@@ -2,83 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408832B3000
+	by mail.lfdr.de (Postfix) with ESMTP id AF0C82B3001
 	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgKNTLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 14:11:32 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:54958 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgKNTLb (ORCPT
+        id S1726274AbgKNTMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 14:12:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgKNTMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 14:11:31 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id D60F080560;
-        Sat, 14 Nov 2020 20:11:28 +0100 (CET)
-Date:   Sat, 14 Nov 2020 20:11:27 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Lee Jones <lee.jones@linaro.org>, Eric Anholt <eric@anholt.net>
-Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/40] drm/pl111/pl111_display: Make local function static
-Message-ID: <20201114191127.GB3797389@ravnborg.org>
-References: <20201113134938.4004947-1-lee.jones@linaro.org>
- <20201113134938.4004947-13-lee.jones@linaro.org>
+        Sat, 14 Nov 2020 14:12:08 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DC1C0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 11:12:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WxkHg606XkyvNta0/g/LnAPObU1iotZ1sOfBfOHWffc=; b=jmZpwLSiLutZKV2fkbiPqmxFEn
+        iS47AQF/5TyY8mMIqGDEzaBXMaFhv9xBeUePelOl+MiVGz7+pRcdQLzhxCFKY3a0WGGn+wzbzm6Sa
+        d9scRAX8mKrEsABz70XIkQbBypiyaL453USpeyrVnG7lDVUVlXB7IwoGAAF1ToIxKUzVpDJjt6ESC
+        EiMby6+nEQMurMn9/XHn0p8FBB2NxqB2uLdx3KsMtqxPbsAfJSP4MApvjEx0NUBocUhwQ7EHixsQl
+        JHsDi8W57QWbncdnklLQ+RuhvCQeRSChQEiPo4UucxxkMU4y1KpDQxkoD0eyXmL/drkNQ0W9w6eix
+        rVtvhY8w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ke0xq-0004sf-75; Sat, 14 Nov 2020 19:11:58 +0000
+Date:   Sat, 14 Nov 2020 19:11:58 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hui Su <sh_def@163.com>, hughd@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, pankaj.gupta.linux@gmail.com,
+        lkp@intel.com
+Subject: Re: [PATCH v2] mm/shmem.c: make shmem_mapping() inline
+Message-ID: <20201114191158.GN17076@casper.infradead.org>
+References: <20201114055134.GA186011@rlk>
+ <20201114105039.4d44e3036e22e10c9a70912c@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201113134938.4004947-13-lee.jones@linaro.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=IkcTkHD0fZMA:10 a=-VAfIpHNAAAA:8 a=e5mUnYsNAAAA:8 a=KKAkSRfTAAAA:8
-        a=Cwvp4g05kwjmXd1pErQA:9 a=QEXdDO2ut3YA:10 a=srlwD-8ojaedGGhPAyx8:22
-        a=Vxmtnl_E_bksehYqCbjh:22 a=cvBusfyB2V15izCimMoJ:22
+In-Reply-To: <20201114105039.4d44e3036e22e10c9a70912c@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
-On Fri, Nov 13, 2020 at 01:49:10PM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Sat, Nov 14, 2020 at 10:50:39AM -0800, Andrew Morton wrote:
+> But really, shmem_mapping() isn't worth an out-of-line call from any
+> callsite - it would be best to make it inlined everywhere.
 > 
->  drivers/gpu/drm/pl111/pl111_display.c:356:6: warning: no previous prototype for ‘pl111_display_disable’ [-Wmissing-prototypes]
-> 
-> Cc: Eric Anholt <eric@anholt.net>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> - make shmem_aops global
+> - declare shmem_aops in shmem_fs.h
+> - export shmem_aops to modules for drivers/dma-buf/udmabuf.c
+> - include linux/fs.h in shmem_fs.h for address_space_operations (we already
+>   include fs.h via swap.h, but we shouldn't depend on that)
+> - make shmem_mapping() a static inline in shmem_fs.h.
 
-Eric's was not copied on this or the other pl111 patch.
-Added Eric so he can be aware of this fix.
+... or use an AS_ bit to make shmem_mapping() global inline without
+exposing the shmem_aops symbol.  We're not short of AS_ bits, and it's
+probably even cheaper than a pointer comparison.
 
-	Sam
-
-> ---
->  drivers/gpu/drm/pl111/pl111_display.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/pl111/pl111_display.c b/drivers/gpu/drm/pl111/pl111_display.c
-> index b3e8697cafcf1..69c02e7c82b7e 100644
-> --- a/drivers/gpu/drm/pl111/pl111_display.c
-> +++ b/drivers/gpu/drm/pl111/pl111_display.c
-> @@ -353,7 +353,7 @@ static void pl111_display_enable(struct drm_simple_display_pipe *pipe,
->  		drm_crtc_vblank_on(crtc);
->  }
->  
-> -void pl111_display_disable(struct drm_simple_display_pipe *pipe)
-> +static void pl111_display_disable(struct drm_simple_display_pipe *pipe)
->  {
->  	struct drm_crtc *crtc = &pipe->crtc;
->  	struct drm_device *drm = crtc->dev;
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+A really good changelog would explain why we need shmem_mapping()
+everywhere that we currently use it.  It's not immediately obvious why
+so many places need to know.
