@@ -2,80 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BDE2B3109
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 22:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7899E2B310D
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 22:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgKNVg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 16:36:28 -0500
-Received: from mail-ua1-f49.google.com ([209.85.222.49]:39185 "EHLO
-        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgKNVg2 (ORCPT
+        id S1726260AbgKNVoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 16:44:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgKNVoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 16:36:28 -0500
-Received: by mail-ua1-f49.google.com with SMTP id t15so4151525ual.6
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 13:36:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=6Bm6To4mLIzf5vAmwyulHb1ZoyA5Lm0EbLMIcNlfojY=;
-        b=HiPk0XwW/+QjncigVrTTyF7uz/jakwKs9rvDDffhPwYtIrVm6ZnbZt41KtitsypEm3
-         iv4JSg+xKoIicgVoOPLdemBe9cmxnFF3unf2jtcq3AWCWo3cBIcmcAoiEobukQfxNpom
-         UD+MVxX1qVi8SQvpsgO4brYElpRiQR7sOzTLHd9k4Qg8/R1dMIBNu981MsnZ+uSywNuI
-         v0Flk80gNyL6E67Jlmv85/VC0716JQiQn+bVJ0x8EjSU+i1J/8qHbel39NaTOotyeVZo
-         l6dSzwabqb/PcacfxvCGCY/IhG1EPOwuF6nu7M0jbaPzdqnjoOb6wR51XcVIrSoUwneZ
-         uHoA==
-X-Gm-Message-State: AOAM531RlVn47WGAOmfcYE6y3S43Od9nrAjETTM1OpDShzORyOTaqg9V
-        HTr7Rtw5dy7oaNxTsbPPEfIIeSk2+j4=
-X-Google-Smtp-Source: ABdhPJxwQXNhLuTppiMDs2BSYQWOBQklaWNvn7u9qiILW8RcN5Ot/QzVF7gzzvUpiHFuSfq4bjpRhQ==
-X-Received: by 2002:ab0:2984:: with SMTP id u4mr4650907uap.22.1605389787166;
-        Sat, 14 Nov 2020 13:36:27 -0800 (PST)
-Received: from google.com (239.145.196.35.bc.googleusercontent.com. [35.196.145.239])
-        by smtp.gmail.com with ESMTPSA id f25sm1622872vkm.41.2020.11.14.13.36.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 13:36:26 -0800 (PST)
-Date:   Sat, 14 Nov 2020 21:36:24 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] percpu fix for v5.10-rc4
-Message-ID: <20201114213624.GA1126012@google.com>
+        Sat, 14 Nov 2020 16:44:01 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0419BC0613D1;
+        Sat, 14 Nov 2020 13:44:00 -0800 (PST)
+Date:   Sat, 14 Nov 2020 21:43:56 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605390238;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FA57tlyeiRT09yLmvSyYiA3hxv8YXd8cBaTnA8ammNA=;
+        b=kKVr1q3BPALxInY0nH8+uLmF3dGPajwpkjL3p4pogbzrr9qpIekSnlnIon5GsWe3p8UoU1
+        o0HPsLXL9WLLTead39KCoMmcN2y/DrEiYBF52WW+GFq/8JMnhJrn6jT9IOpAPJqZ8eg3XX
+        EjRyxJ99ryxbYN6pfwBAZP08FemadW7y2LhC28oEmCmii5tqs4uVI7xqngrCiAFQs7CPCc
+        gPVDH5TwvgtfLvseYRUH6o5TieTKxS2jEvXsR4E5gycug24kMb/Tc/zB3fzvSI11mebL8P
+        0Tct3VtoMvP0GOIXMWNZDL5caAcpiyPjsA5S56Sxz7JXQeHpmJTDqjhTLO8E9w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605390238;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FA57tlyeiRT09yLmvSyYiA3hxv8YXd8cBaTnA8ammNA=;
+        b=6WF/GWbSS+8rUVre7D/BWBC5G3/Y8UbwngiW2QLUq3b2YyH2kcJ4k5BYr/MpL7x/JTjDYW
+        sijY/TuKCkrPsgAw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] genirq: Remove GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <87eekvac06.fsf@nanos.tec.linutronix.de>
+References: <87eekvac06.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <160539023632.11244.9050114800835130352.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The following commit has been merged into the irq/core branch of tip:
 
-A fix for a Wshadow warning in asm-generic percpu macros came in and
-then I tacked on the removal of flexible array initializers in the
-percpu allocator which was discussed in the 5.9 pull request.
+Commit-ID:     f296dcd629aa412a80a53215e46087f53af87f08
+Gitweb:        https://git.kernel.org/tip/f296dcd629aa412a80a53215e46087f53af87f08
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sat, 14 Nov 2020 22:01:45 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 14 Nov 2020 22:39:00 +01:00
 
-Thanks,
-Dennis
+genirq: Remove GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Commit bb9d812643d8 ("arch: remove tile port") removed the last user of
+this cruft two years ago...
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/87eekvac06.fsf@nanos.tec.linutronix.de
 
-are available in the Git repository at:
+---
+ include/linux/irq.h  | 15 +-------------
+ kernel/irq/Kconfig   |  5 +----
+ kernel/irq/irqdesc.c | 51 +-------------------------------------------
+ 3 files changed, 71 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.10-fixes
-
-for you to fetch changes up to 61cf93d3e14a29288e4d5522aecb6e58268eec62:
-
-  percpu: convert flexible array initializers to use struct_size() (2020-10-30 23:02:28 +0000)
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      asm-generic: percpu: avoid Wshadow warning
-
-Dennis Zhou (1):
-      percpu: convert flexible array initializers to use struct_size()
-
- include/asm-generic/percpu.h | 18 +++++++++---------
- mm/percpu.c                  |  8 ++++----
- 2 files changed, 13 insertions(+), 13 deletions(-)
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index c543653..79ce314 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -954,21 +954,6 @@ static inline void irq_free_desc(unsigned int irq)
+ 	irq_free_descs(irq, 1);
+ }
+ 
+-#ifdef CONFIG_GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
+-unsigned int irq_alloc_hwirqs(int cnt, int node);
+-static inline unsigned int irq_alloc_hwirq(int node)
+-{
+-	return irq_alloc_hwirqs(1, node);
+-}
+-void irq_free_hwirqs(unsigned int from, int cnt);
+-static inline void irq_free_hwirq(unsigned int irq)
+-{
+-	return irq_free_hwirqs(irq, 1);
+-}
+-int arch_setup_hwirq(unsigned int irq, int node);
+-void arch_teardown_hwirq(unsigned int irq);
+-#endif
+-
+ #ifdef CONFIG_GENERIC_IRQ_LEGACY
+ void irq_init_desc(unsigned int irq);
+ #endif
+diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
+index 10a5aff..f2cda6b 100644
+--- a/kernel/irq/Kconfig
++++ b/kernel/irq/Kconfig
+@@ -26,11 +26,6 @@ config GENERIC_IRQ_SHOW_LEVEL
+ config GENERIC_IRQ_EFFECTIVE_AFF_MASK
+        bool
+ 
+-# Facility to allocate a hardware interrupt. This is legacy support
+-# and should not be used in new code. Use irq domains instead.
+-config GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
+-       bool
+-
+ # Support for delayed migration from interrupt context
+ config GENERIC_PENDING_IRQ
+ 	bool
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index 1a77236..e810eb9 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -810,57 +810,6 @@ unlock:
+ }
+ EXPORT_SYMBOL_GPL(__irq_alloc_descs);
+ 
+-#ifdef CONFIG_GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
+-/**
+- * irq_alloc_hwirqs - Allocate an irq descriptor and initialize the hardware
+- * @cnt:	number of interrupts to allocate
+- * @node:	node on which to allocate
+- *
+- * Returns an interrupt number > 0 or 0, if the allocation fails.
+- */
+-unsigned int irq_alloc_hwirqs(int cnt, int node)
+-{
+-	int i, irq = __irq_alloc_descs(-1, 0, cnt, node, NULL, NULL);
+-
+-	if (irq < 0)
+-		return 0;
+-
+-	for (i = irq; cnt > 0; i++, cnt--) {
+-		if (arch_setup_hwirq(i, node))
+-			goto err;
+-		irq_clear_status_flags(i, _IRQ_NOREQUEST);
+-	}
+-	return irq;
+-
+-err:
+-	for (i--; i >= irq; i--) {
+-		irq_set_status_flags(i, _IRQ_NOREQUEST | _IRQ_NOPROBE);
+-		arch_teardown_hwirq(i);
+-	}
+-	irq_free_descs(irq, cnt);
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(irq_alloc_hwirqs);
+-
+-/**
+- * irq_free_hwirqs - Free irq descriptor and cleanup the hardware
+- * @from:	Free from irq number
+- * @cnt:	number of interrupts to free
+- *
+- */
+-void irq_free_hwirqs(unsigned int from, int cnt)
+-{
+-	int i, j;
+-
+-	for (i = from, j = cnt; j > 0; i++, j--) {
+-		irq_set_status_flags(i, _IRQ_NOREQUEST | _IRQ_NOPROBE);
+-		arch_teardown_hwirq(i);
+-	}
+-	irq_free_descs(from, cnt);
+-}
+-EXPORT_SYMBOL_GPL(irq_free_hwirqs);
+-#endif
+-
+ /**
+  * irq_get_next_irq - get next allocated irq number
+  * @offset:	where to start the search
