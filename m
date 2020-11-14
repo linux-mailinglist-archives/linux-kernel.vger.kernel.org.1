@@ -2,167 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7062B297E
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F37B2B29A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 01:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgKNAII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 13 Nov 2020 19:08:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgKNAII (ORCPT
+        id S1726184AbgKNAOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 13 Nov 2020 19:14:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34353 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726028AbgKNAOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:08:08 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECE6C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:08:08 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id v13so8488042ybe.18
-        for <linux-kernel@vger.kernel.org>; Fri, 13 Nov 2020 16:08:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=eTdjv2rngDcsaDWT4WQKH1RsSRvVouhbrVuptq5s48Y=;
-        b=Ohksk+KB272p6u87RNhfUuLZXl58HRUjNbyL87mj/sutTkuUas2CENsR71uVn7W52w
-         06VcP4T/wkC2zkU0PistGGftNlmXYCQSzWhBc5D/pEzIhAgGedf0c8RGozf36DX7UP/J
-         E0h8vGJBTZmuwTLT+Aynwc0zVdR1+sc83Fj1VpBPafOl6KzponPuVedAX8w2Wuer+8MJ
-         o8ZrX1R6ifqIyPYF/v/9i2WvKNZ9vTd4ztG06SY8pJ1bwlDfzXt+EdbxQzlaOoPY7wr5
-         ZWNVSRrAEs2pmROAyoi21a+KeoWKsYgBF5oneMZkdxj9ytDzwbfVi2ppFUFsZ5EEjKIN
-         rHxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=eTdjv2rngDcsaDWT4WQKH1RsSRvVouhbrVuptq5s48Y=;
-        b=cCB4lUhbLaJjTD/cA18npy+LN8i2G9MkxBKnWIYUKvAnMe/qyY6HXnmrOp5MbKb/8e
-         fH+hIKMHTQKod2hvqKR4lF+0D9NfTA+2YZ5T0lF6E9/Gc2Fmq0r56ZNN2To/DA4Pbkii
-         tuCT5nHeoZ8Y2C8btn37F6MfqBUmCJoEv38h5tshkMroI95TJnOB7ppHpJcgFaMycaHt
-         WUV3U48+ffVxVqvwhMorlnXf3lAdHkT2wkNhXOLS7jvjXkj4SZOyu9lOjtI1xQydYxYv
-         IHFxCy98i1WWATOvVmQMD78ke7PDMGKf2r6YxK7oU+EjUoCKX1SzlaVWZkEXM8px45Im
-         5JHw==
-X-Gm-Message-State: AOAM533F2GFoLKACoShbPEqaE1Wgh+YY8MmhGmf61OD0ir/a0DMwU1x8
-        eif6htmdmY0K1n/NqpEqrjF73h3YFtZT
-X-Google-Smtp-Source: ABdhPJzibzamHePnxBf+A4piCsu4MGx6D9wlL0PVQxhkOPJeWVilpO1ArNnVKVOos72VtYAL67XHAH3mtito
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a25:fc1c:: with SMTP id
- v28mr4954437ybd.356.1605312487133; Fri, 13 Nov 2020 16:08:07 -0800 (PST)
-Date:   Fri, 13 Nov 2020 16:08:03 -0800
-Message-Id: <20201114000803.909530-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH] perf test: Fix dwarf unwind for optimized builds.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 13 Nov 2020 19:14:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605312883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A6s1TC71DL1xDZonclhg9sXnTjrfTeH4/kmIsBa3yVE=;
+        b=OiduScPcMs7vZG43Qr4Cu/qX7atwrnoSihNMKw31wtt8aPh5FrFIBeB9ICJjjWJEsDyRC5
+        4mK4PC27CUuThO8oU9lQDD9LhqNiEseES5a6vl/9tCvd5Tm/i/mCvqZYVgfuDT/PqSVaIk
+        ro3O+nCH3CQSeN6+GeC+xFp19tXClo4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-Y-1_SB6xMTuSXBECTyQMUw-1; Fri, 13 Nov 2020 19:14:42 -0500
+X-MC-Unique: Y-1_SB6xMTuSXBECTyQMUw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C47FF1868401;
+        Sat, 14 Nov 2020 00:14:39 +0000 (UTC)
+Received: from Whitewolf.lyude.net (ovpn-115-66.rdu2.redhat.com [10.10.115.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 04E7A60C15;
+        Sat, 14 Nov 2020 00:14:37 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Takashi Iwai <tiwai@suse.de>, James Jones <jajones@nvidia.com>,
+        nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/8] drm/nouveau/kms/nv50-: Use atomic encoder callbacks everywhere
+Date:   Fri, 13 Nov 2020 19:14:10 -0500
+Message-Id: <20201114001417.155093-2-lyude@redhat.com>
+In-Reply-To: <20201114001417.155093-1-lyude@redhat.com>
+References: <20201114001417.155093-1-lyude@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To ensure the stack frames are on the stack tail calls optimizations
-need to be inhibited. If your compiler supports an attribute use it,
-otherwise use an asm volatile barrier.
+It turns out that I forgot to go through and make sure that I converted all
+encoder callbacks to use atomic_enable/atomic_disable(), so let's go and
+actually do that.
 
-The barrier fix was suggested here:
-https://lore.kernel.org/lkml/20201028081123.GT2628@hirez.programming.kicks-ass.net/
-
-Fixes: 9ae1e990f1ab ("perf tools: Remove broken __no_tail_call
-       attribute")
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
+Fixes: 09838c4efe9a ("drm/nouveau/kms: Search for encoders' connectors properly")
 ---
- tools/perf/tests/dwarf-unwind.c | 39 +++++++++++++++++++++++++++------
- 1 file changed, 32 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/nouveau/dispnv50/disp.c | 29 ++++++++++++-------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
 
-diff --git a/tools/perf/tests/dwarf-unwind.c b/tools/perf/tests/dwarf-unwind.c
-index 83638097c3bc..c8ce86bceea8 100644
---- a/tools/perf/tests/dwarf-unwind.c
-+++ b/tools/perf/tests/dwarf-unwind.c
-@@ -24,6 +24,23 @@
- /* For bsearch. We try to unwind functions in shared object. */
- #include <stdlib.h>
- 
-+/*
-+ * The test will assert frames are on the stack but tail call optimizations lose
-+ * the frame of the caller. Clang can disable this optimization on a called
-+ * function but GCC currently (11/2020) lacks this attribute. The barrier is
-+ * used to inhibit tail calls in these cases.
-+ */
-+#ifdef __has_attribute
-+#if __has_attribute(disable_tail_calls)
-+#define NO_TAIL_CALL_ATTRIBUTE __attribute__((disable_tail_calls))
-+#define NO_TAIL_CALL_BARRIER
-+#endif
-+#endif
-+#ifndef NO_TAIL_CALL_ATTRIBUTE
-+#define NO_TAIL_CALL_ATTRIBUTE
-+#define NO_TAIL_CALL_BARRIER __asm__ __volatile__("" : : : "memory");
-+#endif
-+
- static int mmap_handler(struct perf_tool *tool __maybe_unused,
- 			union perf_event *event,
- 			struct perf_sample *sample,
-@@ -95,7 +112,7 @@ static int unwind_entry(struct unwind_entry *entry, void *arg)
- 	return strcmp((const char *) symbol, funcs[idx]);
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+index b111fe24a06b..36d6b6093d16 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+@@ -455,7 +455,7 @@ nv50_outp_get_old_connector(struct nouveau_encoder *outp,
+  * DAC
+  *****************************************************************************/
+ static void
+-nv50_dac_disable(struct drm_encoder *encoder)
++nv50_dac_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+ {
+ 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+ 	struct nv50_core *core = nv50_disp(encoder->dev)->core;
+@@ -467,7 +467,7 @@ nv50_dac_disable(struct drm_encoder *encoder)
  }
  
--noinline int test_dwarf_unwind__thread(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__thread(struct thread *thread)
+ static void
+-nv50_dac_enable(struct drm_encoder *encoder)
++nv50_dac_enable(struct drm_encoder *encoder, struct drm_atomic_state *state)
  {
- 	struct perf_sample sample;
- 	unsigned long cnt = 0;
-@@ -126,7 +143,7 @@ noinline int test_dwarf_unwind__thread(struct thread *thread)
+ 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+ 	struct nouveau_crtc *nv_crtc = nouveau_crtc(encoder->crtc);
+@@ -525,8 +525,8 @@ nv50_dac_detect(struct drm_encoder *encoder, struct drm_connector *connector)
+ static const struct drm_encoder_helper_funcs
+ nv50_dac_help = {
+ 	.atomic_check = nv50_outp_atomic_check,
+-	.enable = nv50_dac_enable,
+-	.disable = nv50_dac_disable,
++	.atomic_enable = nv50_dac_enable,
++	.atomic_disable = nv50_dac_disable,
+ 	.detect = nv50_dac_detect
+ };
  
- static int global_unwind_retval = -INT_MAX;
- 
--noinline int test_dwarf_unwind__compare(void *p1, void *p2)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__compare(void *p1, void *p2)
- {
- 	/* Any possible value should be 'thread' */
- 	struct thread *thread = *(struct thread **)p1;
-@@ -145,7 +162,7 @@ noinline int test_dwarf_unwind__compare(void *p1, void *p2)
- 	return p1 - p2;
+@@ -1055,7 +1055,7 @@ nv50_dp_bpc_to_depth(unsigned int bpc)
  }
  
--noinline int test_dwarf_unwind__krava_3(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_3(struct thread *thread)
+ static void
+-nv50_msto_enable(struct drm_encoder *encoder)
++nv50_msto_enable(struct drm_encoder *encoder, struct drm_atomic_state *state)
  {
- 	struct thread *array[2] = {thread, thread};
- 	void *fp = &bsearch;
-@@ -164,14 +181,22 @@ noinline int test_dwarf_unwind__krava_3(struct thread *thread)
- 	return global_unwind_retval;
+ 	struct nv50_head *head = nv50_head(encoder->crtc);
+ 	struct nv50_head_atom *armh = nv50_head_atom(head->base.base.state);
+@@ -1101,7 +1101,7 @@ nv50_msto_enable(struct drm_encoder *encoder)
  }
  
--noinline int test_dwarf_unwind__krava_2(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_2(struct thread *thread)
+ static void
+-nv50_msto_disable(struct drm_encoder *encoder)
++nv50_msto_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
  {
--	return test_dwarf_unwind__krava_3(thread);
-+	int ret;
-+
-+	ret =  test_dwarf_unwind__krava_3(thread);
-+	NO_TAIL_CALL_BARRIER;
-+	return ret;
+ 	struct nv50_msto *msto = nv50_msto(encoder);
+ 	struct nv50_mstc *mstc = msto->mstc;
+@@ -1118,8 +1118,8 @@ nv50_msto_disable(struct drm_encoder *encoder)
+ 
+ static const struct drm_encoder_helper_funcs
+ nv50_msto_help = {
+-	.disable = nv50_msto_disable,
+-	.enable = nv50_msto_enable,
++	.atomic_disable = nv50_msto_disable,
++	.atomic_enable = nv50_msto_enable,
+ 	.atomic_check = nv50_msto_atomic_check,
+ };
+ 
+@@ -1645,8 +1645,7 @@ nv50_sor_disable(struct drm_encoder *encoder,
  }
  
--noinline int test_dwarf_unwind__krava_1(struct thread *thread)
-+NO_TAIL_CALL_ATTRIBUTE noinline int test_dwarf_unwind__krava_1(struct thread *thread)
+ static void
+-nv50_sor_enable(struct drm_encoder *encoder,
+-		struct drm_atomic_state *state)
++nv50_sor_enable(struct drm_encoder *encoder, struct drm_atomic_state *state)
  {
--	return test_dwarf_unwind__krava_2(thread);
-+	int ret;
-+
-+	ret =  test_dwarf_unwind__krava_2(thread);
-+	NO_TAIL_CALL_BARRIER;
-+	return ret;
+ 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+ 	struct nouveau_crtc *nv_crtc = nouveau_crtc(encoder->crtc);
+@@ -1873,7 +1872,7 @@ nv50_pior_atomic_check(struct drm_encoder *encoder,
  }
  
- int test__dwarf_unwind(struct test *test __maybe_unused, int subtest __maybe_unused)
+ static void
+-nv50_pior_disable(struct drm_encoder *encoder)
++nv50_pior_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+ {
+ 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+ 	struct nv50_core *core = nv50_disp(encoder->dev)->core;
+@@ -1885,7 +1884,7 @@ nv50_pior_disable(struct drm_encoder *encoder)
+ }
+ 
+ static void
+-nv50_pior_enable(struct drm_encoder *encoder)
++nv50_pior_enable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+ {
+ 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+ 	struct nouveau_crtc *nv_crtc = nouveau_crtc(encoder->crtc);
+@@ -1921,14 +1920,14 @@ nv50_pior_enable(struct drm_encoder *encoder)
+ 	}
+ 
+ 	core->func->pior->ctrl(core, nv_encoder->or, ctrl, asyh);
+-	nv_encoder->crtc = encoder->crtc;
++	nv_encoder->crtc = &nv_crtc->base;
+ }
+ 
+ static const struct drm_encoder_helper_funcs
+ nv50_pior_help = {
+ 	.atomic_check = nv50_pior_atomic_check,
+-	.enable = nv50_pior_enable,
+-	.disable = nv50_pior_disable,
++	.atomic_enable = nv50_pior_enable,
++	.atomic_disable = nv50_pior_disable,
+ };
+ 
+ static void
 -- 
-2.29.2.299.gdc1121823c-goog
+2.28.0
 
