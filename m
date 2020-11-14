@@ -2,117 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F282B3067
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3092F2B306F
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 20:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgKNTyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 14:54:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKNTyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 14:54:39 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        id S1726291AbgKNT6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 14:58:48 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:58318 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726174AbgKNT6s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 14:58:48 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D6C8222E9;
-        Sat, 14 Nov 2020 19:54:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605383678;
-        bh=3L3ZdjLNpMbrM9kh33h56mx9+Ki1Zw4agazyBg/3pcA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sx2AXaeaySiB2zLUmMq86OFJklD3Fm6dTSh9KrnOQer24GofRVK0L4lf60yQ/2KM5
-         4a940clfyJe4KdmAwUTfsL+HzvShGm6sg6mgQRlukTsoUAEu3FamN+/3XMweDEdNYQ
-         9EHmzLlM2oZzCRdVkOCscToOyRILYOa7d8n109b8=
-Date:   Sat, 14 Nov 2020 11:54:37 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        linux-next@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v2] net: linux/skbuff.h: combine SKB_EXTENSIONS
- + KCOV handling
-Message-ID: <20201114115437.55eed094@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201114174618.24471-1-rdunlap@infradead.org>
-References: <20201114174618.24471-1-rdunlap@infradead.org>
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 2DE2F8054C;
+        Sat, 14 Nov 2020 20:58:45 +0100 (CET)
+Date:   Sat, 14 Nov 2020 20:58:43 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/5] drm/panel/samsung-sofef00: Add panel for OnePlus 6/T
+ devices
+Message-ID: <20201114195843.GA3900471@ravnborg.org>
+References: <20201112161920.2671430-1-caleb@connolly.tech>
+ <20201112161920.2671430-2-caleb@connolly.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112161920.2671430-2-caleb@connolly.tech>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=OPaO7OcAVtVQApmh9Q0A:9 a=CjuIK1q_8ugA:10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Nov 2020 09:46:18 -0800 Randy Dunlap wrote:
-> The previous Kconfig patch led to some other build errors as
-> reported by the 0day bot and my own overnight build testing.
+Hi Caleb,
+On Thu, Nov 12, 2020 at 04:21:13PM +0000, Caleb Connolly wrote:
+> The OnePlus 6/T devices use different panels however they are
+> functionally identical with the only differences being the resolution.
+> The panels also don't seem to be used by any other devices, just combine
+> them into one driver.
 > 
-> These are all in <linux/skbuff.h> when KCOV is enabled but
-> SKB_EXTENSIONS is not enabled, so fix those by combining those conditions
-> in the header file.
+> The panels are: samsung,sofef00
+> and             samsung,s6e3fc2x01
 > 
-> Fixes: 6370cc3bbd8a ("net: add kcov handle to skb extensions")
-> Fixes: 85ce50d337d1 ("net: kcov: don't select SKB_EXTENSIONS when there is no NET")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Aleksandr Nogikh <nogikh@google.com>
-> Cc: Willem de Bruijn <willemb@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-next@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> ---
-> v2: (as suggested by Matthieu Baerts <matthieu.baerts@tessares.net>)
->   drop an extraneous space in a comment;
->   use CONFIG_SKB_EXTENSIONS instead of CONFIG_NET;
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
 
-Thanks for the fix Randy!
+Thanks, applied to drm-misc-next.
+Fixed a few checkpatch --strict warnings when applying.
+Please check with --strict in the future.
 
-> --- linux-next-20201113.orig/include/linux/skbuff.h
-> +++ linux-next-20201113/include/linux/skbuff.h
-> @@ -4151,7 +4151,7 @@ enum skb_ext_id {
->  #if IS_ENABLED(CONFIG_MPTCP)
->  	SKB_EXT_MPTCP,
->  #endif
-> -#if IS_ENABLED(CONFIG_KCOV)
-> +#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
-
-I don't think this part is necessary, this is already under an ifdef:
-
-#ifdef CONFIG_SKB_EXTENSIONS
-enum skb_ext_id {
-
-if I'm reading the code right.
-
-That said I don't know why the enum is under CONFIG_SKB_EXTENSIONS in
-the first place.
-
-If extensions are not used doesn't matter if we define the enum and with
-how many entries.
-
-At the same time if we take the enum from under the ifdef and add stubs
-for skb_ext_add() and skb_ext_find() we could actually remove the stubs
-for kcov-related helpers. That seems cleaner and less ifdefy to me.
-
-WDYT?
-
->  	SKB_EXT_KCOV_HANDLE,
->  #endif
->  	SKB_EXT_NUM, /* must be last */
-> @@ -4608,7 +4608,7 @@ static inline void skb_reset_redirect(st
->  #endif
->  }
->  
-> -#ifdef CONFIG_KCOV
-> +#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
->  static inline void skb_set_kcov_handle(struct sk_buff *skb,
->  				       const u64 kcov_handle)
->  {
-> @@ -4636,7 +4636,7 @@ static inline u64 skb_get_kcov_handle(st
->  static inline void skb_set_kcov_handle(struct sk_buff *skb,
->  				       const u64 kcov_handle) { }
->  static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
-> -#endif /* CONFIG_KCOV */
-> +#endif /* CONFIG_KCOV && CONFIG_SKB_EXTENSIONS */
->  
->  #endif	/* __KERNEL__ */
->  #endif	/* _LINUX_SKBUFF_H */
-
+	Sam
