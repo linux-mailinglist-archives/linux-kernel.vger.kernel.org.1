@@ -2,37 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477562B2C7C
-	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 10:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E86B2B2C7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 14 Nov 2020 10:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgKNJwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 04:52:21 -0500
-Received: from verein.lst.de ([213.95.11.211]:49844 "EHLO verein.lst.de"
+        id S1726685AbgKNJxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 04:53:11 -0500
+Received: from verein.lst.de ([213.95.11.211]:49857 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726541AbgKNJwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 04:52:21 -0500
+        id S1726481AbgKNJxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 04:53:10 -0500
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id A911267373; Sat, 14 Nov 2020 10:52:18 +0100 (CET)
-Date:   Sat, 14 Nov 2020 10:52:18 +0100
+        id 830C468AFE; Sat, 14 Nov 2020 10:53:07 +0100 (CET)
+Date:   Sat, 14 Nov 2020 10:53:07 +0100
 From:   Christoph Hellwig <hch@lst.de>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     freedreno@lists.freedesktop.org, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:DMA MAPPING HELPERS" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/5] dma-direct: add dma_direct_bypass() to force
- direct ops
-Message-ID: <20201114095218.GA19102@lst.de>
-References: <20201106163437.30836-1-jonathan@marek.ca> <20201106163437.30836-3-jonathan@marek.ca>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hughd@google.com, hch@lst.de,
+        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
+        dchinner@redhat.com, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v4 01/16] mm: Make pagecache tagged lookups return only
+ head pages
+Message-ID: <20201114095307.GB19102@lst.de>
+References: <20201112212641.27837-1-willy@infradead.org> <20201112212641.27837-2-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201106163437.30836-3-jonathan@marek.ca>
+In-Reply-To: <20201112212641.27837-2-willy@infradead.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So despite a week long wait I'e only received this patch from the
-series.  Please resend the whole series if you want a review.
+On Thu, Nov 12, 2020 at 09:26:26PM +0000, Matthew Wilcox (Oracle) wrote:
+> Pagecache tags are used for dirty page writeback.  Since dirtiness is
+> tracked on a per-THP basis, we only want to return the head page rather
+> than each subpage of a tagged page.  All the filesystems which use huge
+> pages today are in-memory, so there are no tagged huge pages today.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+
+Looks good,
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
