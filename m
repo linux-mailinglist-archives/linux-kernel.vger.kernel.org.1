@@ -2,224 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625C72B332D
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 10:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1456F2B3332
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 10:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgKOJRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 04:17:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726754AbgKOJRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 04:17:17 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01B8422450;
-        Sun, 15 Nov 2020 09:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605431835;
-        bh=XrsLu3AgfKf/yhCqreqSLPfO0QbxjM5u1nh2OTK+i7M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q0I4G8XBAWR7g47zvvLF17b4q7dpa65b9wkXecvSGjBwSxVcsrFJ8ESXu8JFAv6n6
-         sdRm52xntWf8ZCcumTh9FSor5j2JPuQESup2yC2R21JKmZx1500hzTDazlR+vjkiGB
-         IVdV6hSWm3dBik27GJTFfn5JfaFip6aaLkmt9qWY=
-Date:   Sun, 15 Nov 2020 11:17:00 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Roman Gushchin <guroan@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v8 6/9] secretmem: add memcg accounting
-Message-ID: <20201115091700.GY4758@kernel.org>
-References: <20201110151444.20662-1-rppt@kernel.org>
- <20201110151444.20662-7-rppt@kernel.org>
- <CALo0P13aq3GsONnZrksZNU9RtfhMsZXGWhK1n=xYJWQizCd4Zw@mail.gmail.com>
+        id S1726744AbgKOJW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 04:22:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726552AbgKOJWV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 04:22:21 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C37C0613D1;
+        Sun, 15 Nov 2020 01:22:21 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id 7so20068905ejm.0;
+        Sun, 15 Nov 2020 01:22:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ErxNsuDkpd1W/DgWEjOvUcqQZYKwNOZCjLfy5r+fMW4=;
+        b=EiRQv+5WibDnUbF1YEgtIVVn9/cZsIfofXuGl9oIzWePfmtK8bWFCJR4TkWuUfuS+w
+         E0uYr+CrVEX85JHkcRN1idUF45nSjh+gHru31LaQ8dN9WiSoI64HvfMufvJ8f7kkkfu+
+         CHfjek6MtyQHtl1lwKE8CAq0220jL2woE6SXZg1rrE2SPPhb3u7Su1B8aP1JOjUZFrmr
+         qaTTSMfmwV5HTA6n2E41b7nRLzl9I8S3TT974jah7fq9xkxDKZhKV/7iK2fucT4SUg95
+         TbOsG43zvqu+EGTg6PxyZFh0whCPzCdDeGgySDyB/EQaGOhL72jH5jEjYaubgx0x+Wia
+         IbDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ErxNsuDkpd1W/DgWEjOvUcqQZYKwNOZCjLfy5r+fMW4=;
+        b=O9F0E1QkVbUEjr2FDZ0NVWKMFC4ZEcbAK3WugqfX75eSfLZIuuuhFLOW9fKFpm/sUF
+         Uk5i6ncBhZrolwe42V6vesb8jHteKEXc7+RyYikcgi+k1npP9CO1Bbrc4SF6c9UeIqVL
+         gGmLYZDXxdQMdeC03Ta+P6zDGmzeANgD25+Hd/uSVU82xY6K1RrvJK26uC1VjCsxP1d5
+         O17JXQCHp7QAQv7stRQH9GWftdZvEuk4q1CN3CL2GqCL3Da8817Y6PQGrGX/RtyQBUKS
+         rD0rGdL4hgtAwqczauqxjh5P3+Jr3lj7GE6HueCNYcDw17tm35IlFeYiFAETUFpkUPgP
+         Oo2g==
+X-Gm-Message-State: AOAM5304+qSBaJ0iwBugtSfT0DdEWuLm1nZ79CeLoPwBCJz9oWYU6UX2
+        JO9Kyv6sMWl2kThp6qbDlytFRWP3FYQff0e1rCQ=
+X-Google-Smtp-Source: ABdhPJwBuH2TYudRTSq4x2ACk4w4Jv5QBQFB7KtV8gD0oxBNII0XyQUEUWfGeLMsNcLBmzBTRATH3faB9L1T+PSsmuo=
+X-Received: by 2002:a17:906:3d1:: with SMTP id c17mr9576167eja.187.1605432137878;
+ Sun, 15 Nov 2020 01:22:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALo0P13aq3GsONnZrksZNU9RtfhMsZXGWhK1n=xYJWQizCd4Zw@mail.gmail.com>
+References: <20201114200104.4148283-1-martin.blumenstingl@googlemail.com>
+ <20201114200104.4148283-2-martin.blumenstingl@googlemail.com> <20201114223250.GI1480543@lunn.ch>
+In-Reply-To: <20201114223250.GI1480543@lunn.ch>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 15 Nov 2020 10:22:06 +0100
+Message-ID: <CAFBinCAmExHsCpP8hh_K6M6pg8SjoF1WNNj9fwSKR3dhgBGJdA@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 1/4] dt-bindings: net: dwmac-meson: use picoseconds
+ for the RGMII RX delay
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, jianxin.pan@amlogic.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        khilman@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
+        jbrunet@baylibre.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 03:42:25PM -0800, Roman Gushchin wrote:
-> вт, 10 нояб. 2020 г. в 07:16, Mike Rapoport <rppt@kernel.org>:
-> >
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> >
-> > Account memory consumed by secretmem to memcg. The accounting is updated
-> > when the memory is actually allocated and freed.
-> >
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >  mm/filemap.c   |  2 +-
-> >  mm/secretmem.c | 42 +++++++++++++++++++++++++++++++++++++++++-
-> >  2 files changed, 42 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/filemap.c b/mm/filemap.c
-> > index 249cf489f5df..11387a077373 100644
-> > --- a/mm/filemap.c
-> > +++ b/mm/filemap.c
-> > @@ -844,7 +844,7 @@ static noinline int __add_to_page_cache_locked(struct page *page,
-> >         page->mapping = mapping;
-> >         page->index = offset;
-> >
-> > -       if (!huge) {
-> > +       if (!huge && !page->memcg_data) {
-> >                 error = mem_cgroup_charge(page, current->mm, gfp);
-> >                 if (error)
-> >                         goto error;
-> > diff --git a/mm/secretmem.c b/mm/secretmem.c
-> > index 1aa2b7cffe0d..1eb7667016fa 100644
-> > --- a/mm/secretmem.c
-> > +++ b/mm/secretmem.c
-> > @@ -17,6 +17,7 @@
-> >  #include <linux/syscalls.h>
-> >  #include <linux/memblock.h>
-> >  #include <linux/pseudo_fs.h>
-> > +#include <linux/memcontrol.h>
-> >  #include <linux/set_memory.h>
-> >  #include <linux/sched/signal.h>
-> >
-> > @@ -49,6 +50,38 @@ struct secretmem_ctx {
-> >
-> >  static struct cma *secretmem_cma;
-> >
-> 
-> Hi Mike!
-> 
-> > +static int secretmem_memcg_charge(struct page *page, gfp_t gfp, int order)
-> > +{
-> > +       unsigned long nr_pages = (1 << order);
-> > +       int i, err;
-> > +
-> > +       err = memcg_kmem_charge_page(page, gfp, order);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       for (i = 1; i < nr_pages; i++) {
-> > +               struct page *p = page + i;
-> > +
-> > +               p->memcg_data = page->memcg_data;
-> > +       }
-> 
-> Hm, it looks very strange to me. Why do we need to copy memcg_data?
-> What about css reference counting?
+Hi Andrew,
 
-I need to copy memcg_data to mark a page as being accounted so it won't
-be charged again when it is added to page cache.
+On Sat, Nov 14, 2020 at 11:32 PM Andrew Lunn <andrew@lunn.ch> wrote:
+[...]
+> > +        amlogic,rgmii-rx-delay-ps:
+> > +          default: 0
+> >            description:
+> >              The internal RGMII RX clock delay (provided by this IP block) in
+> > -            nanoseconds. When phy-mode is set to "rgmii" then the RX delay
+> > +            picoseconds. When phy-mode is set to "rgmii" then the RX delay
+> >              should be explicitly configured. When the phy-mode is set to
+> >              either "rgmii-id" or "rgmii-rxid" the RX clock delay is already
+> >              provided by the PHY. Any configuration is ignored when the
+> >              phy-mode is set to "rmii".
+>
+> Hi Martin
+>
+> I don't think the wording matches what the driver is actually doing:
+>
+>         if (dwmac->rx_delay_ns == 2)
+>                 rx_dly_config = PRG_ETH0_ADJ_ENABLE | PRG_ETH0_ADJ_SETUP;
+>         else
+>                 rx_dly_config = 0;
+>
+>         switch (dwmac->phy_mode) {
+>         case PHY_INTERFACE_MODE_RGMII:
+>                 delay_config = tx_dly_config | rx_dly_config;
+>                 break;
+>         case PHY_INTERFACE_MODE_RGMII_RXID:
+>                 delay_config = tx_dly_config;
+>                 break;
+>         case PHY_INTERFACE_MODE_RGMII_TXID:
+>                 delay_config = rx_dly_config;
+>                 break;
+>         case PHY_INTERFACE_MODE_RGMII_ID:
+>         case PHY_INTERFACE_MODE_RMII:
+>                 delay_config = 0;
+>                 break;
+>
+> So rx_delay is used for both rgmii and rgmii-txid. The binding says
+> nothing about rgmii-txid.
+interesting point here. it's been like this before this patch. still I
+would like to understand what the proper way to fix it is so I can
+also include a fix for it:
+1. should rgmii-txid not add any RX delay on the MAC side? that would
+mean for my board I will switch to phy-mode rgmii so the MAC applies
+both the RX and TX delays
+2. update the documentation to clarify that rgmii-txid would also add
+the RX delay on the MAC side
 
-What happens here is that I allocate a large page and then use it as a
-local cache for allocations in secretmem_fault(). I charge the large
-page as kmem. 
+> And while i'm looking at the code, i wonder about this:
+>
+>        if (rx_dly_config & PRG_ETH0_ADJ_ENABLE) {
+>                 if (!dwmac->timing_adj_clk) {
+>                         dev_err(dwmac->dev,
+>                                 "The timing-adjustment clock is mandatory for the RX delay re-timing\n");
+>                         return -EINVAL;
+>                 }
+>
+>                 /* The timing adjustment logic is driven by a separate clock */
+>                 ret = meson8b_devm_clk_prepare_enable(dwmac,
+>                                                       dwmac->timing_adj_clk);
+>                 if (ret) {
+>                         dev_err(dwmac->dev,
+>                                 "Failed to enable the timing-adjustment clock\n");
+>                         return ret;
+>                 }
+>         }
+>
+> It looks like it can be that rx_dly_config & PRG_ETH0_ADJ_ENABLE is
+> true, so the clock is enabled, but delay_config does not contain
+> rx_delay_config, so it is pointless turning it on.
+that is a good point and also a bug with one of the previous patches
+I'll include a patch fixing this in v2
 
-During secretmem_fault() a small sub-page from that large page goes into
-page cache and there I skip its memcg accounting.
 
-In the end, when the large page is freed, the memcg_data for all its
-sub-pages is cleared and I uncharge memcg with the order of large page.
-
-An alternative would be to uncharge a small page from kmem in
-secretmem_fault() and make this page charged in add_to_page_cache(), but
-that would complicate the release path as I would need to re-charge the
-small page back to kmem at secretmem_freepage() and track all the
-participating memcgs till the large page is freed.
-
-> And what about statistics?
-
-Hmm, that's probably won't be accurate :-/
-
-> I'm sorry for being late.
-> 
-> Thank you!
-> 
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void secretmem_memcg_uncharge(struct page *page, int order)
-> > +{
-> > +       unsigned long nr_pages = (1 << order);
-> > +       int i;
-> > +
-> > +       for (i = 1; i < nr_pages; i++) {
-> > +               struct page *p = page + i;
-> > +
-> > +               p->memcg_data = 0;
-> > +       }
-> > +
-> > +       memcg_kmem_uncharge_page(page, PMD_PAGE_ORDER);
-> > +}
-> > +
-> >  static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
-> >  {
-> >         unsigned long nr_pages = (1 << PMD_PAGE_ORDER);
-> > @@ -61,10 +94,14 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
-> >         if (!page)
-> >                 return -ENOMEM;
-> >
-> > -       err = set_direct_map_invalid_noflush(page, nr_pages);
-> > +       err = secretmem_memcg_charge(page, gfp, PMD_PAGE_ORDER);
-> >         if (err)
-> >                 goto err_cma_release;
-> >
-> > +       err = set_direct_map_invalid_noflush(page, nr_pages);
-> > +       if (err)
-> > +               goto err_memcg_uncharge;
-> > +
-> >         addr = (unsigned long)page_address(page);
-> >         err = gen_pool_add(pool, addr, PMD_SIZE, NUMA_NO_NODE);
-> >         if (err)
-> > @@ -81,6 +118,8 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
-> >          * won't fail
-> >          */
-> >         set_direct_map_default_noflush(page, nr_pages);
-> > +err_memcg_uncharge:
-> > +       secretmem_memcg_uncharge(page, PMD_PAGE_ORDER);
-> >  err_cma_release:
-> >         cma_release(secretmem_cma, page, nr_pages);
-> >         return err;
-> > @@ -310,6 +349,7 @@ static void secretmem_cleanup_chunk(struct gen_pool *pool,
-> >         int i;
-> >
-> >         set_direct_map_default_noflush(page, nr_pages);
-> > +       secretmem_memcg_uncharge(page, PMD_PAGE_ORDER);
-> >
-> >         for (i = 0; i < nr_pages; i++)
-> >                 clear_highpage(page + i);
-> > --
-> > 2.28.0
-> >
-> >
-
--- 
-Sincerely yours,
-Mike.
+Best regards,
+Martin
