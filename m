@@ -2,146 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0C42B330D
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 09:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4392B3314
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 09:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgKOIyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 03:54:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34826 "EHLO mail.kernel.org"
+        id S1726823AbgKOI44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 03:56:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726644AbgKOIxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 03:53:31 -0500
-Received: from kernel.org (unknown [77.125.7.142])
+        id S1726642AbgKOI44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 03:56:56 -0500
+Received: from localhost (otava-0257.koleje.cuni.cz [78.128.181.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E7962242E;
-        Sun, 15 Nov 2020 08:53:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 073752242E;
+        Sun, 15 Nov 2020 08:56:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605430403;
-        bh=zogKbmLR5WuYYhS1A9PyjE2BBFUNYgIBXxOPOFu4jUs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lX2fpz594y7d/5i/mEef+AbbnIJzikgvOzNnoqSfFlQrJb9q90Elp66aOiMYcs1zs
-         TTHjnJQu5Da13GIKSCOa/J3DAETZs6oYZ3AL3AqwfPmxmxZFENcF3lAkHuh559m70/
-         7Mni0kOKQphJSxWriCKyHTtX74+IDbuZ2lYSWHfw=
-Date:   Sun, 15 Nov 2020 10:53:07 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>
-Subject: Re: [PATCH v8 4/9] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20201115085307.GV4758@kernel.org>
-References: <20201110151444.20662-1-rppt@kernel.org>
- <20201110151444.20662-5-rppt@kernel.org>
- <20201113135848.GF17076@casper.infradead.org>
+        s=default; t=1605430615;
+        bh=XlDHcdsl532SN92xdtOqleWanacVK4C5l0LGG518skA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UPt0zKKVOB17S0lL9O3/xZIsjZwBnd/ahSRgC/zVMdLWyUKOvrj3fRsbxYY9Wc1HB
+         SQgiN8oXcpOvNgITU/tJPLgkCbr4EOWs8urM8GSOzPD3YiSRAAR+I4P5hkIAe13dKv
+         pCYIIWoMwG3FqXtixZkMDjNOT9GtqrD7xDD583dU=
+Date:   Sun, 15 Nov 2020 09:56:48 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Andreas =?UTF-8?B?RsOkcmJlcg==?= <afaerber@suse.de>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <uwe@kleine-koenig.org>,
+        Michal Hrusecki <Michal.Hrusecky@nic.cz>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH net-next] net: mvneta: Fix validation of 2.5G HSGMII
+ without comphy
+Message-ID: <20201115095648.0af1c42b@kernel.org>
+In-Reply-To: <4bf5376c-a7d1-17bf-1034-b793113b101e@suse.de>
+References: <20201115004151.12899-1-afaerber@suse.de>
+        <20201115010241.GF1551@shell.armlinux.org.uk>
+        <4bf5376c-a7d1-17bf-1034-b793113b101e@suse.de>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113135848.GF17076@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 01:58:48PM +0000, Matthew Wilcox wrote:
-> On Tue, Nov 10, 2020 at 05:14:39PM +0200, Mike Rapoport wrote:
-> > +static vm_fault_t secretmem_fault(struct vm_fault *vmf)
-> > +{
-> > +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
-> > +	struct inode *inode = file_inode(vmf->vma->vm_file);
-> > +	pgoff_t offset = vmf->pgoff;
-> > +	unsigned long addr;
-> > +	struct page *page;
-> > +	int ret = 0;
-> > +
-> > +	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
-> > +		return vmf_error(-EINVAL);
-> > +
-> > +	page = find_get_entry(mapping, offset);
-> 
-> Why did you decide to use find_get_entry() here?  You don't handle
-> swap or shadow entries.
+On Sun, 15 Nov 2020 03:26:01 +0100
+Andreas F=C3=A4rber <afaerber@suse.de> wrote:
 
-Right, I've missed that. 
+> Hi Russell,
+>=20
+> On 15.11.20 02:02, Russell King - ARM Linux admin wrote:
+> > On Sun, Nov 15, 2020 at 01:41:51AM +0100, Andreas F=C3=A4rber wrote: =20
+> >> Commit 1a642ca7f38992b086101fe204a1ae3c90ed8016 (net: ethernet: mvneta:
+> >> Add 2500BaseX support for SoCs without comphy) added support for 2500B=
+aseX.
+> >>
+> >> In case a comphy is not provided, mvneta_validate()'s check
+> >>   state->interface =3D=3D PHY_INTERFACE_MODE_2500BASEX
+> >> could never be true (it would've returned with empty bitmask before),
+> >> so that 2500baseT_Full and 2500baseX_Full do net get added to the mask=
+. =20
+> >=20
+> > This makes me nervous. It was intentional that if there is no comphy
+> > configured in DT for SoCs such as Armada 388, then there is no support
+> > to switch between 1G and 2.5G speed. Unfortunately, the configuration
+> > of the comphy is up to the board to do, not the SoC .dtsi, so we can't
+> > rely on there being a comphy on Armada 388 systems. =20
+>=20
+> Please note that the if clause at the beginning of the validate function
+> does not check for comphy at all. So even with comphy, if there is a
+> code path that attempts to validate state 2500BASEX, it is broken, too.
+>=20
+> Do you consider the modification of both ifs (validate and power_up) as
+> correct? Should they be split off from my main _NA change you discuss?
+>=20
+> > So, one of the side effects of this patch is it incorrectly opens up
+> > the possibility of allowing 2.5G support on Armada 388 without a comphy
+> > configured.
+> >=20
+> > We really need a better way to solve this; just relying on the lack of
+> > comphy and poking at a register that has no effect on Armada 388 to
+> > select 2.5G speed while allowing 1G and 2.5G to be arbitarily chosen
+> > doesn't sound like a good idea to me. =20
+> [snip]
+>=20
+> May I add that the comphy needs better documentation?
+>=20
+> Marek and I independently came up with <&comphy5 2> in the end, but the
+> DT binding doesn't explain what the index is supposed to be and how I
+> might figure it out. It cost me days of reading U-Boot and kernel
+> sources and playing around with values until I had the working one.
+>=20
+> Might be helpful to have a symbolic dt-bindings #define for this 2.
+>=20
 
-> > +	if (!page) {
-> > +		page = secretmem_alloc_page(vmf->gfp_mask);
-> > +		if (!page)
-> > +			return vmf_error(-EINVAL);
-> 
-> Why is this EINVAL and not ENOMEM?
+The gbe mux number is described in Armada 385 documentation. Yes, maybe
+we should add these defines somewhere, but certainly we should not
+declare ability of 2500baseX if comphy is not present and the interface
+is not configured to 2500baseX by default.
 
-Ah, I was annoyed by OOMs I got when I simulated various allocation
-failures, so I changed it to get SIGBUS instead and than forgot to restore.
-Will fix.
+I propose putting this just into the dt binding documentation. No need
+for macros IMO, especially since these muxes may be different on each
+SOC.
 
-> > +		ret = add_to_page_cache(page, mapping, offset, vmf->gfp_mask);
-> > +		if (unlikely(ret))
-> > +			goto err_put_page;
-> > +
-> > +		ret = set_direct_map_invalid_noflush(page, 1);
-> > +		if (ret)
-> > +			goto err_del_page_cache;
-> > +
-> > +		addr = (unsigned long)page_address(page);
-> > +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-> > +
-> > +		__SetPageUptodate(page);
-> > +
-> > +		ret = VM_FAULT_LOCKED;
-> > +	}
-> > +
-> > +	vmf->page = page;
-> > +	return ret;
-> 
-> Does sparse not warn you about this abuse of vm_fault_t?  Separate out
-> 'ret' and 'err'.
- 
-Will fix.
-
-> Andrew, please fold in this fix.  I suspect Mike will want to fix
-> the other things I mention above.
-> 
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> index 3dfdbd85ba00..09ca27f21661 100644
-> --- a/mm/secretmem.c
-> +++ b/mm/secretmem.c
-> @@ -172,7 +172,7 @@ static vm_fault_t secretmem_fault(struct vm_fault *vmf)
->  	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
->  		return vmf_error(-EINVAL);
->  
-> -	page = find_get_entry(mapping, offset);
-> +	page = find_get_page(mapping, offset);
->  	if (!page) {
->  		page = secretmem_alloc_page(ctx, vmf->gfp_mask);
->  		if (!page)
-
--- 
-Sincerely yours,
-Mike.
+Marek
