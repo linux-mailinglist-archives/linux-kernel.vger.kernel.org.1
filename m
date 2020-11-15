@@ -2,221 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77122B37A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE39B2B37AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727137AbgKOSLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:11:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
+        id S1727321AbgKOSMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 13:12:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgKOSLo (ORCPT
+        with ESMTP id S1726727AbgKOSMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:11:44 -0500
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC219C0613D2
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 10:11:43 -0800 (PST)
-Received: by mail-oo1-xc41.google.com with SMTP id y3so3358521ooq.2
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 10:11:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Tbq1vEgEMTBoexcFc2qtiD/aGn5ZlYHghcweLEeR5g=;
-        b=GvBBVq2j1thxIqxLdyh/HEf7BXC3CObT+/mfmrC30J+QwTdZyhYZjSCBekIL96rBZc
-         wVPDnehbUiyoUVUAny2epI2cffKCh2efQd5xyfHAdzZX7pgwf24X0wRyRphzDJ7eN2MH
-         wHSECWBN8pDj1WP9I/SM5tdDQpHnb8bQ+9L805Jv77OEbrBu7eIIVOz5UXgHk0RGGB0l
-         fUieg48jSeflZkjQGJPFVex7yqtXVwOopn+WLiHcBUdX2bUZ1tk002IVpPRzgWpGVp/p
-         YSl4X8DkPhqT/cnxCrGpm+VsZ77HumFBCgqe3OlpKuZW3e/EMJ8lBkcvLn324A/+rBut
-         q6fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Tbq1vEgEMTBoexcFc2qtiD/aGn5ZlYHghcweLEeR5g=;
-        b=Qzu73JgJX0SOniAMJG8Px333iaAeqiJ0tXPXaWUO6pKFR3UifH6PCMDuDcMS+aRUOr
-         Kdbcy5AMUz8oNVf2nxia31MQfgZ/2JIOIMYpKo3JcQlJC1n9n9HRbV2GC//fdOV0t0J3
-         ENp0s8aqlnX0PA7Ad4KwtDhKzPY/fy7t6GFIy0NRlIGZolcQ/SZX/dG+jYiQlaMNzRO+
-         9ol8Ij5L5xoMqJ3HLZbKNv5Thm9BZuERIDD6FSA0lbTk3C/OThfFp4Ww1kpX1pPRs+ME
-         DeIM+UEQE/o4xnAadVcvc1HXVGyIPaAj8OJQoeIMRxbTnZsU6KbZ+e6sT8rUzVrAQsTy
-         vvBQ==
-X-Gm-Message-State: AOAM533pCoVBhUC/EdHU0XdABh/5W2Hivn7RLU6j/CISwjhu9kOMlWya
-        PUI59+T7FtzzibVz4C7IISae3K90AgJPagPcJUsiZA==
-X-Google-Smtp-Source: ABdhPJzrKFcXvD8UGQex6ifrdPRSCJj6pNP9xshWqtwRuGwJwtq2eT4lnG+g4FskuKifR3eZvCCdsbEFzC8e4EL9GPI=
-X-Received: by 2002:a4a:b28b:: with SMTP id k11mr7938155ooo.54.1605463902926;
- Sun, 15 Nov 2020 10:11:42 -0800 (PST)
+        Sun, 15 Nov 2020 13:12:45 -0500
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCC7C0613D1;
+        Sun, 15 Nov 2020 10:12:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender:
+        Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=wisLx0HcXDpOlNdLfdL+yoTgFgj72O61RgzyIAG8wGM=; b=dy8tMnGNtuXH6mJMSUCWu/ZxSD
+        aKfnFL6th/pJYBY7LddhA4aKFDY85u1uFHKcDMH8yCU6UUNjRM5hrgUnt3Su3YsCwOW+sLPtJpep3
+        7fS6y43n1+2oPijYMVIpL4h4nFe59Lw//MR5EJszlgVKcttFLxORAqP3kGrM5n/ykEz6YTCYcctv8
+        bDpbD5Q5ISXEjBCk+A++XbdSn5nOHDIaj39mIv9SvednFah5yb+hBVfg4ProPdO1xpp2+9Wg28Fad
+        UCHz6ESCGHckaSlNtB7gZ+CIlAoygPXRU/RdJQfmaws92q2wS3sjnDl/ftP15e0pFAGiINgAUAOGK
+        BBIoNkvQ==;
+Received: from noodles by the.earth.li with local (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1keMW2-0007q8-AS; Sun, 15 Nov 2020 18:12:42 +0000
+Date:   Sun, 15 Nov 2020 18:12:42 +0000
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: dmaengine: Convert Qualcomm ADM bindings to yaml
+Message-ID: <20201115181242.GA30004@earth.li>
 MIME-Version: 1.0
-References: <20201114123648.97857-1-98.arpi@gmail.com> <CANpmjNNsVxGiGWeij-EsDUpc_fBBYg7iBynis1tQKwh8ks5jQw@mail.gmail.com>
- <3c0eb37e-aa9b-876c-6635-1f32181f4e5d@gmail.com>
-In-Reply-To: <3c0eb37e-aa9b-876c-6635-1f32181f4e5d@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Sun, 15 Nov 2020 19:11:31 +0100
-Message-ID: <CANpmjNNhpe6TYt0KmBCCR-Wfz1Bxd8qnhiwegwnDQsxRAWmUMg@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Tim Bird <Tim.Bird@sony.com>, David Gow <davidgow@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Nov 2020 at 13:18, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->
-> On 15/11/20 2:28 pm, Marco Elver wrote:
-> > On Sat, 14 Nov 2020 at 13:38, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> >> Implementation of support for parameterized testing in KUnit. This
-> >> approach requires the creation of a test case using the
-> >> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
-> >>
-> >> This generator function should return the next parameter given the
-> >> previous parameter in parameterized tests. It also provides a macro to
-> >> generate common-case generators based on arrays. Generators may also
-> >> optionally provide a human-readable description of parameters, which is
-> >> displayed where available.
-> >>
-> >> Note, currently the result of each parameter run is displayed in
-> >> diagnostic lines, and only the overall test case output summarizes
-> >> TAP-compliant success or failure of all parameter runs. In future, when
-> >> supported by kunit-tool, these can be turned into subsubtest outputs.
-> >>
-> >> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> >> Co-developed-by: Marco Elver <elver@google.com>
-> >> Signed-off-by: Marco Elver <elver@google.com>
-> >> ---
-> >> Changes v6->v7:
-> >> - Clarify commit message.
-> >> - Introduce ability to optionally generate descriptions for parameters;
-> >>   if no description is provided, we'll still print 'param-N'.
-> >> - Change diagnostic line format to:
-> >>         # <test-case-name>: <ok|not ok> N - [<param description>]
-> >>
-> >> Changes v5->v6:
-> >> - Fix alignment to maintain consistency
-> >>
-> >> Changes v4->v5:
-> >> - Update kernel-doc comments.
-> >> - Use const void* for generator return and prev value types.
-> >> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-> >> - Rework parameterized test case execution strategy: each parameter is executed
-> >>   as if it was its own test case, with its own test initialization and cleanup
-> >>   (init and exit are called, etc.). However, we cannot add new test cases per TAP
-> >>   protocol once we have already started execution. Instead, log the result of
-> >>   each parameter run as a diagnostic comment.
-> >>
-> >> Changes v3->v4:
-> >> - Rename kunit variables
-> >> - Rename generator function helper macro
-> >> - Add documentation for generator approach
-> >> - Display test case name in case of failure along with param index
-> >>
-> >> Changes v2->v3:
-> >> - Modifictaion of generator macro and method
-> >>
-> >> Changes v1->v2:
-> >> - Use of a generator method to access test case parameters
-> >> Changes v6->v7:
-> >> - Clarify commit message.
-> >> - Introduce ability to optionally generate descriptions for parameters;
-> >>   if no description is provided, we'll still print 'param-N'.
-> >> - Change diagnostic line format to:
-> >>         # <test-case-name>: <ok|not ok> N - [<param description>]
-> >> - Before execution of parameterized test case, count number of
-> >>   parameters and display number of parameters. Currently also as a
-> >>   diagnostic line, but this may be used in future to generate a subsubtest
-> >>   plan. A requirement of this change is that generators must generate a
-> >>   deterministic number of parameters.
-> >>
-> >> Changes v5->v6:
-> >> - Fix alignment to maintain consistency
-> >>
-> >> Changes v4->v5:
-> >> - Update kernel-doc comments.
-> >> - Use const void* for generator return and prev value types.
-> >> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-> >> - Rework parameterized test case execution strategy: each parameter is executed
-> >>   as if it was its own test case, with its own test initialization and cleanup
-> >>   (init and exit are called, etc.). However, we cannot add new test cases per TAP
-> >>   protocol once we have already started execution. Instead, log the result of
-> >>   each parameter run as a diagnostic comment.
-> >>
-> >> Changes v3->v4:
-> >> - Rename kunit variables
-> >> - Rename generator function helper macro
-> >> - Add documentation for generator approach
-> >> - Display test case name in case of failure along with param index
-> >>
-> >> Changes v2->v3:
-> >> - Modifictaion of generator macro and method
-> >>
-> >> Changes v1->v2:
-> >> - Use of a generator method to access test case parameters
-> >>
-> >>  include/kunit/test.h | 51 ++++++++++++++++++++++++++++++++++++++
-> >>  lib/kunit/test.c     | 59 ++++++++++++++++++++++++++++++++++----------
-> >>  2 files changed, 97 insertions(+), 13 deletions(-)
-> >>
-> >> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> >> index db1b0ae666c4..cf5f33b1c890 100644
-> >> --- a/include/kunit/test.h
-> >> +++ b/include/kunit/test.h
-> >> @@ -94,6 +94,9 @@ struct kunit;
-> >>  /* Size of log associated with test. */
-> >>  #define KUNIT_LOG_SIZE 512
-> >>
-> >> +/* Maximum size of parameter description string. */
-> >> +#define KUNIT_PARAM_DESC_SIZE 64
-> >
-> > I think we need to make this larger, perhaps 128. I just noticed a few
-> > of the inode-test strings are >64 chars (and it should probably also
-> > use strncpy() to copy to description, which is my bad).
-> >
->
-> Okay, I will make the description size larger and use strncpy().
+Converts the device tree bindings for the Qualcomm Application Data
+Mover (ADM) DMA controller over to YAML schemas.
 
-Thanks. There's also a report by the test robot now which noticed this.
+Signed-off-by: Jonathan McDowell <noodles@earth.li>
+---
+ .../devicetree/bindings/dma/qcom,adm.yaml     | 102 ++++++++++++++++++
+ .../devicetree/bindings/dma/qcom_adm.txt      |  61 -----------
+ 2 files changed, 102 insertions(+), 61 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/dma/qcom,adm.yaml
+ delete mode 100644 Documentation/devicetree/bindings/dma/qcom_adm.txt
 
-> >>  /*
-> >>   * TAP specifies subtest stream indentation of 4 spaces, 8 spaces for a
-> >>   * sub-subtest.  See the "Subtests" section in
-> >> @@ -107,6 +110,7 @@ struct kunit;
-> > [...]
-> >> +/**
-> >> + * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
-> >> + * @name:  prefix for the test parameter generator function.
-> >> + * @array: array of test parameters.
-> >> + * @get_desc: function to convert param to description; NULL to use default
-> >> + *
-> >> + * Define function @name_gen_params which uses @array to generate parameters.
-> >> + */
-> >> +#define KUNIT_ARRAY_PARAM(name, array, get_desc)                                               \
-> >> +       static const void *name##_gen_params(const void *prev, char *desc)                      \
-> >> +       {                                                                                       \
-> >> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
-> >
-> > Why did you reintroduce a space between * and __next? AFAIK, this
-> > should follow the same style as the rest of the kernel, and it should
-> > just be 'thetype *ptr'.
-> >
->
-> I introduced this space because checkpatch.pl gave an error without the space:
-> ERROR: need consistent spacing around '*' (ctx:WxV)
-> #1786: FILE: ./include/kunit/test.h:1786:
-> +               typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 : (array);      \
->
-> But, if this is a mistake as it doesn't recognize __next to be a pointer, I will remove the space.
+diff --git a/Documentation/devicetree/bindings/dma/qcom,adm.yaml b/Documentation/devicetree/bindings/dma/qcom,adm.yaml
+new file mode 100644
+index 000000000000..353d85d3326d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/dma/qcom,adm.yaml
+@@ -0,0 +1,102 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/dma/qcom,adm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: QCOM ADM DMA Controller
++
++maintainers:
++  - Jonathan McDowell <noodles@earth.li>
++
++description: |
++  QCOM Application Data Mover (ADM) DMA controller found in the MSM8x60
++  and IPQ/APQ8064 platforms.
++
++properties:
++  compatible:
++    oneOf:
++      - const: qcom,adm
++
++  reg:
++    maxItems: 1
++    description:
++      Address range for DMA registers
++
++  interrupts:
++    maxItems: 1
++    description:
++      Should contain one interrupt shared by all channels
++
++  "#dma-cells":
++    const: 2
++    description:
++      First cell denotes the channel number.  Second cell denotes CRCI
++      (client rate control interface) flow control assignment. If no
++      flow control is required, use 0.
++
++  clocks:
++    maxItems: 2
++    description:
++      Should contain the core clock and interface clock.
++
++  clock-names:
++    items:
++      - const: core
++      - const: iface
++
++  resets:
++    maxItems: 4
++    description:
++      Must contain an entry for each entry in reset names.
++
++  reset-names:
++    items:
++      - const: clk
++      - const: c0
++      - const: c1
++      - const: c2
++
++  qcom,ee:
++    maxItems: 1
++    description:
++      Indicates the security domain identifier used in the secure world.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++required:
++  - "#dma-cells"
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - interrupts
++  - qcom,ee
++  - resets
++  - reset-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/reset/qcom,gcc-ipq806x.h>
++
++    adm_dma: dma@18300000 {
++             compatible = "qcom,adm";
++             reg = <0x18300000 0x100000>;
++             interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
++             #dma-cells = <2>;
++
++             clocks = <&gcc ADM0_CLK>, <&gcc ADM0_PBUS_CLK>;
++             clock-names = "core", "iface";
++
++             resets = <&gcc ADM0_RESET>,
++                      <&gcc ADM0_C0_RESET>,
++                      <&gcc ADM0_C1_RESET>,
++                      <&gcc ADM0_C2_RESET>;
++             reset-names = "clk", "c0", "c1", "c2";
++             qcom,ee = <0>;
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/dma/qcom_adm.txt b/Documentation/devicetree/bindings/dma/qcom_adm.txt
+deleted file mode 100644
+index 9d3b2f917b7b..000000000000
+--- a/Documentation/devicetree/bindings/dma/qcom_adm.txt
++++ /dev/null
+@@ -1,61 +0,0 @@
+-QCOM ADM DMA Controller
+-
+-Required properties:
+-- compatible: must contain "qcom,adm" for IPQ/APQ8064 and MSM8960
+-- reg: Address range for DMA registers
+-- interrupts: Should contain one interrupt shared by all channels
+-- #dma-cells: must be <2>.  First cell denotes the channel number.  Second cell
+-  denotes CRCI (client rate control interface) flow control assignment.
+-- clocks: Should contain the core clock and interface clock.
+-- clock-names: Must contain "core" for the core clock and "iface" for the
+-  interface clock.
+-- resets: Must contain an entry for each entry in reset names.
+-- reset-names: Must include the following entries:
+-  - clk
+-  - c0
+-  - c1
+-  - c2
+-- qcom,ee: indicates the security domain identifier used in the secure world.
+-
+-Example:
+-		adm_dma: dma@18300000 {
+-			compatible = "qcom,adm";
+-			reg = <0x18300000 0x100000>;
+-			interrupts = <0 170 0>;
+-			#dma-cells = <2>;
+-
+-			clocks = <&gcc ADM0_CLK>, <&gcc ADM0_PBUS_CLK>;
+-			clock-names = "core", "iface";
+-
+-			resets = <&gcc ADM0_RESET>,
+-				<&gcc ADM0_C0_RESET>,
+-				<&gcc ADM0_C1_RESET>,
+-				<&gcc ADM0_C2_RESET>;
+-			reset-names = "clk", "c0", "c1", "c2";
+-			qcom,ee = <0>;
+-		};
+-
+-DMA clients must use the format descripted in the dma.txt file, using a three
+-cell specifier for each channel.
+-
+-Each dmas request consists of 3 cells:
+- 1. phandle pointing to the DMA controller
+- 2. channel number
+- 3. CRCI assignment, if applicable.  If no CRCI flow control is required, use 0.
+-    The CRCI is used for flow control.  It identifies the peripheral device that
+-    is the source/destination for the transferred data.
+-
+-Example:
+-
+-	spi4: spi@1a280000 {
+-		spi-max-frequency = <50000000>;
+-
+-		pinctrl-0 = <&spi_pins>;
+-		pinctrl-names = "default";
+-
+-		cs-gpios = <&qcom_pinmux 20 0>;
+-
+-		dmas = <&adm_dma 6 9>,
+-			<&adm_dma 5 10>;
+-		dma-names = "rx", "tx";
+-	};
+-- 
+2.29.2
 
-I think checkpatch.pl thinks this is a multiplication. It's definitely
-a false positive. Please do format it like a normal pointer.
-
-Thanks,
--- Marco
