@@ -2,71 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8BE2B3806
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82A02B3815
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727430AbgKOSuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:50:25 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36514 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727061AbgKOSuZ (ORCPT
+        id S1727482AbgKOSwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 13:52:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbgKOSwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:50:25 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605466223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D8ZjbeFX8d6nq879izqAu1ChAOcTxw97ZdH3nLCQPVo=;
-        b=cUJW6DSofkCJo/YgFNoH6wk8ld+g/Ro8rFC6SMfAUJllF6/f9gskD/OZ411dKtxl/d/cqg
-        T4aZoJW/d5dqxel/O9EX8CFyZjwYlWk0NFoMVy5HCQj+7pJbQL99Mc5PwXpRCvHc+YV9Xm
-        8Gne1lWo4sYSc3/H96IFz/hYOluv32E/KG5nKDzRJQjRlStBwBkGH+OkZ8htJFAH2+nPCi
-        gYXyJEBxmqaeiolQnR9f3zOVMKuZI/HTfUkLPfqSGp4JuB614njHiFwwSqFLdm+7GQT4kE
-        +niTmTL65Gt/Kjui+hfUh13C5GwTzurdnnuVFdODfu++x7dncQVQ0d37SyliCA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605466223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D8ZjbeFX8d6nq879izqAu1ChAOcTxw97ZdH3nLCQPVo=;
-        b=hc2OcVBjh6N2TxPKldRV0wOOkKViTdsXr1oFXDvo5PssS8w+q809fHbmXpP3G12RBVh23j
-        nrDfhniWURG7AgAA==
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     mingo@redhat.com, keescook@chromium.org, arnd@arndb.de,
-        luto@amacapital.net, wad@chromium.org, rostedt@goodmis.org,
-        paul@paul-moore.com, eparis@redhat.com, oleg@redhat.com,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com
-Subject: Re: [PATCH 00/10] Migrate syscall entry/exit work to SYSCALL_WORK flagset
-In-Reply-To: <20201114032917.1205658-1-krisman@collabora.com>
-References: <20201114032917.1205658-1-krisman@collabora.com>
-Date:   Sun, 15 Nov 2020 19:50:22 +0100
-Message-ID: <87pn4e8nf5.fsf@nanos.tec.linutronix.de>
+        Sun, 15 Nov 2020 13:52:43 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCB8C0613D1;
+        Sun, 15 Nov 2020 10:52:43 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id o21so21333028ejb.3;
+        Sun, 15 Nov 2020 10:52:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tl2vZixbwhz7yRTmQqo4JrSMqXfMjdNjvwgPYWVQyqE=;
+        b=MnhFxIgUqNBTnwT/BhPWQYoUaaz4QQfh5TSB3dWqVk3WDf0+tg0bY0Yo5vWROnqPdd
+         o3hztCa4xazcxWRiyJ5OnRwS/8oKe6D12yCPYbEHOrVuOpi1aTaiyxq039TpF/qz3QSg
+         Hvyc3J7/kdGl71SVCoEJpqjBJGla82IT4NcVU1qlZpFE9WFEHdT+vATvU2csFOmqdix0
+         XPl/Vcn4GAWK593j6S5BAI5it9PRaS+26GJYngoihBp7b+LRq/bqPxW2EPNiFic640wF
+         WnxMxE1qPYYnAHghW7fcz+Y9LzDIsZz5QZjuQv7guhyTXtOe1sNfNI7zLN5aYApdrHG+
+         SMhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tl2vZixbwhz7yRTmQqo4JrSMqXfMjdNjvwgPYWVQyqE=;
+        b=mxhZrScE9WVgBbEFnQo8ZYtX4BvhyBAk1Y9gOIZ51n8XWalHG9Ln6i8ho1hyYEoYta
+         Zn+N3rdvojh7sL+vgQ4xPljHLC+j8W/+tynqpYkC6YVuRQFzvvo5uKndRNGQMszOtLpn
+         dLuhgK7lY+OMeeEtfe41OESJ3MOxM8QflpI0jTsuWCzdlA2d6NhpxZkJAcE/jCBo9dmV
+         U7ld0ojxpBi4VKzHPS4kJYZVz4SopCVayL3tXSRpn7L7FYjsbiLO68k42zL7cHMF9kQc
+         TSLHwOJI3MphroyWyJ+zxG99izBfo5lJuSSqAM/Ij81uLDOITS/6JkyaosUsmE6ny+kI
+         6d7w==
+X-Gm-Message-State: AOAM533f4LKrKA4Y75Cbowfeqjqf12IN8W8polkFLFQxeaUOuz/aMvQ4
+        XQgomDit9XE3Jluq8IQ+qyc=
+X-Google-Smtp-Source: ABdhPJxm69nswwaPrLAyyaLIH/a5/v+K/iaWB92oG+w66/9+rxLY97qdpvO3RfCleiTZU9LyHHnFKA==
+X-Received: by 2002:a17:906:d0cd:: with SMTP id bq13mr11057291ejb.372.1605466362047;
+        Sun, 15 Nov 2020 10:52:42 -0800 (PST)
+Received: from localhost.localdomain (p4fc3ea77.dip0.t-ipconnect.de. [79.195.234.119])
+        by smtp.googlemail.com with ESMTPSA id i13sm9233520ejv.84.2020.11.15.10.52.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 10:52:41 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     davem@davemloft.net, kuba@kernel.org,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, netdev@vger.kernel.org
+Cc:     jianxin.pan@amlogic.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com, andrew@lunn.ch,
+        f.fainelli@gmail.com,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH RFC v2 0/5] dwmac-meson8b: picosecond precision RX delay support
+Date:   Sun, 15 Nov 2020 19:52:05 +0100
+Message-Id: <20201115185210.573739-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13 2020 at 22:29, Gabriel Krisman Bertazi wrote:
-> This a refactor work moving the work done by features like seccomp,
-> ptrace, audit and tracepoints out of the TI flags.  The reasons are:
->
->    1) Scarcity of TI flags in x86 32-bit.
->
->    2) TI flags are defined by the architecture, while these features are
->    arch-independent.
->
->    3) Community resistance in merging new architecture-independent
->    features as TI flags.
->
-> The design exposes a new field in struct thread_info that is read at
-> syscall_trace_enter and syscall_work_exit in place of the ti flags.
-> No functional changes is expected from this patchset.  The design and
-> organization of this patchset achieves the following goals:
+Hello,
 
-Aside of the few nitpicks, this looks good. Thanks for doing this!
+with the help of Jianxin Pan (many thanks!) the meaning of the "new"
+PRG_ETH1[19:16] register bits on Amlogic Meson G12A, G12B and SM1 SoCs
+are finally known. These SoCs allow fine-tuning the RGMII RX delay in
+200ps steps (contrary to what I have thought in the past [0] these are
+not some "calibration" values).
 
-      tglx
+The vendor u-boot has code to automatically detect the best RX/TX delay
+settings. For now we keep it simple and add a device-tree property with
+200ps precision to select the "right" RX delay for each board.
+
+While here, deprecate the "amlogic,rx-delay-ns" property as it's not
+used on any upstream .dts (yet). The driver is backwards compatible.
+
+I have tested this on an X96 Air 4GB board (not upstream yet). Testing
+with iperf3 gives 938 Mbits/sec in both directions (RX and TX). The
+following network settings were used in the .dts (2ns TX delay
+generated by the PHY, 800ps RX delay generated by the MAC as the PHY
+only supports 0ns or 2ns RX delays):
+        &ext_mdio {
+                external_phy: ethernet-phy@0 {
+                        /* Realtek RTL8211F (0x001cc916) */
+                        reg = <0>;
+                        eee-broken-1000t;
+
+                        reset-assert-us = <10000>;
+                        reset-deassert-us = <30000>;
+                        reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW |
+                                                GPIO_OPEN_DRAIN)>;
+
+                        interrupt-parent = <&gpio_intc>;
+                        /* MAC_INTR on GPIOZ_14 */
+                        interrupts = <26 IRQ_TYPE_LEVEL_LOW>;
+                };
+        };
+
+        &ethmac {
+                status = "okay";
+
+                pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>;
+                pinctrl-names = "default";
+
+                phy-mode = "rgmii-txid";
+                phy-handle = <&external_phy>;
+
+                amlogic,rgmii-rx-delay-ps = <800>;
+        };
+
+To use the same settings from vendor u-boot (which in my case has broken
+Ethernet) the following commands can be used:
+  mw.l 0xff634540 0x1621
+  mw.l 0xff634544 0x30000
+  phyreg w 0x0 0x1040
+  phyreg w 0x1f 0xd08
+  phyreg w 0x11 0x9
+  phyreg w 0x15 0x11
+  phyreg w 0x1f 0x0
+  phyreg w 0x0 0x9200
+
+Also I have tested this on a X96 Max board without any .dts changes
+to confirm that other boards with the same IP block still work fine
+with these changes.
+
+
+Changes since v1 at [1]:
+- updated patch 1 by making it more clear when the RX delay is applied.
+  Thanks to Andrew for the suggestion!
+- added a fix to enabling the timing-adjustment clock only when really
+  needed. Found by Andrew - thanks!
+- added testing not about X96 Max
+- v1 did not go to the netdev mailing list, v2 fixes this
+
+
+[0] https://lore.kernel.org/netdev/CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com/
+[1] https://patchwork.kernel.org/project/linux-amlogic/list/?series=384279
+
+Martin Blumenstingl (5):
+  dt-bindings: net: dwmac-meson: use picoseconds for the RGMII RX delay
+  net: stmmac: dwmac-meson8b: fix enabling the timing-adjustment clock
+  net: stmmac: dwmac-meson8b: use picoseconds for the RGMII RX delay
+  net: stmmac: dwmac-meson8b: move RGMII delays into a separate function
+  net: stmmac: dwmac-meson8b: add support for the RGMII RX delay on G12A
+
+ .../bindings/net/amlogic,meson-dwmac.yaml     | 61 +++++++++++-
+ .../ethernet/stmicro/stmmac/dwmac-meson8b.c   | 92 +++++++++++++++----
+ 2 files changed, 128 insertions(+), 25 deletions(-)
+
+-- 
+2.29.2
+
