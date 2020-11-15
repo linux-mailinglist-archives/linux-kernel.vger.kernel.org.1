@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DFD2B392A
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E532B392C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727622AbgKOUe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 15:34:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
+        id S1727778AbgKOUfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 15:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727317AbgKOUe4 (ORCPT
+        with ESMTP id S1727317AbgKOUfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 15:34:56 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184D3C0613CF;
-        Sun, 15 Nov 2020 12:34:56 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id w142so22137119lff.8;
-        Sun, 15 Nov 2020 12:34:55 -0800 (PST)
+        Sun, 15 Nov 2020 15:35:36 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDF2C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:35:36 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id dk16so21502045ejb.12
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:35:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=B0jHWOCcW63JFVrVVWaeUh4dEjp7zVb8ymSRWG+wbUY=;
-        b=ZKHiJb7bC1PX8PHE6DLijEe9UWieZwh9O8AWdslFXJEjjN2vRiizr4gW2uMwufG3g8
-         NATumqLRCocFZpqK/ASuLr1nrZhhTTwNnCn8S8Cz999UyczpZrbNy+4Tpwm7m54reH26
-         9eS0lFLiiVnHfQMA9fOjWaY3amyrngfGE4DMRBgitHobnBx2bFQCsQW4Bg2IcAc/psl7
-         C6K49VV5oynqJfHhoishih+zsFOTRzLswTY6RQI/XwxWIcUDWM170/J4mpcDXnqWOwRy
-         XGEzRTyRKdABaABHsPlttWY12Ea0XokMU4pv9NYoq/uDouSRB1xrpXrrxU6FrwssJ7KK
-         gzrw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ijg9lN4q+y1lKWWb0I210T2G+LZI/xVs/0TId95I5ng=;
+        b=W4RjtnWI+BKHWNFpCfOvPpta63nqCPhbZ7c0m6ZzGyaCq9QyMuC/YqekjnwfgIdThW
+         5HSVWNfrroeWYcXASxPhMJNLVINwYYJ8JvFdsUPYpspSkVDZR8IIjsrPZKy0WElubF6S
+         qyXsNa4mCurwFnpdeeYUGlI4aAgras0OiNeQx9rnwbWXhYK1DPdwXigkJTplPkKXBvPw
+         4WVIk+8DZq5ekCeaiXctRAEu04RY6xIDpjw66RBCcvmgx326LIffJW+aUkNT+LTyzNZp
+         0ZgVkS+a+7mdIa4eCzlDQ6VcacMEkNKRncn2/W747wEx/TkpEEt5GbCyQS5foUrourJR
+         qyIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=B0jHWOCcW63JFVrVVWaeUh4dEjp7zVb8ymSRWG+wbUY=;
-        b=hv7SFy5pEqeidITBHSwKTxK2LUddhsM1QteY+HpS8YYxYUK0a2YPUXyY6kjBDvEKPx
-         azw+NME/kQ8aA4WP3K1Hh/vSOEWnjl8nCtV7OMYzTq1Wcj//xqqBd1xFQQQSi7Y2G4uZ
-         RBo7hbjL9fygm58IIHhg6SYzxmuE1qPfbeRkCPfMc97z2kcAQnOV0FSqethask8+ULqX
-         PwBNy6oMfrcEIQ0YA6S/lMbGnn6Xt8dn4+3MTTEdeNVAmwYHz98eautU5dJBakQed06D
-         mRku6FHmqtjrGAo+nEvjtf6h+l7NYJTCao3qf+7AO+bhCb3cPJrj7ZdsAqqOAuUrRZVr
-         /HVQ==
-X-Gm-Message-State: AOAM530Yg5yjjtsTW2mzuRkXXeTAFQ5LhuEzjGuuDEkL05yR0A2c7Cfz
-        g6NBvtAvo8j1xOCyuPMyhx0x5lCE/eU=
-X-Google-Smtp-Source: ABdhPJyz7BK+TgLm29aE5fUyarpBH/H7FGoP5XcvAvunUFVO+Qjt5qinuGlcihKoyz188FmlIr9/yA==
-X-Received: by 2002:a05:6512:210b:: with SMTP id q11mr4030575lfr.238.1605472494181;
-        Sun, 15 Nov 2020 12:34:54 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.gmail.com with ESMTPSA id f191sm2391886lfd.63.2020.11.15.12.34.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 12:34:53 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] clk: Add hardware-enable column to clk summary
-Date:   Sun, 15 Nov 2020 23:34:32 +0300
-Message-Id: <20201115203432.13934-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ijg9lN4q+y1lKWWb0I210T2G+LZI/xVs/0TId95I5ng=;
+        b=oMYQD1rcVbiGEKFaJrsk0bTNcwVTx4Nc3QnfT3ClK8EQThmLXmcqeSBSccpNGeV2Bc
+         d0ZUEbyfAJYl6DV2F5XldXpK8wemFnM8VTz/UPdPOm2UcrnFZTaGXqpMxMwJV3+yzO/l
+         TVqCmKmJgcMQw+PMa30X6cTkGrFd8yvHLJOhUXI6sJEbH8/wYPNQUjUtTNAssLuJjnPB
+         mcIPQmTlnGkQ02l616qm5mp3F8bA0rLWNbrxBKVFe4uimf4yqSWmhOj9rCAg4OwZuzQD
+         pgnbilYugVjVV1pCTlhs6GXsaxgHj2iPim9rnzaOfdvxhuq988ijC0ovl1cfYBAfHABA
+         5Ggw==
+X-Gm-Message-State: AOAM532hE+pFLF3njev7ihzAI9FcUGVr86aEjh2ymKX/qQ6qXVjK4UjN
+        7tO28ADByitlu53GOkIun1ME/w6fOA2XlzbOCRYO0O5td0A=
+X-Google-Smtp-Source: ABdhPJxHshwuqi/yaOW02cHa96cuk2s8w5tE5RdJPO2rcxGDrZpH6KdRqzYXTPZvr5A21b7vculdOK9IfW5KLpF9uCQ=
+X-Received: by 2002:a17:906:82d9:: with SMTP id a25mr11612572ejy.101.1605472534755;
+ Sun, 15 Nov 2020 12:35:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
+ <20201103222013.hypmzlq7uuqufe76@box> <CAHk-=whPqB1PUVCCcQMjm-YTBnTP7UD_ey2rbXzcJhQufJwcUQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whPqB1PUVCCcQMjm-YTBnTP7UD_ey2rbXzcJhQufJwcUQ@mail.gmail.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Mon, 16 Nov 2020 06:35:22 +1000
+Message-ID: <CAPM=9tySfv3vueCjR84MTzxiZdKZZwVuddb-GuuPyoVncoSPyg@mail.gmail.com>
+Subject: Re: [git pull] drm next pull for 5.10-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Lyude Paul <lyude@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "hardware enable" column to the clk summary in order to show actual
-hardware enable-state of all clocks. The possible states are "Y/N/?",
-where question mark means that state is unknown, i.e. clock isn't a
-mux and clk-driver doesn't support is_enabled() callback for this clock.
+On Mon, 16 Nov 2020 at 03:57, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Tue, Nov 3, 2020 at 2:20 PM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+> >
+> > On Thu, Oct 15, 2020 at 11:33:08AM +1000, Dave Airlie wrote:
+> > >       drm/nouveau/kms: Search for encoders' connectors properly
+> >
+> > This commit (09838c4efe9a) broke boot for me. These two hunks in
+> > particular:
+>
+> Christ. It's been two weeks. I'm doing -rc4 today, and I still don't
+> have the fix.
+>
+> The problem seems entirely obvious, as reported by Kirill: the nv50
+> code unconditionally calls the "atomic_{dis,en}able()" functions, even
+> when not everybody was converted.
+>
+> The fix seems to be to either just do the conversion of the remaining
+> cases (which looks like just adding an argument to the remaining
+> functions, and using that for the "atomic" callback), or the trivial
+> suggestion by Kirill from two weeks ago:
+>
+> > I hacked up patch to use help->disable/help->enable if atomic_ versions
+> > are NULL. It worked.
+>
+> Kirill, since the nouveau people aren't fixing this, can you just send
+> me your tested patch?
+>
+> Lyude/Ben - let me just say that I think this is all a huge disgrace.
+>
+> You had a problem report with a bisected commit, a suggested fix, and
+> two weeks later there's absolutely _nothing_.
 
-In conjunction with clk_ignore_unused, this tells us what unused clocks
-are left enabled after bootloader. This is also useful a useful aid for
-debugging interactions with firmware which changes clock states without
-notifying kernel.
+I do have a fixes pull from Ben from Saturday in my inbox, I can send
+it on this morning.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
-
-Changelog:
-
-v2: - Renamed "enable state" column to "hardware enable" and changed
-      reported values to Y/N/?
-
-    - Improved commit message.
-
- drivers/clk/clk.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index f83dac54ed85..c2cbf3618680 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -2931,7 +2931,14 @@ static void clk_summary_show_one(struct seq_file *s, struct clk_core *c,
- 	else
- 		seq_puts(s, "-----");
- 
--	seq_printf(s, " %6d\n", clk_core_get_scaled_duty_cycle(c, 100000));
-+	seq_printf(s, " %6d", clk_core_get_scaled_duty_cycle(c, 100000));
-+
-+	if (c->ops->is_enabled)
-+		seq_printf(s, " %9c\n", clk_core_is_enabled(c) ? 'Y' : 'N');
-+	else if (!c->ops->enable)
-+		seq_printf(s, " %9c\n", 'Y');
-+	else
-+		seq_printf(s, " %9c\n", '?');
- }
- 
- static void clk_summary_show_subtree(struct seq_file *s, struct clk_core *c,
-@@ -2950,9 +2957,9 @@ static int clk_summary_show(struct seq_file *s, void *data)
- 	struct clk_core *c;
- 	struct hlist_head **lists = (struct hlist_head **)s->private;
- 
--	seq_puts(s, "                                 enable  prepare  protect                                duty\n");
--	seq_puts(s, "   clock                          count    count    count        rate   accuracy phase  cycle\n");
--	seq_puts(s, "---------------------------------------------------------------------------------------------\n");
-+	seq_puts(s, "                                 enable  prepare  protect                                duty  hardware\n");
-+	seq_puts(s, "   clock                          count    count    count        rate   accuracy phase  cycle    enable\n");
-+	seq_puts(s, "-------------------------------------------------------------------------------------------------------\n");
- 
- 	clk_prepare_lock();
- 
--- 
-2.29.2
-
+Dave.
