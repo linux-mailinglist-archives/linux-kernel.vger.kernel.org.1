@@ -2,144 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E435D2B32EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 09:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFCB2B32F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 09:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgKOI1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 03:27:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726230AbgKOI1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 03:27:02 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8E7D223FB;
-        Sun, 15 Nov 2020 08:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605428822;
-        bh=yPPmO10BjV3QuMLTiJSy+eaPoun4VeN4IOYCFMPIW3Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R+z3QYRbZNqVk9bpVlVwZDNZxE2pqRbWdky82QdwZCnhutQVhKo4uL1VTsDa0ZE0q
-         yY21By/rZPhrNb9jExx73wyEb8XgbIbYgQRplks8YHeL/+yd/3eblrBCvdrXDyzLew
-         HSIpQTgMObWKqHc51kCyrdzYJUikL82+NZSdbVEg=
-Date:   Sun, 15 Nov 2020 09:26:58 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lucas Tanure <tanure@linux.com>
-Cc:     Bastien Nocera <hadess@hadess.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: apple-mfi-fastcharge: Use devm_kzalloc and simplify
- the code
-Message-ID: <X7DmUsasFnylaY8C@kroah.com>
-References: <20201114124249.634234-1-tanure@linux.com>
- <X6/UDpZRDAGDZydT@kroah.com>
- <CAJX_Q+2iLzf8M-vzvrEh6TEhn2bDyg-P5CiHiSOwcmoYxzQgdQ@mail.gmail.com>
- <X6/xhYwdw/RPBXf9@kroah.com>
- <CAJX_Q+0-9=7q=VcM6uP+8mCX2mVAjS4sT52mvpj-hS6rm63DGg@mail.gmail.com>
+        id S1726497AbgKOI3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 03:29:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbgKOI27 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 03:28:59 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D355C0613D1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 00:28:58 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id d28so13798319qka.11
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 00:28:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OCIV90QYh+cSh9MXoA2/IH8XF2Fc4Vxipk6OCQKO1MY=;
+        b=rTXJGk5LqbBqx3UK2IlH+7lNbshagoVs6nibtXVudYoLOxkDfNs23XEsmbcPCH1gzg
+         vQAb8uPCMcL8+YHDhXRiLRo+u4lMOpSJMhPcrRR/2KhP7PaR63VXo9pOoRuSUebvdtm2
+         K7NHVlntGhVBVcz5uVq3Wf1iTaJ2OupMQUh2NsP3hW79ckImX9xnzLuHhGvmQb4dzHi2
+         vxbfTYBFMmf1OG1D3EyhLsTfoxakkMP3qadaQYC8L9ceMjYfH4IQAPL+fh3GiN5q9/42
+         sIQhsBvahKRIz3tl4YZhhM92lIem1lGAKGhntJZqYddeB2p193uCclUmEUF/cnYUwXi6
+         FAng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OCIV90QYh+cSh9MXoA2/IH8XF2Fc4Vxipk6OCQKO1MY=;
+        b=npgNGnUkIrQKFRt7y3r7W1XBM/ct+Q2Q4sjkVMoW+pG+gSIkMx8lU82vmcnc7zPDW9
+         0EdHCrQO3WLht9R/clkXmHLgH1Gk+czhlvCY/v+mn2TSqCYwuCCe6XaH8HlLRA6GItpY
+         +/2upcpl2zUHGWzUbjPUZBYSPH03JgFyNMYvaQUFYf7sAZu7jwpEqZYmiDyMRDwRuwf9
+         ULPqwPsZlEJu1zCmy/dt4R+aI/3bSO/SzbCLtVA9htvqPPOLFFCBm8f3D8oE9Ncb+HeT
+         oeJLI2MFAsSvnjHQMdWrjImfSmSM/d8900fyNWRP83axmiXJYr4cDwgzmEW3/7eE+k7D
+         iqkQ==
+X-Gm-Message-State: AOAM5324eEJR3vrSOLWVTnp0fMvCgK8Mf0a3Q6D4YJl6DDF+3rHk+CmA
+        6JePSjnQR/eZSZf+0H6Of+sGkrTTMWo3SKulW5Lrhg==
+X-Google-Smtp-Source: ABdhPJy98BUc5SZvNJ4A+MS54+NCVMJOCN+1VS9jFB6eYTCxJtpBA4RlCcoD0tBykysQg72XR562Akg6uLQrLvzjgc0=
+X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr9938686qkm.231.1605428937214;
+ Sun, 15 Nov 2020 00:28:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJX_Q+0-9=7q=VcM6uP+8mCX2mVAjS4sT52mvpj-hS6rm63DGg@mail.gmail.com>
+References: <00000000000081bcd205b40d1f44@google.com>
+In-Reply-To: <00000000000081bcd205b40d1f44@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sun, 15 Nov 2020 09:28:45 +0100
+Message-ID: <CACT4Y+a6oXow5XKeKg4sS=a8nbCydtEMAUQpZHFRpr6s-wZRKg@mail.gmail.com>
+Subject: Re: bpf test error: BUG: sleeping function called from invalid
+ context in sta_info_move_state
+To:     syzbot <syzbot+5921b7c1b10a0ddd02bc@syzkaller.appspotmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 08:13:51AM +0000, Lucas Tanure wrote:
-> On Sat, Nov 14, 2020 at 3:03 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sat, Nov 14, 2020 at 02:17:48PM +0000, Lucas Tanure wrote:
-> > > On Sat, Nov 14, 2020 at 12:56 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Sat, Nov 14, 2020 at 12:42:49PM +0000, Lucas Tanure wrote:
-> > > > > Signed-off-by: Lucas Tanure <tanure@linux.com>
-> > > >
-> > > > I can't take patches without any changelog text, sorry.
-> > > >
-> > > > > ---
-> > > > >  drivers/usb/misc/apple-mfi-fastcharge.c | 17 +++++------------
-> > > > >  1 file changed, 5 insertions(+), 12 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/usb/misc/apple-mfi-fastcharge.c b/drivers/usb/misc/apple-mfi-fastcharge.c
-> > > > > index 9de0171b5177..de86e389a008 100644
-> > > > > --- a/drivers/usb/misc/apple-mfi-fastcharge.c
-> > > > > +++ b/drivers/usb/misc/apple-mfi-fastcharge.c
-> > > > > @@ -178,16 +178,13 @@ static int mfi_fc_probe(struct usb_device *udev)
-> > > > >  {
-> > > > >       struct power_supply_config battery_cfg = {};
-> > > > >       struct mfi_device *mfi = NULL;
-> > > > > -     int err;
-> > > > >
-> > > > >       if (!mfi_fc_match(udev))
-> > > > >               return -ENODEV;
-> > > > >
-> > > > > -     mfi = kzalloc(sizeof(struct mfi_device), GFP_KERNEL);
-> > > > > -     if (!mfi) {
-> > > > > -             err = -ENOMEM;
-> > > > > -             goto error;
-> > > > > -     }
-> > > > > +     mfi = devm_kzalloc(&udev->dev, sizeof(*mfi), GFP_KERNEL);
-> > > > > +     if (!mfi)
-> > > > > +             return -ENOMEM;
-> > > > >
-> > > > >       battery_cfg.drv_data = mfi;
-> > > > >
-> > > > > @@ -197,8 +194,7 @@ static int mfi_fc_probe(struct usb_device *udev)
-> > > > >                                               &battery_cfg);
-> > > > >       if (IS_ERR(mfi->battery)) {
-> > > > >               dev_err(&udev->dev, "Can't register battery\n");
-> > > > > -             err = PTR_ERR(mfi->battery);
-> > > > > -             goto error;
-> > > > > +             return PTR_ERR(mfi->battery);
-> > > > >       }
-> > > > >
-> > > > >       mfi->udev = usb_get_dev(udev);
-> > > > > @@ -206,9 +202,6 @@ static int mfi_fc_probe(struct usb_device *udev)
-> > > > >
-> > > > >       return 0;
-> > > > >
-> > > > > -error:
-> > > > > -     kfree(mfi);
-> > > > > -     return err;
-> > > > >  }
-> > > > >
-> > > > >  static void mfi_fc_disconnect(struct usb_device *udev)
-> > > > > @@ -220,7 +213,7 @@ static void mfi_fc_disconnect(struct usb_device *udev)
-> > > > >               power_supply_unregister(mfi->battery);
-> > > > >       dev_set_drvdata(&udev->dev, NULL);
-> > > > >       usb_put_dev(mfi->udev);
-> > > > > -     kfree(mfi);
-> > > > > +     devm_kfree(&udev->dev, mfi);
-> > > >
-> > > > Are you sure about this?
-> > > I think so, as the probe will allocate again that struct, the
-> > > disconnect should free the previous one.
-> >
-> > Why do you need to manually free it here like this?
-> My understanding is that memory will only be freed when the driver
-> gets unloaded and the next connection of the device will allocate a
-> new one.
-> So every new disconnection and re-connection there will be a small
-> memory leak until the driver gets unloaded.
+On Sat, Nov 14, 2020 at 9:42 AM syzbot
+<syzbot+5921b7c1b10a0ddd02bc@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    96021828 MAINTAINERS/bpf: Update Andrii's entry.
+> git tree:       bpf
+> console output: https://syzkaller.appspot.com/x/log.txt?x=102717be500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5921b7c1b10a0ddd02bc
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5921b7c1b10a0ddd02bc@syzkaller.appspotmail.com
 
-devm_* functions operate on the lifecycle of the device, not the driver.
-Two totally different things :)
+#syz fix: mac80211: free sta in sta_info_insert_finish() on errors
 
-> > Why are you trying to convert this file to this api anyway?
-> I was just trying to improve the code as the original source calls
-> kfree even when kzalloc fails.
-
-Then please fix that bug independant of any conversion to a new api, as
-that is a bugfix that should be backported to older kernels.
-
-> And using devm_* would remove the need for kfree and the end of probe.
-
-Yes, but you can't introduce new bugs when trying to fix existing ones.
-
-Also, you didn't say this was a bugfix anywhere, which is one reason
-that writing good changelog text is essencial.
-
-thanks,
-
-greg k-h
+> BUG: sleeping function called from invalid context at net/mac80211/sta_info.c:1962
+> in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 124, name: kworker/u4:3
+> 4 locks held by kworker/u4:3/124:
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+>  #1: ffffc9000132fda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+>  #2: ffff88801ab98d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+>  #2: ffff88801ab98d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
+>  #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_finish net/mac80211/sta_info.c:644 [inline]
+>  #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_rcu+0x680/0x2ba0 net/mac80211/sta_info.c:732
+> Preemption disabled at:
+> [<ffffffff88e63ecf>] __mutex_lock_common kernel/locking/mutex.c:955 [inline]
+> [<ffffffff88e63ecf>] __mutex_lock+0x10f/0x10e0 kernel/locking/mutex.c:1103
+> CPU: 0 PID: 124 Comm: kworker/u4:3 Not tainted 5.10.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: phy4 ieee80211_iface_work
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:118
+>  ___might_sleep.cold+0x1e8/0x22e kernel/sched/core.c:7298
+>  sta_info_move_state+0x32/0x8d0 net/mac80211/sta_info.c:1962
+>  sta_info_free+0x65/0x3b0 net/mac80211/sta_info.c:274
+>  sta_info_insert_rcu+0x303/0x2ba0 net/mac80211/sta_info.c:738
+>  ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
+>  ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1700
+>  ieee80211_iface_work+0x82e/0x970 net/mac80211/iface.c:1476
+>  process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+>  kthread+0x3af/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+>
+> =============================
+> [ BUG: Invalid wait context ]
+> 5.10.0-rc2-syzkaller #0 Tainted: G        W
+> -----------------------------
+> kworker/u4:3/124 is trying to lock:
+> ffff888035f2a9d0 (&local->chanctx_mtx){+.+.}-{3:3}, at: ieee80211_recalc_min_chandef+0x49/0x140 net/mac80211/util.c:2740
+> other info that might help us debug this:
+> context-{4:4}
+> 4 locks held by kworker/u4:3/124:
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+>  #0: ffff888035f48938 ((wq_completion)phy4){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+>  #1: ffffc9000132fda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+>  #2: ffff88801ab98d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+>  #2: ffff88801ab98d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
+>  #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_finish net/mac80211/sta_info.c:644 [inline]
+>  #3: ffffffff8b337160 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_rcu+0x680/0x2ba0 net/mac80211/sta_info.c:732
+> stack backtrace:
+> CPU: 0 PID: 124 Comm: kworker/u4:3 Tainted: G        W         5.10.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: phy4 ieee80211_iface_work
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:118
+>  print_lock_invalid_wait_context kernel/locking/lockdep.c:4483 [inline]
+>  check_wait_context kernel/locking/lockdep.c:4544 [inline]
+>  __lock_acquire.cold+0x310/0x3a2 kernel/locking/lockdep.c:4781
+>  lock_acquire kernel/locking/lockdep.c:5436 [inline]
+>  lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5401
+>  __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+>  __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+>  ieee80211_recalc_min_chandef+0x49/0x140 net/mac80211/util.c:2740
+>  sta_info_move_state+0x3cf/0x8d0 net/mac80211/sta_info.c:2019
+>  sta_info_free+0x65/0x3b0 net/mac80211/sta_info.c:274
+>  sta_info_insert_rcu+0x303/0x2ba0 net/mac80211/sta_info.c:738
+>  ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
+>  ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1700
+>  ieee80211_iface_work+0x82e/0x970 net/mac80211/iface.c:1476
+>  process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+>  kthread+0x3af/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000081bcd205b40d1f44%40google.com.
