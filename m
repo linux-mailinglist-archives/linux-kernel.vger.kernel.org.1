@@ -2,211 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9D02B3A8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:15:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1E02B3A90
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgKOXNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 18:13:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S1728024AbgKOXUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 18:20:51 -0500
+Received: from mga03.intel.com ([134.134.136.65]:47622 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727976AbgKOXNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 18:13:08 -0500
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6ED6D22453
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 23:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605481987;
-        bh=lk702/tUQXibGYdggCfUZgCdOzqj1Eu9ni298A0WYIY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2Fa/9ZiHQnc5BbU0XZDC3uAMemNwIsstR9qKiGMuNCt9Qj4Vz3Qb03lkXZ5P4m3LP
-         94hqfd32fXJf0Y/9wy6nkz6popX+S300JgMACJh+ICLNvuIT77/glxBmqfn4UJmqkw
-         BJfiiLWQTLleOY/WvL2Z0rbAfFBNQb4uQMsUlmbQ=
-Received: by mail-ej1-f42.google.com with SMTP id dk16so21837194ejb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 15:13:07 -0800 (PST)
-X-Gm-Message-State: AOAM533bAkqpzaHycTnYzsFNOuOpuEaceGZmZjxE2NjpqsErTL1s190D
-        AuP2WjtShzW2vqgphtLnFyejT/il6u79q9VwWA==
-X-Google-Smtp-Source: ABdhPJyhR7yVa8OMs9CVMO4MXD46m7RyAQokGoT/HE9LB+f69Ko6msdZkOuu0dL0VOctbP5UKTEaLDUtX2zyBsS3qnw=
-X-Received: by 2002:a17:906:a106:: with SMTP id t6mr11718404ejy.63.1605481985911;
- Sun, 15 Nov 2020 15:13:05 -0800 (PST)
+        id S1726102AbgKOXUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 18:20:51 -0500
+IronPort-SDR: 4ibWZiP9RMt3eT4VdEAhA0Of7mKYVaxpPxrcwmIG9UYsR8C0Mi60AJQNNb8+LbnBwOupVu9pF9
+ U7z4WpAzmSxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="170786139"
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
+   d="scan'208";a="170786139"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 15:20:50 -0800
+IronPort-SDR: 5q/S1LyTEJNPJIN/klVL5G7PVx/g3kr56Ohzpke+ztrOrFhG1fs43lZuWxGxb5ykwLZKl87mBn
+ p00GwCNffMag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
+   d="scan'208";a="367325305"
+Received: from lkp-server01.sh.intel.com (HELO 2e68b9ba5db3) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 15 Nov 2020 15:20:48 -0800
+Received: from kbuild by 2e68b9ba5db3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1keRKC-0000JQ-9I; Sun, 15 Nov 2020 23:20:48 +0000
+Date:   Mon, 16 Nov 2020 07:20:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ e906a546bd8653ed2e7a14cb300fd17952d7f862
+Message-ID: <5fb1b7b0.TlySjBb1fxdWFrL7%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20201115001403.7833-1-chunkuang.hu@kernel.org>
- <CAAOTY_-16s=NXg2kOJijhO+82nNsT9HkKj4PVh1qN8dKchBOBA@mail.gmail.com> <20201116002522.1a5c3736@a-VirtualBox>
-In-Reply-To: <20201116002522.1a5c3736@a-VirtualBox>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Mon, 16 Nov 2020 07:12:55 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-_N9pcmao0FFtGs-qVLrvA-QBz5FJrSaYynuMZMe1Qhg@mail.gmail.com>
-Message-ID: <CAAOTY_-_N9pcmao0FFtGs-qVLrvA-QBz5FJrSaYynuMZMe1Qhg@mail.gmail.com>
-Subject: Re: [PATCH] drm/mediatek: dsi: Calculate horizontal_backporch_byte by itself
-To:     Bilal Wasim <bilalwasim676@gmail.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, CK Hu <ck.hu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Bilal:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  irq/core
+branch HEAD: e906a546bd8653ed2e7a14cb300fd17952d7f862  genirq/irqdomain: Make irq_domain_disassociate() static
 
-Bilal Wasim <bilalwasim676@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=8816=
-=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=883:25=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Hi CK,
->
-> On Sun, 15 Nov 2020 08:53:24 +0800
-> Chun-Kuang Hu <chunkuang.hu@kernel.org> wrote:
->
-> > Hi, Bilal:
-> >
-> > Please help to test this patch on your Chromebook elm, thanks.
-> >
-> > Regards,
-> > Chun-Kuang Hu
->
-> Just tried this patch on the Chromebook Elm, and it doesn't work. The
-> HDMI screen remains black, though the rest of the system keeps on
-> operating normally.
+elapsed time: 721m
 
-Could you print this information, so I could find out the solution for
-both small hbp and elm.
+configs tested: 133
+configs skipped: 2
 
-vm->hfront_porch, vm->hback_porch, dsi_tmp_buf_bpp,
-data_phy_cycles_byte, and the final horizontal_frontporch_byte,
-horizontal_backporch_byte.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Regards,
-Chun-Kuang.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+riscv                    nommu_k210_defconfig
+ia64                                defconfig
+arm                          tango4_defconfig
+powerpc                      ppc40x_defconfig
+mips                            gpr_defconfig
+c6x                              alldefconfig
+powerpc                    amigaone_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                      mgcoge_defconfig
+arc                        nsim_700_defconfig
+arm                           omap1_defconfig
+c6x                        evmc6474_defconfig
+arm                       omap2plus_defconfig
+sh                           se7722_defconfig
+m68k                       m5249evb_defconfig
+m68k                         amcore_defconfig
+powerpc                     tqm8560_defconfig
+mips                             allyesconfig
+mips                            ar7_defconfig
+arc                            hsdk_defconfig
+sh                        apsh4ad0a_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                          sdk7780_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                          sdk7786_defconfig
+ia64                        generic_defconfig
+powerpc                     ep8248e_defconfig
+sparc64                          alldefconfig
+powerpc                 mpc837x_mds_defconfig
+arm                        spear3xx_defconfig
+powerpc                 mpc8540_ads_defconfig
+mips                         db1xxx_defconfig
+sh                             espt_defconfig
+mips                        jmr3927_defconfig
+mips                        bcm47xx_defconfig
+arm                         orion5x_defconfig
+mips                  cavium_octeon_defconfig
+sparc                       sparc64_defconfig
+mips                       rbtx49xx_defconfig
+arm                       aspeed_g4_defconfig
+arc                         haps_hs_defconfig
+arm                         vf610m4_defconfig
+arm                       versatile_defconfig
+sh                           se7619_defconfig
+sh                                  defconfig
+powerpc                    socrates_defconfig
+mips                      pic32mzda_defconfig
+mips                        maltaup_defconfig
+powerpc                 mpc834x_mds_defconfig
+mips                       lemote2f_defconfig
+arm                         axm55xx_defconfig
+sh                          landisk_defconfig
+m68k                         apollo_defconfig
+sh                           se7712_defconfig
+mips                        nlm_xlr_defconfig
+mips                     decstation_defconfig
+powerpc                      arches_defconfig
+powerpc                        warp_defconfig
+mips                          rb532_defconfig
+sh                           se7343_defconfig
+powerpc                mpc7448_hpc2_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201115
+i386                 randconfig-a005-20201115
+i386                 randconfig-a001-20201115
+i386                 randconfig-a002-20201115
+i386                 randconfig-a004-20201115
+i386                 randconfig-a003-20201115
+x86_64               randconfig-a015-20201115
+x86_64               randconfig-a011-20201115
+x86_64               randconfig-a014-20201115
+x86_64               randconfig-a013-20201115
+x86_64               randconfig-a016-20201115
+x86_64               randconfig-a012-20201115
+i386                 randconfig-a012-20201115
+i386                 randconfig-a014-20201115
+i386                 randconfig-a016-20201115
+i386                 randconfig-a011-20201115
+i386                 randconfig-a015-20201115
+i386                 randconfig-a013-20201115
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
->
-> >
-> > Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=
-=8815=E6=97=A5 =E9=80=B1=E6=97=A5
-> > =E4=B8=8A=E5=8D=888:14=E5=AF=AB=E9=81=93=EF=BC=9A
-> > >
-> > > From: CK Hu <ck.hu@mediatek.com>
-> > >
-> > > Using vm->hfront_porch + vm->hback_porch to calculate
-> > > horizontal_backporch_byte would make it negtive, so
-> > > use horizontal_backporch_byte itself to make it positive.
-> > >
-> > > Fixes: 35bf948f1edb ("drm/mediatek: dsi: Fix scrolling of panel
-> > > with small hfp or hbp")
-> > >
-> > > Signed-off-by: CK Hu <ck.hu@mediatek.com>
-> > > Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> > > ---
-> > >  drivers/gpu/drm/mediatek/mtk_dsi.c | 53
-> > > ++++++++++-------------------- 1 file changed, 18 insertions(+), 35
-> > > deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> > > b/drivers/gpu/drm/mediatek/mtk_dsi.c index
-> > > 4a188a942c38..2a64fdaed9a7 100644 ---
-> > > a/drivers/gpu/drm/mediatek/mtk_dsi.c +++
-> > > b/drivers/gpu/drm/mediatek/mtk_dsi.c @@ -444,7 +444,10 @@ static
-> > > void mtk_dsi_config_vdo_timing(struct mtk_dsi *dsi) u32
-> > > horizontal_sync_active_byte; u32 horizontal_backporch_byte;
-> > >         u32 horizontal_frontporch_byte;
-> > > +       u32 horizontal_front_back_byte;
-> > > +       u32 data_phy_cycles_byte;
-> > >         u32 dsi_tmp_buf_bpp, data_phy_cycles;
-> > > +       u32 delta;
-> > >         struct mtk_phy_timing *timing =3D &dsi->phy_timing;
-> > >
-> > >         struct videomode *vm =3D &dsi->vm;
-> > > @@ -474,42 +477,22 @@ static void mtk_dsi_config_vdo_timing(struct
-> > > mtk_dsi *dsi) data_phy_cycles =3D timing->lpx + timing->da_hs_prepare
-> > > + timing->da_hs_zero + timing->da_hs_exit;
-> > >
-> > > -       if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) {
-> > > -               if ((vm->hfront_porch + vm->hback_porch) *
-> > > dsi_tmp_buf_bpp >
-> > > -                   data_phy_cycles * dsi->lanes + 18) {
-> > > -                       horizontal_frontporch_byte =3D
-> > > -                               vm->hfront_porch * dsi_tmp_buf_bpp -
-> > > -                               (data_phy_cycles * dsi->lanes + 18)
-> > > *
-> > > -                               vm->hfront_porch /
-> > > -                               (vm->hfront_porch +
-> > > vm->hback_porch); -
-> > > -                       horizontal_backporch_byte =3D
-> > > -                               horizontal_backporch_byte -
-> > > -                               (data_phy_cycles * dsi->lanes + 18)
-> > > *
-> > > -                               vm->hback_porch /
-> > > -                               (vm->hfront_porch +
-> > > vm->hback_porch);
-> > > -               } else {
-> > > -                       DRM_WARN("HFP less than d-phy, FPS will
-> > > under 60Hz\n");
-> > > -                       horizontal_frontporch_byte =3D
-> > > vm->hfront_porch *
-> > > -
-> > > dsi_tmp_buf_bpp;
-> > > -               }
-> > > +       delta =3D dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST ? 18 :
-> > > 12; +
-> > > +       horizontal_frontporch_byte =3D vm->hfront_porch *
-> > > dsi_tmp_buf_bpp;
-> > > +       horizontal_front_back_byte =3D horizontal_frontporch_byte +
-> > > horizontal_backporch_byte;
-> > > +       data_phy_cycles_byte =3D data_phy_cycles * dsi->lanes + delta=
-;
-> > > +
-> > > +       if (horizontal_front_back_byte > data_phy_cycles_byte) {
-> > > +               horizontal_frontporch_byte -=3D data_phy_cycles_byte =
-*
-> > > +
-> > > horizontal_frontporch_byte /
-> > > +
-> > > horizontal_front_back_byte; +
-> > > +               horizontal_backporch_byte -=3D data_phy_cycles_byte *
-> > > +
-> > > horizontal_backporch_byte /
-> > > +
-> > > horizontal_front_back_byte; } else {
-> > > -               if ((vm->hfront_porch + vm->hback_porch) *
-> > > dsi_tmp_buf_bpp >
-> > > -                   data_phy_cycles * dsi->lanes + 12) {
-> > > -                       horizontal_frontporch_byte =3D
-> > > -                               vm->hfront_porch * dsi_tmp_buf_bpp -
-> > > -                               (data_phy_cycles * dsi->lanes + 12)
-> > > *
-> > > -                               vm->hfront_porch /
-> > > -                               (vm->hfront_porch +
-> > > vm->hback_porch);
-> > > -                       horizontal_backporch_byte =3D
-> > > horizontal_backporch_byte -
-> > > -                               (data_phy_cycles * dsi->lanes + 12)
-> > > *
-> > > -                               vm->hback_porch /
-> > > -                               (vm->hfront_porch +
-> > > vm->hback_porch);
-> > > -               } else {
-> > > -                       DRM_WARN("HFP less than d-phy, FPS will
-> > > under 60Hz\n");
-> > > -                       horizontal_frontporch_byte =3D
-> > > vm->hfront_porch *
-> > > -
-> > > dsi_tmp_buf_bpp;
-> > > -               }
-> > > +               DRM_WARN("HFP + HBP less than d-phy, FPS will under
-> > > 60Hz\n"); }
-> > >
-> > >         writel(horizontal_sync_active_byte, dsi->regs + DSI_HSA_WC);
-> > > --
-> > > 2.17.1
-> > >
->
-> Thanks,
-> Bilal
+clang tested configs:
+x86_64               randconfig-a003-20201115
+x86_64               randconfig-a005-20201115
+x86_64               randconfig-a004-20201115
+x86_64               randconfig-a002-20201115
+x86_64               randconfig-a001-20201115
+x86_64               randconfig-a006-20201115
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
