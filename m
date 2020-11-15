@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46DC2B3A9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033902B3AA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727985AbgKOXow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 18:44:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727018AbgKOXow (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 18:44:52 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FB8C0613D1;
-        Sun, 15 Nov 2020 15:44:52 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZ8270zfGz9sRR;
-        Mon, 16 Nov 2020 10:44:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605483887;
-        bh=CJI4uybuXE1Y3DgSUlwe6M6y80s0lD85qJPkm6MMXXM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c6+W8xXgg2ksq3PQCI2anSprRiGUzuNqoxR7MtZaO1KW2BgzYFM2jCoSWtMKlm889
-         BSXklsWSMCAJNHZZ/jZTQuwOHkdQjO9b8lmotOMepEidJMpGEefaxsQuwB1WUHCPCI
-         shuojrvW77HcQJ+DKhFURUvDaCz2dS4bD+H8fBozYwCKiTdnmSv3btZIiU9Q4fF7Lz
-         /8DRpT/qau02we/zngW0XFoLx8LM+tlKFSK1tUCcaAaqNS0xjB0RGdFDToFk3YhEvQ
-         08lOvWXayu6+UkpjHPTIG3p0Cmb8VWtrgxdLyoBiXeTtU65GMowv8WZQ6iNt3p6sNr
-         rv+x+OF+Y5LvQ==
-Date:   Mon, 16 Nov 2020 10:44:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the drm tree
-Message-ID: <20201116104444.044486ea@canb.auug.org.au>
-In-Reply-To: <20201105175031.00e0b081@canb.auug.org.au>
-References: <20201105175031.00e0b081@canb.auug.org.au>
+        id S1728057AbgKOXsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 18:48:25 -0500
+Received: from mga03.intel.com ([134.134.136.65]:49230 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726369AbgKOXsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 18:48:25 -0500
+IronPort-SDR: G0IzlSGXZ/YLjGvgCL/wa3FBzOk5qPJUUqfdF9XZdkW2ADssQcgKJSmcqgRXGj9v8tm+WFk9/i
+ K16BslmkaiQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="170787072"
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
+   d="scan'208";a="170787072"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 15:48:24 -0800
+IronPort-SDR: QFsXTK8yVJAJVshqFuARa27KZZ7lQvmrMDwIx7oqw5NiZ71abynlHnruwa681+tBsBtddcg0E6
+ mVNxTG+UtNqQ==
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
+   d="scan'208";a="358279683"
+Received: from chenyudo-mobl.ccr.corp.intel.com (HELO [10.254.215.59]) ([10.254.215.59])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 15:48:21 -0800
+Cc:     baolu.lu@linux.intel.com, Arnd Bergmann <arnd@arndb.de>,
+        Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/vt-d: include conditionally on
+ CONFIG_INTEL_IOMMU_SVM
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org
+References: <20201115205951.20698-1-lukas.bulwahn@gmail.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <188313a2-ec53-28ef-2349-66594e116a2e@linux.intel.com>
+Date:   Mon, 16 Nov 2020 07:47:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5KjDEq3ByPRtzQ=Ny0g3gZZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201115205951.20698-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5KjDEq3ByPRtzQ=Ny0g3gZZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020/11/16 4:59, Lukas Bulwahn wrote:
+> Commit 6ee1b77ba3ac ("iommu/vt-d: Add svm/sva invalidate function")
+> introduced intel_iommu_sva_invalidate() when CONFIG_INTEL_IOMMU_SVM.
+> This function uses the dedicated static variable inv_type_granu_table
+> and functions to_vtd_granularity() and to_vtd_size().
+> 
+> These parts are unused when !CONFIG_INTEL_IOMMU_SVM, and hence,
+> make CC=clang W=1 warns with an -Wunused-function warning.
+> 
+> Include these parts conditionally on CONFIG_INTEL_IOMMU_SVM.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Hi all,
+Fixes: 6ee1b77ba3ac0 ("iommu/vt-d: Add svm/sva invalidate function")
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-On Thu, 5 Nov 2020 17:50:31 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Hi all,
->=20
-> After merging the drm tree, today's linux-next build (htmldocs) produced
-> these warnings:
->=20
-> include/linux/dma-buf-map.h:106: warning: Excess function parameter 'vadd=
-r' description in 'DMA_BUF_MAP_INIT_VADDR'
-> include/linux/dma-buf-map.h:106: warning: Function parameter or member 'v=
-addr_' not described in 'DMA_BUF_MAP_INIT_VADDR'
-> include/linux/dma-buf-map.h:106: warning: Excess function parameter 'vadd=
-r' description in 'DMA_BUF_MAP_INIT_VADDR'
->=20
-> Introduced by commit
->=20
->   20e76f1a7059 ("dma-buf: Use struct dma_buf_map in dma_buf_vunmap() inte=
-rfaces")
+Best regards,
+baolu
 
-I am still getting these warnings.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/5KjDEq3ByPRtzQ=Ny0g3gZZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+xvWwACgkQAVBC80lX
-0Gyj7wf/aUzJdgB96pMouyzaU+j/xWIW5tyyigOoZp12WVgj7Pguu1HvTsijVYBG
-1mkewmjaeYBQqMqzAWLsZyx3TlbqQVTBL2NG1r7YqM9B+/6vDrkOOyqHV6VXfQP2
-0b7tHBwd8Pude0QxV0+goFtSeM7ac8ayOKH2GD1A40oEHUybqrHIAb29udiJkaiP
-XOkMXCGyRdCvGtt4DHxfcop1u0KYCwsjAECol/yMUUBu9uZrq1YCR7mnU2hWmG5q
-8o+BP5m9NzqyedXJ5xhObN3ctk6GoPHx1ujDbVWqEUpXSKiCsTVfmD977cV/qPgS
-FjfOpc+HSpKsBWX9Dxy1sB199HZnOw==
-=aCSm
------END PGP SIGNATURE-----
-
---Sig_/5KjDEq3ByPRtzQ=Ny0g3gZZ--
+> ---
+> applies cleanly on current master and next-20201113
+> 
+> Liu Yi L, Jakob Pan, Lu Baolu, please ack.
+> 
+> Joerg, please pick this minor non-urgent clean-up patch.
+> 
+>   drivers/iommu/intel/iommu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index c6622011d493..7b32703c0b47 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -5386,6 +5386,7 @@ static void intel_iommu_aux_detach_device(struct iommu_domain *domain,
+>   	aux_domain_remove_dev(to_dmar_domain(domain), dev);
+>   }
+>   
+> +#ifdef CONFIG_INTEL_IOMMU_SVM
+>   /*
+>    * 2D array for converting and sanitizing IOMMU generic TLB granularity to
+>    * VT-d granularity. Invalidation is typically included in the unmap operation
+> @@ -5432,7 +5433,6 @@ static inline u64 to_vtd_size(u64 granu_size, u64 nr_granules)
+>   	return order_base_2(nr_pages);
+>   }
+>   
+> -#ifdef CONFIG_INTEL_IOMMU_SVM
+>   static int
+>   intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
+>   			   struct iommu_cache_invalidate_info *inv_info)
+> 
