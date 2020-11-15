@@ -2,201 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D673E2B3A98
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D46DC2B3A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727904AbgKOXiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 18:38:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48822 "EHLO
+        id S1727985AbgKOXow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 18:44:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgKOXiV (ORCPT
+        with ESMTP id S1727018AbgKOXow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 18:38:21 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CCCC0613CF;
-        Sun, 15 Nov 2020 15:38:20 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1keRb4-006roW-2J; Sun, 15 Nov 2020 23:38:14 +0000
-Date:   Sun, 15 Nov 2020 23:38:14 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Sun, 15 Nov 2020 18:44:52 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FB8C0613D1;
+        Sun, 15 Nov 2020 15:44:52 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZ8270zfGz9sRR;
+        Mon, 16 Nov 2020 10:44:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1605483887;
+        bh=CJI4uybuXE1Y3DgSUlwe6M6y80s0lD85qJPkm6MMXXM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c6+W8xXgg2ksq3PQCI2anSprRiGUzuNqoxR7MtZaO1KW2BgzYFM2jCoSWtMKlm889
+         BSXklsWSMCAJNHZZ/jZTQuwOHkdQjO9b8lmotOMepEidJMpGEefaxsQuwB1WUHCPCI
+         shuojrvW77HcQJ+DKhFURUvDaCz2dS4bD+H8fBozYwCKiTdnmSv3btZIiU9Q4fF7Lz
+         /8DRpT/qau02we/zngW0XFoLx8LM+tlKFSK1tUCcaAaqNS0xjB0RGdFDToFk3YhEvQ
+         08lOvWXayu6+UkpjHPTIG3p0Cmb8VWtrgxdLyoBiXeTtU65GMowv8WZQ6iNt3p6sNr
+         rv+x+OF+Y5LvQ==
+Date:   Mon, 16 Nov 2020 10:44:44 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-Message-ID: <20201115233814.GT3576660@ZenIV.linux.org.uk>
-References: <20201114011754.GL3576660@ZenIV.linux.org.uk>
- <20201114030124.GA236@Ryzen-9-3900X.localdomain>
- <20201114035453.GM3576660@ZenIV.linux.org.uk>
- <20201114041420.GA231@Ryzen-9-3900X.localdomain>
- <20201114055048.GN3576660@ZenIV.linux.org.uk>
- <20201114061934.GA658@Ryzen-9-3900X.localdomain>
- <20201114070025.GO3576660@ZenIV.linux.org.uk>
- <20201114205000.GP3576660@ZenIV.linux.org.uk>
- <20201115155355.GR3576660@ZenIV.linux.org.uk>
- <20201115214125.GA317@Ryzen-9-3900X.localdomain>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the drm tree
+Message-ID: <20201116104444.044486ea@canb.auug.org.au>
+In-Reply-To: <20201105175031.00e0b081@canb.auug.org.au>
+References: <20201105175031.00e0b081@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201115214125.GA317@Ryzen-9-3900X.localdomain>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: multipart/signed; boundary="Sig_/5KjDEq3ByPRtzQ=Ny0g3gZZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 02:41:25PM -0700, Nathan Chancellor wrote:
-> Hi Al,
-> 
-> Apologies for the delay.
-> 
-> On Sun, Nov 15, 2020 at 03:53:55PM +0000, Al Viro wrote:
-> > On Sat, Nov 14, 2020 at 08:50:00PM +0000, Al Viro wrote:
-> > 
-> > OK, I think I understand what's going on.  Could you check if
-> > reverting the variant in -next and applying the following instead
-> > fixes what you are seeing?
-> 
-> The below diff on top of d4d50710a8b46082224376ef119a4dbb75b25c56 does
-> not fix my issue unfortunately.
+--Sig_/5KjDEq3ByPRtzQ=Ny0g3gZZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-OK...  Now that I have a reproducer[1], I think I've sorted it out.
-And yes, it had been too subtle for its own good ;-/
+Hi all,
 
-[1] I still wonder what the hell in the userland has come up with the
-idea of reading through a file with readv(), each time with 2-element
-iovec array, the first element covering 0 bytes and the second one - 1024.
-AFAICS, nothing is systemd git appears to be _that_ weird...  Makes for
-a useful testcase, though...
+On Thu, 5 Nov 2020 17:50:31 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Hi all,
+>=20
+> After merging the drm tree, today's linux-next build (htmldocs) produced
+> these warnings:
+>=20
+> include/linux/dma-buf-map.h:106: warning: Excess function parameter 'vadd=
+r' description in 'DMA_BUF_MAP_INIT_VADDR'
+> include/linux/dma-buf-map.h:106: warning: Function parameter or member 'v=
+addr_' not described in 'DMA_BUF_MAP_INIT_VADDR'
+> include/linux/dma-buf-map.h:106: warning: Excess function parameter 'vadd=
+r' description in 'DMA_BUF_MAP_INIT_VADDR'
+>=20
+> Introduced by commit
+>=20
+>   20e76f1a7059 ("dma-buf: Use struct dma_buf_map in dma_buf_vunmap() inte=
+rfaces")
 
-Anyway, could you test this replacement?
+I am still getting these warnings.
 
-diff --git a/fs/seq_file.c b/fs/seq_file.c
-index 3b20e21604e7..c0dfe2861b35 100644
---- a/fs/seq_file.c
-+++ b/fs/seq_file.c
-@@ -168,12 +168,14 @@ EXPORT_SYMBOL(seq_read);
- ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- {
- 	struct seq_file *m = iocb->ki_filp->private_data;
--	size_t size = iov_iter_count(iter);
- 	size_t copied = 0;
- 	size_t n;
- 	void *p;
- 	int err = 0;
- 
-+	if (!iov_iter_count(iter))
-+		return 0;
-+
- 	mutex_lock(&m->lock);
- 
- 	/*
-@@ -208,34 +210,32 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	}
- 	/* if not empty - flush it first */
- 	if (m->count) {
--		n = min(m->count, size);
--		if (copy_to_iter(m->buf + m->from, n, iter) != n)
--			goto Efault;
-+		n = copy_to_iter(m->buf + m->from, m->count, iter);
- 		m->count -= n;
- 		m->from += n;
--		size -= n;
- 		copied += n;
--		if (!size)
-+		if (m->count)	// hadn't managed to copy everything
- 			goto Done;
- 	}
--	/* we need at least one record in buffer */
-+	/* we need at least one non-empty record in the buffer */
- 	m->from = 0;
- 	p = m->op->start(m, &m->index);
- 	while (1) {
- 		err = PTR_ERR(p);
--		if (!p || IS_ERR(p))
-+		if (!p || IS_ERR(p))	// EOF or an error
- 			break;
- 		err = m->op->show(m, p);
--		if (err < 0)
-+		if (err < 0)		// hard error
- 			break;
--		if (unlikely(err))
-+		if (unlikely(err))	// ->show() says "skip it"
- 			m->count = 0;
--		if (unlikely(!m->count)) {
-+		if (unlikely(!m->count)) { // empty record
- 			p = m->op->next(m, p, &m->index);
- 			continue;
- 		}
--		if (m->count < m->size)
-+		if (!seq_has_overflowed(m)) // got it
- 			goto Fill;
-+		// need a bigger buffer
- 		m->op->stop(m, p);
- 		kvfree(m->buf);
- 		m->count = 0;
-@@ -244,11 +244,14 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 			goto Enomem;
- 		p = m->op->start(m, &m->index);
- 	}
-+	// EOF or an error
- 	m->op->stop(m, p);
- 	m->count = 0;
- 	goto Done;
- Fill:
--	/* they want more? let's try to get some more */
-+	// one non-empty record is in the buffer; if they want more,
-+	// try to fit more in, but in any case we need to advance
-+	// the iterator at least once.
- 	while (1) {
- 		size_t offs = m->count;
- 		loff_t pos = m->index;
-@@ -259,11 +262,9 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 					    m->op->next);
- 			m->index++;
- 		}
--		if (!p || IS_ERR(p)) {
--			err = PTR_ERR(p);
-+		if (!p || IS_ERR(p))	// no next record for us
- 			break;
--		}
--		if (m->count >= size)
-+		if (m->count >= iov_iter_count(iter))
- 			break;
- 		err = m->op->show(m, p);
- 		if (seq_has_overflowed(m) || err) {
-@@ -273,16 +274,14 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 		}
- 	}
- 	m->op->stop(m, p);
--	n = min(m->count, size);
--	if (copy_to_iter(m->buf, n, iter) != n)
--		goto Efault;
-+	n = copy_to_iter(m->buf, m->count, iter);
- 	copied += n;
- 	m->count -= n;
- 	m->from = n;
- Done:
--	if (!copied)
--		copied = err;
--	else {
-+	if (unlikely(!copied)) {
-+		copied = m->count ? -EFAULT : err;
-+	} else {
- 		iocb->ki_pos += copied;
- 		m->read_pos += copied;
- 	}
-@@ -291,9 +290,6 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- Enomem:
- 	err = -ENOMEM;
- 	goto Done;
--Efault:
--	err = -EFAULT;
--	goto Done;
- }
- EXPORT_SYMBOL(seq_read_iter);
- 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/5KjDEq3ByPRtzQ=Ny0g3gZZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+xvWwACgkQAVBC80lX
+0Gyj7wf/aUzJdgB96pMouyzaU+j/xWIW5tyyigOoZp12WVgj7Pguu1HvTsijVYBG
+1mkewmjaeYBQqMqzAWLsZyx3TlbqQVTBL2NG1r7YqM9B+/6vDrkOOyqHV6VXfQP2
+0b7tHBwd8Pude0QxV0+goFtSeM7ac8ayOKH2GD1A40oEHUybqrHIAb29udiJkaiP
+XOkMXCGyRdCvGtt4DHxfcop1u0KYCwsjAECol/yMUUBu9uZrq1YCR7mnU2hWmG5q
+8o+BP5m9NzqyedXJ5xhObN3ctk6GoPHx1ujDbVWqEUpXSKiCsTVfmD977cV/qPgS
+FjfOpc+HSpKsBWX9Dxy1sB199HZnOw==
+=aCSm
+-----END PGP SIGNATURE-----
+
+--Sig_/5KjDEq3ByPRtzQ=Ny0g3gZZ--
