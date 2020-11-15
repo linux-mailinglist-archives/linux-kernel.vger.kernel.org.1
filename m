@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBF82B37B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B5B2B37BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgKOSPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:15:32 -0500
-Received: from m12-18.163.com ([220.181.12.18]:51367 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726817AbgKOSPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:15:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=adebA
-        P0ds1BhxIpklwNKRlL7iwkY1ihT1RM94CKHo3w=; b=aflViqMi/WY94Az6Y9mHm
-        FPVfERmkhLDkT0j7lhkZH+1JK5dtXtIBzzHB0aHWrX91TmWOGrg+ZAs713TIoxaq
-        SiUUDex9H99DtE/pJ0GypKxiwyFqFCpXRgiJcSojhTXw6vXmhnmzhDB5U+X1odny
-        lFJD9WcrbAbnylV8sUnFq0=
-Received: from localhost (unknown [101.86.213.176])
-        by smtp14 (Coremail) with SMTP id EsCowADn99chcLFfbHwLEQ--.34571S2;
-        Mon, 16 Nov 2020 02:14:57 +0800 (CST)
-Date:   Mon, 16 Nov 2020 02:14:57 +0800
-From:   Hui Su <sh_def@163.com>
-To:     christian.brauner@ubuntu.com, serge@hallyn.com, avagin@openvz.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org
-Cc:     sh_def@163.com
-Subject: [PATCH] nsproxy: remove judge of timens_on_fork()'s return val
-Message-ID: <20201115181457.GA376527@rlk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: EsCowADn99chcLFfbHwLEQ--.34571S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GrW7ZFy5ur4UZFykXF1xAFb_yoWDAFg_AF
-        ZFq3ZIgFnIqFnavry3Ca1fXF97t390krWxCw4Iqay3AFn8JF4UJwsrAr98GryDCFs3WFy5
-        uFWUJryDJw1YqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8ov35UUUUU==
-X-Originating-IP: [101.86.213.176]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbipAHdX1r7rdL7rAAAsu
+        id S1727365AbgKOSW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 13:22:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbgKOSWz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 13:22:55 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115EAC0613D1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 10:22:54 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 23so16298633wrc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 10:22:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZIe36ROzo6+salMbb1n1Mr2cByL0OaDO1PyAW3FVZ48=;
+        b=XKpzS6rn2YmUgN309ZWl+FK4EbC9twEmQeYVFLfqMdUZcC9TBmtFODe2/V5BygOOFG
+         gQHLZoVqrIbyJfDwEp43/dz0bw9xra8nszz1IXFpRxguW1InYRh0EDTGjmuEI5ATHXdY
+         62elg+AeBzhUGxctiRIaVXXAWc2L7ufZBIHtjTfmR3lF7Y9XSWGjCUThMs5pjJlu4RK/
+         YV/FPejCUtc/Fde+iQklv1OG64kzSA7EkIQse7fAcXgxLZId9BPVTDuUxr5NwPzchZD3
+         taYf3UGiApqMPRdXWifZwxXuG0gPrwfp/NId4FMwB1uA0NZHYDWO/3RR+CsTppCvJV4U
+         /Ctw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZIe36ROzo6+salMbb1n1Mr2cByL0OaDO1PyAW3FVZ48=;
+        b=B3lgYWR9f/3d4sgZKmBS4ZgFDshcoDn5min+n30Wj87oGkgUON3VjZS0lDs94wuFA7
+         JHztEG+SUd60qlLy1uqFQda0XpY9/ToddD8TqkNmtc5TORT4UDR12kb9qy2QNgWl82u0
+         8zE72NQ1I945T3cXUVQx2UZfAksk8oM66Rs7wRa6QT1oexW9pYATumrQBovz1FWngAoz
+         tWycR2Zs+/wfB8DoaVlddIdaS4uqnHZa91ZLsNUEwXf58oOYLN+2Mlpl4StplGRF12Uu
+         HwVHNubZ3ZiROeqSl7GejD72ZO8LcKD97nkyIorCK+kyNQj+J4+4QcwgWrQMqrmWJKjq
+         JKWA==
+X-Gm-Message-State: AOAM532U9eg2fHmytdXxt8FGFiFT0ZlQph9L8dVZ+zeQcvoYDL026AWD
+        fse2yOyA6jXicnWQ9b59Bh7AEkZHjL6/bg==
+X-Google-Smtp-Source: ABdhPJzKqGpBK6NfBHb5qOvv7E8voFNFNTn7iZGYaH6PJvRgdEthKJLKeXg3l+TblsaiNLvhh5nwzg==
+X-Received: by 2002:adf:f9c5:: with SMTP id w5mr14634256wrr.69.1605464572821;
+        Sun, 15 Nov 2020 10:22:52 -0800 (PST)
+Received: from localhost.localdomain ([163.172.76.58])
+        by smtp.googlemail.com with ESMTPSA id f17sm16793269wmh.10.2020.11.15.10.22.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 10:22:52 -0800 (PST)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com
+Cc:     linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] x86/defconfigs: enable HDA realtek codec
+Date:   Sun, 15 Nov 2020 18:22:46 +0000
+Message-Id: <20201115182246.9208-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-timens_on_fork() always return 0, and maybe not
-need to judge the return value in copy_namespaces().
+I have lot of board booting with "hdaudio hdaudioC0D2: Unable to bind the codec".
+This is, for all of them, due to missing the HDA realtek codec.
 
-Signed-off-by: Hui Su <sh_def@163.com>
+In fact CONFIG_SND_HDA_CODEC_REALTEK was already enabled via commit 5cb04df8d3f0 ("x86: defconfig updates")
+but removed later via commit 8b1bb90701f9 ("defconfig reduction")
+
+Anyway, one of those system is part of kernelCI and having
+CONFIG_SND_HDA_CODEC_REALTEK back will permit more testing.
+
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- kernel/nsproxy.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ arch/x86/configs/x86_64_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
-index 12dd41b39a7f..e2e6c5dc433f 100644
---- a/kernel/nsproxy.c
-+++ b/kernel/nsproxy.c
-@@ -153,7 +153,6 @@ int copy_namespaces(unsigned long flags, struct task_struct *tsk)
- 	struct nsproxy *old_ns = tsk->nsproxy;
- 	struct user_namespace *user_ns = task_cred_xxx(tsk, user_ns);
- 	struct nsproxy *new_ns;
--	int ret;
- 
- 	if (likely(!(flags & (CLONE_NEWNS | CLONE_NEWUTS | CLONE_NEWIPC |
- 			      CLONE_NEWPID | CLONE_NEWNET |
-@@ -180,11 +179,7 @@ int copy_namespaces(unsigned long flags, struct task_struct *tsk)
- 	if (IS_ERR(new_ns))
- 		return  PTR_ERR(new_ns);
- 
--	ret = timens_on_fork(new_ns, tsk);
--	if (ret) {
--		free_nsproxy(new_ns);
--		return ret;
--	}
-+	timens_on_fork(new_ns, tsk);
- 
- 	tsk->nsproxy = new_ns;
- 	return 0;
+diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+index 9936528e1939..830e4af263a2 100644
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -190,6 +190,7 @@ CONFIG_SND_HRTIMER=y
+ CONFIG_SND_SEQUENCER=y
+ CONFIG_SND_SEQ_DUMMY=y
+ CONFIG_SND_HDA_INTEL=y
++CONFIG_SND_HDA_CODEC_REALTEK=y
+ CONFIG_SND_HDA_HWDEP=y
+ CONFIG_HIDRAW=y
+ CONFIG_HID_GYRATION=y
 -- 
-2.29.0
-
+2.26.2
 
