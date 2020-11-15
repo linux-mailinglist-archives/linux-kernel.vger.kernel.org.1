@@ -2,370 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063002B3519
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 14:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C94A2B352F
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 15:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbgKONov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 08:44:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27637 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727156AbgKONot (ORCPT
+        id S1727188AbgKOOF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 09:05:29 -0500
+Received: from out02.mta.xmission.com ([166.70.13.232]:35142 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727073AbgKOOF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 08:44:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605447887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/AlAMNtD74YjT/rjpnNjzT//DRG+bFcq+PfVYbskjbI=;
-        b=OcNGDEAFC9atVvLCdtRbyeG7M0paU4w7livuAKWTPPFw9j16i7Bu4yY6e+3kTBVNNfwqJf
-        3/OgdsicH8Ls+mpuwSNpB/3IsrXI3yyWUmnRNy1sli3SFt4JmlgvRIYRKrq4rtMONGV3kX
-        z8DB9TK9RJ/LeE+7c7gZfwesHOA3pxQ=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-vn38RquVOeuRMlCcM-zGug-1; Sun, 15 Nov 2020 08:44:45 -0500
-X-MC-Unique: vn38RquVOeuRMlCcM-zGug-1
-Received: by mail-qv1-f69.google.com with SMTP id dp12so3307517qvb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 05:44:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/AlAMNtD74YjT/rjpnNjzT//DRG+bFcq+PfVYbskjbI=;
-        b=Oe1+5CSA60HZTYzZS7eGLxRTunG6O2XoF04FAGd2LkwBoGS2sVRI8TO5XTdtDunv3M
-         HBlGWomW2NoBMyTK1oxqC4XQlcfeKDoX+Xqcr5PAsxuDaw+POBSzPO7RFMj3TYUs8b2q
-         LpXFV8vuAyNnMk00mJEC3OFaVloyZIBjb/AXs+xDCGWUJp2r6zEcGYQ55n9rHvusIidq
-         p+oEhovoJV9MHEhmquJo7nqdTCiqN+iwgN3L2NmlnAgjdYwXFq3merHhQ9gDdJvC+ZXM
-         sjdY4JIxPYb+p2Pm9J5vuh/2i9fPdGDv7ULVEfYr4uhlW7tY/VItDoVRXcxzfdyuz4e8
-         2Dbw==
-X-Gm-Message-State: AOAM531vld6o9nwOiAxeq8Yt8wNfK7QrtHGlYAhmRqQuvXfVl1vADUyc
-        kshMkN9pPyMuIwqQSGsZ6V8otwCx/KV/6rX4RsVoQSCeRa+L/dXEd0uDfB8M1vJp/fz4B6l0xth
-        0YGgA/uOxB3swcBIKk49D0znk
-X-Received: by 2002:a05:620a:140d:: with SMTP id d13mr10650464qkj.470.1605447884933;
-        Sun, 15 Nov 2020 05:44:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwh0p0YZXgO380IGoC1uZUQybygH3fPFTfj0d1CdP4JKAzkkb9SXTcE2PilUChkV9RYFvn9xg==
-X-Received: by 2002:a05:620a:140d:: with SMTP id d13mr10650443qkj.470.1605447884616;
-        Sun, 15 Nov 2020 05:44:44 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k4sm1743516qtp.5.2020.11.15.05.44.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Nov 2020 05:44:44 -0800 (PST)
-Subject: Re: [PATCH v5 2/6] fpga: m10bmc-sec: create max10 bmc secure update
- driver
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20201114005559.90860-1-russell.h.weight@intel.com>
- <20201114005559.90860-3-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <9b42ad34-84bf-7409-414b-925c143c7959@redhat.com>
-Date:   Sun, 15 Nov 2020 05:44:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sun, 15 Nov 2020 09:05:28 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1keIeg-009fU2-79; Sun, 15 Nov 2020 07:05:22 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1keIef-0003D4-7f; Sun, 15 Nov 2020 07:05:21 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        linux-pci@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com,
+        dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, andi@firstfloor.org,
+        lukas@wunner.de, okaya@kernel.org, kernelfans@gmail.com,
+        ddstreet@canonical.com, gavin.guo@canonical.com,
+        jay.vosburgh@canonical.com, kernel@gpiccoli.net,
+        shan.gavin@linux.alibaba.com,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20201114212215.GA1194074@bjorn-Precision-5520>
+Date:   Sun, 15 Nov 2020 08:05:05 -0600
+In-Reply-To: <20201114212215.GA1194074@bjorn-Precision-5520> (Bjorn Helgaas's
+        message of "Sat, 14 Nov 2020 15:22:15 -0600")
+Message-ID: <87v9e6n2b2.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20201114005559.90860-3-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
+X-XM-SPF: eid=1keIef-0003D4-7f;;;mid=<87v9e6n2b2.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+YuU7K8slUpoLdruiB0niDW9O6RxUm9go=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4994]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Bjorn Helgaas <helgaas@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 501 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 9 (1.7%), b_tie_ro: 7 (1.5%), parse: 1.35 (0.3%),
+        extract_message_metadata: 5 (1.0%), get_uri_detail_list: 2.5 (0.5%),
+        tests_pri_-1000: 4.5 (0.9%), tests_pri_-950: 1.44 (0.3%),
+        tests_pri_-900: 1.18 (0.2%), tests_pri_-90: 128 (25.4%), check_bayes:
+        126 (25.1%), b_tokenize: 9 (1.9%), b_tok_get_all: 11 (2.1%),
+        b_comp_prob: 3.5 (0.7%), b_tok_touch_all: 98 (19.6%), b_finish: 0.92
+        (0.2%), tests_pri_0: 333 (66.5%), check_dkim_signature: 0.55 (0.1%),
+        check_dkim_adsp: 2.4 (0.5%), poll_dns_idle: 0.49 (0.1%), tests_pri_10:
+        2.1 (0.4%), tests_pri_500: 6 (1.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Bjorn Helgaas <helgaas@kernel.org> writes:
 
-On 11/13/20 4:55 PM, Russ Weight wrote:
-> Create a platform driver that can be invoked as a sub
-> driver for the Intel MAX10 BMC in order to support
-> secure updates. This sub-driver will invoke an
-> instance of the FPGA Security Manager class driver
-> in order to expose sysfs interfaces for managing and
-> monitoring secure updates to FPGA and BMC images.
+> [+cc Rafael for question about ACPI method for PCI host bridge reset]
 >
-> This patch creates the MAX10 BMC Secure Update driver and
-> provides sysfs files for displaying the current root entry hashes
-> for the FPGA static region, the FPGA PR region, and the MAX10
-> BMC.
+> On Sat, Nov 14, 2020 at 09:58:08PM +0100, Thomas Gleixner wrote:
+>> On Sat, Nov 14 2020 at 14:39, Bjorn Helgaas wrote:
+>> > On Sat, Nov 14, 2020 at 12:40:10AM +0100, Thomas Gleixner wrote:
+>> >> On Sat, Nov 14 2020 at 00:31, Thomas Gleixner wrote:
+>> >> > On Fri, Nov 13 2020 at 10:46, Bjorn Helgaas wrote:
+>> >> >> pci_device_shutdown() still clears the Bus Master Enable bit if we're
+>> >> >> doing a kexec and the device is in D0-D3hot, which should also disable
+>> >> >> MSI/MSI-X.  Why doesn't this solve the problem?  Is this because the
+>> >> >> device causing the storm was in PCI_UNKNOWN state?
+>> >> >
+>> >> > That's indeed a really good question.
+>> >> 
+>> >> So we do that on kexec, but is that true when starting a kdump kernel
+>> >> from a kernel crash? I doubt it.
+>> >
+>> > Ah, right, I bet that's it, thanks.  The kdump path is basically this:
+>> >
+>> >   crash_kexec
+>> >     machine_kexec
+>> >
+>> > while the usual kexec path is:
+>> >
+>> >   kernel_kexec
+>> >     kernel_restart_prepare
+>> >       device_shutdown
+>> >         while (!list_empty(&devices_kset->list))
+>> >           dev->bus->shutdown
+>> >             pci_device_shutdown            # pci_bus_type.shutdown
+>> >     machine_kexec
+>> >
+>> > So maybe we need to explore doing some or all of device_shutdown() in
+>> > the crash_kexec() path as well as in the kernel_kexec() path.
+>> 
+>> The problem is that if the machine crashed anything you try to attempt
+>> before starting the crash kernel is reducing the chance that the crash
+>> kernel actually starts.
 >
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> ---
-> v5:
->   - No change
-> v4:
->   - Moved sysfs files for displaying the root entry hashes (REH)
->     from the FPGA Security Manager class driver to here. The
->     m10bmc_reh() and m10bmc_reh_size() functions are removed and
->     the functionality from these functions is moved into a
->     show_root_entry_hash() function for displaying the REHs.
->   - Added ABI documentation for the new sysfs entries:
->     sysfs-driver-intel-m10-bmc-secure
->   - Updated the MAINTAINERS file to add the new ABI documentation
->     file: sysfs-driver-intel-m10-bmc-secure
->   - Removed unnecessary ret variable from m10bmc_secure_probe()
->   - Incorporated new devm_fpga_sec_mgr_register() function into
->     m10bmc_secure_probe() and removed the m10bmc_secure_remove()
->     function.
-> v3:
->   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
->   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
->   - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure
->     Update driver"
->   - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
->     underlying functions are now called directly.
->   - Changed "_root_entry_hash" to "_reh", with a comment explaining
->     what reh is.
-> v2:
->   - Added drivers/fpga/intel-m10-bmc-secure.c file to MAINTAINERS.
->   - Switched to GENMASK(31, 16) for a couple of mask definitions.
->   - Moved MAX10 BMC address and function definitions to a separate
->     patch.
->   - Replaced small function-creation macros with explicit function
->     declarations.
->   - Removed ifpga_sec_mgr_init() and ifpga_sec_mgr_uinit() functions.
->   - Adapted to changes in the Intel FPGA Security Manager by splitting
->     the single call to ifpga_sec_mgr_register() into two function
->     calls: devm_ifpga_sec_mgr_create() and ifpga_sec_mgr_register().
-> ---
->  .../testing/sysfs-driver-intel-m10-bmc-secure |  29 ++++
->  MAINTAINERS                                   |   2 +
->  drivers/fpga/Kconfig                          |  11 ++
->  drivers/fpga/Makefile                         |   3 +
->  drivers/fpga/intel-m10-bmc-secure.c           | 134 ++++++++++++++++++
->  5 files changed, 179 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
->  create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
+> Right.
 >
-> diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
-> new file mode 100644
-> index 000000000000..2992488b717a
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
-> @@ -0,0 +1,29 @@
-> +What:		/sys/bus/platform/devices/n3000bmc-secure.*.auto/security/sr_root_entry_hash
-> +Date:		Oct 2020
-> +KernelVersion:  5.11
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Read only. Returns the root entry hash for the static
-> +		region if one is programmed, else it returns the
-> +		string: "hash not programmed".  This file is only
-> +		visible if the underlying device supports it.
-> +		Format: "0x%x".
-> +
-> +What:		/sys/bus/platform/devices/n3000bmc-secure.*.auto/security/pr_root_entry_hash
-> +Date:		Oct 2020
-> +KernelVersion:  5.11
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Read only. Returns the root entry hash for the partial
-> +		reconfiguration region if one is programmed, else it
-> +		returns the string: "hash not programmed".  This file
-> +		is only visible if the underlying device supports it.
-> +		Format: "0x%x".
-> +
-> +What:		/sys/bus/platform/devices/n3000bmc-secure.*.auto/security/bmc_root_entry_hash
-> +Date:		Oct 2020
-> +KernelVersion:  5.11
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Read only. Returns the root entry hash for the BMC image
-> +		if one is programmed, else it returns the string:
-> +		"hash not programmed".  This file is only visible if the
-> +		underlying device supports it.
-> +		Format: "0x%x".
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 23c655fc0001..bbd2366280de 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6941,8 +6941,10 @@ M:	Russ Weight <russell.h.weight@intel.com>
->  L:	linux-fpga@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-> +F:	Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
->  F:	Documentation/fpga/fpga-sec-mgr.rst
->  F:	drivers/fpga/fpga-sec-mgr.c
-> +F:	drivers/fpga/intel-m10-bmc-secure.c
->  F:	include/linux/fpga/fpga-sec-mgr.h
->  
->  FPU EMULATOR
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index 03e9a3b16e3e..a102ab1df7ae 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -235,4 +235,15 @@ config FPGA_SEC_MGR
->  	  region and for the BMC. Select this option to enable
->  	  updates for secure FPGA devices.
->  
-> +config IFPGA_M10_BMC_SECURE
-> +	tristate "Intel MAX10 BMC Secure Update driver"
-> +	depends on MFD_INTEL_M10_BMC && FPGA_SEC_MGR
-> +	help
-> +	  Secure update support for the Intel MAX10 board management
-> +	  controller.
-> +
-> +	  This is a subdriver of the Intel MAX10 board management controller
-> +	  (BMC) and provides support for secure updates for the BMC image,
-> +	  the FPGA image, the Root Entry Hashes, etc.
-> +
->  endif # FPGA
-> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> index 22576d1a3996..7259f1ab2531 100644
-> --- a/drivers/fpga/Makefile
-> +++ b/drivers/fpga/Makefile
-> @@ -24,6 +24,9 @@ obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
->  # FPGA Security Manager Framework
->  obj-$(CONFIG_FPGA_SEC_MGR)		+= fpga-sec-mgr.o
->  
-> +# FPGA Secure Update Drivers
-> +obj-$(CONFIG_IFPGA_M10_BMC_SECURE)	+= intel-m10-bmc-secure.o
-> +
->  # FPGA Bridge Drivers
->  obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
->  obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
-> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
-> new file mode 100644
-> index 000000000000..198bc8273d6b
-> --- /dev/null
-> +++ b/drivers/fpga/intel-m10-bmc-secure.c
-> @@ -0,0 +1,134 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Intel Max10 Board Management Controller Secure Update Driver
-> + *
-> + * Copyright (C) 2019-2020 Intel Corporation. All rights reserved.
-> + *
-> + */
-> +#include <linux/bitfield.h>
-> +#include <linux/device.h>
-> +#include <linux/fpga/fpga-sec-mgr.h>
-> +#include <linux/mfd/intel-m10-bmc.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +
-> +struct m10bmc_sec {
-> +	struct device *dev;
-> +	struct intel_m10bmc *m10bmc;
-> +};
-> +
-> +/* Root Entry Hash (REH) support */
-> +#define REH_SHA256_SIZE		32
-> +#define REH_SHA384_SIZE		48
-> +#define REH_MAGIC		GENMASK(15, 0)
-> +#define REH_SHA_NUM_BYTES	GENMASK(31, 16)
-> +
-> +static ssize_t
-> +show_root_entry_hash(struct device *dev, u32 exp_magic,
-> +		     u32 prog_addr, u32 reh_addr, char *buf)
-> +{
-> +	struct m10bmc_sec *sec = dev_get_drvdata(dev);
-> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
-> +	int sha_num_bytes, i, cnt, ret;
-> +	u8 hash[REH_SHA384_SIZE];
-> +	u32 magic;
-> +
-> +	ret = m10bmc_raw_read(sec->m10bmc, prog_addr, &magic);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_dbg(dev, "%s magic 0x%08x\n", __func__, magic);
-> +
-> +	if (FIELD_GET(REH_MAGIC, magic) != exp_magic)
-> +		return sysfs_emit(buf, "hash not programmed\n");
-> +
-> +	sha_num_bytes = FIELD_GET(REH_SHA_NUM_BYTES, magic) / 8;
-> +	if (sha_num_bytes != REH_SHA256_SIZE &&
-> +	    sha_num_bytes != REH_SHA384_SIZE)   {
-> +		dev_err(sec->dev, "%s bad sha num bytes %d\n", __func__,
-> +			sha_num_bytes);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = regmap_bulk_read(sec->m10bmc->regmap, reh_addr,
-> +			       hash, sha_num_bytes / stride);
+>> Is there something at the root bridge level which allows to tell the
+>> underlying busses to shut up, reset or go into a defined state? That
+>> might avoid chasing lists which might be already unreliable.
+>
+> Maybe we need some kind of crash_device_shutdown() that does the
+> minimal thing to protect the kdump kernel from devices.
 
-Assumes !(sha_num_bytes % stride)
+The kdump kernel does not use any memory the original kernel uses.
+Which should be a minimal and fairly robust level of protection
+until the device drivers can be loaded and get ahold of things.
 
-Maybe add an assert.
+> The programming model for conventional PCI host bridges and PCIe Root
+> Complexes is device-specific since they're outside the PCI domain.
+> There probably *are* ways to do those things, but you would need a
+> native host bridge driver or something like an ACPI method.  I'm not
+> aware of an ACPI way to do this, but I added Rafael in case he is.
+>
+> A crash_device_shutdown() could do something at the host bridge level
+> if that's possible, or reset/disable bus mastering/disable MSI/etc on
+> individual PCI devices if necessary.
 
-Tom
+Unless I am confused DMA'ing to memory that is not already in use
+is completely broken wether or not you are using the kdump kernel.
 
-> +	if (ret) {
-> +		dev_err(dev, "failed to read root entry hash: %x cnt %x: %d\n",
-> +			reh_addr, sha_num_bytes / stride, ret);
-> +		return ret;
-> +	}
-> +
-> +	cnt = sprintf(buf, "0x");
-> +	for (i = 0; i < sha_num_bytes; i++)
-> +		cnt += sprintf(buf + cnt, "%02x", hash[i]);
-> +	cnt += sprintf(buf + cnt, "\n");
-> +
-> +	return cnt;
-> +}
-> +
-> +#define DEVICE_ATTR_SEC_REH_RO(_name, _magic, _prog_addr, _reh_addr) \
-> +static ssize_t _name##_root_entry_hash_show(struct device *dev, \
-> +					    struct device_attribute *attr, \
-> +					    char *buf) \
-> +{ return show_root_entry_hash(dev, _magic, _prog_addr, _reh_addr, buf); } \
-> +static DEVICE_ATTR_RO(_name##_root_entry_hash)
-> +
-> +DEVICE_ATTR_SEC_REH_RO(bmc, BMC_PROG_MAGIC, BMC_PROG_ADDR, BMC_REH_ADDR);
-> +DEVICE_ATTR_SEC_REH_RO(sr, SR_PROG_MAGIC, SR_PROG_ADDR, SR_REH_ADDR);
-> +DEVICE_ATTR_SEC_REH_RO(pr, PR_PROG_MAGIC, PR_PROG_ADDR, PR_REH_ADDR);
-> +
-> +static struct attribute *m10bmc_security_attrs[] = {
-> +	&dev_attr_bmc_root_entry_hash.attr,
-> +	&dev_attr_sr_root_entry_hash.attr,
-> +	&dev_attr_pr_root_entry_hash.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group m10bmc_security_attr_group = {
-> +	.name = "security",
-> +	.attrs = m10bmc_security_attrs,
-> +};
-> +
-> +static const struct attribute_group *m10bmc_sec_attr_groups[] = {
-> +	&m10bmc_security_attr_group,
-> +	NULL,
-> +};
-> +
-> +static const struct fpga_sec_mgr_ops m10bmc_sops = { };
-> +
-> +static int m10bmc_secure_probe(struct platform_device *pdev)
-> +{
-> +	struct fpga_sec_mgr *smgr;
-> +	struct m10bmc_sec *sec;
-> +
-> +	sec = devm_kzalloc(&pdev->dev, sizeof(*sec), GFP_KERNEL);
-> +	if (!sec)
-> +		return -ENOMEM;
-> +
-> +	sec->dev = &pdev->dev;
-> +	sec->m10bmc = dev_get_drvdata(pdev->dev.parent);
-> +	dev_set_drvdata(&pdev->dev, sec);
-> +
-> +	smgr = devm_fpga_sec_mgr_create(sec->dev, "Max10 BMC Secure Update",
-> +					&m10bmc_sops, sec);
-> +	if (!smgr) {
-> +		dev_err(sec->dev, "Security manager failed to start\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	return devm_fpga_sec_mgr_register(sec->dev, smgr);
-> +}
-> +
-> +static struct platform_driver intel_m10bmc_secure_driver = {
-> +	.probe = m10bmc_secure_probe,
-> +	.driver = {
-> +		.name = "n3000bmc-secure",
-> +		.dev_groups = m10bmc_sec_attr_groups,
-> +	},
-> +};
-> +module_platform_driver(intel_m10bmc_secure_driver);
-> +
-> +MODULE_ALIAS("platform:n3000bmc-secure");
-> +MODULE_AUTHOR("Intel Corporation");
-> +MODULE_DESCRIPTION("Intel MAX10 BMC Secure Update");
-> +MODULE_LICENSE("GPL v2");
-
+Eric
