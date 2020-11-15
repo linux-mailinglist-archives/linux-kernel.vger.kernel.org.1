@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFCC2B38F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1263C2B38F7
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgKOUFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 15:05:14 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:56086 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727706AbgKOUFO (ORCPT
+        id S1727835AbgKOUI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 15:08:27 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:36858 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727527AbgKOUI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 15:05:14 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AFK43b1047047;
-        Sun, 15 Nov 2020 20:04:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=bmoZX8u1q0Upqf5t/0ploFSERTNgOdg02qf028mJeBE=;
- b=GYAiWZNttqNOK74hRQEBF7OE4rozOOgldgLTTDIo28kZ/Kg/QGT9lbiHi2Hp/9kg3afv
- JUHHg4SlP6hJp1T9Lt4vZclaGcbgveOqVG82SD21zQc0PPQteswcIX/kddfm7YTyUE9w
- vJZ1KZ2GgQWAtC7kcJ+luVT4B6fVsKTcDunpwGXpz6fXoP7SiyQfAEtr/mxtJqDIhBo4
- 1Dq/ixPrErNz6KYjcIfZW94tYw6GkyCutXEW8bn47s0P15cmA33VUl/e6Wc7ezJc9AXc
- kjcKFPL0AmajHcO6oBz2E075MU5dYrXoFeJrYOOeBPYQHJ7Tc1TOjcjTNAo2R0auzVCx 3g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 34t76kjqr8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 15 Nov 2020 20:04:54 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AFJxTsN048469;
-        Sun, 15 Nov 2020 20:04:54 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 34trtjwg5f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 15 Nov 2020 20:04:54 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AFK4nlU032208;
-        Sun, 15 Nov 2020 20:04:49 GMT
-Received: from [10.159.225.239] (/10.159.225.239)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 15 Nov 2020 12:04:49 -0800
-Subject: Re: [PATCH v2 1/1] page_frag: Recover from memory pressure
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, netdev@vger.kernel.org,
-        aruna.ramakrishna@oracle.com, bert.barbe@oracle.com,
-        rama.nichanamatlu@oracle.com, venkat.x.venkatsubra@oracle.com,
-        manjunath.b.patil@oracle.com, joe.jin@oracle.com,
-        srinivas.eeda@oracle.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        davem@davemloft.net, edumazet@google.com, vbabka@suse.cz
-References: <20201115065106.10244-1-dongli.zhang@oracle.com>
- <20201115121828.GQ17076@casper.infradead.org>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-Message-ID: <aca0ba1d-6090-045a-5051-df296bbfdacf@oracle.com>
-Date:   Sun, 15 Nov 2020 12:04:47 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 15 Nov 2020 15:08:27 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605470905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rslwn3VsOrVpjh0Wl9Gc/WPY+sOX5olDIoKD/htyL4U=;
+        b=lOXVAyExlfj2ZScRm1CXWrYFvxUd62pEQIUmwANEmZcflBzfhVwa+BZ/FZbMW1hUlSrvTj
+        Uyy2ApqaC5FZWk7jQC0J7xVNu6yy2uJ2AKcCwXsxhOfvXREKe8uxzwnK2S0lxL9z0G3c23
+        0NQhjtyOp6i7VAy+xJwpYV5fzm1WSv/FTqQ43zqUQ6UJTtcvv9YLgpYOn2wAlUN/gGaZ9n
+        RgT6+nP87IMTq0wqvzhI3K0QnmOy8KtReDYqmSW6wmxwvnxavAwmXHEGKvYgM8sVYsfLrl
+        3CkLBNipEwCf3Sq81f+CrI7pkiXtbuOFoUVI65Dy/6Bzf+r9v1KQ6IeKWzOElg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605470905;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rslwn3VsOrVpjh0Wl9Gc/WPY+sOX5olDIoKD/htyL4U=;
+        b=LBc/cNLoamn6DuIHRbzKwGYogU1lre6JgC6iHZ2xq+tNPJFu8Q4f9CHDChD1qmREtdshiL
+        tauz7d6OjrTbP+AA==
+To:     Alex Shi <alex.shi@linux.alibaba.com>, john.stultz@linaro.org
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] timekeeping: add missed kernel-doc marks for 'tkf'
+In-Reply-To: <1605252275-63652-2-git-send-email-alex.shi@linux.alibaba.com>
+References: <1605252275-63652-1-git-send-email-alex.shi@linux.alibaba.com> <1605252275-63652-2-git-send-email-alex.shi@linux.alibaba.com>
+Date:   Sun, 15 Nov 2020 21:08:25 +0100
+Message-ID: <87eeku8jt2.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201115121828.GQ17076@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 malwarescore=0 spamscore=0 mlxlogscore=911 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011150129
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=925
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011150129
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 13 2020 at 15:24, Alex Shi wrote:
 
+> Fix the kernel-doc markup and remove the following warning:
+> kernel/time/timekeeping.c:415: warning: Function parameter or member
+> 'tkf' not described in 'update_fast_timekeeper'
+> kernel/time/timekeeping.c:464: warning: Function parameter or member
+> 'tkf' not described in '__ktime_get_fast_ns'
+>
+> diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+> index daa0ff017819..d0f7cd1b8823 100644
+> --- a/kernel/time/timekeeping.c
+> +++ b/kernel/time/timekeeping.c
+> @@ -399,6 +399,7 @@ static inline u64 timekeeping_cycles_to_ns(const struct tk_read_base *tkr, u64 c
+>  /**
+>   * update_fast_timekeeper - Update the fast and NMI safe monotonic timekeeper.
+>   * @tkr: Timekeeping readout base from which we take the update
+> + * @tkf: NMI safe timekeeper
+>   *
+>   * We want to use this from any context including NMI and tracing /
+>   * instrumenting the timekeeping code itself.
+> @@ -430,6 +431,7 @@ static void update_fast_timekeeper(const struct tk_read_base *tkr,
+>  
+>  /**
+>   * ktime_get_mono_fast_ns - Fast NMI safe access to clock monotonic
+> + * @tkf: NMI safe timekeeper
+>   *
+>   * This timestamp is not guaranteed to be monotonic across an update.
+>   * The timestamp is calculated by:
 
-On 11/15/20 4:18 AM, Matthew Wilcox wrote:
-> On Sat, Nov 14, 2020 at 10:51:06PM -0800, Dongli Zhang wrote:
->> +		if (nc->pfmemalloc) {
-> 
-> You missed the unlikely() change that Eric recommended.
-> 
+That's wrong. The documentation is for ktime_get_mono_fast_ns() which
+does not have an argument, but due to an oversight the documentation is
+now above __ktime_get_mono_fast_ns() which takes an argument.
 
-Thank you very much. I missed that email.
-
-I will send v3.
-
-Dongli Zhang
+I'm fixing it up.
