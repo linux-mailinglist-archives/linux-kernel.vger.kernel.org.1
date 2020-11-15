@@ -2,129 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87EC2B382A
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AA42B3833
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbgKOS4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:56:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
+        id S1727398AbgKOS6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 13:58:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726923AbgKOS4M (ORCPT
+        with ESMTP id S1727061AbgKOS6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:56:12 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695EBC0613D1;
-        Sun, 15 Nov 2020 10:56:12 -0800 (PST)
-Date:   Sun, 15 Nov 2020 18:56:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605466570;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uEDpHhF2OCoF+id9YLRt+CynHxCQsmIsMt62XXgA0kg=;
-        b=MeKN1K+cxBSCzQq+PJ/6PMv3hYLxbZqozJ7wBS0G26W1U6EbdfeaaTPXjIeB7k7y9m0BIT
-        7V33Fm1uavMI5aEdVO8G87Yr0e+kVOWi3QkcwCJgBZ31FH43T0CblwCg9icDVdoiJ2gOWj
-        ehUukimQyxKl+qtRYW9yNm+ZObRcrRjJyh2gLmpkat4lbJdZhIys+t1zgGbU7ZpJJIYDN6
-        LlGMYQqkB3yyP96EHzYUXgQGnMNXaVsEH3c/mIYDsCN0IR++rgLUCtGSpMZwjMahHTwaoS
-        ejhZOR/PGNgV+nXe+IxK8Z8MMzyieyzJC3wuRqRn7hbImaf4zLjXO/ne7FF6vA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605466570;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uEDpHhF2OCoF+id9YLRt+CynHxCQsmIsMt62XXgA0kg=;
-        b=YwbUxQu1X1O5+AKqp8dmw0HaPHJiu4X+Scw3qkclUgrgHziNbFss6sumvgK2SjbB6epFxY
-        Exs++CInV2zXZqAg==
-From:   "tip-bot2 for Ira Weiny" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/entry] entry: Fix spelling/typo errors in irq entry code
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201104230157.3378023-1-ira.weiny@intel.com>
-References: <20201104230157.3378023-1-ira.weiny@intel.com>
+        Sun, 15 Nov 2020 13:58:42 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B465C0613D1;
+        Sun, 15 Nov 2020 10:58:42 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id z3so11296739pfb.10;
+        Sun, 15 Nov 2020 10:58:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fsui5Y17lzl7T7beDxKCrgnubgmvY0fF3OhZafDSjCY=;
+        b=o/hLQC6i8ug7QkNmXb3Nkd6gGPV58MB272KNBO+EgMrAObw98YAxd3lFh6uJlmUNTB
+         edaJzwycdCesTcZESBvDCdHXwsdXxgE3o+v8Bp7i9ehTFfG0XcZbFU4YoYSfxIH7q6KV
+         Ptxvbtbv4KXxUnliZnlbLrezwn3LVXIR7Hbpsv96wHq7yxRbWgYKYcGcI/+efC5KJQEe
+         kXcLpFQ2Ep6TGsrXJLkG1bBpzRInqYv5+eDjDbb4YsBjnlfiPxVTsaZj5a2XADgxCB1W
+         VoM5jH+zd2nTnS5BU3GBoEqNjQw2GevPKVaAHsxfIxofjqeBVEWx5oBbYhmvagVu9hzI
+         6zEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fsui5Y17lzl7T7beDxKCrgnubgmvY0fF3OhZafDSjCY=;
+        b=OYF1au/iobQd8POGy128JYIrZG00/FVIrn6wL5Tp6PeUPhVFXD95hJDqTn8e8hNNRr
+         0rkC+LWPU2vgoDTdd7t8+V8/MXOrm3KjH9XAJNN0puhIXbg7jYacGkcVlHAVitjFp2K9
+         4+6m+vQ6b+76OiK303SJOkmACa2RgjKI3ThszhtiPZUcG4YPnb9qdlcNBpRtS5o1C4Pg
+         jwkcBNnVz9X4QCStPHEzaOw1prMZ8ecYQBFaVLSKtVNBzDVaBlp32wutmvTs7X4PFy2q
+         urjpxn0akUen7A7yMM4iqAo6bKC5QMy/wHa/DBv3WT9ViLV7ofyq2i0gS6G1AnYLm0jA
+         1Lfw==
+X-Gm-Message-State: AOAM533LYEUwqSh4iwEpvlb8TuCU2rYWMzzr5d6jTa8eGJyEs8+LJTKF
+        CQcEdN+CGxenlsWPSyiq6o8=
+X-Google-Smtp-Source: ABdhPJxvXBIYimXCUURD+qcGDzPhl7TuBTnWmB6yRWztRS/kaJINJFH7TfN5UAptOYt51NAyCGVrGA==
+X-Received: by 2002:a62:8244:0:b029:196:c24:cfbc with SMTP id w65-20020a6282440000b02901960c24cfbcmr9276541pfd.18.1605466721970;
+        Sun, 15 Nov 2020 10:58:41 -0800 (PST)
+Received: from arpitha-Inspiron-7570.lan ([106.51.140.48])
+        by smtp.gmail.com with ESMTPSA id z7sm16375055pfq.214.2020.11.15.10.58.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 10:58:41 -0800 (PST)
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        elver@google.com, yzaikin@google.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, Tim.Bird@sony.com, davidgow@google.com
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH v8 1/2] kunit: Support for Parameterized Testing
+Date:   Mon, 16 Nov 2020 00:27:59 +0530
+Message-Id: <20201115185759.169279-1-98.arpi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <160546656898.11244.12849621903409820578.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/entry branch of tip:
+Implementation of support for parameterized testing in KUnit. This
+approach requires the creation of a test case using the
+KUNIT_CASE_PARAM() macro that accepts a generator function as input.
 
-Commit-ID:     8ca2378089994a0508248230e1a1e75f73102d32
-Gitweb:        https://git.kernel.org/tip/8ca2378089994a0508248230e1a1e75f73102d32
-Author:        Ira Weiny <ira.weiny@intel.com>
-AuthorDate:    Wed, 04 Nov 2020 15:01:57 -08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 15 Nov 2020 19:51:51 +01:00
+This generator function should return the next parameter given the
+previous parameter in parameterized tests. It also provides a macro to
+generate common-case generators based on arrays. Generators may also
+optionally provide a human-readable description of parameters, which is
+displayed where available.
 
-entry: Fix spelling/typo errors in irq entry code
+Note, currently the result of each parameter run is displayed in
+diagnostic lines, and only the overall test case output summarizes
+TAP-compliant success or failure of all parameter runs. In future, when
+supported by kunit-tool, these can be turned into subsubtest outputs.
 
-s/reguired/required/
-s/Interupts/Interrupts/
-s/quiescient/quiescent/
-s/assemenbly/assembly/
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201104230157.3378023-1-ira.weiny@intel.com
-
+Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+Co-developed-by: Marco Elver <elver@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
 ---
- include/linux/entry-common.h | 4 ++--
- kernel/entry/common.c        | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Changes v7->v8:
+- Increase KUNIT_PARAM_DESC_SIZE to 128
+- Format pointer style appropriately 
 
-diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index 1a128ba..6693812 100644
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -415,7 +415,7 @@ void irqentry_exit_cond_resched(void);
-  * @state:	Return value from matching call to irqentry_enter()
+Changes v6->v7:
+- Clarify commit message.
+- Introduce ability to optionally generate descriptions for parameters;
+  if no description is provided, we'll still print 'param-N'.
+- Change diagnostic line format to:
+        # <test-case-name>: <ok|not ok> N - [<param description>]
+
+Changes v5->v6:
+- Fix alignment to maintain consistency
+
+Changes v4->v5:
+- Update kernel-doc comments.
+- Use const void* for generator return and prev value types.
+- Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+- Rework parameterized test case execution strategy: each parameter is executed
+  as if it was its own test case, with its own test initialization and cleanup
+  (init and exit are called, etc.). However, we cannot add new test cases per TAP
+  protocol once we have already started execution. Instead, log the result of
+  each parameter run as a diagnostic comment.
+
+Changes v3->v4:
+- Rename kunit variables
+- Rename generator function helper macro
+- Add documentation for generator approach
+- Display test case name in case of failure along with param index
+
+Changes v2->v3:
+- Modifictaion of generator macro and method
+
+Changes v1->v2:
+- Use of a generator method to access test case parameters
+Changes v6->v7:
+- Clarify commit message.
+- Introduce ability to optionally generate descriptions for parameters;
+  if no description is provided, we'll still print 'param-N'.
+- Change diagnostic line format to:
+        # <test-case-name>: <ok|not ok> N - [<param description>]
+- Before execution of parameterized test case, count number of
+  parameters and display number of parameters. Currently also as a
+  diagnostic line, but this may be used in future to generate a subsubtest
+  plan. A requirement of this change is that generators must generate a
+  deterministic number of parameters.
+
+Changes v5->v6:
+- Fix alignment to maintain consistency
+
+Changes v4->v5:
+- Update kernel-doc comments.
+- Use const void* for generator return and prev value types.
+- Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+- Rework parameterized test case execution strategy: each parameter is executed
+  as if it was its own test case, with its own test initialization and cleanup
+  (init and exit are called, etc.). However, we cannot add new test cases per TAP
+  protocol once we have already started execution. Instead, log the result of
+  each parameter run as a diagnostic comment.
+
+Changes v3->v4:
+- Rename kunit variables
+- Rename generator function helper macro
+- Add documentation for generator approach
+- Display test case name in case of failure along with param index
+
+Changes v2->v3:
+- Modifictaion of generator macro and method
+
+Changes v1->v2:
+- Use of a generator method to access test case parameters
+
+ include/kunit/test.h | 51 ++++++++++++++++++++++++++++++++++++++
+ lib/kunit/test.c     | 59 ++++++++++++++++++++++++++++++++++----------
+ 2 files changed, 97 insertions(+), 13 deletions(-)
+
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index db1b0ae666c4..27b42a008c7a 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -94,6 +94,9 @@ struct kunit;
+ /* Size of log associated with test. */
+ #define KUNIT_LOG_SIZE	512
+ 
++/* Maximum size of parameter description string. */
++#define KUNIT_PARAM_DESC_SIZE 128
++
+ /*
+  * TAP specifies subtest stream indentation of 4 spaces, 8 spaces for a
+  * sub-subtest.  See the "Subtests" section in
+@@ -107,6 +110,7 @@ struct kunit;
   *
-  * Depending on the return target (kernel/user) this runs the necessary
-- * preemption and work checks if possible and reguired and returns to
-+ * preemption and work checks if possible and required and returns to
-  * the caller with interrupts disabled and no further work pending.
+  * @run_case: the function representing the actual test case.
+  * @name:     the name of the test case.
++ * @generate_params: the generator function for parameterized tests.
   *
-  * This is the last action before returning to the low level ASM code which
-@@ -438,7 +438,7 @@ irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs);
-  * @regs:	Pointer to pt_regs (NMI entry regs)
-  * @irq_state:	Return value from matching call to irqentry_nmi_enter()
-  *
-- * Last action before returning to the low level assmenbly code.
-+ * Last action before returning to the low level assmebly code.
-  *
-  * Counterpart to irqentry_nmi_enter().
+  * A test case is a function with the signature,
+  * ``void (*)(struct kunit *)``
+@@ -141,6 +145,7 @@ struct kunit;
+ struct kunit_case {
+ 	void (*run_case)(struct kunit *test);
+ 	const char *name;
++	const void* (*generate_params)(const void *prev, char *desc);
+ 
+ 	/* private: internal use only. */
+ 	bool success;
+@@ -163,6 +168,27 @@ static inline char *kunit_status_to_string(bool status)
   */
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index bc75c11..fa17baa 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -304,7 +304,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
- 	 * If this entry hit the idle task invoke rcu_irq_enter() whether
- 	 * RCU is watching or not.
- 	 *
--	 * Interupts can nest when the first interrupt invokes softirq
-+	 * Interrupts can nest when the first interrupt invokes softirq
- 	 * processing on return which enables interrupts.
- 	 *
- 	 * Scheduler ticks in the idle task can mark quiescent state and
-@@ -315,7 +315,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
- 	 * interrupt to invoke rcu_irq_enter(). If that nested interrupt is
- 	 * the tick then rcu_flavor_sched_clock_irq() would wrongfully
- 	 * assume that it is the first interupt and eventually claim
--	 * quiescient state and end grace periods prematurely.
-+	 * quiescent state and end grace periods prematurely.
- 	 *
- 	 * Unconditionally invoke rcu_irq_enter() so RCU state stays
- 	 * consistent.
+ #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+ 
++/**
++ * KUNIT_CASE_PARAM - A helper for creation a parameterized &struct kunit_case
++ *
++ * @test_name: a reference to a test case function.
++ * @gen_params: a reference to a parameter generator function.
++ *
++ * The generator function::
++ *
++ *	const void* gen_params(const void *prev, char *desc)
++ *
++ * is used to lazily generate a series of arbitrarily typed values that fit into
++ * a void*. The argument @prev is the previously returned value, which should be
++ * used to derive the next value; @prev is set to NULL on the initial generator
++ * call. When no more values are available, the generator must return NULL.
++ * Optionally write a string into @desc (size of KUNIT_PARAM_DESC_SIZE)
++ * describing the parameter.
++ */
++#define KUNIT_CASE_PARAM(test_name, gen_params)			\
++		{ .run_case = test_name, .name = #test_name,	\
++		  .generate_params = gen_params }
++
+ /**
+  * struct kunit_suite - describes a related collection of &struct kunit_case
+  *
+@@ -208,6 +234,10 @@ struct kunit {
+ 	const char *name; /* Read only after initialization! */
+ 	char *log; /* Points at case log after initialization */
+ 	struct kunit_try_catch try_catch;
++	/* param_value is the current parameter value for a test case. */
++	const void *param_value;
++	/* param_index stores the index of the parameter in parameterized tests. */
++	int param_index;
+ 	/*
+ 	 * success starts as true, and may only be set to false during a
+ 	 * test case; thus, it is safe to update this across multiple
+@@ -1742,4 +1772,25 @@ do {									       \
+ 						fmt,			       \
+ 						##__VA_ARGS__)
+ 
++/**
++ * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
++ * @name:  prefix for the test parameter generator function.
++ * @array: array of test parameters.
++ * @get_desc: function to convert param to description; NULL to use default
++ *
++ * Define function @name_gen_params which uses @array to generate parameters.
++ */
++#define KUNIT_ARRAY_PARAM(name, array, get_desc)						\
++	static const void *name##_gen_params(const void *prev, char *desc)			\
++	{											\
++		typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 : (array);	\
++		if (__next - (array) < ARRAY_SIZE((array))) {					\
++			void (*__get_desc)(typeof(__next), char *) = get_desc;			\
++			if (__get_desc)								\
++				__get_desc(__next, desc);					\
++			return __next;								\
++		}										\
++		return NULL;									\
++	}
++
+ #endif /* _KUNIT_TEST_H */
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 750704abe89a..ec9494e914ef 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -325,39 +325,72 @@ static void kunit_catch_run_case(void *data)
+  * occur in a test case and reports them as failures.
+  */
+ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+-					struct kunit_case *test_case)
++					struct kunit_case *test_case,
++					struct kunit *test)
+ {
+ 	struct kunit_try_catch_context context;
+ 	struct kunit_try_catch *try_catch;
+-	struct kunit test;
+ 
+-	kunit_init_test(&test, test_case->name, test_case->log);
+-	try_catch = &test.try_catch;
++	kunit_init_test(test, test_case->name, test_case->log);
++	try_catch = &test->try_catch;
+ 
+ 	kunit_try_catch_init(try_catch,
+-			     &test,
++			     test,
+ 			     kunit_try_run_case,
+ 			     kunit_catch_run_case);
+-	context.test = &test;
++	context.test = test;
+ 	context.suite = suite;
+ 	context.test_case = test_case;
+ 	kunit_try_catch_run(try_catch, &context);
+ 
+-	test_case->success = test.success;
+-
+-	kunit_print_ok_not_ok(&test, true, test_case->success,
+-			      kunit_test_case_num(suite, test_case),
+-			      test_case->name);
++	test_case->success = test->success;
+ }
+ 
+ int kunit_run_tests(struct kunit_suite *suite)
+ {
++	char param_desc[KUNIT_PARAM_DESC_SIZE];
+ 	struct kunit_case *test_case;
+ 
+ 	kunit_print_subtest_start(suite);
+ 
+-	kunit_suite_for_each_test_case(suite, test_case)
+-		kunit_run_case_catch_errors(suite, test_case);
++	kunit_suite_for_each_test_case(suite, test_case) {
++		struct kunit test = { .param_value = NULL, .param_index = 0 };
++		bool test_success = true;
++
++		if (test_case->generate_params) {
++			/* Get initial param. */
++			param_desc[0] = '\0';
++			test.param_value = test_case->generate_params(NULL, param_desc);
++		}
++
++		do {
++			kunit_run_case_catch_errors(suite, test_case, &test);
++			test_success &= test_case->success;
++
++			if (test_case->generate_params) {
++				if (param_desc[0] == '\0') {
++					snprintf(param_desc, sizeof(param_desc),
++						 "param-%d", test.param_index);
++				}
++
++				kunit_log(KERN_INFO, &test,
++					  KUNIT_SUBTEST_INDENT
++					  "# %s: %s %d - %s",
++					  test_case->name,
++					  kunit_status_to_string(test.success),
++					  test.param_index + 1, param_desc);
++
++				/* Get next param. */
++				param_desc[0] = '\0';
++				test.param_value = test_case->generate_params(test.param_value, param_desc);
++				test.param_index++;
++			}
++		} while (test.param_value);
++
++		kunit_print_ok_not_ok(&test, true, test_success,
++				      kunit_test_case_num(suite, test_case),
++				      test_case->name);
++	}
+ 
+ 	kunit_print_subtest_end(suite);
+ 
+-- 
+2.25.1
+
