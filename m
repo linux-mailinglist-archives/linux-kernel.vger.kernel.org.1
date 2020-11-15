@@ -2,96 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386292B3319
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 09:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF152B331F
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 10:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgKOI5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 03:57:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726829AbgKOI5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 03:57:08 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 224EC22450;
-        Sun, 15 Nov 2020 08:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605430626;
-        bh=SUtFVZkBjnPG4BEsw28+x8DzSO0BcyIPD75+9xZ8F1g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nA4M8UsTrs+9GlWcdh9/jFcMAMptctAK3t+3wr64R0pGeK4zorYnmfDnfR3Ad3XuM
-         4V9iKOl0BQeRQea+6ux/1qg3VYiBu+QNEGvj/FtyAXZ1cUxYcq8fcJg8nlVaicah0u
-         qQq3y46yY70qBqcgnfIM+bdn1hjhb9BA2nf7HDLQ=
-Date:   Sun, 15 Nov 2020 10:56:53 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v8 8/9] arch, mm: wire up memfd_secret system call were
- relevant
-Message-ID: <20201115085653.GW4758@kernel.org>
-References: <20201110151444.20662-1-rppt@kernel.org>
- <20201110151444.20662-9-rppt@kernel.org>
- <20201113122507.GC3212@gaia>
+        id S1726807AbgKOI7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 03:59:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726815AbgKOI6f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 03:58:35 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94BCC0617A6
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 00:58:33 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id h16so8844333otq.9
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 00:58:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eOfon08D4Z8QqvBeUPGRpAKg2puT4+gjjSEjZd3iW9U=;
+        b=wKSPTVfFPmI7y0+3EK74LC5ZHIYhP+UsyUVeT4mOjbN3rjOPwenhkD76d8kMEmEwTU
+         fZ9IU5vPB0KFoFeB5wj8Kwb1ZgcDdj0IIMztyZkcDYdQJ6bGROofOV56xq3/Zf9U6kp9
+         WFrdoQ05yQLtZcgF7N0+cn02+xpeEtjRitJCPap8GmhYRoJIJ/QBfIGxMQLpEMwsTu7e
+         DGMUk1Qc1Q8WXsdtBli++0Z27BrxaduSAculqD4fx8QQRvN1Uw2zvzK6A/9qkiyMXRxo
+         0axZhijITMHaydwtu9To8uf/nfQhFCmp/+DyEVZCkAGfC9xva7++5Z7zOY8NecyA+rxt
+         M+/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eOfon08D4Z8QqvBeUPGRpAKg2puT4+gjjSEjZd3iW9U=;
+        b=ehjoVoxrhdMe9FpBiw1S7e/s2dCo9xjM3d6JSJWVktqFZD0WIkZL0ZLOIHH+/E1R7G
+         PBHqN1R4ueHwQs38q7gSwwnq1U7pYGILs0gNmknIZ4/sTZzSK1KNFMpIeVmG790GDUEQ
+         5ADNNBqChECN2rZDEJDArkO/a0cKJFYTYEKnSYpFXv5rfQDTGX/XEiFd1m0p4wPc8XvH
+         jjn5inTriPfmMqgr+52rfKPdAcEk87JfixlYtLJxH+/Ne1eYOp4q4xd1RcR/ZsAtjOd3
+         YoMTPA8XQ11ICbY0p/5cOenOwebMpTufIUTgVP8VYeacoN8rGDN9Diuh02lgP9RsPhJT
+         aOcA==
+X-Gm-Message-State: AOAM531mrvB2lk5VCYisCVSTDCNBjYVH3AvH2ZHCFvjIY1ws9EX3cLGg
+        h2cBeIbVL+lvmbKNnmOXKMPrMJF2LUUCGDI4r2lmbg==
+X-Google-Smtp-Source: ABdhPJzeDiymHRksn52ZIlUX8jqRL3oxfopfmqdADwje3rGNKDhpfM9140ry6nmookbuB0Eot4/zWYcFlJqq0rK/ijs=
+X-Received: by 2002:a9d:65d5:: with SMTP id z21mr6656603oth.251.1605430712516;
+ Sun, 15 Nov 2020 00:58:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113122507.GC3212@gaia>
+References: <20201114123648.97857-1-98.arpi@gmail.com>
+In-Reply-To: <20201114123648.97857-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Sun, 15 Nov 2020 09:58:21 +0100
+Message-ID: <CANpmjNNsVxGiGWeij-EsDUpc_fBBYg7iBynis1tQKwh8ks5jQw@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Tim Bird <Tim.Bird@sony.com>, David Gow <davidgow@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:25:08PM +0000, Catalin Marinas wrote:
-> Hi Mike,
-> 
-> On Tue, Nov 10, 2020 at 05:14:43PM +0200, Mike Rapoport wrote:
-> > diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-> > index 6c1dcca067e0..c71c3fe0b6cd 100644
-> > --- a/arch/arm64/include/asm/unistd32.h
-> > +++ b/arch/arm64/include/asm/unistd32.h
-> > @@ -891,6 +891,8 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
-> >  __SYSCALL(__NR_process_madvise, sys_process_madvise)
-> >  #define __NR_watch_mount 441
-> >  __SYSCALL(__NR_watch_mount, sys_watch_mount)
-> > +#define __NR_memfd_secret 442
-> > +__SYSCALL(__NR_memfd_secret, sys_memfd_secret)
-> 
-> arch/arm doesn't select ARCH_HAS_SET_DIRECT_MAP and doesn't support
-> memfd_secret(), so I wouldn't add it to the compat layer.
+On Sat, 14 Nov 2020 at 13:38, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> Implementation of support for parameterized testing in KUnit. This
+> approach requires the creation of a test case using the
+> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
+>
+> This generator function should return the next parameter given the
+> previous parameter in parameterized tests. It also provides a macro to
+> generate common-case generators based on arrays. Generators may also
+> optionally provide a human-readable description of parameters, which is
+> displayed where available.
+>
+> Note, currently the result of each parameter run is displayed in
+> diagnostic lines, and only the overall test case output summarizes
+> TAP-compliant success or failure of all parameter runs. In future, when
+> supported by kunit-tool, these can be turned into subsubtest outputs.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> Changes v6->v7:
+> - Clarify commit message.
+> - Introduce ability to optionally generate descriptions for parameters;
+>   if no description is provided, we'll still print 'param-N'.
+> - Change diagnostic line format to:
+>         # <test-case-name>: <ok|not ok> N - [<param description>]
+>
+> Changes v5->v6:
+> - Fix alignment to maintain consistency
+>
+> Changes v4->v5:
+> - Update kernel-doc comments.
+> - Use const void* for generator return and prev value types.
+> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+> - Rework parameterized test case execution strategy: each parameter is executed
+>   as if it was its own test case, with its own test initialization and cleanup
+>   (init and exit are called, etc.). However, we cannot add new test cases per TAP
+>   protocol once we have already started execution. Instead, log the result of
+>   each parameter run as a diagnostic comment.
+>
+> Changes v3->v4:
+> - Rename kunit variables
+> - Rename generator function helper macro
+> - Add documentation for generator approach
+> - Display test case name in case of failure along with param index
+>
+> Changes v2->v3:
+> - Modifictaion of generator macro and method
+>
+> Changes v1->v2:
+> - Use of a generator method to access test case parameters
+> Changes v6->v7:
+> - Clarify commit message.
+> - Introduce ability to optionally generate descriptions for parameters;
+>   if no description is provided, we'll still print 'param-N'.
+> - Change diagnostic line format to:
+>         # <test-case-name>: <ok|not ok> N - [<param description>]
+> - Before execution of parameterized test case, count number of
+>   parameters and display number of parameters. Currently also as a
+>   diagnostic line, but this may be used in future to generate a subsubtest
+>   plan. A requirement of this change is that generators must generate a
+>   deterministic number of parameters.
+>
+> Changes v5->v6:
+> - Fix alignment to maintain consistency
+>
+> Changes v4->v5:
+> - Update kernel-doc comments.
+> - Use const void* for generator return and prev value types.
+> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+> - Rework parameterized test case execution strategy: each parameter is executed
+>   as if it was its own test case, with its own test initialization and cleanup
+>   (init and exit are called, etc.). However, we cannot add new test cases per TAP
+>   protocol once we have already started execution. Instead, log the result of
+>   each parameter run as a diagnostic comment.
+>
+> Changes v3->v4:
+> - Rename kunit variables
+> - Rename generator function helper macro
+> - Add documentation for generator approach
+> - Display test case name in case of failure along with param index
+>
+> Changes v2->v3:
+> - Modifictaion of generator macro and method
+>
+> Changes v1->v2:
+> - Use of a generator method to access test case parameters
+>
+>  include/kunit/test.h | 51 ++++++++++++++++++++++++++++++++++++++
+>  lib/kunit/test.c     | 59 ++++++++++++++++++++++++++++++++++----------
+>  2 files changed, 97 insertions(+), 13 deletions(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index db1b0ae666c4..cf5f33b1c890 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -94,6 +94,9 @@ struct kunit;
+>  /* Size of log associated with test. */
+>  #define KUNIT_LOG_SIZE 512
+>
+> +/* Maximum size of parameter description string. */
+> +#define KUNIT_PARAM_DESC_SIZE 64
 
-Ok, I'll drop it.
+I think we need to make this larger, perhaps 128. I just noticed a few
+of the inode-test strings are >64 chars (and it should probably also
+use strncpy() to copy to description, which is my bad).
 
-> -- 
-> Catalin
+>  /*
+>   * TAP specifies subtest stream indentation of 4 spaces, 8 spaces for a
+>   * sub-subtest.  See the "Subtests" section in
+> @@ -107,6 +110,7 @@ struct kunit;
+[...]
+> +/**
+> + * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
+> + * @name:  prefix for the test parameter generator function.
+> + * @array: array of test parameters.
+> + * @get_desc: function to convert param to description; NULL to use default
+> + *
+> + * Define function @name_gen_params which uses @array to generate parameters.
+> + */
+> +#define KUNIT_ARRAY_PARAM(name, array, get_desc)                                               \
+> +       static const void *name##_gen_params(const void *prev, char *desc)                      \
+> +       {                                                                                       \
+> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
 
--- 
-Sincerely yours,
-Mike.
+Why did you reintroduce a space between * and __next? AFAIK, this
+should follow the same style as the rest of the kernel, and it should
+just be 'thetype *ptr'.
+
+> +               if (__next - (array) < ARRAY_SIZE((array))) {                                   \
+> +                       void (*__get_desc)(typeof(__next), char *) = get_desc;                  \
+> +                       if (__get_desc)                                                         \
+> +                               __get_desc(__next, desc);                                       \
+> +                       return __next;                                                          \
+> +               }                                                                               \
+> +               return NULL;                                                                    \
+> +       }
+> +
+
+Thanks,
+-- Marco
