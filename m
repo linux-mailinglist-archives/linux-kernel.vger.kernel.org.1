@@ -2,98 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6995C2B38CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A152B38D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbgKOTnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 14:43:42 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36764 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727317AbgKOTnm (ORCPT
+        id S1727683AbgKOTpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 14:45:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727571AbgKOTpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 14:43:42 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605469420;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LqUSyAUeh+oln8IDe6CcbGx6+YPt/iQBXMlHnjAm338=;
-        b=IX/yW47ggsZAWS+SrGrHdus69fz9Dz5jUK2A2gXzLIksJaLRZl0/nQ+BoXgGlOl7uGk1R+
-        TDKGZJ7ZPDSWkxkZObEW3lg8cH5iYHv5xNUtU26tjah/CrYDn74tAxhHboensoD8y7MFAB
-        BX8Aswue7CTArpkszzaw97PXESeExOIe3P90mrS6YaOhVVRLHnhDjnEu9YaPMR58RYyYB7
-        o7xIYUZdC1rLUA1CRPqnnWDIZ+u7Q/emfRumAHHF8ctSnOrFf4Ln19K5z6SoKxFRZfMHHT
-        7OCK0XZsz7t4Aql37bqT/h+niLFFlh1yFTsP1jrUovSaA7urXn6GnO0at7iH/g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605469420;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LqUSyAUeh+oln8IDe6CcbGx6+YPt/iQBXMlHnjAm338=;
-        b=Sv6jyJFgIxN4azQ59ZsPoJp0ih9bBrK7t8PL+yOCuL2FCzizrdAJiQnR7wpFkY+D/n2QF1
-        qD7pZXFDSlVFDTDQ==
-To:     Yunfeng Ye <yeyunfeng@huawei.com>, fweisbec@gmail.com,
-        mingo@kernel.org, linux-kernel@vger.kernel.org,
-        Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-Subject: Re: [PATCH] tick/nohz: Reduce the critical region for jiffies_seq
-In-Reply-To: <ac822c72-673e-73e1-9622-c5f12591b373@huawei.com>
-References: <ac822c72-673e-73e1-9622-c5f12591b373@huawei.com>
-Date:   Sun, 15 Nov 2020 20:43:39 +0100
-Message-ID: <87h7pq8kyc.fsf@nanos.tec.linutronix.de>
+        Sun, 15 Nov 2020 14:45:09 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E9DC0613D1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 11:45:09 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id l36so13939320ota.4
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 11:45:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6zNjOkpCVoYdq5SpvfJCUuoFxEeE/HXUKkYfS/pJSPQ=;
+        b=YGqgAsRPCcFEYGbkYFYFYF7c6IZTiUtw/7UtjsOW/6+vpk09z2RB5iBAvx2tDpeqPa
+         x1axtuQ84E7Rco2Vg3VjKEvRBLHgd2h7kgIZwNvC2RC4tHeu3k5fizrI0IJLpuo+Bxui
+         fR5kt64PckZC5KfiM7rDnIZFmXzDayvC4kRPWWYRkxWBOvcr9hoMPyQqxVl9yTkb5itJ
+         V3cHUvlgbtSHHPGKhKjcXMGZ/jFAyJricyZAkGCS2EH7klMhEXQ4RImb+cxj0pejdAGc
+         tO5imJcxIlNH4iw47ArLS/Z2NReC5lg45qAR7Yu6+WV5YWxBGzy/LbgfoHLMY5FsZ/FX
+         EgtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6zNjOkpCVoYdq5SpvfJCUuoFxEeE/HXUKkYfS/pJSPQ=;
+        b=fW8rSG/lxWyhlsiG5oa3jvb3TIUhN5UD6k0FObzFQnQW1ESBf1WZ0bsRoWGDGz3Dd3
+         o9ZlxovOjjMY+SBAQtVprMoCN9/ZDEC1+9KtPkCT2LYCceP9X84Bv/4QObe0mJQyukpF
+         rboR8S68xv2NlIOwNONs36AlkHS32cNW6Anpb4T5Drru/9v/viTplCdO317752/TTAUs
+         YmUyH9frkUvHwHORV7nBklo63liFLUpEXOJX1l5YOmHS2EJWXlentVgBHROaAfvXaFTj
+         bseLyuZ4oIVu+nwKoVQ8rpTEyHQC+zgQAg0gIotgNZfk7hmBPkz36BL6g7SzewivslBd
+         byVw==
+X-Gm-Message-State: AOAM531zcdc+Ka7el3xs7SdIpNcCgj5QLF1JqeybQeXK0JHixUlkI8lw
+        6tubHQ478phaAUV3oS6rd9wA6yypvqr3Ir25LBtoYg==
+X-Google-Smtp-Source: ABdhPJz6faio6eUJA+ICMoEJv/bY0IEMAmFaezB9H58f8aYdotirk71yWz/OqihHIepXw9oidy4ryfi7C2l9l0H9eBA=
+X-Received: by 2002:a9d:69:: with SMTP id 96mr4599418ota.233.1605469508232;
+ Sun, 15 Nov 2020 11:45:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201115185759.169279-1-98.arpi@gmail.com> <20201115185905.169349-1-98.arpi@gmail.com>
+In-Reply-To: <20201115185905.169349-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Sun, 15 Nov 2020 20:44:56 +0100
+Message-ID: <CANpmjNPKfPeiXUUPwz1aU6iKwOXpSZNV5ZJq22NkZZWEhE9r1w@mail.gmail.com>
+Subject: Re: [PATCH v8 2/2] fs: ext4: Modify inode-test.c to use KUnit
+ parameterized testing feature
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Tim Bird <Tim.Bird@sony.com>, David Gow <davidgow@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11 2020 at 17:11, Yunfeng Ye wrote:
-> When nohz or nohz_full is configured, the concurrency calls of
-> tick_do_update_jiffies64 increases,
+On Sun, 15 Nov 2020 at 19:59, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>
+> Modify fs/ext4/inode-test.c to use the parameterized testing
+> feature of KUnit.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> Changes v7->v8:
+> - Replace strcpy() with strncpy() in timestamp_expectation_to_desc()
+> Changes v6->v7:
+> - Introduce timestamp_expectation_to_desc() to convert param to
+>   description.
+> Changes v5->v6:
+> - No change to this patch of the patch series
+> Changes v4->v5:
+> - No change to this patch of the patch series
+> Changes v3->v4:
+> - Modification based on latest implementation of KUnit parameterized testing
+> Changes v2->v3:
+> - Marked hardcoded test data const
+> - Modification based on latest implementation of KUnit parameterized testing
+> Changes v1->v2:
+> - Modification based on latest implementation of KUnit parameterized testing
+>
+>  fs/ext4/inode-test.c | 323 ++++++++++++++++++++++---------------------
+>  1 file changed, 167 insertions(+), 156 deletions(-)
+>
+> diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+> index d62d802c9c12..2c0c00c45c6b 100644
+> --- a/fs/ext4/inode-test.c
+> +++ b/fs/ext4/inode-test.c
+> @@ -80,6 +80,148 @@ struct timestamp_expectation {
+>         bool lower_bound;
+>  };
+>
+> +static const struct timestamp_expectation test_data[] = {
+> +       {
+> +               .test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = true,
+> +               .extra_bits = 0,
+> +               .expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = false,
+> +               .extra_bits = 0,
+> +               .expected = {.tv_sec = -1LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 0,
+> +               .expected = {0LL, 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 0,
+> +               .expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = true,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = false,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 1,
+> +               .expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = true,
+> +               .extra_bits =  2,
+> +               .expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
+> +               .msb_set = true,
+> +               .lower_bound = false,
+> +               .extra_bits = 2,
+> +               .expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 2,
+> +               .expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 2,
+> +               .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 6,
+> +               .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 0xFFFFFFFF,
+> +               .expected = {.tv_sec = 0x300000000LL,
+> +                            .tv_nsec = MAX_NANOSECONDS},
+> +       },
+> +
+> +       {
+> +               .test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = true,
+> +               .extra_bits = 3,
+> +               .expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
+> +       },
+> +
+> +       {
+> +               .test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+> +               .msb_set = false,
+> +               .lower_bound = false,
+> +               .extra_bits = 3,
+> +               .expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
+> +       }
+> +};
+> +
+> +static void timestamp_expectation_to_desc(const struct timestamp_expectation *t,
+> +                                         char *desc)
+> +{
+> +       int desc_length = strlen(t->test_case_name);
+> +
+> +       strncpy(desc, t->test_case_name, desc_length);
+> +       desc[desc_length] = '\0';
+> +}
 
-Why?
+This unfortunately won't prevent out-of-bounds accesses if the
+description is longer than KUNIT_PARAM_DESC_SIZE.
 
-> and the conflict between jiffies_lock and jiffies_seq increases,
-> especially in multi-core scenarios.
+With strncpy() we want to avoid copying more bytes than the
+destination buffer can hold. This can be done by simply a
+strncpy(desc, t->test_case_name, KUNIT_PARAM_DESC_SIZE). But,
+strncpy() is unsafe in certain cases, too, so the kernel introduced
+strscpy() -- see the note about strncpy() in
+Documentation/process/deprecated.rst. Also have a look at the
+documentation about str{n,l,s}cpy() in lib/string.c.
 
-This does not make sense. The sequence counter is updated when holding
-the lock, so there is no conflict between the lock and the sequence
-count.
+So, finally, what we want here is just 1 line:
 
-> However, it is unnecessary to update the jiffies_seq lock multiple
-> times in a tick period, so the critical region of the jiffies_seq
-> can be reduced to reduce latency overheads.
+    strscpy(desc, t->test_case_name, KUNIT_PARAM_DESC_SIZE);
 
-This does not make sense either. Before taking the lock we have:
-
-        delta = ktime_sub(now, READ_ONCE(last_jiffies_update));
-        if (delta < tick_period)
-                return;
-
-as a lockless quick check.
-
-We also have mechanisms to avoid that a gazillion of CPUs call this. Why
-are they not working or are some of the callsites missing them?
-
-I'm not against reducing the seqcount write scope per se, but it needs a
-proper and correct explanation.
-
-> By the way, last_jiffies_update is protected by jiffies_lock, so
-> reducing the jiffies_seq critical area is safe.
-
-This is misleading. The write to last_jiffies_update is serialized by
-the jiffies lock, but the write has also to be inside the sequence write
-held section because tick_nohz_next_event() does:
-
-	/* Read jiffies and the time when jiffies were updated last */
-	do {
-		seq = read_seqcount_begin(&jiffies_seq);
-		basemono = last_jiffies_update;
-		basejiff = jiffies;
-	} while (read_seqcount_retry(&jiffies_seq, seq));
-
-So there is no 'By the way'.
+Patch 1/2 looks fine though, so hopefully v9 will be final. :-)
 
 Thanks,
-
-        tglx
+-- Marco
