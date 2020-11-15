@@ -2,117 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D74F2B38AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876C72B38B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727618AbgKOTaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 14:30:22 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:49621 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727236AbgKOTaU (ORCPT
+        id S1727657AbgKOTaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 14:30:25 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:45783 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727425AbgKOTaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 14:30:20 -0500
-Received: by mail-il1-f200.google.com with SMTP id s74so9319279ili.16
+        Sun, 15 Nov 2020 14:30:22 -0500
+Received: by mail-il1-f198.google.com with SMTP id z18so10418382ilb.12
         for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 11:30:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=ksV7G1LvEOFsXln138z/UT0+mU4z4jF6i3q/RbguKBE=;
-        b=LNQZRlXRd3k58vegOGWn4Ldrh9uIrEhyp3t6G0E49BzliIDJv+UeTs+Se0NQrkT6Zp
-         wbvsIrRscBeqgE/V4Fod53fNSXp0V+JtNDMcN4Sd0kmgrjwC4pwxax5q0E6yhyQpW1Uh
-         jaQfmIOQU63/GOuHqLavWldk4PfGt7rz2FH0nlE2HCuIcxuddseAQkmzn8ozFCxnd9tC
-         nYkRdjLrZTwgMsyUMQjJvLN1qkRFZFHH3MTCDv0MFn3fPO+cekMRCTZ25SImxrKXAyVm
-         qeKO1cscJc0f51vSr72KwoOdNeMw4uJnBjaC8SSdQyOIzXf0LZ+8eZM2XEdUCzamaz5Z
-         aLTQ==
-X-Gm-Message-State: AOAM533w3i41pI5YBeAZbgSsYVYXldOGf5c/bBPelNkpQPGSLE5qLK1P
-        5yHhOjx+KqBHpxYsKlHZdpe8l1LzHycrmb1LadRwjZTnAGAO
-X-Google-Smtp-Source: ABdhPJyTFNiW2UMuHFLCQHdHACXWFDf603sbZLflQzA5TfYrxntczCO8luJ0Ua5W+B49yf7sdRIasORLokwCEOVWHt+thHMlsb6r
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=reAnx4O5xXKHBeW4ynKl5kqLTK0jD87c4+XTK2E/3PY=;
+        b=hM9oAuimS0NrEGHkzLcWR2xsgsystI7alDyJ94QeMx4K6TcR3Op+e8COdSF/dh6H0F
+         hIpQFPT+L3tGyccUuuOv7HsU/2sRXf2ao95OGApLV/XvuHIj6qLzalIZTUSpyuMcCopd
+         zBm6E7zxTIY01MHpw3BMV4XhohLwMWkJBelFIPalKc5uAOO9UqEAYtABEbAvDGMBWwYR
+         JWxwngP32F+iX6cr2itRYSUE2CheNjhVi0tUa+zz32kZZm0/FN3X9bl8GeiVYtIjFufn
+         KgER/M961xu0ybKF5qyHtBcv58opDVaqSQqA6OwZwQkJ7uaetHQCne8mpi7uSjti2TFo
+         eOjQ==
+X-Gm-Message-State: AOAM531tATjsvrgAAm9AVkgx+U4Mw3pp3cBGzNx7mLEIbXy2dSOJD4fK
+        Y7NTMYUuPcsd4BUdVmmV6V9ZqjlB+jtfOhSF++TSAGYkIJqY
+X-Google-Smtp-Source: ABdhPJzqD4vyX/EdogezQiQ5Xvd4V9S+DHxX9WUcRpflKMxt0ReqC5doZIALYMLab0OUqwzcl+hNaR0GnaVogNEHgIQOmMixWcHV
 MIME-Version: 1.0
-X-Received: by 2002:a5d:898c:: with SMTP id m12mr5743569iol.196.1605468619350;
+X-Received: by 2002:a02:a15b:: with SMTP id m27mr8620665jah.116.1605468619654;
  Sun, 15 Nov 2020 11:30:19 -0800 (PST)
 Date:   Sun, 15 Nov 2020 11:30:19 -0800
-In-Reply-To: <0000000000003b856d05b2bdb5f7@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c1286c05b42a4a3e@google.com>
-Subject: Re: general protection fault in wext_handle_ioctl
-From:   syzbot <syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000c5d1f605b42a4a6e@google.com>
+Subject: WARNING: suspicious RCU usage in unmap_page_range
+From:   syzbot <syzbot+4ca458af025542e76123@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Hello,
 
-HEAD commit:    e28c0d7c Merge branch 'akpm' (patches from Andrew)
+syzbot found the following issue on:
+
+HEAD commit:    eccc8767 Merge branch 'fixes' of git://git.kernel.org/pub/..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15cd1cc2500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37bf5609aacce0b6
-dashboard link: https://syzkaller.appspot.com/bug?extid=8b2a88a09653d4084179
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13706da1500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10229fdc500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=115b9a26500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=86ae89f992df998f
+dashboard link: https://syzkaller.appspot.com/bug?extid=4ca458af025542e76123
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com
+Reported-by: syzbot+4ca458af025542e76123@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 8462 Comm: syz-executor301 Not tainted 5.10.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:call_commit_handler net/wireless/wext-core.c:900 [inline]
-RIP: 0010:ioctl_standard_call net/wireless/wext-core.c:1029 [inline]
-RIP: 0010:wireless_process_ioctl net/wireless/wext-core.c:954 [inline]
-RIP: 0010:wext_ioctl_dispatch net/wireless/wext-core.c:987 [inline]
-RIP: 0010:wext_handle_ioctl+0x974/0xb20 net/wireless/wext-core.c:1048
-Code: e8 61 1d a3 f8 eb 6c 48 8b 44 24 18 42 80 3c 20 00 48 8b 5c 24 20 74 08 48 89 df e8 26 16 e5 f8 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 0d 16 e5 f8 48 8b 1b 48 89 d8 48
-RSP: 0018:ffffc9000143fe00 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff88d1ed88
-RDX: ffff8880290e8000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffff88801b738000 R08: ffffffff88d1edaf R09: ffffed10036e7009
-R10: ffffed10036e7009 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000008b04
-FS:  0000000001eb8880(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd3b2be000 CR3: 0000000024723000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+=============================
+WARNING: suspicious RCU usage
+5.10.0-rc3-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:7264 Illegal context switch in RCU-sched read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+2 locks held by udevd/9816:
+ #0: ffff8880124f5b40 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: prepare_bprm_creds fs/exec.c:1449 [inline]
+ #0: ffff8880124f5b40 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: bprm_execve+0x1c6/0x1b70 fs/exec.c:1791
+ #1: ffff8880124f5bd0 (&sig->exec_update_mutex){+.+.}-{3:3}, at: exec_mmap fs/exec.c:984 [inline]
+ #1: ffff8880124f5bd0 (&sig->exec_update_mutex){+.+.}-{3:3}, at: begin_new_exec+0xa89/0x2ac0 fs/exec.c:1276
+
+stack backtrace:
+CPU: 1 PID: 9816 Comm: udevd Not tainted 5.10.0-rc3-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
 Call Trace:
- sock_ioctl+0xdc/0x690 net/socket.c:1119
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7264
+ zap_pte_range mm/memory.c:1323 [inline]
+ zap_pmd_range mm/memory.c:1357 [inline]
+ zap_pud_range mm/memory.c:1386 [inline]
+ zap_p4d_range mm/memory.c:1407 [inline]
+ unmap_page_range+0xfd2/0x2640 mm/memory.c:1428
+ unmap_single_vma+0x198/0x300 mm/memory.c:1473
+ unmap_vmas+0x168/0x2e0 mm/memory.c:1505
+ exit_mmap+0x2b1/0x530 mm/mmap.c:3222
+ __mmput+0x122/0x470 kernel/fork.c:1079
+ mmput+0x53/0x60 kernel/fork.c:1100
+ exec_mmap fs/exec.c:1030 [inline]
+ begin_new_exec+0xdc3/0x2ac0 fs/exec.c:1276
+ load_elf_binary+0x159d/0x4a60 fs/binfmt_elf.c:998
+ search_binary_handler fs/exec.c:1703 [inline]
+ exec_binprm fs/exec.c:1744 [inline]
+ bprm_execve+0x9d7/0x1b70 fs/exec.c:1820
+ do_execveat_common+0x626/0x7c0 fs/exec.c:1915
+ do_execve fs/exec.c:1983 [inline]
+ __do_sys_execve fs/exec.c:2059 [inline]
+ __se_sys_execve fs/exec.c:2054 [inline]
+ __x64_sys_execve+0x8f/0xc0 fs/exec.c:2054
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441529
-Code: e8 ec 05 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b 0d fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffeab8016d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffeab801700 RCX: 0000000000441529
-RDX: 00000000200000c0 RSI: 0000000000008b04 RDI: 0000000000000003
-RBP: 0000000000000003 R08: 0000002000000000 R09: 0000002000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
-R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
-Modules linked in:
----[ end trace d1b799cc496836f9 ]---
-RIP: 0010:call_commit_handler net/wireless/wext-core.c:900 [inline]
-RIP: 0010:ioctl_standard_call net/wireless/wext-core.c:1029 [inline]
-RIP: 0010:wireless_process_ioctl net/wireless/wext-core.c:954 [inline]
-RIP: 0010:wext_ioctl_dispatch net/wireless/wext-core.c:987 [inline]
-RIP: 0010:wext_handle_ioctl+0x974/0xb20 net/wireless/wext-core.c:1048
-Code: e8 61 1d a3 f8 eb 6c 48 8b 44 24 18 42 80 3c 20 00 48 8b 5c 24 20 74 08 48 89 df e8 26 16 e5 f8 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 0d 16 e5 f8 48 8b 1b 48 89 d8 48
-RSP: 0018:ffffc9000143fe00 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff88d1ed88
-RDX: ffff8880290e8000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffff88801b738000 R08: ffffffff88d1edaf R09: ffffed10036e7009
-R10: ffffed10036e7009 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000008b04
-FS:  0000000001eb8880(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd3b2be000 CR3: 0000000024723000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+RIP: 0033:0x7f13375e8207
+Code: Unable to access opcode bytes at RIP 0x7f13375e81dd.
+RSP: 002b:00007ffc9f06eb68 EFLAGS: 00000202 ORIG_RAX: 000000000000003b
+RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007f13375e8207
+RDX: 0000000001df1ee0 RSI: 00007ffc9f06ec60 RDI: 00007ffc9f06fc70
+RBP: 0000000000625500 R08: 00000000000025c3 R09: 00000000000025c3
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000001df1ee0
+R13: 0000000000000007 R14: 0000000001c60030 R15: 0000000000000005
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
