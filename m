@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2B82B3928
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DFD2B392A
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727656AbgKOUaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 15:30:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
+        id S1727622AbgKOUe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 15:34:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727375AbgKOUaF (ORCPT
+        with ESMTP id S1727317AbgKOUe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 15:30:05 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2544BC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:30:05 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id y7so11386117pfq.11
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:30:05 -0800 (PST)
+        Sun, 15 Nov 2020 15:34:56 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184D3C0613CF;
+        Sun, 15 Nov 2020 12:34:56 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id w142so22137119lff.8;
+        Sun, 15 Nov 2020 12:34:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uchtDpHIzTRX4R0TzTTXvMsifqvBDrgCOU4Whu1bLBA=;
-        b=eTaiHgE1kP9MxX8kHMxyC4jz5qjt8kweGXoui7jzCeB5Jnjgp9fGzRSXo5s+QsIBsZ
-         c2h7WIE9l6Ve8zgSIXUYzlztkGJRv31L0KzbbSg5CnrYhZdIsQnLCS+Q5I+cdGNbDDMH
-         6UxX59mwvi6BikxcSZYqlGMOKnJHGa544c5JT/NwE3F6SDiaq+Fioan8oWmvYbXx6WOT
-         bHsXuv81CiK3jke/03AjBYggFX3kkp1vXCKFj5j0lkV28htQ+HZ4whPf5ZCtEF/DeBRy
-         2UKMkemEgQjUDe+13XBCgk3qLsORcepMljx217wh4P+JINId7ESWfdroAnjpfuBlKIGZ
-         Ku3A==
+        bh=B0jHWOCcW63JFVrVVWaeUh4dEjp7zVb8ymSRWG+wbUY=;
+        b=ZKHiJb7bC1PX8PHE6DLijEe9UWieZwh9O8AWdslFXJEjjN2vRiizr4gW2uMwufG3g8
+         NATumqLRCocFZpqK/ASuLr1nrZhhTTwNnCn8S8Cz999UyczpZrbNy+4Tpwm7m54reH26
+         9eS0lFLiiVnHfQMA9fOjWaY3amyrngfGE4DMRBgitHobnBx2bFQCsQW4Bg2IcAc/psl7
+         C6K49VV5oynqJfHhoishih+zsFOTRzLswTY6RQI/XwxWIcUDWM170/J4mpcDXnqWOwRy
+         XGEzRTyRKdABaABHsPlttWY12Ea0XokMU4pv9NYoq/uDouSRB1xrpXrrxU6FrwssJ7KK
+         gzrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uchtDpHIzTRX4R0TzTTXvMsifqvBDrgCOU4Whu1bLBA=;
-        b=n3Va1JCktsMylD6B8qELc9fb6KGUwI4lK5F73HA4KSvvH9ElddzHg6KnRVM2q9IAX7
-         sRm3bNWW34isKOxxp9QTFe8/3NEA+vdmVFM0hrCBqlEr9QM3so4rlbzzrD2bad322hKL
-         g9rt/Y45EupmRmuiNHkmeyVTD7j9/Vq+0h44YMBOPtqf8fiz1Z27w13DHSYhvG+/f9LH
-         5h2xgNN2W9bHvkR/PS1LUZkq9DjS+6sSG5BPoW3jhXvfgKzvknUPae955xp9pFbtY2MT
-         jW3cicGm7rwaS8gVjbEiZArZRe30wjweEo0zPPiHx0KjzTNtRiojAaKGvFqWdxxDF3Tx
-         2LzA==
-X-Gm-Message-State: AOAM531viU2Znm5chjjMJDTWYM1rffxC9KdrL7A0HEibrUhxgKgWiYMF
-        kvjXXXkAenIi+RYxxcibWbc=
-X-Google-Smtp-Source: ABdhPJxgJCZQBqHb4PFvyN+HU+G4OGLVSvsKzfA4M/r2PDUR2nGQFefU0pcFc0uKnIWhqL9/VuDmxg==
-X-Received: by 2002:a62:1901:0:b029:18c:659c:e55f with SMTP id 1-20020a6219010000b029018c659ce55fmr11561621pfz.51.1605472204549;
-        Sun, 15 Nov 2020 12:30:04 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:9004:6810:256a:6eb7:36cf:abda])
-        by smtp.gmail.com with ESMTPSA id l9sm8127573pjy.10.2020.11.15.12.30.01
+        bh=B0jHWOCcW63JFVrVVWaeUh4dEjp7zVb8ymSRWG+wbUY=;
+        b=hv7SFy5pEqeidITBHSwKTxK2LUddhsM1QteY+HpS8YYxYUK0a2YPUXyY6kjBDvEKPx
+         azw+NME/kQ8aA4WP3K1Hh/vSOEWnjl8nCtV7OMYzTq1Wcj//xqqBd1xFQQQSi7Y2G4uZ
+         RBo7hbjL9fygm58IIHhg6SYzxmuE1qPfbeRkCPfMc97z2kcAQnOV0FSqethask8+ULqX
+         PwBNy6oMfrcEIQ0YA6S/lMbGnn6Xt8dn4+3MTTEdeNVAmwYHz98eautU5dJBakQed06D
+         mRku6FHmqtjrGAo+nEvjtf6h+l7NYJTCao3qf+7AO+bhCb3cPJrj7ZdsAqqOAuUrRZVr
+         /HVQ==
+X-Gm-Message-State: AOAM530Yg5yjjtsTW2mzuRkXXeTAFQ5LhuEzjGuuDEkL05yR0A2c7Cfz
+        g6NBvtAvo8j1xOCyuPMyhx0x5lCE/eU=
+X-Google-Smtp-Source: ABdhPJyz7BK+TgLm29aE5fUyarpBH/H7FGoP5XcvAvunUFVO+Qjt5qinuGlcihKoyz188FmlIr9/yA==
+X-Received: by 2002:a05:6512:210b:: with SMTP id q11mr4030575lfr.238.1605472494181;
+        Sun, 15 Nov 2020 12:34:54 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.gmail.com with ESMTPSA id f191sm2391886lfd.63.2020.11.15.12.34.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 12:30:03 -0800 (PST)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com
-Subject: [PATCH] checkpatch: Fix unescaped left brace
-Date:   Mon, 16 Nov 2020 01:59:28 +0530
-Message-Id: <20201115202928.81955-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 15 Nov 2020 12:34:53 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] clk: Add hardware-enable column to clk summary
+Date:   Sun, 15 Nov 2020 23:34:32 +0300
+Message-Id: <20201115203432.13934-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an unescaped left brace in a regex in OPEN_BRACE
-check. This throws a runtime error when checkpatch is run
-with --fix flag and the OPEN_BRACE check is executed.
+Add "hardware enable" column to the clk summary in order to show actual
+hardware enable-state of all clocks. The possible states are "Y/N/?",
+where question mark means that state is unknown, i.e. clock isn't a
+mux and clk-driver doesn't support is_enabled() callback for this clock.
 
-Fix it by escaping the left brace.
+In conjunction with clk_ignore_unused, this tells us what unused clocks
+are left enabled after bootloader. This is also useful a useful aid for
+debugging interactions with firmware which changes clock states without
+notifying kernel.
 
-Fixes: 8d1824780f2f ("checkpatch: add --fix option for a couple OPEN_BRACE misuses")
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- scripts/checkpatch.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 2749f32dffe9..0da6422cd0fd 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -4505,7 +4505,7 @@ sub process {
- 			    $fix) {
- 				fix_delete_line($fixlinenr, $rawline);
- 				my $fixed_line = $rawline;
--				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*){(.*)$/;
-+				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*)\{(.*)$/;
- 				my $line1 = $1;
- 				my $line2 = $2;
- 				fix_insert_line($fixlinenr, ltrim($line1));
+Changelog:
+
+v2: - Renamed "enable state" column to "hardware enable" and changed
+      reported values to Y/N/?
+
+    - Improved commit message.
+
+ drivers/clk/clk.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index f83dac54ed85..c2cbf3618680 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -2931,7 +2931,14 @@ static void clk_summary_show_one(struct seq_file *s, struct clk_core *c,
+ 	else
+ 		seq_puts(s, "-----");
+ 
+-	seq_printf(s, " %6d\n", clk_core_get_scaled_duty_cycle(c, 100000));
++	seq_printf(s, " %6d", clk_core_get_scaled_duty_cycle(c, 100000));
++
++	if (c->ops->is_enabled)
++		seq_printf(s, " %9c\n", clk_core_is_enabled(c) ? 'Y' : 'N');
++	else if (!c->ops->enable)
++		seq_printf(s, " %9c\n", 'Y');
++	else
++		seq_printf(s, " %9c\n", '?');
+ }
+ 
+ static void clk_summary_show_subtree(struct seq_file *s, struct clk_core *c,
+@@ -2950,9 +2957,9 @@ static int clk_summary_show(struct seq_file *s, void *data)
+ 	struct clk_core *c;
+ 	struct hlist_head **lists = (struct hlist_head **)s->private;
+ 
+-	seq_puts(s, "                                 enable  prepare  protect                                duty\n");
+-	seq_puts(s, "   clock                          count    count    count        rate   accuracy phase  cycle\n");
+-	seq_puts(s, "---------------------------------------------------------------------------------------------\n");
++	seq_puts(s, "                                 enable  prepare  protect                                duty  hardware\n");
++	seq_puts(s, "   clock                          count    count    count        rate   accuracy phase  cycle    enable\n");
++	seq_puts(s, "-------------------------------------------------------------------------------------------------------\n");
+ 
+ 	clk_prepare_lock();
+ 
 -- 
-2.27.0
+2.29.2
 
