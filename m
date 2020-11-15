@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A244E2B3937
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2B82B3928
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727907AbgKOUqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 15:46:47 -0500
-Received: from gateway22.websitewelcome.com ([192.185.47.206]:31185 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727741AbgKOUqr (ORCPT
+        id S1727656AbgKOUaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 15:30:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727375AbgKOUaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 15:46:47 -0500
-X-Greylist: delayed 1502 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Nov 2020 15:46:46 EST
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id F042B2EC4
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 13:58:14 -0600 (CST)
-Received: from br164.hostgator.com.br ([192.185.176.180])
-        by cmsmtp with SMTP
-        id eOAAkcehZAAk4eOAAkAQEg; Sun, 15 Nov 2020 13:58:14 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Rah/S8YAQ7saare3sIo3uqQ/44a3rofOOnXnbQNuukM=; b=GDfZl0r9Ej6WjFTovf0Yh/cv1n
-        Qc83Djfx+XmDt6x8+FkI6z9JsvQJCeKFuE6RON6R5BLzCnKuprAQqhSKM/Fvji7ShpX2VHCBUxpZa
-        lBEFj8tYZt5YcyrckoOwNEkZn6UQst2Npt85DpHRZNW4QgtYKGe/KAmApnSrB92Babi02mWrybNB3
-        bwtfxEkSrIl2IPUQqyeO6BJw+PQeMj+4qqqRxVvpGVcN2d1BXWIYGkvA5HOHoeb+xWgmnJYmCc8d2
-        p4L+eNinxrb1aNJAGJnQQVU8zqGPvvtfV3fmpc+zWq1vWvTwh5sgqy2m5ygnYZ5Azco7K5uCXYY4L
-        hgYInIHQ==;
-Received: from 179-197-124-241.ultrabandalargafibra.com.br ([179.197.124.241]:50406 helo=DESKTOP-TKDJ6MU.localdomain)
-        by br164.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <matheus@castello.eng.br>)
-        id 1keOAA-000kPb-DE; Sun, 15 Nov 2020 16:58:14 -0300
-From:   Matheus Castello <matheus@castello.eng.br>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org
-Cc:     sashal@kernel.org, Tianyu.Lan@microsoft.com, decui@microsoft.com,
-        mikelley@microsoft.com, sunilmut@microsoft.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matheus Castello <matheus@castello.eng.br>
-Subject: [PATCH 2/6] drivers: hv: vmbus: Replace symbolic permissions by octal permissions
-Date:   Sun, 15 Nov 2020 16:57:30 -0300
-Message-Id: <20201115195734.8338-3-matheus@castello.eng.br>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201115195734.8338-1-matheus@castello.eng.br>
-References: <20201115195734.8338-1-matheus@castello.eng.br>
+        Sun, 15 Nov 2020 15:30:05 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2544BC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:30:05 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id y7so11386117pfq.11
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:30:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uchtDpHIzTRX4R0TzTTXvMsifqvBDrgCOU4Whu1bLBA=;
+        b=eTaiHgE1kP9MxX8kHMxyC4jz5qjt8kweGXoui7jzCeB5Jnjgp9fGzRSXo5s+QsIBsZ
+         c2h7WIE9l6Ve8zgSIXUYzlztkGJRv31L0KzbbSg5CnrYhZdIsQnLCS+Q5I+cdGNbDDMH
+         6UxX59mwvi6BikxcSZYqlGMOKnJHGa544c5JT/NwE3F6SDiaq+Fioan8oWmvYbXx6WOT
+         bHsXuv81CiK3jke/03AjBYggFX3kkp1vXCKFj5j0lkV28htQ+HZ4whPf5ZCtEF/DeBRy
+         2UKMkemEgQjUDe+13XBCgk3qLsORcepMljx217wh4P+JINId7ESWfdroAnjpfuBlKIGZ
+         Ku3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uchtDpHIzTRX4R0TzTTXvMsifqvBDrgCOU4Whu1bLBA=;
+        b=n3Va1JCktsMylD6B8qELc9fb6KGUwI4lK5F73HA4KSvvH9ElddzHg6KnRVM2q9IAX7
+         sRm3bNWW34isKOxxp9QTFe8/3NEA+vdmVFM0hrCBqlEr9QM3so4rlbzzrD2bad322hKL
+         g9rt/Y45EupmRmuiNHkmeyVTD7j9/Vq+0h44YMBOPtqf8fiz1Z27w13DHSYhvG+/f9LH
+         5h2xgNN2W9bHvkR/PS1LUZkq9DjS+6sSG5BPoW3jhXvfgKzvknUPae955xp9pFbtY2MT
+         jW3cicGm7rwaS8gVjbEiZArZRe30wjweEo0zPPiHx0KjzTNtRiojAaKGvFqWdxxDF3Tx
+         2LzA==
+X-Gm-Message-State: AOAM531viU2Znm5chjjMJDTWYM1rffxC9KdrL7A0HEibrUhxgKgWiYMF
+        kvjXXXkAenIi+RYxxcibWbc=
+X-Google-Smtp-Source: ABdhPJxgJCZQBqHb4PFvyN+HU+G4OGLVSvsKzfA4M/r2PDUR2nGQFefU0pcFc0uKnIWhqL9/VuDmxg==
+X-Received: by 2002:a62:1901:0:b029:18c:659c:e55f with SMTP id 1-20020a6219010000b029018c659ce55fmr11561621pfz.51.1605472204549;
+        Sun, 15 Nov 2020 12:30:04 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:6810:256a:6eb7:36cf:abda])
+        by smtp.gmail.com with ESMTPSA id l9sm8127573pjy.10.2020.11.15.12.30.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 12:30:03 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH] checkpatch: Fix unescaped left brace
+Date:   Mon, 16 Nov 2020 01:59:28 +0530
+Message-Id: <20201115202928.81955-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - castello.eng.br
-X-BWhitelist: no
-X-Source-IP: 179.197.124.241
-X-Source-L: No
-X-Exim-ID: 1keOAA-000kPb-DE
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 179-197-124-241.ultrabandalargafibra.com.br (DESKTOP-TKDJ6MU.localdomain) [179.197.124.241]:50406
-X-Source-Auth: matheus@castello.eng.br
-X-Email-Count: 27
-X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixed the below checkpatch issue:
-WARNING: Symbolic permissions 'S_IRUGO' are not preferred.
-Consider using octal permissions '0444'.
+There is an unescaped left brace in a regex in OPEN_BRACE
+check. This throws a runtime error when checkpatch is run
+with --fix flag and the OPEN_BRACE check is executed.
 
-Signed-off-by: Matheus Castello <matheus@castello.eng.br>
+Fix it by escaping the left brace.
+
+Fixes: 8d1824780f2f ("checkpatch: add --fix option for a couple OPEN_BRACE misuses")
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
- drivers/hv/vmbus_drv.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ scripts/checkpatch.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 9ed7e3b1d654..52c1407c1849 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1812,7 +1812,7 @@ static ssize_t channel_pending_show(struct vmbus_channel *channel,
- 		       channel_pending(channel,
- 				       vmbus_connection.monitor_pages[1]));
- }
--static VMBUS_CHAN_ATTR(pending, S_IRUGO, channel_pending_show, NULL);
-+static VMBUS_CHAN_ATTR(pending, 0444, channel_pending_show, NULL);
-
- static ssize_t channel_latency_show(struct vmbus_channel *channel,
- 				    char *buf)
-@@ -1821,19 +1821,19 @@ static ssize_t channel_latency_show(struct vmbus_channel *channel,
- 		       channel_latency(channel,
- 				       vmbus_connection.monitor_pages[1]));
- }
--static VMBUS_CHAN_ATTR(latency, S_IRUGO, channel_latency_show, NULL);
-+static VMBUS_CHAN_ATTR(latency, 0444, channel_latency_show, NULL);
-
- static ssize_t channel_interrupts_show(struct vmbus_channel *channel, char *buf)
- {
- 	return sprintf(buf, "%llu\n", channel->interrupts);
- }
--static VMBUS_CHAN_ATTR(interrupts, S_IRUGO, channel_interrupts_show, NULL);
-+static VMBUS_CHAN_ATTR(interrupts, 0444, channel_interrupts_show, NULL);
-
- static ssize_t channel_events_show(struct vmbus_channel *channel, char *buf)
- {
- 	return sprintf(buf, "%llu\n", channel->sig_events);
- }
--static VMBUS_CHAN_ATTR(events, S_IRUGO, channel_events_show, NULL);
-+static VMBUS_CHAN_ATTR(events, 0444, channel_events_show, NULL);
-
- static ssize_t channel_intr_in_full_show(struct vmbus_channel *channel,
- 					 char *buf)
-@@ -1872,7 +1872,7 @@ static ssize_t subchannel_monitor_id_show(struct vmbus_channel *channel,
- {
- 	return sprintf(buf, "%u\n", channel->offermsg.monitorid);
- }
--static VMBUS_CHAN_ATTR(monitor_id, S_IRUGO, subchannel_monitor_id_show, NULL);
-+static VMBUS_CHAN_ATTR(monitor_id, 0444, subchannel_monitor_id_show, NULL);
-
- static ssize_t subchannel_id_show(struct vmbus_channel *channel,
- 				  char *buf)
---
-2.28.0
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 2749f32dffe9..0da6422cd0fd 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4505,7 +4505,7 @@ sub process {
+ 			    $fix) {
+ 				fix_delete_line($fixlinenr, $rawline);
+ 				my $fixed_line = $rawline;
+-				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*){(.*)$/;
++				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*)\{(.*)$/;
+ 				my $line1 = $1;
+ 				my $line2 = $2;
+ 				fix_insert_line($fixlinenr, ltrim($line1));
+-- 
+2.27.0
 
