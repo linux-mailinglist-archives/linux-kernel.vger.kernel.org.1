@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46802B3882
+	by mail.lfdr.de (Postfix) with ESMTP id 372E12B3881
 	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727758AbgKOTWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 14:22:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        id S1727743AbgKOTWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 14:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727704AbgKOTWH (ORCPT
+        with ESMTP id S1727669AbgKOTWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 14:22:07 -0500
+        Sun, 15 Nov 2020 14:22:06 -0500
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F1EC0613CF;
-        Sun, 15 Nov 2020 11:22:05 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id k2so16517561wrx.2;
-        Sun, 15 Nov 2020 11:22:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB25C0613D1;
+        Sun, 15 Nov 2020 11:22:06 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id s8so16452027wrw.10;
+        Sun, 15 Nov 2020 11:22:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Iu/aWIbrp7kIu5C5ShufKi40TdSl3vZcOeSwZg4KWVw=;
-        b=r9zHbG+eudrhZrWs+PtnOTJFLrdJMs5Cy9Dug79M6KGy9J7b+3EwHP7Yd4aBHgRGGd
-         wDVil3/JnwkROETF9kpi3RN3AgpKOqnZVsAI+yT6AwiocHdLC2z6TEb04UWOcU3vQrUv
-         NI5SXMvURmaC7c8MJVNBumu899ndMPZjEkvN+oFk5M8WedyJvtbXQex8Bnz1y2it8IdL
-         YgX+PNG0l63lKBzKAPxoXotmPb9ViCyVturuJWkFZMrJLAdtI4JxXAGp6cmS0EQV0vbN
-         s2GkbhNDZqY/8YJUfRvyJYdTaWK4DyVsFfK2FpDem3tHhlsvz1LDD0PRH/XcFaFYJJSG
-         xI9Q==
+        bh=Hmke5hD5ixk6/oJQn6iEQf5E+iJzWp8ycd7dsyeT46o=;
+        b=ZhiLO+sPnZ9sX0b2Ib8QXU9k1bP7EGPYbGDJo9XtPpX/IPWT+1oIBPR2tg1fvUXrDJ
+         RKKVqeZuLSyPt3KbGUmxzvrhywIdBoRy0Dvo1ArwdWao5b4jG228XwEeaol3VsL4omom
+         wftnBXFCoQ3xJ+GzaZ6sH6TdHoh/SJ+8/KmhJlN2FAngSicUpnY5VobKzTIbXgqQI0pJ
+         QhgO8H8/dqseWuk1PJGHBjty1zQhQ7uFwgake7RTJxAXL+TWMoNuKDAMWdwf6OzeFPRH
+         +YjopWkEoMSb3KPgJC/10GxpPAB7W3RXv1McFlyP9016pUmfB6+ivXk0mQZdg2m3WBxJ
+         w9YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Iu/aWIbrp7kIu5C5ShufKi40TdSl3vZcOeSwZg4KWVw=;
-        b=FXXzA96MsQlzkjmqYY3QfTiBZB9++OBK8Vor9VKw14FSzmj0J1r2wELav69vlkwumS
-         PiyWBaqO4ncZcf81/w7dEWWWwvSewjl9Y+K+L9j/AoyHJ/Jgav+QPRliWjIRVH8W9XaW
-         TucbhDHWP+DnuYaI1b4yeobdDt7GxI5Z4GiPxFHN7rrRDxGeUbEjO0iMYC5A9rLnYPAg
-         RIF0+Op5ZbOGpHUsT7oyBDAA4XF2x/nihKOsf9L7CqedPBIuEI5OLTydjahXE93blF3W
-         RcX4zZQ4Iwo6Q00kqwIlqD9hh2xv7fKS2CHSqbjYE+uMuMNN023RDg/4jhxbX4l56ctf
-         2qPA==
-X-Gm-Message-State: AOAM530GT92YNOvUjAlvkgbiaYpsEDuH0UwoYv8Jey60KOWZd08bmAYp
-        rdkP7M/ciLTDVVfACyvIR0rbMQ+bUFI=
-X-Google-Smtp-Source: ABdhPJzWxhSyJnbs12WBaZ42ZH5lTl28ZgF+Oh2pT2dNkXtClOoX5GZhQFtwZWRzbSl05MqJq+j2ew==
-X-Received: by 2002:adf:f90f:: with SMTP id b15mr15637908wrr.343.1605468123475;
-        Sun, 15 Nov 2020 11:22:03 -0800 (PST)
+        bh=Hmke5hD5ixk6/oJQn6iEQf5E+iJzWp8ycd7dsyeT46o=;
+        b=XupGh+GTqa3Y5gmHwhG3HTAMdSm7IRnt25lq06RWHhP88jAcDpdsIhs0lcozXJKz0i
+         xvwhsgF6+l8Aj8ZJwg65vonSHIuGWfzEQGioj+xUUuZ++qR2vokczIgJuk17su4OTmqI
+         wXR7l7rxMjYGdLXj7Gk4Hvr2B9wUJxOx0UnahhzNnNhGHz+mZ41WJaqAsPEjIaXK0VBQ
+         wCZ75oIv560jl2oC6WGQDIp/sAJqjQGrEU6ehX1GTwe+Ce90McmpDmvGsmbbxbr7hsof
+         bg1vn0QYJyjefezHp9W6AI6ZiIKaZMUz2MEzO5SI39WVVs75umqCtYmEqzNNVq14dW6t
+         J82Q==
+X-Gm-Message-State: AOAM532fsnQmJadFHX7S6ydAsEU49D5X8gjEys98P1TC38Ntyg4SFpE3
+        jMsLIyJddh0+C161dkKO1CSrBFvlzxg=
+X-Google-Smtp-Source: ABdhPJyCY8ANAD0p8S1GqvjGMUQYPEwHwYN2qBaEXBgUJOnD1QkdUs74DImRSnk7pqpPWcx51uhSIg==
+X-Received: by 2002:a5d:5446:: with SMTP id w6mr15410212wrv.122.1605468124830;
+        Sun, 15 Nov 2020 11:22:04 -0800 (PST)
 Received: from xws.fritz.box (p5487b28b.dip0.t-ipconnect.de. [84.135.178.139])
-        by smtp.gmail.com with ESMTPSA id u8sm17106600wmg.6.2020.11.15.11.22.02
+        by smtp.gmail.com with ESMTPSA id u8sm17106600wmg.6.2020.11.15.11.22.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 11:22:02 -0800 (PST)
+        Sun, 15 Nov 2020 11:22:04 -0800 (PST)
 From:   Maximilian Luz <luzmaximilian@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
         =?UTF-8?q?Bla=C5=BE=20Hrastnik?= <blaz@mxxn.io>,
         Dorian Stoll <dorian.stoll@tmsp.io>,
         platform-driver-x86@vger.kernel.org
-Subject: [PATCH 2/9] platform/surface: aggregator: Add control packet allocation caching
-Date:   Sun, 15 Nov 2020 20:21:36 +0100
-Message-Id: <20201115192143.21571-3-luzmaximilian@gmail.com>
+Subject: [PATCH 3/9] platform/surface: aggregator: Add event item allocation caching
+Date:   Sun, 15 Nov 2020 20:21:37 +0100
+Message-Id: <20201115192143.21571-4-luzmaximilian@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201115192143.21571-1-luzmaximilian@gmail.com>
 References: <20201115192143.21571-1-luzmaximilian@gmail.com>
@@ -70,155 +70,212 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Surface Serial Hub communication is, in its core, packet based. Each
-sequenced packet requires to be acknowledged, via an ACK-type control
-packet. In case invalid data has been received by the driver, a NAK-type
-(not-acknowledge/negative acknowledge) control packet is sent,
-triggering retransmission.
+Event items are used for completing Surface Aggregator EC events, i.e.
+placing event command data and payload on a workqueue for later
+processing to avoid doing said processing directly on the receiver
+thread. This means that event items are allocated for each incoming
+event, regardless of that event being transmitted via sequenced or
+unsequenced packets.
 
-Control packets are therefore a core communication primitive and used
-frequently enough (with every sequenced packet transmission sent by the
-embedded controller, including events and request responses) that it may
-warrant caching their allocations to reduce possible memory
-fragmentation.
+On the Surface Book 3 and Surface Laptop 3, touchpad HID input events
+(unsequenced), can constitute a larger amount of traffic, and therefore
+allocation of event items. This warrants caching event items to reduce
+memory fragmentation. The size of the cached objects is specifically
+tuned to accommodate keyboard and touchpad input events and their
+payloads on those devices. As a result, this effectively also covers
+most other event types. In case of a larger event payload, event item
+allocation will fall back to kzalloc().
 
 Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 ---
- drivers/platform/surface/aggregator/core.c    | 27 ++++++++++-
- .../surface/aggregator/ssh_packet_layer.c     | 47 +++++++++++++++----
- .../surface/aggregator/ssh_packet_layer.h     |  3 ++
- 3 files changed, 67 insertions(+), 10 deletions(-)
+ .../platform/surface/aggregator/controller.c  | 84 +++++++++++++++++--
+ .../platform/surface/aggregator/controller.h  |  9 ++
+ drivers/platform/surface/aggregator/core.c    | 16 +++-
+ 3 files changed, 100 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/platform/surface/aggregator/core.c b/drivers/platform/surface/aggregator/core.c
-index 58ba000e95d6..5c01d598a479 100644
---- a/drivers/platform/surface/aggregator/core.c
-+++ b/drivers/platform/surface/aggregator/core.c
-@@ -772,7 +772,32 @@ static struct serdev_device_driver ssam_serial_hub = {
- 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 	},
- };
--module_serdev_device_driver(ssam_serial_hub);
-+
-+
-+/* -- Module setup. --------------------------------------------------------- */
-+
-+static int __init ssam_core_init(void)
-+{
-+	int status;
-+
-+	status = ssh_ctrl_packet_cache_init();
-+	if (status)
-+		return status;
-+
-+	status = serdev_device_driver_register(&ssam_serial_hub);
-+	if (status)
-+		ssh_ctrl_packet_cache_destroy();
-+
-+	return status;
-+}
-+module_init(ssam_core_init);
-+
-+static void __exit ssam_core_exit(void)
-+{
-+	serdev_device_driver_unregister(&ssam_serial_hub);
-+	ssh_ctrl_packet_cache_destroy();
-+}
-+module_exit(ssam_core_exit);
+diff --git a/drivers/platform/surface/aggregator/controller.c b/drivers/platform/surface/aggregator/controller.c
+index fed5b069489c..1c7d2d7b29f7 100644
+--- a/drivers/platform/surface/aggregator/controller.c
++++ b/drivers/platform/surface/aggregator/controller.c
+@@ -535,14 +535,74 @@ static void ssam_nf_destroy(struct ssam_nf *nf)
  
- MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
- MODULE_DESCRIPTION("Subsystem and Surface Serial Hub driver for Surface System Aggregator Module");
-diff --git a/drivers/platform/surface/aggregator/ssh_packet_layer.c b/drivers/platform/surface/aggregator/ssh_packet_layer.c
-index eb0b142148db..920e0d75c641 100644
---- a/drivers/platform/surface/aggregator/ssh_packet_layer.c
-+++ b/drivers/platform/surface/aggregator/ssh_packet_layer.c
-@@ -291,24 +291,53 @@ void ssh_packet_init(struct ssh_packet *packet, unsigned long type,
- }
+ #define SSAM_CPLT_WQ_NAME	"ssam_cpltq"
  
- 
-+static struct kmem_cache *ssh_ctrl_packet_cache;
++/*
++ * SSAM_EVENT_ITEM_CACHE_PAYLOAD_LEN - Maximum payload length for a cached
++ * &struct ssam_event_item.
++ *
++ * This length has been chosen to be accommodate standard touchpad and
++ * keyboard input events. Events with larger payloads will be allocated
++ * separately.
++ */
++#define SSAM_EVENT_ITEM_CACHE_PAYLOAD_LEN	32
++
++static struct kmem_cache *ssam_event_item_cache;
 +
 +/**
-+ * ssh_ctrl_packet_cache_init() - Initialize the control packet cache.
++ * ssam_event_item_cache_init() - Initialize the event item cache.
 + */
-+int ssh_ctrl_packet_cache_init(void)
++int ssam_event_item_cache_init(void)
 +{
-+	const unsigned int size = sizeof(struct ssh_packet) + SSH_MSG_LEN_CTRL;
-+	const unsigned int align = __alignof__(struct ssh_packet);
++	const unsigned int size = sizeof(struct ssam_event_item)
++				  + SSAM_EVENT_ITEM_CACHE_PAYLOAD_LEN;
++	const unsigned int align = __alignof__(struct ssam_event_item);
 +	struct kmem_cache *cache;
 +
-+	cache = kmem_cache_create("ssam_ctrl_packet", size, align, 0, NULL);
++	cache = kmem_cache_create("ssam_event_item", size, align, 0, NULL);
 +	if (!cache)
 +		return -ENOMEM;
 +
-+	ssh_ctrl_packet_cache = cache;
++	ssam_event_item_cache = cache;
 +	return 0;
 +}
 +
 +/**
-+ * ssh_ctrl_packet_cache_destroy() - Deinitialize the control packet cache.
++ * ssam_event_item_cache_destroy() - Deinitialize the event item cache.
 + */
-+void ssh_ctrl_packet_cache_destroy(void)
++void ssam_event_item_cache_destroy(void)
 +{
-+	kmem_cache_destroy(ssh_ctrl_packet_cache);
-+	ssh_ctrl_packet_cache = NULL;
++	kmem_cache_destroy(ssam_event_item_cache);
++	ssam_event_item_cache = NULL;
++}
++
++static void __ssam_event_item_free_cached(struct ssam_event_item *item)
++{
++	kmem_cache_free(ssam_event_item_cache, item);
++}
++
++static void __ssam_event_item_free_generic(struct ssam_event_item *item)
++{
++	kfree(item);
++}
++
++/**
++ * ssam_event_item_free() - Free the provided event item.
++ * @item: The event item to free.
++ */
++static void ssam_event_item_free(struct ssam_event_item *item)
++{
++	item->ops.free(item);
 +}
 +
  /**
-- * ssh_ctrl_packet_alloc() - Allocate control packet.
-+ * ssh_ctrl_packet_alloc() - Allocate packet from control packet cache.
-  * @packet: Where the pointer to the newly allocated packet should be stored.
-  * @buffer: The buffer corresponding to this packet.
-  * @flags:  Flags used for allocation.
+  * ssam_event_item_alloc() - Allocate an event item with the given payload size.
+  * @len:   The event payload length.
+  * @flags: The flags used for allocation.
   *
-- * Allocates a packet and corresponding transport buffer. Sets the packet's
-- * buffer reference to the allocated buffer. The packet must be freed via
-- * ssh_ctrl_packet_free(), which will also free the corresponding buffer. The
-- * corresponding buffer must not be freed separately. Intended to be used with
-- * %ssh_ptl_ctrl_packet_ops as packet operations.
-+ * Allocates a packet and corresponding transport buffer from the control
-+ * packet cache. Sets the packet's buffer reference to the allocated buffer.
-+ * The packet must be freed via ssh_ctrl_packet_free(), which will also free
-+ * the corresponding buffer. The corresponding buffer must not be freed
-+ * separately. Intended to be used with %ssh_ptl_ctrl_packet_ops as packet
-+ * operations.
+- * Allocate an event item with the given payload size. Sets the item
+- * operations and payload length values. The item free callback (``ops.free``)
+- * should not be overwritten after this call.
++ * Allocate an event item with the given payload size, preferring allocation
++ * from the event item cache if the payload is small enough (i.e. smaller than
++ * %SSAM_EVENT_ITEM_CACHE_PAYLOAD_LEN). Sets the item operations and payload
++ * length values. The item free callback (``ops.free``) should not be
++ * overwritten after this call.
   *
-  * Return: Returns zero on success, %-ENOMEM if the allocation failed.
+  * Return: Returns the newly allocated event item.
   */
- static int ssh_ctrl_packet_alloc(struct ssh_packet **packet,
- 				 struct ssam_span *buffer, gfp_t flags)
+@@ -550,9 +610,19 @@ static struct ssam_event_item *ssam_event_item_alloc(size_t len, gfp_t flags)
  {
--	*packet = kzalloc(sizeof(**packet) + SSH_MSG_LEN_CTRL, flags);
-+	*packet = kmem_cache_alloc(ssh_ctrl_packet_cache, flags);
- 	if (!*packet)
- 		return -ENOMEM;
+ 	struct ssam_event_item *item;
  
-@@ -319,12 +348,12 @@ static int ssh_ctrl_packet_alloc(struct ssh_packet **packet,
- }
- 
- /**
-- * ssh_ctrl_packet_free() - Free control packet.
-+ * ssh_ctrl_packet_free() - Free packet allocated from control packet cache.
-  * @p: The packet to free.
-  */
- static void ssh_ctrl_packet_free(struct ssh_packet *p)
- {
--	kfree(p);
-+	kmem_cache_free(ssh_ctrl_packet_cache, p);
- }
- 
- static const struct ssh_packet_ops ssh_ptl_ctrl_packet_ops = {
-diff --git a/drivers/platform/surface/aggregator/ssh_packet_layer.h b/drivers/platform/surface/aggregator/ssh_packet_layer.h
-index 01ac27d60c3a..f3d8a85389d5 100644
---- a/drivers/platform/surface/aggregator/ssh_packet_layer.h
-+++ b/drivers/platform/surface/aggregator/ssh_packet_layer.h
-@@ -169,4 +169,7 @@ void ssh_ptl_tx_wakeup(struct ssh_ptl *ptl);
- void ssh_packet_init(struct ssh_packet *packet, unsigned long type,
- 		     u8 priority, const struct ssh_packet_ops *ops);
- 
-+int ssh_ctrl_packet_cache_init(void);
-+void ssh_ctrl_packet_cache_destroy(void);
+-	item = kzalloc(sizeof(*item) + len, GFP_KERNEL);
+-	if (!item)
+-		return NULL;
++	if (len <= SSAM_EVENT_ITEM_CACHE_PAYLOAD_LEN) {
++		item = kmem_cache_alloc(ssam_event_item_cache, GFP_KERNEL);
++		if (!item)
++			return NULL;
 +
- #endif /* _SURFACE_AGGREGATOR_SSH_PACKET_LAYER_H */
++		item->ops.free = __ssam_event_item_free_cached;
++	} else {
++		item = kzalloc(sizeof(*item) + len, GFP_KERNEL);
++		if (!item)
++			return NULL;
++
++		item->ops.free = __ssam_event_item_free_generic;
++	}
+ 
+ 	item->event.length = len;
+ 	return item;
+@@ -714,7 +784,7 @@ static void ssam_event_queue_work_fn(struct work_struct *work)
+ 			return;
+ 
+ 		ssam_nf_call(nf, dev, item->rqid, &item->event);
+-		kfree(item);
++		ssam_event_item_free(item);
+ 	}
+ 
+ 	if (!ssam_event_queue_is_empty(queue))
+diff --git a/drivers/platform/surface/aggregator/controller.h b/drivers/platform/surface/aggregator/controller.h
+index 7688cbc7d0ae..96e2b87a25d9 100644
+--- a/drivers/platform/surface/aggregator/controller.h
++++ b/drivers/platform/surface/aggregator/controller.h
+@@ -81,12 +81,18 @@ struct ssam_cplt;
+  * struct ssam_event_item - Struct for event queuing and completion.
+  * @node:     The node in the queue.
+  * @rqid:     The request ID of the event.
++ * @ops:      Instance specific functions.
++ * @ops.free: Callback for freeing this event item.
+  * @event:    Actual event data.
+  */
+ struct ssam_event_item {
+ 	struct list_head node;
+ 	u16 rqid;
+ 
++	struct {
++		void (*free)(struct ssam_event_item *event);
++	} ops;
++
+ 	struct ssam_event event;	// must be last
+ };
+ 
+@@ -276,4 +282,7 @@ int ssam_ctrl_notif_d0_entry(struct ssam_controller *ctrl);
+ int ssam_controller_suspend(struct ssam_controller *ctrl);
+ int ssam_controller_resume(struct ssam_controller *ctrl);
+ 
++int ssam_event_item_cache_init(void);
++void ssam_event_item_cache_destroy(void);
++
+ #endif /* _SURFACE_AGGREGATOR_CONTROLLER_H */
+diff --git a/drivers/platform/surface/aggregator/core.c b/drivers/platform/surface/aggregator/core.c
+index 5c01d598a479..733a7d46ee07 100644
+--- a/drivers/platform/surface/aggregator/core.c
++++ b/drivers/platform/surface/aggregator/core.c
+@@ -782,12 +782,23 @@ static int __init ssam_core_init(void)
+ 
+ 	status = ssh_ctrl_packet_cache_init();
+ 	if (status)
+-		return status;
++		goto err_cpkg;
++
++	status = ssam_event_item_cache_init();
++	if (status)
++		goto err_evitem;
+ 
+ 	status = serdev_device_driver_register(&ssam_serial_hub);
+ 	if (status)
+-		ssh_ctrl_packet_cache_destroy();
++		goto err_register;
+ 
++	return 0;
++
++err_register:
++	ssam_event_item_cache_destroy();
++err_evitem:
++	ssh_ctrl_packet_cache_destroy();
++err_cpkg:
+ 	return status;
+ }
+ module_init(ssam_core_init);
+@@ -795,6 +806,7 @@ module_init(ssam_core_init);
+ static void __exit ssam_core_exit(void)
+ {
+ 	serdev_device_driver_unregister(&ssam_serial_hub);
++	ssam_event_item_cache_destroy();
+ 	ssh_ctrl_packet_cache_destroy();
+ }
+ module_exit(ssam_core_exit);
 -- 
 2.29.2
 
