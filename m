@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DAD2B322A
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 05:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC33F2B322D
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 05:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgKOExL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 23:53:11 -0500
-Received: from mout.gmx.net ([212.227.17.20]:37151 "EHLO mout.gmx.net"
+        id S1726584AbgKOE5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 23:57:32 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:59788 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726136AbgKOExJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 23:53:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605415954;
-        bh=dmBd2cfK4ZQ819sShRi7EdQJWAYvfrEQtwdzIS/N99M=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=P3tVUlQQy+dNSieoEvCXmUBYvqhBVzg3npY2p4mQp3vk6sD7hft6Ch6m1MovCe45K
-         jOjnqp/wWbjnng7YoMykL3MBDsGXNDuLg+hEDYsgPUF45w/fkvLCw4xld8iGZRwd/u
-         IzVL+qTzp9QKrq3hfauYREmEVIZ6oBnMf2YLwG74=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.217.172]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUGiJ-1knp5t2nRb-00RKVi; Sun, 15
- Nov 2020 05:52:34 +0100
-Message-ID: <c09b5a4153cfea8ed181bfb48ade0aafa9dab6fb.camel@gmx.de>
-Subject: Re: [PATCH RT 1/5] net: Properly annotate the try-lock for the
- seqlock
-From:   Mike Galbraith <efault@gmx.de>
-To:     Tom Zanussi <zanussi@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        stable-rt@vger.kernel.org
-Date:   Sun, 15 Nov 2020 05:52:33 +0100
-In-Reply-To: <0936e53c297ef3202ce3a48a135053f468c427af.camel@kernel.org>
-References: <20201110153853.463368981@goodmis.org>
-         <20201110154024.958923729@goodmis.org>
-         <617eb5e8478df466afa9013b02a2425f7c4c673f.camel@kernel.org>
-         <aa57c01bceaaac362d4da6e25427827fabe4d37a.camel@kernel.org>
-         <6209c8773bb1d361266046323f266526a810f850.camel@gmx.de>
-         <0936e53c297ef3202ce3a48a135053f468c427af.camel@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RqZ35syf7Y2e9Rxu29QwF2gNJps7COVQy/Rn7NnDHlryKpNypst
- OQSUYv7jfMta05/S8K9DLs/VVhvBfCdcGMIXVftkRHccrD6Npwn/7FHOBL/Bk1ALhUVz0tb
- j2X+VeWs3BEkg9la8AZvLCOpcQqdMfNPQgVYZZ6jlu/ZIOZlfuF/RhB/F+bbOSJEx21AhLf
- bp2TjQk8p6zcKDA0R7P1w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:E7jYevKY1fc=:cRIcrBSYL/5CgvhGhK4MzE
- fZ2fl2/DwZl8FK9xO9+Lc3NpzqIsd9GcdTDobbYtgYFxoHcoejH+ZUK+R9W8gl6AlIjXxjChj
- +biznzAI/ti48q149o5w6urpSRuIbUY/IsjD5yyO7WJ8EPIUUUFdkj6dit+CMrSFAp/zKdivW
- Q1wMzScS8siCOMIjr5aaYz4abuLkAitYX15LT8TePIU+pPVOSZCIRyObNGILzk0PdYvooIk6P
- TCxcUAzAcXw10JnQCP/NT+e2xhPshfRiGLNe0+mdBICcG0etSIsF8YwJFKSp+XWG1UZMfCEl8
- 0OTvwp7gpJ0Vjz6vQguxfNjdL1/cJnJdjwaE8UsxBfxaheJboOvENrMTwwhvFlkGxfPAr+dhB
- TgrpX5RJAu9Yr46EhLODDgijGcpqVldPrEDJtpMuPQ6J6IIWYngDb1EDiaUFfCy21hSCy/Wzq
- zJncApby8ks/Hvsonxsmt3k5AizbCn/F0ZDzGPWK1JAM8mSp6sqPyrP1OH+tJMs5mpVx6nkiL
- GS/X5+Lz9D89vPcA+qBafoWH/j9iBqryr7HLJ1E92Elye7OxBMWQKOYbGyxO5uh5F1s78+/O9
- 1yn8mSjvDe0gnj4F7SpE0DWLIvcRMy/2hj7lzp4AaOemRa1nT49H2gVkMghFhrxOdNdeLjrMH
- uKWfRK29ZUAW3Spio/ZYyEDBgxBskv16gnnRGed1BnzgOV1q3ljOdFAj79+bL1Su/OnpHrBX7
- gUbhAtFSP+BM4r0Bw8EoOpg/yQnsqNYsyMNcbYib2BI2HU6zUDmB3CmawTtJKao2MH4SPgK82
- flCWrWtEUjLsCj0/MRYuaSEiOXQ17CqFnOuEKUg4Rztz18NGbSd6gBThykaPWpS+x6Oq2gu3Q
- DMGpKhpKNJum8Oucr9Xw==
+        id S1726540AbgKOE5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 23:57:22 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605416242; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=DHZQrIgHGobEqfrhC8jO9oXKDIMrd9L7WeOf8QdR/wg=; b=r9tvNCFvETQyQv6biXlmgH32/+pHyuam90NRLSYbTA4ado28uZU+T4RCwSPQ/Ydfli3dPRgg
+ CLLXgR/Sr+1pVUYM5qHcImMaQh7zNKBuM54QT4w2oUV+rGAjjdc7/58Akh3VX6aRouTqSUy+
+ 4dsTl+3egnDxPHJN4d1EHik5WyA=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fb0b52937ede2253b5b654d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 15 Nov 2020 04:57:13
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6C88FC43464; Sun, 15 Nov 2020 04:57:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DB9F2C433C6;
+        Sun, 15 Nov 2020 04:57:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DB9F2C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Subject: [PATCH] Asoc: qcom: lpass-platform: Fix memory leak
+Date:   Sun, 15 Nov 2020 10:26:50 +0530
+Message-Id: <1605416210-14530-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-11-14 at 13:24 -0600, Tom Zanussi wrote:
-> On Sat, 2020-11-14 at 20:00 +0100, Mike Galbraith wrote:
->
-> > __raw_write_seqcount_end() is an integral part of write_sequnlock(),
-> > but we do seem to be missing a seqcount_release() in 5.4-rt.
-> >
->
-> Yep, you're right, it's just the missing seqcount_release() - I'll
-> resubmit with just that.
+lpass_pcm_data is not freed in error paths. Free it in
+error paths to avoid memory leak.
 
-Or just drop the backport, since it adds annotation, while the original
-was fixing existing annotation.
+Fixes: 022d00ee0b55 ("ASoC: lpass-platform: Fix broken pcm data usage")
 
-__raw_write_seqcount_begin() called in 5.4-rt try_write_seqlock() is
-not annotated, while write_seqcount_begin() called by the 5.9-rt
-version leads to the broken annotation that the original then fixed.
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-platform.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-	-Mike
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 36d1512..7a3fdf8 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -122,8 +122,10 @@ static int lpass_platform_pcmops_open(struct snd_soc_component *component,
+ 	else
+ 		dma_ch = 0;
+ 
+-	if (dma_ch < 0)
++	if (dma_ch < 0) {
++		kfree(data);
+ 		return dma_ch;
++	}
+ 
+ 	if (cpu_dai->driver->id == LPASS_DP_RX) {
+ 		map = drvdata->hdmiif_map;
+@@ -147,6 +149,7 @@ static int lpass_platform_pcmops_open(struct snd_soc_component *component,
+ 	ret = snd_pcm_hw_constraint_integer(runtime,
+ 			SNDRV_PCM_HW_PARAM_PERIODS);
+ 	if (ret < 0) {
++		kfree(data);
+ 		dev_err(soc_runtime->dev, "setting constraints failed: %d\n",
+ 			ret);
+ 		return -EINVAL;
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
