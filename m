@@ -2,125 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6420B2B3974
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 22:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AC42B3976
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 22:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbgKOVSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 16:18:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23238 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728015AbgKOVSL (ORCPT
+        id S1728032AbgKOVT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 16:19:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727626AbgKOVT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 16:18:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605475089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UAsJ/vHwUufjthY49pyRmBioJW4SQk95ciC/9TJRffQ=;
-        b=EXLV9bbT31Z8l2JuZBoIAgvqhX0QeVcpUMlTvH7MlgQ3F1hiqWEGo6Zt4Qv1UGrSeRb858
-        g8dJ5Ra7k1huTI/cZAn2u1vFqN1rHllblFzqkGsO2Qr/wau6TDHuOsWOVu+Tt39mYSK7jE
-        LjeLfySZ42qcz7uF0sI4Tt/wHw5LTv8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-PWGMV7AvP4ycSrs23W3emQ-1; Sun, 15 Nov 2020 16:18:08 -0500
-X-MC-Unique: PWGMV7AvP4ycSrs23W3emQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46ABF1007464;
-        Sun, 15 Nov 2020 21:18:06 +0000 (UTC)
-Received: from krava (unknown [10.40.192.76])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6CD1A55769;
-        Sun, 15 Nov 2020 21:18:03 +0000 (UTC)
-Date:   Sun, 15 Nov 2020 22:18:02 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     James Clark <james.clark@arm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <andi@firstfloor.org>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH 00/13 v4] perf tools: fix perf stat with large socket IDs
-Message-ID: <20201115211802.GE1081385@krava>
-References: <20201113172654.989-1-james.clark@arm.com>
+        Sun, 15 Nov 2020 16:19:26 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E8CC0613CF;
+        Sun, 15 Nov 2020 13:19:26 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id s8so16634253wrw.10;
+        Sun, 15 Nov 2020 13:19:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IJf2dmVXH1a/IOMc2vY/SImgMDeWPmPkQk0mds6NUSM=;
+        b=HC3jgIu8MNYh2QgAobTdGwhFcal2nwtKiGTOpSJaPHXDkICoLe6OOy5TQNg7D6Lzyl
+         1q0PVXakWmQT9vgGHXh4XBh61N+oJ8VHw49Wcq++KmAxwbdV+x1r2Tna+Vn4TQ7eqd6x
+         OYadwt60UwBhvRoPFLjt5S+GavE+olM7vphmTUP2J07O9w17+Uqdbrj87nzrrbwy9m+k
+         /QZguBf5pYLU2zNc+TGuwBY+zDkLv9PiH8NXSgyUUJgM57AugfX9rfLDAgtlkOomEw2i
+         FbCyQ7dvtwj4lASSswUlRFuJO+NGiPS0K0cCNBraCZMm+wW/RVSsf6UxEZCFxm/zglUX
+         5PWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IJf2dmVXH1a/IOMc2vY/SImgMDeWPmPkQk0mds6NUSM=;
+        b=GQ/BHcijxCP5W1c+n1gTY5VK1z9oqnD2JQ3IFZ+7fm2O2NJIM7sVTSGOBkkcCvnVon
+         M8s8BnsDadx0LYc/sgf4bUiVShAlT4g4A3hmn185YojroM/567jPzM0n46C98anaoXOg
+         a+149MbNGeL27hzhGfJTzL631gb6J5wGMvcBnfaJE3wlG7fl9Qv+wNeRMDTDrTh7gfnD
+         0GmIvoIFEEq6xb8lWV1blF94zkQJusS8NodmvhrExwDHhE68kB/rGUtslEhaidf5r9ef
+         sxnQjjOknS7IGB+2c9YL8L3fEuidwNtuQaHaomLdioTox/TpnVPEH4OCcPt91Jg+swEj
+         gDZQ==
+X-Gm-Message-State: AOAM530RHRPXjfuLlb2wMwnnZRddFLogfcWycGdsPwuxiFnOXxBNzZf9
+        be7lnotzDUGdnDRGGJ/3hfJ4DHZ2lAw=
+X-Google-Smtp-Source: ABdhPJxEheK3VzYA3RBZzYVxv+/GtG0KybvdLam+70zBZlE1MB2Ze2HFfiTXnQvoaxhM1xTmvHQ4UQ==
+X-Received: by 2002:adf:e74d:: with SMTP id c13mr16440269wrn.277.1605475164374;
+        Sun, 15 Nov 2020 13:19:24 -0800 (PST)
+Received: from [192.168.2.202] (p5487b28b.dip0.t-ipconnect.de. [84.135.178.139])
+        by smtp.gmail.com with ESMTPSA id f16sm20347063wrp.66.2020.11.15.13.19.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Nov 2020 13:19:23 -0800 (PST)
+Subject: Re: [PATCH] PCI: Add sysfs attribute for PCI device power state
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201115202719.GA1239987@bjorn-Precision-5520>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <96da5aa3-a6ff-aeee-430b-bc9958f5aefa@gmail.com>
+Date:   Sun, 15 Nov 2020 22:19:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113172654.989-1-james.clark@arm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20201115202719.GA1239987@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 07:26:41PM +0200, James Clark wrote:
-> v3 had a mistake in a couple of my signed off lines so I have fixed them
-> in v4.
-> 
-> v3 breaks up the previous v2 patchset into smaller atomic commits.
-> The end result is the same as the previous patchset apart from
-> some minor refactoring, asserting on an empty header and
-> calling cpu__setup_cpunode_map() in the topology self test.
-> 
-> Testing done:
-> 
-> Tested --per-core, --per-thread, --per-die, --per-node 'perf
-> stat' outputs on Arm ThunderX2 and Intel KNL.
-> 
-> Also tested 'perf stat record' and 'perf stat report --input'
-> with recordings from a version of perf before this patchset
-> to confirm that the output was the same.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Thomas Richter <tmricht@linux.ibm.com>
-> Cc: John Garry <john.garry@huawei.com>
-> 
-> James Clark (13):
->   perf tools: Improve topology test
->   perf tools: Use allocator for perf_cpu_map
->   perf tools: Add new struct for cpu aggregation
->   perf tools: Replace aggregation ID with a struct
->   perf tools: add new map type for aggregation
->   perf tools: drop in cpu_aggr_map struct
->   perf tools: restrict visibility of functions
->   perf tools: Start using cpu_aggr_id in map
->   perf tools: Add separate node member
->   perf tools: Add separate socket member
->   perf tools: Add separate die member
->   perf tools: Add separate core member
->   perf tools: add thread field
+On 11/15/20 9:27 PM, Bjorn Helgaas wrote:
 
-I sent few comments but overall looks good
+[...]
 
-Stephane, Andi, could you take a look, please?
+> I think something read from sysfs is a snapshot with no guarantee
+> about how long it will remain valid, so I don't see a problem with the
+> value being stale by the time userspace consumes it.
 
-thanks,
-jirka
+I agree on this, and the READ_ONCE won't protect against it. The
+READ_ONCE would only protect against future changes, e.g. something like
 
+     const char *state_names[] = { ... };
+
+     // check if state is invalid
+     if (READ(pci_dev->current_state) >= ARRAY_SIZE(state_names))
+             return sprintf(..., "invalid");
+     else    // look state up in table
+             return sprintf(..., state_names[READ(pci_dev->current_state)])
+
+Note that I've explicitly marked the problematic reads here: If those
+are done separately, the invalidity check may pass, but by the time the
+state name is looked up, the value may have changed and may be invalid.
+
+Note further that if we have something like
+
+     pci_power_t state = pci_dev->current_state;
+
+the compiler is, in theory, free to replace each access to "state" with
+a read to pci_dev->current_state. As far as I can tell, the whole point
+of READ_ONCE is to prevent that and ensure that there is only one read.
+
+Note also that something like this could be easily introduced by
+changing the code in pci_power_name(), as that is likely inlined by the
+compiler. I'm not entirely sure, but I think that the compiler is allowed
+to, at least theoretically, split that into two reads here and inlining
+might be done before further optimization.
+
+On the other hand, the changes that could lead to issues above are
+fairly unlikely to cause them as the compiler will _probably_ read the
+value only once anyways.
+
+> If there's a downside to doing two separate reads, we could mention
+> that in the commit log or a comment.
 > 
->  tools/perf/builtin-stat.c      | 128 +++++++++++++------------
->  tools/perf/tests/topology.c    |  58 +++++++++--
->  tools/perf/util/cpumap.c       | 170 ++++++++++++++++++++++-----------
->  tools/perf/util/cpumap.h       |  55 ++++++-----
->  tools/perf/util/stat-display.c | 106 +++++++++++---------
->  tools/perf/util/stat.c         |   2 +-
->  tools/perf/util/stat.h         |   9 +-
->  7 files changed, 332 insertions(+), 196 deletions(-)
-> 
-> -- 
-> 2.28.0
-> 
+> If there's not a specific reason for using READ_ONCE(), I think we
+> should omit it because using it in one place but not others suggests
+> that there's something special about this place.
 
+I'd argue that there is indeed something special about this place:
+current_state is accessed without holding the device lock (unless I'm
+mistaken and sysfs attributes do acquire the device lock automatically)
+and the state is normally only accessed/changed under it.
+
+Apart from (hopefully) preventing somewhat unlikely future issues and
+highlighting that it is (somewhat of a) special case, the READ_ONCE does
+not serve any purpose here. As the code is now, omitting it will not
+cause any issues (or really should not make any difference in produced
+code).
+
+All in all, I'm not entirely sure that it's a good idea to drop the
+READ_ONCE, but I'll defer to you for that judgement.
+
+Regards,
+Max
