@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA462B383F
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDECA2B3846
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727302AbgKOTHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 14:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
+        id S1727384AbgKOTI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 14:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726823AbgKOTHJ (ORCPT
+        with ESMTP id S1726823AbgKOTIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 14:07:09 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB640C0613D1;
-        Sun, 15 Nov 2020 11:07:08 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id o15so16445477wru.6;
-        Sun, 15 Nov 2020 11:07:08 -0800 (PST)
+        Sun, 15 Nov 2020 14:08:25 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58144C0613D1
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 11:08:25 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id 131so783647pfb.9
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 11:08:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7roRCqL5Ay4r8Kq4FOxDSQwbJ/1pjtvGTuBd9UPkQAM=;
-        b=mIQ8Av7HDseFauMW4+BA3K4phgYTqQpav3PChSMOT5uP83FkZcTXS/8F3Vq5TqcfLN
-         EKU+C+Qwf8qbM6r1lmVEfUIav2Uh6nqjPDnm3L3j5/IRd80NTUdyjiDpXevuyJuxRyaX
-         04l0/sF560u7nCJiYQpghgqqEOv3NmfunWpBgbCBm+e+edBNII/y8q1MzP34lu26LY4A
-         Ha1m1WNTQuQ4edJ2AOGu+EOZgIB0AfhNqL7kooqNuAVXpCFxNCrWh5Hi/qwOPRsktQiA
-         IUExLCybSeUtZvLMBLiC/PagdD6CsA/mtdp98ZnD607yzJYz02N0McwH39Va3Zbn2mwx
-         mJPg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=4KPQVzj3XaK0dcddXHao3rFPSxVSyHVZa7GVCBHBYGg=;
+        b=QBr+Tfprgj2XQXAST4ZuTFUKXgfRKS//pj86h4zxdfUqPM530T+atjzm6q8qzowE7/
+         qpdtzmdQyCAWXpYeIpCQLU8OPsaMW9hFxc6XIpS5znQsI7j0GMmhk4AMg17/kuQ1J8go
+         M4H+qyiSl36bUnDwZT+ahShgYJ/5F8MrW+tc+3GqB/X1jHlTfJPryMhJkF2mHDeah1nl
+         iNYm28H4Y+Sb/UvoG0d4gqLpFLFyx8KgDMvkLbRx0YP+FWRS18AXKm5VFPA7EcWvTeeN
+         uTvx86H5GWuac3Lr+g+ALnCtT92A7yXPmhbQCklK0kXuzWD2B6Cltrh4GLY0ThY7VGeq
+         2sBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7roRCqL5Ay4r8Kq4FOxDSQwbJ/1pjtvGTuBd9UPkQAM=;
-        b=JZrRtrpAVpwMKVHbapsmMJpfOBkDnQeUMwgtp689Sinp2MwgoCyRQHel+I+VMgk8TK
-         oAc7OdJ08MiDl9eNSFXGDqOOZ0ENMsg1pZhnEXbGp0iysQYAb1Xhs6VDxYB7hcQgIrN5
-         2k849f66o2DlsrCYOmQ73Hc2+nK1YHXpXQYzbysWAl1/NpD+xXfxYn/0RyAAry0JF/ji
-         qBHRG02bGNxPQGjpWatn9AZFl1aoF/l5ZG1kgUbh7Ir0CcGJmDkTEjBrRftiS/2QIR8J
-         K34Wlw/CuQDOBpN0rBfi03sTt42FRxtsQsyoeqzhX1z1tjQW/PV/15BGMMQRM0oS/aof
-         nD4Q==
-X-Gm-Message-State: AOAM530ziZL1OQDsNMeFhmvr0BFlY3Jpun3yFYRfGt9266Y1teBvFbdQ
-        /+dcFBK/Ad+X5YLgWnuLf+k=
-X-Google-Smtp-Source: ABdhPJwGSvwkPTTNP2qUQL/7YRVjKWuNCTuVxK+0a3BAbOQqNJL31OfQm92WtFl4KKsqcy903mJphw==
-X-Received: by 2002:adf:814f:: with SMTP id 73mr15192513wrm.174.1605467227250;
-        Sun, 15 Nov 2020 11:07:07 -0800 (PST)
-Received: from localhost.localdomain (p4fc3ea77.dip0.t-ipconnect.de. [79.195.234.119])
-        by smtp.googlemail.com with ESMTPSA id u5sm14707869wro.56.2020.11.15.11.07.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=4KPQVzj3XaK0dcddXHao3rFPSxVSyHVZa7GVCBHBYGg=;
+        b=TMXFzIGFH4u4szBsiBavyzt/HSg6aCN8NsXSgz+PFIxmrTEjJP2VXP+YdBoSC+OvaF
+         OaYFr0uSU14SpbJTw1wjQQtn9Y9D0ejolSBIZkAvJVn1BQJElE5J3+3a0pkaDW9ZkC41
+         BPkB8RHk6smQAylt6KRu9qGa47blDRjd8m5wm7PSbPGj4AAP1tAhyH8FQlCz/N9HpCVf
+         yzvELoaIZS0/YCfdCPeaBGTXE13MJZbz+WGaqWoHOaBK6KoCbuO0oJeAJUjSdGim9hvb
+         ncaIOnGs4R+l8VaxMc008tveBjZvT7Yhfed0hXTvYryVqpcPqwSz5LxM2k3pw+v6W9c6
+         oWWg==
+X-Gm-Message-State: AOAM530FlwSDjElkqdzE6rssYs/mogFOMc8SzPy+V17cBzYt+mEgAKrY
+        fvmXTDFw4nyNBkdoTTkTyi/lPg==
+X-Google-Smtp-Source: ABdhPJxnKD9u/eRJm/dyqBqJLS6fVwosAXdLsioU1A+4Lz1XJS5ReKZThYSgP5/749PQIcicugQHpQ==
+X-Received: by 2002:a63:484e:: with SMTP id x14mr10340222pgk.282.1605467304921;
+        Sun, 15 Nov 2020 11:08:24 -0800 (PST)
+Received: from localhost.localdomain ([163.172.76.58])
+        by smtp.googlemail.com with ESMTPSA id i16sm15810339pfr.183.2020.11.15.11.08.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 11:07:06 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     glaroque@baylibre.com, linux-pm@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-Cc:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH] thermal: amlogic: Add hwmon support
-Date:   Sun, 15 Nov 2020 20:06:58 +0100
-Message-Id: <20201115190658.631578-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 15 Nov 2020 11:08:24 -0800 (PST)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     dan.carpenter@oracle.com, davem@davemloft.net,
+        herbert@gondor.apana.org.au, jernej.skrabec@siol.net,
+        mripard@kernel.org, wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] crypto: allwinner: sun8i-ce: fix two error path's memory leak
+Date:   Sun, 15 Nov 2020 19:08:07 +0000
+Message-Id: <20201115190807.12251-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many monitoring tools read the CPU temperature using the hwmon
-interface. Expose the thermal sensors on Amlogic boards as hwmon
-devices.
+This patch fixes the following smatch warnings:
+drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c:412
+sun8i_ce_hash_run() warn: possible memory leak of 'result'
+Note: "buf" is leaked as well.
 
-Without this lm_sensors' "sensors" tool does not find any temperature
-sensors. Now it prints:
-  cpu_thermal-virtual-0
-  Adapter: Virtual device
-  temp1:        +44.7 C  (crit = +110.0 C)
+Furthermore, in case of ENOMEM, crypto_finalize_hash_request() was not
+called which was an error.
 
-  ddr_thermal-virtual-0
-  Adapter: Virtual device
-  temp1:        +45.9 C  (crit = +110.0 C)
-
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Fixes: 56f6d5aee88d ("crypto: sun8i-ce - support hash algorithms")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/thermal/amlogic_thermal.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 20 +++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/thermal/amlogic_thermal.c b/drivers/thermal/amlogic_thermal.c
-index ccb1fe18e993..dffe3ba8c7c4 100644
---- a/drivers/thermal/amlogic_thermal.c
-+++ b/drivers/thermal/amlogic_thermal.c
-@@ -29,6 +29,7 @@
- #include <linux/thermal.h>
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+index a94bf28f858a..4c5a2c11d714 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+@@ -262,13 +262,13 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	u32 common;
+ 	u64 byte_count;
+ 	__le32 *bf;
+-	void *buf;
++	void *buf = NULL;
+ 	int j, i, todo;
+ 	int nbw = 0;
+ 	u64 fill, min_fill;
+ 	__be64 *bebits;
+ 	__le64 *lebits;
+-	void *result;
++	void *result = NULL;
+ 	u64 bs;
+ 	int digestsize;
+ 	dma_addr_t addr_res, addr_pad;
+@@ -285,13 +285,17 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
  
- #include "thermal_core.h"
-+#include "thermal_hwmon.h"
+ 	/* the padding could be up to two block. */
+ 	buf = kzalloc(bs * 2, GFP_KERNEL | GFP_DMA);
+-	if (!buf)
+-		return -ENOMEM;
++	if (!buf) {
++		err = -ENOMEM;
++		goto theend;
++	}
+ 	bf = (__le32 *)buf;
  
- #define TSENSOR_CFG_REG1			0x4
- 	#define TSENSOR_CFG_REG1_RSET_VBG	BIT(12)
-@@ -287,6 +288,9 @@ static int amlogic_thermal_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+ 	result = kzalloc(digestsize, GFP_KERNEL | GFP_DMA);
+-	if (!result)
+-		return -ENOMEM;
++	if (!result) {
++		err = -ENOMEM;
++		goto theend;
++	}
  
-+	if (devm_thermal_add_hwmon_sysfs(pdata->tzd))
-+		dev_warn(&pdev->dev, "Failed to add hwmon sysfs attributes\n");
-+
- 	ret = amlogic_thermal_initialize(pdata);
- 	if (ret)
- 		return ret;
+ 	flow = rctx->flow;
+ 	chan = &ce->chanlist[flow];
+@@ -403,11 +407,11 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	dma_unmap_sg(ce->dev, areq->src, nr_sgs, DMA_TO_DEVICE);
+ 	dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+ 
+-	kfree(buf);
+ 
+ 	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
+-	kfree(result);
+ theend:
++	kfree(buf);
++	kfree(result);
+ 	crypto_finalize_hash_request(engine, breq, err);
+ 	return 0;
+ }
 -- 
-2.29.2
+2.26.2
 
