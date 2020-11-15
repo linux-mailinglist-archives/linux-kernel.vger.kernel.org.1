@@ -2,211 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF152B331F
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 10:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0983C2B3325
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 10:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgKOI7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 03:59:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgKOI6f (ORCPT
+        id S1726773AbgKOJK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 04:10:57 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7541 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbgKOJKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 03:58:35 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94BCC0617A6
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 00:58:33 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id h16so8844333otq.9
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 00:58:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eOfon08D4Z8QqvBeUPGRpAKg2puT4+gjjSEjZd3iW9U=;
-        b=wKSPTVfFPmI7y0+3EK74LC5ZHIYhP+UsyUVeT4mOjbN3rjOPwenhkD76d8kMEmEwTU
-         fZ9IU5vPB0KFoFeB5wj8Kwb1ZgcDdj0IIMztyZkcDYdQJ6bGROofOV56xq3/Zf9U6kp9
-         WFrdoQ05yQLtZcgF7N0+cn02+xpeEtjRitJCPap8GmhYRoJIJ/QBfIGxMQLpEMwsTu7e
-         DGMUk1Qc1Q8WXsdtBli++0Z27BrxaduSAculqD4fx8QQRvN1Uw2zvzK6A/9qkiyMXRxo
-         0axZhijITMHaydwtu9To8uf/nfQhFCmp/+DyEVZCkAGfC9xva7++5Z7zOY8NecyA+rxt
-         M+/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eOfon08D4Z8QqvBeUPGRpAKg2puT4+gjjSEjZd3iW9U=;
-        b=ehjoVoxrhdMe9FpBiw1S7e/s2dCo9xjM3d6JSJWVktqFZD0WIkZL0ZLOIHH+/E1R7G
-         PBHqN1R4ueHwQs38q7gSwwnq1U7pYGILs0gNmknIZ4/sTZzSK1KNFMpIeVmG790GDUEQ
-         5ADNNBqChECN2rZDEJDArkO/a0cKJFYTYEKnSYpFXv5rfQDTGX/XEiFd1m0p4wPc8XvH
-         jjn5inTriPfmMqgr+52rfKPdAcEk87JfixlYtLJxH+/Ne1eYOp4q4xd1RcR/ZsAtjOd3
-         YoMTPA8XQ11ICbY0p/5cOenOwebMpTufIUTgVP8VYeacoN8rGDN9Diuh02lgP9RsPhJT
-         aOcA==
-X-Gm-Message-State: AOAM531mrvB2lk5VCYisCVSTDCNBjYVH3AvH2ZHCFvjIY1ws9EX3cLGg
-        h2cBeIbVL+lvmbKNnmOXKMPrMJF2LUUCGDI4r2lmbg==
-X-Google-Smtp-Source: ABdhPJzeDiymHRksn52ZIlUX8jqRL3oxfopfmqdADwje3rGNKDhpfM9140ry6nmookbuB0Eot4/zWYcFlJqq0rK/ijs=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr6656603oth.251.1605430712516;
- Sun, 15 Nov 2020 00:58:32 -0800 (PST)
+        Sun, 15 Nov 2020 04:10:50 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CYmB70TpqzhZ5N;
+        Sun, 15 Nov 2020 16:50:23 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Sun, 15 Nov 2020
+ 16:50:25 +0800
+From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
+To:     <thierry.reding@gmail.com>
+CC:     <jonathanh@nvidia.com>, <olof@lixom.net>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>
+Subject: [PATCH] soc/tegra: fuse: Fix build with Tegra234 configuration
+Date:   Sun, 15 Nov 2020 16:50:21 +0800
+Message-ID: <20201115085021.42100-1-bobo.shaobowang@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201114123648.97857-1-98.arpi@gmail.com>
-In-Reply-To: <20201114123648.97857-1-98.arpi@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Sun, 15 Nov 2020 09:58:21 +0100
-Message-ID: <CANpmjNNsVxGiGWeij-EsDUpc_fBBYg7iBynis1tQKwh8ks5jQw@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Tim Bird <Tim.Bird@sony.com>, David Gow <davidgow@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Nov 2020 at 13:38, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
-> Implementation of support for parameterized testing in KUnit. This
-> approach requires the creation of a test case using the
-> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
->
-> This generator function should return the next parameter given the
-> previous parameter in parameterized tests. It also provides a macro to
-> generate common-case generators based on arrays. Generators may also
-> optionally provide a human-readable description of parameters, which is
-> displayed where available.
->
-> Note, currently the result of each parameter run is displayed in
-> diagnostic lines, and only the overall test case output summarizes
-> TAP-compliant success or failure of all parameter runs. In future, when
-> supported by kunit-tool, these can be turned into subsubtest outputs.
->
-> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> Co-developed-by: Marco Elver <elver@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> Changes v6->v7:
-> - Clarify commit message.
-> - Introduce ability to optionally generate descriptions for parameters;
->   if no description is provided, we'll still print 'param-N'.
-> - Change diagnostic line format to:
->         # <test-case-name>: <ok|not ok> N - [<param description>]
->
-> Changes v5->v6:
-> - Fix alignment to maintain consistency
->
-> Changes v4->v5:
-> - Update kernel-doc comments.
-> - Use const void* for generator return and prev value types.
-> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-> - Rework parameterized test case execution strategy: each parameter is executed
->   as if it was its own test case, with its own test initialization and cleanup
->   (init and exit are called, etc.). However, we cannot add new test cases per TAP
->   protocol once we have already started execution. Instead, log the result of
->   each parameter run as a diagnostic comment.
->
-> Changes v3->v4:
-> - Rename kunit variables
-> - Rename generator function helper macro
-> - Add documentation for generator approach
-> - Display test case name in case of failure along with param index
->
-> Changes v2->v3:
-> - Modifictaion of generator macro and method
->
-> Changes v1->v2:
-> - Use of a generator method to access test case parameters
-> Changes v6->v7:
-> - Clarify commit message.
-> - Introduce ability to optionally generate descriptions for parameters;
->   if no description is provided, we'll still print 'param-N'.
-> - Change diagnostic line format to:
->         # <test-case-name>: <ok|not ok> N - [<param description>]
-> - Before execution of parameterized test case, count number of
->   parameters and display number of parameters. Currently also as a
->   diagnostic line, but this may be used in future to generate a subsubtest
->   plan. A requirement of this change is that generators must generate a
->   deterministic number of parameters.
->
-> Changes v5->v6:
-> - Fix alignment to maintain consistency
->
-> Changes v4->v5:
-> - Update kernel-doc comments.
-> - Use const void* for generator return and prev value types.
-> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-> - Rework parameterized test case execution strategy: each parameter is executed
->   as if it was its own test case, with its own test initialization and cleanup
->   (init and exit are called, etc.). However, we cannot add new test cases per TAP
->   protocol once we have already started execution. Instead, log the result of
->   each parameter run as a diagnostic comment.
->
-> Changes v3->v4:
-> - Rename kunit variables
-> - Rename generator function helper macro
-> - Add documentation for generator approach
-> - Display test case name in case of failure along with param index
->
-> Changes v2->v3:
-> - Modifictaion of generator macro and method
->
-> Changes v1->v2:
-> - Use of a generator method to access test case parameters
->
->  include/kunit/test.h | 51 ++++++++++++++++++++++++++++++++++++++
->  lib/kunit/test.c     | 59 ++++++++++++++++++++++++++++++++++----------
->  2 files changed, 97 insertions(+), 13 deletions(-)
->
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index db1b0ae666c4..cf5f33b1c890 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -94,6 +94,9 @@ struct kunit;
->  /* Size of log associated with test. */
->  #define KUNIT_LOG_SIZE 512
->
-> +/* Maximum size of parameter description string. */
-> +#define KUNIT_PARAM_DESC_SIZE 64
+If only Tegra234 support is enabled, the tegra30_fuse_read() and
+tegra30_fuse_init() function are not declared and cause a build failure.
 
-I think we need to make this larger, perhaps 128. I just noticed a few
-of the inode-test strings are >64 chars (and it should probably also
-use strncpy() to copy to description, which is my bad).
+drivers/soc/tegra/fuse/fuse-tegra30.c:376:10: error: ‘tegra30_fuse_read’
+ undeclared here (not in a function); did you mean ‘tegra_fuse_readl’?
+  .read = tegra30_fuse_read,
+          ^~~~~~~~~~~~~~~~~
+          tegra_fuse_readl
+drivers/soc/tegra/fuse/fuse-tegra30.c:382:10: error: ‘tegra30_fuse_init’
+ undeclared here (not in a function); did you mean ‘tegra30_fuse_read’?
+  .init = tegra30_fuse_init,
+          ^~~~~~~~~~~~~~~~~
+          tegra30_fuse_read
 
->  /*
->   * TAP specifies subtest stream indentation of 4 spaces, 8 spaces for a
->   * sub-subtest.  See the "Subtests" section in
-> @@ -107,6 +110,7 @@ struct kunit;
-[...]
-> +/**
-> + * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
-> + * @name:  prefix for the test parameter generator function.
-> + * @array: array of test parameters.
-> + * @get_desc: function to convert param to description; NULL to use default
-> + *
-> + * Define function @name_gen_params which uses @array to generate parameters.
-> + */
-> +#define KUNIT_ARRAY_PARAM(name, array, get_desc)                                               \
-> +       static const void *name##_gen_params(const void *prev, char *desc)                      \
-> +       {                                                                                       \
-> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+Fixes: 1f44febf71ba ("soc/tegra: fuse: Add Tegra234 support")
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+---
+ drivers/soc/tegra/fuse/fuse-tegra30.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Why did you reintroduce a space between * and __next? AFAIK, this
-should follow the same style as the rest of the kernel, and it should
-just be 'thetype *ptr'.
+diff --git a/drivers/soc/tegra/fuse/fuse-tegra30.c b/drivers/soc/tegra/fuse/fuse-tegra30.c
+index 9ea7f0168457..c1aa7815bd6e 100644
+--- a/drivers/soc/tegra/fuse/fuse-tegra30.c
++++ b/drivers/soc/tegra/fuse/fuse-tegra30.c
+@@ -37,7 +37,8 @@
+     defined(CONFIG_ARCH_TEGRA_132_SOC) || \
+     defined(CONFIG_ARCH_TEGRA_210_SOC) || \
+     defined(CONFIG_ARCH_TEGRA_186_SOC) || \
+-    defined(CONFIG_ARCH_TEGRA_194_SOC)
++    defined(CONFIG_ARCH_TEGRA_194_SOC) || \
++    defined(CONFIG_ARCH_TEGRA_234_SOC)
+ static u32 tegra30_fuse_read_early(struct tegra_fuse *fuse, unsigned int offset)
+ {
+ 	if (WARN_ON(!fuse->base))
+-- 
+2.17.1
 
-> +               if (__next - (array) < ARRAY_SIZE((array))) {                                   \
-> +                       void (*__get_desc)(typeof(__next), char *) = get_desc;                  \
-> +                       if (__get_desc)                                                         \
-> +                               __get_desc(__next, desc);                                       \
-> +                       return __next;                                                          \
-> +               }                                                                               \
-> +               return NULL;                                                                    \
-> +       }
-> +
-
-Thanks,
--- Marco
