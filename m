@@ -2,82 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB152B378F
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B77122B37A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgKOSBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:01:24 -0500
-Received: from m12-12.163.com ([220.181.12.12]:51636 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727000AbgKOSBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:01:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=6MubN
-        k2IDlcXLKxODBPdt2LcfZmGAlZrFRKaa1VWLxI=; b=hy7EnfSy+TPcFpr3dYVRo
-        //U3rW9X5SAlf19MmGaY6nT4/pZlXnr3gPn02fVIgxvE+fIYYr7+/tXNiNi+HJxZ
-        PxQbcot5jbuh2bCl81/KGC6damj0LkJOY9tfEx7/JcQFMgc7kV2On2bahY+BYXC5
-        k8TnqFy+qP8H73KIZhjAj0=
-Received: from localhost (unknown [101.86.213.176])
-        by smtp8 (Coremail) with SMTP id DMCowABnM9nWbLFfvZyMBw--.838S2;
-        Mon, 16 Nov 2020 02:00:54 +0800 (CST)
-Date:   Mon, 16 Nov 2020 02:00:54 +0800
-From:   Hui Su <sh_def@163.com>
-To:     christian.brauner@ubuntu.com, serge@hallyn.com, avagin@openvz.org,
-        0x7f454c46@gmail.com, linux-kernel@vger.kernel.org
-Cc:     sh_def@163.com
-Subject: [PATCH] nsproxy: use put_nsproxy() in switch_task_namespaces()
-Message-ID: <20201115180054.GA371317@rlk>
+        id S1727137AbgKOSLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 13:11:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726727AbgKOSLo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 13:11:44 -0500
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC219C0613D2
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 10:11:43 -0800 (PST)
+Received: by mail-oo1-xc41.google.com with SMTP id y3so3358521ooq.2
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 10:11:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Tbq1vEgEMTBoexcFc2qtiD/aGn5ZlYHghcweLEeR5g=;
+        b=GvBBVq2j1thxIqxLdyh/HEf7BXC3CObT+/mfmrC30J+QwTdZyhYZjSCBekIL96rBZc
+         wVPDnehbUiyoUVUAny2epI2cffKCh2efQd5xyfHAdzZX7pgwf24X0wRyRphzDJ7eN2MH
+         wHSECWBN8pDj1WP9I/SM5tdDQpHnb8bQ+9L805Jv77OEbrBu7eIIVOz5UXgHk0RGGB0l
+         fUieg48jSeflZkjQGJPFVex7yqtXVwOopn+WLiHcBUdX2bUZ1tk002IVpPRzgWpGVp/p
+         YSl4X8DkPhqT/cnxCrGpm+VsZ77HumFBCgqe3OlpKuZW3e/EMJ8lBkcvLn324A/+rBut
+         q6fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Tbq1vEgEMTBoexcFc2qtiD/aGn5ZlYHghcweLEeR5g=;
+        b=Qzu73JgJX0SOniAMJG8Px333iaAeqiJ0tXPXaWUO6pKFR3UifH6PCMDuDcMS+aRUOr
+         Kdbcy5AMUz8oNVf2nxia31MQfgZ/2JIOIMYpKo3JcQlJC1n9n9HRbV2GC//fdOV0t0J3
+         ENp0s8aqlnX0PA7Ad4KwtDhKzPY/fy7t6GFIy0NRlIGZolcQ/SZX/dG+jYiQlaMNzRO+
+         9ol8Ij5L5xoMqJ3HLZbKNv5Thm9BZuERIDD6FSA0lbTk3C/OThfFp4Ww1kpX1pPRs+ME
+         DeIM+UEQE/o4xnAadVcvc1HXVGyIPaAj8OJQoeIMRxbTnZsU6KbZ+e6sT8rUzVrAQsTy
+         vvBQ==
+X-Gm-Message-State: AOAM533pCoVBhUC/EdHU0XdABh/5W2Hivn7RLU6j/CISwjhu9kOMlWya
+        PUI59+T7FtzzibVz4C7IISae3K90AgJPagPcJUsiZA==
+X-Google-Smtp-Source: ABdhPJzrKFcXvD8UGQex6ifrdPRSCJj6pNP9xshWqtwRuGwJwtq2eT4lnG+g4FskuKifR3eZvCCdsbEFzC8e4EL9GPI=
+X-Received: by 2002:a4a:b28b:: with SMTP id k11mr7938155ooo.54.1605463902926;
+ Sun, 15 Nov 2020 10:11:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: DMCowABnM9nWbLFfvZyMBw--.838S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GF13ur15Ww47uFy3uw4kWFg_yoWDtFg_AF
-        ZrX3Z3K34jy3Z0yr15Ww1fXFy0q39IkF4xKw4IvrW5Ar98Xr47JwsrAFy3GF9rGFs3ua45
-        uFy5Gr1DCr1rWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbYhF3UUUUU==
-X-Originating-IP: [101.86.213.176]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbByxbdX1PAProDmwAAsQ
+References: <20201114123648.97857-1-98.arpi@gmail.com> <CANpmjNNsVxGiGWeij-EsDUpc_fBBYg7iBynis1tQKwh8ks5jQw@mail.gmail.com>
+ <3c0eb37e-aa9b-876c-6635-1f32181f4e5d@gmail.com>
+In-Reply-To: <3c0eb37e-aa9b-876c-6635-1f32181f4e5d@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Sun, 15 Nov 2020 19:11:31 +0100
+Message-ID: <CANpmjNNhpe6TYt0KmBCCR-Wfz1Bxd8qnhiwegwnDQsxRAWmUMg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Tim Bird <Tim.Bird@sony.com>, David Gow <davidgow@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use put_nsproxy() instead of '
-if (atomic_dec_and_test(&ns->count)) {
-	free_nsproxy(ns);
-}' in switch_task_namespaces().
+On Sun, 15 Nov 2020 at 13:18, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>
+> On 15/11/20 2:28 pm, Marco Elver wrote:
+> > On Sat, 14 Nov 2020 at 13:38, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+> >> Implementation of support for parameterized testing in KUnit. This
+> >> approach requires the creation of a test case using the
+> >> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
+> >>
+> >> This generator function should return the next parameter given the
+> >> previous parameter in parameterized tests. It also provides a macro to
+> >> generate common-case generators based on arrays. Generators may also
+> >> optionally provide a human-readable description of parameters, which is
+> >> displayed where available.
+> >>
+> >> Note, currently the result of each parameter run is displayed in
+> >> diagnostic lines, and only the overall test case output summarizes
+> >> TAP-compliant success or failure of all parameter runs. In future, when
+> >> supported by kunit-tool, these can be turned into subsubtest outputs.
+> >>
+> >> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> >> Co-developed-by: Marco Elver <elver@google.com>
+> >> Signed-off-by: Marco Elver <elver@google.com>
+> >> ---
+> >> Changes v6->v7:
+> >> - Clarify commit message.
+> >> - Introduce ability to optionally generate descriptions for parameters;
+> >>   if no description is provided, we'll still print 'param-N'.
+> >> - Change diagnostic line format to:
+> >>         # <test-case-name>: <ok|not ok> N - [<param description>]
+> >>
+> >> Changes v5->v6:
+> >> - Fix alignment to maintain consistency
+> >>
+> >> Changes v4->v5:
+> >> - Update kernel-doc comments.
+> >> - Use const void* for generator return and prev value types.
+> >> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+> >> - Rework parameterized test case execution strategy: each parameter is executed
+> >>   as if it was its own test case, with its own test initialization and cleanup
+> >>   (init and exit are called, etc.). However, we cannot add new test cases per TAP
+> >>   protocol once we have already started execution. Instead, log the result of
+> >>   each parameter run as a diagnostic comment.
+> >>
+> >> Changes v3->v4:
+> >> - Rename kunit variables
+> >> - Rename generator function helper macro
+> >> - Add documentation for generator approach
+> >> - Display test case name in case of failure along with param index
+> >>
+> >> Changes v2->v3:
+> >> - Modifictaion of generator macro and method
+> >>
+> >> Changes v1->v2:
+> >> - Use of a generator method to access test case parameters
+> >> Changes v6->v7:
+> >> - Clarify commit message.
+> >> - Introduce ability to optionally generate descriptions for parameters;
+> >>   if no description is provided, we'll still print 'param-N'.
+> >> - Change diagnostic line format to:
+> >>         # <test-case-name>: <ok|not ok> N - [<param description>]
+> >> - Before execution of parameterized test case, count number of
+> >>   parameters and display number of parameters. Currently also as a
+> >>   diagnostic line, but this may be used in future to generate a subsubtest
+> >>   plan. A requirement of this change is that generators must generate a
+> >>   deterministic number of parameters.
+> >>
+> >> Changes v5->v6:
+> >> - Fix alignment to maintain consistency
+> >>
+> >> Changes v4->v5:
+> >> - Update kernel-doc comments.
+> >> - Use const void* for generator return and prev value types.
+> >> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+> >> - Rework parameterized test case execution strategy: each parameter is executed
+> >>   as if it was its own test case, with its own test initialization and cleanup
+> >>   (init and exit are called, etc.). However, we cannot add new test cases per TAP
+> >>   protocol once we have already started execution. Instead, log the result of
+> >>   each parameter run as a diagnostic comment.
+> >>
+> >> Changes v3->v4:
+> >> - Rename kunit variables
+> >> - Rename generator function helper macro
+> >> - Add documentation for generator approach
+> >> - Display test case name in case of failure along with param index
+> >>
+> >> Changes v2->v3:
+> >> - Modifictaion of generator macro and method
+> >>
+> >> Changes v1->v2:
+> >> - Use of a generator method to access test case parameters
+> >>
+> >>  include/kunit/test.h | 51 ++++++++++++++++++++++++++++++++++++++
+> >>  lib/kunit/test.c     | 59 ++++++++++++++++++++++++++++++++++----------
+> >>  2 files changed, 97 insertions(+), 13 deletions(-)
+> >>
+> >> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> >> index db1b0ae666c4..cf5f33b1c890 100644
+> >> --- a/include/kunit/test.h
+> >> +++ b/include/kunit/test.h
+> >> @@ -94,6 +94,9 @@ struct kunit;
+> >>  /* Size of log associated with test. */
+> >>  #define KUNIT_LOG_SIZE 512
+> >>
+> >> +/* Maximum size of parameter description string. */
+> >> +#define KUNIT_PARAM_DESC_SIZE 64
+> >
+> > I think we need to make this larger, perhaps 128. I just noticed a few
+> > of the inode-test strings are >64 chars (and it should probably also
+> > use strncpy() to copy to description, which is my bad).
+> >
+>
+> Okay, I will make the description size larger and use strncpy().
 
-and remove the whitespace by the way.
+Thanks. There's also a report by the test robot now which noticed this.
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- kernel/nsproxy.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> >>  /*
+> >>   * TAP specifies subtest stream indentation of 4 spaces, 8 spaces for a
+> >>   * sub-subtest.  See the "Subtests" section in
+> >> @@ -107,6 +110,7 @@ struct kunit;
+> > [...]
+> >> +/**
+> >> + * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
+> >> + * @name:  prefix for the test parameter generator function.
+> >> + * @array: array of test parameters.
+> >> + * @get_desc: function to convert param to description; NULL to use default
+> >> + *
+> >> + * Define function @name_gen_params which uses @array to generate parameters.
+> >> + */
+> >> +#define KUNIT_ARRAY_PARAM(name, array, get_desc)                                               \
+> >> +       static const void *name##_gen_params(const void *prev, char *desc)                      \
+> >> +       {                                                                                       \
+> >> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+> >
+> > Why did you reintroduce a space between * and __next? AFAIK, this
+> > should follow the same style as the rest of the kernel, and it should
+> > just be 'thetype *ptr'.
+> >
+>
+> I introduced this space because checkpatch.pl gave an error without the space:
+> ERROR: need consistent spacing around '*' (ctx:WxV)
+> #1786: FILE: ./include/kunit/test.h:1786:
+> +               typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 : (array);      \
+>
+> But, if this is a mistake as it doesn't recognize __next to be a pointer, I will remove the space.
 
-diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
-index 12dd41b39a7f..3ebfd090398a 100644
---- a/kernel/nsproxy.c
-+++ b/kernel/nsproxy.c
-@@ -173,7 +173,7 @@ int copy_namespaces(unsigned long flags, struct task_struct *tsk)
- 	 * it along with CLONE_NEWIPC.
- 	 */
- 	if ((flags & (CLONE_NEWIPC | CLONE_SYSVSEM)) ==
--		(CLONE_NEWIPC | CLONE_SYSVSEM)) 
-+		(CLONE_NEWIPC | CLONE_SYSVSEM))
- 		return -EINVAL;
- 
- 	new_ns = create_new_namespaces(flags, tsk, user_ns, tsk->fs);
-@@ -250,8 +250,8 @@ void switch_task_namespaces(struct task_struct *p, struct nsproxy *new)
- 	p->nsproxy = new;
- 	task_unlock(p);
- 
--	if (ns && atomic_dec_and_test(&ns->count))
--		free_nsproxy(ns);
-+	if (ns)
-+		put_nsproxy(ns);
- }
- 
- void exit_task_namespaces(struct task_struct *p)
--- 
-2.29.0
+I think checkpatch.pl thinks this is a multiplication. It's definitely
+a false positive. Please do format it like a normal pointer.
 
-
+Thanks,
+-- Marco
