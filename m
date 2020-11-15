@@ -2,91 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A98F52B3A7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 23:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB632B3A7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 23:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgKOWyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 17:54:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
+        id S1726970AbgKOW4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 17:56:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgKOWyq (ORCPT
+        with ESMTP id S1726057AbgKOW4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 17:54:46 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFF6C0613CF;
-        Sun, 15 Nov 2020 14:54:46 -0800 (PST)
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 368F722F99;
-        Sun, 15 Nov 2020 23:54:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1605480880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5IYmtrwNrffuEO24QOGmuJZWmuOyIjGYeeOlbsSgu2M=;
-        b=pEetpn7uEE8AJxY1CJZ1CsC9oRNsJDfPtHGPud1UMU5Uyq4gj8jdSPYkhHdArHRXwktcCW
-        C2Mz2NeHOl36flMOrzjQE6KFS8pXS2AVP62oMmESHAWBJLB7trKhhShPOr0+xRFgmKrBoL
-        yh/Bwx0M2u5gXJkUgnzAWvST2EG9Vhw=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Sun, 15 Nov 2020 17:56:35 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8948AC0613CF;
+        Sun, 15 Nov 2020 14:56:35 -0800 (PST)
+Date:   Sun, 15 Nov 2020 22:56:32 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605480993;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=km7Slix76rspfzQsOmys81UPfOB5HZftlvk8l3W+8LI=;
+        b=ZLfkQARV/oRw8mi6Djaer5FHke9OWlE0pzIaHyw08nYQaJoc1mtkncycpvvcm6QTE1VL2R
+        GL3UiAn2mS1XAdYZJiE6pxCVz1Y5dpSxGPZaje2sadFeur69DjAWZPxnMnrqaiQAEMxEtD
+        5STK1qtiHisARhKQXnXabKJfS3vyPTBI/ji8upITfsCboz2g8nnuuLuxykvHbFux6+CuVi
+        BJpcPqXGfOotiDavlsGD+z3IplOTBqkzzElh0LauYYx1pW7OEccpHe4p3SUQ1SbX1cpEIx
+        UFf9niMJzwyXUb/uoGDXucgLHFjyNrFv1UPWFm6gNeoXIt5D2yUZMlebPp/6gw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605480993;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=km7Slix76rspfzQsOmys81UPfOB5HZftlvk8l3W+8LI=;
+        b=t9xuabEIHCtyRfUn7qtdCdJ6/dlulNldOrk6R97W1cjuh8HFqpmBvcJExe+vad59iCE7H9
+        actPHPeFw4IebKAw==
+From:   "tip-bot2 for Ira Weiny" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/entry] entry: Fix spelling/typo errors in irq entry code
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH] arm64: dts: freescale: sl28: combine SPI MTD partitions
-Date:   Sun, 15 Nov 2020 23:54:35 +0100
-Message-Id: <20201115225435.8529-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201104230157.3378023-1-ira.weiny@intel.com>
+References: <20201104230157.3378023-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Message-ID: <160548099204.11244.6842720288075136334.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The upstream port, doesn't really follow the vendor partitioning. The
-bootloader partition has one U-Boot FIT image containing all needed
-bits and pieces. Even today the bootloader is already larger than the
-current "bootloader" partition. Thus, fold all the partitions into one
-and keep the environment one. The latter is still valid.
-We keep the failsafe partitions because the first half of the SPI flash
-is preinstalled by the vendor and immutable.
+The following commit has been merged into the core/entry branch of tip:
 
-Fixes: 815364d0424e ("arm64: dts: freescale: add Kontron sl28 support")
-Signed-off-by: Michael Walle <michael@walle.cc>
+Commit-ID:     78a56e0494ad29feccd4c54c2b5682721f8cb988
+Gitweb:        https://git.kernel.org/tip/78a56e0494ad29feccd4c54c2b5682721f8cb988
+Author:        Ira Weiny <ira.weiny@intel.com>
+AuthorDate:    Wed, 04 Nov 2020 15:01:57 -08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sun, 15 Nov 2020 23:54:00 +01:00
+
+entry: Fix spelling/typo errors in irq entry code
+
+s/reguired/required/
+s/Interupts/Interrupts/
+s/quiescient/quiescent/
+s/assemenbly/assembly/
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201104230157.3378023-1-ira.weiny@intel.com
 ---
- .../boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts  | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ include/linux/entry-common.h | 4 ++--
+ kernel/entry/common.c        | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-index 54ff6f7c2477..fbaecf285d05 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-@@ -159,20 +159,10 @@
- 		};
- 
- 		partition@210000 {
--			reg = <0x210000 0x0f0000>;
-+			reg = <0x210000 0x1d0000>;
- 			label = "bootloader";
- 		};
- 
--		partition@300000 {
--			reg = <0x300000 0x040000>;
--			label = "DP firmware";
--		};
--
--		partition@340000 {
--			reg = <0x340000 0x0a0000>;
--			label = "trusted firmware";
--		};
--
- 		partition@3e0000 {
- 			reg = <0x3e0000 0x020000>;
- 			label = "bootloader environment";
--- 
-2.20.1
-
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index 1a128ba..aab5490 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -415,7 +415,7 @@ void irqentry_exit_cond_resched(void);
+  * @state:	Return value from matching call to irqentry_enter()
+  *
+  * Depending on the return target (kernel/user) this runs the necessary
+- * preemption and work checks if possible and reguired and returns to
++ * preemption and work checks if possible and required and returns to
+  * the caller with interrupts disabled and no further work pending.
+  *
+  * This is the last action before returning to the low level ASM code which
+@@ -438,7 +438,7 @@ irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs);
+  * @regs:	Pointer to pt_regs (NMI entry regs)
+  * @irq_state:	Return value from matching call to irqentry_nmi_enter()
+  *
+- * Last action before returning to the low level assmenbly code.
++ * Last action before returning to the low level assembly code.
+  *
+  * Counterpart to irqentry_nmi_enter().
+  */
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index bc75c11..fa17baa 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -304,7 +304,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
+ 	 * If this entry hit the idle task invoke rcu_irq_enter() whether
+ 	 * RCU is watching or not.
+ 	 *
+-	 * Interupts can nest when the first interrupt invokes softirq
++	 * Interrupts can nest when the first interrupt invokes softirq
+ 	 * processing on return which enables interrupts.
+ 	 *
+ 	 * Scheduler ticks in the idle task can mark quiescent state and
+@@ -315,7 +315,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
+ 	 * interrupt to invoke rcu_irq_enter(). If that nested interrupt is
+ 	 * the tick then rcu_flavor_sched_clock_irq() would wrongfully
+ 	 * assume that it is the first interupt and eventually claim
+-	 * quiescient state and end grace periods prematurely.
++	 * quiescent state and end grace periods prematurely.
+ 	 *
+ 	 * Unconditionally invoke rcu_irq_enter() so RCU state stays
+ 	 * consistent.
