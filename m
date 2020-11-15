@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19742B35C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 16:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E052B35C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 16:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgKOP3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 10:29:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34193 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727079AbgKOP3M (ORCPT
+        id S1727112AbgKOPcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 10:32:43 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:42774 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726749AbgKOPcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 10:29:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605454151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rgstLvewQswHzH1bYuEdWL4wJXi1Onb1Pbf/B2GM9RA=;
-        b=AT3+GmxZQk3AyC/8+r2CQoib26lpQUeWZoqz5FiOAiDzUlunteI4N2JJZCFQ/gL3Pz7lDb
-        /pCK3cHOp0U6BCYOTdWraVIZ2Ud0eaHFU+OrgrxMQWGDc+HgdcUER2eUcBA6MLh98Kq0EA
-        FaeNH+sLH3gGWY081srvny4I394WGlQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-sz4OOuA7O1KRgI6x5Vr_Aw-1; Sun, 15 Nov 2020 10:29:09 -0500
-X-MC-Unique: sz4OOuA7O1KRgI6x5Vr_Aw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4B198049C1;
-        Sun, 15 Nov 2020 15:29:07 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 856C65B4BB;
-        Sun, 15 Nov 2020 15:29:07 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] More KVM fixes for 5.10-rc4
-Date:   Sun, 15 Nov 2020 10:29:07 -0500
-Message-Id: <20201115152907.1625371-1-pbonzini@redhat.com>
+        Sun, 15 Nov 2020 10:32:43 -0500
+Received: from relay1-d.mail.gandi.net (unknown [217.70.183.193])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 0850B3A9EDC;
+        Sun, 15 Nov 2020 15:24:13 +0000 (UTC)
+X-Originating-IP: 78.193.40.249
+Received: from kb-xps (unknown [78.193.40.249])
+        (Authenticated sender: kamel.bouhara@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 34C82240004;
+        Sun, 15 Nov 2020 15:23:51 +0000 (UTC)
+Date:   Sun, 15 Nov 2020 16:23:49 +0100
+From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        jic23@kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] counter: microchip-tcb-capture: Fix CMR value check
+Message-ID: <20201115152349.GA2233@kb-xps>
+References: <20201111163807.10201-1-vilhelm.gray@gmail.com>
+ <20201114224827.GQ4556@piout.net>
+ <20201114225113.GR4556@piout.net>
+ <X7BhFOA9uPAUluv0@shinobu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X7BhFOA9uPAUluv0@shinobu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Sat, Nov 14, 2020 at 05:58:28PM -0500, William Breathitt Gray wrote:
+> On Sat, Nov 14, 2020 at 11:51:13PM +0100, Alexandre Belloni wrote:
+> > On 14/11/2020 23:48:28+0100, Alexandre Belloni wrote:
+> > > On 11/11/2020 11:38:07-0500, William Breathitt Gray wrote:
+> > > > The ATMEL_TC_ETRGEDG_* defines are not masks but rather possible values
+> > > > for CMR. This patch fixes the action_get() callback to properly check
+> > > > for these values rather than mask them.
+> > > >
+> > > > Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
+> > > > Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > >
+> > > > ---
+> > > >  drivers/counter/microchip-tcb-capture.c | 16 ++++++++++------
+> > > >  1 file changed, 10 insertions(+), 6 deletions(-)
+> > > >
+> > > > diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
+> > > > index 039c54a78aa5..142b389fc9db 100644
+> > > > --- a/drivers/counter/microchip-tcb-capture.c
+> > > > +++ b/drivers/counter/microchip-tcb-capture.c
+> > > > @@ -183,16 +183,20 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
+> > > >
+> > > >  	regmap_read(priv->regmap, ATMEL_TC_REG(priv->channel[0], CMR), &cmr);
+> > > >
+> > > > -	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
+> > > > -
+> > > > -	if (cmr & ATMEL_TC_ETRGEDG_NONE)
+> > > > +	switch (cmr & ATMEL_TC_ETRGEDG_BOTH) {
+> >
+> > BTW, this could be simply ATMEL_TC_ETRGEDG which is the mask.
+>
+> You're right, let me resubmit this patch with that change since it'll be
+> much clearer.
+>
+> By the way, microchip-tcb-capture.c is missing a MAINTAINERS entry. Is
+> Kamel the maintainer of this driver? I'd like to get a proper entry
+> added so we have a point of contact in case of future bugs and changes.
+>
 
-The following changes since commit 585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba:
+Hello William,
 
-  Merge tag 'fscrypt-for-linus' of git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt (2020-11-12 16:39:58 -0800)
+Thanks for the patch, indeed Im the maintainer of this driver.
 
-are available in the Git repository at:
+Regards,
+Kamel
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> Thanks,
+>
+> William Breathitt Gray
 
-for you to fetch changes up to c887c9b9ca62c051d339b1c7b796edf2724029ed:
 
-  kvm: mmu: fix is_tdp_mmu_check when the TDP MMU is not in use (2020-11-15 08:55:43 -0500)
 
-----------------------------------------------------------------
-Fixes for ARM and x86, the latter especially for old processors
-without two-dimensional paging (EPT/NPT).
-
-----------------------------------------------------------------
-Babu Moger (2):
-      KVM: x86: Introduce cr3_lm_rsvd_bits in kvm_vcpu_arch
-      KVM: SVM: Update cr3_lm_rsvd_bits for AMD SEV guests
-
-David Edmondson (1):
-      KVM: x86: clflushopt should be treated as a no-op by emulation
-
-Marc Zyngier (4):
-      Merge tag 'v5.10-rc1' into kvmarm-master/next
-      KVM: arm64: Allow setting of ID_AA64PFR0_EL1.CSV2 from userspace
-      KVM: arm64: Unify trap handlers injecting an UNDEF
-      KVM: arm64: Handle SCXTNUM_ELx traps
-
-Paolo Bonzini (2):
-      Merge tag 'kvmarm-fixes-5.10-3' of git://git.kernel.org/.../kvmarm/kvmarm into HEAD
-      kvm: mmu: fix is_tdp_mmu_check when the TDP MMU is not in use
-
- arch/arm64/include/asm/kvm_host.h |   2 +
- arch/arm64/include/asm/sysreg.h   |   4 ++
- arch/arm64/kvm/arm.c              |  16 ++++++
- arch/arm64/kvm/sys_regs.c         | 111 +++++++++++++++++++++++---------------
- arch/x86/include/asm/kvm_host.h   |   1 +
- arch/x86/kvm/cpuid.c              |   2 +
- arch/x86/kvm/emulate.c            |   8 ++-
- arch/x86/kvm/mmu/tdp_mmu.c        |   7 +++
- arch/x86/kvm/svm/svm.c            |   8 +++
- arch/x86/kvm/x86.c                |   2 +-
- 10 files changed, 115 insertions(+), 46 deletions(-)
-
+--
+Kamel Bouhara, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
