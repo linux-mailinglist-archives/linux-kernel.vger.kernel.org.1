@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CDD2B39D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 23:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB412B39D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 23:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgKOWS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 17:18:26 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35993 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727443AbgKOWSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 17:18:25 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZ66F4k2Vz9s0b;
-        Mon, 16 Nov 2020 09:18:13 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605478698;
-        bh=ObCA8HN2tG6i5xFH74HFyEHh30uOaZaaQ/NKJ3dg0UY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XCdCeOoFUmKbEzPr59upwGw1YOI6dL5jIM5AkUUWkqRBtJg1bpH/Wi44nhHggW6mx
-         wxL7PRewdWdwbKoCiewWV3IDZn8p5MCE4zdTA//6E/hROIpG44xx49IzcOCT6nHDg5
-         W8akhlSq5SfWx63u9vWk+eeNMC+pnOiwBRqqDRd8dbveWuRVKwQF93yj+cpPR+NSrr
-         ZJXda/jBJ9elLLlqv8hiVNxp/rWwJ8BagdFQ8Cq0U89CSYTpaOJEaTgdmCRrRBIR6x
-         QWSBRzogdqnE4hf4wUmjax6cNjnSoIYq19E6YfEUYmfnvIH3+arPIY3efYw7x2S8lY
-         Kc+Dm/fZ0MtWw==
-Date:   Mon, 16 Nov 2020 09:17:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Balbir Singh <sblbir@amazon.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the tip tree
-Message-ID: <20201116091751.64131fe0@canb.auug.org.au>
-In-Reply-To: <20201028142300.34ed89b1@canb.auug.org.au>
-References: <20201028142300.34ed89b1@canb.auug.org.au>
+        id S1727854AbgKOWTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 17:19:37 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37380 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgKOWTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 17:19:36 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605478770;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=mvUChvQtJDtOXKi7ZSXRCCglC4rht804XBkqEO6iVxA=;
+        b=VMG7gFt3BUeFueD23+8iIxeuYxd7F1JGBLNcpa8roF+2pDV6jWVMThCsf3RpnaBmnhRLT+
+        Z7Z2OI8Biqk67R0qGVY47TF5fDAe0ku3p12yuNAGnDV1ZrXniDXKLWRduudIZuJDDHe6SU
+        yn0j97XPjvC+ghwC8lwdlZuNO00pYpshAarbMU1ev65j5KuiYm3N9VY64YH1mhijKVG31P
+        0khETiOZFynZnFxdfy8XUIizif4xX2PdPFuvpFV9RUctIkoLMzCXRgSYApIuZPflnO1lVX
+        DLvzujc0ZTjwnWRFiH90Vk8+BJArtuILuwoV13Y1jvy+OcDemQR+4KSr1dg+tg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605478770;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=mvUChvQtJDtOXKi7ZSXRCCglC4rht804XBkqEO6iVxA=;
+        b=QMM3KylPKEYAwl/ux+M6btqBIxYn6Yf22Srgcy98kmr8Je7+ct/IFUbxQiq+4/jaC/Rv4U
+        M39TAUQU8r8lR0Dw==
+To:     Alex Shi <alex.shi@linux.alibaba.com>, john.stultz@linaro.org
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] timekeeping: add ts/tk explaination for kernel-doc
+In-Reply-To: <1605252275-63652-5-git-send-email-alex.shi@linux.alibaba.com>
+Date:   Sun, 15 Nov 2020 23:19:29 +0100
+Message-ID: <87361a5klq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/X3Au2nx0pXlbAz83kRNd1XT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/X3Au2nx0pXlbAz83kRNd1XT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Nov 13 2020 at 15:24, Alex Shi wrote:
 
-Hi all,
+Subject: timekeeping: add ts/tk explaination for kernel-doc
 
-On Wed, 28 Oct 2020 14:23:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Hi all,
->=20
-> After merging the tip tree, today's linux-next build (htmldocs) produced
-> this warning:
->=20
-> Documentation/admin-guide/hw-vuln/l1d_flush.rst:25: WARNING: undefined la=
-bel: documentation/userspace-api/spec_ctrl.rst (if the link has no caption =
-the label must precede a section header)
->=20
-> Introduced by commit
->=20
->   767d46ab566d ("Documentation: Add L1D flushing Documentation")
+ Sentence after the colon starts with an uppercase letter.
+ s/explaination/explanation/ Please use a spell checker.
 
-I am still getting this warning.
+Also what is ts/tk? The short log sentence has to be concise and easy to
+understand and decribe what the patch does.
 
---=20
-Cheers,
-Stephen Rothwell
+> this patch fixed kernel-doc mark incorrection:
 
---Sig_/X3Au2nx0pXlbAz83kRNd1XT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+'This patch fixed' ?
 
------BEGIN PGP SIGNATURE-----
+First of all, sentences start with an uppercase letter, but also please
+do:
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+xqQ8ACgkQAVBC80lX
-0Gw4Sgf/RtOIyfPxrOAF9JSEK171GzqEJvqCUN3NxPD5NqwMOeHd3f4dbUoi8Oyo
-s1Shz2ngo50p117oFPlEW1UiYCBR21RnvtAQJ63oSzw1ceQysGZpLOFinH/0m+UN
-R58Y4FZbnPKR7wEjeiyo7kmqUK5R9wfTlnU4g9bKzpqGBeGK9c+G3AelXjkTypkK
-Azcza90IxCdWoYg6s1bFOfxy1KMuCaFAyN8Ksz/VtzLzXRxHWvwa5e4KSM+e1499
-NekB1s+dPFUE38mlX1pIWxAiSRa5gApnXnAceo95WKKtL4uQFGAyL4Mq3rZzUsQD
-7LSSewvE0snE4b7CvZcxTUiYN7+7BA==
-=gHxz
------END PGP SIGNATURE-----
+ # git grep 'This patch' Documentation/process/
 
---Sig_/X3Au2nx0pXlbAz83kRNd1XT--
+and read the paragraph which matches.
+
+>  /**
+>   * timekeeping_inject_offset - Adds or subtracts from the current time.
+> - * @tv:		pointer to the timespec variable containing the offset
+> + * @ts:		pointer to the timespec variable containing the offset
+
+This is _not_ adding documention, it's fixing the wrongly named
+parameter.
+
+Thanks,
+
+        tglx
+
+
