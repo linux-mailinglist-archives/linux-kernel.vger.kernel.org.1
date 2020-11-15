@@ -2,83 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B366E2B35D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 16:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420672B35DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 16:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgKOPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 10:39:10 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36270 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727112AbgKOPjK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 10:39:10 -0500
-Received: from 61-220-137-34.hinet-ip.hinet.net ([61.220.137.34] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1keK7B-0007bG-AP; Sun, 15 Nov 2020 15:38:54 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     tiwai@suse.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Chris Wulff <crwulff@gmail.com>,
-        Alexander Tsoy <alexander@tsoy.me>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andrew Oakley <andrew@adoakley.name>,
-        Chris Boyle <chris@boyle.name>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        alsa-devel@alsa-project.org (moderated list:SOUND),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ALSA: usb-audio: Use ALC1220-VB-DT mapping for ASUS ROG Strix TRX40 mobo
-Date:   Sun, 15 Nov 2020 23:38:42 +0800
-Message-Id: <20201115153843.1109200-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.28.0
+        id S1727187AbgKOPrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 10:47:17 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:56168 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726749AbgKOPrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 10:47:17 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1keKFD-007CFB-2d; Sun, 15 Nov 2020 16:47:11 +0100
+Date:   Sun, 15 Nov 2020 16:47:11 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v1 net-next] net: dsa: qca: ar9331: add ethtool stats
+ support
+Message-ID: <20201115154711.GB1701029@lunn.ch>
+References: <20201115073533.1366-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201115073533.1366-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ASUS ROG Strix also uses ALC1220-VB-DT, so adjust the mapping and add
-profile name to let userspace pick correct UCM profile.
+On Sun, Nov 15, 2020 at 08:35:33AM +0100, Oleksij Rempel wrote:
+> Add stats support for the ar9331 switch.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-BugLink: https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/issues/1031
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/usb/card.c       | 4 ++++
- sound/usb/mixer_maps.c | 3 ++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index fa764b61fe9c..4457214a3ae6 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -379,6 +379,10 @@ static const struct usb_audio_device_name usb_audio_names[] = {
- 
- 	DEVICE_NAME(0x046d, 0x0990, "Logitech, Inc.", "QuickCam Pro 9000"),
- 
-+	/* ASUS ROG Strix */
-+	PROFILE_NAME(0x0b05, 0x1917,
-+		     "Realtek", "ALC1220-VB-DT", "Realtek-ALC1220-VB-Desktop"),
-+
- 	/* Dell WD15 Dock */
- 	PROFILE_NAME(0x0bda, 0x4014, "Dell", "WD15 Dock", "Dell-WD15-Dock"),
- 	/* Dell WD19 Dock */
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index c369c81e74c4..a7212f16660e 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -561,7 +561,8 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 	},
- 	{	/* ASUS ROG Strix */
- 		.id = USB_ID(0x0b05, 0x1917),
--		.map = asus_rog_map,
-+		.map = trx40_mobo_map,
-+		.connector_map = trx40_mobo_connector_map,
- 	},
- 	{	/* MSI TRX40 Creator */
- 		.id = USB_ID(0x0db0, 0x0d64),
--- 
-2.28.0
-
+    Andrew
