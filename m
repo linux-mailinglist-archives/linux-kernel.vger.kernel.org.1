@@ -2,106 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF402B3488
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 12:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F71C2B3493
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 12:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgKOLFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 06:05:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgKOLFp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 06:05:45 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3807C0613D1;
-        Sun, 15 Nov 2020 03:05:45 -0800 (PST)
-Date:   Sun, 15 Nov 2020 11:05:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605438343;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bij7WmP9+y87wX1KmnpAU4g3B0H3sxtPXI7Q6zWWxQs=;
-        b=cFN0Xi+xYEvuHoPWSxGjXqYvCpIIXDs5G2NN1Pg0ai7C8x5elEIbH3B2X2TIYdBKsZ5STX
-        90FFlaLoj9Pyj7LxVMf02QdJknDAS1QSBXLzCNXKQvBLgb3wKExhDwhYef6uWYzjRUfuUw
-        01XTQ09oJkydhWgrHghO6334MluuwikVi5ZsazgTMOwIdj0rpq7gMhpg0JL0EktGgQvMFI
-        eG+1o+OtmlTDWJm+qPs0/183zJLoa+mLEqTt0T9akXNNTcQh5vLPbDOnraA2sPr6kbveiV
-        3HivOAR0SjeIQ7bxZKbaS/u2Gnr0RA5P9TmD05stYxlcmRVYF8iEcDb50pmdDg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605438343;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bij7WmP9+y87wX1KmnpAU4g3B0H3sxtPXI7Q6zWWxQs=;
-        b=9aHzsEu+3vkUgLobOam1UnDVGcyOjlX2Z8WySsysE24LlvIOAjNhLa9gnis2OYvkDodXxT
-        HMq6ok/G231XAjAA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq/irqdomain: Make irq_domain_disassociate() static
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <87a6vja7mb.fsf@nanos.tec.linutronix.de>
-References: <87a6vja7mb.fsf@nanos.tec.linutronix.de>
+        id S1726948AbgKOLT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 06:19:27 -0500
+Received: from correo.us.es ([193.147.175.20]:45526 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726894AbgKOLT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 06:19:27 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 7BA98E4B83
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:19:22 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 6CD4BFC5E6
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:19:22 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 5FDBBDA730; Sun, 15 Nov 2020 12:19:22 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 517F8DA704;
+        Sun, 15 Nov 2020 12:19:20 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Sun, 15 Nov 2020 12:19:20 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 30D1A4265A5A;
+        Sun, 15 Nov 2020 12:19:20 +0100 (CET)
+Date:   Sun, 15 Nov 2020 12:19:19 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: rectify file patterns for NETFILTER
+Message-ID: <20201115111919.GA24901@salvia>
+References: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Message-ID: <160543834186.11244.15951474822549357496.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Mon, Nov 09, 2020 at 10:19:42AM +0100, Lukas Bulwahn wrote:
+> The two file patterns in the NETFILTER section:
+> 
+>   F:      include/linux/netfilter*
+>   F:      include/uapi/linux/netfilter*
+> 
+> intended to match the directories:
+> 
+>   ./include{/uapi}/linux/netfilter_{arp,bridge,ipv4,ipv6}
+> 
+> A quick check with ./scripts/get_maintainer.pl --letters -f will show that
+> they are not matched, though, because this pattern only matches files, but
+> not directories.
+> 
+> Rectify the patterns to match the intended directories.
 
-Commit-ID:     e906a546bd8653ed2e7a14cb300fd17952d7f862
-Gitweb:        https://git.kernel.org/tip/e906a546bd8653ed2e7a14cb300fd17952d7f862
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 14 Nov 2020 23:36:28 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 15 Nov 2020 12:01:11 +01:00
-
-genirq/irqdomain: Make irq_domain_disassociate() static
-
-No users outside of the core code.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/87a6vja7mb.fsf@nanos.tec.linutronix.de
-
----
- include/linux/irqdomain.h | 2 --
- kernel/irq/irqdomain.c    | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 77bf7d8..5701a8b 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -387,8 +387,6 @@ extern int irq_domain_associate(struct irq_domain *domain, unsigned int irq,
- extern void irq_domain_associate_many(struct irq_domain *domain,
- 				      unsigned int irq_base,
- 				      irq_hw_number_t hwirq_base, int count);
--extern void irq_domain_disassociate(struct irq_domain *domain,
--				    unsigned int irq);
- 
- extern unsigned int irq_create_mapping(struct irq_domain *host,
- 				       irq_hw_number_t hwirq);
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 9c9cb88..3d7463f 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -496,7 +496,7 @@ static void irq_domain_set_mapping(struct irq_domain *domain,
- 	}
- }
- 
--void irq_domain_disassociate(struct irq_domain *domain, unsigned int irq)
-+static void irq_domain_disassociate(struct irq_domain *domain, unsigned int irq)
- {
- 	struct irq_data *irq_data = irq_get_irq_data(irq);
- 	irq_hw_number_t hwirq;
+Applied, thanks.
