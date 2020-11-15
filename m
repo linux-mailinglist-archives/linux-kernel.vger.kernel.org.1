@@ -2,142 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF822B34E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 13:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD132B34F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 13:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbgKOMVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 07:21:18 -0500
-Received: from host.euro-space.net ([87.117.239.2]:40155 "EHLO
-        host.euro-space.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726678AbgKOMVR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 07:21:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=birdec.com;
-         s=default; h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=4oo0hbU3ekJrFD+VdnDUAiKmeIwqAfw/S+FCziusOw8=; b=ZvPNc9KZ1E2+p70iK6KumfJCD0
-        NQLvMh+pnmK/PaZXKvk1PKKwazky/Y/AyRhUkUj+Cir9b93pkkMwj5zmXbx0vxH5x77NkiimzQFJd
-        /ntmNkYvI4zTaquKFJFDtnfXJCFIHmFWMvgmx2MuwYYusMSsCzO2KiKgKXEYNoSmtHKlUnI+hMySu
-        PgSSV+E8DFxVR2JRNpzk48XfDQmO9XC9U/tabduNK6kMhCkJfhRPiblQrFGS/adjM6OmMixhJ3QMz
-        r8cXfzA07wuDdGkEsf+Orp2Ke1Z90T/hve02Rhl2SpqX1YOcwp8QNCIjefLgFxqVGBhiLdNVZKJeO
-        f1uIGFOg==;
-Received: from dynamic-078-054-118-130.78.54.pool.telefonica.de ([78.54.118.130]:55232 helo=gentoo0.localdomain)
-        by host.euro-space.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <kmarinushkin@birdec.com>)
-        id 1keH1u-000338-Qb; Sun, 15 Nov 2020 12:21:14 +0000
-From:   Kirill Marinushkin <kmarinushkin@birdec.com>
-To:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     Matthias Reichl <hias@horus.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Kirill Marinushkin <kmarinushkin@birdec.com>
-Subject: [PATCH v3 4/4] ASoC: pcm512x: Add support for more data formats
-Date:   Sun, 15 Nov 2020 13:23:06 +0100
-Message-Id: <20201115122306.18164-5-kmarinushkin@birdec.com>
-X-Mailer: git-send-email 2.13.6
-In-Reply-To: <20201115122306.18164-1-kmarinushkin@birdec.com>
-References: <20201115122306.18164-1-kmarinushkin@birdec.com>
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - host.euro-space.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - birdec.com
-X-Get-Message-Sender-Via: host.euro-space.net: authenticated_id: kmarinushkin@birdec.com
-X-Authenticated-Sender: host.euro-space.net: kmarinushkin@birdec.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        id S1726853AbgKOMkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 07:40:47 -0500
+Received: from mga17.intel.com ([192.55.52.151]:13400 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726770AbgKOMkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 07:40:46 -0500
+IronPort-SDR: BVBvEgN1gqBfisNbQJGaEX4DAixPV5VjzjQD65gueQNrqvSl5f2P3NIK/sC8NbDGrhkKaC3tcW
+ /EyCWqH/l8Wg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9805"; a="150495456"
+X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
+   d="scan'208";a="150495456"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 04:40:45 -0800
+IronPort-SDR: J661xsZUvdjkP7WCoxBTOMElFRC1yI6sL+1JF4ZN2FKdX+1tQCwA+iwaPp+W9ZXo5fuQIuw3rY
+ ZDuMMOUqIxyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
+   d="scan'208";a="358138257"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Nov 2020 04:40:42 -0800
+Date:   Sun, 15 Nov 2020 20:40:41 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, zhengjun.xing@intel.com
+Subject: Re: [Fonts]  9522750c66:  fio.read_iops 7.5% improvement
+Message-ID: <20201115124041.GA3793@shbuild999.sh.intel.com>
+References: <20201112140625.GA21612@xsang-OptiPlex-9020>
+ <X64r4X/By+0BTc6a@kroah.com>
+ <20201114071916.GA71316@shbuild999.sh.intel.com>
+ <X6/MyFRkEPGqnNtK@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X6/MyFRkEPGqnNtK@kroah.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, pcm512x driver supports only I2S data format.
-This commit adds RJ, LJ, DSP_A and DSP_B as well.
+On Sat, Nov 14, 2020 at 01:25:44PM +0100, Greg Kroah-Hartman wrote:
+> On Sat, Nov 14, 2020 at 03:19:17PM +0800, Feng Tang wrote:
+> > Hi Greg,
+> > 
+> > On Fri, Nov 13, 2020 at 07:46:57AM +0100, Greg Kroah-Hartman wrote:
+> > > On Thu, Nov 12, 2020 at 10:06:25PM +0800, kernel test robot wrote:
+> > > > 
+> > > > Greeting,
+> > > > 
+> > > > FYI, we noticed a 7.5% improvement of fio.read_iops due to commit:
+> > > > 
+> > > > 
+> > > > commit: 9522750c66c689b739e151fcdf895420dc81efc0 ("Fonts: Replace discarded const qualifier")
+> > > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > > 
+> > > I strongly doubt this :)
+> > 
+> > We just double checked, the test was run 4 times and the result are
+> > very stable.
+> > 
+> > The commit does looks irrelevant to fio test, and we just further
+> > checked the System map of the 2 kernels, and many data's alignment
+> > have been changed (systemmaps attached).
+> > 
+> > We have a hack debug patch to make data sections of each .o file to
+> > be aligned, with that the fio result gap could be reduced from +7.5%
+> > to +3.8%, so there is still some other factor affecting the benchmark,
+> > which need more checking. And with the same debug method of forcing
+> > data sections aligned, 2 other strange performance bumps[1][2] reported
+> > by 0day could be recovered.
+> > 
+> > [1]. https://lore.kernel.org/lkml/20200205123216.GO12867@shao2-debian/
+> > [2]. https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
+> 
+> That's really odd.  Why wouldn't .o sections be aligned already and how
+> does that affect the real .ko files that are created from that?  What
+> alignment are you forcing?
 
-I don't expect regression WRT existing sound cards, because:
+Our debug patch is hacky which enforce 16K aligned (to adapt other rules
+in the linker script to make kernel boot), as below:
 
-* default value in corresponding register of pcm512x codec is 0 ==  I2S
-* existing in-tree sound cards with pcm512x codec are configured for I2S
-* i don't see how existing off-tree sound cards with pcm512x codec could be
-  configured differently - it would not work
-* tested explicitly, that there is no regression with Raspberry Pi +
-  sound card `sound/soc/bcm/hifiberry_dacplus.c`
-
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Matthias Reichl <hias@horus.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
----
- sound/soc/codecs/pcm512x.c | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 22ef77955a28..4dc844f3c1fc 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -1335,6 +1335,8 @@ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
-+	int afmt;
-+	int offset = 0;
- 	int clock_output;
- 	int master_mode;
- 	int ret;
-@@ -1372,6 +1374,42 @@ static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return ret;
- 	}
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 1bf7e31..de5ddc8 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -156,7 +156,9 @@ SECTIONS
+	X86_ALIGN_RODATA_END
  
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		afmt = PCM512x_AFMT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		afmt = PCM512x_AFMT_RTJ;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		afmt = PCM512x_AFMT_LTJ;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		offset = 1;
-+		fallthrough;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		afmt = PCM512x_AFMT_DSP;
-+		break;
-+	default:
-+		dev_err(component->dev, "unsupported DAI format: 0x%x\n",
-+			pcm512x->fmt);
-+		return -EINVAL;
-+	}
-+
-+	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_1,
-+				 PCM512x_AFMT, afmt);
-+	if (ret != 0) {
-+		dev_err(component->dev, "Failed to set data format: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_2,
-+				 0xFF, offset);
-+	if (ret != 0) {
-+		dev_err(component->dev, "Failed to set data offset: %d\n", ret);
-+		return ret;
-+	}
-+
- 	pcm512x->fmt = fmt;
- 
- 	return 0;
--- 
-2.13.6
+	/* Data */
+-	.data : AT(ADDR(.data) - LOAD_OFFSET) {
++	.data : AT(ADDR(.data) - LOAD_OFFSET)
++	SUBALIGN(16384)
++	{
+		/* Start of data section */
+		_sdata = .;
 
+And to make it boot, for our kernel config, we have to disable
+CONFIG_DYNAMIC_DEBUG to avoid kernel panic.
+
+> And also, what hardware is seeing this performance gains?  Something is
+> fitting into a cache now that previously wasn't, and tracking that down
+> seems like it would be very worthwhile as that is a non-trivial speedup
+> that some developers take years to achieve with code changes.
+
+It's a x86 server with 2S/48C/96T, and the fio parameters are:
+
+	[global]
+	bs=2M
+	ioengine=mmap
+	iodepth=32
+	size=4473924266
+	nr_files=1
+	filesize=4473924266
+	direct=0
+	runtime=240
+	invalidate=1
+	fallocate=posix
+	io_size=4473924266
+	file_service_type=roundrobin
+	random_distribution=random
+	group_reporting
+	pre_read=0
+
+	time_based
+
+	[task_0]
+	rw=read
+	directory=/fs/pmem0
+	numjobs=24
+
+	[task_1]
+	rw=read
+	directory=/fs/pmem1
+	numjobs=24
+
+And yes, we also think it's cacheline related, and we are further   
+checking it. Actually we have 2 other similar strange performance
+change checking ongoing:
+
+https://lore.kernel.org/lkml/20201102091543.GM31092@shao2-debian/
+https://lore.kernel.org/lkml/20201004132838.GU393@shao2-debian/
+
+So it may take some time. And to be frank, there have been quite
+some old similar cases that we couldn't figure out the exact cause.
+
+Thanks,
+Feng
+
+> thanks,
+> 
+> greg k-h
