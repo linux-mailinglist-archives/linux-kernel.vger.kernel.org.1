@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4392B3314
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 09:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 386292B3319
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 09:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgKOI44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 03:56:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36232 "EHLO mail.kernel.org"
+        id S1726851AbgKOI5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 03:57:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgKOI44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 03:56:56 -0500
-Received: from localhost (otava-0257.koleje.cuni.cz [78.128.181.4])
+        id S1726829AbgKOI5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 03:57:08 -0500
+Received: from kernel.org (unknown [77.125.7.142])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 073752242E;
-        Sun, 15 Nov 2020 08:56:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 224EC22450;
+        Sun, 15 Nov 2020 08:56:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605430615;
-        bh=XlDHcdsl532SN92xdtOqleWanacVK4C5l0LGG518skA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UPt0zKKVOB17S0lL9O3/xZIsjZwBnd/ahSRgC/zVMdLWyUKOvrj3fRsbxYY9Wc1HB
-         SQgiN8oXcpOvNgITU/tJPLgkCbr4EOWs8urM8GSOzPD3YiSRAAR+I4P5hkIAe13dKv
-         pCYIIWoMwG3FqXtixZkMDjNOT9GtqrD7xDD583dU=
-Date:   Sun, 15 Nov 2020 09:56:48 +0100
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Andreas =?UTF-8?B?RsOkcmJlcg==?= <afaerber@suse.de>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <uwe@kleine-koenig.org>,
-        Michal Hrusecki <Michal.Hrusecky@nic.cz>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH net-next] net: mvneta: Fix validation of 2.5G HSGMII
- without comphy
-Message-ID: <20201115095648.0af1c42b@kernel.org>
-In-Reply-To: <4bf5376c-a7d1-17bf-1034-b793113b101e@suse.de>
-References: <20201115004151.12899-1-afaerber@suse.de>
-        <20201115010241.GF1551@shell.armlinux.org.uk>
-        <4bf5376c-a7d1-17bf-1034-b793113b101e@suse.de>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        s=default; t=1605430626;
+        bh=SUtFVZkBjnPG4BEsw28+x8DzSO0BcyIPD75+9xZ8F1g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nA4M8UsTrs+9GlWcdh9/jFcMAMptctAK3t+3wr64R0pGeK4zorYnmfDnfR3Ad3XuM
+         4V9iKOl0BQeRQea+6ux/1qg3VYiBu+QNEGvj/FtyAXZ1cUxYcq8fcJg8nlVaicah0u
+         qQq3y46yY70qBqcgnfIM+bdn1hjhb9BA2nf7HDLQ=
+Date:   Sun, 15 Nov 2020 10:56:53 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v8 8/9] arch, mm: wire up memfd_secret system call were
+ relevant
+Message-ID: <20201115085653.GW4758@kernel.org>
+References: <20201110151444.20662-1-rppt@kernel.org>
+ <20201110151444.20662-9-rppt@kernel.org>
+ <20201113122507.GC3212@gaia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113122507.GC3212@gaia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Nov 2020 03:26:01 +0100
-Andreas F=C3=A4rber <afaerber@suse.de> wrote:
+On Fri, Nov 13, 2020 at 12:25:08PM +0000, Catalin Marinas wrote:
+> Hi Mike,
+> 
+> On Tue, Nov 10, 2020 at 05:14:43PM +0200, Mike Rapoport wrote:
+> > diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
+> > index 6c1dcca067e0..c71c3fe0b6cd 100644
+> > --- a/arch/arm64/include/asm/unistd32.h
+> > +++ b/arch/arm64/include/asm/unistd32.h
+> > @@ -891,6 +891,8 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
+> >  __SYSCALL(__NR_process_madvise, sys_process_madvise)
+> >  #define __NR_watch_mount 441
+> >  __SYSCALL(__NR_watch_mount, sys_watch_mount)
+> > +#define __NR_memfd_secret 442
+> > +__SYSCALL(__NR_memfd_secret, sys_memfd_secret)
+> 
+> arch/arm doesn't select ARCH_HAS_SET_DIRECT_MAP and doesn't support
+> memfd_secret(), so I wouldn't add it to the compat layer.
 
-> Hi Russell,
->=20
-> On 15.11.20 02:02, Russell King - ARM Linux admin wrote:
-> > On Sun, Nov 15, 2020 at 01:41:51AM +0100, Andreas F=C3=A4rber wrote: =20
-> >> Commit 1a642ca7f38992b086101fe204a1ae3c90ed8016 (net: ethernet: mvneta:
-> >> Add 2500BaseX support for SoCs without comphy) added support for 2500B=
-aseX.
-> >>
-> >> In case a comphy is not provided, mvneta_validate()'s check
-> >>   state->interface =3D=3D PHY_INTERFACE_MODE_2500BASEX
-> >> could never be true (it would've returned with empty bitmask before),
-> >> so that 2500baseT_Full and 2500baseX_Full do net get added to the mask=
-. =20
-> >=20
-> > This makes me nervous. It was intentional that if there is no comphy
-> > configured in DT for SoCs such as Armada 388, then there is no support
-> > to switch between 1G and 2.5G speed. Unfortunately, the configuration
-> > of the comphy is up to the board to do, not the SoC .dtsi, so we can't
-> > rely on there being a comphy on Armada 388 systems. =20
->=20
-> Please note that the if clause at the beginning of the validate function
-> does not check for comphy at all. So even with comphy, if there is a
-> code path that attempts to validate state 2500BASEX, it is broken, too.
->=20
-> Do you consider the modification of both ifs (validate and power_up) as
-> correct? Should they be split off from my main _NA change you discuss?
->=20
-> > So, one of the side effects of this patch is it incorrectly opens up
-> > the possibility of allowing 2.5G support on Armada 388 without a comphy
-> > configured.
-> >=20
-> > We really need a better way to solve this; just relying on the lack of
-> > comphy and poking at a register that has no effect on Armada 388 to
-> > select 2.5G speed while allowing 1G and 2.5G to be arbitarily chosen
-> > doesn't sound like a good idea to me. =20
-> [snip]
->=20
-> May I add that the comphy needs better documentation?
->=20
-> Marek and I independently came up with <&comphy5 2> in the end, but the
-> DT binding doesn't explain what the index is supposed to be and how I
-> might figure it out. It cost me days of reading U-Boot and kernel
-> sources and playing around with values until I had the working one.
->=20
-> Might be helpful to have a symbolic dt-bindings #define for this 2.
->=20
+Ok, I'll drop it.
 
-The gbe mux number is described in Armada 385 documentation. Yes, maybe
-we should add these defines somewhere, but certainly we should not
-declare ability of 2500baseX if comphy is not present and the interface
-is not configured to 2500baseX by default.
+> -- 
+> Catalin
 
-I propose putting this just into the dt binding documentation. No need
-for macros IMO, especially since these muxes may be different on each
-SOC.
-
-Marek
+-- 
+Sincerely yours,
+Mike.
