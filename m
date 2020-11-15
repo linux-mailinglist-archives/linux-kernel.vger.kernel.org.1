@@ -2,141 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE97D2B3868
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA4A2B383C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727610AbgKOTRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 14:17:03 -0500
-Received: from gw.c-home.cz ([89.24.150.100]:33600 "EHLO dmz.c-home.cz"
+        id S1727531AbgKOTAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 14:00:38 -0500
+Received: from wind.enjellic.com ([76.10.64.91]:60690 "EHLO wind.enjellic.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726823AbgKOTRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 14:17:03 -0500
-X-Greylist: delayed 1016 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Nov 2020 14:17:02 EST
-Received: from dmz.c-home.cz (localhost [127.0.0.1])
-        by dmz.c-home.cz (8.14.4+Sun/8.14.4) with ESMTP id 0AFIxRf9023820;
-        Sun, 15 Nov 2020 19:59:32 +0100 (CET)
-Received: from localhost (martin@localhost)
-        by dmz.c-home.cz (8.14.4+Sun/8.14.4/Submit) with ESMTP id 0AFIxOBg023817;
-        Sun, 15 Nov 2020 19:59:24 +0100 (CET)
-X-Authentication-Warning: dmz.c-home.cz: martin owned process doing -bs
-Date:   Sun, 15 Nov 2020 19:59:24 +0100 (CET)
-From:   Martin Cerveny <martin@c-home.cz>
-Reply-To: Martin Cerveny <M.Cerveny@computer.org>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-cc:     Martin Cerveny <m.cerveny@computer.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 0/6] ARM: dts: sun8i: v3s: Enable video decoder
-In-Reply-To: <c8cc3529-3e21-2a11-d258-bb03885a5c91@xs4all.nl>
-Message-ID: <alpine.GSO.2.00.2011151911340.21646@dmz.c-home.cz>
-References: <20200912143052.30952-1-m.cerveny@computer.org> <c8cc3529-3e21-2a11-d258-bb03885a5c91@xs4all.nl>
-User-Agent: Alpine 2.00 (GSO 1167 2008-08-23)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+        id S1727156AbgKOTAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 14:00:38 -0500
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 0AFIxqvw026709;
+        Sun, 15 Nov 2020 12:59:52 -0600
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 0AFIxoc0026708;
+        Sun, 15 Nov 2020 12:59:50 -0600
+Date:   Sun, 15 Nov 2020 12:59:50 -0600
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct vm_operations_struct
+Message-ID: <20201115185950.GA26542@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com> <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com> <20201106174359.GA24109@wind.enjellic.com> <e70c9e92-0bd4-59a4-21b1-bccf8621c6bb@intel.com> <20201107150930.GA29530@wind.enjellic.com> <c7157bc6-8a65-11f4-e961-17163730df5d@intel.com> <20201112205819.GA9172@wind.enjellic.com> <5c22300c-0956-48ed-578d-00cf62cb5c09@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5c22300c-0956-48ed-578d-00cf62cb5c09@intel.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Sun, 15 Nov 2020 12:59:53 -0600 (CST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+On Thu, Nov 12, 2020 at 01:31:19PM -0800, Dave Hansen wrote:
 
-On Thu, 5 Nov 2020, Hans Verkuil wrote:
+Good afternoon to everyone.
 
-> Hi Martin,
->
-> On 12/09/2020 16:30, Martin Cerveny wrote:
->> First patch extends cedrus capability to all decoders
->> because V3s missing MPEG2 decoder.
->>
->> Next two patches add system control node (SRAM C1) and
->> next three patches add support for Cedrus VPU.
->>
->> Tested on "Lichee Zero" V3s platform with testing LCD patch
->> ( https://github.com/mcerveny/linux/tree/v3s_videocodec_v4 )
->> and V4L2 raw API testing utility
->> ( https://github.com/mcerveny/v4l2-request-test ):
->> - enabled LCD (DRM dual VI and sigle UI planes)
->> - added RGB panel
->> - enabled PWM
->>
->> There is low memory on V3s (64MB) and maximum must be available to CMA:
->> - CONFIG_CMA_SIZE_MBYTES=28
->> - add swap to swapout other processes
->> - decrease buffers in v4l2-request-test (.buffers_count from 16 to 6)
->>
->> Only H.264 decoder working - MPEG and H.265 unsupported by V3s,
->> JPEG/MJPEG still unimplemented, encoder unimplemented
->
-> When I tried to merged these patches I got merge conflicts.
->
-> Possibly due to other 5.10 changes, but certainly because of conflicts
-> with patches from Jernej:
->
-> https://patchwork.linuxtv.org/project/linux-media/patch/20200825173523.1289379-4-jernej.skrabec@siol.net/
-> https://patchwork.linuxtv.org/project/linux-media/patch/20200825173523.1289379-5-jernej.skrabec@siol.net/
->
-> I've merged Jerne's patches and posted a PR for that:
-> https://patchwork.linuxtv.org/project/linux-media/patch/f3b8e5e2-5f0e-fb6f-e5b2-7f44f7e365e7@xs4all.nl/
->
-> Can you rebase your patches on top of my branch that contains Jernej's patches?
->
-> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=for-v5.11e
->
-> Once my PR is merged into the media_tree master I can take your rebased
-> patches.
+> On 11/12/20 12:58 PM, Dr. Greg wrote:
+> > @@ -270,11 +270,10 @@ static int sgx_vma_mprotect(struct vm_area_struct *vma,
+> >  			    struct vm_area_struct **pprev, unsigned long start,
+> >  			    unsigned long end, unsigned long newflags)
+> >  {
+> > -	int ret;
+> > +	struct sgx_encl *encl = vma->vm_private_data;
+> >  
+> > -	ret = sgx_encl_may_map(vma->vm_private_data, start, end, newflags);
+> > -	if (ret)
+> > -		return ret;
+> > +	if ( test_bit(SGX_ENCL_INITIALIZED, &encl->flags) )
+> > +		return -EACCES;
+> >  
+> >  	return mprotect_fixup(vma, pprev, start, end, newflags);
+> >  }
 
-I updated patches:
-https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e
+> This rules out mprotect() on running enclaves.  Does that break any
+> expectations from enclave authors, or take away capabilities that
+> folks need?
 
-BUT, commit (555 commits) for v5.10-1
-https://github.com/torvalds/linux/commit/fd5c32d80884268a381ed0e67cccef0b3d37750b
-disrupts usability of Cedrus H.264 (at least for my Allwinner V3s):
+As I mentioned an hour or so ago when I posted our updated patch, Sean
+and Jarkko have specifically indicated that there is no intention to
+support Enclave Dynamic Memory Management (EDMM) at this stage of the
+driver.  I believe the intent is to open that can of worms after the
+driver is mainlined.
 
-1) colors are disrupted
+Since the stated intent of the driver is to only implement SGX1
+semantics there is no need to allow page permission changes of any
+type after the enclave is initialized.  If mmap/mprotect are taken off
+the table for an initialized enclave, there is no need to walk the
+enclave page permissions since the hardware itself will enforce those
+intents.
 
-There are missing some initialization now.
+Runtime support is critical to implementing EDMM.  It seems premature
+to place code into the kernel until there is agreement from the
+runtime developers as to how page permission intent should be
+communicated into the kernel.  Current EDMM implementations simply
+allocate a sparse aperture which can be further extended, for example,
+to increase heap space or the number of Task Control Structures.
 
-If I use "5.9" compatible code
-(last bisect good point https://github.com/torvalds/linux/commit/647412daeb454b6dad12a6c6961ab90aac9e5d29 )
-then reboot (not power-off!) and use new code 
-( https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e )
-and colors are OK.
+As I've stated previously, there is an open question at this point as
+to how useful a mainline driver will be without EDMM support, unless
+the distributions or cloud providers are going to patch it in on top
+of the mainline driver.  Those players have been copied on all of
+these e-mails so I would assume they could/would pipe up with comments
+on what type of security architecture should be implemented.
 
-2) decoding of complex streams fails
+As I've stated before, I believe in the final analysis that the only
+relevant question is yes or no with respect to dynamic enclaves.
 
-( https://github.com/mcerveny/v4l2-request-test/tree/v5.10 )
-- bbb-h264-all-i-32 - OK
-- bbb-h264-32 - bad from frame 5
-- bbb-h264-high-32 - bad from frame 6
+Have a good remainder of the weekend.
 
-best regards,
-Martin
+Dr. Greg
 
->> Changes since v1:
->> - patch 0005 rename
->> - added testing description
->>
->> Martin Cerveny (6):
->>   media: cedrus: Register all codecs as capability
->>   dt-bindings: sram: allwinner,sun4i-a10-system-control: Add V3s
->>     compatibles
->>   ARM: dts: sun8i: v3s: Add node for system control
->>   media: cedrus: Add support for V3s
->>   dt-bindings: media: cedrus: Add V3s compatible
->>   ARM: dts: sun8i: v3s: Add video engine node
->>
->>  .../allwinner,sun4i-a10-video-engine.yaml     |  1 +
->>  .../allwinner,sun4i-a10-system-control.yaml   |  6 ++++
->>  arch/arm/boot/dts/sun8i-v3s.dtsi              | 33 +++++++++++++++++++
->>  drivers/staging/media/sunxi/cedrus/cedrus.c   | 28 +++++++++++++++-
->>  drivers/staging/media/sunxi/cedrus/cedrus.h   |  2 ++
->>  .../staging/media/sunxi/cedrus/cedrus_video.c |  2 ++
->>  6 files changed, 71 insertions(+), 1 deletion(-)
->>
->
+As always,
+Greg Wettstein, Ph.D, Worker          Autonomously self-defensive
+Enjellic Systems Development, LLC     IOT platforms and edge devices.
+4206 N. 19th Ave.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: greg@enjellic.com
+------------------------------------------------------------------------------
+"If you think nobody cares if you're alive, try missing a couple of car
+ payments."
+                                -- Earl Wilson
