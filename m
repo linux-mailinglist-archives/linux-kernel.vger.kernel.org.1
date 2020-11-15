@@ -2,96 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DC52B3535
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 15:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4322B3537
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 15:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727193AbgKOOKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 09:10:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbgKOOKI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 09:10:08 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2CEC0613D1;
-        Sun, 15 Nov 2020 06:10:08 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id e139so1440917lfd.1;
-        Sun, 15 Nov 2020 06:10:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cBgdH6GdCBGnI5dccRIOmhr8A9LKRM3pERsD4/tt0MI=;
-        b=It0OY4wQqG9i4I/LrYjiVWH6/tC8vyBnyqL7b12g9w4Js5PcICJQB1ABagRngiYNyS
-         Ki9JK3/SxfI8BPgGCf0bEW2GWl64ppaSwNvg4pVddCWZVuFOy3cE3JGdI+kmkL/KCUMK
-         MWvtnYTaUMV6cDpyD9O+9vfcTGs0pebf4w/F+JmsjOytsbpDDJmgx8bI12vOpACxf5Uc
-         ylL9u0tST0lRgTew3w6tg9AE80d2gXuLX3/Z36rKv5Xi1dHdzGyWgAe/XWG2vReJdMT3
-         QQWH9f/OBrRhB1TPJ82ziTsOlQvmhDUwP1UP0/igMz8B70Nw0E9nKXhmbb0444K/XiZ3
-         hRUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cBgdH6GdCBGnI5dccRIOmhr8A9LKRM3pERsD4/tt0MI=;
-        b=F2/HEGGf8akpSW3FMJZ3GNX1uUdFol8sAi4P4ufjE9Kd/8mU5Mv04AJZ8wn0r0APSG
-         E00La+C+ZXCMBqz//COcNGeLTxXRuujEbF55q0GA1RYLauadS7dqmuREkxuvKF4MVKai
-         NPT1IXg6ddIQAWUn7tcEtcJ8H6ezBzoj3lvTltTytB6m2wvhtgCICgMCcHIs/jmvF7iz
-         cANGpZGPKfaf2VLfMuLiO9kj1ioDHwuvRihn2qD6F5QVLISoYon3QRdJ1ak3PyxDOWeo
-         oG8lOsPSmHQPF0H3ukk0wdNDksg0jm14GYgqejW+GjmrEmxI9XbGAao894TOwNrLxoKi
-         0Few==
-X-Gm-Message-State: AOAM530iEW7qB1aay2vbWp22wrtQ1Ycwmp86c980jdRX2i2dzgyWqzIg
-        +mGHp1bnrFgXyJiqsRSYaDQIIVDgP1A=
-X-Google-Smtp-Source: ABdhPJzrrn2CWEv9FRn7nhv9rrehNC6O46kpoyDGaO+VBaOEOcQacCia9+OiQ+wJnnrgAlPRsiMYmQ==
-X-Received: by 2002:a19:8544:: with SMTP id h65mr4165469lfd.344.1605449406342;
-        Sun, 15 Nov 2020 06:10:06 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id j22sm2028419lfr.6.2020.11.15.06.10.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Nov 2020 06:10:05 -0800 (PST)
-Subject: Re: [PATCH v1] clk: tegra30: Use 300MHz for video decoder by default
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201104134810.21026-1-digetx@gmail.com>
- <160538861846.60232.2236874455363048014@swboyd.mtv.corp.google.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b362195a-665d-5e1d-4c6e-26cbc2459777@gmail.com>
-Date:   Sun, 15 Nov 2020 17:10:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1727204AbgKOOLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 09:11:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726743AbgKOOLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 09:11:17 -0500
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8B2B2344C;
+        Sun, 15 Nov 2020 14:11:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605449476;
+        bh=W79SsNbfjzxWPr68MkFF7CwzXqxmFk8cyvy7xhSLVZQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=y/95aUzUTGGv0uhKX/ECj544rFNzQGaU0EDd0l53VcSd/4JKMKccFnY3EbGIrd/QB
+         4iphERsVpcevCFP0a0k+skT1PFVcoBE/nPgU9/GurDDi3HGZl6y+zNTz4QMRNClKET
+         BU6RxTQfIO5gd+VjQvhJljvc7+FpDrdwJ1duGelg=
+Received: by mail-ot1-f54.google.com with SMTP id 79so13322805otc.7;
+        Sun, 15 Nov 2020 06:11:16 -0800 (PST)
+X-Gm-Message-State: AOAM531pbYnx1mht9J6n3RRKPZYjooll+Bf0LGzp66L9kWQgJ/ehksLh
+        Lv6bthbI4eI9eqnHdHcrNnaNP0ICjrrGh8NweEk=
+X-Google-Smtp-Source: ABdhPJyTPNVEaiqI65jKj6ofpnc68HWknI57qrxN0D6QNUJkPnSQRINil+Bq4EtPc6sB4yhS/1A4aX5j8HExZfTHozc=
+X-Received: by 2002:a05:6830:214c:: with SMTP id r12mr7247607otd.90.1605449476122;
+ Sun, 15 Nov 2020 06:11:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <160538861846.60232.2236874455363048014@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <5fadef1f.1c69fb81.9166e.093c@mx.google.com> <e16e2ce5-dc21-d159-ecf2-e0a430d772e1@collabora.com>
+ <CAMj1kXFrxYqTARLprws6ja2=C1xZNC+TNr0Vvayr6sReqsUhyg@mail.gmail.com>
+ <ce91a878-5ce3-614d-d10c-569b891b12d0@collabora.com> <20201113155825.GD1551@shell.armlinux.org.uk>
+ <CAMj1kXHMBNK4ke3j0=h-xkxR9sWe3x_D2TLsPtDZv-sWCW4eWQ@mail.gmail.com> <CAMj1kXH6_-tNuhOVDJA4mhEUQBDTDLjJA8CUkb4mRFsAZSy9ig@mail.gmail.com>
+In-Reply-To: <CAMj1kXH6_-tNuhOVDJA4mhEUQBDTDLjJA8CUkb4mRFsAZSy9ig@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sun, 15 Nov 2020 15:11:03 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEFMgRZ1QgaAfwvg7Um-=UdiG-THGAySwrBHhQX=tMPeQ@mail.gmail.com>
+Message-ID: <CAMj1kXEFMgRZ1QgaAfwvg7Um-=UdiG-THGAySwrBHhQX=tMPeQ@mail.gmail.com>
+Subject: Re: rmk/for-next bisection: baseline.login on bcm2836-rpi-2-b
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernelci-results@groups.io,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mike Rapoport <rppt@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.11.2020 00:16, Stephen Boyd пишет:
-> Quoting Dmitry Osipenko (2020-11-04 05:48:10)
->> The 600MHz is a too high clock rate for some SoC versions for the video
->> decoder hardware and this may cause stability issues. Use 300MHz for the
->> video decoder by default, which is supported by all hardware versions.
->>
->> Fixes: ed1a2459e20c ("clk: tegra: Add Tegra20/30 EMC clock implementation")
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
-> 
-> Should this go to clk-fixes? Thierry?
-> 
+On Fri, 13 Nov 2020 at 17:25, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Fri, 13 Nov 2020 at 17:15, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Fri, 13 Nov 2020 at 16:58, Russell King - ARM Linux admin
+> > <linux@armlinux.org.uk> wrote:
+> > >
+> > > On Fri, Nov 13, 2020 at 03:43:27PM +0000, Guillaume Tucker wrote:
+> > > > On 13/11/2020 10:35, Ard Biesheuvel wrote:
+> > > > > On Fri, 13 Nov 2020 at 11:31, Guillaume Tucker
+> > > > > <guillaume.tucker@collabora.com> wrote:
+> > > > >>
+> > > > >> Hi Ard,
+> > > > >>
+> > > > >> Please see the bisection report below about a boot failure on
+> > > > >> RPi-2b.
+> > > > >>
+> > > > >> Reports aren't automatically sent to the public while we're
+> > > > >> trialing new bisection features on kernelci.org but this one
+> > > > >> looks valid.
+> > > > >>
+> > > > >> There's nothing in the serial console log, probably because it's
+> > > > >> crashing too early during boot.  I'm not sure if other platforms
+> > > > >> on kernelci.org were hit by this in the same way, but there
+> > > > >> doesn't seem to be any.
+> > > > >>
+> > > > >> The same regression can be see on rmk's for-next branch as well
+> > > > >> as in linux-next.  It happens with both bcm2835_defconfig and
+> > > > >> multi_v7_defconfig.
+> > > > >>
+> > > > >> Some more details can be found here:
+> > > > >>
+> > > > >>   https://kernelci.org/test/case/id/5fae44823818ee918adb8864/
+> > > > >>
+> > > > >> If this looks like a real issue but you don't have a platform at
+> > > > >> hand to reproduce it, please let us know if you would like the
+> > > > >> KernelCI test to be re-run with earlyprintk or some debug config
+> > > > >> turned on, or if you have a fix to try.
+> > > > >>
+> > > > >> Best wishes,
+> > > > >> Guillaume
+> > > > >>
+> > > > >
+> > > > > Hello Guillaume,
+> > > > >
+> > > > > That patch did have an issue, but it was already fixed by
+> > > > >
+> > > > > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9020/1
+> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=fc2933c133744305236793025b00c2f7d258b687
+> > > > >
+> > > > > Could you please double check whether cherry-picking that on top of
+> > > > > the first bad commit fixes the problem?
+> > > >
+> > > > Sadly this doesn't appear to be fixing the issue.  I've
+> > > > cherry-picked your patch on top of the commit found by the
+> > > > bisection but it still didn't boot, here's the git log
+> > > >
+> > > > cbb9656e83ca ARM: 9020/1: mm: use correct section size macro to describe the FDT virtual address
+> > > > 7a1be318f579 ARM: 9012/1: move device tree mapping out of linear region
+> > > > e9a2f8b599d0 ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+> > > > 3650b228f83a Linux 5.10-rc1
+> > > >
+> > > > Test log: https://people.collabora.com/~gtucker/lava/boot/rpi-2-b/v5.10-rc1-3-gcbb9656e83ca/
+> > > >
+> > > > There's no output so it's hard to tell what is going on, but
+> > > > reverting the bad commmit does make the board to boot (that's
+> > > > what "revert: PASS" means in the bisect report).  So it's
+> > > > unlikely that there is another issue causing the boot failure.
+> > >
+> > > These silent boot failures are precisely what the DEBUG_LL stuff (and
+> > > early_printk) is supposed to help with - getting the kernel messages
+> > > out when there is an oops before the serial console is initialised.
+> > >
+> >
+> > If this is indeed related to the FDT mapping, I would assume
+> > earlycon=... to be usable here.
+> >
+> > I will try to reproduce this on a RPi3 but I don't have a RPi2 at
+> > hand, unfortunately.
+> >
+> > Would you mind having a quick try whether you can reproduce this on
+> > QEMU, using the raspi2 machine model? If so, that would be a *lot*
+> > easier to diagnose.
+>
+> Also, please have a go with 'earlycon=pl011,0x3f201000' added to the
+> kernel command line.
 
-Either way should be good. The fix isn't critical because 600MHz seems
-to be working okay on unsupported hardware.
+I cannot reproduce this - I don't have the exact same hardware, but
+for booting the kernel, I think RPi2 and RPi3 should be sufficiently
+similar, and I can boot on Rpi3 using a u-boot built for rpi2 using
+your provided dtb for RPi2.
 
-Potentially this could vary depending on a board, but then I don't think
-that there are actively-supported boards which would notice this change.
+What puzzles me is that u-boot reports itself as
 
-Likely that this patch will be backported by a bot anyways because of
-the fixes tag.
+U-Boot 2016.03-rc1-00131-g39af3d8-dirty
+
+RPI Model B+ (0x10)
+
+which is the ARMv6 model not the ARMv7, but then the kernel reports
+
+CPU: ARMv7 Processor [410fc075] revision 5 (ARMv7), cr=10c53c7d
+
+So even though I am perfectly willing to accept that there is
+something wrong with the patch in question that needs to be fixed,
+trying to reproduce this using an ancient rc1 u-boot with local
+changes that identifies the platform incorrectly may be asking a bit
+much.
+
+Also, I did manage to get earlycon working with those zImages you
+provided, so please give that a go. And if you have any contacts that
+could lend me a RPi2, that would be very helpful (e.g., the BayLibre
+office is down the road from where I live)
