@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35D42B34FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 14:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC1E2B3500
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 14:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgKONBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 08:01:39 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35262 "EHLO
+        id S1727059AbgKONBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 08:01:40 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35268 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726863AbgKONBi (ORCPT
+        with ESMTP id S1727028AbgKONBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 08:01:38 -0500
-Date:   Sun, 15 Nov 2020 13:00:42 -0000
+        Sun, 15 Nov 2020 08:01:39 -0500
+Date:   Sun, 15 Nov 2020 13:00:43 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605445295;
+        s=2020; t=1605445297;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=pnQyTI1tBI/RcJUtDwnYXCZ4IfJWf8Uit307BI2dtFY=;
-        b=qayVM0qP5hozXA+hJj76wbxZQNH7wVp29fxaS5wxGdVDMf7VpBM2gnD2Upwb4unrsDwVWO
-        2cYr5mS39vkHkvwP+syIPpyVg/3UiMkRMBd60QOJu2pxITDyV0yOMiSLTzBNbhxkkINYXk
-        qjIj/7qCd8jq5u7EKFFtqgPHg38gYN6lXkV8/d0rrJPYUvAGZMBPVd2sjSM3vfvX9zLKb8
-        xhyAJeNVhMO4UsunXuJFotDTLe4ErvvcIxUkNupTgr0rSHUadTBloVyNZus6iz7no1nOxA
-        UCJfNdKKuCyzj+5y3X6vn+N03PzeiBnRSrZY+X/oVNz15GacoCv2JJeE2e6vSg==
+        bh=0NM9HxVcwvPIUXFtFXNagxgz3Qp8ez8aVxVbQcJSzvk=;
+        b=w4t5cT2xsdxeIi9jaTxbGeJlX+Q/6QU/5gh52DFTMIZNTYBd8o2jTFSQPBEYbIF9l9qxY4
+        /6lk0EE3gyutkQ17I3Bym1OvLHJNhacpdMGb9DF0bFx5oaloACBTAjLRZvyT4r9VGGsJRc
+        3uPdlr1elr2pVQyBBvqC9ykCaPE59kFRh6dottJBrAsYrA+ODtZd1Tg2aoCwETt228dYMu
+        HaHlTTPCd+yIBv/9Q7w+LUQUDngIsCDWNz+y6kOUyDIKg0VX7v4hUDsnxjRIn4EGeEP+U7
+        Jcd7VVz/5/bujt016CcVX8Tw8urNg1GEXu883oblRpR8UHKDKi9gc/MOeNwB5A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605445295;
+        s=2020e; t=1605445297;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=pnQyTI1tBI/RcJUtDwnYXCZ4IfJWf8Uit307BI2dtFY=;
-        b=rqILnreyHZ0HzOwpPZCZb3mXL3GXlbg/9gJ5Bs1KYxbQ7OsNxgKoTcgzttzXGh8pciLdSY
-        ZLtsHYY/EVYPd6DQ==
+        bh=0NM9HxVcwvPIUXFtFXNagxgz3Qp8ez8aVxVbQcJSzvk=;
+        b=Mz2TLKFBJ6w+Er3D+E6y9ZUlqqSsBWr3pN+A89vdNIsGEJ0Vbbvd5IE3utJr6D/DgFQpkY
+        HHD4UZQ3eewyYeBQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] sched/urgent for v5.10-rc4
+Subject: [GIT pull] x86/urgent for v5.10-rc4
 References: <160544524024.25051.12292089189937197323.tglx@nanos>
-Message-ID: <160544524266.25051.13876494098346280672.tglx@nanos>
+Message-ID: <160544524386.25051.9326481900625497800.tglx@nanos>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -46,224 +46,144 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Linus,
 
-please pull the latest sched/urgent branch from:
+please pull the latest x86/urgent branch from:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2020-11-15
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-11-15
 
-up to:  8d4d9c7b4333: sched/debug: Fix memory corruption caused by multiple small reads of flags
+up to:  ff828729be44: iommu/vt-d: Cure VF irqdomain hickup
 
 
-A set of scheduler fixes:
+A small set of fixes for x86:
 
- - Address a load balancer regression by making the load balancer use the
-   same logic as the wakeup path to spread tasks in the LLC domain.
+ - Cure the fallout from the MSI irqdomain overhaul which missed that the
+   Intel IOMMU does not register virtual function devices and therefore
+   never reaches the point where the MSI interrupt domain is assigned. This
+   makes the VF devices use the non-remapped MSI domain which is trapped by
+   the IOMMU/remap unit.
 
- - Prefer the CPU on which a task run last over the local CPU in the fast
-   wakeup path for asymmetric CPU capacity systems to align with the
-   symmetric case. This ensures more locality and prevents massive
-   migration overhead on those asymetric systems
+ - Remove an extra space in the SGI_UV architecture type procfs output for
+   UV5.
 
- - Fix a memory corruption bug in the scheduler debug code caused by
-   handing a modified buffer pointer to kfree().
+ - Remove a unused function which was missed when removing the UV BAU TLB
+   shootdown handler.
 
 Thanks,
 
 	tglx
 
 ------------------>
-Colin Ian King (1):
-      sched/debug: Fix memory corruption caused by multiple small reads of flags
+Jiri Slaby (1):
+      x86/platform/uv: Drop last traces of uv_flush_tlb_others
 
-Vincent Guittot (2):
-      sched/fair: Ensure tasks spreading in LLC during LB
-      sched/fair: Prefer prev cpu in asymmetric wakeup path
+Mike Travis (1):
+      x86/platform/uv: Fix copied UV5 output archtype
+
+Thomas Gleixner (1):
+      iommu/vt-d: Cure VF irqdomain hickup
 
 
- kernel/sched/debug.c | 12 ++++-----
- kernel/sched/fair.c  | 70 +++++++++++++++++++++++++++++++++-------------------
- 2 files changed, 51 insertions(+), 31 deletions(-)
+ arch/x86/include/asm/uv/uv.h       | 10 ----------
+ arch/x86/kernel/apic/x2apic_uv_x.c |  6 +++---
+ drivers/iommu/intel/dmar.c         | 19 ++++++++++++++++++-
+ 3 files changed, 21 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 0655524700d2..2357921580f9 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -251,7 +251,7 @@ static int sd_ctl_doflags(struct ctl_table *table, int write,
- 	unsigned long flags = *(unsigned long *)table->data;
- 	size_t data_size = 0;
- 	size_t len = 0;
--	char *tmp;
-+	char *tmp, *buf;
- 	int idx;
+diff --git a/arch/x86/include/asm/uv/uv.h b/arch/x86/include/asm/uv/uv.h
+index 172d3e4a9e4b..648eb23fe7f0 100644
+--- a/arch/x86/include/asm/uv/uv.h
++++ b/arch/x86/include/asm/uv/uv.h
+@@ -2,14 +2,8 @@
+ #ifndef _ASM_X86_UV_UV_H
+ #define _ASM_X86_UV_UV_H
  
- 	if (write)
-@@ -269,17 +269,17 @@ static int sd_ctl_doflags(struct ctl_table *table, int write,
- 		return 0;
- 	}
- 
--	tmp = kcalloc(data_size + 1, sizeof(*tmp), GFP_KERNEL);
--	if (!tmp)
-+	buf = kcalloc(data_size + 1, sizeof(*buf), GFP_KERNEL);
-+	if (!buf)
- 		return -ENOMEM;
- 
- 	for_each_set_bit(idx, &flags, __SD_FLAG_CNT) {
- 		char *name = sd_flag_debug[idx].name;
- 
--		len += snprintf(tmp + len, strlen(name) + 2, "%s ", name);
-+		len += snprintf(buf + len, strlen(name) + 2, "%s ", name);
- 	}
- 
--	tmp += *ppos;
-+	tmp = buf + *ppos;
- 	len -= *ppos;
- 
- 	if (len > *lenp)
-@@ -294,7 +294,7 @@ static int sd_ctl_doflags(struct ctl_table *table, int write,
- 	*lenp = len;
- 	*ppos += len;
- 
--	kfree(tmp);
-+	kfree(buf);
- 
- 	return 0;
- }
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index aa4c6227cd6d..8e563cf2b5e7 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6172,21 +6172,21 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- static int
- select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
- {
--	unsigned long best_cap = 0;
-+	unsigned long task_util, best_cap = 0;
- 	int cpu, best_cpu = -1;
- 	struct cpumask *cpus;
- 
--	sync_entity_load_avg(&p->se);
+-#include <asm/tlbflush.h>
 -
- 	cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
- 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+ enum uv_system_type {UV_NONE, UV_LEGACY_APIC, UV_X2APIC};
  
-+	task_util = uclamp_task_util(p);
-+
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		unsigned long cpu_cap = capacity_of(cpu);
+-struct cpumask;
+-struct mm_struct;
+-struct flush_tlb_info;
+-
+ #ifdef CONFIG_X86_UV
+ #include <linux/efi.h>
  
- 		if (!available_idle_cpu(cpu) && !sched_idle_cpu(cpu))
- 			continue;
--		if (task_fits_capacity(p, cpu_cap))
-+		if (fits_capacity(task_util, cpu_cap))
- 			return cpu;
+@@ -44,10 +38,6 @@ static inline int is_uv_system(void)	{ return 0; }
+ static inline int is_uv_hubbed(int uv)	{ return 0; }
+ static inline void uv_cpu_init(void)	{ }
+ static inline void uv_system_init(void)	{ }
+-static inline const struct cpumask *
+-uv_flush_tlb_others(const struct cpumask *cpumask,
+-		    const struct flush_tlb_info *info)
+-{ return cpumask; }
  
- 		if (cpu_cap > best_cap) {
-@@ -6198,44 +6198,42 @@ select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
- 	return best_cpu;
+ #endif	/* X86_UV */
+ 
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index 3115caa7d7d0..1b98f8c12b96 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -33,7 +33,7 @@ static union uvh_apicid		uvh_apicid;
+ static int			uv_node_id;
+ 
+ /* Unpack AT/OEM/TABLE ID's to be NULL terminated strings */
+-static u8 uv_archtype[UV_AT_SIZE];
++static u8 uv_archtype[UV_AT_SIZE + 1];
+ static u8 oem_id[ACPI_OEM_ID_SIZE + 1];
+ static u8 oem_table_id[ACPI_OEM_TABLE_ID_SIZE + 1];
+ 
+@@ -320,7 +320,7 @@ static int __init decode_arch_type(unsigned long ptr)
+ 
+ 	if (n > 0 && n < sizeof(uv_ate->archtype)) {
+ 		pr_info("UV: UVarchtype received from BIOS\n");
+-		uv_stringify(UV_AT_SIZE, uv_archtype, uv_ate->archtype);
++		uv_stringify(sizeof(uv_archtype), uv_archtype, uv_ate->archtype);
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -378,7 +378,7 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
+ 	if (!early_get_arch_type())
+ 
+ 		/* If not use OEM ID for UVarchtype */
+-		uv_stringify(UV_AT_SIZE, uv_archtype, _oem_id);
++		uv_stringify(sizeof(uv_archtype), uv_archtype, oem_id);
+ 
+ 	/* Check if not hubbed */
+ 	if (strncmp(uv_archtype, "SGI", 3) != 0) {
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index 404b40af31cb..b2e804473209 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -333,6 +333,11 @@ static void  dmar_pci_bus_del_dev(struct dmar_pci_notify_info *info)
+ 	dmar_iommu_notify_scope_dev(info);
  }
  
-+static inline bool asym_fits_capacity(int task_util, int cpu)
++static inline void vf_inherit_msi_domain(struct pci_dev *pdev)
 +{
-+	if (static_branch_unlikely(&sched_asym_cpucapacity))
-+		return fits_capacity(task_util, capacity_of(cpu));
-+
-+	return true;
++	dev_set_msi_domain(&pdev->dev, dev_get_msi_domain(&pdev->physfn->dev));
 +}
 +
- /*
-  * Try and locate an idle core/thread in the LLC cache domain.
-  */
- static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ static int dmar_pci_bus_notifier(struct notifier_block *nb,
+ 				 unsigned long action, void *data)
  {
- 	struct sched_domain *sd;
-+	unsigned long task_util;
- 	int i, recent_used_cpu;
- 
- 	/*
--	 * For asymmetric CPU capacity systems, our domain of interest is
--	 * sd_asym_cpucapacity rather than sd_llc.
-+	 * On asymmetric system, update task utilization because we will check
-+	 * that the task fits with cpu's capacity.
- 	 */
- 	if (static_branch_unlikely(&sched_asym_cpucapacity)) {
--		sd = rcu_dereference(per_cpu(sd_asym_cpucapacity, target));
--		/*
--		 * On an asymmetric CPU capacity system where an exclusive
--		 * cpuset defines a symmetric island (i.e. one unique
--		 * capacity_orig value through the cpuset), the key will be set
--		 * but the CPUs within that cpuset will not have a domain with
--		 * SD_ASYM_CPUCAPACITY. These should follow the usual symmetric
--		 * capacity path.
--		 */
--		if (!sd)
--			goto symmetric;
--
--		i = select_idle_capacity(p, sd, target);
--		return ((unsigned)i < nr_cpumask_bits) ? i : target;
-+		sync_entity_load_avg(&p->se);
-+		task_util = uclamp_task_util(p);
- 	}
- 
--symmetric:
--	if (available_idle_cpu(target) || sched_idle_cpu(target))
-+	if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
-+	    asym_fits_capacity(task_util, target))
- 		return target;
- 
- 	/*
- 	 * If the previous CPU is cache affine and idle, don't be stupid:
- 	 */
- 	if (prev != target && cpus_share_cache(prev, target) &&
--	    (available_idle_cpu(prev) || sched_idle_cpu(prev)))
-+	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-+	    asym_fits_capacity(task_util, prev))
- 		return prev;
- 
- 	/*
-@@ -6258,7 +6256,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	    recent_used_cpu != target &&
- 	    cpus_share_cache(recent_used_cpu, target) &&
- 	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
--	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr)) {
-+	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr) &&
-+	    asym_fits_capacity(task_util, recent_used_cpu)) {
- 		/*
- 		 * Replace recent_used_cpu with prev as it is a potential
- 		 * candidate for the next wake:
-@@ -6267,6 +6266,26 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 		return recent_used_cpu;
- 	}
- 
-+	/*
-+	 * For asymmetric CPU capacity systems, our domain of interest is
-+	 * sd_asym_cpucapacity rather than sd_llc.
-+	 */
-+	if (static_branch_unlikely(&sched_asym_cpucapacity)) {
-+		sd = rcu_dereference(per_cpu(sd_asym_cpucapacity, target));
+@@ -342,8 +347,20 @@ static int dmar_pci_bus_notifier(struct notifier_block *nb,
+ 	/* Only care about add/remove events for physical functions.
+ 	 * For VFs we actually do the lookup based on the corresponding
+ 	 * PF in device_to_iommu() anyway. */
+-	if (pdev->is_virtfn)
++	if (pdev->is_virtfn) {
 +		/*
-+		 * On an asymmetric CPU capacity system where an exclusive
-+		 * cpuset defines a symmetric island (i.e. one unique
-+		 * capacity_orig value through the cpuset), the key will be set
-+		 * but the CPUs within that cpuset will not have a domain with
-+		 * SD_ASYM_CPUCAPACITY. These should follow the usual symmetric
-+		 * capacity path.
++		 * Ensure that the VF device inherits the irq domain of the
++		 * PF device. Ideally the device would inherit the domain
++		 * from the bus, but DMAR can have multiple units per bus
++		 * which makes this impossible. The VF 'bus' could inherit
++		 * from the PF device, but that's yet another x86'sism to
++		 * inflict on everybody else.
 +		 */
-+		if (sd) {
-+			i = select_idle_capacity(p, sd, target);
-+			return ((unsigned)i < nr_cpumask_bits) ? i : target;
-+		}
++		if (action == BUS_NOTIFY_ADD_DEVICE)
++			vf_inherit_msi_domain(pdev);
+ 		return NOTIFY_DONE;
 +	}
 +
- 	sd = rcu_dereference(per_cpu(sd_llc, target));
- 	if (!sd)
- 		return target;
-@@ -9031,7 +9050,8 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
- 	 * emptying busiest.
- 	 */
- 	if (local->group_type == group_has_spare) {
--		if (busiest->group_type > group_fully_busy) {
-+		if ((busiest->group_type > group_fully_busy) &&
-+		    !(env->sd->flags & SD_SHARE_PKG_RESOURCES)) {
- 			/*
- 			 * If busiest is overloaded, try to fill spare
- 			 * capacity. This might end up creating spare capacity
+ 	if (action != BUS_NOTIFY_ADD_DEVICE &&
+ 	    action != BUS_NOTIFY_REMOVED_DEVICE)
+ 		return NOTIFY_DONE;
 
