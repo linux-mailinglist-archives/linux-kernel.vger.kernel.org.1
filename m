@@ -2,127 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA242B31FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 03:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173B82B3204
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 04:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgKOC0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 14 Nov 2020 21:26:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53324 "EHLO mx2.suse.de"
+        id S1726527AbgKODGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 14 Nov 2020 22:06:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726136AbgKOC0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 14 Nov 2020 21:26:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F3D10AC2D;
-        Sun, 15 Nov 2020 02:26:02 +0000 (UTC)
-Subject: Re: [PATCH net-next] net: mvneta: Fix validation of 2.5G HSGMII
- without comphy
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
-        Michal Hrusecki <Michal.Hrusecky@nic.cz>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-References: <20201115004151.12899-1-afaerber@suse.de>
- <20201115010241.GF1551@shell.armlinux.org.uk>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Message-ID: <4bf5376c-a7d1-17bf-1034-b793113b101e@suse.de>
-Date:   Sun, 15 Nov 2020 03:26:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1726136AbgKODGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 14 Nov 2020 22:06:06 -0500
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEC412417B;
+        Sun, 15 Nov 2020 03:06:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605409566;
+        bh=PcClpXu3KiOwaaUagTIiQI2iPEfsvKH5yU8G9nBQ3EA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vB7zggMFq2DHn8xvFqn4EjCMyTHILpnMqGUS//DNHMbF0AEupaISKIQBFDwoCrUlZ
+         GO3SLR1mKnRE+K+XpRdGlOoU2E0nQ8UEnHN7+cNqo0MHEI58lgRTinIiWOiJxTy2+5
+         1uFy4RebSMEbJVRUcVGycxPuQWqAmllWEQGHzy3c=
+Received: by mail-lf1-f53.google.com with SMTP id r9so19817651lfn.11;
+        Sat, 14 Nov 2020 19:06:05 -0800 (PST)
+X-Gm-Message-State: AOAM530ojJEqvCwyITaAHyJkHSfVPZSIGx96ZiFHmUBp0pt9LkxFsWqJ
+        DC6LjMWgsX9LMqab4eOPQNB1jRzDqy6l8yzX3oA=
+X-Google-Smtp-Source: ABdhPJy7AM5rppSQoupCrOrC1VAmGG/BLptOkWdz7cLxMYo/htpzH163GWy1eTrOW3pvsQD8GpjaBPiPEPgy5+sCWvA=
+X-Received: by 2002:a19:fc0f:: with SMTP id a15mr3152753lfi.248.1605409563974;
+ Sat, 14 Nov 2020 19:06:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201115010241.GF1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1603024697-30080-1-git-send-email-guoren@kernel.org> <202011131457.63270B286@keescook>
+In-Reply-To: <202011131457.63270B286@keescook>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 15 Nov 2020 11:05:52 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTT6j3YQJBy6C4Rz-wfYd7r7FkWLV+q1G7NHzBzUQ6iVqw@mail.gmail.com>
+Message-ID: <CAJF2gTT6j3YQJBy6C4Rz-wfYd7r7FkWLV+q1G7NHzBzUQ6iVqw@mail.gmail.com>
+Subject: Re: [PATCH v4] riscv: Enable per-task stack canaries
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>, cooper.qu@linux.alibaba.com,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
+Hi Palmer,
 
-On 15.11.20 02:02, Russell King - ARM Linux admin wrote:
-> On Sun, Nov 15, 2020 at 01:41:51AM +0100, Andreas Färber wrote:
->> Commit 1a642ca7f38992b086101fe204a1ae3c90ed8016 (net: ethernet: mvneta:
->> Add 2500BaseX support for SoCs without comphy) added support for 2500BaseX.
->>
->> In case a comphy is not provided, mvneta_validate()'s check
->>   state->interface == PHY_INTERFACE_MODE_2500BASEX
->> could never be true (it would've returned with empty bitmask before),
->> so that 2500baseT_Full and 2500baseX_Full do net get added to the mask.
-> 
-> This makes me nervous. It was intentional that if there is no comphy
-> configured in DT for SoCs such as Armada 388, then there is no support
-> to switch between 1G and 2.5G speed. Unfortunately, the configuration
-> of the comphy is up to the board to do, not the SoC .dtsi, so we can't
-> rely on there being a comphy on Armada 388 systems.
+Could you help move the patch into your next-tree with Kees' review added?
 
-Please note that the if clause at the beginning of the validate function
-does not check for comphy at all. So even with comphy, if there is a
-code path that attempts to validate state 2500BASEX, it is broken, too.
+On Sat, Nov 14, 2020 at 6:57 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Sun, Oct 18, 2020 at 12:38:17PM +0000, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > This enables the use of per-task stack canary values if GCC has
+> > support for emitting the stack canary reference relative to the
+> > value of tp, which holds the task struct pointer in the riscv
+> > kernel.
+> >
+> > After compare arm64 and x86 implementations, seems arm64's is more
+> > flexible and readable. The key point is how gcc get the offset of
+> > stack_canary from gs/el0_sp.
+> >
+> > x86: Use a fix offset from gs, not flexible.
+> >
+> > struct fixed_percpu_data {
+> >       /*
+> >        * GCC hardcodes the stack canary as %gs:40.  Since the
+> >        * irq_stack is the object at %gs:0, we reserve the bottom
+> >        * 48 bytes of the irq stack for the canary.
+> >        */
+> >       char            gs_base[40]; // :(
+> >       unsigned long   stack_canary;
+> > };
+> >
+> > arm64: Use -mstack-protector-guard-offset & guard-reg
+> >       gcc options:
+> >       -mstack-protector-guard=sysreg
+> >       -mstack-protector-guard-reg=sp_el0
+> >       -mstack-protector-guard-offset=xxx
+> >
+> > riscv: Use -mstack-protector-guard-offset & guard-reg
+> >       gcc options:
+> >       -mstack-protector-guard=tls
+> >       -mstack-protector-guard-reg=tp
+> >       -mstack-protector-guard-offset=xxx
+> >
+> >  GCC's implementation has been merged:
+> >  commit c931e8d5a96463427040b0d11f9c4352ac22b2b0
+> >  Author: Cooper Qu <cooper.qu@linux.alibaba.com>
+> >  Date:   Mon Jul 13 16:15:08 2020 +0800
+> >
+> >      RISC-V: Add support for TLS stack protector canary access
+> >
+> > In the end, these codes are inserted by gcc before return:
+> >
+> > *  0xffffffe00020b396 <+120>:   ld      a5,1008(tp) # 0x3f0
+> > *  0xffffffe00020b39a <+124>:   xor     a5,a5,a4
+> > *  0xffffffe00020b39c <+126>:   mv      a0,s5
+> > *  0xffffffe00020b39e <+128>:   bnez    a5,0xffffffe00020b61c <_do_fork+766>
+> >    0xffffffe00020b3a2 <+132>:   ld      ra,136(sp)
+> >    0xffffffe00020b3a4 <+134>:   ld      s0,128(sp)
+> >    0xffffffe00020b3a6 <+136>:   ld      s1,120(sp)
+> >    0xffffffe00020b3a8 <+138>:   ld      s2,112(sp)
+> >    0xffffffe00020b3aa <+140>:   ld      s3,104(sp)
+> >    0xffffffe00020b3ac <+142>:   ld      s4,96(sp)
+> >    0xffffffe00020b3ae <+144>:   ld      s5,88(sp)
+> >    0xffffffe00020b3b0 <+146>:   ld      s6,80(sp)
+> >    0xffffffe00020b3b2 <+148>:   ld      s7,72(sp)
+> >    0xffffffe00020b3b4 <+150>:   addi    sp,sp,144
+> >    0xffffffe00020b3b6 <+152>:   ret
+> >    ...
+> > *  0xffffffe00020b61c <+766>:   auipc   ra,0x7f8
+> > *  0xffffffe00020b620 <+770>:   jalr    -1764(ra) # 0xffffffe000a02f38 <__stack_chk_fail>
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+>
+> Thanks for getting this working! It looks good to me. :)
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> --
+> Kees Cook
 
-Do you consider the modification of both ifs (validate and power_up) as
-correct? Should they be split off from my main _NA change you discuss?
 
-> So, one of the side effects of this patch is it incorrectly opens up
-> the possibility of allowing 2.5G support on Armada 388 without a comphy
-> configured.
-> 
-> We really need a better way to solve this; just relying on the lack of
-> comphy and poking at a register that has no effect on Armada 388 to
-> select 2.5G speed while allowing 1G and 2.5G to be arbitarily chosen
-> doesn't sound like a good idea to me.
-[snip]
-
-May I add that the comphy needs better documentation?
-
-Marek and I independently came up with <&comphy5 2> in the end, but the
-DT binding doesn't explain what the index is supposed to be and how I
-might figure it out. It cost me days of reading U-Boot and kernel
-sources and playing around with values until I had the working one.
-
-Might be helpful to have a symbolic dt-bindings #define for this 2.
-
-U-Boot v2020.10 on Turris Omnia dumps this table:
-
- | Lane # | Speed |  Type       |
- --------------------------------
- |   0    |   6   | SATA0       |
- |   1    |   5   | USB3 HOST0  |
- |   2    |   5   | PCIe1       |
- |   3    |   5   | USB3 HOST1  |
- |   4    |   5   | PCIe2       |
- |   5    |   0   | SGMII2      |
- --------------------------------
-
-But IIUC the Linux comphy driver doesn't take any type ID as argument
-but rather an index into a table of "ports" which specifies another
-index to apply or look up? Terribly indirect and magic to non-experts.
-
-As a DT contributor I would need the binding to tell me that it's an
-enum with 2 meaning SGMII2. Not even the max of 2 is documented. The
-Linux driver talks of ports, but I don't see that term used in U-Boot,
-and U-Boot APIs appeared to pass very different args in the board code.
-
-The binding also still needs to be converted to YAML before we can
-extend it with any better explanations. (And before you suggest it:
-Since I obviously don't fully understand that hardware, I'm the wrong
-person to attempt documenting it. The 38x comphy seems not mentioned in
-MAINTAINERS, only the 3700 one.)
-
-Regards,
-Andreas
 
 -- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
