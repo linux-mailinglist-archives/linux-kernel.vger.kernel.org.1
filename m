@@ -2,94 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD8F2B34B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 12:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3FA2B34B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 12:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgKOLnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 06:43:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgKOLnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 06:43:17 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86E102225B;
-        Sun, 15 Nov 2020 11:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605440597;
-        bh=lbJzMmcIHKZw6icm+u/fUPmEkFsHnOIOxVx+EoPyE14=;
-        h=From:To:Cc:Subject:Date:From;
-        b=nHTgLmOWJWMrMZOZUWS3Op37vJeQ/ixGG4vT26WQ5PEOfbC+jITx9dbOtSCaxXFzP
-         xDpTUGbr/TdlEVLOoN4BD8fpcfVlTGRKRfJLfa7qO45zrb1GuQhCHQovlejx2iHYkj
-         hC7LtdT6TtomGtsOX7aSuJScVMdA52J5HOrbB52c=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eli Cohen <eli@mellanox.com>,
-        Haggai Abramonvsky <hagaya@mellanox.com>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        "majd@mellanox.com" <majd@mellanox.com>,
-        Matan Barak <matanb@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Roland Dreier <roland@purestorage.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-next v1 0/7] Use ib_umem_find_best_pgsz() for all umems
-Date:   Sun, 15 Nov 2020 13:43:04 +0200
-Message-Id: <20201115114311.136250-1-leon@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1727030AbgKOLo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 06:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbgKOLo5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 06:44:57 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E61C0613D1;
+        Sun, 15 Nov 2020 03:44:57 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id gv24so2499567pjb.3;
+        Sun, 15 Nov 2020 03:44:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tmv8ZZeN6TdxknLtX/g558yOOygP5SGuU1C7JA+C4O0=;
+        b=hZoP9Ve4d54Ov6C5lzXSlYc/1VBgNVdp0HM83TnmjMByRcWDPDdE/AiipZ+fMHPILu
+         nv0KO1bOr+gZZ63oSB1PKd/0nkFSJvtDqpoJ7r/cKuhYnC9YUhFbzZPU0rJTA75P7aEz
+         ybhTzNaIzW/3OKuUIDH7Kgq7JpcNtx1GRujzZw56OFK+PIRUDWwui0ZHBHALjd0zEjIl
+         FEmhn76n9lCzfYEcsHnZVOY32F9+5SulLnq5RcVFd27I7xg19Zn+dpgh+Mne/ijqgm6l
+         yyWqvSQ6eAsCidyw+QwwSRLdr4ZCDIBRLUn2775/ICR6XdtrJqgxLDhJ+4sIY7wnUmL8
+         vszQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tmv8ZZeN6TdxknLtX/g558yOOygP5SGuU1C7JA+C4O0=;
+        b=fFu6QC0JnpzwblZek/MhfL56ov29OfQzwS8dmQPk6R7ByuXZcyKD1aLBDA21y2xl4g
+         in1zUwN+sf4vkRWgR+rrCGwpdk2f22/rk8kCTU5HKaGe+SFuJsV558i9y2iXXHPoVynl
+         CFMqo/fyuyWqfi/udlRcFhHozRiCLEoXBqnhAz+lNZO3WOwEFry3oTOA7zF1gIaIJDnx
+         cE36ctUtyUff/Wsza2THfUDwAEec0hb0+ivV1UTBfNW2sUBDMzYfzyoUHNrTlhxRtkPj
+         lq9cAB5K/DpgrPLekAKpc8Yc2sRHbI+iLvioMEBgtSN/zkkfhycp2OnXaZo3Xkb+6Oqi
+         /MWA==
+X-Gm-Message-State: AOAM532RT4rFmxASC9dp2lV79JluK8IP9dAnZhLOEY2zED+5UbxAMi62
+        eFAJAqZUCU/b4yHbfR5TwpM=
+X-Google-Smtp-Source: ABdhPJzhd5fE9raRSdPzbL7fsH6jo/q3xiNgphqVH6VKQMapA4fU7Ip8o4uMeQJwCzyNBUPR2pDWxw==
+X-Received: by 2002:a17:90b:1098:: with SMTP id gj24mr11401419pjb.140.1605440696679;
+        Sun, 15 Nov 2020 03:44:56 -0800 (PST)
+Received: from Thinkpad ([45.118.167.196])
+        by smtp.gmail.com with ESMTPSA id 21sm15276376pfw.105.2020.11.15.03.44.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 03:44:55 -0800 (PST)
+Date:   Sun, 15 Nov 2020 17:14:48 +0530
+From:   Anmol Karn <anmol.karan123@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     ralf@linux-mips.org, davem@davemloft.net, saeed@kernel.org,
+        gregkh@linuxfoundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
+Subject: Re: [Linux-kernel-mentees] [PATCH v4 net] rose: Fix Null pointer
+ dereference in rose_send_frame()
+Message-ID: <20201115114448.GA40574@Thinkpad>
+References: <20201110194518.GA97719@Thinkpad>
+ <20201111165954.14743-1-anmol.karan123@gmail.com>
+ <20201114111838.03b933af@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201114111838.03b933af@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Sat, Nov 14, 2020 at 11:18:38AM -0800, Jakub Kicinski wrote:
+> On Wed, 11 Nov 2020 22:29:54 +0530 Anmol Karn wrote:
+> > rose_send_frame() dereferences `neigh->dev` when called from
+> > rose_transmit_clear_request(), and the first occurrence of the
+> > `neigh` is in rose_loopback_timer() as `rose_loopback_neigh`,
+> > and it is initialized in rose_add_loopback_neigh() as NULL.
+> > i.e when `rose_loopback_neigh` used in rose_loopback_timer()
+> > its `->dev` was still NULL and rose_loopback_timer() was calling
+> > rose_rx_call_request() without checking for NULL.
+> > 
+> > - net/rose/rose_link.c
+> > This bug seems to get triggered in this line:
+> > 
+> > rose_call = (ax25_address *)neigh->dev->dev_addr;
+> > 
+> > Fix it by adding NULL checking for `rose_loopback_neigh->dev`
+> > in rose_loopback_timer().
+> > 
+> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> > Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
+> > Tested-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
+> > Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3
+> > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+> 
+> > diff --git a/net/rose/rose_loopback.c b/net/rose/rose_loopback.c
+> > index 7b094275ea8b..6a71b6947d92 100644
+> > --- a/net/rose/rose_loopback.c
+> > +++ b/net/rose/rose_loopback.c
+> > @@ -96,10 +96,12 @@ static void rose_loopback_timer(struct timer_list *unused)
+> >  		}
+> > 
+> >  		if (frametype == ROSE_CALL_REQUEST) {
+> > -			if ((dev = rose_dev_get(dest)) != NULL) {
+> > +			dev = rose_dev_get(dest);
+> > +			if (rose_loopback_neigh->dev && dev) {
+> >  				if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0)
+> >  					kfree_skb(skb);
+> >  			} else {
+> > +				dev_put(dev);
+> >  				kfree_skb(skb);
+> >  			}
+> >  		} else {
+> 
+> This is still not correct. With this code dev_put() could be called with
+> NULL, which would cause a crash.
+> 
+> There is also a dev_put() missing if rose_rx_call_request() returns 0.
+> 
+> I think that this is the correct code:
+> 
+> diff --git a/net/rose/rose_loopback.c b/net/rose/rose_loopback.c
+> index 7b094275ea8b..ff252ef73592 100644
+> --- a/net/rose/rose_loopback.c
+> +++ b/net/rose/rose_loopback.c
+> @@ -96,11 +96,22 @@ static void rose_loopback_timer(struct timer_list *unused)
+>  		}
+>  
+>  		if (frametype == ROSE_CALL_REQUEST) {
+> -			if ((dev = rose_dev_get(dest)) != NULL) {
+> -				if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0)
+> -					kfree_skb(skb);
+> -			} else {
+> +			if (!rose_loopback_neigh->dev) {
+>  				kfree_skb(skb);
+> +				continue;
+> +			}
+> +
+> +			dev = rose_dev_get(dest);
+> +			if (!dev) {
+> +				kfree_skb(skb);
+> +				continue;
+> +			}
+> +
+> +			if (rose_rx_call_request(skb, dev, rose_loopback_neigh,
+> +						 lci_o) == 0) {
+> +				dev_put(dev);
+> +				kfree_skb(skb);
+>  			}
+>  		} else {
+>  			kfree_skb(skb);
+> 
+> Please test this and resubmit it if it works.
 
-Changelog:
-v1:
- * Added patch for raw QP
- * Fixed commit messages
-v0: https://lore.kernel.org/lkml/20201026132635.1337663-1-leon@kernel.org
+Sure sir, I will test it and resend, if it works.
 
--------------------------
-From Jason:
 
-Move the remaining cases working with umems to use versions of
-ib_umem_find_best_pgsz() tailored to the calculations the devices
-requires.
-
-Unlike a MR there is no IOVA, instead a page offset from the starting page
-is possible, with various restrictions.
-
-Compute the best page size to meet the page_offset restrictions.
-
-Thanks
-
-Jason Gunthorpe (7):
-  RDMA/mlx5: Use ib_umem_find_best_pgoff() for SRQ
-  RDMA/mlx5: Use mlx5_umem_find_best_quantized_pgoff() for WQ
-  RDMA/mlx5: Directly compute the PAS list for raw QP RQ's
-  RDMA/mlx5: Use mlx5_umem_find_best_quantized_pgoff() for QP
-  RDMA/mlx5: mlx5_umem_find_best_quantized_pgoff() for CQ
-  RDMA/mlx5: Use ib_umem_find_best_pgsz() for devx
-  RDMA/mlx5: Lower setting the umem's PAS for SRQ
-
- drivers/infiniband/hw/mlx5/cq.c      |  48 +++++---
- drivers/infiniband/hw/mlx5/devx.c    |  66 ++++++-----
- drivers/infiniband/hw/mlx5/mem.c     | 115 +++++++------------
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  47 +++++++-
- drivers/infiniband/hw/mlx5/qp.c      | 165 ++++++++++++---------------
- drivers/infiniband/hw/mlx5/srq.c     |  27 +----
- drivers/infiniband/hw/mlx5/srq.h     |   1 +
- drivers/infiniband/hw/mlx5/srq_cmd.c |  80 ++++++++++++-
- include/rdma/ib_umem.h               |  42 +++++++
- 9 files changed, 343 insertions(+), 248 deletions(-)
-
---
-2.28.0
-
+Thanks,
+Anmol
