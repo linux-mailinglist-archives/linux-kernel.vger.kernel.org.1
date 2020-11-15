@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F71C2B3493
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 12:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89F42B349C
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 12:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgKOLT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 06:19:27 -0500
-Received: from correo.us.es ([193.147.175.20]:45526 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726894AbgKOLT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 06:19:27 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 7BA98E4B83
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:19:22 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 6CD4BFC5E6
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 12:19:22 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 5FDBBDA730; Sun, 15 Nov 2020 12:19:22 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 517F8DA704;
-        Sun, 15 Nov 2020 12:19:20 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sun, 15 Nov 2020 12:19:20 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 30D1A4265A5A;
-        Sun, 15 Nov 2020 12:19:20 +0100 (CET)
-Date:   Sun, 15 Nov 2020 12:19:19 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: rectify file patterns for NETFILTER
-Message-ID: <20201115111919.GA24901@salvia>
-References: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
+        id S1726964AbgKOL0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 06:26:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726826AbgKOL0Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 06:26:24 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77A6C0613D1;
+        Sun, 15 Nov 2020 03:26:24 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605439583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=saojbe8LdPKGDAiEz1jquPkUf3s7kcI/f55Y0htbe4s=;
+        b=gX6z1dqvU6cHYqV4K37jeiKwqt9/r5FZtOrjMklEE164vtcEPLoskDnhjpLpkwXVi/mkok
+        a0d3XbPvOVslLTwHh5GyzUkLTfx2n4KWvHpAVhPYjeH4g4YvKYP0EjeSz8THofHULnMrVa
+        gjV8K9OelqUuMEpkTClS3sMIbflOe1yTG9xANj0CWOZL2KrvdPM0UkjA39dmqiKi7NdffM
+        b19/rbwfkxLIcJaXvwaaVtU+ThIhr5bLyWhfZsHD/PKKOoh64RBlWJLQVlfWnBT7RsuzSF
+        y+KdnS+0d2STzdiulCS6F9rjlC51PGr76OwksQDHNYj0DzPMurPxgPyTyy+f5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605439583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=saojbe8LdPKGDAiEz1jquPkUf3s7kcI/f55Y0htbe4s=;
+        b=uDucKq0Zw4iyNGZ4Yc4IghjkqXIuPJiROE8suqA7ipywdSIASEW260Z8Nix9NpRG3KHIS/
+        ECkoErT6aeUjNVBg==
+To:     "Raj\, Ashok" <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        "Tian\, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul\@kernel.org" <vkoul@kernel.org>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "maz\@kernel.org" <maz@kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
+        "parav\@mellanox.com" <parav@mellanox.com>,
+        "rafael\@kernel.org" <rafael@kernel.org>,
+        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain\, Mona" <mona.hossain@intel.com>,
+        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+In-Reply-To: <20201114211837.GB12197@araj-mobl1.jf.intel.com>
+References: <874klykc7h.fsf@nanos.tec.linutronix.de> <20201109173034.GG2620339@nvidia.com> <87pn4mi23u.fsf@nanos.tec.linutronix.de> <20201110051412.GA20147@otc-nc-03> <875z6dik1a.fsf@nanos.tec.linutronix.de> <20201110141323.GB22336@otc-nc-03> <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com> <20201112193253.GG19638@char.us.oracle.com> <877dqqmc2h.fsf@nanos.tec.linutronix.de> <20201114103430.GA9810@infradead.org> <20201114211837.GB12197@araj-mobl1.jf.intel.com>
+Date:   Sun, 15 Nov 2020 12:26:22 +0100
+Message-ID: <877dqmamjl.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 10:19:42AM +0100, Lukas Bulwahn wrote:
-> The two file patterns in the NETFILTER section:
-> 
->   F:      include/linux/netfilter*
->   F:      include/uapi/linux/netfilter*
-> 
-> intended to match the directories:
-> 
->   ./include{/uapi}/linux/netfilter_{arp,bridge,ipv4,ipv6}
-> 
-> A quick check with ./scripts/get_maintainer.pl --letters -f will show that
-> they are not matched, though, because this pattern only matches files, but
-> not directories.
-> 
-> Rectify the patterns to match the intended directories.
+On Sat, Nov 14 2020 at 13:18, Ashok Raj wrote:
+> On Sat, Nov 14, 2020 at 10:34:30AM +0000, Christoph Hellwig wrote:
+>> On Thu, Nov 12, 2020 at 11:42:46PM +0100, Thomas Gleixner wrote:
+>> Which is why I really think we need explicit opt-ins for "native"
+>> SIOV handling and for paravirtualized SIOV handling, with the kernel
+>> not offering support at all without either or a manual override on
+>> the command line.
+>
+> opt-in by device or kernel? The way we are planning to support this is:
+>
+> Device support for IMS - Can discover in device specific means
+> Kernel support for IMS. - Supported by IOMMU driver.
 
-Applied, thanks.
+And why exactly do we have to enforce IOMMU support? Please stop looking
+at IMS purely from the IDXD perspective. We are talking about the
+general concept here and not about the restricted Intel universe.
+
+> each driver can check 
+>
+> if (dev_supports_ims() && iommu_supports_ims()) {
+> 	/* Then IMS is supported in the platform.*/
+> }
+
+Please forget this 'each driver can check'. That's just wrong.
+
+The only thing the driver has to check is whether the device supports
+IMS or not. Everything else has to be handled by the underlying
+infrastructure.
+
+That's pretty much the same thing like PCI/MSI[X]. The driver does not
+have to check 'device_has_msix() && platform_supports_msix()'. Enabling
+MSI[X] will simply fail if it's not supported.
+
+So for IMS creating the underlying irqdomain has to fail when the
+platform does not support it and the driver can act upon the fail and
+fallback to MSI[X] or just refuse to load when IMS is required for the
+device to be functional.
+
+Thanks,
+
+        tglx
