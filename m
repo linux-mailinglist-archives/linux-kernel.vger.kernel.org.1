@@ -2,101 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E9C2B3334
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 10:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A962B3337
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 10:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgKOJ0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 04:26:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbgKOJ0B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 04:26:01 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2026C0613D1;
-        Sun, 15 Nov 2020 01:25:58 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id 142so2482267ljj.10;
-        Sun, 15 Nov 2020 01:25:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1l1hwffIjqjNt9GhUbePPVmTyJTeUW4Yv+243TWcPf4=;
-        b=lieK4LR33y1aZ1fap+D73ZumMoVL6M6468po+NR+gyGMCEQBUSJjgqTFMr6hER6WfB
-         U/oEFvAuY+SrclwCLNpGUMrex3vA1wy59VOYYk7fZNpc57VlEVHtj6RKqpsAn80oM0Z2
-         Mo+p0cSbnAnQGOau+OjoIyQFeCcrmmveBOMzHv5D/OCZhYZtF4Tc7TZgEQxqouMcvULn
-         9V70vXKnmnjwHw412JpQiKAtzWYPr4LXwz6zZqCPP36mY4krJyjfujSJAeSH3zHMtpDB
-         o+DUoAUq5Ry6GcotqKtVg31Q+MvRKmZQQ9QT2dV0mpmKH/sNPWbmqtXHpi8uf6Fg+n+S
-         RYbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1l1hwffIjqjNt9GhUbePPVmTyJTeUW4Yv+243TWcPf4=;
-        b=SdD6p+Ar91ILLUhDGtYxHPjsUmZta53CyFBAgeiQuh2mjSwIdAOq3W8Ied7kXR0lRE
-         y9OIfQWMaey/5muFC4hW1CKjsORcosLl4Vkq3USEMqNdBRUbaLtxvA6nZaCAB6Lu20xp
-         3BO2IeKKRuCFTkfXE4NVGX4exxPUjqis2KTft7+pRyKUZ13f2ma7ZaNdIbXfscfA86tV
-         6FddSHaj+VNWsmYEKJJ330F84DRRjdJQ7ic+6MxUBvzeEevEEBWHHy/UMSeyA9QidRkL
-         RdqsAS+5cNVJnpNFXphShpN7dmb8cATAZBBgsNkFNB+3JU4ZCke/IcQJiYd64BRgbKgN
-         Z8+g==
-X-Gm-Message-State: AOAM533VpKif+RzGR2zmty2Ebp7d+NAy5k/eLinxbMml3lBr/blb1cdo
-        kmBMztWTB2Lqr8/eWhGdVZM=
-X-Google-Smtp-Source: ABdhPJx1nXm+/KmGOYLgm50Vcu3V6KYIGD4YCXPL3AWVXb0ez8GMZN7O40WHA127zZg9J7ACD8dKCQ==
-X-Received: by 2002:a2e:bc1a:: with SMTP id b26mr4226326ljf.359.1605432357253;
-        Sun, 15 Nov 2020 01:25:57 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id j25sm1170497lja.98.2020.11.15.01.25.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Nov 2020 01:25:56 -0800 (PST)
-Subject: Re: [PATCH v8 08/26] memory: tegra30-emc: Continue probing if timings
- are missing in device-tree
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201111011456.7875-1-digetx@gmail.com>
- <20201111011456.7875-9-digetx@gmail.com> <20201114154227.GB14208@kozik-lap>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <90201243-b31e-29fc-a3e6-337f78afa9d2@gmail.com>
-Date:   Sun, 15 Nov 2020 12:25:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1726834AbgKOJ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 04:29:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39562 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726438AbgKOJ31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 04:29:27 -0500
+Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71E5E22450;
+        Sun, 15 Nov 2020 09:29:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605432566;
+        bh=S+l7zjOVIux2ji8vYMF5u+4XPB+/PGFifq/NnLov1ds=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yTYhmZ79Zx56I4zsC4G5mhESOGtLIXtwBgZYuQVmvj3zQF5weYrUnpmjKdmQ8AGKU
+         nDJhvWEM17XiDnVztyAvy3bcuymUoVKdXoExzd/1OisMMb+B5IwW0D+JTy+ElgpBHz
+         u0RPKppKmu9NgfltDUQrOFVQ/uibM4lqmZ6SDhCc=
+Date:   Sun, 15 Nov 2020 11:29:22 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Wang ShaoBo <bobo.shaobowang@huawei.com>
+Cc:     jgg@ziepe.ca, dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, huawei.libin@huawei.com,
+        cj.chengjian@huawei.com
+Subject: Re: [PATCH] IB/hfi1: Fix error return code in hfi1_init_dd()
+Message-ID: <20201115092922.GB47002@unreal>
+References: <20201115082548.35793-1-bobo.shaobowang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20201114154227.GB14208@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201115082548.35793-1-bobo.shaobowang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-14.11.2020 18:42, Krzysztof Kozlowski пишет:
-> On Wed, Nov 11, 2020 at 04:14:38AM +0300, Dmitry Osipenko wrote:
->> EMC driver will become mandatory after turning it into interconnect
->> provider because interconnect users, like display controller driver, will
->> fail to probe using newer device-trees that have interconnect properties.
->> Thus make EMC driver to probe even if timings are missing in device-tree.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/memory/tegra/tegra30-emc.c | 29 +++++++++++++++--------------
->>  1 file changed, 15 insertions(+), 14 deletions(-)
-> 
-> Thanks, applied 1-8.  For the rest I see discussion on going, so I guess
-> there will be a v9.
+On Sun, Nov 15, 2020 at 04:25:48PM +0800, Wang ShaoBo wrote:
+> Fix to return the error code from hfi1_netdev_alloc() instaed of 0
+> in hfi1_init_dd(), as done elsewhere in this function.
+>
+> Fixes: 4730f4a6c6b2 ("IB/hfi1: Activate the dummy netdev")
+> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+> ---
+>  drivers/infiniband/hw/hfi1/chip.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-The v9 will be ready soon, thank you.
+It was already handled, thanks
+https://lore.kernel.org/lkml/1605249747-17942-1-git-send-email-zhangchangzhong@huawei.com
