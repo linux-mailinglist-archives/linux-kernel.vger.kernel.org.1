@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A4A2B36ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 18:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9C32B36EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 18:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727196AbgKOREE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 12:04:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57224 "EHLO mail.kernel.org"
+        id S1727337AbgKORHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 12:07:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726998AbgKORED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 12:04:03 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727317AbgKORHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 12:07:02 -0500
+Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A7F2223FB;
-        Sun, 15 Nov 2020 17:04:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A902B221F9;
+        Sun, 15 Nov 2020 17:07:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605459843;
-        bh=47Yg3gRFv07hkRm946gKdQt9gA1sJtG0nNWa6xf0C/4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tWwIjkCozPQsYmXmcuNE1AUahp+dOfl95+iNZIM/P4bLp6VYNMnrBqlIjVkkNBWwo
-         9rH+4FQExc4s+GkE5zlJMIUKciQYYg3xxPlWXX34AKG9HdThv7oI6qL6LAFza+Uy85
-         k//45RpJvVLbH9IPaJYsbqpAEUXv+o0cLsa68o4M=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1keLRZ-00AoQd-Ho; Sun, 15 Nov 2020 17:04:01 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sun, 15 Nov 2020 17:04:01 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, eric.auger@redhat.com,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, wanghaibin.wang@huawei.com,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: Re: [PATCH 1/2] KVM: arm64: vgic: Forbid invalid userspace
- Redistributor accesses
-In-Reply-To: <20201113142801.1659-2-yuzenghui@huawei.com>
-References: <20201113142801.1659-1-yuzenghui@huawei.com>
- <20201113142801.1659-2-yuzenghui@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <724c43702b52aac0d3c9beb9604d1bfb@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: yuzenghui@huawei.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, eric.auger@redhat.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, wanghaibin.wang@huawei.com, zhukeqian1@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        s=default; t=1605460021;
+        bh=6612iz/wOV7iLmeYWB9xpng9vvdHRnkYCRyJneu/GSM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eT14NCvpOE/qRLuA+QYDO6E8JGCwPfh89S4Ub7Pmp2SCP/BUnl/vvs1S2WIBaJZa0
+         vMQiYEG5xsvnBAgoxnl8BrDZjSehjKWBeltKoN2TW8NT8yclCA+6IGVfN5no88XtZX
+         HzxmUqOoSLH5yKQcFvd1pkKqMXtUYTUCi3t8z2yY=
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH] habanalabs/gaudi: align to new FW reset scheme
+Date:   Sun, 15 Nov 2020 19:06:56 +0200
+Message-Id: <20201115170656.23990-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zenghui,
+From: Ofir Bitton <obitton@habana.ai>
 
-On 2020-11-13 14:28, Zenghui Yu wrote:
-> It's expected that users will access registers in the redistributor 
-> *if*
-> the RD has been initialized properly. Unfortunately userspace can be 
-> bogus
-> enough to access registers before setting the RD base address, and KVM
-> implicitly allows it (we handle the access anyway, regardless of 
-> whether
-> the base address is set).
-> 
-> Bad thing happens when we're handling the user read of GICR_TYPER. We 
-> end
-> up with an oops when deferencing the unset rdreg...
-> 
-> 	gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
-> 			(rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
-> 
-> Fix this issue by informing userspace what had gone wrong (-ENXIO).
+As part of the security effort in which FW will be handling
+sensitive HW registers, hard reset flow will be done by FW
+and will be triggered by driver.
 
-I'm worried about the "implicit" aspect of the access that this patch
-now forbids.
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/gaudi/gaudi.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-The problem is that the existing documentation doesn't cover this case,
-and -ENXIO's "Getting or setting this register is not yet supported"
-is way too vague. There is a precedent with the ITS, but that's 
-undocumented
-as well. Also, how about v2? If that's the wasy we are going to fix 
-this,
-we also nned to beef up the documentation.
-
-Of course, the other horrible way to address the issue is to return a 
-value
-that doesn't have the Last bit set, since we can't synthetise it. It 
-doesn't
-change the userspace API, and I can even find some (admittedly  twisted)
-logic to it (since there is no base address, there is no last RD...).
-
-Thoughts?
-
-         M.
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 9c9df5f020a6..9f54baeef754 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -65,7 +65,7 @@
+ 
+ #define GAUDI_DMA_POOL_BLK_SIZE		0x100 /* 256 bytes */
+ 
+-#define GAUDI_RESET_TIMEOUT_MSEC	1000		/* 1000ms */
++#define GAUDI_RESET_TIMEOUT_MSEC	2000		/* 2000ms */
+ #define GAUDI_RESET_WAIT_MSEC		1		/* 1ms */
+ #define GAUDI_CPU_RESET_WAIT_MSEC	200		/* 200ms */
+ #define GAUDI_TEST_QUEUE_WAIT_USEC	100000		/* 100ms */
+@@ -3534,7 +3534,6 @@ static void gaudi_halt_engines(struct hl_device *hdev, bool hard_reset)
+ 		wait_timeout_ms = GAUDI_RESET_WAIT_MSEC;
+ 
+ 	gaudi_stop_nic_qmans(hdev);
+-
+ 	gaudi_stop_mme_qmans(hdev);
+ 	gaudi_stop_tpc_qmans(hdev);
+ 	gaudi_stop_hbm_dma_qmans(hdev);
+@@ -3911,26 +3910,31 @@ static void gaudi_hw_fini(struct hl_device *hdev, bool hard_reset)
+ 	/* Set device to handle FLR by H/W as we will put the device CPU to
+ 	 * halt mode
+ 	 */
+-	WREG32(mmPCIE_AUX_FLR_CTRL, (PCIE_AUX_FLR_CTRL_HW_CTRL_MASK |
++	if (!hdev->asic_prop.hard_reset_done_by_fw)
++		WREG32(mmPCIE_AUX_FLR_CTRL, (PCIE_AUX_FLR_CTRL_HW_CTRL_MASK |
+ 					PCIE_AUX_FLR_CTRL_INT_MASK_MASK));
+ 
+ 	/* I don't know what is the state of the CPU so make sure it is
+ 	 * stopped in any means necessary
+ 	 */
+ 	WREG32(mmPSOC_GLOBAL_CONF_KMD_MSG_TO_CPU, KMD_MSG_GOTO_WFE);
++
+ 	WREG32(mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR, GAUDI_EVENT_HALT_MACHINE);
+ 
+-	msleep(cpu_timeout_ms);
++	if (!hdev->asic_prop.hard_reset_done_by_fw) {
++		msleep(cpu_timeout_ms);
+ 
+-	/* Tell ASIC not to re-initialize PCIe */
+-	WREG32(mmPREBOOT_PCIE_EN, LKD_HARD_RESET_MAGIC);
++		/* Tell ASIC not to re-initialize PCIe */
++		WREG32(mmPREBOOT_PCIE_EN, LKD_HARD_RESET_MAGIC);
+ 
+-	/* Restart BTL/BLR upon hard-reset */
+-	if (hdev->asic_prop.fw_security_disabled)
+-		WREG32(mmPSOC_GLOBAL_CONF_BOOT_SEQ_RE_START, 1);
++		/* Restart BTL/BLR upon hard-reset */
++		if (hdev->asic_prop.fw_security_disabled)
++			WREG32(mmPSOC_GLOBAL_CONF_BOOT_SEQ_RE_START, 1);
+ 
+-	WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST,
++		WREG32(mmPSOC_GLOBAL_CONF_SW_ALL_RST,
+ 			1 << PSOC_GLOBAL_CONF_SW_ALL_RST_IND_SHIFT);
++	}
++
+ 	dev_info(hdev->dev,
+ 		"Issued HARD reset command, going to wait %dms\n",
+ 		reset_timeout_ms);
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
