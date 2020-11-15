@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467192B35BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 16:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD992B35BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 16:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgKOP0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 10:26:23 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:49499 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgKOP0W (ORCPT
+        id S1727067AbgKOP16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 10:27:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53371 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726749AbgKOP15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 10:26:22 -0500
-Received: from kb-xps (unknown [78.193.40.249])
-        (Authenticated sender: kamel.bouhara@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 38229200002;
-        Sun, 15 Nov 2020 15:26:19 +0000 (UTC)
-Date:   Sun, 15 Nov 2020 16:26:17 +0100
-From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, robh+dt@kernel.org,
-        alexandre.belloni@bootlin.com,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] counter: microchip-tcb-capture: Fix CMR value check
-Message-ID: <20201115152617.GB2233@kb-xps>
-References: <20201114232805.253108-1-vilhelm.gray@gmail.com>
+        Sun, 15 Nov 2020 10:27:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605454077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tEILAmOv/3vnRK3BL1tBNlRIN1HW0Lh9cIAmXOTwRHs=;
+        b=LAqSXJo7MhCNZGYUZyif28vjHj9Hd6cppfAWB2qR41sM07h5mukQenaAW0Fosf+3OJdWD/
+        7xnKfirys4/TslPi4gdy9tpsHieXiWirDo9ebd0VJE5IbW8e0jVcD/j9BEJT09kiESd58V
+        mftxMQZw5VVqXHMHKV1m2Bu7Imz5r5s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-dVX9a26FOB2wCnB7W9j7mQ-1; Sun, 15 Nov 2020 10:27:54 -0500
+X-MC-Unique: dVX9a26FOB2wCnB7W9j7mQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82240427C7;
+        Sun, 15 Nov 2020 15:27:53 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A39321E78;
+        Sun, 15 Nov 2020 15:27:53 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Ben Gardon <bgardon@google.com>
+Subject: [PATCH] kvm: mmu: fix is_tdp_mmu_check when the TDP MMU is not in use
+Date:   Sun, 15 Nov 2020 10:27:52 -0500
+Message-Id: <20201115152752.1625224-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201114232805.253108-1-vilhelm.gray@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 06:28:05PM -0500, William Breathitt Gray wrote:
-> The ATMEL_TC_ETRGEDG_* defines are not masks but rather possible values
-> for CMR. This patch fixes the action_get() callback to properly check
-> for these values rather than mask them.
->
-> Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
-> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
+In some cases where shadow paging is in use, the root page will
+be either mmu->pae_root or vcpu->arch.mmu->lm_root.  Then it will
+not have an associated struct kvm_mmu_page, because it is allocated
+with alloc_page instead of kvm_mmu_alloc_page.
 
-Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+Just return false quickly from is_tdp_mmu_root if the TDP MMU is
+not in use, which also includes the case where shadow paging is
+enabled.
 
->  drivers/counter/microchip-tcb-capture.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
-> index 039c54a78aa5..710acc0a3704 100644
-> --- a/drivers/counter/microchip-tcb-capture.c
-> +++ b/drivers/counter/microchip-tcb-capture.c
-> @@ -183,16 +183,20 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
->
->  	regmap_read(priv->regmap, ATMEL_TC_REG(priv->channel[0], CMR), &cmr);
->
-> -	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
-> -
-> -	if (cmr & ATMEL_TC_ETRGEDG_NONE)
-> +	switch (cmr & ATMEL_TC_ETRGEDG) {
-> +	default:
->  		*action = MCHP_TC_SYNAPSE_ACTION_NONE;
-> -	else if (cmr & ATMEL_TC_ETRGEDG_RISING)
-> +		break;
-> +	case ATMEL_TC_ETRGEDG_RISING:
->  		*action = MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
-> -	else if (cmr & ATMEL_TC_ETRGEDG_FALLING)
-> +		break;
-> +	case ATMEL_TC_ETRGEDG_FALLING:
->  		*action = MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
-> -	else if (cmr & ATMEL_TC_ETRGEDG_BOTH)
-> +		break;
-> +	case ATMEL_TC_ETRGEDG_BOTH:
->  		*action = MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE;
-> +		break;
-> +	}
->
->  	return 0;
->  }
-> --
-> 2.29.2
->
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/mmu/tdp_mmu.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---
-Kamel Bouhara, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 27e381c9da6c..ff28a5c6abd6 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -49,7 +49,14 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
+ {
+ 	struct kvm_mmu_page *sp;
+ 
++	if (!kvm->arch.tdp_mmu_enabled)
++		return false;
++	if (WARN_ON(!VALID_PAGE(hpa)))
++		return false;
++
+ 	sp = to_shadow_page(hpa);
++	if (WARN_ON(!sp))
++		return false;
+ 
+ 	return sp->tdp_mmu_page && sp->root_count;
+ }
+-- 
+2.26.2
+
