@@ -2,91 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8A92B36DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 17:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3302B36E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 17:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgKOQ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 11:57:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
+        id S1727216AbgKOQ6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 11:58:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgKOQ5H (ORCPT
+        with ESMTP id S1727150AbgKOQ6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 11:57:07 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAD2C0613D1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 08:57:05 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id y16so17079350ljk.1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 08:57:05 -0800 (PST)
+        Sun, 15 Nov 2020 11:58:06 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5721BC0613D1;
+        Sun, 15 Nov 2020 08:58:06 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id h2so21628113wmm.0;
+        Sun, 15 Nov 2020 08:58:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7ZhWNdmrv7uNC+shuTB5UrdMpVq8cOfsO/67ny1dABo=;
-        b=GKe8HtSGVpql7itwBeLIkBdzeQTDlLA/NMjuNvTbYEKWXB7yyVUDwFWl9MTbBscdEJ
-         hObKcjWJK90+BTLO+zgzmCcH+qCmtS9aZD909pSoyW/0/+CSK0ggGgVgQQGW5k7uiBQQ
-         9/PazKzHsYQiacJMrzhtp0dCF64qWviUt14wA=
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qF9yStZHuIhpGKt0Se1a4eQvafHT0q3rr8k/OBb7qMU=;
+        b=dRt1W10yyFl73Jg94BQCOvy7cRJANMXu31ils4GfQa7h582dASZGZ2sdFKNMubpGjw
+         Ab9SdyTMlGsLZba3dSNIGPBk/0jjBNQIeLyYn/g2w5kWGVnuSWOvwOKn9BSdzpQW/fWt
+         1LQy3XVhp1m+UGlTQb/muTUfD+C8TdvVTQRnJSg+njmUbKPnktd1VknROoRCXwy4QQjD
+         O5QE5Kg+kOux1GS2hrPpbdUSjs2UYybsGlsjzrPp1+2JMKBBQka2mkxcTxDF/FDP3pFy
+         Q9yQPvchSo0d+5r7ruRk8JEybH2wqOLcedUsUw1AXYj/larMemdtxg9eDH+4udy2OGJM
+         zSfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7ZhWNdmrv7uNC+shuTB5UrdMpVq8cOfsO/67ny1dABo=;
-        b=VsazhAzqXHzcB6TFTMr7bTxUJ32tU7gwxYH7TGw0L/DqX69vffJf3dzoCLX2Sngz7b
-         wkuqQQqmPtUAkcng5ZbX5dgiTGdYLL+8TX+UgL2BtonwVaCS+uW3/hPyGDbP7SNWFdFy
-         Z37s3lAPhE5mqVL3PjALKgg8OHc+kcCgeW33dEyCHHyyhfZ6RQUhF1q92GnUMMWGBf2T
-         G0scd/mvw51vwkMlk1EajB2hvlrz/Gc86PnJQcWafLtZeqfnobMcB1e7K62lBV//5bRt
-         3fTp4WpjWlGKLWM7JLaQSOziWXsREgPRht94PEEbVTCEKe5u/Y1hpsTUwyhn8mlp0is1
-         py+Q==
-X-Gm-Message-State: AOAM530PM53R7wkdMyT4Pdhd8j7yMQkvOXFnNOFou00KgZHwtsruwevB
-        JX5ykXLgZc4WSROtlt++bGhRwkm9+78S/A==
-X-Google-Smtp-Source: ABdhPJwtujH1xhpY1ex8k/EYO7kIZiv2GQfKFRuO26jrpi6FJXUVnqGu73oIChiSJWwI/OeFCR8uAg==
-X-Received: by 2002:a2e:86d3:: with SMTP id n19mr4974587ljj.194.1605459423931;
-        Sun, 15 Nov 2020 08:57:03 -0800 (PST)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id n186sm2380519lfa.271.2020.11.15.08.57.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Nov 2020 08:57:01 -0800 (PST)
-Received: by mail-lf1-f52.google.com with SMTP id a9so20449204lfh.2
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 08:57:00 -0800 (PST)
-X-Received: by 2002:a19:7f55:: with SMTP id a82mr4592052lfd.603.1605459420530;
- Sun, 15 Nov 2020 08:57:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qF9yStZHuIhpGKt0Se1a4eQvafHT0q3rr8k/OBb7qMU=;
+        b=lpetp6GDYxVa/YKN5ZbCj2FjJ/gFDJYmvlhVrkb9jcmlrbo0lV+wQrIjfMSA9OWBSQ
+         zVTPV/O53bo6dQBL8X+JsU2Gozu707KXu9Ff6zeT+y9nTFiReX/s/seJ2xTlrUDqLY8S
+         7j/WQIAtDOU8KScHHPYiQvzphtBAKGU6XuQJFgFqoU72tN78yNy8e7jxK2AujyMh6b/z
+         k5buLzMp/BpHyZnIrcBYDKq1kh1cygUs4GMOWX4cLOEtjpqMWQgojrFZkcf1gRrcq424
+         MPpq+B4VQotITTDiA/QETHccvJBtsi7wZbWUCSs/bc7Mc0uLRxZHCN8Z9NBxFWL8RdwC
+         353w==
+X-Gm-Message-State: AOAM530oNxl3rlipMlAWXxxVG16Dw1ZCnkKkHrEo/qZxz+fm+O5cV0Di
+        yvlKMQ5LAG/tPgREYxHqc6s=
+X-Google-Smtp-Source: ABdhPJxpcx6TsxMXXphN6Q+l3Z8fDIgYP1kSCzNRXCEBG9fDisnOOfSucphxDlFCuXEkohFD2IEc8Q==
+X-Received: by 2002:a7b:cb82:: with SMTP id m2mr11358489wmi.75.1605459485009;
+        Sun, 15 Nov 2020 08:58:05 -0800 (PST)
+Received: from localhost.localdomain (p4fc3ea77.dip0.t-ipconnect.de. [79.195.234.119])
+        by smtp.googlemail.com with ESMTPSA id 6sm12583924wrn.72.2020.11.15.08.58.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 08:58:04 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     hauke@hauke-m.de, netdev@vger.kernel.org
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2] net: lantiq: Wait for the GPHY firmware to be ready
+Date:   Sun, 15 Nov 2020 17:57:57 +0100
+Message-Id: <20201115165757.552641-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201111222116.GA919131@ZenIV.linux.org.uk> <20201113235453.GA227700@ubuntu-m3-large-x86>
- <20201114011754.GL3576660@ZenIV.linux.org.uk> <20201114030124.GA236@Ryzen-9-3900X.localdomain>
- <20201114035453.GM3576660@ZenIV.linux.org.uk> <20201114041420.GA231@Ryzen-9-3900X.localdomain>
- <20201114055048.GN3576660@ZenIV.linux.org.uk> <20201114061934.GA658@Ryzen-9-3900X.localdomain>
- <20201114070025.GO3576660@ZenIV.linux.org.uk> <20201114205000.GP3576660@ZenIV.linux.org.uk>
- <20201115155355.GR3576660@ZenIV.linux.org.uk>
-In-Reply-To: <20201115155355.GR3576660@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 15 Nov 2020 08:56:44 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wisaN3QOEYq6XBSKyW_74X5GhdbyE5AnbLkh9krarhDAA@mail.gmail.com>
-Message-ID: <CAHk-=wisaN3QOEYq6XBSKyW_74X5GhdbyE5AnbLkh9krarhDAA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 7:54 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> OK, I think I understand what's going on.  Could you check if
-> reverting the variant in -next and applying the following instead
-> fixes what you are seeing?
+A user reports (slightly shortened from the original message):
+  libphy: lantiq,xrx200-mdio: probed
+  mdio_bus 1e108000.switch-mii: MDIO device at address 17 is missing.
+  gswip 1e108000.switch lan: no phy at 2
+  gswip 1e108000.switch lan: failed to connect to port 2: -19
+  lantiq,xrx200-net 1e10b308.eth eth0: error -19 setting up slave phy
 
-Side note: if this ends up working, can you add a lot of comments
-about this thing (both in the code and the commit message)? It
-confused both Christoph and me, and clearly you were stumped too.
-That's not a great sign.
+This is a single-port board using the internal Fast Ethernet PHY. The
+user reports that switching to PHY scanning instead of configuring the
+PHY within device-tree works around this issue.
 
-                  Linus
+The documentation for the standalone variant of the PHY11G (which is
+probably very similar to what is used inside the xRX200 SoCs but having
+the firmware burnt onto that standalone chip in the factory) states that
+the PHY needs 300ms to be ready for MDIO communication after releasing
+the reset.
+
+Add a 300ms delay after initializing all GPHYs to ensure that the GPHY
+firmware had enough time to initialize and to appear on the MDIO bus.
+Unfortunately there is no (known) documentation on what the minimum time
+to wait after releasing the reset on an internal PHY so play safe and
+take the one for the external variant. Only wait after the last GPHY
+firmware is loaded to not slow down the initialization too much (
+xRX200 has two GPHYs but newer SoCs have at least three GPHYs).
+
+Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+Changes since v1:
+- move the msleep() closer to the actual loop over all GPHY instances
+  as suggested by Andrew
+- added Andrew's Reviewed-by (thank you!)
+
+
+ drivers/net/dsa/lantiq_gswip.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index 74db81dafee3..09701c17f3f6 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -26,6 +26,7 @@
+  */
+ 
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/etherdevice.h>
+ #include <linux/firmware.h>
+ #include <linux/if_bridge.h>
+@@ -1837,6 +1838,16 @@ static int gswip_gphy_fw_list(struct gswip_priv *priv,
+ 		i++;
+ 	}
+ 
++	/* The standalone PHY11G requires 300ms to be fully
++	 * initialized and ready for any MDIO communication after being
++	 * taken out of reset. For the SoC-internal GPHY variant there
++	 * is no (known) documentation for the minimum time after a
++	 * reset. Use the same value as for the standalone variant as
++	 * some users have reported internal PHYs not being detected
++	 * without any delay.
++	 */
++	msleep(300);
++
+ 	return 0;
+ 
+ remove_gphy:
+-- 
+2.29.2
+
