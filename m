@@ -2,101 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDEE2B3307
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 09:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3072B3312
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 09:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgKOIw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 03:52:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59768 "EHLO mail.kernel.org"
+        id S1726742AbgKOI4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 03:56:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726600AbgKOIpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 03:45:55 -0500
-Received: from kernel.org (unknown [77.125.7.142])
+        id S1726600AbgKOI4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 03:56:20 -0500
+Received: from localhost (otava-0257.koleje.cuni.cz [78.128.181.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC352223FB;
-        Sun, 15 Nov 2020 08:45:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B913223FB;
+        Sun, 15 Nov 2020 08:48:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605429954;
-        bh=I2e6oiG56Ipc+LYVEf48Tzpdu9e5X2SPeAjMkXGJ+FY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mvUrkC8DbWSBeGtX5LmBQbQw3erYKhs5cOaKJid6GDJMPM7nXXubIxoNcBB3oGNe7
-         rCwIs49LamtntTc1amgIjfXRya2sb8UfoqlV6jooN7E3J+NN/S80wRZL4M8ZXWanKD
-         tXrCqT3L+M5TGE/FDZPfoLrZTF0AQQmH6gi3Hxpk=
-Date:   Sun, 15 Nov 2020 10:45:39 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>
-Subject: Re: [PATCH v8 4/9] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20201115084539.GU4758@kernel.org>
-References: <20201110151444.20662-1-rppt@kernel.org>
- <20201110151444.20662-5-rppt@kernel.org>
- <20201113140656.GG17076@casper.infradead.org>
+        s=default; t=1605430113;
+        bh=Rb5YMKuDhGA8y27ozdkJkBkaoCrinqJTdOX9QLayzaI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SLqbXgfYurGq37YLB0Ug66DB0D9xSxF2FZ4C4qLsdTFOmGSlYVuDDz37jWUzyIlZ9
+         e5d/jh28ccpFk1tPHu81sQROPRKMJLTy+NYWQxP1ufza1JjvWTXnkgSlgyTmUB3dQl
+         he5s7um2zxLE/FLL2yTJ6OuzfLuP5BBZ5wxLA+E0=
+Date:   Sun, 15 Nov 2020 09:48:27 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Andreas =?UTF-8?B?RsOkcmJlcg==?= <afaerber@suse.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <uwe@kleine-koenig.org>,
+        Michal Hrusecki <Michal.Hrusecky@nic.cz>,
+        Tomas Hlavacek <tomas.hlavacek@nic.cz>,
+        =?UTF-8?B?QmVkxZlpY2hhIEtvxaFhdHU=?= <bedrich.kosata@nic.cz>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: mvneta: Fix validation of 2.5G HSGMII
+ without comphy
+Message-ID: <20201115094827.74eacbc3@kernel.org>
+In-Reply-To: <20201115004151.12899-1-afaerber@suse.de>
+References: <20201115004151.12899-1-afaerber@suse.de>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113140656.GG17076@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 02:06:56PM +0000, Matthew Wilcox wrote:
-> On Tue, Nov 10, 2020 at 05:14:39PM +0200, Mike Rapoport wrote:
-> > diff --git a/mm/Kconfig b/mm/Kconfig
-> > index c89c5444924b..d8d170fa5210 100644
-> > --- a/mm/Kconfig
-> > +++ b/mm/Kconfig
-> > @@ -884,4 +884,7 @@ config ARCH_HAS_HUGEPD
-> >  config MAPPING_DIRTY_HELPERS
-> >          bool
-> >  
-> > +config SECRETMEM
-> > +	def_bool ARCH_HAS_SET_DIRECT_MAP && !EMBEDDED
-> 
-> So I now have to build this in, whether I want it or not?
+On Sun, 15 Nov 2020 01:41:51 +0100
+Andreas F=C3=A4rber <afaerber@suse.de> wrote:
 
-Why wouldn't anybody want this nice feature? ;-)
+> -	if (pp->comphy || state->interface =3D=3D PHY_INTERFACE_MODE_2500BASEX)=
+ {
+> +	if (pp->comphy || state->interface =3D=3D PHY_INTERFACE_MODE_2500BASEX
+> +		       || state->interface =3D=3D PHY_INTERFACE_MODE_NA) {
+>  		phylink_set(mask, 2500baseT_Full);
+>  		phylink_set(mask, 2500baseX_Full);
+>  	}
 
-Now, seriously, I hesitated a lot about having a prompt here, but in the
-end I've decided to go without it.
+No, this will cause, on systems without comphy described, phylink to
+think that 2500baseX/T is possible. But without comphy how can it be
+configured?
 
-The added footprint is not so big, with x86 defconfig it's less than 8K
-and with distro (I've checked with Fedora) config the difference is less
-than 1k because they anyway have CMA=y.
-
-As this is "security" feature, disros most probably would have this
-enabled anyway, and I believe users that will see something like "Allow
-hiding memory from the kernel" will hit Y there.
-
--- 
-Sincerely yours,
-Mike.
+Marek
