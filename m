@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00572B32B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 07:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74232B32BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 07:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgKOGjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 01:39:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726173AbgKOGjc (ORCPT
+        id S1726636AbgKOGnW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 15 Nov 2020 01:43:22 -0500
+Received: from mail-io1-f66.google.com ([209.85.166.66]:41600 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgKOGnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 01:39:32 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEC9C0613D1;
-        Sat, 14 Nov 2020 22:39:30 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id r9so2331610pjl.5;
-        Sat, 14 Nov 2020 22:39:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=tlFXBTFcYkPa84QBqoC1ru6zN2P/DQwrQTwyiFFdexA=;
-        b=F20TrEo/nLSlrT6wylg/JZzgqjkXxwbzyvXyQaBf9ELIlTVRPEjnCQrlTq0BMXI1Zn
-         vAOmH1lHKhYfhUQVYiFlb6lN5XwirBNUSED9xjuGdKOr0i/fUJyGn4zDAJKs+HAuP0FM
-         Ph9wlPusORVnoCJBXQFtl+TLW5yp3GTCrVQGQ9QAk7gr/dPMRG/XFYp4rydMKY9ZbA75
-         PHeSYrAqP8qjcog1qIchYiAOSE93ok6ojuNoygUsqG/zaoWLaz4jue55i9NUMmcR6Xtl
-         jF1WiTMcggOFHr+/Uu2CkZT/rDriPnRe2UdBGNaJw0k2qJGEOinIMQSkhvzDFGNyqvR5
-         FuxA==
+        Sun, 15 Nov 2020 01:43:20 -0500
+Received: by mail-io1-f66.google.com with SMTP id t8so13964873iov.8
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 22:43:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tlFXBTFcYkPa84QBqoC1ru6zN2P/DQwrQTwyiFFdexA=;
-        b=VaTxhyaUpzc8XM4mA75xLV/cNlW/g88bMKIDYwDDdWRnr6gdnKTl/6lgeN+iF7uX5A
-         LgapDp7NBlNS8GyUGKFTjNSzespLPSRABnVGalfwJX3iEVRr+FvM7EYGVpHUkxWC5mA9
-         VMuozOa4vPakMHG1GZzFqFRzOP+nyEc8+fv5eBCb22NwLWIPFSThQZg/YWlmDxOMbq/P
-         hU45BMTQ/jlKMrNi/5GLxSWVpr29ns5s0PbnBV7EAWj2ckhlChsCg4FoFjTcMTS9iQ8I
-         UwltJ/E4cyAm4YgLn4h1TTlql384aDsJJaG24SZgdX1WeXNfJmQwkB7YnyQPhKJ4ddZW
-         sr4w==
-X-Gm-Message-State: AOAM531OwHw+pGK282PGEPcGIAvVFnqsala1rlP3rUu1p7sx9Yfw0IbV
-        eKtNDuL6tExEoboy9ARrfA==
-X-Google-Smtp-Source: ABdhPJwwhVoZ/OBIloqRKcYiB4dt8ojq6wF1xEGyXG5lbG6Fubn8EWRKzrmN0e0ZkABqUuCcWCrMUg==
-X-Received: by 2002:a17:902:b209:b029:d8:e821:d61a with SMTP id t9-20020a170902b209b02900d8e821d61amr1649464plr.58.1605422370115;
-        Sat, 14 Nov 2020 22:39:30 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id k8sm12830580pgi.39.2020.11.14.22.39.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 14 Nov 2020 22:39:29 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] btrfs: remove the useless value assignment in block_rsv_release_bytes
-Date:   Sun, 15 Nov 2020 14:39:23 +0800
-Message-Id: <1605422363-14947-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FlCPIz21EkVPk8p6G6lCEs2golYaRENiMcOidNPlzCE=;
+        b=Udcan16vCLe159jRV9ljXdZvCPtFbbXODhhwlQC8/lyMvjPvPeBT36W7CMt3uZ/UJd
+         52esp9RMzGvrABGGpK9LT+a9A+zxVXgfjaXhaccR4sDl1pUQzpmeRfLTWHVYSl87Ow5k
+         eBAvE/SSYmu5diFB3kgn+VZaR6SZN41ClE2grluVzR6uH5EJtbVHANFM9aOdk+VEE3eT
+         pAnTz9KqkCJzfb5xG+iC4QgpWPMh0XyTIhXNfjsqCG4o8tGMTxeb5L+itbsSkojbqKF7
+         GCPOMgkI+4lR6eGWqsOj9T8mfKOu+TKpwhjHalqNmjSVDeA4NeePWz/oqdNkNoWcxLzL
+         DUSQ==
+X-Gm-Message-State: AOAM532eIkB0WxHCcYEFcjO4azuhjSk7nClZle2saMYplg+bZoFRaKC/
+        jmd0UACiAU6Lxwee+3uQhicPbrKczMbU2dUZrzzS417dULXQYg==
+X-Google-Smtp-Source: ABdhPJxwE3eKgT/Hwxtb1X6oLPiFN90nlCj3CkEdEaN7YCVmrCrSzblnhY0wba39dtkDbgMgYlrdfM6jatqUj5A+zpQ=
+X-Received: by 2002:a5d:97da:: with SMTP id k26mr4607093ios.13.1605422599905;
+ Sat, 14 Nov 2020 22:43:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20201113205233.827493-1-rkir@google.com> <20201113210730.GA1992396@bogus>
+ <CAOGAQeq29S06+6M58qF0e4ivjzkZDg4+M7ffSK+FapbgmCBrLQ@mail.gmail.com>
+ <CAL_Jsq+QjQxDh3_KDhgE_2A6DjA+gSyvknjrVfRFLMLz-p_M9A@mail.gmail.com>
+ <CAOGAQepCsj63yZzJJHKCdHTenkWNLc_v=Ab6PgvS3hzqZMwH8A@mail.gmail.com>
+ <CAOGAQepW3pbbjK9KpPZR1BwGY-CGF7V_pTY_9dw98XPgUKYFHg@mail.gmail.com>
+ <X68aZ/Dgm7CObQmH@kroah.com> <tencent_3801BEAE39670E174105E007@qq.com> <CAOGAQepHauLriqfkxzMfyB=5MqUrX0XRTt==eSN=Q48CjKiEYQ@mail.gmail.com>
+In-Reply-To: <CAOGAQepHauLriqfkxzMfyB=5MqUrX0XRTt==eSN=Q48CjKiEYQ@mail.gmail.com>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Sun, 15 Nov 2020 14:43:08 +0800
+Message-ID: <CAAhV-H72_yAt+r=P-3td=HkaeT3tAPg6VzPFaaMrmnf5deQo0g@mail.gmail.com>
+Subject: Re: [PATCH] drivers: rtc: retire RTC_DRV_GOLDFISH
+To:     Roman Kiryanov <rkir@google.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lingfeng Yang <lfy@google.com>, Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+Hi, Roman,
 
-The variable qgroup_to_release is overwritten by the following if/else
-statement before it is used, so this assignment is useless. Remove it.
+On Sun, Nov 15, 2020 at 6:02 AM Roman Kiryanov <rkir@google.com> wrote:
+>
+> Hi Hancai,
+>
+> do you know if CONFIG_GOLDFISH_AUDIO is required for MIPS? I sent a
+> patch to retire it.
+Not required for MIPS.
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- fs/btrfs/block-rsv.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index bc920afe23bf..8638327069b7 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -109,10 +109,8 @@ static u64 block_rsv_release_bytes(struct btrfs_fs_info *fs_info,
- 	u64 ret;
- 
- 	spin_lock(&block_rsv->lock);
--	if (num_bytes == (u64)-1) {
-+	if (num_bytes == (u64)-1)
- 		num_bytes = block_rsv->size;
--		qgroup_to_release = block_rsv->qgroup_rsv_size;
--	}
- 	block_rsv->size -= num_bytes;
- 	if (block_rsv->reserved >= block_rsv->size) {
- 		num_bytes = block_rsv->reserved - block_rsv->size;
--- 
-2.20.0
-
+Huacai
+>
+> Regards,
+> Roman.
+>
+> On Sat, Nov 14, 2020 at 12:06 AM 陈华才 <chenhc@lemote.com> wrote:
+> >
+> > Hi, All,
+> >
+> > Goldfish RTC works well on MIPS, and QEMU RISC-V emulator use Goldfish as well, so I think  we should keep it in kernel.
+> >
+> > Huacai
+> >
+> >
+> > ------------------ Original ------------------
+> > From:  "Greg KH"<gregkh@linuxfoundation.org>;
+> > Date:  Sat, Nov 14, 2020 07:43 AM
+> > To:  "Roman Kiryanov"<rkir@google.com>;
+> > Cc:  "chenhc"<chenhc@lemote.com>; "Paul Walmsley"<paul.walmsley@sifive.com>; "LKML"<linux-kernel@vger.kernel.org>; "Lingfeng Yang"<lfy@google.com>; "Rob Herring"<robh@kernel.org>;
+> > Subject:  Re: [PATCH] drivers: rtc: retire RTC_DRV_GOLDFISH
+> >
+> >
+> >
+> > On Fri, Nov 13, 2020 at 03:36:49PM -0800, Roman Kiryanov wrote:
+> > > +Greg KH
+> > >
+> > > On Fri, Nov 13, 2020 at 2:02 PM Roman Kiryanov <rkir@google.com> wrote:
+> > > >
+> > > > Hi Hancai,
+> > > >
+> > > > I see you added /arch/mips/boot/dts/loongson/loongson64v_4core_virtio.dts which
+> > > > refers to goldfish-rtc in 39c1485c8baa47aa20caefc1ec0a3410fbad6c81.
+> > > > We (Android Studio Emulator aka "goldfish") do not support MIPS anymore.
+> > > > Do you know if goldfish-rtc still works and is assumed to be available?
+> >
+> > I've dropped this patch from my trees now, please feel free to resend
+> > when you have an updated version.
+> >
+> > thanks,
+> >
+> > greg k-h
