@@ -2,162 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5AC2B37E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6382B37EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbgKOSgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:36:54 -0500
-Received: from mga12.intel.com ([192.55.52.136]:24186 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgKOSgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:36:54 -0500
-IronPort-SDR: KMKLJbxkBW4O7KW5gvsIvFJIOiIBryPeGPiOQcRvTsOHdBXrh4Zf0LttnmGKAx10RXqEF22r6W
- 8fYxILpWfvhQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="149940270"
-X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
-   d="scan'208";a="149940270"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 10:36:53 -0800
-IronPort-SDR: Se/PPj6k5pLuMb1SOKkJWlA61D8sB7Vu3NsHwZyyDQeeMjc7qm2bmP6cqQJk1sr6RmDNh3lDPO
- Cxn3v29AJBSA==
-X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
-   d="scan'208";a="533184727"
-Received: from jlongun-mobl3.amr.corp.intel.com (HELO [10.209.102.30]) ([10.209.102.30])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 10:36:51 -0800
-Subject: Re: [PATCH v41 10/24] mm: Add 'mprotect' hook to struct
- vm_operations_struct
-To:     Matthew Wilcox <willy@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-References: <20201112220135.165028-1-jarkko@kernel.org>
- <20201112220135.165028-11-jarkko@kernel.org>
- <20201115173208.GR17076@casper.infradead.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <96318679-3320-8d7c-d178-7fa34ed11fdf@intel.com>
-Date:   Sun, 15 Nov 2020 10:36:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727184AbgKOSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 13:38:18 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:24506 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726817AbgKOSiS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 13:38:18 -0500
+X-IronPort-AV: E=Sophos;i="5.77,480,1596492000"; 
+   d="scan'208";a="477607723"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 19:37:59 +0100
+Date:   Sun, 15 Nov 2020 19:37:59 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        Quentin Schulz <quentin.schulz@bootlin.com>,
+        kernel test robot <lkp@intel.com>
+cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Denis Efremov <efremov@linux.com>
+Subject: [PATCH] net: phy: mscc: fix excluded_middle.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2011151935230.35728@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20201115173208.GR17076@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/20 9:32 AM, Matthew Wilcox wrote:
-> On Fri, Nov 13, 2020 at 12:01:21AM +0200, Jarkko Sakkinen wrote:
->> +++ b/include/linux/mm.h
->> @@ -559,6 +559,13 @@ struct vm_operations_struct {
->>  	void (*close)(struct vm_area_struct * area);
->>  	int (*split)(struct vm_area_struct * area, unsigned long addr);
->>  	int (*mremap)(struct vm_area_struct * area);
->> +	/*
->> +	 * Called by mprotect() to make driver-specific permission
->> +	 * checks before mprotect() is finalised.   The VMA must not
->> +	 * be modified.  Returns 0 if eprotect() can proceed.
->> +	 */
-> 
-> This is the wrong place for this documentation, and it's absurdly
-> specific to your implementation.  It should be in
-> Documentation/filesystems/locking.rst.
+From: kernel test robot <lkp@intel.com>
 
-I'll let you and Mel duke that one out:
+Condition !A || A && B is equivalent to !A || B.
 
-> https://lore.kernel.org/linux-mm/20201106100409.GD3371@techsingularity.net/
+Generated by: scripts/coccinelle/misc/excluded_middle.cocci
 
-As for 'locking.rst', I didn't even know that was there.  It's also a
-_bit_ silly that we would depend on folks finding that for code like SGX
-that has nothing to do with filesystems.  If we expect folks to update
-that, we need a comment spelling that out in the struct.
+Fixes: b76f0ea01312 ("coccinelle: misc: add excluded_middle.cocci script")
+CC: Denis Efremov <efremov@linux.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
 
-The comment also _looks_ reasonably generic to me.  None of the
-parameters can be modified, so the impact on the core mm code must only
-be from the result of the return code, even if the handler does some
-other magic in addition to plain checks.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   e28c0d7c92c89016c12a677616668957351e7542
+commit: b76f0ea013125358d1b4ca147a6f9b6883dd2493 coccinelle: misc: add excluded_middle.cocci script
+:::::: branch date: 8 hours ago
+:::::: commit date: 8 weeks ago
 
-For one thing, I guess we could take the literal mention of "driver"
-out.  vm_operations are certainly supplied by code that isn't a "driver"
-per se.
+Please take the patch only if it's a positive warning. Thanks!
 
->> +	int (*mprotect)(struct vm_area_struct *vma, unsigned long start,
->> +			unsigned long end, unsigned long newflags);
->> +
->> +		if (vma->vm_ops && vma->vm_ops->mprotect)
->> +			error = vma->vm_ops->mprotect(vma, nstart, tmp, newflags);
->> +		if (error)
->> +			goto out;
->> +
->>  		error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
->>  		if (error)
->>  			goto out;
->> +
->>  		nstart = tmp;
-> 
-> Spurious newline added.
+ mscc_ptp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I don't actually think this is spurious.  It ends up grouping the code
-into the logical chunks with the ->mprotect() and goto in one chunk and
-mprotect_fixup() and its goto in another.  Without this newline, the two
-logical parts don't look separate.
+--- a/drivers/net/phy/mscc/mscc_ptp.c
++++ b/drivers/net/phy/mscc/mscc_ptp.c
+@@ -136,7 +136,7 @@ static void vsc85xx_ts_write_csr(struct
 
-It's kinda hard to see with just the diff context, though.
+ 	phy_ts_base_write(phydev, MSCC_EXT_PAGE_ACCESS, MSCC_PHY_PAGE_1588);
+
+-	if (!cond || (cond && upper))
++	if (!cond || upper)
+ 		phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_MSB, upper);
+
+ 	phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_LSB, lower);
