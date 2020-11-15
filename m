@@ -2,123 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876C72B38B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C91972B38B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727657AbgKOTaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 14:30:25 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:45783 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727425AbgKOTaW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 14:30:22 -0500
-Received: by mail-il1-f198.google.com with SMTP id z18so10418382ilb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 11:30:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=reAnx4O5xXKHBeW4ynKl5kqLTK0jD87c4+XTK2E/3PY=;
-        b=hM9oAuimS0NrEGHkzLcWR2xsgsystI7alDyJ94QeMx4K6TcR3Op+e8COdSF/dh6H0F
-         hIpQFPT+L3tGyccUuuOv7HsU/2sRXf2ao95OGApLV/XvuHIj6qLzalIZTUSpyuMcCopd
-         zBm6E7zxTIY01MHpw3BMV4XhohLwMWkJBelFIPalKc5uAOO9UqEAYtABEbAvDGMBWwYR
-         JWxwngP32F+iX6cr2itRYSUE2CheNjhVi0tUa+zz32kZZm0/FN3X9bl8GeiVYtIjFufn
-         KgER/M961xu0ybKF5qyHtBcv58opDVaqSQqA6OwZwQkJ7uaetHQCne8mpi7uSjti2TFo
-         eOjQ==
-X-Gm-Message-State: AOAM531tATjsvrgAAm9AVkgx+U4Mw3pp3cBGzNx7mLEIbXy2dSOJD4fK
-        Y7NTMYUuPcsd4BUdVmmV6V9ZqjlB+jtfOhSF++TSAGYkIJqY
-X-Google-Smtp-Source: ABdhPJzqD4vyX/EdogezQiQ5Xvd4V9S+DHxX9WUcRpflKMxt0ReqC5doZIALYMLab0OUqwzcl+hNaR0GnaVogNEHgIQOmMixWcHV
+        id S1727794AbgKOTb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 14:31:59 -0500
+Received: from mga11.intel.com ([192.55.52.93]:30262 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726923AbgKOTb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 14:31:59 -0500
+IronPort-SDR: FgLV4Wth+NUZBN4nIlSzP+82rc3lVD01d75nU1HL616896T18iPYywpzhDraX1DiGM9/iv9yqZ
+ 5gLJWHabW+MA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="167162873"
+X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
+   d="scan'208";a="167162873"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 11:31:58 -0800
+IronPort-SDR: Qnm5JRmHnQ0SBJ2JYsuLr9hPybwhr3GhMPNdkgfQhAF+zZicp+aGixd2M9IGyK7p7qTGSuNYt/
+ s2IRPJXtNqBQ==
+X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
+   d="scan'208";a="543334348"
+Received: from araj-mobl1.jf.intel.com ([10.251.5.100])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 11:31:57 -0800
+Date:   Sun, 15 Nov 2020 11:31:56 -0800
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201115193156.GB14750@araj-mobl1.jf.intel.com>
+References: <87pn4mi23u.fsf@nanos.tec.linutronix.de>
+ <20201110051412.GA20147@otc-nc-03>
+ <875z6dik1a.fsf@nanos.tec.linutronix.de>
+ <20201110141323.GB22336@otc-nc-03>
+ <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201112193253.GG19638@char.us.oracle.com>
+ <877dqqmc2h.fsf@nanos.tec.linutronix.de>
+ <20201114103430.GA9810@infradead.org>
+ <20201114211837.GB12197@araj-mobl1.jf.intel.com>
+ <877dqmamjl.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a15b:: with SMTP id m27mr8620665jah.116.1605468619654;
- Sun, 15 Nov 2020 11:30:19 -0800 (PST)
-Date:   Sun, 15 Nov 2020 11:30:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c5d1f605b42a4a6e@google.com>
-Subject: WARNING: suspicious RCU usage in unmap_page_range
-From:   syzbot <syzbot+4ca458af025542e76123@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dqmamjl.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.1 (2017-09-22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Nov 15, 2020 at 12:26:22PM +0100, Thomas Gleixner wrote:
+> On Sat, Nov 14 2020 at 13:18, Ashok Raj wrote:
+> > On Sat, Nov 14, 2020 at 10:34:30AM +0000, Christoph Hellwig wrote:
+> >> On Thu, Nov 12, 2020 at 11:42:46PM +0100, Thomas Gleixner wrote:
+> >> Which is why I really think we need explicit opt-ins for "native"
+> >> SIOV handling and for paravirtualized SIOV handling, with the kernel
+> >> not offering support at all without either or a manual override on
+> >> the command line.
+> >
+> > opt-in by device or kernel? The way we are planning to support this is:
+> >
+> > Device support for IMS - Can discover in device specific means
+> > Kernel support for IMS. - Supported by IOMMU driver.
+> 
+> And why exactly do we have to enforce IOMMU support? Please stop looking
+> at IMS purely from the IDXD perspective. We are talking about the
+> general concept here and not about the restricted Intel universe.
 
-syzbot found the following issue on:
+I think you have mentioned it almost every reply :-)..Got that! Point taken
+several emails ago!! :-)
 
-HEAD commit:    eccc8767 Merge branch 'fixes' of git://git.kernel.org/pub/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=115b9a26500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=86ae89f992df998f
-dashboard link: https://syzkaller.appspot.com/bug?extid=4ca458af025542e76123
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+I didn't mean just for idxd, I said for *ANY* device driver that wants to
+use IMS.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> > each driver can check 
+> >
+> > if (dev_supports_ims() && iommu_supports_ims()) {
+> > 	/* Then IMS is supported in the platform.*/
+> > }
+> 
+> Please forget this 'each driver can check'. That's just wrong.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4ca458af025542e76123@syzkaller.appspotmail.com
+Ok.
 
-=============================
-WARNING: suspicious RCU usage
-5.10.0-rc3-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:7264 Illegal context switch in RCU-sched read-side critical section!
+> 
+> The only thing the driver has to check is whether the device supports
+> IMS or not. Everything else has to be handled by the underlying
+> infrastructure.
 
-other info that might help us debug this:
+That's pretty much the same thing.. I guess you wanted to add 
+"Does infrastructure support IMS" to be someplace else, instead
+of device driver checking it. That's perfectly fine.
 
+Until we support this natively via hypercall or vIOMMU we can use your
+varient of finding if you are not on bare_metal to decide support for IMS.
 
-rcu_scheduler_active = 2, debug_locks = 0
-2 locks held by udevd/9816:
- #0: ffff8880124f5b40 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: prepare_bprm_creds fs/exec.c:1449 [inline]
- #0: ffff8880124f5b40 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: bprm_execve+0x1c6/0x1b70 fs/exec.c:1791
- #1: ffff8880124f5bd0 (&sig->exec_update_mutex){+.+.}-{3:3}, at: exec_mmap fs/exec.c:984 [inline]
- #1: ffff8880124f5bd0 (&sig->exec_update_mutex){+.+.}-{3:3}, at: begin_new_exec+0xa89/0x2ac0 fs/exec.c:1276
+How you highligted below:
 
-stack backtrace:
-CPU: 1 PID: 9816 Comm: udevd Not tainted 5.10.0-rc3-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7264
- zap_pte_range mm/memory.c:1323 [inline]
- zap_pmd_range mm/memory.c:1357 [inline]
- zap_pud_range mm/memory.c:1386 [inline]
- zap_p4d_range mm/memory.c:1407 [inline]
- unmap_page_range+0xfd2/0x2640 mm/memory.c:1428
- unmap_single_vma+0x198/0x300 mm/memory.c:1473
- unmap_vmas+0x168/0x2e0 mm/memory.c:1505
- exit_mmap+0x2b1/0x530 mm/mmap.c:3222
- __mmput+0x122/0x470 kernel/fork.c:1079
- mmput+0x53/0x60 kernel/fork.c:1100
- exec_mmap fs/exec.c:1030 [inline]
- begin_new_exec+0xdc3/0x2ac0 fs/exec.c:1276
- load_elf_binary+0x159d/0x4a60 fs/binfmt_elf.c:998
- search_binary_handler fs/exec.c:1703 [inline]
- exec_binprm fs/exec.c:1744 [inline]
- bprm_execve+0x9d7/0x1b70 fs/exec.c:1820
- do_execveat_common+0x626/0x7c0 fs/exec.c:1915
- do_execve fs/exec.c:1983 [inline]
- __do_sys_execve fs/exec.c:2059 [inline]
- __se_sys_execve fs/exec.c:2054 [inline]
- __x64_sys_execve+0x8f/0xc0 fs/exec.c:2054
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f13375e8207
-Code: Unable to access opcode bytes at RIP 0x7f13375e81dd.
-RSP: 002b:00007ffc9f06eb68 EFLAGS: 00000202 ORIG_RAX: 000000000000003b
-RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007f13375e8207
-RDX: 0000000001df1ee0 RSI: 00007ffc9f06ec60 RDI: 00007ffc9f06fc70
-RBP: 0000000000625500 R08: 00000000000025c3 R09: 00000000000025c3
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000001df1ee0
-R13: 0000000000000007 R14: 0000000001c60030 R15: 0000000000000005
+https://lore.kernel.org/lkml/877dqrnzr3.fsf@nanos.tec.linutronix.de/
+
+probably_on_bare_metal()
+{
+        if (CPUID(FEATURE_HYPERVISOR))
+        	return false;
+       	if (dmi_match_hypervisor_vendor())
+        	return false;
+
+        return PROBABLY_RUNNING_ON_BARE_METAL;
+}
+
+The above is all we need for now and will work in almost all cases. 
+We will move forward with just the above in the next series.
+
+Below is for future consideration.
+
+Even the above isn't fool proof if both HYPERVISOR feature flag isn't set,
+and the dmi_string doesn't match, say some new hypervisor. The only way 
+we can figure that is
+
+- If no iommu support, or iommu can tell if this is a virtualized iommu.
+The presence of caching_mode is one such indication for Intel. 
+
+PS: Other IOMMU's must have something like this to support virtualization.
+    I'm not saying this is an Intel only feature just in case you interpret
+    it that way! I'm only saying if there is a mechanism to distinguish
+    native vs emulated platform.
+
+When vIOMMU supports getting native interrupt handle via a virtual command
+interface for Intel IOMMU's. OR some equivalent when other vedors provide
+such capability. Even without a hypercall virtualizing IOMMU can provide
+the same solution.
+
+If we support hypercall then its more generic so it would fall into the
+native all platforms/vendors. Certainly the most scalable long term
+solution.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Cheers,
+Ashok
