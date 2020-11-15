@@ -2,164 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD132B34F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 13:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 889AB2B34F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 13:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgKOMkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 07:40:47 -0500
-Received: from mga17.intel.com ([192.55.52.151]:13400 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726770AbgKOMkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 07:40:46 -0500
-IronPort-SDR: BVBvEgN1gqBfisNbQJGaEX4DAixPV5VjzjQD65gueQNrqvSl5f2P3NIK/sC8NbDGrhkKaC3tcW
- /EyCWqH/l8Wg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9805"; a="150495456"
-X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
-   d="scan'208";a="150495456"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 04:40:45 -0800
-IronPort-SDR: J661xsZUvdjkP7WCoxBTOMElFRC1yI6sL+1JF4ZN2FKdX+1tQCwA+iwaPp+W9ZXo5fuQIuw3rY
- ZDuMMOUqIxyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
-   d="scan'208";a="358138257"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Nov 2020 04:40:42 -0800
-Date:   Sun, 15 Nov 2020 20:40:41 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, zhengjun.xing@intel.com
-Subject: Re: [Fonts]  9522750c66:  fio.read_iops 7.5% improvement
-Message-ID: <20201115124041.GA3793@shbuild999.sh.intel.com>
-References: <20201112140625.GA21612@xsang-OptiPlex-9020>
- <X64r4X/By+0BTc6a@kroah.com>
- <20201114071916.GA71316@shbuild999.sh.intel.com>
- <X6/MyFRkEPGqnNtK@kroah.com>
+        id S1726949AbgKOMpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 07:45:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbgKOMpZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 07:45:25 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5973EC0613D1;
+        Sun, 15 Nov 2020 04:45:23 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id p1so15653419wrf.12;
+        Sun, 15 Nov 2020 04:45:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UD5PdOGagx7VYcctZvzUbtmNTDYW+xMH7eNa7mMsWsk=;
+        b=DN/0wuKaUI9AH1CmxAp6BQpisOoaM4e1y5fkYpdr/mOxuik7ODUG3YEe05u/ny+0Ir
+         et87z9FAnuEbxfE8PQeo1R1Ly8Ast4RFdClNVFGRhUmZ+SgDSAEVXJVu2vmQR8vcRx1E
+         rjUqez1g6zjj3AI6SVeKeayuDDaLXfAs4qJXl5It+mjRBnErJEZuhbDD64dFeb9E7cke
+         49NvwYDGPtRZ4l2apL+zDBZ+unI3NYYcw5eg4mHcdIXSv/a9cI8zUDd1gAKMz8MLOQcK
+         M5396SKLYJnEnuKSmlWj1vQPemgfEG919tUf+B4JCei6O2H9j0FdrDnNzBnVNn7iQboy
+         K0fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UD5PdOGagx7VYcctZvzUbtmNTDYW+xMH7eNa7mMsWsk=;
+        b=Jiq8fWb/mrAZju2y4BoRTb11GNeMO/w1+R+dDKRSA92ehxyre7SNjThu2UhhDaLQo7
+         zSou1GatG/Pt+InW/yuk3AMre9ifPKmuhx49mgtIi+LM6obGWwp0WikBU8DEKzSuv3x7
+         u1YU+OEPBb0xMJVWUxLspPl84jMj4o1F8cDnPAuQzVqw162dP9gA/SdmKoaYF0AvwulA
+         8XObbwp9VnyI+m34s/1/lT/jx2oJettvkOELCZy7Wb4srFZWmKL+4v0akb7H9asE0XXH
+         8oVPVXRlKSGdQnH7fzJY8cQhvXXtEwozGnlBmGtTpeegnY8qVFEbglPg7+S18ViWCK89
+         1afA==
+X-Gm-Message-State: AOAM532WAN49RUIPQkgvE16XbUGqFlm+VXWF7yR0TsM8p847Zci998aD
+        gJHi76zfVMyVVvF1KutB7hg33FOkH+g=
+X-Google-Smtp-Source: ABdhPJx+qpJdaWkqbtIvulSiHTmuTRUM4cQSM4WI7FPKiFcttq9jPRuXo0fB0Kcf8EzswNShyHB3Zg==
+X-Received: by 2002:a5d:4001:: with SMTP id n1mr6979638wrp.176.1605444321535;
+        Sun, 15 Nov 2020 04:45:21 -0800 (PST)
+Received: from [192.168.2.202] (p5487b28b.dip0.t-ipconnect.de. [84.135.178.139])
+        by smtp.gmail.com with ESMTPSA id t11sm12099874wrm.8.2020.11.15.04.45.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Nov 2020 04:45:20 -0800 (PST)
+Subject: Re: [PATCH] PCI: Add sysfs attribute for PCI device power state
+To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201102141520.831630-1-luzmaximilian@gmail.com>
+ <X7DF2ZyVnyIFjdC1@rocinante>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <688dcd74-3acc-bc28-7ba3-55fdedbe6e70@gmail.com>
+Date:   Sun, 15 Nov 2020 13:45:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X6/MyFRkEPGqnNtK@kroah.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <X7DF2ZyVnyIFjdC1@rocinante>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 01:25:44PM +0100, Greg Kroah-Hartman wrote:
-> On Sat, Nov 14, 2020 at 03:19:17PM +0800, Feng Tang wrote:
-> > Hi Greg,
-> > 
-> > On Fri, Nov 13, 2020 at 07:46:57AM +0100, Greg Kroah-Hartman wrote:
-> > > On Thu, Nov 12, 2020 at 10:06:25PM +0800, kernel test robot wrote:
-> > > > 
-> > > > Greeting,
-> > > > 
-> > > > FYI, we noticed a 7.5% improvement of fio.read_iops due to commit:
-> > > > 
-> > > > 
-> > > > commit: 9522750c66c689b739e151fcdf895420dc81efc0 ("Fonts: Replace discarded const qualifier")
-> > > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > > 
-> > > I strongly doubt this :)
-> > 
-> > We just double checked, the test was run 4 times and the result are
-> > very stable.
-> > 
-> > The commit does looks irrelevant to fio test, and we just further
-> > checked the System map of the 2 kernels, and many data's alignment
-> > have been changed (systemmaps attached).
-> > 
-> > We have a hack debug patch to make data sections of each .o file to
-> > be aligned, with that the fio result gap could be reduced from +7.5%
-> > to +3.8%, so there is still some other factor affecting the benchmark,
-> > which need more checking. And with the same debug method of forcing
-> > data sections aligned, 2 other strange performance bumps[1][2] reported
-> > by 0day could be recovered.
-> > 
-> > [1]. https://lore.kernel.org/lkml/20200205123216.GO12867@shao2-debian/
-> > [2]. https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
+On 11/15/20 7:08 AM, Krzysztof Wilczyński wrote:
+> Hi Maximilian,
 > 
-> That's really odd.  Why wouldn't .o sections be aligned already and how
-> does that affect the real .ko files that are created from that?  What
-> alignment are you forcing?
-
-Our debug patch is hacky which enforce 16K aligned (to adapt other rules
-in the linker script to make kernel boot), as below:
-
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 1bf7e31..de5ddc8 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -156,7 +156,9 @@ SECTIONS
-	X86_ALIGN_RODATA_END
- 
-	/* Data */
--	.data : AT(ADDR(.data) - LOAD_OFFSET) {
-+	.data : AT(ADDR(.data) - LOAD_OFFSET)
-+	SUBALIGN(16384)
-+	{
-		/* Start of data section */
-		_sdata = .;
-
-And to make it boot, for our kernel config, we have to disable
-CONFIG_DYNAMIC_DEBUG to avoid kernel panic.
-
-> And also, what hardware is seeing this performance gains?  Something is
-> fitting into a cache now that previously wasn't, and tracking that down
-> seems like it would be very worthwhile as that is a non-trivial speedup
-> that some developers take years to achieve with code changes.
-
-It's a x86 server with 2S/48C/96T, and the fio parameters are:
-
-	[global]
-	bs=2M
-	ioengine=mmap
-	iodepth=32
-	size=4473924266
-	nr_files=1
-	filesize=4473924266
-	direct=0
-	runtime=240
-	invalidate=1
-	fallocate=posix
-	io_size=4473924266
-	file_service_type=roundrobin
-	random_distribution=random
-	group_reporting
-	pre_read=0
-
-	time_based
-
-	[task_0]
-	rw=read
-	directory=/fs/pmem0
-	numjobs=24
-
-	[task_1]
-	rw=read
-	directory=/fs/pmem1
-	numjobs=24
-
-And yes, we also think it's cacheline related, and we are further   
-checking it. Actually we have 2 other similar strange performance
-change checking ongoing:
-
-https://lore.kernel.org/lkml/20201102091543.GM31092@shao2-debian/
-https://lore.kernel.org/lkml/20201004132838.GU393@shao2-debian/
-
-So it may take some time. And to be frank, there have been quite
-some old similar cases that we couldn't figure out the exact cause.
-
-Thanks,
-Feng
-
-> thanks,
+> On 20-11-02 15:15:20, Maximilian Luz wrote:
+>> While most PCI power-states can be queried from user-space via lspci,
+>> this has some limits. Specifically, lspci fails to provide an accurate
+>> value when the device is in D3cold as it has to resume the device before
+>> it can access its power state via the configuration space, leading to it
+>> reporting D0 or another on-state. Thus lspci can, for example, not be
+>> used to diagnose power-consumption issues for devices that can enter
+>> D3cold or to ensure that devices properly enter D3cold at all.
+>>
+>> To alleviate this issue, introduce a new sysfs device attribute for the
+>> PCI power state, showing the current power state as seen by the kernel.
 > 
-> greg k-h
+> Very nice!  Thank you for adding this.
+> 
+> [...]
+>> +/* PCI power state */
+>> +static ssize_t power_state_show(struct device *dev,
+>> +				struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct pci_dev *pci_dev = to_pci_dev(dev);
+>> +	pci_power_t state = READ_ONCE(pci_dev->current_state);
+>> +
+>> +	return sprintf(buf, "%s\n", pci_power_name(state));
+>> +}
+>> +static DEVICE_ATTR_RO(power_state);
+> [...]
+> 
+> Curious, why did you decide to use the READ_ONCE() macro here?  Some
+> other drivers exposing data through sysfs use, but certainly not all.
+
+As far as I can tell current_state is normally guarded by the device
+lock, but here we don't hold that lock. I generally prefer to be
+explicit about those kinds of access, if only to document that the value
+can change here.
+
+In this case it should work fine without it, but this also has the
+benefit that if someone were to add a change like
+
+   if (state > x)
+           state = y;
+
+later on (here or even in pci_power_name() due to inlining), things
+wouldn't break as we explicitly forbid the compiler to load
+current_state more than once. Without the READ_ONCE, the compiler would
+be theoretically allowed to do two separate reads then (although
+arguably unlikely it would end up doing that).
+
+Also there's no downside of marking it as READ_ONCE here as far as I can
+tell, as in that context the value will always have to be loaded from
+memory.
+
+So in short, mostly personal preference rooted in documentation and
+avoiding potential (unlikely) future mishaps.
+
+Regards,
+Max
