@@ -2,59 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1022B34D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 13:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAC42B34D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 13:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbgKOMOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 07:14:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726707AbgKOMOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 07:14:31 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 327E9222EC;
-        Sun, 15 Nov 2020 12:14:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605442470;
-        bh=tD8TNin26MKum6aEsZwqr40A3sJT+0ySR+1neHcfRqc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MaS8eVZpvfN2VrLOAy3QjCeb6b+iB1SfQkL2/zXUgPDfjL6UGIndHbxM2cUBZv+Ri
-         bELToeMERGGy4ufW5vgyzPT8LZ4C/iLSv8IGlAdzuPo6poZt+pbssH0sMSXjitHOvu
-         7pGgQIdqK8w6V7EfiN9PGxQmox4H0h+fXOaaNYN8=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-next 0/2] Enable querying AH for XRC QP types
-Date:   Sun, 15 Nov 2020 14:14:23 +0200
-Message-Id: <20201115121425.139833-1-leon@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1727088AbgKOMSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 07:18:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726727AbgKOMSw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 07:18:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683E5C0613D1;
+        Sun, 15 Nov 2020 04:18:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SqBkoMisN8DRT7Ugl7/Kskn70ZM+RV1ZXq04Kt9+Zxk=; b=Fc13oNdA5LMGuxAfQ+cshr3PRq
+        uKzkSPTQ1CFEqEsskFx41rAFTodBdHAnA2A7YA3Nps1cnwwZkgYsB2pw3M1Dp5GQFRMKytpA+Fu1S
+        0cPoQUJ2wU9gQCnPjrU35rXPhLGuRr3KBtiWl2S+CO8anENkcFKfXvF1cbXVwzl75fUMdCSOZ112F
+        qFXivRmLn+hKZqwfukred3rOLgyM9222Voh5Wmpr9eR8HIivgDrvCTXS+juikfiNiI3adujhz3l3O
+        d+5/XNH06bFAWtzJ8sL22st8+nRyCoHLTHysKdAYiHd0Mr+5gR4dGRz5NYTfVRX5EtwXjv+qQkbS7
+        N/Kjjm5w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keGzE-00041W-Am; Sun, 15 Nov 2020 12:18:28 +0000
+Date:   Sun, 15 Nov 2020 12:18:28 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     linux-mm@kvack.org, netdev@vger.kernel.org,
+        aruna.ramakrishna@oracle.com, bert.barbe@oracle.com,
+        rama.nichanamatlu@oracle.com, venkat.x.venkatsubra@oracle.com,
+        manjunath.b.patil@oracle.com, joe.jin@oracle.com,
+        srinivas.eeda@oracle.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        davem@davemloft.net, edumazet@google.com, vbabka@suse.cz
+Subject: Re: [PATCH v2 1/1] page_frag: Recover from memory pressure
+Message-ID: <20201115121828.GQ17076@casper.infradead.org>
+References: <20201115065106.10244-1-dongli.zhang@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201115065106.10244-1-dongli.zhang@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Sat, Nov 14, 2020 at 10:51:06PM -0800, Dongli Zhang wrote:
+> +		if (nc->pfmemalloc) {
 
-Update mlx4 and mlx5 drivers to support querying AH for XRC QP types.
-
-Thanks
-
-Avihai Horon (2):
-  RDMA/mlx5: Enable querying AH for XRC QP types
-  RDMA/mlx4: Enable querying AH for XRC QP types
-
- drivers/infiniband/hw/mlx4/qp.c | 4 +++-
- drivers/infiniband/hw/mlx5/qp.c | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
---
-2.28.0
-
+You missed the unlikely() change that Eric recommended.
