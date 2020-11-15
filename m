@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792A12B3705
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 18:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F612B3726
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 18:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727435AbgKORKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 12:10:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726727AbgKORKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 12:10:09 -0500
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 002F9241A3;
-        Sun, 15 Nov 2020 17:10:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605460209;
-        bh=aEUp0B6gKWhexMWTFrPQ6syXXhv4DwFr18aY9X2Sbr4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V3qmWys4GJ+55sDezEl4qwyS2jtjIpQxwkjiulc5KFvkI+vJCfm4rOLTN9AT5rm0A
-         JEbL/6hsbV5Rrd/6V9E5W4GCWcH05U1/mPxqBpjyu7Z4AaaGQdcFhlqtd4pdo+gZcR
-         5Q7MEWczSaK2Z4Rh4Qha8JOyb67INOYvrXzJIX/U=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        id S1727202AbgKORbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 12:31:34 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:34846 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726923AbgKORbe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 12:31:34 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 062001C0B9E; Sun, 15 Nov 2020 18:31:31 +0100 (CET)
+Date:   Sun, 15 Nov 2020 18:31:30 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Laxminath Kasam <lkasam@codeaurora.org>,
+        Merlijn Wajer <merlijn@wizzup.org>,
         Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [RFC 3/3] media: atomisp: do not select COMMON_CLK to fix builds
-Date:   Sun, 15 Nov 2020 18:09:50 +0100
-Message-Id: <20201115170950.304460-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201115170950.304460-1-krzk@kernel.org>
-References: <20201115170950.304460-1-krzk@kernel.org>
+        Sebastian Reichel <sre@kernel.org>,
+        Tim Harvey <tharvey@gateworks.com>
+Subject: Re: [PATCH] mfd: cpcap: Fix interrupt regression with regmap
+ clear_ack
+Message-ID: <20201115173130.GA32085@duo.ucw.cz>
+References: <20201111170613.46057-1-tony@atomide.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="EVF5PPMfhYS0aIcm"
+Content-Disposition: inline
+In-Reply-To: <20201111170613.46057-1-tony@atomide.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-COMMON_CLK is a user-selectable option with its own dependencies.  The
-most important dependency is !HAVE_LEGACY_CLK.  User-selectable drivers
-should not select COMMON_CLK because they will create a dependency cycle
-and build failures.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/staging/media/atomisp/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--EVF5PPMfhYS0aIcm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/media/atomisp/Kconfig b/drivers/staging/media/atomisp/Kconfig
-index 37577bb72998..742edb261d85 100644
---- a/drivers/staging/media/atomisp/Kconfig
-+++ b/drivers/staging/media/atomisp/Kconfig
-@@ -2,9 +2,9 @@
- menuconfig INTEL_ATOMISP
- 	bool "Enable support to Intel Atom ISP camera drivers"
- 	depends on X86 && EFI && PCI && ACPI
-+	depends on COMMON_CLK
- 	select IOSF_MBI
- 	select MEDIA_CONTROLLER
--	select COMMON_CLK
- 	help
- 	  Enable support for the Intel ISP2 camera interfaces and MIPI
- 	  sensor drivers.
--- 
-2.25.1
+Hi!
 
+> With commit 3a6f0fb7b8eb ("regmap: irq: Add support to clear ack
+> registers"), the cpcap interrupts are no longer getting acked properly
+> leading to a very unresponsive device with CPUs fully loaded spinning
+> in the threaded IRQ handlers.
+>=20
+> To me it looks like the clear_ack commit above actually fixed a long
+> standing bug in regmap_irq_thread() where we unconditionally acked the
+> interrupts earlier without considering ack_invert. And the issue with
+> cpcap started happening as we now also consider ack_invert.
+>=20
+> Tim Harvey <tharvey@gateworks.com> tried to fix this issue earlier with
+> "[PATCH v2] regmap: irq: fix ack-invert", but the reading of the ack
+> register was considered unnecessary for just ack_invert, and we did not
+> have clear_ack available yet. As the cpcap irqs worked both with and
+> without ack_invert earlier because of the unconditional ack, the
+> problem remained hidden until now.
+>=20
+> Also, looks like the earlier v3.0.8 based Motorola Android Linux kernel
+> does clear_ack style read-clear-write with "ireg_val & ~mreg_val" instead
+> of just ack_invert style write. So let's switch cpcap to use clear_ack
+> to fix the issue.
+>=20
+> Fixes: 3a6f0fb7b8eb ("regmap: irq: Add support to clear ack registers")
+
+Tested-by: Pavel Machek <pavel@ucw.cz>
+
+Thank you, culomb counter issue is now gone.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--EVF5PPMfhYS0aIcm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX7Fl8gAKCRAw5/Bqldv6
+8lwCAJ9uJs0Bdz5l5K0mgXtFFqWx/sTcwACfWTMrgo9TLu2B1px+X54+n6zKjRU=
+=HTYp
+-----END PGP SIGNATURE-----
+
+--EVF5PPMfhYS0aIcm--
