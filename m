@@ -2,74 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6382B37EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B612B37EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727184AbgKOSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:38:18 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:24506 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726817AbgKOSiS (ORCPT
+        id S1727291AbgKOSip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 13:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbgKOSio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:38:18 -0500
-X-IronPort-AV: E=Sophos;i="5.77,480,1596492000"; 
-   d="scan'208";a="477607723"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 19:37:59 +0100
-Date:   Sun, 15 Nov 2020 19:37:59 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Antoine Tenart <antoine.tenart@bootlin.com>,
-        Quentin Schulz <quentin.schulz@bootlin.com>,
-        kernel test robot <lkp@intel.com>
-cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Denis Efremov <efremov@linux.com>
-Subject: [PATCH] net: phy: mscc: fix excluded_middle.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2011151935230.35728@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sun, 15 Nov 2020 13:38:44 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3A9C0613D1;
+        Sun, 15 Nov 2020 10:38:44 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605465522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O4mgR0kHkYjGB2CrntfnSMeBIDhzCNl2DmyYq35MLl0=;
+        b=E1SpT58uj57870IoxbMzDovdySlH/UOrN4fG7EVSG+gVuSbdsNqVkiFBGB6qJA5aoYeZSV
+        cTq0eCmRAbc1Fn7XEG2HHod5kbh7LKeeJiMDlYuzWSTSFoDBd8EF8JZj8U/rgr/rZ1Mdps
+        fv+pjyK/V4sOL3zJdB6NyZyk9DoYu9KCM8wm3b96+y46Tai2Zjboy7FAQjkKMnRYyMa1aO
+        58Zf8bvyMpku3nM5hPVIKRy8TB98aqG9rSOTiWhV+4UE35z1Sl2e4zYXxozv+hWFX/Is5L
+        5GKCmEpJF+c7Xxfp5yONa36rlbujzmjo69d1Mka6tfTh4+Lm+VnwPPny5LHs9w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605465522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O4mgR0kHkYjGB2CrntfnSMeBIDhzCNl2DmyYq35MLl0=;
+        b=7jIUMERIvDFev2Ut8f0IFEa1aGM9KjWKagnilHHX98lIYHtl/FB0+ONh5ZBwqLl9HfLlF/
+        AF3i5mIxZJM47tCw==
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     mingo@redhat.com, keescook@chromium.org, arnd@arndb.de,
+        luto@amacapital.net, wad@chromium.org, rostedt@goodmis.org,
+        paul@paul-moore.com, eparis@redhat.com, oleg@redhat.com,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: Re: [PATCH 03/10] kernel: entry: Wire up syscall_work in common entry code
+In-Reply-To: <20201114032917.1205658-4-krisman@collabora.com>
+References: <20201114032917.1205658-1-krisman@collabora.com> <20201114032917.1205658-4-krisman@collabora.com>
+Date:   Sun, 15 Nov 2020 19:38:42 +0100
+Message-ID: <87v9e68nyl.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Fri, Nov 13 2020 at 22:29, Gabriel Krisman Bertazi wrote:
 
-Condition !A || A && B is equivalent to !A || B.
+"kernel: entry:" is not the right subsystem prefix.
 
-Generated by: scripts/coccinelle/misc/excluded_middle.cocci
+git log kernel/entry/ might give you a hint.
 
-Fixes: b76f0ea01312 ("coccinelle: misc: add excluded_middle.cocci script")
-CC: Denis Efremov <efremov@linux.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
+> Prepares the common entry code to use the SYSCALL_WORK flags. They
+> will
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e28c0d7c92c89016c12a677616668957351e7542
-commit: b76f0ea013125358d1b4ca147a6f9b6883dd2493 coccinelle: misc: add excluded_middle.cocci script
-:::::: branch date: 8 hours ago
-:::::: commit date: 8 weeks ago
+s/Prepares/Prepare/
 
-Please take the patch only if it's a positive warning. Thanks!
+> be defined in subsequent patches for each type of syscall
+> work. SYSCALL_WORK_ENTRY/EXIT are defined for the transition, as they
+> will replace the TIF_ equivalent defines.
+>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> ---
+>  include/linux/entry-common.h |  3 +++
+>  kernel/entry/common.c        | 15 +++++++++------
+>  2 files changed, 12 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+> index 1a128baf3628..cbc5c702ee4d 100644
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -64,6 +64,9 @@
+>  	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT |			\
+>  	 _TIF_SYSCALL_TRACEPOINT | ARCH_SYSCALL_EXIT_WORK)
+>  
+> +#define SYSCALL_WORK_ENTER	(0)
+> +#define SYSCALL_WORK_EXIT	(0)
+> +
+>  /*
+>   * TIF flags handled in exit_to_user_mode_loop()
+>   */
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index bc75c114c1b3..5a4bb72ff28e 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -42,7 +42,7 @@ static inline void syscall_enter_audit(struct pt_regs *regs, long syscall)
+>  }
+>  
+>  static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+> -				unsigned long ti_work)
+> +				unsigned long ti_work, unsigned long work)
+>  {
+>  	long ret = 0;
+>  
+> @@ -75,10 +75,11 @@ static __always_inline long
+>  __syscall_enter_from_user_work(struct pt_regs *regs, long syscall)
+>  {
+>  	unsigned long ti_work;
+> +	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
 
- mscc_ptp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Even if this is temporary this code uses reverse fir tree ordering of
+variable declarations:
 
---- a/drivers/net/phy/mscc/mscc_ptp.c
-+++ b/drivers/net/phy/mscc/mscc_ptp.c
-@@ -136,7 +136,7 @@ static void vsc85xx_ts_write_csr(struct
+	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
+ 	unsigned long ti_work;
 
- 	phy_ts_base_write(phydev, MSCC_EXT_PAGE_ACCESS, MSCC_PHY_PAGE_1588);
+Thanks,
 
--	if (!cond || (cond && upper))
-+	if (!cond || upper)
- 		phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_MSB, upper);
-
- 	phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_LSB, lower);
+        tglx
