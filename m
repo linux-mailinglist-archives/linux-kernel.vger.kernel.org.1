@@ -2,182 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE032B39C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 23:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9122B39C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 23:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727622AbgKOWLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 17:11:36 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37306 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727443AbgKOWLg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 17:11:36 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605478288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6TFX5iDoqSU4XMSTlY2depc58WL9jbkVOPxJSaKpX1w=;
-        b=EMeVVBC6Fu80l9wEyzf72WLeD7zqU7duok6LeiLq6ntvr/yCM5jKU0jjzsOqr72nErJVVn
-        rAL7ONQPghWFzA80ezhtbDEmhV48Klx3KYX+w0OUD50fsqPQuKX+t4Wwpg088k+Mandp4y
-        XfIrICnRPrHboTpgx3atl/EUf/oq8MhzsRDuj3GSxszH1qoNFKQZRFTgXhNRRO8edrr/PD
-        VOCyM/26xavGBaHxLVILZ1UO5M9hNe+R1yRSM0CVrXQRcn+R7mCF8smSMcmY6YzvFa2G3A
-        CMtPxfiQEyJiWVXEUdw75OF2PgbySeOAlniVzxZ/3ylR/K87U+mKyYM8eCtLDw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605478288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6TFX5iDoqSU4XMSTlY2depc58WL9jbkVOPxJSaKpX1w=;
-        b=YgFNGHBNJRaPf0FNkvPNTDMM0zfYcq3p/2Cm0CnbsaX64wH0mGg0yiF9IMeuXrfoSMKqLT
-        0I0U8EBJ6uiFOPBA==
-To:     "Raj\, Ashok" <ashok.raj@intel.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "maz\@kernel.org" <maz@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-In-Reply-To: <20201115193156.GB14750@araj-mobl1.jf.intel.com>
-References: <87pn4mi23u.fsf@nanos.tec.linutronix.de> <20201110051412.GA20147@otc-nc-03> <875z6dik1a.fsf@nanos.tec.linutronix.de> <20201110141323.GB22336@otc-nc-03> <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com> <20201112193253.GG19638@char.us.oracle.com> <877dqqmc2h.fsf@nanos.tec.linutronix.de> <20201114103430.GA9810@infradead.org> <20201114211837.GB12197@araj-mobl1.jf.intel.com> <877dqmamjl.fsf@nanos.tec.linutronix.de> <20201115193156.GB14750@araj-mobl1.jf.intel.com>
-Date:   Sun, 15 Nov 2020 23:11:27 +0100
-Message-ID: <875z665kz4.fsf@nanos.tec.linutronix.de>
+        id S1727794AbgKOWLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 17:11:41 -0500
+Received: from mail-dm6nam10on2115.outbound.protection.outlook.com ([40.107.93.115]:21534
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727656AbgKOWLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 17:11:40 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X+0+RgKcE86to0n1jk6uC8L1bRVUYtNCbSovjhG6OAFDJd7OdS6ZEtcwVogF+brW7GIww1anD6pP5XyVOJcfK60VlfNTOvCv/wxEjnJNdJWX5r2vF2QKZd1U4lhIZxPqNxuGRAloIHtcVPXPmGxVHXXsPRj/LEbWxzzjuS3LmNKzI2Cnpa1GQRxxAjr28GrMp1WJywobLElJEQJ+vOeQfGNj+A5yK7pAuKjSbgurIthWYeDpmMTJpHIyTwKvXVCoxs9zJGwSEmDfNQ/frQ9OGswCY8q0lP1T9D2P6xeZqB1awvHXSVu2/Yfr/iorNrNpWyifBwFbqbzGldV39acIng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5OBNQZCTpGlTESwmTMKu5+WI+K743l/tp5JhqQav9Tg=;
+ b=OrIKT0DE4albVPk+eyDOYGe9lKTC3i0W73hcWm43BYkLr/wBKg04SIUQHXl4pqd106QwKmCXcpd0LUAbc7xPPdg9Dl5hmvFvgF9y4R6ERyYN+a36E83zwDe9oQ44r31uLxkC2KQ3ekXbiRxYmdWSkQulHhqdliKpu+SU9e51fc1V6g+tYOHjBRvRtW+t9RpyOCkN+mMPMW3j2IJ+rlmsT4UVQ3bYRCj1MbMws0abQTHAiGl6kqwcKPrM5w0sqt1CqxTM+Hew1/V+Sj+q5xjz17aY+qjo8QiA9kiuTIlxetb3CDi537/N77uQSUKEzH21MjVPSrxxnWaBHsqJi6e6Gg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5OBNQZCTpGlTESwmTMKu5+WI+K743l/tp5JhqQav9Tg=;
+ b=EUwJ4z7ByrJ5aBsMM+jFPR2ciiDnLFHFIbBlpL4XfMyzjLX+kI39mKWvLfIfSk0KAJuTNAQiW1JWX+6+Sy2W501yleb6M9jDJK8c7OgUmofd86ban9smFJjCAlA/5IcPAPEpwFPmdRZDRwLooWgbJ12PruEp+B/LFa4jmS8VKEU=
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com (2603:10b6:302:a::16)
+ by MW2PR2101MB0890.namprd21.prod.outlook.com (2603:10b6:302:10::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.6; Sun, 15 Nov
+ 2020 22:11:33 +0000
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922]) by MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922%9]) with mapi id 15.20.3564.021; Sun, 15 Nov 2020
+ 22:11:33 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Matheus Castello <matheus@castello.eng.br>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>
+CC:     "sashal@kernel.org" <sashal@kernel.org>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/6] drivers: hv: Fix hyperv_record_panic_msg path on
+ comment
+Thread-Topic: [PATCH 1/6] drivers: hv: Fix hyperv_record_panic_msg path on
+ comment
+Thread-Index: AQHWu4mj4353Jy5R+Ey/So4Y7vDOI6nJwTIg
+Date:   Sun, 15 Nov 2020 22:11:33 +0000
+Message-ID: <MW2PR2101MB1052D49DFD8B107E82819D23D7E40@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <20201115195734.8338-1-matheus@castello.eng.br>
+ <20201115195734.8338-2-matheus@castello.eng.br>
+In-Reply-To: <20201115195734.8338-2-matheus@castello.eng.br>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-11-15T22:11:31Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=50e27f4a-5b56-49f3-9e4e-e5282f680b51;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: castello.eng.br; dkim=none (message not signed)
+ header.d=none;castello.eng.br; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a56a6e41-8bdc-4cba-eac2-08d889b36973
+x-ms-traffictypediagnostic: MW2PR2101MB0890:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB08903ADD386589018AE6E788D7E40@MW2PR2101MB0890.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NO9vra0SBM9f3nOnisPaXX0o9U2GJZAgDpnMpFtYE3EwBOCgRDDRvRPJXL4L/yR+HlzbIHAmggXtmlGnuT6SyZnlhKqJEaHrxK4QC7tNHfMRK+K9qtTbL1LQqSw0rBQUv0fv6fxQaiYyPGCJA7cMi/1DDbLnVxrRxIBuPQ5sHvwPsvO4AKJNa9yjZI9kqJgSdk4djOhrqUXjR7+RRvqGic91Ns1+mdIsO1FtcYvKTkQO+db0XSa69NRsWd2S3BVCc7kRQ6T2jy6d7x0SeJ1TZc1CvGTBB7nl3UUi6CM6g20bo+R5eCiUp5Xc5s8Ayb9ssZ+lBLxzO98MpMluRSFPlA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39860400002)(396003)(346002)(64756008)(82950400001)(7696005)(4326008)(316002)(66476007)(82960400001)(66556008)(8990500004)(5660300002)(76116006)(9686003)(83380400001)(66446008)(186003)(478600001)(2906002)(110136005)(71200400001)(55016002)(4744005)(33656002)(54906003)(6506007)(26005)(10290500003)(8676002)(86362001)(8936002)(52536014)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: r4hAVLMkXOXqhCpTdqAGgGOxO8c0zlqJCIyFICQg9Psz+N41rQt0NaSrSb2MVUWCvd4ycj7iJFK/JE8k1WXX7Tt8ZuVLTi/OpIOSDOAaBrjgMrETAhQI/JnKhwdo9AYv8EFbDRUGtTob/bqF/F0y8EV0Z9z3fCwmxwBY7MdtX3yFB4R/49aERHQ3i9Ian+A88EU/L78OC5doOkztAsBbP0GQW2TkEQH0lN3RHayRItTRK1gHev3ysDtuCA6qGxBcekFUyWRRIlW9wvd1wY2eJGmidX0AGBZwBQLnT3/Nnt029QxWG3eaJKjFDhZl9594MDKu5MPw8Qtc6B7V+56LWeMR6GCdMW043ktPNNXNNtRQgJE5UcZ2T+hJO1CwTUzajOqMJSFgxHTZl4J0HUaLCCTk6jT93Vv7Vm5RIvfWhSN7IG1H7Bo/zq9eOzaIhCLh8EsMlJ50lEWWhoxnyJsyzSu0d7VLHNMT4LG5lZki/MtV5jODzxqyd+8KXm4PhEO56Fm/9Uu9VVd3sAnbUe7098u7V2jA1wbFOAzf5KXwZsN3XTcqPSQytACpgVgIdNFOQU530ontUNvqaHZGqQSnkIvmwE79OuJaggLVmKmrji35ER9HeX5MA8Q2Y7NBTKrxrLzUe3Bg3nRf+a01VdR2vKkx130t0T3NmNlR6vUxVnJ+9Miy7wGCFZvHgYvQLbDgLC91atcGbdaTNGs11okx7mpWs2On3QbK09NKIQyxaGxnYwuxMXJjsaNV22so9tb7cFtBgXyDbWxRAaLoEUEEMoy5A2ZPZ8rpRcu9jTEKa7738UuxarJuZPctU4qmLPJxXs3I23RrBR6It6hcKqpTqpqdugoPDN6bsfS0oLKNKVw3IL1c5QzWOrzDwHShG1e/QJWfH3aKdcqoVT6awbeU/g==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a56a6e41-8bdc-4cba-eac2-08d889b36973
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2020 22:11:33.1382
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ba2YVG9OEXxreg5vmKZjuHvlA5bXQdpyn0ZPociw8ffKswgO6NfOIEaG3B0XNyGzXLefAC8SafBBGkjh5LB8BJB9Ugk1Se2B5+fipir/WW0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0890
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15 2020 at 11:31, Ashok Raj wrote:
-> On Sun, Nov 15, 2020 at 12:26:22PM +0100, Thomas Gleixner wrote:
->> > opt-in by device or kernel? The way we are planning to support this is:
->> >
->> > Device support for IMS - Can discover in device specific means
->> > Kernel support for IMS. - Supported by IOMMU driver.
->> 
->> And why exactly do we have to enforce IOMMU support? Please stop looking
->> at IMS purely from the IDXD perspective. We are talking about the
->> general concept here and not about the restricted Intel universe.
->
-> I think you have mentioned it almost every reply :-)..Got that! Point taken
-> several emails ago!! :-)
+From: Matheus Castello <matheus@castello.eng.br>  Sent: Sunday, November 15=
+, 2020 11:57 AM
+>=20
+> Fix the kernel parameter path in the comment, in the documentation the
+> parameter is correct but if someone who is studying the code and see
+> this first can get confused and try to access the wrong path/parameter
+>=20
+> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
+> ---
+>  drivers/hv/vmbus_drv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> index 4fad3e6745e5..9ed7e3b1d654 100644
+> --- a/drivers/hv/vmbus_drv.c
+> +++ b/drivers/hv/vmbus_drv.c
+> @@ -55,7 +55,7 @@ int vmbus_interrupt;
+>  /*
+>   * Boolean to control whether to report panic messages over Hyper-V.
+>   *
+> - * It can be set via /proc/sys/kernel/hyperv/record_panic_msg
+> + * It can be set via /proc/sys/kernel/hyperv_record_panic_msg
+>   */
+>  static int sysctl_record_panic_msg =3D 1;
+>=20
+> --
+> 2.28.0
 
-You sure? I _try_ to not mention it again then. No promise though. :)
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
-> I didn't mean just for idxd, I said for *ANY* device driver that wants to
-> use IMS.
-
-Which is wrong. Again:
-
-A) For PF/VF on bare metal there is absolutely no IOMMU dependency
-   because it does not have a PASID requirement. It's just an
-   alternative solution to MSI[X], which allows optimizations like
-   storing the message in driver manages queue memory or lifting the
-   restriction of 2048 interrupts per device. Nothing else.
-
-B) For PF/VF in a guest the IOMMU dependency of IMS is a red herring.
-   There is no direct dependency on the IOMMU.
-
-   The problem is the inability of the VMM to trap the message write to
-   the IMS storage if the storage is in guest driver managed memory.
-   This can be solved with either
-
-   - a hypercall which translates the guest MSI message
-   or
-   - a vIOMMU which uses a hypercall or whatever to translate the guest
-     MSI message
-
-C) Subdevices ala mdev are a different story. They require PASID which
-   enforces IOMMU and the IMS part is not managed by the users anyway.
-
-So we have a couple of problems to solve:
-
-  1) Figure out whether the OS runs on bare metal
-
-     There is no reliable answer to that, so we either:
-
-      - Use heuristics and assume that failure is unlikely and in case
-        of failure blame the incompetence of VMM authors and/or
-        sysadmins
-
-     or
-     
-      - Default to IMS disabled and let the sysadmin enable it via
-        command line option.
-
-        If the kernel detects to run in a VM it yells and disables it
-        unless the OS and the hypervisor agree to provide support for
-        that scenario (see #2).
-
-        That's fails as well if the sysadmin does so when the OS runs on
-        a VMM which is not identifiable, but at least we can rightfully
-        blame the sysadmin in that case.
-
-     or
-
-      - Declare that IMS always depends on IOMMU
-
-        I personaly don't care, but people working on these kind of
-        device already said, that they want to avoid it when possible.
-        
-        If you want to go that route, then please talk to those folks
-        and ask them to agree in public.
-
-     You also need to take into account that this must work on all
-     architectures which support virtualization because IMS is
-     architecture independent.
-
-  2) Guest support for PF/VF
-
-     Again we have several scenarios depending on the IMS storage
-     type.
-
-      - If the storage type is device memory then it's pretty much the
-        same as MSI[X] just a different location.
-
-      - If the storage is in driver managed memory then this needs
-        #1 plus guest OS and hypervisor support (hypercall/vIOMMU)
-        
-  3) Guest support for PF/VF and guest managed subdevice (mdev)
-
-     Depends on #1 and #2 and is an orthogonal problem if I'm not
-     missing something.
-
-To move forward we need to make a decision about #1 and #2 now.
-
-This needs to be well thought out as changing it after the fact is
-going to be a nightmare.
-
-/me grudgingly refrains from mentioning the obvious once more.
-
-Thanks,
-
-        tglx
