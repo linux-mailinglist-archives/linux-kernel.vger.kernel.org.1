@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2433B2B35A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 16:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467192B35BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 16:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgKOPLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 10:11:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726945AbgKOPLq (ORCPT
+        id S1727038AbgKOP0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 10:26:23 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:49499 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726749AbgKOP0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 10:11:46 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC4BC0613D1;
-        Sun, 15 Nov 2020 07:11:46 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605453104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BiZgDCmSDSxFhb+kif0umV6sJo4+v4DAm7HzC6Uu7YE=;
-        b=pUgU0cAnlQBXxUyB3cNYGu1WF0g/EettZwT5S15yQQ6f1/D9zAR5sDgO7Azdh3/eEB1Jkq
-        tB8nIaOOs+OfjKtFfhQnE0sJVsHtufu8FT5Ba6gK7rrZ4ADETO6m8Lvc5QPZP2bAT4vMO+
-        rQH2ZldFdcLpMU760Aw3GDGUVcwXsWAfxbKixZkCY0FyblgSeCfdcQYTn1mAJnFTfWX/vP
-        Hdqyi9bdN2V9hfXWGRcx8lKTpjJoduaxXCcBg1dtvjNT3t4MHS9Qbq6zPXm++nE8EAOUb6
-        IvcDKgfStp6BFm6gMMku2tBb5sFsrV6p/VHJ73w0TSRz3uNgEPlOy2aKSpGu4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605453104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BiZgDCmSDSxFhb+kif0umV6sJo4+v4DAm7HzC6Uu7YE=;
-        b=W2pTExk0gsbMHLbIitLdUNMJTp/0jOTWLFrWWBeFMegpYuUxW4Yz4c/5CsI7FWJj3wHGTT
-        4FLSrYGdk2AB1xBw==
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, kernelfans@gmail.com,
-        andi@firstfloor.org, hpa@zytor.com, bhe@redhat.com, x86@kernel.org,
-        okaya@kernel.org, mingo@redhat.com, jay.vosburgh@canonical.com,
-        dyoung@redhat.com, gavin.guo@canonical.com,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>, bp@alien8.de,
-        bhelgaas@google.com, shan.gavin@linux.alibaba.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel@gpiccoli.net,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ddstreet@canonical.com, lukas@wunner.de, vgoyal@redhat.com
-Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
-In-Reply-To: <87sg9almmg.fsf@x220.int.ebiederm.org>
-References: <20201114212215.GA1194074@bjorn-Precision-5520> <87v9e6n2b2.fsf@x220.int.ebiederm.org> <87sg9almmg.fsf@x220.int.ebiederm.org>
-Date:   Sun, 15 Nov 2020 16:11:43 +0100
-Message-ID: <874klqac40.fsf@nanos.tec.linutronix.de>
+        Sun, 15 Nov 2020 10:26:22 -0500
+Received: from kb-xps (unknown [78.193.40.249])
+        (Authenticated sender: kamel.bouhara@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 38229200002;
+        Sun, 15 Nov 2020 15:26:19 +0000 (UTC)
+Date:   Sun, 15 Nov 2020 16:26:17 +0100
+From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     jic23@kernel.org, robh+dt@kernel.org,
+        alexandre.belloni@bootlin.com,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] counter: microchip-tcb-capture: Fix CMR value check
+Message-ID: <20201115152617.GB2233@kb-xps>
+References: <20201114232805.253108-1-vilhelm.gray@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201114232805.253108-1-vilhelm.gray@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15 2020 at 08:29, Eric W. Biederman wrote:
-> ebiederm@xmission.com (Eric W. Biederman) writes:
-> For ordinary irqs you can have this with level triggered irqs
-> and the kernel has code that will shutdown the irq at the ioapic
-> level.  Then the kernel continues by polling the irq source.
+On Sat, Nov 14, 2020 at 06:28:05PM -0500, William Breathitt Gray wrote:
+> The ATMEL_TC_ETRGEDG_* defines are not masks but rather possible values
+> for CMR. This patch fixes the action_get() callback to properly check
+> for these values rather than mask them.
 >
-> I am still missing details but my first question is can our general
-> solution to screaming level triggered irqs apply?
+> Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
+> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> ---
 
-No.
+Acked-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
 
-> How can edge triggered MSI irqs be screaming?
+>  drivers/counter/microchip-tcb-capture.c | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
 >
-> Is there something we can do in enabling the APICs or IOAPICs that
-> would allow this to be handled better.  My memory when we enable
-> the APICs and IOAPICs we completely clear the APIC entries and so
-> should be disabling sources.
+> diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
+> index 039c54a78aa5..710acc0a3704 100644
+> --- a/drivers/counter/microchip-tcb-capture.c
+> +++ b/drivers/counter/microchip-tcb-capture.c
+> @@ -183,16 +183,20 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
+>
+>  	regmap_read(priv->regmap, ATMEL_TC_REG(priv->channel[0], CMR), &cmr);
+>
+> -	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
+> -
+> -	if (cmr & ATMEL_TC_ETRGEDG_NONE)
+> +	switch (cmr & ATMEL_TC_ETRGEDG) {
+> +	default:
+>  		*action = MCHP_TC_SYNAPSE_ACTION_NONE;
+> -	else if (cmr & ATMEL_TC_ETRGEDG_RISING)
+> +		break;
+> +	case ATMEL_TC_ETRGEDG_RISING:
+>  		*action = MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
+> -	else if (cmr & ATMEL_TC_ETRGEDG_FALLING)
+> +		break;
+> +	case ATMEL_TC_ETRGEDG_FALLING:
+>  		*action = MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
+> -	else if (cmr & ATMEL_TC_ETRGEDG_BOTH)
+> +		break;
+> +	case ATMEL_TC_ETRGEDG_BOTH:
+>  		*action = MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE;
+> +		break;
+> +	}
+>
+>  	return 0;
+>  }
+> --
+> 2.29.2
+>
 
-Yes, but MSI has nothing to do with APIC/IOAPIC
-
-> Is the problem perhaps that we wind up using an APIC entry that was
-> previously used for the MSI interrupt as something else when we
-> reprogram them?  Even with this why doesn't the generic code
-> to stop screaming irqs apply here?
-
-Again. No. The problem cannot be solved at the APIC level. The APIC is
-the receiving end of MSI and has absolutely no control over it.
-
-An MSI interrupt is a (DMA) write to the local APIC base address
-0xfeexxxxx which has the target CPU and control bits encoded in the
-lower bits. The written data is the vector and more control bits.
-
-The only way to stop that is to shut it up at the PCI device level.
-
-Assume the following situation:
-
-  - PCI device has MSI enabled and a valid target vector assigned
-
-  - Kernel crashes
-
-  - Kdump kernel starts
-
-  - PCI device raises interrupts which result in the MSI write
-
-  - Kdump kernel enables interrupts and the pending vector is raised in
-    the CPU.
-
-  - The CPU has no interrupt descriptor assigned to the vector
-    and does not even know where the interrupt originated from. So it
-    treats it like any other spurious interrupt to an unassigned vector,
-    emits a ratelimited message and ACKs the interrupt at the APIC.
-
-  - PCI device behaves stupid and reraises the interrupt for whatever
-    reason.
-
-  - Lather, rinse and repeat.
-
-Unfortunately there is no way to tell the APIC "Mask vector X" and the
-dump kernel does neither know which device it comes from nor does it
-have enumerated PCI completely which would reset the device and shutup
-the spew. Due to the interrupt storm it does not get that far.
-
-Thanks,
-
-        tglx
+--
+Kamel Bouhara, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
