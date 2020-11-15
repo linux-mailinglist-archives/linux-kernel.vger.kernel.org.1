@@ -2,81 +2,444 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE832B3538
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 15:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC992B353B
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 15:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbgKOOP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 09:15:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727095AbgKOOP4 (ORCPT
+        id S1727231AbgKOORM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 09:17:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37786 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726701AbgKOORL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 09:15:56 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD13C0613D1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 06:15:56 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id c20so11045319pfr.8
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 06:15:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=69FFOlnrMLFrDHeax6Rw5jeALQVD9Q3UcMoPuHs6k74=;
-        b=DOboKuvuE2VBEMf2rJSdDxVfGIhhaVulJ5h3OUb1bfjVf3k6mMoHQkfvc7TycqMQa7
-         GQOomkXQJTXebpZtOkm5llOU+6lT1sc4Mb/Q30dEMllOAlGWC6/KypeoamHPMf5RJPh8
-         b+BnUEtz1ImpTP8/efqC4IYXXzSm6k6h54R3CtBZJtRJDSAc0lnFnHiHFM2DrOADrwug
-         kuNdy0re1ZQvjHdygh20l0FpTLEp/mBXAmv78IYvqNu4pmQ0fBIBMGIlRpZo9TJcMCGw
-         Gjs+LBPbRDxXnBcX5F7kz1Aa0AZe6quz2F/JXYgr0m1z/gfVr2jwUilN3B0eypFNj2aN
-         vI+w==
+        Sun, 15 Nov 2020 09:17:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605449828;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i/xkffaVnP2j5GFtsDZ95jd9ooHsi00279H6aPA0Cy0=;
+        b=bovlxaYL3yxWQFPoY3ajNa698TWXgI39X+3YT8W6FjRvnoKUWdUdxGZ2waKLkdxJ1pUrNT
+        YI4XhbVRCSQ67TrgpgHnaim/z7tQe0f37k0tNvw/WiK7hzXwzS0zQzlybzbmD+ugxvHLgK
+        ZCFlvblvMktmoMP933cOnTeHe746j6c=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-9osyENZSPp2AAJRWMmUxQw-1; Sun, 15 Nov 2020 09:17:06 -0500
+X-MC-Unique: 9osyENZSPp2AAJRWMmUxQw-1
+Received: by mail-qk1-f199.google.com with SMTP id 198so9045049qkj.7
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 06:17:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=69FFOlnrMLFrDHeax6Rw5jeALQVD9Q3UcMoPuHs6k74=;
-        b=qMm2yyH1WQ7UZI/aWLMvyw5UWjM5OERoGEuLn4cafuczW1745zVBsHRXSQLfi8WrlC
-         qJIymhLgwtPiC9Uhcuk1QDf8a2xXgeeVzoH4DTNatKRWApU993hjMFYrALkc8FtRUYCw
-         WZh89JQZtZWmf2IEli5nKIC7ENfGskjuEdxmzk8aybbVpG0tsWqUdgnooncEfzHeIfmo
-         Pt1i4HSooZBKirwpTcDxJPZhxlyg1V+66Rj7lRWadTsHRiAsSfJ09MS0ebEG7CgnzdjY
-         O2tDFblM97FuMEsZOaxsW5hpWoAfaesIY6XANCNL2BPMh5PbgfbIWDf5yO+rbTn5yHFI
-         4quQ==
-X-Gm-Message-State: AOAM533wZXCXDTdDknFVFWuV6U3q3G9hybRPGsEs61fSKomkHex+TnmJ
-        54M81teBiJ6wDsvdkXh6XjWZtg16zWOYSQ==
-X-Google-Smtp-Source: ABdhPJz4SfE0X8G4tcdqby7TJ21FQrDsBBPnGPwqIOxWfxklZ2hcjl/qAKp+jE/pWsRQbQXm3ZevYw==
-X-Received: by 2002:a62:7ac2:0:b029:18b:c5bb:303d with SMTP id v185-20020a627ac20000b029018bc5bb303dmr10195622pfc.71.1605449755667;
-        Sun, 15 Nov 2020 06:15:55 -0800 (PST)
-Received: from hymmsx-virtual-machine.localdomain (170.146.201.35.bc.googleusercontent.com. [35.201.146.170])
-        by smtp.gmail.com with ESMTPSA id ga18sm7444793pjb.5.2020.11.15.06.15.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 06:15:55 -0800 (PST)
-From:   "logic.yu" <hymmsx.yu@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "logic.yu" <hymmsx.yu@gmail.com>
-Subject: [PATCH] mm: remove the filename in the top of file comment in vmscan.c
-Date:   Sun, 15 Nov 2020 22:15:41 +0800
-Message-Id: <20201115141541.3878-1-hymmsx.yu@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=i/xkffaVnP2j5GFtsDZ95jd9ooHsi00279H6aPA0Cy0=;
+        b=rkd8elByi+Ki8XnA1EdTqQaWc4ntWW44TyDzRg3W7mNDei+dF9crdT/WzVbhKJCTIG
+         p/+9ZgqOKnx5AaCpY9mRdAeeuQOWitrPDgjHgzQSvC6GUAOrx20AXfvY83wNCmnKONMa
+         WCVGicOCob4XB8oDahXSf7VzsxCWCWIp5uRBJ+q1CnUm7Luw3SIPONx9ROQd8KSlq37Z
+         Y3uJdCUnAuFf4izK6ooMqtse0eZjHiVIXHb+46EK8dkTEBN8aFtOJGDevBE4dw0GFA9d
+         mBQur3w/rZhDbYL5G2xzUHek7NZRP0sB5RZk+pyrU2H3+pus11cpAMC/w85P9eEWEYE8
+         qlTw==
+X-Gm-Message-State: AOAM530/AVuKQtdByHHjNXKAoXf5E8D621sp571kyg1hRYKmSWY8mir9
+        scPLJjdqO23iRGnw1g/rrA/s/PxICArKXqlZ1f9RHqSZmS5hNXjDfiGjql3vr43ol2wyU8T4q/k
+        KGiGW64OrxOS26ctx/ucN7sFo
+X-Received: by 2002:ac8:37f2:: with SMTP id e47mr10277761qtc.290.1605449826133;
+        Sun, 15 Nov 2020 06:17:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwQrD/XD3TOwrX4XwPtzX+My34Euw5n+51ponJWFm3FmkyVgLj3WufxVXlFExCb5sVigcDV7Q==
+X-Received: by 2002:ac8:37f2:: with SMTP id e47mr10277735qtc.290.1605449825900;
+        Sun, 15 Nov 2020 06:17:05 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id m15sm11188700qtc.90.2020.11.15.06.17.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Nov 2020 06:17:05 -0800 (PST)
+Subject: Re: [PATCH v5 5/6] fpga: m10bmc-sec: add max10 secure update
+ functions
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20201114005559.90860-1-russell.h.weight@intel.com>
+ <20201114005559.90860-6-russell.h.weight@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <3c531b5d-0620-5239-06a7-02a01381c436@redhat.com>
+Date:   Sun, 15 Nov 2020 06:17:03 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201114005559.90860-6-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No point in having the filename inside the file.
 
-Signed-off-by: logic.yu <hymmsx.yu@gmail.com>
----
- mm/vmscan.c | 2 --
- 1 file changed, 2 deletions(-)
+On 11/13/20 4:55 PM, Russ Weight wrote:
+> Extend the MAX10 BMC Secure Update driver to include
+> the functions that enable secure updates of BMC images,
+> FPGA images, etc.
+>
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+> v5:
+>   - No change
+> v4:
+>   - No change
+> v3:
+>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+>   - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure Update
+>     driver"
+>   - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+>     underlying functions are now called directly.
+>   - Changed calling functions of functions that return "enum fpga_sec_err"
+>     to check for (ret != FPGA_SEC_ERR_NONE) instead of (ret)
+> v2:
+>   - Reworked the rsu_start_done() function to make it more readable
+>   - Reworked while-loop condition/content in rsu_prog_ready()
+>   - Minor code cleanup per review comments
+>   - Added a comment to the m10bmc_sec_poll_complete() function to
+>     explain the context (could take 30+ minutes to complete).
+>   - Added m10bmc_ prefix to functions in m10bmc_iops structure
+>   - Moved MAX10 BMC address and function definitions to a separate
+>     patch.
+> ---
+>  drivers/fpga/intel-m10-bmc-secure.c | 305 +++++++++++++++++++++++++++-
+>  1 file changed, 304 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
+> index 689da5bc6461..4fa8a2256088 100644
+> --- a/drivers/fpga/intel-m10-bmc-secure.c
+> +++ b/drivers/fpga/intel-m10-bmc-secure.c
+> @@ -174,7 +174,310 @@ static const struct attribute_group *m10bmc_sec_attr_groups[] = {
+>  	NULL,
+>  };
+>  
+> -static const struct fpga_sec_mgr_ops m10bmc_sops = { };
+> +static void log_error_regs(struct m10bmc_sec *sec, u32 doorbell)
+> +{
+> +	u32 auth_result;
+> +
+> +	dev_err(sec->dev, "RSU error status: 0x%08x\n", doorbell);
+> +
+> +	if (!m10bmc_sys_read(sec->m10bmc, M10BMC_AUTH_RESULT, &auth_result))
+> +		dev_err(sec->dev, "RSU auth result: 0x%08x\n", auth_result);
+> +}
+> +
+> +static enum fpga_sec_err rsu_check_idle(struct m10bmc_sec *sec)
+> +{
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+> +	if (ret)
+> +		return FPGA_SEC_ERR_RW_ERROR;
+> +
+> +	if (rsu_prog(doorbell) != RSU_PROG_IDLE &&
+> +	    rsu_prog(doorbell) != RSU_PROG_RSU_DONE) {
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_BUSY;
+> +	}
+> +
+> +	return FPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static inline bool rsu_start_done(u32 doorbell)
+> +{
+> +	u32 status, progress;
+> +
+> +	if (doorbell & DRBL_RSU_REQUEST)
+> +		return false;
+> +
+> +	status = rsu_stat(doorbell);
+> +	if (status == RSU_STAT_ERASE_FAIL || status == RSU_STAT_WEAROUT)
+> +		return true;
+> +
+> +	progress = rsu_prog(doorbell);
+> +	if (progress != RSU_PROG_IDLE && progress != RSU_PROG_RSU_DONE)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+> +static enum fpga_sec_err rsu_update_init(struct m10bmc_sec *sec)
+> +{
+> +	u32 doorbell, status;
+> +	int ret;
+> +
+> +	ret = regmap_update_bits(sec->m10bmc->regmap,
+> +				 M10BMC_SYS_BASE + M10BMC_DOORBELL,
+> +				 DRBL_RSU_REQUEST | DRBL_HOST_STATUS,
+> +				 DRBL_RSU_REQUEST |
+> +				 FIELD_PREP(DRBL_HOST_STATUS,
+> +					    HOST_STATUS_IDLE));
+> +	if (ret)
+> +		return FPGA_SEC_ERR_RW_ERROR;
+> +
+> +	ret = regmap_read_poll_timeout(sec->m10bmc->regmap,
+> +				       M10BMC_SYS_BASE + M10BMC_DOORBELL,
+> +				       doorbell,
+> +				       rsu_start_done(doorbell),
+> +				       NIOS_HANDSHAKE_INTERVAL_US,
+> +				       NIOS_HANDSHAKE_TIMEOUT_US);
+> +
+> +	if (ret == -ETIMEDOUT) {
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_TIMEOUT;
+> +	} else if (ret) {
+> +		return FPGA_SEC_ERR_RW_ERROR;
+> +	}
+> +
+> +	status = rsu_stat(doorbell);
+> +	if (status == RSU_STAT_WEAROUT) {
+> +		dev_warn(sec->dev, "Excessive flash update count detected\n");
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 1b8f0e059767..16b9d82a7941 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1,7 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- *  linux/mm/vmscan.c
-- *
-  *  Copyright (C) 1991, 1992, 1993, 1994  Linus Torvalds
-  *
-  *  Swap reorganised 29.12.95, Stephen Tweedie.
--- 
-2.17.1
+If wear out is going to flood logs, move this to a warn once.
+
+Maybe make rsu_stat a function.
+
+> +		return FPGA_SEC_ERR_WEAROUT;
+> +	} else if (status == RSU_STAT_ERASE_FAIL) {
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	return FPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static enum fpga_sec_err rsu_prog_ready(struct m10bmc_sec *sec)
+> +{
+> +	unsigned long poll_timeout;
+> +	u32 doorbell, progress;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+> +	if (ret)
+> +		return FPGA_SEC_ERR_RW_ERROR;
+> +
+> +	poll_timeout = jiffies + msecs_to_jiffies(RSU_PREP_TIMEOUT_MS);
+> +	while (rsu_prog(doorbell) == RSU_PROG_PREPARE) {
+> +		msleep(RSU_PREP_INTERVAL_MS);
+> +		if (time_after(jiffies, poll_timeout))
+> +			break;
+> +
+> +		ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+> +		if (ret)
+> +			return FPGA_SEC_ERR_RW_ERROR;
+> +	}
+> +
+> +	progress = rsu_prog(doorbell);
+> +	if (progress == RSU_PROG_PREPARE) {
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_TIMEOUT;
+> +	} else if (progress != RSU_PROG_READY) {
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	return FPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static enum fpga_sec_err rsu_send_data(struct m10bmc_sec *sec)
+> +{
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = regmap_update_bits(sec->m10bmc->regmap,
+> +				 M10BMC_SYS_BASE + M10BMC_DOORBELL,
+> +				 DRBL_HOST_STATUS,
+> +				 FIELD_PREP(DRBL_HOST_STATUS,
+> +					    HOST_STATUS_WRITE_DONE));
+> +	if (ret)
+> +		return FPGA_SEC_ERR_RW_ERROR;
+> +
+> +	ret = regmap_read_poll_timeout(sec->m10bmc->regmap,
+> +				       M10BMC_SYS_BASE + M10BMC_DOORBELL,
+> +				       doorbell,
+> +				       rsu_prog(doorbell) != RSU_PROG_READY,
+> +				       NIOS_HANDSHAKE_INTERVAL_US,
+> +				       NIOS_HANDSHAKE_TIMEOUT_US);
+> +
+> +	if (ret == -ETIMEDOUT) {
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_TIMEOUT;
+> +	} else if (ret) {
+> +		return FPGA_SEC_ERR_RW_ERROR;
+> +	}
+> +
+> +	switch (rsu_stat(doorbell)) {
+> +	case RSU_STAT_NORMAL:
+> +	case RSU_STAT_NIOS_OK:
+> +	case RSU_STAT_USER_OK:
+> +	case RSU_STAT_FACTORY_OK:
+wear out is ok below but not here. why ?
+> +		break;
+> +	default:
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	return FPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static int rsu_check_complete(struct m10bmc_sec *sec, u32 *doorbell)
+> +{
+> +	if (m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, doorbell))
+> +		return -EIO;
+> +
+> +	switch (rsu_stat(*doorbell)) {
+> +	case RSU_STAT_NORMAL:
+> +	case RSU_STAT_NIOS_OK:
+> +	case RSU_STAT_USER_OK:
+> +	case RSU_STAT_FACTORY_OK:
+> +	case RSU_STAT_WEAROUT:
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (rsu_prog(*doorbell)) {
+> +	case RSU_PROG_IDLE:
+> +	case RSU_PROG_RSU_DONE:
+> +		return 0;
+> +	case RSU_PROG_AUTHENTICATING:
+> +	case RSU_PROG_COPYING:
+> +	case RSU_PROG_UPDATE_CANCEL:
+> +	case RSU_PROG_PROGRAM_KEY_HASH:
+> +		return -EAGAIN;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static enum fpga_sec_err m10bmc_sec_prepare(struct fpga_sec_mgr *smgr)
+> +{
+> +	struct m10bmc_sec *sec = smgr->priv;
+> +	enum fpga_sec_err ret;
+> +
+> +	if (smgr->remaining_size > M10BMC_STAGING_SIZE)
+> +		return FPGA_SEC_ERR_INVALID_SIZE;
+> +
+> +	ret = rsu_check_idle(sec);
+> +	if (ret != FPGA_SEC_ERR_NONE)
+> +		return ret;
+> +
+> +	ret = rsu_update_init(sec);
+> +	if (ret != FPGA_SEC_ERR_NONE)
+> +		return ret;
+> +
+> +	return rsu_prog_ready(sec);
+> +}
+> +
+> +static enum fpga_sec_err
+> +m10bmc_sec_write_blk(struct fpga_sec_mgr *smgr, u32 offset, u32 size)
+> +{
+> +	struct m10bmc_sec *sec = smgr->priv;
+> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+> +	if (ret) {
+> +		return FPGA_SEC_ERR_RW_ERROR;
+> +	} else if (rsu_prog(doorbell) != RSU_PROG_READY) {
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	ret = regmap_bulk_write(sec->m10bmc->regmap,
+> +				M10BMC_STAGING_BASE + offset,
+> +				(void *)smgr->data + offset, size / stride);
+
+Lose trailing bytes if (size % stride)
+
+maybe change to (size + stride - 1) / stride
+
+> +
+> +	return ret ? FPGA_SEC_ERR_RW_ERROR : FPGA_SEC_ERR_NONE;
+> +}
+> +
+> +/*
+> + * m10bmc_sec_poll_complete() is called after handing things off to
+> + * the BMC firmware. Depending on the type of update, it could be
+> + * 30+ minutes before the BMC firmware completes the update. The
+> + * smgr->driver_unload check allows the driver to be unloaded,
+> + * but the BMC firmware will continue the update and no further
+> + * secure updates can be started for this device until the update
+> + * is complete.
+> + */
+> +static enum fpga_sec_err m10bmc_sec_poll_complete(struct fpga_sec_mgr *smgr)
+> +{
+> +	struct m10bmc_sec *sec = smgr->priv;
+> +	unsigned long poll_timeout;
+> +	enum fpga_sec_err result;
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	result = rsu_send_data(sec);
+> +	if (result != FPGA_SEC_ERR_NONE)
+> +		return result;
+> +
+> +	ret = rsu_check_complete(sec, &doorbell);
+
+If the first iteration will never be successful, just replace call with
+
+ret = -EAGAIN;
+
+Tom
+
+> +	poll_timeout = jiffies + msecs_to_jiffies(RSU_COMPLETE_TIMEOUT_MS);
+> +
+> +	while (ret == -EAGAIN && !time_after(jiffies, poll_timeout)) {
+> +		msleep(RSU_COMPLETE_INTERVAL_MS);
+> +		ret = rsu_check_complete(sec, &doorbell);
+> +		if (smgr->driver_unload)
+> +			return FPGA_SEC_ERR_CANCELED;
+> +	}
+> +
+> +	if (ret == -EAGAIN) {
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_TIMEOUT;
+> +	} else if (ret == -EIO) {
+> +		return FPGA_SEC_ERR_RW_ERROR;
+> +	} else if (ret) {
+> +		log_error_regs(sec, doorbell);
+> +		return FPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	return FPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static enum fpga_sec_err m10bmc_sec_cancel(struct fpga_sec_mgr *smgr)
+> +{
+> +	struct m10bmc_sec *sec = smgr->priv;
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+> +	if (ret)
+> +		return FPGA_SEC_ERR_RW_ERROR;
+> +
+> +	if (rsu_prog(doorbell) != RSU_PROG_READY)
+> +		return FPGA_SEC_ERR_BUSY;
+> +
+> +	ret = regmap_update_bits(sec->m10bmc->regmap,
+> +				 M10BMC_SYS_BASE + M10BMC_DOORBELL,
+> +				 DRBL_HOST_STATUS,
+> +				 FIELD_PREP(DRBL_HOST_STATUS,
+> +					    HOST_STATUS_ABORT_RSU));
+> +
+> +	return ret ? FPGA_SEC_ERR_RW_ERROR : FPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static const struct fpga_sec_mgr_ops m10bmc_sops = {
+> +	.prepare = m10bmc_sec_prepare,
+> +	.write_blk = m10bmc_sec_write_blk,
+> +	.poll_complete = m10bmc_sec_poll_complete,
+> +	.cancel = m10bmc_sec_cancel,
+> +};
+>  
+>  static int m10bmc_secure_probe(struct platform_device *pdev)
+>  {
 
