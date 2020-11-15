@@ -2,444 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21842B383A
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE97D2B3868
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727482AbgKOS7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:59:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbgKOS7g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:59:36 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74A0C0613D1;
-        Sun, 15 Nov 2020 10:59:34 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x15so7028347pll.2;
-        Sun, 15 Nov 2020 10:59:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I7nyAef/ps8aO0HXexFB9vyY502uhN9jokzsj+GrHx8=;
-        b=Pp/CNMaMKId7jnYeAU3sqT4Lk2cSuFGCkSH6nSyFMOU3PBB9zZJlBM8OZJF270ReYO
-         zhxmkg+9hbjWbavKQQfGVy6OR+lsPilxnLPIvyjZXK+HeBSzfeclCH7TAvjZ2N0vIQJ5
-         7MHF2uzt8UpMvqQl5cCG9UPWmDXrosDOq+l8TEtZHyGjje2DbjXKpgqA7BmaolJVoTFF
-         mnEUb+4ZV0ALFKMCwoeTIdAUDuLN3eGqAI3pcOY7tW4vG0rGPj1COuriaKbdQ5KhZNlD
-         0DvkAEszik36SSyHYTuyz9nkEhzxy0toxEc4s/3p+l6g6fbg8gSWKSd5wvwKFeEaEkke
-         tdFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=I7nyAef/ps8aO0HXexFB9vyY502uhN9jokzsj+GrHx8=;
-        b=cdjTQJc/1L3L1apSAa3xuFAoxBq4gO0+Q8kXvXBBkgn36ZtgNu7CMbdXdBz3qGojHm
-         u699T4dIDwePSIYtNHspcauJRPQu28gY6I2ENBMY4iYusUKgJfcVc4VZ1t5HpUak8RmJ
-         vwsXKN1i/vniHdydr+9qM4Dl6i6MDa1ePjt/KVGUvgi9vTT6Zo0txSPzXWFAO+5f18SP
-         NGaKELl7K8yLZhGtr622Ild0YR8BgWFiCCZ+DXO1LcikbAkkFduVVMFVAr3IdDHQtAE5
-         dywdQvtUfVvsEvJD36jLOvfxBsdzXadgroUvMLPthuiUGMUFLQyz16OLz5NVyujNj+88
-         ndSA==
-X-Gm-Message-State: AOAM533mJMIkwdxX70X2zv/qg2Qj0HGWlt5aAo6lRbqKqthA9/EabV9Y
-        3qto9R7nSKT/lq2XtohSTJo=
-X-Google-Smtp-Source: ABdhPJzCkyJ2SXNFSQ35eY3rZCnCWLMVKCzccpXJTTGwujRL+UY4stljaGDCiwT7POMb05FpqzOiiA==
-X-Received: by 2002:a17:90a:f00a:: with SMTP id bt10mr11672419pjb.91.1605466774396;
-        Sun, 15 Nov 2020 10:59:34 -0800 (PST)
-Received: from arpitha-Inspiron-7570.lan ([106.51.140.48])
-        by smtp.gmail.com with ESMTPSA id k17sm17482645pji.50.2020.11.15.10.59.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 10:59:33 -0800 (PST)
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
-        elver@google.com, yzaikin@google.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, Tim.Bird@sony.com, davidgow@google.com
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH v8 2/2] fs: ext4: Modify inode-test.c to use KUnit parameterized testing feature
-Date:   Mon, 16 Nov 2020 00:29:05 +0530
-Message-Id: <20201115185905.169349-1-98.arpi@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201115185759.169279-1-98.arpi@gmail.com>
-References: <20201115185759.169279-1-98.arpi@gmail.com>
+        id S1727610AbgKOTRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 14:17:03 -0500
+Received: from gw.c-home.cz ([89.24.150.100]:33600 "EHLO dmz.c-home.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726823AbgKOTRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 14:17:03 -0500
+X-Greylist: delayed 1016 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Nov 2020 14:17:02 EST
+Received: from dmz.c-home.cz (localhost [127.0.0.1])
+        by dmz.c-home.cz (8.14.4+Sun/8.14.4) with ESMTP id 0AFIxRf9023820;
+        Sun, 15 Nov 2020 19:59:32 +0100 (CET)
+Received: from localhost (martin@localhost)
+        by dmz.c-home.cz (8.14.4+Sun/8.14.4/Submit) with ESMTP id 0AFIxOBg023817;
+        Sun, 15 Nov 2020 19:59:24 +0100 (CET)
+X-Authentication-Warning: dmz.c-home.cz: martin owned process doing -bs
+Date:   Sun, 15 Nov 2020 19:59:24 +0100 (CET)
+From:   Martin Cerveny <martin@c-home.cz>
+Reply-To: Martin Cerveny <M.Cerveny@computer.org>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+cc:     Martin Cerveny <m.cerveny@computer.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 0/6] ARM: dts: sun8i: v3s: Enable video decoder
+In-Reply-To: <c8cc3529-3e21-2a11-d258-bb03885a5c91@xs4all.nl>
+Message-ID: <alpine.GSO.2.00.2011151911340.21646@dmz.c-home.cz>
+References: <20200912143052.30952-1-m.cerveny@computer.org> <c8cc3529-3e21-2a11-d258-bb03885a5c91@xs4all.nl>
+User-Agent: Alpine 2.00 (GSO 1167 2008-08-23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify fs/ext4/inode-test.c to use the parameterized testing
-feature of KUnit.
+Hello.
 
-Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-Signed-off-by: Marco Elver <elver@google.com>
----
-Changes v7->v8:
-- Replace strcpy() with strncpy() in timestamp_expectation_to_desc()
-Changes v6->v7:
-- Introduce timestamp_expectation_to_desc() to convert param to
-  description.
-Changes v5->v6:
-- No change to this patch of the patch series
-Changes v4->v5:
-- No change to this patch of the patch series
-Changes v3->v4:
-- Modification based on latest implementation of KUnit parameterized testing
-Changes v2->v3:
-- Marked hardcoded test data const
-- Modification based on latest implementation of KUnit parameterized testing
-Changes v1->v2:
-- Modification based on latest implementation of KUnit parameterized testing
+On Thu, 5 Nov 2020, Hans Verkuil wrote:
 
- fs/ext4/inode-test.c | 323 ++++++++++++++++++++++---------------------
- 1 file changed, 167 insertions(+), 156 deletions(-)
+> Hi Martin,
+>
+> On 12/09/2020 16:30, Martin Cerveny wrote:
+>> First patch extends cedrus capability to all decoders
+>> because V3s missing MPEG2 decoder.
+>>
+>> Next two patches add system control node (SRAM C1) and
+>> next three patches add support for Cedrus VPU.
+>>
+>> Tested on "Lichee Zero" V3s platform with testing LCD patch
+>> ( https://github.com/mcerveny/linux/tree/v3s_videocodec_v4 )
+>> and V4L2 raw API testing utility
+>> ( https://github.com/mcerveny/v4l2-request-test ):
+>> - enabled LCD (DRM dual VI and sigle UI planes)
+>> - added RGB panel
+>> - enabled PWM
+>>
+>> There is low memory on V3s (64MB) and maximum must be available to CMA:
+>> - CONFIG_CMA_SIZE_MBYTES=28
+>> - add swap to swapout other processes
+>> - decrease buffers in v4l2-request-test (.buffers_count from 16 to 6)
+>>
+>> Only H.264 decoder working - MPEG and H.265 unsupported by V3s,
+>> JPEG/MJPEG still unimplemented, encoder unimplemented
+>
+> When I tried to merged these patches I got merge conflicts.
+>
+> Possibly due to other 5.10 changes, but certainly because of conflicts
+> with patches from Jernej:
+>
+> https://patchwork.linuxtv.org/project/linux-media/patch/20200825173523.1289379-4-jernej.skrabec@siol.net/
+> https://patchwork.linuxtv.org/project/linux-media/patch/20200825173523.1289379-5-jernej.skrabec@siol.net/
+>
+> I've merged Jerne's patches and posted a PR for that:
+> https://patchwork.linuxtv.org/project/linux-media/patch/f3b8e5e2-5f0e-fb6f-e5b2-7f44f7e365e7@xs4all.nl/
+>
+> Can you rebase your patches on top of my branch that contains Jernej's patches?
+>
+> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=for-v5.11e
+>
+> Once my PR is merged into the media_tree master I can take your rebased
+> patches.
 
-diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
-index d62d802c9c12..2c0c00c45c6b 100644
---- a/fs/ext4/inode-test.c
-+++ b/fs/ext4/inode-test.c
-@@ -80,6 +80,148 @@ struct timestamp_expectation {
- 	bool lower_bound;
- };
- 
-+static const struct timestamp_expectation test_data[] = {
-+	{
-+		.test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
-+		.msb_set = true,
-+		.lower_bound = true,
-+		.extra_bits = 0,
-+		.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
-+		.msb_set = true,
-+		.lower_bound = false,
-+		.extra_bits = 0,
-+		.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 0,
-+		.expected = {0LL, 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 0,
-+		.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
-+		.msb_set = true,
-+		.lower_bound = true,
-+		.extra_bits = 1,
-+		.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
-+		.msb_set = true,
-+		.lower_bound = false,
-+		.extra_bits = 1,
-+		.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 1,
-+		.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 1,
-+		.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
-+		.msb_set = true,
-+		.lower_bound = true,
-+		.extra_bits =  2,
-+		.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
-+		.msb_set = true,
-+		.lower_bound = false,
-+		.extra_bits = 2,
-+		.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 2,
-+		.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 2,
-+		.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 6,
-+		.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 0xFFFFFFFF,
-+		.expected = {.tv_sec = 0x300000000LL,
-+			     .tv_nsec = MAX_NANOSECONDS},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 3,
-+		.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 3,
-+		.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
-+	}
-+};
-+
-+static void timestamp_expectation_to_desc(const struct timestamp_expectation *t,
-+					  char *desc)
-+{
-+	int desc_length = strlen(t->test_case_name);
-+
-+	strncpy(desc, t->test_case_name, desc_length);
-+	desc[desc_length] = '\0';
-+}
-+
-+KUNIT_ARRAY_PARAM(ext4_inode, test_data, timestamp_expectation_to_desc);
-+
- static time64_t get_32bit_time(const struct timestamp_expectation * const test)
- {
- 	if (test->msb_set) {
-@@ -101,166 +243,35 @@ static time64_t get_32bit_time(const struct timestamp_expectation * const test)
-  */
- static void inode_test_xtimestamp_decoding(struct kunit *test)
- {
--	const struct timestamp_expectation test_data[] = {
--		{
--			.test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
--			.msb_set = true,
--			.lower_bound = true,
--			.extra_bits = 0,
--			.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
--			.msb_set = true,
--			.lower_bound = false,
--			.extra_bits = 0,
--			.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 0,
--			.expected = {0LL, 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 0,
--			.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
--			.msb_set = true,
--			.lower_bound = true,
--			.extra_bits = 1,
--			.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
--			.msb_set = true,
--			.lower_bound = false,
--			.extra_bits = 1,
--			.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 1,
--			.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 1,
--			.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
--			.msb_set = true,
--			.lower_bound = true,
--			.extra_bits =  2,
--			.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
--			.msb_set = true,
--			.lower_bound = false,
--			.extra_bits = 2,
--			.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 2,
--			.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 2,
--			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 6,
--			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 0xFFFFFFFF,
--			.expected = {.tv_sec = 0x300000000LL,
--				     .tv_nsec = MAX_NANOSECONDS},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 3,
--			.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 3,
--			.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
--		}
--	};
--
- 	struct timespec64 timestamp;
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
--		timestamp.tv_sec = get_32bit_time(&test_data[i]);
--		ext4_decode_extra_time(&timestamp,
--				       cpu_to_le32(test_data[i].extra_bits));
--
--		KUNIT_EXPECT_EQ_MSG(test,
--				    test_data[i].expected.tv_sec,
--				    timestamp.tv_sec,
--				    CASE_NAME_FORMAT,
--				    test_data[i].test_case_name,
--				    test_data[i].msb_set,
--				    test_data[i].lower_bound,
--				    test_data[i].extra_bits);
--		KUNIT_EXPECT_EQ_MSG(test,
--				    test_data[i].expected.tv_nsec,
--				    timestamp.tv_nsec,
--				    CASE_NAME_FORMAT,
--				    test_data[i].test_case_name,
--				    test_data[i].msb_set,
--				    test_data[i].lower_bound,
--				    test_data[i].extra_bits);
--	}
-+
-+	struct timestamp_expectation *test_param =
-+			(struct timestamp_expectation *)(test->param_value);
-+
-+	timestamp.tv_sec = get_32bit_time(test_param);
-+	ext4_decode_extra_time(&timestamp,
-+			       cpu_to_le32(test_param->extra_bits));
-+
-+	KUNIT_EXPECT_EQ_MSG(test,
-+			    test_param->expected.tv_sec,
-+			    timestamp.tv_sec,
-+			    CASE_NAME_FORMAT,
-+			    test_param->test_case_name,
-+			    test_param->msb_set,
-+			    test_param->lower_bound,
-+			    test_param->extra_bits);
-+	KUNIT_EXPECT_EQ_MSG(test,
-+			    test_param->expected.tv_nsec,
-+			    timestamp.tv_nsec,
-+			    CASE_NAME_FORMAT,
-+			    test_param->test_case_name,
-+			    test_param->msb_set,
-+			    test_param->lower_bound,
-+			    test_param->extra_bits);
- }
- 
- static struct kunit_case ext4_inode_test_cases[] = {
--	KUNIT_CASE(inode_test_xtimestamp_decoding),
-+	KUNIT_CASE_PARAM(inode_test_xtimestamp_decoding, ext4_inode_gen_params),
- 	{}
- };
- 
--- 
-2.25.1
+I updated patches:
+https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e
 
+BUT, commit (555 commits) for v5.10-1
+https://github.com/torvalds/linux/commit/fd5c32d80884268a381ed0e67cccef0b3d37750b
+disrupts usability of Cedrus H.264 (at least for my Allwinner V3s):
+
+1) colors are disrupted
+
+There are missing some initialization now.
+
+If I use "5.9" compatible code
+(last bisect good point https://github.com/torvalds/linux/commit/647412daeb454b6dad12a6c6961ab90aac9e5d29 )
+then reboot (not power-off!) and use new code 
+( https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e )
+and colors are OK.
+
+2) decoding of complex streams fails
+
+( https://github.com/mcerveny/v4l2-request-test/tree/v5.10 )
+- bbb-h264-all-i-32 - OK
+- bbb-h264-32 - bad from frame 5
+- bbb-h264-high-32 - bad from frame 6
+
+best regards,
+Martin
+
+>> Changes since v1:
+>> - patch 0005 rename
+>> - added testing description
+>>
+>> Martin Cerveny (6):
+>>   media: cedrus: Register all codecs as capability
+>>   dt-bindings: sram: allwinner,sun4i-a10-system-control: Add V3s
+>>     compatibles
+>>   ARM: dts: sun8i: v3s: Add node for system control
+>>   media: cedrus: Add support for V3s
+>>   dt-bindings: media: cedrus: Add V3s compatible
+>>   ARM: dts: sun8i: v3s: Add video engine node
+>>
+>>  .../allwinner,sun4i-a10-video-engine.yaml     |  1 +
+>>  .../allwinner,sun4i-a10-system-control.yaml   |  6 ++++
+>>  arch/arm/boot/dts/sun8i-v3s.dtsi              | 33 +++++++++++++++++++
+>>  drivers/staging/media/sunxi/cedrus/cedrus.c   | 28 +++++++++++++++-
+>>  drivers/staging/media/sunxi/cedrus/cedrus.h   |  2 ++
+>>  .../staging/media/sunxi/cedrus/cedrus_video.c |  2 ++
+>>  6 files changed, 71 insertions(+), 1 deletion(-)
+>>
+>
