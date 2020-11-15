@@ -2,377 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DD82B32CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 08:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4572C2B32D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 08:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgKOHJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 02:09:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
+        id S1726647AbgKOHft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 02:35:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbgKOHJN (ORCPT
+        with ESMTP id S1726483AbgKOHfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 02:09:13 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C372CC0613D1;
-        Sat, 14 Nov 2020 23:09:12 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id r12so14044496iot.4;
-        Sat, 14 Nov 2020 23:09:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=05is77nM5oqtZJU2FExlbLUjjMRlhLFjQYpIta1rViw=;
-        b=pmtgaMqy4OfESZ3rjHEACRBkNQnZZeoNA6DfKvE5/+y0iOdTcQBItasTX8oesYm6du
-         kbsBjit4qy6b3IVMZfVIigbRUBeUsVSUoqp50tQSVQAhZxUNGeCZnSBXIT8PUq4iPrdW
-         5wcwdEqNMP27voxN5MvhJU98nSy5r5jwiffn+fGh7oioRN08NYs59VMiDO1B4/K1N0Ny
-         /z1JYJ95KXCom18tpa3FuK5heka1/USEBPGkllQJxSiS94LXpXPSoeIiBQOY8huSWxQq
-         ZRkGhf/nWoK4UcKCcKmzLFp5dim0Ik70DmIYhADH8nm0CiBtI5yHNGJuvLLphgIm8gxc
-         gVLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=05is77nM5oqtZJU2FExlbLUjjMRlhLFjQYpIta1rViw=;
-        b=Uww1y31dzj5wmFvgyuNwB0B9MJV9U+qGR/1LjdW1VCNaVnOKURcM2oZDfjo4PefS6B
-         CHTNhhkRZrV8BjUOObngSbRWZpqIx11jZYCeWpi0yCI2Rwl2Vmn405ekMgy7AL4+AEn1
-         uorCtr3dlC4paJ+cCSXeK2YUNTRIT6YCussyp+3ovfSJC5JuUwzfopcnQ2QO3Onc2PCP
-         KivgjX6z+xjMMPl++QGPNiglah2dRE7uF9a1wPJqWR5aB7po6oDEODwrC0GSfPIW+/wr
-         N/ylkTZ8lKWeeKgwMrC1iN6MJMM8SIo0O2lBICww5Mj87JCtB0VVSOY0XyTgVSDtnWGm
-         7ZHg==
-X-Gm-Message-State: AOAM531tljQSqAbIkhIGbr38WJYMcuToizGtvdlxf8NMrdnGo/GskeoA
-        8wzk+tvJEV1M/UJIZhsFdkw3Cb/YW3El5mMr8FUexnhD
-X-Google-Smtp-Source: ABdhPJxFiOCDQOpWZrQ6wxFou4B/r85iYC1UCPAS3Ii/goHqPzA2hirHEzsZQjDk6R4l9KShQbqVLVfzPShQj9m/0vE=
-X-Received: by 2002:a5d:9042:: with SMTP id v2mr4200468ioq.98.1605424151899;
- Sat, 14 Nov 2020 23:09:11 -0800 (PST)
+        Sun, 15 Nov 2020 02:35:48 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CFD7C0613D1
+        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 23:35:48 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1keCZV-0006Lj-BJ; Sun, 15 Nov 2020 08:35:37 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1keCZT-0000O4-9V; Sun, 15 Nov 2020 08:35:35 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v1 net-next] net: dsa: qca: ar9331: add ethtool stats support
+Date:   Sun, 15 Nov 2020 08:35:33 +0100
+Message-Id: <20201115073533.1366-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200924084155.99406-1-alexandru.ardelean@analog.com>
- <20200925133805.062c0b1c@archlinux> <CA+U=DsqVomxim2SVqkC8LVYguUaSv-w0kw-B-shz7S0Yeka6Gg@mail.gmail.com>
- <20201114153023.415bea0e@archlinux> <20201114153234.0fa226df@archlinux>
-In-Reply-To: <20201114153234.0fa226df@archlinux>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Sun, 15 Nov 2020 09:09:00 +0200
-Message-ID: <CA+U=Dsqf3UgyM666Gg9EmehpWiucDx2P0bmsC9JR--JJDT_eWQ@mail.gmail.com>
-Subject: Re: [PATCH] iio: core: centralize ioctl() calls to the main chardev
-To:     Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 5:32 PM Jonathan Cameron
-<jic23@jic23.retrosnub.co.uk> wrote:
->
-> On Sat, 14 Nov 2020 15:30:23 +0000
-> Jonathan Cameron <jic23@kernel.org> wrote:
->
-> > On Mon, 2 Nov 2020 08:59:57 +0200
-> > Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
-> >
-> > > On Fri, Sep 25, 2020 at 3:38 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> > > >
-> > > > On Thu, 24 Sep 2020 11:41:55 +0300
-> > > > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-> > > >
-> > > > > The aim of this is to improve a bit the organization of ioctl() calls in
-> > > > > IIO core. Currently the chardev is split across IIO core sub-modules/files.
-> > > > > The main chardev has to be able to handle ioctl() calls, and if we need to
-> > > > > add buffer ioctl() calls, this would complicate things.
-> > > > >
-> > > > > The 'industrialio-core.c' file will provide a 'iio_device_ioctl()' which
-> > > > > will iterate over a list of ioctls registered with the IIO device. These
-> > > > > can be event ioctl() or buffer ioctl() calls, or something else.
-> > > > >
-> > > > > Each ioctl() handler will have to return a IIO_IOCTL_UNHANDLED code (which
-> > > > > is positive 1), if the ioctl() did not handle the call in any. This
-> > > > > eliminates any potential ambiguities about negative error codes, which
-> > > > > should fail the call altogether.
-> > > > >
-> > > > > If any ioctl() returns 0, it was considered that it was serviced
-> > > > > successfully and the loop will exit.
-> > > > >
-> > > > > This change also moves the handling of the IIO_GET_EVENT_FD_IOCTL command
-> > > > > inside 'industrialio-event.c', where this is better suited.
-> > > > >
-> > > > > This patch is a combination of 2 other patches from an older series:
-> > > > > Patch 1: iio: core: add simple centralized mechanism for ioctl() handlers
-> > > > >   Link: https://lore.kernel.org/linux-iio/20200427131100.50845-6-alexandru.ardelean@analog.com/
-> > > > > Patch 2: iio: core: use new common ioctl() mechanism
-> > > > >   Link: https://lore.kernel.org/linux-iio/20200427131100.50845-7-alexandru.ardelean@analog.com/
-> > > > >
-> > > > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > > > > ---
-> > > > >
-> > > > > Note: since this is a change to the IIO core, we don't need to put this in
-> > > > > right now; especially if there is a tight schedule, or we are too close to
-> > > > > a merge window.
-> > > >
-> > > > Looks good to me.  As you suggest, lets let this one sit on the list for a
-> > > > while though!
-> > >
-> > > ping on this
-> >
-> > Thanks.  Was still on my list, but I've been lazy and not been clearing that
-> > out for a while - too many scary things there :)
-> >
-> > Anyhow, applied to the togreg branch of iio.git and pushed out as testing for
-> > all the normal reasons.
-> Hmm. I should really wait for local build tests to finish.  Tweaked to
-> remove the bonus @ where you have @@ in the docs.
->
-> Note I'm build testing with W=1 these days that finds this sort of docs
-> issue.
+Add stats support for the ar9331 switch.
 
-I should also start using W=1 that in my build-checks.
-I think I am getting more often hit by these lately.
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/dsa/qca/ar9331.c | 113 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 113 insertions(+)
 
->
-> thanks,
->
-> Jonathan
->
-> >
-> > Thanks,
-> >
-> > Jonathan
-> >
-> > >
-> > > thanks
-> > > Alex
-> > >
-> > > >
-> > > > Jonathan
-> > > >
-> > > > >
-> > > > >  drivers/iio/iio_core.h           | 15 ++++++++-
-> > > > >  drivers/iio/industrialio-core.c  | 56 ++++++++++++++++++++++++--------
-> > > > >  drivers/iio/industrialio-event.c | 28 +++++++++++++++-
-> > > > >  include/linux/iio/iio-opaque.h   |  2 ++
-> > > > >  4 files changed, 85 insertions(+), 16 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-> > > > > index fd9a5f1d5e51..fced02cadcc3 100644
-> > > > > --- a/drivers/iio/iio_core.h
-> > > > > +++ b/drivers/iio/iio_core.h
-> > > > > @@ -17,6 +17,20 @@ struct iio_dev;
-> > > > >
-> > > > >  extern struct device_type iio_device_type;
-> > > > >
-> > > > > +#define IIO_IOCTL_UNHANDLED  1
-> > > > > +struct iio_ioctl_handler {
-> > > > > +     struct list_head entry;
-> > > > > +     long (*ioctl)(struct iio_dev *indio_dev, struct file *filp,
-> > > > > +                   unsigned int cmd, unsigned long arg);
-> > > > > +};
-> > > > > +
-> > > > > +long iio_device_ioctl(struct iio_dev *indio_dev, struct file *filp,
-> > > > > +                   unsigned int cmd, unsigned long arg);
-> > > > > +
-> > > > > +void iio_device_ioctl_handler_register(struct iio_dev *indio_dev,
-> > > > > +                                    struct iio_ioctl_handler *h);
-> > > > > +void iio_device_ioctl_handler_unregister(struct iio_ioctl_handler *h);
-> > > > > +
-> > > > >  int __iio_add_chan_devattr(const char *postfix,
-> > > > >                          struct iio_chan_spec const *chan,
-> > > > >                          ssize_t (*func)(struct device *dev,
-> > > > > @@ -74,7 +88,6 @@ static inline void iio_buffer_wakeup_poll(struct iio_dev *indio_dev) {}
-> > > > >  int iio_device_register_eventset(struct iio_dev *indio_dev);
-> > > > >  void iio_device_unregister_eventset(struct iio_dev *indio_dev);
-> > > > >  void iio_device_wakeup_eventset(struct iio_dev *indio_dev);
-> > > > > -int iio_event_getfd(struct iio_dev *indio_dev);
-> > > > >
-> > > > >  struct iio_event_interface;
-> > > > >  bool iio_event_enabled(const struct iio_event_interface *ev_int);
-> > > > > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> > > > > index 261d3b17edc9..964a0a2d6f8b 100644
-> > > > > --- a/drivers/iio/industrialio-core.c
-> > > > > +++ b/drivers/iio/industrialio-core.c
-> > > > > @@ -1567,6 +1567,7 @@ struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
-> > > > >       }
-> > > > >       dev_set_name(&dev->dev, "iio:device%d", dev->id);
-> > > > >       INIT_LIST_HEAD(&iio_dev_opaque->buffer_list);
-> > > > > +     INIT_LIST_HEAD(&iio_dev_opaque->ioctl_handlers);
-> > > > >
-> > > > >       return dev;
-> > > > >  }
-> > > > > @@ -1660,26 +1661,47 @@ static int iio_chrdev_release(struct inode *inode, struct file *filp)
-> > > > >       return 0;
-> > > > >  }
-> > > > >
-> > > > > -/* Somewhat of a cross file organization violation - ioctls here are actually
-> > > > > - * event related */
-> > > > > +void iio_device_ioctl_handler_register(struct iio_dev *indio_dev,
-> > > > > +                                    struct iio_ioctl_handler *h)
-> > > > > +{
-> > > > > +     struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> > > > > +
-> > > > > +     list_add_tail(&h->entry, &iio_dev_opaque->ioctl_handlers);
-> > > > > +}
-> > > > > +
-> > > > > +void iio_device_ioctl_handler_unregister(struct iio_ioctl_handler *h)
-> > > > > +{
-> > > > > +     list_del(&h->entry);
-> > > > > +}
-> > > > > +
-> > > > >  static long iio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-> > > > >  {
-> > > > >       struct iio_dev *indio_dev = filp->private_data;
-> > > > > -     int __user *ip = (int __user *)arg;
-> > > > > -     int fd;
-> > > > > +     struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> > > > > +     struct iio_ioctl_handler *h;
-> > > > > +     int ret = -ENODEV;
-> > > > > +
-> > > > > +     mutex_lock(&indio_dev->info_exist_lock);
-> > > > >
-> > > > > +     /**
-> > > > > +      * The NULL check here is required to prevent crashing when a device
-> > > > > +      * is being removed while userspace would still have open file handles
-> > > > > +      * to try to access this device.
-> > > > > +      */
-> > > > >       if (!indio_dev->info)
-> > > > > -             return -ENODEV;
-> > > > > -
-> > > > > -     if (cmd == IIO_GET_EVENT_FD_IOCTL) {
-> > > > > -             fd = iio_event_getfd(indio_dev);
-> > > > > -             if (fd < 0)
-> > > > > -                     return fd;
-> > > > > -             if (copy_to_user(ip, &fd, sizeof(fd)))
-> > > > > -                     return -EFAULT;
-> > > > > -             return 0;
-> > > > > +             goto out_unlock;
-> > > > > +
-> > > > > +     ret = -EINVAL;
-> > > > > +     list_for_each_entry(h, &iio_dev_opaque->ioctl_handlers, entry) {
-> > > > > +             ret = h->ioctl(indio_dev, filp, cmd, arg);
-> > > > > +             if (ret != IIO_IOCTL_UNHANDLED)
-> > > > > +                     break;
-> > > > >       }
-> > > > > -     return -EINVAL;
-> > > > > +
-> > > > > +out_unlock:
-> > > > > +     mutex_unlock(&indio_dev->info_exist_lock);
-> > > > > +
-> > > > > +     return ret;
-> > > > >  }
-> > > > >
-> > > > >  static const struct file_operations iio_buffer_fileops = {
-> > > > > @@ -1796,6 +1818,9 @@ EXPORT_SYMBOL(__iio_device_register);
-> > > > >   **/
-> > > > >  void iio_device_unregister(struct iio_dev *indio_dev)
-> > > > >  {
-> > > > > +     struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> > > > > +     struct iio_ioctl_handler *h, *t;
-> > > > > +
-> > > > >       cdev_device_del(&indio_dev->chrdev, &indio_dev->dev);
-> > > > >
-> > > > >       mutex_lock(&indio_dev->info_exist_lock);
-> > > > > @@ -1806,6 +1831,9 @@ void iio_device_unregister(struct iio_dev *indio_dev)
-> > > > >
-> > > > >       indio_dev->info = NULL;
-> > > > >
-> > > > > +     list_for_each_entry_safe(h, t, &iio_dev_opaque->ioctl_handlers, entry)
-> > > > > +             list_del(&h->entry);
-> > > > > +
-> > > > >       iio_device_wakeup_eventset(indio_dev);
-> > > > >       iio_buffer_wakeup_poll(indio_dev);
-> > > > >
-> > > > > diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
-> > > > > index 99ba657b8568..a2de2fd89067 100644
-> > > > > --- a/drivers/iio/industrialio-event.c
-> > > > > +++ b/drivers/iio/industrialio-event.c
-> > > > > @@ -31,6 +31,7 @@
-> > > > >   * @flags:           file operations related flags including busy flag.
-> > > > >   * @group:           event interface sysfs attribute group
-> > > > >   * @read_lock:               lock to protect kfifo read operations
-> > > > > + * @@ioctl_handler:  handler for event ioctl() calls
-> > > > >   */
-> > > > >  struct iio_event_interface {
-> > > > >       wait_queue_head_t       wait;
-> > > > > @@ -40,6 +41,7 @@ struct iio_event_interface {
-> > > > >       unsigned long           flags;
-> > > > >       struct attribute_group  group;
-> > > > >       struct mutex            read_lock;
-> > > > > +     struct iio_ioctl_handler        ioctl_handler;
-> > > > >  };
-> > > > >
-> > > > >  bool iio_event_enabled(const struct iio_event_interface *ev_int)
-> > > > > @@ -187,7 +189,7 @@ static const struct file_operations iio_event_chrdev_fileops = {
-> > > > >       .llseek = noop_llseek,
-> > > > >  };
-> > > > >
-> > > > > -int iio_event_getfd(struct iio_dev *indio_dev)
-> > > > > +static int iio_event_getfd(struct iio_dev *indio_dev)
-> > > > >  {
-> > > > >       struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> > > > >       struct iio_event_interface *ev_int = iio_dev_opaque->event_interface;
-> > > > > @@ -473,6 +475,24 @@ static void iio_setup_ev_int(struct iio_event_interface *ev_int)
-> > > > >       mutex_init(&ev_int->read_lock);
-> > > > >  }
-> > > > >
-> > > > > +static long iio_event_ioctl(struct iio_dev *indio_dev, struct file *filp,
-> > > > > +                         unsigned int cmd, unsigned long arg)
-> > > > > +{
-> > > > > +     int __user *ip = (int __user *)arg;
-> > > > > +     int fd;
-> > > > > +
-> > > > > +     if (cmd == IIO_GET_EVENT_FD_IOCTL) {
-> > > > > +             fd = iio_event_getfd(indio_dev);
-> > > > > +             if (fd < 0)
-> > > > > +                     return fd;
-> > > > > +             if (copy_to_user(ip, &fd, sizeof(fd)))
-> > > > > +                     return -EFAULT;
-> > > > > +             return 0;
-> > > > > +     }
-> > > > > +
-> > > > > +     return IIO_IOCTL_UNHANDLED;
-> > > > > +}
-> > > > > +
-> > > > >  static const char *iio_event_group_name = "events";
-> > > > >  int iio_device_register_eventset(struct iio_dev *indio_dev)
-> > > > >  {
-> > > > > @@ -526,6 +546,10 @@ int iio_device_register_eventset(struct iio_dev *indio_dev)
-> > > > >               ev_int->group.attrs[attrn++] = &p->dev_attr.attr;
-> > > > >       indio_dev->groups[indio_dev->groupcounter++] = &ev_int->group;
-> > > > >
-> > > > > +     ev_int->ioctl_handler.ioctl = iio_event_ioctl;
-> > > > > +     iio_device_ioctl_handler_register(&iio_dev_opaque->indio_dev,
-> > > > > +                                       &ev_int->ioctl_handler);
-> > > > > +
-> > > > >       return 0;
-> > > > >
-> > > > >  error_free_setup_event_lines:
-> > > > > @@ -558,6 +582,8 @@ void iio_device_unregister_eventset(struct iio_dev *indio_dev)
-> > > > >
-> > > > >       if (ev_int == NULL)
-> > > > >               return;
-> > > > > +
-> > > > > +     iio_device_ioctl_handler_unregister(&ev_int->ioctl_handler);
-> > > > >       iio_free_chan_devattr_list(&ev_int->dev_attr_list);
-> > > > >       kfree(ev_int->group.attrs);
-> > > > >       kfree(ev_int);
-> > > > > diff --git a/include/linux/iio/iio-opaque.h b/include/linux/iio/iio-opaque.h
-> > > > > index f2e94196d31f..07c5a8e52ca8 100644
-> > > > > --- a/include/linux/iio/iio-opaque.h
-> > > > > +++ b/include/linux/iio/iio-opaque.h
-> > > > > @@ -11,6 +11,7 @@
-> > > > >   * @channel_attr_list:               keep track of automatically created channel
-> > > > >   *                           attributes
-> > > > >   * @chan_attr_group:         group for all attrs in base directory
-> > > > > + * @ioctl_handlers:          ioctl handlers registered with the core handler
-> > > > >   * @debugfs_dentry:          device specific debugfs dentry
-> > > > >   * @cached_reg_addr:         cached register address for debugfs reads
-> > > > >   * @read_buf:                        read buffer to be used for the initial reg read
-> > > > > @@ -22,6 +23,7 @@ struct iio_dev_opaque {
-> > > > >       struct list_head                buffer_list;
-> > > > >       struct list_head                channel_attr_list;
-> > > > >       struct attribute_group          chan_attr_group;
-> > > > > +     struct list_head                ioctl_handlers;
-> > > > >  #if defined(CONFIG_DEBUG_FS)
-> > > > >       struct dentry                   *debugfs_dentry;
-> > > > >       unsigned                        cached_reg_addr;
-> > > >
-> >
->
+diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
+index e24a99031b80..f6947fb0182f 100644
+--- a/drivers/net/dsa/qca/ar9331.c
++++ b/drivers/net/dsa/qca/ar9331.c
+@@ -101,6 +101,9 @@
+ 	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
+ 	 AR9331_SW_PORT_STATUS_SPEED_M)
+ 
++/* MIB registers */
++#define AR9331_PORT_MIB_COUNTER(_i)			(0x20000 + (_i) * 0x100)
++
+ /* Phy bypass mode
+  * ------------------------------------------------------------------------
+  * Bit:   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |14 |15 |
+@@ -165,6 +168,61 @@ struct ar9331_sw_priv {
+ 	struct reset_control *sw_reset;
+ };
+ 
++struct ar9331_mib_desc {
++	unsigned int size;
++	unsigned int offset;
++	const char *name;
++};
++
++#define MIB_DESC(_s, _o, _n)	\
++	{			\
++		.size = (_s),	\
++		.offset = (_o),	\
++		.name = (_n),	\
++	}
++
++static const struct ar9331_mib_desc ar9331_mib[] = {
++	MIB_DESC(1, 0x00, "RxBroad"),
++	MIB_DESC(1, 0x04, "RxPause"),
++	MIB_DESC(1, 0x08, "RxMulti"),
++	MIB_DESC(1, 0x0c, "RxFcsErr"),
++	MIB_DESC(1, 0x10, "RxAlignErr"),
++	MIB_DESC(1, 0x14, "RxRunt"),
++	MIB_DESC(1, 0x18, "RxFragment"),
++	MIB_DESC(1, 0x1c, "Rx64Byte"),
++	MIB_DESC(1, 0x20, "Rx128Byte"),
++	MIB_DESC(1, 0x24, "Rx256Byte"),
++	MIB_DESC(1, 0x28, "Rx512Byte"),
++	MIB_DESC(1, 0x2c, "Rx1024Byte"),
++	MIB_DESC(1, 0x30, "Rx1518Byte"),
++	MIB_DESC(1, 0x34, "RxMaxByte"),
++	MIB_DESC(1, 0x38, "RxTooLong"),
++	MIB_DESC(2, 0x3c, "RxGoodByte"),
++	MIB_DESC(2, 0x44, "RxBadByte"),
++	MIB_DESC(1, 0x4c, "RxOverFlow"),
++	MIB_DESC(1, 0x50, "Filtered"),
++	MIB_DESC(1, 0x54, "TxBroad"),
++	MIB_DESC(1, 0x58, "TxPause"),
++	MIB_DESC(1, 0x5c, "TxMulti"),
++	MIB_DESC(1, 0x60, "TxUnderRun"),
++	MIB_DESC(1, 0x64, "Tx64Byte"),
++	MIB_DESC(1, 0x68, "Tx128Byte"),
++	MIB_DESC(1, 0x6c, "Tx256Byte"),
++	MIB_DESC(1, 0x70, "Tx512Byte"),
++	MIB_DESC(1, 0x74, "Tx1024Byte"),
++	MIB_DESC(1, 0x78, "Tx1518Byte"),
++	MIB_DESC(1, 0x7c, "TxMaxByte"),
++	MIB_DESC(1, 0x80, "TxOverSize"),
++	MIB_DESC(2, 0x84, "TxByte"),
++	MIB_DESC(1, 0x8c, "TxCollision"),
++	MIB_DESC(1, 0x90, "TxAbortCol"),
++	MIB_DESC(1, 0x94, "TxMultiCol"),
++	MIB_DESC(1, 0x98, "TxSingleCol"),
++	MIB_DESC(1, 0x9c, "TxExcDefer"),
++	MIB_DESC(1, 0xa0, "TxDefer"),
++	MIB_DESC(1, 0xa4, "TxLateCol"),
++};
++
+ /* Warning: switch reset will reset last AR9331_SW_MDIO_PHY_MODE_PAGE request
+  * If some kind of optimization is used, the request should be repeated.
+  */
+@@ -475,6 +533,58 @@ static void ar9331_sw_phylink_mac_link_up(struct dsa_switch *ds, int port,
+ 		dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
+ }
+ 
++static void ar9331_get_strings(struct dsa_switch *ds, int port, u32 stringset,
++			       uint8_t *data)
++{
++	int i;
++
++	if (stringset != ETH_SS_STATS)
++		return;
++
++	for (i = 0; i < ARRAY_SIZE(ar9331_mib); i++)
++		strncpy(data + i * ETH_GSTRING_LEN, ar9331_mib[i].name,
++			ETH_GSTRING_LEN);
++}
++
++static void ar9331_get_ethtool_stats(struct dsa_switch *ds, int port,
++				     uint64_t *data)
++{
++	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
++	struct regmap *regmap = priv->regmap;
++	const struct ar9331_mib_desc *mib;
++	u32 reg, i, stat;
++	u64 hi;
++	int ret;
++
++	for (i = 0; i < ARRAY_SIZE(ar9331_mib); i++) {
++		mib = &ar9331_mib[i];
++		reg = AR9331_PORT_MIB_COUNTER(port) + mib->offset;
++
++		ret = regmap_read(regmap, reg, &stat);
++		if (ret)
++			dev_err_ratelimited(priv->dev, "%s: %i\n", __func__,
++					    ret);
++		data[i] = stat;
++		if (mib->size == 2) {
++			ret = regmap_read(regmap, reg + 4, &stat);
++			if (ret)
++				dev_err_ratelimited(priv->dev, "%s: %i\n",
++						    __func__, ret);
++
++			hi = stat;
++			data[i] |= hi << 32;
++		}
++	}
++}
++
++static int ar9331_get_sset_count(struct dsa_switch *ds, int port, int sset)
++{
++	if (sset != ETH_SS_STATS)
++		return 0;
++
++	return ARRAY_SIZE(ar9331_mib);
++}
++
+ static const struct dsa_switch_ops ar9331_sw_ops = {
+ 	.get_tag_protocol	= ar9331_sw_get_tag_protocol,
+ 	.setup			= ar9331_sw_setup,
+@@ -483,6 +593,9 @@ static const struct dsa_switch_ops ar9331_sw_ops = {
+ 	.phylink_mac_config	= ar9331_sw_phylink_mac_config,
+ 	.phylink_mac_link_down	= ar9331_sw_phylink_mac_link_down,
+ 	.phylink_mac_link_up	= ar9331_sw_phylink_mac_link_up,
++	.get_strings		= ar9331_get_strings,
++	.get_ethtool_stats	= ar9331_get_ethtool_stats,
++	.get_sset_count		= ar9331_get_sset_count,
+ };
+ 
+ static irqreturn_t ar9331_sw_irq(int irq, void *data)
+-- 
+2.28.0
+
