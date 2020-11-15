@@ -2,149 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196D92B38FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 256442B3926
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:28:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgKOUQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 15:16:36 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:35384 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKOUQf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 15:16:35 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AFKFgcE070900;
-        Sun, 15 Nov 2020 20:16:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=aAP7NEpPhJaLfVSkAw1EFepSSFXX6aFlTtVNOEDZoYM=;
- b=FFBX/ieyMiBRg6X3MSa/FhJ0gMN00AodZoSmj5NAGxeMbjNubqu7Bug/MZDLVCOJc+t1
- Bj3zgJu6yw6bY8mMXTjuhBcDRBfIu9XRDeOozsL8QlQ9ya/qZRZ/gPYN3AZuCnrniapL
- fTbQCba1N6QiQRKhZ001rm08bG1k8Cb95TV8z6UP+oDn5Ua7K1Ni3ZgNrgm75dSC0HnW
- LRdCZAIu53QqKisN5CMgmclAUd0vuYaEdFo5Hbsv2Q9eZmXf/jZ/bSds03K3gl23NoJ/
- vyDvwlMkCFX0C9h+8TckQD9xMDcVfyYGPHGKPKsRWCNvJDD5OakTXfwTL/st69pvpvDL cg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34t76kjr11-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 15 Nov 2020 20:16:25 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AFKB9iT027537;
-        Sun, 15 Nov 2020 20:14:25 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34ts4vnn6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 15 Nov 2020 20:14:25 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AFKEM4S015914;
-        Sun, 15 Nov 2020 20:14:22 GMT
-Received: from localhost.localdomain (/10.211.9.80)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 15 Nov 2020 12:14:22 -0800
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-To:     linux-mm@kvack.org, netdev@vger.kernel.org
-Cc:     willy@infradead.org, aruna.ramakrishna@oracle.com,
-        bert.barbe@oracle.com, rama.nichanamatlu@oracle.com,
-        venkat.x.venkatsubra@oracle.com, manjunath.b.patil@oracle.com,
-        joe.jin@oracle.com, srinivas.eeda@oracle.com,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, davem@davemloft.net,
-        edumazet@google.com, vbabka@suse.cz, dongli.zhang@oracle.com
-Subject: [PATCH v3 1/1] page_frag: Recover from memory pressure
-Date:   Sun, 15 Nov 2020 12:10:29 -0800
-Message-Id: <20201115201029.11903-1-dongli.zhang@oracle.com>
-X-Mailer: git-send-email 2.17.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
- adultscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011150130
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011150130
+        id S1727527AbgKOU1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 15:27:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727375AbgKOU1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 15:27:22 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 149ED22370;
+        Sun, 15 Nov 2020 20:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605472041;
+        bh=DsG/M6wWbYUsYN9gKB8XjsEZ0mTQl+lpn9KqWXW52xY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=QwF4vJb4vmikz/QUv2seGm1Zo72ArpksNSgm+9Xk7D5y69JWays3oCtutf+E3Am5k
+         UHIqvgC59krEFNkL0ckvZfsDeosQEpzxxOErtwTRXaNv3KXUWpVfGflL6a/ihyP4mN
+         uy2NDDF6H9WD8IAcxi/qYnrPTu/MbhuLjE38LiDA=
+Date:   Sun, 15 Nov 2020 14:27:19 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Add sysfs attribute for PCI device power state
+Message-ID: <20201115202719.GA1239987@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <688dcd74-3acc-bc28-7ba3-55fdedbe6e70@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ethernet driver may allocate skb (and skb->data) via napi_alloc_skb().
-This ends up to page_frag_alloc() to allocate skb->data from
-page_frag_cache->va.
+On Sun, Nov 15, 2020 at 01:45:18PM +0100, Maximilian Luz wrote:
+> On 11/15/20 7:08 AM, Krzysztof Wilczyński wrote:
+> > On 20-11-02 15:15:20, Maximilian Luz wrote:
+> > > While most PCI power-states can be queried from user-space via lspci,
+> > > this has some limits. Specifically, lspci fails to provide an accurate
+> > > value when the device is in D3cold as it has to resume the device before
+> > > it can access its power state via the configuration space, leading to it
+> > > reporting D0 or another on-state. Thus lspci can, for example, not be
+> > > used to diagnose power-consumption issues for devices that can enter
+> > > D3cold or to ensure that devices properly enter D3cold at all.
+> > > 
+> > > To alleviate this issue, introduce a new sysfs device attribute for the
+> > > PCI power state, showing the current power state as seen by the kernel.
+> > 
+> > Very nice!  Thank you for adding this.
+> > 
+> > [...]
+> > > +/* PCI power state */
+> > > +static ssize_t power_state_show(struct device *dev,
+> > > +				struct device_attribute *attr, char *buf)
+> > > +{
+> > > +	struct pci_dev *pci_dev = to_pci_dev(dev);
+> > > +	pci_power_t state = READ_ONCE(pci_dev->current_state);
+> > > +
+> > > +	return sprintf(buf, "%s\n", pci_power_name(state));
+> > > +}
+> > > +static DEVICE_ATTR_RO(power_state);
+> > [...]
+> > 
+> > Curious, why did you decide to use the READ_ONCE() macro here?  Some
+> > other drivers exposing data through sysfs use, but certainly not all.
+> 
+> As far as I can tell current_state is normally guarded by the device
+> lock, but here we don't hold that lock. I generally prefer to be
+> explicit about those kinds of access, if only to document that the value
+> can change here.
+> 
+> In this case it should work fine without it, but this also has the
+> benefit that if someone were to add a change like
+> 
+>   if (state > x)
+>           state = y;
+> 
+> later on (here or even in pci_power_name() due to inlining), things
+> wouldn't break as we explicitly forbid the compiler to load
+> current_state more than once. Without the READ_ONCE, the compiler would
+> be theoretically allowed to do two separate reads then (although
+> arguably unlikely it would end up doing that).
+> 
+> Also there's no downside of marking it as READ_ONCE here as far as I can
+> tell, as in that context the value will always have to be loaded from
+> memory.
 
-During the memory pressure, page_frag_cache->va may be allocated as
-pfmemalloc page. As a result, the skb->pfmemalloc is always true as
-skb->data is from page_frag_cache->va. The skb will be dropped if the
-sock (receiver) does not have SOCK_MEMALLOC. This is expected behaviour
-under memory pressure.
+I think something read from sysfs is a snapshot with no guarantee
+about how long it will remain valid, so I don't see a problem with the
+value being stale by the time userspace consumes it.
 
-However, once kernel is not under memory pressure any longer (suppose large
-amount of memory pages are just reclaimed), the page_frag_alloc() may still
-re-use the prior pfmemalloc page_frag_cache->va to allocate skb->data. As a
-result, the skb->pfmemalloc is always true unless page_frag_cache->va is
-re-allocated, even if the kernel is not under memory pressure any longer.
+If there's a downside to doing two separate reads, we could mention
+that in the commit log or a comment.
 
-Here is how kernel runs into issue.
+If there's not a specific reason for using READ_ONCE(), I think we
+should omit it because using it in one place but not others suggests
+that there's something special about this place.
 
-1. The kernel is under memory pressure and allocation of
-PAGE_FRAG_CACHE_MAX_ORDER in __page_frag_cache_refill() will fail. Instead,
-the pfmemalloc page is allocated for page_frag_cache->va.
-
-2: All skb->data from page_frag_cache->va (pfmemalloc) will have
-skb->pfmemalloc=true. The skb will always be dropped by sock without
-SOCK_MEMALLOC. This is an expected behaviour.
-
-3. Suppose a large amount of pages are reclaimed and kernel is not under
-memory pressure any longer. We expect skb->pfmemalloc drop will not happen.
-
-4. Unfortunately, page_frag_alloc() does not proactively re-allocate
-page_frag_alloc->va and will always re-use the prior pfmemalloc page. The
-skb->pfmemalloc is always true even kernel is not under memory pressure any
-longer.
-
-Fix this by freeing and re-allocating the page instead of recycling it.
-
-References: https://lore.kernel.org/lkml/20201103193239.1807-1-dongli.zhang@oracle.com/
-References: https://lore.kernel.org/linux-mm/20201105042140.5253-1-willy@infradead.org/
-Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-Cc: Bert Barbe <bert.barbe@oracle.com>
-Cc: Rama Nichanamatlu <rama.nichanamatlu@oracle.com>
-Cc: Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>
-Cc: Manjunath Patil <manjunath.b.patil@oracle.com>
-Cc: Joe Jin <joe.jin@oracle.com>
-Cc: SRINIVAS <srinivas.eeda@oracle.com>
-Cc: stable@vger.kernel.org
-Fixes: 79930f5892e ("net: do not deplete pfmemalloc reserve")
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
----
-Changed since v1:
-  - change author from Matthew to Dongli
-  - Add references to all prior discussions
-  - Add more details to commit message
-Changed since v2:
-  - add unlikely (suggested by Eric Dumazet)
-
- mm/page_alloc.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 23f5066bd4a5..91129ce75ed4 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5103,6 +5103,11 @@ void *page_frag_alloc(struct page_frag_cache *nc,
- 		if (!page_ref_sub_and_test(page, nc->pagecnt_bias))
- 			goto refill;
- 
-+		if (unlikely(nc->pfmemalloc)) {
-+			free_the_page(page, compound_order(page));
-+			goto refill;
-+		}
-+
- #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
- 		/* if size can vary use size else just use PAGE_SIZE */
- 		size = nc->size;
--- 
-2.17.1
-
+Bjorn
