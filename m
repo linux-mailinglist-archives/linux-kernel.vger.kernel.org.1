@@ -2,150 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C94A2B352F
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 15:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DC52B3535
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 15:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgKOOF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 09:05:29 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:35142 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727073AbgKOOF2 (ORCPT
+        id S1727193AbgKOOKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 09:10:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726743AbgKOOKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 09:05:28 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1keIeg-009fU2-79; Sun, 15 Nov 2020 07:05:22 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1keIef-0003D4-7f; Sun, 15 Nov 2020 07:05:21 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        linux-pci@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com,
-        dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, andi@firstfloor.org,
-        lukas@wunner.de, okaya@kernel.org, kernelfans@gmail.com,
-        ddstreet@canonical.com, gavin.guo@canonical.com,
-        jay.vosburgh@canonical.com, kernel@gpiccoli.net,
-        shan.gavin@linux.alibaba.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-References: <20201114212215.GA1194074@bjorn-Precision-5520>
-Date:   Sun, 15 Nov 2020 08:05:05 -0600
-In-Reply-To: <20201114212215.GA1194074@bjorn-Precision-5520> (Bjorn Helgaas's
-        message of "Sat, 14 Nov 2020 15:22:15 -0600")
-Message-ID: <87v9e6n2b2.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Sun, 15 Nov 2020 09:10:08 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2CEC0613D1;
+        Sun, 15 Nov 2020 06:10:08 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id e139so1440917lfd.1;
+        Sun, 15 Nov 2020 06:10:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cBgdH6GdCBGnI5dccRIOmhr8A9LKRM3pERsD4/tt0MI=;
+        b=It0OY4wQqG9i4I/LrYjiVWH6/tC8vyBnyqL7b12g9w4Js5PcICJQB1ABagRngiYNyS
+         Ki9JK3/SxfI8BPgGCf0bEW2GWl64ppaSwNvg4pVddCWZVuFOy3cE3JGdI+kmkL/KCUMK
+         MWvtnYTaUMV6cDpyD9O+9vfcTGs0pebf4w/F+JmsjOytsbpDDJmgx8bI12vOpACxf5Uc
+         ylL9u0tST0lRgTew3w6tg9AE80d2gXuLX3/Z36rKv5Xi1dHdzGyWgAe/XWG2vReJdMT3
+         QQWH9f/OBrRhB1TPJ82ziTsOlQvmhDUwP1UP0/igMz8B70Nw0E9nKXhmbb0444K/XiZ3
+         hRUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cBgdH6GdCBGnI5dccRIOmhr8A9LKRM3pERsD4/tt0MI=;
+        b=F2/HEGGf8akpSW3FMJZ3GNX1uUdFol8sAi4P4ufjE9Kd/8mU5Mv04AJZ8wn0r0APSG
+         E00La+C+ZXCMBqz//COcNGeLTxXRuujEbF55q0GA1RYLauadS7dqmuREkxuvKF4MVKai
+         NPT1IXg6ddIQAWUn7tcEtcJ8H6ezBzoj3lvTltTytB6m2wvhtgCICgMCcHIs/jmvF7iz
+         cANGpZGPKfaf2VLfMuLiO9kj1ioDHwuvRihn2qD6F5QVLISoYon3QRdJ1ak3PyxDOWeo
+         oG8lOsPSmHQPF0H3ukk0wdNDksg0jm14GYgqejW+GjmrEmxI9XbGAao894TOwNrLxoKi
+         0Few==
+X-Gm-Message-State: AOAM530iEW7qB1aay2vbWp22wrtQ1Ycwmp86c980jdRX2i2dzgyWqzIg
+        +mGHp1bnrFgXyJiqsRSYaDQIIVDgP1A=
+X-Google-Smtp-Source: ABdhPJzrrn2CWEv9FRn7nhv9rrehNC6O46kpoyDGaO+VBaOEOcQacCia9+OiQ+wJnnrgAlPRsiMYmQ==
+X-Received: by 2002:a19:8544:: with SMTP id h65mr4165469lfd.344.1605449406342;
+        Sun, 15 Nov 2020 06:10:06 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id j22sm2028419lfr.6.2020.11.15.06.10.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Nov 2020 06:10:05 -0800 (PST)
+Subject: Re: [PATCH v1] clk: tegra30: Use 300MHz for video decoder by default
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201104134810.21026-1-digetx@gmail.com>
+ <160538861846.60232.2236874455363048014@swboyd.mtv.corp.google.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b362195a-665d-5e1d-4c6e-26cbc2459777@gmail.com>
+Date:   Sun, 15 Nov 2020 17:10:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1keIef-0003D4-7f;;;mid=<87v9e6n2b2.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+YuU7K8slUpoLdruiB0niDW9O6RxUm9go=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4994]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Bjorn Helgaas <helgaas@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 501 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 9 (1.7%), b_tie_ro: 7 (1.5%), parse: 1.35 (0.3%),
-        extract_message_metadata: 5 (1.0%), get_uri_detail_list: 2.5 (0.5%),
-        tests_pri_-1000: 4.5 (0.9%), tests_pri_-950: 1.44 (0.3%),
-        tests_pri_-900: 1.18 (0.2%), tests_pri_-90: 128 (25.4%), check_bayes:
-        126 (25.1%), b_tokenize: 9 (1.9%), b_tok_get_all: 11 (2.1%),
-        b_comp_prob: 3.5 (0.7%), b_tok_touch_all: 98 (19.6%), b_finish: 0.92
-        (0.2%), tests_pri_0: 333 (66.5%), check_dkim_signature: 0.55 (0.1%),
-        check_dkim_adsp: 2.4 (0.5%), poll_dns_idle: 0.49 (0.1%), tests_pri_10:
-        2.1 (0.4%), tests_pri_500: 6 (1.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <160538861846.60232.2236874455363048014@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn Helgaas <helgaas@kernel.org> writes:
+15.11.2020 00:16, Stephen Boyd пишет:
+> Quoting Dmitry Osipenko (2020-11-04 05:48:10)
+>> The 600MHz is a too high clock rate for some SoC versions for the video
+>> decoder hardware and this may cause stability issues. Use 300MHz for the
+>> video decoder by default, which is supported by all hardware versions.
+>>
+>> Fixes: ed1a2459e20c ("clk: tegra: Add Tegra20/30 EMC clock implementation")
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+> 
+> Should this go to clk-fixes? Thierry?
+> 
 
-> [+cc Rafael for question about ACPI method for PCI host bridge reset]
->
-> On Sat, Nov 14, 2020 at 09:58:08PM +0100, Thomas Gleixner wrote:
->> On Sat, Nov 14 2020 at 14:39, Bjorn Helgaas wrote:
->> > On Sat, Nov 14, 2020 at 12:40:10AM +0100, Thomas Gleixner wrote:
->> >> On Sat, Nov 14 2020 at 00:31, Thomas Gleixner wrote:
->> >> > On Fri, Nov 13 2020 at 10:46, Bjorn Helgaas wrote:
->> >> >> pci_device_shutdown() still clears the Bus Master Enable bit if we're
->> >> >> doing a kexec and the device is in D0-D3hot, which should also disable
->> >> >> MSI/MSI-X.  Why doesn't this solve the problem?  Is this because the
->> >> >> device causing the storm was in PCI_UNKNOWN state?
->> >> >
->> >> > That's indeed a really good question.
->> >> 
->> >> So we do that on kexec, but is that true when starting a kdump kernel
->> >> from a kernel crash? I doubt it.
->> >
->> > Ah, right, I bet that's it, thanks.  The kdump path is basically this:
->> >
->> >   crash_kexec
->> >     machine_kexec
->> >
->> > while the usual kexec path is:
->> >
->> >   kernel_kexec
->> >     kernel_restart_prepare
->> >       device_shutdown
->> >         while (!list_empty(&devices_kset->list))
->> >           dev->bus->shutdown
->> >             pci_device_shutdown            # pci_bus_type.shutdown
->> >     machine_kexec
->> >
->> > So maybe we need to explore doing some or all of device_shutdown() in
->> > the crash_kexec() path as well as in the kernel_kexec() path.
->> 
->> The problem is that if the machine crashed anything you try to attempt
->> before starting the crash kernel is reducing the chance that the crash
->> kernel actually starts.
->
-> Right.
->
->> Is there something at the root bridge level which allows to tell the
->> underlying busses to shut up, reset or go into a defined state? That
->> might avoid chasing lists which might be already unreliable.
->
-> Maybe we need some kind of crash_device_shutdown() that does the
-> minimal thing to protect the kdump kernel from devices.
+Either way should be good. The fix isn't critical because 600MHz seems
+to be working okay on unsupported hardware.
 
-The kdump kernel does not use any memory the original kernel uses.
-Which should be a minimal and fairly robust level of protection
-until the device drivers can be loaded and get ahold of things.
+Potentially this could vary depending on a board, but then I don't think
+that there are actively-supported boards which would notice this change.
 
-> The programming model for conventional PCI host bridges and PCIe Root
-> Complexes is device-specific since they're outside the PCI domain.
-> There probably *are* ways to do those things, but you would need a
-> native host bridge driver or something like an ACPI method.  I'm not
-> aware of an ACPI way to do this, but I added Rafael in case he is.
->
-> A crash_device_shutdown() could do something at the host bridge level
-> if that's possible, or reset/disable bus mastering/disable MSI/etc on
-> individual PCI devices if necessary.
-
-Unless I am confused DMA'ing to memory that is not already in use
-is completely broken wether or not you are using the kdump kernel.
-
-Eric
+Likely that this patch will be backported by a bot anyways because of
+the fixes tag.
