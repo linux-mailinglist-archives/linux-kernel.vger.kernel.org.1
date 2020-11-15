@@ -2,174 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A967D2B38F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFCC2B38F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727698AbgKOUDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 15:03:32 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:42625 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727230AbgKOUDc (ORCPT
+        id S1727817AbgKOUFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 15:05:14 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:56086 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727706AbgKOUFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 15:03:32 -0500
-Received: by mail-pf1-f193.google.com with SMTP id 131so852663pfb.9;
-        Sun, 15 Nov 2020 12:03:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gSgzS039n+3PGyt0MXWMRrql06PRL7hk2fw+AHog/6U=;
-        b=j7LvDPLUYecUAtgYHJubLbhdaOu6oU6n8gfHV3hCXwp6QQU+wb43ADCmlxyzw35sYw
-         bXFlMpTXYC7LuEL3+IJpV0bJa4sKmOXUnEeGY9XCuT0Qx3+sGig/KVmb09RSuJPBj+uD
-         Wsoi1rMS5zAtnVm1QV5GcVxTo8XQk0QwROXqjm0yRlVdjk55e9omTlueQHPuUutzHWAQ
-         PSme+wOECAimmTiD7ODW+d9FxgQ1WSB01EpwwE5xd1xu7o9H2QTiI78snpegmC6r1tuB
-         hn9mrDUx0/dl7TX3zPwvbcpAbeeo6228UjqhmcZ2IJn+sbIbzyEkIxV3kft2S8A4wIpJ
-         WxXw==
-X-Gm-Message-State: AOAM532Mu05JHCHPZ6VQ/8HT6HK5CJVe49HxNUaIasQT98yXu2QXro1t
-        CYYdBWhg5DngMj+jUkAH8Jg=
-X-Google-Smtp-Source: ABdhPJwTCovdOfzalSZlErBDSQsDiY+yoRFgw4wclM0ZJkz4wbinMYTp4JAaiW7FQXnVnywAl9u6GA==
-X-Received: by 2002:a62:6586:0:b029:164:1cb9:8aff with SMTP id z128-20020a6265860000b02901641cb98affmr11419835pfb.64.1605470611629;
-        Sun, 15 Nov 2020 12:03:31 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id t36sm14348354pfg.55.2020.11.15.12.03.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 12:03:31 -0800 (PST)
-Date:   Sun, 15 Nov 2020 12:03:30 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, lee.jones@linaro.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v5 3/6] fpga: m10bmc-sec: expose max10 flash update count
-Message-ID: <20201115200330.GA284619@epycbox.lan>
-References: <20201114005559.90860-1-russell.h.weight@intel.com>
- <20201114005559.90860-4-russell.h.weight@intel.com>
+        Sun, 15 Nov 2020 15:05:14 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AFK43b1047047;
+        Sun, 15 Nov 2020 20:04:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=bmoZX8u1q0Upqf5t/0ploFSERTNgOdg02qf028mJeBE=;
+ b=GYAiWZNttqNOK74hRQEBF7OE4rozOOgldgLTTDIo28kZ/Kg/QGT9lbiHi2Hp/9kg3afv
+ JUHHg4SlP6hJp1T9Lt4vZclaGcbgveOqVG82SD21zQc0PPQteswcIX/kddfm7YTyUE9w
+ vJZ1KZ2GgQWAtC7kcJ+luVT4B6fVsKTcDunpwGXpz6fXoP7SiyQfAEtr/mxtJqDIhBo4
+ 1Dq/ixPrErNz6KYjcIfZW94tYw6GkyCutXEW8bn47s0P15cmA33VUl/e6Wc7ezJc9AXc
+ kjcKFPL0AmajHcO6oBz2E075MU5dYrXoFeJrYOOeBPYQHJ7Tc1TOjcjTNAo2R0auzVCx 3g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 34t76kjqr8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 15 Nov 2020 20:04:54 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AFJxTsN048469;
+        Sun, 15 Nov 2020 20:04:54 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 34trtjwg5f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 15 Nov 2020 20:04:54 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AFK4nlU032208;
+        Sun, 15 Nov 2020 20:04:49 GMT
+Received: from [10.159.225.239] (/10.159.225.239)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 15 Nov 2020 12:04:49 -0800
+Subject: Re: [PATCH v2 1/1] page_frag: Recover from memory pressure
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, netdev@vger.kernel.org,
+        aruna.ramakrishna@oracle.com, bert.barbe@oracle.com,
+        rama.nichanamatlu@oracle.com, venkat.x.venkatsubra@oracle.com,
+        manjunath.b.patil@oracle.com, joe.jin@oracle.com,
+        srinivas.eeda@oracle.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        davem@davemloft.net, edumazet@google.com, vbabka@suse.cz
+References: <20201115065106.10244-1-dongli.zhang@oracle.com>
+ <20201115121828.GQ17076@casper.infradead.org>
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+Message-ID: <aca0ba1d-6090-045a-5051-df296bbfdacf@oracle.com>
+Date:   Sun, 15 Nov 2020 12:04:47 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201114005559.90860-4-russell.h.weight@intel.com>
+In-Reply-To: <20201115121828.GQ17076@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 spamscore=0 mlxlogscore=911 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011150129
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=925
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011150129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 04:55:56PM -0800, Russ Weight wrote:
-> Extend the MAX10 BMC Secure Update driver to provide a
-> sysfs file to expose the flash update count for the FPGA
-> user image.
+
+
+On 11/15/20 4:18 AM, Matthew Wilcox wrote:
+> On Sat, Nov 14, 2020 at 10:51:06PM -0800, Dongli Zhang wrote:
+>> +		if (nc->pfmemalloc) {
 > 
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
-> ---
-> v5:
->   - Renamed sysfs node user_flash_count to flash_count and updated the
->     sysfs documentation accordingly.
-> v4:
->   - Moved the sysfs file for displaying the flash count from the
->     FPGA Security Manager class driver to here. The
->     m10bmc_user_flash_count() function is removed and the
->     functionality is moved into a user_flash_count_show()
->     function.
->   - Added ABI documentation for the new sysfs entry
-> v3:
->   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
->   - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure Update
->     driver"
->   - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
->     underlying functions are now called directly.
-> v2:
->   - Renamed get_qspi_flash_count() to m10bmc_user_flash_count()
->   - Minor code cleanup per review comments
->   - Added m10bmc_ prefix to functions in m10bmc_iops structure
-> ---
->  .../testing/sysfs-driver-intel-m10-bmc-secure |  8 +++++
->  drivers/fpga/intel-m10-bmc-secure.c           | 34 +++++++++++++++++++
->  2 files changed, 42 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
-> index 2992488b717a..73a3aba750e8 100644
-> --- a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
-> +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
-> @@ -27,3 +27,11 @@ Description:	Read only. Returns the root entry hash for the BMC image
->  		"hash not programmed".  This file is only visible if the
->  		underlying device supports it.
->  		Format: "0x%x".
-> +
-> +What:		/sys/bus/platform/devices/n3000bmc-secure.*.auto/security/flash_count
-> +Date:		Oct 2020
-> +KernelVersion:  5.11
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Read only. Returns number of times the secure update
-> +		staging area has been flashed.
-> +		Format: "%u".
-> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
-> index 198bc8273d6b..6ad897001086 100644
-> --- a/drivers/fpga/intel-m10-bmc-secure.c
-> +++ b/drivers/fpga/intel-m10-bmc-secure.c
-> @@ -11,6 +11,7 @@
->  #include <linux/mfd/intel-m10-bmc.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> +#include <linux/slab.h>
->  
->  struct m10bmc_sec {
->  	struct device *dev;
-> @@ -77,7 +78,40 @@ DEVICE_ATTR_SEC_REH_RO(bmc, BMC_PROG_MAGIC, BMC_PROG_ADDR, BMC_REH_ADDR);
->  DEVICE_ATTR_SEC_REH_RO(sr, SR_PROG_MAGIC, SR_PROG_ADDR, SR_REH_ADDR);
->  DEVICE_ATTR_SEC_REH_RO(pr, PR_PROG_MAGIC, PR_PROG_ADDR, PR_REH_ADDR);
->  
-> +#define FLASH_COUNT_SIZE 4096	/* count stored as inverted bit vector */
-> +
-> +static ssize_t flash_count_show(struct device *dev,
-> +				struct device_attribute *attr, char *buf)
-> +{
-> +	struct m10bmc_sec *sec = dev_get_drvdata(dev);
-> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
-> +	unsigned int num_bits = FLASH_COUNT_SIZE * 8;
-> +	u8 *flash_buf;
-> +	int cnt, ret;
-
-(Nit) Can you make this:
-
-	struct m10bmc_sec *sec = dev_get_drvdata(dev);
-	unsigned int stride, num_bits;
-	u8 *flash_buf;
-	int cnt, ret;
-
-	stride = regmap_get_reg_stride(sec->m10bmc->regmap);
-	num_bits = FLASH_COUNT_SIZE * 8;
-
-
-> +
-> +	flash_buf = kmalloc(FLASH_COUNT_SIZE, GFP_KERNEL);
-> +	if (!flash_buf)
-> +		return -ENOMEM;
-> +
-> +	ret = regmap_bulk_read(sec->m10bmc->regmap, STAGING_FLASH_COUNT,
-> +			       flash_buf, FLASH_COUNT_SIZE / stride);
-> +	if (ret) {
-> +		dev_err(sec->dev,
-> +			"failed to read flash count: %x cnt %x: %d\n",
-> +			STAGING_FLASH_COUNT, FLASH_COUNT_SIZE / stride, ret);
-> +		goto exit_free;
-> +	}
-> +	cnt = num_bits - bitmap_weight((unsigned long *)flash_buf, num_bits);
-> +
-> +exit_free:
-> +	kfree(flash_buf);
-> +
-> +	return ret ? : sysfs_emit(buf, "%u\n", cnt);
-> +}
-> +static DEVICE_ATTR_RO(flash_count);
-> +
->  static struct attribute *m10bmc_security_attrs[] = {
-> +	&dev_attr_flash_count.attr,
->  	&dev_attr_bmc_root_entry_hash.attr,
->  	&dev_attr_sr_root_entry_hash.attr,
->  	&dev_attr_pr_root_entry_hash.attr,
-> -- 
-> 2.25.1
+> You missed the unlikely() change that Eric recommended.
 > 
 
-Otherwise looks good to me,
+Thank you very much. I missed that email.
 
-- Moritz
+I will send v3.
+
+Dongli Zhang
