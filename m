@@ -2,97 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876902B3906
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A967D2B38F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 21:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgKOUUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 15:20:21 -0500
-Received: from gateway31.websitewelcome.com ([192.185.144.219]:19194 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727553AbgKOUUT (ORCPT
+        id S1727698AbgKOUDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 15:03:32 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:42625 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727230AbgKOUDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 15:20:19 -0500
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 47C3A8607B
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 13:58:45 -0600 (CST)
-Received: from br164.hostgator.com.br ([192.185.176.180])
-        by cmsmtp with SMTP
-        id eOAfkCIdMosA0eOAfknGyu; Sun, 15 Nov 2020 13:58:45 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=rFcOP8UWegi27SgLGGK/1FD40QNsTlzehhrgLClCyW8=; b=r60dmg+3VJ08/+ivsUeiC93GvI
-        JP2+3Dmr8EcYyusEvFW5FXZ9+gSyQv7o4Grg+8dNey7vIkZTetCTkmJjW0o1T5+1HRIYOZIzaqY8G
-        CiChPUX/AjfOCUodElH/Gyk65kuofufyEQdklXaA0/prhL1IuRq53zLEL34//c8fm1qqIECQ0wUFR
-        g9ZFcZywa5O/MiMFgs9Fd8XX7Uvzzdoz0WqwZ/UBnHbBQfxHP2scU5XKkZGyTLUDr2hNyPs8m3ceC
-        wk/9R362AD/nrfzJMIlVr4I1mwuOi0yW+IgJNSHFEoHS/9nvYQay0dnr5hEZTlewIiPv0x/Gz4xAj
-        AR16Hlgw==;
-Received: from 179-197-124-241.ultrabandalargafibra.com.br ([179.197.124.241]:50406 helo=DESKTOP-TKDJ6MU.localdomain)
-        by br164.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <matheus@castello.eng.br>)
-        id 1keOAe-000kPb-NR; Sun, 15 Nov 2020 16:58:45 -0300
-From:   Matheus Castello <matheus@castello.eng.br>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org
-Cc:     sashal@kernel.org, Tianyu.Lan@microsoft.com, decui@microsoft.com,
-        mikelley@microsoft.com, sunilmut@microsoft.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matheus Castello <matheus@castello.eng.br>
-Subject: [PATCH 6/6] drivers: hv: vmbus: Fix call msleep using < 20ms
-Date:   Sun, 15 Nov 2020 16:57:34 -0300
-Message-Id: <20201115195734.8338-7-matheus@castello.eng.br>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201115195734.8338-1-matheus@castello.eng.br>
-References: <20201115195734.8338-1-matheus@castello.eng.br>
+        Sun, 15 Nov 2020 15:03:32 -0500
+Received: by mail-pf1-f193.google.com with SMTP id 131so852663pfb.9;
+        Sun, 15 Nov 2020 12:03:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gSgzS039n+3PGyt0MXWMRrql06PRL7hk2fw+AHog/6U=;
+        b=j7LvDPLUYecUAtgYHJubLbhdaOu6oU6n8gfHV3hCXwp6QQU+wb43ADCmlxyzw35sYw
+         bXFlMpTXYC7LuEL3+IJpV0bJa4sKmOXUnEeGY9XCuT0Qx3+sGig/KVmb09RSuJPBj+uD
+         Wsoi1rMS5zAtnVm1QV5GcVxTo8XQk0QwROXqjm0yRlVdjk55e9omTlueQHPuUutzHWAQ
+         PSme+wOECAimmTiD7ODW+d9FxgQ1WSB01EpwwE5xd1xu7o9H2QTiI78snpegmC6r1tuB
+         hn9mrDUx0/dl7TX3zPwvbcpAbeeo6228UjqhmcZ2IJn+sbIbzyEkIxV3kft2S8A4wIpJ
+         WxXw==
+X-Gm-Message-State: AOAM532Mu05JHCHPZ6VQ/8HT6HK5CJVe49HxNUaIasQT98yXu2QXro1t
+        CYYdBWhg5DngMj+jUkAH8Jg=
+X-Google-Smtp-Source: ABdhPJwTCovdOfzalSZlErBDSQsDiY+yoRFgw4wclM0ZJkz4wbinMYTp4JAaiW7FQXnVnywAl9u6GA==
+X-Received: by 2002:a62:6586:0:b029:164:1cb9:8aff with SMTP id z128-20020a6265860000b02901641cb98affmr11419835pfb.64.1605470611629;
+        Sun, 15 Nov 2020 12:03:31 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id t36sm14348354pfg.55.2020.11.15.12.03.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 12:03:31 -0800 (PST)
+Date:   Sun, 15 Nov 2020 12:03:30 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     mdf@kernel.org, lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v5 3/6] fpga: m10bmc-sec: expose max10 flash update count
+Message-ID: <20201115200330.GA284619@epycbox.lan>
+References: <20201114005559.90860-1-russell.h.weight@intel.com>
+ <20201114005559.90860-4-russell.h.weight@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - castello.eng.br
-X-BWhitelist: no
-X-Source-IP: 179.197.124.241
-X-Source-L: No
-X-Exim-ID: 1keOAe-000kPb-NR
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 179-197-124-241.ultrabandalargafibra.com.br (DESKTOP-TKDJ6MU.localdomain) [179.197.124.241]:50406
-X-Source-Auth: matheus@castello.eng.br
-X-Email-Count: 75
-X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201114005559.90860-4-russell.h.weight@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed checkpatch warning: MSLEEP: msleep < 20ms can sleep for up to
-20ms; see Documentation/timers/timers-howto.rst
+On Fri, Nov 13, 2020 at 04:55:56PM -0800, Russ Weight wrote:
+> Extend the MAX10 BMC Secure Update driver to provide a
+> sysfs file to expose the flash update count for the FPGA
+> user image.
+> 
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Reviewed-by: Tom Rix <trix@redhat.com>
+> ---
+> v5:
+>   - Renamed sysfs node user_flash_count to flash_count and updated the
+>     sysfs documentation accordingly.
+> v4:
+>   - Moved the sysfs file for displaying the flash count from the
+>     FPGA Security Manager class driver to here. The
+>     m10bmc_user_flash_count() function is removed and the
+>     functionality is moved into a user_flash_count_show()
+>     function.
+>   - Added ABI documentation for the new sysfs entry
+> v3:
+>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+>   - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure Update
+>     driver"
+>   - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+>     underlying functions are now called directly.
+> v2:
+>   - Renamed get_qspi_flash_count() to m10bmc_user_flash_count()
+>   - Minor code cleanup per review comments
+>   - Added m10bmc_ prefix to functions in m10bmc_iops structure
+> ---
+>  .../testing/sysfs-driver-intel-m10-bmc-secure |  8 +++++
+>  drivers/fpga/intel-m10-bmc-secure.c           | 34 +++++++++++++++++++
+>  2 files changed, 42 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
+> index 2992488b717a..73a3aba750e8 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
+> +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
+> @@ -27,3 +27,11 @@ Description:	Read only. Returns the root entry hash for the BMC image
+>  		"hash not programmed".  This file is only visible if the
+>  		underlying device supports it.
+>  		Format: "0x%x".
+> +
+> +What:		/sys/bus/platform/devices/n3000bmc-secure.*.auto/security/flash_count
+> +Date:		Oct 2020
+> +KernelVersion:  5.11
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read only. Returns number of times the secure update
+> +		staging area has been flashed.
+> +		Format: "%u".
+> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
+> index 198bc8273d6b..6ad897001086 100644
+> --- a/drivers/fpga/intel-m10-bmc-secure.c
+> +++ b/drivers/fpga/intel-m10-bmc-secure.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/mfd/intel-m10-bmc.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/slab.h>
+>  
+>  struct m10bmc_sec {
+>  	struct device *dev;
+> @@ -77,7 +78,40 @@ DEVICE_ATTR_SEC_REH_RO(bmc, BMC_PROG_MAGIC, BMC_PROG_ADDR, BMC_REH_ADDR);
+>  DEVICE_ATTR_SEC_REH_RO(sr, SR_PROG_MAGIC, SR_PROG_ADDR, SR_REH_ADDR);
+>  DEVICE_ATTR_SEC_REH_RO(pr, PR_PROG_MAGIC, PR_PROG_ADDR, PR_REH_ADDR);
+>  
+> +#define FLASH_COUNT_SIZE 4096	/* count stored as inverted bit vector */
+> +
+> +static ssize_t flash_count_show(struct device *dev,
+> +				struct device_attribute *attr, char *buf)
+> +{
+> +	struct m10bmc_sec *sec = dev_get_drvdata(dev);
+> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
+> +	unsigned int num_bits = FLASH_COUNT_SIZE * 8;
+> +	u8 *flash_buf;
+> +	int cnt, ret;
 
-Signed-off-by: Matheus Castello <matheus@castello.eng.br>
----
- drivers/hv/vmbus_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+(Nit) Can you make this:
 
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 774b88dd0e15..cf49c0c01206 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -2382,7 +2382,7 @@ static int vmbus_bus_suspend(struct device *dev)
- 		 * We wait here until the completion of any channel
- 		 * offers that are currently in progress.
- 		 */
--		msleep(1);
-+		usleep_range(1000, 2000);
- 	}
+	struct m10bmc_sec *sec = dev_get_drvdata(dev);
+	unsigned int stride, num_bits;
+	u8 *flash_buf;
+	int cnt, ret;
 
- 	mutex_lock(&vmbus_connection.channel_mutex);
---
-2.28.0
+	stride = regmap_get_reg_stride(sec->m10bmc->regmap);
+	num_bits = FLASH_COUNT_SIZE * 8;
 
+
+> +
+> +	flash_buf = kmalloc(FLASH_COUNT_SIZE, GFP_KERNEL);
+> +	if (!flash_buf)
+> +		return -ENOMEM;
+> +
+> +	ret = regmap_bulk_read(sec->m10bmc->regmap, STAGING_FLASH_COUNT,
+> +			       flash_buf, FLASH_COUNT_SIZE / stride);
+> +	if (ret) {
+> +		dev_err(sec->dev,
+> +			"failed to read flash count: %x cnt %x: %d\n",
+> +			STAGING_FLASH_COUNT, FLASH_COUNT_SIZE / stride, ret);
+> +		goto exit_free;
+> +	}
+> +	cnt = num_bits - bitmap_weight((unsigned long *)flash_buf, num_bits);
+> +
+> +exit_free:
+> +	kfree(flash_buf);
+> +
+> +	return ret ? : sysfs_emit(buf, "%u\n", cnt);
+> +}
+> +static DEVICE_ATTR_RO(flash_count);
+> +
+>  static struct attribute *m10bmc_security_attrs[] = {
+> +	&dev_attr_flash_count.attr,
+>  	&dev_attr_bmc_root_entry_hash.attr,
+>  	&dev_attr_sr_root_entry_hash.attr,
+>  	&dev_attr_pr_root_entry_hash.attr,
+> -- 
+> 2.25.1
+> 
+
+Otherwise looks good to me,
+
+- Moritz
