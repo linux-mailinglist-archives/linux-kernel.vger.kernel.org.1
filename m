@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243F42B36E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 18:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9982B36EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 18:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727294AbgKOQ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 11:59:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727042AbgKOQ7E (ORCPT
+        id S1727053AbgKORCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 12:02:01 -0500
+Received: from bmailout3.hostsharing.net ([176.9.242.62]:58991 "EHLO
+        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbgKORCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 11:59:04 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678CEC0613D1;
-        Sun, 15 Nov 2020 08:59:04 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id cq7so16264357edb.4;
-        Sun, 15 Nov 2020 08:59:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w7mL2iRg/mInBs54fIX3rJ0Znez3wS1L6LbIDjQE9Qw=;
-        b=oILdEVcpWtl4r1ydW78cb/WfUlDQF3N7VHncAaffvsIGb8N7DwziMJgQvQ9mP1q/Cc
-         WbYeh1Kf1acDsQhQqNK090fho3forIolY4LZplpd+f2kd3WqhEKGZmhlyREl8qVMRqJ0
-         +3DP8fGQf8N3LMv91RayZ8WN0AzH8sonXFHiOkz0POgEsPdxfChqZkdaQIrUmbSSsXNa
-         0stgeiY9mP3IUBFwXDiqJyiSF8cQJm9/ntQeY9bPwHriyFuYvY5DPY4DFJZ1Y61exZN4
-         GehjO8Xg4vLNN8vCkN99OoJfsLfjiSVFCMDSEqnUv9StQXN+nq6dLBaANeoBgVU9vP6L
-         VACg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w7mL2iRg/mInBs54fIX3rJ0Znez3wS1L6LbIDjQE9Qw=;
-        b=FPPuEX9mENatyY1f99lj+jOJ3WrCEgLjwxaEeijN4i0+qKwzEwNpLbH2SRThScA/3l
-         TYZL1WUtN7fRuPbhUzqKQssFfx64W5ZI1I54GkaAOemegYDk3nvFQRUaoxz0Eu9XEHIj
-         VSMpmnV09N86HW6fheyhqqrGoKkBxGw33T9lX+mm8xqmHbzmISO3jEEP3eonAPlhR0eK
-         T7iicgdBZ4JtXWE4C/QKnPI18Vio0rR8Udccj0V2FzUNnBGq+un6E2rITiDhKNGfJDPb
-         E2dNfkVljBguvINi0fJgLdIVwAURabSjc/QKETOA3LNA1gY3zm6gCf0qphefTXDQL/dC
-         EOgA==
-X-Gm-Message-State: AOAM531+oI/NQG9zJwnYzsFy9tgLLZhz4epOrPLqa4OOFihy5aqho64+
-        zw/MVKTZDKI7QE4oVpN1vEvuBtGzdAtx8isOuSY=
-X-Google-Smtp-Source: ABdhPJzx+f4P0oGzB/k0StBQNk3fG+LG+uXSoQxtEgvG4uZqfPQfhY6BdJMgNTUcG1WKpP7VDsoDXL6Nam3uMQyhNqw=
-X-Received: by 2002:a05:6402:b35:: with SMTP id bo21mr12825628edb.52.1605459543089;
- Sun, 15 Nov 2020 08:59:03 -0800 (PST)
+        Sun, 15 Nov 2020 12:02:00 -0500
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 75C88100E2006;
+        Sun, 15 Nov 2020 18:01:58 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 61A271BCF3; Sun, 15 Nov 2020 18:01:58 +0100 (CET)
+Date:   Sun, 15 Nov 2020 18:01:58 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        kernelfans@gmail.com, andi@firstfloor.org, hpa@zytor.com,
+        bhe@redhat.com, x86@kernel.org, okaya@kernel.org, mingo@redhat.com,
+        jay.vosburgh@canonical.com, dyoung@redhat.com,
+        gavin.guo@canonical.com,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>, bp@alien8.de,
+        bhelgaas@google.com, shan.gavin@linux.alibaba.com,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel@gpiccoli.net,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ddstreet@canonical.com, vgoyal@redhat.com
+Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
+Message-ID: <20201115170158.GA27152@wunner.de>
+References: <20201114212215.GA1194074@bjorn-Precision-5520>
+ <87v9e6n2b2.fsf@x220.int.ebiederm.org>
+ <87sg9almmg.fsf@x220.int.ebiederm.org>
+ <874klqac40.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201115100623.257293-1-martin.blumenstingl@googlemail.com> <20201115155753.GC1701029@lunn.ch>
-In-Reply-To: <20201115155753.GC1701029@lunn.ch>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sun, 15 Nov 2020 17:58:52 +0100
-Message-ID: <CAFBinCA8T6hcdkt72g_HRRuoaUzfb28C0C5feJL+BCSf6YsRTw@mail.gmail.com>
-Subject: Re: [PATCH] net: lantiq: Wait for the GPHY firmware to be ready
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>, netdev@vger.kernel.org,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874klqac40.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Sun, Nov 15, 2020 at 04:11:43PM +0100, Thomas Gleixner wrote:
+> Unfortunately there is no way to tell the APIC "Mask vector X" and the
+> dump kernel does neither know which device it comes from nor does it
+> have enumerated PCI completely which would reset the device and shutup
+> the spew. Due to the interrupt storm it does not get that far.
 
-On Sun, Nov 15, 2020 at 4:57 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > Add a 300ms delay after initializing all GPHYs to ensure that the GPHY
-> > firmware had enough time to initialize and to appear on the MDIO bus.
-> > Unfortunately there is no (known) documentation on what the minimum time
-> > to wait after releasing the reset on an internal PHY so play safe and
-> > take the one for the external variant. Only wait after the last GPHY
-> > firmware is loaded to not slow down the initialization too much (
-> > xRX200 has two GPHYs but newer SoCs have at least three GPHYs).
->
-> Hi Martin
->
-> Could this be moved into gswip_gphy_fw_list() where the actual
-> firmware download happens?
->
-> To me that seems like the more logical place.
-good point, that's closer to the loop over all GPHY instances.
-I've taken care of it in v2 - many thanks!
+Can't we just set DisINTx, clear MSI Enable and clear MSI-X Enable
+on all active PCI devices in the crashing kernel before starting the
+crash kernel?  So that the crash kernel starts with a clean slate?
 
+Guilherme's original patches from 2018 iterate over all 256 PCI buses.
+That might impact boot time negatively.  The reason he has to do that
+is because the crashing kernel doesn't know which devices exist and
+which have interrupts enabled.  However the crashing kernel has that
+information.  It should either disable interrupts itself or pass the
+necessary information to the crashing kernel as setup_data or whatever.
 
-Best regards,
-Martin
+Guilherme's patches add a "clearmsi" command line parameter.  I guess
+the idea is that the parameter is always passed to the crash kernel
+but the patches don't do that, which seems odd.
+
+Thanks,
+
+Lukas
