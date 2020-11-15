@@ -2,177 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB112B3A8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9D02B3A8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbgKOXMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 18:12:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726004AbgKOXMd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 18:12:33 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9C2C0613CF;
-        Sun, 15 Nov 2020 15:12:31 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 11so18119897ljf.2;
-        Sun, 15 Nov 2020 15:12:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+d69nkc43tsxlWAdrY2B8Lv8/D9Hq7HoZ8uP+nxtrpU=;
-        b=rw/MacKYgPqufYzCAcV49V9EFPkaGaY49qdhek/4+wuqbCFb3KLnZqichUMsNzXgt3
-         H1osuM3WWraMicDdhUhO9ZTmmX7BM1f0hDC2gBbZRW4cILup2m2wuNdPF8phJYSAPxru
-         vaWKJB9Zzd8Pj2PCsjloR76pHj3EctM+be3YMh/dBftfZV0hmDWBMirSxXtqduBDTG/m
-         LmyGF9JWzkCpVkkF2lTNBP/6UvYQv/nfgyPHyRGHt6oOgMA+HVh2NY1Dw7e6u3BhZi+3
-         ShdTQf8vdNazLWQUalPaHsEB5A3uXNO/Bo9ZWNKnP7trLRP8ewla8Cxzz16aehIIFbyb
-         prYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+d69nkc43tsxlWAdrY2B8Lv8/D9Hq7HoZ8uP+nxtrpU=;
-        b=Xhi5IyACryoZLUyvjnKDkHC0/2fbyRetYnXSX100050yCDLaQ1ZIYdKjQrm/z67Bx7
-         eyfNQeFyT6wU8FYhSd02rSxOUVoq7oFTCrCbEA8LeyeKCO2/f/sAGBI6N25xq6pIUNbS
-         eBZSdcEBX60YucjkCX/mjMJVF7tMz9xgfMzCdbjz2StnwaO1mHe2PB1aR8oH8g0CZ6G7
-         IBtmBzRRcro8+0xz3RSnoocBQBmGdpYkpfgW0QCWPmbru2DJzlEY8CDu6+RjIq8jMjfG
-         100pVN3XAzONsgf2pYcZfTs2vgCDwZFEL2BP3LXKcaxwiJh1T0QzJyPv9E3QADge1oS9
-         Hw0g==
-X-Gm-Message-State: AOAM532Etqk3InqgGhQDANs0acR7hdQxC+JECwpMEkWShYV0sonl+tpZ
-        YNqvV3NO/ANncWtlpiBEjFe1eS4RfYI=
-X-Google-Smtp-Source: ABdhPJweNLpJrdfTfSIrR2pHU83vh4d7qoq/W7T4NCC96902xjSBicuLhW6l2KkEi2owX/3xqbrTyA==
-X-Received: by 2002:a2e:9207:: with SMTP id k7mr4906912ljg.71.1605481950294;
-        Sun, 15 Nov 2020 15:12:30 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id w12sm2519786ljo.67.2020.11.15.15.12.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Nov 2020 15:12:29 -0800 (PST)
-Subject: Re: [PATCH v5 2/4] mfd: Add driver for Embedded Controller found on
- Acer Iconia Tab A500
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201104203403.24937-1-digetx@gmail.com>
- <20201104203403.24937-3-digetx@gmail.com> <20201113093747.GJ2787115@dell>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <3ad644fd-cd03-a1e1-36d9-014304fdfcee@gmail.com>
-Date:   Mon, 16 Nov 2020 02:12:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1728000AbgKOXNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 18:13:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727976AbgKOXNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 18:13:08 -0500
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6ED6D22453
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 23:13:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605481987;
+        bh=lk702/tUQXibGYdggCfUZgCdOzqj1Eu9ni298A0WYIY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=2Fa/9ZiHQnc5BbU0XZDC3uAMemNwIsstR9qKiGMuNCt9Qj4Vz3Qb03lkXZ5P4m3LP
+         94hqfd32fXJf0Y/9wy6nkz6popX+S300JgMACJh+ICLNvuIT77/glxBmqfn4UJmqkw
+         BJfiiLWQTLleOY/WvL2Z0rbAfFBNQb4uQMsUlmbQ=
+Received: by mail-ej1-f42.google.com with SMTP id dk16so21837194ejb.12
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 15:13:07 -0800 (PST)
+X-Gm-Message-State: AOAM533bAkqpzaHycTnYzsFNOuOpuEaceGZmZjxE2NjpqsErTL1s190D
+        AuP2WjtShzW2vqgphtLnFyejT/il6u79q9VwWA==
+X-Google-Smtp-Source: ABdhPJyhR7yVa8OMs9CVMO4MXD46m7RyAQokGoT/HE9LB+f69Ko6msdZkOuu0dL0VOctbP5UKTEaLDUtX2zyBsS3qnw=
+X-Received: by 2002:a17:906:a106:: with SMTP id t6mr11718404ejy.63.1605481985911;
+ Sun, 15 Nov 2020 15:13:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201113093747.GJ2787115@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201115001403.7833-1-chunkuang.hu@kernel.org>
+ <CAAOTY_-16s=NXg2kOJijhO+82nNsT9HkKj4PVh1qN8dKchBOBA@mail.gmail.com> <20201116002522.1a5c3736@a-VirtualBox>
+In-Reply-To: <20201116002522.1a5c3736@a-VirtualBox>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 16 Nov 2020 07:12:55 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-_N9pcmao0FFtGs-qVLrvA-QBz5FJrSaYynuMZMe1Qhg@mail.gmail.com>
+Message-ID: <CAAOTY_-_N9pcmao0FFtGs-qVLrvA-QBz5FJrSaYynuMZMe1Qhg@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: dsi: Calculate horizontal_backporch_byte by itself
+To:     Bilal Wasim <bilalwasim676@gmail.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, CK Hu <ck.hu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.11.2020 12:37, Lee Jones пишет:
-...
->> +config MFD_ACER_A500_EC
->> +	tristate "Embedded Controller driver for Acer Iconia Tab A500"
-> 
-> Drop "driver".  This is meant to be describing the device.
-> 
->> +	depends on I2C
-> 
-> depends on OF ?
-...
->> +	depends on ARCH_TEGRA_2x_SOC || COMPILE_TEST
->> +	select MFD_CORE
->> +	select REGMAP
->> +	help
+Hi, Bilal:
 
-ARCH_TEGRA_2x_SOC selects OF.
+Bilal Wasim <bilalwasim676@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=8816=
+=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=883:25=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> Hi CK,
+>
+> On Sun, 15 Nov 2020 08:53:24 +0800
+> Chun-Kuang Hu <chunkuang.hu@kernel.org> wrote:
+>
+> > Hi, Bilal:
+> >
+> > Please help to test this patch on your Chromebook elm, thanks.
+> >
+> > Regards,
+> > Chun-Kuang Hu
+>
+> Just tried this patch on the Chromebook Elm, and it doesn't work. The
+> HDMI screen remains black, though the rest of the system keeps on
+> operating normally.
 
-For COMPILE_TEST it doesn't matter since OF framework provides stubs for
-!OF.
+Could you print this information, so I could find out the solution for
+both small hbp and elm.
 
-...
->> +static int a500_ec_read(void *context, const void *reg_buf, size_t reg_size,
->> +			void *val_buf, size_t val_sizel)
->> +{
->> +	struct i2c_client *client = context;
->> +	unsigned int reg, retries = 5;
->> +	u16 *ret_val = val_buf;
->> +	s32 ret = 0;
->> +
->> +	if (reg_size != 1 || val_sizel != 2)
-> 
-> No magic numbers please.
-> 
-> What does this *mean*?
+vm->hfront_porch, vm->hback_porch, dsi_tmp_buf_bpp,
+data_phy_cycles_byte, and the final horizontal_frontporch_byte,
+horizontal_backporch_byte.
 
-These are the size of address register and size of a read value, both in
-bytes.
+Regards,
+Chun-Kuang.
 
->> +		return -EOPNOTSUPP;
-> 
-> Why EOPNOTSUPP?
-
-Other sizes aren't supported by embedded controller.
-
-Although, perhaps this check isn't really needed at all since the sizes
-are already expressed in the a500_ec_regmap_config.
-
-I'll need to take a closer look at why this size-checking was added
-because don't quite remember already. If it's not needed, then I'll
-remove it in the next revision, otherwise will add a clarifying comment.
-
->> +	reg = *(u8 *)reg_buf;
->> +
->> +	while (retries-- > 0) {
->> +		ret = i2c_smbus_read_word_data(client, reg);
->> +		if (ret >= 0)
->> +			break;
->> +
->> +		msleep(A500_EC_I2C_ERR_TIMEOUT);
->> +	}
->> +
->> +	if (ret < 0) {
->> +		dev_err(&client->dev, "read 0x%x failed: %d\n", reg, ret);
->> +		return ret;
->> +	}
->> +
->> +	*ret_val = ret;
->> +
->> +	if (reg == REG_CURRENT_NOW)
->> +		fsleep(10000);
-> 
-> Ooo, new toy!
-> 
->> +	return 0;
->> +}
-> 
-> I'm surprised there isn't a generic function which does this kind of
-> read.  Seems like pretty common/boilerplate stuff.
-
-I'm not quite sure that this is a really very common pattern which
-deserves a generic helper.
-
-...
->> +static int a500_ec_restart_notify(struct notifier_block *this,
->> +				  unsigned long reboot_mode, void *data)
->> +{
->> +	if (reboot_mode == REBOOT_WARM)
->> +		i2c_smbus_write_word_data(a500_ec_client_pm_off,
->> +					  REG_WARM_REBOOT, 0);
->> +	else
->> +		i2c_smbus_write_word_data(a500_ec_client_pm_off,
->> +					  REG_COLD_REBOOT, 1);
-> 
-> What's with the magic '0' and '1's at the end?
-
-These are the values which controller's firmware wants to see, otherwise
-it will reject command as invalid. I'll add a clarifying comment to the
-code.
-
-Thank you for the review. I'll address all the comments in the v7.
+>
+> >
+> > Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=
+=8815=E6=97=A5 =E9=80=B1=E6=97=A5
+> > =E4=B8=8A=E5=8D=888:14=E5=AF=AB=E9=81=93=EF=BC=9A
+> > >
+> > > From: CK Hu <ck.hu@mediatek.com>
+> > >
+> > > Using vm->hfront_porch + vm->hback_porch to calculate
+> > > horizontal_backporch_byte would make it negtive, so
+> > > use horizontal_backporch_byte itself to make it positive.
+> > >
+> > > Fixes: 35bf948f1edb ("drm/mediatek: dsi: Fix scrolling of panel
+> > > with small hfp or hbp")
+> > >
+> > > Signed-off-by: CK Hu <ck.hu@mediatek.com>
+> > > Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> > > ---
+> > >  drivers/gpu/drm/mediatek/mtk_dsi.c | 53
+> > > ++++++++++-------------------- 1 file changed, 18 insertions(+), 35
+> > > deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> > > b/drivers/gpu/drm/mediatek/mtk_dsi.c index
+> > > 4a188a942c38..2a64fdaed9a7 100644 ---
+> > > a/drivers/gpu/drm/mediatek/mtk_dsi.c +++
+> > > b/drivers/gpu/drm/mediatek/mtk_dsi.c @@ -444,7 +444,10 @@ static
+> > > void mtk_dsi_config_vdo_timing(struct mtk_dsi *dsi) u32
+> > > horizontal_sync_active_byte; u32 horizontal_backporch_byte;
+> > >         u32 horizontal_frontporch_byte;
+> > > +       u32 horizontal_front_back_byte;
+> > > +       u32 data_phy_cycles_byte;
+> > >         u32 dsi_tmp_buf_bpp, data_phy_cycles;
+> > > +       u32 delta;
+> > >         struct mtk_phy_timing *timing =3D &dsi->phy_timing;
+> > >
+> > >         struct videomode *vm =3D &dsi->vm;
+> > > @@ -474,42 +477,22 @@ static void mtk_dsi_config_vdo_timing(struct
+> > > mtk_dsi *dsi) data_phy_cycles =3D timing->lpx + timing->da_hs_prepare
+> > > + timing->da_hs_zero + timing->da_hs_exit;
+> > >
+> > > -       if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) {
+> > > -               if ((vm->hfront_porch + vm->hback_porch) *
+> > > dsi_tmp_buf_bpp >
+> > > -                   data_phy_cycles * dsi->lanes + 18) {
+> > > -                       horizontal_frontporch_byte =3D
+> > > -                               vm->hfront_porch * dsi_tmp_buf_bpp -
+> > > -                               (data_phy_cycles * dsi->lanes + 18)
+> > > *
+> > > -                               vm->hfront_porch /
+> > > -                               (vm->hfront_porch +
+> > > vm->hback_porch); -
+> > > -                       horizontal_backporch_byte =3D
+> > > -                               horizontal_backporch_byte -
+> > > -                               (data_phy_cycles * dsi->lanes + 18)
+> > > *
+> > > -                               vm->hback_porch /
+> > > -                               (vm->hfront_porch +
+> > > vm->hback_porch);
+> > > -               } else {
+> > > -                       DRM_WARN("HFP less than d-phy, FPS will
+> > > under 60Hz\n");
+> > > -                       horizontal_frontporch_byte =3D
+> > > vm->hfront_porch *
+> > > -
+> > > dsi_tmp_buf_bpp;
+> > > -               }
+> > > +       delta =3D dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST ? 18 :
+> > > 12; +
+> > > +       horizontal_frontporch_byte =3D vm->hfront_porch *
+> > > dsi_tmp_buf_bpp;
+> > > +       horizontal_front_back_byte =3D horizontal_frontporch_byte +
+> > > horizontal_backporch_byte;
+> > > +       data_phy_cycles_byte =3D data_phy_cycles * dsi->lanes + delta=
+;
+> > > +
+> > > +       if (horizontal_front_back_byte > data_phy_cycles_byte) {
+> > > +               horizontal_frontporch_byte -=3D data_phy_cycles_byte =
+*
+> > > +
+> > > horizontal_frontporch_byte /
+> > > +
+> > > horizontal_front_back_byte; +
+> > > +               horizontal_backporch_byte -=3D data_phy_cycles_byte *
+> > > +
+> > > horizontal_backporch_byte /
+> > > +
+> > > horizontal_front_back_byte; } else {
+> > > -               if ((vm->hfront_porch + vm->hback_porch) *
+> > > dsi_tmp_buf_bpp >
+> > > -                   data_phy_cycles * dsi->lanes + 12) {
+> > > -                       horizontal_frontporch_byte =3D
+> > > -                               vm->hfront_porch * dsi_tmp_buf_bpp -
+> > > -                               (data_phy_cycles * dsi->lanes + 12)
+> > > *
+> > > -                               vm->hfront_porch /
+> > > -                               (vm->hfront_porch +
+> > > vm->hback_porch);
+> > > -                       horizontal_backporch_byte =3D
+> > > horizontal_backporch_byte -
+> > > -                               (data_phy_cycles * dsi->lanes + 12)
+> > > *
+> > > -                               vm->hback_porch /
+> > > -                               (vm->hfront_porch +
+> > > vm->hback_porch);
+> > > -               } else {
+> > > -                       DRM_WARN("HFP less than d-phy, FPS will
+> > > under 60Hz\n");
+> > > -                       horizontal_frontporch_byte =3D
+> > > vm->hfront_porch *
+> > > -
+> > > dsi_tmp_buf_bpp;
+> > > -               }
+> > > +               DRM_WARN("HFP + HBP less than d-phy, FPS will under
+> > > 60Hz\n"); }
+> > >
+> > >         writel(horizontal_sync_active_byte, dsi->regs + DSI_HSA_WC);
+> > > --
+> > > 2.17.1
+> > >
+>
+> Thanks,
+> Bilal
