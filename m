@@ -2,594 +2,436 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC652B3A81
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B32112B3A88
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 00:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbgKOXDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 18:03:04 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:38113 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgKOXDD (ORCPT
+        id S1727815AbgKOXMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 18:12:07 -0500
+Received: from smtprelay0050.hostedemail.com ([216.40.44.50]:43498 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726004AbgKOXMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 18:03:03 -0500
-Received: by mail-pf1-f196.google.com with SMTP id 10so11704587pfp.5;
-        Sun, 15 Nov 2020 15:03:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kx6fYDgNrlY4DEUL/r0zLu7njRtLOEl/EbpGBQ9PK5E=;
-        b=S+m7bYp3Wrx/vKo5TDpIhYWlnwhlltQb+niwt43bfU9cqBYVorCHFOtwP6pPToKZdL
-         f8SmMAjaI+X0RDVzpR0DrtHLgANxh73VGf1jwudjXCaLsrvUoiYVrmRTZla6BXh2ovPT
-         7Z5tLhgDM2W4l9GFZVZwpACLUBQ4DseBO1bnSWRqRJ7SQ9Ab/zasT5mKUOdrSCHqQ2Hv
-         hcG/GTRzy8OxQhiX5DRGCJJPV0h3Y17q6jOjdRxcXjXHdwvKZ1KCsXec5wm3I5BsP8Y1
-         YYoUOYR9LQjucAfND5kyQX7/+c0h81PyyQKpFEQYhLDE7cx84K8r66YxdVgEEKHh3RO8
-         9GsQ==
-X-Gm-Message-State: AOAM532oH30+azK5uybwmTQO8XOmWUvIEkuvxquhKjghFOJ0L97GnfOy
-        lj8BlIe4VaNfWrZM6MFCvxw=
-X-Google-Smtp-Source: ABdhPJyyVep7cxGZcqbhDwWQRE3vde/vx34PCDny8VI3z+AmDgdeu340tW/c76iK0xQSWaQWMSX3uQ==
-X-Received: by 2002:a63:570e:: with SMTP id l14mr10125061pgb.302.1605481381880;
-        Sun, 15 Nov 2020 15:03:01 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id r6sm15818115pjd.39.2020.11.15.15.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 15:03:01 -0800 (PST)
-Date:   Sun, 15 Nov 2020 15:03:00 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v6 1/7] fpga: sec-mgr: fpga security manager class driver
-Message-ID: <X7GzpM95S5pdjNi/@epycbox.lan>
-References: <20201106010905.11935-1-russell.h.weight@intel.com>
- <20201106010905.11935-2-russell.h.weight@intel.com>
+        Sun, 15 Nov 2020 18:12:06 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id B6E2C100E7B43;
+        Sun, 15 Nov 2020 23:12:04 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:327:355:379:599:967:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:1801:2194:2199:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4605:5007:8985:9025:9040:9121:9592:10004:10848:11026:11232:11473:11657:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13255:13439:14096:14097:14659:21080:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: brush60_4d0c30627324
+X-Filterd-Recvd-Size: 21605
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 15 Nov 2020 23:12:03 +0000 (UTC)
+Message-ID: <176ba5be7e1a4cd5aa36c5e891a55728075135d0.camel@perches.com>
+Subject: Re: [PATCH 01/40] drm/amd/include/vega10_ip_offset: Mark _BASE
+ structs as __maybe_unused
+From:   Joe Perches <joe@perches.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Date:   Sun, 15 Nov 2020 15:12:01 -0800
+In-Reply-To: <20201113134938.4004947-2-lee.jones@linaro.org>
+References: <20201113134938.4004947-1-lee.jones@linaro.org>
+         <20201113134938.4004947-2-lee.jones@linaro.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106010905.11935-2-russell.h.weight@intel.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russ,
-
-On Thu, Nov 05, 2020 at 05:08:59PM -0800, Russ Weight wrote:
-> Create the FPGA Security Manager class driver. The security
-> manager provides interfaces to manage secure updates for the
-> FPGA and BMC images that are stored in FLASH. The driver can
-> also be used to update root entry hashes and to cancel code
-> signing keys. The image type is encoded in the image file
-> and is decoded by the HW/FW secure update engine.
+On Fri, 2020-11-13 at 13:48 +0000, Lee Jones wrote:
+> This patch fixes nearly 400 warnings!
 > 
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
-> ---
-> v6:
->   - Removed sysfs support and documentation for the display of the
->     flash count, root entry hashes, and code-signing-key cancelation
->     vectors.
-> v5:
->   - Added the devm_fpga_sec_mgr_unregister() function, following recent
->     changes to the fpga_manager() implementation.
->   - Changed some *_show() functions to use sysfs_emit() instead of sprintf(
-> v4:
->   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
->     and removed unnecessary references to "Intel".
->   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-> v3:
->   - Modified sysfs handler check in check_sysfs_handler() to make
->     it more readable.
-> v2:
->   - Bumped documentation dates and versions
->   - Added Documentation/fpga/ifpga-sec-mgr.rst 
->   - Removed references to bmc_flash_count & smbus_flash_count (not supported)
->   - Split ifpga_sec_mgr_register() into create() and register() functions
->   - Added devm_ifpga_sec_mgr_create()
->   - Removed typedefs for imgr ops
-> ---
->  .../ABI/testing/sysfs-class-fpga-sec-mgr      |   5 +
->  Documentation/fpga/fpga-sec-mgr.rst           |  44 +++
->  Documentation/fpga/index.rst                  |   1 +
->  MAINTAINERS                                   |   9 +
->  drivers/fpga/Kconfig                          |   9 +
->  drivers/fpga/Makefile                         |   3 +
->  drivers/fpga/fpga-sec-mgr.c                   | 296 ++++++++++++++++++
->  include/linux/fpga/fpga-sec-mgr.h             |  44 +++
->  8 files changed, 411 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
->  create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
->  create mode 100644 drivers/fpga/fpga-sec-mgr.c
->  create mode 100644 include/linux/fpga/fpga-sec-mgr.h
+> These structures are too widely used in too many varying
+> configurations to be split-up into different headers or moved into
+> source files.
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-> new file mode 100644
-> index 000000000000..ecda22a3ff3b
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-> @@ -0,0 +1,5 @@
-> +What: 		/sys/class/fpga_sec_mgr/fpga_secX/name
-> +Date:		Oct 2020
-> +KernelVersion:  5.11
-> +Contact:	Russ Weight <russell.h.weight@intel.com>
-> +Description:	Name of low level fpga security manager driver.
-> diff --git a/Documentation/fpga/fpga-sec-mgr.rst b/Documentation/fpga/fpga-sec-mgr.rst
-> new file mode 100644
-> index 000000000000..26dac599ead7
-> --- /dev/null
-> +++ b/Documentation/fpga/fpga-sec-mgr.rst
-> @@ -0,0 +1,44 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +========================================
-> +FPGA Security Manager Class Driver
-> +========================================
-> +
-> +The FPGA Security Manager class driver provides a common
-> +API for user-space tools to manage updates for secure FPGA
-> +devices. Device drivers that instantiate the Security
-> +Manager class driver will interact with a HW secure update
-> +engine in order to transfer new FPGA and BMC images to FLASH so
-> +that they will be automatically loaded when the FPGA card reboots.
-> +
-> +A significant difference between the FPGA Manager and the FPGA
-> +Security Manager is that the FPGA Manager does a live update (Partial
-> +Reconfiguration) to a device, whereas the FPGA Security Manager
-> +updates the FLASH images for the Static Region and the BMC so that
-> +they will be loaded the next time the FPGA card boots. Security is
-> +enforced by hardware and firmware. The security manager interacts
-> +with the firmware to initiate an update, pass in the necessary data,
-> +and collect status on the update.
+> Instead, we'll mark them as __maybe_unused which tells the compiler
+> that we're aware they're being included into source files which do not
+> make use of them - but we've looked into it, and it's okay.
 
-I've always wondered if we could've made this a functionality of an FPGA
-manager 'non-volatile' node or something.
+https://gcc.gnu.org/onlinedocs/gcc-4.7.2/gcc/Type-Attributes.html#Type-Attributes
 
-I guess there might be cases where you can only do either of them, i.e.
-only update flash or only update at runtime.
+Wouldn't it be simpler to mark the struct definitions as maybe_unused
+instead of the declarations?
 
-> +
-> +In addition to managing secure updates of the FPGA and BMC images,
-> +the FPGA Security Manager update process may also used to
-> +program root entry hashes and cancellation keys for the FPGA static
-> +region, the FPGA partial reconfiguration region, and the BMC.
-> +
-> +Secure updates make use of the request_firmware framework, which
-> +requires that image files are accessible under /lib/firmware. A request
-> +for a secure update returns immediately, while the update itself
-> +proceeds in the context of a kernel worker thread. Sysfs files provide
-> +a means for monitoring the progress of a secure update and for
-> +retrieving error information in the event of a failure.
-> +
-> +Sysfs Attributes
-> +================
-> +
-> +The API includes a sysfs entry *name* to export the name of the parent
-> +driver. It also includes an *update* sub-directory that can be used to
-> +instantiate and monitor a secure update.
-> +
-> +See `<../ABI/testing/sysfs-class-fpga-sec-mgr>`__ for a full
-> +description of the sysfs attributes for the FPGA Security
-> +Manager.
-> diff --git a/Documentation/fpga/index.rst b/Documentation/fpga/index.rst
-> index f80f95667ca2..0b2f427042af 100644
-> --- a/Documentation/fpga/index.rst
-> +++ b/Documentation/fpga/index.rst
-> @@ -8,6 +8,7 @@ fpga
->      :maxdepth: 1
->  
->      dfl
-> +    fpga-sec-mgr
->  
->  .. only::  subproject and html
->  
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 87452fca5235..a434cd1921f7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6919,6 +6919,15 @@ F:	Documentation/fpga/
->  F:	drivers/fpga/
->  F:	include/linux/fpga/
->  
-> +FPGA SECURITY MANAGER DRIVERS
-> +M:	Russ Weight <russell.h.weight@intel.com>
-> +L:	linux-fpga@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-> +F:	Documentation/fpga/fpga-sec-mgr.rst
-> +F:	drivers/fpga/fpga-sec-mgr.c
-> +F:	include/linux/fpga/fpga-sec-mgr.h
-> +
->  FPU EMULATOR
->  M:	Bill Metzenthen <billm@melbpc.org.au>
->  S:	Maintained
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index 7cd5a29fc437..6810b23b178d 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -215,4 +215,13 @@ config FPGA_MGR_ZYNQMP_FPGA
->  	  to configure the programmable logic(PL) through PS
->  	  on ZynqMP SoC.
->  
-> +config FPGA_SEC_MGR
-> +	tristate "FPGA Security Manager"
-> +	help
-> +	  The Security Manager class driver presents a common
-> +	  user API for managing secure updates for FPGA
-> +	  devices, including flash images for the FPGA static
-> +	  region and for the BMC. Select this option to enable
-> +	  updates for secure FPGA devices.
-> +
->  endif # FPGA
-> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> index d8e21dfc6778..0e357262faed 100644
-> --- a/drivers/fpga/Makefile
-> +++ b/drivers/fpga/Makefile
-> @@ -21,6 +21,9 @@ obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+= zynqmp-fpga.o
->  obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
->  obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
->  
-> +# FPGA Security Manager Framework
-> +obj-$(CONFIG_FPGA_SEC_MGR)		+= fpga-sec-mgr.o
-> +
->  # FPGA Bridge Drivers
->  obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
->  obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
-> diff --git a/drivers/fpga/fpga-sec-mgr.c b/drivers/fpga/fpga-sec-mgr.c
-> new file mode 100644
-> index 000000000000..468379e0c825
-> --- /dev/null
-> +++ b/drivers/fpga/fpga-sec-mgr.c
-> @@ -0,0 +1,296 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * FPGA Security Manager
-> + *
-> + * Copyright (C) 2019-2020 Intel Corporation, Inc.
-> + */
-> +
-> +#include <linux/fpga/fpga-sec-mgr.h>
-> +#include <linux/idr.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/vmalloc.h>
-> +
-> +static DEFINE_IDA(fpga_sec_mgr_ida);
-> +static struct class *fpga_sec_mgr_class;
-> +
-> +struct fpga_sec_mgr_devres {
-> +	struct fpga_sec_mgr *smgr;
-> +};
-> +
-> +#define to_sec_mgr(d) container_of(d, struct fpga_sec_mgr, dev)
-> +
-> +static ssize_t name_show(struct device *dev,
-> +			 struct device_attribute *attr, char *buf)
-> +{
-> +	struct fpga_sec_mgr *smgr = to_sec_mgr(dev);
-> +
-> +	return sysfs_emit(buf, "%s\n", smgr->name);
-> +}
-> +static DEVICE_ATTR_RO(name);
-> +
-> +static struct attribute *sec_mgr_attrs[] = {
-> +	&dev_attr_name.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group sec_mgr_attr_group = {
-> +	.attrs = sec_mgr_attrs,
-> +};
-> +
-> +static const struct attribute_group *fpga_sec_mgr_attr_groups[] = {
-> +	&sec_mgr_attr_group,
-> +	NULL,
-> +};
-> +
-> +/**
-> + * fpga_sec_mgr_create - create and initialize an FPGA
-> + *			  security manager struct
-> + *
-> + * @dev:  fpga security manager device from pdev
-> + * @name: fpga security manager name
-> + * @sops: pointer to a structure of fpga callback functions
-> + * @priv: fpga security manager private data
-> + *
-> + * The caller of this function is responsible for freeing the struct
-> + * with ifpg_sec_mgr_free(). Using devm_fpga_sec_mgr_create() instead
-> + * is recommended.
-> + *
-> + * Return: pointer to struct fpga_sec_mgr or NULL
-> + */
-> +struct fpga_sec_mgr *
-> +fpga_sec_mgr_create(struct device *dev, const char *name,
-> +		    const struct fpga_sec_mgr_ops *sops, void *priv)
-> +{
-> +	struct fpga_sec_mgr *smgr;
-> +	int id, ret;
-> +
-> +	if (!name || !strlen(name)) {
-> +		dev_err(dev, "Attempt to register with no name!\n");
-> +		return NULL;
-> +	}
-> +
-> +	smgr = kzalloc(sizeof(*smgr), GFP_KERNEL);
-> +	if (!smgr)
-> +		return NULL;
-> +
-> +	id = ida_simple_get(&fpga_sec_mgr_ida, 0, 0, GFP_KERNEL);
-> +	if (id < 0)
-> +		goto error_kfree;
-> +
-> +	mutex_init(&smgr->lock);
-> +
-> +	smgr->name = name;
-> +	smgr->priv = priv;
-> +	smgr->sops = sops;
-> +
-> +	device_initialize(&smgr->dev);
-> +	smgr->dev.class = fpga_sec_mgr_class;
-> +	smgr->dev.parent = dev;
-> +	smgr->dev.id = id;
-> +
-> +	ret = dev_set_name(&smgr->dev, "fpga_sec%d", id);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to set device name: fpga_sec%d\n", id);
-> +		goto error_device;
-> +	}
-> +
-> +	return smgr;
-> +
-> +error_device:
-> +	ida_simple_remove(&fpga_sec_mgr_ida, id);
-> +
-> +error_kfree:
-> +	kfree(smgr);
-> +
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(fpga_sec_mgr_create);
-> +
-> +/**
-> + * fpga_sec_mgr_free - free an FPGA security manager created
-> + *			with fpga_sec_mgr_create()
-> + *
-> + * @smgr:	FPGA security manager structure
-> + */
-> +void fpga_sec_mgr_free(struct fpga_sec_mgr *smgr)
-> +{
-> +	ida_simple_remove(&fpga_sec_mgr_ida, smgr->dev.id);
-> +	kfree(smgr);
-> +}
-> +EXPORT_SYMBOL_GPL(fpga_sec_mgr_free);
-> +
-> +static void devm_fpga_sec_mgr_release(struct device *dev, void *res)
-> +{
-> +	struct fpga_sec_mgr_devres *dr = res;
-> +
-> +	fpga_sec_mgr_free(dr->smgr);
-> +}
-> +
-> +/**
-> + * devm_fpga_sec_mgr_create - create and initialize an FPGA
-> + *			       security manager struct
-> + *
-> + * @dev:  fpga security manager device from pdev
-> + * @name: fpga security manager name
-> + * @sops: pointer to a structure of fpga callback functions
-> + * @priv: fpga security manager private data
-> + *
-> + * This function is intended for use in a FPGA Security manager
-> + * driver's probe function.  After the security manager driver creates
-> + * the fpga_sec_mgr struct with devm_fpga_sec_mgr_create(), it should
-> + * register it with devm_fpga_sec_mgr_register().
-> + * The fpga_sec_mgr struct allocated with this function will be freed
-> + * automatically on driver detach.
-> + *
-> + * Return: pointer to struct fpga_sec_mgr or NULL
-> + */
-> +struct fpga_sec_mgr *
-> +devm_fpga_sec_mgr_create(struct device *dev, const char *name,
-> +			 const struct fpga_sec_mgr_ops *sops, void *priv)
-> +{
-> +	struct fpga_sec_mgr_devres *dr;
-> +
-> +	dr = devres_alloc(devm_fpga_sec_mgr_release, sizeof(*dr), GFP_KERNEL);
-> +	if (!dr)
-> +		return NULL;
-> +
-> +	dr->smgr = fpga_sec_mgr_create(dev, name, sops, priv);
-> +	if (!dr->smgr) {
-> +		devres_free(dr);
-> +		return NULL;
-> +	}
-> +
-> +	devres_add(dev, dr);
-> +
-> +	return dr->smgr;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_fpga_sec_mgr_create);
-> +
-> +/**
-> + * fpga_sec_mgr_register - register an FPGA security manager
-> + *
-> + * @smgr: fpga security manager struct
-> + *
-> + * Return: 0 on success, negative error code otherwise.
-> + */
-> +int fpga_sec_mgr_register(struct fpga_sec_mgr *smgr)
-> +{
-> +	int ret;
-> +
-> +	ret = device_add(&smgr->dev);
-> +	if (ret)
-> +		goto error_device;
-> +
-> +	dev_info(&smgr->dev, "%s registered\n", smgr->name);
-> +
-> +	return 0;
-> +
-> +error_device:
-> +	ida_simple_remove(&fpga_sec_mgr_ida, smgr->dev.id);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(fpga_sec_mgr_register);
-> +
-> +/**
-> + * fpga_sec_mgr_unregister - unregister an FPGA security manager
-> + *
-> + * @mgr: fpga manager struct
-> + *
-> + * This function is intended for use in an FPGA security manager
-> + * driver's remove() function.
-> + */
-> +void fpga_sec_mgr_unregister(struct fpga_sec_mgr *smgr)
-> +{
-> +	dev_info(&smgr->dev, "%s %s\n", __func__, smgr->name);
-> +
-> +	device_unregister(&smgr->dev);
-> +}
-> +EXPORT_SYMBOL_GPL(fpga_sec_mgr_unregister);
-> +
-> +static int fpga_sec_mgr_devres_match(struct device *dev, void *res,
-> +				     void *match_data)
-> +{
-> +	struct fpga_sec_mgr_devres *dr = res;
-> +
-> +	return match_data == dr->smgr;
-> +}
-> +
-> +static void devm_fpga_sec_mgr_unregister(struct device *dev, void *res)
-> +{
-> +	struct fpga_sec_mgr_devres *dr = res;
-> +
-> +	fpga_sec_mgr_unregister(dr->smgr);
-> +}
-> +
-> +/**
-> + * devm_fpga_sec_mgr_register - resource managed variant of
-> + *				fpga_sec_mgr_register()
-> + *
-> + * @dev: managing device for this FPGA security manager
-> + * @smgr: fpga security manager struct
-> + *
-> + * This is the devres variant of fpga_sec_mgr_register() for which the
-> + * unregister function will be called automatically when the managing
-> + * device is detached.
-> + */
-> +int devm_fpga_sec_mgr_register(struct device *dev, struct fpga_sec_mgr *smgr)
-> +{
-> +	struct fpga_sec_mgr_devres *dr;
-> +	int ret;
-> +
-> +	/*
-> +	 * Make sure that the struct fpga_sec_mgr * that is passed in is
-> +	 * managed itself.
-> +	 */
-> +	if (WARN_ON(!devres_find(dev, devm_fpga_sec_mgr_release,
-> +				 fpga_sec_mgr_devres_match, smgr)))
-> +		return -EINVAL;
-> +
-> +	dr = devres_alloc(devm_fpga_sec_mgr_unregister, sizeof(*dr), GFP_KERNEL);
-> +	if (!dr)
-> +		return -ENOMEM;
-> +
-> +	ret = fpga_sec_mgr_register(smgr);
-> +	if (ret) {
-> +		devres_free(dr);
-> +		return ret;
-> +	}
-> +
-> +	dr->smgr = smgr;
-> +	devres_add(dev, dr);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_fpga_sec_mgr_register);
-> +
-> +static void fpga_sec_mgr_dev_release(struct device *dev)
-> +{
-> +}
-> +
-> +static int __init fpga_sec_mgr_class_init(void)
-> +{
-> +	pr_info("FPGA Security Manager\n");
-> +
-> +	fpga_sec_mgr_class = class_create(THIS_MODULE, "fpga_sec_mgr");
-> +	if (IS_ERR(fpga_sec_mgr_class))
-> +		return PTR_ERR(fpga_sec_mgr_class);
-> +
-> +	fpga_sec_mgr_class->dev_groups = fpga_sec_mgr_attr_groups;
-> +	fpga_sec_mgr_class->dev_release = fpga_sec_mgr_dev_release;
-> +
-> +	return 0;
-> +}
-> +
-> +static void __exit fpga_sec_mgr_class_exit(void)
-> +{
-> +	class_destroy(fpga_sec_mgr_class);
-> +	ida_destroy(&fpga_sec_mgr_ida);
-> +}
-> +
-> +MODULE_DESCRIPTION("FPGA Security Manager Driver");
-> +MODULE_LICENSE("GPL v2");
-> +
-> +subsys_initcall(fpga_sec_mgr_class_init);
-> +module_exit(fpga_sec_mgr_class_exit)
-> diff --git a/include/linux/fpga/fpga-sec-mgr.h b/include/linux/fpga/fpga-sec-mgr.h
-> new file mode 100644
-> index 000000000000..f85665b79b9d
-> --- /dev/null
-> +++ b/include/linux/fpga/fpga-sec-mgr.h
-> @@ -0,0 +1,44 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Header file for FPGA Security Manager
-> + *
-> + * Copyright (C) 2019-2020 Intel Corporation, Inc.
-> + */
-> +#ifndef _LINUX_FPGA_SEC_MGR_H
-> +#define _LINUX_FPGA_SEC_MGR_H
-> +
-> +#include <linux/device.h>
-> +#include <linux/mutex.h>
-> +#include <linux/types.h>
-> +
-> +struct fpga_sec_mgr;
-> +
-> +/**
-> + * struct fpga_sec_mgr_ops - device specific operations
-> + */
-> +struct fpga_sec_mgr_ops {
-> +};
-> +
-> +struct fpga_sec_mgr {
-> +	const char *name;
-> +	struct device dev;
-> +	const struct fpga_sec_mgr_ops *sops;
-> +	struct mutex lock;		/* protect data structure contents */
-> +	void *priv;
-> +};
-> +
-> +struct fpga_sec_mgr *
-> +fpga_sec_mgr_create(struct device *dev, const char *name,
-> +		    const struct fpga_sec_mgr_ops *sops, void *priv);
-> +
-> +struct fpga_sec_mgr *
-> +devm_fpga_sec_mgr_create(struct device *dev, const char *name,
-> +			 const struct fpga_sec_mgr_ops *sops, void *priv);
-> +
-> +int fpga_sec_mgr_register(struct fpga_sec_mgr *smgr);
-> +int devm_fpga_sec_mgr_register(struct device *dev,
-> +			       struct fpga_sec_mgr *smgr);
-> +void fpga_sec_mgr_unregister(struct fpga_sec_mgr *smgr);
-> +void fpga_sec_mgr_free(struct fpga_sec_mgr *smgr);
-> +
-> +#endif
-> -- 
-> 2.25.1
-> 
-Looks good to me otherwise, let me look at the rest of the series,
+And perhaps remove all the unnecessary zeroed declarations?
 
-Moritz
+Something like this example?
+---
+ drivers/gpu/drm/amd/include/arct_ip_offset.h | 353 +++++++++++----------------
+ 1 file changed, 145 insertions(+), 208 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/include/arct_ip_offset.h b/drivers/gpu/drm/amd/include/arct_ip_offset.h
+index a7791a9e1f90..9f2d6b832dd9 100644
+--- a/drivers/gpu/drm/amd/include/arct_ip_offset.h
++++ b/drivers/gpu/drm/amd/include/arct_ip_offset.h
+@@ -33,215 +33,152 @@ struct IP_BASE_INSTANCE
+ struct IP_BASE
+ {
+     struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
+-};
+-
+-
+-static const struct IP_BASE ATHUB_BASE            ={ { { { 0x00000C20, 0x00012460, 0x00408C00, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE CLK_BASE            ={ { { { 0x000120C0, 0x00016C00, 0x00401800, 0, 0, 0 } },
+-                                        { { 0x000120E0, 0x00016E00, 0x00401C00, 0, 0, 0 } },
+-                                        { { 0x00012100, 0x00017000, 0x00402000, 0, 0, 0 } },
+-                                        { { 0x00012120, 0x00017200, 0x00402400, 0, 0, 0 } },
+-                                        { { 0x000136C0, 0x0001B000, 0x0042D800, 0, 0, 0 } },
+-                                        { { 0x00013720, 0x0001B200, 0x0042E400, 0, 0, 0 } },
+-                                        { { 0x000125E0, 0x00017E00, 0x0040BC00, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE DF_BASE            ={ { { { 0x00007000, 0x000125C0, 0x0040B800, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE FUSE_BASE            ={ { { { 0x000120A0, 0x00017400, 0x00401400, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE GC_BASE            ={ { { { 0x00002000, 0x0000A000, 0x00012160, 0x00402C00, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE HDP_BASE            ={ { { { 0x00000F20, 0x00012520, 0x0040A400, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE MMHUB_BASE            ={ { { { 0x00012440, 0x0001A000, 0x00408800, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE MP0_BASE            ={ { { { 0x00016000, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE MP1_BASE            ={ { { { 0x00016000, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE NBIF0_BASE            ={ { { { 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0x00012D80, 0x0041B000 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE OSSSYS_BASE            ={ { { { 0x000010A0, 0x00012500, 0x0040A000, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE PCIE0_BASE            ={ { { { 0x000128C0, 0x00411800, 0x04440000, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA0_BASE            ={ { { { 0x00001260, 0x00012540, 0x0040A800, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA1_BASE            ={ { { { 0x00001860, 0x00012560, 0x0040AC00, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA2_BASE            ={ { { { 0x00013760, 0x0001E000, 0x0042EC00, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA3_BASE            ={ { { { 0x00013780, 0x0001E400, 0x0042F000, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA4_BASE            ={ { { { 0x000137A0, 0x0001E800, 0x0042F400, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA5_BASE            ={ { { { 0x000137C0, 0x0001EC00, 0x0042F800, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA6_BASE            ={ { { { 0x000137E0, 0x0001F000, 0x0042FC00, 0, 0, 0 } },
+-                                       { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SDMA7_BASE            ={ { { { 0x00013800, 0x0001F400, 0x00430000, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE SMUIO_BASE            ={ { { { 0x00016800, 0x00016A00, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE THM_BASE            ={ { { { 0x00016600, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE UMC_BASE            ={ { { { 0x000132C0, 0x00014000, 0x00425800, 0, 0, 0 } },
+-                                        { { 0x000132E0, 0x00054000, 0x00425C00, 0, 0, 0 } },
+-                                        { { 0x00013300, 0x00094000, 0x00426000, 0, 0, 0 } },
+-                                        { { 0x00013320, 0x000D4000, 0x00426400, 0, 0, 0 } },
+-                                        { { 0x00013340, 0x00114000, 0x00426800, 0, 0, 0 } },
+-                                        { { 0x00013360, 0x00154000, 0x00426C00, 0, 0, 0 } },
+-                                        { { 0x00013380, 0x00194000, 0x00427000, 0, 0, 0 } },
+-                                        { { 0x000133A0, 0x001D4000, 0x00427400, 0, 0, 0 } } } };
+-static const struct IP_BASE UVD_BASE            ={ { { { 0x00007800, 0x00007E00, 0x00012180, 0x00403000, 0, 0 } },
+-                                        { { 0x00007A00, 0x00009000, 0x000136E0, 0x0042DC00, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE DBGU_IO_BASE            ={ { { { 0x000001E0, 0x000125A0, 0x0040B400, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-static const struct IP_BASE RSMU_BASE            ={ { { { 0x00012000, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } },
+-                                        { { 0, 0, 0, 0, 0, 0 } } } };
+-
++} __maybe_unused;
+ 
++static const struct IP_BASE ATHUB_BASE = {
++	{
++		{{ 0x00000C20, 0x00012460, 0x00408C00, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE CLK_BASE = {
++	{
++		{{ 0x000120C0, 0x00016C00, 0x00401800, 0, 0, 0 }},
++		{{ 0x000120E0, 0x00016E00, 0x00401C00, 0, 0, 0 }},
++		{{ 0x00012100, 0x00017000, 0x00402000, 0, 0, 0 }},
++		{{ 0x00012120, 0x00017200, 0x00402400, 0, 0, 0 }},
++		{{ 0x000136C0, 0x0001B000, 0x0042D800, 0, 0, 0 }},
++		{{ 0x00013720, 0x0001B200, 0x0042E400, 0, 0, 0 }},
++		{{ 0x000125E0, 0x00017E00, 0x0040BC00, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE DF_BASE = {
++	{
++		{{ 0x00007000, 0x000125C0, 0x0040B800, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE FUSE_BASE = {
++	{
++		{{ 0x000120A0, 0x00017400, 0x00401400, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE GC_BASE = {
++	{
++		{{ 0x00002000, 0x0000A000, 0x00012160, 0x00402C00, 0, 0 }},
++	}
++};
++static const struct IP_BASE HDP_BASE = {
++	{
++		{{ 0x00000F20, 0x00012520, 0x0040A400, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE MMHUB_BASE = {
++	{
++		{{ 0x00012440, 0x0001A000, 0x00408800, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE MP0_BASE = {
++	{
++		{{ 0x00016000, 0, 0, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE MP1_BASE = {
++	{
++		{{ 0x00016000, 0, 0, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE NBIF0_BASE = {
++	{
++		{{ 0x00000000, 0x00000014, 0x00000D20, 0x00010400, 0x00012D80, 0x0041B000 }},
++	}
++};
++static const struct IP_BASE OSSSYS_BASE = {
++	{
++		{{ 0x000010A0, 0x00012500, 0x0040A000, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE PCIE0_BASE = {
++	{
++		{{ 0x000128C0, 0x00411800, 0x04440000, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE SDMA0_BASE = {
++	{
++		{{ 0x00001260, 0x00012540, 0x0040A800, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE SDMA1_BASE = {
++	{
++		{{ 0x00001860, 0x00012560, 0x0040AC00, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE SDMA2_BASE = {
++	{
++		{{ 0x00013760, 0x0001E000, 0x0042EC00, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE SDMA3_BASE = {
++	{
++		{{ 0x00013780, 0x0001E400, 0x0042F000, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE SDMA4_BASE = {
++	{
++		{{ 0x000137A0, 0x0001E800, 0x0042F400, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE SDMA5_BASE = {
++	{
++		{{ 0x000137C0, 0x0001EC00, 0x0042F800, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE SDMA6_BASE = {
++	{
++		{{ 0x000137E0, 0x0001F000, 0x0042FC00, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE SDMA7_BASE = {
++	{
++		{{ 0x00013800, 0x0001F400, 0x00430000, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE SMUIO_BASE = {
++	{
++		{{ 0x00016800, 0x00016A00, 0, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE THM_BASE = {
++	{
++		{{ 0x00016600, 0, 0, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE UMC_BASE = {
++	{
++		{{ 0x000132C0, 0x00014000, 0x00425800, 0, 0, 0 }},
++		{{ 0x000132E0, 0x00054000, 0x00425C00, 0, 0, 0 }},
++		{{ 0x00013300, 0x00094000, 0x00426000, 0, 0, 0 }},
++		{{ 0x00013320, 0x000D4000, 0x00426400, 0, 0, 0 }},
++		{{ 0x00013340, 0x00114000, 0x00426800, 0, 0, 0 }},
++		{{ 0x00013360, 0x00154000, 0x00426C00, 0, 0, 0 }},
++		{{ 0x00013380, 0x00194000, 0x00427000, 0, 0, 0 }},
++		{{ 0x000133A0, 0x001D4000, 0x00427400, 0, 0, 0 }}
++	}
++};
++static const struct IP_BASE UVD_BASE = {
++	{
++		{{ 0x00007800, 0x00007E00, 0x00012180, 0x00403000, 0, 0 }},
++		{{ 0x00007A00, 0x00009000, 0x000136E0, 0x0042DC00, 0, 0 }},
++	}
++};
++static const struct IP_BASE DBGU_IO_BASE = {
++	{
++		{{ 0x000001E0, 0x000125A0, 0x0040B400, 0, 0, 0 }},
++	}
++};
++static const struct IP_BASE RSMU_BASE = {
++	{
++		{{ 0x00012000, 0, 0, 0, 0, 0 }},
++	}
++};
+ 
+ #define ATHUB_BASE__INST0_SEG0                     0x00000C20
+ #define ATHUB_BASE__INST0_SEG1                     0x00012460
+
