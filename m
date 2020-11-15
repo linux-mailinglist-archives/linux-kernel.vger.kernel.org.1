@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335202B3A73
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 23:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3BB2B3A76
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 23:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgKOWwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 17:52:10 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37548 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727302AbgKOWwJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 17:52:09 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605480727;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/eDU4LroO7PYbFgMq6JRhzipnWtkFc9jYZysBKLqo6Y=;
-        b=m4mcdIendMIAnzCvjzB1rKiLDhMePzMj9yhGaKi7wQJrCDEQwM+ipMz2GdXgMmHEXKkOq4
-        pkaojbZ/PRmUn/aYegFO3fkiZsxyby9Ci1S2kMPeNKN3Kb6PRMNib7AZP7HOr7Y4PvfDZ5
-        sQ/g2iMNutuWWSsSq6rLtPbQrrw992BroPnxAI5xY1uPcXdjXgCTC2KN0NEA9+6DGNHKxb
-        rGcpyjekwdVXDnUYDJTKSWtUf0SP+AzHqhDUw3Z+7CnYihutJE9m5WDTa2iPeVVd5cKYhd
-        Pl6zRKA31UB7V8nh7GsrbUx1FjzsMkA+65bt/kSxHeGfV3TTVgXIIuxSEAH7+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605480727;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/eDU4LroO7PYbFgMq6JRhzipnWtkFc9jYZysBKLqo6Y=;
-        b=6TGwwNeOxyM6hVDkLnwtgC8zP5E0KAVVOw4sYSD7ma3+8+QVAyg9wN5UUo02VnQSjquhoB
-        FvvMBpBQx+8JCeCA==
-To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org
-Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org
-Subject: Re: [tip: core/entry] entry: Fix spelling/typo errors in irq entry code
-In-Reply-To: <7cb2266c9056f0106c5a870f741691143fcd0a77.camel@perches.com>
-References: <20201104230157.3378023-1-ira.weiny@intel.com> <160546656898.11244.12849621903409820578.tip-bot2@tip-bot2> <7cb2266c9056f0106c5a870f741691143fcd0a77.camel@perches.com>
-Date:   Sun, 15 Nov 2020 23:52:07 +0100
-Message-ID: <87tutq44iw.fsf@nanos.tec.linutronix.de>
+        id S1728214AbgKOWwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 17:52:43 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:35577 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727302AbgKOWwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 17:52:43 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZ6t11VNCz9s1l;
+        Mon, 16 Nov 2020 09:52:41 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1605480761;
+        bh=z0gqodq2vYO025Kym10C+FJXUnbXj3P12AagbjbSuI0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=N51MWmmOBsTxqplD0z3uafrfdgQHfqzSmRYAJPEl5MlQg4ebOtsnQfsNYiANA1GtG
+         ItIto0GnWEu33jxq8pdQlCZhODX+ELbyuDvxyh2frI+iXtGVhQB49qW/M1WtUhU7Mc
+         vJESGzJxugaCdTezc7WAkORKsQDw1qB5eLzzYrLknUJLCgu2il3mi1LqkCOM4X8HQP
+         27XvKO1T9/a5kjrhrOkXg6dseQ/ksCH3rBviKVEVcR+zS/6phBmKmUmXiD2r3PyN91
+         tFUuqUS9PWImztRG7n368KWKNMb8xiY+ywZSkWOpIAqwammzRnROEZ3Lk8xYKkuGKD
+         t5xUCZSoZSAUw==
+Date:   Mon, 16 Nov 2020 09:52:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the fpga tree
+Message-ID: <20201116095240.52d70d6e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/+JKD3i0rH53tiNGfjUdW/FD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15 2020 at 11:08, Joe Perches wrote:
+--Sig_/+JKD3i0rH53tiNGfjUdW/FD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Sun, 2020-11-15 at 18:56 +0000, tip-bot2 for Ira Weiny wrote:
->> The following commit has been merged into the core/entry branch of tip:
-> []
->> s/assemenbly/assembly/
-> []
->> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-> []
->> @@ -438,7 +438,7 @@ irqentry_state_t noinstr irqentry_nmi_enter(struct p=
-t_regs *regs);
->> =C2=A0=C2=A0* @regs:	Pointer to pt_regs (NMI entry regs)
->> =C2=A0=C2=A0* @irq_state:	Return value from matching call to irqentry_nm=
-i_enter()
->> =C2=A0=C2=A0*
->> - * Last action before returning to the low level assmenbly code.
->> + * Last action before returning to the low level assmebly code.
->
-> Might want to fix that typo typo fix...
+Hi all,
 
-Bah ....
+Commits
+
+  aaf8fe39c952 ("Revert "fpga: dfl: fix the definitions of type & feature_i=
+d for dfl devices"")
+  9922e71f43ac ("Revert "fpga: dfl: move dfl_device_id to mod_devicetable.h=
+"")
+  3ae706b58b0b ("Revert "fpga: dfl: add dfl bus support to MODULE_DEVICE_TA=
+BLE()"")
+  dd57ca7ddec5 ("Revert "fpga: dfl: move dfl bus related APIs to include/li=
+nux/dfl.h"")
+
+are missing a Signed-off-by from their author and committer.
+
+Reverts are commits, too.  It is also very useful for the commit message
+of a revert to contain some reason(s) for the revert as this may help
+future developers.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+JKD3i0rH53tiNGfjUdW/FD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+xsTgACgkQAVBC80lX
+0Gy8jggAh4CnvtpWw8SVjc4pkVkJPrzulcb0XvZ9Eu30toEjjgYA0Wgrnj4Sug+S
+j6vLjTQ5qRW4aNe2K4h9GxZ3ct6jVhfUoH+JQiC/7Cn3qo7kuxnlgubElib2PFdJ
+Wx0gjiQTNb9pSSC90RDMG0DtmJCQ7rL13Lp7mv1hCpYJAiTuFgZX8ckFWbB2Uh5b
+38WUCZdb6qEO3nHUTAaNmfadcIcahiCjgEL0y8+PlHg08BIDY6hlBe86XGqBmRM/
+oNtGjpDEMy4HLOg7PnJ865ZPg0HvJ8iI76qy5aCSJdUvOCURTHt5qDwt3RGXal+3
+tM10P6MZIxQ5Xjd9cNg4rtKHPyGT3w==
+=kvbv
+-----END PGP SIGNATURE-----
+
+--Sig_/+JKD3i0rH53tiNGfjUdW/FD--
