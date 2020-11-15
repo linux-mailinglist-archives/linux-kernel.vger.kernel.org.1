@@ -2,286 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EB62B32A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 06:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3EF02B32AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 07:09:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgKOFxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 00:53:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgKOFxP (ORCPT
+        id S1726600AbgKOGIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 01:08:30 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52854 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgKOGI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 00:53:15 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10123C0617A6
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 21:53:11 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id q10so10685140pfn.0
-        for <linux-kernel@vger.kernel.org>; Sat, 14 Nov 2020 21:53:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mmlx-us.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=yisTEGEpuLNf6xZbQr7SAnVyH1VRtVC+ny/LYkg0J4w=;
-        b=wyTPMxhtpWvC7Emtna0S2qcY5sK5qWDOSHxY3+fSNmXozOIlIvSeTawBbLP/fE0B9z
-         bnqSNdF4xMjcWpyhLdMLzaROeuWISCHDCjqNnPLOwI5DDOArTX/cTMoO7cO4fuhF+TPs
-         u9E/bXKDPa0pMtts4zJft9LHHd+H2GEgVnz9f+Ks990HQlC9nIVd8fnVAfrk4OwhwMpa
-         YyJW+tN33rF7Ucmdv3tYCW7ml6qhrJb+rufB9jWvb/yY/LAG6oO8mpR+ylOBON12h9Fd
-         5d0iAotc0wwpIRGDK9nbtY1Hqs16Mff92kpyY/uvvUyRZJMJejXQD2J3ITcZKh63g6FI
-         Ki3A==
+        Sun, 15 Nov 2020 01:08:29 -0500
+Received: by mail-wm1-f67.google.com with SMTP id 10so20429135wml.2;
+        Sat, 14 Nov 2020 22:08:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=yisTEGEpuLNf6xZbQr7SAnVyH1VRtVC+ny/LYkg0J4w=;
-        b=A8jgO7JWYXrxItDji8FuBrdBijEnbRJyPeJGltiCogD0NuordBeXVyV6s7PcbkFj5V
-         3PjBZqFNOsHBsQ8X7xb6/wQJtEnF2n07wTOjw068kg2vDcIusovYbGnl/wdwEH+aK7Zi
-         5aN+LBTDmYRWziOD/pRS7AcQ4SG9/GBfGZu2DVUpl5f9l8ufJm+Q3eFCP+Cu+uAgVp+X
-         KV9SBqausjVJrdJ2ogazJyuOXeOstddK9ye6xINeg2yF8a160K+ucYPKETXbO61ADXHK
-         wLa10xeS66KaTtntixMRM0LJmS1kAVSOwBAQQyNCsyIv4WVgojxOO6tD0bzAIlWf4w2a
-         +s1Q==
-X-Gm-Message-State: AOAM533X/+Y0MR8V1/o63QjJVUT09PK1MYoRN27rebejGbHeYk7tMAlT
-        qMcLhCRNYqLDNKLggg+60IBU2Q==
-X-Google-Smtp-Source: ABdhPJyVX2qor+e2s977UOIgORSIhDzuZDMpdmOTus8acp40c5R5B5E4m3t9HwqdqJ/zMkX48rRqCg==
-X-Received: by 2002:a63:d46:: with SMTP id 6mr8342237pgn.227.1605419591244;
-        Sat, 14 Nov 2020 21:53:11 -0800 (PST)
-Received: from nitrogen.local.mmlx.us ([199.231.240.229])
-        by smtp.gmail.com with ESMTPSA id c28sm15840255pfj.108.2020.11.14.21.53.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=40+jqrpUK0SdtJrAhDUEaChrJidmD54kAPTtU1C47qo=;
+        b=Cn/crLZ/86wlHl2pn47qsZ/dmPoq8PZ5bgDcODhsJV1LuM2/VMJgfgjBxVLI7v36hn
+         5UviatLq3ASh6QmeI0emoayyl/nFtIw3+0vSBQVSTBXvLFs7wgZ6RSGL4cjUaxq55xDx
+         kWtoObawTJgedQ+o34yBsX6Rmw6MUApy5HCYp+jagDD83nt+kjR2/If6re4zaCHOf1Nd
+         7xDYoG7ct/zCSuuVe1SJTQ43y9LeSBdCpOZhwFIO8kDNY5vR0fLDD2gJEYh4ah3XLAnC
+         FL1hlFgDBapXnBAE6IooaeghjnSFAxJQZx0kFDirwbXyC8iZ/9gJRotJnL4W09Ii87Xv
+         BRCw==
+X-Gm-Message-State: AOAM531ntoI4ce174+306+WQJdjBP3t1JPqqHcVmVAEn4peBygRrFt4H
+        vCorRIkCNAUCwxg+CH6/fI0=
+X-Google-Smtp-Source: ABdhPJzq7wZGr68QEkaHFWYnyTRaGZ6ymFeh8oRhcoAygQgSzThA1MOAPEm+0mJu/rYb+cPSt9X0Zw==
+X-Received: by 2002:a1c:87:: with SMTP id 129mr9600178wma.34.1605420506956;
+        Sat, 14 Nov 2020 22:08:26 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id q5sm13801290wrf.41.2020.11.14.22.08.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Nov 2020 21:53:10 -0800 (PST)
-From:   Matt Mullins <mmullins@mmlx.us>
-To:     rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     dvyukov@google.com, Matt Mullins <mmullins@mmlx.us>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
-Date:   Sat, 14 Nov 2020 21:52:55 -0800
-Message-Id: <20201115055256.65625-1-mmullins@mmlx.us>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <00000000000004500b05b31e68ce@google.com>
-References: <00000000000004500b05b31e68ce@google.com>
+        Sat, 14 Nov 2020 22:08:26 -0800 (PST)
+Date:   Sun, 15 Nov 2020 07:08:25 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Add sysfs attribute for PCI device power state
+Message-ID: <X7DF2ZyVnyIFjdC1@rocinante>
+References: <20201102141520.831630-1-luzmaximilian@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201102141520.831630-1-luzmaximilian@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bpf_link_free is always called in process context, including from a
-workqueue and from __fput.  Neither of these have the ability to
-propagate an -ENOMEM to the caller.
+Hi Maximilian,
 
-Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
-Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-Signed-off-by: Matt Mullins <mmullins@mmlx.us>
----
-I previously referenced a "pretty ugly" patch.  This is not that one,
-because I don't think there's any way I can make the caller of
-->release() actually handle errors like ENOMEM.
+On 20-11-02 15:15:20, Maximilian Luz wrote:
+> While most PCI power-states can be queried from user-space via lspci,
+> this has some limits. Specifically, lspci fails to provide an accurate
+> value when the device is in D3cold as it has to resume the device before
+> it can access its power state via the configuration space, leading to it
+> reporting D0 or another on-state. Thus lspci can, for example, not be
+> used to diagnose power-consumption issues for devices that can enter
+> D3cold or to ensure that devices properly enter D3cold at all.
+> 
+> To alleviate this issue, introduce a new sysfs device attribute for the
+> PCI power state, showing the current power state as seen by the kernel.
 
-It also looks like most of the other ways tracepoint_probe_unregister is
-called also don't check the error code (e.g. just a quick grep found
-blk_unregister_tracepoints).  Should this just be upgraded to GFP_NOFAIL
-across the board instead of passing around a gfp_t?
+Very nice!  Thank you for adding this.
 
- include/linux/trace_events.h |  6 ++++--
- include/linux/tracepoint.h   |  7 +++++--
- kernel/bpf/syscall.c         |  2 +-
- kernel/trace/bpf_trace.c     |  6 ++++--
- kernel/trace/trace_events.c  |  6 ++++--
- kernel/tracepoint.c          | 20 ++++++++++----------
- 6 files changed, 28 insertions(+), 19 deletions(-)
+[...]
+> +/* PCI power state */
+> +static ssize_t power_state_show(struct device *dev,
+> +				struct device_attribute *attr, char *buf)
+> +{
+> +	struct pci_dev *pci_dev = to_pci_dev(dev);
+> +	pci_power_t state = READ_ONCE(pci_dev->current_state);
+> +
+> +	return sprintf(buf, "%s\n", pci_power_name(state));
+> +}
+> +static DEVICE_ATTR_RO(power_state);
+[...]
 
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 5c6943354049..166ad7646a98 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -625,7 +625,8 @@ int perf_event_attach_bpf_prog(struct perf_event *event, struct bpf_prog *prog);
- void perf_event_detach_bpf_prog(struct perf_event *event);
- int perf_event_query_prog_array(struct perf_event *event, void __user *info);
- int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog);
--int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog);
-+int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
-+			 gfp_t flags);
- struct bpf_raw_event_map *bpf_get_raw_tracepoint(const char *name);
- void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp);
- int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
-@@ -654,7 +655,8 @@ static inline int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_p
- {
- 	return -EOPNOTSUPP;
- }
--static inline int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *p)
-+static inline int bpf_probe_unregister(struct bpf_raw_event_map *btp,
-+				       struct bpf_prog *p, gfp_t flags)
- {
- 	return -EOPNOTSUPP;
- }
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 598fec9f9dbf..7b02f92f3b8f 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -12,6 +12,7 @@
-  * Heavily inspired from the Linux Kernel Markers.
-  */
- 
-+#include <linux/gfp.h>
- #include <linux/smp.h>
- #include <linux/srcu.h>
- #include <linux/errno.h>
-@@ -40,7 +41,8 @@ extern int
- tracepoint_probe_register_prio(struct tracepoint *tp, void *probe, void *data,
- 			       int prio);
- extern int
--tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data);
-+tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data,
-+			    gfp_t flags);
- extern void
- for_each_kernel_tracepoint(void (*fct)(struct tracepoint *tp, void *priv),
- 		void *priv);
-@@ -260,7 +262,8 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 	unregister_trace_##name(void (*probe)(data_proto), void *data)	\
- 	{								\
- 		return tracepoint_probe_unregister(&__tracepoint_##name,\
--						(void *)probe, data);	\
-+						(void *)probe, data,	\
-+						GFP_KERNEL);		\
- 	}								\
- 	static inline void						\
- 	check_trace_callback_type_##name(void (*cb)(data_proto))	\
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index b999e7ff2583..f6876681c4ab 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2601,7 +2601,7 @@ static void bpf_raw_tp_link_release(struct bpf_link *link)
- 	struct bpf_raw_tp_link *raw_tp =
- 		container_of(link, struct bpf_raw_tp_link, link);
- 
--	bpf_probe_unregister(raw_tp->btp, raw_tp->link.prog);
-+	bpf_probe_unregister(raw_tp->btp, raw_tp->link.prog, GFP_KERNEL | __GFP_NOFAIL);
- 	bpf_put_raw_tracepoint(raw_tp->btp);
- }
- 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index a8d4f253ed77..a4ea58c7506d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1955,9 +1955,11 @@ int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
- 	return __bpf_probe_register(btp, prog);
- }
- 
--int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
-+int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
-+			 gfp_t flags)
- {
--	return tracepoint_probe_unregister(btp->tp, (void *)btp->bpf_func, prog);
-+	return tracepoint_probe_unregister(btp->tp, (void *)btp->bpf_func, prog,
-+					   flags);
- }
- 
- int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index a85effb2373b..ab1ac89caed2 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -296,7 +296,8 @@ int trace_event_reg(struct trace_event_call *call,
- 	case TRACE_REG_UNREGISTER:
- 		tracepoint_probe_unregister(call->tp,
- 					    call->class->probe,
--					    file);
-+					    file,
-+					    GFP_KERNEL);
- 		return 0;
- 
- #ifdef CONFIG_PERF_EVENTS
-@@ -307,7 +308,8 @@ int trace_event_reg(struct trace_event_call *call,
- 	case TRACE_REG_PERF_UNREGISTER:
- 		tracepoint_probe_unregister(call->tp,
- 					    call->class->perf_probe,
--					    call);
-+					    call,
-+					    GFP_KERNEL);
- 		return 0;
- 	case TRACE_REG_PERF_OPEN:
- 	case TRACE_REG_PERF_CLOSE:
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 73956eaff8a9..619666a43c9f 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -53,10 +53,9 @@ struct tp_probes {
- 	struct tracepoint_func probes[0];
- };
- 
--static inline void *allocate_probes(int count)
-+static inline void *allocate_probes(int count, gfp_t flags)
- {
--	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
--				       GFP_KERNEL);
-+	struct tp_probes *p  = kmalloc(struct_size(p, probes, count), flags);
- 	return p == NULL ? NULL : p->probes;
- }
- 
-@@ -150,7 +149,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- 		}
- 	}
- 	/* + 2 : one for new probe, one for NULL func */
--	new = allocate_probes(nr_probes + 2);
-+	new = allocate_probes(nr_probes + 2, GFP_KERNEL);
- 	if (new == NULL)
- 		return ERR_PTR(-ENOMEM);
- 	if (old) {
-@@ -174,7 +173,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- }
- 
- static void *func_remove(struct tracepoint_func **funcs,
--		struct tracepoint_func *tp_func)
-+		struct tracepoint_func *tp_func, gfp_t flags)
- {
- 	int nr_probes = 0, nr_del = 0, i;
- 	struct tracepoint_func *old, *new;
-@@ -207,7 +206,7 @@ static void *func_remove(struct tracepoint_func **funcs,
- 		int j = 0;
- 		/* N -> M, (N > 1, M > 0) */
- 		/* + 1 for NULL */
--		new = allocate_probes(nr_probes - nr_del + 1);
-+		new = allocate_probes(nr_probes - nr_del + 1, flags);
- 		if (new == NULL)
- 			return ERR_PTR(-ENOMEM);
- 		for (i = 0; old[i].func; i++)
-@@ -264,13 +263,13 @@ static int tracepoint_add_func(struct tracepoint *tp,
-  * by preempt_disable around the call site.
-  */
- static int tracepoint_remove_func(struct tracepoint *tp,
--		struct tracepoint_func *func)
-+		struct tracepoint_func *func, gfp_t flags)
- {
- 	struct tracepoint_func *old, *tp_funcs;
- 
- 	tp_funcs = rcu_dereference_protected(tp->funcs,
- 			lockdep_is_held(&tracepoints_mutex));
--	old = func_remove(&tp_funcs, func);
-+	old = func_remove(&tp_funcs, func, flags);
- 	if (IS_ERR(old)) {
- 		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
- 		return PTR_ERR(old);
-@@ -344,7 +343,8 @@ EXPORT_SYMBOL_GPL(tracepoint_probe_register);
-  *
-  * Returns 0 if ok, error value on error.
-  */
--int tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data)
-+int tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data,
-+				gfp_t flags)
- {
- 	struct tracepoint_func tp_func;
- 	int ret;
-@@ -352,7 +352,7 @@ int tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data)
- 	mutex_lock(&tracepoints_mutex);
- 	tp_func.func = probe;
- 	tp_func.data = data;
--	ret = tracepoint_remove_func(tp, &tp_func);
-+	ret = tracepoint_remove_func(tp, &tp_func, flags);
- 	mutex_unlock(&tracepoints_mutex);
- 	return ret;
- }
--- 
-2.17.1
+Curious, why did you decide to use the READ_ONCE() macro here?  Some
+other drivers exposing data through sysfs use, but certainly not all.
 
+Krzysztof
