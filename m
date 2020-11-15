@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EAE2B386C
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4102B3872
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 20:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbgKOTSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 14:18:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36654 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726823AbgKOTSC (ORCPT
+        id S1727657AbgKOTTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 14:19:40 -0500
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:40306 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726823AbgKOTTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 14:18:02 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605467881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CLnGu8lb5LNXF3wcoVZ3vJRrTXJjdROaGVrW8S5oQhA=;
-        b=O/XE1m2MKFlT8xZf1Cq6Po1Gmac/E8iDwHur8LM3eSeCywQZwDx2Out46Q533GwOaXAIKR
-        WkfIAx9v3DWYMBbt798kLTr7J1mhpTTD/y/GtchWmGoW8aXUQ7md3ZZn78RIEhvWcEc9QS
-        JqFF0Vn3s8Lrwa3Ru3UPo1ROZgGn9TK07F51ySN9fTcWK2w/lJuXIQNRrYaTT8ii6qrhWB
-        lf6dijSSu0nQRpa5lseE058OFXnYWGSdhpCPpxfVHZ7T1S58ssoSl19E2urYfx9seP8lek
-        7M1Ntp90BB0NqB9WDnNi8I7hWvRKRXl3ak6HweMbCC0iLegtlmSUDkbSNPIw7g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605467881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CLnGu8lb5LNXF3wcoVZ3vJRrTXJjdROaGVrW8S5oQhA=;
-        b=iEidRvNc0brKUtlWaXD2pf4gXMXSsUxGARxc5nIk7yhvgrAIMK9rWDg11U8CLbXtcSgVhI
-        DpgYmmuxdwp2uBDg==
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        kernelfans@gmail.com, andi@firstfloor.org, hpa@zytor.com,
-        bhe@redhat.com, x86@kernel.org, okaya@kernel.org, mingo@redhat.com,
-        jay.vosburgh@canonical.com, dyoung@redhat.com,
-        gavin.guo@canonical.com,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>, bp@alien8.de,
-        bhelgaas@google.com, shan.gavin@linux.alibaba.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel@gpiccoli.net,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ddstreet@canonical.com, vgoyal@redhat.com
-Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
-In-Reply-To: <20201115170158.GA27152@wunner.de>
-References: <20201114212215.GA1194074@bjorn-Precision-5520> <87v9e6n2b2.fsf@x220.int.ebiederm.org> <87sg9almmg.fsf@x220.int.ebiederm.org> <874klqac40.fsf@nanos.tec.linutronix.de> <20201115170158.GA27152@wunner.de>
-Date:   Sun, 15 Nov 2020 20:18:00 +0100
-Message-ID: <87k0um8m53.fsf@nanos.tec.linutronix.de>
+        Sun, 15 Nov 2020 14:19:40 -0500
+Received: by mail-pf1-f175.google.com with SMTP id w14so11325767pfd.7;
+        Sun, 15 Nov 2020 11:19:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sCdUZDZ+Yqlofwx7LvAQagcvHYFaJ7VL6GaQVJUCgmw=;
+        b=fh2pi5HURLkEPREU6WUpQ/yUTONclVFefEQbpt7y1aMt5qTj5FD206dB4onohFgneu
+         SwCXUFfWYFnZscFeb+ZquZKOO+X02sckVQHzIKWm/6kXcVqKZ3AjBGe1ylAXtjsQEUS3
+         SbI0NUYYrbX/LdOLK69LUpXPZCAQ9jeTAecY8IYBhCDmJUnMzZ026wAGHyD+sZT64bIL
+         xEx/Z2rvSYmzSLILg6M8i8nKeqduwhrkN8evyvG5T191MnbGIhE8GHuiezyDsv1Z4T6u
+         5Ypqj+IPSsGkqKxWgM8VF2U8sEFsZnzI/EpD6ypddbLbKQXs+WXxuYt5dmcgPSQF9TDl
+         CUxw==
+X-Gm-Message-State: AOAM533uFdQNmemmuQ2PKrtL1yyvbfvZs9zF7q40jJ1fFIdJHbxUfKUk
+        0n+l28hUYXsD+IrohvbAnt0=
+X-Google-Smtp-Source: ABdhPJwgOoemqmSL5lJTPYlkGeSwcThICkaIaXz2nnY4w8ScpmSzjidYtdQ7bLWu3EyV71h4lLEcfQ==
+X-Received: by 2002:a62:7781:0:b029:18b:5c31:5c27 with SMTP id s123-20020a6277810000b029018b5c315c27mr11028704pfc.70.1605467978279;
+        Sun, 15 Nov 2020 11:19:38 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id e184sm16038199pfe.146.2020.11.15.11.19.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 11:19:37 -0800 (PST)
+Date:   Sun, 15 Nov 2020 11:19:36 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     richard.gong@linux.intel.com
+Cc:     mdf@kernel.org, trix@redhat.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dinguyen@kernel.org,
+        sridhar.rajagopal@intel.com, Richard Gong <richard.gong@intel.com>
+Subject: Re: [PATCHv1 4/4] fpga: stratix10-soc: entend driver for bitstream
+ authentication
+Message-ID: <20201115191936.GA283592@epycbox.lan>
+References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
+ <1605204403-6663-5-git-send-email-richard.gong@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605204403-6663-5-git-send-email-richard.gong@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15 2020 at 18:01, Lukas Wunner wrote:
-> On Sun, Nov 15, 2020 at 04:11:43PM +0100, Thomas Gleixner wrote:
->> Unfortunately there is no way to tell the APIC "Mask vector X" and the
->> dump kernel does neither know which device it comes from nor does it
->> have enumerated PCI completely which would reset the device and shutup
->> the spew. Due to the interrupt storm it does not get that far.
->
-> Can't we just set DisINTx, clear MSI Enable and clear MSI-X Enable
-> on all active PCI devices in the crashing kernel before starting the
-> crash kernel?  So that the crash kernel starts with a clean slate?
->
-> Guilherme's original patches from 2018 iterate over all 256 PCI buses.
-> That might impact boot time negatively.  The reason he has to do that
-> is because the crashing kernel doesn't know which devices exist and
-> which have interrupts enabled.  However the crashing kernel has that
-> information.  It should either disable interrupts itself or pass the
-> necessary information to the crashing kernel as setup_data or whatever.
+On Thu, Nov 12, 2020 at 12:06:43PM -0600, richard.gong@linux.intel.com wrote:
+> From: Richard Gong <richard.gong@intel.com>
+> 
+> Exten FPGA manager driver to support FPGA bitstream authentication on
+Nit: Extend
+> Intel SocFPGA platforms.
+> 
+> Signed-off-by: Richard Gong <richard.gong@intel.com>
+> ---
+>  drivers/fpga/stratix10-soc.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
+> index 657a70c..8a59365 100644
+> --- a/drivers/fpga/stratix10-soc.c
+> +++ b/drivers/fpga/stratix10-soc.c
+> @@ -185,7 +185,10 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
+>  	ctype.flags = 0;
+>  	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
+>  		dev_dbg(dev, "Requesting partial reconfiguration.\n");
+> -		ctype.flags |= BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
+> +		ctype.flags |= FPGA_MGR_PARTIAL_RECONFIG;
+I think we had this discussion during the original review of the
+stratix10-soc driver?
 
-As I explained before: The problem with doing anything between crashing
-and starting the crash kernel is reducing the chance of actually
-starting it. The kernel crashed for whatever reason, so it's in a
-completely undefined state.
+Wasn't the point of using the BIT() to not assume alignment of FPGA_MGR
+flags and firmware structure?
 
-Ergo there is no 'just do something'. You really have to think hard
-about what can be done safely with the least probability of running into
-another problem.
+The FPGA_MGR_* bits are kernel internal and can therefore change, it
+would be unfortunate to end up in a situation where this breaks the FW
+interface (assuming firmware uses the value in pass-through which it
+looks like is what is happening).
+
+> +	} else if (info->flags & FPGA_MGR_BITSTREM_AUTHENTICATION) {
+> +		dev_dbg(dev, "Requesting bitstream authentication.\n");
+> +		ctype.flags |= FPGA_MGR_BITSTREM_AUTHENTICATION;
+Do you want to change this to BIT(COMMAND_AUTHENTICATE_BITSTREAM) or
+something like that?
+>  	} else {
+>  		dev_dbg(dev, "Requesting full reconfiguration.\n");
+>  	}
+> -- 
+> 2.7.4
+> 
 
 Thanks,
-
-        tglx
-
-
+Moritz
