@@ -2,76 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0926C2B33EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 11:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F622B3453
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 11:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727179AbgKOKjr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 15 Nov 2020 05:39:47 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:39500 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727042AbgKOKjn (ORCPT
+        id S1727132AbgKOKtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 05:49:01 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:56560 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726749AbgKOKtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 05:39:43 -0500
-Received: by mail-wm1-f67.google.com with SMTP id s13so20963366wmh.4;
-        Sun, 15 Nov 2020 02:39:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zu0rhM4q83IY0WgccKoFdr2ohPj3HXFQklS1qVvBPpQ=;
-        b=eTphyODATjti29sofpfW8umUcceUOjQZ4kzMUNgHIMtAgO857/Hiol4EvVsSPnwqNC
-         iAzvsRChR/3n7Zv1fmHl+Sun0IAuCxlP0edpv4ieMv4AKVR4rwBRheC0POf8Si7mwI/k
-         cdqybFMAzDfUUfhbH0es3AxDCziXsXXHaEwQjc+WOp4PhhZGdteG/7v+QWYoMPRam8k/
-         lcKvuLmWCTue/dk4Et0jzDEKBEFTyXdxztJCfXiBfHuOX4R6lFkP2YLEyLpUQwxBauPK
-         qun+qWFzTwj62WaDbF/gMtsUUgNy497JD0xKrixKlIQ3KZ6kbG+ijXOBqRqLDo8n7m6Y
-         8bhQ==
-X-Gm-Message-State: AOAM532XpRrmQ2XmFGrbJatS2cGGAUD4HzmQlFB6DyUvZTAyxpRZySl1
-        LFKU6lh2Cb06AAvyPho6vpM=
-X-Google-Smtp-Source: ABdhPJwmQgaGiHS8oigoQQu/6HMU9o0zeF37D49I/RtSUG56hFv3wLVOITXpIIU4+mm+Z7G5o9pX9g==
-X-Received: by 2002:a1c:7f90:: with SMTP id a138mr10498035wmd.61.1605436781293;
-        Sun, 15 Nov 2020 02:39:41 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y187sm16066232wmg.33.2020.11.15.02.39.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 02:39:40 -0800 (PST)
-Date:   Sun, 15 Nov 2020 11:39:38 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Anand Moon <linux.amoon@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v2 2/6] ARM: dts: exynos: Add an alias for the Ethernet
- interface on Odroid XU3
-Message-ID: <20201115103938.GB5751@kozik-lap>
-References: <20201103184412.18874-1-l.stelmach@samsung.com>
- <CGME20201103184418eucas1p242bfce393134713bc1d21d0776b2f9ca@eucas1p2.samsung.com>
- <20201103184412.18874-3-l.stelmach@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201103184412.18874-3-l.stelmach@samsung.com>
+        Sun, 15 Nov 2020 05:49:00 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AFAjw3L034226;
+        Sun, 15 Nov 2020 10:48:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=0SQ04sPpy55hmGwi9wK6B8H2o5DGQMXCFt2rANOMIJQ=;
+ b=vuC857aCSvmVZPlZZcuDCMwoGt8JXGZnv4TNihkUw0bUu0I7LSZEN3aUmczFwXRYKkZM
+ BICVdxf8d2zT6rq0Zsh5gMDwCu9dvc5QLu8dlNz9yKi//3mD0hJ7gXrSSBkseZvOij8s
+ YJD01ZSI0P9W0tQHYZwHomOiSksO5dGquskzOyTaXYR+Wrnt1955nBfss9H225qgD7Ma
+ DRqrsoUP0S8WjqQLuxc7ncRbyN3AypqsHUpz03Cg1sGGFyXquIx/67sV/WS1oNBDDBbA
+ fIPrY77epKwe/lVOdRSYnRVyt410fHbbf5yBWjEPsF948ZLn18Ypio2XYgViW/ZTSQwD Vg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 34t76kj71e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 15 Nov 2020 10:48:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AFAjJGs053689;
+        Sun, 15 Nov 2020 10:46:42 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 34ts0nc20e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 15 Nov 2020 10:46:42 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AFAkedg026085;
+        Sun, 15 Nov 2020 10:46:40 GMT
+Received: from localhost.uk.oracle.com (/10.175.173.115)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 15 Nov 2020 02:46:40 -0800
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] libbpf: bpf__find_by_name[_kind] should use btf__get_nr_types()
+Date:   Sun, 15 Nov 2020 10:46:35 +0000
+Message-Id: <1605437195-2175-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9805 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011150065
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9805 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011150065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 07:44:08PM +0100, Łukasz Stelmach wrote:
-> Add an alias to enable bootloaders to find the Ethernet
-> interface and assign a MAC address.
-> 
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-> ---
->  arch/arm/boot/dts/exynos5422-odroidxu3.dts | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+When operating on split BTF, btf__find_by_name[_kind] will not
+iterate over all types since they use btf->nr_types to show
+the number of types to iterate over.  For split BTF this is
+the number of types _on top of base BTF_, so it will
+underestimate the number of types to iterate over, especially
+for vmlinux + module BTF, where the latter is much smaller.
 
-Thanks, applied.
+Use btf__get_nr_types() instead.
 
-Best regards,
-Krzysztof
+Fixes: ba451366bf44 ("libbpf: Implement basic split BTF support")
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ tools/lib/bpf/btf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 2d0d064..8ff46cd 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -674,12 +674,12 @@ int btf__resolve_type(const struct btf *btf, __u32 type_id)
+ 
+ __s32 btf__find_by_name(const struct btf *btf, const char *type_name)
+ {
+-	__u32 i;
++	__u32 i, nr_types = btf__get_nr_types(btf);
+ 
+ 	if (!strcmp(type_name, "void"))
+ 		return 0;
+ 
+-	for (i = 1; i <= btf->nr_types; i++) {
++	for (i = 1; i <= nr_types; i++) {
+ 		const struct btf_type *t = btf__type_by_id(btf, i);
+ 		const char *name = btf__name_by_offset(btf, t->name_off);
+ 
+@@ -693,12 +693,12 @@ __s32 btf__find_by_name(const struct btf *btf, const char *type_name)
+ __s32 btf__find_by_name_kind(const struct btf *btf, const char *type_name,
+ 			     __u32 kind)
+ {
+-	__u32 i;
++	__u32 i, nr_types = btf__get_nr_types(btf);
+ 
+ 	if (kind == BTF_KIND_UNKN || !strcmp(type_name, "void"))
+ 		return 0;
+ 
+-	for (i = 1; i <= btf->nr_types; i++) {
++	for (i = 1; i <= nr_types; i++) {
+ 		const struct btf_type *t = btf__type_by_id(btf, i);
+ 		const char *name;
+ 
+-- 
+1.8.3.1
 
