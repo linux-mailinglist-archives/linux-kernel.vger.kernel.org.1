@@ -2,195 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0082B3826
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E87EC2B382A
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727672AbgKOSzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:55:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33840 "EHLO
+        id S1727354AbgKOS4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 13:56:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727179AbgKOSzV (ORCPT
+        with ESMTP id S1726923AbgKOS4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:55:21 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EC2C0613D1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 10:55:21 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1keNBA-0004Io-Ue; Sun, 15 Nov 2020 19:55:13 +0100
-Received: from [IPv6:2a03:f580:87bc:d400:1e3d:e0be:764c:4a56] (unknown [IPv6:2a03:f580:87bc:d400:1e3d:e0be:764c:4a56])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 2664F592F2D;
-        Sun, 15 Nov 2020 18:55:10 +0000 (UTC)
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        linux-can@vger.kernel.org
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
-References: <20201114152325.523630-1-mailhol.vincent@wanadoo.fr>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
- zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
- QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
- 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
- Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
- XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
- nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
- Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
- eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
- kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
- ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
- CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJfEWX4BQkQo2czAAoJECte4hHF
- iupUvfMP/iNtiysSr5yU4tbMBzRkGov1/FjurfH1kPweLVHDwiQJOGBz9HgM5+n8boduRv36
- 0lU32g3PehN0UHZdHWhygUd6J09YUi2mJo1l2Fz1fQ8elUGUOXpT/xoxNQjslZjJGItCjza8
- +D1DO+0cNFgElcNPa7DFBnglatOCZRiMjo4Wx0i8njEVRU+4ySRU7rCI36KPts+uVmZAMD7V
- 3qiR1buYklJaPCJsnXURXYsilBIE9mZRmQjTDVqjLWAit++flqUVmDjaD/pj2AQe2Jcmd2gm
- sYW5P1moz7ACA1GzMjLDmeFtpJOIB7lnDX0F/vvsG3V713/701aOzrXqBcEZ0E4aWeZJzaXw
- n1zVIrl/F3RKrWDhMKTkjYy7HA8hQ9SJApFXsgP334Vo0ea82H3dOU755P89+Eoj0y44MbQX
- 7xUy4UTRAFydPl4pJskveHfg4dO6Yf0PGIvVWOY1K04T1C5dpnHAEMvVNBrfTA8qcahRN82V
- /iIGB+KSC2xR79q1kv1oYn0GOnWkvZmMhqGLhxIqHYitwH4Jn5uRfanKYWBk12LicsjRiTyW
- Z9cJf2RgAtQgvMPvmaOL8vB3U4ava48qsRdgxhXMagU618EszVdYRNxGLCqsKVYIDySTrVzu
- ZGs2ibcRhN4TiSZjztWBAe1MaaGk05Ce4h5IdDLbOOxhuQENBF8SDLABCADohJLQ5yffd8Sq
- 8Lo9ymzgaLcWboyZ46pY4CCCcAFDRh++QNOJ8l4mEJMNdEa/yrW4lDQDhBWV75VdBuapYoal
- LFrSzDzrqlHGG4Rt4/XOqMo6eSeSLipYBu4Xhg59S9wZOWbHVT/6vZNmiTa3d40+gBg68dQ8
- iqWSU5NhBJCJeLYdG6xxeUEtsq/25N1erxmhs/9TD0sIeX36rFgWldMwKmZPe8pgZEv39Sdd
- B+ykOlRuHag+ySJxwovfdVoWT0o0LrGlHzAYo6/ZSi/Iraa9R/7A1isWOBhw087BMNkRYx36
- B77E4KbyBPx9h3wVyD/R6T0Q3ZNPu6SQLnsWojMzABEBAAGJAjwEGAEKACYWIQTBQAugs5ie
- b7x9W1wrXuIRxYrqVAUCXxIMsAIbDAUJAucGAAAKCRArXuIRxYrqVOu0D/48xSLyVZ5NN2Bb
- yqo3zxdv/PMGJSzM3JqSv7hnMZPQGy9XJaTc5Iz/hyXaNRwpH5X0UNKqhQhlztChuAKZ7iu+
- 2VKzq4JJe9qmydRUwylluc4HmGwlIrDNvE0N66pRvC3h8tOVIsippAQlt5ciH74bJYXr0PYw
- Aksw1jugRxMbNRzgGECg4O6EBNaHwDzsVPX1tDj0d9t/7ClzJUy20gg8r9Wm/I/0rcNkQOpV
- RJLDtSbGSusKxor2XYmVtHGauag4YO6Vdq+2RjArB3oNLgSOGlYVpeqlut+YYHjWpaX/cTf8
- /BHtIQuSAEu/WnycpM3Z9aaLocYhbp5lQKL6/bcWQ3udd0RfFR/Gv7eR7rn3evfqNTtQdo4/
- YNmd7P8TS7ALQV/5bNRe+ROLquoAZvhaaa6SOvArcmFccnPeyluX8+o9K3BCdXPwONhsrxGO
- wrPI+7XKMlwWI3O076NqNshh6mm8NIC0mDUr7zBUITa67P3Q2VoPoiPkCL9RtsXdQx5BI9iI
- h/6QlzDxcBdw2TVWyGkVTCdeCBpuRndOMVmfjSWdCXXJCLXO6sYeculJyPkuNvumxgwUiK/H
- AqqdUfy1HqtzP2FVhG5Ce0TeMJepagR2CHPXNg88Xw3PDjzdo+zNpqPHOZVKpLUkCvRv1p1q
- m1qwQVWtAwMML/cuPga78rkBDQRfEXGWAQgAt0Cq8SRiLhWyTqkf16Zv/GLkUgN95RO5ntYM
- fnc2Tr3UlRq2Cqt+TAvB928lN3WHBZx6DkuxRM/Y/iSyMuhzL5FfhsICuyiBs5f3QG70eZx+
- Bdj4I7LpnIAzmBdNWxMHpt0m7UnkNVofA0yH6rcpCsPrdPRJNOLFI6ZqXDQk9VF+AB4HVAJY
- BDU3NAHoyVGdMlcxev0+gEXfBQswEcysAyvzcPVTAqmrDsupnIB2f0SDMROQCLO6F+/cLG4L
- Stbz+S6YFjESyXblhLckTiPURvDLTywyTOxJ7Mafz6ZCene9uEOqyd/h81nZOvRd1HrXjiTE
- 1CBw+Dbvbch1ZwGOTQARAQABiQNyBBgBCgAmFiEEwUALoLOYnm+8fVtcK17iEcWK6lQFAl8R
- cZYCGwIFCQLnoRoBQAkQK17iEcWK6lTAdCAEGQEKAB0WIQQreQhYm33JNgw/d6GpyVqK+u3v
- qQUCXxFxlgAKCRCpyVqK+u3vqatQCAC3QIk2Y0g/07xNLJwhWcD7JhIqfe7Qc5Vz9kf8ZpWr
- +6w4xwRfjUSmrXz3s6e/vrQsfdxjVMDFOkyG8c6DWJo0TVm6Ucrf9G06fsjjE/6cbE/gpBkk
- /hOVz/a7UIELT+HUf0zxhhu+C9hTSl8Nb0bwtm6JuoY5AW0LP2KoQ6LHXF9KNeiJZrSzG6WE
- h7nf3KRFS8cPKe+trbujXZRb36iIYUfXKiUqv5xamhohy1hw+7Sy8nLmw8rZPa40bDxX0/Gi
- 98eVyT4/vi+nUy1gF1jXgNBSkbTpbVwNuldBsGJsMEa8lXnYuLzn9frLdtufUjjCymdcV/iT
- sFKziU9AX7TLZ5AP/i1QMP9OlShRqERH34ufA8zTukNSBPIBfmSGUe6G2KEWjzzNPPgcPSZx
- Do4jfQ/m/CiiibM6YCa51Io72oq43vMeBwG9/vLdyev47bhSfMLTpxdlDJ7oXU9e8J61iAF7
- vBwerBZL94I3QuPLAHptgG8zPGVzNKoAzxjlaxI1MfqAD9XUM80MYBVjunIQlkU/AubdvmMY
- X7hY1oMkTkC5hZNHLgIsDvWUG0g3sACfqF6gtMHY2lhQ0RxgxAEx+ULrk/svF6XGDe6iveyc
- z5Mg5SUggw3rMotqgjMHHRtB3nct6XqgPXVDGYR7nAkXitG+nyG5zWhbhRDglVZ0mLlW9hij
- z3Emwa94FaDhN2+1VqLFNZXhLwrNC5mlA6LUjCwOL+zb9a07HyjekLyVAdA6bZJ5BkSXJ1CO
- 5YeYolFjr4YU7GXcSVfUR6fpxrb8N+yH+kJhY3LmS9vb2IXxneE/ESkXM6a2YAZWfW8sgwTm
- 0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
- HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
- xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
-Subject: Re: [PATCH v6] can: usb: etas_es58X: add support for ETAS ES58X CAN
- USB interfaces
-Message-ID: <11bada82-7406-d8e1-66e3-43db237ee265@pengutronix.de>
-Date:   Sun, 15 Nov 2020 19:55:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sun, 15 Nov 2020 13:56:12 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695EBC0613D1;
+        Sun, 15 Nov 2020 10:56:12 -0800 (PST)
+Date:   Sun, 15 Nov 2020 18:56:08 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605466570;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uEDpHhF2OCoF+id9YLRt+CynHxCQsmIsMt62XXgA0kg=;
+        b=MeKN1K+cxBSCzQq+PJ/6PMv3hYLxbZqozJ7wBS0G26W1U6EbdfeaaTPXjIeB7k7y9m0BIT
+        7V33Fm1uavMI5aEdVO8G87Yr0e+kVOWi3QkcwCJgBZ31FH43T0CblwCg9icDVdoiJ2gOWj
+        ehUukimQyxKl+qtRYW9yNm+ZObRcrRjJyh2gLmpkat4lbJdZhIys+t1zgGbU7ZpJJIYDN6
+        LlGMYQqkB3yyP96EHzYUXgQGnMNXaVsEH3c/mIYDsCN0IR++rgLUCtGSpMZwjMahHTwaoS
+        ejhZOR/PGNgV+nXe+IxK8Z8MMzyieyzJC3wuRqRn7hbImaf4zLjXO/ne7FF6vA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605466570;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uEDpHhF2OCoF+id9YLRt+CynHxCQsmIsMt62XXgA0kg=;
+        b=YwbUxQu1X1O5+AKqp8dmw0HaPHJiu4X+Scw3qkclUgrgHziNbFss6sumvgK2SjbB6epFxY
+        Exs++CInV2zXZqAg==
+From:   "tip-bot2 for Ira Weiny" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/entry] entry: Fix spelling/typo errors in irq entry code
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201104230157.3378023-1-ira.weiny@intel.com>
+References: <20201104230157.3378023-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201114152325.523630-1-mailhol.vincent@wanadoo.fr>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="7KjNyHPgHzuIuAFRP5MDixmwX0lOjynfG"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Message-ID: <160546656898.11244.12849621903409820578.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---7KjNyHPgHzuIuAFRP5MDixmwX0lOjynfG
-Content-Type: multipart/mixed; boundary="2TiozWkGeyZmt1hP37spvFYpTH3KfDAmH";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>, linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
- Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Masahiro Yamada <masahiroy@kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
-Message-ID: <11bada82-7406-d8e1-66e3-43db237ee265@pengutronix.de>
-Subject: Re: [PATCH v6] can: usb: etas_es58X: add support for ETAS ES58X CAN
- USB interfaces
-References: <20201114152325.523630-1-mailhol.vincent@wanadoo.fr>
-In-Reply-To: <20201114152325.523630-1-mailhol.vincent@wanadoo.fr>
+The following commit has been merged into the core/entry branch of tip:
 
---2TiozWkGeyZmt1hP37spvFYpTH3KfDAmH
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     8ca2378089994a0508248230e1a1e75f73102d32
+Gitweb:        https://git.kernel.org/tip/8ca2378089994a0508248230e1a1e75f73102d32
+Author:        Ira Weiny <ira.weiny@intel.com>
+AuthorDate:    Wed, 04 Nov 2020 15:01:57 -08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sun, 15 Nov 2020 19:51:51 +01:00
 
-On 11/14/20 4:22 PM, Vincent Mailhol wrote:
-> This driver supports the ES581.4, ES582.1 and ES584.1 interfaces from
-> ETAS GmbH (https://www.etas.com/en/products/es58x.php).
->=20
-> Co-developed-by: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.=
-com>
-> Signed-off-by: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.co=
-m>
-> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+entry: Fix spelling/typo errors in irq entry code
 
-The driver fails to compile with CONFIG_SYSFS switched off
+s/reguired/required/
+s/Interupts/Interrupts/
+s/quiescient/quiescent/
+s/assemenbly/assembly/
 
-  CC [M]  drivers/net/can/usb/etas_es58x/es58x_core.o
-drivers/net/can/usb/etas_es58x/es58x_core.c: In function =E2=80=98es58x_i=
-nit_netdev=E2=80=99:
-drivers/net/can/usb/etas_es58x/es58x_core.c:2380:32: error: =E2=80=98stru=
-ct netdev_queue=E2=80=99 has no member named =E2=80=98dql=E2=80=99
- 2380 |  netdev_get_tx_queue(netdev, 0)->dql.min_limit =3D
-      |                                ^~
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201104230157.3378023-1-ira.weiny@intel.com
 
-regards,
-Marc
+---
+ include/linux/entry-common.h | 4 ++--
+ kernel/entry/common.c        | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---2TiozWkGeyZmt1hP37spvFYpTH3KfDAmH--
-
---7KjNyHPgHzuIuAFRP5MDixmwX0lOjynfG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+xeYkACgkQqclaivrt
-76nyBQf+L4OxN9ufKCwxNaHJTYaAZVqlbnW1DUJZKlnNYK2zIC1fQ5bO648Liwls
-3su+QQotABXmLrYol0RbkzvcL4brVts+kJydbTEnDHtBVXHJhvgtirTjJy2CMxzo
-dWfap8eNvS6hPGxzf1GUwvquKv7uZ3bbfKZ7UQfGrNv7htPXTEONZ3xwGCcrZGBD
-l5m0d4EsOnMBM2DI30Ge6XLuZX+Jf9gKOs6MblFH3/TnY5JkxKDiKD0ziWZMmYnF
-QfmbbLIH4S6E2oaB6xySoR5Pt/oYw41YXDPr5IAshYqSy2KqCfXrdQHam5O1cJ6b
-MXHdIUZqfvM/hxGDKSY07qrkPCE63g==
-=lrm6
------END PGP SIGNATURE-----
-
---7KjNyHPgHzuIuAFRP5MDixmwX0lOjynfG--
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index 1a128ba..6693812 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -415,7 +415,7 @@ void irqentry_exit_cond_resched(void);
+  * @state:	Return value from matching call to irqentry_enter()
+  *
+  * Depending on the return target (kernel/user) this runs the necessary
+- * preemption and work checks if possible and reguired and returns to
++ * preemption and work checks if possible and required and returns to
+  * the caller with interrupts disabled and no further work pending.
+  *
+  * This is the last action before returning to the low level ASM code which
+@@ -438,7 +438,7 @@ irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs);
+  * @regs:	Pointer to pt_regs (NMI entry regs)
+  * @irq_state:	Return value from matching call to irqentry_nmi_enter()
+  *
+- * Last action before returning to the low level assmenbly code.
++ * Last action before returning to the low level assmebly code.
+  *
+  * Counterpart to irqentry_nmi_enter().
+  */
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index bc75c11..fa17baa 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -304,7 +304,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
+ 	 * If this entry hit the idle task invoke rcu_irq_enter() whether
+ 	 * RCU is watching or not.
+ 	 *
+-	 * Interupts can nest when the first interrupt invokes softirq
++	 * Interrupts can nest when the first interrupt invokes softirq
+ 	 * processing on return which enables interrupts.
+ 	 *
+ 	 * Scheduler ticks in the idle task can mark quiescent state and
+@@ -315,7 +315,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
+ 	 * interrupt to invoke rcu_irq_enter(). If that nested interrupt is
+ 	 * the tick then rcu_flavor_sched_clock_irq() would wrongfully
+ 	 * assume that it is the first interupt and eventually claim
+-	 * quiescient state and end grace periods prematurely.
++	 * quiescent state and end grace periods prematurely.
+ 	 *
+ 	 * Unconditionally invoke rcu_irq_enter() so RCU state stays
+ 	 * consistent.
