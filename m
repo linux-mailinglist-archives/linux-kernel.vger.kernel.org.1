@@ -2,183 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1072B3484
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 12:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF402B3488
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 12:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgKOLDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 06:03:10 -0500
-Received: from mga01.intel.com ([192.55.52.88]:37738 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726749AbgKOLDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 06:03:08 -0500
-IronPort-SDR: OFmwew/5M1rh0dGUedHjU4vgGdh+m1g5xemwKyIEOt8QuxRenbw6sqffqOId4pjs7Ip+tCFRNH
- FupTefeXYKFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9805"; a="188678406"
-X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
-   d="scan'208";a="188678406"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 03:03:07 -0800
-IronPort-SDR: irn2lGz+k3j+isQoiPrxsgnvIT3pdrZnl5LxxwHLvFHvvPjvKbYk28furQvgoITYjV5d6W6gSC
- WZ6AR/qCmXAg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,480,1596524400"; 
-   d="scan'208";a="329388615"
-Received: from lkp-server01.sh.intel.com (HELO 2e68b9ba5db3) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 15 Nov 2020 03:03:06 -0800
-Received: from kbuild by 2e68b9ba5db3 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1keFoH-00009h-RK; Sun, 15 Nov 2020 11:03:05 +0000
-Date:   Sun, 15 Nov 2020 19:02:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- f296dcd629aa412a80a53215e46087f53af87f08
-Message-ID: <5fb10abf.ezzrvcF9hUzwowiF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726859AbgKOLFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 06:05:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgKOLFp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 06:05:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3807C0613D1;
+        Sun, 15 Nov 2020 03:05:45 -0800 (PST)
+Date:   Sun, 15 Nov 2020 11:05:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605438343;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bij7WmP9+y87wX1KmnpAU4g3B0H3sxtPXI7Q6zWWxQs=;
+        b=cFN0Xi+xYEvuHoPWSxGjXqYvCpIIXDs5G2NN1Pg0ai7C8x5elEIbH3B2X2TIYdBKsZ5STX
+        90FFlaLoj9Pyj7LxVMf02QdJknDAS1QSBXLzCNXKQvBLgb3wKExhDwhYef6uWYzjRUfuUw
+        01XTQ09oJkydhWgrHghO6334MluuwikVi5ZsazgTMOwIdj0rpq7gMhpg0JL0EktGgQvMFI
+        eG+1o+OtmlTDWJm+qPs0/183zJLoa+mLEqTt0T9akXNNTcQh5vLPbDOnraA2sPr6kbveiV
+        3HivOAR0SjeIQ7bxZKbaS/u2Gnr0RA5P9TmD05stYxlcmRVYF8iEcDb50pmdDg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605438343;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bij7WmP9+y87wX1KmnpAU4g3B0H3sxtPXI7Q6zWWxQs=;
+        b=9aHzsEu+3vkUgLobOam1UnDVGcyOjlX2Z8WySsysE24LlvIOAjNhLa9gnis2OYvkDodXxT
+        HMq6ok/G231XAjAA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] genirq/irqdomain: Make irq_domain_disassociate() static
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <87a6vja7mb.fsf@nanos.tec.linutronix.de>
+References: <87a6vja7mb.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <160543834186.11244.15951474822549357496.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  irq/core
-branch HEAD: f296dcd629aa412a80a53215e46087f53af87f08  genirq: Remove GENERIC_IRQ_LEGACY_ALLOC_HWIRQ
+The following commit has been merged into the irq/core branch of tip:
 
-elapsed time: 721m
+Commit-ID:     e906a546bd8653ed2e7a14cb300fd17952d7f862
+Gitweb:        https://git.kernel.org/tip/e906a546bd8653ed2e7a14cb300fd17952d7f862
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sat, 14 Nov 2020 23:36:28 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sun, 15 Nov 2020 12:01:11 +01:00
 
-configs tested: 119
-configs skipped: 2
+genirq/irqdomain: Make irq_domain_disassociate() static
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+No users outside of the core code.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-riscv                    nommu_k210_defconfig
-ia64                                defconfig
-arm                          tango4_defconfig
-powerpc                      ppc40x_defconfig
-mips                            gpr_defconfig
-c6x                              alldefconfig
-xtensa                           allyesconfig
-nios2                         3c120_defconfig
-sh                          r7780mp_defconfig
-mips                           ci20_defconfig
-sh                          r7785rp_defconfig
-powerpc                         wii_defconfig
-arm                           h5000_defconfig
-mips                      loongson3_defconfig
-mips                            ar7_defconfig
-m68k                       m5249evb_defconfig
-arc                            hsdk_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                          sdk7780_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                          sdk7786_defconfig
-ia64                        generic_defconfig
-powerpc                     ep8248e_defconfig
-sparc64                          alldefconfig
-powerpc                 mpc837x_mds_defconfig
-arm                        spear3xx_defconfig
-powerpc                 mpc8540_ads_defconfig
-mips                         db1xxx_defconfig
-sh                             espt_defconfig
-mips                        jmr3927_defconfig
-mips                        bcm47xx_defconfig
-arm                         orion5x_defconfig
-mips                  cavium_octeon_defconfig
-nds32                             allnoconfig
-sparc                       sparc64_defconfig
-alpha                            allyesconfig
-mips                       rbtx49xx_defconfig
-sh                           se7750_defconfig
-csky                             alldefconfig
-sparc64                             defconfig
-powerpc                  storcenter_defconfig
-powerpc                     stx_gp3_defconfig
-c6x                        evmc6474_defconfig
-arm                         axm55xx_defconfig
-sh                          landisk_defconfig
-m68k                         apollo_defconfig
-sh                           se7712_defconfig
-mips                        nlm_xlr_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20201115
-i386                 randconfig-a005-20201115
-i386                 randconfig-a001-20201115
-i386                 randconfig-a002-20201115
-i386                 randconfig-a004-20201115
-i386                 randconfig-a003-20201115
-x86_64               randconfig-a015-20201115
-x86_64               randconfig-a011-20201115
-x86_64               randconfig-a014-20201115
-x86_64               randconfig-a013-20201115
-x86_64               randconfig-a016-20201115
-x86_64               randconfig-a012-20201115
-i386                 randconfig-a012-20201115
-i386                 randconfig-a014-20201115
-i386                 randconfig-a016-20201115
-i386                 randconfig-a011-20201115
-i386                 randconfig-a015-20201115
-i386                 randconfig-a013-20201115
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201115
-x86_64               randconfig-a005-20201115
-x86_64               randconfig-a004-20201115
-x86_64               randconfig-a002-20201115
-x86_64               randconfig-a001-20201115
-x86_64               randconfig-a006-20201115
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/87a6vja7mb.fsf@nanos.tec.linutronix.de
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ include/linux/irqdomain.h | 2 --
+ kernel/irq/irqdomain.c    | 2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+index 77bf7d8..5701a8b 100644
+--- a/include/linux/irqdomain.h
++++ b/include/linux/irqdomain.h
+@@ -387,8 +387,6 @@ extern int irq_domain_associate(struct irq_domain *domain, unsigned int irq,
+ extern void irq_domain_associate_many(struct irq_domain *domain,
+ 				      unsigned int irq_base,
+ 				      irq_hw_number_t hwirq_base, int count);
+-extern void irq_domain_disassociate(struct irq_domain *domain,
+-				    unsigned int irq);
+ 
+ extern unsigned int irq_create_mapping(struct irq_domain *host,
+ 				       irq_hw_number_t hwirq);
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 9c9cb88..3d7463f 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -496,7 +496,7 @@ static void irq_domain_set_mapping(struct irq_domain *domain,
+ 	}
+ }
+ 
+-void irq_domain_disassociate(struct irq_domain *domain, unsigned int irq)
++static void irq_domain_disassociate(struct irq_domain *domain, unsigned int irq)
+ {
+ 	struct irq_data *irq_data = irq_get_irq_data(irq);
+ 	irq_hw_number_t hwirq;
