@@ -2,51 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258612B378D
-	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB152B378F
+	for <lists+linux-kernel@lfdr.de>; Sun, 15 Nov 2020 19:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727359AbgKOSAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 13:00:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34428 "EHLO mail.kernel.org"
+        id S1727518AbgKOSBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 13:01:24 -0500
+Received: from m12-12.163.com ([220.181.12.12]:51636 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727276AbgKOSAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 13:00:13 -0500
-Subject: Re: [GIT pull] x86/urgent for v5.10-rc4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605463213;
-        bh=t01aNBqjhl+T+iGazP8IwfRA15s1/HmaL8SiWYz6BjE=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=p7z0s9VxpdK+nvrZqLYbYfkXnAMDmf26ve+Pj3t4kVfXUhJWseoHKKESBFfGryAXw
-         LiIEUpqzuksT4iR2uQQn+8FRTbixVFppXkxL/RjQX8x/dU9l3RmW9FCcgmyVeXjlIr
-         uAdiQktqy29eOrC0hQotm/qOi8O7AlhdqkQ21Do0=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <160544524386.25051.9326481900625497800.tglx@nanos>
-References: <160544524024.25051.12292089189937197323.tglx@nanos> <160544524386.25051.9326481900625497800.tglx@nanos>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <160544524386.25051.9326481900625497800.tglx@nanos>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-11-15
-X-PR-Tracked-Commit-Id: ff828729be446b86957f7c294068758231cd2183
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 326fd6db6112534738b5229da538bf426d78c851
-Message-Id: <160546321362.32406.16184632785016585645.pr-tracker-bot@kernel.org>
-Date:   Sun, 15 Nov 2020 18:00:13 +0000
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        id S1727000AbgKOSBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 13:01:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=6MubN
+        k2IDlcXLKxODBPdt2LcfZmGAlZrFRKaa1VWLxI=; b=hy7EnfSy+TPcFpr3dYVRo
+        //U3rW9X5SAlf19MmGaY6nT4/pZlXnr3gPn02fVIgxvE+fIYYr7+/tXNiNi+HJxZ
+        PxQbcot5jbuh2bCl81/KGC6damj0LkJOY9tfEx7/JcQFMgc7kV2On2bahY+BYXC5
+        k8TnqFy+qP8H73KIZhjAj0=
+Received: from localhost (unknown [101.86.213.176])
+        by smtp8 (Coremail) with SMTP id DMCowABnM9nWbLFfvZyMBw--.838S2;
+        Mon, 16 Nov 2020 02:00:54 +0800 (CST)
+Date:   Mon, 16 Nov 2020 02:00:54 +0800
+From:   Hui Su <sh_def@163.com>
+To:     christian.brauner@ubuntu.com, serge@hallyn.com, avagin@openvz.org,
+        0x7f454c46@gmail.com, linux-kernel@vger.kernel.org
+Cc:     sh_def@163.com
+Subject: [PATCH] nsproxy: use put_nsproxy() in switch_task_namespaces()
+Message-ID: <20201115180054.GA371317@rlk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: DMCowABnM9nWbLFfvZyMBw--.838S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7GF13ur15Ww47uFy3uw4kWFg_yoWDtFg_AF
+        ZrX3Z3K34jy3Z0yr15Ww1fXFy0q39IkF4xKw4IvrW5Ar98Xr47JwsrAFy3GF9rGFs3ua45
+        uFy5Gr1DCr1rWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbYhF3UUUUU==
+X-Originating-IP: [101.86.213.176]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbByxbdX1PAProDmwAAsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 15 Nov 2020 13:00:43 -0000:
+Use put_nsproxy() instead of '
+if (atomic_dec_and_test(&ns->count)) {
+	free_nsproxy(ns);
+}' in switch_task_namespaces().
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-11-15
+and remove the whitespace by the way.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/326fd6db6112534738b5229da538bf426d78c851
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ kernel/nsproxy.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thank you!
-
+diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
+index 12dd41b39a7f..3ebfd090398a 100644
+--- a/kernel/nsproxy.c
++++ b/kernel/nsproxy.c
+@@ -173,7 +173,7 @@ int copy_namespaces(unsigned long flags, struct task_struct *tsk)
+ 	 * it along with CLONE_NEWIPC.
+ 	 */
+ 	if ((flags & (CLONE_NEWIPC | CLONE_SYSVSEM)) ==
+-		(CLONE_NEWIPC | CLONE_SYSVSEM)) 
++		(CLONE_NEWIPC | CLONE_SYSVSEM))
+ 		return -EINVAL;
+ 
+ 	new_ns = create_new_namespaces(flags, tsk, user_ns, tsk->fs);
+@@ -250,8 +250,8 @@ void switch_task_namespaces(struct task_struct *p, struct nsproxy *new)
+ 	p->nsproxy = new;
+ 	task_unlock(p);
+ 
+-	if (ns && atomic_dec_and_test(&ns->count))
+-		free_nsproxy(ns);
++	if (ns)
++		put_nsproxy(ns);
+ }
+ 
+ void exit_task_namespaces(struct task_struct *p)
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.29.0
+
+
