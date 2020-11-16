@@ -2,307 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406A42B43A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B81922B43A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730042AbgKPMZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:25:25 -0500
-Received: from mga17.intel.com ([192.55.52.151]:35075 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728843AbgKPMZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:25:24 -0500
-IronPort-SDR: c+d/SKQOa+WZ1Svgea/YkxbH1VK6V/ChGabNn7pSeatS3Y6tvzwnTDbm2qZqHTh7A3tx2Y12uD
- 9HIC9/7k5BEA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="150586110"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="150586110"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:25:24 -0800
-IronPort-SDR: OqdaRrfsKl4PZgQSbASYNdwf0TkWIR52WMO2uUJ6IvHTTvBCB13WDXxLRJtL/EhnoODWy3Svd7
- ZmbyCYJPIUBA==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="543585116"
-Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.228.209]) ([10.249.228.209])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:25:20 -0800
-Subject: [PATCH v3 12/12] perf session: use reader functions to load perf data
- file
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>
-References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <d3f3ab63-7841-97c5-76a0-87d1a763566d@linux.intel.com>
-Date:   Mon, 16 Nov 2020 15:25:18 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1728269AbgKPMZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:25:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60680 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727184AbgKPMZo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:25:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605529542;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=twYAjgtjeEtP7dme/B3MtQN8LFC4b+SiLV0pksaCw+Q=;
+        b=beiNO0zmf1qEofoM6i6EUb8FXyRKDHCv7whNvQKSQhkrAYGpW54JifkHafQdEAICko/pXf
+        4WvB6vWtD8nIvhuymQ2Y5gRLq+QjQNWgJmYgZ+hIEFg46/Rnau/imd2Ao66txutxC1NsBe
+        hPIizj0dXXZl6onCyHNQWjMCxL1wa88=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-A8hognzWOQudJpQ1oTNwVQ-1; Mon, 16 Nov 2020 07:25:40 -0500
+X-MC-Unique: A8hognzWOQudJpQ1oTNwVQ-1
+Received: by mail-wr1-f72.google.com with SMTP id x16so6326337wrn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:25:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=twYAjgtjeEtP7dme/B3MtQN8LFC4b+SiLV0pksaCw+Q=;
+        b=qWbZrlgOWhpoa1GCJAj6pLqgOxIXKzzNvgsacWKfxtosH4OVgVkoQUQoQd3g7jdNB1
+         8g85XLEJylcnOW6uPcDuG6pyBPbZ5L7yzU+CkTna80GljpUFXtlgEg/3nXt/Cbaz9Yod
+         q6FVjYl6wBekhpaJ9h3KU8qWOHaH2tTiSaAMKqiK6tYuHzL6hp87HRlZrei/G9b9xcYL
+         4nYNgNyyjKGmzYb3h3scZnjlxOXOUFb0pRp3km8VH6+T27Z6ptKSu9+Mn3MUkuv5Jm+q
+         876tc5eZuSOz4MT4rVd98uhG/RV6jBW4oRS24J1dp119RmCi/tjJri5Uxt+yWh6e1KFO
+         IQBA==
+X-Gm-Message-State: AOAM533chajzR4BK9WIM+yvX48L+6/lqd00QYUJz+XVRDvFPpsMIDl6o
+        9tOglVBjcs4SQPdBojXN8TxQUs/Md38DV4KiAlm9jiI+I0/uDgSkNBkp8/nisvWg4NI0Jkbotru
+        jCA9x9AzQiRkA3+j8k/rs0ua6
+X-Received: by 2002:adf:a551:: with SMTP id j17mr20868542wrb.217.1605529539627;
+        Mon, 16 Nov 2020 04:25:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzTpJY9zGC+xn6xq+CTHXLTZWqhazVhhm46QQKKwl8uV2NZSejldsTJ5sdUDy6obYAtroP4Vw==
+X-Received: by 2002:adf:a551:: with SMTP id j17mr20868522wrb.217.1605529539401;
+        Mon, 16 Nov 2020 04:25:39 -0800 (PST)
+Received: from redhat.com ([147.161.8.56])
+        by smtp.gmail.com with ESMTPSA id i10sm22686923wrs.22.2020.11.16.04.25.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 04:25:38 -0800 (PST)
+Date:   Mon, 16 Nov 2020 07:25:31 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alexander Lobakin <alobakin@pm.me>, Amit Shah <amit@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
+ for rproc serial
+Message-ID: <20201116071910-mutt-send-email-mst@kernel.org>
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
+ <20201116091950.GA30524@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116091950.GA30524@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 09:19:50AM +0000, Christoph Hellwig wrote:
+> I just noticed this showing up in Linus' tree and I'm not happy.
 
-Use the reader functions to load data file similar to loading of
-data directory files.
+Are you sure? I think it's in next.
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/perf/util/session.c | 215 ++++++++++++--------------------------
- 1 file changed, 66 insertions(+), 149 deletions(-)
+> This whole model of the DMA subdevices in remoteproc is simply broken.
+> 
+> We really need to change the virtio code pass an expicit DMA device (
+> similar to what e.g. the USB and RDMA code does), instead of faking up
+> devices with broken adhoc inheritance of DMA properties and magic poking
+> into device parent relationships.
 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 3cb30c1667c0..f6b06187c6f5 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -2194,109 +2194,6 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
- 	return 0;
- }
- 
--static int
--reader__process_events(struct reader *rd, struct perf_session *session,
--		       struct ui_progress *prog)
--{
--	u64 data_size = rd->data_size;
--	u64 head, page_offset, file_offset, file_pos, size;
--	int err = 0, mmap_prot, mmap_flags, map_idx = 0;
--	size_t	mmap_size;
--	char *buf, *mmaps[NUM_MMAPS];
--	union perf_event *event;
--	s64 skip;
--
--	page_offset = page_size * (rd->data_offset / page_size);
--	file_offset = page_offset;
--	head = rd->data_offset - page_offset;
--
--	ui_progress__init_size(prog, data_size, "Processing events...");
--
--	data_size += rd->data_offset;
--
--	mmap_size = MMAP_SIZE;
--	if (mmap_size > data_size) {
--		mmap_size = data_size;
--		session->one_mmap = true;
--	}
--
--	memset(mmaps, 0, sizeof(mmaps));
--
--	mmap_prot  = PROT_READ;
--	mmap_flags = MAP_SHARED;
--
--	if (session->header.needs_swap) {
--		mmap_prot  |= PROT_WRITE;
--		mmap_flags = MAP_PRIVATE;
--	}
--remap:
--	buf = mmap(NULL, mmap_size, mmap_prot, mmap_flags, rd->fd,
--		   file_offset);
--	if (buf == MAP_FAILED) {
--		pr_err("failed to mmap file\n");
--		err = -errno;
--		goto out;
--	}
--	mmaps[map_idx] = buf;
--	map_idx = (map_idx + 1) & (ARRAY_SIZE(mmaps) - 1);
--	file_pos = file_offset + head;
--	if (session->one_mmap) {
--		session->one_mmap_addr = buf;
--		session->one_mmap_offset = file_offset;
--	}
--
--more:
--	event = fetch_mmaped_event(head, mmap_size, buf, session->header.needs_swap);
--	if (IS_ERR(event))
--		return PTR_ERR(event);
--
--	if (!event) {
--		if (mmaps[map_idx]) {
--			munmap(mmaps[map_idx], mmap_size);
--			mmaps[map_idx] = NULL;
--		}
--
--		page_offset = page_size * (head / page_size);
--		file_offset += page_offset;
--		head -= page_offset;
--		goto remap;
--	}
--
--	size = event->header.size;
--
--	skip = -EINVAL;
--
--	if (size < sizeof(struct perf_event_header) ||
--	    (skip = rd->process(session, event, file_pos, rd->path)) < 0) {
--		pr_err("%#" PRIx64 " [%s] [%#x]: failed to process type: %d [%s]\n",
--		       file_offset + head, rd->path, event->header.size,
--		       event->header.type, strerror(-skip));
--		err = skip;
--		goto out;
--	}
--
--	if (skip)
--		size += skip;
--
--	head += size;
--	file_pos += size;
--
--	err = __perf_session__process_decomp_events(session);
--	if (err)
--		goto out;
--
--	ui_progress__update(prog, size);
--
--	if (session_done())
--		goto out;
--
--	if (file_pos < data_size)
--		goto more;
--
--out:
--	return err;
--}
--
- static s64 process_simple(struct perf_session *session,
- 			  union perf_event *event,
- 			  u64 file_offset,
-@@ -2305,52 +2202,6 @@ static s64 process_simple(struct perf_session *session,
- 	return perf_session__process_event(session, event, file_offset, file_path);
- }
- 
--static int __perf_session__process_events(struct perf_session *session)
--{
--	struct reader rd = {
--		.fd		= perf_data__fd(session->data),
--		.data_size	= session->header.data_size,
--		.data_offset	= session->header.data_offset,
--		.process	= process_simple,
--		.path		= session->data->file.path,
--	};
--	struct ordered_events *oe = &session->ordered_events;
--	struct perf_tool *tool = session->tool;
--	struct ui_progress prog;
--	int err;
--
--	perf_tool__fill_defaults(tool);
--
--	if (rd.data_size == 0)
--		return -1;
--
--	ui_progress__init_size(&prog, rd.data_size, "Processing events...");
--
--	err = reader__process_events(&rd, session, &prog);
--	if (err)
--		goto out_err;
--	/* do the final flush for ordered samples */
--	err = ordered_events__flush(oe, OE_FLUSH__FINAL);
--	if (err)
--		goto out_err;
--	err = auxtrace__flush_events(session, tool);
--	if (err)
--		goto out_err;
--	err = perf_session__flush_thread_stacks(session);
--out_err:
--	ui_progress__finish();
--	if (!tool->no_warn)
--		perf_session__warn_about_errors(session);
--	/*
--	 * We may switching perf.data output, make ordered_events
--	 * reusable.
--	 */
--	ordered_events__reinit(&session->ordered_events);
--	auxtrace__free_events(session);
--	session->one_mmap = false;
--	return err;
--}
--
- static int
- reader__init(struct reader *rd, bool *one_mmap)
- {
-@@ -2467,6 +2318,72 @@ reader__read_event(struct reader *rd, struct perf_session *session,
- 	session->active_reader = NULL;;
- 	return ret;
- }
-+
-+static int __perf_session__process_events(struct perf_session *session)
-+{
-+	struct reader *rd;
-+	struct ordered_events *oe = &session->ordered_events;
-+	struct perf_tool *tool = session->tool;
-+	struct ui_progress prog;
-+	int err;
-+
-+	perf_tool__fill_defaults(tool);
-+
-+	rd = session->readers = zalloc(sizeof(struct reader));
-+	if (!rd)
-+		return -ENOMEM;
-+
-+	session->nr_readers = 1;
-+
-+	*rd = (struct reader) {
-+		.fd		= perf_data__fd(session->data),
-+		.data_size	= session->header.data_size,
-+		.data_offset	= session->header.data_offset,
-+		.process	= process_simple,
-+		.path		= session->data->file.path,
-+	};
-+
-+	ui_progress__init_size(&prog, rd->data_size, "Processing events...");
-+
-+	reader__init(rd, &session->one_mmap);
-+	if (reader__mmap(rd, session) != READER_OK)
-+		goto out_err;
-+
-+	while (true) {
-+		if (session_done())
-+			break;
-+
-+		err = reader__read_event(rd, session, &prog);
-+		if (err < 0)
-+			break;
-+		if (err == READER_EOF) {
-+			err = reader__mmap(rd, session);
-+			if (err <= 0)
-+				break;
-+		}
-+	}
-+
-+	/* do the final flush for ordered samples */
-+	err = ordered_events__flush(oe, OE_FLUSH__FINAL);
-+	if (err)
-+		goto out_err;
-+	err = auxtrace__flush_events(session, tool);
-+	if (err)
-+		goto out_err;
-+	err = perf_session__flush_thread_stacks(session);
-+out_err:
-+	ui_progress__finish();
-+	if (!tool->no_warn)
-+		perf_session__warn_about_errors(session);
-+	/*
-+	 * We may switching perf.data output, make ordered_events
-+	 * reusable.
-+	 */
-+	ordered_events__reinit(&session->ordered_events);
-+	auxtrace__free_events(session);
-+	session->one_mmap = false;
-+	return err;
-+}
- /*
-  * This function reads, merge and process directory data.
-  * It assumens the version 1 of directory data, where each
--- 
-2.24.1
+OK but we do have a regression since 5.7 and this looks like
+a fix appropriate for e.g. stable, right?
+
+> Bjorn, I thought you were going to look into this a while ago?
+> 
+> 
+> On Wed, Nov 04, 2020 at 03:31:36PM +0000, Alexander Lobakin wrote:
+> > Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
+> > specific dma memory pool"), every remoteproc has a DMA subdevice
+> > ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
+> > DMA capabilities from the corresponding platform device. This allowed
+> > to associate different DMA pools with each vdev, and required from
+> > virtio drivers to perform DMA operations with the parent device
+> > (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
+> > 
+> > virtio_rpmsg_bus was already changed in the same merge cycle with
+> > commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
+> > but virtio_console did not. In fact, operations using the grandparent
+> > worked fine while the grandparent was the platform device, but since
+> > commit c774ad010873 ("remoteproc: Fix and restore the parenting
+> > hierarchy for vdev") this was changed, and now the grandparent device
+> > is the remoteproc device without any DMA capabilities.
+> > So, starting v5.8-rc1 the following warning is observed:
+> > 
+> > [    2.483925] ------------[ cut here ]------------
+> > [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
+> > [    2.489152] Modules linked in: virtio_console(+)
+> > [    2.503737]  virtio_rpmsg_bus rpmsg_core
+> > [    2.508903]
+> > [    2.528898] <Other modules, stack and call trace here>
+> > [    2.913043]
+> > [    2.914907] ---[ end trace 93ac8746beab612c ]---
+> > [    2.920102] virtio-ports vport1p0: Error allocating inbufs
+> > 
+> > kernel/dma/mapping.c:427 is:
+> > 
+> > WARN_ON_ONCE(!dev->coherent_dma_mask);
+> > 
+> > obviously because the grandparent now is remoteproc dev without any
+> > DMA caps:
+> > 
+> > [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
+> > 
+> > Fix this the same way as it was for virtio_rpmsg_bus, using just the
+> > parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
+> > operations.
+> > This also allows now to reserve DMA pools/buffers for rproc serial
+> > via Device Tree.
+> > 
+> > Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
+> > Cc: stable@vger.kernel.org # 5.1+
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  drivers/char/virtio_console.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+> > index a2da8f768b94..1836cc56e357 100644
+> > --- a/drivers/char/virtio_console.c
+> > +++ b/drivers/char/virtio_console.c
+> > @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_device *vdev, size_t buf_size
+> >  		/*
+> >  		 * Allocate DMA memory from ancestor. When a virtio
+> >  		 * device is created by remoteproc, the DMA memory is
+> > -		 * associated with the grandparent device:
+> > -		 * vdev => rproc => platform-dev.
+> > +		 * associated with the parent device:
+> > +		 * virtioY => remoteprocX#vdevYbuffer.
+> >  		 */
+> > -		if (!vdev->dev.parent || !vdev->dev.parent->parent)
+> > +		buf->dev = vdev->dev.parent;
+> > +		if (!buf->dev)
+> >  			goto free_buf;
+> > -		buf->dev = vdev->dev.parent->parent;
+> >  
+> >  		/* Increase device refcnt to avoid freeing it */
+> >  		get_device(buf->dev);
+> > -- 
+> > 2.29.2
+> > 
+> > 
+> ---end quoted text---
 
