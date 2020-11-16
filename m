@@ -2,137 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD5E2B519C
+	by mail.lfdr.de (Postfix) with ESMTP id AA7C92B519D
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbgKPTwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:52:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726575AbgKPTwG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:52:06 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68639C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:52:05 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a65so451300wme.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:52:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wq29JeznquOyMiGvYv3bv2rp5DdAOeORT9zJBFrcDzc=;
-        b=h4UHeYWxxgV39h+GY6It7+5vDavyNtIH/Tf3nWBMfQJoX9kjZv4ZMfLujxIFDE9sFl
-         RLwBGhj7rWayHSZHqH23Twl51t6FTHqSCWCEyDbdQiQ79Lm7tVAGqhilZSdIHPH4mFUF
-         FMB9B7KFZsEa+g4Xo452UaNSovPYrJor+KwQgSsKwVnjqfCZ8tSgPxhtZfGhE4hESllc
-         +uDoThQ7W2+vIvxGblYChCjxw35MTVt3u0uH/GTfdvmvMglh1WKu2CsjpShtTjf9L1lc
-         d02zeJtLBnisokfSfkP8FratED2MnRTlk5h+47lRGp18houuio/QXgTX0LtEYCVM2+/5
-         JmPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wq29JeznquOyMiGvYv3bv2rp5DdAOeORT9zJBFrcDzc=;
-        b=EYHUkjudAXN6nwp3lsVPZ8hES84PM6VV6Wa8wbj8CAm3ZdF2FYrVdmAI8akx76Fc+P
-         mPhNYbWPyYK97j7yc21Dmb5GF2cwtGXT/qiNrJdgXfG3b59+elXwyY3xD+UoTJANXiAC
-         hOrH7K1Yp9jJ+tgdSiYrL/CGhW3TTv1B7YNjgrwQWDKfCdoBgwo8GV6Vk1Z+XupwqnM5
-         Dj9Ln9JrG6vQP9jgKj25C1ePUJHtoT6eYUUH6zp2hz9yTskw5hIsjo+LcY9SaVsWtp7A
-         t9Ja2ue792HYZlvQHIjEL7itcet9C7a/2o5POT6EVC7L2YTo2l1p2ThXDXJRLQl7ivCV
-         c8lA==
-X-Gm-Message-State: AOAM532WbbA5oBwPIYHwGU9d0QHykdW0GMaQSA4OsMzU6FFl16GhiKXd
-        636DmYPvxNL8zwt6ct37utCnt1fd7ikD1BWE6SU=
-X-Google-Smtp-Source: ABdhPJw3tjYa83/wDbt2LS1fpb/1ZTFVzVcFetg5Q3cXdirmWmVFjH+Iw4aXSbXGrXQS8TVlZstodoUlIS4q3iDeZ7s=
-X-Received: by 2002:a7b:c015:: with SMTP id c21mr526817wmb.79.1605556324212;
- Mon, 16 Nov 2020 11:52:04 -0800 (PST)
+        id S1731043AbgKPTwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:52:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726575AbgKPTwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 14:52:22 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AD892080A;
+        Mon, 16 Nov 2020 19:52:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605556341;
+        bh=VWhr9jewBX0UGHGFaiENb1K89beC+p+6bup/fl1b+RU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=v9yBjVsC2DCPQqM2Z0JiCPFB6N/gjCPHCyptPSMIZJG1IRENFNQXK9dGTRuqO9PWF
+         3Hk1lTb+l9KQs6uf/vBAGXiDp+f8Sl1eJlsnHOgRasnZoGNo9+K5ZZqUwCO7xiK5+o
+         4WxeAA0w9+Jcw5AP4C0qgoNVdwus02LhkK2NSSZk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4C0003522684; Mon, 16 Nov 2020 11:52:21 -0800 (PST)
+Date:   Mon, 16 Nov 2020 11:52:21 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH rcu-dev] rcu/trace: Add tracing for how segcb list changes
+Message-ID: <20201116195221.GB1437@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201114193132.2660464-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-References: <20201116173700.1830487-1-lee.jones@linaro.org> <20201116173700.1830487-14-lee.jones@linaro.org>
-In-Reply-To: <20201116173700.1830487-14-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 16 Nov 2020 14:51:53 -0500
-Message-ID: <CADnq5_OMb3ZEUzUUJy1_joxQGCcuALGLW+E-EXPAPFhUP9h95A@mail.gmail.com>
-Subject: Re: [PATCH 13/43] drm/radeon/radeon_drv: Move 'radeon_mmap()'s
- prototype to shared header
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201114193132.2660464-1-joel@joelfernandes.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 12:37 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/radeon/radeon_ttm.c:931:5: warning: no previous prototyp=
-e for =E2=80=98radeon_mmap=E2=80=99 [-Wmissing-prototypes]
->  931 | int radeon_mmap(struct file *filp, struct vm_area_struct *vma)
->  | ^~~~~~~~~~~
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Gareth Hughes <gareth@valinux.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Sat, Nov 14, 2020 at 02:31:32PM -0500, Joel Fernandes (Google) wrote:
+> Track how the segcb list changes before/after acceleration, during
+> queuing and during dequeuing.
+> 
+> This has proved useful to discover an optimization to avoid unwanted GP
+> requests when there are no callbacks accelerated. The overhead is minimal as
+> each segment's length is now stored in the respective segment.
+> 
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Applied.  Thanks!
+Queued for further review and testing, thank you all!
 
-Alex
+If testing goes well I expect to put this in the v5.11 bucket.  Here is
+hoping...
+
+							Thanx, Paul
 
 > ---
->  drivers/gpu/drm/radeon/radeon_drv.c | 2 +-
->  drivers/gpu/drm/radeon/radeon_ttm.h | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon=
-/radeon_drv.c
-> index 536b246b9a6aa..2b9deaead99b2 100644
-> --- a/drivers/gpu/drm/radeon/radeon_drv.c
-> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
-> @@ -51,6 +51,7 @@
->  #include <drm/radeon_drm.h>
->
->  #include "radeon_drv.h"
-> +#include "radeon_ttm.h"
->  #include "radeon.h"
->  #include "radeon_device.h"
->
-> @@ -125,7 +126,6 @@ extern int radeon_get_crtc_scanoutpos(struct drm_devi=
-ce *dev, unsigned int crtc,
->                                       ktime_t *stime, ktime_t *etime,
->                                       const struct drm_display_mode *mode=
-);
->  extern bool radeon_is_px(struct drm_device *dev);
-> -int radeon_mmap(struct file *filp, struct vm_area_struct *vma);
->  int radeon_mode_dumb_mmap(struct drm_file *filp,
->                           struct drm_device *dev,
->                           uint32_t handle, uint64_t *offset_p);
-> diff --git a/drivers/gpu/drm/radeon/radeon_ttm.h b/drivers/gpu/drm/radeon=
-/radeon_ttm.h
-> index 91ea7141bc812..4d7b90ee27740 100644
-> --- a/drivers/gpu/drm/radeon/radeon_ttm.h
-> +++ b/drivers/gpu/drm/radeon/radeon_ttm.h
-> @@ -32,5 +32,6 @@ struct radeon_device;
->
->  int radeon_ttm_init(struct radeon_device *rdev);
->  void radeon_ttm_fini(struct radeon_device *rdev);
-> +int radeon_mmap(struct file *filp, struct vm_area_struct *vma);
->
->  #endif                         /* __RADEON_TTM_H__ */
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  include/trace/events/rcu.h | 26 ++++++++++++++++++++++++++
+>  kernel/rcu/tree.c          |  9 +++++++++
+>  2 files changed, 35 insertions(+)
+> 
+> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> index 155b5cb43cfd..5fc29400e1a2 100644
+> --- a/include/trace/events/rcu.h
+> +++ b/include/trace/events/rcu.h
+> @@ -505,6 +505,32 @@ TRACE_EVENT_RCU(rcu_callback,
+>  		  __entry->qlen)
+>  );
+>  
+> +TRACE_EVENT_RCU(rcu_segcb_stats,
+> +
+> +		TP_PROTO(struct rcu_segcblist *rs, const char *ctx),
+> +
+> +		TP_ARGS(rs, ctx),
+> +
+> +		TP_STRUCT__entry(
+> +			__field(const char *, ctx)
+> +			__array(unsigned long, gp_seq, RCU_CBLIST_NSEGS)
+> +			__array(long, seglen, RCU_CBLIST_NSEGS)
+> +		),
+> +
+> +		TP_fast_assign(
+> +			__entry->ctx = ctx;
+> +			memcpy(__entry->seglen, rs->seglen, RCU_CBLIST_NSEGS * sizeof(long));
+> +			memcpy(__entry->gp_seq, rs->gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
+> +
+> +		),
+> +
+> +		TP_printk("%s seglen: (DONE=%ld, WAIT=%ld, NEXT_READY=%ld, NEXT=%ld) "
+> +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
+> +			  __entry->seglen[0], __entry->seglen[1], __entry->seglen[2], __entry->seglen[3],
+> +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
+> +
+> +);
+> +
+>  /*
+>   * Tracepoint for the registration of a single RCU callback of the special
+>   * kvfree() form.  The first argument is the RCU type, the second argument
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 413831b48648..b96d26d0d44a 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1497,6 +1497,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+>  	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+>  		return false;
+>  
+> +	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPreAcc"));
+> +
+>  	/*
+>  	 * Callbacks are often registered with incomplete grace-period
+>  	 * information.  Something about the fact that getting exact
+> @@ -1517,6 +1519,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+>  	else
+>  		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
+>  
+> +	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
+> +
+>  	return ret;
+>  }
+>  
+> @@ -2473,11 +2477,14 @@ static void rcu_do_batch(struct rcu_data *rdp)
+>  	rcu_segcblist_extract_done_cbs(&rdp->cblist, &rcl);
+>  	if (offloaded)
+>  		rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
+> +
+> +	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbDequeued"));
+>  	rcu_nocb_unlock_irqrestore(rdp, flags);
+>  
+>  	/* Invoke callbacks. */
+>  	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
+>  	rhp = rcu_cblist_dequeue(&rcl);
+> +
+>  	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+>  		rcu_callback_t f;
+>  
+> @@ -2989,6 +2996,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  		trace_rcu_callback(rcu_state.name, head,
+>  				   rcu_segcblist_n_cbs(&rdp->cblist));
+>  
+> +	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
+> +
+>  	/* Go handle any RCU core processing required. */
+>  	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+>  		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
