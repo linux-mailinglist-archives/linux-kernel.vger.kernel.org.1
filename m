@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E372B463F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3E72B4640
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730421AbgKPOqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:46:52 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:55562 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730412AbgKPOqu (ORCPT
+        id S1730430AbgKPOqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:46:55 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:37134 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730424AbgKPOqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:46:50 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGEjaEf034272;
-        Mon, 16 Nov 2020 14:46:29 GMT
+        Mon, 16 Nov 2020 09:46:54 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGEi5xN182803;
+        Mon, 16 Nov 2020 14:46:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=9YYO7nmDyOzMKDU/wzV07C/qil2glDwx4yeF2k9SnjQ=;
- b=M5uBvang34/8Gu1eUwJiTgEL1nqFcM0XshfyafK1RoZhFL6t8SL/suz6KOIZRgLEfalY
- YzyLOOQTOzHcTtmrG3kooWoXyLbUKb0482lU4MLb8MvubMs80KqUBh0VHLxZAM+Drfrl
- dbAgf/PuA1iIoK6ZidcDK7BFYwN+Chu2E5anJ+RGVLPr952yewcn53ZnSocWqEozfLwT
- sS5VRAUN+iCKrtoEeK3Yt1d0N8weUTTgpEN1FQS/pyh8QEiw25YlYbOQXUIJRDvB2mUh
- o6xBF7GrkH2wxbur/iBKPBQC93DpO+yZ+WxQHxtNXE/wWjSyzHT5reybaDdhwoXfv352 2Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34t7vmward-1
+ bh=NqYAtGUsRpznGmvP3IrcpJ35Lu8QH+UzxHx+wAvsNkk=;
+ b=IGSlkBM3A4J3GLGQJQvQF60EKHOEBqmf+VS9NqJfoUT+Uh9tqGV2uH1hWhZpTWO/T0dH
+ nNbMquEppPv+WudT/KAzJZeNTywKkP54F6kfk9IAP894i89P4c1UwjfHNLefzWYjqvyJ
+ hkJCpad4cbHvG5BsaA3rfRf2X0s8zuBJSiOY//ae/JtEEJXxxDZ0NFu4X3cMcPEYU7K0
+ bfkKGOAtioT8Yif7wvaC11fo8eZxzvO+IVwDv/z9lkPdzCB2Phyi96fr3W47CzQIDguV
+ DtJj91JeANak7w9kVJFPJPyBp7UqEWf6I0XR/XF/FeMwueYwClBsyQDL/mMfyxiNgmiR aA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 34t76kncp1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 16 Nov 2020 14:46:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGEjDNF164495;
-        Mon, 16 Nov 2020 14:46:28 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34umcww38t-1
+        Mon, 16 Nov 2020 14:46:34 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGEjVQY056088;
+        Mon, 16 Nov 2020 14:46:34 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 34usps3t0y-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Nov 2020 14:46:28 +0000
+        Mon, 16 Nov 2020 14:46:34 +0000
 Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AGEkPi1005628;
-        Mon, 16 Nov 2020 14:46:25 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AGEkWfh014721;
+        Mon, 16 Nov 2020 14:46:32 GMT
 Received: from localhost.localdomain (/92.157.91.83)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 16 Nov 2020 06:46:25 -0800
+        with ESMTP ; Mon, 16 Nov 2020 06:46:31 -0800
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
         x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
@@ -49,176 +49,103 @@ Cc:     konrad.wilk@oracle.com, jan.setjeeilers@oracle.com,
         junaids@google.com, oweisse@google.com, rppt@linux.vnet.ibm.com,
         graf@amazon.de, mgross@linux.intel.com, kuzuno@gmail.com,
         alexandre.chartre@oracle.com
-Subject: [RFC][PATCH v2 07/21] x86/entry: Fill ESPFIX stack using C code
-Date:   Mon, 16 Nov 2020 15:47:43 +0100
-Message-Id: <20201116144757.1920077-8-alexandre.chartre@oracle.com>
+Subject: [RFC][PATCH v2 08/21] x86/pti: Introduce per-task PTI trampoline stack
+Date:   Mon, 16 Nov 2020 15:47:44 +0100
+Message-Id: <20201116144757.1920077-9-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.4
 In-Reply-To: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
 References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011160090
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=966 malwarescore=0
+ mlxscore=0 bulkscore=0 suspectscore=0 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011160090
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=941
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2011160090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ESPFIX stack is filled using assembly code. Move this code to a C
-function so that it is easier to read and modify.
+Double the size of the kernel stack when using PTI. The entire stack
+is mapped into the kernel address space, and the top half of the stack
+(the PTI stack) is also mapped into the user address space.
+
+The PTI stack will be used as a per-task trampoline stack instead of
+the current per-cpu trampoline stack. This will allow running more
+code on the trampoline stack, in particular code that schedules the
+task out.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/entry/entry_64.S   | 62 ++++++++++++++++++-------------------
- arch/x86/kernel/espfix_64.c | 41 ++++++++++++++++++++++++
- 2 files changed, 72 insertions(+), 31 deletions(-)
+ arch/x86/include/asm/page_64_types.h | 36 +++++++++++++++++++++++++++-
+ arch/x86/include/asm/processor.h     |  3 +++
+ 2 files changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 73e9cd47dc83..6e0b5b010e0b 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -684,8 +684,10 @@ native_irq_return_ldt:
- 	 * long (see ESPFIX_STACK_SIZE).  espfix_waddr points to the bottom
- 	 * of the ESPFIX stack.
- 	 *
--	 * We clobber RAX and RDI in this code.  We stash RDI on the
--	 * normal stack and RAX on the ESPFIX stack.
-+	 * We call into C code to fill the ESPFIX stack. We stash registers
-+	 * that the C function can clobber on the normal stack. The user RAX
-+	 * is stashed first so that it is adjacent to the iret frame which
-+	 * will be copied to the ESPFIX stack.
- 	 *
- 	 * The ESPFIX stack layout we set up looks like this:
- 	 *
-@@ -699,39 +701,37 @@ native_irq_return_ldt:
- 	 * --- bottom of ESPFIX stack ---
- 	 */
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index 3f49dac03617..733accc20fdb 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -12,7 +12,41 @@
+ #define KASAN_STACK_ORDER 0
+ #endif
  
--	pushq	%rdi				/* Stash user RDI */
--	SWAPGS					/* to kernel GS */
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdi	/* to kernel CR3 */
--
--	movq	PER_CPU_VAR(espfix_waddr), %rdi
--	movq	%rax, (0*8)(%rdi)		/* user RAX */
--	movq	(1*8)(%rsp), %rax		/* user RIP */
--	movq	%rax, (1*8)(%rdi)
--	movq	(2*8)(%rsp), %rax		/* user CS */
--	movq	%rax, (2*8)(%rdi)
--	movq	(3*8)(%rsp), %rax		/* user RFLAGS */
--	movq	%rax, (3*8)(%rdi)
--	movq	(5*8)(%rsp), %rax		/* user SS */
--	movq	%rax, (5*8)(%rdi)
--	movq	(4*8)(%rsp), %rax		/* user RSP */
--	movq	%rax, (4*8)(%rdi)
--	/* Now RAX == RSP. */
--
--	andl	$0xffff0000, %eax		/* RAX = (RSP & 0xffff0000) */
-+	/* save registers */
-+	pushq	%rax
-+	pushq	%rdi
-+	pushq	%rsi
-+	pushq	%rdx
-+	pushq	%rcx
-+	pushq	%r8
-+	pushq	%r9
-+	pushq	%r10
-+	pushq	%r11
- 
- 	/*
--	 * espfix_stack[31:16] == 0.  The page tables are set up such that
--	 * (espfix_stack | (X & 0xffff0000)) points to a read-only alias of
--	 * espfix_waddr for any X.  That is, there are 65536 RO aliases of
--	 * the same page.  Set up RSP so that RSP[31:16] contains the
--	 * respective 16 bits of the /userspace/ RSP and RSP nonetheless
--	 * still points to an RO alias of the ESPFIX stack.
-+	 * fill_espfix_stack will copy the iret+rax frame to the ESPFIX
-+	 * stack and return with RAX containing a pointer to the ESPFIX
-+	 * stack.
- 	 */
--	orq	PER_CPU_VAR(espfix_stack), %rax
-+	leaq	8*8(%rsp), %rdi		/* points to the iret+rax frame */
-+	call	fill_espfix_stack
- 
--	SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
--	SWAPGS					/* to user GS */
--	popq	%rdi				/* Restore user RDI */
-+	/*
-+	 * RAX contains a pointer to the ESPFIX, so restore registers but
-+	 * RAX. RAX will be restored from the ESPFIX stack.
-+	 */
-+	popq	%r11
-+	popq	%r10
-+	popq	%r9
-+	popq	%r8
-+	popq	%rcx
-+	popq	%rdx
-+	popq	%rsi
-+	popq	%rdi
- 
- 	movq	%rax, %rsp
- 	UNWIND_HINT_IRET_REGS offset=8
-diff --git a/arch/x86/kernel/espfix_64.c b/arch/x86/kernel/espfix_64.c
-index 4fe7af58cfe1..ff4b5160b39c 100644
---- a/arch/x86/kernel/espfix_64.c
-+++ b/arch/x86/kernel/espfix_64.c
-@@ -33,6 +33,7 @@
- #include <asm/pgalloc.h>
- #include <asm/setup.h>
- #include <asm/espfix.h>
-+#include <asm/entry-common.h>
- 
- /*
-  * Note: we only need 6*8 = 48 bytes for the espfix stack, but round
-@@ -205,3 +206,43 @@ void init_espfix_ap(int cpu)
- 	per_cpu(espfix_waddr, cpu) = (unsigned long)stack_page
- 				      + (addr & ~PAGE_MASK);
- }
-+
+-#define THREAD_SIZE_ORDER	(2 + KASAN_STACK_ORDER)
++#ifdef CONFIG_PAGE_TABLE_ISOLATION
 +/*
-+ * iret frame with an additional user_rax register.
++ * PTI doubles the size of the stack. The entire stack is mapped into
++ * the kernel address space. However, only the top half of the stack is
++ * mapped into the user address space.
++ *
++ * On syscall or interrupt, user mode enters the kernel with the user
++ * page-table, and the stack pointer is switched to the top of the
++ * stack (which is mapped in the user address space and in the kernel).
++ * The syscall/interrupt handler will then later decide when to switch
++ * to the kernel address space, and to switch to the top of the kernel
++ * stack which is only mapped in the kernel.
++ *
++ *   +-------------+
++ *   |             | ^                       ^
++ *   | kernel-only | | KERNEL_STACK_SIZE     |
++ *   |    stack    | |                       |
++ *   |             | V                       |
++ *   +-------------+ <- top of kernel stack  | THREAD_SIZE
++ *   |             | ^                       |
++ *   | kernel and  | | KERNEL_STACK_SIZE     |
++ *   | PTI stack   | |                       |
++ *   |             | V                       v
++ *   +-------------+ <- top of stack
 + */
-+struct iret_rax_frame {
-+	unsigned long user_rax;
-+	unsigned long rip;
-+	unsigned long cs;
-+	unsigned long rflags;
-+	unsigned long rsp;
-+	unsigned long ss;
-+};
++#define PTI_STACK_ORDER 1
++#else
++#define PTI_STACK_ORDER 0
++#endif
 +
-+noinstr unsigned long fill_espfix_stack(struct iret_rax_frame *frame)
-+{
-+	struct iret_rax_frame *espfix_frame;
-+	unsigned long rsp;
++#define KERNEL_STACK_ORDER 2
++#define KERNEL_STACK_SIZE (PAGE_SIZE << KERNEL_STACK_ORDER)
 +
-+	native_swapgs();
-+	user_pagetable_exit();
++#define THREAD_SIZE_ORDER	\
++	(KERNEL_STACK_ORDER + PTI_STACK_ORDER + KASAN_STACK_ORDER)
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+ 
+ #define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 82a08b585818..47b1b806535b 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -769,6 +769,9 @@ static inline void spin_lock_prefetch(const void *x)
+ 
+ #define task_top_of_stack(task) ((unsigned long)(task_pt_regs(task) + 1))
+ 
++#define task_top_of_kernel_stack(task) \
++	((void *)(((unsigned long)task_stack_page(task)) + KERNEL_STACK_SIZE))
 +
-+	espfix_frame = (struct iret_rax_frame *)this_cpu_read(espfix_waddr);
-+	*espfix_frame = *frame;
-+
-+	/*
-+	 * espfix_stack[31:16] == 0.  The page tables are set up such that
-+	 * (espfix_stack | (X & 0xffff0000)) points to a read-only alias of
-+	 * espfix_waddr for any X.  That is, there are 65536 RO aliases of
-+	 * the same page.  Set up RSP so that RSP[31:16] contains the
-+	 * respective 16 bits of the /userspace/ RSP and RSP nonetheless
-+	 * still points to an RO alias of the ESPFIX stack.
-+	 */
-+	rsp = ((unsigned long)espfix_frame) & 0xffff0000;
-+	rsp |= this_cpu_read(espfix_stack);
-+
-+	user_pagetable_enter();
-+	native_swapgs();
-+
-+	return rsp;
-+}
+ #define task_pt_regs(task) \
+ ({									\
+ 	unsigned long __ptr = (unsigned long)task_stack_page(task);	\
 -- 
 2.18.4
 
