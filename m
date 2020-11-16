@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D3A2B50EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294302B50F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgKPTTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:19:25 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:35184 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgKPTTY (ORCPT
+        id S1729278AbgKPTWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:22:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgKPTWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:19:24 -0500
-Received: by mail-oi1-f196.google.com with SMTP id c80so19990375oib.2;
-        Mon, 16 Nov 2020 11:19:23 -0800 (PST)
+        Mon, 16 Nov 2020 14:22:33 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F3AC0613CF;
+        Mon, 16 Nov 2020 11:22:32 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id j7so20016748wrp.3;
+        Mon, 16 Nov 2020 11:22:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=14bPYV2knZJtYUG1KcgdCm7PQP7xKN/R/o8I5J+Sbyk=;
+        b=FuVwPzVmOTUPtrPxtRZbjLhpKfT2RmPp7UVJTe3wEwPsnvgpu0EpcaZeMULYwNRMvw
+         wDcKDVf5uiKY2j6T7oGUqpmE/vtYlYmk3PGA/jh3pq8kMXda+QMWNwQ7yzFs65ak11kL
+         TcuNM0JdofNCMyn7YZVn6O0Nde+eJa0T5nCLYMdjADDQhE6fupj/wJrCBGf3Hevw93aH
+         FtOZTshGSntgHELGHHOcXwnM0UuVj5MKCi8AQzCViNuVYbnLNJuQNnH1RB05nm4nIuJ3
+         q9AHkx/YJWeOK9NrUTyI0MSsCTMZhMu6WEsSg/XiOgJBeNFLCiEuvyEEt8/RVo+sbYY6
+         y0kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hk0zicNyvdGlejHlcvT1pkraHtVqp71eil3CE0c3jBs=;
-        b=dayPsDEuPVI/yN161qBjN8OZOAC4Fn7xGHzcz7kwzoh4SML0clgBdTy7+rs1BiMEUb
-         YvnJDgLNjSQrBg/EFWE3qddWao8BaBghgyqtj6JeP6jE1rcYg1BYT0HGu4PSPazL3oMV
-         tBFQ2IFEo2yG2x7fErvvzhJRhwL9/i49cg2Fqzd9X7IwDFPFXVn6pts1/3VmjQsb5m5s
-         Y8yL2ySzYeMMG8/keGOyrM4F058gY4PAGq9zKVI9a3MDbk2i7TFiBrzAm1ZewvARLSxO
-         5CRoyBOsnEgAeY6EVumGfbDAUpfXfqfeTv1E3VaJZIZ5Vc4ycKzhSkllepOIv5yMQRWc
-         dO1g==
-X-Gm-Message-State: AOAM530uUBih/OBrLu/6GhgxXbWl+zhDsYwr/RTVNxg6LSAc+5Q7tUi1
-        IpF4ef4LK7DxYPsjSxE5Sg==
-X-Google-Smtp-Source: ABdhPJz/+A/D5xNcXl2Y3DjW8C6hn8SSU4lIu+WqboemSEynjf7hT/q2B5BgicViUMLJpx8Hyyng/g==
-X-Received: by 2002:aca:c502:: with SMTP id v2mr112809oif.93.1605554363527;
-        Mon, 16 Nov 2020 11:19:23 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 14sm4970527otf.10.2020.11.16.11.19.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 11:19:22 -0800 (PST)
-Received: (nullmailer pid 1985278 invoked by uid 1000);
-        Mon, 16 Nov 2020 19:19:22 -0000
-Date:   Mon, 16 Nov 2020 13:19:22 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
-Cc:     cheol.yong.kim@intel.com, dmaengine@vger.kernel.org,
-        chuanhua.lei@linux.intel.com, peter.ujfalusi@ti.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        malliamireddy009@gmail.com, vkoul@kernel.org,
-        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v9 1/2] dt-bindings: dma: Add bindings for Intel LGM SoC
-Message-ID: <20201116191922.GA1985224@bogus>
-References: <cover.1605158930.git.mallikarjunax.reddy@linux.intel.com>
- <bfe586ac62080d14759bda22ebf1de1a1fa9c09d.1605158930.git.mallikarjunax.reddy@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=14bPYV2knZJtYUG1KcgdCm7PQP7xKN/R/o8I5J+Sbyk=;
+        b=Y9+Q42Fm8LWkwYe1JmRtk97sHXSsuYYocvf/lGjksECson5m6zOv9YqMy4HZ1vs0pA
+         TGkijlKpUTYo00AL7RbEy4g+X505QtsCqbCUS8v1ptgNTHH3BPz4+wd5HbVBxM36lE0u
+         gIcE1zkLoLeFpWjIGxwF+nxvgrXugfoVcb7NLspFfVzmJT8fp73XIdEPL38Nc9xJytQq
+         CkIbp60UGClrvf6zfoYyvx1BYU/0oPibjUh5F5zxBU9lribUh/f9EgETV7f8/rN2+Esm
+         1Hx/ANwUEcOwvNkYeYd31W6wTzAB9T+ydgwpwLov1Kup19GIRNsr9PBbFjKQqOmZb3J+
+         nliQ==
+X-Gm-Message-State: AOAM532xUc0o5I+amGavFCRmlz5CE9FiWw2pHXRu3Nxg32E9f/vgHLH9
+        zi+UWoaW2W5ZDdcGHA/zNNs=
+X-Google-Smtp-Source: ABdhPJxWiKfLDy0RD/0V+R0zWI4yxEbQZv4EsqYOwuuzep0F3uc01mXvnZrO9ISZBkALAIC5xC5jbg==
+X-Received: by 2002:a5d:614e:: with SMTP id y14mr22482984wrt.25.1605554550837;
+        Mon, 16 Nov 2020 11:22:30 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id d10sm24099050wro.89.2020.11.16.11.22.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Nov 2020 11:22:30 -0800 (PST)
+Subject: Re: [PATCH v4] perf_event_open.2: Update man page with recent changes
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Michael Kerrisk-manpages <mtk.manpages@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alejandro Colomar <colomar.6.4.3@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-man@vger.kernel.org,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>
+References: <20201112103240.18363-1-alx.manpages@gmail.com>
+ <20201113212622.15031-1-alx.manpages@gmail.com>
+ <CAM9d7cjfbF7vR8dOM0EWSESEkO5m+AyawunNg4C3y8kziNNRdg@mail.gmail.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <19b639c1-27aa-4392-3b21-76704765ef14@gmail.com>
+Date:   Mon, 16 Nov 2020 20:22:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bfe586ac62080d14759bda22ebf1de1a1fa9c09d.1605158930.git.mallikarjunax.reddy@linux.intel.com>
+In-Reply-To: <CAM9d7cjfbF7vR8dOM0EWSESEkO5m+AyawunNg4C3y8kziNNRdg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 13:38:45 +0800, Amireddy Mallikarjuna reddy wrote:
-> Add DT bindings YAML schema for DMA controller driver
-> of Lightning Mountain (LGM) SoC.
-> 
-> Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
-> ---
-> v1:
-> - Initial version.
-> 
-> v2:
-> - Fix bot errors.
-> 
-> v3:
-> - No change.
-> 
-> v4:
-> - Address Thomas langer comments
->   - use node name pattern as dma-controller as in common binding.
->   - Remove "_" (underscore) in instance name.
->   - Remove "port-" and "chan-" in attribute name for both 'dma-ports' & 'dma-channels' child nodes.
-> 
-> v5:
-> - Moved some of the attributes in 'dma-ports' & 'dma-channels' child nodes to dma client/consumer side as cells in 'dmas' properties.
-> 
-> v6:
-> - Add additionalProperties: false
-> - completely removed 'dma-ports' and 'dma-channels' child nodes.
-> - Moved channel dt properties to client side dmas.
-> - Use standard dma-channels and dma-channel-mask properties.
-> - Documented reset-names
-> - Add description for dma-cells
-> 
-> v7:
-> - modified compatible to oneof
-> - Reduced number of dma-cells to 3
-> - Fine tune the description of some properties.
-> 
-> v7-resend:
-> - rebase to 5.10-rc1
-> 
-> v8:
-> - rebased to 5.10-rc3
-> - Fixing the bot issues (wrong indentation)
-> 
-> v9:
-> - rebased to 5.10-rc3
-> - Use 'enum' instead of oneOf+const
-> - Drop '#dma-cells' in required:, already covered in dma-common.yaml
-> - Drop nodename Already covered by dma-controller.yaml
-> ---
->  .../devicetree/bindings/dma/intel,ldma.yaml        | 130 +++++++++++++++++++++
->  1 file changed, 130 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 11/16/20 5:17 PM, Namhyung Kim wrote:
+> Hello Alex,
+> 
+> On Sat, Nov 14, 2020 at 6:28 AM Alejandro Colomar
+> <alx.manpages@gmail.com> wrote:
+>>
+>> From: Namhyung Kim <namhyung@gmail.com>
+>>
+>> There are lots of changes as usual.  I've tried to fill some missing
+>> bits in the man page but it'd be nice if you could take a look and put
+>> more info there.
+>>
+>> Signed-off-by: Namhyung Kim <namhyung@gmail.com>
+>> [alx: ffix + tfix]
+>> Cowritten-by : Alejandro Colomar <alx.manpages@gmail.com>
+>> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+>> ---
+>>
+>> Hi Nahmyung,
+>>
+>> I fixed another typo,
+>> and mainly fixed many formatting changes I introduced
+>> a few days ago because we were discussing about
+>> trying to improve the formatting,
+>> but finally decided to continue with the old way.
+> 
+> Thanks a lot for fixing them!
+> 
+> I also found a broken formatting below and would like
+> to add more description of PERF_RECORD_SAMPLE.
+
+Hi Namhyung,
+
+Fine, could you send an updated patch with the changes?
+
+Thanks,
+
+Alex
