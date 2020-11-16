@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1762B3FBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62792B3FBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728551AbgKPJ2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:28:10 -0500
-Received: from mxout70.expurgate.net ([91.198.224.70]:51172 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726628AbgKPJ2J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728516AbgKPJ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 16 Nov 2020 04:28:09 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1keans-000U41-6S; Mon, 16 Nov 2020 10:28:04 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1keanr-000B76-Fq; Mon, 16 Nov 2020 10:28:03 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id C6595240049;
-        Mon, 16 Nov 2020 10:28:02 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 6B9F6240047;
-        Mon, 16 Nov 2020 10:28:02 +0100 (CET)
-Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id 3D7E820438;
-        Mon, 16 Nov 2020 10:28:02 +0100 (CET)
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>
-Subject: [PATCH net v2] net/tun: Call netdev notifiers
-Date:   Mon, 16 Nov 2020 10:27:51 +0100
-Message-ID: <20201116092751.6905-1-ms@dev.tdt.de>
-X-Mailer: git-send-email 2.20.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727192AbgKPJ2I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:28:08 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9A3C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:28:08 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 10so23035842wml.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:28:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aiVEflQDL1Czjb2cNgVWqiIiSyZhmV56WumKQIdULB8=;
+        b=N8h/wOgVmzOgB6oQWVsAXyVwSkIxftrwX56zVH0kkezD2bi7ZhV8b86mFR2ShBS3+d
+         JsR7oIjQttTRadOEjoii/N1xvfYFk/v0FDTBZCpoREnE01stEd7m76wojUkjuGPzX36t
+         /XhMjHCXo8QkC3ZwxqLM/CGIXxo0nKbyiqt9Tn58HFa7CsjeHEECi3btpJ5eoVlzWazw
+         twXifoQik41Dtdkya2l7youQ44+4Z6jM0SRRXzHOleALfw0LVBYt2NJPdvDu0srN0opf
+         6k3cdIJTPR7LcDuNkpV2AR3/QT+8UxcnoqSe2ZPXcomNCwUc73cIR7YJyPpD6js98ksD
+         j+EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aiVEflQDL1Czjb2cNgVWqiIiSyZhmV56WumKQIdULB8=;
+        b=g9XuFIT72aM0wD75vGt1N5TMXDYUpOEfSQGBKFWOpK5XHvBjM8Za45mMj6aVSpwao+
+         t91Sz3Tn2SmSf9l0oL165z8vPrZo+5NWlU0+HekJDEWW8PDXEmUdWRkNOFGrKgB76i6C
+         svHfYZBdwxltlrmC+gT1TI5TjjKi3GMQcQvlfn9d8VTyyK7/QcN1xE4evrTwNPaR+3K3
+         FyCTEze/ib6KpYGkqim73IN4DCUnymz3jbbxbtYfj6DXVaUDpUTEZxF0OTVDxeACbz3l
+         k1vQfQok04qUUycqj/87rgm7Tq1IYE9/zF47MuW1kaRbuCcE6E3dAL6x/kPIE3omUvOu
+         WdYg==
+X-Gm-Message-State: AOAM532y0xMSvLeKzHBMAoiKvGx1IhN0r2yz6HmR10j7UPE15pD+YQOR
+        cERY9YR7Q8JWdKntpTt8k1U+WBi7yZ99CQ==
+X-Google-Smtp-Source: ABdhPJzlGXMgl3T04ISYwJc9hF/19Gvm08KlXJPXpkDO+c7n7N8p9oqyP/Q+OQHCtq20IQpJhKEO6w==
+X-Received: by 2002:a1c:309:: with SMTP id 9mr13737111wmd.80.1605518886526;
+        Mon, 16 Nov 2020 01:28:06 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:eda6:9373:9374:7214? ([2a01:e34:ed2f:f020:eda6:9373:9374:7214])
+        by smtp.googlemail.com with ESMTPSA id n23sm19036873wmk.24.2020.11.16.01.28.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Nov 2020 01:28:05 -0800 (PST)
+Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
+ PCH.
+To:     Andres Freund <andres@anarazel.de>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tushar Dave <tushar.n.dave@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <2fd3733b-ed67-80e0-7b27-8e3c421eeb9c@linaro.org>
+ <20201113204916.1144907-1-andres@anarazel.de>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <116a81e6-7989-8077-1fc4-c9f047256e9a@linaro.org>
+Date:   Mon, 16 Nov 2020 10:28:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-Content-Transfer-Encoding: quoted-printable
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-ID: 151534::1605518883-0001EBBE-7397339F/0/0
+In-Reply-To: <20201113204916.1144907-1-andres@anarazel.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call netdev notifiers before and after changing the device type.
+On 13/11/2020 21:49, Andres Freund wrote:
+> I noticed that I couldn't read the PCH temperature on my workstation
+> (C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but had to go
+> through IPMI. Looking at the data sheet, it looks to me like the
+> existing intel PCH thermal driver should work without changes for
+> Lewisburg.
+> 
+> I suspect there's some other PCI IDs missing. But I hope somebody at
+> Intel would have an easier time figuring that out than I...
+> 
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Tushar Dave <tushar.n.dave@intel.com>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Link: https://lore.kernel.org/lkml/20200115184415.1726953-1-andres@anarazel.de/
+> Signed-off-by: Andres Freund <andres@anarazel.de>
+> ---
 
-Signed-off-by: Martin Schiller <ms@dev.tdt.de>
----
+Applied, thanks
 
-Change from v1:
-fix 'subject_prefix' and 'checkpatch' warnings
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
----
- drivers/net/tun.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index be69d272052f..f3b337d45ad0 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -3124,9 +3124,13 @@ static long __tun_chr_ioctl(struct file *file, uns=
-igned int cmd,
- 				   "Linktype set failed because interface is up\n");
- 			ret =3D -EBUSY;
- 		} else {
-+			call_netdevice_notifiers(NETDEV_PRE_TYPE_CHANGE,
-+						 tun->dev);
- 			tun->dev->type =3D (int) arg;
- 			netif_info(tun, drv, tun->dev, "linktype set to %d\n",
- 				   tun->dev->type);
-+			call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE,
-+						 tun->dev);
- 			ret =3D 0;
- 		}
- 		break;
---=20
-2.20.1
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
