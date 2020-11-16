@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177512B4439
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669652B4445
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728573AbgKPNAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 08:00:33 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:41132 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728533AbgKPNAb (ORCPT
+        id S1728650AbgKPNCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 08:02:08 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37704 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728583AbgKPNCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 08:00:31 -0500
-Date:   Mon, 16 Nov 2020 13:00:28 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605531629;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZQB4z5SJCFwv0sltJnh6bHxyGxDGFsleI6cb+qIZBOw=;
-        b=fG4HWmZFtfuIT8R5Z/CrDCGPCuurlYklhRzlfN504WjDZPAP/w4MxEQkDs47MqK4YICVaF
-        IeVK2qA/t+pKISKL8MASjN62awqdcGMi4gTbbkrq5WvUMSPbXlZ5SzYjfqxqG9CKlzudre
-        2KaY71cV54tWJghsdARn0V0qkTlc5sClBSRDvAkycGK7NtbX2qsbEplY/h+2x2ImQa7wE2
-        qRwUhpRvuMSnwwGBTx4mcjAj6IcHllUzdMXjJjFiJGB/+O6IgT/HF+T0m3kX45UI4F7qak
-        SgdAsJXJj795qRPpPBvvk8MqCGto4wDbpH9aFvWVIGzWM3ImIzl4VeNIEZIxnw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605531629;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZQB4z5SJCFwv0sltJnh6bHxyGxDGFsleI6cb+qIZBOw=;
-        b=BT+hqxYByovNK3aZW9A4wRMdyRsH9DfAKQsc3mhmFXTpHiP17BRIIE4VXyrtnU7jCNZi/w
-        crKYsSbISm8mBbBg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] iommu/vt-d: Take CONFIG_PCI_ATS into account
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Mon, 16 Nov 2020 08:02:08 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AGD1lKr072874;
+        Mon, 16 Nov 2020 07:01:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605531707;
+        bh=qOn9VBecldSCPtkfrayvV0l2cc/JVvoAqmkbFZ+As/A=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=bGPU51Cb9p4KckeEvI9sPoNtqV3fX1E6/YX8YXmum5L3fx2mriEjOkxLD8AByQRtd
+         pR0WP2G7fpl9l4l27YlaaWYsCOZku8DaUJ9ioxtdOzY7cAdavId4Hq0pylGAwidDtx
+         16Cqv7pilOk1iQ6kEVWbC0J7fEpxAZ0Gef3z/WK0=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AGD1ldX046622
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 16 Nov 2020 07:01:47 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 16
+ Nov 2020 07:01:46 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 16 Nov 2020 07:01:46 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AGD1hsN035807;
+        Mon, 16 Nov 2020 07:01:44 -0600
+Subject: Re: [PATCH net-next 2/3] net: ethernet: ti: cpsw_new: enable
+ broadcast/multicast rate limit support
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>
+References: <20201114035654.32658-1-grygorii.strashko@ti.com>
+ <20201114035654.32658-3-grygorii.strashko@ti.com>
+ <20201114190909.cc3rlnvom6wf2zkg@skbuf>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <7c288b6d-f32f-c5a9-8e8c-ab377423d4a8@ti.com>
+Date:   Mon, 16 Nov 2020 15:01:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <160553162825.11244.6542099673312045530.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201114190909.cc3rlnvom6wf2zkg@skbuf>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     8986f223bd777a73119f5d593c15b4d630ff49bb
-Gitweb:        https://git.kernel.org/tip/8986f223bd777a73119f5d593c15b4d630ff49bb
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 16 Nov 2020 13:52:47 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 16 Nov 2020 13:57:46 +01:00
 
-iommu/vt-d: Take CONFIG_PCI_ATS into account
+On 14/11/2020 21:09, Vladimir Oltean wrote:
+> On Sat, Nov 14, 2020 at 05:56:53AM +0200, Grygorii Strashko wrote:
+>> This patch enables support for ingress broadcast(BC)/multicast(MC) rate limiting
+>> in TI CPSW switchdev driver (the corresponding ALE support was added in previous
+>> patch) by implementing HW offload for simple tc-flower policer with matches
+>> on dst_mac:
+>>   - ff:ff:ff:ff:ff:ff has to be used for BC rate limiting
+>>   - 01:00:00:00:00:00 fixed value has to be used for MC rate limiting
+>>
+>> Hence tc policer defines rate limit in terms of bits per second, but the
+>> ALE supports limiting in terms of packets per second - the rate limit
+>> bits/sec is converted to number of packets per second assuming minimum
+>> Ethernet packet size ETH_ZLEN=60 bytes.
+>>
+>> Examples:
+>> - BC rate limit to 1000pps:
+>>    tc qdisc add dev eth0 clsact
+>>    tc filter add dev eth0 ingress flower skip_sw dst_mac ff:ff:ff:ff:ff:ff \
+>>    action police rate 480kbit burst 64k
+>>
+>>    rate 480kbit - 1000pps * 60 bytes * 8, burst - not used.
+>>
+>> - MC rate limit to 20000pps:
+>>    tc qdisc add dev eth0 clsact
+>>    tc filter add dev eth0 ingress flower skip_sw dst_mac 01:00:00:00:00:00 \
+>>    action police rate 9600kbit burst 64k
+>>
+>>    rate 9600kbit - 20000pps * 60 bytes * 8, burst - not used.
+>>
+>> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+>> ---
+> 
+> Your example for multicast would actually be correct if you specified
+> the mask as well. Like this:
+> 
+> tc filter add dev eth0 ingress flower skip_sw \
+> 	dst_mac 01:00:00:00:00:00/01:00:00:00:00:00 \
+> 	action police rate 9600kbit burst 64k
+> 
+> But as things stand, the flow rule would have a certain meaning in
+> software (rate-limit only that particular multicast MAC address) and a
+> different meaning in hardware. Please modify the driver code to also
+> match on the mask.
+> 
 
-pci_dev::physfn is only available when CONFIG_PCI_ATS is set. The recent
-fix for the irqdomain rework missed that dependency which makes the build
-fail when CONFIG_PCI_ATS=n.
+ok.
 
-Add the necessary #ifdeffery.
-
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Fixes: ff828729be44 ("iommu/vt-d: Cure VF irqdomain hickup")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Joerg Roedel <joro@8bytes.org>
----
- drivers/iommu/intel/dmar.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index b2e8044..bc9f4cf 100644
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -335,7 +335,9 @@ static void  dmar_pci_bus_del_dev(struct dmar_pci_notify_info *info)
- 
- static inline void vf_inherit_msi_domain(struct pci_dev *pdev)
- {
-+#ifdef CONFIG_PCI_ATS
- 	dev_set_msi_domain(&pdev->dev, dev_get_msi_domain(&pdev->physfn->dev));
-+#endif
- }
- 
- static int dmar_pci_bus_notifier(struct notifier_block *nb,
+-- 
+Best regards,
+grygorii
