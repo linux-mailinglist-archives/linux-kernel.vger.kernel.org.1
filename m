@@ -2,103 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59172B46A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9E52B4854
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730731AbgKPO6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:58:55 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:34261 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730678AbgKPO6x (ORCPT
+        id S1731284AbgKPPEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:04:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730711AbgKPO6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:58:53 -0500
-Received: by mail-oi1-f194.google.com with SMTP id w188so19091884oib.1;
-        Mon, 16 Nov 2020 06:58:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9Gfhy/yjV1GXVhi6NSk7xstYcxR79T3ACbInqJLsafY=;
-        b=CrOOWO6bZkK0jD6mAZu34RO6PvGsj0L4UIzf2l8YGALv83gm57t8QU0eYRapJ0M0Ii
-         xfEc04KQo1290eekMzLU2uzO06MK54RxYVlgXRzmrfc+Z4cOeJC/JJT4bO0ka55ijS+K
-         rcyLX4CfvayemBSkHD6K69CbIKyuYAu0DH6M2v5K4PVlORPtHQokkLAvMtUMhFul1DX7
-         xV3Ij2bZn0oy9OOi5Es5UyyI72l4iksRjg8HWAXo9opO0nNUFiZqFylLJ/z2E5GoIGAh
-         PlapTKRvbzN8c0MpCY/ve/0h2X79J7VzMSBCu9oDib3erban0XduAvdt/oqDuBlZQvzb
-         FXJQ==
-X-Gm-Message-State: AOAM531UNxXgiWnzAGzDAeC/3vLXlUy5LRSuEJ4ENJE7W4Ct8lGvkyEW
-        HjaA9EOB5sMr1jz70gRk5CThqMVwbQ==
-X-Google-Smtp-Source: ABdhPJzQAvANeGr+VifH3Ry3wGi/leVqwv0JFC1O1upObnagqRSGpHomNuydlWtAynDJdWwN8NbQJw==
-X-Received: by 2002:aca:4ed0:: with SMTP id c199mr9582156oib.14.1605538732440;
-        Mon, 16 Nov 2020 06:58:52 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w21sm3113791ooj.32.2020.11.16.06.58.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 06:58:51 -0800 (PST)
-Received: (nullmailer pid 1641092 invoked by uid 1000);
-        Mon, 16 Nov 2020 14:58:50 -0000
-Date:   Mon, 16 Nov 2020 08:58:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     devicetree@vger.kernel.org,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        linux-media@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v2 2/3] media: dt-bindings: media: i2c: Add bindings for
- TW9900
-Message-ID: <20201116145850.GA1640813@bogus>
-References: <20201113134417.471445-1-maxime.chevallier@bootlin.com>
- <20201113134417.471445-3-maxime.chevallier@bootlin.com>
+        Mon, 16 Nov 2020 09:58:54 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE946C0613CF;
+        Mon, 16 Nov 2020 06:58:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6EdMp+J4CPsD0P134OEgMzKPGqPxSRaNzTZK3tAi2vc=; b=Vlf4RNF5FC7pjylF3gIWO1MIuh
+        UR7DDYawMGFs1g4faKaSosRjQ2LEI5vXfyjL+tmyFv2iTEwDGzh9f2OPWGaIOtKmNOjtNa9OXsWTf
+        1B8edQMA7OxMjS4K/DbkxM9B1wY/HG7XWM+VZCwfSIiEtfeM25A48AJj7UUgmVkf7+tSC/saozz+q
+        glcIUhge/OFe4cWaZ5QLy9SPWMO39mlJjp8Oosxe5pxM0cw6HOXNDM1mkkKWCTHhJKqf6HNnyIpqw
+        HdiWQSmlLQcmRu6j8Be72teIYAKuI99jkYGhMYeuYI9G8T5JJqRxNDAp5by+fOu3dhsXGYbiJTLuy
+        iTE5XtxA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kefxy-0003u0-W3; Mon, 16 Nov 2020 14:58:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 43EFB305CC3;
+        Mon, 16 Nov 2020 15:58:50 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2F5BE2025CA2A; Mon, 16 Nov 2020 15:58:50 +0100 (CET)
+Date:   Mon, 16 Nov 2020 15:58:50 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, corbet@lwn.net,
+        keescook@chromium.org, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] seqnum_ops: Introduce Sequence Number Ops
+Message-ID: <20201116145850.GC3121429@hirez.programming.kicks-ass.net>
+References: <cover.1605287778.git.skhan@linuxfoundation.org>
+ <26cbcc431be5e3ab7d8e0e881d522605a27b1312.1605287778.git.skhan@linuxfoundation.org>
+ <20201113210327.GJ17076@casper.infradead.org>
+ <20201116144914.GE3121378@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201113134417.471445-3-maxime.chevallier@bootlin.com>
+In-Reply-To: <20201116144914.GE3121378@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 14:44:16 +0100, Maxime Chevallier wrote:
-> The Techwell TW9900 is a video decoder supporting multiple input
-> standards, such as PAL, NTSC and SECAM, and outputs a BT.656 video
-> signal.
+On Mon, Nov 16, 2020 at 03:49:14PM +0100, Peter Zijlstra wrote:
+> On Fri, Nov 13, 2020 at 09:03:27PM +0000, Matthew Wilcox wrote:
+> > I think almost all of this information should go into atomic_ops.rst
 > 
-> It's designed to be low-power, posesses some features such as a
-> programmable comb-filter, and automatic input standard detection.
-> 
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> ---
-> v1->v2: Fix the example not compiling
-> 
->  .../devicetree/bindings/media/i2c/tw9900.yaml | 60 +++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/tw9900.yaml
-> 
+> No, we should delete atomic_ops.rst. It's bitrotted nonsense. The only
 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/i2c/tw9900.example.dt.yaml: tw9900@44: 'reset-gpio' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/i2c/tw9900.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1399805
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Sod it, I'll just queue a deletion. That'll stop people from trying to
+update the trainwreck.
