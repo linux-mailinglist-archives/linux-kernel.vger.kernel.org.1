@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 139DA2B4FA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6122B4FAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388235AbgKPS2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:28:11 -0500
-Received: from mga06.intel.com ([134.134.136.31]:20636 "EHLO mga06.intel.com"
+        id S2388616AbgKPSav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:30:51 -0500
+Received: from mga06.intel.com ([134.134.136.31]:20645 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388095AbgKPS2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:28:09 -0500
-IronPort-SDR: 0uHw5TVTUp1VNyN+BwGMmMYtZ7bDaRWBqB43hlirwkWog4UIYjv2TG8jzbo2NRkKSVaKAHh7k2
- bNtve30jYbWw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232410050"
+        id S2388229AbgKPS2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:28:10 -0500
+IronPort-SDR: YL/rgSuRDWEANztkCs2RMvtR3U4OO0Ing6QQIK3RFzq/QgrW0mlWqHzefqoHnhdekJhUVRhA3a
+ ch3DfDvm2+wg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232410052"
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="232410050"
+   d="scan'208";a="232410052"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:08 -0800
-IronPort-SDR: ix4YNSY74kgFgcbyDGWJufKKuGTn9MPfyqAqrt3TjWDCuvFF3FVUDjc7zYwsfO7gBh0SlllzVN
- qTl/9Pa2C78Q==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:09 -0800
+IronPort-SDR: XDNgKlubACap/YjCiy30MO5c7BvGj9iaXY7uhsLE1kPts++UzGrhS27GqeyeIbE7E8WcHIw1g/
+ hXMG8di6Ouxg==
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="400528106"
+   d="scan'208";a="400528130"
 Received: from ls.sc.intel.com (HELO localhost) ([143.183.96.54])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:08 -0800
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:09 -0800
 From:   isaku.yamahata@intel.com
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -38,9 +38,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
         Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [RFC PATCH 35/67] KVM: x86/mmu: Explicitly check for MMIO spte in fast page fault
-Date:   Mon, 16 Nov 2020 10:26:20 -0800
-Message-Id: <8d129c5e2ab4ca26eaf761a2fd46cb50cf6376ba.1605232743.git.isaku.yamahata@intel.com>
+Subject: [RFC PATCH 37/67] KVM: x86/mmu: Ignore bits 63 and 62 when checking for "present" SPTEs
+Date:   Mon, 16 Nov 2020 10:26:22 -0800
+Message-Id: <7ca4ebee9566d6fb5ecdbffd32468a6b756ab515.1605232743.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1605232743.git.isaku.yamahata@intel.com>
 References: <cover.1605232743.git.isaku.yamahata@intel.com>
@@ -52,28 +52,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Explicity check for an MMIO spte in the fast page fault flow.  TDX will
-use a not-present entry for MMIO sptes, which can be mistaken for an
-access-tracked spte since both have SPTE_SPECIAL_MASK set.
+Ignore bits 63 and 62 when checking for present SPTEs to allow setting
+said bits in not-present SPTEs.  TDX will set bit 63 in "zero" SPTEs to
+suppress #VEs (TDX-SEAM unconditionally enables EPT Violation #VE), and
+will use bit 62 to track zapped private SPTEs.
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/mmu/paging_tmpl.h |  2 +-
+ arch/x86/kvm/mmu/spte.h        | 17 +++++++++++++++--
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 76de8d48165d..c4d657b26066 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3090,7 +3090,7 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
- 				break;
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index 5d4e9f404018..06659d5c8ba0 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -1039,7 +1039,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+ 		gpa_t pte_gpa;
+ 		gfn_t gfn;
  
- 		sp = sptep_to_sp(iterator.sptep);
--		if (!is_last_spte(spte, sp->role.level))
-+		if (!is_last_spte(spte, sp->role.level) || is_mmio_spte(spte))
- 			break;
+-		if (!sp->spt[i])
++		if (!__is_shadow_present_pte(sp->spt[i]))
+ 			continue;
  
- 		/*
+ 		pte_gpa = first_pte_gpa + i * sizeof(pt_element_t);
+diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+index e5c94848ade1..22256cc8cce6 100644
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -174,9 +174,22 @@ static inline bool is_access_track_spte(u64 spte)
+ 	return !spte_ad_enabled(spte) && (spte & shadow_acc_track_mask) == 0;
+ }
+ 
+-static inline int is_shadow_present_pte(u64 pte)
++static inline bool __is_shadow_present_pte(u64 pte)
+ {
+-	return (pte != 0) && !is_mmio_spte(pte);
++	/*
++	 * Ignore bits 63 and 62 so that they can be set in SPTEs that are well
++	 * and truly not present.  We can't use the sane/obvious approach of
++	 * querying bits 2:0 (RWX or P) because EPT without A/D bits will clear
++	 * RWX of a "present" SPTE to do access tracking.  Tracking updates can
++	 * be done out of mmu_lock, so even the flushing logic needs to treat
++	 * such SPTEs as present.
++	 */
++	return !!(pte << 2);
++}
++
++static inline bool is_shadow_present_pte(u64 pte)
++{
++	return __is_shadow_present_pte(pte) && !is_mmio_spte(pte);
+ }
+ 
+ static inline int is_large_pte(u64 pte)
 -- 
 2.17.1
 
