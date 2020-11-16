@@ -2,213 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01802B3FCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70502B3FCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgKPJd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:33:57 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:45838 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726837AbgKPJd4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:33:56 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UFWvYxj_1605519230;
-Received: from 30.225.32.141(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0UFWvYxj_1605519230)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 16 Nov 2020 17:33:51 +0800
-Subject: Re: INFO: task can't die in io_sq_thread_stop
-To:     syzbot <syzbot+03beeb595f074db9cfd1@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <00000000000038569805b4211287@google.com>
-From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Message-ID: <39be8d01-6550-ee8a-5a8d-2707b372b711@linux.alibaba.com>
-Date:   Mon, 16 Nov 2020 17:32:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1728479AbgKPJdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:33:50 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:30642 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726837AbgKPJdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:33:49 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605519229; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=P698r6QVcWi7gJVt5PbJbTnDn3TXyQARl7Szjb9POHI=;
+ b=J+cILDkRZ+EbFqoAS89Feq+okOwADgZ/1sXJcBjW/XxhEKj076DAS3pCeQkJ8QkDSbsWRtpv
+ QPGNUXygPM4praODD3NeN+Wozyslgr0dWxJdazTF9UxV3K9LtSden64XaiChbNNAkSb0iUa6
+ UJkuU3YtHW2nXwC4psvyLUfGgjk=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fb2476f40d44461259422fe (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 09:33:35
+ GMT
+Sender: wgong=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6B59EC433ED; Mon, 16 Nov 2020 09:33:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wgong)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98D12C433C6;
+        Mon, 16 Nov 2020 09:33:34 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <00000000000038569805b4211287@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 16 Nov 2020 17:33:34 +0800
+From:   Wen Gong <wgong@codeaurora.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     kernel test robot <rong.a.chen@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+Subject: Re: drivers/net/wireless/ath/ath10k/sdio.c:2234:2: warning:
+ Non-boolean value returned from function returning bool
+In-Reply-To: <87o8jx20w6.fsf@codeaurora.org>
+References: <20201116055212.GA3723@shao2-debian>
+ <87o8jx20w6.fsf@codeaurora.org>
+Message-ID: <32eb018069a079fd82e359d0ed4e1b1e@codeaurora.org>
+X-Sender: wgong@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi jens,
+On 2020-11-16 15:53, Kalle Valo wrote:
+> + ath10k list
+> 
+> kernel test robot <rong.a.chen@intel.com> writes:
+> 
+>> tree:   
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
+>> master
+>> head:   f01c30de86f1047e9bae1b1b1417b0ce8dcd15b1
+>> commit: 3c45f21af84eb05a355919abc80cf70a3a681cee ath10k: sdio: add
+>> firmware coredump support
+>> compiler: nios2-linux-gcc (GCC) 9.3.0
+>> 
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <rong.a.chen@intel.com>
+>> 
+>> 
+>> cppcheck possible warnings: (new ones prefixed by >>, may not real 
+>> problems)
+>> 
+>>>> drivers/net/wireless/ath/ath10k/sdio.c:2234:2: warning: Non-boolean
+>> value returned from function returning bool
+>> [returnNonBoolInBooleanFunction]
+>>     return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
+>>     ^
+> 
+> Is this really a problem? I guess we could change that to "!!(param &
+> HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW)" but how is that better and
+> does it make any practical difference when
+> ath10k_sdio_is_fast_dump_supported() returns a boolean anyway?
+It should not be a real problem by test before.
+ath10k_sdio_is_fast_dump_supported return true in test before.
+and fast_dump get true from ath10k_sdio_is_fast_dump_supported in 
+ath10k_sdio_fw_crashed_dump.
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    6dd65e60 Add linux-next specific files for 20201110
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14727d42500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=4fab43daf5c54712
-> dashboard link: https://syzkaller.appspot.com/bug?extid=03beeb595f074db9cfd1
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+03beeb595f074db9cfd1@syzkaller.appspotmail.com
-> 
-> INFO: task syz-executor.2:12399 can't die for more than 143 seconds.
-> task:syz-executor.2  state:D stack:28744 pid:12399 ppid:  8504 flags:0x00004004
-> Call Trace:
->   context_switch kernel/sched/core.c:3773 [inline]
->   __schedule+0x893/0x2170 kernel/sched/core.c:4522
->   schedule+0xcf/0x270 kernel/sched/core.c:4600
->   schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1847
->   do_wait_for_common kernel/sched/completion.c:85 [inline]
->   __wait_for_common kernel/sched/completion.c:106 [inline]
->   wait_for_common kernel/sched/completion.c:117 [inline]
->   wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
->   kthread_stop+0x17a/0x720 kernel/kthread.c:596
->   io_put_sq_data fs/io_uring.c:7193 [inline]
->   io_sq_thread_stop+0x452/0x570 fs/io_uring.c:7290
->   io_finish_async fs/io_uring.c:7297 [inline]
->   io_sq_offload_create fs/io_uring.c:8015 [inline]
->   io_uring_create fs/io_uring.c:9433 [inline]
->   io_uring_setup+0x19b7/0x3730 fs/io_uring.c:9507
->   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-I also don't have a reproducer yet, but seems that there is a race
-in current codes:                  |
-=> io_put_sq_data                  |
-==> kthread_park(sqd->thread);     |
-                                    | T1: sq thread is parked now.
-==> kthread_stop(sqd->thread);     |
-===> kthread_unpark(k);            |
-                                    | T2: sq thread is now unpared, can run again
-                                    |
-                                    | T3: sq thread is now preempted out.
-                                    |
-===> wake_up_process(k);           |
-                                    |
-                                    | T4: Since sqd ctx list is empty, needs_sched will be true,
-                                    | then sq thread sets task state to TASK_INTERRUPTIBLE,
-                                    | and schedule, now sq thread will never be waken up.
-===> wait_for_completion           |
+the risk maybe like this:
+u32 param in ath10k_sdio_is_fast_dump_supported is 4 bytes, and bool is 
+1 byte.
+if Gcc does not do any convertion from u32 to bool, then the bool value 
+will only
+get the lower byte(byte 0) of the 4 bytes, then maybe get an mistake 
+result.
 
-I have artificially used mdelay() to simulate above race, will get same stack like
-this syzbot report.
+I did a disassemble of sdio.o with/without below change, and dump 
+sdio.o, it have no difference in this place:
+I change send a patch with below change if needed.
+@@ -2231,7 +2231,7 @@ static bool 
+ath10k_sdio_is_fast_dump_supported(struct ath10k *ar)
 
--               if (kthread_should_park())
-+               if (kthread_should_park()) {
-                         kthread_parkme();
-+                       if (kthread_should_stop())
-+                               break;
-+               }
-this diff can fix this issue, and if ctx_list is empty, we don't need to call schedule().
+         ath10k_dbg(ar, ATH10K_DBG_SDIO, "sdio hi_option_flag2 %x\n", 
+param);
 
-Regards,
-Xiaoguang Wang
+-       return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
++       return !!(param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW);
+  }
 
+objdump -Sl sdio.o > sdio.o-Sl.txt
 
-> RIP: 0033:0x45deb9
-> Code: Unable to access opcode bytes at RIP 0x45de8f.
-> RSP: 002b:00007f174e51ac78 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
-> RAX: ffffffffffffffda RBX: 0000000000008640 RCX: 000000000045deb9
-> RDX: 0000000000000000 RSI: 0000000020000140 RDI: 00000000000050e5
-> RBP: 000000000118bf58 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-> R13: 00007ffed9ca723f R14: 00007f174e51b9c0 R15: 000000000118bf2c
-> INFO: task syz-executor.2:12399 blocked for more than 143 seconds.
->        Not tainted 5.10.0-rc3-next-20201110-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:syz-executor.2  state:D stack:28744 pid:12399 ppid:  8504 flags:0x00004004
-> Call Trace:
->   context_switch kernel/sched/core.c:3773 [inline]
->   __schedule+0x893/0x2170 kernel/sched/core.c:4522
->   schedule+0xcf/0x270 kernel/sched/core.c:4600
->   schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1847
->   do_wait_for_common kernel/sched/completion.c:85 [inline]
->   __wait_for_common kernel/sched/completion.c:106 [inline]
->   wait_for_common kernel/sched/completion.c:117 [inline]
->   wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
->   kthread_stop+0x17a/0x720 kernel/kthread.c:596
->   io_put_sq_data fs/io_uring.c:7193 [inline]
->   io_sq_thread_stop+0x452/0x570 fs/io_uring.c:7290
->   io_finish_async fs/io_uring.c:7297 [inline]
->   io_sq_offload_create fs/io_uring.c:8015 [inline]
->   io_uring_create fs/io_uring.c:9433 [inline]
->   io_uring_setup+0x19b7/0x3730 fs/io_uring.c:9507
->   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x45deb9
-> Code: Unable to access opcode bytes at RIP 0x45de8f.
-> RSP: 002b:00007f174e51ac78 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
-> RAX: ffffffffffffffda RBX: 0000000000008640 RCX: 000000000045deb9
-> RDX: 0000000000000000 RSI: 0000000020000140 RDI: 00000000000050e5
-> RBP: 000000000118bf58 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-> R13: 00007ffed9ca723f R14: 00007f174e51b9c0 R15: 000000000118bf2c
-> 
-> Showing all locks held in the system:
-> 1 lock held by khungtaskd/1653:
->   #0: ffffffff8b3386a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6253
-> 1 lock held by systemd-journal/4873:
-> 1 lock held by in:imklog/8167:
->   #0: ffff88801c86e0f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
-> 
-> =============================================
-> 
-> NMI backtrace for cpu 1
-> CPU: 1 PID: 1653 Comm: khungtaskd Not tainted 5.10.0-rc3-next-20201110-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->   __dump_stack lib/dump_stack.c:77 [inline]
->   dump_stack+0x107/0x163 lib/dump_stack.c:118
->   nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
->   nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
->   trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
->   check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
->   watchdog+0xd89/0xf30 kernel/hung_task.c:338
->   kthread+0x3af/0x4a0 kernel/kthread.c:292
->   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> Sending NMI from CPU 1 to CPUs 0:
-> NMI backtrace for cpu 0
-> CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.0-rc3-next-20201110-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: events nsim_dev_trap_report_work
-> RIP: 0010:mark_lock+0x30/0x24c0 kernel/locking/lockdep.c:4371
-> Code: 41 54 41 89 d4 48 ba 00 00 00 00 00 fc ff df 55 53 48 81 ec 18 01 00 00 48 8d 5c 24 38 48 89 3c 24 48 c7 44 24 38 b3 8a b5 41 <48> c1 eb 03 48 c7 44 24 40 30 1b c6 8a 48 8d 04 13 48 c7 44 24 48
-> RSP: 0018:ffffc90000ca7988 EFLAGS: 00000096
-> RAX: 0000000000000004 RBX: ffffc90000ca79c0 RCX: ffffffff8155b947
-> RDX: dffffc0000000000 RSI: ffff888010d20918 RDI: ffff888010d20000
-> RBP: 0000000000000006 R08: 0000000000000000 R09: ffffffff8ebb477f
-> R10: fffffbfff1d768ef R11: 000000004fb6aa4b R12: 0000000000000006
-> R13: dffffc0000000000 R14: ffff888010d20918 R15: 0000000000000022
-> FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f8ffcf99000 CR3: 000000001b2e7000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   mark_held_locks+0x9f/0xe0 kernel/locking/lockdep.c:4011
->   __trace_hardirqs_on_caller kernel/locking/lockdep.c:4037 [inline]
->   lockdep_hardirqs_on_prepare kernel/locking/lockdep.c:4097 [inline]
->   lockdep_hardirqs_on_prepare+0x28b/0x400 kernel/locking/lockdep.c:4049
->   trace_hardirqs_on+0x5b/0x1c0 kernel/trace/trace_preemptirq.c:49
->   __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
->   _raw_spin_unlock_irqrestore+0x42/0x50 kernel/locking/spinlock.c:191
->   extract_crng drivers/char/random.c:1026 [inline]
->   _get_random_bytes+0x229/0x670 drivers/char/random.c:1562
->   nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:538 [inline]
->   nsim_dev_trap_report drivers/net/netdevsim/dev.c:568 [inline]
->   nsim_dev_trap_report_work+0x740/0xbd0 drivers/net/netdevsim/dev.c:609
->   process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
->   worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
->   kthread+0x3af/0x4a0 kernel/kthread.c:292
->   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
+0000000000002b00 <ath10k_sdio_fw_crashed_dump>:
+void ath10k_sdio_fw_crashed_dump(struct ath10k *ar)
+{
+...
+/home/wgong/ath11k/ath-master/ath/drivers/net/wireless/ath/ath10k/sdio.c:2234
+
+	return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
+     2b75:	8b 44 24 44          	mov    0x44(%rsp),%eax
+     2b79:	25 00 08 00 00       	and    $0x800,%eax //"the SF, ZF, and PF 
+flags are set according to the result".ZF will be 0 if true.
+     2b7e:	89 44 24 2c          	mov    %eax,0x2c(%rsp)
+     2b82:	40 0f 95 c5          	setne  %bpl //"Set byte if not equal 
+(ZF=0)".stored the ZF flag to bpl as value of fast_dump.
+ath10k_sdio_fw_crashed_dump():
+/home/wgong/ath11k/ath-master/ath/drivers/net/wireless/ath/ath10k/sdio.c:2483
+	char guid[UUID_STRING_LEN + 1];
+	bool fast_dump;
+
+	fast_dump = ath10k_sdio_is_fast_dump_supported(ar);
+
+	if (fast_dump)
+     2b86:	0f 85 c3 03 00 00    	jne    2f4f 
+<ath10k_sdio_fw_crashed_dump+0x44f> //"Jump near if not equal (ZF=0)"
+...
+/home/wgong/ath11k/ath-master/ath/drivers/net/wireless/ath/ath10k/sdio.c:2499
+	ath10k_sdio_dump_registers(ar, crash_data, fast_dump);
+     2be5:	40 0f b6 d5          	movzbl %bpl,%edx //use the bpl stored as 
+value of fast_dump
+     2be9:	48 89 de             	mov    %rbx,%rsi
+     2bec:	4c 89 ff             	mov    %r15,%rdi
+     2bef:	e8 8c fb ff ff       	callq  2780 <ath10k_sdio_dump_registers>
+
