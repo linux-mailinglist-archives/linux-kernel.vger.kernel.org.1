@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4CB2B54BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 967782B54BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbgKPXER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:04:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgKPXER (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:04:17 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE78C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:04:17 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id s8so20810421wrw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:04:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PP6FX2f2oqxrVvYPJAU1kY9ytsKB35iPzARqt8mNWbA=;
-        b=VsgnJCtcHNaLAZW4qhQS4kYs27Dbh2epwN+6KIl2yFDSVuNKflTUZ0xcfEF+EIQ+OJ
-         6Tg8vDV4HORMLm8tHo/J8Yf9qhMrPpIKaW2p3r4bOW9T+xwiOG00DHwEtJJTdHsoy5pw
-         CpMye71FoNHxRq+YXFX8GQw6X/kzKrDEu5RLasOJthqXOt7OnthYroZUIx4kKx2q/tI9
-         l8S5KWkQgxnz8mX8pRPMwYRJc8f+2EQ8tyanAabCN9H+t7/Ie+qMarpaUG+zQErlzF2m
-         QzKOwvT2yaRfFsBj8DljUStD0IsriJUeKYRL7pxea/5kblscys0Ssm45D1JGjgpTd+Pv
-         wiLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PP6FX2f2oqxrVvYPJAU1kY9ytsKB35iPzARqt8mNWbA=;
-        b=MU49FGk1PWOnSmFBd7dAWoOlF86OKAfJObLBFhERzfCAUMMRzg5tU8ke3SNXsnmemq
-         6OPL1cxpp94doWAUa9deXv1rQnEfHoiAXm013KN9kTrNjZeiicbTWL160cvXsZ/Djf0k
-         50sTcyPitwtnjeUqvikTdZxCBnNENdkfq/yLAGtY5YG5KdRgMX1De0xfxV3h6lc81+n/
-         nxiGpJpprgIlz8FQRqkRJc4R3yXJLtd5mVYmRKekbAMYENv9W+hzpGX3YNeGJ7cEWDsG
-         zB4+sFFjVeyeHGjN8ueB9KewdeSxGU+VQXnd/jfhp/m2WiVBglWnsW9nahOcLe7+/mDI
-         ZNDw==
-X-Gm-Message-State: AOAM530NYmzW66L90A+2tB6iJrx96N2/c5dvQH2H48glXanf5U8BaUcS
-        hSi+3+rp1ZMA2E0nIX2DZMg4SFj2TxzkoIKq6PXIow==
-X-Google-Smtp-Source: ABdhPJwENCdjM+k4PETduXFWBM58hHcx0EZxIC5UOTjI81q2YI4Ck1x1x3QOkK4dH5S6ijiN7TkFifiwgkUytrCAeVc=
-X-Received: by 2002:a5d:5482:: with SMTP id h2mr10951710wrv.18.1605567855975;
- Mon, 16 Nov 2020 15:04:15 -0800 (PST)
+        id S1728620AbgKPXGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:06:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgKPXGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 18:06:24 -0500
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FEA3241A5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605567983;
+        bh=0Pqi7azRIWSbLIpOeitvpzKPLJGnjQeCpndMdUmdrAo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=2IOvZZPeGDj+Zct6OlvIZod58PJIp3hy9ZWtyPjPTimvJbBJqiku0bu3pKfw2/M1/
+         EP2a/7aeAMxXeabBImwfXcm6v+SehUvXkjoVo8wSzxP3eDq3XVahSNr6ha2CyZGNy5
+         B7Y2QONNejEe08f7hqYXRPS5CrQNPV7hKsfoCuWw=
+Received: by mail-wm1-f44.google.com with SMTP id p19so837711wmg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:06:23 -0800 (PST)
+X-Gm-Message-State: AOAM531jUcHB9Bzo3kOup5Zca2l9J1sHGRa0FuUAjqsqyWdDByIL1BqL
+        h3n2JJo9/lbaG+kwHNBHa3WvCTuqa7c3Xz/598nc4w==
+X-Google-Smtp-Source: ABdhPJzaErYYKYPau7kte9K2Eqgjui//v7T+37VcdCsJfQWFo6yKNCo5wdUrCV2Z/NFPrRMrLA8Ahpoyiep2mKeOWO0=
+X-Received: by 2002:a1c:7e87:: with SMTP id z129mr1136898wmc.176.1605567982035;
+ Mon, 16 Nov 2020 15:06:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20201002042915.403558-1-mark.mossberg@gmail.com>
- <20201103125034.GA30391@redhat.com> <20201103171537.GC4111@zn.tnic>
- <20201103174744.GB23992@redhat.com> <20201103175237.GD4111@zn.tnic>
- <20201103181114.GC23992@redhat.com> <20201103182018.GE4111@zn.tnic> <87blfxx8ps.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87blfxx8ps.fsf@nanos.tec.linutronix.de>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Mon, 16 Nov 2020 15:04:02 -0800
-Message-ID: <CALCETrW+Jek_t51RyqxO=HUA_PJ4APwS9hJQWsXyc426cgf0wA@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/dumpstack: Fix misleading instruction pointer
- error message
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Borislav Petkov <bp@alien8.de>, Oleg Nesterov <oleg@redhat.com>,
-        Mark Mossberg <mark.mossberg@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
+ <20201116144757.1920077-12-alexandre.chartre@oracle.com> <CALCETrXoykRjRPYPfZr6gBKoMnHuRYiJTDOcFYMq8GLef00j1A@mail.gmail.com>
+ <820278dc-5f8e-6224-71b4-7c61819f68d1@oracle.com>
+In-Reply-To: <820278dc-5f8e-6224-71b4-7c61819f68d1@oracle.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 16 Nov 2020 15:06:08 -0800
+X-Gmail-Original-Message-ID: <CALCETrXYP13pPcRfDDkwetLgzA3quYOBg7OTo5nbpLpPfSqaLw@mail.gmail.com>
+Message-ID: <CALCETrXYP13pPcRfDDkwetLgzA3quYOBg7OTo5nbpLpPfSqaLw@mail.gmail.com>
+Subject: Re: [RFC][PATCH v2 11/21] x86/pti: Extend PTI user mappings
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jann Horn <jannh@google.com>,
-        kyin@redhat.com
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
+        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
+        kuzuno@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 2:01 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->  arch/x86/kernel/dumpstack.c |   23 +++++++++++++++++++----
->  1 file changed, 19 insertions(+), 4 deletions(-)
+On Mon, Nov 16, 2020 at 12:18 PM Alexandre Chartre
+<alexandre.chartre@oracle.com> wrote:
 >
-> --- a/arch/x86/kernel/dumpstack.c
-> +++ b/arch/x86/kernel/dumpstack.c
-> @@ -78,6 +78,9 @@ static int copy_code(struct pt_regs *reg
->         if (!user_mode(regs))
->                 return copy_from_kernel_nofault(buf, (u8 *)src, nbytes);
 >
-> +       /* The user space code from other tasks cannot be accessed. */
-> +       if (regs != task_pt_regs(current))
-> +               return -EPERM;
+> On 11/16/20 8:48 PM, Andy Lutomirski wrote:
+> > On Mon, Nov 16, 2020 at 6:49 AM Alexandre Chartre
+> > <alexandre.chartre@oracle.com> wrote:
+> >>
+> >> Extend PTI user mappings so that more kernel entry code can be executed
+> >> with the user page-table. To do so, we need to map syscall and interrupt
+> >> entry code, per cpu offsets (__per_cpu_offset, which is used some in
+> >> entry code), the stack canary, and the PTI stack (which is defined per
+> >> task).
+> >
+> > Does anything unmap the PTI stack?  Mapping is easy, and unmapping
+> > could be a pretty big mess.
+> >
+>
+> No, there's no unmap. The mapping exists as long as the task page-table
+> does (i.e. as long as the task mm exits). I assume that the task stack
+> and mm are freed at the same time but that's not something I have checked.
+>
 
-Depending on exactly where this gets called, this may not be
-sufficient.  You should also check nmi_uaccess_okay().
+Nope.  A multi-threaded mm will free task stacks when the task exits,
+but the mm may outlive the individual tasks.  Additionally, if you
+allocate page tables as part of mapping PTI stacks, you need to make
+sure the pagetables are freed.  Finally, you need to make sure that
+the PTI stacks have appropriate guard pages -- just doubling the
+allocation is not safe enough.
 
---Andy
+My intuition is that this is going to be far more complexity than is justified.
