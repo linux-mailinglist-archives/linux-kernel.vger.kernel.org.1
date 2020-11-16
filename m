@@ -2,32 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66742B4EF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EFA2B4EF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731304AbgKPSOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:14:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:44822 "EHLO foss.arm.com"
+        id S1731502AbgKPSOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:14:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730628AbgKPSOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:14:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1E7631B;
-        Mon, 16 Nov 2020 10:14:03 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A170C3F719;
-        Mon, 16 Nov 2020 10:14:02 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hector Yuan <hector.yuan@mediatek.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v2] dt-bindings: dvfs: Add support for generic performance domains
-Date:   Mon, 16 Nov 2020 18:13:56 +0000
-Message-Id: <20201116181356.804590-1-sudeep.holla@arm.com>
+        id S1730628AbgKPSOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:14:06 -0500
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D955E2078E;
+        Mon, 16 Nov 2020 18:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605550446;
+        bh=rryR7gEWIpjU4vN8PjeQodDDv/FqOgqr5+c2J5MS73o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UwoPRnA1ZTXNbn9yuyqT4A+6bIRkE02jOB4LE7zvhPv0bxIK6coVhLIwBItPlmOnf
+         QCtWcFcfFvIoXffGdrKIP4t3gVQ/72/IzdIUxpFXb869k89agGwSjmyooEuVpmJCTs
+         XpaYSpj/jJyK4biO4tlobknPh8yoQVoMjP9RN/2A=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] drm/imx: depend on COMMON_CLK to fix compile tests
+Date:   Mon, 16 Nov 2020 19:14:00 +0100
+Message-Id: <20201116181400.543718-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -35,128 +45,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CLKSCREW attack [0] exposed security vulnerabilities in energy management
-implementations where untrusted software had direct access to clock and
-voltage hardware controls. In this attack, the malicious software was able to
-place the platform into unsafe overclocked or undervolted configurations. Such
-configurations then enabled the injection of predictable faults to reveal
-secrets.
+The iMX DRM drivers use Common Clock Framework thus they cannot be built
+on platforms without it (e.g. compile test on MIPS with RALINK and
+SOC_RT305X):
 
-Many Arm-based systems used to or still use voltage regulator and clock
-frameworks in the kernel. These frameworks allow callers to independently
-manipulate frequency and voltage settings. Such implementations can render
-systems susceptible to this form of attack.
+    /usr/bin/mips-linux-gnu-ld: drivers/gpu/drm/imx/imx-ldb.o: in function `imx_ldb_encoder_disable':
+    imx-ldb.c:(.text+0x400): undefined reference to `clk_set_parent'
 
-Attacks such as CLKSCREW are now being mitigated by not having direct and
-independent control of clock and voltage in the kernel and moving that
-control to a trusted entity, such as the SCP firmware or secure world
-firmware/software which are to perform sanity checking on the requested
-performance levels, thereby preventing any attempted malicious programming.
-
-With the advent of such an abstraction, there is a need to replace the
-generic clock and regulator bindings used by such devices with a generic
-performance domains bindings.
-
-[0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
-
-Cc: Rob Herring <robh+dt@kernel.org>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../bindings/dvfs/performance-domain.yaml     | 76 +++++++++++++++++++
- 1 file changed, 76 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+ drivers/gpu/drm/imx/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-v1[1]->v2:
-	- Changed to Dual License
-	- Added select: true, enum for #performance-domain-cells and
-	  $ref for performance-domain
-	- Changed the example to use real existing compatibles instead
-	  of made-up ones
-
-[1] https://lore.kernel.org/lkml/20201105173539.1426301-1-sudeep.holla@arm.com
-
-diff --git a/Documentation/devicetree/bindings/dvfs/performance-domain.yaml b/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-new file mode 100644
-index 000000000000..29fb589a5192
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
-@@ -0,0 +1,76 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dvfs/performance-domain.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Generic performance domains
-+
-+maintainers:
-+  - Sudeep Holla <sudeep.holla@arm.com>
-+
-+description: |+
-+  This binding is intended for performance management of groups of devices or
-+  CPUs that run in the same performance domain. Performance domains must not
-+  be confused with power domains. A performance domain is defined by a set
-+  of devices that always have to run at the same performance level. For a given
-+  performance domain, there is a single point of control that affects all the
-+  devices in the domain, making it impossible to set the performance level of
-+  an individual device in the domain independently from other devices in
-+  that domain. For example, a set of CPUs that share a voltage domain, and
-+  have a common frequency control, is said to be in the same performance
-+  domain.
-+
-+  This device tree binding can be used to bind performance domain consumer
-+  devices with their performance domains provided by performance domain
-+  providers. A performance domain provider can be represented by any node in
-+  the device tree and can provide one or more performance domains. A consumer
-+  node can refer to the provider by a phandle and a set of phandle arguments
-+  (so called performance domain specifiers) of length specified by the
-+  \#performance-domain-cells property in the performance domain provider node.
-+
-+select: true
-+
-+properties:
-+  "#performance-domain-cells":
-+    description:
-+      Number of cells in a performance domain specifier. Typically 0 for nodes
-+      representing a single performance domain and 1 for nodes providing
-+      multiple performance domains (e.g. performance controllers), but can be
-+      any value as specified by device tree binding documentation of particular
-+      provider.
-+    enum: [ 0, 1 ]
-+
-+  performance-domains:
-+    $ref: '/schemas/types.yaml#/definitions/phandle-array'
-+    description:
-+      A phandle and performance domain specifier as defined by bindings of the
-+      performance controller/provider specified by phandle.
-+
-+required:
-+  - "#performance-domain-cells"
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    performance: performance-controller@12340000 {
-+        compatible = "qcom,cpufreq-hw";
-+        reg = <0x12340000 0x1000>;
-+        #performance-domain-cells = <1>;
-+    };
-+
-+    // The node above defines a performance controller that is a performance
-+    // domain provider and expects one cell as its phandle argument.
-+    cpus {
-+        #address-cells = <2>;
-+        #size-cells = <0>;
-+
-+        cpu@0 {
-+            device_type = "cpu";
-+            compatible = "arm,cortex-a57";
-+            reg = <0x0 0x0>;
-+            performance-domains = <&performance 1>;
-+        };
-+    };
-+
+diff --git a/drivers/gpu/drm/imx/Kconfig b/drivers/gpu/drm/imx/Kconfig
+index 6231048aa5aa..65f9ef625337 100644
+--- a/drivers/gpu/drm/imx/Kconfig
++++ b/drivers/gpu/drm/imx/Kconfig
+@@ -5,7 +5,8 @@ config DRM_IMX
+ 	select VIDEOMODE_HELPERS
+ 	select DRM_GEM_CMA_HELPER
+ 	select DRM_KMS_CMA_HELPER
+-	depends on DRM && (ARCH_MXC || ARCH_MULTIPLATFORM || COMPILE_TEST)
++	depends on DRM
++	depends on ARCH_MXC || ARCH_MULTIPLATFORM || COMPILE_TEST && COMMON_CLK
+ 	depends on IMX_IPUV3_CORE
+ 	help
+ 	  enable i.MX graphics support
 -- 
 2.25.1
 
