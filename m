@@ -2,71 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6982B50A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A482B50E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729265AbgKPTRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:17:00 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:36630 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729223AbgKPTRA (ORCPT
+        id S1729029AbgKPTSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:18:17 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:46416 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgKPTSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:17:00 -0500
-Received: by mail-oi1-f195.google.com with SMTP id d9so19967730oib.3;
-        Mon, 16 Nov 2020 11:16:57 -0800 (PST)
+        Mon, 16 Nov 2020 14:18:17 -0500
+Received: by mail-ot1-f68.google.com with SMTP id g19so17061375otp.13;
+        Mon, 16 Nov 2020 11:18:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=D4c13z/AWlllHasXtboOHruCJmJ26ohfoTPObmNGa6I=;
-        b=lFiVcBmjVw70u+icpxbE0lAFTfkIQUMxjJfrohWML4ruzkJlJQbOGSf2O6XK3Nk0f1
-         us1WTsxFMqnDyBKF/9maeAPpHJiEt8S6wMNh0VR+H8TPyj8WUACjMVwXz2WV9Fi8kZOn
-         pYsh1SoDjg3o+WLnJS5G62bPz3IBvhHEftVmDdNijd+CoEgzrVynyCIyAMhh8nlFfTd3
-         2nT40/9Trz1E6D5FqSqwpvr/RZ+eu85LtxLtdv2IOuKnzuneqzVeFopTDQbGli3kAKp5
-         7RGwDECenosRpY6ppX4kuKKiQTPZpYBcO+fMTWmKy3ApW1QnDCAvP6rEtzGEa0tHR9mI
-         ZkVg==
-X-Gm-Message-State: AOAM531YPChu/F8pFnfma409ClwPYAW6TFvmSu3wkn4sIdKrjeq1LYNF
-        ndsYkNRDe+i/T5yjSdIu4g==
-X-Google-Smtp-Source: ABdhPJzYCwATlASvNHOCVUN3DnFx1wAEYSk90oisTeLS9A3YG/B9cJipsAO6LXDTD//sFHU08Ti66w==
-X-Received: by 2002:a05:6808:7cd:: with SMTP id f13mr150333oij.38.1605554217445;
-        Mon, 16 Nov 2020 11:16:57 -0800 (PST)
+        bh=EPhHNNZqdEahcd/eb53lKDLlEmin4saNiGp+SAL2Ql4=;
+        b=pXb0+3mPKXedwBaVeYCZxIwu8Am88p3AHfBoCq81TWV41yGtko0bmvq2HZVTOKnqUL
+         D57Wv3UaUitcbyvTek5szyS0aU7ZUMeuLlHnpzsCiR1a3DY7deNr/G8x6pWnjSITVh5n
+         4gtzUCBkI3xRpIbawBJzOG8plMmfZLWrG8tsp7wPxl8inukcAxOwPbVc84/az10P3Wq5
+         N6vwKWZJuwv3joUOI2AF/xSkSF5zEQKpHgzMtxdpYTtJ/v//f0Z1CQbqm3r+9R2wdUcJ
+         jPRwLtq/7jvj9ahSB0Va+1ytEHgLj9dWxWHm5DkoyHtL3lZ2Zht2ibyJwZyqRe0+L6QU
+         u90Q==
+X-Gm-Message-State: AOAM533A7QkPZFP29oIxpdfNh2NkiPoslp7BQ84VAzXAxllEJrsv6jf4
+        SYB2W8nCa+rktjmob7dXyg==
+X-Google-Smtp-Source: ABdhPJyLw3/Yl1MuoY1Z0YNmqEjTb1i1kMhothk9Ti4ZvtaROgO/i20brbg8QEDjTSmSSiyhSlGURQ==
+X-Received: by 2002:a9d:2c68:: with SMTP id f95mr604552otb.300.1605554294743;
+        Mon, 16 Nov 2020 11:18:14 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n21sm4980586oie.15.2020.11.16.11.16.56
+        by smtp.gmail.com with ESMTPSA id v13sm5020814oic.17.2020.11.16.11.18.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 11:16:56 -0800 (PST)
-Received: (nullmailer pid 1981950 invoked by uid 1000);
-        Mon, 16 Nov 2020 19:16:55 -0000
-Date:   Mon, 16 Nov 2020 13:16:55 -0600
+        Mon, 16 Nov 2020 11:18:14 -0800 (PST)
+Received: (nullmailer pid 1983723 invoked by uid 1000);
+        Mon, 16 Nov 2020 19:18:12 -0000
+Date:   Mon, 16 Nov 2020 13:18:12 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, john@phrozen.org, jiaxun.yang@flygoat.com,
-        devicetree@vger.kernel.org, devel@driverdev.osuosl.org,
-        tsbogend@alpha.franken.de, robh+dt@kernel.org,
-        hackpascal@gmail.com, gregkh@linuxfoundation.org,
-        linux-mips@vger.kernel.org, mturquette@baylibre.com
-Subject: Re: [PATCH 2/7] dt: bindings: add mt7621-pll device tree binding
- documentation
-Message-ID: <20201116191655.GA1981921@bogus>
-References: <20201111163013.29412-1-sergio.paracuellos@gmail.com>
- <20201111163013.29412-3-sergio.paracuellos@gmail.com>
+To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>
+Cc:     s.hauer@pengutronix.de, laurentiu.palcu@nxp.com,
+        robert.chiras@nxp.com, hverkuil-cisco@xs4all.nl,
+        niklas.soderlund+renesas@ragnatech.se,
+        dafna.hirschfeld@collabora.com, shawnguo@kernel.org,
+        aisheng.dong@nxp.com, linux-media@vger.kernel.org,
+        mchehab@kernel.org, ezequiel@collabora.com,
+        paul.kocialkowski@bootlin.com, linux-kernel@vger.kernel.org,
+        p.zabel@pengutronix.de, Mirela Rabulea <mirela.rabulea@nxp.com>,
+        mark.rutland@arm.com, daniel.baluta@nxp.com,
+        laurent.pinchart+renesas@ideasonboard.com, robh+dt@kernel.org,
+        linux-imx@nxp.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 03/10] media: dt-bindings: Add bindings for
+ i.MX8QXP/QM JPEG driver
+Message-ID: <20201116191812.GA1983669@bogus>
+References: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
+ <20201112030557.8540-4-mirela.rabulea@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111163013.29412-3-sergio.paracuellos@gmail.com>
+In-Reply-To: <20201112030557.8540-4-mirela.rabulea@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 17:30:08 +0100, Sergio Paracuellos wrote:
-> Adds device tree binding documentation for PLL controller in
-> the MT7621 SOC.
+On Thu, 12 Nov 2020 05:05:50 +0200, Mirela Rabulea (OSS) wrote:
+> From: Mirela Rabulea <mirela.rabulea@nxp.com>
 > 
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Add bindings documentation for i.MX8QXP/QM JPEG decoder & encoder driver.
+> 
+> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
 > ---
->  .../bindings/clock/mediatek,mt7621-pll.yaml   | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-pll.yaml
+> Changes in v5:
+> changed compatible name to be SOC specific
+> changed fsl->nxp
+> rephrased a bit the interrupts description
+> 
+>  .../bindings/media/nxp,imx8-jpeg.yaml         | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
