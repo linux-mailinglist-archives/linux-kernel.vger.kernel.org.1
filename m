@@ -2,65 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30662B4091
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 500342B40A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgKPKNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:13:44 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7503 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727012AbgKPKNn (ORCPT
+        id S1728789AbgKPKQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:16:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726621AbgKPKQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:13:43 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CZPzZ0cxtzhXjy;
-        Mon, 16 Nov 2020 18:13:30 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 16 Nov 2020
- 18:13:36 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <shuah@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andrii@kernel.org>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>, <sdf@google.com>
-CC:     <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH bpf] selftests/bpf: fix error return code in run_getsockopt_test()
-Date:   Mon, 16 Nov 2020 18:16:33 +0800
-Message-ID: <20201116101633.64627-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 16 Nov 2020 05:16:53 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41B1C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:16:51 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id j7so18037287wrp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:16:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cPcVTlt4PtaJnqwyX4xYXu+/IKdY0k4HutlOclbS1nM=;
+        b=TZjbGcnkBRQSD8Dl4SgMJvoMpmw4tLtZFcPYqIvp+RKueRfsMqBuCAC8vyU/ubvNYX
+         uLO/dh8A2P3ZugUzDocHm3jFdQeZONKKsi2g5neE1s+gHXG9jd8tOnQQYWoEBCR65qIh
+         vq0uyQzd+2aOQ5JCaGNVJM37Wc+b7BSqKp6F0O4il/O1uA1hki9xlLHkMEmwe548jwHE
+         FrZdFIkJ9cFJKsY2NgtRJO92jwP6w7loQKZxM2R8M14J1LvBEBxycHLdz08x+NNJ7UaZ
+         pCqjpBscww5rIahnB9+0ykkPahxxBTM8GOXsE164c62x9rS7+cA+Ed2J+UR1Z15jSdk7
+         NWXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cPcVTlt4PtaJnqwyX4xYXu+/IKdY0k4HutlOclbS1nM=;
+        b=L3TOWNgsnbLf9qI9JePDD+F6PCbdKFmcnei0wwOw0XNND6+/Qyibt4Rq553sB6O9vK
+         Usi3fintjWfERzrySoKyWZ6lbWM8Wu/IyP40lhjwXNpSHQkcrAZbITvilktfkATX8EuK
+         KnqOOfts0uwDA23sO+ECtDbW6b9fJASHDcVZWTGtb1bq2zDrah4MhWnyqi+1S7GrHCjl
+         ZNpxeluUKP0ODRQBqlzneN7ryAgWU+ddD1dLOnHKFJ7i9r0XDaqS1SyHv5jDPtaYbYm9
+         4dSkFLtuIXa3HLHv9ojE2vDmyc60Fn9Et/Yar2x2wuqG4+SWEr/k2DY3rOGXgjTJ7XMy
+         9Ukw==
+X-Gm-Message-State: AOAM531eTT8azSCX9hD8mQWrAEmZdYMiejHAmuJTlkRBwcEShvsUPh8K
+        S/Ju2ZIfFzINeY+PAYomdyjEgg==
+X-Google-Smtp-Source: ABdhPJwQA7DtozqXJFXVwh4cU0VIT5A/4FmmNR8g+7sNzKjawJaeF7OXh2yqeovX9ruqo2vLuDccOg==
+X-Received: by 2002:adf:f9cb:: with SMTP id w11mr18853811wrr.1.1605521810515;
+        Mon, 16 Nov 2020 02:16:50 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb])
+        by smtp.gmail.com with ESMTPSA id c17sm22265131wro.19.2020.11.16.02.16.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 02:16:49 -0800 (PST)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     kishon@ti.com, repk@triplefau.lt, vkoul@kernel.org
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v3 0/3] phy: amlogic: add MIPI DSI function to analog MIPI+PCIe PHY
+Date:   Mon, 16 Nov 2020 11:16:44 +0100
+Message-Id: <20201116101647.73448-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+The AXG Analog MIPI-DSI PHY also provides functions to the PCIe PHY,
+thus we need to have inclusive support for both interfaces at runtime.
 
-Fixes: 65b4414a05eb ("selftests/bpf: add sockopt test that exercises BPF_F_ALLOW_MULTI")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- tools/testing/selftests/bpf/prog_tests/sockopt_multi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This fixes the regmap get from parent node, removes cell param
+to select a mode and implement runtime configuration & power on/off
+for both functions since they are not exclusive.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c b/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
-index 29188d6f5c8d..51fac975b316 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
-@@ -138,7 +138,8 @@ static int run_getsockopt_test(struct bpf_object *obj, int cg_parent,
- 	 */
- 
- 	buf = 0x40;
--	if (setsockopt(sock_fd, SOL_IP, IP_TOS, &buf, 1) < 0) {
-+	err = setsockopt(sock_fd, SOL_IP, IP_TOS, &buf, 1);
-+	if (err < 0) {
- 		log_err("Failed to call setsockopt(IP_TOS)");
- 		goto detach;
- 	}
+Changes since v2 at [2]:
+- Add DT review tags
+- Rebase on 5.10-rc1
+
+Changes since v1 at [1]:
+- added description to binding as requested parent
+- updated commit log of patch 1
+- also update example of patch 1
+
+[1] https://lkml.kernel.org/r/20200907073402.26674-1-narmstrong@baylibre.com
+[2] https://lkml.kernel.org/r/20200915130339.11079-1-narmstrong@baylibre.com
+
+Neil Armstrong (3):
+  dt-bindings: phy: amlogic,meson-axg-mipi-pcie-analog: remove reg
+    attribute
+  dt-bindings: phy: amlogic,meson-axg-mipi-pcie-analog: remove phy cell
+    parameter
+  phy: amlogic: phy-meson-axg-mipi-pcie-analog: add support for MIPI DSI
+    analog
+
+ .../amlogic,meson-axg-mipi-pcie-analog.yaml   |  21 +-
+ drivers/phy/amlogic/Kconfig                   |   1 +
+ .../amlogic/phy-meson-axg-mipi-pcie-analog.c  | 204 ++++++++++++------
+ 3 files changed, 149 insertions(+), 77 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
