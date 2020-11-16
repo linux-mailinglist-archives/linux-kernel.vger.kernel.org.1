@@ -2,109 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D17C2B5278
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583E12B51C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732502AbgKPUZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:25:44 -0500
-Received: from maynard.decadent.org.uk ([95.217.213.242]:52618 "EHLO
-        maynard.decadent.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732478AbgKPUZo (ORCPT
+        id S1731362AbgKPUAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:00:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727393AbgKPUAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:25:44 -0500
-X-Greylist: delayed 2043 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Nov 2020 15:25:43 EST
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126] helo=deadeye)
-        by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1kekXL-00031O-8H; Mon, 16 Nov 2020 20:51:39 +0100
-Received: from ben by deadeye with local (Exim 4.94)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1kekXK-0007aI-0S; Mon, 16 Nov 2020 19:51:38 +0000
-Message-ID: <ef625c1e21c492be8c423730e45e90d92b1ae899.camel@decadent.org.uk>
-Subject: Re: drivers/accessibility/speakup/serialio.c:48:19: warning:
- variable 'quot' set but not used
-From:   Ben Hutchings <ben@decadent.org.uk>
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Mon, 16 Nov 2020 19:51:23 +0000
-In-Reply-To: <20201116190122.yslib3wicn45rbuo@function>
-References: <202011160942.AmYkxiJv-lkp@intel.com>
-         <20201116190122.yslib3wicn45rbuo@function>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-lNInYjliUYrP/BVGlU8T"
-User-Agent: Evolution 3.36.4-2 
+        Mon, 16 Nov 2020 15:00:14 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F45C0613CF;
+        Mon, 16 Nov 2020 12:00:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=z8OzNGspQXnwNNcU0w++SX1K+3G8m57VI2juCCZTgyU=; b=XK+yWWrfRuNhvqIpyTCVd2+tvD
+        vWQWosYHC19Eca/wSVQOQMZb2zbMs8UoCYy1sM3fbI/sA95r8PcW8CR9s/E+o+j9ATkT6oVzWymrj
+        XrhRKXfPPOtuNWlonuzskNrvQAp0RHk0KXvtMo5GmDCcj0OyPy5XlGZ64v8adFr3l8z8T3UnryyaM
+        qvHf2HlqdbUXaUZ5jRdagxG89IyoN9og6kb7rcHheL0Ihff1Yhdm8VIwf25IcmKSEcElLwUrmiHcq
+        5Ek/GA7cp7K93BZZGRc2K4CH+trRpJDM5mLa15onBZYa/DFauROaUWnTvzBlag53u0jmCLXHGGftl
+        F2cBjaXA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kekfZ-0002Di-VR; Mon, 16 Nov 2020 20:00:10 +0000
+Date:   Mon, 16 Nov 2020 20:00:09 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>
+Subject: Re: [PATCH v2] epoll: add nsec timeout support
+Message-ID: <20201116200009.GJ29991@casper.infradead.org>
+References: <20201116161001.1606608-1-willemdebruijn.kernel@gmail.com>
+ <20201116161930.GF29991@casper.infradead.org>
+ <CA+FuTSdifgNAYe4DAfpRJxCO08y-sOi=XhOeMhd9mKbA3aPOug@mail.gmail.com>
+ <eead2765ea5e417abe616950b4e5d02f@AcuMS.aculab.com>
+ <CAF=yD-LGtfPGuqM8WP5Wz7d9_u6x-HdeBitKg81zdA8E6tMQwQ@mail.gmail.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 88.96.1.126
-X-SA-Exim-Mail-From: ben@decadent.org.uk
-X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF=yD-LGtfPGuqM8WP5Wz7d9_u6x-HdeBitKg81zdA8E6tMQwQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 02:54:17PM -0500, Willem de Bruijn wrote:
+> > You could also add a compile assert to check that the flag is reserved.
+> 
+> Like this?
+> 
+>         /* Check the EPOLL_* constant for consistency.  */
+>         BUILD_BUG_ON(EPOLL_CLOEXEC != O_CLOEXEC);
+> +        BUILD_BUG_ON(EPOLL_NSTIMEO & EPOLL_RESERVED_FLAGS);
 
---=-lNInYjliUYrP/BVGlU8T
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2020-11-16 at 20:01 +0100, Samuel Thibault wrote:
-> Hello Ben,
->=20
-> A long time ago you added a dependency for speakup drivers on
-> CONFIG_ISA, and you also added || COMPILE_TEST as an alternative.
->=20
-> It seems that some platform portability tests then think they should
-> be able to build it, even if they don't enable ISA, but then we are
-> getting warnings, or even errors, depending on the compatibility macros
-> in <asm/io.h> in the !ISA case (here, the parisc compatibility macros do
-> not consume their parameter).
->=20
-> Perhaps we should rather use
->=20
-> depends on ISA || (X86 && COMPILE_TEST)
->=20
-> ?
-> so that we have compile testing on x86 only (where the inb/outb macros
-> always behave fine) to avoid such issues on other archs?
-
-That seems reasonable though unusual.
-
-> Or we tell the architecture maintainers to fix their out macros into
-> consuming their parameters?
-[...]
-
-It does seem odd for parisc to define the I/O functions this way.  I
-don't know if it's really a bug.
-
-Ben.
-
---=20
-Ben Hutchings
-Everything should be made as simple as possible, but not simpler.
-                                                      - Albert Einstein
-
-
-
---=-lNInYjliUYrP/BVGlU8T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAl+y2DsACgkQ57/I7JWG
-EQkz+w//UfnbQDFWLWLce0U9xQUMBvXQhuN6tanVINl3C4BPgNWRJgT4dPTtZc2g
-DZoD+7AgT2Tlckt7T4y26vFD0sRPzB1Y994t/xgLc6KTvFZRAQh+wAjLTHBSeLR8
-CxBgVQvoVsgKuJvcb2hW/F6LHYu5sYjyMr0Xe9xEkq0YEMyO9ye6mtSSQBJjYuYS
-LmdBkVgbcTF8SrM8ekf7ZzEA/CFkgv0KnpGMW4MVyQsjX9WnXFK/tE2rwxDeFmym
-zab7OW0pfYvdlDlkmX/r+G1sK2/uT8PMDkLwXEEYU31a5b0aAJcev/Q8uEFHbZ14
-shQxgY8VOlmujpX+W0RoK84v73Za/y16m7SolZbg0ECGkKz65QaoqlezXYZotD9l
-YEujqTo2Fu8tw/5bJz7vvv4NBqU3Lkk70cjojjmDQeySMVQP6efHyoLDRqd/hwZh
-BFmPQZrEKCT1xeu5iTElOibNhQcMYQV3VUi30S/asqywifmTcDqEgSoLB0RkF5KE
-qB/J1V+VUe6c6tlCOg5BwAbFK9iYZBkfgI2bj7UcpCnvfNBnRk3zJ0uJwqeIHLnE
-D2t1fFomvyIUy82GBwQuEkmvm64RJmiXpnr1j08bNgla/jG4QGf1wg0dFxuRNntQ
-cycqRNq/ouBx6/mj2mv3nOaAfxLEiMru9/nDgid7bYgbxZB2Avw=
-=lQdv
------END PGP SIGNATURE-----
-
---=-lNInYjliUYrP/BVGlU8T--
+i think you got the sense of that test wrong.  but yes.
