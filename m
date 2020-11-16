@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A2A2B4146
+	by mail.lfdr.de (Postfix) with ESMTP id C23612B4147
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728842AbgKPKl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:41:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgKPKl1 (ORCPT
+        id S1729047AbgKPKld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:41:33 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:30151 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726889AbgKPKlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:41:27 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E56C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:41:26 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id s13so23133853wmh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:41:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GNUQO66qrdOdHSIIOO/s1hb0xndxqjBt91UQm30+zSM=;
-        b=eaBdGU3RDogVhMoxMVTWKeu5mCzcJ6EkO8wmaLAffBpNuaRTr0/bYPye/tXTGVA/YJ
-         L8BSx6nD+tYs5O25wmLBv0Kvz+Vl/I+7vjxPjWQLcrdyT5tq4/rgtJiVBF44h2gi00X9
-         kwfkMIx0yLKM5p5bTprZ8xdcgCcjzOE7iSDdXBjWqDrT6m5cx1HWO700kRVq37o4Cj0s
-         x/9fIDCU4AGoPFmtWnhuk3ltC4ShrEBqsuXRdxBoUkAw1+4b7YHZRxlLWz7S5CtzY7Cm
-         qBuVIGaqu0gVeNl1DpufDrmA/1K3OVAZWaOHsza6XOG6W40xjGwdpIaC8zVHuOa6Ev2Y
-         RsvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GNUQO66qrdOdHSIIOO/s1hb0xndxqjBt91UQm30+zSM=;
-        b=UTtUeEoNi3m23pY7H0Ac7mak2kO/tNjKLPUtSWzuz+i7TpAVdiumZ7RJc6RB5xvA3h
-         bkLsUuJt3MfB6reb+5Up09NadaAitm4dv2tJYA9NZ9Jf/gnrJrWp7Bq0izqv9krFHJVz
-         QXplK1Om5tCu8Tg4ezxlqOGSjbUgrTyNhlLPAYoVT9QmTd2B8GlGy4bNkvARscc3KLnh
-         SnUJw4ed74AANoe023r2+gK2LZGkDSGOIiMOmrkMjwKcXUxerDwU42223kvkl/YgS2c0
-         4gBFGJBhrqUe1YZ2r9ztnDmyEt7hHaGiSj20DwuFG+uz4ty8Bvv+2DN8qtXB0VPd19DX
-         lLrw==
-X-Gm-Message-State: AOAM533nITGb+XH35ub/ccCyIRIMlJNMuWqIL6m8bvyjVynaOQw2Gc6V
-        SSldExm3JCvnGZDTiDU0dfqdUA==
-X-Google-Smtp-Source: ABdhPJzBKk5BZ8yxuZV6z8Js1n1trQRG3UwxA+uVCz99sq20IQ7B/qzTBNeeceyyb3JEzQwM02hQdA==
-X-Received: by 2002:a1c:2c2:: with SMTP id 185mr14991445wmc.103.1605523285546;
-        Mon, 16 Nov 2020 02:41:25 -0800 (PST)
-Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id o197sm18729720wme.17.2020.11.16.02.41.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 02:41:24 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Subject: [PATCH 1/1] scsi: pm8001: pm8001_hwi: Remove unused variable 'value'
-Date:   Mon, 16 Nov 2020 10:41:19 +0000
-Message-Id: <20201116104119.816527-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 16 Nov 2020 05:41:32 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kebwt-0008hw-Ty; Mon, 16 Nov 2020 11:41:27 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kebwt-0004Ut-74; Mon, 16 Nov 2020 11:41:27 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id EBE7B240049;
+        Mon, 16 Nov 2020 11:41:26 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 90BC9240047;
+        Mon, 16 Nov 2020 11:41:26 +0100 (CET)
+Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id 524FC21E6A;
+        Mon, 16 Nov 2020 11:41:26 +0100 (CET)
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>
+Subject: [PATCH net-next v3] net/tun: Call netdev notifiers
+Date:   Mon, 16 Nov 2020 11:41:21 +0100
+Message-ID: <20201116104121.20884-1-ms@dev.tdt.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+Content-Transfer-Encoding: quoted-printable
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1605523287-00014126-C1E0DC53/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hasn't been used since 2009.
+Call netdev notifiers before and after changing the device type.
 
-Fixes the following W=1 kernel build warning(s):
-
- drivers/scsi/pm8001/pm8001_hwi.c: In function ‘mpi_set_phys_g3_with_ssc’:
- drivers/scsi/pm8001/pm8001_hwi.c:415:6: warning: variable ‘value’ set but not used [-Wunused-but-set-variable]
-
-Cc: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Martin Schiller <ms@dev.tdt.de>
 ---
- drivers/scsi/pm8001/pm8001_hwi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
-index 2054c2b03d928..0a1e09b1cd580 100644
---- a/drivers/scsi/pm8001/pm8001_hwi.c
-+++ b/drivers/scsi/pm8001/pm8001_hwi.c
-@@ -416,7 +416,7 @@ int pm8001_bar4_shift(struct pm8001_hba_info *pm8001_ha, u32 shiftValue)
- static void mpi_set_phys_g3_with_ssc(struct pm8001_hba_info *pm8001_ha,
- 				     u32 SSCbit)
- {
--	u32 value, offset, i;
-+	u32 offset, i;
- 	unsigned long flags;
- 
- #define SAS2_SETTINGS_LOCAL_PHY_0_3_SHIFT_ADDR 0x00030000
-@@ -467,7 +467,7 @@ static void mpi_set_phys_g3_with_ssc(struct pm8001_hba_info *pm8001_ha,
- 	so that the written value will be 0x8090c016.
- 	This will ensure only down-spreading SSC is enabled on the SPC.
- 	*************************************************************/
--	value = pm8001_cr32(pm8001_ha, 2, 0xd8);
-+	pm8001_cr32(pm8001_ha, 2, 0xd8);
- 	pm8001_cw32(pm8001_ha, 2, 0xd8, 0x8000C016);
- 
- 	/*set the shifted destination address to 0x0 to avoid error operation */
--- 
-2.25.1
+Change from v2:
+use subject_prefix 'net-next' to fix 'fixes_present' issue
+
+Change from v1:
+fix 'subject_prefix' and 'checkpatch' warnings
+
+---
+ drivers/net/tun.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 3d45d56172cb..2d9a00f41023 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -3071,9 +3071,13 @@ static long __tun_chr_ioctl(struct file *file, uns=
+igned int cmd,
+ 				   "Linktype set failed because interface is up\n");
+ 			ret =3D -EBUSY;
+ 		} else {
++			call_netdevice_notifiers(NETDEV_PRE_TYPE_CHANGE,
++						 tun->dev);
+ 			tun->dev->type =3D (int) arg;
+ 			netif_info(tun, drv, tun->dev, "linktype set to %d\n",
+ 				   tun->dev->type);
++			call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE,
++						 tun->dev);
+ 			ret =3D 0;
+ 		}
+ 		break;
+--=20
+2.20.1
 
