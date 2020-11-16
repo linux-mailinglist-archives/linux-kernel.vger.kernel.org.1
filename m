@@ -2,112 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA742B4AF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A332B4AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732060AbgKPQZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:25:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732050AbgKPQZY (ORCPT
+        id S1732071AbgKPQZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:25:45 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:34562 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731416AbgKPQZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:25:24 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8F2C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:25:22 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id d17so25936157lfq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:25:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9xG/1WZ4hUQEniTycexlF0Z4iE3+wzuenU4kk90ywzo=;
-        b=fTcQvCZGCknts/NWYoWF0Fs/xydCjDT5R47q5L8XVSIQCtXgnpEvmEMywuwBAXCk2G
-         pDUWrW36ijpFhxsKBQ2yprs3ExU7VW+RvmXR+nElMvwqjusEDhygn9d0vPdRGgO78kaG
-         A3OhfXTUoMT8EtIxk8rC3XgFytVcCFHI8F63J9Ts9IXVHBsFCBrkRggkJHxGe1GwCmuR
-         HHwE4rE5P9LElA0ptK7e6RJFaeaSNACP3m1PvvwNEfaK+R5leph9ahTAaPPHxdakdzli
-         8BH8gjargFPpYPjSTIwhXQ7E9wdF9lVeDDDyZia52sP05H+hFj2++7/AYYUKVpFOpwrE
-         J30A==
+        Mon, 16 Nov 2020 11:25:44 -0500
+Received: by mail-ot1-f66.google.com with SMTP id j14so16589322ots.1;
+        Mon, 16 Nov 2020 08:25:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9xG/1WZ4hUQEniTycexlF0Z4iE3+wzuenU4kk90ywzo=;
-        b=VJ2P/NUqMbxTrAN6junZ81vJe/g5uIo0aUgh5INPYQf/JxUTyF926WKJzw5Ivds5TW
-         5Rm16gr7fQH3+ReMlRrwhGdzof89JmoYAjsoov5/uIahG6RYXPfsQ/KrG59hAxV/Yjdx
-         YJaBmZCipBLhwvPUthajPFHXZAd8Z1yPDDB8o4LoZVPx13JF6C9ISRh2GcKlBUvlBUQD
-         YUhfps3hnSU3pfxb8frE1DWXozZSJ59g5j1ZvB5eruP64vJl1DpKVmIZEVew6UICv/GP
-         otYYzn+hDLndkan1skJfObcWlXX/4nMgfjNUg3QfvOP8+u6QWj/0LpA/6ekvBbkaORnD
-         ec/A==
-X-Gm-Message-State: AOAM531VpD5VEI3v5klK/d3b17ytG56MZWnuxcslvWBIW321bDb5+4H5
-        AePztiJGfs7NqQc2YpG2RFLPeA==
-X-Google-Smtp-Source: ABdhPJznVMQDd/DqjHtRUUctKXYAeZzd9Z0emVAQbGecQckp4yC+zEBPdGaEqNez4ohtfGKWQ92Exw==
-X-Received: by 2002:ac2:5199:: with SMTP id u25mr74800lfi.438.1605543920845;
-        Mon, 16 Nov 2020 08:25:20 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id w199sm2790781lff.91.2020.11.16.08.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 08:25:20 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 3A492100F5E; Mon, 16 Nov 2020 19:25:19 +0300 (+03)
-Date:   Mon, 16 Nov 2020 19:25:19 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Yang Shi <shy828301@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>
-Subject: Re: [RFC PATCH 3/6] mm: page_owner: add support for splitting to any
- order in split page_owner.
-Message-ID: <20201116162519.f4n445yku3dp2fhw@box>
-References: <20201111204008.21332-1-zi.yan@sent.com>
- <20201111204008.21332-4-zi.yan@sent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Nc27M9ki9nKK3SIKwkHCnsf1A8616+iJpgisEL0zo4=;
+        b=ihWUupm7LNY6quJsfIwPiAH98FIeUh4boKu5Y5ptabQAh4xA4JavBtrVCGUpO56bLf
+         VMRx69ePxkDRGQ4Bt17xPqQGSh0F0oJBdvoBODOlZRK8T+KtcVtek09uUAv3cv/buMs9
+         KMvuXOVoDrwVgLXKhQSJh4FOlsipo71F7Y8oEe1eXDIWYF5BDSvtyzbZcsJXtgAXBl0s
+         eMqimhASylpvN6YdSt+FnNtYCNcG12mjrhRqVnYuzljSLsQEk3JWZeL3WYsC+FoeC7yD
+         60nzkpE+MPXygNgYhpPdH/5VGTly5lcBNvSufmCedpwV+sr1GY6a5/iDdS1NEx8hgAi5
+         zeCQ==
+X-Gm-Message-State: AOAM5300NB1LYG98CRkYLEzZfZ0mCV1WgfllYORH6dX2EU2ap+/uO0Hg
+        je0KtKrlh1zlefuElJGEf6SMiWD4DOvDNPdqrJw=
+X-Google-Smtp-Source: ABdhPJwkIGRT8KJ1R50oN/HYp+g+UTL1v50WX4tmwPKkYgyP3a0+sWiF5eWeqZBT3UMgTvZ/iOm+4l1OeljlMxM0GpI=
+X-Received: by 2002:a9d:222f:: with SMTP id o44mr15316ota.321.1605543943606;
+ Mon, 16 Nov 2020 08:25:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111204008.21332-4-zi.yan@sent.com>
+References: <20201104232356.4038506-1-saravanak@google.com> <20201104232356.4038506-13-saravanak@google.com>
+In-Reply-To: <20201104232356.4038506-13-saravanak@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 16 Nov 2020 17:25:32 +0100
+Message-ID: <CAJZ5v0hM9cUeW58OMRRWfAfY+_GYuXy=Dt8bssU+TCufuhukmw@mail.gmail.com>
+Subject: Re: [PATCH v1 12/18] driver core: Add fw_devlink_parse_fwtree()
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 03:40:05PM -0500, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> It adds a new_order parameter to set new page order in page owner.
-> It prepares for upcoming changes to support split huge page to any lower
-> order.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
+On Thu, Nov 5, 2020 at 12:24 AM Saravana Kannan <saravanak@google.com> wrote:
+>
+> This function is a wrapper around fwnode_operations.add_links().
+>
+> This function parses each node in a fwnode tree and create fwnode links
+> for each of those nodes. The information for creating the fwnode links
+> (the supplier and consumer fwnode) is obtained by parsing the properties
+> in each of the fwnodes.
+>
+> This function also ensures that no fwnode is parsed more than once by
+> marking the fwnodes as parsed.
+>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 > ---
->  include/linux/page_owner.h | 7 ++++---
->  mm/huge_memory.c           | 2 +-
->  mm/page_alloc.c            | 2 +-
->  mm/page_owner.c            | 6 +++---
->  4 files changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
-> index 3468794f83d2..215cbb159568 100644
-> --- a/include/linux/page_owner.h
-> +++ b/include/linux/page_owner.h
-> @@ -31,10 +31,11 @@ static inline void set_page_owner(struct page *page,
->  		__set_page_owner(page, order, gfp_mask);
+>  drivers/base/core.c    | 19 +++++++++++++++++++
+>  include/linux/fwnode.h |  3 +++
+>  2 files changed, 22 insertions(+)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 4a0907574646..ee28d8c7ee85 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -1543,6 +1543,25 @@ static bool fw_devlink_is_permissive(void)
+>         return fw_devlink_flags == DL_FLAG_SYNC_STATE_ONLY;
 >  }
->  
-> -static inline void split_page_owner(struct page *page, unsigned int nr)
-> +static inline void split_page_owner(struct page *page, unsigned int nr,
-> +			unsigned int new_order)
+>
+> +static void fw_devlink_parse_fwnode(struct fwnode_handle *fwnode)
+> +{
+> +       if (fwnode->flags & FWNODE_FLAG_LINKS_ADDED)
+> +               return;
+
+Why is the flag needed?
+
+Duplicate links won't be created anyway and it doesn't cause the tree
+walk to be terminated.
+
+> +
+> +       fwnode_call_int_op(fwnode, add_links, NULL);
+> +       fwnode->flags |= FWNODE_FLAG_LINKS_ADDED;
+> +}
+> +
+> +static void fw_devlink_parse_fwtree(struct fwnode_handle *fwnode)
+> +{
+> +       struct fwnode_handle *child = NULL;
+> +
+> +       fw_devlink_parse_fwnode(fwnode);
+> +
+> +       while ((child = fwnode_get_next_available_child_node(fwnode, child)))
+
+I'd prefer
+
+for (child = NULL; child; child =
+fwnode_get_next_available_child_node(fwnode, child))
+
+> +               fw_devlink_parse_fwtree(child);
+> +}
+> +
+>  static void fw_devlink_link_device(struct device *dev)
 >  {
->  	if (static_branch_unlikely(&page_owner_inited))
-> -		__split_page_owner(page, nr);
-> +		__split_page_owner(page, nr, new_order);
+>         int fw_ret;
+> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+> index ec02e1e939cc..9aaf9e4f3994 100644
+> --- a/include/linux/fwnode.h
+> +++ b/include/linux/fwnode.h
+> @@ -15,12 +15,15 @@
+>  struct fwnode_operations;
+>  struct device;
+>
 
-Hm. Where do you correct __split_page_owner() declaration. I don't see it.
+Description here, please.
 
--- 
- Kirill A. Shutemov
+> +#define FWNODE_FLAG_LINKS_ADDED                BIT(0)
+> +
+>  struct fwnode_handle {
+>         struct fwnode_handle *secondary;
+>         const struct fwnode_operations *ops;
+>         struct device *dev;
+>         struct list_head suppliers;
+>         struct list_head consumers;
+> +       u32 flags;
+
+That's a bit wasteful.  Maybe u8 would suffice for the time being?
+
+>  };
+>
+>  struct fwnode_link {
+> --
+> 2.29.1.341.ge80a0c044ae-goog
+>
