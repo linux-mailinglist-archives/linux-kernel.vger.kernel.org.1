@@ -2,1093 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF81A2B3BDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA9D2B3BE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgKPDd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 22:33:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgKPDd6 (ORCPT
+        id S1726532AbgKPDiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 22:38:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31292 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726203AbgKPDiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 22:33:58 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04CFC0613CF;
-        Sun, 15 Nov 2020 19:33:58 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id b16so11761611qtb.6;
-        Sun, 15 Nov 2020 19:33:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VHApJq/Few3rO+PsJswsAjD2xg/TF+yH8mK3EqygBZ8=;
-        b=IU7rG5Id/wjxU9Ko861JgpgdFpxMi2Yz8nDJY+mjhjRrGSK386J/hZczZblhVOIzuU
-         rH4sqzCy3PHcqCII7b0K0C1rJ+4ChhzzqBuyP1aPdG/gUNBHS1H0zr2lv8DJtB/06cho
-         wa+MxoRPH66reEgtxrrT9RzGvBA2bF+UkSn0A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VHApJq/Few3rO+PsJswsAjD2xg/TF+yH8mK3EqygBZ8=;
-        b=L6L4fqqPrxtmWhtDpaorhy1/OUz6JzjSJ+LVYJzqE7h1llr7687SQOq1WgyfRTTyVE
-         K/TCEJ7KhvbiEWFB7BYgi7RgDRhbGMFMkiyOm7IipyRMojRYr7QUnToWxi6rPKfxdKy0
-         id8doW5DKPvga7TajhnND9LpEUC9CI3k711b20lJ9IG00jDwFB6mh+4dN/qZN3qCIjV6
-         4ChizXbrGrkjBvPcWx3pRQpeM6WO9qL0UzBdJTd4UfjY8A6gIY8MG9N6w3ucIRQuU8fV
-         gi3Ha1CI6cK+dKrTof7RRMLNbGfpnVQEt5X/nkNVQRECa67+SXXkP3Qg9ri6L0KsKICD
-         hSdA==
-X-Gm-Message-State: AOAM532Be5Ykq+4p5xMpxyrKx3w+Sf9hxziGNyfgDkQ7oY6uUDtH5ofa
-        IuM99ojCEoFFSO7VOnNW1DXUNKtKxcHH2PAWOeIrgsxO1GGVKA==
-X-Google-Smtp-Source: ABdhPJxLbq++VdHEvuckMaE0oGXrWK+DV7DqHONdzd9K3rD+nUDYKHqxuWIx4CUksHqehv04m7c14zlLrV9z3KwFiJE=
-X-Received: by 2002:ac8:6651:: with SMTP id j17mr12485984qtp.176.1605497637791;
- Sun, 15 Nov 2020 19:33:57 -0800 (PST)
+        Sun, 15 Nov 2020 22:38:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605497885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sJuVxD8MKBr57zv/aexgnLowqoN1xbyWUa+Emh3GwGE=;
+        b=EwdKSOYVVF287ZQXZ8Lkw4/oHYGW/IA2+ewQPdqOo5XHEqrsG3tZnOWD0OZAjuqyaUw4FU
+        KLRzsAGE5Od6RdDpY34iXcaMMOJIlEzj6RIh0IHq4SUq6voBZci9yDgzWVy9+7NDyLSv95
+        gE5VIjmXIu2cnknwFYMkz8vtki7OlVo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-xKPNSRrfMP-foyIS6wm_3Q-1; Sun, 15 Nov 2020 22:38:03 -0500
+X-MC-Unique: xKPNSRrfMP-foyIS6wm_3Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 52A458049D6;
+        Mon, 16 Nov 2020 03:38:02 +0000 (UTC)
+Received: from [10.72.13.126] (ovpn-13-126.pek2.redhat.com [10.72.13.126])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 502A227CC5;
+        Mon, 16 Nov 2020 03:37:50 +0000 (UTC)
+Subject: Re: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block
+ device
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com>
+Date:   Mon, 16 Nov 2020 11:37:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201110072446.8218-1-rentao.bupt@gmail.com>
-In-Reply-To: <20201110072446.8218-1-rentao.bupt@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Mon, 16 Nov 2020 03:33:45 +0000
-Message-ID: <CACPK8Xcpj_LsYOJ=S0p1D5Wqof_2m7SLnPRantQen61B2_XjAA@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: aspeed: minipack: Fixup I2C tree
-To:     Tao Ren <rentao.bupt@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tao Ren <taoren@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201113134712.69744-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 at 07:24, <rentao.bupt@gmail.com> wrote:
->
-> From: Tao Ren <rentao.bupt@gmail.com>
->
-> Create all the i2c switches in device tree and use aliases to assign
-> child channels with consistent bus numbers.
->
-> Besides, "i2c-mux-idle-disconnect" is set for all the i2c switches to
-> avoid potential conflicts when multiple devices (beind the switches) use
-> the same device address.
->
-> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+On 2020/11/13 下午9:47, Stefano Garzarella wrote:
+> Thanks to Max that started this work!
+> I took his patches, and extended the block simulator a bit.
+>
+> This series moves the network device simulator in a new module
+> (vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
+> module, allowing the possibility to add new vDPA device simulators.
+> Then we added a new vdpa_sim_blk module to simulate a block device.
+>
+> I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() to skip
+> bytes when ptr is NULL"), maybe we can add a new functions instead of
+> modify vringh_iov_xfer().
+>
+> As Max reported, I'm also seeing errors with vdpa_sim_blk related to
+> iotlb and vringh when there is high load, these are some of the error
+> messages I can see randomly:
+>
+>    vringh: Failed to access avail idx at 00000000e8deb2cc
+>    vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
+>    vringh: Failed to get flags at 000000006635d7a3
+>
+>    virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 offset: 0x2840000 len: 0x20000
+>    virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 offset: 0x58ee000 len: 0x3000
+>
+> These errors should all be related to the fact that iotlb_translate()
+> fails with -EINVAL, so it seems that we miss some mapping.
 
-I will apply for 5.11.
 
-> ---
->  .../boot/dts/aspeed-bmc-facebook-minipack.dts | 888 ++++++++++++++++++
->  1 file changed, 888 insertions(+)
+Is this only reproducible when there's multiple co-current accessing of 
+IOTLB? If yes, it's probably a hint that some kind of synchronization is 
+still missed somewhere.
+
+It might be useful to log the dma_map/unmp in both virtio_ring and 
+vringh to see who is missing the map.
+
+Thanks
+
+
 >
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-minipack.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-minipack.dts
-> index c34741dbd268..9eb23e874f19 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-facebook-minipack.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-facebook-minipack.dts
-> @@ -70,6 +70,162 @@
->                 i2c45 = &imux45;
->                 i2c46 = &imux46;
->                 i2c47 = &imux47;
-> +
-> +               /*
-> +                * I2C Switch 24-0071 (channel #0 of 8-0070): 8 channels for
-> +                * connecting to left PDB (Power Distribution Board).
-> +                */
-> +               i2c48 = &imux48;
-> +               i2c49 = &imux49;
-> +               i2c50 = &imux50;
-> +               i2c51 = &imux51;
-> +               i2c52 = &imux52;
-> +               i2c53 = &imux53;
-> +               i2c54 = &imux54;
-> +               i2c55 = &imux55;
-> +
-> +               /*
-> +                * I2C Switch 25-0072 (channel #1 of 8-0070): 8 channels for
-> +                * connecting to right PDB (Power Distribution Board).
-> +                */
-> +               i2c56 = &imux56;
-> +               i2c57 = &imux57;
-> +               i2c58 = &imux58;
-> +               i2c59 = &imux59;
-> +               i2c60 = &imux60;
-> +               i2c61 = &imux61;
-> +               i2c62 = &imux62;
-> +               i2c63 = &imux63;
-> +
-> +               /*
-> +                * I2C Switch 26-0076 (channel #2 of 8-0070): 8 channels for
-> +                * connecting to top FCM (Fan Control Module).
-> +                */
-> +               i2c64 = &imux64;
-> +               i2c65 = &imux65;
-> +               i2c66 = &imux66;
-> +               i2c67 = &imux67;
-> +               i2c68 = &imux68;
-> +               i2c69 = &imux69;
-> +               i2c70 = &imux70;
-> +               i2c71 = &imux71;
-> +
-> +               /*
-> +                * I2C Switch 27-0076 (channel #3 of 8-0070): 8 channels for
-> +                * connecting to bottom FCM (Fan Control Module).
-> +                */
-> +               i2c72 = &imux72;
-> +               i2c73 = &imux73;
-> +               i2c74 = &imux74;
-> +               i2c75 = &imux75;
-> +               i2c76 = &imux76;
-> +               i2c77 = &imux77;
-> +               i2c78 = &imux78;
-> +               i2c79 = &imux79;
-> +
-> +               /*
-> +                * I2C Switch 40-0073 (channel #0 of 11-0070): connecting
-> +                * to PIM (Port Interface Module) #1 (1-based).
-> +                */
-> +               i2c80 = &imux80;
-> +               i2c81 = &imux81;
-> +               i2c82 = &imux82;
-> +               i2c83 = &imux83;
-> +               i2c84 = &imux84;
-> +               i2c85 = &imux85;
-> +               i2c86 = &imux86;
-> +               i2c87 = &imux87;
-> +
-> +               /*
-> +                * I2C Switch 41-0073 (channel #1 of 11-0070): connecting
-> +                * to PIM (Port Interface Module) #2 (1-based).
-> +                */
-> +               i2c88 = &imux88;
-> +               i2c89 = &imux89;
-> +               i2c90 = &imux90;
-> +               i2c91 = &imux91;
-> +               i2c92 = &imux92;
-> +               i2c93 = &imux93;
-> +               i2c94 = &imux94;
-> +               i2c95 = &imux95;
-> +
-> +               /*
-> +                * I2C Switch 42-0073 (channel #2 of 11-0070): connecting
-> +                * to PIM (Port Interface Module) #3 (1-based).
-> +                */
-> +               i2c96 = &imux96;
-> +               i2c97 = &imux97;
-> +               i2c98 = &imux98;
-> +               i2c99 = &imux99;
-> +               i2c100 = &imux100;
-> +               i2c101 = &imux101;
-> +               i2c102 = &imux102;
-> +               i2c103 = &imux103;
-> +
-> +               /*
-> +                * I2C Switch 43-0073 (channel #3 of 11-0070): connecting
-> +                * to PIM (Port Interface Module) #4 (1-based).
-> +                */
-> +               i2c104 = &imux104;
-> +               i2c105 = &imux105;
-> +               i2c106 = &imux106;
-> +               i2c107 = &imux107;
-> +               i2c108 = &imux108;
-> +               i2c109 = &imux109;
-> +               i2c110 = &imux110;
-> +               i2c111 = &imux111;
-> +
-> +               /*
-> +                * I2C Switch 44-0073 (channel #4 of 11-0070): connecting
-> +                * to PIM (Port Interface Module) #5 (1-based).
-> +                */
-> +               i2c112 = &imux112;
-> +               i2c113 = &imux113;
-> +               i2c114 = &imux114;
-> +               i2c115 = &imux115;
-> +               i2c116 = &imux116;
-> +               i2c117 = &imux117;
-> +               i2c118 = &imux118;
-> +               i2c119 = &imux119;
-> +
-> +               /*
-> +                * I2C Switch 45-0073 (channel #5 of 11-0070): connecting
-> +                * to PIM (Port Interface Module) #6 (1-based).
-> +                */
-> +               i2c120 = &imux120;
-> +               i2c121 = &imux121;
-> +               i2c122 = &imux122;
-> +               i2c123 = &imux123;
-> +               i2c124 = &imux124;
-> +               i2c125 = &imux125;
-> +               i2c126 = &imux126;
-> +               i2c127 = &imux127;
-> +
-> +               /*
-> +                * I2C Switch 46-0073 (channel #6 of 11-0070): connecting
-> +                * to PIM (Port Interface Module) #7 (1-based).
-> +                */
-> +               i2c128 = &imux128;
-> +               i2c129 = &imux129;
-> +               i2c130 = &imux130;
-> +               i2c131 = &imux131;
-> +               i2c132 = &imux132;
-> +               i2c133 = &imux133;
-> +               i2c134 = &imux134;
-> +               i2c135 = &imux135;
-> +
-> +               /*
-> +                * I2C Switch 47-0073 (channel #7 of 11-0070): connecting
-> +                * to PIM (Port Interface Module) #8 (1-based).
-> +                */
-> +               i2c136 = &imux136;
-> +               i2c137 = &imux137;
-> +               i2c138 = &imux138;
-> +               i2c139 = &imux139;
-> +               i2c140 = &imux140;
-> +               i2c141 = &imux141;
-> +               i2c142 = &imux142;
-> +               i2c143 = &imux143;
->         };
+> I'll debug more carefully, in the meantime can you give a first review?
 >
->         chosen {
-> @@ -184,11 +340,16 @@
->  &i2c2 {
->         status = "okay";
+> Thanks,
+> Stefano
 >
-> +       /*
-> +        * I2C Switch 2-0070 is connecting to SCM (System Controller
-> +        * Module).
-> +        */
->         i2c-switch@70 {
->                 compatible = "nxp,pca9548";
->                 #address-cells = <1>;
->                 #size-cells = <0>;
->                 reg = <0x70>;
-> +               i2c-mux-idle-disconnect;
+> Max Gurtovoy (4):
+>    vhost-vdpa: add support for vDPA blk devices
+>    vdpa: split vdpasim to core and net modules
+>    vdpa_sim: remove hard-coded virtq count
+>    vdpa: add vdpa simulator for block device
 >
->                 imux16: i2c@0 {
->                         #address-cells = <1>;
-> @@ -269,29 +430,270 @@
->                 #address-cells = <1>;
->                 #size-cells = <0>;
->                 reg = <0x70>;
-> +               i2c-mux-idle-disconnect;
+> Stefano Garzarella (8):
+>    vdpa_sim: remove the limit of IOTLB entries
+>    vdpa_sim: add struct vdpasim_device to store device properties
+>    vdpa_sim: move config management outside of the core
+>    vdpa_sim: use kvmalloc to allocate vdpasim->buffer
+>    vdpa_sim: make vdpasim->buffer size configurable
+>    vdpa_sim: split vdpasim_virtqueue's iov field in riov and wiov
+>    vringh: allow vringh_iov_xfer() to skip bytes when ptr is NULL
+>    vdpa_sim_blk: implement ramdisk behaviour
 >
-> +               /*
-> +                * I2C Switch 8-0070 channel #0: connecting to left PDB
-> +                * (Power Distribution Board).
-> +                */
->                 imux24: i2c@0 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <0>;
-> +
-> +                       i2c-switch@71 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x71>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux48: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux49: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux50: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux51: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux52: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux53: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux54: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux55: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
+>   drivers/vdpa/vdpa_sim/vdpa_sim.h     | 117 +++++++++++
+>   drivers/vdpa/vdpa_sim/vdpa_sim.c     | 283 +++++----------------------
+>   drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 251 ++++++++++++++++++++++++
+>   drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 172 ++++++++++++++++
+>   drivers/vhost/vdpa.c                 |  11 +-
+>   drivers/vhost/vringh.c               |  16 +-
+>   drivers/vdpa/Kconfig                 |  16 +-
+>   drivers/vdpa/vdpa_sim/Makefile       |   2 +
+>   8 files changed, 628 insertions(+), 240 deletions(-)
+>   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim.h
+>   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+>   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_net.c
 >
-> +               /*
-> +                * I2C Switch 8-0070 channel #1: connecting to right PDB
-> +                * (Power Distribution Board).
-> +                */
->                 imux25: i2c@1 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <1>;
-> +
-> +                       i2c-switch@72 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x72>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux56: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux57: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux58: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux59: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux60: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux61: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux62: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux63: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
-> +               /*
-> +                * I2C Switch 8-0070 channel #2: connecting to top FCM
-> +                * (Fan Control Module).
-> +                */
->                 imux26: i2c@2 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <2>;
-> +
-> +                       i2c-switch@76 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x76>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux64: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux65: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux66: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux67: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux68: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux69: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux70: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux71: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
-> +               /*
-> +                * I2C Switch 8-0070 channel #3: connecting to bottom
-> +                * FCM (Fan Control Module).
-> +                */
->                 imux27: i2c@3 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <3>;
-> +
-> +                       i2c-switch@76 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x76>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux72: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux73: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux74: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux75: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux76: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux77: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux78: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux79: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
->                 imux28: i2c@4 {
-> @@ -323,11 +725,16 @@
->  &i2c9 {
->         status = "okay";
->
-> +       /*
-> +        * I2C Switch 9-0070 is connecting to MAC/PHY EEPROMs on SMB
-> +        * (Switch Main Board).
-> +        */
->         i2c-switch@70 {
->                 compatible = "nxp,pca9548";
->                 #address-cells = <1>;
->                 #size-cells = <0>;
->                 reg = <0x70>;
-> +               i2c-mux-idle-disconnect;
->
->                 imux32: i2c@0 {
->                         #address-cells = <1>;
-> @@ -391,53 +798,534 @@
->                 #address-cells = <1>;
->                 #size-cells = <0>;
->                 reg = <0x70>;
-> +               i2c-mux-idle-disconnect;
->
-> +               /*
-> +                * I2C Switch 11-0070 channel #0: connecting to PIM
-> +                * (Port Interface Module) #1 (1-based).
-> +                */
->                 imux40: i2c@0 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <0>;
-> +
-> +                       i2c-switch@73 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x73>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux80: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux81: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux82: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux83: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux84: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux85: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux86: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux87: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
-> +               /*
-> +                * I2C Switch 11-0070 channel #1: connecting to PIM
-> +                * (Port Interface Module) #2 (1-based).
-> +                */
->                 imux41: i2c@1 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <1>;
-> +
-> +                       i2c-switch@73 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x73>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux88: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux89: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux90: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux91: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux92: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux93: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux94: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux95: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
-> +               /*
-> +                * I2C Switch 11-0070 channel #2: connecting to PIM
-> +                * (Port Interface Module) #3 (1-based).
-> +                */
->                 imux42: i2c@2 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <2>;
-> +
-> +                       i2c-switch@73 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x73>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux96: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux97: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux98: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux99: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux100: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux101: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux102: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux103: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
-> +               /*
-> +                * I2C Switch 11-0070 channel #3: connecting to PIM
-> +                * (Port Interface Module) #4 (1-based).
-> +                */
->                 imux43: i2c@3 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <3>;
-> +
-> +                       i2c-switch@73 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x73>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux104: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux105: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux106: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux107: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux108: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux109: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux110: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux111: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
-> +               /*
-> +                * I2C Switch 11-0070 channel #4: connecting to PIM
-> +                * (Port Interface Module) #5 (1-based).
-> +                */
->                 imux44: i2c@4 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <4>;
-> +
-> +                       i2c-switch@73 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x73>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux112: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux113: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux114: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux115: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux116: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux117: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux118: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux119: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
-> +               /*
-> +                * I2C Switch 11-0070 channel #5: connecting to PIM
-> +                * (Port Interface Module) #6 (1-based).
-> +                */
->                 imux45: i2c@5 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <5>;
-> +
-> +                       i2c-switch@73 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x73>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux120: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux121: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux122: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux123: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux124: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux125: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux126: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux127: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
-> +               /*
-> +                * I2C Switch 11-0070 channel #6: connecting to PIM
-> +                * (Port Interface Module) #7 (1-based).
-> +                */
->                 imux46: i2c@6 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <6>;
-> +
-> +                       i2c-switch@73 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x73>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux128: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux129: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux130: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux131: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux132: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux133: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux134: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux135: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->
-> +               /*
-> +                * I2C Switch 11-0070 channel #7: connecting to PIM
-> +                * (Port Interface Module) #8 (1-based).
-> +                */
->                 imux47: i2c@7 {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->                         reg = <7>;
-> +
-> +                       i2c-switch@73 {
-> +                               compatible = "nxp,pca9548";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               reg = <0x73>;
-> +                               i2c-mux-idle-disconnect;
-> +
-> +                               imux136: i2c@0 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <0>;
-> +                               };
-> +
-> +                               imux137: i2c@1 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <1>;
-> +                               };
-> +
-> +                               imux138: i2c@2 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <2>;
-> +                               };
-> +
-> +                               imux139: i2c@3 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <3>;
-> +                               };
-> +
-> +                               imux140: i2c@4 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <4>;
-> +                               };
-> +
-> +                               imux141: i2c@5 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <5>;
-> +                               };
-> +
-> +                               imux142: i2c@6 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <6>;
-> +                               };
-> +
-> +                               imux143: i2c@7 {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +                                       reg = <7>;
-> +                               };
-> +                       };
->                 };
->         };
->  };
-> --
-> 2.17.1
->
+
