@@ -2,94 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62FC82B5121
+	by mail.lfdr.de (Postfix) with ESMTP id DC1612B5122
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727731AbgKPT3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:29:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
+        id S1727714AbgKPTaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:30:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgKPT3C (ORCPT
+        with ESMTP id S1726255AbgKPTaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:29:02 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352E4C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:29:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=BBb+0MAVRl4o+gsCUweO3CE8BYgSiGgb0WEbUxUtSNM=; b=t3YX5Pr5Jm0DVCluskREN3Aari
-        K4yvnb8dD7Y5wolEiLfgGcDYPnQDQasMEFFlzyz14w3EefsbpqaIrfrtyGa1CHF0Q+p85CrSsmD5b
-        qp1JSAmkXE31ScAV/X1XCGW2ZUA+q1FgL09Miv3pzCyjf67XFOwRa3361X/rO5KD67m9mDlm7IQVD
-        reNIEWQS16u62+dK2M7CejNK7I+XPVbb5l6jO61dM6WoxX4HqvDK2PwIq4561iPIVbbuzO24K8sJX
-        FOW5NhLJMNYWXU3ViXp8UFll/RXJIVI2JWxNKRHKj4BmhyWscmI+LQXVUndo7ADUG40tJK3gPMV+8
-        Zh179aaA==;
-Received: from [2601:1c0:6280:3f0::990e] (helo=dragon.site)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kekBP-0006V2-LK; Mon, 16 Nov 2020 19:28:59 +0000
-Subject: Re: [PATCH] compiler.h: Fix barrier_data() on clang
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20201014212631.207844-1-nivedita@alum.mit.edu>
- <87sg999ot0.fsf@igel.home>
- <0dbaca2d-9ad0-8c1a-a280-97be01cac2bd@infradead.org>
- <87k0ul9msr.fsf@igel.home>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3fff1eb9-83c0-1c29-6f57-fa50f1ec6ee7@infradead.org>
-Date:   Mon, 16 Nov 2020 11:28:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 16 Nov 2020 14:30:04 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6376C0613CF;
+        Mon, 16 Nov 2020 11:30:03 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id d142so385622wmd.4;
+        Mon, 16 Nov 2020 11:30:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=baVdptJRCbDZjJ8DuZudh573ITj/FBuGjcAGOwxiymE=;
+        b=IuvYiIBdBzwE/ULUmhF38FiOnb7R4NGmVftrkFCqCOQR0O/KEd6bZXGyeJ1nJDgPr4
+         Y7kS8W0aDBBmijlFQQNnlEjiMXBqv5aZiDy0JiEijD6S2xWceJP976I+//bU8u8IKVw9
+         xNRKr3Sp8iVmL9vJVw7jcKdC6WVAiDGVC0jLk/JGmUwPv/QkwHe/lAvONDSq6rCbgrMn
+         YKrlBGaXfm5Vbs3u/829/sqTDC62+ekXnUJ+UxNZzXSivvtXFY/lQbLa23IfbT+nAfiM
+         PrqJtql+f4kzXPcxxW57BQIi03p6hGmE12/lcAfNPxvcTrQRhGzD2xX5QosSsXuRiiu5
+         47Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=baVdptJRCbDZjJ8DuZudh573ITj/FBuGjcAGOwxiymE=;
+        b=KfRHtiockJZx6gCP2Tep2nFgLqoKTaDK99ClyrY9GupyI+MMi0os+kXrpSvokrhHDr
+         MSBiGwb4MrLVAlwMPXwD+S4Vqe8dOdk3MMhXb7YHqWaSDDjsAuu2cjCOTFJ6N4nT/kQ2
+         368qe5SMHPQgDUQdd9V+JzTFlz/mvR2c+UPjmRvndu9pPnTUWdRpWjVZ2W0zqyZ7NbUD
+         Alx/WSofufl2HJ52K3k1rSo330+ZFXUR3RxhSf0JnzlJ7mavZ0vEujPvjp3F+DHTV9Rn
+         oT6v4oea0ixw4kXmt25daY+4d0Lt4GvuzStcGZ631koIxtdo5jTdZHuL1XLqX120fVUr
+         zKdA==
+X-Gm-Message-State: AOAM531AVxufOE0/z8A3aDf9pAz5GzEuQj07LwfVFBGKoTlyVnnUUw8A
+        jOJ9SmbKBoViKoR5Udv7wdkvvMduZvfMNnTDlNA=
+X-Google-Smtp-Source: ABdhPJyqLuVQBeAcZ0X7bNgq/BftyKAlmOzveP2UgPrWbROSjaHIRnbl5ejKqxG3FbJwSCmGSrlpiJAJ47st7HsMhrY=
+X-Received: by 2002:a7b:c157:: with SMTP id z23mr468742wmi.70.1605555002601;
+ Mon, 16 Nov 2020 11:30:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87k0ul9msr.fsf@igel.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201116173005.1825880-1-lee.jones@linaro.org> <20201116173005.1825880-3-lee.jones@linaro.org>
+In-Reply-To: <20201116173005.1825880-3-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 16 Nov 2020 14:29:51 -0500
+Message-ID: <CADnq5_MjjgY0mUKh81Qr6rsX8e52C_snz2-LXwpV-WGxuVnbFQ@mail.gmail.com>
+Subject: Re: [PATCH 02/43] drm/radeon/radeon: Move prototype into shared header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20 10:30 AM, Andreas Schwab wrote:
-> On Nov 16 2020, Randy Dunlap wrote:
-> 
->> What kernel version are you building?
-> 
-> 5.10-rc4
-> 
-> Andreas.
+On Mon, Nov 16, 2020 at 12:30 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Unfortunately, a suitable one didn't already exist.
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/radeon_device.c:637:6: warning: no previous proto=
+type for =E2=80=98radeon_device_is_virtual=E2=80=99 [-Wmissing-prototypes]
+>  637 | bool radeon_device_is_virtual(void)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-OK, thanks.
+Applied.  Thanks!
 
-My build machine is slow, but I have a patch that I am testing:
+Alex
 
----
-From: Randy Dunlap <rdunlap@infradead.org>
-
-riscv's <vdso/processor.h> uses barrier() so it should
-#include <asm/barrier.h> to prevent build errors.
-
-Reported-by: Andreas Schwab <schwab@linux-m68k.org>
----
-  arch/riscv/include/asm/vdso/processor.h |    2 ++
-  1 file changed, 2 insertions(+)
-
---- lnx-510-rc4.orig/arch/riscv/include/asm/vdso/processor.h
-+++ lnx-510-rc4/arch/riscv/include/asm/vdso/processor.h
-@@ -4,6 +4,8 @@
-
-  #ifndef __ASSEMBLY__
-
-+#include <asm/barrier.h>
-+
-  static inline void cpu_relax(void)
-  {
-  #ifdef __riscv_muldiv
-
-
-
-
-
+> ---
+>  drivers/gpu/drm/radeon/radeon_device.c |  1 +
+>  drivers/gpu/drm/radeon/radeon_device.h | 32 ++++++++++++++++++++++++++
+>  drivers/gpu/drm/radeon/radeon_drv.c    |  3 +--
+>  3 files changed, 34 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/rad=
+eon/radeon_device.c
+> index 7f384ffe848a7..ad572f965190b 100644
+> --- a/drivers/gpu/drm/radeon/radeon_device.c
+> +++ b/drivers/gpu/drm/radeon/radeon_device.c
+> @@ -42,6 +42,7 @@
+>  #include <drm/drm_probe_helper.h>
+>  #include <drm/radeon_drm.h>
+>
+> +#include "radeon_device.h"
+>  #include "radeon_reg.h"
+>  #include "radeon.h"
+>  #include "atom.h"
+> diff --git a/drivers/gpu/drm/radeon/radeon_device.h b/drivers/gpu/drm/rad=
+eon/radeon_device.h
+> new file mode 100644
+> index 0000000000000..3112b99ae36f1
+> --- /dev/null
+> +++ b/drivers/gpu/drm/radeon/radeon_device.h
+> @@ -0,0 +1,32 @@
+> +/* radeon_device.h -- Private header for radeon device -*- linux-c -*-
+> + *
+> + * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
+> + * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
+> + * All rights reserved.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining=
+ a
+> + * copy of this software and associated documentation files (the "Softwa=
+re"),
+> + * to deal in the Software without restriction, including without limita=
+tion
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
+se,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice (including the =
+next
+> + * paragraph) shall be included in all copies or substantial portions of=
+ the
+> + * Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
+SS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
+TY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
+ALL
+> + * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAG=
+ES OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR=
+ OTHER
+> + * DEALINGS IN THE SOFTWARE.
+> + */
+> +
+> +#ifndef __RADEON_DEVICE_H__
+> +#define __RADEON_DEVICE_H__
+> +
+> +bool radeon_device_is_virtual(void);
+> +
+> +#endif                         /* __RADEON_DEVICE_H__ */
+> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon=
+/radeon_drv.c
+> index f813eb5e140dd..536b246b9a6aa 100644
+> --- a/drivers/gpu/drm/radeon/radeon_drv.c
+> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
+> @@ -52,6 +52,7 @@
+>
+>  #include "radeon_drv.h"
+>  #include "radeon.h"
+> +#include "radeon_device.h"
+>
+>  /*
+>   * KMS wrapper.
+> @@ -293,8 +294,6 @@ MODULE_DEVICE_TABLE(pci, pciidlist);
+>
+>  static const struct drm_driver kms_driver;
+>
+> -bool radeon_device_is_virtual(void);
+> -
+>  static int radeon_pci_probe(struct pci_dev *pdev,
+>                             const struct pci_device_id *ent)
+>  {
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
