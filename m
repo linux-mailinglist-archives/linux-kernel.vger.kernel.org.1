@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632CC2B4060
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3362B4063
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgKPJ7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:59:47 -0500
-Received: from mga11.intel.com ([192.55.52.93]:47364 "EHLO mga11.intel.com"
+        id S1727047AbgKPKBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:01:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbgKPJ7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:59:46 -0500
-IronPort-SDR: hhgE9bbRFdc4cZJVKUJHRwKM9GpS2QDU4wKGSNgArdmbx0zZOmUKXiVUoMTHSva7vvyDVLzmu/
- 62Cd4iPbtYig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="167213207"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="167213207"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 01:59:45 -0800
-IronPort-SDR: fOi6cNCfXhxG7oIBMPMHtk+YlTck4cc7ABDpxR5p5NMvIZeyF9Vo//OqNMhstecLb5G1VQ7rZM
- YHuwh75mMKtA==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="533364241"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 01:59:44 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kebJW-0072PD-4l; Mon, 16 Nov 2020 12:00:46 +0200
-Date:   Mon, 16 Nov 2020 12:00:46 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: bitmap: Remove unused function declaration
-Message-ID: <20201116100046.GS4077@smile.fi.intel.com>
-References: <BN7PR11MB26097166B6B46387D8A1ABA4FDE30@BN7PR11MB2609.namprd11.prod.outlook.com>
- <CAAH8bW_WVomz45dUAth9OqVRe=+nYcBBcc9iW4tmXkDSnJOUhw@mail.gmail.com>
+        id S1726860AbgKPKBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 05:01:19 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3ACEC20855;
+        Mon, 16 Nov 2020 10:01:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605520878;
+        bh=g3NC2i2JvAfCqKV0nrXfTSrA5NvK35Rp2cqd8YX6o0U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oHkeaOnv8TVC169QG2VXk+ZX53nLbgndZd+eP9+6NTU6xY/qwM4TJBtCoLbbRGcUC
+         NvtxMRkXz0np8SvUXZpl3GoPWLAryqPZh6sUtubhjFE9lkQHrLX0f6gEJb2CIcBcTZ
+         oBNjtvaGR+txwYLf77DF5hNJQpZhUMI7wKdNoyaM=
+Date:   Mon, 16 Nov 2020 10:01:10 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [patch 06/19] arm64: irqstat: Get rid of duplicated declaration
+Message-ID: <20201116100110.GA29459@willie-the-truck>
+References: <20201113140207.499353218@linutronix.de>
+ <20201113141733.392015387@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAH8bW_WVomz45dUAth9OqVRe=+nYcBBcc9iW4tmXkDSnJOUhw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201113141733.392015387@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 07:59:37PM -0800, Yury Norov wrote:
-> (CC related people)
+On Fri, Nov 13, 2020 at 03:02:13PM +0100, Thomas Gleixner wrote:
+> irq_cpustat_t is exactly the same as the asm-generic one. Define
+> ack_bad_irq so the generic header does not emit the generic version of it.
 > 
-> Since there is no actual implementation for them, there's , I think
-> it's safe (and better)
-> to remove the declarations. Thanks for the catch.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> ---
+>  arch/arm64/include/asm/hardirq.h |    7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
 
-Fixes: 2afe27c718b6 ("lib/bitmap.c: bitmap_[empty,full]: remove code duplication")
+Acked-by: Will Deacon <will@kernel.org>
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Acked-by: Yury Norov <yury.norov@gmail.com>
-> 
-> On Sun, Nov 15, 2020 at 7:17 PM Ma, Jianpeng <jianpeng.ma@intel.com> wrote:
-> >
-> > Signed-off-by: Jianpeng Ma <jianpeng.ma@intel.com>
-> > ---
-> >  include/linux/bitmap.h | 2 --
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> > index 99058eb81042..6f08965c69a5 100644
-> > --- a/include/linux/bitmap.h
-> > +++ b/include/linux/bitmap.h
-> > @@ -126,8 +126,6 @@ extern void bitmap_free(const unsigned long *bitmap);
-> >   * lib/bitmap.c provides these functions:
-> >   */
-> >
-> > -extern int __bitmap_empty(const unsigned long *bitmap, unsigned int nbits);
-> > -extern int __bitmap_full(const unsigned long *bitmap, unsigned int nbits);
-> >  extern int __bitmap_equal(const unsigned long *bitmap1,
-> >                           const unsigned long *bitmap2, unsigned int nbits);
-> >  extern bool __pure __bitmap_or_equal(const unsigned long *src1,
-> > --
-> > 2.28.0
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Will
