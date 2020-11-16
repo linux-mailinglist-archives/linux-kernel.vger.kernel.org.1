@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885DB2B4D76
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D512B4D84
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387482AbgKPRhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:37:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
+        id S2387496AbgKPRhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:37:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387460AbgKPRhs (ORCPT
+        with ESMTP id S2387484AbgKPRhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:37:48 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12508C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:48 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id p8so19650887wrx.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:48 -0800 (PST)
+        Mon, 16 Nov 2020 12:37:51 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B2EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:49 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id c17so19605523wrc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a/Zj5V7ntHFWoK7hDL0KY4UUjT17GXd4P0At2oNvDPk=;
-        b=TFBPvHxiNg0J66sXloeHlwrOB5eWbndg3GWxnxNUY/l85QSylm74QsaOu6c9V0sLmG
-         gsrnImQVGr/vzI1O7BgbeoRNaysARDN0yLvRIL+qaCWtSVIL3Dki7e9FEDW8asTZVwZ6
-         +KbfAcOKEr1hxQUuXN22cD2h5KNqAixBIbRYq2Qf8CZUofHYwO2YGcYYuXget9TsJXwS
-         sSWUlQBWfMX4tksJumaQpklKT/jTnTL3slInD2HfyyF2gVExiphw0nn20uXiUWBwEc4T
-         9naALP835/24p4ry/5XCk+jssfHvQcCihUPctJQpGv51yNSp70AKMXPK/mHf3HRNuU1n
-         5s4g==
+        bh=wQLiBxHM+lzm9ozhMmLXV+2+mYaIBz41oWImWz9w9hM=;
+        b=rDoz2LODwdktvJ9Y9EB13KeCm6PWI+1JaZSHYfxn0zExBSUAYcFF3Lk6Ktpw5Vwga8
+         aL0QXnr6CBahNfjRD5G4eKtK79HrTR4hmKiITJdzXnS0ED9XlTb2mt0hJeqqOcBwxmeR
+         05rnsgHtTUluKUDpP5sJhTd0r20O3S6oLrlgydUWSzxOQfL7knsKgSvaji3bHKLYTqHJ
+         FvK5gDN2dVmttG7hb8l5OFk80iq7QiJ3jDsFhiGAEhryWjHOc+L4L2KVW/kUCftYR/yE
+         MVyBHd1SJt/+YU3LZD24rx8hHt80lCb5WQ4tsk9PtPfzNzGI51M7c/IeZIR5U+Y2eTem
+         nWfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a/Zj5V7ntHFWoK7hDL0KY4UUjT17GXd4P0At2oNvDPk=;
-        b=tnVXNWXGQC6PYu9Gy5VqbJqgBsA33RQ2MQ3gMWDiJ+BKKuP61E6rPyVd4O9IXIEQpc
-         c+eXUpb8Y/1vmvhGcdQyg8Sy33C3CvxdQltTaCBf+MJUfgs+uGfcURlAfD2AHyFDcZ8g
-         RRzPGcFaq3A+NntIzwjGQR/KSBinLKBNW5DF+HFU0qbIpZNSczm59sSTuxL5JaIL4cQY
-         w0CaRPch8CW771cStoD1dwWsNWYSU5cw4QuhU7IsUExNdqDdvyrBbfC/nEBDNdsYVQYf
-         I3FuD4+Wg9QHJVTSLBEt1X+FqRLJ3TQ+KvZxXVEVPTqX4Fe80WI0tCriB734H60A+tMM
-         5vJw==
-X-Gm-Message-State: AOAM533ISTJomd/L443ZNEcmIw/Jx8abKKMYy0r7B1jvUCVT+LpCOMI7
-        blGTWGSjAp1jRakWNLKHoFZapQ==
-X-Google-Smtp-Source: ABdhPJyMK0Ji9phYwLd+YAD9fkz+za+2JWzXtRjSfGXUX56GVCuCSEw3Ah5D19tYN5hkRyKDaHQNxA==
-X-Received: by 2002:adf:e512:: with SMTP id j18mr21789945wrm.390.1605548266827;
-        Mon, 16 Nov 2020 09:37:46 -0800 (PST)
+        bh=wQLiBxHM+lzm9ozhMmLXV+2+mYaIBz41oWImWz9w9hM=;
+        b=QtqdVI29eLkExlnsxRa9ey6ztRpFO+PnjKXN65vJINlU5utDQIPqb5XFGrcrnsC1DF
+         85DC+nMyuMYoJqErQ+BxRB+ThCF+vXJZhukb1hPJR9EL0ZGxTFwAjSHYnUPUc9J4SXg4
+         ZgSyl7MeEZLiqtBhLDc6FzUmL3Rnqc49wRhVKf9snQm/dr9UUK2W2hNtWPqTr75m1mrp
+         t+CfNE8kRgDM/Gv45jNewf25XE/FCak7g5S5rv3H0s04RmPZXP2OojAKkwEmYxvOWray
+         JxpLKaH2MGInVhRK/8rgyMiTrD2aI4nJK9u543r7qi8fry1beCDasq7BWzSijnusQpVb
+         3j2A==
+X-Gm-Message-State: AOAM530HFIPWmggf70fD/A1UPSgOIgVAvcRLmpsDHX7Slw6bF/H8LiwP
+        pWkOui9ExiMHwO2JwJ2fZhtfzg==
+X-Google-Smtp-Source: ABdhPJxCpzwe4imCzFW0TzeoW/NB4Uovt0DLHrE/wNPjb+bT45c82Lf7bTQCIN3A11qDyKVlyg1sQw==
+X-Received: by 2002:a5d:5342:: with SMTP id t2mr20141378wrv.243.1605548268198;
+        Mon, 16 Nov 2020 09:37:48 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.45
+        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:37:46 -0800 (PST)
+        Mon, 16 Nov 2020 09:37:47 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 31/43] drm/radeon/cik: Move 'si_*()'s prototypes to shared header
-Date:   Mon, 16 Nov 2020 17:36:48 +0000
-Message-Id: <20201116173700.1830487-32-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 32/43] drm/radeon/btc_dpm: Move 'evergreen_get_pi's prototype to shared header
+Date:   Mon, 16 Nov 2020 17:36:49 +0000
+Message-Id: <20201116173700.1830487-33-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116173700.1830487-1-lee.jones@linaro.org>
 References: <20201116173700.1830487-1-lee.jones@linaro.org>
@@ -73,70 +71,141 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/si.c:4186:6: warning: no previous prototype for ‘si_vram_gtt_location’ [-Wmissing-prototypes]
- 4186 | void si_vram_gtt_location(struct radeon_device *rdev,
- | ^~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/si.c:5186:6: warning: no previous prototype for ‘si_init_uvd_internal_cg’ [-Wmissing-prototypes]
- 5186 | void si_init_uvd_internal_cg(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/si.c:5801:6: warning: no previous prototype for ‘si_rlc_reset’ [-Wmissing-prototypes]
- 5801 | void si_rlc_reset(struct radeon_device *rdev)
- | ^~~~~~~~~~~~
+ drivers/gpu/drm/radeon/rv770_dpm.c:62:30: warning: no previous prototype for ‘evergreen_get_pi’ [-Wmissing-prototypes]
+ 62 | struct evergreen_power_info *evergreen_get_pi(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/cik.c | 4 +---
- drivers/gpu/drm/radeon/si.h  | 4 ++++
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/radeon/btc_dpm.c     | 3 +--
+ drivers/gpu/drm/radeon/cypress_dpm.c | 3 +--
+ drivers/gpu/drm/radeon/evergreen.h   | 2 ++
+ drivers/gpu/drm/radeon/ni_dpm.c      | 3 +--
+ drivers/gpu/drm/radeon/rv770_dpm.c   | 1 +
+ drivers/gpu/drm/radeon/si_dpm.c      | 3 +--
+ 6 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
-index ae020ad7b3185..cef0f3111cd3a 100644
---- a/drivers/gpu/drm/radeon/cik.c
-+++ b/drivers/gpu/drm/radeon/cik.c
-@@ -40,6 +40,7 @@
- #include "radeon_asic.h"
- #include "radeon_audio.h"
- #include "radeon_ucode.h"
-+#include "si.h"
+diff --git a/drivers/gpu/drm/radeon/btc_dpm.c b/drivers/gpu/drm/radeon/btc_dpm.c
+index 018949668536e..4e64ed38c439f 100644
+--- a/drivers/gpu/drm/radeon/btc_dpm.c
++++ b/drivers/gpu/drm/radeon/btc_dpm.c
+@@ -29,6 +29,7 @@
+ #include "btc_dpm.h"
+ #include "btcd.h"
+ #include "cypress_dpm.h"
++#include "evergreen.h"
+ #include "r600_dpm.h"
+ #include "rv770.h"
+ #include "radeon.h"
+@@ -49,8 +50,6 @@
+ #ifndef BTC_MGCG_SEQUENCE
+ #define BTC_MGCG_SEQUENCE  300
  
- #define SH_MEM_CONFIG_GFX_DEFAULT \
- 	ALIGNMENT_MODE(SH_MEM_ALIGNMENT_MODE_UNALIGNED)
-@@ -127,9 +128,6 @@ MODULE_FIRMWARE("radeon/mullins_mec.bin");
- MODULE_FIRMWARE("radeon/mullins_rlc.bin");
- MODULE_FIRMWARE("radeon/mullins_sdma.bin");
+-struct evergreen_power_info *evergreen_get_pi(struct radeon_device *rdev);
+-
+ extern int ni_mc_load_microcode(struct radeon_device *rdev);
  
--extern void si_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc);
--extern void si_rlc_reset(struct radeon_device *rdev);
--extern void si_init_uvd_internal_cg(struct radeon_device *rdev);
- static u32 cik_get_cu_active_bitmap(struct radeon_device *rdev, u32 se, u32 sh);
- extern int cik_sdma_resume(struct radeon_device *rdev);
- extern void cik_sdma_enable(struct radeon_device *rdev, bool enable);
-diff --git a/drivers/gpu/drm/radeon/si.h b/drivers/gpu/drm/radeon/si.h
-index a1751ae560f02..f483a64d17050 100644
---- a/drivers/gpu/drm/radeon/si.h
-+++ b/drivers/gpu/drm/radeon/si.h
-@@ -25,8 +25,12 @@
- #define __SI_H__
+ //********* BARTS **************//
+diff --git a/drivers/gpu/drm/radeon/cypress_dpm.c b/drivers/gpu/drm/radeon/cypress_dpm.c
+index 6d3690bcca2d2..fdddbbaecbb74 100644
+--- a/drivers/gpu/drm/radeon/cypress_dpm.c
++++ b/drivers/gpu/drm/radeon/cypress_dpm.c
+@@ -26,6 +26,7 @@
  
+ #include "atom.h"
+ #include "cypress_dpm.h"
++#include "evergreen.h"
+ #include "evergreend.h"
+ #include "r600_dpm.h"
+ #include "rv770.h"
+@@ -44,8 +45,6 @@
+ #define MC_CG_SEQ_YCLK_SUSPEND      0x04
+ #define MC_CG_SEQ_YCLK_RESUME       0x0a
+ 
+-struct evergreen_power_info *evergreen_get_pi(struct radeon_device *rdev);
+-
+ static void cypress_enable_bif_dynamic_pcie_gen2(struct radeon_device *rdev,
+ 						 bool enable)
+ {
+diff --git a/drivers/gpu/drm/radeon/evergreen.h b/drivers/gpu/drm/radeon/evergreen.h
+index f8d772e612a48..a829deb8b078a 100644
+--- a/drivers/gpu/drm/radeon/evergreen.h
++++ b/drivers/gpu/drm/radeon/evergreen.h
+@@ -29,6 +29,7 @@
+ #define __RADEON_EVERGREEN_H__
+ 
+ struct evergreen_mc_save;
++struct evergreen_power_info;
  struct radeon_device;
-+struct radeon_mc;
  
- int si_mc_load_microcode(struct radeon_device *rdev);
- u32 si_gpu_check_soft_reset(struct radeon_device *rdev);
-+void si_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc);
-+void si_rlc_reset(struct radeon_device *rdev);
-+void si_init_uvd_internal_cg(struct radeon_device *rdev);
+ bool evergreen_is_display_hung(struct radeon_device *rdev);
+@@ -49,5 +50,6 @@ u32 evergreen_get_number_of_dram_channels(struct radeon_device *rdev);
+ void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
+ u32 evergreen_gpu_check_soft_reset(struct radeon_device *rdev);
+ int evergreen_rlc_resume(struct radeon_device *rdev);
++struct evergreen_power_info *evergreen_get_pi(struct radeon_device *rdev);
  
- #endif                         /* __SI_H__ */
+ #endif				/* __RADEON_EVERGREEN_H__ */
+diff --git a/drivers/gpu/drm/radeon/ni_dpm.c b/drivers/gpu/drm/radeon/ni_dpm.c
+index d39bbd9793cc2..dd5ef64937230 100644
+--- a/drivers/gpu/drm/radeon/ni_dpm.c
++++ b/drivers/gpu/drm/radeon/ni_dpm.c
+@@ -26,6 +26,7 @@
+ #include <linux/seq_file.h>
+ 
+ #include "atom.h"
++#include "evergreen.h"
+ #include "ni_dpm.h"
+ #include "nid.h"
+ #include "r600_dpm.h"
+@@ -720,8 +721,6 @@ static const u32 cayman_sysls_enable[] =
+ };
+ #define CAYMAN_SYSLS_ENABLE_LENGTH sizeof(cayman_sysls_enable) / (3 * sizeof(u32))
+ 
+-struct evergreen_power_info *evergreen_get_pi(struct radeon_device *rdev);
+-
+ extern int ni_mc_load_microcode(struct radeon_device *rdev);
+ 
+ struct ni_power_info *ni_get_pi(struct radeon_device *rdev)
+diff --git a/drivers/gpu/drm/radeon/rv770_dpm.c b/drivers/gpu/drm/radeon/rv770_dpm.c
+index badd8ac6e038f..ef2f1a048cfed 100644
+--- a/drivers/gpu/drm/radeon/rv770_dpm.c
++++ b/drivers/gpu/drm/radeon/rv770_dpm.c
+@@ -30,6 +30,7 @@
+ #include "rv770_dpm.h"
+ #include "cypress_dpm.h"
+ #include "atom.h"
++#include "evergreen.h"
+ #include <linux/seq_file.h>
+ 
+ #define MC_CG_ARB_FREQ_F0           0x0a
+diff --git a/drivers/gpu/drm/radeon/si_dpm.c b/drivers/gpu/drm/radeon/si_dpm.c
+index 32b697965c064..b4581392fbce9 100644
+--- a/drivers/gpu/drm/radeon/si_dpm.c
++++ b/drivers/gpu/drm/radeon/si_dpm.c
+@@ -26,6 +26,7 @@
+ #include <linux/seq_file.h>
+ 
+ #include "atom.h"
++#include "evergreen.h"
+ #include "r600_dpm.h"
+ #include "rv770.h"
+ #include "radeon.h"
+@@ -1720,8 +1721,6 @@ static const struct si_powertune_data powertune_data_hainan =
+ 	true
+ };
+ 
+-struct evergreen_power_info *evergreen_get_pi(struct radeon_device *rdev);
+-
+ extern void vce_v1_0_enable_mgcg(struct radeon_device *rdev, bool enable);
+ 
+ static int si_populate_voltage_value(struct radeon_device *rdev,
 -- 
 2.25.1
 
