@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62792B3FBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5352B4013
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgKPJ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:28:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbgKPJ2I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:28:08 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9A3C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:28:08 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 10so23035842wml.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:28:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aiVEflQDL1Czjb2cNgVWqiIiSyZhmV56WumKQIdULB8=;
-        b=N8h/wOgVmzOgB6oQWVsAXyVwSkIxftrwX56zVH0kkezD2bi7ZhV8b86mFR2ShBS3+d
-         JsR7oIjQttTRadOEjoii/N1xvfYFk/v0FDTBZCpoREnE01stEd7m76wojUkjuGPzX36t
-         /XhMjHCXo8QkC3ZwxqLM/CGIXxo0nKbyiqt9Tn58HFa7CsjeHEECi3btpJ5eoVlzWazw
-         twXifoQik41Dtdkya2l7youQ44+4Z6jM0SRRXzHOleALfw0LVBYt2NJPdvDu0srN0opf
-         6k3cdIJTPR7LcDuNkpV2AR3/QT+8UxcnoqSe2ZPXcomNCwUc73cIR7YJyPpD6js98ksD
-         j+EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aiVEflQDL1Czjb2cNgVWqiIiSyZhmV56WumKQIdULB8=;
-        b=g9XuFIT72aM0wD75vGt1N5TMXDYUpOEfSQGBKFWOpK5XHvBjM8Za45mMj6aVSpwao+
-         t91Sz3Tn2SmSf9l0oL165z8vPrZo+5NWlU0+HekJDEWW8PDXEmUdWRkNOFGrKgB76i6C
-         svHfYZBdwxltlrmC+gT1TI5TjjKi3GMQcQvlfn9d8VTyyK7/QcN1xE4evrTwNPaR+3K3
-         FyCTEze/ib6KpYGkqim73IN4DCUnymz3jbbxbtYfj6DXVaUDpUTEZxF0OTVDxeACbz3l
-         k1vQfQok04qUUycqj/87rgm7Tq1IYE9/zF47MuW1kaRbuCcE6E3dAL6x/kPIE3omUvOu
-         WdYg==
-X-Gm-Message-State: AOAM532y0xMSvLeKzHBMAoiKvGx1IhN0r2yz6HmR10j7UPE15pD+YQOR
-        cERY9YR7Q8JWdKntpTt8k1U+WBi7yZ99CQ==
-X-Google-Smtp-Source: ABdhPJzlGXMgl3T04ISYwJc9hF/19Gvm08KlXJPXpkDO+c7n7N8p9oqyP/Q+OQHCtq20IQpJhKEO6w==
-X-Received: by 2002:a1c:309:: with SMTP id 9mr13737111wmd.80.1605518886526;
-        Mon, 16 Nov 2020 01:28:06 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:eda6:9373:9374:7214? ([2a01:e34:ed2f:f020:eda6:9373:9374:7214])
-        by smtp.googlemail.com with ESMTPSA id n23sm19036873wmk.24.2020.11.16.01.28.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 01:28:05 -0800 (PST)
-Subject: Re: [PATCH] thermal: intel_pch_thermal: Add PCI ids for Lewisburg
- PCH.
-To:     Andres Freund <andres@anarazel.de>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tushar Dave <tushar.n.dave@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <2fd3733b-ed67-80e0-7b27-8e3c421eeb9c@linaro.org>
- <20201113204916.1144907-1-andres@anarazel.de>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <116a81e6-7989-8077-1fc4-c9f047256e9a@linaro.org>
-Date:   Mon, 16 Nov 2020 10:28:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728630AbgKPJnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:43:03 -0500
+Received: from correo.us.es ([193.147.175.20]:51654 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726598AbgKPJnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:43:02 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 99CEAD2DA22
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 10:42:58 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 730A78561D
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 10:42:58 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id B08D816490A; Mon, 16 Nov 2020 10:39:28 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1931523B9D8;
+        Mon, 16 Nov 2020 10:17:37 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Mon, 16 Nov 2020 10:17:32 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id CF2AE4265A5A;
+        Mon, 16 Nov 2020 10:17:36 +0100 (CET)
+Date:   Mon, 16 Nov 2020 10:17:36 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: rectify file patterns for NETFILTER
+Message-ID: <20201116091736.GA32490@salvia>
+References: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
+ <d03c87f9fcc4bb68c148cfad12cafef5f2385eef.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <20201113204916.1144907-1-andres@anarazel.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d03c87f9fcc4bb68c148cfad12cafef5f2385eef.camel@perches.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/2020 21:49, Andres Freund wrote:
-> I noticed that I couldn't read the PCH temperature on my workstation
-> (C620 series chipset, w/ 2x Xeon Gold 5215 CPUs) directly, but had to go
-> through IPMI. Looking at the data sheet, it looks to me like the
-> existing intel PCH thermal driver should work without changes for
-> Lewisburg.
+Hi Lukas,
+
+On Sun, Nov 15, 2020 at 07:58:33PM -0800, Joe Perches wrote:
+> On Mon, 2020-11-09 at 10:19 +0100, Lukas Bulwahn wrote:
+> > The two file patterns in the NETFILTER section:
+> > 
+> >   F:      include/linux/netfilter*
+> >   F:      include/uapi/linux/netfilter*
+> > 
+> > intended to match the directories:
+> > 
+> >   ./include{/uapi}/linux/netfilter_{arp,bridge,ipv4,ipv6}
+> > 
+> > A quick check with ./scripts/get_maintainer.pl --letters -f will show that
+> > they are not matched, though, because this pattern only matches files, but
+> > not directories.
+> > 
+> > Rectify the patterns to match the intended directories.
+> []
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> []
+> > @@ -12139,10 +12139,10 @@ W:	http://www.nftables.org/
+> >  Q:	http://patchwork.ozlabs.org/project/netfilter-devel/list/
+> >  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+> >  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git
+> > -F:	include/linux/netfilter*
+> > +F:	include/linux/netfilter*/
+> >  F:	include/linux/netfilter/
 > 
-> I suspect there's some other PCI IDs missing. But I hope somebody at
-> Intel would have an easier time figuring that out than I...
+> This line could be deleted or perhaps moved up one line above
 > 
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Tushar Dave <tushar.n.dave@intel.com>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Link: https://lore.kernel.org/lkml/20200115184415.1726953-1-andres@anarazel.de/
-> Signed-off-by: Andres Freund <andres@anarazel.de>
-> ---
+> F:	include/linux/netfilter/
+> F:	include/linux/netfilter*/
+> 
+> (as the second line already matches the first line's files too)
+> 
+> >  F:	include/net/netfilter/
+> > -F:	include/uapi/linux/netfilter*
+> > +F:	include/uapi/linux/netfilter*/
+> >  F:	include/uapi/linux/netfilter/
+> 
+> same here.
+> 
+> >  F:	net/*/netfilter.c
+> >  F:	net/*/netfilter/
 
-Applied, thanks
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Please, send a v2 to address this feedback. Thank you.
