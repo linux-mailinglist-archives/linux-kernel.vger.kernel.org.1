@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9FC2B430A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1351B2B430E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729806AbgKPLlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:41:13 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:34288 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728352AbgKPLlN (ORCPT
+        id S1729872AbgKPLlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:41:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728662AbgKPLlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:41:13 -0500
-Received: by mail-wr1-f68.google.com with SMTP id r17so18366562wrw.1;
-        Mon, 16 Nov 2020 03:41:09 -0800 (PST)
+        Mon, 16 Nov 2020 06:41:47 -0500
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC86C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:41:45 -0800 (PST)
+Received: by mail-vk1-xa44.google.com with SMTP id s135so3635465vkh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:41:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2lOdbwlpCkQ/U9b3AI8byk39FYQ+zSfYd4xMBl2NASE=;
+        b=jVRee76xd/vj7nXCbI+BMQETz21ek9rOn5KYwlEgY8rR7BwA15GOWS/WjjTQdHOr/L
+         jUFPM9gMGsb2ja5/vP0MD6Cu1HL8aBPFeE7/sEEB1TBN94P7zs6yMRe8yAz5WYI32eT/
+         mxfxhgJHsKXS37zoW9tG03L2y8KDDQYANGkj4ipDQhWvU1IPXyPK2rwBrgc15JQFTYZm
+         yEdQYbWcEdXbTVZ0upCd/wRj1ZmWWlPZcBLfx1Pt6kfV+iwitXgSftXc4VS8TwUV/yNf
+         AEUNT12cbenYntn9bjKSjVCVwFHH7wS6NVXt0cx+djYtAjiu4PPC3oc1TAWMOzcVOGCe
+         gjbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Y7kdbqVSDMdCnPNWY4xSbC6hJYp1+DS6xFZoA2u4R2Y=;
-        b=bSgikvXuuB4MuvJFEANvghqlliw5C1O0pvDoAt4FicQrg0Tx9pI4kD/YlIuVNGibo8
-         hs8x6ONXwzM43BmbFtLO9oQxcjUGrbVFEZ0aklBKpddt1aImNTO92/0Q0Im+BZ6Vfco6
-         ZH1XTWTo+AgNexHOzM851nL6ORxdhB31WbFAMJqKdEjdTT7Hiqrdr4QhJlBNdm6ux2zU
-         BeVdFWrlny23feFvbE1bk2vXIflw5klGeDG0H3ghVBVZIAsmN/zMeekW+nR+zhdPxj40
-         lPrqY6drCE36OhGmVwWLWEheCtlB5ZuuAEgYacdB0gPizgF4+4YeuHuDyeNBET8a9Nbo
-         bKwA==
-X-Gm-Message-State: AOAM531qvFPkKsskXjblEWcsdSwPx/dAS9NtK4Zo2wWVvlsemmPcGtdq
-        oMG+aPNTBrPulZWolwBhFeA=
-X-Google-Smtp-Source: ABdhPJyYg/u3vBgXPIJPMNUX/jFnANGn5/BDaJHlRUiRHCzw+3vz4t3mF3pvxwJ5OzdEyUDiFEZEBw==
-X-Received: by 2002:adf:f852:: with SMTP id d18mr18070916wrq.232.1605526869393;
-        Mon, 16 Nov 2020 03:41:09 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id t11sm16089352wrm.8.2020.11.16.03.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 03:41:08 -0800 (PST)
-Date:   Mon, 16 Nov 2020 11:41:07 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v2 09/17] x86/hyperv: provide a bunch of helper functions
-Message-ID: <20201116114107.bdi2opfjd7gwbpdu@liuwe-devbox-debian-v2>
-References: <20201105165814.29233-1-wei.liu@kernel.org>
- <20201105165814.29233-10-wei.liu@kernel.org>
- <871rgyy3d1.fsf@vitty.brq.redhat.com>
- <20201113155111.fcruk7dlsp6ohoq5@liuwe-devbox-debian-v2>
- <87zh3lutdz.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2lOdbwlpCkQ/U9b3AI8byk39FYQ+zSfYd4xMBl2NASE=;
+        b=Lpv25oZ2AuWvo3CnXsoC+aj2sDBIZ79mclC9Doa4BskUuHqnjZkw3RcGLTgtiIYNrK
+         14qb/z0yQQiDW4sAk1HwhOWplD3MScMOvdQjhD3EX7fFSJK8kSqplShTnfrbjt0/C5Mv
+         qXxtLKvNUggjG5o7zXlfaUHpEFCJ3KGX+TkUdM+LVTpcABExoCxYD8JYvDhPu5g44YEe
+         ORiPz6PqinYOVTN6EgURspyPlO+0YMLIXzfMKXPLje7ZQiuGv2pv/mo+VEd2MTRynt2C
+         QxzE/Ht07PVgJuMnt0cGmR9z2KIt/pNCS7ECs4935KFnFqr6Ykf9GGAHsi2l6Dse6jPk
+         O6bA==
+X-Gm-Message-State: AOAM532i0Y2hlhHu0qqEBmy1T1zAM+CHw1IFJXhoTqK8oEiMEySRfkX3
+        ABKT0YTEtMynAsdf69BfjOsTeSyzLzzVcTweLi1Sbg==
+X-Google-Smtp-Source: ABdhPJyF+H/3JuvG1rFtW0kdG+BQsvxK9WRDn/noF2Wj5TJ7U/U1fEbxZ4IGsVFZ+argIC1nTyuv7vbjE+bp1pyH1+Q=
+X-Received: by 2002:a1f:41cc:: with SMTP id o195mr6992899vka.15.1605526904953;
+ Mon, 16 Nov 2020 03:41:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zh3lutdz.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+References: <20201106120933.7190-1-muhammad.husaini.zulkifli@intel.com> <20201106120933.7190-2-muhammad.husaini.zulkifli@intel.com>
+In-Reply-To: <20201106120933.7190-2-muhammad.husaini.zulkifli@intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 16 Nov 2020 12:41:08 +0100
+Message-ID: <CAPDyKFrq0Wsc7bNS0QPMitNqpkzK87VAuTnjDqrqTrVDGCwxgg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem
+ Bay SOC
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 05:13:44PM +0100, Vitaly Kuznetsov wrote:
-> Wei Liu <wei.liu@kernel.org> writes:
-> 
-> > On Thu, Nov 12, 2020 at 04:57:46PM +0100, Vitaly Kuznetsov wrote:
-> >> Wei Liu <wei.liu@kernel.org> writes:
-> > [...]
-> >> > diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> >> > index 67f5d35a73d3..4e590a167160 100644
-> >> > --- a/arch/x86/include/asm/mshyperv.h
-> >> > +++ b/arch/x86/include/asm/mshyperv.h
-> >> > @@ -80,6 +80,10 @@ extern void  __percpu  **hyperv_pcpu_output_arg;
-> >> >  
-> >> >  extern u64 hv_current_partition_id;
-> >> >  
-> >> > +int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages);
-> >> > +int hv_call_add_logical_proc(int node, u32 lp_index, u32 acpi_id);
-> >> > +int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags);
-> >> 
-> >> You seem to be only doing EXPORT_SYMBOL_GPL() for
-> >> hv_call_deposit_pages() and hv_call_create_vp() but not for
-> >> hv_call_add_logical_proc() - is this intended? Also, I don't see
-> >> hv_call_create_vp()/hv_call_add_logical_proc() usage outside of
-> >> arch/x86/kernel/cpu/mshyperv.c so maybe we don't need to export them at all?
-> >> 
-> >
-> > hv_call_deposit_pages and hv_call_create_vp will be needed by /dev/mshv,
-> > which can be built as a module.
-> >
-> 
-> I'd suggest to move EXPORT_SYMBOL_GPL() to the series adding '/dev/mshv'
-> then. Dangling exported symbols with no users tend to be removed. No
-> strong opinion, just a suggestion.
+On Fri, 6 Nov 2020 at 05:10, <muhammad.husaini.zulkifli@intel.com> wrote:
+>
+> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+>
+> Commit 16ada730a759 ("mmc: sdhci-of-arasan: Modify clock operations handling")
+> introduces platform specific SDHCI clock operation.
+>
+> This patch declares the clock operation for Keem Bay.
+> Add clk_ops for SD, EMMC and SDIO operations.
 
-Sure. This is now done in my v3.
+The above commit message doesn't really tell why or what goes on here.
+Can please try to clarify that.
 
-Wei.
+>
+> Fixes: 36c6aadaae86 ("mmc: sdhci-of-arasan: Add support for Intel Keem Bay")
+
+Is $subject patch fixing a bug/regression?
+
+Kind regards
+Uffe
+
+>
+> Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  drivers/mmc/host/sdhci-of-arasan.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+> index 829ccef87426..012d52e1abee 100644
+> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> @@ -1199,16 +1199,19 @@ static struct sdhci_arasan_of_data sdhci_arasan_versal_data = {
+>  static struct sdhci_arasan_of_data intel_keembay_emmc_data = {
+>         .soc_ctl_map = &intel_keembay_soc_ctl_map,
+>         .pdata = &sdhci_keembay_emmc_pdata,
+> +       .clk_ops = &arasan_clk_ops,
+>  };
+>
+>  static struct sdhci_arasan_of_data intel_keembay_sd_data = {
+>         .soc_ctl_map = &intel_keembay_soc_ctl_map,
+>         .pdata = &sdhci_keembay_sd_pdata,
+> +       .clk_ops = &arasan_clk_ops,
+>  };
+>
+>  static struct sdhci_arasan_of_data intel_keembay_sdio_data = {
+>         .soc_ctl_map = &intel_keembay_soc_ctl_map,
+>         .pdata = &sdhci_keembay_sdio_pdata,
+> +       .clk_ops = &arasan_clk_ops,
+>  };
+>
+>  static const struct of_device_id sdhci_arasan_of_match[] = {
+> --
+> 2.17.1
+>
