@@ -2,115 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFD72B4A03
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 423542B4A05
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731605AbgKPPxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:53:23 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:18584 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731597AbgKPPxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:53:20 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CZYWY1ht4z9vDFh;
-        Mon, 16 Nov 2020 16:53:13 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id GuQQh-CZyMar; Mon, 16 Nov 2020 16:53:13 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CZYWY0v6pz9vDFc;
-        Mon, 16 Nov 2020 16:53:13 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8829C8B7A3;
-        Mon, 16 Nov 2020 16:53:18 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id QkII7FUp4hCp; Mon, 16 Nov 2020 16:53:18 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 370418B7A6;
-        Mon, 16 Nov 2020 16:53:18 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id D5CC266884; Mon, 16 Nov 2020 15:53:17 +0000 (UTC)
-Message-Id: <cc9129bdda1dbc2f0a09cf45fece7d0b0e690784.1605541983.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <40ae19c2bf013e3815a6ae0d6016963fdb0f51b7.1605541983.git.christophe.leroy@csgroup.eu>
-References: <40ae19c2bf013e3815a6ae0d6016963fdb0f51b7.1605541983.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 5/5] powerpc/mm: Don't WARN() on KUAP fault
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 16 Nov 2020 15:53:17 +0000 (UTC)
+        id S1731615AbgKPPx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:53:29 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:39111 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730396AbgKPPx1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 10:53:27 -0500
+Received: by mail-ot1-f68.google.com with SMTP id z16so16450864otq.6;
+        Mon, 16 Nov 2020 07:53:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=07t3K0JEgnCVg7rKOhxAhhlnyrobdjtihkJZvLcS2u0=;
+        b=h5ifRz47yimj17zm9PRylBV8LlFnfcZKo2g9Yq4cmLuFZqcYEQcuF2tQZ7vG5kTbXA
+         JSMMJeIXK+9AU2xuz0jh9qvhIGLfmU/FdJofQAJWqY2gI/Xb3lUxyUsyqH0mwUNDgQbw
+         BczAQmbzU5zbmIMx4ZGoAquo6zoP5EkYJCapYGL+ROiChoodL1xNnhhlf0+6CWz/AamX
+         VZ7DK4c9SBGR7OGDB2j9yJhyZveHQoUHM8unlsVIiQ4JAf4bSiIo2eGaVm1xsvTmbzeD
+         1+qHKYKaN0tVtyBebujauceV9rZlRPmfNkxNU2EA4gRj4fpdHY7hEwu7Kbg4OIv6cCpo
+         /RCQ==
+X-Gm-Message-State: AOAM5329TKI8BGFKKAdIluv1p1701Phlyu3dVtxRGXgA6e7oZsBkC6E9
+        4FFX0eCJYued1C/aYpu8cQ==
+X-Google-Smtp-Source: ABdhPJywYfUrmrSzu10gQ7/fhwrtAtrz2VHNs70NHmvabvWuDMD9WVRBTGvxa5ipLKfnDg9mXWLDSw==
+X-Received: by 2002:a05:6830:22c9:: with SMTP id q9mr11706594otc.48.1605542005594;
+        Mon, 16 Nov 2020 07:53:25 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id d8sm4776015otl.15.2020.11.16.07.53.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 07:53:24 -0800 (PST)
+Received: (nullmailer pid 1716954 invoked by uid 1000);
+        Mon, 16 Nov 2020 15:53:24 -0000
+Date:   Mon, 16 Nov 2020 09:53:24 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil@xs4all.nl>, devicetree@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: media: i2c: Add OV5648 bindings
+ documentation
+Message-ID: <20201116155324.GA1716839@bogus>
+References: <20201113170104.2252046-1-paul.kocialkowski@bootlin.com>
+ <20201113170104.2252046-2-paul.kocialkowski@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113170104.2252046-2-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The WARN() in do_page_fault() is useless the problem is not in
-do_page_fault() but on the place which generated the DSI exception.
+On Fri, 13 Nov 2020 18:01:03 +0100, Paul Kocialkowski wrote:
+> This introduces YAML bindings documentation for the OV5648
+> image sensor.
+> 
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> ---
+>  .../bindings/media/i2c/ovti,ov5648.yaml       | 112 ++++++++++++++++++
+>  1 file changed, 112 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml
+> 
 
-We already have a dump from the Oops, no need of a WARN() in addition
-The warning emitted by bad_kernel_fault() is good enough.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: New (Partly taken from patch "powerpc/mm: Kill the task on KUAP fault")
----
- arch/powerpc/include/asm/book3s/32/kup.h       | 6 +-----
- arch/powerpc/include/asm/book3s/64/kup-radix.h | 7 ++++---
- arch/powerpc/include/asm/nohash/32/kup-8xx.h   | 3 +--
- 3 files changed, 6 insertions(+), 10 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
-index 32fd4452e960..a0117a9d5b06 100644
---- a/arch/powerpc/include/asm/book3s/32/kup.h
-+++ b/arch/powerpc/include/asm/book3s/32/kup.h
-@@ -183,11 +183,7 @@ bad_kuap_fault(struct pt_regs *regs, unsigned long address, bool is_write)
- 	unsigned long begin = regs->kuap & 0xf0000000;
- 	unsigned long end = regs->kuap << 28;
- 
--	if (!is_write)
--		return false;
--
--	return WARN(address < begin || address >= end,
--		    "Bug: write fault blocked by segment registers !");
-+	return is_write && (address < begin || address >= end);
- }
- 
- #endif /* CONFIG_PPC_KUAP */
-diff --git a/arch/powerpc/include/asm/book3s/64/kup-radix.h b/arch/powerpc/include/asm/book3s/64/kup-radix.h
-index 3ee1ec60be84..8bdf559a4b32 100644
---- a/arch/powerpc/include/asm/book3s/64/kup-radix.h
-+++ b/arch/powerpc/include/asm/book3s/64/kup-radix.h
-@@ -161,9 +161,10 @@ static inline void restore_user_access(unsigned long flags)
- static inline bool
- bad_kuap_fault(struct pt_regs *regs, unsigned long address, bool is_write)
- {
--	return WARN(mmu_has_feature(MMU_FTR_RADIX_KUAP) &&
--		    (regs->kuap & (is_write ? AMR_KUAP_BLOCK_WRITE : AMR_KUAP_BLOCK_READ)),
--		    "Bug: %s fault blocked by AMR!", is_write ? "Write" : "Read");
-+	if (!mmu_has_feature(MMU_FTR_RADIX_KUAP))
-+		return false;
-+
-+	return !!(regs->kuap & (is_write ? AMR_KUAP_BLOCK_WRITE : AMR_KUAP_BLOCK_READ));
- }
- #else /* CONFIG_PPC_KUAP */
- static inline void kuap_restore_amr(struct pt_regs *regs, unsigned long amr)
-diff --git a/arch/powerpc/include/asm/nohash/32/kup-8xx.h b/arch/powerpc/include/asm/nohash/32/kup-8xx.h
-index 567cdc557402..17a4a616436f 100644
---- a/arch/powerpc/include/asm/nohash/32/kup-8xx.h
-+++ b/arch/powerpc/include/asm/nohash/32/kup-8xx.h
-@@ -63,8 +63,7 @@ static inline void restore_user_access(unsigned long flags)
- static inline bool
- bad_kuap_fault(struct pt_regs *regs, unsigned long address, bool is_write)
- {
--	return WARN(!((regs->kuap ^ MD_APG_KUAP) & 0xff000000),
--		    "Bug: fault blocked by AP register !");
-+	return !((regs->kuap ^ MD_APG_KUAP) & 0xff000000);
- }
- 
- #endif /* !__ASSEMBLY__ */
--- 
-2.25.0
-
+Reviewed-by: Rob Herring <robh@kernel.org>
