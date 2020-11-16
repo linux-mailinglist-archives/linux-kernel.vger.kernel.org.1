@@ -2,122 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792DA2B5467
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AD62B546B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbgKPWbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:31:17 -0500
-Received: from sonic317-39.consmr.mail.ne1.yahoo.com ([66.163.184.50]:44750
-        "EHLO sonic317-39.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730140AbgKPWbR (ORCPT
+        id S1730390AbgKPWbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:31:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730313AbgKPWbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:31:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605565875; bh=MssB1MdVCNqazPNYFFSuB0FQG8vHLzyME6PDI5ALbKE=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=gpDdorGvDhcxPQ8i4P0z4a/K9P9WMCm7PmM4SzNHsaZVdL2oB/PWM/MePaRk7kD4iKpw/3nFbcRefPxMWyWeiQ/iJzoFRtIEOO0ybqusiMYqymU+rB1qvCC+1kwaNncE9NxEWIaABMsC8TQIE493r4DSV2BNdlPU3Yv6z94nbgD4x3GCiSLGAXqlzVvDiHidYsdD11tG89r8D/1IGgeuRTaJJ+tmvgMppwlBITAhxZS08WfAlqQRRLBIckxGb9eRLc87K/U8FhIcvgsZE4oYBcUZAOcPd0bgelHhWcV+OPYS20dhhJZqF+e7OCVUebcK8hgQZtAbmr2IcVSHQU1NFw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605565875; bh=8egYpnoCKFQnfQTkL69NeX0axCIjcWmxAQkdiS3uoIJ=; h=Subject:To:From:Date:From:Subject; b=HitoWczk29GjC6QzYTU4rsO/WOusoALeZC1VFsvlqjgx3Fx3JhSIUBA6kx0r4VpaUSt8L4S2jkgldZoede7SiHQHHDrL3o6aVc0ML7yL22Yq0aOoj/F5gV8rM1plVYTPNpHBwR8AKiODibwFker4ZoMDFZWgL6h13fECNstp8w0WnwL0IbXUz3HBmfSL2HXWxiG30Naq/JVFkSBMnJmhfujKsILTGGJdh1hUwUPwrQq5ezLsZ+eo+CE3DBSITvS852VWVdfVAo4yXWFAvFO7Ek083PNhpW3NIz+dsmjlmkkyP9mMlCBqGFKE/saWAwt6x4r01M/8JWvDqKTiu9EZ/w==
-X-YMail-OSG: yD3fjB4VM1kJFijiRklbGEDwMgx2gmTAZbkRWjHfVi41jA09zhSJQYy8zaPLvQZ
- .EZ.6rE2OMQJhee.B9TtRsM1_0GntqJLkIXroPw2Gv8Tzo4sDIal2KXSsS.lTJ8GcnOnJTU8L5XG
- uIHOmMBYAjcWpJjWXiqNvDFE582Afqbj8r1Cr0S8KGpwcdujYs7Liqb__ZjOpQU5L.mRxGu4TpAw
- 663AvzPqBRXdBVmUf20FYmecXlfVs6n4kKrDyPZYLl5GQCabSybAsNESCqY.yZGqf2d8DnRHduuo
- jUpGfEzyLX3L0POWaTR5FXSrqZv9dqJi8yGs_PejazMPnSwgvnIWfd9c29qwhGDTarjjLBkNVI4b
- gZKPtBcyZ9FY5CdhtVRN2I3wAg81.RVZEcTtfLy3EsmYCm8M62BohIbOVzhUY.rBO56CjmemvG2o
- z7M6DYFtfbINvowwhmaF_OFFIvQT8Lg.SlM7OSfzCpsEDIXbDpVp4wXlq90RGPAJrYNYyhmZy1eQ
- 7F_ofnh7ca2GR.bqTfzVVT7Wg2i2GIpguFQrXVcLX.1msvRN9NFPwEUZ_dVIVTqjVb1FEOeiRz81
- 3NdydQ1lzUFzELeGRweV1qrZ9Hxzv2FMkAoB.cf3BEQZG_e4ZkkkEJVU79V98YCcUzB4ZBqQAwm8
- y_1dqF9z4yQxPVGq8xmS_R.I1bBu.LWuENpo7xHrjweYSToEqTQNOHx.G8Ge0yKlKa_HaSiLZMt2
- ltPEYl06.NbYDwMe723YmuMI2L4lgrN4qpHtNXsmHtfKuMWo3KgaCas2OR17N.XumI9RRZMgtbLg
- R.Aw8eiXdvzeLcAn9Z98PY7drXz_BgNkJfMpwcc13cpAqHlKbHGEcOUhIHQTBtTE4y6KBi9nzDPU
- BkFLjmfc9B5l1ArgSGlHr2QM39JhfgXj4VKecygupf_ZEfqiFFgBNi.oWm8vUYF.AvFE4omo0KkR
- 4ZP2RBtgh9UjfpmuYFtkkwTTTYei.2BvWObjRaclU.6LRGUC5FHFTQq3qnk3UYC9XqJuo9zNqxtE
- _UuJr_Mi1s_DB4Kw_X9H0E62O6i6jYz1dhLLzJ9NxjrOLAGKAtANpa_N_6iZPDvZDxVsFzqPeMCI
- KXHn0qAyo800eaY8fCx8dJU70zOkOjmq6ESAZKQfxO2yA7XuVPYL2qT6wxocQDyYfETo0L1mQbRg
- _h0wvKiysP5C.jU1iucfBxU_P4y5E7ty9gjgLZbKSW6ZKTtMfAMFlIE7sCNvo2_7JD6wxL9R4IJK
- xsOSiGDRHFDywCgmaDaniwKaRXvmfzposIobld4f12ywN3TtUP64etxIotIPmYKivT222QVzPwTX
- 3_8y9dWZnIbMheRCInAxMbZU4SLHI8VYNSwe_IluzQHmQmRRYsGOqSoViGyxI1UFZz1S6Mj4Mer1
- xWmkemQkr4g1zIs7bvMMf2wJnxHE3tYIAZQ_dJ0ZxF4G9r6Ia8tsCmiH5WYHoq3UiYwYUItTSgC5
- s4xqLhQXhq2lESIpDA2uBWRVGCJr9Lxey7NqrxjTTcFKgzzy7fd5RoH56KendKgF4DRDMY1C1R9l
- TFEnG5cwdOy.eRzqQM_VloYbWK5..7kDcVusi9G7eMDEKIFZj24QSGanvduZvGsY4Rgg6cGr378g
- fak1B_CVvWB4vbA2cH6CzODETlFGuxBTH.6xauCrO7pASdhT1CsOHdmAjkdNHerZqqypSgp1GaHt
- TTSo95fbzYxAmvJEQpJhY1TXdh8BaBhwAQgZAZTiH4ks2CTCrJfwPHWijv0KfrMpN7jxkZve4MJZ
- syBqKPscQAIGP..cpMR_3OnZhlhU60kvxsN4QY5Sen4Kao02ziG5rJ743VMJsC3q2OhCpLODWRfN
- NYZzN5htHM0Cw6dDN_VLq7KtPX8XXG4QrBcy9L87AOjebGVitXulORzfvle0p5kJ04ynlrpKn708
- hMKAvdEuPCRq4g0ONkMrhO2h52BdvCu6Bm3We6JFpK2SEX6uiLdVhojcD_54C07TZ_hs11Zbb0Wo
- 4UyvJyWliHYtmjWNtHumU8gDSs5po0rL7HhAPMMyoxg1BrESKB.NRNwKAFcJdJg73m5Gor3qGn.H
- SCOzxAXHW3p7B.PUxvFD6IWpKHJ9kUJ83Nj9aPrSxIuInEjYDL7oBL6iu5jRJbQQ8XcSW6xUAssz
- kqoRhv_O0uXS_4frOCyZzHFHhjTgtrpD5FoMbQaS0IK_h4b4vacbKz7efFLq82SEKSzPQHfBS93o
- RgAP239hPTuTDbV8uMXPU1Q_CS7eMpiAYLA4uEKWKXVGkOiErhK7Mxhqw_G3U8SZTtSfc4M4XS0t
- IZ5dVewK2H4_NNMeu65Asrmq4tE4qcOnZ0hMaPz7JfAlP_4rq4A.i18zWEzlBogziOpAoXJrsTMB
- w7zXTtniZWQ6IoYwIITdbKErk6lvj45jLiEwjomB1aj7t.ZuNxBxxVfyOAeUYzs.MEpQx2sw33hb
- TOJnZclHxBj4n2L8.Wqof5odSRkBNCp1955KKc5RlUoX7Hfnt0E9CcP1jD_pV_XJ5pThxp.LWDjk
- dQnOKufqXTn8057HUUkFy84oOHDfT2U9oN4M6PM01JVhl9KxnuGYm99DC2II0UJe6bdcWffdbkXn
- wj1mjfoXMOwLLZCHL_otsO5UIAkPc4HAPiJB3yHmDdBfLTeRL2CElWB3lMDUTnsiASbza91jzkyV
- cBPjtiovewnk7QaGIX_t7L0gtLYwGhCbpFqrK203hNt6E9Lbdz2BIG6afSxMOg1z3COGPOOIwNsC
- JR7f5O7C0p3g68TkqPwux0D0slAt5TWlOp.VaQDsn2xV9HpvMF1_3L_uhL8ungYWurrdG9DIBWSd
- kcWd124Irnnl.J6EXXbl4kkFHP83ZGNGV6eNIjQRXmxLwuvgL4nDF.EVT7e0UBk6.CTGlBbIgvZI
- 4fsEHx5j1UHP7L1xMyDdsbg2Daw4R_6jOtkfJ2yGTDFK2oFgTYYRdFu.yNEPbqyB0aDE16sTH.xm
- uYq1C_0fp8klu7eA5HsVrEhgw_1kvhSZFbnNued2meoAL7QCiH7Sa3hF9k7zzDA3EOCS.hJ3sSQ-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Mon, 16 Nov 2020 22:31:15 +0000
-Received: by smtp406.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 02ff2210146a9f6ff86b5e921c0b99d9;
-          Mon, 16 Nov 2020 22:31:11 +0000 (UTC)
-Subject: Re: [PATCH] security/smack: remove unused varible 'rc'
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <1604817942-3755-1-git-send-email-alex.shi@linux.alibaba.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <6fbd7b38-ac0b-571f-fec6-4a807d2eaef7@schaufler-ca.com>
-Date:   Mon, 16 Nov 2020 14:31:10 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        Mon, 16 Nov 2020 17:31:51 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDA2C0613CF;
+        Mon, 16 Nov 2020 14:31:51 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id l11so15307407lfg.0;
+        Mon, 16 Nov 2020 14:31:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iSYKumRzw7eYrCW4RMOKX9kdE0Zs7ymFb38Zx2Z3008=;
+        b=uV91XdhqSZGDi6joKFKhCRH4M1G928Du1MQaGuPaFF0mk4tv+t9PDhs4Hc6WME/Wvs
+         Iyj8pFN95Ew2qCO5AgKZvcn1iHTtbTSWCJPqIvVf5SkKTj6m20lWM4OAZttUo8fuey0z
+         +ScktwRElsc/yRnblEvUmmJVctjYY5L7EbQKeS6mTmWzmoDCav+AjqcP5T6LmcFBLgzI
+         d7f5E2Ut7KDiJYYUVtZgXFb17xIq2fibojG/LMBjE3SSyKB7WXBPZeCqLG6/I8gDS/Fv
+         0hVzQyQe0LNwEeLMqedSE7QOVf7y4YEzeW8sIR0EToYS19S/XAQYQ5e7A0P+6NfgnrtX
+         7VKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iSYKumRzw7eYrCW4RMOKX9kdE0Zs7ymFb38Zx2Z3008=;
+        b=GB/0FWpNeqnwwzdOPITmEUQSmaSPasve1khe/OvQ6zSUds1wAfDWI/iEtxtS2ABolg
+         U8Ss8WXG9MF4lhW5c0LU1gc6mdZnkY+CTzJsurHNbEoNMCnUYEpftjHtJtp0AutifaLu
+         /v0gwaD+pvQm1Vop+QpaXvimrQNsHqAw1KWOh2paNef2DP+LAsTccWjqwwMWl7/eUUTK
+         eAN8O48KWXiOAyGSTVyK9PxUlUq9pW3qeWUMnyZuitNCR1dOqEq6+Kq6WCVBiTngFHnT
+         nXEZ6tWBueoxulHNzZGECsEIR1lZyUxm0wNYlxoVNY7IsR41+YMNKKcnP6+CzxvB+9uN
+         ZGNw==
+X-Gm-Message-State: AOAM531KukqRXqO51Ar+lXeUAqPy8y778CBeQeZUVmocAl/JKCrWkKx3
+        ylrKf7zd+3JLsNntdDIspLQ=
+X-Google-Smtp-Source: ABdhPJwr+w/3bZyj+XwkV9anNeh/Humh8Tbve+lpyWy+/p3m4xfKycR26U+SDJUW9ifhqxtuIG/RuQ==
+X-Received: by 2002:ac2:58e6:: with SMTP id v6mr525554lfo.137.1605565909601;
+        Mon, 16 Nov 2020 14:31:49 -0800 (PST)
+Received: from mobilestation ([95.79.141.114])
+        by smtp.gmail.com with ESMTPSA id 23sm2946213lft.140.2020.11.16.14.31.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 14:31:48 -0800 (PST)
+Date:   Tue, 17 Nov 2020 01:31:46 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: reserve the memblock right after the kernel
+Message-ID: <20201116223146.cmb6myelohnlbw7y@mobilestation>
+References: <20201106141001.57637-1-alexander.sverdlin@nokia.com>
+ <20201107094028.GA4918@alpha.franken.de>
+ <1d6a424e-944e-7f21-1f30-989fb61018a8@nokia.com>
+ <20201110095503.GA10357@alpha.franken.de>
+ <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
+ <20201111145240.lok3q5g3pgcvknqr@mobilestation>
+ <4c58b551-b07f-d217-c683-615f7b54ea30@nokia.com>
+ <13fff200-660a-27b8-6507-82124eee51c5@nokia.com>
 MIME-Version: 1.0
-In-Reply-To: <1604817942-3755-1-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.16944 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.8)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <13fff200-660a-27b8-6507-82124eee51c5@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/2020 10:45 PM, Alex Shi wrote:
-> This varible isn't used and can be removed to avoid a gcc warning:
-> security/smack/smack_lsm.c:3873:6: warning: variable ‘rc’ set but not
-> used [-Wunused-but-set-variable]
->
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Casey Schaufler <casey@schaufler-ca.com> 
-> Cc: James Morris <jmorris@namei.org> 
-> Cc: "Serge E. Hallyn" <serge@hallyn.com> 
-> Cc: linux-security-module@vger.kernel.org 
-> Cc: linux-kernel@vger.kernel.org 
+On Fri, Nov 13, 2020 at 02:09:09PM +0100, Alexander Sverdlin wrote:
+> Hello Serge, Thomas,
+> 
+> On 13/11/2020 10:17, Alexander Sverdlin wrote:
+> >> So IMHO what could be the best conclusion in the framework of this patch:
+> >> 1) As Thomas said any platform-specific reservation should be done in the
+> >> platform-specific code. That means if octeon needs some memory behind
+> >> the kernel being reserved, then it should be done for example in
+> >> prom_init().
+> >> 2) The check_kernel_sections_mem() method can be removed. But it
+> >> should be done carefully. We at least need to try to find all the
+> >> platforms, which rely on its functionality.
+> > Thanks for looking into this! I agree with your analysis, I'll try to rework,
+> > removing check_kernel_sections_mem().
+> 
 
-I will take this through the Smack tree. Thank you.
+> but now, after grepping inside arch/mips, I found that only Octeon does memblock_add()
+> of the area between _text and _and explicitly.
+> 
+> Therefore, maybe many other platforms indeed rely on check_kernel_sections_mem()?
 
-> ---
->  security/smack/smack_lsm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-> index 5c90b9fa4d40..9994fcfafd70 100644
-> --- a/security/smack/smack_lsm.c
-> +++ b/security/smack/smack_lsm.c
-> @@ -3870,7 +3870,6 @@ static struct smack_known *smack_from_netlbl(struct sock *sk, u16 family,
->  	struct netlbl_lsm_secattr secattr;
->  	struct socket_smack *ssp = NULL;
->  	struct smack_known *skp = NULL;
-> -	int rc;
->  
->  	netlbl_secattr_init(&secattr);
->  
-> @@ -3880,7 +3879,7 @@ static struct smack_known *smack_from_netlbl(struct sock *sk, u16 family,
->  	if (netlbl_skbuff_getattr(skb, family, &secattr) == 0) {
->  		skp = smack_from_secattr(&secattr, ssp);
->  		if (secattr.flags & NETLBL_SECATTR_CACHEABLE)
-> -			rc = netlbl_cache_add(skb, family, &skp->smk_netlabel);
-> +			netlbl_cache_add(skb, family, &skp->smk_netlabel);
->  	}
->  
->  	netlbl_secattr_destroy(&secattr);
+Taking into account what Maciej said, now I am not sure it was a good
+idea to discard the check_kernel_sections_mem() method. Indeed it is
+useful for a custom memory layout passed via the kernel parameters.
+
+> Maybe the proper way would be really to remote the PFN_UP()/PFN_DOWN() from
+> check_kernel_sections_mem(), which is not necessary after commit b10d6bca8720
+> ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
+> which fixed the resource_init()?
+> 
+
+If you think they are redundant, why not?
+
+> As completely unrelated optimization I can remove the same memblock_add() of the
+> kernel sections from the Octeon platform code. 
+
+Why not as long as it will work. AFAICS the octeon platform code does
+some kernel start address adjustment while the generic MIPS code
+doesn't. Are you sure using the generic version for octeon won't cause
+any problem?
+
+-Sergey
+
+> 
+> -- 
+> Best regards,
+> Alexander Sverdlin.
