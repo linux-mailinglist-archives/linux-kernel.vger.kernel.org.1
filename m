@@ -2,243 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9846C2B51AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B7E2B51B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731118AbgKPT4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:56:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42728 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731069AbgKPT4i (ORCPT
+        id S1731216AbgKPT5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:57:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730160AbgKPT5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:56:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605556597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0bA4pw5q7HHQg8TpZjusnVos/EyOd9oFFb9XD9wHdZQ=;
-        b=dDE9to1siFCi4UoOIT9a5mHll6oq0GuEheiyMclmUXE+jixnwpSVkH5W3yh3u5xx2EGfBS
-        hoQNTdAnqSU6PUbGyYUSL3zxCON2K07npaYZNSiwDS2e++0ibeV6pQsjqxyoRW+Uw5Y9No
-        MPwusWNtW0E1bSN39uAfJmO6mevWWg8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-5Rg_nuSINhuae9dCIcPnLw-1; Mon, 16 Nov 2020 14:56:35 -0500
-X-MC-Unique: 5Rg_nuSINhuae9dCIcPnLw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 18B43802B6D;
-        Mon, 16 Nov 2020 19:56:33 +0000 (UTC)
-Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3514819C66;
-        Mon, 16 Nov 2020 19:56:32 +0000 (UTC)
-Date:   Mon, 16 Nov 2020 12:56:31 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH 1/1] vfio/type1: Add subdev_ioasid callback to
- vfio_iommu_driver_ops
-Message-ID: <20201116125631.2d043fcd@w520.home>
-In-Reply-To: <20201112022407.2063896-1-baolu.lu@linux.intel.com>
-References: <20201112022407.2063896-1-baolu.lu@linux.intel.com>
+        Mon, 16 Nov 2020 14:57:08 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD13CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:57:07 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 19so489125wmf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:57:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/UCaw7X3P7z/cBmEH8BLiazMTEggP6Dng172R08XqlE=;
+        b=nFLRdlWHDhI4/em2J4oMSbWjBy5R4ImhX7LV8vU1ixn1HBQXMYllhhhcwC2Vj4oH0P
+         x10fZuCzUqw5PKY1YYnIwAm8BArxr2xMV9j2U3urB+JOxLRLP86eQGt1E/UJUf37VzUi
+         SF3Ee5jsoxCHv0cr8mlSbPtnui98wj+jtfxyUCCvuejtaJ3yLV2ZMdviU8sWGgoQnVF4
+         PTalG8ih1QEddSfnRuBn+wmZdD6o7D9YD4RfLaBhUb3nOzJqQYHlmzVzec99VnFXCKss
+         SQWmL/9ANDBR+p8fyW5DW+9/hx1eHhTqUQIA55vJWUmPJ8o9/iGSJjcg4v5XJFqgWt9b
+         iZSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/UCaw7X3P7z/cBmEH8BLiazMTEggP6Dng172R08XqlE=;
+        b=YUuj8Nd04BZtMZQKgkZnblDTH7mDszmeJc1LO/StjXn+NaTPUnmWk1yAZE/FXgmpn6
+         BmX7pMvwhHnp7SDg8hTNykqXXer0zNbOM62buwUr0HVSsW5j0NfdDBJ96BiWLyQe+/VV
+         wcYK7VkOVCsIcdKEFi1cRbhlKrjjkI0i7V8/0xkKDHKz+MRl1JvLgdy95IwAtwMRyJQU
+         wZoMU2dX2UY1Q25Lrbt+epivkhpbyWMi7nuxmT9dIAMfsUcetuE9sU7KNrPqgFpXtvco
+         +HYnzwCxp8KrQjx0XGZ43p1yaJxXH6H0JLRwkSEQaYthuP6g11JYaQdkBstMBOD01moY
+         njgg==
+X-Gm-Message-State: AOAM531YiZ+gE+GPr8Cn4bU1zzk42oe3+CORXbc+DuFQ6Av1EXJRc8XM
+        no3bUZUBpVXuIhX0iLvxuLEJe2L+TkNkBlsXesk=
+X-Google-Smtp-Source: ABdhPJxCVpNqYs3aplYAyaOcRgyLwjP46yvCt4GGTWu8IPMC+qRBXB8iwEnsCdRX5XgAkvcTX1wkre9lWbQq4iRax/A=
+X-Received: by 2002:a1c:1c3:: with SMTP id 186mr538158wmb.39.1605556626649;
+ Mon, 16 Nov 2020 11:57:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201116173700.1830487-1-lee.jones@linaro.org> <20201116173700.1830487-16-lee.jones@linaro.org>
+In-Reply-To: <20201116173700.1830487-16-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 16 Nov 2020 14:56:55 -0500
+Message-ID: <CADnq5_M2_Uu8Zf8OiOp8yOQmyYG0Lk=ist_CO+6u80_SOWyqjQ@mail.gmail.com>
+Subject: Re: [PATCH 15/43] drm/radeon/atom: Move 'radeon_atom_hw_i2c_*()'s
+ prototypes into shared header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 10:24:07 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+On Mon, Nov 16, 2020 at 12:37 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/atombios_i2c.c:100:5: warning: no previous protot=
+ype for =E2=80=98radeon_atom_hw_i2c_xfer=E2=80=99 [-Wmissing-prototypes]
+>  100 | int radeon_atom_hw_i2c_xfer(struct i2c_adapter *i2c_adap,
+>  | ^~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/atombios_i2c.c:150:5: warning: no previous protot=
+ype for =E2=80=98radeon_atom_hw_i2c_func=E2=80=99 [-Wmissing-prototypes]
+>  150 | u32 radeon_atom_hw_i2c_func(struct i2c_adapter *adap)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-> Add API for getting the ioasid of a subdevice (vfio/mdev). This calls
-> into the backend IOMMU module to get the actual value or error number
-> if ioasid for subdevice is not supported. The physical device driver
-> implementations which rely on the vfio/mdev framework for mediated
-> device user level access could typically consume this interface like
-> below:
-> 
-> 	struct device *dev = mdev_dev(mdev);
-> 	unsigned int pasid;
-> 	int ret;
-> 
-> 	ret = vfio_subdev_ioasid(dev, &pasid);
-> 	if (ret < 0)
-> 		return ret;
-> 
->          /* Program device context with pasid value. */
->          ....
-
-
-Seems like an overly specific callback.  We already export means for
-you to get a vfio_group, test that a device is an mdev, and get the
-iommu device from an mdev.  So you can already test whether a given
-device is an mdev with an iommu backing device that supports aux
-domains.  The only missing piece seems to be that you can't get the
-domain for a group in order to retrieve the pasid.  So why aren't we
-exporting a callback that given a vfio_group provides the iommu domain?
-Thanks,
+Applied.  Thanks!
 
 Alex
 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 > ---
->  drivers/vfio/vfio.c             | 34 ++++++++++++++++++++
->  drivers/vfio/vfio_iommu_type1.c | 57 +++++++++++++++++++++++++++++++++
->  include/linux/vfio.h            |  4 +++
->  3 files changed, 95 insertions(+)
-> 
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index 2151bc7f87ab..4931e1492921 100644
-> --- a/drivers/vfio/vfio.c
-> +++ b/drivers/vfio/vfio.c
-> @@ -2331,6 +2331,40 @@ int vfio_unregister_notifier(struct device *dev, enum vfio_notify_type type,
->  }
->  EXPORT_SYMBOL(vfio_unregister_notifier);
->  
-> +int vfio_subdev_ioasid(struct device *dev, unsigned int *id)
-> +{
-> +	struct vfio_container *container;
-> +	struct vfio_iommu_driver *driver;
-> +	struct vfio_group *group;
-> +	int ret;
+>  drivers/gpu/drm/radeon/atom.h       | 7 +++++++
+>  drivers/gpu/drm/radeon/radeon_i2c.c | 4 ----
+>  2 files changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/atom.h b/drivers/gpu/drm/radeon/atom.=
+h
+> index 1bf06c91cd959..5de0563b63d2e 100644
+> --- a/drivers/gpu/drm/radeon/atom.h
+> +++ b/drivers/gpu/drm/radeon/atom.h
+> @@ -154,6 +154,13 @@ bool atom_parse_data_header(struct atom_context *ctx=
+, int index, uint16_t *size,
+>  bool atom_parse_cmd_header(struct atom_context *ctx, int index,
+>                            uint8_t *frev, uint8_t *crev);
+>  int atom_allocate_fb_scratch(struct atom_context *ctx);
 > +
-> +	if (!dev || !id)
-> +		return -EINVAL;
+> +struct i2c_msg;
+> +struct i2c_adapter;
+> +int radeon_atom_hw_i2c_xfer(struct i2c_adapter *i2c_adap,
+> +                           struct i2c_msg *msgs, int num);
+> +u32 radeon_atom_hw_i2c_func(struct i2c_adapter *adap);
 > +
-> +	group = vfio_group_get_from_dev(dev);
-> +	if (!group)
-> +		return -ENODEV;
-> +
-> +	ret = vfio_group_add_container_user(group);
-> +	if (ret)
-> +		goto out;
-> +
-> +	container = group->container;
-> +	driver = container->iommu_driver;
-> +	if (likely(driver && driver->ops->subdev_ioasid))
-> +		ret = driver->ops->subdev_ioasid(container->iommu_data,
-> +						 group->iommu_group, id);
-> +	else
-> +		ret = -ENOTTY;
-> +
-> +	vfio_group_try_dissolve_container(group);
-> +
-> +out:
-> +	vfio_group_put(group);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(vfio_subdev_ioasid);
-> +
->  /**
->   * Module/class support
->   */
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 67e827638995..f94cc7707d7e 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2980,6 +2980,62 @@ static int vfio_iommu_type1_dma_rw(void *iommu_data, dma_addr_t user_iova,
->  	return ret;
->  }
->  
-> +static int vfio_iommu_type1_subdev_ioasid(void *iommu_data,
-> +					  struct iommu_group *iommu_group,
-> +					  unsigned int *id)
-> +{
-> +	struct vfio_iommu *iommu = iommu_data;
-> +	struct vfio_domain *domain = NULL, *d;
-> +	struct device *iommu_device = NULL;
-> +	struct bus_type *bus = NULL;
-> +	int ret;
-> +
-> +	if (!iommu || !iommu_group || !id)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&iommu->lock);
-> +	ret = iommu_group_for_each_dev(iommu_group, &bus, vfio_bus_type);
-> +	if (ret)
-> +		goto out;
-> +
-> +	if (!vfio_bus_is_mdev(bus)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	ret = iommu_group_for_each_dev(iommu_group, &iommu_device,
-> +				       vfio_mdev_iommu_device);
-> +	if (ret || !iommu_device ||
-> +	    !iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX)) {
-> +		ret = -ENODEV;
-> +		goto out;
-> +	}
-> +
-> +	list_for_each_entry(d, &iommu->domain_list, next) {
-> +		if (find_iommu_group(d, iommu_group)) {
-> +			domain = d;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!domain) {
-> +		ret = -ENODEV;
-> +		goto out;
-> +	}
-> +
-> +	ret = iommu_aux_get_pasid(domain->domain, iommu_device);
-> +	if (ret > 0) {
-> +		*id = ret;
-> +		ret = 0;
-> +	} else {
-> +		ret = -ENOSPC;
-> +	}
-> +
-> +out:
-> +	mutex_unlock(&iommu->lock);
-> +	return ret;
-> +}
-> +
->  static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
->  	.name			= "vfio-iommu-type1",
->  	.owner			= THIS_MODULE,
-> @@ -2993,6 +3049,7 @@ static const struct vfio_iommu_driver_ops vfio_iommu_driver_ops_type1 = {
->  	.register_notifier	= vfio_iommu_type1_register_notifier,
->  	.unregister_notifier	= vfio_iommu_type1_unregister_notifier,
->  	.dma_rw			= vfio_iommu_type1_dma_rw,
-> +	.subdev_ioasid		= vfio_iommu_type1_subdev_ioasid,
->  };
->  
->  static int __init vfio_iommu_type1_init(void)
-> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-> index 38d3c6a8dc7e..6dcf09a2796d 100644
-> --- a/include/linux/vfio.h
-> +++ b/include/linux/vfio.h
-> @@ -90,6 +90,9 @@ struct vfio_iommu_driver_ops {
->  					       struct notifier_block *nb);
->  	int		(*dma_rw)(void *iommu_data, dma_addr_t user_iova,
->  				  void *data, size_t count, bool write);
-> +	int		(*subdev_ioasid)(void *iommu_data,
-> +					 struct iommu_group *group,
-> +					 unsigned int *id);
->  };
->  
->  extern int vfio_register_iommu_driver(const struct vfio_iommu_driver_ops *ops);
-> @@ -125,6 +128,7 @@ extern int vfio_group_unpin_pages(struct vfio_group *group,
->  
->  extern int vfio_dma_rw(struct vfio_group *group, dma_addr_t user_iova,
->  		       void *data, size_t len, bool write);
-> +extern int vfio_subdev_ioasid(struct device *dev, unsigned int *id);
->  
->  /* each type has independent events */
->  enum vfio_notify_type {
-
+>  #include "atom-types.h"
+>  #include "atombios.h"
+>  #include "ObjectID.h"
+> diff --git a/drivers/gpu/drm/radeon/radeon_i2c.c b/drivers/gpu/drm/radeon=
+/radeon_i2c.c
+> index aa61b3cb4049c..e543d993f73ee 100644
+> --- a/drivers/gpu/drm/radeon/radeon_i2c.c
+> +++ b/drivers/gpu/drm/radeon/radeon_i2c.c
+> @@ -34,10 +34,6 @@
+>  #include "radeon.h"
+>  #include "atom.h"
+>
+> -extern int radeon_atom_hw_i2c_xfer(struct i2c_adapter *i2c_adap,
+> -                                  struct i2c_msg *msgs, int num);
+> -extern u32 radeon_atom_hw_i2c_func(struct i2c_adapter *adap);
+> -
+>  bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool us=
+e_aux)
+>  {
+>         u8 out =3D 0x0;
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
