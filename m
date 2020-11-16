@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379E02B4FC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD282B4FC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388590AbgKPSdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:33:04 -0500
+        id S2388377AbgKPScn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:32:43 -0500
 Received: from mga06.intel.com ([134.134.136.31]:20632 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387967AbgKPS2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:28:02 -0500
-IronPort-SDR: di7sk8XbKdhpmIzmkNq7//68U6Td0IMEP3Td53niZX9srnYPex7W7x2Jp9tId4bbiUha2utAWO
- e39RmAJyajhQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232410018"
+        id S2387771AbgKPS2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:28:03 -0500
+IronPort-SDR: ZXajAuBrZ2koRQ28pD2moigbziGlX5TanRdDgllmNqAhUC1OpEKmBDabfHhaqe2DB2jd3nW74q
+ oL90CDntHhzw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232410028"
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="232410018"
+   d="scan'208";a="232410028"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:01 -0800
-IronPort-SDR: 3qzqJl0UN+MA5VvL+rL7AjbQ/k+loXJpB2Uj9oqSP6mtBFw2jJwwgWs/xBrkdJb53FHZRv5Iez
- /mmzD0PYCaxQ==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:02 -0800
+IronPort-SDR: HSmSmve9NahGtLT9P0ekBHeZ+ETPGer5F6hFhlc8Q5AxThCCdr1jMH67bHx+ERS18CDjE7zU2t
+ i7x5r3Jy1dHw==
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="400527929"
+   d="scan'208";a="400527973"
 Received: from ls.sc.intel.com (HELO localhost) ([143.183.96.54])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:00 -0800
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:02 -0800
 From:   isaku.yamahata@intel.com
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -37,11 +37,10 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kai Huang <kai.huang@linux.intel.com>
-Subject: [RFC PATCH 19/67] KVM: x86: Add flag to disallow #MC injection / KVM_X86_SETUP_MCE
-Date:   Mon, 16 Nov 2020 10:26:04 -0800
-Message-Id: <d017cd51d02e42e9f14065acc7ec35ce82edc8bd.1605232743.git.isaku.yamahata@intel.com>
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [RFC PATCH 22/67] KVM: Add per-VM flag to mark read-only memory as unsupported
+Date:   Mon, 16 Nov 2020 10:26:07 -0800
+Message-Id: <499bf4c92e07de7e27745cf8d266a1932d18d85f.1605232743.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1605232743.git.isaku.yamahata@intel.com>
 References: <cover.1605232743.git.isaku.yamahata@intel.com>
@@ -51,68 +50,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-Add a flag to disallow MCE injection and reject KVM_X86_SETUP_MCE with
--EINVAL when set.  TDX doesn't support injecting exceptions, including
-(virtual) #MCs.
+Add a flag for TDX to flag RO memory as unsupported and propagate it to
+KVM_MEM_READONLY to allow reporting RO memory as unsupported on a per-VM
+basis.  TDX1 doesn't expose permission bits to the VMM in the SEPT
+tables, i.e. doesn't support read-only private memory.
 
-Signed-off-by: Kai Huang <kai.huang@linux.intel.com>
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/x86.c              | 14 +++++++-------
- 2 files changed, 8 insertions(+), 7 deletions(-)
+ arch/x86/kvm/x86.c       | 4 +++-
+ include/linux/kvm_host.h | 4 ++++
+ virt/kvm/kvm_main.c      | 8 +++++---
+ 3 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index e8180a1fe610..70528102d865 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -996,6 +996,7 @@ struct kvm_arch {
- 
- 	bool guest_state_protected;
- 	bool irq_injection_disallowed;
-+	bool mce_injection_disallowed;
- 
- 	struct kvm_pmu_event_filter *pmu_event_filter;
- 	struct task_struct *nx_lpage_recovery_thread;
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ec66d5d53a1a..2fb0d20c5788 100644
+index 01380f057d9f..4060f3d91f74 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -4095,15 +4095,16 @@ static int vcpu_ioctl_tpr_access_reporting(struct kvm_vcpu *vcpu,
- static int kvm_vcpu_ioctl_x86_setup_mce(struct kvm_vcpu *vcpu,
- 					u64 mcg_cap)
- {
--	int r;
- 	unsigned bank_num = mcg_cap & 0xff, bank;
+@@ -3695,7 +3695,6 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 	case KVM_CAP_ASYNC_PF_INT:
+ 	case KVM_CAP_GET_TSC_KHZ:
+ 	case KVM_CAP_KVMCLOCK_CTRL:
+-	case KVM_CAP_READONLY_MEM:
+ 	case KVM_CAP_HYPERV_TIME:
+ 	case KVM_CAP_IOAPIC_POLARITY_IGNORED:
+ 	case KVM_CAP_TSC_DEADLINE_TIMER:
+@@ -3785,6 +3784,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		if (kvm_x86_ops.is_vm_type_supported(KVM_X86_TDX_VM))
+ 			r |= BIT(KVM_X86_TDX_VM);
+ 		break;
++	case KVM_CAP_READONLY_MEM:
++		r = kvm && kvm->readonly_mem_unsupported ? 0 : 1;
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 95371750c23f..1a0df7b83fd0 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -517,6 +517,10 @@ struct kvm {
+ 	pid_t userspace_pid;
+ 	unsigned int max_halt_poll_ns;
  
--	r = -EINVAL;
-+	if (vcpu->kvm->arch.mce_injection_disallowed)
-+		return -EINVAL;
++#ifdef __KVM_HAVE_READONLY_MEM
++	bool readonly_mem_unsupported;
++#endif
 +
- 	if (!bank_num || bank_num > KVM_MAX_MCE_BANKS)
--		goto out;
-+		return -EINVAL;
- 	if (mcg_cap & ~(kvm_mce_cap_supported | 0xff | 0xff0000))
--		goto out;
--	r = 0;
-+		return -EINVAL;
-+
- 	vcpu->arch.mcg_cap = mcg_cap;
- 	/* Init IA32_MCG_CTL to all 1s */
- 	if (mcg_cap & MCG_CTL_P)
-@@ -4113,8 +4114,7 @@ static int kvm_vcpu_ioctl_x86_setup_mce(struct kvm_vcpu *vcpu,
- 		vcpu->arch.mce_banks[bank*4] = ~(u64)0;
+ 	bool vm_bugged;
+ };
  
- 	kvm_x86_ops.setup_mce(vcpu);
--out:
--	return r;
-+	return 0;
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 3dc41b6e12a0..572a66a61c29 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1100,12 +1100,14 @@ static void update_memslots(struct kvm_memslots *slots,
+ 	}
  }
  
- static int kvm_vcpu_ioctl_x86_set_mce(struct kvm_vcpu *vcpu,
+-static int check_memory_region_flags(const struct kvm_userspace_memory_region *mem)
++static int check_memory_region_flags(struct kvm *kvm,
++				     const struct kvm_userspace_memory_region *mem)
+ {
+ 	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
+ 
+ #ifdef __KVM_HAVE_READONLY_MEM
+-	valid_flags |= KVM_MEM_READONLY;
++	if (!kvm->readonly_mem_unsupported)
++		valid_flags |= KVM_MEM_READONLY;
+ #endif
+ 
+ 	if (mem->flags & ~valid_flags)
+@@ -1278,7 +1280,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 	int as_id, id;
+ 	int r;
+ 
+-	r = check_memory_region_flags(mem);
++	r = check_memory_region_flags(kvm, mem);
+ 	if (r)
+ 		return r;
+ 
 -- 
 2.17.1
 
