@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDA62B4D99
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9D22B4D70
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733153AbgKPRjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:39:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
+        id S2387438AbgKPRhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733301AbgKPRhf (ORCPT
+        with ESMTP id S2387423AbgKPRhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:37:35 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993C7C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:35 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id h21so26507wmb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:35 -0800 (PST)
+        Mon, 16 Nov 2020 12:37:38 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5D2C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:37 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id p19so371846wmg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bUgD99dAZfuLWNam3kGxkjEykoel9F1pl4Jg76K7MCg=;
-        b=A8HzgcFmHJlDoRnxOLVZNJsNZd5RSaDMhSbJjyA6Zsf+uOVZiwxgsrZ3qS/yomov6M
-         ImfkYga1c9za82A3rxY+3q1sgd1dKCR4FLFTq54FzNvsOXjP4jT3rk7iNq4V+OfNY1qz
-         HA3Guu8rubwWPgTwa96fKsPnDlmxn4lljezuu9Htm+kOdivDmj83mDkrl9I0Lgmt7hAI
-         NcjebhEvuNFy98kZ0fjw6avLJaR4r/+QtLJqJbYxr/c1rqXQdoPd7Z2LCUKWcWb219aN
-         MtgPdH+xHTSR3WfhZ6yXP6rToCbCsx2/OQ7yUsk6/6IyW62TPiCBhsUK01Z3RQsgytV9
-         pl9Q==
+        bh=6NqivdSoS8aJrg9SJeB6kGm72B7/tU0UIKTvRD3ut9A=;
+        b=C1Q+CHNZ+SnTO8vHJOinWbhc3vH3s30mod5pEkymEsYScz0GtjCroxKRsb7NQwoWde
+         KV66Y0C0gQr6Krra8A9aDTX9GBdHGPWgrxfye5m2RGA5tOY5LqLYrKaX7x0Rb/gvR7hV
+         zW1d6+ZnhsrFZ7oo1nbFKaf0UMMviNLMMDvZse1OretnkhtHys6LnzODOQNxHPpIoQG9
+         KBOzzhpsuSNKHFAT5JxEjV6Jwd5h4xxOa5XhZKacJ43uzU9jnNQ9BVIxwGC6oh2JnwKN
+         GLMxyUrLpqisq/HpJFKXLMi6C9Dgt5GcOrNkfmuxtlX1EEGwqudN1Lm+qCs+1pukF8XV
+         niXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bUgD99dAZfuLWNam3kGxkjEykoel9F1pl4Jg76K7MCg=;
-        b=czs99fJy6T+EnhXDvE3WMv+B7IpNZhKmfFQQ0UuZ+4dxdcH4wSrA+mBWDJJRygmaLi
-         MV0vywcS4KPgeNwXZa0JNfWpS3YDK4Gdiaxr8pCLufsq5f6Ho/ll3ITOBxuxlszfqtgx
-         lbMlPQ2H1OmUbou7dafOb1fdiQoNA7SHk52wQcp+ajCO52cSjsvDJOktFUcTsft5JHOp
-         +b+sUdABCgD9r7QVF7PsODMbf11J5u2EG5F8CnZ+K3jJn1/14b4D6ZfcMmyChow6yRtM
-         k8VlTtDBk2VAMs5crr2JUCc8pCCF4WT3JZTGAd8hXrCLjroZofOwHrif+XZ2cyzkOebN
-         l3XA==
-X-Gm-Message-State: AOAM533+9AVFuPkMPqtdNzMRXGsFfyl7MzDTTFxpnNr+JyZTC3u+VgVd
-        NCcut6fdQ+sYM8hX9TUCmaAAXw==
-X-Google-Smtp-Source: ABdhPJxlyykqsXt354bAFqYf+ZEcs9kf2t4KuZ489r99dtOsPjsfVIxOwBijBEqB1CWFQJ+qtJiSng==
-X-Received: by 2002:a05:600c:2204:: with SMTP id z4mr15910947wml.57.1605548254381;
-        Mon, 16 Nov 2020 09:37:34 -0800 (PST)
+        bh=6NqivdSoS8aJrg9SJeB6kGm72B7/tU0UIKTvRD3ut9A=;
+        b=opGsox5O8GriqVp9knULWh5bpFwOhZvUZ+uFAeB1wraofwnsSCHZn4JuyWYEN+cLwz
+         HO31TAU+55QV2vybSY6ARxPyeL10hcumHEQSzmIYNPpc38v3XksAgYcZJtDcCmThU640
+         0hqYTL/eX1oDFrRp47G2VbhhhzvjQa9Q7+YM+PE1azne/W+gOD4Or7xvCJJREBXybzMS
+         ufgk5R3+u6/4pmwnLG1kQtc5Rfxet7Q07g5j0rMVSkI3kQF+7gjP+i9LUm4BWs3BzEc0
+         w6ACokGA6TPwsdrNkXLbiZwOlPZwfHiyzuWeiFUsI23B239rkBKmiEZndlGSJKlbjqxr
+         HLlw==
+X-Gm-Message-State: AOAM53016+47UzJzQ3l7O/WnVBl0bgsBeqisR5MCyVqxuBR/SBiacfrX
+        Pha6f5FTovLx8RyaQGR+Qx+Iow==
+X-Google-Smtp-Source: ABdhPJwMJtLAFYyr97EyAPYpJ7qyi5IqvZswjgm4XdVLqLLHFtaXQNWZ3VEoGPX14yGcY/n1XEUokg==
+X-Received: by 2002:a1c:e3c1:: with SMTP id a184mr16024wmh.88.1605548255825;
+        Mon, 16 Nov 2020 09:37:35 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.32
+        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:37:33 -0800 (PST)
+        Mon, 16 Nov 2020 09:37:35 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Sumit Semwal <sumit.semwal@linaro.org>,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 21/43] drm/radeon/r600_dma: Move 'r600_gpu_check_soft_reset()'s prototype to shared location
-Date:   Mon, 16 Nov 2020 17:36:38 +0000
-Message-Id: <20201116173700.1830487-22-lee.jones@linaro.org>
+Subject: [PATCH 22/43] drm/radeon/cik: Move 'r600_ih_ring_{alloc,fini}()'s prototypes to shared header
+Date:   Mon, 16 Nov 2020 17:36:39 +0000
+Message-Id: <20201116173700.1830487-23-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116173700.1830487-1-lee.jones@linaro.org>
 References: <20201116173700.1830487-1-lee.jones@linaro.org>
@@ -73,9 +73,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/r600.c:1615:5: warning: no previous prototype for ‘r600_gpu_check_soft_reset’ [-Wmissing-prototypes]
- 1615 | u32 r600_gpu_check_soft_reset(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/r600.c:3480:5: warning: no previous prototype for ‘r600_ih_ring_alloc’ [-Wmissing-prototypes]
+ 3480 | int r600_ih_ring_alloc(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/r600.c:3516:6: warning: no previous prototype for ‘r600_ih_ring_fini’ [-Wmissing-prototypes]
+ 3516 | void r600_ih_ring_fini(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
@@ -88,81 +91,65 @@ Cc: linux-media@vger.kernel.org
 Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/r600.c     |  1 +
- drivers/gpu/drm/radeon/r600.h     | 35 +++++++++++++++++++++++++++++++
- drivers/gpu/drm/radeon/r600_dma.c |  3 +--
- 3 files changed, 37 insertions(+), 2 deletions(-)
- create mode 100644 drivers/gpu/drm/radeon/r600.h
+ drivers/gpu/drm/radeon/cik.c  | 3 +--
+ drivers/gpu/drm/radeon/r600.h | 2 ++
+ drivers/gpu/drm/radeon/si.c   | 3 +--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.c
-index f09b6dc5cbeb3..94e8815e5067d 100644
---- a/drivers/gpu/drm/radeon/r600.c
-+++ b/drivers/gpu/drm/radeon/r600.c
-@@ -39,6 +39,7 @@
- 
- #include "atom.h"
- #include "avivod.h"
+diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
+index 315c4f3df3656..980b50d046cbc 100644
+--- a/drivers/gpu/drm/radeon/cik.c
++++ b/drivers/gpu/drm/radeon/cik.c
+@@ -34,6 +34,7 @@
+ #include "cik_blit_shaders.h"
+ #include "cikd.h"
+ #include "clearstate_ci.h"
 +#include "r600.h"
- #include "r600d.h"
- #include "rv770.h"
- #include "radeon.h"
-diff --git a/drivers/gpu/drm/radeon/r600.h b/drivers/gpu/drm/radeon/r600.h
-new file mode 100644
-index 0000000000000..2a3915f0039e4
---- /dev/null
-+++ b/drivers/gpu/drm/radeon/r600.h
-@@ -0,0 +1,35 @@
-+/* r600.h -- Private header for radeon driver -*- linux-c -*-
-+ *
-+ * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
-+ * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
-+ * All rights reserved.
-+ *
-+ * Permission is hereby granted, free of charge, to any person obtaining a
-+ * copy of this software and associated documentation files (the "Software"),
-+ * to deal in the Software without restriction, including without limitation
-+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-+ * and/or sell copies of the Software, and to permit persons to whom the
-+ * Software is furnished to do so, subject to the following conditions:
-+ *
-+ * The above copyright notice and this permission notice (including the next
-+ * paragraph) shall be included in all copies or substantial portions of the
-+ * Software.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-+ * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-+ * DEALINGS IN THE SOFTWARE.
-+ *
-+ */
-+
-+#ifndef __R600_H__
-+#define __R600_H__
-+
-+struct radeon_device;
-+
-+u32 r600_gpu_check_soft_reset(struct radeon_device *rdev);
-+
-+#endif				/* __R600_H__ */
-diff --git a/drivers/gpu/drm/radeon/r600_dma.c b/drivers/gpu/drm/radeon/r600_dma.c
-index af6c0da45f28a..89ca2738c5d4c 100644
---- a/drivers/gpu/drm/radeon/r600_dma.c
-+++ b/drivers/gpu/drm/radeon/r600_dma.c
-@@ -24,10 +24,9 @@
- 
  #include "radeon.h"
  #include "radeon_asic.h"
-+#include "r600.h"
- #include "r600d.h"
+ #include "radeon_audio.h"
+@@ -125,8 +126,6 @@ MODULE_FIRMWARE("radeon/mullins_mec.bin");
+ MODULE_FIRMWARE("radeon/mullins_rlc.bin");
+ MODULE_FIRMWARE("radeon/mullins_sdma.bin");
  
--u32 r600_gpu_check_soft_reset(struct radeon_device *rdev);
--
- /*
-  * DMA
-  * Starting with R600, the GPU has an asynchronous
+-extern int r600_ih_ring_alloc(struct radeon_device *rdev);
+-extern void r600_ih_ring_fini(struct radeon_device *rdev);
+ extern void si_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc);
+ extern void si_rlc_reset(struct radeon_device *rdev);
+ extern void si_init_uvd_internal_cg(struct radeon_device *rdev);
+diff --git a/drivers/gpu/drm/radeon/r600.h b/drivers/gpu/drm/radeon/r600.h
+index 2a3915f0039e4..e66ef58706cd8 100644
+--- a/drivers/gpu/drm/radeon/r600.h
++++ b/drivers/gpu/drm/radeon/r600.h
+@@ -31,5 +31,7 @@
+ struct radeon_device;
+ 
+ u32 r600_gpu_check_soft_reset(struct radeon_device *rdev);
++int r600_ih_ring_alloc(struct radeon_device *rdev);
++void r600_ih_ring_fini(struct radeon_device *rdev);
+ 
+ #endif				/* __R600_H__ */
+diff --git a/drivers/gpu/drm/radeon/si.c b/drivers/gpu/drm/radeon/si.c
+index 45076c27d7ded..d0407145c07b5 100644
+--- a/drivers/gpu/drm/radeon/si.c
++++ b/drivers/gpu/drm/radeon/si.c
+@@ -33,6 +33,7 @@
+ #include "atom.h"
+ #include "clearstate_si.h"
+ #include "evergreen.h"
++#include "r600.h"
+ #include "radeon.h"
+ #include "radeon_asic.h"
+ #include "radeon_audio.h"
+@@ -128,8 +129,6 @@ static void si_pcie_gen3_enable(struct radeon_device *rdev);
+ static void si_program_aspm(struct radeon_device *rdev);
+ extern void sumo_rlc_fini(struct radeon_device *rdev);
+ extern int sumo_rlc_init(struct radeon_device *rdev);
+-extern int r600_ih_ring_alloc(struct radeon_device *rdev);
+-extern void r600_ih_ring_fini(struct radeon_device *rdev);
+ static void si_enable_gui_idle_interrupt(struct radeon_device *rdev,
+ 					 bool enable);
+ static void si_init_pg(struct radeon_device *rdev);
 -- 
 2.25.1
 
