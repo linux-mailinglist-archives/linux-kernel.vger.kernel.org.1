@@ -2,441 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55262B40FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADD32B4107
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgKPKUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:20:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbgKPKUw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:20:52 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3DFC0613CF;
-        Mon, 16 Nov 2020 02:20:52 -0800 (PST)
-Received: from [192.168.0.217] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F0601A1B;
-        Mon, 16 Nov 2020 11:20:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1605522050;
-        bh=YAn8HZAXXRZkJFW3dYKkdcJaqR1PGu8Q4CmPGl5nzTQ=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ROQNQUONpZL+1zMcGGBPbQ8/2hXBakyQIS9K7wMN+erYKx/K9kZ3zXPfMpfQGwPKK
-         5HVFWY+Au/qj9R6nseio5lmw0xTqub/MOSVWMagTuLRVw7p+VEgYgnx73J3/csPBND
-         lMedHEGZsYj+aVT4A7kLmxh46SsKAc+OeMIBL79E=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH v4 1/8] media: i2c: Add driver for RDACM21 camera module
-To:     Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-References: <20201112162729.101384-1-jacopo+renesas@jmondi.org>
- <20201112162729.101384-2-jacopo+renesas@jmondi.org>
- <95e2e968-d77f-0838-641a-d81a6df6f0b5@ideasonboard.com>
- <20201114140457.h7x6l53cfqqhpq6l@uno.localdomain>
- <20201116090833.GB6540@pendragon.ideasonboard.com>
- <20201116100302.mmv5skzk7s34ocxa@uno.localdomain>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <ef1196f4-28f3-5ca1-0e11-08e65c6a1abe@ideasonboard.com>
-Date:   Mon, 16 Nov 2020 10:20:47 +0000
+        id S1729166AbgKPKVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:21:55 -0500
+Received: from relay.sw.ru ([185.231.240.75]:55166 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728283AbgKPKVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 05:21:54 -0500
+Received: from [192.168.15.170]
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1kebcy-008k4G-Qr; Mon, 16 Nov 2020 13:20:52 +0300
+Subject: Re: [PATCH v4 02/27] net: datagram: fix some kernel-doc markups
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Guillaume Nault <gnault@redhat.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Martin Varghese <martin.varghese@nokia.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Sabrina Dubroca <sd@queasysnail.net>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <cover.1605521731.git.mchehab+huawei@kernel.org>
+ <7a16cca43a8fc1b2491c9848c1cb72804692afda.1605521731.git.mchehab+huawei@kernel.org>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <8566eebd-c6a9-fa9d-dd47-94885b93b416@virtuozzo.com>
+Date:   Mon, 16 Nov 2020 13:20:59 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201116100302.mmv5skzk7s34ocxa@uno.localdomain>
+In-Reply-To: <7a16cca43a8fc1b2491c9848c1cb72804692afda.1605521731.git.mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2020 10:03, Jacopo Mondi wrote:
-> Hi Laurent,
+On 16.11.2020 13:17, Mauro Carvalho Chehab wrote:
+> Some identifiers have different names between their prototypes
+> and the kernel-doc markup.
 > 
-> On Mon, Nov 16, 2020 at 11:08:33AM +0200, Laurent Pinchart wrote:
->> Hi Jacopo,
->>
->> On Sat, Nov 14, 2020 at 03:04:57PM +0100, Jacopo Mondi wrote:
->>> On Thu, Nov 12, 2020 at 10:31:05PM +0000, Kieran Bingham wrote:
->>>> Hi Jacopo,
->>>
->>> [snip]
->>>
->>>>> +	/* Wait for firmware boot by reading streamon status. */
->>>>> +	ov490_write(dev, 0xfffd, 0x80);
->>>>> +	ov490_write(dev, 0xfffe, 0x29);
->>>>> +	usleep_range(100, 150);
->>>>> +	for (timeout = 300; timeout > 0; timeout--) {
->>>>> +		ov490_read(dev, 0xd000, &val);
->>>>> +		if (val == 0x0c)
->>>>
->>>> What is 0x0c here? Is it something we can better describe in a #define?
->>>>
->>>
->>> The 0x0c value itself means "frame output enable" + "whole frame
->>> output enable". I don't think it has much value to define it,
->>> otherwise we would need to define also the register 8029d000
->>
->> Shouldn't we have macros for *all* register addresses and fields ?
->>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Reviewed-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+
+> ---
+>  net/core/datagram.c   | 2 +-
+>  net/core/dev.c        | 4 ++--
+>  net/core/skbuff.c     | 2 +-
+>  net/ethernet/eth.c    | 6 +++---
+>  net/sunrpc/rpc_pipe.c | 3 ++-
+>  5 files changed, 9 insertions(+), 8 deletions(-)
 > 
-> I'm not sure it's worth it, we have a single register-value table, and
-> the way ov490 is programmed, as you can see is to specify the high
-> bytes of the 32-bits register to write in the special 'page' registers
-> 0xfffd, 0xfffe (which I've not found documented)
+> diff --git a/net/core/datagram.c b/net/core/datagram.c
+> index 9fcaa544f11a..81809fa735a7 100644
+> --- a/net/core/datagram.c
+> +++ b/net/core/datagram.c
+> @@ -692,41 +692,41 @@ EXPORT_SYMBOL(__zerocopy_sg_from_iter);
+>   *	@from: the source to copy from
+>   *
+>   *	The function will first copy up to headlen, and then pin the userspace
+>   *	pages and build frags through them.
+>   *
+>   *	Returns 0, -EFAULT or -EMSGSIZE.
+>   */
+>  int zerocopy_sg_from_iter(struct sk_buff *skb, struct iov_iter *from)
+>  {
+>  	int copy = min_t(int, skb_headlen(skb), iov_iter_count(from));
+>  
+>  	/* copy up to skb headlen */
+>  	if (skb_copy_datagram_from_iter(skb, 0, from, copy))
+>  		return -EFAULT;
+>  
+>  	return __zerocopy_sg_from_iter(NULL, skb, from, ~0U);
+>  }
+>  EXPORT_SYMBOL(zerocopy_sg_from_iter);
+>  
+>  /**
+> - *	skb_copy_and_csum_datagram_iter - Copy datagram to an iovec iterator
+> + *	skb_copy_and_csum_datagram - Copy datagram to an iovec iterator
+>   *          and update a checksum.
+>   *	@skb: buffer to copy
+>   *	@offset: offset in the buffer to start copying from
+>   *	@to: iovec iterator to copy to
+>   *	@len: amount of data to copy from buffer to iovec
+>   *      @csump: checksum pointer
+>   */
+>  static int skb_copy_and_csum_datagram(const struct sk_buff *skb, int offset,
+>  				      struct iov_iter *to, int len,
+>  				      __wsum *csump)
+>  {
+>  	return __skb_datagram_iter(skb, offset, to, len, true,
+>  			csum_and_copy_to_iter, csump);
+>  }
+>  
+>  /**
+>   *	skb_copy_and_csum_datagram_msg - Copy and checksum skb to user iovec.
+>   *	@skb: skbuff
+>   *	@hlen: hardware length
+>   *	@msg: destination
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 60d325bda0d7..4bfdcd6b20e8 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -6902,41 +6902,41 @@ static int ____netdev_has_upper_dev(struct net_device *upper_dev,
+>   *
+>   * Find out if a device is linked to specified upper device and return true
+>   * in case it is. Note that this checks only immediate upper device,
+>   * not through a complete stack of devices. The caller must hold the RTNL lock.
+>   */
+>  bool netdev_has_upper_dev(struct net_device *dev,
+>  			  struct net_device *upper_dev)
+>  {
+>  	struct netdev_nested_priv priv = {
+>  		.data = (void *)upper_dev,
+>  	};
+>  
+>  	ASSERT_RTNL();
+>  
+>  	return netdev_walk_all_upper_dev_rcu(dev, ____netdev_has_upper_dev,
+>  					     &priv);
+>  }
+>  EXPORT_SYMBOL(netdev_has_upper_dev);
+>  
+>  /**
+> - * netdev_has_upper_dev_all - Check if device is linked to an upper device
+> + * netdev_has_upper_dev_all_rcu - Check if device is linked to an upper device
+>   * @dev: device
+>   * @upper_dev: upper device to check
+>   *
+>   * Find out if a device is linked to specified upper device and return true
+>   * in case it is. Note that this checks the entire upper device chain.
+>   * The caller must hold rcu lock.
+>   */
+>  
+>  bool netdev_has_upper_dev_all_rcu(struct net_device *dev,
+>  				  struct net_device *upper_dev)
+>  {
+>  	struct netdev_nested_priv priv = {
+>  		.data = (void *)upper_dev,
+>  	};
+>  
+>  	return !!netdev_walk_all_upper_dev_rcu(dev, ____netdev_has_upper_dev,
+>  					       &priv);
+>  }
+>  EXPORT_SYMBOL(netdev_has_upper_dev_all_rcu);
+>  
+> @@ -8140,41 +8140,41 @@ void netdev_adjacent_rename_links(struct net_device *dev, char *oldname)
+>  	}
+>  }
+>  
+>  void *netdev_lower_dev_get_private(struct net_device *dev,
+>  				   struct net_device *lower_dev)
+>  {
+>  	struct netdev_adjacent *lower;
+>  
+>  	if (!lower_dev)
+>  		return NULL;
+>  	lower = __netdev_find_adj(lower_dev, &dev->adj_list.lower);
+>  	if (!lower)
+>  		return NULL;
+>  
+>  	return lower->private;
+>  }
+>  EXPORT_SYMBOL(netdev_lower_dev_get_private);
+>  
+>  
+>  /**
+> - * netdev_lower_change - Dispatch event about lower device state change
+> + * netdev_lower_state_changed - Dispatch event about lower device state change
+>   * @lower_dev: device
+>   * @lower_state_info: state to dispatch
+>   *
+>   * Send NETDEV_CHANGELOWERSTATE to netdev notifiers with info.
+>   * The caller must hold the RTNL lock.
+>   */
+>  void netdev_lower_state_changed(struct net_device *lower_dev,
+>  				void *lower_state_info)
+>  {
+>  	struct netdev_notifier_changelowerstate_info changelowerstate_info = {
+>  		.info.dev = lower_dev,
+>  	};
+>  
+>  	ASSERT_RTNL();
+>  	changelowerstate_info.lower_state_info = lower_state_info;
+>  	call_netdevice_notifiers_info(NETDEV_CHANGELOWERSTATE,
+>  				      &changelowerstate_info.info);
+>  }
+>  EXPORT_SYMBOL(netdev_lower_state_changed);
+>  
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index c9a5a3c262c8..ffe3dcc0ebea 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -825,41 +825,41 @@ EXPORT_SYMBOL(skb_tx_error);
+>  /**
+>   *	consume_skb - free an skbuff
+>   *	@skb: buffer to free
+>   *
+>   *	Drop a ref to the buffer and free it if the usage count has hit zero
+>   *	Functions identically to kfree_skb, but kfree_skb assumes that the frame
+>   *	is being dropped after a failure and notes that
+>   */
+>  void consume_skb(struct sk_buff *skb)
+>  {
+>  	if (!skb_unref(skb))
+>  		return;
+>  
+>  	trace_consume_skb(skb);
+>  	__kfree_skb(skb);
+>  }
+>  EXPORT_SYMBOL(consume_skb);
+>  #endif
+>  
+>  /**
+> - *	consume_stateless_skb - free an skbuff, assuming it is stateless
+> + *	__consume_stateless_skb - free an skbuff, assuming it is stateless
+>   *	@skb: buffer to free
+>   *
+>   *	Alike consume_skb(), but this variant assumes that this is the last
+>   *	skb reference and all the head states have been already dropped
+>   */
+>  void __consume_stateless_skb(struct sk_buff *skb)
+>  {
+>  	trace_consume_skb(skb);
+>  	skb_release_data(skb);
+>  	kfree_skbmem(skb);
+>  }
+>  
+>  void __kfree_skb_flush(void)
+>  {
+>  	struct napi_alloc_cache *nc = this_cpu_ptr(&napi_alloc_cache);
+>  
+>  	/* flush skb_cache if containing objects */
+>  	if (nc->skb_count) {
+>  		kmem_cache_free_bulk(skbuff_head_cache, nc->skb_count,
+>  				     nc->skb_cache);
+> diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
+> index dac65180c4ef..4106373180c6 100644
+> --- a/net/ethernet/eth.c
+> +++ b/net/ethernet/eth.c
+> @@ -255,41 +255,41 @@ int eth_header_cache(const struct neighbour *neigh, struct hh_cache *hh, __be16
+>  EXPORT_SYMBOL(eth_header_cache);
+>  
+>  /**
+>   * eth_header_cache_update - update cache entry
+>   * @hh: destination cache entry
+>   * @dev: network device
+>   * @haddr: new hardware address
+>   *
+>   * Called by Address Resolution module to notify changes in address.
+>   */
+>  void eth_header_cache_update(struct hh_cache *hh,
+>  			     const struct net_device *dev,
+>  			     const unsigned char *haddr)
+>  {
+>  	memcpy(((u8 *) hh->hh_data) + HH_DATA_OFF(sizeof(struct ethhdr)),
+>  	       haddr, ETH_ALEN);
+>  }
+>  EXPORT_SYMBOL(eth_header_cache_update);
+>  
+>  /**
+> - * eth_header_parser_protocol - extract protocol from L2 header
+> + * eth_header_parse_protocol - extract protocol from L2 header
+>   * @skb: packet to extract protocol from
+>   */
+>  __be16 eth_header_parse_protocol(const struct sk_buff *skb)
+>  {
+>  	const struct ethhdr *eth = eth_hdr(skb);
+>  
+>  	return eth->h_proto;
+>  }
+>  EXPORT_SYMBOL(eth_header_parse_protocol);
+>  
+>  /**
+>   * eth_prepare_mac_addr_change - prepare for mac change
+>   * @dev: network device
+>   * @p: socket address
+>   */
+>  int eth_prepare_mac_addr_change(struct net_device *dev, void *p)
+>  {
+>  	struct sockaddr *addr = p;
+>  
+>  	if (!(dev->priv_flags & IFF_LIVE_ADDR_CHANGE) && netif_running(dev))
+> @@ -506,42 +506,42 @@ unsigned char * __weak arch_get_platform_mac_address(void)
+>  
+>  int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
+>  {
+>  	const unsigned char *addr = NULL;
+>  
+>  	if (dev->of_node)
+>  		addr = of_get_mac_address(dev->of_node);
+>  	if (IS_ERR_OR_NULL(addr))
+>  		addr = arch_get_platform_mac_address();
+>  
+>  	if (!addr)
+>  		return -ENODEV;
+>  
+>  	ether_addr_copy(mac_addr, addr);
+>  
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(eth_platform_get_mac_address);
+>  
+>  /**
+> - * Obtain the MAC address from an nvmem cell named 'mac-address' associated
+> - * with given device.
+> + * nvmem_get_mac_address - Obtain the MAC address from an nvmem cell named
+> + * 'mac-address' associated with given device.
+>   *
+>   * @dev:	Device with which the mac-address cell is associated.
+>   * @addrbuf:	Buffer to which the MAC address will be copied on success.
+>   *
+>   * Returns 0 on success or a negative error number on failure.
+>   */
+>  int nvmem_get_mac_address(struct device *dev, void *addrbuf)
+>  {
+>  	struct nvmem_cell *cell;
+>  	const void *mac;
+>  	size_t len;
+>  
+>  	cell = nvmem_cell_get(dev, "mac-address");
+>  	if (IS_ERR(cell))
+>  		return PTR_ERR(cell);
+>  
+>  	mac = nvmem_cell_read(cell, &len);
+>  	nvmem_cell_put(cell);
+>  
+>  	if (IS_ERR(mac))
+> diff --git a/net/sunrpc/rpc_pipe.c b/net/sunrpc/rpc_pipe.c
+> index eadc0ede928c..8241f5a4a01c 100644
+> --- a/net/sunrpc/rpc_pipe.c
+> +++ b/net/sunrpc/rpc_pipe.c
+> @@ -764,41 +764,42 @@ static struct dentry *rpc_mkdir_populate(struct dentry *parent,
+>  
+>  static int rpc_rmdir_depopulate(struct dentry *dentry,
+>  		void (*depopulate)(struct dentry *))
+>  {
+>  	struct dentry *parent;
+>  	struct inode *dir;
+>  	int error;
+>  
+>  	parent = dget_parent(dentry);
+>  	dir = d_inode(parent);
+>  	inode_lock_nested(dir, I_MUTEX_PARENT);
+>  	if (depopulate != NULL)
+>  		depopulate(dentry);
+>  	error = __rpc_rmdir(dir, dentry);
+>  	inode_unlock(dir);
+>  	dput(parent);
+>  	return error;
+>  }
+>  
+>  /**
+> - * rpc_mkpipe - make an rpc_pipefs file for kernel<->userspace communication
+> + * rpc_mkpipe_dentry - make an rpc_pipefs file for kernel<->userspace
+> + *		       communication
+>   * @parent: dentry of directory to create new "pipe" in
+>   * @name: name of pipe
+>   * @private: private data to associate with the pipe, for the caller's use
+>   * @pipe: &rpc_pipe containing input parameters
+>   *
+>   * Data is made available for userspace to read by calls to
+>   * rpc_queue_upcall().  The actual reads will result in calls to
+>   * @ops->upcall, which will be called with the file pointer,
+>   * message, and userspace buffer to copy to.
+>   *
+>   * Writes can come at any time, and do not necessarily have to be
+>   * responses to upcalls.  They will result in calls to @msg->downcall.
+>   *
+>   * The @private argument passed here will be available to all these methods
+>   * from the file pointer, via RPC_I(file_inode(file))->private.
+>   */
+>  struct dentry *rpc_mkpipe_dentry(struct dentry *parent, const char *name,
+>  				 void *private, struct rpc_pipe *pipe)
+>  {
+>  	struct dentry *dentry;
 > 
-> 	ov490_write(dev, 0xfffd, 0x80);
-> 	ov490_write(dev, 0xfffe, 0x29);
-> 	ov490_read(dev, 0xd000, &val);
-> 
-> This, to my understanding reads register 0x8029d000
-> 
-> We would need three macros, maybe a
->         PAGE_HIGH(reg)  (u8)(reg >> 24)
->         PAGE_LOW(reg)   (u8)(reg >> 16)
->         REG_LOW(reg)    (u16)(reg)
-> 
-> To that's a lot of churn for no gain imho, the code isn't much more
-> clear
-
-To me it means we need a couple of helper functions.
-
-ov490_write_long()
-ov490_read_long().
-
-(Or other names if appropriate)
-
-Wouldn't that make the code clearer, and more maintainable? And then
-allow more correct register definitions to be created?
-
-
-
->>> Also, the ov490 is programmed loading the content of a SPI Flash chip,
->>> I guess it's just known that "output enabled" is required to have
->>> stream operations properly working.
->>>
->>>>> +			break;
->>>>> +		mdelay(1);
->>>>> +	}
->>>>> +	if (!timeout) {
->>>>> +		dev_err(dev->dev, "Timeout firmware boot wait\n");
->>>>> +		return -ENODEV;
->>>>> +	}
->>>>> +	dev_dbg(dev->dev, "Firmware booted in %u msec\n", 300 - timeout);
->>>>> +
->>>>> +	/* Read OV10640 Id to test communications. */
->>>>> +	ov490_write(dev, 0xfffd, 0x80);
->>>>> +	ov490_write(dev, 0xfffe, 0x19);
-
-The other one was a write to 0x80, 0x29, why is this now to 0x19?
-
-
->>>>> +	usleep_range(100, 150);
-> 
-> Not to add that I don't have register 0x80195000 in the documentation I've
-
-Aha, so writing to 0xfffd, 0xfffe, 'sets' the top page. I see.
-
-And I presume there must always be a usleep_range(100, 150) after any
-page change?
-
-Really sounds like a helper function to me, which keeps track of the
-current page, and updates the page when needed.
-
-
-
-> access to (the master SCCB control page is at  address 0x8090xxxx
-> 
->>>>> +
->>>>> +	ov490_write(dev, 0x5000, 0x01);
->>>>> +	ov490_write(dev, 0x5001, 0x30);
->>>>> +	ov490_write(dev, 0x5002, 0x0a)
->>>>> +	ov490_write(dev, 0xfffe, 0x80);
-> 
-> This sequence in example, reads the 0x300a register of the slave
-> (ov10640) by programming registers
->                 0x80195000      0x1
->                 0x80195001      0x30
->                 0x80195002      0x0a
-> 
->>>>> +	usleep_range(100, 150);
->>>>> +	ov490_write(dev, 0xc0, 0xc1);
-> 
-> Triggering a transaction writing 0xc1 to 0x808000c0 (0xc1
-> undocumented)
-
-
-Do we do many reads of the connected sensor? or is this the only one.
-If you know that's what's happening, I'd be tempted to say we should
-wrap that up in a function to make it clearer too.
-
-
-
->>>>> +	ov490_write(dev, 0xfffe, 0x19);
->>>>> +	usleep_range(1000, 1500);
->>>>> +	ov490_read(dev, 0x5000, &val);
-> 
-> and reading back the transaction result at address 0x80195000
-> 
-> I got these parts from
-> https://github.com/CogentEmbedded/meta-rcar/blob/v2.12.0/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/0040-H3-MAX9286-TI964-support-add-10635-10640-cameras.patch#L3732
-> 
-> and that's why I kept Vladimir's authorship in MODULE_AUTHORS()
-
-That's fine, but I think we can do better than dragging that code in
-directly.
-
-
-
->>>>> +	if (val != OV10640_ID_LOW) {
->>>>> +		dev_err(dev->dev, "OV10640 ID mismatch: (0x%02x)\n", val);
->>>>> +		return -ENODEV;
->>>>> +	}
->>>>> +
->>>>> +	dev_dbg(dev->dev, "OV10640 ID = 0x%2x\n", val);
->>>>> +
->>>>> +	for (i = 0; i < ARRAY_SIZE(ov490_regs_wizard); ++i) {
->>>>> +		ret = ov490_write(dev, ov490_regs_wizard[i].reg,
->>>>> +				  ov490_regs_wizard[i].val);
->>>>> +		if (ret < 0) {
->>>>> +			dev_err(dev->dev,
->>>>> +				"%s: register %u (0x%04x) write failed (%d)\n",
->>>>> +				__func__, i, ov490_regs_wizard[i].reg, ret);
->>>>> +
->>>>> +			return -EIO;
->>>>> +		}
->>>>> +
->>>>> +		usleep_range(100, 150);
->>>>> +	}
->>>>> +
->>>>> +	/*
->>>>> +	 * The ISP is programmed with the content of a serial flash memory.
->>>>> +	 * Read the firmware configuration to reflect it through the V4L2 APIs.
->>>>> +	 */
->>>>> +	ov490_write(dev, 0xfffd, 0x80);
->>>>> +	ov490_write(dev, 0xfffe, 0x82);
->>>>> +	usleep_range(100, 150);
->>>>> +	ov490_read(dev, OV490_ISP_HSIZE_HIGH, &val);
->>>>> +	dev->fmt.width = (val & 0xf) << 8;
->>>>> +	ov490_read(dev, OV490_ISP_HSIZE_LOW, &val);
->>>>> +	dev->fmt.width |= (val & 0xff);
->>>>> +
->>>>> +	ov490_read(dev, OV490_ISP_VSIZE_HIGH, &val);
->>>>> +	dev->fmt.height = (val & 0xf) << 8;
->>>>> +	ov490_read(dev, OV490_ISP_VSIZE_LOW, &val);
->>>>> +	dev->fmt.height |= val & 0xff;
->>>>> +
->>>>> +	/* Set bus width to 12 bits [0:11] */
->>>>> +	ov490_write(dev, 0xfffd, 0x80);
->>>>> +	ov490_write(dev, 0xfffe, 0x28);
->>>>> +	usleep_range(100, 150);
->>>>> +	ov490_write(dev, 0x6009, 0x10);
->>>>> +
->>>>> +	dev_info(dev->dev, "Identified RDACM21 camera module\n");
->>>>> +
->>>>> +	return 0;
->>>>> +}
->>>>> +
->>>>> +static int rdacm21_initialize(struct rdacm21_device *dev)
->>>>> +{
->>>>> +	int ret;
->>>>> +
->>>>> +	/* Verify communication with the MAX9271: ping to wakeup. */
->>>>> +	dev->serializer->client->addr = MAX9271_DEFAULT_ADDR;
->>>>> +	i2c_smbus_read_byte(dev->serializer->client);
->>>>> +
->>>>> +	/* Serial link disabled during config as it needs a valid pixel clock. */
->>>>> +	ret = max9271_set_serial_link(dev->serializer, false);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +
->>>>> +	/* Set GPO high to hold OV490 in reset during max9271 configuration. */
->>>>> +	ret = max9271_set_gpios(dev->serializer, MAX9271_GPO);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +
->>>>> +	/* Configure I2C bus at 105Kbps speed and configure GMSL link. */
->>>>> +	ret = max9271_configure_i2c(dev->serializer,
->>>>> +				    MAX9271_I2CSLVSH_469NS_234NS |
->>>>> +				    MAX9271_I2CSLVTO_1024US |
->>>>> +				    MAX9271_I2CMSTBT_105KBPS);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +
->>>>> +	ret = max9271_configure_gmsl_link(dev->serializer);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +
->>>>> +	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +	dev->serializer->client->addr = dev->addrs[0];
->>>>> +
->>>>> +	/*
->>>>> +	 * Release OV490 from reset and program address translation
->>>>> +	 * before performing OV490 configuration.
->>>>> +	 */
->>>>> +	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPO);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +
->>>>> +	ret = max9271_set_translation(dev->serializer, dev->addrs[1],
->>>>> +				      OV490_I2C_ADDRESS);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +	dev->isp->addr = dev->addrs[1];
->>>>> +
->>>>> +	ret = ov490_initialize(dev);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +
->>>>> +	/*
->>>>> +	 * Set reverse channel high threshold to increase noise immunity.
->>>>> +	 *
->>>>> +	 * This should be compensated by increasing the reverse channel
->>>>> +	 * amplitude on the remote deserializer side.
->>>>> +	 */
->>>>> +	ret = max9271_set_high_threshold(dev->serializer, true);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +
->>>>> +	return 0;
->>>>> +}
->>>>> +
->>>>> +static int rdacm21_probe(struct i2c_client *client)
->>>>> +{
->>>>> +	struct rdacm21_device *dev;
->>>>> +	struct fwnode_handle *ep;
->>>>> +	int ret;
->>>>> +
->>>>> +	dev = devm_kzalloc(&client->dev, sizeof(*dev), GFP_KERNEL);
->>>>> +	if (!dev)
->>>>> +		return -ENOMEM;
->>>>> +	dev->dev = &client->dev;
->>>>> +
->>>>> +	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
->>>>> +				       GFP_KERNEL);
->>>>> +	if (!dev->serializer)
->>>>> +		return -ENOMEM;
->>>>> +
->>>>> +	dev->serializer->client = client;
->>>>> +
->>>>> +	ret = of_property_read_u32_array(client->dev.of_node, "reg",
->>>>> +					 dev->addrs, 2);
->>>>> +	if (ret < 0) {
->>>>> +		dev_err(dev->dev, "Invalid DT reg property: %d\n", ret);
->>>>> +		return -EINVAL;
->>>>> +	}
->>>>> +
->>>>> +	/* Create the dummy I2C client for the sensor. */
->>>>> +	dev->isp = i2c_new_dummy_device(client->adapter, OV490_I2C_ADDRESS);
->>>>> +	if (IS_ERR(dev->isp))
->>>>> +		return PTR_ERR(dev->isp);
->>>>> +
->>>>> +	ret = rdacm21_initialize(dev);
->>>>> +	if (ret < 0)
->>>>> +		goto error;
->>>>> +
->>>>> +	/* Initialize and register the subdevice. */
->>>>> +	v4l2_i2c_subdev_init(&dev->sd, client, &rdacm21_subdev_ops);
->>>>> +	dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
->>>>> +
->>>>> +	v4l2_ctrl_handler_init(&dev->ctrls, 1);
->>>>> +	v4l2_ctrl_new_std(&dev->ctrls, NULL, V4L2_CID_PIXEL_RATE,
->>>>> +			  OV10640_PIXEL_RATE, OV10640_PIXEL_RATE, 1,
->>>>> +			  OV10640_PIXEL_RATE);
->>>>> +	dev->sd.ctrl_handler = &dev->ctrls;
->>>>> +
->>>>> +	ret = dev->ctrls.error;
->>>>> +	if (ret)
->>>>> +		goto error_free_ctrls;
->>>>> +
->>>>> +	dev->pad.flags = MEDIA_PAD_FL_SOURCE;
->>>>> +	dev->sd.entity.flags |= MEDIA_ENT_F_CAM_SENSOR;
->>>>> +	ret = media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
->>>>> +	if (ret < 0)
->>>>> +		goto error_free_ctrls;
->>>>> +
->>>>> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev), NULL);
->>>>> +	if (!ep) {
->>>>> +		dev_err(&client->dev,
->>>>> +			"Unable to get endpoint in node %pOF\n",
->>>>> +			client->dev.of_node);
->>>>> +		ret = -ENOENT;
->>>>> +		goto error_free_ctrls;
->>>>> +	}
->>>>> +	dev->sd.fwnode = ep;
->>>>> +
->>>>> +	ret = v4l2_async_register_subdev(&dev->sd);
->>>>> +	if (ret)
->>>>> +		goto error_put_node;
->>>>> +
->>>>> +	return 0;
->>>>> +
->>>>> +error_put_node:
->>>>> +	fwnode_handle_put(dev->sd.fwnode);
->>>>> +error_free_ctrls:
->>>>> +	v4l2_ctrl_handler_free(&dev->ctrls);
->>>>> +error:
->>>>> +	i2c_unregister_device(dev->isp);
->>>>> +
->>>>> +	return ret;
->>>>> +}
->>>>> +
->>>>> +static int rdacm21_remove(struct i2c_client *client)
->>>>> +{
->>>>> +	struct rdacm21_device *dev = i2c_to_rdacm21(client);
->>>>> +
->>>>> +	fwnode_handle_put(dev->sd.fwnode);
->>>>> +	v4l2_async_unregister_subdev(&dev->sd);
->>>>> +	v4l2_ctrl_handler_free(&dev->ctrls);
->>>>> +	i2c_unregister_device(dev->isp);
->>>>> +
->>>>> +	return 0;
->>>>> +}
->>>>> +
->>>>> +static const struct of_device_id rdacm21_of_ids[] = {
->>>>> +	{ .compatible = "imi,rdacm21" },
->>>>> +	{ }
->>>>> +};
->>>>> +MODULE_DEVICE_TABLE(of, rdacm21_of_ids);
->>>>> +
->>>>> +static struct i2c_driver rdacm21_i2c_driver = {
->>>>> +	.driver	= {
->>>>> +		.name	= "rdacm21",
->>>>> +		.of_match_table = rdacm21_of_ids,
->>>>> +	},
->>>>> +	.probe_new	= rdacm21_probe,
->>>>> +	.remove		= rdacm21_remove,
->>>>> +};
->>>>> +
->>>>> +module_i2c_driver(rdacm21_i2c_driver);
->>>>> +
->>>>> +MODULE_DESCRIPTION("GMSL Camera driver for RDACM21");
->>>>> +MODULE_AUTHOR("Jacopo Mondi, Kieran Bingham, Laurent Pinchart, Niklas Söderlund, Vladimir Barinov");
->>>>
->>>> I think by this point you could chop MODULE_AUTHOR for this one down to
->>>> just you ;-)
->>>>
->>>>
->>>> A fairly arbitrary, and cursory
->>>>
->>>> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
->>>>
->>>> I'll be aiming to test this (series) as soon as I can too.
->>>
->>> Thanks, let me know if I should submit for proper inclusion!
->>>
->>>>> +MODULE_LICENSE("GPL v2");
->>
->> --
->> Regards,
->>
->> Laurent Pinchart
 
