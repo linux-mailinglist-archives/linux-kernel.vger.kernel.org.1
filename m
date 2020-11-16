@@ -2,222 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEC92B52CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:40:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B70812B52D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733242AbgKPUkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:40:42 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:39083 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730680AbgKPUkf (ORCPT
+        id S1732664AbgKPUmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:42:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgKPUmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:40:35 -0500
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 16 Nov 2020 12:40:34 -0800
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com ([10.46.162.81])
-  by ironmsg01-sd.qualcomm.com with ESMTP; 16 Nov 2020 12:40:34 -0800
-Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
-        id 32EE5192D; Mon, 16 Nov 2020 12:40:34 -0800 (PST)
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        Kavya Nunna <knunna@codeaurora.org>,
-        Guru Das Srinagesh <gurus@codeaurora.org>
-Subject: [PATCH v6 3/3] extcon: qcom-spmi: Add support for VBUS detection
-Date:   Mon, 16 Nov 2020 12:40:32 -0800
-Message-Id: <88468584643c5f9f93812715e2325fdd5387309f.1605559069.git.gurus@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1605559069.git.gurus@codeaurora.org>
-References: <cover.1605559069.git.gurus@codeaurora.org>
-In-Reply-To: <cover.1605559069.git.gurus@codeaurora.org>
-References: <cover.1605559069.git.gurus@codeaurora.org>
+        Mon, 16 Nov 2020 15:42:36 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E76C0613CF;
+        Mon, 16 Nov 2020 12:42:36 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 23so656293wmg.1;
+        Mon, 16 Nov 2020 12:42:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3z+NbxLCoSUpXc6qIVJmm/Cby6IwqNHb9FTQiHAyLpQ=;
+        b=ZMaZY17YDp5J0FtljoLT9MOJyeYK9wI2VldyllFIjWA+feBYKFM87WUnZOQLj3BR3J
+         8X8mv5IcJ9elNlTLN6HprUhcSWl1Oyc4K5leOKdfVF/zdngMzEhAAh13tju6GlLFiGMT
+         5UT2sGbxEQAWkqdQiDS31uRCWgtt0USGVUc2odIlHHa6AwjBPiNBgWsFlaC30TnjOQRI
+         /HwXVRM3DO4GIY6jcQiPh4BTNGdvHKNQoTRGtHbl+Z+6YTNfjyqpbxfxCSSl6ECUExTO
+         BmXdK42koWVsdxugF5RKR2qqp5NSPPotc0Od8AcbD5K9lpUFvVU+MfCZAr0PuVpEAq4z
+         Ypxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3z+NbxLCoSUpXc6qIVJmm/Cby6IwqNHb9FTQiHAyLpQ=;
+        b=f7/RckoDt7eBUdfHYh1Rzj6xR5RrvKkowMKXIhJcW+4Cqag026ceTQT5LMotaocHig
+         hHK7wqbhcmnFfIQJVKciMyNz4XNnd4izd7wEwvYomnHWk9OTqEoLKKsMhge+MrUUr3ZR
+         8zwTbOtEL6i0FVK8fExwh4ZKrfzEMBVHJ9DqvelXXwGEGneRnKEZmxpKEzxeCElUlFww
+         OQ9Xnr+689N6EiDPP3SoAdgVl8bdk2UveEx9gBoNCuJIP+dcvhQtDli3EfTk5qle842K
+         w12KlC9iL6csyv2d/aXwIKIhqnWOVGKKw2yzLN76gGrgXHZceMzAVK+JyyCYu/8/mcW2
+         O+6A==
+X-Gm-Message-State: AOAM530/Um2dUi5ckGbidJCyqSqaWGsPDXR1ZEa05HXC2DhgHTuAIziS
+        avk6eXCevHNVITPjiVzNhPlssJ5MfWiJmT1ltg0=
+X-Google-Smtp-Source: ABdhPJzMitW7KoFSksU/zt+YNQhzbtPynx2aS+dOwmPuAI1Vbj8yIE/6ayztvfblfVaSIEsfQFY+bJuDWGnscmxiEAk=
+X-Received: by 2002:a7b:c015:: with SMTP id c21mr705614wmb.79.1605559354802;
+ Mon, 16 Nov 2020 12:42:34 -0800 (PST)
+MIME-Version: 1.0
+References: <20201116173700.1830487-1-lee.jones@linaro.org> <20201116173700.1830487-39-lee.jones@linaro.org>
+In-Reply-To: <20201116173700.1830487-39-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 16 Nov 2020 15:42:23 -0500
+Message-ID: <CADnq5_NdY-vbn74Qzp8X04y_eozZVFiOXwepSP2+iABRzUOTxA@mail.gmail.com>
+Subject: Re: [PATCH 38/43] drm/radeon/cik: Move 'Move 'cik_sdma_*()'s
+ prototypes to shared header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Ghayal <aghayal@codeaurora.org>
+On Mon, Nov 16, 2020 at 12:38 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/cik_sdma.c:331:6: warning: no previous prototype =
+for =E2=80=98cik_sdma_enable=E2=80=99 [-Wmissing-prototypes]
+>  331 | void cik_sdma_enable(struct radeon_device *rdev, bool enable)
+>  | ^~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/cik_sdma.c:528:5: warning: no previous prototype =
+for =E2=80=98cik_sdma_resume=E2=80=99 [-Wmissing-prototypes]
+>  528 | int cik_sdma_resume(struct radeon_device *rdev)
+>  | ^~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/cik_sdma.c:557:6: warning: no previous prototype =
+for =E2=80=98cik_sdma_fini=E2=80=99 [-Wmissing-prototypes]
+>  557 | void cik_sdma_fini(struct radeon_device *rdev)
+>  | ^~~~~~~~~~~~~
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-VBUS can be detected via a dedicated PMIC pin. Add support
-for reporting the VBUS status.
+Applied.  Thanks!
 
-Signed-off-by: Anirudh Ghayal <aghayal@codeaurora.org>
-Signed-off-by: Kavya Nunna <knunna@codeaurora.org>
-Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
----
- drivers/extcon/extcon-qcom-spmi-misc.c | 99 +++++++++++++++++++++++++++-------
- 1 file changed, 80 insertions(+), 19 deletions(-)
+Alex
 
-diff --git a/drivers/extcon/extcon-qcom-spmi-misc.c b/drivers/extcon/extcon-qcom-spmi-misc.c
-index 6b836ae..9e8ccfb 100644
---- a/drivers/extcon/extcon-qcom-spmi-misc.c
-+++ b/drivers/extcon/extcon-qcom-spmi-misc.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /**
-  * extcon-qcom-spmi-misc.c - Qualcomm USB extcon driver to support USB ID
-- *				detection based on extcon-usb-gpio.c.
-+ *			and VBUS detection based on extcon-usb-gpio.c.
-  *
-  * Copyright (C) 2016 Linaro, Ltd.
-  * Stephen Boyd <stephen.boyd@linaro.org>
-@@ -21,30 +21,56 @@
- 
- struct qcom_usb_extcon_info {
- 	struct extcon_dev *edev;
--	int irq;
-+	int id_irq;
-+	int vbus_irq;
- 	struct delayed_work wq_detcable;
- 	unsigned long debounce_jiffies;
- };
- 
- static const unsigned int qcom_usb_extcon_cable[] = {
-+	EXTCON_USB,
- 	EXTCON_USB_HOST,
- 	EXTCON_NONE,
- };
- 
- static void qcom_usb_extcon_detect_cable(struct work_struct *work)
- {
--	bool id;
-+	bool state = false;
- 	int ret;
-+	union extcon_property_value val;
- 	struct qcom_usb_extcon_info *info = container_of(to_delayed_work(work),
- 						    struct qcom_usb_extcon_info,
- 						    wq_detcable);
- 
--	/* check ID and update cable state */
--	ret = irq_get_irqchip_state(info->irq, IRQCHIP_STATE_LINE_LEVEL, &id);
--	if (ret)
--		return;
-+	if (info->id_irq > 0) {
-+		/* check ID and update cable state */
-+		ret = irq_get_irqchip_state(info->id_irq,
-+				IRQCHIP_STATE_LINE_LEVEL, &state);
-+		if (ret)
-+			return;
-+
-+		if (!state) {
-+			val.intval = true;
-+			extcon_set_property(info->edev, EXTCON_USB_HOST,
-+						EXTCON_PROP_USB_SS, val);
-+		}
-+		extcon_set_state_sync(info->edev, EXTCON_USB_HOST, !state);
-+	}
- 
--	extcon_set_state_sync(info->edev, EXTCON_USB_HOST, !id);
-+	if (info->vbus_irq > 0) {
-+		/* check VBUS and update cable state */
-+		ret = irq_get_irqchip_state(info->vbus_irq,
-+				IRQCHIP_STATE_LINE_LEVEL, &state);
-+		if (ret)
-+			return;
-+
-+		if (state) {
-+			val.intval = true;
-+			extcon_set_property(info->edev, EXTCON_USB,
-+						EXTCON_PROP_USB_SS, val);
-+		}
-+		extcon_set_state_sync(info->edev, EXTCON_USB, state);
-+	}
- }
- 
- static irqreturn_t qcom_usb_irq_handler(int irq, void *dev_id)
-@@ -79,21 +105,48 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	ret = extcon_set_property_capability(info->edev,
-+			EXTCON_USB, EXTCON_PROP_USB_SS);
-+	ret |= extcon_set_property_capability(info->edev,
-+			EXTCON_USB_HOST, EXTCON_PROP_USB_SS);
-+	if (ret) {
-+		dev_err(dev, "failed to register extcon props rc=%d\n",
-+						ret);
-+		return ret;
-+	}
-+
- 	info->debounce_jiffies = msecs_to_jiffies(USB_ID_DEBOUNCE_MS);
- 	INIT_DELAYED_WORK(&info->wq_detcable, qcom_usb_extcon_detect_cable);
- 
--	info->irq = platform_get_irq_byname(pdev, "usb_id");
--	if (info->irq < 0)
--		return info->irq;
-+	info->id_irq = platform_get_irq_byname(pdev, "usb_id");
-+	if (info->id_irq > 0) {
-+		ret = devm_request_threaded_irq(dev, info->id_irq, NULL,
-+					qcom_usb_irq_handler,
-+					IRQF_TRIGGER_RISING |
-+					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+					pdev->name, info);
-+		if (ret < 0) {
-+			dev_err(dev, "failed to request handler for ID IRQ\n");
-+			return ret;
-+		}
-+	}
- 
--	ret = devm_request_threaded_irq(dev, info->irq, NULL,
-+	info->vbus_irq = platform_get_irq_byname(pdev, "usb_vbus");
-+	if (info->vbus_irq > 0) {
-+		ret = devm_request_threaded_irq(dev, info->vbus_irq, NULL,
- 					qcom_usb_irq_handler,
- 					IRQF_TRIGGER_RISING |
- 					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 					pdev->name, info);
--	if (ret < 0) {
--		dev_err(dev, "failed to request handler for ID IRQ\n");
--		return ret;
-+		if (ret < 0) {
-+			dev_err(dev, "failed to request handler for VBUS IRQ\n");
-+			return ret;
-+		}
-+	}
-+
-+	if (info->id_irq < 0 && info->vbus_irq < 0) {
-+		dev_err(dev, "ID and VBUS IRQ not found\n");
-+		return -EINVAL;
- 	}
- 
- 	platform_set_drvdata(pdev, info);
-@@ -120,8 +173,12 @@ static int qcom_usb_extcon_suspend(struct device *dev)
- 	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
- 	int ret = 0;
- 
--	if (device_may_wakeup(dev))
--		ret = enable_irq_wake(info->irq);
-+	if (device_may_wakeup(dev)) {
-+		if (info->id_irq > 0)
-+			ret = enable_irq_wake(info->id_irq);
-+		if (info->vbus_irq > 0)
-+			ret = enable_irq_wake(info->vbus_irq);
-+	}
- 
- 	return ret;
- }
-@@ -131,8 +188,12 @@ static int qcom_usb_extcon_resume(struct device *dev)
- 	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
- 	int ret = 0;
- 
--	if (device_may_wakeup(dev))
--		ret = disable_irq_wake(info->irq);
-+	if (device_may_wakeup(dev)) {
-+		if (info->id_irq > 0)
-+			ret = disable_irq_wake(info->id_irq);
-+		if (info->vbus_irq > 0)
-+			ret = disable_irq_wake(info->vbus_irq);
-+	}
- 
- 	return ret;
- }
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+> ---
+>  drivers/gpu/drm/radeon/cik.c | 3 ---
+>  drivers/gpu/drm/radeon/cik.h | 3 +++
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
+> index cef0f3111cd3a..2af76463906ad 100644
+> --- a/drivers/gpu/drm/radeon/cik.c
+> +++ b/drivers/gpu/drm/radeon/cik.c
+> @@ -129,9 +129,6 @@ MODULE_FIRMWARE("radeon/mullins_rlc.bin");
+>  MODULE_FIRMWARE("radeon/mullins_sdma.bin");
+>
+>  static u32 cik_get_cu_active_bitmap(struct radeon_device *rdev, u32 se, =
+u32 sh);
+> -extern int cik_sdma_resume(struct radeon_device *rdev);
+> -extern void cik_sdma_enable(struct radeon_device *rdev, bool enable);
+> -extern void cik_sdma_fini(struct radeon_device *rdev);
+>  extern void vce_v2_0_enable_mgcg(struct radeon_device *rdev, bool enable=
+);
+>  static void cik_rlc_stop(struct radeon_device *rdev);
+>  static void cik_pcie_gen3_enable(struct radeon_device *rdev);
+> diff --git a/drivers/gpu/drm/radeon/cik.h b/drivers/gpu/drm/radeon/cik.h
+> index 420207d19de52..d1bf541da5923 100644
+> --- a/drivers/gpu/drm/radeon/cik.h
+> +++ b/drivers/gpu/drm/radeon/cik.h
+> @@ -34,4 +34,7 @@ void cik_init_cp_pg_table(struct radeon_device *rdev);
+>  u32 cik_get_csb_size(struct radeon_device *rdev);
+>  void cik_get_csb_buffer(struct radeon_device *rdev, volatile u32 *buffer=
+);
+>
+> +int cik_sdma_resume(struct radeon_device *rdev);
+> +void cik_sdma_enable(struct radeon_device *rdev, bool enable);
+> +void cik_sdma_fini(struct radeon_device *rdev);
+>  #endif                         /* __CIK_H__ */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
