@@ -2,191 +2,442 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB5B2B48E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 618CC2B48F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730188AbgKPPOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
+        id S1730889AbgKPPPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:15:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728858AbgKPPOu (ORCPT
+        with ESMTP id S1730710AbgKPPPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:14:50 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91013C0613CF;
-        Mon, 16 Nov 2020 07:14:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DPK8kltl3zjX8pqHlBtk1g1ne4D5St7jwKhxm4gTJu8=; b=pD234fuxwp9moQ14SJrs0DTB8C
-        dfmEyPxIbX33wEVNG0/I85yb+JcIY206Y77Aipblvnf6Bvu3Gyz6ivCMj6IcXW48auThCxpnrNjkz
-        IooTapSSZ5NPzrvyGQO93iM0ymePG+SitxcNefJYyvMRPq15mvMk0X+Au80/8pWK2F5qulB2l3DV1
-        L0Sbtq0C7e+xEptFt46fWYINu89PaOPAmWMgVDNEbM2mICyfVT4bCGJefPCfB8SetLbmuGQ9f1yAK
-        Ut8qZUb/vZid5oYxOnk0/iq1D5QxgnvkH4vvNjpTtXwLXtO/pMYR0Mxr5YF0R5/2+An7JxVWZWfbS
-        Y8sf4bAg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kegDM-0006Uh-HT; Mon, 16 Nov 2020 15:14:44 +0000
-Date:   Mon, 16 Nov 2020 15:14:44 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
-        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
-        dchinner@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
-Message-ID: <20201116151444.GB29991@casper.infradead.org>
-References: <20201112212641.27837-1-willy@infradead.org>
- <alpine.LSU.2.11.2011160128001.1206@eggly.anvils>
+        Mon, 16 Nov 2020 10:15:10 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941DFC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:15:10 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id d142so24068369wmd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:15:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tZbF54K8tolVCl75FRWFPLUDutXX6oQr5R1sT2PK7H4=;
+        b=XyBmRmKWX1lpnGehzVf4zs1ATCdGQDADzNpb+PAvAOfKe3fz8SU+SXYr17Yvo0QQwF
+         tYwQgfymQg4AXxQRZQLGIL0bJS539SBmzADGCZCG62JHWHfDDSd1Csa2codMbjQsy06M
+         wkBCd/k40mwpkr0V2ibON1r8sTuQS7b87AGkV6QCyHTUYhby5yWU5nXPy9XpUO+aV/yC
+         5v3mqK4PhMq/UZ4frDMpMaWVRT2nx7IZV54fLSE3r6m8IKsArTZmUnTNVGssmTYFi4MS
+         bFE3Q5xzWNxCYmlrzeRNV4XXChMKTHu8o/ausyxjkDWCRqHc42kHvwu2F86oW3C8cUnD
+         Imiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tZbF54K8tolVCl75FRWFPLUDutXX6oQr5R1sT2PK7H4=;
+        b=oEkezFX5qn9w98c0jikPBsjFUT8bcLr3mFewY6UYN2LtaiAVxCcjf3tqo+3eyrZOlx
+         M84lp3o7cRDKnEjKeNTVAb4bmNsFQGEjRWXl6FmuZ53oxmTMGNNpGdadu6paNaPtdOEX
+         GtSoFu60uC3b4n6gZBTT0uRLrz/CQvrh+D7Nk0Jfmh6C3FtiI+nn3ZfBHoSCJgcyerhI
+         Lok0NRRQsOhf4U/ryR8DG8t6bQgjTKslayCZGaxIj3IFmVSgHy9A2kV122m8oweEUFXE
+         Olb+FLxRI+v+QRUTrG89SBj+uGf6lu/H2GlEnHhI3buei/vUE8ahMFa95ys24nfIQG6G
+         8uJw==
+X-Gm-Message-State: AOAM532Ob67PLfVMQEiHNnnwPV9GB7gZJELA0pFwwJ7e3PhxMnzpmJ/c
+        pPzNkMDqx6qBIC3lDHDTTVJPGg==
+X-Google-Smtp-Source: ABdhPJzI2LggIWQJeI7hhmX65FksBmExScC0cJKxshFFEyrSOMRuUj972Rx4tPLFOqSCxzT9nns4AQ==
+X-Received: by 2002:a1c:544c:: with SMTP id p12mr5744356wmi.146.1605539709052;
+        Mon, 16 Nov 2020 07:15:09 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id i10sm23358160wrs.22.2020.11.16.07.15.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 07:15:08 -0800 (PST)
+Date:   Mon, 16 Nov 2020 16:15:01 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mm v3 11/19] kasan: add and integrate kasan boot
+ parameters
+Message-ID: <20201116151501.GC1357314@elver.google.com>
+References: <cover.1605305978.git.andreyknvl@google.com>
+ <deb1af093f19c8848346682245513af059626412.1605305978.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2011160128001.1206@eggly.anvils>
+In-Reply-To: <deb1af093f19c8848346682245513af059626412.1605305978.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 02:34:34AM -0800, Hugh Dickins wrote:
-> On Thu, 12 Nov 2020, Matthew Wilcox (Oracle) wrote:
+On Fri, Nov 13, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
+> Hardware tag-based KASAN mode is intended to eventually be used in
+> production as a security mitigation. Therefore there's a need for finer
+> control over KASAN features and for an existence of a kill switch.
 > 
-> > This THP prep patchset changes several page cache iteration APIs to only
-> > return head pages.
-> > 
-> >  - It's only possible to tag head pages in the page cache, so only
-> >    return head pages, not all their subpages.
-> >  - Factor a lot of common code out of the various batch lookup routines
-> >  - Add mapping_seek_hole_data()
-> >  - Unify find_get_entries() and pagevec_lookup_entries()
-> >  - Make find_get_entries only return head pages, like find_get_entry().
-> > 
-> > These are only loosely connected, but they seem to make sense together
-> > as a series.
-> > 
-> > v4:
-> >  - Add FGP_ENTRY, remove find_get_entry and find_lock_entry
-> >  - Rename xas_find_get_entry to find_get_entry
-> >  - Add "Optimise get_shadow_from_swap_cache"
-> >  - Move "iomap: Use mapping_seek_hole_data" to this patch series
-> >  - Rebase against next-20201112
+> This change adds a few boot parameters for hardware tag-based KASAN that
+> allow to disable or otherwise control particular KASAN features.
 > 
-> I hope next-20201112 had nothing vital for this series, I applied
-> it to v5.10-rc3, and have been busy testing huge tmpfs on that.
-
-Thank you.  It's plain I'm not able to hit these cases ... I do run
-xfstests against shmem, but that's obviously not good enough.  Can
-you suggest something I should be running to improve my coverage?
-
-> Fix to [PATCH v4 06/16] mm/filemap: Add helper for finding pages.
-> I hit that VM_BUG_ON_PAGE(!thp_contains) when swapping, it is not
-> safe without page lock, during the interval when shmem is moving a
-> page between page cache and swap cache.  It could be tightened by
-> passing in a new FGP to distinguish whether searching page or swap
-> cache, but I think never tight enough in the swap case - because there
-> is no rule for persisting page->private as there is for page->index.
-> The best I could do is:
-
-I'll just move this out to the caller who actually locks the page:
-
-+++ b/mm/filemap.c
-@@ -1839,7 +1839,6 @@ static inline struct page *find_get_entry(struct xa_state *xas, pgoff_t max,
-                put_page(page);
-                goto reset;
-        }
--       VM_BUG_ON_PAGE(!thp_contains(page, xas->xa_index), page);
- 
-        return page;
- reset:
-@@ -1923,6 +1922,8 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
-                                goto put;
-                        if (page->mapping != mapping || PageWriteback(page))
-                                goto unlock;
-+                       VM_BUG_ON_PAGE(!thp_contains(page, xas->xa_index),
-+                                       page);
-                }
-                indices[pvec->nr] = xas.xa_index;
-                if (!pagevec_add(pvec, page))
-
-> Fix to [PATCH v4 07/16] mm/filemap: Add mapping_seek_hole_data.
-> Crashed on a swap entry 0x2ff09, fairly obvious...
-
-Whoops.  Thanks.
-
-> Fix to [PATCH v4 15/16] mm/truncate,shmem: Handle truncates that split THPs.
-> One machine ran fine, swapping and building in ext4 on loop0 on huge tmpfs;
-> one machine got occasional pages of zeros in its .os; one machine couldn't
-> get started because of ext4_find_dest_de errors on the newly mkfs'ed fs.
-> The partial_end case was decided by PAGE_SIZE, when there might be a THP
-> there.  The below patch has run well (for not very long), but I could
-> easily have got it slightly wrong, off-by-one or whatever; and I have
-> not looked into the similar code in mm/truncate.c, maybe that will need
-> a similar fix or maybe not.
+> The features that can be controlled are:
 > 
-> --- 5103w/mm/shmem.c	2020-11-12 15:46:21.075254036 -0800
-> +++ 5103wh/mm/shmem.c	2020-11-16 01:09:35.431677308 -0800
-> @@ -874,7 +874,7 @@ static void shmem_undo_range(struct inod
->  	long nr_swaps_freed = 0;
->  	pgoff_t index;
->  	int i;
-> -	bool partial_end;
-> +	bool same_page;
+> 1. Whether KASAN is enabled at all.
+> 2. Whether KASAN collects and saves alloc/free stacks.
+> 3. Whether KASAN panics on a detected bug or not.
+> 
+> With this change a new boot parameter kasan.mode allows to choose one of
+> three main modes:
+> 
+> - kasan.mode=off - KASAN is disabled, no tag checks are performed
+> - kasan.mode=prod - only essential production features are enabled
+> - kasan.mode=full - all KASAN features are enabled
+> 
+> The chosen mode provides default control values for the features mentioned
+> above. However it's also possible to override the default values by
+> providing:
+> 
+> - kasan.stacktrace=off/on - enable alloc/free stack collection
+>                             (default: on for mode=full, otherwise off)
+> - kasan.fault=report/panic - only report tag fault or also panic
+>                              (default: report)
+> 
+> If kasan.mode parameter is not provided, it defaults to full when
+> CONFIG_DEBUG_KERNEL is enabled, and to prod otherwise.
+> 
+> It is essential that switching between these modes doesn't require
+> rebuilding the kernel with different configs, as this is required by
+> the Android GKI (Generic Kernel Image) initiative [1].
+> 
+> [1] https://source.android.com/devices/architecture/kernel/generic-kernel-image
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/If7d37003875b2ed3e0935702c8015c223d6416a4
+
+Reviewed-by: Marco Elver <elver@google.com>
+
+> ---
+>  mm/kasan/common.c  |  22 +++++--
+>  mm/kasan/hw_tags.c | 151 +++++++++++++++++++++++++++++++++++++++++++++
+>  mm/kasan/kasan.h   |  16 +++++
+>  mm/kasan/report.c  |  14 ++++-
+>  4 files changed, 196 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 1ac4f435c679..a11e3e75eb08 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -135,6 +135,11 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+>  	unsigned int redzone_size;
+>  	int redzone_adjust;
 >  
->  	if (lend == -1)
->  		end = -1;	/* unsigned, so actually very big */
-> @@ -907,16 +907,12 @@ static void shmem_undo_range(struct inod
->  		index++;
+> +	if (!kasan_stack_collection_enabled()) {
+> +		*flags |= SLAB_KASAN;
+> +		return;
+> +	}
+> +
+>  	/* Add alloc meta. */
+>  	cache->kasan_info.alloc_meta_offset = *size;
+>  	*size += sizeof(struct kasan_alloc_meta);
+> @@ -171,6 +176,8 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+>  
+>  size_t kasan_metadata_size(struct kmem_cache *cache)
+>  {
+> +	if (!kasan_stack_collection_enabled())
+> +		return 0;
+>  	return (cache->kasan_info.alloc_meta_offset ?
+>  		sizeof(struct kasan_alloc_meta) : 0) +
+>  		(cache->kasan_info.free_meta_offset ?
+> @@ -263,11 +270,13 @@ void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
+>  {
+>  	struct kasan_alloc_meta *alloc_meta;
+>  
+> -	if (!(cache->flags & SLAB_KASAN))
+> -		return (void *)object;
+> +	if (kasan_stack_collection_enabled()) {
+> +		if (!(cache->flags & SLAB_KASAN))
+> +			return (void *)object;
+>  
+> -	alloc_meta = kasan_get_alloc_meta(cache, object);
+> -	__memset(alloc_meta, 0, sizeof(*alloc_meta));
+> +		alloc_meta = kasan_get_alloc_meta(cache, object);
+> +		__memset(alloc_meta, 0, sizeof(*alloc_meta));
+> +	}
+>  
+>  	if (IS_ENABLED(CONFIG_KASAN_SW_TAGS) || IS_ENABLED(CONFIG_KASAN_HW_TAGS))
+>  		object = set_tag(object, assign_tag(cache, object, true, false));
+> @@ -307,6 +316,9 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+>  	rounded_up_size = round_up(cache->object_size, KASAN_GRANULE_SIZE);
+>  	poison_range(object, rounded_up_size, KASAN_KMALLOC_FREE);
+>  
+> +	if (!kasan_stack_collection_enabled())
+> +		return false;
+> +
+>  	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine) ||
+>  			unlikely(!(cache->flags & SLAB_KASAN)))
+>  		return false;
+> @@ -357,7 +369,7 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>  	poison_range((void *)redzone_start, redzone_end - redzone_start,
+>  		     KASAN_KMALLOC_REDZONE);
+>  
+> -	if (cache->flags & SLAB_KASAN)
+> +	if (kasan_stack_collection_enabled() && (cache->flags & SLAB_KASAN))
+>  		set_alloc_info(cache, (void *)object, flags);
+>  
+>  	return set_tag(object, tag);
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index 863fed4edd3f..30ce88935e9d 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -8,18 +8,115 @@
+>  
+>  #define pr_fmt(fmt) "kasan: " fmt
+>  
+> +#include <linux/init.h>
+>  #include <linux/kasan.h>
+>  #include <linux/kernel.h>
+>  #include <linux/memory.h>
+>  #include <linux/mm.h>
+> +#include <linux/static_key.h>
+>  #include <linux/string.h>
+>  #include <linux/types.h>
+>  
+>  #include "kasan.h"
+>  
+> +enum kasan_arg_mode {
+> +	KASAN_ARG_MODE_DEFAULT,
+> +	KASAN_ARG_MODE_OFF,
+> +	KASAN_ARG_MODE_PROD,
+> +	KASAN_ARG_MODE_FULL,
+> +};
+> +
+> +enum kasan_arg_stacktrace {
+> +	KASAN_ARG_STACKTRACE_DEFAULT,
+> +	KASAN_ARG_STACKTRACE_OFF,
+> +	KASAN_ARG_STACKTRACE_ON,
+> +};
+> +
+> +enum kasan_arg_fault {
+> +	KASAN_ARG_FAULT_DEFAULT,
+> +	KASAN_ARG_FAULT_REPORT,
+> +	KASAN_ARG_FAULT_PANIC,
+> +};
+> +
+> +static enum kasan_arg_mode kasan_arg_mode __ro_after_init;
+> +static enum kasan_arg_stacktrace kasan_arg_stacktrace __ro_after_init;
+> +static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
+> +
+> +/* Whether KASAN is enabled at all. */
+> +DEFINE_STATIC_KEY_FALSE_RO(kasan_flag_enabled);
+> +EXPORT_SYMBOL(kasan_flag_enabled);
+> +
+> +/* Whether to collect alloc/free stack traces. */
+> +DEFINE_STATIC_KEY_FALSE_RO(kasan_flag_stacktrace);
+> +
+> +/* Whether panic or disable tag checking on fault. */
+> +bool kasan_flag_panic __ro_after_init;
+> +
+> +/* kasan.mode=off/prod/full */
+> +static int __init early_kasan_mode(char *arg)
+> +{
+> +	if (!arg)
+> +		return -EINVAL;
+> +
+> +	if (!strcmp(arg, "off"))
+> +		kasan_arg_mode = KASAN_ARG_MODE_OFF;
+> +	else if (!strcmp(arg, "prod"))
+> +		kasan_arg_mode = KASAN_ARG_MODE_PROD;
+> +	else if (!strcmp(arg, "full"))
+> +		kasan_arg_mode = KASAN_ARG_MODE_FULL;
+> +	else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +early_param("kasan.mode", early_kasan_mode);
+> +
+> +/* kasan.stack=off/on */
+> +static int __init early_kasan_flag_stacktrace(char *arg)
+> +{
+> +	if (!arg)
+> +		return -EINVAL;
+> +
+> +	if (!strcmp(arg, "off"))
+> +		kasan_arg_stacktrace = KASAN_ARG_STACKTRACE_OFF;
+> +	else if (!strcmp(arg, "on"))
+> +		kasan_arg_stacktrace = KASAN_ARG_STACKTRACE_ON;
+> +	else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +early_param("kasan.stacktrace", early_kasan_flag_stacktrace);
+> +
+> +/* kasan.fault=report/panic */
+> +static int __init early_kasan_fault(char *arg)
+> +{
+> +	if (!arg)
+> +		return -EINVAL;
+> +
+> +	if (!strcmp(arg, "report"))
+> +		kasan_arg_fault = KASAN_ARG_FAULT_REPORT;
+> +	else if (!strcmp(arg, "panic"))
+> +		kasan_arg_fault = KASAN_ARG_FAULT_PANIC;
+> +	else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +early_param("kasan.fault", early_kasan_fault);
+> +
+>  /* kasan_init_hw_tags_cpu() is called for each CPU. */
+>  void kasan_init_hw_tags_cpu(void)
+>  {
+> +	/*
+> +	 * There's no need to check that the hardware is MTE-capable here,
+> +	 * as this function is only called for MTE-capable hardware.
+> +	 */
+> +
+> +	/* If KASAN is disabled, do nothing. */
+> +	if (kasan_arg_mode == KASAN_ARG_MODE_OFF)
+> +		return;
+> +
+>  	hw_init_tags(KASAN_TAG_MAX);
+>  	hw_enable_tagging();
+>  }
+> @@ -27,6 +124,60 @@ void kasan_init_hw_tags_cpu(void)
+>  /* kasan_init_hw_tags() is called once on boot CPU. */
+>  void __init kasan_init_hw_tags(void)
+>  {
+> +	/* If hardware doesn't support MTE, do nothing. */
+> +	if (!system_supports_mte())
+> +		return;
+> +
+> +	/* Choose KASAN mode if kasan boot parameter is not provided. */
+> +	if (kasan_arg_mode == KASAN_ARG_MODE_DEFAULT) {
+> +		if (IS_ENABLED(CONFIG_DEBUG_KERNEL))
+> +			kasan_arg_mode = KASAN_ARG_MODE_FULL;
+> +		else
+> +			kasan_arg_mode = KASAN_ARG_MODE_PROD;
+> +	}
+> +
+> +	/* Preset parameter values based on the mode. */
+> +	switch (kasan_arg_mode) {
+> +	case KASAN_ARG_MODE_DEFAULT:
+> +		/* Shouldn't happen as per the check above. */
+> +		WARN_ON(1);
+> +		return;
+> +	case KASAN_ARG_MODE_OFF:
+> +		/* If KASAN is disabled, do nothing. */
+> +		return;
+> +	case KASAN_ARG_MODE_PROD:
+> +		static_branch_enable(&kasan_flag_enabled);
+> +		break;
+> +	case KASAN_ARG_MODE_FULL:
+> +		static_branch_enable(&kasan_flag_enabled);
+> +		static_branch_enable(&kasan_flag_stacktrace);
+> +		break;
+> +	}
+> +
+> +	/* Now, optionally override the presets. */
+> +
+> +	switch (kasan_arg_stacktrace) {
+> +	case KASAN_ARG_STACKTRACE_DEFAULT:
+> +		break;
+> +	case KASAN_ARG_STACKTRACE_OFF:
+> +		static_branch_disable(&kasan_flag_stacktrace);
+> +		break;
+> +	case KASAN_ARG_STACKTRACE_ON:
+> +		static_branch_enable(&kasan_flag_stacktrace);
+> +		break;
+> +	}
+> +
+> +	switch (kasan_arg_fault) {
+> +	case KASAN_ARG_FAULT_DEFAULT:
+> +		break;
+> +	case KASAN_ARG_FAULT_REPORT:
+> +		kasan_flag_panic = false;
+> +		break;
+> +	case KASAN_ARG_FAULT_PANIC:
+> +		kasan_flag_panic = true;
+> +		break;
+> +	}
+> +
+>  	pr_info("KernelAddressSanitizer initialized\n");
+>  }
+>  
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 8aa83b7ad79e..d01a5ac34f70 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -6,6 +6,22 @@
+>  #include <linux/kfence.h>
+>  #include <linux/stackdepot.h>
+>  
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +#include <linux/static_key.h>
+> +DECLARE_STATIC_KEY_FALSE(kasan_flag_stacktrace);
+> +static inline bool kasan_stack_collection_enabled(void)
+> +{
+> +	return static_branch_unlikely(&kasan_flag_stacktrace);
+> +}
+> +#else
+> +static inline bool kasan_stack_collection_enabled(void)
+> +{
+> +	return true;
+> +}
+> +#endif
+> +
+> +extern bool kasan_flag_panic __ro_after_init;
+> +
+>  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>  #define KASAN_GRANULE_SIZE	(1UL << KASAN_SHADOW_SCALE_SHIFT)
+>  #else
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 76a0e3ae2049..ffa6076b1710 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -99,6 +99,10 @@ static void end_report(unsigned long *flags)
+>  		panic_on_warn = 0;
+>  		panic("panic_on_warn set ...\n");
 >  	}
+> +#ifdef CONFIG_KASAN_HW_TAGS
+> +	if (kasan_flag_panic)
+> +		panic("kasan.fault=panic set ...\n");
+> +#endif
+>  	kasan_enable_current();
+>  }
 >  
-> -	partial_end = ((lend + 1) % PAGE_SIZE) > 0;
-> +	same_page = (lstart >> PAGE_SHIFT) == end;
->  	page = NULL;
->  	shmem_getpage(inode, lstart >> PAGE_SHIFT, &page, SGP_READ);
->  	if (page) {
-> -		bool same_page;
-> -
->  		page = thp_head(page);
->  		same_page = lend < page_offset(page) + thp_size(page);
-> -		if (same_page)
-> -			partial_end = false;
-
-I don't object to this patch at all, at least partly because it's shorter
-and simpler!  I don't understand what it's solving, though.  The case
-where there's a THP which covers partial_end is supposed to be handled
-by the three lines above.
-
-> Fix to [PATCH v4 15/16] mm/truncate,shmem: Handle truncates that split THPs.
-> xfstests generic/012 on huge tmpfs hit this every time (when checking
-> xfs_io commands available: later decides "not run" because no "fiemap").
-> I grabbed this line unthinkingly from one of your later series, it fixes
-> the crash; but once I actually thought about it when trying to track down
-> weirder behaviours, realize that the kmap_atomic() and flush_dcache_page()
-> in zero_user_segments() are not prepared for a THP - so highmem and
-> flush_dcache_page architectures will be disappointed. If I searched
-> through your other series, I might find the complete fix; or perhaps
-> it's already there in linux-next, I haven't looked.
-
-zero_user_segments() is fixed by "mm: Support THPs in zero_user_segments".
-I think most recently posted here:
-https://lore.kernel.org/linux-mm/20201026183136.10404-2-willy@infradead.org/
-
-My fault for not realising this patch depended on that patch.  I did
-test these patches stand-alone, but it didn't trigger this problem.
-
-flush_dcache_page() needs to be called once for each sub-page.  We
-really need a flush_dcache_thp() so that architectures can optimise this.
-Although maybe now that's going to be called flush_dcache_folio().
-
-> I also had noise from the WARN_ON(page_to_index(page) != index)
-> in invalidate_inode_pages2_range(): but that's my problem, since
-> for testing I add a dummy shmem_direct_IO() (return 0): for that
-> I've now added a shmem_mapping() check at the head of pages2_range().
-
-Ah, I have a later fix for invalidate_inode_pages2_range():
-https://lore.kernel.org/linux-mm/20201026183136.10404-6-willy@infradead.org/
-
-I didn't post it earlier because there aren't any filesystems currently
-which use THPs and directIO ;-)
-
-> That's all for now: I'll fire off more overnight testing.
-
-Thanks!
+> @@ -161,8 +165,8 @@ static void describe_object_addr(struct kmem_cache *cache, void *object,
+>  		(void *)(object_addr + cache->object_size));
+>  }
+>  
+> -static void describe_object(struct kmem_cache *cache, void *object,
+> -				const void *addr, u8 tag)
+> +static void describe_object_stacks(struct kmem_cache *cache, void *object,
+> +					const void *addr, u8 tag)
+>  {
+>  	struct kasan_alloc_meta *alloc_meta = kasan_get_alloc_meta(cache, object);
+>  
+> @@ -190,7 +194,13 @@ static void describe_object(struct kmem_cache *cache, void *object,
+>  		}
+>  #endif
+>  	}
+> +}
+>  
+> +static void describe_object(struct kmem_cache *cache, void *object,
+> +				const void *addr, u8 tag)
+> +{
+> +	if (kasan_stack_collection_enabled())
+> +		describe_object_stacks(cache, object, addr, tag);
+>  	describe_object_addr(cache, object, addr);
+>  }
+>  
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
