@@ -2,191 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686FD2B4387
+	by mail.lfdr.de (Postfix) with ESMTP id D6D6E2B4388
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730017AbgKPMT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:19:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727027AbgKPMTZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:19:25 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7155DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:19:25 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id t5so12645734qtp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:19:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/kYjKHOYdbRkTjeegvgMiUR7lrALhGYE7BaLrgneuEo=;
-        b=dwCtwSG1CRtiWFQFZf4fc7QGzmXHSvCxOczUoTS3liWWSeYKySIjb/aNGCMq4vY22z
-         7S8yG5Hc/Y57cokBs7emePi+zUY6Vf4tLiP3n+dQ+1A6XDOXo5kMf8IWsTzgmGeyBwii
-         wPbPS5Tc8whp73gFMP0tYWZz4kkggygE6KzTRx19J9eA1MBhSUplPG4LIzTI1Uoo0uDw
-         8Dcn2aB22UdbhjlGkyV5YM0xI7oTIh8zakc6xXl5vQoJepGLlBGmOnV1cG/3LEt6LX8l
-         sIiLdq0+kAHl85li03YQk/T7Vc7n/pg/nIp8HcVUYieU4VObKtdnd0WxyXWN7am+eLcT
-         oJ4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/kYjKHOYdbRkTjeegvgMiUR7lrALhGYE7BaLrgneuEo=;
-        b=kqFTUWR3iAlbW7UxpgAPdcQm1K1NppV9Ke2ODTDndmuzWGhDzcJiQOPwEOEhpHZA+m
-         3h/vms4MSKLo2VgytqSCkafmFUYtKWG3/bGoPq+Bk85JL8A5ms4TvEIAy7oKWuombLKU
-         zFC1x3JJTbd/Z7nyMRlE2J0eHMFeJnKlBrW3BxKaj6WtlpeGbsDLtSTKz7243dNY6tNB
-         JYwQpzGgpOq7T2VZa8dE9BPiKhRQZgPnAOzFkpawUOaKFA2EegU8N7xjjmzWXpelqCan
-         apjIVBC6Tq8APFvOa/QZSCkVg16uPfdQ0Hn8fdiXaXmcA/IGPykgglzFTAA0cJyoSSH6
-         br6A==
-X-Gm-Message-State: AOAM532458DGwah9F9D3wvCoPKskZITkR/oPGA1BdOA/TZb1ncsrXIVu
-        jE0rl3yrjE+rAtIvus83lE9HmJr7DTdjCVO27/lEew==
-X-Google-Smtp-Source: ABdhPJzVtuVEKbYpXTvA7bt6Bpfm8IWTKWQYpOD+OfdF3VKnQMbyBfE5Xwk1DVVV2nhzbJJ3JbrNZnq9kHaQ20TpoxA=
-X-Received: by 2002:aed:2744:: with SMTP id n62mr14165891qtd.67.1605529158914;
- Mon, 16 Nov 2020 04:19:18 -0800 (PST)
+        id S1730022AbgKPMTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:19:47 -0500
+Received: from mga07.intel.com ([134.134.136.100]:33006 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727027AbgKPMTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:19:46 -0500
+IronPort-SDR: kiP35a81h4t1x4OkDe87NkP2q/f9SfmVlbdZmdQXqopMv0R/6rllckLOkQST/KStzj/UAcDBl4
+ R/30tCSEe2iw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="234890264"
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="234890264"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:19:46 -0800
+IronPort-SDR: QDc9WV9vYdaygni7Q3aMCtTuOTNZ+a4/G6pWkpaez+oe6xr1nVQQequmny8CN2A2NWERmhM0Xy
+ olfmX+8F988Q==
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="543583511"
+Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.228.209]) ([10.249.228.209])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:19:43 -0800
+Subject: [PATCH v3 07/12] perf record: init data file at mmap buffer object
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>
+References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <ad205903-41a6-5041-f4f3-6f57d83cbd3a@linux.intel.com>
+Date:   Mon, 16 Nov 2020 15:19:41 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <ded454eeff88f631dc08eef76f0ad9f2daff0085.1603372719.git.andreyknvl@google.com>
- <CACT4Y+Zys3+VUsO6GDWQEcjCS6Wx16W_+B6aNy-fyhPcir7eeA@mail.gmail.com>
- <CAAeHK+xvGZNwTtvkzNnU7Hh7iUiPKFNDKDpKT8UPcqQk6Ah3yQ@mail.gmail.com>
- <CACT4Y+Z3UCwAY2Mm1KiQMBXVhc2Bobi-YrdiNYtToNgMRjOE4g@mail.gmail.com>
- <CANpmjNPNqHsOfcw7Wh+XQ_pPT1610-+B9By171t7KMS3aB2sBg@mail.gmail.com> <X7Jthb9D5Ekq93sS@trantor>
-In-Reply-To: <X7Jthb9D5Ekq93sS@trantor>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 16 Nov 2020 13:19:07 +0100
-Message-ID: <CACT4Y+ZubLBEiGZOVyptB4RPf=3Qr570GN+JBpSmaeEvHWQB5g@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 04/21] kasan: unpoison stack only with CONFIG_KASAN_STACK
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 1:16 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Mon, Nov 16, 2020 at 12:50:00PM +0100, Marco Elver wrote:
-> > On Mon, 16 Nov 2020 at 11:59, Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > On Thu, Oct 29, 2020 at 8:57 PM 'Andrey Konovalov' via kasan-dev
-> > > <kasan-dev@googlegroups.com> wrote:
-> > > > On Tue, Oct 27, 2020 at 1:44 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > > >
-> > > > > On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> > > > > >
-> > > > > > There's a config option CONFIG_KASAN_STACK that has to be enabled for
-> > > > > > KASAN to use stack instrumentation and perform validity checks for
-> > > > > > stack variables.
-> > > > > >
-> > > > > > There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
-> > > > > > Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
-> > > > > > enabled.
-> > > > > >
-> > > > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > > > > Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
-> > > > > > ---
-> > > > > >  arch/arm64/kernel/sleep.S        |  2 +-
-> > > > > >  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
-> > > > > >  include/linux/kasan.h            | 10 ++++++----
-> > > > > >  mm/kasan/common.c                |  2 ++
-> > > > > >  4 files changed, 10 insertions(+), 6 deletions(-)
-> > > > > >
-> > > > > > diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
-> > > > > > index ba40d57757d6..bdadfa56b40e 100644
-> > > > > > --- a/arch/arm64/kernel/sleep.S
-> > > > > > +++ b/arch/arm64/kernel/sleep.S
-> > > > > > @@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
-> > > > > >          */
-> > > > > >         bl      cpu_do_resume
-> > > > > >
-> > > > > > -#ifdef CONFIG_KASAN
-> > > > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-> > > > > >         mov     x0, sp
-> > > > > >         bl      kasan_unpoison_task_stack_below
-> > > > > >  #endif
-> > > > > > diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
-> > > > > > index c8daa92f38dc..5d3a0b8fd379 100644
-> > > > > > --- a/arch/x86/kernel/acpi/wakeup_64.S
-> > > > > > +++ b/arch/x86/kernel/acpi/wakeup_64.S
-> > > > > > @@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
-> > > > > >         movq    pt_regs_r14(%rax), %r14
-> > > > > >         movq    pt_regs_r15(%rax), %r15
-> > > > > >
-> > > > > > -#ifdef CONFIG_KASAN
-> > > > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-> > > > > >         /*
-> > > > > >          * The suspend path may have poisoned some areas deeper in the stack,
-> > > > > >          * which we now need to unpoison.
-> > > > > > diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> > > > > > index 3f3f541e5d5f..7be9fb9146ac 100644
-> > > > > > --- a/include/linux/kasan.h
-> > > > > > +++ b/include/linux/kasan.h
-> > > > > > @@ -68,8 +68,6 @@ static inline void kasan_disable_current(void) {}
-> > > > > >
-> > > > > >  void kasan_unpoison_memory(const void *address, size_t size);
-> > > > > >
-> > > > > > -void kasan_unpoison_task_stack(struct task_struct *task);
-> > > > > > -
-> > > > > >  void kasan_alloc_pages(struct page *page, unsigned int order);
-> > > > > >  void kasan_free_pages(struct page *page, unsigned int order);
-> > > > > >
-> > > > > > @@ -114,8 +112,6 @@ void kasan_restore_multi_shot(bool enabled);
-> > > > > >
-> > > > > >  static inline void kasan_unpoison_memory(const void *address, size_t size) {}
-> > > > > >
-> > > > > > -static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
-> > > > > > -
-> > > > > >  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
-> > > > > >  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
-> > > > > >
-> > > > > > @@ -167,6 +163,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
-> > > > > >
-> > > > > >  #endif /* CONFIG_KASAN */
-> > > > > >
-> > > > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-> > > > >
-> > > > > && defined(CONFIG_KASAN_STACK) for consistency
-> > > >
-> > > > CONFIG_KASAN_STACK is different from other KASAN configs. It's always
-> > > > defined, and its value is what controls whether stack instrumentation
-> > > > is enabled.
-> > >
-> > > Not sure why we did this instead of the following, but okay.
-> > >
-> > >  config KASAN_STACK
-> > > -       int
-> > > -       default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
-> > > -       default 0
-> > > +       bool
-> > > +       default y if KASAN_STACK_ENABLE || CC_IS_GCC
-> > > +       default n
-> >
-> > I wondered the same, but then looking at scripts/Makefile.kasan I
-> > think it's because we directly pass it to the compiler:
-> >     ...
-> >     $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
-> >     ...
->
-> Try this instead:
->
->       $(call cc-param,asan-stack=$(if $(CONFIG_KASAN_STACK),1,0)) \
 
+Initialize data files located at mmap buffer objects so trace data
+can be written into several data file located at data directory.
 
-We could have just 1 config instead of 2 as well.
-For gcc we could do no prompt and default value y, and for clang --
-prompt and default value n. I think it should do what we need.
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/builtin-record.c | 41 ++++++++++++++++++++++++++++++-------
+ tools/perf/util/record.h    |  1 +
+ 2 files changed, 35 insertions(+), 7 deletions(-)
+
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 779676531edf..f5e5175da6a1 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -158,6 +158,11 @@ static const char *affinity_tags[PERF_AFFINITY_MAX] = {
+ 	"SYS", "NODE", "CPU"
+ };
+ 
++static int record__threads_enabled(struct record *rec)
++{
++	return rec->opts.threads_spec;
++}
++
+ static bool switch_output_signal(struct record *rec)
+ {
+ 	return rec->switch_output.signal &&
+@@ -1060,7 +1065,7 @@ static int record__free_thread_data(struct record *rec)
+ static int record__mmap_evlist(struct record *rec,
+ 			       struct evlist *evlist)
+ {
+-	int ret;
++	int i, ret;
+ 	struct record_opts *opts = &rec->opts;
+ 	bool auxtrace_overwrite = opts->auxtrace_snapshot_mode ||
+ 				  opts->auxtrace_sample_mode;
+@@ -1099,6 +1104,18 @@ static int record__mmap_evlist(struct record *rec,
+ 	if (ret)
+ 		return ret;
+ 
++	if (record__threads_enabled(rec)) {
++		ret = perf_data__create_dir(&rec->data, evlist->core.nr_mmaps);
++		if (ret)
++			return ret;
++		for (i = 0; i < evlist->core.nr_mmaps; i++) {
++			if (evlist->mmap)
++				evlist->mmap[i].file = &rec->data.dir.files[i];
++			if (evlist->overwrite_mmap)
++				evlist->overwrite_mmap[i].file = &rec->data.dir.files[i];
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -1400,8 +1417,12 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
+ 	/*
+ 	 * Mark the round finished in case we wrote
+ 	 * at least one event.
++	 *
++	 * No need for round events in directory mode,
++	 * because per-cpu maps and files have data
++	 * sorted by kernel.
+ 	 */
+-	if (bytes_written != rec->bytes_written)
++	if (!record__threads_enabled(rec) && bytes_written != rec->bytes_written)
+ 		rc = record__write(rec, NULL, &finished_round_event, sizeof(finished_round_event));
+ 
+ 	if (overwrite)
+@@ -1514,7 +1535,9 @@ static void record__init_features(struct record *rec)
+ 	if (!rec->opts.use_clockid)
+ 		perf_header__clear_feat(&session->header, HEADER_CLOCK_DATA);
+ 
+-	perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
++	if (!record__threads_enabled(rec))
++		perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
++
+ 	if (!record__comp_enabled(rec))
+ 		perf_header__clear_feat(&session->header, HEADER_COMPRESSED);
+ 
+@@ -1525,15 +1548,21 @@ static void
+ record__finish_output(struct record *rec)
+ {
+ 	struct perf_data *data = &rec->data;
+-	int fd = perf_data__fd(data);
++	int i, fd = perf_data__fd(data);
+ 
+ 	if (data->is_pipe)
+ 		return;
+ 
+ 	rec->session->header.data_size += rec->bytes_written;
+ 	data->file.size = lseek(perf_data__fd(data), 0, SEEK_CUR);
++	if (record__threads_enabled(rec)) {
++		for (i = 0; i < data->dir.nr; i++)
++			data->dir.files[i].size = lseek(data->dir.files[i].fd, 0, SEEK_CUR);
++	}
+ 
+ 	if (!rec->no_buildid) {
++		/* this will be recalculated during process_buildids() */
++		rec->samples = 0;
+ 		process_buildids(rec);
+ 
+ 		if (rec->buildid_all)
+@@ -2438,8 +2467,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		status = err;
+ 
+ 	record__synthesize(rec, true);
+-	/* this will be recalculated during process_buildids() */
+-	rec->samples = 0;
+ 
+ 	if (!err) {
+ 		if (!rec->timestamp_filename) {
+@@ -3179,7 +3206,7 @@ int cmd_record(int argc, const char **argv)
+ 
+ 	}
+ 
+-	if (rec->opts.kcore)
++	if (rec->opts.kcore || record__threads_enabled(rec))
+ 		rec->data.is_dir = true;
+ 
+ 	if (rec->opts.comp_level != 0) {
+diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+index 266760ac9143..9c13a39cc58f 100644
+--- a/tools/perf/util/record.h
++++ b/tools/perf/util/record.h
+@@ -74,6 +74,7 @@ struct record_opts {
+ 	int	      ctl_fd;
+ 	int	      ctl_fd_ack;
+ 	bool	      ctl_fd_close;
++	int	      threads_spec;
+ };
+ 
+ extern const char * const *record_usage;
+-- 
+2.24.1
+
