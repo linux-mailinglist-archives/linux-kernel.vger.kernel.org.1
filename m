@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6102B505A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D463F2B506D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727233AbgKPSyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:54:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50332 "EHLO mail.kernel.org"
+        id S1727626AbgKPS7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:59:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbgKPSyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:54:53 -0500
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725879AbgKPS7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:59:22 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76E252231B;
-        Mon, 16 Nov 2020 18:54:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEA562225E;
+        Mon, 16 Nov 2020 18:59:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605552892;
-        bh=VUgJn3gCDf8LQvqGJa0Q1W2ju75Kaw313SrTYPIIguA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=no7KwtrMBTttsCn1fg0tI1bOmdl35zp7bdNWYTgYRLZ1Avqp9sXhE5Xtu5LgDWkFI
-         x0mUv1e5sKqCguFn/uK09NdetwAut6wP8n2RmNcBrrlkKgFbrzRbTjXKR78hr9JJJk
-         tOcdml4xDl3FRHh1Oe7Jh6gmp3+YaIcT9cdgvNsY=
-Received: by mail-ot1-f48.google.com with SMTP id f16so16995792otl.11;
-        Mon, 16 Nov 2020 10:54:52 -0800 (PST)
-X-Gm-Message-State: AOAM532S3o+jbzuV6eJjHa5KSE2npB70FgoTYP7/1/7zIi7YeSZVrNLu
-        67yvJUiPOzz27dRSbweswFb8wxWgrvXL/qb/dg==
-X-Google-Smtp-Source: ABdhPJwGvsSVV4wVtv/wz445N2G+m7CZ57dR9o2XykijQzjw0jqj+bo8Xq6WnU3sswimSpwcaX3xfZQUJ4STsn0scJQ=
-X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr532760otd.192.1605552891767;
- Mon, 16 Nov 2020 10:54:51 -0800 (PST)
+        s=default; t=1605553162;
+        bh=smOxAXwlGOhb8VxRKmDFNCcS//qtmuvu8c06NvzMAbM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ceCWswZhVr4xmHaJHLg0PlaCuSw9Vj6kFAH+DPWUIY4oILI6o4/jHrRcgeZJuOvgE
+         74/FQt5yaKsTqG1W4BuqsAbUfMe/1TFEysqDF7NXenoby8ahqWc5YUgI4FuqQIyjoV
+         Yo8XTB26k2U6VtEb3kIbMh2fjM37T5GS8UfOAiec=
+Date:   Mon, 16 Nov 2020 18:59:03 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Tony Lindgren <tony@atomide.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Laxminath Kasam <lkasam@codeaurora.org>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>, Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH] mfd: cpcap: Fix interrupt regression with regmap
+ clear_ack
+Message-ID: <20201116185903.GD4739@sirena.org.uk>
+References: <20201111170613.46057-1-tony@atomide.com>
+ <20201113102134.GI3718728@dell>
+ <CAJ+vNU0T0qS282MU-FRy8zNLgjnvF=+-5k=XxxXhZw6k2cgASw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200916071950.1493-1-gilad@benyossef.com> <20200916071950.1493-2-gilad@benyossef.com>
- <20200923015702.GA3676455@bogus> <CAOtvUMekoMjFij_xDnrwRj2PsfgO8tKx4Jk6d7C5vq-Vh+boWw@mail.gmail.com>
- <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com>
-In-Reply-To: <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 16 Nov 2020 12:54:40 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
-Message-ID: <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Steven Price <steven.price@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sgneBHv3152wZ8jf"
+Content-Disposition: inline
+In-Reply-To: <CAJ+vNU0T0qS282MU-FRy8zNLgjnvF=+-5k=XxxXhZw6k2cgASw@mail.gmail.com>
+X-Cookie: Immanuel doesn't pun, he Kant.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 1:18 AM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
->
->
-> Hi again,
->
-> Any opinion on the suggested below?
 
-Sorry, lost in the pile...
+--sgneBHv3152wZ8jf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Thanks!
-> Gilad
->
->
-> On Tue, Sep 29, 2020 at 9:08 PM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
->>
->>
->> On Wed, Sep 23, 2020 at 4:57 AM Rob Herring <robh@kernel.org> wrote:
->> >
->> > On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
->> > > Document ccree driver supporting new optional parameters allowing to
->> > > customize the DMA transactions cache parameters and ACE bus sharability
->> > > properties.
->> > >
->> > > Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
->> > > ---
->> > >  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 ++++
->> > >  1 file changed, 4 insertions(+)
->> > >
->> > > diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
->> > > index 6130e6eb4af8..1a1603e457a8 100644
->> > > --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
->> > > +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
->> > > @@ -13,6 +13,10 @@ Required properties:
->> > >  Optional properties:
->> > >  - clocks: Reference to the crypto engine clock.
->> > >  - dma-coherent: Present if dma operations are coherent.
->> > > +- awcache: Set write transactions cache attributes
->> > > +- arcache: Set read transactions cache attributes
->> >
->> > dma-coherent already implies these are 011x, 101x or 111x. In my limited
->> > experience configuring these (Calxeda SATA and ethernet), writeback,
->> > write-allocate was pretty much always optimal.
->>
->> Indeed and these are the default. But not all SoC are born equal and
->> we got a request to allow setting these.
->>
->> Maybe instead of numerical values have three possible verbal setting
->> would be better?
->>
->>
->> > > +- awdomain: Set write transactions ACE sharability domain (712, 703, 713 only)
->> > > +- ardomain: Set read transactions ACE sharability domain (712, 703, 713 only)
->> >
->> > This probably needs something common. We may need something for Mali,
->> > too. I don't think different settings for read and write makes much
->> > sense nor does anything beyond IS or OS.
->>
->> I agree. Maybe
->>
->> sharability_domain: either "IS" or "OS"?
+On Fri, Nov 13, 2020 at 02:06:29PM -0800, Tim Harvey wrote:
 
-It's still an Arm thing, so it would need at least an 'arm,' prefix.
-But ideally it wouldn't be Arm specific though I'm not sure if any
-such thing is needed for other arches. If common either for Arm or
-across arches, then it needs to be documented in a common doc with
-some wider agreement than what a device specific property needs.
+> asserted? I'm also wondering if my issue is that I currently have the
+> interrupt registered as such:
 
->> > These could also just be implied by the compatible string (and requiring
->> > an SoC specific one).
->>
->> hm... we could do it but this will require us to know (and publicly
->> acknowledge) of every SoC making use of this piece of hardware design.
+> ret = devm_regmap_add_irq_chip(dev, gsc->regmap, client->irq,
+> IRQF_ONESHOT | IRQF_SHARED | IRQF_TRIGGER_FALLING, 0, &gsc_irq_chip,
+> &irq_data);
 
-That's already a requirement in general. Sometimes we can avoid it,
-but that's cases of getting lucky.
+> Perhaps this should be IRQF_TRIGGER_LOW as the device will not
+> de-assert its IRQ# until all source bits are cleared.
 
->> There is currently no other part of the driver that needs this.
+That's clearly an active low interrupt, it will break things if it's
+registered as edge triggered.
 
-If your DT is part of firmware, then waiting until adding some driver
-feature or quirk based on a new DT property is too late. Whereas with
-a SoC specific compatible, you can handle any new feature or quirk
-without a DT change (e.g. just a stable kernel update). Some platforms
-may not care about that model, but in general that's the policy we
-follow. Not doing that, we end up with the DWC3 binding.
+--sgneBHv3152wZ8jf
+Content-Type: application/pgp-signature; name="signature.asc"
 
-A fallback compatible is how we avoid updating drivers for every
-single SoC unless needed.
+-----BEGIN PGP SIGNATURE-----
 
-Rob
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+yy/YACgkQJNaLcl1U
+h9BXzwf/fEV8IYsyXwfhsDE4zvAPyzuUj3rhfRfOdaJsizrVyWt2TSZyq25Qug5L
+RvD4Ya65vKAg2Hrzvw6EegS9Yg8FVhMq1wYQLXFd9q4L8+01ea3WaSP4nYdoNvAI
+u8rDlLs264IM7ge6a1kVF5OKjj5fYM/PnOwpJFgxyFPtie/1wOPxxfkkvU2/T9yE
+gdmLHBBGuZgo1hfWi2Lm6y0zxgIio7vYytwVrpbEvB62SyxePmTVPZJqyjbBFfNw
+MYpAozg5UUHFu4qgBVHwijOI/4c0VwiU3nUkmTv7lhVMtVEO5De7c6CeIqMoqv1g
+25bgrb+eCOf4Jb9Q/IoB3gBx1I52vQ==
+=dCaT
+-----END PGP SIGNATURE-----
+
+--sgneBHv3152wZ8jf--
