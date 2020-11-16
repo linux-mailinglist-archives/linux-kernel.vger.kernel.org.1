@@ -2,105 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89B42B4B8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DFE2B4B97
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732304AbgKPQpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:45:00 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:42256 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729645AbgKPQo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:44:59 -0500
-Date:   Mon, 16 Nov 2020 16:44:56 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605545097;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0F9DWkx/uxEZH3vSu2wV0DsB7ElZv3L7hkTxeVg3vIY=;
-        b=tB1cLbMiHUcbv50D03dt9djxXLpr3KJ0lzK3BTVFQo/7W2jy3zY0VCCptzX/m6sKw9aZfu
-        XuVf03AItjcxdm4Rl+SaC8bbo/CDkize0zjkV6t/Wnb7HB/XKCWZHQWmLkvAWwoLbRz/gf
-        13COpW3VWluLa+j7Aopf7OCc2GJmQUOKxGLVN6gPI48jmEcI6jvAwN1z9kb+PZkxUpERcV
-        yxCtk236ELbraAeDH4iAU5NfuTDd7SI+MITS6ZyURj6pLQWWQhJkaoeYR5UqNhLefMudb9
-        pwOXPh3Wzk+GJ81vc4RWxWMc++KbFkxLUftU19mLRZEEcrhudg/eacdJaXPPVA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605545097;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0F9DWkx/uxEZH3vSu2wV0DsB7ElZv3L7hkTxeVg3vIY=;
-        b=F/YPYk5/gB4SguXF2h9+nmj6wYRFVKAodTuD1HS5QRO/cDCPxwao96wwUbo3dDjzKewl0Y
-        yH1JiZ1C0vZb0ZBQ==
-From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce: Use "safe" MSR functions when enabling
- additional error logging
-Cc:     Qian Cai <cai@redhat.com>, Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201111003954.GA11878@agluck-desk2.amr.corp.intel.com>
-References: <20201111003954.GA11878@agluck-desk2.amr.corp.intel.com>
+        id S1732316AbgKPQqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:46:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727499AbgKPQqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:46:31 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CA7D20776;
+        Mon, 16 Nov 2020 16:46:30 +0000 (UTC)
+Date:   Mon, 16 Nov 2020 11:46:29 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>, eupm90@gmail.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: #PF from NMI
+Message-ID: <20201116114629.1e1894be@gandalf.local.home>
+In-Reply-To: <87ima8luix.fsf@nanos.tec.linutronix.de>
+References: <20201113125332.GA2611@hirez.programming.kicks-ass.net>
+        <87ima8luix.fsf@nanos.tec.linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <160554509642.11244.15619784651926454924.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
+On Sat, 14 Nov 2020 00:13:58 +0100
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-Commit-ID:     098416e6986127f7e4c8ce4fd6bbbd80e55b0386
-Gitweb:        https://git.kernel.org/tip/098416e6986127f7e4c8ce4fd6bbbd80e55b0386
-Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Tue, 10 Nov 2020 16:39:54 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 16 Nov 2020 17:34:08 +01:00
+> nmi:
+>   ...
+>   trace_hardirqs_off_finish() {
+>     if (!this_cpu_read(tracing_irq_cpu)) {
+>            this_cpu_write(tracing_irq_cpu, 1);
+>            ...
+>   }
+>   ...
+>   perf()
+> 
+> #PF
+>   save_cr2()
+>   
+>   irqentry_enter()
+>      trace_hardirqs_off_finish()
+>         if (!this_cpu_read(tracing_irq_cpu)) {
+> 
+> So yes, it is recursion protected unless I'm missing something.
 
-x86/mce: Use "safe" MSR functions when enabling additional error logging
+That should work.
 
-Booting as a guest under KVM results in error messages about
-unchecked MSR access:
+-- Steve
 
-  unchecked MSR access error: RDMSR from 0x17f at rIP: 0xffffffff84483f16 (mce_intel_feature_init+0x156/0x270)
-
-because KVM doesn't provide emulation for random model specific
-registers.
-
-Switch to using rdmsrl_safe()/wrmsrl_safe() to avoid the message.
-
-Fixes: 68299a42f842 ("x86/mce: Enable additional error logging on certain Intel CPUs")
-Reported-by: Qian Cai <cai@redhat.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201111003954.GA11878@agluck-desk2.amr.corp.intel.com
----
- arch/x86/kernel/cpu/mce/intel.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
-index b47883e..c2476fe 100644
---- a/arch/x86/kernel/cpu/mce/intel.c
-+++ b/arch/x86/kernel/cpu/mce/intel.c
-@@ -521,9 +521,10 @@ static void intel_imc_init(struct cpuinfo_x86 *c)
- 	case INTEL_FAM6_SANDYBRIDGE_X:
- 	case INTEL_FAM6_IVYBRIDGE_X:
- 	case INTEL_FAM6_HASWELL_X:
--		rdmsrl(MSR_ERROR_CONTROL, error_control);
-+		if (rdmsrl_safe(MSR_ERROR_CONTROL, &error_control))
-+			return;
- 		error_control |= 2;
--		wrmsrl(MSR_ERROR_CONTROL, error_control);
-+		wrmsrl_safe(MSR_ERROR_CONTROL, error_control);
- 		break;
- 	}
- }
