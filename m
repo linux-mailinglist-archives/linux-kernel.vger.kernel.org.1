@@ -2,89 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083E62B53FB
+	by mail.lfdr.de (Postfix) with ESMTP id 745B82B53FC
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728801AbgKPVts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:49:48 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:53655 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727850AbgKPVtr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:49:47 -0500
-Received: from mail-ed1-f71.google.com ([209.85.208.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <guilherme.piccoli@canonical.com>)
-        id 1kemNd-0006NZ-8L
-        for linux-kernel@vger.kernel.org; Mon, 16 Nov 2020 21:49:45 +0000
-Received: by mail-ed1-f71.google.com with SMTP id d3so3708665eds.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 13:49:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=umNIoM2617jBm/kSow8UcR9m5NpkXB/CDpm1QO+O5AE=;
-        b=L2bh04S8KWxR6cubsLIA2cThXCuL5mGubyctMnNCKwA8SozE1LIv3lzmv7GFPgEZwI
-         4V1pKIWrdRef2+YAicFwHrmaLkrPWh3+AP+uMNjPwJ/5QK2GMKuW8TReiS4IM3UNOFyT
-         rd5ZYdP/4PU+zqZ5OwMctKLQMkK2UD9X5Hr2CEX+1dTlakk6Vwb3G1W9e3UYrPmrV+bm
-         oxmh2znKkuyv2eiXo8rRdRmjrsM60j8KR+kt2fEYY5KxhuvtnIhkIYOqPXsAgoz9s7Y+
-         UuWZVn9f+KNfM+dcoW1NXcnNX+mI6kS1h/aNG0g9eXKghgsSqf7IVCFWCskwVuR29qTX
-         sPxA==
-X-Gm-Message-State: AOAM530QfCbidFJm41W2+h0510vC4vL4o2n3u2P8PQlxPJiv+H+h7GYf
-        +ENSf7FakE1TjFZ4m1PKNwcXDpvdW2BpU1R27moVnTRtUOVqtz4+GX5vfLuhrbN1ggKDkkk2V6t
-        JS9E/WviGtCN5vI6SJWHO76jjibVxG3hWa1wPE3tQgNjnyuo+E59FCYb5Og==
-X-Received: by 2002:a17:906:fcdb:: with SMTP id qx27mr16916797ejb.470.1605563384818;
-        Mon, 16 Nov 2020 13:49:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwAp96hr5JgdqVnl6r62CtZZ/vc6C3LNUKt1YzaSo0TRa1TeoieSyEzCGC0UHu4wHv/eCeV/8tRzuALD2OY1A4=
-X-Received: by 2002:a17:906:fcdb:: with SMTP id qx27mr16916769ejb.470.1605563384635;
- Mon, 16 Nov 2020 13:49:44 -0800 (PST)
+        id S1730171AbgKPVuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:50:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727850AbgKPVuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 16:50:05 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605563405;
+        bh=T0yfg0Ck3m11/ib7YMz+hav7/OgdqtrW6OV2NI4vKDY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=1OsVoErF0pFvoc8JQjrRUCbDxXUl1qDhoCc+z8JoB17PkO8soeGDfbdoEOM3QmfnK
+         Q1Jga51B1z+XwbzIUQnJ1vnKOn8qpE9ziNXMC/34TX7fPNwahDVi6BEwznLBle5scM
+         1nInWI5/HdrC1cf7/QQcQqe/mjciv6Jhn9vpjlVA=
 MIME-Version: 1.0
-References: <20201114212215.GA1194074@bjorn-Precision-5520>
- <87v9e6n2b2.fsf@x220.int.ebiederm.org> <87sg9almmg.fsf@x220.int.ebiederm.org>
- <874klqac40.fsf@nanos.tec.linutronix.de> <87lff2ic0h.fsf@x220.int.ebiederm.org>
- <c8238524-4197-c22d-7bae-df61133fcbfe@canonical.com> <87a6vhht71.fsf@x220.int.ebiederm.org>
-In-Reply-To: <87a6vhht71.fsf@x220.int.ebiederm.org>
-From:   Guilherme Piccoli <gpiccoli@canonical.com>
-Date:   Mon, 16 Nov 2020 18:49:08 -0300
-Message-ID: <CAHD1Q_zk6Z841E1yAH-GKpDXQ=32YPb-R4Exo7UcNHnTY3bdqQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Bjorn Helgaas <helgaas@kernel.org>, lukas@wunner.de,
-        linux-pci@vger.kernel.org, Pingfan Liu <kernelfans@gmail.com>,
-        andi@firstfloor.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Baoquan He <bhe@redhat.com>, x86@kernel.org,
-        Sinan Kaya <okaya@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Dave Young <dyoung@redhat.com>,
-        Gavin Guo <gavin.guo@canonical.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Guowen Shan <gshan@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dan Streetman <ddstreet@canonical.com>,
-        Vivek Goyal <vgoyal@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: lantiq: Wait for the GPHY firmware to be ready
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160556340543.26491.18312190727350290865.git-patchwork-notify@kernel.org>
+Date:   Mon, 16 Nov 2020 21:50:05 +0000
+References: <20201115165757.552641-1-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20201115165757.552641-1-martin.blumenstingl@googlemail.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     hauke@hauke-m.de, netdev@vger.kernel.org, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 6:45 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> The way to do that would be to collect the set of pci devices when the
-> kexec on panic kernel is loaded, not during crash_kexec.  If someone
-> performs a device hotplug they would need to reload the kexec on panic
-> kernel.
->
-> I am not necessarily endorsing that just pointing out how it can be
-> done.
->
-> Eric
+Hello:
 
-Thanks Eric, I agree! I think if we use something like PKRAM (a more
-dynamic approach) we could have the PCI hotplug path updating the data
-to-be-passed to the crash kernel, so the crash kernel doesn't even
-need to be loaded again.
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Sun, 15 Nov 2020 17:57:57 +0100 you wrote:
+> A user reports (slightly shortened from the original message):
+>   libphy: lantiq,xrx200-mdio: probed
+>   mdio_bus 1e108000.switch-mii: MDIO device at address 17 is missing.
+>   gswip 1e108000.switch lan: no phy at 2
+>   gswip 1e108000.switch lan: failed to connect to port 2: -19
+>   lantiq,xrx200-net 1e10b308.eth eth0: error -19 setting up slave phy
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] net: lantiq: Wait for the GPHY firmware to be ready
+    https://git.kernel.org/netdev/net/c/2a1828e378c1
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
