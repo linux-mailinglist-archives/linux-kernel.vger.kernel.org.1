@@ -2,94 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21472B4C71
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D752B4C77
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732628AbgKPRRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731072AbgKPRRu (ORCPT
+        id S1732699AbgKPRSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:18:23 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:32961 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730775AbgKPRSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:17:50 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD26C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:17:49 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id p12so13409944qtp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:17:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RY7dzZjNXgsnJCVVQm8TyT/jUzYsH7NzXH3Mac7B9Rw=;
-        b=Wf3kB4A140V5E08ma2vQlRfFr7iwHao00b8EDxrwHAUlbrApv9/MDn9ZD/TXcGlNj+
-         rRfETVYLjXsvAsVTe1GfWzN1dC8IPcJbeLuscQx38hNfq+/vfXpQ9iTB6bhtkOEIbn3s
-         gOs8ztPYmRMRtsLn0Icorskz/foCpzs1RS5K3e5F6svPBHTtXmOFB1nVnjOubd4Vrb9O
-         IYlOuEfsNgWsXVO47Irs1t48pObB+PKbjCRO1/40tkKh0DEF/hSo573z6dmQQzRQ9A/K
-         DMujZU+uI8hdyIwAFsJzjXvPPrjVjcg9DwaEujb6eZi6XW2FqjIWTQQyxnB0+4JaN1GN
-         CMbw==
+        Mon, 16 Nov 2020 12:18:23 -0500
+Received: by mail-oi1-f195.google.com with SMTP id k26so19624909oiw.0;
+        Mon, 16 Nov 2020 09:18:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RY7dzZjNXgsnJCVVQm8TyT/jUzYsH7NzXH3Mac7B9Rw=;
-        b=rOiJqhakacwbxlr4N6NK83MN3pNGjQVrvF2xEOJ54gOV9yuPUKqEe1Cu59yOqEjzew
-         NocAimhl7RERaknrn9M4SBFDzV1kghHGa1WPWiD70KmbTnXyeaqf2RVTiTmIJfTB0cWm
-         qxkRVz0DaYI+CKRfzGB0u6ZMOdUR/1XYP6cSHCRcLOClrJa2ebnQoI6nhFOZ96bio+MC
-         inZIcLc7JkybByxGHS/HIeNER/GIFyO+PsXhWi55cqmDPb88rNAzkgSZlVxrGJ+FqCso
-         vhvo0qBCVmFKtgYxK8YXjX8rpnEx1axWmznDeyukYUjSNbAnXJI51NmxTGzHObyNcC7+
-         L+yg==
-X-Gm-Message-State: AOAM530sGwDQRwsXjeV3a3jK6VkjIxiRCVzI+idYZyVVt0EfUD+CXw/C
-        1pgcrkj7qw3hrR8EKej8vo5M7cefTgADjdwh4Ci+SQ==
-X-Google-Smtp-Source: ABdhPJy1GZi3KsRmAdk3ycATA59ZxIy129o62tCASlipDogQ69pc6V+0XGxARQ9IQ0+E6+bmdfk9CCJ24zuhMKmPwyk=
-X-Received: by 2002:aed:22ab:: with SMTP id p40mr14640722qtc.200.1605547068880;
- Mon, 16 Nov 2020 09:17:48 -0800 (PST)
+        bh=T8nCjWUklv1uqL5YB3imQHkVHNrDBkeRqNKVQtv+q4E=;
+        b=QrqI1gCD2NU1I5box1wQhY7XaOsPRrDNeHvHUiNtEch+26cgS3AlbLoYwblKhhS2q/
+         vBuJwq69sBS6uQhVRwH/0zuJikucBL1trMBJnbfxqp1B+jO45OqMlr3c2F4bdzzdmsSS
+         y1FqHiOHE9+evk55p9nqq+Yyp9+a1NwaJ9T3RpmQHR86JUpUdbJPWtbqBEamn/38vK50
+         qstcQ6/0setMSk3+JsBmYY3KyRPl3II3IPG7SGjDUb96J+XRlTzkWzXTmEqFV8E5mcxx
+         eav8yc0c4gEumAE/TwsWHup20XXSlT1PG/It5OAuKm6LbpW2psgXctyuKSxzwWXwlYul
+         Q6+w==
+X-Gm-Message-State: AOAM5310c/sdGHhZdfHlmS+cofkEVovP22Rjn1AnnU48N27VEFrxRc0J
+        BTR8Xn2Hy38ctwNbi57aEfhnBjhJTvLMhBiRi/s=
+X-Google-Smtp-Source: ABdhPJz5XPbFXE2ilVfkNa74UnNgwcDqoGYqP6YkthwqxGvtXSvOA2EjmjOb2Q4FzPkRp5O0dWClbJJV6D3zEd68cJQ=
+X-Received: by 2002:aca:c4c9:: with SMTP id u192mr340787oif.69.1605547102222;
+ Mon, 16 Nov 2020 09:18:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20201026144943.30821-1-grzegorz.jaszczyk@linaro.org> <a1a787b2-efac-3baf-2a3c-ba135b8b32d0@ti.com>
-In-Reply-To: <a1a787b2-efac-3baf-2a3c-ba135b8b32d0@ti.com>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Mon, 16 Nov 2020 18:17:37 +0100
-Message-ID: <CAMxfBF4SJsPYZqr5nB4puQAFPGWh6X-L6ty027dAJgdUvy9EZw@mail.gmail.com>
-Subject: Re: [PATCH] soc: ti: pruss: Remove wrong check against
- *get_match_data return value
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "Bajjuri, Praneeth" <praneeth@ti.com>, tony@atomide.com,
-        Wei Yongjun <weiyongjun1@huawei.com>
+References: <20201023060417.517246-1-josephjang@google.com> <X66J0plvSKqFbDIy@kroah.com>
+In-Reply-To: <X66J0plvSKqFbDIy@kroah.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 16 Nov 2020 18:18:11 +0100
+Message-ID: <CAJZ5v0jVQWSawNuKOB+F+2rkneexsd4bYBLBzCkKRq8ssRapbw@mail.gmail.com>
+Subject: Re: [PATCH v3] power: suspend: Move dpm_watchdog to suspend.c and
+ enhance it
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Joseph Jang <josephjang@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>, jonglin@google.com,
+        woodylin@google.com, Mark Cheng <markcheng@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suman,
-
-On Tue, 10 Nov 2020 at 21:43, Suman Anna <s-anna@ti.com> wrote:
+On Fri, Nov 13, 2020 at 2:26 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Hi Greg,
->
-> On 10/26/20 9:49 AM, Grzegorz Jaszczyk wrote:
-> > Since the of_device_get_match_data() doesn't return error code, remove
-> > wrong IS_ERR test. Proper check against NULL pointer is already done
-> > later before usage: if (data && data->...).
+> On Fri, Oct 23, 2020 at 02:04:17PM +0800, Joseph Jang wrote:
+> > Since dpm_watchdog just cover device power management, we proposed to
+> > move it to core power suspend.c to cover not only device power management
+> > hang issues, but also core power management hand issues.
 > >
-> > Additionally, proceeding with empty device data is valid (e.g. in case
-> > of "ti,am3356-pruss").
+> > Since dpm_watchdog stands for device pm, we propose to use new name sleep
+> > timer and new timeout handler to cover more sleep hang issues. The new
+> > timeout handler will dump disk sleep task at first round timeout and
+> > trigger kernel panic at second round timeout.
+> > The default timer for each round is defined in
+> > CONFIG_PM_SLEEP_TIMER_TIMEOUT.
 > >
-> > Reported-by: Wei Yongjun <weiyongjun1@huawei.com>
+> > Signed-off-by: Joseph Jang <josephjang@google.com>
 >
-> Please add the appropriate Fixes: tag.
+> It still seems odd you can't use a watchdog for this, as you really have
+> just implemented the same thing here, but "open coded" the logic.
 >
-> And prefer %s/Remove/Fix/ in patch title.
+> I'll let Rafael chime in here too, as he knows this area much better
+> than I as to if this is viable or not.
 
-Sure.
+It is viable AFAICS.
 
->
-> With that,
-> Acked-by: Suman Anna <s-anna@ti.com>
-
-Thank you, I will post v2 with all improvements soon.
-Best regards,
-Grzegorz
+Just make the existing thing work with dev == NULL and use it as needed.
