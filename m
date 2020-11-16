@@ -2,187 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7F12B543F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CC52B544E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729633AbgKPWX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:23:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729558AbgKPWX2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:23:28 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D1EC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:23:27 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id 131so4985719pfb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:23:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=Jg+RxZauwnh0dh6jwmWN33Uz7KM6ODP2EAS1nPOc80g=;
-        b=a1EDH7nmrkcfUkrAK0WbDmN7WIfCbWZYgHrBM3PUdAvKMxC2bmcVAIFL+7yfT/AqFQ
-         +0rJupnpRu86I/Wefkhvdpj+7U9JZ1D2tWNASzt4rz/zBvfSOtIbzlFbNvBq0ZX6H0XW
-         iett+I0NFCqPpJdCUpbwS9HPvc0YjGWEenxZI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=Jg+RxZauwnh0dh6jwmWN33Uz7KM6ODP2EAS1nPOc80g=;
-        b=bcv6FV3CFzGv8Utuq7V22brE4RiVRYfXWpJXGffUHaWj9QZIMIIaenz6kW8osQA2H6
-         DKY3E+0eH+2MdxB9jR26ljbeCtf5Il52DmnRFnM/X189xm0odwpa4grZbYjNyNbEcJXr
-         Abg7cipL4x8s6J+ub9jqNvVNXzEpqDNAMo8bWH10ujhxO8bzcMXmAlHtxolGc9+Kwc+p
-         PSoK63wb/dTKcl86l9vPNexH8CnhWr+vAMKcsoRH6Zq0EK3waV7VRTYHFu3Ch4LD1zWz
-         qzjEdFEOft2gkKXnoU9LrtxyO8cNRnrplWiS7DoyxBtAuPikifrsgbUZ5fH75Ai38h1D
-         W5Xw==
-X-Gm-Message-State: AOAM531SFH+HDEEr/g9uks2Wd0gjZVwOSlhvJEVNo3KVJg1mj+JPxHUR
-        m83Dx4RMCAXd3587OczIsDVFVWOAb/tjcnu3jTdEMf3idgaOpuwKvEw5Hs7yrCeBHKqFKenbk/K
-        X40AjE/MY/7pnb3xqQmXHAcxCbAYT3kPUKaCw2CqZsQown/minyE5LQRfLLU/Y7GrKWFM7bvB67
-        LcxAYbgg==
-X-Google-Smtp-Source: ABdhPJx0Rrad471U4lc4EpQJGmCOMEatYbpv2RB0Crf9zvHbw1//Qd+WqBdXWQEhIn0Vtdg+bBovQg==
-X-Received: by 2002:a63:df58:: with SMTP id h24mr1123205pgj.206.1605565406795;
-        Mon, 16 Nov 2020 14:23:26 -0800 (PST)
-Received: from [10.136.8.243] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id mt2sm462274pjb.7.2020.11.16.14.23.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 14:23:26 -0800 (PST)
-Subject: Re: [PATCH] pinctrl: bcm: pinctrl-iproc-gpio: Fix setting GPIO as
- output
-To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        rjui@broadcom.com, sbranden@broadcom.com
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201116215842.29488-1-mark.tomlinson@alliedtelesis.co.nz>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <2d0ed323-d2c4-b60c-7f10-a313458e4656@broadcom.com>
-Date:   Mon, 16 Nov 2020 14:23:24 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1729916AbgKPW22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:28:28 -0500
+Received: from mga06.intel.com ([134.134.136.31]:41513 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729773AbgKPW21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 17:28:27 -0500
+IronPort-SDR: bQgWbstVARarHN/UDe6Cj30reA/hx4xvsWgmR5iewh3vu0d1l7lg0UmdiBI6FtzZJG9d24DD2w
+ TAngxDuM5k1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232442040"
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="232442040"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 14:28:25 -0800
+IronPort-SDR: dupbUSpfBTNA3gN+qTaexNJ2w3A5eFA7K+ngLED7952B5CjB+LHq94LjzxvEOt2njZ1Jxn98es
+ 8U1Ojcs+eHpg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="533581638"
+Received: from viggo.jf.intel.com ([10.54.77.144])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Nov 2020 14:28:24 -0800
+From:   Dave Hansen <dave.hansen@intel.com>
+To:     jarkko@kernel.org
+Cc:     akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        jethro@fortanix.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, ludloff@google.com, luto@kernel.org,
+        mikko.ylinen@intel.com, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, serge.ayoun@intel.com,
+        tglx@linutronix.de, x86@kernel.org, yaozhangx@google.com,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH] x86/sgx: clarify 'laundry_list' locking
+Date:   Mon, 16 Nov 2020 14:25:31 -0800
+Message-Id: <20201116222531.4834-1-dave.hansen@intel.com>
+X-Mailer: git-send-email 2.19.1
+In-Reply-To: <20201112220135.165028-6-jarkko@kernel.org>
+References: <20201112220135.165028-6-jarkko@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201116215842.29488-1-mark.tomlinson@alliedtelesis.co.nz>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000c5fbfb05b440d3f5"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000c5fbfb05b440d3f5
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From: Dave Hansen <dave.hansen@linux.intel.com>
 
+Short Version:
 
+The SGX section->laundry_list structure is effectively thread-local,
+but declared next to some shared structures.  Its semantics are clear
+as mud.  Fix that.  No functional changes.  Compile tested only.
 
-On 11/16/2020 1:58 PM, Mark Tomlinson wrote:
-> When setting a GPIO pin to an output, it is important to set the value
-> correctly before enabling the output so that a glitch is not seen on the
-> pin. This glitch may be very short, but can be important if this is a
-> reset signal.
-> 
-> Fixes: b64333ce769c ("pinctrl: cygnus: add gpio/pinconf driver")
-> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-> ---
->  drivers/pinctrl/bcm/pinctrl-iproc-gpio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c b/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
-> index e2bd2dce6bb4..cadcf5eb0466 100644
-> --- a/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
-> +++ b/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
-> @@ -348,8 +348,8 @@ static int iproc_gpio_direction_output(struct gpio_chip *gc, unsigned gpio,
->  	unsigned long flags;
->  
->  	raw_spin_lock_irqsave(&chip->lock, flags);
-> -	iproc_set_bit(chip, IPROC_GPIO_OUT_EN_OFFSET, gpio, true);
->  	iproc_set_bit(chip, IPROC_GPIO_DATA_OUT_OFFSET, gpio, !!(val));
-> +	iproc_set_bit(chip, IPROC_GPIO_OUT_EN_OFFSET, gpio, true);
->  	raw_spin_unlock_irqrestore(&chip->lock, flags);
->  
->  	dev_dbg(chip->dev, "gpio:%u set output, value:%d\n", gpio, val);
-> 
+Long Version:
 
-Thanks. The fix looks good. Would you be able to also help fix this in
-pinctrl-nsp-gpio.c ?
+The SGX hardware keeps per-page metadata.  This can provide things like
+permissions, integrity and replay protection.  It also prevents things
+like having an enclave page mapped multiple times or shared between
+enclaves.
 
-Acked-by: Ray Jui <ray.jui@broadcom.com>
+But, that presents a problem for kexec()'d kernels (or any other kernel
+that does not run immediately after a hardware reset).  This is because
+the last kernel may have been rude and forgotten to reset pages, which
+would trigger the the "shared page" sanity check.
 
---000000000000c5fbfb05b440d3f5
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+To fix this, the SGX code "launders" the pages by running the EREMOVE
+instruction on all pages at boot.  This is slow and can take a long
+time, so it is performed off in the SGX-specific ksgxd instead of being
+synchronous at boot.  The init code hands the list of pages to launder
+in a per-SGX-section list: ->laundry_list.  The only code to touch this
+list is the init code and ksgxd.  This means that no locking is
+necessary for ->laundry_list.
 
-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
-Gp3tsmw0Vz7IMJs6DQIm7T8CfIzeId1IIHcH02MbpO7m1Btzyz625FoBWF8CAwEAAaOCAcswggHH
-MA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9z
-ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29jc3AuY3J0
-MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24y
-c2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
-dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWG
-M2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNybDAfBgNV
-HREEGDAWgRRyYXkuanVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUvUTLkCwFvnpejW/KGvdaDA31b+sw
-DQYJKoZIhvcNAQELBQADggEBACMny/9Y1OPK7qwiBKBMt478eBgXnTlJ0J0HNebYcxN/l7fKIKMb
-/eX/AQKIDsHeshmV2ekPU4yY/04veXx3QTgmE1bb4ksKEFEbU0LXlVPrnlgNn8M75cPymegn/2yU
-r1+htd2eve3obmKc5Lrl0GP+4m72XxAOL687Aw5vRa4Lf294s+x4d+VRwUjoFTj9zyLhexWQuJv/
-yX1HjSkrlIsRwi6DN0/ieL04O9aD1UNPlCC6akGnv4tgwlESh51M564qhonlfSW6La+L/aTIuQc0
-88lq8s/VMBBGdc7176/v5TbNwEC/c5QYbp2n76rAmKKjhjwWmBk64yLT7CoIxk0xggJvMIICawIB
-ATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypH
-bG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCUMagLNLily51ao1jAN
-BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgRT1WhFp0IFRoMuWE9BDJvhieqqvJ3Adm
-klMxuGhs5I8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMTE2
-MjIyMzI3WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
-AWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIB
-MA0GCSqGSIb3DQEBAQUABIIBAA1PMYRDNgW1nsgXVKiFuEbBLSUvYj8c01knnxwJKbqlmG4zbA8h
-Fx6WtFckidBqzagxb/kiT/RQI14JmN8W8zzXe3E40w/NE1LryMXz99OQsEbk3qu0D9VI2nO68vN+
-v4/FT0iOKcP175SQiOwh+8o+NKFXanqfXV7uq7ZSv3vHaKCOZKypPHiSGHwqiA26LCJ8myO40dRk
-3cgB+LuHoEDKwLf+kWGVOs94dxG2n3bAp4j/pFYC9Fdfguo/9f1Rnhy1UI6CHi1t7HVG0km7cWZn
-olAIPYrEJChE9H04ZlpWlZDU9GWuj+uhGUUR0LjN+suI9vJcKF6gHlHnMhY5Pcs=
---000000000000c5fbfb05b440d3f5--
+However, a lock is required for section->page_list, which is accessed
+while creating enclaves and by ksgxd.  This lock (section->lock is
+acquired by ksgxd while also processing ->laundry_list.  It is easy
+to confuse the purpose of the locking as being for ->laundry_list
+and ->page_list.
+
+Rename ->laundry_list to ->init_laundry_list to make it clear that
+this is not normally used at runtime.  Also add some comments
+clarifying the locking, and reorganize 'sgx_epc_section' to put 'lock'
+near the things it protects.
+
+Note: init_laundry_list is 128 bytes of wasted space at runtime.  It
+could theoretically be dynamically allocated and then freed after the
+laundering process.  But, I suspect it would take nearly 128 bytes
+of extra instructions to do that.
+
+Cc: Jethro Beekman <jethro@fortanix.com>
+Cc: Serge Ayoun <serge.ayoun@intel.com>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+---
+
+ b/arch/x86/kernel/cpu/sgx/main.c |   14 ++++++++------
+ b/arch/x86/kernel/cpu/sgx/sgx.h  |   15 ++++++++++++---
+ 2 files changed, 20 insertions(+), 9 deletions(-)
+
+diff -puN arch/x86/kernel/cpu/sgx/main.c~sgx-laundry-comments arch/x86/kernel/cpu/sgx/main.c
+--- a/arch/x86/kernel/cpu/sgx/main.c~sgx-laundry-comments	2020-11-16 13:55:42.624972349 -0800
++++ b/arch/x86/kernel/cpu/sgx/main.c	2020-11-16 13:58:10.652971980 -0800
+@@ -36,13 +36,15 @@ static void sgx_sanitize_section(struct
+ 	LIST_HEAD(dirty);
+ 	int ret;
+ 
+-	while (!list_empty(&section->laundry_list)) {
++	/* init_laundry_list is thread-local, no need for a lock: */
++	while (!list_empty(&section->init_laundry_list)) {
+ 		if (kthread_should_stop())
+ 			return;
+ 
++		/* needed for access to ->page_list: */
+ 		spin_lock(&section->lock);
+ 
+-		page = list_first_entry(&section->laundry_list,
++		page = list_first_entry(&section->init_laundry_list,
+ 					struct sgx_epc_page, list);
+ 
+ 		ret = __eremove(sgx_get_epc_virt_addr(page));
+@@ -56,7 +58,7 @@ static void sgx_sanitize_section(struct
+ 		cond_resched();
+ 	}
+ 
+-	list_splice(&dirty, &section->laundry_list);
++	list_splice(&dirty, &section->init_laundry_list);
+ }
+ 
+ static bool sgx_reclaimer_age(struct sgx_epc_page *epc_page)
+@@ -418,7 +420,7 @@ static int ksgxswapd(void *p)
+ 		sgx_sanitize_section(&sgx_epc_sections[i]);
+ 
+ 		/* Should never happen. */
+-		if (!list_empty(&sgx_epc_sections[i].laundry_list))
++		if (!list_empty(&sgx_epc_sections[i].init_laundry_list))
+ 			WARN(1, "EPC section %d has unsanitized pages.\n", i);
+ 	}
+ 
+@@ -632,13 +634,13 @@ static bool __init sgx_setup_epc_section
+ 	section->phys_addr = phys_addr;
+ 	spin_lock_init(&section->lock);
+ 	INIT_LIST_HEAD(&section->page_list);
+-	INIT_LIST_HEAD(&section->laundry_list);
++	INIT_LIST_HEAD(&section->init_laundry_list);
+ 
+ 	for (i = 0; i < nr_pages; i++) {
+ 		section->pages[i].section = index;
+ 		section->pages[i].flags = 0;
+ 		section->pages[i].owner = NULL;
+-		list_add_tail(&section->pages[i].list, &section->laundry_list);
++		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
+ 	}
+ 
+ 	section->free_cnt = nr_pages;
+diff -puN arch/x86/kernel/cpu/sgx/sgx.h~sgx-laundry-comments arch/x86/kernel/cpu/sgx/sgx.h
+--- a/arch/x86/kernel/cpu/sgx/sgx.h~sgx-laundry-comments	2020-11-16 13:55:42.627972349 -0800
++++ b/arch/x86/kernel/cpu/sgx/sgx.h	2020-11-16 13:55:42.631972349 -0800
+@@ -34,15 +34,24 @@ struct sgx_epc_page {
+  * physical memory e.g. for memory areas of the each node. This structure is
+  * used to store EPC pages for one EPC section and virtual memory area where
+  * the pages have been mapped.
++ *
++ * 'lock' must be held before accessing 'page_list' or 'free_cnt'.
+  */
+ struct sgx_epc_section {
+ 	unsigned long phys_addr;
+ 	void *virt_addr;
+-	struct list_head page_list;
+-	struct list_head laundry_list;
+ 	struct sgx_epc_page *pages;
+-	unsigned long free_cnt;
++
+ 	spinlock_t lock;
++	struct list_head page_list;
++	unsigned long free_cnt;
++
++	/*
++	 * Pages which need EREMOVE run on them before they can be
++	 * used.  Only safe to be accessed in ksgxd and init code.
++	 * Not protected by locks.
++	 */
++	struct list_head init_laundry_list;
+ };
+ 
+ extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+_
