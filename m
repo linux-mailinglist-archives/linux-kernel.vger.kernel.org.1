@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558272B4F45
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200E52B4F46
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388101AbgKPS2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:28:06 -0500
-Received: from mga06.intel.com ([134.134.136.31]:20632 "EHLO mga06.intel.com"
+        id S2388220AbgKPS2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:28:08 -0500
+Received: from mga06.intel.com ([134.134.136.31]:20638 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388086AbgKPS2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:28:04 -0500
-IronPort-SDR: +JsGjOS9Qt2iT8fBSSW0DBTECaxYSi2JPoak/1nKUGvpnAqCkIQfLHamzv15e0IF2R5PWIfXtG
- JxDnjdTKzRBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232410031"
+        id S2388095AbgKPS2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:28:06 -0500
+IronPort-SDR: cRGVddNAopi48G6pJKgAFoC3dBwnwlX445Yp6GyyEPelr2GOHncisD+6eSGzgQMZ1vOoQvvFTi
+ wSSAyxMsATvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232410035"
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="232410031"
+   d="scan'208";a="232410035"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:03 -0800
-IronPort-SDR: kmdBeUL4mdS0+jujBwt2ADTN0JowZGlBjbiaErA3r/ls19CNWuswZNlgUfjAmq523RLBg4SlcU
- 1EbibhERw4fg==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:04 -0800
+IronPort-SDR: siudl/3OmboItfUXg82BNh2u5l2IKHgnkwlMqzSDHugZoEFjK/1vQ0YNW39ilQbT044gUIgIWa
+ fHSD1U5mAY1Q==
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="400527986"
+   d="scan'208";a="400528018"
 Received: from ls.sc.intel.com (HELO localhost) ([143.183.96.54])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:02 -0800
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:04 -0800
 From:   isaku.yamahata@intel.com
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -37,10 +37,11 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [RFC PATCH 23/67] KVM: Add per-VM flag to disable dirty logging of memslots for TDs
-Date:   Mon, 16 Nov 2020 10:26:08 -0800
-Message-Id: <b8c847e84fd298abb25047b305ee76be13bea1b0.1605232743.git.isaku.yamahata@intel.com>
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [RFC PATCH 26/67] KVM: x86: Add kvm_x86_ops .cache_gprs() and .flush_gprs()
+Date:   Mon, 16 Nov 2020 10:26:11 -0800
+Message-Id: <e57e13793023cf2e605b93e8681b520eb492197b.1605232743.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1605232743.git.isaku.yamahata@intel.com>
 References: <cover.1605232743.git.isaku.yamahata@intel.com>
@@ -52,43 +53,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Add a flag for TDX to mark dirty logging as unsupported.
+Add hooks to cache and flush GPRs and invoke them from KVM_GET_REGS and
+KVM_SET_REGS respecitively.  TDX will use the hooks to read/write GPRs
+from TDX-SEAM on-demand (for debug TDs).
 
-Suggested-by: Kai Huang <kai.huang@intel.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- include/linux/kvm_host.h | 1 +
- virt/kvm/kvm_main.c      | 5 ++++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/kvm_host.h | 2 ++
+ arch/x86/kvm/x86.c              | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 1a0df7b83fd0..9682282cb258 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -517,6 +517,7 @@ struct kvm {
- 	pid_t userspace_pid;
- 	unsigned int max_halt_poll_ns;
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 7537ba0bada2..01c78eeefef4 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1130,6 +1130,8 @@ struct kvm_x86_ops {
+ 	void (*set_gdt)(struct kvm_vcpu *vcpu, struct desc_ptr *dt);
+ 	void (*sync_dirty_debug_regs)(struct kvm_vcpu *vcpu);
+ 	void (*set_dr7)(struct kvm_vcpu *vcpu, unsigned long value);
++	void (*cache_gprs)(struct kvm_vcpu *vcpu);
++	void (*flush_gprs)(struct kvm_vcpu *vcpu);
+ 	void (*cache_reg)(struct kvm_vcpu *vcpu, enum kvm_reg reg);
+ 	unsigned long (*get_rflags)(struct kvm_vcpu *vcpu);
+ 	void (*set_rflags)(struct kvm_vcpu *vcpu, unsigned long rflags);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index a1c57d1eb460..22e956f01ddc 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9385,6 +9385,9 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
  
-+	bool dirty_log_unsupported;
- #ifdef __KVM_HAVE_READONLY_MEM
- 	bool readonly_mem_unsupported;
- #endif
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 572a66a61c29..aa5f27753756 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1103,7 +1103,10 @@ static void update_memslots(struct kvm_memslots *slots,
- static int check_memory_region_flags(struct kvm *kvm,
- 				     const struct kvm_userspace_memory_region *mem)
+ static void __get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
  {
--	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
-+	u32 valid_flags = 0;
++	if (kvm_x86_ops.cache_gprs)
++		kvm_x86_ops.cache_gprs(vcpu);
 +
-+	if (!kvm->dirty_log_unsupported)
-+		valid_flags |= KVM_MEM_LOG_DIRTY_PAGES;
+ 	if (vcpu->arch.emulate_regs_need_sync_to_vcpu) {
+ 		/*
+ 		 * We are here if userspace calls get_regs() in the middle of
+@@ -9459,6 +9462,9 @@ static void __set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
  
- #ifdef __KVM_HAVE_READONLY_MEM
- 	if (!kvm->readonly_mem_unsupported)
+ 	vcpu->arch.exception.pending = false;
+ 
++	if (kvm_x86_ops.flush_gprs)
++		kvm_x86_ops.flush_gprs(vcpu);
++
+ 	kvm_make_request(KVM_REQ_EVENT, vcpu);
+ }
+ 
 -- 
 2.17.1
 
