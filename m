@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607922B3DA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDC62B3DA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727610AbgKPHa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 02:30:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgKPHa0 (ORCPT
+        id S1727520AbgKPHaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 02:30:22 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49562 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726247AbgKPHaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 02:30:26 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6E2C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 23:30:26 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id p68so1985398pga.6
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 23:30:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=qE47fPw7Ssv/KFjA0L5dv63syn8BReivonGm+SniB8A=;
-        b=h0+wlUkSs9l9wFOvTLSFGjlgYJP5CDxqYNejm8bqCkE2tXtTPtFB9VJLpwahg1lHsy
-         MWV5oMMV4dMpCwFYwaUQbbK/EvTvQpSusTjnxqw83xeASmZRmAL9ySQS/zbyzkHWqDSa
-         njlAIZCLDwUDHFqIMwtbYzAqCKGNoJhePKLlhoTsrrMAGCGhuOXNiQ/qGUxzcYzkuLtR
-         OpcuwICWAsh1RP152nM5f11LmDzOTcnaBTm3B6y09lb9vLR+cswu36oSq3QbYL6jstbm
-         +iGddyAG0tzzhVukqc2WIxK6N9zUni6s5a2LDxRYAsoB0WJqOjIYYpCqFkJwitMq4bg8
-         pecA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qE47fPw7Ssv/KFjA0L5dv63syn8BReivonGm+SniB8A=;
-        b=n506pJE6KzL/YKPZTmvQBEZhVGlr3LHiTRtlxaCcWtF4WwV30+n9kynr1tPAC/+V6v
-         jrzW/rMsQAFyXjUW5JMCilB8g5iamxCHcgylM5/EZ/CA2Rb8drY4vO9zdfaTsvp46Xdu
-         iLPi+9gwQ8BX/A9Xdk6AbxE7reRmjj+lKU8FBn3AHCGFbrvAs+f/UPAkw1UYWB5sIbTI
-         r1l/2sZehc2symY7c3yuHCaaxzGu6tfG4UwUXwKaM3af8oVZoXbEQnjrpTDus+deAiHV
-         gU2OYn4nWk1ukGWY0Y0YDJY5h3/ReBMYIV+Esoc/rU+gEZS0A+8LcZ0R3FKaTjPVHP9c
-         9R/w==
-X-Gm-Message-State: AOAM5339YUsAvTAxQBX80+KrxfxQCy8rC15oTOr9rcpdyOYPRO1Vne7w
-        MuS5VYRNhzKDz2OD2Gzhu8w=
-X-Google-Smtp-Source: ABdhPJy9PjU7zc8oaoWL2URVsHZHrRT7EKvuD+h19fqF9heouoBF+iWw6QumYlZ9VQk3N935DYvang==
-X-Received: by 2002:a17:90a:34c5:: with SMTP id m5mr14482406pjf.184.1605511826091;
-        Sun, 15 Nov 2020 23:30:26 -0800 (PST)
-Received: from localhost.localdomain ([8.210.202.142])
-        by smtp.gmail.com with ESMTPSA id w196sm16746235pfd.177.2020.11.15.23.30.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 15 Nov 2020 23:30:25 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     minyard@acm.org
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, yejune.deng@gmail.com
-Subject: [PATCH] ipmi/watchdog: replace atomic_add() and atomic_sub()
-Date:   Mon, 16 Nov 2020 15:30:07 +0800
-Message-Id: <1605511807-7135-1-git-send-email-yejune.deng@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Mon, 16 Nov 2020 02:30:21 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AG722CR079802;
+        Mon, 16 Nov 2020 02:30:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=VHNxyxnhRygWhPh7u6PPy+e4MDCuK+5zMCSvg6qk98U=;
+ b=tgpcn+OSZvDwpur5i1ZEG2klUSl8atqs0f1HAPGnAw6hcYETKysmzhy400ICRh0EFcGl
+ 3GPxy+ZHgwQJB4egCmjcquxY0YRmzuPL/Jz0Mw8FY46NPyB9tT/nyC31FUAefZ/emWDJ
+ 2/x+8K0fqKeIzpDYp0cYlHNGenLcBC42xilAmAQox+/sPo84yS/HA5ILS5UNZx3pvOE9
+ vIhF638IlqiyktAat1ekeRnetsRhbEUlOjCrqtaut05m2YeERwUC2rRAczJrmpGQxabS
+ ukL1wiLzo/SLJzTHCjM5Qfvnd7yK9IwIhFNKm0SjUS11vOZ36htJAjggByvgvptWw54x 4g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34umkf8qsa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Nov 2020 02:30:17 -0500
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0AG7DLmu122803;
+        Mon, 16 Nov 2020 02:30:16 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34umkf8qru-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Nov 2020 02:30:16 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AG7SSfI005052;
+        Mon, 16 Nov 2020 07:30:15 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 34t6v88x6s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Nov 2020 07:30:14 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AG7UC1D3605234
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Nov 2020 07:30:12 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DBC59A406A;
+        Mon, 16 Nov 2020 07:30:10 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 789E0A4062;
+        Mon, 16 Nov 2020 07:30:10 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.92.115])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 16 Nov 2020 07:30:10 +0000 (GMT)
+Subject: Re: [PATCH] md: dm-writeback: add __noreturn to BUG-ging function
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
+References: <20201113225228.20563-1-rdunlap@infradead.org>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <344abf76-9405-58ba-2dc4-27cab88c974d@de.ibm.com>
+Date:   Mon, 16 Nov 2020 08:30:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20201113225228.20563-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-16_01:2020-11-13,2020-11-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 clxscore=1011
+ impostorscore=0 mlxscore=0 spamscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011160039
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-atomic_inc() and atomic_dec() looks better
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- drivers/char/ipmi/ipmi_watchdog.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
-index f78156d..32c334e 100644
---- a/drivers/char/ipmi/ipmi_watchdog.c
-+++ b/drivers/char/ipmi/ipmi_watchdog.c
-@@ -495,7 +495,7 @@ static void panic_halt_ipmi_heartbeat(void)
- 	msg.cmd = IPMI_WDOG_RESET_TIMER;
- 	msg.data = NULL;
- 	msg.data_len = 0;
--	atomic_add(1, &panic_done_count);
-+	atomic_inc(&panic_done_count);
- 	rv = ipmi_request_supply_msgs(watchdog_user,
- 				      (struct ipmi_addr *) &addr,
- 				      0,
-@@ -505,7 +505,7 @@ static void panic_halt_ipmi_heartbeat(void)
- 				      &panic_halt_heartbeat_recv_msg,
- 				      1);
- 	if (rv)
--		atomic_sub(1, &panic_done_count);
-+		atomic_dec(&panic_done_count);
- }
- 
- static struct ipmi_smi_msg panic_halt_smi_msg = {
-@@ -529,12 +529,12 @@ static void panic_halt_ipmi_set_timeout(void)
- 	/* Wait for the messages to be free. */
- 	while (atomic_read(&panic_done_count) != 0)
- 		ipmi_poll_interface(watchdog_user);
--	atomic_add(1, &panic_done_count);
-+	atomic_inc(&panic_done_count);
- 	rv = __ipmi_set_timeout(&panic_halt_smi_msg,
- 				&panic_halt_recv_msg,
- 				&send_heartbeat_now);
- 	if (rv) {
--		atomic_sub(1, &panic_done_count);
-+		atomic_dec(&panic_done_count);
- 		pr_warn("Unable to extend the watchdog timeout\n");
- 	} else {
- 		if (send_heartbeat_now)
--- 
-1.9.1
+On 13.11.20 23:52, Randy Dunlap wrote:
+> Building on arch/s390/ flags this as an error, so add the
+> __noreturn attribute modifier to prevent the build error.
+> 
+> cc1: some warnings being treated as errors
+> ../drivers/md/dm-writecache.c: In function 'persistent_memory_claim':
+> ../drivers/md/dm-writecache.c:323:1: error: no return statement in function returning non-void [-Werror=return-type]
 
+ok with me, but I am asking why
+
+the unreachable macro is not good enough. For x86 it obviously is.
+
+form arch/s390/include/asm/bug.h
+#define BUG() do {                                      \
+        __EMIT_BUG(0);                                  \
+        unreachable();                                  \
+} while (0)
+
+
+> 
+> Fixes: 48debafe4f2f ("dm: add writecache target")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Mikulas Patocka <mpatocka@redhat.com>
+> Cc: Alasdair Kergon <agk@redhat.com>
+> Cc: Mike Snitzer <snitzer@redhat.com>
+> Cc: dm-devel@redhat.com
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: linux-s390@vger.kernel.org
+> ---
+>  drivers/md/dm-writecache.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- linux-next-20201113.orig/drivers/md/dm-writecache.c
+> +++ linux-next-20201113/drivers/md/dm-writecache.c
+> @@ -317,7 +317,7 @@ err1:
+>  	return r;
+>  }
+>  #else
+> -static int persistent_memory_claim(struct dm_writecache *wc)
+> +static int __noreturn persistent_memory_claim(struct dm_writecache *wc)
+>  {
+>  	BUG();
+>  }
+> 
