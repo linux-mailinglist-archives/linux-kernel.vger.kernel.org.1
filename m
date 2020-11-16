@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069CD2B4AAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EC22B4ABB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731880AbgKPQSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:18:47 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:43995 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731853AbgKPQSr (ORCPT
+        id S1731924AbgKPQTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:19:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728072AbgKPQTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:18:47 -0500
-Received: by mail-lj1-f194.google.com with SMTP id 142so7148846ljj.10;
-        Mon, 16 Nov 2020 08:18:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BJ1XEERZAY6S03XKE750mhbDDlnLNwz1luqDFRiL+1s=;
-        b=gckgdudIUGDJ/8NPkBIx46hI2aGitDlHWAuLf2/9VLP+xhiGeR6YDGeHdcohHEfAGP
-         num20cv0nLJo3yI863De7DsFggO4yRWglE//pFKy9ULUR7EuET74u/30TVBIh99+om+H
-         7lTSkHjjEqweVbUeJUZh4rgHWTZiJRtFp/D3OopsiAEPrlsb4a/JjT2aRE2svqGo39YH
-         HdWY5ChXAHJfbiNdz24xYTp6N2fYqNhdH+/cSdJWEw+J+qlSQjwHVipiRmmsL+q7mX6u
-         S4rfW2cXRua204zEQwzKErkEgNaux0KsyeprrUBddeXeBBiIEGJxswmZloTcKop3Yyvi
-         yT3A==
-X-Gm-Message-State: AOAM531clj9UZR8QWjhc5icPEyG0jyzk1ALRj+EJ4MF+Id4VS6hSmO91
-        RDqWRR8gXXdRyUTD/S84TTAIVafXy8xYDA==
-X-Google-Smtp-Source: ABdhPJzfht+xx42TnvR0cNG+9ajpoK83NQ3I1BFJZNnGOU+IOZ1b2lzB6l5TU+lYEPa6M17uwORArQ==
-X-Received: by 2002:a2e:6a0f:: with SMTP id f15mr34591ljc.375.1605543523927;
-        Mon, 16 Nov 2020 08:18:43 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id b20sm2670513lfc.89.2020.11.16.08.18.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 08:18:42 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1kehDI-0007g4-6x; Mon, 16 Nov 2020 17:18:44 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     linux-usb@vger.kernel.org
-Cc:     Sheng Long Wang <shenglong.wang.ext@siemens.com>,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 6/6] USB: serial: cp210x: clean up dts_rts
-Date:   Mon, 16 Nov 2020 17:18:26 +0100
-Message-Id: <20201116161826.29417-7-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201116161826.29417-1-johan@kernel.org>
-References: <20201116161826.29417-1-johan@kernel.org>
+        Mon, 16 Nov 2020 11:19:33 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEA9C0613CF;
+        Mon, 16 Nov 2020 08:19:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PTcACb+OPzDkD7ip03OpCQ1AWGmAYd97p5XJ+anWegk=; b=fcvLdwy/fhA+TsKH7HKxs4jKmO
+        H+PhyvltB7ut8MnBtmeulXF1ztgUkQBjnCGuFKAjvVB/YjgWnFb/sM1LEzOtveF4NrWTGw/71CoGp
+        MN7PFpNHsPbI8wK27sSmATqhLgDQBE8Uj9glbXdl/8eA2fUffPEZDG0wcBn7MHDbTia3YJo7wSQmP
+        7+UBW3BXPDzIrSG6bw6LeaGkdLzBfOY6vxWMShbfTy/KGb1nMspLPEg5id7MbgtX+kci0zPo8H6Pd
+        whQuS8y/TgNkvtu/v9ZkaJyb3Iim3aPFtnFl5wT6bG8cbAtsTefll+1EDoxK43dnzHQrnGmCf31Jx
+        JjY4L4Bw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kehE2-0003lV-Py; Mon, 16 Nov 2020 16:19:30 +0000
+Date:   Mon, 16 Nov 2020 16:19:30 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        soheil.kdev@gmail.com, arnd@arndb.de, shuochen@google.com,
+        Willem de Bruijn <willemb@google.com>
+Subject: Re: [PATCH v2] epoll: add nsec timeout support
+Message-ID: <20201116161930.GF29991@casper.infradead.org>
+References: <20201116161001.1606608-1-willemdebruijn.kernel@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116161001.1606608-1-willemdebruijn.kernel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up dtr_rts by renaming the port parameter and adding missing
-whitespace.
+On Mon, Nov 16, 2020 at 11:10:01AM -0500, Willem de Bruijn wrote:
+> diff --git a/include/uapi/linux/eventpoll.h b/include/uapi/linux/eventpoll.h
+> index 8a3432d0f0dc..f6ef9c9f8ac2 100644
+> --- a/include/uapi/linux/eventpoll.h
+> +++ b/include/uapi/linux/eventpoll.h
+> @@ -21,6 +21,7 @@
+>  
+>  /* Flags for epoll_create1.  */
+>  #define EPOLL_CLOEXEC O_CLOEXEC
+> +#define EPOLL_NSTIMEO 0x1
+>  
+>  /* Valid opcodes to issue to sys_epoll_ctl() */
+>  #define EPOLL_CTL_ADD 1
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/cp210x.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Not a problem with your patch, but this concerns me.  O_CLOEXEC is
+defined differently for each architecture, so we need to stay out of
+several different bits when we define new flags for EPOLL_*.  Maybe
+this:
 
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index c77fd09b91ce..fbb10dfc56e3 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -46,7 +46,7 @@ static void cp210x_disconnect(struct usb_serial *);
- static void cp210x_release(struct usb_serial *);
- static int cp210x_port_probe(struct usb_serial_port *);
- static int cp210x_port_remove(struct usb_serial_port *);
--static void cp210x_dtr_rts(struct usb_serial_port *p, int on);
-+static void cp210x_dtr_rts(struct usb_serial_port *port, int on);
- static void cp210x_process_read_urb(struct urb *urb);
- static void cp210x_enable_event_mode(struct usb_serial_port *port);
- static void cp210x_disable_event_mode(struct usb_serial_port *port);
-@@ -1234,12 +1234,12 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
- 	return cp210x_write_u16_reg(port, CP210X_SET_MHS, control);
- }
- 
--static void cp210x_dtr_rts(struct usb_serial_port *p, int on)
-+static void cp210x_dtr_rts(struct usb_serial_port *port, int on)
- {
- 	if (on)
--		cp210x_tiocmset_port(p, TIOCM_DTR|TIOCM_RTS, 0);
-+		cp210x_tiocmset_port(port, TIOCM_DTR | TIOCM_RTS, 0);
- 	else
--		cp210x_tiocmset_port(p, 0, TIOCM_DTR|TIOCM_RTS);
-+		cp210x_tiocmset_port(port, 0, TIOCM_DTR | TIOCM_RTS);
- }
- 
- static int cp210x_tiocmget(struct tty_struct *tty)
--- 
-2.26.2
+/*
+ * Flags for epoll_create1.  O_CLOEXEC may be different bits, depending
+ * on the CPU architecture.  Reserve the known ones.
+ */
+#define EPOLL_CLOEXEC		O_CLOEXEC
+#define EPOLL_RESERVED_FLAGS	0x00680000
+#define EPOLL_NSTIMEO		0x00000001
 
