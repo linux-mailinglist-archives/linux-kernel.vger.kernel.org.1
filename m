@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692B92B3D2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538C52B3D30
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgKPGcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 01:32:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37012 "EHLO mail.kernel.org"
+        id S1727134AbgKPGfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 01:35:07 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:51319 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725819AbgKPGcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 01:32:33 -0500
-Received: from sekiro (lfbn-mar-1-625-225.w90-118.abo.wanadoo.fr [90.118.2.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725819AbgKPGfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 01:35:07 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C0EE2222E;
-        Mon, 16 Nov 2020 06:32:30 +0000 (UTC)
-Date:   Mon, 16 Nov 2020 07:32:27 +0100
-From:   Ludovic Desroches <ludovic.desroches@microchip.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/9] iio: adc: at91_adc: cleanup DT bindings
-Message-ID: <20201116063227.eqhqyocmgxe4khmj@sekiro>
-References: <20201113212650.507680-1-alexandre.belloni@bootlin.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZK7W61dfz9sRR;
+        Mon, 16 Nov 2020 17:35:03 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1605508504;
+        bh=mZ9pJim/9qu1xbydQ4AUEek3SWS3nI5D3sgElsQp58s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ACjBcKcC+Cs7zikojbKMCC4HihNOQZTkv07ZczRzX319+Ime1zuBSifAwBIZw/CaX
+         o08P3Y6KxwRtC8/cjzXQibR/1/MJbWufCsy+MCcmkWIfx3vBv7rS65Q5i1hk2+w/YM
+         Xyc7ElfEqH00jJK1xUiuM1h12OqyWLIA9/KAt/e8FOFhv2CIGNAor5KiN6lC7sV9jv
+         +S6ucYbX71ZPRHkXv/KE3U+qhWhqgMXHXGZtXR51HpPD4Q0kk4glu6QKUKaIHm1jSH
+         nWalLOVDMjK90YP9uqK5PrnodFrvHFI9lqhOGmZrfhuQ2G/dewE47v96Y2NoN/Hom4
+         7NeVVzmR6h3jg==
+Date:   Mon, 16 Nov 2020 17:35:02 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the ftrace tree
+Message-ID: <20201116173502.392a769c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113212650.507680-1-alexandre.belloni@bootlin.com>
+Content-Type: multipart/signed; boundary="Sig_/xfgPDyV0Q0GD1T0Xhf1bfnv";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 10:26:41PM +0100, Alexandre Belloni wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> Hello,
-> 
-> This series cleans up the at91_adc devicetree bindings. This mainly
-> moves back the resolution options and names and the triggers description
-> back in the driver.
-> 
-> There are also other cleanups, like removing platform data support, this
-> was pending for a while.
->
+--Sig_/xfgPDyV0Q0GD1T0Xhf1bfnv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Nice cleanup of this old and obscur binding.
+Hi all,
 
-Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+After merging the ftrace tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Thanks.
+Documentation/trace/ftrace-uses.rst:123: WARNING: Unexpected indentation.
 
-> Alexandre Belloni (8):
->   iio: adc: at91_adc: remove platform data
->   iio: adc: at91_adc: rework resolution selection
->   iio: adc: at91_adc: rework trigger definition
->   iio: adc: at91_adc: merge at91_adc_probe_dt back in at91_adc_probe
->   iio: adc: at91_adc: remove forward declaration
->   iio: adc: at91_adc: use devm_input_allocate_device
->   ARM: dts: at91: sama5d3: use proper ADC compatible
->   ARM: dts: at91: remove deprecated ADC properties
-> 
-> Jonathan Cameron (1):
->   dt-bindings:iio:adc:atmel,sama9260-adc: conversion to yaml from
->     at91_adc.txt
-> 
->  .../devicetree/bindings/iio/adc/at91_adc.txt  |  83 ----
->  .../bindings/iio/adc/atmel,sama9260-adc.yaml  | 121 ++++++
->  arch/arm/boot/dts/at91sam9260.dtsi            |  25 --
->  arch/arm/boot/dts/at91sam9g45.dtsi            |  27 --
->  arch/arm/boot/dts/at91sam9rl.dtsi             |  25 --
->  arch/arm/boot/dts/at91sam9x5.dtsi             |  28 --
->  arch/arm/boot/dts/sama5d3.dtsi                |  26 +-
->  arch/arm/boot/dts/sama5d4.dtsi                |  22 -
->  drivers/iio/adc/at91_adc.c                    | 377 +++++++-----------
->  include/linux/platform_data/at91_adc.h        |  49 ---
->  10 files changed, 259 insertions(+), 524 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/iio/adc/at91_adc.txt
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/atmel,sama9260-adc.yaml
->  delete mode 100644 include/linux/platform_data/at91_adc.h
-> 
-> --
-> 2.28.0
+Introduced by commit
+
+  a25d036d939a ("ftrace: Reverse what the RECURSION flag means in the ftrac=
+e_ops")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xfgPDyV0Q0GD1T0Xhf1bfnv
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+yHZYACgkQAVBC80lX
+0GzThAf/X6nN97l+a/Hp3NsTfd9uVribBXbpQ3br1VReGNM7IgQCWM4duFbvuXIz
+ct/Uo2kqIfVyQeFMmp7+SEUJ5nWlNQU1dbL2oWoucwDYfUWN7F3OQxKXi+MxleW+
+zZ3n6KWZNph/mHTUCQtrjpUI09JiPJsdD5S1SlBaDF7GqyI/px2DiqFsy6vX+VcX
+Jn3SCCPJZDcZJBb7a2e7E4NBGVb9d+uqppjypYT/rEHVJkBIHWVTIx6+c3+IcaGz
+DJPcLJWPvQ6PzA/cr7rPrtagONfXB/u/Ett6jlySnLjGvhRai26z1Lvj/jzJmAG0
+NQ60IGY3uKwD8bBSm+6zCXV1Y8OskA==
+=WKXn
+-----END PGP SIGNATURE-----
+
+--Sig_/xfgPDyV0Q0GD1T0Xhf1bfnv--
