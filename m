@@ -2,105 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E27E2B3B90
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 03:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D4A2B3B94
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgKPC6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 21:58:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgKPC6B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 21:58:01 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55C9C0613CF;
-        Sun, 15 Nov 2020 18:58:01 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id j5so7654122plk.7;
-        Sun, 15 Nov 2020 18:58:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eNO29EHcV4BOXQ+t6yVnI/0F8ygGUshqUsY5NTnMcho=;
-        b=JJxkKVIiHIRQMXg0bWMZR3Qqv0r7GSUsS1FgXMueJu8fUy2PYyXiBVEmglgfIyeSbG
-         Bt60MZKE+aKW/8IKEzNLLlEu+HQ4tloSpZFCu+35d1qFFzPHvTPupGJHeerrUI9+CEyM
-         aiMgjPKABglmd8Ay6c6FOdSsjwsTEB+yukusiXXrrngEZ4q4eo14SJ7SUpnF8yhKY7Dr
-         RrxYiP0A8MSBLpsk8jFn2Q4TynwpL9YGw5/T4m0P8WpkkmDrCNaxHDUgagO4si5RyD1Q
-         Cpw10XOYojhiSnlS1NTRR4Lg+HdK5nt1oV0Bojqp2nJtbGt4hPxq4LaV/1Vas8wawKmw
-         folw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eNO29EHcV4BOXQ+t6yVnI/0F8ygGUshqUsY5NTnMcho=;
-        b=K96B2YebXlWKOu88MLRMP0rCZXlE9VxD+lqLmXg0VQJuI7fRiXmoh/IKpw/PIbLUyf
-         Xepp2rimjz6y0ruFA7gnKJxpNVWcjpkLqyNUg2RVbe3g3BYJbxKUjDdta7IeDcJNGnpL
-         R2SKDvvoR6ElztEyBcoMGFKFGqRg7C8/JgHOvjvKLgn8Dr+KqrbPFqwRuYE14G4yn8UR
-         5UunPGHTrLz0fU3LDnGRimo0GA8ovkuST3+Ug/jPt05ciSI3f7aQLSjGTBuJRzvXGO41
-         SgF5R6ncnM9v6wRt86u6yBcal5v41Mo7fpbKlWm1cZ9nKsyi2VGrQpZ9bTn0PhnZic+p
-         uBSA==
-X-Gm-Message-State: AOAM5336CP9P7BOgX1KqLCukKGlq+r7Obgk33uvi60C0SCbc7J0x+sfa
-        XgNlJ87wYmXfsy6qkYgRFji7yf43hLs=
-X-Google-Smtp-Source: ABdhPJxaQ1941oW+zP7Lyz2/b+sd2CaryA1ZvhOyJ7ePTSKkhq3EHOx/2ptx3UoS/fG/++x0S0xo9g==
-X-Received: by 2002:a17:902:6ac5:b029:d6:4e05:8343 with SMTP id i5-20020a1709026ac5b02900d64e058343mr10934436plt.8.1605495480663;
-        Sun, 15 Nov 2020 18:58:00 -0800 (PST)
-Received: from [10.230.28.242] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id c12sm15393440pgi.14.2020.11.15.18.57.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Nov 2020 18:57:59 -0800 (PST)
-Subject: Re: [PATCH v2] net: lantiq: Wait for the GPHY firmware to be ready
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        hauke@hauke-m.de, netdev@vger.kernel.org
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org
-References: <20201115165757.552641-1-martin.blumenstingl@googlemail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <972ccc3f-2e66-16a2-fb58-875552645342@gmail.com>
-Date:   Sun, 15 Nov 2020 18:57:52 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.4.3
+        id S1726690AbgKPC7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 21:59:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48400 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726534AbgKPC7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 21:59:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8F2DDABDE;
+        Mon, 16 Nov 2020 02:59:05 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>
+Date:   Mon, 16 Nov 2020 13:59:00 +1100
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] NFS: only invalidate dentrys that are clearly invalid.
+Message-ID: <87361aovm3.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <20201115165757.552641-1-martin.blumenstingl@googlemail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
 
-On 11/15/2020 8:57 AM, Martin Blumenstingl wrote:
-> A user reports (slightly shortened from the original message):
->   libphy: lantiq,xrx200-mdio: probed
->   mdio_bus 1e108000.switch-mii: MDIO device at address 17 is missing.
->   gswip 1e108000.switch lan: no phy at 2
->   gswip 1e108000.switch lan: failed to connect to port 2: -19
->   lantiq,xrx200-net 1e10b308.eth eth0: error -19 setting up slave phy
-> 
-> This is a single-port board using the internal Fast Ethernet PHY. The
-> user reports that switching to PHY scanning instead of configuring the
-> PHY within device-tree works around this issue.
-> 
-> The documentation for the standalone variant of the PHY11G (which is
-> probably very similar to what is used inside the xRX200 SoCs but having
-> the firmware burnt onto that standalone chip in the factory) states that
-> the PHY needs 300ms to be ready for MDIO communication after releasing
-> the reset.
-> 
-> Add a 300ms delay after initializing all GPHYs to ensure that the GPHY
-> firmware had enough time to initialize and to appear on the MDIO bus.
-> Unfortunately there is no (known) documentation on what the minimum time
-> to wait after releasing the reset on an internal PHY so play safe and
-> take the one for the external variant. Only wait after the last GPHY
-> firmware is loaded to not slow down the initialization too much (
-> xRX200 has two GPHYs but newer SoCs have at least three GPHYs).
-> 
-> Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Prior to commit 5ceb9d7fdaaf ("NFS: Refactor nfs_lookup_revalidate()")
+and error from nfs_lookup_verify_inode() other than -ESTALE would result
+in nfs_lookup_revalidate() returning that error code (-ESTALE is mapped
+to zero).
+Since that commit, all errors result in zero being returned.
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+When nfs_lookup_revalidate() returns zero, the dentry is invalidated
+and, significantly, if the dentry is a directory that is mounted on,
+that mountpoint is lost.
+
+If you:
+ - mount an NFS filesystem which contains a directory
+ - mount something (e.g. tmpfs) on that directory
+ - use iptables (or scissors) to block traffic to the server
+ - ls -l the-mounted-on-directory
+ - interrupt the 'ls -l'
+you will find that the directory has been unmounted.
+
+This can be fixed by returning the actual error code from
+nfs_lookup_verify_inode() rather then zero (except for -ESTALE).
+
+Fixes: 5ceb9d7fdaaf ("NFS: Refactor nfs_lookup_revalidate()")
+Signed-off-by: NeilBrown <neilb@suse.de>
+=2D--
+ fs/nfs/dir.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+index cb52db9a0cfb..d24acf556e9e 100644
+=2D-- a/fs/nfs/dir.c
++++ b/fs/nfs/dir.c
+@@ -1350,7 +1350,7 @@ nfs_do_lookup_revalidate(struct inode *dir, struct de=
+ntry *dentry,
+ 			 unsigned int flags)
+ {
+ 	struct inode *inode;
+=2D	int error;
++	int error =3D 0;
+=20
+ 	nfs_inc_stats(dir, NFSIOS_DENTRYREVALIDATE);
+ 	inode =3D d_inode(dentry);
+@@ -1372,8 +1372,10 @@ nfs_do_lookup_revalidate(struct inode *dir, struct d=
+entry *dentry,
+ 	    nfs_check_verifier(dir, dentry, flags & LOOKUP_RCU)) {
+ 		error =3D nfs_lookup_verify_inode(inode, flags);
+ 		if (error) {
+=2D			if (error =3D=3D -ESTALE)
++			if (error =3D=3D -ESTALE) {
+ 				nfs_zap_caches(dir);
++				error =3D 0;
++			}
+ 			goto out_bad;
+ 		}
+ 		nfs_advise_use_readdirplus(dir);
+@@ -1395,7 +1397,7 @@ nfs_do_lookup_revalidate(struct inode *dir, struct de=
+ntry *dentry,
+ out_bad:
+ 	if (flags & LOOKUP_RCU)
+ 		return -ECHILD;
+=2D	return nfs_lookup_revalidate_done(dir, dentry, inode, 0);
++	return nfs_lookup_revalidate_done(dir, dentry, inode, error);
+ }
+=20
+ static int
+=2D-=20
+2.29.2
+
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl+x6vQOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigbkHHA/6ArBmbcJgnubaMOQu+U5qI40yP8NwiLUOLbbC
+8tzWBA1lQoIm6ww98VmxD43iSgmAtqA9tz5Ln3fhEVnypznjnmDOp5TI5cFERXTQ
+mR8U8OjBPAM6zMxpX43yGcZYjod0aKqstyIwGb49AieuyWuV3RRE+j7NFiVw0sZu
+i15CExoEYH5Z3OVqUSdhY4C2LSQj+JLJOEUqGeJ1t+qaMQ7liT0TMUlGNCMYPCKt
+kMn3/ApPQjH73sJnX+YDCl9DAHiHn7BGTp3VxjtxaYEEaZqdbQSgY1m7WErQKCdm
+RaLN0ydwGHmgknWLBIzpFtnoP7FBIs4xAPDUHJfnT4UhRHzx1KT/9lDJxmN2aZ0R
+btyn4osJzMp1iLcOctKNpkog0Vvin6QjAMCqvqa5CadCO7OEMjEqFywMogoDzDzp
+cx6MJvKtSSqk1Z018HgJbXcuijOfU6AGqj3wOpb/q0t5qascBmeqRdoaJg8yjNAo
+hwF2Fi/OShobs9w/HCepLcHaxDD+vT4cAgv9YKdA8x/Ce52yeKZRSP1E28Nb+6zT
+3rUcH4fpdUY8/rsaNWw0GKdUYD4h3HY/QNrg3t7Ga95xB4AStwTgtcQCncruR16y
+nQZJMxV8JROUg5U0Qv7Xyd9K4yRkKv78EaDGo4xAI9BjOOoQqQ6TUSqq/xnbIfSj
+B9IG7EM=
+=7Ejm
+-----END PGP SIGNATURE-----
+--=-=-=--
