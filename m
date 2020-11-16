@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4CA2B53DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E669A2B53E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729651AbgKPVe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:34:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgKPVez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:34:55 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B063E2224F;
-        Mon, 16 Nov 2020 21:34:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605562495;
-        bh=lSGys+8LKdYd14eGCQNhlTPa72dn/l05p/h7XghfMf0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=y0bArRZ8uGQASEyaDNauaVUvPbxaTPo+0EXoOpgzEY+uHqEj0Qgg4lJCpYSkFxXlJ
-         e8V49DOEGbOy+M7CQWCYm3JBmUkpPnntvjUqSe1gxktNJrdwzX0OgPzKfnUqug5+eE
-         6DCYLttpGZP107kQhZP5uSy4XcAHoaDWiJ8DNK8E=
-Date:   Mon, 16 Nov 2020 13:34:53 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v1 net-next] net: dsa: qca: ar9331: add ethtool stats
- support
-Message-ID: <20201116133453.270b8db5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201115073533.1366-1-o.rempel@pengutronix.de>
-References: <20201115073533.1366-1-o.rempel@pengutronix.de>
+        id S1729826AbgKPVgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729760AbgKPVgZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 16:36:25 -0500
+Received: from smtp-1908.mail.infomaniak.ch (smtp-1908.mail.infomaniak.ch [IPv6:2001:1600:4:17::1908])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D66FC0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 13:36:25 -0800 (PST)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CZj7S2n4nzlhKBs;
+        Mon, 16 Nov 2020 22:36:20 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CZj7P4XQrzlh8TF;
+        Mon, 16 Nov 2020 22:36:17 +0100 (CET)
+Subject: Re: [PATCH v22 01/12] landlock: Add object management
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jann Horn <jannh@google.com>, Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20201027200358.557003-1-mic@digikod.net>
+ <20201027200358.557003-2-mic@digikod.net> <20201116212609.GA13063@amd>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <523d2141-e6f9-354d-d102-ae8345c84686@digikod.net>
+Date:   Mon, 16 Nov 2020 22:36:17 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201116212609.GA13063@amd>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Nov 2020 08:35:33 +0100 Oleksij Rempel wrote:
-> +static const struct ar9331_mib_desc ar9331_mib[] = {
-> +	MIB_DESC(1, 0x00, "RxBroad"),
-> +	MIB_DESC(1, 0x04, "RxPause"),
-> +	MIB_DESC(1, 0x08, "RxMulti"),
-> +	MIB_DESC(1, 0x0c, "RxFcsErr"),
-> +	MIB_DESC(1, 0x10, "RxAlignErr"),
-> +	MIB_DESC(1, 0x14, "RxRunt"),
-> +	MIB_DESC(1, 0x18, "RxFragment"),
-> +	MIB_DESC(1, 0x1c, "Rx64Byte"),
-> +	MIB_DESC(1, 0x20, "Rx128Byte"),
-> +	MIB_DESC(1, 0x24, "Rx256Byte"),
-> +	MIB_DESC(1, 0x28, "Rx512Byte"),
-> +	MIB_DESC(1, 0x2c, "Rx1024Byte"),
-> +	MIB_DESC(1, 0x30, "Rx1518Byte"),
-> +	MIB_DESC(1, 0x34, "RxMaxByte"),
-> +	MIB_DESC(1, 0x38, "RxTooLong"),
-> +	MIB_DESC(2, 0x3c, "RxGoodByte"),
-> +	MIB_DESC(2, 0x44, "RxBadByte"),
-> +	MIB_DESC(1, 0x4c, "RxOverFlow"),
-> +	MIB_DESC(1, 0x50, "Filtered"),
-> +	MIB_DESC(1, 0x54, "TxBroad"),
-> +	MIB_DESC(1, 0x58, "TxPause"),
-> +	MIB_DESC(1, 0x5c, "TxMulti"),
-> +	MIB_DESC(1, 0x60, "TxUnderRun"),
-> +	MIB_DESC(1, 0x64, "Tx64Byte"),
-> +	MIB_DESC(1, 0x68, "Tx128Byte"),
-> +	MIB_DESC(1, 0x6c, "Tx256Byte"),
-> +	MIB_DESC(1, 0x70, "Tx512Byte"),
-> +	MIB_DESC(1, 0x74, "Tx1024Byte"),
-> +	MIB_DESC(1, 0x78, "Tx1518Byte"),
-> +	MIB_DESC(1, 0x7c, "TxMaxByte"),
-> +	MIB_DESC(1, 0x80, "TxOverSize"),
-> +	MIB_DESC(2, 0x84, "TxByte"),
-> +	MIB_DESC(1, 0x8c, "TxCollision"),
-> +	MIB_DESC(1, 0x90, "TxAbortCol"),
-> +	MIB_DESC(1, 0x94, "TxMultiCol"),
-> +	MIB_DESC(1, 0x98, "TxSingleCol"),
-> +	MIB_DESC(1, 0x9c, "TxExcDefer"),
-> +	MIB_DESC(1, 0xa0, "TxDefer"),
-> +	MIB_DESC(1, 0xa4, "TxLateCol"),
-> +};
 
-You must expose relevant statistics via the normal get_stats64 NDO
-before you start dumping free form stuff in ethtool -S.
+On 16/11/2020 22:26, Pavel Machek wrote:
+> Hi!
+> 
+>> A Landlock object enables to identify a kernel object (e.g. an inode).
+>> A Landlock rule is a set of access rights allowed on an object.  Rules
+>> are grouped in rulesets that may be tied to a set of processes (i.e.
+>> subjects) to enforce a scoped access-control (i.e. a domain).
+>>
+>> Because Landlock's goal is to empower any process (especially
+>> unprivileged ones) to sandbox themselves, we cannot rely on a
+>> system-wide object identification such as file extended attributes.
+> 
+> 
+>> +config SECURITY_LANDLOCK
+>> +	bool "Landlock support"
+>> +	depends on SECURITY
+>> +	select SECURITY_PATH
+>> +	help
+>> +	  Landlock is a safe sandboxing mechanism which enables processes to
+>> +	  restrict themselves (and their future children) by gradually
+>> +	  enforcing tailored access control policies.  A security policy is a
+>> +	  set of access rights (e.g. open a file in read-only, make a
+>> +	  directory, etc.) tied to a file hierarchy.  Such policy can be configured
+>> +	  and enforced by any processes for themselves thanks to dedicated system
+>> +	  calls: landlock_create_ruleset(), landlock_add_rule(), and
+>> +	  landlock_enforce_ruleset_current().
+> 
+> How does it interact with setuid binaries? Being able to exec passwd
+> in a sandbox sounds like ... fun way to get root? :-).
+
+It works like seccomp: if you run with CAP_SYS_ADMIN in the current
+namespace, then SUID binaries may be allowed, otherwise if you use
+PR_SET_NO_NEW_PRIVS, then executing a SUID binary is denied.
+
+The 24th version is here:
+https://lore.kernel.org/lkml/20201112205141.775752-1-mic@digikod.net/
+
+> 
+> Best regards,
+> 								Pavel
+> 								
+> 
