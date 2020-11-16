@@ -2,64 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF482B3EC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0750C2B3EC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727446AbgKPIeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:34:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726219AbgKPIeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:34:23 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F655207BC;
-        Mon, 16 Nov 2020 08:34:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605515662;
-        bh=XRMSYA38EWNB6SZh6t6STfpii3PwY9kz7Jvt5zohb8w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YdI9cFFQ2/Gv43v5+1Js9ojr5/kXbWUW141XXkWt30Ik0fSo/2Pjp2W7h/qSWpYeE
-         T89r7H781FX7RjG+xkGexAlbBbf+gRt7HsW0Z4sEcj2FhTLnNkJZutDJovH1Pzcjaj
-         REpRUdzXzIcgA2Gbv8zAvBEeIYzqvP7givijzroQ=
-Date:   Mon, 16 Nov 2020 16:34:17 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Daniel Baluta <daniel.baluta@nxp.com>
-Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, paul.olaru@nxp.com,
-        shengjiu.wang@nxp.com
-Subject: Re: [PATCH RESEND 0/3] Allow on demand channel request / free
-Message-ID: <20201116083415.GK5849@dragon>
-References: <20201111111118.21824-1-daniel.baluta@nxp.com>
+        id S1727486AbgKPIeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:34:24 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7246 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727384AbgKPIeY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 03:34:24 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CZMmq2rB3zkY8s;
+        Mon, 16 Nov 2020 16:34:03 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 16 Nov 2020 16:34:15 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <chunfeng.yun@mediatek.com>, <gregkh@linuxfoundation.org>,
+        <matthias.bgg@gmail.com>
+CC:     <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] usb: mtu3: replace spin_lock_irqsave by spin_lock in hard IRQ
+Date:   Mon, 16 Nov 2020 16:34:42 +0800
+Message-ID: <1605515682-23771-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111111118.21824-1-daniel.baluta@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 01:11:15PM +0200, Daniel Baluta wrote:
-> Requesting an mailbox channel will call mailbox's startup
-> function.
-> 
-> startup function calls pm_runtime_get_sync which increments device usage
-> count and will keep the device active. Specifically, mailbox clock will
-> be always ON when a mailbox channel is requested.
-> 
-> For this, reason we introduce a way to request/free IMX DSP channels
-> on demand to save power when the channels are not used.
-> 
-> First two patches are doing code refactoring preparing the path
-> for 3rd patch which exports functions for on demand channel request/free
-> 
-> 
-> Daniel Baluta (3):
->   firmware: imx: Introduce imx_dsp_setup_channels
->   firmware: imx: Save channel name for further use
->   firmware: imx-dsp: Export functions to request/free channels
+The code has been in a irq-disabled context since it is hard IRQ. There
+is no necessity to do it again.
 
-Applied all, thanks.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/usb/mtu3/mtu3_core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/mtu3/mtu3_core.c b/drivers/usb/mtu3/mtu3_core.c
+index b3b4599..a6d7684 100644
+--- a/drivers/usb/mtu3/mtu3_core.c
++++ b/drivers/usb/mtu3/mtu3_core.c
+@@ -745,10 +745,9 @@ static irqreturn_t mtu3_u2_common_isr(struct mtu3 *mtu)
+ static irqreturn_t mtu3_irq(int irq, void *data)
+ {
+ 	struct mtu3 *mtu = (struct mtu3 *)data;
+-	unsigned long flags;
+ 	u32 level1;
+ 
+-	spin_lock_irqsave(&mtu->lock, flags);
++	spin_lock(&mtu->lock);
+ 
+ 	/* U3D_LV1ISR is RU */
+ 	level1 = mtu3_readl(mtu->mac_base, U3D_LV1ISR);
+@@ -769,7 +768,7 @@ static irqreturn_t mtu3_irq(int irq, void *data)
+ 	if (level1 & QMU_INTR)
+ 		mtu3_qmu_isr(mtu);
+ 
+-	spin_unlock_irqrestore(&mtu->lock, flags);
++	spin_unlock(&mtu->lock);
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.7.4
+
