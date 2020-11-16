@@ -2,64 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C8A2B3D3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487132B3D42
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727161AbgKPGsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 01:48:01 -0500
-Received: from mail-m1271.qiye.163.com ([115.236.127.1]:27733 "EHLO
-        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgKPGsA (ORCPT
+        id S1727212AbgKPGvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 01:51:01 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59517 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727166AbgKPGvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 01:48:00 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id 763F0583098;
-        Mon, 16 Nov 2020 14:47:57 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wang Wenhu <wenhu.wang@vivo.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Chucheng Luo <luochucheng@vivo.com>,
-        Wang Qing <wangqing@vivo.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH doc] doc: zh_CN: add tmpfs to index tree
-Date:   Mon, 16 Nov 2020 14:47:50 +0800
-Message-Id: <1605509272-13770-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 16 Nov 2020 01:51:01 -0500
+X-UUID: ffa5188b57fd4f078e325a969e0568ed-20201116
+X-UUID: ffa5188b57fd4f078e325a969e0568ed-20201116
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 603744827; Mon, 16 Nov 2020 14:50:56 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 16 Nov 2020 14:50:55 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 16 Nov 2020 14:50:55 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <kwmad.kim@samsung.com>,
+        <liwei213@huawei.com>, <matthias.bgg@gmail.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v1 0/9] scsi: ufs: Refactoring and cleanups
+Date:   Mon, 16 Nov 2020 14:50:45 +0800
+Message-ID: <20201116065054.7658-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHkodQx9DH0lKT04dVkpNS05OS0JJTENLSk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NxA6IRw5Sz8sTgooGB9MKUM5
-        PgsKCRRVSlVKTUtOTktCSUxDT0pMVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKQ01MNwY+
-X-HM-Tid: 0a75cfcf68c298b6kuuu763f0583098
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add temfs to the index tree while adding tempfs translation.
+Hi,
+This series simply do some refactoring and cleanups in UFS drivers.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- Documentation/translations/zh_CN/filesystems/index.rst | 1 +
- 1 file changed, 1 insertion(+)
+Stanley Chu (9):
+  scsi: ufs-mediatek: Refactor performance scaling functions
+  scsi: ufs: Introduce device parameter initialization function
+  scsi: ufs-mediatek: Use device parameter initialization function
+  scsi: ufs-qcom: Use device parameter initialization function
+  scsi: ufs-exynos: Use device parameter initialization function
+  scsi: ufs-hisi: Use device parameter initialization function
+  scsi: ufs: Refactor ADAPT configuration function
+  scsi: ufs-mediatek: Use common ADAPT configuration function
+  scsi: ufs-qcom: Use common ADAPT configuration function
 
-diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
-index 186501d..9f2a8b0
---- a/Documentation/translations/zh_CN/filesystems/index.rst
-+++ b/Documentation/translations/zh_CN/filesystems/index.rst
-@@ -25,4 +25,5 @@ Linux Kernel中的文件系统
- 
-    virtiofs
-    debugfs
-+   tmpfs
- 
+ drivers/scsi/ufs/ufs-exynos.c    | 15 +---------
+ drivers/scsi/ufs/ufs-exynos.h    | 13 --------
+ drivers/scsi/ufs/ufs-hisi.c      | 13 +-------
+ drivers/scsi/ufs/ufs-hisi.h      | 13 --------
+ drivers/scsi/ufs/ufs-mediatek.c  | 51 ++++++++++++++------------------
+ drivers/scsi/ufs/ufs-mediatek.h  | 16 ----------
+ drivers/scsi/ufs/ufs-qcom.c      | 27 +++--------------
+ drivers/scsi/ufs/ufs-qcom.h      | 11 -------
+ drivers/scsi/ufs/ufshcd-pltfrm.c | 17 +++++++++++
+ drivers/scsi/ufs/ufshcd-pltfrm.h |  1 +
+ drivers/scsi/ufs/ufshcd.c        | 16 ++++++++++
+ drivers/scsi/ufs/ufshcd.h        |  3 ++
+ 12 files changed, 65 insertions(+), 131 deletions(-)
+
 -- 
-2.7.4
+2.18.0
 
