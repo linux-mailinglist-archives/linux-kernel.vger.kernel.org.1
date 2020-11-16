@@ -2,108 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526DF2B423A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1742B423E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729715AbgKPLHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:07:06 -0500
-Received: from mail-eopbgr70135.outbound.protection.outlook.com ([40.107.7.135]:16558
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726353AbgKPLHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:07:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DMgVB8opX1i1ycODWRbP/mhzTuvIyD6dW3C5GUWz3W0kqNisiwz3Ss2WyhGgBfpuNPx8Xo7b3CZtmJflZnW7fL/f97IcWA7FDLZ0O7nSMmT9wmc1yjQSEkGR0RuNWqI6y6YGBF6ZXInr3EACda2slrDNCBeayKdA8cyl+Tdixf/K5Z/s2iJhYEYUyBZfQa8BS3ELwFDCXj+mC6F61MjB9uZ+mb9tQfZ5QBQgnv6v4j9yPNBfxdbnja7MfsdEDlFiW1qriu5vTwzMsmIEqegKL80sBc0nWXw+mTWMmdiyHZ1qSfrOwVrfm1Y/5+dEJuYEIVKC52/fvrcpdDS7S2jHUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8RcKy3SDft3VVlEuBpjinNagKiTiw+2n+PnCsCwBMlU=;
- b=noiG7ZbOFB/zz45eA6/vxGot2PUW67p/xv5Y/DE/QQouKUMsIPAEdWvLpMjPIzbGTFRh2O/RC0RD9laE/mN0KlTuStMnFFV62wxDg1AzsiBfnqF3203azcXcB+FNA6fE0qtxeNTLnKcbF5MBtVvcMs+piWmbyTdrFqPm3WiM8e+k/Juur6NFd/qEv/lszi+fw2xHaP7B8X2XnEnGAtTJtiH1jY+3DZn/StA6n2SsNksXw9Lj12NblYJRwozSAaoHNITn9S9sx8zVB1AOjjlnmnfQ7IVTJJkNgoAfERiydmdfO4b/tHsXLGKYHSTFjgPbt1BKUCRHgQvJDDfI7CIhUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=syrmia.com; dmarc=pass action=none header.from=syrmia.com;
- dkim=pass header.d=syrmia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syrmia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8RcKy3SDft3VVlEuBpjinNagKiTiw+2n+PnCsCwBMlU=;
- b=GMZzcWGT6Vi5hNGDf49yDGi4SeLKhqzT3ZU0Y1BzDDHvt81u36GIT8NqzAMyVFS2w9KfpX+M2TscQO5N6omgk5up1Zxi+R3UQHWV6LNVThy8C0s8BWiQWutJJfpk6Ei7psX++gWn3ISqdgxtvELmTRo+igufFD5kCqQFsHjx6yU=
-Received: from VI1PR0301MB6655.eurprd03.prod.outlook.com
- (2603:10a6:800:19c::8) by VE1PR03MB5392.eurprd03.prod.outlook.com
- (2603:10a6:802:a2::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Mon, 16 Nov
- 2020 11:07:00 +0000
-Received: from VI1PR0301MB6655.eurprd03.prod.outlook.com
- ([fe80::216f:196f:cc77:1fe6]) by VI1PR0301MB6655.eurprd03.prod.outlook.com
- ([fe80::216f:196f:cc77:1fe6%5]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
- 11:06:59 +0000
-From:   Miodrag Dinic <Miodrag.Dinic@syrmia.com>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
-CC:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
-Subject: RE: [PATCH 2/2] MAINTAINERS: Set myself as Goldfish RTC maintainer
-Thread-Topic: [PATCH 2/2] MAINTAINERS: Set myself as Goldfish RTC maintainer
-Thread-Index: AQHWuodtusWq9FPmB02FIVpt0SpZnanH8gMAgAKpjvA=
-Date:   Mon, 16 Nov 2020 11:06:59 +0000
-Message-ID: <VI1PR0301MB6655CE868F5A472261C1435F94E30@VI1PR0301MB6655.eurprd03.prod.outlook.com>
-References: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
- <20201114130921.651882-3-jiaxun.yang@flygoat.com>
- <6bcbba2a-5a75-9b07-1816-edf6fb77a664@gmail.com>
-In-Reply-To: <6bcbba2a-5a75-9b07-1816-edf6fb77a664@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=syrmia.com;
-x-originating-ip: [24.135.192.43]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 56c9fe6f-7ead-4b90-92e4-08d88a1fbd5a
-x-ms-traffictypediagnostic: VE1PR03MB5392:
-x-microsoft-antispam-prvs: <VE1PR03MB53924113B5D9717C03853AE294E30@VE1PR03MB5392.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GQbRiDr2K9P8y+WkW8Har1PshTS1ZTU72VH+Yk9kssTulu5Qr42UpZkbDY49CcDLLE/0OgcslmeZh/QbWi25aYJFdf+ApV7CK9zWHsqT36iQ3ubsFA0M6OU63aH3N35N0ytV1C1pffd92ccgZSjNr13ovbIj8kxRO7I/VDfMHZU7jnu26PchfpF9LQrVfeWBNhrF91G4Z1GAAYC+Etvg6fiUPz+7huYfMoO+gc01zQOEv5fwrp6IIOWT0GKX3QOgH4qn1SOnJV6wk8kCfbUvqyd9c4r8JScaDMfuvNFD1kUc2hdIPYawVnh3iYwCKs4GpKZcnrr86UwiJcolityHKw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0301MB6655.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(39830400003)(396003)(346002)(26005)(4744005)(66946007)(66476007)(66446008)(4326008)(64756008)(86362001)(76116006)(66556008)(53546011)(9686003)(55016002)(54906003)(110136005)(478600001)(2906002)(6506007)(186003)(7696005)(316002)(52536014)(5660300002)(33656002)(71200400001)(8676002)(8936002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: QIWBBaafnD3pmbXKki6bO/XvYzHWFtbcnCeJCklmAqHc1ACO5wefDYBOREvk11plqJt9zNKYkp13+1CyHFJdkuzYv/DPaRqeW4Rtw4Ee/yxTFlgGFl0y7iL86ENVXV+EiQQ6qGjITscXCP32sWZTpKqZ2UP92+Fn9f+i3TCD8tNpqbX7QV9S6ZD07j2DJbCRrKfeRvDV3g5Iga62OJnnLxJTpkvcErJejUnrUphTaC+9EFrWXEshu0TZsEpqAax6Fuo0GSbwo1/UAdios0XtTE14q6R9rNl+tds7EE+Lw1Yctjlu0MBFU5hQFT0aAmSQ6rNLg62bsBEFoM08Xg8V5XNXhCoCG3yuF/Wsb5phX+G8AyF+ZkDoQsFNMT+Sn7E9w3vBk7DunGt+kIww9cjYg95qGSvTK7CO2QtpOCitqYpgKO324EA6av4VfqUhz5vSZaoZjoWeIBjZFnwM4b1R4BZ9pEa1xyg2y/vYhIt/27XNXWhOSQRrK//mSVqlAez7W+uRGVIe4H7JvGhgJIdJrIVXhcmnmZypHA3VuStn3ajOECT3AHGxlpEdah9mUut9radXvEABd/h/7OZCO+eTZZjjqucdjvftBejt2nnS33HJTMyBZWjzD962JVPdpmSi3nNoBKXMVsEFdXMX3LAzsH+eMbDUFyb4gotPUKvsrTQU05dgsAMn8tdi77NzafOEVd7qW3MDRTgFH/i8h6A2cMncGXG+nVqCqVXeRYJ8nQEoYO/sfnJPokI2dNsSqNgyLjhsLxzogtvnye6pGtLOF3N7GOKMWcf9OrF8k4bd96Y8gmBMZN2COJUOxbFTc4y3rEJaCEMuRH//Y0XEJVU2SYQBKPWTn6SKc3JnO5XUPPNQrfvsnB3fxZbmqzJ3XieaSatTh/W4mRI8y0zzZCSdXQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728954AbgKPLIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:08:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32858 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726353AbgKPLIO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 06:08:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605524892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZXX/wZqiroUfD/O74sRJcUfHvErWOcCKorfJ8YBwuSM=;
+        b=LJdCOgP99pen6+gmpoWHEhukfH0B8mTP1n5iQ1BWtPZvRODHGh74HLDZFvKRLWaUxjv/+N
+        snxTHXKICaJ2EOYa0Ia27yUqU3KQ4TIOuphNgsh63NlmYUVu7R8oMeKkDQV1NHa/HX6t/j
+        Fq6bhCfA8coe+i0IjCqYCy2D7tkMaQA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348-i1bmGA-dNWq-QJ_ficXIoA-1; Mon, 16 Nov 2020 06:08:09 -0500
+X-MC-Unique: i1bmGA-dNWq-QJ_ficXIoA-1
+Received: by mail-wm1-f71.google.com with SMTP id y1so10063997wma.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:08:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZXX/wZqiroUfD/O74sRJcUfHvErWOcCKorfJ8YBwuSM=;
+        b=jbiKasyevLI6YLfy5dfipb7m23H+DS53MV7KKVUdZL23GHAXTCX+pa7AKltEWdk+8G
+         T+SBL2QAgFC26/+NOV81Is9AjAkNLxEv0GG/FcaCWwU2WIuqYFifeVXK9mVm3E9ARuO8
+         Lw2OYHguVLW9hUIlKMIr0p/rri/0Sfs3AK9NB5NECFHJlQjLZpcgWTgD1v1P3pbyAt77
+         ssbgOJPYelprzu/7NytYY2qxZ7All7qD7P0NWtw2yVjN7RPSYpr6sYHnqt6k2l0FgOWg
+         QB1Cs5vbLY6wE5dRlvczabhD8hVf4HakMkt5Ibtoti5Ub/4BHB0SK1jKBAxxuQZ4tzX4
+         OuaQ==
+X-Gm-Message-State: AOAM530IDWJQAGJjh8yrigeJO8U4XHwf/8xwdxm0ghgoJTetLx8PZGjD
+        pbBe0YOdIFlJC1ex810CvCCMa/arxfPV18P4HzGeCg8vTzoPYY6Uqy8bBvtax38RVR84aJZrWs9
+        YQRVOayNwqCX0/Md5S+z5pnHW
+X-Received: by 2002:adf:f602:: with SMTP id t2mr7940581wrp.40.1605524888368;
+        Mon, 16 Nov 2020 03:08:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxz0hQkQCVM7hHaRIfa6NDF4VzNeIvWdO00UDUV/f+MZSCAifF0VGRZOYOApyIH9wUNSun9jA==
+X-Received: by 2002:adf:f602:: with SMTP id t2mr7940555wrp.40.1605524888154;
+        Mon, 16 Nov 2020 03:08:08 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id p10sm22850438wre.2.2020.11.16.03.08.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 03:08:07 -0800 (PST)
+Date:   Mon, 16 Nov 2020 12:08:05 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 12/12] vdpa_sim_blk: implement ramdisk behaviour
+Message-ID: <20201116110805.efspwzkuw2sdnaca@steredhat>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-13-sgarzare@redhat.com>
+ <56d8c992-44ca-f365-fb92-f5da94896680@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: syrmia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0301MB6655.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56c9fe6f-7ead-4b90-92e4-08d88a1fbd5a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2020 11:06:59.6691
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 19214a73-c1ab-4e19-8f59-14bdcb09a66e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jXZe6yzPH0Zoo2ol6AgRJHH5zovcPGHa9cDwRsjj4phPqlen0d6U/vQ/Vy1x4gZfDcjZ1tla95ke7owMMCaILaavV4RKtczyHwzBKUwiT2M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR03MB5392
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <56d8c992-44ca-f365-fb92-f5da94896680@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEknbSBnbGFkIHRvIHNlZSB0aGF0IHRoZSBjb2RlIGlzIHN0aWxsIGluIHVzZS4gVGhhbmtz
-IGZvciBub3RpZmljYXRpb24sIGZlZWwgZnJlZSB0byB0YWtlIG93bmVyc2hpcCBhbmQgY29udGlu
-dWUgZGV2ZWxvcG1lbnQvbWFpbnRlbmFuY2Ugb2YgdGhpcyBjb2RlLg0KDQpLaW5kIHJlZ2FyZHMs
-DQpNaW9kcmFnDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBTZXJnZWkgU2h0
-eWx5b3YgPHNlcmdlaS5zaHR5bHlvdkBnbWFpbC5jb20+IA0KU2VudDogU2F0dXJkYXksIE5vdmVt
-YmVyIDE0LCAyMDIwIDc6MjYgUE0NClRvOiBKaWF4dW4gWWFuZyA8amlheHVuLnlhbmdAZmx5Z29h
-dC5jb20+OyBsaW51eC1taXBzQHZnZXIua2VybmVsLm9yZw0KQ2M6IE1pb2RyYWcgRGluaWMgPE1p
-b2RyYWcuRGluaWNAc3lybWlhLmNvbT47IEFsZXNzYW5kcm8gWnVtbW8gPGEuenVtbW9AdG93ZXJ0
-ZWNoLml0PjsgQWxleGFuZHJlIEJlbGxvbmkgPGFsZXhhbmRyZS5iZWxsb25pQGJvb3RsaW4uY29t
-PjsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtcnRjQHZnZXIua2VybmVsLm9y
-Zw0KU3ViamVjdDogUmU6IFtQQVRDSCAyLzJdIE1BSU5UQUlORVJTOiBTZXQgbXlzZWxmIGFzIEdv
-bGRmaXNoIFJUQyBtYWludGFpbmVyDQoNCkhlbGxvIQ0KDQpPbiAxMS8xNC8yMCA0OjA5IFBNLCBK
-aWF4dW4gWWFuZyB3cm90ZToNCg0KPiBXaGlsZSBHaWxkZmlzaCBwbGF0Zm9ybSBpcyBkdXN0ZWQs
-IHRoZSBSVEMgZHJpdmVyIHJlbWFpbnMNCg0KICAgR29sZGZpc2guIDotKQ0KDQo+IHZhbHVhYmxl
-IGZvciB1cy4NCj4gDQo+IEknbSB2b2x1bnRlZXJpbmcgdG8gbWFpbnRhaW4gZ29sZGZpc2ggUlRD
-IGRyaXZlciBvbndhcmQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBKaWF4dW4gWWFuZyA8amlheHVu
-LnlhbmdAZmx5Z29hdC5jb20+DQo+IENjOiBNaW9kcmFnIERpbmljIDxNaW9kcmFnLkRpbmljQHN5
-cm1pYS5jb20+DQpbLi4uXQ0KDQpNQlIsIFNlcmdlaQ0K
+On Mon, Nov 16, 2020 at 01:25:31PM +0800, Jason Wang wrote:
+>
+>On 2020/11/13 下午9:47, Stefano Garzarella wrote:
+>>The previous implementation wrote only the status of each request.
+>>This patch implements a more accurate block device simulator,
+>>providing a ramdisk-like behavior.
+>>
+>>Also handle VIRTIO_BLK_T_GET_ID request, always answering the
+>>"vdpa_blk_sim" string.
+>
+>
+>Let's use a separate patch for this.
+>
+
+Okay, I'll do.
+
+>
+>>
+>>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>>---
+>>  drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 151 +++++++++++++++++++++++----
+>>  1 file changed, 133 insertions(+), 18 deletions(-)
+>>
+>>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+>>index 8e41b3ab98d5..68e74383322f 100644
+>>--- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+>>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+>>@@ -7,6 +7,7 @@
+>>   */
+>>  #include <linux/module.h>
+>>+#include <linux/blkdev.h>
+>>  #include <uapi/linux/virtio_blk.h>
+>>  #include "vdpa_sim.h"
+>>@@ -24,10 +25,137 @@
+>>  static struct vdpasim *vdpasim_blk_dev;
+>>+static int vdpasim_blk_handle_req(struct vdpasim *vdpasim,
+>>+				  struct vdpasim_virtqueue *vq)
+>>+{
+>>+	size_t wrote = 0, to_read = 0, to_write = 0;
+>>+	struct virtio_blk_outhdr hdr;
+>>+	uint8_t status;
+>>+	uint32_t type;
+>>+	ssize_t bytes;
+>>+	loff_t offset;
+>>+	int i, ret;
+>>+
+>>+	vringh_kiov_cleanup(&vq->riov);
+>>+	vringh_kiov_cleanup(&vq->wiov);
+>
+>
+>It looks to me we should do those after vringh_get_desc_iotlb()? See 
+>comment above vringh_getdesc_kern().
+
+Do you mean after the last vringh_iov_push_iotlb()?
+
+Because vringh_kiov_cleanup() will free the allocated iov[].
+
+>
+>
+>>+
+>>+	ret = vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
+>>+				   &vq->head, GFP_ATOMIC);
+>>+	if (ret != 1)
+>>+		return ret;
+>>+
+>>+	for (i = 0; i < vq->wiov.used; i++)
+>>+		to_write += vq->wiov.iov[i].iov_len;
+>
+>
+>It's better to introduce a helper for this (or consider to use iov 
+>iterator).
+
+Okay, I'll try to find the best solution.
+
+>
+>
+>>+	to_write -= 1; /* last byte is the status */
+>>+
+>>+	for (i = 0; i < vq->riov.used; i++)
+>>+		to_read += vq->riov.iov[i].iov_len;
+>>+
+>>+	bytes = vringh_iov_pull_iotlb(&vq->vring, &vq->riov, &hdr, sizeof(hdr));
+>>+	if (bytes != sizeof(hdr))
+>>+		return 0;
+>>+
+>>+	to_read -= bytes;
+>>+
+>>+	type = le32_to_cpu(hdr.type);
+>>+	offset = le64_to_cpu(hdr.sector) << SECTOR_SHIFT;
+>>+	status = VIRTIO_BLK_S_OK;
+>>+
+>>+	switch (type) {
+>>+	case VIRTIO_BLK_T_IN:
+>>+		if (offset + to_write > VDPASIM_BLK_CAPACITY << 
+>>SECTOR_SHIFT) {
+>>+			dev_err(&vdpasim->vdpa.dev,
+>>+				"reading over the capacity - offset: 
+>>0x%llx len: 0x%lx\n",
+>>+				offset, to_write);
+>>+			status = VIRTIO_BLK_S_IOERR;
+>>+			break;
+>>+		}
+>>+
+>>+		bytes = vringh_iov_push_iotlb(&vq->vring, &vq->wiov,
+>>+					      vdpasim->buffer + offset,
+>>+					      to_write);
+>>+		if (bytes < 0) {
+>>+			dev_err(&vdpasim->vdpa.dev,
+>>+				"vringh_iov_push_iotlb() error: %ld offset: 0x%llx len: 0x%lx\n",
+>>+				bytes, offset, to_write);
+>>+			status = VIRTIO_BLK_S_IOERR;
+>>+			break;
+>>+		}
+>>+
+>>+		wrote += bytes;
+>>+		break;
+>>+
+>>+	case VIRTIO_BLK_T_OUT:
+>>+		if (offset + to_read > VDPASIM_BLK_CAPACITY << SECTOR_SHIFT) {
+>>+			dev_err(&vdpasim->vdpa.dev,
+>>+				"writing over the capacity - offset: 0x%llx len: 0x%lx\n",
+>>+				offset, to_read);
+>>+			status = VIRTIO_BLK_S_IOERR;
+>>+			break;
+>>+		}
+>>+
+>>+		bytes = vringh_iov_pull_iotlb(&vq->vring, &vq->riov,
+>>+					      vdpasim->buffer + offset,
+>>+					      to_read);
+>>+		if (bytes < 0) {
+>>+			dev_err(&vdpasim->vdpa.dev,
+>>+				"vringh_iov_pull_iotlb() error: %ld offset: 0x%llx len: 0x%lx\n",
+>>+				bytes, offset, to_read);
+>>+			status = VIRTIO_BLK_S_IOERR;
+>>+			break;
+>>+		}
+>>+		break;
+>>+
+>>+	case VIRTIO_BLK_T_GET_ID: {
+>>+		char id[VIRTIO_BLK_ID_BYTES] = "vdpa_blk_sim";
+>
+>
+>Let's use a global static one?
+
+I'll do.
+
+>
+>
+>>+
+>>+		bytes = vringh_iov_push_iotlb(&vq->vring,
+>>+					      &vq->wiov, id,
+>>+					      VIRTIO_BLK_ID_BYTES);
+>>+		if (bytes < 0) {
+>>+			dev_err(&vdpasim->vdpa.dev,
+>>+				"vringh_iov_push_iotlb() error: %ld\n", bytes);
+>>+			status = VIRTIO_BLK_S_IOERR;
+>>+			break;
+>>+		}
+>>+
+>>+		wrote += bytes;
+>>+		break;
+>>+	}
+>>+
+>>+	default:
+>>+		dev_warn(&vdpasim->vdpa.dev,
+>>+			 "Unsupported request type %d\n", type);
+>>+		status = VIRTIO_BLK_S_IOERR;
+>>+		break;
+>>+	}
+>>+
+>>+	/* if VIRTIO_BLK_T_IN or VIRTIO_BLK_T_GET_ID fail, we need to skip
+>>+	 * the remaining bytes to put the status in the last byte
+>>+	 */
+>>+	if (to_write - wrote > 0) {
+>>+		vringh_iov_push_iotlb(&vq->vring, &vq->wiov, NULL,
+>>+				      to_write - wrote);
+>>+	}
+>>+
+>>+	/* last byte is the status */
+>>+	bytes = vringh_iov_push_iotlb(&vq->vring, &vq->wiov, &status, 1);
+>>+	if (bytes != 1)
+>>+		return 0;
+>>+
+>>+	wrote += bytes;
+>>+
+>>+	/* Make sure data is wrote before advancing index */
+>>+	smp_wmb();
+>>+
+>>+	vringh_complete_iotlb(&vq->vring, vq->head, wrote);
+>>+
+>>+	return ret;
+>>+}
+>>+
+>>  static void vdpasim_blk_work(struct work_struct *work)
+>>  {
+>>  	struct vdpasim *vdpasim = container_of(work, struct vdpasim, work);
+>>-	u8 status = VIRTIO_BLK_S_OK;
+>>  	int i;
+>>  	spin_lock(&vdpasim->lock);
+>>@@ -41,21 +169,7 @@ static void vdpasim_blk_work(struct work_struct *work)
+>>  		if (!vq->ready)
+>>  			continue;
+>>-		while (vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
+>>-					    &vq->head, GFP_ATOMIC) > 0) {
+>>-
+>>-			int write;
+>>-
+>>-			vq->wiov.i = vq->wiov.used - 1;
+>>-			write = vringh_iov_push_iotlb(&vq->vring, &vq->wiov, &status, 1);
+>>-			if (write <= 0)
+>>-				break;
+>>-
+>>-			/* Make sure data is wrote before advancing 
+>>index */
+>>-			smp_wmb();
+>>-
+>>-			vringh_complete_iotlb(&vq->vring, vq->head, write);
+>>-
+>>+		while (vdpasim_blk_handle_req(vdpasim, vq) > 0) {
+>>  			/* Make sure used is visible before rasing the interrupt. */
+>>  			smp_wmb();
+>>@@ -67,6 +181,7 @@ static void vdpasim_blk_work(struct work_struct *work)
+>>  				vq->cb(vq->private);
+>>  			local_bh_enable();
+>>  		}
+>>+
+>
+>
+>Unnecessary change.
+
+Removed.
+
+Thanks,
+Stefano
+
