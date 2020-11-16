@@ -2,271 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ACC2B4A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD5F2B4A3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731622AbgKPP7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:59:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730176AbgKPP7l (ORCPT
+        id S1731652AbgKPQDU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 11:03:20 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:34873 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728858AbgKPQDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:59:41 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF58C0613CF;
-        Mon, 16 Nov 2020 07:59:40 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id o15so19233982wru.6;
-        Mon, 16 Nov 2020 07:59:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=z5ur65gLeEENNkFOpp7pfGnPUJSHbI8yD0TwgMdNv0Y=;
-        b=ek5b06i+kiObeO8ER7rtiAmRtiIHnS7ck1QByi8fBldniHgRqNyS+s9hpOHu4AgMPo
-         TiCdS683L4b4WEVKFg8q/lKravN6yX8EnGW+11FuJIODvmeoV3nQaS5s2CsJn6WJVSI2
-         xrAKcjGgZaYED7tvzsaa8W+J1+7iKDQwEW848C22xMg4kB1BuuGAs7ajjSgbBc2eRPXt
-         wFBqY2n6mnVxQOFVbKCR2PkUiVxYhaBGJlyAgvOQboY1szy7LcpV0aQ5CwFwKipTyvHi
-         rVxgqTU63TVh//y8wwVKARX48Q5hafdQz/Nr/ro2sHxhU3KjzQAXgjps1wqHH9dJ/VHu
-         0h0Q==
+        Mon, 16 Nov 2020 11:03:19 -0500
+Received: by mail-wm1-f68.google.com with SMTP id w24so24083175wmi.0;
+        Mon, 16 Nov 2020 08:03:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=z5ur65gLeEENNkFOpp7pfGnPUJSHbI8yD0TwgMdNv0Y=;
-        b=CkuBv1A8PdUeqmL6rfUiJi9SyhobWBCgBDYMMoxWXomLxUwd+SDQbY1SP5PCVZML+L
-         gB/Z8LqGwf4Cq1bb/Ue+Iz4j6CIQUigCAMNNRdWgTa1TPcaCWdceClhSuBChVBjSumhH
-         NZCN202xijsWB1NKHBxoRK2vpD4Zm4S1Lpj1G6VQ1aaDWgcEyR5lae6bUE9/QALCkBbV
-         PWb9eoz503kIPl9qkOqwwKAX6G2hqszsBmBrn2CQ/jkdnkwpuVkCEVfhf8cyKaqxPVj9
-         ypOjt+5r/aM0UEfKaWUoZeJY5op1BCBv1edyeYGr7uNhwQoHWZuY2jszgboDdCnFP5ia
-         7mBg==
-X-Gm-Message-State: AOAM5333WHJvUrMqLGxT6qv6Om1F3WJ3KMtwBK1DrOFZkUPI51JX9hVk
-        /9foyXmoiAz8it9t4fSpTuM=
-X-Google-Smtp-Source: ABdhPJwLmovywBzsrJ1BE+ohK9taILO9CTOyD86991/89fhQXG/wjeb9riDdYI5Owzd2IacBnREkdg==
-X-Received: by 2002:adf:f7ce:: with SMTP id a14mr20297381wrq.294.1605542379314;
-        Mon, 16 Nov 2020 07:59:39 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id g20sm20089864wmh.20.2020.11.16.07.59.37
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cTPPtiGx5HABWSYjj2Jwh7qUN2s4bgdFOFffAOPRj60=;
+        b=KNT6yHRubXuHnl6ZT3BDbSFaNLiMKqyslzDvdEq/cc2/8uyBcv8J8FdrCYip98o3UU
+         0HoAS2xChWJAFUiadVD7GCSaqxwwduxDFnVh2wOujUKvJanEHWhH6678ni8fnjiwhJwv
+         3crdMohZdW9oYRzh2zjrVgnHkzy6wm9gMxCLFGUtARRNQW3nh35d1kmbGmiBYebn0BCL
+         tjw2t5epAMcbmh7dhWU78bKW13Lww953CjamB3wL7HEVNeQxwi/ejSjSU6LtDT3Tz65l
+         dhGnXC9BWyB3Wq+kWuUXphM2R/WKir+h6sbgt6oC+89b9yprpbnzKAugi/nVtnZ6GiQC
+         3dBw==
+X-Gm-Message-State: AOAM532BrWzZplrM/fIgh4zvFN0YfcV5kCkf+Ngpwjrj+BcapFQHfvYT
+        5wkG/AIDUfBdXUp6WGSnWS4=
+X-Google-Smtp-Source: ABdhPJyYNOREUfzH58jqjfzNh1gaerwk5W77qLOc2STCfqhe8DvnCZk5FlL0CNhK+5pWyIWgvS5zIQ==
+X-Received: by 2002:a1c:9901:: with SMTP id b1mr6818993wme.18.1605542597489;
+        Mon, 16 Nov 2020 08:03:17 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id n23sm20326920wmk.24.2020.11.16.08.03.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 07:59:37 -0800 (PST)
-Date:   Mon, 16 Nov 2020 16:59:36 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] firmware: QCOM_SCM: Allow qcom_scm driver to be
- loadable as a permenent module
-Message-ID: <20201116155936.GE2224373@ulmo>
-References: <20201106042710.55979-1-john.stultz@linaro.org>
- <20201106042710.55979-3-john.stultz@linaro.org>
+        Mon, 16 Nov 2020 08:03:16 -0800 (PST)
+Date:   Mon, 16 Nov 2020 17:03:14 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Alice Guo <alice.guo@nxp.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH v3 1/4] dt-bindings: soc: imx8m: add DT Binding
+ doc for soc unique ID
+Message-ID: <20201116160314.GA25108@kozik-lap>
+References: <20201113110409.13546-1-alice.guo@nxp.com>
+ <20201114164936.GA32552@kozik-lap>
+ <AM6PR04MB60530B6F577A2A05B173748EE2E30@AM6PR04MB6053.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Ns7jmDPpOpCD+GE/"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201106042710.55979-3-john.stultz@linaro.org>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <AM6PR04MB60530B6F577A2A05B173748EE2E30@AM6PR04MB6053.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 07:04:13AM +0000, Alice Guo wrote:
+> 
+> > -----Original Message-----
+> > From: Krzysztof Kozlowski <krzk@kernel.org>
+> > Sent: 2020年11月15日 0:50
+> > To: Alice Guo <alice.guo@nxp.com>
+> > Cc: robh+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
+> > dl-linux-imx <linux-imx@nxp.com>; Peng Fan <peng.fan@nxp.com>;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > linux-arm-kernel@lists.infradead.org
+> > Subject: [EXT] Re: [PATCH v3 1/4] dt-bindings: soc: imx8m: add DT Binding doc
+> > for soc unique ID
+> > 
+> > Caution: EXT Email
+> > 
+> > On Fri, Nov 13, 2020 at 07:04:06PM +0800, Alice Guo wrote:
+> > > Add DT Binding doc for the Unique ID of i.MX 8M series.
+> > >
+> > > Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> > > ---
+> > >  .../devicetree/bindings/arm/fsl.yaml          | 25
+> > +++++++++++++++++++
+> > >  1 file changed, 25 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > index e4db0f9ed664..f4faebbb57da 100644
+> > > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > @@ -901,6 +901,31 @@ properties:
+> > >                - fsl,s32v234-evb           # S32V234-EVB2 Customer
+> > Evaluation Board
+> > >            - const: fsl,s32v234
+> > >
+> > > +  soc:
+> > > +    type: object
+> > > +    properties:
+> > > +      compatible:
+> > > +        oneOf:
+> > > +          - description: i.MX8M SoCs
+> > > +            items:
+> > > +              - enum:
+> > > +                  - fsl,imx8mm-soc
+> > > +                  - fsl,imx8mn-soc
+> > > +                  - fsl,imx8mp-soc
+> > > +                  - fsl,imx8mq-soc
+> > > +              - const: simple-bus
+> > > +
+> > > +          - description: Other SoCs
+> > > +            items:
+> > > +              - const: simple-bus
+> > > +
+> > > +      nvmem-cells:
+> > > +        maxItems: 1
+> > > +        description: Phandle to the SOC Unique ID provided by a nvmem
+> > > + node
+> > > +
+> > > +      nvmem-cells-names:
+> > > +        const: soc_unique_id
+> > > +
+> > >  additionalProperties: true
+> > 
+> > The "soc" node should be required for these compatibles. Otherwise you will
+> > have to stay with this backwards-compatible-DTB-device-initcall-glue for many
+> > years... I think you can achieve it with allOf.
+> > 
+> [Alice Guo]Hi,
+> I find that my description for compatible is ambiguous. There are two kinds of compatible of the "soc" node:
+> 1. For dtsi files used for SoCs other than imx8m series SoCs and old version dtsi files used for imx8m series SoCs,
+> compatible of the "soc" node is "simple-bus".
+> 2. For new version dtsi files used for imx8m series SoCs, compatible of the "soc" node is {"fsl,imx8mX-soc","simple-bus"}.
+> 
+> "nvmem-cell" is an optional property.
+> 
+> I do not understand what you mean. You mean that limit the compatible of "soc" node must include " fsl,imx8mX-soc" in new version dts files. Is my understanding correct?
 
---Ns7jmDPpOpCD+GE/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+All new DTS files should have soc node with "fsl,imx8mX-soc" and this
+should be required by dtschema. The nvmem-cells and related properties
+do not look like optional. From the hardware perspective - they are
+always present. From the driver point of view: they are required and
+driver will fail to work.
 
-On Fri, Nov 06, 2020 at 04:27:10AM +0000, John Stultz wrote:
-> Allow the qcom_scm driver to be loadable as a permenent module.
->=20
-> This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-> ensure that drivers that call into the qcom_scm driver are
-> also built as modules. While not ideal in some cases its the
-> only safe way I can find to avoid build errors without having
-> those drivers select QCOM_SCM and have to force it on (as
-> QCOM_SCM=3Dn can be valid for those drivers).
->=20
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: Maulik Shah <mkshah@codeaurora.org>
-> Cc: Lina Iyer <ilina@codeaurora.org>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-gpio@vger.kernel.org
-> Acked-by: Kalle Valo <kvalo@codeaurora.org>
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
-> v3:
-> * Fix __arm_smccc_smc build issue reported by
->   kernel test robot <lkp@intel.com>
-> v4:
-> * Add "depends on QCOM_SCM || !QCOM_SCM" bit to ath10k
->   config that requires it.
-> v5:
-> * Fix QCOM_QCM typo in Kconfig, it should be QCOM_SCM
-> ---
->  drivers/firmware/Kconfig                | 4 ++--
->  drivers/firmware/Makefile               | 3 ++-
->  drivers/firmware/qcom_scm.c             | 4 ++++
->  drivers/iommu/Kconfig                   | 2 ++
->  drivers/net/wireless/ath/ath10k/Kconfig | 1 +
->  5 files changed, 11 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> index 3315e3c215864..5e369928bc567 100644
-> --- a/drivers/firmware/Kconfig
-> +++ b/drivers/firmware/Kconfig
-> @@ -235,8 +235,8 @@ config INTEL_STRATIX10_RSU
->  	  Say Y here if you want Intel RSU support.
-> =20
->  config QCOM_SCM
-> -	bool
-> -	depends on ARM || ARM64
-> +	tristate "Qcom SCM driver"
-> +	depends on (ARM && HAVE_ARM_SMCCC) || ARM64
->  	select RESET_CONTROLLER
-> =20
->  config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
-> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-> index 5e013b6a3692e..523173cbff335 100644
-> --- a/drivers/firmware/Makefile
-> +++ b/drivers/firmware/Makefile
-> @@ -17,7 +17,8 @@ obj-$(CONFIG_ISCSI_IBFT)	+=3D iscsi_ibft.o
->  obj-$(CONFIG_FIRMWARE_MEMMAP)	+=3D memmap.o
->  obj-$(CONFIG_RASPBERRYPI_FIRMWARE) +=3D raspberrypi.o
->  obj-$(CONFIG_FW_CFG_SYSFS)	+=3D qemu_fw_cfg.o
-> -obj-$(CONFIG_QCOM_SCM)		+=3D qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-> +obj-$(CONFIG_QCOM_SCM)		+=3D qcom-scm.o
-> +qcom-scm-objs +=3D qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
->  obj-$(CONFIG_TI_SCI_PROTOCOL)	+=3D ti_sci.o
->  obj-$(CONFIG_TRUSTED_FOUNDATIONS) +=3D trusted_foundations.o
->  obj-$(CONFIG_TURRIS_MOX_RWTM)	+=3D turris-mox-rwtm.o
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index 7be48c1bec96d..6f431b73e617d 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -1280,6 +1280,7 @@ static const struct of_device_id qcom_scm_dt_match[=
-] =3D {
->  	{ .compatible =3D "qcom,scm" },
->  	{}
->  };
-> +MODULE_DEVICE_TABLE(of, qcom_scm_dt_match);
-> =20
->  static struct platform_driver qcom_scm_driver =3D {
->  	.driver =3D {
-> @@ -1295,3 +1296,6 @@ static int __init qcom_scm_init(void)
->  	return platform_driver_register(&qcom_scm_driver);
->  }
->  subsys_initcall(qcom_scm_init);
-> +
-> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. SCM driver");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> index 04878caf6da49..c64d7a2b65134 100644
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -248,6 +248,7 @@ config SPAPR_TCE_IOMMU
->  config ARM_SMMU
->  	tristate "ARM Ltd. System MMU (SMMU) Support"
->  	depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-> +	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=3Dm this can't be =3Dy
->  	select IOMMU_API
->  	select IOMMU_IO_PGTABLE_LPAE
->  	select ARM_DMA_USE_IOMMU if ARM
+Best regards,
+Krzysztof
 
-This, in conjunction with deferred probe timeout, causes mayhem on
-Tegra186. The problem, as far as I can tell, is that there are various
-devices that are hooked up to the ARM SMMU, but if ARM SMMU ends up
-being built as a loadable module, then those devices will initialize
-without IOMMU support (because deferred probe will timeout before the
-ARM SMMU module can be loaded from the root filesystem).
-
-Unfortunately, the ARM SMMU module will eventually end up being loaded
-once the root filesystem has been mounted (for example via SDHCI or
-Ethernet, both with using just plain, non-IOMMU-backed DMA API) and then
-initialize, configuring as "fault by default", which then results from a
-slew of SMMU faults from all the devices that have previously configured
-themselves without IOMMU support.
-
-One way to work around this is to just disable all QCOM-related drivers
-for the build so that ARM SMMU will be built-in again. I'm going to
-guess that distributions aren't going to be too happy about having to
-make that kind of choice.
-
-Another way would be for the ARM SMMU module to be included in the
-initial ramdisk, which /should/ solve this as well, though I haven't
-actually tested that yet. That's not ideal, because it means that users
-will have to use an initial ramdisk in order to make this work, and not
-all of them may want to.
-
-Perhaps a better solution for now would be to make QCOM_SCM always
-built-in, so that ARM SMMU can also always be built-in? I suspect that
-this will be a problem not only on Tegra but on any platform that uses
-an ARM SMMU. I think this is also not directly related to the QCOM_SCM
-code because this would also happen if ARM SMMU were built as a module
-for a kernel that doesn't have any QCOM drivers enabled. So in general
-any configuration that builds ARM SMMU as a module seems like it would
-currently be broken (if it also keeps the "fault by default" default).
-Is this something that people have extensively tested? I can't see how
-that would currently work, since there's no way for an ARM SMMU master
-to somehow recover and switch to IOMMU-backed DMA API dynamically once
-the ARM SMMU becomes available.
-
-I guess yet another possibility would be for the ARM SMMU driver to
-detect whether it was loaded after all of its consumers and switch to
-"bypass by default" automatically in such a situation. That should allow
-any driver probed after the ARM SMMU to still take advantage of IOVA
-translation, but will not impact the devices probed before the ARM SMMU.
-
-Thierry
-
---Ns7jmDPpOpCD+GE/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+yoeQACgkQ3SOs138+
-s6EeIw/+Jkiy34v/1TaxUz5pLZYHnJwmKT1lGYDf9KdRC9vO87BZVqj5/lNO5IXa
-+dyBEeU5axJ6Iyohml966Ry57AnSRjtMjeuqJCEwK0bZFZxwGe9oq9NnHmSuYPVa
-MX8qpw9npa2QUFnNs3w+YE2cxcndyR6kcl3LPNNpFJ9zdAeD7S1wc9kgC69P+mV3
-ZWN7koQ5I5WLfwRkOLEpV2NyuyREYw2u2KboLNt4Sy7+M5ZaGQDDsrQ6hUXT9BkF
-NmaYl/ao4ukTocxLoe3Ol/mcrM8PExy4kPSnw1FAYIO5g4sXUjpzY/Ks1ajZymM6
-jqeCVC+pTnSVI9E34lj01CdiZODV7Wl6cgO6GEmey7YXwf6AN2D61WPMXaA3Pryj
-KSngHp099W9E7wyUj9TQlXXDWzmmiDrk2GNaxvjiU08V0ADCV+aP7I7S5723MySN
-43PqFETM/omI+WWMRbdZ/pNqQENzsOhRfCo1PVyIdlfYMfu57QpP7eqXNyhvIu30
-JSzz9G6TPVMtMeOlE1n9v8xHYm1jF8kb3itX1966++MniHV5SwP5MQwMfHCXk7ER
-SDue3dleku/Yb0WCPGCRF3oMzHV/cELFtsQmRUerXHSgvmc0Auq3YMhqfzoTVb1s
-quggJ16RzZOdPqMecJoPOeJPTlpjGER1HNvwiLPAY2+U0GAPZcM=
-=oQiu
------END PGP SIGNATURE-----
-
---Ns7jmDPpOpCD+GE/--
