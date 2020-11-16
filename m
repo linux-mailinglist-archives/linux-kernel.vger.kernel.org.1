@@ -2,110 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F402C2B54E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EE32B54ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729492AbgKPXW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:22:29 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8084 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729384AbgKPXW2 (ORCPT
+        id S1728851AbgKPXYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:24:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727098AbgKPXYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:22:28 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb309be0000>; Mon, 16 Nov 2020 15:22:38 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov
- 2020 23:22:28 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 16 Nov 2020 23:22:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XqMYJ3fND+xM6LmnJxncZTLAlrRw9rzJcf5ESjpromsEzuW9YrpErmxWwU8kWcUlBkMw4fB8YirPGTH9znM6TzNmfZtFNzA6+c7CLcv8Ucco6aIAdF9SoxrHknF+gZ8JFiWVSwnKZDizvdKaJ0A6TXDBumGaHPg+sSsiPhyEBGQTj2KFLcyC/6T+Hn6tQf/3Z/s6PiYBN4ZdtFTEL1SWHnq2cWz3YW+wemeqK8Sc7dU80+z0IJ6QeYoWSR9fYGc56cbX6+r//eXG4vVpG1f+5uH48cQSo6NKjCjfLevEt/wHhHeh8XRFkPKZZig0qY8W4vlZzTwkOal5l25i0W8xGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=509+VmkLlEPOxe/lQoQ9OAnAIf0urLi7ZvhTpP11KWo=;
- b=iktqZ6+edGq54JTXYpvhvxwZ75TDHFiTlLlXoCunEbF1hnXeUj8e9UTU64NY6u8n5VaeG11Fp/tclotuA7D14puuC+XqWDlIK68/59gvpnrBXFxRGlItOdA+1VTn2BzfxP5DxbK5QqFjDSsnssiK3nfXNr7QMg4fvGCTmCIcS98Dsmps70GbJf8e4EZ3ouuia5egb7KTKzAUwOk52takcIappFJXjTpao/A8wxOZ8/1QAUmnjI0GpFLAKAYyD0SKnKrU/l2mxS+k3NvVIB2DYE28cTDDj2s0WYZg19kGs8ftYc6l1HTl3TzAZIX8tLWov1g9jMnQ0rMWT/ZuFaVJYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4619.namprd12.prod.outlook.com (2603:10b6:5:7c::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
- 2020 23:22:23 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
- 23:22:23 +0000
-Date:   Mon, 16 Nov 2020 19:22:21 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     Ziyad Atiyyeh <ziyadat@nvidia.com>,
-        Itay Aveksis <itayav@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        <iommu@lists.linux-foundation.org>, <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: iommu/vt-d: Cure VF irqdomain hickup
-Message-ID: <20201116232221.GS917484@nvidia.com>
-References: <20200826111628.794979401@linutronix.de>
- <20201112125531.GA873287@nvidia.com> <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
- <87k0uqmwn4.fsf@nanos.tec.linutronix.de>
- <87d00imlop.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <87d00imlop.fsf@nanos.tec.linutronix.de>
-X-ClientProxiedBy: BL0PR0102CA0068.prod.exchangelabs.com
- (2603:10b6:208:25::45) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Mon, 16 Nov 2020 18:24:40 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3C3C0613CF;
+        Mon, 16 Nov 2020 15:24:40 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id q10so15670976pfn.0;
+        Mon, 16 Nov 2020 15:24:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9gHW/b2b9IVZCe8TQB/5bFXeA9E/gEGYf6Ex+dE1xsM=;
+        b=Du7zG1zkT8cXy4aIUBIS0820a1I4oY4AepXtnqY9BwQROuLpFqc2G0WXju9pYjEd5o
+         8yLw2EBPiw2bvTHtnEwbiM2asA+S1zbJtbxIRvvSMp3/iHyQfnCFtmRMhcspPTLNF4Iq
+         RN2iFkXw8qfTzsfNCdKjOsHi4ZlCX+Iu2bJEO9BrIaxIbhm6mRPBcva4tamRkKThO+xX
+         ui0VT56lAA/6z3DRpGr6wFOMnzKEUSHdSVWnYQwctuHP9M79dtfavDkO+gXk8r0E5Onb
+         U3l0QD+H/Mgt/6t36gOX5RipWIj5E6CiguISxim27EchNuFD/qDlzP0SRv9KgrHXTk4J
+         l2QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9gHW/b2b9IVZCe8TQB/5bFXeA9E/gEGYf6Ex+dE1xsM=;
+        b=AZi6Bfie2AZXJNyiWyZvfirknnQ3EiZLlo27WMyoAuQK47xNyUc/ny4jOY/YcyWu1w
+         zyePAJR3d8ZgVd4eaZiso8IJtnHJio5/BNgEoTTHpCJZwAnElawV6DFlHgyzkmsYXvYU
+         DRTlRy4UIkMJSKVT0AbGiOeg1CsxHu/Lq4nl2iB079ua04j7v8RgK3rdlU2/kcDv0P1W
+         hioh3/27G+RPwhwbNKq3vkBaSte89EhzCuFi677k5vMS6d/ro+7Kpb/2zaL+kUC58cz2
+         /JF541NDf6btx4oqvnqzTm6wqAMmzjWsqXAt5d0ZQiL1q97rtsU9x52Ar8Pjo2J2KtYo
+         wXTw==
+X-Gm-Message-State: AOAM532Np14ZZd3keKAZmDPc2j7SnSHDIewXsgAZXTuUv9wyxPa3Ziwa
+        kFc/SrCQTgFdoRsZDYWr0+0=
+X-Google-Smtp-Source: ABdhPJw+CCN+2GPNi3R5/WE8CzIWOQd5JBJwok6cN7cwCTZI+Jyj+dy07C+eYUEo56lj67iDBxXo0w==
+X-Received: by 2002:a17:90a:d495:: with SMTP id s21mr1413055pju.30.1605569079574;
+        Mon, 16 Nov 2020 15:24:39 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id mt2sm556195pjb.7.2020.11.16.15.24.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 15:24:38 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 16 Nov 2020 15:24:36 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
+ killing a process
+Message-ID: <20201116232436.GA3943731@google.com>
+References: <20201113173448.1863419-1-surenb@google.com>
+ <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
+ <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
+ <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
+ <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
+ <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
+ <CAJuCfpH-Qjm5uqfaUcfk0QV2zC76uL96FQjd88bZGBvCuXE_aA@mail.gmail.com>
+ <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR0102CA0068.prod.exchangelabs.com (2603:10b6:208:25::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28 via Frontend Transport; Mon, 16 Nov 2020 23:22:23 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kenpF-006rGb-Sg; Mon, 16 Nov 2020 19:22:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605568958; bh=509+VmkLlEPOxe/lQoQ9OAnAIf0urLi7ZvhTpP11KWo=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=jllMDa00p/VQ6l3K63jHe96kycEVYbHGAN3FIs4kqwAHWQ2KK4OJl2a96Otea+zIX
-         MGxCNp3a0sGWNh8Y2KRH+Za1PW7uhWV7oZiE3iqwvdaQve1ZzItDjv4UCRfUa37Ps8
-         AKmMOrzuKITRp4g+Or64aT+lxillBOkoDud5wwts8fARCN8+1S2J8lUMo0UwUTzJN3
-         9wgnHClx7YaU2M+c4kHe4gi7dhtcq5tk1R5ghbmbr8bBV0/+D5MBaiN116vbKAPLCr
-         l306GhyMI3EW6VCnKvOsss4ltHS/mI62hkv+abTRt0w0nlCR33iGA7jUnM2qFmtocJ
-         gUnmk2qKETcWg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 08:15:02PM +0100, Thomas Gleixner wrote:
-> The recent changes to store the MSI irqdomain pointer in struct device
-> missed that Intel DMAR does not register virtual function devices.  Due to
-> that a VF device gets the plain PCI-MSI domain assigned and then issues
-> compat MSI messages which get caught by the interrupt remapping unit.
+On Fri, Nov 13, 2020 at 06:16:32PM -0800, Andrew Morton wrote:
+> On Fri, 13 Nov 2020 17:57:02 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
 > 
-> Cure that by inheriting the irq domain from the physical function
-> device.
+> > On Fri, Nov 13, 2020 at 5:18 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > >
+> > > On Fri, 13 Nov 2020 17:09:37 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > > > > > Seems to me that the ability to reap another process's memory is a
+> > > > > > > generally useful one, and that it should not be tied to delivering a
+> > > > > > > signal in this fashion.
+> > > > > > >
+> > > > > > > And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
+> > > > > > > few changes and tweaks, but can't that be used to solve this problem?
+> > > > > >
+> > > > > > Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
+> > > > > > one of the options recently discussed in
+> > > > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+> > > > > > . The thread describes some of the issues with that approach but if we
+> > > > > > limit it to processes with pending SIGKILL only then I think that
+> > > > > > would be doable.
+> > > > >
+> > > > > Why would it be necessary to read /proc/pid/maps?  I'd have thought
+> > > > > that a starting effort would be
+> > > > >
+> > > > >         madvise((void *)0, (void *)-1, MADV_PAGEOUT)
+> > > > >
+> > > > > (after translation into process_madvise() speak).  Which is equivalent
+> > > > > to the proposed process_madvise(MADV_DONTNEED_MM)?
+> > > >
+> > > > Yep, this is very similar to option #3 in
+> > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
+> > > > and I actually have a tested prototype for that.
+> > >
+> > > Why is the `vector=NULL' needed?  Can't `vector' point at a single iovec
+> > > which spans the whole address range?
+> > 
+> > That would be the option #4 from the same discussion and the issues
+> > noted there are "process_madvise return value can't handle such a
+> > large number of bytes and there is MAX_RW_COUNT limit on max number of
+> > bytes one process_madvise call can handle". In my prototype I have a
+> > special handling for such "bulk operation" to work around the
+> > MAX_RW_COUNT limitation.
 > 
-> That's a temporary workaround. The correct fix is to inherit the irq domain
-> from the bus, but that's a larger effort which needs quite some other
-> changes to the way how x86 manages PCI and MSI domains.
+> Ah, OK, return value.  Maybe process_madvise() shouldn't have done that
+> and should have simply returned 0 on success, like madvise().
 > 
-> Fixes: 85a8dfc57a0b ("iommm/vt-d: Store irq domain in struct device")
-> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  drivers/iommu/intel/dmar.c |   19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
+> I guess a special "nuke whole address space" command is OK.  But, again
+> in the search for generality, the ability to nuke very large amounts of
+> address space (but not the entire address space) would be better. 
+> 
+> The process_madvise() return value issue could be addressed by adding a
+> process_madvise() mode which return 0 on success.
+> 
+> And I guess the MAX_RW_COUNT issue is solvable by adding an
+> import_iovec() arg to say "don't check that".  Along those lines.
+> 
+> It's all sounding a bit painful (but not *too* painful).  But to
+> reiterate, I do think that adding the ability for a process to shoot
+> down a large amount of another process's memory is a lot more generally
+> useful than tying it to SIGKILL, agree?
 
-Our QA says it solves the issue:
-
-Tested-by: Itay Aveksis <itayav@nvidia.com>
-
-Thanks,
-Jason
+I agree the direction but I think it's the general problem for every
+APIs have supported iovec and not sure process_madvise is special to
+chage it.
+IOW, it wouldn't be a problem to support *entire address space* special
+mode but not sure to support *large amount of address space* at the cost
+of breaking existing iovec scheme.
