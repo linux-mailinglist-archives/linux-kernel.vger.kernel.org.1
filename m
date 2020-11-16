@@ -2,102 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484262B3B77
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 03:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD802B3B85
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 03:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbgKPCcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 21:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbgKPCcR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 21:32:17 -0500
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9343FC0613CF;
-        Sun, 15 Nov 2020 18:32:17 -0800 (PST)
-Received: by mail-oo1-xc43.google.com with SMTP id i13so3554467oou.11;
-        Sun, 15 Nov 2020 18:32:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aAYf/mSH8NjjlOSQgsUeCy8MchLu8n4Ad1F6VWZiQPg=;
-        b=sCMXnEgVT+rPDz8VpU15G0pZ2pNHOibHppfZQdpQoqUw98PrYf3SHyus6ScF3qm4Qr
-         yTmc0JUfUdPD63mK5F7YguPVC6u1M8kZsadei6QCQrCNQaOwwkfKK3A0KyWW049yAKjR
-         UBb9afjIpaX6s86E2CdG6jpckHJgzilkdPQSJOIqsLBwHPi1SIIrHqpRZ+6/wXMWwDff
-         JhYJ/pJ8XfJbTCC5kfK+aLx4msoFYGQB9K1A9+n/fUhbTF3Fib/6b0U3vhFaHn47fW3U
-         z3Hn/18H4PbWTSM5UgeYmNGtvJ/OeLqCsKc39reuNTG5KNKh8cwNbczsY3Q4feMEIG2g
-         f++A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aAYf/mSH8NjjlOSQgsUeCy8MchLu8n4Ad1F6VWZiQPg=;
-        b=aKrr/ac1K8U+m2+/uyFuHB7ky1jHWDOMwzt9pVjcwQXIP9MHIu1hCKD7JTh60YX1Ik
-         RPzU4H4ZSzcmoJ85pz8mHfaqD4B9FaCKS1nvIoS4f1pAcgZZfP0/T2qbWGtwqZYUpeVx
-         By11XS+l6jS713dWHE0tmUd/yCURVuZmyWiUOYxK101rVobTeyVDRW5F/JSGLdBOuZa1
-         YQKEuY79gHcbawyCut7ZAAnUARBK4XfqbEMBK6YO0CtTCuYSF3s8Was/ejHryfOy/Bk+
-         FmJ6LInbmZZChbvfAQUWPVttZolDuZSWi4dXr8tPFd+RgownuIbEAVxNSRnZ9Rf2J/CW
-         8DGQ==
-X-Gm-Message-State: AOAM530HzIi65bM34+lRTUz2oYaede4JSS5E1kNhLKi7wNdBpF4wMP0J
-        DQH5fQFmNVMZHiPh5fFEIn0GH4PZr52VmQ==
-X-Google-Smtp-Source: ABdhPJykWFdlitfTBl2PNx0gTwFcqspzv1if+gLUFJg1SmpzQUGsNLMX0DSysA55lWSrCkBwEyjJqw==
-X-Received: by 2002:a4a:e5ce:: with SMTP id r14mr8966114oov.11.1605493936661;
-        Sun, 15 Nov 2020 18:32:16 -0800 (PST)
-Received: from proxmox.local.lan (2603-80a0-0e01-cc2f-0226-b9ff-fe41-ba6b.res6.spectrum.com. [2603:80a0:e01:cc2f:226:b9ff:fe41:ba6b])
-        by smtp.googlemail.com with ESMTPSA id w18sm4156080otl.38.2020.11.15.18.32.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 18:32:14 -0800 (PST)
-From:   Tom Seewald <tseewald@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Tom Seewald <tseewald@gmail.com>,
-        Vishal Kulkarni <vishal@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rohit Maheshwari <rohitm@chelsio.com>
-Subject: [PATCH] cxbgb4: Fix build failure when CHELSIO_TLS_DEVICE=n
-Date:   Sun, 15 Nov 2020 20:31:40 -0600
-Message-Id: <20201116023140.28975-1-tseewald@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726532AbgKPCti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 21:49:38 -0500
+Received: from relay68.bu.edu ([128.197.228.73]:46168 "EHLO relay68.bu.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgKPCti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 21:49:38 -0500
+X-Greylist: delayed 611 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Nov 2020 21:49:38 EST
+X-Envelope-From: alxndr@bu.edu
+X-BU-AUTH: mozz.bu.edu [128.197.127.33]
+Received: from BU-AUTH (localhost.localdomain [127.0.0.1]) (authenticated bits=0)
+        by relay68.bu.edu (8.14.3/8.14.3) with ESMTP id 0AG2ckR6027512
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 15 Nov 2020 21:38:50 -0500
+Date:   Sun, 15 Nov 2020 21:38:46 -0500
+From:   Alexander Bulekov <alxndr@bu.edu>
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Collecting both remote and "local" coverage with KCOV
+Message-ID: <20201116023846.awjtbzh2o2yj4fvn@mozz.bu.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 9d2e5e9eeb59 ("cxgb4/ch_ktls: decrypted bit is not enough")
-building the kernel with CHELSIO_T4=y and CHELSIO_TLS_DEVICE=n results
-in the following error:
+Hello,
+I'm trying to collect coverage over the syscalls issued by my process,
+as well as the kthreads spawned as a result of these syscalls
+(eg coverage over vhost ioctls and the worker kthread). Is there a way
+to collect coverage with both KCOV_REMOTE_ENABLE(with common_handle) and
+KCOV_ENABLE, simultaneously? 
 
-ld: drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.o: in function
-`cxgb_select_queue':
-cxgb4_main.c:(.text+0x2dac): undefined reference to `tls_validate_xmit_skb'
-
-This is caused by cxgb_select_queue() calling cxgb4_is_ktls_skb() without
-checking if CHELSIO_TLS_DEVICE=y. Fix this by calling cxgb4_is_ktls_skb()
-only when this config option is enabled.
-
-Fixes: 9d2e5e9eeb59 ("cxgb4/ch_ktls: decrypted bit is not enough")
-Signed-off-by: Tom Seewald <tseewald@gmail.com>
----
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-index 7fd264a6d085..8e8783afd6df 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-@@ -1176,7 +1176,9 @@ static u16 cxgb_select_queue(struct net_device *dev, struct sk_buff *skb,
- 		txq = netdev_pick_tx(dev, skb, sb_dev);
- 		if (xfrm_offload(skb) || is_ptp_enabled(skb, dev) ||
- 		    skb->encapsulation ||
--		    cxgb4_is_ktls_skb(skb) ||
-+#if IS_ENABLED(CONFIG_CHELSIO_TLS_DEVICE)
-+		cxgb4_is_ktls_skb(skb) ||
-+#endif /* CHELSIO_TLS_DEVICE */
- 		    (proto != IPPROTO_TCP && proto != IPPROTO_UDP))
- 			txq = txq % pi->nqsets;
- 
--- 
-2.20.1
-
+Based on the code it seems that these two modes are mutually
+exclusive within a single task, but I don't think this is mentioned in
+the Documentation, so I want to make sure I'm not missing something.
+Thank you
+-Alex
