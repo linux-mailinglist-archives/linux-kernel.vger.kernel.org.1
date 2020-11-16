@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C8F2B3F08
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B9D2B3F0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbgKPIqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728204AbgKPIqg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:46:36 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8796C0613CF;
-        Mon, 16 Nov 2020 00:46:35 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id oq3so23243823ejb.7;
-        Mon, 16 Nov 2020 00:46:35 -0800 (PST)
+        id S1728226AbgKPIqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:46:43 -0500
+Received: from mail-eopbgr690073.outbound.protection.outlook.com ([40.107.69.73]:3811
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726643AbgKPIqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 03:46:43 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Opn/t5GuN1l0EeWSAqp0z4qlGNlA1eZnFBxwjq9zUcJrHGOXOAR3A0AJjMM7TsSx9BoiJhVU4fxp+yZQm+n6OIZhILz6LDgfIzIkdfc1aH+UhbjEYQfzk+E6a/uxHYuIo4J8Gz4qzYDykySW3rhvOC6OorKK6OwOCwJb8tzcuvYsHSZ24SswVy0fTAK4f3NiG+KOohJBPltwkXzkd2jp+r7uDiBLJrgDYjP+YNdocGO4nAY+EyrjA91N/rnPn2o/6hmXIPVFpHPFO/9w9h9VszCi/AbYaoQvIio3nA7aLoVuJYJF65Agn020V25sDcklUH7y8bP4XNuzQjG22m25kg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P4S0ciZbgVuZOEI7SRTLepUKDXjsNROv/k07G8WInyY=;
+ b=klUHxNJSuTcjzj6oy6E3/bjKVNNN5yqL45DPMKowDl0ePP4RcKY+FZaiNMaLFeAkjK06CB7zpKY3sn0ak0Qn/VL5tUBuXHyEvvlKwp71J2X6AlNInP4U15cenJWpoT+nI9xEn2iKR4edSGomqgBzSoGzwiH8kJPgUgnJXlUPKlCGYE5T1y+W7oYtbV6cW3gl89P1BzwH1YBWnC17Sl9QuiNDPa07TLPrEDj6RyhbFZCynTAmHeWjeY1aF88MIGl+vznNr9H0Aj4K4+ExUaKQdSiPB6vTSljtOu0/t1WOsKI3R4+SBV0/uTpxrCL/fbM8J/8h2I8yfxZTVvCvOlX9/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mCofBzJy30fhjMWH00xS2hq/jknrv2dfs6NyvbseoFQ=;
-        b=cF2NsUGse1hW5wog8Dq0U2TGCaUVhqzE3884hcp6wAXvED/krAr2Ix/jOrSD6KlO52
-         daxM3IW8Vu7LKLxCHjNX10SXtQrafdintDb9tT17PS+9uAA+4XWEDKqTgWLR7gnJ9Mkw
-         sz1KB/BAr8EpO6aS9T6QZvlL6i5reWJAYt/GqhXgnSraoqMfP7KuXiMUnb9VT4Fp90Bi
-         fzhr+/6HyojcHkLQhNvkzTJfiL5EOvvQxnKmZKhfdWK+kbQfjR7L1zhXYpuH8Ti126ku
-         lcaUbLMdifRoLHlhykcq2eueEWDErBWBtYKRWVmXOk+eqEsrjqP6dOPIIp4pUE8y20Dh
-         iDeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mCofBzJy30fhjMWH00xS2hq/jknrv2dfs6NyvbseoFQ=;
-        b=hLKTVwGcNgCYGKmPn6rIOQM68+CQrAqtMeVC8nV8Da5KlEjIn1EWrkp46KYs3Xot1y
-         Hlrr6B8z4XsHnYsg0GPhKps9+0Lwrk4NCSAynlyhWwury7zIxhtpT7UAS8WfDtK+dBFW
-         3CWtsExn5PzRwVDgK2kOIlXgelVCwaLsGbVhGkbvxDnsR7dEI1CC6AqnzVN0jzvXodRc
-         ynz2PB+1QyqmNBKUSQuZVQm+y4g0TvGFUneqrmWFEaNN4Ss77nGG/lbRm5/zze53B2A+
-         Fe5wKkix1TODcKuXsBYmYCSjJ487hR7WhpG3LFDoYJLYEpaYP+hcHTb9LM8MQxHwQWYQ
-         XzAw==
-X-Gm-Message-State: AOAM532bDMQJkPXq85CdPHH/YKbNJ350nM1ANECEs+92uB5GR0/DPCOe
-        anTaHNmqa6ljknq9OujwYK4=
-X-Google-Smtp-Source: ABdhPJwLUUiqwOrEc50Ra9NiKEF2Cm/Ktj5Ut9whQJY21mzZcz2RIKdMsxfQo2Kk8N9rTYtN4B7RSQ==
-X-Received: by 2002:a17:906:b749:: with SMTP id fx9mr4956570ejb.0.1605516394490;
-        Mon, 16 Nov 2020 00:46:34 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bee22.dynamic.kabel-deutschland.de. [95.91.238.34])
-        by smtp.googlemail.com with ESMTPSA id nd5sm10128807ejb.37.2020.11.16.00.46.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 16 Nov 2020 00:46:34 -0800 (PST)
-Message-ID: <40d184834e6953982ac31b719d9803c81b3d61f4.camel@gmail.com>
-Subject: Re: [PATCH v1 0/9] scsi: ufs: Refactoring and cleanups
-From:   Bean Huo <huobean@gmail.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, asutoshd@codeaurora.org, cang@codeaurora.org,
-        kwmad.kim@samsung.com, liwei213@huawei.com, matthias.bgg@gmail.com,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com
-Date:   Mon, 16 Nov 2020 09:46:32 +0100
-In-Reply-To: <20201116065054.7658-1-stanley.chu@mediatek.com>
-References: <20201116065054.7658-1-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P4S0ciZbgVuZOEI7SRTLepUKDXjsNROv/k07G8WInyY=;
+ b=ottlg8b0UmKd8Zb1vn8veISBHd2GXccbjulUPOHgv0yYKZHxMgCX14LoySi42404KUFS/Ea/2lSzTNcTML5RfaiYE9NKfdaryWkSUMmzrc4/sN5hQLC3c8eyUjR7NEeDLU2WxhAVUB2ni/3T1x4vX+TBENc95NyyWaMkZPs5AxU=
+Received: from BYAPR02MB5896.namprd02.prod.outlook.com (2603:10b6:a03:122::10)
+ by BYAPR02MB5064.namprd02.prod.outlook.com (2603:10b6:a03:71::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
+ 2020 08:46:39 +0000
+Received: from BYAPR02MB5896.namprd02.prod.outlook.com
+ ([fe80::1876:e714:1c03:e89b]) by BYAPR02MB5896.namprd02.prod.outlook.com
+ ([fe80::1876:e714:1c03:e89b%6]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
+ 08:46:39 +0000
+From:   Manish Narani <MNARANI@xilinx.com>
+To:     Manish Narani <MNARANI@xilinx.com>,
+        Michal Simek <michals@xilinx.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>, Sai Krishna Potthuri <lakshmis@xilinx.com>
+Subject: RE: [PATCH] mmc: sdhci-of-arasan: Allow configuring zero tap values
+Thread-Topic: [PATCH] mmc: sdhci-of-arasan: Allow configuring zero tap values
+Thread-Index: AQHWt4jdqyLias1MGEyvXezJC++3FanKeOJg
+Date:   Mon, 16 Nov 2020 08:46:39 +0000
+Message-ID: <BYAPR02MB58967C89CA4D09E5F9F39E5EC1E30@BYAPR02MB5896.namprd02.prod.outlook.com>
+References: <1605030122-52196-1-git-send-email-manish.narani@xilinx.com>
+In-Reply-To: <1605030122-52196-1-git-send-email-manish.narani@xilinx.com>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: xilinx.com; dkim=none (message not signed)
+ header.d=none;xilinx.com; dmarc=none action=none header.from=xilinx.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [149.199.50.128]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 869217fb-6bc2-45e8-fe13-08d88a0c2299
+x-ms-traffictypediagnostic: BYAPR02MB5064:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR02MB5064AF11650E8AD4A95E316CC1E30@BYAPR02MB5064.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1107;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TabD8AaAbX8wc6ZaZK52J1pp2W4txzYKaPaAa8xd8r6u1mgcSSmCFZK6+4A5U0JDCYYKcxipXqw+VHascdVrYFZqWL6bXYLqcvSSFS8rHrnQ7LBiAp6oYIG9/atJr2W2FlC5sOy+/5hDRizoy80XOHbVEyQJw6Rklq5jKA9fCMMg0eAdjXprFtnpjvcxEQwHLC6h251WJq4bN4HaYquvwy0H+SxttIQL+bLb8PhU2SbevUZVyBMi00Exz5zohuZdl+OYSMgro5LILWwj3xS3dRyQdnxD2Y5KLku0BOv5Wkzxs9ponsU85LFBpL0XIOI9YaQNrr82tnf8Sivv8RXRHFxB1KzfvqxCj16kA0CyUdEypS7V81Nj9XBDm65cTfQQwJhgkcCnvzAN6lJ0bd/BjQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5896.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39850400004)(376002)(346002)(136003)(4744005)(2906002)(66476007)(66946007)(66556008)(66446008)(5660300002)(64756008)(52536014)(76116006)(33656002)(54906003)(110136005)(44832011)(966005)(478600001)(316002)(9686003)(55016002)(26005)(53546011)(6506007)(4326008)(186003)(107886003)(71200400001)(7696005)(83380400001)(8936002)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: v9Qy57UCDY5iNL1r3jPsC2u6PidNnvOSuNK00SUqsQp9zCWPC0UdOLkf3OAmd0PNzRFoT6QCzL1kzuH7NVwS3suXYlSdFCUNkGEgEpksHiLFa35SOEGMOqEHQQ5ATGoXdhtGPvFSXwUbP9hqC/Awd+jOsMw+FkozRZBLPhWb5CLIqdGojOAJ9F05ViOGBJ/zqCsjGlS0PhycV9PwUa+5bpiOUyDDqZ21obRYlBQnMKjbKCpyLFih73clRzUnjCVSKZXX/4Sv0tMWxhx1FRoT04GM92LUMxsMcyFOQwAItMKArVpY9sEXAioCP7qfe2zpsfzwBV/n6Q2NZB65UPvXj1q9n/vowCVNfKBMwmANDJr4foZC4r/66cFjYD8v/GM0RRBBE50OiKvCT7HYCcdTrJND1LMzFOLng5HVGzahCWY0wyZSRH8G6eM6V/SttXWnYJ+RR1iS7ah5ZPGrlnK41V8PZotdku1dHIhcYDM1EQZQEpRpkd0DV+sXGs61DNgLdo534A210BVUMoRLK1v/8M7Yvcvo2f4++PmjUlHsdK6i/j2xLIdAyoJnT2Gg0CcK96Rp84u7e6GbhRG8Jse+CdW1xntvZSJHKba4x3a0MHOR7aw53LuTXz+/+JS9Jb3OAVqmEZR1vU2H381vqW8CiQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5896.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 869217fb-6bc2-45e8-fe13-08d88a0c2299
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2020 08:46:39.6054
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eSaPlfmhkeze0WAfbtYB5yBqo33Ze4UviQl8k+09MkB453vZaoiz/SSyKD1Y1eyuvtYBm0WNcinax84kyKiIDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-16 at 14:50 +0800, Stanley Chu wrote:
-> Hi,
-> This series simply do some refactoring and cleanups in UFS drivers.
-> 
-> Stanley Chu (9):
->   scsi: ufs-mediatek: Refactor performance scaling functions
->   scsi: ufs: Introduce device parameter initialization function
->   scsi: ufs-mediatek: Use device parameter initialization function
->   scsi: ufs-qcom: Use device parameter initialization function
->   scsi: ufs-exynos: Use device parameter initialization function
->   scsi: ufs-hisi: Use device parameter initialization function
->   scsi: ufs: Refactor ADAPT configuration function
->   scsi: ufs-mediatek: Use common ADAPT configuration function
->   scsi: ufs-qcom: Use common ADAPT configuration function
-> 
->  drivers/scsi/ufs/ufs-exynos.c    | 15 +---------
->  drivers/scsi/ufs/ufs-exynos.h    | 13 --------
->  drivers/scsi/ufs/ufs-hisi.c      | 13 +-------
->  drivers/scsi/ufs/ufs-hisi.h      | 13 --------
->  drivers/scsi/ufs/ufs-mediatek.c  | 51 ++++++++++++++--------------
-> ----
->  drivers/scsi/ufs/ufs-mediatek.h  | 16 ----------
->  drivers/scsi/ufs/ufs-qcom.c      | 27 +++--------------
->  drivers/scsi/ufs/ufs-qcom.h      | 11 -------
->  drivers/scsi/ufs/ufshcd-pltfrm.c | 17 +++++++++++
->  drivers/scsi/ufs/ufshcd-pltfrm.h |  1 +
->  drivers/scsi/ufs/ufshcd.c        | 16 ++++++++++
->  drivers/scsi/ufs/ufshcd.h        |  3 ++
->  12 files changed, 65 insertions(+), 131 deletions(-)
-> 
+Hi,
 
-This series looks good to me, thanks.
+> -----Original Message-----
+> From: Manish Narani <manish.narani@xilinx.com>
+> Sent: Tuesday, November 10, 2020 11:12 PM
+> To: Michal Simek <michals@xilinx.com>; adrian.hunter@intel.com;
+> ulf.hansson@linaro.org
+> Cc: linux-arm-kernel@lists.infradead.org; linux-mmc@vger.kernel.org; linu=
+x-
+> kernel@vger.kernel.org; git <git@xilinx.com>; Manish Narani
+> <MNARANI@xilinx.com>; Sai Krishna Potthuri <lakshmis@xilinx.com>
+> Subject: [PATCH] mmc: sdhci-of-arasan: Allow configuring zero tap values
+>=20
+> Allow configuring the Output and Input tap values with zero to avoid
+> failures in some cases (one of them is SD boot mode) where the output
+> and input tap values may be already set to non-zero.
+>=20
+> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.=
+com>
+> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+> ---
+>  drivers/mmc/host/sdhci-of-arasan.c | 40 ++++++------------------------
+>  1 file changed, 8 insertions(+), 32 deletions(-)
+>=20
 
-Reviewed-by: Bean Huo <beanhuo@micron.com>
+This patch, with "Fixes" tag added in commit, is included along with the
+v2 patch series for couple of bug fixes in https://lkml.org/lkml/2020/11/16=
+/142 .
+Please review this patch series.
 
+Thanks,
+Manish
