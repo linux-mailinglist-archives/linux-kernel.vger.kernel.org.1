@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5492B4B40
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D842B4B2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732133AbgKPQdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:33:20 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:37560 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729499AbgKPQdT (ORCPT
+        id S1732081AbgKPQad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:30:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726236AbgKPQad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:33:19 -0500
-Received: from relay11.mail.gandi.net (unknown [217.70.178.231])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 250613B1605
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 16:25:01 +0000 (UTC)
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 1399C10000F;
-        Mon, 16 Nov 2020 16:24:37 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        <Steen.Hegelund@microchip.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v3 5/5] irqchip: ocelot: Add support for Jaguar2 platforms
-Date:   Mon, 16 Nov 2020 17:24:27 +0100
-Message-Id: <20201116162427.1727851-6-gregory.clement@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201116162427.1727851-1-gregory.clement@bootlin.com>
-References: <20201116162427.1727851-1-gregory.clement@bootlin.com>
+        Mon, 16 Nov 2020 11:30:33 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ADBC0613CF;
+        Mon, 16 Nov 2020 08:30:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yUFvC+ZrK6PRN0rtQL0QXcTBGoDM4oX8Dm71BpkV+wM=; b=rQ5Eb0gDl+z8/n2Td6rzDkxACs
+        BemXonCnVeay50Gy70B/PnPwg3sUEpjhTPG9l6RdYa8NsvnUeTuEM50tGQmceYj2UfAmnVGOHJUTb
+        U4rLn2oHqfeleNJYBC9GOy+AURtdfNM4/y2n3o6Bqz1zXjUETpuQRwZ+krsSb+58qKfDqSJyCbkGu
+        qok1Sg6MsvhYZMhLsJ0gr4bk6BX4wiokcauSf4Zu/ePCaMTsqE2ulpMN5zBFVf2ryn3u2LRGU9Qwh
+        awIzRsXoX9qbb61KX3yGdHqiqFX7Po5HNzcSYYug3yWnnaaLLL5+EWCERNDEoaLxxYKJY36/1MnZc
+        UMUS094Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kehOY-0004dX-T1; Mon, 16 Nov 2020 16:30:22 +0000
+Date:   Mon, 16 Nov 2020 16:30:22 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Amit Shah <amit@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc@vger.kernel.org, Suman Anna <s-anna@ti.com>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
+ for rproc serial
+Message-ID: <20201116163022.GC16619@infradead.org>
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
+ <20201116091950.GA30524@infradead.org>
+ <20201116071910-mutt-send-email-mst@kernel.org>
+ <u9RJBckNwnezQttAPrOyEqDYKu0rnhedUZYGpaS83qg@cp3-web-024.plabs.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <u9RJBckNwnezQttAPrOyEqDYKu0rnhedUZYGpaS83qg@cp3-web-024.plabs.ch>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends irqchip driver for ocelot to be used with an other
-vcoreiii base platform: Jaguar2.
+On Mon, Nov 16, 2020 at 01:07:28PM +0000, Alexander Lobakin wrote:
+> But lots of subsystems like netdev for example uses dev->parent for
+> DMA operations. I know that their pointers go directly to the
+> platform/PCI/etc. device, but still.
 
-Based on a larger patch from Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
----
- drivers/irqchip/irq-mscc-ocelot.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Oh, every drivers is perfectly fine to use ->parent as it suits.  The
+problem is when we have layered architectures, where this pokes a
+massive hole into the layering.
 
-diff --git a/drivers/irqchip/irq-mscc-ocelot.c b/drivers/irqchip/irq-mscc-ocelot.c
-index 584af3b0a9e2..0dfea8771172 100644
---- a/drivers/irqchip/irq-mscc-ocelot.c
-+++ b/drivers/irqchip/irq-mscc-ocelot.c
-@@ -70,6 +70,18 @@ static const struct chip_props luton_props = {
- 	.n_irq			= 28,
- };
- 
-+static const struct chip_props jaguar2_props = {
-+	.flags			= FLAGS_HAS_TRIGGER,
-+	.reg_off_sticky		= 0x10,
-+	.reg_off_ena		= 0x18,
-+	.reg_off_ena_clr	= 0x1c,
-+	.reg_off_ena_set	= 0x20,
-+	.reg_off_ident		= 0x38,
-+	.reg_off_trigger	= 0x5c,
-+	.reg_off_force		= 0xc,
-+	.n_irq			= 29,
-+};
-+
- static void ocelot_irq_unmask(struct irq_data *data)
- {
- 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(data);
-@@ -237,3 +249,11 @@ static int __init luton_irq_init(struct device_node *node,
- }
- 
- IRQCHIP_DECLARE(luton_icpu, "mscc,luton-icpu-intr", luton_irq_init);
-+
-+static int __init jaguar2_irq_init(struct device_node *node,
-+				   struct device_node *parent)
-+{
-+	return vcoreiii_irq_init(node, parent, &jaguar2_props);
-+}
-+
-+IRQCHIP_DECLARE(jaguar2_icpu, "mscc,jaguar2-icpu-intr", jaguar2_irq_init);
--- 
-2.29.2
+> The only reason behind "fake" DMA devices for rproc is to be able to
+> reserve DMA memory through the Device Tree exclusively for only one
+> virtio dev like virtio_console or virtio_rpmsg_bus. That's why
+> they are present, are coercing DMA caps from physical dev
+> representor, and why questinable dma_declare_coherent_memory()
+> is still here and doesn't allow to build rproc core as a module.
+> I agree that this is not the best model obviously, and we should take
+> a look at it.
 
+As far as I can tell the series from Arnaud does the right thing here.
