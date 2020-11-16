@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82F92B51FE
+	by mail.lfdr.de (Postfix) with ESMTP id 67FDD2B51FD
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731710AbgKPUIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:08:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49292 "EHLO mail.kernel.org"
+        id S1731699AbgKPUIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:08:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729210AbgKPUIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:08:15 -0500
+        id S1731681AbgKPUIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 15:08:16 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F5D721D7E;
-        Mon, 16 Nov 2020 20:08:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 045D7221F9;
+        Mon, 16 Nov 2020 20:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605557294;
-        bh=2VOb7XIOrKIllCFHjvzwsMuOV/VdeyMcE2EElW6nZBU=;
+        s=default; t=1605557295;
+        bh=A+D/OB7qcJ+Uw0X+akOLPoeJ2m1P11y6+CjEDPewkNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B7dQGVT6lyVgTubKShhcdlUpeuwqIj9iz7z72/jyEsxV7BQjxR1AdztCjK8vlHVqO
-         FMpQUJNSs8+MogDADDpQnCVR4p/h+cRTfJso0aYb/fOgtWVWQqta118lTs37QMXV/w
-         vIoKQrZVYh7IsoTvbuZZtppjVQghNjl00BTQd8fk=
+        b=Dxmi7JY/bBNjzDqSo0BsyPWK7MBrfdtFnZNogjXRaNxdsqkqEv21PQy2LP8lxoadM
+         YNQgx/Y+ocgjHv5rseVNh3SmWvwKQ5/RxSNXQeLSW4Z5i8r8PXJXQCj+dGoWN27x/G
+         jnR9qQCH0gFRI3cCa70/D4cDsq74Y38EzQy/VH/o=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1keknM-00B7cF-Gf; Mon, 16 Nov 2020 20:08:12 +0000
+        id 1keknN-00B7cF-4M; Mon, 16 Nov 2020 20:08:13 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     Neil Armstrong <narmstrong@baylibre.com>,
         Kevin Hilman <khilman@baylibre.com>
@@ -36,9 +36,9 @@ Cc:     Jerome Brunet <jbrunet@baylibre.com>,
         kernel-team@android.com, dri-devel@lists.freedesktop.org,
         linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] drm/meson: Unbind all connectors on module removal
-Date:   Mon, 16 Nov 2020 20:07:42 +0000
-Message-Id: <20201116200744.495826-3-maz@kernel.org>
+Subject: [PATCH 3/4] drm/meson: dw-hdmi: Register a callback to disable the regulator
+Date:   Mon, 16 Nov 2020 20:07:43 +0000
+Message-Id: <20201116200744.495826-4-maz@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201116200744.495826-1-maz@kernel.org>
 References: <20201116200744.495826-1-maz@kernel.org>
@@ -52,94 +52,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removing the meson DRM module results in the following splats:
+Removing the meson-dw-hdmi module results in the following splat:
 
-[   42.689228] WARNING: CPU: 0 PID: 572 at drivers/gpu/drm/drm_irq.c:192 drm_irq_uninstall+0x130/0x160 [drm]
+i[   43.340509] WARNING: CPU: 0 PID: 572 at drivers/regulator/core.c:2125 _regulator_put.part.0+0x16c/0x174
 [...]
-[   42.812820] Hardware name:  , BIOS 2021.01-rc2-00012-gde865f7ee1 11/16/2020
-[   42.819723] pstate: 80400089 (Nzcv daIf +PAN -UAO -TCO BTYPE=--)
-[   42.825737] pc : drm_irq_uninstall+0x130/0x160 [drm]
-[   42.830647] lr : drm_irq_uninstall+0xc4/0x160 [drm]
+[   43.454870] CPU: 0 PID: 572 Comm: modprobe Tainted: G        W   E     5.10.0-rc4-00049-gd274813a4de3-dirty #2147
+[   43.465042] Hardware name:  , BIOS 2021.01-rc2-00012-gde865f7ee1 11/16/2020
+[   43.471945] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
+[   43.477896] pc : _regulator_put.part.0+0x16c/0x174
+[   43.482638] lr : regulator_put+0x44/0x60
 [...]
-[   42.917614] Call trace:
-[   42.920086]  drm_irq_uninstall+0x130/0x160 [drm]
-[   42.924612]  meson_drv_unbind+0x68/0xa4 [meson_drm]
-[   42.929436]  component_del+0xc0/0x180
-[   42.933058]  meson_dw_hdmi_remove+0x28/0x40 [meson_dw_hdmi]
-[   42.938576]  platform_drv_remove+0x38/0x60
-[   42.942628]  __device_release_driver+0x190/0x23c
-[   42.947198]  driver_detach+0xcc/0x160
-[   42.950822]  bus_remove_driver+0x68/0xe0
-[   42.954702]  driver_unregister+0x3c/0x6c
-[   42.958583]  platform_driver_unregister+0x20/0x2c
-[   42.963243]  meson_dw_hdmi_platform_driver_exit+0x18/0x4a8 [meson_dw_hdmi]
-[   42.970057]  __arm64_sys_delete_module+0x1bc/0x294
-[   42.974801]  el0_svc_common.constprop.0+0x80/0x240
-[   42.979542]  do_el0_svc+0x30/0xa0
-[   42.982821]  el0_svc+0x18/0x50
-[   42.985839]  el0_sync_handler+0x198/0x404
-[   42.989806]  el0_sync+0x158/0x180
+[   43.568715] Call trace:
+[   43.571132]  _regulator_put.part.0+0x16c/0x174
+[   43.575529]  regulator_put+0x44/0x60
+[   43.579067]  devm_regulator_release+0x20/0x2c
+[   43.583380]  release_nodes+0x1c8/0x2b4
+[   43.587087]  devres_release_all+0x44/0x6c
+[   43.591056]  __device_release_driver+0x1a0/0x23c
+[   43.595626]  driver_detach+0xcc/0x160
+[   43.599249]  bus_remove_driver+0x68/0xe0
+[   43.603130]  driver_unregister+0x3c/0x6c
+[   43.607011]  platform_driver_unregister+0x20/0x2c
+[   43.611678]  meson_dw_hdmi_platform_driver_exit+0x18/0x4a8 [meson_dw_hdmi]
+[   43.618485]  __arm64_sys_delete_module+0x1bc/0x294
 
-immediatelly followed by
+as the HDMI regulator is still enabled on release.
 
-[   43.002296] WARNING: CPU: 0 PID: 572 at drivers/gpu/drm/drm_mode_config.c:504 drm_mode_config_cleanup+0x2a8/0x304 [drm]
-[...]
-[   43.128150] Hardware name:  , BIOS 2021.01-rc2-00012-gde865f7ee1 11/16/2020
-[   43.135052] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
-[   43.141062] pc : drm_mode_config_cleanup+0x2a8/0x304 [drm]
-[   43.146492] lr : drm_mode_config_cleanup+0xac/0x304 [drm]
-[...]
-[   43.233979] Call trace:
-[   43.236451]  drm_mode_config_cleanup+0x2a8/0x304 [drm]
-[   43.241538]  drm_mode_config_init_release+0x1c/0x2c [drm]
-[   43.246886]  drm_managed_release+0xa8/0x120 [drm]
-[   43.251543]  drm_dev_put+0x94/0xc0 [drm]
-[   43.255380]  meson_drv_unbind+0x78/0xa4 [meson_drm]
-[   43.260204]  component_del+0xc0/0x180
-[   43.263829]  meson_dw_hdmi_remove+0x28/0x40 [meson_dw_hdmi]
-[   43.269344]  platform_drv_remove+0x38/0x60
-[   43.273398]  __device_release_driver+0x190/0x23c
-[   43.277967]  driver_detach+0xcc/0x160
-[   43.281590]  bus_remove_driver+0x68/0xe0
-[   43.285471]  driver_unregister+0x3c/0x6c
-[   43.289352]  platform_driver_unregister+0x20/0x2c
-[   43.294011]  meson_dw_hdmi_platform_driver_exit+0x18/0x4a8 [meson_dw_hdmi]
-[   43.300826]  __arm64_sys_delete_module+0x1bc/0x294
-[   43.305570]  el0_svc_common.constprop.0+0x80/0x240
-[   43.310312]  do_el0_svc+0x30/0xa0
-[   43.313590]  el0_svc+0x18/0x50
-[   43.316608]  el0_sync_handler+0x198/0x404
-[   43.320574]  el0_sync+0x158/0x180
-[   43.323852] ---[ end trace d796a3072dab01da ]---
-[   43.328561] [drm:drm_mode_config_cleanup [drm]] *ERROR* connector HDMI-A-1 leaked!
-
-both triggered by the fact that the HDMI subsystem is still active,
-and the DRM removal doesn't result in the connectors being torn down.
-
-Call drm_atomic_helper_shutdown() and component_unbind_all() to safely
-tear the module down.
+In order to address this, register a callback that will deal with
+the disabling when the driver is unbound, solving the problem.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/gpu/drm/meson/meson_drv.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/meson/meson_dw_hdmi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
-index 324fa489f1c4..3d1de9cbb1c8 100644
---- a/drivers/gpu/drm/meson/meson_drv.c
-+++ b/drivers/gpu/drm/meson/meson_drv.c
-@@ -390,8 +390,10 @@ static void meson_drv_unbind(struct device *dev)
+diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+index 29a8ff41595d..68826cf9993f 100644
+--- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
++++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+@@ -941,6 +941,11 @@ static void meson_dw_hdmi_init(struct meson_dw_hdmi *meson_dw_hdmi)
+ 
+ }
+ 
++static void meson_disable_regulator(void *data)
++{
++	regulator_disable(data);
++}
++
+ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+ 				void *data)
+ {
+@@ -989,6 +994,10 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+ 		ret = regulator_enable(meson_dw_hdmi->hdmi_supply);
+ 		if (ret)
+ 			return ret;
++		ret = devm_add_action_or_reset(dev, meson_disable_regulator,
++					       meson_dw_hdmi->hdmi_supply);
++		if (ret)
++			return ret;
  	}
  
- 	drm_dev_unregister(drm);
--	drm_irq_uninstall(drm);
- 	drm_kms_helper_poll_fini(drm);
-+	drm_atomic_helper_shutdown(drm);
-+	component_unbind_all(dev, drm);
-+	drm_irq_uninstall(drm);
- 	drm_dev_put(drm);
- 
- 	if (priv->afbcd.ops) {
+ 	meson_dw_hdmi->hdmitx_apb = devm_reset_control_get_exclusive(dev,
 -- 
 2.28.0
 
