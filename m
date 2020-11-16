@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390A82B4E5C
+	by mail.lfdr.de (Postfix) with ESMTP id A502D2B4E5D
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387640AbgKPRp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:45:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38282 "EHLO mx2.suse.de"
+        id S2388040AbgKPRpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:45:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731712AbgKPRpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:45:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E4470AD11;
-        Mon, 16 Nov 2020 17:45:21 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: kernel: Fix for_each_memblock conversion
-Date:   Mon, 16 Nov 2020 18:45:15 +0100
-Message-Id: <20201116174516.144243-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.16.4
+        id S1731712AbgKPRpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 12:45:39 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10D6B20B80;
+        Mon, 16 Nov 2020 17:45:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605548739;
+        bh=tQW67WaRqbqEetQTxYCnJ/yXmPFnNQVNmYTNVKmKS+Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N5Cp/cvZZupZ8JgSE3HETbGgmW35MK+6KDFsi3a2eckV5fEql5j7G55cdbs6hzqIV
+         RQ7XfIH+ki7GHSSCfruj9XO72u0UKzv6B7Qn6RgHW4uZOhpu5AMLWTEJC/4ScJsjcu
+         y0dIL0aaJr9kfIbMDF4DNMJ6hXjwmWeezW+mXEtU=
+Date:   Mon, 16 Nov 2020 09:45:38 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: phy: smsc: add missed clk_disable_unprepare in
+ smsc_phy_probe()
+Message-ID: <20201116094538.47937d15@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201116092607.psaelzuga3kcrryu@pengutronix.de>
+References: <1605180239-1792-1-git-send-email-zhangchangzhong@huawei.com>
+        <20201114112625.440b52f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <fc03d4de-14d2-1b61-ac9b-40ea26e6fa9a@gmail.com>
+        <20201116092607.psaelzuga3kcrryu@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The loop over all memblocks works with PFN numbers and not physical
-addresses, so we need for_each_mem_pfn_range().
+On Mon, 16 Nov 2020 10:26:07 +0100 Marco Felsch wrote:
+> > > The code right above looks highly questionable as well:
+> > > 
+> > >         priv->refclk = clk_get_optional(dev, NULL);
+> > >         if (IS_ERR(priv->refclk))
+> > >                 dev_err_probe(dev, PTR_ERR(priv->refclk), "Failed to request clock\n");
+> > >  
+> > >         ret = clk_prepare_enable(priv->refclk);
+> > >         if (ret)
+> > >                 return ret;
+> > > 
+> > > I don't think clk_prepare_enable() will be too happy to see an error
+> > > pointer. This should probably be:
+> > > 
+> > >         priv->refclk = clk_get_optional(dev, NULL);
+> > >         if (IS_ERR(priv->refclk))
+> > >                 return dev_err_probe(dev, PTR_ERR(priv->refclk), 
+> > > 				      "Failed to request clock\n");  
+> > 
+> > Right, especially if EPROBE_DEFER must be returned because the clock
+> > provider is not ready yet, we should have a chance to do that.  
+> 
+> damn.. I missed the return here. Thanks for covering that. Should I send
+> a fix or did you do that already?
 
-Fixes: b10d6bca8720 ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/kernel/setup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 0d4253208bde..ca579deef939 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -262,8 +262,8 @@ static void __init bootmem_init(void)
- static void __init bootmem_init(void)
- {
- 	phys_addr_t ramstart, ramend;
--	phys_addr_t start, end;
--	u64 i;
-+	unsigned long start, end;
-+	int i;
- 
- 	ramstart = memblock_start_of_DRAM();
- 	ramend = memblock_end_of_DRAM();
-@@ -300,7 +300,7 @@ static void __init bootmem_init(void)
- 
- 	min_low_pfn = ARCH_PFN_OFFSET;
- 	max_pfn = PFN_DOWN(ramend);
--	for_each_mem_range(i, &start, &end) {
-+	for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, NULL) {
- 		/*
- 		 * Skip highmem here so we get an accurate max_low_pfn if low
- 		 * memory stops short of high memory.
--- 
-2.16.4
-
+Please do, I don't see any fix for this issue in patchwork right now.
