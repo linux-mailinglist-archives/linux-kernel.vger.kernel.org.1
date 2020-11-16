@@ -2,171 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6982B3EDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A6A2B3EE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:42:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbgKPIjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:39:00 -0500
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:44931 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726621AbgKPIi7 (ORCPT
+        id S1727566AbgKPIk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgKPIk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:38:59 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id ea29kmSnDfkEdea2DkVMq6; Mon, 16 Nov 2020 09:38:56 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1605515936; bh=0HBXrKpLPW8g1OySaIvQCG5gl20kZV+fEcDaxaxDToQ=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=fHGPhhNedtHBlczoUP3Qo7/bWFYMRN5qndb4TE0nshwnGLDBUZfNy3Nyb+ZMZnkG9
-         A63DvXCrQgX7nCQCCXLRIYixYJZAbj0ySYpwhRChWVjTVW8yY64D2J/bvqh7STvljW
-         xsZft2du0XCyQuVg6xQ3JdaUarq9b6TRZo53XZOMP7/xzLWo4XgW96vovA8fwrJJPo
-         eGXAbIiseeaerET7ErcZvabvwAv24ffsconaj+fliM7HyaGfXjWHOhSkz7YzA6ebKb
-         VETvxga0cW6Mnk3tBQaLqrAor2MWpvk5jVQJiIlVRri9wPSqmawR9uwdcei60VDuuc
-         kI/vl+AZG21pg==
-Subject: Re: [PATCH v2 0/6] ARM: dts: sun8i: v3s: Enable video decoder
-To:     Martin Cerveny <M.Cerveny@computer.org>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20200912143052.30952-1-m.cerveny@computer.org>
- <c8cc3529-3e21-2a11-d258-bb03885a5c91@xs4all.nl>
- <alpine.GSO.2.00.2011151911340.21646@dmz.c-home.cz>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <19bbdf9f-3894-606b-728e-b41df27a4f5d@xs4all.nl>
-Date:   Mon, 16 Nov 2020 09:38:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 16 Nov 2020 03:40:27 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA6FC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:40:27 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id l1so17697098wrb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:40:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=66vgfrqqdZ/IjftnWRbyL4mui98MkxfRQBZDGIvtL2s=;
+        b=rG3sxjughMIpsK016TP+ndDu9i6AsudSrG82mApavm72NuxKrKmrpmqp7UfsnrS+yr
+         LPkQykKHB7bRePswqOeFuGE5U3urfRmgY8xCS2gNc18KwwFLvnk13kusPLexPkHCAW4J
+         Q9HmnCCFvyN/irDbL+knw2OVY4WgR9jGxnNnnkdowuQhOUiVIrhDotn0STih9731kL2C
+         /o8NkkcLheLF2oh3UB4RhqEomcfmm1va+jVfdm4csg0sztaacD7Acd252QOQanS4gjCV
+         gVJG2ZjycLDmaEQGJe2yo8jij2ity89vkyHFF3HwoQOqrTAzFbKF1R57Z2dOgJPXgc73
+         2pzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=66vgfrqqdZ/IjftnWRbyL4mui98MkxfRQBZDGIvtL2s=;
+        b=jymA+Ta6wA70gk/Dm6dSs7/faiDMR0cUiBD66eap3Q8WSR0K7cf6KppLmlCrDvUTwB
+         uz9aU/eF2/e1qBJ9VeITm95zrftvqF3LneNYmacqA5XOyu/3MxPBtzph7ETZUiwdNlEG
+         A6NR3xJ10w5i4WgwXwmaKTPsxM0Xp85uofdNpQ6s/X6QUX3nfGt3On7lo4B4ZKSrYbA2
+         HG7sCbdGtAjbMloXiblibC24tNSCITCTtdskZ8v2N8uKHUA96ZOSlaj+iUGbGHIBrSfu
+         zIR/oMUiHUGlVSvPmDLwbdi9GcF1Z+5v3n4aSda6t9VGdOcItoy3YPBieW1osiwBLU85
+         VXoA==
+X-Gm-Message-State: AOAM532k4aUJUP5eXZUT7sX31mOPSvrBJNtn/b7MiFUWWb2PPuwLrr5l
+        BOYBVh5gRjDNzUBTrigMDD9nwwjLczW/YWnV
+X-Google-Smtp-Source: ABdhPJwtkF/gvhkWNlAdOMKy71DTjd+S++as5sylbMhPP9SVjdJjRBSawpKlXZ8BBiftB8AUIyg38Q==
+X-Received: by 2002:adf:f94b:: with SMTP id q11mr18901740wrr.351.1605516026241;
+        Mon, 16 Nov 2020 00:40:26 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id t5sm18937446wmg.19.2020.11.16.00.40.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 00:40:25 -0800 (PST)
+Date:   Mon, 16 Nov 2020 08:40:23 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/40] drm/pl111/pl111_display: Make local function static
+Message-ID: <20201116084023.GL3718728@dell>
+References: <20201113134938.4004947-1-lee.jones@linaro.org>
+ <20201113134938.4004947-13-lee.jones@linaro.org>
+ <20201114191127.GB3797389@ravnborg.org>
 MIME-Version: 1.0
-In-Reply-To: <alpine.GSO.2.00.2011151911340.21646@dmz.c-home.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDqxeIl3zPlBEnQSYmV0VDPHCX9kfSj2fQYnFCgHd4wq04j+fNXIA3/t7eOTHSb8ESZ05regaNJKbZ/aYgtgiT7Oi4yuxnmaEDmhWeiKLd4N1GBbBp6B
- 4AOz6Y//eo2oFcCnRo87LAljNyamxbP2YbkQMSsMt/ZQTN+4gextCiZdfUafVqwR9d1lQMPjpdg9UrfA2xOJWWvLkfMbp5cfNVP96j8X6MRVi3rq79B7QR9Q
- 07UGX+capvn0sA1Fvi0jop9LGmjVbY2FY+eHNk3LqbUl/q5FagReD8fh/IXLq2K4ROoMzDaWP3qpqGFYfTwDX9LawiQDze91sJb+GFbu8FLfwzUuc5n6k+Qz
- rLpSK73x1H/aaA4rbZXuwiqH4PR1C8f4sp/Cg0U84WqmBP/UTF6fAmxAtf8e84/ju8pYk4LJgf7wgTsXSkWhTtMRiRlu3/y2qSdCM4k3uLHYobn7dsHTqQm8
- rGf9Q/ChLCLT+27ure/MbyxuU89yGmwCMVQVZ/NkqR+Ux7Ioi5lBpESa2xNNjvQ/ZgFhKjJEhJR6XjSpGt8gbk3jpZybwPrjEOZTTMdPO3ipB4f4oznMR6zs
- VEsYURoEXkzQY4xAltEUYbFW
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201114191127.GB3797389@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/11/2020 19:59, Martin Cerveny wrote:
-> Hello.
-> 
-> On Thu, 5 Nov 2020, Hans Verkuil wrote:
-> 
->> Hi Martin,
->>
->> On 12/09/2020 16:30, Martin Cerveny wrote:
->>> First patch extends cedrus capability to all decoders
->>> because V3s missing MPEG2 decoder.
->>>
->>> Next two patches add system control node (SRAM C1) and
->>> next three patches add support for Cedrus VPU.
->>>
->>> Tested on "Lichee Zero" V3s platform with testing LCD patch
->>> ( https://github.com/mcerveny/linux/tree/v3s_videocodec_v4 )
->>> and V4L2 raw API testing utility
->>> ( https://github.com/mcerveny/v4l2-request-test ):
->>> - enabled LCD (DRM dual VI and sigle UI planes)
->>> - added RGB panel
->>> - enabled PWM
->>>
->>> There is low memory on V3s (64MB) and maximum must be available to CMA:
->>> - CONFIG_CMA_SIZE_MBYTES=28
->>> - add swap to swapout other processes
->>> - decrease buffers in v4l2-request-test (.buffers_count from 16 to 6)
->>>
->>> Only H.264 decoder working - MPEG and H.265 unsupported by V3s,
->>> JPEG/MJPEG still unimplemented, encoder unimplemented
->>
->> When I tried to merged these patches I got merge conflicts.
->>
->> Possibly due to other 5.10 changes, but certainly because of conflicts
->> with patches from Jernej:
->>
->> https://patchwork.linuxtv.org/project/linux-media/patch/20200825173523.1289379-4-jernej.skrabec@siol.net/
->> https://patchwork.linuxtv.org/project/linux-media/patch/20200825173523.1289379-5-jernej.skrabec@siol.net/
->>
->> I've merged Jerne's patches and posted a PR for that:
->> https://patchwork.linuxtv.org/project/linux-media/patch/f3b8e5e2-5f0e-fb6f-e5b2-7f44f7e365e7@xs4all.nl/
->>
->> Can you rebase your patches on top of my branch that contains Jernej's patches?
->>
->> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=for-v5.11e
->>
->> Once my PR is merged into the media_tree master I can take your rebased
->> patches.
-> 
-> I updated patches:
-> https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e
-> 
-> BUT, commit (555 commits) for v5.10-1
-> https://github.com/torvalds/linux/commit/fd5c32d80884268a381ed0e67cccef0b3d37750b
-> disrupts usability of Cedrus H.264 (at least for my Allwinner V3s):
-> 
-> 1) colors are disrupted
-> 
-> There are missing some initialization now.
-> 
-> If I use "5.9" compatible code
-> (last bisect good point https://github.com/torvalds/linux/commit/647412daeb454b6dad12a6c6961ab90aac9e5d29 )
-> then reboot (not power-off!) and use new code 
-> ( https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e )
-> and colors are OK.
+On Sat, 14 Nov 2020, Sam Ravnborg wrote:
 
-Could this or the next issue be related to this bug fix?
-
-https://git.linuxtv.org/media_tree.git/commit/?h=fixes&id=9ac924b98728c3733c91c6c59fc410827d0da49f
-
-That fix isn't yet in our master tree.
-
+> Hi Lee,
+> On Fri, Nov 13, 2020 at 01:49:10PM +0000, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/gpu/drm/pl111/pl111_display.c:356:6: warning: no previous prototype for ‘pl111_display_disable’ [-Wmissing-prototypes]
+> > 
+> > Cc: Eric Anholt <eric@anholt.net>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > 
-> 2) decoding of complex streams fails
-> 
-> ( https://github.com/mcerveny/v4l2-request-test/tree/v5.10 )
-> - bbb-h264-all-i-32 - OK
-> - bbb-h264-32 - bad from frame 5
-> - bbb-h264-high-32 - bad from frame 6
+> Eric's was not copied on this or the other pl111 patch.
+> Added Eric so he can be aware of this fix.
 
-I think cedrus devs need to take a look at these issues.
+Eric Anholt?
 
-Regards,
+He's on Cc?
 
-	Hans
+> > ---
+> >  drivers/gpu/drm/pl111/pl111_display.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/pl111/pl111_display.c b/drivers/gpu/drm/pl111/pl111_display.c
+> > index b3e8697cafcf1..69c02e7c82b7e 100644
+> > --- a/drivers/gpu/drm/pl111/pl111_display.c
+> > +++ b/drivers/gpu/drm/pl111/pl111_display.c
+> > @@ -353,7 +353,7 @@ static void pl111_display_enable(struct drm_simple_display_pipe *pipe,
+> >  		drm_crtc_vblank_on(crtc);
+> >  }
+> >  
+> > -void pl111_display_disable(struct drm_simple_display_pipe *pipe)
+> > +static void pl111_display_disable(struct drm_simple_display_pipe *pipe)
+> >  {
+> >  	struct drm_crtc *crtc = &pipe->crtc;
+> >  	struct drm_device *drm = crtc->dev;
 
-> 
-> best regards,
-> Martin
-> 
->>> Changes since v1:
->>> - patch 0005 rename
->>> - added testing description
->>>
->>> Martin Cerveny (6):
->>>   media: cedrus: Register all codecs as capability
->>>   dt-bindings: sram: allwinner,sun4i-a10-system-control: Add V3s
->>>     compatibles
->>>   ARM: dts: sun8i: v3s: Add node for system control
->>>   media: cedrus: Add support for V3s
->>>   dt-bindings: media: cedrus: Add V3s compatible
->>>   ARM: dts: sun8i: v3s: Add video engine node
->>>
->>>  .../allwinner,sun4i-a10-video-engine.yaml     |  1 +
->>>  .../allwinner,sun4i-a10-system-control.yaml   |  6 ++++
->>>  arch/arm/boot/dts/sun8i-v3s.dtsi              | 33 +++++++++++++++++++
->>>  drivers/staging/media/sunxi/cedrus/cedrus.c   | 28 +++++++++++++++-
->>>  drivers/staging/media/sunxi/cedrus/cedrus.h   |  2 ++
->>>  .../staging/media/sunxi/cedrus/cedrus_video.c |  2 ++
->>>  6 files changed, 71 insertions(+), 1 deletion(-)
->>>
->>
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
