@@ -2,84 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C4E2B4C51
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C452B4C53
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732664AbgKPRMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:12:24 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:37859 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732620AbgKPRMX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:12:23 -0500
-X-Originating-IP: 91.175.115.186
-Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id AD68960011;
-        Mon, 16 Nov 2020 17:12:20 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        <Steen.Hegelund@microchip.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 5/5] MIPS: dts: mscc: add reset support for Luton and Jaguar2
-Date:   Mon, 16 Nov 2020 18:11:59 +0100
-Message-Id: <20201116171159.1735315-6-gregory.clement@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201116171159.1735315-1-gregory.clement@bootlin.com>
-References: <20201116171159.1735315-1-gregory.clement@bootlin.com>
+        id S1732579AbgKPRMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:12:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731047AbgKPRMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 12:12:44 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 687A120797;
+        Mon, 16 Nov 2020 17:12:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605546764;
+        bh=C+QJikeAlLIV6+DknTEUchTCebYLLhgex24/4Sa1/mk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xd92LMg4sb5lNB9U2s8QyLQwfDwvDYKwoj02d6R5nJJG6smh/WbEUZKf5U4gEjh8w
+         u1HCFAw4F7GBBwQegG9gvlLj1kSPVFoqwY2Vp6k3OlxP4gYfUPU3aY57VdVYzTxEzR
+         XVmUKpGbDxbrVGlUJBIx4D/Y4TRvGq0cGO9RQgeU=
+Date:   Mon, 16 Nov 2020 22:42:39 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Maciej Sosnowski <maciej.sosnowski@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        dmaengine@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: ioatdma: remove unused function missed during
+ dma_v2 removal
+Message-ID: <20201116171239.GX7499@vkoul-mobl>
+References: <20201113081248.26416-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113081248.26416-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow Luton and Jaguar2 SoC to use reset feature by adding the reset
-node.
+On 13-11-20, 09:12, Lukas Bulwahn wrote:
+> Commit 7f832645d0e5 ("dmaengine: ioatdma: remove ioatdma v2 registration")
+> missed to remove dca2_tag_map_valid() during its removal. Hence, since
+> then, dca2_tag_map_valid() is unused and make CC=clang W=1 warns:
+> 
+>   drivers/dma/ioat/dca.c:44:19:
+>     warning: unused function 'dca2_tag_map_valid' [-Wunused-function]
+> 
+> So, remove this unused function and get rid of a -Wused-function warning.
 
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
----
- arch/mips/boot/dts/mscc/jaguar2.dtsi | 6 ++++++
- arch/mips/boot/dts/mscc/luton.dtsi   | 5 +++++
- 2 files changed, 11 insertions(+)
+Applied, thanks
 
-diff --git a/arch/mips/boot/dts/mscc/jaguar2.dtsi b/arch/mips/boot/dts/mscc/jaguar2.dtsi
-index 42b2b0a51ddc..f5f7b81c4044 100644
---- a/arch/mips/boot/dts/mscc/jaguar2.dtsi
-+++ b/arch/mips/boot/dts/mscc/jaguar2.dtsi
-@@ -60,6 +60,12 @@ cpu_ctrl: syscon@70000000 {
- 			reg = <0x70000000 0x2c>;
- 		};
- 
-+		reset@71010008 {
-+			compatible = "mscc,luton-chip-reset";
-+			reg = <0x71010008 0x4>;
-+			microchip,reset-switch-core;
-+		};
-+
- 		intc: interrupt-controller@70000070 {
- 			compatible = "mscc,jaguar2-icpu-intr";
- 			reg = <0x70000070 0x94>;
-diff --git a/arch/mips/boot/dts/mscc/luton.dtsi b/arch/mips/boot/dts/mscc/luton.dtsi
-index 2a170b84c5a9..4a26c2874386 100644
---- a/arch/mips/boot/dts/mscc/luton.dtsi
-+++ b/arch/mips/boot/dts/mscc/luton.dtsi
-@@ -56,6 +56,11 @@ cpu_ctrl: syscon@10000000 {
- 			reg = <0x10000000 0x2c>;
- 		};
- 
-+		reset@00070090 {
-+			compatible = "mscc,luton-chip-reset";
-+			reg = <0x70090 0x4>;
-+		};
-+
- 		intc: interrupt-controller@10000084 {
- 			compatible = "mscc,luton-icpu-intr";
- 			reg = <0x10000084 0x70>;
 -- 
-2.29.2
-
+~Vinod
