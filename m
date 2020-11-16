@@ -2,135 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA9D2B3BE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D34D72B3BE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgKPDiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 22:38:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31292 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726203AbgKPDiG (ORCPT
+        id S1726723AbgKPDnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 22:43:22 -0500
+Received: from smtprelay0232.hostedemail.com ([216.40.44.232]:36944 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726198AbgKPDnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 22:38:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605497885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sJuVxD8MKBr57zv/aexgnLowqoN1xbyWUa+Emh3GwGE=;
-        b=EwdKSOYVVF287ZQXZ8Lkw4/oHYGW/IA2+ewQPdqOo5XHEqrsG3tZnOWD0OZAjuqyaUw4FU
-        KLRzsAGE5Od6RdDpY34iXcaMMOJIlEzj6RIh0IHq4SUq6voBZci9yDgzWVy9+7NDyLSv95
-        gE5VIjmXIu2cnknwFYMkz8vtki7OlVo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-xKPNSRrfMP-foyIS6wm_3Q-1; Sun, 15 Nov 2020 22:38:03 -0500
-X-MC-Unique: xKPNSRrfMP-foyIS6wm_3Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 52A458049D6;
-        Mon, 16 Nov 2020 03:38:02 +0000 (UTC)
-Received: from [10.72.13.126] (ovpn-13-126.pek2.redhat.com [10.72.13.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 502A227CC5;
-        Mon, 16 Nov 2020 03:37:50 +0000 (UTC)
-Subject: Re: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block
- device
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-References: <20201113134712.69744-1-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com>
-Date:   Mon, 16 Nov 2020 11:37:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 15 Nov 2020 22:43:21 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id C36D118029151;
+        Mon, 16 Nov 2020 03:43:20 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3867:3868:3870:3871:3872:3874:4321:4362:5007:7514:7903:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12555:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21067:21080:21221:21451:21627:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: leaf99_1a0628d27325
+X-Filterd-Recvd-Size: 2128
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 16 Nov 2020 03:43:19 +0000 (UTC)
+Message-ID: <d3d6b68178b4193f04c35863163ce811a1571c0a.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Fix unescaped left brace
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Sun, 15 Nov 2020 19:43:18 -0800
+In-Reply-To: <20201115202928.81955-1-dwaipayanray1@gmail.com>
+References: <20201115202928.81955-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20201113134712.69744-1-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2020-11-16 at 01:59 +0530, Dwaipayan Ray wrote:
+> There is an unescaped left brace in a regex in OPEN_BRACE
+> check. This throws a runtime error when checkpatch is run
+> with --fix flag and the OPEN_BRACE check is executed.
+> 
+> Fix it by escaping the left brace.
+> 
+> Fixes: 8d1824780f2f ("checkpatch: add --fix option for a couple OPEN_BRACE misuses")
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 
-On 2020/11/13 ä¸‹åˆ9:47, Stefano Garzarella wrote:
-> Thanks to Max that started this work!
-> I took his patches, and extended the block simulator a bit.
->
-> This series moves the network device simulator in a new module
-> (vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
-> module, allowing the possibility to add new vDPA device simulators.
-> Then we added a new vdpa_sim_blk module to simulate a block device.
->
-> I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() to skip
-> bytes when ptr is NULL"), maybe we can add a new functions instead of
-> modify vringh_iov_xfer().
->
-> As Max reported, I'm also seeing errors with vdpa_sim_blk related to
-> iotlb and vringh when there is high load, these are some of the error
-> messages I can see randomly:
->
->    vringh: Failed to access avail idx at 00000000e8deb2cc
->    vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
->    vringh: Failed to get flags at 000000006635d7a3
->
->    virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 offset: 0x2840000 len: 0x20000
->    virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 offset: 0x58ee000 len: 0x3000
->
-> These errors should all be related to the fact that iotlb_translate()
-> fails with -EINVAL, so it seems that we miss some mapping.
+Thanks Dwaipayan.
 
+Obviously that code path hasn't been tested in awhile.
 
-Is this only reproducible when there's multiple co-current accessing of 
-IOTLB? If yes, it's probably a hint that some kind of synchronization is 
-still missed somewhere.
+I think the notice to require an escape for a { was added back in
+perl 5.16 or so.
 
-It might be useful to log the dma_map/unmp in both virtio_ring and 
-vringh to see who is missing the map.
+Acked-by: Joe Perches <joe@perches.com>
 
-Thanks
+> ---
+>  scripts/checkpatch.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 2749f32dffe9..0da6422cd0fd 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -4505,7 +4505,7 @@ sub process {
+>  			    $fix) {
+>  				fix_delete_line($fixlinenr, $rawline);
+>  				my $fixed_line = $rawline;
+> -				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*){(.*)$/;
+> +				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*)\{(.*)$/;
+>  				my $line1 = $1;
+>  				my $line2 = $2;
+>  				fix_insert_line($fixlinenr, ltrim($line1));
 
-
->
-> I'll debug more carefully, in the meantime can you give a first review?
->
-> Thanks,
-> Stefano
->
-> Max Gurtovoy (4):
->    vhost-vdpa: add support for vDPA blk devices
->    vdpa: split vdpasim to core and net modules
->    vdpa_sim: remove hard-coded virtq count
->    vdpa: add vdpa simulator for block device
->
-> Stefano Garzarella (8):
->    vdpa_sim: remove the limit of IOTLB entries
->    vdpa_sim: add struct vdpasim_device to store device properties
->    vdpa_sim: move config management outside of the core
->    vdpa_sim: use kvmalloc to allocate vdpasim->buffer
->    vdpa_sim: make vdpasim->buffer size configurable
->    vdpa_sim: split vdpasim_virtqueue's iov field in riov and wiov
->    vringh: allow vringh_iov_xfer() to skip bytes when ptr is NULL
->    vdpa_sim_blk: implement ramdisk behaviour
->
->   drivers/vdpa/vdpa_sim/vdpa_sim.h     | 117 +++++++++++
->   drivers/vdpa/vdpa_sim/vdpa_sim.c     | 283 +++++----------------------
->   drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 251 ++++++++++++++++++++++++
->   drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 172 ++++++++++++++++
->   drivers/vhost/vdpa.c                 |  11 +-
->   drivers/vhost/vringh.c               |  16 +-
->   drivers/vdpa/Kconfig                 |  16 +-
->   drivers/vdpa/vdpa_sim/Makefile       |   2 +
->   8 files changed, 628 insertions(+), 240 deletions(-)
->   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim.h
->   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
->   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_net.c
->
 
