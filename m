@@ -2,134 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1BE2B4A53
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECCA2B4A56
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731720AbgKPQJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:09:34 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:38293 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730962AbgKPQJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:09:34 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CZYtG2Bs9z9vDFh;
-        Mon, 16 Nov 2020 17:09:26 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id yKPDwfMvW28n; Mon, 16 Nov 2020 17:09:26 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CZYtG0w6Qz9vDFf;
-        Mon, 16 Nov 2020 17:09:26 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B852D8B7A5;
-        Mon, 16 Nov 2020 17:09:31 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 3MolZdsrsKwf; Mon, 16 Nov 2020 17:09:31 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5EDF28B7A3;
-        Mon, 16 Nov 2020 17:09:31 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 0A40766884; Mon, 16 Nov 2020 16:09:31 +0000 (UTC)
-Message-Id: <8a4ffe4798e9ea32aaaccdf85e411bb1beed3500.1605542955.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/32s: Handle PROTFAULT in hash_page() also for
- CONFIG_PPC_KUAP
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 16 Nov 2020 16:09:31 +0000 (UTC)
+        id S1731730AbgKPQKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:10:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730625AbgKPQKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:10:06 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EFEC0613CF;
+        Mon, 16 Nov 2020 08:10:06 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id d9so17237156qke.8;
+        Mon, 16 Nov 2020 08:10:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sxIs3F6y9Hap2HZWxwutrOTpApNQNkZ1qsXxhmaCrPs=;
+        b=UtIRS1jMrYjTp3Ww+lPSxfYCrB7YqsIdXjgWDCcKpAJrVg35O5p74FKtBt1K9iI1ez
+         voluKxDKevddBM7frnwcJdASuIA4JYiLo96KXXBP+KmM1Fi6sUWgkmPKMb38aWFAzwlc
+         MVniBJdEVbDgTM9HBErS6bqcY5Jcon45Fkv9QoThCgIRpgy5LtVM09AhXcFhQ0TOdXk5
+         QZftSQNRLTl2+2HGwiQZWBrnS/N1cXS5vUqpzThAhimLOSpxNhXjgGlhnoA+ZIl7jV6w
+         2RwqyrBs4JgqX+SEHQ1egvo6LJdPm7dNU8vVIzWBUZHa2of7z/Wf90FtNu8+2zVdAaki
+         Ncfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sxIs3F6y9Hap2HZWxwutrOTpApNQNkZ1qsXxhmaCrPs=;
+        b=oRb3SVbu0YyYL8MF0twixoC/IgioJbqmBNsDk+ORkiiYeW7HE2vJg1CdnVkxk2RQof
+         OzoqbzJ6JO27uzId7Uu+ocxgkJjDpHakn7t3T8enhERA11kb50gzzuW5qe2zsB88Y5j3
+         GgN9s1/om64rWavQJUcpi7LPO55ZVSAvbe0Ex0il7m8vRLBf3BIQL7z3RCLwonLGCFXz
+         L/pZTXhd0OIkM7bIxJmUzRq3tVc/FAEtkDlc8evLnFOdVmqNCzOSpSPuIg6n19Lw2uhU
+         9U/ajeXYVoMfyBI+LP4uhDDV5L0qwbNn9SQ6HuSAxeAjmuKwHP/Nzk3lJFxGpNy8ds8D
+         HgOA==
+X-Gm-Message-State: AOAM532E+KmXEbQHSnltc/Y9eMzsPG+HMB10VASrJNXLc3Wfr9IzTbGb
+        b6Z5HwCm10VDedjzL5PCkUfeJw25JIk=
+X-Google-Smtp-Source: ABdhPJyN++A/s6LCL6iKAWeMfkeGycx8+XwjoAHuRcd+7RdNlFxXLdI2c5V6+tZBXbwig1yFCTiKLw==
+X-Received: by 2002:a05:620a:554:: with SMTP id o20mr15053926qko.394.1605543004829;
+        Mon, 16 Nov 2020 08:10:04 -0800 (PST)
+Received: from willemb.nyc.corp.google.com ([2620:0:1003:312:f693:9fff:fef4:3e8a])
+        by smtp.gmail.com with ESMTPSA id d19sm2458822qtd.32.2020.11.16.08.10.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 08:10:03 -0800 (PST)
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, soheil.kdev@gmail.com, arnd@arndb.de,
+        shuochen@google.com, Willem de Bruijn <willemb@google.com>
+Subject: [PATCH v2] epoll: add nsec timeout support
+Date:   Mon, 16 Nov 2020 11:10:01 -0500
+Message-Id: <20201116161001.1606608-1-willemdebruijn.kernel@gmail.com>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On hash 32 bits, handling minor protection faults like unsetting
-dirty flag is heavy if done from the normal page_fault processing,
-because it implies hash table software lookup for flushing the entry
-and then a DSI is taken anyway to add the entry back.
+From: Willem de Bruijn <willemb@google.com>
 
-When KUAP was implemented, as explained in commit a68c31fc01ef
-("powerpc/32s: Implement Kernel Userspace Access Protection"),
-protection faults has been diverted from hash_page() because
-hash_page() was not able to identify a KUAP fault.
+Add epoll_create1 flag EPOLL_NSTIMEO. When passed, this changes the
+interpretation of argument timeout in epoll_wait from msec to nsec.
 
-Implement KUAP verification in hash_page(), by clearing write
-permission when the access is a kernel access and Ks is 1.
-This works regardless of the address because kernel segments always
-have Ks set to 0 while user segments have Ks set to 0 only
-when kernel write to userspace is granted.
+Use cases such as datacenter networking operate on timescales well
+below milliseconds. Shorter timeouts bounds their tail latency.
+The underlying hrtimer is already programmed with nsec resolution.
 
-Then protection faults can be handled by hash_page() even for KUAP.
+Changes (v2):
+  - cast to s64: avoid overflow on 32-bit platforms (Shuo Chen)
+  - minor commit message rewording
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+
 ---
- arch/powerpc/kernel/head_book3s_32.S |  8 --------
- arch/powerpc/mm/book3s32/hash_low.S  | 13 +++++++++++--
- 2 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index a0dda2a1f2df..a4b811044f97 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -294,11 +294,7 @@ BEGIN_MMU_FTR_SECTION
- 	stw	r11, THR11(r10)
- 	mfspr	r10, SPRN_DSISR
- 	mfcr	r11
--#ifdef CONFIG_PPC_KUAP
--	andis.	r10, r10, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH | DSISR_PROTFAULT)@h
--#else
- 	andis.	r10, r10, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH)@h
--#endif
- 	mfspr	r10, SPRN_SPRG_THREAD
- 	beq	hash_page_dsi
- .Lhash_page_dsi_cont:
-@@ -323,11 +319,7 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
- 	EXCEPTION_PROLOG handle_dar_dsisr=1
- 	get_and_save_dar_dsisr_on_stack	r4, r5, r11
- BEGIN_MMU_FTR_SECTION
--#ifdef CONFIG_PPC_KUAP
--	andis.	r0, r5, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH | DSISR_PROTFAULT)@h
--#else
- 	andis.	r0, r5, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH)@h
--#endif
- 	bne	handle_page_fault_tramp_2	/* if not, try to put a PTE */
- 	rlwinm	r3, r5, 32 - 15, 21, 21		/* DSISR_STORE -> _PAGE_RW */
- 	bl	hash_page
-diff --git a/arch/powerpc/mm/book3s32/hash_low.S b/arch/powerpc/mm/book3s32/hash_low.S
-index b2c912e517b9..9a56ba4f68f2 100644
---- a/arch/powerpc/mm/book3s32/hash_low.S
-+++ b/arch/powerpc/mm/book3s32/hash_low.S
-@@ -95,8 +95,6 @@ _GLOBAL(hash_page)
- #else
- 	rlwimi	r8,r4,23,20,28		/* compute pte address */
+Applies cleanly both to 5.10-rc4 and next-20201116.
+In next, nstimeout no longer fills padding with new field refs.
+
+Selftest for now at github. Can follow-up for kselftests.
+https://github.com/wdebruij/kerneltools/blob/master/tests/epoll_nstimeo.c
+---
+ fs/eventpoll.c                 | 26 +++++++++++++++++++-------
+ include/uapi/linux/eventpoll.h |  1 +
+ 2 files changed, 20 insertions(+), 7 deletions(-)
+
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index 4df61129566d..817d9cc5b8b8 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -225,6 +225,9 @@ struct eventpoll {
+ 	unsigned int napi_id;
  #endif
--	rlwinm	r0,r3,32-3,24,24	/* _PAGE_RW access -> _PAGE_DIRTY */
--	ori	r0,r0,_PAGE_ACCESSED|_PAGE_HASHPTE
  
++	/* Accept timeout in ns resolution (EPOLL_NSTIMEO) */
++	unsigned int nstimeout:1;
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	/* tracks wakeup nests for lockdep validation */
+ 	u8 nests;
+@@ -1787,17 +1790,20 @@ static int ep_send_events(struct eventpoll *ep,
+ 	return esed.res;
+ }
+ 
+-static inline struct timespec64 ep_set_mstimeout(long ms)
++static inline struct timespec64 ep_set_nstimeout(s64 ns)
+ {
+-	struct timespec64 now, ts = {
+-		.tv_sec = ms / MSEC_PER_SEC,
+-		.tv_nsec = NSEC_PER_MSEC * (ms % MSEC_PER_SEC),
+-	};
++	struct timespec64 now, ts;
+ 
++	ts = ns_to_timespec64(ns);
+ 	ktime_get_ts64(&now);
+ 	return timespec64_add_safe(now, ts);
+ }
+ 
++static inline struct timespec64 ep_set_mstimeout(long ms)
++{
++	return ep_set_nstimeout(ms * (s64)NSEC_PER_MSEC);
++}
++
+ /**
+  * ep_poll - Retrieves ready events, and delivers them to the caller supplied
+  *           event buffer.
+@@ -1826,7 +1832,10 @@ static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
+ 	lockdep_assert_irqs_enabled();
+ 
+ 	if (timeout > 0) {
+-		struct timespec64 end_time = ep_set_mstimeout(timeout);
++		struct timespec64 end_time;
++
++		end_time = ep->nstimeout ? ep_set_nstimeout(timeout) :
++					   ep_set_mstimeout(timeout);
+ 
+ 		slack = select_estimate_accuracy(&end_time);
+ 		to = &expires;
+@@ -2046,7 +2055,7 @@ static int do_epoll_create(int flags)
+ 	/* Check the EPOLL_* constant for consistency.  */
+ 	BUILD_BUG_ON(EPOLL_CLOEXEC != O_CLOEXEC);
+ 
+-	if (flags & ~EPOLL_CLOEXEC)
++	if (flags & ~(EPOLL_CLOEXEC | EPOLL_NSTIMEO))
+ 		return -EINVAL;
  	/*
- 	 * Update the linux PTE atomically.  We do the lwarx up-front
-@@ -112,7 +110,18 @@ _GLOBAL(hash_page)
- #endif
- .Lretry:
- 	lwarx	r6,0,r8			/* get linux-style pte, flag word */
-+#ifdef CONFIG_PPC_KUAP
-+	mfsrin	r5,r4
-+	rlwinm	r0,r9,28,_PAGE_RW	/* MSR[PR] => _PAGE_RW */
-+	rlwinm	r5,r5,12,_PAGE_RW	/* Ks => _PAGE_RW */
-+	andc	r5,r5,r0		/* Ks & ~MSR[PR] */
-+	andc	r5,r6,r5		/* Clear _PAGE_RW when Ks = 1 && MSR[PR] = 0 */
-+	andc.	r5,r3,r5		/* check access & ~permission */
-+#else
- 	andc.	r5,r3,r6		/* check access & ~permission */
-+#endif
-+	rlwinm	r0,r3,32-3,24,24	/* _PAGE_RW access -> _PAGE_DIRTY */
-+	ori	r0,r0,_PAGE_ACCESSED|_PAGE_HASHPTE
- #ifdef CONFIG_SMP
- 	bne-	.Lhash_page_out		/* return if access not permitted */
- #else
+ 	 * Create the internal data structure ("struct eventpoll").
+@@ -2054,6 +2063,9 @@ static int do_epoll_create(int flags)
+ 	error = ep_alloc(&ep);
+ 	if (error < 0)
+ 		return error;
++
++	ep->nstimeout = !!(flags & EPOLL_NSTIMEO);
++
+ 	/*
+ 	 * Creates all the items needed to setup an eventpoll file. That is,
+ 	 * a file structure and a free file descriptor.
+diff --git a/include/uapi/linux/eventpoll.h b/include/uapi/linux/eventpoll.h
+index 8a3432d0f0dc..f6ef9c9f8ac2 100644
+--- a/include/uapi/linux/eventpoll.h
++++ b/include/uapi/linux/eventpoll.h
+@@ -21,6 +21,7 @@
+ 
+ /* Flags for epoll_create1.  */
+ #define EPOLL_CLOEXEC O_CLOEXEC
++#define EPOLL_NSTIMEO 0x1
+ 
+ /* Valid opcodes to issue to sys_epoll_ctl() */
+ #define EPOLL_CTL_ADD 1
 -- 
-2.25.0
+2.29.2.299.gdc1121823c-goog
 
