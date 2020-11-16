@@ -2,151 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EE32B54ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E55F2B54EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728851AbgKPXYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:24:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
+        id S1729214AbgKPXZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:25:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727098AbgKPXYk (ORCPT
+        with ESMTP id S1725710AbgKPXZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:24:40 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3C3C0613CF;
-        Mon, 16 Nov 2020 15:24:40 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id q10so15670976pfn.0;
-        Mon, 16 Nov 2020 15:24:40 -0800 (PST)
+        Mon, 16 Nov 2020 18:25:40 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C64C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:25:40 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id l1so20853437wrb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:25:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9gHW/b2b9IVZCe8TQB/5bFXeA9E/gEGYf6Ex+dE1xsM=;
-        b=Du7zG1zkT8cXy4aIUBIS0820a1I4oY4AepXtnqY9BwQROuLpFqc2G0WXju9pYjEd5o
-         8yLw2EBPiw2bvTHtnEwbiM2asA+S1zbJtbxIRvvSMp3/iHyQfnCFtmRMhcspPTLNF4Iq
-         RN2iFkXw8qfTzsfNCdKjOsHi4ZlCX+Iu2bJEO9BrIaxIbhm6mRPBcva4tamRkKThO+xX
-         ui0VT56lAA/6z3DRpGr6wFOMnzKEUSHdSVWnYQwctuHP9M79dtfavDkO+gXk8r0E5Onb
-         U3l0QD+H/Mgt/6t36gOX5RipWIj5E6CiguISxim27EchNuFD/qDlzP0SRv9KgrHXTk4J
-         l2QQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=33uKN+9Cl21nHIzw+MtC0Lw4sQzHiWLWopQ6EWaBywg=;
+        b=ldoO+4eAJCUKf81SOfHdQemnc+VAfFVQD/yRN58xiQej9CnrSNBBvSqbnY3eR4hB2Q
+         kKm9POM4YFDRE/P9jBjNvh2RwZZxBDy3tJKIa6kGxtx6cy8x5Stx+rfcHwLwG87kWXMD
+         JZG/H/RFL0F5akORkVk0DltLnjwS1erjfuyoY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=9gHW/b2b9IVZCe8TQB/5bFXeA9E/gEGYf6Ex+dE1xsM=;
-        b=AZi6Bfie2AZXJNyiWyZvfirknnQ3EiZLlo27WMyoAuQK47xNyUc/ny4jOY/YcyWu1w
-         zyePAJR3d8ZgVd4eaZiso8IJtnHJio5/BNgEoTTHpCJZwAnElawV6DFlHgyzkmsYXvYU
-         DRTlRy4UIkMJSKVT0AbGiOeg1CsxHu/Lq4nl2iB079ua04j7v8RgK3rdlU2/kcDv0P1W
-         hioh3/27G+RPwhwbNKq3vkBaSte89EhzCuFi677k5vMS6d/ro+7Kpb/2zaL+kUC58cz2
-         /JF541NDf6btx4oqvnqzTm6wqAMmzjWsqXAt5d0ZQiL1q97rtsU9x52Ar8Pjo2J2KtYo
-         wXTw==
-X-Gm-Message-State: AOAM532Np14ZZd3keKAZmDPc2j7SnSHDIewXsgAZXTuUv9wyxPa3Ziwa
-        kFc/SrCQTgFdoRsZDYWr0+0=
-X-Google-Smtp-Source: ABdhPJw+CCN+2GPNi3R5/WE8CzIWOQd5JBJwok6cN7cwCTZI+Jyj+dy07C+eYUEo56lj67iDBxXo0w==
-X-Received: by 2002:a17:90a:d495:: with SMTP id s21mr1413055pju.30.1605569079574;
-        Mon, 16 Nov 2020 15:24:39 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id mt2sm556195pjb.7.2020.11.16.15.24.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=33uKN+9Cl21nHIzw+MtC0Lw4sQzHiWLWopQ6EWaBywg=;
+        b=ClOgScCcaUPb6e07zgAhyq0RI1pkpMaL65Y2KFbBhII4nSoFbTv5Q3sQVZ0X8qJd7D
+         Lg2k4ky6vy97gwQRU+mYiCcStsxWEMpgeEiDnOWEZfXCDnhIk5tWIko2zPFHtcrv4oj8
+         gmy+ZJcyESbMHBXVAGsdaEXgUCF91/UeS5H/RKlFnHxCCzyy3gx2eB1a+MrGZy99PE+L
+         Irs0WA3hi90JFH2a3UtpMPpMBKR9sa9/TFtQRzPs0xjw1kQ3WL9zeviGuv+mIjuQs6Eh
+         C6XQOSJlxkesqFJpQd/1fxsJseXDDReoq75kpasxRFsGg77gU1z94E6KyoZtWYdaVRjV
+         XiGA==
+X-Gm-Message-State: AOAM532GbaxXO4QinRQ8QMoOpyzjIg4+gAQDLopOO4EVhEp6mhr6wyh2
+        7f8R9ghzOuld0TAMV0hJd3PMOesZuX8cJg==
+X-Google-Smtp-Source: ABdhPJyFWMMVzLrNMzEghtw8MN+go5Texi+l5kWSjBuYib5lj0uvL9iO6vymu7ytN2H6s1KDCozVPA==
+X-Received: by 2002:adf:8382:: with SMTP id 2mr21814905wre.227.1605569138400;
+        Mon, 16 Nov 2020 15:25:38 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id m3sm20783212wrv.6.2020.11.16.15.25.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 15:24:38 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 16 Nov 2020 15:24:36 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH 1/1] RFC: add pidfd_send_signal flag to reclaim mm while
- killing a process
-Message-ID: <20201116232436.GA3943731@google.com>
-References: <20201113173448.1863419-1-surenb@google.com>
- <20201113155539.64e0af5b60ad3145b018ab0d@linux-foundation.org>
- <CAJuCfpGJkEUqUWmo_7ms66ZqwHfy+OGsEhzgph+a4QfOWQ32Yw@mail.gmail.com>
- <20201113170032.7aa56ea273c900f97e6ccbdc@linux-foundation.org>
- <CAJuCfpHS3hZi-E=JCp257u0AG+RoMAG4kLa3NQydONGfp9oXQQ@mail.gmail.com>
- <20201113171810.bebf66608b145cced85bf54c@linux-foundation.org>
- <CAJuCfpH-Qjm5uqfaUcfk0QV2zC76uL96FQjd88bZGBvCuXE_aA@mail.gmail.com>
- <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
+        Mon, 16 Nov 2020 15:25:37 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+Subject: [PATCH bpf-next v2 1/2] bpf: Add bpf_lsm_set_bprm_opts helper
+Date:   Mon, 16 Nov 2020 23:25:35 +0000
+Message-Id: <20201116232536.1752908-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113181632.6d98489465430a987c96568d@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 06:16:32PM -0800, Andrew Morton wrote:
-> On Fri, 13 Nov 2020 17:57:02 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
-> 
-> > On Fri, Nov 13, 2020 at 5:18 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > >
-> > > On Fri, 13 Nov 2020 17:09:37 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
-> > >
-> > > > > > > Seems to me that the ability to reap another process's memory is a
-> > > > > > > generally useful one, and that it should not be tied to delivering a
-> > > > > > > signal in this fashion.
-> > > > > > >
-> > > > > > > And we do have the new process_madvise(MADV_PAGEOUT).  It may need a
-> > > > > > > few changes and tweaks, but can't that be used to solve this problem?
-> > > > > >
-> > > > > > Thank you for the feedback, Andrew. process_madvise(MADV_DONTNEED) was
-> > > > > > one of the options recently discussed in
-> > > > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
-> > > > > > . The thread describes some of the issues with that approach but if we
-> > > > > > limit it to processes with pending SIGKILL only then I think that
-> > > > > > would be doable.
-> > > > >
-> > > > > Why would it be necessary to read /proc/pid/maps?  I'd have thought
-> > > > > that a starting effort would be
-> > > > >
-> > > > >         madvise((void *)0, (void *)-1, MADV_PAGEOUT)
-> > > > >
-> > > > > (after translation into process_madvise() speak).  Which is equivalent
-> > > > > to the proposed process_madvise(MADV_DONTNEED_MM)?
-> > > >
-> > > > Yep, this is very similar to option #3 in
-> > > > https://lore.kernel.org/linux-api/CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com
-> > > > and I actually have a tested prototype for that.
-> > >
-> > > Why is the `vector=NULL' needed?  Can't `vector' point at a single iovec
-> > > which spans the whole address range?
-> > 
-> > That would be the option #4 from the same discussion and the issues
-> > noted there are "process_madvise return value can't handle such a
-> > large number of bytes and there is MAX_RW_COUNT limit on max number of
-> > bytes one process_madvise call can handle". In my prototype I have a
-> > special handling for such "bulk operation" to work around the
-> > MAX_RW_COUNT limitation.
-> 
-> Ah, OK, return value.  Maybe process_madvise() shouldn't have done that
-> and should have simply returned 0 on success, like madvise().
-> 
-> I guess a special "nuke whole address space" command is OK.  But, again
-> in the search for generality, the ability to nuke very large amounts of
-> address space (but not the entire address space) would be better. 
-> 
-> The process_madvise() return value issue could be addressed by adding a
-> process_madvise() mode which return 0 on success.
-> 
-> And I guess the MAX_RW_COUNT issue is solvable by adding an
-> import_iovec() arg to say "don't check that".  Along those lines.
-> 
-> It's all sounding a bit painful (but not *too* painful).  But to
-> reiterate, I do think that adding the ability for a process to shoot
-> down a large amount of another process's memory is a lot more generally
-> useful than tying it to SIGKILL, agree?
+From: KP Singh <kpsingh@google.com>
 
-I agree the direction but I think it's the general problem for every
-APIs have supported iovec and not sure process_madvise is special to
-chage it.
-IOW, it wouldn't be a problem to support *entire address space* special
-mode but not sure to support *large amount of address space* at the cost
-of breaking existing iovec scheme.
+The helper allows modification of certain bits on the linux_binprm
+struct starting with the secureexec bit which can be updated using the
+BPF_LSM_F_BPRM_SECUREEXEC flag.
+
+secureexec can be set by the LSM for privilege gaining executions to set
+the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
+use of certain environment variables (like LD_PRELOAD).
+
+Signed-off-by: KP Singh <kpsingh@google.com>
+---
+ include/uapi/linux/bpf.h       | 14 ++++++++++++++
+ kernel/bpf/bpf_lsm.c           | 27 +++++++++++++++++++++++++++
+ scripts/bpf_helpers_doc.py     |  2 ++
+ tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
+ 4 files changed, 57 insertions(+)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 162999b12790..7f1b6ba8246c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3787,6 +3787,14 @@ union bpf_attr {
+  *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
+  *	Return
+  *		Pointer to the current task.
++ *
++ * long bpf_lsm_set_bprm_opts(struct linux_binprm *bprm, u64 flags)
++ *
++ *	Description
++ *		Sets certain options on the *bprm*:
++ *
++ *		**BPF_LSM_F_BPRM_SECUREEXEC** Set the secureexec bit
++ *		which sets the **AT_SECURE** auxv for glibc.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3948,6 +3956,7 @@ union bpf_attr {
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
+ 	FN(get_current_task_btf),	\
++	FN(lsm_set_bprm_opts),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+@@ -4119,6 +4128,11 @@ enum bpf_lwt_encap_mode {
+ 	BPF_LWT_ENCAP_IP,
+ };
+ 
++/* Flags for LSM helpers */
++enum {
++	BPF_LSM_F_BPRM_SECUREEXEC	= (1ULL << 0),
++};
++
+ #define __bpf_md_ptr(type, name)	\
+ union {					\
+ 	type name;			\
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index 553107f4706a..31f85474a0ef 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -7,6 +7,7 @@
+ #include <linux/filter.h>
+ #include <linux/bpf.h>
+ #include <linux/btf.h>
++#include <linux/binfmts.h>
+ #include <linux/lsm_hooks.h>
+ #include <linux/bpf_lsm.h>
+ #include <linux/kallsyms.h>
+@@ -51,6 +52,30 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 	return 0;
+ }
+ 
++/* Mask for all the currently supported BPRM option flags */
++#define BPF_LSM_F_BRPM_OPTS_MASK	0x1ULL
++
++BPF_CALL_2(bpf_lsm_set_bprm_opts, struct linux_binprm *, bprm, u64, flags)
++{
++
++	if (flags & ~BPF_LSM_F_BRPM_OPTS_MASK)
++		return -EINVAL;
++
++	bprm->secureexec = (flags & BPF_LSM_F_BPRM_SECUREEXEC);
++	return 0;
++}
++
++BTF_ID_LIST_SINGLE(bpf_lsm_set_bprm_opts_btf_ids, struct, linux_binprm)
++
++const static struct bpf_func_proto bpf_lsm_set_bprm_opts_proto = {
++	.func		= bpf_lsm_set_bprm_opts,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_BTF_ID,
++	.arg1_btf_id	= &bpf_lsm_set_bprm_opts_btf_ids[0],
++	.arg2_type	= ARG_ANYTHING,
++};
++
+ static const struct bpf_func_proto *
+ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+@@ -71,6 +96,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_task_storage_get_proto;
+ 	case BPF_FUNC_task_storage_delete:
+ 		return &bpf_task_storage_delete_proto;
++	case BPF_FUNC_lsm_set_bprm_opts:
++		return &bpf_lsm_set_bprm_opts_proto;
+ 	default:
+ 		return tracing_prog_func_proto(func_id, prog);
+ 	}
+diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
+index 31484377b8b1..c5bc947a70ad 100755
+--- a/scripts/bpf_helpers_doc.py
++++ b/scripts/bpf_helpers_doc.py
+@@ -418,6 +418,7 @@ class PrinterHelpers(Printer):
+             'struct bpf_tcp_sock',
+             'struct bpf_tunnel_key',
+             'struct bpf_xfrm_state',
++            'struct linux_binprm',
+             'struct pt_regs',
+             'struct sk_reuseport_md',
+             'struct sockaddr',
+@@ -465,6 +466,7 @@ class PrinterHelpers(Printer):
+             'struct bpf_tcp_sock',
+             'struct bpf_tunnel_key',
+             'struct bpf_xfrm_state',
++            'struct linux_binprm',
+             'struct pt_regs',
+             'struct sk_reuseport_md',
+             'struct sockaddr',
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 162999b12790..7f1b6ba8246c 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3787,6 +3787,14 @@ union bpf_attr {
+  *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
+  *	Return
+  *		Pointer to the current task.
++ *
++ * long bpf_lsm_set_bprm_opts(struct linux_binprm *bprm, u64 flags)
++ *
++ *	Description
++ *		Sets certain options on the *bprm*:
++ *
++ *		**BPF_LSM_F_BPRM_SECUREEXEC** Set the secureexec bit
++ *		which sets the **AT_SECURE** auxv for glibc.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3948,6 +3956,7 @@ union bpf_attr {
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
+ 	FN(get_current_task_btf),	\
++	FN(lsm_set_bprm_opts),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+@@ -4119,6 +4128,11 @@ enum bpf_lwt_encap_mode {
+ 	BPF_LWT_ENCAP_IP,
+ };
+ 
++/* Flags for LSM helpers */
++enum {
++	BPF_LSM_F_BPRM_SECUREEXEC	= (1ULL << 0),
++};
++
+ #define __bpf_md_ptr(type, name)	\
+ union {					\
+ 	type name;			\
+-- 
+2.29.2.299.gdc1121823c-goog
+
