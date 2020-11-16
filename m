@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A28A2B4274
+	by mail.lfdr.de (Postfix) with ESMTP id E5EEA2B4275
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728877AbgKPLSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:18:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgKPLSv (ORCPT
+        id S1729046AbgKPLSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:18:55 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:37742 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728968AbgKPLSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:18:51 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EF4C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:18:50 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id s8so15272442yba.13
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:18:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MD9xHbpoBxI28g0y3d7aQhsOLegTugTpd8AuiJspFNs=;
-        b=hmuBOgJMpbiQxGBqnGrXSn0SRmC2e/BrQz+KtWufgEXRLOpLsa1gEzPF3ryhKN3DFx
-         OLb/bG4g63OMg5Z+G1vFMNjqsjuTvWF1v5n3OZ+TVC9b2R9W+ZvjzLY4nt0GD2fJRc8Q
-         XMj3vIjuYhu77GI2PDZXJVmO3okeiRm+zBjp60MRe7Q86qDO6sMflPnA9wZ4nW+3ew1N
-         5RuJzfHJ7SeCliEWT+dPFVqMWejHZ7DEHBtVMLtfHwEfSS71gOno3GE4zrjAzcnmWm8t
-         n7U/u+EcrrANh36tYYcfQYHY84YmL1Vgx8QrVXOwE808k9O62urPXN4RjPtrBIwxSBHg
-         lh5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MD9xHbpoBxI28g0y3d7aQhsOLegTugTpd8AuiJspFNs=;
-        b=NYF3ilTDFHfox2eLxDtOld5DNqyBqj9WLo81yb2UxZuLYrMV3DiYp3z5w43//6CLK1
-         DgyXQMlxWD04HZ1n8PF67J/yXXFeQZh/UdOMQYdf8evnVr//dzteTCIdc+lCOjDIEnH9
-         8BOxG+xIzdKMVXNm2b16zzoZvPJ9ySrvRE3Rlf/e0DpgiVcIw7/V1EX1Fuq5vxEhmVS8
-         A+oGgEeXyK0LBe5GZJYj/85SkqrQrHOpS7Y8PljXn2Z+0SdcKaAnJWtCx3tayA5tXDM7
-         zJ0XwtKi+WWIp61d5TyvMYF9jDTZSQbTDme025D2CHCZSzyzqyHWWNuoobYghJDRUZOy
-         165w==
-X-Gm-Message-State: AOAM5308xkQFmGIA044G4teT3r3xblkJ7BzqW/GxCcFZ7BEPNMlLQeWc
-        CaLkuMwqMX7N0Amoa44IdMT89gfU7RAv/19hX4E=
-X-Google-Smtp-Source: ABdhPJzuUvalT4x4fTA5gvfWQI1Nk/liV9/MbNuQHoZJj5e5bfz8uHuoywkSfsj71fb1fzdtohQMNxW0KOe/fNhPR/0=
-X-Received: by 2002:a25:5f0f:: with SMTP id t15mr16854532ybb.26.1605525529784;
- Mon, 16 Nov 2020 03:18:49 -0800 (PST)
+        Mon, 16 Nov 2020 06:18:55 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 86E0720056;
+        Mon, 16 Nov 2020 12:18:51 +0100 (CET)
+Date:   Mon, 16 Nov 2020 12:18:50 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 12/40] drm/pl111/pl111_display: Make local function static
+Message-ID: <20201116111850.GA68743@ravnborg.org>
+References: <20201113134938.4004947-1-lee.jones@linaro.org>
+ <20201113134938.4004947-13-lee.jones@linaro.org>
+ <20201114191127.GB3797389@ravnborg.org>
+ <20201116084023.GL3718728@dell>
+ <20201116101734.GA65688@ravnborg.org>
+ <20201116102530.GN3718728@dell>
 MIME-Version: 1.0
-References: <20201116043532.4032932-1-ndesaulniers@google.com>
- <20201116043532.4032932-3-ndesaulniers@google.com> <20201116062639.GB7265@embeddedor>
-In-Reply-To: <20201116062639.GB7265@embeddedor>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 16 Nov 2020 12:18:38 +0100
-Message-ID: <CANiq72k=m1=vVaO4bfqGoLReQzQ9ywpyXF=-M6vbw3XzRe_0fQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] Revert "lib: Revert use of fallthrough pseudo-keyword
- in lib/"
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201116102530.GN3718728@dell>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=IkcTkHD0fZMA:10 a=-VAfIpHNAAAA:8 a=e5mUnYsNAAAA:8 a=KKAkSRfTAAAA:8
+        a=VwQbUJbxAAAA:8 a=xQzvdHlxAAAA:20 a=YYAp68AnUQjD0k_29DoA:9
+        a=QEXdDO2ut3YA:10 a=srlwD-8ojaedGGhPAyx8:22 a=Vxmtnl_E_bksehYqCbjh:22
+        a=cvBusfyB2V15izCimMoJ:22 a=AjGcO6oz07-iQ99wixmX:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 7:26 AM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.com>
+Hi Lee,
+On Mon, Nov 16, 2020 at 10:25:30AM +0000, Lee Jones wrote:
+> On Mon, 16 Nov 2020, Sam Ravnborg wrote:
+> 
+> > Hi Lee,
+> > On Mon, Nov 16, 2020 at 08:40:23AM +0000, Lee Jones wrote:
+> > > On Sat, 14 Nov 2020, Sam Ravnborg wrote:
+> > > 
+> > > > Hi Lee,
+> > > > On Fri, Nov 13, 2020 at 01:49:10PM +0000, Lee Jones wrote:
+> > > > > Fixes the following W=1 kernel build warning(s):
+> > > > > 
+> > > > >  drivers/gpu/drm/pl111/pl111_display.c:356:6: warning: no previous prototype for ‘pl111_display_disable’ [-Wmissing-prototypes]
+> > > > > 
+> > > > > Cc: Eric Anholt <eric@anholt.net>
+> > > > > Cc: David Airlie <airlied@linux.ie>
+> > > > > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > > > > Cc: dri-devel@lists.freedesktop.org
+> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > 
+> > > > Eric's was not copied on this or the other pl111 patch.
+> > > > Added Eric so he can be aware of this fix.
+> > > 
+> > > Eric Anholt?
+> > > 
+> > > He's on Cc?
+> > Not on the original mail I received.
+> 
+> Looks fine to me:
+> 
+> Date: Fri, 13 Nov 2020 13:49:10 +0000
+> From: Lee Jones <lee.jones@linaro.org>
+> To: lee.jones@linaro.org
+> Cc: linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org
+> Subject: [PATCH 12/40] drm/pl111/pl111_display: Make local function static
+> 
+> Also reflected in Gmail:
+> 
+>  https://i.imgur.com/d69YTzz.png
 
-.org :-)
+Strange indeed. In lore Eric is not included:
+https://lore.kernel.org/dri-devel/20201113134938.4004947-13-lee.jones@linaro.org/
 
-Cheers,
-Miguel
+I consider this a fluke in the force, and will not worry more about it.
+
+	Sam
