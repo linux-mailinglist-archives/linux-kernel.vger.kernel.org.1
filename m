@@ -2,69 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3248A2B40A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27B02B40C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbgKPKRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:17:42 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:38108 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727012AbgKPKRm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:17:42 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
+        id S1729017AbgKPKTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:19:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728867AbgKPKSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 05:18:32 -0500
+Received: from mail.kernel.org (ip5f5ad5de.dynamic.kabel-deutschland.de [95.90.213.222])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id CC65B804C8;
-        Mon, 16 Nov 2020 11:17:35 +0100 (CET)
-Date:   Mon, 16 Nov 2020 11:17:34 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/40] drm/pl111/pl111_display: Make local function static
-Message-ID: <20201116101734.GA65688@ravnborg.org>
-References: <20201113134938.4004947-1-lee.jones@linaro.org>
- <20201113134938.4004947-13-lee.jones@linaro.org>
- <20201114191127.GB3797389@ravnborg.org>
- <20201116084023.GL3718728@dell>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C48B2467D;
+        Mon, 16 Nov 2020 10:18:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605521909;
+        bh=hrYDFejIWKc2Sc1kJcaDxBLFYaPls+fhDdb9MsI3AZg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nOYrZpl4mWNo4VChMm50rhlZZFPHrNl2Md99UAjXUoT1Rv4ai6qEtKNY48QQHHDZ9
+         HHi0C1trk4izVD71hsF3fVqJ+98gWWf5nNLgENrcQfgxQXQZ2k1Gs3wz9z2aw/LySR
+         l+js1iuF3inRwlmH2DVzaLCAfu7AYgHEXvSB+IiI=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kebab-00FwDo-Pf; Mon, 16 Nov 2020 11:18:25 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Ben Segall <bsegall@google.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jan Kara <jack@suse.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Mike Rapoport <rppt@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Gong <richard.gong@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Reichel <sre@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Drewry <wad@chromium.org>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, target-devel@vger.kernel.org
+Subject: [PATCH v4 00/27]Fix several bad kernel-doc markups
+Date:   Mon, 16 Nov 2020 11:17:56 +0100
+Message-Id: <cover.1605521731.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201116084023.GL3718728@dell>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=IkcTkHD0fZMA:10 a=-VAfIpHNAAAA:8 a=e5mUnYsNAAAA:8 a=KKAkSRfTAAAA:8
-        a=uGS4jb_diw1687yx55MA:9 a=QEXdDO2ut3YA:10 a=srlwD-8ojaedGGhPAyx8:22
-        a=Vxmtnl_E_bksehYqCbjh:22 a=cvBusfyB2V15izCimMoJ:22
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
-On Mon, Nov 16, 2020 at 08:40:23AM +0000, Lee Jones wrote:
-> On Sat, 14 Nov 2020, Sam Ravnborg wrote:
-> 
-> > Hi Lee,
-> > On Fri, Nov 13, 2020 at 01:49:10PM +0000, Lee Jones wrote:
-> > > Fixes the following W=1 kernel build warning(s):
-> > > 
-> > >  drivers/gpu/drm/pl111/pl111_display.c:356:6: warning: no previous prototype for ‘pl111_display_disable’ [-Wmissing-prototypes]
-> > > 
-> > > Cc: Eric Anholt <eric@anholt.net>
-> > > Cc: David Airlie <airlied@linux.ie>
-> > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > Cc: dri-devel@lists.freedesktop.org
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > 
-> > Eric's was not copied on this or the other pl111 patch.
-> > Added Eric so he can be aware of this fix.
-> 
-> Eric Anholt?
-> 
-> He's on Cc?
-Not on the original mail I received.
+Kernel-doc has always be limited to a probably bad documented
+rule:
 
-	Sam
+The kernel-doc markups should appear *imediatelly before* the
+function or data structure that it documents.
+
+On other words, if a C file would contain something like this:
+
+	/**
+	 * foo - function foo
+	 * @args: foo args
+	 */
+	static inline void bar(int args);
+
+	/**
+	 * bar - function bar
+	 * @args: foo args
+	 */
+	static inline void foo(void *args);
+
+
+The output (in ReST format) will be:
+
+	.. c:function:: void bar (int args)
+
+	   function foo
+
+	**Parameters**
+
+	``int args``
+	  foo args
+
+
+	.. c:function:: void foo (void *args)
+
+	   function bar
+
+	**Parameters**
+
+	``void *args``
+	  foo args
+
+Which is clearly a wrong result.  Before this changeset, 
+not even a warning is produced on such cases.
+
+As placing such markups just before the documented
+data is a common practice, on most cases this is fine.
+
+However, as patches touch things, identifiers may be
+renamed, and people may forget to update the kernel-doc
+markups to follow such changes.
+
+This has been happening for quite a while, as there are
+lots of files with kernel-doc problems.
+
+This series address those issues and add a file at the
+end that will enforce that the identifier will match the
+kernel-doc markup, avoiding this problem from
+keep happening as time goes by.
+
+This series is based on current upstream tree.
+
+@maintainers: feel free to pick the patches and
+apply them directly on your trees, as all patches on 
+this series are independent from the other ones.
+
+--
+
+v4:
+
+  - Patches got rebased and got some acks.
+
+Mauro Carvalho Chehab (27):
+  net: phy: fix kernel-doc markups
+  net: datagram: fix some kernel-doc markups
+  net: core: fix some kernel-doc markups
+  s390: fix kernel-doc markups
+  drm: fix some kernel-doc markups
+  HSI: fix a kernel-doc markup
+  IB: fix kernel-doc markups
+  parport: fix a kernel-doc markup
+  rapidio: fix kernel-doc a markup
+  video: fix some kernel-doc markups
+  fs: fix kernel-doc markups
+  jbd2: fix kernel-doc markups
+  pstore/zone: fix a kernel-doc markup
+  completion: fix kernel-doc markups
+  firmware: stratix10-svc: fix kernel-doc markups
+  connector: fix a kernel-doc markup
+  lib/crc7: fix a kernel-doc markup
+  hrtimer: fix kernel-doc markups
+  genirq: fix kernel-doc markups
+  list: fix a typo at the kernel-doc markup
+  memblock: fix kernel-doc markups
+  w1: fix a kernel-doc markup
+  resource: fix kernel-doc markups
+  shed: fix kernel-doc markup
+  mm: fix kernel-doc markups
+  selftests: kselftest_harness.h: partially fix kernel-doc markups
+  scripts: kernel-doc: validate kernel-doc markup with the actual names
+
+ arch/s390/include/asm/ccwdev.h                |  2 +-
+ arch/s390/include/asm/cio.h                   |  2 +-
+ drivers/gpu/drm/drm_atomic_state_helper.c     |  2 +-
+ drivers/gpu/drm/drm_connector.c               |  3 +-
+ drivers/gpu/drm/drm_dp_helper.c               |  2 +-
+ drivers/gpu/drm/drm_framebuffer.c             |  2 +-
+ drivers/gpu/drm/drm_gem.c                     |  4 +-
+ drivers/gpu/drm/drm_gem_vram_helper.c         |  2 +-
+ drivers/gpu/drm/drm_mode_object.c             |  2 +-
+ drivers/gpu/drm/drm_modes.c                   |  4 +-
+ drivers/gpu/drm/drm_scdc_helper.c             |  2 +-
+ drivers/gpu/drm/i915/display/intel_dpll_mgr.c |  2 +-
+ drivers/gpu/drm/i915/i915_gem_evict.c         |  2 +-
+ drivers/gpu/drm/i915/i915_perf.c              |  8 ++-
+ drivers/gpu/drm/scheduler/sched_main.c        |  2 +-
+ drivers/gpu/drm/v3d/v3d_sched.c               |  2 +-
+ drivers/gpu/drm/vc4/vc4_bo.c                  |  2 +-
+ drivers/hsi/hsi_core.c                        |  2 +-
+ drivers/infiniband/core/cm.c                  |  5 +-
+ drivers/infiniband/core/cq.c                  |  4 +-
+ drivers/infiniband/core/iwpm_util.h           |  2 +-
+ drivers/infiniband/core/sa_query.c            |  3 +-
+ drivers/infiniband/core/verbs.c               |  4 +-
+ drivers/infiniband/sw/rdmavt/ah.c             |  2 +-
+ drivers/infiniband/sw/rdmavt/mcast.c          | 12 ++--
+ drivers/infiniband/sw/rdmavt/qp.c             |  8 +--
+ drivers/infiniband/ulp/iser/iscsi_iser.c      |  2 +-
+ .../infiniband/ulp/opa_vnic/opa_vnic_encap.h  |  2 +-
+ .../ulp/opa_vnic/opa_vnic_vema_iface.c        |  2 +-
+ drivers/infiniband/ulp/srpt/ib_srpt.h         |  2 +-
+ drivers/net/phy/mdio_bus.c                    |  2 +-
+ drivers/net/phy/phy-c45.c                     |  2 +-
+ drivers/net/phy/phy.c                         |  2 +-
+ drivers/net/phy/phy_device.c                  |  2 +-
+ drivers/net/phy/phylink.c                     |  2 +-
+ drivers/parport/share.c                       |  2 +-
+ drivers/rapidio/rio.c                         |  2 +-
+ drivers/video/fbdev/core/fbcmap.c             |  2 +-
+ drivers/video/hdmi.c                          |  3 +-
+ fs/dcache.c                                   | 72 +++++++++----------
+ fs/inode.c                                    |  4 +-
+ fs/jbd2/journal.c                             | 34 ++++-----
+ fs/jbd2/transaction.c                         | 31 ++++----
+ fs/pstore/zone.c                              |  2 +-
+ fs/seq_file.c                                 |  5 +-
+ fs/super.c                                    | 12 ++--
+ include/drm/drm_atomic_helper.h               |  4 +-
+ include/drm/drm_connector.h                   |  2 +-
+ include/drm/drm_device.h                      |  2 +-
+ include/drm/drm_dsc.h                         |  3 +-
+ include/drm/drm_gem_vram_helper.h             |  8 +--
+ include/linux/completion.h                    | 10 ++-
+ include/linux/connector.h                     |  2 +-
+ .../firmware/intel/stratix10-svc-client.h     | 10 +--
+ include/linux/hrtimer.h                       |  6 +-
+ include/linux/jbd2.h                          |  2 +-
+ include/linux/list.h                          |  2 +-
+ include/linux/memblock.h                      |  4 +-
+ include/linux/netdevice.h                     | 11 ++-
+ include/linux/parport.h                       | 31 ++++++++
+ include/linux/w1.h                            |  2 +-
+ include/rdma/ib_verbs.h                       | 11 +++
+ kernel/irq/chip.c                             |  2 +-
+ kernel/irq/generic-chip.c                     |  2 +-
+ kernel/resource.c                             | 24 ++++---
+ kernel/sched/core.c                           | 16 ++---
+ kernel/sched/fair.c                           |  2 +-
+ kernel/time/hrtimer.c                         |  2 +-
+ lib/crc7.c                                    |  2 +-
+ mm/gup.c                                      | 24 ++++---
+ mm/page_alloc.c                               | 16 ++---
+ mm/truncate.c                                 | 10 ++-
+ net/core/datagram.c                           |  2 +-
+ net/core/dev.c                                |  4 +-
+ net/core/skbuff.c                             |  2 +-
+ net/ethernet/eth.c                            |  6 +-
+ net/sunrpc/rpc_pipe.c                         |  3 +-
+ scripts/kernel-doc                            | 62 +++++++++++-----
+ tools/testing/selftests/kselftest_harness.h   | 22 +++---
+ 79 files changed, 350 insertions(+), 235 deletions(-)
+
+-- 
+2.28.0
+
+
