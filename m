@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7643A2B4612
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C862B461F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730282AbgKPOmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:42:46 -0500
-Received: from mga18.intel.com ([134.134.136.126]:23726 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730250AbgKPOmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:42:45 -0500
-IronPort-SDR: orcUgW/H4SHtHkjt5ZN4mbnN0nqGorYNUlgxSFsehrQaONAt2JbLO/cl0bu+ylf+OHi5vNi65h
- u/h7l3ehjVtA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="158530933"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="158530933"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:42:44 -0800
-IronPort-SDR: mdZvDNgUeCjsSvi0aHbg0soGnpP3Z13ut53o5aklNIirNIucTupKd6nx4VlYduP2wmEOirqGP/
- Iq1me7rOn9zA==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="533435220"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:42:41 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1kefjL-0075SL-DV; Mon, 16 Nov 2020 16:43:43 +0200
-Date:   Mon, 16 Nov 2020 16:43:43 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Claudius Heine <ch@denx.de>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Henning Schild <henning.schild@siemens.com>,
-        Johannes Hahn <johannes-hahn@siemens.com>
-Subject: Re: [PATCH v2 1/3] rtc: rx6110: add i2c support
-Message-ID: <20201116144343.GA1689012@smile.fi.intel.com>
-References: <20201112130734.331094-1-ch@denx.de>
- <20201112130734.331094-2-ch@denx.de>
+        id S1730314AbgKPOpI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 09:45:08 -0500
+Received: from mail-yb1-f196.google.com ([209.85.219.196]:43663 "EHLO
+        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728041AbgKPOpH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:45:07 -0500
+Received: by mail-yb1-f196.google.com with SMTP id d1so3641197ybr.10;
+        Mon, 16 Nov 2020 06:45:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eVAoV+Om+KSwWe/PCuQoaHgBa3Kx3i6nXlnbfHJU4x8=;
+        b=JeEkqE9fRk5A3+vmoTAT71P2INpGYDhEVbkf/yndGyMO4kzrYAxZ4ePjwen4GgPjgE
+         aibrkDGLwrmEzm+7u8qP8e7IAlE4uWdhKMp12+SG1Sj6AYTbkV0b6mdXEkSlnEKWqgIo
+         WqGDuEAvNYpJ8X1tN7ZGhoWKbCVffhJO/wObocjStv7ug1hpZtKwWnLG+BV2YI0q3FKQ
+         nP4VYuwphaCtz8QYx/JnEoAoFAm1TIbvbMTUNQnA+jLbmZ2Tmhkw4pGANTlNWc8kcLEi
+         bsX7PqdwBCFuLn3bKr7amFWCpk+QAa0ihPimTeTt+3HsLp5xh66FbAH6Z40hsGnw+jyb
+         M9oQ==
+X-Gm-Message-State: AOAM533miaJj7fpGjiEXYroi5CCi6Oy9aPu2MU7kw+O+B2idZTVcuZYA
+        2DPDLozE6NftRZt+DCuzuzlDbYKvVmD6a52js3z1mOFnCMuFD8Sv
+X-Google-Smtp-Source: ABdhPJwy+JD4UB0T+4Cxy7ersmtursVy3Gb+RVdPhEamvSQsxOI+Edu8N1ZDENFFFBU8zPNhCOEQ0KQn7OmrCeP1y/I=
+X-Received: by 2002:a25:b90e:: with SMTP id x14mr17217228ybj.307.1605537905871;
+ Mon, 16 Nov 2020 06:45:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112130734.331094-2-ch@denx.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201114152325.523630-1-mailhol.vincent@wanadoo.fr> <11bada82-7406-d8e1-66e3-43db237ee265@pengutronix.de>
+In-Reply-To: <11bada82-7406-d8e1-66e3-43db237ee265@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Mon, 16 Nov 2020 23:44:54 +0900
+Message-ID: <CAMZ6RqKVi8GFxU7s2zkzcv9RLSr_GidayjKu1YyNFRDOijUvgg@mail.gmail.com>
+Subject: Re: [PATCH v6] can: usb: etas_es58X: add support for ETAS ES58X CAN
+ USB interfaces
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 02:07:32PM +0100, Claudius Heine wrote:
-> The RX6110 also supports I2C, so this patch adds support for it to the
-> driver.
-> 
-> This also renames the SPI specific functions and variables to include
-> `_spi_` in their names.
+On Mon. 16 Nov 2020 at 03:55, Marc Kleine-Budde wrote:
+> On 11/14/20 4:22 PM, Vincent Mailhol wrote:
+> > This driver supports the ES581.4, ES582.1 and ES584.1 interfaces from
+> > ETAS GmbH (https://www.etas.com/en/products/es58x.php).
+> >
+> > Co-developed-by: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
+> > Signed-off-by: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
+> > Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+>
+> The driver fails to compile with CONFIG_SYSFS switched off
+>
+>   CC [M]  drivers/net/can/usb/etas_es58x/es58x_core.o
+> drivers/net/can/usb/etas_es58x/es58x_core.c: In function ‘es58x_init_netdev’:
+> drivers/net/can/usb/etas_es58x/es58x_core.c:2380:32: error: ‘struct netdev_queue’ has no member named ‘dql’
+>  2380 |  netdev_get_tx_queue(netdev, 0)->dql.min_limit =
+>       |                                ^~
 
-As practice shows this is not the best approach. Can you ratqer split it to
-three modules: core, spi, i2c like it's done in many other cases (esp. IIO)?
+Thanks, nice catch!
+CONFIG_SYSFS is an expert setting, I totally missed that one. Took me
+actually a couple of minutes navigating in the menuconfig to find how
+to remove the option.
 
-In Kconfig you just leave same option with two additional ones like
+The root cause is actually on CONFIG_BQL (which depends on
+CONFIG_SYSFS).
+Reference: https://elixir.bootlin.com/linux/latest/source/include/linux/netdevice.h#L636
 
-config ..._SPI
-	tristate
-	default SPI_MASTER
-	depends on SPI_MASTER
+Will send a v7 patch right after.
 
-config ..._I2C
-	tristate
-	default I2C
-	depends on I2C
-
--- 
-With Best Regards,
-Andy Shevchenko
+Out of curiosity, how did you find this? Did you find it during a code
+review or did you just happen to have a .config with CONFIG_SYSFS
 
 
+Yours sincerely,
+Vincent Mailhol
