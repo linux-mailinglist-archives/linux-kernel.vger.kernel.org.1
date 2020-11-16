@@ -2,113 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E872B54D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F7C2B54DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbgKPXQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:16:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727460AbgKPXQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:16:42 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CC652225E;
-        Mon, 16 Nov 2020 23:16:39 +0000 (UTC)
-Date:   Mon, 16 Nov 2020 18:16:38 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
- memory allocation
-Message-ID: <20201116181638.6b0de6f7@gandalf.local.home>
-In-Reply-To: <20201116175107.02db396d@gandalf.local.home>
-References: <20201116175107.02db396d@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727861AbgKPXTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:19:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgKPXTy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 18:19:54 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11732C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:19:54 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id s25so26803121ejy.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:19:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rDdIk6WlWEtTD2Qka3gH6AjvLJ6me8YyVBGtt6+aSYw=;
+        b=tOVwTthF+oRBzodNyAt892de12QeK9YVh1NmdZDEO+ofR5XYuXmTL3i9RBUf1+aETa
+         RFVLgVUdfHsJXcJtqXevWAzkAtkndhrk79ZB22Fl8dcQotGg81UcrLrkDgUhpDOaSjHh
+         qf30FSMAco1R758G8XGSN9+HqOguswlRzXbLpMVGufhvficKr1nnXpS/BeLzuW5kOZ6H
+         uijgCE4hItLT9gGhIkQTXdNWeJkMYVAtXYtoOwJfCr6bcEYae5leuL9ItdATzLxakHVQ
+         4Rgjwz3eq5uaVsvwQM3cUacE/x49Pg3gkJjvuwNG3Ko7T9/bynZN8PNor+wMDpL/mDkz
+         6ZuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rDdIk6WlWEtTD2Qka3gH6AjvLJ6me8YyVBGtt6+aSYw=;
+        b=gvPEvcPBwbxiv/eW5ZyEPHKT8EVFS5zBWn0hOfSrvS/RuVuRMsQNKuDmwfXDHVxyTe
+         UIes5RiMI/mPkKFRx788ZWVgk1qbi8mhlwO5BaQmfzoI1BIKiKDnCGe0N0xJ/ZgyM5JB
+         YmRd8rsfsRKJ8IF3OjoJGGIh+ko2jaio6Xg4HtCJyZ1NsOg77rlAmIDs5tVmr+hFPPUl
+         2PReVztW59/5bDCvXeRy5MO98p+CDICnVrjprrdQPtTdHiaz4iodo76BaTcRqwRtaCbf
+         6hCd6rkc+gbG6wRxUAfWWyuFVcKRNXtj5MQZNVlhxMkY5OuJt2CQSzRNw3hTyGlfGwpx
+         O4Bg==
+X-Gm-Message-State: AOAM5320m+ngStWuGGhDl1B86BPHRvI7oz3iUbFFFVBC7zQAc/M3i+JP
+        aGqk9C3bCubz6Zn4IpoTMVFvbthPA7ii3gAzEZ+rIA==
+X-Google-Smtp-Source: ABdhPJzPQBGGcW9pfRJd5nLo2pEUfKE5CqOYKsFWCIec639zZd/SeYHb1n/2m2TEOfzs9ZAm9D9yHborvu9fdysdK2A=
+X-Received: by 2002:a17:906:241b:: with SMTP id z27mr16049093eja.418.1605568792690;
+ Mon, 16 Nov 2020 15:19:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201111054356.793390-5-ben.widawsky@intel.com>
+ <20201113181732.GA1121121@bjorn-Precision-5520> <20201114011225.lzhrbk3sszw2a7m6@intel.com>
+In-Reply-To: <20201114011225.lzhrbk3sszw2a7m6@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 16 Nov 2020 15:19:41 -0800
+Message-ID: <CAPcyv4j+zbns+WhnxWXCdoxa=QN40BFXUpmb=04q36H1sX-aBw@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/9] cxl/mem: Map memory device registers
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 17:51:07 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, Nov 13, 2020 at 5:12 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> On 20-11-13 12:17:32, Bjorn Helgaas wrote:
+> > On Tue, Nov 10, 2020 at 09:43:51PM -0800, Ben Widawsky wrote:
+> > > All the necessary bits are initialized in order to find and map the
+> > > register space for CXL Memory Devices. This is accomplished by using the
+> > > Register Locator DVSEC (CXL 2.0 - 8.1.9.1) to determine which PCI BAR to
+> > > use, and how much of an offset from that BAR should be added.
+> >
+> > "Initialize the necessary bits ..." to use the usual imperative
+> > sentence structure, as you did in the subject.
+> >
+> > > If the memory device registers are found and mapped a new internal data
+> > > structure tracking device state is allocated.
+> >
+> > "Allocate device state if we find device registers" or similar.
+> >
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > ---
+> > >  drivers/cxl/mem.c | 68 +++++++++++++++++++++++++++++++++++++++++++----
+> > >  drivers/cxl/pci.h |  6 +++++
+> > >  2 files changed, 69 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > index aa7d881fa47b..8d9b9ab6c5ea 100644
+> > > --- a/drivers/cxl/mem.c
+> > > +++ b/drivers/cxl/mem.c
+> > > @@ -7,9 +7,49 @@
+> > >  #include "pci.h"
+> > >
+> > >  struct cxl_mem {
+> > > +   struct pci_dev *pdev;
+> > >     void __iomem *regs;
+> > >  };
+> > >
+> > > +static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo, u32 reg_hi)
+> > > +{
+> > > +   struct device *dev = &pdev->dev;
+> > > +   struct cxl_mem *cxlm;
+> > > +   void __iomem *regs;
+> > > +   u64 offset;
+> > > +   u8 bar;
+> > > +   int rc;
+> > > +
+> > > +   offset = ((u64)reg_hi << 32) | (reg_lo & 0xffff0000);
+> > > +   bar = reg_lo & 0x7;
+> > > +
+> > > +   /* Basic sanity check that BAR is big enough */
+> > > +   if (pci_resource_len(pdev, bar) < offset) {
+> > > +           dev_err(dev, "bar%d: %pr: too small (offset: %#llx)\n",
+> > > +                           bar, &pdev->resource[bar], (unsigned long long) offset);
+> >
+> > s/bar/BAR/
+> >
+> > > +           return ERR_PTR(-ENXIO);
+> > > +   }
+> > > +
+> > > +   rc = pcim_iomap_regions(pdev, 1 << bar, pci_name(pdev));
+> > > +   if (rc != 0) {
+> > > +           dev_err(dev, "failed to map registers\n");
+> > > +           return ERR_PTR(-ENXIO);
+> > > +   }
+> > > +
+> > > +   cxlm = devm_kzalloc(&pdev->dev, sizeof(*cxlm), GFP_KERNEL);
+> > > +   if (!cxlm) {
+> > > +           dev_err(dev, "No memory available\n");
+> > > +           return ERR_PTR(-ENOMEM);
+> > > +   }
+> > > +
+> > > +   regs = pcim_iomap_table(pdev)[bar];
+> > > +   cxlm->pdev = pdev;
+> > > +   cxlm->regs = regs + offset;
+> > > +
+> > > +   dev_dbg(dev, "Mapped CXL Memory Device resource\n");
+> > > +   return cxlm;
+> > > +}
+> > > +
+> > >  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+> > >  {
+> > >     int pos;
+> > > @@ -34,9 +74,9 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+> > >
+> > >  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> > >  {
+> > > +   struct cxl_mem *cxlm = ERR_PTR(-ENXIO);
+> > >     struct device *dev = &pdev->dev;
+> > > -   struct cxl_mem *cxlm;
+> >
+> > The order was better before ("dev", then "clxm").  Oh, I suppose this
+> > is a "reverse Christmas tree" thing.
+> >
+>
+> I don't actually care either way as long as it's consistent. I tend to do
+> reverse Christmas tree for no particular reason.
 
-> [ Kees, I added you because you tend to know about these things.
->   Is it OK to assign a void func(void) that doesn't do anything and returns
->   nothing to a function pointer that could be call with parameters? We need
->   to add stubs for tracepoints when we fail to allocate a new array on
->   removal of a callback, but the callbacks do have arguments, but the stub
->   called does not have arguments.
-> 
->   Matt, Does this patch fix the error your patch was trying to fix?
-> ]
-> 
-> The list of tracepoint callbacks is managed by an array that is protected
-> by RCU. To update this array, a new array is allocated, the updates are
-> copied over to the new array, and then the list of functions for the
-> tracepoint is switched over to the new array. After a completion of an RCU
-> grace period, the old array is freed.
-> 
-> This process happens for both adding a callback as well as removing one.
-> But on removing a callback, if the new array fails to be allocated, the
-> callback is not removed, and may be used after it is freed by the clients
-> of the tracepoint.
-> 
-> There's really no reason to fail if the allocation for a new array fails
-> when removing a function. Instead, the function can simply be replaced by a
-> stub function that could be cleaned up on the next modification of the
-> array. That is, instead of calling the function registered to the
-> tracepoint, it would call a stub function in its place.
-> 
-> Link: https://lore.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 97e1c18e8d17b ("tracing: Kernel Tracepoints")
-> Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
-> Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-> Reported-by: Matt Mullins <mmullins@mmlx.us>
+Yeah, reverse Christmas tree for no particular reason.
 
-Forgot my:
+>
+> > > -   int rc, regloc;
+> > > +   int rc, regloc, i;
+> > >
+> > >     rc = cxl_bus_prepared(pdev);
+> > >     if (rc != 0) {
+> > > @@ -44,15 +84,33 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> > >             return rc;
+> > >     }
+> > >
+> > > +   rc = pcim_enable_device(pdev);
+> > > +   if (rc)
+> > > +           return rc;
+> > > +
+> > >     regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
+> > >     if (!regloc) {
+> > >             dev_err(dev, "register location dvsec not found\n");
+> > >             return -ENXIO;
+> > >     }
+> > > +   regloc += 0xc; /* Skip DVSEC + reserved fields */
+> > > +
+> > > +   for (i = regloc; i < regloc + 0x24; i += 8) {
+> > > +           u32 reg_lo, reg_hi;
+> > > +
+> > > +           pci_read_config_dword(pdev, i, &reg_lo);
+> > > +           pci_read_config_dword(pdev, i + 4, &reg_hi);
+> > > +
+> > > +           if (CXL_REGLOG_IS_MEMDEV(reg_lo)) {
+> > > +                   cxlm = cxl_mem_create(pdev, reg_lo, reg_hi);
+> > > +                   break;
+> > > +           }
+> > > +   }
+> > > +
+> > > +   if (IS_ERR(cxlm))
+> > > +           return -ENXIO;
+> >
+> > I think this would be easier to read if cxl_mem_create() returned NULL
+> > on failure (it prints error messages and we throw away
+> > -ENXIO/-ENOMEM distinction here anyway) so you could do:
+> >
+> >   struct cxl_mem *cxlm = NULL;
+> >
+> >   for (...) {
+> >     if (...) {
+> >       cxlm = cxl_mem_create(pdev, reg_lo, reg_hi);
+> >       break;
+> >     }
+> >   }
+> >
+> >   if (!cxlm)
+> >     return -ENXIO;  /* -ENODEV might be more natural? */
+> >
+>
+> I agree on both counts. Both of these came from Dan, so I will let him explain.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-and tested with adding this (just to see if paths are hit).
-
--- Steve
-
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 774b3733cbbe..96f081ff5284 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -167,6 +167,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- 			/* Need to copy one at a time to remove stubs */
- 			int probes = 0;
- 
-+			printk("HERE stub_funcs=%d\n", stub_funcs);
- 			pos = -1;
- 			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
- 				if (old[nr_probes].func == tp_stub_func)
-@@ -235,7 +236,7 @@ static void *func_remove(struct tracepoint_func **funcs,
- 		int j = 0;
- 		/* N -> M, (N > 1, M > 0) */
- 		/* + 1 for NULL */
--		new = allocate_probes(nr_probes - nr_del + 1, __GFP_NOFAIL);
-+		new = NULL; //allocate_probes(nr_probes - nr_del + 1, __GFP_NOFAIL);
- 		if (new) {
- 			for (i = 0; old[i].func; i++)
- 				if ((old[i].func != tp_func->func
+I'm not attached to differentiating -ENOMEM from -ENXIO and am ok to
+drop the ERR_PTR() return. I do tend to use -ENXIO for failure to
+perform an initialization action vs failure to even find the device,
+but if -ENODEV seems more idiomatic to Bjorn, I won't argue.
