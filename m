@@ -2,78 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1702B42C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169D82B41D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729766AbgKPLZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:25:41 -0500
-Received: from fieber.vanmierlo.com ([84.243.197.177]:39456 "EHLO
-        kerio9.vanmierlo.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729110AbgKPLZl (ORCPT
+        id S1729196AbgKPK5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:57:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728211AbgKPK53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:25:41 -0500
-X-Greylist: delayed 1816 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Nov 2020 06:25:40 EST
-X-Footer: dmFubWllcmxvLmNvbQ==
-Received: from roundcube.vanmierlo.com ([192.168.37.37])
-        (authenticated user m.brock@vanmierlo.com)
-        by kerio9.vanmierlo.com (Kerio Connect 9.2.12 patch 1) with ESMTPA;
-        Mon, 16 Nov 2020 11:55:01 +0100
+        Mon, 16 Nov 2020 05:57:29 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E089BC0613CF;
+        Mon, 16 Nov 2020 02:57:28 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id o15so18182395wru.6;
+        Mon, 16 Nov 2020 02:57:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sGBtl7stE1Xi2ywmSUQe0vTOhmZYyoOAWUhdSHo6KUQ=;
+        b=uEfKz5fnvp8a3FCQ/CUoX36/tnMKms1HN8pWmwsn4WcvyylAWO1NVKA8w+eQ8mBiG+
+         8V55DA7WCwHSsEErgZQy7hlOTh26YL3w/cKjC+W/G+Tr9277iLIcOUenB8Q6t0jlURtp
+         eZ+IWoekcStJKTYKBidJni3RB2zhUvLHT7s6G4/lJXkIyxPquXxXScU7NLEi2TNzst6S
+         RaexM8/jttlcoEmWh2FLEKbe1U/mtwuxzeOK9hZsC5g1U8GmACmUpdCN6hOKS/U4TIXv
+         9B5epSrWaI4rWV4+I2BruKzyUaBVx1NEFtau3FTyX7srTLKX3qgFHUDAdTqcW9z2lHui
+         +7ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sGBtl7stE1Xi2ywmSUQe0vTOhmZYyoOAWUhdSHo6KUQ=;
+        b=EAbLIoPQWELo4yAvl+K8jWCGEIaE9CFJ46C0oQs7wr/NNTjWVHehwRNN09Q08VWaOh
+         KRhhVc+vfdv7gs05ckyeK65HOFtQ/2MtlfU16r3rjuNLiuk20bkQiRQIIpSBB/ya4dBe
+         DGV4ZudsuT/kQn1BaWoQ14LWmWKw5ORr+ZjbPI7zcKHBNBhv99hNkodXnAqeQHxQi31X
+         oD/t8hRZx8WVO8dYJzhHmC1cx4S+GFXK5O+sUpzmh/w2ouHkklX6IHCStAxm/QHu1zIo
+         kfqXgvggSvZwNRlpXOuya9fUK5V7T8V5u0FoOwxb1fjVk76CScSFEUfxXf5ppX5C22Sk
+         DKfw==
+X-Gm-Message-State: AOAM533w31J3i7jNPEKnNXRmjIsAVSnSoVoDt5usLOGsOBLlHfZucUO6
+        oR079b7EWgyuTtbXizfWx7qPYcIEvkg=
+X-Google-Smtp-Source: ABdhPJyGkFEVHRfQepzCNGaZ0yGLTKwJKL7NTwjcJGaA79SbUYW9jOy73lisgBlqvZUxw5bOsoGskg==
+X-Received: by 2002:adf:f08a:: with SMTP id n10mr18754749wro.260.1605524247317;
+        Mon, 16 Nov 2020 02:57:27 -0800 (PST)
+Received: from [192.168.8.114] ([37.167.85.62])
+        by smtp.gmail.com with ESMTPSA id n9sm19273935wmd.4.2020.11.16.02.57.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Nov 2020 02:57:26 -0800 (PST)
+Subject: Re: [PATCH v4] tcp: fix race condition when creating child sockets
+ from syncookies
+To:     Ricardo Dias <rdias@singlestore.com>, davem@davemloft.net,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        edumazet@google.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201113190935.GA106934@rdias-suse-pc.lan>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <f91c2d08-34dc-6fd6-1153-8c4a714377e7@gmail.com>
+Date:   Mon, 16 Nov 2020 11:57:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201113190935.GA106934@rdias-suse-pc.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 16 Nov 2020 11:55:01 +0100
-From:   Maarten Brock <m.brock@vanmierlo.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH 22/36] tty: serial: xilinx_uartps: Supply description for
- missing member 'cts_override'
-In-Reply-To: <20201104193549.4026187-23-lee.jones@linaro.org>
-References: <20201104193549.4026187-1-lee.jones@linaro.org>
- <20201104193549.4026187-23-lee.jones@linaro.org>
-Message-ID: <230a462dd8d22fc8cd9dc6f4827edf04@vanmierlo.com>
-X-Sender: m.brock@vanmierlo.com
-User-Agent: Roundcube Webmail/1.3.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 20:35, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+
+
+On 11/13/20 8:09 PM, Ricardo Dias wrote:
+> When the TCP stack is in SYN flood mode, the server child socket is
+> created from the SYN cookie received in a TCP packet with the ACK flag
+> set.
 > 
->  drivers/tty/serial/xilinx_uartps.c:205: warning: Function parameter
-> or member 'cts_override' not described in 'cdns_uart'
+> The child socket is created when the server receives the first TCP
+> packet with a valid SYN cookie from the client. Usually, this packet
+> corresponds to the final step of the TCP 3-way handshake, the ACK
+> packet. But is also possible to receive a valid SYN cookie from the
+> first TCP data packet sent by the client, and thus create a child socket
+> from that SYN cookie.
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Cc: Michal Simek <michal.simek@xilinx.com>
-> Cc: linux-serial@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>
+
+
+...
+
+> Signed-off-by: Ricardo Dias <rdias@singlestore.com>
 > ---
->  drivers/tty/serial/xilinx_uartps.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/tty/serial/xilinx_uartps.c
-> b/drivers/tty/serial/xilinx_uartps.c
-> index a9b1ee27183a7..a14c5d9964739 100644
-> --- a/drivers/tty/serial/xilinx_uartps.c
-> +++ b/drivers/tty/serial/xilinx_uartps.c
-> @@ -192,6 +192,7 @@ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
->   * @baud:		Current baud rate
->   * @clk_rate_change_nb:	Notifier block for clock changes
->   * @quirks:		Flags for RXBS support.
-> + * @cts_override:	Modem control state override
+
+
+
+> +#endif
+>  #include <net/secure_seq.h>
+>  #include <net/ip.h>
+>  #include <net/tcp.h>
+> @@ -510,17 +513,27 @@ static u32 inet_sk_port_offset(const struct sock *sk)
+>  					  inet->inet_dport);
+>  }
+>  
+> -/* insert a socket into ehash, and eventually remove another one
+> - * (The another one can be a SYN_RECV or TIMEWAIT
+> +/* Insert a socket into ehash, and eventually remove another one
+> + * (The another one can be a SYN_RECV or TIMEWAIT)
+> + * If an existing socket already exists, it returns that socket
+> + * through the esk parameter.
 >   */
->  struct cdns_uart {
->  	struct uart_port	*port;
+> -bool inet_ehash_insert(struct sock *sk, struct sock *osk)
+> +bool inet_ehash_insert(struct sock *sk, struct sock *osk, struct sock **esk)
+>  {
+>  	struct inet_hashinfo *hashinfo = sk->sk_prot->h.hashinfo;
+>  	struct hlist_nulls_head *list;
+>  	struct inet_ehash_bucket *head;
+> -	spinlock_t *lock;
+> +	const struct hlist_nulls_node *node;
+> +	struct sock *_esk;
 
-While you are at it, would you consider to also fix the indentation of 
-the
-cts_override flag at line 208?
+> +	spinlock_t *lock; /* protects hashinfo socket entry */
+         Please do not add this comment, I find it confusing, and breaking reverse tree.
 
-Maarten
+> +	struct net *net = sock_net(sk);
+> +	const int dif = sk->sk_bound_dev_if;
+> +	const int sdif = sk->sk_bound_dev_if;
+>  	bool ret = true;
+>  
+> +	INET_ADDR_COOKIE(acookie, sk->sk_daddr, sk->sk_rcv_saddr);
+> +	const __portpair ports = INET_COMBINED_PORTS(sk->sk_dport, sk->sk_num);
+> +
+>  	WARN_ON_ONCE(!sk_unhashed(sk));
+>  
+>  	sk->sk_hash = sk_ehashfn(sk);
+> @@ -532,16 +545,49 @@ bool inet_ehash_insert(struct sock *sk, struct sock *osk)
+>  	if (osk) {
+>  		WARN_ON_ONCE(sk->sk_hash != osk->sk_hash);
+>  		ret = sk_nulls_del_node_init_rcu(osk);
+> +	} else if (esk) {
 
+You could move here all the needed new variables, and also
+     the INET_ADDR_COOKIE(...), const __portpair ports = ...;
+
+This would allow to keep a nice reverse tree order, and keep scope small.
+
+		const __portpair ports = INET_COMBINED_PORTS(sk->sk_dport, sk->sk_num);
+		INET_ADDR_COOKIE(acookie, sk->sk_daddr, sk->sk_rcv_saddr);
+		const int sdif = sk->sk_bound_dev_if;
+		const int dif = sk->sk_bound_dev_if;
+		const struct hlist_nulls_node *node;
+		struct net *net = sock_net(sk);
+
+Alternatively you could also move this code into a helper function.
+
+
+               } else if (esk) {
+                       *esk = inet_ehash_lookup_by_sk(sk, node);
+               }
+
+> +		sk_nulls_for_each_rcu(_esk, node, list) {
+> +			if (_esk->sk_hash != sk->sk_hash)
+> +				continue;
+> +			if (sk->sk_family == AF_INET) {
+> +				if (unlikely(INET_MATCH(_esk, net, acookie,
+> +							sk->sk_daddr,
+> +							sk->sk_rcv_saddr,
+> +							ports, dif, sdif))) {
+> +					refcount_inc(&_esk->sk_refcnt);
+> +					goto found;
+> +				}
+> +			}
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +			else if (sk->sk_family == AF_INET6) {
+> +				if (unlikely(INET6_MATCH(_esk, net,
+> +							 &sk->sk_v6_daddr,
+> +							 &sk->sk_v6_rcv_saddr,
+> +							 ports, dif, sdif))) {
+> +					refcount_inc(&_esk->sk_refcnt);
+> +					goto found;
+> +				}
+> +			}
+> +#endif
+> +		}
+> +
+>
