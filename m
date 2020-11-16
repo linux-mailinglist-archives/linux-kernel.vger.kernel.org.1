@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481FE2B4DED
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173D82B4D67
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387612AbgKPRj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:39:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
+        id S1733266AbgKPRhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733255AbgKPRhW (ORCPT
+        with ESMTP id S1733233AbgKPRhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:37:22 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AE5C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:22 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 10so28949wml.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:22 -0800 (PST)
+        Mon, 16 Nov 2020 12:37:23 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A620C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:23 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id a3so9668wmb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=I1uDD7eJYKIFmY2+cEE1XxDSSI80DfvhehKV0mcsFfw=;
-        b=xwaRqeZ7quP0cWyeWhd8C6+hJKr/nYyRBXd5dcd/0xopFhUsnodBso0oGf7oip4HT5
-         CWT6wdh+uJgJBqvi0EEYxPVdELNx/M2yGoG2KAEoeMLoE9LJFe1WUqpcQY8KLAkNaGN8
-         SvB25e7lNzQ7Q0xQjnrx8YVp1hUbanOFrVvrIBSZi8RCgwbIhHf8fgiLGGTjo7XiQu39
-         6JxMmkENBQ/YeBPOMpvs+pK9pkDuHh+7tIk9gQ/zKXB1bz8LH3BQ1eILp4X29krtQeee
-         axdAUn7R6YssKyyop9XTX1yvlvTSl8KCMnSgrwEMFrsG/3LPLQdvF/27Wp58nwphtKPG
-         ZeNA==
+        bh=BSn+OXUyqlvsEb5g4HG7YJio2FrFxnG4RAzoSpJ37n4=;
+        b=V+ElGLhIkl31Mb6P/M3XGUqM6iyTGUDvmxvcJhvSe07Njk+hFpmjbacneoTsjLTfSA
+         sFaHyOduil4Gvo0/pfIxP9JJGg9xIs4lJ6PC/K/1BjS5gzfuKAtS4dA3U/06gExWEepW
+         z34W2YW39i60AK8MaVWa5tWhHqmxnSpDAcSwTB7TvxuMDO1A6bNFQdF9k66dM1xEHqv7
+         +U3CyMQ83XgpjYOueCkvHHKJV8TuCuYa8gCaCPC1qX1Ro21fGH6DH24sQ4vz9p4c35qp
+         vypuRQj7FtZdT32r2KCrzyTF4ZPSx0btFEs2MYm25/t3tW94aqCkVKeabvJsqDXn9AJW
+         ULeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=I1uDD7eJYKIFmY2+cEE1XxDSSI80DfvhehKV0mcsFfw=;
-        b=DDDDkFPfC+mgYTFrsuG9AnbqyDwOl14tecWaiNEO0i/tsoLP3GZXH0vNFlJLjADZWC
-         obaYxOGCMg60QRZlIUht44cLiVj1p5DYpc4O/qI5VEJkoPXbuZnuDrxcbru6/udtcrCB
-         afC69e0qAnXYejqrs9oi3qSynhvGD5sX1Geg3lyA8lujYDxq61eWf5ocicJTU2gsn8qc
-         /hySaA1E/8hXhfmsdyC7kpLqk/vnadCOFOsqZENU/MS845qkWBO5rpGOD3fvFQqsWLK4
-         ErtUxV/+5jKJNnij0Yynr7EbvbHxTuUq2WsJY1QGKCKNJArgzeNSJUmmXQ5SlngBN/+V
-         KC5A==
-X-Gm-Message-State: AOAM530Xtzn1eHb9RL5PDNXipmb+B1a43q7rfuZX8jF424VsoDWPQdQk
-        RojBxdlbmHsLAzNh08ic9EhkqA==
-X-Google-Smtp-Source: ABdhPJyPyvX6KsLrBpMenVnxw9lp2ogJx9C5LPszyl+alzyLn0ibB1AcbIsYmL/pB+oAoVo8qw3y4A==
-X-Received: by 2002:a1c:b0c4:: with SMTP id z187mr16320374wme.113.1605548240726;
-        Mon, 16 Nov 2020 09:37:20 -0800 (PST)
+        bh=BSn+OXUyqlvsEb5g4HG7YJio2FrFxnG4RAzoSpJ37n4=;
+        b=MSrz4WZRhIA8lD5wCIzm7fdnsnkf4PxD28RkVb3iYjQP/NeZFvFCJZMdoiODsRxyMw
+         yFCjzdgcG82bmf8vdIAjIKTO1uSIn9sxwg+0O+Rdvlo/9zj3vhh4K0DCw0ODyaMx8R9C
+         wKkt5EjTFe1emjS1Jl11PA6gxfHP6W4ZGuRY6VgIPXEvVi1YggLQNspszLo5JF4/l6tn
+         5t9RSClnMWnL/++jux1T6byroMOy0MWu0Hykf8q3z3WDLr2T8umRZFXWQyiKy9WgI50H
+         +8reSV+E9L9wAMgYSi0k+qWRDOc46pSiPW0ZR3SLXoNbVbthQu2IIm0lvbPgmaV8zZMl
+         sL2A==
+X-Gm-Message-State: AOAM5323if3DIxcmnKen2e5GHydHBXAtrVbv12xF+cq61u1HlYCq+PTy
+        AGc39froUDfw5pgI2jQljBVwqA==
+X-Google-Smtp-Source: ABdhPJxXTILeArQ2qdcPdd40XEL/rxA2gV1qsUMQkoZC+iy0q2saiuvG4VqLjI16yVxZ/cTxA9BrFw==
+X-Received: by 2002:a1c:2b05:: with SMTP id r5mr16513667wmr.179.1605548242110;
+        Mon, 16 Nov 2020 09:37:22 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.19
+        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:37:20 -0800 (PST)
+        Mon, 16 Nov 2020 09:37:21 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 12/43] drm/radeon/evergreen: Move 'evergreen_*' and 'sumo_*' prototypes out to shared location
-Date:   Mon, 16 Nov 2020 17:36:29 +0000
-Message-Id: <20201116173700.1830487-13-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Gareth Hughes <gareth@valinux.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 13/43] drm/radeon/radeon_drv: Move 'radeon_mmap()'s prototype to shared header
+Date:   Mon, 16 Nov 2020 17:36:30 +0000
+Message-Id: <20201116173700.1830487-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116173700.1830487-1-lee.jones@linaro.org>
 References: <20201116173700.1830487-1-lee.jones@linaro.org>
@@ -71,213 +72,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/evergreen.c:1281:6: warning: no previous prototype for ‘evergreen_fix_pci_max_read_req_size’ [-Wmissing-prototypes]
- 1281 | void evergreen_fix_pci_max_read_req_size(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:2664:6: warning: no previous prototype for ‘evergreen_mc_stop’ [-Wmissing-prototypes]
- 2664 | void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save)
- | ^~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:2762:6: warning: no previous prototype for ‘evergreen_mc_resume’ [-Wmissing-prototypes]
- 2762 | void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save)
- | ^~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:2850:6: warning: no previous prototype for ‘evergreen_mc_program’ [-Wmissing-prototypes]
- 2850 | void evergreen_mc_program(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:3710:5: warning: no previous prototype for ‘evergreen_mc_init’ [-Wmissing-prototypes]
- 3710 | int evergreen_mc_init(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:3769:6: warning: no previous prototype for ‘evergreen_print_gpu_status_regs’ [-Wmissing-prototypes]
- 3769 | void evergreen_print_gpu_status_regs(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:3797:6: warning: no previous prototype for ‘evergreen_is_display_hung’ [-Wmissing-prototypes]
- 3797 | bool evergreen_is_display_hung(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:4009:6: warning: no previous prototype for ‘evergreen_gpu_pci_config_reset’ [-Wmissing-prototypes]
- 4009 | void evergreen_gpu_pci_config_reset(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:4110:6: warning: no previous prototype for ‘sumo_rlc_fini’ [-Wmissing-prototypes]
- 4110 | void sumo_rlc_fini(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:4153:5: warning: no previous prototype for ‘sumo_rlc_init’ [-Wmissing-prototypes]
- 4153 | int sumo_rlc_init(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:4381:5: warning: no previous prototype for ‘evergreen_rlc_resume’ [-Wmissing-prototypes]
- 4381 | int evergreen_rlc_resume(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~
- drivers/gpu/drm/radeon/evergreen.c:4670:6: warning: no previous prototype for ‘evergreen_irq_suspend’ [-Wmissing-prototypes]
- 4670 | void evergreen_irq_suspend(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~~~~~
-
-NB: Lots more of these - snipped for brevity
+ drivers/gpu/drm/radeon/radeon_ttm.c:931:5: warning: no previous prototype for ‘radeon_mmap’ [-Wmissing-prototypes]
+ 931 | int radeon_mmap(struct file *filp, struct vm_area_struct *vma)
+ | ^~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Gareth Hughes <gareth@valinux.com>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/cik.c       |  6 +---
- drivers/gpu/drm/radeon/evergreen.c |  1 +
- drivers/gpu/drm/radeon/evergreen.h | 51 ++++++++++++++++++++++++++++++
- drivers/gpu/drm/radeon/ni.c        | 16 +---------
- drivers/gpu/drm/radeon/si.c        |  7 +---
- 5 files changed, 55 insertions(+), 26 deletions(-)
- create mode 100644 drivers/gpu/drm/radeon/evergreen.h
+ drivers/gpu/drm/radeon/radeon_drv.c | 2 +-
+ drivers/gpu/drm/radeon/radeon_ttm.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
-index abf370e16bd9f..315c4f3df3656 100644
---- a/drivers/gpu/drm/radeon/cik.c
-+++ b/drivers/gpu/drm/radeon/cik.c
-@@ -30,6 +30,7 @@
- #include <drm/drm_vblank.h>
+diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
+index 536b246b9a6aa..2b9deaead99b2 100644
+--- a/drivers/gpu/drm/radeon/radeon_drv.c
++++ b/drivers/gpu/drm/radeon/radeon_drv.c
+@@ -51,6 +51,7 @@
+ #include <drm/radeon_drm.h>
  
- #include "atom.h"
-+#include "evergreen.h"
- #include "cik_blit_shaders.h"
- #include "cikd.h"
- #include "clearstate_ci.h"
-@@ -126,11 +127,6 @@ MODULE_FIRMWARE("radeon/mullins_sdma.bin");
- 
- extern int r600_ih_ring_alloc(struct radeon_device *rdev);
- extern void r600_ih_ring_fini(struct radeon_device *rdev);
--extern void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
--extern void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save);
--extern bool evergreen_is_display_hung(struct radeon_device *rdev);
--extern void sumo_rlc_fini(struct radeon_device *rdev);
--extern int sumo_rlc_init(struct radeon_device *rdev);
- extern void si_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc);
- extern void si_rlc_reset(struct radeon_device *rdev);
- extern void si_init_uvd_internal_cg(struct radeon_device *rdev);
-diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeon/evergreen.c
-index 9a1e240b07234..f860f5ef2df88 100644
---- a/drivers/gpu/drm/radeon/evergreen.c
-+++ b/drivers/gpu/drm/radeon/evergreen.c
-@@ -32,6 +32,7 @@
- #include "atom.h"
- #include "avivod.h"
- #include "rv770.h"
-+#include "evergreen.h"
- #include "evergreen_blit_shaders.h"
- #include "evergreen_reg.h"
- #include "evergreend.h"
-diff --git a/drivers/gpu/drm/radeon/evergreen.h b/drivers/gpu/drm/radeon/evergreen.h
-new file mode 100644
-index 0000000000000..30c9ca99ced90
---- /dev/null
-+++ b/drivers/gpu/drm/radeon/evergreen.h
-@@ -0,0 +1,51 @@
-+/* radeon_evergreen.h -- Private header for radeon driver -*- linux-c -*-
-+ *
-+ * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
-+ * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
-+ * All rights reserved.
-+ *
-+ * Permission is hereby granted, free of charge, to any person obtaining a
-+ * copy of this software and associated documentation files (the "Software"),
-+ * to deal in the Software without restriction, including without limitation
-+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-+ * and/or sell copies of the Software, and to permit persons to whom the
-+ * Software is furnished to do so, subject to the following conditions:
-+ *
-+ * The above copyright notice and this permission notice (including the next
-+ * paragraph) shall be included in all copies or substantial portions of the
-+ * Software.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-+ * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-+ * DEALINGS IN THE SOFTWARE.
-+ *
-+ */
-+
-+#ifndef __RADEON_EVERGREEN_H__
-+#define __RADEON_EVERGREEN_H__
-+
-+struct evergreen_mc_save;
-+struct radeon_device;
-+
-+bool evergreen_is_display_hung(struct radeon_device *rdev);
-+void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
-+void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
-+void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save);
-+int evergreen_mc_wait_for_idle(struct radeon_device *rdev);
-+void evergreen_mc_program(struct radeon_device *rdev);
-+void evergreen_irq_suspend(struct radeon_device *rdev);
-+int evergreen_mc_init(struct radeon_device *rdev);
-+void evergreen_fix_pci_max_read_req_size(struct radeon_device *rdev);
-+void evergreen_pcie_gen2_enable(struct radeon_device *rdev);
-+void evergreen_program_aspm(struct radeon_device *rdev);
-+void sumo_rlc_fini(struct radeon_device *rdev);
-+int sumo_rlc_init(struct radeon_device *rdev);
-+void evergreen_gpu_pci_config_reset(struct radeon_device *rdev);
-+u32 evergreen_get_number_of_dram_channels(struct radeon_device *rdev);
-+void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
-+
-+#endif				/* __RADEON_EVERGREEN_H__ */
-diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
-index 564a775b4b90c..1c9030a4631b8 100644
---- a/drivers/gpu/drm/radeon/ni.c
-+++ b/drivers/gpu/drm/radeon/ni.c
-@@ -32,6 +32,7 @@
- #include "atom.h"
- #include "cayman_blit_shaders.h"
- #include "clearstate_cayman.h"
-+#include "evergreen.h"
- #include "ni_reg.h"
- #include "nid.h"
+ #include "radeon_drv.h"
++#include "radeon_ttm.h"
  #include "radeon.h"
-@@ -190,21 +191,6 @@ static const u32 tn_rlc_save_restore_register_list[] =
- 	0x802c,
- };
+ #include "radeon_device.h"
  
--extern bool evergreen_is_display_hung(struct radeon_device *rdev);
--extern void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
--extern void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
--extern void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save);
--extern int evergreen_mc_wait_for_idle(struct radeon_device *rdev);
--extern void evergreen_mc_program(struct radeon_device *rdev);
--extern void evergreen_irq_suspend(struct radeon_device *rdev);
--extern int evergreen_mc_init(struct radeon_device *rdev);
--extern void evergreen_fix_pci_max_read_req_size(struct radeon_device *rdev);
--extern void evergreen_pcie_gen2_enable(struct radeon_device *rdev);
--extern void evergreen_program_aspm(struct radeon_device *rdev);
--extern void sumo_rlc_fini(struct radeon_device *rdev);
--extern int sumo_rlc_init(struct radeon_device *rdev);
--extern void evergreen_gpu_pci_config_reset(struct radeon_device *rdev);
--
- /* Firmware Names */
- MODULE_FIRMWARE("radeon/BARTS_pfp.bin");
- MODULE_FIRMWARE("radeon/BARTS_me.bin");
-diff --git a/drivers/gpu/drm/radeon/si.c b/drivers/gpu/drm/radeon/si.c
-index de0792842af89..45076c27d7ded 100644
---- a/drivers/gpu/drm/radeon/si.c
-+++ b/drivers/gpu/drm/radeon/si.c
-@@ -32,6 +32,7 @@
+@@ -125,7 +126,6 @@ extern int radeon_get_crtc_scanoutpos(struct drm_device *dev, unsigned int crtc,
+ 				      ktime_t *stime, ktime_t *etime,
+ 				      const struct drm_display_mode *mode);
+ extern bool radeon_is_px(struct drm_device *dev);
+-int radeon_mmap(struct file *filp, struct vm_area_struct *vma);
+ int radeon_mode_dumb_mmap(struct drm_file *filp,
+ 			  struct drm_device *dev,
+ 			  uint32_t handle, uint64_t *offset_p);
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.h b/drivers/gpu/drm/radeon/radeon_ttm.h
+index 91ea7141bc812..4d7b90ee27740 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.h
++++ b/drivers/gpu/drm/radeon/radeon_ttm.h
+@@ -32,5 +32,6 @@ struct radeon_device;
  
- #include "atom.h"
- #include "clearstate_si.h"
-+#include "evergreen.h"
- #include "radeon.h"
- #include "radeon_asic.h"
- #include "radeon_audio.h"
-@@ -129,12 +130,6 @@ extern void sumo_rlc_fini(struct radeon_device *rdev);
- extern int sumo_rlc_init(struct radeon_device *rdev);
- extern int r600_ih_ring_alloc(struct radeon_device *rdev);
- extern void r600_ih_ring_fini(struct radeon_device *rdev);
--extern void evergreen_fix_pci_max_read_req_size(struct radeon_device *rdev);
--extern void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
--extern void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save);
--extern u32 evergreen_get_number_of_dram_channels(struct radeon_device *rdev);
--extern void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
--extern bool evergreen_is_display_hung(struct radeon_device *rdev);
- static void si_enable_gui_idle_interrupt(struct radeon_device *rdev,
- 					 bool enable);
- static void si_init_pg(struct radeon_device *rdev);
+ int radeon_ttm_init(struct radeon_device *rdev);
+ void radeon_ttm_fini(struct radeon_device *rdev);
++int radeon_mmap(struct file *filp, struct vm_area_struct *vma);
+ 
+ #endif				/* __RADEON_TTM_H__ */
 -- 
 2.25.1
 
