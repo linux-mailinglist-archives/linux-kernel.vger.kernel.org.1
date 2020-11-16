@@ -2,64 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9E52B4854
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F0C2B4809
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731284AbgKPPEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:04:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730711AbgKPO6y (ORCPT
+        id S1731222AbgKPPAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:00:41 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:38065 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731147AbgKPPAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:58:54 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE946C0613CF;
-        Mon, 16 Nov 2020 06:58:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6EdMp+J4CPsD0P134OEgMzKPGqPxSRaNzTZK3tAi2vc=; b=Vlf4RNF5FC7pjylF3gIWO1MIuh
-        UR7DDYawMGFs1g4faKaSosRjQ2LEI5vXfyjL+tmyFv2iTEwDGzh9f2OPWGaIOtKmNOjtNa9OXsWTf
-        1B8edQMA7OxMjS4K/DbkxM9B1wY/HG7XWM+VZCwfSIiEtfeM25A48AJj7UUgmVkf7+tSC/saozz+q
-        glcIUhge/OFe4cWaZ5QLy9SPWMO39mlJjp8Oosxe5pxM0cw6HOXNDM1mkkKWCTHhJKqf6HNnyIpqw
-        HdiWQSmlLQcmRu6j8Be72teIYAKuI99jkYGhMYeuYI9G8T5JJqRxNDAp5by+fOu3dhsXGYbiJTLuy
-        iTE5XtxA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kefxy-0003u0-W3; Mon, 16 Nov 2020 14:58:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 43EFB305CC3;
-        Mon, 16 Nov 2020 15:58:50 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2F5BE2025CA2A; Mon, 16 Nov 2020 15:58:50 +0100 (CET)
-Date:   Mon, 16 Nov 2020 15:58:50 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, corbet@lwn.net,
-        keescook@chromium.org, gregkh@linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/13] seqnum_ops: Introduce Sequence Number Ops
-Message-ID: <20201116145850.GC3121429@hirez.programming.kicks-ass.net>
-References: <cover.1605287778.git.skhan@linuxfoundation.org>
- <26cbcc431be5e3ab7d8e0e881d522605a27b1312.1605287778.git.skhan@linuxfoundation.org>
- <20201113210327.GJ17076@casper.infradead.org>
- <20201116144914.GE3121378@hirez.programming.kicks-ass.net>
+        Mon, 16 Nov 2020 10:00:24 -0500
+Received: by mail-ot1-f66.google.com with SMTP id a15so16276689otf.5;
+        Mon, 16 Nov 2020 07:00:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mmkzgNSoeEUQq9ZJSPSCkP5fe2eYf8fnvdnTvX3FQ9o=;
+        b=SiPxBCi3i/uY0jIYI/T1JMFd1eJw2nNv10aG4fz03bQdYA+Z9YYCeHWkSM8bz7OioF
+         +DE5l92nsP2b58tRHNEH/Y1mAJkeM26Hu/rmxthmRU4/LF07opvZp3i8CW19/bN435VP
+         mQLBBRmcySv6LD/myVcPwB/0v78zgJapOjWxW7RyjUlhENVmMZ0pNZKk/1TA2VtAyhYK
+         yf0i0wZ5VtT+AYyh7sgODV/LGT5O+0YWRF/v/WhXkrbLexcnWcJn1XzRNp+JeGdoSbE3
+         13Zpm0ItO71hebc44KyuwDh1K+ZMbbXtrpEHElkzDAvyI6FVJ5PbLt7+aD2TskvO/4Tr
+         mgiA==
+X-Gm-Message-State: AOAM5312UmnHLe81O69/culHfRseuex/APPPVMGZuu2oVBLJ172ycfxw
+        0KsIa36ngvQvO1hANlclOA==
+X-Google-Smtp-Source: ABdhPJwvG0kAayLRkygCXMCLVdZADmD40ITyYLucvzOzIYkakNUFC8ID4apKoUygBywvx1BB4tJteQ==
+X-Received: by 2002:a9d:12b2:: with SMTP id g47mr10353352otg.354.1605538823702;
+        Mon, 16 Nov 2020 07:00:23 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h8sm4872162otm.72.2020.11.16.07.00.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 07:00:22 -0800 (PST)
+Received: (nullmailer pid 1643194 invoked by uid 1000);
+        Mon, 16 Nov 2020 15:00:22 -0000
+Date:   Mon, 16 Nov 2020 09:00:22 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-ide@vger.kernel.org, thierry.reding@gmail.com,
+        devicetree@vger.kernel.org, jonathanh@nvidia.com,
+        robh+dt@kernel.org
+Subject: Re: [PATCH v2 3/6] dt-bindings: ata: tegra: Convert binding
+ documentation to YAML
+Message-ID: <20201116150022.GA1642318@bogus>
+References: <1605296218-2510-1-git-send-email-skomatineni@nvidia.com>
+ <1605296218-2510-4-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116144914.GE3121378@hirez.programming.kicks-ass.net>
+In-Reply-To: <1605296218-2510-4-git-send-email-skomatineni@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 03:49:14PM +0100, Peter Zijlstra wrote:
-> On Fri, Nov 13, 2020 at 09:03:27PM +0000, Matthew Wilcox wrote:
-> > I think almost all of this information should go into atomic_ops.rst
+On Fri, 13 Nov 2020 11:36:55 -0800, Sowjanya Komatineni wrote:
+> This patch converts text based dt-binding document to YAML based
+> dt-binding document.
 > 
-> No, we should delete atomic_ops.rst. It's bitrotted nonsense. The only
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 137 +++++++++++++++++++++
+>  .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 -------
+>  2 files changed, 137 insertions(+), 44 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
+> 
 
-Sod it, I'll just queue a deletion. That'll stop people from trying to
-update the trainwreck.
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dts:27.31-32 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1364: dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1400065
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
