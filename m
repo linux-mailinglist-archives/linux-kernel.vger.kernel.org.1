@@ -2,71 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ADA2B4B2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C31422B4B37
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:33:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732128AbgKPQa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:30:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730302AbgKPQay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:30:54 -0500
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C868A223BD
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 16:30:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605544254;
-        bh=2O3LBp1HPw0KQ1G2spNpvOUgelxUM0n8eKWWsC7ds30=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dqOsYI+0YGbb9NsAnIzVJVzN0+ZCeTcljVXkHY3Ca9c9X+hnuCJH8G2FUn67vfd9U
-         obw74aqxw/UPBefBUp/bAQMVgF7JOQ9WyTuYSFtDMR4oweOAreMWzRFjeNPN566/DC
-         MYCetQ39nn4CSqfi8ZhF3wCBDvpGh7bvgBDqVpPc=
-Received: by mail-wr1-f41.google.com with SMTP id o15so19352282wru.6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:30:53 -0800 (PST)
-X-Gm-Message-State: AOAM532T53J/onkMI4e9wpuQnxt2DDbHaoaIYDZ/XcDq7FWW0Vre9qvP
-        e/D/QScROTYaMxnp/YXdR6Rd1TY0N76sPoDo/ajiuw==
-X-Google-Smtp-Source: ABdhPJxRrSLHlH4ScZov5CaCHz95dre2M6ViQYOjxHY5oh3r9MUJXokIlLxakAYO4Hpet3isswmFWL/5m9Ab6jgvvwU=
-X-Received: by 2002:a5d:5482:: with SMTP id h2mr9404192wrv.18.1605544252224;
- Mon, 16 Nov 2020 08:30:52 -0800 (PST)
+        id S1732182AbgKPQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:32:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgKPQci (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:32:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E50C0613CF;
+        Mon, 16 Nov 2020 08:32:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iB0y9J1IMDI66YKSWITVEM2aiz/Z5fCZJNJJPMLMkso=; b=MJkQpTrW56osExBi/dMXVJnpIw
+        NIlim9BCJT5F5tgyRdOgmQc+boPZNK9p2apNt7gPcoXA8jA0ovSWzSY10zPEiqSr3+oMaxVZb70AP
+        oE1d8y1M8GC1BVl1Wrgr8+EiIX5BHNeGxGVFYf5OwmuUoHZ5G+9NE3FNqws2aN4aXapXlr3S1WyFf
+        MbxONtk+/fXp/gZ91aXIK4qBADADnY8JNHkvgF+q4Ey3/9x69E8S246Qfv4I+hyERDvT2eZjzBth0
+        O8m5XecVDdfXHdAapE9jDEwN00NEgE6m/+zq3aerrhQasuizLEzJYlqT7tFfNyF4+14x1giM/kFn9
+        KoCNtN9w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kehQL-0004lE-3b; Mon, 16 Nov 2020 16:32:13 +0000
+Date:   Mon, 16 Nov 2020 16:32:13 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Peter Zijlstra <peterz@infradead.org>,
+        kan.liang@linux.intel.com, mingo@kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, christophe.leroy@csgroup.eu,
+        npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        mpe@ellerman.id.au, will@kernel.org, aneesh.kumar@linux.ibm.com,
+        sparclinux@vger.kernel.org, davem@davemloft.net,
+        catalin.marinas@arm.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kirill.shutemov@linux.intel.com
+Subject: Re: [PATCH 0/5] perf/mm: Fix PERF_SAMPLE_*_PAGE_SIZE
+Message-ID: <20201116163213.GG29991@casper.infradead.org>
+References: <20201113111901.743573013@infradead.org>
+ <20201116154357.bw64c5ie2kiu5l4x@box>
+ <20201116155404.GD29991@casper.infradead.org>
+ <eeec67f6-ea05-1115-f249-b6cdcf2c5e2c@intel.com>
 MIME-Version: 1.0
-References: <20201116152301.24558-1-jgross@suse.com> <20201116152301.24558-5-jgross@suse.com>
-In-Reply-To: <20201116152301.24558-5-jgross@suse.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 16 Nov 2020 08:30:38 -0800
-X-Gmail-Original-Message-ID: <CALCETrVMX+D1fv3bbb7F_Cp2SfrFBudUqJk=uR3AJkgQ_KCniQ@mail.gmail.com>
-Message-ID: <CALCETrVMX+D1fv3bbb7F_Cp2SfrFBudUqJk=uR3AJkgQ_KCniQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/xen: drop USERGS_SYSRET64 paravirt call
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel <xen-devel@lists.xenproject.org>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eeec67f6-ea05-1115-f249-b6cdcf2c5e2c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 7:23 AM Juergen Gross <jgross@suse.com> wrote:
->
-> USERGS_SYSRET64 is used to return from a syscall via sysret, but
-> a Xen PV guest will nevertheless use the iret hypercall, as there
-> is no sysret PV hypercall defined.
->
-> So instead of testing all the prerequisites for doing a sysret and
-> then mangling the stack for Xen PV again for doing an iret just use
-> the iret exit from the beginning.
->
-> This can easily be done via an ALTERNATIVE like it is done for the
-> sysenter compat case already.
->
-> While at it remove to stale sysret32 remnants.
+On Mon, Nov 16, 2020 at 08:28:23AM -0800, Dave Hansen wrote:
+> On 11/16/20 7:54 AM, Matthew Wilcox wrote:
+> > It gets even more complicated with CPUs with multiple levels of TLB
+> > which support different TLB entry sizes.  My CPU reports:
+> > 
+> > TLB info
+> >  Instruction TLB: 2M/4M pages, fully associative, 8 entries
+> >  Instruction TLB: 4K pages, 8-way associative, 64 entries
+> >  Data TLB: 1GB pages, 4-way set associative, 4 entries
+> >  Data TLB: 4KB pages, 4-way associative, 64 entries
+> >  Shared L2 TLB: 4KB/2MB pages, 6-way associative, 1536 entries
+> 
+> It's even "worse" on recent AMD systems.  Those will coalesce multiple
+> adjacent PTEs into a single TLB entry.  I think Alphas did something
+> like this back in the day with an opt-in.
 
-s/to/the/
+I debated mentioning that ;-)  We can detect in software whether that's
+_possible_, but we can't detect whether it's *done* it.  I heard it
+sometimes takes several faults on the 4kB entries for the CPU to decide
+that it's beneficial to use a 32kB TLB entry.  But this is all rumour.
+
+> Anyway, the changelog should probably replace:
+> 
+> > This enables PERF_SAMPLE_{DATA,CODE}_PAGE_SIZE to report accurate TLB
+> > page sizes.
+> 
+> with something more like:
+> 
+> This enables PERF_SAMPLE_{DATA,CODE}_PAGE_SIZE to report accurate page
+> table mapping sizes.
+> 
+> That's really the best we can do from software without digging into
+> microarchitecture-specific events.
+
+I mean this is perf.  Digging into microarch specific events is what it
+does ;-)
