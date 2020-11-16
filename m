@@ -2,494 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C809B2B44C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136782B44DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729204AbgKPNcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 08:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
+        id S1729336AbgKPNht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 08:37:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgKPNcm (ORCPT
+        with ESMTP id S1728879AbgKPNhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 08:32:42 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF31C0613CF;
-        Mon, 16 Nov 2020 05:32:42 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id 62so13222606pgg.12;
-        Mon, 16 Nov 2020 05:32:42 -0800 (PST)
+        Mon, 16 Nov 2020 08:37:48 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E67C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 05:37:48 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id r14so9112667vsa.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 05:37:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MhvQIZx+4WVXltMTHk6NM1rItTX9NEJ32VnNB91hdHk=;
-        b=XHbn2J8mnoj7TV74MxBxH47MWzw9dlU8s3waSru0K1QldnT4uulLZwcjbu3Pv0q0Pq
-         wRn7YBML1ypolf31Z9tMSgIRjxwzZ7H3KHDy4okTnmZ4RmYEcDhQFkXB9t2R9t1Kw9PU
-         z7Ia5EhD5L4is9JNDm1HJNtO+L9O+b2TWYQa4dLPjgIR8vJ6QwdbE8/KXQsQU6ljVvim
-         kuRXQjEXixk6Ugyfa0q9llUYsTY1WeqkCPBpLGHpHoskQ7JGG+7miZ08mjLAxoq2FS1C
-         OEOcNgaeVHjEaNUkbTOFa5AhlutxHjjY4gv36dFFIyXO34xDDoQGcIHuEvqT9LsJ5TjH
-         ztcg==
+         :cc;
+        bh=dWeaN/nGyVOapaqnYKOPSjDBSNQCNt5OkvgWb8fXvg0=;
+        b=t/3JTz1Vz+AHx+7HmYy6rF69zY2etWreBILyA4tiJReKyMKWqMMvMtYPuOonusasgP
+         /4pd8juJicbK7odNNPg+SpBaPJafsgr9HNaw1iXwWwRcfAkCPvbC4qCuTNrcS83ucMou
+         LwRqlywHPPf1XDkCSMdmWG3PBI/5bFpihhrRpArvezmloFslLfXj/QAJlzhTC74Vf3G4
+         AAO9Z33OHpp5JEVnV3k9wMdigpqU7hqX+Kx/Zt94VxvsJWluiCj28n3Si3UJtcOhGWNd
+         gHY+kx6lDtjxf6Ar8cL1e8wUg0FgMR9TNzONsW4pFIzHrGPUMVMYudOsJzmFuNin8xoz
+         XpHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MhvQIZx+4WVXltMTHk6NM1rItTX9NEJ32VnNB91hdHk=;
-        b=lfKuRWW6GROoy0xDI2+80ABfp18xjmkk3GUt1wLX4Hu0FKMto6C7P1TJMj8vUFlHvS
-         5BhnqaiWfWDLHVVT26qb6+FNO9ag4kT0zsFigFuHIM+iHmiNaZlXsjACWr3N0Ne3ADWf
-         3yNJx+7r+1N/2uTy4/fI+rcca0rPr/IlI86qazX2pTg6sikrH8Me84ul7QewVb507l0f
-         7L1LwoLKmdyKbh/fOnLgx84/H6Wa4wGyiNWgAR86TB7ekV2t7urEh+1nEM7VUmzmkmVV
-         UKTYeFMFRLMmjUifANI8dytehanei1PS+yPlVe4s+wDuFcWa53OjD6FPFkcEIAsPaGKF
-         Fb7g==
-X-Gm-Message-State: AOAM530UcDUgFrkKOYI3it/ejpCyvsH2eAPfpB+V44VvavF5QGGRdFlx
-        SDJ6MsZ2gyyKR+Biq+bFh4Bzo5sNtowPkkAAjAo=
-X-Google-Smtp-Source: ABdhPJwHIwQ3hD9paSMqYSha+PjuEHPXuAxryI0yMmx201boEP+sef85gkuZ7d1SX1Kdbon3GurrkCvIghyUBPtU2bg=
-X-Received: by 2002:a62:7e4f:0:b029:18c:9322:739b with SMTP id
- z76-20020a627e4f0000b029018c9322739bmr13685227pfc.7.1605533561548; Mon, 16
- Nov 2020 05:32:41 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=dWeaN/nGyVOapaqnYKOPSjDBSNQCNt5OkvgWb8fXvg0=;
+        b=Nv6g4ga2noaL9XDkIp2K8PT5NSuejVUh14vz7J29X46LLopox6cmhiU0/YVTnmLnbq
+         B7U8cgu+kxdm3Jf96cr+DcHQlqe4FuDoKELL7ugEL+XGMR0PPoMPTWZWeZ9YBZ3u0FjT
+         j8BfDvS9I9e2oKTaZx8I4Jg6FGj1wKnBdzHEoT8Kkc91EWSoGpbhO4AKLbMsJPKkBjQx
+         6/aOTy6IfTdZbzwnSM606yIDK5dos3fjIY3qxlWDZXKsIZFzA/eEKwdp8cDGrND06P24
+         tb/GQnnKIEAs5uCNp6y8bl/IXkODzYyjgzqNjlHJ2epP/eLiFDLfYUXv0YaR7xmBqari
+         UL2Q==
+X-Gm-Message-State: AOAM533eDwnP7X50Li1OLyGy0c9vmcETHJvJZMd7xgZRY1kXCBICJZ6N
+        VYJ1poO8wXrWgf0d8i8dd18aCJj8Fqw=
+X-Google-Smtp-Source: ABdhPJxRQYJ0hKdfeNc4N2thNEelMoXhIDKdKjfoIqeqsBfHyddx9GKqaqWAMH0n+6XWTTHE7yL5Pw==
+X-Received: by 2002:a67:ed4b:: with SMTP id m11mr7508617vsp.14.1605533866772;
+        Mon, 16 Nov 2020 05:37:46 -0800 (PST)
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com. [209.85.217.49])
+        by smtp.gmail.com with ESMTPSA id s137sm2215222vks.36.2020.11.16.05.37.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Nov 2020 05:37:45 -0800 (PST)
+Received: by mail-vs1-f49.google.com with SMTP id z123so9142115vsb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 05:37:45 -0800 (PST)
+X-Received: by 2002:a67:e210:: with SMTP id g16mr8140769vsa.28.1605533864970;
+ Mon, 16 Nov 2020 05:37:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20201115192143.21571-1-luzmaximilian@gmail.com> <20201115192143.21571-2-luzmaximilian@gmail.com>
-In-Reply-To: <20201115192143.21571-2-luzmaximilian@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 16 Nov 2020 15:33:29 +0200
-Message-ID: <CAHp75VdOnUW6kftkD1zGR345fJUPPv9zfi0YitYJOb1BPxQcPw@mail.gmail.com>
-Subject: Re: [PATCH 1/9] platform/surface: Add Surface Aggregator subsystem
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+References: <MgZce9htmEtCtHg7pmWxXXfdhmQ6AHrnltXC41zOoo@cp7-web-042.plabs.ch>
+ <20201113121502.GB7578@xsang-OptiPlex-9020> <CA+FuTSccV-DNMOqr0hy5q3fZak8=eWYYDNigo8EnG2GV6X1Stw@mail.gmail.com>
+ <lRGp5G0pLof6EJnaWcq32k5uytNikWVd23oYWn28Pk@cp3-web-029.plabs.ch>
+In-Reply-To: <lRGp5G0pLof6EJnaWcq32k5uytNikWVd23oYWn28Pk@cp3-web-029.plabs.ch>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 16 Nov 2020 08:37:08 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSfqyxCg5okPDHYwQsKUOCEVFOkf0a-vyX7VCS2poJsEnQ@mail.gmail.com>
+Message-ID: <CA+FuTSfqyxCg5okPDHYwQsKUOCEVFOkf0a-vyX7VCS2poJsEnQ@mail.gmail.com>
+Subject: Re: [net] 0b726f6b31: BUG:unable_to_handle_page_fault_for_address
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        0day robot <lkp@intel.com>, lkp@lists.01.org,
+        kernel test robot <oliver.sang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 9:25 PM Maximilian Luz <luzmaximilian@gmail.com> wr=
-ote:
+On Mon, Nov 16, 2020 at 8:07 AM Alexander Lobakin <alobakin@pm.me> wrote:
 >
-> Add Surface System Aggregator Module core and Surface Serial Hub driver,
-> required for the embedded controller found on Microsoft Surface devices.
+> From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Date: Fri, 13 Nov 2020 10:51:36 -0500
 >
-> The Surface System Aggregator Module (SSAM, SAM or Surface Aggregator)
-> is an embedded controller (EC) found on 4th and later generation
-> Microsoft Surface devices, with the exception of the Surface Go series.
-> This EC provides various functionality, depending on the device in
-> question. This can include battery status and thermal reporting (5th and
-> later generations), but also HID keyboard (6th+) and touchpad input
-> (7th+) on Surface Laptop and Surface Book 3 series devices.
+> Hi!
 >
-> This patch provides the basic necessities for communication with the SAM
-> EC on 5th and later generation devices. On these devices, the EC
-> provides an interface that acts as serial device, called the Surface
-> Serial Hub (SSH). 4th generation devices, on which the EC interface is
-> provided via an HID-over-I2C device, are not supported by this patch.
+> > On Fri, Nov 13, 2020 at 7:00 AM kernel test robot <oliver.sang@intel.com> wrote:
+> >>
+> >>
+> >> Greeting,
+> >>
+> >> FYI, we noticed the following commit (built with gcc-9):
+> >>
+> >> commit: 0b726f6b318a07644b6c2388e6e44406740f4754 ("[PATCH v3 net] net: udp: fix Fast/frag0 UDP GRO")
+> >> url: https://github.com/0day-ci/linux/commits/Alexander-Lobakin/net-udp-fix-Fast-frag0-UDP-GRO/20201110-052215
+> >> base: https://git.kernel.org/cgit/linux/kernel/git/davem/net.git 4e0396c59559264442963b349ab71f66e471f84d
+> >>
+> >> in testcase: apachebench
+> >> version:
+> >> with following parameters:
+> >>
+> >>         runtime: 300s
+> >>         concurrency: 2000
+> >>         cluster: cs-localhost
+> >>         cpufreq_governor: performance
+> >>         ucode: 0x7000019
+> >>
+> >> test-description: apachebench is a tool for benchmarking your Apache Hypertext Transfer Protocol (HTTP) server.
+> >> test-url: https://httpd.apache.org/docs/2.4/programs/ab.html
+> >>
+> >>
+> >> on test machine: 16 threads Intel(R) Xeon(R) CPU D-1541 @ 2.10GHz with 48G memory
+> >>
+> >> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> >>
+> >>
+> >> If you fix the issue, kindly add following tag
+> >> Reported-by: kernel test robot <oliver.sang@intel.com>
+> >>
+> >>
+> >> [   28.582714] BUG: unable to handle page fault for address: fffffffffffffffa
+> >> [   28.590164] #PF: supervisor read access in kernel mode
+> >> [   28.590164] #PF: error_code(0x0000) - not-present page
+> >> [   28.590165] PGD c7e20d067 P4D c7e20d067 PUD c7e20f067 PMD 0
+> >> [   28.590169] Oops: 0000 [#1] SMP PTI
+> >> [   28.590171] CPU: 15 PID: 0 Comm: swapper/15 Not tainted 5.10.0-rc2-00373-g0b726f6b318a #1
+> >> [   28.590172] Hardware name: Supermicro SYS-5018D-FN4T/X10SDV-8C-TLN4F, BIOS 1.1 03/02/2016
+> >> [   28.590177] RIP: 0010:__udp4_lib_rcv+0x547/0xbe0
+> >> [   28.590178] Code: 74 0a f6 45 3c 80 74 04 44 8b 4d 28 48 8b 55 58 48 83 e2 fe 74 07 8b 52 7c 85 d2 75 06 8b 95 90 00 00 00 48 8b be f0 04 00 00 <44> 8b 58 0c 8b 48 10 55 41 55 44 89 de 41 51 41 89 d1 44 89 d2 e8
+> >> [   28.590179] RSP: 0018:ffffc900003b4bb8 EFLAGS: 00010246
+> >> [   28.590180] RAX: ffffffffffffffee RBX: 0000000000000011 RCX: ffff888c7bc580e2
+> >> [   28.590181] RDX: 0000000000000002 RSI: ffff88810ddc8000 RDI: ffffffff82d68f00
+> >> [   28.590182] RBP: ffff888c7bf8f800 R08: 00000000000003b7 R09: 0000000000000000
+> >> [   28.590182] R10: 0000000000003500 R11: 0000000000000000 R12: ffff888c7bc580e2
+> >> [   28.590183] R13: ffffffff82e072b0 R14: ffffffff82d68f00 R15: 0000000000000034
+> >> [   28.590184] FS:  0000000000000000(0000) GS:ffff888c7fdc0000(0000) knlGS:0000000000000000
+> >> [   28.590185] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> [   28.590186] CR2: fffffffffffffffa CR3: 0000000c7e20a006 CR4: 00000000003706e0
+> >> [   28.590186] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >> [   28.590187] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >> [   28.590187] Call Trace:
+> >> [   28.590189]  <IRQ>
+> >> [   28.590193]  ip_protocol_deliver_rcu+0xc5/0x1c0
+> >> [   28.590196]  ip_local_deliver_finish+0x4b/0x60
+> >> [   28.738714]  ip_local_deliver+0x6e/0x140
+> >> [   28.738717]  ip_sublist_rcv_finish+0x57/0x80
+> >> [   28.738719]  ip_sublist_rcv+0x199/0x240
+> >> [   28.750730]  ip_list_rcv+0x13a/0x160
+> >> [   28.750733]  __netif_receive_skb_list_core+0x2a9/0x2e0
+> >> [   28.750736]  netif_receive_skb_list_internal+0x1d3/0x320
+> >> [   28.764743]  gro_normal_list+0x19/0x40
+> >> [   28.764747]  napi_complete_done+0x68/0x160
+> >> [   28.773197]  igb_poll+0x63/0x320
+> >> [   28.773198]  net_rx_action+0x136/0x3a0
+> >> [   28.773201]  __do_softirq+0xe1/0x2c3
+> >> [   28.773204]  asm_call_irq_on_stack+0x12/0x20
+> >> [   28.773205]  </IRQ>
+> >> [   28.773208]  do_softirq_own_stack+0x37/0x40
+> >> [   28.773211]  irq_exit_rcu+0xd2/0xe0
+> >> [   28.773213]  common_interrupt+0x74/0x140
+> >> [   28.773216]  asm_common_interrupt+0x1e/0x40
+> >> [   28.773219] RIP: 0010:cpuidle_enter_state+0xd2/0x360
+> >
+> > This was expected. This v3 of the patch has already been superseded by
+> > one that addresses this lookup:
 >
-> Specifically, this patch adds a driver for the SSH device (device HID
-> MSHW0084 in ACPI), as well as a controller structure and associated API.
-> This represents the functional core of the Surface Aggregator kernel
-> subsystem, introduced with this patch, and will be expanded upon in
-> subsequent commits.
->
-> The SSH driver acts as the main attachment point for this subsystem and
-> sets-up and manages the controller structure. The controller in turn
-> provides a basic communication interface, allowing to send requests from
-> host to EC and receiving the corresponding responses, as well as
-> managing and receiving events, sent from EC to host. It is structured
-> into multiple layers, with the top layer presenting the API used by
-> other kernel drivers and the lower layers modeled after the serial
-> protocol used for communication.
->
-> Said other drivers are then responsible for providing the (Surface model
-> specific) functionality accessible through the EC (e.g. battery status
-> reporting, thermal information, ...) via said controller structure and
-> API, and will be added in future commits.
-
-...
-
-> +menuconfig SURFACE_AGGREGATOR
-> +       tristate "Microsoft Surface System Aggregator Module Subsystem an=
-d Drivers"
-> +       depends on SERIAL_DEV_BUS
-> +       depends on ACPI
-> +       select CRC_CCITT
-> +       help
-> +         The Surface System Aggregator Module (Surface SAM or SSAM) is a=
-n
-> +         embedded controller (EC) found on 5th- and later-generation Mic=
-rosoft
-> +         Surface devices (i.e. Surface Pro 5, Surface Book 2, Surface La=
-ptop,
-> +         and newer, with exception of Surface Go series devices).
-> +
-> +         Depending on the device in question, this EC provides varying
-> +         functionality, including:
-> +         - EC access from ACPI via Surface ACPI Notify (5th- and 6th-gen=
-eration)
-> +         - battery status information (all devices)
-> +         - thermal sensor access (all devices)
-> +         - performance mode / cooling mode control (all devices)
-> +         - clipboard detachment system control (Surface Book 2 and 3)
-> +         - HID / keyboard input (Surface Laptops, Surface Book 3)
-> +
-> +         This option controls whether the Surface SAM subsystem core wil=
-l be
-> +         built. This includes a driver for the Surface Serial Hub (SSH),=
- which
-> +         is the device responsible for the communication with the EC, an=
-d a
-> +         basic kernel interface exposing the EC functionality to other c=
-lient
-> +         drivers, i.e. allowing them to make requests to the EC and rece=
-ive
-> +         events from it. Selecting this option alone will not provide an=
-y
-> +         client drivers and therefore no functionality beyond the in-ker=
-nel
-> +         interface. Said functionality is the responsibility of the resp=
-ective
-> +         client drivers.
-> +
-> +         Note: While 4th-generation Surface devices also make use of a S=
-AM EC,
-> +         due to a difference in the communication interface of the contr=
-oller,
-> +         only 5th and later generations are currently supported. Specifi=
-cally,
-> +         devices using SAM-over-SSH are supported, whereas devices using
-> +         SAM-over-HID, which is used on the 4th generation, are currentl=
-y not
-> +         supported.
-
-From this help text I didn't get if it will be a module or what if I
-chose the above?
-
-...
-
-> +/* -- Safe counters. ---------------------------------------------------=
------ */
-
-Why can't XArray be used here?
-
-...
-
-> +
-> +
-
-One blank line is enough
-
-...
-
-> +static bool ssam_event_matches_notifier(
-> +               const struct ssam_event_notifier *notif,
-> +               const struct ssam_event *event)
-
-Perhaps
-
-static bool
-ssam_event_matches_notifier(const struct ssam_event_notifier *n,
-               const struct ssam_event *event)
-
-(or even switch to 100 limit, also note notif ->n =E2=80=94 no need to repe=
-at same word)
-
-...
-
-> +       nb =3D rcu_dereference_raw(nh->head);
-> +       while (nb) {
-> +               nf =3D container_of(nb, struct ssam_event_notifier, base)=
-;
-> +               next_nb =3D rcu_dereference_raw(nb->next);
-> +
-> +               if (ssam_event_matches_notifier(nf, event)) {
-> +                       ret =3D (ret & SSAM_NOTIF_STATE_MASK) | nb->fn(nf=
-, event);
-> +                       if (ret & SSAM_NOTIF_STOP)
-> +                               break;
-
-The returned value is a bitmask?!
-What are you returning at the end?
-
-> +               }
-> +
-> +               nb =3D next_nb;
-> +       }
-
-...
-
-> +static int __ssam_nfblk_insert(struct ssam_nf_head *nh, struct ssam_noti=
-fier_block *nb)
-> +{
-> +       struct ssam_notifier_block **link =3D &nh->head;
-> +
-> +       while ((*link) !=3D NULL) {
-> +               if (unlikely((*link) =3D=3D nb)) {
-> +                       WARN(1, "double register detected");
-> +                       return -EINVAL;
-> +               }
-> +
-> +               if (nb->priority > (*link)->priority)
-> +                       break;
-> +
-> +               link =3D &((*link)->next);
-> +       }
-> +
-> +       nb->next =3D *link;
-> +       rcu_assign_pointer(*link, nb);
-> +
-> +       return 0;
-> +}
-
-If you need RCU (which is also the Q per se), why not use RCU list?
-
-...
-
-> +       while ((*link) !=3D NULL) {
-
-Redundant parentheses, redundant ' !=3D NULL' part.
-
-> +               if ((*link) =3D=3D nb)
-> +                       return link;
-> +
-> +               link =3D &((*link)->next);
-> +       }
-
-...
-
-> + * struct ssam_nf_refcount_entry - RB-tree entry for referecnce counting=
- event
-
-In above you mistyped 'which' as 'whic' or so, and here reference.
-Perhaps go thru spell checker?
-
-...
-
-> + * registered, or ``ERR_PTR(-ENOMEM)`` if the entry could not be allocat=
-ed.
-
-Better to spell out "error pointer" instead of cryptic ERR_PTR().
-
-...
-
-> + * Executa registered callbacks in order of their priority until either =
-no
-> + * callback is left or a callback returned a value with the %SSAM_NOTIF_=
-STOP
-
-returns
-
-> + * bit set. Note that this bit is set automatically when converting non.=
-zero
-> + * error values via ssam_notifier_from_errno() to notifier values.
-
-...
-
-> +               for (i =3D i - 1; i >=3D 0; i--)
-
-while (i--)
-
-> +                       ssam_nf_head_destroy(&nf->head[i]);
-
-...
-
-> +       // limit number of processed events to avoid livelocking
-> +       for (i =3D 0; i < 10; i++) {
-
-Magic number! Also, this will be better to read in a form of
-
-unsigned int iterations =3D 10;
-
-do {
-...
-} while (--iterations);
-
-> +               item =3D ssam_event_queue_pop(queue);
-> +               if (item =3D=3D NULL)
-> +                       return;
-> +
-> +               ssam_nf_call(nf, dev, item->rqid, &item->event);
-> +               kfree(item);
-> +       }
-
-...
-
-> +static const guid_t SSAM_SSH_DSM_GUID =3D GUID_INIT(0xd5e383e1, 0xd892, =
-0x4a76,
-> +               0x89, 0xfc, 0xf6, 0xaa, 0xae, 0x7e, 0xd5, 0xb5);
-
-Can you use usual pattern for these UIDs, like
-static const guid_t SSAM_SSH_DSM_GUID =3D
-        GUID_INIT(0xd5e383e1, 0xd892, 0x4a76,
-                 0x89, 0xfc, 0xf6, 0xaa, 0xae, 0x7e, 0xd5, 0xb5);
-?
-
-Also put a comment how this UID will look like in a string representation.
-
-...
-
-> +       if (!acpi_has_method(handle, "_DSM"))
-> +               return 0;
-
-Hmm... What's the expectation?
-
-> +       obj =3D acpi_evaluate_dsm_typed(handle, &SSAM_SSH_DSM_GUID,
-> +                                     SSAM_SSH_DSM_REVISION, 0, NULL,
-> +                                     ACPI_TYPE_BUFFER);
-> +       if (!obj)
-> +               return -EFAULT;
-
-EFAULT?! Perhaps you can simply return 0 here, no?
-
-> +       for (i =3D 0; i < obj->buffer.length && i < 8; i++)
-> +               mask |=3D (((u64)obj->buffer.pointer[i]) << (i * 8));
-
-Don't we have some helpers for this? At least I remember similar code
-went to one of PDx86 drivers like intel-vbtn or so.
-
-> +       if (mask & 0x01)
-
-BIT(0) ?
-
-> +               *funcs =3D mask;
-
-...
-
-> +       caps->ssh_power_profile =3D (u32)-1;
-> +       caps->screen_on_sleep_idle_timeout =3D (u32)-1;
-> +       caps->screen_off_sleep_idle_timeout =3D (u32)-1;
-> +       caps->d3_closes_handle =3D false;
-> +       caps->ssh_buffer_size =3D (u32)-1;
-
-Use proper types and their limits (limits.h missed?).
-
-...
-
-> +       // initialize request and packet transport layers
-
-Inconsistent style of comments.
-
-...
-
-> + * In the course of this shutdown procedure, all currently registered
-> + * notifiers will be unregistered. It is, however, strongly recommended =
-to not
-> + * rely on this behavior, and instead the party registring the notifier =
-should
-
-registering
-
-> + * unregister it before the controller gets shut down, e.g. via the SSAM=
- bus
-> + * which guarantees client devices to be removed before a shutdown.
-
-> + * Note that events may still be pending after this call, but due to the
-> + * notifiers being unregistered, the will be dropped when the controller=
- is
-
-the?!
-
-> + * subsequently being destroyed via ssam_controller_destroy().
-
-...
-
-> + * Ensures that all resources associated with the controller get freed. =
-This
-> + * function should only be called after the controller has been stopped =
-via
-> + * ssam_controller_shutdown(). In general, this function should not be c=
-alled
-> + * directly. The only valid place to call this function direclty is duri=
-ng
-
-directly
-
-> + * initialization, before the controller has been fully initialized and =
-passed
-> + * to other processes. This function is called automatically when the
-> + * reference count of the controller reaches zero.
-
-...
-
-> + * ssam_request_sync_free() - Free a synchronous request.
-> + * @rqst: The request to free.
-
-to be freed?
-
-...
-
-> + * Allocates a synchronous request struct on the stack, fully initialize=
-s it
-> + * using the provided buffer as message data buffer, submits it, and the=
-n
-> + * waits for its completion before returning its staus. The
-
-status
-
-> + * SSH_COMMAND_MESSAGE_LENGTH() macro can be used to compute the require=
-d
-> + * message buffer size.
-
-...
-
-> + * This is a wrapper for the raw SAM request to enable an event, thus it=
- does
-> + * not handle referecnce counting for enable/disable of events. If an ev=
-ent
-> + * has already been enabled, the EC will ignore this request.
-
-Grammar and English language style somehow feels not okay.
-
-...
-
-> +       u8 buf[1] =3D { 0x00 };
-
-Can't be simply buf ?
-
-...
-
-> + * This function will only send the display-off notification command if
-> + * display noticications are supported by the EC. Currently all known de=
-vices
-> + * support these notification.
-
-Spell check!
-
-...
-
-> + * This function will only send the display-on notification command if d=
-isplay
-> + * noticications are supported by the EC. Currently all known devices su=
-pport
-> + * these notification.
-
-Ditto.
-
-...
-
-> +               ssam_err(ctrl, "unexpected response from D0-exit notifica=
-tion:"
-> +                        " 0x%02x\n", response);
-
-Don't split string literals. Had you run a checkpatch?
-Please do and use strict mode.
-
-
-...
-
-Overall impression of this submission:
- - it's quite huge as for a single patch
- - it feels like quite an overengineered solution: READ_ONCE, RCU,
-list + spin_lock, RB tree of notifiers, my head!
- - where is the architectural document of all these?
-
---=20
-With Best Regards,
-Andy Shevchenko
+> Wait. This page fault happens on IP receive, which is performed after
+> all GRO processing. At this point, all headers are pulled to skb->head,
+> and no GRO helpers are needed to access them.
+> The function that causes that, __udp4_lib_rcv(), uses ip_hdr() a lot,
+> and it's safe. There should be another questionable point.
+
+Right, patch v3 calls skb_gro_network_header from
+__udp4_lib_lookup_skb, which is called from __udp4_lib_rcv, the
+function at which the crash is reported.
+
+@@ -534,7 +534,7 @@ static inline struct sock
+*__udp4_lib_lookup_skb(struct sk_buff *skb,
+                                                 __be16 sport, __be16 dport,
+                                                 struct udp_table *udptable)
+ {
+-       const struct iphdr *iph = ip_hdr(skb);
++       const struct iphdr *iph = skb_gro_network_header(skb);
