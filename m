@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BF62B5310
+	by mail.lfdr.de (Postfix) with ESMTP id E19DF2B5311
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388084AbgKPUoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:44:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
+        id S2388109AbgKPUoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:44:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387938AbgKPUoL (ORCPT
+        with ESMTP id S2387939AbgKPUoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Nov 2020 15:44:11 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AD7C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:44:08 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id m6so3098105wrg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:44:08 -0800 (PST)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29A5C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:44:10 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id k2so20321470wrx.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:44:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/b5jsmdQhqUsP3iV70g55rFSHyU2Npcyd/L9vacP6Sc=;
-        b=oc+9V2ypjwDCQSX2JHTAUt2BRrwLY8+/3AfQMXK5Z0Iol0FtYMP/CKLPK8bKmUQZvh
-         n5+acER6e/irmEd8g0uLmW/xNvXzj2WKzpiGA6jYjSymV14pdrfyLbEz3ZtYAii8wShj
-         /dXq9ek07rghShp0XHB9LewTzzK1hhaoXzzrI8TkJ1lGuFccEL7OaE7MpK2oYK+/aaPK
-         lOCRmbOU+0u/88UkaXdx99xG6hhInjJ/FzGNatUi9toC1gXeLTKGJIAslARrRveo8IYQ
-         gyTuw2WWOgwRC8imlFRYSfNuXhxZ53O6BGCOSj9FHkFq5jDJP1SbHqYFU2rQlKoJCBQw
-         pM7w==
+        bh=5CFjz03HJxHtdKmmeq3XI0pgEGq835KLMY12UZ/ZKTg=;
+        b=l51oR3keMoKmPq/v1ISAlqHy4p/t+CQYtMrQtrP9vZnPMcERdLP/QHt+d0CT9gA/Ed
+         SobfYR2CeQyAX0dOJWwTVbuhvYtnVgveuYzP3rbl3Ij8p3MCRVh0iYc64p9ZQqwbsVdV
+         +HDWxeSVum9m9sMkdtyDTKxiyK3NR6dpkI87nPOBs5gP20q5woGOaKJipnSGcOaCr/3f
+         qvW0h4o5auBjfBRhZWRRACLhjwctmBp3xNbSSrb6KhF3xlCw/QkGVQgs5PsluJQVitm3
+         fTprBP4rfDAsllrSEZg8y2fla9YfmqspG3gOWIvViQaQQlcvL/gp6db9g1rHt5WazShs
+         ffbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/b5jsmdQhqUsP3iV70g55rFSHyU2Npcyd/L9vacP6Sc=;
-        b=gjul+Y2xP4/r+kv7HNh+OwRtQhfX+t7hIOTtHlEMDUmyaGvUrpRGVbk/9S5Vk7/Ew2
-         FrKnIrJekW/o5+K5q9YNHFJDM7di2CIrKC3RXhqNqHs1Gjn5gZpzyrOW+ziuK0qwNTcK
-         gWMeWV3HsNQEyqfZpsF0FGcAFzpB/wR4QVihO+Ar7dL0S1432Kt+m3sWvUFDkoUq4Fle
-         kc/1zZ9lhQPTGXBdgSu5UwWyguuUpssymuzitLXsZFGGI8pD1+NYPaBqCNRLc+CQtAqV
-         J3kIrHkRMEFmQvOVObtDJRFCHnM9WrLb2cHagLWm2UMjDIn/4hKfIcVcbCECZmDqYxZS
-         E9NQ==
-X-Gm-Message-State: AOAM530PL6xWVsiIwdjgKvS9iBbQzYpZA++Kh6LiijQB6oC5DpVDp1sA
-        gvKgZ18yiY6TLVUmD5OkIw3oow==
-X-Google-Smtp-Source: ABdhPJwioNxTaew/6UynUWUqW3NRa5PGrRoMP1SYBFly6NWT6QRM6TZUt8ZXOODPLV9EiV/5CLUuBQ==
-X-Received: by 2002:a5d:4ec2:: with SMTP id s2mr21177611wrv.258.1605559447503;
-        Mon, 16 Nov 2020 12:44:07 -0800 (PST)
+        bh=5CFjz03HJxHtdKmmeq3XI0pgEGq835KLMY12UZ/ZKTg=;
+        b=GEoutyc2H/9+tClojlM8MufO7uVjC8mDFkWtGLEu8OiUQ8oy74rN7oEgw0uJfCgiAK
+         0YSFsdsDt4LQ0w8dXpcpLt1qoR86fapWHpxBTxPjyv4DS2qUYh+cV/ID1PFJWU4IYXW5
+         yya+e2e/9gVIEmwhGZ9epKxWN2KG5ia57mY9nxbWnl6Xxu3wejZEzvk7AsE4EME1xAI2
+         rf3HQjiMUhhAGE187fRRj4/ZDyxPNEHpVsl1GMbhA3Hy4ugrmGDjTV4HubIjPHUz8Q6f
+         nrLmTh0rZJfcaqj337c4Uz0lNVLtWRIZZ7ZMlUizm0IJC1FlywNmjkmIiY7jasECFzZ7
+         2X5g==
+X-Gm-Message-State: AOAM532ey4hhuqZgQTEKLF+SmHxzc7nGBKGoq+/7angRMgv9HkG/MKwZ
+        I9Iy5QQV0NMYHNye0AM7h7Cshw==
+X-Google-Smtp-Source: ABdhPJwTVhg+IzYsedYHZXpYNdeAAlF6a3bNz+Xk9NrjYPSf6yZ7lt0OUtSGjKuG7foETNcuKLqMKA==
+X-Received: by 2002:adf:c3c8:: with SMTP id d8mr21152047wrg.366.1605559449547;
+        Mon, 16 Nov 2020 12:44:09 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:bc40:bd71:373a:1b33])
-        by smtp.gmail.com with ESMTPSA id c2sm26308586wrf.68.2020.11.16.12.44.06
+        by smtp.gmail.com with ESMTPSA id i6sm531311wma.42.2020.11.16.12.44.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 12:44:06 -0800 (PST)
+        Mon, 16 Nov 2020 12:44:08 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Andrew Scull <ascull@google.com>,
         Andrew Walbran <qwandor@google.com>, kernel-team@android.com,
         David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v2 21/24] kvm: arm64: Add kvm-arm.protected early kernel parameter
-Date:   Mon, 16 Nov 2020 20:43:15 +0000
-Message-Id: <20201116204318.63987-22-dbrazdil@google.com>
+Subject: [PATCH v2 22/24] kvm: arm64: Keep nVHE EL2 vector installed
+Date:   Mon, 16 Nov 2020 20:43:16 +0000
+Message-Id: <20201116204318.63987-23-dbrazdil@google.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201116204318.63987-1-dbrazdil@google.com>
 References: <20201116204318.63987-1-dbrazdil@google.com>
@@ -76,131 +76,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an early parameter that allows users to opt into protected KVM mode
-when using the nVHE hypervisor. In this mode, guest state will be kept
-private from the host. This will primarily involve enabling stage-2
-address translation for the host, restricting DMA to host memory, and
-filtering host SMCs.
-
-Capability ARM64_PROTECTED_KVM is set if the param is passed, CONFIG_KVM
-is enabled and the kernel was not booted with VHE.
+KVM by default keeps the stub vector installed and installs the nVHE
+vector only briefly for init and later on demand. Change this policy
+to install the vector at init and then never uninstall it if the kernel
+was given the protected KVM command line parameter.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/cpucaps.h |  3 ++-
- arch/arm64/include/asm/virt.h    |  8 ++++++++
- arch/arm64/kernel/cpufeature.c   | 29 +++++++++++++++++++++++++++++
- arch/arm64/kvm/arm.c             | 10 +++++++++-
- 4 files changed, 48 insertions(+), 2 deletions(-)
+ arch/arm64/kvm/arm.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cpucaps.h b/arch/arm64/include/asm/cpucaps.h
-index e7d98997c09c..ac075f70b2e4 100644
---- a/arch/arm64/include/asm/cpucaps.h
-+++ b/arch/arm64/include/asm/cpucaps.h
-@@ -66,7 +66,8 @@
- #define ARM64_HAS_TLB_RANGE			56
- #define ARM64_MTE				57
- #define ARM64_WORKAROUND_1508412		58
-+#define ARM64_PROTECTED_KVM			59
- 
--#define ARM64_NCAPS				59
-+#define ARM64_NCAPS				60
- 
- #endif /* __ASM_CPUCAPS_H */
-diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
-index 6069be50baf9..2fde1186b962 100644
---- a/arch/arm64/include/asm/virt.h
-+++ b/arch/arm64/include/asm/virt.h
-@@ -97,6 +97,14 @@ static __always_inline bool has_vhe(void)
- 		return cpus_have_final_cap(ARM64_HAS_VIRT_HOST_EXTN);
- }
- 
-+static __always_inline bool is_protected_kvm_enabled(void)
-+{
-+	if (is_vhe_hyp_code())
-+		return false;
-+	else
-+		return cpus_have_final_cap(ARM64_PROTECTED_KVM);
-+}
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* ! __ASM__VIRT_H */
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 6f36c4f62f69..dd5bc0f0cf0d 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1709,6 +1709,29 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
- }
- #endif /* CONFIG_ARM64_MTE */
- 
-+#ifdef CONFIG_KVM
-+static bool enable_protected_kvm;
-+
-+static bool has_protected_kvm(const struct arm64_cpu_capabilities *entry, int __unused)
-+{
-+	if (!enable_protected_kvm)
-+		return false;
-+
-+	if (is_kernel_in_hyp_mode()) {
-+		pr_warn("Protected KVM not available with VHE\n");
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+static int __init early_protected_kvm_cfg(char *buf)
-+{
-+	return strtobool(buf, &enable_protected_kvm);
-+}
-+early_param("kvm-arm.protected", early_protected_kvm_cfg);
-+#endif /* CONFIG_KVM */
-+
- /* Internal helper functions to match cpu capability type */
- static bool
- cpucap_late_cpu_optional(const struct arm64_cpu_capabilities *cap)
-@@ -1822,6 +1845,12 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
- 		.field_pos = ID_AA64PFR0_EL1_SHIFT,
- 		.min_field_value = ID_AA64PFR0_EL1_32BIT_64BIT,
- 	},
-+	{
-+		.desc = "Protected KVM",
-+		.capability = ARM64_PROTECTED_KVM,
-+		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
-+		.matches = has_protected_kvm,
-+	},
- #endif
- 	{
- 		.desc = "Kernel page table isolation (KPTI)",
 diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index c76a8e5bd19c..49d2474f2a80 100644
+index 49d2474f2a80..45bc7a6b9e0b 100644
 --- a/arch/arm64/kvm/arm.c
 +++ b/arch/arm64/kvm/arm.c
-@@ -1796,6 +1796,12 @@ int kvm_arch_init(void *opaque)
- 		return -ENODEV;
- 	}
+@@ -1443,7 +1443,8 @@ static void _kvm_arch_hardware_disable(void *discard)
  
-+	/* The PROTECTED_KVM cap should not have been enabled for VHE. */
-+	if (in_hyp_mode && is_protected_kvm_enabled()) {
-+		kvm_pr_unimpl("VHE protected mode unsupported, not initializing\n");
-+		return -ENODEV;
-+	}
-+
- 	if (cpus_have_final_cap(ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE) ||
- 	    cpus_have_final_cap(ARM64_WORKAROUND_1508412))
- 		kvm_info("Guests without required CPU erratum workarounds can deadlock system!\n" \
-@@ -1827,7 +1833,9 @@ int kvm_arch_init(void *opaque)
- 	if (err)
- 		goto out_hyp;
+ void kvm_arch_hardware_disable(void)
+ {
+-	_kvm_arch_hardware_disable(NULL);
++	if (!is_protected_kvm_enabled())
++		_kvm_arch_hardware_disable(NULL);
+ }
  
--	if (in_hyp_mode)
-+	if (is_protected_kvm_enabled())
-+		kvm_info("Protected nVHE mode initialized successfully\n");
-+	else if (in_hyp_mode)
- 		kvm_info("VHE mode initialized successfully\n");
- 	else
- 		kvm_info("Hyp mode initialized successfully\n");
+ #ifdef CONFIG_CPU_PM
+@@ -1486,11 +1487,13 @@ static struct notifier_block hyp_init_cpu_pm_nb = {
+ 
+ static void __init hyp_cpu_pm_init(void)
+ {
+-	cpu_pm_register_notifier(&hyp_init_cpu_pm_nb);
++	if (!is_protected_kvm_enabled())
++		cpu_pm_register_notifier(&hyp_init_cpu_pm_nb);
+ }
+ static void __init hyp_cpu_pm_exit(void)
+ {
+-	cpu_pm_unregister_notifier(&hyp_init_cpu_pm_nb);
++	if (!is_protected_kvm_enabled())
++		cpu_pm_unregister_notifier(&hyp_init_cpu_pm_nb);
+ }
+ #else
+ static inline void hyp_cpu_pm_init(void)
+@@ -1575,7 +1578,8 @@ static int init_subsystems(void)
+ 	kvm_coproc_table_init();
+ 
+ out:
+-	on_each_cpu(_kvm_arch_hardware_disable, NULL, 1);
++	if (err || !is_protected_kvm_enabled())
++		on_each_cpu(_kvm_arch_hardware_disable, NULL, 1);
+ 
+ 	return err;
+ }
 -- 
 2.29.2.299.gdc1121823c-goog
 
