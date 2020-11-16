@@ -2,223 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E5E2B3FC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013662B3FC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbgKPJ3h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 04:29:37 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2371 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgKPJ3g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:29:36 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4CZP0W3V2cz53sK;
-        Mon, 16 Nov 2020 17:29:15 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 16 Nov 2020 17:29:32 +0800
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 16 Nov 2020 17:29:32 +0800
-Received: from dggpemm000001.china.huawei.com ([7.185.36.245]) by
- dggpemm000001.china.huawei.com ([7.185.36.245]) with mapi id 15.01.1913.007;
- Mon, 16 Nov 2020 17:29:32 +0800
-From:   Jiangyifei <jiangyifei@huawei.com>
-To:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>
-CC:     Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
-        "Wubin (H)" <wu.wubin@huawei.com>,
-        "dengkai (A)" <dengkai1@huawei.com>,
-        yinyipeng <yinyipeng1@huawei.com>
-Subject: RE: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
- programming
-Thread-Topic: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
- programming
-Thread-Index: AQHWtoxQ6udyTXND00qYbGxBYAdmN6nKgOyw
-Date:   Mon, 16 Nov 2020 09:29:31 +0000
-Message-ID: <186ade3c372b44ef8ca1830da8c5002b@huawei.com>
-References: <20201109113240.3733496-1-anup.patel@wdc.com>
- <20201109113240.3733496-11-anup.patel@wdc.com>
-In-Reply-To: <20201109113240.3733496-11-anup.patel@wdc.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.186.209]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S1728061AbgKPJb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:31:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56594 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726156AbgKPJb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:31:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D6722B03F;
+        Mon, 16 Nov 2020 09:31:25 +0000 (UTC)
+Message-ID: <1605519085.19452.74.camel@suse.cz>
+Subject: Re: [x86, sched]  2a0abc5969:
+ phoronix-test-suite.stress-ng.SystemVMessagePassing.bogo_ops_s -14.1%
+ regression
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com, guobing.chen@intel.com,
+        ming.a.chen@intel.com, frank.du@intel.com, Shuhua.Fan@intel.com,
+        wangyang.guo@intel.com, Wenhuan.Huang@intel.com,
+        jessica.ji@intel.com, shan.kang@intel.com, guangli.li@intel.com,
+        tiejun.li@intel.com, yu.ma@intel.com, dapeng1.mi@intel.com,
+        jiebin.sun@intel.com, gengxin.xie@intel.com, fan.zhao@intel.com,
+        aubrey.li@linux.intel.com, yu.c.chen@intel.com
+Date:   Mon, 16 Nov 2020 10:31:25 +0100
+In-Reply-To: <20201116070733.GA22371@xsang-OptiPlex-9020>
+References: <20201116070733.GA22371@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> -----Original Message-----
-> From: Anup Patel [mailto:anup.patel@wdc.com]
-> Sent: Monday, November 9, 2020 7:33 PM
-> To: Palmer Dabbelt <palmer@dabbelt.com>; Palmer Dabbelt
-> <palmerdabbelt@google.com>; Paul Walmsley <paul.walmsley@sifive.com>;
-> Albert Ou <aou@eecs.berkeley.edu>; Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Alexander Graf <graf@amazon.com>; Atish Patra <atish.patra@wdc.com>;
-> Alistair Francis <Alistair.Francis@wdc.com>; Damien Le Moal
-> <damien.lemoal@wdc.com>; Anup Patel <anup@brainfault.org>;
-> kvm@vger.kernel.org; kvm-riscv@lists.infradead.org;
-> linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Anup Patel
-> <anup.patel@wdc.com>; Jiangyifei <jiangyifei@huawei.com>
-> Subject: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
-> programming
+On Mon, 2020-11-16 at 15:07 +0800, kernel test robot wrote:
+> Greeting,
 > 
-> This patch implements all required functions for programming the stage2 page
-> table for each Guest/VM.
+> FYI, we noticed a -14.1% regression of phoronix-test-suite.stress-ng.SystemVMessagePassing.bogo_ops_s due to commit:
 > 
-> At high-level, the flow of stage2 related functions is similar from KVM
-> ARM/ARM64 implementation but the stage2 page table format is quite
-> different for KVM RISC-V.
 > 
-> [jiangyifei: stage2 dirty log support]
-> Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/riscv/include/asm/kvm_host.h     |  12 +
->  arch/riscv/include/asm/pgtable-bits.h |   1 +
->  arch/riscv/kvm/Kconfig                |   1 +
->  arch/riscv/kvm/main.c                 |  19 +
->  arch/riscv/kvm/mmu.c                  | 649
-> +++++++++++++++++++++++++-
->  arch/riscv/kvm/vm.c                   |   6 -
->  6 files changed, 672 insertions(+), 16 deletions(-)
+> commit: 2a0abc59699896f03bf6f16efb8a3a490511216f ("x86, sched: Add support for frequency invariance on SKYLAKE_X")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 > 
-
-......
-
 > 
->  int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu, @@ -69,27 +562,163 @@
-> int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
->  			 gpa_t gpa, unsigned long hva,
->  			 bool writeable, bool is_write)
->  {
-> -	/* TODO: */
-> -	return 0;
-> +	int ret;
-> +	kvm_pfn_t hfn;
-> +	short vma_pageshift;
-> +	gfn_t gfn = gpa >> PAGE_SHIFT;
-> +	struct vm_area_struct *vma;
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct kvm_mmu_page_cache *pcache = &vcpu->arch.mmu_page_cache;
-> +	bool logging = (memslot->dirty_bitmap &&
-> +			!(memslot->flags & KVM_MEM_READONLY)) ? true : false;
-> +	unsigned long vma_pagesize;
-> +
-> +	mmap_read_lock(current->mm);
-> +
-> +	vma = find_vma_intersection(current->mm, hva, hva + 1);
-> +	if (unlikely(!vma)) {
-> +		kvm_err("Failed to find VMA for hva 0x%lx\n", hva);
-> +		mmap_read_unlock(current->mm);
-> +		return -EFAULT;
-> +	}
-> +
-> +	if (is_vm_hugetlb_page(vma))
-> +		vma_pageshift = huge_page_shift(hstate_vma(vma));
-> +	else
-> +		vma_pageshift = PAGE_SHIFT;
-> +	vma_pagesize = 1ULL << vma_pageshift;
-> +	if (logging || (vma->vm_flags & VM_PFNMAP))
-> +		vma_pagesize = PAGE_SIZE;
-> +
-> +	if (vma_pagesize == PMD_SIZE || vma_pagesize == PGDIR_SIZE)
-> +		gfn = (gpa & huge_page_mask(hstate_vma(vma))) >> PAGE_SHIFT;
-> +
-> +	mmap_read_unlock(current->mm);
-> +
-> +	if (vma_pagesize != PGDIR_SIZE &&
-> +	    vma_pagesize != PMD_SIZE &&
-> +	    vma_pagesize != PAGE_SIZE) {
-> +		kvm_err("Invalid VMA page size 0x%lx\n", vma_pagesize);
-> +		return -EFAULT;
-> +	}
-> +
-> +	/* We need minimum second+third level pages */
-> +	ret = stage2_cache_topup(pcache, stage2_pgd_levels,
-> +				 KVM_MMU_PAGE_CACHE_NR_OBJS);
-> +	if (ret) {
-> +		kvm_err("Failed to topup stage2 cache\n");
-> +		return ret;
-> +	}
-> +
-> +	hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
-> +	if (hfn == KVM_PFN_ERR_HWPOISON) {
-> +		send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva,
-> +				vma_pageshift, current);
-> +		return 0;
-> +	}
-> +	if (is_error_noslot_pfn(hfn))
-> +		return -EFAULT;
-> +
-> +	/*
-> +	 * If logging is active then we allow writable pages only
-> +	 * for write faults.
-> +	 */
-> +	if (logging && !is_write)
-> +		writeable = false;
-> +
-> +	spin_lock(&kvm->mmu_lock);
-> +
-> +	if (writeable) {
-
-Hi Anup,
-
-What is the purpose of "writable = !memslot_is_readonly(slot)" in this series?
-
-When mapping the HVA to HPA above, it doesn't know that the PTE writeable of stage2 is "!memslot_is_readonly(slot)".
-This may causes the difference between the writability of HVA->HPA and GPA->HPA.
-For example, GPA->HPA is writeable, but HVA->HPA is not writeable.
-
-Is it better that the writability of HVA->HPA is also determined by whether the memslot is readonly in this change?
-Like this:
--    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
-+    hfn = gfn_to_pfn_prot(kvm, gfn, writeable, NULL);
-
-Regards,
-Yifei
-
-> +		kvm_set_pfn_dirty(hfn);
-> +		mark_page_dirty(kvm, gfn);
-> +		ret = stage2_map_page(kvm, pcache, gpa, hfn << PAGE_SHIFT,
-> +				      vma_pagesize, false, true);
-> +	} else {
-> +		ret = stage2_map_page(kvm, pcache, gpa, hfn << PAGE_SHIFT,
-> +				      vma_pagesize, true, true);
-> +	}
-> +
-> +	if (ret)
-> +		kvm_err("Failed to map in stage2\n");
-> +
-> +	spin_unlock(&kvm->mmu_lock);
-> +	kvm_set_pfn_accessed(hfn);
-> +	kvm_release_pfn_clean(hfn);
-> +	return ret;
->  }
+> in testcase: phoronix-test-suite
+> on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
+> with following parameters:
 > 
+> 	test: stress-ng-1.2.2
+> 	option_a: System V Message Passing
+> 	cpufreq_governor: performance
+> 	ucode: 0x5002f01
 
-......
+I haven't checked this regression yet, but when a "schedutil" change like
+this patch triggers a regression when the "performance" governor is used,
+the trouble might come in some roundabout way, eg. from cache alignment issues.
+
+The patch defines a number of (not necessarily aligned) per-cpu variables, and
+there was a recent thread where Boris Petkov, Tony Luck and Mel Gorman debugged
+something that had similar characteristics:
+
+"RE: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops -14.1% regression"
+https://lore.kernel.org/lkml/6e996ad05e434a6fb13f069ee72b876b@intel.com/
+
+I'll study this problem with that in mind.
+
+
+Giovanni
+
 
