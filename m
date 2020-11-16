@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181EB2B4E55
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CA72B4E54
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387711AbgKPRof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:44:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
+        id S2387693AbgKPRoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387710AbgKPRlj (ORCPT
+        with ESMTP id S2387720AbgKPRlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:41:39 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C03C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:37 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id m125so38566wmm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:37 -0800 (PST)
+        Mon, 16 Nov 2020 12:41:40 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953EBC0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:38 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id d12so19620425wrr.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=e/knA7px3ItuZjnu7kmhshhnJxUB7qJyEjkrpKqZtiA=;
-        b=k6Jv+7mHwhLKPJA/QCG06ugtxDKWpQTKy+20nzwFKSS58MARf4S8W8ACDDJb9At+kN
-         Zj7BRm0cL5pJuZG03JgKNEOyxkFzKQDZEoeq6JKwur3GNW3waj1+cD/cATWqphXb/N3E
-         Hwel7NdYgPQ30GBKTzLyGySsqlcZlYoScXIJf5HNpiV7Q9NiuYvKyh5I1UrBg1kr6UbV
-         iCLuVTvJ0zQs9VHfs2J9H/qqPEg7slFJP5MGKs7bVItDI9ChEjoM5eM4spQGw5YLHt1S
-         zBTagqyBF4NDMKbJ0sdlBYLtRa1aopP+KNyfSJbABRD/2iFY3eTiXtqFZBU8xFpxWZ8o
-         d/bQ==
+        bh=i5j9nO6ToQvZzh6GJLxxL5NsV6KcH6bI4EH07Iu89H8=;
+        b=YVgEUmjSraSC4YQk46p6uPgedVESFPJ3UsJO7Tu4f7fuWARoplJS6YC3o97e91JkZv
+         cBJvp40l0dgXRQaLlTpEuC2Q0uQjxFAwNIn+7nMhNDcFl9mgKct6xkqQsfkHOtazXz+2
+         0vtjIjV1rLHuQlghb40vINrSHBkLUdnkRlbaH3ZaQRgQRO3OPNBtpNrxK6JPR7CTnpxq
+         tdZwoh0efmPizM+AxDTig/MH+rwvLAxSZ445H6Y9Te1xq5aiCAH4ok1RxdGRQKkSivx2
+         HbtPLYE+ge6oxVRG/WTMb8LBqTG8kvBwxC8wW8p0HVl4kN8Y7Tn8G1Id1wAgUtBe/mLD
+         s0Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=e/knA7px3ItuZjnu7kmhshhnJxUB7qJyEjkrpKqZtiA=;
-        b=Vn94jRS3dzcYH7DvNL8Q3ctA9u3R9k/UPsLNMT3KOlertR2ERJzMyDUfUDEaD6xVIT
-         tKuGPhyz8KgauZF/LSk0RRr/Zc+AGEkuCyB3D6+yxpnWSDyOYF11PwoVKjFNk2xG5fQ/
-         0dCMRLuR2tk1Exjr1O/W/NkUq6RL1+arvxID/+svz6jKsyj+orCrIkIjgJzSZD+xFQin
-         XrT2xIJ0aAK1NC7gELv0kp9bfQqyoQRvkbTlU1gBY4dWEBU/Q6MYAMqvmYznIforkziA
-         TPLD64JvwsUI+6eGkCkiLeXsvONqRAeo0aU9jxKlAVLXPnMEj/XAq6l6sSPsqfcqbFIn
-         aouQ==
-X-Gm-Message-State: AOAM530HA2ZvO6cfWXhpQ11mXF1eiIx6EvAn96i+yr6iIoLuCR062CBy
-        GqnKuVqVp2uXqsjkX5+n9JJkzQ==
-X-Google-Smtp-Source: ABdhPJzqHnsBJooc4S8laQMeNPmpnnuKV6rHd3UhDvssbsZxsM79tG8D8ZiF2nH5S1+VMw/gXxelZg==
-X-Received: by 2002:a1c:5f83:: with SMTP id t125mr30364wmb.82.1605548495973;
-        Mon, 16 Nov 2020 09:41:35 -0800 (PST)
+        bh=i5j9nO6ToQvZzh6GJLxxL5NsV6KcH6bI4EH07Iu89H8=;
+        b=LwgXJtYOTvijEx1j/OidJs3YHsCJ14AV5V0q3Apnfqpkc9F8tuBCqF8nxtGDYQryCv
+         qUxUGuTEjnIOlrSxsEpkxoAy3iCQin+QZILHcrmDu+mMz/1lGo6Whl9U3FYoPerjkq4Q
+         Mz7QxCcToQA3RJUaqeN5a9YDFL+aLTdFIbsnkZI3+lSi8sF/exW7rRofFNiZZRUh1rzw
+         0/EFarxhaModzXxIQHXtnXdaH9Bi48PMJTCbzImL+FkYvQBNRZmJcr2Y+XXJGsre+0eJ
+         IOXmK+C6i9AZIJhAa2ypWnV6/z49MWEyEgNwIF8eVnxMWPhzL271ac/Xcm9ShQDFyBLf
+         dsrg==
+X-Gm-Message-State: AOAM530KQ3nno2Rt7IrTvMUxQ5ut0cE1Z+Be/JKArS5KuuezIuaoSv7r
+        9wKEbZqK6qykFS2IHTcIT1wRQg==
+X-Google-Smtp-Source: ABdhPJzrDkYQrEjZLrNb+YUFl0cr5yDvtdbI8mt3oNtaaL8k2XZ9HKXWkCH/mgSrQlJyfuBrthO8LA==
+X-Received: by 2002:a5d:6992:: with SMTP id g18mr20417522wru.362.1605548497365;
+        Mon, 16 Nov 2020 09:41:37 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.41.34
+        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.41.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:41:35 -0800 (PST)
+        Mon, 16 Nov 2020 09:41:36 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        YT SHEN <yt.shen@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 12/42] drm/mediatek/mtk_drm_drv: Staticise local function invoked by reference
-Date:   Mon, 16 Nov 2020 17:40:42 +0000
-Message-Id: <20201116174112.1833368-13-lee.jones@linaro.org>
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 13/42] drm/meson/meson_venc: Make local function 'meson_venc_hdmi_get_dmt_vmode' static
+Date:   Mon, 16 Nov 2020 17:40:43 +0000
+Message-Id: <20201116174112.1833368-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116174112.1833368-1-lee.jones@linaro.org>
 References: <20201116174112.1833368-1-lee.jones@linaro.org>
@@ -78,40 +74,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/mediatek/mtk_drm_drv.c:316:24: warning: no previous prototype for ‘mtk_drm_gem_prime_import’ [-Wmissing-prototypes]
+ drivers/gpu/drm/meson/meson_venc.c:893:6: warning: no previous prototype for ‘meson_venc_hdmi_get_dmt_vmode’ [-Wmissing-prototypes]
 
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: YT SHEN <yt.shen@mediatek.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-amlogic@lists.infradead.org
 Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 4 ++--
+ drivers/gpu/drm/meson/meson_venc.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 2e8065b1e2bbc..401311453e7d0 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -313,8 +313,8 @@ static const struct file_operations mtk_drm_fops = {
-  * We need to override this because the device used to import the memory is
-  * not dev->dev, as drm_gem_prime_import() expects.
-  */
--struct drm_gem_object *mtk_drm_gem_prime_import(struct drm_device *dev,
--						struct dma_buf *dma_buf)
-+static struct drm_gem_object *mtk_drm_gem_prime_import(struct drm_device *dev,
-+						       struct dma_buf *dma_buf)
+diff --git a/drivers/gpu/drm/meson/meson_venc.c b/drivers/gpu/drm/meson/meson_venc.c
+index f93c725b6f02d..5e2236ec189fa 100644
+--- a/drivers/gpu/drm/meson/meson_venc.c
++++ b/drivers/gpu/drm/meson/meson_venc.c
+@@ -890,8 +890,8 @@ bool meson_venc_hdmi_supported_vic(int vic)
+ }
+ EXPORT_SYMBOL_GPL(meson_venc_hdmi_supported_vic);
+ 
+-void meson_venc_hdmi_get_dmt_vmode(const struct drm_display_mode *mode,
+-				   union meson_hdmi_venc_mode *dmt_mode)
++static void meson_venc_hdmi_get_dmt_vmode(const struct drm_display_mode *mode,
++					  union meson_hdmi_venc_mode *dmt_mode)
  {
- 	struct mtk_drm_private *private = dev->dev_private;
+ 	memset(dmt_mode, 0, sizeof(*dmt_mode));
  
 -- 
 2.25.1
