@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84542B42B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFF42B42BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgKPLVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:21:52 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38983 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729072AbgKPLVv (ORCPT
+        id S1729039AbgKPLYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:24:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41142 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726837AbgKPLYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:21:51 -0500
-Received: by mail-wr1-f66.google.com with SMTP id o15so18269530wru.6;
-        Mon, 16 Nov 2020 03:21:50 -0800 (PST)
+        Mon, 16 Nov 2020 06:24:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605525842;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FiZvfqwgppxhW4IM8Jvu0efXIHNIgO+wWL8qCIoswbY=;
+        b=HcQpGxmYIHSg/2hSJze7IzBxyKnt8eMYLqqpVFDd6ENsjEUoy/5iCURLA9od3khhag1d23
+        f9z4qefyTGO0V2hilvOCDgE9IQ6vlv8nNp5+KOAM/wesBZ/BKJ3g6TDw0/aemMPOsXiokM
+        HdNZpi7P+Kmp7d16z97z/Yw8cfhNFbE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-cuW9dXP_MbKz55fgBdQfzQ-1; Mon, 16 Nov 2020 06:24:00 -0500
+X-MC-Unique: cuW9dXP_MbKz55fgBdQfzQ-1
+Received: by mail-wr1-f71.google.com with SMTP id y2so11059094wrl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:23:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4otvzYMRpn5u2dT1OEQuqZOqoSrTSB+6sK/i5vken88=;
-        b=RnCcBHYpHtEsgBXymt44xatBlkg7iduGqvZ44z89rcw7mq2U836Wd89Nlq2cZJCRXp
-         h4cXIU3mpKVRFywhCvtVN4ZDdRcokYbos/Gv9RfhRXPRLw3pOTRJjIUiw6PSH/xRdY9u
-         NiA1IbOLPts8H96/YMJvn/9wzQdminIoohbVodwcZdAc4TMuemC/BqtA8hQN+LTN8fMA
-         fnZ+MU+u8dKvaHMemrlKevgZkx4VsTJoRfX32yCOLXI2lcMAvlKK+3/wfbc+rhV+VOs+
-         QXorTU4sK9Evy+rsHP7xnWbUkvo9/eNQMapHyw85dktcNwAggJzdUHwvWqthTnomgPyk
-         rBLw==
-X-Gm-Message-State: AOAM533Eq15PTNgrA1nC7efgUoU2/FpFGaUq9AikfSMRQrszGAue9ovM
-        eJ6U7XbfAzKxkRGg9AFpQpswDwVvG9g=
-X-Google-Smtp-Source: ABdhPJzQBZE1F78B52wEvpk1lDVAOhLMvV0VJ+FgXT8Mk+avsBREiHlAytaZ6ty4YqnjAz+kmGIV5Q==
-X-Received: by 2002:adf:9163:: with SMTP id j90mr17944799wrj.323.1605525709927;
-        Mon, 16 Nov 2020 03:21:49 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id a14sm2518903wmj.40.2020.11.16.03.21.49
+         :mime-version:content-disposition:in-reply-to;
+        bh=FiZvfqwgppxhW4IM8Jvu0efXIHNIgO+wWL8qCIoswbY=;
+        b=hI1144VleDvVlioJHD1AZKd0ajI+rxhrqNBg27BgwgCGC+BOnc/nSXSGY4Y1osAWXj
+         m7y6wP8dpBpN4HPKIl7j7aMZLzM7fIRncIQQvbJc/zCCG1WvtnYG8JpkswR/3dMbzGS1
+         W/EE+ZeUBU96/vkgOx4KChQOdRHEOpkkdCLT+3v2pzX2++h1qrEbOshND7DL7GNzhsEO
+         v1xRZ1xQGNopbDtzAZdSzaN94s/fBvUrv7a1z9+kgYDyr7M7bn9L1DOblII5GZhgsqS8
+         R3hjqyEgQDi8LdakbEwQSg7BnjzFbiqnsS4O8EdTpZbHlX8ejkV4gRZqvt3x/IjXFxvT
+         EMaA==
+X-Gm-Message-State: AOAM532NuWj3yQIo+oh/z92A64izuY7H+dluet81i0Gs96wj2PZ1u43p
+        4mAZkGxo2Yp3vWhYOxcOWbUooyxyoR63OYyS2qSb2+KfUAmfjosoL9VlZbrFD26RxQQWaNEHG/U
+        LUMsQOlI4uFy/e+r+v1LTwDv5
+X-Received: by 2002:a1c:7e8e:: with SMTP id z136mr15456806wmc.46.1605525838885;
+        Mon, 16 Nov 2020 03:23:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyijXaCLKiuQIior2uUCDA8Exwaq67YsE7tAtnwOjZ8JmrvdfkGFcynUP8JyWVK9HRHnhbfFA==
+X-Received: by 2002:a1c:7e8e:: with SMTP id z136mr15456793wmc.46.1605525838718;
+        Mon, 16 Nov 2020 03:23:58 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id g131sm20177257wma.35.2020.11.16.03.23.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 03:21:49 -0800 (PST)
-Date:   Mon, 16 Nov 2020 11:21:48 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Matheus Castello <matheus@castello.eng.br>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, sashal@kernel.org, Tianyu.Lan@microsoft.com,
-        decui@microsoft.com, mikelley@microsoft.com,
-        sunilmut@microsoft.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] drivers: hv: vmbus: Fix unnecessary OOM_MESSAGE
-Message-ID: <20201116112148.xfajvts4gtoibs65@liuwe-devbox-debian-v2>
-References: <20201115195734.8338-1-matheus@castello.eng.br>
- <20201115195734.8338-6-matheus@castello.eng.br>
+        Mon, 16 Nov 2020 03:23:58 -0800 (PST)
+Date:   Mon, 16 Nov 2020 12:23:55 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 12/12] vdpa_sim_blk: implement ramdisk behaviour
+Message-ID: <20201116112355.vo6blezyrfh7kltl@steredhat>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-13-sgarzare@redhat.com>
+ <20201116045029-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201115195734.8338-6-matheus@castello.eng.br>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201116045029-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 04:57:33PM -0300, Matheus Castello wrote:
-> Fixed checkpatch warning: Possible unnecessary 'out of memory' message
-> checkpatch(OOM_MESSAGE)
-> 
-> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
-> ---
->  drivers/hv/vmbus_drv.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> index 09d8236a51cf..774b88dd0e15 100644
-> --- a/drivers/hv/vmbus_drv.c
-> +++ b/drivers/hv/vmbus_drv.c
-> @@ -1989,10 +1989,8 @@ struct hv_device *vmbus_device_create(const guid_t *type,
->  	struct hv_device *child_device_obj;
-> 
->  	child_device_obj = kzalloc(sizeof(struct hv_device), GFP_KERNEL);
-> -	if (!child_device_obj) {
-> -		pr_err("Unable to allocate device object for child device\n");
-> +	if (!child_device_obj)
+On Mon, Nov 16, 2020 at 04:50:43AM -0500, Michael S. Tsirkin wrote:
+>On Fri, Nov 13, 2020 at 02:47:12PM +0100, Stefano Garzarella wrote:
+>> The previous implementation wrote only the status of each request.
+>> This patch implements a more accurate block device simulator,
+>> providing a ramdisk-like behavior.
+>>
+>> Also handle VIRTIO_BLK_T_GET_ID request, always answering the
+>> "vdpa_blk_sim" string.
+>
+>Maybe an ioctl to specify the id makes more sense.
 
-The generic OOM message would give you a stack dump but not as specific
-/ clear as the message you deleted.
+I agree that make sense to make it configurable from the user, but I'm 
+not sure an ioctl() is the best interface with this device simulator.
 
-Also, the original intent of this check was to check for things like
+Maybe we can use a module parameter as in the net simulator or even 
+better using the new vdpa management tool recently proposed (I need to 
+check better how we can extend it).
 
-    printk("Out of memory");
+What do you think?
 
-which was clearly redundant. The message we print here is not that.
+Thanks,
+Stefano
 
-See https://lkml.org/lkml/2014/6/10/382 .
-
-Wei.
-
->  		return NULL;
-> -	}
-> 
->  	child_device_obj->channel = channel;
->  	guid_copy(&child_device_obj->dev_type, type);
-> --
-> 2.28.0
-> 
