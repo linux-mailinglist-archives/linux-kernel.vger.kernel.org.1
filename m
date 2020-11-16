@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE0A2B3BCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 328192B3BD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgKPDWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 22:22:37 -0500
-Received: from mga02.intel.com ([134.134.136.20]:59623 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgKPDWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 22:22:36 -0500
-IronPort-SDR: dVvUgWlIefuJFpK1Fgqg0gdbEe0zOxlojTnNNY/X/viOTeyzSxvDW7k5F+DMI7ma119GO/dZqE
- tvXd9rInwckA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157720988"
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
-   d="scan'208";a="157720988"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 19:22:30 -0800
-IronPort-SDR: C+9UVmClgbQXVE9Nm0up9iKW+Io7rYMSXIhKHaP13k8X3o1e/U8LJRu+9DndMKIVxmuyzITj5+
- 9l0OKuy62mXw==
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
-   d="scan'208";a="543427933"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.107]) ([10.238.4.107])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 19:22:26 -0800
-Subject: Re: [PATCH] perf/intel: Remove Perfmon-v4 counter_freezing support
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>, wei.w.wang@intel.com,
-        Tony Luck <tony.luck@intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20201109021254.79755-1-like.xu@linux.intel.com>
- <20201110151257.GP2611@hirez.programming.kicks-ass.net>
- <20201110153721.GQ2651@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <11ba9e20-84eb-3ea5-5987-8357ae5af53f@linux.intel.com>
-Date:   Mon, 16 Nov 2020 11:22:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726560AbgKPD3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 22:29:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725969AbgKPD3t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 22:29:49 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B79C0613CF;
+        Sun, 15 Nov 2020 19:29:48 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keVD4-006zpa-RU; Mon, 16 Nov 2020 03:29:43 +0000
+Date:   Mon, 16 Nov 2020 03:29:42 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
+Message-ID: <20201116032942.GV3576660@ZenIV.linux.org.uk>
+References: <20201114055048.GN3576660@ZenIV.linux.org.uk>
+ <20201114061934.GA658@Ryzen-9-3900X.localdomain>
+ <20201114070025.GO3576660@ZenIV.linux.org.uk>
+ <20201114205000.GP3576660@ZenIV.linux.org.uk>
+ <20201115155355.GR3576660@ZenIV.linux.org.uk>
+ <20201115214125.GA317@Ryzen-9-3900X.localdomain>
+ <20201115233814.GT3576660@ZenIV.linux.org.uk>
+ <20201115235149.GA252@Ryzen-9-3900X.localdomain>
+ <20201116002513.GU3576660@ZenIV.linux.org.uk>
+ <20201116003416.GA345@Ryzen-9-3900X.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20201110153721.GQ2651@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116003416.GA345@Ryzen-9-3900X.localdomain>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Sun, Nov 15, 2020 at 05:34:16PM -0700, Nathan Chancellor wrote:
+ 
+> Still good.
+> 
+> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
 
-On 2020/11/10 23:37, Peter Zijlstra wrote:
-> -static int __init intel_perf_counter_freezing_setup(char *s)
-> -{
-> -	bool res;
-> -
-> -	if (kstrtobool(s, &res))
-> -		return -EINVAL;
-> -
-> -	disable_counter_freezing = !res;
-> -	return 1;
-> -}
-> -__setup("perf_v4_pmi=", intel_perf_counter_freezing_setup);
+Pushed into #fixes
 
-...
+> > BTW, is that call of readv() really coming from init?  And if it
+> > is, what version of init are you using?
+> 
+> I believe that it is but since this is WSL2, I believe that /init is a
+> proprietary Microsoft implementation, rather than systemd or another
+> init system:
+> 
+> https://wiki.ubuntu.com/WSL#Keeping_Ubuntu_Updated_in_WSL
+> 
+> So I am not sure how possible it is to see exactly what is going on or
+> getting it improved.
 
-> Anyway, as it stands I think the whole counter_freezing thing is a
-> trainwreck and it needs to go.
+Oh, well...  Anyway, as a regression test it's interesting:
 
-If you really want to drop the counter_freezing stuff, we also need
-to clean it up in Documentation/admin-guide/kernel-parameters.txt:
+#include <sys/uio.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <errno.h>
+main()
+{
+	static char s[1024];
+	static struct iovec v[2] = {{NULL, 0}, {s, 1024}};
 
-	perf_v4_pmi=	[X86,INTEL]
-			Format: <bool>
-			Disable Intel PMU counter freezing feature.
-			The feature only exists starting from
-			Arch Perfmon v4 (Skylake and newer).
+	for(;;) {
+		ssize_t n = readv(0, v, 2), m, w;
 
-However someone may still need it based on the correct understanding
-of "Freeze-on-Overflow" as Stephane said. How about renaming and 
-documenting it instead of discarding it completely?
+		if (n < 0) {
+			perror("readv");
+			return -1;
+		}
+		if (!n)
+			return 0;
+		for (m = 0; m < n; m += w) {
+			w = write(1, s + m, n - m);
+			if (w < 0)
+				perror("write");
+		}
+	}
+}
 
-Our guest PEBS enabling patches does not completely depend on it
-and we do not require the administrator to enable perf_v4_pmi for
-guest PEBS.
-
-Would you generously take a look at the perf part in this series?
-
-Thanks,
-Like Xu
+which ought to copy stdin to stdout; with this bug it would (on sufficiently
+large seq_file-based files) fail with "readv: Bad address" (-EFAULT, that is).
