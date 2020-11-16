@@ -2,65 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB76E2B4604
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD102B4606
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgKPOil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:38:41 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:57504 "EHLO vps0.lunn.ch"
+        id S1730004AbgKPOjK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 09:39:10 -0500
+Received: from mga01.intel.com ([192.55.52.88]:27237 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727820AbgKPOil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:38:41 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kefeI-007MMi-6h; Mon, 16 Nov 2020 15:38:30 +0100
-Date:   Mon, 16 Nov 2020 15:38:30 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     hauke@hauke-m.de, netdev@vger.kernel.org, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: lantiq: Wait for the GPHY firmware to be ready
-Message-ID: <20201116143830.GD1716542@lunn.ch>
-References: <20201115165757.552641-1-martin.blumenstingl@googlemail.com>
+        id S1728041AbgKPOjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:39:10 -0500
+IronPort-SDR: 6DQGaiLMfdSFWYoGHyble8lrTk3Pl0NuNSKBkcx5MsQkytey5d5nvD5NhMa7RijSEWecaqv/Ru
+ qRg5X2SZggJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="188798029"
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="188798029"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:39:09 -0800
+IronPort-SDR: gYL1TNp0InemVJZI4EtlOLq1jl3Xfd/TzBA7Mx0ELyfeTObRaKaPbh0f1rzj6L2HIxQRgzJ9dp
+ prODrFP98w9w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="329695151"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga006.jf.intel.com with ESMTP; 16 Nov 2020 06:39:07 -0800
+Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 16 Nov 2020 06:39:07 -0800
+Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
+ SHSMSX603.ccr.corp.intel.com (10.109.6.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 16 Nov 2020 22:39:05 +0800
+Received: from shsmsx601.ccr.corp.intel.com ([10.109.6.141]) by
+ SHSMSX601.ccr.corp.intel.com ([10.109.6.141]) with mapi id 15.01.1713.004;
+ Mon, 16 Nov 2020 22:39:04 +0800
+From:   "Sang, Oliver" <oliver.sang@intel.com>
+To:     Lars Poeschel <poeschel@lemonage.de>
+CC:     Miguel Ojeda <ojeda@kernel.org>, lkp <lkp@intel.com>,
+        Willy Tarreau <w@1wt.eu>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>
+Subject: RE: [LKP] Re: [auxdisplay]  b26deabb1d:
+ BUG:kernel_NULL_pointer_dereference,address
+Thread-Topic: [LKP] Re: [auxdisplay]  b26deabb1d:
+ BUG:kernel_NULL_pointer_dereference,address
+Thread-Index: AQHWtpV8lMndfo9euk63Z8UNc8IVGanD/GsggAYQNQCAANJ/wA==
+Date:   Mon, 16 Nov 2020 14:39:04 +0000
+Message-ID: <b254aa1a08974f6d9525ebb9321d7472@intel.com>
+References: <20201109062934.GA7739@xsang-OptiPlex-9020>
+ <20201109124003.ppuzlyyy5blf3ixu@lem-wkst-02.lemonage>
+ <983cc8dc58a24dd1a839e05213fb1ffb@intel.com>
+ <20201116100504.tccqktcgxwn4pyqd@lem-wkst-02.lemonage>
+In-Reply-To: <20201116100504.tccqktcgxwn4pyqd@lem-wkst-02.lemonage>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.239.127.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201115165757.552641-1-martin.blumenstingl@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 05:57:57PM +0100, Martin Blumenstingl wrote:
-> A user reports (slightly shortened from the original message):
->   libphy: lantiq,xrx200-mdio: probed
->   mdio_bus 1e108000.switch-mii: MDIO device at address 17 is missing.
->   gswip 1e108000.switch lan: no phy at 2
->   gswip 1e108000.switch lan: failed to connect to port 2: -19
->   lantiq,xrx200-net 1e10b308.eth eth0: error -19 setting up slave phy
 > 
-> This is a single-port board using the internal Fast Ethernet PHY. The
-> user reports that switching to PHY scanning instead of configuring the
-> PHY within device-tree works around this issue.
-> 
-> The documentation for the standalone variant of the PHY11G (which is
-> probably very similar to what is used inside the xRX200 SoCs but having
-> the firmware burnt onto that standalone chip in the factory) states that
-> the PHY needs 300ms to be ready for MDIO communication after releasing
-> the reset.
-> 
-> Add a 300ms delay after initializing all GPHYs to ensure that the GPHY
-> firmware had enough time to initialize and to appear on the MDIO bus.
-> Unfortunately there is no (known) documentation on what the minimum time
-> to wait after releasing the reset on an internal PHY so play safe and
-> take the one for the external variant. Only wait after the last GPHY
-> firmware is loaded to not slow down the initialization too much (
-> xRX200 has two GPHYs but newer SoCs have at least three GPHYs).
-> 
-> Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> It is working now and I can reproduce the error.
+> Thank you!
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+you are welcome
 
-    Andrew
