@@ -2,135 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A9B2B4B75
+	by mail.lfdr.de (Postfix) with ESMTP id DF4D72B4B77
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732189AbgKPQlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730328AbgKPQlS (ORCPT
+        id S1732256AbgKPQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:41:45 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33808 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729689AbgKPQlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:41:18 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD12BC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:41:16 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p8so19399831wrx.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:41:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=Rtf3WPy2v5/PbwArc8zsVNsYHP4yZqiUV6FRg+0fDSA=;
-        b=teNJyuybcUBRu8Y/N3gpPv/LkkNYwAueeD6QaOUW4C0LP+SGZAkWUTyyfuxdp71ABj
-         mwJazhnQ3ObYIxtFblXSVQyRtxkhhCkWVEsdYJHKkEa45fxyFsy8NkGaxQ264EhAFrah
-         KE68YvuSveMPDdbqLjECCajE7wFZNJI3NnPI2Du5TADkSQfiSL5QcijOsW4jjUZbdASw
-         9aoSkR+JnlXDaGMV6tl8WBux4Bod70pl/GYVIAYgmoWVXGpsa2puo9GSkE631MpSr0ri
-         gY3AByZqA8TLYUJhmV6X3+QWnhG25t2sgOaTkjhlEVkjS/BKkzt5W2+NTVUWZqofvv2U
-         vSYg==
+        Mon, 16 Nov 2020 11:41:44 -0500
+Received: by mail-qt1-f196.google.com with SMTP id 7so13325171qtp.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:41:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=Rtf3WPy2v5/PbwArc8zsVNsYHP4yZqiUV6FRg+0fDSA=;
-        b=pxYyAh2p0M0+Ej6sJXIJhyxeaM/mSP1But+jwYW8u4PG5S/GzKmvrN470yUBdTHXEi
-         P/nYDaniE+Gaz82+IcoI2JtYmWwUfP9SRIyJCWm0/za1kbhHfEfZ2gUHh4uJrvrBxxrN
-         Yta0fLJA3m2T5tkU8IjREHK210EfnEZHPmLHJvY65c3Q9N2zpJXgXyoQROxMZ2lnp1rk
-         SxNIz0kU9puk0faYuwEeiCQl2LNTly2UdF6mE+/y5Al9ETWXqqwFG38Pd2S28D38SF5h
-         QPmvyr1xDq6Y+LCtLX4EIxRVOQ/YlE7edtcZJ5c1xHxPDL7Nvw4MYCuJnknkl1D9iteY
-         5i5Q==
-X-Gm-Message-State: AOAM5318g2U4i03gapDJ9gKzRbMSXVVCw6AveWrxfZHJYuJxuCGI3M+D
-        duPLOGyHE1wU7CwKVRudQymY/jV6G8gvCtUM
-X-Google-Smtp-Source: ABdhPJzvBUGf8eI0OYt/qmbfQt+9LTf5uEZcDSPO6S6VGAe1+j7kmLoBgoNQyoNJtK+MHMe/ypdKGw==
-X-Received: by 2002:adf:f4c7:: with SMTP id h7mr19643713wrp.234.1605544875289;
-        Mon, 16 Nov 2020 08:41:15 -0800 (PST)
-Received: from localhost (253.35.17.109.rev.sfr.net. [109.17.35.253])
-        by smtp.gmail.com with ESMTPSA id k1sm20071604wrp.23.2020.11.16.08.41.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 08:41:14 -0800 (PST)
-References: <20201112230043.28987-1-aouledameur@baylibre.com>
- <0f679c62aa48603ea43a8fa4819d688baa802d73.camel@pengutronix.de>
- <1jima91e92.fsf@starbuckisacylon.baylibre.com>
- <48332a44241f3c06966420277060b6048c1f77d0.camel@pengutronix.de>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Amjad Ouled-Ameur <aouledameur@baylibre.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-usb@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>
-Subject: Re: [PATCH v2] reset: make shared pulsed reset controls re-triggerable
-In-reply-to: <48332a44241f3c06966420277060b6048c1f77d0.camel@pengutronix.de>
-Message-ID: <1j4klp1cgm.fsf@starbuckisacylon.baylibre.com>
-Date:   Mon, 16 Nov 2020 17:41:13 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N4ZH/LjNb3Hokat0rYv7xscgHOsbb+sHkrIrtYELG2Q=;
+        b=R4RlypE43NEuGg4xg9mtVUr7FbOZXj6x9X+33SBQ6R6E8sHExasyLMEV2BcOLYVLmj
+         KxoN6Hl/YdGRzA5h9tGvKFFs/xGY+Xjz3JVTaCzzBcPTELfzXM++KfjO+p8RvKK3vf2S
+         eQkxSo6W+SD/JQhIpnQUWNG+xuiKyxEM56IOyxxVQkb8PDYxT6jThu/7BfXnnV3cmrHH
+         3ACqXfyauY3ConF/U48eA4G/0/f5LUgU1MaES8hl+hYj1nFAaDy7aG8O6Stt5JzGQtGZ
+         w2Tl0xvf+Ekg9cDcMqJXKciPS2WnmBUnUmBxJ87w5i4KJWKP+yPMWl7hFd2QD2lhlXQ4
+         OfxQ==
+X-Gm-Message-State: AOAM530CK/mvrwC2fyZAFJJAc6fhBjmcb2m27PQXlQsXN6cBzce6GF4N
+        99vYfauKBfdrLLuw+qFWyqxcgAMpUpuiDvq4xVY=
+X-Google-Smtp-Source: ABdhPJwLLWHV3nuJNG4xf6VCpvfMCnZVWwbQzzB+GIpM5OFDeV6z4rlwp49XDc5/U433hjGY3578FT5go4IcrWrTjM8=
+X-Received: by 2002:ac8:5806:: with SMTP id g6mr14914954qtg.292.1605544903546;
+ Mon, 16 Nov 2020 08:41:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201114023643.211313-1-namhyung@kernel.org> <20201115130824.GM894261@tassilo.jf.intel.com>
+In-Reply-To: <20201115130824.GM894261@tassilo.jf.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 17 Nov 2020 01:41:32 +0900
+Message-ID: <CAM9d7cgRQpSi5LE5NmGOkDtkZgZ4fVt6Ues=FpikpJ8CYEdJxQ@mail.gmail.com>
+Subject: Re: [PATCH] perf stat: Take cgroups into account for shadow stats
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 15, 2020 at 10:08 PM Andi Kleen <ak@linux.intel.com> wrote:
+>
+> Actually thinking about it more you should probably pass around ctx/cgroup
+> in a single abstract argument. Otherwise have to change all the metrics
+> functions for the next filter too.
 
-On Mon 16 Nov 2020 at 17:36, Philipp Zabel <p.zabel@pengutronix.de> wrote:
+Ok, will do.
 
-> On Fri, 2020-11-13 at 16:13 +0100, Jerome Brunet wrote:
->> On Fri 13 Nov 2020 at 16:04, Philipp Zabel <p.zabel@pengutronix.de> wrote:
->> 
->> > On Fri, 2020-11-13 at 00:00 +0100, Amjad Ouled-Ameur wrote:
->> > > The current reset framework API does not allow to release what is done by
->> > > reset_control_reset(), IOW decrement triggered_count. Add the new
->> > > reset_control_rearm() call to do so.
->> > > 
->> > > When reset_control_reset() has been called once, the counter
->> > > triggered_count, in the reset framework, is incremented i.e the resource
->> > > under the reset is in-use and the reset should not be done again.
->> > > reset_control_rearm() would be the way to state that the resource is
->> > > no longer used and, that from the caller's perspective, the reset can be
->> > > fired again if necessary.
->> > > 
->> > > Signed-off-by: Amjad Ouled-Ameur <aouledameur@baylibre.com>
->> > > Reported-by: Jerome Brunet <jbrunet@baylibre.com>
->> > > ---
->> > > Change since v1: [0]
->> > > * Renamed the new call from reset_control_(array_)resettable to 
->> > > reset_control_(array_)rearm
->> > > * Open-coded reset_control_array_rearm to check for errors before
->> > > decrementing triggered_count because we cannot roll back in case an
->> > > error occurs while decrementing one of the rstc.
->> > > * Reworded the new call's description.
->> > 
->> > Thank you, applied to reset/next.
->> 
->> Hi Philipp,
->> 
->> Would it be possible to get an immutable branch/tag with this ?
->> It would allow to move forward on the USB side, without waiting for the
->> next rc1.
->
-> Here you go,
->
-> The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
->
->   Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
->
-> are available in the Git repository at:
->
->   git://git.pengutronix.de/git/pza/linux.git reset/shared-retrigger
->
-> for you to fetch changes up to 557acb3d2cd9c82de19f944f6cc967a347735385:
->
->   reset: make shared pulsed reset controls re-triggerable (2020-11-16 17:05:28 +0100)
->
-> ----------------------------------------------------------------
-> Amjad Ouled-Ameur (1):
->       reset: make shared pulsed reset controls re-triggerable
->
->  drivers/reset/core.c  | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/reset.h |  1 +
->  2 files changed, 74 insertions(+)
->
-
-Thx Philipp !
-
-> regards
-> Philipp
-
+Thanks,
+Namhyung
