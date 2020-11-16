@@ -2,117 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C8F2B54AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021D42B54B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727278AbgKPXAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:00:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
+        id S1727610AbgKPXAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgKPXAJ (ORCPT
+        with ESMTP id S1725379AbgKPXAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:00:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EA4C0613CF;
-        Mon, 16 Nov 2020 15:00:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=pkMMx2It+5Pvco6e/Mzh+7cjlpElvgRby/hMw4rxyqs=; b=pSihbiP0NpEOovk4JegF6/FeWU
-        XH/+UeM50+Ld8mGi/S0oS6QD2oizuU5SikacL1Pr7lbExrkBag7/nF+/j00HNz0L7rxtUpqHYHF+c
-        SPhqS9d3VkJcm46rGTa3XE4AjKMsgiru+TK5a66JhFqK9D7FZqp4bZmwRPw7RfINnnJoIMIRufSlu
-        wkhkUohGrkUvQC2La2lXAiyL0rONWV4fze+BaKcLMUZo9of2cH1IvNQUYuAACJpexkgXD0ccYSWvh
-        2RZyGqv6K2ZKXZXb3mAKx/+Le4NXuhO3pGuXtcuF+Zgtz88134/+by+UMzUgISNH7ePZSAFfkJ/Eq
-        NY+3sZmQ==;
-Received: from [2601:1c0:6280:3f0::f32]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kenTh-0004T5-H3; Mon, 16 Nov 2020 23:00:05 +0000
-Subject: Re: [PATCH] md: dm-writeback: add __noreturn to BUG-ging function
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Mikulas Patocka <mpatocka@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
-References: <20201113225228.20563-1-rdunlap@infradead.org>
- <344abf76-9405-58ba-2dc4-27cab88c974d@de.ibm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c29eeb5d-0683-49eb-f729-38b14fac7745@infradead.org>
-Date:   Mon, 16 Nov 2020 15:00:01 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 16 Nov 2020 18:00:23 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6572EC0613CF;
+        Mon, 16 Nov 2020 15:00:22 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id p12so22040216ljc.9;
+        Mon, 16 Nov 2020 15:00:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wW8IUNAptqvWRtctO8+YJZugcJSalzqIkeIZj+Z4Rtw=;
+        b=fYSORLuDaalmGULUcgovWcBMhYmu+41qeaivS3tk/IuTo5jKCuZSEuTN27m0/s25Gi
+         qIBi7vR5LdvkyHyia67g1l6ZhEUStwTqFVOt6nkhYYboVUYV4YEKf7Z7EvdMFYZxKJkr
+         35OtG/yhXNpP8+WI/yt5S36pRY2xccZj/dPqwWh9mK2epHf826UM/2wOrkknxarawbRo
+         iYTtABlnmGLfbYy9dlc+y1lgs0eJCGR2tAv5t/CLnWoQ3v9CNlxwDB8vQ2mHmKpTVixq
+         KGN7GBqdQW/dk6RpG2qzYRRWySDeXTjJ+pzNcPBzUZRRPh7uHDfsKMLXssG7zd+OlqhX
+         Ks2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wW8IUNAptqvWRtctO8+YJZugcJSalzqIkeIZj+Z4Rtw=;
+        b=cn3Iqzlwz0XMhACnd8yt+qeJrp4z3iPLKNSd9clD16jaGtMLFbMn4iQFqIzindUDM2
+         +7Zrpkb0kvS2hqbEjvOHiel3y/xp68abXCufUM27bC8OF+f3WT4rwPXi77FwHGFGIJVl
+         DFq7f+p57pVGGbd5xItfo18pfi//M1rVOLOcs0L/LAmFPUhGu4oetj13LnPjb/uNjAeS
+         MHcOX3SLgxOf4CTYNaqPF9obN4BMMTbUjBLqaDAucZhNh/qefhgfu5xgrSM0jls9d24S
+         +O4iVZqvLMCkS0qrn4RiOb5RMOh5o+BcWM/rj9ynD8ZkLux5G8kD4Eo14SiKjUyebR/H
+         Kqgw==
+X-Gm-Message-State: AOAM530BfLvvfdT1HAe543rLiG/8MUs/N+CTa2Z7JwXkH42ZB4eiuivp
+        41UDoCBJN/bQazA0kK2LbHz+1WmwrtkRdZyKpPOq6z1h
+X-Google-Smtp-Source: ABdhPJwMAU1Gf9GwxRMsib+Ov5RfLYTREiuC0SOlH81RZHFha+3vgr6icMrXKm/jRKrSJeDcpEjnfIBiZVXP0eJAELk=
+X-Received: by 2002:a2e:8982:: with SMTP id c2mr652402lji.121.1605567620926;
+ Mon, 16 Nov 2020 15:00:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <344abf76-9405-58ba-2dc4-27cab88c974d@de.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201116140110.1412642-1-kpsingh@chromium.org>
+ <793acf23-b263-6ae5-2206-18fcdfa991eb@iogearbox.net> <CACYkzJ6U3PNZ0w5ryeWbyTi0NfSLg241iHMHz-b8mrDdsgfkfw@mail.gmail.com>
+In-Reply-To: <CACYkzJ6U3PNZ0w5ryeWbyTi0NfSLg241iHMHz-b8mrDdsgfkfw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 16 Nov 2020 15:00:09 -0800
+Message-ID: <CAADnVQ+6zXX0V8Qn7VOrdgcVVjgbyTEguAKpqkwvW4b3spSHYw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add bpf_lsm_set_bprm_opts helper
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Pauline Middelink <middelin@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/20 11:30 PM, Christian Borntraeger wrote:
-> 
-> 
-> On 13.11.20 23:52, Randy Dunlap wrote:
->> Building on arch/s390/ flags this as an error, so add the
->> __noreturn attribute modifier to prevent the build error.
->>
->> cc1: some warnings being treated as errors
->> ../drivers/md/dm-writecache.c: In function 'persistent_memory_claim':
->> ../drivers/md/dm-writecache.c:323:1: error: no return statement in function returning non-void [-Werror=return-type]
-> 
-> ok with me, but I am asking why
-> 
-> the unreachable macro is not good enough. For x86 it obviously is.
-> 
-> form arch/s390/include/asm/bug.h
-> #define BUG() do {                                      \
->         __EMIT_BUG(0);                                  \
->         unreachable();                                  \
-> } while (0)
-> 
+On Mon, Nov 16, 2020 at 2:48 PM KP Singh <kpsingh@chromium.org> wrote:
+>
+> [...]
+>
+> > >
+> > > +BPF_CALL_2(bpf_lsm_set_bprm_opts, struct linux_binprm *, bprm, u64, flags)
+> > > +{
+> >
+> > This should also reject invalid flags. I'd rather change this helper from RET_VOID
+> > to RET_INTEGER and throw -EINVAL for everything other than BPF_LSM_F_BPRM_SECUREEXEC
+> > passed in here including zero so it can be extended in future.
+>
+> Sounds good, I added:
+>
+>  enum {
+>         BPF_LSM_F_BPRM_SECUREEXEC       = (1ULL << 0),
+> +       /* Mask for all the currently supported BPRM options */
+> +       BPF_LSM_F_BRPM_OPTS_MASK        = 0x1ULL,
+>  };
 
-Hi Christian,
-
-Good question.
-I don't see any guidance about when to use one or the other etc.
-
-I see __noreturn being used 109 times and unreachable();
-being used 33 times, but only now that I look at them.
-That had nothing to do with why I used __noreturn in the patch.
-
-> 
->>
->> Fixes: 48debafe4f2f ("dm: add writecache target")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Mikulas Patocka <mpatocka@redhat.com>
->> Cc: Alasdair Kergon <agk@redhat.com>
->> Cc: Mike Snitzer <snitzer@redhat.com>
->> Cc: dm-devel@redhat.com
->> Cc: Heiko Carstens <hca@linux.ibm.com>
->> Cc: Vasily Gorbik <gor@linux.ibm.com>
->> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
->> Cc: linux-s390@vger.kernel.org
->> ---
->>  drivers/md/dm-writecache.c |    2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> --- linux-next-20201113.orig/drivers/md/dm-writecache.c
->> +++ linux-next-20201113/drivers/md/dm-writecache.c
->> @@ -317,7 +317,7 @@ err1:
->>  	return r;
->>  }
->>  #else
->> -static int persistent_memory_claim(struct dm_writecache *wc)
->> +static int __noreturn persistent_memory_claim(struct dm_writecache *wc)
->>  {
->>  	BUG();
->>  }
->>
-
-thanks.
--- 
-~Randy
-
+No need to add it to uapi.
+Keep it next to the helper in .c file like it's done with other flags.
