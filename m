@@ -2,82 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55802B4048
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C872B404A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728760AbgKPJvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:51:31 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:43318 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726215AbgKPJva (ORCPT
+        id S1728699AbgKPJv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:51:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28448 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728597AbgKPJv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:51:30 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UFWzOrN_1605520286;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFWzOrN_1605520286)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 16 Nov 2020 17:51:26 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     corbet@lwn.net
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, Zi Yan <ziy@nvidia.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] docs/vm: remove unused 3 items explanation for /proc/vmstat
-Date:   Mon, 16 Nov 2020 17:51:22 +0800
-Message-Id: <1605520282-51993-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 16 Nov 2020 04:51:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605520316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1KNmLbHx5FsMWeQyHC4U7PBaTOGh9+m1vfmK/puBcB8=;
+        b=CUbdgiBvjV8KJAi/j3LCRNZ5nd2oBKNU48mlPecVB3qqBF6iI0RVQX6Z/LFeaDMj57SSVO
+        /+e4XXBVcvdgPeTaqbBnPXzfswH4UpXjMVMqTRYmcFnMk5basZVMn7AOsQ4I09uyDCZdlq
+        Rf92XA+4sPX/VQIkscUJFSUl03ugsEM=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-141-srcnoWaPMPCXOGrnR8wDIw-1; Mon, 16 Nov 2020 04:51:55 -0500
+X-MC-Unique: srcnoWaPMPCXOGrnR8wDIw-1
+Received: by mail-wm1-f72.google.com with SMTP id a130so9248995wmf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:51:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1KNmLbHx5FsMWeQyHC4U7PBaTOGh9+m1vfmK/puBcB8=;
+        b=LcqnGDCee5Vrbzcu/FyczjQRDyse/zwf74i+tN6KdmceVbQJqSz3+OLF2V9iNGcswR
+         lgLrAluQU69n2ZTxr6sQgzsoWLznMh+ZiiDlTz4WAL5RFOIUDh/uW9o2DGhP/CVw/9Gr
+         pRElJEm0mavAIQEpIL5b0QiZVhLXGlVatA9ONpVVjpZo+3XDh5NIk+GLVQvDPnCcX+vl
+         FQ4eKFSpBErIUelW9zHbhFyEZoGXw94vsFUZza+huXCaQKYY1oB50Ensi5meXkT0K/g7
+         VE7c7zkYQinJbmjuICFCqe18z/+o3VhS/NdqTbsZtFNgsZbw2e9JLlrSKVbXZ7H8xYIK
+         xWTA==
+X-Gm-Message-State: AOAM533R7pRyJ7lrGI5yhEBxWVMhC0mzM2HuxSx6KODU1C5hhPLPqt2r
+        quHX7flp6Wi8WWftrceBYom6bXkNNcQV4YHwQJOJv/2JnxqeCo/LHD8DskNGtlU7J76YebWqike
+        hdZ+MnUSjlcRIAKdUbkKRIABD
+X-Received: by 2002:a5d:4046:: with SMTP id w6mr17917573wrp.51.1605520313881;
+        Mon, 16 Nov 2020 01:51:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy5W14m0wF60uDdLzrkjrK5PsnrgSpm7lIZwz39JWVlPNEmIAhEgzigORtf8B6aoS6/Wf5jEQ==
+X-Received: by 2002:a5d:4046:: with SMTP id w6mr17917548wrp.51.1605520313646;
+        Mon, 16 Nov 2020 01:51:53 -0800 (PST)
+Received: from redhat.com (bzq-79-176-118-93.red.bezeqint.net. [79.176.118.93])
+        by smtp.gmail.com with ESMTPSA id j8sm18304039wrx.11.2020.11.16.01.51.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 01:51:52 -0800 (PST)
+Date:   Mon, 16 Nov 2020 04:51:49 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alexander Lobakin <alobakin@pm.me>, Amit Shah <amit@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
+ for rproc serial
+Message-ID: <20201116045127-mutt-send-email-mst@kernel.org>
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
+ <20201116091950.GA30524@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116091950.GA30524@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5647bc293ab1 ("mm: compaction: Move migration fail/success
-stats to migrate.c"), removed 3 items in /proc/vmstat. but the docs
-still has their explanation. let's remove them.
+On Mon, Nov 16, 2020 at 09:19:50AM +0000, Christoph Hellwig wrote:
+> I just noticed this showing up in Linus' tree and I'm not happy.
+> 
+> This whole model of the DMA subdevices in remoteproc is simply broken.
+> 
+> We really need to change the virtio code pass an expicit DMA device (
+> similar to what e.g. the USB and RDMA code does),
 
-"compact_blocks_moved",
-"compact_pages_moved",
-"compact_pagemigrate_failed",
+Could you point me at an example or two please?
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Jonathan Corbet <corbet@lwn.net> 
-Cc: Andrew Morton <akpm@linux-foundation.org> 
-Cc: Yang Shi <yang.shi@linux.alibaba.com> 
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> 
-Cc: David Rientjes <rientjes@google.com> 
-Cc: Zi Yan <ziy@nvidia.com> 
-Cc: linux-doc@vger.kernel.org 
-Cc: linux-kernel@vger.kernel.org 
----
- Documentation/admin-guide/mm/transhuge.rst | 15 ---------------
- 1 file changed, 15 deletions(-)
+Thanks!
 
-diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
-index b2acd0d395ca..3b8a336511a4 100644
---- a/Documentation/admin-guide/mm/transhuge.rst
-+++ b/Documentation/admin-guide/mm/transhuge.rst
-@@ -401,21 +401,6 @@ compact_fail
- 	is incremented if the system tries to compact memory
- 	but failed.
- 
--compact_pages_moved
--	is incremented each time a page is moved. If
--	this value is increasing rapidly, it implies that the system
--	is copying a lot of data to satisfy the huge page allocation.
--	It is possible that the cost of copying exceeds any savings
--	from reduced TLB misses.
--
--compact_pagemigrate_failed
--	is incremented when the underlying mechanism
--	for moving a page failed.
--
--compact_blocks_moved
--	is incremented each time memory compaction examines
--	a huge page aligned range of pages.
--
- It is possible to establish how long the stalls were using the function
- tracer to record how long was spent in __alloc_pages_nodemask and
- using the mm_page_alloc tracepoint to identify which allocations were
--- 
-2.29.GIT
+> instead of faking up
+> devices with broken adhoc inheritance of DMA properties and magic poking
+> into device parent relationships.
+> 
+> Bjorn, I thought you were going to look into this a while ago?
+> 
+> 
+> On Wed, Nov 04, 2020 at 03:31:36PM +0000, Alexander Lobakin wrote:
+> > Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
+> > specific dma memory pool"), every remoteproc has a DMA subdevice
+> > ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
+> > DMA capabilities from the corresponding platform device. This allowed
+> > to associate different DMA pools with each vdev, and required from
+> > virtio drivers to perform DMA operations with the parent device
+> > (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
+> > 
+> > virtio_rpmsg_bus was already changed in the same merge cycle with
+> > commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
+> > but virtio_console did not. In fact, operations using the grandparent
+> > worked fine while the grandparent was the platform device, but since
+> > commit c774ad010873 ("remoteproc: Fix and restore the parenting
+> > hierarchy for vdev") this was changed, and now the grandparent device
+> > is the remoteproc device without any DMA capabilities.
+> > So, starting v5.8-rc1 the following warning is observed:
+> > 
+> > [    2.483925] ------------[ cut here ]------------
+> > [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
+> > [    2.489152] Modules linked in: virtio_console(+)
+> > [    2.503737]  virtio_rpmsg_bus rpmsg_core
+> > [    2.508903]
+> > [    2.528898] <Other modules, stack and call trace here>
+> > [    2.913043]
+> > [    2.914907] ---[ end trace 93ac8746beab612c ]---
+> > [    2.920102] virtio-ports vport1p0: Error allocating inbufs
+> > 
+> > kernel/dma/mapping.c:427 is:
+> > 
+> > WARN_ON_ONCE(!dev->coherent_dma_mask);
+> > 
+> > obviously because the grandparent now is remoteproc dev without any
+> > DMA caps:
+> > 
+> > [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
+> > 
+> > Fix this the same way as it was for virtio_rpmsg_bus, using just the
+> > parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
+> > operations.
+> > This also allows now to reserve DMA pools/buffers for rproc serial
+> > via Device Tree.
+> > 
+> > Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
+> > Cc: stable@vger.kernel.org # 5.1+
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  drivers/char/virtio_console.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+> > index a2da8f768b94..1836cc56e357 100644
+> > --- a/drivers/char/virtio_console.c
+> > +++ b/drivers/char/virtio_console.c
+> > @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_device *vdev, size_t buf_size
+> >  		/*
+> >  		 * Allocate DMA memory from ancestor. When a virtio
+> >  		 * device is created by remoteproc, the DMA memory is
+> > -		 * associated with the grandparent device:
+> > -		 * vdev => rproc => platform-dev.
+> > +		 * associated with the parent device:
+> > +		 * virtioY => remoteprocX#vdevYbuffer.
+> >  		 */
+> > -		if (!vdev->dev.parent || !vdev->dev.parent->parent)
+> > +		buf->dev = vdev->dev.parent;
+> > +		if (!buf->dev)
+> >  			goto free_buf;
+> > -		buf->dev = vdev->dev.parent->parent;
+> >  
+> >  		/* Increase device refcnt to avoid freeing it */
+> >  		get_device(buf->dev);
+> > -- 
+> > 2.29.2
+> > 
+> > 
+> ---end quoted text---
 
