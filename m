@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90872B4418
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126FA2B441B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728006AbgKPM5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:57:15 -0500
-Received: from mga02.intel.com ([134.134.136.20]:16105 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726455AbgKPM5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:57:14 -0500
-IronPort-SDR: ayLfF+/Rw1IqH0DTSz3rjBUeHO8NPEHzp64vbhbvt508M141NyxkLWtw6Cd601hbV1tqkgX+/1
- /XXh/g/fFVZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157765311"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="157765311"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:57:12 -0800
-IronPort-SDR: F/jSnKN098h0snytVYx+biObxO7tmenaAWd2FcXe0Bo0+EMxLUbnaRIzY22R9eCKfb71ybYMzS
- evf97b8UNYjg==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="358454835"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:57:10 -0800
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Sean Z Huang <sean.z.huang@intel.com>
-Subject: [char-misc-next 2/2] mei: bus: enable pavp device.
-Date:   Mon, 16 Nov 2020 14:56:12 +0200
-Message-Id: <20201116125612.1660971-2-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201116125612.1660971-1-tomas.winkler@intel.com>
-References: <20201116125612.1660971-1-tomas.winkler@intel.com>
+        id S1727378AbgKPM6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:58:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbgKPM6J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:58:09 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93214C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:58:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KRXNkO+KFPcAC0XnVHoUN3XHV3TWuEbfhoxAq87wtMM=; b=B0L09+U2QoRTqaM6/qgdzSi31Z
+        bGUGOs6oWWZnqTOoTxyZIZUnEMInKNBuvfo18awjmqlzUWIG+mxGVdV/UOq1OzLef7ci0IGhTTTpq
+        FTSD4AfBVZw3rKQDWR2VRIocxQ8iD+W6SFE3Auu4I2czF679Lk5fbBoo8EdIFLL6eRO8y7oyEAYP8
+        O4ZbTiRnhgFdVBHipz59jj5NyAJofb+qw2KpVFlbaMuRPXZLzTZaWHOW08+KUow39Lj+GqH/WyiXS
+        rjE+IQMCFzr1nISH7lqOrbJkGAhentDuPBCikT2rJy0CS31ZIwxS7rTxgUlzNvVVWLYdIV9doG1QK
+        NZVM1KDg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kee55-0004fe-Ri; Mon, 16 Nov 2020 12:58:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 79A623060AE;
+        Mon, 16 Nov 2020 13:58:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 65CAB202647A8; Mon, 16 Nov 2020 13:58:03 +0100 (CET)
+Date:   Mon, 16 Nov 2020 13:58:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: Loadavg accounting error on arm64
+Message-ID: <20201116125803.GB3121429@hirez.programming.kicks-ass.net>
+References: <20201116091054.GL3371@techsingularity.net>
+ <20201116114938.GN3371@techsingularity.net>
+ <20201116125355.GB3121392@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116125355.GB3121392@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable protected audio video path client on mei client
-bus.
+On Mon, Nov 16, 2020 at 01:53:55PM +0100, Peter Zijlstra wrote:
+> On Mon, Nov 16, 2020 at 11:49:38AM +0000, Mel Gorman wrote:
+> > On Mon, Nov 16, 2020 at 09:10:54AM +0000, Mel Gorman wrote:
+> > > I'll be looking again today to see can I find a mistake in the ordering for
+> > > how sched_contributes_to_load is handled but again, the lack of knowledge
+> > > on the arm64 memory model means I'm a bit stuck and a second set of eyes
+> > > would be nice :(
+> > > 
+> > 
+> > This morning, it's not particularly clear what orders the visibility of
+> > sched_contributes_to_load exactly like other task fields in the schedule
+> > vs try_to_wake_up paths. I thought the rq lock would have ordered them but
+> > something is clearly off or loadavg would not be getting screwed. It could
+> > be done with an rmb and wmb (testing and hasn't blown up so far) but that's
+> > far too heavy.  smp_load_acquire/smp_store_release might be sufficient
+> > on it although less clear if the arm64 gives the necessary guarantees.
+> > 
+> > (This is still at the chucking out ideas as I haven't context switched
+> > back in all the memory barrier rules).
+> 
+> IIRC it should be so ordered by ->on_cpu.
+> 
+> We have:
+> 
+> 	schedule()
+> 		prev->sched_contributes_to_load = X;
+> 		smp_store_release(prev->on_cpu, 0);
+> 
+> 
+> on the one hand, and:
 
-Cc: Sean Z Huang <sean.z.huang@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
----
- drivers/misc/mei/bus-fixup.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Ah, my bad, ttwu() itself will of course wait for !p->on_cpu before we
+even get here.
 
-diff --git a/drivers/misc/mei/bus-fixup.c b/drivers/misc/mei/bus-fixup.c
-index 6cc3145bb716..d8e760b11ae3 100644
---- a/drivers/misc/mei/bus-fixup.c
-+++ b/drivers/misc/mei/bus-fixup.c
-@@ -33,6 +33,9 @@ static const uuid_le mei_nfc_info_guid = MEI_UUID_NFC_INFO;
- #define MEI_UUID_HDCP UUID_LE(0xB638AB7E, 0x94E2, 0x4EA2, \
- 			      0xA5, 0x52, 0xD1, 0xC5, 0x4B, 0x62, 0x7F, 0x04)
- 
-+#define MEI_UUID_PAVP UUID_LE(0xfbf6fcf1, 0x96cf, 0x4e2e, 0xA6, \
-+			      0xa6, 0x1b, 0xab, 0x8c, 0xbe, 0x36, 0xb1)
-+
- #define MEI_UUID_ANY NULL_UUID_LE
- 
- /**
-@@ -491,6 +494,7 @@ static struct mei_fixup {
- 	MEI_FIXUP(MEI_UUID_MKHIF_FIX, mei_mkhi_fix),
- 	MEI_FIXUP(MEI_UUID_HDCP, whitelist),
- 	MEI_FIXUP(MEI_UUID_ANY, vt_support),
-+	MEI_FIXUP(MEI_UUID_PAVP, whitelist),
- };
- 
- /**
--- 
-2.26.2
+> 	sched_ttwu_pending()
+> 		if (WARN_ON_ONCE(p->on_cpu))
+> 			smp_cond_load_acquire(&p->on_cpu)
+> 
+> 		ttwu_do_activate()
+> 			if (p->sched_contributes_to_load)
+> 				...
+> 
+> on the other (for the remote case, which is the only 'interesting' one).
 
+Also see the "Notes on Program-Order guarantees on SMP systems."
+comment.
