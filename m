@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D232B5512
+	by mail.lfdr.de (Postfix) with ESMTP id EC84E2B5514
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730314AbgKPXdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:33:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41168 "EHLO mail.kernel.org"
+        id S1730408AbgKPXeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:34:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbgKPXdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:33:50 -0500
+        id S1726227AbgKPXeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 18:34:09 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7491822280;
-        Mon, 16 Nov 2020 23:33:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0188E22314;
+        Mon, 16 Nov 2020 23:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605569630;
-        bh=lG8vjtafSwJlzpTe4ZWzO3xTe2KC9KSe1kymL1F6xJo=;
+        s=default; t=1605569649;
+        bh=jYfF/Df9sJgPWiehVRzemv1qkjlKpJfp3meLqrvQK6s=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=JlvKzOhlcrAT+uQ0LdSTp/rSUQoUXnPxaf0cJ3Bqu40UHuJVjP8qQpoMkmuwF3Q4f
-         sla8xzK9k705EWOb6rMqXtHlYAwVmFXSFv1kGdT0WuVJWxoOQRn2EoA00j6E3QZy05
-         SQSalKDIKfH3CXMc85AXKBnZBwByPKw7jXvo2YGU=
-Date:   Mon, 16 Nov 2020 23:33:31 +0000
+        b=o0e08W1IMyTXEbl6IULFYskAlrpG2rKkfJNYBXos/b+6mXpdIePpUxP3AgqVp0blf
+         nd3k3Aa/UQRRYHCCDuM5DELBo9uBTC3v8INL/u4fxtE9A9iQv5pMxBsdfUEySeXCXD
+         oxtYv1iYMHxmFwWkD8ldP13x0zhioCE3udoFb+No=
+Date:   Mon, 16 Nov 2020 23:33:50 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-amlogic@lists.infradead.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20201116172423.546855-1-jbrunet@baylibre.com>
-References: <20201116172423.546855-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH] ASoC: meson: fix COMPILE_TEST error
-Message-Id: <160556956525.29683.11005029623520003708.b4-ty@kernel.org>
+To:     tudor.ambarus@microchip.com,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        vadivel.muruganx.ramuthevar@linux.intel.com,
+        p.zabel@pengutronix.de, vigneshr@ti.com
+Cc:     yi.zhang@huawei.com, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201116141836.2970579-1-chengzhihao1@huawei.com>
+References: <20201116141836.2970579-1-chengzhihao1@huawei.com>
+Subject: Re: [PATCH v2] spi: cadence-quadspi: Fix error return code in cqspi_probe
+Message-Id: <160556963072.29969.15448651614213250723.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,25 +42,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 18:24:23 +0100, Jerome Brunet wrote:
-> When compiled with CONFIG_HAVE_CLK, the kernel need to get provider for the
-> clock API. This is usually selected by the platform and the sound drivers
-> should not really care about this. However COMPILE_TEST is special and the
-> platform required may not have been selected, leading to this type of
-> error:
-> 
-> > aiu-encoder-spdif.c:(.text+0x3a0): undefined reference to `clk_set_parent'
-> 
-> [...]
+On Mon, 16 Nov 2020 22:18:36 +0800, Zhihao Cheng wrote:
+> Fix to return the error code from
+> devm_reset_control_get_optional_exclusive() instaed of 0
+> in cqspi_probe().
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: meson: fix COMPILE_TEST error
-      commit: 299fe9937dbd1a4d9a1da6a2b6f222298534ca57
+[1/1] spi: cadence-quadspi: Fix error return code in cqspi_probe
+      commit: ac9978fcad3c5abc43cdd225441ce9459c36e16b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
