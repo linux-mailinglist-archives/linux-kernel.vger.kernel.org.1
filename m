@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A482B50E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D3A2B50EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbgKPTSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:18:17 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46416 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgKPTSR (ORCPT
+        id S1729163AbgKPTTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:19:25 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:35184 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgKPTTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:18:17 -0500
-Received: by mail-ot1-f68.google.com with SMTP id g19so17061375otp.13;
-        Mon, 16 Nov 2020 11:18:15 -0800 (PST)
+        Mon, 16 Nov 2020 14:19:24 -0500
+Received: by mail-oi1-f196.google.com with SMTP id c80so19990375oib.2;
+        Mon, 16 Nov 2020 11:19:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=EPhHNNZqdEahcd/eb53lKDLlEmin4saNiGp+SAL2Ql4=;
-        b=pXb0+3mPKXedwBaVeYCZxIwu8Am88p3AHfBoCq81TWV41yGtko0bmvq2HZVTOKnqUL
-         D57Wv3UaUitcbyvTek5szyS0aU7ZUMeuLlHnpzsCiR1a3DY7deNr/G8x6pWnjSITVh5n
-         4gtzUCBkI3xRpIbawBJzOG8plMmfZLWrG8tsp7wPxl8inukcAxOwPbVc84/az10P3Wq5
-         N6vwKWZJuwv3joUOI2AF/xSkSF5zEQKpHgzMtxdpYTtJ/v//f0Z1CQbqm3r+9R2wdUcJ
-         jPRwLtq/7jvj9ahSB0Va+1ytEHgLj9dWxWHm5DkoyHtL3lZ2Zht2ibyJwZyqRe0+L6QU
-         u90Q==
-X-Gm-Message-State: AOAM533A7QkPZFP29oIxpdfNh2NkiPoslp7BQ84VAzXAxllEJrsv6jf4
-        SYB2W8nCa+rktjmob7dXyg==
-X-Google-Smtp-Source: ABdhPJyLw3/Yl1MuoY1Z0YNmqEjTb1i1kMhothk9Ti4ZvtaROgO/i20brbg8QEDjTSmSSiyhSlGURQ==
-X-Received: by 2002:a9d:2c68:: with SMTP id f95mr604552otb.300.1605554294743;
-        Mon, 16 Nov 2020 11:18:14 -0800 (PST)
+        bh=Hk0zicNyvdGlejHlcvT1pkraHtVqp71eil3CE0c3jBs=;
+        b=dayPsDEuPVI/yN161qBjN8OZOAC4Fn7xGHzcz7kwzoh4SML0clgBdTy7+rs1BiMEUb
+         YvnJDgLNjSQrBg/EFWE3qddWao8BaBghgyqtj6JeP6jE1rcYg1BYT0HGu4PSPazL3oMV
+         tBFQ2IFEo2yG2x7fErvvzhJRhwL9/i49cg2Fqzd9X7IwDFPFXVn6pts1/3VmjQsb5m5s
+         Y8yL2ySzYeMMG8/keGOyrM4F058gY4PAGq9zKVI9a3MDbk2i7TFiBrzAm1ZewvARLSxO
+         5CRoyBOsnEgAeY6EVumGfbDAUpfXfqfeTv1E3VaJZIZ5Vc4ycKzhSkllepOIv5yMQRWc
+         dO1g==
+X-Gm-Message-State: AOAM530uUBih/OBrLu/6GhgxXbWl+zhDsYwr/RTVNxg6LSAc+5Q7tUi1
+        IpF4ef4LK7DxYPsjSxE5Sg==
+X-Google-Smtp-Source: ABdhPJz/+A/D5xNcXl2Y3DjW8C6hn8SSU4lIu+WqboemSEynjf7hT/q2B5BgicViUMLJpx8Hyyng/g==
+X-Received: by 2002:aca:c502:: with SMTP id v2mr112809oif.93.1605554363527;
+        Mon, 16 Nov 2020 11:19:23 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v13sm5020814oic.17.2020.11.16.11.18.13
+        by smtp.gmail.com with ESMTPSA id 14sm4970527otf.10.2020.11.16.11.19.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 11:18:14 -0800 (PST)
-Received: (nullmailer pid 1983723 invoked by uid 1000);
-        Mon, 16 Nov 2020 19:18:12 -0000
-Date:   Mon, 16 Nov 2020 13:18:12 -0600
+        Mon, 16 Nov 2020 11:19:22 -0800 (PST)
+Received: (nullmailer pid 1985278 invoked by uid 1000);
+        Mon, 16 Nov 2020 19:19:22 -0000
+Date:   Mon, 16 Nov 2020 13:19:22 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>
-Cc:     s.hauer@pengutronix.de, laurentiu.palcu@nxp.com,
-        robert.chiras@nxp.com, hverkuil-cisco@xs4all.nl,
-        niklas.soderlund+renesas@ragnatech.se,
-        dafna.hirschfeld@collabora.com, shawnguo@kernel.org,
-        aisheng.dong@nxp.com, linux-media@vger.kernel.org,
-        mchehab@kernel.org, ezequiel@collabora.com,
-        paul.kocialkowski@bootlin.com, linux-kernel@vger.kernel.org,
-        p.zabel@pengutronix.de, Mirela Rabulea <mirela.rabulea@nxp.com>,
-        mark.rutland@arm.com, daniel.baluta@nxp.com,
-        laurent.pinchart+renesas@ideasonboard.com, robh+dt@kernel.org,
-        linux-imx@nxp.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 03/10] media: dt-bindings: Add bindings for
- i.MX8QXP/QM JPEG driver
-Message-ID: <20201116191812.GA1983669@bogus>
-References: <20201112030557.8540-1-mirela.rabulea@oss.nxp.com>
- <20201112030557.8540-4-mirela.rabulea@oss.nxp.com>
+To:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+Cc:     cheol.yong.kim@intel.com, dmaengine@vger.kernel.org,
+        chuanhua.lei@linux.intel.com, peter.ujfalusi@ti.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        malliamireddy009@gmail.com, vkoul@kernel.org,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v9 1/2] dt-bindings: dma: Add bindings for Intel LGM SoC
+Message-ID: <20201116191922.GA1985224@bogus>
+References: <cover.1605158930.git.mallikarjunax.reddy@linux.intel.com>
+ <bfe586ac62080d14759bda22ebf1de1a1fa9c09d.1605158930.git.mallikarjunax.reddy@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112030557.8540-4-mirela.rabulea@oss.nxp.com>
+In-Reply-To: <bfe586ac62080d14759bda22ebf1de1a1fa9c09d.1605158930.git.mallikarjunax.reddy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 12 Nov 2020 05:05:50 +0200, Mirela Rabulea (OSS) wrote:
-> From: Mirela Rabulea <mirela.rabulea@nxp.com>
+On Thu, 12 Nov 2020 13:38:45 +0800, Amireddy Mallikarjuna reddy wrote:
+> Add DT bindings YAML schema for DMA controller driver
+> of Lightning Mountain (LGM) SoC.
 > 
-> Add bindings documentation for i.MX8QXP/QM JPEG decoder & encoder driver.
-> 
-> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
+> Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
 > ---
-> Changes in v5:
-> changed compatible name to be SOC specific
-> changed fsl->nxp
-> rephrased a bit the interrupts description
+> v1:
+> - Initial version.
 > 
->  .../bindings/media/nxp,imx8-jpeg.yaml         | 84 +++++++++++++++++++
->  1 file changed, 84 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+> v2:
+> - Fix bot errors.
+> 
+> v3:
+> - No change.
+> 
+> v4:
+> - Address Thomas langer comments
+>   - use node name pattern as dma-controller as in common binding.
+>   - Remove "_" (underscore) in instance name.
+>   - Remove "port-" and "chan-" in attribute name for both 'dma-ports' & 'dma-channels' child nodes.
+> 
+> v5:
+> - Moved some of the attributes in 'dma-ports' & 'dma-channels' child nodes to dma client/consumer side as cells in 'dmas' properties.
+> 
+> v6:
+> - Add additionalProperties: false
+> - completely removed 'dma-ports' and 'dma-channels' child nodes.
+> - Moved channel dt properties to client side dmas.
+> - Use standard dma-channels and dma-channel-mask properties.
+> - Documented reset-names
+> - Add description for dma-cells
+> 
+> v7:
+> - modified compatible to oneof
+> - Reduced number of dma-cells to 3
+> - Fine tune the description of some properties.
+> 
+> v7-resend:
+> - rebase to 5.10-rc1
+> 
+> v8:
+> - rebased to 5.10-rc3
+> - Fixing the bot issues (wrong indentation)
+> 
+> v9:
+> - rebased to 5.10-rc3
+> - Use 'enum' instead of oneOf+const
+> - Drop '#dma-cells' in required:, already covered in dma-common.yaml
+> - Drop nodename Already covered by dma-controller.yaml
+> ---
+>  .../devicetree/bindings/dma/intel,ldma.yaml        | 130 +++++++++++++++++++++
+>  1 file changed, 130 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
