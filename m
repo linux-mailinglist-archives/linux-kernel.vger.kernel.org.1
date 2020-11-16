@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A60F2B4E14
+	by mail.lfdr.de (Postfix) with ESMTP id 762442B4E15
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387795AbgKPRl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:41:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46582 "EHLO
+        id S2387511AbgKPRmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:42:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387771AbgKPRlx (ORCPT
+        with ESMTP id S2387779AbgKPRl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:41:53 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CAB3C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:53 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id p22so45419wmg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:53 -0800 (PST)
+        Mon, 16 Nov 2020 12:41:56 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67BBC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:54 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id r17so19688910wrw.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+170YZVUptUVP8b8DCIuLCBL2J9gnyH4hHHhpysSOuQ=;
-        b=rJZgv0r3y1uaooYzLQ77T067OtNBcziJ1kMk4hccmXIIg+vWYcZOw6hRxBvEbvrc0e
-         54BY9C/GyH3afuOmhUyh6oT2QBbXnogaeE9MwZ8W5t2+aGcJ3fqzTwm9tMeqqBDsagX9
-         9IkPccddWCzGVUmqxsrk1Dhwh1XIH8iyVoIKyOqo0YydsxRfN8zwh930DQ8CFItkCyld
-         8XlOZ70+ZtnSKmSDmqzspsXieifAqjySJVAavAWNnzUcekoawVH3eL0zRZC+k2YBSfqQ
-         gUpEssUZXiRRFwtseSyNvOhXWtr/4Qbonpf5kRYeA35GUHQD3fpKSDAovTkR3QY/Vhag
-         HIFg==
+        bh=6ly2vy0YXlYaSPJSVrw6dCp9MyYzaUlBE3q9eSYRtTE=;
+        b=pPumeK8MjgTP68BQSG7hK5qh97k6m6M3fw6z+lcvLPzvg8BTWkTZHzzkXpU7QxOXHo
+         BNjpaSAzOgDBRdrPBcrtCR8DySCYkQDX4/MZVG76DaCUlEmmI49870pkv1EZV4xCG+RW
+         xUkjKMIcPpgrpkYhscE9yITsWMpQmuW/CKacZfUBLt/FmxAD6478E6Bi15qz8SGIpYuX
+         /HCT/SjC04O9zWBTy/dqDc5YderwRLjQdaOVsRKO4MH6wC7olydW+2wepE2s4TjzZQU4
+         2tSuihOsK2IWwV376TXT9CQEMTFzOTWhYx5vOCjVCZcjRFvbRIzFn8H2bFZdysPo46RF
+         prWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+170YZVUptUVP8b8DCIuLCBL2J9gnyH4hHHhpysSOuQ=;
-        b=fvaE/L5qtOZR5w0+huZwCCQz8wioevyAyUcyKD6OgrmLJ+JK4FpaifqmUF3OQWAOoz
-         o3CN9KpXRLBLRRfNTyy7Cu7Mc54645VbcS2qJqGAKoUIENS6j/wPkisFrrssZzd28KM1
-         PHe+t0wnKlFJ6/12S5OPQmGd1VD3YagD8ayvNveNzfjaPg0BdlCJjJ9mXFP8lH48LsNg
-         S1rlCv/NLsMJmXE9Ukf/u0zI0o89TZoNP/TFIMhitxV04yZ6Sp7ZUXXi1R9gNdsWoxgp
-         hrnexfKmomOTnmS3nOaFu8bjkpfSesrO7ZGnXykLL53XNpeoShkv924O+rAT/ZQjwdDv
-         sCIw==
-X-Gm-Message-State: AOAM532j1LeaNwkfx4sZ6r+4KfO+BZ15/EdAix+IK/4GTygkLqzqZnGb
-        uDJq5LSL8fC2K8xYVHdeiKhMSw==
-X-Google-Smtp-Source: ABdhPJzrdNHfcckGPvTVYiKyOTyfZ8lac3YqV+u13joqzDyl9nbQ+6pDIovDVylNGHeenJsooQOrxA==
-X-Received: by 2002:a1c:6704:: with SMTP id b4mr28166wmc.96.1605548512097;
-        Mon, 16 Nov 2020 09:41:52 -0800 (PST)
+        bh=6ly2vy0YXlYaSPJSVrw6dCp9MyYzaUlBE3q9eSYRtTE=;
+        b=EH04HMS2bnrr3S/K9fPBjlHqFOV2SRR8FLH9n+AScjEDR/McMS/hYRxjEW0XHMCHnT
+         hRBizQiaetUNidIC1VgChHRpjadtwxmd4/BFq2HPFRdWrONEkp5Efl7dhTbRfLTOZ4OQ
+         cxWV/xyKM/eW+Uw7cwqTtRSosgu12PKdyZAaF61bpkmtM/7zwyyrtHAjmXLQHrf2ojpy
+         rFr8ygYB8rsg8VptTPJ/Icej6AfdZ84nNj8T1IZIi0HxjllvtKlLo22b6aeMZ8FNQOnj
+         aX8bE8WLyKh8oXqwskWmLWeDNb/ED+4HAiSVOKqWKe3d4ODsIMO6E46fE6J0BB2dKNKc
+         2/Xg==
+X-Gm-Message-State: AOAM532BdNBUsBwhOOiPGLmaNxbt+n8ATrk3Sx1O/8Ii6GwZLuKCF1bx
+        Aq4PrU+BXgB56wy9v5ZCu/y/lw==
+X-Google-Smtp-Source: ABdhPJxfPlHBGHo5OFZg60I7eHKyQ/Wgn1YzLYFclvP3QpESJC/x7/DqF1YwB7WHfVgKpSGF4/ZOmg==
+X-Received: by 2002:a5d:410c:: with SMTP id l12mr20517364wrp.173.1605548513635;
+        Mon, 16 Nov 2020 09:41:53 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.41.50
+        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.41.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:41:51 -0800 (PST)
+        Mon, 16 Nov 2020 09:41:52 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 22/42] drm/pl111/pl111_display: Make local function static
-Date:   Mon, 16 Nov 2020 17:40:52 +0000
-Message-Id: <20201116174112.1833368-23-lee.jones@linaro.org>
+Subject: [PATCH 23/42] drm/pl111/pl111_debugfs: Make local function 'pl111_debugfs_regs()' static
+Date:   Mon, 16 Nov 2020 17:40:53 +0000
+Message-Id: <20201116174112.1833368-24-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116174112.1833368-1-lee.jones@linaro.org>
 References: <20201116174112.1833368-1-lee.jones@linaro.org>
@@ -69,7 +69,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/pl111/pl111_display.c:356:6: warning: no previous prototype for ‘pl111_display_disable’ [-Wmissing-prototypes]
+ drivers/gpu/drm/pl111/pl111_debugfs.c:33:5: warning: no previous prototype for ‘pl111_debugfs_regs’ [-Wmissing-prototypes]
 
 Cc: Eric Anholt <eric@anholt.net>
 Cc: David Airlie <airlied@linux.ie>
@@ -77,22 +77,22 @@ Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/pl111/pl111_display.c | 2 +-
+ drivers/gpu/drm/pl111/pl111_debugfs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/pl111/pl111_display.c b/drivers/gpu/drm/pl111/pl111_display.c
-index b3e8697cafcf1..69c02e7c82b7e 100644
---- a/drivers/gpu/drm/pl111/pl111_display.c
-+++ b/drivers/gpu/drm/pl111/pl111_display.c
-@@ -353,7 +353,7 @@ static void pl111_display_enable(struct drm_simple_display_pipe *pipe,
- 		drm_crtc_vblank_on(crtc);
- }
+diff --git a/drivers/gpu/drm/pl111/pl111_debugfs.c b/drivers/gpu/drm/pl111/pl111_debugfs.c
+index 317f68abf18b0..6744fa16f4644 100644
+--- a/drivers/gpu/drm/pl111/pl111_debugfs.c
++++ b/drivers/gpu/drm/pl111/pl111_debugfs.c
+@@ -30,7 +30,7 @@ static const struct {
+ 	REGDEF(CLCD_PL111_LCUR),
+ };
  
--void pl111_display_disable(struct drm_simple_display_pipe *pipe)
-+static void pl111_display_disable(struct drm_simple_display_pipe *pipe)
+-int pl111_debugfs_regs(struct seq_file *m, void *unused)
++static int pl111_debugfs_regs(struct seq_file *m, void *unused)
  {
- 	struct drm_crtc *crtc = &pipe->crtc;
- 	struct drm_device *drm = crtc->dev;
+ 	struct drm_info_node *node = (struct drm_info_node *)m->private;
+ 	struct drm_device *dev = node->minor->dev;
 -- 
 2.25.1
 
