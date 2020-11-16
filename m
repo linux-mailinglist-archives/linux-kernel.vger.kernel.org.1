@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23012B3BF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6D92B3BF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 05:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgKPD6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 22:58:37 -0500
-Received: from smtprelay0094.hostedemail.com ([216.40.44.94]:35450 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726532AbgKPD6h (ORCPT
+        id S1726853AbgKPD7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 22:59:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgKPD7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 22:58:37 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 5630C1730858;
-        Mon, 16 Nov 2020 03:58:36 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4605:4659:5007:9010:9025:9388:10004:10049:10400:10848:11232:11657:11658:11783:11914:12043:12048:12297:12555:12740:12895:13069:13311:13357:13439:13894:14094:14106:14181:14659:14721:14764:14849:21080:21451:21627:21691:21740:21781:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: scent45_491207927325
-X-Filterd-Recvd-Size: 2428
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 16 Nov 2020 03:58:34 +0000 (UTC)
-Message-ID: <d03c87f9fcc4bb68c148cfad12cafef5f2385eef.camel@perches.com>
-Subject: Re: [PATCH] MAINTAINERS: rectify file patterns for NETFILTER
-From:   Joe Perches <joe@perches.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 15 Nov 2020 19:58:33 -0800
-In-Reply-To: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
-References: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 15 Nov 2020 22:59:49 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827C1C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 19:59:49 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id n129so15870645iod.5
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 19:59:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xoKkCk1ViZ7cyDkfkn32mt+pu9Euhk6ljleTl1w5KYw=;
+        b=GtuRtmU2k/VKyIq+ohLxciYqRhsG36XyT2Up2675OxXUTvoXTWC7KZhuIvJyEPVqvN
+         kGBGaVgXxwwd2ECUdGovuvR9rq0QTmAWDsvcZoivebj1HL2fs5HNnxXVG7aT2026D5T3
+         iKo/ZG41NBzjLxqF+7TOFwuTo+hizHQp49eYXNuKtBZoR2OpzvUOvVe9hT0Pt6q98zYe
+         K/Gho1PNJzLYS5De7S4ogij5gdEdQ/irIGCydRcmVSoFT/zcs1jlwS5tn4pDeNc8wJBu
+         TE97xZmA2gfe3l0eYljhh6SX9v+v3AhXQHnrCuqHLi8XO6M8Z2HHMTXHnS2GhsYslpkk
+         KJXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xoKkCk1ViZ7cyDkfkn32mt+pu9Euhk6ljleTl1w5KYw=;
+        b=geSiFe2mUpO4Btqa6wUrXkTvLcJAIhIsHfBWxdHlELyfGZpW67zVlNLK/GR6d6FZHs
+         OLZsw4C3ngyr15ORk6YMqOIpFSRG2FfcHY6yuWwsOBh9Lr8lwB12neOM12ntzsq5hXEq
+         EEny8p/D1sqfYgvyVXi6wuIFYR0HB5tQCPAgg36d+ZXLAqwK63SgfktOAVfpOeV4HXgj
+         gJNK4E34M6w1baPpNa/N7irc3U/ExJIWPUGqAlglpr/YGKVmpHryb/X/2rnOpNgxEZiG
+         1iNm5pMC874KJvYzxQBIdfEZ+A+rkLqDqiU6NJzEmAjTIXbPGSvqCKhW2q+h9ccqhwQF
+         sHOg==
+X-Gm-Message-State: AOAM530WOooE5zal8MgvpErXy1pes9F5cnBwuY6DeMOEZ55a07yclrep
+        T8O6hLbR/MufoznbAwKJ+pYccEtRkAOYyNMwSNg=
+X-Google-Smtp-Source: ABdhPJwGD3kzZ3e8UsaE7X+yrU5zBbAwhLXF3V30+nVXHbWI5xKA5BVVCJbTdJcDDXa/KJrF2fP+9nfnsY70Ezxhyaw=
+X-Received: by 2002:a02:2e52:: with SMTP id u18mr9220183jae.29.1605499188480;
+ Sun, 15 Nov 2020 19:59:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <BN7PR11MB26097166B6B46387D8A1ABA4FDE30@BN7PR11MB2609.namprd11.prod.outlook.com>
+In-Reply-To: <BN7PR11MB26097166B6B46387D8A1ABA4FDE30@BN7PR11MB2609.namprd11.prod.outlook.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Sun, 15 Nov 2020 19:59:37 -0800
+Message-ID: <CAAH8bW_WVomz45dUAth9OqVRe=+nYcBBcc9iW4tmXkDSnJOUhw@mail.gmail.com>
+Subject: Re: bitmap: Remove unused function declaration
+To:     "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-09 at 10:19 +0100, Lukas Bulwahn wrote:
-> The two file patterns in the NETFILTER section:
-> 
->   F:      include/linux/netfilter*
->   F:      include/uapi/linux/netfilter*
-> 
-> intended to match the directories:
-> 
->   ./include{/uapi}/linux/netfilter_{arp,bridge,ipv4,ipv6}
-> 
-> A quick check with ./scripts/get_maintainer.pl --letters -f will show that
-> they are not matched, though, because this pattern only matches files, but
-> not directories.
-> 
-> Rectify the patterns to match the intended directories.
-[]
-diff --git a/MAINTAINERS b/MAINTAINERS
-[]
-> @@ -12139,10 +12139,10 @@ W:	http://www.nftables.org/
->  Q:	http://patchwork.ozlabs.org/project/netfilter-devel/list/
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git
-> -F:	include/linux/netfilter*
-> +F:	include/linux/netfilter*/
->  F:	include/linux/netfilter/
+(CC related people)
 
-This line could be deleted or perhaps moved up one line above
+Since there is no actual implementation for them, there's , I think
+it's safe (and better)
+to remove the declarations. Thanks for the catch.
 
-F:	include/linux/netfilter/
-F:	include/linux/netfilter*/
+Acked-by: Yury Norov <yury.norov@gmail.com>
 
-(as the second line already matches the first line's files too)
-
->  F:	include/net/netfilter/
-> -F:	include/uapi/linux/netfilter*
-> +F:	include/uapi/linux/netfilter*/
->  F:	include/uapi/linux/netfilter/
-
-same here.
-
->  F:	net/*/netfilter.c
->  F:	net/*/netfilter/
-
-
+On Sun, Nov 15, 2020 at 7:17 PM Ma, Jianpeng <jianpeng.ma@intel.com> wrote:
+>
+> Signed-off-by: Jianpeng Ma <jianpeng.ma@intel.com>
+> ---
+>  include/linux/bitmap.h | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index 99058eb81042..6f08965c69a5 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -126,8 +126,6 @@ extern void bitmap_free(const unsigned long *bitmap);
+>   * lib/bitmap.c provides these functions:
+>   */
+>
+> -extern int __bitmap_empty(const unsigned long *bitmap, unsigned int nbits);
+> -extern int __bitmap_full(const unsigned long *bitmap, unsigned int nbits);
+>  extern int __bitmap_equal(const unsigned long *bitmap1,
+>                           const unsigned long *bitmap2, unsigned int nbits);
+>  extern bool __pure __bitmap_or_equal(const unsigned long *src1,
+> --
+> 2.28.0
