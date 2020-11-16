@@ -2,99 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500342B40A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CA72B409F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgKPKQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728797AbgKPKQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 16 Nov 2020 05:16:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbgKPKQx (ORCPT
+        with ESMTP id S1728703AbgKPKQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Nov 2020 05:16:53 -0500
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41B1C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:16:51 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id j7so18037287wrp.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:16:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC02C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:16:53 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id 23so18014342wrc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:16:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cPcVTlt4PtaJnqwyX4xYXu+/IKdY0k4HutlOclbS1nM=;
-        b=TZjbGcnkBRQSD8Dl4SgMJvoMpmw4tLtZFcPYqIvp+RKueRfsMqBuCAC8vyU/ubvNYX
-         uLO/dh8A2P3ZugUzDocHm3jFdQeZONKKsi2g5neE1s+gHXG9jd8tOnQQYWoEBCR65qIh
-         vq0uyQzd+2aOQ5JCaGNVJM37Wc+b7BSqKp6F0O4il/O1uA1hki9xlLHkMEmwe548jwHE
-         FrZdFIkJ9cFJKsY2NgtRJO92jwP6w7loQKZxM2R8M14J1LvBEBxycHLdz08x+NNJ7UaZ
-         pCqjpBscww5rIahnB9+0ykkPahxxBTM8GOXsE164c62x9rS7+cA+Ed2J+UR1Z15jSdk7
-         NWXA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ceCydoW0taXspmLSuwqkIqJ7k7CBWNdOO4aazBAUNz0=;
+        b=SG2Ndhe6APWjlDn6wFEvBZ3ehJOUWLlIgfiAYzAPABdH4U5rx/TjUyvoLtMsvnGE5T
+         qMjURWhDpgFHkUkTBxhkQE9JtPrwJ+btN6BDoOVcNzqeaPGq3Am1WfKnVjT8ZUQZofZ3
+         /C2l8KmcE+5vQ3kL4ls01KicfLYWdQD1v8brhkdP50/OEjppXABLw95IHG5oDr2AcNDW
+         JAhh0dCaGfmVGNOcoKS1AW+q5DlGgv3XIIy2wHQ/j2AJjA6YuNjU4PN2U7vItiShRmsX
+         kBoSI4+bSJZ1Sy/2zBXWdcXqe0kRgMaBQK4khGLgB18ZzXVVzp8xOiwGw0d8cQCogixs
+         AXsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cPcVTlt4PtaJnqwyX4xYXu+/IKdY0k4HutlOclbS1nM=;
-        b=L3TOWNgsnbLf9qI9JePDD+F6PCbdKFmcnei0wwOw0XNND6+/Qyibt4Rq553sB6O9vK
-         Usi3fintjWfERzrySoKyWZ6lbWM8Wu/IyP40lhjwXNpSHQkcrAZbITvilktfkATX8EuK
-         KnqOOfts0uwDA23sO+ECtDbW6b9fJASHDcVZWTGtb1bq2zDrah4MhWnyqi+1S7GrHCjl
-         ZNpxeluUKP0ODRQBqlzneN7ryAgWU+ddD1dLOnHKFJ7i9r0XDaqS1SyHv5jDPtaYbYm9
-         4dSkFLtuIXa3HLHv9ojE2vDmyc60Fn9Et/Yar2x2wuqG4+SWEr/k2DY3rOGXgjTJ7XMy
-         9Ukw==
-X-Gm-Message-State: AOAM531eTT8azSCX9hD8mQWrAEmZdYMiejHAmuJTlkRBwcEShvsUPh8K
-        S/Ju2ZIfFzINeY+PAYomdyjEgg==
-X-Google-Smtp-Source: ABdhPJwQA7DtozqXJFXVwh4cU0VIT5A/4FmmNR8g+7sNzKjawJaeF7OXh2yqeovX9ruqo2vLuDccOg==
-X-Received: by 2002:adf:f9cb:: with SMTP id w11mr18853811wrr.1.1605521810515;
-        Mon, 16 Nov 2020 02:16:50 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ceCydoW0taXspmLSuwqkIqJ7k7CBWNdOO4aazBAUNz0=;
+        b=baQzrgn3TUNzMMOYYrJXh9pa2LRVd25lONxeK1iv242eQjYcA1a1WeIwiKfuckCfWB
+         65KW2sl9MTVJOW55Q1bFeqI7+8TWDXdxN33BuX39izYNX4lAWGZU4pd7HZruvCMwo3w5
+         H/1iZMnBNOhACqpLumFO0SEIIzD+nJ2WOhOoEelY1gQuNI/NNXDP5u9sM9SuGHD3WpWi
+         VmFpuBJJKNl8LimejWPF1Q/bfVpL9buUe0hfgiEHLOaqdMozA0QJ4k6c0LDOdFFcgkX2
+         xqC6pZWfhOaqtTjM0ZG0K5W0n+YpoQZB9VgzgH9IdR5zHOdWQocTk72jrJp967Eg8Mic
+         +LfA==
+X-Gm-Message-State: AOAM530kAeVWyexm5dPPzsCRC6fXV/IVyUv4vQdl0e27VTDgIC+v7/Yg
+        /MnSZl2gNAFew0FPwKyjIa3i9A==
+X-Google-Smtp-Source: ABdhPJy7bRH4MB0eF2todERkHKwsqav6ZT/Sr2okUSKCVRiGHZhZZuaJo0eIDZb+4P8SU1UrHOLHhQ==
+X-Received: by 2002:adf:8382:: with SMTP id 2mr18405195wre.227.1605521812097;
+        Mon, 16 Nov 2020 02:16:52 -0800 (PST)
 Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb])
-        by smtp.gmail.com with ESMTPSA id c17sm22265131wro.19.2020.11.16.02.16.49
+        by smtp.gmail.com with ESMTPSA id c17sm22265131wro.19.2020.11.16.02.16.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 02:16:49 -0800 (PST)
+        Mon, 16 Nov 2020 02:16:51 -0800 (PST)
 From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     kishon@ti.com, repk@triplefau.lt, vkoul@kernel.org
+To:     kishon@ti.com, repk@triplefau.lt, devicetree@vger.kernel.org,
+        vkoul@kernel.org
 Cc:     Neil Armstrong <narmstrong@baylibre.com>,
         linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v3 0/3] phy: amlogic: add MIPI DSI function to analog MIPI+PCIe PHY
-Date:   Mon, 16 Nov 2020 11:16:44 +0100
-Message-Id: <20201116101647.73448-1-narmstrong@baylibre.com>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: [RESEND PATCH v3 1/3] dt-bindings: phy: amlogic,meson-axg-mipi-pcie-analog: remove reg attribute
+Date:   Mon, 16 Nov 2020 11:16:45 +0100
+Message-Id: <20201116101647.73448-2-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201116101647.73448-1-narmstrong@baylibre.com>
+References: <20201116101647.73448-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AXG Analog MIPI-DSI PHY also provides functions to the PCIe PHY,
-thus we need to have inclusive support for both interfaces at runtime.
+The PHY registers happens to be at the beginning of a large zone containing
+interleaved system registers (mainly clocks, power management, PHY control..),
+found in all Amlogic SoC so far.
 
-This fixes the regmap get from parent node, removes cell param
-to select a mode and implement runtime configuration & power on/off
-for both functions since they are not exclusive.
+The goal is to model it the same way as the other "features" of this zone,
+like Documentation/devicetree/bindings/clock/amlogic,gxbb-clkc.txt
+and Documentation/devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml
+and have a coherent bindings scheme over the Amlogic SoCs.
 
-Changes since v2 at [2]:
-- Add DT review tags
-- Rebase on 5.10-rc1
+This update the description, removed the reg attribute then updates the example
+accordingly.
 
-Changes since v1 at [1]:
-- added description to binding as requested parent
-- updated commit log of patch 1
-- also update example of patch 1
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ .../phy/amlogic,meson-axg-mipi-pcie-analog.yaml | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-[1] https://lkml.kernel.org/r/20200907073402.26674-1-narmstrong@baylibre.com
-[2] https://lkml.kernel.org/r/20200915130339.11079-1-narmstrong@baylibre.com
-
-Neil Armstrong (3):
-  dt-bindings: phy: amlogic,meson-axg-mipi-pcie-analog: remove reg
-    attribute
-  dt-bindings: phy: amlogic,meson-axg-mipi-pcie-analog: remove phy cell
-    parameter
-  phy: amlogic: phy-meson-axg-mipi-pcie-analog: add support for MIPI DSI
-    analog
-
- .../amlogic,meson-axg-mipi-pcie-analog.yaml   |  21 +-
- drivers/phy/amlogic/Kconfig                   |   1 +
- .../amlogic/phy-meson-axg-mipi-pcie-analog.c  | 204 ++++++++++++------
- 3 files changed, 149 insertions(+), 77 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml b/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml
+index 18c1ec5e19ad..702763a84dac 100644
+--- a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml
++++ b/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml
+@@ -9,27 +9,32 @@ title: Amlogic AXG shared MIPI/PCIE analog PHY
+ maintainers:
+   - Remi Pommarel <repk@triplefau.lt>
+ 
++description: |+
++  The Everything-Else Power Domains node should be the child of a syscon
++  node with the required property:
++
++  - compatible: Should be the following:
++                "amlogic,meson-gx-hhi-sysctrl", "simple-mfd", "syscon"
++
++  Refer to the the bindings described in
++  Documentation/devicetree/bindings/mfd/syscon.yaml
++
+ properties:
+   compatible:
+     const: amlogic,axg-mipi-pcie-analog-phy
+ 
+-  reg:
+-    maxItems: 1
+-
+   "#phy-cells":
+     const: 1
+ 
+ required:
+   - compatible
+-  - reg
+   - "#phy-cells"
+ 
+ additionalProperties: false
+ 
+ examples:
+   - |
+-    mpphy: phy@0 {
++    mpphy: phy {
+           compatible = "amlogic,axg-mipi-pcie-analog-phy";
+-          reg = <0x0 0xc>;
+           #phy-cells = <1>;
+     };
 -- 
 2.25.1
 
