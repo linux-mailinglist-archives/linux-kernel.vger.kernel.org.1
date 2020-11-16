@@ -2,71 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791E22B4EFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 594BF2B4F0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731935AbgKPSQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:16:42 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:47936 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731241AbgKPSQm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:16:42 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kej3M-0006bF-Ao; Mon, 16 Nov 2020 18:16:36 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: wireless: make a const array static, makes object smaller
-Date:   Mon, 16 Nov 2020 18:16:36 +0000
-Message-Id: <20201116181636.362729-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.28.0
+        id S1732148AbgKPSTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:19:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:44874 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730997AbgKPSTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:19:14 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 136FF31B;
+        Mon, 16 Nov 2020 10:19:14 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 681543F719;
+        Mon, 16 Nov 2020 10:19:11 -0800 (PST)
+References: <20201113140207.499353218@linutronix.de> <20201113141733.276505871@linutronix.de>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch 05/19] ARM: irqstat: Get rid of duplicated declaration
+In-reply-to: <20201113141733.276505871@linutronix.de>
+Date:   Mon, 16 Nov 2020 18:19:04 +0000
+Message-ID: <jhjy2j1w4fb.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Don't populate the const array bws on the stack but instead it
-static. Makes the object code smaller by 80 bytes:
+On 13/11/20 14:02, Thomas Gleixner wrote:
+> irq_cpustat_t is exactly the same as the asm-generic one. Define
+> ack_bad_irq so the generic header does not emit the generic version of it.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  85694	  16865	   1216	 103775	  1955f	./net/wireless/reg.o
-
-After:
-   text	   data	    bss	    dec	    hex	filename
-  85518	  16961	   1216	 103695	  1950f	./net/wireless/reg.o
-
-(gcc version 10.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- net/wireless/reg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/wireless/reg.c b/net/wireless/reg.c
-index a04fdfb35f07..c037960e5a1a 100644
---- a/net/wireless/reg.c
-+++ b/net/wireless/reg.c
-@@ -1616,7 +1616,7 @@ static const struct ieee80211_reg_rule *
- __freq_reg_info(struct wiphy *wiphy, u32 center_freq, u32 min_bw)
- {
- 	const struct ieee80211_regdomain *regd = reg_get_regdomain(wiphy);
--	const u32 bws[] = {0, 1, 2, 4, 5, 8, 10, 16, 20};
-+	static const u32 bws[] = {0, 1, 2, 4, 5, 8, 10, 16, 20};
- 	const struct ieee80211_reg_rule *reg_rule;
- 	int i = ARRAY_SIZE(bws) - 1;
- 	u32 bw;
--- 
-2.28.0
-
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
