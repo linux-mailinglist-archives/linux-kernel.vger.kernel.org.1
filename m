@@ -2,227 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BD82B3CCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BED22B3CD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgKPGIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 01:08:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgKPGIm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 01:08:42 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50184C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 22:08:42 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id q28so1782620pgk.1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 22:08:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VOT36GzCBGJk+dkdlNwohM145tIdzBNvZpW+yBCQw1Y=;
-        b=CBAXxdsTjnOjus8LcRGYWfuleEzwfBJ8TbpynsFTmelGaHkf7jxoBsUsZ+v088Tp2b
-         iWdSGndtk1/4387kGz7aK9jZPDgfv7h9EPBa1H8JSx9tPV97evhN4GFZnYt40YYa8JKi
-         d6vGkADPSnwr4WPlbCqN5I3orqnGIOMOPzuoWfHQ27e0foJhUvwbyAYU5quYbQa1mc59
-         oeUiGM8KR44VrSoAmuc0X6ABRJrL+aJG67mhnpKIOedaMQdzAxqGvd1oaZdeYOXgY+Gq
-         lh+oBmSfcZavWKE39qnf7eVXRwGlnQrShvJsh2e68lb9tXjdFv69ggw/j+Kg1ANUCvw9
-         VMzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VOT36GzCBGJk+dkdlNwohM145tIdzBNvZpW+yBCQw1Y=;
-        b=aPBgNR1jf8AX5sYn7Rd2QehxEvy36TQM3ssl76g3XS/PkNDp364EjpLuSSbVNy6Hqu
-         PYTjLKynQPGvgnSpqp+BMaPptmFAWjeRZHL1J1LTJrQQr+XnlmuDpe2Gga1jA1M3mEgu
-         bb5qmBU81fUrgUM/KwS53YmPrjvWecG0fxDyZkQVd2bZRS4AqxWtCB15OhG7laWsAhvH
-         9t4rX3t2OO2RjwhqRm928+TsFeoSAMjyw2AteaAqp7nDUmZBTs6pGA2goRBbV7lV56mb
-         Ocyj4C/1pZ6QqFQ81q1opw8XHg8vAKXJ0b69yGDtOuFFfjTaaODOpsKt3nMenQH19lYp
-         KoDA==
-X-Gm-Message-State: AOAM532Yvt0juq+fu3xFWQQ4oQDaoD4jhrCHeK+egaJuPWGi/Xl8IjEe
-        xe5BhK+6ZlN5Y61DVkHowr+j
-X-Google-Smtp-Source: ABdhPJz/1G0EorOtbzWI2nqt41SDK38J4rVTEWmr7eJ5XlQ2bXl1Oo9mzqlgDEGaX4Sx2aEBYOVyLg==
-X-Received: by 2002:aa7:9409:0:b029:18b:9e20:b9df with SMTP id x9-20020aa794090000b029018b9e20b9dfmr12788867pfo.63.1605506921629;
-        Sun, 15 Nov 2020 22:08:41 -0800 (PST)
-Received: from Mani-XPS-13-9360 ([2409:4072:618e:9b0a:75fd:1290:bf5c:a350])
-        by smtp.gmail.com with ESMTPSA id w70sm16673392pfc.11.2020.11.15.22.08.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 15 Nov 2020 22:08:40 -0800 (PST)
-Date:   Mon, 16 Nov 2020 11:38:31 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     carl.yin@quectel.com, hemantk@codeaurora.org, sfr@canb.auug.org.au,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        naveen.kumar@quectel.com
-Subject: Re: [PATCH v2] bus: mhi: core: Add support MHI EE FP for download
- firmware
-Message-ID: <20201116060831.GD3926@Mani-XPS-13-9360>
-References: <20201102122756.23452-1-carl.yin@quectel.com>
- <9693bd0918956ec489fec9d2b36cb4d6@codeaurora.org>
+        id S1726791AbgKPGI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 01:08:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59164 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgKPGI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 01:08:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F01E6AC48;
+        Mon, 16 Nov 2020 06:08:54 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Date:   Mon, 16 Nov 2020 17:08:47 +1100
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] NFS: only invalidate dentrys that are clearly invalid.
+In-Reply-To: <0673647d9d70f31a02c74da713e5343ac3918835.camel@hammerspace.com>
+References: <87361aovm3.fsf@notabene.neil.brown.name>
+ <d2fabd4b78dda3bd52519b84f50785dbcc2d40fb.camel@hammerspace.com>
+ <87zh3hoqrx.fsf@notabene.neil.brown.name>
+ <d208c9c085d8abf27a764e31a61e98f9c3743675.camel@hammerspace.com>
+ <87wnylopyv.fsf@notabene.neil.brown.name>
+ <b28216153179dd20c22aa164259d3f901099896c.camel@hammerspace.com>
+ <87tutpopfj.fsf@notabene.neil.brown.name>
+ <0673647d9d70f31a02c74da713e5343ac3918835.camel@hammerspace.com>
+Message-ID: <87r1otomts.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9693bd0918956ec489fec9d2b36cb4d6@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 08:34:14AM -0800, Bhaumik Bhatt wrote:
-> On 2020-11-02 04:27, carl.yin@quectel.com wrote:
-> > From: "carl.yin" <carl.yin@quectel.com>
-> > 
-> > MHI wwan modems support download firmware to nand or emmc
-> > by firehose protocol, process as next:
-> > 1. modem boot up and enter EE AMSS, create DIAG channels (4, 5) device
-> > 2. user space tool send EDL command via DIAG channel,
-> >    then modem enter EE EDL
-> > 3. boot.c download 'flash programmer image' via BHI interface
-> > 4. modem enter EE FP, and create EDL channels (34, 35) device
-> > 5. user space tool download 'firmware image' to modem via EDL channels
-> >    by firehose protocol
-> > 
-> > Signed-off-by: carl.yin <carl.yin@quectel.com>
-> > ---
-> >  drivers/bus/mhi/core/init.c     |  2 ++
-> >  drivers/bus/mhi/core/internal.h |  1 +
-> >  drivers/bus/mhi/core/main.c     |  5 ++++-
-> >  drivers/bus/mhi/core/pm.c       | 13 ++++++++++++-
-> >  include/linux/mhi.h             |  4 +++-
-> >  5 files changed, 22 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> > index ac4aa5c..e34616b 100644
-> > --- a/drivers/bus/mhi/core/init.c
-> > +++ b/drivers/bus/mhi/core/init.c
-> > @@ -26,6 +26,7 @@ const char * const mhi_ee_str[MHI_EE_MAX] = {
-> >  	[MHI_EE_WFW] = "WFW",
-> >  	[MHI_EE_PTHRU] = "PASS THRU",
-> >  	[MHI_EE_EDL] = "EDL",
-> > +	[MHI_EE_FP] = "FLASH PROGRAMMER",
-> >  	[MHI_EE_DISABLE_TRANSITION] = "DISABLE",
-> >  	[MHI_EE_NOT_SUPPORTED] = "NOT SUPPORTED",
-> >  };
-> > @@ -35,6 +36,7 @@ const char * const
-> > dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
-> >  	[DEV_ST_TRANSITION_READY] = "READY",
-> >  	[DEV_ST_TRANSITION_SBL] = "SBL",
-> >  	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION_MODE",
-> > +	[DEV_ST_TRANSITION_FP] = "FLASH_PROGRAMMER",
-> >  	[DEV_ST_TRANSITION_SYS_ERR] = "SYS_ERR",
-> >  	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
-> >  };
-> > diff --git a/drivers/bus/mhi/core/internal.h
-> > b/drivers/bus/mhi/core/internal.h
-> > index 4abf0cf..6ae897a 100644
-> > --- a/drivers/bus/mhi/core/internal.h
-> > +++ b/drivers/bus/mhi/core/internal.h
-> > @@ -386,6 +386,7 @@ enum dev_st_transition {
-> >  	DEV_ST_TRANSITION_READY,
-> >  	DEV_ST_TRANSITION_SBL,
-> >  	DEV_ST_TRANSITION_MISSION_MODE,
-> > +	DEV_ST_TRANSITION_FP,
-> >  	DEV_ST_TRANSITION_SYS_ERR,
-> >  	DEV_ST_TRANSITION_DISABLE,
-> >  	DEV_ST_TRANSITION_MAX,
-> > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> > index 3950792..a1e1561 100644
-> > --- a/drivers/bus/mhi/core/main.c
-> > +++ b/drivers/bus/mhi/core/main.c
-> > @@ -422,7 +422,7 @@ irqreturn_t mhi_intvec_threaded_handler(int
-> > irq_number, void *priv)
-> >  		wake_up_all(&mhi_cntrl->state_event);
-> > 
-> >  		/* For fatal errors, we let controller decide next step */
-> > -		if (MHI_IN_PBL(ee))
-> > +		if (MHI_IN_PBL(mhi_cntrl->ee))
-> Let's please have this as a separate patch with a fixes tag, as it fixes a
-> pre-existing bug. I am sure Mani would want this.
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Yes. It is not recommended to club changes like this onto a single patch.
+On Mon, Nov 16 2020, Trond Myklebust wrote:
 
-Thanks,
-Mani
+> On Mon, 2020-11-16 at 16:12 +1100, NeilBrown wrote:
+>> On Mon, Nov 16 2020, Trond Myklebust wrote:
+>>=20
+>> > On Mon, 2020-11-16 at 16:00 +1100, NeilBrown wrote:
+>> > > On Mon, Nov 16 2020, Trond Myklebust wrote:
+>> > >=20
+>> > > > On Mon, 2020-11-16 at 15:43 +1100, NeilBrown wrote:
+>> > > > > On Mon, Nov 16 2020, Trond Myklebust wrote:
+>> > > > >=20
+>> > > > > > On Mon, 2020-11-16 at 13:59 +1100, NeilBrown wrote:
+>> > > > > > >=20
+>> > > > > > > Prior to commit 5ceb9d7fdaaf ("NFS: Refactor
+>> > > > > > > nfs_lookup_revalidate()")
+>> > > > > > > and error from nfs_lookup_verify_inode() other than -
+>> > > > > > > ESTALE
+>> > > > > > > would
+>> > > > > > > result
+>> > > > > > > in nfs_lookup_revalidate() returning that error code (-
+>> > > > > > > ESTALE
+>> > > > > > > is
+>> > > > > > > mapped
+>> > > > > > > to zero).
+>> > > > > > > Since that commit, all errors result in zero being
+>> > > > > > > returned.
+>> > > > > > >=20
+>> > > > > > > When nfs_lookup_revalidate() returns zero, the dentry is
+>> > > > > > > invalidated
+>> > > > > > > and, significantly, if the dentry is a directory that is
+>> > > > > > > mounted
+>> > > > > > > on,
+>> > > > > > > that mountpoint is lost.
+>> > > > > > >=20
+>> > > > > > > If you:
+>> > > > > > > =C2=A0- mount an NFS filesystem which contains a directory
+>> > > > > > > =C2=A0- mount something (e.g. tmpfs) on that directory
+>> > > > > > > =C2=A0- use iptables (or scissors) to block traffic to the
+>> > > > > > > server
+>> > > > > > > =C2=A0- ls -l the-mounted-on-directory
+>> > > > > > > =C2=A0- interrupt the 'ls -l'
+>> > > > > > > you will find that the directory has been unmounted.
+>> > > > > > >=20
+>> > > > > > > This can be fixed by returning the actual error code from
+>> > > > > > > nfs_lookup_verify_inode() rather then zero (except for -
+>> > > > > > > ESTALE).
+>> > > > > > >=20
+>> > > > > > > Fixes: 5ceb9d7fdaaf ("NFS: Refactor
+>> > > > > > > nfs_lookup_revalidate()")
+>> > > > > > > Signed-off-by: NeilBrown <neilb@suse.de>
+>> > > > > > > ---
+>> > > > > > > =C2=A0fs/nfs/dir.c | 8 +++++---
+>> > > > > > > =C2=A01 file changed, 5 insertions(+), 3 deletions(-)
+>> > > > > > >=20
+>> > > > > > > diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+>> > > > > > > index cb52db9a0cfb..d24acf556e9e 100644
+>> > > > > > > --- a/fs/nfs/dir.c
+>> > > > > > > +++ b/fs/nfs/dir.c
+>> > > > > > > @@ -1350,7 +1350,7 @@ nfs_do_lookup_revalidate(struct
+>> > > > > > > inode
+>> > > > > > > *dir,
+>> > > > > > > struct dentry *dentry,
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 unsigned int flags)
+>> > > > > > > =C2=A0{
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct inode=
+ *inode;
+>> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int error;
+>> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int error =3D 0;
+>> > > > > > > =C2=A0
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_inc_stat=
+s(dir, NFSIOS_DENTRYREVALIDATE);
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0inode =3D d_=
+inode(dentry);
+>> > > > > > > @@ -1372,8 +1372,10 @@ nfs_do_lookup_revalidate(struct
+>> > > > > > > inode
+>> > > > > > > *dir,
+>> > > > > > > struct dentry *dentry,
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 nfs_check_verifier(dir, dentry, flags &
+>> > > > > > > LOOKUP_RCU))
+>> > > > > > > {
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0error =3D nfs_lookup_verify_inode(inode,
+>> > > > > > > flags);
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (error) {
+>> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0if (error =3D=3D -ESTALE)
+>> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0if (error =3D=3D -ESTALE) {
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_zap_caches(dir=
+);
+>> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0error =3D 0;
+>> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0}
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0goto out_bad;
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_advise_use_readdirplus(dir);
+>> > > > > > > @@ -1395,7 +1397,7 @@ nfs_do_lookup_revalidate(struct
+>> > > > > > > inode
+>> > > > > > > *dir,
+>> > > > > > > struct dentry *dentry,
+>> > > > > > > =C2=A0out_bad:
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (flags & =
+LOOKUP_RCU)
+>> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ECHILD;
+>> > > > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return nfs_lookup=
+_revalidate_done(dir, dentry,
+>> > > > > > > inode,
+>> > > > > > > 0);
+>> > > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return nfs_lookup=
+_revalidate_done(dir, dentry,
+>> > > > > > > inode,
+>> > > > > > > error);
+>> > > > > >=20
+>> > > > > > Which errors do we actually need to return here? As far as
+>> > > > > > I
+>> > > > > > can
+>> > > > > > tell,
+>> > > > > > the only errors that nfs_lookup_verify_inode() is supposed
+>> > > > > > to
+>> > > > > > return is
+>> > > > > > ENOMEM, ESTALE, ECHILD, and possibly EIO or ETiMEDOUT.
+>> > > > > >=20
+>> > > > > > Why would it be better to return those errors rather than
+>> > > > > > just
+>> > > > > > a 0
+>> > > > > > when
+>> > > > > > we need to invalidate the inode, particularly since we
+>> > > > > > already
+>> > > > > > have
+>> > > > > > a
+>> > > > > > special case in nfs_lookup_revalidate_done() when the
+>> > > > > > dentry is
+>> > > > > > root?
+>> > > > >=20
+>> > > > > ERESTARTSYS is the error that easily causes problems.
+>> > > > >=20
+>> > > > > Returning 0 causes d_invalidate() to be called which is quite
+>> > > > > heavy
+>> > > > > handed in mountpoints.
+>> > > >=20
+>> > > > My point is that it shouldn't get returned for mountpoints. See
+>> > > > nfs_lookup_revalidate_done().
+>> > >=20
+>> > > nfs_lookup_revalidate_done() only checks IS_ROOT(), and while
+>> > > many
+>> > > mountpoints are IS_ROOT(), not all are (--bind easily makes
+>> > > others).
+>> > >=20
+>> > > But that isn't even really relevant here.=C2=A0 The dentry being
+>> > > revalidated
+>> > > is the underlying directory - that something else is mounted on.
+>> > > step_into() which follows mount points is called in
+>> > > walk_component()
+>> > > *after* lookup_fast or lookup_slow which will have revalidated
+>> > > the
+>> > > dentry.
+>> >=20
+>> > So then why is it not sufficient to just add a check for
+>> > d_mountpoint()? This is a revalidation, not a new lookup.
+>> >=20
+>>=20
+>> I guess you could do that.
+>> But why would you want to call d_invalidate() just because a signal
+>> was
+>> received, or a memory allocation failed?
+>
+> Why would I care about the error return from nfs_lookup_verify_inode()?
 
-> >  			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
-> >  		else
-> >  			mhi_pm_sys_err_handler(mhi_cntrl);
-> > @@ -782,6 +782,9 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller
-> > *mhi_cntrl,
-> >  			case MHI_EE_SBL:
-> >  				st = DEV_ST_TRANSITION_SBL;
-> >  				break;
-> > +			case MHI_EE_FP:
-> > +				st = DEV_ST_TRANSITION_FP;
-> > +				break;
-> When do you get this EE event on the control event ring? Does it come by
-> after you
-> have detected EE as FP from mhi_sync_power_up() and move to ready and then
-> M0?
-> >  			case MHI_EE_WFW:
-> >  			case MHI_EE_AMSS:
-> >  				st = DEV_ST_TRANSITION_MISSION_MODE;
-> > diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> > index 3de7b16..2d68812 100644
-> > --- a/drivers/bus/mhi/core/pm.c
-> > +++ b/drivers/bus/mhi/core/pm.c
-> > @@ -658,6 +658,12 @@ void mhi_pm_st_worker(struct work_struct *work)
-> >  		case DEV_ST_TRANSITION_MISSION_MODE:
-> >  			mhi_pm_mission_mode_transition(mhi_cntrl);
-> >  			break;
-> > +		case DEV_ST_TRANSITION_FP:
-> > +			write_lock_irq(&mhi_cntrl->pm_lock);
-> > +			mhi_cntrl->ee = MHI_EE_FP;
-> > +			write_unlock_irq(&mhi_cntrl->pm_lock);
-> > +			mhi_create_devices(mhi_cntrl);
-> > +			break;
-> >  		case DEV_ST_TRANSITION_READY:
-> >  			mhi_ready_state_transition(mhi_cntrl);
-> >  			break;
-> > @@ -1077,10 +1083,15 @@ int mhi_sync_power_up(struct mhi_controller
-> > *mhi_cntrl)
-> > 
-> >  	wait_event_timeout(mhi_cntrl->state_event,
-> >  			   MHI_IN_MISSION_MODE(mhi_cntrl->ee) ||
-> > +			   mhi_cntrl->ee == MHI_EE_FP ||
-> >  			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
-> >  			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
-> > 
-> > -	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
-> > +	if (mhi_cntrl->ee == MHI_EE_FP)
-> > +		mhi_queue_state_transition(mhi_cntrl, DEV_ST_TRANSITION_READY);
-> > +	else
-> > +		ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -ETIMEDOUT;
-> > +
-> >  	if (ret)
-> >  		mhi_power_down(mhi_cntrl, false);
-> > 
-> We should come up with a better design for this later on.
-> > diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> > index 6e1122c..4620af8 100644
-> > --- a/include/linux/mhi.h
-> > +++ b/include/linux/mhi.h
-> > @@ -120,6 +120,7 @@ struct mhi_link_info {
-> >   * @MHI_EE_WFW: WLAN firmware mode
-> >   * @MHI_EE_PTHRU: Passthrough
-> >   * @MHI_EE_EDL: Embedded downloader
-> > + * @MHI_EE_FP, Flash Programmer Environment
-> >   */
-> >  enum mhi_ee_type {
-> >  	MHI_EE_PBL,
-> > @@ -129,7 +130,8 @@ enum mhi_ee_type {
-> >  	MHI_EE_WFW,
-> >  	MHI_EE_PTHRU,
-> >  	MHI_EE_EDL,
-> > -	MHI_EE_MAX_SUPPORTED = MHI_EE_EDL,
-> > +	MHI_EE_FP,
-> > +	MHI_EE_MAX_SUPPORTED = MHI_EE_FP,
-> >  	MHI_EE_DISABLE_TRANSITION, /* local EE, not related to mhi spec */
-> >  	MHI_EE_NOT_SUPPORTED,
-> >  	MHI_EE_MAX,
-> 
-> Thanks,
-> Bhaumik
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+?? Why wouldn't you?  What am I missing?
+
+> This is a revalidation, and so sometimes the error returned is not
+> transient, but is persistent (e.g. EIO/ETIMEDOUT if the server is
+> down). In those cases, I still want to be able to do things like
+> unmount the filesystem.
+
+Why do you think that a server being down is a persistent error?
+Servers come back up.
+
+I don't have a particular opinion on how EIO and ETIMEDOUT should be
+handled as I don't have a clear idea of what underlying issue produces
+them.
+
+I do know that ESTALE means the directory doesn't exist any more, so the
+dentry should be invalidated, whether it is mounted on or not.
+I do know that ERESTARTSYS means that a fatal signal was received by the
+current process, so it is inappropriate to invalidate the dentry.
+
+So I'm certain that we need to be able to handle different error codes
+differently.  Maybe EIO should be treated the same as ESTALE.  Probably
+ENOMEM should be handled like ERESTARTSYS....
+
+NeilBrown
+
+
+>
+>>=20
+>> NeilBrown
+>>=20
+>>=20
+>> > >=20
+>> > > NeilBrown
+>> > >=20
+>> > >=20
+>> > > >=20
+>> > > > > So it is only reasonable to return 0 when we have unambiguous
+>> > > > > confirmation from the server that the object no longer
+>> > > > > exists.=C2=A0
+>> > > > > ESTALE
+>> > > > > is unambiguous. EIO might be unambiguous.=C2=A0 ERESTARTSYS,
+>> > > > > ENOMEM,
+>> > > > > ETIMEDOUT are transient and don't justify d_invalidate()
+>> > > > > being
+>> > > > > called.
+>> > > > >=20
+>> > > > > (BTW, Commit cc89684c9a26 ("NFS: only invalidate dentrys that
+>> > > > > are
+>> > > > > clearly invalid.")
+>> > > > > =C2=A0fixed much the same bug 3 years ago).
+>> > > > > =C2=A0
+>> > > > > Thanks,
+>> > > > > NeilBrown
+>> > > > >=20
+>> > > > >=20
+>> > > > > >=20
+>> > > > > > > =C2=A0}
+>> > > > > > > =C2=A0
+>> > > > > > > =C2=A0static int
+>> > > > > >=20
+>> > > > > > --=20
+>> > > > > > Trond Myklebust
+>> > > > > > Linux NFS client maintainer, Hammerspace
+>> > > > > > trond.myklebust@hammerspace.com
+>> > > >=20
+>> > > > --=20
+>> > > > Trond Myklebust
+>> > > > CTO, Hammerspace Inc
+>> > > > 4984 El Camino Real, Suite 208
+>> > > > Los Altos, CA 94022
+>> > > > =E2=80=8B
+>> > > > www.hammer.space
+>> >=20
+>> > --=20
+>> > Trond Myklebust
+>> > Linux NFS client maintainer, Hammerspace
+>> > trond.myklebust@hammerspace.com
+>
+> --=20
+> Trond Myklebust
+> CTO, Hammerspace Inc
+> 4984 El Camino Real, Suite 208
+> Los Altos, CA 94022
+> =E2=80=8B
+> www.hammer.space
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl+yF3EOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigblmDw/8DfeLcvLewWy/L+fVd9xH0vt5krjZR4W+tCNl
+Qkja3aMIZO8k80RW7m4l2YnEDaLkZM5Gs7COq8e+WkAaKcJNWxMpiRUI6zdDXhe+
+V0acxUQ5cvUhvGkq2yzllAkE4E1OolrOQFfnsLqaNCd28dbQp9PeylUOkE6dncRe
+OMZVOcKZIfQuavyf2J9EWq4pQC//gwumaWzBl4pM89n6v9//ui+tOsUh4JdLlEyc
+ZiOeecffgJkx7k8sONneGufechh6B4fMP0hk7MNXaBWXHGK1sSOTUZvscM13yXxi
+nV6++8n/s93Vv84Mm82zu2a0QOa2LTMp2ZXtyiElODG62lgn/TGbkfCeeseaHgHp
+GM4kxxvM/ZFxs9pxxQ+ypD46aVTUl2XyuX61hLA5pEwfGW9PNpVuzzCaW2Aqk6gV
+L/+6EM09PLpb7ASSpV/ylDQmjlV6il08d2VdvyrLqwzvycNs7M5IL2xI99gqFX0T
+ygKMTNuUS46eN5FunIMQ94ruXNywZhhGI9pc3Yxpl+W8Ko7aX0bjjceXj7KUvqdZ
+M3++Fr2ppZ/OQYrCA0wq2qNc2MUUWMFgZQulVgupBtaxWUiArZnVG0YArFJ2TK1K
+y2f7MxQHEzodrjnBjFOT5WU3Y2UcoNrGJUJf7t2Z0KcQFqDhOM+QsJJ1aPh+DUVG
+1Ty6TE4=
+=36zm
+-----END PGP SIGNATURE-----
+--=-=-=--
