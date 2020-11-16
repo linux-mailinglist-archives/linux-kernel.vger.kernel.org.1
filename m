@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3393F2B4DFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D41522B4E59
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733300AbgKPRlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:41:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        id S1733141AbgKPRos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:44:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732921AbgKPRlV (ORCPT
+        with ESMTP id S1733294AbgKPRlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:41:21 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2C2C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:21 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id k2so19700594wrx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:21 -0800 (PST)
+        Mon, 16 Nov 2020 12:41:23 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C405FC0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:22 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so19670787wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qEyPNgqrCvgW7yAtw6B6vQyE222bBpFcTf7vHkr21Ko=;
-        b=o1UX4zCdDDDNMV0OKn61RJZh5y0bXjwuSLSb/l0adES4M9qoqn7sv1BgCviUEyBC9c
-         YkW31BulSSuyM5+eWBzeavPqQ3NlTBNZubQzQ8wtBRC/GUKmFYk3lzpk/YE3zsJ/6WBl
-         OpKn4Wy9zyDhuplwApEWD5Sa6zKv+AxMW88gW874lf++usj3pJ6pcP4EB7aKSnEKcHnY
-         kCasy1dCT1JGnPTFofUgrWLFptS2mPNQSJqgRojLSiEN6sitXESVrhduYN1uH3wka2Bv
-         yg8/3HsJ4Ku+jxbJGWlvJEDL04L/+8P+k/Us8Su3EihI97fe/pyVcTBp5V8a0wj1wcDA
-         CTmg==
+        bh=wySX8cNvv9NUCsmEXsR0JBc7XJM0MHUH49ItqBshbVE=;
+        b=hy+U4SAx16PrqlnuxVW5U1xQBAKZb2kMB+JBT6jHCWWzrxWoYMTf/gpOSUnZWvRMBJ
+         AV+gpm5PS/9qVYSDg82yYZi5O9uwFTk2UVpOOUA9Q4MvdxOld2ijiYRGuvNm5GalEDxs
+         H1hQ4gnyxx6Zs2PHS9F7KXqSpGHsvqpezLeVqbrX7w7HPqWJrC6g6I8U9OhtKkHHHTNk
+         cOjr9HODR3ivsTKLy9slgduBPEMGw2/z1aGzX4m9gECM8l81Ti37Trf+2hA7dZT2Qof5
+         NdJl4WjDbuuwMbqraBU2i1ZcGYRv6BvOUBLindgX0mkRR8iLqZ6+d2hsFvh9ewzYucNv
+         wZWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qEyPNgqrCvgW7yAtw6B6vQyE222bBpFcTf7vHkr21Ko=;
-        b=YsUNGvDNIsUmBWB26wn+W7N/Afy0L7qwZcOWhFrriLR3kWYeM8wuAblYnCZAlD0hT5
-         s5CCJNCsE5PuWAEd3lbUNZNQYuDgpTjOttZvFtXagK2z4AMuLGSCtm24MZ6Wbz+GoIXu
-         XsrP0/ibsNwJJfQnnMt/R1phRvvaHDaCIkJ5Z3Ilkg6cm4JCgm0GqFrILcgvlK/MlPcU
-         rOfK41z8grduQ64duxalxb1/MpiHJEVeD00ngF2++YDwImxXwsBYdhHD3KffhBWNsnMe
-         vHONTMEqZFHwQNdPWME7J3J+J90Sns//ddKFQz+bzQE3SwXlmGolPqUKfs4ynw0PAEVd
-         pd0w==
-X-Gm-Message-State: AOAM531y1wwL6Oo11gx848qQbNclOIExi5vPZyKZ6er4X+BZhJvid8cP
-        j5bQ9EoPxDdF1Dflr/cr09JT1w==
-X-Google-Smtp-Source: ABdhPJzRRRIcqjO4tgQf4glCQA5hVitq6bSC5qSo/xDr9yKWinhRugh4nu2qRSQ/wCZZC7eA8JUXXA==
-X-Received: by 2002:adf:fd0d:: with SMTP id e13mr19708579wrr.85.1605548480370;
-        Mon, 16 Nov 2020 09:41:20 -0800 (PST)
+        bh=wySX8cNvv9NUCsmEXsR0JBc7XJM0MHUH49ItqBshbVE=;
+        b=F6fXgITHm0IMvbS5ow5YUwsTlSsTuq0BDEwg36E5Ns+Ld9DdFBip5b8u7tig9V3vGN
+         t4WyQu6nIR54i1NUJbKtgBwVH/xBC0ee7aNaZUb+Cld9AZz13jooz4A233jOKRcEbW/3
+         hjqKwQICEgyMLvPwkw+qRuMYgYAPinMs6I428bHIHdVqVYN/WFRvXchfCOqsvDpkQ0di
+         r6Jnzuyg4fR8SduLTABq/gEtLfvDYnr0BDK06DWeKIDD30YZy2SPIc9xQjdZRKffygt+
+         qs3EP/hv7HSh1+Ef27Yh9xITx3kmUsI7lvLzkNov4ZiIwXnamafjxY9OTuq9GIDvzyDC
+         9G8w==
+X-Gm-Message-State: AOAM532HDiJcHeCv4HEsZ7Om+JHQQXSDIoriIgjrNjNXOzzd+SvwMvcx
+        Dj4mrrjUvvQ70ZXHhdpx9Z5q1x6g92/RbuDU
+X-Google-Smtp-Source: ABdhPJz2NVpodSO80ODErNsO8Nnc8xpQNlSxjZjIgamuTY2aDdtYen+IQPe6zyftuY2DtfotFd1Ybw==
+X-Received: by 2002:adf:eb4d:: with SMTP id u13mr19723606wrn.146.1605548481587;
+        Mon, 16 Nov 2020 09:41:21 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.41.19
+        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.41.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:41:19 -0800 (PST)
+        Mon, 16 Nov 2020 09:41:21 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 01/42] drm/amd/amdgpu/atombios_encoders: Remove set but unused variable 'backlight_level'
-Date:   Mon, 16 Nov 2020 17:40:31 +0000
-Message-Id: <20201116174112.1833368-2-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 02/42] drm/armada/armada_overlay: Staticify local function 'armada_overlay_duplicate_state'
+Date:   Mon, 16 Nov 2020 17:40:32 +0000
+Message-Id: <20201116174112.1833368-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116174112.1833368-1-lee.jones@linaro.org>
 References: <20201116174112.1833368-1-lee.jones@linaro.org>
@@ -70,47 +67,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also removing the call to amdgpu_atombios_encoder_get_backlight_level_from_reg()
-since, according to Alex Deucher, "We call it again below indirectly".
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/atombios_encoders.c: In function ‘amdgpu_atombios_encoder_init_backlight’:
- drivers/gpu/drm/amd/amdgpu/atombios_encoders.c:174:5: warning: variable ‘backlight_level’ set but not used [-Wunused-but-set-variable]
+ drivers/gpu/drm/armada/armada_overlay.c:329:1: warning: no previous prototype for ‘armada_overlay_duplicate_state’ [-Wmissing-prototypes]
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Russell King <linux@armlinux.org.uk>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Luben Tuikov <luben.tuikov@amd.com>
-Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/atombios_encoders.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/gpu/drm/armada/armada_overlay.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/atombios_encoders.c b/drivers/gpu/drm/amd/amdgpu/atombios_encoders.c
-index fa817ebff9804..6134ed9640279 100644
---- a/drivers/gpu/drm/amd/amdgpu/atombios_encoders.c
-+++ b/drivers/gpu/drm/amd/amdgpu/atombios_encoders.c
-@@ -171,7 +171,6 @@ void amdgpu_atombios_encoder_init_backlight(struct amdgpu_encoder *amdgpu_encode
- 	struct backlight_properties props;
- 	struct amdgpu_backlight_privdata *pdata;
- 	struct amdgpu_encoder_atom_dig *dig;
--	u8 backlight_level;
- 	char bl_name[16];
+diff --git a/drivers/gpu/drm/armada/armada_overlay.c b/drivers/gpu/drm/armada/armada_overlay.c
+index 30e01101f59ed..6346b890279a0 100644
+--- a/drivers/gpu/drm/armada/armada_overlay.c
++++ b/drivers/gpu/drm/armada/armada_overlay.c
+@@ -325,7 +325,7 @@ static void armada_overlay_reset(struct drm_plane *plane)
+ 	}
+ }
  
- 	/* Mac laptops with multiple GPUs use the gmux driver for backlight
-@@ -207,8 +206,6 @@ void amdgpu_atombios_encoder_init_backlight(struct amdgpu_encoder *amdgpu_encode
- 
- 	pdata->encoder = amdgpu_encoder;
- 
--	backlight_level = amdgpu_atombios_encoder_get_backlight_level_from_reg(adev);
--
- 	dig = amdgpu_encoder->enc_priv;
- 	dig->bl_dev = bd;
- 
+-struct drm_plane_state *
++static struct drm_plane_state *
+ armada_overlay_duplicate_state(struct drm_plane *plane)
+ {
+ 	struct armada_overlay_state *state;
 -- 
 2.25.1
 
