@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7032B4B21
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E54D2B4B41
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732066AbgKPQaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:30:04 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:20882 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730795AbgKPQaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:30:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605544202; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=OcOxP9SoB2zIBSz04f/3dy8QWxDpqnS+1Xsbwg8a9Zg=; b=Rs7XGNn6DKeOlEIRBX77QjOUD8b7LVy8SrRvtlt1+vHxulkrxKvONrQUyYtbugWGq9lA3gBt
- Nxq4WJnqxPWSUy7Afb70IjN1o3vTntvH/2JHkOj617f9EKs1usWMS7S1FylYgMfB1JbKBMsz
- uBlHPyQfG2qeR6z9fUSb42xCdNY=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fb2a90a07fe4e8a18ca5edc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 16:30:02
- GMT
-Sender: mojha=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 94930C43464; Mon, 16 Nov 2020 16:30:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from mojha-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mojha)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D57B1C433C6;
-        Mon, 16 Nov 2020 16:29:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D57B1C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mojha@codeaurora.org
-From:   Mukesh Ojha <mojha@codeaurora.org>
-To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
-        Mukesh Ojha <mojha@codeaurora.org>
-Subject: [PATCH] thermal: Fix NULL pointer dereference issue
-Date:   Mon, 16 Nov 2020 21:59:41 +0530
-Message-Id: <1605544181-5348-1-git-send-email-mojha@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1731970AbgKPQdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:33:20 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:37554 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730591AbgKPQdT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:33:19 -0500
+Received: from relay11.mail.gandi.net (unknown [217.70.178.231])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id CC5003B1211
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 16:24:56 +0000 (UTC)
+Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 56ED1100002;
+        Mon, 16 Nov 2020 16:24:33 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        <Steen.Hegelund@microchip.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v3 2/5] dt-bindings: interrupt-controller: Add binding for few Microsemi interrupt controllers
+Date:   Mon, 16 Nov 2020 17:24:24 +0100
+Message-Id: <20201116162427.1727851-3-gregory.clement@bootlin.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201116162427.1727851-1-gregory.clement@bootlin.com>
+References: <20201116162427.1727851-1-gregory.clement@bootlin.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cooling stats variable inside thermal_cooling_device_stats_update()
-can get NULL. We should add a NULL check on stat inside for sanity.
+Add the Device Tree binding documentation for the Microsemi Jaguar2,
+Luton and Serval interrupt controller that is part of the ICPU. It is
+connected directly to the MIPS core interrupt controller.
 
-Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- drivers/thermal/thermal_sysfs.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml  | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-index a6f371f..f52708f 100644
---- a/drivers/thermal/thermal_sysfs.c
-+++ b/drivers/thermal/thermal_sysfs.c
-@@ -754,6 +754,9 @@ void thermal_cooling_device_stats_update(struct thermal_cooling_device *cdev,
- {
- 	struct cooling_dev_stats *stats = cdev->stats;
- 
-+	if (!stats)
-+		return;
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml b/Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml
+index 3a537635a859..5483ed7062ba 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/mscc,ocelot-icpu-intr.yaml
+@@ -21,7 +21,11 @@ properties:
+   compatible:
+     items:
+       - enum:
++          - mscc,jaguar2-icpu-intr
++          - mscc,luton-icpu-intr
+           - mscc,ocelot-icpu-intr
++          - mscc,serval-icpu-intr
 +
- 	spin_lock(&stats->lock);
  
- 	if (stats->state == new_state)
+   '#interrupt-cells':
+     const: 1
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+2.29.2
 
