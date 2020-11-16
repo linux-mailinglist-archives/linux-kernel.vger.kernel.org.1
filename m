@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7092B496A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2362B496C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731204AbgKPPcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:32:07 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:46109 "EHLO
+        id S1731217AbgKPPck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:32:40 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:36589 "EHLO
         mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730309AbgKPPcF (ORCPT
+        with ESMTP id S1730198AbgKPPck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:32:05 -0500
-Received: by mail-ot1-f65.google.com with SMTP id g19so16336289otp.13;
-        Mon, 16 Nov 2020 07:32:04 -0800 (PST)
+        Mon, 16 Nov 2020 10:32:40 -0500
+Received: by mail-ot1-f65.google.com with SMTP id n89so16368842otn.3;
+        Mon, 16 Nov 2020 07:32:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=wixeaOXGt4VS5H1X/I4umvvniIQSQv3LBR9erOlmCDg=;
-        b=ZK/9QBLL0dWF4IxjL0B6v3H6UswXUiWPDSGiT4UXbWKH2lNyaeWYyWv7qypmbCiEhb
-         pR88/NpU1NZTuer/jGYxkkNBHIwOmt43v7twfOV4a8i+Bw779jQ2QKSNb18JMdKZJI3n
-         5jw+TaYvwJih7OTGV+cBAwzF04MUy7jFTBZ6bGqNdJAQ0kUE9zvKxrNJ8hjHhlhPjr1y
-         tbUlgjqvM0JkuWLtsQsh9jjzI4+t7LGaIHEqCkkarHoL5pmn7ZO49N3JBDVP0q7HWZiH
-         F+4iaQMEPNhuu8Zu4t2WQSHjMMwQE1h0U5qnYgMWSIJ8OjQ7C5+6lnz4C7TQ7/a7880x
-         MjSg==
-X-Gm-Message-State: AOAM531CoTV0IOFIfgn8cqOcPu1cvh7w8j67DFTt6bO9b+wnTkClyira
-        WHb9KYHZ4y+H9AlPo4IN7A==
-X-Google-Smtp-Source: ABdhPJxGhcMJL/DOYks58mO9JJMSpwwlGx6zJQaXkutaB4fNQpZUlOZri1r+ZjQNCziItAYEQLnZQA==
-X-Received: by 2002:a9d:470c:: with SMTP id a12mr11470030otf.161.1605540724371;
-        Mon, 16 Nov 2020 07:32:04 -0800 (PST)
+        bh=jms1tjLF1eND3pvYwF99TGV28gY+b78u9W1AZwIrB3M=;
+        b=gRhWLvinMLYG8J36JobgVJ8PDD8FJR4m6aUkGpx9jUDvCcb2Hz/LQALJC+/aNkZIhi
+         P92VsVFFQ9a+rapFCqnF51Y5VcwERl//EzyJwhojpNAfX8F7QMwZim7A1eoGzbjDW0S0
+         2+8Fpzd67N+UF4/nWQ1fpG7RjxJHQr4tru6J0KLDAkjhhpnPJKELSThJ4lUPeZ1BVF0S
+         yf/6clRsij9rLFXH+uy2K8SAmDejZrz22pLud+ugFvM0w66Qh4pJR79o1aDGwecYJp+1
+         TSohOfZ4f7RfybpXkCWJ40d2+j3jPGfGihgoLZbMi+8+Mr8aLoK4Hc2/IId0gemjl8QG
+         vXGw==
+X-Gm-Message-State: AOAM533eKyjgSMTKCuYFUwZyWXNxjCdCcijP9GdmD18264lS8l7tYK4m
+        xoR295afbAYDFjnBD4fNKA==
+X-Google-Smtp-Source: ABdhPJyD00JXiViecz7jg35poN6Lre3W3a3UQ9S/5zoPMwy4+oplksUnWCkMC3no3KF6cZIwbWOETQ==
+X-Received: by 2002:a05:6830:1af4:: with SMTP id c20mr11735398otd.198.1605540759297;
+        Mon, 16 Nov 2020 07:32:39 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t19sm4730619otp.51.2020.11.16.07.32.03
+        by smtp.gmail.com with ESMTPSA id g22sm5097101oop.0.2020.11.16.07.32.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 07:32:03 -0800 (PST)
-Received: (nullmailer pid 1685415 invoked by uid 1000);
-        Mon, 16 Nov 2020 15:32:02 -0000
-Date:   Mon, 16 Nov 2020 09:32:02 -0600
+        Mon, 16 Nov 2020 07:32:38 -0800 (PST)
+Received: (nullmailer pid 1686301 invoked by uid 1000);
+        Mon, 16 Nov 2020 15:32:37 -0000
+Date:   Mon, 16 Nov 2020 09:32:37 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>, mauro.chehab@huawei.com,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        devicetree@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>,
+Cc:     Mayulong <mayulong1@huawei.com>, devicetree@vger.kernel.org,
+        John Stultz <john.stultz@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linuxarm@huawei.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mayulong <mayulong1@huawei.com>,
+        devel@driverdev.osuosl.org, mauro.chehab@huawei.com,
         Manivannan Sadhasivam <mani@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, devel@driverdev.osuosl.org
-Subject: Re: [PATCH 2/8] spmi: hi6421-spmi-pmic: move driver from staging
-Message-ID: <20201116153202.GA1685169@bogus>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/8] mfd: hi6421-spmi-pmic: move driver from staging
+Message-ID: <20201116153237.GA1685828@bogus>
 References: <cover.1605530560.git.mchehab+huawei@kernel.org>
- <7e01d84b31d561fa4df1d42369e4222f4a41a8d3.1605530560.git.mchehab+huawei@kernel.org>
+ <504469db0d6659fdaed550a89822be6e7b8dc85e.1605530560.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7e01d84b31d561fa4df1d42369e4222f4a41a8d3.1605530560.git.mchehab+huawei@kernel.org>
+In-Reply-To: <504469db0d6659fdaed550a89822be6e7b8dc85e.1605530560.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 13:59:28 +0100, Mauro Carvalho Chehab wrote:
-> The Hisilicon 6421v600 SPMI driver is ready for mainstream.
-> 
-> So, move it from staging.
+On Mon, 16 Nov 2020 13:59:29 +0100, Mauro Carvalho Chehab wrote:
+> This driver is ready for mainstream. So, move it out of staging.
 > 
 > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  .../spmi/hisilicon,hisi-spmi-controller.yaml  |  62 +++
+>  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 159 ++++++++
 >  MAINTAINERS                                   |   7 +
->  drivers/spmi/Kconfig                          |   9 +
->  drivers/spmi/Makefile                         |   1 +
->  drivers/spmi/hisi-spmi-controller.c           | 358 ++++++++++++++++++
->  drivers/staging/hikey9xx/Kconfig              |  11 -
+>  drivers/mfd/Kconfig                           |  15 +
+>  drivers/mfd/Makefile                          |   1 +
+>  drivers/mfd/hi6421-spmi-pmic.c                | 342 ++++++++++++++++++
+>  drivers/staging/hikey9xx/Kconfig              |  16 -
 >  drivers/staging/hikey9xx/Makefile             |   1 -
->  .../staging/hikey9xx/hisi-spmi-controller.c   | 358 ------------------
->  .../hisilicon,hisi-spmi-controller.yaml       |  62 ---
->  9 files changed, 437 insertions(+), 432 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
->  create mode 100644 drivers/spmi/hisi-spmi-controller.c
->  delete mode 100644 drivers/staging/hikey9xx/hisi-spmi-controller.c
->  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
+>  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 342 ------------------
+>  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 159 --------
+>  9 files changed, 524 insertions(+), 518 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+>  create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
 > 
 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml:34:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml: 'additionalProperties' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
-Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.example.dts:29.20-31.15: Warning (unit_address_vs_reg): /example-0/bus/spmi@fff24000/pmic@0: node has a unit name, but no reg or ranges property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.example.dt.yaml: spmi@fff24000: pmic@0: 'reg' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/spmi.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
 
 
-See https://patchwork.ozlabs.org/patch/1400897
+See https://patchwork.ozlabs.org/patch/1400898
 
 The base for the patch is generally the last rc1. Any dependencies
 should be noted.
