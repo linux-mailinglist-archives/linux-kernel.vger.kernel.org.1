@@ -2,127 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFEE2B4F20
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB65F2B4F27
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732198AbgKPSVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:21:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52476 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729555AbgKPSVa (ORCPT
+        id S1731893AbgKPSXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:23:36 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:41131 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730520AbgKPSXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:21:30 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AGI1UuT186530;
-        Mon, 16 Nov 2020 13:21:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=wsTuE6Zzrnrn5c2WufKfrNoKmg3P4Ge4J3WtTTDx828=;
- b=lA788sEMYgducpArP8W68NqRrDv+feJLItaf3ZAXUBbMDo43GrPlu5F9q0s8RgPykDtZ
- 2ZqkKntnmTiJ3z1GB+JgpnlCjgbt8rSStCH/a/WFop6RRc2X80qkN47Urcs4ZFyJ7T27
- xWZ84GM+nq8LSOYnQu7pwiAbbxxrYQHI7k10kzKtN/ESF41DcK7mMT54XkzWyUyvScud
- qMoO+7k2WfOrs6wEbrkqhsyI4bnbLmJHe99NMSiyZV6NKLPTeRJpScvCy44Y570Anxvv
- v2GlOXoPW7CGNrh6XP6tTqA0F0+3K3DH0NL+bAEZ2QbZb6L0wFMaN7hrztzgOqT3rAgp 6Q== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34uvav46t2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 13:21:17 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AGIIn9B001136;
-        Mon, 16 Nov 2020 18:21:16 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 34t6gh2cn3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 18:21:15 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AGILDZY2228744
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Nov 2020 18:21:13 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B1C7842049;
-        Mon, 16 Nov 2020 18:21:13 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E4C842041;
-        Mon, 16 Nov 2020 18:21:11 +0000 (GMT)
-Received: from sig-9-65-243-37.ibm.com (unknown [9.65.243.37])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 16 Nov 2020 18:21:10 +0000 (GMT)
-Message-ID: <51b4f4f119a80827fcc539de68ec9fa3df16d94d.camel@linux.ibm.com>
-Subject: Re: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Date:   Mon, 16 Nov 2020 13:21:10 -0500
-In-Reply-To: <20201116174127.GA4578@infradead.org>
-References: <20201113080132.16591-1-roberto.sassu@huawei.com>
-         <20201114111057.GA16415@infradead.org>
-         <0fd0fb3360194d909ba48f13220f9302@huawei.com>
-         <20201116162202.GA15010@infradead.org>
-         <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
-         <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
-         <20201116174127.GA4578@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-16_09:2020-11-13,2020-11-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=3
- priorityscore=1501 mlxscore=0 phishscore=0 mlxlogscore=999 bulkscore=0
- malwarescore=0 impostorscore=0 adultscore=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011160102
+        Mon, 16 Nov 2020 13:23:36 -0500
+X-Originating-IP: 2.224.242.101
+Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 4D06F1C0004;
+        Mon, 16 Nov 2020 18:23:31 +0000 (UTC)
+Date:   Mon, 16 Nov 2020 19:23:34 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        sakari.ailus@iki.fi, laurent.pinchart@ideasonboard.com
+Subject: Re: [PATCH v5 1/3] dt-bindings: media: atmel: csi2dc: add bindings
+ for microchip csi2dc
+Message-ID: <20201116182334.colrvkj7lztz52t4@uno.localdomain>
+References: <20201112133437.372475-1-eugen.hristev@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201112133437.372475-1-eugen.hristev@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-16 at 17:41 +0000, Christoph Hellwig wrote:
-> On Mon, Nov 16, 2020 at 09:37:32AM -0800, Linus Torvalds wrote:
-> > > This discussion seems to be going down the path of requiring an IMA
-> > > filesystem hook for reading the file, again.  That solution was
-> > > rejected, not by me.  What is new this time?
-> > 
-> > You can't read a non-read-opened file. Not even IMA can.
-> > 
-> > So don't do that then.
-> > 
-> > IMA is doing something wrong. Why would you ever read a file that can't be read?
-> > 
-> > Fix whatever "open" function instead of trying to work around the fact
-> > that you opened it wrong.
-> 
-> The "issue" with IMA is that it uses security hooks to hook into the
-> VFS and then wants to read every file that gets opened on a real file
-> system to "measure" the contents vs a hash stashed away somewhere.
-> Which has always been rather sketchy.
+Hello Eugen,
 
-There are security hooks, where IMA is co-located, but there are also
-IMA hooks where there isn't an IMA hook (e.g. ima_file_check).  In all
-cases, the file needs to be read in order to calculate the file hash,
-which is then used for verifying file signatures (equivalent of secure
-boot) and extending the TPM (equivalent of trusted boot).  Only after
-measuring and verifying the file integrity, should access be granted to
-the file.
+On Thu, Nov 12, 2020 at 03:34:35PM +0200, Eugen Hristev wrote:
+> Add bindings documentation for Microchip CSI2 Demultiplexer controller.
+>
+> CSI2DC is a demultiplexer from Synopsys IDI interface specification to
+> parallel interface connection or direct memory access.
+>
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> ---
+> Changes in v5:
+> - modified bindings as per Rob Herring review
+>
+> Changes in v4:
+> - Removed property for inter-line-delay and for clock continuous/non-continuous
+> - Removed virtual channel by reg for second endpoint
+>
+> Changes in v3:
+> - Removed some text from description, as it was explained in the schema
+> - fixed other things as per Rob's review
+> - moved some text inside the schema, like the clock description
+>
+> Changes in v2:
+> - fixed warnings reported by dt_binding_check
+>
+>  .../bindings/media/microchip,csi2dc.yaml      | 119 ++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> new file mode 100644
+> index 000000000000..e79f0d6ba9db
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> @@ -0,0 +1,119 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/microchip,csi2dc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip CSI2 Demux Controller (CSI2DC)
+> +
+> +maintainers:
+> +  - Eugen Hristev <eugen.hristev@microchip.com>
+> +
+> +description:
+> +  CSI2DC - Camera Serial Interface 2 Demux Controller
+> +
+> +  CSI2DC is a hardware block that receives incoming data from an IDI interface
+> +  and filters packets based on their data type and virtual channel identifier,
+> +  then converts the byte stream into a cross clock domain to a pixel stream
+> +  to a parallel interface that can be read by a sensor controller.
+> +
+> +  CSI2DC provides two pipes, one video pipe and one data pipe. Video pipe
+> +  is connected to a sensor controller and the data pipe is accessible
+> +  as a DMA slave port to a DMA controller.
+> +
+> +  CSI2DC supports a single 'port' node as a source pad with Synopsys 32-bit
+> +  IDI interface. The connected endpoint must be a IDI interface compatible
+> +  device (like Synopsys CSI2HOST) , that can provide 32-bit IDI interface
+> +  connection as sink pad.
 
-Whether filesystems can and should be trusted to provide the real file
-hashes is a separate issue.
+Comments on a description from a non-native speaker might be
+mis-leading, take the following as suggestions only :)
 
-The decision as to which files should be measured or the signature
-verified is based on policy.
+the here mentioned port node is said to be a 'source' to which an IDI
+interface that provides data is connected ? Is this a s/sink/source
+mistake or did you mean the first port node has to be connected to a
+source (the IDI interface) ?
 
-thanks,
+Also, maybe it's me but 'pad' is a media-controller concept, which
+should not be mentioned in bindings (as well as 'source' and 'sink'
+but they have a more generic usage)
 
-Mimi
+The first port, to me, is simply an 'IDI input port'
 
+> +  For media entity and endpoints please refer to the bindings defined in
+> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+
+I would drop 'media-entity'. To be honest I would drop this phrase and
+mention ../video-interfaces.txt in the ports description. Up to you.
+
+> +  For Synopsys IDI interface please refer to
+> +  Documentation/devicetree/bindings/media/snps,dw-csi-plat.txt
+> +
+> +  CSI2DC supports one 'port' node as sink pad with parallel interface. This is
+> +  called video pipe.
+
+I'm confused again, isn't the parallel interface an output ? Why is it
+said to be a 'sink pad' ?
+
+Isn't port one simply a 'video output port' ?
+
+Also the association between bindings' 'port' and their representation
+as media-controller constructs should in my opinion be avoided.
+Bindings are about describing hardware, and they could be used by
+non-Linux systems as well (at least, I've been told this multiple
+times :)
+
+> +  This port has an 'endpoint' can then be used as a source pad for another
+> +  controller (next in pipeline).
+> +  Please refer to the bindings defined in
+> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> +
+> +  CSI2DC also supports direct access to the data through AHB, via DMA channel,
+> +  called data pipe.
+
+Is my understanding correct of this 'direct access' is not represented
+in DTS ?
+
+> +  Because of this, the sink 'port' child node (second) is not mandatory.
+> +  If the sink 'port' child node is missing, only data pipe is available.
+
+And so the DMA channel and the output video port are mutually
+exclusive ? I feel like the DMA port should be described or at least
+represented and made exclusive with port1 presence ?
+
+> +
+> +properties:
+> +  compatible:
+> +    const: microchip,sama7g5-csi2dc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    description:
+> +      CSI2DC must have two clocks to function correctly. One clock is the
+> +      peripheral clock for the inside functionality of the hardware block.
+> +      This is named 'pclk'. The second clock must be the cross domain clock,
+> +      in which CSI2DC will perform clock crossing. This clock must be fed
+> +      by the next controller in pipeline, which usually is a sensor controller.
+> +      Normally this clock should be given by this sensor controller who
+> +      is also a clock source. This clock is named 'scck', sensor controller clock.
+> +    items:
+> +      - const: pclk
+> +      - const: scck
+> +
+> +  ports:
+> +    type: object
+> +    description:
+> +      List of ports
+> +
+> +    properties:
+> +      port@0:
+> +        type: object
+> +        description:
+> +          Input port node, single endpoint describing the input pad.
+> +      port@1:
+> +        type: object
+> +        description:
+> +          Output port node, single endpoint, describing the output pad.
+
+That's a parallel video output, correct ? Does this port support any
+configurable property of the ones defined by video-interfaces.txt ?
+
+Thanks
+   j
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - ports
+> +
+> +examples:
+> +  - |
+> +    csi2dc@e1404000 {
+> +        compatible = "microchip,sama7g5-csi2dc";
+> +        reg = <0xe1404000 0x500>;
+> +        clocks = <&pclk>, <&scck>;
+> +        clock-names = "pclk", "scck";
+> +
+> +        ports {
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +               port@0 {
+> +                       reg = <0>; /* must be 0, first child port */
+> +                       csi2dc_in: endpoint { /* input from IDI interface */
+> +                               remote-endpoint = <&csi2host_out>;
+> +                       };
+> +               };
+> +
+> +               port@1 {
+> +                       reg = <1>; /* must be 1, second child port */
+> +                       csi2dc_out: endpoint {
+> +                               remote-endpoint = <&xisc_in>; /* output to sensor controller */
+> +                       };
+> +               };
+> +        };
+> +    };
+> +
+> +...
+> --
+> 2.25.1
+>
