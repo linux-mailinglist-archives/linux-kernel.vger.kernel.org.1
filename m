@@ -2,176 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6652B4BC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C162B4BCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732214AbgKPQz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:55:29 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:45466 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731088AbgKPQz2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:55:28 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kehmn-0008PX-W1; Mon, 16 Nov 2020 16:55:26 +0000
-Subject: Re: [PATCH][next] drm/kmb: fix array out-of-bounds writes to
- kmb->plane_status[]
-To:     "Chrisanthus, Anitha" <anitha.chrisanthus@intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     "Dea, Edmund J" <edmund.j.dea@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201113120121.33212-1-colin.king@canonical.com>
- <20201113145557.GB3647624@ravnborg.org>
- <8dd5b960-d6c4-73cc-703e-349dc66f2937@canonical.com>
- <20201113180214.GA3675629@ravnborg.org>
- <BY5PR11MB4182D871B9BD3FB79213D6F18CE30@BY5PR11MB4182.namprd11.prod.outlook.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <36e65d6c-5142-5150-2de9-ffb2143497eb@canonical.com>
-Date:   Mon, 16 Nov 2020 16:55:25 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1732296AbgKPQzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:55:52 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:49964 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729841AbgKPQzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:55:51 -0500
+Received: from zn.tnic (p200300ec2f07680050d12d82a515c0a8.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:6800:50d1:2d82:a515:c0a8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 579231EC0391;
+        Mon, 16 Nov 2020 17:55:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605545750;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=mP17by/35hnZwkxXmR9HMZFcsob75Ss7BHNoFkg72Cw=;
+        b=I/RzRMHWwzBz5/YAzonMHKHsT9QTtB6SzIO58E79BqceFZYAQVhk8gB6n4TCXXEVYY9EKI
+        E6qgh16FM62Ym0R9IlgXbVpD9911Q3XuCCojAHcvyItlAvw+/mkyBJVomfTjs5b7NCErq2
+        Yy+Xv552Bb5nYnADQJQDA4sJhKgFSXo=
+Date:   Mon, 16 Nov 2020 17:55:44 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v41 00/24] Intel SGX foundations
+Message-ID: <20201116165544.GC1131@zn.tnic>
+References: <20201112220135.165028-1-jarkko@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <BY5PR11MB4182D871B9BD3FB79213D6F18CE30@BY5PR11MB4182.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201112220135.165028-1-jarkko@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2020 16:53, Chrisanthus, Anitha wrote:
-> Hi Sam and Colin,
-> 
->> -----Original Message-----
->> From: Sam Ravnborg <sam@ravnborg.org>
->> Sent: Friday, November 13, 2020 10:02 AM
->> To: Colin Ian King <colin.king@canonical.com>
->> Cc: Chrisanthus, Anitha <anitha.chrisanthus@intel.com>; Dea, Edmund J
->> <edmund.j.dea@intel.com>; David Airlie <airlied@linux.ie>; Daniel Vetter
->> <daniel@ffwll.ch>; dri-devel@lists.freedesktop.org; kernel-
->> janitors@vger.kernel.org; linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH][next] drm/kmb: fix array out-of-bounds writes to kmb-
->>> plane_status[]
->>
->> Hi Colin.
->> On Fri, Nov 13, 2020 at 03:04:34PM +0000, Colin Ian King wrote:
->>> On 13/11/2020 14:55, Sam Ravnborg wrote:
->>>> Hi Colin.
->>>>
->>>> On Fri, Nov 13, 2020 at 12:01:21PM +0000, Colin King wrote:
->>>>> From: Colin Ian King <colin.king@canonical.com>
->>>>>
->>>>> Writes to elements in the kmb->plane_status array in function
->>>>> kmb_plane_atomic_disable are overrunning the array when plane_id is
->>>>> more than 1 because currently the array is KMB_MAX_PLANES elements
->>>>> in size and this is currently #defined as 1.  Fix this by defining
->>>>> KMB_MAX_PLANES to 4.
->>>>
->>>> I fail to follow you here.
->>>> In kmb_plane_init() only one plane is allocated - with id set to 0.
->>>> So for now only one plane is allocated thus kmb_plane_atomic_disable()
->>>> is only called for this plane.
->>>>
->>>> With your change we will start allocating four planes, something that is
->>>> not tested.
->>>>
->>>> Do I miss something?
->>>>
->>>> 	Sam
->>>>
->>>
->>> The static analysis from coverity on linux-next suggested that there was
->>> an array overflow as follows:
->>>
->>> 108 static void kmb_plane_atomic_disable(struct drm_plane *plane,
->>> 109                                     struct drm_plane_state *state)
->>> 110 {
->>>
->>>    1. Condition 0 /* !!(!__builtin_types_compatible_p() &&
->>> !__builtin_types_compatible_p()) */, taking false branch.
->>>
->>> 111        struct kmb_plane *kmb_plane = to_kmb_plane(plane);
->>>
->>>    2. assignment: Assigning: plane_id = kmb_plane->id.
->>>
->>> 112        int plane_id = kmb_plane->id;
->>> 113        struct kmb_drm_private *kmb;
->>> 114
->>> 115        kmb = to_kmb(plane->dev);
->>> 116
->>>
->>>    3. Switch case value LAYER_3.
->>>
->>> 117        switch (plane_id) {
->>> 118        case LAYER_0:
->>> 119                kmb->plane_status[plane_id].ctrl = LCD_CTRL_VL1_ENABLE;
->>> 120                break;
->>
->> With the current code this is the only case that hits.
->> So coverity is right that if we hit other cases that would result in a
->> bug. But kmb_plane->id will for now not have other values than 0.
->>
->> So it is a subtle false positive.
->> There is some "dead" code here - but this is in preparation for more
->> than one layer and we will keep the code for now, unless Anitha chimes
->> in and says otherwise.
-> 
-> Thanks Sam, I was out on Friday. Agree with Sam, let's keep the current code for now. Kmb->plane_id will not have non-zero values now.
-> Only one plane is supported and tested currently, the extra code is in preparation for multiple planes.
+On Fri, Nov 13, 2020 at 12:01:11AM +0200, Jarkko Sakkinen wrote:
+> Sean Christopherson is a major contributor to this series.  However, he
+> has left Intel and his @intel.com address will soon be bouncing.  He
+> does not have a email he wants us to substitute or put in .mailmap for
+> now.  To avoid subjecting everyone to bounces, we have commented out his
+> tag lines in the commit messages.
 
-Thanks for the clarification. Apologies for the noise.
+Don't do that - there's a --suppress-cc=<category> cmdline switch to
+git-send-email for exactly those things.
 
-> 
-> Thanks,
-> Anitha
->>
->> 	Sam
->>
->>> 121        case LAYER_1:
->>>
->>>    (#2 of 4): Out-of-bounds write (OVERRUN)
->>>
->>> 122                kmb->plane_status[plane_id].ctrl = LCD_CTRL_VL2_ENABLE;
->>> 123                break;
->>> 124        case LAYER_2:
->>>
->>>    (#3 of 4): Out-of-bounds write (OVERRUN)
->>>
->>> 125                kmb->plane_status[plane_id].ctrl = LCD_CTRL_GL1_ENABLE;
->>> 126                break;
->>>
->>>    4. equality_cond: Jumping to case LAYER_3.
->>>
->>> 127        case LAYER_3:
->>>
->>>    (#1 of 4): Out-of-bounds write (OVERRUN)
->>>    5. overrun-local: Overrunning array kmb->plane_status of 1 8-byte
->>> elements at element index 3 (byte offset 31) using index plane_id (which
->>> evaluates to 3).
->>>
->>> 128                kmb->plane_status[plane_id].ctrl = LCD_CTRL_GL2_ENABLE;
->>> 129                break;
->>> 130        }
->>> 131
->>>
->>>    (#4 of 4): Out-of-bounds write (OVERRUN)
->>>
->>> 132        kmb->plane_status[plane_id].disable = true;
->>> 133 }
->>> 134
->>>
->>> So it seems the assignments to  kmb->plane_status[plane_id] are
->>> overrunning the array since plane_status is allocated as 1 element and
->>> yet plane_id can be 0..3
->>>
->>> I could be misunderstanding this, or it may be a false positive.
->>>
->>> Colin
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
