@@ -2,63 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583E12B51C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66FC2B51C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731362AbgKPUAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:00:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727393AbgKPUAO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:00:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F45C0613CF;
-        Mon, 16 Nov 2020 12:00:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=z8OzNGspQXnwNNcU0w++SX1K+3G8m57VI2juCCZTgyU=; b=XK+yWWrfRuNhvqIpyTCVd2+tvD
-        vWQWosYHC19Eca/wSVQOQMZb2zbMs8UoCYy1sM3fbI/sA95r8PcW8CR9s/E+o+j9ATkT6oVzWymrj
-        XrhRKXfPPOtuNWlonuzskNrvQAp0RHk0KXvtMo5GmDCcj0OyPy5XlGZ64v8adFr3l8z8T3UnryyaM
-        qvHf2HlqdbUXaUZ5jRdagxG89IyoN9og6kb7rcHheL0Ihff1Yhdm8VIwf25IcmKSEcElLwUrmiHcq
-        5Ek/GA7cp7K93BZZGRc2K4CH+trRpJDM5mLa15onBZYa/DFauROaUWnTvzBlag53u0jmCLXHGGftl
-        F2cBjaXA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kekfZ-0002Di-VR; Mon, 16 Nov 2020 20:00:10 +0000
-Date:   Mon, 16 Nov 2020 20:00:09 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>
-Subject: Re: [PATCH v2] epoll: add nsec timeout support
-Message-ID: <20201116200009.GJ29991@casper.infradead.org>
-References: <20201116161001.1606608-1-willemdebruijn.kernel@gmail.com>
- <20201116161930.GF29991@casper.infradead.org>
- <CA+FuTSdifgNAYe4DAfpRJxCO08y-sOi=XhOeMhd9mKbA3aPOug@mail.gmail.com>
- <eead2765ea5e417abe616950b4e5d02f@AcuMS.aculab.com>
- <CAF=yD-LGtfPGuqM8WP5Wz7d9_u6x-HdeBitKg81zdA8E6tMQwQ@mail.gmail.com>
+        id S1731403AbgKPUAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:00:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726575AbgKPUAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 15:00:46 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2131208C7;
+        Mon, 16 Nov 2020 20:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605556846;
+        bh=e6Pic+7L11QD6xi374GsTYuOp0GRbXjHHJECZ1AFmq8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gw+LNtSyIkMGjoDYkFGWnukFLJoZkRTPy1a3rXed+cWjxxa95k2KE4I1t0Qj51GU5
+         hugMMrEVrl9/j79pFtEFWugaqx0eHqtpCzBTb7eF4D4ktnP7DXLx7qQ8TcgAdlGAZ/
+         jcJxYuUJOwYzEHvEtof7jjghtvaJuzkoqzEg69gI=
+Date:   Mon, 16 Nov 2020 20:00:27 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Bayi Cheng <bayi.cheng@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        srv_heupstream@mediatek.com
+Subject: Re: [PATCH v1] add axi clock control for MT8192 spi-nor
+Message-ID: <20201116200027.GI4739@sirena.org.uk>
+References: <1605084902-13151-1-git-send-email-bayi.cheng@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Li7ckgedzMh1NgdW"
 Content-Disposition: inline
-In-Reply-To: <CAF=yD-LGtfPGuqM8WP5Wz7d9_u6x-HdeBitKg81zdA8E6tMQwQ@mail.gmail.com>
+In-Reply-To: <1605084902-13151-1-git-send-email-bayi.cheng@mediatek.com>
+X-Cookie: Immanuel doesn't pun, he Kant.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 02:54:17PM -0500, Willem de Bruijn wrote:
-> > You could also add a compile assert to check that the flag is reserved.
-> 
-> Like this?
-> 
->         /* Check the EPOLL_* constant for consistency.  */
->         BUILD_BUG_ON(EPOLL_CLOEXEC != O_CLOEXEC);
-> +        BUILD_BUG_ON(EPOLL_NSTIMEO & EPOLL_RESERVED_FLAGS);
 
-i think you got the sense of that test wrong.  but yes.
+--Li7ckgedzMh1NgdW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 11, 2020 at 04:55:01PM +0800, Bayi Cheng wrote:
+> bayi cheng (1):
+>   spi: spi-mtk-nor: add axi clock control for MT8192 spi-nor
+
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
+
+--Li7ckgedzMh1NgdW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+y2loACgkQJNaLcl1U
+h9CkIAf+LgGXsnM9kY0nd1NRS64B85c9CWhmqEIuIXyBnH9Nh5F97gqKOrGrcNT4
+0Xg5bW0+V3LXXg3rBZTrH5wFF+D+ts10B45v9QHLp2FLCE9idgLUFEk5K3PmonAb
+KPe15kR0dK2VMl6dKuWCGlPPlBPgvcIIRZU42gfjkkC5vq/AWuCnNRJRiYPSftl4
+D7DKjEQVCHcM+d/V4vXLMtNnkI7IirMDeeMsXa4emlIjB3lnbsqU1x3Aux+/Q3CU
+/6lu6PU3NP2RFrZP8fF/m2yJjYbofcDuaMn0tjLS06OMtZHZDuigdOUhBWchbEIO
+D82R0UHAwq7NrkZOYZtHsLuKp+m1yw==
+=86GQ
+-----END PGP SIGNATURE-----
+
+--Li7ckgedzMh1NgdW--
