@@ -2,152 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAF12B54E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F402C2B54E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbgKPXVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:21:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbgKPXVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:21:00 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA93B2244C;
-        Mon, 16 Nov 2020 23:20:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605568860;
-        bh=Ckc3lnp9XJjLw+HiUSyThl4xMi1jyjUDeG3UV03dKcE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Sz5Uq2AnBExzb5l+OhENUeOTkb9n1z1tBFW7HcABvnUh/b/GF31PPhR2Fm+GUMLU0
-         PKlDLmr/z60juSOlF+47U3YG4ITtDLzhpEGatctxb1UgMmvYqjhrw37aUxypjv8Iz/
-         U4iOtDesqwGRLGPN44+5wzUkjTcK1bHn7vQMR3b0=
-Date:   Mon, 16 Nov 2020 15:20:58 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH] Revert
- "mm/vunmap: add cond_resched() in vunmap_pmd_range"
-Message-Id: <20201116152058.effcc5e6915cd9b98ba31348@linux-foundation.org>
-In-Reply-To: <20201116175323.GB3805951@google.com>
-References: <20201105170249.387069-1-minchan@kernel.org>
-        <20201106175933.90e4c8851010c9ce4dd732b6@linux-foundation.org>
-        <20201107083939.GA1633068@google.com>
-        <20201112200101.GC123036@google.com>
-        <20201112144919.5f6b36876f4e59ebb4a99d6d@linux-foundation.org>
-        <20201113162529.GA2378542@google.com>
-        <20201116175323.GB3805951@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729492AbgKPXW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:22:29 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8084 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729384AbgKPXW2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 18:22:28 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb309be0000>; Mon, 16 Nov 2020 15:22:38 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov
+ 2020 23:22:28 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 16 Nov 2020 23:22:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XqMYJ3fND+xM6LmnJxncZTLAlrRw9rzJcf5ESjpromsEzuW9YrpErmxWwU8kWcUlBkMw4fB8YirPGTH9znM6TzNmfZtFNzA6+c7CLcv8Ucco6aIAdF9SoxrHknF+gZ8JFiWVSwnKZDizvdKaJ0A6TXDBumGaHPg+sSsiPhyEBGQTj2KFLcyC/6T+Hn6tQf/3Z/s6PiYBN4ZdtFTEL1SWHnq2cWz3YW+wemeqK8Sc7dU80+z0IJ6QeYoWSR9fYGc56cbX6+r//eXG4vVpG1f+5uH48cQSo6NKjCjfLevEt/wHhHeh8XRFkPKZZig0qY8W4vlZzTwkOal5l25i0W8xGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=509+VmkLlEPOxe/lQoQ9OAnAIf0urLi7ZvhTpP11KWo=;
+ b=iktqZ6+edGq54JTXYpvhvxwZ75TDHFiTlLlXoCunEbF1hnXeUj8e9UTU64NY6u8n5VaeG11Fp/tclotuA7D14puuC+XqWDlIK68/59gvpnrBXFxRGlItOdA+1VTn2BzfxP5DxbK5QqFjDSsnssiK3nfXNr7QMg4fvGCTmCIcS98Dsmps70GbJf8e4EZ3ouuia5egb7KTKzAUwOk52takcIappFJXjTpao/A8wxOZ8/1QAUmnjI0GpFLAKAYyD0SKnKrU/l2mxS+k3NvVIB2DYE28cTDDj2s0WYZg19kGs8ftYc6l1HTl3TzAZIX8tLWov1g9jMnQ0rMWT/ZuFaVJYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4619.namprd12.prod.outlook.com (2603:10b6:5:7c::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
+ 2020 23:22:23 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
+ 23:22:23 +0000
+Date:   Mon, 16 Nov 2020 19:22:21 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     Ziyad Atiyyeh <ziyadat@nvidia.com>,
+        Itay Aveksis <itayav@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        <iommu@lists.linux-foundation.org>, <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: iommu/vt-d: Cure VF irqdomain hickup
+Message-ID: <20201116232221.GS917484@nvidia.com>
+References: <20200826111628.794979401@linutronix.de>
+ <20201112125531.GA873287@nvidia.com> <87mtzmmzk6.fsf@nanos.tec.linutronix.de>
+ <87k0uqmwn4.fsf@nanos.tec.linutronix.de>
+ <87d00imlop.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <87d00imlop.fsf@nanos.tec.linutronix.de>
+X-ClientProxiedBy: BL0PR0102CA0068.prod.exchangelabs.com
+ (2603:10b6:208:25::45) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR0102CA0068.prod.exchangelabs.com (2603:10b6:208:25::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28 via Frontend Transport; Mon, 16 Nov 2020 23:22:23 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kenpF-006rGb-Sg; Mon, 16 Nov 2020 19:22:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605568958; bh=509+VmkLlEPOxe/lQoQ9OAnAIf0urLi7ZvhTpP11KWo=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=jllMDa00p/VQ6l3K63jHe96kycEVYbHGAN3FIs4kqwAHWQ2KK4OJl2a96Otea+zIX
+         MGxCNp3a0sGWNh8Y2KRH+Za1PW7uhWV7oZiE3iqwvdaQve1ZzItDjv4UCRfUa37Ps8
+         AKmMOrzuKITRp4g+Or64aT+lxillBOkoDud5wwts8fARCN8+1S2J8lUMo0UwUTzJN3
+         9wgnHClx7YaU2M+c4kHe4gi7dhtcq5tk1R5ghbmbr8bBV0/+D5MBaiN116vbKAPLCr
+         l306GhyMI3EW6VCnKvOsss4ltHS/mI62hkv+abTRt0w0nlCR33iGA7jUnM2qFmtocJ
+         gUnmk2qKETcWg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Let's cc Uladzislau on vmalloc things?
-
-> How about this?
-
-Well, lol, that's a simple approach to avoiding the problem ;)
-
-> unmap_kernel_range had been atomic operation and zsmalloc has used
-> it in atomic context in zs_unmap_object.
-> However, ("e47110e90584, mm/vunmap: add cond_resched() in vunmap_pmd_range")
-> changed it into non-atomic operation via adding cond_resched.
-> It causes zram decompresion failure by corrupting compressed buffer
-> in atomic context.
+On Thu, Nov 12, 2020 at 08:15:02PM +0100, Thomas Gleixner wrote:
+> The recent changes to store the MSI irqdomain pointer in struct device
+> missed that Intel DMAR does not register virtual function devices.  Due to
+> that a VF device gets the plain PCI-MSI domain assigned and then issues
+> compat MSI messages which get caught by the interrupt remapping unit.
 > 
-> This patch introduces unmap_kernel_range_atomic which works for
-> only range less than PMD_SIZE to prevent cond_resched call.
+> Cure that by inheriting the irq domain from the physical function
+> device.
 > 
-> ...
->
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -180,6 +180,7 @@ int map_kernel_range(unsigned long start, unsigned long size, pgprot_t prot,
->  		struct page **pages);
->  extern void unmap_kernel_range_noflush(unsigned long addr, unsigned long size);
->  extern void unmap_kernel_range(unsigned long addr, unsigned long size);
-> +extern void unmap_kernel_range_atomic(unsigned long addr, unsigned long size);
->  static inline void set_vm_flush_reset_perms(void *addr)
->  {
->  	struct vm_struct *vm = find_vm_area(addr);
-> @@ -200,6 +201,7 @@ unmap_kernel_range_noflush(unsigned long addr, unsigned long size)
->  {
->  }
->  #define unmap_kernel_range unmap_kernel_range_noflush
-> +#define unmap_kernel_range_atomic unmap_kernel_range_noflush
->  static inline void set_vm_flush_reset_perms(void *addr)
->  {
->  }
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index d7075ad340aa..714e5425dc45 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -88,6 +88,7 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->  	pmd_t *pmd;
->  	unsigned long next;
->  	int cleared;
-> +	bool check_resched = (end - addr) > PMD_SIZE;
->  
->  	pmd = pmd_offset(pud, addr);
->  	do {
-> @@ -102,8 +103,8 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->  		if (pmd_none_or_clear_bad(pmd))
->  			continue;
->  		vunmap_pte_range(pmd, addr, next, mask);
-> -
-> -		cond_resched();
-> +		if (check_resched)
-> +			cond_resched();
->  	} while (pmd++, addr = next, addr != end);
->  }
->  
-> @@ -2024,6 +2025,24 @@ void unmap_kernel_range(unsigned long addr, unsigned long size)
->  	flush_tlb_kernel_range(addr, end);
->  }
->  
-> +/**
-> + * unmap_kernel_range_atomic - unmap kernel VM area and flush cache and TLB
-> + * @addr: start of the VM area to unmap
-> + * @size: size of the VM area to unmap
-> + *
-> + * Similar to unmap_kernel_range_noflush() but it's atomic. @size should be
-> + * less than PMD_SIZE.
-> + */
-> +void unmap_kernel_range_atomic(unsigned long addr, unsigned long size)
-> +{
-> +	unsigned long end = addr + size;
-> +
-> +	flush_cache_vunmap(addr, end);
-> +	WARN_ON(size > PMD_SIZE);
+> That's a temporary workaround. The correct fix is to inherit the irq domain
+> from the bus, but that's a larger effort which needs quite some other
+> changes to the way how x86 manages PCI and MSI domains.
+> 
+> Fixes: 85a8dfc57a0b ("iommm/vt-d: Store irq domain in struct device")
+> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  drivers/iommu/intel/dmar.c |   19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
 
-WARN_ON_ONCE() would be better here - no point in creating a million
-warnings where one would suffice.
+Our QA says it solves the issue:
 
-> +	unmap_kernel_range_noflush(addr, size);
-> +	flush_tlb_kernel_range(addr, end);
-> +}
-> +
->  static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
->  	struct vmap_area *va, unsigned long flags, const void *caller)
->  {
-> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-> index 662ee420706f..9decc7634852 100644
-> --- a/mm/zsmalloc.c
-> +++ b/mm/zsmalloc.c
-> @@ -1154,7 +1154,7 @@ static inline void __zs_unmap_object(struct mapping_area *area,
->  {
->  	unsigned long addr = (unsigned long)area->vm_addr;
->  
-> -	unmap_kernel_range(addr, PAGE_SIZE * 2);
-> +	unmap_kernel_range_atomic(addr, PAGE_SIZE * 2);
->  }
+Tested-by: Itay Aveksis <itayav@nvidia.com>
 
-I suppose we could live with it if no better solutions are forthcoming.
+Thanks,
+Jason
