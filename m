@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB0B2B492D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C012B492F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731092AbgKPP1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:27:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728433AbgKPP07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:26:59 -0500
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2021920715
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605540419;
-        bh=TdjljZas82Klfz7KMfoEYcx1d5Hp8TQ19pIW82o2aHM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TjYsMFAe4P9WVhddB/LlDGoNYU7TVVocerNTK5R+6aoT3EFoY8TIYgvSzPYlvHaX6
-         9nGpfAslyo3ORr+vIek5H8YpKCNPMtqC3gW5KwbSrX5Rl/T1J7E8yoaw4z/ZNqF6eW
-         qE8qprT9DAsXV0jmu59SrwbUr6iU0NN00yQQRUz4=
-Received: by mail-ot1-f53.google.com with SMTP id l36so16369560ota.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:26:59 -0800 (PST)
-X-Gm-Message-State: AOAM5312eklyQfO4Vkbdy2CcNtzps9PwtOu6sW5W4VGods7XIYq3NKfj
-        4PyVYS6R/WGthjGFOD0ETBN4lKaLBatDQWNUk60=
-X-Google-Smtp-Source: ABdhPJwhet+SwyMBiqbppkcd3dYEsGU5RzrFvJ+5Sdf61XDp0fTatCkGAnQznKAjG8JLapZ+2A7OAk0LVxFMtUWdqno=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr10259369oth.251.1605540418384;
- Mon, 16 Nov 2020 07:26:58 -0800 (PST)
+        id S1731136AbgKPP1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:27:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728433AbgKPP1K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 10:27:10 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBEFC0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:27:10 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id l1so19099753wrb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:27:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/nUNOFLN6IikzihRcWpgoGdh6TnItZX1uNVpsszzMXQ=;
+        b=XpH8iEeu08Fe9sEZDYnOcbXjab9a1kGi0+K3Vf7ZkwPegpg9qLfQKOhYvbxG/EvDeO
+         /KvmOdIW/ZJpRWDinTXXRTpi7ZyVTUzq/8Oui6wJ3RwUSpzPhNEpUPyrwcbaBdFyTue1
+         LKlXJEZCq5kY552c8gYHd3zYadmq0gn7oiWmCrBDRnTDcGhPyuUpG4QctH9AGLFLm3YO
+         14Xv7zIDRvds0IJuR2W4WYlrXs/o73DgDOh1Py54MHup2GdE+i33X68ygR0taw//kaiu
+         xej+e7UfwlbvBer88QzQStJ0+YPd1HC6OQu0qg+6ti8nDabxTqLnHacev3oGtuJaHryW
+         ivMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/nUNOFLN6IikzihRcWpgoGdh6TnItZX1uNVpsszzMXQ=;
+        b=rdMUqLdIdAVV0wKRoB+8OIb2RVboHe26qred4SxpfSo+ELheQ4OQrlC/8CE/l6Z8Bm
+         2jeT2kEVcNcsvDsMwRmrdA0YcSxzNlpBjf2ymTBTSoU2qv67Fpm22WmClXzCkslx2bYE
+         uRTGPTiqqgD29C9b8tn348L+MusH/uCTdk9LO3FlcXAnoQIJYDZIRlXEMCE67rzCiC74
+         7FIlUTXa3TS5z6frJEsv9FzGt6rjBSzFfHbYJ454jUpaUg4VBubGT5B1jAdUWl69d0AK
+         8tk2TMnB+jvo5S68scRjitmXRV1yAynfhOfWWzqWfoXnrtqfQLgdj3TM9UAuJD5iMRZg
+         cR0w==
+X-Gm-Message-State: AOAM532G2nZMpmh+iofa+BRpZ9LfJWy6fWi49eLxBI4sPBfrUdQd2SAU
+        Fg4gI+VsN2YlBANnWzkhylWeOA==
+X-Google-Smtp-Source: ABdhPJxAprY9OOmw66oSB+iId6DIhrCa8bWI+rKVkdeNdwJQavoObh/EzTKd0o2MtdyprhVHKeQ6Yg==
+X-Received: by 2002:adf:a343:: with SMTP id d3mr19990822wrb.91.1605540428664;
+        Mon, 16 Nov 2020 07:27:08 -0800 (PST)
+Received: from localhost.localdomain (lns-bzn-59-82-252-135-240.adsl.proxad.net. [82.252.135.240])
+        by smtp.gmail.com with ESMTPSA id k20sm19930453wmi.15.2020.11.16.07.27.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 07:27:07 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     rjw@rjwysocki.net
+Cc:     ilina@codeaurora.org, ulf.hansson@linaro.org,
+        linux-pm@vger.kernel.org, lukasz.luba@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        rkumbako@codeaurora.org, rui.zhang@intel.com
+Subject: [PATCH V2 0/4] powercap/dtpm: Add the DTPM framework
+Date:   Mon, 16 Nov 2020 16:26:45 +0100
+Message-Id: <20201116152649.11482-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201026162022.3710091-1-arnd@kernel.org> <87h7ppz9ew.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87h7ppz9ew.fsf@nanos.tec.linutronix.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 16 Nov 2020 16:26:41 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2fprKoq3D-u4vV7RvqdpCL06ET2QWS9HJkLuOnNU5Ntg@mail.gmail.com>
-Message-ID: <CAK8P3a2fprKoq3D-u4vV7RvqdpCL06ET2QWS9HJkLuOnNU5Ntg@mail.gmail.com>
-Subject: Re: [PATCH] irqdomain: fix -Wshadow warning
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 3:03 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> On Mon, Oct 26 2020 at 17:20, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > When building with W=2, there are tons of warnings about conflicting
-> > local and global definitions of 'nr_irqs' in common header files:
-> >
-> > include/linux/irqdomain.h: In function 'irq_domain_alloc_irqs':
-> > include/linux/irqdomain.h:482:17: warning: declaration of 'nr_irqs' shadows a global declaration [-Wshadow]
-> >   482 |    unsigned int nr_irqs, int node, void *arg)
-> >       |    ~~~~~~~~~~~~~^~~~~~~
-> > In file included from ../include/linux/interrupt.h:10,
-> >                  from ../include/linux/kernel_stat.h:9,
-> >                  from ../include/linux/cgroup.h:26,
-> >                  from ../include/linux/perf_event.h:57,
-> >                  from ../include/linux/trace_events.h:10,
-> >                  from ../include/trace/syscall.h:7,
-> >                  from ../include/linux/syscalls.h:84,
-> >                  from ../init/main.c:21:
-> > include/linux/irqnr.h:8:12: note: shadowed declaration is here
-> >     8 | extern int nr_irqs;
-> >       |            ^~~~~~~
-> >
-> > Rename the local in irqdomain.h to shut up those warnings
->
-> That's lame tinkering. There are gazillion of other functions which have
-> the very same problem and nr_irqs is used all over the place for local
-> variables.
->
-> So instead of trying to chase all these places we really want to rename
-> the global 'nr_irqs' variable.
+The density of components greatly increased the last decade bringing a
+numerous number of heating sources which are monitored by more than 20
+sensors on recent SoC. The skin temperature, which is the case
+temperature of the device, must stay below approximately 45°C in order
+to comply with the legal requirements.
 
-Fair enough, yes.
+The skin temperature is managed as a whole by an user space daemon,
+which is catching the current application profile, to allocate a power
+budget to the different components where the resulting heating effect
+will comply with the skin temperature constraint.
 
-> Something like the uncompiled below which is purely mechanical and does
-> not even try to look at some of the places which use it for the very
-> wrong reasons and purpose * Shudder *.
+This technique is called the Dynamic Thermal Power Management.
 
-Looks good to me.
+The Linux kernel does not provide any unified interface to act on the
+power of the different devices. Currently, the thermal framework is
+changed to export artificially the performance states of different
+devices via the cooling device software component with opaque values.
+This change is done regardless of the in-kernel logic to mitigate the
+temperature. The user space daemon uses all the available knobs to act
+on the power limit and those differ from one platform to another.
 
-If we rename it, we might want to pick an even longer name to make
-it stand out in code review when it does get used, and easier to
-grep for.
+This series provides a Dynamic Thermal Power Management framework to
+provide an unified way to act on the power of the devices.
 
-I don't have my build testing infrastructure running at the moment,
-once I get that back up, I can start testing your patch.
+Changelog:
+ V2:
+  - Fixed indentation
+  - Fixed typos in comments
+  - Fixed missing kfree for dtpm_cpu
+  - Capitalize letters in the Kconfig description
+  - Reduced name description
+  - Stringified section name
+  - Added more debug traces in the code
+  - Removed duplicate initialization in the dtpm cpu
 
-> --- a/arch/arm/kernel/irq.c
-> +++ b/arch/arm/kernel/irq.c
-> @@ -100,7 +100,7 @@ void __init init_IRQ(void)
->  #ifdef CONFIG_SPARSE_IRQ
->  int __init arch_probe_nr_irqs(void)
->  {
-> -       nr_irqs = machine_desc->nr_irqs ? machine_desc->nr_irqs : NR_IRQS;
-> -       return nr_irqs;
-> +       max_nr_irqs = machine_desc->nr_irqs ? machine_desc->nr_irqs : NR_IRQS;
-> +       return max_nr_irqs;
->  }
->  #endif
+Daniel Lezcano (4):
+  units: Add Watt units
+  Documentation/powercap/dtpm: Add documentation for dtpm
+  powercap/drivers/dtpm: Add API for dynamic thermal power management
+  powercap/drivers/dtpm: Add CPU energy model based support
 
-I think this one can just lose the assignment and return the value.
+ Documentation/power/powercap/dtpm.rst | 222 +++++++++++++
+ drivers/powercap/Kconfig              |  13 +
+ drivers/powercap/Makefile             |   2 +
+ drivers/powercap/dtpm.c               | 436 ++++++++++++++++++++++++++
+ drivers/powercap/dtpm_cpu.c           | 282 +++++++++++++++++
+ include/asm-generic/vmlinux.lds.h     |  11 +
+ include/linux/cpuhotplug.h            |   1 +
+ include/linux/dtpm.h                  |  75 +++++
+ include/linux/units.h                 |   4 +
+ 9 files changed, 1046 insertions(+)
+ create mode 100644 Documentation/power/powercap/dtpm.rst
+ create mode 100644 drivers/powercap/dtpm.c
+ create mode 100644 drivers/powercap/dtpm_cpu.c
+ create mode 100644 include/linux/dtpm.h
 
-> --- a/arch/powerpc/platforms/cell/axon_msi.c
-> +++ b/arch/powerpc/platforms/cell/axon_msi.c
-> @@ -111,7 +111,7 @@ static void axon_msi_cascade(struct irq_
->                 pr_devel("axon_msi: woff %x roff %x msi %x\n",
->                           write_offset, msic->read_offset, msi);
->
-> -               if (msi < nr_irqs && irq_get_chip_data(msi) == msic) {
-> +               if (msi < max_nr_irqs && irq_get_chip_data(msi) == msic) {
->                         generic_handle_irq(msi);
->                         msic->fifo_virt[idx] = cpu_to_le32(0xffffffff);
->                 } else {
+-- 
+2.17.1
 
-Most of the ones like this seem to have been simply converted from
-old sanity checks using NR_IRQS and would work just as well without
-the checks.
-
-Actually removing the checks would have a small regression
-potential.
-
-> --- a/drivers/pcmcia/at91_cf.c
-> +++ b/drivers/pcmcia/at91_cf.c
-
-potential.
-
-> @@ -312,7 +312,7 @@ static int at91_cf_probe(struct platform
->                         goto fail0a;
->                 cf->socket.pci_irq = gpio_to_irq(board->irq_pin);
->         } else
-> -               cf->socket.pci_irq = nr_irqs + 1;
-> +               cf->socket.pci_irq = max_nr_irqs + 1;
->
->         /*
->          * pcmcia layer only remaps "real" memory not iospace
-
-This one would seem to actually warrant a bugfix, setting
-the field to zero.
-
-      Arnd
