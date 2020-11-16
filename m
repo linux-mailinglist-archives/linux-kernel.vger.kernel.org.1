@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3A42B4E1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 614312B4E44
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387852AbgKPRmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
+        id S2388007AbgKPRnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:43:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387829AbgKPRmI (ORCPT
+        with ESMTP id S2387838AbgKPRmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:42:08 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0B7C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:08 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id b6so19670197wrt.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:07 -0800 (PST)
+        Mon, 16 Nov 2020 12:42:11 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B6BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:09 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id w24so57501wmi.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xPa36hbXRaCWHNKBNpsuuGTQcILERbE7+3Txd9Olckk=;
-        b=pRWYp0XTrVtt3Xvh9YDV5tP6dikwZIDkT90eW9C2OdRoYyd2HswTEVenhb4ycBTOiv
-         m0PyBnWv7J8AixspV9covb8JFHnTe8YM2jN84skal5ondJKls6A9lksIy6pD9EwgxGhu
-         rZGOvxBj8p/+8YLdDB/E8ijfhC08TPNqfGpoofRbq3gc+zDXXnJaMWSM7DkwmQ8MPgv+
-         TqFQ4HaN6/KAC4JiaFVOqnS2icRTYJIr0TJbh3U3s7h2r0dLE4IVIFrX0EVgBgEIAaRV
-         AN5bru5QhzF8jQZ2zWe5YmVhQMZlVkG5l/V9ybXf+8ELVTcEHTtIcpONXI3T+dCsPR4K
-         yNvA==
+        bh=CdkaNwQj8NyYLTZAwxAzCnUjBubyLoQ1IDILNJ47mBc=;
+        b=KYfB0p1J8ty+Ajm53YV2GUUYUG37fGMs+sTFghOyy81qeMcYCCBI0/1BHv2PUUIjDE
+         YJYsC/JCj7JtTZj3LyeZyJ1ma6n7LJCEiHH/ECiJExw5fRbRQdumA6Nqr77uK6bjFOuI
+         BdrOz9vOe7aKsV8/DI8+LaFvwRQe2SdAvBaMINlVnHFLwMn2zrcuItOO7epWpzEzcjjy
+         LL8GNS3NJxYFhMeaQpdHZhvjk7TSm74KER7gMmo4vmP71LM3IdxdizLCIdPV2MH7hQ17
+         JfRc3KXZvX7Yqz6mbHZE9RjWwh5uzsQrwJoHLX7oWExRQ5v6vbpRbZzjuFUDhyOTxtV2
+         42Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xPa36hbXRaCWHNKBNpsuuGTQcILERbE7+3Txd9Olckk=;
-        b=WHJ/aLkhIf5AXa1LmWR/kcFkQ76MbITJCrzxqQKovEfjWF1ObYrAjDoGdGmoQu64LT
-         9VdVW1AdrTZcLSUaoLdgOUj1j93c2n8yl0LwXFytBa5b2wnbDsIBKUS/lb0tL/uc4P2z
-         Av0d5Vat7uJ4gar8RLT0GEoow1ZHF8SUUzd/eh9PUgqGj54/DrGfwrtBKuWAghQE3YV2
-         rIRIMC3kC5kcsmTm52QffWFex08HeM36++qRUk97Xrzy7JeYAWR/shu5UJovSIlaCXR2
-         MXXOaZmPqJLW4tLhh1SlKRz0s3WqTTwNDyTL4U1AOEqSsgY2DUYlCC8dg7Zl6VDFgTms
-         mhOw==
-X-Gm-Message-State: AOAM532rsAE7UfAY8+iycVIMOaB4hwg23Zt2NSnvSlegBvKe6ojSvaWA
-        Z3TXUnfyrzZENTXoDOZY8xwlcA==
-X-Google-Smtp-Source: ABdhPJwhedprnVRT8XYKz4ZODyRIwOSlsB9QfSG2MGDe7+rjWfM0Dx7z9ufFAbkbiueG2aby7uBBaA==
-X-Received: by 2002:adf:8030:: with SMTP id 45mr20573626wrk.407.1605548526801;
-        Mon, 16 Nov 2020 09:42:06 -0800 (PST)
+        bh=CdkaNwQj8NyYLTZAwxAzCnUjBubyLoQ1IDILNJ47mBc=;
+        b=eggYh/xLfLLhY/d8oLz3KIK7gFPugMgQygnArvNuDlgvHXIvGqx24S5do69SoOhK+j
+         6qqx7rNpwMSFo7//2blNRybTqWNRtyGTwyB1k8tX6XjI2HJWOj3W5eK+NstmTiPCxZnh
+         DLkvDHUIOS2HwKQN7avpcebK/pYExLF5RFr6h3UxQHSmqkV4XHWbwdnoxVbEqgUC8JIo
+         rdVLNkwK1zfqDrfKS+NoLFSrmzfiWadSy5v7kcLwedvihEeODlQkBOuEyv+W06ko5bZb
+         FdwpP1w8gr3+svf0GwJbdLmR16xdutEM/H4M/ucG4ZkI6c4BIf8XHosNXEQ8cWo7nNKX
+         qKgg==
+X-Gm-Message-State: AOAM531DJNrNQtmByjKjpKtm5xmDGzIEvzRPeGkJXSp8B4azMKS2ls2Z
+        DoK+5DTjMWm6PZoXOYsgvlnkGA==
+X-Google-Smtp-Source: ABdhPJy4j2soVkwNqRi5Mut8ukSXC78cgBDynmPGR3xvRkypNFcub1qJ/G6B6xgySH2RieWkvkMAcA==
+X-Received: by 2002:a7b:c145:: with SMTP id z5mr17523wmi.164.1605548528328;
+        Mon, 16 Nov 2020 09:42:08 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.42.05
+        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.42.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:42:06 -0800 (PST)
+        Mon, 16 Nov 2020 09:42:07 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+        David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 33/42] drm/ttm/ttm_range_manager: Demote non-conformant kernel-doc header
-Date:   Mon, 16 Nov 2020 17:41:03 +0000
-Message-Id: <20201116174112.1833368-34-lee.jones@linaro.org>
+Subject: [PATCH 34/42] drm/v3d/v3d_drv: Remove unused static variable 'v3d_v3d_pm_ops'
+Date:   Mon, 16 Nov 2020 17:41:04 +0000
+Message-Id: <20201116174112.1833368-35-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116174112.1833368-1-lee.jones@linaro.org>
 References: <20201116174112.1833368-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,31 +70,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/ttm/ttm_range_manager.c:46: warning: cannot understand function prototype: 'struct ttm_range_manager '
+ drivers/gpu/drm/v3d/v3d_drv.c:73:32: warning: ‘v3d_v3d_pm_ops’ defined but not used [-Wunused-const-variable=]
 
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Huang Rui <ray.huang@amd.com>
+Cc: Eric Anholt <eric@anholt.net>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/ttm/ttm_range_manager.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/v3d/v3d_drv.c | 36 -----------------------------------
+ 1 file changed, 36 deletions(-)
 
-diff --git a/drivers/gpu/drm/ttm/ttm_range_manager.c b/drivers/gpu/drm/ttm/ttm_range_manager.c
-index ea77919569a2e..e0952444cea93 100644
---- a/drivers/gpu/drm/ttm/ttm_range_manager.c
-+++ b/drivers/gpu/drm/ttm/ttm_range_manager.c
-@@ -37,7 +37,7 @@
- #include <linux/spinlock.h>
- #include <linux/module.h>
+diff --git a/drivers/gpu/drm/v3d/v3d_drv.c b/drivers/gpu/drm/v3d/v3d_drv.c
+index 2da0c1180bc69..42d401fd244e3 100644
+--- a/drivers/gpu/drm/v3d/v3d_drv.c
++++ b/drivers/gpu/drm/v3d/v3d_drv.c
+@@ -38,42 +38,6 @@
+ #define DRIVER_MINOR 0
+ #define DRIVER_PATCHLEVEL 0
  
--/**
-+/*
-  * Currently we use a spinlock for the lock, but a mutex *may* be
-  * more appropriate to reduce scheduling latency if the range manager
-  * ends up with very fragmented allocation patterns.
+-#ifdef CONFIG_PM
+-static int v3d_runtime_suspend(struct device *dev)
+-{
+-	struct drm_device *drm = dev_get_drvdata(dev);
+-	struct v3d_dev *v3d = to_v3d_dev(drm);
+-
+-	v3d_irq_disable(v3d);
+-
+-	clk_disable_unprepare(v3d->clk);
+-
+-	return 0;
+-}
+-
+-static int v3d_runtime_resume(struct device *dev)
+-{
+-	struct drm_device *drm = dev_get_drvdata(dev);
+-	struct v3d_dev *v3d = to_v3d_dev(drm);
+-	int ret;
+-
+-	ret = clk_prepare_enable(v3d->clk);
+-	if (ret != 0)
+-		return ret;
+-
+-	/* XXX: VPM base */
+-
+-	v3d_mmu_set_page_table(v3d);
+-	v3d_irq_enable(v3d);
+-
+-	return 0;
+-}
+-#endif
+-
+-static const struct dev_pm_ops v3d_v3d_pm_ops = {
+-	SET_RUNTIME_PM_OPS(v3d_runtime_suspend, v3d_runtime_resume, NULL)
+-};
+-
+ static int v3d_get_param_ioctl(struct drm_device *dev, void *data,
+ 			       struct drm_file *file_priv)
+ {
 -- 
 2.25.1
 
