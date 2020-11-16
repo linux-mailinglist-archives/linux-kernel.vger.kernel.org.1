@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC952B42D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D2E2B42DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbgKPL3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:29:18 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:40630 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgKPL3S (ORCPT
+        id S1728874AbgKPLdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:33:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbgKPLdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:29:18 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605526156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5TXA8C//OAiETe8IM0ulyE5+aluYy8UWpM/42a1HSXU=;
-        b=1/RDjHnJgcbQCbstpEJCAPFhnId2nhImvkGUfQnUYHGMcL2mNGesTgbdS0K0piuy4P+jAt
-        K9rzbtZGxlopQSIXJUuzO4jEVlz+ES3859Koi6bdkMv8vURj1+m2duNxOInyIWw/1KQCmC
-        40BG+rdNclbVzMOKBAJHrJ4gNsMKSgUeRKblLGATMHIHYortgOCd1ZCjt9VciNQyLW5xi+
-        lFXqp2lXkg5/B6F8j1bmhjc/waCr3KeHwdE+furrMnsdrDkVTpkRfz50aWgAhGsteNDhhr
-        o644Ekdb65ovFzh7tw6jYPkMXw4oRFMGL5gtHIVbYS4HrnU0ez609+B7XuFhVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605526156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5TXA8C//OAiETe8IM0ulyE5+aluYy8UWpM/42a1HSXU=;
-        b=MQOiW7TralESTKON3A2siO0qCk6yh+Qm1OJjQ7hsNppYpSczlChg0fGLt7opYc3nVk828C
-        CTd6eCym0K1ZpgBw==
-To:     Yunfeng Ye <yeyunfeng@huawei.com>, fweisbec@gmail.com,
-        mingo@kernel.org, linux-kernel@vger.kernel.org,
-        Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-Subject: Re: [PATCH] tick/nohz: Reduce the critical region for jiffies_seq
-In-Reply-To: <66c172ec-72a1-022a-d387-6c836a698912@huawei.com>
-References: <ac822c72-673e-73e1-9622-c5f12591b373@huawei.com> <87h7pq8kyc.fsf@nanos.tec.linutronix.de> <66c172ec-72a1-022a-d387-6c836a698912@huawei.com>
-Date:   Mon, 16 Nov 2020 12:29:16 +0100
-Message-ID: <87o8jxzgj7.fsf@nanos.tec.linutronix.de>
+        Mon, 16 Nov 2020 06:33:12 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1B1C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:33:12 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id c129so15333828yba.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:33:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NGE/8zZSbrMYM1BfuDIYlYWu/KQaD7nuUUEC61XDj5g=;
+        b=XHsS+MRqQF7/ddTQTacN4pm7PHH4Krd4KnI7MEHyyNDvd1NVVU39XWuGhqPjBt/FhR
+         CGJ6lq2+B20s2uW+B/mC6jj1mqFVaddyiyzNVA7ZOgFHQ1FU+gULjDPkgqeQeIJ9ZQ8K
+         gN8O1i6/InM4D/QpNBM+t0f1WsmTLUMD2mbVeeUV7dx9jySxYSw6OSam7ueewWWyj/ud
+         kHwkl83D9HFWayss20Adjwg+RKCJY1zC2opGqdbaxgWBeUNdZ1QPZvJvFUwZvGaCjVRa
+         dk8SvNYYmajFok3avNPpcPvJbFwPBGcM8LjIhsoWZeIbIbud8esTTfUyN5dFLRfkuAIz
+         hzCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NGE/8zZSbrMYM1BfuDIYlYWu/KQaD7nuUUEC61XDj5g=;
+        b=LMs1Ii4AkHEu39nvfZJD4dxa/f/+12JFiwXu0yNbgtX8Z+jkIQ9YgmyuPo64TeB/kg
+         4NxGYUGqZ61Ua3dZcDz4dP7H1oujVBhWbsQCfnnYv8jSTeqnXzzF7+jvYnzEUgjNfDnM
+         z0SvQVTtKJVmSPZqZQ/NEeLjXCtrrSoVNN19eHCUQYlf9moY567iyBazJk8QjtCCwlA5
+         +tPlBhPfDK5ghQoL5/JrkY1vcHocsTWdBtvBWsJ6/i0zu7DznW134EoXwLvMiRh8GRT9
+         FeuhrrVpw5Ik5a5EFFeA047imKcYJuWkB+8mhHyIkrJsciGGOzbL2QBsO8H2hOdhEKsX
+         TM8w==
+X-Gm-Message-State: AOAM532Kzg9YbtecmZ6bQ7nGJwJ/L3CWnoAWguuG7nm+fuurbueRkSud
+        kvWCi9mSbjorXpfvtboyhaHnL4KRmmX9R+q3IFc=
+X-Google-Smtp-Source: ABdhPJyi8dQ0hwCdbQgZlwbfhe98B1Ei/rMrpJkSgiik4CIVzXdGxmHNcANXDVSHrI0ev71EzKrRfRyA3NHmZKCzDi4=
+X-Received: by 2002:a25:2e0d:: with SMTP id u13mr11676325ybu.247.1605526391609;
+ Mon, 16 Nov 2020 03:33:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201116043532.4032932-1-ndesaulniers@google.com> <20201116043532.4032932-4-ndesaulniers@google.com>
+In-Reply-To: <20201116043532.4032932-4-ndesaulniers@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 16 Nov 2020 12:33:00 +0100
+Message-ID: <CANiq72=nTM9enY2pTm8aoR8grPiiODCif5d7DDnOLkivaY2fsg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] powerpc: fix -Wimplicit-fallthrough
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16 2020 at 14:07, Yunfeng Ye wrote:
-> On 2020/11/16 3:43, Thomas Gleixner wrote:
->>> and the conflict between jiffies_lock and jiffies_seq increases,
->>> especially in multi-core scenarios.
->> 
->> This does not make sense. The sequence counter is updated when holding
->> the lock, so there is no conflict between the lock and the sequence
->> count.
->> 
-> Yes, there is no conflict between the lock and the sequence count, but
-> when tick_do_update_jiffies64() is called one by one, the sequence count
-> will be updated, it will affect the latency of tick_nohz_next_event(),
-> because the priority of read seqcount is less than writer.
+On Mon, Nov 16, 2020 at 5:35 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> The "fallthrough" pseudo-keyword was added as a portable way to denote
+> intentional fallthrough. Clang will still warn on cases where there is a
+> fallthrough to an immediate break. Add explicit breaks for those cases.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/236
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-It's clear to me because I know how that code works, but for someone who
-is not familiar with it your description of the problem is confusing at
-best.
+It makes things clearer having a `break` added, so I like that warning.
 
-> During a tick period,
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
-'During a tick period' is misleading. The tick period is the reciprocal
-value ot the tick frequency.
-
-What you want to explain is that if jiffies require an update, i.e.
-
-     now > last_update + period
-
-then multiple CPUs might contend on it until last_update is forwarded
-and the quick check is preventing it again.
-
-> the tick_do_update_jiffies64() is called concurrency, and the
-> time is up to 30+us. so the lockless quick check in tick_do_update_jiffies64()
-> cannot intercept all concurrency.
-
-It cannot catch all of it, right. 
-
-There are quite some other inefficiencies in that code and the seqcount
-held time can be reduced way further. Let me stare at it.
-
-Thanks,
-
-        tglx
+Cheers,
+Miguel
