@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F8B2B508E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B06D2B5092
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728908AbgKPTKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:10:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726355AbgKPTKp (ORCPT
+        id S1728979AbgKPTMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:12:17 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:60018 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725879AbgKPTMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:10:45 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7240C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:10:45 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id 35so4704122ple.12
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:10:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=DGgJquhYYV+Tzh8ZT7w+8c+Lo4mKYMrSfopaj2Mm3nM=;
-        b=yF8JpZDrKkv9JICmK1vHZzm4fElvqZ4erpbXNJESXLtUZJXyjhTHjDe7GReFmryXAc
-         BCGRKKOFkWPun2+ghcwXfq44o1e1/9d6qwZ103iUN0GeLZnzHU5YTto8mAXs03QGBUl1
-         v1X16aHLn9RTF8OgGlYqaJ1DBWhurxAiAc8GqgdTRRQATMhCEH52o++qLHs/erZQV5FD
-         XdDi5NofFzy33vjBxiFVCvu1Z5eWRyF0YX1ShlTaFODxuwFYIK3BA0QiyROMT3rLi0g0
-         CR4T7BYuAMX80Nhul01Ut0e8XrOAnGjmu+PoIi8mS5e13s78eKSd8MsqWzt5yeFQLtj7
-         wfxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=DGgJquhYYV+Tzh8ZT7w+8c+Lo4mKYMrSfopaj2Mm3nM=;
-        b=DVKi7HLlqxXb9Kn/Xmm1Zwn3la5v3i+G43mbSHOklM/wN+1eQ7l9AUsgBuxI7YQjed
-         kVVmI/bO9/u6X2ve8s2HqDtgKwMX8E48rGUVA1oD+hPH0HIiiI4rvD/qj3FrQSzhG8AX
-         /w110gGqCkqcEhl19Eg64/aflIl92WAsXc6aKd8fyn9ShkF5n/jZND0VYih7NIxlMx5E
-         ++NXBp0/YsMeLJoWf+pypxZIVL/Hp9ABR4jYPkKgrkIbInYB3g/PVBXMvB3on5eixeLJ
-         srukUkulxHFRQOc+SR2+iJemKyFfBeiRroNUZlu38JxE0buJu6Fvmg2ZbTROlLGNk0Vl
-         paYg==
-X-Gm-Message-State: AOAM533NwWWADFRUEQmK64sDlDSuCcJg90uo7gi8eIjfE5CLpuPszc9R
-        tvKAJ1r2BDIqG5mYPbpHhv9Ok60Q2cLjYQ==
-X-Google-Smtp-Source: ABdhPJxFw/0Wd5j5UG+u3JOvfHbApC9lykSr3UwfR5lLoS0xR57D19MeWyytsAeWu2fLjcTZQbv3CQ==
-X-Received: by 2002:a17:902:c016:b029:d7:1a0:7cf0 with SMTP id v22-20020a170902c016b02900d701a07cf0mr13618172plx.64.1605553844604;
-        Mon, 16 Nov 2020 11:10:44 -0800 (PST)
-Received: from debian ([122.174.144.192])
-        by smtp.gmail.com with ESMTPSA id p15sm143488pjv.44.2020.11.16.11.10.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 11:10:44 -0800 (PST)
-Message-ID: <2f3d616bea4fca2f47f8db0564bbcc17169f8cfb.camel@rajagiritech.edu.in>
-Subject: Re: checking for "config" file existence.
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Date:   Tue, 17 Nov 2020 00:40:40 +0530
-In-Reply-To: <d6e1e346-ff95-74ef-7f43-1d2468d5330c@linuxfoundation.org>
-References: <2ea637f38be0d03d0e0c545a6d12f36217cededc.camel@rajagiritech.edu.in>
-         <d6e1e346-ff95-74ef-7f43-1d2468d5330c@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Mon, 16 Nov 2020 14:12:16 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AGJBwli076471;
+        Mon, 16 Nov 2020 13:11:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605553918;
+        bh=t60DnI5YCD6HaN90PufRT/hJS+sgAJ7rmVoY+7yi4ik=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=IkHkTwZHnAEhiHTzJNP+6Iq3yjOylGIzszMX18faLh8Yp3QtSeunICM3USXHEQ1Dv
+         7sh3sxSNQ9tD8OOpMnCbF4rGvGcGp2Yzas8l5mkSkAfqKIn23HUh/sV2pgyymwZkZ/
+         W8dgIhAWIqdrnQqUdnu4CdAAo9Q+D6vhYVknuhdQ=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AGJBwSQ018067
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 16 Nov 2020 13:11:58 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 16
+ Nov 2020 13:11:57 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 16 Nov 2020 13:11:57 -0600
+Received: from [10.250.38.244] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AGJBv70045665;
+        Mon, 16 Nov 2020 13:11:57 -0600
+Subject: Re: [PATCH v2] soc: ti: pruss: Fix wrong check against
+ *get_match_data return value
+To:     <santosh.shilimkar@oracle.com>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        <ssantosh@kernel.org>
+CC:     <lee.jones@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <praneeth@ti.com>,
+        <tony@atomide.com>, Wei Yongjun <weiyongjun1@huawei.com>
+References: <20201116172233.18459-1-grzegorz.jaszczyk@linaro.org>
+ <7a18452c-8c9c-df7d-b175-529ab690623f@ti.com>
+ <528e56d5-23d5-9f83-1bf4-a7f786593eae@oracle.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <af1ecbaf-52e5-5e8b-2b0c-ee8cfe5cb0f0@ti.com>
+Date:   Mon, 16 Nov 2020 13:11:57 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <528e56d5-23d5-9f83-1bf4-a7f786593eae@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-16 at 11:32 -0700, Shuah Khan wrote:
-> On 11/12/20 10:40 AM, Jeffrin Jose T wrote:
-> > hello,
-> > 
-> > i wrote a  small program to check for the existence of "config"
-> > files
-> > for testing projects under kselftest framework.
-> > 
-> > chmod 755 test_config.py
-> > This file should be located in "tools/testing/selftests"
-> > This can be run as "./test_config.py"
-> > 
-> Why do we need a dedicated script when you can do it with:
-> 
-> cd tools/testing/selftests; find . -name config
-> 
-> I see that your script also prints if config doesn't exist.
-> It is not a failure not have config as config is necessary
-> only when a test has config option dependencies.
-> 
-> What does this script attempting to solve?
+On 11/16/20 1:06 PM, santosh.shilimkar@oracle.com wrote:
+> On 11/16/20 9:31 AM, Suman Anna wrote:
+>> Hi Santosh,
+>>
+>> On 11/16/20 11:22 AM, Grzegorz Jaszczyk wrote:
+>>> Since the of_device_get_match_data() doesn't return error code, remove
+>>> wrong IS_ERR test. Proper check against NULL pointer is already done
+>>> later before usage: if (data && data->...).
+>>>
+>>> Additionally, proceeding with empty device data is valid (e.g. in case
+>>> of "ti,am3356-pruss").
+>>>
+>>> Fixes: ba59c9b43c86 ("soc: ti: pruss: support CORECLK_MUX and IEPCLK_MUX")
+>>> Reported-by: Wei Yongjun <weiyongjun1@huawei.com>
+>>> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+>>> Acked-by: Suman Anna <s-anna@ti.com>
+>>
+>> Can you please pick this up for 5.10-rc's?
+>>
+> Nothing is broken so I will just add these for next merge window.
 
-according to what  you said  this script may not be necessary
-thanks for the explanation :)
+Yeah, that is fine as well. Thanks Santosh.
 
-
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
-
+regards
+Suman
