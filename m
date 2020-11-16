@@ -2,823 +2,3367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D936A2B3FA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C34F2B3FAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgKPJW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:22:58 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:40858 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726837AbgKPJW6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:22:58 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AG9EWpT109693;
-        Mon, 16 Nov 2020 09:22:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=fCPWHKAeylUZpsU1oOPXDgyTF9urYjOaQSoXsioo8js=;
- b=hmpt6eFAybmzIRdKyZy/tG2w5bSnc/KDuSHv4rJqLMH8Vt94eke74XY7klCwU+X5O5rm
- gh+BDofoVGsDWep2Sl0oS8c6Enp4RbuWs13qEyIF8DXd/XosQ7pTHMS62mQEc61CDiBp
- GKA+JqYRtZjMcKVE1uBy0dlNqBSuS9dp1vgQ/JytwqkBNspJ5o20ZGkHWC72bWUDAVqh
- rcXtS/QjPElosjQsTunCHhhbH8/t8FtKvat0UYdkjXhMxEpE1nSc4zNuEQFz1ijEF1Ei
- ZNecECurHRcexEScW98KHA2/u6WcdNrbCWqqvNmQ7hb2ZfTflJzOTqYLFLKK7CnuR3pB CQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34t4ram5v1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 16 Nov 2020 09:22:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AG9ASOv068490;
-        Mon, 16 Nov 2020 09:22:45 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 34ts5uf8ka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Nov 2020 09:22:45 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AG9Miqc012186;
-        Mon, 16 Nov 2020 09:22:44 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 16 Nov 2020 01:22:42 -0800
-Date:   Mon, 16 Nov 2020 12:22:36 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: drivers/mmc/host/tmio_mmc.c:177 tmio_mmc_probe() warn: argument 3 to
- %08lx specifier is cast from pointer
-Message-ID: <20201116092236.GT29398@kadam>
+        id S1728238AbgKPJXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:23:41 -0500
+Received: from mail-eopbgr110120.outbound.protection.outlook.com ([40.107.11.120]:40640
+        "EHLO GBR01-CWL-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726291AbgKPJXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:23:40 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IJ3KoIZY15eCJ6k6hIpCRJxvWJdqwb5fzN/awtN2BO+dioFArEMUK45guY9XXPEWH+d/w0AY+6Y/BGcgPfeuFE7LM6xA/lqH38M09QrjClQEVEdRQl3bauXddoeNKdMCd9spm45VkeAMh+5XkzzciNBf6Tqih6tjMsoe9OF8u4Kf8q2aNKEuUY0kBe4Rq06kgY6BfFPR0fE8n5ltYSNQR/PeqY7GkgbI3sxby+dawySoEqKEIssOnfKoCOrnF7sKYxTGQHjSWPeja5rjBp3rGzSkOCv/6clQwC/mggEX/y3t5bHoxQhL/UX904CC7dSbGsBCpnS9qTuLgP+ZMDFSVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X2JcrMhE2MGjnVv8zclLXIRKprkzhzzE2dqqVgcyvpE=;
+ b=LzTCGAw7/KQsDBy6ddElBWVa2gUWZLcsnofRuRDAMXXQ2hsTdV17ER/QC4GaKow/boEULY1LYJY+6RyXwm5Otad7iQ2UAYSLVnjpg2xtzFp2ywnOTh0SQ/qZ7BgKNTZZ4r3H6i0GXnUwyuKmo9R61p8sX8c4aIzE8Jwi8m/QZiJIuUsFfrsu19IxL3o4JWiyTdppl3+owUpk3aGB2TWfFSj93xXTvSyErveybaR5PxCR4K9zj46EarzuTEt/hIKfRnhTvqPCF0oos9riPVlEotnp4tqFgilN2WBnsoRr+XZ2jlT9znRrh7Fu/I4PIykOilTttcy81aTe9TMRW3hkPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=purelifi.com; dmarc=pass action=none header.from=purelifi.com;
+ dkim=pass header.d=purelifi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=purevlc.onmicrosoft.com; s=selector2-purevlc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X2JcrMhE2MGjnVv8zclLXIRKprkzhzzE2dqqVgcyvpE=;
+ b=cpcdinpWln/nEevJ8sMQVECS2cb6BQkAzfzgUIb9D3YhRMlCcLwM6pSaxc/eiCqANOtQVfnbeLjWQ9uFDYt0FNtsz0vXZ7SSs4GJXCQEWxsuMYX6EOy0EYC7RJvZwFYv/NB+Yjz+0gr65GwC6fxovJkWzO3kcKAZ/5Ydvt3eOoA=
+Authentication-Results: purelifi.com; dkim=none (message not signed)
+ header.d=none;purelifi.com; dmarc=none action=none header.from=purelifi.com;
+Received: from CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:3a::14)
+ by CWLP265MB2435.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:91::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Mon, 16 Nov
+ 2020 09:23:23 +0000
+Received: from CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::f8b6:b3c:d651:2dde]) by CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::f8b6:b3c:d651:2dde%7]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
+ 09:23:23 +0000
+From:   Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     mostafa.afgani@purelifi.com,
+        Srinivasan Raju <srini.raju@purelifi.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Subject: [PATCH] [v7] wireless: Initial driver submission for pureLiFi STA devices
+Date:   Mon, 16 Nov 2020 14:52:37 +0530
+Message-Id: <20201116092253.1302196-1-srini.raju@purelifi.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201016063444.29822-1-srini.raju@purelifi.com>
+References: <20201016063444.29822-1-srini.raju@purelifi.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [103.104.125.255]
+X-ClientProxiedBy: BM1PR0101CA0052.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:19::14) To CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:3a::14)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="JPKYlvo4+BwO1+FT"
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011160055
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011160055
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (103.104.125.255) by BM1PR0101CA0052.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:19::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Mon, 16 Nov 2020 09:23:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a923b0b4-2e0c-44ab-5c2e-08d88a1143fb
+X-MS-TrafficTypeDiagnostic: CWLP265MB2435:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CWLP265MB24350EBF9FE801058416D14CE0E30@CWLP265MB2435.GBRP265.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tEp1u438Jni3eq3CdlboYWbKUGxpbf0CfEAO/hFyIy/T+DmZG+ccxrS8jh4I4OMR1KK5ofYopFRSW0cNo87Qq/jSxy/sqW6q5PICz07+v0q2f+9g3/eOCs/6vpZfbLKOq704HIp3FGRapkbzdr+BKyy9TgbNMsyBCL0gZgrXeGXV6MIui2HMZ6BQaULP+R46uon23hu5S8rle9K09a60fl0nMJQPJ18pKBeBmMthgz85K6P5uR8cheHSEdWQoijNRhcSw/UeBaukSl4/99RjmyM1v3zVSjN3BF0071GZhD9zU+pSmZ8rPHv230G86N8gWnxRsZqlDs8O+6Qite2/sZWYw0QteNSQ8ZxKaJTHo6zHKaJOMIiJyos5KuGilcPiIgzzi31cPSgNhRkBBSPrSw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(6029001)(4636009)(376002)(396003)(366004)(346002)(136003)(39830400003)(16526019)(66556008)(2906002)(83380400001)(86362001)(66946007)(66476007)(26005)(54906003)(316002)(6512007)(52116002)(186003)(6486002)(6506007)(478600001)(8676002)(2616005)(956004)(6666004)(36756003)(4326008)(5660300002)(109986005)(69590400008)(8936002)(1076003)(30864003)(266003)(579004)(559001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: c83ih7leMeHokQH4z4mmd/uTYzxK6KkMLq3efXCrw2OED2Fn0fmcISJ6F8ZP9Srvv/YDahzJqJkISsz+ag9p1vZXYeo+85I+X8CYr6OxIucN/XbguCgAUHN6/9YCIKRVFgeSdn783n49QSi8Vy0BozOoOGO/cbSfl4OfrVKIxjNvMnbav0JTyav48m88ZzbREchQQTumltAcHcnt6T1RvzhyrjQ3FKrKmaQitxzIrRQBa4u4t4yka4XJfgwUJXrSCr+k0bAA7oaPnaL+c9mCEEA79Db4QQA2fkN56rHN/u7jrZGglGWEk8VN6gzMcIego+0bw7S1awgDGE15CU580q6plzqs0KgWZ8vAgIp8Ndh+DeLgNSAEJmgkzYOcFvGRMTK+7AduPa7GOSVO80ljkg9ao9qiJ7m/9B2KbbYe1rTnbd5kttpnbtL09iKqH7XQElzpZ5MAnSod1S/2eE4s4+PTfMVKWqaueBz3pISVpkN3RNmiY4KDrEZszI81NnEu2LzGEhNu7CrhrOZuQZ84vD/dMI8Nne+otZ/ViKIEugWMS+ECI0T1VZtWQPS1sc9HJ6Q4jGTN5qOwLdoDqWWMpXiagjREWJQj4cd3NN8osV0NEa877SYrUVveiiIcSVBRdEHym7LyrNOY37EaAZ/W7w==
+X-OriginatorOrg: purelifi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a923b0b4-2e0c-44ab-5c2e-08d88a1143fb
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2020 09:23:23.7596
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5cf4eba2-7b8f-4236-bed4-a2ac41f1a6dc
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N96yvP4gu6FpphgAK9oEYoP1Kk+MKo005z7hkmzecRLNQ1sNRhNn3kt0UosU+6CNOp6NDoIM1ATmMzlegvvepA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB2435
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
+and LiFi-XL USB devices.
 
---JPKYlvo4+BwO1+FT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This driver implementation has been based on the zd1211rw driver.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f01c30de86f1047e9bae1b1b1417b0ce8dcd15b1
-commit: 54d8454436a205682bd89d66d8d9eedbc8452d15 mmc: host: Enable compile testing of multiple drivers
-config: arm64-randconfig-m031-20201113 (attached as .config)
-compiler: aarch64-linux-gcc (GCC) 9.3.0
+Driver is based on 802.11 softMAC Architecture and uses
+native 802.11 for configuration and management.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+The driver is compiled and tested in ARM, x86 architectures and
+compiled in powerpc architecture.
 
-smatch warnings:
-drivers/mmc/host/tmio_mmc.c:177 tmio_mmc_probe() warn: argument 3 to %08lx specifier is cast from pointer
+Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
 
-vim +177 drivers/mmc/host/tmio_mmc.c
-
-94b110aff8679b1 Kuninori Morimoto     2015-01-13  170  
-de501af98dfab9c Ian Molton            2015-04-27  171  	ret = devm_request_irq(&pdev->dev, irq, tmio_mmc_irq,
-de501af98dfab9c Ian Molton            2015-04-27  172  			       IRQF_TRIGGER_FALLING,
-d9618e9f1a057ef Yong Zhang            2011-09-22  173  			       dev_name(&pdev->dev), host);
-8e7bfdb37ac001c Magnus Damm           2011-05-06  174  	if (ret)
-8e7bfdb37ac001c Magnus Damm           2011-05-06  175  		goto host_remove;
-8e7bfdb37ac001c Magnus Damm           2011-05-06  176  
-311f3ac76826bfd Guennadi Liakhovetski 2010-05-19 @177  	pr_info("%s at 0x%08lx irq %d\n", mmc_hostname(host->mmc),
-                                                                       ^^^^^^^
-These are supposed to be %p so that the kernel can hide them and avoid
-showing kernel pointers to user space.
-
-8e7bfdb37ac001c Magnus Damm           2011-05-06  178  		(unsigned long)host->ctl, irq);
-4a48998fa16121d Ian Molton            2008-07-15  179  
-4a48998fa16121d Ian Molton            2008-07-15  180  	return 0;
-4a48998fa16121d Ian Molton            2008-07-15  181  
-8e7bfdb37ac001c Magnus Damm           2011-05-06  182  host_remove:
-8e7bfdb37ac001c Magnus Damm           2011-05-06  183  	tmio_mmc_host_remove(host);
-94b110aff8679b1 Kuninori Morimoto     2015-01-13  184  host_free:
-94b110aff8679b1 Kuninori Morimoto     2015-01-13  185  	tmio_mmc_host_free(host);
-7ee422dc6e947fc Magnus Damm           2010-02-17  186  cell_disable:
-7ee422dc6e947fc Magnus Damm           2010-02-17  187  	if (cell->disable)
-b6147490e6aac82 Guennadi Liakhovetski 2011-03-23  188  		cell->disable(pdev);
-4a48998fa16121d Ian Molton            2008-07-15  189  out:
-4a48998fa16121d Ian Molton            2008-07-15  190  	return ret;
-4a48998fa16121d Ian Molton            2008-07-15  191  }
-
+Changes v6->v7:
+- Magic numbers removed and used IEEE80211 macors
+- usb.c is split into two files firmware.c and dbgfs.c
+- Other code style and timer function fixes (mod_timer)
+Changes v5->v6:
+- Code style fix patch from Joe Perches
+Changes v4->v5:
+- Code refactoring for clarity and redundnacy removal
+- Fix warnings from kernel test robot
+Changes v3->v4:
+- Code refactoring based on kernel code guidelines
+- Remove multi level macors and use kernel debug macros
+Changes v2->v3:
+- Code style fixes kconfig fix
+Changes v1->v2:
+- v1 was submitted to staging, v2 submitted to wireless-next
+- Code style fixes and copyright statement fix
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ MAINTAINERS                              |    5 +
+ drivers/net/wireless/Kconfig             |    1 +
+ drivers/net/wireless/Makefile            |    1 +
+ drivers/net/wireless/purelifi/Kconfig    |   27 +
+ drivers/net/wireless/purelifi/Makefile   |    3 +
+ drivers/net/wireless/purelifi/chip.c     |   94 ++
+ drivers/net/wireless/purelifi/chip.h     |   82 ++
+ drivers/net/wireless/purelifi/dbgfs.c    |  161 ++++
+ drivers/net/wireless/purelifi/firmware.c |  367 ++++++++
+ drivers/net/wireless/purelifi/intf.h     |   38 +
+ drivers/net/wireless/purelifi/mac.c      |  876 ++++++++++++++++++
+ drivers/net/wireless/purelifi/mac.h      |  189 ++++
+ drivers/net/wireless/purelifi/usb.c      | 1073 ++++++++++++++++++++++
+ drivers/net/wireless/purelifi/usb.h      |  197 ++++
+ 14 files changed, 3114 insertions(+)
+ create mode 100644 drivers/net/wireless/purelifi/Kconfig
+ create mode 100644 drivers/net/wireless/purelifi/Makefile
+ create mode 100644 drivers/net/wireless/purelifi/chip.c
+ create mode 100644 drivers/net/wireless/purelifi/chip.h
+ create mode 100644 drivers/net/wireless/purelifi/dbgfs.c
+ create mode 100644 drivers/net/wireless/purelifi/firmware.c
+ create mode 100644 drivers/net/wireless/purelifi/intf.h
+ create mode 100644 drivers/net/wireless/purelifi/mac.c
+ create mode 100644 drivers/net/wireless/purelifi/mac.h
+ create mode 100644 drivers/net/wireless/purelifi/usb.c
+ create mode 100644 drivers/net/wireless/purelifi/usb.h
 
---JPKYlvo4+BwO1+FT
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c80f87d7258c..150f592fb6e4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14108,6 +14108,11 @@ T:	git git://linuxtv.org/media_tree.git
+ F:	Documentation/admin-guide/media/pulse8-cec.rst
+ F:	drivers/media/cec/usb/pulse8/
+ 
++PUREILIFI USB DRIVER
++M:	Srinivasan Raju <srini.raju@purelifi.com>
++S:	Maintained
++F:	drivers/net/wireless/purelifi
++
+ PVRUSB2 VIDEO4LINUX DRIVER
+ M:	Mike Isely <isely@pobox.com>
+ L:	pvrusb2@isely.net	(subscribers-only)
+diff --git a/drivers/net/wireless/Kconfig b/drivers/net/wireless/Kconfig
+index 170a64e67709..b87da3139f94 100644
+--- a/drivers/net/wireless/Kconfig
++++ b/drivers/net/wireless/Kconfig
+@@ -48,6 +48,7 @@ source "drivers/net/wireless/st/Kconfig"
+ source "drivers/net/wireless/ti/Kconfig"
+ source "drivers/net/wireless/zydas/Kconfig"
+ source "drivers/net/wireless/quantenna/Kconfig"
++source "drivers/net/wireless/purelifi/Kconfig"
+ 
+ config PCMCIA_RAYCS
+ 	tristate "Aviator/Raytheon 2.4GHz wireless support"
+diff --git a/drivers/net/wireless/Makefile b/drivers/net/wireless/Makefile
+index 80b324499786..e9fc770026f0 100644
+--- a/drivers/net/wireless/Makefile
++++ b/drivers/net/wireless/Makefile
+@@ -20,6 +20,7 @@ obj-$(CONFIG_WLAN_VENDOR_ST) += st/
+ obj-$(CONFIG_WLAN_VENDOR_TI) += ti/
+ obj-$(CONFIG_WLAN_VENDOR_ZYDAS) += zydas/
+ obj-$(CONFIG_WLAN_VENDOR_QUANTENNA) += quantenna/
++obj-$(CONFIG_WLAN_VENDOR_PURELIFI) += purelifi/
+ 
+ # 16-bit wireless PCMCIA client drivers
+ obj-$(CONFIG_PCMCIA_RAYCS)	+= ray_cs.o
+diff --git a/drivers/net/wireless/purelifi/Kconfig b/drivers/net/wireless/purelifi/Kconfig
+new file mode 100644
+index 000000000000..f6630791df9d
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/Kconfig
+@@ -0,0 +1,27 @@
++# SPDX-License-Identifier: GPL-2.0
++config WLAN_VENDOR_PURELIFI
++	bool "pureLiFi devices"
++	default y
++	help
++	  If you have a pureLiFi device, say Y.
++
++	  Note that the answer to this question doesn't directly affect the
++	  kernel: saying N will just cause the configurator to skip all the
++	  questions about these cards. If you say Y, you will be asked for
++	  your specific card in the following questions.
++
++if WLAN_VENDOR_PURELIFI
++
++config PURELIFI
++
++	tristate "pureLiFi device support"
++	depends on CFG80211 && MAC80211 && USB
++	help
++	   This driver makes the adapter appear as a normal WLAN interface.
++
++	   The pureLiFi device requires external STA firmware to be loaded.
++
++	   To compile this driver as a module, choose M here: the module will
++	   be called purelifi.
++
++endif # WLAN_VENDOR_PURELIFI
+diff --git a/drivers/net/wireless/purelifi/Makefile b/drivers/net/wireless/purelifi/Makefile
+new file mode 100644
+index 000000000000..cf9b931840ac
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/Makefile
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_PURELIFI)		:= purelifi.o
++purelifi-objs 		+= chip.o usb.o mac.o firmware.o dbgfs.o
+diff --git a/drivers/net/wireless/purelifi/chip.c b/drivers/net/wireless/purelifi/chip.c
+new file mode 100644
+index 000000000000..4282ce1d92b4
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/chip.c
+@@ -0,0 +1,94 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/kernel.h>
++#include <linux/errno.h>
++
++#include "chip.h"
++#include "mac.h"
++#include "usb.h"
++
++void purelifi_chip_init(struct purelifi_chip *chip,
++			struct ieee80211_hw *hw,
++			struct usb_interface *intf)
++{
++	memset(chip, 0, sizeof(*chip));
++	mutex_init(&chip->mutex);
++	purelifi_usb_init(&chip->usb, hw, intf);
++}
++
++void purelifi_chip_release(struct purelifi_chip *chip)
++{
++	purelifi_usb_release(&chip->usb);
++	mutex_destroy(&chip->mutex);
++}
++
++int purelifi_set_beacon_interval(struct purelifi_chip *chip, u16 interval,
++				 u8 dtim_period, int type)
++{
++	if (!interval || (chip->beacon_set &&
++			  chip->beacon_interval == interval)) {
++		return 0;
++	}
++
++	chip->beacon_interval = interval;
++	chip->beacon_set = true;
++	return usb_write_req((const u8 *)&chip->beacon_interval,
++			     sizeof(chip->beacon_interval),
++			     USB_REQ_BEACON_INTERVAL_WR);
++}
++
++int purelifi_chip_init_hw(struct purelifi_chip *chip)
++{
++	u8 *addr = purelifi_mac_get_perm_addr(purelifi_chip_to_mac(chip));
++	struct usb_device *udev = interface_to_usbdev(chip->usb.intf);
++
++	pr_info("purelifi chip %02x:%02x v%02x  %02x-%02x-%02x %s\n",
++		le16_to_cpu(udev->descriptor.idVendor),
++		le16_to_cpu(udev->descriptor.idProduct),
++		le16_to_cpu(udev->descriptor.bcdDevice),
++		addr[0], addr[1], addr[2],
++		purelifi_speed(udev->speed));
++
++	return purelifi_set_beacon_interval(chip, 100, 0, 0);
++}
++
++int purelifi_chip_switch_radio(struct purelifi_chip *chip, u32 value)
++{
++	int r;
++
++	r = usb_write_req((const u8 *)&value, sizeof(value), USB_REQ_POWER_WR);
++	if (r)
++		dev_err(purelifi_chip_dev(chip), "POWER_WR failed (%d)\n", r);
++	return r;
++}
++
++int purelifi_chip_enable_rxtx(struct purelifi_chip *chip)
++{
++	purelifi_usb_enable_tx(&chip->usb);
++	return purelifi_usb_enable_rx(&chip->usb);
++}
++
++void purelifi_chip_disable_rxtx(struct purelifi_chip *chip)
++{
++	u8 value;
++
++	value = 0;
++	usb_write_req((const u8 *)&value, sizeof(value), USB_REQ_RXTX_WR);
++	purelifi_usb_disable_rx(&chip->usb);
++	purelifi_usb_disable_tx(&chip->usb);
++}
++
++int purelifi_chip_set_rate(struct purelifi_chip *chip, u8 rate)
++{
++	int r;
++
++	if (!chip)
++		return -EINVAL;
++
++	r = usb_write_req((const u8 *)&rate, sizeof(rate), USB_REQ_RATE_WR);
++	if (r)
++		dev_err(purelifi_chip_dev(chip), "RATE_WR failed (%d)\n", r);
++	return r;
++}
++
++MODULE_LICENSE("GPL");
+diff --git a/drivers/net/wireless/purelifi/chip.h b/drivers/net/wireless/purelifi/chip.h
+new file mode 100644
+index 000000000000..f479f34a6503
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/chip.h
+@@ -0,0 +1,82 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _LF_X_CHIP_H
++#define _LF_X_CHIP_H
++
++#include <net/mac80211.h>
++
++#include "usb.h"
++
++enum unit_type_t {
++	STA = 0,
++	AP = 1,
++};
++
++struct purelifi_chip {
++	struct purelifi_usb usb;
++	struct mutex mutex; /* lock to protect chip data */
++	enum unit_type_t unit_type;
++	u16 link_led;
++	u8  beacon_set;
++	u16 beacon_interval;
++};
++
++struct purelifi_mc_hash {
++	u32 low;
++	u32 high;
++};
++
++#define purelifi_chip_dev(chip) (&(chip)->usb.intf->dev)
++
++void purelifi_chip_init(struct purelifi_chip *chip,
++			struct ieee80211_hw *hw,
++			struct usb_interface *intf);
++
++void purelifi_chip_release(struct purelifi_chip *chip);
++
++void purelifi_chip_disable_rxtx(struct purelifi_chip *chip);
++
++int purelifi_chip_init_hw(struct purelifi_chip *chip);
++
++int purelifi_chip_enable_rxtx(struct purelifi_chip *chip);
++
++int purelifi_chip_set_rate(struct purelifi_chip *chip, u8 rate);
++
++int purelifi_set_beacon_interval(struct purelifi_chip *chip, u16 interval,
++				 u8 dtim_period, int type);
++
++int purelifi_chip_switch_radio(struct purelifi_chip *chip, u32 value);
++
++static inline struct purelifi_chip *purelifi_usb_to_chip(struct purelifi_usb
++							 *usb)
++{
++	return container_of(usb, struct purelifi_chip, usb);
++}
++
++static inline void purelifi_mc_clear(struct purelifi_mc_hash *hash)
++{
++	hash->low = 0;
++	/* The interfaces must always received broadcasts.
++	 * The hash of the broadcast address ff:ff:ff:ff:ff:ff is 63.
++	 */
++	hash->high = 0x80000000;
++}
++
++static inline void purelifi_mc_add_all(struct purelifi_mc_hash *hash)
++{
++	hash->low = 0xffffffff;
++	hash->high = 0xffffffff;
++}
++
++static inline void purelifi_mc_add_addr(struct purelifi_mc_hash *hash,
++					u8 *addr
++					)
++{
++	unsigned int i = addr[5] >> 2;
++
++	if (i < 32)
++		hash->low |= 1 << i;
++	else
++		hash->high |= 1 << (i - 32);
++}
++#endif /* _LF_X_CHIP_H */
+diff --git a/drivers/net/wireless/purelifi/dbgfs.c b/drivers/net/wireless/purelifi/dbgfs.c
+new file mode 100644
+index 000000000000..411c0a423a23
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/dbgfs.c
+@@ -0,0 +1,161 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/proc_fs.h>
++#include <linux/fs.h>
++#include "mac.h"
++#include "usb.h"
++
++ssize_t purelifi_store_frequency(struct device *dev,
++				 struct device_attribute *attr,
++				 const char *buf,
++				 size_t len)
++{
++	int i, r, row, col, predivider, feedback_divider, output_div_0;
++	int output_div_1, output_div_2, clkout3_phase;
++	char values[6][4] = {{0}, {0} };
++	char usr_input[8] = {0};
++	bool valid = false;
++	int rv = 0;
++
++	row = 0; col = 0;
++	for (i = 0; i < min(len, sizeof(values)); i++) {
++		values[row][col] = buf[i];
++		col++;
++		if (buf[i] == 0x20) {
++			row++;
++			col = 0;
++		} else if (buf[i] == 0x0A) {
++			if (row == 5 && col > 0) {
++				rv = sscanf((char *)&values[0][0],
++					    "%d", &predivider);
++				if (rv != 1)
++					valid = false;
++				rv = sscanf((char *)&values[1][0],
++					    "%d", &feedback_divider);
++				if (rv != 1)
++					valid = false;
++				rv = sscanf((char *)&values[2][0],
++					    "%d", &output_div_0);
++				if (rv != 1)
++					valid = false;
++				rv = sscanf((char *)&values[3][0],
++					    "%d", &output_div_1);
++				if (rv != 1)
++					valid = false;
++				rv = sscanf((char *)&values[4][0],
++					    "%d", &output_div_2);
++				if (rv != 1)
++					valid = false;
++				rv = sscanf((char *)&values[5][0],
++					    "%d", &clkout3_phase);
++				if (rv != 1)
++					valid = false;
++				valid = true;
++
++				break;
++			}
++		}
++	}
++
++	if (valid) {
++		usr_input[0] = (char)predivider;
++		usr_input[1] = (char)feedback_divider;
++		usr_input[2] = (char)output_div_0;
++		usr_input[3] = (char)output_div_1;
++		usr_input[4] = (char)output_div_2;
++		usr_input[5] = (char)clkout3_phase;
++
++		dev_err(dev, "options IP_DIV: %d VCO_MULT: %d OP_DIV_PHY: %d",
++			usr_input[0], usr_input[1], usr_input[2]);
++		dev_err(dev, "OP_DIV_CPU: %d OP_DIV_USB: %d CLK3_PH: %d\n",
++			usr_input[3], usr_input[4], usr_input[5]);
++
++		r = usb_write_req((const u8 *)&usr_input[0],
++				  sizeof(usr_input), USB_REQ_SET_FREQ);
++		if (r < 0)
++			dev_err(dev, "SET_FREQ failed (%d)\n", r);
++	} else {
++		dev_err(dev, "Your options are invalid\n");
++	}
++
++	return len;
++}
++
++ssize_t purelifi_show_sysfs(struct device *dev,
++			    struct device_attribute *attr,
++			    char *buf)
++{
++	return 0;
++}
++
++ssize_t purelifi_store_modulation(struct device *dev,
++				  struct device_attribute *attr,
++				  const char *buf, size_t len)
++{
++	int rate, i;
++	char usr_input[8] = {0, 0, 0, 0, 0, 0, 0, 0};
++	int rv = 0;
++
++	for (i = 0; i < min(len, sizeof(usr_input)); i++)
++		usr_input[i] = buf[i];
++	usr_input[7] = 0;
++	rv = sscanf((char *)&usr_input[0], "%d", &rate);
++	if (rv != 1)
++		return 0;
++	purelifi_chip_set_rate(NULL, rate);
++	return len;
++}
++
++ssize_t purelifi_show_modulation(struct device *dev,
++				 struct device_attribute *attr,
++				 char *buf)
++{
++	return 0;
++}
++
++void create_config(struct usb_interface *intf)
++{
++	struct device *dev;
++
++	dev = &intf->dev;
++	if (device_create_file(dev, &purelifi_attr_modulation)) {
++		dev_err(&intf->dev,
++			"failed to create modulation sysfs entry\n");
++		return;
++	}
++	if (device_create_file(dev, &purelifi_attr_frequency)) {
++		device_remove_file(dev, &purelifi_attr_modulation);
++		dev_err(&intf->dev,
++			"failed to create frequency sysfs entry\n");
++	}
++}
++
++int modulation_open(struct inode *inode_p, struct file *file_p)
++{
++	return 0;
++}
++
++ssize_t modulation_read(struct file *file_p,
++			char __user *user_p,
++			size_t offset, loff_t *off_p)
++{
++	return 0;
++}
++
++ssize_t modulation_write(struct file *file_p,
++			 const char __user *buffer,
++			 size_t count, loff_t *actual_data_written)
++{
++	int rate;
++	char usr_input[8] = {0, 0, 0, 0, 0, 0, 0, 0};
++	int rv = 0;
++
++	if (copy_from_user(usr_input, buffer, min(count, sizeof(usr_input))))
++		return -EFAULT;
++	usr_input[7] = 0;
++	rv = sscanf((char *)&usr_input[0], "%d", &rate);
++	if (rv != 1)
++		return 0;
++	purelifi_chip_set_rate(NULL, rate);
++	return count;
++}
+diff --git a/drivers/net/wireless/purelifi/firmware.c b/drivers/net/wireless/purelifi/firmware.c
+new file mode 100644
+index 000000000000..c53e25e02b31
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/firmware.c
+@@ -0,0 +1,367 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/firmware.h>
++
++#include "mac.h"
++#include "usb.h"
++
++static int send_vendor_request(struct usb_device *udev, int request,
++			       unsigned char *buffer, int buffer_size)
++{
++	return usb_control_msg(udev,
++			       usb_rcvctrlpipe(udev, 0),
++			       request, 0xC0, 0, 0,
++			       buffer, buffer_size, 1000);
++}
++
++static int send_vendor_command(struct usb_device *udev, int request,
++			       unsigned char *buffer, int buffer_size)
++{
++	return usb_control_msg(udev,
++			       usb_sndctrlpipe(udev, 0),
++			       request, USB_TYPE_VENDOR /*0x40*/, 0, 0,
++			       buffer, buffer_size, 1000);
++}
++
++int download_fpga(struct usb_interface *intf)
++{
++	int i, r, actual_length;
++	int fw_data_i, blk_tran_len = 16384;
++	const char *fw_name;
++	unsigned char fpga_setting[2];
++	unsigned char *fpga_dmabuff;
++	unsigned char *fw_data;
++	unsigned char fpga_state[9];
++	struct firmware *fw = NULL;
++	struct usb_device *udev = interface_to_usbdev(intf);
++
++	if ((le16_to_cpu(udev->descriptor.idVendor) ==
++				PURELIFI_X_VENDOR_ID_0) &&
++	    (le16_to_cpu(udev->descriptor.idProduct) ==
++				PURELIFI_X_PRODUCT_ID_0)) {
++		fw_name = "purelifi/li_fi_x/fpga.bit";
++		dev_info(&intf->dev, "bit file for X selected\n");
++
++	} else if ((le16_to_cpu(udev->descriptor.idVendor)) ==
++					PURELIFI_XC_VENDOR_ID_0 &&
++		   (le16_to_cpu(udev->descriptor.idProduct) ==
++					PURELIFI_XC_PRODUCT_ID_0)) {
++		fw_name = "purelifi/li_fi_x/fpga_xc.bit";
++		dev_info(&intf->dev, "bit file for XC selected\n");
++
++	} else {
++		r = -EINVAL;
++		goto error;
++	}
++
++	r = request_firmware((const struct firmware **)&fw, fw_name,
++			     &intf->dev);
++	if (r) {
++		dev_err(&intf->dev, "request_firmware failed (%d)\n", r);
++		goto error;
++	}
++
++	send_vendor_request(udev, 0x33, fpga_setting, sizeof(fpga_setting));
++
++	send_vendor_command(udev, 0x34, NULL, 0);
++
++	if (fpga_setting[0] != 6) {
++		dev_err(&intf->dev, "fpga_setting[0] is wrong\n");
++		r = -EINVAL;
++		goto error_free_fw;
++	}
++
++	for (fw_data_i = 0; fw_data_i < fw->size;) {
++		int tbuf_idx;
++
++		if ((fw->size - fw_data_i) < blk_tran_len)
++			blk_tran_len = fw->size - fw_data_i;
++
++		fw_data = kmalloc(blk_tran_len, GFP_KERNEL);
++
++		memcpy(fw_data, &fw->data[fw_data_i], blk_tran_len);
++
++		for (tbuf_idx = 0; tbuf_idx < blk_tran_len; tbuf_idx++) {
++			fw_data[tbuf_idx] =
++				((fw_data[tbuf_idx] & 128) >> 7) |
++				((fw_data[tbuf_idx] &  64) >> 5) |
++				((fw_data[tbuf_idx] &  32) >> 3) |
++				((fw_data[tbuf_idx] &  16) >> 1) |
++				((fw_data[tbuf_idx] &   8) << 1) |
++				((fw_data[tbuf_idx] &   4) << 3) |
++				((fw_data[tbuf_idx] &   2) << 5) |
++				((fw_data[tbuf_idx] &   1) << 7);
++		}
++		r = usb_bulk_msg(udev,
++				 usb_sndbulkpipe(interface_to_usbdev(intf),
++						 fpga_setting[0] & 0xFF),
++				 fw_data,
++				 blk_tran_len,
++				 &actual_length,
++				 2000);
++
++		if (r)
++			dev_err(&intf->dev, "Bulk msg failed (%d)\n", r);
++
++		kfree(fw_data);
++		fw_data_i += blk_tran_len;
++	}
++
++	fpga_dmabuff = NULL;
++	fpga_dmabuff = kmalloc(9, GFP_KERNEL);
++	if (!fpga_dmabuff) {
++		r = -ENOMEM;
++		goto error_free_fw;
++	}
++	memset(fpga_dmabuff, 0xFF, 9);
++
++	send_vendor_request(udev, 0x30, fpga_dmabuff, sizeof(fpga_state));
++
++	dev_info(&intf->dev, "fpga_status");
++	for (i = 0; i <= 8; i++)
++		dev_info(&intf->dev, " %x ", fpga_dmabuff[i]);
++	dev_info(&intf->dev, "\n");
++
++	if (fpga_dmabuff[0] != 0) {
++		r = -EINVAL;
++		kfree(fpga_dmabuff);
++		goto error_free_fw;
++	}
++
++	kfree(fpga_dmabuff);
++
++	send_vendor_command(udev, 0x35, NULL, 0);
++
++	msleep(200);
++
++error_free_fw:
++	release_firmware(fw);
++error:
++	return r;
++}
++
++int download_xl_firmware(struct usb_interface *intf)
++{
++	int r;
++
++	struct firmware *fw_packed = NULL;
++	int step;
++	u8 *buf;
++	u32 size, nmb_of_control_packets, i, no_of_files;
++	u32 tot_size, start_addr;
++	const char *fw_pack;
++	struct usb_device *udev = interface_to_usbdev(intf);
++
++	r = send_vendor_command(udev, 0x80, NULL, 0);
++	msleep(100);
++
++	/* Code for single pack file download */
++
++	fw_pack = "purelifi/li_fi_x/Li-Fi-XL.bin";
++
++	r = request_firmware((const struct firmware **)&fw_packed, fw_pack,
++			     &intf->dev);
++	if (r) {
++		dev_err(&intf->dev, "request_firmware failed (%d)\n", r);
++		goto error;
++	}
++	no_of_files = *(u32 *)&fw_packed->data[0];
++	tot_size = fw_packed->size;
++	dev_dbg(&intf->dev, "XL Firmware (%d, %d)\n", no_of_files, tot_size);
++	buf = kzalloc(64, GFP_KERNEL);
++	r = -ENOMEM;
++	if (!buf)
++		goto error;
++
++	for (step = 0; step < no_of_files; step++) {
++		buf[0] = step;
++		r = send_vendor_command(udev, 0x82, buf, 64);
++
++		if (step < no_of_files - 1)
++			size = *(u32 *)&fw_packed->data[4 + ((step + 1) * 4)]
++				- *(u32 *)&fw_packed->data[4 + (step) * 4];
++		else
++			size = tot_size -
++				*(u32 *)&fw_packed->data[4 + (step) * 4];
++
++		start_addr = *(u32 *)&fw_packed->data[4 + (step * 4)];
++
++		if ((size % 64) && step < 2)
++			size += 64 - size % 64;
++		nmb_of_control_packets = size / 64;
++
++		for (i = 0; i < nmb_of_control_packets; i++) {
++			memcpy(buf,
++			       &fw_packed->data[start_addr + (i * 64)], 64);
++			r = send_vendor_command(udev, 0x81, buf, 64);
++		}
++	  dev_info(&intf->dev, "fw-dw step %d,r=%d size %d\n", step, r, size);
++	}
++	release_firmware(fw_packed);
++	kfree(buf);
++
++	/* Code for single pack file download ends fw download finish*/
++
++	r = send_vendor_command(udev, 0x83, NULL, 0);
++	dev_info(&intf->dev, "download_fpga (4) (%d)\n", r);
++error:
++	return r;
++}
++
++struct flash_t {
++	unsigned char enabled;
++	unsigned int sector_size;
++	unsigned int sectors;
++	unsigned char ec;
++};
++
++int upload_mac_and_serial_number(struct usb_interface *intf,
++				 unsigned char *hw_address,
++				 unsigned char *serial_number)
++{
++#ifdef LOAD_MAC_AND_SERIAL_FROM_FILE
++	struct firmware *fw = NULL;
++	struct usb_device *udev = interface_to_usbdev(intf);
++	int r;
++	char *mac_file_name = "purelifi/li_fi_x/mac.ascii";
++
++	r = request_firmware((const struct firmware **)&fw, mac_file_name,
++			     &intf->dev);
++	if (r) {
++		dev_err(&intf->dev, "request_firmware fail (%d)\n", r);
++		goto ERROR;
++	}
++	dev_info(&intf->dev, "fw->data=%s\n", fw->data);
++	r = sscanf(fw->data,
++		   "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
++		    &hw_address[0], &hw_address[1],
++		    &hw_address[2], &hw_address[3],
++		    &hw_address[4], &hw_address[5]);
++	if (r != 6) {
++		dev_err(&intf->dev, "fw_dw - usage args fail (%d)\n", r);
++		goto ERROR;
++	}
++	release_firmware(fw);
++
++	char *serial_file_name = "purelifi/li_fi_x/serial.ascii";
++
++	r = request_firmware((const struct firmware **)&fw, serial_file_name,
++			     &intf->dev);
++	if (r) {
++		dev_err(&intf->dev, "request_firmware fail (%d)\n", r);
++		goto ERROR;
++	}
++	dev_info(&intf->dev, "fw->data=%s\n", fw->data);
++	strlcpy(serial_number, fw->data, PURELIFI_SERIAL_LEN);
++	dev_info(&intf->dev, "serial_number=%s\n", serial_number);
++	release_firmware(fw);
++	dev_info(&intf->dev, "hw_address=%pM\n", hw_address);
++ERROR:
++	return r;
++#endif
++
++#ifdef LOAD_MAC_AND_SERIAL_FROM_FLASH
++
++#define FLASH_EC_BUSY 3
++
++	struct flash_t flash;
++	unsigned char *flash_sector_buf;
++	unsigned int sector_index;
++
++	do {
++		unsigned char buf[8];
++
++		msleep(200);
++
++		send_vendor_request(udev, 0x40, buf, sizeof(buf));
++		flash.enabled = buf[0] & 0xFF;
++
++		if (flash.enabled) {
++			flash.sectors = ((buf[6] & 255) << 24) |
++				((buf[5] & 255) << 16) |
++				((buf[4] & 255) <<  8) |
++				(buf[3] & 255);
++
++			flash.sector_size =
++				((buf[2] & 255) << 8) | (buf[1] & 255);
++		} else {
++			flash.sectors = 0;
++			flash.sector_size = 0;
++		}
++
++		if (flash.sector_size & 0x8000)
++			flash.sector_size = 1 << (flash.sector_size & 0x7FFF);
++
++		flash.ec = buf[7] & 0xFF;
++	} while (flash.ec == FLASH_EC_BUSY);
++
++	flash_sector_buf = kmalloc(flash.sector_size,
++				   GFP_KERNEL);
++	if (!flash_sector_buf)
++		return -ENOMEM;
++
++	if (!flash.enabled) {
++		dev_err(&intf->dev, "Flash is not enabled\n");
++		return -EINVAL;
++	}
++
++	read_flash(intf, &flash, 0, flash_sector_buf);
++	sector_index = *((unsigned int *)flash_sector_buf);
++
++	read_flash(intf, &flash, sector_index, flash_sector_buf);
++	memcpy(hw_address, flash_sector_buf, ETH_ALEN);
++	strncpy(serial_number, &flash_sector_buf[ETH_ALEN], 256);
++
++	dev_info(&intf->dev, "hw_address=%pM\n", hw_address);
++	kfree(flash_sector_buf);
++	return 0;
++#endif
++
++#ifdef LOAD_MAC_AND_SERIAL_FROM_EP0
++
++#define USB_MAC_VENDOR_REQUEST 0x36
++#define USB_SERIAL_NUMBER_VENDOR_REQUEST 0x37
++#define USB_FIRMWARE_VERSION_VENDOR_REQUEST 0x39
++#define SERIAL_NUMBER_LENGTH 14
++
++	int r = 0;
++	unsigned char *dma_buffer = NULL;
++	unsigned long long firmware_version;
++
++	dma_buffer = kmalloc(14, GFP_KERNEL);
++	if (!dma_buffer) {
++		r = -ENOMEM;
++		goto error;
++	}
++
++	send_vendor_request(udev, USB_MAC_VENDOR_REQUEST, dma_buffer,
++			    ETH_ALEN);
++
++	memcpy(hw_address, dma_buffer, ETH_ALEN);
++
++	send_vendor_request(udev, USB_SERIAL_NUMBER_VENDOR_REQUEST,
++			    dma_buffer, 14);
++
++	send_vendor_request(udev, USB_SERIAL_NUMBER_VENDOR_REQUEST,
++			    dma_buffer, 14);
++
++	memcpy(serial_number, dma_buffer, SERIAL_NUMBER_LENGTH);
++
++	memset(dma_buffer, 0x00, 14);
++
++	send_vendor_request(udev, USB_FIRMWARE_VERSION_VENDOR_REQUEST,
++			    (unsigned char *)dma_buffer, 8);
++
++	memcpy(&firmware_version, dma_buffer, sizeof(unsigned long long));
++
++	dev_info(&intf->dev, "Firmware Version: %llu, Revision: 16418\n",
++		 firmware_version);
++	kfree(dma_buffer);
++
++	dev_info(&intf->dev, "hw_address=%pM\n", hw_address);
++error:
++	return r;
++#endif
++	return 0;
++}
++
+diff --git a/drivers/net/wireless/purelifi/intf.h b/drivers/net/wireless/purelifi/intf.h
+new file mode 100644
+index 000000000000..20e96671e0a7
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/intf.h
+@@ -0,0 +1,38 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _PURELIFI_MAC_DRIVER_USB_INTERFACE
++#define _PURELIFI_MAC_DRIVER_USB_INTERFACE
++#define PURELIFI_BYTE_NUM_ALIGNMENT 4
++#ifndef ETH_ALEN
++#define ETH_ALEN 6
++#endif
++#define AP_USER_LIMIT 8
++
++struct rx_status {
++	u16 rssi;
++	u8  rate_idx;
++	u8  pad;
++	u64 crc_error_count;
++} __packed;
++
++enum usb_req_enum_t {
++	USB_REQ_TEST_WR            = 0,
++	USB_REQ_MAC_WR             = 1,
++	USB_REQ_POWER_WR           = 2,
++	USB_REQ_RXTX_WR            = 3,
++	USB_REQ_BEACON_WR          = 4,
++	USB_REQ_BEACON_INTERVAL_WR = 5,
++	USB_REQ_RTS_CTS_RATE_WR    = 6,
++	USB_REQ_HASH_WR            = 7,
++	USB_REQ_DATA_TX            = 8,
++	USB_REQ_RATE_WR            = 9,
++	USB_REQ_SET_FREQ           = 15
++};
++
++struct usb_req_t {
++	enum usb_req_enum_t id;
++	u32            len;
++	u8             buf[512];
++};
++
++#endif
+diff --git a/drivers/net/wireless/purelifi/mac.c b/drivers/net/wireless/purelifi/mac.c
+new file mode 100644
+index 000000000000..5386ec1a7eb4
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/mac.c
+@@ -0,0 +1,876 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
++#include <linux/slab.h>
++#include <linux/usb.h>
++#include <linux/gpio.h>
++#include <linux/jiffies.h>
++#include <net/ieee80211_radiotap.h>
++
++#include "chip.h"
++#include "mac.h"
++#include "usb.h"
++
++struct plf_reg_alpha2_map {
++	u32 reg;
++	char alpha2[2];
++};
++
++static struct plf_reg_alpha2_map reg_alpha2_map[] = {
++	{ PLF_REGDOMAIN_FCC, "US" },
++	{ PLF_REGDOMAIN_IC, "CA" },
++	{ PLF_REGDOMAIN_ETSI, "DE" }, /* Generic ETSI, use most restrictive */
++	{ PLF_REGDOMAIN_JAPAN, "JP" },
++	{ PLF_REGDOMAIN_SPAIN, "ES" },
++	{ PLF_REGDOMAIN_FRANCE, "FR" },
++};
++
++static const struct ieee80211_rate purelifi_rates[] = {
++	{ .bitrate = 10,
++		.hw_value = PURELIFI_CCK_RATE_1M,
++		.flags = 0 },
++	{ .bitrate = 20,
++		.hw_value = PURELIFI_CCK_RATE_2M,
++		.hw_value_short = PURELIFI_CCK_RATE_2M
++			| PURELIFI_CCK_PREA_SHORT,
++		.flags = IEEE80211_RATE_SHORT_PREAMBLE },
++	{ .bitrate = 55,
++		.hw_value = PURELIFI_CCK_RATE_5_5M,
++		.hw_value_short = PURELIFI_CCK_RATE_5_5M
++			| PURELIFI_CCK_PREA_SHORT,
++		.flags = IEEE80211_RATE_SHORT_PREAMBLE },
++	{ .bitrate = 110,
++		.hw_value = PURELIFI_CCK_RATE_11M,
++		.hw_value_short = PURELIFI_CCK_RATE_11M
++			| PURELIFI_CCK_PREA_SHORT,
++		.flags = IEEE80211_RATE_SHORT_PREAMBLE },
++	{ .bitrate = 60,
++		.hw_value = PURELIFI_OFDM_RATE_6M,
++		.flags = 0 },
++	{ .bitrate = 90,
++		.hw_value = PURELIFI_OFDM_RATE_9M,
++		.flags = 0 },
++	{ .bitrate = 120,
++		.hw_value = PURELIFI_OFDM_RATE_12M,
++		.flags = 0 },
++	{ .bitrate = 180,
++		.hw_value = PURELIFI_OFDM_RATE_18M,
++		.flags = 0 },
++	{ .bitrate = 240,
++		.hw_value = PURELIFI_OFDM_RATE_24M,
++		.flags = 0 },
++	{ .bitrate = 360,
++		.hw_value = PURELIFI_OFDM_RATE_36M,
++		.flags = 0 },
++	{ .bitrate = 480,
++		.hw_value = PURELIFI_OFDM_RATE_48M,
++		.flags = 0 },
++	{ .bitrate = 540,
++		.hw_value = PURELIFI_OFDM_RATE_54M,
++		.flags = 0 },
++};
++
++static const struct ieee80211_channel purelifi_channels[] = {
++	{ .center_freq = 2412, .hw_value = 1 },
++	{ .center_freq = 2417, .hw_value = 2 },
++	{ .center_freq = 2422, .hw_value = 3 },
++	{ .center_freq = 2427, .hw_value = 4 },
++	{ .center_freq = 2432, .hw_value = 5 },
++	{ .center_freq = 2437, .hw_value = 6 },
++	{ .center_freq = 2442, .hw_value = 7 },
++	{ .center_freq = 2447, .hw_value = 8 },
++	{ .center_freq = 2452, .hw_value = 9 },
++	{ .center_freq = 2457, .hw_value = 10 },
++	{ .center_freq = 2462, .hw_value = 11 },
++	{ .center_freq = 2467, .hw_value = 12 },
++	{ .center_freq = 2472, .hw_value = 13 },
++	{ .center_freq = 2484, .hw_value = 14 },
++};
++
++static int purelifi_mac_config_beacon(struct ieee80211_hw *hw,
++				      struct sk_buff *beacon, bool in_intr);
++
++static int plf_reg2alpha2(u8 regdomain, char *alpha2)
++{
++	unsigned int i;
++	struct plf_reg_alpha2_map *reg_map;
++		for (i = 0; i < ARRAY_SIZE(reg_alpha2_map); i++) {
++			reg_map = &reg_alpha2_map[i];
++			if (regdomain == reg_map->reg) {
++				alpha2[0] = reg_map->alpha2[0];
++				alpha2[1] = reg_map->alpha2[1];
++				return 0;
++			}
++	}
++	return 1;
++}
++
++int purelifi_mac_preinit_hw(struct ieee80211_hw *hw, unsigned char *hw_address)
++{
++	SET_IEEE80211_PERM_ADDR(hw, hw_address);
++	return 0;
++}
++
++void block_queue(struct purelifi_usb *usb, const u8 *mac, bool block)
++{
++	if (block)
++		ieee80211_stop_queues(purelifi_usb_to_hw(usb));
++	else
++		ieee80211_wake_queues(purelifi_usb_to_hw(usb));
++}
++
++int purelifi_mac_init_hw(struct ieee80211_hw *hw)
++{
++	int r;
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++	struct purelifi_chip *chip = &mac->chip;
++	char alpha2[2];
++
++	mac->default_regdomain = PLF_REGDOMAIN_ETSI;
++	r = purelifi_chip_init_hw(chip);
++	if (r) {
++		dev_warn(purelifi_mac_dev(mac), "init hw failed (%d)\n", r);
++		return r;
++	}
++
++	dev_dbg(purelifi_mac_dev(mac), "irq_disabled (%d)\n", irqs_disabled());
++	r = plf_reg2alpha2(mac->regdomain, alpha2);
++	r = regulatory_hint(hw->wiphy, alpha2);
++	return r;
++}
++
++void purelifi_mac_release(struct purelifi_mac *mac)
++{
++	purelifi_chip_release(&mac->chip);
++	lockdep_assert_held(&mac->lock);
++}
++
++int purelifi_op_start(struct ieee80211_hw *hw)
++{
++	purelifi_hw_mac(hw)->chip.usb.initialized = 1;
++	return 0;
++}
++
++void purelifi_op_stop(struct ieee80211_hw *hw)
++{
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++
++	clear_bit(PURELIFI_DEVICE_RUNNING, &mac->flags);
++}
++
++int purelifi_restore_settings(struct purelifi_mac *mac)
++{
++	struct sk_buff *beacon;
++	int beacon_interval, beacon_period;
++
++	spin_lock_irq(&mac->lock);
++	beacon_interval = mac->beacon.interval;
++	beacon_period = mac->beacon.period;
++	spin_unlock_irq(&mac->lock);
++
++	if (mac->type != NL80211_IFTYPE_ADHOC)
++		return 0;
++
++	if (mac->vif) {
++		beacon = ieee80211_beacon_get(mac->hw, mac->vif);
++		if (beacon) {
++			purelifi_mac_config_beacon(mac->hw, beacon, false);
++			kfree_skb(beacon);
++			/* Returned skb is used only once and lowlevel
++			 *  driver is responsible for freeing it.
++			 */
++		}
++	}
++
++	purelifi_set_beacon_interval(&mac->chip, beacon_interval,
++				     beacon_period, mac->type);
++
++	spin_lock_irq(&mac->lock);
++	mac->beacon.last_update = jiffies;
++	spin_unlock_irq(&mac->lock);
++
++	return 0;
++}
++
++/**
++ * purelifi_mac_tx_status - reports tx status of a packet if required
++ * @hw - a &struct ieee80211_hw pointer
++ * @skb - a sk-buffer
++ * @flags: extra flags to set in the TX status info
++ * @ackssi: ACK signal strength
++ * @success - True for successful transmission of the frame
++ *
++ * This information calls ieee80211_tx_status_irqsafe() if required by the
++ * control information. It copies the control information into the status
++ * information.
++ *
++ * If no status information has been requested, the skb is freed.
++ */
++static void purelifi_mac_tx_status(struct ieee80211_hw *hw,
++				   struct sk_buff *skb,
++				   int ackssi,
++				   struct tx_status *tx_status)
++{
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	int success = 1, retry = 1;
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++
++	ieee80211_tx_info_clear_status(info);
++
++	if (tx_status) {
++		success = !tx_status->failure;
++		retry = tx_status->retry + success;
++	}
++
++	if (success)
++		info->flags |= IEEE80211_TX_STAT_ACK;
++	else
++		info->flags &= ~IEEE80211_TX_STAT_ACK;
++
++	dev_info(purelifi_mac_dev(mac), "retry=%d\n", retry);
++	info->status.ack_signal = 50;
++	ieee80211_tx_status_irqsafe(hw, skb);
++}
++
++/**
++ * purelifi_mac_tx_to_dev - callback for USB layer
++ * @skb: a &sk_buff pointer
++ * @error: error value, 0 if transmission successful
++ *
++ * Informs the MAC layer that the frame has successfully transferred to the
++ * device. If an ACK is required and the transfer to the device has been
++ * successful, the packets are put on the @ack_wait_queue with
++ * the control set removed.
++ */
++void purelifi_mac_tx_to_dev(struct sk_buff *skb, int error)
++{
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	struct ieee80211_hw *hw = info->rate_driver_data[0];
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++
++	ieee80211_tx_info_clear_status(info);
++	skb_pull(skb, sizeof(struct purelifi_ctrlset));
++
++	if (unlikely(error ||
++		     (info->flags & IEEE80211_TX_CTL_NO_ACK))) {
++		ieee80211_tx_status_irqsafe(hw, skb);
++	} else {
++		/* ieee80211_tx_status_irqsafe(hw, skb); */
++		struct sk_buff_head *q = &mac->ack_wait_queue;
++
++		skb_queue_tail(q, skb);
++		while (skb_queue_len(q)/* > PURELIFI_MAC_MAX_ACK_WAITERS*/) {
++			purelifi_mac_tx_status(hw, skb_dequeue(q),
++					       mac->ack_pending ?
++					       mac->ack_signal : 0,
++					       NULL);
++			mac->ack_pending = 0;
++		}
++	}
++}
++
++static int purelifi_mac_config_beacon(struct ieee80211_hw *hw,
++				      struct sk_buff *beacon, bool in_intr)
++{
++	return usb_write_req((const u8 *)beacon->data, beacon->len,
++			USB_REQ_BEACON_WR);
++}
++
++static int fill_ctrlset(struct purelifi_mac *mac, struct sk_buff *skb)
++{
++	unsigned int frag_len = skb->len;
++	unsigned int tmp;
++	struct purelifi_ctrlset *cs;
++
++	if (skb_headroom(skb) < sizeof(struct purelifi_ctrlset)) {
++		dev_info(purelifi_mac_dev(mac), "Not enough hroom(1)\n");
++		return 1;
++	}
++
++	cs = (struct purelifi_ctrlset *)skb_push(skb,
++			sizeof(struct purelifi_ctrlset));
++	cs->id = USB_REQ_DATA_TX;
++	cs->payload_len_nw = frag_len;
++	cs->len = cs->payload_len_nw + sizeof(struct purelifi_ctrlset)
++		- sizeof(cs->id) - sizeof(cs->len);
++
++	/* data packet lengths must be multiple of four bytes
++	 * and must not be a multiple of 512
++	 * bytes. First, it is attempted to append the
++	 * data packet in the tailroom of the skb. In rare
++	 * ocasions, the tailroom is too small. In this case,
++	 * the content of the packet is shifted into
++	 * the headroom of the skb by memcpy. Headroom is allocated
++	 * at startup (below in this file). Therefore,
++	 * there will be always enough headroom. The call skb_headroom
++	 * is an additional safety which might be
++	 * dropped.
++	 */
++
++	/*check if 32 bit aligned and align data*/
++	tmp = skb->len & 3;
++	if (tmp) {
++		if (skb_tailroom(skb) < (3 - tmp)) {
++			if (skb_headroom(skb) >= 4 - tmp) {
++				u8 len;
++				u8 *src_pt;
++				u8 *dest_pt;
++
++				len = skb->len;
++				src_pt = skb->data;
++				dest_pt = skb_push(skb, 4 - tmp);
++				memcpy(dest_pt, src_pt, len);
++			} else {
++				return 1;
++			}
++		} else {
++			skb_put(skb, 4 - tmp);
++		}
++		cs->len +=  4 - tmp;
++	}
++
++	/* check if not multiple of 512 and align data*/
++	tmp = skb->len & 0x1ff;
++	if (!tmp) {
++		if (skb_tailroom(skb) < 4) {
++			if (skb_headroom(skb) >= 4) {
++				u8 len = skb->len;
++				u8 *src_pt = skb->data;
++				u8 *dest_pt = skb_push(skb, 4);
++
++				memcpy(dest_pt, src_pt, len);
++			} else {
++				/* should never happen b/c
++				 * sufficient headroom was reserved
++				 */
++				return 1;
++			}
++		} else {
++			skb_put(skb, 4);
++		}
++		cs->len +=  4;
++	}
++
++	cs->id = TO_NETWORK(cs->id);
++	cs->len = TO_NETWORK(cs->len);
++	cs->payload_len_nw = TO_NETWORK(cs->payload_len_nw);
++
++	return 0;
++}
++
++/**
++ * purelifi_op_tx - transmits a network frame to the device
++ *
++ * @dev: mac80211 hardware device
++ * @skb: socket buffer
++ * @control: the control structure
++ *
++ * This function transmit an IEEE 802.11 network frame to the device. The
++ * control block of the skbuff will be initialized. If necessary the incoming
++ * mac80211 queues will be stopped.
++ */
++static void purelifi_op_tx(struct ieee80211_hw *hw,
++			   struct ieee80211_tx_control *control,
++			   struct sk_buff *skb)
++{
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++	struct purelifi_usb *usb = &mac->chip.usb;
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	unsigned long flags;
++	int r;
++
++	r = fill_ctrlset(mac, skb);
++	if (r)
++		goto fail;
++	info->rate_driver_data[0] = hw;
++
++	if (skb->data[24] == IEEE80211_FTYPE_DATA) {
++		u8 dst_mac[ETH_ALEN];
++		u8 sidx;
++		bool found = false;
++		struct purelifi_usb_tx *tx = &usb->tx;
++
++		memcpy(dst_mac, &skb->data[28], ETH_ALEN);
++		for (sidx = 0; sidx < MAX_STA_NUM; sidx++) {
++			if (!(tx->station[sidx].flag & STATION_CONNECTED_FLAG))
++				continue;
++			if (!memcmp(tx->station[sidx].mac, dst_mac, ETH_ALEN)) {
++				found = true;
++				break;
++			}
++		}
++
++		/* Default to broadcast address for unknown MACs */
++		if (!found)
++			sidx = STA_BROADCAST_INDEX;
++
++		/* Stop OS from sending packets, if the queue is half full */
++		if (skb_queue_len(&tx->station[sidx].data_list) > 60)
++			block_queue(usb, tx->station[sidx].mac, true);
++
++		/* Schedule packet for transmission if queue is not full */
++		if (skb_queue_len(&tx->station[sidx].data_list) < 256) {
++			skb_queue_tail(&tx->station[sidx].data_list, skb);
++			purelifi_send_packet_from_data_queue(usb);
++		} else {
++			dev_kfree_skb(skb);
++		}
++	} else {
++		spin_lock_irqsave(&usb->tx.lock, flags);
++		r = usb_write_req_async(&mac->chip.usb, skb->data, skb->len,
++					USB_REQ_DATA_TX, tx_urb_complete, skb);
++		spin_unlock_irqrestore(&usb->tx.lock, flags);
++		if (r)
++			goto fail;
++	}
++	return;
++
++fail:
++	dev_kfree_skb(skb);
++}
++
++/**
++ * filter_ack - filters incoming packets for acknowledgements
++ * @dev: the mac80211 device
++ * @rx_hdr: received header
++ * @stats: the status for the received packet
++ *
++ * This functions looks for ACK packets and tries to match them with the
++ * frames in the tx queue. If a match is found the frame will be dequeued and
++ * the upper layers is informed about the successful transmission. If
++ * mac80211 queues have been stopped and the number of frames still to be
++ * transmitted is low the queues will be opened again.
++ *
++ * Returns 1 if the frame was an ACK, 0 if it was ignored.
++ */
++static int filter_ack(struct ieee80211_hw *hw, struct ieee80211_hdr *rx_hdr,
++		      struct ieee80211_rx_status *stats)
++{
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++	struct sk_buff *skb;
++	struct sk_buff_head *q;
++	unsigned long flags;
++	int found = 0;
++	int i, position = 0;
++
++	if (!ieee80211_is_ack(rx_hdr->frame_control))
++		return 0;
++
++	dev_info(purelifi_mac_dev(mac), "ACK Received\n");
++
++	/* code based on zy driver, this logic may need fix */
++	q = &mac->ack_wait_queue;
++	spin_lock_irqsave(&q->lock, flags);
++
++	skb_queue_walk(q, skb) {
++		struct ieee80211_hdr *tx_hdr;
++
++		position++;
++
++		if (mac->ack_pending && skb_queue_is_first(q, skb))
++			continue;
++		else if (mac->ack_pending == 0)
++			break;
++
++		tx_hdr = (struct ieee80211_hdr *)skb->data;
++		if (likely(ether_addr_equal(tx_hdr->addr2, rx_hdr->addr1))) {
++			found = 1;
++			break;
++		}
++	}
++
++	if (found) {
++		for (i = 1; i < position; i++) {
++			skb = __skb_dequeue(q);
++			if (i == position) {
++				purelifi_mac_tx_status(hw, skb,
++						       mac->ack_pending ?
++						       mac->ack_signal : 0,
++						       NULL);
++				mac->ack_pending = 0;
++			}
++		}
++
++		mac->ack_pending = skb_queue_len(q) ? 1 : 0;
++		mac->ack_signal = stats->signal;
++	}
++
++	spin_unlock_irqrestore(&q->lock, flags);
++	return 1;
++}
++
++int purelifi_mac_rx(struct ieee80211_hw *hw, const u8 *buffer,
++		    unsigned int length)
++{
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++	struct ieee80211_rx_status stats;
++	const struct rx_status *status;
++	struct sk_buff *skb;
++	int bad_frame = 0;
++	__le16 fc;
++	int need_padding;
++	unsigned int payload_length;
++	static unsigned short int min_exp_seq_nmb;
++	u32 crc_error_cnt_low, crc_error_cnt_high;
++	int sidx;
++	struct purelifi_usb_tx *tx;
++
++	/* Packet blockade during disabled interface. */
++	if (!mac->vif)
++		return 0;
++
++	memset(&stats, 0, sizeof(stats));
++	status = (struct rx_status *)buffer;
++
++	stats.flag     = 0;
++	stats.freq     = 2412;
++	stats.band     = NL80211_BAND_2GHZ;
++	mac->rssi      = -15 * ntohs(status->rssi) / 10;
++
++	stats.signal   = mac->rssi;
++
++	if (status->rate_idx > 7)
++		stats.rate_idx = 0;
++	else
++		stats.rate_idx = status->rate_idx;
++
++	crc_error_cnt_low = status->crc_error_count;
++	crc_error_cnt_high = status->crc_error_count >> 32;
++	mac->crc_errors = ((u64)ntohl(crc_error_cnt_low) << 32) |
++		ntohl(crc_error_cnt_high);
++
++	if (!bad_frame &&
++	    filter_ack(hw, (struct ieee80211_hdr *)buffer, &stats) &&
++	    !mac->pass_ctrl)
++		return 0;
++
++	buffer += sizeof(struct rx_status);
++	payload_length = TO_HOST(*(u32 *)buffer);
++
++	/* MTU = 1500, MAC header = 36, CRC = 4, sum = 1540 */
++	if (payload_length > 1560) {
++		dev_err(purelifi_mac_dev(mac), " > MTU %u\n", payload_length);
++		return 0;
++	}
++	buffer += sizeof(u32);
++
++	fc = get_unaligned((__le16 *)buffer);
++	need_padding = ieee80211_is_data_qos(fc) ^ ieee80211_has_a4(fc);
++
++	tx = &mac->chip.usb.tx;
++
++	for (sidx = 0; sidx < MAX_STA_NUM - 1; sidx++) {
++		if (memcmp(&buffer[10], tx->station[sidx].mac, ETH_ALEN))
++			continue;
++		if (tx->station[sidx].flag & STATION_CONNECTED_FLAG) {
++			tx->station[sidx].flag |= STATION_HEARTBEAT_FLAG;
++			break;
++		}
++	}
++
++	if (sidx == MAX_STA_NUM - 1) {
++		for (sidx = 0; sidx < MAX_STA_NUM - 1; sidx++) {
++			if (tx->station[sidx].flag & STATION_CONNECTED_FLAG)
++				continue;
++			memcpy(tx->station[sidx].mac, &buffer[10], ETH_ALEN);
++			tx->station[sidx].flag |= STATION_CONNECTED_FLAG;
++			tx->station[sidx].flag |= STATION_HEARTBEAT_FLAG;
++			break;
++		}
++	}
++
++	if (buffer[0] == IEEE80211_STYPE_PROBE_REQ)
++		dev_info(purelifi_mac_dev(mac), "Probe request\n");
++	else if (buffer[0] == IEEE80211_STYPE_ASSOC_REQ)
++		dev_info(purelifi_mac_dev(mac), "Association request\n");
++
++	if (buffer[0] == IEEE80211_STYPE_AUTH) {
++		dev_info(purelifi_mac_dev(mac), "Authentication req\n");
++		min_exp_seq_nmb = 0;
++	} else if (buffer[0] == IEEE80211_FTYPE_DATA) {
++		unsigned short int seq_nmb = (buffer[23] << 4) |
++			((buffer[22] & 0xF0) >> 4);
++
++		if (seq_nmb < min_exp_seq_nmb &&
++		    ((min_exp_seq_nmb - seq_nmb) < 3000)) {
++			dev_info(purelifi_mac_dev(mac), "seq_nmb < min_exp\n");
++		} else {
++			min_exp_seq_nmb = (seq_nmb + 1) % 4096;
++		}
++	}
++
++	skb = dev_alloc_skb(payload_length + (need_padding ? 2 : 0));
++	if (!skb)
++		return -ENOMEM;
++	if (need_padding) {
++		/* Make sure that the payload data is 4 byte aligned. */
++		skb_reserve(skb, 2);
++	}
++
++	memcpy(skb_put(skb, payload_length), buffer, payload_length);
++	memcpy(IEEE80211_SKB_RXCB(skb), &stats, sizeof(stats));
++	ieee80211_rx_irqsafe(hw, skb);
++	return 0;
++}
++
++static int purelifi_op_add_interface(struct ieee80211_hw *hw,
++				     struct ieee80211_vif *vif)
++{
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++	static const char * const iftype80211[] = {
++		[NL80211_IFTYPE_STATION]	= "Station",
++		[NL80211_IFTYPE_ADHOC]		= "Adhoc"
++	};
++
++	if (mac->type != NL80211_IFTYPE_UNSPECIFIED)
++		return -EOPNOTSUPP;
++
++	if (vif->type == NL80211_IFTYPE_ADHOC ||
++	    vif->type == NL80211_IFTYPE_STATION) {
++		dev_info(purelifi_mac_dev(mac), "%s %s\n", __func__,
++			 iftype80211[vif->type]);
++		mac->type = vif->type;
++		mac->vif = vif;
++	} else {
++		dev_info(purelifi_mac_dev(mac), "unsupported iftype\n");
++		return -EOPNOTSUPP;
++	}
++
++	return 0;
++}
++
++static void purelifi_op_remove_interface(struct ieee80211_hw *hw,
++					 struct ieee80211_vif *vif)
++{
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++
++	mac->type = NL80211_IFTYPE_UNSPECIFIED;
++	mac->vif = NULL;
++}
++
++static int purelifi_op_config(struct ieee80211_hw *hw, u32 changed)
++{
++	return 0;
++}
++
++#define SUPPORTED_FIF_FLAGS \
++	(FIF_ALLMULTI | FIF_FCSFAIL | FIF_CONTROL | \
++	 FIF_OTHER_BSS | FIF_BCN_PRBRESP_PROMISC)
++static void purelifi_op_configure_filter(struct ieee80211_hw *hw,
++					 unsigned int changed_flags,
++					 unsigned int *new_flags,
++					 u64 multicast)
++{
++	struct purelifi_mc_hash hash = {
++		.low = multicast,
++		.high = multicast >> 32,
++	};
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++	unsigned long flags;
++
++	/* Only deal with supported flags */
++	changed_flags &= SUPPORTED_FIF_FLAGS;
++	*new_flags &= SUPPORTED_FIF_FLAGS;
++
++	/* If multicast parameter
++	 * (as returned by purelifi_op_prepare_multicast)
++	 * has changed, no bit in changed_flags is set. To handle this
++	 * situation, we do not return if changed_flags is 0. If we do so,
++	 * we will have some issue with IPv6 which uses multicast for link
++	 * layer address resolution.
++	 */
++	if (*new_flags & (FIF_ALLMULTI))
++		purelifi_mc_add_all(&hash);
++
++	spin_lock_irqsave(&mac->lock, flags);
++	mac->pass_failed_fcs = !!(*new_flags & FIF_FCSFAIL);
++	mac->pass_ctrl = !!(*new_flags & FIF_CONTROL);
++	mac->multicast_hash = hash;
++	spin_unlock_irqrestore(&mac->lock, flags);
++
++	/* no handling required for FIF_OTHER_BSS as we don't currently
++	 * do BSSID filtering
++	 */
++	/* FIXME: in future it would be nice to enable the probe response
++	 * filter (so that the driver doesn't see them) until
++	 * FIF_BCN_PRBRESP_PROMISC is set. however due to atomicity here, we'd
++	 * have to schedule work to enable prbresp reception, which might
++	 * happen too late. For now we'll just listen and forward them all the
++	 * time.
++	 */
++}
++
++static void purelifi_op_bss_info_changed(struct ieee80211_hw *hw,
++					 struct ieee80211_vif *vif,
++					 struct ieee80211_bss_conf *bss_conf,
++					 u32 changes)
++{
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++	int associated;
++
++	dev_info(purelifi_mac_dev(mac), "changes: %x\n", changes);
++
++	if (mac->type != NL80211_IFTYPE_ADHOC) { /* for STATION */
++		associated = is_valid_ether_addr(bss_conf->bssid);
++		goto exit_all;
++	}
++	/* for ADHOC */
++	associated = true;
++	if (changes & BSS_CHANGED_BEACON) {
++		struct sk_buff *beacon = ieee80211_beacon_get(hw, vif);
++
++		if (beacon) {
++			purelifi_mac_config_beacon(hw, beacon, false);
++			kfree_skb(beacon);
++			/*Returned skb is used only once and
++			 * low-level driver is
++			 * responsible for freeing it.
++			 */
++		}
++	}
++
++	if (changes & BSS_CHANGED_BEACON_ENABLED) {
++		u16 interval = 0;
++		u8 period = 0;
++
++		if (bss_conf->enable_beacon) {
++			period = bss_conf->dtim_period;
++			interval = bss_conf->beacon_int;
++		}
++
++		spin_lock_irq(&mac->lock);
++		mac->beacon.period = period;
++		mac->beacon.interval = interval;
++		mac->beacon.last_update = jiffies;
++		spin_unlock_irq(&mac->lock);
++
++		purelifi_set_beacon_interval(&mac->chip, interval,
++					     period, mac->type);
++	}
++exit_all:
++	spin_lock_irq(&mac->lock);
++	mac->associated = associated;
++	spin_unlock_irq(&mac->lock);
++}
++
++static int purelifi_get_stats(struct ieee80211_hw *hw,
++			      struct ieee80211_low_level_stats *stats)
++{
++	stats->dot11ACKFailureCount = 0;
++	stats->dot11RTSFailureCount = 0;
++	stats->dot11FCSErrorCount = 0;
++	stats->dot11RTSSuccessCount = 0;
++	return 0;
++}
++
++const char et_strings[][ETH_GSTRING_LEN] = {
++	"phy_rssi",
++	"phy_rx_crc_err"
++};
++
++static int purelifi_get_et_sset_count(struct ieee80211_hw *hw,
++				      struct ieee80211_vif *vif, int sset)
++{
++	if (sset == ETH_SS_STATS)
++		return ARRAY_SIZE(et_strings);
++
++	return 0;
++}
++
++static void purelifi_get_et_strings(struct ieee80211_hw *hw,
++				    struct ieee80211_vif *vif,
++				    u32 sset, u8 *data)
++{
++	if (sset == ETH_SS_STATS)
++		memcpy(data, *et_strings, sizeof(et_strings));
++}
++
++static void purelifi_get_et_stats(struct ieee80211_hw *hw,
++				  struct ieee80211_vif *vif,
++				  struct ethtool_stats *stats, u64 *data)
++{
++	struct purelifi_mac *mac = purelifi_hw_mac(hw);
++
++	data[0] = mac->rssi;
++	data[1] = mac->crc_errors;
++}
++
++static int purelifi_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
++{
++	return 0;
++}
++
++static const struct ieee80211_ops purelifi_ops = {
++	.tx                 = purelifi_op_tx,
++	.start              = purelifi_op_start,
++	.stop               = purelifi_op_stop,
++	.add_interface      = purelifi_op_add_interface,
++	.remove_interface   = purelifi_op_remove_interface,
++	.set_rts_threshold  = purelifi_set_rts_threshold,
++	.config             = purelifi_op_config,
++	.configure_filter   = purelifi_op_configure_filter,
++	.bss_info_changed   = purelifi_op_bss_info_changed,
++	.get_stats          = purelifi_get_stats,
++	.get_et_sset_count  = purelifi_get_et_sset_count,
++	.get_et_stats       = purelifi_get_et_stats,
++	.get_et_strings     = purelifi_get_et_strings,
++};
++
++struct ieee80211_hw *purelifi_mac_alloc_hw(struct usb_interface *intf)
++{
++	struct purelifi_mac *mac;
++	struct ieee80211_hw *hw;
++
++	hw = ieee80211_alloc_hw(sizeof(struct purelifi_mac), &purelifi_ops);
++	if (!hw) {
++		dev_dbg(&intf->dev, "out of memory\n");
++		return NULL;
++	}
++	set_wiphy_dev(hw->wiphy, &intf->dev);
++
++	mac = purelifi_hw_mac(hw);
++
++	memset(mac, 0, sizeof(*mac));
++	spin_lock_init(&mac->lock);
++	mac->hw = hw;
++
++	mac->type = NL80211_IFTYPE_UNSPECIFIED;
++
++	memcpy(mac->channels, purelifi_channels, sizeof(purelifi_channels));
++	memcpy(mac->rates, purelifi_rates, sizeof(purelifi_rates));
++	mac->band.n_bitrates = ARRAY_SIZE(purelifi_rates);
++	mac->band.bitrates = mac->rates;
++	mac->band.n_channels = ARRAY_SIZE(purelifi_channels);
++	mac->band.channels = mac->channels;
++
++	hw->wiphy->bands[NL80211_BAND_2GHZ] = &mac->band;
++
++	_ieee80211_hw_set(hw, IEEE80211_HW_RX_INCLUDES_FCS);
++	_ieee80211_hw_set(hw, IEEE80211_HW_SIGNAL_DBM);
++	_ieee80211_hw_set(hw, IEEE80211_HW_HOST_BROADCAST_PS_BUFFERING);
++	_ieee80211_hw_set(hw, IEEE80211_HW_MFP_CAPABLE);
++
++	hw->wiphy->interface_modes =
++		BIT(NL80211_IFTYPE_STATION) |
++		BIT(NL80211_IFTYPE_ADHOC);
++
++	hw->max_signal = 100;
++	hw->queues = 1;
++	hw->extra_tx_headroom = sizeof(struct purelifi_ctrlset) + 4;
++	/* 4 for 32 bit alignment if no tailroom */
++
++	/* Tell mac80211 that we support multi rate retries */
++	hw->max_rates = IEEE80211_TX_MAX_RATES;
++	hw->max_rate_tries = 18;   /* 9 rates * 2 retries/rate */
++
++	skb_queue_head_init(&mac->ack_wait_queue);
++	mac->ack_pending = 0;
++
++	purelifi_chip_init(&mac->chip, hw, intf);
++
++	SET_IEEE80211_DEV(hw, &intf->dev);
++	return hw;
++}
++
++MODULE_LICENSE("GPL");
+diff --git a/drivers/net/wireless/purelifi/mac.h b/drivers/net/wireless/purelifi/mac.h
+new file mode 100644
+index 000000000000..0c0a6e01a636
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/mac.h
+@@ -0,0 +1,189 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _PURELIFI_MAC_H
++#define _PURELIFI_MAC_H
++
++#include <linux/kernel.h>
++#include <net/mac80211.h>
++
++#include "chip.h"
++
++#define PURELIFI_CCK                  0x00
++#define PURELIFI_OFDM                 0x10
++#define PURELIFI_CCK_PREA_SHORT       0x20
++
++#define PURELIFI_OFDM_PLCP_RATE_6M	0xb
++#define PURELIFI_OFDM_PLCP_RATE_9M	0xf
++#define PURELIFI_OFDM_PLCP_RATE_12M	0xa
++#define PURELIFI_OFDM_PLCP_RATE_18M	0xe
++#define PURELIFI_OFDM_PLCP_RATE_24M	0x9
++#define PURELIFI_OFDM_PLCP_RATE_36M	0xd
++#define PURELIFI_OFDM_PLCP_RATE_48M	0x8
++#define PURELIFI_OFDM_PLCP_RATE_54M	0xc
++
++#define PURELIFI_CCK_RATE_1M	(PURELIFI_CCK | 0x00)
++#define PURELIFI_CCK_RATE_2M	(PURELIFI_CCK | 0x01)
++#define PURELIFI_CCK_RATE_5_5M	(PURELIFI_CCK | 0x02)
++#define PURELIFI_CCK_RATE_11M	(PURELIFI_CCK | 0x03)
++#define PURELIFI_OFDM_RATE_6M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_6M)
++#define PURELIFI_OFDM_RATE_9M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_9M)
++#define PURELIFI_OFDM_RATE_12M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_12M)
++#define PURELIFI_OFDM_RATE_18M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_18M)
++#define PURELIFI_OFDM_RATE_24M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_24M)
++#define PURELIFI_OFDM_RATE_36M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_36M)
++#define PURELIFI_OFDM_RATE_48M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_48M)
++#define PURELIFI_OFDM_RATE_54M	(PURELIFI_OFDM | PURELIFI_OFDM_PLCP_RATE_54M)
++
++#define PURELIFI_RX_ERROR		0x80
++#define PURELIFI_RX_CRC32_ERROR		0x10
++
++#define PLF_REGDOMAIN_FCC	0x10
++#define PLF_REGDOMAIN_IC	0x20
++#define PLF_REGDOMAIN_ETSI	0x30
++#define PLF_REGDOMAIN_SPAIN	0x31
++#define PLF_REGDOMAIN_FRANCE	0x32
++#define PLF_REGDOMAIN_JAPAN_2	0x40
++#define PLF_REGDOMAIN_JAPAN	0x41
++#define PLF_REGDOMAIN_JAPAN_3	0x49
++
++enum {
++	MODULATION_RATE_BPSK_1_2 = 0,
++	MODULATION_RATE_BPSK_3_4,
++	MODULATION_RATE_QPSK_1_2,
++	MODULATION_RATE_QPSK_3_4,
++	MODULATION_RATE_QAM16_1_2,
++	MODULATION_RATE_QAM16_3_4,
++	MODULATION_RATE_QAM64_1_2,
++	MODULATION_RATE_QAM64_3_4,
++	MODULATION_RATE_AUTO,
++	MODULATION_RATE_NUM
++};
++
++#define purelifi_mac_dev(mac) (purelifi_chip_dev(&(mac)->chip))
++
++#define PURELIFI_MAC_STATS_BUFFER_SIZE 16
++#define PURELIFI_MAC_MAX_ACK_WAITERS 50
++
++struct purelifi_ctrlset {
++	enum usb_req_enum_t id;
++	u32            len;
++	u8             modulation;
++	u8             control;
++	u8             service;
++	u8             pad;
++	__le16         packet_length;
++	__le16         current_length;
++	__le16          next_frame_length;
++	__le16         tx_length;
++	u32            payload_len_nw;
++} __packed;
++
++struct tx_status {
++	u8 type;
++	u8 id;
++	u8 rate;
++	u8 pad;
++	u8 mac[ETH_ALEN];
++	u8 retry;
++	u8 failure;
++} __packed;
++
++enum mac_flags {
++	MAC_FIXED_CHANNEL = 0x01,
++};
++
++struct beacon {
++	struct delayed_work watchdog_work;
++	struct sk_buff *cur_beacon;
++	unsigned long last_update;
++	u16 interval;
++	u8 period;
++};
++
++enum purelifi_device_flags {
++	PURELIFI_DEVICE_RUNNING,
++};
++
++struct purelifi_mac {
++	struct purelifi_chip chip;
++	spinlock_t lock; /* lock for mac data */
++	spinlock_t intr_lock; /* not used : interrupt lock for mac */
++	struct ieee80211_hw *hw;
++	struct ieee80211_vif *vif;
++	struct beacon beacon;
++	struct work_struct set_rts_cts_work;
++	struct work_struct process_intr;
++	struct purelifi_mc_hash multicast_hash;
++	u8 intr_buffer[USB_MAX_EP_INT_BUFFER];
++	u8 regdomain;
++	u8 default_regdomain;
++	u8 channel;
++	int type;
++	int associated;
++	unsigned long flags;
++	struct sk_buff_head ack_wait_queue;
++	struct ieee80211_channel channels[14];
++	struct ieee80211_rate rates[12];
++	struct ieee80211_supported_band band;
++
++	/* whether to pass frames with CRC errors to stack */
++	unsigned int pass_failed_fcs:1;
++
++	/* whether to pass control frames to stack */
++	unsigned int pass_ctrl:1;
++
++	/* whether we have received a 802.11 ACK that is pending */
++	bool ack_pending:1;
++
++	/* signal strength of the last 802.11 ACK received */
++	int ack_signal;
++
++	unsigned char hw_address[ETH_ALEN];
++	char serial_number[256];
++	u64 crc_errors;
++	u64 rssi;
++};
++
++static inline struct purelifi_mac *purelifi_hw_mac(struct ieee80211_hw *hw)
++{
++	return hw->priv;
++}
++
++static inline struct purelifi_mac *purelifi_chip_to_mac(struct purelifi_chip
++		*chip)
++{
++	return container_of(chip, struct purelifi_mac, chip);
++}
++
++static inline struct purelifi_mac *purelifi_usb_to_mac(struct purelifi_usb *usb)
++{
++	return purelifi_chip_to_mac(purelifi_usb_to_chip(usb));
++}
++
++static inline u8 *purelifi_mac_get_perm_addr(struct purelifi_mac *mac)
++{
++	return mac->hw->wiphy->perm_addr;
++}
++
++struct ieee80211_hw *purelifi_mac_alloc_hw(struct usb_interface *intf);
++void purelifi_mac_release(struct purelifi_mac *mac);
++
++int purelifi_mac_preinit_hw(struct ieee80211_hw *hw, unsigned char *hw_address);
++int purelifi_mac_init_hw(struct ieee80211_hw *hw);
++
++int purelifi_mac_rx(struct ieee80211_hw *hw, const u8 *buffer,
++		    unsigned int length);
++void purelifi_mac_tx_failed(struct urb *urb);
++void purelifi_mac_tx_to_dev(struct sk_buff *skb, int error);
++int purelifi_op_start(struct ieee80211_hw *hw);
++void purelifi_op_stop(struct ieee80211_hw *hw);
++int purelifi_restore_settings(struct purelifi_mac *mac);
++void block_queue(struct purelifi_usb *usb, const u8 *mac, bool block);
++
++#ifdef DEBUG
++void purelifi_dump_rx_status(const struct rx_status *status);
++#else
++#define purelifi_dump_rx_status(status)
++#endif
++
++#endif
+diff --git a/drivers/net/wireless/purelifi/usb.c b/drivers/net/wireless/purelifi/usb.c
+new file mode 100644
+index 000000000000..918324fa6862
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/usb.c
+@@ -0,0 +1,1073 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/errno.h>
++#include <linux/slab.h>
++#include <linux/skbuff.h>
++#include <linux/usb.h>
++#include <linux/workqueue.h>
++#include <linux/proc_fs.h>
++#include <linux/fs.h>
++#include <linux/string.h>
++#include <linux/module.h>
++#include <net/mac80211.h>
++#include <asm/unaligned.h>
++#include <linux/version.h>
++#include <linux/sysfs.h>
++
++#include "mac.h"
++#include "usb.h"
++
++#define FCS_LEN 4
++
++#undef  LOAD_MAC_AND_SERIAL_FROM_FILE
++#undef  LOAD_MAC_AND_SERIAL_FROM_FLASH
++#define LOAD_MAC_AND_SERIAL_FROM_EP0
++
++#define PROC_FOLDER           "purelifi"
++#define MODULATION_FILENAME   "modulation"
++
++struct proc_dir_entry *proc_folder;
++struct proc_dir_entry *modulation_proc_entry;
++static atomic_t data_queue_flag;
++
++/*Tx retry backoff timer (in milliseconds).*/
++# define TX_RETRY_BACKOFF_MS 10
++# define STA_QUEUE_CLEANUP_MS 5000
++
++/*Tx retry backoff timer (in jiffies).*/
++# define TX_RETRY_BACKOFF_JIFF ((TX_RETRY_BACKOFF_MS * HZ) / 1000)
++# define STA_QUEUE_CLEANUP_JIFF ((STA_QUEUE_CLEANUP_MS * HZ) / 1000)
++
++static struct usb_device_id usb_ids[] = {
++	{ USB_DEVICE(PURELIFI_X_VENDOR_ID_0, PURELIFI_X_PRODUCT_ID_0),
++	  .driver_info = DEVICE_LIFI_X },
++	{ USB_DEVICE(PURELIFI_XC_VENDOR_ID_0, PURELIFI_XC_PRODUCT_ID_0),
++	  .driver_info = DEVICE_LIFI_XC },
++	{ USB_DEVICE(PURELIFI_XL_VENDOR_ID_0, PURELIFI_XL_PRODUCT_ID_0),
++	  .driver_info = DEVICE_LIFI_XL },
++	{}
++};
++
++const struct device_attribute purelifi_attr_frequency = {
++	  .attr = {.name = "frequency", .mode = (0666)},
++	  .show = purelifi_show_sysfs,
++	  .store = purelifi_store_frequency,
++};
++
++struct device_attribute purelifi_attr_modulation = {
++	.attr = {.name = "modulation", .mode = (0666)},
++	.show = purelifi_show_modulation,
++	.store = purelifi_store_modulation,
++};
++
++const struct proc_ops  modulation_fops = {
++	.proc_open  = modulation_open,
++	.proc_read  = modulation_read,
++	.proc_write = modulation_write
++};
++
++struct usb_interface *ez_usb_interface;
++
++static inline u16 get_bcd_device(const struct usb_device *udev)
++{
++	return le16_to_cpu(udev->descriptor.bcdDevice);
++}
++
++/* Ensures that MAX_TRANSFER_SIZE is even. */
++#define MAX_TRANSFER_SIZE (USB_MAX_TRANSFER_SIZE & ~1)
++
++#define urb_dev(urb) (&(urb)->dev->dev)
++
++void purelifi_send_packet_from_data_queue(struct purelifi_usb *usb)
++{
++	struct sk_buff *skb = NULL;
++	unsigned long flags;
++	static u8 sidx;
++	u8 last_served_sidx;
++	struct purelifi_usb_tx *tx = &usb->tx;
++
++	spin_lock_irqsave(&tx->lock, flags);
++	last_served_sidx = sidx;
++	do {
++		sidx = (sidx + 1) % MAX_STA_NUM;
++		if (!tx->station[sidx].flag & STATION_CONNECTED_FLAG)
++			continue;
++		if (!(tx->station[sidx].flag & STATION_FIFO_FULL_FLAG))
++			skb = skb_peek(&tx->station[sidx].data_list);
++	} while ((sidx != last_served_sidx) && (!skb));
++
++	if (skb) {
++		skb = skb_dequeue(&tx->station[sidx].data_list);
++		usb_write_req_async(usb, skb->data, skb->len, USB_REQ_DATA_TX,
++				    tx_urb_complete, skb);
++		if (skb_queue_len(&tx->station[sidx].data_list) <= 60)
++			block_queue(usb, tx->station[sidx].mac, false);
++	}
++	spin_unlock_irqrestore(&tx->lock, flags);
++}
++
++static void handle_rx_packet(struct purelifi_usb *usb, const u8 *buffer,
++			     unsigned int length)
++{
++	purelifi_mac_rx(purelifi_usb_to_hw(usb), buffer, length);
++}
++
++#define STATION_FIFO_ALMOST_FULL_MESSAGE     0
++#define STATION_FIFO_ALMOST_FULL_NOT_MESSAGE 1
++#define STATION_CONNECT_MESSAGE              2
++#define STATION_DISCONNECT_MESSAGE           3
++
++int rx_usb_enabled;
++static void rx_urb_complete(struct urb *urb)
++{
++	int r;
++	struct purelifi_usb *usb;
++	struct purelifi_usb_tx *tx;
++	const u8 *buffer;
++	static u8 fpga_link_connection_f;
++	unsigned int length;
++	u16 status;
++	u8 sidx;
++
++	if (!urb) {
++		dev_err(purelifi_usb_dev(usb), "urb is NULL.\n");
++		return;
++	} else if (!urb->context) {
++		dev_err(purelifi_usb_dev(usb), "urb ctx is NULL.\n");
++		return;
++	}
++	usb = urb->context;
++
++	if (usb->initialized != 1)
++		return;
++
++	switch (urb->status) {
++	case 0:
++		break;
++	case -ESHUTDOWN:
++	case -EINVAL:
++	case -ENODEV:
++	case -ENOENT:
++	case -ECONNRESET:
++	case -EPIPE:
++		dev_dbg(urb_dev(urb), "urb %p error %d\n", urb, urb->status);
++		return;
++	default:
++		dev_dbg(urb_dev(urb), "urb %p error %d\n", urb, urb->status);
++		goto resubmit;
++	}
++
++	buffer = urb->transfer_buffer;
++	length = (*(u32 *)(buffer + sizeof(struct rx_status))) + sizeof(u32);
++
++	tx = &usb->tx;
++
++	if (urb->actual_length != 8) {
++		if (usb->initialized && fpga_link_connection_f)
++			handle_rx_packet(usb, buffer, length);
++		goto resubmit;
++	}
++
++	status = buffer[7];
++
++	dev_info(&usb->intf->dev, "Recv status=%u\n", status);
++	dev_info(&usb->intf->dev, "Tx packet MAC=%x:%x:%x:%x:%x:%x\n",
++		 buffer[0], buffer[1], buffer[2], buffer[3],
++		 buffer[4], buffer[5]);
++
++	switch (status) {
++	case STATION_FIFO_ALMOST_FULL_NOT_MESSAGE:
++		dev_info(&usb->intf->dev,
++			 "FIFO full not packet receipt\n");
++		tx->mac_fifo_full = 1;
++		for (sidx = 0; sidx < MAX_STA_NUM; sidx++)
++			tx->station[sidx].flag |= STATION_FIFO_FULL_FLAG;
++		break;
++	case STATION_FIFO_ALMOST_FULL_MESSAGE:
++		dev_info(&usb->intf->dev, "FIFO full packet receipt\n");
++
++		for (sidx = 0; sidx < MAX_STA_NUM; sidx++)
++			tx->station[sidx].flag &= 0xFD;
++
++		purelifi_send_packet_from_data_queue(usb);
++		break;
++	case STATION_CONNECT_MESSAGE:
++		fpga_link_connection_f = 1;
++		dev_info(&usb->intf->dev, "ST_CONNECT_MSG packet receipt\n");
++		break;
++	case STATION_DISCONNECT_MESSAGE:
++		fpga_link_connection_f = 0;
++		dev_info(&usb->intf->dev, "ST_DISCONN_MSG packet receipt\n");
++		break;
++	default:
++		dev_info(&usb->intf->dev, "Unknown packet receipt\n");
++		break;
++	}
++
++resubmit:
++	r = usb_submit_urb(urb, GFP_ATOMIC);
++	if (r)
++		dev_dbg(urb_dev(urb), "urb %p resubmit failed (%d)\n", urb, r);
++}
++
++static struct urb *alloc_rx_urb(struct purelifi_usb *usb)
++{
++	struct usb_device *udev = purelifi_usb_to_usbdev(usb);
++	struct urb *urb;
++	void *buffer;
++
++	urb = usb_alloc_urb(0, GFP_KERNEL);
++	if (!urb)
++		return NULL;
++
++	buffer = usb_alloc_coherent(udev, USB_MAX_RX_SIZE, GFP_KERNEL,
++				    &urb->transfer_dma);
++	if (!buffer) {
++		usb_free_urb(urb);
++		return NULL;
++	}
++
++	usb_fill_bulk_urb(urb, udev, usb_rcvbulkpipe(udev, EP_DATA_IN),
++			  buffer, USB_MAX_RX_SIZE,
++			  rx_urb_complete, usb);
++	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
++
++	return urb;
++}
++
++static void free_rx_urb(struct urb *urb)
++{
++	if (!urb)
++		return;
++	usb_free_coherent(urb->dev, urb->transfer_buffer_length,
++			  urb->transfer_buffer, urb->transfer_dma);
++	usb_free_urb(urb);
++}
++
++static int __lf_x_usb_enable_rx(struct purelifi_usb *usb)
++{
++	int i, r;
++	struct purelifi_usb_rx *rx = &usb->rx;
++	struct urb **urbs;
++
++	r = -ENOMEM;
++	urbs = kcalloc(RX_URBS_COUNT, sizeof(struct urb *), GFP_KERNEL);
++	if (!urbs)
++		goto error;
++
++	for (i = 0; i < RX_URBS_COUNT; i++) {
++		urbs[i] = alloc_rx_urb(usb);
++		if (!urbs[i])
++			goto error;
++	}
++
++	spin_lock_irq(&rx->lock);
++
++	dev_dbg(purelifi_usb_dev(usb), "irq_disabled %d\n", irqs_disabled());
++
++	if (rx->urbs) {
++		spin_unlock_irq(&rx->lock);
++		r = 0;
++		goto error;
++	}
++	rx->urbs = urbs;
++	rx->urbs_count = RX_URBS_COUNT;
++	spin_unlock_irq(&rx->lock);
++
++	for (i = 0; i < RX_URBS_COUNT; i++) {
++		r = usb_submit_urb(urbs[i], GFP_KERNEL);
++		if (r)
++			goto error_submit;
++	}
++
++	return 0; /*no error return*/
++
++error_submit:
++	for (i = 0; i < RX_URBS_COUNT; i++)
++		usb_kill_urb(urbs[i]);
++	spin_lock_irq(&rx->lock);
++	rx->urbs = NULL;
++	rx->urbs_count = 0;
++	spin_unlock_irq(&rx->lock);
++error:
++	if (urbs) {
++		for (i = 0; i < RX_URBS_COUNT; i++)
++			free_rx_urb(urbs[i]);
++	}
++	return r;
++}
++
++int purelifi_usb_enable_rx(struct purelifi_usb *usb)
++{
++	int r;
++	struct purelifi_usb_rx *rx = &usb->rx;
++
++	mutex_lock(&rx->setup_mutex);
++	r = __lf_x_usb_enable_rx(usb);
++	if (!r)
++		rx_usb_enabled = 1;
++
++	mutex_unlock(&rx->setup_mutex);
++
++	return r;
++}
++
++static void __lf_x_usb_disable_rx(struct purelifi_usb *usb)
++{
++	int i;
++	unsigned long flags;
++	struct urb **urbs;
++	unsigned int count;
++	struct purelifi_usb_rx *rx = &usb->rx;
++
++	spin_lock_irqsave(&rx->lock, flags);
++	urbs = rx->urbs;
++	count = rx->urbs_count;
++	spin_unlock_irqrestore(&rx->lock, flags);
++
++	if (!urbs)
++		return;
++
++	for (i = 0; i < count; i++) {
++		usb_kill_urb(urbs[i]);
++		free_rx_urb(urbs[i]);
++	}
++	kfree(urbs);
++
++	spin_lock_irqsave(&rx->lock, flags);
++	rx->urbs = NULL;
++	rx->urbs_count = 0;
++	spin_unlock_irqrestore(&rx->lock, flags);
++}
++
++void purelifi_usb_disable_rx(struct purelifi_usb *usb)
++{
++	struct purelifi_usb_rx *rx = &usb->rx;
++
++	mutex_lock(&rx->setup_mutex);
++	__lf_x_usb_disable_rx(usb);
++	rx_usb_enabled = 0;
++	mutex_unlock(&rx->setup_mutex);
++}
++
++/**
++ * purelifi_usb_disable_tx - disable transmission
++ * @usb: the driver USB structure
++ *
++ * Frees all URBs in the free list and marks the transmission as disabled.
++ */
++void purelifi_usb_disable_tx(struct purelifi_usb *usb)
++{
++	struct purelifi_usb_tx *tx = &usb->tx;
++	unsigned long flags;
++
++	atomic_set(&tx->enabled, 0);
++
++	/* kill all submitted tx-urbs */
++	usb_kill_anchored_urbs(&tx->submitted);
++
++	spin_lock_irqsave(&tx->lock, flags);
++	WARN_ON(!skb_queue_empty(&tx->submitted_skbs));
++	WARN_ON(tx->submitted_urbs != 0);
++	tx->submitted_urbs = 0;
++	spin_unlock_irqrestore(&tx->lock, flags);
++
++	/* The stopped state is ignored, relying on ieee80211_wake_queues()
++	 * in a potentionally following purelifi_usb_enable_tx().
++	 */
++}
++
++/**
++ * purelifi_usb_enable_tx - enables transmission
++ * @usb: a &struct purelifi_usb pointer
++ *
++ * This function enables transmission and prepares the &purelifi_usb_tx data
++ * structure.
++ */
++void purelifi_usb_enable_tx(struct purelifi_usb *usb)
++{
++	unsigned long flags;
++	struct purelifi_usb_tx *tx = &usb->tx;
++
++	spin_lock_irqsave(&tx->lock, flags);
++	atomic_set(&tx->enabled, 1);
++	tx->submitted_urbs = 0;
++	ieee80211_wake_queues(purelifi_usb_to_hw(usb));
++	tx->stopped = 0;
++	spin_unlock_irqrestore(&tx->lock, flags);
++}
++
++/**
++ * tx_urb_complete - completes the execution of an URB
++ * @urb: a URB
++ *
++ * This function is called if the URB has been transferred to a device or an
++ * error has happened.
++ */
++void tx_urb_complete(struct urb *urb)
++{
++	struct sk_buff *skb;
++	struct ieee80211_tx_info *info;
++	struct purelifi_usb *usb;
++
++	skb = (struct sk_buff *)urb->context;
++	info = IEEE80211_SKB_CB(skb);
++	/* grab 'usb' pointer before handing off the skb (since
++	 * it might be freed by purelifi_mac_tx_to_dev or mac80211)
++	 */
++	usb = &purelifi_hw_mac(info->rate_driver_data[0])->chip.usb;
++
++	switch (urb->status) {
++	case 0:
++		break;
++	case -ESHUTDOWN:
++	case -EINVAL:
++	case -ENODEV:
++	case -ENOENT:
++	case -ECONNRESET:
++	case -EPIPE:
++		dev_dbg(urb_dev(urb), "urb %p error %d\n", urb, urb->status);
++		break;
++	default:
++		dev_dbg(urb_dev(urb), "urb %p error %d\n", urb, urb->status);
++		return;
++	}
++
++	purelifi_mac_tx_to_dev(skb, urb->status);
++	purelifi_send_packet_from_data_queue(usb);
++	usb_free_urb(urb);
++}
++
++/**
++ * purelifi_usb_tx: initiates transfer of a frame of the device
++ *
++ * @usb: the driver USB structure
++ * @skb: a &struct sk_buff pointer
++ *
++ * This function tranmits a frame to the device. It doesn't wait for
++ * completion. The frame must contain the control set and have all the
++ * control set information available.
++ *
++ * The function returns 0 if the transfer has been successfully initiated.
++ */
++int purelifi_usb_tx(struct purelifi_usb *usb, struct sk_buff *skb)
++{
++	int r;
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	struct usb_device *udev = purelifi_usb_to_usbdev(usb);
++	struct urb *urb;
++	struct purelifi_usb_tx *tx = &usb->tx;
++
++	if (!atomic_read(&tx->enabled)) {
++		r = -ENOENT;
++		goto out;
++	}
++
++	urb = usb_alloc_urb(0, GFP_ATOMIC);
++	if (!urb) {
++		r = -ENOMEM;
++		goto out;
++	}
++
++	usb_fill_bulk_urb(urb, udev, usb_sndbulkpipe(udev, EP_DATA_OUT),
++			  skb->data, skb->len, tx_urb_complete, skb);
++
++	info->rate_driver_data[1] = (void *)jiffies;
++	skb_queue_tail(&tx->submitted_skbs, skb);
++	usb_anchor_urb(urb, &tx->submitted);
++
++	r = usb_submit_urb(urb, GFP_ATOMIC);
++	if (r) {
++		dev_dbg(purelifi_usb_dev(usb), "urb %p submit failed (%d)\n",
++			urb, r);
++		usb_unanchor_urb(urb);
++		skb_unlink(skb, &tx->submitted_skbs);
++		goto error;
++	}
++	return 0;
++error:
++	usb_free_urb(urb);
++out:
++	return r;
++}
++
++static inline void init_usb_rx(struct purelifi_usb *usb)
++{
++	struct purelifi_usb_rx *rx = &usb->rx;
++
++	spin_lock_init(&rx->lock);
++	mutex_init(&rx->setup_mutex);
++
++	if (interface_to_usbdev(usb->intf)->speed == USB_SPEED_HIGH)
++		rx->usb_packet_size = 512;
++	else
++		rx->usb_packet_size = 64;
++
++	if (rx->fragment_length != 0)
++		dev_dbg(purelifi_usb_dev(usb), "fragment_length error\n");
++}
++
++static inline void init_usb_tx(struct purelifi_usb *usb)
++{
++	struct purelifi_usb_tx *tx = &usb->tx;
++
++	spin_lock_init(&tx->lock);
++	atomic_set(&tx->enabled, 0);
++	tx->stopped = 0;
++	skb_queue_head_init(&tx->submitted_skbs);
++	init_usb_anchor(&tx->submitted);
++}
++
++void purelifi_usb_init(struct purelifi_usb *usb, struct ieee80211_hw *hw,
++		       struct usb_interface *intf)
++{
++	memset(usb, 0, sizeof(*usb));
++	usb->intf = usb_get_intf(intf);
++	usb_set_intfdata(usb->intf, hw);
++	hw->conf.chandef.width = NL80211_CHAN_WIDTH_20;
++	init_usb_tx(usb);
++	init_usb_rx(usb);
++}
++
++void purelifi_usb_release(struct purelifi_usb *usb)
++{
++	usb_set_intfdata(usb->intf, NULL);
++	usb_put_intf(usb->intf);
++	/* FIXME: usb_interrupt, usb_tx, usb_rx? */
++}
++
++const char *purelifi_speed(enum usb_device_speed speed)
++{
++	switch (speed) {
++	case USB_SPEED_LOW:
++		return "low";
++	case USB_SPEED_FULL:
++		return "full";
++	case USB_SPEED_HIGH:
++		return "high";
++	default:
++		return "unknown";
++	}
++}
++
++int purelifi_usb_init_hw(struct purelifi_usb *usb)
++{
++	int r;
++
++	r = usb_reset_configuration(purelifi_usb_to_usbdev(usb));
++	if (r) {
++		dev_err(purelifi_usb_dev(usb), "cfg reset failed (%d)\n", r);
++		return r;
++	}
++	return 0;
++}
++
++static void get_usb_req(struct usb_device *udev, const u8 *buffer,
++			int buffer_len, enum usb_req_enum_t usb_req_id,
++			struct usb_req_t *usb_req)
++{
++	u8 *buffer_dst_p = usb_req->buf;
++	const u8 *buffer_src_p = buffer;
++	u32 payload_len_nw = TO_NETWORK((buffer_len + FCS_LEN));
++
++	usb_req->id = usb_req_id;
++	usb_req->len  = 0;
++
++	/* Copy buffer length into the transmitted buffer, as it is important
++	 * for the Rx MAC to know its exact length.
++	 */
++	if (usb_req->id == USB_REQ_BEACON_WR) {
++		memcpy(buffer_dst_p, &payload_len_nw, sizeof(payload_len_nw));
++		buffer_dst_p += sizeof(payload_len_nw);
++		usb_req->len += sizeof(payload_len_nw);
++	}
++
++	memcpy(buffer_dst_p, buffer_src_p, buffer_len);
++	buffer_dst_p += buffer_len;
++	buffer_src_p += buffer_len;
++	usb_req->len +=  buffer_len;
++
++	/* Set the FCS_LEN (4) bytes as 0 for CRC checking. */
++	memset(buffer_dst_p, 0, FCS_LEN);
++	buffer_dst_p += FCS_LEN;
++	usb_req->len += FCS_LEN;
++
++	/* Round the packet to be transmitted to 4 bytes. */
++	if (usb_req->len % PURELIFI_BYTE_NUM_ALIGNMENT) {
++		memset(buffer_dst_p, 0, PURELIFI_BYTE_NUM_ALIGNMENT -
++		       (usb_req->len % PURELIFI_BYTE_NUM_ALIGNMENT));
++		buffer_dst_p += PURELIFI_BYTE_NUM_ALIGNMENT -
++			(usb_req->len % PURELIFI_BYTE_NUM_ALIGNMENT);
++		usb_req->len += PURELIFI_BYTE_NUM_ALIGNMENT -
++			(usb_req->len % PURELIFI_BYTE_NUM_ALIGNMENT);
++	}
++
++	usb_req->id = TO_NETWORK(usb_req->id);
++	usb_req->len = TO_NETWORK(usb_req->len);
++}
++
++int usb_write_req_async(struct purelifi_usb *usb, const u8 *buffer,
++			int buffer_len, enum usb_req_enum_t usb_req_id,
++			usb_complete_t complete_fn,
++			void *context)
++{
++	int r;
++	struct usb_device *udev = interface_to_usbdev(ez_usb_interface);
++	struct urb *urb = usb_alloc_urb(0, GFP_ATOMIC);
++
++	usb_fill_bulk_urb(urb, udev, usb_sndbulkpipe(udev, EP_DATA_OUT),
++			  (void *)buffer, buffer_len, complete_fn, context);
++
++	r = usb_submit_urb(urb, GFP_ATOMIC);
++
++	if (r)
++		dev_err(&udev->dev, "async write submit failed (%d)\n", r);
++
++	return r;
++}
++
++int usb_write_req(const u8 *buffer, int buffer_len,
++		  enum usb_req_enum_t usb_req_id)
++{
++	int r;
++	int actual_length;
++	int usb_bulk_msg_len;
++	unsigned char *dma_buffer = NULL;
++	struct usb_device *udev = interface_to_usbdev(ez_usb_interface);
++	struct usb_req_t usb_req;
++
++	get_usb_req(udev, buffer, buffer_len, usb_req_id, &usb_req);
++	usb_bulk_msg_len = sizeof(usb_req.id) + sizeof(usb_req.len) +
++			   TO_HOST(usb_req.len);
++
++	dma_buffer = kzalloc(usb_bulk_msg_len, GFP_KERNEL);
++
++	if (!dma_buffer) {
++		r = -ENOMEM;
++		goto error;
++	}
++	memcpy(dma_buffer, &usb_req, usb_bulk_msg_len);
++
++	r = usb_bulk_msg(udev,
++			 usb_sndbulkpipe(udev, EP_DATA_OUT),
++			 dma_buffer, usb_bulk_msg_len,
++			 &actual_length, USB_BULK_MSG_TIMEOUT_MS);
++	kfree(dma_buffer);
++error:
++	if (r)
++		dev_err(&udev->dev, "usb_bulk_msg failed (%d)\n", r);
++
++	return r;
++}
++
++static void slif_data_plane_sap_timer_callb(struct timer_list *t)
++{
++	struct purelifi_usb *usb = from_timer(usb, t, tx.tx_retry_timer);
++
++	purelifi_send_packet_from_data_queue(usb);
++	timer_setup(&usb->tx.tx_retry_timer,
++		    slif_data_plane_sap_timer_callb, 0);
++	mod_timer(&usb->tx.tx_retry_timer, jiffies + TX_RETRY_BACKOFF_JIFF);
++}
++
++static void sta_queue_cleanup_timer_callb(struct timer_list *t)
++{
++	struct purelifi_usb *usb = from_timer(usb, t, sta_queue_cleanup);
++	struct purelifi_usb_tx *tx = &usb->tx;
++	int sidx;
++
++	for (sidx = 0; sidx < MAX_STA_NUM - 1; sidx++) {
++		if (!(tx->station[sidx].flag & STATION_CONNECTED_FLAG))
++			continue;
++		if (tx->station[sidx].flag & STATION_HEARTBEAT_FLAG) {
++			tx->station[sidx].flag ^= STATION_HEARTBEAT_FLAG;
++		} else {
++			memset(tx->station[sidx].mac, 0, ETH_ALEN);
++			tx->station[sidx].flag = 0;
++		}
++	}
++	timer_setup(&usb->sta_queue_cleanup,
++		    sta_queue_cleanup_timer_callb, 0);
++	mod_timer(&usb->sta_queue_cleanup, jiffies + STA_QUEUE_CLEANUP_JIFF);
++}
++
++static int probe(struct usb_interface *intf,
++		 const struct usb_device_id *id)
++{
++	int r = 0;
++	struct purelifi_chip *chip;
++	struct purelifi_usb *usb;
++	struct purelifi_usb_tx *tx;
++	struct ieee80211_hw *hw = NULL;
++	static unsigned char hw_address[ETH_ALEN];
++	static unsigned char serial_number[PURELIFI_SERIAL_LEN];
++	unsigned int i;
++
++	ez_usb_interface = intf;
++
++	create_config(intf);
++	hw = purelifi_mac_alloc_hw(intf);
++
++	if (!hw) {
++		r = -ENOMEM;
++		goto error;
++	}
++
++	chip = &purelifi_hw_mac(hw)->chip;
++	usb = &chip->usb;
++	tx = &usb->tx;
++
++	r = upload_mac_and_serial_number(intf, hw_address, serial_number);
++	if (r) {
++		dev_err(&intf->dev, "MAC and Serial upload failed (%d)\n", r);
++		goto error;
++	}
++	chip->unit_type = STA;
++
++	r = purelifi_mac_preinit_hw(hw, hw_address);
++	if (r) {
++		dev_dbg(&intf->dev, "init mac failed (%d)\n", r);
++		goto error;
++	}
++
++	r = ieee80211_register_hw(hw);
++	if (r) {
++		dev_dbg(&intf->dev, "register device failed (%d)\n", r);
++		goto error;
++	}
++	dev_info(&intf->dev, "%s\n", wiphy_name(hw->wiphy));
++
++	if ((le16_to_cpu(interface_to_usbdev(intf)->descriptor.idVendor) ==
++				PURELIFI_XL_VENDOR_ID_0) &&
++	    (le16_to_cpu(interface_to_usbdev(intf)->descriptor.idProduct) ==
++				PURELIFI_XL_PRODUCT_ID_0)) {
++		r = download_xl_firmware(intf);
++	} else {
++		r = download_fpga(intf);
++	}
++	if (r != 0) {
++		dev_err(&intf->dev, "FPGA download failed (%d)\n", r);
++		goto error;
++	}
++
++	tx->mac_fifo_full = 0;
++	spin_lock_init(&tx->lock);
++
++	msleep(200);
++	r = purelifi_usb_init_hw(usb);
++	if (r < 0) {
++		dev_info(&intf->dev, "usb_init_hw failed (%d)\n", r);
++		goto error;
++	}
++
++	msleep(200);
++	r = purelifi_chip_switch_radio(chip, 1); /* Switch ON Radio */
++	if (r < 0) {
++		dev_info(&intf->dev, "chip_switch_radio_on failed (%d)\n", r);
++		goto error;
++	}
++
++	msleep(200);
++	r = purelifi_chip_set_rate(chip, 8);
++	if (r < 0) {
++		dev_info(&intf->dev, "chip_set_rate failed (%d)\n", r);
++		goto error;
++	}
++
++	msleep(200);
++	r = usb_write_req(hw_address, ETH_ALEN, USB_REQ_MAC_WR);
++	if (r < 0) {
++		dev_info(&intf->dev, "MAC_WR failure (%d)\n", r);
++		goto error;
++	}
++
++	purelifi_chip_enable_rxtx(chip);
++
++	/* Initialise the data plane Tx queue */
++	atomic_set(&data_queue_flag, 1);
++	for (i = 0; i < MAX_STA_NUM; i++) {
++		skb_queue_head_init(&tx->station[i].data_list);
++		tx->station[i].flag = 0;
++	}
++	tx->station[STA_BROADCAST_INDEX].flag |= STATION_CONNECTED_FLAG;
++	for (i = 0; i < ETH_ALEN; i++)
++		tx->station[STA_BROADCAST_INDEX].mac[i] = 0xFF;
++	atomic_set(&data_queue_flag, 0);
++
++	timer_setup(&tx->tx_retry_timer, slif_data_plane_sap_timer_callb, 0);
++	tx->tx_retry_timer.expires = jiffies + TX_RETRY_BACKOFF_JIFF;
++	add_timer(&tx->tx_retry_timer);
++
++	timer_setup(&usb->sta_queue_cleanup,
++		    sta_queue_cleanup_timer_callb, 0);
++	usb->sta_queue_cleanup.expires = jiffies + STA_QUEUE_CLEANUP_JIFF;
++	add_timer(&usb->sta_queue_cleanup);
++
++	usb->initialized = 1;
++	return 0;
++error:
++	if (hw) {
++		purelifi_mac_release(purelifi_hw_mac(hw));
++		ieee80211_unregister_hw(hw);
++		ieee80211_free_hw(hw);
++	}
++	return r;
++}
++
++static void disconnect(struct usb_interface *intf)
++{
++	struct ieee80211_hw *hw = purelifi_intf_to_hw(intf);
++	struct purelifi_mac *mac;
++	struct purelifi_usb *usb;
++
++	/* Either something really bad happened, or
++	 * we're just dealing with
++	 * a DEVICE_INSTALLER.
++	 */
++	if (!hw)
++		return;
++
++	mac = purelifi_hw_mac(hw);
++	usb = &mac->chip.usb;
++
++	del_timer_sync(&usb->tx.tx_retry_timer);
++	del_timer_sync(&usb->sta_queue_cleanup);
++
++	ieee80211_unregister_hw(hw);
++
++	purelifi_usb_disable_tx(usb);
++	purelifi_usb_disable_rx(usb);
++
++	/* If the disconnect has been caused by a removal of the
++	 * driver module, the reset allows reloading of the driver. If the
++	 * reset will not be executed here,
++	 * the upload of the firmware in the
++	 * probe function caused by the reloading of the driver will fail.
++	 */
++	usb_reset_device(interface_to_usbdev(intf));
++
++	device_remove_file(&intf->dev, &purelifi_attr_modulation);
++	device_remove_file(&intf->dev, &purelifi_attr_frequency);
++
++	purelifi_mac_release(mac);
++	ieee80211_free_hw(hw);
++}
++
++static void purelifi_usb_resume(struct purelifi_usb *usb)
++{
++	struct purelifi_mac *mac = purelifi_usb_to_mac(usb);
++	int r;
++
++	r = purelifi_op_start(purelifi_usb_to_hw(usb));
++	if (r < 0) {
++		dev_warn(purelifi_usb_dev(usb),
++			 "Device resume failed (%d)\n", r);
++
++		if (usb->was_running)
++			set_bit(PURELIFI_DEVICE_RUNNING, &mac->flags);
++
++		usb_queue_reset_device(usb->intf);
++		return;
++	}
++
++	if (mac->type != NL80211_IFTYPE_UNSPECIFIED) {
++		r = purelifi_restore_settings(mac);
++		if (r < 0) {
++			dev_dbg(purelifi_usb_dev(usb),
++				"restore failed (%d)\n", r);
++			return;
++		}
++	}
++}
++
++static void purelifi_usb_stop(struct purelifi_usb *usb)
++{
++	purelifi_op_stop(purelifi_usb_to_hw(usb));
++	purelifi_usb_disable_tx(usb);
++	purelifi_usb_disable_rx(usb);
++
++	usb->initialized = 0;
++}
++
++static int pre_reset(struct usb_interface *intf)
++{
++	struct ieee80211_hw *hw = usb_get_intfdata(intf);
++	struct purelifi_mac *mac;
++	struct purelifi_usb *usb;
++
++	if (!hw || intf->condition != USB_INTERFACE_BOUND)
++		return 0;
++
++	mac = purelifi_hw_mac(hw);
++	usb = &mac->chip.usb;
++
++	usb->was_running = test_bit(PURELIFI_DEVICE_RUNNING, &mac->flags);
++
++	purelifi_usb_stop(usb);
++
++	mutex_lock(&mac->chip.mutex);
++	return 0;
++}
++
++static int post_reset(struct usb_interface *intf)
++{
++	struct ieee80211_hw *hw = usb_get_intfdata(intf);
++	struct purelifi_mac *mac;
++	struct purelifi_usb *usb;
++
++	if (!hw || intf->condition != USB_INTERFACE_BOUND)
++		return 0;
++
++	mac = purelifi_hw_mac(hw);
++	usb = &mac->chip.usb;
++
++	mutex_unlock(&mac->chip.mutex);
++
++	if (usb->was_running)
++		purelifi_usb_resume(usb);
++	return 0;
++}
++
++static struct purelifi_usb *get_purelifi_usb(struct usb_interface *intf)
++{
++	struct ieee80211_hw *hw = purelifi_intf_to_hw(intf);
++	struct purelifi_mac *mac;
++
++	/* Either something really bad happened, or
++	 * we're just dealing with
++	 * a DEVICE_INSTALLER.
++	 */
++	if (!hw)
++		return NULL;
++
++	mac = purelifi_hw_mac(hw);
++	return &mac->chip.usb;
++}
++
++#ifdef CONFIG_PM
++
++static int suspend(struct usb_interface *interface,
++		   pm_message_t message)
++{
++	struct purelifi_usb *pl = get_purelifi_usb(interface);
++	struct purelifi_mac *mac = purelifi_usb_to_mac(pl);
++
++	if (!pl || !purelifi_usb_dev(pl))
++		return -ENODEV;
++	if (pl->initialized == 0)
++		return 0;
++	pl->was_running = test_bit(PURELIFI_DEVICE_RUNNING, &mac->flags);
++	purelifi_usb_stop(pl);
++	return 0;
++}
++
++static int resume(struct usb_interface *interface)
++{
++	struct purelifi_usb *pl = get_purelifi_usb(interface);
++
++	if (!pl || !purelifi_usb_dev(pl))
++		return -ENODEV;
++	if (pl->was_running)
++		purelifi_usb_resume(pl);
++	return 0;
++}
++
++#endif
++
++static struct usb_driver driver = {
++	.name        = KBUILD_MODNAME,
++	.id_table    = usb_ids,
++	.probe        = probe,
++	.disconnect    = disconnect,
++	.pre_reset    = pre_reset,
++	.post_reset    = post_reset,
++	.suspend        = suspend,
++	.resume         = resume,
++	.disable_hub_initiated_lpm = 1,
++};
++
++struct workqueue_struct *purelifi_workqueue;
++
++static int create_proc_entry_e(struct proc_dir_entry *entry,
++			       size_t size,
++			       mode_t mode,
++			       const struct proc_ops *pops,
++			       const char *entry_name,
++			       struct proc_dir_entry *parent
++			     )
++{
++	entry = proc_create(entry_name, mode, parent, pops);
++	if (!(entry))
++		return -ENOMEM;
++	return 0;
++}
++
++static int __init usb_init(void)
++{
++	int r;
++
++	proc_folder = proc_mkdir(PROC_FOLDER, NULL);
++	if (!proc_folder) {
++		pr_err("error creating proc folder\n");
++		r = -ENOMEM;
++		goto error;
++	}
++
++	r = create_proc_entry_e(modulation_proc_entry, sizeof(u32), 0666,
++				&modulation_fops, MODULATION_FILENAME,
++				proc_folder);
++	if (r)
++		goto remove_proc_dir;
++
++	purelifi_workqueue = create_singlethread_workqueue(driver.name);
++	if (!purelifi_workqueue) {
++		pr_err("%s couldn't create workqueue\n", driver.name);
++		r = -ENOMEM;
++		goto remove_modulation_proc_file;
++	}
++
++	r = usb_register(&driver);
++	if (r) {
++		destroy_workqueue(purelifi_workqueue);
++		pr_err("%s usb_register() failed %d\n", driver.name, r);
++		return r;
++	}
++
++	pr_debug("Driver initialized :%s\n", driver.name);
++	return 0;
++
++remove_modulation_proc_file:
++	remove_proc_entry(MODULATION_FILENAME, proc_folder);
++remove_proc_dir:
++	remove_proc_entry(PROC_FOLDER, NULL);
++error:
++	return r;
++}
++
++static void __exit usb_exit(void)
++{
++	remove_proc_entry(MODULATION_FILENAME, proc_folder);
++	remove_proc_entry(PROC_FOLDER, NULL);
++	if (ez_usb_interface) {
++		device_remove_file(&ez_usb_interface->dev,
++				   &purelifi_attr_modulation);
++		device_remove_file(&ez_usb_interface->dev,
++				   &purelifi_attr_frequency);
++	}
++	usb_deregister(&driver);
++	destroy_workqueue(purelifi_workqueue);
++	pr_debug("%s %s\n", driver.name, __func__);
++}
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("USB driver for pureLiFi devices");
++MODULE_AUTHOR("pureLiFi Ltd");
++MODULE_VERSION("1.0");
++MODULE_FIRMWARE("purelifi/li_fi_x/fpga.bit");
++MODULE_DEVICE_TABLE(usb, usb_ids);
++
++module_init(usb_init);
++module_exit(usb_exit);
+diff --git a/drivers/net/wireless/purelifi/usb.h b/drivers/net/wireless/purelifi/usb.h
+new file mode 100644
+index 000000000000..7bba5fef2ab2
+--- /dev/null
++++ b/drivers/net/wireless/purelifi/usb.h
+@@ -0,0 +1,197 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _PURELIFI_USB_H
++#define _PURELIFI_USB_H
++
++#include <linux/completion.h>
++#include <linux/netdevice.h>
++#include <linux/spinlock.h>
++#include <linux/skbuff.h>
++#include <linux/usb.h>
++
++#include "intf.h"
++
++#define TO_NETWORK(X) ((((X) & 0xFF000000) >> 24) | (((X) & 0xFF0000) >> 8) |\
++		      (((X) & 0xFF00) << 8) | (((X) & 0xFF) << 24))
++
++#define TO_NETWORK_16(X) ((((X) & 0xFF00) >> 8) | (((X) & 0x00FF) << 8))
++
++#define TO_NETWORK_32(X) TO_NETWORK(X)
++
++#define TO_HOST(X)    TO_NETWORK(X)
++#define TO_HOST_16(X) TO_NETWORK_16(X)
++#define TO_HOST_32(X) TO_NETWORK_32(X)
++
++#define USB_BULK_MSG_TIMEOUT_MS 2000
++
++#define PURELIFI_X_VENDOR_ID_0   0x16C1
++#define PURELIFI_X_PRODUCT_ID_0  0x1CDE
++#define PURELIFI_XC_VENDOR_ID_0  0x2EF5
++#define PURELIFI_XC_PRODUCT_ID_0 0x0008
++#define PURELIFI_XL_VENDOR_ID_0  0x2EF5
++#define PURELIFI_XL_PRODUCT_ID_0 0x000A /* Station */
++
++int usb_write_req(const u8 *buffer, int buffer_len,
++		  enum usb_req_enum_t usb_req_id);
++void tx_urb_complete(struct urb *urb);
++
++enum {
++	USB_MAX_RX_SIZE       = 4800,
++	USB_MAX_EP_INT_BUFFER = 64,
++};
++
++/* USB interrupt */
++struct purelifi_usb_interrupt {
++	spinlock_t lock;/* spin lock for usb interrupt buffer */
++	struct urb *urb;
++	void *buffer;
++	int interval;
++};
++
++#define RX_URBS_COUNT 5
++
++struct purelifi_usb_rx {
++	spinlock_t lock;/* spin lock for rx urb */
++	struct mutex setup_mutex; /* mutex lockt for rx urb */
++	u8 fragment[2 * USB_MAX_RX_SIZE];
++	unsigned int fragment_length;
++	unsigned int usb_packet_size;
++	struct urb **urbs;
++	int urbs_count;
++};
++
++struct station_t {
++   //  7...3    |    2      |     1     |     0	    |
++   // Reserved  | Heartbeat | FIFO full | Connected |
++	unsigned char flag;
++	unsigned char mac[ETH_ALEN];
++	struct sk_buff_head data_list;
++};
++
++extern const struct device_attribute purelifi_attr_frequency;
++extern struct device_attribute purelifi_attr_modulation;
++
++#define STATION_CONNECTED_FLAG 0x1
++#define STATION_FIFO_FULL_FLAG 0x2
++#define STATION_HEARTBEAT_FLAG 0x4
++
++#define PURELIFI_SERIAL_LEN 256
++/**
++ * struct purelifi_usb_tx - structure used for transmitting frames
++ * @enabled: atomic enabled flag, indicates whether tx is enabled
++ * @lock: lock for transmission
++ * @submitted: anchor for URBs sent to device
++ * @submitted_urbs: atomic integer that counts the URBs having sent to the
++ *   device, which haven't been completed
++ * @stopped: indicates whether higher level tx queues are stopped
++ */
++#define STA_BROADCAST_INDEX (AP_USER_LIMIT)
++#define MAX_STA_NUM         (AP_USER_LIMIT + 1)
++struct purelifi_usb_tx {
++	atomic_t enabled;
++	spinlock_t lock; /*spinlock for USB tx */
++	u8 mac_fifo_full;
++	struct sk_buff_head submitted_skbs;
++	struct usb_anchor submitted;
++	int submitted_urbs;
++	u8 stopped:1;
++	struct timer_list tx_retry_timer;
++	struct station_t station[MAX_STA_NUM];
++};
++
++/* Contains the usb parts. The structure doesn't require a lock because intf
++ * will not be changed after initialization.
++ */
++struct purelifi_usb {
++	struct timer_list sta_queue_cleanup;
++	struct purelifi_usb_rx rx;
++	struct purelifi_usb_tx tx;
++	struct usb_interface *intf;
++	u8 req_buf[64]; /* purelifi_usb_iowrite16v needs 62 bytes */
++	u8 initialized:1, was_running:1;
++};
++
++enum endpoints {
++	EP_DATA_IN  = 2,
++	EP_DATA_OUT = 8,
++};
++
++enum devicetype {
++	DEVICE_LIFI_X  = 0,
++	DEVICE_LIFI_XC  = 1,
++	DEVICE_LIFI_XL  = 1,
++};
++
++int usb_write_req_async(struct purelifi_usb *usb, const u8 *buffer,
++			int buffer_len, enum usb_req_enum_t usb_req_id,
++		usb_complete_t complete_fn, void *context);
++
++#define purelifi_usb_dev(usb) (&(usb)->intf->dev)
++static inline struct usb_device *purelifi_usb_to_usbdev(struct purelifi_usb
++		*usb)
++{
++	return interface_to_usbdev(usb->intf);
++}
++
++static inline struct ieee80211_hw *purelifi_intf_to_hw(struct usb_interface
++		*intf)
++{
++	return usb_get_intfdata(intf);
++}
++
++static inline struct ieee80211_hw *purelifi_usb_to_hw(struct purelifi_usb
++		*usb)
++{
++	return purelifi_intf_to_hw(usb->intf);
++}
++
++void purelifi_usb_init(struct purelifi_usb *usb, struct ieee80211_hw *hw,
++		       struct usb_interface *intf);
++void purelifi_send_packet_from_data_queue(struct purelifi_usb *usb);
++void purelifi_usb_release(struct purelifi_usb *usb);
++void purelifi_usb_disable_rx(struct purelifi_usb *usb);
++void purelifi_usb_enable_tx(struct purelifi_usb *usb);
++void purelifi_usb_disable_tx(struct purelifi_usb *usb);
++int purelifi_usb_tx(struct purelifi_usb *usb, struct sk_buff *skb);
++int purelifi_usb_enable_rx(struct purelifi_usb *usb);
++int purelifi_usb_init_hw(struct purelifi_usb *usb);
++const char *purelifi_speed(enum usb_device_speed speed);
++
++/*Firmware declarations */
++int download_xl_firmware(struct usb_interface *intf);
++int download_fpga(struct usb_interface *intf);
++int upload_mac_and_serial_number(struct usb_interface *intf,
++				 unsigned char *hw_address,
++				 unsigned char *serial_number);
++void create_config(struct usb_interface *intf);
++
++/* Debugfs declarations */
++
++ssize_t purelifi_store_frequency(struct device *dev,
++				 struct device_attribute *attr,
++				 const char *buf,
++				 size_t len);
++
++ssize_t purelifi_show_sysfs(struct device *dev,
++			    struct device_attribute *attr,
++			    char *buf);
++
++ssize_t purelifi_store_modulation(struct device *dev,
++				  struct device_attribute *attr,
++				  const char *buf,
++				  size_t len);
++
++ssize_t purelifi_show_modulation(struct device *dev,
++				 struct device_attribute *attr,
++				 char *buf);
++
++int modulation_open(struct inode *inode_p, struct file *file_p);
++
++ssize_t modulation_read(struct file *file_p,
++			char __user *user_p,
++			size_t offset, loff_t *off_p);
++
++ssize_t modulation_write(struct file *file_p,
++			 const char __user *buffer,
++			 size_t count, loff_t *actual_data_written);
++#endif
+-- 
+2.25.1
 
-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
-C+Lz5ireFbZA8f8A3joZsMFXAgA=
-
---JPKYlvo4+BwO1+FT--
