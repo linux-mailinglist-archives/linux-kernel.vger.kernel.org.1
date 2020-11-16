@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6532B40D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FF02B40F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgKPKSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:18:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52844 "EHLO mail.kernel.org"
+        id S1729123AbgKPKUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:20:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728773AbgKPKS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:18:29 -0500
+        id S1728832AbgKPKSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 05:18:30 -0500
 Received: from mail.kernel.org (ip5f5ad5de.dynamic.kabel-deutschland.de [95.90.213.222])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F21F221F9;
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B157222E8;
         Mon, 16 Nov 2020 10:18:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1605521908;
-        bh=P/GEMxeGxaldEqXRpO9YI9VDpRvjUfzifZKnsBkxW1I=;
+        bh=js84ZgGHWrr4G6ZbrEp+3qfBF3y+4j27kugX1PPwPo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DVwCjgBYVSGPj3Fcnxmqr5wYdqiMZUTXA2kTlLzwUltx4ISicjk/j4+hkoKrFdMMK
-         9s6AYnsHcALnFl9bmipHM+bUy4IiFsTU7xR2lsv2GhE8BqzBhInhKxCpqBD4rJWEu+
-         iMv2NQLyHYwENu4XKdRb7vnXv3OuTNYpMd+nmoM4=
+        b=Hwyqm/0Eu5mNLSwf3lorMTDBa9AQVGPU/LEK8Fs/EmQY1m+aVP+y5T2lOnxRhbvm2
+         qc9Cuq3KThOsc8MOcrNMoLqBFEkOoYmPovGeQM4tSy2DkVxpQipJw2VTw/mdabe5YO
+         FbEoQhCT3JvsZfY0veVKBtzVZNSvy0EC1Qxe/z8Q=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kebac-00FwE7-51; Mon, 16 Nov 2020 11:18:26 +0100
+        id 1kebac-00FwE9-5s; Mon, 16 Nov 2020 11:18:26 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Alexandre Bounine <alex.bou9@gmail.com>,
+        Matt Porter <mporter@kernel.crashing.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
         "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 08/27] parport: fix a kernel-doc markup
-Date:   Mon, 16 Nov 2020 11:18:04 +0100
-Message-Id: <a97c59a840d26ea41c4bf38154f23e06871aac43.1605521731.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v4 09/27] rapidio: fix kernel-doc a markup
+Date:   Mon, 16 Nov 2020 11:18:05 +0100
+Message-Id: <d287d2af8e7cf4d68cd60ce65c9f165ab529f990.1605521731.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1605521731.git.mchehab+huawei@kernel.org>
 References: <cover.1605521731.git.mchehab+huawei@kernel.org>
@@ -45,141 +46,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel-doc markup inside share.c is actually for
-__parport_register_driver. The actual goal seems to be
-to document parport_register_driver().
-
-So, fix the existing markup and add a new one.
+Probaly this was due to a cut and paste issue.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/parport/share.c |  2 +-
- include/linux/parport.h | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 32 insertions(+), 1 deletion(-)
+ drivers/rapidio/rio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/parport/share.c b/drivers/parport/share.c
-index 7fec4fefe151..62f8407923d4 100644
---- a/drivers/parport/share.c
-+++ b/drivers/parport/share.c
-@@ -226,41 +226,41 @@ static int port_check(struct device *dev, void *dev_drv)
- 
- 	/* only send ports, do not send other devices connected to bus */
- 	if (is_parport(dev))
- 		drv->match_port(to_parport_dev(dev));
- 	return 0;
- }
- 
- /*
-  * Iterates through all the devices connected to the bus and return 1
-  * if the device is a parallel port.
+diff --git a/drivers/rapidio/rio.c b/drivers/rapidio/rio.c
+index 606986c5ba2c..16b59b472b3d 100644
+--- a/drivers/rapidio/rio.c
++++ b/drivers/rapidio/rio.c
+@@ -732,41 +732,41 @@ EXPORT_SYMBOL_GPL(rio_unmap_inb_region);
   */
- 
- static int port_detect(struct device *dev, void *dev_drv)
+ int rio_map_outb_region(struct rio_mport *mport, u16 destid, u64 rbase,
+ 			u32 size, u32 rflags, dma_addr_t *local)
  {
- 	if (is_parport(dev))
- 		return 1;
- 	return 0;
+ 	int rc;
+ 	unsigned long flags;
+ 
+ 	if (!mport->ops->map_outb)
+ 		return -ENODEV;
+ 
+ 	spin_lock_irqsave(&rio_mmap_lock, flags);
+ 	rc = mport->ops->map_outb(mport, destid, rbase, size,
+ 		rflags, local);
+ 	spin_unlock_irqrestore(&rio_mmap_lock, flags);
+ 
+ 	return rc;
  }
+ EXPORT_SYMBOL_GPL(rio_map_outb_region);
  
  /**
-- *	parport_register_driver - register a parallel port device driver
-+ *	__parport_register_driver - register a parallel port device driver
-  *	@drv: structure describing the driver
-  *	@owner: owner module of drv
-  *	@mod_name: module name string
-  *
-  *	This can be called by a parallel port device driver in order
-  *	to receive notifications about ports being found in the
-  *	system, as well as ports no longer available.
-  *
-  *	If devmodel is true then the new device model is used
-  *	for registration.
-  *
-  *	The @drv structure is allocated by the caller and must not be
-  *	deallocated until after calling parport_unregister_driver().
-  *
-  *	If using the non device model:
-  *	The driver's attach() function may block.  The port that
-  *	attach() is given will be valid for the duration of the
-  *	callback, but if the driver wants to take a copy of the
-  *	pointer it must call parport_get_port() to do so.  Calling
-  *	parport_register_device() on that port will do this for you.
-diff --git a/include/linux/parport.h b/include/linux/parport.h
-index 1fb508c19e83..f981f794c850 100644
---- a/include/linux/parport.h
-+++ b/include/linux/parport.h
-@@ -280,40 +280,71 @@ struct parport *parport_register_port(unsigned long base, int irq, int dma,
- 
- /* Once a registered port is ready for high-level drivers to use, the
-    low-level driver that registered it should announce it.  This will
-    call the high-level drivers' attach() functions (after things like
-    determining the IEEE 1284.3 topology of the port and collecting
-    DeviceIDs). */
- void parport_announce_port (struct parport *port);
- 
- /* Unregister a port. */
- extern void parport_remove_port(struct parport *port);
- 
- /* Register a new high-level driver. */
- 
- int __must_check __parport_register_driver(struct parport_driver *,
- 					   struct module *,
- 					   const char *mod_name);
- /*
-  * parport_register_driver must be a macro so that KBUILD_MODNAME can
-  * be expanded
+- * rio_unmap_inb_region -- Unmap the inbound memory region
++ * rio_unmap_outb_region -- Unmap the inbound memory region
+  * @mport: Master port
+  * @destid: destination id mapping points to
+  * @rstart: RIO base address window translates to
   */
-+
-+/**
-+ *	parport_register_driver - register a parallel port device driver
-+ *	@driver: structure describing the driver
-+ *
-+ *	This can be called by a parallel port device driver in order
-+ *	to receive notifications about ports being found in the
-+ *	system, as well as ports no longer available.
-+ *
-+ *	If devmodel is true then the new device model is used
-+ *	for registration.
-+ *
-+ *	The @driver structure is allocated by the caller and must not be
-+ *	deallocated until after calling parport_unregister_driver().
-+ *
-+ *	If using the non device model:
-+ *	The driver's attach() function may block.  The port that
-+ *	attach() is given will be valid for the duration of the
-+ *	callback, but if the driver wants to take a copy of the
-+ *	pointer it must call parport_get_port() to do so.  Calling
-+ *	parport_register_device() on that port will do this for you.
-+ *
-+ *	The driver's detach() function may block.  The port that
-+ *	detach() is given will be valid for the duration of the
-+ *	callback, but if the driver wants to take a copy of the
-+ *	pointer it must call parport_get_port() to do so.
-+ *
-+ *
-+ *	Returns 0 on success. The non device model will always succeeds.
-+ *	but the new device model can fail and will return the error code.
-+ **/
- #define parport_register_driver(driver)             \
- 	__parport_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
+ void rio_unmap_outb_region(struct rio_mport *mport, u16 destid, u64 rstart)
+ {
+ 	unsigned long flags;
  
- /* Unregister a high-level driver. */
- extern void parport_unregister_driver (struct parport_driver *);
- void parport_unregister_driver(struct parport_driver *);
+ 	if (!mport->ops->unmap_outb)
+ 		return;
  
- /* If parport_register_driver doesn't fit your needs, perhaps
-  * parport_find_xxx does. */
- extern struct parport *parport_find_number (int);
- extern struct parport *parport_find_base (unsigned long);
+ 	spin_lock_irqsave(&rio_mmap_lock, flags);
+ 	mport->ops->unmap_outb(mport, destid, rstart);
+ 	spin_unlock_irqrestore(&rio_mmap_lock, flags);
+ }
+ EXPORT_SYMBOL_GPL(rio_unmap_outb_region);
  
- /* generic irq handler, if it suits your needs */
- extern irqreturn_t parport_irq_handler(int irq, void *dev_id);
- 
- /* Reference counting for ports. */
- extern struct parport *parport_get_port (struct parport *);
- extern void parport_put_port (struct parport *);
- void parport_del_port(struct parport *);
- 
+ /**
+  * rio_mport_get_physefb - Helper function that returns register offset
+  *                      for Physical Layer Extended Features Block.
 -- 
 2.28.0
 
