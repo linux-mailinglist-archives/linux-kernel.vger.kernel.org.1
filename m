@@ -2,110 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55272B54B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052312B54B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbgKPXA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:00:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbgKPXA4 (ORCPT
+        id S1728999AbgKPXCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:02:40 -0500
+Received: from smtprelay0075.hostedemail.com ([216.40.44.75]:52874 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725379AbgKPXCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:00:56 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9E5C0613CF;
-        Mon, 16 Nov 2020 15:00:56 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id oq3so26755876ejb.7;
-        Mon, 16 Nov 2020 15:00:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q1oNa+SDvS8rNlOFpMcD/JWhI9Mb+yXMudWdOfTVJtg=;
-        b=UodquA9Jt/2gII7GaU8AlnmKZb13xKoqOA8734Fs+qd4BKf/P0S/FJwCTLBN5Y56V/
-         jf1AcqnQ0kTeDmU1k2/KepFPpDmxuwnStO3/NVq2QGPigNelIhjgdJDw1uZ+s9lfXw8w
-         8BDCGkNpn5kfF1wi7nc0UbKbZWAWpeJ4PORKPJMTrZRm3WWTUSMZNPyzCnBcYXrqEbcG
-         qIsKvnRc7GO/GFq9h8uErEeP4IRjr6yF/Mab7770RN7BQeCrvddbqEAlK/WME3Yns1Wf
-         olIuqvrtiiEhRoLk3feSzgKt+f1dI7m/gh8GHntvetdUYYS7UsqRVviNHELi6Owt+LEZ
-         r9og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q1oNa+SDvS8rNlOFpMcD/JWhI9Mb+yXMudWdOfTVJtg=;
-        b=UAIMMqVSkgkJVIrhbF/X1HjNGgdacrd1YUMkOwZeDsb4OOdlIFkkPeOMePnK7rF6Cq
-         Ocoxwgpd52ju05v8Ed6Ldo7fti0o0ad7xJHJ29Z3VCMebJ7+9QNgTCqDG0fIz7S2kkH2
-         i/VpI1ud5pD/zROC8HrcQu+Hn+EZdmzXNey9oakrLb2FwTLnDO2ygT8QL0/t5qsv16te
-         TR34hgy89wDuiYgDRHR+vwnET+t7H2mU4w7/Xoq7MBxI+KNykDqUlZCRi7VUBjjR1s1+
-         gOkkfqKegWDQ9Nq6mU+AHdKXWa/2PgtN5if2gQTGKJR9xUu3ccfjIFE0TmtS3WoLA17K
-         BD6g==
-X-Gm-Message-State: AOAM533t1V2DfqjS4Wn62LrJXnlqtaQUtTiWn3jHmjlOseTY63DobuyG
-        SRSYkY1Us+Xn28MRhfkYi4n0IxAhCjQ=
-X-Google-Smtp-Source: ABdhPJzOt57Bd/bq43g7ujtQDWOL1EJeGUeQ/2YjH4ds0rj/1pOuf5MoqHuGcNt79rsOAxkV9gFe7w==
-X-Received: by 2002:a17:906:46d5:: with SMTP id k21mr16974710ejs.495.1605567655118;
-        Mon, 16 Nov 2020 15:00:55 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id d19sm11285984eds.31.2020.11.16.15.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 15:00:54 -0800 (PST)
-Date:   Tue, 17 Nov 2020 01:00:53 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v1 net-next] net: dsa: qca: ar9331: add ethtool stats
- support
-Message-ID: <20201116230053.ddub7p6lvvszz7ic@skbuf>
-References: <20201115073533.1366-1-o.rempel@pengutronix.de>
- <20201116133453.270b8db5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201116222146.znetv5u2q2q2vk2j@skbuf>
- <20201116143544.036baf58@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Mon, 16 Nov 2020 18:02:39 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 9330A100E7B42;
+        Mon, 16 Nov 2020 23:02:38 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7514:7903:9025:10004:10400:10848:11232:11658:11914:12043:12296:12297:12555:12679:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21067:21080:21451:21627:21987:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: pin73_56106342732c
+X-Filterd-Recvd-Size: 1810
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 16 Nov 2020 23:02:37 +0000 (UTC)
+Message-ID: <67332536788cefbc39c7f87129adca462bb42fa5.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Fix unescaped left brace
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Mon, 16 Nov 2020 15:02:36 -0800
+In-Reply-To: <d3d6b68178b4193f04c35863163ce811a1571c0a.camel@perches.com>
+References: <20201115202928.81955-1-dwaipayanray1@gmail.com>
+         <d3d6b68178b4193f04c35863163ce811a1571c0a.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116143544.036baf58@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 02:35:44PM -0800, Jakub Kicinski wrote:
-> On Tue, 17 Nov 2020 00:21:46 +0200 Vladimir Oltean wrote:
-> > On Mon, Nov 16, 2020 at 01:34:53PM -0800, Jakub Kicinski wrote:
-> > > You must expose relevant statistics via the normal get_stats64 NDO
-> > > before you start dumping free form stuff in ethtool -S.
-> >
-> > Completely agree on the point, Jakub, but to be honest we don't give him
-> > that possibility within the DSA framework today, see .ndo_get_stats64 in
-> > net/dsa/slave.c which returns the generic dev_get_tstats64 implementation,
-> > and not something that hooks into the hardware counters, or into the
-> > driver at all, for that matter.
->
-> Simple matter of coding, right? I don't see a problem.
->
-> Also I only mentioned .ndo_get_stats64, but now we also have stats in
-> ethtool->get_pause_stats.
+On Sun, 2020-11-15 at 19:43 -0800, Joe Perches wrote:
+> On Mon, 2020-11-16 at 01:59 +0530, Dwaipayan Ray wrote:
+> > There is an unescaped left brace in a regex in OPEN_BRACE
+> > check. This throws a runtime error when checkpatch is run
+> > with --fix flag and the OPEN_BRACE check is executed.
+> > 
+> > Fix it by escaping the left brace.
+> > 
+> > Fixes: 8d1824780f2f ("checkpatch: add --fix option for a couple OPEN_BRACE misuses")
+> > Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> 
+> Thanks Dwaipayan.
+> 
+> Obviously that code path hasn't been tested in awhile.
+> 
+> I think the notice to require an escape for a { was added back in
+> perl 5.16 or so.
 
-Yes, sure we can do that. The pause stats and packet counter ops would
-need to be exposed to the drivers by DSA first, though. Not sure if this
-is something you expect Oleksij to do or if we could pick that up separately
-afterwards.
+Just fyi:  it seems the requirement was actually implemented in perl 5.22
+and this code predates the release of perl 5.22
 
-> > But it's good that you raise the point, I was thinking too that we
-> > should do better in terms of keeping the software counters in sync with
-> > the hardware. But what would be a good reference for keeping statistics
-> > on an offloaded interface? Is it ok to just populate the netdev counters
-> > based on the hardware statistics?
->
-> IIRC the stats on the interface should be a sum of forwarded in software
-> and in hardware. Which in practice means interface HW stats are okay,
-> given eventually both forwarding types end up in the HW interface
-> (/MAC block).
+https://github.com/Perl/perl5/blob/blead/pod/perl5220delta.pod
 
-A sum? Wouldn't that count the packets sent/received by the stack twice?
