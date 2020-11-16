@@ -2,128 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6A22B53D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7282B53DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729508AbgKPVag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:30:36 -0500
-Received: from mga18.intel.com ([134.134.136.126]:60550 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgKPVag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:30:36 -0500
-IronPort-SDR: fbzVzJPh71d24eMHaY6krkcgoV5kxc2154mao955jsNNq1QY/gVe45gpmCiuPcEbw4kkrgzYGL
- o5EN/mjgPsDA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="158594019"
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="158594019"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 13:30:21 -0800
-IronPort-SDR: nYvSDaJbDRJyoLEJ6aQ61vfzzlpFBHHD4PSUhCZg66AKhOnVsH+pggjhEXWSmrEHKXizkel/rk
- u8U1GBMTtTqw==
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="543755912"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 13:30:21 -0800
-Date:   Mon, 16 Nov 2020 13:30:19 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Chen Yu <yu.c.chen@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH][v2] x86/microcode/intel: check cpu stepping and
- processor flag before saving microcode
-Message-ID: <20201116213019.GB76389@otc-nc-03>
-References: <20201113015923.13960-1-yu.c.chen@intel.com>
- <20201116122735.GA1131@zn.tnic>
+        id S1729544AbgKPVeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:34:44 -0500
+Received: from mail.efficios.com ([167.114.26.124]:60978 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbgKPVen (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 16:34:43 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 276C22D1426;
+        Mon, 16 Nov 2020 16:34:42 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id f-Ce_6a2g1Tu; Mon, 16 Nov 2020 16:34:41 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id AA8BB2D105C;
+        Mon, 16 Nov 2020 16:34:41 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com AA8BB2D105C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1605562481;
+        bh=EMWqZDrzoqtCJkVXP8nY7dQB0JH0OvHZOGk4DxHpjVM=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=hSxrcYILoORHcHBaFoqN2cdA8LD7oKbqIuXhoatCyzyUzgdV69Xm1l3oU/ajsCS7w
+         gTC88Teotu//DfDBOh5Q/2rG+ZMJ5+McWGT0AZWysjQqYhLfzhENYHxMLpGHnMT9Yz
+         M8jPGagXnGIqFiTDMlBihZmgS4bzVlV6tXztuQuUPIjoYu4LXyhJnRqw5YncBY+kyz
+         +HVNeVVtkNnXyb21sTD0mPTh6z5mNZdE2x1WH4uevhsk2AkT6MKSNBLmYXaDFZIyAv
+         OWP/slVcdpBNbK0ZTZz4EIfe/EnYTijLnpKk+CFl/EvrdQiZVTlaBNNV4Cbo0umYWw
+         S+b5kEmZXzSlA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id bZ-GxLbRQbYG; Mon, 16 Nov 2020 16:34:41 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 90DFF2D105B;
+        Mon, 16 Nov 2020 16:34:41 -0500 (EST)
+Date:   Mon, 16 Nov 2020 16:34:41 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     paulmck <paulmck@kernel.org>, Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Message-ID: <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201116160218.3b705345@gandalf.local.home>
+References: <00000000000004500b05b31e68ce@google.com> <20201115055256.65625-1-mmullins@mmlx.us> <20201116121929.1a7aeb16@gandalf.local.home> <1889971276.46615.1605559047845.JavaMail.zimbra@efficios.com> <20201116154437.254a8b97@gandalf.local.home> <20201116160218.3b705345@gandalf.local.home>
+Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116122735.GA1131@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
+Thread-Topic: don't fail kmalloc while releasing raw_tp
+Thread-Index: rv+RzkkQl7L/OC9Xs4agP4GYhHq4hQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris
+----- On Nov 16, 2020, at 4:02 PM, rostedt rostedt@goodmis.org wrote:
 
-On Mon, Nov 16, 2020 at 01:27:35PM +0100, Borislav Petkov wrote:
-> ( drop stable@ from Cc because this is not how fixes get added to stable@ )
+> On Mon, 16 Nov 2020 15:44:37 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+>> If you use a stub function, it shouldn't affect anything. And the worse
+>> that would happen is that you have a slight overhead of calling the stub
+>> until you can properly remove the callback.
+> 
+> Something like this:
+> 
+> (haven't compiled it yet, I'm about to though).
+> 
+> -- Steve
+> 
+> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> index 3f659f855074..8eab40f9d388 100644
+> --- a/kernel/tracepoint.c
+> +++ b/kernel/tracepoint.c
+> @@ -53,10 +53,16 @@ struct tp_probes {
+> 	struct tracepoint_func probes[];
+> };
+> 
+> -static inline void *allocate_probes(int count)
+> +/* Called in removal of a func but failed to allocate a new tp_funcs */
+> +static void tp_stub_func(void)
 
-Stable is still left below. with #v4.10+
+I'm still not sure whether it's OK to call a (void) function with arguments.
 
-Do you want to keep this? Also do you want him to resend or you have that
-covered?
+> +{
+> +	return;
+> +}
+> +
+> +static inline void *allocate_probes(int count, gfp_t extra_flags)
+> {
+> 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
+> -				       GFP_KERNEL);
+> +				       GFP_KERNEL | extra_flags);
+> 	return p == NULL ? NULL : p->probes;
+> }
+> 
+> @@ -150,7 +156,7 @@ func_add(struct tracepoint_func **funcs, struct
+> tracepoint_func *tp_func,
+> 		}
+> 	}
+> 	/* + 2 : one for new probe, one for NULL func */
+> -	new = allocate_probes(nr_probes + 2);
+> +	new = allocate_probes(nr_probes + 2, 0);
+> 	if (new == NULL)
+> 		return ERR_PTR(-ENOMEM);
+> 	if (old) {
+> @@ -188,8 +194,9 @@ static void *func_remove(struct tracepoint_func **funcs,
+> 	/* (N -> M), (N > 1, M >= 0) probes */
+> 	if (tp_func->func) {
+> 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+> -			if (old[nr_probes].func == tp_func->func &&
+> -			     old[nr_probes].data == tp_func->data)
+> +			if ((old[nr_probes].func == tp_func->func &&
+> +			     old[nr_probes].data == tp_func->data) ||
+> +			    old[nr_probes].func == tp_stub_func)
+> 				nr_del++;
+> 		}
+> 	}
+> @@ -207,15 +214,20 @@ static void *func_remove(struct tracepoint_func **funcs,
+> 		int j = 0;
+> 		/* N -> M, (N > 1, M > 0) */
+> 		/* + 1 for NULL */
+> -		new = allocate_probes(nr_probes - nr_del + 1);
+> -		if (new == NULL)
+> -			return ERR_PTR(-ENOMEM);
+> -		for (i = 0; old[i].func; i++)
+> -			if (old[i].func != tp_func->func
+> -					|| old[i].data != tp_func->data)
+> -				new[j++] = old[i];
+> -		new[nr_probes - nr_del].func = NULL;
+> -		*funcs = new;
+> +		new = allocate_probes(nr_probes - nr_del + 1, __GFP_NOFAIL);
+> +		if (new) {
+> +			for (i = 0; old[i].func; i++)
+> +				if (old[i].func != tp_func->func
+> +				    || old[i].data != tp_func->data)
 
-> 
-> On Fri, Nov 13, 2020 at 09:59:23AM +0800, Chen Yu wrote:
-> > Currently scan_microcode() leverages microcode_matches() to check if the
-> > microcode matches the CPU by comparing the family and model. However before
-> > saving the microcode in scan_microcode(), the processor stepping and flag
-> > of the microcode signature should also be considered in order to avoid
-> > incompatible update and caused the failure of microcode update.
-> 
-> This is going in the right direction but needs to take care of one
-> more angle. I've extended your fix to the version below. Lemme know if
-> something's not clear or still missing.
-> 
+as you point out in your reply, skip tp_stub_func here too.
 
-Seems clear to me, and the commit log cleanup also makes sense.
-I don't have a system myself,. Will wait for Chen Yu to confirm if it works
-for him as well. 
+> +					new[j++] = old[i];
+> +			new[nr_probes - nr_del].func = NULL;
+> +		} else {
+> +			for (i = 0; old[i].func; i++)
+> +				if (old[i].func == tp_func->func &&
+> +				    old[i].data == tp_func->data)
+> +					old[i].func = tp_stub_func;
 
-> Thx.
+I think you'll want a WRITE_ONCE(old[i].func, tp_stub_func) here, matched
+with a READ_ONCE() in __DO_TRACE. This introduces a new situation where the
+func pointer can be updated and loaded concurrently.
+
+> +		}
+> +		*funcs = old;
+
+The line above seems wrong for the successful allocate_probe case. You will likely
+want *funcs = new on successful allocation, and *funcs = old for the failure case.
+
+Thanks,
+
+Mathieu
+
+> 	}
+> 	debug_print_probes(*funcs);
+> 	return old;
+> @@ -300,6 +312,10 @@ static int tracepoint_remove_func(struct tracepoint *tp,
+> 		return PTR_ERR(old);
+> 	}
 > 
-> ---
-> From: Chen Yu <yu.c.chen@intel.com>
-> Date: Fri, 13 Nov 2020 09:59:23 +0800
-> Subject: [PATCH] x86/microcode/intel: Check patch signature before saving microcode for early loading
-> 
-> Currently, scan_microcode() leverages microcode_matches() to check
-> if the microcode matches the CPU by comparing the family and model.
-> However, the processor stepping and flags of the microcode signature
-> should also be considered when saving a microcode patch for early
-> update.
-> 
-> Use find_matching_signature() in scan_microcode() and get rid of the
-> now-unused microcode_matches() which is a good cleanup in itself.
-> 
-> Complete the verification of the patch being saved for early loading in
-> save_microcode_patch() directly. This needs to be done there too because
-> save_mc_for_early() will call save_microcode_patch() too.
-> 
-> The second reason why this needs to be done is because the loader still
-> tries to support, at least hypothetically, mixed-steppings systems and
-> thus adds all patches to the cache that belong to the same CPU model
-> albeit with different steppings.
-> 
-> For example:
-> 
->   microcode: CPU: sig=0x906ec, pf=0x2, rev=0xd6
->   microcode: mc_saved[0]: sig=0x906e9, pf=0x2a, rev=0xd6, total size=0x19400, date = 2020-04-23
->   microcode: mc_saved[1]: sig=0x906ea, pf=0x22, rev=0xd6, total size=0x19000, date = 2020-04-27
->   microcode: mc_saved[2]: sig=0x906eb, pf=0x2, rev=0xd6, total size=0x19400, date = 2020-04-23
->   microcode: mc_saved[3]: sig=0x906ec, pf=0x22, rev=0xd6, total size=0x19000, date = 2020-04-27
->   microcode: mc_saved[4]: sig=0x906ed, pf=0x22, rev=0xd6, total size=0x19400, date = 2020-04-23
-> 
-> The patch which is being saved for early loading, however, can only be
-> the one which fits the CPU this runs on so do the signature verification
-> before saving.
-> 
->  [ bp: Do signature verification in save_microcode_patch()
->        and rewrite commit message. ]
-> 
-> Fixes: 06b8534cb728 ("x86/microcode: Rework microcode loading")
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Cc: stable@vger.kernel.org #v4.10+
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=208535
-> Link: https://lkml.kernel.org/r/20201113015923.13960-1-yu.c.chen@intel.com
-> ---
->  arch/x86/kernel/cpu/microcode/intel.c | 63 +++++----------------------
->  1 file changed, 10 insertions(+), 53 deletions(-)
+> +	if (tp_funcs == old)
+> +		/* Failed allocating new tp_funcs, replaced func with stub */
+> +		return 0;
+> +
+> 	if (!tp_funcs) {
+> 		/* Removed last function */
+>  		if (tp->unregfunc && static_key_enabled(&tp->key))
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
