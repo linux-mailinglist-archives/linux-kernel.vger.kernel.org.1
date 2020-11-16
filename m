@@ -2,153 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066CA2B3C5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 06:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 209C62B3C95
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 06:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgKPFTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 00:19:31 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56876 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgKPFTa (ORCPT
+        id S1726633AbgKPFZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 00:25:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21590 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725730AbgKPFZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 00:19:30 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AG5JCok040603;
-        Sun, 15 Nov 2020 23:19:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605503952;
-        bh=3oB89CbTYHpl2o9ZDiCY/Ic+iLDClTkUpWMbGhciyBQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=GYfchMo9v/DfW6ccVCdckXt4QZKgJrL3G5GMw28kA7JYyz4+K1RKIyv2vPK3lbKr3
-         ZLOzNKKyuxJCbpJx4GQD2KGQllnePA8bn5omu05e5fUJZ3DmF/xYaSYt6Z7lwzQI5/
-         6COYbZey3qpLaDR0yZjxfqZmD5s4S0UJ76Pf1zq8=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AG5JB5Y049190
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 15 Nov 2020 23:19:12 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 15
- Nov 2020 23:19:11 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sun, 15 Nov 2020 23:19:11 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AG5J6v5020556;
-        Sun, 15 Nov 2020 23:19:07 -0600
-Subject: Re: [PATCH v7 15/18] NTB: Add support for EPF PCI-Express
- Non-Transparent Bridge
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Sherry Sun <sherry.sun@nxp.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "jdmason@kudzu.us" <jdmason@kudzu.us>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "allenbh@gmail.com" <allenbh@gmail.com>,
-        "tjoseph@cadence.com" <tjoseph@cadence.com>,
-        Rob Herring <robh@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
-References: <20200930153519.7282-16-kishon@ti.com>
- <VI1PR04MB496061EAB6F249F1C394F01092EA0@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <d6d27475-3464-6772-2122-cc194b8ae022@ti.com>
- <VI1PR04MB49602D24F65E11FF1F14294F92E90@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <30c8f7a1-baa5-1eb4-d2c2-9a13be896f0f@ti.com>
- <CAK8P3a38vBXbAWE09H+TSoZUTkFdYDcQmXX97foT4qXQc8t5ZQ@mail.gmail.com>
- <5a9115c8-322e-ffd4-6274-ae98c375b21d@ti.com>
- <CAK8P3a33XSvenqBhuQpGmtLbYydyzY2OQh73150TJtpzW24DTw@mail.gmail.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <c720de5b-bf76-162f-24cb-07f6fe670bd2@ti.com>
-Date:   Mon, 16 Nov 2020 10:49:05 +0530
+        Mon, 16 Nov 2020 00:25:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605504350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=idWyoh7qRbmkwmAn0b59fT2mdkgJ00GkL/2MJYUzIjo=;
+        b=e8bai97ithVujj29iog96SA1D5Xv7SHRVLlBUkIURTqvMVuXjcdL9XygPNxwE/z49XGXUo
+        jgD/ml4QcS16UbCf0G9Wu3zSOVNuPQ1wECJjT5l7OaBq+HPKDkWuc67t9XRjs0EYfwMc6g
+        8o8fQWk77tMWYK4uEdHLUg7pDcUEiLU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-251-4WXemXDFM6qUD7zKhShcKw-1; Mon, 16 Nov 2020 00:25:44 -0500
+X-MC-Unique: 4WXemXDFM6qUD7zKhShcKw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CF5710074C5;
+        Mon, 16 Nov 2020 05:25:43 +0000 (UTC)
+Received: from [10.72.13.92] (ovpn-13-92.pek2.redhat.com [10.72.13.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A83466B8E5;
+        Mon, 16 Nov 2020 05:25:33 +0000 (UTC)
+Subject: Re: [PATCH RFC 12/12] vdpa_sim_blk: implement ramdisk behaviour
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-13-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <56d8c992-44ca-f365-fb92-f5da94896680@redhat.com>
+Date:   Mon, 16 Nov 2020 13:25:31 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a33XSvenqBhuQpGmtLbYydyzY2OQh73150TJtpzW24DTw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201113134712.69744-13-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
 
-On 12/11/20 6:54 pm, Arnd Bergmann wrote:
-> On Tue, Nov 10, 2020 at 4:42 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->> On 10/11/20 8:29 pm, Arnd Bergmann wrote:
->>> On Tue, Nov 10, 2020 at 3:20 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->>>> On 10/11/20 7:55 am, Sherry Sun wrote:
->>>
->>>>> But for VOP, only two boards are needed(one board as host and one board as card) to realize the
->>>>> communication between the two systems, so my question is what are the advantages of using NTB?
->>>>
->>>> NTB is a bridge that facilitates communication between two different
->>>> systems. So it by itself will not be source or sink of any data unlike a
->>>> normal EP to RP system (or the VOP) which will be source or sink of data.
->>>>
->>>>> Because I think the architecture of NTB seems more complicated. Many thanks!
->>>>
->>>> yeah, I think it enables a different use case all together. Consider you
->>>> have two x86 HOST PCs (having RP) and they have to be communicate using
->>>> PCIe. NTB can be used in such cases for the two x86 PCs to communicate
->>>> with each other over PCIe, which wouldn't be possible without NTB.
->>>
->>> I think for VOP, we should have an abstraction that can work on either NTB
->>> or directly on the endpoint framework but provide an interface that then
->>> lets you create logical devices the same way.
->>>
->>> Doing VOP based on NTB plus the new NTB_EPF driver would also
->>> work and just move the abstraction somewhere else, but I guess it
->>> would complicate setting it up for those users that only care about the
->>> simpler endpoint case.
->>
->> I'm not sure if you've got a chance to look at [1], where I added
->> support for RP<->EP system both running Linux, with EP configured using
->> Linux EP framework (as well as HOST ports connected to NTB switch,
->> patches 20 and 21, that uses the Linux NTB framework) to communicate
->> using virtio over PCIe.
->>
->> The cover-letter [1] shows a picture of the two use cases supported in
->> that series.
->>
->> [1] -> http://lore.kernel.org/r/20200702082143.25259-1-kishon@ti.com
-> 
-> No, I missed, that, thanks for pointing me to it!
-> 
-> This looks very  promising indeed, I need to read up on the whole
-> discussion there. I also see your slides at [1]  that help do explain some
-> of it. I have one fundamental question that I can't figure out from
-> the description, maybe you can help me here:
-> 
-> How is the configuration managed, taking the EP case as an
-> example? Your UseCase1 example sounds like the system that owns
-> the EP hardware is the one that turns the EP into a vhost device,
-> and creates a vhost-rpmsg device on top, while the RC side would
-> probe the pci-vhost and then detect a virtio-rpmsg device to talk to.
+On 2020/11/13 下午9:47, Stefano Garzarella wrote:
+> The previous implementation wrote only the status of each request.
+> This patch implements a more accurate block device simulator,
+> providing a ramdisk-like behavior.
+>
+> Also handle VIRTIO_BLK_T_GET_ID request, always answering the
+> "vdpa_blk_sim" string.
 
-That's correct. Slide no 9 in [1] should give the layering details.
 
-> Can it also do the opposite, so you end up with e.g. a virtio-net
-> device on the EP side and vhost-net on the RC?
+Let's use a separate patch for this.
 
-Unfortunately no. Again referring slide 9 in [1], we only have
-vhost-pci-epf on the EP side which only creates a "vhost_dev" to deal
-with vhost side of things. For doing the opposite, we'd need to create
-virtio-pci-epf for EP side that interacts with core virtio (and also the
-corresponding vhost back end on PCI host).
+
+>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>   drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 151 +++++++++++++++++++++++----
+>   1 file changed, 133 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> index 8e41b3ab98d5..68e74383322f 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> @@ -7,6 +7,7 @@
+>    */
+>   
+>   #include <linux/module.h>
+> +#include <linux/blkdev.h>
+>   #include <uapi/linux/virtio_blk.h>
+>   
+>   #include "vdpa_sim.h"
+> @@ -24,10 +25,137 @@
+>   
+>   static struct vdpasim *vdpasim_blk_dev;
+>   
+> +static int vdpasim_blk_handle_req(struct vdpasim *vdpasim,
+> +				  struct vdpasim_virtqueue *vq)
+> +{
+> +	size_t wrote = 0, to_read = 0, to_write = 0;
+> +	struct virtio_blk_outhdr hdr;
+> +	uint8_t status;
+> +	uint32_t type;
+> +	ssize_t bytes;
+> +	loff_t offset;
+> +	int i, ret;
+> +
+> +	vringh_kiov_cleanup(&vq->riov);
+> +	vringh_kiov_cleanup(&vq->wiov);
+
+
+It looks to me we should do those after vringh_get_desc_iotlb()? See 
+comment above vringh_getdesc_kern().
+
+
+> +
+> +	ret = vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
+> +				   &vq->head, GFP_ATOMIC);
+> +	if (ret != 1)
+> +		return ret;
+> +
+> +	for (i = 0; i < vq->wiov.used; i++)
+> +		to_write += vq->wiov.iov[i].iov_len;
+
+
+It's better to introduce a helper for this (or consider to use iov 
+iterator).
+
+
+> +	to_write -= 1; /* last byte is the status */
+> +
+> +	for (i = 0; i < vq->riov.used; i++)
+> +		to_read += vq->riov.iov[i].iov_len;
+> +
+> +	bytes = vringh_iov_pull_iotlb(&vq->vring, &vq->riov, &hdr, sizeof(hdr));
+> +	if (bytes != sizeof(hdr))
+> +		return 0;
+> +
+> +	to_read -= bytes;
+> +
+> +	type = le32_to_cpu(hdr.type);
+> +	offset = le64_to_cpu(hdr.sector) << SECTOR_SHIFT;
+> +	status = VIRTIO_BLK_S_OK;
+> +
+> +	switch (type) {
+> +	case VIRTIO_BLK_T_IN:
+> +		if (offset + to_write > VDPASIM_BLK_CAPACITY << SECTOR_SHIFT) {
+> +			dev_err(&vdpasim->vdpa.dev,
+> +				"reading over the capacity - offset: 0x%llx len: 0x%lx\n",
+> +				offset, to_write);
+> +			status = VIRTIO_BLK_S_IOERR;
+> +			break;
+> +		}
+> +
+> +		bytes = vringh_iov_push_iotlb(&vq->vring, &vq->wiov,
+> +					      vdpasim->buffer + offset,
+> +					      to_write);
+> +		if (bytes < 0) {
+> +			dev_err(&vdpasim->vdpa.dev,
+> +				"vringh_iov_push_iotlb() error: %ld offset: 0x%llx len: 0x%lx\n",
+> +				bytes, offset, to_write);
+> +			status = VIRTIO_BLK_S_IOERR;
+> +			break;
+> +		}
+> +
+> +		wrote += bytes;
+> +		break;
+> +
+> +	case VIRTIO_BLK_T_OUT:
+> +		if (offset + to_read > VDPASIM_BLK_CAPACITY << SECTOR_SHIFT) {
+> +			dev_err(&vdpasim->vdpa.dev,
+> +				"writing over the capacity - offset: 0x%llx len: 0x%lx\n",
+> +				offset, to_read);
+> +			status = VIRTIO_BLK_S_IOERR;
+> +			break;
+> +		}
+> +
+> +		bytes = vringh_iov_pull_iotlb(&vq->vring, &vq->riov,
+> +					      vdpasim->buffer + offset,
+> +					      to_read);
+> +		if (bytes < 0) {
+> +			dev_err(&vdpasim->vdpa.dev,
+> +				"vringh_iov_pull_iotlb() error: %ld offset: 0x%llx len: 0x%lx\n",
+> +				bytes, offset, to_read);
+> +			status = VIRTIO_BLK_S_IOERR;
+> +			break;
+> +		}
+> +		break;
+> +
+> +	case VIRTIO_BLK_T_GET_ID: {
+> +		char id[VIRTIO_BLK_ID_BYTES] = "vdpa_blk_sim";
+
+
+Let's use a global static one?
+
+
+> +
+> +		bytes = vringh_iov_push_iotlb(&vq->vring,
+> +					      &vq->wiov, id,
+> +					      VIRTIO_BLK_ID_BYTES);
+> +		if (bytes < 0) {
+> +			dev_err(&vdpasim->vdpa.dev,
+> +				"vringh_iov_push_iotlb() error: %ld\n", bytes);
+> +			status = VIRTIO_BLK_S_IOERR;
+> +			break;
+> +		}
+> +
+> +		wrote += bytes;
+> +		break;
+> +	}
+> +
+> +	default:
+> +		dev_warn(&vdpasim->vdpa.dev,
+> +			 "Unsupported request type %d\n", type);
+> +		status = VIRTIO_BLK_S_IOERR;
+> +		break;
+> +	}
+> +
+> +	/* if VIRTIO_BLK_T_IN or VIRTIO_BLK_T_GET_ID fail, we need to skip
+> +	 * the remaining bytes to put the status in the last byte
+> +	 */
+> +	if (to_write - wrote > 0) {
+> +		vringh_iov_push_iotlb(&vq->vring, &vq->wiov, NULL,
+> +				      to_write - wrote);
+> +	}
+> +
+> +	/* last byte is the status */
+> +	bytes = vringh_iov_push_iotlb(&vq->vring, &vq->wiov, &status, 1);
+> +	if (bytes != 1)
+> +		return 0;
+> +
+> +	wrote += bytes;
+> +
+> +	/* Make sure data is wrote before advancing index */
+> +	smp_wmb();
+> +
+> +	vringh_complete_iotlb(&vq->vring, vq->head, wrote);
+> +
+> +	return ret;
+> +}
+> +
+>   static void vdpasim_blk_work(struct work_struct *work)
+>   {
+>   	struct vdpasim *vdpasim = container_of(work, struct vdpasim, work);
+> -	u8 status = VIRTIO_BLK_S_OK;
+>   	int i;
+>   
+>   	spin_lock(&vdpasim->lock);
+> @@ -41,21 +169,7 @@ static void vdpasim_blk_work(struct work_struct *work)
+>   		if (!vq->ready)
+>   			continue;
+>   
+> -		while (vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
+> -					    &vq->head, GFP_ATOMIC) > 0) {
+> -
+> -			int write;
+> -
+> -			vq->wiov.i = vq->wiov.used - 1;
+> -			write = vringh_iov_push_iotlb(&vq->vring, &vq->wiov, &status, 1);
+> -			if (write <= 0)
+> -				break;
+> -
+> -			/* Make sure data is wrote before advancing index */
+> -			smp_wmb();
+> -
+> -			vringh_complete_iotlb(&vq->vring, vq->head, write);
+> -
+> +		while (vdpasim_blk_handle_req(vdpasim, vq) > 0) {
+>   			/* Make sure used is visible before rasing the interrupt. */
+>   			smp_wmb();
+>   
+> @@ -67,6 +181,7 @@ static void vdpasim_blk_work(struct work_struct *work)
+>   				vq->cb(vq->private);
+>   			local_bh_enable();
+>   		}
+> +
+
+
+Unnecessary change.
 
 Thanks
-Kishon
 
-> 
->      Arnd
-> 
-> [1] https://linuxplumbersconf.org/event/7/contributions/849/attachments/642/1175/Virtio_for_PCIe_RC_EP_NTB.pdf
-> 
+
