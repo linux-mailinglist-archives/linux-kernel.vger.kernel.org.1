@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1862B53CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FDA2B53CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729060AbgKPV0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:26:14 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51910 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgKPV0N (ORCPT
+        id S1729314AbgKPV17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:27:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgKPV17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:26:13 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id BE2B01C0B8D; Mon, 16 Nov 2020 22:26:09 +0100 (CET)
-Date:   Mon, 16 Nov 2020 22:26:09 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jann Horn <jannh@google.com>, Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v22 01/12] landlock: Add object management
-Message-ID: <20201116212609.GA13063@amd>
-References: <20201027200358.557003-1-mic@digikod.net>
- <20201027200358.557003-2-mic@digikod.net>
+        Mon, 16 Nov 2020 16:27:59 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10283C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 13:27:59 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id l22so9958059vsa.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 13:27:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EwGz4nO+cm59nPX+1nCEN39WoYWpvBzcZZIZEOPDIWA=;
+        b=WWFLjZCEFXGX7nlWQl0XMopyn+eK+0oe8HZcFqey62EqTnLU9iplnYPU1lorxuC3gA
+         HFHuQvZWK2+H6lYArmzCQcRrFiIq8fKwj4zAGe2wZyKU4OH8SgLitvaF70dJPG7wkVgE
+         x2AG0J6vEurQeQ8of0VpuFo4CUsOTdgtAkLRcr2MOaUpT1Pj02Zb2uiachTTvWJ6jVSQ
+         MwA2dTPbYm6S0RJuvJngvlBz/EbYXn1DEnSQ5QC9xx+f4+cHjCZAqyAA2s5tVckKBPKT
+         +jp0AUTmo4AFGZK/HcxbVtRgUbQxxqh6crn4xpQIKNd6MrXlr0Zy1Jvor/U+mdNJLbpN
+         ADAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EwGz4nO+cm59nPX+1nCEN39WoYWpvBzcZZIZEOPDIWA=;
+        b=OnISJgPD9wP54hD11oJny+Lu0kqQtwxMq9c8IkpWWX+2e0fC63Msbip+Cp7i6nfO15
+         ZMRnTDreAYspmY10P9DhJpVLdxasdGM7+TChl+zWZ9l7255kJK7Tx6BEsam6ncM9o0bM
+         FAvetmqQJ4D0oD7Ze+fCYLeYFg6hTDl+F0MIR6x/cSPLVDa5etlE6vzLULYz4nxrusnj
+         Gn90EK+siX6qTfxYSVWXgZey0n1bblG25NfZdOzG75hpfQd6YCR3M5/RH/qbEdC7FZEI
+         hqgA3F3R7y0jblToxDksq3PxKaMPZNtTiwurAB7KBe/dP06/9L3mcfCq3oDMlyK4hiiN
+         4BIA==
+X-Gm-Message-State: AOAM530OPB9WwMeSw+jdshX7LyqLY55A/WUMK0VWEpFZL+nmvzIIvJWC
+        9sydavIhA4bewCa4z9t9ci65cjl11Qv9AZMAD0ZfYw==
+X-Google-Smtp-Source: ABdhPJxD0wEewB35Q1kJPwqNImnMrI54oVrlA24LDOT161npZGqN8UpJNB5Vz2vjX0SQ8sSGozZJilo5ensS7fojXjg=
+X-Received: by 2002:a05:6102:448:: with SMTP id e8mr9656538vsq.14.1605562078079;
+ Mon, 16 Nov 2020 13:27:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
-Content-Disposition: inline
-In-Reply-To: <20201027200358.557003-2-mic@digikod.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20201113183414.1446671-1-samitolvanen@google.com>
+ <20201116113931.2b60a191@gandalf.local.home> <CABCJKudNGa2=65vATJMqo--8guvWHZ6-wMWHZQy-ZaH32dXdnA@mail.gmail.com>
+ <20201116153834.57ace64e@gandalf.local.home> <CABCJKufdFmoEEmx1-P_0d6vE6TOoDwJ43mq8eCQNQZ7rb0PxPQ@mail.gmail.com>
+ <20201116161819.040408dd@gandalf.local.home>
+In-Reply-To: <20201116161819.040408dd@gandalf.local.home>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 16 Nov 2020 13:27:46 -0800
+Message-ID: <CABCJKudT1vaoNNXjgduxzKJNiNCOWhCY3cq=xxi2rgJPQvYAag@mail.gmail.com>
+Subject: Re: [PATCH] samples/ftrace: mark my_tramp[12]? global
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 1:18 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Mon, 16 Nov 2020 13:10:57 -0800
+> Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> > Clang doesn't warn about this as we're building a module, it just
+> > generates a reference to a non-existing global "my_tramp" symbol,
+> > because the one defined in inline assembly has a local binding:
+> >
+> > $ readelf --symbols --wide ftrace-direct.lto.o | grep my_tramp
+> >     16: 0000000000000000    13 FUNC    LOCAL  DEFAULT    1 my_tramp
+> >     33: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND my_tramp
+> >     42: 0000000000000000     8 FUNC    GLOBAL HIDDEN     8 my_tramp.cfi_jt
+> >
+> > This would prevent the module from loading, which modpost catches:
+> >
+> > ERROR: modpost: "my_tramp" [samples/ftrace/ftrace-direct.ko] undefined!
+> >
+> > > From user space, I'm just using the following file:
+> >
+> > As this error happens only with Control-Flow Integrity, we need to
+> > take the address of the "test" function to force the compiler to
+> > generate a jump table entry for it. Here's a slightly tweaked
+> > stand-alone reproducer:
+> >
+> > https://godbolt.org/z/GnzjE4
+>
+> Thanks, we don't need to look more into this. It was mostly my curiosity to
+> find a way to have the compiler know about a function declared statically
+> in inline assembly. Maybe I'm asking for too much ;-)
+>
+> I'll take your original patch. Does it need to go to stable, or is this not
+> that big of an issue to allow it to be added in the next merge window?
 
---dDRMvlgZJXvWKvBx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks! This is definitely not a big issue, it just fixes the
+allyesconfig build with CFI, and it's not needed in -stable.
 
-Hi!
-
-> A Landlock object enables to identify a kernel object (e.g. an inode).
-> A Landlock rule is a set of access rights allowed on an object.  Rules
-> are grouped in rulesets that may be tied to a set of processes (i.e.
-> subjects) to enforce a scoped access-control (i.e. a domain).
->=20
-> Because Landlock's goal is to empower any process (especially
-> unprivileged ones) to sandbox themselves, we cannot rely on a
-> system-wide object identification such as file extended attributes.
-
-
-> +config SECURITY_LANDLOCK
-> +	bool "Landlock support"
-> +	depends on SECURITY
-> +	select SECURITY_PATH
-> +	help
-> +	  Landlock is a safe sandboxing mechanism which enables processes to
-> +	  restrict themselves (and their future children) by gradually
-> +	  enforcing tailored access control policies.  A security policy is a
-> +	  set of access rights (e.g. open a file in read-only, make a
-> +	  directory, etc.) tied to a file hierarchy.  Such policy can be config=
-ured
-> +	  and enforced by any processes for themselves thanks to dedicated syst=
-em
-> +	  calls: landlock_create_ruleset(), landlock_add_rule(), and
-> +	  landlock_enforce_ruleset_current().
-
-How does it interact with setuid binaries? Being able to exec passwd
-in a sandbox sounds like ... fun way to get root? :-).
-
-Best regards,
-								Pavel
-							=09
---=20
-http://www.livejournal.com/~pavelmachek
-
---dDRMvlgZJXvWKvBx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+y7nAACgkQMOfwapXb+vJFfQCdHLSXWQS49bTl69HbD8dnhWOY
-ddEAnjooP/7zpi9Jvz2z3cUDPwsLBIua
-=fSBm
------END PGP SIGNATURE-----
-
---dDRMvlgZJXvWKvBx--
+Sami
