@@ -2,335 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0812B4A4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2BD2B4A49
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731679AbgKPQHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:07:25 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:21730 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729475AbgKPQHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:07:24 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605542843; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=hOxV+vttSSOm2bFddWZYJ7/cKjMMz1q3pkDpq81xAcg=; b=qiIlTaRZxj/jvnpK4+ddUix0+Ang1fDP0cSVa/r/umdCabVkCRhJJxXKpOk9qTG/6D3awopy
- rEO8Nd8X5EC7dFotUIfGxIDuwuk7v2bBHAnFqfb7pN2zdbSk4R3NAyF9PeZXjAHC4vypWK8D
- ZGDPoZIxbGJS2nt0Qy4sUvzafu0=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fb2a36e3825e013b57f067e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 16:06:06
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E2A20C43465; Mon, 16 Nov 2020 16:06:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from localhost (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BEA83C433ED;
-        Mon, 16 Nov 2020 16:06:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BEA83C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>
-Subject: [PATCH V2] rcu: Check and report missed fqs timer wakeup on RCU stall
-Date:   Mon, 16 Nov 2020 21:36:00 +0530
-Message-Id: <1605542760-9746-1-git-send-email-neeraju@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1731675AbgKPQGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:06:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730648AbgKPQGm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:06:42 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779E7C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:06:42 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id l11so13794508lfg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:06:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eBI49tM4v1Bt7eLVCOqa1vopmhcAU6RnnYuW/UNt060=;
+        b=IrjIDB8vowk449uWh6E/266sIEKw0dGMFTK3piPEZkPqnHTniBV0eBaq9c6z2XL6Nk
+         ZLSlikntZzep/y5apbq+poU3quWwAfsH3NweRvq2j5ZJI1eHEUjBBX3IiVR3t59rUk1m
+         OH8/djLdprekzHaJuAJrKJl9nGLb/vRe5JhQsyvTNecPFw4MbMPGduqnN15IllZcTplh
+         y83olIpWE2P/Alt1nVPW0RSW2CfEmqcdbyI1a54jwWxpfBMdbk+nU8In5xPBSTgogc6q
+         cR47irLghuajqvSQKppLEQPLzl5Weo4atf0icl41W45PwtGtxyqTMUCHHhIb6N/fAHSC
+         U9lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eBI49tM4v1Bt7eLVCOqa1vopmhcAU6RnnYuW/UNt060=;
+        b=RRzwcOzAjF/+Vm2ELzXr4MKJMbl05cIvj0bsvD68M2dYUKX3t2BBhf+swlWQgw/RXD
+         Ff8UD10jMlgvbD1nlsRWStZACxVjgPmmYotwEjZ6VS6nOog9x3EAdViKLTcAUQGXLngP
+         txCDiw+s6gIlWWqSherOEcxqLNkJKoEvzN0fJNtoRqMlAVBHhOU71h1Pdb6FyWk/DfiM
+         AsE2RPOzheudtPOvwj3/rXpkV5D10iFtxtXuaju+XjroxAbY6T7ADSlv1KZf4Q/BrkTN
+         UQiqmvpYCdMPKCvNiVnbQCxWafRoiDYm2As0MXYMAxBMU5vunzinDZ9A2f3VzqBLME0a
+         tsqQ==
+X-Gm-Message-State: AOAM531XHCp6gNH30ERoBGIoLO737VP9h1P8yPMM1WrtfBKw787Okyxf
+        rNC6BpjIC3gT+GzL7CwfO4p80g==
+X-Google-Smtp-Source: ABdhPJyf85Zc/HOeEe2M/da3ODjNWj/3qMNCyaJUeKRlcFp6y/ksWYXK9VX8UMBURe0K2OgHkiNQPQ==
+X-Received: by 2002:a19:5f0b:: with SMTP id t11mr39565lfb.326.1605542799939;
+        Mon, 16 Nov 2020 08:06:39 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id o3sm2775331lfo.217.2020.11.16.08.06.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 08:06:39 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 161D8100F5E; Mon, 16 Nov 2020 19:06:38 +0300 (+03)
+Date:   Mon, 16 Nov 2020 19:06:38 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Yang Shi <shy828301@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>
+Subject: Re: [RFC PATCH 1/6] mm: huge_memory: add new debugfs interface to
+ trigger split huge page on any page range.
+Message-ID: <20201116160638.po3euk3agkt4ragx@box>
+References: <20201111204008.21332-1-zi.yan@sent.com>
+ <20201111204008.21332-2-zi.yan@sent.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111204008.21332-2-zi.yan@sent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For a new grace period request, RCU GP kthread transitions
-through following states:
+On Wed, Nov 11, 2020 at 03:40:03PM -0500, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> Huge pages in the process with the given pid and virtual address range
+> are split. It is used to test split huge page function. In addition,
+> a testing program is added to tools/testing/selftests/vm to utilize the
+> interface by splitting PMD THPs.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>  mm/huge_memory.c                              |  98 +++++++++++
+>  mm/internal.h                                 |   1 +
+>  mm/migrate.c                                  |   2 +-
+>  tools/testing/selftests/vm/Makefile           |   1 +
+>  .../selftests/vm/split_huge_page_test.c       | 161 ++++++++++++++++++
+>  5 files changed, 262 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/vm/split_huge_page_test.c
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 207ebca8c654..c4fead5ead31 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -7,6 +7,7 @@
+>  
+>  #include <linux/mm.h>
+>  #include <linux/sched.h>
+> +#include <linux/sched/mm.h>
+>  #include <linux/sched/coredump.h>
+>  #include <linux/sched/numa_balancing.h>
+>  #include <linux/highmem.h>
+> @@ -2935,10 +2936,107 @@ static int split_huge_pages_set(void *data, u64 val)
+>  DEFINE_DEBUGFS_ATTRIBUTE(split_huge_pages_fops, NULL, split_huge_pages_set,
+>  		"%llu\n");
+>  
+> +static ssize_t split_huge_pages_in_range_pid_write(struct file *file,
+> +		const char __user *buf, size_t count, loff_t *ppops)
+> +{
+> +	static DEFINE_MUTEX(mutex);
+> +	ssize_t ret;
+> +	char input_buf[80]; /* hold pid, start_vaddr, end_vaddr */
+> +	int pid;
+> +	unsigned long vaddr_start, vaddr_end, addr;
+> +	nodemask_t task_nodes;
+> +	struct mm_struct *mm;
+> +
+> +	ret = mutex_lock_interruptible(&mutex);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = -EFAULT;
+> +
+> +	memset(input_buf, 0, 80);
+> +	if (copy_from_user(input_buf, buf, min_t(size_t, count, 80)))
+> +		goto out;
+> +
+> +	input_buf[80] = '\0';
 
-a. [RCU_GP_WAIT_GPS] -> [RCU_GP_DONE_GPS]
+Hm. Out-of-buffer access?
 
-Initial state, where GP kthread waits for a new GP start
-request is RCU_GP_WAIT_GPS. On new GP request (started by
-callers, for any new callbacks, by setting RCU_GP_FLAG_INIT
-gp_state flag and waking up the GP kthread) GP kthread
-enters RCU_GP_DONE_GPS.
+> +	ret = sscanf(input_buf, "%d,%lx,%lx", &pid, &vaddr_start, &vaddr_end);
 
-b. [RCU_GP_DONE_GPS] -> [RCU_GP_ONOFF]
+Why hex without 0x prefix?
 
-Grace period initialization starts in rcu_gp_init(), which
-records the start of new GP in rcu_state.gp_seq and enters
-into RCU_GP_ONOFF state.
+> +	if (ret != 3) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +	vaddr_start &= PAGE_MASK;
+> +	vaddr_end &= PAGE_MASK;
+> +
+> +	ret = strlen(input_buf);
+> +	pr_debug("split huge pages in pid: %d, vaddr: [%lx - %lx]\n",
+> +		 pid, vaddr_start, vaddr_end);
+> +
+> +	mm = find_mm_struct(pid, &task_nodes);
 
-c. [RCU_GP_ONOFF] -> [RCU_GP_INIT]
+I don't follow why you need nodemask.
 
-In RCU_GP_ONOFF state, for each leaf rnp node, GP kthread
-applies the buffered online/offline information of its cpus,
-from ->qsmaskinitnext to ->qsmaskinit, which is basically
-the mask of cpus, which need to report quiescent state, for
-the new GP to complete.
+> +	if (IS_ERR(mm)) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	mmap_read_lock(mm);
+> +	for (addr = vaddr_start; addr < vaddr_end;) {
+> +		struct vm_area_struct *vma = find_vma(mm, addr);
+> +		unsigned int follflags;
+> +		struct page *page;
+> +
+> +		if (!vma || addr < vma->vm_start || !vma_migratable(vma))
+> +			break;
+> +
+> +		/* FOLL_DUMP to ignore special (like zero) pages */
+> +		follflags = FOLL_GET | FOLL_DUMP;
+> +		page = follow_page(vma, addr, follflags);
+> +
+> +		if (IS_ERR(page))
+> +			break;
+> +		if (!page)
+> +			break;
+> +
+> +		if (!is_transparent_hugepage(page))
+> +			goto next;
+> +
+> +		if (!can_split_huge_page(page, NULL))
+> +			goto next;
+> +
+> +		if (!trylock_page(page))
+> +			goto next;
+> +
+> +		addr += page_size(page) - PAGE_SIZE;
 
-Also, in this state, an outgoing rnp's (for which all cpus
-are now offline and there are no tasks blocked inside
-RCU read section) or an incoming rnp's (for which first cpu
-comes online) participation in the new and subsequent GP is
-advertised, by propagating its qsmaskinit information up the
-tree.
+Who said it was mapped as huge? mremap() allows to construct an PTE page
+table that filled with PTE-mapped THPs, each of them distinct.
 
-d. [RCU_GP_INIT] -> [RCU_GP_WAIT_FQS]
+> +
+> +		/* reset addr if split fails */
+> +		if (split_huge_page(page))
+> +			addr -= (page_size(page) - PAGE_SIZE);
+> +
+> +		unlock_page(page);
+> +next:
+> +		/* next page */
+> +		addr += page_size(page);
 
-In RCU_GP_INIT state, current GPs qs mask information and new
-GP seq is propagated down the tree, into all rnp nodes,
-in breadth first order.
+Isn't it the second time if split_huge_page() succeed.
 
-On GP initialization completion, GP kthread enters a fqs loop,
-which does following things, to get quiescent state reported
-for cpus, which aren't quiesce in ->qsmask:
+> +		put_page(page);
+> +	}
+> +	mmap_read_unlock(mm);
+> +
+> +
+> +	mmput(mm);
+> +out:
+> +	mutex_unlock(&mutex);
+> +	return ret;
+> +
+> +}
+> +
+> +static const struct file_operations split_huge_pages_in_range_pid_fops = {
+> +	.owner	 = THIS_MODULE,
+> +	.write	 = split_huge_pages_in_range_pid_write,
+> +	.llseek  = no_llseek,
+> +};
+> +
+>  static int __init split_huge_pages_debugfs(void)
+>  {
+>  	debugfs_create_file("split_huge_pages", 0200, NULL, NULL,
+>  			    &split_huge_pages_fops);
+> +	debugfs_create_file("split_huge_pages_in_range_pid", 0200, NULL, NULL,
+> +			    &split_huge_pages_in_range_pid_fops);
+>  	return 0;
+>  }
+>  late_initcall(split_huge_pages_debugfs);
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 3ea43642b99d..fd841a38830f 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -624,4 +624,5 @@ struct migration_target_control {
+>  
+>  bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end);
+>  void page_cache_free_page(struct address_space *mapping, struct page *page);
+> +struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes);
+>  #endif	/* __MM_INTERNAL_H */
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index a50bbb0e029b..e35654d1087d 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1851,7 +1851,7 @@ static int do_pages_stat(struct mm_struct *mm, unsigned long nr_pages,
+>  	return nr_pages ? -EFAULT : 0;
+>  }
+>  
+> -static struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes)
+> +struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes)
+>  {
+>  	struct task_struct *task;
+>  	struct mm_struct *mm;
+> diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
+> index 62fb15f286ee..d9ead0cdd3e9 100644
+> --- a/tools/testing/selftests/vm/Makefile
+> +++ b/tools/testing/selftests/vm/Makefile
+> @@ -42,6 +42,7 @@ TEST_GEN_FILES += on-fault-limit
+>  TEST_GEN_FILES += thuge-gen
+>  TEST_GEN_FILES += transhuge-stress
+>  TEST_GEN_FILES += userfaultfd
+> +TEST_GEN_FILES += split_huge_page_test
+>  
+>  ifeq ($(ARCH),x86_64)
+>  CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_32bit_program.c -m32)
+> diff --git a/tools/testing/selftests/vm/split_huge_page_test.c b/tools/testing/selftests/vm/split_huge_page_test.c
+> new file mode 100644
+> index 000000000000..c8a32ae9e13a
+> --- /dev/null
+> +++ b/tools/testing/selftests/vm/split_huge_page_test.c
+> @@ -0,0 +1,161 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#define _GNU_SOURCE
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include "numa.h"
+> +#include <unistd.h>
+> +#include <errno.h>
+> +#include <inttypes.h>
+> +#include <string.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +#include <sys/mman.h>
+> +#include <sys/time.h>
+> +#include <sys/wait.h>
+> +#include <malloc.h>
+> +#include <stdbool.h>
+> +
+> +#define PAGE_4KB (4096UL)
+> +#define PAGE_2MB (512UL*PAGE_4KB)
+> +#define PAGE_1GB (512UL*PAGE_2MB)
+> +
+> +#define PRESENT_MASK (1UL<<63)
+> +#define SWAPPED_MASK (1UL<<62)
+> +#define PAGE_TYPE_MASK (1UL<<61)
+> +#define PFN_MASK     ((1UL<<55)-1)
+> +
+> +#define KPF_THP      (1UL<<22)
+> +#define KPF_PUD_THP      (1UL<<27)
+> +
+> +#define SPLIT_DEBUGFS "/sys/kernel/debug/split_huge_pages_in_range_pid"
+> +#define SMAP_PATH "/proc/self/smaps"
+> +#define INPUT_MAX 80
+> +
+> +static int write_file(const char *path, const char *buf, size_t buflen)
+> +{
+> +	int fd;
+> +	ssize_t numwritten;
+> +
+> +	fd = open(path, O_WRONLY);
+> +	if (fd == -1)
+> +		return 0;
+> +
+> +	numwritten = write(fd, buf, buflen - 1);
+> +	close(fd);
+> +	if (numwritten < 1)
+> +		return 0;
+> +
+> +	return (unsigned int) numwritten;
+> +}
+> +
+> +static void write_debugfs(int pid, uint64_t vaddr_start, uint64_t vaddr_end)
+> +{
+> +	char input[INPUT_MAX];
+> +	int ret;
+> +
+> +	ret = snprintf(input, INPUT_MAX, "%d,%lx,%lx", pid, vaddr_start,
+> +			vaddr_end);
+> +	if (ret >= INPUT_MAX) {
+> +		printf("%s: Debugfs input is too long\n", __func__);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +	if (!write_file(SPLIT_DEBUGFS, input, ret + 1)) {
+> +		perror(SPLIT_DEBUGFS);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +}
+> +
+> +#define MAX_LINE_LENGTH 500
+> +
+> +static bool check_for_pattern(FILE *fp, char *pattern, char *buf)
+> +{
+> +	while (fgets(buf, MAX_LINE_LENGTH, fp) != NULL) {
+> +		if (!strncmp(buf, pattern, strlen(pattern)))
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+> +static uint64_t check_huge(void *addr)
+> +{
+> +	uint64_t thp = 0;
+> +	int ret;
+> +	FILE *fp;
+> +	char buffer[MAX_LINE_LENGTH];
+> +	char addr_pattern[MAX_LINE_LENGTH];
+> +
+> +	ret = snprintf(addr_pattern, MAX_LINE_LENGTH, "%08lx-",
+> +		       (unsigned long) addr);
+> +	if (ret >= MAX_LINE_LENGTH) {
+> +		printf("%s: Pattern is too long\n", __func__);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +
+> +	fp = fopen(SMAP_PATH, "r");
+> +	if (!fp) {
+> +		printf("%s: Failed to open file %s\n", __func__, SMAP_PATH);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +	if (!check_for_pattern(fp, addr_pattern, buffer))
+> +		goto err_out;
+> +
+> +	/*
+> +	 * Fetch the AnonHugePages: in the same block and check the number of
+> +	 * hugepages.
+> +	 */
+> +	if (!check_for_pattern(fp, "AnonHugePages:", buffer))
+> +		goto err_out;
+> +
+> +	if (sscanf(buffer, "AnonHugePages:%10ld kB", &thp) != 1) {
+> +		printf("Reading smap error\n");
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +err_out:
+> +	fclose(fp);
+> +	return thp;
+> +}
+> +
+> +void split_pmd_thp(void)
+> +{
+> +	char *one_page;
+> +	size_t len = 4 * PAGE_2MB;
+> +	uint64_t thp_size;
+> +
+> +	one_page = memalign(PAGE_1GB, len);
+> +
+> +	madvise(one_page, len, MADV_HUGEPAGE);
+> +
+> +	memset(one_page, 1, len);
+> +
+> +	thp_size = check_huge(one_page);
+> +	if (!thp_size) {
+> +		printf("No THP is allocatd");
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +	/* split all possible huge pages */
+> +	write_debugfs(getpid(), (uint64_t)one_page, (uint64_t)one_page + len);
+> +
+> +	*one_page = 0;
+> +
+> +	thp_size = check_huge(one_page);
+> +	if (thp_size) {
+> +		printf("Still %ld kB AnonHugePages not split\n", thp_size);
+> +		exit(EXIT_FAILURE);
+> +	}
+> +
+> +	printf("Split huge pages successful\n");
+> +	free(one_page);
+> +}
+> +
+> +int main(int argc, char **argv)
+> +{
+> +	split_pmd_thp();
+> +
+> +	return 0;
+> +}
+> -- 
+> 2.28.0
+> 
+> 
 
-  i. For CPUs, which have entered idle since the first iteration,
-     report quiescent state up the tree.
-
-  ii. Based on how long the current grace period has been running
-      for, either, set the appropriate flags, so that sched clock
-      interrupt on that cpu, does qs reporting or do a resched
-      on that cpu.
-
-On each iteration, it transitions through following states. The fqs
-loop is terminated on GP completion, when all CPUs report their
-quiescent state and all RCU readers, blocking current grace period
-have completed the RCU read section.
-
-e. [RCU_GP_WAIT_FQS] -> [RCU_GP_DOING_FQS]
-
-GP kthread uses a timed wait (jiffies_till_first_fqs for first
-iteration and jiffies_till_next_fqs for subsequent iterations),
-before doing all the work, to force quiescent state on
-all cpus. It wakes up from this state, either on timeout, or
-when (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD) flags are set, either
-on callback overload conditions or when last cpu reports its
-quiescent state and all RCU readers blocking current GP, have
-left the RCU read section.
-
-f. [RCU_GP_CLEANUP] -> [RCU_GP_CLEANED]
-
-Mark end of grace period, in ->gp_seq, on all rnp nodes, in breadth
-first order and finally in rcu_state.
-
-For cases where timers are not served (due to issues in timer
-configuration, in timer framework or due to softirqs not getting
-handled, when there is a storm of interrupts) on the CPU,
-where GP kthread queued a timer (for timed wait, which is done
-in RCU_GP_WAIT_FQS) its possible that RCU kthread never wakes up.
-Report the same from stall warnings, if GP thread is in RCU_GP_WAIT_FQS
-state, and the timeout has elapsed and the kthread is not woken.
-
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
----
-Changes in V2:
-
- - Documentation update.
- - Replace READ_ONCE()/smp_rmb() with smp_load_acquire(), as suggested by Paul.
- - Correct time_after() check.
- - Move fqs timer warning above starvation warning.
-
- Documentation/RCU/stallwarn.rst | 23 ++++++++++++++++++++++-
- kernel/rcu/tree.c               | 25 +++++++++++++++----------
- kernel/rcu/tree_stall.h         | 32 ++++++++++++++++++++++++++++++++
- 3 files changed, 69 insertions(+), 11 deletions(-)
-
-diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-index c9ab6af..5170cc0 100644
---- a/Documentation/RCU/stallwarn.rst
-+++ b/Documentation/RCU/stallwarn.rst
-@@ -92,7 +92,9 @@ warnings:
- 	buggy timer hardware through bugs in the interrupt or exception
- 	path (whether hardware, firmware, or software) through bugs
- 	in Linux's timer subsystem through bugs in the scheduler, and,
--	yes, even including bugs in RCU itself.
-+	yes, even including bugs in RCU itself. It can also result in
-+	the ``rcu_.*timer wakeup didn't happen for`` console-log message,
-+	which will include additional debugging information.
- 
- -	A bug in the RCU implementation.
- 
-@@ -292,6 +294,25 @@ kthread is waiting for a short timeout, the "state" precedes value of the
- task_struct ->state field, and the "cpu" indicates that the grace-period
- kthread last ran on CPU 5.
- 
-+If the relevant grace-period kthread isn't woken up from fqs wait, and
-+fqs timeout has happened, then the following additional line is printed::
-+
-+	kthread timer wakeup didn't happen for 23804 jiffies! g7076 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-+
-+The "23804" indicates that kthread's timer expired 23 thousand jiffies
-+back. Rest of the debug information is similar to kthread starvation
-+case.
-+
-+Additionally, below line is printed on::
-+
-+	Possible timer handling issue on cpu=4 timer-softirq=11142
-+
-+Here "cpu" indicates that the grace-period kthread last ran on CPU 4,
-+where it queued the fqs timer. "timer-softirq" is current TIMER softirq
-+count on cpu 4. If panic on rcu stall is not enabled or
-+sysctl_max_rcu_stall_to_panic is > 2, timer softirq count changes
-+between the successive stall warnings would indicate a timer problem.
-+
- 
- Multiple Warnings From One Stall
- ================================
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 413831b..804e543 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1767,7 +1767,7 @@ static bool rcu_gp_init(void)
- 	 * go offline later.  Please also refer to "Hotplug CPU" section
- 	 * of RCU's Requirements documentation.
- 	 */
--	rcu_state.gp_state = RCU_GP_ONOFF;
-+	WRITE_ONCE(rcu_state.gp_state, RCU_GP_ONOFF);
- 	rcu_for_each_leaf_node(rnp) {
- 		smp_mb(); // Pair with barriers used when updating ->ofl_seq to odd values.
- 		firstseq = READ_ONCE(rnp->ofl_seq);
-@@ -1833,7 +1833,7 @@ static bool rcu_gp_init(void)
- 	 * The grace period cannot complete until the initialization
- 	 * process finishes, because this kthread handles both.
- 	 */
--	rcu_state.gp_state = RCU_GP_INIT;
-+	WRITE_ONCE(rcu_state.gp_state, RCU_GP_INIT);
- 	rcu_for_each_node_breadth_first(rnp) {
- 		rcu_gp_slow(gp_init_delay);
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
-@@ -1932,17 +1932,22 @@ static void rcu_gp_fqs_loop(void)
- 	ret = 0;
- 	for (;;) {
- 		if (!ret) {
--			rcu_state.jiffies_force_qs = jiffies + j;
-+			WRITE_ONCE(rcu_state.jiffies_force_qs, jiffies + j);
-+			/*
-+			 * jiffies_force_qs before RCU_GP_WAIT_FQS state
-+			 * update; required for stall checks.
-+			 */
-+			smp_wmb();
- 			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
- 				   jiffies + (j ? 3 * j : 2));
- 		}
- 		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 				       TPS("fqswait"));
--		rcu_state.gp_state = RCU_GP_WAIT_FQS;
-+		WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_FQS);
- 		ret = swait_event_idle_timeout_exclusive(
- 				rcu_state.gp_wq, rcu_gp_fqs_check_wake(&gf), j);
- 		rcu_gp_torture_wait();
--		rcu_state.gp_state = RCU_GP_DOING_FQS;
-+		WRITE_ONCE(rcu_state.gp_state, RCU_GP_DOING_FQS);
- 		/* Locking provides needed memory barriers. */
- 		/* If grace period done, leave loop. */
- 		if (!READ_ONCE(rnp->qsmask) &&
-@@ -2056,7 +2061,7 @@ static void rcu_gp_cleanup(void)
- 	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("end"));
- 	rcu_seq_end(&rcu_state.gp_seq);
- 	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
--	rcu_state.gp_state = RCU_GP_IDLE;
-+	WRITE_ONCE(rcu_state.gp_state, RCU_GP_IDLE);
- 	/* Check for GP requests since above loop. */
- 	rdp = this_cpu_ptr(&rcu_data);
- 	if (!needgp && ULONG_CMP_LT(rnp->gp_seq, rnp->gp_seq_needed)) {
-@@ -2095,12 +2100,12 @@ static int __noreturn rcu_gp_kthread(void *unused)
- 		for (;;) {
- 			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
- 					       TPS("reqwait"));
--			rcu_state.gp_state = RCU_GP_WAIT_GPS;
-+			WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_GPS);
- 			swait_event_idle_exclusive(rcu_state.gp_wq,
- 					 READ_ONCE(rcu_state.gp_flags) &
- 					 RCU_GP_FLAG_INIT);
- 			rcu_gp_torture_wait();
--			rcu_state.gp_state = RCU_GP_DONE_GPS;
-+			WRITE_ONCE(rcu_state.gp_state, RCU_GP_DONE_GPS);
- 			/* Locking provides needed memory barrier. */
- 			if (rcu_gp_init())
- 				break;
-@@ -2115,9 +2120,9 @@ static int __noreturn rcu_gp_kthread(void *unused)
- 		rcu_gp_fqs_loop();
- 
- 		/* Handle grace-period end. */
--		rcu_state.gp_state = RCU_GP_CLEANUP;
-+		WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANUP);
- 		rcu_gp_cleanup();
--		rcu_state.gp_state = RCU_GP_CLEANED;
-+		WRITE_ONCE(rcu_state.gp_state, RCU_GP_CLEANED);
- 	}
- }
- 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index d203ea0..0fa1bf3 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -480,6 +480,36 @@ static void rcu_check_gp_kthread_starvation(void)
- 	}
- }
- 
-+/* Complain about missing wakeups from expired fqs wait timer */
-+static void rcu_check_gp_kthread_expired_fqs_timer(void)
-+{
-+	struct task_struct *gpk = rcu_state.gp_kthread;
-+	short gp_state;
-+	unsigned long jiffies_fqs;
-+	int cpu;
-+
-+	/*
-+	 * Order reads of .gp_state and .jiffies_force_qs.
-+	 * Matching smp_wmb() is present in rcu_gp_fqs_loop().
-+	 */
-+	gp_state = smp_load_acquire(&rcu_state.gp_state);
-+	jiffies_fqs = READ_ONCE(rcu_state.jiffies_force_qs);
-+
-+	if (gp_state == RCU_GP_WAIT_FQS &&
-+	    time_after(jiffies, jiffies_fqs + RCU_STALL_MIGHT_MIN) &&
-+	    gpk && !READ_ONCE(gpk->on_rq)) {
-+		cpu = task_cpu(gpk);
-+		pr_err("%s kthread timer wakeup didn't happen for %ld jiffies! g%ld f%#x %s(%d) ->state=%#lx\n",
-+		       rcu_state.name, (jiffies - jiffies_fqs),
-+		       (long)rcu_seq_current(&rcu_state.gp_seq),
-+		       data_race(rcu_state.gp_flags),
-+		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
-+		       gpk->state);
-+		pr_err("\tPossible timer handling issue on cpu=%d timer-softirq=%u\n",
-+		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
-+	}
-+}
-+
- static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- {
- 	int cpu;
-@@ -541,6 +571,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 		WRITE_ONCE(rcu_state.jiffies_stall,
- 			   jiffies + 3 * rcu_jiffies_till_stall_check() + 3);
- 
-+	rcu_check_gp_kthread_expired_fqs_timer();
- 	rcu_check_gp_kthread_starvation();
- 
- 	panic_on_rcu_stall();
-@@ -576,6 +607,7 @@ static void print_cpu_stall(unsigned long gps)
- 		jiffies - gps,
- 		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen);
- 
-+	rcu_check_gp_kthread_expired_fqs_timer();
- 	rcu_check_gp_kthread_starvation();
- 
- 	rcu_dump_cpu_stacks();
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+ Kirill A. Shutemov
