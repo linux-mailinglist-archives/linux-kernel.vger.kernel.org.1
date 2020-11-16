@@ -2,186 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A285A2B43E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A790B2B43E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727425AbgKPMnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgKPMnm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:43:42 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4180AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:43:42 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id j5so8322422plk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:43:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hzIkr1PGmJSmnpkluYdeJ6kws69fWOgunLbcgLydCjE=;
-        b=XEzs8XNgzzcBbve6IQ4WR5Lmi9aKtzMhCzKZQ6tYPgJZvLOfR9TctZEaxyOCtiKyPZ
-         3J4bPWTXrvCF3KIv72nfYLIe4ICJX22xQsmDgvCCkQfYddezdMT6zw3iu9QYVYAf2d7U
-         UqTnr5+qLXHtE6zqsBQJ3sP761SrKPYmow88+HcFGwQykMG1lQcsVDKqVCFRFeSoEmbs
-         aoPeUoqzc3TdJo+E9ykLWIyySzS+Zidhp0Cvng9BAhxrxTTGUiyDba3OIl6YcR/9Y1Ls
-         6gA8CBf2+zisHicZNjqqsFz4rc/gMB6aggmHuBr7JeLn5D9Jo++Jgi/fZzdrSTNYL5fA
-         waZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hzIkr1PGmJSmnpkluYdeJ6kws69fWOgunLbcgLydCjE=;
-        b=IcYSnwkIDpMv3rLIJwa5Zi5bBsksumfWcrvvf4aklQnz/8hU7fSPYU5zPl3Au1xe2v
-         9SRhzE1wEsgxufKXuEyy+6sOgaUMovSgBsa9wBWYiSB7oOn6vdKCFxNU+Wj+cpCalYhX
-         4K6VUJlWG5sEZqT4T6aWSYoZvblHUfEwEFOcPhHPQgDEj3AiTdeiCVRgyjykToVEU9L+
-         EDsEDsCzS+YzPVHMeU4E7SYGtt/akfLErvhNwBQFVmuOM5097swToH8DFv6jlGCKsqeA
-         kt6alTtBgGeJM9fAjG/rdIGz7iZb1X8TCxbd9Vp1sQbyHtZe6DIHtm+YUsFmyLNOUWRc
-         P/jQ==
-X-Gm-Message-State: AOAM532hoE8IEr+PLjwyq0IEjKL1YjGFZHtuTo5ZprsZq1CAnpByzZ/u
-        LxlrdCKRz2YHYryUvOotsPnW
-X-Google-Smtp-Source: ABdhPJyMR162mCy3sZjRcJn/62V15QusACXsYwb2psjiIMeW3J/hiLOBLe1xLn3PHDH3ccCwsmeTnA==
-X-Received: by 2002:a17:902:e788:b029:d6:dc69:80a8 with SMTP id cp8-20020a170902e788b02900d6dc6980a8mr12967315plb.59.1605530621700;
-        Mon, 16 Nov 2020 04:43:41 -0800 (PST)
-Received: from Mani-XPS-13-9360 ([2409:4072:618e:9b0a:75fd:1290:bf5c:a350])
-        by smtp.gmail.com with ESMTPSA id t9sm20526789pje.1.2020.11.16.04.43.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 16 Nov 2020 04:43:40 -0800 (PST)
-Date:   Mon, 16 Nov 2020 18:13:32 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, loic.poulain@linaro.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] bus: mhi: core: Add support to stop or start
- channel data transfers
-Message-ID: <20201116124332.GK3926@Mani-XPS-13-9360>
-References: <1605122473-12179-1-git-send-email-bbhatt@codeaurora.org>
- <1605122473-12179-4-git-send-email-bbhatt@codeaurora.org>
+        id S1727391AbgKPMmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:42:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:39166 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726614AbgKPMmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:42:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC39B101E;
+        Mon, 16 Nov 2020 04:42:16 -0800 (PST)
+Received: from [10.37.12.42] (unknown [10.37.12.42])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 003023F70D;
+        Mon, 16 Nov 2020 04:42:12 -0800 (PST)
+Subject: Re: [PATCH RFC v2 04/21] kasan: unpoison stack only with
+ CONFIG_KASAN_STACK
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1603372719.git.andreyknvl@google.com>
+ <ded454eeff88f631dc08eef76f0ad9f2daff0085.1603372719.git.andreyknvl@google.com>
+ <CACT4Y+Zys3+VUsO6GDWQEcjCS6Wx16W_+B6aNy-fyhPcir7eeA@mail.gmail.com>
+ <CAAeHK+xvGZNwTtvkzNnU7Hh7iUiPKFNDKDpKT8UPcqQk6Ah3yQ@mail.gmail.com>
+ <CACT4Y+Z3UCwAY2Mm1KiQMBXVhc2Bobi-YrdiNYtToNgMRjOE4g@mail.gmail.com>
+ <CANpmjNPNqHsOfcw7Wh+XQ_pPT1610-+B9By171t7KMS3aB2sBg@mail.gmail.com>
+ <X7Jthb9D5Ekq93sS@trantor>
+ <CACT4Y+ZubLBEiGZOVyptB4RPf=3Qr570GN+JBpSmaeEvHWQB5g@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <9d4156e6-ec4f-a742-a44e-f38bf7fa9ba9@arm.com>
+Date:   Mon, 16 Nov 2020 12:45:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605122473-12179-4-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CACT4Y+ZubLBEiGZOVyptB4RPf=3Qr570GN+JBpSmaeEvHWQB5g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:21:10AM -0800, Bhaumik Bhatt wrote:
-> Some MHI client drivers may want to request a pause or halt of
-> data transfer activity on their channels. Support for this does
-> not exist and must be introduced, wherein the channel context is
-> not reset or cleared but only the STOP channel command is issued.
-> This would need to be paired with an API that allows resuming the
-> data transfer activity on channels by use of the START channel
-> command. This API assumes that the context information is already
-> setup. Enable this using two new APIs, mhi_start_transfer() and
-> mhi_stop_transfer().
+
+
+On 11/16/20 12:19 PM, Dmitry Vyukov wrote:
+> On Mon, Nov 16, 2020 at 1:16 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>>
+>> On Mon, Nov 16, 2020 at 12:50:00PM +0100, Marco Elver wrote:
+>>> On Mon, 16 Nov 2020 at 11:59, Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>> On Thu, Oct 29, 2020 at 8:57 PM 'Andrey Konovalov' via kasan-dev
+>>>> <kasan-dev@googlegroups.com> wrote:
+>>>>> On Tue, Oct 27, 2020 at 1:44 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>>>>
+>>>>>> On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>>>>>>>
+>>>>>>> There's a config option CONFIG_KASAN_STACK that has to be enabled for
+>>>>>>> KASAN to use stack instrumentation and perform validity checks for
+>>>>>>> stack variables.
+>>>>>>>
+>>>>>>> There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
+>>>>>>> Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
+>>>>>>> enabled.
+>>>>>>>
+>>>>>>> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+>>>>>>> Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
+>>>>>>> ---
+>>>>>>>  arch/arm64/kernel/sleep.S        |  2 +-
+>>>>>>>  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+>>>>>>>  include/linux/kasan.h            | 10 ++++++----
+>>>>>>>  mm/kasan/common.c                |  2 ++
+>>>>>>>  4 files changed, 10 insertions(+), 6 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+>>>>>>> index ba40d57757d6..bdadfa56b40e 100644
+>>>>>>> --- a/arch/arm64/kernel/sleep.S
+>>>>>>> +++ b/arch/arm64/kernel/sleep.S
+>>>>>>> @@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
+>>>>>>>          */
+>>>>>>>         bl      cpu_do_resume
+>>>>>>>
+>>>>>>> -#ifdef CONFIG_KASAN
+>>>>>>> +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+>>>>>>>         mov     x0, sp
+>>>>>>>         bl      kasan_unpoison_task_stack_below
+>>>>>>>  #endif
+>>>>>>> diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+>>>>>>> index c8daa92f38dc..5d3a0b8fd379 100644
+>>>>>>> --- a/arch/x86/kernel/acpi/wakeup_64.S
+>>>>>>> +++ b/arch/x86/kernel/acpi/wakeup_64.S
+>>>>>>> @@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+>>>>>>>         movq    pt_regs_r14(%rax), %r14
+>>>>>>>         movq    pt_regs_r15(%rax), %r15
+>>>>>>>
+>>>>>>> -#ifdef CONFIG_KASAN
+>>>>>>> +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+>>>>>>>         /*
+>>>>>>>          * The suspend path may have poisoned some areas deeper in the stack,
+>>>>>>>          * which we now need to unpoison.
+>>>>>>> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+>>>>>>> index 3f3f541e5d5f..7be9fb9146ac 100644
+>>>>>>> --- a/include/linux/kasan.h
+>>>>>>> +++ b/include/linux/kasan.h
+>>>>>>> @@ -68,8 +68,6 @@ static inline void kasan_disable_current(void) {}
+>>>>>>>
+>>>>>>>  void kasan_unpoison_memory(const void *address, size_t size);
+>>>>>>>
+>>>>>>> -void kasan_unpoison_task_stack(struct task_struct *task);
+>>>>>>> -
+>>>>>>>  void kasan_alloc_pages(struct page *page, unsigned int order);
+>>>>>>>  void kasan_free_pages(struct page *page, unsigned int order);
+>>>>>>>
+>>>>>>> @@ -114,8 +112,6 @@ void kasan_restore_multi_shot(bool enabled);
+>>>>>>>
+>>>>>>>  static inline void kasan_unpoison_memory(const void *address, size_t size) {}
+>>>>>>>
+>>>>>>> -static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+>>>>>>> -
+>>>>>>>  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+>>>>>>>  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+>>>>>>>
+>>>>>>> @@ -167,6 +163,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+>>>>>>>
+>>>>>>>  #endif /* CONFIG_KASAN */
+>>>>>>>
+>>>>>>> +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+>>>>>>
+>>>>>> && defined(CONFIG_KASAN_STACK) for consistency
+>>>>>
+>>>>> CONFIG_KASAN_STACK is different from other KASAN configs. It's always
+>>>>> defined, and its value is what controls whether stack instrumentation
+>>>>> is enabled.
+>>>>
+>>>> Not sure why we did this instead of the following, but okay.
+>>>>
+>>>>  config KASAN_STACK
+>>>> -       int
+>>>> -       default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
+>>>> -       default 0
+>>>> +       bool
+>>>> +       default y if KASAN_STACK_ENABLE || CC_IS_GCC
+>>>> +       default n
+>>>
+>>> I wondered the same, but then looking at scripts/Makefile.kasan I
+>>> think it's because we directly pass it to the compiler:
+>>>     ...
+>>>     $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
+>>>     ...
+>>
+>> Try this instead:
+>>
+>>       $(call cc-param,asan-stack=$(if $(CONFIG_KASAN_STACK),1,0)) \
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/main.c | 41 +++++++++++++++++++++++++++++++++++++++++
->  include/linux/mhi.h         | 19 +++++++++++++++++++
->  2 files changed, 60 insertions(+)
 > 
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 1226933..1a969f4 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -1560,6 +1560,47 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
->  }
->  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
->  
-> +static int mhi_update_transfer_state(struct mhi_device *mhi_dev,
-> +				     enum mhi_ch_state_type to_state)
-> +{
-> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> +	struct mhi_chan *mhi_chan;
-> +	int dir, ret;
-> +
-> +	for (dir = 0; dir < 2; dir++) {
-> +		mhi_chan = dir ? mhi_dev->ul_chan : mhi_dev->dl_chan;
-> +
-> +		if (!mhi_chan)
-> +			continue;
-> +
-> +		/*
-> +		 * Bail out if one of the channels fail as client will reset
-> +		 * both upon failure
-> +		 */
-> +		mutex_lock(&mhi_chan->mutex);
-
-Hmm. The documentation about wait_for_completion*() used in
-mhi_update_channel_state()says below,
-
-"As all variants of wait_for_completion() can (obviously) block for a long
-time depending on the nature of the activity they are waiting for, so in
-most cases you probably don't want to call this with held mutexes."
-
-> +		ret = mhi_update_channel_state(mhi_cntrl, mhi_chan, to_state);
-> +		if (ret) {
-> +			mutex_unlock(&mhi_chan->mutex);
-> +			return ret;
-> +		}
-> +		mutex_unlock(&mhi_chan->mutex);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int mhi_stop_transfer(struct mhi_device *mhi_dev)
-> +{
-> +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_STOP);
-> +}
-> +EXPORT_SYMBOL_GPL(mhi_stop_transfer);
-> +
-> +int mhi_start_transfer(struct mhi_device *mhi_dev)
-> +{
-> +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_START);
-> +}
-> +EXPORT_SYMBOL_GPL(mhi_start_transfer);
-> +
->  int mhi_poll(struct mhi_device *mhi_dev, u32 budget)
->  {
->  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index 52b3c60..aee8494 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -702,6 +702,25 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
->  void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev);
->  
->  /**
-> + * mhi_stop_transfer - Pauses ongoing channel activity by issuing the STOP
-> + *                     channel command to both UL and DL channels. This command
-> + *                     does not reset the channel context and the client drivers
-> + *                     can issue mhi_start_transfer to resume activity.
-> + * @mhi_dev: Device associated with the channels
-> + */
-> +int mhi_stop_transfer(struct mhi_device *mhi_dev);
-> +
-> +/**
-> + * mhi_start_transfer - Resumes channel activity by issuing the START channel
-> + *                      command to both UL and DL channels. This command assumes
-> + *                      the channel context is already setup and the client
-> + *                      drivers can issue mhi_stop_transfer to pause activity if
-> + *                      required.
-> + * @mhi_dev: Device associated with the channels
-> + */
-> +int mhi_start_transfer(struct mhi_device *mhi_dev);
-> +
-> +/**
-
-Align the comment header properly.
-
-Thanks,
-Mani
-
->   * mhi_poll - Poll for any available data in DL direction
->   * @mhi_dev: Device associated with the channels
->   * @budget: # of events to process
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> We could have just 1 config instead of 2 as well.
+> For gcc we could do no prompt and default value y, and for clang --
+> prompt and default value n. I think it should do what we need.
 > 
+
+I agree with Catalin's proposal since it should simplify things.
+
+Nit: 'default n' is the default hence I do not think it should be required
+explicitly.
+
+-- 
+Regards,
+Vincenzo
