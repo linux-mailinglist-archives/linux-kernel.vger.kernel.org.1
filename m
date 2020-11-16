@@ -2,113 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CA02B4C01
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AEA2B4C04
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732463AbgKPRBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730829AbgKPRBw (ORCPT
+        id S1732472AbgKPRB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:01:57 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:41199 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730829AbgKPRB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:01:52 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6570CC0613CF;
-        Mon, 16 Nov 2020 09:01:52 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id a65so24279785wme.1;
-        Mon, 16 Nov 2020 09:01:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=c3CTpkaJK+UixnUEvBg65ZoBUOSpxaDhzbHcJ5DEGNI=;
-        b=CuLldi5UDBDN2rTF1hkcZa6Ezpl6ewm/TY1Mtyupsu6d0arVIzH1H26nFGzuHgiO59
-         2ZByKjRKOR3joy83M35Y2k4U9RqRJ4AMYs7qshl6R1sYwHTbcdWxKIrCNbXxuvnt0v+e
-         4s+17RD2KoZdgIAD1pAvbG9V+fLTi1vTWXoxPPj6jw0neMzW3S9LitqrEeTDvNvZChXz
-         t20IvU0E02z0Ln4TLcbLlX8TGXQ8+5HbTHTdETDDTjAkv8vjkpXW86GFMpxdzNPJI5dk
-         UolUxpwbxi/cnbeRm7bUCA5Zlkvr+CVmPBMWbng/u6RtxcrYu6/QKhAqgP6T9ezsOzuW
-         FynA==
+        Mon, 16 Nov 2020 12:01:57 -0500
+Received: by mail-oi1-f193.google.com with SMTP id m13so19522084oih.8;
+        Mon, 16 Nov 2020 09:01:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=c3CTpkaJK+UixnUEvBg65ZoBUOSpxaDhzbHcJ5DEGNI=;
-        b=a+f4YBXGSEF6XY5FnuN/E+TQWXpLanmz6J//BIABRyoha8atF8FRDB5yWeWtMMJfwQ
-         1vJixCuFWv1q8zzsfcZIYuZFFrEAsAr91fxn5Q+ZX0bvGdssvwIP4C1WzPkqyUyV+c1m
-         1B6EjBZ4+6aZcP2NJWbW1FSBDejSh2hfx9dKSHfemkiEQsDLV5BTvOGnM5aUZ4VSxfp9
-         eDbaKQKdxcu5PJY+zaSNA6JBboBQq3LdN1alj12cV3pFFswe3ZbJfUvl91SZs9G+jXGn
-         EzfwaApBFsfdm1a19M6CiAJqdzNoDsJqMVZkFvlIWXMP8K4yQt5NzONSzsjNEcECFlPA
-         q20Q==
-X-Gm-Message-State: AOAM533RSny7kJ63X6/n4PLCyrfHrFOQshH84f1fCspX/LfK/0QA4mnY
-        p+dTehvg5cv/iO6yv2FPDyDUcZOgBfM=
-X-Google-Smtp-Source: ABdhPJzI6XAZ9igUYwWvC227Lh/pGF/9AZ8r1Lo0t64282p84UhM0xX65sPVYICkN7HZC6IeMKV9ow==
-X-Received: by 2002:a1c:c286:: with SMTP id s128mr16426739wmf.88.1605546110875;
-        Mon, 16 Nov 2020 09:01:50 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id d134sm20299429wmd.8.2020.11.16.09.01.49
+         :mime-version:content-disposition:in-reply-to;
+        bh=u+JXrZYifKdUs7FbxLSzL5FeCPiKddkCqanejgp6YUk=;
+        b=Pi2fDs/d1SwyUhQyyYgliVpIVHVJX2+HKMwZ5M8l/Hb9Z63isJ14a8Yz8+2vGTZysT
+         gLMrW7rm+BEGGWv2aX1qxxrKbChqs2iY8+xOhjmW/baR9zi91ip4mEe/lfscQ+ybxb0A
+         UB5Xs2yoz+gdgEmxQVnztbwFWD0x3mPNIwDkxJDIvXeKLKrWYKSnEYSsltzkq37/xtzZ
+         CWlycqw7oXbaxXjlIQzz9FBWwqDsuDDO01fUbTTORsbMjlkEQI1rLsBytvmpu6FCmQeV
+         EUTInl/1XpC1Ervr1oGlgUOxgSYxsAL6Q9fPyfxGuQqGfzJp+EfhTvurw+G0de+beIpD
+         3Czw==
+X-Gm-Message-State: AOAM533ycTdRug10UDh73LDEHBYjTN3aqsJzdlQLilSffJLYRC+PqfnJ
+        TSPawdRhHWrTmDjVBPBOcg==
+X-Google-Smtp-Source: ABdhPJxfIngqPIPPFq6gc+SDNZG2oWmf4zFtDxQiQMoBenm1qbDm6a92Xa7UhiT2+YDtpgUuD0aGRg==
+X-Received: by 2002:aca:5110:: with SMTP id f16mr290638oib.94.1605546116505;
+        Mon, 16 Nov 2020 09:01:56 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s131sm4819187oie.58.2020.11.16.09.01.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:01:49 -0800 (PST)
-Date:   Mon, 16 Nov 2020 18:01:48 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH] PCI: tegra: Use PTR_ERR_OR_ZERO
-Message-ID: <20201116170137.GA2587640@ulmo>
-References: <20201116165407.8050-1-sudipm.mukherjee@gmail.com>
+        Mon, 16 Nov 2020 09:01:55 -0800 (PST)
+Received: (nullmailer pid 1808233 invoked by uid 1000);
+        Mon, 16 Nov 2020 17:01:54 -0000
+Date:   Mon, 16 Nov 2020 11:01:54 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        kernel@pengutronix.de, Alexandre Torgue <alexandre.torgue@st.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: arm: stm32: add extra SiP compatible
+ for lxa, stm32mp157c-mc1
+Message-ID: <20201116170154.GA1808177@bogus>
+References: <20201110102552.7270-1-a.fatoum@pengutronix.de>
+ <20201110102552.7270-2-a.fatoum@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TRYliJ5NKNqkz5bu"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116165407.8050-1-sudipm.mukherjee@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201110102552.7270-2-a.fatoum@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---TRYliJ5NKNqkz5bu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Nov 16, 2020 at 04:54:07PM +0000, Sudip Mukherjee wrote:
-> Coccinelle suggested using PTR_ERR_OR_ZERO() and looking at the code,
-> we can use PTR_ERR_OR_ZERO() instead of checking IS_ERR() and then
-> doing 'return 0'.
->=20
-> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+On Tue, 10 Nov 2020 11:25:50 +0100, Ahmad Fatoum wrote:
+> The Linux Automation MC-1 is built around an OSD32MP15x SiP with CPU,
+> RAM, PMIC, Oscillator and EEPROM. Adjust the binding, so the SiP
+> compatible is contained as well. This allows boot firmware to match
+> against it to apply fixups if necessary.
+> 
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 > ---
->  drivers/pci/controller/pci-tegra.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+> v1 -> v2:
+>  - split up binding and device tree change
+> ---
+>  Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
 
-This has been proposed multiple times in the past and Bjorn and I have
-agreed every time that this is not an improvement, so sorry, but NAK.
-
-Thierry
-
---TRYliJ5NKNqkz5bu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+ysHsACgkQ3SOs138+
-s6GC7xAAnSsYlESiX6ESGZs1qV+dr+SktWx1QxMTKlk4fG43Mryvctb5YZb8vq2F
-YZSf0Z/c1W9TbPrn2OLF3ZGi9dZanU5VsRzIiiCXXUF1NPLIdELn2Nes0WpBD9i2
-6ZoUqRG4n3+8av6H3m3VJdbGElBOdFpGDcrzw1v7RQFjkBRYBtCKV7GxJo7so7u5
-FgSBoJB/qL5+DVxa/6DJNtmiYqBk4ZGKpiTOVPzTgN1Fb3ZKoz/KPuql7cmunwxV
-BbB2Xnibu3yJDW/TxaHin7+xUGTc9J9HAtIOKmY2ZnBeVDW6NC9e31x9i13efMLe
-nLFLfw0KNdsHiex4aRgdEHqtZxYOCBUWA0vbMuzG5dnzCkZTZzqvn+Nvw/wntAv8
-O7v/SK2j4cuo8g9V2alT8PKU99xALK9K4sxnZaN18sluR0Kx3JwLNnyT7Mqnpdwn
-hwrvcHC34nNGAgrVri/SPzFPQt7zUrJHYlCjad5CS4G/sX+dr+AtnJ3gSAEFKo5R
-+7YGVow03aIon+34KSyM+WBZrl+xwWxUlc04lr48UwavftC2Bp52Trup/yOaEUpi
-3jOmv3hel97NrRun3JZA1SxD86wGuVUWRlDSAbTR6BDgau5bGViGRCobqRYGbA/w
-nwgs2ETztkeL2jlyI5nVufNgQJ77SdECYl5Zm3Ga1xqMKZHaOK8=
-=hvDV
------END PGP SIGNATURE-----
-
---TRYliJ5NKNqkz5bu--
+Acked-by: Rob Herring <robh@kernel.org>
