@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093E82B3F1A
+	by mail.lfdr.de (Postfix) with ESMTP id 809F22B3F1B
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgKPIs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:48:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
+        id S1728203AbgKPItQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgKPIs5 (ORCPT
+        with ESMTP id S1726291AbgKPItP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:48:57 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780F2C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:48:55 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a3so22817304wmb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:48:55 -0800 (PST)
+        Mon, 16 Nov 2020 03:49:15 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE78C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:49:15 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id d12so17708504wrr.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:49:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:autocrypt:organization:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=bytOyaTdOaNPlL5Eeo/KhiZTN4i5aXJrm4o5Lrz7ER8=;
-        b=2RNqv42H/eGo/quWg2lndaDw7RHeYBpTfnlVf3NL0B6MtJutBTKBkARf0JuHnC++ZQ
-         k6+HYR9B4/VQFOmC0JsGByoNCqLDhF7Nc6jMF1G6YyDQbT/ODTk8boMFbvIEoLlp09tn
-         lF4dic3X48hOniW9hqlVA5jS8Rgq8/4EkIXqimVDsAMPbGA8J7znIbq8JZPZpvXAWYDm
-         dNwa5VchRcS5guKRH3Z+23PZrkPKFcx6Y1mL/BwpFrlV2s5zTjwTIR9PiXxuLMiPmeR+
-         qV1AStBx3V21I3FVobie7PMI5b701emozvn8F0KG35/FQhYCCvZrkw8atSelsdNtdIhc
-         T4Dw==
+        bh=+bJlyMAEB2wHlml8EIC85KvHJwpTysu8mR/NuE9XAF0=;
+        b=o40VuBTiIdI/Be8sg+w9Di15L8i1eXDUFX/wCpzqcC6HiQe7XtMC7o16DbBbB0q9CG
+         +6rUOVb57r5yY22FEA7Y1ClAoU0JAQpTEp6QlyiEEBpaZyxG52QH8gs4Smm74LVp/77P
+         rLS3zGpph0gp7HbHw+lbnstGIFj0B/ZGHY71FnAqPcvRiRFIHzkROAs7K6+ygfFEgsEc
+         ylm1j+XILPV/M/jzLVMnyeflbDG3wz4GZi+6rBdY+BDym72p76/FC4iAdwWC+0q8gw+c
+         vDADDOF8wnet1+tfQSJdtGmDadhgsHGnWB7fJCICco0bFNZA5QUs5ufvPMZcXg7O4kTI
+         +Jfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=bytOyaTdOaNPlL5Eeo/KhiZTN4i5aXJrm4o5Lrz7ER8=;
-        b=pMIC7RR3Ifqq4cA+zeIvIkbb4g27PXNxkwazfv6JHTrT7cTkOggJm97llnnrHQ9/wg
-         Bcfks1D0SxwrkNqynR4uR0SQBuvlX8NcBuKGdvAKRIIe0yZMLbR7KuBgnnz59XZ7ZmTh
-         S11EMHT0BtEB4bWFXCcEzQrga64+92MvOpbuSAZaQWy9RVCW4jgTl2ap+SsUq5sgwBFI
-         YWb/QiGULhMVMIzVXWQTbmu8Zra8ACFhEViWr5RaKzpMgDzbJkkAWTevLuDIKsHPDTKU
-         a2Zr51hhRcu7UZhGYLVQ+tNhQgeci/cNlewGRcLupX9AmZdH+QFCfwCh+QkjOO0QHZGQ
-         vUqA==
-X-Gm-Message-State: AOAM532Y66fiNep7qMDN4gJs1qXYjeipfcxv9AOoqjKLCw0lF9P5yNg6
-        BJAhkNwTaoO2TJ7BBcD3LwYcKQ==
-X-Google-Smtp-Source: ABdhPJyoPNoNZwRvVQk1Wah6zgtln7DoTbb8M4M/f0bmQrNiR53tBKdWzgyzrEfhRymXF+k/UCqJOg==
-X-Received: by 2002:a1c:a555:: with SMTP id o82mr14314602wme.188.1605516534118;
-        Mon, 16 Nov 2020 00:48:54 -0800 (PST)
+        bh=+bJlyMAEB2wHlml8EIC85KvHJwpTysu8mR/NuE9XAF0=;
+        b=YMYQS3K5OI+bU/qKLXkao1M2/Cj2gkWs7isFQSdZ3zvFcMujWXbYlnGJeeASmrZ2/C
+         mFy8m8h4TXf0ob/1AlCzdo3tLZTH7nIgzKc8/oBtRXKi87qKUMwmP3VjFpnCEMsLZEJC
+         PuKHJyHYmA2JWlUE3LmDKf6Mjzf0Xx8Z9svlcyYg3o2nl2sOQrn+E+6luZCn+uKqgwC6
+         18C6B15m1cfuH31T6/L6yV+/ZjzRXtO6+FzRk6KvQuTiP2MNMLGFeZe25kKnZHTtf+5L
+         RVGk5mmvY5GTjvUXb6sKGxewbpLuhEo+KWxAa6fFIzuPEksYGxKjVRqgJaFqwaDcNqQc
+         P/MA==
+X-Gm-Message-State: AOAM530JemyRUv+/zJhC4mmNui4EKHKY5OqHz8NkyxFLK7r2N+oOgaJd
+        fY+Ry9Zf2evfPsftkWfsx/hC2w==
+X-Google-Smtp-Source: ABdhPJwrA53uPM354BPUgss5N/mtk4pEdi0rbBm9IYMCj7W9gwIRiSDqLRePwC7xAvcFToS7EZo1rg==
+X-Received: by 2002:adf:a40c:: with SMTP id d12mr18407470wra.154.1605516553626;
+        Mon, 16 Nov 2020 00:49:13 -0800 (PST)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb? ([2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb])
-        by smtp.gmail.com with ESMTPSA id k20sm18632864wmi.15.2020.11.16.00.48.52
+        by smtp.gmail.com with ESMTPSA id m22sm22832111wrb.97.2020.11.16.00.49.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 00:48:52 -0800 (PST)
-Subject: Re: [PATCH 14/40] drm/meson/meson_venc: Make local function
- 'meson_venc_hdmi_get_dmt_vmode' static
+        Mon, 16 Nov 2020 00:49:12 -0800 (PST)
+Subject: Re: [PATCH 17/40] drm/meson/meson_vclk: Make two local functions
+ static
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
@@ -61,7 +61,7 @@ Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
         dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org
 References: <20201113134938.4004947-1-lee.jones@linaro.org>
- <20201113134938.4004947-15-lee.jones@linaro.org>
+ <20201113134938.4004947-18-lee.jones@linaro.org>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -113,12 +113,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
  ZaTUOEkgIor5losDrePdPgE=
 Organization: Baylibre
-Message-ID: <46c423b8-8c1b-a2b8-91d7-12cde980f5fc@baylibre.com>
-Date:   Mon, 16 Nov 2020 09:48:51 +0100
+Message-ID: <9ef1827b-c415-6e17-2b0d-46477dce6d83@baylibre.com>
+Date:   Mon, 16 Nov 2020 09:49:05 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201113134938.4004947-15-lee.jones@linaro.org>
+In-Reply-To: <20201113134938.4004947-18-lee.jones@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -129,7 +129,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 13/11/2020 14:49, Lee Jones wrote:
 > Fixes the following W=1 kernel build warning(s):
 > 
->  drivers/gpu/drm/meson/meson_venc.c:893:6: warning: no previous prototype for ‘meson_venc_hdmi_get_dmt_vmode’ [-Wmissing-prototypes]
+>  drivers/gpu/drm/meson/meson_vclk.c:134:6: warning: no previous prototype for ‘meson_vid_pll_set’ [-Wmissing-prototypes]
+>  drivers/gpu/drm/meson/meson_vclk.c:490:6: warning: no previous prototype for ‘meson_hdmi_pll_set_params’ [-Wmissing-prototypes]
 > 
 > Cc: Neil Armstrong <narmstrong@baylibre.com>
 > Cc: David Airlie <airlied@linux.ie>
@@ -142,23 +143,34 @@ On 13/11/2020 14:49, Lee Jones wrote:
 > Cc: linux-arm-kernel@lists.infradead.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/gpu/drm/meson/meson_venc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/meson/meson_vclk.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/meson/meson_venc.c b/drivers/gpu/drm/meson/meson_venc.c
-> index f93c725b6f02d..5e2236ec189fa 100644
-> --- a/drivers/gpu/drm/meson/meson_venc.c
-> +++ b/drivers/gpu/drm/meson/meson_venc.c
-> @@ -890,8 +890,8 @@ bool meson_venc_hdmi_supported_vic(int vic)
->  }
->  EXPORT_SYMBOL_GPL(meson_venc_hdmi_supported_vic);
+> diff --git a/drivers/gpu/drm/meson/meson_vclk.c b/drivers/gpu/drm/meson/meson_vclk.c
+> index 0eb86943a3588..2a82119eb58ed 100644
+> --- a/drivers/gpu/drm/meson/meson_vclk.c
+> +++ b/drivers/gpu/drm/meson/meson_vclk.c
+> @@ -131,7 +131,7 @@ enum {
+>  	VID_PLL_DIV_15,
+>  };
 >  
-> -void meson_venc_hdmi_get_dmt_vmode(const struct drm_display_mode *mode,
-> -				   union meson_hdmi_venc_mode *dmt_mode)
-> +static void meson_venc_hdmi_get_dmt_vmode(const struct drm_display_mode *mode,
-> +					  union meson_hdmi_venc_mode *dmt_mode)
+> -void meson_vid_pll_set(struct meson_drm *priv, unsigned int div)
+> +static void meson_vid_pll_set(struct meson_drm *priv, unsigned int div)
 >  {
->  	memset(dmt_mode, 0, sizeof(*dmt_mode));
+>  	unsigned int shift_val = 0;
+>  	unsigned int shift_sel = 0;
+> @@ -487,9 +487,9 @@ static inline unsigned int pll_od_to_reg(unsigned int od)
+>  	return 0;
+>  }
+>  
+> -void meson_hdmi_pll_set_params(struct meson_drm *priv, unsigned int m,
+> -			       unsigned int frac, unsigned int od1,
+> -			       unsigned int od2, unsigned int od3)
+> +static void meson_hdmi_pll_set_params(struct meson_drm *priv, unsigned int m,
+> +				      unsigned int frac, unsigned int od1,
+> +				      unsigned int od2, unsigned int od3)
+>  {
+>  	unsigned int val;
 >  
 > 
 
