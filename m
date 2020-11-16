@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDDF2B441C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858232B4457
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbgKPM6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:58:14 -0500
-Received: from outbound-smtp55.blacknight.com ([46.22.136.239]:57543 "EHLO
-        outbound-smtp55.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727740AbgKPM6O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:58:14 -0500
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp55.blacknight.com (Postfix) with ESMTPS id 7F27DFA9A8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:58:12 +0000 (GMT)
-Received: (qmail 17723 invoked from network); 16 Nov 2020 12:58:12 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Nov 2020 12:58:11 -0000
-Date:   Mon, 16 Nov 2020 12:58:09 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: Loadavg accounting error on arm64
-Message-ID: <20201116125809.GP3371@techsingularity.net>
-References: <20201116091054.GL3371@techsingularity.net>
- <20201116124657.GA3121392@hirez.programming.kicks-ass.net>
+        id S1728907AbgKPNCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 08:02:42 -0500
+Received: from gw.c-home.cz ([89.24.150.100]:33806 "EHLO dmz.c-home.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727978AbgKPNCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 08:02:41 -0500
+Received: from ubuntu2004.c-home.cz (unifi.c-home.cz [192.168.1.227])
+        by dmz.c-home.cz (8.14.4+Sun/8.14.4) with ESMTP id 0AGCuMlV021922;
+        Mon, 16 Nov 2020 13:56:27 +0100 (CET)
+From:   Martin Cerveny <m.cerveny@computer.org>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Martin Cerveny <m.cerveny@computer.org>,
+        Chen-Yu Tsai <wens@csie.org>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v3 0/6] ARM: dts: sun8i: v3s: Enable video decoder
+Date:   Mon, 16 Nov 2020 13:56:11 +0100
+Message-Id: <20201116125617.7597-1-m.cerveny@computer.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201116124657.GA3121392@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 01:46:57PM +0100, Peter Zijlstra wrote:
-> On Mon, Nov 16, 2020 at 09:10:54AM +0000, Mel Gorman wrote:
-> > Similarly, it's not clear why the arm64 implementation
-> > does not call smp_acquire__after_ctrl_dep in the smp_load_acquire
-> > implementation. Even when it was introduced, the arm64 implementation
-> > differed significantly from the arm implementation in terms of what
-> > barriers it used for non-obvious reasons.
-> 
-> This is because ARM64's smp_cond_load_acquire() implementation uses
-> smp_load_aquire() directly, as opposed to the generic version that uses
-> READ_ONCE().
-> 
-> This is because ARM64 has a load-acquire instruction, which is highly
-> optimized, and generally considered cheaper than the smp_rmb() from
-> smp_acquire__after_ctrl_dep().
-> 
-> Or so I've been led to believe.
+First patch extends cedrus capability to all decoders
+because V3s missing MPEG2 decoder.
 
-Fair enough. Either way, barriering sched_contributes_to_load "works"
-but it's clumsy and may not be guaranteed to be correct. The bits
-should have been protected by the rq lock but sched_remote_wakeup
-updates outside of the lock which might be leading to the adject fields
-(like sched_contributes_to_load) getting corrupted as per the "anti
-guarantees" in memory-barriers.txt. The rq lock could be conditionally
-acquired __ttwu_queue_wakelist for WF_MIGRATED and explicitly cleared in
-sched_ttwu_pending (not tested if this works) but it would also suck to
-acquire a remote lock when that's what we're explicitly trying to avoid
-in that path.
+Next two patches add system control node (SRAM C1) and 
+next three patches add support for Cedrus VPU.
+
+Tested on "Lichee Zero" V3s platform with testing LCD patch
+( https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e )
+and V4L2 raw API testing utility (updated to v5.10)
+( https://github.com/mcerveny/v4l2-request-test ):
+- enabled LCD (DRM dual VI and sigle UI planes)
+- added RGB panel
+- enabled PWM
+- need additional patch https://git.linuxtv.org/media_tree.git/commit/?h=fixes&id=9ac924b98728c3733c91c6c59fc410827d0da49f
+
+There is low memory on V3s (64MB) and maximum must be available to CMA:
+- CONFIG_CMA_SIZE_MBYTES=28
+- add swap to swapout other processes
+- decrease buffers in v4l2-request-test (.buffers_count from 16 to 8)
+
+Only H.264 decoder working - MPEG and H.265 unsupported by V3s,
+JPEG/MJPEG still unimplemented, encoder unimplemented
+
+best regards,
+Martin
+
+Changes since v2:
+- updated/rebased to https://git.linuxtv.org/hverkuil/media_tree.git/?h=for-v5.11e
+- some parts of patches implemeted by others
+- updated R40
+Changes since v1:
+- patch 0005 rename
+- added testing description
+
+Martin Cerveny (6):
+  media: cedrus: Register all codecs as capability
+  dt-bindings: sram: allwinner,sun4i-a10-system-control: Add V3s
+    compatibles
+  ARM: dts: sun8i: v3s: Add node for system control
+  media: cedrus: Add support for V3s
+  dt-bindings: media: cedrus: Add V3s compatible
+  ARM: dts: sun8i: v3s: Add video engine node
+
+ .../allwinner,sun4i-a10-video-engine.yaml     |  1 +
+ .../allwinner,sun4i-a10-system-control.yaml   |  3 ++
+ arch/arm/boot/dts/sun8i-v3s.dtsi              | 24 ++++++++++++++
+ drivers/staging/media/sunxi/cedrus/cedrus.c   | 32 +++++++++++++++++--
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |  2 ++
+ .../staging/media/sunxi/cedrus/cedrus_video.c |  2 ++
+ 6 files changed, 62 insertions(+), 2 deletions(-)
 
 -- 
-Mel Gorman
-SUSE Labs
+2.25.1
+
