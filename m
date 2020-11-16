@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C172B3B7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 03:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAC62B3B7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 03:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgKPChK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 21:37:10 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7542 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgKPChK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 21:37:10 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CZCrk4ZhYzhZ69;
-        Mon, 16 Nov 2020 10:36:54 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 16 Nov 2020 10:36:57 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
-CC:     Satish Kharat <satishkh@cisco.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] scsi: fnic: Fix error return in fnic_probe
-Date:   Mon, 16 Nov 2020 10:41:38 +0800
-Message-ID: <20201116024138.22519-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726497AbgKPCp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 21:45:59 -0500
+Received: from mga04.intel.com ([192.55.52.120]:49240 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgKPCp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 21:45:59 -0500
+IronPort-SDR: aqiVO5DFMUS+nRjbQ3hrBtm4iiETuPvdM5Xc7uC5+byvCx2dLimPHbgTyCjNhdgd1sBpQYe2at
+ cJjkJDwrnm+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="168117394"
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
+   d="scan'208";a="168117394"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 18:45:57 -0800
+IronPort-SDR: SdaGANuOcK1wN4nJGO+YR3vn9icdVGYmlxBnOjSB0v1rBF5mpLyhmdhHRqXLeWyK6r84kHNytz
+ gCP99sz9LYCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
+   d="scan'208";a="533262345"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Nov 2020 18:45:55 -0800
+Date:   Mon, 16 Nov 2020 10:41:47 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     richard.gong@linux.intel.com
+Cc:     mdf@kernel.org, trix@redhat.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dinguyen@kernel.org,
+        sridhar.rajagopal@intel.com, Richard Gong <richard.gong@intel.com>,
+        yilun.xu@intel.com
+Subject: Re: [PATCHv1 0/4] Extend FPGA manager and region drivers for
+Message-ID: <20201116024147.GA8715@yilunxu-OptiPlex-7050>
+References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If mempool_create_slab_pool fails, return -ENOMEM.
+On Thu, Nov 12, 2020 at 12:06:39PM -0600, richard.gong@linux.intel.com wrote:
+> From: Richard Gong <richard.gong@intel.com>
+> 
+> The customer wants to verify that a FPGA bitstream can be started properly
+> before saving the bitstream to the QSPI flash memory.
+> 
+> The customer sends the bitstream via FPGA framework and overlay, the
+> firmware will authenticate the bitstream but not program the bitstream to
+> device. If the authentication passes, the bitstream will be programmed into
+> QSPI flash and will be expected to boot without issues.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- drivers/scsi/fnic/fnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+So when we have successfully reprogramed region with the
+FPGA_MGR_BITSTREM_AUTHENTICATION flag, the bitstream in QSPI flash is
+updated but not activated, we need an FPGA reboot to activate it, is it?
 
-diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
-index 5f8a7ef8f6a8..4f7befb43d60 100644
---- a/drivers/scsi/fnic/fnic_main.c
-+++ b/drivers/scsi/fnic/fnic_main.c
-@@ -740,6 +740,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	for (i = 0; i < FNIC_IO_LOCKS; i++)
- 		spin_lock_init(&fnic->io_req_lock[i]);
- 
-+	err = -ENOMEM;
- 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
- 	if (!fnic->io_req_pool)
- 		goto err_out_free_resources;
--- 
-2.26.2
+Thanks,
+Yilun
 
+> 
+> Extend FPGA manager and region drivers to support the bitstream
+> authentication feature.
+> 
+> Richard Gong (4):
+>   fpga: fpga-mgr: add FPGA_MGR_BITSTREM_AUTHENTICATION flag
+>   fpga: of-fpga-region: add authenticate-fpga-config property
+>   dt-bindings: fpga: add authenticate-fpga-config property
+>   fpga: stratix10-soc: entend driver for bitstream authentication
+> 
+>  Documentation/devicetree/bindings/fpga/fpga-region.txt | 1 +
+>  drivers/fpga/of-fpga-region.c                          | 3 +++
+>  drivers/fpga/stratix10-soc.c                           | 5 ++++-
+>  include/linux/fpga/fpga-mgr.h                          | 3 +++
+>  4 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> -- 
+> 2.7.4
