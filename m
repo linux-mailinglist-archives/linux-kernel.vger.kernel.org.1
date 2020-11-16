@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9152A2B3BC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB492B3BCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgKPDOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 22:14:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
+        id S1726509AbgKPDR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 22:17:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgKPDOQ (ORCPT
+        with ESMTP id S1726265AbgKPDRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 22:14:16 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE695C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 19:14:15 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id m13so17333930oih.8
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 19:14:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UmXDsbkMyG3TLtFxXGtOYPD+kRSyJ20ru4tSJVWRVhU=;
-        b=MhhQtbTSSKCTKj6L6N6yRgPmAq/Bi9/wSZ0bci2FRMthAssY1VMWTwL66hm6coRqEs
-         Py2l3hJl9C9xA3x9NnWIIgxiuLD9tQwzWAQaMYVD7N09XjTVcHxjXCOiuYduIpgc+me/
-         HQEWx7PVG7lgZ3jBkOO3N1GMg6zJWpNfLkCEPOU8OrfFpYvGGgo/y73ztBv0N8rhj2xh
-         v1bLlewoDC7u+20WshYT0q6THMLY0PPz0cMLObfbqx+T+opfxL+2P9HcR6xHxhxN1B4H
-         pItkSGEtq6zosMdnUlI3xlcrrbfZKkYLId3aNORkM5KTi1XsXB8qzNMMvv17D6l8bEwE
-         4EeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UmXDsbkMyG3TLtFxXGtOYPD+kRSyJ20ru4tSJVWRVhU=;
-        b=O4yRLqNCj+bxePnR/VX48D/PnqCkGEKej0toQMLfF22j20J0a725wHqh5m2awwgPrh
-         VhUBKm0jJC9t8zYdZQYbiCVCkvJzMDl0euKM7LHSjnYh1bP8b/Vvys9MCuNvnReqlw+u
-         qDupri3w0PuPohA7LxeKYhiCQ7PCP9pQwPMSe+4sGIde3rSOvaiYOma8f5RltHLh4W1u
-         q1leGGQpVID1SyMNP9nYMDqL80n9xZxyUER8tiANiyX+4eni1NyVq/5d6+tlWzFCoPlx
-         GHd9B3u+zzvHgbgM5st9pFFxgNdj7Od5/P+/U4RIRc2pEII1Bs25uw3Vqh4B7WGTF1P+
-         kfOQ==
-X-Gm-Message-State: AOAM533BvWepfco07FqdTn7jX7qlFW4kNkaHlfaggn0D41zFMV0VZVTI
-        2CRnX6KdcMaOxoURvUtME6gxauQVldsHPgZwoQ06qNtdCkxXyRJC
-X-Google-Smtp-Source: ABdhPJyDqNE9q4x0eWvYqW5pk63CuMMdkh8YP/75hsj5Hw4gwBaBxi0hKu8Sv2f1F706gKCXsdakj45MtBoi3gehBCU=
-X-Received: by 2002:a05:6808:69a:: with SMTP id k26mr8650729oig.140.1605496455229;
- Sun, 15 Nov 2020 19:14:15 -0800 (PST)
+        Sun, 15 Nov 2020 22:17:25 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6658DC0613CF;
+        Sun, 15 Nov 2020 19:17:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=rLL9X6jjJCna5p7PH8EM+yh73syISaST57XUG2k8t6o=; b=dMjzwsf13RWSgZG0yQSp+ZfBIO
+        hZJ8SP9NPiwlYkvjNTYTl6o4xmcFzVqZWY2JcWZVoS+SyXAgS96FDE67uF9ebaaFzyH6pYVbluNBo
+        KWJiBwLmHOu9QViMXNZSH7vmF6+k9XyMUOrKr9K0/EH64Ofgy2JIvJuxwk35NRJFZUfcVtL2WAYyF
+        aLKgiOePUojFUbT9xntuGNikS9/fEztKX8e20/wAu6E3R1nqQRJh3/BrYZPnL6BGX1mcyU7X8mNAR
+        rAkXwUfTJQwgbV8r5//S5I+6Z4EGSxdwmVLrww52f4z04ohIqfQTVhJm619MmftxpFCg798Wvudef
+        7uL286VQ==;
+Received: from [2601:1c0:6280:3f0::f32] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keV17-0008Q3-J9; Mon, 16 Nov 2020 03:17:22 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: [PATCH net-next v4] net: linux/skbuff.h: combine SKB_EXTENSIONS + KCOV handling
+Date:   Sun, 15 Nov 2020 19:17:15 -0800
+Message-Id: <20201116031715.7891-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201111093514.103155-1-zong.li@sifive.com> <20201111093514.103155-2-zong.li@sifive.com>
- <MN2PR13MB279761320CFB61CEBC340B73EBE80@MN2PR13MB2797.namprd13.prod.outlook.com>
- <160516094980.60232.10838645292668930157@swboyd.mtv.corp.google.com>
-In-Reply-To: <160516094980.60232.10838645292668930157@swboyd.mtv.corp.google.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Mon, 16 Nov 2020 11:14:05 +0800
-Message-ID: <CANXhq0oX63CFqUUMqtcoqQavLnTymWAPHSQrfcboQZxznfc+Cg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] clk: sifive: Extract prci core to common base
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Pragnesh Patel <pragnesh.patel@openfive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "schwab@linux-m68k.org" <schwab@linux-m68k.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        Yash Shah <yash.shah@openfive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 2:02 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Pragnesh Patel (2020-11-11 01:51:17)
-> > >+#define RCI_GEMGXLPLLCFG1_CKE_SHIFT   24
-> > >+#define PRCI_GEMGXLPLLCFG1_CKE_MASK   (0x1 <<
-> > >PRCI_GEMGXLPLLCFG1_CKE_SHIFT)
-> >
-> > Same here, Other than this
-> >
-> > Reviewed-by: Pragnesh Patel <Pragnesh.patel@sifive.com>
-> >
->
-> Please trim your replies
+The previous Kconfig patch led to some other build errors as
+reported by the 0day bot and my own overnight build testing.
 
-In v4 patch version, I change the definition of macros to 31 from 24 as follows:
-- PRCI_CLTXPLLCFG1_CKE_SHIFT
-- PRCI_DVFSCOREPLLCFG1_CKE_SHIFT
-- PRCI_HFPCLKPLLCFG1_CKE_SHIFT
-- PRCI_DDRPLLCFG1_CKE_SHIFT
-- RCI_GEMGXLPLLCFG1_CKE_SHIFT
+These are all in <linux/skbuff.h> when KCOV is enabled but
+SKB_EXTENSIONS is not enabled, so fix those by combining those conditions
+in the header file.
+
+Also, add stubs for skb_ext_add() and skb_ext_find() to reduce the
+amount of ifdef-ery. (Jakub)
+
+Fixes: 6370cc3bbd8a ("net: add kcov handle to skb extensions")
+Fixes: 85ce50d337d1 ("net: kcov: don't select SKB_EXTENSIONS when there is no NET")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Aleksandr Nogikh <nogikh@google.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-next@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: Matthieu Baerts <matthieu.baerts@tessares.net>
+---
+v4: The enum for SKB_EXT_KCOV_HANDLE needs to be exposed unconditionally
+  because it is used in skb_get/set_kcov_handle(), which are always
+  present since v3.
+v3: (as suggested by Jakub Kicinski <kuba@kernel.org>)
+  add stubs for skb_ext_add() and skb_ext_find() to reduce the ifdef-ery
+v2: (as suggested by Matthieu Baerts <matthieu.baerts@tessares.net>)
+  drop an extraneous space in a comment;
+  use CONFIG_SKB_EXTENSIONS instead of CONFIG_NET;
+
+ include/linux/skbuff.h |   14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+--- linux-next-20201113.orig/include/linux/skbuff.h
++++ linux-next-20201113/include/linux/skbuff.h
+@@ -4137,7 +4137,6 @@ static inline void skb_set_nfct(struct s
+ #endif
+ }
+ 
+-#ifdef CONFIG_SKB_EXTENSIONS
+ enum skb_ext_id {
+ #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
+ 	SKB_EXT_BRIDGE_NF,
+@@ -4151,12 +4150,11 @@ enum skb_ext_id {
+ #if IS_ENABLED(CONFIG_MPTCP)
+ 	SKB_EXT_MPTCP,
+ #endif
+-#if IS_ENABLED(CONFIG_KCOV)
+ 	SKB_EXT_KCOV_HANDLE,
+-#endif
+ 	SKB_EXT_NUM, /* must be last */
+ };
+ 
++#ifdef CONFIG_SKB_EXTENSIONS
+ /**
+  *	struct skb_ext - sk_buff extensions
+  *	@refcnt: 1 on allocation, deallocated on 0
+@@ -4252,6 +4250,10 @@ static inline void skb_ext_del(struct sk
+ static inline void __skb_ext_copy(struct sk_buff *d, const struct sk_buff *s) {}
+ static inline void skb_ext_copy(struct sk_buff *dst, const struct sk_buff *s) {}
+ static inline bool skb_has_extensions(struct sk_buff *skb) { return false; }
++static inline void *skb_ext_add(struct sk_buff *skb, enum skb_ext_id id)
++{ return NULL; }
++static inline void *skb_ext_find(const struct sk_buff *skb, enum skb_ext_id id)
++{ return NULL; }
+ #endif /* CONFIG_SKB_EXTENSIONS */
+ 
+ static inline void nf_reset_ct(struct sk_buff *skb)
+@@ -4608,7 +4610,6 @@ static inline void skb_reset_redirect(st
+ #endif
+ }
+ 
+-#ifdef CONFIG_KCOV
+ static inline void skb_set_kcov_handle(struct sk_buff *skb,
+ 				       const u64 kcov_handle)
+ {
+@@ -4632,11 +4633,6 @@ static inline u64 skb_get_kcov_handle(st
+ 
+ 	return kcov_handle ? *kcov_handle : 0;
+ }
+-#else
+-static inline void skb_set_kcov_handle(struct sk_buff *skb,
+-				       const u64 kcov_handle) { }
+-static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
+-#endif /* CONFIG_KCOV */
+ 
+ #endif	/* __KERNEL__ */
+ #endif	/* _LINUX_SKBUFF_H */
