@@ -2,204 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899A42B5345
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4016E2B5349
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgKPUzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:55:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgKPUzl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:55:41 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1106BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:55:41 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id r12so18894779iot.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:55:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Be144PmpR2r/+3mLxCPcCbcigQoOxzS6Vke1CO1s/GU=;
-        b=c1wcBdkONeTDIyTRb5fxCLkD5WeJx0AqEuzOeOBUwczSP+V8/+v5gfe5gM7PW6qNgM
-         2FKMdkyrQuMCZ2D2b8jjubyIBXJa3jn9/4UKLTjp8NCbpupJm5YLnKqJBCXIrMWKvQdX
-         1pn7vx7Df8NmSN91jUI11BfeBk7c5GiHp6AMgIgG/hVZ1zCrJZh0AX8GClxneQaSa38t
-         U9wgZWvttfMrvpsrqlJUfs1+OzbVNMio4oKrLQRd3RVu4Z/N1k9cf25s2hlPYy8kzppp
-         /sKROZ7VVr6AgkAJv0YF0PmGB0z8aJvjCr3cyV5afFxN6uyxL7lANugIyDeKIqFHLZdK
-         pQnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Be144PmpR2r/+3mLxCPcCbcigQoOxzS6Vke1CO1s/GU=;
-        b=CHum128lqINzyjyZamBvq81zRxUzUxX9L/fe/GBU4wjt8AuUOAlFr0XCM9M4mWoiAu
-         VBrKfc9pD5VMGenahnRaMdfejj7SYNzZrPNlG7gy9EB1CnQaMmgHRZAy3qJUezpmXADJ
-         wExl0O+ZcXyjWKcJXuSYv/4EoRI1rHRaF74qB/NIMiBNCEJkbLTpNIfwcIQSmfbJKjHM
-         +4OcBPzMO7yzALVZx7CiDtGoxpiNvZDtl7HwVxBRDxGuLmvPijwQmfDXTbtE69deee6u
-         1nwftNZWdKigaifB9A5SUv1AjNr7hnFF2wh2dkGp+Q/XaUY+oWy1TuY3f+9k4Gt4rpNq
-         DG9Q==
-X-Gm-Message-State: AOAM530fi/EIGK7pl1jItmxyEXgXUJlEDjEkumhkc5CkjcKXqxupV3LC
-        wJq8Y0dzE+l+jXODrXzqpWCp9Yy8Mr9STPxMJb4/eA==
-X-Google-Smtp-Source: ABdhPJyY4x0wcN+Rnb91pciYL8+eiS6j3KSVLPxfw04duPuFPIO+eVe2VczDlFTiwVwqh2Wsjyhxa3bkB+3zd146cKs=
-X-Received: by 2002:a6b:6a03:: with SMTP id x3mr4250371iog.96.1605560140084;
- Mon, 16 Nov 2020 12:55:40 -0800 (PST)
+        id S1730742AbgKPU42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:56:28 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:34580 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730488AbgKPU40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 15:56:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605560185; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Xjkdxhx1322RAQKV663NGZFDklq/I5URrPDT1967820=;
+ b=iEiXT1fStoUiIEeYkiD+qPvzg8FUJFRaaz55n17hlyFGDzpxOtguVgn94/KSjxlSEAvBJzcn
+ fbkVM1F5U7s5xzBSRIVla4jw+50sorxF6Nd6iTXHQjCGUb0asJ9ZimoBoERkIgjrg07xqWkG
+ 9K4t/I5Kje/gfSck8KlTPKW6fUg=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5fb2e7718bd2e3c2225061e7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 20:56:17
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BF667C43460; Mon, 16 Nov 2020 20:56:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9438C433ED;
+        Mon, 16 Nov 2020 20:56:16 +0000 (UTC)
 MIME-Version: 1.0
-References: <20200820162738.33053904@oasis.local.home> <20201022173434.910879-1-lpy@google.com>
-In-Reply-To: <20201022173434.910879-1-lpy@google.com>
-From:   Peiyong Lin <lpy@google.com>
-Date:   Mon, 16 Nov 2020 12:55:29 -0800
-Message-ID: <CA+0soAkD7BG6CjhMW6PYR4yAgDykU2uUizcHx1QQdXqgesCFFg@mail.gmail.com>
-Subject: Re: [PATCH v4] Add power/gpu_frequency tracepoint.
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Amit Kucheria <amit.kucheria@linaro.org>,
-        android-kernel@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Prahlad Kilambi <prahladk@google.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        zzyiwei@android.com, Sidath Senanayake <sidaths@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 16 Nov 2020 12:56:16 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, loic.poulain@linaro.org,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] bus: mhi: core: Add support to stop or start
+ channel data transfers
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20201116124332.GK3926@Mani-XPS-13-9360>
+References: <1605122473-12179-1-git-send-email-bbhatt@codeaurora.org>
+ <1605122473-12179-4-git-send-email-bbhatt@codeaurora.org>
+ <20201116124332.GK3926@Mani-XPS-13-9360>
+Message-ID: <3bf88d90e4006ba17e2e86c76a926581@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 10:34 AM Peiyong Lin <lpy@google.com> wrote:
->
-> Historically there is no common trace event for GPU frequency, in
-> downstream Android each different hardware vendor implements their own
-> way to expose GPU frequency, for example as a debugfs node.  This patch
-> standardize it as a common trace event in upstream linux kernel to help
-> the ecosystem have a common implementation across hardware vendors.
-> Toolings in the Linux ecosystem will benefit from this especially in the
-> downstream Android, where this information is critical to graphics
-> developers.
->
-> Signed-off-by: Peiyong Lin <lpy@google.com>
-> ---
->
-> Changelog since v3:
->  - Correct copyright title.
->
-> Changelog since v2:
->  - Add more comments to indicate when the event should be emitted.
->  - Change state to frequency.
->
-> Changelog since v1:
->  - Use %u in TP_printk
->
->  drivers/gpu/Makefile                    |  1 +
->  drivers/gpu/trace/Kconfig               |  3 +++
->  drivers/gpu/trace/Makefile              |  1 +
->  drivers/gpu/trace/trace_gpu_frequency.c | 13 ++++++++++
->  include/trace/events/power.h            | 33 +++++++++++++++++++++++++
->  5 files changed, 51 insertions(+)
->  create mode 100644 drivers/gpu/trace/trace_gpu_frequency.c
->
-> diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
-> index 835c88318cec..f289a47eb031 100644
-> --- a/drivers/gpu/Makefile
-> +++ b/drivers/gpu/Makefile
-> @@ -6,3 +6,4 @@ obj-$(CONFIG_TEGRA_HOST1X)      += host1x/
->  obj-y                  += drm/ vga/
->  obj-$(CONFIG_IMX_IPUV3_CORE)   += ipu-v3/
->  obj-$(CONFIG_TRACE_GPU_MEM)            += trace/
-> +obj-$(CONFIG_TRACE_GPU_FREQUENCY)              += trace/
-> diff --git a/drivers/gpu/trace/Kconfig b/drivers/gpu/trace/Kconfig
-> index c24e9edd022e..ac4aec8d5845 100644
-> --- a/drivers/gpu/trace/Kconfig
-> +++ b/drivers/gpu/trace/Kconfig
-> @@ -2,3 +2,6 @@
->
->  config TRACE_GPU_MEM
->         bool
-> +
-> +config TRACE_GPU_FREQUENCY
-> +       bool
-> diff --git a/drivers/gpu/trace/Makefile b/drivers/gpu/trace/Makefile
-> index b70fbdc5847f..2b7ae69327d6 100644
-> --- a/drivers/gpu/trace/Makefile
-> +++ b/drivers/gpu/trace/Makefile
-> @@ -1,3 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0
->
->  obj-$(CONFIG_TRACE_GPU_MEM) += trace_gpu_mem.o
-> +obj-$(CONFIG_TRACE_GPU_FREQUENCY) += trace_gpu_frequency.o
-> diff --git a/drivers/gpu/trace/trace_gpu_frequency.c b/drivers/gpu/trace/trace_gpu_frequency.c
-> new file mode 100644
-> index 000000000000..668fabd6b77a
-> --- /dev/null
-> +++ b/drivers/gpu/trace/trace_gpu_frequency.c
-> @@ -0,0 +1,13 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * GPU frequency trace points
-> + *
-> + * Copyright (C) 2020 Google LLC
-> + */
-> +
-> +#include <linux/module.h>
-> +
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/power.h>
-> +
-> +EXPORT_TRACEPOINT_SYMBOL(gpu_frequency);
-> diff --git a/include/trace/events/power.h b/include/trace/events/power.h
-> index af5018aa9517..343825a76953 100644
-> --- a/include/trace/events/power.h
-> +++ b/include/trace/events/power.h
-> @@ -500,6 +500,39 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
->
->         TP_ARGS(name, type, new_value)
->  );
-> +
-> +/**
-> + * gpu_frequency - Reports the GPU frequency in GPU clock domains.
-> + *
-> + * This event should be emitted whenever there's a GPU frequency change happens,
-> + * or a GPU goes from idle state to active state, or vice versa.
-> + *
-> + * When the GPU goes from idle state to active state, this event should report
-> + * the GPU frequency of the active state. When the GPU goes from active state to
-> + * idle state, this event should report a zero frequency value.
-> + *
-> + * @frequency:  New frequency (in KHz)
-> + * @gpu_id: Id for each GPU clock domain
-> + */
-> +TRACE_EVENT(gpu_frequency,
-> +
-> +       TP_PROTO(unsigned int frequency, unsigned int gpu_id),
-> +
-> +       TP_ARGS(frequency, gpu_id),
-> +
-> +       TP_STRUCT__entry(
-> +               __field(unsigned int, frequency)
-> +               __field(unsigned int, gpu_id)
-> +       ),
-> +
-> +       TP_fast_assign(
-> +               __entry->frequency = frequency;
-> +               __entry->gpu_id = gpu_id;
-> +       ),
-> +
-> +       TP_printk("frequency=%u gpu_id=%u",
-> +               __entry->frequency, __entry->gpu_id)
-> +);
->  #endif /* _TRACE_POWER_H */
->
->  /* This part must be outside protection */
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
+Hi Mani,
 
-Hi there,
+On 2020-11-16 04:43, Manivannan Sadhasivam wrote:
+> On Wed, Nov 11, 2020 at 11:21:10AM -0800, Bhaumik Bhatt wrote:
+>> Some MHI client drivers may want to request a pause or halt of
+>> data transfer activity on their channels. Support for this does
+>> not exist and must be introduced, wherein the channel context is
+>> not reset or cleared but only the STOP channel command is issued.
+>> This would need to be paired with an API that allows resuming the
+>> data transfer activity on channels by use of the START channel
+>> command. This API assumes that the context information is already
+>> setup. Enable this using two new APIs, mhi_start_transfer() and
+>> mhi_stop_transfer().
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/main.c | 41 
+>> +++++++++++++++++++++++++++++++++++++++++
+>>  include/linux/mhi.h         | 19 +++++++++++++++++++
+>>  2 files changed, 60 insertions(+)
+>> 
+>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> index 1226933..1a969f4 100644
+>> --- a/drivers/bus/mhi/core/main.c
+>> +++ b/drivers/bus/mhi/core/main.c
+>> @@ -1560,6 +1560,47 @@ void mhi_unprepare_from_transfer(struct 
+>> mhi_device *mhi_dev)
+>>  }
+>>  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
+>> 
+>> +static int mhi_update_transfer_state(struct mhi_device *mhi_dev,
+>> +				     enum mhi_ch_state_type to_state)
+>> +{
+>> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+>> +	struct mhi_chan *mhi_chan;
+>> +	int dir, ret;
+>> +
+>> +	for (dir = 0; dir < 2; dir++) {
+>> +		mhi_chan = dir ? mhi_dev->ul_chan : mhi_dev->dl_chan;
+>> +
+>> +		if (!mhi_chan)
+>> +			continue;
+>> +
+>> +		/*
+>> +		 * Bail out if one of the channels fail as client will reset
+>> +		 * both upon failure
+>> +		 */
+>> +		mutex_lock(&mhi_chan->mutex);
+> 
+> Hmm. The documentation about wait_for_completion*() used in
+> mhi_update_channel_state()says below,
+> 
+> "As all variants of wait_for_completion() can (obviously) block for a 
+> long
+> time depending on the nature of the activity they are waiting for, so 
+> in
+> most cases you probably don't want to call this with held mutexes."
+> 
+Yes, that is understood. The mhi_chan->mutex is only used to lock any 
+channel
+enable/start/stop/disable type operations, since these have to be in 
+order, it
+is essential that we wait for one of the operations to finish before the 
+next
+one.
 
-May I ask whether the merge window has passed? If so is it possible to
-ask for a review?
+Also we avoid a race, for example, at a time when a device crash forces 
+a driver
+"remove" call, while an operation to start/stop a channel is already 
+going on.
+>> +		ret = mhi_update_channel_state(mhi_cntrl, mhi_chan, to_state);
+>> +		if (ret) {
+>> +			mutex_unlock(&mhi_chan->mutex);
+>> +			return ret;
+>> +		}
+>> +		mutex_unlock(&mhi_chan->mutex);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +int mhi_stop_transfer(struct mhi_device *mhi_dev)
+>> +{
+>> +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_STOP);
+>> +}
+>> +EXPORT_SYMBOL_GPL(mhi_stop_transfer);
+>> +
+>> +int mhi_start_transfer(struct mhi_device *mhi_dev)
+>> +{
+>> +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_START);
+>> +}
+>> +EXPORT_SYMBOL_GPL(mhi_start_transfer);
+>> +
+>>  int mhi_poll(struct mhi_device *mhi_dev, u32 budget)
+>>  {
+>>  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+>> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+>> index 52b3c60..aee8494 100644
+>> --- a/include/linux/mhi.h
+>> +++ b/include/linux/mhi.h
+>> @@ -702,6 +702,25 @@ int mhi_prepare_for_transfer(struct mhi_device 
+>> *mhi_dev);
+>>  void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev);
+>> 
+>>  /**
+>> + * mhi_stop_transfer - Pauses ongoing channel activity by issuing the 
+>> STOP
+>> + *                     channel command to both UL and DL channels. 
+>> This command
+>> + *                     does not reset the channel context and the 
+>> client drivers
+>> + *                     can issue mhi_start_transfer to resume 
+>> activity.
+>> + * @mhi_dev: Device associated with the channels
+>> + */
+>> +int mhi_stop_transfer(struct mhi_device *mhi_dev);
+>> +
+>> +/**
+>> + * mhi_start_transfer - Resumes channel activity by issuing the START 
+>> channel
+>> + *                      command to both UL and DL channels. This 
+>> command assumes
+>> + *                      the channel context is already setup and the 
+>> client
+>> + *                      drivers can issue mhi_stop_transfer to pause 
+>> activity if
+>> + *                      required.
+>> + * @mhi_dev: Device associated with the channels
+>> + */
+>> +int mhi_start_transfer(struct mhi_device *mhi_dev);
+>> +
+>> +/**
+> 
+> Align the comment header properly.
+> 
+So I am trying to follow the documentation style for other functions in 
+the same
+file. Is there any particular format you want me to refer to?
+
+I use all spaces for the lines after the first one to align them just 
+like the
+rest of them.
+
+> Thanks,
+> Mani
+> 
+>>   * mhi_poll - Poll for any available data in DL direction
+>>   * @mhi_dev: Device associated with the channels
+>>   * @budget: # of events to process
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
 
 Thanks,
-Peiyong
+Bhaumik
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
