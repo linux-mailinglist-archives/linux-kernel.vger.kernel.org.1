@@ -2,144 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5A92B3F9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3882B3FA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgKPJUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:20:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbgKPJUV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:20:21 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBA4C0613CF;
-        Mon, 16 Nov 2020 01:20:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l8lfZbtE/pQjKf8onWmpmDV2l9aNdEWCmZpm7QvhYhY=; b=WkZ4jWMSdM5oVJJ1+WT3a3ZKKw
-        ZZd1qF3sOIRHnvODVySNJ0v9EmHjoNO5yHaKM+wxcmtRkp5tJ6xiiB8Ctp1jjq8rslJxEymNdglBP
-        WaFi7AkglyXM9KtL/4HrR9B5G+5BQ75Ca2H2+eAB0Ix10CEsGgslpuPr0Rg7qjGinrOj5y54IbHAN
-        9FmoqLypVkD5Dhx8lUSPxSBmHILF+SaNpwq/Q65nYk/fgyW3FvfidjnMzoaUIizFMe91Bmcx7vR4Z
-        ike0qgFGPKS9fCN4ccNutbHYobwd2qe4CNXw7EBccw7LtABW6AD+J/p72yv57FL350vVm0OyurNam
-        snYUw6lg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1keafu-00087a-31; Mon, 16 Nov 2020 09:19:50 +0000
-Date:   Mon, 16 Nov 2020 09:19:50 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
- for rproc serial
-Message-ID: <20201116091950.GA30524@infradead.org>
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
+        id S1727724AbgKPJWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:22:33 -0500
+Received: from mailout05.rmx.de ([94.199.90.90]:55885 "EHLO mailout05.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726837AbgKPJWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:22:33 -0500
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout05.rmx.de (Postfix) with ESMTPS id 4CZNrj0zRpz9xCZ;
+        Mon, 16 Nov 2020 10:22:29 +0100 (CET)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4CZNrS3HBTz2TTNs;
+        Mon, 16 Nov 2020 10:22:16 +0100 (CET)
+Received: from n95hx1g2.localnet (192.168.54.154) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 16 Nov
+ 2020 10:21:15 +0100
+From:   Christian Eggers <ceggers@arri.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        "Richard Cochran" <richardcochran@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Vivien Didelot" <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 03/11] net: dsa: microchip: split ksz_common.h
+Date:   Mon, 16 Nov 2020 10:21:14 +0100
+Message-ID: <21145167.0O08aVLsga@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <5328227.AyQhSCNoNJ@n95hx1g2>
+References: <20201112153537.22383-1-ceggers@arri.de> <20201112230254.v6bzsud3jlcmsjm2@skbuf> <5328227.AyQhSCNoNJ@n95hx1g2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.154]
+X-RMX-ID: 20201116-102216-4CZNrS3HBTz2TTNs-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I just noticed this showing up in Linus' tree and I'm not happy.
+On Friday, 13 November 2020, 17:56:34 CET, Christian Eggers wrote:
+> On Friday, 13 November 2020, 00:02:54 CET, Vladimir Oltean wrote:
+> > On Thu, Nov 12, 2020 at 04:35:29PM +0100, Christian Eggers wrote:
+> > > Parts of ksz_common.h (struct ksz_device) will be required in
+> > > net/dsa/tag_ksz.c soon. So move the relevant parts into a new header
+> > > file.
+> > > 
+> > > Signed-off-by: Christian Eggers <ceggers@arri.de>
+> > > ---
+> > 
+> > I had to skip ahead to see what you're going to use struct ksz_port and
+> > 
+> > struct ksz_device for. It looks like you need:
+> > 	struct ksz_port::tstamp_rx_latency_ns
+> > 	struct ksz_device::ptp_clock_lock
+> > 	struct ksz_device::ptp_clock_time
+> > 
+> > Not more.
+I have tried to put these members into separate structs:
 
-This whole model of the DMA subdevices in remoteproc is simply broken.
+include/linux/dsa/ksz_common.h:
+struct ksz_port_ptp_shared {
+	u16 tstamp_rx_latency_ns;   /* rx delay from wire to tstamp unit */
+};
 
-We really need to change the virtio code pass an expicit DMA device (
-similar to what e.g. the USB and RDMA code does), instead of faking up
-devices with broken adhoc inheritance of DMA properties and magic poking
-into device parent relationships.
+struct ksz_device_ptp_shared {
+	spinlock_t ptp_clock_lock; /* for ptp_clock_time */
+	/* approximated current time, read once per second from hardware */
+	struct timespec64 ptp_clock_time;
+};
 
-Bjorn, I thought you were going to look into this a while ago?
+drivers/net/dsa/microchip/ksz_common.h:
+...
+#include <linux/dsa/ksz_common.h>
+...
+struct ksz_port {
+...
+#if IS_ENABLED(CONFIG_NET_DSA_MICROCHIP_KSZ9477_PTP)
+	struct ksz_port_ptp_shared ptp_shared;	/* shared with tag_ksz.c */
+	u16 tstamp_tx_latency_ns;	/* tx delay from tstamp unit to wire */
+	struct hwtstamp_config tstamp_config;
+	struct sk_buff *tstamp_tx_xdelay_skb;
+	unsigned long tstamp_state;
+#endif
+};
+...
+struct ksz_device {
+...
+#if IS_ENABLED(CONFIG_NET_DSA_MICROCHIP_KSZ9477_PTP)
+	struct ptp_clock *ptp_clock;
+	struct ptp_clock_info ptp_caps;
+	struct mutex ptp_mutex;
+	struct ksz_device_ptp_shared ptp_shared;   /* shared with tag_ksz.c */
+#endif
+};
+
+The problem with such technique is, that I still need to dereference
+struct ksz_device in tag_ksz.c:
+
+static void ksz9477_rcv_timestamp(struct sk_buff *skb, u8 *tag,
+				  struct net_device *dev, unsigned int port)
+{
+...
+	struct dsa_switch *ds = dev->dsa_ptr->ds;
+	struct ksz_device *ksz = ds->priv;
+	struct ksz_port *prt = &ksz->ports[port];
+...
+}
+
+As struct dsa_switch::priv is already occupied by the pointer to
+struct ksz_device, I see no way accessing the ptp specific device/port
+information in tag_ksz.c.
+
+> > 
+> > Why don't you go the other way around, i.e. exporting some functions
+> > from your driver, and calling them from the tagger?
+> 
+> Good question... But as for as I can see, there are a single tagger and
+> multiple device drivers (currently KSZ8795 and KSZ9477).
+> 
+> Moving the KSZ9477 specific stuff, which is required by the tagger, into the
+> KSZ9477 device driver, would make the tagger dependent on the driver(s).
+> Currently, no tagger seems to have this direction of dependency (at least I
+> cannot find this in net/dsa/Kconfig).
+> 
+> If I shall change this anyway, I would use #ifdefs within the tag_ksz driver
+> in order to avoid unnecessary dependencies to the KSZ9477 driver for the
+> case only KSZ8795 is selected.
+> 
+> > You could even move
+> > the entire ksz9477_tstamp_to_clock() into the driver as-is, as far as I
+> > can see.
+
+regards
+Christian
 
 
-On Wed, Nov 04, 2020 at 03:31:36PM +0000, Alexander Lobakin wrote:
-> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
-> specific dma memory pool"), every remoteproc has a DMA subdevice
-> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
-> DMA capabilities from the corresponding platform device. This allowed
-> to associate different DMA pools with each vdev, and required from
-> virtio drivers to perform DMA operations with the parent device
-> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
-> 
-> virtio_rpmsg_bus was already changed in the same merge cycle with
-> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
-> but virtio_console did not. In fact, operations using the grandparent
-> worked fine while the grandparent was the platform device, but since
-> commit c774ad010873 ("remoteproc: Fix and restore the parenting
-> hierarchy for vdev") this was changed, and now the grandparent device
-> is the remoteproc device without any DMA capabilities.
-> So, starting v5.8-rc1 the following warning is observed:
-> 
-> [    2.483925] ------------[ cut here ]------------
-> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
-> [    2.489152] Modules linked in: virtio_console(+)
-> [    2.503737]  virtio_rpmsg_bus rpmsg_core
-> [    2.508903]
-> [    2.528898] <Other modules, stack and call trace here>
-> [    2.913043]
-> [    2.914907] ---[ end trace 93ac8746beab612c ]---
-> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
-> 
-> kernel/dma/mapping.c:427 is:
-> 
-> WARN_ON_ONCE(!dev->coherent_dma_mask);
-> 
-> obviously because the grandparent now is remoteproc dev without any
-> DMA caps:
-> 
-> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
-> 
-> Fix this the same way as it was for virtio_rpmsg_bus, using just the
-> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
-> operations.
-> This also allows now to reserve DMA pools/buffers for rproc serial
-> via Device Tree.
-> 
-> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
-> Cc: stable@vger.kernel.org # 5.1+
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  drivers/char/virtio_console.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-> index a2da8f768b94..1836cc56e357 100644
-> --- a/drivers/char/virtio_console.c
-> +++ b/drivers/char/virtio_console.c
-> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_device *vdev, size_t buf_size
->  		/*
->  		 * Allocate DMA memory from ancestor. When a virtio
->  		 * device is created by remoteproc, the DMA memory is
-> -		 * associated with the grandparent device:
-> -		 * vdev => rproc => platform-dev.
-> +		 * associated with the parent device:
-> +		 * virtioY => remoteprocX#vdevYbuffer.
->  		 */
-> -		if (!vdev->dev.parent || !vdev->dev.parent->parent)
-> +		buf->dev = vdev->dev.parent;
-> +		if (!buf->dev)
->  			goto free_buf;
-> -		buf->dev = vdev->dev.parent->parent;
->  
->  		/* Increase device refcnt to avoid freeing it */
->  		get_device(buf->dev);
-> -- 
-> 2.29.2
-> 
-> 
----end quoted text---
+
