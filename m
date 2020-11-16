@@ -2,221 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6322B3B42
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 03:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484262B3B77
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 03:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgKPCDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 21:03:40 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41715 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728010AbgKPCDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 21:03:39 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZC6G6pxkz9sPB;
-        Mon, 16 Nov 2020 13:03:34 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605492215;
-        bh=86aHr/WDWqqYM5YXmz5R5Fn1puSspOFGF/WvLNrT74M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VNt8DeXjXlHuFWwYpIolKi3bTCLSVK4tv/6EH7EM/ZGXoBrhm3Cgz6FelG/8X6mWj
-         gpNfhQxk66+Y9oDwGbEcdr2PhL0gDfe66OZYhNse/2DYXKSZbhB4GKNx77fO0LIS3y
-         rovnCMwE+u4bGmJbaz0XcfmRxBILIjIEi/lzENI6XFgf0puZ7hD067juVKPQSio8TG
-         /crHg5POWUBbapcxtP33PSqevtvz4l3vNn92lzu8MGWKV8Q4aGMzVc8CNwnRC2Kosb
-         zfnud7Z2cK+0LDOQBzmHrDtwA2bWxP055bHQ6nBA+IIpxDSDEvTzGEEtkMi2o+GmmE
-         t8k7+wtGmNpRg==
-Date:   Mon, 16 Nov 2020 13:03:33 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the amdgpu tree with the drm tree
-Message-ID: <20201116130333.74aedc21@canb.auug.org.au>
+        id S1726325AbgKPCcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 21:32:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbgKPCcR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 21:32:17 -0500
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9343FC0613CF;
+        Sun, 15 Nov 2020 18:32:17 -0800 (PST)
+Received: by mail-oo1-xc43.google.com with SMTP id i13so3554467oou.11;
+        Sun, 15 Nov 2020 18:32:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aAYf/mSH8NjjlOSQgsUeCy8MchLu8n4Ad1F6VWZiQPg=;
+        b=sCMXnEgVT+rPDz8VpU15G0pZ2pNHOibHppfZQdpQoqUw98PrYf3SHyus6ScF3qm4Qr
+         yTmc0JUfUdPD63mK5F7YguPVC6u1M8kZsadei6QCQrCNQaOwwkfKK3A0KyWW049yAKjR
+         UBb9afjIpaX6s86E2CdG6jpckHJgzilkdPQSJOIqsLBwHPi1SIIrHqpRZ+6/wXMWwDff
+         JhYJ/pJ8XfJbTCC5kfK+aLx4msoFYGQB9K1A9+n/fUhbTF3Fib/6b0U3vhFaHn47fW3U
+         z3Hn/18H4PbWTSM5UgeYmNGtvJ/OeLqCsKc39reuNTG5KNKh8cwNbczsY3Q4feMEIG2g
+         f++A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aAYf/mSH8NjjlOSQgsUeCy8MchLu8n4Ad1F6VWZiQPg=;
+        b=aKrr/ac1K8U+m2+/uyFuHB7ky1jHWDOMwzt9pVjcwQXIP9MHIu1hCKD7JTh60YX1Ik
+         RPzU4H4ZSzcmoJ85pz8mHfaqD4B9FaCKS1nvIoS4f1pAcgZZfP0/T2qbWGtwqZYUpeVx
+         By11XS+l6jS713dWHE0tmUd/yCURVuZmyWiUOYxK101rVobTeyVDRW5F/JSGLdBOuZa1
+         YQKEuY79gHcbawyCut7ZAAnUARBK4XfqbEMBK6YO0CtTCuYSF3s8Was/ejHryfOy/Bk+
+         FmJ6LInbmZZChbvfAQUWPVttZolDuZSWi4dXr8tPFd+RgownuIbEAVxNSRnZ9Rf2J/CW
+         8DGQ==
+X-Gm-Message-State: AOAM530HzIi65bM34+lRTUz2oYaede4JSS5E1kNhLKi7wNdBpF4wMP0J
+        DQH5fQFmNVMZHiPh5fFEIn0GH4PZr52VmQ==
+X-Google-Smtp-Source: ABdhPJykWFdlitfTBl2PNx0gTwFcqspzv1if+gLUFJg1SmpzQUGsNLMX0DSysA55lWSrCkBwEyjJqw==
+X-Received: by 2002:a4a:e5ce:: with SMTP id r14mr8966114oov.11.1605493936661;
+        Sun, 15 Nov 2020 18:32:16 -0800 (PST)
+Received: from proxmox.local.lan (2603-80a0-0e01-cc2f-0226-b9ff-fe41-ba6b.res6.spectrum.com. [2603:80a0:e01:cc2f:226:b9ff:fe41:ba6b])
+        by smtp.googlemail.com with ESMTPSA id w18sm4156080otl.38.2020.11.15.18.32.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 18:32:14 -0800 (PST)
+From:   Tom Seewald <tseewald@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Tom Seewald <tseewald@gmail.com>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rohit Maheshwari <rohitm@chelsio.com>
+Subject: [PATCH] cxbgb4: Fix build failure when CHELSIO_TLS_DEVICE=n
+Date:   Sun, 15 Nov 2020 20:31:40 -0600
+Message-Id: <20201116023140.28975-1-tseewald@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/o7e3_q.FzK=BMzS7UJF8lku";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/o7e3_q.FzK=BMzS7UJF8lku
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+After commit 9d2e5e9eeb59 ("cxgb4/ch_ktls: decrypted bit is not enough")
+building the kernel with CHELSIO_T4=y and CHELSIO_TLS_DEVICE=n results
+in the following error:
 
-Hi all,
+ld: drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.o: in function
+`cxgb_select_queue':
+cxgb4_main.c:(.text+0x2dac): undefined reference to `tls_validate_xmit_skb'
 
-Today's linux-next merge of the amdgpu tree got a conflict in:
+This is caused by cxgb_select_queue() calling cxgb4_is_ktls_skb() without
+checking if CHELSIO_TLS_DEVICE=y. Fix this by calling cxgb4_is_ktls_skb()
+only when this config option is enabled.
 
-  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+Fixes: 9d2e5e9eeb59 ("cxgb4/ch_ktls: decrypted bit is not enough")
+Signed-off-by: Tom Seewald <tseewald@gmail.com>
+---
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-between commit:
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+index 7fd264a6d085..8e8783afd6df 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+@@ -1176,7 +1176,9 @@ static u16 cxgb_select_queue(struct net_device *dev, struct sk_buff *skb,
+ 		txq = netdev_pick_tx(dev, skb, sb_dev);
+ 		if (xfrm_offload(skb) || is_ptp_enabled(skb, dev) ||
+ 		    skb->encapsulation ||
+-		    cxgb4_is_ktls_skb(skb) ||
++#if IS_ENABLED(CONFIG_CHELSIO_TLS_DEVICE)
++		cxgb4_is_ktls_skb(skb) ||
++#endif /* CHELSIO_TLS_DEVICE */
+ 		    (proto != IPPROTO_TCP && proto != IPPROTO_UDP))
+ 			txq = txq % pi->nqsets;
+ 
+-- 
+2.20.1
 
-  f5a89a5cae81 ("drm/amdgpu/ttm: use multihop")
-
-from the drm tree and commit:
-
-  75501872b4af ("drm/amd/amdgpu/amdgpu_ttm: Demote non-conformant kernel-do=
-c headers, fix slightly lacking ones")
-
-from the amdgpu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index 676fb520e044,761dd68d7ced..000000000000
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@@ -512,7 -512,120 +512,7 @@@ error
-  	return r;
-  }
- =20
- -/**
- - * amdgpu_move_vram_ram - Copy VRAM buffer to RAM buffer
- - *
- - * Called by amdgpu_bo_move().
- - */
- -static int amdgpu_move_vram_ram(struct ttm_buffer_object *bo, bool evict,
- -				struct ttm_operation_ctx *ctx,
- -				struct ttm_resource *new_mem)
- -{
- -	struct ttm_resource *old_mem =3D &bo->mem;
- -	struct ttm_resource tmp_mem;
- -	struct ttm_place placements;
- -	struct ttm_placement placement;
- -	int r;
- -
- -	/* create space/pages for new_mem in GTT space */
- -	tmp_mem =3D *new_mem;
- -	tmp_mem.mm_node =3D NULL;
- -	placement.num_placement =3D 1;
- -	placement.placement =3D &placements;
- -	placement.num_busy_placement =3D 1;
- -	placement.busy_placement =3D &placements;
- -	placements.fpfn =3D 0;
- -	placements.lpfn =3D 0;
- -	placements.mem_type =3D TTM_PL_TT;
- -	placements.flags =3D 0;
- -	r =3D ttm_bo_mem_space(bo, &placement, &tmp_mem, ctx);
- -	if (unlikely(r)) {
- -		pr_err("Failed to find GTT space for blit from VRAM\n");
- -		return r;
- -	}
- -
- -	r =3D ttm_tt_populate(bo->bdev, bo->ttm, ctx);
- -	if (unlikely(r))
- -		goto out_cleanup;
- -
- -	/* Bind the memory to the GTT space */
- -	r =3D amdgpu_ttm_backend_bind(bo->bdev, bo->ttm, &tmp_mem);
- -	if (unlikely(r)) {
- -		goto out_cleanup;
- -	}
- -
- -	/* blit VRAM to GTT */
- -	r =3D amdgpu_move_blit(bo, evict, &tmp_mem, old_mem);
- -	if (unlikely(r)) {
- -		goto out_cleanup;
- -	}
- -
- -	r =3D ttm_bo_wait_ctx(bo, ctx);
- -	if (unlikely(r))
- -		goto out_cleanup;
- -
- -	amdgpu_ttm_backend_unbind(bo->bdev, bo->ttm);
- -	ttm_resource_free(bo, &bo->mem);
- -	ttm_bo_assign_mem(bo, new_mem);
- -out_cleanup:
- -	ttm_resource_free(bo, &tmp_mem);
- -	return r;
- -}
- -
---/**
- - * amdgpu_move_ram_vram - Copy buffer from RAM to VRAM
- - *
- - * Called by amdgpu_bo_move().
- - */
- -static int amdgpu_move_ram_vram(struct ttm_buffer_object *bo, bool evict,
- -				struct ttm_operation_ctx *ctx,
- -				struct ttm_resource *new_mem)
- -{
- -	struct ttm_resource *old_mem =3D &bo->mem;
- -	struct ttm_resource tmp_mem;
- -	struct ttm_placement placement;
- -	struct ttm_place placements;
- -	int r;
- -
- -	/* make space in GTT for old_mem buffer */
- -	tmp_mem =3D *new_mem;
- -	tmp_mem.mm_node =3D NULL;
- -	placement.num_placement =3D 1;
- -	placement.placement =3D &placements;
- -	placement.num_busy_placement =3D 1;
- -	placement.busy_placement =3D &placements;
- -	placements.fpfn =3D 0;
- -	placements.lpfn =3D 0;
- -	placements.mem_type =3D TTM_PL_TT;
- -	placements.flags =3D 0;
- -	r =3D ttm_bo_mem_space(bo, &placement, &tmp_mem, ctx);
- -	if (unlikely(r)) {
- -		pr_err("Failed to find GTT space for blit to VRAM\n");
- -		return r;
- -	}
- -
- -	/* move/bind old memory to GTT space */
- -	r =3D ttm_tt_populate(bo->bdev, bo->ttm, ctx);
- -	if (unlikely(r))
- -		return r;
- -
- -	r =3D amdgpu_ttm_backend_bind(bo->bdev, bo->ttm, &tmp_mem);
- -	if (unlikely(r)) {
- -		goto out_cleanup;
- -	}
- -
- -	ttm_bo_assign_mem(bo, &tmp_mem);
- -	/* copy to VRAM */
- -	r =3D amdgpu_move_blit(bo, evict, new_mem, old_mem);
- -	if (unlikely(r)) {
- -		goto out_cleanup;
- -	}
- -out_cleanup:
- -	ttm_resource_free(bo, &tmp_mem);
- -	return r;
- -}
- -
-+ /*
-   * amdgpu_mem_visible - Check that memory can be accessed by ttm_bo_move_=
-memcpy
-   *
-   * Called by amdgpu_bo_move()
-
---Sig_/o7e3_q.FzK=BMzS7UJF8lku
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+x3fUACgkQAVBC80lX
-0GzOIQf/QhG3CAnXcQFFnHj+B7GI8IIfro7e6RXSAELuRFkrjDUT+xsDn5McfRe4
-zzAXN0E/7+8KcDOzYYGq3x4Cc7isDn0cF0X06U902r6tcIknzLrh7HmlIt3pNy7m
-KGWlnadrHOHCJhgztK9pznNgc0Jn7/9XxUE9ss01NT0JazsBjMmDlnTxT4jI7a3a
-OmwaitIRUbgu/ba1hDvsvKN/78YRw8kqfQoxFgJINbtB3v/kz9BGC2TOAkwb3ug/
-ah1T0QcjKQg74JKWbP81zAjWoaz9oYBedU3Qhev5jLRca3MmXcDdbBniBJGMJCMI
-Z+mVINv77E7lxUyjKcVFOPMAF66NzQ==
-=PK9s
------END PGP SIGNATURE-----
-
---Sig_/o7e3_q.FzK=BMzS7UJF8lku--
