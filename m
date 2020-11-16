@@ -2,62 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4D72B4B77
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7552B4B7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732256AbgKPQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:41:45 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33808 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729689AbgKPQlo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:41:44 -0500
-Received: by mail-qt1-f196.google.com with SMTP id 7so13325171qtp.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:41:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N4ZH/LjNb3Hokat0rYv7xscgHOsbb+sHkrIrtYELG2Q=;
-        b=R4RlypE43NEuGg4xg9mtVUr7FbOZXj6x9X+33SBQ6R6E8sHExasyLMEV2BcOLYVLmj
-         KxoN6Hl/YdGRzA5h9tGvKFFs/xGY+Xjz3JVTaCzzBcPTELfzXM++KfjO+p8RvKK3vf2S
-         eQkxSo6W+SD/JQhIpnQUWNG+xuiKyxEM56IOyxxVQkb8PDYxT6jThu/7BfXnnV3cmrHH
-         3ACqXfyauY3ConF/U48eA4G/0/f5LUgU1MaES8hl+hYj1nFAaDy7aG8O6Stt5JzGQtGZ
-         w2Tl0xvf+Ekg9cDcMqJXKciPS2WnmBUnUmBxJ87w5i4KJWKP+yPMWl7hFd2QD2lhlXQ4
-         OfxQ==
-X-Gm-Message-State: AOAM530CK/mvrwC2fyZAFJJAc6fhBjmcb2m27PQXlQsXN6cBzce6GF4N
-        99vYfauKBfdrLLuw+qFWyqxcgAMpUpuiDvq4xVY=
-X-Google-Smtp-Source: ABdhPJwLLWHV3nuJNG4xf6VCpvfMCnZVWwbQzzB+GIpM5OFDeV6z4rlwp49XDc5/U433hjGY3578FT5go4IcrWrTjM8=
-X-Received: by 2002:ac8:5806:: with SMTP id g6mr14914954qtg.292.1605544903546;
- Mon, 16 Nov 2020 08:41:43 -0800 (PST)
+        id S1732263AbgKPQmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:42:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729689AbgKPQmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:42:02 -0500
+Received: from localhost (189.sub-72-105-114.myvzw.com [72.105.114.189])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A6AD206D9;
+        Mon, 16 Nov 2020 16:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605544922;
+        bh=TgH1abjAGKm1AI19eKqktN7to1FFPzXHleFxcxbkKI8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=sQ5aXPh3snFjQmczM+VPazL8s/aZevGo5eKBMXnrsHdeK2P4LWLWwhRgrP+4tjo8v
+         fW5whkpjlstLvmNNEO8dlnYlFNu6k+v/nUNQX7WySZoxfEoEU88ZimYtMLQAhFVB1f
+         GulmiaLGww5TeaexigJXCTBgVktebrIBLAsYafiM=
+Date:   Mon, 16 Nov 2020 10:41:59 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Chen-Yu Tsai <wens@kernel.org>
+Cc:     Shawn Lin <shawn.lin@rock-chips.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/4] PCI: rockchip: make ep_gpio optional
+Message-ID: <20201116164159.GA1282970@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20201114023643.211313-1-namhyung@kernel.org> <20201115130824.GM894261@tassilo.jf.intel.com>
-In-Reply-To: <20201115130824.GM894261@tassilo.jf.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 17 Nov 2020 01:41:32 +0900
-Message-ID: <CAM9d7cgRQpSi5LE5NmGOkDtkZgZ4fVt6Ues=FpikpJ8CYEdJxQ@mail.gmail.com>
-Subject: Re: [PATCH] perf stat: Take cgroups into account for shadow stats
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116075215.15303-2-wens@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 10:08 PM Andi Kleen <ak@linux.intel.com> wrote:
->
-> Actually thinking about it more you should probably pass around ctx/cgroup
-> in a single abstract argument. Otherwise have to change all the metrics
-> functions for the next filter too.
+Run "git log --oneline drivers/pci/controller/pcie-rockchip.c" (or
+even just look at the Fixes: commits you mention) and follow the
+convention, e.g.,
 
-Ok, will do.
+  PCI: rockchip: Make 'ep-gpios' DT property optional
 
-Thanks,
-Namhyung
+Also, you used 'ep_gpio' (singular, with an underline) in the subject
+but 'ep-gpios' (plural, with hyphen) in the commit log.  The error
+message and Documentation/devicetree/bindings/pci/rockchip-pcie-host.txt
+both say 'ep-gpios' (plural, with hyphen).
+
+Please fix so this is all consistent.  Details matter.
+
+On Mon, Nov 16, 2020 at 03:52:12PM +0800, Chen-Yu Tsai wrote:
+> From: Chen-Yu Tsai <wens@csie.org>
+> 
+> The Rockchip PCIe controller DT binding clearly states that ep-gpios is
+> an optional property. And indeed there are boards that don't require it.
+> 
+> Make the driver follow the binding by using devm_gpiod_get_optional()
+> instead of devm_gpiod_get().
+> 
+> Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller support")
+> Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC driver")
+> Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt() to parse DT")
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> ---
+>  drivers/pci/controller/pcie-rockchip.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/controller/pcie-rockchip.c
+> index 904dec0d3a88..c95950e9004f 100644
+> --- a/drivers/pci/controller/pcie-rockchip.c
+> +++ b/drivers/pci/controller/pcie-rockchip.c
+> @@ -118,7 +118,7 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *rockchip)
+>  	}
+>  
+>  	if (rockchip->is_rc) {
+> -		rockchip->ep_gpio = devm_gpiod_get(dev, "ep", GPIOD_OUT_HIGH);
+> +		rockchip->ep_gpio = devm_gpiod_get_optional(dev, "ep", GPIOD_OUT_HIGH);
+>  		if (IS_ERR(rockchip->ep_gpio)) {
+>  			dev_err(dev, "missing ep-gpios property in node\n");
+>  			return PTR_ERR(rockchip->ep_gpio);
+> -- 
+> 2.29.1
+> 
