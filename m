@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC16E2B3EC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45652B3EC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727683AbgKPIfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:35:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45972 "EHLO
+        id S1727811AbgKPIf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:35:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727384AbgKPIfL (ORCPT
+        with ESMTP id S1727716AbgKPIf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:35:11 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C3CC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:35:11 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p1so17661277wrf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:35:11 -0800 (PST)
+        Mon, 16 Nov 2020 03:35:27 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A68C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:35:27 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id m6so528194wrg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:35:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=subject:to:references:from:autocrypt:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=A3pLQC/E5zB5lHnw308Bcg98VJGiT9RpVsUiOih9/i8=;
-        b=ECuwEu2z5NQkl9XD/uIQNc7drJbCBnA9T6Jhd+8IuKy47G6yRS/B4Sp1n1IWo7isCd
-         Ja88GvjqLYVcdE5vaykbBqQISw8Wj4Nqs41hh3epIoDRBcLtePYgUwzJZo8IL2+V1KJQ
-         oLtAM6VXD+M0lSdDGsj4goty3V+9M4HW8s9qq87yHliXs6/sU9JZKDGoBpUA+P83JA2b
-         fpv4x3K4FdVPVDIhpjzw6wnLjxnVSD8tPcdneZTwLJtddCOuDOjaP0YCvj2jc6RW1T/V
-         RaF3Nyp164Y+0ukmFmNFFeSBmIXntx1erabf5Lm6pehCgC1pBNDnLorFuiXGemK9Ppk2
-         1REw==
+        bh=/IJqBaMYJ+hoVSYMTGaDaqMR3k30zomG5l27v6zlVwU=;
+        b=ctF2bR8twrALNSfxZV6vz4tuweciP/hBos+Ko9PTkCzwzlZR9AJop66gR0JWcg0JZT
+         Y9Sl8ypIl0zPYi7//jylfyPKGNNmJHW0aogRuBP3QSDJUeF4nPfw46erePAZqapgUK3r
+         3Y85kBiqTddbZCHPEW9vF+Rm8Svg+4nz770ESIyCs6SbHuizqfvukKWEiZ8YpPe6nR3O
+         c3ICEXiNF7fDjIBQOXhYRhaakCHdlsstTwHfl4TFqWZYdfIQeYpvTW7vjdGztSpy9NRB
+         eGL5sDSuccRbZzNovJukaRXHVF11T/0DOZnXYbAIPIvZDn2sa8OrTWm95mIXauilL0Cu
+         hT9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+        h=x-gm-message-state:subject:to:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=A3pLQC/E5zB5lHnw308Bcg98VJGiT9RpVsUiOih9/i8=;
-        b=Q06+8fd9+DQD+bU3o18ECIlYCdilwtsABk1MVZaiA5YwaMGXZ0DrtD9QXkYhyfMNXw
-         zQwN5O70ntXhbm1+NKlDoXlUhL2bbSTSwdiBWmeeN64xyN/+KFo8ph23uw7iGgbjBb5o
-         2VvDEs8PZ037tdd7B9iEE1LchrVRWXR/Bx60u23Pdb3FN0wt88o9btoZ6/f7S8ta0l5v
-         OMDi8IqkEVTDmAwtfCX85s/wVy/Hzfz2jF4aB3+IbrQ/Be697ZReUaSwsi1uMNCdP73M
-         ZeI20FOSABjUTGrXR2ezTyJM7pRHLLthh+wlORAKwD1DFZKCXicVaJjffRqWB5zcorcg
-         BfkA==
-X-Gm-Message-State: AOAM531MDZl20vJ+B4aY+QB24N5S1IKUoAoOFQKz8bH4aQs/dqb4K19N
-        zCUqq8f75gpzulOs9MCsxIVdszCsgliXSGAX
-X-Google-Smtp-Source: ABdhPJx1lgl6O2HAzxIH+t/WRfKoER3eQV93iwgUAIxHNkqTbWLjhz3SuYVVhlGh1jBKfoaRy8jS7g==
-X-Received: by 2002:adf:82ca:: with SMTP id 68mr17334331wrc.332.1605515709540;
-        Mon, 16 Nov 2020 00:35:09 -0800 (PST)
+        bh=/IJqBaMYJ+hoVSYMTGaDaqMR3k30zomG5l27v6zlVwU=;
+        b=pHhIiyPO5/y3Qf7zEmS6dTLhj9/Ay4HIrhQ/v3mH+L+kbtAEJB9NaHOTyhIwsHXWri
+         RpxY7BD5WjMu5MkyIS+22h1tQ3PmzG9vMfiZ+B7r576RR48VZ9TaJ+qEKf/CGiCUaTZA
+         HTgOsZHHlUyYfCkfos8zg5thuIhrLnQdbGK8YfMUoQ9wejUe5723I7jC4xFLAouObOQx
+         DZ5XMaOKrvuSmrLcbla/rTQxj3+e+JL9EV/NDIeJ/X7x+VKk2hKIQW9iZ9vHaL9yxZsT
+         uRC1wEe+Dx0vvuUJ1MFD+K8b91MIgwgRgoD0YJWepaSY0mFEEUXNZRyyGHvWftkMh0HZ
+         yXXw==
+X-Gm-Message-State: AOAM531E8WVO5BICCpvzYQRmnDsiprO9feGj6KjWDEaYqaUQ8SsCSfDo
+        hRZL2hwXoEleOqZ7E8YoosH/6KXFLhaG+5tx
+X-Google-Smtp-Source: ABdhPJxglwCJdCUOSoAPZoA1Fv4MDJrKqSeCMK4FPDvpgWUtA8mDVqdcSD7PIG577koRdEOuqIvRpQ==
+X-Received: by 2002:a5d:6447:: with SMTP id d7mr18224215wrw.96.1605515725835;
+        Mon, 16 Nov 2020 00:35:25 -0800 (PST)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb? ([2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb])
-        by smtp.gmail.com with ESMTPSA id b17sm21712152wru.12.2020.11.16.00.35.08
+        by smtp.gmail.com with ESMTPSA id c8sm20935777wrv.26.2020.11.16.00.35.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 00:35:08 -0800 (PST)
-Subject: Re: [PATCH] thermal: amlogic: Add hwmon support
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        glaroque@baylibre.com, linux-pm@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-Cc:     amitk@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        Mon, 16 Nov 2020 00:35:25 -0800 (PST)
+Subject: Re: [PATCH] media: meson: vdec: add G12/SM1 to module description
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <20201115190658.631578-1-martin.blumenstingl@googlemail.com>
+References: <20201116043055.23655-1-christianshewitt@gmail.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -108,12 +112,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
  ZaTUOEkgIor5losDrePdPgE=
 Organization: Baylibre
-Message-ID: <13c3b1c5-9c06-d663-47ae-5ccd8f87fe57@baylibre.com>
-Date:   Mon, 16 Nov 2020 09:35:07 +0100
+Message-ID: <a2783176-1a5e-60ad-3130-d514ff152c83@baylibre.com>
+Date:   Mon, 16 Nov 2020 09:35:23 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201115190658.631578-1-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20201116043055.23655-1-christianshewitt@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -121,50 +125,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/11/2020 20:06, Martin Blumenstingl wrote:
-> Many monitoring tools read the CPU temperature using the hwmon
-> interface. Expose the thermal sensors on Amlogic boards as hwmon
-> devices.
+On 16/11/2020 05:30, Christian Hewitt wrote:
+> The meson vdec driver also supports Amlogic G12/SM1 hardware.
 > 
-> Without this lm_sensors' "sensors" tool does not find any temperature
-> sensors. Now it prints:
->   cpu_thermal-virtual-0
->   Adapter: Virtual device
->   temp1:        +44.7 C  (crit = +110.0 C)
-> 
->   ddr_thermal-virtual-0
->   Adapter: Virtual device
->   temp1:        +45.9 C  (crit = +110.0 C)
-> 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 > ---
->  drivers/thermal/amlogic_thermal.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  drivers/staging/media/meson/vdec/vdec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/thermal/amlogic_thermal.c b/drivers/thermal/amlogic_thermal.c
-> index ccb1fe18e993..dffe3ba8c7c4 100644
-> --- a/drivers/thermal/amlogic_thermal.c
-> +++ b/drivers/thermal/amlogic_thermal.c
-> @@ -29,6 +29,7 @@
->  #include <linux/thermal.h>
+> diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
+> index 5ccb3846c879..5d4db7a5b4b5 100644
+> --- a/drivers/staging/media/meson/vdec/vdec.c
+> +++ b/drivers/staging/media/meson/vdec/vdec.c
+> @@ -1131,6 +1131,6 @@ static struct platform_driver meson_vdec_driver = {
+>  };
+>  module_platform_driver(meson_vdec_driver);
 >  
->  #include "thermal_core.h"
-> +#include "thermal_hwmon.h"
->  
->  #define TSENSOR_CFG_REG1			0x4
->  	#define TSENSOR_CFG_REG1_RSET_VBG	BIT(12)
-> @@ -287,6 +288,9 @@ static int amlogic_thermal_probe(struct platform_device *pdev)
->  		return ret;
->  	}l
->  
-> +	if (devm_thermal_add_hwmon_sysfs(pdata->tzd))
-> +		dev_warn(&pdev->dev, "Failed to add hwmon sysfs attributes\n");
-> +
->  	ret = amlogic_thermal_initialize(pdata);
->  	if (ret)
->  		return ret;
+> -MODULE_DESCRIPTION("Meson video decoder driver for GXBB/GXL/GXM");
+> +MODULE_DESCRIPTION("Meson video decoder driver for GXBB/GXL/GXM/G12/SM1");
+>  MODULE_AUTHOR("Maxime Jourdan <mjourdan@baylibre.com>");
+>  MODULE_LICENSE("GPL");
 > 
-
-Thanks !!
 
 Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
