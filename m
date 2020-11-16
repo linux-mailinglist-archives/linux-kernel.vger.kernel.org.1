@@ -2,186 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7601E2B3C37
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 05:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 375102B3C38
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 05:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgKPEni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 23:43:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47632 "EHLO mx2.suse.de"
+        id S1726338AbgKPEof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 23:44:35 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:43196 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgKPEnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 23:43:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EF3B0ABDE;
-        Mon, 16 Nov 2020 04:43:35 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Date:   Mon, 16 Nov 2020 15:43:30 +1100
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] NFS: only invalidate dentrys that are clearly invalid.
-In-Reply-To: <d2fabd4b78dda3bd52519b84f50785dbcc2d40fb.camel@hammerspace.com>
-References: <87361aovm3.fsf@notabene.neil.brown.name>
- <d2fabd4b78dda3bd52519b84f50785dbcc2d40fb.camel@hammerspace.com>
-Message-ID: <87zh3hoqrx.fsf@notabene.neil.brown.name>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+        id S1726016AbgKPEof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 23:44:35 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605501874; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=8/+YQew3Txf0Cwu8tAYiwK8NJb8X+FRmfAI2FPy3l6E=; b=ZRMpcLnBBV1j0w69IvGK/xhmYZd7F7OijSHGOY4kLAgMgPcjxZq6GstAPhH58izbnalW8cnv
+ AJV5IOtX0xsUT5VAVs2+jqhO5FAUXg9aeLWCXK3er5SKSWcUJ2pGSqdfYHbnPa6ka5vGlo1I
+ As3hDvgGZtQASe/WRFo4GbrQiAo=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fb203a3d6e6336a4eb0bcc0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 04:44:19
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D3A79C43463; Mon, 16 Nov 2020 04:44:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0321AC433C6;
+        Mon, 16 Nov 2020 04:44:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0321AC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, rppt@kernel.org
+Cc:     vinmenon@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
+Subject: [PATCH v2] mm: memblock: add more debug logs
+Date:   Mon, 16 Nov 2020 10:14:04 +0530
+Message-Id: <1605501844-22390-1-git-send-email-faiyazm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+It is useful to know the exact caller of memblock_phys_alloc_range() to
+track early memory reservations during development.
 
-On Mon, Nov 16 2020, Trond Myklebust wrote:
+Currently, when memblock debugging is enabled, the allocations done with
+memblock_phys_alloc_range() are only reported at memblock_reserve():
 
-> On Mon, 2020-11-16 at 13:59 +1100, NeilBrown wrote:
->>=20
->> Prior to commit 5ceb9d7fdaaf ("NFS: Refactor
->> nfs_lookup_revalidate()")
->> and error from nfs_lookup_verify_inode() other than -ESTALE would
->> result
->> in nfs_lookup_revalidate() returning that error code (-ESTALE is
->> mapped
->> to zero).
->> Since that commit, all errors result in zero being returned.
->>=20
->> When nfs_lookup_revalidate() returns zero, the dentry is invalidated
->> and, significantly, if the dentry is a directory that is mounted on,
->> that mountpoint is lost.
->>=20
->> If you:
->> =C2=A0- mount an NFS filesystem which contains a directory
->> =C2=A0- mount something (e.g. tmpfs) on that directory
->> =C2=A0- use iptables (or scissors) to block traffic to the server
->> =C2=A0- ls -l the-mounted-on-directory
->> =C2=A0- interrupt the 'ls -l'
->> you will find that the directory has been unmounted.
->>=20
->> This can be fixed by returning the actual error code from
->> nfs_lookup_verify_inode() rather then zero (except for -ESTALE).
->>=20
->> Fixes: 5ceb9d7fdaaf ("NFS: Refactor nfs_lookup_revalidate()")
->> Signed-off-by: NeilBrown <neilb@suse.de>
->> ---
->> =C2=A0fs/nfs/dir.c | 8 +++++---
->> =C2=A01 file changed, 5 insertions(+), 3 deletions(-)
->>=20
->> diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
->> index cb52db9a0cfb..d24acf556e9e 100644
->> --- a/fs/nfs/dir.c
->> +++ b/fs/nfs/dir.c
->> @@ -1350,7 +1350,7 @@ nfs_do_lookup_revalidate(struct inode *dir,
->> struct dentry *dentry,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 un=
-signed int flags)
->> =C2=A0{
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct inode *inode;
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int error;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int error =3D 0;
->> =C2=A0
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_inc_stats(dir, NFSIO=
-S_DENTRYREVALIDATE);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0inode =3D d_inode(dentry=
-);
->> @@ -1372,8 +1372,10 @@ nfs_do_lookup_revalidate(struct inode *dir,
->> struct dentry *dentry,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 nfs_c=
-heck_verifier(dir, dentry, flags & LOOKUP_RCU)) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0error =3D nfs_lookup_verify_inode(inode, flags);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0if (error) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (er=
-ror =3D=3D -ESTALE)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (er=
-ror =3D=3D -ESTALE) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_zap_caches(dir);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0error =3D 0;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0got=
-o out_bad;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0}
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0nfs_advise_use_readdirplus(dir);
->> @@ -1395,7 +1397,7 @@ nfs_do_lookup_revalidate(struct inode *dir,
->> struct dentry *dentry,
->> =C2=A0out_bad:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (flags & LOOKUP_RCU)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return -ECHILD;
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return nfs_lookup_revalidate_=
-done(dir, dentry, inode, 0);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return nfs_lookup_revalidate_=
-done(dir, dentry, inode, error);
->
-> Which errors do we actually need to return here? As far as I can tell,
-> the only errors that nfs_lookup_verify_inode() is supposed to return is
-> ENOMEM, ESTALE, ECHILD, and possibly EIO or ETiMEDOUT.
->
-> Why would it be better to return those errors rather than just a 0 when
-> we need to invalidate the inode, particularly since we already have a
-> special case in nfs_lookup_revalidate_done() when the dentry is root?
+[    0.000000] memblock_reserve: [0x000000023fc6b000-0x000000023fc6bfff] memblock_alloc_range_nid+0xc0/0x188
 
-ERESTARTSYS is the error that easily causes problems.
+Add memblock_dbg() to memblock_phys_alloc_range() to get details about
+its usage.
 
-Returning 0 causes d_invalidate() to be called which is quite heavy
-handed in mountpoints.
-So it is only reasonable to return 0 when we have unambiguous
-confirmation from the server that the object no longer exists.  ESTALE
-is unambiguous. EIO might be unambiguous.  ERESTARTSYS, ENOMEM,
-ETIMEDOUT are transient and don't justify d_invalidate() being called.
+For example:
 
-(BTW, Commit cc89684c9a26 ("NFS: only invalidate dentrys that are clearly i=
-nvalid.")
- fixed much the same bug 3 years ago).
-=20
-Thanks,
-NeilBrown
+[    0.000000] memblock_phys_alloc_range: 4096 bytes align=0x1000 from=0x0000000000000000 max_addr=0x0000000000000000 early_pgtable_alloc+0x24/0x178
+[    0.000000] memblock_reserve: [0x000000023fc6b000-0x000000023fc6bfff] memblock_alloc_range_nid+0xc0/0x188
 
+Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+---
+ mm/memblock.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
->
->> =C2=A0}
->> =C2=A0
->> =C2=A0static int
->
-> --=20
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 049df41..f65af9f 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -1419,6 +1419,9 @@ phys_addr_t __init memblock_phys_alloc_range(phys_addr_t size,
+ 					     phys_addr_t start,
+ 					     phys_addr_t end)
+ {
++	memblock_dbg("%s: %llu bytes align=0x%llx from=%pa max_addr=%pa %pS\n",
++			__func__, (u64)size, (u64)align, &start, &end,
++			(void *)_RET_IP_);
+ 	return memblock_alloc_range_nid(size, align, start, end, NUMA_NO_NODE,
+ 					false);
+ }
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl+yA3IOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbm1+BAAkCWhqH1cS4EDBSKyqYlP8yn9TrBlfmTrEq4A
-u/gOxvp9N3AlEvnTbw4pCy5Gac/xhsTRJjH5jxt25jF3oNGXd3478SWyGNc9SbrZ
-S00Gx6beyRfjEl58wOGsCsSH2klpNHyucY7YIExlSTFvtNGc+KpD0dH79Tw6kh8q
-dij0i0Aycf/QiOBlLmXOwsY9OjgbzlFNzzXQw+nTxPoc5DGrePHVqW5bXR3bUIUX
-1NesoEFe/Ikz2RIfGZkDP+Kvt/1MECIosuVRBzYL5sS7lxHjkgS4X1OUzMTk5wxr
-F3d381OF7GVYh/6igd9Wek7qH2fTHjGVus7T1O6peE/ajPt32i0wXYuTRN/6/p6c
-gUnQh6HXaqs0Nlsj/urykHVULgUTTHFvfoeo1X45IrmF2vlHfJ7LQtZNJvv1ppDj
-iyQ0gY3e7EOlxcMXtrw5+yMC+pmAq3LT7N2qrW4mS3kg9pFdVJ6R01VzHmuOCky3
-NZZ6UoyXUpMC818kOB0LGqOKV6hUf3kfSeoT1JxyS6xuswGhKTtRtjsmIs8wD50L
-lE38NF7PoCI7dNau3I70xZnvuAhG/UXjlntlKz1GqvoqzDLs+DeS6nDvKky5OY3l
-Xh5Kg3KzYcFWXYt42c9xjHQtFz6jl3SFt+gn8O5Jh1f6kvUOKt3mqm8DpZBtPxgK
-tHJs/XI=
-=+eWE
------END PGP SIGNATURE-----
---=-=-=--
