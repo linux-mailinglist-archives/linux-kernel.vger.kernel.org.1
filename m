@@ -2,194 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF702B411E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B502B4125
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbgKPKaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:30:21 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:38563 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728720AbgKPKaU (ORCPT
+        id S1728948AbgKPKa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:30:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47861 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727293AbgKPKa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:30:20 -0500
-Received: by mail-il1-f197.google.com with SMTP id p17so11639905ilb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:30:20 -0800 (PST)
+        Mon, 16 Nov 2020 05:30:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605522626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t9mu4w19hr/sBfyuZDsXE1cTZzK5aREzs9f9lMQcv5k=;
+        b=S9bZ98GYN336Ng/tapW6keavtWBscMI5dAwd+mPENqLaD2ll8537GH+GzY5pcNfTbmcAWn
+        3uotaY78koOuvzDcjbp0NmFL+efxPvmXrY/IwIKPYQRat33RyS4reqER8mTXSPJV64LkLU
+        7rhAssfjomxQr1WVgs6lTyzOfpWJUCQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-gEzWVgpCO1-g3SwCT8zxQA-1; Mon, 16 Nov 2020 05:30:24 -0500
+X-MC-Unique: gEzWVgpCO1-g3SwCT8zxQA-1
+Received: by mail-wm1-f72.google.com with SMTP id 3so10072195wms.9
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:30:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=PEXWi6MJqCB/SPlcWqgz64xY5Wl0D3GleDopT4k3ghY=;
-        b=KacbJbB5sl5YynJKwjx509KfEEBmcDNATEmYXqs/lVZG1k7IaCnMlZATabLqem5CX1
-         Z7G/vEnWDZJhCj3Q7h0PNDfCCm5xXQfzliEkBAloDctGTS/VfoF0ttAOwDziKV/ihCGo
-         pOROxBnGxDjHekrPyzu6Hp8HPhk9rdnbtqTGnIhyw58cqayW4Kh9oDUknjaT98rGRgtx
-         j4DGietMlXC/OApxTgoWM+gfzQVPzywivmWaJt599y4EHaectNzgxOiV30kEi3jdkikO
-         HEoRP9D2llYlUxCmSHBOlXP5ce5jWT9MhVJwXqkLbGvIVQ//luHxd9W3uIlKxseRjSS2
-         426g==
-X-Gm-Message-State: AOAM533n+fyf1k2VJUgiKBhYc/I5WH5krAB5vojbD+VYNecIQpyaYsa2
-        Sk1BR/ziOnfGV8ABkNYqq9S5zkeNdPgrD8r/Ft8V0to4pQnS
-X-Google-Smtp-Source: ABdhPJyPDjAvb4aOPk6aQp8tEZ+6FV0hpMscyObv2ukARyw/55pY0hTpuLRUpgy1rSfiDWg/7B7jjWY559Hwrl9HRFfAV32m9cH9
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=t9mu4w19hr/sBfyuZDsXE1cTZzK5aREzs9f9lMQcv5k=;
+        b=EIexY3i8h7acjTjgucoTlrBOD0eQst1xunAkxJ/yenCyTaS3Mz9Or/aw6Y3yeFoMCU
+         ThA1F1tq7KuaKJBs7nUNxyJV9/0ZREk4zsyRkmqDGujiphSBowgAyv1AZrx1DuojIGhE
+         UBjDTKP57zEWhyQPWamcjGToLp0k8ILZ8hEkTdo6M0+ZVoP02kPoHMtFe7c5pddhNpGc
+         676wSDki2b1/1poX4u+6b6zWZKjkBiQ+L4uptjev4aGL0Cc3Fa2yIq3VKkBo/eln0n5e
+         krP+0muuZzjN5Mmk1a0cnszmd4Z6ISCGthIU9r+ctEJnbC4exVPTMPL+uGtO3AyWSEIu
+         scQA==
+X-Gm-Message-State: AOAM532yAzMmywyFdL36MckwnSex7/A7OWxIgt2V0GvOxZUQCNyeq7iR
+        MZUyAxTmn/AsSBaWR0QcUW0oe+saYn3EOTUpVei86v3uoikzfCMPLFW9IgEb4tcatr2pZJsJibI
+        kEkYXlcAzrK7ESkXy1aZCPeYM
+X-Received: by 2002:a1c:b18a:: with SMTP id a132mr14882931wmf.95.1605522621918;
+        Mon, 16 Nov 2020 02:30:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxnzvVYbUwZqYPfzYcTsVDOC+ls57+JUD2iiSsJ6nH0cRwwZnQmmZI45Dakl7qo4+P2XtmVNQ==
+X-Received: by 2002:a1c:b18a:: with SMTP id a132mr14882916wmf.95.1605522621691;
+        Mon, 16 Nov 2020 02:30:21 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id w21sm18917595wmi.29.2020.11.16.02.30.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 02:30:20 -0800 (PST)
+Date:   Mon, 16 Nov 2020 11:30:18 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 06/12] vdpa_sim: add struct vdpasim_device to store
+ device properties
+Message-ID: <20201116103018.3vf2denitfi2byvd@steredhat>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-7-sgarzare@redhat.com>
+ <6d031365-b03b-9f6f-64cb-e4cb328397b7@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:108e:: with SMTP id r14mr7957900ilj.41.1605522619821;
- Mon, 16 Nov 2020 02:30:19 -0800 (PST)
-Date:   Mon, 16 Nov 2020 02:30:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006ef45b05b436ddb4@google.com>
-Subject: KASAN: invalid-free in p9_client_create
-From:   syzbot <syzbot+3a0f6c96e37e347c6ba9@syzkaller.appspotmail.com>
-To:     asmadeus@codewreck.org, davem@davemloft.net, ericvh@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, lucho@ionkov.net,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        v9fs-developer@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6d031365-b03b-9f6f-64cb-e4cb328397b7@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Nov 16, 2020 at 12:14:31PM +0800, Jason Wang wrote:
+>
+>On 2020/11/13 下午9:47, Stefano Garzarella wrote:
+>>Move device properties used during the entire life cycle in a new
+>>structure to simplify the copy of these fields during the vdpasim
+>>initialization.
+>>
+>>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>
+>
+>It would be better to do it before patch 2.
+>
 
-syzbot found the following issue on:
+Okay, I'll move this patch.
 
-HEAD commit:    92edc4ae Add linux-next specific files for 20201113
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=142f8816500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=79ad4f8ad2d96176
-dashboard link: https://syzkaller.appspot.com/bug?extid=3a0f6c96e37e347c6ba9
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+>
+>>---
+>>  drivers/vdpa/vdpa_sim/vdpa_sim.h     | 17 ++++++++------
+>>  drivers/vdpa/vdpa_sim/vdpa_sim.c     | 33 ++++++++++++++--------------
+>>  drivers/vdpa/vdpa_sim/vdpa_sim_blk.c |  8 +++++--
+>>  drivers/vdpa/vdpa_sim/vdpa_sim_net.c |  9 +++++---
+>>  4 files changed, 38 insertions(+), 29 deletions(-)
+>>
+>>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.h b/drivers/vdpa/vdpa_sim/vdpa_sim.h
+>>index 6a1267c40d5e..76e642042eb0 100644
+>>--- a/drivers/vdpa/vdpa_sim/vdpa_sim.h
+>>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.h
+>>@@ -40,12 +40,17 @@ struct vdpasim_virtqueue {
+>>  	irqreturn_t (*cb)(void *data);
+>>  };
+>>+struct vdpasim_device {
+>>+	u64 supported_features;
+>>+	u32 id;
+>>+	int nvqs;
+>>+};
+>>+
+>>  struct vdpasim_init_attr {
+>>-	u32		device_id;
+>>-	u64		features;
+>>+	struct vdpasim_device device;
+>>+	int batch_mapping;
+>>+
+>>  	work_func_t	work_fn;
+>>-	int		batch_mapping;
+>>-	int		nvqs;
+>>  };
+>>  /* State of each vdpasim device */
+>>@@ -53,18 +58,16 @@ struct vdpasim {
+>>  	struct vdpa_device vdpa;
+>>  	struct vdpasim_virtqueue *vqs;
+>>  	struct work_struct work;
+>>+	struct vdpasim_device device;
+>>  	/* spinlock to synchronize virtqueue state */
+>>  	spinlock_t lock;
+>>  	/* virtio config according to device type */
+>>  	void *config;
+>>  	struct vhost_iotlb *iommu;
+>>  	void *buffer;
+>>-	u32 device_id;
+>>  	u32 status;
+>>  	u32 generation;
+>>  	u64 features;
+>>-	u64 supported_features;
+>>-	int nvqs;
+>>  	/* spinlock to synchronize iommu table */
+>>  	spinlock_t iommu_lock;
+>>  };
+>>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>index 9c9717441bbe..d053bd14b3f8 100644
+>>--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>@@ -28,7 +28,7 @@ static void vdpasim_queue_ready(struct vdpasim *vdpasim, unsigned int idx)
+>>  {
+>>  	struct vdpasim_virtqueue *vq = &vdpasim->vqs[idx];
+>>-	vringh_init_iotlb(&vq->vring, vdpasim->supported_features,
+>>+	vringh_init_iotlb(&vq->vring, vdpasim->device.supported_features,
+>>  			  VDPASIM_QUEUE_MAX, false,
+>>  			  (struct vring_desc *)(uintptr_t)vq->desc_addr,
+>>  			  (struct vring_avail *)
+>>@@ -46,7 +46,7 @@ static void vdpasim_vq_reset(struct vdpasim *vdpasim,
+>>  	vq->device_addr = 0;
+>>  	vq->cb = NULL;
+>>  	vq->private = NULL;
+>>-	vringh_init_iotlb(&vq->vring, vdpasim->supported_features,
+>>+	vringh_init_iotlb(&vq->vring, vdpasim->device.supported_features,
+>>  			  VDPASIM_QUEUE_MAX, false, NULL, NULL, NULL);
+>>  }
+>>@@ -54,7 +54,7 @@ static void vdpasim_reset(struct vdpasim *vdpasim)
+>>  {
+>>  	int i;
+>>-	for (i = 0; i < vdpasim->nvqs; i++)
+>>+	for (i = 0; i < vdpasim->device.nvqs; i++)
+>>  		vdpasim_vq_reset(vdpasim, &vdpasim->vqs[i]);
+>>  	spin_lock(&vdpasim->iommu_lock);
+>>@@ -189,7 +189,7 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
+>>  	struct device *dev;
+>>  	int i, size, ret = -ENOMEM;
+>>-	device_id = attr->device_id;
+>>+	device_id = attr->device.id;
+>>  	/* Currently, we only accept the network and block devices. */
+>>  	if (device_id != VIRTIO_ID_NET && device_id != VIRTIO_ID_BLOCK)
+>>  		return ERR_PTR(-EOPNOTSUPP);
+>>@@ -200,10 +200,12 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
+>>  		ops = &vdpasim_config_ops;
+>>  	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL, ops,
+>>-				    attr->nvqs);
+>>+				    attr->device.nvqs);
+>>  	if (!vdpasim)
+>>  		goto err_alloc;
+>>+	vdpasim->device = attr->device;
+>>+
+>>  	if (device_id == VIRTIO_ID_NET)
+>>  		size = sizeof(struct virtio_net_config);
+>>  	else
+>>@@ -212,14 +214,11 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
+>>  	if (!vdpasim->config)
+>>  		goto err_iommu;
+>>-	vdpasim->vqs = kcalloc(attr->nvqs, sizeof(struct vdpasim_virtqueue),
+>>-			       GFP_KERNEL);
+>>+	vdpasim->vqs = kcalloc(vdpasim->device.nvqs,
+>>+			       sizeof(struct vdpasim_virtqueue), GFP_KERNEL);
+>>  	if (!vdpasim->vqs)
+>>  		goto err_iommu;
+>>-	vdpasim->device_id = device_id;
+>>-	vdpasim->supported_features = attr->features;
+>>-	vdpasim->nvqs = attr->nvqs;
+>>  	INIT_WORK(&vdpasim->work, attr->work_fn);
+>>  	spin_lock_init(&vdpasim->lock);
+>>  	spin_lock_init(&vdpasim->iommu_lock);
+>>@@ -238,7 +237,7 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
+>>  	if (!vdpasim->buffer)
+>>  		goto err_iommu;
+>>-	for (i = 0; i < vdpasim->nvqs; i++)
+>>+	for (i = 0; i < vdpasim->device.nvqs; i++)
+>>  		vringh_set_iotlb(&vdpasim->vqs[i].vring, vdpasim->iommu);
+>>  	vdpasim->vdpa.dma_dev = dev;
+>>@@ -347,7 +346,7 @@ static u64 vdpasim_get_features(struct vdpa_device *vdpa)
+>>  {
+>>  	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>>-	return vdpasim->supported_features;
+>>+	return vdpasim->device.supported_features;
+>>  }
+>>  static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
+>>@@ -358,14 +357,14 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
+>>  	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
+>>  		return -EINVAL;
+>>-	vdpasim->features = features & vdpasim->supported_features;
+>>+	vdpasim->features = features & vdpasim->device.supported_features;
+>>  	/* We generally only know whether guest is using the legacy interface
+>>  	 * here, so generally that's the earliest we can set config fields.
+>>  	 * Note: We actually require VIRTIO_F_ACCESS_PLATFORM above which
+>>  	 * implies VIRTIO_F_VERSION_1, but let's not try to be clever here.
+>>  	 */
+>>-	if (vdpasim->device_id == VIRTIO_ID_NET) {
+>>+	if (vdpasim->device.id == VIRTIO_ID_NET) {
+>>  		struct virtio_net_config *config =
+>>  			(struct virtio_net_config *)vdpasim->config;
+>>@@ -391,7 +390,7 @@ static u32 vdpasim_get_device_id(struct vdpa_device *vdpa)
+>>  {
+>>  	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>>-	return vdpasim->device_id;
+>>+	return vdpasim->device.id;
+>>  }
+>>  static u32 vdpasim_get_vendor_id(struct vdpa_device *vdpa)
+>>@@ -427,10 +426,10 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
+>>  {
+>>  	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>>-	if (vdpasim->device_id == VIRTIO_ID_BLOCK &&
+>>+	if (vdpasim->device.id == VIRTIO_ID_BLOCK &&
+>>  	    (offset + len < sizeof(struct virtio_blk_config)))
+>>  		memcpy(buf, vdpasim->config + offset, len);
+>>-	else if (vdpasim->device_id == VIRTIO_ID_NET &&
+>>+	else if (vdpasim->device.id == VIRTIO_ID_NET &&
+>>  		 (offset + len < sizeof(struct virtio_net_config)))
+>>  		memcpy(buf, vdpasim->config + offset, len);
+>>  }
+>>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+>>index 386dbb2f7138..363273d72e26 100644
+>>--- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+>>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+>>@@ -78,9 +78,13 @@ static int __init vdpasim_blk_init(void)
+>>  	struct virtio_blk_config *config;
+>>  	int ret;
+>>-	attr.device_id = VIRTIO_ID_BLOCK;
+>>-	attr.features = VDPASIM_FEATURES | VDPASIM_BLK_FEATURES;
+>>+	attr.device.id = VIRTIO_ID_BLOCK;
+>>+	attr.device.supported_features = VDPASIM_FEATURES |
+>>+					 VDPASIM_BLK_FEATURES;
+>>+	attr.device.nvqs = VDPASIM_BLK_VQ_NUM;
+>>+
+>>  	attr.work_fn = vdpasim_blk_work;
+>>+
+>>  	vdpasim_blk_dev = vdpasim_create(&attr);
+>>  	if (IS_ERR(vdpasim_blk_dev)) {
+>>  		ret = PTR_ERR(vdpasim_blk_dev);
+>>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+>>index e1e57c52b108..88c9569f6bd3 100644
+>>--- a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+>>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+>>@@ -105,11 +105,14 @@ static int __init vdpasim_net_init(void)
+>>  	struct virtio_net_config *config;
+>>  	int ret;
+>>-	attr.device_id = VIRTIO_ID_NET;
+>>-	attr.features = VDPASIM_FEATURES | VDPASIM_NET_FEATURES;
+>>-	attr.nvqs = VDPASIM_NET_VQ_NUM;
+>>+	attr.device.id = VIRTIO_ID_NET;
+>>+	attr.device.supported_features = VDPASIM_FEATURES |
+>>+					 VDPASIM_NET_FEATURES;
+>>+	attr.device.nvqs = VDPASIM_NET_VQ_NUM;
+>>+
+>>  	attr.work_fn = vdpasim_net_work;
+>>  	attr.batch_mapping = batch_mapping;
+>>+
+>
+>
+>Unnecessary changes.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I'll remove these new lines.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3a0f6c96e37e347c6ba9@syzkaller.appspotmail.com
+Thanks,
+Stefano
 
-RBP: 00007fa358076ca0 R08: 0000000020000080 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000001f
-R13: 00007fff7dcf224f R14: 00007fa3580779c0 R15: 000000000118bf2c
-kobject_add_internal failed for 9p-fcall-cache (error: -12 parent: slab)
-==================================================================
-BUG: KASAN: double-free or invalid-free in slab_free mm/slub.c:3157 [inline]
-BUG: KASAN: double-free or invalid-free in kmem_cache_free+0x82/0x350 mm/slub.c:3173
-
-CPU: 0 PID: 15981 Comm: syz-executor.5 Not tainted 5.10.0-rc3-next-20201113-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:355
- ____kasan_slab_free+0x100/0x110 mm/kasan/common.c:352
- kasan_slab_free include/linux/kasan.h:194 [inline]
- slab_free_hook mm/slub.c:1548 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1586
- slab_free mm/slub.c:3157 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3173
- create_cache mm/slab_common.c:274 [inline]
- kmem_cache_create_usercopy+0x2ab/0x300 mm/slab_common.c:357
- p9_client_create+0xc4d/0x10c0 net/9p/client.c:1063
- v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
- v9fs_mount+0x79/0x9b0 fs/9p/vfs_super.c:126
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1549
- do_new_mount fs/namespace.c:2896 [inline]
- path_mount+0x12ae/0x1e70 fs/namespace.c:3227
- do_mount fs/namespace.c:3240 [inline]
- __do_sys_mount fs/namespace.c:3448 [inline]
- __se_sys_mount fs/namespace.c:3425 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45deb9
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fa358076c78 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000021800 RCX: 000000000045deb9
-RDX: 0000000020000100 RSI: 0000000020000040 RDI: 0000000000000000
-RBP: 00007fa358076ca0 R08: 0000000020000080 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000001f
-R13: 00007fff7dcf224f R14: 00007fa3580779c0 R15: 000000000118bf2c
-
-Allocated by task 15981:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:39
- kasan_set_track mm/kasan/common.c:47 [inline]
- set_alloc_info mm/kasan/common.c:403 [inline]
- ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:434
- kasan_slab_alloc include/linux/kasan.h:211 [inline]
- slab_post_alloc_hook mm/slab.h:512 [inline]
- slab_alloc_node mm/slub.c:2903 [inline]
- slab_alloc mm/slub.c:2911 [inline]
- kmem_cache_alloc+0x12a/0x470 mm/slub.c:2916
- kmem_cache_zalloc include/linux/slab.h:672 [inline]
- create_cache mm/slab_common.c:251 [inline]
- kmem_cache_create_usercopy+0x1a6/0x300 mm/slab_common.c:357
- p9_client_create+0xc4d/0x10c0 net/9p/client.c:1063
- v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
- v9fs_mount+0x79/0x9b0 fs/9p/vfs_super.c:126
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1549
- do_new_mount fs/namespace.c:2896 [inline]
- path_mount+0x12ae/0x1e70 fs/namespace.c:3227
- do_mount fs/namespace.c:3240 [inline]
- __do_sys_mount fs/namespace.c:3448 [inline]
- __se_sys_mount fs/namespace.c:3425 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 15981:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:39
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:47
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:359
- ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:373
- kasan_slab_free include/linux/kasan.h:194 [inline]
- slab_free_hook mm/slub.c:1548 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1586
- slab_free mm/slub.c:3157 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3173
- kobject_cleanup lib/kobject.c:705 [inline]
- kobject_release lib/kobject.c:736 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c8/0x540 lib/kobject.c:753
- sysfs_slab_add+0x164/0x1d0 mm/slub.c:5656
- __kmem_cache_create+0x471/0x5a0 mm/slub.c:4476
- create_cache mm/slab_common.c:262 [inline]
- kmem_cache_create_usercopy+0x1ed/0x300 mm/slab_common.c:357
- p9_client_create+0xc4d/0x10c0 net/9p/client.c:1063
- v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
- v9fs_mount+0x79/0x9b0 fs/9p/vfs_super.c:126
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1549
- do_new_mount fs/namespace.c:2896 [inline]
- path_mount+0x12ae/0x1e70 fs/namespace.c:3227
- do_mount fs/namespace.c:3240 [inline]
- __do_sys_mount fs/namespace.c:3448 [inline]
- __se_sys_mount fs/namespace.c:3425 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888013a45b40
- which belongs to the cache kmem_cache of size 224
-The buggy address is located 0 bytes inside of
- 224-byte region [ffff888013a45b40, ffff888013a45c20)
-The buggy address belongs to the page:
-page:00000000cfbbc7ff refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888013a45c80 pfn:0x13a45
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888010041000
-raw: ffff888013a45c80 00000000800c0004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888013a45a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888013a45a80: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
->ffff888013a45b00: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
-                                           ^
- ffff888013a45b80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888013a45c00: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
