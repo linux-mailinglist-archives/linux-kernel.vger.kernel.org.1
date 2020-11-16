@@ -2,88 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300FD2B4462
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F7D2B4469
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgKPNFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 08:05:37 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7921 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727212AbgKPNFh (ORCPT
+        id S1728639AbgKPNHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 08:07:44 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:27616 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726944AbgKPNHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 08:05:37 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CZTnr59Mdz6v92;
-        Mon, 16 Nov 2020 21:05:20 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 16 Nov 2020 21:05:30 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     <aelior@marvell.com>, <GR-everest-linux-l2@marvell.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <Michal.Kalderon@cavium.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] qed: fix error return code in qed_iwarp_ll2_start()
-Date:   Mon, 16 Nov 2020 21:07:13 +0800
-Message-ID: <1605532033-27373-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 16 Nov 2020 08:07:44 -0500
+Date:   Mon, 16 Nov 2020 13:07:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1605532056; bh=8oVEkWwUGCZq1VBwSHjSrKA6sbt5877cWkL9X4cTHoA=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=Kq1bYk8/r3uZv2QoQqriIJn223K57uI2nZgMyAzeEM1UVUQpxzjk2Fm/p5mD4BQ8a
+         naNL+VRGgo7TEiN05NwbLucBTFoBhfdEe0C0l523jPXkrXJZR47DcNddBpsGu9d4An
+         RazR0OnVsm/rRa5F4xGu2BSpeTAtSOio+lWWEkicfI/mlr3KU/Gsl8xGOwR7lthVF5
+         LY81/L7421PqAPkHBMFwdkxChMQthTe7l8LmsNAZUKykllsHMZRd5d7HRy3SiSNC0b
+         4KvGcwB7iZjfVAKbvJZVfIef9BUIgC6iCnChOEnxc28zjgQ6ndwS4c1JnwPXcH0f/z
+         AuImkK3WzdeKQ==
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Amit Shah <amit@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc@vger.kernel.org, Suman Anna <s-anna@ti.com>,
+        virtualization@lists.linux-foundation.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation for rproc serial
+Message-ID: <u9RJBckNwnezQttAPrOyEqDYKu0rnhedUZYGpaS83qg@cp3-web-024.plabs.ch>
+In-Reply-To: <20201116071910-mutt-send-email-mst@kernel.org>
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch> <20201116091950.GA30524@infradead.org> <20201116071910-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Date: Mon, 16 Nov 2020 07:25:31 -0500
 
-Fixes: 469981b17a4f ("qed: Add unaligned and packed packet processing")
-Fixes: fcb39f6c10b2 ("qed: Add mpa buffer descriptors for storing and processing mpa fpdus")
-Fixes: 1e28eaad07ea ("qed: Add iWARP support for fpdu spanned over more than two tcp packets")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/net/ethernet/qlogic/qed/qed_iwarp.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+> On Mon, Nov 16, 2020 at 09:19:50AM +0000, Christoph Hellwig wrote:
+>> I just noticed this showing up in Linus' tree and I'm not happy.
+>
+> Are you sure? I think it's in next.
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-index 512cbef..a998611 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-@@ -2754,14 +2754,18 @@ qed_iwarp_ll2_start(struct qed_hwfn *p_hwfn,
- 	iwarp_info->partial_fpdus = kcalloc((u16)p_hwfn->p_rdma_info->num_qps,
- 					    sizeof(*iwarp_info->partial_fpdus),
- 					    GFP_KERNEL);
--	if (!iwarp_info->partial_fpdus)
-+	if (!iwarp_info->partial_fpdus) {
-+		rc = -ENOMEM;
- 		goto err;
-+	}
- 
- 	iwarp_info->max_num_partial_fpdus = (u16)p_hwfn->p_rdma_info->num_qps;
- 
- 	iwarp_info->mpa_intermediate_buf = kzalloc(buff_size, GFP_KERNEL);
--	if (!iwarp_info->mpa_intermediate_buf)
-+	if (!iwarp_info->mpa_intermediate_buf) {
-+		rc = -ENOMEM;
- 		goto err;
-+	}
- 
- 	/* The mpa_bufs array serves for pending RX packets received on the
- 	 * mpa ll2 that don't have place on the tx ring and require later
-@@ -2771,8 +2775,10 @@ qed_iwarp_ll2_start(struct qed_hwfn *p_hwfn,
- 	iwarp_info->mpa_bufs = kcalloc(data.input.rx_num_desc,
- 				       sizeof(*iwarp_info->mpa_bufs),
- 				       GFP_KERNEL);
--	if (!iwarp_info->mpa_bufs)
-+	if (!iwarp_info->mpa_bufs) {
-+		rc = -ENOMEM;
- 		goto err;
-+	}
- 
- 	INIT_LIST_HEAD(&iwarp_info->mpa_buf_pending_list);
- 	INIT_LIST_HEAD(&iwarp_info->mpa_buf_list);
--- 
-2.9.5
+Nope, it goes to fixes since it just fixes the regression introduced
+in 5.7.
+That's why it's not about any refactoring or rethinking the whole
+model.
+
+>> This whole model of the DMA subdevices in remoteproc is simply broken.
+>>
+>> We really need to change the virtio code pass an expicit DMA device (
+>> similar to what e.g. the USB and RDMA code does), instead of faking up
+>> devices with broken adhoc inheritance of DMA properties and magic poking
+>> into device parent relationships.
+
+But lots of subsystems like netdev for example uses dev->parent for
+DMA operations. I know that their pointers go directly to the
+platform/PCI/etc. device, but still.
+
+The only reason behind "fake" DMA devices for rproc is to be able to
+reserve DMA memory through the Device Tree exclusively for only one
+virtio dev like virtio_console or virtio_rpmsg_bus. That's why
+they are present, are coercing DMA caps from physical dev
+representor, and why questinable dma_declare_coherent_memory()
+is still here and doesn't allow to build rproc core as a module.
+I agree that this is not the best model obviously, and we should take
+a look at it.
+
+> OK but we do have a regression since 5.7 and this looks like
+> a fix appropriate for e.g. stable, right?
+>
+>> Bjorn, I thought you were going to look into this a while ago?
+>>
+>>
+>> On Wed, Nov 04, 2020 at 03:31:36PM +0000, Alexander Lobakin wrote:
+>>> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
+>>> specific dma memory pool"), every remoteproc has a DMA subdevice
+>>> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
+>>> DMA capabilities from the corresponding platform device. This allowed
+>>> to associate different DMA pools with each vdev, and required from
+>>> virtio drivers to perform DMA operations with the parent device
+>>> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
+>>>
+>>> virtio_rpmsg_bus was already changed in the same merge cycle with
+>>> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
+>>> but virtio_console did not. In fact, operations using the grandparent
+>>> worked fine while the grandparent was the platform device, but since
+>>> commit c774ad010873 ("remoteproc: Fix and restore the parenting
+>>> hierarchy for vdev") this was changed, and now the grandparent device
+>>> is the remoteproc device without any DMA capabilities.
+>>> So, starting v5.8-rc1 the following warning is observed:
+>>>
+>>> [    2.483925] ------------[ cut here ]------------
+>>> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x8=
+0e7eee8
+>>> [    2.489152] Modules linked in: virtio_console(+)
+>>> [    2.503737]  virtio_rpmsg_bus rpmsg_core
+>>> [    2.508903]
+>>> [    2.528898] <Other modules, stack and call trace here>
+>>> [    2.913043]
+>>> [    2.914907] ---[ end trace 93ac8746beab612c ]---
+>>> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
+>>>
+>>> kernel/dma/mapping.c:427 is:
+>>>
+>>> WARN_ON_ONCE(!dev->coherent_dma_mask);
+>>>
+>>> obviously because the grandparent now is remoteproc dev without any
+>>> DMA caps:
+>>>
+>>> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc=
+0
+>>>
+>>> Fix this the same way as it was for virtio_rpmsg_bus, using just the
+>>> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
+>>> operations.
+>>> This also allows now to reserve DMA pools/buffers for rproc serial
+>>> via Device Tree.
+>>>
+>>> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarc=
+hy for vdev")
+>>> Cc: stable@vger.kernel.org # 5.1+
+>>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+>>> ---
+>>>  drivers/char/virtio_console.c | 8 ++++----
+>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_consol=
+e.c
+>>> index a2da8f768b94..1836cc56e357 100644
+>>> --- a/drivers/char/virtio_console.c
+>>> +++ b/drivers/char/virtio_console.c
+>>> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virti=
+o_device *vdev, size_t buf_size
+>>>  =09=09/*
+>>>  =09=09 * Allocate DMA memory from ancestor. When a virtio
+>>>  =09=09 * device is created by remoteproc, the DMA memory is
+>>> -=09=09 * associated with the grandparent device:
+>>> -=09=09 * vdev =3D> rproc =3D> platform-dev.
+>>> +=09=09 * associated with the parent device:
+>>> +=09=09 * virtioY =3D> remoteprocX#vdevYbuffer.
+>>>  =09=09 */
+>>> -=09=09if (!vdev->dev.parent || !vdev->dev.parent->parent)
+>>> +=09=09buf->dev =3D vdev->dev.parent;
+>>> +=09=09if (!buf->dev)
+>>>  =09=09=09goto free_buf;
+>>> -=09=09buf->dev =3D vdev->dev.parent->parent;
+>>>
+>>>  =09=09/* Increase device refcnt to avoid freeing it */
+>>>  =09=09get_device(buf->dev);
+>>> --
+>>> 2.29.2
+>>>
+>>>
+>> ---end quoted text---
+
+Thanks,
+Al
 
