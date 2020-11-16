@@ -2,264 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937982B456C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398BD2B456E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730158AbgKPOBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:01:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727305AbgKPOBP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:01:15 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83AECC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 06:01:15 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id r17so18829907wrw.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 06:01:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eOygS4wWi0Mj1OKkBe1SNoBK+tephMdRiAacrMx8etU=;
-        b=NgM9NiqMXIwVQwGA4tiLK8TugEdapmeUTnU0tcd32I1WRaTpnt52QkfVJ5P7xmtzfY
-         VfyeF056+ZgDX4g0V3z9p85HtXd+NCWVFUh9LTTHqYBCJn7ng7UxArhtuaR5ysPm2n/f
-         i4frP9y3JhVjmFiKDJuDAJW6DDjtUL6T16cXw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eOygS4wWi0Mj1OKkBe1SNoBK+tephMdRiAacrMx8etU=;
-        b=s4GUQ5XW9EZ+IX7GGEzC8bBP1/6xAOpmDXt4mRKAjGZv/8neEi+H/j0hLEnhwl1pd+
-         7lZXp9XiGOzH6bcY5Z4kBAFbSQRMA/QW1oSm89V1l6r1RBAHCrqwKVis49Db5PTanhea
-         CiwNCfE6e4WhLb0E+kA6kVNvFPaZIBa03PvuX6YP3fL1s05EC7YO62Ot2cEHdKUhobFn
-         MbvAHIKtMrnm6Ivr/44p/wc7HMtyKf8i3VV/E3cj8ubpXQtVizRXuhz3PtES5q/BcyGl
-         93qfxVUDd4kfwr1bxKYzjPwn636jVGiAdeaNwTO4HNKi1pfAkSp8vOklbmg/clyMP7vz
-         kSgg==
-X-Gm-Message-State: AOAM530y7amHLbQFiVukxt439eZw3C16c1NbUKFXkTzD7h1MQDZMu4EG
-        o9EgBPFJtJyUlihdakfOmAXdHDNIIE0tB5WH
-X-Google-Smtp-Source: ABdhPJwFCz/cQODQFE7vC86rW4ighvTHoYBoaQ+wLVzowqnryyeBjVSkpYBnA0UOvY9KWPkBhWRD6g==
-X-Received: by 2002:a5d:4f90:: with SMTP id d16mr14382452wru.292.1605535273948;
-        Mon, 16 Nov 2020 06:01:13 -0800 (PST)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id i11sm23172477wrm.1.2020.11.16.06.01.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 06:01:13 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Pauline Middelink <middelin@google.com>
-Subject: [PATCH bpf-next 2/2] bpf: Add tests for bpf_lsm_set_bprm_opts
-Date:   Mon, 16 Nov 2020 15:01:10 +0100
-Message-Id: <20201116140110.1412642-2-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-In-Reply-To: <20201116140110.1412642-1-kpsingh@chromium.org>
-References: <20201116140110.1412642-1-kpsingh@chromium.org>
+        id S1730218AbgKPOBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:01:37 -0500
+Received: from mail-eopbgr60055.outbound.protection.outlook.com ([40.107.6.55]:34693
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730211AbgKPOBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:01:35 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=idndw+9bjNvng9YfM5RKu2LBj/mIU2aJ8n4DKg3uQl4OGZeo8Nxriu+LuuZC15UsWjiykCNgBFFfHYijONBBfDHYO5hkBNg5DnepLFML1kVH1nFPRIZdb5QB0PlL1EgJMsau/7MOI3jmGavcgZAXIMy4dqRmHYX/ESB++IDboZEcyjDUBDyGco6DswQYYYBWa5vJoyon67FH0uhQodIydTUM2aKPj2JWH0LF3KNCRqZtt3xygO8redpLaVTHlqdZJT8lewXaeEMYfbd/cedkHkE4bnkggHm5eg0+NuRRc1kpanmu+8veyDqv0q/4NPd3T0oE9KpvjxFmucs7qAZK9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zwuI+rn5HNfIbC6upNB+7LKwEGjcclUS5DLsoDgOSw0=;
+ b=ivSHafjy/0eG+s85LaJPcen9DnAJuQO5SmvjunB1AW2sKeDVaw8ktFYP11c83vPyev7jlT9nJ/nNpNf+dASIX0HPhCdqsskqCsByF0D6lSabNeFeZOlY2m24sczy/Yq1Jl9QYkJrIAOq9po52n0KLUAm6oBF9RJ4jA2e0tavkPmMNRXTNw8fkFBKp5PU75vwXvCT/5PFNIUPoUHPcGa4Zsg+ci//6nKHyyiZc1WREt4aZkbwkil2WAOxVwbepAjpoda1jvUy/HdsWZwOqeSu24otWevWxPl0Y/3CxUJxmSmeDi7UtVnVGzehISZ1qrpBWq2xMNqRbYS9E/1Wo7E6gA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zwuI+rn5HNfIbC6upNB+7LKwEGjcclUS5DLsoDgOSw0=;
+ b=HTxgnnUp9w+puKT7jiYZCIsBkTDZ0B04Zsn3u4OnJVVvua4/M+sYQi/qMHV5rnPzhLBzSa75kyEWrmkYNyr8wGxJefKUo16E+RNFMi01H8AN7mk1jQ1dw0Qg6Ph6QHSIljOKF9NyYaEdxbE+pOpyu4w5GqWiL54ePDxEOw4EoME=
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
+ by DBBPR04MB6027.eurprd04.prod.outlook.com (2603:10a6:10:c7::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
+ 2020 14:01:33 +0000
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
+ 14:01:33 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+CC:     "balbi@kernel.org" <balbi@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "weiyongjun1@huawei.com" <weiyongjun1@huawei.com>,
+        "jun.li@freescale.com" <jun.li@freescale.com>,
+        "rogerq@ti.com" <rogerq@ti.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH v2] usb: gadget: mass_storage: fix error return code in
+ msg_bind()
+Thread-Topic: [PATCH v2] usb: gadget: mass_storage: fix error return code in
+ msg_bind()
+Thread-Index: AQHWuPqsLIOnAtmxwUipVxtESKIpeqnKz+IA
+Date:   Mon, 16 Nov 2020 14:01:33 +0000
+Message-ID: <20201116140104.GG28313@b29397-desktop>
+References: <20201112135423.89536-1-chenzhou10@huawei.com>
+In-Reply-To: <20201112135423.89536-1-chenzhou10@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 59ca0937-133b-455b-35e9-08d88a381fef
+x-ms-traffictypediagnostic: DBBPR04MB6027:
+x-microsoft-antispam-prvs: <DBBPR04MB6027F6233ABC3C02F01B4C378BE30@DBBPR04MB6027.eurprd04.prod.outlook.com>
+x-ms-exchange-transport-forked: True
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eP0FywL9RcClidAcFY8KlsUcw9IMMGTenwuYdVglSmKXr16Q3jFv3D9oyvo4bTFRdCOh3Og47e+a8I3N4ldtqiXT/6KviLDbW1gI4PMEtNa4Xk64TMNZkd2RL5YYdzxsUt6c1jnPt2Hzw5w7CWuNSPN3xgAmddl1F+mU8+y+ZPPuCZeZ3jG0taVtz2/ymfsTBg7j/N/cMNfLs17roS/ycpgYiKPS2e5og3pJ6y167Tj81c5rkVgm2kzvZi/TLweGE/qOaYLGCgKdauCsN1yy0CnISC/M6U1jcm5s5b2DJLJd9yVhI7yIZGzzlQUPE5VyXS/gV89gjQcxi2j5IqQy1Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(396003)(136003)(39860400002)(346002)(376002)(26005)(53546011)(71200400001)(54906003)(6506007)(316002)(186003)(44832011)(5660300002)(76116006)(91956017)(66446008)(64756008)(1076003)(8936002)(66556008)(66476007)(86362001)(33716001)(33656002)(8676002)(4326008)(66946007)(83380400001)(6916009)(478600001)(2906002)(6512007)(9686003)(6486002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: xfSPciGe4yiheKmL/nzAUW1C3a4vzdCyDgVjxFZXAH84Sp0oeTEG4dSpFIDpNI6s1pTMEIcdm5tQQx7K953K1pre1cnX0vxcBx6FznC4SFN6Obkoo68hXzJerRPZkb+kKxUdGJrvvse7qTYhHZSG4jrmqKj0kMeQV/Y/ev2OPCw51PLnpAbF494Z3VnAkVckX921u+ctVC3v/ll20z7EbXoxNGMLUzrToBVl86390nRcI+0u6VBosmjb8UITyzjhvL+sOzfDF2FeTHFvF6IKYkCU8ivYdE40lKZ4N/VDz+wyubc55qwiN7vSDrbtj7uoPMXbw+VBrwE3YSdsH/ewlLJKTy29dR8jpEI/tfhI7p2LTFRVlHCwzL7HNNz4XegdgW/YHQlaQJ0LceEVGtJMLKlZMBdLPuXg1kUnVHTZoqPrz8XrZpMi6Sj0+JsM1gnNBE4DicnkOHc/nWO7oe+b9gks2P2cd3vS09wuKx966fHrRG0uoO9voXx+3twQOg3PiPj9Hfo3rYnj2F7F8AWEs8JLtXsDR0Jhi0p5BoNg7RwWIuP8jWmpnkQ0s3BuMmGCF+83NOWWXyzK7y4qI/MidsBRzXcNd0ndjlg5WnzAqp1TnPLRNyD20Y9RLEacQn690APwomOPIlBoFkCQPd33gQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <93BBCD88BDED4349B2F61D504CDF2BEC@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59ca0937-133b-455b-35e9-08d88a381fef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2020 14:01:33.0591
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lAFXCUpN3WnPZQeOiL78TjfcvU5DKjz+sX2JBJtOY6lFl5ecDq6O5C7M42ZKTgrrYsf0tGzQ+Em5TR1H+sAB8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB6027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On 20-11-12 21:54:23, Chen Zhou wrote:
+> Fix to return a negative error code from the error handling case
+> instead of 0 in function msg_bind(), as done elsewhere in this
+> function.
+>=20
+> Fixes: d86788979761 ("usb: gadget: mass_storage: allocate and init otg de=
+scriptor by otg capabilities")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
 
-The test forks a child process, updates the local storage to set/unset
-the securexec bit.
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
 
-The BPF program in the test attaches to bprm_creds_for_exec which checks
-the local storage of the current task to set the secureexec bit on the
-binary parameters (bprm).
+Peter
+> ---
+>  drivers/usb/gadget/legacy/mass_storage.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/usb/gadget/legacy/mass_storage.c b/drivers/usb/gadge=
+t/legacy/mass_storage.c
+> index 9ed22c5fb7fe..ac1741126619 100644
+> --- a/drivers/usb/gadget/legacy/mass_storage.c
+> +++ b/drivers/usb/gadget/legacy/mass_storage.c
+> @@ -175,8 +175,10 @@ static int msg_bind(struct usb_composite_dev *cdev)
+>  		struct usb_descriptor_header *usb_desc;
+> =20
+>  		usb_desc =3D usb_otg_descriptor_alloc(cdev->gadget);
+> -		if (!usb_desc)
+> +		if (!usb_desc) {
+> +			status =3D -ENOMEM;
+>  			goto fail_string_ids;
+> +		}
+>  		usb_otg_descriptor_init(cdev->gadget, usb_desc);
+>  		otg_desc[0] =3D usb_desc;
+>  		otg_desc[1] =3D NULL;
+> --=20
+> 2.20.1
+>=20
 
-The child then execs a bash command with the environment variable
-TMPDIR set in the envp.  The bash command returns a different exit code
-based on its observed value of the TMPDIR variable.
+--=20
 
-Since TMPDIR is one of the variables that is ignored by the dynamic
-loader when the secureexec bit is set, one should expect the
-child execution to not see this value when the secureexec bit is set.
-
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- .../selftests/bpf/prog_tests/test_bprm_opts.c | 124 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bprm_opts.c |  35 +++++
- 2 files changed, 159 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
- create mode 100644 tools/testing/selftests/bpf/progs/bprm_opts.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
-new file mode 100644
-index 000000000000..cba1ef3dc8b4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2020 Google LLC.
-+ */
-+
-+#include <asm-generic/errno-base.h>
-+#include <sys/stat.h>
-+#include <test_progs.h>
-+#include <linux/limits.h>
-+
-+#include "bprm_opts.skel.h"
-+#include "network_helpers.h"
-+
-+#ifndef __NR_pidfd_open
-+#define __NR_pidfd_open 434
-+#endif
-+
-+static const char * const bash_envp[] = { "TMPDIR=shouldnotbeset", NULL };
-+
-+static inline int sys_pidfd_open(pid_t pid, unsigned int flags)
-+{
-+	return syscall(__NR_pidfd_open, pid, flags);
-+}
-+
-+static int update_storage(int map_fd, int secureexec)
-+{
-+	int task_fd, ret = 0;
-+
-+	task_fd = sys_pidfd_open(getpid(), 0);
-+	if (task_fd < 0)
-+		return errno;
-+
-+	ret = bpf_map_update_elem(map_fd, &task_fd, &secureexec, BPF_NOEXIST);
-+	if (ret)
-+		ret = errno;
-+
-+	close(task_fd);
-+	return ret;
-+}
-+
-+static int run_set_secureexec(int map_fd, int secureexec)
-+{
-+
-+	int child_pid, child_status, ret, null_fd;
-+
-+	child_pid = fork();
-+	if (child_pid == 0) {
-+		null_fd = open("/dev/null", O_WRONLY);
-+		if (null_fd == -1)
-+			exit(errno);
-+		dup2(null_fd, STDOUT_FILENO);
-+		dup2(null_fd, STDERR_FILENO);
-+		close(null_fd);
-+
-+		/* Ensure that all executions from hereon are
-+		 * secure by setting a local storage which is read by
-+		 * the bprm_creds_for_exec hook and sets bprm->secureexec.
-+		 */
-+		ret = update_storage(map_fd, secureexec);
-+		if (ret)
-+			exit(ret);
-+
-+		/* If the binary is executed with securexec=1, the dynamic
-+		 * loader ingores and unsets certain variables like LD_PRELOAD,
-+		 * TMPDIR etc. TMPDIR is used here to simplify the example, as
-+		 * LD_PRELOAD requires a real .so file.
-+		 *
-+		 * If the value of TMPDIR is set, the bash command returns 10
-+		 * and if the value is unset, it returns 20.
-+		 */
-+		ret = execle("/bin/bash", "bash", "-c",
-+			     "[[ -z \"${TMPDIR}\" ]] || exit 10 && exit 20",
-+			     NULL, bash_envp);
-+		if (ret)
-+			exit(errno);
-+	} else if (child_pid > 0) {
-+		waitpid(child_pid, &child_status, 0);
-+		ret = WEXITSTATUS(child_status);
-+
-+		/* If a secureexec occured, the exit status should be 20.
-+		 */
-+		if (secureexec && ret == 20)
-+			return 0;
-+
-+		/* If normal execution happened the exit code should be 10.
-+		 */
-+		if (!secureexec && ret == 10)
-+			return 0;
-+
-+		return ret;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+void test_test_bprm_opts(void)
-+{
-+	int err, duration = 0;
-+	struct bprm_opts *skel = NULL;
-+
-+	skel = bprm_opts__open_and_load();
-+	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
-+		goto close_prog;
-+
-+	err = bprm_opts__attach(skel);
-+	if (CHECK(err, "attach", "attach failed: %d\n", err))
-+		goto close_prog;
-+
-+	/* Run the test with the secureexec bit unset */
-+	err = run_set_secureexec(bpf_map__fd(skel->maps.secure_exec_task_map),
-+				 0 /* secureexec */);
-+	if (CHECK(err, "run_set_secureexec:0", "err = %d", err))
-+		goto close_prog;
-+
-+	/* Run the test with the secureexec bit set */
-+	err = run_set_secureexec(bpf_map__fd(skel->maps.secure_exec_task_map),
-+				 1 /* secureexec */);
-+	if (CHECK(err, "run_set_secureexec:1", "err = %d", err))
-+		goto close_prog;
-+
-+close_prog:
-+	bprm_opts__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bprm_opts.c b/tools/testing/selftests/bpf/progs/bprm_opts.c
-new file mode 100644
-index 000000000000..af4741fc5765
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bprm_opts.c
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, int);
-+} secure_exec_task_map SEC(".maps");
-+
-+SEC("lsm/bprm_creds_for_exec")
-+int BPF_PROG(secure_exec, struct linux_binprm *bprm)
-+{
-+	int *secureexec;
-+
-+	secureexec = bpf_task_storage_get(&secure_exec_task_map,
-+				   bpf_get_current_task_btf(), 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!secureexec)
-+		return 0;
-+
-+	if (*secureexec)
-+		bpf_lsm_set_bprm_opts(bprm, BPF_LSM_F_BPRM_SECUREEXEC);
-+	return 0;
-+}
--- 
-2.29.2.299.gdc1121823c-goog
-
+Thanks,
+Peter Chen=
