@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104632B4E72
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7435E2B4E85
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387607AbgKPRsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:48:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733190AbgKPRsp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:48:45 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBC7C0613CF;
-        Mon, 16 Nov 2020 09:48:43 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id r17so19728850wrw.1;
-        Mon, 16 Nov 2020 09:48:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oo28y8CwbarIIHt9QVICKSL/cPf2jBzgOsxS9+pjqV4=;
-        b=Xo+6RoUKW5EPAQ5AfiLMX2ZOBP3YtaRXNtMeaOx5Kz6LQeDbTNdN8Tn1drGDcfrXbC
-         mPk13Xv0teQZptYrVKdoX4Wo9+81F0IAhppDl0rbxUZYifSBDn25uao5eQeQo1F2qh2o
-         oDFsFeLhHS524Vtqx1v5iCCJ0CKyCSNVG917jK5sS0i0nGSSY43ASsqSX+k+7zleqUwP
-         m2J84Jhrk0YOxQ22Cg7UdO7tOgwcWJJBKfgbfpM6wwxzC4Q2UsWXPFW+TpnUHVet2yv/
-         91PQg079/9WnamlCea28HYMTRO6Pt3f6splsJ4ecRed2px63Gik6CAV0aQZU1XnWjgeZ
-         gUJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oo28y8CwbarIIHt9QVICKSL/cPf2jBzgOsxS9+pjqV4=;
-        b=AtRqJJlwNgVMOtmwuXDmik7Tf8n7zLzf58XyqNOjDaAi2KtgQv4dKTAYR83iaD1mHf
-         gchDHncf5Ohu3x9KS42GsIGMjD5raSnUMRqfxSj44dwYMnT7y3hqhdcp5a3cqe3Nrayn
-         vkh1IfQdE81jZ1NUjk8N9Rutp1txVesj9w8LIbVKmIbUXXTP35dWGNqiiex/EiyDgkBH
-         GcX08sYZeUDYe0hvnpr6tsDLhTKgAOekfWcn+vYPCQ5xXROE6tbAZnA2to9jcWnu3F/a
-         KkUC0OUsSU0aR4krxuEH4kOqf5FO38Y7I2MeXUfDpOkmfmVfsRpB/RedBVYQbsEud4dx
-         p/nQ==
-X-Gm-Message-State: AOAM530hIOtCgPr5H0EIyrnK15wBxL+GIDMRH+x+ieRrlMO1GEBMu1Fl
-        dnWCWwcLlpanX6dDfXAJHY4zAyjmMzBuGtRo739mmIgX99c=
-X-Google-Smtp-Source: ABdhPJwLUHRCNxP780S9wB4HTWCUx9z/UF/ZjtKuXyrKptvA/sOlIX/C0TT7KCOFIw7oMBBwToUFga8s7TvJdYI0jDU=
-X-Received: by 2002:adf:f04b:: with SMTP id t11mr19535784wro.147.1605548922581;
- Mon, 16 Nov 2020 09:48:42 -0800 (PST)
+        id S2388112AbgKPRvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:51:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730726AbgKPRvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 12:51:42 -0500
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C562B206A1;
+        Mon, 16 Nov 2020 17:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605549102;
+        bh=tRaOz8oIAnb8ap7gOwWei+nyulQb7y67ExoivBhnKY0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BiOBDcmMNEC9wbBi7/e48JI42AaobEbTpFfonGI3DzD8rcrI76uns59eemyjobca0
+         EKcH+VgUpsaIntiqVP6PVxYKAPFrCAIuS1lE6BlLgfw4Ymv8aqmpolCDF8asII26eB
+         LqYVcT+MGoHg1wRMusFlUAX4U9KkWXayjMf+ytoI=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/4] ASoC: meson: depend on COMMON_CLK to fix compile tests
+Date:   Mon, 16 Nov 2020 18:51:30 +0100
+Message-Id: <20201116175133.402553-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201114151717.5369-1-jonathan@marek.ca> <20201114151717.5369-5-jonathan@marek.ca>
- <20201114162406.GC24411@lst.de> <CAF6AEGvujttEkFuRqtt7i+0o7-=2spKXfAvJZrj96uWAFRLYuA@mail.gmail.com>
- <50ddcadb-c630-2ef6-cdc4-724d9823fba7@marek.ca> <CAF6AEGsH5Wk=J+HxHnRqTMLZscjErjKq2v0Rms7Td=W7icZ3sw@mail.gmail.com>
- <b6e4f167-871a-5f26-46bd-d914476af519@marek.ca> <20201116173346.GA24173@lst.de>
-In-Reply-To: <20201116173346.GA24173@lst.de>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 16 Nov 2020 09:50:28 -0800
-Message-ID: <CAF6AEGuFzsurd4n6G-nUmCusTJ8vMo9Kqjzs3JRS_d6n+qHgEA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 4/5] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for
- non-coherent cache maintenance
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 9:33 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Sat, Nov 14, 2020 at 03:07:20PM -0500, Jonathan Marek wrote:
-> > qcom's vulkan driver has nonCoherentAtomSize=1, and it looks like
-> > dma_sync_single_for_cpu() does deal in some way with the partial cache line
-> > case, although I'm not sure that means we can have a nonCoherentAtomSize=1.
->
-> No, it doesn't.  You need to ensure ownership is managed at
-> dma_get_cache_alignment() granularity.
+The Meson SoC sound drivers use Common Clock Framework thus they cannot
+be built on platforms without it (e.g. compile test on MIPS with RALINK
+and SOC_RT305X):
 
-my guess is nonCoherentAtomSize=1 only works in the case of cache
-coherent buffers
+    /usr/bin/mips-linux-gnu-ld: sound/soc/meson/aiu-encoder-spdif.o: in function `aiu_encoder_spdif_startup':
+    aiu-encoder-spdif.c:(.text+0x3a0): undefined reference to `clk_set_parent'
+    /usr/bin/mips-linux-gnu-ld: sound/soc/meson/axg-tdm-formatter.o: in function `axg_tdm_formatter_event':
+    (.text+0x7ec): undefined reference to `clk_set_parent'
 
-BR,
--R
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ sound/soc/meson/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
+index 363dc3b1bbe4..dd8a05e61f58 100644
+--- a/sound/soc/meson/Kconfig
++++ b/sound/soc/meson/Kconfig
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menu "ASoC support for Amlogic platforms"
+-	depends on ARCH_MESON || COMPILE_TEST
++	depends on ARCH_MESON || COMPILE_TEST && COMMON_CLK
+ 
+ config SND_MESON_AIU
+ 	tristate "Amlogic AIU"
+-- 
+2.25.1
+
