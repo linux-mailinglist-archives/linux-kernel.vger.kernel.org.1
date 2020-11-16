@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EAE2B4025
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8802B4027
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgKPJrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:47:36 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:45907 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgKPJrf (ORCPT
+        id S1728668AbgKPJrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:47:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728661AbgKPJrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:47:35 -0500
-Received: by mail-oi1-f193.google.com with SMTP id k19so9504714oic.12;
-        Mon, 16 Nov 2020 01:47:35 -0800 (PST)
+        Mon, 16 Nov 2020 04:47:40 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A7EC0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:47:40 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id s8so17919498wrw.10
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:47:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+si8LH3jhi9EyKVGhLQbwPSv91L15i1+9Oq4Ed8hni4=;
+        b=nqdN4uRj5voyOinQdTs1MOSCoiyOPfj8u3NnVEqnwsh89YfCT6AgozfIcjPTqpXfGM
+         lBTAsB/8ReuT9cWudKtSXV6Xx6Cu1e9GXcTbBqR1IybviVR9utneYkZK07dnnd2r5fmU
+         VjSpPGF3TP6yCGp1bFPcfJeEDazghUqDzEIAeHTMCz4+wDsWLtkUfvGl5yxM2LA4vTkT
+         oTCM+tvMjLtGCGwZyEuxP91A5mCccTGGiYO8m6VdU2c7bhQeHi4RE0iuqY0NjzK1QlC9
+         wpFZrvXQ9YK0dwFMJzJMKD4kZ42TTfZJ+4hxMdW5ja9gPk9S//eN2Zpx0npfMgnQLBI1
+         FCMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z+F5r+A2Ydy3g6regFzy4mPZxcGaSWa5FXZJrRUitmk=;
-        b=kIT5nfB1ZdslkbPXvstIPtol8scy4M/y1cVemcobxGuAW4cj1ZqhDCwRBY0Njfoqvx
-         mNCtJHCLfEyXDH/83ymg5HXlwqC7hx1bTqSs+1ESMhSGLA+xJhsvaEEzNHGUAdXkPcXJ
-         4MMzIK84NsgmA1lqP+8qg4etuRfE243bRyezbwVzKHtvkGwX7AV+wa47GeGNySeH+3uA
-         w4Bv/0Cm5sm01oLHEZYD3jSQwHuqGu+mmvzjk0dums97yWXzN+CF5SEux+qGUtXd+1UL
-         EYBDyxO6pspI0606de4HREsHV1zy7AJit8ygjf9/Z4okL+bXyg3FajEfGncJVZX6RHKi
-         FlEQ==
-X-Gm-Message-State: AOAM533kLXmMpK1Xft8fPBiBncQBSlpblqYaGU0NG0BHrZJT3sg3Y+uD
-        uBXIsWhWUUBL3FmfiSy+kbjoy1vnq1pZrsBpj1E=
-X-Google-Smtp-Source: ABdhPJywjKJgEoVdofvrrxMy7A30vVriKI1tM5Mq/PI9qja7lbnht9Sd63/thbMiAKpLUQgfaV6TpBEM7w2Aq4WrXdM=
-X-Received: by 2002:aca:c3c4:: with SMTP id t187mr8708087oif.148.1605520054848;
- Mon, 16 Nov 2020 01:47:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+si8LH3jhi9EyKVGhLQbwPSv91L15i1+9Oq4Ed8hni4=;
+        b=B1vqnCj1IamcsDQR7ghG22AT7XrXuWtnFoQ2XxYdhuZ5g/o+eyqaOubrxozmPmOIe9
+         XBE4sDgaGMmL9H5EgOAp/vKO6EomDrnapNKJtERPb43rWLpWv4R6sxcDyQgsKx5I0bff
+         FiEIyd7FAjg6+BKtTAbZVT4vbhhTZUSvHqnTrmBK3OKe6WpNJ39gQ0fPHnBwj00Kgox/
+         amlaEgn1dUUPOJVwEAXRk7sP4Jj6DlHuLcjbg+DTKJHr80n9CsT0uMZKyGRVBFdh3sJW
+         A2b7rwH2SNuvuRUCGPZBzL9jjqs6LSP6l3N+aRoxAAJ+O8RED5OwQxr9JeSjVk6v/UTy
+         qk8A==
+X-Gm-Message-State: AOAM530Uq/Du0OmGfG9DINWhoxwfA3hmAT7N0SKS0L2GT+CjTrPtU/PL
+        ZbyMZY7AwcFtMkuv1uvCI3mA1Q==
+X-Google-Smtp-Source: ABdhPJxTb/57HfJkOZ7cB/V/z4dTk0Fhk5LOW+nej7IimYiur/RP+toGkLtmhrPKf82iiC+Ou9db0w==
+X-Received: by 2002:a05:6000:1088:: with SMTP id y8mr19995697wrw.207.1605520058932;
+        Mon, 16 Nov 2020 01:47:38 -0800 (PST)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id m21sm29402766wmi.3.2020.11.16.01.47.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 01:47:38 -0800 (PST)
+Date:   Mon, 16 Nov 2020 09:47:36 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        kgdb-bugreport@lists.sourceforge.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Subject: Re: [PATCH] Documentation: kgdb: Fix a typo
+Message-ID: <20201116094736.hmqnyl3xezeupzyb@holly.lan>
+References: <1605519767-25502-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-References: <20200826111628.794979401@linutronix.de> <20201112125531.GA873287@nvidia.com>
- <87mtzmmzk6.fsf@nanos.tec.linutronix.de> <87k0uqmwn4.fsf@nanos.tec.linutronix.de>
- <87d00imlop.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87d00imlop.fsf@nanos.tec.linutronix.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 16 Nov 2020 10:47:23 +0100
-Message-ID: <CAMuHMdXA7wfJovmfSH2nbAhN0cPyCiFHodTvg4a8Hm9rx5Dj-w@mail.gmail.com>
-Subject: Re: iommu/vt-d: Cure VF irqdomain hickup
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Ziyad Atiyyeh <ziyadat@nvidia.com>,
-        Itay Aveksis <itayav@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605519767-25502-1-git-send-email-yangtiezhu@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Mon, Nov 16, 2020 at 05:42:47PM +0800, Tiezhu Yang wrote:
+> "to into" -> "into"
+> 
+> Reported-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-On Thu, Nov 12, 2020 at 8:16 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> The recent changes to store the MSI irqdomain pointer in struct device
-> missed that Intel DMAR does not register virtual function devices.  Due to
-> that a VF device gets the plain PCI-MSI domain assigned and then issues
-> compat MSI messages which get caught by the interrupt remapping unit.
->
-> Cure that by inheriting the irq domain from the physical function
-> device.
->
-> That's a temporary workaround. The correct fix is to inherit the irq domain
-> from the bus, but that's a larger effort which needs quite some other
-> changes to the way how x86 manages PCI and MSI domains.
->
-> Fixes: 85a8dfc57a0b ("iommm/vt-d: Store irq domain in struct device")
-> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+
+
 > ---
->  drivers/iommu/intel/dmar.c |   19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
->
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -333,6 +333,11 @@ static void  dmar_pci_bus_del_dev(struct
->         dmar_iommu_notify_scope_dev(info);
->  }
->
-> +static inline void vf_inherit_msi_domain(struct pci_dev *pdev)
-> +{
-> +       dev_set_msi_domain(&pdev->dev, dev_get_msi_domain(&pdev->physfn->dev));
-
-If CONFIG_PCI_ATS is not set:
-
-    error: 'struct pci_dev' has no member named 'physfn'
-
-http://kisskb.ellerman.id.au/kisskb/buildresult/14400927/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>  Documentation/dev-tools/kgdb.rst | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/dev-tools/kgdb.rst b/Documentation/dev-tools/kgdb.rst
+> index 77b688e..4345624 100644
+> --- a/Documentation/dev-tools/kgdb.rst
+> +++ b/Documentation/dev-tools/kgdb.rst
+> @@ -63,10 +63,9 @@ will want to turn on ``CONFIG_DEBUG_INFO`` which is called
+>  It is advised, but not required, that you turn on the
+>  ``CONFIG_FRAME_POINTER`` kernel option which is called :menuselection:`Compile
+>  the kernel with frame pointers` in the config menu. This option inserts code
+> -to into the compiled executable which saves the frame information in
+> -registers or on the stack at different points which allows a debugger
+> -such as gdb to more accurately construct stack back traces while
+> -debugging the kernel.
+> +into the compiled executable which saves the frame information in registers
+> +or on the stack at different points which allows a debugger such as gdb to
+> +more accurately construct stack back traces while debugging the kernel.
+>  
+>  If the architecture that you are using supports the kernel option
+>  ``CONFIG_STRICT_KERNEL_RWX``, you should consider turning it off. This
+> -- 
+> 2.1.0
+> 
