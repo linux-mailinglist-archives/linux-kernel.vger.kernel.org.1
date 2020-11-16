@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141492B4B87
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EEA2B4B83
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732282AbgKPQoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:44:02 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:54420 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732245AbgKPQoA (ORCPT
+        id S1732242AbgKPQn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:43:56 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:34921 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731504AbgKPQnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:44:00 -0500
-Date:   Mon, 16 Nov 2020 16:43:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1605545037; bh=Qd/V7/auXUafl/mmu4wV/5UTH2jsCO9yUBd0yO33sBM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=VlQUg8MWVCwoGEChmrB66g+17zZvHCemdWx/S3I3dZFwjlupgMZI3jfOCHeBcJ2fl
-         dd4Fh90TmTDAWerIDzrDeHx+Jneyc124zM30lHxeixHJAN4MY35JfQTkX9FXZtm2tI
-         Xgr+aNXYuNKTZ3q1u6PSPne2RTXMGVDtmZzDSN5PLhqFOqB1/xt3jsw0ApiRWTD7We
-         QPMSv8e0GGQ0sApM1RHEblmUgPfOfftZ7RVvtm8y96lM7Pp9v9cbMQz6RVGIm3gu4+
-         3YbIqss9xs/X0l06iiAL9uQKjrO9scMH86+shuElONyRLna8spU4YfHlJQdkdRMNBl
-         Qkaz6MTQWfGcQ==
-To:     Christoph Hellwig <hch@infradead.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Amit Shah <amit@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc@vger.kernel.org, Suman Anna <s-anna@ti.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation for rproc serial
-Message-ID: <g6x4jAuAkaB51kwCXU4GlGyCGilkEvRhguvwfPkrA@cp3-web-024.plabs.ch>
-In-Reply-To: <20201116162744.GA16619@infradead.org>
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch> <20201116091950.GA30524@infradead.org> <20201116045127-mutt-send-email-mst@kernel.org> <20201116162744.GA16619@infradead.org>
+        Mon, 16 Nov 2020 11:43:55 -0500
+Received: by mail-wm1-f68.google.com with SMTP id w24so24198829wmi.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:43:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CU/ArYgUmsV0IxBE5kQnWgLCbAVJFNGDcMQi4/XhurY=;
+        b=sxoWw4yBR2oepvthbsA2yPqEfv0UroDJf96Z0ti2KLdN39oJHirtMGOoTlbGLsfQIO
+         Up1uYA/+Roxwwgs9/e+BqPuCQ53pBe2r9pRZmZd1X2BpgYYLYmfN5PfR3h3eEO/Fbins
+         kD23bsZvmyCmyerbO55qV7mLQEVvN1adideB3EGawHcq/wzvZY5LpJ59eZ9KJ1ArbxZS
+         DdaKnbLMqt9J/WVESZB4B6Jhwrx1ERnNGm3x5TdodQ/hI5pmUuBeHPpC+me6wxF1luYS
+         d0I1tpQfvKbIKntJ+ME3J+z/YGRMVJPdpg+U3NjHXz/eXLM3QY9j/b6NTzlKNyXys7wM
+         9SMQ==
+X-Gm-Message-State: AOAM530vQI1gz2Ul1HehDfpanHLSTdnm+GJH+iGT6KyFHRmT49VgUOiN
+        wJ0+u4NIhjrsK0IhYJy129Y=
+X-Google-Smtp-Source: ABdhPJwrytIY7dl2WyWJYJvj3sS0LfOC+VxR1BPCIAPEeDaBU+31icV0iu6ZfGFAJWOtzdtMFDXIMg==
+X-Received: by 2002:a05:600c:4147:: with SMTP id h7mr15502690wmm.146.1605545033868;
+        Mon, 16 Nov 2020 08:43:53 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id y187sm20730377wmg.33.2020.11.16.08.43.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 08:43:52 -0800 (PST)
+Date:   Mon, 16 Nov 2020 17:43:51 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: drivers/mmc/host/tmio_mmc.c:177 tmio_mmc_probe() warn: argument
+ 3 to %08lx specifier is cast from pointer
+Message-ID: <20201116164351.GA44776@kozik-lap>
+References: <20201116092236.GT29398@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+In-Reply-To: <20201116092236.GT29398@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@infradead.org>
-Date: Mon, 16 Nov 2020 16:27:44 +0000
+On Mon, Nov 16, 2020 at 12:22:36PM +0300, Dan Carpenter wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   f01c30de86f1047e9bae1b1b1417b0ce8dcd15b1
+> commit: 54d8454436a205682bd89d66d8d9eedbc8452d15 mmc: host: Enable compile testing of multiple drivers
+> config: arm64-randconfig-m031-20201113 (attached as .config)
+> compiler: aarch64-linux-gcc (GCC) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> smatch warnings:
+> drivers/mmc/host/tmio_mmc.c:177 tmio_mmc_probe() warn: argument 3 to %08lx specifier is cast from pointer
+> 
+> vim +177 drivers/mmc/host/tmio_mmc.c
+> 
+> 94b110aff8679b1 Kuninori Morimoto     2015-01-13  170  
+> de501af98dfab9c Ian Molton            2015-04-27  171  	ret = devm_request_irq(&pdev->dev, irq, tmio_mmc_irq,
+> de501af98dfab9c Ian Molton            2015-04-27  172  			       IRQF_TRIGGER_FALLING,
+> d9618e9f1a057ef Yong Zhang            2011-09-22  173  			       dev_name(&pdev->dev), host);
+> 8e7bfdb37ac001c Magnus Damm           2011-05-06  174  	if (ret)
+> 8e7bfdb37ac001c Magnus Damm           2011-05-06  175  		goto host_remove;
+> 8e7bfdb37ac001c Magnus Damm           2011-05-06  176  
+> 311f3ac76826bfd Guennadi Liakhovetski 2010-05-19 @177  	pr_info("%s at 0x%08lx irq %d\n", mmc_hostname(host->mmc),
+>                                                                        ^^^^^^^
+> These are supposed to be %p so that the kernel can hide them and avoid
+> showing kernel pointers to user space.
 
-> On Mon, Nov 16, 2020 at 04:51:49AM -0500, Michael S. Tsirkin wrote:
->> On Mon, Nov 16, 2020 at 09:19:50AM +0000, Christoph Hellwig wrote:
->>> I just noticed this showing up in Linus' tree and I'm not happy.
->>>
->>> This whole model of the DMA subdevices in remoteproc is simply broken.
->>>
->>> We really need to change the virtio code pass an expicit DMA device (
->>> similar to what e.g. the USB and RDMA code does),
->>
->> Could you point me at an example or two please?
->
-> Take a look at the ib_dma_* helper in include/rdma/ib_verbs.h and
-> dma_device member in struct ib_device for the best example.
+Thanks, I sent a patch.
 
-Oh, best example indeed. I did really love these helpers and kinda
-wish there were such for Ethernet and wireless networking. They'd
-allow to keep the code more readable and clean and prevent from
-several sorts of silly mistakes.
-
-This could be done in e.g. 4 steps:
- - introduce such helpers for netdev/mac80211;
- - add checkpatch warnings to discourage usage of old methods like
-   SET_NETDEV_DEV() and direct dereferencing of netdev->dev.parent;
- - slowly convert existing drivers to the new model;
- - remove the old way entirely along with checkpatch remnants.
-
-I could take this if there'll be enough votes :)
-
-Al
+Best regards,
+Krzysztof
 
