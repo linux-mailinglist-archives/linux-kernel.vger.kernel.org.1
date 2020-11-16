@@ -2,92 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2382B5200
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897442B5208
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731618AbgKPUIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:08:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729960AbgKPUIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:08:16 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B14EF2222E;
-        Mon, 16 Nov 2020 20:08:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605557295;
-        bh=Je+1DhnpdkGhc6qYf9RxDbFGJo+EGiP/trGm8cjM7Qo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u258Of84CXLzDjjJ8TZF4+UpWCR/a9YF5nSqN0JE40tQfB+Um/IE+9nWwf7odOY8U
-         ZyaQ7enP+07vE0fTQrvTMCd7fcBe/ynwcSdZnUZI5r1Ot150+OZ5weCoRaed7J+JYL
-         TV4SbZgkKDYUVwihPnECHdD8p/FsA6+ZTsGG77ZE=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1keknN-00B7cF-TA; Mon, 16 Nov 2020 20:08:14 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        kernel-team@android.com, dri-devel@lists.freedesktop.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] drm/meson: dw-hdmi: Ensure that clocks are enabled before touching the TOP registers
-Date:   Mon, 16 Nov 2020 20:07:44 +0000
-Message-Id: <20201116200744.495826-5-maz@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201116200744.495826-1-maz@kernel.org>
-References: <20201116200744.495826-1-maz@kernel.org>
+        id S1731775AbgKPUId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:08:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731662AbgKPUIa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 15:08:30 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9206FC0613CF;
+        Mon, 16 Nov 2020 12:08:30 -0800 (PST)
+Date:   Mon, 16 Nov 2020 20:08:27 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605557308;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UNtM+Tqm8xc4Yhv0kGDgHY27rB8uw2uBmAbWvfTcnjo=;
+        b=bc2O+p8XDY6crVD4O+2wrSuebrIKlCSb9N6ouVaGCOQJXixoj0dmyatbBIIHhuM7nb07c2
+        8nfzSdlxfgFz1xufW887FzfZ7RuPJVtJ4pjMTFmeMWLSQ3tDS7BHpjpZZuNGlw7nVCraGw
+        vUTiQm2Wz7JyvdeAvRkovMud+QBJef/8YYQc4QbzwncCATq5uWDMOWoV4t8oWqoXzLeQ1v
+        1GCcU6MLQmw/zX8JYu0jtUDkzqnYVD5mGe7icqpKUiz/dEf4ejo2ZI+B9MmmKwHfcaxfbx
+        ObZcwcaLc5TNp7guki9CvOyFoCZs/WqfPDLyLggkkE4tIAmIp/FrZkK/fDppyA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605557308;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UNtM+Tqm8xc4Yhv0kGDgHY27rB8uw2uBmAbWvfTcnjo=;
+        b=Gkb7MRmDYyZXAQlJgCPm0+yPk3VxgFM7uL+dn7NQ8HxlkU4RtA3w6nW239POqTn39t2TyA
+        eb0VWktYOFglSxBQ==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] tools/power/x86_energy_perf_policy: Read
+ energy_perf_bias from sysfs
+Cc:     Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201029190259.3476-4-bp@alien8.de>
+References: <20201029190259.3476-4-bp@alien8.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: narmstrong@baylibre.com, khilman@baylibre.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com, kernel-team@android.com, dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Message-ID: <160555730775.11244.6939969381086396057.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removing the meson-dw-hdmi module and re-inserting it results in a hang
-as the driver writes to HDMITX_TOP_SW_RESET. Similar effects can be seen
-when booting with mainline u-boot and using the u-boot provided DT (which
-is highly desirable).
+The following commit has been merged into the x86/misc branch of tip:
 
-The reason for the hang seem to be that the clocks are not always
-enabled by the time we enter meson_dw_hdmi_init(). Moving this call
-*after* dw_hdmi_probe() ensures that the clocks are enabled.
+Commit-ID:     fe0a5788624c8b8f113a35bbe4636e37f9321241
+Gitweb:        https://git.kernel.org/tip/fe0a5788624c8b8f113a35bbe4636e37f9321241
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Thu, 15 Oct 2020 14:58:48 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 16 Nov 2020 17:43:28 +01:00
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+tools/power/x86_energy_perf_policy: Read energy_perf_bias from sysfs
+
+... and stop poking at the MSR directly.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201029190259.3476-4-bp@alien8.de
 ---
- drivers/gpu/drm/meson/meson_dw_hdmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c | 109 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 99 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-index 68826cf9993f..7f8eea494147 100644
---- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
-+++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-@@ -1073,8 +1073,6 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+diff --git a/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c b/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
+index 3fe1eed..ad6aed1 100644
+--- a/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
++++ b/tools/power/x86/x86_energy_perf_policy/x86_energy_perf_policy.c
+@@ -91,6 +91,9 @@ unsigned int has_hwp_request_pkg;	/* IA32_HWP_REQUEST_PKG */
  
- 	DRM_DEBUG_DRIVER("encoder initialized\n");
+ unsigned int bdx_highest_ratio;
  
--	meson_dw_hdmi_init(meson_dw_hdmi);
--
- 	/* Bridge / Connector */
- 
- 	dw_plat_data->priv_data = meson_dw_hdmi;
-@@ -1097,6 +1095,8 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
- 	if (IS_ERR(meson_dw_hdmi->hdmi))
- 		return PTR_ERR(meson_dw_hdmi->hdmi);
- 
-+	meson_dw_hdmi_init(meson_dw_hdmi);
++#define PATH_TO_CPU "/sys/devices/system/cpu/"
++#define SYSFS_PATH_MAX 255
 +
- 	next_bridge = of_drm_find_bridge(pdev->dev.of_node);
- 	if (next_bridge)
- 		drm_bridge_attach(encoder, next_bridge,
--- 
-2.28.0
-
+ /*
+  * maintain compatibility with original implementation, but don't document it:
+  */
+@@ -668,6 +671,48 @@ int put_msr(int cpu, int offset, unsigned long long new_msr)
+ 	return 0;
+ }
+ 
++static unsigned int read_sysfs(const char *path, char *buf, size_t buflen)
++{
++	ssize_t numread;
++	int fd;
++
++	fd = open(path, O_RDONLY);
++	if (fd == -1)
++		return 0;
++
++	numread = read(fd, buf, buflen - 1);
++	if (numread < 1) {
++		close(fd);
++		return 0;
++	}
++
++	buf[numread] = '\0';
++	close(fd);
++
++	return (unsigned int) numread;
++}
++
++static unsigned int write_sysfs(const char *path, char *buf, size_t buflen)
++{
++	ssize_t numwritten;
++	int fd;
++
++	fd = open(path, O_WRONLY);
++	if (fd == -1)
++		return 0;
++
++	numwritten = write(fd, buf, buflen - 1);
++	if (numwritten < 1) {
++		perror("write failed\n");
++		close(fd);
++		return -1;
++	}
++
++	close(fd);
++
++	return (unsigned int) numwritten;
++}
++
+ void print_hwp_cap(int cpu, struct msr_hwp_cap *cap, char *str)
+ {
+ 	if (cpu != -1)
+@@ -745,17 +790,61 @@ void write_hwp_request(int cpu, struct msr_hwp_request *hwp_req, unsigned int ms
+ 	put_msr(cpu, msr_offset, msr);
+ }
+ 
++static int get_epb(int cpu)
++{
++	char path[SYSFS_PATH_MAX];
++	char linebuf[3];
++	char *endp;
++	long val;
++
++	if (!has_epb)
++		return -1;
++
++	snprintf(path, sizeof(path), PATH_TO_CPU "cpu%u/power/energy_perf_bias", cpu);
++
++	if (!read_sysfs(path, linebuf, 3))
++		return -1;
++
++	val = strtol(linebuf, &endp, 0);
++	if (endp == linebuf || errno == ERANGE)
++		return -1;
++
++	return (int)val;
++}
++
++static int set_epb(int cpu, int val)
++{
++	char path[SYSFS_PATH_MAX];
++	char linebuf[3];
++	char *endp;
++	int ret;
++
++	if (!has_epb)
++		return -1;
++
++	snprintf(path, sizeof(path), PATH_TO_CPU "cpu%u/power/energy_perf_bias", cpu);
++	snprintf(linebuf, sizeof(linebuf), "%d", val);
++
++	ret = write_sysfs(path, linebuf, 3);
++	if (ret <= 0)
++		return -1;
++
++	val = strtol(linebuf, &endp, 0);
++	if (endp == linebuf || errno == ERANGE)
++		return -1;
++
++	return (int)val;
++}
++
+ int print_cpu_msrs(int cpu)
+ {
+-	unsigned long long msr;
+ 	struct msr_hwp_request req;
+ 	struct msr_hwp_cap cap;
++	int epb;
+ 
+-	if (has_epb) {
+-		get_msr(cpu, MSR_IA32_ENERGY_PERF_BIAS, &msr);
+-
+-		printf("cpu%d: EPB %u\n", cpu, (unsigned int) msr);
+-	}
++	epb = get_epb(cpu);
++	if (epb >= 0)
++		printf("cpu%d: EPB %u\n", cpu, (unsigned int) epb);
+ 
+ 	if (!has_hwp)
+ 		return 0;
+@@ -1038,15 +1127,15 @@ int enable_hwp_on_cpu(int cpu)
+ int update_cpu_msrs(int cpu)
+ {
+ 	unsigned long long msr;
+-
++	int epb;
+ 
+ 	if (update_epb) {
+-		get_msr(cpu, MSR_IA32_ENERGY_PERF_BIAS, &msr);
+-		put_msr(cpu, MSR_IA32_ENERGY_PERF_BIAS, new_epb);
++		epb = get_epb(cpu);
++		set_epb(cpu, new_epb);
+ 
+ 		if (verbose)
+ 			printf("cpu%d: ENERGY_PERF_BIAS old: %d new: %d\n",
+-				cpu, (unsigned int) msr, (unsigned int) new_epb);
++				cpu, epb, (unsigned int) new_epb);
+ 	}
+ 
+ 	if (update_turbo) {
