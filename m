@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294302B50F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BED2B50FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729278AbgKPTWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:22:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgKPTWd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:22:33 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F3AC0613CF;
-        Mon, 16 Nov 2020 11:22:32 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id j7so20016748wrp.3;
-        Mon, 16 Nov 2020 11:22:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=14bPYV2knZJtYUG1KcgdCm7PQP7xKN/R/o8I5J+Sbyk=;
-        b=FuVwPzVmOTUPtrPxtRZbjLhpKfT2RmPp7UVJTe3wEwPsnvgpu0EpcaZeMULYwNRMvw
-         wDcKDVf5uiKY2j6T7oGUqpmE/vtYlYmk3PGA/jh3pq8kMXda+QMWNwQ7yzFs65ak11kL
-         TcuNM0JdofNCMyn7YZVn6O0Nde+eJa0T5nCLYMdjADDQhE6fupj/wJrCBGf3Hevw93aH
-         FtOZTshGSntgHELGHHOcXwnM0UuVj5MKCi8AQzCViNuVYbnLNJuQNnH1RB05nm4nIuJ3
-         q9AHkx/YJWeOK9NrUTyI0MSsCTMZhMu6WEsSg/XiOgJBeNFLCiEuvyEEt8/RVo+sbYY6
-         y0kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=14bPYV2knZJtYUG1KcgdCm7PQP7xKN/R/o8I5J+Sbyk=;
-        b=Y9+Q42Fm8LWkwYe1JmRtk97sHXSsuYYocvf/lGjksECson5m6zOv9YqMy4HZ1vs0pA
-         TGkijlKpUTYo00AL7RbEy4g+X505QtsCqbCUS8v1ptgNTHH3BPz4+wd5HbVBxM36lE0u
-         gIcE1zkLoLeFpWjIGxwF+nxvgrXugfoVcb7NLspFfVzmJT8fp73XIdEPL38Nc9xJytQq
-         CkIbp60UGClrvf6zfoYyvx1BYU/0oPibjUh5F5zxBU9lribUh/f9EgETV7f8/rN2+Esm
-         1Hx/ANwUEcOwvNkYeYd31W6wTzAB9T+ydgwpwLov1Kup19GIRNsr9PBbFjKQqOmZb3J+
-         nliQ==
-X-Gm-Message-State: AOAM532xUc0o5I+amGavFCRmlz5CE9FiWw2pHXRu3Nxg32E9f/vgHLH9
-        zi+UWoaW2W5ZDdcGHA/zNNs=
-X-Google-Smtp-Source: ABdhPJxWiKfLDy0RD/0V+R0zWI4yxEbQZv4EsqYOwuuzep0F3uc01mXvnZrO9ISZBkALAIC5xC5jbg==
-X-Received: by 2002:a5d:614e:: with SMTP id y14mr22482984wrt.25.1605554550837;
-        Mon, 16 Nov 2020 11:22:30 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id d10sm24099050wro.89.2020.11.16.11.22.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 11:22:30 -0800 (PST)
-Subject: Re: [PATCH v4] perf_event_open.2: Update man page with recent changes
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Michael Kerrisk-manpages <mtk.manpages@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alejandro Colomar <colomar.6.4.3@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-man@vger.kernel.org,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>
-References: <20201112103240.18363-1-alx.manpages@gmail.com>
- <20201113212622.15031-1-alx.manpages@gmail.com>
- <CAM9d7cjfbF7vR8dOM0EWSESEkO5m+AyawunNg4C3y8kziNNRdg@mail.gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <19b639c1-27aa-4392-3b21-76704765ef14@gmail.com>
-Date:   Mon, 16 Nov 2020 20:22:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729048AbgKPTXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:23:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgKPTXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 14:23:23 -0500
+Received: from localhost (189.sub-72-105-114.myvzw.com [72.105.114.189])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBB302225B;
+        Mon, 16 Nov 2020 19:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605554602;
+        bh=g0rPF891hY5n20OTuoyLNjb51WCLMjcMNMxWkW5x6r4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VIZWt/gjTQ1W6GTJzcOu2+w+1Ha5xbdud4IgZiDCWP5doSWm55i2h73+907fxRY16
+         ibe+ErD/e4baLmQZPeoImfqKuVP/mYVU4OAv/a/9SFT9FhIXpPXvWsQ1jhpbDlsaAD
+         9lyN61KTZBXdK6L+bzT8WvWOe3BJnFmsF9J6KIkI=
+Date:   Mon, 16 Nov 2020 13:23:20 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Len Brown <len.brown@intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PCI: Disable PTM during suspend on Intel PCI bridges
+Message-ID: <20201116192320.GA1290192@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7cjfbF7vR8dOM0EWSESEkO5m+AyawunNg4C3y8kziNNRdg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0gwSe=o_Ta0MR6XTn4BmHjs=ewTVJHe6OTp18ho+5h1Eg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/16/20 5:17 PM, Namhyung Kim wrote:
-> Hello Alex,
+On Mon, Nov 16, 2020 at 06:53:09PM +0100, Rafael J. Wysocki wrote:
+> On Wed, Oct 7, 2020 at 7:10 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Wed, Oct 07, 2020 at 06:53:16PM +0200, Rafael J. Wysocki wrote:
+> > > On Wed, Oct 7, 2020 at 6:49 PM David E. Box <david.e.box@linux.intel.com> wrote:
+> > > >
+> > > > On Intel Platform Controller Hubs (PCH) since Cannon Lake, the Precision
+> > > > Time Measurement (PTM) capability can prevent PCIe root ports from power
+> > > > gating during suspend-to-idle, causing increased power consumption on
+> > > > systems that suspend using Low Power S0 Idle [1]. The issue is yet to be
+> > > > root caused but believed to be coming from a race condition in the suspend
+> > > > flow as the incidence rate varies for different platforms on Linux but the
+> > > > issue does not occur at all in other operating systems. For now, disable
+> > > > the feature on suspend on all Intel root ports and enable again on resume.
+> > >
+> > > IMV it should also be noted that there is no particular reason why PTM
+> > > would need to be enabled while the whole system is suspended.  At
+> > > least it doesn't seem to be particularly useful in that state.
+> >
+> > Is this a hardware erratum?  If not, and this is working as designed,
+> > it sounds like we'd need to apply this quirk to every device that
+> > supports PTM.  That's not really practical.
 > 
-> On Sat, Nov 14, 2020 at 6:28 AM Alejandro Colomar
-> <alx.manpages@gmail.com> wrote:
->>
->> From: Namhyung Kim <namhyung@gmail.com>
->>
->> There are lots of changes as usual.  I've tried to fill some missing
->> bits in the man page but it'd be nice if you could take a look and put
->> more info there.
->>
->> Signed-off-by: Namhyung Kim <namhyung@gmail.com>
->> [alx: ffix + tfix]
->> Cowritten-by : Alejandro Colomar <alx.manpages@gmail.com>
->> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
->> ---
->>
->> Hi Nahmyung,
->>
->> I fixed another typo,
->> and mainly fixed many formatting changes I introduced
->> a few days ago because we were discussing about
->> trying to improve the formatting,
->> but finally decided to continue with the old way.
+> Why not?
+
+My objection was that the original patch is a quirk that applies only
+to Intel devices.
+
+If this is a generic thing that should be done for *all* devices that
+support PTM, that's fine, but it should not be a quirk, and it should
+not involve a list of Vendor or Device IDs.
+
+> It looks like the capability should be saved by pci_save_state() (it
+> isn't ATM, which appears to be a mistake) and restored by
+> pci_restore_state(), so if that is implemented, the saving can be
+> combined with the disabling in principle.
+
+Yup, looks like a mistake.  Maybe David can fix that at the same time
+(probably a separate patch, though).  I don't have a way to test it,
+but he probably does.
+
+> > The bugzilla says "there is no erratum as this does not affect
+> > Windows," but that doesn't answer the question.  What I want to know
+> > is whether this is a *hardware* defect and whether it will be fixed in
+> > future hardware.
 > 
-> Thanks a lot for fixing them!
+> I cannot answer this question, sorry.
 > 
-> I also found a broken formatting below and would like
-> to add more description of PERF_RECORD_SAMPLE.
+> ATM we only know that certain SoCs may not enter the deepest idle
+> state if PTM is enabled on some PCIe root ports during suspend.
+> 
+> Disabling PTM on those ports while suspending helps and hence the patch.
+> 
+> It doesn't appear to qualify as a "hardware defect".
+> 
+> > If it's a "wont-fix" hardware issue, we can just disable PTM
+> > completely on Intel hardware and we won't have to worry about it
+> > during suspend.
+> 
+> I'm not following the logic here, sorry again.
+> 
+> First of all, there are systems that never suspend, so why would they
+> be affected by the remedy (whatever it is)?
+> 
+> Second, it is not about the suspend failing entirely.  It's about
+> being able to make the system draw less power while suspended.
+> 
+> Generally, if someone said "I can make the system draw less power
+> while suspended if I disable PCIe feature X during suspend", would you
+> disregard that?
 
-Hi Namhyung,
+My questions were all prompted by the Intel-specific nature of the
+original patch, which suggests an ongoing maintenance burden.  If it
+can be done generically, I have no problem with it.
 
-Fine, could you send an updated patch with the changes?
-
-Thanks,
-
-Alex
+Bjorn
