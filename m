@@ -2,67 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763492B5098
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31A52B509C
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728864AbgKPTN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:13:58 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:44491 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725879AbgKPTN5 (ORCPT
+        id S1728929AbgKPTPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:15:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgKPTPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:13:57 -0500
-Received: by mail-ot1-f68.google.com with SMTP id f16so17051741otl.11;
-        Mon, 16 Nov 2020 11:13:55 -0800 (PST)
+        Mon, 16 Nov 2020 14:15:46 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC9AC0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:15:46 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id n12so18613704ioc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:15:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=99NQEfWpebH0JZaPShV/ZqMQjroijwm6vQAuryLgtTY=;
+        b=pUz0P3tVeQ1RUtxaQlmVb7n2wzh5gwNgAG6ufxYyL5uE4Nl8s3pqivW4DjCtE8gLyA
+         zoY5brm2mBYemwf6Rl2FjcICOM1eTAbq1MZcPwUFrQyKDuLwAOp1VqwVxKmGoeTdg+m8
+         ZG4D8jMOq3McrUDezA8IMEaTL4OTBluEg4CmunOW0/sZJll1jO/FyCBkQfKSaMhh83jl
+         NWa6XfKs4dRFSG9Ybz/o11Xsua/MZEwJJtsJcyQSgSwEVZ8sQkHRyBe9jKUcgQHeNMSQ
+         lRMiLKkhN7NtLYcMPHRMqi3907PYnn/7meP2Jgagx1nOcEnv1sGS5plhsILl3Q3J+1iK
+         c5mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K6I9Q7uYU+1V06QV1nRfkMu2gtpH5bALi2iSib07hAE=;
-        b=IbBVHkMM7Ze1vvvUW0xefCsL4VnRmdrt210hT3FY1a8LUotE1GPogegpsXxcJ12h1x
-         vlXfzdM3g+v12Dtfqr5EGAT84H69AUJzmmHXCP67OqPhNX2GVZNhDOi+/53SAA38lPjl
-         WvJCCiP+4Oe+xPhTqssGnuzC000vBDk+cdDqq7ihgshMUKPlaEztjXEujXefYOCS3BAm
-         itOHfQ1t0S8r6+esnVAzwQlVVQNr8HECazql9InEz3UOJE1xWqDOjsq0YS+xuyhTLece
-         cH0IJNFQtTLSpN2wgrF61IjFtvnBedVeMPI0M2QJCVlaa/2zgMqR4SjPsProikFhmkwI
-         q7oQ==
-X-Gm-Message-State: AOAM531E2WBdBfh8kGtd/iR8YPSCp1iLgZaRPe4MHx1Y6GDIGC6kPctj
-        r/65RPj4gQJIEeGx8jKmgQ==
-X-Google-Smtp-Source: ABdhPJylE0odHk1sUNwAg8pufVRl8nRqtkr00hbaJG1PTMd3S3PhR4MMd5bGJauQ+tZgDh2163zwHw==
-X-Received: by 2002:a05:6830:236d:: with SMTP id r13mr630308oth.34.1605554035585;
-        Mon, 16 Nov 2020 11:13:55 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 85sm5015804oie.30.2020.11.16.11.13.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 11:13:54 -0800 (PST)
-Received: (nullmailer pid 1977880 invoked by uid 1000);
-        Mon, 16 Nov 2020 19:13:54 -0000
-Date:   Mon, 16 Nov 2020 13:13:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     alexandru.tachici@analog.com
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, linux@roeck-us.net, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] dt-binding: hwmon: Add documentation for ltc2992
-Message-ID: <20201116191354.GA1977819@bogus>
-References: <20201111162057.73055-1-alexandru.tachici@analog.com>
- <20201111162057.73055-4-alexandru.tachici@analog.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=99NQEfWpebH0JZaPShV/ZqMQjroijwm6vQAuryLgtTY=;
+        b=fIWAhXdPtMfpUymwAgJahpzj4MjwV20V8xYzSaosVmtWDkm/VlGCTmFjgJ6lFrbnwl
+         spMxX/jl13oRkpWs6OreOhEb/v5hID+/J8QH7zK7av7qGn/GDuDOfvQNqVSbOTCfAd/8
+         jullRAoN/ZHXiPdFG/ZwnUxYV7mf1p+gKScoBgukE6FpqWQZ0DobNNkTJnfz98uAG4z6
+         HdWjfIB76hLjcXuNiuB+ZCrqBCCElMzPNFuQicdlQFIPW156VbzKsNeqzdHv3HtBkO6l
+         23wIowmuzLfI47g2c4jkJlmVtVb3fAJ7xrx9IxNod58dUu3o/geL9qKQGwCKts0dXn1R
+         2BhA==
+X-Gm-Message-State: AOAM5306SV8J0lQ0Mx3iXLk+V8tjz0b+jt0FLifZI+5tw57DWiOtuzqx
+        a1MDM8PBkNha+rhzpwBVRFuzl4X/WYocTLO76wxFK1GDcR8=
+X-Google-Smtp-Source: ABdhPJx/15tWi7ORQegPRDAQikpetJZdcJfF01Qlcy+OPS9EkZLyFeQeAqafT6ivv4CFc/4Air1TOe3iFPRl4jK2Ms4=
+X-Received: by 2002:a05:6638:159:: with SMTP id y25mr889816jao.4.1605554145510;
+ Mon, 16 Nov 2020 11:15:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111162057.73055-4-alexandru.tachici@analog.com>
+References: <20201027175944.1183301-1-bgardon@google.com>
+In-Reply-To: <20201027175944.1183301-1-bgardon@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 16 Nov 2020 11:15:34 -0800
+Message-ID: <CANgfPd8FkNL-05P7us6sPq8pXPJ1jedXGMPkR2OrvTtg8+WSLg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kvm: x86/mmu: Add existing trace points to TDP MMU
+To:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Peter Feiner <pfeiner@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 18:20:57 +0200, alexandru.tachici@analog.com wrote:
-> From: Alexandru Tachici <alexandru.tachici@analog.com>
-> 
-> Add documentation for ltc2992.
-> 
-> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+On Tue, Oct 27, 2020 at 10:59 AM Ben Gardon <bgardon@google.com> wrote:
+>
+> The TDP MMU was initially implemented without some of the usual
+> tracepoints found in mmu.c. Correct this discrepancy by adding the
+> missing trace points to the TDP MMU.
+>
+> Tested: ran the demand paging selftest on an Intel Skylake machine with
+>         all the trace points used by the TDP MMU enabled and observed
+>         them firing with expected values.
+>
+> This patch can be viewed in Gerrit at:
+> https://linux-review.googlesource.com/c/virt/kvm/kvm/+/3812
+>
+> Signed-off-by: Ben Gardon <bgardon@google.com>
 > ---
->  .../bindings/hwmon/adi,ltc2992.yaml           | 80 +++++++++++++++++++
->  1 file changed, 80 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml
-> 
+>  arch/x86/kvm/mmu/tdp_mmu.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 27e381c9da6c2..047e2d966abef 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -7,6 +7,8 @@
+>  #include "tdp_mmu.h"
+>  #include "spte.h"
+>
+> +#include <trace/events/kvm.h>
+> +
+>  #ifdef CONFIG_X86_64
+>  static bool __read_mostly tdp_mmu_enabled = false;
+>  module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
+> @@ -101,6 +103,8 @@ static struct kvm_mmu_page *alloc_tdp_mmu_page(struct kvm_vcpu *vcpu, gfn_t gfn,
+>         sp->gfn = gfn;
+>         sp->tdp_mmu_page = true;
+>
+> +       trace_kvm_mmu_get_page(sp, true);
+> +
+>         return sp;
+>  }
+>
+> @@ -271,6 +275,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>                 pt = spte_to_child_pt(old_spte, level);
+>                 sp = sptep_to_sp(pt);
+>
+> +               trace_kvm_mmu_prepare_zap_page(sp);
+> +
+>                 list_del(&sp->link);
+>
+>                 if (sp->lpage_disallowed)
+> @@ -473,11 +479,13 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
+>         if (unlikely(is_noslot_pfn(pfn))) {
+>                 new_spte = make_mmio_spte(vcpu, iter->gfn, ACC_ALL);
+>                 trace_mark_mmio_spte(iter->sptep, iter->gfn, new_spte);
+> -       } else
+> +       } else {
+>                 make_spte_ret = make_spte(vcpu, ACC_ALL, iter->level, iter->gfn,
+>                                          pfn, iter->old_spte, prefault, true,
+>                                          map_writable, !shadow_accessed_mask,
+>                                          &new_spte);
+> +               trace_kvm_mmu_set_spte(iter->level, iter->gfn, iter->sptep);
+> +       }
+>
+>         if (new_spte == iter->old_spte)
+>                 ret = RET_PF_SPURIOUS;
+> @@ -691,6 +699,8 @@ static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
+>
+>                 tdp_mmu_set_spte_no_acc_track(kvm, &iter, new_spte);
+>                 young = 1;
+> +
+> +               trace_kvm_age_page(iter.gfn, iter.level, slot, young);
+>         }
+>
+>         return young;
+> --
+> 2.29.0.rc2.309.g374f81d7ae-goog
+>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+If anyone has time to review this short series, I'd appreciate it. I
+don't want these to get lost in the shuffle.
+Thanks!
