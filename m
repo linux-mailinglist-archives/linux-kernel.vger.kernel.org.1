@@ -2,159 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EED2B4FEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68ADF2B4FF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgKPSiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:38:05 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:41646 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726272AbgKPSiF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:38:05 -0500
-Received: by mail-ot1-f67.google.com with SMTP id o3so6447861ota.8;
-        Mon, 16 Nov 2020 10:38:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7txsWknCiewn8OFUjAkOemwMtstyUm6JbL05uCaZO30=;
-        b=mwPwJfTytkIvoqE8WdgYnuYoBzNUSF9UCB6Yg4JovJsflfL4yUyyFdqSH5WDN6UdKB
-         1WhbKQgi/vzgvS9wwpjqlKzHYrrvb1ccbDB11lRThWLL3OllDZC1rSPa7RoYSX6oJApx
-         ob8vtaVkdPEn/BR8ThMiOMROC5za8PwjplIGVvzTMg269zskfNqGEZOZAc0LOF4pMaEi
-         43orJCs3aJm+WkafGE4l9v1BVwWAr3y0Mb88+lNxktUf9fbcFUzY15doNHY9rYfpGuHU
-         mOwSlHcY3NE1JtvzJsj0NFVbC/Wl2X8qMd0nC4Fqx328pYdujcATRhe8wgHhu2j2J2B1
-         e4vg==
-X-Gm-Message-State: AOAM532BzjsxbXwpZkUY3AwuiDRKndw549iszBky5mT6/hjpB0z5kmXd
-        qRGkhwvS4lrHRHR/UjMuMnMrIDimkHL+HtfKX0U=
-X-Google-Smtp-Source: ABdhPJydnVKU0HkvmtzkaJ8MXH5nibNJnfxF9XGbyqRGgQEVwOjyF9zM2XdFLOnFm4dfJ38vPNxHGWxqoWKpYDxzt7A=
-X-Received: by 2002:a9d:171a:: with SMTP id i26mr488714ota.260.1605551884287;
- Mon, 16 Nov 2020 10:38:04 -0800 (PST)
+        id S1727088AbgKPSiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:38:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbgKPSiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:38:54 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 325AB20855;
+        Mon, 16 Nov 2020 18:38:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605551932;
+        bh=YTcygU6VKUGc5ktRdis4rGQ4GpHdlfgMSJ6U4wVxquI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H0saQ126FJsFP2yt00nBXeaX92T9NuXH372sUDDiV1zFUypjujRTtGpOu0QPZv7Rb
+         1ydonAmSl8FW23Upx1QjmIPAwPWdf9S/58oW9dSFpgQNfrY8eyoi9How2O6r86qqfS
+         c8/lgSwblC6NivSE/tToMzXDBjjo4iV75hYW10uk=
+Date:   Mon, 16 Nov 2020 18:38:33 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] regulator: hi6421v600-regulator: move it from staging
+Message-ID: <20201116183833.GC4739@sirena.org.uk>
+References: <cover.1605530560.git.mchehab+huawei@kernel.org>
+ <471362653f22a8748202c55babd2b462056a5797.1605530560.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20201112131545.62628-1-f.suligoi@asem.it>
-In-Reply-To: <20201112131545.62628-1-f.suligoi@asem.it>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 16 Nov 2020 19:37:53 +0100
-Message-ID: <CAJZ5v0gZxWJdNjRVqznhcNqO-Ofc6dGGES4CKhuk3w-jBhdaKw@mail.gmail.com>
-Subject: Re: [PATCH v4] Documentation: ACPI: explain how to use gpio-line-names
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-gpio@vger.kernel.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
+Content-Disposition: inline
+In-Reply-To: <471362653f22a8748202c55babd2b462056a5797.1605530560.git.mchehab+huawei@kernel.org>
+X-Cookie: Immanuel doesn't pun, he Kant.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 2:15 PM Flavio Suligoi <f.suligoi@asem.it> wrote:
->
-> The "gpio-line-names" declaration is not fully
-> documented, so can be useful to add some important
-> information and one more example.
->
-> This commit also fixes a trivial spelling mistake.
 
-The spelling mistake has been fixed already, so I dropped this part of
-the patch and applied the rest as 5.11 material.
+--Md/poaVZ8hnGTzuv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+On Mon, Nov 16, 2020 at 01:59:30PM +0100, Mauro Carvalho Chehab wrote:
 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> ---
->
-> v2: - fix commit spelling mistakes
->     - add double back quotes to gpio-line-names
->     - adjust documentation lines layout
->     - add comma at the end of Package list names in the first example
->
-> v3: - add: Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> v4: - add: Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
->
->  .../firmware-guide/acpi/gpio-properties.rst   | 58 ++++++++++++++++++-
->  1 file changed, 56 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/firmware-guide/acpi/gpio-properties.rst b/Documentation/firmware-guide/acpi/gpio-properties.rst
-> index bb6d74f23ee0..ae5396a1f092 100644
-> --- a/Documentation/firmware-guide/acpi/gpio-properties.rst
-> +++ b/Documentation/firmware-guide/acpi/gpio-properties.rst
-> @@ -107,7 +107,61 @@ Example::
->
->  - gpio-line-names
->
-> -Example::
-> +The ``gpio-line-names`` declaration is a list of strings ("names"), which
-> +describes each line/pin of a GPIO controller/expander. This list, contained in
-> +a package, must be inserted inside the GPIO controller declaration of an ACPI
-> +table (typically inside the DSDT). The ``gpio-line-names`` list must respect the
-> +following rules (see also the examples):
+> This driver is ready for mainstream. Move it out of staging.
+
+There's quite a few issues here, to be honest I'm disappointed some of
+them weren't caught during staging review, this needs fairly substantial
+work and there's signs that this also applies to at least the MFD
+portion.
+
+This also appears to be missing a DT binding document, binding
+documentation is required for anything with DT support.
+
+> +config REGULATOR_HI6421V600
+> +	tristate "HiSilicon Hi6421v600 PMIC voltage regulator support"
+> +	depends on MFD_HI6421_SPMI && OF
+> +	depends on REGULATOR
+
+This is inside an if REGULATOR block, as with all the other regulator
+drivers it doesn't need a dependency on REGULATOR.
+
+> --- /dev/null
+> +++ b/drivers/regulator/hi6421v600-regulator.c
+> @@ -0,0 +1,478 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Device driver for regulators in Hisi IC
+
+Please make the entire comment a C++ one so things look more
+intentional.
+
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/mfd/hi6421-spmi-pmic.h>
+> +#include <linux/module.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/regulator/driver.h>
+> +#include <linux/regulator/machine.h>
+> +#include <linux/regulator/of_regulator.h>
+> +#include <linux/seq_file.h>
+> +#include <linux/slab.h>
+> +#include <linux/spmi.h>
+> +#include <linux/time.h>
+> +#include <linux/uaccess.h>
+
+Are we sure about *all* these includes?
+
+> +#define rdev_dbg(rdev, fmt, arg...)	\
+> +		 pr_debug("%s: %s: " fmt, (rdev)->desc->name, __func__, ##arg)
+
+If it is useful to copy this then put it in a header rather than
+cut'n'pasting it.  I'm not sure I see a pressing need for most of the
+trace here, it looks to be duplicating a lot of things the core does for
+you.
+
+> +static DEFINE_MUTEX(enable_mutex);
+
+Drivers shouldn't be declaring global variables, if this is required it
+should be allocated in driver data.
+
+> +/*
+> + * helper function to ensure when it returns it is at least 'delay_us'
+> + * microseconds after 'since'.
+> + */
 > +
-> +  - the first name in the list corresponds with the first line/pin of the GPIO
-> +    controller/expander
-> +  - the names inside the list must be consecutive (no "holes" are permitted)
-> +  - the list can be incomplete and can end before the last GPIO line: in
-> +    other words, it is not mandatory to fill all the GPIO lines
-> +  - empty names are allowed (two quotation marks ``""`` correspond to an empty
-> +    name)
+> +static int hi6421_spmi_regulator_is_enabled(struct regulator_dev *rdev)
+
+The helper function appears to have been removed?
+
+> +{
+> +	struct hi6421v600_regulator *sreg =3D rdev_get_drvdata(rdev);
+> +	struct hi6421_spmi_pmic *pmic =3D sreg->pmic;
+> +	u32 reg_val;
 > +
-> +Example of a GPIO controller of 16 lines, with an incomplete list with two
-> +empty names::
+> +	reg_val =3D hi6421_spmi_pmic_read(pmic, rdev->desc->enable_reg);
 > +
-> +  Package () {
-> +      "gpio-line-names",
-> +      Package () {
-> +          "pin_0",
-> +          "pin_1",
-> +          "",
-> +          "",
-> +          "pin_3",
-> +          "pin_4_push_button",
-> +      }
-> +  }
+> +	rdev_dbg(rdev,
+> +		 "enable_reg=3D0x%x, val=3D 0x%x, enable_state=3D%d\n",
+> +		 rdev->desc->enable_reg,
+> +		 reg_val, (reg_val & rdev->desc->enable_mask));
 > +
-> +At runtime, the above declaration produces the following result (using the
-> +"libgpiod" tools)::
+> +	return ((reg_val & rdev->desc->enable_mask) !=3D 0);
+> +}
+
+It looks like it would be less code overall to just implement a regmap
+for the MFD, even if it were only used in this driver - almost
+everything in here is just a carbon copy of standard helpers that the
+core provides for regmap devices.  Doing it in the MFD would be more
+idiomatic for everything though.
+
+> +static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
+> +{
+> +	struct hi6421v600_regulator *sreg =3D rdev_get_drvdata(rdev);
+> +	struct hi6421_spmi_pmic *pmic =3D sreg->pmic;
 > +
-> +  root@debian:~# gpioinfo gpiochip4
-> +  gpiochip4 - 16 lines:
-> +          line   0:      "pin_0"       unused   input  active-high
-> +          line   1:      "pin_1"       unused   input  active-high
-> +          line   2:      unnamed       unused   input  active-high
-> +          line   3:      unnamed       unused   input  active-high
-> +          line   4:      "pin_3"       unused   input  active-high
-> +          line   5: "pin_4_push_button" unused input active-high
-> +          line   6:      unnamed       unused   input  active-high
-> +          line   7       unnamed       unused   input  active-high
-> +          line   8:      unnamed       unused   input  active-high
-> +          line   9:      unnamed       unused   input  active-high
-> +          line  10:      unnamed       unused   input  active-high
-> +          line  11:      unnamed       unused   input  active-high
-> +          line  12:      unnamed       unused   input  active-high
-> +          line  13:      unnamed       unused   input  active-high
-> +          line  14:      unnamed       unused   input  active-high
-> +          line  15:      unnamed       unused   input  active-high
-> +  root@debian:~# gpiofind pin_4_push_button
-> +  gpiochip4 5
-> +  root@debian:~#
+> +	/* cannot enable more than one regulator at one time */
+> +	mutex_lock(&enable_mutex);
+> +	usleep_range(HISI_REGS_ENA_PROTECT_TIME,
+> +		     HISI_REGS_ENA_PROTECT_TIME + 1000);
 > +
-> +Another example::
->
->    Package () {
->        "gpio-line-names",
-> @@ -191,7 +245,7 @@ The driver might expect to get the right GPIO when it does::
->  but since there is no way to know the mapping between "reset" and
->  the GpioIo() in _CRS desc will hold ERR_PTR(-ENOENT).
->
-> -The driver author can solve this by passing the mapping explictly
-> +The driver author can solve this by passing the mapping explicitly
->  (the recommended way and documented in the above chapter).
->
->  The ACPI GPIO mapping tables should not contaminate drivers that are not
-> --
-> 2.25.1
->
+> +	/* set enable register */
+> +	rdev_dbg(rdev,
+> +		 "off_on_delay=3D%d us, enable_reg=3D0x%x, enable_mask=3D0x%x\n",
+> +		 rdev->desc->off_on_delay, rdev->desc->enable_reg,
+> +		 rdev->desc->enable_mask);
+> +
+> +	hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
+> +			     rdev->desc->enable_mask,
+> +			     rdev->desc->enable_mask);
+
+This is the one operation which is doing anything unusual and which I'd
+expect to be open coded in the driver - obviously this is a pretty
+simplistic implementation but it will work though as indicated above it
+shouldn't be using a global, the mutex should be in driver data.  I
+guess you could use the mutex to protect a timestamp and use that to
+figure out if a delay is actually needed?
+
+> +static int hi6421_spmi_dt_parse(struct platform_device *pdev,
+> +				struct hi6421v600_regulator *sreg,
+> +			 struct regulator_desc *rdesc)
+> +{
+> +	struct device *dev =3D &pdev->dev;
+> +	struct device_node *np =3D dev->of_node;
+> +	unsigned int *v_table;
+> +	int ret;
+> +
+> +	ret =3D of_property_read_u32(np, "reg", &rdesc->enable_reg);
+> +	if (ret) {
+> +		dev_err(dev, "missing reg property\n");
+> +		return ret;
+> +	}
+> +
+> +	ret =3D of_property_read_u32(np, "vsel-reg", &rdesc->vsel_reg);
+
+There is no way this stuff should be being parsed out of DT, we should
+know the register map for the device and what regulators it has based
+purely off knowing what device we have.  Baking the register map into
+the ABI is bad practice, it prevents us from improving our support for
+the hardware without going and updating people's DTs.
+
+> +	/*
+> +	 * Not all regulators work on idle mode
+> +	 */
+> +	ret =3D of_property_read_u32(np, "idle-mode-mask", &sreg->eco_mode_mask=
+);
+> +	if (ret) {
+> +		dev_dbg(dev, "LDO doesn't support economy mode.\n");
+> +		sreg->eco_mode_mask =3D 0;
+> +		sreg->eco_uA =3D 0;
+> +	} else {
+> +		ret =3D of_property_read_u32(np, "eco-microamp", &sreg->eco_uA);
+
+There's no conditional code to not register the mode operations if the
+mode information is not available (and again this should be done based=20
+on knowing the properties of the device, this is unlikely to be system
+dependent).
+
+> +static int hi6421_spmi_regulator_probe_ldo(struct platform_device *pdev,
+> +                                          struct device_node *np,
+> +                                          struct hi6421_spmi_pmic *pmic)
+> +{
+
+This probe code looks very different to other regulator drivers, this
+alone should have been a warning that the driver needs some substantial
+refactoring here.  As indicated information about what regulators are
+present on devices and their properties should be in the driver not the
+DT, the driver should just be able to register them unconditionally and
+use of_match and regulators_node to allow the core to find any
+constraints that are provided by the platform.
+
+> +	constraint->valid_modes_mask =3D REGULATOR_MODE_NORMAL;
+> +	if (sreg->eco_mode_mask) {
+> +		constraint->valid_modes_mask |=3D REGULATOR_MODE_IDLE;
+> +		constraint->valid_ops_mask |=3D REGULATOR_CHANGE_MODE;
+> +	}
+
+This is absolutely not OK, a regulator driver should *not* be modifying
+the constraints that the machine has set.  If it is safe to change modes
+on a platform and the system integrator wants to do that then they will
+set the constraints appropriately, there is no way the regulator driver
+can tell what is appropriate on a given system.  The fact that the
+driver is including machine.h at all ought to have been an indicator
+that there's an abstraction problem here.
+
+--Md/poaVZ8hnGTzuv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+yxykACgkQJNaLcl1U
+h9AVmwf9Fh0gq1PvguNk/O4RlIH0keSOmokskApjrq3vBNZf13Qryn7XsC5iuIvN
+bDsBKlc7wRrLL3xRzT5IG8ycfdzyNsjaBaoVME3PJVVXM6ApoFUHRQAmD8qNZVbT
+bNIZ9jbsS9H8LlXdAlPoXp6RjMAqlfO/ueNmFjlGE/mZbuoUlNoLSbOzZaHyGWu1
+4ZVH1mzwqO9NPaGaj8gnWgVfPv4eF7Urr0SzVAxU+yjZ6TYWbFHSKUXAxmtEAFlA
+YZE02WbxRJhmjyo0gNzOfT3QNGhoxi86LvGl/cV6c+veLcilUbyix4gyyOMl9uMw
+mN03xDRzMh5gaJKBHKYOTYbvE6W/Qw==
+=Oi77
+-----END PGP SIGNATURE-----
+
+--Md/poaVZ8hnGTzuv--
