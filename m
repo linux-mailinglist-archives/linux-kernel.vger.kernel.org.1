@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7062B4FDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E912B4FC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388535AbgKPSe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:34:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387910AbgKPSe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:34:57 -0500
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E3422231B
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:34:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605551696;
-        bh=Ae16e9zwZ+DMUvyqQKTLhkJCEL5vVvGc+zxNjI9QG6Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tTeOeRj+1wV4lXQRIfuGFYomlCLP2E8WEJ08+mAtKOrsNTqJHqUVk6+j0Oja2iqKE
-         vHAhvs4ALdqOyrxLDnR/jgb2QfZ7qDEixWK8SkhcWRmDKY9ow1TNwSheR2/3vz+PnS
-         oBjkufh2HJ/bLpkH1YSTI2ilV9Kp3Vq0AZswKgCU=
-Received: by mail-wm1-f50.google.com with SMTP id a65so247852wme.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 10:34:55 -0800 (PST)
-X-Gm-Message-State: AOAM533h5MEoWpY2Gx1OC96lc6v6K5rlFvQCSZjcaFJ/X6TbxMpRE8SN
-        Pdn901XQbAfeawW3/6TbdpiXcMo8kZgTdyp0jYhrLw==
-X-Google-Smtp-Source: ABdhPJxX//M2liTzjJfdTzELKtgMmkXdLHdI5I1TbmhjDzQruW8WkdMIlAeyO3E87iNk5qE/6S60KfHjEgY/h4OGI5I=
-X-Received: by 2002:a1c:7e87:: with SMTP id z129mr236051wmc.176.1605551694330;
- Mon, 16 Nov 2020 10:34:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116144757.1920077-13-alexandre.chartre@oracle.com> <CALCETrUSCwtR41CCo_cAQf_BwG7istH6fM=bxWh_VfOjSNFmSw@mail.gmail.com>
- <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com>
-In-Reply-To: <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 16 Nov 2020 10:34:40 -0800
-X-Gmail-Original-Message-ID: <CALCETrUJQJRi6fE=bs3iAySgM8wjmGU1f464FqOuU+PiBwwnQQ@mail.gmail.com>
-Message-ID: <CALCETrUJQJRi6fE=bs3iAySgM8wjmGU1f464FqOuU+PiBwwnQQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH v2 12/21] x86/pti: Use PTI stack instead of
- trampoline stack
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S2388469AbgKPScy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:32:54 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:34050 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388105AbgKPScw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:32:52 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGIUJoP152544;
+        Mon, 16 Nov 2020 18:32:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=z0fncIWvpWks9UlgsGIQvgOH6hT2maJxTS6diusAzv4=;
+ b=JJvtjuK9QQFr2ZXtiVzUOptjaQEiLzuS13JWM8CYjJV3W+EHBbBNLLIoImmPjcYOwaKh
+ NX69chLReMHixYr90rK83cNHFPzhs8hnFMzYJATgFaimAAOE9JLJFrAS8YbfM17TPNyA
+ vDDrbRrjzeZ40bwLgrRpvvtO1+lUB90gfau4ctmMAVRy7bD6gPwgmlAu0+fHEIXZoBU5
+ YacpRVhGGJoa/cNYehPGy4jXggi4LRFimuxB0JRGyYlPUPMd5MQoJxLoiZwQlOc+m9Hk
+ 9DTv80UmKeqqeok7AWxmu7SJJRDThz/29OoR69PtafiGgfvAzc3E/kUyHN+1irt5w3S2 uw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 34t4rapph8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 16 Nov 2020 18:32:34 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGIPXDO032135;
+        Mon, 16 Nov 2020 18:32:33 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 34uspsbw5a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Nov 2020 18:32:33 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AGIWVuq030741;
+        Mon, 16 Nov 2020 18:32:31 GMT
+Received: from localhost.localdomain (/92.157.91.83)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 16 Nov 2020 10:32:30 -0800
+Subject: Re: [RFC][PATCH v2 21/21] x86/pti: Use a different stack canary with
+ the user and kernel page-table
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -56,57 +57,61 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
         Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
         kuzuno@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
+ <20201116144757.1920077-22-alexandre.chartre@oracle.com>
+ <CALCETrU5qnsxgLb6W5UPk8RRbbkFTTbjLxHefkBXCyk-2=uDcQ@mail.gmail.com>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <3cf22df6-86fd-91b3-6dde-ce28ca48a6f6@oracle.com>
+Date:   Mon, 16 Nov 2020 19:34:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <CALCETrU5qnsxgLb6W5UPk8RRbbkFTTbjLxHefkBXCyk-2=uDcQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 bulkscore=0 suspectscore=0 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011160109
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011160109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 10:10 AM Alexandre Chartre
-<alexandre.chartre@oracle.com> wrote:
->
->
-> On 11/16/20 5:57 PM, Andy Lutomirski wrote:
-> > On Mon, Nov 16, 2020 at 6:47 AM Alexandre Chartre
-> > <alexandre.chartre@oracle.com> wrote:
-> >>
-> >> When entering the kernel from userland, use the per-task PTI stack
-> >> instead of the per-cpu trampoline stack. Like the trampoline stack,
-> >> the PTI stack is mapped both in the kernel and in the user page-table.
-> >> Using a per-task stack which is mapped into the kernel and the user
-> >> page-table instead of a per-cpu stack will allow executing more code
-> >> before switching to the kernel stack and to the kernel page-table.
-> >
-> > Why?
->
-> When executing more code in the kernel, we are likely to reach a point
-> where we need to sleep while we are using the user page-table, so we need
-> to be using a per-thread stack.
->
-> > I can't immediately evaluate how nasty the page table setup is because
-> > it's not in this patch.
->
-> The page-table is the regular page-table as introduced by PTI. It is just
-> augmented with a few additional mapping which are in patch 11 (x86/pti:
-> Extend PTI user mappings).
->
-> >  But AFAICS the only thing that this enables is sleeping with user pagetables.
->
-> That's precisely the point, it allows to sleep with the user page-table.
->
-> > Do we really need to do that?
->
-> Actually, probably not with this particular patchset, because I do the page-table
-> switch at the very beginning and end of the C handler. I had some code where I
-> moved the page-table switch deeper in the kernel handler where you definitively
-> can sleep (for example, if you switch back to the user page-table before
-> exit_to_user_mode_prepare()).
->
-> So a first step should probably be to not introduce the per-task PTI trampoline stack,
-> and stick with the existing trampoline stack. The per-task PTI trampoline stack can
-> be introduced later when the page-table switch is moved deeper in the C handler and
-> we can effectively sleep while using the user page-table.
 
-Seems reasonable.
+On 11/16/20 5:56 PM, Andy Lutomirski wrote:
+> On Mon, Nov 16, 2020 at 6:48 AM Alexandre Chartre
+> <alexandre.chartre@oracle.com> wrote:
+>>
+>> Using stack protector requires the stack canary to be mapped into
+>> the current page-table. Now that the page-table switch between the
+>> user and kernel page-table is deferred to C code, stack protector can
+>> be used while the user page-table is active and so the stack canary
+>> is mapped into the user page-table.
+>>
+>> To prevent leaking the stack canary used with the kernel page-table,
+>> use a different canary with the user and kernel page-table. The stack
+>> canary is changed when switching the page-table.
+> 
+> Unless I've missed something, this doesn't have the security
+> properties we want.  One CPU can be executing with kernel CR3, and
+> another CPU can read the stack canary using Meltdown.
 
-Where is the code that allocates and frees these stacks hiding?  I
-think I should at least read it.
+I think you are right because we have the mapping to the stack canary in
+the user page-table. From userspace, we will only read the user stack canary,
+but using Meltdown we can speculatively read the kernel stack canary which
+will be stored at the same place.
+
+> I think that doing this safely requires mapping a different page with
+> the stack canary in the two pagetables.
+
+Right.
+
+alex.
