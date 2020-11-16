@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB5A2B4670
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B095E2B4673
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730388AbgKPOyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:54:47 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:33822 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728396AbgKPOyr (ORCPT
+        id S1730445AbgKPOzO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 09:55:14 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:32316 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728396AbgKPOzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:54:47 -0500
-Received: by mail-oi1-f195.google.com with SMTP id w188so19077067oib.1;
-        Mon, 16 Nov 2020 06:54:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H1fyXfriaU5b4SAeacTn2vCNWOWHstHOi6kBAkwLmps=;
-        b=Go7vaomOVVHxeTMKCsb/9a4of+7qRb7TrSFKzmwhQr6rZfcuAfwX4/tRrkvI8H2q06
-         DugXbHjPUAgbLiJwvCZ3ODBHYSra/B9A4KQjhld3EZMPYnJvlgGI2J7QGWFBFJKhWb/O
-         VfE7ivfxmEMHxsMwpz2ykJ5BGN1bRDDOb65r8e1Q4xcLi3PgDe2PgnjZ7x6AZUdrCM32
-         8yiduEs0El6oZC+YwOgnLJtqeg1O+HuH0QtXABAH5Ghxb2YZXFjAGsQq81m+AQ8WvhSR
-         cY6c5Iv187uad39hoMZg+BCB3NFtUygVwmmFtmYRV2jat1P9i6F6Qw4TioG+X6cLW0Ai
-         pVug==
-X-Gm-Message-State: AOAM5302Qo6wnv3ZFWemkFji+11KG1t5bSKIx2w/N/IYoghKxXknxPHk
-        yTbSj4N6IsYZEv04coqM8Q==
-X-Google-Smtp-Source: ABdhPJz5gWioJ8NqYo4oG9SUmUzRw7oWLBP2V+XP7Gx8sDtfeW4CefAXIkAElVf39xP91omtQMlQqg==
-X-Received: by 2002:aca:bdc4:: with SMTP id n187mr884007oif.154.1605538486308;
-        Mon, 16 Nov 2020 06:54:46 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k10sm4849639otb.81.2020.11.16.06.54.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 06:54:45 -0800 (PST)
-Received: (nullmailer pid 1635671 invoked by uid 1000);
-        Mon, 16 Nov 2020 14:54:44 -0000
-Date:   Mon, 16 Nov 2020 08:54:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>, linux-input@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        Nemo Han <nemo.han@unisoc.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: input: Convert sc27xx-vibra.txt to
- json-schema
-Message-ID: <20201116145444.GA1635499@bogus>
-References: <20201113113451.52355-1-zhang.lyra@gmail.com>
- <20201113113451.52355-2-zhang.lyra@gmail.com>
+        Mon, 16 Nov 2020 09:55:13 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-98-JkwNPBRkP3WlYXkMFARcSg-1; Mon, 16 Nov 2020 14:54:59 +0000
+X-MC-Unique: JkwNPBRkP3WlYXkMFARcSg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 16 Nov 2020 14:54:58 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 16 Nov 2020 14:54:58 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Corentin Labbe' <clabbe@baylibre.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "wens@csie.org" <wens@csie.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-sunxi@googlegroups.com" <linux-sunxi@googlegroups.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v3 2/7] crypto: sun4i-ss: checking sg length is not
+ sufficient
+Thread-Topic: [PATCH v3 2/7] crypto: sun4i-ss: checking sg length is not
+ sufficient
+Thread-Index: AQHWvCBry++55PgsQECGWrYMz9WH2qnK16lg
+Date:   Mon, 16 Nov 2020 14:54:58 +0000
+Message-ID: <0a9e713557104048b535958b5fe6cb10@AcuMS.aculab.com>
+References: <20201116135345.11834-1-clabbe@baylibre.com>
+ <20201116135345.11834-3-clabbe@baylibre.com>
+In-Reply-To: <20201116135345.11834-3-clabbe@baylibre.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113113451.52355-2-zhang.lyra@gmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 19:34:50 +0800, Chunyan Zhang wrote:
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+From: Corentin Labbe
+> Sent: 16 November 2020 13:54
 > 
-> Convert the sprd sc27xx vibrator binding to DT schema using json-schema.
+> The optimized cipher function need length multiple of 4 bytes.
+> But it get sometimes odd length.
+> This is due to SG data could be stored with an offset.
 > 
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> So the fix is to check also if the offset is aligned with 4 bytes.
+> Fixes: 6298e948215f2 ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 > ---
->  .../bindings/input/sprd,sc27xx-vibra.txt      | 23 ----------
->  .../bindings/input/sprd,sc27xx-vibrator.yaml  | 44 +++++++++++++++++++
->  2 files changed, 44 insertions(+), 23 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/input/sprd,sc27xx-vibra.txt
->  create mode 100644 Documentation/devicetree/bindings/input/sprd,sc27xx-vibrator.yaml
+>  drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-
+> ss/sun4i-ss-cipher.c
+> index 19f1aa577ed4..4dd736ee5a4d 100644
+> --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> @@ -186,12 +186,12 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+>  	 * we can use the SS optimized function
+>  	 */
+>  	while (in_sg && no_chunk == 1) {
+> -		if (in_sg->length % 4)
+> +		if (in_sg->length % 4 || !IS_ALIGNED(in_sg->offset, sizeof(u32)))
 
+You probably ought to do the test in a consistent manner.
+Probably something that reduces to:
+	((unsigned long)in_sg->offset | in_sg->length) & 3u
 
-My bot found errors running 'make dt_binding_check' on your patch:
+	David
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/sprd,sc27xx-vibrator.yaml: 'additionalProperties' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/sprd,sc27xx-vibrator.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/input/sprd,sc27xx-vibrator.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1399724
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
