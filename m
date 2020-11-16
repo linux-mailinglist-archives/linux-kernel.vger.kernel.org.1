@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762442B4E15
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB152B4E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387511AbgKPRmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        id S2387662AbgKPRoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:44:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387779AbgKPRl4 (ORCPT
+        with ESMTP id S2387777AbgKPRl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Nov 2020 12:41:56 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67BBC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:54 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id r17so19688910wrw.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:54 -0800 (PST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18069C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:56 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p8so19674290wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:41:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6ly2vy0YXlYaSPJSVrw6dCp9MyYzaUlBE3q9eSYRtTE=;
-        b=pPumeK8MjgTP68BQSG7hK5qh97k6m6M3fw6z+lcvLPzvg8BTWkTZHzzkXpU7QxOXHo
-         BNjpaSAzOgDBRdrPBcrtCR8DySCYkQDX4/MZVG76DaCUlEmmI49870pkv1EZV4xCG+RW
-         xUkjKMIcPpgrpkYhscE9yITsWMpQmuW/CKacZfUBLt/FmxAD6478E6Bi15qz8SGIpYuX
-         /HCT/SjC04O9zWBTy/dqDc5YderwRLjQdaOVsRKO4MH6wC7olydW+2wepE2s4TjzZQU4
-         2tSuihOsK2IWwV376TXT9CQEMTFzOTWhYx5vOCjVCZcjRFvbRIzFn8H2bFZdysPo46RF
-         prWw==
+        bh=CEyFJOSSbdvLfYxo1nswzgxPyZwwh2XfGKJvNAOyE+k=;
+        b=gjEJWyJwzFrX7dC3f76aducJiYprGZ51SMUFwBK0DQrAv2ywbkD8FzspryEi7eqbmU
+         NXN1+uLfqPrmytc1nA4abMsKa57dKeJvezW7Rwn+7yCHAylw/EoLcg9k6NvPlYerc67F
+         QHekoEKTHsinLMc3sfH0j8TI3MZbJXOfA58QULxB4oq1DmI1kEj8W8/yjoiry5RfRYjb
+         hwxFEINkJg6rRbF27qnkxPUEz2B1K+Gwpmg8fZp/SXQRDZKiHYeHpXXTyxGIKh40CdHu
+         Wp26Nhmd141+vPVeDCootPazEl9rUNZH5qUXvPTcRM89akPJGhDuAYOv8WSU2mHvgXfy
+         4dkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6ly2vy0YXlYaSPJSVrw6dCp9MyYzaUlBE3q9eSYRtTE=;
-        b=EH04HMS2bnrr3S/K9fPBjlHqFOV2SRR8FLH9n+AScjEDR/McMS/hYRxjEW0XHMCHnT
-         hRBizQiaetUNidIC1VgChHRpjadtwxmd4/BFq2HPFRdWrONEkp5Efl7dhTbRfLTOZ4OQ
-         cxWV/xyKM/eW+Uw7cwqTtRSosgu12PKdyZAaF61bpkmtM/7zwyyrtHAjmXLQHrf2ojpy
-         rFr8ygYB8rsg8VptTPJ/Icej6AfdZ84nNj8T1IZIi0HxjllvtKlLo22b6aeMZ8FNQOnj
-         aX8bE8WLyKh8oXqwskWmLWeDNb/ED+4HAiSVOKqWKe3d4ODsIMO6E46fE6J0BB2dKNKc
-         2/Xg==
-X-Gm-Message-State: AOAM532BdNBUsBwhOOiPGLmaNxbt+n8ATrk3Sx1O/8Ii6GwZLuKCF1bx
-        Aq4PrU+BXgB56wy9v5ZCu/y/lw==
-X-Google-Smtp-Source: ABdhPJxfPlHBGHo5OFZg60I7eHKyQ/Wgn1YzLYFclvP3QpESJC/x7/DqF1YwB7WHfVgKpSGF4/ZOmg==
-X-Received: by 2002:a5d:410c:: with SMTP id l12mr20517364wrp.173.1605548513635;
-        Mon, 16 Nov 2020 09:41:53 -0800 (PST)
+        bh=CEyFJOSSbdvLfYxo1nswzgxPyZwwh2XfGKJvNAOyE+k=;
+        b=U+8ORzwWq8Znfa10Hs78ggXspppU0BSTpxBCxH0+W3H2NZs+iKd5r4fezdEQ0ffocj
+         4uds1puqYDktO00rTgCw3a0aeJXQZH3InKCFM5nFx1nUJ71Xx0WHR4aUk6EBqYc8TysM
+         fJVC40bOWhzEhdesqDxX0wycq2ynWmgr1SiLRQYsI3NYC66i/EV4jRBYhUwYTY6QvD2Q
+         MD7vAWbKMXgfQVoWj+lgxXRZc0iyuI7hex/5SZ91Ihdl5bdPOIFWT9HG2Fn6+qRBEZ6N
+         jq/FLiU/cleiQN2w/q5bMzowqWjfGJgprkLNZPHuTw5yZmVay7JDvLRAySCVVCQzy6gn
+         d/Ng==
+X-Gm-Message-State: AOAM530k3bVZEhpQE4lAfu0ClhEYhVfWgxypHFqTSxeLRyOW4pjblN3o
+        FfAjewWBwd5+qsyTuVrwtZj2aw==
+X-Google-Smtp-Source: ABdhPJzEz6hKtbXBg6S6mlCSEzioxtEnXfOHuGEg87lALXMzEVHRmwq7gEtk9990PpeLgnNOh0pLRQ==
+X-Received: by 2002:adf:cf0b:: with SMTP id o11mr20117453wrj.162.1605548514868;
+        Mon, 16 Nov 2020 09:41:54 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.41.52
+        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.41.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:41:52 -0800 (PST)
+        Mon, 16 Nov 2020 09:41:54 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+Cc:     linux-kernel@vger.kernel.org, Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 23/42] drm/pl111/pl111_debugfs: Make local function 'pl111_debugfs_regs()' static
-Date:   Mon, 16 Nov 2020 17:40:53 +0000
-Message-Id: <20201116174112.1833368-24-lee.jones@linaro.org>
+        Chris Zhong <zyw@rock-chips.com>,
+        Nickey Yang <nickey.yang@rock-chips.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH 24/42] drm/rockchip/dw-mipi-dsi-rockchip: Demote non-conformant kernel-doc headers
+Date:   Mon, 16 Nov 2020 17:40:54 +0000
+Message-Id: <20201116174112.1833368-25-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116174112.1833368-1-lee.jones@linaro.org>
 References: <20201116174112.1833368-1-lee.jones@linaro.org>
@@ -69,30 +74,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/pl111/pl111_debugfs.c:33:5: warning: no previous prototype for ‘pl111_debugfs_regs’ [-Wmissing-prototypes]
+ drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c:357: warning: Function parameter or member 'dsi' not described in 'ns2bc'
+ drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c:357: warning: Function parameter or member 'ns' not described in 'ns2bc'
+ drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c:365: warning: Function parameter or member 'dsi' not described in 'ns2ui'
+ drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c:365: warning: Function parameter or member 'ns' not described in 'ns2ui'
 
-Cc: Eric Anholt <eric@anholt.net>
+Cc: Sandy Huang <hjc@rock-chips.com>
+Cc: "Heiko Stübner" <heiko@sntech.de>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Chris Zhong <zyw@rock-chips.com>
+Cc: Nickey Yang <nickey.yang@rock-chips.com>
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-rockchip@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/pl111/pl111_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/pl111/pl111_debugfs.c b/drivers/gpu/drm/pl111/pl111_debugfs.c
-index 317f68abf18b0..6744fa16f4644 100644
---- a/drivers/gpu/drm/pl111/pl111_debugfs.c
-+++ b/drivers/gpu/drm/pl111/pl111_debugfs.c
-@@ -30,7 +30,7 @@ static const struct {
- 	REGDEF(CLCD_PL111_LCUR),
- };
+diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
+index 542dcf7eddd66..e84325e56d980 100644
+--- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
++++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
+@@ -350,7 +350,7 @@ static void dw_mipi_dsi_phy_write(struct dw_mipi_dsi_rockchip *dsi,
+ 	dsi_write(dsi, DSI_PHY_TST_CTRL0, PHY_TESTCLK | PHY_UNTESTCLR);
+ }
  
--int pl111_debugfs_regs(struct seq_file *m, void *unused)
-+static int pl111_debugfs_regs(struct seq_file *m, void *unused)
- {
- 	struct drm_info_node *node = (struct drm_info_node *)m->private;
- 	struct drm_device *dev = node->minor->dev;
+-/**
++/*
+  * ns2bc - Nanoseconds to byte clock cycles
+  */
+ static inline unsigned int ns2bc(struct dw_mipi_dsi_rockchip *dsi, int ns)
+@@ -358,7 +358,7 @@ static inline unsigned int ns2bc(struct dw_mipi_dsi_rockchip *dsi, int ns)
+ 	return DIV_ROUND_UP(ns * dsi->lane_mbps / 8, 1000);
+ }
+ 
+-/**
++/*
+  * ns2ui - Nanoseconds to UI time periods
+  */
+ static inline unsigned int ns2ui(struct dw_mipi_dsi_rockchip *dsi, int ns)
 -- 
 2.25.1
 
