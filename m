@@ -2,111 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A22A2B4FE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 034CA2B4FE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388676AbgKPSfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:35:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64730 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388539AbgKPSf3 (ORCPT
+        id S1726769AbgKPShZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:37:25 -0500
+Received: from relay4.mymailcheap.com ([137.74.80.154]:46521 "EHLO
+        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgKPShY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:35:29 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AGIUWTM119603;
-        Mon, 16 Nov 2020 13:35:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Dbn/rFOSSjETkmlwnkjOpFVHw+8xDL5UdBr5TOeMcc4=;
- b=YfRKP7FzwQqY3pgnpsooX8T5kWEyUWaUbvgJ7OwP26zAy72VC+HkSnCgJrxkEpleVhDd
- 3GFPxwlSVFC6AEnG9YA7Z70ZXOd52kxCNOP4iY0GdaiG64MWVNpkigEHPi4IFlqyA7no
- 2ObRaNUhCzsk44lw4of71PI4EpWZXHvjXdAPt7UtyWMHftur0fy0UyPcVNdzPnnugjwp
- Y2B2dIyVOVbd/taWaAzTruLgMQhZp32uDTjmXl9lHq0wEP/1MRhFE1CmkkyG+4CSdhQx
- BsBhbey1dbiCHopa4O0TdVhWRtO7A5SRR+7hpp+hDFZnd0MgrzF9aOHeEP6JPjmSK+D3 dw== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34uvbccf5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 13:35:18 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AGIQmTi005168;
-        Mon, 16 Nov 2020 18:35:17 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 34t6v8ac2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 18:35:16 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AGIZEmr60817766
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Nov 2020 18:35:14 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C416611C050;
-        Mon, 16 Nov 2020 18:35:14 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D12D11C04A;
-        Mon, 16 Nov 2020 18:35:12 +0000 (GMT)
-Received: from sig-9-65-243-37.ibm.com (unknown [9.65.243.37])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 16 Nov 2020 18:35:12 +0000 (GMT)
-Message-ID: <3f8cc7c9462353ac2eef58e39beee079bdd9c7b4.camel@linux.ibm.com>
-Subject: Re: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Date:   Mon, 16 Nov 2020 13:35:11 -0500
-In-Reply-To: <CAHk-=wjd0RNthZQTLVsnK_d9SFYH0rug2tkezLLB0J-YZzVC+Q@mail.gmail.com>
-References: <20201113080132.16591-1-roberto.sassu@huawei.com>
-         <20201114111057.GA16415@infradead.org>
-         <0fd0fb3360194d909ba48f13220f9302@huawei.com>
-         <20201116162202.GA15010@infradead.org>
-         <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
-         <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
-         <20201116174127.GA4578@infradead.org>
-         <CAHk-=wjd0RNthZQTLVsnK_d9SFYH0rug2tkezLLB0J-YZzVC+Q@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-16_09:2020-11-13,2020-11-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=631 clxscore=1015 priorityscore=1501 suspectscore=3
- impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011160106
+        Mon, 16 Nov 2020 13:37:24 -0500
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id EB7193F1D0;
+        Mon, 16 Nov 2020 19:37:20 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 0AD622A365;
+        Mon, 16 Nov 2020 13:37:20 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1605551840;
+        bh=VH5KML0r+bx1HTyZIGYMOWB5EsWUiSK02/YgLi4WzhA=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=A2PVFmTdciJoOh25rPMeFPIH/z5+4f8Xco5Mq/s2e7s1XPVqNUAXuhUGW+F8vdlo1
+         IJvyjiYRXah+cjkLBi56CVFhFuDuafcgeVgDLy7ERIafWVALOaVw6TVXyFrgDJJl/7
+         XYdkXZvM31u3WQLqV4Nmx7syQSAaZyAOwI2GlLUU=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ks0Cfo-Jeolh; Mon, 16 Nov 2020 13:37:18 -0500 (EST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Mon, 16 Nov 2020 13:37:18 -0500 (EST)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 677C141E57;
+        Mon, 16 Nov 2020 18:37:16 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="mArYa4Ll";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [172.19.0.1] (unknown [64.225.114.122])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 346CF412C0;
+        Mon, 16 Nov 2020 18:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1605551834; bh=VH5KML0r+bx1HTyZIGYMOWB5EsWUiSK02/YgLi4WzhA=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=mArYa4LlnrQWDdsSsouI06L/Skm7E8CsNVpZ2sdOeBiMKlt1YlJnLloBf0qA9v0vj
+         R7+HJaUaSlbifFOZBREuzskhblEpyimNmkbkO3XtYEB2MujOfTeQMHeam5eOaKzZgC
+         ZNSy+CPzrIHz2knYd/ozxOp07Gid3/9YRfuYfrss=
+Date:   Tue, 17 Nov 2020 02:36:48 +0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20201116155508.364dg6ycklwylswe@gilmour.lan>
+References: <20201107124958.2222253-1-icenowy@aosc.io> <20201107125332.2223197-1-icenowy@aosc.io> <20201110103925.rbej5ueo2fefbmlp@gilmour.lan> <6175E674-E8BC-4199-8BE8-A983065C32D5@aosc.io> <20201116155508.364dg6ycklwylswe@gilmour.lan>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [linux-sunxi] Re: [PATCH 3/3] arm64: allwinner: dts: a64: add DT for PineTab developer sample
+To:     maxime@cerno.tech, Maxime Ripard <maxime@cerno.tech>
+CC:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+From:   Icenowy Zheng <icenowy@aosc.io>
+Message-ID: <8FFC1A6C-9CA4-4F94-91C4-F111A7519979@aosc.io>
+X-Rspamd-Queue-Id: 677C141E57
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-16 at 10:09 -0800, Linus Torvalds wrote:
-> On Mon, Nov 16, 2020 at 9:41 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > The "issue" with IMA is that it uses security hooks to hook into the
-> > VFS and then wants to read every file that gets opened on a real file
-> > system to "measure" the contents vs a hash stashed away somewhere.
-> 
-> Well, but that's easy enough to handle: if the open isn't a read open,
-> then the old contents don't matter, so you shouldn't bother to measure
-> the file.
-> 
-> So this literally sounds like a "doctor, doctor, it hurts when I hit
-> my head with a hammer" situation..
 
-We need to differentiate between signed files, which by definition are
-immutable, and those that are mutable.  Appending to a mutable file,
-for example, would result in the file hash not being updated. 
-Subsequent reads would fail.
 
-Mimi
+=E4=BA=8E 2020=E5=B9=B411=E6=9C=8816=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=88=
+11:55:08, Maxime Ripard <maxime@cerno=2Etech> =E5=86=99=E5=88=B0:
+>On Tue, Nov 10, 2020 at 06:41:37PM +0800, Icenowy Zheng wrote:
+>>=20
+>>=20
+>> =E4=BA=8E 2020=E5=B9=B411=E6=9C=8810=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=
+=886:39:25, Maxime Ripard <maxime@cerno=2Etech>
+>=E5=86=99=E5=88=B0:
+>> >On Sat, Nov 07, 2020 at 08:53:32PM +0800, Icenowy Zheng wrote:
+>> >> Some developers received PineTab samples that used an old LCD
+>panel=2E
+>> >>=20
+>> >> Add device tree for these samples=2E
+>> >>=20
+>> >> Signed-off-by: Icenowy Zheng <icenowy@aosc=2Eio>
+>> >> ---
+>> >>  arch/arm64/boot/dts/allwinner/Makefile        |  1 +
+>> >>  =2E=2E=2E/dts/allwinner/sun50i-a64-pinetab-dev=2Edts  | 28
+>> >+++++++++++++++++++
+>> >>  2 files changed, 29 insertions(+)
+>> >>  create mode 100644
+>> >arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev=2Edts
+>> >>=20
+>> >> diff --git a/arch/arm64/boot/dts/allwinner/Makefile
+>> >b/arch/arm64/boot/dts/allwinner/Makefile
+>> >> index 211d1e9d4701=2E=2Ea221dcebfad4 100644
+>> >> --- a/arch/arm64/boot/dts/allwinner/Makefile
+>> >> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+>> >> @@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_SUNXI) +=3D
+>> >sun50i-a64-pinephone-1=2E0=2Edtb
+>> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1=2E1=2Edtb
+>> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1=2E2=2Edtb
+>> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinetab=2Edtb
+>> >> +dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinetab-dev=2Edtb
+>> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-sopine-baseboard=2Edtb
+>> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-teres-i=2Edtb
+>> >>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a100-allwinner-perf1=2Edtb
+>> >> diff --git
+>a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev=2Edts
+>> >b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev=2Edts
+>> >> new file mode 100644
+>> >> index 000000000000=2E=2E3a4153890f3e
+>> >> --- /dev/null
+>> >> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev=2Edts
+>> >> @@ -0,0 +1,28 @@
+>> >> +// SPDX-License-Identifier: (GPL-2=2E0+ OR MIT)
+>> >> +/*
+>> >> + * Copyright (C) 2020 Icenowy Zheng <icenowy@aosc=2Eio>
+>> >> + *
+>> >> + */
+>> >> +
+>> >> +/dts-v1/;
+>> >> +
+>> >> +#include "sun50i-a64-pinetab=2Edts"
+>> >> +
+>> >> +/ {
+>> >> +	model =3D "PineTab Developer Sample";
+>> >> +	compatible =3D "pine64,pinetab-dev", "allwinner,sun50i-a64";
+>> >> +};
+>> >
+>> >Changing the DT and the compatible half-way through it isn't ok=2E
+>Please
+>> >add a new DT with the newer revision like we did for the pinephone
+>>=20
+>> We did this on Pine H64=2E
+>
+>What are you referring to? I couldn't find a commit where we did what
+>you suggested in that patch to the pine H64=2E
 
+Oh the situation is complex=2E On Pine H64, we didn't specify anything at
+start (which is the same here), the DT is originally version-neutral
+but then transitioned to model B, then reverted to model A=2E Here the DT =
+is always
+for the sample=2E
+
+However, for Pine H64 there's model A/B names, but for PineTab there's no
+any samples that are sold, thus except who got the samples, all PineTab
+owners simply owns a "PineTab", not a "PineTab xxx version"=2E
+
+>
+>Maxime
