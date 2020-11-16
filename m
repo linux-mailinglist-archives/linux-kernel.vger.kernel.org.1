@@ -2,122 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1351B2B430E
+	by mail.lfdr.de (Postfix) with ESMTP id EE1A52B4310
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbgKPLlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:41:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728662AbgKPLlr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:41:47 -0500
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC86C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:41:45 -0800 (PST)
-Received: by mail-vk1-xa44.google.com with SMTP id s135so3635465vkh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:41:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2lOdbwlpCkQ/U9b3AI8byk39FYQ+zSfYd4xMBl2NASE=;
-        b=jVRee76xd/vj7nXCbI+BMQETz21ek9rOn5KYwlEgY8rR7BwA15GOWS/WjjTQdHOr/L
-         jUFPM9gMGsb2ja5/vP0MD6Cu1HL8aBPFeE7/sEEB1TBN94P7zs6yMRe8yAz5WYI32eT/
-         mxfxhgJHsKXS37zoW9tG03L2y8KDDQYANGkj4ipDQhWvU1IPXyPK2rwBrgc15JQFTYZm
-         yEdQYbWcEdXbTVZ0upCd/wRj1ZmWWlPZcBLfx1Pt6kfV+iwitXgSftXc4VS8TwUV/yNf
-         AEUNT12cbenYntn9bjKSjVCVwFHH7wS6NVXt0cx+djYtAjiu4PPC3oc1TAWMOzcVOGCe
-         gjbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2lOdbwlpCkQ/U9b3AI8byk39FYQ+zSfYd4xMBl2NASE=;
-        b=Lpv25oZ2AuWvo3CnXsoC+aj2sDBIZ79mclC9Doa4BskUuHqnjZkw3RcGLTgtiIYNrK
-         14qb/z0yQQiDW4sAk1HwhOWplD3MScMOvdQjhD3EX7fFSJK8kSqplShTnfrbjt0/C5Mv
-         qXxtLKvNUggjG5o7zXlfaUHpEFCJ3KGX+TkUdM+LVTpcABExoCxYD8JYvDhPu5g44YEe
-         ORiPz6PqinYOVTN6EgURspyPlO+0YMLIXzfMKXPLje7ZQiuGv2pv/mo+VEd2MTRynt2C
-         QxzE/Ht07PVgJuMnt0cGmR9z2KIt/pNCS7ECs4935KFnFqr6Ykf9GGAHsi2l6Dse6jPk
-         O6bA==
-X-Gm-Message-State: AOAM532i0Y2hlhHu0qqEBmy1T1zAM+CHw1IFJXhoTqK8oEiMEySRfkX3
-        ABKT0YTEtMynAsdf69BfjOsTeSyzLzzVcTweLi1Sbg==
-X-Google-Smtp-Source: ABdhPJyF+H/3JuvG1rFtW0kdG+BQsvxK9WRDn/noF2Wj5TJ7U/U1fEbxZ4IGsVFZ+argIC1nTyuv7vbjE+bp1pyH1+Q=
-X-Received: by 2002:a1f:41cc:: with SMTP id o195mr6992899vka.15.1605526904953;
- Mon, 16 Nov 2020 03:41:44 -0800 (PST)
-MIME-Version: 1.0
-References: <20201106120933.7190-1-muhammad.husaini.zulkifli@intel.com> <20201106120933.7190-2-muhammad.husaini.zulkifli@intel.com>
-In-Reply-To: <20201106120933.7190-2-muhammad.husaini.zulkifli@intel.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 16 Nov 2020 12:41:08 +0100
-Message-ID: <CAPDyKFrq0Wsc7bNS0QPMitNqpkzK87VAuTnjDqrqTrVDGCwxgg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem
- Bay SOC
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729286AbgKPLm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:42:59 -0500
+Received: from mga03.intel.com ([134.134.136.65]:49271 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726487AbgKPLm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 06:42:59 -0500
+IronPort-SDR: ClaXI4WNnmdTKwU5AtUVFvzAUJPs6Btt3ajormKV7qICe1xa2EbMJM50aV3mIir7QHmRaRIdrd
+ yFYEFR0M4jrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="170835769"
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="170835769"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 03:42:58 -0800
+IronPort-SDR: Qi1s0Ek/xRNPEsHppnSRiF+tJP9437Rko+uhHEB8Mt9me4JBXN4fv1yzm0tOpKcg2FN7tOIqSf
+ dIljw7Wey9pg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="367679963"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga007.jf.intel.com with ESMTP; 16 Nov 2020 03:42:55 -0800
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     linux-leds@vger.kernel.org, pavel@ucw.cz, dmurphy@ti.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
+        malliamireddy009@gmail.com, yixin.zhu@intel.com
+Subject: [PATCH v2 1/2] dt-bindings: leds: Add bindings for Intel LGM SoC
+Date:   Mon, 16 Nov 2020 19:42:51 +0800
+Message-Id: <bce27bce2df36e04c5b9b688b1defd9c4fc9b191.1605526923.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 at 05:10, <muhammad.husaini.zulkifli@intel.com> wrote:
->
-> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
->
-> Commit 16ada730a759 ("mmc: sdhci-of-arasan: Modify clock operations handling")
-> introduces platform specific SDHCI clock operation.
->
-> This patch declares the clock operation for Keem Bay.
-> Add clk_ops for SD, EMMC and SDIO operations.
+Add DT bindings YAML schema for SSO controller driver
+of Lightning Mountain (LGM) SoC.
 
-The above commit message doesn't really tell why or what goes on here.
-Can please try to clarify that.
+Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+---
+v1:
+- Initial version
 
->
-> Fixes: 36c6aadaae86 ("mmc: sdhci-of-arasan: Add support for Intel Keem Bay")
+v2:
+- Fix bot errors (wrong indentation).
+- Spell out LGM and SSO.
+- Remove vendor specific name for LED properites.
+- removed deprecating property "label"
+- Include 'reg', 'function' & 'color' properties.
+---
+ .../devicetree/bindings/leds/leds-lgm.yaml         | 130 +++++++++++++++++++++
+ 1 file changed, 130 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-lgm.yaml
 
-Is $subject patch fixing a bug/regression?
+diff --git a/Documentation/devicetree/bindings/leds/leds-lgm.yaml b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
+new file mode 100644
+index 000000000000..d9c53ec30ad1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
+@@ -0,0 +1,130 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/leds-lgm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Intel Lightning Mountain (LGM) SoC LED Serial Shift Output (SSO) Controller driver
++
++maintainers:
++  - Yixin.zhu@intel.com
++  - mallikarjunax.reddy@intel.com
++
++properties:
++  compatible:
++    const: intel,sso-led
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    maxItems: 2
++    items:
++      - const: sso
++      - const: fpid
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    const: 2
++
++  intel,sso-gpio-base:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description:
++      Identifies the first gpio handled.
++
++  ngpios:
++    minimum: 0
++    maximum: 32
++    description:
++      Number of GPIOs this controller provides.
++
++  intel,sso-update-rate:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description:
++      Blink frequency for SOUTs in Hz.
++
++  ssoled:
++    type: object
++    description:
++      This sub-node must contain a sub-node for each leds.
++
++    patternProperties:
++      "^led@[0-23]$":
++        type: object
++
++        properties:
++          reg:
++            description: Index of the LED.
++            minimum: 0
++            maximum: 2
++
++          sso-hw-trigger:
++            type: boolean
++            description: This property indicates Hardware driven/control LED.
++
++          sso-hw-blink:
++            type: boolean
++            description: This property indicates Enable LED blink by Hardware.
++
++          sso-blink-rate:
++            $ref: /schemas/types.yaml#/definitions/uint32
++            description: LED HW blink frequency.
++
++          retain-state-suspended:
++            type: boolean
++            description: The suspend state of LED can be retained.
++
++          retain-state-shutdown:
++            type: boolean
++            description: Retain the state of the LED on shutdown.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - "#gpio-cells"
++  - gpio-controller
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/intel,lgm-clk.h>
++    #include <dt-bindings/leds/common.h>
++
++    ssogpio: ssogpio@E0D40000 {
++      compatible = "intel,sso-led";
++      reg = <0xE0D40000 0x2E4>;
++      gpio-controller;
++      #gpio-cells = <2>;
++      ngpios = <32>;
++      pinctrl-names = "default";
++      pinctrl-0 = <&pinctrl_ledc>;
++      clocks = <&cgu0 LGM_GCLK_LEDC0>, <&afeclk>;
++      clock-names = "sso", "fpid";
++      intel,sso-update-rate = <250000>;
++
++      ssoled {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        led@0 {
++          reg = <0>;
++          function = "gphy";
++          color = <LED_COLOR_ID_GREEN>;
++          led-gpio = <&ssogpio 0 0>;
++        };
++
++        led@23 {
++          reg = <23>;
++          function = LED_FUNCTION_POWER;
++          color = <LED_COLOR_ID_GREEN>;
++          led-gpio = <&ssogpio 23 0>;
++        };
++      };
++    };
+-- 
+2.11.0
 
-Kind regards
-Uffe
-
->
-> Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  drivers/mmc/host/sdhci-of-arasan.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-> index 829ccef87426..012d52e1abee 100644
-> --- a/drivers/mmc/host/sdhci-of-arasan.c
-> +++ b/drivers/mmc/host/sdhci-of-arasan.c
-> @@ -1199,16 +1199,19 @@ static struct sdhci_arasan_of_data sdhci_arasan_versal_data = {
->  static struct sdhci_arasan_of_data intel_keembay_emmc_data = {
->         .soc_ctl_map = &intel_keembay_soc_ctl_map,
->         .pdata = &sdhci_keembay_emmc_pdata,
-> +       .clk_ops = &arasan_clk_ops,
->  };
->
->  static struct sdhci_arasan_of_data intel_keembay_sd_data = {
->         .soc_ctl_map = &intel_keembay_soc_ctl_map,
->         .pdata = &sdhci_keembay_sd_pdata,
-> +       .clk_ops = &arasan_clk_ops,
->  };
->
->  static struct sdhci_arasan_of_data intel_keembay_sdio_data = {
->         .soc_ctl_map = &intel_keembay_soc_ctl_map,
->         .pdata = &sdhci_keembay_sdio_pdata,
-> +       .clk_ops = &arasan_clk_ops,
->  };
->
->  static const struct of_device_id sdhci_arasan_of_match[] = {
-> --
-> 2.17.1
->
