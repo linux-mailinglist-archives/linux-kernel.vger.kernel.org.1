@@ -2,193 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A658F2B3D6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 811662B3D71
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727184AbgKPHAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 02:00:21 -0500
-Received: from mga11.intel.com ([192.55.52.93]:33335 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726524AbgKPHAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 02:00:21 -0500
-IronPort-SDR: agsMhFDot2Gi4YIU3XABrasvnA6e6kQveRYFg3pO8v0p3GAUID10BeVOFZr1pEZuqfFKJRcgSj
- hAh/pp7YI4Cg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="167197352"
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
-   d="scan'208";a="167197352"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 23:00:20 -0800
-IronPort-SDR: a6YVB0d1c8XEAhXYaX/DDafoePLfja47dmT9Gus18T6MbGJyDXT3cTy/twhAlVmjj4w9zj4htk
- yxgAiw5AIFXg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
-   d="scan'208";a="367404067"
-Received: from lkp-server01.sh.intel.com (HELO bf1bf4bba8e9) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 15 Nov 2020 23:00:18 -0800
-Received: from kbuild by bf1bf4bba8e9 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1keYUr-00000b-TK; Mon, 16 Nov 2020 07:00:17 +0000
-Date:   Mon, 16 Nov 2020 15:00:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.11.10a] BUILD REGRESSION
- 1bc2f285f9c940176cc2c231db1372d5b2f0c635
-Message-ID: <5fb22380.8TYwn7qlnkn+uOFU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1727257AbgKPHAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 02:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726524AbgKPHAq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 02:00:46 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA65CC0613CF;
+        Sun, 15 Nov 2020 23:00:44 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h21so1827882wmb.2;
+        Sun, 15 Nov 2020 23:00:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/WS+PJRE2OGyeY6RdUzMuAsaLGec+mJ+W+Kppo7JUTk=;
+        b=mT6a5U26s+LjfpqwX2Q+Ilm57J/7WiUUItSDp3s462F7bbtdwHhev2bL9n671X6x0X
+         lbtarwKYDmxY7ZrnrOMAy9dDvLTPGxplGnFsChFmTrueaFHMFuEIPOlme7iPMPu9s6bH
+         remHDWst0JePDJqZkOoEPryZeORpe8+X8hTYJN/k7bw/4hn873VcSY2Q9CxvmiPZ8MAc
+         d2zahCvE0JoKfA+DcmGEBbqjfZaeMXqFoxQQryTcG2+TZZ+8lpaveEnjC7uajvXSPy9p
+         Lde3nDgNnLnwAQU2SM4kKrjgtXGaHog3VbSfq//aNy+JOWxgV5IL1QrKhtEglJZ9Wc+b
+         J8XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/WS+PJRE2OGyeY6RdUzMuAsaLGec+mJ+W+Kppo7JUTk=;
+        b=d/9MHg8bdWSTMqYDqO8TCH4DPgEIrXKpIkjfCn5OXRpk4oDcXbfLUq99WLNNXpc7Oa
+         OXuG9qn7hJPWBNPt6WQkmeyJFuFqnxyktuw7KDAQQk2vsG91UmKSHlItcaVqJbT0APAv
+         4Bp0A06KNt1m7NoF0fLDmsBjimbcKd4+frgMDWUlwP7TF2l1sv9g8foFEvocccZ8Y2gA
+         oxtOLREMv9F2kFZFXmuBiY5+Zgn/DjS8SYU46fJfxfbcMHWiVlVEJp9YC53NIVuTq5pE
+         txrlrUoXRGXYwQcQNqrvtnwNPra34Yuv5zdeIYmhaiVMl8XKI4jJeuW6d7iDXD1jbntP
+         /z0A==
+X-Gm-Message-State: AOAM533w801J3ijYH8mRw6O3bsAc+73lnpNnizPnaJU2vIFsb+Ci1BFM
+        zZ9/EiSyHQcvRbiBxwNzHb8=
+X-Google-Smtp-Source: ABdhPJyRr2lPY09u6b19zO7iBZ3oI+I7YiQQo5QkM5PA4TRlPOgnU6fg+mtPEQtiEzTLzvvJ0iCLNw==
+X-Received: by 2002:a7b:c1ce:: with SMTP id a14mr13996360wmj.126.1605510043378;
+        Sun, 15 Nov 2020 23:00:43 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2de6:ad00:939:47a9:70b9:fe5b])
+        by smtp.gmail.com with ESMTPSA id o63sm18676667wmo.2.2020.11.15.23.00.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 23:00:42 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] scsi: sd: remove obsolete variable in sd_remove()
+Date:   Mon, 16 Nov 2020 08:00:35 +0100
+Message-Id: <20201116070035.11870-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.11.10a
-branch HEAD: 1bc2f285f9c940176cc2c231db1372d5b2f0c635  EXP refscale: Allow summarization of verbose output
+Commit 140ea3bbf39a ("sd: use __register_blkdev to avoid a modprobe for an
+unregistered dev_t") removed blk_register_region(devt, ...) in sd_remove()
+and since then, devt is unused in sd_remove().
 
-Error/Warning reports:
+Hence, make W=1 warns:
 
-https://lore.kernel.org/lkml/202011160746.rMeDMJQM-lkp@intel.com
+  drivers/scsi/sd.c:3516:8:
+      warning: variable 'devt' set but not used [-Wunused-but-set-variable]
 
-Error/Warning in current branch:
+Simply remove this obsolete variable.
 
-ERROR: modpost: "get_state_synchronize_srcu" [kernel/rcu/rcutorture.ko] undefined!
-ERROR: modpost: "poll_state_synchronize_srcu" [kernel/rcu/rcutorture.ko] undefined!
-ERROR: modpost: "start_poll_synchronize_srcu" [kernel/rcu/rcutorture.ko] undefined!
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- i386-randconfig-m021-20201115
-|   |-- ERROR:get_state_synchronize_srcu-kernel-rcu-rcutorture.ko-undefined
-|   |-- ERROR:poll_state_synchronize_srcu-kernel-rcu-rcutorture.ko-undefined
-|   `-- ERROR:start_poll_synchronize_srcu-kernel-rcu-rcutorture.ko-undefined
-`-- x86_64-randconfig-s022-20201115
-    |-- ERROR:get_state_synchronize_srcu-kernel-rcu-rcutorture.ko-undefined
-    |-- ERROR:poll_state_synchronize_srcu-kernel-rcu-rcutorture.ko-undefined
-    `-- ERROR:start_poll_synchronize_srcu-kernel-rcu-rcutorture.ko-undefined
-
-elapsed time: 721m
-
-configs tested: 110
-configs skipped: 2
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         lpc32xx_defconfig
-mips                            e55_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                           allnoconfig
-sh                      rts7751r2d1_defconfig
-riscv                    nommu_k210_defconfig
-arm                     eseries_pxa_defconfig
-mips                      malta_kvm_defconfig
-m68k                         amcore_defconfig
-arm                           viper_defconfig
-ia64                          tiger_defconfig
-mips                       capcella_defconfig
-mips                        nlm_xlr_defconfig
-sh                        dreamcast_defconfig
-h8300                       h8s-sim_defconfig
-powerpc64                           defconfig
-xtensa                           alldefconfig
-powerpc                      pmac32_defconfig
-nios2                               defconfig
-nds32                            alldefconfig
-powerpc                      ppc40x_defconfig
-arm                          badge4_defconfig
-um                            kunit_defconfig
-sh                          rsk7203_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                           xway_defconfig
-alpha                               defconfig
-riscv                             allnoconfig
-powerpc                     mpc512x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a006-20201116
-i386                 randconfig-a005-20201116
-i386                 randconfig-a001-20201116
-i386                 randconfig-a002-20201116
-i386                 randconfig-a004-20201116
-i386                 randconfig-a003-20201116
-i386                 randconfig-a006-20201115
-i386                 randconfig-a005-20201115
-i386                 randconfig-a001-20201115
-i386                 randconfig-a002-20201115
-i386                 randconfig-a004-20201115
-i386                 randconfig-a003-20201115
-x86_64               randconfig-a015-20201115
-x86_64               randconfig-a011-20201115
-x86_64               randconfig-a014-20201115
-x86_64               randconfig-a013-20201115
-x86_64               randconfig-a016-20201115
-x86_64               randconfig-a012-20201115
-i386                 randconfig-a012-20201115
-i386                 randconfig-a014-20201115
-i386                 randconfig-a016-20201115
-i386                 randconfig-a011-20201115
-i386                 randconfig-a015-20201115
-i386                 randconfig-a013-20201115
-x86_64               randconfig-a003-20201116
-x86_64               randconfig-a005-20201116
-x86_64               randconfig-a004-20201116
-x86_64               randconfig-a002-20201116
-x86_64               randconfig-a001-20201116
-x86_64               randconfig-a006-20201116
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201115
-x86_64               randconfig-a005-20201115
-x86_64               randconfig-a004-20201115
-x86_64               randconfig-a002-20201115
-x86_64               randconfig-a001-20201115
-x86_64               randconfig-a006-20201115
-
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+applies cleanly on current master and next-20201113
+
+Christoph, Hannes, please ack.
+
+Martin, James, please pick this minor non-urgent clean-up patch.
+
+ drivers/scsi/sd.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 106a9cda0eb7..82d0cb97b758 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -3513,10 +3513,8 @@ static int sd_probe(struct device *dev)
+ static int sd_remove(struct device *dev)
+ {
+ 	struct scsi_disk *sdkp;
+-	dev_t devt;
+ 
+ 	sdkp = dev_get_drvdata(dev);
+-	devt = disk_devt(sdkp->disk);
+ 	scsi_autopm_get_device(sdkp->device);
+ 
+ 	async_synchronize_full_domain(&scsi_sd_pm_domain);
+-- 
+2.17.1
+
