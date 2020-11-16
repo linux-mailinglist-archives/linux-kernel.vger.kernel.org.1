@@ -2,69 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561392B4240
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C542B4246
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729262AbgKPLI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:08:27 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:50306 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgKPLI0 (ORCPT
+        id S1729054AbgKPLL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:11:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728722AbgKPLL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:08:26 -0500
-Date:   Mon, 16 Nov 2020 11:08:13 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1605524903;
-        bh=QGhi54MdNuZPb1+rrhFwdkR6s6Cgk8mVP/zIusN9TRs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=DwTv/PZdOIVkD5yYisQNusXYtUo94jyX5zKb8OaM6tAx7mXnwpAxxCfaib5crVwUv
-         EmmzLowY+OJhzYpeOZK1D1heZ+G1IGOGdrnb9zHYoO/Fmbf+dJdzL5uftmTokmgB+x
-         wqVQbhNKCm1kRh/rPvb+j22cLVkfSbTefDNfZ75BAR3TpU9R8hx97PRnS3OnA9fHpp
-         c6AFhKUpQ7OlBEUOFxUAGtJ/WqsZmy/4NMSeoIFThoaJ3jLf73VqJZrS7tr7PoGSru
-         MY+5U1lOfqNr5ZwwYgYBdf/sQM+ol3jkmc5E148KcCr9rGlNQ/AHwOnlPy6UWB9/R9
-         lqP7YsC3iCuMg==
-To:     Colin King <colin.king@canonical.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: [PATCH][next] drm/atomic: avoid null pointer dereference on pointer crtc
-Message-ID: <Gsgkd1PRlRQd3tlZ0nZROZwVfLvE7QmJdeOA8wkeVyE9ewGIj89RZAixoLltsvvgqB-Ica_sfpcNbwdtRCjDx16tYykgs61QOJRYm9Eumys=@emersion.fr>
-In-Reply-To: <20201116110316.269934-1-colin.king@canonical.com>
-References: <20201116110316.269934-1-colin.king@canonical.com>
+        Mon, 16 Nov 2020 06:11:27 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C133DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:11:27 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id d28so16340752qka.11
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:11:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fSyWfHMbqsw8Zkd0DQKyrHH6W5HuZEjs3rsVI0VZGww=;
+        b=dfYugB5qvGr57g4YL3GEW6fNCws4rmjQ/IxqVRxNXnBnDliyX67BXekn4wlUMegniY
+         9vsCMSN/+SfrW4E7lqSROs2t5gViZuPeoylpJDTs8JLOymbx8XeHGAhZsU2jAmQ3PG6I
+         jMesNJXk188H4jHwHcw6OG2Lb4NqYnHsaanCHGWxaIRgeI97Uq2sMSDuO1vh7phb9R3r
+         Y/RsbPG/372nxGqnOqhxJwQk7anl+C6EMWVdVyo/2ChyxaPWl190Hi6aL2EqMbQ/pZkw
+         jZxYvCFDHpNkCrBnN3Wf11OYq2OVSkZRmJAbnD2GXdqgB6im60vxXasR7FfOPmh3ijEA
+         F/OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fSyWfHMbqsw8Zkd0DQKyrHH6W5HuZEjs3rsVI0VZGww=;
+        b=trlKCv8h8zVIlTNUY2I7jsYhfPbztKskFAUoBzXVZAjCBHIST6Ih7+sQR/PI/Khz/f
+         iKo/1XEYsLXgsbjU9bYlC/XFvFnR6Gjz+Gprcm8OrWOzmyssXijE9GRnyXJ/0NjFxW4M
+         3bNMaUpMpUeSQYsXIgzJqyJxj5ETnxIAzdGRIww36YhVo4t/6YMD1AQ2U2joqqBOt07Z
+         FoAW5IdUzls5wAn/yjHS4GLsMcxe71doL5PYJnzFbg74y9+Ar2faHcrQ7s74u09lPlQ/
+         UFWYJHTYlKHOaBTKwUF0xrsS1wtiGayj0d6v0yZF0ErRlVafSZAUh5VMTKD73rNjbY8F
+         Fcgg==
+X-Gm-Message-State: AOAM533C8PuHItVn4UtIjvTFkHHi4hx0+AYo/J+/iVPSXrjh4w65jb3j
+        h7zkhD4FydMB8lnEXrFk9b/1tmmCFnwfr8ffkRE5vg==
+X-Google-Smtp-Source: ABdhPJw2aA4znWI4ahsXM30ZWQu9uSOxkyqTDr2sMEfhc6CDl5Gnn/Ggq0vogUKle5msVJrKgBx78hNIISVbQFEVpJg=
+X-Received: by 2002:a37:49d6:: with SMTP id w205mr13948885qka.501.1605525086672;
+ Mon, 16 Nov 2020 03:11:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <0000000000006ef45b05b436ddb4@google.com>
+In-Reply-To: <0000000000006ef45b05b436ddb4@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 16 Nov 2020 12:11:15 +0100
+Message-ID: <CACT4Y+aMw276FEUfS5+ZjJxxZqmFqM7=MnC7gWE9zn7vgha-AA@mail.gmail.com>
+Subject: Re: KASAN: invalid-free in p9_client_create
+To:     syzbot <syzbot+3a0f6c96e37e347c6ba9@syzkaller.appspotmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>
+Cc:     Dominique Martinet <asmadeus@codewreck.org>,
+        David Miller <davem@davemloft.net>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        v9fs-developer@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, November 16, 2020 12:03 PM, Colin King <colin.king@canonical.com=
-> wrote:
-
-> From: Colin Ian King colin.king@canonical.com
+On Mon, Nov 16, 2020 at 11:30 AM syzbot
+<syzbot+3a0f6c96e37e347c6ba9@syzkaller.appspotmail.com> wrote:
 >
-> Since moving to the new debug helper functions we now have a debug messag=
-e
-> that dereferences crtc to print a kernel debug message when crtc is null
-> and so this debug message will now cause a null pointer dereference. Sinc=
-e
-> this is a debug message it probably is just simplest to fix this by just
-> removing the debug message altogether.
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    92edc4ae Add linux-next specific files for 20201113
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=142f8816500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=79ad4f8ad2d96176
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3a0f6c96e37e347c6ba9
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+3a0f6c96e37e347c6ba9@syzkaller.appspotmail.com
 
-NACK. This removes the log altogether instead of fixing it.
+Looks like a real double free in slab code. +MM maintainers
+Note there was a preceding kmalloc failure in sysfs_slab_add.
 
-A fix has already been pushed to drm-misc-next: 0003b687ee6d ("drm: fix
-oops in drm_atomic_set_crtc_for_connector").
+
+> RBP: 00007fa358076ca0 R08: 0000000020000080 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000001f
+> R13: 00007fff7dcf224f R14: 00007fa3580779c0 R15: 000000000118bf2c
+> kobject_add_internal failed for 9p-fcall-cache (error: -12 parent: slab)
+> ==================================================================
+> BUG: KASAN: double-free or invalid-free in slab_free mm/slub.c:3157 [inline]
+> BUG: KASAN: double-free or invalid-free in kmem_cache_free+0x82/0x350 mm/slub.c:3173
+>
+> CPU: 0 PID: 15981 Comm: syz-executor.5 Not tainted 5.10.0-rc3-next-20201113-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+>  kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:355
+>  ____kasan_slab_free+0x100/0x110 mm/kasan/common.c:352
+>  kasan_slab_free include/linux/kasan.h:194 [inline]
+>  slab_free_hook mm/slub.c:1548 [inline]
+>  slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1586
+>  slab_free mm/slub.c:3157 [inline]
+>  kmem_cache_free+0x82/0x350 mm/slub.c:3173
+>  create_cache mm/slab_common.c:274 [inline]
+>  kmem_cache_create_usercopy+0x2ab/0x300 mm/slab_common.c:357
+>  p9_client_create+0xc4d/0x10c0 net/9p/client.c:1063
+>  v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
+>  v9fs_mount+0x79/0x9b0 fs/9p/vfs_super.c:126
+>  legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+>  vfs_get_tree+0x89/0x2f0 fs/super.c:1549
+>  do_new_mount fs/namespace.c:2896 [inline]
+>  path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+>  do_mount fs/namespace.c:3240 [inline]
+>  __do_sys_mount fs/namespace.c:3448 [inline]
+>  __se_sys_mount fs/namespace.c:3425 [inline]
+>  __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45deb9
+> Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007fa358076c78 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+> RAX: ffffffffffffffda RBX: 0000000000021800 RCX: 000000000045deb9
+> RDX: 0000000020000100 RSI: 0000000020000040 RDI: 0000000000000000
+> RBP: 00007fa358076ca0 R08: 0000000020000080 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000001f
+> R13: 00007fff7dcf224f R14: 00007fa3580779c0 R15: 000000000118bf2c
+>
+> Allocated by task 15981:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:39
+>  kasan_set_track mm/kasan/common.c:47 [inline]
+>  set_alloc_info mm/kasan/common.c:403 [inline]
+>  ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:434
+>  kasan_slab_alloc include/linux/kasan.h:211 [inline]
+>  slab_post_alloc_hook mm/slab.h:512 [inline]
+>  slab_alloc_node mm/slub.c:2903 [inline]
+>  slab_alloc mm/slub.c:2911 [inline]
+>  kmem_cache_alloc+0x12a/0x470 mm/slub.c:2916
+>  kmem_cache_zalloc include/linux/slab.h:672 [inline]
+>  create_cache mm/slab_common.c:251 [inline]
+>  kmem_cache_create_usercopy+0x1a6/0x300 mm/slab_common.c:357
+>  p9_client_create+0xc4d/0x10c0 net/9p/client.c:1063
+>  v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
+>  v9fs_mount+0x79/0x9b0 fs/9p/vfs_super.c:126
+>  legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+>  vfs_get_tree+0x89/0x2f0 fs/super.c:1549
+>  do_new_mount fs/namespace.c:2896 [inline]
+>  path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+>  do_mount fs/namespace.c:3240 [inline]
+>  __do_sys_mount fs/namespace.c:3448 [inline]
+>  __se_sys_mount fs/namespace.c:3425 [inline]
+>  __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> Freed by task 15981:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:39
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:47
+>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:359
+>  ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:373
+>  kasan_slab_free include/linux/kasan.h:194 [inline]
+>  slab_free_hook mm/slub.c:1548 [inline]
+>  slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1586
+>  slab_free mm/slub.c:3157 [inline]
+>  kmem_cache_free+0x82/0x350 mm/slub.c:3173
+>  kobject_cleanup lib/kobject.c:705 [inline]
+>  kobject_release lib/kobject.c:736 [inline]
+>  kref_put include/linux/kref.h:65 [inline]
+>  kobject_put+0x1c8/0x540 lib/kobject.c:753
+>  sysfs_slab_add+0x164/0x1d0 mm/slub.c:5656
+>  __kmem_cache_create+0x471/0x5a0 mm/slub.c:4476
+>  create_cache mm/slab_common.c:262 [inline]
+>  kmem_cache_create_usercopy+0x1ed/0x300 mm/slab_common.c:357
+>  p9_client_create+0xc4d/0x10c0 net/9p/client.c:1063
+>  v9fs_session_init+0x1dd/0x1770 fs/9p/v9fs.c:406
+>  v9fs_mount+0x79/0x9b0 fs/9p/vfs_super.c:126
+>  legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+>  vfs_get_tree+0x89/0x2f0 fs/super.c:1549
+>  do_new_mount fs/namespace.c:2896 [inline]
+>  path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+>  do_mount fs/namespace.c:3240 [inline]
+>  __do_sys_mount fs/namespace.c:3448 [inline]
+>  __se_sys_mount fs/namespace.c:3425 [inline]
+>  __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> The buggy address belongs to the object at ffff888013a45b40
+>  which belongs to the cache kmem_cache of size 224
+> The buggy address is located 0 bytes inside of
+>  224-byte region [ffff888013a45b40, ffff888013a45c20)
+> The buggy address belongs to the page:
+> page:00000000cfbbc7ff refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888013a45c80 pfn:0x13a45
+> flags: 0xfff00000000200(slab)
+> raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888010041000
+> raw: ffff888013a45c80 00000000800c0004 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+>
+> Memory state around the buggy address:
+>  ffff888013a45a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff888013a45a80: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+> >ffff888013a45b00: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+>                                            ^
+>  ffff888013a45b80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff888013a45c00: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
+> ==================================================================
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000006ef45b05b436ddb4%40google.com.
