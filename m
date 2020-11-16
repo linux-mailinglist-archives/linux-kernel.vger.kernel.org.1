@@ -2,77 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5394B2B4D56
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5F52B4D5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733005AbgKPRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:36:21 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:37031 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731590AbgKPRgU (ORCPT
+        id S1733089AbgKPRhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:37:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728047AbgKPRhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:36:20 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 9B3BF100043;
-        Mon, 16 Nov 2020 17:36:18 +0000 (UTC)
-Date:   Mon, 16 Nov 2020 18:36:17 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Claudius Heine <ch@denx.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Henning Schild <henning.schild@siemens.com>,
-        Johannes Hahn <johannes-hahn@siemens.com>
-Subject: Re: [PATCH v2 1/3] rtc: rx6110: add i2c support
-Message-ID: <20201116173617.GV4556@piout.net>
-References: <20201112130734.331094-1-ch@denx.de>
- <20201112130734.331094-2-ch@denx.de>
- <20201116144343.GA1689012@smile.fi.intel.com>
+        Mon, 16 Nov 2020 12:37:05 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE48C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:05 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id m6so2453786wrg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rnCmLL25pCLDNOYAVS5vRDXtM8wklwyGg+VrKx5Ma2A=;
+        b=tllhDcFg6v1aQCkXpAymrypD3GV4OHum5p2/WrHJOhw21jBh1tzJJ5YQH3+f8rLq90
+         8fToMihvovq8zyX5/I8FXSc5WZkHtOfg5oa2zOsz6xOUoH8dFamywrLBkG1OT13Xw1oP
+         il6O++szmQO7CqwAPSxzz6EWh12ZQrDN4J7e/mbQ0NURGC7pTuhl5MwwChSE5D1Il1lk
+         HpwEfmWYN3pcLtOPHZ92fsiQtU0aldoiGcEJkWSyVvHh8bIcdsaplMyuupmxeuax+ogU
+         FRrxHweR5keMnn03xWcpPltyvudJv0QJkfwjngh09FALkU07xOZv4vXBx7iTdqHZiRWJ
+         xwSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rnCmLL25pCLDNOYAVS5vRDXtM8wklwyGg+VrKx5Ma2A=;
+        b=GC1PRVPUR+7oMz0O1fvuXtiiaO+0zNj+g3JVDwkpsKaqh/aTrTUvz9gHxnWzZNjXB9
+         6NPTJBg0i5v0w230ixUrHKIgKgMFNfpevemfSYaH8tTtYzDI+qTZUTRAzjLkZjDv4FwC
+         KpqwYBabwaameXlMayOYrLGTWm1b9yDTwwHjhIxndb23wfy9gHTUsaUBpyS4HRGqBUgk
+         YnZsKU8LPZSml+YSa+urfpYwplCGBbWxre6QQ4O9Sny2pIMs7tVLlYD1Gmlodlsr+cRd
+         XtxzA08/STwjjFLPlI/wxaQwZmAbBkg5pDnrNDeq7K3s/ZqqHejAc1i5PWS6DYZOJZHX
+         Sjfg==
+X-Gm-Message-State: AOAM5324hAyPjFN7fOxI766fYqpPMd2tLW4u3xAaDXoFGYXVnbuk1XZW
+        U8QHJa1wu8FgmZWi/1010WpmhQ==
+X-Google-Smtp-Source: ABdhPJzrvRFR93QE2mlsw9W/o6xTJR2iMN7IxdLb1TO4poszSjTKNNTUHXJ0m0aAMJICbuU0sVIMwQ==
+X-Received: by 2002:adf:cf0b:: with SMTP id o11mr20096726wrj.162.1605548223950;
+        Mon, 16 Nov 2020 09:37:03 -0800 (PST)
+Received: from dell.default ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 09:37:03 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Evan Quan <evan.quan@amd.com>,
+        Gareth Hughes <gareth@valinux.com>,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        Slava Grigorev <slava.grigorev@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: [RESEND v2 00/43] Rid W=1 warnings from GPU
+Date:   Mon, 16 Nov 2020 17:36:17 +0000
+Message-Id: <20201116173700.1830487-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116144343.GA1689012@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2020 16:43:43+0200, Andy Shevchenko wrote:
-> On Thu, Nov 12, 2020 at 02:07:32PM +0100, Claudius Heine wrote:
-> > The RX6110 also supports I2C, so this patch adds support for it to the
-> > driver.
-> > 
-> > This also renames the SPI specific functions and variables to include
-> > `_spi_` in their names.
-> 
-> As practice shows this is not the best approach. Can you ratqer split it to
-> three modules: core, spi, i2c like it's done in many other cases (esp. IIO)?
-> 
+[sending again, as `git send-email` crashed!]
 
-Actually, I'm fine with having everytihn in the same file because
-separating everything out means having 3 more files per rtc supporting
-both busses in an already very crowded folder. And I don't think being
-able to remove support for one or the other holds any actual value.
+This set contains fixes for some "wouldn't it be nice if" issues,
+however most of the patches seen here have been on the MLs, but
+were left unreviewed.
 
-> In Kconfig you just leave same option with two additional ones like
-> 
-> config ..._SPI
-> 	tristate
-> 	default SPI_MASTER
-> 	depends on SPI_MASTER
-> 
-> config ..._I2C
-> 	tristate
-> 	default I2C
-> 	depends on I2C
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Lee Jones (43):
+  drm/radeon/atombios_encoders: Move 'radeon_atom_get_tv_timings()'s
+    prototype into shared location
+  drm/radeon/radeon: Move prototype into shared header
+  drm/radeon/radeon_kms: Move 'radeon_*_kms' prototypes to shared header
+  drm/radeon/radeon_kms: Fix misnaming of 'radeon_info_ioctl's dev param
+  drm/radeon: Move radeon_ttm{init,fini} to shared location
+  drm/radeon/radeon_legacy_encoders: Move 'radeon_add_legacy_encoder'
+    prototype to shared header
+  drm/radeon/radeon_legacy_encoders: Move 'radeon_add_legacy_encoder's
+    prototype to shared location
+  drm/radeon/radeon_irq_kms: Demote non-conformant kernel-doc fix
+    another
+  drm/radeon/rv770: Move 'rv770_set_clk_bypass_mode' prototype to shared
+    location
+  drm/radeon/radeon_pm: Move 'radeon_pm_acpi_event_handler' prototype
+    into shared header
+  drm/radeon/radeon_audio: Move 'dce3_2_*' prototypes to shared location
+  drm/radeon/evergreen: Move 'evergreen_*' and 'sumo_*' prototypes out
+    to shared location
+  drm/radeon/radeon_drv: Move 'radeon_mmap()'s prototype to shared
+    header
+  drm/radeon/radeon_drv: Move 'radeon_driver_irq_handler_kms's prototype
+    into shared header
+  drm/radeon/atom: Move 'radeon_atom_hw_i2c_*()'s prototypes into shared
+    header
+  drm/radeon/radeon_gem: Move 'radeon_gem_prime_*()'s prototypes to
+    shared header
+  drm/radeon/evergreen_hdmi: Move 'evergreen_*()' and 'dce4_*()' HDMI
+    prototypes to shared header
+  drm/radeon/rv770: Move 'rv770_get_*()'s prototypes to shared header
+  drm/radeon/ni_dpm: Move 'ni_get_{pi,ps}()'s into shared header
+  drm/radeon/evergreen: Move 'cayman_*()'s prototypes to shared header
+  drm/radeon/r600_dma: Move 'r600_gpu_check_soft_reset()'s prototype to
+    shared location
+  drm/radeon/cik: Move 'r600_ih_ring_{alloc,fini}()'s prototypes to
+    shared header
+  drm/radeon/evergreen_dma: Move 'evergreen_gpu_check_soft_reset()'s
+    prototype to shared header
+  drm/radeon/r600: Move 'evergreen_rlc_resume()'s prototype to shared
+    header
+  drm/radeon/ni_dma: Move 'cayman_gpu_check_soft_reset()'s prototype to
+    shared header
+  drm/radeon/radeon_atombios: Move 'radeon_add_atom_encoder()'s
+    prototype to shared header
+  drm/radeon/radeon_encoders: Move 'radeon_atom_backlight_init's
+    prototype to shared header
+  drm/radeon/ci_dpm: Move 'ci_*()'s prototypes to shared header
+  drm/radeon/si_dpm: Move 'si_mc_load_microcode()'s prototype to shared
+    header
+  drm/radeon/si_dma: Move 'si_gpu_check_soft_reset()'s prototype to
+    shared header
+  drm/radeon/cik: Move 'si_*()'s prototypes to shared header
+  drm/radeon/btc_dpm: Move 'evergreen_get_pi's prototype to shared
+    header
+  drm/radeon/radeon_audio: Move 'dce6_*()'s prototypes to shared header
+  drm/radeon/evergreen: Move 'si_get_csb_*()'s prototypes to shared
+    header
+  drm/radeon/cik_sdma: Move 'amdgpu_cik_gpu_check_soft_reset()'s
+    prototype to shared header
+  drm/radeon/evergreen: Move 'cik_*()'s prototypes to shared header
+  drm/radeon/ci_dpm: Move 'si_*()'s prototypes to shared header
+  drm/radeon/cik: Move 'Move 'cik_sdma_*()'s prototypes to shared header
+  drm/radeon/si_dpm: Move 'vce_v1_0_enable_mgcg()'s prototype to shared
+    header
+  drm/radeon/cik: Move 'vce_v2_0_enable_mgcg()'s prototype to shared
+    header
+  drm/radeon/evergreen_cs: Move 'r600_dma_cs_next_reloc()'s prototype to
+    shared header
+  drm/radeon/radeon_audio: Move 'r600_*' prototypes into shared header
+  drm/radeon/radeon_drv: Move 'radeon_gem_prime_import_sg_table()'s
+    prototype to shared header
 
+ drivers/gpu/drm/radeon/atom.h                 |  7 ++
+ drivers/gpu/drm/radeon/atombios_encoders.c    |  5 +-
+ drivers/gpu/drm/radeon/btc_dpm.c              |  6 +-
+ drivers/gpu/drm/radeon/ci_dpm.c               | 13 +---
+ drivers/gpu/drm/radeon/cik.c                  | 19 ++---
+ drivers/gpu/drm/radeon/cik.h                  | 40 +++++++++++
+ drivers/gpu/drm/radeon/cik_sdma.c             |  3 +-
+ drivers/gpu/drm/radeon/cypress_dpm.c          |  6 +-
+ drivers/gpu/drm/radeon/dce6_afmt.c            |  1 +
+ drivers/gpu/drm/radeon/dce6_afmt.h            | 52 ++++++++++++++
+ drivers/gpu/drm/radeon/evergreen.c            | 16 ++---
+ drivers/gpu/drm/radeon/evergreen.h            | 55 +++++++++++++++
+ drivers/gpu/drm/radeon/evergreen_cs.c         |  3 +-
+ drivers/gpu/drm/radeon/evergreen_dma.c        |  3 +-
+ drivers/gpu/drm/radeon/evergreen_hdmi.c       |  1 +
+ drivers/gpu/drm/radeon/evergreen_hdmi.h       | 69 +++++++++++++++++++
+ drivers/gpu/drm/radeon/ni.c                   | 17 +----
+ drivers/gpu/drm/radeon/ni.h                   | 39 +++++++++++
+ drivers/gpu/drm/radeon/ni_dma.c               |  3 +-
+ drivers/gpu/drm/radeon/ni_dpm.c               |  5 +-
+ drivers/gpu/drm/radeon/ni_dpm.h               |  3 +
+ drivers/gpu/drm/radeon/r600.c                 |  5 +-
+ drivers/gpu/drm/radeon/r600.h                 | 58 ++++++++++++++++
+ drivers/gpu/drm/radeon/r600_cs.c              |  1 +
+ drivers/gpu/drm/radeon/r600_dma.c             |  3 +-
+ drivers/gpu/drm/radeon/r600_hdmi.c            |  1 +
+ drivers/gpu/drm/radeon/radeon_acpi.c          |  3 +-
+ drivers/gpu/drm/radeon/radeon_atombios.c      | 11 +--
+ drivers/gpu/drm/radeon/radeon_atombios.h      | 45 ++++++++++++
+ drivers/gpu/drm/radeon/radeon_audio.c         | 68 +-----------------
+ drivers/gpu/drm/radeon/radeon_audio.h         | 12 ++++
+ drivers/gpu/drm/radeon/radeon_combios.c       |  6 +-
+ drivers/gpu/drm/radeon/radeon_device.c        |  1 +
+ drivers/gpu/drm/radeon/radeon_device.h        | 32 +++++++++
+ drivers/gpu/drm/radeon/radeon_display.c       |  1 +
+ drivers/gpu/drm/radeon/radeon_drv.c           | 14 ++--
+ drivers/gpu/drm/radeon/radeon_encoders.c      | 10 +--
+ drivers/gpu/drm/radeon/radeon_gem.c           |  1 +
+ drivers/gpu/drm/radeon/radeon_i2c.c           |  4 --
+ drivers/gpu/drm/radeon/radeon_irq_kms.c       |  9 ++-
+ drivers/gpu/drm/radeon/radeon_kms.c           |  3 +-
+ drivers/gpu/drm/radeon/radeon_kms.h           | 40 +++++++++++
+ .../gpu/drm/radeon/radeon_legacy_encoders.c   |  1 +
+ .../gpu/drm/radeon/radeon_legacy_encoders.h   | 36 ++++++++++
+ drivers/gpu/drm/radeon/radeon_object.c        |  3 +-
+ drivers/gpu/drm/radeon/radeon_pm.c            |  1 +
+ drivers/gpu/drm/radeon/radeon_pm.h            | 33 +++++++++
+ drivers/gpu/drm/radeon/radeon_prime.c         |  1 +
+ drivers/gpu/drm/radeon/radeon_prime.h         | 42 +++++++++++
+ drivers/gpu/drm/radeon/radeon_ttm.c           |  1 +
+ drivers/gpu/drm/radeon/radeon_ttm.h           | 37 ++++++++++
+ drivers/gpu/drm/radeon/rv730_dpm.c            |  4 +-
+ drivers/gpu/drm/radeon/rv740_dpm.c            |  3 +-
+ drivers/gpu/drm/radeon/rv770.c                |  1 +
+ drivers/gpu/drm/radeon/rv770.h                | 39 +++++++++++
+ drivers/gpu/drm/radeon/rv770_dpm.c            |  2 +
+ drivers/gpu/drm/radeon/si.c                   | 11 +--
+ drivers/gpu/drm/radeon/si.h                   | 38 ++++++++++
+ drivers/gpu/drm/radeon/si_dma.c               |  3 +-
+ drivers/gpu/drm/radeon/si_dpm.c               | 13 ++--
+ drivers/gpu/drm/radeon/si_dpm.h               |  5 ++
+ drivers/gpu/drm/radeon/trinity_dpm.c          |  2 +-
+ drivers/gpu/drm/radeon/vce.h                  | 35 ++++++++++
+ drivers/gpu/drm/radeon/vce_v1_0.c             |  1 +
+ drivers/gpu/drm/radeon/vce_v2_0.c             |  1 +
+ 65 files changed, 794 insertions(+), 213 deletions(-)
+ create mode 100644 drivers/gpu/drm/radeon/cik.h
+ create mode 100644 drivers/gpu/drm/radeon/dce6_afmt.h
+ create mode 100644 drivers/gpu/drm/radeon/evergreen.h
+ create mode 100644 drivers/gpu/drm/radeon/evergreen_hdmi.h
+ create mode 100644 drivers/gpu/drm/radeon/ni.h
+ create mode 100644 drivers/gpu/drm/radeon/r600.h
+ create mode 100644 drivers/gpu/drm/radeon/radeon_atombios.h
+ create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
+ create mode 100644 drivers/gpu/drm/radeon/radeon_kms.h
+ create mode 100644 drivers/gpu/drm/radeon/radeon_legacy_encoders.h
+ create mode 100644 drivers/gpu/drm/radeon/radeon_pm.h
+ create mode 100644 drivers/gpu/drm/radeon/radeon_prime.h
+ create mode 100644 drivers/gpu/drm/radeon/radeon_ttm.h
+ create mode 100644 drivers/gpu/drm/radeon/rv770.h
+ create mode 100644 drivers/gpu/drm/radeon/si.h
+ create mode 100644 drivers/gpu/drm/radeon/vce.h
+
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Evan Quan <evan.quan@amd.com>
+Cc: Gareth Hughes <gareth@valinux.com>
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-media@vger.kernel.org
+Cc: Slava Grigorev <slava.grigorev@amd.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.25.1
+
