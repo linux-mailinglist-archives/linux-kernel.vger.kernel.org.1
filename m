@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA3E2B40E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2711D2B40DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729105AbgKPKTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:19:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53212 "EHLO mail.kernel.org"
+        id S1729060AbgKPKTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:19:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728838AbgKPKSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:18:30 -0500
+        id S1728856AbgKPKSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 05:18:31 -0500
 Received: from mail.kernel.org (ip5f5ad5de.dynamic.kabel-deutschland.de [95.90.213.222])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79809238E6;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B6D22462E;
         Mon, 16 Nov 2020 10:18:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1605521908;
-        bh=bYE3K8qf8FuwlLitXjd9/yN9A+lYb43nUXRVfV4LFV4=;
+        bh=PJLtGmv4En+3vnXJ8f68rtLRDgDexuQGTS2qS58wwhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZBa/yVr9oXRB0QRipjpbDQqoGTOaedRbnNeZr3nROwiTeGoSla+DzctYNfH1ik1xP
-         BEcM1O0frppI5UpSDFktm9aawOid0Dh9+ozqAYTiyFxIQpG1G2gCbgBHRf6Z7yZvC1
-         V3GppEBTX2/uh5u39bJCUNZilARElSUYRfX0fYOM=
+        b=ytSPsuGlZFKDV6u1q67oMSxli+OouGHtwkj0M3/nr7jxJ5PUOGdCMXexpyzTi6Vgq
+         mwC8Jb4JIoxuO0NB2HW+a00xg+3tXBe6PYbM9w1lEKzDSdrqBnr9JwgCAP1N8NfwHq
+         AIRKiBrHVJHMc5jvyoNgabljsfNi5fDBEl9OqoiM=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kebac-00FwEY-Gq; Mon, 16 Nov 2020 11:18:26 +0100
+        id 1kebac-00FwEa-Hl; Mon, 16 Nov 2020 11:18:26 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Asif Rasheed <b00073877@aus.edu>,
+        Eric Dumazet <edumazet@google.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 19/27] genirq: fix kernel-doc markups
-Date:   Mon, 16 Nov 2020 11:18:15 +0100
-Message-Id: <13a44f4f0c3135e14b16ae8fcce4af1eab27cb5f.1605521731.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v4 20/27] list: fix a typo at the kernel-doc markup
+Date:   Mon, 16 Nov 2020 11:18:16 +0100
+Message-Id: <d0ef485aaaa648bf6ebbc26a4082ccb2ff6a8e5b.1605521731.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1605521731.git.mchehab+huawei@kernel.org>
 References: <cover.1605521731.git.mchehab+huawei@kernel.org>
@@ -45,109 +50,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some identifiers have different names between their prototypes
-and the kernel-doc markup.
+hlist_add_behing -> hlist_add_behind
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- kernel/irq/chip.c         | 2 +-
- kernel/irq/generic-chip.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/linux/list.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index b9b9618e1aca..df75c3573dcb 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -44,41 +44,41 @@ int irq_set_chip(unsigned int irq, struct irq_chip *chip)
- 	struct irq_desc *desc = irq_get_desc_lock(irq, &flags, 0);
- 
- 	if (!desc)
- 		return -EINVAL;
- 
- 	if (!chip)
- 		chip = &no_irq_chip;
- 
- 	desc->irq_data.chip = chip;
- 	irq_put_desc_unlock(desc, flags);
- 	/*
- 	 * For !CONFIG_SPARSE_IRQ make the irq show up in
- 	 * allocated_irqs.
- 	 */
- 	irq_mark_irq(irq);
- 	return 0;
+diff --git a/include/linux/list.h b/include/linux/list.h
+index 89bdc92e75c3..f2af4b4aa4e9 100644
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -884,41 +884,41 @@ static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
+ 		WRITE_ONCE(first->pprev, &n->next);
+ 	WRITE_ONCE(h->first, n);
+ 	WRITE_ONCE(n->pprev, &h->first);
  }
- EXPORT_SYMBOL(irq_set_chip);
  
  /**
-- *	irq_set_type - set the irq trigger type for an irq
-+ *	irq_set_irq_type - set the irq trigger type for an irq
-  *	@irq:	irq number
-  *	@type:	IRQ_TYPE_{LEVEL,EDGE}_* value - see include/linux/irq.h
+  * hlist_add_before - add a new entry before the one specified
+  * @n: new entry to be added
+  * @next: hlist node to add it before, which must be non-NULL
   */
- int irq_set_irq_type(unsigned int irq, unsigned int type)
+ static inline void hlist_add_before(struct hlist_node *n,
+ 				    struct hlist_node *next)
  {
- 	unsigned long flags;
- 	struct irq_desc *desc = irq_get_desc_buslock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
- 	int ret = 0;
- 
- 	if (!desc)
- 		return -EINVAL;
- 
- 	ret = __irq_set_trigger(desc, type);
- 	irq_put_desc_busunlock(desc, flags);
- 	return ret;
- }
- EXPORT_SYMBOL(irq_set_irq_type);
- 
- /**
-  *	irq_set_handler_data - set irq handler data for an irq
-diff --git a/kernel/irq/generic-chip.c b/kernel/irq/generic-chip.c
-index e2999a070a99..a23ac2bbf433 100644
---- a/kernel/irq/generic-chip.c
-+++ b/kernel/irq/generic-chip.c
-@@ -252,41 +252,41 @@ EXPORT_SYMBOL_GPL(irq_alloc_generic_chip);
- 
- static void
- irq_gc_init_mask_cache(struct irq_chip_generic *gc, enum irq_gc_flags flags)
- {
- 	struct irq_chip_type *ct = gc->chip_types;
- 	u32 *mskptr = &gc->mask_cache, mskreg = ct->regs.mask;
- 	int i;
- 
- 	for (i = 0; i < gc->num_ct; i++) {
- 		if (flags & IRQ_GC_MASK_CACHE_PER_TYPE) {
- 			mskptr = &ct[i].mask_cache_priv;
- 			mskreg = ct[i].regs.mask;
- 		}
- 		ct[i].mask_cache = mskptr;
- 		if (flags & IRQ_GC_INIT_MASK_CACHE)
- 			*mskptr = irq_reg_readl(gc, mskreg);
- 	}
+ 	WRITE_ONCE(n->pprev, next->pprev);
+ 	WRITE_ONCE(n->next, next);
+ 	WRITE_ONCE(next->pprev, &n->next);
+ 	WRITE_ONCE(*(n->pprev), n);
  }
  
  /**
-- * __irq_alloc_domain_generic_chip - Allocate generic chips for an irq domain
-+ * __irq_alloc_domain_generic_chips - Allocate generic chips for an irq domain
-  * @d:			irq domain for which to allocate chips
-  * @irqs_per_chip:	Number of interrupts each chip handles (max 32)
-  * @num_ct:		Number of irq_chip_type instances associated with this
-  * @name:		Name of the irq chip
-  * @handler:		Default flow handler associated with these chips
-  * @clr:		IRQ_* bits to clear in the mapping function
-  * @set:		IRQ_* bits to set in the mapping function
-  * @gcflags:		Generic chip specific setup flags
+- * hlist_add_behing - add a new entry after the one specified
++ * hlist_add_behind - add a new entry after the one specified
+  * @n: new entry to be added
+  * @prev: hlist node to add it after, which must be non-NULL
   */
- int __irq_alloc_domain_generic_chips(struct irq_domain *d, int irqs_per_chip,
- 				     int num_ct, const char *name,
- 				     irq_flow_handler_t handler,
- 				     unsigned int clr, unsigned int set,
- 				     enum irq_gc_flags gcflags)
+ static inline void hlist_add_behind(struct hlist_node *n,
+ 				    struct hlist_node *prev)
  {
- 	struct irq_domain_chip_generic *dgc;
- 	struct irq_chip_generic *gc;
- 	int numchips, sz, i;
- 	unsigned long flags;
- 	void *tmp;
+ 	WRITE_ONCE(n->next, prev->next);
+ 	WRITE_ONCE(prev->next, n);
+ 	WRITE_ONCE(n->pprev, &prev->next);
+ 
+ 	if (n->next)
+ 		WRITE_ONCE(n->next->pprev, &n->next);
+ }
+ 
+ /**
+  * hlist_add_fake - create a fake hlist consisting of a single headless node
+  * @n: Node to make a fake list out of
+  *
+  * This makes @n appear to be its own predecessor on a headless hlist.
+  * The point of this is to allow things like hlist_del() to work correctly
 -- 
 2.28.0
 
