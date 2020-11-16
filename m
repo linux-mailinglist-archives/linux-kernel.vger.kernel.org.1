@@ -2,149 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5762B4BC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF8E2B4BC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731764AbgKPQyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:54:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
+        id S1732270AbgKPQzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:55:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730379AbgKPQyU (ORCPT
+        with ESMTP id S1731088AbgKPQzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:54:20 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD07C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:54:20 -0800 (PST)
+        Mon, 16 Nov 2020 11:55:32 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA385C0613CF;
+        Mon, 16 Nov 2020 08:55:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RdSNhM8Hn1M8U/H/W7XgtiZjk4F566V45WZZcGzUBuo=; b=esKOJAxXuLn1o3Gh7n5RxwHvvG
-        bVz98oZiDrmyArrcQS4CRf5vR7/7VjJHV2lfVYMZajOILGoPPdMN7uOUqOXC7H1MciBapaixa1NBv
-        Zt4mKoUxBx7GTnCHgewUgiBUvz0r/aGJqXSX/A9SMHGD+XVe+czCO2dnh3SW5In9NZDyKq1uZ1hEf
-        XYv+Zyu3f7U82YuaTb+OtoXfyd1dU/1VSGOsOtcj7l2hklXXl0bLtMKNWv9ROoLA00pmNmQJeYdi7
-        BFkmwtAAiL9oAl3bzYJd7cxdufp491ktYY0QHkxAX33F3GgsvSrt/u86Mr730j/sY+vFdPStYMsat
-        NPykfnsA==;
+        bh=qwpmaY+3FLIw2My8lpkirBu6QWcmDVtCZWX9oSsd5pI=; b=sCjdaAN7YgUfR5Na4/L2rwidiM
+        15tIgEAD8fxyHNfjXSLVkszMh4VTvOdC4da0kQq33F5KN4YSPiZ1pNJ9L3rNDo7hadHux4HVGEMek
+        gK6TmC0vH1duDtKuQzo1ZYcV7W6fvsORpiGDSkx6N/FLHn6JtiFfK079qdGhTFdukuBnFzojnMJEG
+        soexUqk6dXlXrsFdSZ0FCimGpoCbHwE4Er09GJ3Cs7tnhIyuNpJXdhi3Fp9CJDQA/FmtXMCTtp2Bh
+        YPYI07+Be6K6ArB4N8yV3nsqZFzjHUdnpniYgtCJxv2v3RU7k1q3I0QDvlbvjYpcQLy1IaBJccdYa
+        3w3WYxuw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kehlg-00038a-JE; Mon, 16 Nov 2020 16:54:16 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kehmU-0006C5-2F; Mon, 16 Nov 2020 16:55:07 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 645F93012DC;
-        Mon, 16 Nov 2020 17:54:15 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3D864301959;
+        Mon, 16 Nov 2020 17:55:04 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 489F620282DFC; Mon, 16 Nov 2020 17:54:15 +0100 (CET)
-Date:   Mon, 16 Nov 2020 17:54:15 +0100
+        id 28BB820282DFC; Mon, 16 Nov 2020 17:55:04 +0100 (CET)
+Date:   Mon, 16 Nov 2020 17:55:04 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: Loadavg accounting error on arm64
-Message-ID: <20201116165415.GG3121392@hirez.programming.kicks-ass.net>
-References: <20201116091054.GL3371@techsingularity.net>
- <20201116131102.GA29992@willie-the-truck>
- <20201116133721.GQ3371@techsingularity.net>
- <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
- <20201116155232.GS3371@techsingularity.net>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        kan.liang@linux.intel.com, mingo@kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, christophe.leroy@csgroup.eu,
+        npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        mpe@ellerman.id.au, will@kernel.org, aneesh.kumar@linux.ibm.com,
+        sparclinux@vger.kernel.org, davem@davemloft.net,
+        catalin.marinas@arm.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kirill.shutemov@linux.intel.com
+Subject: Re: [PATCH 0/5] perf/mm: Fix PERF_SAMPLE_*_PAGE_SIZE
+Message-ID: <20201116165504.GH3121392@hirez.programming.kicks-ass.net>
+References: <20201113111901.743573013@infradead.org>
+ <20201116154357.bw64c5ie2kiu5l4x@box>
+ <20201116155404.GD29991@casper.infradead.org>
+ <eeec67f6-ea05-1115-f249-b6cdcf2c5e2c@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116155232.GS3371@techsingularity.net>
+In-Reply-To: <eeec67f6-ea05-1115-f249-b6cdcf2c5e2c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 03:52:32PM +0000, Mel Gorman wrote:
-> On Mon, Nov 16, 2020 at 03:20:05PM +0100, Peter Zijlstra wrote:
-> > > It used to be at least a WRITE_ONCE until 58877d347b58 ("sched: Better
-> > > document ttwu()") which changed it. Not sure why that is and didn't
-> > > think about it too deep as it didn't appear to be directly related to
-> > > the problem and didn't have ordering consequences.
+On Mon, Nov 16, 2020 at 08:28:23AM -0800, Dave Hansen wrote:
+> On 11/16/20 7:54 AM, Matthew Wilcox wrote:
+> > It gets even more complicated with CPUs with multiple levels of TLB
+> > which support different TLB entry sizes.  My CPU reports:
 > > 
-> > I'm confused; that commit didn't change deactivate_task(). Anyway,
-> > ->on_rq should be strictly under rq->lock. That said, since there is a
-> > READ_ONCE() consumer of ->on_rq it makes sense to have the stores as
-> > WRITE_ONCE().
-> > 
+> > TLB info
+> >  Instruction TLB: 2M/4M pages, fully associative, 8 entries
+> >  Instruction TLB: 4K pages, 8-way associative, 64 entries
+> >  Data TLB: 1GB pages, 4-way set associative, 4 entries
+> >  Data TLB: 4KB pages, 4-way associative, 64 entries
+> >  Shared L2 TLB: 4KB/2MB pages, 6-way associative, 1536 entries
 > 
-> It didn't change deactivate_task but it did this
+> It's even "worse" on recent AMD systems.  Those will coalesce multiple
+> adjacent PTEs into a single TLB entry.  I think Alphas did something
+> like this back in the day with an opt-in.
 > 
-> -       WRITE_ONCE(p->on_rq, TASK_ON_RQ_MIGRATING);
-> -       dequeue_task(rq, p, DEQUEUE_NOCLOCK);
-> +       deactivate_task(rq, p, DEQUEUE_NOCLOCK);
-> 
-> which makes that write a
-> 
-> p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
-> 
-> As activate_task is also a plain store and I didn't spot a relevant
-> ordering problem that would impact loadavg, I concluded it was not
-> immediately relevant, just a curiousity.
+> Anyway, the changelog should probably replace:
 
-That's move_queued_task() case, which is irrelevant for the issue at
-hand.
+ARM64 does too.
 
-> > > > __ttwu_queue_wakelist() we have:
-> > > > 
-> > > > 	p->sched_remote_wakeup = !!(wake_flags & WF_MIGRATED);
-> > > > 
-> > > > which can be invoked on the try_to_wake_up() path if p->on_rq is first read
-> > > > as zero and then p->on_cpu is read as 1. Perhaps these non-atomic bitfield
-> > > > updates can race and cause the flags to be corrupted?
-> > > > 
-> > > 
-> > > I think this is at least one possibility. I think at least that one
-> > > should only be explicitly set on WF_MIGRATED and explicitly cleared in
-> > > sched_ttwu_pending. While I haven't audited it fully, it might be enough
-> > > to avoid a double write outside of the rq lock on the bitfield but I
-> > > still need to think more about the ordering of sched_contributes_to_load
-> > > and whether it's ordered by p->on_cpu or not.
-> > 
-> > The scenario you're worried about is something like:
-> > 
-> > 	CPU0							CPU1
-> > 
-> > 	schedule()
-> > 		prev->sched_contributes_to_load = X;
-> > 		deactivate_task(prev);
-> > 
-> > 								try_to_wake_up()
-> > 									if (p->on_rq &&) // false
-> > 									if (smp_load_acquire(&p->on_cpu) && // true
-> > 									    ttwu_queue_wakelist())
-> > 										p->sched_remote_wakeup = Y;
-> > 
-> > 		smp_store_release(prev->on_cpu, 0);
-> > 
+> > This enables PERF_SAMPLE_{DATA,CODE}_PAGE_SIZE to report accurate TLB
+> > page sizes.
 > 
-> Yes, mostly because of what memory-barriers.txt warns about for bitfields
-> if they are not protected by the same lock.
-
-I'm not sure memory-barriers.txt is relevant; that's simply two racing
-stores and 'obviously' buggered.
-
-> > And then the stores of X and Y clobber one another.. Hummph, seems
-> > reasonable. One quick thing to test would be something like this:
-> > 
-> > 
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index 7abbdd7f3884..9844e541c94c 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -775,7 +775,9 @@ struct task_struct {
-> >  	unsigned			sched_reset_on_fork:1;
-> >  	unsigned			sched_contributes_to_load:1;
-> >  	unsigned			sched_migrated:1;
-> > +	unsigned			:0;
-> >  	unsigned			sched_remote_wakeup:1;
-> > +	unsigned			:0;
-> >  #ifdef CONFIG_PSI
-> >  	unsigned			sched_psi_wake_requeue:1;
-> >  #endif
+> with something more like:
 > 
-> I'll test this after the smp_wmb() test completes. While a clobbering may
-> be the issue, I also think the gap between the rq->nr_uninterruptible++
-> and smp_store_release(prev->on_cpu, 0) is relevant and a better candidate.
+> This enables PERF_SAMPLE_{DATA,CODE}_PAGE_SIZE to report accurate page
+> table mapping sizes.
 
-I really don't understand what you wrote in that email...
+Sure.
