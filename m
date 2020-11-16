@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910122B4113
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD012B4118
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729202AbgKPK1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:27:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
+        id S1728697AbgKPK3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgKPK1N (ORCPT
+        with ESMTP id S1726885AbgKPK3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:27:13 -0500
-X-Greylist: delayed 42855 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 16 Nov 2020 02:27:13 PST
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBA1C0613CF;
-        Mon, 16 Nov 2020 02:27:13 -0800 (PST)
-Received: from mail.natalenko.name (vulcan.natalenko.name [IPv6:fe80::5400:ff:fe0c:dfa0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 02C6189DC12;
-        Mon, 16 Nov 2020 11:27:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1605522430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sj6OiBdO7loZZMxCiHWmGm/4jUgM9stnYplzGZbEaPs=;
-        b=xT+SqK9/GEXSJK0vb8FES4Ticw6nqxiEIq3iDkQhGDvPhdDkTKEl7fF8dnvdFycalbRtir
-        dAcab73XL+cbaJtt3jFNqa0MU48G1syTYESR7O3KYFkCWyZM8TVD5LrJMvXYDT63UDSBax
-        6LMFNcVv0fVgelscsgL1zQ35Bj5FqX0=
+        Mon, 16 Nov 2020 05:29:06 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BB9C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:29:05 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id d12so18049121wrr.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wmRBhZj7/1pxfeVgZYMcCYX2nwmFSv/2NvPyqCkbFzU=;
+        b=RftIK7kde9WlaffU9j38KVk/J1NaQLQ8CtGJGBdkT6P0pW5BBCOZSJWa0IsAikZWXG
+         LP6YzPgeM64MOgYeHsbLkqf7irgCQPXs6gB8XR9HmviYbDsS6B8NFD4iKj9H8O8HHFjr
+         zX0YaqHR6UWwBE40vsDO9aM9BjUL1K7o+hSq5MpkHo7uJiAbo+8u69fZ2+dFHc/Btcf3
+         TG23NOv0/v/5C32hSU7zxy6vFqfKJ71hhCLbfDzOIWexlhnDFrK0xcssVxKzorIR9om1
+         kq8llc5d3qMDCEG5NzlwZJLL8eFweqXr6df0oS1FV2pp8RoAxw5PmDcF/2jbM/Evsjn6
+         Qs4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wmRBhZj7/1pxfeVgZYMcCYX2nwmFSv/2NvPyqCkbFzU=;
+        b=RZecvfv8Es/F97MJ7ycfV7hC2tIx9hsPKBMQqOv2QV710kb/v5Vbv/GeRNxpooYlLl
+         URSdJY2RfaA5rG6/j3xH1ly0IqA4gkeDk/eHB52eX3MyM0GqQrezTZogOXmdNwpSScEf
+         pNz+ern8WWmMLpTgWYCL2gddXceAf+PjsRk1PBopUSlkrUVh1A6RiP1c9+mhsXOikzyd
+         sicO058ET8Dejvzb66bqpKOrpVUm4fSdPjv/HD1TaJw6mM5qUXvzI707PzFSR9f5a5AP
+         +QPjOnXDtKA/qEjNqTWrenKhnTYNrlYySw5362RjmJIG5oWEKk2/IfUFFOnQg9793UM7
+         zt9w==
+X-Gm-Message-State: AOAM532j//eWFO9PPT6jLx3DMBuij8GC2sXqOVrNxs+a+Hhi08SdB36P
+        JOiBqby6tnHKijomn0SLeXWS6Q==
+X-Google-Smtp-Source: ABdhPJx++ca5WSk2zevIOD5mCC/jI7JYS7KLm3+x6zUCHUrs4kWmF68X4YCcaDImcIZKjO0Vln2cOA==
+X-Received: by 2002:adf:f208:: with SMTP id p8mr17519290wro.280.1605522544279;
+        Mon, 16 Nov 2020 02:29:04 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id c8sm21329564wrv.26.2020.11.16.02.29.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 02:29:03 -0800 (PST)
+Date:   Mon, 16 Nov 2020 10:29:01 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/4] mfd: Add driver for Embedded Controller found on
+ Acer Iconia Tab A500
+Message-ID: <20201116102901.GO3718728@dell>
+References: <20201104203403.24937-1-digetx@gmail.com>
+ <20201104203403.24937-3-digetx@gmail.com>
+ <20201113093747.GJ2787115@dell>
+ <3ad644fd-cd03-a1e1-36d9-014304fdfcee@gmail.com>
+ <20201116084837.GM3718728@dell>
+ <0e795281-ca18-fca6-1585-a487bcfabb86@gmail.com>
 MIME-Version: 1.0
-Date:   Mon, 16 Nov 2020 11:27:09 +0100
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org
-Subject: Re: WARNING at kernel/sched/core.c:2013
- migration_cpu_stop+0x2e3/0x330
-In-Reply-To: <jhj3619y63v.mognet@arm.com>
-References: <a1fd0d9c6c8cd90a74879b61467ae48d@natalenko.name>
- <jhj3619y63v.mognet@arm.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <41d6aca71c6a52df8437cdb7b4a1b1c4@natalenko.name>
-X-Sender: oleksandr@natalenko.name
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0e795281-ca18-fca6-1585-a487bcfabb86@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
-
-On 16.11.2020 11:00, Valentin Schneider wrote:
-> On 15/11/20 22:32, Oleksandr Natalenko wrote:
->> I'm running v5.10-rc3-rt7 for some time, and I came across this splat 
->> in
->> dmesg:
->> 
->> ```
->> [118769.951010] ------------[ cut here ]------------
->> [118769.951013] WARNING: CPU: 19 PID: 146 at kernel/sched/core.c:2013
+On Mon, 16 Nov 2020, Dmitry Osipenko wrote:
+> ...
+> >>>> +	while (retries-- > 0) {
+> >>>> +		ret = i2c_smbus_read_word_data(client, reg);
+> >>>> +		if (ret >= 0)
+> >>>> +			break;
+> >>>> +
+> >>>> +		msleep(A500_EC_I2C_ERR_TIMEOUT);
+> >>>> +	}
+> ...
+> >>> I'm surprised there isn't a generic function which does this kind of
+> >>> read.  Seems like pretty common/boilerplate stuff.
+> >>
+> >> I'm not quite sure that this is a really very common pattern which
+> >> deserves a generic helper.
+> > 
+> > What?  Read from I2C a few times, then sleep sounds like a pretty
+> > common pattern to me.
 > 
-> Err, I didn't pick up on this back then, but isn't that check bogus? If 
-> the
-> task is enqueued elsewhere, it's valid for it not to be affined
-> 'here'. Also that is_migration_disabled() check within is_cpu_allowed()
-> makes me think this isn't the best thing to call on a remote task.
+> Maybe the read_poll_timeout() helper could be used for that, but I think
+> the open-coded variant is much easier to perceive, don't you agree?
+
+I haven't looked into it.  My comment was more general in nature.
+
+As a general rule, helpers are better than open coding, but there are
+always exceptions.  There may not even be a suitable helper for this
+use-case.  As I say, the comment was more of a passing remark.
+
+[...]
+
+> >> These are the values which controller's firmware wants to see, otherwise
+> >> it will reject command as invalid. I'll add a clarifying comment to the
+> >> code.
+> > 
+> > Thanks.  Hopefully with a bit more information as to why the firmware
+> > expects to see them.  Hopefully they're not random.
 > 
-> ---
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 1218f3ce1713..47d5b677585f 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -2010,7 +2010,7 @@ static int migration_cpu_stop(void *data)
->  		 * valid again. Nothing to do.
->  		 */
->  		if (!pending) {
-> -			WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
-> +			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), p->cpus_ptr));
->  			goto out;
->  		}
+> These are the firmware-defined specific command opcodes, I'll add
+> defines for them to make it more clear, thanks.
 
-Not sure whether the check is legitimate, but FWIW I've managed to put a 
-test task [1] (it spawns a lot of threads and applies affinity) into a 
-permanent unkillable D state here:
-
-```
-[<0>] affine_move_task+0x2d3/0x620
-[<0>] __set_cpus_allowed_ptr+0x164/0x210
-[<0>] sched_setaffinity+0x21a/0x300
-[<0>] __x64_sys_sched_setaffinity+0x8c/0xc0
-[<0>] do_syscall_64+0x33/0x40
-[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-```
-
-I think this corresponds to something around here:
-
-```
-$ scripts/faddr2line kernel/sched/core.o affine_move_task+0x2d3
-affine_move_task+0x2d3/0x620:
-arch_atomic_fetch_sub at 
-/home/pf/linux-pf-edge/src/linux-5.10/./arch/x86/include/asm/atomic.h:190
-(inlined by) atomic_fetch_sub_release at 
-/home/pf/linux-pf-edge/src/linux-5.10/./include/asm-generic/atomic-instrumented.h:221
-(inlined by) __refcount_sub_and_test at 
-/home/pf/linux-pf-edge/src/linux-5.10/./include/linux/refcount.h:272
-(inlined by) __refcount_dec_and_test at 
-/home/pf/linux-pf-edge/src/linux-5.10/./include/linux/refcount.h:315
-(inlined by) refcount_dec_and_test at 
-/home/pf/linux-pf-edge/src/linux-5.10/./include/linux/refcount.h:333
-(inlined by) affine_move_task at 
-/home/pf/linux-pf-edge/src/linux-5.10/kernel/sched/core.c:2334
-```
-
-or:
-
-```
-2332     wait_for_completion(&pending->done);
-2333
-2334     if (refcount_dec_and_test(&pending->refs))
-2335         wake_up_var(&pending->refs);
-```
-
-I'm not positive about this being directly related to the original 
-report, but I think it is still worth mentioning.
-
-Thanks.
-
-[1] https://gitlab.com/post-factum/burn_scheduler
+That'll do.
 
 -- 
-   Oleksandr Natalenko (post-factum)
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
