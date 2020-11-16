@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F112B45CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315E62B45D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730153AbgKPOZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:25:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729437AbgKPOZu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:25:50 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4A4C0613CF;
-        Mon, 16 Nov 2020 06:25:48 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id d18so6000473edt.7;
-        Mon, 16 Nov 2020 06:25:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=L16V5nkbIF94gXRlKpA4q4FCXTH9WuIAPnoBpYHLXkU=;
-        b=WeuEqUIQw/uCXjwMIr5thuv465m2Wy5JvfRHw1rQyoY6Qk/w0DVnsuI3e1YgYAV85T
-         cyk7Wpj3FA/GhW72iZEsJZRgVRyJ7RivLX28BRGCS8yOQYAI1SDs+g8T607ZDRlZ7yXA
-         GXKVT99aISzRxj6V9xu0kM8s+9FNsaNfzZ4A8EVnT2XiGoLROkyizYg7frZs4uzOw7Hj
-         0NCCndfQY63iPYCq8/ctBiDn7k/GLRw318fKAqEMh6HVf/u8IIuq7pN4ihoBubNn1ABG
-         lOm9Dr6XwzFECnzqpx77d0pwrG7af5WcMlYcvhxs8VrAhz5Cq2+/6gmhNYKxmii8ikLp
-         Xv2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=L16V5nkbIF94gXRlKpA4q4FCXTH9WuIAPnoBpYHLXkU=;
-        b=iH3VWqXoFH0UgviF68rTp5IAV8HkdLiY1AL7BLnLOU2DI4XdeyKEnvsIjHyUQ2pyn0
-         7peTYw5xrpNKskVpmGqAPWMEFG/dK4+ML6VQD5ij6cXZWk9Cj+c1jah0jZjfvXO9Vu2m
-         TgyUcF2jt3/kuoCpIzblh1oGXZw6eF+X5fmlujiQVreWeMjcljGdSIfnndtX5vDMDkcF
-         QpSAX8/FDl6c5rr6FywdulIJoy0hsCdyzuxKmQtMmlCG2CYDTJC9ODlPh9BRxfOgrkcf
-         QN5D11DbWf7ayBBDY2pV9iR3ADDI6wLmEPHSsPPtWAwFAcyxrhodKHbj0TOk9IwCcLDz
-         rF4Q==
-X-Gm-Message-State: AOAM531YE37nnG0eaoCUVHmC3Gmz924gJzkoJIXvEuMGVLcu0u351pd7
-        QrkbTmvT17hygF5Xa2E4+RbvwtdNHZIVtw==
-X-Google-Smtp-Source: ABdhPJxBA/Rc8N9vzOogRluiecCDnqxK3aGFQpih53XK6vcBCS7S/v4+524mpSNCsYPMfP7Pdi984w==
-X-Received: by 2002:a50:cd0a:: with SMTP id z10mr15509771edi.223.1605536747378;
-        Mon, 16 Nov 2020 06:25:47 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id cn8sm10581825edb.18.2020.11.16.06.25.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Nov 2020 06:25:46 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, wim@linux-watchdog.org, linux@roeck-us.net,
-        jamie@jamieiles.com, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-binding: watchdog: add Rockchip compatibles to snps,dw-wdt.yaml
-Date:   Mon, 16 Nov 2020 15:25:39 +0100
-Message-Id: <20201116142539.12377-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S1729616AbgKPO2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:28:04 -0500
+Received: from vern.gendns.com ([98.142.107.122]:38928 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727305AbgKPO2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:28:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=0q44A1LrsVM1ufm10U18bRl/Slcf2gwki6qy7vTVfFg=; b=DxZbsbv7eWjuFxzo7H7NjhfMCD
+        lEpEJZ5Wz/cUzwC3XuO00/CsuNEqlLxcrNuiLlSVOMOJgIB0YrqfVgUsV0ty/6rAdDIQHfbfg4PZY
+        SeXbJgcqJdqXgh7iJajpdRR61oSHva0mPch3htNLh0FwJt7GYgsfj9D+O1soo8rJx1Rt+CocsVMRN
+        o6x2xJ60h87bMkKyaDAsT7SCkw+CXhtB7s7GiybCzx6F5vhs9fRPoImz9Pw+e1yrM/chj6kPcRVXe
+        2wJxbIsl0WxGaitrAxD7ml34yZMCVP07/OrDWov+zslX6EpgUn3EkNje2yMnFZ8aKPRwg1Qaj5b7i
+        55JBvpRg==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:37112 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kefU6-0002sg-PC; Mon, 16 Nov 2020 09:27:58 -0500
+Subject: Re: [PATCH 0/3] Enable eQEP counter driver on BeagleBone Blue
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     linux-omap@vger.kernel.org,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20201012211229.3282128-1-david@lechnology.com>
+ <20201116113658.GE26857@atomide.com>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <34752e5c-a9fa-daac-3295-b686875b5d21@lechnology.com>
+Date:   Mon, 16 Nov 2020 08:27:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201116113658.GE26857@atomide.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Rockchip watchdog compatibles below are already in use,
-but somehow never added to a document,
-so add them to the snps,dw-wdt.yaml file.
+On 11/16/20 5:36 AM, Tony Lindgren wrote:
+> * David Lechner <david@lechnology.com> [201013 00:13]:
+>> This series adds device tree nodes for the eQEP portion of the PWMSS on AM33xx
+>> and enables it on BeagleBone Blue.
+>>
+>> I actually submitted these a year ago, but it looks like these patches never got
+>> applied with the actual eQEP driver when it was merged.
+> 
+> Sorry if I dropped these earlier, I guess I though you're reposting the
+> series and untagged them.
 
-"rockchip,rk3066-wdt", "snps,dw-wdt"
-"rockchip,rk3188-wdt", "snps,dw-wdt"
-"rockchip,rk3288-wdt", "snps,dw-wdt"
-"rockchip,rk3368-wdt", "snps,dw-wdt"
+No worries, I forgot about them too. :-)
 
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-index d9fc7bb85..f7ee9229c 100644
---- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-+++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-@@ -14,7 +14,15 @@ maintainers:
- 
- properties:
-   compatible:
--    const: snps,dw-wdt
-+    oneOf:
-+      - const: snps,dw-wdt
-+      - items:
-+          - enum:
-+              - rockchip,rk3066-wdt
-+              - rockchip,rk3188-wdt
-+              - rockchip,rk3288-wdt
-+              - rockchip,rk3368-wdt
-+          - const: snps,dw-wdt
- 
-   reg:
-     maxItems: 1
--- 
-2.11.0
+> 
+>> For reference, there was some previous discussion about the clocks in "ARM: dts:
+>> am33xx: Add nodes for eQEP". [1]
+>>
+>> [1]: https://lore.kernel.org/linux-omap/20190723145100.GS5447@atomide.com/
+>>
+>> I have also included a new patch to enable the eQEP driver in the defconfig.
+> 
+> Great, thanks applying these into omap-for-v5.11/dt and defconfig branches.
+> 
+> Regards,
+> 
+> Tony
+> 
 
