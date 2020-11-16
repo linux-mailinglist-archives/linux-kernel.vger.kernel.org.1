@@ -2,86 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7650A2B54A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 792DA2B5467
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728603AbgKPWyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:54:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36744 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725379AbgKPWyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:54:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 61900ACC5;
-        Mon, 16 Nov 2020 22:54:07 +0000 (UTC)
-Date:   Mon, 16 Nov 2020 14:31:02 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH] USB: serial: mos7720: defer state restore to a workqueue
-Message-ID: <20201116223102.eliwt7uh5rkiiq5h@linux-p48b.lan>
-References: <20201102211450.5722-1-dave@stgolabs.net>
- <20201103204014.3ue37owcras6cx7p@linux-p48b.lan>
- <20201104110657.GW4085@localhost>
- <20201104162534.GY4085@localhost>
- <20201105001307.lelve65nif344cfs@linux-p48b.lan>
- <20201105082540.GA4085@localhost>
- <20201106061713.lgghl4xnvdmkvges@linux-p48b.lan>
- <20201113091443.GI4085@localhost>
- <20201114042725.ofs7zbzmxg32tbbi@linux-p48b.lan>
- <X7KyPrY8FDH4C/gm@localhost>
+        id S1730244AbgKPWbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:31:17 -0500
+Received: from sonic317-39.consmr.mail.ne1.yahoo.com ([66.163.184.50]:44750
+        "EHLO sonic317-39.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730140AbgKPWbR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 17:31:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605565875; bh=MssB1MdVCNqazPNYFFSuB0FQG8vHLzyME6PDI5ALbKE=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=gpDdorGvDhcxPQ8i4P0z4a/K9P9WMCm7PmM4SzNHsaZVdL2oB/PWM/MePaRk7kD4iKpw/3nFbcRefPxMWyWeiQ/iJzoFRtIEOO0ybqusiMYqymU+rB1qvCC+1kwaNncE9NxEWIaABMsC8TQIE493r4DSV2BNdlPU3Yv6z94nbgD4x3GCiSLGAXqlzVvDiHidYsdD11tG89r8D/1IGgeuRTaJJ+tmvgMppwlBITAhxZS08WfAlqQRRLBIckxGb9eRLc87K/U8FhIcvgsZE4oYBcUZAOcPd0bgelHhWcV+OPYS20dhhJZqF+e7OCVUebcK8hgQZtAbmr2IcVSHQU1NFw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605565875; bh=8egYpnoCKFQnfQTkL69NeX0axCIjcWmxAQkdiS3uoIJ=; h=Subject:To:From:Date:From:Subject; b=HitoWczk29GjC6QzYTU4rsO/WOusoALeZC1VFsvlqjgx3Fx3JhSIUBA6kx0r4VpaUSt8L4S2jkgldZoede7SiHQHHDrL3o6aVc0ML7yL22Yq0aOoj/F5gV8rM1plVYTPNpHBwR8AKiODibwFker4ZoMDFZWgL6h13fECNstp8w0WnwL0IbXUz3HBmfSL2HXWxiG30Naq/JVFkSBMnJmhfujKsILTGGJdh1hUwUPwrQq5ezLsZ+eo+CE3DBSITvS852VWVdfVAo4yXWFAvFO7Ek083PNhpW3NIz+dsmjlmkkyP9mMlCBqGFKE/saWAwt6x4r01M/8JWvDqKTiu9EZ/w==
+X-YMail-OSG: yD3fjB4VM1kJFijiRklbGEDwMgx2gmTAZbkRWjHfVi41jA09zhSJQYy8zaPLvQZ
+ .EZ.6rE2OMQJhee.B9TtRsM1_0GntqJLkIXroPw2Gv8Tzo4sDIal2KXSsS.lTJ8GcnOnJTU8L5XG
+ uIHOmMBYAjcWpJjWXiqNvDFE582Afqbj8r1Cr0S8KGpwcdujYs7Liqb__ZjOpQU5L.mRxGu4TpAw
+ 663AvzPqBRXdBVmUf20FYmecXlfVs6n4kKrDyPZYLl5GQCabSybAsNESCqY.yZGqf2d8DnRHduuo
+ jUpGfEzyLX3L0POWaTR5FXSrqZv9dqJi8yGs_PejazMPnSwgvnIWfd9c29qwhGDTarjjLBkNVI4b
+ gZKPtBcyZ9FY5CdhtVRN2I3wAg81.RVZEcTtfLy3EsmYCm8M62BohIbOVzhUY.rBO56CjmemvG2o
+ z7M6DYFtfbINvowwhmaF_OFFIvQT8Lg.SlM7OSfzCpsEDIXbDpVp4wXlq90RGPAJrYNYyhmZy1eQ
+ 7F_ofnh7ca2GR.bqTfzVVT7Wg2i2GIpguFQrXVcLX.1msvRN9NFPwEUZ_dVIVTqjVb1FEOeiRz81
+ 3NdydQ1lzUFzELeGRweV1qrZ9Hxzv2FMkAoB.cf3BEQZG_e4ZkkkEJVU79V98YCcUzB4ZBqQAwm8
+ y_1dqF9z4yQxPVGq8xmS_R.I1bBu.LWuENpo7xHrjweYSToEqTQNOHx.G8Ge0yKlKa_HaSiLZMt2
+ ltPEYl06.NbYDwMe723YmuMI2L4lgrN4qpHtNXsmHtfKuMWo3KgaCas2OR17N.XumI9RRZMgtbLg
+ R.Aw8eiXdvzeLcAn9Z98PY7drXz_BgNkJfMpwcc13cpAqHlKbHGEcOUhIHQTBtTE4y6KBi9nzDPU
+ BkFLjmfc9B5l1ArgSGlHr2QM39JhfgXj4VKecygupf_ZEfqiFFgBNi.oWm8vUYF.AvFE4omo0KkR
+ 4ZP2RBtgh9UjfpmuYFtkkwTTTYei.2BvWObjRaclU.6LRGUC5FHFTQq3qnk3UYC9XqJuo9zNqxtE
+ _UuJr_Mi1s_DB4Kw_X9H0E62O6i6jYz1dhLLzJ9NxjrOLAGKAtANpa_N_6iZPDvZDxVsFzqPeMCI
+ KXHn0qAyo800eaY8fCx8dJU70zOkOjmq6ESAZKQfxO2yA7XuVPYL2qT6wxocQDyYfETo0L1mQbRg
+ _h0wvKiysP5C.jU1iucfBxU_P4y5E7ty9gjgLZbKSW6ZKTtMfAMFlIE7sCNvo2_7JD6wxL9R4IJK
+ xsOSiGDRHFDywCgmaDaniwKaRXvmfzposIobld4f12ywN3TtUP64etxIotIPmYKivT222QVzPwTX
+ 3_8y9dWZnIbMheRCInAxMbZU4SLHI8VYNSwe_IluzQHmQmRRYsGOqSoViGyxI1UFZz1S6Mj4Mer1
+ xWmkemQkr4g1zIs7bvMMf2wJnxHE3tYIAZQ_dJ0ZxF4G9r6Ia8tsCmiH5WYHoq3UiYwYUItTSgC5
+ s4xqLhQXhq2lESIpDA2uBWRVGCJr9Lxey7NqrxjTTcFKgzzy7fd5RoH56KendKgF4DRDMY1C1R9l
+ TFEnG5cwdOy.eRzqQM_VloYbWK5..7kDcVusi9G7eMDEKIFZj24QSGanvduZvGsY4Rgg6cGr378g
+ fak1B_CVvWB4vbA2cH6CzODETlFGuxBTH.6xauCrO7pASdhT1CsOHdmAjkdNHerZqqypSgp1GaHt
+ TTSo95fbzYxAmvJEQpJhY1TXdh8BaBhwAQgZAZTiH4ks2CTCrJfwPHWijv0KfrMpN7jxkZve4MJZ
+ syBqKPscQAIGP..cpMR_3OnZhlhU60kvxsN4QY5Sen4Kao02ziG5rJ743VMJsC3q2OhCpLODWRfN
+ NYZzN5htHM0Cw6dDN_VLq7KtPX8XXG4QrBcy9L87AOjebGVitXulORzfvle0p5kJ04ynlrpKn708
+ hMKAvdEuPCRq4g0ONkMrhO2h52BdvCu6Bm3We6JFpK2SEX6uiLdVhojcD_54C07TZ_hs11Zbb0Wo
+ 4UyvJyWliHYtmjWNtHumU8gDSs5po0rL7HhAPMMyoxg1BrESKB.NRNwKAFcJdJg73m5Gor3qGn.H
+ SCOzxAXHW3p7B.PUxvFD6IWpKHJ9kUJ83Nj9aPrSxIuInEjYDL7oBL6iu5jRJbQQ8XcSW6xUAssz
+ kqoRhv_O0uXS_4frOCyZzHFHhjTgtrpD5FoMbQaS0IK_h4b4vacbKz7efFLq82SEKSzPQHfBS93o
+ RgAP239hPTuTDbV8uMXPU1Q_CS7eMpiAYLA4uEKWKXVGkOiErhK7Mxhqw_G3U8SZTtSfc4M4XS0t
+ IZ5dVewK2H4_NNMeu65Asrmq4tE4qcOnZ0hMaPz7JfAlP_4rq4A.i18zWEzlBogziOpAoXJrsTMB
+ w7zXTtniZWQ6IoYwIITdbKErk6lvj45jLiEwjomB1aj7t.ZuNxBxxVfyOAeUYzs.MEpQx2sw33hb
+ TOJnZclHxBj4n2L8.Wqof5odSRkBNCp1955KKc5RlUoX7Hfnt0E9CcP1jD_pV_XJ5pThxp.LWDjk
+ dQnOKufqXTn8057HUUkFy84oOHDfT2U9oN4M6PM01JVhl9KxnuGYm99DC2II0UJe6bdcWffdbkXn
+ wj1mjfoXMOwLLZCHL_otsO5UIAkPc4HAPiJB3yHmDdBfLTeRL2CElWB3lMDUTnsiASbza91jzkyV
+ cBPjtiovewnk7QaGIX_t7L0gtLYwGhCbpFqrK203hNt6E9Lbdz2BIG6afSxMOg1z3COGPOOIwNsC
+ JR7f5O7C0p3g68TkqPwux0D0slAt5TWlOp.VaQDsn2xV9HpvMF1_3L_uhL8ungYWurrdG9DIBWSd
+ kcWd124Irnnl.J6EXXbl4kkFHP83ZGNGV6eNIjQRXmxLwuvgL4nDF.EVT7e0UBk6.CTGlBbIgvZI
+ 4fsEHx5j1UHP7L1xMyDdsbg2Daw4R_6jOtkfJ2yGTDFK2oFgTYYRdFu.yNEPbqyB0aDE16sTH.xm
+ uYq1C_0fp8klu7eA5HsVrEhgw_1kvhSZFbnNued2meoAL7QCiH7Sa3hF9k7zzDA3EOCS.hJ3sSQ-
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Mon, 16 Nov 2020 22:31:15 +0000
+Received: by smtp406.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 02ff2210146a9f6ff86b5e921c0b99d9;
+          Mon, 16 Nov 2020 22:31:11 +0000 (UTC)
+Subject: Re: [PATCH] security/smack: remove unused varible 'rc'
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <1604817942-3755-1-git-send-email-alex.shi@linux.alibaba.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <6fbd7b38-ac0b-571f-fec6-4a807d2eaef7@schaufler-ca.com>
+Date:   Mon, 16 Nov 2020 14:31:10 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <X7KyPrY8FDH4C/gm@localhost>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <1604817942-3755-1-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.16944 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.8)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020, Johan Hovold wrote:
-
->On Fri, Nov 13, 2020 at 08:27:25PM -0800, Davidlohr Bueso wrote:
->> @@ -1883,21 +1724,17 @@ static void mos7720_release(struct usb_serial *serial)
->>		if (mos_parport->msg_pending)
->>			wait_for_completion_timeout(&mos_parport->syncmsg_compl,
->>					    msecs_to_jiffies(MOS_WDR_TIMEOUT));
->> +		/*
->> +		 * If delayed work is currently scheduled, wait for it to
->> +		 * complete. This also implies barriers that ensure the
->> +		 * below serial clearing is not hoisted above the ->work.
->> +		 */
->> +		cancel_work_sync(&mos_parport->work);
+On 11/7/2020 10:45 PM, Alex Shi wrote:
+> This varible isn't used and can be removed to avoid a gcc warning:
+> security/smack/smack_lsm.c:3873:6: warning: variable ‘rc’ set but not
+> used [-Wunused-but-set-variable]
 >
->As I mentioned, this needs to be done *after* deregistering the port or
->you could theoretically end up with the work item being requeued.
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Casey Schaufler <casey@schaufler-ca.com> 
+> Cc: James Morris <jmorris@namei.org> 
+> Cc: "Serge E. Hallyn" <serge@hallyn.com> 
+> Cc: linux-security-module@vger.kernel.org 
+> Cc: linux-kernel@vger.kernel.org 
 
-Hmm sorry yes I forgot to mention this. I was counting on the private_data
-already being null to prevent any new work being actually scheduled, so an
-incoming restore state, for example, would be a nop.
+I will take this through the Smack tree. Thank you.
 
+> ---
+>  security/smack/smack_lsm.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
->Yes, the same applies for the "synchronous" requests, but that's a
->preexisting issue.
-
-Per the above I also assumed sync requests were also safe as is.
-
-But I can certainly re-order things, how about:
-
-mos7720_release():
-    mos_parport->pp->private_data = NULL;
-    parport_remove_port(mos_parport->pp);
-
-    wait_for_completion_timeout();
-    cancel_work_sync();
-
-    usb_set_serial_data(serial, NULL);
-    mos_parport->serial = NULL;
-
-    parport_del_port(mos_parport->pp);
-    kref_put();
-
-Thanks,
-Davidlohr
+> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> index 5c90b9fa4d40..9994fcfafd70 100644
+> --- a/security/smack/smack_lsm.c
+> +++ b/security/smack/smack_lsm.c
+> @@ -3870,7 +3870,6 @@ static struct smack_known *smack_from_netlbl(struct sock *sk, u16 family,
+>  	struct netlbl_lsm_secattr secattr;
+>  	struct socket_smack *ssp = NULL;
+>  	struct smack_known *skp = NULL;
+> -	int rc;
+>  
+>  	netlbl_secattr_init(&secattr);
+>  
+> @@ -3880,7 +3879,7 @@ static struct smack_known *smack_from_netlbl(struct sock *sk, u16 family,
+>  	if (netlbl_skbuff_getattr(skb, family, &secattr) == 0) {
+>  		skp = smack_from_secattr(&secattr, ssp);
+>  		if (secattr.flags & NETLBL_SECATTR_CACHEABLE)
+> -			rc = netlbl_cache_add(skb, family, &skp->smk_netlabel);
+> +			netlbl_cache_add(skb, family, &skp->smk_netlabel);
+>  	}
+>  
+>  	netlbl_secattr_destroy(&secattr);
