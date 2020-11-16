@@ -2,174 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81922B43A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD522B43B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgKPMZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:25:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60680 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727184AbgKPMZo (ORCPT
+        id S1730103AbgKPM1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:27:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727184AbgKPM1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:25:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605529542;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=twYAjgtjeEtP7dme/B3MtQN8LFC4b+SiLV0pksaCw+Q=;
-        b=beiNO0zmf1qEofoM6i6EUb8FXyRKDHCv7whNvQKSQhkrAYGpW54JifkHafQdEAICko/pXf
-        4WvB6vWtD8nIvhuymQ2Y5gRLq+QjQNWgJmYgZ+hIEFg46/Rnau/imd2Ao66txutxC1NsBe
-        hPIizj0dXXZl6onCyHNQWjMCxL1wa88=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-35-A8hognzWOQudJpQ1oTNwVQ-1; Mon, 16 Nov 2020 07:25:40 -0500
-X-MC-Unique: A8hognzWOQudJpQ1oTNwVQ-1
-Received: by mail-wr1-f72.google.com with SMTP id x16so6326337wrn.9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:25:40 -0800 (PST)
+        Mon, 16 Nov 2020 07:27:01 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3F0C0613CF;
+        Mon, 16 Nov 2020 04:27:00 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id q3so18474803edr.12;
+        Mon, 16 Nov 2020 04:27:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NhnByTKHacvBfFX7LoBxN6v/c0+KH93VX+xILbPNiZ0=;
+        b=WUzSE04KoVilvNxfYFWGftMel9yN2xdkmBkKZD8C+N2Achn3X6gU+TuYWPF6gJIWpw
+         CCy4QtNZbLi6O+hoOBCwmCuIEg/lYxJyaMk2L6eZFd8wjb6fHRxAoIfCVjjym6Y3w3GC
+         D+T+jdSz7Y8yOJSkftu4XloBVrx6FaTbY/lBe/mHY+UOqoI2vUVDK475X9zLEAaTv0rt
+         7LKAIczlncKngA6v96zaC03cSK92TRwu0yE6CX6FaSjJWRd74nWD6PbGbDifAomH48Ba
+         nYNOewVkFoz25kzXGsysRyuERhoZUQZ47IwsJ3eOVC846S9PwVJnc5NMepSONZj9tCi9
+         QS8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=twYAjgtjeEtP7dme/B3MtQN8LFC4b+SiLV0pksaCw+Q=;
-        b=qWbZrlgOWhpoa1GCJAj6pLqgOxIXKzzNvgsacWKfxtosH4OVgVkoQUQoQd3g7jdNB1
-         8g85XLEJylcnOW6uPcDuG6pyBPbZ5L7yzU+CkTna80GljpUFXtlgEg/3nXt/Cbaz9Yod
-         q6FVjYl6wBekhpaJ9h3KU8qWOHaH2tTiSaAMKqiK6tYuHzL6hp87HRlZrei/G9b9xcYL
-         4nYNgNyyjKGmzYb3h3scZnjlxOXOUFb0pRp3km8VH6+T27Z6ptKSu9+Mn3MUkuv5Jm+q
-         876tc5eZuSOz4MT4rVd98uhG/RV6jBW4oRS24J1dp119RmCi/tjJri5Uxt+yWh6e1KFO
-         IQBA==
-X-Gm-Message-State: AOAM533chajzR4BK9WIM+yvX48L+6/lqd00QYUJz+XVRDvFPpsMIDl6o
-        9tOglVBjcs4SQPdBojXN8TxQUs/Md38DV4KiAlm9jiI+I0/uDgSkNBkp8/nisvWg4NI0Jkbotru
-        jCA9x9AzQiRkA3+j8k/rs0ua6
-X-Received: by 2002:adf:a551:: with SMTP id j17mr20868542wrb.217.1605529539627;
-        Mon, 16 Nov 2020 04:25:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzTpJY9zGC+xn6xq+CTHXLTZWqhazVhhm46QQKKwl8uV2NZSejldsTJ5sdUDy6obYAtroP4Vw==
-X-Received: by 2002:adf:a551:: with SMTP id j17mr20868522wrb.217.1605529539401;
-        Mon, 16 Nov 2020 04:25:39 -0800 (PST)
-Received: from redhat.com ([147.161.8.56])
-        by smtp.gmail.com with ESMTPSA id i10sm22686923wrs.22.2020.11.16.04.25.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 04:25:38 -0800 (PST)
-Date:   Mon, 16 Nov 2020 07:25:31 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Alexander Lobakin <alobakin@pm.me>, Amit Shah <amit@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
- for rproc serial
-Message-ID: <20201116071910-mutt-send-email-mst@kernel.org>
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
- <20201116091950.GA30524@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116091950.GA30524@infradead.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NhnByTKHacvBfFX7LoBxN6v/c0+KH93VX+xILbPNiZ0=;
+        b=BXBTBQypGw4Tagjf6uktv18tluuk3VPhPHuGwFvBCevPKZGRbkTs9LOoXxwAthsHzG
+         ElOk2z4bEJZmqABLc7KnNNnrdpjml1atO/QxwQ9B9ByVI3hceQLsdGEmeS/e3njr7Cmf
+         0BwDrz87zIfyGQf1xozlroGAt1jy0buv8imhbm7DUoPSUwAaM4INrBoUg8CNBNh7wYuY
+         5D0B0ChAqW0Ug7Z24EdxNhC1iU/fwcqqxNoWohoOm1iLiTAF1RjruN62EqrMXcS16+QT
+         /iNJpZNFxeR/kQr6W+6eCau9jPcDfhzfXhx6qmICGsZX4ELNc1yPBdq3JRRx1TLLivHc
+         GWhA==
+X-Gm-Message-State: AOAM530QUXwOaYBUVM7tShIwYQhsvxAylK/FtmjW/1zsPpoKJc72ASAg
+        +PgLar/tfbJrMOHq8+qjPDE=
+X-Google-Smtp-Source: ABdhPJzPFOU/M+h4+/S3lOSOrBAHkUzwzkWnNu5zIA7/R48aWhxxUrRNFAD0JFpst1EmAnqQ8XM3oA==
+X-Received: by 2002:a05:6402:1714:: with SMTP id y20mr15255357edu.306.1605529619681;
+        Mon, 16 Nov 2020 04:26:59 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id n22sm10704848edr.11.2020.11.16.04.26.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Nov 2020 04:26:59 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     zhangqing@rock-chips.com, mturquette@baylibre.com,
+        sboyd@kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] clk: rockchip: add CLK_SET_RATE_PARENT to sclk for rk3066a i2s and uart clocks
+Date:   Mon, 16 Nov 2020 13:26:50 +0100
+Message-Id: <20201116122651.4215-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 09:19:50AM +0000, Christoph Hellwig wrote:
-> I just noticed this showing up in Linus' tree and I'm not happy.
+Add CLK_SET_RATE_PARENT to sclk for rk3066a i2s and uart clocks,
+so that the parent COMPOSITE_FRACMUX and COMPOSITE_NOMUX
+also update.
 
-Are you sure? I think it's in next.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ drivers/clk/rockchip/clk-rk3188.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-> This whole model of the DMA subdevices in remoteproc is simply broken.
-> 
-> We really need to change the virtio code pass an expicit DMA device (
-> similar to what e.g. the USB and RDMA code does), instead of faking up
-> devices with broken adhoc inheritance of DMA properties and magic poking
-> into device parent relationships.
-
-OK but we do have a regression since 5.7 and this looks like
-a fix appropriate for e.g. stable, right?
-
-> Bjorn, I thought you were going to look into this a while ago?
-> 
-> 
-> On Wed, Nov 04, 2020 at 03:31:36PM +0000, Alexander Lobakin wrote:
-> > Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
-> > specific dma memory pool"), every remoteproc has a DMA subdevice
-> > ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
-> > DMA capabilities from the corresponding platform device. This allowed
-> > to associate different DMA pools with each vdev, and required from
-> > virtio drivers to perform DMA operations with the parent device
-> > (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
-> > 
-> > virtio_rpmsg_bus was already changed in the same merge cycle with
-> > commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
-> > but virtio_console did not. In fact, operations using the grandparent
-> > worked fine while the grandparent was the platform device, but since
-> > commit c774ad010873 ("remoteproc: Fix and restore the parenting
-> > hierarchy for vdev") this was changed, and now the grandparent device
-> > is the remoteproc device without any DMA capabilities.
-> > So, starting v5.8-rc1 the following warning is observed:
-> > 
-> > [    2.483925] ------------[ cut here ]------------
-> > [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
-> > [    2.489152] Modules linked in: virtio_console(+)
-> > [    2.503737]  virtio_rpmsg_bus rpmsg_core
-> > [    2.508903]
-> > [    2.528898] <Other modules, stack and call trace here>
-> > [    2.913043]
-> > [    2.914907] ---[ end trace 93ac8746beab612c ]---
-> > [    2.920102] virtio-ports vport1p0: Error allocating inbufs
-> > 
-> > kernel/dma/mapping.c:427 is:
-> > 
-> > WARN_ON_ONCE(!dev->coherent_dma_mask);
-> > 
-> > obviously because the grandparent now is remoteproc dev without any
-> > DMA caps:
-> > 
-> > [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
-> > 
-> > Fix this the same way as it was for virtio_rpmsg_bus, using just the
-> > parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
-> > operations.
-> > This also allows now to reserve DMA pools/buffers for rproc serial
-> > via Device Tree.
-> > 
-> > Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
-> > Cc: stable@vger.kernel.org # 5.1+
-> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> > ---
-> >  drivers/char/virtio_console.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-> > index a2da8f768b94..1836cc56e357 100644
-> > --- a/drivers/char/virtio_console.c
-> > +++ b/drivers/char/virtio_console.c
-> > @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_device *vdev, size_t buf_size
-> >  		/*
-> >  		 * Allocate DMA memory from ancestor. When a virtio
-> >  		 * device is created by remoteproc, the DMA memory is
-> > -		 * associated with the grandparent device:
-> > -		 * vdev => rproc => platform-dev.
-> > +		 * associated with the parent device:
-> > +		 * virtioY => remoteprocX#vdevYbuffer.
-> >  		 */
-> > -		if (!vdev->dev.parent || !vdev->dev.parent->parent)
-> > +		buf->dev = vdev->dev.parent;
-> > +		if (!buf->dev)
-> >  			goto free_buf;
-> > -		buf->dev = vdev->dev.parent->parent;
-> >  
-> >  		/* Increase device refcnt to avoid freeing it */
-> >  		get_device(buf->dev);
-> > -- 
-> > 2.29.2
-> > 
-> > 
-> ---end quoted text---
+diff --git a/drivers/clk/rockchip/clk-rk3188.c b/drivers/clk/rockchip/clk-rk3188.c
+index 1ba25b460..81ecf348e 100644
+--- a/drivers/clk/rockchip/clk-rk3188.c
++++ b/drivers/clk/rockchip/clk-rk3188.c
+@@ -255,19 +255,19 @@ static struct rockchip_clk_branch common_spdif_fracmux __initdata =
+ 			RK2928_CLKSEL_CON(5), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_uart0_fracmux __initdata =
+-	MUX(SCLK_UART0, "sclk_uart0", mux_sclk_uart0_p, 0,
++	MUX(SCLK_UART0, "sclk_uart0", mux_sclk_uart0_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(13), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_uart1_fracmux __initdata =
+-	MUX(SCLK_UART1, "sclk_uart1", mux_sclk_uart1_p, 0,
++	MUX(SCLK_UART1, "sclk_uart1", mux_sclk_uart1_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(14), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_uart2_fracmux __initdata =
+-	MUX(SCLK_UART2, "sclk_uart2", mux_sclk_uart2_p, 0,
++	MUX(SCLK_UART2, "sclk_uart2", mux_sclk_uart2_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(15), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_uart3_fracmux __initdata =
+-	MUX(SCLK_UART3, "sclk_uart3", mux_sclk_uart3_p, 0,
++	MUX(SCLK_UART3, "sclk_uart3", mux_sclk_uart3_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(16), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
+@@ -408,28 +408,28 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
+ 	COMPOSITE_NOMUX(0, "uart0_pre", "uart_src", 0,
+ 			RK2928_CLKSEL_CON(13), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(1), 8, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "uart0_frac", "uart0_pre", 0,
++	COMPOSITE_FRACMUX(0, "uart0_frac", "uart0_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(17), 0,
+ 			RK2928_CLKGATE_CON(1), 9, GFLAGS,
+ 			&common_uart0_fracmux),
+ 	COMPOSITE_NOMUX(0, "uart1_pre", "uart_src", 0,
+ 			RK2928_CLKSEL_CON(14), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(1), 10, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "uart1_frac", "uart1_pre", 0,
++	COMPOSITE_FRACMUX(0, "uart1_frac", "uart1_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(18), 0,
+ 			RK2928_CLKGATE_CON(1), 11, GFLAGS,
+ 			&common_uart1_fracmux),
+ 	COMPOSITE_NOMUX(0, "uart2_pre", "uart_src", 0,
+ 			RK2928_CLKSEL_CON(15), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(1), 12, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "uart2_frac", "uart2_pre", 0,
++	COMPOSITE_FRACMUX(0, "uart2_frac", "uart2_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(19), 0,
+ 			RK2928_CLKGATE_CON(1), 13, GFLAGS,
+ 			&common_uart2_fracmux),
+ 	COMPOSITE_NOMUX(0, "uart3_pre", "uart_src", 0,
+ 			RK2928_CLKSEL_CON(16), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(1), 14, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "uart3_frac", "uart3_pre", 0,
++	COMPOSITE_FRACMUX(0, "uart3_frac", "uart3_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(20), 0,
+ 			RK2928_CLKGATE_CON(1), 15, GFLAGS,
+ 			&common_uart3_fracmux),
+@@ -543,15 +543,15 @@ static struct clk_div_table div_aclk_cpu_t[] = {
+ };
+ 
+ static struct rockchip_clk_branch rk3066a_i2s0_fracmux __initdata =
+-	MUX(SCLK_I2S0, "sclk_i2s0", mux_sclk_i2s0_p, 0,
++	MUX(SCLK_I2S0, "sclk_i2s0", mux_sclk_i2s0_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(2), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch rk3066a_i2s1_fracmux __initdata =
+-	MUX(SCLK_I2S1, "sclk_i2s1", mux_sclk_i2s1_p, 0,
++	MUX(SCLK_I2S1, "sclk_i2s1", mux_sclk_i2s1_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(3), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch rk3066a_i2s2_fracmux __initdata =
+-	MUX(SCLK_I2S2, "sclk_i2s2", mux_sclk_i2s2_p, 0,
++	MUX(SCLK_I2S2, "sclk_i2s2", mux_sclk_i2s2_p, CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(4), 8, 2, MFLAGS);
+ 
+ static struct rockchip_clk_branch rk3066a_clk_branches[] __initdata = {
+@@ -615,21 +615,21 @@ static struct rockchip_clk_branch rk3066a_clk_branches[] __initdata = {
+ 	COMPOSITE_NOMUX(0, "i2s0_pre", "i2s_src", 0,
+ 			RK2928_CLKSEL_CON(2), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(0), 7, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "i2s0_frac", "i2s0_pre", 0,
++	COMPOSITE_FRACMUX(0, "i2s0_frac", "i2s0_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(6), 0,
+ 			RK2928_CLKGATE_CON(0), 8, GFLAGS,
+ 			&rk3066a_i2s0_fracmux),
+ 	COMPOSITE_NOMUX(0, "i2s1_pre", "i2s_src", 0,
+ 			RK2928_CLKSEL_CON(3), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(0), 9, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "i2s1_frac", "i2s1_pre", 0,
++	COMPOSITE_FRACMUX(0, "i2s1_frac", "i2s1_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(7), 0,
+ 			RK2928_CLKGATE_CON(0), 10, GFLAGS,
+ 			&rk3066a_i2s1_fracmux),
+ 	COMPOSITE_NOMUX(0, "i2s2_pre", "i2s_src", 0,
+ 			RK2928_CLKSEL_CON(4), 0, 7, DFLAGS,
+ 			RK2928_CLKGATE_CON(0), 11, GFLAGS),
+-	COMPOSITE_FRACMUX(0, "i2s2_frac", "i2s2_pre", 0,
++	COMPOSITE_FRACMUX(0, "i2s2_frac", "i2s2_pre", CLK_SET_RATE_PARENT,
+ 			RK2928_CLKSEL_CON(8), 0,
+ 			RK2928_CLKGATE_CON(0), 12, GFLAGS,
+ 			&rk3066a_i2s2_fracmux),
+-- 
+2.11.0
 
