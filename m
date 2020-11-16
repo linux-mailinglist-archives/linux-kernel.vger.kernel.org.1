@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90C32B4B12
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D84772B4B14
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732098AbgKPQ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:28:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55544 "EHLO mail.kernel.org"
+        id S1732108AbgKPQ20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:28:26 -0500
+Received: from mga17.intel.com ([192.55.52.151]:56226 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730795AbgKPQ2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:28:16 -0500
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF65F22314
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 16:28:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605544095;
-        bh=x3FHK31Xm/BBB7HpLRBIa98x7QEqf275AgxsToa6mkU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dSp2LxJUJ58gcX59eL2xT0qVUTROA6hs+/D6p0wzaVRwjytMTLR0IOaUwLCw0qvV9
-         oPxeDEHDRvLSTb6pZKi4znh9AdooQXrCYtwzhXRxhD5nuPb55BqjjPXvLVpCG0M3FD
-         iDc77eS+vloBkEmarGAjuhz3e8qNrbVN/RCsAOsE=
-Received: by mail-wr1-f42.google.com with SMTP id k2so19384666wrx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:28:14 -0800 (PST)
-X-Gm-Message-State: AOAM5306SgW4h/8cCYDHVQNIPY81o1qajXf7jpF8vCfqBusB23Dl0E/B
-        yYp2Z6GkIQrRSddoK9JU5KDeWwZNZ2z6POaCVdoPkg==
-X-Google-Smtp-Source: ABdhPJyncJCxKduqliOLf7Ic4pClunkNO5+SsixRmuCBm2erhKc8dlxKlGJlIEYjuLvuG7ANk+QxxpsYnP+LvzP3zfc=
-X-Received: by 2002:a5d:4991:: with SMTP id r17mr20556285wrq.70.1605544093233;
- Mon, 16 Nov 2020 08:28:13 -0800 (PST)
+        id S1730795AbgKPQ2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:28:25 -0500
+IronPort-SDR: X+5EUzaVwryV9K1JsfK19HJBQoOaRcYsqVBrEMn4temXTkNlAdt4Iua0zA9OflDTamxeDNxedy
+ GlxFa7FanM5Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="150620917"
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="150620917"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 08:28:24 -0800
+IronPort-SDR: QRNLbR08A8bApOcpvcq4auJa0CU721DHnLYZ1BCOv6A1tnpcCs1YXXYSKDlOMBdDSRJaWB2Wjm
+ kcoV3/QMsHfg==
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="358517669"
+Received: from pgao1-mobl1.amr.corp.intel.com (HELO [10.212.6.211]) ([10.212.6.211])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 08:28:23 -0800
+Subject: Re: [PATCH 0/5] perf/mm: Fix PERF_SAMPLE_*_PAGE_SIZE
+To:     Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Peter Zijlstra <peterz@infradead.org>, kan.liang@linux.intel.com,
+        mingo@kernel.org, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        eranian@google.com, christophe.leroy@csgroup.eu, npiggin@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au, will@kernel.org,
+        aneesh.kumar@linux.ibm.com, sparclinux@vger.kernel.org,
+        davem@davemloft.net, catalin.marinas@arm.com,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kirill.shutemov@linux.intel.com
+References: <20201113111901.743573013@infradead.org>
+ <20201116154357.bw64c5ie2kiu5l4x@box>
+ <20201116155404.GD29991@casper.infradead.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <eeec67f6-ea05-1115-f249-b6cdcf2c5e2c@intel.com>
+Date:   Mon, 16 Nov 2020 08:28:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201116152301.24558-1-jgross@suse.com> <20201116152301.24558-5-jgross@suse.com>
-In-Reply-To: <20201116152301.24558-5-jgross@suse.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 16 Nov 2020 08:28:00 -0800
-X-Gmail-Original-Message-ID: <CALCETrW_UO9sksa1agOfs5E7yV+RqOyugEEOBjZY8Z47R-04Pg@mail.gmail.com>
-Message-ID: <CALCETrW_UO9sksa1agOfs5E7yV+RqOyugEEOBjZY8Z47R-04Pg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/xen: drop USERGS_SYSRET64 paravirt call
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel <xen-devel@lists.xenproject.org>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201116155404.GD29991@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 7:23 AM Juergen Gross <jgross@suse.com> wrote:
->
-> USERGS_SYSRET64 is used to return from a syscall via sysret, but
-> a Xen PV guest will nevertheless use the iret hypercall, as there
-> is no sysret PV hypercall defined.
->
-> So instead of testing all the prerequisites for doing a sysret and
-> then mangling the stack for Xen PV again for doing an iret just use
-> the iret exit from the beginning.
->
-> This can easily be done via an ALTERNATIVE like it is done for the
-> sysenter compat case already.
->
-> While at it remove to stale sysret32 remnants.
->
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+On 11/16/20 7:54 AM, Matthew Wilcox wrote:
+> It gets even more complicated with CPUs with multiple levels of TLB
+> which support different TLB entry sizes.  My CPU reports:
+> 
+> TLB info
+>  Instruction TLB: 2M/4M pages, fully associative, 8 entries
+>  Instruction TLB: 4K pages, 8-way associative, 64 entries
+>  Data TLB: 1GB pages, 4-way set associative, 4 entries
+>  Data TLB: 4KB pages, 4-way associative, 64 entries
+>  Shared L2 TLB: 4KB/2MB pages, 6-way associative, 1536 entries
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+It's even "worse" on recent AMD systems.  Those will coalesce multiple
+adjacent PTEs into a single TLB entry.  I think Alphas did something
+like this back in the day with an opt-in.
 
-FWIW, you've lost the VGCF_in_syscall optimization.  Let me see if I
-can give it back to you better.
+Anyway, the changelog should probably replace:
 
-> ---
->  arch/x86/entry/entry_64.S             | 22 +++++++++-------------
->  arch/x86/include/asm/irqflags.h       |  6 ------
->  arch/x86/include/asm/paravirt.h       |  5 -----
->  arch/x86/include/asm/paravirt_types.h |  8 --------
->  arch/x86/kernel/asm-offsets_64.c      |  2 --
->  arch/x86/kernel/paravirt.c            |  5 +----
->  arch/x86/kernel/paravirt_patch.c      |  4 ----
->  arch/x86/xen/enlighten_pv.c           |  1 -
->  arch/x86/xen/xen-asm.S                | 20 --------------------
->  arch/x86/xen/xen-ops.h                |  2 --
->  10 files changed, 10 insertions(+), 65 deletions(-)
->
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index a876204a73e0..df865eebd3d7 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -46,14 +46,6 @@
->  .code64
->  .section .entry.text, "ax"
->
-> -#ifdef CONFIG_PARAVIRT_XXL
-> -SYM_CODE_START(native_usergs_sysret64)
-> -       UNWIND_HINT_EMPTY
-> -       swapgs
-> -       sysretq
-> -SYM_CODE_END(native_usergs_sysret64)
-> -#endif /* CONFIG_PARAVIRT_XXL */
-> -
->  /*
->   * 64-bit SYSCALL instruction entry. Up to 6 arguments in registers.
->   *
-> @@ -123,12 +115,15 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
->          * Try to use SYSRET instead of IRET if we're returning to
->          * a completely clean 64-bit userspace context.  If we're not,
->          * go to the slow exit path.
-> +        * In the Xen PV case we must use iret anyway.
->          */
-> -       movq    RCX(%rsp), %rcx
-> -       movq    RIP(%rsp), %r11
->
-> -       cmpq    %rcx, %r11      /* SYSRET requires RCX == RIP */
-> -       jne     swapgs_restore_regs_and_return_to_usermode
-> +       ALTERNATIVE __stringify( \
-> +               movq    RCX(%rsp), %rcx; \
-> +               movq    RIP(%rsp), %r11; \
-> +               cmpq    %rcx, %r11;     /* SYSRET requires RCX == RIP */ \
-> +               jne     swapgs_restore_regs_and_return_to_usermode), \
-> +       "jmp    swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+> This enables PERF_SAMPLE_{DATA,CODE}_PAGE_SIZE to report accurate TLB
+> page sizes.
 
-I'm not in love with this save-a-few-bytes stringify, but I can live with it.
+with something more like:
 
---Andy
+This enables PERF_SAMPLE_{DATA,CODE}_PAGE_SIZE to report accurate page
+table mapping sizes.
+
+That's really the best we can do from software without digging into
+microarchitecture-specific events.
