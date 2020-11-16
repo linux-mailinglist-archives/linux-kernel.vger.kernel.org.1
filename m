@@ -2,181 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D742B3F95
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5A92B3F9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgKPJN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:13:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51908 "EHLO
+        id S1726543AbgKPJUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:20:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728057AbgKPJNZ (ORCPT
+        with ESMTP id S1726215AbgKPJUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:13:25 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29328C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:13:23 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id a15so17953003edy.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:13:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=b64DklvkPbJlghCpQ9o33D4Srw1SHKJxfzxD/FgwdD0=;
-        b=jUJCvlVe/hM1y+Lb2TrbXSWEld4ElJHChOmjbH3XmloUiNlfkQPnoC81kynrL3dk5e
-         9glLcAujNINZE5THL50H3wF7IeifGRpVxckLb1XZVdvueiRaXs0pKiXWdvS72+EnXCfz
-         b4dbKIM6jdALr5LLE2z4X8t7IL59HSHub3UqeDN9yDEeHO6kanZ+4ay7uSOAkSMGd6pK
-         MNZHkTIeaGdZn6bBaEV+zp37O/XeO4dEflxdg8bhSI3DVplGC/0Aw/Alihej/IxNhO17
-         aIUjEJqXob77gF83WYO/lt8xQ/sb6ykfmErd+osD0g3CKZ/z9s9mB9ifOl+8Xw5T1TxZ
-         hE0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=b64DklvkPbJlghCpQ9o33D4Srw1SHKJxfzxD/FgwdD0=;
-        b=YAVof03yhH9+LbVJqXUNIAVZhns6mWdz6CVbDOq7EttUS2w2jltW6c769qi/3gKhyx
-         jO0kqPeWegUADPdLfYriNn4/MU9p9on3nlbHUG+OUpZ0mlzOvs6AP9iR8GBq1kgtAQfi
-         mWmFiZOhx6keNl5nkD2EP+GkV+HJjUjyN/aObw99u22aEWY3jXa6kxiS4GaTOidJovpx
-         crBDhT05Qb/vTxPGrX2jniAfu1Mm0EGKxxcFenv3X8Hkhr0oT39VKQVJQD/d+Tz16gie
-         MIl2flF/AgQLmu9ppfveaImS5jxuGqoAGglz2MudF+5jCkBycxAvMwUKUyiU76OMFxKU
-         qZYg==
-X-Gm-Message-State: AOAM530OiIfsrpLCecbZldUGbWRbPD9tekgh0lzwGWKoqOLVRLOiBWbm
-        RZNXjYRXU5el9zhH5ZVUP/FrSQcjJhytitb61zkHoQ==
-X-Google-Smtp-Source: ABdhPJzbb2CEFmZHPu02GiWFosq6pO5nK8WyF+Ii74ndpPPn+AWTh6mMqEkNn929jplJTFTFCpOa0MrY1mMrn6H/oWE=
-X-Received: by 2002:a05:6402:48d:: with SMTP id k13mr14919406edv.92.1605518001742;
- Mon, 16 Nov 2020 01:13:21 -0800 (PST)
+        Mon, 16 Nov 2020 04:20:21 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBA4C0613CF;
+        Mon, 16 Nov 2020 01:20:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l8lfZbtE/pQjKf8onWmpmDV2l9aNdEWCmZpm7QvhYhY=; b=WkZ4jWMSdM5oVJJ1+WT3a3ZKKw
+        ZZd1qF3sOIRHnvODVySNJ0v9EmHjoNO5yHaKM+wxcmtRkp5tJ6xiiB8Ctp1jjq8rslJxEymNdglBP
+        WaFi7AkglyXM9KtL/4HrR9B5G+5BQ75Ca2H2+eAB0Ix10CEsGgslpuPr0Rg7qjGinrOj5y54IbHAN
+        9FmoqLypVkD5Dhx8lUSPxSBmHILF+SaNpwq/Q65nYk/fgyW3FvfidjnMzoaUIizFMe91Bmcx7vR4Z
+        ike0qgFGPKS9fCN4ccNutbHYobwd2qe4CNXw7EBccw7LtABW6AD+J/p72yv57FL350vVm0OyurNam
+        snYUw6lg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keafu-00087a-31; Mon, 16 Nov 2020 09:19:50 +0000
+Date:   Mon, 16 Nov 2020 09:19:50 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
+ for rproc serial
+Message-ID: <20201116091950.GA30524@infradead.org>
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
 MIME-Version: 1.0
-Received: by 2002:a54:380d:0:0:0:0:0 with HTTP; Mon, 16 Nov 2020 01:13:21
- -0800 (PST)
-X-Originating-IP: [5.35.10.61]
-In-Reply-To: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
-References: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-Date:   Mon, 16 Nov 2020 12:13:21 +0300
-Message-ID: <CAOJe8K3wz=-LC++N-Hvrturt46+AAK1cW8VYXK+VMT9y1OSzmQ@mail.gmail.com>
-Subject: Re: [PATCH] xsk: add cq event
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> When we write all cq items to tx, we have to wait for a new event based
-> on poll to indicate that it is writable. But the current writability is
-> triggered based on whether tx is full or not, and In fact, when tx is
-> dissatisfied, the user of cq's item may not necessarily get it, because it
-> may still be occupied by the network card. In this case, we need to know
-> when cq is available, so this patch adds a socket option, When the user
-> configures this option using setsockopt, when cq is available, a
-> readable event is generated for all xsk bound to this umem.
->
-> I can't find a better description of this event,
-> I think it can also be 'readable', although it is indeed different from
-> the 'readable' of the new data. But the overhead of xsk checking whether
-> cq or rx is readable is small.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+I just noticed this showing up in Linus' tree and I'm not happy.
+
+This whole model of the DMA subdevices in remoteproc is simply broken.
+
+We really need to change the virtio code pass an expicit DMA device (
+similar to what e.g. the USB and RDMA code does), instead of faking up
+devices with broken adhoc inheritance of DMA properties and magic poking
+into device parent relationships.
+
+Bjorn, I thought you were going to look into this a while ago?
+
+
+On Wed, Nov 04, 2020 at 03:31:36PM +0000, Alexander Lobakin wrote:
+> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
+> specific dma memory pool"), every remoteproc has a DMA subdevice
+> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
+> DMA capabilities from the corresponding platform device. This allowed
+> to associate different DMA pools with each vdev, and required from
+> virtio drivers to perform DMA operations with the parent device
+> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
+> 
+> virtio_rpmsg_bus was already changed in the same merge cycle with
+> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
+> but virtio_console did not. In fact, operations using the grandparent
+> worked fine while the grandparent was the platform device, but since
+> commit c774ad010873 ("remoteproc: Fix and restore the parenting
+> hierarchy for vdev") this was changed, and now the grandparent device
+> is the remoteproc device without any DMA capabilities.
+> So, starting v5.8-rc1 the following warning is observed:
+> 
+> [    2.483925] ------------[ cut here ]------------
+> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
+> [    2.489152] Modules linked in: virtio_console(+)
+> [    2.503737]  virtio_rpmsg_bus rpmsg_core
+> [    2.508903]
+> [    2.528898] <Other modules, stack and call trace here>
+> [    2.913043]
+> [    2.914907] ---[ end trace 93ac8746beab612c ]---
+> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
+> 
+> kernel/dma/mapping.c:427 is:
+> 
+> WARN_ON_ONCE(!dev->coherent_dma_mask);
+> 
+> obviously because the grandparent now is remoteproc dev without any
+> DMA caps:
+> 
+> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
+> 
+> Fix this the same way as it was for virtio_rpmsg_bus, using just the
+> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
+> operations.
+> This also allows now to reserve DMA pools/buffers for rproc serial
+> via Device Tree.
+> 
+> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
+> Cc: stable@vger.kernel.org # 5.1+
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 > ---
->  include/net/xdp_sock.h      |  1 +
->  include/uapi/linux/if_xdp.h |  1 +
->  net/xdp/xsk.c               | 28 ++++++++++++++++++++++++++++
->  3 files changed, 30 insertions(+)
->
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index 1a9559c..faf5b1a 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -49,6 +49,7 @@ struct xdp_sock {
->  	struct xsk_buff_pool *pool;
->  	u16 queue_id;
->  	bool zc;
-> +	bool cq_event;
->  	enum {
->  		XSK_READY = 0,
->  		XSK_BOUND,
-> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-> index a78a809..2dba3cb 100644
-> --- a/include/uapi/linux/if_xdp.h
-> +++ b/include/uapi/linux/if_xdp.h
-> @@ -63,6 +63,7 @@ struct xdp_mmap_offsets {
->  #define XDP_UMEM_COMPLETION_RING	6
->  #define XDP_STATISTICS			7
->  #define XDP_OPTIONS			8
-> +#define XDP_CQ_EVENT			9
->
->  struct xdp_umem_reg {
->  	__u64 addr; /* Start of packet data area */
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index cfbec39..0c53403 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -285,7 +285,16 @@ void __xsk_map_flush(void)
->
->  void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
->  {
-> +	struct xdp_sock *xs;
-> +
->  	xskq_prod_submit_n(pool->cq, nb_entries);
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-> +		if (xs->cq_event)
-> +			sock_def_readable(&xs->sk);
-> +	}
-> +	rcu_read_unlock();
->  }
->  EXPORT_SYMBOL(xsk_tx_completed);
->
-> @@ -495,6 +504,9 @@ static __poll_t xsk_poll(struct file *file, struct
-> socket *sock,
->  			__xsk_sendmsg(sk);
->  	}
->
-> +	if (xs->cq_event && pool->cq && !xskq_prod_is_empty(pool->cq))
-> +		mask |= EPOLLIN | EPOLLRDNORM;
-> +
->  	if (xs->rx && !xskq_prod_is_empty(xs->rx))
->  		mask |= EPOLLIN | EPOLLRDNORM;
->  	if (xs->tx && !xskq_cons_is_full(xs->tx))
-> @@ -882,6 +894,22 @@ static int xsk_setsockopt(struct socket *sock, int
-> level, int optname,
->  		mutex_unlock(&xs->mutex);
->  		return err;
->  	}
-> +	case XDP_CQ_EVENT:
-> +	{
-> +		int cq_event;
-> +
-> +		if (optlen < sizeof(cq_event))
-> +			return -EINVAL;
-> +		if (copy_from_sockptr(&cq_event, optval, sizeof(cq_event)))
-> +			return -EFAULT;
-> +
-> +		if (cq_event)
-> +			xs->cq_event = true;
-> +		else
-> +			xs->cq_event = false;
-
-It's false by default, isn't it?
-
-> +
-> +		return 0;
-> +	}
->  	default:
->  		break;
->  	}
-> --
-> 1.8.3.1
->
->
+>  drivers/char/virtio_console.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+> index a2da8f768b94..1836cc56e357 100644
+> --- a/drivers/char/virtio_console.c
+> +++ b/drivers/char/virtio_console.c
+> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_device *vdev, size_t buf_size
+>  		/*
+>  		 * Allocate DMA memory from ancestor. When a virtio
+>  		 * device is created by remoteproc, the DMA memory is
+> -		 * associated with the grandparent device:
+> -		 * vdev => rproc => platform-dev.
+> +		 * associated with the parent device:
+> +		 * virtioY => remoteprocX#vdevYbuffer.
+>  		 */
+> -		if (!vdev->dev.parent || !vdev->dev.parent->parent)
+> +		buf->dev = vdev->dev.parent;
+> +		if (!buf->dev)
+>  			goto free_buf;
+> -		buf->dev = vdev->dev.parent->parent;
+>  
+>  		/* Increase device refcnt to avoid freeing it */
+>  		get_device(buf->dev);
+> -- 
+> 2.29.2
+> 
+> 
+---end quoted text---
