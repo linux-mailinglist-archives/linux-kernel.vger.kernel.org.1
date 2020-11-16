@@ -2,180 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EED32B4416
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C00D2B4417
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727716AbgKPMy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:54:58 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:49214 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgKPMy6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:54:58 -0500
-Date:   Mon, 16 Nov 2020 12:54:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1605531290; bh=+hsbscD87v5FdIi3UG7iDR0ZE/sC0SMS1AC8ygEZWuQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=dXcq0j0HyeB+VsET/TIpsmE9VVOKbKA2R4jp6O3QSlxPk+iGnZOUSH1mZ6mrDBRDb
-         Ik3DhKuZvnldG6Fr1KakqfVtQs8t6R4ZuUbpqjp9TQ+zW1vre9Ggr2y36TU7uctBwx
-         Lda0R0GOB699S3fqimb81rotKKj6EApLyUJsr322/bmqOwK5p6cTqn9OxrGLXbwI91
-         a/H2NM/MEKfD5Dhl0n3T73ZkupfZ/bWye4rnAUZQAvYv87eN2xjCV1NNpfCQmJePV1
-         EBG1M70zpaXBkKjtxLo1smbgbivLik0/PhAG4Z27trQPssR4s5VdSRxU6h9hlpXjR1
-         gsmFA4iy27xwQ==
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        0day robot <lkp@intel.com>, lkp@lists.01.org,
-        kernel test robot <oliver.sang@intel.com>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [net] 0b726f6b31: BUG:unable_to_handle_page_fault_for_address
-Message-ID: <lRGp5G0pLof6EJnaWcq32k5uytNikWVd23oYWn28Pk@cp3-web-029.plabs.ch>
-In-Reply-To: <CA+FuTSccV-DNMOqr0hy5q3fZak8=eWYYDNigo8EnG2GV6X1Stw@mail.gmail.com>
-References: <MgZce9htmEtCtHg7pmWxXXfdhmQ6AHrnltXC41zOoo@cp7-web-042.plabs.ch> <20201113121502.GB7578@xsang-OptiPlex-9020> <CA+FuTSccV-DNMOqr0hy5q3fZak8=eWYYDNigo8EnG2GV6X1Stw@mail.gmail.com>
+        id S1727899AbgKPM5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:57:07 -0500
+Received: from mga18.intel.com ([134.134.136.126]:13484 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726455AbgKPM5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:57:07 -0500
+IronPort-SDR: nAwDZR44/kklrGX0cguflAahe33Tx6FSB8/RpbKmoPHFPPl4dlWjb/+KF8OR+5YUHGTo3pRVBO
+ jg5vUfDg3gxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="158516489"
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="158516489"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:57:03 -0800
+IronPort-SDR: YSQp+/ACU4A9fhS4RLIo4HvHX6hLv7oHIPs6DNOiHJGTOBnpFqukb2G4BkWFTuVnEaLeC0UJPv
+ WYLBPuCtUrGw==
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="358454797"
+Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:57:01 -0800
+From:   Tomas Winkler <tomas.winkler@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Z Huang <sean.z.huang@intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>
+Subject: [char-misc-next 1/2] mei: bus: add vtag support
+Date:   Mon, 16 Nov 2020 14:56:11 +0200
+Message-Id: <20201116125612.1660971-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date: Fri, 13 Nov 2020 10:51:36 -0500
+From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-Hi!
+Add API to support vtag in communication on mei bus.
 
-> On Fri, Nov 13, 2020 at 7:00 AM kernel test robot <oliver.sang@intel.com>=
- wrote:
->>
->>
->> Greeting,
->>
->> FYI, we noticed the following commit (built with gcc-9):
->>
->> commit: 0b726f6b318a07644b6c2388e6e44406740f4754 ("[PATCH v3 net] net: u=
-dp: fix Fast/frag0 UDP GRO")
->> url: https://github.com/0day-ci/linux/commits/Alexander-Lobakin/net-udp-=
-fix-Fast-frag0-UDP-GRO/20201110-052215
->> base: https://git.kernel.org/cgit/linux/kernel/git/davem/net.git 4e0396c=
-59559264442963b349ab71f66e471f84d
->>
->> in testcase: apachebench
->> version:
->> with following parameters:
->>
->>         runtime: 300s
->>         concurrency: 2000
->>         cluster: cs-localhost
->>         cpufreq_governor: performance
->>         ucode: 0x7000019
->>
->> test-description: apachebench is a tool for benchmarking your Apache Hyp=
-ertext Transfer Protocol (HTTP) server.
->> test-url: https://httpd.apache.org/docs/2.4/programs/ab.html
->>
->>
->> on test machine: 16 threads Intel(R) Xeon(R) CPU D-1541 @ 2.10GHz with 4=
-8G memory
->>
->> caused below changes (please refer to attached dmesg/kmsg for entire log=
-/backtrace):
->>
->>
->> If you fix the issue, kindly add following tag
->> Reported-by: kernel test robot <oliver.sang@intel.com>
->>
->>
->> [   28.582714] BUG: unable to handle page fault for address: fffffffffff=
-ffffa
->> [   28.590164] #PF: supervisor read access in kernel mode
->> [   28.590164] #PF: error_code(0x0000) - not-present page
->> [   28.590165] PGD c7e20d067 P4D c7e20d067 PUD c7e20f067 PMD 0
->> [   28.590169] Oops: 0000 [#1] SMP PTI
->> [   28.590171] CPU: 15 PID: 0 Comm: swapper/15 Not tainted 5.10.0-rc2-00=
-373-g0b726f6b318a #1
->> [   28.590172] Hardware name: Supermicro SYS-5018D-FN4T/X10SDV-8C-TLN4F,=
- BIOS 1.1 03/02/2016
->> [   28.590177] RIP: 0010:__udp4_lib_rcv+0x547/0xbe0
->> [   28.590178] Code: 74 0a f6 45 3c 80 74 04 44 8b 4d 28 48 8b 55 58 48 =
-83 e2 fe 74 07 8b 52 7c 85 d2 75 06 8b 95 90 00 00 00 48 8b be f0 04 00 00 =
-<44> 8b 58 0c 8b 48 10 55 41 55 44 89 de 41 51 41 89 d1 44 89 d2 e8
->> [   28.590179] RSP: 0018:ffffc900003b4bb8 EFLAGS: 00010246
->> [   28.590180] RAX: ffffffffffffffee RBX: 0000000000000011 RCX: ffff888c=
-7bc580e2
->> [   28.590181] RDX: 0000000000000002 RSI: ffff88810ddc8000 RDI: ffffffff=
-82d68f00
->> [   28.590182] RBP: ffff888c7bf8f800 R08: 00000000000003b7 R09: 00000000=
-00000000
->> [   28.590182] R10: 0000000000003500 R11: 0000000000000000 R12: ffff888c=
-7bc580e2
->> [   28.590183] R13: ffffffff82e072b0 R14: ffffffff82d68f00 R15: 00000000=
-00000034
->> [   28.590184] FS:  0000000000000000(0000) GS:ffff888c7fdc0000(0000) knl=
-GS:0000000000000000
->> [   28.590185] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   28.590186] CR2: fffffffffffffffa CR3: 0000000c7e20a006 CR4: 00000000=
-003706e0
->> [   28.590186] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000000=
-00000000
->> [   28.590187] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000000=
-00000400
->> [   28.590187] Call Trace:
->> [   28.590189]  <IRQ>
->> [   28.590193]  ip_protocol_deliver_rcu+0xc5/0x1c0
->> [   28.590196]  ip_local_deliver_finish+0x4b/0x60
->> [   28.738714]  ip_local_deliver+0x6e/0x140
->> [   28.738717]  ip_sublist_rcv_finish+0x57/0x80
->> [   28.738719]  ip_sublist_rcv+0x199/0x240
->> [   28.750730]  ip_list_rcv+0x13a/0x160
->> [   28.750733]  __netif_receive_skb_list_core+0x2a9/0x2e0
->> [   28.750736]  netif_receive_skb_list_internal+0x1d3/0x320
->> [   28.764743]  gro_normal_list+0x19/0x40
->> [   28.764747]  napi_complete_done+0x68/0x160
->> [   28.773197]  igb_poll+0x63/0x320
->> [   28.773198]  net_rx_action+0x136/0x3a0
->> [   28.773201]  __do_softirq+0xe1/0x2c3
->> [   28.773204]  asm_call_irq_on_stack+0x12/0x20
->> [   28.773205]  </IRQ>
->> [   28.773208]  do_softirq_own_stack+0x37/0x40
->> [   28.773211]  irq_exit_rcu+0xd2/0xe0
->> [   28.773213]  common_interrupt+0x74/0x140
->> [   28.773216]  asm_common_interrupt+0x1e/0x40
->> [   28.773219] RIP: 0010:cpuidle_enter_state+0xd2/0x360
->
-> This was expected. This v3 of the patch has already been superseded by
-> one that addresses this lookup:
+Add mei_cldev_send_vtag, mei_cldev_recv_vtag and
+mei_cldev_recv_nonblock_vtag functions to allow sending a message
+with vtag set and to receive vtag of an incoming message.
 
-Wait. This page fault happens on IP receive, which is performed after
-all GRO processing. At this point, all headers are pulled to skb->head,
-and no GRO helpers are needed to access them.
-The function that causes that, __udp4_lib_rcv(), uses ip_hdr() a lot,
-and it's safe. There should be another questionable point.
+Cc: Sean Z Huang <sean.z.huang@intel.com>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+---
+ drivers/misc/mei/bus-fixup.c |  13 +++--
+ drivers/misc/mei/bus.c       | 101 +++++++++++++++++++++++++++++------
+ drivers/misc/mei/client.c    |   6 ++-
+ drivers/misc/mei/mei_dev.h   |   4 +-
+ include/linux/mei_cl_bus.h   |   6 +++
+ 5 files changed, 104 insertions(+), 26 deletions(-)
 
->> @@ -534,7 +534,7 @@ static inline struct sock *__udp4_lib_lookup_skb(str=
-uct sk_buff *skb,
->>                                                  __be16 sport, __be16 dp=
-ort,
->>                                                  struct udp_table *udpta=
-ble)
->>  {
->> -       const struct iphdr *iph =3D ip_hdr(skb);
->> +       const struct iphdr *iph =3D skb_gro_network_header(skb);
->
-> The merged version was v5 and lacks this change.
-
-Thanks,
-Al
+diff --git a/drivers/misc/mei/bus-fixup.c b/drivers/misc/mei/bus-fixup.c
+index 4e30fa98fe7d..6cc3145bb716 100644
+--- a/drivers/misc/mei/bus-fixup.c
++++ b/drivers/misc/mei/bus-fixup.c
+@@ -148,7 +148,7 @@ static int mei_osver(struct mei_cl_device *cldev)
+ 	os_ver = (struct mei_os_ver *)fwcaps->data;
+ 	os_ver->os_type = OSTYPE_LINUX;
+ 
+-	return __mei_cl_send(cldev->cl, buf, size, mode);
++	return __mei_cl_send(cldev->cl, buf, size, 0, mode);
+ }
+ 
+ #define MKHI_FWVER_BUF_LEN (sizeof(struct mkhi_msg_hdr) + \
+@@ -169,7 +169,7 @@ static int mei_fwver(struct mei_cl_device *cldev)
+ 	req.hdr.group_id = MKHI_GEN_GROUP_ID;
+ 	req.hdr.command = MKHI_GEN_GET_FW_VERSION_CMD;
+ 
+-	ret = __mei_cl_send(cldev->cl, (u8 *)&req, sizeof(req),
++	ret = __mei_cl_send(cldev->cl, (u8 *)&req, sizeof(req), 0,
+ 			    MEI_CL_IO_TX_BLOCKING);
+ 	if (ret < 0) {
+ 		dev_err(&cldev->dev, "Could not send ReqFWVersion cmd\n");
+@@ -177,7 +177,7 @@ static int mei_fwver(struct mei_cl_device *cldev)
+ 	}
+ 
+ 	ret = 0;
+-	bytes_recv = __mei_cl_recv(cldev->cl, buf, sizeof(buf), 0,
++	bytes_recv = __mei_cl_recv(cldev->cl, buf, sizeof(buf), NULL, 0,
+ 				   MKHI_RCV_TIMEOUT);
+ 	if (bytes_recv < 0 || (size_t)bytes_recv < MKHI_FWVER_LEN(1)) {
+ 		/*
+@@ -324,13 +324,15 @@ static int mei_nfc_if_version(struct mei_cl *cl,
+ 	};
+ 	struct mei_nfc_reply *reply = NULL;
+ 	size_t if_version_length;
++	u8 vtag;
+ 	int bytes_recv, ret;
+ 
+ 	bus = cl->dev;
+ 
+ 	WARN_ON(mutex_is_locked(&bus->device_lock));
+ 
+-	ret = __mei_cl_send(cl, (u8 *)&cmd, sizeof(cmd), MEI_CL_IO_TX_BLOCKING);
++	ret = __mei_cl_send(cl, (u8 *)&cmd, sizeof(cmd), 0,
++			    MEI_CL_IO_TX_BLOCKING);
+ 	if (ret < 0) {
+ 		dev_err(bus->dev, "Could not send IF version cmd\n");
+ 		return ret;
+@@ -344,7 +346,8 @@ static int mei_nfc_if_version(struct mei_cl *cl,
+ 		return -ENOMEM;
+ 
+ 	ret = 0;
+-	bytes_recv = __mei_cl_recv(cl, (u8 *)reply, if_version_length, 0, 0);
++	bytes_recv = __mei_cl_recv(cl, (u8 *)reply, if_version_length, &vtag,
++				   0, 0);
+ 	if (bytes_recv < 0 || (size_t)bytes_recv < if_version_length) {
+ 		dev_err(bus->dev, "Could not read IF version\n");
+ 		ret = -EIO;
+diff --git a/drivers/misc/mei/bus.c b/drivers/misc/mei/bus.c
+index 7fe48baa103a..2907db260fba 100644
+--- a/drivers/misc/mei/bus.c
++++ b/drivers/misc/mei/bus.c
+@@ -26,11 +26,12 @@
+  * @cl: host client
+  * @buf: buffer to send
+  * @length: buffer length
++ * @vtag: virtual tag
+  * @mode: sending mode
+  *
+  * Return: written size bytes or < 0 on error
+  */
+-ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length,
++ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length, u8 vtag,
+ 		      unsigned int mode)
+ {
+ 	struct mei_device *bus;
+@@ -86,6 +87,7 @@ ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length,
+ 		rets = -ENOMEM;
+ 		goto out;
+ 	}
++	cb->vtag = vtag;
+ 
+ 	cb->internal = !!(mode & MEI_CL_IO_TX_INTERNAL);
+ 	cb->blocking = !!(mode & MEI_CL_IO_TX_BLOCKING);
+@@ -106,11 +108,12 @@ ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length,
+  * @buf: buffer to receive
+  * @length: buffer length
+  * @mode: io mode
++ * @vtag: virtual tag
+  * @timeout: recv timeout, 0 for infinite timeout
+  *
+  * Return: read size in bytes of < 0 on error
+  */
+-ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length,
++ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length, u8 *vtag,
+ 		      unsigned int mode, unsigned long timeout)
+ {
+ 	struct mei_device *bus;
+@@ -196,6 +199,8 @@ ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length,
+ 	r_length = min_t(size_t, length, cb->buf_idx);
+ 	memcpy(buf, cb->buf.data, r_length);
+ 	rets = r_length;
++	if (vtag)
++		*vtag = cb->vtag;
+ 
+ free:
+ 	mei_cl_del_rd_completed(cl, cb);
+@@ -206,40 +211,87 @@ ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length,
+ }
+ 
+ /**
+- * mei_cldev_send - me device send  (write)
++ * mei_cldev_send_vtag - me device send with vtag  (write)
+  *
+  * @cldev: me client device
+  * @buf: buffer to send
+  * @length: buffer length
++ * @vtag: virtual tag
+  *
+- * Return: written size in bytes or < 0 on error
++ * Return:
++ *  * written size in bytes
++ *  * < 0 on error
+  */
+-ssize_t mei_cldev_send(struct mei_cl_device *cldev, u8 *buf, size_t length)
++
++ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
++			    u8 vtag)
+ {
+ 	struct mei_cl *cl = cldev->cl;
+ 
+-	return __mei_cl_send(cl, buf, length, MEI_CL_IO_TX_BLOCKING);
++	return __mei_cl_send(cl, buf, length, vtag, MEI_CL_IO_TX_BLOCKING);
+ }
+-EXPORT_SYMBOL_GPL(mei_cldev_send);
++EXPORT_SYMBOL_GPL(mei_cldev_send_vtag);
+ 
+ /**
+- * mei_cldev_recv_nonblock - non block client receive (read)
++ * mei_cldev_recv_vtag - client receive with vtag (read)
+  *
+  * @cldev: me client device
+  * @buf: buffer to receive
+  * @length: buffer length
++ * @vtag: virtual tag
+  *
+- * Return: read size in bytes of < 0 on error
+- *         -EAGAIN if function will block.
++ * Return:
++ * * read size in bytes
++ * *  < 0 on error
+  */
+-ssize_t mei_cldev_recv_nonblock(struct mei_cl_device *cldev, u8 *buf,
+-				size_t length)
++
++ssize_t mei_cldev_recv_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
++			    u8 *vtag)
+ {
+ 	struct mei_cl *cl = cldev->cl;
+ 
+-	return __mei_cl_recv(cl, buf, length, MEI_CL_IO_RX_NONBLOCK, 0);
++	return __mei_cl_recv(cl, buf, length, vtag, 0, 0);
+ }
+-EXPORT_SYMBOL_GPL(mei_cldev_recv_nonblock);
++EXPORT_SYMBOL_GPL(mei_cldev_recv_vtag);
++
++/**
++ * mei_cldev_recv_nonblock_vtag - non block client receive with vtag (read)
++ *
++ * @cldev: me client device
++ * @buf: buffer to receive
++ * @length: buffer length
++ * @vtag: virtual tag
++ *
++ * Return:
++ * * read size in bytes
++ * * -EAGAIN if function will block.
++ * * < 0 on other error
++ */
++ssize_t mei_cldev_recv_nonblock_vtag(struct mei_cl_device *cldev, u8 *buf,
++				     size_t length, u8 *vtag)
++{
++	struct mei_cl *cl = cldev->cl;
++
++	return __mei_cl_recv(cl, buf, length, vtag, MEI_CL_IO_RX_NONBLOCK, 0);
++}
++EXPORT_SYMBOL_GPL(mei_cldev_recv_nonblock_vtag);
++
++/**
++ * mei_cldev_send - me device send  (write)
++ *
++ * @cldev: me client device
++ * @buf: buffer to send
++ * @length: buffer length
++ *
++ * Return:
++ *  * written size in bytes
++ *  * < 0 on error
++ */
++ssize_t mei_cldev_send(struct mei_cl_device *cldev, u8 *buf, size_t length)
++{
++	return mei_cldev_send_vtag(cldev, buf, length, 0);
++}
++EXPORT_SYMBOL_GPL(mei_cldev_send);
+ 
+ /**
+  * mei_cldev_recv - client receive (read)
+@@ -252,12 +304,27 @@ EXPORT_SYMBOL_GPL(mei_cldev_recv_nonblock);
+  */
+ ssize_t mei_cldev_recv(struct mei_cl_device *cldev, u8 *buf, size_t length)
+ {
+-	struct mei_cl *cl = cldev->cl;
+-
+-	return __mei_cl_recv(cl, buf, length, 0, 0);
++	return mei_cldev_recv_vtag(cldev, buf, length, NULL);
+ }
+ EXPORT_SYMBOL_GPL(mei_cldev_recv);
+ 
++/**
++ * mei_cldev_recv_nonblock - non block client receive (read)
++ *
++ * @cldev: me client device
++ * @buf: buffer to receive
++ * @length: buffer length
++ *
++ * Return: read size in bytes of < 0 on error
++ *         -EAGAIN if function will block.
++ */
++ssize_t mei_cldev_recv_nonblock(struct mei_cl_device *cldev, u8 *buf,
++				size_t length)
++{
++	return mei_cldev_recv_nonblock_vtag(cldev, buf, length, NULL);
++}
++EXPORT_SYMBOL_GPL(mei_cldev_recv_nonblock);
++
+ /**
+  * mei_cl_bus_rx_work - dispatch rx event for a bus device
+  *
+diff --git a/drivers/misc/mei/client.c b/drivers/misc/mei/client.c
+index d5c3f7d54634..a56d41321f32 100644
+--- a/drivers/misc/mei/client.c
++++ b/drivers/misc/mei/client.c
+@@ -1306,7 +1306,7 @@ struct mei_cl_vtag *mei_cl_vtag_alloc(struct file *fp, u8 vtag)
+  * mei_cl_fp_by_vtag - obtain the file pointer by vtag
+  *
+  * @cl: host client
+- * @vtag: vm tag
++ * @vtag: virtual tag
+  *
+  * Return:
+  * * A file pointer - on success
+@@ -1317,7 +1317,9 @@ const struct file *mei_cl_fp_by_vtag(const struct mei_cl *cl, u8 vtag)
+ 	struct mei_cl_vtag *vtag_l;
+ 
+ 	list_for_each_entry(vtag_l, &cl->vtag_map, list)
+-		if (vtag_l->vtag == vtag)
++		/* The client on bus has one fixed fp */
++		if ((cl->cldev && mei_cldev_enabled(cl->cldev)) ||
++		    vtag_l->vtag == vtag)
+ 			return vtag_l->fp;
+ 
+ 	return ERR_PTR(-ENOENT);
+diff --git a/drivers/misc/mei/mei_dev.h b/drivers/misc/mei/mei_dev.h
+index 2f4cc1a8aae8..8c395bfdf6f3 100644
+--- a/drivers/misc/mei/mei_dev.h
++++ b/drivers/misc/mei/mei_dev.h
+@@ -340,9 +340,9 @@ struct mei_hw_ops {
+ /* MEI bus API*/
+ void mei_cl_bus_rescan_work(struct work_struct *work);
+ void mei_cl_bus_dev_fixup(struct mei_cl_device *dev);
+-ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length,
++ssize_t __mei_cl_send(struct mei_cl *cl, u8 *buf, size_t length, u8 vtag,
+ 		      unsigned int mode);
+-ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length,
++ssize_t __mei_cl_recv(struct mei_cl *cl, u8 *buf, size_t length, u8 *vtag,
+ 		      unsigned int mode, unsigned long timeout);
+ bool mei_cl_bus_rx_event(struct mei_cl *cl);
+ bool mei_cl_bus_notify_event(struct mei_cl *cl);
+diff --git a/include/linux/mei_cl_bus.h b/include/linux/mei_cl_bus.h
+index 52aa4821093a..959ad7d850b4 100644
+--- a/include/linux/mei_cl_bus.h
++++ b/include/linux/mei_cl_bus.h
+@@ -95,6 +95,12 @@ ssize_t mei_cldev_send(struct mei_cl_device *cldev, u8 *buf, size_t length);
+ ssize_t mei_cldev_recv(struct mei_cl_device *cldev, u8 *buf, size_t length);
+ ssize_t mei_cldev_recv_nonblock(struct mei_cl_device *cldev, u8 *buf,
+ 				size_t length);
++ssize_t mei_cldev_send_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
++			    u8 vtag);
++ssize_t mei_cldev_recv_vtag(struct mei_cl_device *cldev, u8 *buf, size_t length,
++			    u8 *vtag);
++ssize_t mei_cldev_recv_nonblock_vtag(struct mei_cl_device *cldev, u8 *buf,
++				     size_t length, u8 *vtag);
+ 
+ int mei_cldev_register_rx_cb(struct mei_cl_device *cldev, mei_cldev_cb_t rx_cb);
+ int mei_cldev_register_notif_cb(struct mei_cl_device *cldev,
+-- 
+2.26.2
 
