@@ -2,121 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F612B4E1A
+	by mail.lfdr.de (Postfix) with ESMTP id 3D63C2B4E19
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387835AbgKPRmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:42:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
+        id S2387830AbgKPRmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:42:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387818AbgKPRmF (ORCPT
+        with ESMTP id S2387817AbgKPRmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Nov 2020 12:42:05 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190EAC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:04 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id m6so2481553wrg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:04 -0800 (PST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC34C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:05 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id o15so19661145wru.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SmOPpMPfhIiNWLmfD425Vh4v6mCQcNCmoMGuMYmd5/A=;
-        b=qQWadntt/mFLB2dHX6lrFTrO+5jYltfzBzIRsvL1z5Z6vtAiX/okLVJtYTfU6M+6ZS
-         XzZpueyoOCEm+ppetpCQb/hIf7iXx7l2KUxEI7bn55gdSyyYDPd9gZdfOyOvNWfft1SM
-         w+iuynB+rS795d3bkOrNtC1Xrylj2zsp80gJYvH7zZSfL6Hahtp7qBLDtGOGBcpQcEFP
-         DJViqYgYnecWKSHdDGPxR8ed0QSh4us9Z22xp+J6fICeTcd+6MkNOp86MqffqD6smjYX
-         23yKflHz+b2Wn4pZ9o8v5+IFG9YZ/IJ13tKgb+qBOEJgoE4oB3VoDH9y+d0FXXQ2jRgs
-         kSzQ==
+        bh=B656eLYjE1FZlTbAcLYHtkBSzMjn1Kq22EcK7SpZuzI=;
+        b=cqmrXntlw3DQnt5lF1CYf3WMXHIXS25fxnTj07nOs1OnCw5c1rVANuO5n2oIQyYQHT
+         4Kt98XLHFVjJBheC9Pq5A3zK2E3iwNZTZW8CdMKt9h6k280mVzldBX0aBJU82KOHJNZC
+         K4troDtjJnBrA+vQSFbOol2J/naEt2ssUlg13Qi7VjG/pkYNnTOzYXXp7Lm8orIEbBCi
+         jUKtESeFbIhzclHqmUqIvYiMsRq5s0pj4xPEIgzIY+rs4PEQcxcSV2MODdody8XeS5vb
+         cSeQFWCIMzTqv0c9fI8pl12oKO06x1Cyskqe0LzQ2u+ZBjSrbR5ps1YitxXAG/GrnkoQ
+         4p9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SmOPpMPfhIiNWLmfD425Vh4v6mCQcNCmoMGuMYmd5/A=;
-        b=GOnY6JQ2rc7qKAOzB0Xi/9GgDlRsbNuUokrPSPFyVKPxes+5C1Ox7s2lx1BqPkykVZ
-         gGdHFhI8cHgaUIT3W3Y/zKl2Bf5xiJ71BaEzSC8fxCA81qvsG9QKod9gxlPxWO1ch/DT
-         i8oGCIPq7hjDvkfBtyahTV+Vj14RpNIJMEadTz04eJ6qHDKM9Ti17js9AhsBeQLm66je
-         IkCZuCZJHg7Q3jtev58XcsL/8UMzpInkPRwiklLoHQp1eQbQVizxmi4iH6nVP0FlAFGc
-         M2K9DVV0/CSiFwCL0yUKsTfyCHR4I7c2MN+puvmHn1hjmvQZadhvVNFaUECbyQ55thBY
-         dHAA==
-X-Gm-Message-State: AOAM530ecJBizrahg0lXQE39kcB01HNA3r0O7JPHOxumIZM3xGXZXqv1
-        yXpcElnTqdkF9oc9rx7X2rIRww==
-X-Google-Smtp-Source: ABdhPJwE+AiRHnGNLBkmlszJMRYyDRr3EsBayn0O2BqS6CGMXtLN5yEZ0ylGG7y5khqkG3OToESChw==
-X-Received: by 2002:a5d:510a:: with SMTP id s10mr20125292wrt.402.1605548522848;
-        Mon, 16 Nov 2020 09:42:02 -0800 (PST)
+        bh=B656eLYjE1FZlTbAcLYHtkBSzMjn1Kq22EcK7SpZuzI=;
+        b=Ts1WITH9vwLhUBuhETf8lrqNFRzZAIwTk62RDvBMiCdbO2VGU3Q3fUk6Q1YsKTDrUQ
+         Z5OGquGOl5EgTsP9NIWgcviNBSkUqe3rNttmldIASSyKz7Htc1w9Ix9NhxKw5+aDdwft
+         mlCcSoL+kX1a8Y8wg4+6iO/ge/JamPMhbMHufS9srE4BLBplBgzyQawp0EhOWt0ccIr6
+         3ecFfw6euS017aUkguNqXzc6s0btKaP2zRZPw7G7243DP35x0g8hIrwn483RLbegh4es
+         Sjr4LbhceCckVwFnSh3mkoFrHQDRSKvFV3WZ1v/HNkoueNw1NVEiMWn0DdOGElOSnYHl
+         bSgA==
+X-Gm-Message-State: AOAM5305dJhh0b5il5G+6s0zXlBGw5Kfxsqa15vm8f28MtiHin3qyt/E
+        LJQrvaOmWN2Q6dx069PU8uFUvw==
+X-Google-Smtp-Source: ABdhPJwRo58jenu80k77aCwl2EeoUJqluDWvFSt2FOgVWWwXQC9e4UWksYqVOBVC3xnFTVOmp3u+zA==
+X-Received: by 2002:adf:e6c8:: with SMTP id y8mr20291446wrm.414.1605548524179;
+        Mon, 16 Nov 2020 09:42:04 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.42.01
+        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.42.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:42:02 -0800 (PST)
+        Mon, 16 Nov 2020 09:42:03 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 30/42] drm/selftests/test-drm_dp_mst_helper: Move 'sideband_msg_req_encode_decode' onto the heap
-Date:   Mon, 16 Nov 2020 17:41:00 +0000
-Message-Id: <20201116174112.1833368-31-lee.jones@linaro.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 31/42] drm/ttm/ttm_bo: Fix one function header - demote lots of kernel-doc abuses
+Date:   Mon, 16 Nov 2020 17:41:01 +0000
+Message-Id: <20201116174112.1833368-32-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116174112.1833368-1-lee.jones@linaro.org>
 References: <20201116174112.1833368-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is too much data being stored on the stack.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c: In function ‘sideband_msg_req_encode_decode’:
- drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c:168:1: warning: the frame size of 1072 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+ drivers/gpu/drm/ttm/ttm_bo.c:51: warning: Function parameter or member 'ttm_global_mutex' not described in 'DEFINE_MUTEX'
+ drivers/gpu/drm/ttm/ttm_bo.c:286: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_memtype_use'
+ drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_refs'
+ drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'interruptible' not described in 'ttm_bo_cleanup_refs'
+ drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_cleanup_refs'
+ drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'unlock_resv' not described in 'ttm_bo_cleanup_refs'
+ drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'bdev' not described in 'ttm_bo_delayed_delete'
+ drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'remove_all' not described in 'ttm_bo_delayed_delete'
+ drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'bo' not described in 'ttm_bo_evict_swapout_allowable'
+ drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'ctx' not described in 'ttm_bo_evict_swapout_allowable'
+ drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'locked' not described in 'ttm_bo_evict_swapout_allowable'
+ drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'busy' not described in 'ttm_bo_evict_swapout_allowable'
+ drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'bo' not described in 'ttm_bo_add_move_fence'
+ drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'man' not described in 'ttm_bo_add_move_fence'
+ drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'mem' not described in 'ttm_bo_add_move_fence'
+ drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_add_move_fence'
+ drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_force_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'place' not described in 'ttm_bo_mem_force_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_force_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_force_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'placement' not described in 'ttm_bo_mem_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_space'
+ drivers/gpu/drm/ttm/ttm_bo.c:1387: warning: Function parameter or member 'ctx' not described in 'ttm_bo_swapout'
 
+Cc: Christian Koenig <christian.koenig@amd.com>
+Cc: Huang Rui <ray.huang@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/ttm/ttm_bo.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-index e00bdc557f880..6b4759ed6bfd4 100644
---- a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-+++ b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-@@ -122,7 +122,7 @@ sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
- {
- 	struct drm_dp_sideband_msg_req_body *out;
- 	struct drm_printer p = drm_err_printer(PREFIX_STR);
--	struct drm_dp_sideband_msg_tx txmsg;
-+	struct drm_dp_sideband_msg_tx *txmsg;
- 	int i, ret;
- 	bool result = true;
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index e6bcbfe530ecc..9a03c7834b1ed 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -45,7 +45,7 @@
  
-@@ -130,8 +130,12 @@ sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
- 	if (!out)
- 		return false;
+ static void ttm_bo_global_kobj_release(struct kobject *kobj);
  
--	drm_dp_encode_sideband_req(in, &txmsg);
--	ret = drm_dp_decode_sideband_req(&txmsg, out);
-+	txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
-+	if (!txmsg)
-+		return false;
-+
-+	drm_dp_encode_sideband_req(in, txmsg);
-+	ret = drm_dp_decode_sideband_req(txmsg, out);
- 	if (ret < 0) {
- 		drm_printf(&p, "Failed to decode sideband request: %d\n",
- 			   ret);
-@@ -166,6 +170,7 @@ sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
- 
- out:
- 	kfree(out);
-+	kfree(txmsg);
- 	return result;
+-/**
++/*
+  * ttm_global_mutex - protecting the global BO state
+  */
+ DEFINE_MUTEX(ttm_global_mutex);
+@@ -278,7 +278,7 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
+ 	return ret;
  }
  
+-/**
++/*
+  * Call bo::reserved.
+  * Will release GPU memory type usage on destruction.
+  * This is the place to put in driver specific hooks to release
+@@ -352,9 +352,10 @@ static void ttm_bo_flush_all_fences(struct ttm_buffer_object *bo)
+  * Must be called with lru_lock and reservation held, this function
+  * will drop the lru lock and optionally the reservation lock before returning.
+  *
+- * @interruptible         Any sleeps should occur interruptibly.
+- * @no_wait_gpu           Never wait for gpu. Return -EBUSY instead.
+- * @unlock_resv           Unlock the reservation lock as well.
++ * @bo:                    The buffer object to clean-up
++ * @interruptible:         Any sleeps should occur interruptibly.
++ * @no_wait_gpu:           Never wait for gpu. Return -EBUSY instead.
++ * @unlock_resv:           Unlock the reservation lock as well.
+  */
+ 
+ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+@@ -420,7 +421,7 @@ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Traverse the delayed list, and call ttm_bo_cleanup_refs on all
+  * encountered buffers.
+  */
+@@ -628,7 +629,7 @@ bool ttm_bo_eviction_valuable(struct ttm_buffer_object *bo,
+ }
+ EXPORT_SYMBOL(ttm_bo_eviction_valuable);
+ 
+-/**
++/*
+  * Check the target bo is allowable to be evicted or swapout, including cases:
+  *
+  * a. if share same reservation object with ctx->resv, have assumption
+@@ -767,7 +768,7 @@ int ttm_mem_evict_first(struct ttm_bo_device *bdev,
+ 	return ret;
+ }
+ 
+-/**
++/*
+  * Add the last move fence to the BO and reserve a new shared slot.
+  */
+ static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
+@@ -803,7 +804,7 @@ static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Repeatedly evict memory from the LRU for @mem_type until we create enough
+  * space, or we've evicted everything and there isn't enough space.
+  */
+@@ -865,7 +866,7 @@ static int ttm_bo_mem_placement(struct ttm_buffer_object *bo,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Creates space for memory region @mem according to its type.
+  *
+  * This function first searches for free space in compatible memory types in
+@@ -1430,7 +1431,7 @@ int ttm_bo_wait(struct ttm_buffer_object *bo,
+ }
+ EXPORT_SYMBOL(ttm_bo_wait);
+ 
+-/**
++/*
+  * A buffer object shrink method that tries to swap out the first
+  * buffer object on the bo_global::swap_lru list.
+  */
 -- 
 2.25.1
 
