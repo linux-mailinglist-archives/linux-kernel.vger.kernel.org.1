@@ -2,196 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CC52B544E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7650A2B54A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729916AbgKPW22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:28:28 -0500
-Received: from mga06.intel.com ([134.134.136.31]:41513 "EHLO mga06.intel.com"
+        id S1728603AbgKPWyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:54:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36744 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729773AbgKPW21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:28:27 -0500
-IronPort-SDR: bQgWbstVARarHN/UDe6Cj30reA/hx4xvsWgmR5iewh3vu0d1l7lg0UmdiBI6FtzZJG9d24DD2w
- TAngxDuM5k1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232442040"
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="232442040"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 14:28:25 -0800
-IronPort-SDR: dupbUSpfBTNA3gN+qTaexNJ2w3A5eFA7K+ngLED7952B5CjB+LHq94LjzxvEOt2njZ1Jxn98es
- 8U1Ojcs+eHpg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="533581638"
-Received: from viggo.jf.intel.com ([10.54.77.144])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Nov 2020 14:28:24 -0800
-From:   Dave Hansen <dave.hansen@intel.com>
-To:     jarkko@kernel.org
-Cc:     akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        jethro@fortanix.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, ludloff@google.com, luto@kernel.org,
-        mikko.ylinen@intel.com, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, serge.ayoun@intel.com,
-        tglx@linutronix.de, x86@kernel.org, yaozhangx@google.com,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH] x86/sgx: clarify 'laundry_list' locking
-Date:   Mon, 16 Nov 2020 14:25:31 -0800
-Message-Id: <20201116222531.4834-1-dave.hansen@intel.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20201112220135.165028-6-jarkko@kernel.org>
-References: <20201112220135.165028-6-jarkko@kernel.org>
+        id S1725379AbgKPWyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 17:54:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 61900ACC5;
+        Mon, 16 Nov 2020 22:54:07 +0000 (UTC)
+Date:   Mon, 16 Nov 2020 14:31:02 -0800
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH] USB: serial: mos7720: defer state restore to a workqueue
+Message-ID: <20201116223102.eliwt7uh5rkiiq5h@linux-p48b.lan>
+References: <20201102211450.5722-1-dave@stgolabs.net>
+ <20201103204014.3ue37owcras6cx7p@linux-p48b.lan>
+ <20201104110657.GW4085@localhost>
+ <20201104162534.GY4085@localhost>
+ <20201105001307.lelve65nif344cfs@linux-p48b.lan>
+ <20201105082540.GA4085@localhost>
+ <20201106061713.lgghl4xnvdmkvges@linux-p48b.lan>
+ <20201113091443.GI4085@localhost>
+ <20201114042725.ofs7zbzmxg32tbbi@linux-p48b.lan>
+ <X7KyPrY8FDH4C/gm@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <X7KyPrY8FDH4C/gm@localhost>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+On Mon, 16 Nov 2020, Johan Hovold wrote:
 
-Short Version:
+>On Fri, Nov 13, 2020 at 08:27:25PM -0800, Davidlohr Bueso wrote:
+>> @@ -1883,21 +1724,17 @@ static void mos7720_release(struct usb_serial *serial)
+>>		if (mos_parport->msg_pending)
+>>			wait_for_completion_timeout(&mos_parport->syncmsg_compl,
+>>					    msecs_to_jiffies(MOS_WDR_TIMEOUT));
+>> +		/*
+>> +		 * If delayed work is currently scheduled, wait for it to
+>> +		 * complete. This also implies barriers that ensure the
+>> +		 * below serial clearing is not hoisted above the ->work.
+>> +		 */
+>> +		cancel_work_sync(&mos_parport->work);
+>
+>As I mentioned, this needs to be done *after* deregistering the port or
+>you could theoretically end up with the work item being requeued.
 
-The SGX section->laundry_list structure is effectively thread-local,
-but declared next to some shared structures.  Its semantics are clear
-as mud.  Fix that.  No functional changes.  Compile tested only.
+Hmm sorry yes I forgot to mention this. I was counting on the private_data
+already being null to prevent any new work being actually scheduled, so an
+incoming restore state, for example, would be a nop.
 
-Long Version:
+>
+>Yes, the same applies for the "synchronous" requests, but that's a
+>preexisting issue.
 
-The SGX hardware keeps per-page metadata.  This can provide things like
-permissions, integrity and replay protection.  It also prevents things
-like having an enclave page mapped multiple times or shared between
-enclaves.
+Per the above I also assumed sync requests were also safe as is.
 
-But, that presents a problem for kexec()'d kernels (or any other kernel
-that does not run immediately after a hardware reset).  This is because
-the last kernel may have been rude and forgotten to reset pages, which
-would trigger the the "shared page" sanity check.
+But I can certainly re-order things, how about:
 
-To fix this, the SGX code "launders" the pages by running the EREMOVE
-instruction on all pages at boot.  This is slow and can take a long
-time, so it is performed off in the SGX-specific ksgxd instead of being
-synchronous at boot.  The init code hands the list of pages to launder
-in a per-SGX-section list: ->laundry_list.  The only code to touch this
-list is the init code and ksgxd.  This means that no locking is
-necessary for ->laundry_list.
+mos7720_release():
+    mos_parport->pp->private_data = NULL;
+    parport_remove_port(mos_parport->pp);
 
-However, a lock is required for section->page_list, which is accessed
-while creating enclaves and by ksgxd.  This lock (section->lock is
-acquired by ksgxd while also processing ->laundry_list.  It is easy
-to confuse the purpose of the locking as being for ->laundry_list
-and ->page_list.
+    wait_for_completion_timeout();
+    cancel_work_sync();
 
-Rename ->laundry_list to ->init_laundry_list to make it clear that
-this is not normally used at runtime.  Also add some comments
-clarifying the locking, and reorganize 'sgx_epc_section' to put 'lock'
-near the things it protects.
+    usb_set_serial_data(serial, NULL);
+    mos_parport->serial = NULL;
 
-Note: init_laundry_list is 128 bytes of wasted space at runtime.  It
-could theoretically be dynamically allocated and then freed after the
-laundering process.  But, I suspect it would take nearly 128 bytes
-of extra instructions to do that.
+    parport_del_port(mos_parport->pp);
+    kref_put();
 
-Cc: Jethro Beekman <jethro@fortanix.com>
-Cc: Serge Ayoun <serge.ayoun@intel.com>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
----
-
- b/arch/x86/kernel/cpu/sgx/main.c |   14 ++++++++------
- b/arch/x86/kernel/cpu/sgx/sgx.h  |   15 ++++++++++++---
- 2 files changed, 20 insertions(+), 9 deletions(-)
-
-diff -puN arch/x86/kernel/cpu/sgx/main.c~sgx-laundry-comments arch/x86/kernel/cpu/sgx/main.c
---- a/arch/x86/kernel/cpu/sgx/main.c~sgx-laundry-comments	2020-11-16 13:55:42.624972349 -0800
-+++ b/arch/x86/kernel/cpu/sgx/main.c	2020-11-16 13:58:10.652971980 -0800
-@@ -36,13 +36,15 @@ static void sgx_sanitize_section(struct
- 	LIST_HEAD(dirty);
- 	int ret;
- 
--	while (!list_empty(&section->laundry_list)) {
-+	/* init_laundry_list is thread-local, no need for a lock: */
-+	while (!list_empty(&section->init_laundry_list)) {
- 		if (kthread_should_stop())
- 			return;
- 
-+		/* needed for access to ->page_list: */
- 		spin_lock(&section->lock);
- 
--		page = list_first_entry(&section->laundry_list,
-+		page = list_first_entry(&section->init_laundry_list,
- 					struct sgx_epc_page, list);
- 
- 		ret = __eremove(sgx_get_epc_virt_addr(page));
-@@ -56,7 +58,7 @@ static void sgx_sanitize_section(struct
- 		cond_resched();
- 	}
- 
--	list_splice(&dirty, &section->laundry_list);
-+	list_splice(&dirty, &section->init_laundry_list);
- }
- 
- static bool sgx_reclaimer_age(struct sgx_epc_page *epc_page)
-@@ -418,7 +420,7 @@ static int ksgxswapd(void *p)
- 		sgx_sanitize_section(&sgx_epc_sections[i]);
- 
- 		/* Should never happen. */
--		if (!list_empty(&sgx_epc_sections[i].laundry_list))
-+		if (!list_empty(&sgx_epc_sections[i].init_laundry_list))
- 			WARN(1, "EPC section %d has unsanitized pages.\n", i);
- 	}
- 
-@@ -632,13 +634,13 @@ static bool __init sgx_setup_epc_section
- 	section->phys_addr = phys_addr;
- 	spin_lock_init(&section->lock);
- 	INIT_LIST_HEAD(&section->page_list);
--	INIT_LIST_HEAD(&section->laundry_list);
-+	INIT_LIST_HEAD(&section->init_laundry_list);
- 
- 	for (i = 0; i < nr_pages; i++) {
- 		section->pages[i].section = index;
- 		section->pages[i].flags = 0;
- 		section->pages[i].owner = NULL;
--		list_add_tail(&section->pages[i].list, &section->laundry_list);
-+		list_add_tail(&section->pages[i].list, &section->init_laundry_list);
- 	}
- 
- 	section->free_cnt = nr_pages;
-diff -puN arch/x86/kernel/cpu/sgx/sgx.h~sgx-laundry-comments arch/x86/kernel/cpu/sgx/sgx.h
---- a/arch/x86/kernel/cpu/sgx/sgx.h~sgx-laundry-comments	2020-11-16 13:55:42.627972349 -0800
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h	2020-11-16 13:55:42.631972349 -0800
-@@ -34,15 +34,24 @@ struct sgx_epc_page {
-  * physical memory e.g. for memory areas of the each node. This structure is
-  * used to store EPC pages for one EPC section and virtual memory area where
-  * the pages have been mapped.
-+ *
-+ * 'lock' must be held before accessing 'page_list' or 'free_cnt'.
-  */
- struct sgx_epc_section {
- 	unsigned long phys_addr;
- 	void *virt_addr;
--	struct list_head page_list;
--	struct list_head laundry_list;
- 	struct sgx_epc_page *pages;
--	unsigned long free_cnt;
-+
- 	spinlock_t lock;
-+	struct list_head page_list;
-+	unsigned long free_cnt;
-+
-+	/*
-+	 * Pages which need EREMOVE run on them before they can be
-+	 * used.  Only safe to be accessed in ksgxd and init code.
-+	 * Not protected by locks.
-+	 */
-+	struct list_head init_laundry_list;
- };
- 
- extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
-_
+Thanks,
+Davidlohr
