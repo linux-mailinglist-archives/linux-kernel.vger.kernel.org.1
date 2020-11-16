@@ -2,105 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B01C2B5259
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7E82B5261
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732316AbgKPUTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:19:23 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40480 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727849AbgKPUTW (ORCPT
+        id S1732122AbgKPUW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:22:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727359AbgKPUW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:19:22 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGKE7FC184017;
-        Mon, 16 Nov 2020 20:18:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=BYnJRTZcs0oaUzlPY8WjSL5rSKEpZDv+xiUp4uldaUo=;
- b=OaZMygvS4nsU1iJVGY1OS8MDUKL4YHc3INxFzS7U9kiKGx69Plx5KRM04lnKSOD8R3MX
- QPH9eq9l4wOSh98GZCu1VuX/QWn4OUTASKPSPNbK1CT4ahzG8g/2TlAfR8IosGGZq7ou
- kabF9x/HLVIMO27Ft8T48AyDkjnxovEhngV91TeDewJLHKdbNoH2JT4nWWqCk7pwrQZF
- j/jJcx9kLTI/mny+MGVSxzMToBQcWF7dI0RqHelCkhhhtBkeir9VrZ/xgykM+/IJS2cq
- QHxjRA88gz551wYrhHT3HaUzD1SNQIO+f3RXbZnhZiMlz6MI2dXFAB9E3OY+1+4fTDgP Wg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 34t76kq3su-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 16 Nov 2020 20:18:47 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGKAUKS132359;
-        Mon, 16 Nov 2020 20:18:46 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 34ts5v5016-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Nov 2020 20:18:46 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AGKIhNg018994;
-        Mon, 16 Nov 2020 20:18:43 GMT
-Received: from localhost.localdomain (/92.157.91.83)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 16 Nov 2020 12:18:43 -0800
-Subject: Re: [RFC][PATCH v2 11/21] x86/pti: Extend PTI user mappings
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
-        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
-        kuzuno@gmail.com
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116144757.1920077-12-alexandre.chartre@oracle.com>
- <CALCETrXoykRjRPYPfZr6gBKoMnHuRYiJTDOcFYMq8GLef00j1A@mail.gmail.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <820278dc-5f8e-6224-71b4-7c61819f68d1@oracle.com>
-Date:   Mon, 16 Nov 2020 21:21:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 16 Nov 2020 15:22:58 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBACAC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:22:57 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 19so566131wmf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:22:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DuarJJhpDRx/9+5W9R32EPHRCg72/dsV/R3Fbi0RzDs=;
+        b=n5YNkhvz2jgmhEYoGRO52BVn39NMFzJeAMVzPnk2GFxvat3OFpcsA14OgKCuzZBkGV
+         J6LxhWzBrneFA7zOXzZHdtM3XGbQRTY4VwJHFxNp4+fnSSgEowpIVm1QSq0xTSrnDYJc
+         0BQclXCXie08LNhNQB06y7LT5CLjni46ebzc+/FHRH1ZdoEATdjHwrM4TnTvXzlgyY5b
+         arnh1JUnnuA9hW2D+8w87YanuVuFMxcWSCzAVH13iatKy6QZu9XYnYOSdggNL3+WXGoM
+         GE+q9d7bNYtUDPGnM0KeExWCqU7FLaTwqRkJirujTBxZPP7wACaDB98X+e+jHC6aMJdl
+         RCEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DuarJJhpDRx/9+5W9R32EPHRCg72/dsV/R3Fbi0RzDs=;
+        b=PcOWxXM+RaUJ4Qu7nuDNvXNucEM+e1ByYoB+uqfOByY5QZpvbop1am4i4RCGrQ/KlN
+         9BZiV8Flqw35LzkNMZvuxUyx9aiuSUfgXBqKHZy50Nq3NWvPKKNp24KyRl6dSH8HE/aJ
+         Sh+8wFTRdTWEa+yXyl6HuIItvIi4X67j3+kX8+j8jVqN748g9m6vGpcREn5IA4SE0gGi
+         HtcYwX3+8PW8CzY3qwhQ1T7iYTrN2UxU8HoHjHdw1yuyTZLicLeOxkuXQIKPlnD1K7Rg
+         hHyKZdJVZDwZLpeUwuzLX4D2cQv44eJObCbLMNUTA23ts4oHAeWJ+VO47XAfegjGPv+l
+         kBkA==
+X-Gm-Message-State: AOAM530rOTnqYGSr2ZdHwR1CgV7QjsC9HziwOaJJpfY83oti93IerOMj
+        hg+0L3Gh91pbW/qBHWI+K0DxCLo2JzpIfP+0WkU=
+X-Google-Smtp-Source: ABdhPJwz82pD94+4fHfPu9TrMqYJhfqMOndS19nP3bK3JLBd7APsbnE2rca+aktpzzLoMcga8iZC30CJFIiJqT4HWz4=
+X-Received: by 2002:a1c:2dc8:: with SMTP id t191mr262491wmt.73.1605558176583;
+ Mon, 16 Nov 2020 12:22:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CALCETrXoykRjRPYPfZr6gBKoMnHuRYiJTDOcFYMq8GLef00j1A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011160117
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011160117
+References: <20201116173700.1830487-1-lee.jones@linaro.org> <20201116173700.1830487-29-lee.jones@linaro.org>
+In-Reply-To: <20201116173700.1830487-29-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 16 Nov 2020 15:22:45 -0500
+Message-ID: <CADnq5_O4CTPD=cCmeme955WHOuyFo40rDaNMjmFKpsFn_pOYzw@mail.gmail.com>
+Subject: Re: [PATCH 28/43] drm/radeon/ci_dpm: Move 'ci_*()'s prototypes to
+ shared header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 12:38 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/cik.c:1868:5: warning: no previous prototype for =
+=E2=80=98ci_mc_load_microcode=E2=80=99 [-Wmissing-prototypes]
+>  1868 | int ci_mc_load_microcode(struct radeon_device *rdev)
+>  | ^~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/cik.c:5847:6: warning: no previous prototype for =
+=E2=80=98cik_enter_rlc_safe_mode=E2=80=99 [-Wmissing-prototypes]
+>  5847 | void cik_enter_rlc_safe_mode(struct radeon_device *rdev)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/cik.c:5868:6: warning: no previous prototype for =
+=E2=80=98cik_exit_rlc_safe_mode=E2=80=99 [-Wmissing-prototypes]
+>  5868 | void cik_exit_rlc_safe_mode(struct radeon_device *rdev)
+>  | ^~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/cik.c:6286:6: warning: no previous prototype for =
+=E2=80=98cik_update_cg=E2=80=99 [-Wmissing-prototypes]
+>  6286 | void cik_update_cg(struct radeon_device *rdev,
+>  | ^~~~~~~~~~~~~
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-On 11/16/20 8:48 PM, Andy Lutomirski wrote:
-> On Mon, Nov 16, 2020 at 6:49 AM Alexandre Chartre
-> <alexandre.chartre@oracle.com> wrote:
->>
->> Extend PTI user mappings so that more kernel entry code can be executed
->> with the user page-table. To do so, we need to map syscall and interrupt
->> entry code, per cpu offsets (__per_cpu_offset, which is used some in
->> entry code), the stack canary, and the PTI stack (which is defined per
->> task).
-> 
-> Does anything unmap the PTI stack?  Mapping is easy, and unmapping
-> could be a pretty big mess.
-> 
+Applied.  Thanks!
 
-No, there's no unmap. The mapping exists as long as the task page-table
-does (i.e. as long as the task mm exits). I assume that the task stack
-and mm are freed at the same time but that's not something I have checked.
+Alex
 
-alex.
+> ---
+>  drivers/gpu/drm/radeon/ci_dpm.c |  7 +------
+>  drivers/gpu/drm/radeon/cik.c    |  1 +
+>  drivers/gpu/drm/radeon/cik.h    | 33 +++++++++++++++++++++++++++++++++
+>  3 files changed, 35 insertions(+), 6 deletions(-)
+>  create mode 100644 drivers/gpu/drm/radeon/cik.h
+>
+> diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_=
+dpm.c
+> index 8324aca5fd006..a9fc0a552736c 100644
+> --- a/drivers/gpu/drm/radeon/ci_dpm.c
+> +++ b/drivers/gpu/drm/radeon/ci_dpm.c
+> @@ -27,6 +27,7 @@
+>
+>  #include "atom.h"
+>  #include "ci_dpm.h"
+> +#include "cik.h"
+>  #include "cikd.h"
+>  #include "r600_dpm.h"
+>  #include "radeon.h"
+> @@ -157,12 +158,6 @@ extern u8 si_get_mclk_frequency_ratio(u32 memory_clo=
+ck, bool strobe_mode);
+>  extern void si_trim_voltage_table_to_fit_state_table(struct radeon_devic=
+e *rdev,
+>                                                      u32 max_voltage_step=
+s,
+>                                                      struct atom_voltage_=
+table *voltage_table);
+> -extern void cik_enter_rlc_safe_mode(struct radeon_device *rdev);
+> -extern void cik_exit_rlc_safe_mode(struct radeon_device *rdev);
+> -extern int ci_mc_load_microcode(struct radeon_device *rdev);
+> -extern void cik_update_cg(struct radeon_device *rdev,
+> -                         u32 block, bool enable);
+> -
+>  static int ci_get_std_voltage_value_sidd(struct radeon_device *rdev,
+>                                          struct atom_voltage_table_entry =
+*voltage_table,
+>                                          u16 *std_voltage_hi_sidd, u16 *s=
+td_voltage_lo_sidd);
+> diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
+> index 980b50d046cbc..ae020ad7b3185 100644
+> --- a/drivers/gpu/drm/radeon/cik.c
+> +++ b/drivers/gpu/drm/radeon/cik.c
+> @@ -32,6 +32,7 @@
+>  #include "atom.h"
+>  #include "evergreen.h"
+>  #include "cik_blit_shaders.h"
+> +#include "cik.h"
+>  #include "cikd.h"
+>  #include "clearstate_ci.h"
+>  #include "r600.h"
+> diff --git a/drivers/gpu/drm/radeon/cik.h b/drivers/gpu/drm/radeon/cik.h
+> new file mode 100644
+> index 0000000000000..297b3c1ff804f
+> --- /dev/null
+> +++ b/drivers/gpu/drm/radeon/cik.h
+> @@ -0,0 +1,33 @@
+> +/* cik.h -- Private header for radeon driver -*- linux-c -*-
+> + * Copyright 2012 Advanced Micro Devices, Inc.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining=
+ a
+> + * copy of this software and associated documentation files (the "Softwa=
+re"),
+> + * to deal in the Software without restriction, including without limita=
+tion
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
+se,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be includ=
+ed in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
+SS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
+TY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
+ALL
+> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES=
+ OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + * OTHER DEALINGS IN THE SOFTWARE.
+> + */
+> +
+> +#ifndef __CIK_H__
+> +#define __CIK_H__
+> +
+> +struct radeon_device;
+> +
+> +void cik_enter_rlc_safe_mode(struct radeon_device *rdev);
+> +void cik_exit_rlc_safe_mode(struct radeon_device *rdev);
+> +int ci_mc_load_microcode(struct radeon_device *rdev);
+> +void cik_update_cg(struct radeon_device *rdev, u32 block, bool enable);
+> +
+> +#endif                         /* __CIK_H__ */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
