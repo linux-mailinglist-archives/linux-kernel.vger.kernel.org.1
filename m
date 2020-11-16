@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E022B5393
+	by mail.lfdr.de (Postfix) with ESMTP id 70D922B5394
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731793AbgKPVOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:14:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50756 "EHLO mail.kernel.org"
+        id S1731979AbgKPVPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:15:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727478AbgKPVOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:14:45 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1725994AbgKPVPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 16:15:06 -0500
+Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1612D20888;
-        Mon, 16 Nov 2020 21:14:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3795C20888;
+        Mon, 16 Nov 2020 21:15:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605561284;
-        bh=gfPKngfD4EQ5z/E0JWLSCaRtEJGlbAeJZSIz7NPV6iY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X376lL2cJOXe6PhlDjQ5Zwe9eV8jBFDfigG4u1a3nqjHJmxEgescHE+takZ8xjEFt
-         NPsWJAwEbTdLp5YwOv3AJwnV7WVSeBfVHLQoNfQH8MEq17sLZ/niUMQAfcNxdY6kq4
-         vbPd4OELUe3lxc3M9iP6uNOM3WmyPJiSDEhMqewY=
-Date:   Mon, 16 Nov 2020 21:14:25 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Tony Lindgren <tony@atomide.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Laxminath Kasam <lkasam@codeaurora.org>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>, Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH] mfd: cpcap: Fix interrupt regression with regmap
- clear_ack
-Message-ID: <20201116211425.GK4739@sirena.org.uk>
-References: <20201111170613.46057-1-tony@atomide.com>
- <20201113102134.GI3718728@dell>
- <CAJ+vNU0T0qS282MU-FRy8zNLgjnvF=+-5k=XxxXhZw6k2cgASw@mail.gmail.com>
- <20201116185903.GD4739@sirena.org.uk>
- <CAJ+vNU3Qrbd8bez+eiHaXrvntqpO_iDM0PSJN_RTAV5W6a7uOw@mail.gmail.com>
+        s=default; t=1605561306;
+        bh=KKKLqy05JpAvCjkxBFWdO5hMPGcadZx9kPhUbI8AJHA=;
+        h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
+        b=vgmAOVrIK2rI8Dv6s6VoLfFghIVyDqzuR7OfxYPgXPJhZ+hBDjcdYC8e54afzzvHV
+         gx6/qMloTBbQA147g6H+LxvAqQ4UhfJmdgXOMDaaxpLFRPE2vDwtoK+QWvwaB6yTzQ
+         aXmEhacgnEle+TUydS51i8KvGTo8/x5vqWHaDML0=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="VSVNCtZB1QZ8vhj+"
-Content-Disposition: inline
-In-Reply-To: <CAJ+vNU3Qrbd8bez+eiHaXrvntqpO_iDM0PSJN_RTAV5W6a7uOw@mail.gmail.com>
-X-Cookie: Immanuel doesn't pun, he Kant.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <alpine.DEB.2.22.394.2011161633240.2682@hadrien>
+References: <alpine.DEB.2.22.394.2011161633240.2682@hadrien>
+From:   Antoine Tenart <atenart@kernel.org>
+Subject: Re: [PATCH v2] net: phy: mscc: fix excluded_middle.cocci warnings
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Quentin Schulz <quentin.schulz@bootlin.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Denis Efremov <efremov@linux.com>,
+        netdev@vger.kernel.org
+Message-ID: <160556130103.369564.5641893167437988724@surface.local>
+Date:   Mon, 16 Nov 2020 22:15:01 +0100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Julia,
 
---VSVNCtZB1QZ8vhj+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Quoting Julia Lawall (2020-11-16 16:34:44)
+> From: kernel test robot <lkp@intel.com>
+>=20
+> Condition !A || A && B is equivalent to !A || B.
+>=20
+> Generated by: scripts/coccinelle/misc/excluded_middle.cocci
+>=20
+> Fixes: b76f0ea01312 ("coccinelle: misc: add excluded_middle.cocci script")
+> CC: Denis Efremov <efremov@linux.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 
-On Mon, Nov 16, 2020 at 12:43:57PM -0800, Tim Harvey wrote:
+Reviewed-by: Antoine Tenart <atenart@kernel.org>
 
-> What are your thoughts regarding the issue of  regmap_irq_sync_unlock
-> ack_invert ack'ing by writing ~d->mask_buf[i] which ends up setting
-> all the other bits not trying to be awk'd? I would say that the device
-> allowing an interrupt status to be 'set' and keeping it from releasing
-> its IRQ is strange/broken for sure, but I'll need to work around it
-> somehow.
+Thanks!
+Antoine
 
-My initial assumption with ack_invert would be that any bits we're not
-acking are inverted as well - if we just write 0 to those bits then we
-might be spuriously acking them.  I'm not sure if there's something that
-is being missed with how this hardware is modelled or if it's just a not
-entirely thought through hardware design, if I'm understanding it
-correctly I can't see anything that can safely be written to the bits we
-don't want to ack.  Either we cause them to be asserted or we might
-clear them incorrectly if we race with that interrupt asserting.
-
---VSVNCtZB1QZ8vhj+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+y67AACgkQJNaLcl1U
-h9AXwgf5AaFUxdfQuCTAUysGSkuVWkSME/2FIu4Q173zTyhFBKTZJJRo8omHShRO
-nC+yAwuZ0tt05i79HmkWTSdzztyXr7pgKmqhO3xsXdShBy0Yun+xmzVByP1yUg8V
-bHkKx/B10fChWqqRy4an9hIn935wRGjrsVrthOmvrKnTt/Mh2d6Z7Vf2CkZrlT9v
-yeArsHCqIdpZQz8XCmB7MHpbyxEQWEXpbGMu178jwO+dK/js6YA57K4KkKrLzEHW
-0jSLGf1FboaXSeDiJ6PrTAKl8yPnfh+VqDyKWDv820GRWtPxr/ld3V0zZvcPJSdE
-gk2HKaFWQWV55si+iLoeFCcwBUAZ1A==
-=TGnP
------END PGP SIGNATURE-----
-
---VSVNCtZB1QZ8vhj+--
+> ---
+>=20
+> v2: add netdev mailing list
+>=20
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   e28c0d7c92c89016c12a677616668957351e7542
+> commit: b76f0ea013125358d1b4ca147a6f9b6883dd2493 coccinelle: misc: add ex=
+cluded_middle.cocci script
+> :::::: branch date: 8 hours ago
+> :::::: commit date: 8 weeks ago
+>=20
+> Please take the patch only if it's a positive warning. Thanks!
+>=20
+>  mscc_ptp.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> --- a/drivers/net/phy/mscc/mscc_ptp.c
+> +++ b/drivers/net/phy/mscc/mscc_ptp.c
+> @@ -136,7 +136,7 @@ static void vsc85xx_ts_write_csr(struct
+>=20
+>         phy_ts_base_write(phydev, MSCC_EXT_PAGE_ACCESS, MSCC_PHY_PAGE_158=
+8);
+>=20
+> -       if (!cond || (cond && upper))
+> +       if (!cond || upper)
+>                 phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_MSB, upper=
+);
+>=20
+>         phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_LSB, lower);
