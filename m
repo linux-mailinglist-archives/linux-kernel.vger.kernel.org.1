@@ -2,256 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE62E2B4386
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 686FD2B4387
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730007AbgKPMTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:19:02 -0500
-Received: from mga02.intel.com ([134.134.136.20]:13722 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727027AbgKPMTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:19:02 -0500
-IronPort-SDR: fJB7Qp8Mrwxj8MZpRATSVeZ24QesCjz3nOU7cHEAviVnzG3M+F4aerimCnRWlAzgAbq5Pd3uUv
- n+avig488OBA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157761927"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="157761927"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:18:55 -0800
-IronPort-SDR: SSrRlrV8iPWGdJiFGleHXWcXypKoFBrQvjZSTtAfcXlfHteC/aQ4Svug+P+Ci0XG/Dx9E2DuD9
- PMwiu3yk2N6w==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="543583327"
-Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.228.209]) ([10.249.228.209])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:18:51 -0800
-Subject: [PATCH v3 06/12] perf record: introduce data file at mmap buffer
- object
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>
-References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <c439c1f5-de40-8f6b-d494-39082092f3b4@linux.intel.com>
-Date:   Mon, 16 Nov 2020 15:18:50 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1730017AbgKPMT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:19:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727027AbgKPMTZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:19:25 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7155DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:19:25 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id t5so12645734qtp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:19:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/kYjKHOYdbRkTjeegvgMiUR7lrALhGYE7BaLrgneuEo=;
+        b=dwCtwSG1CRtiWFQFZf4fc7QGzmXHSvCxOczUoTS3liWWSeYKySIjb/aNGCMq4vY22z
+         7S8yG5Hc/Y57cokBs7emePi+zUY6Vf4tLiP3n+dQ+1A6XDOXo5kMf8IWsTzgmGeyBwii
+         wPbPS5Tc8whp73gFMP0tYWZz4kkggygE6KzTRx19J9eA1MBhSUplPG4LIzTI1Uoo0uDw
+         8Dcn2aB22UdbhjlGkyV5YM0xI7oTIh8zakc6xXl5vQoJepGLlBGmOnV1cG/3LEt6LX8l
+         sIiLdq0+kAHl85li03YQk/T7Vc7n/pg/nIp8HcVUYieU4VObKtdnd0WxyXWN7am+eLcT
+         oJ4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/kYjKHOYdbRkTjeegvgMiUR7lrALhGYE7BaLrgneuEo=;
+        b=kqFTUWR3iAlbW7UxpgAPdcQm1K1NppV9Ke2ODTDndmuzWGhDzcJiQOPwEOEhpHZA+m
+         3h/vms4MSKLo2VgytqSCkafmFUYtKWG3/bGoPq+Bk85JL8A5ms4TvEIAy7oKWuombLKU
+         zFC1x3JJTbd/Z7nyMRlE2J0eHMFeJnKlBrW3BxKaj6WtlpeGbsDLtSTKz7243dNY6tNB
+         JYwQpzGgpOq7T2VZa8dE9BPiKhRQZgPnAOzFkpawUOaKFA2EegU8N7xjjmzWXpelqCan
+         apjIVBC6Tq8APFvOa/QZSCkVg16uPfdQ0Hn8fdiXaXmcA/IGPykgglzFTAA0cJyoSSH6
+         br6A==
+X-Gm-Message-State: AOAM532458DGwah9F9D3wvCoPKskZITkR/oPGA1BdOA/TZb1ncsrXIVu
+        jE0rl3yrjE+rAtIvus83lE9HmJr7DTdjCVO27/lEew==
+X-Google-Smtp-Source: ABdhPJzVtuVEKbYpXTvA7bt6Bpfm8IWTKWQYpOD+OfdF3VKnQMbyBfE5Xwk1DVVV2nhzbJJ3JbrNZnq9kHaQ20TpoxA=
+X-Received: by 2002:aed:2744:: with SMTP id n62mr14165891qtd.67.1605529158914;
+ Mon, 16 Nov 2020 04:19:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1603372719.git.andreyknvl@google.com> <ded454eeff88f631dc08eef76f0ad9f2daff0085.1603372719.git.andreyknvl@google.com>
+ <CACT4Y+Zys3+VUsO6GDWQEcjCS6Wx16W_+B6aNy-fyhPcir7eeA@mail.gmail.com>
+ <CAAeHK+xvGZNwTtvkzNnU7Hh7iUiPKFNDKDpKT8UPcqQk6Ah3yQ@mail.gmail.com>
+ <CACT4Y+Z3UCwAY2Mm1KiQMBXVhc2Bobi-YrdiNYtToNgMRjOE4g@mail.gmail.com>
+ <CANpmjNPNqHsOfcw7Wh+XQ_pPT1610-+B9By171t7KMS3aB2sBg@mail.gmail.com> <X7Jthb9D5Ekq93sS@trantor>
+In-Reply-To: <X7Jthb9D5Ekq93sS@trantor>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 16 Nov 2020 13:19:07 +0100
+Message-ID: <CACT4Y+ZubLBEiGZOVyptB4RPf=3Qr570GN+JBpSmaeEvHWQB5g@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 04/21] kasan: unpoison stack only with CONFIG_KASAN_STACK
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Introduce data file and compressor objects into mmap object so
-they could be used to process and store data stream from the
-corresponding kernel data buffer. Introduce bytes_transferred
-and bytes_compressed stats so they would capture statistics for
-the related data buffer transfers. Make use of the introduced
-per mmap file, compressor and stats when they are initialized
-and available.
-
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/perf/builtin-record.c | 64 +++++++++++++++++++++++++++++--------
- tools/perf/util/mmap.c      |  6 ++++
- tools/perf/util/mmap.h      |  6 ++++
- 3 files changed, 63 insertions(+), 13 deletions(-)
-
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 13773739bedc..779676531edf 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -188,11 +188,19 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
- {
- 	struct perf_data_file *file = &rec->session->data->file;
- 
-+	if (map && map->file)
-+		file = map->file;
-+
- 	if (perf_data_file__write(file, bf, size) < 0) {
- 		pr_err("failed to write perf data, error: %m\n");
- 		return -1;
- 	}
- 
-+	if (map && map->file) {
-+		map->bytes_written += size;
-+		return 0;
-+	}
-+
- 	rec->bytes_written += size;
- 
- 	if (record__output_max_size_exceeded(rec) && !done) {
-@@ -210,8 +218,8 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
- 
- static int record__aio_enabled(struct record *rec);
- static int record__comp_enabled(struct record *rec);
--static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
--			    void *src, size_t src_size);
-+static size_t zstd_compress(struct zstd_data *data,
-+			    void *dst, size_t dst_size, void *src, size_t src_size);
- 
- #ifdef HAVE_AIO_SUPPORT
- static int record__aio_write(struct aiocb *cblock, int trace_fd,
-@@ -345,9 +353,13 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
- 	 */
- 
- 	if (record__comp_enabled(aio->rec)) {
--		size = zstd_compress(aio->rec->session, aio->data + aio->size,
--				     mmap__mmap_len(map) - aio->size,
-+		struct zstd_data *zstd_data = &aio->rec->session->zstd_data;
-+
-+		aio->rec->session->bytes_transferred += size;
-+		size = zstd_compress(zstd_data,
-+				     aio->data + aio->size, mmap__mmap_len(map) - aio->size,
- 				     buf, size);
-+		aio->rec->session->bytes_compressed += size;
- 	} else {
- 		memcpy(aio->data + aio->size, buf, size);
- 	}
-@@ -572,8 +584,22 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- 	struct record *rec = to;
- 
- 	if (record__comp_enabled(rec)) {
--		size = zstd_compress(rec->session, map->data, mmap__mmap_len(map), bf, size);
-+		struct zstd_data *zstd_data = &rec->session->zstd_data;
-+
-+		if (map->file) {
-+			zstd_data = &map->zstd_data;
-+			map->bytes_transferred += size;
-+		} else {
-+			rec->session->bytes_transferred += size;
-+		}
-+
-+		size = zstd_compress(zstd_data, map->data, mmap__mmap_len(map), bf, size);
- 		bf   = map->data;
-+
-+		if (map->file)
-+			map->bytes_compressed += size;
-+		else
-+			rec->session->bytes_compressed += size;
- 	}
- 
- 	thread->samples++;
-@@ -1291,18 +1317,15 @@ static size_t process_comp_header(void *record, size_t increment)
- 	return size;
- }
- 
--static size_t zstd_compress(struct perf_session *session, void *dst, size_t dst_size,
-+static size_t zstd_compress(struct zstd_data *zstd_data, void *dst, size_t dst_size,
- 			    void *src, size_t src_size)
- {
- 	size_t compressed;
- 	size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct perf_record_compressed) - 1;
- 
--	compressed = zstd_compress_stream_to_records(&session->zstd_data, dst, dst_size, src, src_size,
-+	compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size, src, src_size,
- 						     max_record_size, process_comp_header);
- 
--	session->bytes_transferred += src_size;
--	session->bytes_compressed  += compressed;
--
- 	return compressed;
- }
- 
-@@ -1959,8 +1982,9 @@ static int record__start_threads(struct record *rec)
- 
- static int record__stop_threads(struct record *rec, unsigned long *waking)
- {
--	int t;
-+	int t, tm;
- 	struct thread_data *thread_data = rec->thread_data;
-+	u64 bytes_written = 0, bytes_transferred = 0, bytes_compressed = 0;
- 
- 	for (t = 1; t < rec->nr_threads; t++)
- 		record__terminate_thread(&thread_data[t]);
-@@ -1968,9 +1992,23 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
- 	for (t = 0; t < rec->nr_threads; t++) {
- 		rec->samples += thread_data[t].samples;
- 		*waking += thread_data[t].waking;
--		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld\n",
-+		for (tm = 0; tm < thread_data[t].nr_mmaps; tm++) {
-+			if (thread_data[t].maps) {
-+				bytes_transferred += thread_data[t].maps[tm]->bytes_transferred;
-+				bytes_compressed += thread_data[t].maps[tm]->bytes_compressed;
-+				bytes_written += thread_data[t].maps[tm]->bytes_written;
-+			}
-+			if (thread_data[t].overwrite_maps) {
-+				bytes_transferred += thread_data[t].overwrite_maps[tm]->bytes_transferred;
-+				bytes_compressed += thread_data[t].overwrite_maps[tm]->bytes_compressed;
-+				bytes_written += thread_data[t].overwrite_maps[tm]->bytes_written;
-+			}
-+		}
-+		rec->session->bytes_transferred += bytes_transferred;
-+		rec->session->bytes_compressed += bytes_compressed;
-+		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld, written=%ld\n",
- 			 thread_data[t].tid, thread_data[t].samples, thread_data[t].waking,
--			 rec->session->bytes_transferred, rec->session->bytes_compressed);
-+			 bytes_transferred, bytes_compressed, bytes_written);
- 	}
- 
- 	return 0;
-diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
-index ab7108d22428..a2c5e4237592 100644
---- a/tools/perf/util/mmap.c
-+++ b/tools/perf/util/mmap.c
-@@ -230,6 +230,8 @@ void mmap__munmap(struct mmap *map)
- {
- 	bitmap_free(map->affinity_mask.bits);
- 
-+	zstd_fini(&map->zstd_data);
-+
- 	perf_mmap__aio_munmap(map);
- 	if (map->data != NULL) {
- 		munmap(map->data, mmap__mmap_len(map));
-@@ -291,6 +293,10 @@ int mmap__mmap(struct mmap *map, struct mmap_params *mp, int fd, int cpu)
- 	map->core.flush = mp->flush;
- 
- 	map->comp_level = mp->comp_level;
-+	if (zstd_init(&map->zstd_data, map->comp_level)) {
-+		pr_debug2("failed to init mmap commpressor, error %d\n", errno);
-+		return -1;
-+	}
- 
- 	if (map->comp_level && !perf_mmap__aio_enabled(map)) {
- 		map->data = mmap(NULL, mmap__mmap_len(map), PROT_READ|PROT_WRITE,
-diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
-index 9d5f589f02ae..c04ca4b5adf5 100644
---- a/tools/perf/util/mmap.h
-+++ b/tools/perf/util/mmap.h
-@@ -13,6 +13,7 @@
- #endif
- #include "auxtrace.h"
- #include "event.h"
-+#include "util/compress.h"
- 
- struct aiocb;
- 
-@@ -43,6 +44,11 @@ struct mmap {
- 	struct mmap_cpu_mask	affinity_mask;
- 	void		*data;
- 	int		comp_level;
-+	struct perf_data_file *file;
-+	struct zstd_data      zstd_data;
-+	u64		      bytes_transferred;
-+	u64		      bytes_compressed;
-+	u64		      bytes_written;
- };
- 
- struct mmap_params {
--- 
-2.24.1
+On Mon, Nov 16, 2020 at 1:16 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Mon, Nov 16, 2020 at 12:50:00PM +0100, Marco Elver wrote:
+> > On Mon, 16 Nov 2020 at 11:59, Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > On Thu, Oct 29, 2020 at 8:57 PM 'Andrey Konovalov' via kasan-dev
+> > > <kasan-dev@googlegroups.com> wrote:
+> > > > On Tue, Oct 27, 2020 at 1:44 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > > >
+> > > > > On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> > > > > >
+> > > > > > There's a config option CONFIG_KASAN_STACK that has to be enabled for
+> > > > > > KASAN to use stack instrumentation and perform validity checks for
+> > > > > > stack variables.
+> > > > > >
+> > > > > > There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
+> > > > > > Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
+> > > > > > enabled.
+> > > > > >
+> > > > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > > > > Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
+> > > > > > ---
+> > > > > >  arch/arm64/kernel/sleep.S        |  2 +-
+> > > > > >  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+> > > > > >  include/linux/kasan.h            | 10 ++++++----
+> > > > > >  mm/kasan/common.c                |  2 ++
+> > > > > >  4 files changed, 10 insertions(+), 6 deletions(-)
+> > > > > >
+> > > > > > diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+> > > > > > index ba40d57757d6..bdadfa56b40e 100644
+> > > > > > --- a/arch/arm64/kernel/sleep.S
+> > > > > > +++ b/arch/arm64/kernel/sleep.S
+> > > > > > @@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
+> > > > > >          */
+> > > > > >         bl      cpu_do_resume
+> > > > > >
+> > > > > > -#ifdef CONFIG_KASAN
+> > > > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > > > >         mov     x0, sp
+> > > > > >         bl      kasan_unpoison_task_stack_below
+> > > > > >  #endif
+> > > > > > diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+> > > > > > index c8daa92f38dc..5d3a0b8fd379 100644
+> > > > > > --- a/arch/x86/kernel/acpi/wakeup_64.S
+> > > > > > +++ b/arch/x86/kernel/acpi/wakeup_64.S
+> > > > > > @@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+> > > > > >         movq    pt_regs_r14(%rax), %r14
+> > > > > >         movq    pt_regs_r15(%rax), %r15
+> > > > > >
+> > > > > > -#ifdef CONFIG_KASAN
+> > > > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > > > >         /*
+> > > > > >          * The suspend path may have poisoned some areas deeper in the stack,
+> > > > > >          * which we now need to unpoison.
+> > > > > > diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> > > > > > index 3f3f541e5d5f..7be9fb9146ac 100644
+> > > > > > --- a/include/linux/kasan.h
+> > > > > > +++ b/include/linux/kasan.h
+> > > > > > @@ -68,8 +68,6 @@ static inline void kasan_disable_current(void) {}
+> > > > > >
+> > > > > >  void kasan_unpoison_memory(const void *address, size_t size);
+> > > > > >
+> > > > > > -void kasan_unpoison_task_stack(struct task_struct *task);
+> > > > > > -
+> > > > > >  void kasan_alloc_pages(struct page *page, unsigned int order);
+> > > > > >  void kasan_free_pages(struct page *page, unsigned int order);
+> > > > > >
+> > > > > > @@ -114,8 +112,6 @@ void kasan_restore_multi_shot(bool enabled);
+> > > > > >
+> > > > > >  static inline void kasan_unpoison_memory(const void *address, size_t size) {}
+> > > > > >
+> > > > > > -static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+> > > > > > -
+> > > > > >  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+> > > > > >  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+> > > > > >
+> > > > > > @@ -167,6 +163,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+> > > > > >
+> > > > > >  #endif /* CONFIG_KASAN */
+> > > > > >
+> > > > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > > >
+> > > > > && defined(CONFIG_KASAN_STACK) for consistency
+> > > >
+> > > > CONFIG_KASAN_STACK is different from other KASAN configs. It's always
+> > > > defined, and its value is what controls whether stack instrumentation
+> > > > is enabled.
+> > >
+> > > Not sure why we did this instead of the following, but okay.
+> > >
+> > >  config KASAN_STACK
+> > > -       int
+> > > -       default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
+> > > -       default 0
+> > > +       bool
+> > > +       default y if KASAN_STACK_ENABLE || CC_IS_GCC
+> > > +       default n
+> >
+> > I wondered the same, but then looking at scripts/Makefile.kasan I
+> > think it's because we directly pass it to the compiler:
+> >     ...
+> >     $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
+> >     ...
+>
+> Try this instead:
+>
+>       $(call cc-param,asan-stack=$(if $(CONFIG_KASAN_STACK),1,0)) \
 
 
+We could have just 1 config instead of 2 as well.
+For gcc we could do no prompt and default value y, and for clang --
+prompt and default value n. I think it should do what we need.
