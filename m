@@ -2,164 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F192B542D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4562B5433
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgKPWQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
+        id S1728829AbgKPWUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:20:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726016AbgKPWQM (ORCPT
+        with ESMTP id S1726016AbgKPWUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:16:12 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F5DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:16:11 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id r9so27326773lfn.11
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:16:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iF9pv4yrV71gAZ7pO+xa+oOM736e/dHlJRDoOYN7BR4=;
-        b=SAXvYD6FrqsuD5DpNnkQhTSzDKmNP1Sh38hp3dJSoWvquXLZ9X6xzr2FaysmQoh1H8
-         Mu8JA5m8dnSCLh5avzm9QMivhW01tjdrEVuwqCzQiDmNKrvCbwE4Gk7Qben/Btt1sMzM
-         HeQv91ZaP57NbJZQ1izw2X/HW2YXwDZfu1AO4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iF9pv4yrV71gAZ7pO+xa+oOM736e/dHlJRDoOYN7BR4=;
-        b=o0ELZYpEHVLSBpvCsJypecYD3vyvHmlcyJyt9w1ew3i7M9AvAISqhLg+rTjYFq3em6
-         t1SIjWMmtYY3033+TfmXDNN4NvgE6oNVGQfyQrtEIK70dv0zh83ozCAxcoTQGe7VJwLh
-         cYhdiW+fF+vRfYrKgTELWGvirk/kVqYn1uctDdi+G6e+l91d9DLzJI0VRk+5vgQBEKDR
-         czNYhHjU6sRkdD6wlpyjp6vNdIKQB/9iT8njInWX+t70LlvIPSyyQNP1x1Dkqri78yno
-         7PzxVRwhu+k45f6FUSwlTUzLeJzBCSwXj6W26taMIwvjrLqfZ1RAJPG4LmlVhKFHBvq3
-         LcfA==
-X-Gm-Message-State: AOAM531aamHMTuSmk5uoxb99HfAqjfRyzdeRJr+p+BWsfH8TnDrTsv2j
-        Escltn7jLlsPHa/AeQo8hBCjnTg3gJe2ZQ==
-X-Google-Smtp-Source: ABdhPJyjyiMdqfigS/VHjYznXshHlT5e36ETw7F4v4QhtLM06mKL2A4dAh6hpNG262Rm+S1t+sMJKw==
-X-Received: by 2002:a19:8243:: with SMTP id e64mr523074lfd.145.1605564969493;
-        Mon, 16 Nov 2020 14:16:09 -0800 (PST)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id j22sm2875881lfm.257.2020.11.16.14.16.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 14:16:08 -0800 (PST)
-Received: by mail-lj1-f171.google.com with SMTP id r17so21914998ljg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:16:08 -0800 (PST)
-X-Received: by 2002:a2e:a375:: with SMTP id i21mr498450ljn.421.1605564967930;
- Mon, 16 Nov 2020 14:16:07 -0800 (PST)
+        Mon, 16 Nov 2020 17:20:01 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC79C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:20:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=rmbEOUuFUDWT2r+1h2dWrIdCOj079NG2OKQi9QhFvjo=; b=uMUcuSmEOxdvWusgeKZNV0Z0f9
+        SgXsrlfEMxCC2e6ojKy55SnEgSh+KeEe2wKJYWK/txvvRyur0+leAhE61oRPiAv8tMtf9RZNr4kCK
+        DSSEZACpbdMCNOUb/oyxPPec/Ftlc/NDcJPkqhcjxeswUXTplEo7HbObtI9fJse3Gt8LnSQ/qj4uq
+        dVxBmL6vfXDhYEAMSmR9Gk5mX9QkiKZorkd7vwX1TrKa9iqN3yGFBHD720f46rNKcpxjJSGH34B4n
+        pH3t+rgYArYo8gHcuVGozyscG9Wdik22z1OyfIbOxvJA6vMYA2Fm5O2MgmryMR8Y9msnjcpl/XFse
+        VIXva19Q==;
+Received: from [2601:1c0:6280:3f0::f32]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kemqs-0002AK-0r; Mon, 16 Nov 2020 22:19:58 +0000
+Subject: Re: [PATCH] compiler.h: Fix barrier_data() on clang
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <20201014212631.207844-1-nivedita@alum.mit.edu>
+ <87sg999ot0.fsf@igel.home>
+ <0dbaca2d-9ad0-8c1a-a280-97be01cac2bd@infradead.org>
+ <87k0ul9msr.fsf@igel.home>
+ <3fff1eb9-83c0-1c29-6f57-fa50f1ec6ee7@infradead.org>
+Message-ID: <3c0a8d26-a95f-a7ca-60ee-203b67d07875@infradead.org>
+Date:   Mon, 16 Nov 2020 14:19:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <cover.1605560917.git.dxu@dxuuu.xyz> <470ffc3c76414443fc359b884080a5394dcccec3.1605560917.git.dxu@dxuuu.xyz>
-In-Reply-To: <470ffc3c76414443fc359b884080a5394dcccec3.1605560917.git.dxu@dxuuu.xyz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 16 Nov 2020 14:15:52 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wggUw3XYffJ-od8Dbfh-JkXkEuCPjSRR2Z+8HrNUNxJ=g@mail.gmail.com>
-Message-ID: <CAHk-=wggUw3XYffJ-od8Dbfh-JkXkEuCPjSRR2Z+8HrNUNxJ=g@mail.gmail.com>
-Subject: Re: [PATCH bpf v6 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3fff1eb9-83c0-1c29-6f57-fa50f1ec6ee7@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 1:17 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Based on on-list discussion and some off-list discussion with Alexei,
-> I'd like to propose the v4-style patch without the `(*out & ~mask)`
-> bit.
+On 11/16/20 11:28 AM, Randy Dunlap wrote:
+> On 11/16/20 10:30 AM, Andreas Schwab wrote:
+>> On Nov 16 2020, Randy Dunlap wrote:
+>>
+>>> What kernel version are you building?
+>>
+>> 5.10-rc4
+>>
+>> Andreas.
+> 
+> OK, thanks.
+> 
+> My build machine is slow, but I have a patch that I am testing:
+> 
+> ---
+> From: Randy Dunlap <rdunlap@infradead.org>
+> 
+> riscv's <vdso/processor.h> uses barrier() so it should
+> #include <asm/barrier.h> to prevent build errors.
+> 
+> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+> ---
+>  arch/riscv/include/asm/vdso/processor.h |    2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> --- lnx-510-rc4.orig/arch/riscv/include/asm/vdso/processor.h
+> +++ lnx-510-rc4/arch/riscv/include/asm/vdso/processor.h
+> @@ -4,6 +4,8 @@
+> 
+>  #ifndef __ASSEMBLY__
+> 
+> +#include <asm/barrier.h>
+> +
+>  static inline void cpu_relax(void)
+>  {
+>  #ifdef __riscv_muldiv
 
-So I've verified that at least on x86-64, this doesn't really make
-code generation any worse, and I'm ok with the patch from that
-standpoint.
 
-However, this was not what the discussion actually amended at as far
-as I'm concerned.
+This fixes the emulex/benet/ driver build.
+I'm still building allmodconfig to see if there are any
+other issues.
 
-I mentioned that if BPF cares about the bytes past the end of the
-string, I want a *BIG COMMENT* about it. Yes, in strncpy_from_user()
-itself, but even more in the place that cares.
+-- 
+~Randy
 
-And no, that does not mean bpf_probe_read_user_str().  That function
-clearly doesn't care at all, and doesn't access anything past the end
-of the string. I want a comment in whatever code that accesses past
-the end of the string.
-
-And your ABI point is actively misleading:
-
-> We can't really zero out the rest of the buffer due to ABI issues.
-> The bpf docs state for bpf_probe_read_user_str():
->
-> > In case the string length is smaller than *size*, the target is not
-> > padded with further NUL bytes.
-
-This comment is actively wrong and misleading.
-
-The code (after the patch) clearly *does* pad a bit with "further NUL
-bytes". It's just that it doesn't pad all the way to the end.
-
-Where is the actual buffer zeroing done?
-
-Because without the buffer zeroing, this whole patch is completely
-pointless. Which is why I want that comment, and I want a pointer to
-where that zeroing is done.
-
-Really. You have two cases:
-
- (a) the buffer isn't zeroed before the strncpy_from_user()
-
- (b) the buffer is guaranteed to be zero before that
-
-and in case (a), this patch is pointless, since the data after the
-string is already undefined.
-
-And in case (b), I want to see a comment and a pointer to the code
-that actually does the zeroing.
-
-HOWEVER. Look at bpf_probe_read_user_str_common(), and notice how it
-ALREADY does the zeroing of the buffer past the end, it's just that it
-only does it in the error case.
-
-Why do you send this patch, instead of
-
- (a) get rid of the pointless pre-zeroing
-
- (b) change bpf_probe_read_user_str_common() to do
-
-        int ret;
-        u32 offset;
-
-        ret = strncpy_from_user_nofault(dst, unsafe_ptr, size);
-        offset = ret < 0 ? 0 : ret;
-        memset(dst+offset, 0, size-offset);
-        return ret;
-
-which seems to be much simpler anyway. The comment you quote about
-"target is not padded with further NUL bytes" is clearly wrong anyway,
-since that error case *does* pad the target with NUL bytes, and always
-has.
-
-So honestly, in this whole discussion, it seems rather clear to me
-that the bug has always been in bpf, not in strncpy_from_user(). The
-ABI comment you quote is clearly not true, and I can point to that
-existing bpf_probe_read_user_str_common() code itself:
-
-        ret = strncpy_from_user_nofault(dst, unsafe_ptr, size);
-        if (unlikely(ret < 0))
-                memset(dst, 0, size);
-
-as to why that is.
-
-But guys, as mentioned, I'm willing to apply this patch, but only if
-you add some actually *correct* comments about the odd bpf use of this
-string, and point to where the pre-zeroing is done.
-
-               Linus
