@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D922B5394
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1982B539F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731979AbgKPVPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:15:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725994AbgKPVPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:15:06 -0500
-Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3795C20888;
-        Mon, 16 Nov 2020 21:15:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605561306;
-        bh=KKKLqy05JpAvCjkxBFWdO5hMPGcadZx9kPhUbI8AJHA=;
-        h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=vgmAOVrIK2rI8Dv6s6VoLfFghIVyDqzuR7OfxYPgXPJhZ+hBDjcdYC8e54afzzvHV
-         gx6/qMloTBbQA147g6H+LxvAqQ4UhfJmdgXOMDaaxpLFRPE2vDwtoK+QWvwaB6yTzQ
-         aXmEhacgnEle+TUydS51i8KvGTo8/x5vqWHaDML0=
-Content-Type: text/plain; charset="utf-8"
+        id S1728331AbgKPVRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:17:53 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:35305 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726735AbgKPVRt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 16:17:49 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 35B50D05;
+        Mon, 16 Nov 2020 16:17:48 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 16 Nov 2020 16:17:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=bI7+0n+mvNdYBFFyytXWs7i5PU
+        CHOde+5ov5uwXFL7k=; b=m0qOIwIJXZidGxx0Mp8vuIA/REOXrKwkhn37qVDsum
+        vQS1YupiiabxkBvRsg86kMnpmE9QV5R9C+AB/KquaJegGOSkUzkXrmNla+8W1eOh
+        4+k6iA02/5vQ+WreGmBkoRbAUJj2GtvXhgyWxWs08GyylHCFTlFTrM3bfGSb/EPi
+        sfS+iS751ZS3yTKA+RKMwAWn2HM7Q9828/2trZOl67bw9EFKHUUYLCKJLm7+aZzz
+        xcpUTMwJNR53LsNLGP9Ja1Bsva87gmFHxfp6FV+aKgD9JVpW6NdAafnbSTMfd/PE
+        X+53l+MlfomTITB4jp2xdArf/MNE0I1Y0csYjnCZcwVQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=bI7+0n+mvNdYBFFyy
+        tXWs7i5PUCHOde+5ov5uwXFL7k=; b=CS6/vLYdbVG0YQDrNXnWM69h3YTrShaCY
+        nEgzlL01sPxL9PKSdzMwnw9w1YtCJSHtNjbsr07Tay6nT7Wom75O9XXMHmfvF1Gt
+        yORDUuTI1zl2c+4QMswXTqPbOUDqD4jOVXgYBqzYxRiJy6poZiKrVvcLVH5qkh2f
+        XSHM/csNQ4xQkcJTFdNbcLlB2qSbqpZxnXkNFRtdSfwHRgRfPNNEFzSGRf0U8v5Q
+        Hzf2bGwRwb4jG3TGqhGXiAA3chwlCh+yIMRKPicfQicAAknOGhZ2w+GPXm1qUDVJ
+        vlBZa9g+S9KyPWq0sVrlcu8khupjdsgsh5klta1hv4e6qpAfUBX5g==
+X-ME-Sender: <xms:euyyXzZM7pZMiyEI4lEuYY-TZOwACh10XapxpIui4VAJmCG7mhBNuQ>
+    <xme:euyyXyYTrbnaPRinm9PyTfRZlL2LovuqaPKJaJCh_AkU2vdfLBGgbaKpnDC09m4Iq
+    V8I0iCCJmml6wxtYQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudefuddgudegkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
+    fvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepieffgfelvdffiedtleejvd
+    etfeefiedvfeehieevveejudeiiefgteeiveeiffffnecukfhppeeiledrudekuddruddt
+    hedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:euyyX1-jTSCnIqRf3uk9P5iw-i2ofTGhtDPdB0xhaqOnlixUcs892A>
+    <xmx:euyyX5pVTcRjVcKDraozefy7B11IGu_AXJDmjw-yTO-Je4X_gY0_dw>
+    <xmx:euyyX-qSEcKmLbVJrxwNY49NrkEoyu9m1zSMtizIavrWyLM5MjcsXg>
+    <xmx:e-yyX_cq_6KI3eiisDDEoOcsLhAHWSNcIBilAiecK5_8gvl_fhF5sA>
+Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E98DF3280060;
+        Mon, 16 Nov 2020 16:17:45 -0500 (EST)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, songliubraving@fb.com,
+        andrii.nakryiko@gmail.com, torvalds@linux-foundation.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
+Subject: [PATCH bpf v6 0/2] Fix bpf_probe_read_user_str() overcopying
+Date:   Mon, 16 Nov 2020 13:17:30 -0800
+Message-Id: <cover.1605560917.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <alpine.DEB.2.22.394.2011161633240.2682@hadrien>
-References: <alpine.DEB.2.22.394.2011161633240.2682@hadrien>
-From:   Antoine Tenart <atenart@kernel.org>
-Subject: Re: [PATCH v2] net: phy: mscc: fix excluded_middle.cocci warnings
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Antoine Tenart <antoine.tenart@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Quentin Schulz <quentin.schulz@bootlin.com>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Denis Efremov <efremov@linux.com>,
-        netdev@vger.kernel.org
-Message-ID: <160556130103.369564.5641893167437988724@surface.local>
-Date:   Mon, 16 Nov 2020 22:15:01 +0100
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Julia,
+6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
+kernel}_str helpers") introduced a subtle bug where
+bpf_probe_read_user_str() would potentially copy a few extra bytes after
+the NUL terminator.
 
-Quoting Julia Lawall (2020-11-16 16:34:44)
-> From: kernel test robot <lkp@intel.com>
->=20
-> Condition !A || A && B is equivalent to !A || B.
->=20
-> Generated by: scripts/coccinelle/misc/excluded_middle.cocci
->=20
-> Fixes: b76f0ea01312 ("coccinelle: misc: add excluded_middle.cocci script")
-> CC: Denis Efremov <efremov@linux.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+This issue is particularly nefarious when strings are used as map keys,
+as seemingly identical strings can occupy multiple entries in a map.
 
-Reviewed-by: Antoine Tenart <atenart@kernel.org>
+This patchset fixes the issue and introduces a selftest to prevent
+future regressions.
 
-Thanks!
-Antoine
+v5 -> v6:
+* zero-pad up to sizeof(unsigned long) after NUL
 
-> ---
->=20
-> v2: add netdev mailing list
->=20
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   e28c0d7c92c89016c12a677616668957351e7542
-> commit: b76f0ea013125358d1b4ca147a6f9b6883dd2493 coccinelle: misc: add ex=
-cluded_middle.cocci script
-> :::::: branch date: 8 hours ago
-> :::::: commit date: 8 weeks ago
->=20
-> Please take the patch only if it's a positive warning. Thanks!
->=20
->  mscc_ptp.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> --- a/drivers/net/phy/mscc/mscc_ptp.c
-> +++ b/drivers/net/phy/mscc/mscc_ptp.c
-> @@ -136,7 +136,7 @@ static void vsc85xx_ts_write_csr(struct
->=20
->         phy_ts_base_write(phydev, MSCC_EXT_PAGE_ACCESS, MSCC_PHY_PAGE_158=
-8);
->=20
-> -       if (!cond || (cond && upper))
-> +       if (!cond || upper)
->                 phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_MSB, upper=
-);
->=20
->         phy_ts_base_write(phydev, MSCC_PHY_TS_CSR_DATA_LSB, lower);
+v4 -> v5:
+* don't read potentially uninitialized memory
+
+v3 -> v4:
+* directly pass userspace pointer to prog
+* test more strings of different length
+
+v2 -> v3:
+* set pid filter before attaching prog in selftest
+* use long instead of int as bpf_probe_read_user_str() retval
+* style changes
+
+v1 -> v2:
+* add Fixes: tag
+* add selftest
+
+Daniel Xu (2):
+  lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
+  selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes
+    after NUL
+
+ lib/strncpy_from_user.c                       |  8 ++-
+ .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
+ .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
+ 3 files changed, 102 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+
+-- 
+2.29.2
+
