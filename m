@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE812B5400
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3002B5404
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728446AbgKPVzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:55:49 -0500
-Received: from smtprelay0004.hostedemail.com ([216.40.44.4]:39678 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727864AbgKPVzs (ORCPT
+        id S1730220AbgKPV7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:59:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728531AbgKPV7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:55:48 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id A099A100E7B49;
-        Mon, 16 Nov 2020 21:55:46 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2560:2563:2682:2685:2689:2731:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3653:3865:3867:3868:3870:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6119:7875:7903:9010:9025:10004:10400:10848:11232:11658:11914:12043:12297:12555:12740:12895:13161:13229:13439:13894:14181:14659:14721:21080:21433:21451:21627:21740:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: sky93_41062bc2732c
-X-Filterd-Recvd-Size: 2867
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 16 Nov 2020 21:55:45 +0000 (UTC)
-Message-ID: <d675ffc7c85c68117c3e2d78d2e35679f778a9c2.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: add fix option for MAINTAINERS_STYLE
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Mon, 16 Nov 2020 13:55:44 -0800
-In-Reply-To: <20201116071930.7733-1-yashsri421@gmail.com>
-References: <20201116071930.7733-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 16 Nov 2020 16:59:16 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74282C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 13:59:15 -0800 (PST)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 39006806A8;
+        Tue, 17 Nov 2020 10:59:06 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1605563946;
+        bh=8KWdMd8qaxPKtziTolyHFsm/ErZmO9Vb61jZx+cWi2A=;
+        h=From:To:Cc:Subject:Date;
+        b=fcB1Zq6DCpncjQzJ6xeU3LC0ynE9o7QBjXRszneE13cVtdTf14nNPEZ5XzLtJ2gvN
+         2agVxS7+B1/PmOPwVYlocH8nSSKR6slvJ8j6NGXOc03Itq6ICuLWOKGXWBgJtLTnD4
+         MCq86dSw2zBZUd3SgLuF57IYMYCX+1WB1CS45hoLM6fE/rLkt1G6kVtZGv+jAQHuYv
+         29vaSQpk6g5dHHWHJLiMwP3TVEeqTWDEDu4lLIayHuNHiPFrk4z5Bzt+AFfPvNFUt4
+         1vHlcPTE8IiGrudW2lRnoMoD9Mo2FGY+70Cy5Ujnt9gubgsZ1aSWX5exvwALPC7Ecb
+         2JMaRoJ1h8sjA==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5fb2f6290000>; Tue, 17 Nov 2020 10:59:05 +1300
+Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
+        by smtp (Postfix) with ESMTP id D448C13ED56;
+        Tue, 17 Nov 2020 10:59:05 +1300 (NZDT)
+Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
+        id 0B57D340FC5; Tue, 17 Nov 2020 10:59:06 +1300 (NZDT)
+From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+To:     rjui@broadcom.com, sbranden@broadcom.com
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Subject: [PATCH] pinctrl: bcm: pinctrl-iproc-gpio: Fix setting GPIO as output
+Date:   Tue, 17 Nov 2020 10:58:42 +1300
+Message-Id: <20201116215842.29488-1-mark.tomlinson@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-16 at 12:49 +0530, Aditya Srivastava wrote:
-> Checkpatch expects entries in MAINTAINERS file in a specific order and
-> warns if the changes made do not follow the specified order.
-> 
-> E.g., running checkpatch on commit 6f736909f0a4 ("MAINTAINERS: Add
-> patchwork link for PWM entry") reports this warning:
-> 
-> WARNING: Misordered MAINTAINERS entry - list 'Q:' before 'T:'
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git
-> +Q:	https://patchwork.ozlabs.org/project/linux-pwm/list/
-> 
-> Provide a simple fix by swapping the unordered lines
+When setting a GPIO pin to an output, it is important to set the value
+correctly before enabling the output so that a glitch is not seen on the
+pin. This glitch may be very short, but can be important if this is a
+reset signal.
 
-NAK.
+Fixes: b64333ce769c ("pinctrl: cygnus: add gpio/pinconf driver")
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+---
+ drivers/pinctrl/bcm/pinctrl-iproc-gpio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This --fix option can't work if a patch merely adds a single line.
-The patch context lines would be wrong.
-
-This has to make sure the both lines are additions (start with +)
-
-
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3299,13 +3299,22 @@ sub process {
->  					     "Unknown MAINTAINERS entry type: '$cur'\n" . $herecurr);
->  				} else {
->  					if ($previndex >= 0 && $curindex < $previndex) {
-> -						WARN("MAINTAINERS_STYLE",
-> -						     "Misordered MAINTAINERS entry - list '$cur:' before '$prev:'\n" . $hereprev);
-> +						if (WARN("MAINTAINERS_STYLE",
-> +							 "Misordered MAINTAINERS entry - list '$cur:' before '$prev:'\n" . $hereprev) &&
-> +						    $fix) {
-> +							# swap these lines
-> +							$fixed[$fixlinenr - 1] = $rawline;
-> +							$fixed[$fixlinenr] = $prevrawline;
-> +						}
->  					} elsif ((($prev eq 'F' && $cur eq 'F') ||
->  						  ($prev eq 'X' && $cur eq 'X')) &&
->  						 ($prevval cmp $curval) > 0) {
-> -						WARN("MAINTAINERS_STYLE",
-> -						     "Misordered MAINTAINERS entry - list file patterns in alphabetic order\n" . $hereprev);
-> +						if (WARN("MAINTAINERS_STYLE",
-> +							 "Misordered MAINTAINERS entry - list file patterns in alphabetic order\n" . $hereprev) &&
-> +						    $fix) {
-> +							$fixed[$fixlinenr - 1] = $rawline;
-> +							$fixed[$fixlinenr] = $prevrawline;
-> +						}
->  					}
->  				}
->  			}
-
+diff --git a/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c b/drivers/pinctrl/b=
+cm/pinctrl-iproc-gpio.c
+index e2bd2dce6bb4..cadcf5eb0466 100644
+--- a/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
++++ b/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
+@@ -348,8 +348,8 @@ static int iproc_gpio_direction_output(struct gpio_ch=
+ip *gc, unsigned gpio,
+ 	unsigned long flags;
+=20
+ 	raw_spin_lock_irqsave(&chip->lock, flags);
+-	iproc_set_bit(chip, IPROC_GPIO_OUT_EN_OFFSET, gpio, true);
+ 	iproc_set_bit(chip, IPROC_GPIO_DATA_OUT_OFFSET, gpio, !!(val));
++	iproc_set_bit(chip, IPROC_GPIO_OUT_EN_OFFSET, gpio, true);
+ 	raw_spin_unlock_irqrestore(&chip->lock, flags);
+=20
+ 	dev_dbg(chip->dev, "gpio:%u set output, value:%d\n", gpio, val);
+--=20
+2.29.2
 
