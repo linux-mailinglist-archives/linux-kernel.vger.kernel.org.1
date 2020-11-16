@@ -2,274 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC682B4CBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730A82B4CBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732809AbgKPR1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:27:02 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3827 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730899AbgKPR1C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:27:02 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb2b66a0000>; Mon, 16 Nov 2020 09:27:06 -0800
-Received: from [10.2.160.29] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov
- 2020 17:26:57 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-CC:     <linux-mm@kvack.org>, Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "Michal Hocko" <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Ralph Campbell" <rcampbell@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>
-Subject: Re: [RFC PATCH 1/6] mm: huge_memory: add new debugfs interface to
- trigger split huge page on any page range.
-Date:   Mon, 16 Nov 2020 12:26:55 -0500
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <18FFF828-DA23-43E3-9FFE-FC7AD96D5BCA@nvidia.com>
-In-Reply-To: <20201116160638.po3euk3agkt4ragx@box>
-References: <20201111204008.21332-1-zi.yan@sent.com>
- <20201111204008.21332-2-zi.yan@sent.com>
- <20201116160638.po3euk3agkt4ragx@box>
+        id S1732820AbgKPR1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:27:14 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:13462 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732757AbgKPR1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 12:27:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605547632; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=7BOlt1PZL/4mw5Z2iPqeU6H+H03xeCC/0uJqO3xhXL4=; b=GzFacxsfFVAdsCFwCTIoyt3N7zYxtwsJigm73Ir4uqAD3Q/e4UOi789Xq6ZD9g6mwCmh5stv
+ v4f+Nscjsf4dJPulfhW4iiGDdwPc3K5AYtw0bqs2icDoalCinjG3J9pTWcF1Oxi/LyAuQ2z0
+ 0UOWixPlp1T3RAMLByrvBMBtX3g=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fb2b66c3825e013b5c19d7a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 17:27:08
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 27B1DC433C6; Mon, 16 Nov 2020 17:27:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8FF4DC43460;
+        Mon, 16 Nov 2020 17:27:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8FF4DC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 16 Nov 2020 10:27:04 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Sean Paul <sean@poorly.run>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [Freedreno] [RESEND PATCH v2 4/5] drm/msm: add
+ DRM_MSM_GEM_SYNC_CACHE for non-coherent cache maintenance
+Message-ID: <20201116172703.GD16856@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Jonathan Marek <jonathan@marek.ca>, David Airlie <airlied@linux.ie>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>, Christoph Hellwig <hch@lst.de>
+References: <20201114151717.5369-1-jonathan@marek.ca>
+ <20201114151717.5369-5-jonathan@marek.ca>
+ <20201114162406.GC24411@lst.de>
+ <CAF6AEGvujttEkFuRqtt7i+0o7-=2spKXfAvJZrj96uWAFRLYuA@mail.gmail.com>
+ <50ddcadb-c630-2ef6-cdc4-724d9823fba7@marek.ca>
+ <CAF6AEGsH5Wk=J+HxHnRqTMLZscjErjKq2v0Rms7Td=W7icZ3sw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed;
-        boundary="=_MailMate_D7FC6E8C-6546-4760-B1D9-22B8349CFB28_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605547626; bh=bpA4kShifYKEb3pjvm1x1QsajMFxRrW7/8/ZIq7MJHs=;
-        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=j9pBrGMFq6eFtKW+V4W2XrAp5+Ol4X3dJhlJ9OKDwV9a2LH8qWLNK6BauSB1d3uJO
-         BiRK8Lq/Ct9D0kcFAq71nmfHI9yFvDk2DDXSfySUb3pfX8tN9wq/qu1ltxNM0IlXKU
-         pzgnfKkuaahCvcCy2Sv6UUUvBoTBqmRbafVU5wPjmOuyqEvdt35HfpJga64nqOU8ag
-         X3Cbia6m0YhPHye1HhRssjMZ+7X1Me9easlqYTL7R1j0OFkzjaNkcrPaq3Pbt5g1eX
-         IwnYezj514oYtLEncanZAOs7cNmeEC4qm5GB0f3A83E87CN9iXJ9t2RYpauRWhMcw2
-         6LsfNmVbWRegA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGsH5Wk=J+HxHnRqTMLZscjErjKq2v0Rms7Td=W7icZ3sw@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_D7FC6E8C-6546-4760-B1D9-22B8349CFB28_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Sat, Nov 14, 2020 at 11:39:45AM -0800, Rob Clark wrote:
+> On Sat, Nov 14, 2020 at 10:58 AM Jonathan Marek <jonathan@marek.ca> wrote:
+> >
+> > On 11/14/20 1:46 PM, Rob Clark wrote:
+> > > On Sat, Nov 14, 2020 at 8:24 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >>
+> > >> On Sat, Nov 14, 2020 at 10:17:12AM -0500, Jonathan Marek wrote:
+> > >>> +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
+> > >>> +             size_t range_start, size_t range_end)
+> > >>> +{
+> > >>> +     struct msm_gem_object *msm_obj = to_msm_bo(obj);
+> > >>> +     struct device *dev = msm_obj->base.dev->dev;
+> > >>> +
+> > >>> +     /* exit early if get_pages() hasn't been called yet */
+> > >>> +     if (!msm_obj->pages)
+> > >>> +             return;
+> > >>> +
+> > >>> +     /* TODO: sync only the specified range */
+> > >>> +
+> > >>> +     if (flags & MSM_GEM_SYNC_FOR_DEVICE) {
+> > >>> +             dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
+> > >>> +                             msm_obj->sgt->nents, DMA_TO_DEVICE);
+> > >>> +     }
+> > >>> +
+> > >>> +     if (flags & MSM_GEM_SYNC_FOR_CPU) {
+> > >>> +             dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
+> > >>> +                             msm_obj->sgt->nents, DMA_FROM_DEVICE);
+> > >>> +     }
+> > >>
+> > >> Splitting this helper from the only caller is rather strange, epecially
+> > >> with the two unused arguments.  And I think the way this is specified
+> > >> to take a range, but ignoring it is actively dangerous.  User space will
+> > >> rely on it syncing everything sooner or later and then you are stuck.
+> > >> So just define a sync all primitive for now, and if you really need a
+> > >> range sync and have actually implemented it add a new ioctl for that.
+> > >
+> > > We do already have a split of ioctl "layer" which enforces valid ioctl
+> > > params, etc, and gem (or other) module code which is called by the
+> > > ioctl func.  So I think it is fine to keep this split here.  (Also, I
+> > > think at some point there will be a uring type of ioctl alternative
+> > > which would re-use the same gem func.)
+> > >
+> > > But I do agree that the range should be respected or added later..
+> > > drm_ioctl() dispatch is well prepared for extending ioctls.
+> > >
+> > > And I assume there should be some validation that the range is aligned
+> > > to cache-line?  Or can we flush a partial cache line?
+> > >
+> >
+> > The range is intended to be "sync at least this range", so that
+> > userspace doesn't have to worry about details like that.
+> >
+> 
+> I don't think userspace can *not* worry about details like that.
+> Consider a case where the cpu and gpu are simultaneously accessing
+> different parts of a buffer (for ex, sub-allocation).  There needs to
+> be cache-line separation between the two.
 
-On 16 Nov 2020, at 11:06, Kirill A. Shutemov wrote:
+There is at least one compute conformance test that I can think of that does
+exactly this.
 
-> On Wed, Nov 11, 2020 at 03:40:03PM -0500, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> Huge pages in the process with the given pid and virtual address range=
+Jordan
 
->> are split. It is used to test split huge page function. In addition,
->> a testing program is added to tools/testing/selftests/vm to utilize th=
-e
->> interface by splitting PMD THPs.
->>
->> Signed-off-by: Zi Yan <ziy@nvidia.com>
->> ---
->>  mm/huge_memory.c                              |  98 +++++++++++
->>  mm/internal.h                                 |   1 +
->>  mm/migrate.c                                  |   2 +-
->>  tools/testing/selftests/vm/Makefile           |   1 +
->>  .../selftests/vm/split_huge_page_test.c       | 161 +++++++++++++++++=
-+
->>  5 files changed, 262 insertions(+), 1 deletion(-)
->>  create mode 100644 tools/testing/selftests/vm/split_huge_page_test.c
->>
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index 207ebca8c654..c4fead5ead31 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -7,6 +7,7 @@
->>
->>  #include <linux/mm.h>
->>  #include <linux/sched.h>
->> +#include <linux/sched/mm.h>
->>  #include <linux/sched/coredump.h>
->>  #include <linux/sched/numa_balancing.h>
->>  #include <linux/highmem.h>
->> @@ -2935,10 +2936,107 @@ static int split_huge_pages_set(void *data, u=
-64 val)
->>  DEFINE_DEBUGFS_ATTRIBUTE(split_huge_pages_fops, NULL, split_huge_page=
-s_set,
->>  		"%llu\n");
->>
->> +static ssize_t split_huge_pages_in_range_pid_write(struct file *file,=
+> BR,
+> -R
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
 
->> +		const char __user *buf, size_t count, loff_t *ppops)
->> +{
->> +	static DEFINE_MUTEX(mutex);
->> +	ssize_t ret;
->> +	char input_buf[80]; /* hold pid, start_vaddr, end_vaddr */
->> +	int pid;
->> +	unsigned long vaddr_start, vaddr_end, addr;
->> +	nodemask_t task_nodes;
->> +	struct mm_struct *mm;
->> +
->> +	ret =3D mutex_lock_interruptible(&mutex);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret =3D -EFAULT;
->> +
->> +	memset(input_buf, 0, 80);
->> +	if (copy_from_user(input_buf, buf, min_t(size_t, count, 80)))
->> +		goto out;
->> +
->> +	input_buf[80] =3D '\0';
->
-> Hm. Out-of-buffer access?
-
-Sorry. Will fix it.
-
->
->> +	ret =3D sscanf(input_buf, "%d,%lx,%lx", &pid, &vaddr_start, &vaddr_e=
-nd);
->
-> Why hex without 0x prefix?
-
-No particular reason. Let me add the prefix.
-
->
->> +	if (ret !=3D 3) {
->> +		ret =3D -EINVAL;
->> +		goto out;
->> +	}
->> +	vaddr_start &=3D PAGE_MASK;
->> +	vaddr_end &=3D PAGE_MASK;
->> +
->> +	ret =3D strlen(input_buf);
->> +	pr_debug("split huge pages in pid: %d, vaddr: [%lx - %lx]\n",
->> +		 pid, vaddr_start, vaddr_end);
->> +
->> +	mm =3D find_mm_struct(pid, &task_nodes);
->
-> I don't follow why you need nodemask.
-
-I don=E2=80=99t need it. I just reuse the find_mm_struct function from
-mm/migrate.c.
-
->
->> +	if (IS_ERR(mm)) {
->> +		ret =3D -EINVAL;
->> +		goto out;
->> +	}
->> +
->> +	mmap_read_lock(mm);
->> +	for (addr =3D vaddr_start; addr < vaddr_end;) {
->> +		struct vm_area_struct *vma =3D find_vma(mm, addr);
->> +		unsigned int follflags;
->> +		struct page *page;
->> +
->> +		if (!vma || addr < vma->vm_start || !vma_migratable(vma))
->> +			break;
->> +
->> +		/* FOLL_DUMP to ignore special (like zero) pages */
->> +		follflags =3D FOLL_GET | FOLL_DUMP;
->> +		page =3D follow_page(vma, addr, follflags);
->> +
->> +		if (IS_ERR(page))
->> +			break;
->> +		if (!page)
->> +			break;
->> +
->> +		if (!is_transparent_hugepage(page))
->> +			goto next;
->> +
->> +		if (!can_split_huge_page(page, NULL))
->> +			goto next;
->> +
->> +		if (!trylock_page(page))
->> +			goto next;
->> +
->> +		addr +=3D page_size(page) - PAGE_SIZE;
->
-> Who said it was mapped as huge? mremap() allows to construct an PTE pag=
-e
-> table that filled with PTE-mapped THPs, each of them distinct.
-
-I forgot about this. I was trying to be smart to skip the rest of
-subpages if we split a THP. I will increase addr always by PAGE_SIZE
-to handle this situation.
-
->> +
->> +		/* reset addr if split fails */
->> +		if (split_huge_page(page))
->> +			addr -=3D (page_size(page) - PAGE_SIZE);
->> +
->> +		unlock_page(page);
->> +next:
->> +		/* next page */
->> +		addr +=3D page_size(page);
->
-> Isn't it the second time if split_huge_page() succeed.
-
-If split_huge_page() succeeds, page_size(page) would be PAGE_SIZE
-and addr was increased by THP size - PAGE_SIZE above, so addr now should
-be at the end of the original THP.
-
-Anyway, I will change the code to something like:
-
-        /*
-         * always increase addr by PAGE_SIZE, since we could have a PTE p=
-age
-         * table filled with PTE-mapped THPs, each of which is distinct.
-         */
-        for (addr =3D vaddr_start; addr < vaddr_end; addr +=3D PAGE_SIZE)=
- {
-				=
-
-				...
-
-                if (!trylock_page(page))
-                        continue;
-
-                split_huge_page(page);
-
-                unlock_page(page);
-                put_page(page);
-        }
-        mmap_read_unlock(mm);
-
-
-Thanks for reviewing the patch.
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_D7FC6E8C-6546-4760-B1D9-22B8349CFB28_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+ytl8PHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKj6EP/jFWjGbkm0DyPZMPJ/UjF/3WtafO/oumSaaT
-vRsZLTaKZRmtbUaIDJSqEIdTRnj0s2QSOpwZzFpQ1PrdRuWqP7XGqy5UZ3eXAd2l
-8gmUzkLMTeSAtlcecv/1CjwtMTFAOSS9wlOU+3bWKl8KWmXMZpLcEJG/S7WisBB4
-RbcLn018hxfMJYX7TCy3rZ3h9mJi42pgBlOr+k/3R3wrLF+oT0xZ9IsjrEfeNKBx
-tSusGMGGJcYNsARW1mMyTRk4OWCSoKgC9aAqDkq47XeLfiDPtzknCrciVAUbFmO/
-9+bQGSNXOeAPLqHqTPaYwGbUBW1AK4P9r5rIH8d1YF87edZdi01n6hX6ADkqCI+h
-hQ0poM94WyNb0AhBOENR1onTAc+uzCk4jA9eabzHnBafPoqrmt6W3wlqOFSyodgC
-Oq/L/kVD3dJnyp/2S+DUVR1SQHenabui1K2N3sWElUz7xpbLO7f1CZHHpLb/14ql
-+w5mVRLt+AMTA9Wiv+PlLy738ovdownZA8uLFXA3+CMtYX1xohIlgJDZBu9/NiN0
-cG8UiLreEOaUD20/XZI313cYFKpP41726zvLYYy/MiNfnAcTIV/AyrIrqo9vdlwd
-p1XXEFvuIrIUZmXeKRt+S6swDPwq1TGyKFTtcS1DwTRA4DdhlkMw0/ZLGN7Nlxs9
-Io5qEBDq
-=+hfQ
------END PGP SIGNATURE-----
-
---=_MailMate_D7FC6E8C-6546-4760-B1D9-22B8349CFB28_=--
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
