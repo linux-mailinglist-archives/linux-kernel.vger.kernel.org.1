@@ -2,119 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19852B4AA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A91512B4AB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731767AbgKPQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:18:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731618AbgKPQSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:18:35 -0500
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85E26223C7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 16:18:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605543514;
-        bh=FsCTuWY5dgbEYPYoLX82oXYdTcQy1FIVElAFfZct3k8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Oe7/tt18Twv01APSGnqs8SWS1fDCBKIyWzn/U+44CK8947Civ2f4SrphT6VetEj5t
-         kWjqEP48VMSNpsDrmPODrOa9csiO8j5dFT8YHh/rSsWAQZG/2hHORMS7O7uYD7I5X3
-         gKq7a/V3Gs/4tndGlHB2qoY3O+C7aBH6vPHH2h1c=
-Received: by mail-ed1-f49.google.com with SMTP id k4so2601267edl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:18:34 -0800 (PST)
-X-Gm-Message-State: AOAM530C6/24FPzHeRAGqvzLwpM7Hm9E6EJvVf9c3scwYmF23oY3MiaW
-        uDaq1JaaS7Zsgl+gdoB5VWHZqfryufn69RzqQw==
-X-Google-Smtp-Source: ABdhPJy5UEMa514VORYkzr40o5c6+5CuGbj0ZX3gVbzHQCZd656Uw9TY6XR+KuAhCyCycCnwR0Dvv0cwt3EvXFa5jUM=
-X-Received: by 2002:aa7:dbca:: with SMTP id v10mr16591877edt.219.1605543513111;
- Mon, 16 Nov 2020 08:18:33 -0800 (PST)
+        id S1731910AbgKPQS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:18:59 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:41390 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731735AbgKPQSo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:18:44 -0500
+Received: by mail-lj1-f196.google.com with SMTP id v20so20764768ljk.8;
+        Mon, 16 Nov 2020 08:18:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7MXQxs+9OiuUHRVlMAr9XZU2J/NqSLeM5VxTwBPPYAs=;
+        b=CKnYAa0lf3bnJvGF11Hsrl4f4rVT6vsY4hDTT1SKsBbX50DRuMuh8iwLoPl03/0J9I
+         /pECO7vu9lf5pXqOtaHGB35HJCTC4UDl/Hh2yMgZG70f+VwHwh+9wo7mfdIbgGJCd3eY
+         6CPAvyib+2ZmTSkPJa7lXTaKxQ6H/Kvz44TbyRfDmMa4QQ3Ot7Llwa/bswgRlrrrpY7S
+         17hA2r7EFjp4kKkEm1xvJHnVM7EUqdsZS2QXZxbhcW5jfJH9h06wPM4OoKJ4/wpfHcj6
+         yUXHD+6uVesrH/WT4nymnbYk5FlKXRGRVr7lgp9CpLKbPl32hICSQYVYNSBfswnQz9uI
+         JvHw==
+X-Gm-Message-State: AOAM5339G7Pj5vIUyGVBEYarQH6h0hCmzfV/KZoNSOnWrL/Ti+RlmgW0
+        OO1eZAM9W4lh5EFlMbVpmauXQrYtHP5HIw==
+X-Google-Smtp-Source: ABdhPJwFi4vGxlKKCFNEyjFkyzGAdYc999zSVE9oXgmrCcHEiS79AUMU1HoMGBZnBxFL9HsYJwDr7g==
+X-Received: by 2002:a2e:96d8:: with SMTP id d24mr46628ljj.151.1605543521581;
+        Mon, 16 Nov 2020 08:18:41 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id h10sm724214lfc.18.2020.11.16.08.18.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 08:18:40 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1kehDH-0007fl-Pv; Mon, 16 Nov 2020 17:18:43 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     linux-usb@vger.kernel.org
+Cc:     Sheng Long Wang <shenglong.wang.ext@siemens.com>,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 2/6] USB: serial: cp210x: clean up line-control handling
+Date:   Mon, 16 Nov 2020 17:18:22 +0100
+Message-Id: <20201116161826.29417-3-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201116161826.29417-1-johan@kernel.org>
+References: <20201116161826.29417-1-johan@kernel.org>
 MIME-Version: 1.0
-References: <20201103003422.17838-1-chunkuang.hu@kernel.org> <CAAOTY_9px2KEoEF4YrYapP0kDPct+9SwpUEF591zRRU10+BSHg@mail.gmail.com>
-In-Reply-To: <CAAOTY_9px2KEoEF4YrYapP0kDPct+9SwpUEF591zRRU10+BSHg@mail.gmail.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 17 Nov 2020 00:18:21 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__XjQZYnaO4_xioZnQZmUWrt5SDxJPkiLdXW1Q6DjBJnw@mail.gmail.com>
-Message-ID: <CAAOTY__XjQZYnaO4_xioZnQZmUWrt5SDxJPkiLdXW1Q6DjBJnw@mail.gmail.com>
-Subject: Re: [PATCH 00/11] Decouple Mediatek DRM sub driver
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=881=
-6=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=887:33=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=
-=883=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=888:34=E5=AF=AB=E9=81=93=
-=EF=BC=9A
-> >
-> > mtk ccorr is controlled by DRM and MDP [1]. In order to share
-> > mtk_ccorr driver for DRM and MDP, decouple Mediatek DRM sub driver
-> > which include mtk_ccorr, so MDP could use this decoupled mtk_ccorr.
->
-> Applied the whole series into mediatek-drm-next [1].
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.gi=
-t/log/?h=3Dmediatek-drm-next
->
+Update the line-control settings in one request unconditionally instead
+of setting the word-length, parity and stop-bit settings separately.
 
-Sorry, because of iommu larb problem, I drop this series from mediatek-drm-=
-next.
+This avoids multiple requests when several settings are changed even if
+this scheme could potentially also be used to detect unsupported device
+settings. Since all device types but CP2101 appears to support all
+settings, let's handle that one specifically and also report back the
+unsupported settings properly through termios by clearing the
+corresponding bits.
 
-Regards,
-Chun-Kuang.
+Also drop the related unnecessary debug printks.
 
-> Regards,
-> Chun-Kuang.
->
-> >
-> > [1] https://patchwork.kernel.org/patch/11140751/
-> >
-> > CK Hu (9):
-> >   drm/mediatek: Move clk info from struct mtk_ddp_comp to sub driver
-> >     private data
-> >   drm/mediatek: Move regs info from struct mtk_ddp_comp to sub driver
-> >     private data
-> >   drm/mediatek: Remove irq in struct mtk_ddp_comp
-> >   drm/mediatek: Use struct cmdq_client_reg to gather cmdq variable
-> >   drm/mediatek: Move cmdq_reg info from struct mtk_ddp_comp to sub
-> >     driver private data
-> >   drm/mediatek: Change sub driver interface from mtk_ddp_comp to device
-> >   drm/mediatek: Register vblank callback function
-> >   drm/mediatek: DRM driver directly refer to sub driver's function
-> >   drm/mediatek: Move mtk_ddp_comp_init() from sub driver to DRM driver
-> >
-> > Chun-Kuang Hu (2):
-> >   drm/mediatek: Get CMDQ client register for all ddp component
-> >   drm/mediatek: Use correct device pointer to get CMDQ client register
-> >
-> >  drivers/gpu/drm/mediatek/mtk_disp_color.c   |  86 ++---
-> >  drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  69 ++++
-> >  drivers/gpu/drm/mediatek/mtk_disp_ovl.c     | 215 ++++++-----
-> >  drivers/gpu/drm/mediatek/mtk_disp_rdma.c    | 169 +++++----
-> >  drivers/gpu/drm/mediatek/mtk_dpi.c          |  44 +--
-> >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c     |  75 ++--
-> >  drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |   1 -
-> >  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 389 ++++++++++++--------
-> >  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h | 100 ++---
-> >  drivers/gpu/drm/mediatek/mtk_drm_drv.c      |  30 +-
-> >  drivers/gpu/drm/mediatek/mtk_drm_drv.h      |   2 +-
-> >  drivers/gpu/drm/mediatek/mtk_dsi.c          |  47 +--
-> >  12 files changed, 658 insertions(+), 569 deletions(-)
-> >  create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_drv.h
-> >
-> > --
-> > 2.17.1
-> >
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/usb/serial/cp210x.c | 101 +++++++++++++++---------------------
+ 1 file changed, 41 insertions(+), 60 deletions(-)
+
+diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+index f1fd109d97d5..ad134e517849 100644
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -1364,9 +1364,11 @@ static bool cp210x_termios_change(const struct ktermios *a, const struct ktermio
+ static void cp210x_set_termios(struct tty_struct *tty,
+ 		struct usb_serial_port *port, struct ktermios *old_termios)
+ {
++	struct cp210x_serial_private *priv = usb_get_serial_data(port->serial);
+ 	struct device *dev = &port->dev;
+ 	unsigned int cflag, old_cflag;
+ 	u16 bits;
++	int ret;
+ 
+ 	if (!cp210x_termios_change(&tty->termios, old_termios))
+ 		return;
+@@ -1377,74 +1379,53 @@ static void cp210x_set_termios(struct tty_struct *tty,
+ 	if (tty->termios.c_ospeed != old_termios->c_ospeed)
+ 		cp210x_change_speed(tty, port, old_termios);
+ 
+-	/* If the number of data bits is to be updated */
+-	if ((cflag & CSIZE) != (old_cflag & CSIZE)) {
+-		cp210x_get_line_ctl(port, &bits);
+-		bits &= ~BITS_DATA_MASK;
+-		switch (cflag & CSIZE) {
+-		case CS5:
+-			bits |= BITS_DATA_5;
+-			dev_dbg(dev, "%s - data bits = 5\n", __func__);
+-			break;
+-		case CS6:
+-			bits |= BITS_DATA_6;
+-			dev_dbg(dev, "%s - data bits = 6\n", __func__);
+-			break;
+-		case CS7:
+-			bits |= BITS_DATA_7;
+-			dev_dbg(dev, "%s - data bits = 7\n", __func__);
+-			break;
+-		case CS8:
+-		default:
+-			bits |= BITS_DATA_8;
+-			dev_dbg(dev, "%s - data bits = 8\n", __func__);
+-			break;
+-		}
+-		if (cp210x_write_u16_reg(port, CP210X_SET_LINE_CTL, bits))
+-			dev_dbg(dev, "Number of data bits requested not supported by device\n");
++	/* CP2101 only supports CS8, 1 stop bit and non-stick parity. */
++	if (priv->partnum == CP210X_PARTNUM_CP2101) {
++		tty->termios.c_cflag &= ~(CSIZE | CSTOPB | CMSPAR);
++		tty->termios.c_cflag |= CS8;
+ 	}
+ 
+-	if ((cflag     & (PARENB|PARODD|CMSPAR)) !=
+-	    (old_cflag & (PARENB|PARODD|CMSPAR))) {
+-		cp210x_get_line_ctl(port, &bits);
+-		bits &= ~BITS_PARITY_MASK;
+-		if (cflag & PARENB) {
+-			if (cflag & CMSPAR) {
+-				if (cflag & PARODD) {
+-					bits |= BITS_PARITY_MARK;
+-					dev_dbg(dev, "%s - parity = MARK\n", __func__);
+-				} else {
+-					bits |= BITS_PARITY_SPACE;
+-					dev_dbg(dev, "%s - parity = SPACE\n", __func__);
+-				}
+-			} else {
+-				if (cflag & PARODD) {
+-					bits |= BITS_PARITY_ODD;
+-					dev_dbg(dev, "%s - parity = ODD\n", __func__);
+-				} else {
+-					bits |= BITS_PARITY_EVEN;
+-					dev_dbg(dev, "%s - parity = EVEN\n", __func__);
+-				}
+-			}
+-		}
+-		if (cp210x_write_u16_reg(port, CP210X_SET_LINE_CTL, bits))
+-			dev_dbg(dev, "Parity mode not supported by device\n");
++	bits = 0;
++
++	switch (C_CSIZE(tty)) {
++	case CS5:
++		bits |= BITS_DATA_5;
++		break;
++	case CS6:
++		bits |= BITS_DATA_6;
++		break;
++	case CS7:
++		bits |= BITS_DATA_7;
++		break;
++	case CS8:
++	default:
++		bits |= BITS_DATA_8;
++		break;
+ 	}
+ 
+-	if ((cflag & CSTOPB) != (old_cflag & CSTOPB)) {
+-		cp210x_get_line_ctl(port, &bits);
+-		bits &= ~BITS_STOP_MASK;
+-		if (cflag & CSTOPB) {
+-			bits |= BITS_STOP_2;
+-			dev_dbg(dev, "%s - stop bits = 2\n", __func__);
++	if (C_PARENB(tty)) {
++		if (C_CMSPAR(tty)) {
++			if (C_PARODD(tty))
++				bits |= BITS_PARITY_MARK;
++			else
++				bits |= BITS_PARITY_SPACE;
+ 		} else {
+-			bits |= BITS_STOP_1;
+-			dev_dbg(dev, "%s - stop bits = 1\n", __func__);
++			if (C_PARODD(tty))
++				bits |= BITS_PARITY_ODD;
++			else
++				bits |= BITS_PARITY_EVEN;
+ 		}
+-		if (cp210x_write_u16_reg(port, CP210X_SET_LINE_CTL, bits))
+-			dev_dbg(dev, "Number of stop bits requested not supported by device\n");
+ 	}
+ 
++	if (C_CSTOPB(tty))
++		bits |= BITS_STOP_2;
++	else
++		bits |= BITS_STOP_1;
++
++	ret = cp210x_write_u16_reg(port, CP210X_SET_LINE_CTL, bits);
++	if (ret)
++		dev_err(&port->dev, "failed to set line control: %d\n", ret);
++
+ 	if ((cflag & CRTSCTS) != (old_cflag & CRTSCTS)) {
+ 		struct cp210x_flow_ctl flow_ctl;
+ 		u32 ctl_hs;
+-- 
+2.26.2
+
