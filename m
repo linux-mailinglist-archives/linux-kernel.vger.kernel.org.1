@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F67D2B4DFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8102B4E08
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387636AbgKPRl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:41:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733295AbgKPRlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:41:24 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8ED0620575;
-        Mon, 16 Nov 2020 17:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605548484;
-        bh=BUdpGhQR6uvQ1UiDPnz3BIXkl0WyChUt637AGhwILLU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PqmyS1s6Xkb7owRE7Xh7P+XzYqPQ0k/xDZnr3WzJCMvp8brRHsGn4Wfl3rf1RfId1
-         N7HzSdqDZ6lrzKe1zmYv/R7PkeWA7zJ6YKVIB6TJiHT2D10rxyGsjjYhJjtIuy3v0m
-         24wvqkbaYM6SorYbYhP3MylRUHPtj65YdjjRhd+I=
-Date:   Mon, 16 Nov 2020 17:41:20 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: Loadavg accounting error on arm64
-Message-ID: <20201116174119.GB30723@willie-the-truck>
-References: <20201116091054.GL3371@techsingularity.net>
- <20201116114938.GN3371@techsingularity.net>
- <20201116125355.GB3121392@hirez.programming.kicks-ass.net>
- <20201116125803.GB3121429@hirez.programming.kicks-ass.net>
- <20201116152946.GR3371@techsingularity.net>
- <20201116164928.GF3121392@hirez.programming.kicks-ass.net>
- <20201116172444.GV3371@techsingularity.net>
+        id S2387736AbgKPRlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:41:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387673AbgKPRle (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 12:41:34 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7FFC0613CF;
+        Mon, 16 Nov 2020 09:41:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jXhYiraeCvEjgtp4Al1Jja9wRZjk54jdQVNIIz1mtNI=; b=DJ4JRqLbCnxL7oV46eew1i513o
+        cuizmUxtJNSsbEo/J7T6unlPPjbVcPfPHf7PEy6C4HL42PdN2meHxNJqdVEh9o6Qd5c3kGMsCRZPY
+        7DgN1CTRMw9CX90r4EprheOKWoTjCkfD8FGZ/NxD+4ghMRRkbOJM/AFS6IKNsybRVRGEGzy7aA+a5
+        IKdlZCwL79FzxVE6bFdihZ05OG5Ph3WDVHIV0JmRn6s2T95xG3usEQE8da8xbEyzqPe0E4Se596fY
+        hPSJ/dXtrulN/kouNf7LnzZHhkhqTVzBc7IEPlnbRKoVclBnuq1pjPMlp68L1LoJhR5F9AzO93B/o
+        cZTocpbg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keiVL-0001Fe-6A; Mon, 16 Nov 2020 17:41:27 +0000
+Date:   Mon, 16 Nov 2020 17:41:27 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
+ ima_calc_file_hash()
+Message-ID: <20201116174127.GA4578@infradead.org>
+References: <20201113080132.16591-1-roberto.sassu@huawei.com>
+ <20201114111057.GA16415@infradead.org>
+ <0fd0fb3360194d909ba48f13220f9302@huawei.com>
+ <20201116162202.GA15010@infradead.org>
+ <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
+ <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116172444.GV3371@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 05:24:44PM +0000, Mel Gorman wrote:
-> On Mon, Nov 16, 2020 at 05:49:28PM +0100, Peter Zijlstra wrote:
-> > > So while we might be able to avoid a smp_rmb() before the read of
-> > > sched_contributes_to_load and rely on p->on_cpu ordering there,
-> > > we may still need a smp_wmb() after nr_interruptible() increments
-> > > instead of waiting until the smp_store_release() is hit while a task
-> > > is scheduling. That would be a real memory barrier on arm64 and a plain
-> > > compiler barrier on x86-64.
-> > 
+On Mon, Nov 16, 2020 at 09:37:32AM -0800, Linus Torvalds wrote:
+> > This discussion seems to be going down the path of requiring an IMA
+> > filesystem hook for reading the file, again.  That solution was
+> > rejected, not by me.  What is new this time?
 > 
-> Wish I read this before sending the changelog
+> You can't read a non-read-opened file. Not even IMA can.
 > 
-> > I'm mighty confused by your words here; and the patch below. What actual
-> > scenario are you worried about?
-> > 
+> So don't do that then.
 > 
-> The wrong one apparently. Even if the IRQ is released, the IPI would
-> deliver to the CPU that should observe the correct value or take the
-> other path when smp_cond_load_acquire(&p->on_cpu, !VAL) waits for the
-> schedule to finish so I'm now both confused and wondering why smp_wmb
-> made a difference at all.
+> IMA is doing something wrong. Why would you ever read a file that can't be read?
+> 
+> Fix whatever "open" function instead of trying to work around the fact
+> that you opened it wrong.
 
-Probably still worth trying Peter's hack to pad the bitfields though, as I
-think that's still a plausible issue (and one which would appear to be
-fixed by that smp_wmb() too).
-
-Will
+The "issue" with IMA is that it uses security hooks to hook into the
+VFS and then wants to read every file that gets opened on a real file
+system to "measure" the contents vs a hash stashed away somewhere.
+Which has always been rather sketchy.
