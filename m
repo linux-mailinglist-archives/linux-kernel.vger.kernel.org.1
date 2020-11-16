@@ -2,367 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C028A2B3F55
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53912B3F57
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728418AbgKPJCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:02:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728333AbgKPJCs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:02:48 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3A9C0613CF;
-        Mon, 16 Nov 2020 01:02:47 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id k2so17830819wrx.2;
-        Mon, 16 Nov 2020 01:02:47 -0800 (PST)
+        id S1728421AbgKPJDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:03:46 -0500
+Received: from mail-eopbgr1300110.outbound.protection.outlook.com ([40.107.130.110]:50933
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726291AbgKPJDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:03:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i6A7OpKF8emcrHcczSh+i/Wh5N1hIOzs8MGC8UQ8QjGh4sz0OgeZ0p3YxVJpej/ApYTtIlABGsmLUgT/aFSgr3hzvjVH1oo7NYnFr7emRKGNha1XD2ARTTgzViSUvG6oP34GgsbwW1/KSndRL2Dl556wOkd5o5pVSvUJZm+UhTokzBEjdjDEv1IBxUJyslLoHF/fLxBmZ/E/5kpg4VNgup+a38srUDUwZ9jfgsH38+8233mzvYrMxGMS2koZkwBoA3letHRo7WFLF09SL7X5xb3Bx8nBvPlp1ZKqP3Ldhu/TwDf4yD8oO+VGzgDQHO4oyOo204g6KQLJOVgAL9qBXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qWO3aZGmNIcRlkc1pWNHfnp3BnwEvnrkYqUUABghIRI=;
+ b=ZYmRennERsSrjOj3zsYrYVxcXCqSE/A4Fl5g+6ego/iIvOaipy+beBdSo3ny5whWbVmlpe6PCz6JsmujckqRthkko07KEYWv+wi8n9JYijsdXYZM9jERTdPTN1YfPQ/Z4U5iJZvBIIr2hunfM3vRhFY4FIIYNcs27T3tLtCA+G5QEu+g401ysY9hWt7Zu54UxZ1ih1PywS8szlGr7m8m9SNK5+u7kdNb1imDOr/ya9D84TJzRVmpyC4M6snsr8qADjMj2p8P4QyWtdsb2FfdVP4gAsWyuH15A7za/rJwSBVDSSFGaZGFqitXMpmatKl08rU0yr1KQxpEjtSatkDKbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eM0XdfsC5L6zcjJ80a9zefiyqEZ2CaVUlGxtnUuJHd4=;
-        b=ikjR6Vm36oHyGlIr/hYjyPbJM20eAlyBbLNsF5q46AbPrQpQAVAwss93zoQYuasBI2
-         993GlGcTNKmuS2QPeXsYF3VSNRF6wD7BS8z0G03M/OjG5D5d0T30y761w6ligjawr+U0
-         RdcjOUNysqlCnmlorku4BJS2VVOXUCjPKKLY3E+cQGEMhYSKi0YYL8GwO6zJaK/cH48/
-         qRWMxSD+oXyZGQsZmZfZlfs4hTc9r5216OuCMtwst6K94MiPrLv2x0fb3cQgfWw19vXV
-         SRUoIOYggM9XJ9qAFY0H6QUHXA6ToM8l5tKObcuDhfwjZXj6OMzFXDnrtETTrnLu5bkU
-         fVQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eM0XdfsC5L6zcjJ80a9zefiyqEZ2CaVUlGxtnUuJHd4=;
-        b=WWwmjCbCNr87KtcPIlMPw/kAnX1KsrEeVANrf3H870tTPA/OP/oHJHYoD+knAnxg/N
-         dSxTNqnX84aOYJNgV0icCBLuzJdMAd7LvE3NNRMqKa7hlmawQnQq3pIFbHBnGFo3w9dL
-         SxSFzqDQCxn/jf2zB1BfH+XrIu57cU0ztmO7pOmbbeFEgGAmcex+IM9faR0czjAHRArS
-         1IWTBqlgE68XF+rBBKrH40tfXmUxm5LMnGn3iFsY+wa734ouxXYDvnUySa71yGxc8+r2
-         kbDx2lLdo+patirPuK4gezkTULPwOmoOjuGqyytGLAAb1q7eT7pPva8BG/Fw5MxqfgBb
-         2L3Q==
-X-Gm-Message-State: AOAM532l/KOLGMBkkoFenumNQ0V1cDqFJ03v8cRew75HQuHuCMMVSROm
-        NFbPGRhSPorIUvLhTWfs09F72jPrQ7c=
-X-Google-Smtp-Source: ABdhPJw9T2DQtL12MksFtFx9Yb8fbhecjZl/+eMPs033ubJ0ZpEgLyNYj2WHnuZ6qePeYPFHi/5GSg==
-X-Received: by 2002:adf:8304:: with SMTP id 4mr17763156wrd.215.1605517366078;
-        Mon, 16 Nov 2020 01:02:46 -0800 (PST)
-Received: from [192.168.8.114] ([37.167.85.62])
-        by smtp.gmail.com with ESMTPSA id o205sm19060209wma.25.2020.11.16.01.02.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 01:02:45 -0800 (PST)
-Subject: Re: [PATCH v9 3/3] mm/madvise: introduce process_madvise() syscall:
- an external memory hinting API
-To:     Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
-        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        John Dias <joaodias@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jann Horn <jannh@google.com>,
-        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
-        David Rientjes <rientjes@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Colascione <dancol@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        SeongJae Park <sjpark@amazon.de>, linux-man@vger.kernel.org
-References: <20200901000633.1920247-1-minchan@kernel.org>
- <20200901000633.1920247-4-minchan@kernel.org>
- <20200921065633.GA8070@infradead.org> <20200921175539.GB387368@google.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <a376191d-908d-7d3c-a810-8ef51cc45f49@gmail.com>
-Date:   Mon, 16 Nov 2020 10:02:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20200921175539.GB387368@google.com>
-Content-Type: text/plain; charset=utf-8
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qWO3aZGmNIcRlkc1pWNHfnp3BnwEvnrkYqUUABghIRI=;
+ b=n9Lo8hYqxiN/cjbSZUCmGzU3V30j9GrioqQknNSXC+/z+0hzaWF/XWPMkkdvv286enZemxxDnP64yLd19TlraRPK9MpOE4V+fcUpz/RtikxBjB84yrGj0FMsg4Av1ah8MpHaAJES95YDp5TEa/1DdjMeH7O0gkT2ylNYNfCTNnU=
+Received: from TYBPR01MB5309.jpnprd01.prod.outlook.com
+ (2603:1096:404:8025::15) by TY2PR01MB2122.jpnprd01.prod.outlook.com
+ (2603:1096:404:b::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.24; Mon, 16 Nov
+ 2020 09:03:38 +0000
+Received: from TYBPR01MB5309.jpnprd01.prod.outlook.com
+ ([fe80::5d23:de2f:4a70:97db]) by TYBPR01MB5309.jpnprd01.prod.outlook.com
+ ([fe80::5d23:de2f:4a70:97db%3]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
+ 09:03:37 +0000
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: RE: [PATCH v3] clk: renesas: r8a774c0: Add RPC clocks
+Thread-Topic: [PATCH v3] clk: renesas: r8a774c0: Add RPC clocks
+Thread-Index: AQHWt2DiQMDgJXOywkKPxRA3EPixuqnKd7OAgAAE/+A=
+Date:   Mon, 16 Nov 2020 09:03:37 +0000
+Message-ID: <TYBPR01MB53099FFA01431B1E5188B8C686E30@TYBPR01MB5309.jpnprd01.prod.outlook.com>
+References: <20201110125609.30246-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdUky4OEvCLnDYr3C-PB+PKdSx3U5+dCfhiftDhf3RKmAQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdUky4OEvCLnDYr3C-PB+PKdSx3U5+dCfhiftDhf3RKmAQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux-m68k.org; dkim=none (message not signed)
+ header.d=none;linux-m68k.org; dmarc=none action=none
+ header.from=bp.renesas.com;
+x-originating-ip: [109.154.85.162]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2e57675b-827d-4190-d95f-08d88a0e8179
+x-ms-traffictypediagnostic: TY2PR01MB2122:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TY2PR01MB2122ACB205E47422D2B4CB1586E30@TY2PR01MB2122.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wn7MduTF7qM/etjjQPj62pVEvRStRAEcnsYj/GPwGoFKwMHDIZX0FfRfyCceWAvFlih1djHStiPIMqY0A18Q99nR3WEG+T/0KwX6AOXxj/S3MolW143xUymP+uS5Tl80BTwiPayfQR8hQuJ/dxXV/yZyLHpVAy++hd8hdJM3HZYjAsgt2fiw5k5aUt7ygDoqSGXzRkhTw1onFMCWK064urGLtDosoBH6+uKJwaYxgAP9Gv6RyDbdd5CuaBexlsdIEz2XlWLr0ZfPriq75caT+KeYT84bLVgHYCFa3Z9BHpEA8YaVRsCpKm0zx9B/VqMe106tQWmV9WRBI4AstfpqpA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYBPR01MB5309.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(396003)(136003)(39860400002)(4326008)(9686003)(478600001)(55016002)(71200400001)(83380400001)(86362001)(26005)(5660300002)(7696005)(110136005)(66446008)(6506007)(2906002)(66476007)(66946007)(316002)(52536014)(66556008)(33656002)(6636002)(186003)(53546011)(8676002)(8936002)(54906003)(76116006)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: EFfqc2KOMwjN/udlLKG6IwXr55H86vC3M+8EObf8o7B30bRnvT8bg8XMYVi3FwuwBY+nBlbfV9AdET1glVmN/Ftjfc5dyvwdqnGKb8RjBcYI53vYq1K4qx9PqIa4xv1j+Qe35gQ5UJehJuidZXYE9uUDg59hi6/zHbndcL6EdcaV1bIvBG/s7N1bYKPkXP2WpshYmLtOi2de4GjFx9321A2/JtjkgUkijezUAjfovFHyQ6+W1D288j84LD9LXqti8B+jq4c6S6UPjWgikAoHIz6/Kv/Xb0H27qr9xij3GrfB3328Fk91xpmXW9fhznXi7lxSfJ5HbWn0Ue6iRyxJ67QM0422xG9/SxLhE1nLKJExStoQGtkk7VEbaEg9KHw8OQKqjjHsY6C28C0Uphmj1LnTAxTfAURzTgGoc2k5wm/tqppvwslZqQFpKSoiEe3ZhB7tH9mcPW5hiBWWJlJ/Rc2cl0TV8DbOa+gNCzhUPkVEhgR/jN7mWnyNOfsZkwuuMAoaodojnUpz+2R7E4iiV64PZojUjWnvtI/r8Id3EH5ZSGqSnt05zlaQZUBaYASOgENSXg6Sq16dLOcFi3PXfL9S+BgJ3RznPTI2uTtPL4+lDEh//fVyF4NvySJ33JSSyGFSpw/Ejz8JTlPydlbNMaUm5HBcfQ7Zn+hwzP9N26IBU/s8ZtoX0YzVX5U6vgerCZb9VBkb7bD16ZSGFkbGoPeyeCU/PNr4139GR+QQst6j2N55epSAsLYynQ7RTcU6ZdvENZV9Osu/1S00tjGDM6IdnzQ6D7Ki7j1hWPo4Spvi0iGizafbeQMvQHZk7oHAEGF8IQyOKkmmz8ZrzBggjFUt2ud62abJo0fbFcz66zvwNGENWwG1h+wohJMQ+nDaMYKxyZWqqYTeD7+ag8bD6g==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYBPR01MB5309.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e57675b-827d-4190-d95f-08d88a0e8179
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2020 09:03:37.6877
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: us+FftfCZ/pvzvegvNIgKin7tREZ93l9ft0y17vNVWRQhtjP1MAA5Uy09/CnVzvdApNV1u4KeQf66ZxiB6tThD+xfmgJc3x+pI2+4HLEma8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB2122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/21/20 7:55 PM, Minchan Kim wrote:
-> On Mon, Sep 21, 2020 at 07:56:33AM +0100, Christoph Hellwig wrote:
->> On Mon, Aug 31, 2020 at 05:06:33PM -0700, Minchan Kim wrote:
->>> There is usecase that System Management Software(SMS) want to give a
->>> memory hint like MADV_[COLD|PAGEEOUT] to other processes and in the
->>> case of Android, it is the ActivityManagerService.
->>>
->>> The information required to make the reclaim decision is not known to
->>> the app.  Instead, it is known to the centralized userspace
->>> daemon(ActivityManagerService), and that daemon must be able to
->>> initiate reclaim on its own without any app involvement.
->>>
->>> To solve the issue, this patch introduces a new syscall process_madvise(2).
->>> It uses pidfd of an external process to give the hint. It also supports
->>> vector address range because Android app has thousands of vmas due to
->>> zygote so it's totally waste of CPU and power if we should call the
->>> syscall one by one for each vma.(With testing 2000-vma syscall vs
->>> 1-vector syscall, it showed 15% performance improvement.  I think it
->>> would be bigger in real practice because the testing ran very cache
->>> friendly environment).
->>
->> I'm really not sure this syscall is a good idea.  If you want central
->> control you should implement an IPC mechanisms that allows your
->> supervisor daemon to tell the application to perform the madvice
->> instead of forcing the behavior on it.
-> 
-> There was dicussion about the approach. There were several issues.
-> One of them was the target app was already freezed and we wanted
-> to run the syscall in caller's context, not callee.
-> 
->>
->>>  /*
->>>   * The madvise(2) system call.
->>>   *
->>> @@ -1036,6 +1049,11 @@ madvise_behavior_valid(int behavior)
->>>   *  MADV_DONTDUMP - the application wants to prevent pages in the given range
->>>   *		from being included in its core dump.
->>>   *  MADV_DODUMP - cancel MADV_DONTDUMP: no longer exclude from core dump.
->>> + *  MADV_COLD - the application is not expected to use this memory soon,
->>> + *		deactivate pages in this range so that they can be reclaimed
->>> + *		easily if memory pressure hanppens.
->>> + *  MADV_PAGEOUT - the application is not expected to use this memory soon,
->>> + *		page out the pages in this range immediately.
->>
->> This should really go into a separate patch, as it has nothing to do
->> with the new syscall.
-> 
-> Technically, right but I expected it's not worth to have separate patch.
-> 
->>
->>> +static int process_madvise_vec(struct mm_struct *mm, struct iov_iter *iter, int behavior)
->>> +{
->>> +	struct iovec iovec;
->>> +	int ret = 0;
->>> +
->>> +	while (iov_iter_count(iter)) {
->>> +		iovec = iov_iter_iovec(iter);
->>> +		ret = do_madvise(mm, (unsigned long)iovec.iov_base, iovec.iov_len, behavior);
->>> +		if (ret < 0)
->>> +			break;
->>> +		iov_iter_advance(iter, iovec.iov_len);
->>> +	}
->>> +
->>> +	return ret;
->>
->> Please avoid the entirely pointless overly long line.
->>
->>> +static inline int madv_import_iovec(int type, const struct iovec __user *uvec, unsigned int nr_segs,
->>> +		unsigned int fast_segs, struct iovec **iov, struct iov_iter *i)
->>> +{
->>> +#ifdef CONFIG_COMPAT
->>> +	if (in_compat_syscall())
->>> +		return compat_import_iovec(type, (struct compat_iovec __user *)uvec, nr_segs,
->>> +				fast_segs, iov, i);
->>> +#endif
->>
->> More of the same.
->>
->>> +SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
->>> +		unsigned long, vlen, int, behavior, unsigned int, flags)
->>> +{
->>> +	ssize_t ret;
->>> +	struct iovec iovstack[UIO_FASTIOV];
->>> +	struct iovec *iov = iovstack;
->>> +	struct iov_iter iter;
->>> +
->>> +	ret = madv_import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack), &iov, &iter);
->>> +	if (ret < 0)
->>> +		return ret;
->>> +
->>> +	ret = do_process_madvise(pidfd, &iter, behavior, flags);
->>> +	kfree(iov);
->>> +	return ret;
->>
->> Even more here.  But more importantly there seems to be absolutely
->> no reason for the madv_import_iovec and do_process_madvise helpers
->> that both are tiny and have this even smaller function as the only
->> caller.
-> 
-> Fair enough.
-> 
-> 
-> Andrew, could you fold this patch?
-> Thank you.
-> 
-> From 02d63c6b3f61a1085f4eab80f5171bd2627b5ab0 Mon Sep 17 00:00:00 2001
-> From: Minchan Kim <minchan@kernel.org>
-> Date: Mon, 21 Sep 2020 09:31:25 -0700
-> Subject: [PATCH] mm: do not use helper functions for process_madvise
-> 
-> This patch removes helper functions process_madvise_vec,
-> do_process_madvise and madv_import_iovec and use them inline.
-> 
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->  mm/madvise.c | 97 +++++++++++++++++++++++-----------------------------
->  1 file changed, 43 insertions(+), 54 deletions(-)
-> 
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index ae266dfede8a..aa8bc65dbdb6 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -1166,37 +1166,40 @@ SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
->  	return do_madvise(current->mm, start, len_in, behavior);
->  }
->  
-> -static int process_madvise_vec(struct mm_struct *mm, struct iov_iter *iter, int behavior)
-> -{
-> -	struct iovec iovec;
-> -	int ret = 0;
-> -
-> -	while (iov_iter_count(iter)) {
-> -		iovec = iov_iter_iovec(iter);
-> -		ret = do_madvise(mm, (unsigned long)iovec.iov_base, iovec.iov_len, behavior);
-> -		if (ret < 0)
-> -			break;
-> -		iov_iter_advance(iter, iovec.iov_len);
-> -	}
-> -
-> -	return ret;
-> -}
-> -
-> -static ssize_t do_process_madvise(int pidfd, struct iov_iter *iter,
-> -				int behavior, unsigned int flags)
-> +SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> +		size_t, vlen, int, behavior, unsigned int, flags)
->  {
->  	ssize_t ret;
-> +	struct iovec iovstack[UIO_FASTIOV], iovec;
-> +	struct iovec *iov = iovstack;
-> +	struct iov_iter iter;
->  	struct pid *pid;
->  	struct task_struct *task;
->  	struct mm_struct *mm;
-> -	size_t total_len = iov_iter_count(iter);
-> +	size_t total_len;
->  
-> -	if (flags != 0)
-> -		return -EINVAL;
-> +	if (flags != 0) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +#ifdef CONFIG_COMPAT
-> +	if (in_compat_syscall())
-> +		ret = compat_import_iovec(READ,
-> +				(struct compat_iovec __user *)vec, vlen,
-> +				ARRAY_SIZE(iovstack), &iov, &iter);
-> +	else
-> +#endif
-> +		ret = import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack),
-> +				&iov, &iter);
-> +	if (ret < 0)
-> +		goto out;
->  
->  	pid = pidfd_get_pid(pidfd);
-> -	if (IS_ERR(pid))
-> -		return PTR_ERR(pid);
-> +	if (IS_ERR(pid)) {
-> +		ret = PTR_ERR(pid);
-> +		goto free_iov;
-> +	}
->  
->  	task = get_pid_task(pid, PIDTYPE_PID);
->  	if (!task) {
-> @@ -1216,43 +1219,29 @@ static ssize_t do_process_madvise(int pidfd, struct iov_iter *iter,
->  		goto release_task;
->  	}
->  
-> -	ret = process_madvise_vec(mm, iter, behavior);
-> -	if (ret >= 0)
-> -		ret = total_len - iov_iter_count(iter);
-> +	total_len = iov_iter_count(&iter);
-> +
-> +	while (iov_iter_count(&iter)) {
-> +		iovec = iov_iter_iovec(&iter);
-> +		ret = do_madvise(mm, (unsigned long)iovec.iov_base,
-> +					iovec.iov_len, behavior);
-> +		if (ret < 0)
-> +			break;
-> +		iov_iter_advance(&iter, iovec.iov_len);
-> +	}
-> +
-> +	if (ret == 0)
-> +		ret = total_len - iov_iter_count(&iter);
->  
->  	mmput(mm);
-> +	return ret;
-
-This "return ret;" seems quite wrong...
-
-I will send the following :
-
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 416a56b8e757bf3465ab13cea51e0751ade2c745..cc9224a59e9fa07e41f9b4ad2e58b9c97889299b 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -1231,7 +1231,6 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-                ret = total_len - iov_iter_count(&iter);
- 
-        mmput(mm);
--       return ret;
- 
- release_task:
-        put_task_struct(task);
-
-
-
-
-> +
->  release_task:
->  	put_task_struct(task);
->  put_pid:
->  	put_pid(pid);
-> -	return ret;
-> -}
-> -
-> -static inline int madv_import_iovec(int type, const struct iovec __user *uvec, size_t nr_segs,
-> -		unsigned int fast_segs, struct iovec **iov, struct iov_iter *i)
-> -{
-> -#ifdef CONFIG_COMPAT
-> -	if (in_compat_syscall())
-> -		return compat_import_iovec(type, (struct compat_iovec __user *)uvec, nr_segs,
-> -				fast_segs, iov, i);
-> -#endif
-> -
-> -	return import_iovec(type, uvec, nr_segs, fast_segs, iov, i);
-> -}
-> -
-> -SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> -		size_t, vlen, int, behavior, unsigned int, flags)
-> -{
-> -	ssize_t ret;
-> -	struct iovec iovstack[UIO_FASTIOV];
-> -	struct iovec *iov = iovstack;
-> -	struct iov_iter iter;
-> -
-> -	ret = madv_import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack), &iov, &iter);
-> -	if (ret < 0)
-> -		return ret;
-> -
-> -	ret = do_process_madvise(pidfd, &iter, behavior, flags);
-> +free_iov:
->  	kfree(iov);
-> +out:
->  	return ret;
->  }
-> 
+SGkgR2VlcnQsDQoNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2M10gY2xrOiByZW5lc2FzOiByOGE3
+NzRjMDogQWRkIFJQQyBjbG9ja3MNCj4gDQo+IEhpIFByYWJoYWthciwNCj4gDQo+IE9uIFR1ZSwg
+Tm92IDEwLCAyMDIwIGF0IDE6NTYgUE0gTGFkIFByYWJoYWthciA8cHJhYmhha2FyLm1haGFkZXYt
+DQo+IGxhZC5yakBicC5yZW5lc2FzLmNvbT4gd3JvdGU6DQo+ID4gRGVzY3JpYmUgdGhlIFJQQ1NS
+QyBpbnRlcm5hbCBjbG9jayBhbmQgdGhlIFJQQ1tEMl0gY2xvY2tzIGRlcml2ZWQgZnJvbQ0KPiA+
+IGl0LCBhcyB3ZWxsIGFzIHRoZSBSUEMtSUYgbW9kdWxlIGNsb2NrLCBpbiB0aGUgUlovRzJFIChS
+OEE3NzRDMCkNCj4gPiBDUEcvTVNTUiBkcml2ZXIuDQo+ID4NCj4gPiBBZGQgbmV3IGNsayB0eXBl
+IENMS19UWVBFX0dFTjNFM19SUENTUkMgdG8gcmVnaXN0ZXIgcnBjc3JjIGFzIGEgZml4ZWQNCj4g
+PiBjbG9jayBvbiBSLUNhciBHZW4zIEUzIChhbmQgYWxzbyBSWi9HMkUgd2hpY2ggaXMgaWRlbnRp
+Y2FsIHRvIEUzIFNvQyksDQo+ID4gcGFyZW50IGFuZCB0aGUgZGl2aWRlciBpcyBzZXQgYmFzZWQg
+b24gdGhlIHJlZ2lzdGVyIHZhbHVlDQo+ID4gQ1BHX1JQQ0NLQ1JbNDozXSAocGFyZW50IGlzIGNy
+b3NzIHZlcmlmaWVkIGFnYWluc3QgTURbNDoxXSBwaW5zKSB3aGljaA0KPiA+IGhhcyBiZWVuIHNl
+dCBwcmlvciB0byBib290aW5nIHRoZSBrZXJuZWwuDQo+ID4NCj4gPiBNRFs0XSBNRFszXSBNRFsy
+XSBNRFsxXQ0KPiA+ICAgMCAgICAgMCAgICAgMCAgICAxICAgICAtPiBSUENTUkMgQ0xLIHNvdXJj
+ZSBpcyBQTEwxDQo+ID4gICAwICAgICAwICAgICAxICAgIDEgICAgIC0+IFJQQ1NSQyBDTEsgc291
+cmNlIGlzIFBMTDENCj4gPiAgIDAgICAgIDEgICAgIDAgICAgMCAgICAgLT4gUlBDU1JDIENMSyBz
+b3VyY2UgaXMgUExMMQ0KPiA+ICAgMSAgICAgMCAgICAgMSAgICAxICAgICAtPiBSUENTUkMgQ0xL
+IHNvdXJjZSBpcyBQTEwxDQo+ID4gICB4ICAgICB4ICAgICB4ICAgIHggICAgIC0+IEZvciBhbnkg
+b3RoZXIgdmFsdWVzIFJQQ1NSQyBDTEsgc291cmNlIGlzDQo+IFBMTDANCj4gPg0KPiA+IFNpZ25l
+ZC1vZmYtYnk6IExhZCBQcmFiaGFrYXIgPHByYWJoYWthci5tYWhhZGV2LWxhZC5yakBicC5yZW5l
+c2FzLmNvbT4NCj4gPiBSZXZpZXdlZC1ieTogQmlqdSBEYXMgPGJpanUuZGFzLmp6QGJwLnJlbmVz
+YXMuY29tPg0KPiANCj4gVGhhbmtzIGZvciB5b3VyIHBhdGNoIQ0KPiANCj4gPiAtLS0NCj4gPiB2
+Mi0+djMNCj4gPiAqIEltcGxlbWVudGVkIGFzIGEgZml4ZWQgY2xvY2sNCj4gDQo+IFNvdW5kcyBm
+aW5lIHRvIG1lLiAgSWYgd2UgZXZlciBuZWVkIHRvIGNvbmZpZ3VyZSB0aGlzIGNsb2NrIGZyb20g
+TGludXgsDQo+IHRoZSBkcml2ZXIgY2FuIGJlIGNoYW5nZWQuDQo+IA0KPiA+IC0tLSBhL2RyaXZl
+cnMvY2xrL3JlbmVzYXMvcmNhci1nZW4zLWNwZy5jDQo+ID4gKysrIGIvZHJpdmVycy9jbGsvcmVu
+ZXNhcy9yY2FyLWdlbjMtY3BnLmMNCj4gPiBAQCAtNDI3LDYgKzQyNywxOSBAQCBzdGF0aWMgc3Ry
+dWN0IGNsayAqIF9faW5pdA0KPiBjcGdfc2RfY2xrX3JlZ2lzdGVyKGNvbnN0IGNoYXIgKm5hbWUs
+DQo+ID4gICAgICAgICByZXR1cm4gY2xrOw0KPiA+ICB9DQo+ID4NCj4gPiArc3RhdGljIGJvb2wg
+X19pbml0IGNwZ19ycGNzcmNfZTNfcGFyZW50X2lzX3BsbDAodTMyIG1vZGUpIHsNCj4gPiArICAg
+ICAgIHVuc2lnbmVkIGludCBlM19ycGNzcmMgPSAobW9kZSAmIEdFTk1BU0soNCwgMSkpID4+IDE7
+DQo+ID4gKyAgICAgICB1bnNpZ25lZCBpbnQgcGxsMVtdID0geyAweDEsIDB4MywgMHg0LCAweGIs
+IH07DQo+ID4gKyAgICAgICBpbnQgaTsNCj4gPiArDQo+ID4gKyAgICAgICBmb3IgKGkgPSAwOyBp
+IDwgQVJSQVlfU0laRShwbGwxKTsgaSsrKQ0KPiA+ICsgICAgICAgICAgICAgICBpZiAoZTNfcnBj
+c3JjID09IHBsbDFbaV0pDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGZhbHNl
+Ow0KPiANCj4gRGlkIHlvdSBrbm93IGdjYyAodmVyc2lvbiA5LjMuMCkgZ2VuZXJhdGVzIHNtYWxs
+ZXIgY29kZSBmb3I6DQo+IA0KPiAgICAgICAgIHN3aXRjaCAoZTNfcnBjc3JjKSB7DQo+ICAgICAg
+ICAgY2FzZSAweDE6DQo+ICAgICAgICAgY2FzZSAweDM6DQo+ICAgICAgICAgY2FzZSAweDQ6DQo+
+ICAgICAgICAgY2FzZSAweGI6DQo+ICAgICAgICAgICAgICAgICByZXR1cm4gZmFsc2U7DQo+IA0K
+PiAgICAgICAgIGRlZmF1bHQ6DQo+ICAgICAgICAgICAgICAgICByZXR1cm4gdHJ1ZTsNCj4gICAg
+ICAgICB9DQo+IA0KPiA/DQo+IA0KPiA+IEBAIC02OTYsNiArNzA5LDQyIEBAIHN0cnVjdCBjbGsg
+KiBfX2luaXQNCj4gcmNhcl9nZW4zX2NwZ19jbGtfcmVnaXN0ZXIoc3RydWN0IGRldmljZSAqZGV2
+LA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+Y3BnX3JwY3NyY19kaXZfdGFibGUsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAmY3BnX2xvY2spOw0KPiA+DQo+ID4gKyAgICAgICBjYXNlIENM
+S19UWVBFX0dFTjNFM19SUENTUkM6DQo+ID4gKyAgICAgICAgICAgICAgIC8qDQo+ID4gKyAgICAg
+ICAgICAgICAgICAqIFJlZ2lzdGVyIFJQQ1NSQyBhcyBmaXhlZCBmYWN0b3IgY2xvY2sgYmFzZWQg
+b24gdGhlDQo+ID4gKyAgICAgICAgICAgICAgICAqIE1EWzQ6MV0gcGlucyBhbmQgQ1BHX1JQQ0NL
+Q1JbNDozXSByZWdpc3RlciB2YWx1ZSBmb3INCj4gPiArICAgICAgICAgICAgICAgICogd2hpY2gg
+aGFzIGJlZW4gc2V0IHByaW9yIHRvIGJvb3RpbmcgdGhlIGtlcm5lbC4NCj4gPiArICAgICAgICAg
+ICAgICAgICovDQo+ID4gKw0KPiA+ICsgICAgICAgICAgICAgICB2YWx1ZSA9IChyZWFkbChiYXNl
+ICsgQ1BHX1JQQ0NLQ1IpICYgR0VOTUFTSyg0LCAzKSkgPj4NCj4gMzsNCj4gPiArICAgICAgICAg
+ICAgICAgaWYgKGNwZ19ycGNzcmNfZTNfcGFyZW50X2lzX3BsbDAoY3BnX21vZGUpKSB7DQo+ID4g
+KyAgICAgICAgICAgICAgICAgICAgICAgaWYgKHZhbHVlICE9IDIpDQo+ID4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICByZXR1cm4gRVJSX1BUUigtRUlOVkFMKTsNCj4gPiArICAgICAg
+ICAgICAgICAgfSBlbHNlIHsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBpZiAodmFsdWUg
+PT0gMikNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiBFUlJfUFRS
+KC1FSU5WQUwpOw0KPiA+ICsgICAgICAgICAgICAgICB9DQo+IA0KPiBJTUhPIHRoaXMgY3Jvc3Mt
+dmVyaWZpY2F0aW9uIGlzIG5vdCBuZWVkZWQsIGFuZCBoYXJtZnVsOiBpdCBwcmV2ZW50cyB0aGUN
+Cj4gYm9vdCBsb2FkZXIgZnJvbSBjaGFuZ2luZyB0aGUgY29uZmlndXJhdGlvbiwgd2hpY2ggSSB0
+aGluayBpcyBhIHZhbGlkIHVzZQ0KPiBjYXNlLg0KDQpCdXQgdGhpcyBjaGVjayB2YWxpZGF0ZXMs
+IHdoZXRoZXIgYm9vdGxvYWRlciBkb25lIHdyb25nIGNvbmZpZ3VyYXRpb24gb3Igbm90Pw0KRm9y
+IGVnOi0gUExMMSBhbmQgc2V0dGluZyB3cm9uZyBkaXZpZGVyIHZhbHVlIGluIFJQQ0NLQ1IuDQoN
+Ckl0IGFsbG93cyBib290bG9hZGVyIGZvciBjaGFuZ2luZyByaWdodCBjb25maWd1cmF0aW9ucy4g
+SSBtYXkgYmUgd3JvbmcuIFBsZWFzZSBjb3JyZWN0IG1lIGlmIEkgYW0gd3JvbmcuDQoNClJlZ2Fy
+ZHMsDQpCaWp1DQoNCg0KPiA+ICsNCj4gPiArICAgICAgICAgICAgICAgc3dpdGNoICh2YWx1ZSkg
+ew0KPiA+ICsgICAgICAgICAgICAgICBjYXNlIDA6DQo+ID4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgZGl2ID0gNTsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gPiArICAg
+ICAgICAgICAgICAgY2FzZSAxOg0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGRpdiA9IDM7
+DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4gKyAgICAgICAgICAgICAg
+IGNhc2UgMjoNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBwYXJlbnQgPSBjbGtzW2NvcmUt
+PnBhcmVudCA+PiAxNl07DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgaWYgKElTX0VSUihw
+YXJlbnQpKQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIEVSUl9D
+QVNUKHBhcmVudCk7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZGl2ID0gODsNCj4gDQo+
+IFItQ2FyIEQzIGlzIHZlcnkgc2ltaWxhciwgYnV0IHVzZXMgZGl2ID0gNSBpbnN0ZWFkIG9mIDgu
+DQo+IFBlcmhhcHMgdGhpcyB2YWx1ZSBjYW4gYmUgcmV0cmlldmVkIGZyb20gY3BnX2NvcmVfY2xr
+LmRpdj8NCj4gT2YgY291cnNlLCB3ZSBjYW4gZG8gdGhhdCBsYXRlciwgd2hlbiBEMyBzdXBwb3J0
+IGlzIGFkZGVkLg0KPiANCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gPiAr
+ICAgICAgICAgICAgICAgY2FzZSAzOg0KPiA+ICsgICAgICAgICAgICAgICBkZWZhdWx0Og0KPiA+
+ICsgICAgICAgICAgICAgICAgICAgICAgIGRpdiA9IDI7DQo+ID4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgYnJlYWs7DQo+ID4gKyAgICAgICAgICAgICAgIH0NCj4gPiArICAgICAgICAgICAgICAg
+YnJlYWs7DQo+ID4gKw0KPiA+ICAgICAgICAgY2FzZSBDTEtfVFlQRV9HRU4zX1JQQzoNCj4gPiAg
+ICAgICAgICAgICAgICAgcmV0dXJuIGNwZ19ycGNfY2xrX3JlZ2lzdGVyKGNvcmUtPm5hbWUsIGJh
+c2UsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBfX2Ns
+a19nZXRfbmFtZShwYXJlbnQpLA0KPiA+IG5vdGlmaWVycyk7DQo+IA0KPiBUaGUgcmVzdCBsb29r
+cyBnb29kIHRvIG1lLg0KPiANCj4gR3J7b2V0amUsZWV0aW5nfXMsDQo+IA0KPiAgICAgICAgICAg
+ICAgICAgICAgICAgICBHZWVydA0KPiANCj4gLS0NCj4gR2VlcnQgVXl0dGVyaG9ldmVuIC0tIFRo
+ZXJlJ3MgbG90cyBvZiBMaW51eCBiZXlvbmQgaWEzMiAtLSBnZWVydEBsaW51eC0NCj4gbTY4ay5v
+cmcNCj4gDQo+IEluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxl
+LCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLg0KPiBCdXQgd2hlbiBJJ20gdGFsa2luZyB0byBqb3Vy
+bmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcNCj4gbGlrZSB0aGF0
+Lg0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRzDQo=
