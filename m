@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED2D2B52C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DCB2B52C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387535AbgKPUhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:37:31 -0500
-Received: from mail.efficios.com ([167.114.26.124]:44106 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730723AbgKPUh3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:37:29 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6B56D2D0BB6;
-        Mon, 16 Nov 2020 15:37:28 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 5xVR0ch7qYPQ; Mon, 16 Nov 2020 15:37:28 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 094552D08E4;
-        Mon, 16 Nov 2020 15:37:28 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 094552D08E4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1605559048;
-        bh=kBFLZ9EW89Wp5uMRdFavHrh8o0YWg+z4bzCgnMbLUvE=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=p390yQpgofXukqGCurhuyKHPUFZ7fvQAiDk7AT9PVmrdPy4pb10Msf3CWHTUvtZEl
-         CLPowz6UgqeS9GqmGc4HBtaqo11TNvRUVGTM0jKfuwSES0Z2FO8XO5QRMN1NTNaxw9
-         f5j6p6hu4Fb4Z03TCalB55QVJNw8KaiBpsnnp+viK9CyMx4cXK6S2/sDjREhS5lqdQ
-         jVHujnF1syaVVOQNRcwiSrHKXbTHPvFE90Y3kkrIskyfkHfLJRg1ps1WixUAn/Eaqe
-         3rnw3aC3Cb1Ogt40YG+uEcCZDH4VbAKsgghMKK/LQoWUmp3zdd+A42T2biUuWESo0e
-         6OfP/ljztezdw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id RGqurea8Cm3D; Mon, 16 Nov 2020 15:37:27 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id E8CC92D09C8;
-        Mon, 16 Nov 2020 15:37:27 -0500 (EST)
-Date:   Mon, 16 Nov 2020 15:37:27 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>, paulmck <paulmck@kernel.org>
-Cc:     Matt Mullins <mmullins@mmlx.us>, Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Message-ID: <1889971276.46615.1605559047845.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201116121929.1a7aeb16@gandalf.local.home>
-References: <00000000000004500b05b31e68ce@google.com> <20201115055256.65625-1-mmullins@mmlx.us> <20201116121929.1a7aeb16@gandalf.local.home>
-Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
+        id S1731562AbgKPUih convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 15:38:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728374AbgKPUig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 15:38:36 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C95B5208C3;
+        Mon, 16 Nov 2020 20:38:35 +0000 (UTC)
+Date:   Mon, 16 Nov 2020 15:38:34 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] samples/ftrace: mark my_tramp[12]? global
+Message-ID: <20201116153834.57ace64e@gandalf.local.home>
+In-Reply-To: <CABCJKudNGa2=65vATJMqo--8guvWHZ6-wMWHZQy-ZaH32dXdnA@mail.gmail.com>
+References: <20201113183414.1446671-1-samitolvanen@google.com>
+        <20201116113931.2b60a191@gandalf.local.home>
+        <CABCJKudNGa2=65vATJMqo--8guvWHZ6-wMWHZQy-ZaH32dXdnA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
-Thread-Topic: don't fail kmalloc while releasing raw_tp
-Thread-Index: zn74f4GdZFZcw2xYb9djl8cQZU8krQ==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Nov 16, 2020, at 12:19 PM, rostedt rostedt@goodmis.org wrote:
+On Mon, 16 Nov 2020 12:10:10 -0800
+Sami Tolvanen <samitolvanen@google.com> wrote:
 
-> On Sat, 14 Nov 2020 21:52:55 -0800
-> Matt Mullins <mmullins@mmlx.us> wrote:
+> On Mon, Nov 16, 2020 at 8:39 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Fri, 13 Nov 2020 10:34:14 -0800
+> > Sami Tolvanen <samitolvanen@google.com> wrote:
+> >  
+> > > my_tramp[12]? are declared as global functions in C, but they are not
+> > > marked global in the inline assembly definition. This mismatch confuses
+> > > Clang's Control-Flow Integrity checking. Fix the definitions by adding
+> > > .globl.
+> > >  
+> >
+> > Actually, since that function is not really global, would it work if you
+> > removed the "extern" from the my_tramp declaration?  
 > 
->> bpf_link_free is always called in process context, including from a
->> workqueue and from __fput.  Neither of these have the ability to
->> propagate an -ENOMEM to the caller.
->> 
+> Unfortunately not, removing the "extern" doesn't seem to change anything.
 > 
-> Hmm, I think the real fix is to not have unregistering a tracepoint probe
-> fail because of allocation. We are removing a probe, perhaps we could just
-> inject NULL pointer that gets checked via the DO_TRACE loop?
+> > In other words, is there a way to tell C that a function is declared in an
+> > inline assembly block?  
 > 
-> I bet failing an unregister because of an allocation failure causes
-> problems elsewhere than just BPF.
-> 
-> Mathieu,
-> 
-> Can't we do something that would still allow to unregister a probe even if
-> a new probe array fails to allocate? We could kick off a irq work to try to
-> clean up the probe at a later time, but still, the unregister itself should
-> not fail due to memory failure.
+> I'm not sure if there's a way to tell C that a static function is
+> declared in inline assembly. At least I couldn't find a way that would
+> make the compiler happy.
 
-Currently, the fast path iteration looks like:
+I'm trying to see the warning. What option makes clang trigger a warning on
+this?
 
-                struct tracepoint_func *it_func_ptr;
-                void *it_func;
+From user space, I'm just using the following file:
 
-                it_func_ptr =                                           \
-                        rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
-                do {                                                    \
-                        it_func = (it_func_ptr)->func;                  \
-                        __data = (it_func_ptr)->data;                   \
-                        ((void(*)(void *, proto))(it_func))(__data, args); \
-                } while ((++it_func_ptr)->func); 
+#include <stdio.h>
 
-So we RCU dereference the array, and iterate on the array until we find a NULL
-func. So you could not use NULL to skip items, but you could perhaps reserve
-a (void *)0x1UL tombstone for this.
+void my_direct_func(char *str)
+{
+	printf("%s\n", str);
+}
 
-It should ideally be an unlikely branch, and it would be good to benchmark the
-change when multiple tracing probes are attached to figure out whether the
-overhead is significant when tracing is enabled.
+int test(char *str);
 
-I wonder whether we really mind that much about using slightly more memory
-than required after a failed reallocation due to ENOMEM. Perhaps the irq work
-is not even needed. Chances are that the irq work would fail again and again if
-it's in low memory conditions. So maybe it's better to just keep the tombstone
-in place until the next successful callback array reallocation.
+asm (
+"	.pushsection    .text, \"ax\", @progbits\n"
+"	.type		test, @function\n"
+"   test:"
+"	pushq %rbp\n"
+"	movq %rsp, %rbp\n"
+"	pushq %rdi\n"
+"	call my_direct_func\n"
+"	popq %rdi\n"
+"	leave\n"
+"	ret\n"
+"	.size		test, .-test\n"
+"	.popsection\n"
+);
 
-Thoughts ?
+int main (int argc, char **argv)
+{
+	test("hello");
+	return 0;
+}
 
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
