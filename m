@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE03F2B4586
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE09B2B4599
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729694AbgKPOHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:07:44 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7923 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728074AbgKPOHo (ORCPT
+        id S1729575AbgKPOLY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 09:11:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728663AbgKPOLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:07:44 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CZW9S3B94z6wnt;
-        Mon, 16 Nov 2020 22:07:24 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 16 Nov 2020
- 22:07:29 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <wsa@kernel.org>, <sricharan@codeaurora.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <chengzhihao1@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH] i2c: qup: Fix error return code in qup_i2c_bam_schedule_desc()
-Date:   Mon, 16 Nov 2020 22:10:58 +0800
-Message-ID: <20201116141058.2365043-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        Mon, 16 Nov 2020 09:11:23 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57921C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 06:11:23 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kefDt-0005DC-QV; Mon, 16 Nov 2020 15:11:13 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kefDs-0004wE-Tm; Mon, 16 Nov 2020 15:11:12 +0100
+Message-ID: <ed042bbef3432805de6f3bb745286b3823c80d6a.camel@pengutronix.de>
+Subject: Re: [PATCH] spi: cadence-quadspi: Fix error return code in
+ cqspi_probe
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>, broonie@kernel.org,
+        tudor.ambarus@microchip.com,
+        vadivel.muruganx.ramuthevar@linux.intel.com, vigneshr@ti.com
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Date:   Mon, 16 Nov 2020 15:11:12 +0100
+In-Reply-To: <20201116141014.2364260-1-chengzhihao1@huawei.com>
+References: <20201116141014.2364260-1-chengzhihao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return the error code from qup_i2c_change_state()
-instaed of 0 in qup_i2c_bam_schedule_desc().
+Hi Zhihao,
 
-Fixes: fbf9921f8b35d9b2 ("i2c: qup: Fix error handling")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/i2c/busses/i2c-qup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Mon, 2020-11-16 at 22:10 +0800, Zhihao Cheng wrote:
+> Fix to return the error code from
+> devm_reset_control_get_optional_exclusive() instaed of 0
+> in cqspi_probe().
+>
+> Fixes: 31fb632b5d43ca ("spi: Move cadence-quadspi driver to drivers/spi/")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> ---
+>  drivers/spi/spi-cadence-quadspi.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> index 40938cf3806d..22d7158edb71 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -1260,12 +1260,14 @@ static int cqspi_probe(struct platform_device *pdev)
+>  	/* Obtain QSPI reset control */
+>  	rstc = devm_reset_control_get_optional_exclusive(dev, "qspi");
+>  	if (IS_ERR(rstc)) {
+> +		ret = PTR_ERR(rstc);
+>  		dev_err(dev, "Cannot get QSPI reset.\n");
+>  		goto probe_reset_failed;
+>  	}
+>  
+>  	rstc_ocp = devm_reset_control_get_optional_exclusive(dev, "qspi-ocp");
+>  	if (IS_ERR(rstc_ocp)) {
+> +		ret = PTR_ERR(rstc);
 
-diff --git a/drivers/i2c/busses/i2c-qup.c b/drivers/i2c/busses/i2c-qup.c
-index fbc04b60cfd1..5a47915869ae 100644
---- a/drivers/i2c/busses/i2c-qup.c
-+++ b/drivers/i2c/busses/i2c-qup.c
-@@ -801,7 +801,8 @@ static int qup_i2c_bam_schedule_desc(struct qup_i2c_dev *qup)
- 	if (ret || qup->bus_err || qup->qup_err) {
- 		reinit_completion(&qup->xfer);
- 
--		if (qup_i2c_change_state(qup, QUP_RUN_STATE)) {
-+		ret = qup_i2c_change_state(qup, QUP_RUN_STATE);
-+		if (ret) {
- 			dev_err(qup->dev, "change to run state timed out");
- 			goto desc_err;
- 		}
--- 
-2.25.4
+This should be
+		ret = PTR_ERR(rstc_ocp);
+instead.
 
+regards
+Philipp
