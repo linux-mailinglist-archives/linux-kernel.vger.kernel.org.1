@@ -2,113 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C47D2B5559
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E0C2B555B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgKPXtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:49:45 -0500
-Received: from mail-03.mail-europe.com ([91.134.188.129]:39988 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgKPXtp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:49:45 -0500
-Date:   Mon, 16 Nov 2020 23:49:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1605570576;
-        bh=CJNL1D7Vyb/1gRN55OqVYcG4Y4k6wH1TamA2FlX7qmA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=DdL1gEWN0Zi5e+tBQtIO9kJyjCo14VqPl+yb8SAsX9qn0W6Th/WAq2fgt98LlZDgs
-         UyeZuNVpsQ/EHUvEWZiXTkHo2GrI9sILYdKvvHgP9Dks5zbaJXccctp0E9txr1T4vf
-         g6ZVYtqkg8DM5ZFKjEgIAZxJ0bEUcHWkNgdrV/yI=
-To:     Pavel Machek <pavel@ucw.cz>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH 3/5] arm64: dts: sdm845: add oneplus 6/t devices
-Message-ID: <a20145ef-31a1-a72d-2d60-87a5282ace87@connolly.tech>
-In-Reply-To: <20201116220153.GA1003@bug>
-References: <20201112161920.2671430-1-caleb@connolly.tech> <20201112161920.2671430-4-caleb@connolly.tech> <20201116220153.GA1003@bug>
+        id S1730091AbgKPXuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:50:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726287AbgKPXuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 18:50:05 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605570605;
+        bh=q3wS+H3J9kjKcuqBT+lCDYUtl0zMHa8jz4ZrJptsUjI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qy4tJbCNHsE0+HplofsAMdEAXIue/6ZS6msl/YTlH1kHRrM6QcD4DX+2TlPrnPTAF
+         ip8KmPdOT7Kw8MGZsHhs0zTKej7QwzjPpcfpAc1/DKZ6D1oILk+SjnjcTVmbcRBE3T
+         1i8kVFY/FfOX/pQ7WlGg1SdLjiwqPF0okEf+HU+0=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: ethernet: ti: cpsw: fix error return code in
+ cpsw_probe()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160557060526.20238.18082560282045278910.git-patchwork-notify@kernel.org>
+Date:   Mon, 16 Nov 2020 23:50:05 +0000
+References: <1605250173-18438-1-git-send-email-zhangchangzhong@huawei.com>
+In-Reply-To: <1605250173-18438-1-git-send-email-zhangchangzhong@huawei.com>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     grygorii.strashko@ti.com, davem@davemloft.net, kuba@kernel.org,
+        m-karicheri2@ti.com, brouer@redhat.com, richardcochran@gmail.com,
+        yanaijie@huawei.com, linux-omap@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-16 22:01, Pavel Machek wrote:
-> Hi!
->
->> Add initial support for the OnePlus 6 (enchilada) and 6T (fajita) based
->> on the sdm845-mtp DT. Support includes:
->>
->> * Display panels and Adreno 630
->> * Touch screen support with synaptics rmi4
->> * All remoteprocs start correctly
->> * WLAN / Bluetooth
->> * Volume / power buttons and OnePlus Tri-State switch are functional
->>      The tri-state switch is a 3 state mute slider on the side of the ph=
-one * USB
->> support, currently forced to peripheral as type C detection isn't functi=
-onal.
-> I have similar switches on my joystick... but I don't believe modelling i=
-t as 3 separate
-> keys with "macro" keysym is the right way to go.
+Hello:
 
-Hi! I agree that this is a bit of a weird way to model the switch, do=20
-you have any ideas for a better solution?
+This patch was applied to netdev/net.git (refs/heads/master):
 
-I'm happy to drop this from the patch for now and come up with a better=20
-method down the line.
+On Fri, 13 Nov 2020 14:49:33 +0800 you wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: 83a8471ba255 ("net: ethernet: ti: cpsw: refactor probe to group common hw initialization")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> 
+> [...]
 
-Regards,
+Here is the summary with links:
+  - [net] net: ethernet: ti: cpsw: fix error return code in cpsw_probe()
+    https://git.kernel.org/netdev/net/c/35f735c66511
 
-Caleb
-
->> +=09=09state-top {
->> +=09=09=09label =3D "Tri-state key top";
->> +=09=09=09linux,code =3D <KEY_MACRO1>;
->> +=09=09=09interrupt-parent =3D <&tlmm>;
->> +=09=09=09interrupts =3D <24 IRQ_TYPE_EDGE_FALLING>;
->> +=09=09=09debounce-interval =3D <500>;
->> +=09=09=09linux,can-disable;
->> +=09=09};
->> +
->> +=09=09state-middle {
->> +=09=09=09label =3D "Tri-state key middle";
->> +=09=09=09linux,code =3D <KEY_MACRO2>;
->> +=09=09=09interrupt-parent =3D <&tlmm>;
->> +=09=09=09interrupts =3D <52 IRQ_TYPE_EDGE_FALLING>;
->> +=09=09=09debounce-interval =3D <500>;
->> +=09=09=09linux,can-disable;
->> +=09=09};
->> +
->> +=09=09state-bottom {
->> +=09=09=09label =3D "Tri-state key bottom";
->> +=09=09=09linux,code =3D <KEY_MACRO3>;
->> +=09=09=09interrupt-parent =3D <&tlmm>;
->> +=09=09=09interrupts =3D <126 IRQ_TYPE_EDGE_FALLING>;
->> +=09=09=09debounce-interval =3D <500>;
->> +=09=09=09linux,can-disable;
->> +=09=09};
-> Best regards,
-> =09=09=09=09=09=09=09=09=09Pavel
-> --
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/b=
-log.html
-
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
