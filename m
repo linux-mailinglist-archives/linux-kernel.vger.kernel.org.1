@@ -2,110 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAC92B42E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C9A2B42F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729797AbgKPLeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:34:14 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:62589 "EHLO m42-4.mailgun.net"
+        id S1729809AbgKPLfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:35:39 -0500
+Received: from mga14.intel.com ([192.55.52.115]:29182 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728831AbgKPLeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:34:14 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605526453; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=4R/SJz4piuEq/2FZIirdd0xK/g3RiqqG2lw5ozxZmT4=; b=ZmVo2Ay2Re56IDO/AiX0LGBPXqyA/Bj/tKfkUSmWhWs0SU1cBfCnVAJmNh2GFJb4kIp6IuYt
- Sf2T5pfSD7kIHOCK2KBBuTQ6geGhZSw7D7bcuTI4QdH4FEg/Alfq24WbZhCeOotFBMtP8Hio
- kC0B8zxrT4teloCWoEwjTGJ+DHU=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5fb263988e090a888661d956 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 11:33:44
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 11277C433ED; Mon, 16 Nov 2020 11:33:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CAB1AC43460;
-        Mon, 16 Nov 2020 11:33:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CAB1AC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH] Asoc: qcom: dts: Change MI2S GPIO configuration to pulldown
-Date:   Mon, 16 Nov 2020 17:03:28 +0530
-Message-Id: <1605526408-15671-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1728768AbgKPLfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 06:35:38 -0500
+IronPort-SDR: Pg/s+Lt1O/Mk8FYAhDerpy9b0sfxgYVqmHBqHBkDZhi4v+smfuqAiYbu3iYP8PYj/6zYJjMp2/
+ z3zw1C6yHc+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="169948905"
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="169948905"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 03:35:37 -0800
+IronPort-SDR: 6MGAnMuI1vmsARtLW+7TmnMJF2AJ8zoc8JXgQ2DstOHQALxDXUqzDGonxJ6D6lUFrkywCP1SLS
+ yw7x94gP+dBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="310363490"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by fmsmga007.fm.intel.com with ESMTP; 16 Nov 2020 03:35:35 -0800
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     linux-leds@vger.kernel.org, pavel@ucw.cz, dmurphy@ti.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
+        malliamireddy009@gmail.com, yixin.zhu@intel.com
+Subject: [linux-drivers-review] [PATCH v2 1/2] dt-bindings: leds: Add bindings for Intel LGM SoC
+Date:   Mon, 16 Nov 2020 19:35:31 +0800
+Message-Id: <bce27bce2df36e04c5b9b688b1defd9c4fc9b191.1605526245.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Add DT bindings YAML schema for SSO controller driver
+of Lightning Mountain (LGM) SoC.
 
-Change LPASS MI2S gpio configuration to pull down from pull up.
-
-Fixes: 9b72f4e6a3f8 (arm64: dts: qcom: sc7180: Add lpass cpu node for I2S driver)
-
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Signed-off-by: Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
 ---
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+v1:
+- Initial version
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 802ea0a..b0419e0 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -1751,8 +1751,8 @@
- 
- 				pinconf {
- 					pins = "gpio49", "gpio50", "gpio51";
--					drive-strength = <8>;
--					bias-pull-up;
-+					drive-strength = <2>;
-+					bias-pull-down;
- 				};
- 			};
- 
-@@ -1764,8 +1764,8 @@
- 
- 				pinconf {
- 					pins = "gpio53", "gpio54", "gpio55", "gpio56";
--					drive-strength = <8>;
--					bias-pull-up;
-+					drive-strength = <2>;
-+					bias-pull-down;
- 				};
- 			};
- 
-@@ -1777,8 +1777,8 @@
- 
- 				pinconf {
- 					pins = "gpio57";
--					drive-strength = <8>;
--					bias-pull-up;
-+					drive-strength = <2>;
-+					bias-pull-down;
- 				};
- 			};
- 
+v2:
+- Fix bot errors (wrong indentation).
+- Spell out LGM and SSO.
+- Remove vendor specific name for LED properites.
+- removed deprecating property "label"
+- Include 'reg', 'function' & 'color' properties.
+---
+ .../devicetree/bindings/leds/leds-lgm.yaml         | 130 +++++++++++++++++++++
+ 1 file changed, 130 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-lgm.yaml
+
+diff --git a/Documentation/devicetree/bindings/leds/leds-lgm.yaml b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
+new file mode 100644
+index 000000000000..d9c53ec30ad1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/leds-lgm.yaml
+@@ -0,0 +1,130 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/leds-lgm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Intel Lightning Mountain (LGM) SoC LED Serial Shift Output (SSO) Controller driver
++
++maintainers:
++  - Yixin.zhu@intel.com
++  - mallikarjunax.reddy@intel.com
++
++properties:
++  compatible:
++    const: intel,sso-led
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    maxItems: 2
++    items:
++      - const: sso
++      - const: fpid
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    const: 2
++
++  intel,sso-gpio-base:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description:
++      Identifies the first gpio handled.
++
++  ngpios:
++    minimum: 0
++    maximum: 32
++    description:
++      Number of GPIOs this controller provides.
++
++  intel,sso-update-rate:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description:
++      Blink frequency for SOUTs in Hz.
++
++  ssoled:
++    type: object
++    description:
++      This sub-node must contain a sub-node for each leds.
++
++    patternProperties:
++      "^led@[0-23]$":
++        type: object
++
++        properties:
++          reg:
++            description: Index of the LED.
++            minimum: 0
++            maximum: 2
++
++          sso-hw-trigger:
++            type: boolean
++            description: This property indicates Hardware driven/control LED.
++
++          sso-hw-blink:
++            type: boolean
++            description: This property indicates Enable LED blink by Hardware.
++
++          sso-blink-rate:
++            $ref: /schemas/types.yaml#/definitions/uint32
++            description: LED HW blink frequency.
++
++          retain-state-suspended:
++            type: boolean
++            description: The suspend state of LED can be retained.
++
++          retain-state-shutdown:
++            type: boolean
++            description: Retain the state of the LED on shutdown.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - "#gpio-cells"
++  - gpio-controller
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/intel,lgm-clk.h>
++    #include <dt-bindings/leds/common.h>
++
++    ssogpio: ssogpio@E0D40000 {
++      compatible = "intel,sso-led";
++      reg = <0xE0D40000 0x2E4>;
++      gpio-controller;
++      #gpio-cells = <2>;
++      ngpios = <32>;
++      pinctrl-names = "default";
++      pinctrl-0 = <&pinctrl_ledc>;
++      clocks = <&cgu0 LGM_GCLK_LEDC0>, <&afeclk>;
++      clock-names = "sso", "fpid";
++      intel,sso-update-rate = <250000>;
++
++      ssoled {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        led@0 {
++          reg = <0>;
++          function = "gphy";
++          color = <LED_COLOR_ID_GREEN>;
++          led-gpio = <&ssogpio 0 0>;
++        };
++
++        led@23 {
++          reg = <23>;
++          function = LED_FUNCTION_POWER;
++          color = <LED_COLOR_ID_GREEN>;
++          led-gpio = <&ssogpio 23 0>;
++        };
++      };
++    };
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.11.0
 
