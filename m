@@ -2,134 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB962B494D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 770C22B4950
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731002AbgKPP3X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 10:29:23 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:44810 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729729AbgKPP3W (ORCPT
+        id S1731104AbgKPP3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:29:52 -0500
+Received: from outbound-smtp53.blacknight.com ([46.22.136.237]:49401 "EHLO
+        outbound-smtp53.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728029AbgKPP3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:29:22 -0500
-Received: by mail-oi1-f172.google.com with SMTP id t16so19136286oie.11;
-        Mon, 16 Nov 2020 07:29:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=MVEUvpfHGMviV5Aq0lqG5wRuknEEDNTVDhI8XROvTiE=;
-        b=OuCZI9loRxEEKnx3AkyvCrpmUXbkfp4pC80NeLB2T/D6jyw/GvAKd1Lo7gqfmGxNlW
-         ZhQxHQBX4yvkcPo4hHQj5rFGYGY9QB1tRU7E5dOaP6wYQuIQbn3X6CyW3BBwJabXhadg
-         oum8r8HNGCPw4nePstCfzZ2AsSxf6xTVc4ENk7F9hp9OSq4iaTw9UFy6M/n+T9NUXuCa
-         4aus89YXCqWsEcToXmrkornZzFJsabl3llc6NhAlHVUkBEfq8Jj1eB8gitS1+zQup//A
-         wkZ+mu4QqORjuSvPos6UviIu46Lg5OXNVr9K2FaBCjqOScuwn7HlVCgNql2YxYFESKML
-         8Yyw==
-X-Gm-Message-State: AOAM530J0HRETYPudbQh+qkUEETveXqPDk3IgeOpVEfTHHn+9JIfiCuN
-        mstgeJ9LFI+VqGuYHedgUA==
-X-Google-Smtp-Source: ABdhPJwg9iPIZAVtFg1ADdmn8TzFMWYWw0jXsaXKAMu7UcYjcVmaDWuyzA2JgmIqp+J34J1fZ8JEng==
-X-Received: by 2002:aca:5dc5:: with SMTP id r188mr15061oib.120.1605540559244;
-        Mon, 16 Nov 2020 07:29:19 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w79sm4757641oia.28.2020.11.16.07.29.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 07:29:18 -0800 (PST)
-Received: (nullmailer pid 1681485 invoked by uid 1000);
-        Mon, 16 Nov 2020 15:29:17 -0000
-Date:   Mon, 16 Nov 2020 09:29:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Ben Levinsky <ben.levinsky@xilinx.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        mathieu.poirier@linaro.org, linux-kernel@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH v23 4/5] dt-bindings: remoteproc: Add documentation for
- ZynqMP R5 rproc bindings
-Message-ID: <20201116152917.GA1681195@bogus>
-References: <20201114164921.14573-1-ben.levinsky@xilinx.com>
- <20201114164921.14573-5-ben.levinsky@xilinx.com>
+        Mon, 16 Nov 2020 10:29:52 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp53.blacknight.com (Postfix) with ESMTPS id C4784FB14B
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:29:49 +0000 (GMT)
+Received: (qmail 21534 invoked from network); 16 Nov 2020 15:29:49 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Nov 2020 15:29:48 -0000
+Date:   Mon, 16 Nov 2020 15:29:46 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: Loadavg accounting error on arm64
+Message-ID: <20201116152946.GR3371@techsingularity.net>
+References: <20201116091054.GL3371@techsingularity.net>
+ <20201116114938.GN3371@techsingularity.net>
+ <20201116125355.GB3121392@hirez.programming.kicks-ass.net>
+ <20201116125803.GB3121429@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201114164921.14573-5-ben.levinsky@xilinx.com>
+In-Reply-To: <20201116125803.GB3121429@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 14 Nov 2020 08:49:20 -0800, Ben Levinsky wrote:
-> Add binding for ZynqMP R5 OpenAMP.
+On Mon, Nov 16, 2020 at 01:58:03PM +0100, Peter Zijlstra wrote:
+> On Mon, Nov 16, 2020 at 01:53:55PM +0100, Peter Zijlstra wrote:
+> > On Mon, Nov 16, 2020 at 11:49:38AM +0000, Mel Gorman wrote:
+> > > On Mon, Nov 16, 2020 at 09:10:54AM +0000, Mel Gorman wrote:
+> > > > I'll be looking again today to see can I find a mistake in the ordering for
+> > > > how sched_contributes_to_load is handled but again, the lack of knowledge
+> > > > on the arm64 memory model means I'm a bit stuck and a second set of eyes
+> > > > would be nice :(
+> > > > 
+> > > 
+> > > This morning, it's not particularly clear what orders the visibility of
+> > > sched_contributes_to_load exactly like other task fields in the schedule
+> > > vs try_to_wake_up paths. I thought the rq lock would have ordered them but
+> > > something is clearly off or loadavg would not be getting screwed. It could
+> > > be done with an rmb and wmb (testing and hasn't blown up so far) but that's
+> > > far too heavy.  smp_load_acquire/smp_store_release might be sufficient
+> > > on it although less clear if the arm64 gives the necessary guarantees.
+> > > 
+> > > (This is still at the chucking out ideas as I haven't context switched
+> > > back in all the memory barrier rules).
+> > 
+> > IIRC it should be so ordered by ->on_cpu.
+> > 
+> > We have:
+> > 
+> > 	schedule()
+> > 		prev->sched_contributes_to_load = X;
+> > 		smp_store_release(prev->on_cpu, 0);
+> > 
+> > 
+> > on the one hand, and:
 > 
-> Represent the RPU domain resources in one device node. Each RPU
-> processor is a subnode of the top RPU domain node.
-> 
-> Signed-off-by: Jason Wu <j.wu@xilinx.com>
-> Signed-off-by: Wendy Liang <jliang@xilinx.com>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
-> ---
-> - Update grammar and capitalization
-> - Align with TI R5 Remoteproc driver as follows:
->   > Change TCM node to be generic mmio sram node
->   > Reword properties to align with TI R5 driver
->   > Change structure of Yaml parsing to mirror TI R5 driver
-> ---
->  .../xilinx,zynqmp-r5-remoteproc.yaml          | 238 ++++++++++++++++++
->  1 file changed, 238 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+> Ah, my bad, ttwu() itself will of course wait for !p->on_cpu before we
+> even get here.
 > 
 
+Sortof, it will either have called smp_load_acquire(&p->on_cpu) or
+smp_cond_load_acquire(&p->on_cpu, !VAL) before hitting one of the paths
+leading to ttwu_do_activate. Either way, it's covered.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+> > 	sched_ttwu_pending()
+> > 		if (WARN_ON_ONCE(p->on_cpu))
+> > 			smp_cond_load_acquire(&p->on_cpu)
+> > 
+> > 		ttwu_do_activate()
+> > 			if (p->sched_contributes_to_load)
+> > 				...
+> > 
+> > on the other (for the remote case, which is the only 'interesting' one).
+> 
 
-yamllint warnings/errors:
+But this side is interesting because I'm having trouble convincing
+myself it's 100% correct for sched_contributes_to_load. The write of
+prev->sched_contributes_to_load in the schedule() path has a big gap
+before it hits the smp_store_release(prev->on_cpu).
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dts:50.7-34: Warning (reg_format): /r5fss@ff9a0000:reg: property has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dts:13.8-15: Warning (ranges_format): /zynqmp_ipi1:ranges: empty "ranges" property but its #address-cells (1) differs from / (2)
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dts:49.7-14: Warning (ranges_format): /r5fss@ff9a0000:ranges: empty "ranges" property but its #address-cells (1) differs from / (2)
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dts:6.18-43.7: Warning (avoid_default_addr_size): /zynqmp_ipi1: Relying on default #address-cells value
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dts:6.18-43.7: Warning (avoid_default_addr_size): /zynqmp_ipi1: Relying on default #size-cells value
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dts:45.20-82.7: Warning (avoid_default_addr_size): /r5fss@ff9a0000: Relying on default #address-cells value
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dts:45.20-82.7: Warning (avoid_default_addr_size): /r5fss@ff9a0000: Relying on default #size-cells value
-Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: Warning (unique_unit_address): Failed prerequisite 'avoid_default_addr_size'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: /: 'compatible' is a required property
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/root-node.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: /: 'model' is a required property
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/root-node.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: /: '#address-cells' is a required property
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/root-node.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: /: '#size-cells' is a required property
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/root-node.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: r5fss@ff9a0000: 'xilinx,cluster-mode' does not match any of the regexes: '^#.*', '^(at25|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*', '^(keypad|m25p|max8952|max8997|max8998|mpmc),.*', '^(pinctrl-single|#pinctrl-single|PowerPC),.*', '^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*', '^(simple-audio-card|st-plgpio|st-spics|ts),.*', '^70mai,.*', '^GEFanuc,.*', '^ORCL,.*', '^SUNW,.*', '^[a-zA-Z0-9#_][a-zA-Z0-9+\\-._@]{0,63}$', '^[a-zA-Z0-9+\\-._]*@[0-9a-zA-Z,]*$', '^abilis,.*', '^abracon,.*', '^acer,.*', '^acme,.*', '^actions,.*', '^active-semi,.*', '^ad,.*', '^adafruit,.*', '^adapteva,.*', '^adaptrum,.*', '^adh,.*', '^adi,.*', '^advantech,.*', '^aeroflexgaisler,.*', '^al,.*', '^allegro,.*', '^allo,.*', '^allwinner,.*', '^alphascale,.*', '^alps,.*', '^altr,.*', '^amarula,.*', '^amazon,.*', '^amcc,.*', '^amd,.*', '^amediatech,.*', '^amlogic,.*', '^ampire,.*', '^ams,.*', '^amstaos,.*', '^analogix,.*', '^andestech,.*', '^anvo,.*', '^apm,.*', '^aptina,.*', '^arasan,.*', '^archermind,.*', '^arctic,.*', '^arcx,.*', '^aries,.*', '^arm,.*', '^armadeus,.*', '^arrow,.*', '^artesyn,.*', '^asahi-kasei,.*', '^asc,.*', '^aspeed,.*', '^asus,.*', '^atlas,.*', '^atmel,.*', '^auo,.*', '^auvidea,.*', '^avago,.*', '^avia,.*', '^avic,.*', '^avnet,.*', '^awinic,.*', '^axentia,.*', '^axis,.*', '^azoteq,.*', '^azw,.*', '^baikal,.*', '^bananapi,.*', '^beacon,.*', '^beagle,.*', '^bhf,.*', '^bitmain,.*', '^boe,.*', '^bosch,.*', '^boundary,.*', '^brcm,.*', '^broadmobi,.*', '^bticino,.*', '^buffalo,.*', '^bur,.*', '^calaosystems,.*', '^calxeda,.*', '^caninos,.*', '^capella,.*', '^cascoda,.*', '^catalyst,.*', '^cavium,.*', '^cdns,.*', '^cdtech,.*', '^cellwise,.*', '^ceva,.*', '^checkpoint,.*', '^chefree,.*', '^chipidea,.*', '^chipone,.*', '^chipspark,.*', '^chrontel,.*', '^chrp,.*', '^chunghwa,.*', '^chuwi,.*', '^ciaa,.*', '^cirrus,.*', '^cloudengines,.*', '^cnm,.*', '^cnxt,.*', '^colorfly,.*', '^compulab,.*', '^coreriver,.*', '^corpro,.*', '^cortina,.*', '^cosmic,.*', '^crane,.*', '^creative,.*', '^crystalfontz,.*', '^csky,.*', '^csq,.*', '^cubietech,.*', '^cypress,.*', '^cznic,.*', '^dallas,.*', '^dataimage,.*', '^davicom,.*', '^dell,.*', '^delta,.*', '^denx,.*', '^devantech,.*', '^dfi,.*', '^dh,.*', '^difrnce,.*', '^digi,.*', '^digilent,.*', '^dioo,.*', '^dlc,.*', '^dlg,.*', '^dlink,.*', '^dmo,.*', '^domintech,.*', '^dongwoon,.*', '^dptechnics,.*', '^dragino,.*', '^dserve,.*', '^dynaimage,.*', '^ea,.*', '^ebs-systart,.*', '^ebv,.*', '^eckelmann,.*', '^edt,.*', '^eeti,.*', '^einfochips,.*', '^elan,.*', '^elgin,.*', '^elida,.*', '^embest,.*', '^emlid,.*', '^emmicro,.*', '^empire-electronix,.*', '^emtrion,.*', '^endless,.*', '^ene,.*', '^energymicro,.*', '^engicam,.*', '^epcos,.*', '^epfl,.*', '^epson,.*', '^esp,.*', '^est,.*', '^ettus,.*', '^eukrea,.*', '^everest,.*', '^everspin,.*', '^evervision,.*', '^exar,.*', '^excito,.*', '^ezchip,.*', '^facebook,.*', '^fairphone,.*', '^faraday,.*', '^fastrax,.*', '^fcs,.*', '^feixin,.*', '^feiyang,.*', '^firefly,.*', '^focaltech,.*', '^frida,.*', '^friendlyarm,.*', '^fsl,.*', '^fujitsu,.*', '^gardena,.*', '^gateworks,.*', '^gcw,.*', '^ge,.*', '^geekbuying,.*', '^gef,.*', '^gemei,.*', '^geniatech,.*', '^giantec,.*', '^giantplus,.*', '^globalscale,.*', '^globaltop,.*', '^gmt,.*', '^goodix,.*', '^google,.*', '^grinn,.*', '^grmn,.*', '^gumstix,.*', '^gw,.*', '^hannstar,.*', '^haoyu,.*', '^hardkernel,.*', '^hideep,.*', '^himax,.*', '^hisilicon,.*', '^hit,.*', '^hitex,.*', '^holt,.*', '^holtek,.*', '^honeywell,.*', '^hoperun,.*', '^hp,.*', '^hsg,.*', '^hugsun,.*', '^hwacom,.*', '^hydis,.*', '^hyundai,.*', '^i2se,.*', '^ibm,.*', '^icplus,.*', '^idt,.*', '^ifi,.*', '^ilitek,.*', '^img,.*', '^imi,.*', '^incircuit,.*', '^inet-tek,.*', '^infineon,.*', '^inforce,.*', '^ingenic,.*', '^innolux,.*', '^inside-secure,.*', '^inspur,.*', '^intel,.*', '^intercontrol,.*', '^invensense,.*', '^inversepath,.*', '^iom,.*', '^isee,.*', '^isil,.*', '^issi,.*', '^ite,.*', '^itead,.*', '^ivo,.*', '^iwave,.*', '^jdi,.*', '^jedec,.*', '^jesurun,.*', '^jianda,.*', '^kam,.*', '^karo,.*', '^keithkoep,.*', '^keymile,.*', '^khadas,.*', '^kiebackpeter,.*', '^kinetic,.*', '^kingdisplay,.*', '^kingnovel,.*', '^kionix,.*', '^kobo,.*', '^koe,.*', '^kontron,.*', '^kosagi,.*', '^kyo,.*', '^lacie,.*', '^laird,.*', '^lamobo,.*', '^lantiq,.*', '^lattice,.*', '^leadtek,.*', '^leez,.*', '^lego,.*', '^lemaker,.*', '^lenovo,.*', '^lg,.*', '^lgphilips,.*', '^libretech,.*', '^licheepi,.*', '^linaro,.*', '^linksprite,.*', '^linksys,.*', '^linutronix,.*', '^linux,.*', '^linx,.*', '^lltc,.*', '^logicpd,.*', '^logictechno,.*', '^longcheer,.*', '^lontium,.*', '^loongson,.*', '^lsi,.*', '^lwn,.*', '^lxa,.*', '^macnica,.*', '^mantix,.*', '^mapleboard,.*', '^marvell,.*', '^maxbotix,.*', '^maxim,.*', '^mbvl,.*', '^mcube,.*', '^meas,.*', '^mecer,.*', '^mediatek,.*', '^megachips,.*', '^mele,.*', '^melexis,.*', '^melfas,.*', '^mellanox,.*', '^memsic,.*', '^menlo,.*', '^meraki,.*', '^merrii,.*', '^micrel,.*', '^microchip,.*', '^microcrystal,.*', '^micron,.*', '^microsoft,.*', '^mikroe,.*', '^mikrotik,.*', '^miniand,.*', '^minix,.*', '^miramems,.*', '^mitsubishi,.*', '^mosaixtech,.*', '^motorola,.*', '^moxa,.*', '^mpl,.*', '^mps,.*', '^mqmaker,.*', '^mrvl,.*', '^mscc,.*', '^msi,.*', '^mstar,.*', '^mti,.*', '^multi-inno,.*', '^mundoreader,.*', '^murata,.*', '^mxicy,.*', '^myir,.*', '^national,.*', '^nec,.*', '^neonode,.*', '^netgear,.*', '^netlogic,.*', '^netron-dy,.*', '^netxeon,.*', '^neweast,.*', '^newhaven,.*', '^nexbox,.*', '^nextthing,.*', '^ni,.*', '^nintendo,.*', '^nlt,.*', '^nokia,.*', '^nordic,.*', '^novtech,.*', '^nutsboard,.*', '^nuvoton,.*', '^nvd,.*', '^nvidia,.*', '^nxp,.*', '^oceanic,.*', '^okaya,.*', '^oki,.*', '^olimex,.*', '^olpc,.*', '^onion,.*', '^onnn,.*', '^ontat,.*', '^opalkelly,.*', '^opencores,.*', '^openrisc,.*', '^option,.*', '^oranth,.*', '^orisetech,.*', '^ortustech,.*', '^osddisplays,.*', '^overkiz,.*', '^ovti,.*', '^oxsemi,.*', '^ozzmaker,.*', '^panasonic,.*', '^parade,.*', '^parallax,.*', '^pda,.*', '^pericom,.*', '^pervasive,.*', '^phicomm,.*', '^phytec,.*', '^picochip,.*', '^pine64,.*', '^pineriver,.*', '^pixcir,.*', '^plantower,.*', '^plathome,.*', '^plda,.*', '^plx,.*', '^pni,.*', '^pocketbook,.*', '^polaroid,.*', '^portwell,.*', '^poslab,.*', '^pov,.*', '^powertip,.*', '^powervr,.*', '^primux,.*', '^probox2,.*', '^prt,.*', '^pulsedlight,.*', '^purism,.*', '^qca,.*', '^qcom,.*', '^qemu,.*', '^qi,.*', '^qiaodian,.*', '^qihua,.*', '^qnap,.*', '^radxa,.*', '^raidsonic,.*', '^ralink,.*', '^ramtron,.*', '^raspberrypi,.*', '^raydium,.*', '^rda,.*', '^realtek,.*', '^renesas,.*', '^rervision,.*', '^rex,.*', '^richtek,.*', '^ricoh,.*', '^rikomagic,.*', '^riot,.*', '^riscv,.*', '^rockchip,.*', '^rocktech,.*', '^rohm,.*', '^ronbo,.*', '^roofull,.*', '^roseapplepi,.*', '^samsung,.*', '^samtec,.*', '^sancloud,.*', '^sandisk,.*', '^satoz,.*', '^sbs,.*', '^schindler,.*', '^seagate,.*', '^seeed,.*', '^seirobotics,.*', '^semtech,.*', '^sensirion,.*', '^sensortek,.*', '^sff,.*', '^sgd,.*', '^sgmicro,.*', '^sgx,.*', '^sharp,.*', '^shimafuji,.*', '^shiratech,.*', '^si-en,.*', '^si-linux,.*', '^sifive,.*', '^sigma,.*', '^sii,.*', '^sil,.*', '^silabs,.*', '^silead,.*', '^silergy,.*', '^silex-insight,.*', '^siliconmitus,.*', '^simtek,.*', '^sinlinx,.*', '^sinovoip,.*', '^sipeed,.*', '^sirf,.*', '^sis,.*', '^sitronix,.*', '^skyworks,.*', '^smartlabs,.*', '^smsc,.*', '^snps,.*', '^sochip,.*', '^socionext,.*', '^solidrun,.*', '^solomon,.*', '^sony,.*', '^spansion,.*', '^sprd,.*', '^sst,.*', '^sstar,.*', '^st,.*', '^st-ericsson,.*', '^starry,.*', '^startek,.*', '^ste,.*', '^stericsson,.*', '^summit,.*', '^sunchip,.*', '^swir,.*', '^syna,.*', '^synology,.*', '^tbs,.*', '^tbs-biometrics,.*', '^tcg,.*', '^tcl,.*', '^technexion,.*', '^technologic,.*', '^techstar,.*', '^tempo,.*', '^terasic,.*', '^tfc,.*', '^thine,.*', '^thingyjp,.*', '^ti,.*', '^tianma,.*', '^tlm,.*', '^tmt,.*', '^topeet,.*', '^toppoly,.*', '^topwise,.*', '^toradex,.*', '^toshiba,.*', '^toumaz,.*', '^tpk,.*', '^tplink,.*', '^tpo,.*', '^tq,.*', '^tronfy,.*', '^tronsmart,.*', '^truly,.*', '^tsd,.*', '^tyan,.*', '^u-blox,.*', '^u-boot,.*', '^ubnt,.*', '^ucrobotics,.*', '^udoo,.*', '^ugoos,.*', '^uniwest,.*', '^upisemi,.*', '^urt,.*', '^usi,.*', '^utoo,.*', '^v3,.*', '^vaisala,.*', '^vamrs,.*', '^variscite,.*', '^via,.*', '^videostrong,.*', '^virtio,.*', '^vishay,.*', '^visionox,.*', '^vitesse,.*', '^vivante,.*', '^vocore,.*', '^voipac,.*', '^vot,.*', '^vxt,.*', '^wand,.*', '^waveshare,.*', '^wd,.*', '^we,.*', '^wetek,.*', '^wexler,.*', '^whwave,.*', '^wi2wi,.*', '^winbond,.*', '^winstar,.*', '^wits,.*', '^wlf,.*', '^wm,.*', '^wobo,.*', '^x-powers,.*', '^xes,.*', '^xiaomi,.*', '^xillybus,.*', '^xingbangda,.*', '^xinpeng,.*', '^xiphera,.*', '^xlnx,.*', '^xnano,.*', '^xunlong,.*', '^xylon,.*', '^ylm,.*', '^yna,.*', '^yones-toptech,.*', '^ysoft,.*', '^zarlink,.*', '^zealz,.*', '^zeitec,.*', '^zidoo,.*', '^zii,.*', '^zinitix,.*', '^zkmagic,.*', '^zte,.*', '^zyxel,.*'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/vendor-prefixes.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: r5fss@ff9a0000: ranges: True is not of type 'array'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: r5fss@ff9a0000: r5f_0:compatible:0: 'xlnx,zynqmp-r5-single-remoteproc' is not one of ['xilinx,r5f']
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: r5fss@ff9a0000: r5f_0:mboxes: [[1, 0, 1, 1]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: r5fss@ff9a0000: r5f_1:compatible:0: 'xlnx,zynqmp-r5-single-remoteproc' is not one of ['xilinx,r5f']
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.example.dt.yaml: r5fss@ff9a0000: r5f_1:mboxes: [[2, 0, 2, 1]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+On the ttwu path, we have
 
+        if (smp_load_acquire(&p->on_cpu) &&
+            ttwu_queue_wakelist(p, task_cpu(p), wake_flags | WF_ON_CPU))
+                goto unlock;
 
-See https://patchwork.ozlabs.org/patch/1400282
+	ttwu_queue_wakelist queues task on the wakelist, sends IPI
+	and on the receiver side it calls ttwu_do_activate and reads
+	sched_contributes_to_load
 
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
+sched_ttwu_pending() is not necessarily using the same rq lock so no
+protection there. The smp_load_acquire() has just been hit but it still
+leaves a gap between when sched_contributes_to_load is written and a
+parallel read of sched_contributes_to_load.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+So while we might be able to avoid a smp_rmb() before the read of
+sched_contributes_to_load and rely on p->on_cpu ordering there,
+we may still need a smp_wmb() after nr_interruptible() increments
+instead of waiting until the smp_store_release() is hit while a task
+is scheduling. That would be a real memory barrier on arm64 and a plain
+compiler barrier on x86-64.
 
-pip3 install dtschema --upgrade
+> Also see the "Notes on Program-Order guarantees on SMP systems."
+> comment.
 
-Please check and re-submit.
+I did, it was the on_cpu ordering for the blocking case that had me
+looking at the smp_store_release and smp_cond_load_acquire in arm64 in
+the first place thinking that something in there must be breaking the
+on_cpu ordering. I'm re-reading it every so often while trying to figure
+out where the gap is or whether I'm imagining things.
 
+Not fully tested but did not instantly break either
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index d2003a7d5ab5..877eaeba45ac 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4459,14 +4459,26 @@ static void __sched notrace __schedule(bool preempt)
+ 		if (signal_pending_state(prev_state, prev)) {
+ 			prev->state = TASK_RUNNING;
+ 		} else {
+-			prev->sched_contributes_to_load =
++			int acct_load =
+ 				(prev_state & TASK_UNINTERRUPTIBLE) &&
+ 				!(prev_state & TASK_NOLOAD) &&
+ 				!(prev->flags & PF_FROZEN);
+ 
+-			if (prev->sched_contributes_to_load)
++			prev->sched_contributes_to_load = acct_load;
++			if (acct_load) {
+ 				rq->nr_uninterruptible++;
+ 
++				/*
++				 * Pairs with p->on_cpu ordering, either a
++				 * smp_load_acquire or smp_cond_load_acquire
++				 * in the ttwu path before ttwu_do_activate
++				 * p->sched_contributes_to_load. It's only
++				 * after the nr_interruptible update happens
++				 * that the ordering is critical.
++				 */
++				smp_wmb();
++			}
++
+ 			/*
+ 			 * __schedule()			ttwu()
+ 			 *   prev_state = prev->state;    if (p->on_rq && ...)
+
+-- 
+Mel Gorman
+SUSE Labs
