@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682AA2B3D74
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 534912B3D83
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727249AbgKPHEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 02:04:37 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7904 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbgKPHEg (ORCPT
+        id S1727096AbgKPHIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 02:08:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725819AbgKPHIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 02:04:36 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CZKnL1xRBz6vVR;
-        Mon, 16 Nov 2020 15:04:22 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 16 Nov 2020
- 15:04:25 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <michal.simek@xilinx.com>, <daniel.lezcano@linaro.org>,
-        <tglx@linutronix.de>, <soren.brinkmann@xilinx.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>, <zhangxiaoxu5@huawei.com>
-Subject: [PATCH V3] clocksource/drivers/cadence_ttc: fix memory leak in ttc_setup_clockevent()
-Date:   Mon, 16 Nov 2020 15:08:02 +0800
-Message-ID: <20201116070802.1353842-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <cd03869c-6ad1-1463-d7da-c8500adb32c8@linaro.org>
-References: <cd03869c-6ad1-1463-d7da-c8500adb32c8@linaro.org>
+        Mon, 16 Nov 2020 02:08:47 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87BAC0613CF;
+        Sun, 15 Nov 2020 23:08:46 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id 11so18964017ljf.2;
+        Sun, 15 Nov 2020 23:08:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yiSVixBzWFRrc5F0VIHSOyW+ZLBve41qKR5fsnIR0cc=;
+        b=kp/kq64MevP2otQ4mOzUUPbmumwm/olcWFs2tn8XQ25HbaPVfWe/CRo0+hTXfxuBZy
+         3YQE2ojPjuOKYD0KuwRi/vd6qgB0GylXp8BlPmGZLiBObFxBI7MSMM2pwqCWlpZAO7LC
+         N84PGHgBxMTmZbUyOzojdzRVoneUyYZxgZq1GpBgPo3BIQDswb7Yglq6l2IW+F9X90NP
+         4HZ1Wm210Bm3hUBnXL+Gh3j/ZzsT5U6MTl/SAkOux9sQ2GqSkCATk7KWioFCBwwAc68V
+         st/KqcMttugibCjMluGI3b64OIMSRtEx4ydhrZ21sPpHyCk2AjMvpULRTyMKaDc5trQv
+         HCtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yiSVixBzWFRrc5F0VIHSOyW+ZLBve41qKR5fsnIR0cc=;
+        b=fsFrkuLdf9ijdPnENU2/LnU4rayVW8h3aILtEdDOb4aJV2K+dAv3yTHqVdeYSqWUKE
+         oJdmNuhcp29WWJBmrPebR0jN5H9e702E2tTirEX8lDhURdwOoraomnSWFNgo2QXWZZrs
+         p1wDaO+ItT2ZzipYQwxdcbXoCzk0ZXAi8OZVF/OTuiAV0ZUlh0Zo6REm+z2oPiuCYxgw
+         LwqZQ2tUNJP76TwZohKtmXHYiPdoa+ybofptuulZ1+Z8jI8WXFHNwKKtSU7YfivBpVeB
+         C0mfmNdlqJRsDYUB6Fi5hme9/tXNG0geDatkPRguSbewTHiJQtmgfCehbRb+cSa4i8S3
+         LYag==
+X-Gm-Message-State: AOAM530VzNgnL0arbDSwvdV42d/2pfWDppBo7pbcYikp6a75XTgQV9s/
+        vZqGZ1bHe7CAk4p9iliC+m88CCJQ017CjpyG558=
+X-Google-Smtp-Source: ABdhPJw4dMUsVH/zA8fDWR3XLDojnnHfwl/Scr8jxyVncyS2oZX6qzh6nwR375d2cINE/xjokB9mR1M7hYtzJvx7BkM=
+X-Received: by 2002:a2e:95cf:: with SMTP id y15mr5151725ljh.209.1605510525308;
+ Sun, 15 Nov 2020 23:08:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+References: <20201026035710.593-1-zhenzhong.duan@gmail.com> <20201113224723.GA1139246@bjorn-Precision-5520>
+In-Reply-To: <20201113224723.GA1139246@bjorn-Precision-5520>
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Date:   Mon, 16 Nov 2020 15:08:26 +0800
+Message-ID: <CAFH1YnMV2b=HSNU838vaN+MrSCa-7L=HWXOhwpafbe6B9Ysopw@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI: check also dynamic IDs for duplicate in new_id_store()
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If clk_notifier_register() failed, ttc_setup_clockevent() will return
-without freeing 'ttcce', which will leak memory.
+Hi Bjorn,
 
-Fixes: 70504f311d4b ("clocksource/drivers/cadence_ttc: Convert init function to return error")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/clocksource/timer-cadence-ttc.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+On Sat, Nov 14, 2020 at 6:47 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Alex, Cornelia in case VFIO cares about new_id/remove_id
+> semantics]
+>
+> On Mon, Oct 26, 2020 at 11:57:10AM +0800, Zhenzhong Duan wrote:
+> > When a device ID data is writen to /sys/bus/pci/drivers/.../new_id,
+> > only static ID table is checked for duplicate and multiple dynamic ID
+> > entries of same kind are allowed to exist in a dynamic linked list.
+>
+> This doesn't quite say what the problem is.
+>
+> I see that currently new_id_store() uses pci_match_id() to see if the
+> new device ID is in the static id_table, so adding the same ID twice
+> adds multiple entries to the dynids list.  That does seem wrong, and I
+> think we should fix it.
+>
+> But I would like to clarify this commit log so we know whether the
+> current behavior causes user-visible broken behavior.  The dynids list
+> is mostly used by pci_match_device(), and it looks like duplicate
+> entries shouldn't cause it a problem.
+>
+> I guess remove_id_store() will only remove one of the duplicate
+> entries, so if we add an ID several times, we would have to remove it
+> the same number of times before it's completely gone.
 
-diff --git a/drivers/clocksource/timer-cadence-ttc.c b/drivers/clocksource/timer-cadence-ttc.c
-index 80e960602030..c410d1620e24 100644
---- a/drivers/clocksource/timer-cadence-ttc.c
-+++ b/drivers/clocksource/timer-cadence-ttc.c
-@@ -413,10 +413,8 @@ static int __init ttc_setup_clockevent(struct clk *clk,
- 	ttcce->ttc.clk = clk;
- 
- 	err = clk_prepare_enable(ttcce->ttc.clk);
--	if (err) {
--		kfree(ttcce);
--		return err;
--	}
-+	if (err)
-+		go out_kfree;
- 
- 	ttcce->ttc.clk_rate_change_nb.notifier_call =
- 		ttc_rate_change_clockevent_cb;
-@@ -426,7 +424,7 @@ static int __init ttc_setup_clockevent(struct clk *clk,
- 				    &ttcce->ttc.clk_rate_change_nb);
- 	if (err) {
- 		pr_warn("Unable to register clock notifier.\n");
--		return err;
-+		goto out_kfree;
- 	}
- 
- 	ttcce->ttc.freq = clk_get_rate(ttcce->ttc.clk);
-@@ -455,15 +453,17 @@ static int __init ttc_setup_clockevent(struct clk *clk,
- 
- 	err = request_irq(irq, ttc_clock_event_interrupt,
- 			  IRQF_TIMER, ttcce->ce.name, ttcce);
--	if (err) {
--		kfree(ttcce);
--		return err;
--	}
-+	if (err)
-+		goto out_kfree;
- 
- 	clockevents_config_and_register(&ttcce->ce,
- 			ttcce->ttc.freq / PRESCALE, 1, 0xfffe);
- 
- 	return 0;
-+
-+out_kfree:
-+	kfree(ttcce);
-+	return err;
- }
- 
- static int __init ttc_timer_probe(struct platform_device *pdev)
--- 
-2.25.4
+Current behavior doesn't cause user-visible broken behavior, only not
+user friendly. One has to remove an ID at least twice to ensure it's
+really removed if he doesn't know how many times it has been added
+before.
 
+>
+> > Fix it by calling pci_match_device() which checks both dynamic and static
+> > IDs.
+> >
+> > After fix, it shows below result which is expected.
+> >
+> > echo "1af4:1000" > /sys/bus/pci/drivers/vfio-pci/new_id
+> > echo "1af4:1000" > /sys/bus/pci/drivers/vfio-pci/new_id
+> > -bash: echo: write error: File exists
+> >
+> > Drop the static specifier and add a prototype to avoid build error.
+>
+> I don't get this part.  You added a prototype in include/linux/pci.h,
+> which means you expect callers outside drivers/pci.  But there aren't
+> any.
+>
+> In fact, you're only adding a call in the same file where
+> pci_match_device() is defined.  The usual way to resolve that is to
+> move the pci_match_device() definition before the call, so no forward
+> declaration is needed and the function can remain static.
+>
+> I think pci_match_id() and pci_match_device() should both be moved so
+> they remain together.  It would be nice if the move itself were a
+> no-op patch separate from the one that changes new_id_store().
+
+Yes, that's better, will do, thanks for your suggestions.
+
+Zhenzhong
