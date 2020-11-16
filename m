@@ -2,169 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353482B4086
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA77E2B408A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728714AbgKPKKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:10:32 -0500
-Received: from relmlor1.renesas.com ([210.160.252.171]:46267 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726611AbgKPKKc (ORCPT
+        id S1727560AbgKPKNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726172AbgKPKNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:10:32 -0500
-X-IronPort-AV: E=Sophos;i="5.77,482,1596466800"; 
-   d="scan'208";a="62859650"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 16 Nov 2020 19:10:30 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7E97040078AD;
-        Mon, 16 Nov 2020 19:10:28 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v4] clk: renesas: r8a774c0: Add RPC clocks
-Date:   Mon, 16 Nov 2020 10:10:02 +0000
-Message-Id: <20201116101002.5986-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 16 Nov 2020 05:13:22 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0F6C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:13:20 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id u12so10815935wrt.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:13:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XmwQkPQqqWfXNlvX22Ha9TLOtrxJBFOVDCpoC+8Emho=;
+        b=VvheAsTbE8WwpQ2oYwLrAgkSd7Iiqal9qpsjYaiEUXlrvw4ul0QXafZM5YzuXHglSq
+         g/MWOWQnEjTSABEKewgUk3oMSFqBsw1lKeOPIKXX5mZUYH7fGQlrpid6Tqk2bwvFxgHj
+         g8iA+zzNudSegB+t6KrHGLYAVeYMMl2xDFWm4/DZCTtTOd7u6QA5hEz87tP4W15NjRhb
+         PitbTnLHGuFd8kNnOCValDGKx8Uu99kfaTU1pYkurBWDWFG+BQ6rj0KnK4bCbSd6SSCq
+         /rvKzF654gGMCjXP4nbyIygBc0XFsVMJSl6vjV2Iz6fCSkJr8u4+S0EkNpPTv/uMT5pg
+         BypA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XmwQkPQqqWfXNlvX22Ha9TLOtrxJBFOVDCpoC+8Emho=;
+        b=dTVG28/aeEXWh/JFgSaX6PZeyFJDOuuNSE3Dn7xkt/tOkPmMHT4rc8fxEgvqEfIbqY
+         +MqYkuwvZSMWqxU37ShkgOjP0d0Cn6I8hLB8A38iYW0sJU2tnYY7L52Tl/r8a6o5igrS
+         8DcEynkX0nzRyTdP8iX9qbifFGWohv5QkR2wFoqmLunbEEjOZZIUoIr39rMbLN6Z8Aui
+         THdk/vMCpTMNvto73rkVLAgBlsW0i2Cz17AAX5AvHz8T4odzwusjlnpDOg7EpQEbpNfb
+         4FrbCUKGoMbI3gH13tRiT6a+HEATkdjpBY79cMS3XE9WUbzoaEmGhH9+dHpppww1eLBH
+         Xmww==
+X-Gm-Message-State: AOAM530LiH1NLG2rIPD1Ryg5otjXUMW5wXWpdaz/VNp8kzCKTn2kOHpd
+        rz+TsITSqjBfb5U1I5jzZI+2Cg==
+X-Google-Smtp-Source: ABdhPJwojuwRwPWJmJTh4YRPyQtsJWF1DKV/v95zcHZ2hPsI9lVNq8Xs4AKIMwnPt6nVMY0I7URwTA==
+X-Received: by 2002:adf:f041:: with SMTP id t1mr18646025wro.139.1605521599046;
+        Mon, 16 Nov 2020 02:13:19 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb])
+        by smtp.gmail.com with ESMTPSA id g66sm19082228wmg.37.2020.11.16.02.13.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 02:13:18 -0800 (PST)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     kishon@ti.com, vkoul@kernel.org
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v3 0/2] phy: amlogic: Add support for AXG MIPI D-PHY
+Date:   Mon, 16 Nov 2020 11:13:13 +0100
+Message-Id: <20201116101315.71720-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe the RPCSRC internal clock and the RPC[D2] clocks derived from it,
-as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0) CPG/MSSR
-driver.
+The Amlogic AXg SoCs embeds a MIPI D-PHY to communicate with DSI
+panels, this adds the bindings.
 
-Add new clk type CLK_TYPE_GEN3_E3_RPCSRC to register rpcsrc as a fixed
-clock on R-Car Gen3 E3 (and also RZ/G2E which is identical to E3 SoC),
-parent and the divider is set based on the register value CPG_RPCCKCR[4:3]
-which has been set prior to booting the kernel.
+This D-PHY depends on a separate analog PHY.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
-v3->v4
-* Dropped cross verification of clock source
-* Changed DEF_FIXED_RPCSRC_E3 macro so that SoC specific div can be passed
-  which would make addition of D3 SoC easier
-* Renamed CLK_TYPE_GEN3E3_RPCSRC to CLK_TYPE_GEN3_E3_RPCSRC
-* Updated the commit message
+Changes since v2 at [2];
+- Rebase on v5.10-rc1
 
-v2->v3
-* Implemented as a fixed clock
+Changes since v1 at [1]:
+- Fix bindings and add review tag
 
-v1->v2
-* Fixed divider table depending on the clk source
-* Introduced CLK_TYPE_GEN3E3_RPCSRC for E3/G2E.
+[1] https://lkml.kernel.org/r/20200907072708.26043-1-narmstrong@baylibre.com
+[2] https://lkml.kernel.org/r/20200929093203.337954-1-narmstrong@baylibre.com
 
-v1: https://lkml.org/lkml/2020/10/16/474
----
- drivers/clk/renesas/r8a774c0-cpg-mssr.c |  9 ++++++++
- drivers/clk/renesas/rcar-gen3-cpg.c     | 28 +++++++++++++++++++++++++
- drivers/clk/renesas/rcar-gen3-cpg.h     |  5 +++++
- 3 files changed, 42 insertions(+)
+Neil Armstrong (2):
+  dt-bindings: phy: add Amlogic AXG MIPI D-PHY bindings
+  phy: amlogic: Add AXG MIPI D-PHY driver
 
-diff --git a/drivers/clk/renesas/r8a774c0-cpg-mssr.c b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-index 9fc9fa9e531a..ed3a2cf0e0bb 100644
---- a/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-+++ b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-@@ -44,6 +44,7 @@ enum clk_ids {
- 	CLK_S2,
- 	CLK_S3,
- 	CLK_SDSRC,
-+	CLK_RPCSRC,
- 	CLK_RINT,
- 	CLK_OCO,
- 
-@@ -74,6 +75,13 @@ static const struct cpg_core_clk r8a774c0_core_clks[] __initconst = {
- 	DEF_FIXED(".s3",       CLK_S3,             CLK_PLL1,       6, 1),
- 	DEF_FIXED(".sdsrc",    CLK_SDSRC,          CLK_PLL1,       2, 1),
- 
-+	DEF_FIXED_RPCSRC_E3(".rpcsrc", CLK_RPCSRC, CLK_PLL0, CLK_PLL1),
-+
-+	DEF_BASE("rpc",		R8A774C0_CLK_RPC, CLK_TYPE_GEN3_RPC,
-+		 CLK_RPCSRC),
-+	DEF_BASE("rpcd2",	R8A774C0_CLK_RPCD2, CLK_TYPE_GEN3_RPCD2,
-+		 R8A774C0_CLK_RPC),
-+
- 	DEF_DIV6_RO(".r",      CLK_RINT,           CLK_EXTAL, CPG_RCKCR, 32),
- 
- 	DEF_RATE(".oco",       CLK_OCO,            8 * 1000 * 1000),
-@@ -199,6 +207,7 @@ static const struct mssr_mod_clk r8a774c0_mod_clks[] __initconst = {
- 	DEF_MOD("can-fd",		 914,	R8A774C0_CLK_S3D2),
- 	DEF_MOD("can-if1",		 915,	R8A774C0_CLK_S3D4),
- 	DEF_MOD("can-if0",		 916,	R8A774C0_CLK_S3D4),
-+	DEF_MOD("rpc-if",		 917,	R8A774C0_CLK_RPCD2),
- 	DEF_MOD("i2c6",			 918,	R8A774C0_CLK_S3D2),
- 	DEF_MOD("i2c5",			 919,	R8A774C0_CLK_S3D2),
- 	DEF_MOD("i2c-dvfs",		 926,	R8A774C0_CLK_CP),
-diff --git a/drivers/clk/renesas/rcar-gen3-cpg.c b/drivers/clk/renesas/rcar-gen3-cpg.c
-index 488f8b3980c5..20de135e28ed 100644
---- a/drivers/clk/renesas/rcar-gen3-cpg.c
-+++ b/drivers/clk/renesas/rcar-gen3-cpg.c
-@@ -696,6 +696,34 @@ struct clk * __init rcar_gen3_cpg_clk_register(struct device *dev,
- 						  cpg_rpcsrc_div_table,
- 						  &cpg_lock);
- 
-+	case CLK_TYPE_GEN3_E3_RPCSRC:
-+		/*
-+		 * Register RPCSRC as fixed factor clock based on the
-+		 * MD[4:1] pins and CPG_RPCCKCR[4:3] register value for
-+		 * which has been set prior to booting the kernel.
-+		 */
-+		value = (readl(base + CPG_RPCCKCR) & GENMASK(4, 3)) >> 3;
-+
-+		switch (value) {
-+		case 0:
-+			div = 5;
-+			break;
-+		case 1:
-+			div = 3;
-+			break;
-+		case 2:
-+			parent = clks[core->parent >> 16];
-+			if (IS_ERR(parent))
-+				return ERR_CAST(parent);
-+			div = core->div;
-+			break;
-+		case 3:
-+		default:
-+			div = 2;
-+			break;
-+		}
-+		break;
-+
- 	case CLK_TYPE_GEN3_RPC:
- 		return cpg_rpc_clk_register(core->name, base,
- 					    __clk_get_name(parent), notifiers);
-diff --git a/drivers/clk/renesas/rcar-gen3-cpg.h b/drivers/clk/renesas/rcar-gen3-cpg.h
-index c4ac80cac6a0..3d949c4a3244 100644
---- a/drivers/clk/renesas/rcar-gen3-cpg.h
-+++ b/drivers/clk/renesas/rcar-gen3-cpg.h
-@@ -24,6 +24,7 @@ enum rcar_gen3_clk_types {
- 	CLK_TYPE_GEN3_OSC,	/* OSC EXTAL predivider and fixed divider */
- 	CLK_TYPE_GEN3_RCKSEL,	/* Select parent/divider using RCKCR.CKSEL */
- 	CLK_TYPE_GEN3_RPCSRC,
-+	CLK_TYPE_GEN3_E3_RPCSRC,
- 	CLK_TYPE_GEN3_RPC,
- 	CLK_TYPE_GEN3_RPCD2,
- 
-@@ -54,6 +55,10 @@ enum rcar_gen3_clk_types {
- #define DEF_GEN3_Z(_name, _id, _type, _parent, _div, _offset)	\
- 	DEF_BASE(_name, _id, _type, _parent, .div = _div, .offset = _offset)
- 
-+#define DEF_FIXED_RPCSRC_E3(_name, _id, _parent0, _parent1)	\
-+	DEF_BASE(_name, _id, CLK_TYPE_GEN3_E3_RPCSRC,	\
-+		 (_parent0) << 16 | (_parent1), .div = 8)
-+
- struct rcar_gen3_cpg_pll_config {
- 	u8 extal_div;
- 	u8 pll1_mult;
+ .../bindings/phy/amlogic,axg-mipi-dphy.yaml   |  70 +++
+ drivers/phy/amlogic/Kconfig                   |  12 +
+ drivers/phy/amlogic/Makefile                  |   1 +
+ drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c | 413 ++++++++++++++++++
+ 4 files changed, 496 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/amlogic,axg-mipi-dphy.yaml
+ create mode 100644 drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c
+
 -- 
 2.25.1
 
