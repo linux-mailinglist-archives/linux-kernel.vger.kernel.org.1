@@ -2,67 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5EA2B3F61
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C154A2B3F6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728446AbgKPJGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:06:52 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:36075 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728434AbgKPJGv (ORCPT
+        id S1728458AbgKPJIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:08:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728379AbgKPJIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:06:51 -0500
-Received: by mail-wr1-f65.google.com with SMTP id j7so17798860wrp.3;
-        Mon, 16 Nov 2020 01:06:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tfut9vbpdfv8HXF8bwI2zTYoeL/KwnRwgcqOdkpMjQM=;
-        b=nqxKsNrvd9qsY+Gx8fS43J0FeiNOVLE89HZGbgYXd0BjirldeuERZC/oaMybkt34TZ
-         fVGBLCaryXKOM8odjOLpJ5vhNV/5DwWBXklS7tfZ7tC3n0KctykKBDpCfkWPKfL/Y7kD
-         Jjr8CrvqxHrwy9LxAf8B+VSqLaLKaC0f4l1Qzm1hd5rPpvf1vSVL+8pb6zqmVzWRbiGM
-         w+rBmo0KhO8bHsdx0wNfCKX5fC/Woj9EIeKfzCJrPZSBSE5hroIBRA4VWk2sz/sOXQhr
-         4HGmusY0vfQ4wMY+snHuMntw+nc/cFO3QGEtZTbrYyEd0pdUvSuMgEi/hU7cXOgh+Q/V
-         j80A==
-X-Gm-Message-State: AOAM531hckKidwTTw1RvOGjPSfaVBbkr95lKlk16yaQWQECM6XnUO8Fl
-        nYNfxLiYMUePU3NMtcX2M50=
-X-Google-Smtp-Source: ABdhPJymJXtGdK1p6/QBa66dXs3Ikztq26pKrXwaX8dSdc06QcZrx7F9wwgxmGLGLUUkbDSWVt1dGQ==
-X-Received: by 2002:adf:f881:: with SMTP id u1mr19170576wrp.103.1605517609770;
-        Mon, 16 Nov 2020 01:06:49 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id c17sm22001179wro.19.2020.11.16.01.06.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 01:06:48 -0800 (PST)
-Date:   Mon, 16 Nov 2020 10:06:47 +0100
-From:   "krzk@kernel.org" <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon@samsung.com>
-Cc:     Krzysztof Opasiak <k.opasiak@samsung.com>,
-        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 1/3] nfc: s3fwrn5: Remove the max_payload
-Message-ID: <20201116090647.GA5937@kozik-lap>
-References: <CGME20201116011205epcms2p566dbc946d6c7a0198d09b3a872e85f33@epcms2p5>
- <20201116011205epcms2p566dbc946d6c7a0198d09b3a872e85f33@epcms2p5>
+        Mon, 16 Nov 2020 04:08:15 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A40C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:08:14 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1keaUc-0001lp-CB; Mon, 16 Nov 2020 10:08:10 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1keaUZ-0001Ly-0z; Mon, 16 Nov 2020 10:08:07 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Vijayakannan Ayyathurai <vijayakannan.ayyathurai@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Lai, Poey Seng" <poey.seng.lai@intel.com>,
+        "Vineetha G. Jaya Kumaran" <vineetha.g.jaya.kumaran@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH RFC] pwm: keembay: Fix build failure with -Os
+Date:   Mon, 16 Nov 2020 10:08:04 +0100
+Message-Id: <20201116090804.206286-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <202011160303.qi5aRChY-lkp@intel.com>
+References: <202011160303.qi5aRChY-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201116011205epcms2p566dbc946d6c7a0198d09b3a872e85f33@epcms2p5>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 10:12:05AM +0900, Bongsu Jeon wrote:
-> max_payload is unused.
-> 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+The driver used this construct:
 
-Please version your patches (this should be a v2) and describe changes
-between versions in changelog, either in cover letter or after ---
-separator.
+	#define KMB_PWM_LEADIN_MASK             GENMASK(30, 0)
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+	static inline void keembay_pwm_update_bits(struct keembay_pwm *priv, u32 mask,
+						   u32 val, u32 offset)
+	{
+		u32 buff = readl(priv->base + offset);
 
-Best regards,
-Krzysztof
+		buff = u32_replace_bits(buff, val, mask);
+		writel(buff, priv->base + offset);
+	}
+
+	...
+	keembay_pwm_update_bits(priv, KMB_PWM_LEADIN_MASK, 0,
+					KMB_PWM_LEADIN_OFFSET(pwm->hwpwm));
+
+With CONFIG_CC_OPTIMIZE_FOR_SIZE the compiler (here: gcc 10.2.0) this
+triggers:
+
+	In file included from /home/uwe/gsrc/linux/drivers/pwm/pwm-keembay.c:16:
+	In function ‘field_multiplier’,
+	    inlined from ‘keembay_pwm_update_bits’ at /home/uwe/gsrc/linux/include/linux/bitfield.h:124:17:
+	/home/uwe/gsrc/linux/include/linux/bitfield.h:119:3: error: call to ‘__bad_mask’ declared with attribute error: bad bitfield mask
+	  119 |   __bad_mask();
+	      |   ^~~~~~~~~~~~
+	In function ‘field_multiplier’,
+	    inlined from ‘keembay_pwm_update_bits’ at /home/uwe/gsrc/linux/include/linux/bitfield.h:154:1:
+	/home/uwe/gsrc/linux/include/linux/bitfield.h:119:3: error: call to ‘__bad_mask’ declared with attribute error: bad bitfield mask
+	  119 |   __bad_mask();
+	      |   ^~~~~~~~~~~~
+
+The compiler doesn't seem to be able to notice that with field being
+0x3ffffff the expression
+
+	if ((field | (field - 1)) & ((field | (field - 1)) + 1))
+		__bad_mask();
+
+can be optimized away.
+
+So use __always_inline and document the problem in a comment to fix
+this.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
+
+I'm not sure this is the right fix. Maybe the bitfield stuff can be
+changed somehow to make this problem go away, too?
+
+Best regards
+Uwe
+
+ drivers/pwm/pwm-keembay.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pwm/pwm-keembay.c b/drivers/pwm/pwm-keembay.c
+index 2b6dd070daa4..cdfdef66ff8e 100644
+--- a/drivers/pwm/pwm-keembay.c
++++ b/drivers/pwm/pwm-keembay.c
+@@ -63,7 +63,12 @@ static int keembay_clk_enable(struct device *dev, struct clk *clk)
+ 	return devm_add_action_or_reset(dev, keembay_clk_unprepare, clk);
+ }
+ 
+-static inline void keembay_pwm_update_bits(struct keembay_pwm *priv, u32 mask,
++/*
++ * With gcc 10, CONFIG_CC_OPTIMIZE_FOR_SIZE and only "inline" instead of
++ * "__always_inline" this fails to compile because the compiler doesn't notice
++ * for all valid masks (e.g. KMB_PWM_LEADIN_MASK) that they are ok.
++ */
++static __always_inline void keembay_pwm_update_bits(struct keembay_pwm *priv, u32 mask,
+ 					   u32 val, u32 offset)
+ {
+ 	u32 buff = readl(priv->base + offset);
+-- 
+2.28.0
+
