@@ -2,144 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FE22B5156
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB212B5160
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730103AbgKPTjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:39:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
+        id S1727869AbgKPTlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:41:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726523AbgKPTjK (ORCPT
+        with ESMTP id S1726235AbgKPTlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:39:10 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D400C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:39:10 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id m125so394095wmm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:39:10 -0800 (PST)
+        Mon, 16 Nov 2020 14:41:07 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ECCC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:41:07 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id q206so19980233oif.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:41:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SFDYZjZQAaTG2dP2nDjD2sZBHSX8y4VAO8O1y9JdIt4=;
-        b=dn22h72gTUdQINjrVh+u6VcLpUp3feTYDhKbcx/zLTmMMOseqPwzvrqkHK0pN+vkE1
-         cJLKPM/pA3TFI+5FVC9Nrn4jfQSjBblzKhG7Aj+kFbRw/q0TokL6votST754daXnhgEc
-         bFNC5KBCCG77kbvEeDj107kVr0ArMd0o27K3ejzyFxaqHlN2mCGq8U2QDiQvTMKLzH5z
-         PCdpsr6+vLVdIO0Zlh0Cbm5EnGr/ipPOajXOv+faa6r082NZN7UlD7K9iZ6EKpBuFzNQ
-         r4v477fBBm9fQlfaXHaIkHj/mR3pebgreXAlYko/J/2lLYCxa6ZyABb/R3BC5Ax2ct8Y
-         RrCw==
+         :cc;
+        bh=6keoknQ1MsKwnGp8atRoEQd/F72ZsuKmob9p0v6BNfM=;
+        b=tasZqXsCQKKnY90DDBOFueK9bf/kmpGBOAMyvne0z9yM75iExvuVlnIk0btPNoCiCW
+         yBmB+CMAN2cCImV2JGL6cpu714isOmHVLvsDEAO62hR3/dtTAQjN1lWQes+JEayo9rmB
+         500b83lVZ/U5gjKhj7DHSvEwv0Dq75nbcJd3BKzd82GcHv2oH0iq+catANFxSt/ijASr
+         sV5A7ECRSgg5x8ZJrv9XEQ94yyPRPGBZVW8MxWLb/Z4w5TaBkabO1CCmTtqPoREqgHS9
+         lE0Iqa6FxfaQU7AcM3ngJPdJSY0Hw/6W+vD+vLQepB7oE+fQA7uoAEuYolzsyADOj3AO
+         O8aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SFDYZjZQAaTG2dP2nDjD2sZBHSX8y4VAO8O1y9JdIt4=;
-        b=J3mzPu2SQgO8gDjqSnjI/1j99ljdRH5r6kzQxvH4Gv+Id84ctDb44v9KdEtsVVvlZ9
-         +VyT0L/iF1aajJKolsCV+mqNiSSGNSRQhYHN1sUHAZnqvL7dg/dWTJBDm+Dse5dPlELs
-         tC8KOe8J+bRdTwvr5xR+cCaG+lYL1Jay5Y3B+HX5ee5QlI2epZyDRPiDjjl6WetUroJK
-         qZfgmybt82BEL6hzjyxm7xLGRIE+gSJFyoHv2MZkXEmCrFHjVyErHcxgd/GDl/vFJbPM
-         FcS+JDj0peBB8ZQ9LgnD2rFwwhb43k8iuO+udjo4EUXnBhIRAlp+agZRIHlg154qTW9s
-         PVlw==
-X-Gm-Message-State: AOAM532FdEc8xvLy/bUHUotW45qGRsqiEbeSl7H1ArCK5cHSyCmZHot5
-        /CJCKQF8SnDtalcvn5E0d52LGTFb8EZ70Kk/64k=
-X-Google-Smtp-Source: ABdhPJwFpL7kKK3lQzEQOmbpRP4YnvubKEFnUN3DkG5JLPPNtWhPymi8ADkkgzTuFxEMka1t5sTCmS6zK/RSR4B/fyQ=
-X-Received: by 2002:a1c:f017:: with SMTP id a23mr521478wmb.56.1605555548926;
- Mon, 16 Nov 2020 11:39:08 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=6keoknQ1MsKwnGp8atRoEQd/F72ZsuKmob9p0v6BNfM=;
+        b=ZPr65qXUXajtNNc+/6pZCa2cSUZcnbF6zuyPeFy5OKcmulKyciK9+rzaLwu4pCkix9
+         Fzxn9Kx1kExQj2PvvHb0jTu3pscuBNAvcrLjxAALuCO7mW+wdcf5s277HfjhleWR6ZoA
+         /ecHXSoPAyuXscVDPBMNotLijlHhxbiMf/OCK4M27KQjD5r41BJ1691XSdQDFcHcMtaI
+         l/P3itACjAKk9jBZkNXGH8oInZfwQ8ahTYbSwH1EKL7rGp9q5A38Zf7dCf88fwLRmMVF
+         CHoWX53IOgS5Lbwlla6HX6dCNWoIDOSZfrFYQw3Hi2FXKgDjsTI5vnm9g0cvhvUl00Li
+         m1bA==
+X-Gm-Message-State: AOAM533IdtJwiKegBdUm8s0gQ47nEwQaT2wlRMX/tXSOMfAp9xCr6SO9
+        BsNZ5vGTnlFycGyLzl8XgddMHVMcla0ZklqMgmt2iw==
+X-Google-Smtp-Source: ABdhPJwJgF7lB1wdlG4FfTWlBxtm5nm8SQZOWNMyXCDlUcOypoXNgjIFwoE/Hheuqlcxou/pA7ro3Cacgg/Nbmah4fU=
+X-Received: by 2002:aca:c3d6:: with SMTP id t205mr218361oif.10.1605555666955;
+ Mon, 16 Nov 2020 11:41:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20201116173005.1825880-1-lee.jones@linaro.org> <20201116173005.1825880-9-lee.jones@linaro.org>
-In-Reply-To: <20201116173005.1825880-9-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 16 Nov 2020 14:38:57 -0500
-Message-ID: <CADnq5_PdMNHAx=h02br5-ee27FO4_efdakDFKJsUt0LSHX0=UA@mail.gmail.com>
-Subject: Re: [PATCH 08/43] drm/radeon/radeon_irq_kms: Demote non-conformant
- kernel-doc fix another
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+References: <20201106042710.55979-1-john.stultz@linaro.org>
+ <20201106042710.55979-3-john.stultz@linaro.org> <20201116155936.GE2224373@ulmo>
+In-Reply-To: <20201116155936.GE2224373@ulmo>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 16 Nov 2020 11:40:55 -0800
+Message-ID: <CALAqxLXhpE-vw_jL-0_fc1eg-aU5_sLwoNAUiPdUUHx2ubxrkw@mail.gmail.com>
+Subject: Re: [PATCH v6 3/3] firmware: QCOM_SCM: Allow qcom_scm driver to be
+ loadable as a permenent module
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 12:30 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Mon, Nov 16, 2020 at 7:59 AM Thierry Reding <thierry.reding@gmail.com> wrote:
 >
-> Fixes the following W=3D1 kernel build warning(s):
+> On Fri, Nov 06, 2020 at 04:27:10AM +0000, John Stultz wrote:
+> > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> > index 04878caf6da49..c64d7a2b65134 100644
+> > --- a/drivers/iommu/Kconfig
+> > +++ b/drivers/iommu/Kconfig
+> > @@ -248,6 +248,7 @@ config SPAPR_TCE_IOMMU
+> >  config ARM_SMMU
+> >       tristate "ARM Ltd. System MMU (SMMU) Support"
+> >       depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
+> > +     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
+> >       select IOMMU_API
+> >       select IOMMU_IO_PGTABLE_LPAE
+> >       select ARM_DMA_USE_IOMMU if ARM
 >
->  drivers/gpu/drm/radeon/radeon_irq_kms.c:56: warning: Function parameter =
-or member 'irq' not described in 'radeon_driver_irq_handler_kms'
->  drivers/gpu/drm/radeon/radeon_irq_kms.c:56: warning: Function parameter =
-or member 'arg' not described in 'radeon_driver_irq_handler_kms'
->  drivers/gpu/drm/radeon/radeon_irq_kms.c:571: warning: Function parameter=
- or member 'n' not described in 'radeon_irq_kms_set_irq_n_enabled'
->  drivers/gpu/drm/radeon/radeon_irq_kms.c:571: warning: Excess function pa=
-rameter 'num' description in 'radeon_irq_kms_set_irq_n_enabled'
+> This, in conjunction with deferred probe timeout, causes mayhem on
+> Tegra186. The problem, as far as I can tell, is that there are various
+> devices that are hooked up to the ARM SMMU, but if ARM SMMU ends up
+> being built as a loadable module, then those devices will initialize
+> without IOMMU support (because deferred probe will timeout before the
+> ARM SMMU module can be loaded from the root filesystem).
 >
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Unfortunately, the ARM SMMU module will eventually end up being loaded
+> once the root filesystem has been mounted (for example via SDHCI or
+> Ethernet, both with using just plain, non-IOMMU-backed DMA API) and then
+> initialize, configuring as "fault by default", which then results from a
+> slew of SMMU faults from all the devices that have previously configured
+> themselves without IOMMU support.
 
-Applied.  Thanks!
+Oof. My apologies for the trouble. Thanks so much for the report.
 
-Alex
+Out of curiosity, does booting with deferred_probe_timeout=30 avoid
+the issue for you?
 
-
-> ---
->  drivers/gpu/drm/radeon/radeon_irq_kms.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_irq_kms.c b/drivers/gpu/drm/ra=
-deon/radeon_irq_kms.c
-> index b86bc88ad4308..a242b6053d47e 100644
-> --- a/drivers/gpu/drm/radeon/radeon_irq_kms.c
-> +++ b/drivers/gpu/drm/radeon/radeon_irq_kms.c
-> @@ -43,11 +43,9 @@
->
->  #define RADEON_WAIT_IDLE_TIMEOUT 200
->
-> -/**
-> +/*
->   * radeon_driver_irq_handler_kms - irq handler for KMS
->   *
-> - * @int irq, void *arg: args
-> - *
->   * This is the irq handler for the radeon KMS driver (all asics).
->   * radeon_irq_process is a macro that points to the per-asic
->   * irq handler callback.
-> @@ -549,14 +547,14 @@ void radeon_irq_kms_disable_hpd(struct radeon_devic=
-e *rdev, unsigned hpd_mask)
->  }
->
->  /**
-> - * radeon_irq_kms_update_int_n - helper for updating interrupt enable re=
-gisters
-> + * radeon_irq_kms_set_irq_n_enabled - helper for updating interrupt enab=
-le registers
->   *
->   * @rdev: radeon device pointer
->   * @reg: the register to write to enable/disable interrupts
->   * @mask: the mask that enables the interrupts
->   * @enable: whether to enable or disable the interrupt register
->   * @name: the name of the interrupt register to print to the kernel log
-> - * @num: the number of the interrupt register to print to the kernel log
-> + * @n: the number of the interrupt register to print to the kernel log
->   *
->   * Helper for updating the enable state of interrupt registers. Checks w=
-hether
->   * or not the interrupt matches the enable state we want. If it doesn't,=
- then
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+thanks
+-john
