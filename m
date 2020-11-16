@@ -2,151 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC432B3F25
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237A92B3F29
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgKPIwW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 03:52:22 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2104 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726969AbgKPIwW (ORCPT
+        id S1728252AbgKPIxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:53:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22373 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726291AbgKPIxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:52:22 -0500
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CZN7s3tFrz67DF4;
-        Mon, 16 Nov 2020 16:50:33 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 16 Nov 2020 09:52:19 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
- Mon, 16 Nov 2020 09:52:19 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-Thread-Topic: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-Thread-Index: AQHWuZM+vbqfejrqe02000rC0h3xoqnHabyAgAMLzKA=
-Date:   Mon, 16 Nov 2020 08:52:19 +0000
-Message-ID: <0fd0fb3360194d909ba48f13220f9302@huawei.com>
-References: <20201113080132.16591-1-roberto.sassu@huawei.com>
- <20201114111057.GA16415@infradead.org>
-In-Reply-To: <20201114111057.GA16415@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.220.96.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 16 Nov 2020 03:53:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605516798;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=azmEdku+v957nDfLerEj6eIbgCibvT//LlaEDmIrd4c=;
+        b=UFYTVEn5HL5fLA43ADRRwXo1Yz+ExKkApc0Lx1yW4VH7U17o4eSKRdlwcNcQVP7VcFONwS
+        +JoJsrVp492uABFxulQXYQJ/y6VkGWXI3KVN51b0ZB2cmSBPK5rP2N74pWl9fUADHl+ok3
+        eBhVWS/BDe3Jea79MUnydmXraZsMcMQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-117-_2aEDRkaNz-2OsuAmHRGvQ-1; Mon, 16 Nov 2020 03:53:16 -0500
+X-MC-Unique: _2aEDRkaNz-2OsuAmHRGvQ-1
+Received: by mail-wr1-f69.google.com with SMTP id p16so10847588wrx.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:53:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=azmEdku+v957nDfLerEj6eIbgCibvT//LlaEDmIrd4c=;
+        b=nKMtK/Bj01K4vMgcW2H8IcBjoUEDGStwcJ07zNsfry+OBxqpom4XYdEPHbUWUzQtY4
+         WvWSMtEhNfpVGMO4ZCrWuqt9pcjMv7eliIEb68wgejM33jpcCRZxJkzIcTatnUDgi1J7
+         o+wVvc6FvULTuCC2q1yCm9x9kBbB0p/q7qv40CX+ssf+J7baraDfQzNdIg/P1MzoVzkV
+         x6SXiG8Bp+P+sbptTpWBsvahOVwWZxAUo4B+u/uqvNFHDBXMPB2BOKUEGrxLYiJo7Kdo
+         XhYzyL1sUncIhdAN2QfcfoP7yuB9cH1BXmGP30zaTA6ugLQ/wXOKWnQHAngI0O42B+wX
+         T1Gg==
+X-Gm-Message-State: AOAM532kcs57sSCzuKfp4+7BiPnOys85dj8t4F0iLC2VoN9uKYgA5Ozx
+        iiljIC0sVg0rjvJWhDmg4oXpftYCuQcBk2eCssn6XcH/NsSABb0/WEfGVrlEIvmKEvRPFjujgz4
+        dlUFjyE7/RQ8qHAwfMAB1r26T
+X-Received: by 2002:adf:8030:: with SMTP id 45mr18011633wrk.407.1605516795092;
+        Mon, 16 Nov 2020 00:53:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz5n/AE2nQyDKnmQoyCVlmIjPAbEsArXe/3Q5hcir6iosfRJevDexRLbmoqU1yU9ow+HAnSAQ==
+X-Received: by 2002:adf:8030:: with SMTP id 45mr18011610wrk.407.1605516794887;
+        Mon, 16 Nov 2020 00:53:14 -0800 (PST)
+Received: from steredhat (host-79-17-248-175.retail.telecomitalia.it. [79.17.248.175])
+        by smtp.gmail.com with ESMTPSA id u5sm17132310wro.56.2020.11.16.00.53.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 00:53:13 -0800 (PST)
+Date:   Mon, 16 Nov 2020 09:53:11 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block
+ device
+Message-ID: <20201116085311.erzo2z322qesw5in@steredhat>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Christoph Hellwig [mailto:hch@infradead.org]
-> Sent: Saturday, November 14, 2020 12:11 PM
-> On Fri, Nov 13, 2020 at 09:01:32AM +0100, Roberto Sassu wrote:
-> > Commit a1f9b1c0439db ("integrity/ima: switch to using __kernel_read")
-> > replaced the __vfs_read() call in integrity_kernel_read() with
-> > __kernel_read(), a new helper introduced by commit 61a707c543e2a ("fs:
-> add
-> > a __kernel_read helper").
-> >
-> > Since the new helper requires that also the FMODE_CAN_READ flag is set
-> in
-> > file->f_mode, this patch saves the original f_mode and sets the flag if the
-> > the file descriptor has the necessary file operation. Lastly, it restores
-> > the original f_mode at the end of ima_calc_file_hash().
-> 
-> This looks bogus.  FMODE_CAN_READ has a pretty clear definition and
-> you can't just go and read things if it is not set.  Also f_mode
-> manipulations on a life file are racy.
+On Mon, Nov 16, 2020 at 11:37:48AM +0800, Jason Wang wrote:
+>
+>On 2020/11/13 下午9:47, Stefano Garzarella wrote:
+>>Thanks to Max that started this work!
+>>I took his patches, and extended the block simulator a bit.
+>>
+>>This series moves the network device simulator in a new module
+>>(vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
+>>module, allowing the possibility to add new vDPA device simulators.
+>>Then we added a new vdpa_sim_blk module to simulate a block device.
+>>
+>>I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() to skip
+>>bytes when ptr is NULL"), maybe we can add a new functions instead of
+>>modify vringh_iov_xfer().
+>>
+>>As Max reported, I'm also seeing errors with vdpa_sim_blk related to
+>>iotlb and vringh when there is high load, these are some of the error
+>>messages I can see randomly:
+>>
+>>   vringh: Failed to access avail idx at 00000000e8deb2cc
+>>   vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
+>>   vringh: Failed to get flags at 000000006635d7a3
+>>
+>>   virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 offset: 0x2840000 len: 0x20000
+>>   virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 offset: 0x58ee000 len: 0x3000
+>>
+>>These errors should all be related to the fact that iotlb_translate()
+>>fails with -EINVAL, so it seems that we miss some mapping.
+>
+>
+>Is this only reproducible when there's multiple co-current accessing 
+>of IOTLB? If yes, it's probably a hint that some kind of 
+>synchronization is still missed somewhere.
 
-FMODE_CAN_READ was not set because f_mode does not have
-FMODE_READ. In the patch, I check if the former can be set
-similarly to the way it is done in file_table.c and open.c.
+Yeah, maybe this is the case where virtio_ring and vringh use IOTLB 
+concorrentetively.
 
-Is there a better way to read a file when the file was not opened
-for reading and a new file descriptor cannot be created?
+>
+>It might be useful to log the dma_map/unmp in both virtio_ring and 
+>vringh to see who is missing the map.
 
-Thanks
+I'll try.
 
-Roberto
+Thanks for the hints,
+Stefano
 
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> > Cc: stable@vger.kernel.org # 5.8.x
-> > Fixes: a1f9b1c0439db ("integrity/ima: switch to using __kernel_read")
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > ---
-> >  security/integrity/ima/ima_crypto.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/security/integrity/ima/ima_crypto.c
-> b/security/integrity/ima/ima_crypto.c
-> > index 21989fa0c107..22ed86a0c964 100644
-> > --- a/security/integrity/ima/ima_crypto.c
-> > +++ b/security/integrity/ima/ima_crypto.c
-> > @@ -537,6 +537,7 @@ int ima_calc_file_hash(struct file *file, struct
-> ima_digest_data *hash)
-> >  	loff_t i_size;
-> >  	int rc;
-> >  	struct file *f = file;
-> > +	fmode_t saved_mode;
-> >  	bool new_file_instance = false, modified_mode = false;
-> >
-> >  	/*
-> > @@ -550,7 +551,7 @@ int ima_calc_file_hash(struct file *file, struct
-> ima_digest_data *hash)
-> >  	}
-> >
-> >  	/* Open a new file instance in O_RDONLY if we cannot read */
-> > -	if (!(file->f_mode & FMODE_READ)) {
-> > +	if (!(file->f_mode & FMODE_READ) || !(file->f_mode &
-> FMODE_CAN_READ)) {
-> >  		int flags = file->f_flags & ~(O_WRONLY | O_APPEND |
-> >  				O_TRUNC | O_CREAT | O_NOCTTY |
-> O_EXCL);
-> >  		flags |= O_RDONLY;
-> > @@ -562,7 +563,10 @@ int ima_calc_file_hash(struct file *file, struct
-> ima_digest_data *hash)
-> >  			 */
-> >  			pr_info_ratelimited("Unable to reopen file for
-> reading.\n");
-> >  			f = file;
-> > +			saved_mode = f->f_mode;
-> >  			f->f_mode |= FMODE_READ;
-> > +			if (likely(file->f_op->read || file->f_op->read_iter))
-> > +				f->f_mode |= FMODE_CAN_READ;
-> >  			modified_mode = true;
-> >  		} else {
-> >  			new_file_instance = true;
-> > @@ -582,7 +586,7 @@ int ima_calc_file_hash(struct file *file, struct
-> ima_digest_data *hash)
-> >  	if (new_file_instance)
-> >  		fput(f);
-> >  	else if (modified_mode)
-> > -		f->f_mode &= ~FMODE_READ;
-> > +		f->f_mode = saved_mode;
-> >  	return rc;
-> >  }
-> >
-> > --
-> > 2.27.GIT
-> >
-> ---end quoted text---
