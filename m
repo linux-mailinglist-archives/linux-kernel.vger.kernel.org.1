@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D967E2B4FDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 465942B4F96
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388752AbgKPSeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:34:14 -0500
-Received: from mga06.intel.com ([134.134.136.31]:20621 "EHLO mga06.intel.com"
+        id S2387524AbgKPS2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:28:00 -0500
+Received: from mga06.intel.com ([134.134.136.31]:20622 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732556AbgKPS1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:27:54 -0500
-IronPort-SDR: tvoyh1nHyLYYzBKDZSUitvtis4X+jZ1Vb0hP/FBDPS7zIrdD28n+8BV0VdeJYuFgzDeq7eBAnj
- kA6dMGAbnW2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232409995"
+        id S1732673AbgKPS1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:27:55 -0500
+IronPort-SDR: 8vgkqNb5fQSiD6s3VwTzEpvMIg48lyvqtJmAhR1EPuMJAjfdC1yWnMz9N91NjMWObvUa1WQrmw
+ K6O4rNY/Cu9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232409999"
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="232409995"
+   d="scan'208";a="232409999"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:27:54 -0800
-IronPort-SDR: 5Rq4UIVgXXoOKOKdoO/B4Crqbb+CVEkthb46CjIGiUKA5JrVN/wiynBCxV8g8g0NMfljcv9yA2
- bR1ICpCacejw==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:27:55 -0800
+IronPort-SDR: zcpRJgWgBFfVEbPO26jvGzKRs6bd8EAPdPmpoNz/U+K64YrNexf/67QR/+/V89LpQlTBrSwVMm
+ Hy+TQHUSUmNQ==
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="400527764"
+   d="scan'208";a="400527790"
 Received: from ls.sc.intel.com (HELO localhost) ([143.183.96.54])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:27:53 -0800
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:27:54 -0800
 From:   isaku.yamahata@intel.com
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -38,9 +38,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
         Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [RFC PATCH 04/67] KVM: Export kvm_io_bus_read for use by TDX for PV MMIO
-Date:   Mon, 16 Nov 2020 10:25:49 -0800
-Message-Id: <ccee3428925b3436cfeca7b857267ac068c32eeb.1605232743.git.isaku.yamahata@intel.com>
+Subject: [RFC PATCH 06/67] KVM: x86: Split core of hypercall emulation to helper function
+Date:   Mon, 16 Nov 2020 10:25:51 -0800
+Message-Id: <22558f45bbc04d0b491e11ea321dff0f146e43aa.1605232743.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1605232743.git.isaku.yamahata@intel.com>
 References: <cover.1605232743.git.isaku.yamahata@intel.com>
@@ -52,23 +52,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 
+By necessity, TDX will use a different register ABI for hypercalls.
+Break out the core functionality so that it may be reused for TDX.
+
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- virt/kvm/kvm_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/include/asm/kvm_host.h |  4 +++
+ arch/x86/kvm/x86.c              | 49 +++++++++++++++++++++------------
+ 2 files changed, 35 insertions(+), 18 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 2541a17ff1c4..65e1737c4354 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -4288,6 +4288,7 @@ int kvm_io_bus_read(struct kvm_vcpu *vcpu, enum kvm_bus bus_idx, gpa_t addr,
- 	r = __kvm_io_bus_read(vcpu, bus, &range, val);
- 	return r < 0 ? r : 0;
- }
-+EXPORT_SYMBOL_GPL(kvm_io_bus_read);
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index d44858b69353..c2639744ea09 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1549,6 +1549,10 @@ void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu);
+ void kvm_request_apicv_update(struct kvm *kvm, bool activate,
+ 			      unsigned long bit);
  
- /* Caller must hold slots_lock. */
- int kvm_io_bus_register_dev(struct kvm *kvm, enum kvm_bus bus_idx, gpa_t addr,
++unsigned long __kvm_emulate_hypercall(struct kvm_vcpu *vcpu, unsigned long nr,
++				      unsigned long a0, unsigned long a1,
++				      unsigned long a2, unsigned long a3,
++				      int op_64_bit);
+ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu);
+ 
+ int kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 error_code,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index f5ede41bf9e6..0f67f762717a 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8020,23 +8020,15 @@ static void kvm_sched_yield(struct kvm *kvm, unsigned long dest_id)
+ 		kvm_vcpu_yield_to(target);
+ }
+ 
+-int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
++unsigned long __kvm_emulate_hypercall(struct kvm_vcpu *vcpu, unsigned long nr,
++				      unsigned long a0, unsigned long a1,
++				      unsigned long a2, unsigned long a3,
++				      int op_64_bit)
+ {
+-	unsigned long nr, a0, a1, a2, a3, ret;
+-	int op_64_bit;
+-
+-	if (kvm_hv_hypercall_enabled(vcpu->kvm))
+-		return kvm_hv_hypercall(vcpu);
+-
+-	nr = kvm_rax_read(vcpu);
+-	a0 = kvm_rbx_read(vcpu);
+-	a1 = kvm_rcx_read(vcpu);
+-	a2 = kvm_rdx_read(vcpu);
+-	a3 = kvm_rsi_read(vcpu);
++	unsigned long ret;
+ 
+ 	trace_kvm_hypercall(nr, a0, a1, a2, a3);
+ 
+-	op_64_bit = is_64_bit_mode(vcpu);
+ 	if (!op_64_bit) {
+ 		nr &= 0xFFFFFFFF;
+ 		a0 &= 0xFFFFFFFF;
+@@ -8045,11 +8037,6 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+ 		a3 &= 0xFFFFFFFF;
+ 	}
+ 
+-	if (kvm_x86_ops.get_cpl(vcpu) != 0) {
+-		ret = -KVM_EPERM;
+-		goto out;
+-	}
+-
+ 	ret = -KVM_ENOSYS;
+ 
+ 	switch (nr) {
+@@ -8086,6 +8073,32 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+ 		ret = -KVM_ENOSYS;
+ 		break;
+ 	}
++	return ret;
++}
++EXPORT_SYMBOL_GPL(__kvm_emulate_hypercall);
++
++int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
++{
++	unsigned long nr, a0, a1, a2, a3, ret;
++	int op_64_bit;
++
++	if (kvm_hv_hypercall_enabled(vcpu->kvm))
++		return kvm_hv_hypercall(vcpu);
++
++	op_64_bit = is_64_bit_mode(vcpu);
++
++	if (kvm_x86_ops.get_cpl(vcpu) != 0) {
++		ret = -KVM_EPERM;
++		goto out;
++	}
++
++	nr = kvm_rax_read(vcpu);
++	a0 = kvm_rbx_read(vcpu);
++	a1 = kvm_rcx_read(vcpu);
++	a2 = kvm_rdx_read(vcpu);
++	a3 = kvm_rsi_read(vcpu);
++
++	ret = __kvm_emulate_hypercall(vcpu, nr, a0, a1, a2, a3, op_64_bit);
+ out:
+ 	if (!op_64_bit)
+ 		ret = (u32)ret;
 -- 
 2.17.1
 
