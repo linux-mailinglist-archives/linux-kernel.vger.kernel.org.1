@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4AF2B518B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4DE2B5192
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730479AbgKPTsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:48:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38222 "EHLO
+        id S1730633AbgKPTsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:48:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730270AbgKPTsj (ORCPT
+        with ESMTP id S1730191AbgKPTsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:48:39 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC88EC0613CF;
-        Mon, 16 Nov 2020 11:48:38 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id r17so21500883ljg.5;
-        Mon, 16 Nov 2020 11:48:38 -0800 (PST)
+        Mon, 16 Nov 2020 14:48:52 -0500
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DA1C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:48:52 -0800 (PST)
+Received: by mail-oo1-xc43.google.com with SMTP id z13so4184282ooa.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:48:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vPNjoYNRStRNwZP0NAyFtfDW7IEy6fPv1BNAKkfHQ8M=;
-        b=PWRkUGRPFi5Tbx+qKEh9/3wx25dNdFlpMiI9uvWyXTfrA6mRGvyt5y7zRpv6V9VACh
-         OGMxWi0wgitEifNzuoovwar78dOWUowL827NPMH4PWMe+JKyqrV6L5ojdFTYQ9XfB0Ph
-         ggWI3yJ59PsXwifg/WJOrAABfe+1/YW9+IGbxLoxDy142wpBZd00wH9TfR7sRg1QUTXY
-         a6q7QBwWExb3ec/Dv6ICs/YqURlR2rG5EhAFOS5/+SzKervuimUvro1qnGp9zmQA7brD
-         jWJmg2Da/NwHhIBi4/mkJaZOnhF6F/f7DY9zB/EJBRUYcEBtBqaFL//TcnHUfyAHaKnL
-         ftmg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i/jF2vypozoIAWRoRUvExzTm1upLK9kXuTA4kYYBoQM=;
+        b=uCYbRXt0REy+9MdFUsPc354Sh1shvPq/44EoBKW8dlVEhWu2PsBHUOlTLgW0pbkcA/
+         XY6DrDjfxSubwTt3hnLvxkzczKeKX/tDDl1RvU41VhfRU5uk9JA8Xvie/HPDVmYcwthh
+         zADqTYV7qIU2NfqcbnWwMTa/irq1n53tVZD+GFYxd4czNRDmofzXQSLSAVksjfayLJxC
+         F2NB+5yuV1S5xfjiBD5YHoM/2YcjZO4mSAdp1mwPbqjBYmSb2Zo8kPiutdp8anKgzGFP
+         cZJCQ/ubY2T8mN/fKJj/RJ5pC9O42JAhZOUWzZgiD4ewlW5WLm3zlpaFeqkk9vNy3TIa
+         NLsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vPNjoYNRStRNwZP0NAyFtfDW7IEy6fPv1BNAKkfHQ8M=;
-        b=SaJ6UVebr7Ku6AxxFohYUwk2T/6Yqh5dqxqvT2vW8kZbryFDG2dul78PxhPrFJN8ms
-         mQDK6d+uM+qI6sKW0lIYuCN1IhemXJgO1IMJt0zNDd0PDpWH2YCGcTQTWEcFl4Vridz9
-         PL7CxOwSMkWMpROrkKWtLp/7B3nGz+xYJgsE7SE7Bk/xZX3LsNDdPLRIXy05Rpbb4gnJ
-         63p4nU+L+ZcSPlL90p7S6eGGs5lrPE9sAy/MVqp2qzZb67jG8g/Qx+5GzNuhmdiiGzsp
-         YPJw4NPhUdqCrnggmDO6S5jLN65Pfqc68gCrP9R132oBpqC3+Xl9o+tfIAZNZO9as7pa
-         qPmw==
-X-Gm-Message-State: AOAM53051kETy185HxvslFIH/V4xHu2Y73oqcMsdvl5tPZ5WJ9i6YTR2
-        oXxJOFjdemkNtQ9B/+deKKQ=
-X-Google-Smtp-Source: ABdhPJwuOfvzBZ8yauT6UvhVmlPOY1t9vDAgwLceAF2NQgh7qqxo8hzr/SlGRLFK+MsJGyD+VqiNEQ==
-X-Received: by 2002:a05:651c:2c1:: with SMTP id f1mr348925ljo.192.1605556117444;
-        Mon, 16 Nov 2020 11:48:37 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.gmail.com with ESMTPSA id n5sm2864286lfb.306.2020.11.16.11.48.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 11:48:36 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dan Murphy <dmurphy@ti.com>, Sebastian Reichel <sre@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 4/4] ARM: tegra: acer-a500: Add Embedded Controller
-Date:   Mon, 16 Nov 2020 22:48:27 +0300
-Message-Id: <20201116194827.28947-5-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201116194827.28947-1-digetx@gmail.com>
-References: <20201116194827.28947-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i/jF2vypozoIAWRoRUvExzTm1upLK9kXuTA4kYYBoQM=;
+        b=lEV8frZS5ERma1ux3mzp8L5shDXLESI5geYtL0pKXkwXsREuoqimmYzTdzNzmxpupx
+         4K1LFCJ1/Lz0PwTNvfK27yD3MgRalrIVBy/DOEaqbVwPRVf4rNpZnan5VVK7NJ48V2Yc
+         9fx/Fpehj25rf/0rfgrpG9ewPth/YJattaI+MWpG6ZU+1fKKLE7sFaFm4oQOAWPGC0yB
+         51I8YOcq4Cj86q2IKthruo0P9vXw0JeM2k2gic24GrWwX6pZ4ucw+jfmzzoc6O4E9TnA
+         EEPnKZqrMTCpMeg9Md6uYDfbLx/lMS4kb88eswg1lx3uuf4T3JDWeXUw6X+O5Lv/9BpQ
+         p4hA==
+X-Gm-Message-State: AOAM533CB1qeYQj2qPBf+m+BWaz9mWe+dk/6MIoBVvHtzJBZUMiiklT+
+        /8DmNF7nxkLkI4Mg5bTt13NwTCVzqVdzoOBjbYrYBQ==
+X-Google-Smtp-Source: ABdhPJxq2rLWqbms4p0dfqF261lSEUqJezo2VNYvxSZDGEUqeNo2rc3yzBUfI/Hco8mHWx6SRZ/m0Uc+hY7wn2qh3jc=
+X-Received: by 2002:a4a:6802:: with SMTP id p2mr716194ooc.9.1605556131545;
+ Mon, 16 Nov 2020 11:48:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201106042710.55979-1-john.stultz@linaro.org>
+ <20201106042710.55979-3-john.stultz@linaro.org> <20201116155936.GE2224373@ulmo>
+ <20201116163603.GA30507@willie-the-truck>
+In-Reply-To: <20201116163603.GA30507@willie-the-truck>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 16 Nov 2020 11:48:39 -0800
+Message-ID: <CALAqxLVDm923WRSB+DVxFacmEtmEPS7Qeq+rW_jbCDMNMWw9PQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/3] firmware: QCOM_SCM: Allow qcom_scm driver to be
+ loadable as a permenent module
+To:     Will Deacon <will@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds device-tree node for the Embedded Controller which is
-found on the Picasso board. The Embedded Controller itself is ENE KB930,
-it provides functions like battery-gauge/LED/GPIO/etc and it uses firmware
-that is specifically customized for the Acer A500 device.
+On Mon, Nov 16, 2020 at 8:36 AM Will Deacon <will@kernel.org> wrote:
+> On Mon, Nov 16, 2020 at 04:59:36PM +0100, Thierry Reding wrote:
+> > On Fri, Nov 06, 2020 at 04:27:10AM +0000, John Stultz wrote:
+> > Unfortunately, the ARM SMMU module will eventually end up being loaded
+> > once the root filesystem has been mounted (for example via SDHCI or
+> > Ethernet, both with using just plain, non-IOMMU-backed DMA API) and then
+> > initialize, configuring as "fault by default", which then results from a
+> > slew of SMMU faults from all the devices that have previously configured
+> > themselves without IOMMU support.
+>
+> I wonder if fw_devlink=on would help here?
+>
+> But either way, I'd be more inclined to revert this change if it's causing
+> problems for !QCOM devices.
+>
+> Linus -- please can you drop this one (patch 3/3) for now, given that it's
+> causing problems?
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+Agreed. Apologies again for the trouble.
 
-diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index d9ef3857ba03..1da3bcc8003e 100644
---- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-+++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -533,6 +533,16 @@ panel_ddc: i2c@1 {
- 			reg = <1>;
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+
-+			embedded-controller@58 {
-+				compatible = "acer,a500-iconia-ec", "ene,kb930";
-+				reg = <0x58>;
-+
-+				system-power-controller;
-+
-+				monitored-battery = <&bat1010>;
-+				power-supplies = <&mains>;
-+			};
- 		};
- 	};
- 
-@@ -820,6 +830,13 @@ backlight: backlight {
- 		default-brightness-level = <20>;
- 	};
- 
-+	bat1010: battery-2s1p {
-+		compatible = "simple-battery";
-+		charge-full-design-microamp-hours = <3260000>;
-+		energy-full-design-microwatt-hours = <24000000>;
-+		operating-range-celsius = <0 40>;
-+	};
-+
- 	/* PMIC has a built-in 32KHz oscillator which is used by PMC */
- 	clk32k_in: clock@0 {
- 		compatible = "fixed-clock";
--- 
-2.29.2
+I do feel like the probe timeout to handle optional links is causing a
+lot of the trouble here. I expect fw_devlink would solve this, but it
+may be awhile before it can be always enabled.  I may see about
+pushing the default probe timeout value to be a little further out
+than init (I backed away from my last attempt as I didn't want to
+cause long (30 second) delays for cases like NFS root, but maybe 2-5
+seconds would be enough to make things work better for everyone).
 
+thanks
+-john
