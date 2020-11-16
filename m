@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511A42B3EA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1542B3EAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgKPI33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:29:29 -0500
-Received: from mga07.intel.com ([134.134.136.100]:43396 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726172AbgKPI33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:29:29 -0500
-IronPort-SDR: 2YHY0o7ecBVHR6ooseAXfg7aQpoyN8r0o5hwdCmOk1EEKanSVdy0a9vNqJf+UiZZaQYMUcKs9C
- CZU6eESZYXFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="234870221"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="234870221"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 00:29:27 -0800
-IronPort-SDR: ODRF0kv+gdWqUeDMdgSOymqjdHmPsEyLkhukYWmwpZWu0iqWTKoJFfyI7TMIT6QRdnYQLlL5tk
- it/yg7m0HYRw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="430101055"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 16 Nov 2020 00:29:25 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 16 Nov 2020 10:29:24 +0200
-Date:   Mon, 16 Nov 2020 10:29:24 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-usb@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] usb: typec: qcom-pmic-typec: fix builtin build errors
-Message-ID: <20201116082924.GA3124021@kuha.fi.intel.com>
-References: <20201116040653.7943-1-rdunlap@infradead.org>
+        id S1726776AbgKPIa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:30:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726249AbgKPIa0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 03:30:26 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2EFC0613CF;
+        Mon, 16 Nov 2020 00:30:25 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id q28so2051749pgk.1;
+        Mon, 16 Nov 2020 00:30:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jbxb2khKyk+y1AIZPk4FBSYKN7b5uI6tHI8Glj/80TI=;
+        b=j3C6TsHguxy5f0E3VtIWwOguLdPZIgBg8t4CjhQ5USXn5KqLieGRowZEm7QXOLJ59I
+         znx1HI8DTuJNyNhmP2yMF39R9LdgSTvwRvemjHhG5sUX0hzUqgoAt+ug5VH+1kGEbjtB
+         vGkp7FzJZTLeOfwsa3KJsaYvF8dwUvLK9b1yj67ma85xraIWscXzS+Bwl9YtVovWrfbj
+         zkqzGpWdFqNs3mqsPHDWNaFsHJZta9g1FS2iydseCbpsj+cDOGIcRwC7MVSFGwdCMB0e
+         41EXO2S5Q5bzu0FbbTiChgyRGPvhq6/ZL8LvMND4CYAsV+7lG5sF0GjXAfDCdltpIM5G
+         EvKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jbxb2khKyk+y1AIZPk4FBSYKN7b5uI6tHI8Glj/80TI=;
+        b=PYyFvMt6YukC4+2JSS6Atjcl4G8dCq2+gMbfWYz425PakP7mFWV50/vTnSwirSn6Pe
+         6hnlJBnztkljE2eAV/YHo7Y+TrJbwqLPKAlYCdzXg4D9P34GVH4YbMluxAUHF3RrFaRY
+         AYoA3hVTIvnmzItDL00ymmKSJhskgvPe1VwZDVe0QiaKvceRa/x332zHpRoca87lKCHu
+         k7GmuGKPR3DwKWjpTqfN+GSgnYg1TR5ib+Lc005BJEcI3o5eUa8Bp3kqyAOZfEzwkP6N
+         LMdKAnMqZnvobt6XRGWTVlj6I9wS/HW7KeXs3JADTAGSe11fdnrcIPtLJiz033mUIhXu
+         ymHQ==
+X-Gm-Message-State: AOAM533X2rsjkaiSRpJDGj8Dbz8LPqyfG6YaBE/mzh1iFrZ3PD4DgB0/
+        jTk9dWIcr0kJg2T80r4Ni93Bt4cYQyhYYA==
+X-Google-Smtp-Source: ABdhPJxY/3Z8cTJir3PLkDclrLS7OiU3jKitrjkL9BdBne7cOV2nK+cNaz1FVUP18aqclkLPkANHww==
+X-Received: by 2002:a17:90a:609:: with SMTP id j9mr14754476pjj.121.1605515425129;
+        Mon, 16 Nov 2020 00:30:25 -0800 (PST)
+Received: from localhost.localdomain (59-125-183-19.HINET-IP.hinet.net. [59.125.183.19])
+        by smtp.gmail.com with ESMTPSA id ce19sm19670079pjb.53.2020.11.16.00.30.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 00:30:24 -0800 (PST)
+From:   Terry Hsiao <a804335@gmail.com>
+X-Google-Original-From: Terry Hsiao <terry_hsiao@compal.corp-partner.google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        dianders@chromium.org, terry_hsiao@compal.corp-partner.google.com,
+        danny_kuo@compal.corp-partner.google.com,
+        jasper_lee@compal.corp-partner.google.com,
+        van_chen@compal.corp-partner.google.com
+Subject: [PATCH] arm64: dts: qcom: sc7180-trogdor: add "pen-insert" label for trogdor
+Date:   Mon, 16 Nov 2020 16:30:14 +0800
+Message-Id: <20201116083014.547-1-terry_hsiao@compal.corp-partner.google.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116040653.7943-1-rdunlap@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 08:06:53PM -0800, Randy Dunlap wrote:
-> Fix build errors when CONFIG_TYPEC_QCOM_PMIC=y and
-> CONFIG_USB_ROLE_SWITCH=m by limiting the former to =m when
-> USB_ROLE_SWITCH also =m.
-> 
-> powerpc64-linux-ld: drivers/usb/typec/qcom-pmic-typec.o: in function `.qcom_pmic_typec_remove':
-> qcom-pmic-typec.c:(.text+0x28): undefined reference to `.usb_role_switch_set_role'
-> powerpc64-linux-ld: qcom-pmic-typec.c:(.text+0x64): undefined reference to `.usb_role_switch_put'
-> powerpc64-linux-ld: drivers/usb/typec/qcom-pmic-typec.o: in function `.qcom_pmic_typec_check_connection':
-> qcom-pmic-typec.c:(.text+0x120): undefined reference to `.usb_role_switch_set_role'
-> powerpc64-linux-ld: drivers/usb/typec/qcom-pmic-typec.o: in function `.qcom_pmic_typec_probe':
-> qcom-pmic-typec.c:(.text+0x360): undefined reference to `.fwnode_usb_role_switch_get'
-> powerpc64-linux-ld: qcom-pmic-typec.c:(.text+0x4e4): undefined reference to `.usb_role_switch_put'
-> 
-> Fixes: 6c8cf3695176 ("usb: typec: Add QCOM PMIC typec detection driver")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: linux-usb@vger.kernel.org
-> Cc: Wesley Cheng <wcheng@codeaurora.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Add a label to the "pen-insert" node in sc7180-trogdor.dtsi
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Terry Hsiao <terry_hsiao@compal.corp-partner.google.com>
+---
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  drivers/usb/typec/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- linux-next-20201113.orig/drivers/usb/typec/Kconfig
-> +++ linux-next-20201113/drivers/usb/typec/Kconfig
-> @@ -88,6 +88,7 @@ config TYPEC_STUSB160X
->  config TYPEC_QCOM_PMIC
->  	tristate "Qualcomm PMIC USB Type-C driver"
->  	depends on ARCH_QCOM || COMPILE_TEST
-> +	depends on USB_ROLE_SWITCH || !USB_ROLE_SWITCH
->  	help
->  	  Driver for supporting role switch over the Qualcomm PMIC.  This will
->  	  handle the USB Type-C role and orientation detection reported by the
-
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 781e61ad75a61..9de95493ed902 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -201,7 +201,7 @@ gpio_keys: gpio-keys {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pen_pdct_l>;
+ 
+-		pen-insert {
++		pen_insert: pen-insert {
+ 			label = "Pen Insert";
+ 
+ 			/* Insert = low, eject = high */
 -- 
-heikki
+2.26.2
+
