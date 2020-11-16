@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897C52B3AD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC9A2B3AD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728284AbgKPAeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 19:34:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
+        id S1728293AbgKPAkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 19:40:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726311AbgKPAeU (ORCPT
+        with ESMTP id S1728104AbgKPAkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 19:34:20 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076ABC0613CF;
-        Sun, 15 Nov 2020 16:34:20 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id 81so3039080pgf.0;
-        Sun, 15 Nov 2020 16:34:20 -0800 (PST)
+        Sun, 15 Nov 2020 19:40:25 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8DDC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 16:40:25 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a3so22153544wmb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 16:40:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K49blno/leH6jbGpd9F7WZwDQAl1Nwo/ZCkhX0FppDQ=;
-        b=eweI/c81G681zHjBwP9UksLl6bAXnpfnYDfjT11Gmg0FwHWgR1zfBjB8nhxFvYxCZY
-         ZGg7IBD3FgsK19By9Df1bmP1akKWCFfJ4kpeDMhHQ/fa0mm6WhQUU7UwJoZegj6UjKbR
-         0cljAQ13Hum5DVncHMj1wMgaAzqTm4wH6hkwuACFEBdiBaZsnSL1YoBTqj4aaFlqdXNL
-         V4eyYx7DtGZUZ3XpC8Wtnp7C+aPg04l8RwKmQ3hk2JRxEjTlVHUYdKIKFh4lVXGSWnoz
-         a+NQuDF9hlpIGZO6E+FpOiKWeFJqjLgkFMXagIBCX8Zr5MMGWNaeFnRntGGAAg099DFG
-         6ZmQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iL9lxpBrBrFPICBKOKFu8c0itrIvAktEk+HvGD/57WU=;
+        b=RIBUgFVzIehyrerUMVA16aCP2pidbc5aHBjBh/R0UdHr4tzUDUwyVwEDiWGmBJz2JR
+         n1+RBo6KMRoziyaeAaoyyY1iaJ0hedkMNJqDg/+SYNpElQcNqUvGuJeIay/+m2GU86XZ
+         H2FA5WH+9NoW3pr4DeqFWY2anXbofCrwB6xVPsaMSVaSkqnt0LWV0mqE2dx2NfnXDVXo
+         aeCJ6KBFYWCOy4mupN1DDZe39FCQg7RoqyvPRA8rVBOtPmDfqxWQjeUFLQ/hknhk96/T
+         v/ok88YsX53eNponOjd3wodpteGjdhm7tj1Az46mPi19M03K3ws4oF7TYTb9V1FwBEJX
+         4LZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K49blno/leH6jbGpd9F7WZwDQAl1Nwo/ZCkhX0FppDQ=;
-        b=InG4/lo25B5UnXCxP9b9Dro9tVe/5n/w8KWtxJOoaEZXAxnZvjHPKNKppRuZn77Wel
-         ohjYR4oCBWDhezJ1FBtY5i+BLshbsXs1paPLFtcVDvKIJNOwzEzNnrL7XmrQJ0Y/ni3z
-         vn8ykGzJIbhsCQLN2X7kNeNbeu/4vDGo4a980Hy36TsJs/Z4FwL+lAC71o3aFs5LeGAt
-         b6MTJEvAI7X5tXZviO6KJe2tqaZzNJvXmjDYUFBqWDha88Qg4uWbUWEoboLi77XHepOz
-         29umUoWYQe5S7sTauP1pmAO+AOs4Y+1hgN8MZ1ZZJwHJyFIt6cj0M9WWbbnpU1xnNI0L
-         0e/A==
-X-Gm-Message-State: AOAM532mubb1nlHA/1oZ2hXONR71fXxnH6csL8WZvdrosqrCg27/EGRH
-        vipB5+wxyf0sRwSYElQGlJg=
-X-Google-Smtp-Source: ABdhPJyX/cQQwrkaKlrAvK1GzQe0piQKVIOFSPPWqX025AbQpVzOoID8luNHxj2pmDPQDLIk7Zyqeg==
-X-Received: by 2002:a17:90a:fa8c:: with SMTP id cu12mr13256882pjb.127.1605486859425;
-        Sun, 15 Nov 2020 16:34:19 -0800 (PST)
-Received: from Ryzen-9-3900X.localdomain (ip68-98-75-144.ph.ph.cox.net. [68.98.75.144])
-        by smtp.gmail.com with ESMTPSA id f21sm14278948pga.32.2020.11.15.16.34.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 16:34:18 -0800 (PST)
-Date:   Sun, 15 Nov 2020 17:34:16 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-Message-ID: <20201116003416.GA345@Ryzen-9-3900X.localdomain>
-References: <20201114041420.GA231@Ryzen-9-3900X.localdomain>
- <20201114055048.GN3576660@ZenIV.linux.org.uk>
- <20201114061934.GA658@Ryzen-9-3900X.localdomain>
- <20201114070025.GO3576660@ZenIV.linux.org.uk>
- <20201114205000.GP3576660@ZenIV.linux.org.uk>
- <20201115155355.GR3576660@ZenIV.linux.org.uk>
- <20201115214125.GA317@Ryzen-9-3900X.localdomain>
- <20201115233814.GT3576660@ZenIV.linux.org.uk>
- <20201115235149.GA252@Ryzen-9-3900X.localdomain>
- <20201116002513.GU3576660@ZenIV.linux.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iL9lxpBrBrFPICBKOKFu8c0itrIvAktEk+HvGD/57WU=;
+        b=IDdEiTpEYURiIizeL3gGxdfJDAdGJEPvr5av+BSkqtfsyIk26iO3KQhWlcpatEe2Gy
+         2822RJ5w7BmrYItVOqsseBKvTdHLqkm6hCAXHOI8up8SGgbmiNQbUSAthNeo4Xdy0jAY
+         ApgRuQxFgZKNLlF/nwrxBW48inNTjiY7rgybIsSg4oxiiMgTuzhNecfEUBCjaYJs8mZt
+         9OPpWzxc/OJY9BoI0ZfeNz7WPLT9jawNVX0uXS3nP4uIcp34wja3cbujzbnLI1lmvV5w
+         Lm9B7WaY88QGJvh6m+RqfvE2bsHNhPspED3EjQ6/yQILlB7cirGc5Nv9eHAhXrv2fP2o
+         wvgw==
+X-Gm-Message-State: AOAM532+g3iwxK0aNbt+NfU0+u11OMjPvcCQWrIDULyRCjpTA5jfA/wg
+        vNYkXsv9f/1fXdlWsBdggBQ/aqZ+0kvg1p1jgRc=
+X-Google-Smtp-Source: ABdhPJy83h9RCKQuWB+fCby7aMfjpLzevqYvBLH0EU2YJjVvMX9zHGkCsE5gQWjMTmUuHJ5fqiIwHtXtzCM3WME/5Sc=
+X-Received: by 2002:a1c:9ec9:: with SMTP id h192mr12679379wme.8.1605487223649;
+ Sun, 15 Nov 2020 16:40:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116002513.GU3576660@ZenIV.linux.org.uk>
+References: <c995335d16d8b4b4ff47b1273869c33e14782b32.1603867405.git.viresh.kumar@linaro.org>
+In-Reply-To: <c995335d16d8b4b4ff47b1273869c33e14782b32.1603867405.git.viresh.kumar@linaro.org>
+From:   Qiang Yu <yuq825@gmail.com>
+Date:   Mon, 16 Nov 2020 08:40:12 +0800
+Message-ID: <CAKGbVbumtz4qG186Eane+1JvoE2QfCCUMUEKcRCojX_sJhhKGw@mail.gmail.com>
+Subject: Re: [PATCH V2 Resend 1/2] drm/lima: Unconditionally call dev_pm_opp_of_remove_table()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lima@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 12:25:13AM +0000, Al Viro wrote:
-> On Sun, Nov 15, 2020 at 04:51:49PM -0700, Nathan Chancellor wrote:
-> > Looks good to me on top of d4d50710a8b46082224376ef119a4dbb75b25c56,
-> > thanks for quickly looking into this!
-> > 
-> > Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-> 
-> OK... a variant with (hopefully) better comments and cleaned up
-> logics in the second loop (
->                 if (seq_has_overflowed(m) || err) {
->                         m->count = offs;
->                         if (likely(err <= 0))
->                                 break;
->                 }
-> replaced with
->                 if (err > 0) {          // ->show() says "skip it"
->                         m->count = offs;
->                 } else if (err || seq_has_overflowed(m)) {
->                         m->count = offs;
->                         break;
->                 }
-> ) follows.  I'm quite certain that it is an equivalent transformation
-> (seq_has_overflowed() has no side effects) and IMO it's slightly
-> more readable that way.  Survives local beating; could you check if
-> it's still OK with your testcase?  Equivalent transformation or not,
-> I'd rather not slap anyone's Tested-by: on a modified variant of
-> patch...
+Applied to drm-misc-next.
 
-Still good.
-
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-
-> BTW, is that call of readv() really coming from init?  And if it
-> is, what version of init are you using?
-
-I believe that it is but since this is WSL2, I believe that /init is a
-proprietary Microsoft implementation, rather than systemd or another
-init system:
-
-https://wiki.ubuntu.com/WSL#Keeping_Ubuntu_Updated_in_WSL
-
-So I am not sure how possible it is to see exactly what is going on or
-getting it improved.
-
-Cheers,
-Nathan
+On Wed, Oct 28, 2020 at 2:44 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> dev_pm_opp_of_remove_table() doesn't report any errors when it fails to
+> find the OPP table with error -ENODEV (i.e. OPP table not present for
+> the device). And we can call dev_pm_opp_of_remove_table()
+> unconditionally here.
+>
+> Reviewed-by: Qiang Yu <yuq825@gmail.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+>
+> ---
+> V2: Applied Reviewed by tag.
+> ---
+>  drivers/gpu/drm/lima/lima_devfreq.c | 6 +-----
+>  drivers/gpu/drm/lima/lima_devfreq.h | 1 -
+>  2 files changed, 1 insertion(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
+> index bbe02817721b..cd290d866a04 100644
+> --- a/drivers/gpu/drm/lima/lima_devfreq.c
+> +++ b/drivers/gpu/drm/lima/lima_devfreq.c
+> @@ -105,10 +105,7 @@ void lima_devfreq_fini(struct lima_device *ldev)
+>                 devfreq->devfreq = NULL;
+>         }
+>
+> -       if (devfreq->opp_of_table_added) {
+> -               dev_pm_opp_of_remove_table(ldev->dev);
+> -               devfreq->opp_of_table_added = false;
+> -       }
+> +       dev_pm_opp_of_remove_table(ldev->dev);
+>
+>         if (devfreq->regulators_opp_table) {
+>                 dev_pm_opp_put_regulators(devfreq->regulators_opp_table);
+> @@ -162,7 +159,6 @@ int lima_devfreq_init(struct lima_device *ldev)
+>         ret = dev_pm_opp_of_add_table(dev);
+>         if (ret)
+>                 goto err_fini;
+> -       ldevfreq->opp_of_table_added = true;
+>
+>         lima_devfreq_reset(ldevfreq);
+>
+> diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
+> index 5eed2975a375..2d9b3008ce77 100644
+> --- a/drivers/gpu/drm/lima/lima_devfreq.h
+> +++ b/drivers/gpu/drm/lima/lima_devfreq.h
+> @@ -18,7 +18,6 @@ struct lima_devfreq {
+>         struct opp_table *clkname_opp_table;
+>         struct opp_table *regulators_opp_table;
+>         struct thermal_cooling_device *cooling;
+> -       bool opp_of_table_added;
+>
+>         ktime_t busy_time;
+>         ktime_t idle_time;
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
