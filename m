@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170E12B4D8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5BE2B4D98
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387470AbgKPRht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:37:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
+        id S1733144AbgKPRjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:39:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387433AbgKPRhl (ORCPT
+        with ESMTP id S2387431AbgKPRhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Nov 2020 12:37:41 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BE5C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:39 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id s13so16812wmh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:39 -0800 (PST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEF0C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:40 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a65so32311wme.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pyNxvxME2tG4MioZh0DLPpucvuaAdYEDiX4yy0UM7tE=;
-        b=U3XpEpiWRsz0j+hMtLDZ8ijrHq2pxzt4Q63ge8BICYDILPrM0Uk4Znt6t3gnNNK6TA
-         NlOKoWX3AV2dY6ZopWymRVjS6pKydRf3Qy9yyqC+dsxNtmX1UWDNjK6g1ijj8+MSV1PS
-         diXcNe5FtP7YT1fRvskacyGs+kp2Rj2sSYX2lkHzUuwA+ZHhRI4Cll4N/5sRzHkFYVaq
-         MkX1VQC13yUvBzlVxq3Hmv3pczoGHnxuBNInJfWzFE11iZ7h0ZMcoMLObo7M9IgVC4/R
-         k6amszu3ErtAEjGk8HeP0Ws64DknQnHPnko2q4YWihbQ/WiOE45rttjDJudtgCmsouyQ
-         M+7g==
+        bh=5TTguyaQuVrd+USo/F+rMhw06NLnXmuljJDk3k933AM=;
+        b=WRLJ1q4UqmT47CdbxnEAngUmUOahyGqrN/s44SVmCRGE6+Btb4XOge97Tzm/ASOQvQ
+         kHutEnIMP6rdOJgwGTAuB09lr/dhhN/C9SIIs5MrfN7Hw1/lT9c19lWAECUjdPa/KzFp
+         9WRrW4r8nRawZqPNQclJS4KzH2uIjbHP4ys9TnqtcZPjX+SZRjt1oNPvWGWb6WeY5OHz
+         3GnCQNaU27a0kw0JU1LPD5VPe/xWhnp19+XdWN77fMIVozxsf5337JKUQThHXJ5HuR7d
+         8pR0Uwf6UbEh1hBKF0a3CAPdBv/gWuvcX04dnPdYdSsvHxCMg2WVTP6jTa433VpmMBi9
+         8DVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pyNxvxME2tG4MioZh0DLPpucvuaAdYEDiX4yy0UM7tE=;
-        b=gVjuI0uMniYlFAuYyMexNcmrQwpncSxkz70AJGIEeabKOc1DbyyfRpEO60DO1LhtRk
-         oZpIgMww2370sR4u+haAf1Aze2sMNidCbBDHJ2HX9QxL5FjMs33H0zCyk9wYeAG4pXV5
-         AjrmK03j+IZZv2ZlE+Iyw0sADD7i2LBYdyPaXyOm6EgFPMvHYk68Sg6k2CaxEFzXXtAq
-         xdTTEMHodPrmbi15HSkbfxQgjzFkIW+8oNYGCIf5HGJeWl9cb/MFObylPiqfA/UMOwjC
-         niTf2CuHVS2UY5hOARS+sksLhr2YfROrl3q3x8SG2EvtMa47eSJD3fMsB4jHwrwzHOL/
-         Xu/w==
-X-Gm-Message-State: AOAM532Vo/0PO9hq6b0PZZeIef2mfVQ706N0aHZUGBwe1Z5bs9lX2afS
-        u8Q7sL3jpHCwwZW9tokdtrQ1rA==
-X-Google-Smtp-Source: ABdhPJxjNzoVEL+7L/X1+qeuAPEwh/Hw3rRmVVjqZSe7TGSI246nAKkLp8ED984/eStmZR1+Gdt8Lg==
-X-Received: by 2002:a1c:b0c4:: with SMTP id z187mr16321450wme.113.1605548258220;
-        Mon, 16 Nov 2020 09:37:38 -0800 (PST)
+        bh=5TTguyaQuVrd+USo/F+rMhw06NLnXmuljJDk3k933AM=;
+        b=iCZNn0Zakq16KDdYleA/hCeonKqEogKvG6oBUK6yyzTNbUeVI8V2HiNI7lN4l+PxHn
+         NXmKd6h+CI0Ebh682c/F7U1CL9U/Es60vYAqMequjEdos+zWQ+1qcXIQvdnd0otAAfiM
+         Hxy///BDI3iWbiXOqr8f2mo0M5KdRVuuqqi5tz8hYnZigLmxQv0HP7KuM+DbNirD6/Ia
+         9Teu+3JHwpJ+5h3pZa5/F/6jpoFVWpd+loJdyMA4UWHrvzrkMzwmhgcsno55P0OQ5bBM
+         wz2PdoIN8YDMVS4BwM6Et5uvfMvyNQQPoFYr67i5qYm1HxDwA26LwQmfAW2pgYCpdQwa
+         tNIA==
+X-Gm-Message-State: AOAM530cJ51XMaoUXFUKLmayLlpkJns5XObk2coxJ2s750q4KZvhaYdI
+        WLann0uQAHLoP+y55T+IUiBEGA==
+X-Google-Smtp-Source: ABdhPJw0MoOwO876rhqimSbMBMXrkpTGHAmxxSzdJkaUcBzp1n6ZUGdVjsQTISfCOxCG5I7moeivOA==
+X-Received: by 2002:a1c:c203:: with SMTP id s3mr16952678wmf.77.1605548259534;
+        Mon, 16 Nov 2020 09:37:39 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.37
+        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:37:37 -0800 (PST)
+        Mon, 16 Nov 2020 09:37:38 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 24/43] drm/radeon/r600: Move 'evergreen_rlc_resume()'s prototype to shared header
-Date:   Mon, 16 Nov 2020 17:36:41 +0000
-Message-Id: <20201116173700.1830487-25-lee.jones@linaro.org>
+Subject: [PATCH 25/43] drm/radeon/ni_dma: Move 'cayman_gpu_check_soft_reset()'s prototype to shared header
+Date:   Mon, 16 Nov 2020 17:36:42 +0000
+Message-Id: <20201116173700.1830487-26-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116173700.1830487-1-lee.jones@linaro.org>
 References: <20201116173700.1830487-1-lee.jones@linaro.org>
@@ -71,9 +71,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/evergreen.c:4380:5: warning: no previous prototype for ‘evergreen_rlc_resume’ [-Wmissing-prototypes]
- 4380 | int evergreen_rlc_resume(struct radeon_device *rdev)
- | ^~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/ni.c:1733:5: warning: no previous prototype for ‘cayman_gpu_check_soft_reset’ [-Wmissing-prototypes]
+ 1733 | u32 cayman_gpu_check_soft_reset(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
@@ -83,41 +83,37 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/evergreen.h | 1 +
- drivers/gpu/drm/radeon/r600.c      | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/radeon/ni.h     | 1 +
+ drivers/gpu/drm/radeon/ni_dma.c | 3 +--
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/evergreen.h b/drivers/gpu/drm/radeon/evergreen.h
-index eb46ac7776951..f8d772e612a48 100644
---- a/drivers/gpu/drm/radeon/evergreen.h
-+++ b/drivers/gpu/drm/radeon/evergreen.h
-@@ -48,5 +48,6 @@ void evergreen_gpu_pci_config_reset(struct radeon_device *rdev);
- u32 evergreen_get_number_of_dram_channels(struct radeon_device *rdev);
- void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
- u32 evergreen_gpu_check_soft_reset(struct radeon_device *rdev);
-+int evergreen_rlc_resume(struct radeon_device *rdev);
+diff --git a/drivers/gpu/drm/radeon/ni.h b/drivers/gpu/drm/radeon/ni.h
+index d63be1c88c0f1..9a5f31a05e68f 100644
+--- a/drivers/gpu/drm/radeon/ni.h
++++ b/drivers/gpu/drm/radeon/ni.h
+@@ -34,5 +34,6 @@ void cayman_cp_int_cntl_setup(struct radeon_device *rdev,
+ 			      int ring, u32 cp_int_cntl);
+ void cayman_vm_decode_fault(struct radeon_device *rdev,
+ 			    u32 status, u32 addr);
++u32 cayman_gpu_check_soft_reset(struct radeon_device *rdev);
  
- #endif				/* __RADEON_EVERGREEN_H__ */
-diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.c
-index 94e8815e5067d..b44e0c607b1b1 100644
---- a/drivers/gpu/drm/radeon/r600.c
-+++ b/drivers/gpu/drm/radeon/r600.c
-@@ -39,6 +39,7 @@
+ #endif				/* __NI_H__ */
+diff --git a/drivers/gpu/drm/radeon/ni_dma.c b/drivers/gpu/drm/radeon/ni_dma.c
+index c56136848360e..bd515ad4fe4cc 100644
+--- a/drivers/gpu/drm/radeon/ni_dma.c
++++ b/drivers/gpu/drm/radeon/ni_dma.c
+@@ -25,10 +25,9 @@
+ #include "radeon.h"
+ #include "radeon_asic.h"
+ #include "radeon_trace.h"
++#include "ni.h"
+ #include "nid.h"
  
- #include "atom.h"
- #include "avivod.h"
-+#include "evergreen.h"
- #include "r600.h"
- #include "r600d.h"
- #include "rv770.h"
-@@ -113,7 +114,6 @@ static void r600_gpu_init(struct radeon_device *rdev);
- void r600_fini(struct radeon_device *rdev);
- void r600_irq_disable(struct radeon_device *rdev);
- static void r600_pcie_gen2_enable(struct radeon_device *rdev);
--extern int evergreen_rlc_resume(struct radeon_device *rdev);
- 
+-u32 cayman_gpu_check_soft_reset(struct radeon_device *rdev);
+-
  /*
-  * Indirect registers accessor
+  * DMA
+  * Starting with R600, the GPU has an asynchronous
 -- 
 2.25.1
 
