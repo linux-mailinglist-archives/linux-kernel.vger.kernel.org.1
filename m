@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D602B5012
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F102B5020
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728592AbgKPSma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:42:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgKPSm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:42:29 -0500
-Received: from coco.lan (ip5f5ad5de.dynamic.kabel-deutschland.de [95.90.213.222])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5954217A0;
-        Mon, 16 Nov 2020 18:42:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605552149;
-        bh=PKf1mrbQSMMCl7kXOxvqWnUL+SpVIOm/wqvhMfGOZjo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zL3QR8vaSXFPeXVOJrU0zE3M2CkJiOe/scDAEqonDmxy98+64KoiKnGDgc4Ugp7ho
-         G3/lqQzTQnAoVnRRnSIjUNYanXAjjkf1CFuRPY73f3TwEfxAOAdqvFEvQfybuJ0gaG
-         svOlDy2aujIq7vXqcGBtNWw3mdpvegq+xMSx2gkA=
-Date:   Mon, 16 Nov 2020 19:42:20 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Bernard Zhao <bernard@vivo.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 10/27] video: fix some kernel-doc markups
-Message-ID: <20201116194220.15cc9a33@coco.lan>
-In-Reply-To: <20201116172404.GD401619@phenom.ffwll.local>
-References: <cover.1605521731.git.mchehab+huawei@kernel.org>
-        <21661aed9892a1bacc7ef76a5dc9f5c7b37f5d8f.1605521731.git.mchehab+huawei@kernel.org>
-        <20201116153606.GC401619@phenom.ffwll.local>
-        <20201116173804.7d64f55f@coco.lan>
-        <20201116172404.GD401619@phenom.ffwll.local>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1728350AbgKPStN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:49:13 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23494 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726204AbgKPStM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:49:12 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AGIXWA2001681;
+        Mon, 16 Nov 2020 13:49:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=08+LUJn+1NqpvGMznVW9wbSkVMuYy1K575hvfKSkChg=;
+ b=VpsyuqgWW8gD/mVv9JaSiWSU7W4w+gN8tbS9YzMM2e7GzC/JWmdQah6uVvGcjCeezlF0
+ /FIZEaTxTgc9HlbtlDtETzx1JpXxAJr2KYZWm06EEg6KwnTyCwJGTZ926zjrajAp7r1n
+ In2IvOtscJ1WcWSM6RthmSwEKEjMRL81B5/EBkp9S9jk2LIqlmdiPl1w8MwCD2mXuyp0
+ IMbCBP3K8YzGxOojUAiPWWehT4mjWci5Gg3EvKqhSgECnUWWCgoRPEmVUWab6q1FYgNN
+ otgZZXyopj496oSpXZ5GUC766w5YcgtW+BsRQ9jsWMJckfMIwzhSq9L6ftGxkkITjsFy IQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34ux64hag2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Nov 2020 13:49:10 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AGIgoLD019199;
+        Mon, 16 Nov 2020 18:49:09 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 34t6v8acc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Nov 2020 18:49:09 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AGIn7rE2556434
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Nov 2020 18:49:07 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7D035204F;
+        Mon, 16 Nov 2020 18:49:06 +0000 (GMT)
+Received: from sig-9-65-243-37.ibm.com (unknown [9.65.243.37])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 85CBD5204E;
+        Mon, 16 Nov 2020 18:49:04 +0000 (GMT)
+Message-ID: <7fa1b79e42832bd033fdf18cde8293078637262f.camel@linux.ibm.com>
+Subject: Re: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
+ ima_calc_file_hash()
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Date:   Mon, 16 Nov 2020 13:49:03 -0500
+In-Reply-To: <20201116180855.GX3576660@ZenIV.linux.org.uk>
+References: <20201113080132.16591-1-roberto.sassu@huawei.com>
+         <20201114111057.GA16415@infradead.org>
+         <0fd0fb3360194d909ba48f13220f9302@huawei.com>
+         <20201116162202.GA15010@infradead.org>
+         <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
+         <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
+         <20201116180855.GX3576660@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-16_09:2020-11-13,2020-11-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=3 mlxscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=999 impostorscore=0 clxscore=1015 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011160109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 16 Nov 2020 18:24:04 +0100
-Daniel Vetter <daniel@ffwll.ch> escreveu:
-
-> On Mon, Nov 16, 2020 at 05:38:04PM +0100, Mauro Carvalho Chehab wrote:
-> > Em Mon, 16 Nov 2020 16:36:06 +0100
-> > Daniel Vetter <daniel@ffwll.ch> escreveu:
-> >   
-> > > On Mon, Nov 16, 2020 at 11:18:06AM +0100, Mauro Carvalho Chehab wrote:  
-> > > > Some identifiers have different names between their prototypes
-> > > > and the kernel-doc markup.
-> > > > 
-> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>    
-> > > 
-> > > Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > 
-> > > I'm assuming you're sending a pull request for this.  
+On Mon, 2020-11-16 at 18:08 +0000, Al Viro wrote:
+> On Mon, Nov 16, 2020 at 09:37:32AM -0800, Linus Torvalds wrote:
+> > On Mon, Nov 16, 2020 at 8:47 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > >
+> > > This discussion seems to be going down the path of requiring an IMA
+> > > filesystem hook for reading the file, again.  That solution was
+> > > rejected, not by me.  What is new this time?
 > > 
-> > Feel free to just merge it via your tree. Patches here are pretty
-> > much independent ;-)  
+> > You can't read a non-read-opened file. Not even IMA can.
+> > 
+> > So don't do that then.
+> > 
+> > IMA is doing something wrong. Why would you ever read a file that can't be read?
+> >
+> > Fix whatever "open" function instead of trying to work around the fact
+> > that you opened it wrong.
 > 
-> Ok I put it into drm-misc-next. I kinda assumed since there's also a huge
-> effort going on to shut up warnings, plus I think kerneldoc issues are
-> reported by a bunch of build bots nowadays. So assumed you pile this all
-> up.
+> IMA pulls that crap on _every_ open(2), including O_WRONLY.  As far as I'm
+> concerned, the only sane answer is not enabling that thing on your builds;
+> they are deeply special and I hadn't been able to reason with them no
+> matter how much I tried ;-/
 
-Currently, this doesn't generate any warnings (which, IMHO, it is a
-very bad thing). The final patch on this series actually such warning. 
-My plan is to have the final patch merged for Kernel 5.11.
+The builtin IMA policies are only meant to be used until a custom can
+be loaded.  The decision as to what should be measured or verified is
+left up to the system owner.
 
-So, at least from PoV of shut up warnings[1], this patch be either
-be merged for 5.11 or earlier.
+In terms of the architecture specific policy rules, there are rules to:
+- measure the kexec kernel image and kernel modules
+- verify the kexec kernel image and kernel modules appended signatures
 
-Regards,
-Mauro
+These rules should be pretty straight forward to verify.
 
--
+Mimi
 
-[1] Basically, if you do:
-
-	/**
-	 * foo - some foo func
-	 */
-	int bar(...)
-
-the documentation will be for "bar()" function, instead of
-"foo()", as Kernel-doc currently simply ignores "foo".
-
-On several places, this is due to a typo or a function
-rename, but there are a few places where a "bar()" function
-got added between the kernel-doc markup and "foo()" function,
-thus producing wrong docs. Don't remember if are there any
-such issues under drivers/video or drivers/gpu.
