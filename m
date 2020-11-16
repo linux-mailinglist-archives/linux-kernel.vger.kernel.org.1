@@ -2,100 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AB42B4CA7
+	by mail.lfdr.de (Postfix) with ESMTP id 827822B4CA8
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732782AbgKPRYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732772AbgKPRYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 16 Nov 2020 12:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732722AbgKPRYe (ORCPT
+        with ESMTP id S1731709AbgKPRYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:24:34 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CA3C0613D1
+        Mon, 16 Nov 2020 12:24:33 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBD4C0613CF
         for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:24:33 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a3so24336973wmb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:24:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WtMD9HUNCd7ZhC138zP7kvjxUP0uAPHZgUTaa91+Qcc=;
-        b=NFxvcrQEPFkb93g/IBtJ/uRqBozR3l3vlNfcc3pD1YOP/jYIgX5hH75BkC3XJiPcKV
-         GNPWB1vBbrQWhHeC+i/oychqXkOU/ddKdJPT3K5aug5fayuGyLFhdjnoEJ8LJztn+qeI
-         9OTSt8sfTbVjrybvdp4TcZ2vCj3BfcutkR69qe0iHDFlqQZwMbKPVFuWhsPMKe/udgAM
-         zbb0tSAxaj8ReqS+miXkzIhNk7yNw6a4R/k8U2xe5GeAnvdfbMEHlIn0EhC/T/rru/00
-         UMzvzcmarWLLB1ErQmgrsr7RznPI4XAnbs47fCRvlMOk8RwzmYr6MZu/w4MIBjTFkPdi
-         jkdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WtMD9HUNCd7ZhC138zP7kvjxUP0uAPHZgUTaa91+Qcc=;
-        b=BQ58qN0/NgPuqcKw2mUo3lffFl0W5aA0Zd/sTnQxBgdsR3tSB0weMyya+0rpLU90Ag
-         cS1EpUP7ycfKgZdwyK82IQbzein/s/tpFsR/jAJh6CAPgkcQuzUeY/94lZj5B8yVtCSx
-         KsSZeR/ohyFWQC5pI5s7lrmFp+k8cNU4xkXw2jIwgHJlZKUswjuO/nQ7+0FJECyVN2yM
-         tpJJ5PZgq9fKghTvB658W1SaW0mwKEmshiACPwVtMvsNMzdpVcuq7zYeybOH5KI7Wcjy
-         xLq0zbaNynXtmdU3aI5xrQkEml4eas2SVMDj+7rwiJyXEc/1rI7/G1o5aP0UFn4W5YST
-         hUAw==
-X-Gm-Message-State: AOAM5314XTItIMBN8+3Di36zouw+27yfkvEq7bmQE3fgsi2WfKDDNBEN
-        affX5Oe3m9HqJy34jyhFetN9ew==
-X-Google-Smtp-Source: ABdhPJzR+k3v4Mwybe0vCGdYqAqSGoEIjkYxAtsoASKSWzdNHfe23t1SJRHTenco765aUJ4maCS1dQ==
-X-Received: by 2002:a05:600c:209:: with SMTP id 9mr16522232wmi.89.1605547472634;
-        Mon, 16 Nov 2020 09:24:32 -0800 (PST)
-Received: from starbuck.lan (253.35.17.109.rev.sfr.net. [109.17.35.253])
-        by smtp.googlemail.com with ESMTPSA id 34sm24128949wrq.27.2020.11.16.09.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:24:32 -0800 (PST)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] ASoC: meson: fix COMPILE_TEST error
-Date:   Mon, 16 Nov 2020 18:24:23 +0100
-Message-Id: <20201116172423.546855-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.28.0
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605547471;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gq4UiBiAx/WS5IzE7JiWxBNeoN2nn9Rg43gm72By5HE=;
+        b=cGm8IwMBJrDCrRips4icXoJWto83hDV2TQC0N5cBgVJetwnqdF9dYn7dcBbn0CKMQszemQ
+        I/GyQFUmG0ApnXWFgN6MEyhPVSMACQqf3ZFTPJ7KEg/E7UDa52lYSeVwqXeuZNIkmztmxF
+        Ay5Naw5hBTup/qFx+J/oYr6/pymWnJHsqXbcFIrWNxt9i8KlmCJosUPLv8sH9rKaFWMC+c
+        KCGVDbewQ4NwbmmEBLmkOLNtVgiVrc9ymBMaYMWsbytYmbFRa116KQz81SUyQQQRVp5MDV
+        nXUjN6QJ/xxtmcLe4HzPBgMkTaRVqgDPCHSBtRPa40LcG+U1dh+V0LXqycAyew==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605547471;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gq4UiBiAx/WS5IzE7JiWxBNeoN2nn9Rg43gm72By5HE=;
+        b=i6urDyofHeNs7wpEns01sAbLZWQbzzCQ+eHnnLbmbzeeNBAQ9jKgY8seqBBnA1lfWti9et
+        u4q3bmmZKBLa1ACg==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     eupm90@gmail.com, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] rcu: Allow rcu_irq_enter_check_tick() from NMI
+In-Reply-To: <20201116121012.GC3121378@hirez.programming.kicks-ass.net>
+References: <20201113125332.GA2611@hirez.programming.kicks-ass.net> <87ima8luix.fsf@nanos.tec.linutronix.de> <20201114010526.GK3249@paulmck-ThinkPad-P72> <20201116121012.GC3121378@hirez.programming.kicks-ass.net>
+Date:   Mon, 16 Nov 2020 18:24:31 +0100
+Message-ID: <87a6vhz034.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiled with CONFIG_HAVE_CLK, the kernel need to get provider for the
-clock API. This is usually selected by the platform and the sound drivers
-should not really care about this. However COMPILE_TEST is special and the
-platform required may not have been selected, leading to this type of
-error:
+On Mon, Nov 16 2020 at 13:10, Peter Zijlstra wrote:
 
-> aiu-encoder-spdif.c:(.text+0x3a0): undefined reference to `clk_set_parent'
+> Any which way around; here's a proper patch...
+>
+> ---
+>
+> Subject: rcu: Allow rcu_irq_enter_check_tick() from NMI
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Mon Nov 16 12:54:56 CET 2020
+>
+> Eugenio managed to tickle #PF from NMI context which resulted in
+> hitting a WARN in RCU through irqentry_enter() ->
+> __rcu_irq_enter_check_tick().
+>
+> However, this situation is perfectly sane and does not warrant an
+> WARN. The #PF will (necessarily) be atomic and not require messing
+> with the tick state, so early return is correct.
+>
+> Fixes: aaf2bc50df1f ("rcu: Abstract out rcu_irq_enter_check_tick() from r=
+cu_nmi_enter()")
+> Reported-by: "Eugenio P=C3=A9rez" <eupm90@gmail.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Reviewed-by: Andy Lutomirski <luto@kernel.org>
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-Since we need a sane provider of the API with COMPILE_TEST, depends on
-COMMON_CLK.
-
-Fixes: 6dc4fa179fb8 ("ASoC: meson: add axg fifo base driver")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-index 363dc3b1bbe4..ce0cbdc69b2e 100644
---- a/sound/soc/meson/Kconfig
-+++ b/sound/soc/meson/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menu "ASoC support for Amlogic platforms"
--	depends on ARCH_MESON || COMPILE_TEST
-+	depends on ARCH_MESON || (COMPILE_TEST && COMMON_CLK)
- 
- config SND_MESON_AIU
- 	tristate "Amlogic AIU"
--- 
-2.28.0
-
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
