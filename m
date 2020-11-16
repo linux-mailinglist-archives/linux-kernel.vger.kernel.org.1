@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB562B49F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A44E2B49F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731559AbgKPPwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:52:23 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:37725 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730396AbgKPPwX (ORCPT
+        id S1731564AbgKPPwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:52:38 -0500
+Received: from outbound-smtp38.blacknight.com ([46.22.139.221]:55389 "EHLO
+        outbound-smtp38.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730557AbgKPPwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:52:23 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id EAF12B5A;
-        Mon, 16 Nov 2020 10:52:21 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 16 Nov 2020 10:52:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=ctEwiJErU9TBRfjIMhDk86gxCUg
-        nkz6lu3VDXGXwxUc=; b=Tire05xoGPf+svFa2zjzfTlcrFUE0fnH54GM+bK6A0n
-        lK3X9gEv5YngoR/ypkGG2Kz6a/rwZQOGHlfFHwOes6JnsnTkVneaQ6yzfxvorHvZ
-        cwiR0130dwbYxCcKqx3mlhoE3zvL3LKSjGlk66BA4Kx6zYk5wuuD2GMRIdxaNkkN
-        hP+2PC/qOGyKg9Vvr+TIVEBhzO6JSYJ2h/ykOy89QqLIpy9gsKAW2Bi6qTiZVgMq
-        iFIDcHcILEh1363aIRj5DCkLLL2Bw4/0r0vxZcYHFxYiyKRprWhH/YWlLBgGm19c
-        MfPyrUQqc8pKw+tCf4+g+10IlAqVJEMQ+1hubNfhhTQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ctEwiJ
-        ErU9TBRfjIMhDk86gxCUgnkz6lu3VDXGXwxUc=; b=U/X0MiLYoL77rE8rGGxV2i
-        AipzjDiasd6Z4HZNxaZXfnlzJxar3heyXPD8zxF7pt+q6sKOEYpsShbigWDbfH5O
-        wXyBlShO6y/SVY041imXkRlWy/PhUmIm0Io2AnV90Sd5LeJxpVMN3JhL8L1fo9kI
-        18GnhThXLeLzZZdISFqwtAI1YEbqiLs6gRzMdDRQGNuh7X0NTjwFAT4QBFYElqEE
-        5Tw/V8cD7233axOMJjxH/RlhA8LSqpUYxnVCPqVdqLGa5wD3lphFKQlT5UmcWjaj
-        5UvoY64JdQAk66Pv0rpTDD+3WCktYWNvYD23SPHBbaHp40z4jpAJRVmo89Qb+Nbw
-        ==
-X-ME-Sender: <xms:NKCyX1RmlpTUhUC2Zflvb4klllV302lkPX6wNBtx_T7ZdTEffggzNg>
-    <xme:NKCyX-wlX9maACj_I60CbH-MXjZ3QM0cjUU3ekmVJPLur09uqWZm09q83LwTzp28Q
-    MHPfbJ3g9eIpFgjbQY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudefuddgkeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:NKCyX62FhZ69wN2bBnu569srUfWajRE4DItjqUt4SMSbAjCk9hdfPQ>
-    <xmx:NKCyX9DEUvtTdhCROq-HQ16IgiLt0TsH52Z0E1YFo4vwbioQbLC9yg>
-    <xmx:NKCyX-hwFGvAHxwN_388uCPVrPG0SEauDnTLqrfRXmjYMnUWKDB7ag>
-    <xmx:NaCyXxuzFaa9FLx_w16XW8iQBi1ZkgvZsWPSWMUOwH1i4f0d0C8RAw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 72920328006A;
-        Mon, 16 Nov 2020 10:52:20 -0500 (EST)
-Date:   Mon, 16 Nov 2020 16:52:18 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     jernej.skrabec@siol.net, wens@csie.org,
+        Mon, 16 Nov 2020 10:52:38 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp38.blacknight.com (Postfix) with ESMTPS id 1ED321F7B
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:52:36 +0000 (GMT)
+Received: (qmail 2698 invoked from network); 16 Nov 2020 15:52:35 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Nov 2020 15:52:35 -0000
+Date:   Mon, 16 Nov 2020 15:52:32 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: configs: sunxi: enable Realtek PHY
-Message-ID: <20201116155218.fqr7tzooc5i6nnzg@gilmour.lan>
-References: <20201112202652.27676-1-clabbe@baylibre.com>
+Subject: Re: Loadavg accounting error on arm64
+Message-ID: <20201116155232.GS3371@techsingularity.net>
+References: <20201116091054.GL3371@techsingularity.net>
+ <20201116131102.GA29992@willie-the-truck>
+ <20201116133721.GQ3371@techsingularity.net>
+ <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5g56njjhtgpegdqa"
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20201112202652.27676-1-clabbe@baylibre.com>
+In-Reply-To: <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 03:20:05PM +0100, Peter Zijlstra wrote:
+> > It used to be at least a WRITE_ONCE until 58877d347b58 ("sched: Better
+> > document ttwu()") which changed it. Not sure why that is and didn't
+> > think about it too deep as it didn't appear to be directly related to
+> > the problem and didn't have ordering consequences.
+> 
+> I'm confused; that commit didn't change deactivate_task(). Anyway,
+> ->on_rq should be strictly under rq->lock. That said, since there is a
+> READ_ONCE() consumer of ->on_rq it makes sense to have the stores as
+> WRITE_ONCE().
+> 
 
---5g56njjhtgpegdqa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It didn't change deactivate_task but it did this
 
-On Thu, Nov 12, 2020 at 08:26:52PM +0000, Corentin Labbe wrote:
-> Lot of sunxi boards has a Realtek PHY, so let's enable it.
->=20
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+-       WRITE_ONCE(p->on_rq, TASK_ON_RQ_MIGRATING);
+-       dequeue_task(rq, p, DEQUEUE_NOCLOCK);
++       deactivate_task(rq, p, DEQUEUE_NOCLOCK);
 
-Applied, thanks!
-Maxime
+which makes that write a
 
---5g56njjhtgpegdqa
-Content-Type: application/pgp-signature; name="signature.asc"
+p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
 
------BEGIN PGP SIGNATURE-----
+As activate_task is also a plain store and I didn't spot a relevant
+ordering problem that would impact loadavg, I concluded it was not
+immediately relevant, just a curiousity.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX7KgMgAKCRDj7w1vZxhR
-xeF+AQC24Q1koS8gGd7kqh/WQyze3or/jhHzJKT9hU2rte/3YgEA4QRudqAUntYq
-rS0dKEDHsLWT5N/S7s8ley0x8H6pcwk=
-=JLJM
------END PGP SIGNATURE-----
+> > > __ttwu_queue_wakelist() we have:
+> > > 
+> > > 	p->sched_remote_wakeup = !!(wake_flags & WF_MIGRATED);
+> > > 
+> > > which can be invoked on the try_to_wake_up() path if p->on_rq is first read
+> > > as zero and then p->on_cpu is read as 1. Perhaps these non-atomic bitfield
+> > > updates can race and cause the flags to be corrupted?
+> > > 
+> > 
+> > I think this is at least one possibility. I think at least that one
+> > should only be explicitly set on WF_MIGRATED and explicitly cleared in
+> > sched_ttwu_pending. While I haven't audited it fully, it might be enough
+> > to avoid a double write outside of the rq lock on the bitfield but I
+> > still need to think more about the ordering of sched_contributes_to_load
+> > and whether it's ordered by p->on_cpu or not.
+> 
+> The scenario you're worried about is something like:
+> 
+> 	CPU0							CPU1
+> 
+> 	schedule()
+> 		prev->sched_contributes_to_load = X;
+> 		deactivate_task(prev);
+> 
+> 								try_to_wake_up()
+> 									if (p->on_rq &&) // false
+> 									if (smp_load_acquire(&p->on_cpu) && // true
+> 									    ttwu_queue_wakelist())
+> 										p->sched_remote_wakeup = Y;
+> 
+> 		smp_store_release(prev->on_cpu, 0);
+> 
 
---5g56njjhtgpegdqa--
+Yes, mostly because of what memory-barriers.txt warns about for bitfields
+if they are not protected by the same lock.
+
+> And then the stores of X and Y clobber one another.. Hummph, seems
+> reasonable. One quick thing to test would be something like this:
+> 
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 7abbdd7f3884..9844e541c94c 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -775,7 +775,9 @@ struct task_struct {
+>  	unsigned			sched_reset_on_fork:1;
+>  	unsigned			sched_contributes_to_load:1;
+>  	unsigned			sched_migrated:1;
+> +	unsigned			:0;
+>  	unsigned			sched_remote_wakeup:1;
+> +	unsigned			:0;
+>  #ifdef CONFIG_PSI
+>  	unsigned			sched_psi_wake_requeue:1;
+>  #endif
+
+I'll test this after the smp_wmb() test completes. While a clobbering may
+be the issue, I also think the gap between the rq->nr_uninterruptible++
+and smp_store_release(prev->on_cpu, 0) is relevant and a better candidate.
+
+-- 
+Mel Gorman
+SUSE Labs
