@@ -2,95 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB1B2B487D
+	by mail.lfdr.de (Postfix) with ESMTP id D9D392B487E
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731452AbgKPPGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:06:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730250AbgKPPGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:06:05 -0500
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2FC32417F;
-        Mon, 16 Nov 2020 15:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605539165;
-        bh=xviV4UOTnwYV2GNpo/1efgQhXsUJi/eb5EZ3fCOAKe4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0rp7C00pUjFir4o0oeD/zUVCGxqfuRxpw92ReNoyldQYc1I3siT1WCD1q+mMgKs3p
-         RizoV2EqNFDpvvsl1rno8e86Z9oxaR5aXylp9q3GoKy7JATA6THPyZ3fGBt+7vgaFw
-         cAeyfjuAymlVViawXb4XFQ3rZwQUunD55OqrSmGM=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Chen Yu <yu.c.chen@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 2/2] Documentation: bootconfig: Update file format on initrd image
-Date:   Tue, 17 Nov 2020 00:06:01 +0900
-Message-Id: <160553916179.90558.13728376346223515544.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <160553914311.90558.426504572691633862.stgit@devnote2>
-References: <160553914311.90558.426504572691633862.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1731456AbgKPPGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:06:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731369AbgKPPGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 10:06:15 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA219C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:06:15 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 19so24028153wmf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:06:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=s4udoHyh9j5IqUv+HxIL+80tVyb07J8vLMt6/kF0Ir4=;
+        b=u/ixGDcp+NZMNnm/O+DlS0jMRpHKY4q7Pd3EsbpVtdjjSSMtr3FS77mwphnR9q29+f
+         IzDll4a7WFJwUvgxNnlOemkmmCfjvnpJWDAcn4xX4szOhaUhQMXvejtD84fG1m+T0S4v
+         b8HPPvL9a1PvNMQ6/0ghOPVPX0OyZ7ilaHtmEpUPa9h2ValL8VYceeFwdc9bdV3OFBEG
+         WzFqlq8Ko2/WmyM7pIukgIvcBNtHZpDq/ZxL4eTnAbfhsfEtNUci1T56jtUsbvSqUlCe
+         CKaIjSxxLNJ7+xzLTHKO2xL4PkFWph4oBjcItMXaWmdz3s7PXMzJlXSlZBSthnD7uued
+         Z5kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=s4udoHyh9j5IqUv+HxIL+80tVyb07J8vLMt6/kF0Ir4=;
+        b=H3LxTO6cxTdPp9/aLL082RLIEJ6lBKnb4UDDZr4zlB+banYPP3P/Jjr/j1/fR16YB5
+         HhM9q/NeBhuswJdYYxobzk0AJOC9Oq14Zhtj4IWAgFM2i31kvKY3sIRuo50kMnlJNWPv
+         wckJESt3laEkVZV+xRMy4eH21wD3f6Bt5YqnmwsY+V0o2HVgf7w4fbxxD9KqlGCR/Y55
+         EkAowtK+9o601xmZn1wmIbBeAr0Kozz5Zn+Py83KlHY054LeSzj+TG9nwsnFDAaL6L/C
+         B5ahMegNfyKWvaghXpidEAETDPgoeE+JefzQwzJVwQKjdp5RD74VNuyvac0d/vDzW6FS
+         MssA==
+X-Gm-Message-State: AOAM5310StyDvd4EyiPj5iyhAxsrgjVeJh+hl9S0qd8M5uaDqeuK6lY0
+        +zX4OJmfBLLj8ykyp/27JA1fXw==
+X-Google-Smtp-Source: ABdhPJw8tF4y6iZkiPHaYIRvmwH3SgAzlk4656vVGflsdOGVS/S4cEjS2rC+eWSoaGqa5NFbMWb9/Q==
+X-Received: by 2002:a1c:9c53:: with SMTP id f80mr15486878wme.19.1605539174436;
+        Mon, 16 Nov 2020 07:06:14 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id d128sm4597301wmc.7.2020.11.16.07.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 07:06:13 -0800 (PST)
+Date:   Mon, 16 Nov 2020 16:06:07 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mm v3 09/19] kasan: open-code kasan_unpoison_slab
+Message-ID: <20201116150607.GA1357314@elver.google.com>
+References: <cover.1605305978.git.andreyknvl@google.com>
+ <4d64025c647190a8b7101d0b1da3deb922535a0d.1605305978.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4d64025c647190a8b7101d0b1da3deb922535a0d.1605305978.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To align the total file size, add padding null character when appending
-the bootconfig to initrd image.
+On Fri, Nov 13, 2020 at 11:19PM +0100, Andrey Konovalov wrote:
+> There's the external annotation kasan_unpoison_slab() that is currently
+> defined as static inline and uses kasan_unpoison_range(). Open-code this
+> function in mempool.c. Otherwise with an upcoming change this function
+> will result in an unnecessary function call.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/Ia7c8b659f79209935cbaab3913bf7f082cc43a0e
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Documentation/admin-guide/bootconfig.rst |   18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+Reviewed-by: Marco Elver <elver@google.com>
 
-diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
-index a22024f9175e..363599683784 100644
---- a/Documentation/admin-guide/bootconfig.rst
-+++ b/Documentation/admin-guide/bootconfig.rst
-@@ -137,15 +137,22 @@ Boot Kernel With a Boot Config
- ==============================
- 
- Since the boot configuration file is loaded with initrd, it will be added
--to the end of the initrd (initramfs) image file with size, checksum and
--12-byte magic word as below.
-+to the end of the initrd (initramfs) image file with padding, size,
-+checksum and 12-byte magic word as below.
- 
--[initrd][bootconfig][size(u32)][checksum(u32)][#BOOTCONFIG\n]
-+[initrd][bootconfig][padding][size(u32)][checksum(u32)][#BOOTCONFIG\n]
-+
-+When the boot configuration is added to the initrd image, the total
-+file size is aligned to 4 bytes. To fill the gap, null characters
-+(``\0``) will be added. Thus the ``size`` is the length of the bootconfig
-+file + padding bytes.
- 
- The Linux kernel decodes the last part of the initrd image in memory to
- get the boot configuration data.
- Because of this "piggyback" method, there is no need to change or
--update the boot loader and the kernel image itself.
-+update the boot loader and the kernel image itself as long as the boot
-+loader passes the correct initrd file size. If by any chance, the boot
-+loader passes a longer size, the kernel feils to find the bootconfig data.
- 
- To do this operation, Linux kernel provides "bootconfig" command under
- tools/bootconfig, which allows admin to apply or delete the config file
-@@ -176,7 +183,8 @@ up to 512 key-value pairs. If keys contains 3 words in average, it can
- contain 256 key-value pairs. In most cases, the number of config items
- will be under 100 entries and smaller than 8KB, so it would be enough.
- If the node number exceeds 1024, parser returns an error even if the file
--size is smaller than 32KB.
-+size is smaller than 32KB. (Note that this maximum size is not including
-+the padding null characters.)
- Anyway, since bootconfig command verifies it when appending a boot config
- to initrd image, user can notice it before boot.
- 
+Thank you!
 
+I also think this change made the code more readable, as
+kasan_unpoison_slab() made me think it's unpoisoning the *whole* slab,
+which is clearly not the case.
+
+> ---
+>  include/linux/kasan.h | 6 ------
+>  mm/mempool.c          | 2 +-
+>  2 files changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 1594177f86bb..872bf145ddde 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -106,11 +106,6 @@ struct kasan_cache {
+>  	int free_meta_offset;
+>  };
+>  
+> -size_t __ksize(const void *);
+> -static inline void kasan_unpoison_slab(const void *ptr)
+> -{
+> -	kasan_unpoison_range(ptr, __ksize(ptr));
+> -}
+>  size_t kasan_metadata_size(struct kmem_cache *cache);
+>  
+>  bool kasan_save_enable_multi_shot(void);
+> @@ -166,7 +161,6 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
+>  	return false;
+>  }
+>  
+> -static inline void kasan_unpoison_slab(const void *ptr) { }
+>  static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+>  
+>  #endif /* CONFIG_KASAN */
+> diff --git a/mm/mempool.c b/mm/mempool.c
+> index f473cdddaff0..583a9865b181 100644
+> --- a/mm/mempool.c
+> +++ b/mm/mempool.c
+> @@ -112,7 +112,7 @@ static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
+>  static void kasan_unpoison_element(mempool_t *pool, void *element)
+>  {
+>  	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
+> -		kasan_unpoison_slab(element);
+> +		kasan_unpoison_range(element, __ksize(element));
+>  	else if (pool->alloc == mempool_alloc_pages)
+>  		kasan_alloc_pages(element, (unsigned long)pool->pool_data);
+>  }
+> -- 
+> 2.29.2.299.gdc1121823c-goog
+> 
