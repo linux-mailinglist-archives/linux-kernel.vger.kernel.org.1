@@ -2,156 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CC72B4041
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E5E2B3FC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728742AbgKPJt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:49:27 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:36621 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728480AbgKPJt0 (ORCPT
+        id S1728557AbgKPJ3h convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 04:29:37 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2371 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726697AbgKPJ3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:49:26 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201116094914euoutp0173c1ca139f0325fa16ee744ae65c7ad3~H9BMGgwP51192311923euoutp01u
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:49:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201116094914euoutp0173c1ca139f0325fa16ee744ae65c7ad3~H9BMGgwP51192311923euoutp01u
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1605520154;
-        bh=UwB7hd06BgY+vzRM1GIKrF0SRX9dkSTSNo0qT/NjFac=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=H1KPToIkNsQoTGx5WO7BqZ/w+INeUS3Kwk6Nl+gMPDkV8gNojacFZfcVg1YvkizmH
-         edObyvR/PEYJzk4gtHVNFoJOOMlYzln/5U/uvzpyvxFRenZPk8X6B1FF9NFgMgZ+DG
-         qcTmLPNzXS5HMJHRMVk69onGvwJToUF6KKVOIpr4=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201116094312eucas1p17172ee21930f918bbba8e136c4477062~H876otzxD2126921269eucas1p1o;
-        Mon, 16 Nov 2020 09:43:12 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id AF.F1.27958.E7942BF5; Mon, 16
-        Nov 2020 09:42:22 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201116091814eucas1p26556359eb8ecd5309657baf1d876888d~H8mIDeDxT1628416284eucas1p29;
-        Mon, 16 Nov 2020 09:18:13 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201116091813eusmtrp1abe891aa09f56f1dd6f8581ca9bf18aa~H8mHHTeDy1967619676eusmtrp1G;
-        Mon, 16 Nov 2020 09:18:13 +0000 (GMT)
-X-AuditID: cbfec7f2-49bb5a8000006d36-a2-5fb2497ed355
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 99.CF.16282.5D342BF5; Mon, 16
-        Nov 2020 09:18:13 +0000 (GMT)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201116091813eusmtip1bb50ddc74149e7a0b0ac3fef69280e84~H8mGvQcTV0475404754eusmtip1X;
-        Mon, 16 Nov 2020 09:18:13 +0000 (GMT)
-Subject: Re: [PATCH net-next] r8153_ecm: avoid to be prior to r8152 driver
-To:     Hayes Wang <hayeswang@realtek.com>, netdev@vger.kernel.org
-Cc:     nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <5f3db229-940c-c8ed-257b-0b4b3dd2afbb@samsung.com>
-Date:   Mon, 16 Nov 2020 10:18:13 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.4.3
+        Mon, 16 Nov 2020 04:29:36 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4CZP0W3V2cz53sK;
+        Mon, 16 Nov 2020 17:29:15 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 16 Nov 2020 17:29:32 +0800
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 16 Nov 2020 17:29:32 +0800
+Received: from dggpemm000001.china.huawei.com ([7.185.36.245]) by
+ dggpemm000001.china.huawei.com ([7.185.36.245]) with mapi id 15.01.1913.007;
+ Mon, 16 Nov 2020 17:29:32 +0800
+From:   Jiangyifei <jiangyifei@huawei.com>
+To:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>
+CC:     Alexander Graf <graf@amazon.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
+        "Wubin (H)" <wu.wubin@huawei.com>,
+        "dengkai (A)" <dengkai1@huawei.com>,
+        yinyipeng <yinyipeng1@huawei.com>
+Subject: RE: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
+ programming
+Thread-Topic: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
+ programming
+Thread-Index: AQHWtoxQ6udyTXND00qYbGxBYAdmN6nKgOyw
+Date:   Mon, 16 Nov 2020 09:29:31 +0000
+Message-ID: <186ade3c372b44ef8ca1830da8c5002b@huawei.com>
+References: <20201109113240.3733496-1-anup.patel@wdc.com>
+ <20201109113240.3733496-11-anup.patel@wdc.com>
+In-Reply-To: <20201109113240.3733496-11-anup.patel@wdc.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.186.209]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <1394712342-15778-393-Taiwan-albertk@realtek.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphleLIzCtJLcpLzFFi42LZduzned0pnpviDdruGVtMO9jDaHF51xw2
-        i0XLWpktji0Qs/jSO4vVgdXj8dvN7B6fN8kFMEVx2aSk5mSWpRbp2yVwZSzd/Iep4C5fxa3u
-        zSwNjBt4uhg5OSQETCQuLnvI3MXIxSEksIJRYt6O50wgCSGBL4wS19bEQiQ+M0r8+veVGaaj
-        qWkxG0RiOaPEqhmbmSCc94wSCyfeYwGpEhbwktj3dBNYh4iAncT0lxcYQWxmgWCJqU2fwWrY
-        BAwlut52sYHYvEA1ZxZNYQexWQRUJdrOtLKC2KICSRLbt2xnhagRlDg58wlYLydQ/bLNe9kg
-        ZspLbH87hxnCFpe49WQ+2EESAms5JC7/fMQIcbaLxINL89kgbGGJV8e3sEPYMhKnJ/ewQDQ0
-        M0o8PLeWHcLpYZS43DQDqtta4s65X0DdHEArNCXW79KHCDtK7Dq/mxUkLCHAJ3HjrSDEEXwS
-        k7ZNZ4YI80p0tAlBVKtJzDq+Dm7twQuXmCcwKs1C8tosJO/MQvLOLIS9CxhZVjGKp5YW56an
-        FhvmpZbrFSfmFpfmpesl5+duYgQmlNP/jn/awTj31Ue9Q4xMHIyHGCU4mJVEeF1MNsYL8aYk
-        VlalFuXHF5XmpBYfYpTmYFES5101e028kEB6YklqdmpqQWoRTJaJg1OqgSnF0P/uokX7T7Qx
-        HBYOL1t8Z2Hq5M1xG+Slws/2JVxIEjrsGXqG0eTqkn63tCNXe+sZVx56sGPFzM23/VsU79zf
-        miBYnbviqH5wqxYDf6HSq3NaPTL2RzN2nJPUf9J5NeBKzr6srjTHSQZPX1lcSLdWWztR5ESc
-        39QTRpYHlSbF3pf8tS757crUrhtr5xR4/JJeYee8+OVbrwMO1THOjyc++m9yM86G/cDUQkO1
-        xBunZPXz5hsoifxdt2PFlWd9pof3pt2QErP9wiw758/f1frf1+rd3X2o0Wrz2TbrkBtaLMfT
-        Kh9Vc3C+2JJYNj+n/NXjnzaXPt/hDP/7oZH9J2P//Ud3739Ysm33ZdaipxsilViKMxINtZiL
-        ihMB8/fWU5cDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGIsWRmVeSWpSXmKPExsVy+t/xu7pXnTfFG3xfbmox7WAPo8XlXXPY
-        LBYta2W2OLZAzOJL7yxWB1aPx283s3t83iQXwBSlZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdk
-        YqlnaGwea2VkqqRvZ5OSmpNZllqkb5egl7F08x+mgrt8Fbe6N7M0MG7g6WLk5JAQMJFoalrM
-        1sXIxSEksJRR4lLbdmaIhIzEyWkNrBC2sMSfa11QRW8ZJZZ/3QFWJCzgJbHv6SYwW0TATmL6
-        ywuMXYwcHMwCwRJ7XxZA1B9jlJi3+RzYIDYBQ4mutyCDODl4gerPLJrCDmKzCKhKtJ1pBasR
-        FUiSmHn8LDtEjaDEyZlPWEBsTqD6ZZv3gvUyC5gBzXzIDGHLS2x/OwfKFpe49WQ+0wRGoVlI
-        2mchaZmFpGUWkpYFjCyrGEVSS4tz03OLjfSKE3OLS/PS9ZLzczcxAiNo27GfW3Ywrnz1Ue8Q
-        IxMH4yFGCQ5mJRFeF5ON8UK8KYmVValF+fFFpTmpxYcYTYH+mcgsJZqcD4zhvJJ4QzMDU0MT
-        M0sDU0szYyVxXpMja+KFBNITS1KzU1MLUotg+pg4OKUamCSNWad4RD5PXBObd1HtM8usLX27
-        L9dc7N/v94l5T3rpxO03K/VlpP3iXz0+ZCZ20FlG2bOw1TVxftRy+4k1UwKKeR6Eai4tSbKK
-        //vr16+nD45Gr33lka3sy/I83viDeojM8nl3GLSMO8q3s81NPeZlKHDTZltab2fcojlamVda
-        GUzNtI/zCyUe2dwqu2HOga3xd0IE+387fzm7+NytUMPF4pb8z1J3non/eFCx3qJ9++HAzF1n
-        rn5xFM/5wNFXojf7crvfmu59J7/Y92f52Xv0Te56dLvf43iORU/n89/t6WoT760/U/Nhu/La
-        SVLCK9gbzk2cHrCwdQX/nKRA0YAJIfZ2WhEeeQyV669cUmIpzkg01GIuKk4EAAZ/iWYpAwAA
-X-CMS-MailID: 20201116091814eucas1p26556359eb8ecd5309657baf1d876888d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201116065317eucas1p2a2d141857bbdd6b4998dd11937d52f56
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201116065317eucas1p2a2d141857bbdd6b4998dd11937d52f56
-References: <7fd014f2-c9a5-e7ec-f1c6-b3e4bb0f6eb6@samsung.com>
-        <CGME20201116065317eucas1p2a2d141857bbdd6b4998dd11937d52f56@eucas1p2.samsung.com>
-        <1394712342-15778-393-Taiwan-albertk@realtek.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
-On 16.11.2020 07:52, Hayes Wang wrote:
-> Avoid r8153_ecm is compiled as built-in, if r8152 driver is compiled
-> as modules. Otherwise, the r8153_ecm would be used, even though the
-> device is supported by r8152 driver.
->
-> Fixes: c1aedf015ebd ("net/usb/r8153_ecm: support ECM mode for RTL8153")
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
-
-Yes, this fixes this issue, although I would prefer a separate Kconfig 
-entry for r8153_ecm with proper dependencies instead of this ifdefs in 
-Makefile.
-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
+> -----Original Message-----
+> From: Anup Patel [mailto:anup.patel@wdc.com]
+> Sent: Monday, November 9, 2020 7:33 PM
+> To: Palmer Dabbelt <palmer@dabbelt.com>; Palmer Dabbelt
+> <palmerdabbelt@google.com>; Paul Walmsley <paul.walmsley@sifive.com>;
+> Albert Ou <aou@eecs.berkeley.edu>; Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Alexander Graf <graf@amazon.com>; Atish Patra <atish.patra@wdc.com>;
+> Alistair Francis <Alistair.Francis@wdc.com>; Damien Le Moal
+> <damien.lemoal@wdc.com>; Anup Patel <anup@brainfault.org>;
+> kvm@vger.kernel.org; kvm-riscv@lists.infradead.org;
+> linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Anup Patel
+> <anup.patel@wdc.com>; Jiangyifei <jiangyifei@huawei.com>
+> Subject: [PATCH v15 10/17] RISC-V: KVM: Implement stage2 page table
+> programming
+> 
+> This patch implements all required functions for programming the stage2 page
+> table for each Guest/VM.
+> 
+> At high-level, the flow of stage2 related functions is similar from KVM
+> ARM/ARM64 implementation but the stage2 page table format is quite
+> different for KVM RISC-V.
+> 
+> [jiangyifei: stage2 dirty log support]
+> Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->   drivers/net/usb/Makefile | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/usb/Makefile b/drivers/net/usb/Makefile
-> index 99381e6bea78..98f4c100955e 100644
-> --- a/drivers/net/usb/Makefile
-> +++ b/drivers/net/usb/Makefile
-> @@ -13,7 +13,7 @@ obj-$(CONFIG_USB_LAN78XX)	+= lan78xx.o
->   obj-$(CONFIG_USB_NET_AX8817X)	+= asix.o
->   asix-y := asix_devices.o asix_common.o ax88172a.o
->   obj-$(CONFIG_USB_NET_AX88179_178A)      += ax88179_178a.o
-> -obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o r8153_ecm.o
-> +obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o
->   obj-$(CONFIG_USB_NET_CDC_EEM)	+= cdc_eem.o
->   obj-$(CONFIG_USB_NET_DM9601)	+= dm9601.o
->   obj-$(CONFIG_USB_NET_SR9700)	+= sr9700.o
-> @@ -41,3 +41,11 @@ obj-$(CONFIG_USB_NET_QMI_WWAN)	+= qmi_wwan.o
->   obj-$(CONFIG_USB_NET_CDC_MBIM)	+= cdc_mbim.o
->   obj-$(CONFIG_USB_NET_CH9200)	+= ch9200.o
->   obj-$(CONFIG_USB_NET_AQC111)	+= aqc111.o
-> +
-> +ifdef CONFIG_USB_NET_CDCETHER
-> +ifeq ($(CONFIG_USB_RTL8152), m)
-> +obj-$(CONFIG_USB_RTL8152)	+= r8153_ecm.o
-> +else
-> +obj-$(CONFIG_USB_NET_CDCETHER)	+= r8153_ecm.o
-> +endif
-> +endif
+>  arch/riscv/include/asm/kvm_host.h     |  12 +
+>  arch/riscv/include/asm/pgtable-bits.h |   1 +
+>  arch/riscv/kvm/Kconfig                |   1 +
+>  arch/riscv/kvm/main.c                 |  19 +
+>  arch/riscv/kvm/mmu.c                  | 649
+> +++++++++++++++++++++++++-
+>  arch/riscv/kvm/vm.c                   |   6 -
+>  6 files changed, 672 insertions(+), 16 deletions(-)
+> 
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+......
+
+> 
+>  int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu, @@ -69,27 +562,163 @@
+> int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
+>  			 gpa_t gpa, unsigned long hva,
+>  			 bool writeable, bool is_write)
+>  {
+> -	/* TODO: */
+> -	return 0;
+> +	int ret;
+> +	kvm_pfn_t hfn;
+> +	short vma_pageshift;
+> +	gfn_t gfn = gpa >> PAGE_SHIFT;
+> +	struct vm_area_struct *vma;
+> +	struct kvm *kvm = vcpu->kvm;
+> +	struct kvm_mmu_page_cache *pcache = &vcpu->arch.mmu_page_cache;
+> +	bool logging = (memslot->dirty_bitmap &&
+> +			!(memslot->flags & KVM_MEM_READONLY)) ? true : false;
+> +	unsigned long vma_pagesize;
+> +
+> +	mmap_read_lock(current->mm);
+> +
+> +	vma = find_vma_intersection(current->mm, hva, hva + 1);
+> +	if (unlikely(!vma)) {
+> +		kvm_err("Failed to find VMA for hva 0x%lx\n", hva);
+> +		mmap_read_unlock(current->mm);
+> +		return -EFAULT;
+> +	}
+> +
+> +	if (is_vm_hugetlb_page(vma))
+> +		vma_pageshift = huge_page_shift(hstate_vma(vma));
+> +	else
+> +		vma_pageshift = PAGE_SHIFT;
+> +	vma_pagesize = 1ULL << vma_pageshift;
+> +	if (logging || (vma->vm_flags & VM_PFNMAP))
+> +		vma_pagesize = PAGE_SIZE;
+> +
+> +	if (vma_pagesize == PMD_SIZE || vma_pagesize == PGDIR_SIZE)
+> +		gfn = (gpa & huge_page_mask(hstate_vma(vma))) >> PAGE_SHIFT;
+> +
+> +	mmap_read_unlock(current->mm);
+> +
+> +	if (vma_pagesize != PGDIR_SIZE &&
+> +	    vma_pagesize != PMD_SIZE &&
+> +	    vma_pagesize != PAGE_SIZE) {
+> +		kvm_err("Invalid VMA page size 0x%lx\n", vma_pagesize);
+> +		return -EFAULT;
+> +	}
+> +
+> +	/* We need minimum second+third level pages */
+> +	ret = stage2_cache_topup(pcache, stage2_pgd_levels,
+> +				 KVM_MMU_PAGE_CACHE_NR_OBJS);
+> +	if (ret) {
+> +		kvm_err("Failed to topup stage2 cache\n");
+> +		return ret;
+> +	}
+> +
+> +	hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
+> +	if (hfn == KVM_PFN_ERR_HWPOISON) {
+> +		send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva,
+> +				vma_pageshift, current);
+> +		return 0;
+> +	}
+> +	if (is_error_noslot_pfn(hfn))
+> +		return -EFAULT;
+> +
+> +	/*
+> +	 * If logging is active then we allow writable pages only
+> +	 * for write faults.
+> +	 */
+> +	if (logging && !is_write)
+> +		writeable = false;
+> +
+> +	spin_lock(&kvm->mmu_lock);
+> +
+> +	if (writeable) {
+
+Hi Anup,
+
+What is the purpose of "writable = !memslot_is_readonly(slot)" in this series?
+
+When mapping the HVA to HPA above, it doesn't know that the PTE writeable of stage2 is "!memslot_is_readonly(slot)".
+This may causes the difference between the writability of HVA->HPA and GPA->HPA.
+For example, GPA->HPA is writeable, but HVA->HPA is not writeable.
+
+Is it better that the writability of HVA->HPA is also determined by whether the memslot is readonly in this change?
+Like this:
+-    hfn = gfn_to_pfn_prot(kvm, gfn, is_write, NULL);
++    hfn = gfn_to_pfn_prot(kvm, gfn, writeable, NULL);
+
+Regards,
+Yifei
+
+> +		kvm_set_pfn_dirty(hfn);
+> +		mark_page_dirty(kvm, gfn);
+> +		ret = stage2_map_page(kvm, pcache, gpa, hfn << PAGE_SHIFT,
+> +				      vma_pagesize, false, true);
+> +	} else {
+> +		ret = stage2_map_page(kvm, pcache, gpa, hfn << PAGE_SHIFT,
+> +				      vma_pagesize, true, true);
+> +	}
+> +
+> +	if (ret)
+> +		kvm_err("Failed to map in stage2\n");
+> +
+> +	spin_unlock(&kvm->mmu_lock);
+> +	kvm_set_pfn_accessed(hfn);
+> +	kvm_release_pfn_clean(hfn);
+> +	return ret;
+>  }
+> 
+
+......
 
