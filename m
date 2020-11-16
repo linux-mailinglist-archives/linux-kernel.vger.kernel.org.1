@@ -2,170 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE412B40F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956722B40AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729083AbgKPKTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:19:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728841AbgKPKSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:18:31 -0500
-Received: from mail.kernel.org (ip5f5ad5de.dynamic.kabel-deutschland.de [95.90.213.222])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59B0E223C7;
-        Mon, 16 Nov 2020 10:18:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605521908;
-        bh=SMXsLw5ItRIhzT5qa3JH6IwsLuJlRNBRah+HctbIB7M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xW8i1VWvuRoQlQIZkS8vEUYXNu1xm0PHNreFhIth6ZCGwHLUnAtm+6VnZHU+Byojp
-         FneVO/V6+fpBUIYvxVPbnN8OVttfkGFDk3VXKtktdmBPicsAsqsacIpP8PcuTPwLOq
-         5lrHOqTdmK9ETvHxkGRjtTpGxUl/3vmszF2r/jjc=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kebac-00FwEM-BX; Mon, 16 Nov 2020 11:18:26 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 14/27] completion: fix kernel-doc markups
-Date:   Mon, 16 Nov 2020 11:18:10 +0100
-Message-Id: <3540741143ee102db25283454e962768a8d6b9dd.1605521731.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1605521731.git.mchehab+huawei@kernel.org>
-References: <cover.1605521731.git.mchehab+huawei@kernel.org>
+        id S1728830AbgKPKS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:18:29 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:7110 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726837AbgKPKS2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 05:18:28 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AGACjHa022263;
+        Mon, 16 Nov 2020 11:18:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=ZxK0nqexRSDLMtuQw42h/AAZsTjR82dORNC4ap6NePk=;
+ b=tX19IjKZYucTqg3ZFx6pZsILdwUMi2H+fNIRHn8u0LdXx0bFxySKWauPIIUEO1o5LoSt
+ ZMcxTXIfPK58+oU4djiBAD0oXi+ZkBgv5vkR2ycicbMu70ofJst44aKQM1jHeCr0HU00
+ MuaFmtHNzESh/mgGmzjJBwwv7hxoL17pPUsZxc16M6D18xbJznScdadFQG7xOTjAsV6x
+ WQS2uYFsuoQ0aQRczSbAtw//1GFFa3H7dHNbWzwK9ez2wnGnDyk4r7Hq8F/UlbIEQMGy
+ WtwRdMGuQBpFga02fTwMFTiHnkWOALpkXGOqkMDrmb0yQG2txQ84W88xrc1uh51sH/wk 2A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34t58cagn1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Nov 2020 11:18:14 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C8B8D10003A;
+        Mon, 16 Nov 2020 11:18:13 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B8A0624E850;
+        Mon, 16 Nov 2020 11:18:13 +0100 (CET)
+Received: from lmecxl0995.lme.st.com (10.75.127.48) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov
+ 2020 11:18:12 +0100
+Subject: Re: [PATCH 1/2] phy: stm32: don't print an error on probe deferral
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Etienne Carriere <etienne.carriere@st.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20201110102305.27205-1-amelie.delaunay@st.com>
+ <20201116073756.GL7499@vkoul-mobl>
+ <1b91bea5-ffbf-37fb-98ac-6abc5f373375@st.com>
+ <20201116095014.GU7499@vkoul-mobl>
+From:   Amelie DELAUNAY <amelie.delaunay@st.com>
+Message-ID: <4ceb1fb2-40ef-1029-8941-68e5a3472e29@st.com>
+Date:   Mon, 16 Nov 2020 11:18:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <20201116095014.GU7499@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-16_03:2020-11-13,2020-11-16 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel-doc only supports having the comment just before
-the identifier.
+On 11/16/20 10:50 AM, Vinod Koul wrote:
+> On 16-11-20, 09:02, Amelie DELAUNAY wrote:
+>> Hi Vinod,
+>>
+>> On 11/16/20 8:37 AM, Vinod Koul wrote:
+>>> On 10-11-20, 11:23, Amelie Delaunay wrote:
+>>>> Change stm32-usbphyc driver to not print an error message when the device
+>>>> probe operation is deferred.
+>>>
+>>> Applied all, thanks
+>>>
+>>
+>> I'm sorry for the mess, I sent a v2 for the patch 1/2:
+>> https://lore.kernel.org/patchwork/patch/1336206/
+>> Indeed, I forgot the "return" before dev_err_probe.
+> 
+> No worries, I have dropped this and picked v2.
+> Do check if the patches are fine.
+> 
+> Thanks for letting me know
+> 
 
-The markup for init_completion is actually for
-__init_completion.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
----
-
-Thats said, IMHO, it would make sense to simply
-rename __init_completion() to init_completion() and drop
-this define:
-
-	 #define init_completion(x) __init_completion(x)
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- include/linux/completion.h | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/completion.h b/include/linux/completion.h
-index bf8e77001f18..ff354918dbf4 100644
---- a/include/linux/completion.h
-+++ b/include/linux/completion.h
-@@ -12,40 +12,48 @@
- #include <linux/swait.h>
- 
- /*
-  * struct completion - structure used to maintain state for a "completion"
-  *
-  * This is the opaque structure used to maintain the state for a "completion".
-  * Completions currently use a FIFO to queue threads that have to wait for
-  * the "completion" event.
-  *
-  * See also:  complete(), wait_for_completion() (and friends _timeout,
-  * _interruptible, _interruptible_timeout, and _killable), init_completion(),
-  * reinit_completion(), and macros DECLARE_COMPLETION(),
-  * DECLARE_COMPLETION_ONSTACK().
-  */
- struct completion {
- 	unsigned int done;
- 	struct swait_queue_head wait;
- };
- 
- #define init_completion_map(x, m) __init_completion(x)
-+
-+/**
-+ * init_completion - Initialize a dynamically allocated completion
-+ * @x:  pointer to completion structure that is to be initialized
-+ *
-+ * This macro will initialize a dynamically created completion
-+ * structure.
-+ */
- #define init_completion(x) __init_completion(x)
- static inline void complete_acquire(struct completion *x) {}
- static inline void complete_release(struct completion *x) {}
- 
- #define COMPLETION_INITIALIZER(work) \
- 	{ 0, __SWAIT_QUEUE_HEAD_INITIALIZER((work).wait) }
- 
- #define COMPLETION_INITIALIZER_ONSTACK_MAP(work, map) \
- 	(*({ init_completion_map(&(work), &(map)); &(work); }))
- 
- #define COMPLETION_INITIALIZER_ONSTACK(work) \
- 	(*({ init_completion(&work); &work; }))
- 
- /**
-  * DECLARE_COMPLETION - declare and initialize a completion structure
-  * @work:  identifier for the completion structure
-  *
-  * This macro declares and initializes a completion structure. Generally used
-  * for static declarations. You should use the _ONSTACK variant for automatic
-  * variables.
-@@ -59,41 +67,41 @@ static inline void complete_release(struct completion *x) {}
-  * are on the kernel stack:
-  */
- /**
-  * DECLARE_COMPLETION_ONSTACK - declare and initialize a completion structure
-  * @work:  identifier for the completion structure
-  *
-  * This macro declares and initializes a completion structure on the kernel
-  * stack.
-  */
- #ifdef CONFIG_LOCKDEP
- # define DECLARE_COMPLETION_ONSTACK(work) \
- 	struct completion work = COMPLETION_INITIALIZER_ONSTACK(work)
- # define DECLARE_COMPLETION_ONSTACK_MAP(work, map) \
- 	struct completion work = COMPLETION_INITIALIZER_ONSTACK_MAP(work, map)
- #else
- # define DECLARE_COMPLETION_ONSTACK(work) DECLARE_COMPLETION(work)
- # define DECLARE_COMPLETION_ONSTACK_MAP(work, map) DECLARE_COMPLETION(work)
- #endif
- 
- /**
-- * init_completion - Initialize a dynamically allocated completion
-+ * __init_completion - Initialize a dynamically allocated completion
-  * @x:  pointer to completion structure that is to be initialized
-  *
-  * This inline function will initialize a dynamically created completion
-  * structure.
-  */
- static inline void __init_completion(struct completion *x)
- {
- 	x->done = 0;
- 	init_swait_queue_head(&x->wait);
- }
- 
- /**
-  * reinit_completion - reinitialize a completion structure
-  * @x:  pointer to completion structure that is to be reinitialized
-  *
-  * This inline function should be used to reinitialize a completion structure so it can
-  * be reused. This is especially important after complete_all() is used.
-  */
- static inline void reinit_completion(struct completion *x)
- {
--- 
-2.28.0
-
+All is fine now :) Thank you!
