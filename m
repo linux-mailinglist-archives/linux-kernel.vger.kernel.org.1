@@ -2,303 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D2D2B4C81
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D942B4C7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732707AbgKPRTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:19:36 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:52892 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730775AbgKPRTf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:19:35 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AGH7VEo003557;
-        Mon, 16 Nov 2020 18:19:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=fSRa7RfA0XanyYGJn+p+EMlajUNjG8dZjZ4HGQmdNeU=;
- b=euepazcS/D5ocEKwqFFWxY8GmuEtZMU1wJrQmlzOwDbai7OddC7GTVm94eSnA0CGIfGX
- eSu/VBJAvxHHa2XGO+m1Cnm6zeDaHqQ2mgiLTz2vSKzU7lUsxKzAw81Y4o+Tkt2687QC
- Z4UCuROZMKAxsQS9DU+7gHz3afPn032vNYoHU0v05mJWdB329Fi1Z1rlCmoFg3X94j02
- jB8sR4ris+UtQsUDL1/UPW2AkekGhjTvU/5xAo3G4Cuk97FeP4ecv7p2RZoRcUnAKbL1
- cIKI8g+Md8ch/JfVA101fXM3N/6oJEekFl/0KM8mMxfoqGT5GKFG+TB1QXVloNZakkAb zQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34t70gc6h1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 18:19:21 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4182810002A;
-        Mon, 16 Nov 2020 18:19:20 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2E9CE22FFB9;
-        Mon, 16 Nov 2020 18:19:20 +0100 (CET)
-Received: from localhost (10.75.127.46) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov 2020 18:19:19
- +0100
-From:   Amelie Delaunay <amelie.delaunay@st.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>
-Subject: [PATCH v2 1/1] dt-bindings: phy: phy-stm32-usbphyc: convert bindings to json-schema
-Date:   Mon, 16 Nov 2020 18:19:17 +0100
-Message-ID: <20201116171917.10447-1-amelie.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
+        id S1732680AbgKPRTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:19:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730564AbgKPRTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 12:19:33 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9E9F20797;
+        Mon, 16 Nov 2020 17:19:30 +0000 (UTC)
+Date:   Mon, 16 Nov 2020 12:19:29 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Matt Mullins <mmullins@mmlx.us>
+Cc:     mingo@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        dvyukov@google.com, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
+Message-ID: <20201116121929.1a7aeb16@gandalf.local.home>
+In-Reply-To: <20201115055256.65625-1-mmullins@mmlx.us>
+References: <00000000000004500b05b31e68ce@google.com>
+        <20201115055256.65625-1-mmullins@mmlx.us>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-16_09:2020-11-13,2020-11-16 signatures=0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the STM32 USB PHY Controller (USBPHYC) bindings to DT schema format
-using json-schema.
+On Sat, 14 Nov 2020 21:52:55 -0800
+Matt Mullins <mmullins@mmlx.us> wrote:
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-v2: add additionalProperties also for child nodes and Rob's Reviewed-by
----
- .../bindings/phy/phy-stm32-usbphyc.txt        |  73 ---------
- .../bindings/phy/phy-stm32-usbphyc.yaml       | 138 ++++++++++++++++++
- 2 files changed, 138 insertions(+), 73 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.txt
- create mode 100644 Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+> bpf_link_free is always called in process context, including from a
+> workqueue and from __fput.  Neither of these have the ability to
+> propagate an -ENOMEM to the caller.
+> 
 
-diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.txt b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.txt
-deleted file mode 100644
-index 725ae71ae653..000000000000
---- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.txt
-+++ /dev/null
-@@ -1,73 +0,0 @@
--STMicroelectronics STM32 USB HS PHY controller
--
--The STM32 USBPHYC block contains a dual port High Speed UTMI+ PHY and a UTMI
--switch. It controls PHY configuration and status, and the UTMI+ switch that
--selects either OTG or HOST controller for the second PHY port. It also sets
--PLL configuration.
--
--USBPHYC
--      |_ PLL
--      |
--      |_ PHY port#1 _________________ HOST controller
--      |                    _                 |
--      |                  / 1|________________|
--      |_ PHY port#2 ----|   |________________
--      |                  \_0|                |
--      |_ UTMI switch_______|          OTG controller
--
--
--Phy provider node
--=================
--
--Required properties:
--- compatible: must be "st,stm32mp1-usbphyc"
--- reg: address and length of the usb phy control register set
--- clocks: phandle + clock specifier for the PLL phy clock
--- #address-cells: number of address cells for phys sub-nodes, must be <1>
--- #size-cells: number of size cells for phys sub-nodes, must be <0>
--
--Optional properties:
--- assigned-clocks: phandle + clock specifier for the PLL phy clock
--- assigned-clock-parents: the PLL phy clock parent
--- resets: phandle + reset specifier
--
--Required nodes: one sub-node per port the controller provides.
--
--Phy sub-nodes
--==============
--
--Required properties:
--- reg: phy port index
--- phy-supply: phandle to the regulator providing 3V3 power to the PHY,
--	      see phy-bindings.txt in the same directory.
--- vdda1v1-supply: phandle to the regulator providing 1V1 power to the PHY
--- vdda1v8-supply: phandle to the regulator providing 1V8 power to the PHY
--- #phy-cells: see phy-bindings.txt in the same directory, must be <0> for PHY
--  port#1 and must be <1> for PHY port#2, to select USB controller
--
--
--Example:
--		usbphyc: usb-phy@5a006000 {
--			compatible = "st,stm32mp1-usbphyc";
--			reg = <0x5a006000 0x1000>;
--			clocks = <&rcc_clk USBPHY_K>;
--			resets = <&rcc_rst USBPHY_R>;
--			#address-cells = <1>;
--			#size-cells = <0>;
--
--			usbphyc_port0: usb-phy@0 {
--				reg = <0>;
--				phy-supply = <&vdd_usb>;
--				vdda1v1-supply = <&reg11>;
--				vdda1v8-supply = <&reg18>
--				#phy-cells = <0>;
--			};
--
--			usbphyc_port1: usb-phy@1 {
--				reg = <1>;
--				phy-supply = <&vdd_usb>;
--				vdda1v1-supply = <&reg11>;
--				vdda1v8-supply = <&reg18>
--				#phy-cells = <1>;
--			};
--		};
-diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
-new file mode 100644
-index 000000000000..0ba61979b970
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
-@@ -0,0 +1,138 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/phy-stm32-usbphyc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STMicroelectronics STM32 USB HS PHY controller binding
-+
-+description:
-+
-+  The STM32 USBPHYC block contains a dual port High Speed UTMI+ PHY and a UTMI
-+  switch. It controls PHY configuration and status, and the UTMI+ switch that
-+  selects either OTG or HOST controller for the second PHY port. It also sets
-+  PLL configuration.
-+
-+  USBPHYC
-+  |_ PLL
-+  |
-+  |_ PHY port#1 _________________ HOST controller
-+  |                   __                 |
-+  |                  / 1|________________|
-+  |_ PHY port#2 ----|   |________________
-+  |                  \_0|                |
-+  |_ UTMI switch_______|          OTG controller
-+
-+maintainers:
-+  - Amelie Delaunay <amelie.delaunay@st.com>
-+
-+properties:
-+  compatible:
-+    const: st,stm32mp1-usbphyc
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+#Required child nodes:
-+
-+patternProperties:
-+  "^usb-phy@[0|1]$":
-+    type: object
-+    description:
-+      Each port the controller provides must be represented as a sub-node.
-+
-+    properties:
-+      reg:
-+        description: phy port index.
-+        maxItems: 1
-+
-+      phy-supply:
-+        description: regulator providing 3V3 power supply to the PHY.
-+
-+      vdda1v1-supply:
-+        description: regulator providing 1V1 power supply to the PLL block
-+
-+      vdda1v8-supply:
-+        description: regulator providing 1V8 power supply to the PLL block
-+
-+      "#phy-cells":
-+        enum: [ 0x0, 0x1 ]
-+
-+    allOf:
-+      - if:
-+          properties:
-+            reg:
-+              const: 0
-+        then:
-+          properties:
-+            "#phy-cells":
-+              const: 0
-+        else:
-+          properties:
-+            "#phy-cells":
-+              const: 1
-+              description:
-+                The value is used to select UTMI switch output.
-+                0 for OTG controller and 1 for Host controller.
-+
-+    required:
-+      - reg
-+      - phy-supply
-+      - vdda1v1-supply
-+      - vdda1v8-supply
-+      - "#phy-cells"
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - "#address-cells"
-+  - "#size-cells"
-+  - usb-phy@0
-+  - usb-phy@1
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/stm32mp1-clks.h>
-+    #include <dt-bindings/reset/stm32mp1-resets.h>
-+    usbphyc: usbphyc@5a006000 {
-+        compatible = "st,stm32mp1-usbphyc";
-+        reg = <0x5a006000 0x1000>;
-+        clocks = <&rcc USBPHY_K>;
-+        resets = <&rcc USBPHY_R>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        usbphyc_port0: usb-phy@0 {
-+            reg = <0>;
-+            phy-supply = <&vdd_usb>;
-+            vdda1v1-supply = <&reg11>;
-+            vdda1v8-supply = <&reg18>;
-+            #phy-cells = <0>;
-+        };
-+
-+        usbphyc_port1: usb-phy@1 {
-+            reg = <1>;
-+            phy-supply = <&vdd_usb>;
-+            vdda1v1-supply = <&reg11>;
-+            vdda1v8-supply = <&reg18>;
-+            #phy-cells = <1>;
-+        };
-+    };
-+...
--- 
-2.17.1
+Hmm, I think the real fix is to not have unregistering a tracepoint probe
+fail because of allocation. We are removing a probe, perhaps we could just
+inject NULL pointer that gets checked via the DO_TRACE loop?
+
+I bet failing an unregister because of an allocation failure causes
+problems elsewhere than just BPF.
+
+Mathieu,
+
+Can't we do something that would still allow to unregister a probe even if
+a new probe array fails to allocate? We could kick off a irq work to try to
+clean up the probe at a later time, but still, the unregister itself should
+not fail due to memory failure.
+
+-- Steve
+
+
+
+> Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
+> Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
+> Signed-off-by: Matt Mullins <mmullins@mmlx.us>
+> ---
+> I previously referenced a "pretty ugly" patch.  This is not that one,
+> because I don't think there's any way I can make the caller of
+> ->release() actually handle errors like ENOMEM.  
+> 
+> It also looks like most of the other ways tracepoint_probe_unregister is
+> called also don't check the error code (e.g. just a quick grep found
+> blk_unregister_tracepoints).  Should this just be upgraded to GFP_NOFAIL
+> across the board instead of passing around a gfp_t?
+> 
+>  include/linux/trace_events.h |  6 ++++--
+>  include/linux/tracepoint.h   |  7 +++++--
+>  kernel/bpf/syscall.c         |  2 +-
+>  kernel/trace/bpf_trace.c     |  6 ++++--
+>  kernel/trace/trace_events.c  |  6 ++++--
+>  kernel/tracepoint.c          | 20 ++++++++++----------
+>  6 files changed, 28 insertions(+), 19 deletions(-)
+> 
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index 5c6943354049..166ad7646a98 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -625,7 +625,8 @@ int perf_event_attach_bpf_prog(struct perf_event *event, struct bpf_prog *prog);
+>  void perf_event_detach_bpf_prog(struct perf_event *event);
+>  int perf_event_query_prog_array(struct perf_event *event, void __user *info);
+>  int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog);
+> -int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog);
+> +int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
+> +			 gfp_t flags);
+>  struct bpf_raw_event_map *bpf_get_raw_tracepoint(const char *name);
+>  void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp);
+>  int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
+> @@ -654,7 +655,8 @@ static inline int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_p
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> -static inline int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *p)
+> +static inline int bpf_probe_unregister(struct bpf_raw_event_map *btp,
+> +				       struct bpf_prog *p, gfp_t flags)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+> index 598fec9f9dbf..7b02f92f3b8f 100644
+> --- a/include/linux/tracepoint.h
+> +++ b/include/linux/tracepoint.h
+> @@ -12,6 +12,7 @@
+>   * Heavily inspired from the Linux Kernel Markers.
+>   */
+>  
+> +#include <linux/gfp.h>
+>  #include <linux/smp.h>
+>  #include <linux/srcu.h>
+>  #include <linux/errno.h>
+> @@ -40,7 +41,8 @@ extern int
+>  tracepoint_probe_register_prio(struct tracepoint *tp, void *probe, void *data,
+>  			       int prio);
+>  extern int
+> -tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data);
+> +tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data,
+> +			    gfp_t flags);
+>  extern void
+>  for_each_kernel_tracepoint(void (*fct)(struct tracepoint *tp, void *priv),
+>  		void *priv);
+> @@ -260,7 +262,8 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  	unregister_trace_##name(void (*probe)(data_proto), void *data)	\
+>  	{								\
+>  		return tracepoint_probe_unregister(&__tracepoint_##name,\
+> -						(void *)probe, data);	\
+> +						(void *)probe, data,	\
+> +						GFP_KERNEL);		\
+>  	}								\
+>  	static inline void						\
+>  	check_trace_callback_type_##name(void (*cb)(data_proto))	\
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index b999e7ff2583..f6876681c4ab 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2601,7 +2601,7 @@ static void bpf_raw_tp_link_release(struct bpf_link *link)
+>  	struct bpf_raw_tp_link *raw_tp =
+>  		container_of(link, struct bpf_raw_tp_link, link);
+>  
+> -	bpf_probe_unregister(raw_tp->btp, raw_tp->link.prog);
+> +	bpf_probe_unregister(raw_tp->btp, raw_tp->link.prog, GFP_KERNEL | __GFP_NOFAIL);
+>  	bpf_put_raw_tracepoint(raw_tp->btp);
+>  }
+>  
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index a8d4f253ed77..a4ea58c7506d 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1955,9 +1955,11 @@ int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+>  	return __bpf_probe_register(btp, prog);
+>  }
+>  
+> -int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+> +int bpf_probe_unregister(struct bpf_raw_event_map *btp, struct bpf_prog *prog,
+> +			 gfp_t flags)
+>  {
+> -	return tracepoint_probe_unregister(btp->tp, (void *)btp->bpf_func, prog);
+> +	return tracepoint_probe_unregister(btp->tp, (void *)btp->bpf_func, prog,
+> +					   flags);
+>  }
+>  
+>  int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
+> diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+> index a85effb2373b..ab1ac89caed2 100644
+> --- a/kernel/trace/trace_events.c
+> +++ b/kernel/trace/trace_events.c
+> @@ -296,7 +296,8 @@ int trace_event_reg(struct trace_event_call *call,
+>  	case TRACE_REG_UNREGISTER:
+>  		tracepoint_probe_unregister(call->tp,
+>  					    call->class->probe,
+> -					    file);
+> +					    file,
+> +					    GFP_KERNEL);
+>  		return 0;
+>  
+>  #ifdef CONFIG_PERF_EVENTS
+> @@ -307,7 +308,8 @@ int trace_event_reg(struct trace_event_call *call,
+>  	case TRACE_REG_PERF_UNREGISTER:
+>  		tracepoint_probe_unregister(call->tp,
+>  					    call->class->perf_probe,
+> -					    call);
+> +					    call,
+> +					    GFP_KERNEL);
+>  		return 0;
+>  	case TRACE_REG_PERF_OPEN:
+>  	case TRACE_REG_PERF_CLOSE:
+> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> index 73956eaff8a9..619666a43c9f 100644
+> --- a/kernel/tracepoint.c
+> +++ b/kernel/tracepoint.c
+> @@ -53,10 +53,9 @@ struct tp_probes {
+>  	struct tracepoint_func probes[0];
+>  };
+>  
+> -static inline void *allocate_probes(int count)
+> +static inline void *allocate_probes(int count, gfp_t flags)
+>  {
+> -	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
+> -				       GFP_KERNEL);
+> +	struct tp_probes *p  = kmalloc(struct_size(p, probes, count), flags);
+>  	return p == NULL ? NULL : p->probes;
+>  }
+>  
+> @@ -150,7 +149,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
+>  		}
+>  	}
+>  	/* + 2 : one for new probe, one for NULL func */
+> -	new = allocate_probes(nr_probes + 2);
+> +	new = allocate_probes(nr_probes + 2, GFP_KERNEL);
+>  	if (new == NULL)
+>  		return ERR_PTR(-ENOMEM);
+>  	if (old) {
+> @@ -174,7 +173,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
+>  }
+>  
+>  static void *func_remove(struct tracepoint_func **funcs,
+> -		struct tracepoint_func *tp_func)
+> +		struct tracepoint_func *tp_func, gfp_t flags)
+>  {
+>  	int nr_probes = 0, nr_del = 0, i;
+>  	struct tracepoint_func *old, *new;
+> @@ -207,7 +206,7 @@ static void *func_remove(struct tracepoint_func **funcs,
+>  		int j = 0;
+>  		/* N -> M, (N > 1, M > 0) */
+>  		/* + 1 for NULL */
+> -		new = allocate_probes(nr_probes - nr_del + 1);
+> +		new = allocate_probes(nr_probes - nr_del + 1, flags);
+>  		if (new == NULL)
+>  			return ERR_PTR(-ENOMEM);
+>  		for (i = 0; old[i].func; i++)
+> @@ -264,13 +263,13 @@ static int tracepoint_add_func(struct tracepoint *tp,
+>   * by preempt_disable around the call site.
+>   */
+>  static int tracepoint_remove_func(struct tracepoint *tp,
+> -		struct tracepoint_func *func)
+> +		struct tracepoint_func *func, gfp_t flags)
+>  {
+>  	struct tracepoint_func *old, *tp_funcs;
+>  
+>  	tp_funcs = rcu_dereference_protected(tp->funcs,
+>  			lockdep_is_held(&tracepoints_mutex));
+> -	old = func_remove(&tp_funcs, func);
+> +	old = func_remove(&tp_funcs, func, flags);
+>  	if (IS_ERR(old)) {
+>  		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
+>  		return PTR_ERR(old);
+> @@ -344,7 +343,8 @@ EXPORT_SYMBOL_GPL(tracepoint_probe_register);
+>   *
+>   * Returns 0 if ok, error value on error.
+>   */
+> -int tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data)
+> +int tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data,
+> +				gfp_t flags)
+>  {
+>  	struct tracepoint_func tp_func;
+>  	int ret;
+> @@ -352,7 +352,7 @@ int tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data)
+>  	mutex_lock(&tracepoints_mutex);
+>  	tp_func.func = probe;
+>  	tp_func.data = data;
+> -	ret = tracepoint_remove_func(tp, &tp_func);
+> +	ret = tracepoint_remove_func(tp, &tp_func, flags);
+>  	mutex_unlock(&tracepoints_mutex);
+>  	return ret;
+>  }
 
