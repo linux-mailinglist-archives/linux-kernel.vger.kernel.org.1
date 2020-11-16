@@ -2,93 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1542B3EAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3072B3EB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgKPIa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:30:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbgKPIa0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:30:26 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2EFC0613CF;
-        Mon, 16 Nov 2020 00:30:25 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id q28so2051749pgk.1;
-        Mon, 16 Nov 2020 00:30:25 -0800 (PST)
+        id S1726494AbgKPIdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:33:20 -0500
+Received: from mail-eopbgr680045.outbound.protection.outlook.com ([40.107.68.45]:65441
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726172AbgKPIdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 03:33:19 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xru2Q+xyyZxMllMd8d1cUuhf0Hb5HoG78PPjCox/QwrDcUuUzRijwAZfbmXaDKLf2HrbN2YyfufW7/6W/HJMaQ05nH3WsWhzWewA259RDeELBTpiuMgQDzSdvcDX/zclK0z1lMVUkRHXKLTL6TCwXcZMKlSje5bhmAEowl69V4sCc3gkD5ALQbP1KzeBudCqFZpZDAEc56ye4Rb/mf4FYCKdsCzSsp9mY3oQFSqHnOPtsmXOfvE/KVaydsRRwQdK5jXfW+SVRQUzaQthpSY+f8/QvsQ1Fhr3FUJl+yLpJfRffVIqvMTU+jowo2/KE3zhXOm0zRZ7mBPsd80K3DaAag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k2QySNCICxOQy3S9ksfipCrmUWMNV3S9uousmOclyUE=;
+ b=Ozl677TozIZPROH3uM5YkVABezMBZqmVUMei0kAlzlenTVUn3IPNhjdasEKxYQ1PG5tSFD5ZwH1jJwwdoWCTeDgLAYCN0Wio77g4XSuqTnafH4ZPjwq+iceBtQzQpdoM6Xp7oJQdj+BSWUTZ7a3zG2i5HC+jfbiKqhBSlNhSQm3A9/OJ0Ix7bK+a5qlCngccru0LWIvmr9iR53+JwDQspCjCaKvreFeqjI37d53RL4+HNVNQvprnYLMvdo70aNnVjf/xj8xy0OBqJSNesPriSwknaMWp087NMXvC9Zegr8GIDvS7H5/15tvGS7X6R+kUcOU1dWXRA3Pmr3Gr13w3NQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=intel.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jbxb2khKyk+y1AIZPk4FBSYKN7b5uI6tHI8Glj/80TI=;
-        b=j3C6TsHguxy5f0E3VtIWwOguLdPZIgBg8t4CjhQ5USXn5KqLieGRowZEm7QXOLJ59I
-         znx1HI8DTuJNyNhmP2yMF39R9LdgSTvwRvemjHhG5sUX0hzUqgoAt+ug5VH+1kGEbjtB
-         vGkp7FzJZTLeOfwsa3KJsaYvF8dwUvLK9b1yj67ma85xraIWscXzS+Bwl9YtVovWrfbj
-         zkqzGpWdFqNs3mqsPHDWNaFsHJZta9g1FS2iydseCbpsj+cDOGIcRwC7MVSFGwdCMB0e
-         41EXO2S5Q5bzu0FbbTiChgyRGPvhq6/ZL8LvMND4CYAsV+7lG5sF0GjXAfDCdltpIM5G
-         EvKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jbxb2khKyk+y1AIZPk4FBSYKN7b5uI6tHI8Glj/80TI=;
-        b=PYyFvMt6YukC4+2JSS6Atjcl4G8dCq2+gMbfWYz425PakP7mFWV50/vTnSwirSn6Pe
-         6hnlJBnztkljE2eAV/YHo7Y+TrJbwqLPKAlYCdzXg4D9P34GVH4YbMluxAUHF3RrFaRY
-         AYoA3hVTIvnmzItDL00ymmKSJhskgvPe1VwZDVe0QiaKvceRa/x332zHpRoca87lKCHu
-         k7GmuGKPR3DwKWjpTqfN+GSgnYg1TR5ib+Lc005BJEcI3o5eUa8Bp3kqyAOZfEzwkP6N
-         LMdKAnMqZnvobt6XRGWTVlj6I9wS/HW7KeXs3JADTAGSe11fdnrcIPtLJiz033mUIhXu
-         ymHQ==
-X-Gm-Message-State: AOAM533X2rsjkaiSRpJDGj8Dbz8LPqyfG6YaBE/mzh1iFrZ3PD4DgB0/
-        jTk9dWIcr0kJg2T80r4Ni93Bt4cYQyhYYA==
-X-Google-Smtp-Source: ABdhPJxY/3Z8cTJir3PLkDclrLS7OiU3jKitrjkL9BdBne7cOV2nK+cNaz1FVUP18aqclkLPkANHww==
-X-Received: by 2002:a17:90a:609:: with SMTP id j9mr14754476pjj.121.1605515425129;
-        Mon, 16 Nov 2020 00:30:25 -0800 (PST)
-Received: from localhost.localdomain (59-125-183-19.HINET-IP.hinet.net. [59.125.183.19])
-        by smtp.gmail.com with ESMTPSA id ce19sm19670079pjb.53.2020.11.16.00.30.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 00:30:24 -0800 (PST)
-From:   Terry Hsiao <a804335@gmail.com>
-X-Google-Original-From: Terry Hsiao <terry_hsiao@compal.corp-partner.google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        dianders@chromium.org, terry_hsiao@compal.corp-partner.google.com,
-        danny_kuo@compal.corp-partner.google.com,
-        jasper_lee@compal.corp-partner.google.com,
-        van_chen@compal.corp-partner.google.com
-Subject: [PATCH] arm64: dts: qcom: sc7180-trogdor: add "pen-insert" label for trogdor
-Date:   Mon, 16 Nov 2020 16:30:14 +0800
-Message-Id: <20201116083014.547-1-terry_hsiao@compal.corp-partner.google.com>
-X-Mailer: git-send-email 2.26.2
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k2QySNCICxOQy3S9ksfipCrmUWMNV3S9uousmOclyUE=;
+ b=YF60FAUPv9CJhfK2NfLw4H6eaaDRz8aox4QBAEAULXJz3jT0pfHojti64DGdNJv3ui7F1NcuFibFaD+4fEiGgOZlfSX2sz/A4cGjsBfV2sYDx14KNjBn6n/JVFOoujRlz6MYplnr2ZAatG1zDLJg6TAG2Cyy2p5v8ASgwQ5ZWkQ=
+Received: from BL0PR02CA0086.namprd02.prod.outlook.com (2603:10b6:208:51::27)
+ by CY4PR02MB2855.namprd02.prod.outlook.com (2603:10b6:903:11f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
+ 2020 08:33:16 +0000
+Received: from BL2NAM02FT020.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:51:cafe::1) by BL0PR02CA0086.outlook.office365.com
+ (2603:10b6:208:51::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend
+ Transport; Mon, 16 Nov 2020 08:33:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT020.mail.protection.outlook.com (10.152.77.162) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3564.22 via Frontend Transport; Mon, 16 Nov 2020 08:33:15 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 16 Nov 2020 00:32:49 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 16 Nov 2020 00:32:49 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ adrian.hunter@intel.com,
+ ulf.hansson@linaro.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-mmc@vger.kernel.org
+Received: from [172.23.64.106] (port=51129 helo=xhdvnc125.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <manish.narani@xilinx.com>)
+        id 1keZwO-0002Tr-7e; Mon, 16 Nov 2020 00:32:48 -0800
+Received: by xhdvnc125.xilinx.com (Postfix, from userid 16987)
+        id 68BA112109C; Mon, 16 Nov 2020 14:02:47 +0530 (IST)
+From:   Manish Narani <manish.narani@xilinx.com>
+To:     <michal.simek@xilinx.com>, <adrian.hunter@intel.com>,
+        <ulf.hansson@linaro.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <git@xilinx.com>, Manish Narani <manish.narani@xilinx.com>
+Subject: [PATCH v2 0/3] Bug Fixes to Tap Delay code in SDHCI Arasan driver
+Date:   Mon, 16 Nov 2020 14:02:42 +0530
+Message-ID: <1605515565-117562-1-git-send-email-manish.narani@xilinx.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 79b9a4c3-e72a-4150-e362-08d88a0a439e
+X-MS-TrafficTypeDiagnostic: CY4PR02MB2855:
+X-Microsoft-Antispam-PRVS: <CY4PR02MB2855B2D9EB99373E48F7B9CFC1E30@CY4PR02MB2855.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wbCwgWMLIT4mHwPNfCMu3W6yC+0eOjJlEJt6nXEC1dgmJTt3xW11FR1BLDlPvAm4h4RboTb04TiVqQo7GKxbDV3Ihprx3WQWBShmrJgAQQPx/WH6woqSNbfKrnuGXTKH4MUiUnz1I8AnhpKP0PXu41CdaiYIYsQ0cLGXsY8Owhcu9uBZ4Es+gRnHB8sg2zxQdsmY4oevTLBMOAWekKpymDTFdribr9lbRDHtMFQ7E4+5X9R4+n0a4sq9HL/3JoqF5BflxGMvEdg74EVekeHK+bn+X/xz5nV6ugOfi2VHC22nhub0Aa9V6A9I+fKEVqMqy4UlwFy+RrcSL+X/mdko/Dg30UBoBODhGDxfKOIHw0K8kGwh1tl5708q5V+aF9UBVDVueAEpcXNoLoqJjA5soqt5r1kjtx8yaDJYMnuoIJmJT5Cxz/BXChxsB1xaGrO3QGovl8+Yk39p6osqiFhsI92GVK77wnIvGn+Bxn+538WtsnCbRBhlm4uBuJCpWmM+
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(396003)(39850400004)(376002)(136003)(46966005)(7636003)(356005)(82740400003)(26005)(70586007)(47076004)(8676002)(36756003)(107886003)(6266002)(70206006)(336012)(426003)(5660300002)(4744005)(316002)(42186006)(966005)(478600001)(110136005)(2616005)(44832011)(54906003)(4326008)(36906005)(83380400001)(186003)(8936002)(82310400003)(6666004)(2906002)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2020 08:33:15.1352
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79b9a4c3-e72a-4150-e362-08d88a0a439e
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT020.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR02MB2855
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a label to the "pen-insert" node in sc7180-trogdor.dtsi
+This patch set consists a couple of minor bug fixes for SDHCI Arasan
+driver. The fixes are for tap delay programming where in some cases
+tuning is failing for some of the SD cards.
 
-Signed-off-by: Terry Hsiao <terry_hsiao@compal.corp-partner.google.com>
----
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+	- Fixed the eemi_ops call issue by replacing to an API call
+	  directly
+	- Merged https://lore.kernel.org/patchwork/patch/1336342/
+	  with this series of patches
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 781e61ad75a61..9de95493ed902 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -201,7 +201,7 @@ gpio_keys: gpio-keys {
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pen_pdct_l>;
- 
--		pen-insert {
-+		pen_insert: pen-insert {
- 			label = "Pen Insert";
- 
- 			/* Insert = low, eject = high */
+Manish Narani (3):
+  mmc: sdhci-of-arasan: Allow configuring zero tap values
+  mmc: sdhci-of-arasan: Use Mask writes for Tap delays
+  mmc: sdhci-of-arasan: Issue DLL reset explicitly
+
+ drivers/mmc/host/sdhci-of-arasan.c | 51 +++++++++++-------------------
+ 1 file changed, 19 insertions(+), 32 deletions(-)
+
 -- 
-2.26.2
+2.17.1
 
