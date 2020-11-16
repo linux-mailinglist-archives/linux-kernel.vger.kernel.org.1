@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6A82B45A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B89342B45E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgKPOSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:18:36 -0500
-Received: from mga17.intel.com ([192.55.52.151]:44670 "EHLO mga17.intel.com"
+        id S1730184AbgKPObb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:31:31 -0500
+Received: from mga02.intel.com ([134.134.136.20]:25467 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgKPOSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:18:36 -0500
-IronPort-SDR: ecGEpSvUZTdJbUktNXYpS9f2RSyDdbn6jSX6vy0aQmDf2IpizZ2aH7mjwI3I7+jbnYB+/L9Sau
- ZNBrwwodM7/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="150599749"
+        id S1729614AbgKPObb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:31:31 -0500
+IronPort-SDR: 7WkET3B31E6scFgsZJF/xXo8HC3kyPLCYDFfdNfh8E7ic+4RghOCo9YZbpnzRqtGY+YS/dW9ik
+ Hwm1OI8UsfoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157778516"
 X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="150599749"
+   d="scan'208";a="157778516"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:18:35 -0800
-IronPort-SDR: vS8QKsFuJV5rCELUzotlPEHJ/ufDutgE31elHl43XyOc5rl+Tf3XxSTnN9vGHjo7MOwi1LW6xY
- xB+oUHuc1tcw==
-X-ExtLoop1: 1
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:31:29 -0800
+IronPort-SDR: K+El57vBYgY5hP1q9UKFPgeoUch/f9q3VoR1XZukigW7fBy5imXpuuCprZOKjFffXpaEwBbTLh
+ jarEOLfyJcYQ==
 X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="531863793"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by fmsmga006.fm.intel.com with ESMTP; 16 Nov 2020 06:18:34 -0800
-Subject: Re: [PATCHv1 4/4] fpga: stratix10-soc: entend driver for bitstream
- authentication
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     trix@redhat.com, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dinguyen@kernel.org,
-        sridhar.rajagopal@intel.com, Richard Gong <richard.gong@intel.com>
-References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
- <1605204403-6663-5-git-send-email-richard.gong@linux.intel.com>
- <20201115191936.GA283592@epycbox.lan>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <0eb7fa0d-30e6-099f-d104-8a9aea7d8030@linux.intel.com>
-Date:   Mon, 16 Nov 2020 08:39:36 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="543620406"
+Received: from wrzedzic-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.34.230])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:31:25 -0800
+Subject: Re: [PATCH] xsk: add cq event
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <90c58756-934d-adf6-64e8-680cfc019cd4@intel.com>
+Date:   Mon, 16 Nov 2020 15:31:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201115191936.GA283592@epycbox.lan>
+In-Reply-To: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Moritz,
-
-On 11/15/20 1:19 PM, Moritz Fischer wrote:
-> On Thu, Nov 12, 2020 at 12:06:43PM -0600, richard.gong@linux.intel.com wrote:
->> From: Richard Gong <richard.gong@intel.com>
->>
->> Exten FPGA manager driver to support FPGA bitstream authentication on
-> Nit: Extend
-
-Sorry, I will fix that in version 2.
-
->> Intel SocFPGA platforms.
->>
->> Signed-off-by: Richard Gong <richard.gong@intel.com>
->> ---
->>   drivers/fpga/stratix10-soc.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
->> index 657a70c..8a59365 100644
->> --- a/drivers/fpga/stratix10-soc.c
->> +++ b/drivers/fpga/stratix10-soc.c
->> @@ -185,7 +185,10 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
->>   	ctype.flags = 0;
->>   	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
->>   		dev_dbg(dev, "Requesting partial reconfiguration.\n");
->> -		ctype.flags |= BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
->> +		ctype.flags |= FPGA_MGR_PARTIAL_RECONFIG;
-> I think we had this discussion during the original review of the
-> stratix10-soc driver?
-
-Yes, we discussed before.
-
+On 2020-11-16 09:10, Xuan Zhuo wrote:
+> When we write all cq items to tx, we have to wait for a new event based
+> on poll to indicate that it is writable. But the current writability is
+> triggered based on whether tx is full or not, and In fact, when tx is
+> dissatisfied, the user of cq's item may not necessarily get it, because it
+> may still be occupied by the network card. In this case, we need to know
+> when cq is available, so this patch adds a socket option, When the user
+> configures this option using setsockopt, when cq is available, a
+> readable event is generated for all xsk bound to this umem.
 > 
-> Wasn't the point of using the BIT() to not assume alignment of FPGA_MGR
-> flags and firmware structure?
+> I can't find a better description of this event,
+> I think it can also be 'readable', although it is indeed different from
+> the 'readable' of the new data. But the overhead of xsk checking whether
+> cq or rx is readable is small.
 > 
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-Yes, we should use BIT().
+Thanks for the patch!
 
-> The FPGA_MGR_* bits are kernel internal and can therefore change, it
-> would be unfortunate to end up in a situation where this breaks the FW
-> interface (assuming firmware uses the value in pass-through which it
-> looks like is what is happening).
+I'm not a fan of having two different "readable" event (both Rx and cq).
+Could you explain a bit what the use case is, so I get a better
+understanding.
 
-In that case, I should use the flag defined in stratix10-soc driver driver.
+The Tx queues has a back-pressure mechanism, determined of the number of
+elements in cq. Is it related to that?
 
-> 
->> +	} else if (info->flags & FPGA_MGR_BITSTREM_AUTHENTICATION) {
->> +		dev_dbg(dev, "Requesting bitstream authentication.\n");
->> +		ctype.flags |= FPGA_MGR_BITSTREM_AUTHENTICATION;
-> Do you want to change this to BIT(COMMAND_AUTHENTICATE_BITSTREAM) or
-> something like that?
+Please explain a bit more what you're trying to solve, and maybe we can
+figure out a better way forward!
 
-OK, I will change to BIT(COMMAND_AUTHENTICATE_BITSTREAM).
 
-Regards,
-Richard
-
->>   	} else {
->>   		dev_dbg(dev, "Requesting full reconfiguration.\n");
->>   	}
->> -- 
->> 2.7.4
->>
-> 
-> Thanks,
-> Moritz
-> 
+Thanks!
+Björn
