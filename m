@@ -2,76 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9912B5081
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 499542B5088
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgKPTEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:04:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725879AbgKPTEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:04:20 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52B132225B;
-        Mon, 16 Nov 2020 19:04:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605553459;
-        bh=YQbOeR0Ir0jO5GxTkZ/KPEcLOqI6KXbHLyISKeSbQ2k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f3nHWDB5UYIanun4/6bqobOCfJotTUjTtZItEmpy0wO6KaXjrxdusbSMS4ljgIs1V
-         pDbRIw4hq7DjsHI/TtpuMdrR/of84ih03VU/ZohdCYYh2vZ8V+NmW9wOj8Dsj2ZgmL
-         OKSRtmDgMyutH1MzfMyRjnQs3SXIohzYYhKlIbjs=
-Date:   Mon, 16 Nov 2020 19:04:00 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: Re: [PATCH] Asoc: qcom: lpass-platform: Fix memory leak
-Message-ID: <20201116190400.GE4739@sirena.org.uk>
-References: <1605416210-14530-1-git-send-email-srivasam@codeaurora.org>
+        id S1729131AbgKPTG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:06:57 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:35922 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729097AbgKPTG5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 14:06:57 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGJ4Q97016656;
+        Mon, 16 Nov 2020 19:06:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=dULoQgUsplByapZP3DMNGbbEAV2dKRIM8c0yqdiC5v8=;
+ b=zm9ao1smSNr3qWo9zha6asmVCfCm4hK+vH0q/Zu5CKg957wmWQxRRQUk7k+c1pURkYjL
+ p65xCblUIPKErA+yhFy900U1trraha2d6rXbjnFvqpwesVfxlLnsOLVAE8m3UonYFryk
+ 2N1nM6HTEreVtQMFPh6VWS1w1CbUIAlxgyXbzEIm75tnC+K6xcDvBPxOZQccwardL3DF
+ APDwVO9aJhWCZDA0LJdeOWaXwmwLuzauhhdLB4Tt3StEFLm9QUE04qqQkleWU4CfL0AJ
+ KTy0/SrDXwRzxiFkOBncIrUa56C+IX1zfMukflRaa6hmJwoRCqeJvSlwjOT672na+UqL qw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 34t4rapvw6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 16 Nov 2020 19:06:40 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGJ4UiF125700;
+        Mon, 16 Nov 2020 19:06:39 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 34ts5v2m38-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Nov 2020 19:06:39 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AGJ6awN014957;
+        Mon, 16 Nov 2020 19:06:36 GMT
+Received: from [10.98.138.28] (/10.98.138.28)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 16 Nov 2020 11:06:36 -0800
+Subject: Re: [PATCH v2] soc: ti: pruss: Fix wrong check against
+ *get_match_data return value
+To:     Suman Anna <s-anna@ti.com>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        ssantosh@kernel.org
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        praneeth@ti.com, tony@atomide.com,
+        Wei Yongjun <weiyongjun1@huawei.com>
+References: <20201116172233.18459-1-grzegorz.jaszczyk@linaro.org>
+ <7a18452c-8c9c-df7d-b175-529ab690623f@ti.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <528e56d5-23d5-9f83-1bf4-a7f786593eae@oracle.com>
+Date:   Mon, 16 Nov 2020 11:06:34 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="brEuL7wsLY8+TuWz"
-Content-Disposition: inline
-In-Reply-To: <1605416210-14530-1-git-send-email-srivasam@codeaurora.org>
-X-Cookie: Immanuel doesn't pun, he Kant.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <7a18452c-8c9c-df7d-b175-529ab690623f@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011160113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011160113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/16/20 9:31 AM, Suman Anna wrote:
+> Hi Santosh,
+> 
+> On 11/16/20 11:22 AM, Grzegorz Jaszczyk wrote:
+>> Since the of_device_get_match_data() doesn't return error code, remove
+>> wrong IS_ERR test. Proper check against NULL pointer is already done
+>> later before usage: if (data && data->...).
+>>
+>> Additionally, proceeding with empty device data is valid (e.g. in case
+>> of "ti,am3356-pruss").
+>>
+>> Fixes: ba59c9b43c86 ("soc: ti: pruss: support CORECLK_MUX and IEPCLK_MUX")
+>> Reported-by: Wei Yongjun <weiyongjun1@huawei.com>
+>> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+>> Acked-by: Suman Anna <s-anna@ti.com>
+> 
+> Can you please pick this up for 5.10-rc's?
+> 
+Nothing is broken so I will just add these for next merge window.
 
---brEuL7wsLY8+TuWz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sun, Nov 15, 2020 at 10:26:50AM +0530, Srinivasa Rao Mandadapu wrote:
-> lpass_pcm_data is not freed in error paths. Free it in
-> error paths to avoid memory leak.
-
-Please use subject lines reflecting the general style for the subsystem,
-it makes it easier for people to spot patches that need to be reviewed.
-
---brEuL7wsLY8+TuWz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+yzSAACgkQJNaLcl1U
-h9CULgf/enozSv/x01jexTc5wfCzv9oWXsElA/pDZMQvwp2/Hix6fWeuOPzmWIo7
-7PYUVqp5i6mJWejVH+qDpIVIwo2V/KzyT81D5JmooPoOglEZzKdiJcj0LK7mkkD+
-T21T3qhVwaWml3gna9W8srBFidN3/gJ7+Agd5M3nQbxGtqINtMPBrJ1y7F6CsGhc
-+pTCkwcpDe/oOhWiV/iifsBhWYmkdCWHypN3vMSDMzuiE5u+PcnZchGhPSdCqrJF
-FXZ0dMoESRKqUS+MoVa0o3tAL6SEnY/gXvmFEJAw7bYCfpID82GULtwfDuuFmApK
-qXYtPZY8/noF2WY+pdHO582yoJ12ag==
-=NfJ5
------END PGP SIGNATURE-----
-
---brEuL7wsLY8+TuWz--
+Regards,
+Santosh
