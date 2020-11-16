@@ -2,126 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8A52B3B35
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 02:48:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23082B3B38
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 02:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgKPBsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 20:48:04 -0500
-Received: from smtprelay0103.hostedemail.com ([216.40.44.103]:50448 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728010AbgKPBsE (ORCPT
+        id S1728406AbgKPBtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 20:49:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728010AbgKPBtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 20:48:04 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 3AFBB18225E1A;
-        Mon, 16 Nov 2020 01:48:03 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:334:355:368:369:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2561:2564:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4605:5007:6691:8957:9025:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12679:12683:12696:12737:12740:12895:12986:13161:13229:13255:13439:13894:14181:14659:14721:21080:21324:21365:21451:21627:21740:21939:30030:30045:30054:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: wine72_45072f727325
-X-Filterd-Recvd-Size: 3673
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 16 Nov 2020 01:48:02 +0000 (UTC)
-Message-ID: <720b8857ebbe1be81babd04463b865d94049c0a9.camel@perches.com>
-Subject: Re: [tip: timers/core] timer_list: Use printk format instead of
- open-coded symbol lookup
-From:   Joe Perches <joe@perches.com>
-To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org
-Date:   Sun, 15 Nov 2020 17:48:01 -0800
-In-Reply-To: <160548066806.11244.12654291126762323623.tip-bot2@tip-bot2>
-References: <20201104163401.GA3984@ls3530.fritz.box>
-         <160548066806.11244.12654291126762323623.tip-bot2@tip-bot2>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 15 Nov 2020 20:49:06 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452FEC0613CF;
+        Sun, 15 Nov 2020 17:49:06 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id d3so7542576plo.4;
+        Sun, 15 Nov 2020 17:49:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=dwf4L1qwHkkiE8Qr6IfZkqYtpEVJ5wghNmjsqqSTRBc=;
+        b=B1XiwTKYjUgE+/mAp4kiu26thv7ahq9rDf4oPdhAyuGegHghLtTgR5vyYuWkLOcPM1
+         6671K7TtFw+Hw2ayTTTQGo1Iz5S0Cpvz76zSfVjSW1Ssd0u5qbB309W4SwlJt1oucziw
+         urkfqy30eLgajtePU6K858M4Re9SMfnHrqakYjIaC1MrbEI1bdHt0q0DujbRFQ1j7gGb
+         F5yFYv3GBEBTFlXNBwNvFW3M/9kV7B4ByNjQ66OAP47TUFcP/Ci54GAN0x4ibg9YkWha
+         jZqFToWxP31WsGnR50kYVjZbXa2QmvJqAkCJgdqkKEotTxWcNb2B2G7udtgLWeIdH9X0
+         5BMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=dwf4L1qwHkkiE8Qr6IfZkqYtpEVJ5wghNmjsqqSTRBc=;
+        b=owsaQ9xiblQNRAGvIWsnm3e8rvH2yErQTXMQ/XdGR/3pJvZFMv8WDQHiSpfcSxrfkn
+         7dgknDUltxw6OwjyLbFBzCwSRh1pVBTxTILDGhB/yw2zdzJI37CCrHDQi9pp5eXUbsg9
+         sktRibjSftYYUzIoK/5vvWnd7AK9Kc95RpsVuBc49rLfOpKd0B8HEupS9tOC3T8MyIGa
+         O8oZ+Lzw1iNYZorhEdP8WXWvj05sdwGf4MnunnNLtVHVREp8LX2FRxCtohHkcV0jAr4L
+         h5UraKY1Yur0eyh5jcgl0S6XeCUnMwLGISRv2DI7qO6Growd/sD5YSsixn9T+O36Uo5g
+         GsQg==
+X-Gm-Message-State: AOAM531hPqlCfuvSZ1XI89rIo/ncWLllX5QBPFJhihq+LDy42GWnzYYW
+        GZCkIi9xNYMl5++2arZa8oyRLtwYSdo=
+X-Google-Smtp-Source: ABdhPJw8wcYZ5fS5uDas78NkRnt336UK2Awawhc0c+GdfEv77aJJsBQSVnVn7t+uWhNF3OxG966FRw==
+X-Received: by 2002:a17:902:9042:b029:d6:fe3f:6688 with SMTP id w2-20020a1709029042b02900d6fe3f6688mr10636858plz.75.1605491345753;
+        Sun, 15 Nov 2020 17:49:05 -0800 (PST)
+Received: from localhost (27-32-36-31.tpgi.com.au. [27.32.36.31])
+        by smtp.gmail.com with ESMTPSA id h5sm16037129pfn.12.2020.11.15.17.49.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 17:49:05 -0800 (PST)
+Date:   Mon, 16 Nov 2020 11:48:58 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 1/3] asm-generic/atomic64: Add support for ARCH_ATOMIC
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Will Deacon <will@kernel.org>
+References: <20201111110723.3148665-1-npiggin@gmail.com>
+        <20201111110723.3148665-2-npiggin@gmail.com>
+        <3086114c-8af6-3863-0cbf-5d3956fcda95@csgroup.eu>
+        <20201111134412.GT2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201111134412.GT2611@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <1605491118.ek4lw8ppgq.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-15 at 22:51 +0000, tip-bot2 for Helge Deller wrote:
-> The following commit has been merged into the timers/core branch of tip:
-> 
-> Commit-ID:     da88f9b3113620dcd30fc203236aa53d5430ee98
-> Gitweb:        https://git.kernel.org/tip/da88f9b3113620dcd30fc203236aa53d5430ee98
-> Author:        Helge Deller <deller@gmx.de>
-> AuthorDate:    Wed, 04 Nov 2020 17:34:01 +01:00
-> Committer:     Thomas Gleixner <tglx@linutronix.de>
-> CommitterDate: Sun, 15 Nov 2020 20:47:14 +01:00
-> 
-> timer_list: Use printk format instead of open-coded symbol lookup
-> 
-> Use the "%ps" printk format string to resolve symbol names.
-> 
-> This works on all platforms, including ia64, ppc64 and parisc64 on which
-> one needs to dereference pointers to function descriptors instead of
-> function pointers.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Link: https://lore.kernel.org/r/20201104163401.GA3984@ls3530.fritz.box
-> 
-> 
-> ---
->  kernel/time/timer_list.c | 66 +++++++++++----------------------------
->  1 file changed, 19 insertions(+), 47 deletions(-)
-> 
-> diff --git a/kernel/time/timer_list.c b/kernel/time/timer_list.c
-> index acb326f..6939140 100644
-> --- a/kernel/time/timer_list.c
-> +++ b/kernel/time/timer_list.c
-> @@ -42,24 +42,11 @@ static void SEQ_printf(struct seq_file *m, const char *fmt, ...)
->  	va_end(args);
->  }
->  
-> 
-> -static void print_name_offset(struct seq_file *m, void *sym)
-> -{
-> -	char symname[KSYM_NAME_LEN];
-> -
-> -	if (lookup_symbol_name((unsigned long)sym, symname) < 0)
-> -		SEQ_printf(m, "<%pK>", sym);
-> -	else
-> -		SEQ_printf(m, "%s", symname);
-> -}
-> -
->  static void
->  print_timer(struct seq_file *m, struct hrtimer *taddr, struct hrtimer *timer,
->  	    int idx, u64 now)
->  {
-> -	SEQ_printf(m, " #%d: ", idx);
-> -	print_name_offset(m, taddr);
-> -	SEQ_printf(m, ", ");
-> -	print_name_offset(m, timer->function);
-> +	SEQ_printf(m, " #%d: <%pK>, %ps", idx, taddr, timer->function);
->  	SEQ_printf(m, ", S:%02x", timer->state);
->  	SEQ_printf(m, "\n");
+Excerpts from Peter Zijlstra's message of November 11, 2020 11:44 pm:
+> On Wed, Nov 11, 2020 at 02:39:01PM +0100, Christophe Leroy wrote:
+>> Hello,
+>>=20
+>> Le 11/11/2020 =C3=A0 12:07, Nicholas Piggin a =C3=A9crit=C2=A0:
+>> > This passes atomic64 selftest on ppc32 on qemu (uniprocessor only)
+>> > both before and after powerpc is converted to use ARCH_ATOMIC.
+>>=20
+>> Can you explain what this change does and why it is needed ?
+>=20
+> That certainly should've been in the Changelog. This enables atomic
+> instrumentation, see asm-generic/atomic-instrumented.h. IOW, it makes
+> atomic ops visible to K*SAN.
+>=20
 
-trivia:
+Right. This specific patch doesn't actually "do" anything except
+allow generic atomic64 to be used with ARCH_ATOMIC. It does that
+by re-naming some things to avoid name collisions and also providing
+the arch_ prefix that ARCH_ATOMIC expects.
 
-This could be coalesced into a single line statement.
+I don't know what should be in the changelog. I suppose the latter,
+the former is discoverable by looking at ARCH_ATOMIC code and
+patches but I guess it's polite and doesn't hurt to include the
+former as well.
 
-	SEQ_printf(m, "%d: <%pK>, %ps, S:%02x\n",
-		   idx, taddr, timer->function, timer->state);
+I'll send an update before long.
 
-[]
-
-> -	if (dev->set_state_periodic) {
-> -		SEQ_printf(m, " periodic: ");
-> -		print_name_offset(m, dev->set_state_periodic);
-> -		SEQ_printf(m, "\n");
-> -	}
-> +	if (dev->set_state_periodic)
-> +		SEQ_printf(m, " periodic:       %ps\n",
-> +			dev->set_state_periodic);
-
-There is now additional whitespace after periodic: and oneshot:
-
-This _might_ break some silly script that uses fixed column alignment
-for the SEQ_ output.
-
-It does look nicer now though.
-
+Thanks,
+Nick
