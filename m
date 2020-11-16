@@ -2,56 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9012B4022
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EAE2B4025
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbgKPJqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:46:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726598AbgKPJqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:46:16 -0500
-Received: from localhost (unknown [122.171.203.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30AE420782;
-        Mon, 16 Nov 2020 09:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605519976;
-        bh=88dgvohs5sFfjwOsI6WM53YIqM3Q3dM9tg6dsFyp4bE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OWn7aaXR7ABabK9+RwFQUlkWeeIKuufY6m2/1e8PiAn4xkpyB9IZ9JqwlM6btiatf
-         pObXnDohcXpGz2QYMaRFGqRGOL5glx91V6RQ5XweEqTxUrgsAfqXKFCtv2nVN85nfc
-         Su5vBYtQZho8oyUhoP5Q1NdSeweG2J7LoYhW2z6I=
-Date:   Mon, 16 Nov 2020 15:16:11 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     kishon@ti.com, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] phy: amlogic: Add support for AXG MIPI D-PHY
-Message-ID: <20201116094611.GT7499@vkoul-mobl>
-References: <20201104134730.1545875-1-narmstrong@baylibre.com>
- <b2aa7b6c-b590-ff4a-d161-364e4e968b26@baylibre.com>
+        id S1728617AbgKPJrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:47:36 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:45907 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgKPJrf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:47:35 -0500
+Received: by mail-oi1-f193.google.com with SMTP id k19so9504714oic.12;
+        Mon, 16 Nov 2020 01:47:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z+F5r+A2Ydy3g6regFzy4mPZxcGaSWa5FXZJrRUitmk=;
+        b=kIT5nfB1ZdslkbPXvstIPtol8scy4M/y1cVemcobxGuAW4cj1ZqhDCwRBY0Njfoqvx
+         mNCtJHCLfEyXDH/83ymg5HXlwqC7hx1bTqSs+1ESMhSGLA+xJhsvaEEzNHGUAdXkPcXJ
+         4MMzIK84NsgmA1lqP+8qg4etuRfE243bRyezbwVzKHtvkGwX7AV+wa47GeGNySeH+3uA
+         w4Bv/0Cm5sm01oLHEZYD3jSQwHuqGu+mmvzjk0dums97yWXzN+CF5SEux+qGUtXd+1UL
+         EYBDyxO6pspI0606de4HREsHV1zy7AJit8ygjf9/Z4okL+bXyg3FajEfGncJVZX6RHKi
+         FlEQ==
+X-Gm-Message-State: AOAM533kLXmMpK1Xft8fPBiBncQBSlpblqYaGU0NG0BHrZJT3sg3Y+uD
+        uBXIsWhWUUBL3FmfiSy+kbjoy1vnq1pZrsBpj1E=
+X-Google-Smtp-Source: ABdhPJywjKJgEoVdofvrrxMy7A30vVriKI1tM5Mq/PI9qja7lbnht9Sd63/thbMiAKpLUQgfaV6TpBEM7w2Aq4WrXdM=
+X-Received: by 2002:aca:c3c4:: with SMTP id t187mr8708087oif.148.1605520054848;
+ Mon, 16 Nov 2020 01:47:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2aa7b6c-b590-ff4a-d161-364e4e968b26@baylibre.com>
+References: <20200826111628.794979401@linutronix.de> <20201112125531.GA873287@nvidia.com>
+ <87mtzmmzk6.fsf@nanos.tec.linutronix.de> <87k0uqmwn4.fsf@nanos.tec.linutronix.de>
+ <87d00imlop.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87d00imlop.fsf@nanos.tec.linutronix.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 16 Nov 2020 10:47:23 +0100
+Message-ID: <CAMuHMdXA7wfJovmfSH2nbAhN0cPyCiFHodTvg4a8Hm9rx5Dj-w@mail.gmail.com>
+Subject: Re: iommu/vt-d: Cure VF irqdomain hickup
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Ziyad Atiyyeh <ziyadat@nvidia.com>,
+        Itay Aveksis <itayav@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-11-20, 09:47, Neil Armstrong wrote:
-> Hi Vinod, Kishon,
-> 
-> 
-> On 04/11/2020 14:47, Neil Armstrong wrote:
-> > The Amlogic AXg SoCs embeds a MIPI D-PHY to communicate with DSI
-> > panels, this adds the bindings.
-> > 
-> > This D-PHY depends on a separate analog PHY.
+Hi Thomas,
 
-Am not sure why but these two do not seem to be in my inbox, can you
-please resend this and the other one please
+On Thu, Nov 12, 2020 at 8:16 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> The recent changes to store the MSI irqdomain pointer in struct device
+> missed that Intel DMAR does not register virtual function devices.  Due to
+> that a VF device gets the plain PCI-MSI domain assigned and then issues
+> compat MSI messages which get caught by the interrupt remapping unit.
+>
+> Cure that by inheriting the irq domain from the physical function
+> device.
+>
+> That's a temporary workaround. The correct fix is to inherit the irq domain
+> from the bus, but that's a larger effort which needs quite some other
+> changes to the way how x86 manages PCI and MSI domains.
+>
+> Fixes: 85a8dfc57a0b ("iommm/vt-d: Store irq domain in struct device")
+> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  drivers/iommu/intel/dmar.c |   19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+>
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -333,6 +333,11 @@ static void  dmar_pci_bus_del_dev(struct
+>         dmar_iommu_notify_scope_dev(info);
+>  }
+>
+> +static inline void vf_inherit_msi_domain(struct pci_dev *pdev)
+> +{
+> +       dev_set_msi_domain(&pdev->dev, dev_get_msi_domain(&pdev->physfn->dev));
+
+If CONFIG_PCI_ATS is not set:
+
+    error: 'struct pci_dev' has no member named 'physfn'
+
+http://kisskb.ellerman.id.au/kisskb/buildresult/14400927/
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-~Vinod
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
