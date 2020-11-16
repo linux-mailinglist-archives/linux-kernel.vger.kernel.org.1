@@ -2,183 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5F72B5423
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E1C2B5426
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728203AbgKPWKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:10:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgKPWKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:10:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E85A223BF;
-        Mon, 16 Nov 2020 22:10:29 +0000 (UTC)
-Date:   Mon, 16 Nov 2020 17:10:27 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck <paulmck@kernel.org>, Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
-Message-ID: <20201116171027.458a6c17@gandalf.local.home>
-In-Reply-To: <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
-References: <00000000000004500b05b31e68ce@google.com>
-        <20201115055256.65625-1-mmullins@mmlx.us>
-        <20201116121929.1a7aeb16@gandalf.local.home>
-        <1889971276.46615.1605559047845.JavaMail.zimbra@efficios.com>
-        <20201116154437.254a8b97@gandalf.local.home>
-        <20201116160218.3b705345@gandalf.local.home>
-        <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728492AbgKPWN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:13:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728284AbgKPWN0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 17:13:26 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D48AC0613CF;
+        Mon, 16 Nov 2020 14:13:26 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 073801F45D5B
+Subject: Re: rmk/for-next bisection: baseline.login on bcm2836-rpi-2-b
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernelci-results@groups.io,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mike Rapoport <rppt@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Collabora Kernel ML <kernel@collabora.com>
+References: <5fadef1f.1c69fb81.9166e.093c@mx.google.com>
+ <e16e2ce5-dc21-d159-ecf2-e0a430d772e1@collabora.com>
+ <CAMj1kXFrxYqTARLprws6ja2=C1xZNC+TNr0Vvayr6sReqsUhyg@mail.gmail.com>
+ <ce91a878-5ce3-614d-d10c-569b891b12d0@collabora.com>
+ <20201113155825.GD1551@shell.armlinux.org.uk>
+ <CAMj1kXHMBNK4ke3j0=h-xkxR9sWe3x_D2TLsPtDZv-sWCW4eWQ@mail.gmail.com>
+ <CAMj1kXH6_-tNuhOVDJA4mhEUQBDTDLjJA8CUkb4mRFsAZSy9ig@mail.gmail.com>
+ <CAMj1kXEFMgRZ1QgaAfwvg7Um-=UdiG-THGAySwrBHhQX=tMPeQ@mail.gmail.com>
+ <CAMj1kXE-c+7yFwqxZ2WDBG5LOtLbnSgacuGgG1P+CY3PUwu+GA@mail.gmail.com>
+ <CAMj1kXH-BKvykS0wL5BCv5Eh4FWMZxHmM6nHV8MeRACUbWjCPw@mail.gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <0e0da2b3-4751-5491-7972-67223e8fe0ba@collabora.com>
+Date:   Mon, 16 Nov 2020 22:13:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAMj1kXH-BKvykS0wL5BCv5Eh4FWMZxHmM6nHV8MeRACUbWjCPw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 16:34:41 -0500 (EST)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On 16/11/2020 12:20, Ard Biesheuvel wrote:
+> On Mon, 16 Nov 2020 at 12:20, Ard Biesheuvel <ardb@kernel.org> wrote:
+>>
+>> On Sun, 15 Nov 2020 at 15:11, Ard Biesheuvel <ardb@kernel.org> wrote:
+>>>
+>>> On Fri, 13 Nov 2020 at 17:25, Ard Biesheuvel <ardb@kernel.org> wrote:
+>>>>
+>>>> On Fri, 13 Nov 2020 at 17:15, Ard Biesheuvel <ardb@kernel.org> wrote:
+>>>>>
+>>>>> On Fri, 13 Nov 2020 at 16:58, Russell King - ARM Linux admin
+>>>>> <linux@armlinux.org.uk> wrote:
+>>>>>>
+>>>>>> On Fri, Nov 13, 2020 at 03:43:27PM +0000, Guillaume Tucker wrote:
+>>>>>>> On 13/11/2020 10:35, Ard Biesheuvel wrote:
+>>>>>>>> On Fri, 13 Nov 2020 at 11:31, Guillaume Tucker
+>>>>>>>> <guillaume.tucker@collabora.com> wrote:
+>>>>>>>>>
+>>>>>>>>> Hi Ard,
+>>>>>>>>>
+>>>>>>>>> Please see the bisection report below about a boot failure on
+>>>>>>>>> RPi-2b.
+>>>>>>>>>
+>>>>>>>>> Reports aren't automatically sent to the public while we're
+>>>>>>>>> trialing new bisection features on kernelci.org but this one
+>>>>>>>>> looks valid.
+>>>>>>>>>
+>>>>>>>>> There's nothing in the serial console log, probably because it's
+>>>>>>>>> crashing too early during boot.  I'm not sure if other platforms
+>>>>>>>>> on kernelci.org were hit by this in the same way, but there
+>>>>>>>>> doesn't seem to be any.
+>>>>>>>>>
+>>>>>>>>> The same regression can be see on rmk's for-next branch as well
+>>>>>>>>> as in linux-next.  It happens with both bcm2835_defconfig and
+>>>>>>>>> multi_v7_defconfig.
+>>>>>>>>>
+>>>>>>>>> Some more details can be found here:
+>>>>>>>>>
+>>>>>>>>>   https://kernelci.org/test/case/id/5fae44823818ee918adb8864/
+>>>>>>>>>
+>>>>>>>>> If this looks like a real issue but you don't have a platform at
+>>>>>>>>> hand to reproduce it, please let us know if you would like the
+>>>>>>>>> KernelCI test to be re-run with earlyprintk or some debug config
+>>>>>>>>> turned on, or if you have a fix to try.
+>>>>>>>>>
+>>>>>>>>> Best wishes,
+>>>>>>>>> Guillaume
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> Hello Guillaume,
+>>>>>>>>
+>>>>>>>> That patch did have an issue, but it was already fixed by
+>>>>>>>>
+>>>>>>>> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9020/1
+>>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=fc2933c133744305236793025b00c2f7d258b687
+>>>>>>>>
+>>>>>>>> Could you please double check whether cherry-picking that on top of
+>>>>>>>> the first bad commit fixes the problem?
+>>>>>>>
+>>>>>>> Sadly this doesn't appear to be fixing the issue.  I've
+>>>>>>> cherry-picked your patch on top of the commit found by the
+>>>>>>> bisection but it still didn't boot, here's the git log
+>>>>>>>
+>>>>>>> cbb9656e83ca ARM: 9020/1: mm: use correct section size macro to describe the FDT virtual address
+>>>>>>> 7a1be318f579 ARM: 9012/1: move device tree mapping out of linear region
+>>>>>>> e9a2f8b599d0 ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+>>>>>>> 3650b228f83a Linux 5.10-rc1
+>>>>>>>
+>>>>>>> Test log: https://people.collabora.com/~gtucker/lava/boot/rpi-2-b/v5.10-rc1-3-gcbb9656e83ca/
+>>>>>>>
+>>>>>>> There's no output so it's hard to tell what is going on, but
+>>>>>>> reverting the bad commmit does make the board to boot (that's
+>>>>>>> what "revert: PASS" means in the bisect report).  So it's
+>>>>>>> unlikely that there is another issue causing the boot failure.
+>>>>>>
+>>>>>> These silent boot failures are precisely what the DEBUG_LL stuff (and
+>>>>>> early_printk) is supposed to help with - getting the kernel messages
+>>>>>> out when there is an oops before the serial console is initialised.
+>>>>>>
+>>>>>
+>>>>> If this is indeed related to the FDT mapping, I would assume
+>>>>> earlycon=... to be usable here.
+>>>>>
+>>>>> I will try to reproduce this on a RPi3 but I don't have a RPi2 at
+>>>>> hand, unfortunately.
+>>>>>
+>>>>> Would you mind having a quick try whether you can reproduce this on
+>>>>> QEMU, using the raspi2 machine model? If so, that would be a *lot*
+>>>>> easier to diagnose.
+>>>>
+>>>> Also, please have a go with 'earlycon=pl011,0x3f201000' added to the
+>>>> kernel command line.
+>>>
+>>> I cannot reproduce this - I don't have the exact same hardware, but
+>>> for booting the kernel, I think RPi2 and RPi3 should be sufficiently
+>>> similar, and I can boot on Rpi3 using a u-boot built for rpi2 using
+>>> your provided dtb for RPi2.
 
-> ----- On Nov 16, 2020, at 4:02 PM, rostedt rostedt@goodmis.org wrote:
+There's a RPi 3b in BayLibre's lab and it's booting fine, here in
+32-bit mode from the exact same kernel build as the earlier link
+showing the problem on RPi 2b:
+
+  https://kernelci.org/test/plan/id/5fae3fa710b60de7d2db8859/
+
+>>> What puzzles me is that u-boot reports itself as
+>>>
+>>> U-Boot 2016.03-rc1-00131-g39af3d8-dirty
+>>>
+>>> RPI Model B+ (0x10)
+>>>
+>>> which is the ARMv6 model not the ARMv7, but then the kernel reports
+>>>
+>>> CPU: ARMv7 Processor [410fc075] revision 5 (ARMv7), cr=10c53c7d
+
+That is rather puzzling indeed.  Either the bootloader is wrong,
+or we're booting a RPi 1B+ with a RPi 2B device tree...  but I
+wouldn't expect that to be compatible.  I'm pretty sure it is
+really a RPI 2B (BCM2836 ARMv7) and for some reason the
+bootloader is printing the wrong message.  I can try to take a
+look at the version of u-boot that was flashed on that board.
+
+>> Another thing I noticed is that the bootloader on these boards loads
+>> the FDT at address 0x100, which is described by the FDT itself as
+>> reserved memory, and which typically holds the spin tables used for
+>> SMP boot.
+>>
+>> Could you try loading the DT elsewhere, and see if that changes anything?
+
+OK, I think it's worth trying that in any case.  I'll see if I
+can do it tomorrow.  I'll just have to stop kernelci.org tests on
+that board while changing the bootloader configuration to avoid
+inconsistent behaviour.
+
+> I think I narrowed this down to the early DT mapping code, which
+> considers any DT address that falls inside the first section as 'no
+> DT', and then relies on the first section mapping of the decompressed
+> kernel to cover it instead.
 > 
-> > On Mon, 16 Nov 2020 15:44:37 -0500
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >   
-> >> If you use a stub function, it shouldn't affect anything. And the worse
-> >> that would happen is that you have a slight overhead of calling the stub
-> >> until you can properly remove the callback.  
-> > 
-> > Something like this:
-> > 
-> > (haven't compiled it yet, I'm about to though).
-
-Still need more accounting to work on. Almost finished though. ;-)
-
-> > 
-> > -- Steve
-> > 
-> > diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> > index 3f659f855074..8eab40f9d388 100644
-> > --- a/kernel/tracepoint.c
-> > +++ b/kernel/tracepoint.c
-> > @@ -53,10 +53,16 @@ struct tp_probes {
-> > 	struct tracepoint_func probes[];
-> > };
-> > 
-> > -static inline void *allocate_probes(int count)
-> > +/* Called in removal of a func but failed to allocate a new tp_funcs */
-> > +static void tp_stub_func(void)  
+> Could you please try the following change?
 > 
-> I'm still not sure whether it's OK to call a (void) function with arguments.
-
-Actually, I've done it. The thing is, what can actually happen? A void
-function that simply returns should not do anything. If anything, the only
-waste is that the caller would save more registers than necessary.
-
-I can't think of anything that can actually happen, but perhaps there is. I
-wouldn't want to make a stub function for every trace point (it wouldn't be
-hard to do).
-
-But perhaps we should ask the compiler people to make sure.
-
 > 
-> > +{
-> > +	return;
-> > +}
-> > +
-> > +static inline void *allocate_probes(int count, gfp_t extra_flags)
-> > {
-> > 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
-> > -				       GFP_KERNEL);
-> > +				       GFP_KERNEL | extra_flags);
-> > 	return p == NULL ? NULL : p->probes;
-> > }
-> > 
-> > @@ -150,7 +156,7 @@ func_add(struct tracepoint_func **funcs, struct
-> > tracepoint_func *tp_func,
-> > 		}
-> > 	}
-> > 	/* + 2 : one for new probe, one for NULL func */
-> > -	new = allocate_probes(nr_probes + 2);
-> > +	new = allocate_probes(nr_probes + 2, 0);
-> > 	if (new == NULL)
-> > 		return ERR_PTR(-ENOMEM);
-> > 	if (old) {
-> > @@ -188,8 +194,9 @@ static void *func_remove(struct tracepoint_func **funcs,
-> > 	/* (N -> M), (N > 1, M >= 0) probes */
-> > 	if (tp_func->func) {
-> > 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-> > -			if (old[nr_probes].func == tp_func->func &&
-> > -			     old[nr_probes].data == tp_func->data)
-> > +			if ((old[nr_probes].func == tp_func->func &&
-> > +			     old[nr_probes].data == tp_func->data) ||
-> > +			    old[nr_probes].func == tp_stub_func)
-> > 				nr_del++;
-> > 		}
-> > 	}
-> > @@ -207,15 +214,20 @@ static void *func_remove(struct tracepoint_func **funcs,
-> > 		int j = 0;
-> > 		/* N -> M, (N > 1, M > 0) */
-> > 		/* + 1 for NULL */
-> > -		new = allocate_probes(nr_probes - nr_del + 1);
-> > -		if (new == NULL)
-> > -			return ERR_PTR(-ENOMEM);
-> > -		for (i = 0; old[i].func; i++)
-> > -			if (old[i].func != tp_func->func
-> > -					|| old[i].data != tp_func->data)
-> > -				new[j++] = old[i];
-> > -		new[nr_probes - nr_del].func = NULL;
-> > -		*funcs = new;
-> > +		new = allocate_probes(nr_probes - nr_del + 1, __GFP_NOFAIL);
-> > +		if (new) {
-> > +			for (i = 0; old[i].func; i++)
-> > +				if (old[i].func != tp_func->func
-> > +				    || old[i].data != tp_func->data)  
+> diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+> index 28687fd1240a..7f62c5eccdf3 100644
+> --- a/arch/arm/kernel/head.S
+> +++ b/arch/arm/kernel/head.S
+> @@ -265,10 +265,10 @@ __create_page_tables:
+>          * We map 2 sections in case the ATAGs/DTB crosses a section boundary.
+>          */
+>         mov     r0, r2, lsr #SECTION_SHIFT
+> -       movs    r0, r0, lsl #SECTION_SHIFT
+> +       cmp     r2, #0
+>         ldrne   r3, =FDT_FIXED_BASE >> (SECTION_SHIFT - PMD_ORDER)
+>         addne   r3, r3, r4
+> -       orrne   r6, r7, r0
+> +       orrne   r6, r7, r0, lsl #SECTION_SHIFT
+>         strne   r6, [r3], #1 << PMD_ORDER
+>         addne   r6, r6, #1 << SECTION_SHIFT
+>         strne   r6, [r3]
 > 
-> as you point out in your reply, skip tp_stub_func here too.
-> 
-> > +					new[j++] = old[i];
-> > +			new[nr_probes - nr_del].func = NULL;
-> > +		} else {
-> > +			for (i = 0; old[i].func; i++)
-> > +				if (old[i].func == tp_func->func &&
-> > +				    old[i].data == tp_func->data)
-> > +					old[i].func = tp_stub_func;  
-> 
-> I think you'll want a WRITE_ONCE(old[i].func, tp_stub_func) here, matched
-> with a READ_ONCE() in __DO_TRACE. This introduces a new situation where the
-> func pointer can be updated and loaded concurrently.
 
-I thought about this a little, and then only thing we really should worry
-about is synchronizing with those that unregister. Because when we make
-this update, there are now two states. the __DO_TRACE either reads the
-original func or the stub. And either should be OK to call.
+The kernel is now starting to boot with this change (from the
+patch you sent today), but then it fails to load the ramdisk.
+Here's the git history I have now:
 
-Only the func gets updated and not the data. So what exactly are we worried
-about here?
+7d4093dffe16 ARM: head.S: explicitly map DT even if it lives in the first physical section
+7a1be318f579 ARM: 9012/1: move device tree mapping out of linear region
+e9a2f8b599d0 ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+3650b228f83a Linux 5.10-rc1
 
-> 
-> > +		}
-> > +		*funcs = old;  
-> 
-> The line above seems wrong for the successful allocate_probe case. You will likely
-> want *funcs = new on successful allocation, and *funcs = old for the failure case.
+Test log: https://people.collabora.com/~gtucker/lava/boot/rpi-2-b/v5.10-rc1-3-g7d4093dffe16/2830681.log
+Plain log: https://people.collabora.com/~gtucker/lava/boot/rpi-2-b/v5.10-rc1-3-g7d4093dffe16/2830681-console.log
 
-Yeah, it crashed because of this ;-)
-
-Like I said, untested!
-
--- Steve
+Thanks,
+Guillaume
