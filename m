@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419112B3ABE
+	by mail.lfdr.de (Postfix) with ESMTP id AE4D32B3ABF
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbgKPAYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 19:24:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727618AbgKPAYq (ORCPT
+        id S1728227AbgKPAYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 19:24:48 -0500
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:42427 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727618AbgKPAYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 19:24:46 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD2AC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 16:24:46 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id a3so22136107wmb.5
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 16:24:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PUyT7HTicJllVKXgyA1Cwx+07UYSRPUlkv+F+qeualw=;
-        b=dB8ZpzvzFRUR6qFT8MaXdJo8wn/Lhz8NxKk24CPjLigntQbUGrBCr7Pu1BkgNqwl6z
-         qv6zEvWEzQhMzIUSW+NuTaDXW/SWP9YY4VTbotfeuOMxMua94zbBWgQjZ3f8+8L3o15w
-         a/5ZIfWgv/mi/o+tIX6glAss/M2kk1V28uLKN95vVUOIkFt4o5+kgajawIFuPF3xQwD/
-         j8Uv2wqBuKOniXnKxZovYFm9lx9o7kiHetfCAcu58G8CJhNU1nY/LCl1RUAgmPzghThO
-         7UUJsBWV+DbHgnKCjpgBJGRbAM3rSi1WtLRzQX5fzcpgYzx510zi3avB7G39yR6ZMZXP
-         kiVg==
+        Sun, 15 Nov 2020 19:24:47 -0500
+Received: by mail-pf1-f169.google.com with SMTP id 131so1438437pfb.9;
+        Sun, 15 Nov 2020 16:24:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PUyT7HTicJllVKXgyA1Cwx+07UYSRPUlkv+F+qeualw=;
-        b=pETTLWy56o9WlDerqx/IRVLDDARORqA9cAvcFCdkWUWGMwEKEk+hO2dkIW+kzgthhZ
-         h5FiYo/28BzwJ8GKtUgcKZZdS4348JgPaKPnU88CtvqTKA/MDBdcpf4TVNzM2SxeEUzE
-         4jFaHrDILxfnyFTnOPP0AN9YFiMBCJG/mdxc+jm68mjKjNvjbLlyEeoFWODKV6GT+wQZ
-         NtEmRL2KwqchvrzKL/jYHu3aosSREL+5CG3gZeskE97mHOnN9FKBVRLijc0KNL47Qa4a
-         uPkhkWsGRo96S0wI9CDHOgFUShmN3vbTA2QxAprSFGmiKk/7EwWxTtM9dezD0g1MPr9t
-         mdpw==
-X-Gm-Message-State: AOAM532vy628ZXjlTJ/qU8Fty8FNMPFnYOEIfU1D9/mTTwosWbbySSqP
-        kebXYv8WjOajDs5TPGPRFUS1qk/dIJac0rH6DeE=
-X-Google-Smtp-Source: ABdhPJykcujZq4xRwu+2v95YrVwzQup9pDYXTEx8ALY47iKInAFm0+4TaYD9Q33qlns64mpE/RjQ4bqXGdHt7FAIfHI=
-X-Received: by 2002:a7b:c0cc:: with SMTP id s12mr12453523wmh.41.1605486285009;
- Sun, 15 Nov 2020 16:24:45 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nIvBqkNHZoGMDnxUtw6GpyeKSPZCfiNrlQpFKraauoo=;
+        b=m3QxLNiT78BohDtOVy43jqZ0afEOxA0hHZQv5ESKlvuj6JajFjFzRFpqqOqwDqyWEN
+         nlICnfiua7Dl35MKK11nus/SNa9pvvwYcDcmP2JP8NdVGTCiWYji1S6x7ATsyYSmuhZh
+         rkAOpfNt6GdYqT/4XKehyu6V/sRdWSBRxDy0pCrRX3oDvQESxSLqZ04hTSAQlUEIKK9q
+         eHhP9hXhomWKjkBdN2LmudrjTzqJyorPs/R5N1twiObjln8N+2y3LRcCaEABytCyQQ1W
+         f+qvDHHgS7iggRJH01o/Gw8PYXZ4A9PNeLq408sRqXq0mOGr7MyJFYGsWiBNBfH9Y/3S
+         fyIA==
+X-Gm-Message-State: AOAM533g5Wg9pRXDxEnFTuBQPmaiafvu5IrgjMRuDVsa95j1crlUkrIC
+        f0lKHCvXPdjYV4znABaDY1Y=
+X-Google-Smtp-Source: ABdhPJw0BRnfdNJJ/fR4kJzx7vmF80SE72Bj8puzn42r6IyPTDotqhWej2HOT7kHxXiVHupKVLr8jA==
+X-Received: by 2002:a17:90b:3844:: with SMTP id nl4mr12727502pjb.93.1605486287135;
+        Sun, 15 Nov 2020 16:24:47 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id c2sm15959275pfb.196.2020.11.15.16.24.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 16:24:46 -0800 (PST)
+Date:   Sun, 15 Nov 2020 16:24:45 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the fpga tree
+Message-ID: <X7HGzW8kvimYCUO9@epycbox.lan>
+References: <20201116095240.52d70d6e@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-16-lee.jones@linaro.org>
-In-Reply-To: <20201113134938.4004947-16-lee.jones@linaro.org>
-From:   Qiang Yu <yuq825@gmail.com>
-Date:   Mon, 16 Nov 2020 08:24:33 +0800
-Message-ID: <CAKGbVbsubdPbZJfwXKEgRHn873sCHh98kd8pK+HVvKfpQXwXrA@mail.gmail.com>
-Subject: Re: [PATCH 15/40] drm/lima/lima_drv: Demote kernel-doc formatting abuse
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lima@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116095240.52d70d6e@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied to drm-misc-next.
+On Mon, Nov 16, 2020 at 09:52:40AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Commits
+> 
+>   aaf8fe39c952 ("Revert "fpga: dfl: fix the definitions of type & feature_id for dfl devices"")
+>   9922e71f43ac ("Revert "fpga: dfl: move dfl_device_id to mod_devicetable.h"")
+>   3ae706b58b0b ("Revert "fpga: dfl: add dfl bus support to MODULE_DEVICE_TABLE()"")
+>   dd57ca7ddec5 ("Revert "fpga: dfl: move dfl bus related APIs to include/linux/dfl.h"")
+> 
+> are missing a Signed-off-by from their author and committer.
+> 
+> Reverts are commits, too.  It is also very useful for the commit message
+> of a revert to contain some reason(s) for the revert as this may help
+> future developers.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-On Fri, Nov 13, 2020 at 9:50 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=1 kernel build warning(s):
->
->  drivers/gpu/drm/lima/lima_drv.c:264: warning: cannot understand function prototype: 'const struct drm_driver lima_drm_driver = '
->
-> Cc: Qiang Yu <yuq825@gmail.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: lima@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/lima/lima_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/lima/lima_drv.c b/drivers/gpu/drm/lima/lima_drv.c
-> index d497af91d8505..7b8d7178d09aa 100644
-> --- a/drivers/gpu/drm/lima/lima_drv.c
-> +++ b/drivers/gpu/drm/lima/lima_drv.c
-> @@ -255,7 +255,7 @@ static const struct drm_ioctl_desc lima_drm_driver_ioctls[] = {
->
->  DEFINE_DRM_GEM_FOPS(lima_drm_driver_fops);
->
-> -/**
-> +/*
->   * Changelog:
->   *
->   * - 1.1.0 - add heap buffer support
-> --
-> 2.25.1
->
+Sorry, thanks for catching that, for posterity the reason was
+that Greg had some further comments and didn't take the pull-request
+as-is, so I wanted to have the next-tree reflect that.
+
+I'll be more careful next time,
+
+- Moritz
