@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E669A2B53E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DAD2B53F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbgKPVgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:36:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729760AbgKPVgZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:36:25 -0500
-Received: from smtp-1908.mail.infomaniak.ch (smtp-1908.mail.infomaniak.ch [IPv6:2001:1600:4:17::1908])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D66FC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 13:36:25 -0800 (PST)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CZj7S2n4nzlhKBs;
-        Mon, 16 Nov 2020 22:36:20 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CZj7P4XQrzlh8TF;
-        Mon, 16 Nov 2020 22:36:17 +0100 (CET)
-Subject: Re: [PATCH v22 01/12] landlock: Add object management
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jann Horn <jannh@google.com>, Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20201027200358.557003-1-mic@digikod.net>
- <20201027200358.557003-2-mic@digikod.net> <20201116212609.GA13063@amd>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <523d2141-e6f9-354d-d102-ae8345c84686@digikod.net>
-Date:   Mon, 16 Nov 2020 22:36:17 +0100
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <20201116212609.GA13063@amd>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729846AbgKPVow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:44:52 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:39063 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726235AbgKPVow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 16:44:52 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605563091; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=oc3xa/mkBQIhUBblS+TGGHDeHXWcsS+CUmK5xECBbt0=; b=PPN6bbZ4LSTp1EiOsDF1BU2xeFuUOWr2/p4kHNQSb68iCU6rYNtHXGdy2b1XGi8kPuMEO0uj
+ JCmoU11Efd5WoxWDpRUQHRHo1gzToHg6Hr5RnYM7hA5sCkESj1oiUaji9QX6bH+aoktT0Inq
+ czzvSD2hUCh4cRcgeX68rFZqsJs=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fb2f2d2ba0e43f355268989 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 21:44:50
+ GMT
+Sender: rishabhb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BC5DAC43462; Mon, 16 Nov 2020 21:44:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4042C433C6;
+        Mon, 16 Nov 2020 21:44:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C4042C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, sidgup@codeaurora.org,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH v2 0/3] Add events to trace remoteproc lifecycle
+Date:   Mon, 16 Nov 2020 13:44:41 -0800
+Message-Id: <1605563084-30385-1-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Insert tracepoints in mdt_loader, qcom_scm and remoteproc_core drivers.
+These tracepoints will be used to analyze the time taken
+at each step during bootup/shutdown of the remoteproc. Tracepoints
+in mdt_loader driver provides information about location and size
+of firmware segments being loaded. Also trace the scm pas calls
+used to boot/load remote processors.
 
-On 16/11/2020 22:26, Pavel Machek wrote:
-> Hi!
-> 
->> A Landlock object enables to identify a kernel object (e.g. an inode).
->> A Landlock rule is a set of access rights allowed on an object.  Rules
->> are grouped in rulesets that may be tied to a set of processes (i.e.
->> subjects) to enforce a scoped access-control (i.e. a domain).
->>
->> Because Landlock's goal is to empower any process (especially
->> unprivileged ones) to sandbox themselves, we cannot rely on a
->> system-wide object identification such as file extended attributes.
-> 
-> 
->> +config SECURITY_LANDLOCK
->> +	bool "Landlock support"
->> +	depends on SECURITY
->> +	select SECURITY_PATH
->> +	help
->> +	  Landlock is a safe sandboxing mechanism which enables processes to
->> +	  restrict themselves (and their future children) by gradually
->> +	  enforcing tailored access control policies.  A security policy is a
->> +	  set of access rights (e.g. open a file in read-only, make a
->> +	  directory, etc.) tied to a file hierarchy.  Such policy can be configured
->> +	  and enforced by any processes for themselves thanks to dedicated system
->> +	  calls: landlock_create_ruleset(), landlock_add_rule(), and
->> +	  landlock_enforce_ruleset_current().
-> 
-> How does it interact with setuid binaries? Being able to exec passwd
-> in a sandbox sounds like ... fun way to get root? :-).
+Changelog:
 
-It works like seccomp: if you run with CAP_SYS_ADMIN in the current
-namespace, then SUID binaries may be allowed, otherwise if you use
-PR_SET_NO_NEW_PRIVS, then executing a SUID binary is denied.
+v2 -> v1:
+- Add traces in qcom_scm driver
+- Add traces in remoteproc core to trace the remoteproc state
+- Trace the physical address where segment is loaded in mdt_loader
 
-The 24th version is here:
-https://lore.kernel.org/lkml/20201112205141.775752-1-mic@digikod.net/
+Rishabh Bhatnagar (3):
+  soc: qcom: Add tracepoints to mdt loader
+  firmware: scm: Add tracepoints to scm driver for pas calls
+  remoteproc: Add ftrace events to trace lifecycle of remoteprocs
 
-> 
-> Best regards,
-> 								Pavel
-> 								
-> 
+ drivers/firmware/qcom_scm.c          |  9 ++++
+ drivers/remoteproc/remoteproc_core.c | 19 +++++++-
+ drivers/soc/qcom/mdt_loader.c        |  7 +++
+ include/trace/events/mdt_loader.h    | 38 +++++++++++++++
+ include/trace/events/qcom_scm.h      | 34 ++++++++++++++
+ include/trace/events/remoteproc.h    | 91 ++++++++++++++++++++++++++++++++++++
+ 6 files changed, 197 insertions(+), 1 deletion(-)
+ create mode 100644 include/trace/events/mdt_loader.h
+ create mode 100644 include/trace/events/qcom_scm.h
+ create mode 100644 include/trace/events/remoteproc.h
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
