@@ -2,398 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915802B5476
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4CC2B547D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728496AbgKPWkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:40:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        id S1728719AbgKPWpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbgKPWkH (ORCPT
+        with ESMTP id S1726199AbgKPWpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:40:07 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377F6C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:40:07 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id w14so15546207pfd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:40:07 -0800 (PST)
+        Mon, 16 Nov 2020 17:45:18 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26410C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:45:16 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id z21so27400302lfe.12
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:45:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zGbdjy3/Y9+rPZ81HPwnn/Mn4CrTLmwwvNtIjK4BFAY=;
-        b=QQp3poRYH483KPoxMXnGMtiLPY+mYExG8sfwI7jgECqBtpm7X8O8WukPU6texnVL4A
-         sJmveE+KTeIj0zJAWPIh2Tfd+jQ2ivs0QyQwHyV1rwahhZ+TaSYxClQHmjrLUhgKEtBC
-         Wxeu+tzfTbfgFVWnKuMZfsp8CWHN/3qYtPoac4iQ24PxmcBQWzbauLL5e+ClIjx8B75e
-         T8LBDsKjzdOx06suZOR0VekKnhydpOwbC/XG2l7SCmb3b96RRP136owiT+cF+z+rHPXI
-         vAVM1bZT/Pu1dxJVacSYXusRQKwfvAcJ+uRlgkym6JX0EDCR/28RCCo2dxYJg+oPt13d
-         YWZQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V7vyOUozImZ/Vj6DXTZgOyHzaqJaJ4bTWScJHjraJD0=;
+        b=UK6m4rwwMQ+ZiM7rMbtI8OVsV31axi0ur3CjKSJorDnX1Gst0vzal/kaV9mEG4xb6D
+         2Z7bmH57dHM/vYCD1/L0uTpBBl/ODRTMR8a8eUslaEv91c6Lhx+ef9GETZduzNNe8Z2i
+         UNtU6XfCvlAoO6DnIeZq9EkSU2GJlYvyOQDM8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zGbdjy3/Y9+rPZ81HPwnn/Mn4CrTLmwwvNtIjK4BFAY=;
-        b=JRCqnEPzCToGMGgbBBrLkpo3lVirOCozmYpGfsmXEEv3thrDjFXoU7JPuOEMv3W9lG
-         q1f2s7D8XPzpF/9zVsfu6iLO0sfuy96P0qxMGjFvvUikc8F4qHYoS0CkN1xw3DFwhNd8
-         Af0z3rbjYKHWbPeWtgCSWmxnKU4QApcY8blwwoJ2OBlYxgl6ueMOnTip0ctGYfhs7o8w
-         9VtxYVMI4JcUgeXtbqDnqRIfULOygpkDoxKwZ3DzxUbn//QsLvo1gjZ4eznGchO6mclw
-         pPOW2HvQcnE5B1Iqa3zp8dCwGQo2cjkIAFatYwKuTNaaSILZ+JEh0WCXmNNRQlhUEPIc
-         7lRA==
-X-Gm-Message-State: AOAM5335Ab/XpOAxgWA8HesbxlFTIcTgGpFKnfmZphj2DpAADB6ad0v5
-        CiczC2o6mBWDDkPRNg7ixftKfQ==
-X-Google-Smtp-Source: ABdhPJw60Dx3/SOlb3Rd+KRp+qeKbsnAab5GBhz4ywnXZfxtJnGVem0Rn2kpWHma9MTuCHQBamkPJQ==
-X-Received: by 2002:a63:1a4e:: with SMTP id a14mr1123233pgm.78.1605566406484;
-        Mon, 16 Nov 2020 14:40:06 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id gg19sm470296pjb.21.2020.11.16.14.40.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 14:40:05 -0800 (PST)
-Date:   Mon, 16 Nov 2020 15:40:03 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
-Message-ID: <20201116224003.GC3892875@xps15>
-References: <20201109102023.GA17692@ubuntu>
- <20201109175536.GD3395222@xps15>
- <eb7f6707-4483-3e1a-1e39-7f32fbf437e0@st.com>
- <20201111144942.GA6403@ubuntu>
- <c31b8427-baca-5c77-6420-b592c57a3a7b@st.com>
- <20201112115115.GA11069@ubuntu>
- <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
- <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com>
- <20201116151028.GA1519@ubuntu>
- <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V7vyOUozImZ/Vj6DXTZgOyHzaqJaJ4bTWScJHjraJD0=;
+        b=hxNT1GsSZRF70QejWXOPrQOVThJNDHoxlAI9C2sC89cPJGLn0gLvG9rb58E8+/HAAY
+         V8kPvObqEpukn1kplyuVKd1AXynN8W2WkrrrTjgJ+PI5cWeb3LBoDYU4znvqlNOtjx34
+         /ixkF00vjmkyt05MnDYhgNnVii6nltsCWXslL1aUdKeY7p/oZuxY/aVHYeva4QDxJusR
+         DX9/QF0ED4430XGowtaffJLwrR6BReFvsVnh55dA2NEtC+UaEP7hReVbHVqhqd7RdJlm
+         Uc0vyStFehLil0DIoMn2YqPt2ukzobKlvfGw0nT/js/ROoLcI2yQ7ur6cZUpYDjvwqv0
+         X4pg==
+X-Gm-Message-State: AOAM531q9vnYxJ+aqypNoDRwxPXqk+t9URAFJlsd2zQ9HjKe2Y/31X5i
+        cBigb7dzi2EQFIMaGDLCSpIfdEdqTeo2ZQ==
+X-Google-Smtp-Source: ABdhPJy8SeFykKTs4SebYyFEleQKbZk5ZyVtfBuUTOWOPtT5ca/ZfkAosIvkeuu2HDnypnON5tJviQ==
+X-Received: by 2002:a19:915:: with SMTP id 21mr617898lfj.528.1605566714136;
+        Mon, 16 Nov 2020 14:45:14 -0800 (PST)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id y6sm2921507lfh.99.2020.11.16.14.45.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Nov 2020 14:45:12 -0800 (PST)
+Received: by mail-lj1-f171.google.com with SMTP id v20so21985208ljk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:45:12 -0800 (PST)
+X-Received: by 2002:a2e:3503:: with SMTP id z3mr616470ljz.70.1605566711829;
+ Mon, 16 Nov 2020 14:45:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
+References: <cover.1605560917.git.dxu@dxuuu.xyz> <470ffc3c76414443fc359b884080a5394dcccec3.1605560917.git.dxu@dxuuu.xyz>
+ <CAHk-=wggUw3XYffJ-od8Dbfh-JkXkEuCPjSRR2Z+8HrNUNxJ=g@mail.gmail.com>
+In-Reply-To: <CAHk-=wggUw3XYffJ-od8Dbfh-JkXkEuCPjSRR2Z+8HrNUNxJ=g@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 16 Nov 2020 14:44:56 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiEgTXYgLXg8YxRHnH+eZno800pEp8caskKgDCgq55s+g@mail.gmail.com>
+Message-ID: <CAHk-=wiEgTXYgLXg8YxRHnH+eZno800pEp8caskKgDCgq55s+g@mail.gmail.com>
+Subject: Re: [PATCH bpf v6 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+To:     Daniel Xu <dxu@dxuuu.xyz>, Matt Turner <mattst88@gmail.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 04:51:52PM +0100, Arnaud POULIQUEN wrote:
-> Hi Guennadi,
-> 
-> On 11/16/20 4:10 PM, Guennadi Liakhovetski wrote:
-> > Hi Arnaud,
-> > 
-> > On Mon, Nov 16, 2020 at 03:43:35PM +0100, Arnaud POULIQUEN wrote:
-> >> Hi Guennadi, Mathieu,
-> > 
-> > [snip]
-> > 
-> >> I tried the find_module API, it's quite simple and seems to work well. just need
-> >> to be protected by #ifdef MODULE
-> >>
-> >> I also added a select RMPS_NS in the RPMSG_VIRTIO for compatibility with the legacy.
-> >>
-> >> look to me that this patch is a simple fix that should work also for the vhost...
-> >> that said, the question is can we use this API here?
-> >>
-> >> I attached the patch at the end of the mail.
-> > 
-> > Thanks for the patch. Yes, this would guarantee, that the NS module is loaded. But 
-> > does it also guarantee, that the NS probing completes faster than an NS announcement 
-> > arrives? We have a race here:
-> > 
-> > rpmsg_ns_register_device() -----------------\
-> >      |                                      |
-> > virtio_device_ready()                       |
-> >      |                                      |
-> > remote sends NS announcement      rpmsg_register_device()
-> >      |                                      |
-> >      |                            rpmsg_ns_probe()
-> >      |                                      |
-> >      |                            rpmsg_create_ept()
-> > rpmsg_ns_cb()
-> > 
-> > In practice we *should* be fine - maybe the whole probing (the right branch) happens 
-> > synchronously on the same core as where rpmsg_ns_register_device() was called, or 
-> > even if not, the probing runs locally and the NS announcement either talks to a 
-> > remote core or a VM. So, it *should* be safe, but unless we can make guarantee, that 
-> > the probing is synchronous, I wouldn't rely on this. So, without a completion this 
-> > still seems incomplete to me.
-> 
-> Thanks for this description!
-> I tested on a dual core, and I expected what you are describing above but in
-> fact I observed following:
-> 
->  rpmsg_ns_register_device()
->       |
->  rpmsg_register_device()
->       |
->  rpmsg_ns_probe()
->       |
->  rpmsg_create_ept()
->       |
->  virtio_device_ready()
->       |
->  remote sends NS announcement
->  rpmsg_ns_cb()
-> 
-> Here is the associated call stack generated in rpmsg_ns_probe using "warn_on"
-> 
-> [   11.498678] CPU: 1 PID: 348 Comm: systemd-udevd Not tainted 5.10.0-rc2 #54
-> [   11.504106] Hardware name: STM32 (Device Tree Support)
-> [   11.509271] [<c011062c>] (unwind_backtrace) from [<c010c528>]
-> (show_stack+0x10/0x14)
-> [   11.516992] [<c010c528>] (show_stack) from [<c0ad1360>] (dump_stack+0xb8/0xcc)
-> [   11.524204] [<c0ad1360>] (dump_stack) from [<c0120478>] (__warn+0xd8/0xf0)
-> [   11.531066] [<c0120478>] (__warn) from [<c0acd2a0>] (warn_slowpath_fmt+0x64/0xc4)
-> [   11.538547] [<c0acd2a0>] (warn_slowpath_fmt) from [<bf01505c>]
-> (rpmsg_ns_probe+0x5c/0xe0 [rpmsg_ns])
-> [   11.547681] [<bf01505c>] (rpmsg_ns_probe [rpmsg_ns]) from [<bf0005cc>]
-> (rpmsg_dev_probe+0x14c/0x1b0 [rpmsg_core])
-> [   11.557933] [<bf0005cc>] (rpmsg_dev_probe [rpmsg_core]) from [<c067ae44>]
-> (really_probe+0x208/0x4f0)
-> [   11.567050] [<c067ae44>] (really_probe) from [<c067b2f4>]
-> (driver_probe_device+0x78/0x16c)
-> [   11.575305] [<c067b2f4>] (driver_probe_device) from [<c0678e44>]
-> (bus_for_each_drv+0x84/0xd0)
-> [   11.583822] [<c0678e44>] (bus_for_each_drv) from [<c067ab9c>]
-> (__device_attach+0xf0/0x188)
-> [   11.592075] [<c067ab9c>] (__device_attach) from [<c0679c0c>]
-> (bus_probe_device+0x84/0x8c)
-> [   11.600248] [<c0679c0c>] (bus_probe_device) from [<c0676194>]
-> (device_add+0x3b0/0x7b0)
-> [   11.608165] [<c0676194>] (device_add) from [<bf0003dc>]
-> (rpmsg_register_device+0x54/0x88 [rpmsg_core])
-> [   11.617486] [<bf0003dc>] (rpmsg_register_device [rpmsg_core]) from
-> [<bf00ab84>] (rpmsg_probe+0x2c4/0x3f4 [virtio_rpmsg_bus])
-> [   11.628696] [<bf00ab84>] (rpmsg_probe [virtio_rpmsg_bus]) from [<c05cb748>]
-> (virtio_dev_probe+0x1f4/0x2c4)
-> [   11.638352] [<c05cb748>] (virtio_dev_probe) from [<c067ae44>]
-> (really_probe+0x208/0x4f0)
-> [   11.646406] [<c067ae44>] (really_probe) from [<c067b2f4>]
-> (driver_probe_device+0x78/0x16c)
-> [   11.654658] [<c067b2f4>] (driver_probe_device) from [<c067b648>]
-> (device_driver_attach+0x58/0x60)
-> [   11.663522] [<c067b648>] (device_driver_attach) from [<c067b704>]
-> (__driver_attach+0xb4/0x154)
-> [   11.672134] [<c067b704>] (__driver_attach) from [<c0678d64>]
-> (bus_for_each_dev+0x78/0xc0)
-> [   11.680300] [<c0678d64>] (bus_for_each_dev) from [<c0679ebc>]
-> (bus_add_driver+0x170/0x20c)
-> [   11.688599] [<c0679ebc>] (bus_add_driver) from [<c067c22c>]
-> (driver_register+0x74/0x108)
-> [   11.696662] [<c067c22c>] (driver_register) from [<bf01006c>]
-> (rpmsg_init+0x6c/0x1000 [virtio_rpmsg_bus])
-> [   11.706136] [<bf01006c>] (rpmsg_init [virtio_rpmsg_bus]) from [<c0102090>]
-> (do_one_initcall+0x58/0x2bc)
-> [   11.713616] usb33: supplied by vdd_usb
-> [   11.715500] [<c0102090>] (do_one_initcall) from [<c01b6608>]
-> (do_init_module+0x60/0x248)
-> [   11.715525] [<c01b6608>] (do_init_module) from [<c01b86fc>]
-> (load_module+0x12e8/0x1638)
-> [   11.715546] [<c01b86fc>] (load_module) from [<c01b8cd4>]
-> (sys_finit_module+0xd4/0x130)
-> [   11.715575] [<c01b8cd4>] (sys_finit_module) from [<c0100060>]
-> (ret_fast_syscall+0x0/0x54)
-> 
-> Having said that, does this guarantee the probe, a good question!
-> Maybe you or Mathieu have the answer, not me...
+On Mon, Nov 16, 2020 at 2:15 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> So I've verified that at least on x86-64, this doesn't really make
+> code generation any worse, and I'm ok with the patch from that
+> standpoint.
 
-I did a lot of probing, went deep in the bowels of the user mode helper
-subsystem and looked at sys_load_module().  Especially at do_init_module() where
-function do_one_initcall()[1] is called on mod->init, which happens to be
-rpmsg_ns_init() where the name space driver is registered.  I am confident we
-can rely on this mechanism.
+.. looking closer, it will generate extra code on big-endian
+architectures and on alpha, because of the added "zero_bytemask()".
+But on the usual LE machines, zero_bytemask() will already be the same
+as "mask", so all it adds is that "and" operation with values it
+already had access to.
 
-More comments below...
+I don't think anybody cares about alpha and BE - traditional BE
+architectures have moved to LE anyway. And looking at the alpha
+word-at-a-time code, I don't even understand how it works at all.
 
-[1]. https://elixir.bootlin.com/linux/v5.10-rc3/source/kernel/module.c#L3604
+Adding matt/rth/ivan to the cc, just so that maybe one of them can
+educate me on how that odd alpha zero_bytemask() could possibly work.
+The "2ul << .." part confuses me, I think it should be "1ul << ...".
 
-> So if we can't conclude, adding completion would be OK for me.
-> 
-> Thanks,
-> Arnaud
-> 
-> > 
-> > Thanks
-> > Guennadi
-> > 
-> >>>> Why can it not be called in rpmsg_ns_probe()? The only purpose of this completion 
-> >>>> is to make sure that rpmsg_create_ept() for the NS endpoint has completed before 
-> >>>> we begin communicating with the remote / host, e.g. by calling 
-> >>>> virtio_device_ready() in case of the VirtIO backend, right?
-> >>>
-> >>> How the module driver are probed during device registration is not cristal clear
-> >>> for me here...
-> >>> Your approach looks to me a good compromize, I definitively need to apply and
-> >>> test you patch to well understood the associated scheduling...
-> >>
-> >> I looked in code, trying to understand behavior on device registration.
-> >>
-> >> my understanding is: if driver is already registered (basic built-in or module
-> >> previously loaded) the driver is probed on device registration. No asynchronous
-> >> probing through a work queue or other.
-> >>
-> >> So it seems, (but i'm not enough expert to be 100% sure) that ensuring that the
-> >> rmpsg_ns module is loaded (and so driver registered) before the device register
-> >> is enough, no completion mechanism is needed here.
-> >>
-> >> Regards,
-> >> Arnaud
-> >>
-> >>>
-> >>> Thanks,
-> >>> Arnaud
-> >>>
-> >>>>
-> >>>> Thanks
-> >>>> Guennadi
-> >>>>
-> >>>>> Thanks,
-> >>>>> Arnaud
-> >>>>>
-> >>
-> >> [...]
-> >>
-> >> From 2629298ef1b7eea7a3a7df245abba03914c09e6b Mon Sep 17 00:00:00 2001
-> >> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> >> Date: Mon, 16 Nov 2020 15:07:14 +0100
-> >> Subject: [PATCH] rpmsg: specify dependency between virtio rpmsg and virtio_ns
-> >>
-> >> The rpmsg_ns service has to be registered before the first
-> >> message reception. When used as module, this imply and
-> >> dependency of the rpmsg virtio on the rpmsg_ns module.
-> >> this patch solve the dependency issue.
-> >>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> >> ---
-> >>  drivers/rpmsg/Kconfig            |  1 +
-> >>  drivers/rpmsg/rpmsg_ns.c         |  2 +-
-> >>  drivers/rpmsg/virtio_rpmsg_bus.c | 22 ++++++++++++++++++++++
-> >>  3 files changed, 24 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> >> index c3fc75e6514b..1394114782d2 100644
-> >> --- a/drivers/rpmsg/Kconfig
-> >> +++ b/drivers/rpmsg/Kconfig
-> >> @@ -71,5 +71,6 @@ config RPMSG_VIRTIO
-> >>  	depends on HAS_DMA
-> >>  	select RPMSG
-> >>  	select VIRTIO
-> >> +	select RPMSG_NS
-> >>
-> >>  endmenu
-> >> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-> >> index 5bda7cb44618..f19f3cbd2526 100644
-> >> --- a/drivers/rpmsg/rpmsg_ns.c
-> >> +++ b/drivers/rpmsg/rpmsg_ns.c
-> >> @@ -104,5 +104,5 @@ module_exit(rpmsg_ns_exit);
-> >>
-> >>  MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
-> >>  MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
-> >> -MODULE_ALIAS("rpmsg_ns");
-> >> +MODULE_ALIAS("rpmsg:rpmsg_ns");
-> >>  MODULE_LICENSE("GPL v2");
-> >> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> >> index 338f16c6563d..f032e6c3f9a9 100644
-> >> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> >> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> >> @@ -1001,6 +1001,28 @@ static int __init rpmsg_init(void)
-> >>  {
-> >>  	int ret;
-> >>
-> >> +#ifdef MODULE
-> >> +	static const char name[] = "rpmsg_ns";
-> >> +	struct module *ns;
-> >> +
-> >> +	/*
-> >> +	 * Make sur that the rpmsg ns module is loaded in case of module.
-> >> +	 * This ensures that the rpmsg_ns driver is probed immediately when the
-> >> +	 * associated device is registered during the rpmsg virtio probe.
-> >> +	 */
-> >> +	mutex_lock(&module_mutex);
-> >> +	ns = find_module(name);
-> >> +	mutex_unlock(&module_mutex);
-> >> +
-> >> +	if (!ns) {
-> >> +		ret = request_module(name);
-> >> +		if (ret) {
-> >> +			pr_err("can not find %s module (err %d)\n", name, ret);
-> >> +			return ret;
-> >> +		}
-> >> +	}
-> >> +#endif
+I get the feeling that the alpha "2ul" constant might have come from
+the tile version, but in the tile version, the " __builtin_ctzl()"
+counts the leading zeroes to the top bit of any bytes in 'mask'. But
+the alpha version actually uses "find_zero(mask) * 8", so rather than
+have values of 7/15/23/... (for zero byte in byte 0/1/2/..
+respectively), it has values 0/8/16/....
 
-We came up with almost exactly the same thing:
+But it's entirely possible that I'm completely confused, and alpha
+does it right, and I'm just not understanding the code.
 
-diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-index 5bda7cb44618..ab86b603c54e 100644
---- a/drivers/rpmsg/rpmsg_ns.c
-+++ b/drivers/rpmsg/rpmsg_ns.c
-@@ -81,6 +81,7 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
- 
- static struct rpmsg_driver rpmsg_ns_driver = {
-        .drv.name = "rpmsg_ns",
-+       .drv.mod_name = "rpmsg_ns",
-        .probe = rpmsg_ns_probe,
- };
- 
-@@ -104,5 +105,5 @@ module_exit(rpmsg_ns_exit);
- 
- MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
- MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
--MODULE_ALIAS("rpmsg_ns");
-+MODULE_ALIAS("rpmsg:rpmsg_ns");
- MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/rpmsg/ns.h b/include/linux/rpmsg/ns.h
-index e267dd5f909b..28251fd1b2e0 100644
---- a/include/linux/rpmsg/ns.h
-+++ b/include/linux/rpmsg/ns.h
-@@ -3,6 +3,7 @@
- #ifndef _LINUX_RPMSG_NS_H
- #define _LINUX_RPMSG_NS_H
- 
-+#include <linux/module.h>
- #include <linux/mod_devicetable.h>
- #include <linux/rpmsg.h>
- #include <linux/rpmsg/byteorder.h>
-@@ -49,11 +50,27 @@ enum rpmsg_ns_flags {
-  */
- static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
- {
-+       int ret;
-+       struct module *rpmsg_ns;
-+       const char name[] = "rpmsg_ns";
-+
-        strcpy(rpdev->id.name, "rpmsg_ns");
-        rpdev->driver_override = "rpmsg_ns";
-        rpdev->src = RPMSG_NS_ADDR;
-        rpdev->dst = RPMSG_NS_ADDR;
- 
-+#ifdef CONFIG_MODULES
-+       mutex_lock(&module_mutex);
-+       rpmsg_ns = find_module(name);
-+       mutex_unlock(&module_mutex);
-+
-+       if (!rpmsg_ns) {
-+               ret = request_module(name);
-+               if (ret)
-+                       pr_err("Can not find module %s (err %d)\n", name, ret);
-+       }
-+#endif
-+
+It's also possible that the "2ul" vs "1ul" case doesn't matter.
+because the extra bit is always going to mask the byte that is
+actually zero, so being one bit off in the result is a non-event. I
+think that is what may actually be going on.
 
-I think it is better to be in rpmsg_ns_register_devices() because it makes the
-solution stand by itself, i.e no need to call the registration code from another
-driver.  Everything is self contained.
-
-Also note the drv.mod_name = "rpmsg_ns" part.  I took a look at find_module()
-and that is what is supposed to be used.
-
-That works on my side - please test on your setup.  
-
-> >> +
-> >>  	ret = register_virtio_driver(&virtio_ipc_driver);
-> >>  	if (ret)
-> >>  		pr_err("failed to register virtio driver: %d\n", ret);
-> >> -- 
-> >> 2.17.1
+                Linus
