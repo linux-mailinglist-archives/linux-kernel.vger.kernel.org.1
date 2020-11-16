@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FEB82B452F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF262B4567
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729699AbgKPNxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 08:53:55 -0500
-Received: from mga14.intel.com ([192.55.52.115]:39479 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729691AbgKPNxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 08:53:52 -0500
-IronPort-SDR: B/OAyuzbBNHcibXMX97uqH1SaJHmueaMKH8ggmLXfwwuCEbzYiaY6mwoyuF9KZA5lrdQmX7Bck
- f2qAJuur3+/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="169962075"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="169962075"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 05:53:51 -0800
-IronPort-SDR: 5El4P6fk4qn62fdct5ZkAD9m3mIBukH55ffkyku/l6W7g0s0kZqoHjkui45EcQj23D1P63zQsy
- SlGDh7n75gaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="531852296"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by fmsmga006.fm.intel.com with ESMTP; 16 Nov 2020 05:53:51 -0800
-Subject: Re: [PATCHv1 3/4] dt-bindings: fpga: add authenticate-fpga-config
- property
-To:     Xu Yilun <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>
-Cc:     trix@redhat.com, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dinguyen@kernel.org,
-        sridhar.rajagopal@intel.com, Richard Gong <richard.gong@intel.com>
-References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
- <1605204403-6663-4-git-send-email-richard.gong@linux.intel.com>
- <20201115192106.GB283592@epycbox.lan>
- <20201116024758.GA6810@yilunxu-OptiPlex-7050>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <d83b37c2-2baa-b366-8ca4-bb2924bcd4f9@linux.intel.com>
-Date:   Mon, 16 Nov 2020 08:14:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730134AbgKPOBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:01:01 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:36787 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727305AbgKPOBA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:01:00 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kef3w-0006Zt-Oa; Mon, 16 Nov 2020 15:00:56 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kef3v-0004cZ-Ll; Mon, 16 Nov 2020 15:00:55 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id E494A240049;
+        Mon, 16 Nov 2020 15:00:54 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 65F01240047;
+        Mon, 16 Nov 2020 15:00:54 +0100 (CET)
+Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id E3CCF21F0F;
+        Mon, 16 Nov 2020 15:00:53 +0100 (CET)
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     andrew.hendry@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        xie.he.0141@gmail.com
+Cc:     linux-x25@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
+Subject: [PATCH net-next v2 4/6] net/x25: support NETDEV_CHANGE notifier
+Date:   Mon, 16 Nov 2020 14:55:24 +0100
+Message-ID: <20201116135522.21791-5-ms@dev.tdt.de>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201116135522.21791-1-ms@dev.tdt.de>
+References: <20201116135522.21791-1-ms@dev.tdt.de>
 MIME-Version: 1.0
-In-Reply-To: <20201116024758.GA6810@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+Content-Transfer-Encoding: quoted-printable
+X-purgate-ID: 151534::1605535256-00000FB8-C62E8113/0/0
+X-purgate: clean
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This makes it possible to handle carrier lost and detection.
+In case of carrier lost, we shutdown layer 3 and flush all sessions.
 
-Hi Yilun,
+Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+---
 
-On 11/15/20 8:47 PM, Xu Yilun wrote:
-> On Sun, Nov 15, 2020 at 11:21:06AM -0800, Moritz Fischer wrote:
->> Hi Richard,
->>
->> On Thu, Nov 12, 2020 at 12:06:42PM -0600, richard.gong@linux.intel.com wrote:
->>> From: Richard Gong <richard.gong@intel.com>
->>>
->>> Add authenticate-fpga-config property for FPGA bitstream authentication.
->>>
->>> Signed-off-by: Richard Gong <richard.gong@intel.com>
->>> ---
->>>   Documentation/devicetree/bindings/fpga/fpga-region.txt | 1 +
->>>   1 file changed, 1 insertion(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
->>> index e811cf8..7a512bc 100644
->>> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
->>> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
->>> @@ -187,6 +187,7 @@ Optional properties:
->>>   - external-fpga-config : boolean, set if the FPGA has already been configured
->>>   	prior to OS boot up.
->>>   - encrypted-fpga-config : boolean, set if the bitstream is encrypted
->>> +- authenticate-fpga-config : boolean, set if do bitstream authentication
->> It is unclear to me from the description whether this entails
->> authentication + reconfiguration or just authentication.
->>
->> If the latter is the case this should probably be described as such.
-> 
-> If it is just authentication, do we still need to disable bridges in
-> fpga_region_program_fpga?
-> 
+Change from v1:
+fix 'subject_prefix' and 'checkpatch' warnings
 
-Yes.
+---
+ net/x25/af_x25.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Except for the actual configuration of the device, the authentication 
-feature is the same as FPGA configuration.
+diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
+index 25726120fcc7..6a95ca11694e 100644
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -275,6 +275,19 @@ static int x25_device_event(struct notifier_block *t=
+his, unsigned long event,
+ 				 dev->name);
+ 			x25_link_device_remove(dev);
+ 			break;
++		case NETDEV_CHANGE:
++			pr_debug("X.25: got event NETDEV_CHANGE for device: %s\n",
++				 dev->name);
++			if (!netif_carrier_ok(dev)) {
++				pr_debug("X.25: Carrier lost -> set link state down: %s\n",
++					 dev->name);
++				nb =3D x25_get_neigh(dev);
++				if (nb) {
++					x25_link_terminated(nb);
++					x25_neigh_put(nb);
++				}
++			}
++			break;
+ 		}
+ 	}
+=20
+--=20
+2.20.1
 
-Regards,
-Richard
-
-> I'm wondering if the FPGA functionalities could still be working when
-> the authenticating is ongoing, or when the authenticating is failed.
-> 
-
-
-
-> Thanks,
-> Yilun
-> 
->>
->>>   - region-unfreeze-timeout-us : The maximum time in microseconds to wait for
->>>   	bridges to successfully become enabled after the region has been
->>>   	programmed.
->>> -- 
->>> 2.7.4
->>>
->>
->> Thanks
