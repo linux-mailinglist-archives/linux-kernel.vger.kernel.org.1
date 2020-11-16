@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721242B4A1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EFF2B4A2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731265AbgKPP52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:57:28 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:45419 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730473AbgKPP51 (ORCPT
+        id S1731294AbgKPP6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:58:41 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:40147 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730176AbgKPP6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:57:27 -0500
-Received: by mail-oi1-f196.google.com with SMTP id k19so10649382oic.12;
-        Mon, 16 Nov 2020 07:57:27 -0800 (PST)
+        Mon, 16 Nov 2020 10:58:41 -0500
+Received: by mail-wm1-f66.google.com with SMTP id a3so24050798wmb.5;
+        Mon, 16 Nov 2020 07:58:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a0EALgO/iHdkJfCGgD7QPEg0Ns+sovLzKtBhiiye9yc=;
-        b=GEG1JXD1xFDHwLqBfktkhibBPunMuy9lSd1mV9y9Xl+sXRXYTDEsD/mmfdPfklEQD0
-         7+jCHtpwKdrawdWNjcdqMvr19JvcT4kY0aOR4V8haw+/DqdnQB9ddfr9rUfNuN/aDduf
-         q5XQb9R4ygo1cnRLQJIhhN8RSmPYWcC1rY0ty529TGGHezvjR/Ve07gSRLwX1qoYAFAr
-         zKT8pTExo0cM4u7LnDy1pajmRWGH/vSA0y30zZ2HmFzPXcq/NKqx5lV1BOg5kb34W1ml
-         owAm4SL+oGu7i4kCe6TyggntWYQVFSiLZmrcCw73ljkaT/p+tiYJFt8392987/SYrlRl
-         otNg==
-X-Gm-Message-State: AOAM531dcQMWUwMAnT4JcFyCRc5oqwkIglgMDoULAXsDe+wsr1CFZ67d
-        X7dBN6HOQ7UJ+3WG0BHX5tMbpRQ9dryFjoAuAFs=
-X-Google-Smtp-Source: ABdhPJwWZwAQFC3+TfMVq7Mp20QMGFtCLh1JEt1ACvAt6CB+xKVyxfDezXlr6XYrO/QfmP3uWddeWGq7i2O+RgNMlig=
-X-Received: by 2002:aca:c4c9:: with SMTP id u192mr69296oif.69.1605542246780;
- Mon, 16 Nov 2020 07:57:26 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1oQ4B5llrsrQYfFPkW6U5dEnNGacSaiQC37uZPELFqA=;
+        b=prtE5XAozMfaPnlX+lHnyR8t/gm/GPRGf8S0ZG4ftKiNVBX1k67qua9zc5ZbQkl04T
+         TxvJ6EWmd7l5vqaNnIpRb4nRU/viSOMNLugU4mq/77cdgDVi1zROI5k8CWSZBBJexFUx
+         m7K0fuIogu5+9qFtTF/8Mq2uMW4DgBEKFko5b6gDi1GvILGDXowieKwLRizHJlw4c50Y
+         e4q1rniojHTRS7mhE5ocetqIehxftzl+HUFj+QF/zGWzDxES+WqCLO3OvNG+NlJ8An0E
+         fA+1LB1HyNAZfks/rzSlwH1+ePYyb+2bNOdrucxGiEh2kJ6r60AVIrh3CT7EvViYDYHp
+         T6dg==
+X-Gm-Message-State: AOAM533nVZ5xv/LfU+1CU/d1BGaB1wJbU8hNOntoDb+bKUgfCASXogaH
+        NSkoqRqohICnuhsKB/uoWCQ=
+X-Google-Smtp-Source: ABdhPJw7YkD9JjJB14PlrAKVTYqwsaNVm0V52bkCn1J4G3Zk0WntP3BmPHio9ucMKb8a/tAvL0C40A==
+X-Received: by 2002:a1c:c2c3:: with SMTP id s186mr16619148wmf.160.1605542319664;
+        Mon, 16 Nov 2020 07:58:39 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id d63sm20354449wmd.12.2020.11.16.07.58.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 07:58:38 -0800 (PST)
+Date:   Mon, 16 Nov 2020 15:58:37 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Matheus Castello <matheus@castello.eng.br>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, sashal@kernel.org, Tianyu.Lan@microsoft.com,
+        decui@microsoft.com, mikelley@microsoft.com,
+        sunilmut@microsoft.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] drivers: hv: vmbus: Fix unnecessary OOM_MESSAGE
+Message-ID: <20201116155837.7mzaijtfpvmrnkve@liuwe-devbox-debian-v2>
+References: <20201115195734.8338-1-matheus@castello.eng.br>
+ <20201115195734.8338-6-matheus@castello.eng.br>
+ <20201116112148.xfajvts4gtoibs65@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-References: <20201104232356.4038506-1-saravanak@google.com> <20201104232356.4038506-10-saravanak@google.com>
-In-Reply-To: <20201104232356.4038506-10-saravanak@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 16 Nov 2020 16:57:15 +0100
-Message-ID: <CAJZ5v0h31RrsrU4F1tjZKQ1O8BFWtkDJxkwyWoKBzm_kyknxVQ@mail.gmail.com>
-Subject: Re: [PATCH v1 09/18] driver core: Allow only unprobed consumers for
- SYNC_STATE_ONLY device links
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116112148.xfajvts4gtoibs65@liuwe-devbox-debian-v2>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 12:24 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> SYNC_STATE_ONLY device links only affect the behavior of sync_state()
-> callbacks. Specifically, they prevent sync_state() only callbacks from
-> being called on a device if one or more of its consumers haven't probed.
->
-> So, creating a SYNC_STATE_ONLY device link from an already probed
-> consumer is useless. So, don't allow creating such device links.
+On Mon, Nov 16, 2020 at 11:21:48AM +0000, Wei Liu wrote:
+> On Sun, Nov 15, 2020 at 04:57:33PM -0300, Matheus Castello wrote:
+> > Fixed checkpatch warning: Possible unnecessary 'out of memory' message
+> > checkpatch(OOM_MESSAGE)
+> > 
+> > Signed-off-by: Matheus Castello <matheus@castello.eng.br>
+> > ---
+> >  drivers/hv/vmbus_drv.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> > index 09d8236a51cf..774b88dd0e15 100644
+> > --- a/drivers/hv/vmbus_drv.c
+> > +++ b/drivers/hv/vmbus_drv.c
+> > @@ -1989,10 +1989,8 @@ struct hv_device *vmbus_device_create(const guid_t *type,
+> >  	struct hv_device *child_device_obj;
+> > 
+> >  	child_device_obj = kzalloc(sizeof(struct hv_device), GFP_KERNEL);
+> > -	if (!child_device_obj) {
+> > -		pr_err("Unable to allocate device object for child device\n");
+> > +	if (!child_device_obj)
+> 
+> The generic OOM message would give you a stack dump but not as specific
+> / clear as the message you deleted.
+> 
+> Also, the original intent of this check was to check for things like
+> 
+>     printk("Out of memory");
+> 
+> which was clearly redundant. The message we print here is not that.
+> 
+> See https://lkml.org/lkml/2014/6/10/382 .
+> 
 
-I'm wondering why this needs to be part of the series?
+In case my message is not clear, I think this pr_err should stay. ;-)
 
-It looks like it could go in separately, couldn't it?
-
->
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  drivers/base/core.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 1a1d9a55645c..4a0907574646 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -646,6 +646,17 @@ struct device_link *device_link_add(struct device *consumer,
->                 goto out;
->         }
->
-> +       /*
-> +        * SYNC_STATE_ONLY links are useless once a consumer device has probed.
-> +        * So, only create it if the consumer hasn't probed yet.
-> +        */
-> +       if (flags & DL_FLAG_SYNC_STATE_ONLY &&
-> +           consumer->links.status != DL_DEV_NO_DRIVER &&
-> +           consumer->links.status != DL_DEV_PROBING) {
-> +               link = NULL;
-> +               goto out;
-> +       }
-
-Returning NULL at this point may be confusing if there is a link
-between these devices already.
-
-> +
->         /*
->          * DL_FLAG_AUTOREMOVE_SUPPLIER indicates that the link will be needed
->          * longer than for DL_FLAG_AUTOREMOVE_CONSUMER and setting them both
-> --
-> 2.29.1.341.ge80a0c044ae-goog
->
+Wei.
