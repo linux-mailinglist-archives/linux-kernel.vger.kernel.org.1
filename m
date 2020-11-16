@@ -2,73 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893EF2B4BF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BE12B4BFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732424AbgKPRAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:00:10 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38958 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730840AbgKPRAK (ORCPT
+        id S1732456AbgKPRBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:01:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730829AbgKPRBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:00:10 -0500
-Received: by mail-ot1-f68.google.com with SMTP id z16so16673838otq.6;
-        Mon, 16 Nov 2020 09:00:08 -0800 (PST)
+        Mon, 16 Nov 2020 12:01:40 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C42C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:01:39 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id y73so9521612vsc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:01:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b4fm0SwFqZ0vPQiIJuzDxd2kgsTV8XkzW98Kg4ojMik=;
+        b=vgnNA+Y72z0phAYhPwIasWMbeqabwKaTma99OCoKWPG9Ao7GTBL+3BWvfvW1KPZrHp
+         w63FXOSZeRmtpkpVh9Q1YNN//6Na2/5ywEOmL5GRKEJdktHqQAHVyyNmUwo70e2buKtX
+         pJ5ZQ51q50nuSI3h2qbRAZ6a9p151gJnSjerBsFxx86ASzNGeABogNwFPu+gIbmQAyil
+         jLu/WpggBuzcsd/4Dal+KblKcdXzw9k0Jw0IPJhnVXFtrd6pHYkCc56pbs0hrxwZodzP
+         CLaNN1BfkTx7hOkSbj4BOkTd6Dn0LwVv39Wd76ZNVIEvySpgGnFhD/GbJ/wmxXfvbiQX
+         59bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AcLujU/XcYert0gEatW7givS6gqW+TvLh+BjzpfDdRM=;
-        b=ekKRPLaQ1qE20FYBeS3I3RKmdBNTg+nMqkGXXPsGuVgCkC/QLzSQRXFd12ZLYLeCKR
-         Do0pVT32hZNZg38x5U86FdvR28vWB1hd2vn/BTJesAnX58BHPVnAXfRYhWztpzhqLmou
-         zxs+FzDcab+SPZpMa0amQn7H1XBnwprqwxvb3oEzWQrYxQKiSJPUarODJPI01ZoHQ88w
-         0giyRkunf3IUEIzcv0hi3ZaDjh24wmHjK7/KBH/thuNy47tSMchXVQ/WLjN2PXFHpPnO
-         mIUO4nce6E/UwiGycv2MMuT2maqnSqQHqXSOZIFqFj/16DOIvRYolR6w1Ejztjak9p79
-         RpXg==
-X-Gm-Message-State: AOAM531rklBQs0YzkBs2Kkq73RK9cZJAmdfoTSA6eUnFH2l5G4UF3ogp
-        6ZIse+76g2ZaNF51ajB0oQ==
-X-Google-Smtp-Source: ABdhPJz6z1MX9d1u+yLFna+XLipBPR70Synp9H9LXc/tFdSxPMb7qBzLEPdr3cLM7jo+cGj4l2YgQQ==
-X-Received: by 2002:a05:6830:12c2:: with SMTP id a2mr177047otq.162.1605546008236;
-        Mon, 16 Nov 2020 09:00:08 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i27sm849915otf.25.2020.11.16.09.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:00:07 -0800 (PST)
-Received: (nullmailer pid 1805750 invoked by uid 1000);
-        Mon, 16 Nov 2020 17:00:06 -0000
-Date:   Mon, 16 Nov 2020 11:00:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Neeraj Dantu <neeraj.dantu@octavosystems.com>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 1/3] dt-bindings: vendor-prefixes: document Octavo
- Systems oct prefix
-Message-ID: <20201116170006.GA1805656@bogus>
-References: <20201110102552.7270-1-a.fatoum@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b4fm0SwFqZ0vPQiIJuzDxd2kgsTV8XkzW98Kg4ojMik=;
+        b=ZQmiZ0HY2yJ2R1LCdA3T1SBve2Wzt887NDtfGq+IT7BLL3QySQj7X0KRT8GZRps3YF
+         MR8DYT43xxcdV2yndKDA34K/bsvtioTy828+IP9Xa+iMegui/4LGolY+k6HI1KWjFUwk
+         mwS7/bPhOefiTcl2TXRbPLb/k9/vmNcQZwjyK41Yg5smJ5bUM2kJqXCpJbb/BzE1mTGG
+         K4AIJ0783VBFrv6X/uELnb+Nxi5kJTEGf+Zym5Fric/l/xK5B8ne7jOrnHwpK76AwENw
+         fMhIldmIaRzHrEm6WQal/qAdIXoRyDcuquesSsg+zrTb1fHcep+uvYHMtjHyuMnP2W+/
+         y+2Q==
+X-Gm-Message-State: AOAM531OFEK1I7dmQIeYtqLAnG5ruNYF7s4n+QagwKDjw0NGPENVKV9A
+        gruKTvYS/arJ3v7OpBQ1nuR/1sZjeKc=
+X-Google-Smtp-Source: ABdhPJwgAXGBsObfXss0GZfyNX4wCL8PGbqbA2WSK0qYF5SjCdJq2kyf6qAOaaN0mdKl343ki+7afA==
+X-Received: by 2002:a67:ce0e:: with SMTP id s14mr8861098vsl.13.1605546096774;
+        Mon, 16 Nov 2020 09:01:36 -0800 (PST)
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com. [209.85.217.54])
+        by smtp.gmail.com with ESMTPSA id r128sm777285vkr.13.2020.11.16.09.01.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Nov 2020 09:01:24 -0800 (PST)
+Received: by mail-vs1-f54.google.com with SMTP id r14so9504441vsa.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:01:24 -0800 (PST)
+X-Received: by 2002:a05:6102:240f:: with SMTP id j15mr9171653vsi.22.1605546084314;
+ Mon, 16 Nov 2020 09:01:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110102552.7270-1-a.fatoum@pengutronix.de>
+References: <20201116161001.1606608-1-willemdebruijn.kernel@gmail.com> <20201116161930.GF29991@casper.infradead.org>
+In-Reply-To: <20201116161930.GF29991@casper.infradead.org>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 16 Nov 2020 12:00:48 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSdifgNAYe4DAfpRJxCO08y-sOi=XhOeMhd9mKbA3aPOug@mail.gmail.com>
+Message-ID: <CA+FuTSdifgNAYe4DAfpRJxCO08y-sOi=XhOeMhd9mKbA3aPOug@mail.gmail.com>
+Subject: Re: [PATCH v2] epoll: add nsec timeout support
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        linux-fsdevel@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 11:25:49 +0100, Ahmad Fatoum wrote:
-> Octavo Systems is an American company specializing in design and
-> manufacturing of System-in-Package devices.
-> 
-> The prefix is already in use for the Octavo Systems OSD3358-SM-RED
-> device tree, but was so far undocumented. Fix this.
-> 
-> Cc: Neeraj Dantu <neeraj.dantu@octavosystems.com>
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> ---
-> v1 -> v2:
->   - new patch, suggested by Rob
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+On Mon, Nov 16, 2020 at 11:19 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Nov 16, 2020 at 11:10:01AM -0500, Willem de Bruijn wrote:
+> > diff --git a/include/uapi/linux/eventpoll.h b/include/uapi/linux/eventpoll.h
+> > index 8a3432d0f0dc..f6ef9c9f8ac2 100644
+> > --- a/include/uapi/linux/eventpoll.h
+> > +++ b/include/uapi/linux/eventpoll.h
+> > @@ -21,6 +21,7 @@
+> >
+> >  /* Flags for epoll_create1.  */
+> >  #define EPOLL_CLOEXEC O_CLOEXEC
+> > +#define EPOLL_NSTIMEO 0x1
+> >
+> >  /* Valid opcodes to issue to sys_epoll_ctl() */
+> >  #define EPOLL_CTL_ADD 1
+>
+> Not a problem with your patch, but this concerns me.  O_CLOEXEC is
+> defined differently for each architecture, so we need to stay out of
+> several different bits when we define new flags for EPOLL_*.  Maybe
+> this:
+>
+> /*
+>  * Flags for epoll_create1.  O_CLOEXEC may be different bits, depending
+>  * on the CPU architecture.  Reserve the known ones.
+>  */
+> #define EPOLL_CLOEXEC           O_CLOEXEC
+> #define EPOLL_RESERVED_FLAGS    0x00680000
+> #define EPOLL_NSTIMEO           0x00000001
 
-Acked-by: Rob Herring <robh@kernel.org>
+Thanks. Good point, I'll add that in v3.
