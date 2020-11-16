@@ -2,73 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D781D2B4216
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E345E2B421A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729639AbgKPLDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:03:32 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:33670 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727240AbgKPLDb (ORCPT
+        id S1729649AbgKPLD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:03:59 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:36012 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727240AbgKPLD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:03:31 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kecI0-0006oY-Jv; Mon, 16 Nov 2020 11:03:16 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Simon Ser <contact@emersion.fr>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/atomic: avoid null pointer dereference on pointer crtc
-Date:   Mon, 16 Nov 2020 11:03:16 +0000
-Message-Id: <20201116110316.269934-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 16 Nov 2020 06:03:58 -0500
+Received: by mail-wm1-f66.google.com with SMTP id a65so23241607wme.1;
+        Mon, 16 Nov 2020 03:03:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vzbLBZlhKCzw8aWCXrtL3fgPKqSslz5XBfEd+0EuZTU=;
+        b=Nl6Y7U6D6g412Y5EyvaYTCNVZaNhDCfo/6IeUY5L73MmH1ugGTNqWUfZwNVqFPpUuE
+         3ca7JXnsSlFG6DkBD0M/W5rYqtXRofEDXF+TGC1G2q5MgiMPqNn4ZVMHnNsGF3eDMVol
+         2YT3k8VnzGI5DI2Q1i1i/Mmb2t19k1IWvBsMtovrFtcU4HYVg+MBAEnAJcFEMqVjVUYb
+         X/4KrWXSIpLt2kiVIep71sLFfz5F68xjog0jEjALedKlZ7hozjzagEFcRJGnVV616aiD
+         fuEToB58/IdcS+czQed2OlljxjugwaGWAx5JGCTtg6lroVat1YImZhURRNYl3eeN7fug
+         Saog==
+X-Gm-Message-State: AOAM530JXqUYKao7xX+4mrxemauNSkwj5o4i9fRmWF6wK9JkfgLYKfPl
+        Xppq3jVCrTEH7pK94zayoQ2w/VrrEJE=
+X-Google-Smtp-Source: ABdhPJxkE593KIIPiNQrAJmMLS9OVFuJKEQLkWmp7EhuYf4WWbZMwfZBIS8Lzv90wIsg3PY9Pwg09A==
+X-Received: by 2002:a1c:a185:: with SMTP id k127mr14596707wme.23.1605524634488;
+        Mon, 16 Nov 2020 03:03:54 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id w11sm20204620wmg.36.2020.11.16.03.03.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 03:03:53 -0800 (PST)
+Date:   Mon, 16 Nov 2020 11:03:52 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Andrea Parri <parri.andrea@gmail.com>
+Cc:     Wei Liu <wei.liu@kernel.org>, linux-kernel@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        linux-hyperv@vger.kernel.org, Andres Beltran <lkmlabelt@gmail.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v9 2/3] scsi: storvsc: Use vmbus_requestor to generate
+ transaction IDs for VMBus hardening
+Message-ID: <20201116110352.obbqxzxw6etdq4cl@liuwe-devbox-debian-v2>
+References: <20201109100402.8946-1-parri.andrea@gmail.com>
+ <20201109100402.8946-3-parri.andrea@gmail.com>
+ <20201113113327.dmium67e32iadqbz@liuwe-devbox-debian-v2>
+ <20201113185424.ujdfx6ot7siqr5qh@liuwe-devbox-debian-v2>
+ <20201113213933.GA4937@andrea>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113213933.GA4937@andrea>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Nov 13, 2020 at 10:39:33PM +0100, Andrea Parri wrote:
+> On Fri, Nov 13, 2020 at 06:54:24PM +0000, Wei Liu wrote:
+> > On Fri, Nov 13, 2020 at 11:33:27AM +0000, Wei Liu wrote:
+> > > On Mon, Nov 09, 2020 at 11:04:01AM +0100, Andrea Parri (Microsoft) wrote:
+> > > > From: Andres Beltran <lkmlabelt@gmail.com>
+> > > > 
+> > > > Currently, pointers to guest memory are passed to Hyper-V as
+> > > > transaction IDs in storvsc. In the face of errors or malicious
+> > > > behavior in Hyper-V, storvsc should not expose or trust the transaction
+> > > > IDs returned by Hyper-V to be valid guest memory addresses. Instead,
+> > > > use small integers generated by vmbus_requestor as requests
+> > > > (transaction) IDs.
+> > > > 
+> > > > Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
+> > > > Co-developed-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > > > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > > > Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> > > > Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> > > > Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> > > > Cc: linux-scsi@vger.kernel.org
+> > > 
+> > > Reviewed-by: Wei Liu <wl@xen.org>
+> > 
+> > Martin already gave his ack back in July. I guess nothing substantial
+> > changed so it should have been carried over?
+> 
+> The only change here happened in v7 and consisted in moving the
+> allocation of the request IDs from the VSC code down into the core
+> vmbus_sendpacket()&co functions.  As mentioned in v7 cover letter,
+> this change was applied to ensure that the allocation in question
+> is performed after the packet is copied into the ring buffer.  On
+> a positive note, this change greatly reduced the diff of this and
+> the following (NetVSC) patches.
 
-Since moving to the new debug helper functions we now have a debug message
-that dereferences crtc to print a kernel debug message when crtc is null
-and so this debug message will now cause a null pointer dereference. Since
-this is a debug message it probably is just simplest to fix this by just
-removing the debug message altogether.
+Martin and James, are you happy with this change? I would assume you are
+because that means this patch to storvsc is leaner.
 
-Addresses-Coverity: ("Dereference after null check")
-Fixes: e3aae683e861 ("drm: convert drm_atomic_uapi.c to new debug helpers")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/drm_atomic_uapi.c | 5 -----
- 1 file changed, 5 deletions(-)
+Please give an explicit ack if you can. Thanks.
 
-diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
-index 9df7f2a170e3..3fd84590560a 100644
---- a/drivers/gpu/drm/drm_atomic_uapi.c
-+++ b/drivers/gpu/drm/drm_atomic_uapi.c
-@@ -338,11 +338,6 @@ drm_atomic_set_crtc_for_connector(struct drm_connector_state *conn_state,
- 			       "Link [CONNECTOR:%d:%s] state %p to [CRTC:%d:%s]\n",
- 			       connector->base.id, connector->name,
- 			       conn_state, crtc->base.id, crtc->name);
--	} else {
--		drm_dbg_atomic(crtc->dev,
--			       "Link [CONNECTOR:%d:%s] state %p to [NOCRTC]\n",
--			       connector->base.id, connector->name,
--			       conn_state);
- 	}
- 
- 	return 0;
--- 
-2.28.0
+Wei.
 
+> 
+>   Andrea
