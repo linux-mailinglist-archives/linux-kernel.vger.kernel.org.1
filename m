@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A452B4005
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7A52B4007
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728587AbgKPJkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:40:11 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:42454 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728498AbgKPJkK (ORCPT
+        id S1728401AbgKPJma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:42:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgKPJm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:40:10 -0500
-Received: by mail-ot1-f49.google.com with SMTP id h16so11262011otq.9;
-        Mon, 16 Nov 2020 01:40:09 -0800 (PST)
+        Mon, 16 Nov 2020 04:42:29 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFB4C0613CF;
+        Mon, 16 Nov 2020 01:42:28 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 10so23076575wml.2;
+        Mon, 16 Nov 2020 01:42:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=kKG1HRiuJd2eHUG0i5gcYG0tFSdbRsxnGh+YMhzlOSs=;
+        b=L03qTevaBV+hnadsGTp9btsDWXmXv1zj9/Bnsqz5qoGYr/UF88fSih/Ovu2RrRWZaP
+         bqzaux9bbZdHDF6Mw7vEAtCtElazbW02JPWP7JP558sSpNPXcSfYhsWoL+Sr6lvsVPWm
+         7ygTHbs963gpZw4xrXUzz63lxYd6F2KviT95uY56StApkwlEKNRA19hrLQSiV8upu10d
+         31qLElFx+akp2335otEh5hkDN2JiDh3ldlCVjyAY473+zA0GZBFCcTLL5f9FQ6ylUP8a
+         iCHr9uwHP0D2FhmX54ZBiWM8mUaPmtqcVoJBA0SJpJJcbV7vLgqPusvqoft8fD/6tvkK
+         XHmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ozWL5OAdv4loIOYSI2yw5b8cevUZnV5lZwb9w6X66dI=;
-        b=AjyuUFcd1/euDFc0wSKAnk4T6aBrbAHIwOToNcHca5ovSWo8G15iROYADDU00DH188
-         lAGREQbKH42aTDDEqBNDTCerLcOTE2JrAkCGzcHXuGRJPV7Z12iRPE47kUx97iV3Dz3v
-         feqJN3IcD9YetDJnTglBvEIopdZwhwjHdUGi5ExebXxdf1UsnGpnYf7ISZUc/XUseXGc
-         Q+4Hk0moL6pe1fDuhDpOlKl7uAgQtaRo3Jut/3jSr/ORhjkuJTXEk3w+FCrPVO3UgBDg
-         YSpokQdpQcEuDQ3iG78tFgH2vk0Zd4AfuZ1nBPuWNp01PFXcOGCvaez/VvZNkrdp4Dl+
-         0yIg==
-X-Gm-Message-State: AOAM533nSiJL89yAdUGzapf4/aB3gDvS0Rm+v0ZMy5avaBOVlggsynXM
-        i+M0l2Z0+d31h1oQMuqjMQmmbQi01RPtLNyfqpQ=
-X-Google-Smtp-Source: ABdhPJw7n2VYocrj3d8OUp4CkB9RuXyfyKFAWDv7dExWP3Tgt++vCdlJBPXqExdqc3laPYRWmHYvRLDaKGXS+v+Qrvk=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr9929476otc.145.1605519609344;
- Mon, 16 Nov 2020 01:40:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20201110125609.30246-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdUky4OEvCLnDYr3C-PB+PKdSx3U5+dCfhiftDhf3RKmAQ@mail.gmail.com> <TYBPR01MB53099FFA01431B1E5188B8C686E30@TYBPR01MB5309.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYBPR01MB53099FFA01431B1E5188B8C686E30@TYBPR01MB5309.jpnprd01.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 16 Nov 2020 10:39:58 +0100
-Message-ID: <CAMuHMdX+RdE0kgqWNatNBBy_GPiihxcC3exAYi76a50qSHvDMA@mail.gmail.com>
-Subject: Re: [PATCH v3] clk: renesas: r8a774c0: Add RPC clocks
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kKG1HRiuJd2eHUG0i5gcYG0tFSdbRsxnGh+YMhzlOSs=;
+        b=sWwOKuoozsmDS7lgMD6KIw8X1th9rtay9f/64zhacIms4S2nmiZwiWM62THc+bJ7tB
+         Wua7506wIVhkDM/RIVbf+zVUQeGE3RE/1MvhbdO7wwIesE2xB+MVd+iyGtLJp1sYlGcE
+         eIMYhQ89jpXiU249tJC/wOrfTPgL0W22par8vHr4drVA3nrcqOWjcQjDZ319kXgMCXky
+         YoAb0DGkJEAHbX2s1GFAbnRq0PR24R08ybjp/b733TfRimwNIA8P2akqbMLMr0wu9Ndn
+         FCmRjUdN3JzC9gJ1NlwvsLdJlQ41zjjLuNr4OjDjt9BVtNwoPZ4NXQovK6jioYJVLpQk
+         F7HA==
+X-Gm-Message-State: AOAM530x+pX8kcYV1n6eD/OMEWAqwhMxtKhLophgxwwLbkcUVWGz/1Tx
+        4tpksiv2zzbTbxgRnf6yt98=
+X-Google-Smtp-Source: ABdhPJx3l7Ona/5935EASzFzHzIfE0qZloLjmL/5tJPnPYBplPt6j4U68Ih6cUCmibwP9KQK3BnmDg==
+X-Received: by 2002:a7b:c0c2:: with SMTP id s2mr10943085wmh.78.1605519747654;
+        Mon, 16 Nov 2020 01:42:27 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2de6:ad00:939:47a9:70b9:fe5b])
+        by smtp.gmail.com with ESMTPSA id m3sm17917169wrv.6.2020.11.16.01.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 01:42:26 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     "H . Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] x86/cpu: remove needless definition for !CONFIG_X86_32
+Date:   Mon, 16 Nov 2020 10:42:18 +0100
+Message-Id: <20201116094218.10508-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Biju,
+The function flag_is_changeable_p() is used in:
 
-On Mon, Nov 16, 2020 at 10:03 AM Biju Das <biju.das.jz@bp.renesas.com> wrote:
-> > Subject: Re: [PATCH v3] clk: renesas: r8a774c0: Add RPC clocks
-> > On Tue, Nov 10, 2020 at 1:56 PM Lad Prabhakar <prabhakar.mahadev-
-> > lad.rj@bp.renesas.com> wrote:
-> > > Describe the RPCSRC internal clock and the RPC[D2] clocks derived from
-> > > it, as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0)
-> > > CPG/MSSR driver.
-> > >
-> > > Add new clk type CLK_TYPE_GEN3E3_RPCSRC to register rpcsrc as a fixed
-> > > clock on R-Car Gen3 E3 (and also RZ/G2E which is identical to E3 SoC),
-> > > parent and the divider is set based on the register value
-> > > CPG_RPCCKCR[4:3] (parent is cross verified against MD[4:1] pins) which
-> > > has been set prior to booting the kernel.
-> > >
-> > > MD[4] MD[3] MD[2] MD[1]
-> > >   0     0     0    1     -> RPCSRC CLK source is PLL1
-> > >   0     0     1    1     -> RPCSRC CLK source is PLL1
-> > >   0     1     0    0     -> RPCSRC CLK source is PLL1
-> > >   1     0     1    1     -> RPCSRC CLK source is PLL1
-> > >   x     x     x    x     -> For any other values RPCSRC CLK source is
-> > PLL0
-> > >
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> >
-> > Thanks for your patch!
-> >
-> > > ---
-> > > v2->v3
-> > > * Implemented as a fixed clock
-> >
-> > Sounds fine to me.  If we ever need to configure this clock from Linux,
-> > the driver can be changed.
-> >
-> > > --- a/drivers/clk/renesas/rcar-gen3-cpg.c
-> > > +++ b/drivers/clk/renesas/rcar-gen3-cpg.c
+  - have_cpuid_p() for its CONFIG_X86_32 definition
+  - identify_cpu_without_cpuid() within its CONFIG_X86_32 ifdef-block
 
-> > > @@ -696,6 +709,42 @@ struct clk * __init
-> > rcar_gen3_cpg_clk_register(struct device *dev,
-> > >                                                   cpg_rpcsrc_div_table,
-> > >                                                   &cpg_lock);
-> > >
-> > > +       case CLK_TYPE_GEN3E3_RPCSRC:
-> > > +               /*
-> > > +                * Register RPCSRC as fixed factor clock based on the
-> > > +                * MD[4:1] pins and CPG_RPCCKCR[4:3] register value for
-> > > +                * which has been set prior to booting the kernel.
-> > > +                */
-> > > +
-> > > +               value = (readl(base + CPG_RPCCKCR) & GENMASK(4, 3)) >>
-> > 3;
-> > > +               if (cpg_rpcsrc_e3_parent_is_pll0(cpg_mode)) {
-> > > +                       if (value != 2)
-> > > +                               return ERR_PTR(-EINVAL);
-> > > +               } else {
-> > > +                       if (value == 2)
-> > > +                               return ERR_PTR(-EINVAL);
-> > > +               }
-> >
-> > IMHO this cross-verification is not needed, and harmful: it prevents the
-> > boot loader from changing the configuration, which I think is a valid use
-> > case.
->
-> But this check validates, whether bootloader done wrong configuration or not?
-> For eg:- PLL1 and setting wrong divider value in RPCCKCR.
->
-> It allows bootloader for changing right configurations. I may be wrong. Please correct me if I am wrong.
+So, there is no need to define flag_is_changeable_p() if !CONFIG_X86_32.
+Simply remove this needless definition.
 
-What is a wrong configuration? According to the RPCSRC docs, DIV[4:3]
-select both the parent clock and the divider.
-All four possible values are valid.
+This was discovered with make CC=clang W=1:
 
-MD[4:1] select the boot device, and determine the _initial values_ of
-the DIV[4:0] bits.  Nothing in the documentation says they cannot be
-changed later, after which the DIV[4:3] bits no longer match MD[4:1].
+  arch/x86/kernel/cpu/common.c:283:19:
+    warning: unused function 'flag_is_changeable_p' [-Wunused-function]
 
-If you want to be really sure, you can change the bits, and measure the
-impact on the RPC clock signal.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on current master and next-20201116
 
-A long time ago, I did a similar thing for PLL0CR.CKSEL on R-Car D3, and
-looked at the impact on the serial console (albeit with remote access,
-i.e. no console output if kernel and hardware didn't agree ;-)
+Thomas, Boris, please pick this minor non-urgent patch.
 
-Gr{oetje,eeting}s,
+ arch/x86/kernel/cpu/common.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-                        Geert
-
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 35ad8480c464..b89dbc7ccb0c 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -280,10 +280,6 @@ static int __init x86_serial_nr_setup(char *s)
+ }
+ __setup("serialnumber", x86_serial_nr_setup);
+ #else
+-static inline int flag_is_changeable_p(u32 flag)
+-{
+-	return 1;
+-}
+ static inline void squash_the_stupid_serial_number(struct cpuinfo_x86 *c)
+ {
+ }
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
