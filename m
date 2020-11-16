@@ -2,194 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234F22B3ECE
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E56B2B3ED1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgKPIgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727895AbgKPIgL (ORCPT
+        id S1728021AbgKPIgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:36:19 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:43185 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727973AbgKPIgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:36:11 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BF9C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:36:11 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id s8so17682311wrw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:36:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4EG4aCcIJxzY9+5Wm6px9/vBxPVbMMJi/JSK5pdZ4+k=;
-        b=iylfEb6YBFN4jnlgbKtaUSV/gnmc2cbkl3Qe2ftxdBLHXKBNUr8j0SHNcaEdnzK17D
-         BR9Aeod28MU6BPwDoWqcAt2syWIqUd6hq4pXArHNDUoorVCFqLCRuytEp98uz5EwUYUQ
-         Z6GjlVVpW7YZLjmPleNe+WbLh1fXkU0/qdGHcCbeZsP+TRnT61wtq6l5EDRC8AOcLSjn
-         HoVg0v+vaTtYH1Y34icVeuci7IyjbLNbmADBiW3/nt5yXinhBgehcZ0bVdOK3sT7phZg
-         hg6SLDtmN52P5I22LxVf6aGNxSN8yauipNusAH9zQsj3MTTWmt6ffAY+ViO36TuGzThU
-         lJRA==
+        Mon, 16 Nov 2020 03:36:18 -0500
+Received: by mail-io1-f71.google.com with SMTP id o3so10276304iou.10
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:36:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=4EG4aCcIJxzY9+5Wm6px9/vBxPVbMMJi/JSK5pdZ4+k=;
-        b=HzYCiu2yrIxTmFIbPM0hWeq8e1vAxz9Oyb4niTgLu8aNjLKUQvA3qiG5tDzOU1+1II
-         RENNSlzx/y0tfZJRIZpvIWxP0qh6Wni6kDfE2FtRBOAmtbq70Sp1qePdlLSr2qQX/X3N
-         0gBQ6EehgpuF1WWVITFgeYoIyyWIUAzyhTabiix5/K8DNt5J7v0fRnmcS5ReT8E6uYzc
-         2XdM0Noc0FHM2CrM6WheX0gathkkMH5Ips0Q8PSkCYumxpj6BRuxrP8npqCk7oyQvtz2
-         IykbLbSmQGZ3Wm6uL7jHgPD7Gi1+HCX1zrSV1fRnEjAMfn0byF3aOTTFiF7M9ZOLxINi
-         JtQg==
-X-Gm-Message-State: AOAM531V5hA+gaS54D409n2zXCp1wMMQvOYDLrDoaK3PGH1SEBLdfDtf
-        sR+U76RyQg2tneihg6B8OvXwnA==
-X-Google-Smtp-Source: ABdhPJyNs5Eh4oa6C07M4CdtL8gIJBM+vrm8CXRhfRnS7p3S87X9PBb9p33sOL5twCZabIK/2mKHEw==
-X-Received: by 2002:a5d:5146:: with SMTP id u6mr18793500wrt.66.1605515769916;
-        Mon, 16 Nov 2020 00:36:09 -0800 (PST)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb? ([2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb])
-        by smtp.gmail.com with ESMTPSA id z6sm18297622wmi.1.2020.11.16.00.36.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 00:36:08 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: meson: enable rtc node on Khadas VIM1/VIM2
- boards
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Artem Lapkin <art@khadas.com>
-References: <20201116064147.12062-1-christianshewitt@gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <9e790744-c966-0ed6-349e-b1e0013f5193@baylibre.com>
-Date:   Mon, 16 Nov 2020 09:36:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=C4M/+xfiM9OnFE7qhVh67fuqh9hhXKStAw5Nvc3SLzk=;
+        b=QI3seGFFUwai5alecySmmQiy9JcdQwMxtBiAbn9uyH4jIIPn4TNrXs6IgxqJUTo67M
+         NtCxKHWC7mBvZ+FCp3GUIw5/34bvHvMqHsPRbTx30aeqUBv7Av1abdqsf8e+dZ/Aom6E
+         JgPmemiJ/PRr1zOeGmqkrlut+vof9EmltTnPmrqAisnE+D+HFGWQgCoZEjpclLo9rLd0
+         JstQMCFE6kSv1Rps1MfH2fzkQQ0U6zb3nwtTCyGces9GnqsnMhwcPcapsi8ISno9rRXt
+         CH5sj+ME9lpXQdTNehGQBrWooJUpynmcsXZzhFo0T0lCyhOLgUJfXJZsIzpxlHe8OZLe
+         Ve6A==
+X-Gm-Message-State: AOAM5318dOWqWqdQ1PTm5/CCxntkhnsD7emH2gkGG7VMtH18kRN7BSxO
+        gV6oGB25vQC/kYBkkCeZtI8TVv2cGrvxX5KHaaDAGkjzonlL
+X-Google-Smtp-Source: ABdhPJz5CkDlFNdysxHWwKhCe6/a6YA48Pk5yELKjSm9IP/lwTuiY0CWJpghC+UxqHQ2GkjsDX3IdlS6QkcJ8beHvY5L6MTbaxyd
 MIME-Version: 1.0
-In-Reply-To: <20201116064147.12062-1-christianshewitt@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:90ca:: with SMTP id c10mr5132009jag.115.1605515776953;
+ Mon, 16 Nov 2020 00:36:16 -0800 (PST)
+Date:   Mon, 16 Nov 2020 00:36:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000091111005b435456e@google.com>
+Subject: BUG: unable to handle kernel NULL pointer dereference in fbcon_cursor
+From:   syzbot <syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
+        dri-devel@lists.freedesktop.org, george.kennedy@oracle.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        natechancellor@gmail.com, syzkaller-bugs@googlegroups.com,
+        yepeilin.cs@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2020 07:41, Christian Hewitt wrote:
-> Enable the rtc node on VIM1/VIM2 boards so users can simply attach a power
-> cell and use the on-board RTC without modifying the device-tree.
-> 
-> Cold boot with no cell attached is gracefully handled:
-> 
-> VIM2:~ # dmesg | grep rtc
-> [    7.716150] rtc-hym8563 1-0051: no valid clock/calendar values available
-> [    7.716957] rtc-hym8563 1-0051: registered as rtc0
-> [    7.729850] rtc-hym8563 1-0051: no valid clock/calendar values available
-> [    7.729877] rtc-hym8563 1-0051: hctosys: unable to read the hardware clock
-> [    8.126768] rtc-hym8563 1-0051: no valid clock/calendar values available
-> 
-> Warm boot (and any boot with cell attached) recalls stored values resulting
-> in consistently faster (re)boot times:
-> 
-> VIM2:~ # dmesg | grep rtc
-> [    7.441671] rtc-hym8563 1-0051: registered as rtc0
-> [    7.442663] rtc-hym8563 1-0051: setting system clock to 2020-11-16T05:49:59 UTC (1605505799)
-> 
-> Suggested-by: Artem Lapkin <art@khadas.com>
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> ---
-> 
-> This supersedes other recent attempts by Art to make the same change [0]
-> and [1] which were rejected for lack of justification for the change and
-> leaving comments behind. I have been using the same changes in my own
-> tree for a while.
-> 
-> Christian
-> 
-> [0] https://patchwork.kernel.org/project/linux-amlogic/patch/20200925033017.1790973-8-art@khadas.com/
-> [1] https://patchwork.kernel.org/project/linux-amlogic/patch/20200925033017.1790973-9-art@khadas.com/
-> 
->  arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 3 +--
->  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts      | 3 +--
->  2 files changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-> index 8bcdffdf55d0..638a5992d760 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-> @@ -97,8 +97,7 @@
->  	pinctrl-names = "default";
->  
->  	rtc: rtc@51 {
-> -		/* has to be enabled manually when a battery is connected: */
-> -		status = "disabled";
-> +		status = "okay";
->  		compatible = "haoyu,hym8563";
->  		reg = <0x51>;
->  		#clock-cells = <0>;
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> index bff8ec2c1c70..da000c10b945 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> @@ -228,8 +228,7 @@
->  	pinctrl-names = "default";
->  
->  	rtc: rtc@51 {
-> -		/* has to be enabled manually when a battery is connected: */
-> -		status = "disabled";
-> +		status = "okay";
->  		compatible = "haoyu,hym8563";
->  		reg = <0x51>;
->  		#clock-cells = <0>;
-> 
+Hello,
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+syzbot found the following issue on:
+
+HEAD commit:    6dd65e60 Add linux-next specific files for 20201110
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1276af62500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4fab43daf5c54712
+dashboard link: https://syzkaller.appspot.com/bug?extid=b67aaae8d3a927f68d20
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b67aaae8d3a927f68d20@syzkaller.appspotmail.com
+
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 4e683067 P4D 4e683067 PUD 14850067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 9433 Comm: syz-executor.5 Not tainted 5.10.0-rc3-next-20201110-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc9000bca7858 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000002 RSI: ffff888144509000 RDI: ffff888010079000
+RBP: ffff888010079000 R08: 0000000000000000 R09: ffffffff8cecc387
+R10: 0000000000000003 R11: 0000000000000000 R12: ffff888144509000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000720
+FS:  00007f5822bee700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000004e973000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ fbcon_cursor+0x50e/0x620 drivers/video/fbdev/core/fbcon.c:1346
+ hide_cursor+0x85/0x280 drivers/tty/vt/vt.c:907
+ redraw_screen+0x5ed/0x790 drivers/tty/vt/vt.c:1012
+ vc_do_resize+0xed3/0x1150 drivers/tty/vt/vt.c:1326
+ fbcon_set_disp+0x831/0xda0 drivers/video/fbdev/core/fbcon.c:1413
+ con2fb_init_display drivers/video/fbdev/core/fbcon.c:816 [inline]
+ set_con2fb_map+0x7a6/0xf80 drivers/video/fbdev/core/fbcon.c:887
+ fbcon_set_con2fb_map_ioctl+0x165/0x220 drivers/video/fbdev/core/fbcon.c:3072
+ do_fb_ioctl+0x5b6/0x690 drivers/video/fbdev/core/fbmem.c:1156
+ fb_ioctl+0xe7/0x150 drivers/video/fbdev/core/fbmem.c:1185
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45deb9
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f5822bedc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000000e2c0 RCX: 000000000045deb9
+RDX: 00000000200000c0 RSI: 0000000000004610 RDI: 0000000000000006
+RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffe024fb66f R14: 00007f5822bee9c0 R15: 000000000118bf2c
+Modules linked in:
+CR2: 0000000000000000
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 4e683067 P4D 4e683067 PUD 14850067 PMD 0 
+Oops: 0010 [#2] PREEMPT SMP KASAN
+CPU: 0 PID: 9433 Comm: syz-executor.5 Not tainted 5.10.0-rc3-next-20201110-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc9000bca7278 EFLAGS: 00010086
+RAX: 0000000000000007 RBX: 0000000000000000 RCX: 0000000000000007
+RDX: 0000000000000002 RSI: ffff888144509000 RDI: ffff888010079000
+RBP: ffff888010079000 R08: 0000000000000000 R09: ffffffff8cecc387
+R10: 0000000000000003 R11: 0000000000000001 R12: ffff888144509000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000720
+FS:  00007f5822bee700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000004e973000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ fbcon_cursor+0x50e/0x620 drivers/video/fbdev/core/fbcon.c:1346
+ hide_cursor+0x85/0x280 drivers/tty/vt/vt.c:907
+ redraw_screen+0x5ed/0x790 drivers/tty/vt/vt.c:1012
+ fbcon_blank+0x8c5/0xc30 drivers/video/fbdev/core/fbcon.c:2248
+ do_unblank_screen+0x25b/0x470 drivers/tty/vt/vt.c:4406
+ bust_spinlocks+0x5b/0xe0 lib/bust_spinlocks.c:26
+ oops_end+0x2b/0xe0 arch/x86/kernel/dumpstack.c:346
+ no_context+0x5f2/0xa20 arch/x86/mm/fault.c:752
+ __bad_area_nosemaphore+0xa9/0x400 arch/x86/mm/fault.c:840
+ do_user_addr_fault+0x7d7/0xba0 arch/x86/mm/fault.c:1340
+ handle_page_fault arch/x86/mm/fault.c:1434 [inline]
+ exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1490
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:580
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc9000bca7858 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000002 RSI: ffff888144509000 RDI: ffff888010079000
+RBP: ffff888010079000 R08: 0000000000000000 R09: ffffffff8cecc387
+R10: 0000000000000003 R11: 0000000000000000 R12: ffff888144509000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000720
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 8931af4863156cb4 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc9000bca7858 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000002 RSI: ffff888144509000 RDI: ffff888010079000
+RBP: ffff888010079000 R08: 0000000000000000 R09: ffffffff8cecc387
+R10: 0000000000000003 R11: 0000000000000000 R12: ffff888144509000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000720
+FS:  00007f5822bee700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000004e973000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
