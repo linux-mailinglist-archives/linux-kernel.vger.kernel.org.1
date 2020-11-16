@@ -2,83 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAC62B3B7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 03:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF2C2B3B7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 03:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgKPCp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 21:45:59 -0500
-Received: from mga04.intel.com ([192.55.52.120]:49240 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgKPCp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 21:45:59 -0500
-IronPort-SDR: aqiVO5DFMUS+nRjbQ3hrBtm4iiETuPvdM5Xc7uC5+byvCx2dLimPHbgTyCjNhdgd1sBpQYe2at
- cJjkJDwrnm+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="168117394"
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
-   d="scan'208";a="168117394"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 18:45:57 -0800
-IronPort-SDR: SdaGANuOcK1wN4nJGO+YR3vn9icdVGYmlxBnOjSB0v1rBF5mpLyhmdhHRqXLeWyK6r84kHNytz
- gCP99sz9LYCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
-   d="scan'208";a="533262345"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Nov 2020 18:45:55 -0800
-Date:   Mon, 16 Nov 2020 10:41:47 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     richard.gong@linux.intel.com
-Cc:     mdf@kernel.org, trix@redhat.com, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dinguyen@kernel.org,
-        sridhar.rajagopal@intel.com, Richard Gong <richard.gong@intel.com>,
-        yilun.xu@intel.com
-Subject: Re: [PATCHv1 0/4] Extend FPGA manager and region drivers for
-Message-ID: <20201116024147.GA8715@yilunxu-OptiPlex-7050>
-References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
+        id S1726457AbgKPCpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 21:45:46 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51429 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726140AbgKPCpp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 21:45:45 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UFRs7GC_1605494743;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFRs7GC_1605494743)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 16 Nov 2020 10:45:43 +0800
+Subject: Re: [PATCH 1/6] time: fix kernel-doc markup
+To:     Thomas Gleixner <tglx@linutronix.de>, john.stultz@linaro.org
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+References: <1605252275-63652-1-git-send-email-alex.shi@linux.alibaba.com>
+ <87wnym44ol.fsf@nanos.tec.linutronix.de>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <d36cf95b-4073-8c3d-e6b6-1ae583faca31@linux.alibaba.com>
+Date:   Mon, 16 Nov 2020 10:44:35 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <87wnym44ol.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 12:06:39PM -0600, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
-> 
-> The customer wants to verify that a FPGA bitstream can be started properly
-> before saving the bitstream to the QSPI flash memory.
-> 
-> The customer sends the bitstream via FPGA framework and overlay, the
-> firmware will authenticate the bitstream but not program the bitstream to
-> device. If the authentication passes, the bitstream will be programmed into
-> QSPI flash and will be expected to boot without issues.
 
-So when we have successfully reprogramed region with the
-FPGA_MGR_BITSTREM_AUTHENTICATION flag, the bitstream in QSPI flash is
-updated but not activated, we need an FPGA reboot to activate it, is it?
 
-Thanks,
-Yilun
+ÔÚ 2020/11/16 ÉÏÎç6:48, Thomas Gleixner Ð´µÀ:
+> On Fri, Nov 13 2020 at 15:24, Alex Shi wrote:
+> 
+>> The kernel-doc interface error cause some warning:
+> 
+> I fixes the lot up and applied it. Please look at the changes I did and
+> be more careful next time.
+> 
 
-> 
-> Extend FPGA manager and region drivers to support the bitstream
-> authentication feature.
-> 
-> Richard Gong (4):
->   fpga: fpga-mgr: add FPGA_MGR_BITSTREM_AUTHENTICATION flag
->   fpga: of-fpga-region: add authenticate-fpga-config property
->   dt-bindings: fpga: add authenticate-fpga-config property
->   fpga: stratix10-soc: entend driver for bitstream authentication
-> 
->  Documentation/devicetree/bindings/fpga/fpga-region.txt | 1 +
->  drivers/fpga/of-fpga-region.c                          | 3 +++
->  drivers/fpga/stratix10-soc.c                           | 5 ++++-
->  include/linux/fpga/fpga-mgr.h                          | 3 +++
->  4 files changed, 11 insertions(+), 1 deletion(-)
-> 
-> -- 
-> 2.7.4
+Hi Thomas,
+
+Thanks a lot for all fix and kindly coaching! I have learned a lot here.
+
+Thanks
+Alex
