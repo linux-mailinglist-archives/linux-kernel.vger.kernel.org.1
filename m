@@ -2,365 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6C72B3F2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAAF2B3F2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbgKPIxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:53:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
+        id S1728324AbgKPIx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:53:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728140AbgKPIxj (ORCPT
+        with ESMTP id S1728314AbgKPIx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:53:39 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FD7C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:53:39 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id w145so17986310oie.9
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 00:53:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HkX3czK+fbRYaZuXoB4DEn+0Ko5lqadBX0VN06YRjVc=;
-        b=GGNV+n7lWD5VBi9GsyrUcq5BUfeLfvqjxQI38yd/159lWM8mBmUIb+IhbnFfVRHM5O
-         5yjyg3yOZjWavw4PbGUSMtsj6gfuD+lXpU5uVMJEYxoTiV9ZEynHYpxKSgXrzscRbUOi
-         GdHE4WUmVlO+Y3xRFTyKv5p0wRvtFfoNFYsuc2UgdpQtj0F8CvWHxZ7itIM6yo9Z6qGJ
-         SE+Hesr4awK9p1cqoDwg1X6rHKdfk9Jg8t01StD7wSW+dzsRW2tCDOqnE4jd6lRmZGuI
-         ubwGEfTjAprjpb4SrrqBGnsVgeIOdaj3oSiZhMb9fsbaTbolqmIQZCH23hFhOP+jR6Al
-         w5Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HkX3czK+fbRYaZuXoB4DEn+0Ko5lqadBX0VN06YRjVc=;
-        b=clWqPFLav6ETgujga7covPX9KjiR5q2nnw6mN9CJK797qTUf5z8dAcjT9E7XGq01Mf
-         PaF0N062imUOt7esKQu4eRCAXmhXcKRlLywyKyFFvsfasTR2FhDXar0rQ6fpY1vB0V2I
-         qi1TgnJz7sNsUO2vIFijqv/N3LAJZci8A05YHeft5MHeSwRdxsuUP8/uFQc+rfsU/Wo8
-         TiorHVpZMi1G/4W11e+3lHtio5HKsWtgzcyeAs2u6ecLP6ct7ilBH042obK//lGbUyb9
-         R9+AOqGU5uZ6a2XL0E0fjSltEqpk0ehpE2XvNv+YKf4id7QhcyA3VB51Xi2TsNMNf2FK
-         IKEA==
-X-Gm-Message-State: AOAM532C/LVdPOX/VyGO4O7+1pPIkYpo4/DtKRKZouCcjQFyal0nqDch
-        aYD2/imQrDQUx8/WNX3P3QLIn5loqnEel0YqPOOWaQ==
-X-Google-Smtp-Source: ABdhPJxZAKJ4LHOMQHRGvuS7TYY5xthkxV7U20xCSql92bwl5xhKU3jG6bX7d+NJJJgzAMNXCjBxv7wQIUyyEJ7xA/c=
-X-Received: by 2002:aca:a988:: with SMTP id s130mr9148649oie.172.1605516818373;
- Mon, 16 Nov 2020 00:53:38 -0800 (PST)
+        Mon, 16 Nov 2020 03:53:56 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5691CC0613CF;
+        Mon, 16 Nov 2020 00:53:56 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 736EAA1B;
+        Mon, 16 Nov 2020 09:53:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1605516834;
+        bh=2DuJ8uuilfq3ssxZCNNkX3ziGRqEMv53mlwaSsR+j+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UKllBMZ3Xc+3uEOOEHrlAj01wp58umv670p8o1zTNwxYTzg5COn7gCNaxLKTcxuJi
+         pgg356+6kMaYy7pUzqYDDxLxC7QceZyjE5SMCk/Nigf5y42sA/k1Zefo6Hu+o8g2d0
+         CypjDtAaGDFo1fwK7Z9qP7Xwu+ZCLboxTFQzXnes=
+Date:   Mon, 16 Nov 2020 10:53:49 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Dan Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>
+Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
+ software_node connections to sensors on platforms designed for Windows
+Message-ID: <20201116085349.GA6540@pendragon.ideasonboard.com>
+References: <20201024093702.GA3939@pendragon.ideasonboard.com>
+ <20201026161050.GQ4077@smile.fi.intel.com>
+ <20201029201918.GD15024@pendragon.ideasonboard.com>
+ <CAHp75Vc9uYVvhBe3OyCJzCsU0EY9yi62hsxt3pAwppSfjB+jDg@mail.gmail.com>
+ <20201029212930.GE15024@pendragon.ideasonboard.com>
+ <20201029222215.GI4077@smile.fi.intel.com>
+ <20201029225124.GI15024@pendragon.ideasonboard.com>
+ <60b36af2-ad57-000b-76e4-379e1b58a3a0@gmail.com>
+ <20201113162231.GO7524@pendragon.ideasonboard.com>
+ <CAHp75VeGJKMeY-reNWgypVzJ6Myz5S2RXJPHqbPH5kzLYX3G4g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201116054035.211498-1-98.arpi@gmail.com>
-In-Reply-To: <20201116054035.211498-1-98.arpi@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 16 Nov 2020 09:53:27 +0100
-Message-ID: <CANpmjNNFeXU_9JYoJMS7n9Zm-CRXOnRBXjW7pGjfNsaGZeS=Qg@mail.gmail.com>
-Subject: Re: [PATCH v9 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Tim Bird <Tim.Bird@sony.com>, David Gow <davidgow@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeGJKMeY-reNWgypVzJ6Myz5S2RXJPHqbPH5kzLYX3G4g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 at 06:41, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->
-> Implementation of support for parameterized testing in KUnit. This
-> approach requires the creation of a test case using the
-> KUNIT_CASE_PARAM() macro that accepts a generator function as input.
->
-> This generator function should return the next parameter given the
-> previous parameter in parameterized tests. It also provides a macro to
-> generate common-case generators based on arrays. Generators may also
-> optionally provide a human-readable description of parameters, which is
-> displayed where available.
->
-> Note, currently the result of each parameter run is displayed in
-> diagnostic lines, and only the overall test case output summarizes
-> TAP-compliant success or failure of all parameter runs. In future, when
-> supported by kunit-tool, these can be turned into subsubtest outputs.
->
-> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> Co-developed-by: Marco Elver <elver@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
+Hi Andy,
 
-This and patch 2/2 look good to me.
+On Fri, Nov 13, 2020 at 09:45:00PM +0200, Andy Shevchenko wrote:
+> On Fri, Nov 13, 2020 at 6:22 PM Laurent Pinchart wrote:
+> > On Fri, Nov 13, 2020 at 10:02:30AM +0000, Dan Scally wrote:
+> > > On 29/10/2020 22:51, Laurent Pinchart wrote:
+> > > > On Fri, Oct 30, 2020 at 12:22:15AM +0200, Andy Shevchenko wrote:
+> > > >> On Thu, Oct 29, 2020 at 11:29:30PM +0200, Laurent Pinchart wrote:
+> 
+> ...
+> 
+> > > >> In this case we probably need something like
+> > > >>
+> > > >> struct acpi_device *
+> > > >> acpi_dev_get_next_match_dev(struct acpi_device *adev,
+> > > >>                        const char *hid, const char *uid, s64 hrv)
+> > > >> {
+> > > >>    struct device *start = adev ? &adev->dev : NULL;
+> > > >>    ...
+> > > >>    dev = bus_find_device(&acpi_bus_type, start, &match, acpi_dev_match_cb);
+> > > >>    ...
+> > > >> }
+> > > >>
+> > > >> in drivers/acpi/utils.c and
+> > > >>
+> > > >> static inline struct acpi_device *
+> > > >> acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv)
+> > > >> {
+> > > >>    return acpi_dev_get_next_match_dev(NULL, hid, uid, hrv);
+> > > >> }
+> > > >>
+> > > >> in include/linux/acpi.h.
+> > > >>
+> > > >> Then we may add
+> > > >>
+> > > >> #define for_each_acpi_dev_match(adev, hid, uid, hrv)                       \
+> > > >>    for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);        \
+> > > >>         adev;                                                      \
+> > > >>         adev = acpi_dev_get_next_match_dev(adev, hid, uid, hrv))
+> > > >
+> > > > What the cio2-bridge code needs is indeed
+> > > >
+> > > >     for each hid in supported hids:
+> > > >             for each acpi device that is compatible with hid:
+> > > >                     ...
+> > > >
+> > > > which could also be expressed as
+> > > >
+> > > >     for each acpi device:
+> > > >             if acpi device hid is in supported hids:
+> > > >                     ...
+> > > >
+> > > > I don't mind either option, I'll happily follow the preference of the
+> > > > ACPI maintainers.
+> > >
+> > > Does this need raising elsewhere then? The original idea of just
+> > > bus_for_each_dev(&acpi_bus_type...) I have now tested and it works fine,
+> > > but it does mean that I need to export acpi_bus_type (currently that
+> > > symbol's not available)...that seems much simpler to me but I'm not sure
+> > > whether that's something to avoid, and if so whether Andy's approach is
+> > > better.
+> > >
+> > > Thoughts?
+> >
+> > I like simple options :-) A patch to export acpi_bus_type, with enough
+> > context in the commit message (and in the cover latter of the series),
+> > should be enough to provide all the information the ACPI maintainers
+> > need to decide which option is best. With a bit of luck that patch will
+> > be considered the best option and no extra work will be needed.
+> 
+> The problem with ACPI bus is that it is not as simple as other buses,
+> i.e. it may have purely ACPI devices along with *companion* devices,
+> which are usually represented by platform bus. On top of that for
+> several ACPI devices there can be one physical node and it will be not
+> so clear what you are exactly looking for by traversing acpi_bus_type.
+> I believe it's hidden on purpose.
 
-Thank you!
+Maybe there's something I don't get, as I'm not very familiar with the
+ACPI implementation in the kernel, but the code in the cio2-bridge,
+unless I'm mistaken, is really interested in ACPI devices on the ACPI
+bus, not companions or other devices related to the ACPI devices. The
+iterators you have proposed above use bus_find_device() on
+acpi_bus_type, so I don't really see how they make a difference from a
+cio2-bridge point of view. Is your point that acpi_bus_type shouldn't be
+exported because it could then be misused by *other* drivers ? Couldn't
+those drivers then equally misuse the iterators ?
 
--- Marco
+-- 
+Regards,
 
-> ---
-> Changes v8->v9:
-> - No change to this patch of the patch series
->
-> Changes v7->v8:
-> - Increase KUNIT_PARAM_DESC_SIZE to 128
-> - Format pointer style appropriately
->
-> Changes v6->v7:
-> - Clarify commit message.
-> - Introduce ability to optionally generate descriptions for parameters;
->   if no description is provided, we'll still print 'param-N'.
-> - Change diagnostic line format to:
->         # <test-case-name>: <ok|not ok> N - [<param description>]
->
-> Changes v5->v6:
-> - Fix alignment to maintain consistency
->
-> Changes v4->v5:
-> - Update kernel-doc comments.
-> - Use const void* for generator return and prev value types.
-> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-> - Rework parameterized test case execution strategy: each parameter is executed
->   as if it was its own test case, with its own test initialization and cleanup
->   (init and exit are called, etc.). However, we cannot add new test cases per TAP
->   protocol once we have already started execution. Instead, log the result of
->   each parameter run as a diagnostic comment.
->
-> Changes v3->v4:
-> - Rename kunit variables
-> - Rename generator function helper macro
-> - Add documentation for generator approach
-> - Display test case name in case of failure along with param index
->
-> Changes v2->v3:
-> - Modifictaion of generator macro and method
->
-> Changes v1->v2:
-> - Use of a generator method to access test case parameters
-> Changes v6->v7:
-> - Clarify commit message.
-> - Introduce ability to optionally generate descriptions for parameters;
->   if no description is provided, we'll still print 'param-N'.
-> - Change diagnostic line format to:
->         # <test-case-name>: <ok|not ok> N - [<param description>]
-> - Before execution of parameterized test case, count number of
->   parameters and display number of parameters. Currently also as a
->   diagnostic line, but this may be used in future to generate a subsubtest
->   plan. A requirement of this change is that generators must generate a
->   deterministic number of parameters.
->
-> Changes v5->v6:
-> - Fix alignment to maintain consistency
->
-> Changes v4->v5:
-> - Update kernel-doc comments.
-> - Use const void* for generator return and prev value types.
-> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
-> - Rework parameterized test case execution strategy: each parameter is executed
->   as if it was its own test case, with its own test initialization and cleanup
->   (init and exit are called, etc.). However, we cannot add new test cases per TAP
->   protocol once we have already started execution. Instead, log the result of
->   each parameter run as a diagnostic comment.
->
-> Changes v3->v4:
-> - Rename kunit variables
-> - Rename generator function helper macro
-> - Add documentation for generator approach
-> - Display test case name in case of failure along with param index
->
-> Changes v2->v3:
-> - Modifictaion of generator macro and method
->
-> Changes v1->v2:
-> - Use of a generator method to access test case parameters
->
->  include/kunit/test.h | 51 ++++++++++++++++++++++++++++++++++++++
->  lib/kunit/test.c     | 59 ++++++++++++++++++++++++++++++++++----------
->  2 files changed, 97 insertions(+), 13 deletions(-)
->
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index db1b0ae666c4..27b42a008c7a 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -94,6 +94,9 @@ struct kunit;
->  /* Size of log associated with test. */
->  #define KUNIT_LOG_SIZE 512
->
-> +/* Maximum size of parameter description string. */
-> +#define KUNIT_PARAM_DESC_SIZE 128
-> +
->  /*
->   * TAP specifies subtest stream indentation of 4 spaces, 8 spaces for a
->   * sub-subtest.  See the "Subtests" section in
-> @@ -107,6 +110,7 @@ struct kunit;
->   *
->   * @run_case: the function representing the actual test case.
->   * @name:     the name of the test case.
-> + * @generate_params: the generator function for parameterized tests.
->   *
->   * A test case is a function with the signature,
->   * ``void (*)(struct kunit *)``
-> @@ -141,6 +145,7 @@ struct kunit;
->  struct kunit_case {
->         void (*run_case)(struct kunit *test);
->         const char *name;
-> +       const void* (*generate_params)(const void *prev, char *desc);
->
->         /* private: internal use only. */
->         bool success;
-> @@ -163,6 +168,27 @@ static inline char *kunit_status_to_string(bool status)
->   */
->  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
->
-> +/**
-> + * KUNIT_CASE_PARAM - A helper for creation a parameterized &struct kunit_case
-> + *
-> + * @test_name: a reference to a test case function.
-> + * @gen_params: a reference to a parameter generator function.
-> + *
-> + * The generator function::
-> + *
-> + *     const void* gen_params(const void *prev, char *desc)
-> + *
-> + * is used to lazily generate a series of arbitrarily typed values that fit into
-> + * a void*. The argument @prev is the previously returned value, which should be
-> + * used to derive the next value; @prev is set to NULL on the initial generator
-> + * call. When no more values are available, the generator must return NULL.
-> + * Optionally write a string into @desc (size of KUNIT_PARAM_DESC_SIZE)
-> + * describing the parameter.
-> + */
-> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
-> +               { .run_case = test_name, .name = #test_name,    \
-> +                 .generate_params = gen_params }
-> +
->  /**
->   * struct kunit_suite - describes a related collection of &struct kunit_case
->   *
-> @@ -208,6 +234,10 @@ struct kunit {
->         const char *name; /* Read only after initialization! */
->         char *log; /* Points at case log after initialization */
->         struct kunit_try_catch try_catch;
-> +       /* param_value is the current parameter value for a test case. */
-> +       const void *param_value;
-> +       /* param_index stores the index of the parameter in parameterized tests. */
-> +       int param_index;
->         /*
->          * success starts as true, and may only be set to false during a
->          * test case; thus, it is safe to update this across multiple
-> @@ -1742,4 +1772,25 @@ do {                                                                            \
->                                                 fmt,                           \
->                                                 ##__VA_ARGS__)
->
-> +/**
-> + * KUNIT_ARRAY_PARAM() - Define test parameter generator from an array.
-> + * @name:  prefix for the test parameter generator function.
-> + * @array: array of test parameters.
-> + * @get_desc: function to convert param to description; NULL to use default
-> + *
-> + * Define function @name_gen_params which uses @array to generate parameters.
-> + */
-> +#define KUNIT_ARRAY_PARAM(name, array, get_desc)                                               \
-> +       static const void *name##_gen_params(const void *prev, char *desc)                      \
-> +       {                                                                                       \
-> +               typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 : (array);      \
-> +               if (__next - (array) < ARRAY_SIZE((array))) {                                   \
-> +                       void (*__get_desc)(typeof(__next), char *) = get_desc;                  \
-> +                       if (__get_desc)                                                         \
-> +                               __get_desc(__next, desc);                                       \
-> +                       return __next;                                                          \
-> +               }                                                                               \
-> +               return NULL;                                                                    \
-> +       }
-> +
->  #endif /* _KUNIT_TEST_H */
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 750704abe89a..ec9494e914ef 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -325,39 +325,72 @@ static void kunit_catch_run_case(void *data)
->   * occur in a test case and reports them as failures.
->   */
->  static void kunit_run_case_catch_errors(struct kunit_suite *suite,
-> -                                       struct kunit_case *test_case)
-> +                                       struct kunit_case *test_case,
-> +                                       struct kunit *test)
->  {
->         struct kunit_try_catch_context context;
->         struct kunit_try_catch *try_catch;
-> -       struct kunit test;
->
-> -       kunit_init_test(&test, test_case->name, test_case->log);
-> -       try_catch = &test.try_catch;
-> +       kunit_init_test(test, test_case->name, test_case->log);
-> +       try_catch = &test->try_catch;
->
->         kunit_try_catch_init(try_catch,
-> -                            &test,
-> +                            test,
->                              kunit_try_run_case,
->                              kunit_catch_run_case);
-> -       context.test = &test;
-> +       context.test = test;
->         context.suite = suite;
->         context.test_case = test_case;
->         kunit_try_catch_run(try_catch, &context);
->
-> -       test_case->success = test.success;
-> -
-> -       kunit_print_ok_not_ok(&test, true, test_case->success,
-> -                             kunit_test_case_num(suite, test_case),
-> -                             test_case->name);
-> +       test_case->success = test->success;
->  }
->
->  int kunit_run_tests(struct kunit_suite *suite)
->  {
-> +       char param_desc[KUNIT_PARAM_DESC_SIZE];
->         struct kunit_case *test_case;
->
->         kunit_print_subtest_start(suite);
->
-> -       kunit_suite_for_each_test_case(suite, test_case)
-> -               kunit_run_case_catch_errors(suite, test_case);
-> +       kunit_suite_for_each_test_case(suite, test_case) {
-> +               struct kunit test = { .param_value = NULL, .param_index = 0 };
-> +               bool test_success = true;
-> +
-> +               if (test_case->generate_params) {
-> +                       /* Get initial param. */
-> +                       param_desc[0] = '\0';
-> +                       test.param_value = test_case->generate_params(NULL, param_desc);
-> +               }
-> +
-> +               do {
-> +                       kunit_run_case_catch_errors(suite, test_case, &test);
-> +                       test_success &= test_case->success;
-> +
-> +                       if (test_case->generate_params) {
-> +                               if (param_desc[0] == '\0') {
-> +                                       snprintf(param_desc, sizeof(param_desc),
-> +                                                "param-%d", test.param_index);
-> +                               }
-> +
-> +                               kunit_log(KERN_INFO, &test,
-> +                                         KUNIT_SUBTEST_INDENT
-> +                                         "# %s: %s %d - %s",
-> +                                         test_case->name,
-> +                                         kunit_status_to_string(test.success),
-> +                                         test.param_index + 1, param_desc);
-> +
-> +                               /* Get next param. */
-> +                               param_desc[0] = '\0';
-> +                               test.param_value = test_case->generate_params(test.param_value, param_desc);
-> +                               test.param_index++;
-> +                       }
-> +               } while (test.param_value);
-> +
-> +               kunit_print_ok_not_ok(&test, true, test_success,
-> +                                     kunit_test_case_num(suite, test_case),
-> +                                     test_case->name);
-> +       }
->
->         kunit_print_subtest_end(suite);
->
-> --
-> 2.25.1
->
+Laurent Pinchart
