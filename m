@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D562B5023
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C4E2B5029
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgKPStR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:49:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47664 "EHLO mail.kernel.org"
+        id S1728214AbgKPStW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:49:22 -0500
+Received: from mga02.intel.com ([134.134.136.20]:50413 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726204AbgKPStO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:49:14 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE6DA22240;
-        Mon, 16 Nov 2020 18:49:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605552553;
-        bh=iNJNHE5ukcjcWsuO4wvyGow2ixW26b+vBGI+KIy1EN4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gnvEw5bbAStO3Mm7CUrh983t0TiGoRArX2B7fNYRkVt/67vGt0tkPEQ0KcD+csnMY
-         1hhhjhJu4RiY1EU5JMYlremgdHV1J2JEf9NHOvf3l1xWjOOCfyy2XGqyw5Glp5pm89
-         YSbi4Eip1VKgacQDcXTUjxzmL1IWqot4z2XFwdxs=
-Date:   Mon, 16 Nov 2020 20:49:05 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: kernel: Fix for_each_memblock conversion
-Message-ID: <20201116184905.GA370813@kernel.org>
-References: <20201116174516.144243-1-tsbogend@alpha.franken.de>
+        id S1727701AbgKPStV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:49:21 -0500
+IronPort-SDR: isxPLhZX6e4/B74nh8z4uG3vOKzpEKkpbZyptzktclqw6xWlfNfccQ56UOcem5Mvd4UkjTQlnY
+ R31xfgo1knuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="157821919"
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="157821919"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:49:18 -0800
+IronPort-SDR: QM3K1Df9J/Wg+oJAcVfa83qY/TNr4BOrYcj8zI8YrrZ97jsEsonZ8J/uK1N6DUXothgxIsiUVW
+ Pzs792lhR6LA==
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="533514829"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:49:17 -0800
+Date:   Mon, 16 Nov 2020 10:49:16 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 05/10] x86/entry: Pass irqentry_state_t by reference
+Message-ID: <20201116184916.GA722447@iweiny-DESK2.sc.intel.com>
+References: <20201106232908.364581-1-ira.weiny@intel.com>
+ <20201106232908.364581-6-ira.weiny@intel.com>
+ <87mtzi8n0z.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116174516.144243-1-tsbogend@alpha.franken.de>
+In-Reply-To: <87mtzi8n0z.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 06:45:15PM +0100, Thomas Bogendoerfer wrote:
-> The loop over all memblocks works with PFN numbers and not physical
-> addresses, so we need for_each_mem_pfn_range().
+On Sun, Nov 15, 2020 at 07:58:52PM +0100, Thomas Gleixner wrote:
+> Ira,
 > 
-> Fixes: b10d6bca8720 ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-
-Thanks, Thomas!
-
-> ---
->  arch/mips/kernel/setup.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> On Fri, Nov 06 2020 at 15:29, ira weiny wrote:
 > 
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index 0d4253208bde..ca579deef939 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -262,8 +262,8 @@ static void __init bootmem_init(void)
->  static void __init bootmem_init(void)
->  {
->  	phys_addr_t ramstart, ramend;
-> -	phys_addr_t start, end;
-> -	u64 i;
-> +	unsigned long start, end;
-> +	int i;
->  
->  	ramstart = memblock_start_of_DRAM();
->  	ramend = memblock_end_of_DRAM();
-> @@ -300,7 +300,7 @@ static void __init bootmem_init(void)
->  
->  	min_low_pfn = ARCH_PFN_OFFSET;
->  	max_pfn = PFN_DOWN(ramend);
-> -	for_each_mem_range(i, &start, &end) {
-> +	for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, NULL) {
->  		/*
->  		 * Skip highmem here so we get an accurate max_low_pfn if low
->  		 * memory stops short of high memory.
-> -- 
-> 2.16.4
-> 
+> Subject prefix wants to 'entry:'. This changes generic code and the x86
+> part is just required to fix the generic code change.
 
--- 
-Sincerely yours,
-Mike.
+Sorry, yes that was carried incorrectly from earlier versions.
+
+> 
+> > Currently struct irqentry_state_t only contains a single bool value
+> > which makes passing it by value is reasonable.  However, future patches
+> > propose to add information to this struct, for example the PKRS
+> > register/thread state.
+> >
+> > Adding information to irqentry_state_t makes passing by value less
+> > efficient.  Therefore, change the entry/exit calls to pass irq_state by
+> > reference.
+> 
+> The PKRS muck needs to add an u32 to that struct. So how is that a
+> problem?
+
+There are more fields to be added for the kmap/pmem support.  So this will be
+needed eventually.  Even though it is not strictly necessary in the next patch.
+
+> 
+> The resulting struct still fits into 64bit which is by far more
+> efficiently passed by value than by reference. So which problem are you
+> solving here?
+
+I'm getting ahead of myself a bit.  I will be adding more fields for the
+kmap/pmem tracking.
+
+Would you accept just a clean up for the variable names in this patch?  I could
+then add the pass by reference when I add the new fields later.  Or would an
+update to the commit message be ok to land this now?
+
+Ira
+
+> 
+> Thanks
+> 
+>         tglx
+> 
