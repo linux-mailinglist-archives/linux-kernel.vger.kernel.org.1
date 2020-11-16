@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0422B4BEB
+	by mail.lfdr.de (Postfix) with ESMTP id D5BCA2B4BEC
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732403AbgKPQ7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:59:23 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:44692 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731187AbgKPQ7W (ORCPT
+        id S1732408AbgKPQ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:59:32 -0500
+Received: from smtprelay0199.hostedemail.com ([216.40.44.199]:40142 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729849AbgKPQ7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:59:22 -0500
-Received: by mail-ot1-f68.google.com with SMTP id f16so16629258otl.11;
-        Mon, 16 Nov 2020 08:59:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gPm6sA9oRClgJ6QfZp27nZDmEP+LS+OgTAXUUaGYMo8=;
-        b=NQu+Kgkz4/ZpIJNtRP/rVQFO8P+Cxxz75tZu57kSZB2ypMrls+xrfct+OfU/eTzz7b
-         FfxLzgHWVMebyKXu4V0ODkPUamMGl1tJrT3g/jkTH8O2FJ3vF42VesP4rbmsiDNdPZ7c
-         ZYY7kp0h7WqtEzvItRmLxdlsksybpBOxroi/yOJczboyH28Nx6ro66trdJRhhlYfsXW+
-         G+u2nA78B7f06NtE1FS8W+Itniu3KsZg4gdjyq3iJ9mAinRex11T01fc3D2NolihN4QT
-         eiPd+db79F3ojN3755EYhe32LfSS5/NriCv/u/R/SoAja16biXX5KjSKG5o8Lvo/9el1
-         zyKw==
-X-Gm-Message-State: AOAM532r5D+M6COQ8zI9KW/tCMyqWoea+QRqcHbdghx/dphvsvkSVCN8
-        Nm7VgsYM4wwpUNTLSLIxKQ==
-X-Google-Smtp-Source: ABdhPJzHMBn693UwxypsTfTm45fxNBdSjJ65WWD0gGtLKkeCDqW0MqxiCMCZuQZCn4s/O1X/I1R23A==
-X-Received: by 2002:a9d:222f:: with SMTP id o44mr128581ota.321.1605545961368;
-        Mon, 16 Nov 2020 08:59:21 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x1sm829638oog.41.2020.11.16.08.59.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 08:59:20 -0800 (PST)
-Received: (nullmailer pid 1804579 invoked by uid 1000);
-        Mon, 16 Nov 2020 16:59:19 -0000
-Date:   Mon, 16 Nov 2020 10:59:19 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     lgirdwood@gmail.com, linux-kernel@vger.kernel.org, lars@metafoo.de,
-        alsa-devel@alsa-project.org, robh+dt@kernel.org,
-        broonie@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: adau1977: convert text binding to yaml
- format
-Message-ID: <20201116165919.GA1804532@bogus>
-References: <20201106102052.32582-1-alexandru.ardelean@analog.com>
- <20201110084754.46756-1-alexandru.ardelean@analog.com>
+        Mon, 16 Nov 2020 11:59:32 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 5480B181D3026;
+        Mon, 16 Nov 2020 16:59:31 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2902:3138:3139:3140:3141:3142:3352:3622:3870:3876:4321:4362:4605:5007:8531:10004:10400:10848:11026:11232:11473:11658:11914:12043:12114:12297:12438:12740:12895:13069:13255:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:21660:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: camp83_5f113d12732a
+X-Filterd-Recvd-Size: 1719
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 16 Nov 2020 16:59:30 +0000 (UTC)
+Message-ID: <f3ac4a646b82ef2d31bfb0e9ea953b2c961de2c2.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: avoid COMMIT_LOG_LONG_LINE warning for
+ signature tags
+From:   Joe Perches <joe@perches.com>
+To:     Aditya Srivastava <yashsri421@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Date:   Mon, 16 Nov 2020 08:59:28 -0800
+In-Reply-To: <20201116083754.10629-1-yashsri421@gmail.com>
+References: <20201116083754.10629-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110084754.46756-1-alexandru.ardelean@analog.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 10:47:54 +0200, Alexandru Ardelean wrote:
-> This change converts the old device-tree binding for ADAU1977 from text
-> format to the new yaml format.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
-> 
-> Changelog v1 -> v2:
-> * updated libraries to catch newer schema errors/warnings
-> * fixed examples, added i2c & spi nodes
-> 
->  .../bindings/sound/adi,adau1977.txt           | 61 ------------
->  .../bindings/sound/adi,adau1977.yaml          | 92 +++++++++++++++++++
->  2 files changed, 92 insertions(+), 61 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/adi,adau1977.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/adi,adau1977.yaml
-> 
+On Mon, 2020-11-16 at 14:07 +0530, Aditya Srivastava wrote:
+> Currently checkpatch warns us for long lines in commits even for
+> signature tag lines.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thanks Aditya.
+
+Acked-by: Joe Perches <joe@perches.com>
+
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -2961,8 +2961,8 @@ sub process {
+>  					# file delta changes
+>  		      $line =~ /^\s*(?:[\w\.\-]+\/)++[\w\.\-]+:/ ||
+>  					# filename then :
+> -		      $line =~ /^\s*(?:Fixes:|Link:)/i ||
+> -					# A Fixes: or Link: line
+> +		      $line =~ /^\s*(?:Fixes:|Link:|$signature_tags)/i ||
+> +					# A Fixes: or Link: line or signature tag line
+>  		      $commit_log_possible_stack_dump)) {
+>  			WARN("COMMIT_LOG_LONG_LINE",
+>  			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
+
+
