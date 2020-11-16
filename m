@@ -2,63 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3812B4EEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058512B4EEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731029AbgKPSLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:11:22 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:36316 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730200AbgKPSLV (ORCPT
+        id S1731246AbgKPSLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:11:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38916 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730997AbgKPSLc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:11:21 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 16 Nov 2020 13:11:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605550292;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xf1LJn8hGte4D+k0k0YeB9oW653XA/c4TK7Y8k7TCcw=;
+        b=OXpaTSlRQlisd2LLVGYNkbeTRarapVHiGg/pwK38QgipXP71zdcFTDtZc/3PLvX+/sIZZj
+        8iPX0xPwG15wdyITpNphcCjrCv4mUcMHVlE0Z1egLNAuoLNN7d8IRPOpjNbaSmTQTgz20p
+        zgw6J0zz5uA+Rv3Hy848f5/Xd8b+Myg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-79-VP9hCMv8MP6yJjyKGGRZHw-1; Mon, 16 Nov 2020 13:11:28 -0500
+X-MC-Unique: VP9hCMv8MP6yJjyKGGRZHw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 31B6780541;
-        Mon, 16 Nov 2020 19:11:14 +0100 (CET)
-Date:   Mon, 16 Nov 2020 19:11:12 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Bernard Zhao <bernard@vivo.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 10/27] video: fix some kernel-doc markups
-Message-ID: <20201116181112.GA103421@ravnborg.org>
-References: <cover.1605521731.git.mchehab+huawei@kernel.org>
- <21661aed9892a1bacc7ef76a5dc9f5c7b37f5d8f.1605521731.git.mchehab+huawei@kernel.org>
- <20201116153606.GC401619@phenom.ffwll.local>
- <20201116173804.7d64f55f@coco.lan>
- <20201116172404.GD401619@phenom.ffwll.local>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C8571084D72;
+        Mon, 16 Nov 2020 18:11:27 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E0D8A5C1CF;
+        Mon, 16 Nov 2020 18:11:26 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Jim Mattson <jmattson@google.com>
+Subject: [PATCH] KVM: SVM: check CR4 changes against vcpu->arch
+Date:   Mon, 16 Nov 2020 13:11:26 -0500
+Message-Id: <20201116181126.2008838-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116172404.GD401619@phenom.ffwll.local>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=kjb6p09E1yaTWQ9aDqwA:9 a=CjuIK1q_8ugA:10
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel
-> > Feel free to just merge it via your tree. Patches here are pretty
-> > much independent ;-)
-> 
-> Ok I put it into drm-misc-next. I kinda assumed since there's also a huge
-> effort going on to shut up warnings, plus I think kerneldoc issues are
-> reported by a bunch of build bots nowadays. So assumed you pile this all
-> up.
+Similarly to what vmx/vmx.c does, use vcpu->arch.cr4 to check if CR4
+bits PGE, PKE and OSXSAVE have changed.  When switching between VMCB01
+and VMCB02, CPUID has to be adjusted every time if CR4.PKE or CR4.OSXSAVE
+change; without this patch, instead, CR4 would be checked against the
+previous value for L2 on vmentry, and against the previous value for
+L1 on vmexit, and CPUID would not be updated.
 
-Any reason "drm: fix some kernel-doc markups" was not applied?
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/svm/svm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	Sam
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 3b53a7ead04b..6dc337b9c231 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1691,7 +1691,7 @@ static bool svm_is_valid_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
+ void svm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
+ {
+ 	unsigned long host_cr4_mce = cr4_read_shadow() & X86_CR4_MCE;
+-	unsigned long old_cr4 = to_svm(vcpu)->vmcb->save.cr4;
++	unsigned long old_cr4 = vcpu->arch.cr4;
+ 
+ 	if (npt_enabled && ((old_cr4 ^ cr4) & X86_CR4_PGE))
+ 		svm_flush_tlb(vcpu);
+-- 
+2.26.2
+
