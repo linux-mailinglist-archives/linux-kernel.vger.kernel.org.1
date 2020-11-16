@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE882B3BEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C23012B3BF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 04:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgKPDrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 22:47:04 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:46418 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726732AbgKPDrE (ORCPT
+        id S1726812AbgKPD6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 22:58:37 -0500
+Received: from smtprelay0094.hostedemail.com ([216.40.44.94]:35450 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726532AbgKPD6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 22:47:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UFSqqZF_1605498418;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFSqqZF_1605498418)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 16 Nov 2020 11:46:59 +0800
-Subject: Re: [PATCH v21 00/19] per memcg lru lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <c24610dd-a1f1-529d-5fdf-acdd1cc5060a@linux.alibaba.com>
-Date:   Mon, 16 Nov 2020 11:45:51 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Sun, 15 Nov 2020 22:58:37 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 5630C1730858;
+        Mon, 16 Nov 2020 03:58:36 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4605:4659:5007:9010:9025:9388:10004:10049:10400:10848:11232:11657:11658:11783:11914:12043:12048:12297:12555:12740:12895:13069:13311:13357:13439:13894:14094:14106:14181:14659:14721:14764:14849:21080:21451:21627:21691:21740:21781:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: scent45_491207927325
+X-Filterd-Recvd-Size: 2428
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 16 Nov 2020 03:58:34 +0000 (UTC)
+Message-ID: <d03c87f9fcc4bb68c148cfad12cafef5f2385eef.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS: rectify file patterns for NETFILTER
+From:   Joe Perches <joe@perches.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 15 Nov 2020 19:58:33 -0800
+In-Reply-To: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
+References: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Mon, 2020-11-09 at 10:19 +0100, Lukas Bulwahn wrote:
+> The two file patterns in the NETFILTER section:
+> 
+>   F:      include/linux/netfilter*
+>   F:      include/uapi/linux/netfilter*
+> 
+> intended to match the directories:
+> 
+>   ./include{/uapi}/linux/netfilter_{arp,bridge,ipv4,ipv6}
+> 
+> A quick check with ./scripts/get_maintainer.pl --letters -f will show that
+> they are not matched, though, because this pattern only matches files, but
+> not directories.
+> 
+> Rectify the patterns to match the intended directories.
+[]
+diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> @@ -12139,10 +12139,10 @@ W:	http://www.nftables.org/
+>  Q:	http://patchwork.ozlabs.org/project/netfilter-devel/list/
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git
+> -F:	include/linux/netfilter*
+> +F:	include/linux/netfilter*/
+>  F:	include/linux/netfilter/
 
-With all patches are acked-by Hugh and Johannes, and full testing from LKP,
-is this patchset ready for more testing on linux-next? or anything still need
-be improved?
+This line could be deleted or perhaps moved up one line above
 
-Thanks
-Alex
+F:	include/linux/netfilter/
+F:	include/linux/netfilter*/
+
+(as the second line already matches the first line's files too)
+
+>  F:	include/net/netfilter/
+> -F:	include/uapi/linux/netfilter*
+> +F:	include/uapi/linux/netfilter*/
+>  F:	include/uapi/linux/netfilter/
+
+same here.
+
+>  F:	net/*/netfilter.c
+>  F:	net/*/netfilter/
 
 
-åœ¨ 2020/11/5 ä¸‹åˆ4:55, Alex Shi å†™é“:
-> This version rebase on next/master 20201104, with much of Johannes's
-> Acks and some changes according to Johannes comments. And add a new patch
-> v21-0006-mm-rmap-stop-store-reordering-issue-on-page-mapp.patch to support
-> v21-0007.
-> 
-> This patchset followed 2 memcg VM_WARN_ON_ONCE_PAGE patches which were
-> added to -mm tree yesterday.
->  
-> Many thanks for line by line review by Hugh Dickins, Alexander Duyck and
-> Johannes Weiner.
-> 
-> So now this patchset includes 3 parts:
-> 1, some code cleanup and minimum optimization as a preparation. 
-> 2, use TestCleanPageLRU as page isolation's precondition.
-> 3, replace per node lru_lock with per memcg per node lru_lock.
-> 
-> Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
-> lru lists, but now we had moved the lru lists into memcg for long time. Still
-> using per node lru_lock is clearly unscalable, pages on each of memcgs have
-> to compete each others for a whole lru_lock. This patchset try to use per
-> lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
-> it scalable for memcgs and get performance gain.
-> 
-> Currently lru_lock still guards both lru list and page's lru bit, that's ok.
-> but if we want to use specific lruvec lock on the page, we need to pin down
-> the page's lruvec/memcg during locking. Just taking lruvec lock first may be
-> undermined by the page's memcg charge/migration. To fix this problem, we could
-> take out the page's lru bit clear and use it as pin down action to block the
-> memcg changes. That's the reason for new atomic func TestClearPageLRU.
-> So now isolating a page need both actions: TestClearPageLRU and hold the
-> lru_lock.
-> 
-> The typical usage of this is isolate_migratepages_block() in compaction.c
-> we have to take lru bit before lru lock, that serialized the page isolation
-> in memcg page charge/migration which will change page's lruvec and new 
-> lru_lock in it.
-> 
-> The above solution suggested by Johannes Weiner, and based on his new memcg 
-> charge path, then have this patchset. (Hugh Dickins tested and contributed much
-> code from compaction fix to general code polish, thanks a lot!).
-> 
-> Daniel Jordan's testing show 62% improvement on modified readtwice case
-> on his 2P * 10 core * 2 HT broadwell box on v18, which has no much different
-> with this v20.
-> https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
-> 
-> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
-> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
-> Mel Gorman, Shakeel Butt, Matthew Wilcox, Alexander Duyck etc.
-> 
-> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
-> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
