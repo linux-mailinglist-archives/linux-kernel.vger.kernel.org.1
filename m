@@ -2,141 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF00A2B74D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C893F2B74F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 04:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727920AbgKRD3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 22:29:25 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55438 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726769AbgKRD3Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 22:29:24 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 041B41F44AB3
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org
-Cc:     christian.brauner@ubuntu.com, peterz@infradead.org,
-        willy@infradead.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, x86@kernel.org, gofmanp@gmail.com,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v7 7/7] docs: Document Syscall User Dispatch
-Date:   Tue, 17 Nov 2020 22:28:40 -0500
-Message-Id: <20201118032840.3429268-8-krisman@collabora.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201118032840.3429268-1-krisman@collabora.com>
-References: <20201118032840.3429268-1-krisman@collabora.com>
+        id S1727160AbgKRDsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 22:48:36 -0500
+Received: from mga05.intel.com ([192.55.52.43]:32213 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725834AbgKRDsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 22:48:35 -0500
+IronPort-SDR: H7s5nymgOr+W7HHeybn7V50hOaD3vzgr2OHd4UjpoH1Jc3qyQ+bib4/ZpXgxmmQ7PT7KpMm0Ye
+ +NuB42SR8b9Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="255770627"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="255770627"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 19:48:34 -0800
+IronPort-SDR: o4BSdoNgi9D1Qis7zaUen+aQE4dtWMg1zi2+T/m+/PI28h97h3IHrd8XGrlnFjP4Z61m53UsPa
+ q8JZPLipyjeg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="430671986"
+Received: from aubrey-work.sh.intel.com ([10.239.53.113])
+  by fmsmga001.fm.intel.com with ESMTP; 17 Nov 2020 19:48:30 -0800
+From:   Aubrey Li <aubrey.li@linux.intel.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, mgorman@techsingularity.net,
+        valentin.schneider@arm.com, qais.yousef@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com
+Cc:     tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Aubrey Li <aubrey.li@intel.com>, Mel Gorman <mgorman@suse.de>,
+        Jiang Biao <benbjiang@gmail.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Subject: [RFC PATCH v4] sched/fair: select idle cpu from idle cpumask for task wakeup
+Date:   Tue, 17 Nov 2020 04:04:28 +0800
+Message-Id: <20201116200428.47359-1-aubrey.li@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explain the interface, provide some background and security notes.
+From: Aubrey Li <aubrey.li@intel.com>
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Add idle cpumask to track idle cpus in sched domain. When a CPU
+enters idle, if the idle driver indicates to stop tick, this CPU
+is set in the idle cpumask to be a wakeup target. And if the CPU
+is not in idle, the CPU is cleared in idle cpumask during scheduler
+tick to ratelimit idle cpumask update.
+
+When a task wakes up to select an idle cpu, scanning idle cpumask
+has low cost than scanning all the cpus in last level cache domain,
+especially when the system is heavily loaded.
+
+Benchmarks were tested on a x86 4 socket system with 24 cores per
+socket and 2 hyperthreads per core, total 192 CPUs. Hackbench and
+schbench have no notable change, uperf has:
+
+uperf throughput: netperf workload, tcp_nodelay, r/w size = 90
+
+  threads       baseline-avg    %std    patch-avg       %std
+  96            1               0.83    1.23            3.27
+  144           1               1.03    1.67            2.67
+  192           1               0.69    1.81            3.59
+  240           1               2.84    1.51            2.67
+
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Qais Yousef <qais.yousef@arm.com>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Jiang Biao <benbjiang@gmail.com>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
 ---
- .../admin-guide/syscall-user-dispatch.rst     | 87 +++++++++++++++++++
- 1 file changed, 87 insertions(+)
- create mode 100644 Documentation/admin-guide/syscall-user-dispatch.rst
+ include/linux/sched/topology.h | 13 +++++++++
+ kernel/sched/core.c            |  2 ++
+ kernel/sched/fair.c            | 52 +++++++++++++++++++++++++++++++++-
+ kernel/sched/idle.c            |  7 +++--
+ kernel/sched/sched.h           |  2 ++
+ kernel/sched/topology.c        |  3 +-
+ 6 files changed, 74 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/admin-guide/syscall-user-dispatch.rst b/Documentation/admin-guide/syscall-user-dispatch.rst
-new file mode 100644
-index 000000000000..e2fb36926f97
---- /dev/null
-+++ b/Documentation/admin-guide/syscall-user-dispatch.rst
-@@ -0,0 +1,87 @@
-+.. SPDX-License-Identifier: GPL-2.0
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 820511289857..b47b85163607 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -65,8 +65,21 @@ struct sched_domain_shared {
+ 	atomic_t	ref;
+ 	atomic_t	nr_busy_cpus;
+ 	int		has_idle_cores;
++	/*
++	 * Span of all idle CPUs in this domain.
++	 *
++	 * NOTE: this field is variable length. (Allocated dynamically
++	 * by attaching extra space to the end of the structure,
++	 * depending on how many CPUs the kernel has booted up with)
++	 */
++	unsigned long	idle_cpus_span[];
+ };
+ 
++static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
++{
++	return to_cpumask(sds->idle_cpus_span);
++}
 +
-+=====================
-+Syscall User Dispatch
-+=====================
+ struct sched_domain {
+ 	/* These fields must be setup */
+ 	struct sched_domain __rcu *parent;	/* top domain must be null terminated */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index b1e0da56abca..c86ae0495163 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3994,6 +3994,7 @@ void scheduler_tick(void)
+ 	rq_lock(rq, &rf);
+ 
+ 	update_rq_clock(rq);
++	update_idle_cpumask(rq, false);
+ 	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+ 	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+ 	curr->sched_class->task_tick(rq, curr, 0);
+@@ -7192,6 +7193,7 @@ void __init sched_init(void)
+ 		rq_csd_init(rq, &rq->nohz_csd, nohz_csd_func);
+ #endif
+ #endif /* CONFIG_SMP */
++		rq->last_idle_state = 1;
+ 		hrtick_rq_init(rq);
+ 		atomic_set(&rq->nr_iowait, 0);
+ 	}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 48a6d442b444..d67fba5e406b 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6145,7 +6145,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 
+ 	time = cpu_clock(this);
+ 
+-	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
++	/*
++	 * sched_domain_shared is set only at shared cache level,
++	 * this works only because select_idle_cpu is called with
++	 * sd_llc.
++	 */
++	cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+ 
+ 	for_each_cpu_wrap(cpu, cpus, target) {
+ 		if (!--nr)
+@@ -6807,6 +6812,51 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ }
+ #endif /* CONFIG_SMP */
+ 
++/*
++ * Update cpu idle state and record this information
++ * in sd_llc_shared->idle_cpus_span.
++ */
++void update_idle_cpumask(struct rq *rq, bool set_idle)
++{
++	struct sched_domain *sd;
++	int cpu = cpu_of(rq);
++	int idle_state;
 +
-+Background
-+----------
++	/*
++	 * If called from scheduler tick, only update
++	 * idle cpumask if the CPU is busy, as idle
++	 * cpumask is also updated on idle entry.
++	 *
++	 */
++	if (!set_idle && idle_cpu(cpu))
++		return;
++	/*
++	 * Also set SCHED_IDLE cpu in idle cpumask to
++	 * allow SCHED_IDLE cpu as a wakeup target
++	 */
++	idle_state = set_idle || sched_idle_cpu(cpu);
++	/*
++	 * No need to update idle cpumask if the state
++	 * does not change.
++	 */
++	if (rq->last_idle_state == idle_state)
++		return;
 +
-+Compatibility layers like Wine need a way to efficiently emulate system
-+calls of only a part of their process - the part that has the
-+incompatible code - while being able to execute native syscalls without
-+a high performance penalty on the native part of the process.  Seccomp
-+falls short on this task, since it has limited support to efficiently
-+filter syscalls based on memory regions, and it doesn't support removing
-+filters.  Therefore a new mechanism is necessary.
++	rcu_read_lock();
++	sd = rcu_dereference(per_cpu(sd_llc, cpu));
++	if (!sd || !sd->shared)
++		goto unlock;
 +
-+Syscall User Dispatch brings the filtering of the syscall dispatcher
-+address back to userspace.  The application is in control of a flip
-+switch, indicating the current personality of the process.  A
-+multiple-personality application can then flip the switch without
-+invoking the kernel, when crossing the compatibility layer API
-+boundaries, to enable/disable the syscall redirection and execute
-+syscalls directly (disabled) or send them to be emulated in userspace
-+through a SIGSYS.
++	if (idle_state)
++		cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
++	else
++		cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
 +
-+The goal of this design is to provide very quick compatibility layer
-+boundary crosses, which is achieved by not executing a syscall to change
-+personality every time the compatibility layer executes.  Instead, a
-+userspace memory region exposed to the kernel indicates the current
-+personality, and the application simply modifies that variable to
-+configure the mechanism.
++	rq->last_idle_state = idle_state;
++unlock:
++	rcu_read_unlock();
++}
 +
-+There is a relatively high cost associated with handling signals on most
-+architectures, like x86, but at least for Wine, syscalls issued by
-+native Windows code are currently not known to be a performance problem,
-+since they are quite rare, at least for modern gaming applications.
-+
-+Since this mechanism is designed to capture syscalls issued by
-+non-native applications, it must function on syscalls whose invocation
-+ABI is completely unexpected to Linux.  Syscall User Dispatch, therefore
-+doesn't rely on any of the syscall ABI to make the filtering.  It uses
-+only the syscall dispatcher address and the userspace key.
-+
-+Interface
-+---------
-+
-+A process can setup this mechanism on supported kernels
-+CONFIG_SYSCALL_USER_DISPATCH) by executing the following prctl:
-+
-+  prctl(PR_SET_SYSCALL_USER_DISPATCH, <op>, <offset>, <length>, [selector])
-+
-+<op> is either PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF, to enable and
-+disable the mechanism globally for that thread.  When
-+PR_SYS_DISPATCH_OFF is used, the other fields must be zero.
-+
-+<offset> and <offset+length> delimit a closed memory region interval
-+from which syscalls are always executed directly, regardless of the
-+userspace selector.  This provides a fast path for the C library, which
-+includes the most common syscall dispatchers in the native code
-+applications, and also provides a way for the signal handler to return
-+without triggering a nested SIGSYS on (rt_)sigreturn.  Users of this
-+interface should make sure that at least the signal trampoline code is
-+included in this region. In addition, for syscalls that implement the
-+trampoline code on the vDSO, that trampoline is never intercepted.
-+
-+[selector] is a pointer to a char-sized region in the process memory
-+region, that provides a quick way to enable disable syscall redirection
-+thread-wide, without the need to invoke the kernel directly.  selector
-+can be set to PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF.  Any other
-+value should terminate the program with a SIGSYS.
-+
-+Security Notes
-+--------------
-+
-+Syscall User Dispatch provides functionality for compatibility layers to
-+quickly capture system calls issued by a non-native part of the
-+application, while not impacting the Linux native regions of the
-+process.  It is not a mechanism for sandboxing system calls, and it
-+should not be seen as a security mechanism, since it is trivial for a
-+malicious application to subvert the mechanism by jumping to an allowed
-+dispatcher region prior to executing the syscall, or to discover the
-+address and modify the selector value.  If the use case requires any
-+kind of security sandboxing, Seccomp should be used instead.
-+
-+Any fork or exec of the existing process resets the mechanism to
-+PR_SYS_DISPATCH_OFF.
+ static unsigned long wakeup_gran(struct sched_entity *se)
+ {
+ 	unsigned long gran = sysctl_sched_wakeup_granularity;
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index f324dc36fc43..0bd83c00c22a 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -164,7 +164,7 @@ static void cpuidle_idle_call(void)
+ 
+ 	if (cpuidle_not_available(drv, dev)) {
+ 		tick_nohz_idle_stop_tick();
+-
++		update_idle_cpumask(this_rq(), true);
+ 		default_idle_call();
+ 		goto exit_idle;
+ 	}
+@@ -205,9 +205,10 @@ static void cpuidle_idle_call(void)
+ 		 */
+ 		next_state = cpuidle_select(drv, dev, &stop_tick);
+ 
+-		if (stop_tick || tick_nohz_tick_stopped())
++		if (stop_tick || tick_nohz_tick_stopped()) {
++			update_idle_cpumask(this_rq(), true);
+ 			tick_nohz_idle_stop_tick();
+-		else
++		} else
+ 			tick_nohz_idle_retain_tick();
+ 
+ 		entered_state = call_cpuidle(drv, dev, next_state);
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 8d1ca65db3b0..db460b20217a 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1004,6 +1004,7 @@ struct rq {
+ 	/* This is used to determine avg_idle's max value */
+ 	u64			max_idle_balance_cost;
+ #endif /* CONFIG_SMP */
++	unsigned char		last_idle_state;
+ 
+ #ifdef CONFIG_IRQ_TIME_ACCOUNTING
+ 	u64			prev_irq_time;
+@@ -1088,6 +1089,7 @@ static inline void update_idle_core(struct rq *rq)
+ #else
+ static inline void update_idle_core(struct rq *rq) { }
+ #endif
++void update_idle_cpumask(struct rq *rq, bool set_idle);
+ 
+ DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+ 
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 1bd7e3af904f..541bd3a7de4d 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
+ 		sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
+ 		atomic_inc(&sd->shared->ref);
+ 		atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
++		cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
+ 	}
+ 
+ 	sd->private = sdd;
+@@ -1769,7 +1770,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
+ 
+ 			*per_cpu_ptr(sdd->sd, j) = sd;
+ 
+-			sds = kzalloc_node(sizeof(struct sched_domain_shared),
++			sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
+ 					GFP_KERNEL, cpu_to_node(j));
+ 			if (!sds)
+ 				return -ENOMEM;
 -- 
-2.29.2
+2.25.1
 
