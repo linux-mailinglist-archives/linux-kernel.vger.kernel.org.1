@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A80E2B3CF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B3A2B3CF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgKPGRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 01:17:07 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48751 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgKPGRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 01:17:07 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZJkn2kRsz9sPB;
-        Mon, 16 Nov 2020 17:17:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605507425;
-        bh=53Ww9hM6cWh2ShMkOwIVkNfHnjU1pd0mjAsgj/ztTyg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iAVn6ox5JXuFHwQHxgteue+UACFZKfEp8yUs41nup4K1ynbEwLApw3+RLIH19wCVs
-         M4ep7VyLYJkA+v2cMxLEsD8MpbMPdIBwjbu+TtDFQQXRre3Sy+00b9yjs0vmIu7ltO
-         fxujeYUl5JEl9SiMkGG33zQyZb7zn6U6HoLIDWISN1yKyI7LdO3xlnRuiNu4dSiUeg
-         dW72OVCO4oqnop9+XyaPh3VS5MJUFnlK1WD33Cgc6wuPuNkEHlLET5rBcLq1iAobcu
-         AzSNkX3TtcA54C0qPAxPrt8r7MQu2FPT507xg+YmjIhcf7CAtXZViXO/V3PoO/qMSA
-         IRo+wNvgOgkVQ==
-Date:   Mon, 16 Nov 2020 17:17:04 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the akpm tree
-Message-ID: <20201116171704.565df6ad@canb.auug.org.au>
-In-Reply-To: <20201115090105.GX4758@kernel.org>
-References: <20201113180239.0ee06fd2@canb.auug.org.au>
-        <20201113171452.087c489c1ef58e472667577e@linux-foundation.org>
-        <20201115090105.GX4758@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GkXNrfrMFJ8zZ7_KlgR4V8r";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726827AbgKPGUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 01:20:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgKPGUi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 01:20:38 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77323C0613CF;
+        Sun, 15 Nov 2020 22:20:36 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id k2so17418990wrx.2;
+        Sun, 15 Nov 2020 22:20:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=PRE33PyX0DgQV+nPjucF/BuaE/3yxdmGeh7qvmvEzro=;
+        b=TI6RaHtEPsDA2gqYraJ1fkUSJhdCI6IMKeSAjnX8tAupeoT+MgZnMJytGNyIeJZb8E
+         tejpSnUoo2UJl1gYC6y9klVRPRhiTrakvO4ZCFqcry7L52wJBCNEoN1riuc7MWnkSfED
+         i4AWh/1K0qK32fKaLtQECbwi89jKWtlg/hKWREor0cWTAcRgg2mqbtr/DL9tT9YVO96t
+         cIudPEJKp45VpY01drRruOxH/iZRoCFtBuCqIevGTc8yQMJZYXMwLiZ/sELtds2iy0M/
+         ZDRiBx3yvk+9u2V0DNPPyTqspOCcXxm4FE6cMZ2fhtaa+wOq3UY5+hlJoMQHDSnGqeA1
+         wHWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=PRE33PyX0DgQV+nPjucF/BuaE/3yxdmGeh7qvmvEzro=;
+        b=WTCPfzWI6duv8S3jMbf3IR9KQnzCYVEDAYTXptR0vaoHZDhzbzpUXObJ9zUZlPLm/U
+         51yOMxSXKgfdJeZaTgCXncVSrrAoCohNdcxsg7HPnoW0Sl4XgQDIaklq/4Ca3207deiV
+         Nh2Xdbx+KyBGMNDuFYArQcsFro7BwXwp860gGKjtJnmoSkOTeGlhEeOIvPgo9Xxpz5W1
+         mBWhE9olEmWXMpWAf2MiOR91ysPXEq0px89wSlPBNtptl1OmWiHn5crJOpNVanfMAGtO
+         jcoxiAZV21E22RitSFaLaF1vgiUJJsl1Gjms4l+2RAzKMjSvK31gPmR+ZlAyOWHw8Z0/
+         FxPQ==
+X-Gm-Message-State: AOAM530jQ3hZaAOedB0e3X37ZWcyBZU+R+H5tTxrBc2EPPCI+6bkh19f
+        AsrqTgprZ8Tc/h1qwPY17pI=
+X-Google-Smtp-Source: ABdhPJzKlFtq6d42gqMkJc5oVxVrMJJ1WBeET4rSm0rF+ADL8gJZL3ZhaIZJBUubub86R0pfcSCdDw==
+X-Received: by 2002:a5d:4d02:: with SMTP id z2mr9475903wrt.109.1605507635254;
+        Sun, 15 Nov 2020 22:20:35 -0800 (PST)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id m3sm17065985wrv.6.2020.11.15.22.20.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 22:20:34 -0800 (PST)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH v3 0/7] arm64: dts: meson: add more GX soundcards
+Date:   Mon, 16 Nov 2020 06:20:24 +0000
+Message-Id: <20201116062031.11233-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GkXNrfrMFJ8zZ7_KlgR4V8r
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This series adds basic support for LPCM audio over HDMI and S/PDIF
+to GXBB/GXL/GXM devices that I own and have tested with. Audio can
+be extended in the future (some devices have DACs and headphone
+hardware to connect) but this gets the basics working.
 
-Hi Mike,
+Changes from v2
+- Drop p200/p201/p212-s905x/vega-s95 changes
+- Add khadas-vim(1)
 
-On Sun, 15 Nov 2020 11:01:05 +0200 Mike Rapoport <rppt@kernel.org> wrote:
->
-> My preference would be to put the entire function body in '#ifdef
-> CONFIG_MEMCG' here.
+Changes from v1
+- Drop nexbox-a1 and rbox-pro 
 
-OK, so today I used this:
+Christian Hewitt (7):
+  arm64: dts: meson: add audio playback to a95x
+  arm64: dts: meson: add audio playback to khadas-vim
+  arm64: dts: meson: add audio playback to khadas-vim2
+  arm64: dts: meson: add audio playback to nanopi-k2
+  arm64: dts: meson: add audio playback to odroid-c2
+  arm64: dts: meson: add audio playback to wetek-hub
+  arm64: dts: meson: add audio playback to wetek-play2
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 16 Nov 2020 16:55:10 +1100
-Subject: [PATCH] secretmem-add-memcg-accounting-fix2
+ .../boot/dts/amlogic/meson-gxbb-nanopi-k2.dts | 40 ++++++++++++
+ .../dts/amlogic/meson-gxbb-nexbox-a95x.dts    | 40 ++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 40 ++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-wetek-hub.dts | 40 ++++++++++++
+ .../dts/amlogic/meson-gxbb-wetek-play2.dts    | 61 +++++++++++++++++++
+ .../amlogic/meson-gxl-s905x-khadas-vim.dts    | 43 ++++++++++++-
+ .../dts/amlogic/meson-gxm-khadas-vim2.dts     | 44 ++++++++++++-
+ 7 files changed, 303 insertions(+), 5 deletions(-)
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- mm/secretmem.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/mm/secretmem.c b/mm/secretmem.c
-index 5ed6b2070136..c7a37b2d01ed 100644
---- a/mm/secretmem.c
-+++ b/mm/secretmem.c
-@@ -59,6 +59,7 @@ bool secretmem_active(void)
-=20
- static int secretmem_memcg_charge(struct page *page, gfp_t gfp, int order)
- {
-+#ifdef CONFIG_MEMCG
- 	unsigned long nr_pages =3D (1 << order);
- 	int i, err;
-=20
-@@ -72,11 +73,13 @@ static int secretmem_memcg_charge(struct page *page, gf=
-p_t gfp, int order)
- 		p->memcg_data =3D page->memcg_data;
- 	}
-=20
-+#endif
- 	return 0;
- }
-=20
- static void secretmem_memcg_uncharge(struct page *page, int order)
- {
-+#ifdef CONFIG_MEMCG
- 	unsigned long nr_pages =3D (1 << order);
- 	int i;
-=20
-@@ -87,6 +90,7 @@ static void secretmem_memcg_uncharge(struct page *page, i=
-nt order)
- 	}
-=20
- 	memcg_kmem_uncharge_page(page, PMD_PAGE_ORDER);
-+#endif
- }
-=20
- static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
---=20
-2.29.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/GkXNrfrMFJ8zZ7_KlgR4V8r
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+yGWAACgkQAVBC80lX
-0Gz85wf/cY8cijPLbCsrbdxADSyMXMtPvOE2qMn7PTZwKKpnhkoiVe9puw6ArJwv
-X/FfabMrR9NomNOfB4/KoMWwD7SqOIM4qxQcHwE7fd7zOqBTPviG7spX+pXxAa5m
-mtkJcpfRAfDw23WG9w8fwbZUe/JGGTg0f3RRfd/uRZWgVBYVv273s0ivKGgvaYCP
-turJiD6wre/RWtLYyWzeLeZddt4jbobih90p7S2zDoaZjUJ3/tQkZF4CB3I1FV2z
-Z59T46h02aZOTgNwTUpUwkgueOyase323Km9OpgnYEEaOZIBWmjriZwIPW/xC0pC
-5aQ3d3b4dK4uNWoDDAXBIiwrU/WBVQ==
-=jkmX
------END PGP SIGNATURE-----
-
---Sig_/GkXNrfrMFJ8zZ7_KlgR4V8r--
+-- 
+2.17.1
