@@ -2,92 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AC12B3F0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D5D2B3F05
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgKPIq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:46:56 -0500
-Received: from lgeamrelo12.lge.com ([156.147.23.52]:43388 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726643AbgKPIq4 (ORCPT
+        id S1728182AbgKPIpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:45:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726241AbgKPIpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:46:56 -0500
-Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
-        by 156.147.23.52 with ESMTP; 16 Nov 2020 17:46:53 +0900
-X-Original-SENDERIP: 156.147.1.127
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.127 with ESMTP; 16 Nov 2020 17:46:53 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Mon, 16 Nov 2020 17:45:27 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sasha Levin <alexander.levin@microsoft.com>,
-        "Wilson, Chris" <chris@chris-wilson.co.uk>, duyuyang@gmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
-        Tejun Heo <tj@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Greg KH <gregkh@linuxfoundation.org>, kernel-team@lge.com
-Subject: Re: [RFC] Are you good with Lockdep?
-Message-ID: <20201116084527.GA26078@X58A-UD3R>
-References: <20201111050559.GA24438@X58A-UD3R>
- <20201111105441.GA78848@gmail.com>
- <20201111093609.1bd2b637@gandalf.local.home>
- <20201112103225.GE14554@X58A-UD3R>
- <CAKMK7uEAcLizuCEBAN99oFGaN02Wn_ief5asTbzD=Dcv-b=9VQ@mail.gmail.com>
+        Mon, 16 Nov 2020 03:45:50 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F48C0613CF;
+        Mon, 16 Nov 2020 00:45:50 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id t18so8073829plo.0;
+        Mon, 16 Nov 2020 00:45:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eE6kgra1YlTXQSwDwoBMLKyVfTjYvNxtsHARlvdv6S4=;
+        b=goB7l1s/y8wJCBe1/fDM9JnlskpuHR+y6FluwWjlY05HpO62jX5xvTQZM5jicww7hC
+         9bxMGsEnqTMpnOVphEa2Hiq0+tjONnY63Mw2h3/qm/qPxzMfGfUoCzwo8V/rWEe3SUFH
+         wbfUd7DyHqoxehpsJ1/+hforL7ptxEUhU0G2DMGCbwKdQiZS5QTc2ro07hHU5RFkEfjN
+         Uum732C6Emz1vrQZIRWMVZpLk/e91RUcRz+b15EW+nqlmMYlvjiJeAS10e53WNFlJ8sA
+         rwBHC5PAFB5S1WhXBICorQp4RtGo4psnzzRuokrkZGcESA4xe2eZrH9J++86wyP7aq3h
+         jtqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eE6kgra1YlTXQSwDwoBMLKyVfTjYvNxtsHARlvdv6S4=;
+        b=XSDCYRe1PkWIH+We6z/nX4iOri5WnW+lsQ5Rwje06etpHGe76jKoWV6yRuLoVwUkrR
+         pHP3qu+1oKqm86k8YnucG7XjNSKvRnK1N2L3s37/Cwsr+AwteABcZNBf2BVMqzJpaEy1
+         wAPkTceM5bGj5wI/cisRCkyx4onJRkPRBz929oznyo+p29GvrY/OUOiA/2gQ/AmfSDI/
+         fWyk5gzrs1no3RQi2M2snNRFLZ1f/k8cQvVYNlHZmDLqmVejLOEGzou7frsB+EiJNm3h
+         /Tz8kQl5GlYVgM7TjH/9scVCz8rdFSF4wHJR+7jkfu95Hbk7tnlYZi+xCRAfCdms+d65
+         hY/g==
+X-Gm-Message-State: AOAM533SYZVPUw09/WWXdnK3HsA5F+5IKoS83ZkKD53wFQoItQMYWXle
+        Dgt7Eyiw2U9m5dkhT4KCO+CaVdBrJVYNpsa/5k0=
+X-Google-Smtp-Source: ABdhPJx2dqKEw/WrYrgu4jYV6uRrlo/WRa7QeMR0lwbWVWuyiPLkrfJvubOdv9sQ5hjfYu3ROV6hkw9oUHVB2T7y5Wk=
+X-Received: by 2002:a17:902:6b45:b029:d6:c43e:ad13 with SMTP id
+ g5-20020a1709026b45b02900d6c43ead13mr12230806plt.77.1605516349681; Mon, 16
+ Nov 2020 00:45:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uEAcLizuCEBAN99oFGaN02Wn_ief5asTbzD=Dcv-b=9VQ@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20201116073149.23219-1-ms@dev.tdt.de>
+In-Reply-To: <20201116073149.23219-1-ms@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Mon, 16 Nov 2020 00:45:38 -0800
+Message-ID: <CAJht_ENxZhW9MK_HsY_6c_VjUbubQCYZwkVMYbHL-4aWJkaxuQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] net/x25: add/remove x25_link_device by NETDEV_REGISTER/UNREGISTER
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 02:56:49PM +0100, Daniel Vetter wrote:
-> > > I think I understand it. For things like completions and other "wait for
-> > > events" we have lockdep annotation, but it is rather awkward to implement.
-> > > Having something that says "lockdep_wait_event()" and
-> > > "lockdep_exec_event()" wrappers would be useful.
-> >
-> > Yes. It's a problem of lack of APIs. It can be done by reverting revert
-> > of cross-release without big change. ;-)
-> 
-> +1 on lockdep-native support for this. For another use case I've added
-> annotations for dma_fence_wait, and they're not entirely correct
-> unfortunately. But the false positives is along the lines of "you
+Hi Martin,
 
-I'd like to help you solve the problem you are facing. Let me be back
-and help you later. I have to all-stop what I'm doing at the moment
-becasue of a very big personal issue, which is a sad thing.
+Thanks for the series. To get the series applied faster, could you
+address the warnings and failures shown on this page?
+https://patchwork.kernel.org/project/netdevbpf/list/?submitter=174539
+Thanks!
 
-Thank you,
-Byungchul
-
-> really shouldn't do this, even if it's in theory deadlock free". See
-> 
-> commit 5fbff813a4a328b730cb117027c43a4ae9d8b6c0
-> Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Date:   Tue Jul 7 22:12:05 2020 +0200
-> 
->    dma-fence: basic lockdep annotations
-> 
-> for fairly lengthy discussion of the problem and what I ended up with.
-> 
-> Thanks, Daniel
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+To let the netdev robot know which tree this series should be applied,
+we can use [PATCH net-next 1/6] as the subject prefix.
