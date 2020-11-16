@@ -2,108 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B63E2B4B5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C96562B4B48
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732193AbgKPQgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:36:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732184AbgKPQga (ORCPT
+        id S1732142AbgKPQey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:34:54 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35195 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731373AbgKPQex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:36:30 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963CCC0613CF;
-        Mon, 16 Nov 2020 08:36:30 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id m6so2190217wrg.7;
-        Mon, 16 Nov 2020 08:36:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=A+FE3R5hcwBY+z65SnAL9G4GLC9xYY2THDCEYGJfiOk=;
-        b=J1BPqWzpxluha/Pzix6Tivk6KVAv2wIWkDVgTeSGvnKGOjIK3xHxOa2efF9EVxS6ci
-         8s5rTD3Gc65zy5etH8nriLeeDEg4aIHTGiE57MLKhr2l0O3gtG3TMCS3gDBac525nUCU
-         R5UymHm096bLiFhIVfGDLDxZ1Q0kaKnCZQo7CORpzfItWldfKr0wqrjagdu57IcRO7d9
-         s4QZz+VZ/2CRSbU1JRs5N2QsYiEDcJuxmgjfsYARlNTbALgR1+wjq420fIC5gJlB+bnc
-         GoAUdSUJN/m/A67O2Q4nNNtq5y/1kznLVQ0xNhbkOJRhdPN26GaP1DUxtqA4rrgfpFjy
-         YH1g==
+        Mon, 16 Nov 2020 11:34:53 -0500
+Received: by mail-ot1-f65.google.com with SMTP id n11so16620120ota.2;
+        Mon, 16 Nov 2020 08:34:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=A+FE3R5hcwBY+z65SnAL9G4GLC9xYY2THDCEYGJfiOk=;
-        b=L4/XszQeWd6u0MUvNmUB/RP6F5wXkhSZbV72eLuaayHNM2Ns3Vu/rUIKBz+3aPK012
-         etpUH+WNofbQCvuHECzNAvqhZc5ziuYHIGd1fivGgwMoZUSo4td5n2EVo+fEtsTMvRhj
-         pFyMbJQxf9gfDpIaWvxa0Vbwwy55Mt2vAl15ZlTGp69SPvewl1gJdoswg8snmN9hT4YP
-         AeCeQH4yKgUUI3inH+GnkHW0Tu6KQTBjBjh1mBi0MPNX75W/uEW7m6ssSZAi9aQQcmpq
-         0kQRDBWw1IYaN52e0lf3OssV++xQEg0SFhK6+XaQ3YfLwsUprBx43iK7R68u8Jq8zBA+
-         5P/g==
-X-Gm-Message-State: AOAM531pDG2NT9s2yGQzK4edekLNwrAGH0rHDWpeNK/b4nkZt2TiS3rN
-        Hi2jcSxL/I3hMnh49CGN00E=
-X-Google-Smtp-Source: ABdhPJyQOz4ID7iAss60cqSo99HMjyg8KY37EymsVFnt2YOdJq7ZDNPakBD9WB6RpRPOkuB4GSz0kA==
-X-Received: by 2002:a5d:448a:: with SMTP id j10mr19367408wrq.33.1605544589403;
-        Mon, 16 Nov 2020 08:36:29 -0800 (PST)
-Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
-        by smtp.gmail.com with ESMTPSA id h15sm23361628wrw.15.2020.11.16.08.36.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Nov 2020 08:36:28 -0800 (PST)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Yue Wang <yue.wang@Amlogic.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-pci@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] PCI: dwc/meson: Use PTR_ERR_OR_ZERO
-Date:   Mon, 16 Nov 2020 16:34:18 +0000
-Message-Id: <20201116163418.10529-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X6r+TMuXBaWk+0YlYimRvQ3UQLh6IAXQbc5v0U3Ytpw=;
+        b=A/DkBwv36Hx6eCE6p6k/oGdOq0EEGvqZclZxkTMKgpsYXugw1mZuN1cvSArmh+RYB5
+         XnJgD5puOt/KJa7SHqx9KZYIs26Aijf130/jVnb3TskkADMLbyaI+f73STB/7xAOTfaO
+         4c7q8HUSqoy5c6ecqpwkQtYBXe7miWSzzIQSH1pity7dRc3y4A5vXlxs1BwoKOvhtGdV
+         iBPyeftuz26XlvPyp2iie4WZrbLamxZAxHOywFrXAXEjIejzOVw2uiVGXRtLNYeiTCyH
+         sNK2CQ15VIldWXrcBCtGflwlp6dZ94lG5hLvFptc67fZbhjAUCGiK9sJzSce2jlGI9SH
+         xXkw==
+X-Gm-Message-State: AOAM532yd+kgi/LYm3iywxQm2CuycEWT79lmHYJhnw9sLK65kPmZgog4
+        ex+YqYCTcPalEFLG7PZ0IdairCTbWJrTeqMQZOQ9AyJzSAU=
+X-Google-Smtp-Source: ABdhPJxXfOjX8Lhy1wwWUe392JncSbAGxcKFQfRzrNKGlBugUCM6FToKHQOVyMbEwnMz2xffTepsuPCWMTdjBP+D1T8=
+X-Received: by 2002:a9d:222f:: with SMTP id o44mr46532ota.321.1605544492320;
+ Mon, 16 Nov 2020 08:34:52 -0800 (PST)
+MIME-Version: 1.0
+References: <20201104232356.4038506-1-saravanak@google.com> <20201104232356.4038506-15-saravanak@google.com>
+In-Reply-To: <20201104232356.4038506-15-saravanak@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 16 Nov 2020 17:34:41 +0100
+Message-ID: <CAJZ5v0hQFRo8DzA=RFV8_L7_feiZF=7XMT8vVXgG5VtbLPEJ5Q@mail.gmail.com>
+Subject: Re: [PATCH v1 14/18] driver core: Use device's fwnode to check if it
+ is waiting for suppliers
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coccinelle suggested using PTR_ERR_OR_ZERO() and looking at the code,
-we can use PTR_ERR_OR_ZERO() instead of checking IS_ERR() and then
-doing 'return 0'.
+On Thu, Nov 5, 2020 at 12:24 AM Saravana Kannan <saravanak@google.com> wrote:
+>
+> To check if a device is still waiting for its supplier devices to be
+> added, we used to check if the devices is in a global
+> waiting_for_suppliers list. Since the global list will be deleted in
+> subsequent patches, this patch stops using this check.
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- drivers/pci/controller/dwc/pci-meson.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+My kind of educated guess is that you want to drop
+waiting_for_suppliers and that's why you want to use supplier links
+here.
 
-diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
-index 1913dc2c8fa0..f4261f5aceb1 100644
---- a/drivers/pci/controller/dwc/pci-meson.c
-+++ b/drivers/pci/controller/dwc/pci-meson.c
-@@ -115,10 +115,8 @@ static int meson_pcie_get_mems(struct platform_device *pdev,
- 		return PTR_ERR(pci->dbi_base);
- 
- 	mp->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
--	if (IS_ERR(mp->cfg_base))
--		return PTR_ERR(mp->cfg_base);
- 
--	return 0;
-+	return PTR_ERR_OR_ZERO(mp->cfg_base);
- }
- 
- static int meson_pcie_power_on(struct meson_pcie *mp)
-@@ -208,10 +206,8 @@ static int meson_pcie_probe_clocks(struct meson_pcie *mp)
- 		return PTR_ERR(res->general_clk);
- 
- 	res->clk = meson_pcie_probe_clock(dev, "pclk", 0);
--	if (IS_ERR(res->clk))
--		return PTR_ERR(res->clk);
- 
--	return 0;
-+	return PTR_ERR_OR_ZERO(res->clk);
- }
- 
- static inline u32 meson_cfg_readl(struct meson_pcie *mp, u32 reg)
--- 
-2.11.0
+>
+> Instead, this patch uses a more device specific check. It checks if the
+> device's fwnode has any fwnode links that haven't been converted to
+> device links yet.
+>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  drivers/base/core.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 4ae5f2885ac5..d51dd564add1 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -51,6 +51,7 @@ static DEFINE_MUTEX(wfs_lock);
+>  static LIST_HEAD(deferred_sync);
+>  static unsigned int defer_sync_state_count = 1;
+>  static DEFINE_MUTEX(fwnode_link_lock);
+> +static bool fw_devlink_is_permissive(void);
+>
+>  /**
+>   * fwnode_link_add - Create a link between two fwnode_handles.
+> @@ -994,13 +995,13 @@ int device_links_check_suppliers(struct device *dev)
+>          * Device waiting for supplier to become available is not allowed to
+>          * probe.
+>          */
+> -       mutex_lock(&wfs_lock);
+> -       if (!list_empty(&dev->links.needs_suppliers) &&
+> -           dev->links.need_for_probe) {
+> -               mutex_unlock(&wfs_lock);
+> +       mutex_lock(&fwnode_link_lock);
+> +       if (dev->fwnode && !list_empty(&dev->fwnode->suppliers) &&
+> +           !fw_devlink_is_permissive()) {
+> +               mutex_unlock(&fwnode_link_lock);
+>                 return -EPROBE_DEFER;
+>         }
+> -       mutex_unlock(&wfs_lock);
+> +       mutex_unlock(&fwnode_link_lock);
+>
+>         device_links_write_lock();
+>
+> @@ -1166,10 +1167,7 @@ static ssize_t waiting_for_supplier_show(struct device *dev,
+>         bool val;
+>
+>         device_lock(dev);
+> -       mutex_lock(&wfs_lock);
+> -       val = !list_empty(&dev->links.needs_suppliers)
+> -             && dev->links.need_for_probe;
+> -       mutex_unlock(&wfs_lock);
 
+Why isn't the lock needed any more?
+
+Or maybe it wasn't needed previously too?
+
+> +       val = !list_empty(&dev->fwnode->suppliers);
+>         device_unlock(dev);
+>         return sysfs_emit(buf, "%u\n", val);
+>  }
+> @@ -2226,7 +2224,7 @@ static int device_add_attrs(struct device *dev)
+>                         goto err_remove_dev_groups;
+>         }
+>
+> -       if (fw_devlink_flags && !fw_devlink_is_permissive()) {
+> +       if (fw_devlink_flags && !fw_devlink_is_permissive() && dev->fwnode) {
+
+And why is this change needed?
+
+>                 error = device_create_file(dev, &dev_attr_waiting_for_supplier);
+>                 if (error)
+>                         goto err_remove_dev_online;
+> --
+> 2.29.1.341.ge80a0c044ae-goog
+>
