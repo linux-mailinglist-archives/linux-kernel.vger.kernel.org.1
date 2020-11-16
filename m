@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CD32B3D40
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 631C02B3D57
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727174AbgKPGvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 01:51:00 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:59498 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726821AbgKPGvA (ORCPT
+        id S1727047AbgKPGxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 01:53:14 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:52815 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725819AbgKPGxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 01:51:00 -0500
-X-UUID: c5225fbbdcfb4bed8e9767705d9e44a0-20201116
-X-UUID: c5225fbbdcfb4bed8e9767705d9e44a0-20201116
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2043911849; Mon, 16 Nov 2020 14:50:58 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 16 Nov 2020 14:50:57 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 16 Nov 2020 14:50:57 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <kwmad.kim@samsung.com>,
-        <liwei213@huawei.com>, <matthias.bgg@gmail.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v1 9/9] scsi: ufs-qcom: Use common ADAPT configuration function
-Date:   Mon, 16 Nov 2020 14:50:54 +0800
-Message-ID: <20201116065054.7658-10-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201116065054.7658-1-stanley.chu@mediatek.com>
-References: <20201116065054.7658-1-stanley.chu@mediatek.com>
+        Mon, 16 Nov 2020 01:53:13 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0AG6r9DM1027092, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb04.realtek.com.tw[172.21.6.97])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0AG6r9DM1027092
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 16 Nov 2020 14:53:09 +0800
+Received: from fc32.localdomain (172.21.177.102) by RTEXMB04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 16 Nov
+ 2020 14:53:09 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     <netdev@vger.kernel.org>, <m.szyprowski@samsung.com>
+CC:     <nic_swsd@realtek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, Hayes Wang <hayeswang@realtek.com>
+Subject: [PATCH net-next] r8153_ecm: avoid to be prior to r8152 driver
+Date:   Mon, 16 Nov 2020 14:52:39 +0800
+Message-ID: <1394712342-15778-393-Taiwan-albertk@realtek.com>
+X-Mailer: Microsoft Office Outlook 11
+In-Reply-To: <7fd014f2-c9a5-e7ec-f1c6-b3e4bb0f6eb6@samsung.com>
+References: <7fd014f2-c9a5-e7ec-f1c6-b3e4bb0f6eb6@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.177.102]
+X-ClientProxiedBy: RTEXMB01.realtek.com.tw (172.21.6.94) To
+ RTEXMB04.realtek.com.tw (172.21.6.97)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use common ADAPT configuration function to reduce duplicated
-code in UFS drivers.
+Avoid r8153_ecm is compiled as built-in, if r8152 driver is compiled
+as modules. Otherwise, the r8153_ecm would be used, even though the
+device is supported by r8152 driver.
 
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+Fixes: c1aedf015ebd ("net/usb/r8153_ecm: support ECM mode for RTL8153")
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
 ---
- drivers/scsi/ufs/ufs-qcom.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ drivers/net/usb/Makefile | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index 04adfbd10753..1e434cce0f79 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -723,17 +723,9 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
- 			ufs_qcom_dev_ref_clk_ctrl(host, true);
- 
- 		if (host->hw_ver.major >= 0x4) {
--			if (dev_req_params->gear_tx == UFS_HS_G4) {
--				/* INITIAL ADAPT */
--				ufshcd_dme_set(hba,
--					       UIC_ARG_MIB(PA_TXHSADAPTTYPE),
--					       PA_INITIAL_ADAPT);
--			} else {
--				/* NO ADAPT */
--				ufshcd_dme_set(hba,
--					       UIC_ARG_MIB(PA_TXHSADAPTTYPE),
--					       PA_NO_ADAPT);
--			}
-+			ufshcd_dme_configure_adapt(hba,
-+						dev_req_params->gear_tx,
-+						PA_INITIAL_ADAPT);
- 		}
- 		break;
- 	case POST_CHANGE:
+diff --git a/drivers/net/usb/Makefile b/drivers/net/usb/Makefile
+index 99381e6bea78..98f4c100955e 100644
+--- a/drivers/net/usb/Makefile
++++ b/drivers/net/usb/Makefile
+@@ -13,7 +13,7 @@ obj-$(CONFIG_USB_LAN78XX)	+= lan78xx.o
+ obj-$(CONFIG_USB_NET_AX8817X)	+= asix.o
+ asix-y := asix_devices.o asix_common.o ax88172a.o
+ obj-$(CONFIG_USB_NET_AX88179_178A)      += ax88179_178a.o
+-obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o r8153_ecm.o
++obj-$(CONFIG_USB_NET_CDCETHER)	+= cdc_ether.o
+ obj-$(CONFIG_USB_NET_CDC_EEM)	+= cdc_eem.o
+ obj-$(CONFIG_USB_NET_DM9601)	+= dm9601.o
+ obj-$(CONFIG_USB_NET_SR9700)	+= sr9700.o
+@@ -41,3 +41,11 @@ obj-$(CONFIG_USB_NET_QMI_WWAN)	+= qmi_wwan.o
+ obj-$(CONFIG_USB_NET_CDC_MBIM)	+= cdc_mbim.o
+ obj-$(CONFIG_USB_NET_CH9200)	+= ch9200.o
+ obj-$(CONFIG_USB_NET_AQC111)	+= aqc111.o
++
++ifdef CONFIG_USB_NET_CDCETHER
++ifeq ($(CONFIG_USB_RTL8152), m)
++obj-$(CONFIG_USB_RTL8152)	+= r8153_ecm.o
++else
++obj-$(CONFIG_USB_NET_CDCETHER)	+= r8153_ecm.o
++endif
++endif
 -- 
-2.18.0
+2.26.2
 
