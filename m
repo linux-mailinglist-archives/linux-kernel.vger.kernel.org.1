@@ -2,153 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E652B3E0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F12EA2B3DFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgKPHzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 02:55:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48802 "EHLO mail.kernel.org"
+        id S1727993AbgKPHxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 02:53:41 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:33710 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727895AbgKPHyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 02:54:51 -0500
-Received: from wens.tw (mirror2.csie.ntu.edu.tw [140.112.30.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726524AbgKPHxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 02:53:41 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605513220; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=A6Y/pPvQHSECx1kY1OndhW71vtjhtOREXblvdLFxNwE=; b=aTQnn7eu+FROhzaARIxGmgFAmc8CX6EMOnT5MF3JsH4EKkSeZ7p/EoSzJtcRXKTdt+m1vUCH
+ nelIznchpJW2MWqDG03Z9wdtTFVeBS9o7qJZ137Au5vI5aEi1RFewNVSNi+xDpf///6XpB2D
+ pEhdxh9q+rnxkx55nL/ncur4kR8=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fb22ffe57dd92cbec0729fd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 07:53:34
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A7C66C43462; Mon, 16 Nov 2020 07:53:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AE6F222B9;
-        Mon, 16 Nov 2020 07:54:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605513290;
-        bh=AQ/Sx1u+bYD4zoGriANF0/uI3pWLqX2+CyXLECxBBZo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vwO/bi8HxpZmfmGN+1TNtSuJ0TKhs3RpajY7obUPsQc+fyHhgCYQiZiRmakfE/dXl
-         sZLGXowQYfbzG1Df9LaM7jdluA7TKQ2pOLZnB5I1vCKOWztcQPTJ5xbtT5RZGX8rOx
-         IKv+XDU4rAde5JPL7KmlWWrJA/XL+RF+MJGhSseU=
-Received: by wens.tw (Postfix, from userid 1000)
-        id CC6FF5FD01; Mon, 16 Nov 2020 15:54:47 +0800 (CST)
-From:   Chen-Yu Tsai <wens@kernel.org>
-To:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
-        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH 4/4] arm64: dts: rockchip: rk3399: Add NanoPi M4B
-Date:   Mon, 16 Nov 2020 15:52:15 +0800
-Message-Id: <20201116075215.15303-5-wens@kernel.org>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201116075215.15303-1-wens@kernel.org>
-References: <20201116075215.15303-1-wens@kernel.org>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C45DC433ED;
+        Mon, 16 Nov 2020 07:53:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8C45DC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     Wen Gong <wgong@codeaurora.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+Subject: Re: drivers/net/wireless/ath/ath10k/sdio.c:2234:2: warning: Non-boolean value returned from function returning bool
+References: <20201116055212.GA3723@shao2-debian>
+Date:   Mon, 16 Nov 2020 09:53:29 +0200
+In-Reply-To: <20201116055212.GA3723@shao2-debian> (kernel test robot's message
+        of "Mon, 16 Nov 2020 13:53:19 +0800")
+Message-ID: <87o8jx20w6.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
++ ath10k list
 
-The NanoPi M4B is a minor revision of the original M4.
+kernel test robot <rong.a.chen@intel.com> writes:
 
-The differences against the original Nanopi M4 that are common with the
-other M4V2 revision include:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   f01c30de86f1047e9bae1b1b1417b0ce8dcd15b1
+> commit: 3c45f21af84eb05a355919abc80cf70a3a681cee ath10k: sdio: add
+> firmware coredump support
+> compiler: nios2-linux-gcc (GCC) 9.3.0
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+>
+>
+> cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+>
+>>> drivers/net/wireless/ath/ath10k/sdio.c:2234:2: warning: Non-boolean
+> value returned from function returning bool
+> [returnNonBoolInBooleanFunction]
+>     return param & HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW;
+>     ^
 
-  - microphone header removed
-  - power button added
-  - recovery button added
+Is this really a problem? I guess we could change that to "!!(param &
+HI_OPTION_SDIO_CRASH_DUMP_ENHANCEMENT_FW)" but how is that better and
+does it make any practical difference when
+ath10k_sdio_is_fast_dump_supported() returns a boolean anyway?
 
-Additional changes specific to the M4B:
-
-  - USB 3.0 hub removed; board now has 2x USB 3.0 type-A ports and 2x
-    USB 2.0 ports
-  - ADB toggle switch added; this changes the top USB 3.0 host port to
-    a peripheral port
-  - Type-C port no longer supports data or PD
-  - WiFi/Bluetooth combo chip switched to AP6256, which supports BT 5.0
-    but only 1T1R (down from 2T2R) for WiFi
-
-Add a new dts file for the new board revision that shows the difference
-against the original.
-
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
----
- arch/arm64/boot/dts/rockchip/Makefile         |  1 +
- .../boot/dts/rockchip/rk3399-nanopi-m4b.dts   | 52 +++++++++++++++++++
- 2 files changed, 53 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts
-
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 5a53979b7057..fd47414e40eb 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -32,6 +32,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-kobol-helios64.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-leez-p710.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopc-t4.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4b.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-neo4.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-orangepi.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-pinebook-pro.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts
-new file mode 100644
-index 000000000000..72182c58cc46
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * FriendlyElec NanoPi M4B board device tree source
-+ *
-+ * Copyright (c) 2020 Chen-Yu Tsai <wens@csie.org>
-+ */
-+
-+/dts-v1/;
-+#include "rk3399-nanopi-m4.dts"
-+
-+/ {
-+	model = "FriendlyElec NanoPi M4B";
-+	compatible = "friendlyarm,nanopi-m4b", "rockchip,rk3399";
-+
-+	adc-keys {
-+		compatible = "adc-keys";
-+		io-channels = <&saradc 1>;
-+		io-channel-names = "buttons";
-+		keyup-threshold-microvolt = <1500000>;
-+		poll-interval = <100>;
-+
-+		recovery {
-+			label = "Recovery";
-+			linux,code = <KEY_VENDOR>;
-+			press-threshold-microvolt = <18000>;
-+		};
-+	};
-+};
-+
-+/* No USB type-C PD power manager */
-+/delete-node/ &fusb0;
-+
-+&i2c4 {
-+	status = "disabled";
-+};
-+
-+&u2phy0_host {
-+	phy-supply = <&vcc5v0_usb2>;
-+};
-+
-+&u2phy0_otg {
-+	phy-supply = <&vbus_typec>;
-+};
-+
-+&u2phy1_otg {
-+	phy-supply = <&vcc5v0_usb1>;
-+};
-+
-+&vbus_typec {
-+	enable-active-high;
-+	gpios = <&gpio4 RK_PD2 GPIO_ACTIVE_HIGH>;
-+};
 -- 
-2.29.1
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
