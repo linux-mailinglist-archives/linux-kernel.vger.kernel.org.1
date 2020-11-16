@@ -2,146 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243E72B4ECB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C64D2B4ED6
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388206AbgKPSCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:02:55 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:35096 "EHLO nat-hk.nvidia.com"
+        id S1730464AbgKPSIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:08:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:44764 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731246AbgKPSCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:02:54 -0500
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb2becc0000>; Tue, 17 Nov 2020 02:02:52 +0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov
- 2020 18:02:48 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 16 Nov 2020 18:02:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BG2AL4HpLrMD0VGigJwuNI/rTVeB1LeNHXGT62ezyeHvHaP9OXt85YpuPYFF5NSZomsa/TvlOGd3CEbAxuvSu+PbLrnac8fC7uBtZg5Y0Q5+sXvshd6yAXk8zVzFldo8+BeD/hWKGRaDbcKVPbF4ZTBO8KHubm4kyT41bOWX/twG7wcZnGuPOde54Y77ej4LEXzxECI28FoOscIR1EmkMrBH9zT4RHkcTJnmJRvwwzIWM4FxcUVCQ0bHGcZs3HPYDph2mYKl8ZsSAibBapPv/Kfs27MczOpbfWtCwydO5eIQQw/lksPPuQVarKxaMJgKiMZg9AuuXi4dX1Mo0roQyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gctU42yzXtZmjACsW2kwDKYFXJUjOeLjhgXDkGb+56M=;
- b=NBc8RsQPE+TB/nnB1l4GX5q8HIY3cVZ/DfpDCOViUxPVH89DDwSpVHSxb8wUbXhjzdFxtwFY8K9IioEPSOX+AprS46cTmgYOIJ4jV1DT+ZCMGvXZBg1UB+Ts793NvTwguVb5ltuG5vGc1epw1lQwafFKYOL3L30jkAA/0+GoI8ti0suEje4xJt69jxfsvqZ+TFH5Kv2n20wO466k3dSAxmVfBZCcFvYaFEzD0+NXvrILVB4YBHCR8htWKfdOijB/ig1TLWtvD2HCey9wu2wRWYzp0tdL0U+a6w2vbo2ZSUUgYEhz2MIAi3DSxQGnKwHTK5FrZCFCf0GDPzd0cy+qxQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2487.namprd12.prod.outlook.com (2603:10b6:4:af::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
- 2020 18:02:44 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
- 18:02:43 +0000
-Date:   Mon, 16 Nov 2020 14:02:41 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Wilk, Konrad" <konrad.wilk@oracle.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201116180241.GP917484@nvidia.com>
-References: <877dqqmc2h.fsf@nanos.tec.linutronix.de>
- <20201114103430.GA9810@infradead.org>
- <20201114211837.GB12197@araj-mobl1.jf.intel.com>
- <877dqmamjl.fsf@nanos.tec.linutronix.de>
- <20201115193156.GB14750@araj-mobl1.jf.intel.com>
- <875z665kz4.fsf@nanos.tec.linutronix.de>
- <20201116002232.GA2440@araj-mobl1.jf.intel.com>
- <MWHPR11MB164539B8FDE63D5CBDA300E18CE30@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201116154635.GK917484@nvidia.com> <87y2j1xk1a.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <87y2j1xk1a.fsf@nanos.tec.linutronix.de>
-X-ClientProxiedBy: BL0PR03CA0020.namprd03.prod.outlook.com
- (2603:10b6:208:2d::33) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1729332AbgKPSIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:08:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E31A30E;
+        Mon, 16 Nov 2020 10:08:42 -0800 (PST)
+Received: from bogus (unknown [10.57.54.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9336B3F719;
+        Mon, 16 Nov 2020 10:08:40 -0800 (PST)
+Date:   Mon, 16 Nov 2020 18:08:37 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH] dt-bindings: dvfs: Add support for generic performance
+ domains
+Message-ID: <20201116180837.dgv6jhnqj76d5ral@bogus>
+References: <20201105173539.1426301-1-sudeep.holla@arm.com>
+ <20201109201518.GA1679536@bogus>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR03CA0020.namprd03.prod.outlook.com (2603:10b6:208:2d::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Mon, 16 Nov 2020 18:02:43 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1keipt-006LE4-Rv; Mon, 16 Nov 2020 14:02:41 -0400
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605549772; bh=gctU42yzXtZmjACsW2kwDKYFXJUjOeLjhgXDkGb+56M=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
-        b=ZQgW9Ek1MAQdv1H5vhuPRp9uzLSPLBlRmllGTf5kT6x0gDlbk2wDQ4IPcotg/aHg5
-         pK5djhjl0/yDPHCVoKWsLLrHl7HL/5I9BR08B1Ii6FvMeUNyERaqt92/MgrvQ9XaIt
-         XIQQfOjVg82/s5FtqNsR6pn2JobWhCf0jUlkqRa2uj4EqXYZBWP/f7TjewemKVXSOt
-         keVbZrd1sqjEa41qapwrsjKUioqYzT1HlPInLXigFGcDze56UOnwCxMO9bnLXe37xh
-         RupXtuhwHr7FIPvXQolrxt80Byvdaa5L0wldZ00arhCwiqQZVPsOuWHTCDd0fnEbVi
-         qdNouGZAffTEQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109201518.GA1679536@bogus>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 06:56:33PM +0100, Thomas Gleixner wrote:
-> On Mon, Nov 16 2020 at 11:46, Jason Gunthorpe wrote:
+On Mon, Nov 09, 2020 at 02:15:18PM -0600, Rob Herring wrote:
+> On Thu, Nov 05, 2020 at 05:35:39PM +0000, Sudeep Holla wrote:
+> > The CLKSCREW attack [0] exposed security vulnerabilities in energy management
+> > implementations where untrusted software had direct access to clock and
+> > voltage hardware controls. In this attack, the malicious software was able to
+> > place the platform into unsafe overclocked or undervolted configurations. Such
+> > configurations then enabled the injection of predictable faults to reveal
+> > secrets.
+> > 
+> > Many Arm-based systems used to or still use voltage regulator and clock
+> > frameworks in the kernel. These frameworks allow callers to independently
+> > manipulate frequency and voltage settings. Such implementations can render
+> > systems susceptible to this form of attack.
+> > 
+> > Attacks such as CLKSCREW are now being mitigated by not having direct and
+> > independent control of clock and voltage in the kernel and moving that
+> > control to a trusted entity, such as the SCP firmware or secure world
+> > firmware/software which are to perform sanity checking on the requested
+> > performance levels, thereby preventing any attempted malicious programming.
+> > 
+> > With the advent of such an abstraction, there is a need to replace the
+> > generic clock and regulator bindings used by such devices with a generic
+> > performance domains bindings.
+> > 
+> > [0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
+> > 
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+> >  .../bindings/dvfs/performance-domain.yaml     | 67 +++++++++++++++++++
+> >  1 file changed, 67 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/dvfs/performance-domain.yaml b/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+> > new file mode 100644
+> > index 000000000000..fa0151f63ac9
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+> > @@ -0,0 +1,67 @@
+> > +# SPDX-License-Identifier: GPL-2.0
 > 
-> > On Mon, Nov 16, 2020 at 07:31:49AM +0000, Tian, Kevin wrote:
-> >
-> >> > The subdevices require PASID & IOMMU in native, but inside the guest there
-> >> > is no
-> >> > need for IOMMU unless you want to build SVM on top. subdevices work
-> >> > without
-> >> > any vIOMMU or hypercall in the guest. Only because they look like normal
-> >> > PCI devices we could map interrupts to legacy MSIx.
-> >> 
-> >> Guest managed subdevices on PF/VF requires vIOMMU. 
-> >
-> > Why? I've never heard we need vIOMMU for our existing SRIOV flows in
-> > VMs??
+> Dual license new bindings.
 > 
-> Handing PF/VF into the guest does not require it.
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/dvfs/performance-domain.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Generic performance domains
+> > +
+> > +maintainers:
+> > +  - Sudeep Holla <sudeep.holla@arm.com>
+> > +
+> > +description: |+
+> > +  This binding is intended for performance management of groups of devices or
+> > +  CPUs that run in the same performance domain. Performance domains must not
+> > +  be confused with power domains. A performance domain is defined by a set
+> > +  of devices that always have to run at the same performance level. For a given
+> > +  performance domain, there is a single point of control that affects all the
+> > +  devices in the domain, making it impossible to set the performance level of
+> > +  an individual device in the domain independently from other devices in
+> > +  that domain. For example, a set of CPUs that share a voltage domain, and
+> > +  have a common frequency control, is said to be in the same performance
+> > +  domain.
+> > +
+> > +  This device tree binding can be used to bind performance domain consumer
+> > +  devices with their performance domains provided by performance domain
+> > +  providers. A performance domain provider can be represented by any node in
+> > +  the device tree and can provide one or more performance domains. A consumer
+> > +  node can refer to the provider by a phandle and a set of phandle arguments
+> > +  (so called performance domain specifiers) of length specified by the
+> > +  \#performance-domain-cells property in the performance domain provider node.
 > 
-> But if the PF/VF driver in the guest wants to create and manage the
-> magic mdev subdevices which require PASID support then you surely need
-> it.
+> select: true
+> 
+> Otherwise, this schema is never used.
+> 
+> > +
+> > +properties:
+> > +  "#performance-domain-cells":
+> > +    description:
+> > +      Number of cells in a performance domain specifier. Typically 0 for nodes
+> > +      representing a single performance domain and 1 for nodes providing
+> > +      multiple performance domains (e.g. performance controllers), but can be
+> > +      any value as specified by device tree binding documentation of particular
+> > +      provider.
+> 
+> enum: [ 0, 1 ]
+> 
+> If we need more, it can be extended.
+> 
+> > +
+> > +  performance-domains:
+> 
+> Needs a type ref (phandle-array).
+> 
+> > +    description:
+> > +      A phandle and performance domain specifier as defined by bindings of the
+> > +      performance controller/provider specified by phandle.
+> > +
+> > +required:
+> > +  - "#performance-domain-cells"
+> > +
+> > +additionalProperties: true
+> > +
+> > +examples:
+> > +  - |
+> > +    performance: performance-controller@12340000 {
+> > +        compatible = "foo,performance-controller";
+>
+> At some point in the future, this is going to generate warnings as an
+> undocumented binding. So we'll have to remove it, add a schema for it,
+> or replace with a real example. This is a standard DT design pattern, so
+> I'd lean toward removing the example.
+>
 
-'magic mdevs' are only one reason to use IMS in a guest. On mlx5 we
-might want to use IMS for VPDA devices. mlx5 can spawn a VDPA device
-in a guest, against a 'ADI', without ever requiring an IOMMU to do it.
+Thanks for the review, I have fixed all other things pointed out.
+I have retained the example in v2 with real compatibles as I believe
+it is good to have an example for the new binding. I am happy to drop
+it if it still looks wrong.
 
-We don't even need IOMMU in the hypervisor to create the ADI, mlx5 has
-an internal secure IOMMU that can be used instead of the platform
-IOMMU.
-
-Not saying this is a major use case, or a reason not to link things to
-IOMMU detection, but lets be clear that a hard need for IOMMU is a
-another IDXD thing, not general.
-
-Jason
+--
+Regards,
+Sudeep
