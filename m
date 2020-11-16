@@ -2,151 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89812B42FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D192B42FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729828AbgKPLf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:35:58 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:62589 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgKPLf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:35:58 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605526557; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=K9LOsX2gLgSoNSTyxciP2LJzFbg0b7nckKv9VIJNYQQ=; b=FxqGoKzzfP15YkimXabQnO7pMYzIirfKC1QqkByKAhWqfsXSPImkMR4rcyOJrVKt29A28INw
- dfXw87SWs3HKsN1fB+kALh/yZiuyJLU6jC8FEbu3FxVUmt+WWGI56PP4D5n4INaDAw+wYm/8
- 0FNwiOnuhNfOPM+ed3S0wv9dKeA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fb264148bd2e3c222d0b399 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 11:35:48
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B8B80C433ED; Mon, 16 Nov 2020 11:35:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 35485C433C6;
-        Mon, 16 Nov 2020 11:35:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 35485C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, rppt@kernel.org
-Cc:     vinmenon@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
-Subject: [PATCH v2] mm: memblock: drop __init from memblock functions to make it inline
-Date:   Mon, 16 Nov 2020 17:05:37 +0530
-Message-Id: <1605526537-16166-1-git-send-email-faiyazm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1729839AbgKPLgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:36:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729831AbgKPLgR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 06:36:17 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AA7C0613CF;
+        Mon, 16 Nov 2020 03:36:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vJEPnRL4Bt+W45Ld93fb8AMd5s0crtJuuJ0+CxOiB0c=; b=G0Y9NhesjqTSBZ/Dgd68wa8YyT
+        low1lTB1pCLpw73yHvvZsZLjVE1GmkBko8sRGYeU6cGEpNBziLiw442cVIyFNGHZKLRpMBvWWP/tL
+        0rWjm8nyJUcmMPOV5kP91xqEwgIsqx++y4YqNVQg5b9BMqIGYDkD8aw028J6igc/6y4wpThV6HY5j
+        +PIjE8IZRY4Np6A/45n65i40odDABpsO9VGXpn0dgbgXNLNOnUqNpU1a26LfNLNVzxsULPLTcmUUb
+        XB4+Vu6ttFW0wi0EipMztXD8ccpwdKADaXD1RUbUTZlwaWDJ2Sr5TufmoqgpdZ0xcQAt9sFUvEPOk
+        j2tKdZ7A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kecnn-000195-BQ; Mon, 16 Nov 2020 11:36:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 949DA3060AE;
+        Mon, 16 Nov 2020 12:36:05 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7187A2025A325; Mon, 16 Nov 2020 12:36:05 +0100 (CET)
+Date:   Mon, 16 Nov 2020 12:36:05 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 14/27] completion: fix kernel-doc markups
+Message-ID: <20201116113605.GB3121378@hirez.programming.kicks-ass.net>
+References: <cover.1605521731.git.mchehab+huawei@kernel.org>
+ <3540741143ee102db25283454e962768a8d6b9dd.1605521731.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3540741143ee102db25283454e962768a8d6b9dd.1605521731.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__init is used with inline due to which memblock wraper functions are
-not getting inline.
-for example:
-[    0.000000] memblock_alloc_try_nid: 1490 bytes align=0x40 nid=-1 from=0x0000000000000000 max_addr=0x0000000000000000 memblock_alloc+0x20/0x2c
-[    0.000000] memblock_reserve: [0x000000023f09a3c0-0x000000023f09a991] memblock_alloc_range_nid+0xc0/0x188
+On Mon, Nov 16, 2020 at 11:18:10AM +0100, Mauro Carvalho Chehab wrote:
+> Kernel-doc only supports having the comment just before
+> the identifier.
+> 
+> The markup for init_completion is actually for
+> __init_completion.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> 
+> ---
+> 
+> Thats said, IMHO, it would make sense to simply
+> rename __init_completion() to init_completion() and drop
+> this define:
+> 
+> 	 #define init_completion(x) __init_completion(x)
 
-Dropping __init from memblock wrapper functions to make it inline and it
-increase the debugability.
-After:
-[    0.000000] memblock_alloc_try_nid: 1490 bytes align=0x40 nid=-1 from=0x0000000000000000 max_addr=0x0000000000000000 start_kernel+0xa4/0x568
-[    0.000000] memblock_reserve: [0x000000023f09a3c0-0x000000023f09a991] memblock_alloc_range_nid+0xc0/0x188
-
-Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
----
- include/linux/memblock.h | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index ef13125..f78113f 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -404,13 +404,13 @@ void *memblock_alloc_try_nid(phys_addr_t size, phys_addr_t align,
- 			     phys_addr_t min_addr, phys_addr_t max_addr,
- 			     int nid);
- 
--static inline void * __init memblock_alloc(phys_addr_t size,  phys_addr_t align)
-+static inline void *memblock_alloc(phys_addr_t size,  phys_addr_t align)
- {
- 	return memblock_alloc_try_nid(size, align, MEMBLOCK_LOW_LIMIT,
- 				      MEMBLOCK_ALLOC_ACCESSIBLE, NUMA_NO_NODE);
- }
- 
--static inline void * __init memblock_alloc_raw(phys_addr_t size,
-+static inline void *memblock_alloc_raw(phys_addr_t size,
- 					       phys_addr_t align)
- {
- 	return memblock_alloc_try_nid_raw(size, align, MEMBLOCK_LOW_LIMIT,
-@@ -418,7 +418,7 @@ static inline void * __init memblock_alloc_raw(phys_addr_t size,
- 					  NUMA_NO_NODE);
- }
- 
--static inline void * __init memblock_alloc_from(phys_addr_t size,
-+static inline void *memblock_alloc_from(phys_addr_t size,
- 						phys_addr_t align,
- 						phys_addr_t min_addr)
- {
-@@ -426,33 +426,33 @@ static inline void * __init memblock_alloc_from(phys_addr_t size,
- 				      MEMBLOCK_ALLOC_ACCESSIBLE, NUMA_NO_NODE);
- }
- 
--static inline void * __init memblock_alloc_low(phys_addr_t size,
-+static inline void *memblock_alloc_low(phys_addr_t size,
- 					       phys_addr_t align)
- {
- 	return memblock_alloc_try_nid(size, align, MEMBLOCK_LOW_LIMIT,
- 				      ARCH_LOW_ADDRESS_LIMIT, NUMA_NO_NODE);
- }
- 
--static inline void * __init memblock_alloc_node(phys_addr_t size,
-+static inline void *memblock_alloc_node(phys_addr_t size,
- 						phys_addr_t align, int nid)
- {
- 	return memblock_alloc_try_nid(size, align, MEMBLOCK_LOW_LIMIT,
- 				      MEMBLOCK_ALLOC_ACCESSIBLE, nid);
- }
- 
--static inline void __init memblock_free_early(phys_addr_t base,
-+static inline void memblock_free_early(phys_addr_t base,
- 					      phys_addr_t size)
- {
- 	memblock_free(base, size);
- }
- 
--static inline void __init memblock_free_early_nid(phys_addr_t base,
-+static inline void memblock_free_early_nid(phys_addr_t base,
- 						  phys_addr_t size, int nid)
- {
- 	memblock_free(base, size);
- }
- 
--static inline void __init memblock_free_late(phys_addr_t base, phys_addr_t size)
-+static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
- {
- 	__memblock_free_late(base, size);
- }
-@@ -460,7 +460,7 @@ static inline void __init memblock_free_late(phys_addr_t base, phys_addr_t size)
- /*
-  * Set the allocation direction to bottom-up or top-down.
-  */
--static inline void __init memblock_set_bottom_up(bool enable)
-+static inline void memblock_set_bottom_up(bool enable)
- {
- 	memblock.bottom_up = enable;
- }
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+Yeah, that seems to be the result of much code shuffling. That cleanups
+seems sanest.
