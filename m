@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3002B5404
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4293E2B5406
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730220AbgKPV7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:59:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
+        id S1730266AbgKPWAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:00:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728531AbgKPV7Q (ORCPT
+        with ESMTP id S1728568AbgKPWAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:59:16 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74282C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 13:59:15 -0800 (PST)
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 39006806A8;
-        Tue, 17 Nov 2020 10:59:06 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1605563946;
-        bh=8KWdMd8qaxPKtziTolyHFsm/ErZmO9Vb61jZx+cWi2A=;
-        h=From:To:Cc:Subject:Date;
-        b=fcB1Zq6DCpncjQzJ6xeU3LC0ynE9o7QBjXRszneE13cVtdTf14nNPEZ5XzLtJ2gvN
-         2agVxS7+B1/PmOPwVYlocH8nSSKR6slvJ8j6NGXOc03Itq6ICuLWOKGXWBgJtLTnD4
-         MCq86dSw2zBZUd3SgLuF57IYMYCX+1WB1CS45hoLM6fE/rLkt1G6kVtZGv+jAQHuYv
-         29vaSQpk6g5dHHWHJLiMwP3TVEeqTWDEDu4lLIayHuNHiPFrk4z5Bzt+AFfPvNFUt4
-         1vHlcPTE8IiGrudW2lRnoMoD9Mo2FGY+70Cy5Ujnt9gubgsZ1aSWX5exvwALPC7Ecb
-         2JMaRoJ1h8sjA==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5fb2f6290000>; Tue, 17 Nov 2020 10:59:05 +1300
-Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
-        by smtp (Postfix) with ESMTP id D448C13ED56;
-        Tue, 17 Nov 2020 10:59:05 +1300 (NZDT)
-Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
-        id 0B57D340FC5; Tue, 17 Nov 2020 10:59:06 +1300 (NZDT)
-From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-To:     rjui@broadcom.com, sbranden@broadcom.com
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Subject: [PATCH] pinctrl: bcm: pinctrl-iproc-gpio: Fix setting GPIO as output
-Date:   Tue, 17 Nov 2020 10:58:42 +1300
-Message-Id: <20201116215842.29488-1-mark.tomlinson@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.29.2
+        Mon, 16 Nov 2020 17:00:47 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305E0C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:00:46 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id 74so27283333lfo.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:00:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pbM+uzL6L3H+4aTUHFaDKbTwMCquf9JhugqpRvQq5Kc=;
+        b=QraJNQ59ICnWgRHulII7yGGgG45c0rZRXw1NZS79Q8Aaj2xvz6mASVe49CmRSMtvmL
+         8EIkYCdrUa1Cg64uehUamCxrQO69NjK3QEEkmFd1ZBOJgPLmjCqAhapzR6zXAZa9J2Ew
+         l7CA2Y6sdodQAjeGkAraf+U9Zj1LMKn7nKF0meNdjKmHCgxMYrG3LX/iKP2R9gx9baxm
+         2FX9XsjxMN0/aOimHSj3dN1kybOmQns5Aw+T6Bjtx6cRqWmPCx4EvTHBpqlYu7U98ttC
+         W9W1pUKwstts0spEGsObaO6HdT9w4WuKOFKpLwBH4DFrI490zforVdkwMrlpjHs3BVVk
+         UL5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pbM+uzL6L3H+4aTUHFaDKbTwMCquf9JhugqpRvQq5Kc=;
+        b=OtusZNcYdpAxfLPzLUXNzSeJU4NwZLr7ei4svf7LJaRsusPpqO88lF1rwfFt7YSzqG
+         TqYT4rZBZO1w2F8W1dqk7UpZwzu95Aa07DPnu5vqdr+msB/LmvzU5RxbrzTPq8mjhldk
+         yalBtCYcqr4OxR7TIIHQp33hex7Lwl0zBw0K9b0hTGNmgxSDSWE8DvL6+Au+I5SfE+8v
+         oosjWpCPdyvwRs1FcVsceuGZ+E9SFCpFUruurBwp2E1f6bJhQcJwp6b9y2EdAv6GG115
+         buB5C619KG5SkkSpIdspYnF2riuccyhUMIcl8SLyDUdQCfXxpB6srXWbJYvrwCbkLRyl
+         PBQw==
+X-Gm-Message-State: AOAM531uZ2iY9KTKQWK5YSDHBOhpDG0abMpNKEn6vdoyH3S28E5+bjq6
+        AC2lTeN5eusXRWWI9kn/0s0=
+X-Google-Smtp-Source: ABdhPJx6S9mr+zts/Kn/uWIj3McFpRPnLqpyaeqn6EN5RvapZhu5lx1zaheNt2A2SkPAyCmv+YvG3w==
+X-Received: by 2002:a19:3f56:: with SMTP id m83mr473900lfa.381.1605564044598;
+        Mon, 16 Nov 2020 14:00:44 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id v130sm2870160lfa.283.2020.11.16.14.00.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 14:00:44 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 1/2] mm/vmalloc: use free_vm_area() if an allocation fails
+Date:   Mon, 16 Nov 2020 23:00:32 +0100
+Message-Id: <20201116220033.1837-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-x-atlnz-ls: pat
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When setting a GPIO pin to an output, it is important to set the value
-correctly before enabling the output so that a glitch is not seen on the
-pin. This glitch may be very short, but can be important if this is a
-reset signal.
+There is a dedicated and separate function that finds and
+removes a continuous kernel virtual area. As a final step
+it also releases the "area", a descriptor of corresponding
+vm_struct.
 
-Fixes: b64333ce769c ("pinctrl: cygnus: add gpio/pinconf driver")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Use free_vmap_area() in the __vmalloc_node_range() instead
+of open coded steps which are exactly the same, to perform
+a cleanup.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- drivers/pinctrl/bcm/pinctrl-iproc-gpio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/vmalloc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c b/drivers/pinctrl/b=
-cm/pinctrl-iproc-gpio.c
-index e2bd2dce6bb4..cadcf5eb0466 100644
---- a/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
-+++ b/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
-@@ -348,8 +348,8 @@ static int iproc_gpio_direction_output(struct gpio_ch=
-ip *gc, unsigned gpio,
- 	unsigned long flags;
-=20
- 	raw_spin_lock_irqsave(&chip->lock, flags);
--	iproc_set_bit(chip, IPROC_GPIO_OUT_EN_OFFSET, gpio, true);
- 	iproc_set_bit(chip, IPROC_GPIO_DATA_OUT_OFFSET, gpio, !!(val));
-+	iproc_set_bit(chip, IPROC_GPIO_OUT_EN_OFFSET, gpio, true);
- 	raw_spin_unlock_irqrestore(&chip->lock, flags);
-=20
- 	dev_dbg(chip->dev, "gpio:%u set output, value:%d\n", gpio, val);
---=20
-2.29.2
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index d7075ad340aa..b08b06a8cc2a 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2479,8 +2479,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 	}
+ 
+ 	if (!pages) {
+-		remove_vm_area(area->addr);
+-		kfree(area);
++		free_vm_area(area);
+ 		return NULL;
+ 	}
+ 
+-- 
+2.20.1
 
