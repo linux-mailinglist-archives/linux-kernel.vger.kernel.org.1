@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0D82B42CB
+	by mail.lfdr.de (Postfix) with ESMTP id D309E2B42CC
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgKPL1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729790AbgKPL1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 16 Nov 2020 06:27:31 -0500
-Received: from mga04.intel.com ([192.55.52.120]:40193 "EHLO mga04.intel.com"
+Received: from mga18.intel.com ([134.134.136.126]:7868 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgKPL1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:27:30 -0500
-IronPort-SDR: OqQeDLY7H9mwTN3ABkbdYqotgtHkRKaBnsr9+wdZ9E6pIxtdUVEFZDjiBGsNxhDVsoy+K9edUs
- lDv0kZfuYRlA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="168154751"
+        id S1728777AbgKPL1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 06:27:31 -0500
+IronPort-SDR: gEIMlQoamF8CSZS9R23uEWC5fGeCGOm5Cab1uE6+JqSjkUNEaFDlXK1y1+RCZDvZAnJjDkGxje
+ CdQL8e9I0zBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="158508333"
 X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="168154751"
+   d="scan'208";a="158508333"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 03:27:29 -0800
-IronPort-SDR: U6/VOXcoenG2ox7VTTFy4AxP+77oHBx0PZ5UQ7DQ6YuzDs6CGwNHrLX0iZGuk0sMgOLBWwNPnt
- ty+0JVqQrzWA==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 03:27:30 -0800
+IronPort-SDR: sHTIF49sUc4zbNObogJBRvmozz+terrp0dP5RQdaQj+K8Hlxnb0Zn8fJQS2yv0zGU828a4c+2N
+ /BvjZfoo47bQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="329654005"
+   d="scan'208";a="358432712"
 Received: from lkp-server01.sh.intel.com (HELO fb398427a497) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 16 Nov 2020 03:27:28 -0800
+  by fmsmga004.fm.intel.com with ESMTP; 16 Nov 2020 03:27:28 -0800
 Received: from kbuild by fb398427a497 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kecfP-000048-TO; Mon, 16 Nov 2020 11:27:27 +0000
-Date:   Mon, 16 Nov 2020 19:27:20 +0800
+        id 1kecfP-000045-Dm; Mon, 16 Nov 2020 11:27:27 +0000
+Date:   Mon, 16 Nov 2020 19:27:22 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/entry] BUILD SUCCESS WITH WARNING
- 78a56e0494ad29feccd4c54c2b5682721f8cb988
-Message-ID: <5fb26218.bXaBY9YWA7kYt1Xl%lkp@intel.com>
+Subject: [tip:timers/core] BUILD SUCCESS
+ 6e5a91901c2dff3a0f2eb9f10e427dce2b0488fc
+Message-ID: <5fb2621a.sUXuYvWyPsgar6/q%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -45,25 +45,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/entry
-branch HEAD: 78a56e0494ad29feccd4c54c2b5682721f8cb988  entry: Fix spelling/typo errors in irq entry code
-
-Warning in current branch:
-
-kernel/entry/common.c:142 handle_signal_work() warn: bitwise AND condition is false here
-
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- i386-randconfig-m021-20201115
-|   `-- kernel-entry-common.c-handle_signal_work()-warn:bitwise-AND-condition-is-false-here
-`-- x86_64-randconfig-m001-20201116
-    `-- kernel-entry-common.c-handle_signal_work()-warn:bitwise-AND-condition-is-false-here
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  timers/core
+branch HEAD: 6e5a91901c2dff3a0f2eb9f10e427dce2b0488fc  timekeeping: Address parameter documentation issues for various functions
 
 elapsed time: 723m
 
-configs tested: 164
-configs skipped: 2
+configs tested: 179
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
 gcc tested configs:
 arm                                 defconfig
@@ -75,7 +66,6 @@ sh                           se7722_defconfig
 sh                        edosk7760_defconfig
 arm                       versatile_defconfig
 sh                        dreamcast_defconfig
-parisc                           allyesconfig
 nds32                             allnoconfig
 sh                   sh7770_generic_defconfig
 powerpc                       eiger_defconfig
@@ -85,6 +75,12 @@ s390                                defconfig
 arm                         lpc32xx_defconfig
 mips                            e55_defconfig
 openrisc                 simple_smp_defconfig
+powerpc                           allnoconfig
+arm                         at91_dt_defconfig
+arm                          exynos_defconfig
+m68k                        mvme147_defconfig
+arm                       spear13xx_defconfig
+microblaze                    nommu_defconfig
 powerpc                  mpc866_ads_defconfig
 arm                       mainstone_defconfig
 um                           x86_64_defconfig
@@ -104,7 +100,11 @@ sh                             shx3_defconfig
 ia64                          tiger_defconfig
 mips                       capcella_defconfig
 mips                        nlm_xlr_defconfig
-c6x                              allyesconfig
+s390                          debug_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                         s3c6400_defconfig
+powerpc                  storcenter_defconfig
+powerpc                 mpc837x_rdb_defconfig
 arm                    vt8500_v6_v7_defconfig
 mips                     cu1830-neo_defconfig
 ia64                                defconfig
@@ -147,12 +147,18 @@ arm                          moxart_defconfig
 powerpc                      arches_defconfig
 arm                     am200epdkit_defconfig
 sh                          lboxre2_defconfig
+sh                      rts7751r2d1_defconfig
+c6x                        evmc6457_defconfig
+powerpc                 linkstation_defconfig
+mips                     loongson1b_defconfig
+mips                         mpc30x_defconfig
 ia64                             allmodconfig
 ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
 arc                              allyesconfig
+c6x                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
@@ -162,13 +168,13 @@ h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
 s390                             allyesconfig
+parisc                           allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
-powerpc                           allnoconfig
 x86_64               randconfig-a003-20201116
 x86_64               randconfig-a005-20201116
 x86_64               randconfig-a004-20201116
