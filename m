@@ -2,79 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2E62B4BA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EC92B4BAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731196AbgKPQvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:51:01 -0500
-Received: from mga02.intel.com ([134.134.136.20]:38338 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728836AbgKPQvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:51:00 -0500
-IronPort-SDR: cOBdZD25TsHyqCduGK+3OpkXUAdc4HLro18lvp0scdlbaC5lxj9XVq5TaxBZ5LRobgHeNooxw8
- to6Ax0JGnrlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="157801204"
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="157801204"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 08:50:59 -0800
-IronPort-SDR: 3EBLUqO2lAiC7jtYzawjBY+G6ESr3YKN+5Bmt4d3ZZ7AedS2aNQXMorgOdxk5hUPDIUS6UkQLX
- 2Bisr+WReLag==
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="533477258"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 08:50:56 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kehjT-0077HE-3X; Mon, 16 Nov 2020 18:51:59 +0200
-Date:   Mon, 16 Nov 2020 18:51:59 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 0/7] resource: introduce union(), intersection() API
-Message-ID: <20201116165159.GE4077@smile.fi.intel.com>
-References: <20201103204510.19154-1-andriy.shevchenko@linux.intel.com>
+        id S1732332AbgKPQwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730612AbgKPQwi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:52:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AECC0613CF;
+        Mon, 16 Nov 2020 08:52:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=58n1C0eF5U2Ce08w2RFY+aBzbpcHaYmfH6ddU03MxV8=; b=gHrMs+m4c5i43VOs6wLtvFKYRG
+        hIV0TPWTqtDWpuJrTpZQKB+oCEMm5Ky8IhUC50h3NG48uWzVxVfc7TahHNVAJHMup37uN/yJ+XLG3
+        Iveqb1Z6SH0J8WIsABBdYiZe3Z8EZQ0raI8cNQsIF4BJsmK6RMW/Zk3rH/+rDC7Oa4YhGMReuXkW0
+        v/9k0FjKgBpKkpqd+TJS3dvuQWCdg5YQ4L71zeLRAbQibkCvCyRQuiv0kCYsd6eyqhOyakjtzky8y
+        SM8VE2wCWtMToxcnlmSWzF+Wc7/wzZ5MUQZPiyiNwLVclaI+VDXsD1eQJkvz+MqsXYretJAZxdUbA
+        gm1VNQdw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kehjz-00062Z-Rv; Mon, 16 Nov 2020 16:52:31 +0000
+Date:   Mon, 16 Nov 2020 16:52:31 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Chris Mason <clm@fb.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
+        Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
+Message-ID: <20201116165231.GA22834@infradead.org>
+References: <20201103060535.8460-1-nickrterrell@gmail.com>
+ <20201103060535.8460-2-nickrterrell@gmail.com>
+ <20201106183846.GA28005@infradead.org>
+ <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
+ <20201110183953.GA10656@infradead.org>
+ <4ED61269-0F19-46EB-ACE3-C6D81E0A9136@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103204510.19154-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <4ED61269-0F19-46EB-ACE3-C6D81E0A9136@fb.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 10:45:03PM +0200, Andy Shevchenko wrote:
-> Some users may want to use resource library to manage their own resources,
-> besides existing users that open code union() and intersection()
-> implementations.
-> 
-> Provide a generic API for wider use.
+On Tue, Nov 10, 2020 at 02:24:35PM -0500, Chris Mason wrote:
+> I think APIs change based on the needs of the project.  We do this all the
+> time in the kernel, and we don???t think twice about updating users of the
+> API as needed.
 
-Greg, Rafael, if there is no further comments, can it be applied?
+We update kernel APIs when:
 
-> Changelog v6:
-> - added missed tags
-> 
-> Changelog v5:
-> - added test cases (Greg)
-> 
-> Changelog v4:
-> - added Rb tag (Rafael)
-> - Cc'ed to LKML and Greg (Rafael)
-> 
-> Changelog v3:
-> - rebased on top of v5.10-rc1
-> - dropped upstreamed dependencies
-> - added Rb tag to the last patch (Mika)
+ - we need additional functionality
+ - thew new API is clearly better than the old one
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+None of that seems to be the case here.
