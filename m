@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499542B5088
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD632B508A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgKPTG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:06:57 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:35922 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729097AbgKPTG5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:06:57 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGJ4Q97016656;
-        Mon, 16 Nov 2020 19:06:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=dULoQgUsplByapZP3DMNGbbEAV2dKRIM8c0yqdiC5v8=;
- b=zm9ao1smSNr3qWo9zha6asmVCfCm4hK+vH0q/Zu5CKg957wmWQxRRQUk7k+c1pURkYjL
- p65xCblUIPKErA+yhFy900U1trraha2d6rXbjnFvqpwesVfxlLnsOLVAE8m3UonYFryk
- 2N1nM6HTEreVtQMFPh6VWS1w1CbUIAlxgyXbzEIm75tnC+K6xcDvBPxOZQccwardL3DF
- APDwVO9aJhWCZDA0LJdeOWaXwmwLuzauhhdLB4Tt3StEFLm9QUE04qqQkleWU4CfL0AJ
- KTy0/SrDXwRzxiFkOBncIrUa56C+IX1zfMukflRaa6hmJwoRCqeJvSlwjOT672na+UqL qw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34t4rapvw6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 16 Nov 2020 19:06:40 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGJ4UiF125700;
-        Mon, 16 Nov 2020 19:06:39 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 34ts5v2m38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Nov 2020 19:06:39 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AGJ6awN014957;
-        Mon, 16 Nov 2020 19:06:36 GMT
-Received: from [10.98.138.28] (/10.98.138.28)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 16 Nov 2020 11:06:36 -0800
-Subject: Re: [PATCH v2] soc: ti: pruss: Fix wrong check against
- *get_match_data return value
-To:     Suman Anna <s-anna@ti.com>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        ssantosh@kernel.org
-Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        praneeth@ti.com, tony@atomide.com,
-        Wei Yongjun <weiyongjun1@huawei.com>
-References: <20201116172233.18459-1-grzegorz.jaszczyk@linaro.org>
- <7a18452c-8c9c-df7d-b175-529ab690623f@ti.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <528e56d5-23d5-9f83-1bf4-a7f786593eae@oracle.com>
-Date:   Mon, 16 Nov 2020 11:06:34 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        id S1728829AbgKPTHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:07:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725879AbgKPTHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 14:07:53 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 394732225B;
+        Mon, 16 Nov 2020 19:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605553672;
+        bh=yosXMLmSKHZhkAgd5D8vJ5A8qZi+NPfl8uhqpTpOj6k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nqKf9OldNsSdey8/QJeb1luOcd4HwBPSIVYjTLj4rB/CEnWdloMS9AvJgcRqaIgM2
+         mgirUWUsENniK2QwP3AomrpBweLg3Y6wSN+dQ54U4OIrdm5kUuW0WVBaLQs4D8sLIU
+         13UQXjlpCrGXInaBO3eJFoqP6K57yNj+VU9/tw68=
+Date:   Mon, 16 Nov 2020 19:07:33 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-mtd@lists.infradead.org, vigneshr@ti.com, p.yadav@ti.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com
+Subject: Re: [PATCH v7 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to
+ cadence-quadspi.yaml
+Message-ID: <20201116190733.GF4739@sirena.org.uk>
+References: <20201116031003.19062-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201116031003.19062-6-vadivel.muruganx.ramuthevar@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <7a18452c-8c9c-df7d-b175-529ab690623f@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011160113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011160113
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
+Content-Disposition: inline
+In-Reply-To: <20201116031003.19062-6-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Cookie: Immanuel doesn't pun, he Kant.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20 9:31 AM, Suman Anna wrote:
-> Hi Santosh,
-> 
-> On 11/16/20 11:22 AM, Grzegorz Jaszczyk wrote:
->> Since the of_device_get_match_data() doesn't return error code, remove
->> wrong IS_ERR test. Proper check against NULL pointer is already done
->> later before usage: if (data && data->...).
->>
->> Additionally, proceeding with empty device data is valid (e.g. in case
->> of "ti,am3356-pruss").
->>
->> Fixes: ba59c9b43c86 ("soc: ti: pruss: support CORECLK_MUX and IEPCLK_MUX")
->> Reported-by: Wei Yongjun <weiyongjun1@huawei.com>
->> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
->> Acked-by: Suman Anna <s-anna@ti.com>
-> 
-> Can you please pick this up for 5.10-rc's?
-> 
-Nothing is broken so I will just add these for next merge window.
 
-Regards,
-Santosh
+--eDB11BtaWSyaBkpc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Nov 16, 2020 at 11:10:02AM +0800, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel=
+=2Ecom>
+>=20
+> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
+> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
+
+As previously and repeatedly requested please make any conversions to
+YAML the *final* thing in serieses so that issues with the conversion do
+not hold up other development.
+
+--eDB11BtaWSyaBkpc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+yzfUACgkQJNaLcl1U
+h9Db5Af7BSeCmDzgNuAKNa2DAq6jwsMGG9DCDDfsoV8mVxxj88/2ctalltiwpuki
+WiVDc6AuNbqSQhFOWzh5kI1zqNra9A9s1YP8Z69Uld1B/ZrqL5LDr9a9xgWBvsE7
+Co768+PNi5fp1x2hoiFF1MgAUOMsGmKkALVxborYTqB4f3/CC9SJYh94yxYd2dRD
+wdtvJQr4gmGKdwhuhjwKcl+m5dyQ9uI9zWZZFmwkCXRzaW27ndw83utGRPd4Z6ht
+ExGxovoAX/V+HX/sI4133h+F3emUKGJi0c3jT5GLZPRgFDXVSx/B04FBzfn2qlE+
+uleRMfluu5LB/PQJzQrNCFNzeZSYHQ==
+=Hmhj
+-----END PGP SIGNATURE-----
+
+--eDB11BtaWSyaBkpc--
