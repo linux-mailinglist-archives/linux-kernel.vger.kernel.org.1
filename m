@@ -2,88 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA062B3C1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 05:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9742B3C1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 05:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgKPEbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 23:31:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgKPEbC (ORCPT
+        id S1726923AbgKPEcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 23:32:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32006 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726136AbgKPEcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 23:31:02 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A65C0613CF;
-        Sun, 15 Nov 2020 20:31:01 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id w24so22405383wmi.0;
-        Sun, 15 Nov 2020 20:31:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=1ykM2PQF8UjrQNrIxTj9JuB0X1XIeh6YbXFFU1ntkCM=;
-        b=Uwebiu4HIVuABcHK8lNqFk0NZxgyA8PCsBSykCBhRoz6Sd9lzj/QOTTFvWpIUZrVZx
-         QUceQi9d7XcR4i19LHPrx4fblUKtMmwshf1qn10aMaxtvcK6kBkHNCxfzocXZpUz9Dcy
-         IWJ+iywdzys16kK91aM4ZpnMMiE9AKVFpLI+4QB6Cax/MVTnBYn+vb5UWyu4DVS6Rh/L
-         cRpU1hmnB3pUSE8RzfHK1DxQhszbJt9nLsROaDrZnHwg0TSojiOebIOvgDrdhQjgU5/m
-         8J4pG92sRVO7NC82GjsIeoBmyaj6MdsxAOIfTn3bpIaE67W2iO8KHgA14OpXrcBx1iSt
-         gjng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1ykM2PQF8UjrQNrIxTj9JuB0X1XIeh6YbXFFU1ntkCM=;
-        b=X1Kd8aUxaK9Xkd7TPRA/czPrGDHspLmpprP2ZNjfuFKQ6xj+HFhIDEvv1OeFd0l2I1
-         8wFkDeqOaF4UT5PUVaud+zQthLqgROeAtE4gMLxysNE0LAbxeMLOXnhYHD92pRUW0NPx
-         Cnu/DdVznWd9OBwxe0MurFgNcx2njueZRZKzQzAIMoRjBh0FhcN5DHM2BOk53qk6DFM2
-         lVga4jvU369/m95sLr14ImI3yXSDsM+TI4jZMi9Bp1n3nm5ZgU4/P39DzqSPJ21juxdF
-         a1ayTapdqRr+X7ydR3YWGFYkCfiKQ9A1iNjj+fn5Av1iWjdb1Fw/GWKT7wa1TmaQs5ZE
-         +dCQ==
-X-Gm-Message-State: AOAM532uY/1IIU9qXVNUCVV+BfCDao9+lpNBUIWZ5y2Ni+cvrVlw6EDi
-        pvvanolCov2zd67CEJZIUK5Id4TLyNg=
-X-Google-Smtp-Source: ABdhPJx8GlPd1wNv46eUCTw1UhIOajMx1D+l6Y9uVJsmoqiC4qc5rEMeGJXgpeioam+KFMondDJWFQ==
-X-Received: by 2002:a1c:6704:: with SMTP id b4mr12684331wmc.96.1605501060484;
-        Sun, 15 Nov 2020 20:31:00 -0800 (PST)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id f19sm17609525wml.21.2020.11.15.20.30.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 20:30:59 -0800 (PST)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH] media: meson: vdec: add G12/SM1 to module description
-Date:   Mon, 16 Nov 2020 04:30:55 +0000
-Message-Id: <20201116043055.23655-1-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 15 Nov 2020 23:32:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605501136;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rWwwHi+vPJ8ujzj6hxsvoqxeQ6ueO5UlgElf6+sCWok=;
+        b=eMNvgmBPjOTE/KG/ahvFKdvYCigf5BJBVzzSRDr+2BxUMfhmIirVeTew50FoR/S/xlH30f
+        uXZ6Y9I7iz76rzGyGCeIQfqXLGVbbK2BMjFsz7MJNX+2Qvq99FHUljWHtLPLWPbXlJR1Ck
+        1Srlb2lxQi/Q9qefHsZHwBYXhQvIGu4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-92-EPvhdJzgOy60UuEuZ9rE2A-1; Sun, 15 Nov 2020 23:32:15 -0500
+X-MC-Unique: EPvhdJzgOy60UuEuZ9rE2A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 186831007474;
+        Mon, 16 Nov 2020 04:32:14 +0000 (UTC)
+Received: from [10.72.13.126] (ovpn-13-126.pek2.redhat.com [10.72.13.126])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 535C15B4C5;
+        Mon, 16 Nov 2020 04:32:04 +0000 (UTC)
+Subject: Re: [PATCH RFC 11/12] vringh: allow vringh_iov_xfer() to skip bytes
+ when ptr is NULL
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-12-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <a5cfe66f-5ae2-1a73-6010-74123721135b@redhat.com>
+Date:   Mon, 16 Nov 2020 12:32:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201113134712.69744-12-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The meson vdec driver also supports Amlogic G12/SM1 hardware.
 
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
- drivers/staging/media/meson/vdec/vdec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2020/11/13 下午9:47, Stefano Garzarella wrote:
+> In some cases, it may be useful to provide a way to skip a number
+> of bytes in a vringh_iov.
+>
+> In order to keep vringh_iov consistent, let's reuse vringh_iov_xfer()
+> logic and skip bytes when the ptr is NULL.
+>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>
+> I'm not sure if this is the best option, maybe we can add a new
+> function vringh_iov_skip().
+>
+> Suggestions?
 
-diff --git a/drivers/staging/media/meson/vdec/vdec.c b/drivers/staging/media/meson/vdec/vdec.c
-index 5ccb3846c879..5d4db7a5b4b5 100644
---- a/drivers/staging/media/meson/vdec/vdec.c
-+++ b/drivers/staging/media/meson/vdec/vdec.c
-@@ -1131,6 +1131,6 @@ static struct platform_driver meson_vdec_driver = {
- };
- module_platform_driver(meson_vdec_driver);
- 
--MODULE_DESCRIPTION("Meson video decoder driver for GXBB/GXL/GXM");
-+MODULE_DESCRIPTION("Meson video decoder driver for GXBB/GXL/GXM/G12/SM1");
- MODULE_AUTHOR("Maxime Jourdan <mjourdan@baylibre.com>");
- MODULE_LICENSE("GPL");
--- 
-2.17.1
+
+I might be worth to check whether we can convert vringh_iov to use iov 
+iterator then we can use iov_iterator_advance() here.
+
+Thanks
+
+
+> ---
+>   drivers/vhost/vringh.c | 16 +++++++++++-----
+>   1 file changed, 11 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> index 8bd8b403f087..ed3290946ad7 100644
+> --- a/drivers/vhost/vringh.c
+> +++ b/drivers/vhost/vringh.c
+> @@ -75,7 +75,9 @@ static inline int __vringh_get_head(const struct vringh *vrh,
+>   	return head;
+>   }
+>   
+> -/* Copy some bytes to/from the iovec.  Returns num copied. */
+> +/* Copy some bytes to/from the iovec.  Returns num copied.
+> + * If ptr is NULL, skips at most len bytes.
+> + */
+>   static inline ssize_t vringh_iov_xfer(struct vringh *vrh,
+>   				      struct vringh_kiov *iov,
+>   				      void *ptr, size_t len,
+> @@ -89,12 +91,16 @@ static inline ssize_t vringh_iov_xfer(struct vringh *vrh,
+>   		size_t partlen;
+>   
+>   		partlen = min(iov->iov[iov->i].iov_len, len);
+> -		err = xfer(vrh, iov->iov[iov->i].iov_base, ptr, partlen);
+> -		if (err)
+> -			return err;
+> +
+> +		if (ptr) {
+> +			err = xfer(vrh, iov->iov[iov->i].iov_base, ptr, partlen);
+> +			if (err)
+> +				return err;
+> +			ptr += partlen;
+> +		}
+> +
+>   		done += partlen;
+>   		len -= partlen;
+> -		ptr += partlen;
+>   		iov->consumed += partlen;
+>   		iov->iov[iov->i].iov_len -= partlen;
+>   		iov->iov[iov->i].iov_base += partlen;
 
