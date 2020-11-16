@@ -2,176 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6652B533C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 899A42B5345
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731061AbgKPUxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:53:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53692 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728574AbgKPUxn (ORCPT
+        id S1728706AbgKPUzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726236AbgKPUzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:53:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605560021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YR8enLi5JJFBoVjhQ3YblKf2ADCNsqZnAlnJJM2+oc4=;
-        b=SBq78PMQTG+CLYcQI8NknbxGksTPFeWcWxxQ3nK8bASDMkQVBuq/y/iniwURsWYBnP/weY
-        QizFb9+QohjXzgp4dEri1Y9fn13otuRxTyCzt27qFCCCvkVhzGugxnJrQ473HQAxnufDR+
-        rrwAbVRFaVoPBuH+HwtgHoEPglAuO1E=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-67-_yZabOc6mcNQHimp3pQ-1; Mon, 16 Nov 2020 15:53:39 -0500
-X-MC-Unique: 67-_yZabOc6mcNQHimp3pQ-1
-Received: by mail-qt1-f199.google.com with SMTP id w88so11072741qtd.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:53:39 -0800 (PST)
+        Mon, 16 Nov 2020 15:55:41 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1106BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:55:41 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id r12so18894779iot.4
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:55:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Be144PmpR2r/+3mLxCPcCbcigQoOxzS6Vke1CO1s/GU=;
+        b=c1wcBdkONeTDIyTRb5fxCLkD5WeJx0AqEuzOeOBUwczSP+V8/+v5gfe5gM7PW6qNgM
+         2FKMdkyrQuMCZ2D2b8jjubyIBXJa3jn9/4UKLTjp8NCbpupJm5YLnKqJBCXIrMWKvQdX
+         1pn7vx7Df8NmSN91jUI11BfeBk7c5GiHp6AMgIgG/hVZ1zCrJZh0AX8GClxneQaSa38t
+         U9wgZWvttfMrvpsrqlJUfs1+OzbVNMio4oKrLQRd3RVu4Z/N1k9cf25s2hlPYy8kzppp
+         /sKROZ7VVr6AgkAJv0YF0PmGB0z8aJvjCr3cyV5afFxN6uyxL7lANugIyDeKIqFHLZdK
+         pQnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=YR8enLi5JJFBoVjhQ3YblKf2ADCNsqZnAlnJJM2+oc4=;
-        b=QQUjgXpAMW9OD/m0Boj5BMA6J/Kzv0h5+tAPzdodlW9IYOkX+NEM7pKTzhmXFCW01G
-         Ibd8QmWMEyFqMtsFIZNxc3gN8n6CyFjnSIZvPe7kyqeVMlmPti1qAkdicGa/2ih9nvhM
-         nUQmGJHgDD/LFj6tSaqkDly3AyTbUp4KY4hTsCXgKkmWb1qb8JGg2xt9XaMWqgZ+FRDu
-         tzP0GnJ06s/i1uPU0sUF++SXK7/5e6O0Tt0hqvQxGzHr5go/TqstlTwK53S8R+BUmmki
-         otUp2BDOkFuXMe5PLu1PwRdIX5hWuqWIdQz4m1gn4llU16+1dxZmltR/PhtoQd7VeDj7
-         4PXQ==
-X-Gm-Message-State: AOAM530kqHxgieX1fws2HlWQoq0ZqSUFZVIxg0rrbyqTBO+aG4H32WwY
-        qv1KDzxuG3ycymN3MlIu/LjjglO3X+h0TjeVP5ocs4TZlTEpkHlzNNbp/POKREmjoXFPHwehgGH
-        bu8e/GUMCRSTeQ8xcMd2M9YH9
-X-Received: by 2002:a0c:e24e:: with SMTP id x14mr17712001qvl.13.1605560019159;
-        Mon, 16 Nov 2020 12:53:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz2Ux/+NGQkATK4eCnsAGkyR7ehntTZwa+eSlhdMlVrTtRjRwsSKNuQ0I3Aj0hxq0AX9UDyzQ==
-X-Received: by 2002:a0c:e24e:: with SMTP id x14mr17711978qvl.13.1605560018953;
-        Mon, 16 Nov 2020 12:53:38 -0800 (PST)
-Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id 199sm8596858qkj.61.2020.11.16.12.53.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 12:53:38 -0800 (PST)
-Message-ID: <2dad68f011c7cd8a7c3754457c192f9dc2f504ed.camel@redhat.com>
-Subject: Re: [PATCH 29/42] drm/selftests/test-drm_dp_mst_helper: Place
- 'struct drm_dp_sideband_msg_req_body' onto the heap
-From:   Lyude Paul <lyude@redhat.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Francis <David.Francis@amd.com>,
-        dri-devel@lists.freedesktop.org
-Date:   Mon, 16 Nov 2020 15:53:37 -0500
-In-Reply-To: <20201116174112.1833368-30-lee.jones@linaro.org>
-References: <20201116174112.1833368-1-lee.jones@linaro.org>
-         <20201116174112.1833368-30-lee.jones@linaro.org>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Be144PmpR2r/+3mLxCPcCbcigQoOxzS6Vke1CO1s/GU=;
+        b=CHum128lqINzyjyZamBvq81zRxUzUxX9L/fe/GBU4wjt8AuUOAlFr0XCM9M4mWoiAu
+         VBrKfc9pD5VMGenahnRaMdfejj7SYNzZrPNlG7gy9EB1CnQaMmgHRZAy3qJUezpmXADJ
+         wExl0O+ZcXyjWKcJXuSYv/4EoRI1rHRaF74qB/NIMiBNCEJkbLTpNIfwcIQSmfbJKjHM
+         +4OcBPzMO7yzALVZx7CiDtGoxpiNvZDtl7HwVxBRDxGuLmvPijwQmfDXTbtE69deee6u
+         1nwftNZWdKigaifB9A5SUv1AjNr7hnFF2wh2dkGp+Q/XaUY+oWy1TuY3f+9k4Gt4rpNq
+         DG9Q==
+X-Gm-Message-State: AOAM530fi/EIGK7pl1jItmxyEXgXUJlEDjEkumhkc5CkjcKXqxupV3LC
+        wJq8Y0dzE+l+jXODrXzqpWCp9Yy8Mr9STPxMJb4/eA==
+X-Google-Smtp-Source: ABdhPJyY4x0wcN+Rnb91pciYL8+eiS6j3KSVLPxfw04duPuFPIO+eVe2VczDlFTiwVwqh2Wsjyhxa3bkB+3zd146cKs=
+X-Received: by 2002:a6b:6a03:: with SMTP id x3mr4250371iog.96.1605560140084;
+ Mon, 16 Nov 2020 12:55:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200820162738.33053904@oasis.local.home> <20201022173434.910879-1-lpy@google.com>
+In-Reply-To: <20201022173434.910879-1-lpy@google.com>
+From:   Peiyong Lin <lpy@google.com>
+Date:   Mon, 16 Nov 2020 12:55:29 -0800
+Message-ID: <CA+0soAkD7BG6CjhMW6PYR4yAgDykU2uUizcHx1QQdXqgesCFFg@mail.gmail.com>
+Subject: Re: [PATCH v4] Add power/gpu_frequency tracepoint.
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Amit Kucheria <amit.kucheria@linaro.org>,
+        android-kernel@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Prahlad Kilambi <prahladk@google.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        zzyiwei@android.com, Sidath Senanayake <sidaths@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huh-could have sworn I had reviewed this one already.
-
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-
-On Mon, 2020-11-16 at 17:40 +0000, Lee Jones wrote:
-> The stack is too full.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c: In function
-> ‘sideband_msg_req_encode_decode’:
->  drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c:161:1: warning: the
-> frame size of 1176 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> 
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Lyude Paul <lyude@redhat.com>
-> Cc: David Francis <David.Francis@amd.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Thu, Oct 22, 2020 at 10:34 AM Peiyong Lin <lpy@google.com> wrote:
+>
+> Historically there is no common trace event for GPU frequency, in
+> downstream Android each different hardware vendor implements their own
+> way to expose GPU frequency, for example as a debugfs node.  This patch
+> standardize it as a common trace event in upstream linux kernel to help
+> the ecosystem have a common implementation across hardware vendors.
+> Toolings in the Linux ecosystem will benefit from this especially in the
+> downstream Android, where this information is critical to graphics
+> developers.
+>
+> Signed-off-by: Peiyong Lin <lpy@google.com>
 > ---
->  .../drm/selftests/test-drm_dp_mst_helper.c    | 31 ++++++++++++-------
->  1 file changed, 20 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> index 1d696ec001cff..e00bdc557f880 100644
-> --- a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> +++ b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> @@ -120,44 +120,53 @@ sideband_msg_req_equal(const struct
-> drm_dp_sideband_msg_req_body *in,
->  static bool
->  sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
->  {
-> -       struct drm_dp_sideband_msg_req_body out = {0};
-> +       struct drm_dp_sideband_msg_req_body *out;
->         struct drm_printer p = drm_err_printer(PREFIX_STR);
->         struct drm_dp_sideband_msg_tx txmsg;
->         int i, ret;
-> +       bool result = true;
+>
+> Changelog since v3:
+>  - Correct copyright title.
+>
+> Changelog since v2:
+>  - Add more comments to indicate when the event should be emitted.
+>  - Change state to frequency.
+>
+> Changelog since v1:
+>  - Use %u in TP_printk
+>
+>  drivers/gpu/Makefile                    |  1 +
+>  drivers/gpu/trace/Kconfig               |  3 +++
+>  drivers/gpu/trace/Makefile              |  1 +
+>  drivers/gpu/trace/trace_gpu_frequency.c | 13 ++++++++++
+>  include/trace/events/power.h            | 33 +++++++++++++++++++++++++
+>  5 files changed, 51 insertions(+)
+>  create mode 100644 drivers/gpu/trace/trace_gpu_frequency.c
+>
+> diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
+> index 835c88318cec..f289a47eb031 100644
+> --- a/drivers/gpu/Makefile
+> +++ b/drivers/gpu/Makefile
+> @@ -6,3 +6,4 @@ obj-$(CONFIG_TEGRA_HOST1X)      += host1x/
+>  obj-y                  += drm/ vga/
+>  obj-$(CONFIG_IMX_IPUV3_CORE)   += ipu-v3/
+>  obj-$(CONFIG_TRACE_GPU_MEM)            += trace/
+> +obj-$(CONFIG_TRACE_GPU_FREQUENCY)              += trace/
+> diff --git a/drivers/gpu/trace/Kconfig b/drivers/gpu/trace/Kconfig
+> index c24e9edd022e..ac4aec8d5845 100644
+> --- a/drivers/gpu/trace/Kconfig
+> +++ b/drivers/gpu/trace/Kconfig
+> @@ -2,3 +2,6 @@
+>
+>  config TRACE_GPU_MEM
+>         bool
 > +
-> +       out = kzalloc(sizeof(*out), GFP_KERNEL);
-> +       if (!out)
-> +               return false;
->  
->         drm_dp_encode_sideband_req(in, &txmsg);
-> -       ret = drm_dp_decode_sideband_req(&txmsg, &out);
-> +       ret = drm_dp_decode_sideband_req(&txmsg, out);
->         if (ret < 0) {
->                 drm_printf(&p, "Failed to decode sideband request: %d\n",
->                            ret);
-> -               return false;
-> +               result = false;
-> +               goto out;
->         }
->  
-> -       if (!sideband_msg_req_equal(in, &out)) {
-> +       if (!sideband_msg_req_equal(in, out)) {
->                 drm_printf(&p, "Encode/decode failed, expected:\n");
->                 drm_dp_dump_sideband_msg_req_body(in, 1, &p);
->                 drm_printf(&p, "Got:\n");
-> -               drm_dp_dump_sideband_msg_req_body(&out, 1, &p);
-> -               return false;
-> +               drm_dp_dump_sideband_msg_req_body(out, 1, &p);
-> +               result = false;
-> +               goto out;
->         }
->  
->         switch (in->req_type) {
->         case DP_REMOTE_DPCD_WRITE:
-> -               kfree(out.u.dpcd_write.bytes);
-> +               kfree(out->u.dpcd_write.bytes);
->                 break;
->         case DP_REMOTE_I2C_READ:
-> -               for (i = 0; i < out.u.i2c_read.num_transactions; i++)
-> -                       kfree(out.u.i2c_read.transactions[i].bytes);
-> +               for (i = 0; i < out->u.i2c_read.num_transactions; i++)
-> +                       kfree(out->u.i2c_read.transactions[i].bytes);
->                 break;
->         case DP_REMOTE_I2C_WRITE:
-> -               kfree(out.u.i2c_write.bytes);
-> +               kfree(out->u.i2c_write.bytes);
->                 break;
->         }
->  
->         /* Clear everything but the req_type for the input */
->         memset(&in->u, 0, sizeof(in->u));
->  
-> -       return true;
-> +out:
-> +       kfree(out);
-> +       return result;
->  }
->  
->  int igt_dp_mst_sideband_msg_req_decode(void *unused)
+> +config TRACE_GPU_FREQUENCY
+> +       bool
+> diff --git a/drivers/gpu/trace/Makefile b/drivers/gpu/trace/Makefile
+> index b70fbdc5847f..2b7ae69327d6 100644
+> --- a/drivers/gpu/trace/Makefile
+> +++ b/drivers/gpu/trace/Makefile
+> @@ -1,3 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>
+>  obj-$(CONFIG_TRACE_GPU_MEM) += trace_gpu_mem.o
+> +obj-$(CONFIG_TRACE_GPU_FREQUENCY) += trace_gpu_frequency.o
+> diff --git a/drivers/gpu/trace/trace_gpu_frequency.c b/drivers/gpu/trace/trace_gpu_frequency.c
+> new file mode 100644
+> index 000000000000..668fabd6b77a
+> --- /dev/null
+> +++ b/drivers/gpu/trace/trace_gpu_frequency.c
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * GPU frequency trace points
+> + *
+> + * Copyright (C) 2020 Google LLC
+> + */
+> +
+> +#include <linux/module.h>
+> +
+> +#define CREATE_TRACE_POINTS
+> +#include <trace/events/power.h>
+> +
+> +EXPORT_TRACEPOINT_SYMBOL(gpu_frequency);
+> diff --git a/include/trace/events/power.h b/include/trace/events/power.h
+> index af5018aa9517..343825a76953 100644
+> --- a/include/trace/events/power.h
+> +++ b/include/trace/events/power.h
+> @@ -500,6 +500,39 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
+>
+>         TP_ARGS(name, type, new_value)
+>  );
+> +
+> +/**
+> + * gpu_frequency - Reports the GPU frequency in GPU clock domains.
+> + *
+> + * This event should be emitted whenever there's a GPU frequency change happens,
+> + * or a GPU goes from idle state to active state, or vice versa.
+> + *
+> + * When the GPU goes from idle state to active state, this event should report
+> + * the GPU frequency of the active state. When the GPU goes from active state to
+> + * idle state, this event should report a zero frequency value.
+> + *
+> + * @frequency:  New frequency (in KHz)
+> + * @gpu_id: Id for each GPU clock domain
+> + */
+> +TRACE_EVENT(gpu_frequency,
+> +
+> +       TP_PROTO(unsigned int frequency, unsigned int gpu_id),
+> +
+> +       TP_ARGS(frequency, gpu_id),
+> +
+> +       TP_STRUCT__entry(
+> +               __field(unsigned int, frequency)
+> +               __field(unsigned int, gpu_id)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->frequency = frequency;
+> +               __entry->gpu_id = gpu_id;
+> +       ),
+> +
+> +       TP_printk("frequency=%u gpu_id=%u",
+> +               __entry->frequency, __entry->gpu_id)
+> +);
+>  #endif /* _TRACE_POWER_H */
+>
+>  /* This part must be outside protection */
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
 
--- 
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+Hi there,
 
+May I ask whether the merge window has passed? If so is it possible to
+ask for a review?
+
+Thanks,
+Peiyong
