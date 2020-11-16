@@ -2,133 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197FC2B3E55
+	by mail.lfdr.de (Postfix) with ESMTP id 85FDF2B3E56
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbgKPIKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:10:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728007AbgKPIKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:10:33 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 450662225B;
-        Mon, 16 Nov 2020 08:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605514232;
-        bh=gBo6kcsTmHnIVoOISckwU065LqWskgvsIWbnexyS8Jk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b9xG+7K0AUIui1Az1PYlnyHeC9JFSxKe8YGCyllvkSPJFBrI6Iu7V8XDRBq4TZPcR
-         c9Tc5T5onOI4/SzxRBjSCIUtW9VIahlacRHoGmz0Y4eZbMwzWHsnHMjaF7OrtGoO1A
-         Nryj43pPJndIjws2R+0vdso7c1UXDdKqpmYPJv14=
-Date:   Mon, 16 Nov 2020 16:10:26 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Evgeny Boger <boger@wirenboard.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: mxs: Add serial number support for i.MX23, i.MX28
- SoCs
-Message-ID: <20201116081025.GF5849@dragon>
-References: <20201111051859.2776-1-ivan.zaentsev@wirenboard.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111051859.2776-1-ivan.zaentsev@wirenboard.ru>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728176AbgKPILD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:11:03 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:40962 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727789AbgKPILD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 03:11:03 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UFVOgpP_1605514257;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UFVOgpP_1605514257)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 16 Nov 2020 16:10:58 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     netdev@vger.kernel.org
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] xsk: add cq event
+Date:   Mon, 16 Nov 2020 16:10:55 +0800
+Message-Id: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 08:18:59AM +0300, Ivan Zaentsev wrote:
-> i.MX23 and i.MX28 SoCs unique identifiers are factory-programmed
-> in On-Chip OTP memory. i.MX28's 64-bit unique id is in
-> HW_OCOTP_OPS2:HW_OCOTP_OPS3 (see MCIMX28 Ref. Man., sec. 20.4.22-23).
-> 
-> i.MX23 provides 32-bit long unique id in HW_OCOTP_OPS3.
-> Though not clearly documented, there is a clue in sec. 35.9.3.
-> 
-> The unique id is reported in /sys/devices/soc0/serial_number
-> and in /proc/cpuinfo
-> 
-> Signed-off-by: Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>
-> Suggested-by: Evgeny Boger <boger@wirenboard.com>
-> ---
->  arch/arm/mach-mxs/mach-mxs.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/arch/arm/mach-mxs/mach-mxs.c b/arch/arm/mach-mxs/mach-mxs.c
-> index c109f47e9cbc..af96368cc16a 100644
-> --- a/arch/arm/mach-mxs/mach-mxs.c
-> +++ b/arch/arm/mach-mxs/mach-mxs.c
-> @@ -23,6 +23,7 @@
->  #include <asm/mach/map.h>
->  #include <asm/mach/time.h>
->  #include <asm/system_misc.h>
-> +#include <asm/system_info.h>
+When we write all cq items to tx, we have to wait for a new event based
+on poll to indicate that it is writable. But the current writability is
+triggered based on whether tx is full or not, and In fact, when tx is
+dissatisfied, the user of cq's item may not necessarily get it, because it
+may still be occupied by the network card. In this case, we need to know
+when cq is available, so this patch adds a socket option, When the user
+configures this option using setsockopt, when cq is available, a
+readable event is generated for all xsk bound to this umem.
 
-Can we move it above <asm/system_misc.h> to get them alphabetically
-sorted?
+I can't find a better description of this event,
+I think it can also be 'readable', although it is indeed different from
+the 'readable' of the new data. But the overhead of xsk checking whether
+cq or rx is readable is small.
 
->  
->  #include "pm.h"
->  
-> @@ -51,6 +52,9 @@
->  #define MXS_CLR_ADDR		0x8
->  #define MXS_TOG_ADDR		0xc
->  
-> +#define HW_OCOTP_OPS2       19	/* offset 0x150 */
-> +#define HW_OCOTP_OPS3       20	/* offset 0x160 */
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ include/net/xdp_sock.h      |  1 +
+ include/uapi/linux/if_xdp.h |  1 +
+ net/xdp/xsk.c               | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 30 insertions(+)
 
-Use tabs instead of spaces for indent.
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index 1a9559c..faf5b1a 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -49,6 +49,7 @@ struct xdp_sock {
+ 	struct xsk_buff_pool *pool;
+ 	u16 queue_id;
+ 	bool zc;
++	bool cq_event;
+ 	enum {
+ 		XSK_READY = 0,
+ 		XSK_BOUND,
+diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+index a78a809..2dba3cb 100644
+--- a/include/uapi/linux/if_xdp.h
++++ b/include/uapi/linux/if_xdp.h
+@@ -63,6 +63,7 @@ struct xdp_mmap_offsets {
+ #define XDP_UMEM_COMPLETION_RING	6
+ #define XDP_STATISTICS			7
+ #define XDP_OPTIONS			8
++#define XDP_CQ_EVENT			9
+ 
+ struct xdp_umem_reg {
+ 	__u64 addr; /* Start of packet data area */
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index cfbec39..0c53403 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -285,7 +285,16 @@ void __xsk_map_flush(void)
+ 
+ void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
+ {
++	struct xdp_sock *xs;
++
+ 	xskq_prod_submit_n(pool->cq, nb_entries);
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
++		if (xs->cq_event)
++			sock_def_readable(&xs->sk);
++	}
++	rcu_read_unlock();
+ }
+ EXPORT_SYMBOL(xsk_tx_completed);
+ 
+@@ -495,6 +504,9 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+ 			__xsk_sendmsg(sk);
+ 	}
+ 
++	if (xs->cq_event && pool->cq && !xskq_prod_is_empty(pool->cq))
++		mask |= EPOLLIN | EPOLLRDNORM;
++
+ 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
+ 		mask |= EPOLLIN | EPOLLRDNORM;
+ 	if (xs->tx && !xskq_cons_is_full(xs->tx))
+@@ -882,6 +894,22 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
+ 		mutex_unlock(&xs->mutex);
+ 		return err;
+ 	}
++	case XDP_CQ_EVENT:
++	{
++		int cq_event;
++
++		if (optlen < sizeof(cq_event))
++			return -EINVAL;
++		if (copy_from_sockptr(&cq_event, optval, sizeof(cq_event)))
++			return -EFAULT;
++
++		if (cq_event)
++			xs->cq_event = true;
++		else
++			xs->cq_event = false;
++
++		return 0;
++	}
+ 	default:
+ 		break;
+ 	}
+-- 
+1.8.3.1
 
-> +
->  static u32 chipid;
->  static u32 socid;
->  
-> @@ -379,6 +383,8 @@ static void __init mxs_machine_init(void)
->  	struct device *parent;
->  	struct soc_device *soc_dev;
->  	struct soc_device_attribute *soc_dev_attr;
-> +	u64 soc_uid = 0;
-> +	const u32 *ocotp = mxs_get_ocotp();
->  	int ret;
->  
->  	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
-> @@ -394,8 +400,22 @@ static void __init mxs_machine_init(void)
->  	soc_dev_attr->soc_id = mxs_get_soc_id();
->  	soc_dev_attr->revision = mxs_get_revision();
->  
-> +	if (socid == HW_DIGCTL_CHIPID_MX23) {
-> +		soc_uid = system_serial_low = ocotp[HW_OCOTP_OPS3];
-> +	} else if (socid == HW_DIGCTL_CHIPID_MX28) {
-> +		soc_uid = system_serial_high = ocotp[HW_OCOTP_OPS2];
-> +		soc_uid <<= 32;
-> +		system_serial_low = ocotp[HW_OCOTP_OPS3];
-> +		soc_uid |= system_serial_low;
-> +	}
-> +
-> +	if (soc_uid)
-> +		soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX", soc_uid);
-> +
->  	soc_dev = soc_device_register(soc_dev_attr);
-> +
-
-Unnecessary newline.
-
-Shawn
-
->  	if (IS_ERR(soc_dev)) {
-> +		kfree(soc_dev_attr->serial_number);
->  		kfree(soc_dev_attr->revision);
->  		kfree(soc_dev_attr);
->  		return;
-> -- 
-> 2.25.1
-> 
