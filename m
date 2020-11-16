@@ -2,112 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4CC2B547D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3572B548D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728719AbgKPWpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:45:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgKPWpS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:45:18 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26410C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:45:16 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id z21so27400302lfe.12
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:45:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V7vyOUozImZ/Vj6DXTZgOyHzaqJaJ4bTWScJHjraJD0=;
-        b=UK6m4rwwMQ+ZiM7rMbtI8OVsV31axi0ur3CjKSJorDnX1Gst0vzal/kaV9mEG4xb6D
-         2Z7bmH57dHM/vYCD1/L0uTpBBl/ODRTMR8a8eUslaEv91c6Lhx+ef9GETZduzNNe8Z2i
-         UNtU6XfCvlAoO6DnIeZq9EkSU2GJlYvyOQDM8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V7vyOUozImZ/Vj6DXTZgOyHzaqJaJ4bTWScJHjraJD0=;
-        b=hxNT1GsSZRF70QejWXOPrQOVThJNDHoxlAI9C2sC89cPJGLn0gLvG9rb58E8+/HAAY
-         V8kPvObqEpukn1kplyuVKd1AXynN8W2WkrrrTjgJ+PI5cWeb3LBoDYU4znvqlNOtjx34
-         /ixkF00vjmkyt05MnDYhgNnVii6nltsCWXslL1aUdKeY7p/oZuxY/aVHYeva4QDxJusR
-         DX9/QF0ED4430XGowtaffJLwrR6BReFvsVnh55dA2NEtC+UaEP7hReVbHVqhqd7RdJlm
-         Uc0vyStFehLil0DIoMn2YqPt2ukzobKlvfGw0nT/js/ROoLcI2yQ7ur6cZUpYDjvwqv0
-         X4pg==
-X-Gm-Message-State: AOAM531q9vnYxJ+aqypNoDRwxPXqk+t9URAFJlsd2zQ9HjKe2Y/31X5i
-        cBigb7dzi2EQFIMaGDLCSpIfdEdqTeo2ZQ==
-X-Google-Smtp-Source: ABdhPJy8SeFykKTs4SebYyFEleQKbZk5ZyVtfBuUTOWOPtT5ca/ZfkAosIvkeuu2HDnypnON5tJviQ==
-X-Received: by 2002:a19:915:: with SMTP id 21mr617898lfj.528.1605566714136;
-        Mon, 16 Nov 2020 14:45:14 -0800 (PST)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id y6sm2921507lfh.99.2020.11.16.14.45.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 14:45:12 -0800 (PST)
-Received: by mail-lj1-f171.google.com with SMTP id v20so21985208ljk.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:45:12 -0800 (PST)
-X-Received: by 2002:a2e:3503:: with SMTP id z3mr616470ljz.70.1605566711829;
- Mon, 16 Nov 2020 14:45:11 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1605560917.git.dxu@dxuuu.xyz> <470ffc3c76414443fc359b884080a5394dcccec3.1605560917.git.dxu@dxuuu.xyz>
- <CAHk-=wggUw3XYffJ-od8Dbfh-JkXkEuCPjSRR2Z+8HrNUNxJ=g@mail.gmail.com>
-In-Reply-To: <CAHk-=wggUw3XYffJ-od8Dbfh-JkXkEuCPjSRR2Z+8HrNUNxJ=g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 16 Nov 2020 14:44:56 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiEgTXYgLXg8YxRHnH+eZno800pEp8caskKgDCgq55s+g@mail.gmail.com>
-Message-ID: <CAHk-=wiEgTXYgLXg8YxRHnH+eZno800pEp8caskKgDCgq55s+g@mail.gmail.com>
-Subject: Re: [PATCH bpf v6 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-To:     Daniel Xu <dxu@dxuuu.xyz>, Matt Turner <mattst88@gmail.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1730717AbgKPWqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:46:42 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:55904 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730582AbgKPWqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 17:46:40 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605566798; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=iQ+2cr97ThrSA88BQaBRRuQ/qmltdrjpMFmedsejmHY=; b=Q/mKbh/sN9lZFv+XgqGInrHZiOWLsZbuXGELHoh/AxUQcNFa/715a3riknJFrwtJA98yoDe4
+ Syx20ZFJbiE3ijoIIQwwXwMdPKg9rJ6ajzHySDF6MFvxBp+W1eP7O/gO6E9SbJMGnnpHdoxw
+ xP4nvjHxWu0WTKUK/eZT0DXxGPA=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5fb30147c3c3b09004bd476c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 22:46:31
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C8D9AC433ED; Mon, 16 Nov 2020 22:46:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 765EEC433ED;
+        Mon, 16 Nov 2020 22:46:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 765EEC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        skhan@linuxfoundation.org, Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v12 0/5] userspace MHI client interface driver
+Date:   Mon, 16 Nov 2020 14:46:17 -0800
+Message-Id: <1605566782-38013-1-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 2:15 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> So I've verified that at least on x86-64, this doesn't really make
-> code generation any worse, and I'm ok with the patch from that
-> standpoint.
+This patch series adds support for UCI driver. UCI driver enables userspace
+clients to communicate to external MHI devices like modem and WLAN. UCI driver
+probe creates standard character device file nodes for userspace clients to
+perform open, read, write, poll and release file operations. These file
+operations call MHI core layer APIs to perform data transfer using MHI bus
+to communicate with MHI device. It also adds a loopback test application to
+verify the UCI LOOPBACK channel. Patch is tested using arm64 based platform.
 
-.. looking closer, it will generate extra code on big-endian
-architectures and on alpha, because of the added "zero_bytemask()".
-But on the usual LE machines, zero_bytemask() will already be the same
-as "mask", so all it adds is that "and" operation with values it
-already had access to.
+V12:
+- Added loopback test driver under selftest/drivers/mhi. Updated kernel
+  documentation for the usage of the loopback test application.
+- Addressed review comments for renaming variable names, updated inline
+  comments and removed two redundant dev_dbg.
 
-I don't think anybody cares about alpha and BE - traditional BE
-architectures have moved to LE anyway. And looking at the alpha
-word-at-a-time code, I don't even understand how it works at all.
+V11:
+- Fixed review comments for UCI documentation by expanding TLAs and rewording
+  some sentences.
 
-Adding matt/rth/ivan to the cc, just so that maybe one of them can
-educate me on how that odd alpha zero_bytemask() could possibly work.
-The "2ul << .." part confuses me, I think it should be "1ul << ...".
+V10:
+- Replaced mutex_lock with mutex_lock_interruptible in read() and write() file
+  ops call back.
 
-I get the feeling that the alpha "2ul" constant might have come from
-the tile version, but in the tile version, the " __builtin_ctzl()"
-counts the leading zeroes to the top bit of any bytes in 'mask'. But
-the alpha version actually uses "find_zero(mask) * 8", so rather than
-have values of 7/15/23/... (for zero byte in byte 0/1/2/..
-respectively), it has values 0/8/16/....
+V9:
+- Renamed dl_lock to dl_pending _lock and pending list to dl_pending for
+  clarity.
+- Used read lock to protect cur_buf.
+- Change transfer status check logic and only consider 0 and -EOVERFLOW as
+  only success.
+- Added __int to module init function.
+- Print channel name instead of minor number upon successful probe.
 
-But it's entirely possible that I'm completely confused, and alpha
-does it right, and I'm just not understanding the code.
+V8:
+- Fixed kernel test robot compilation error by changing %lu to %zu for
+  size_t.
+- Replaced uci with UCI in Kconfig, commit text, and comments in driver
+  code.
+- Fixed minor style related comments.
 
-It's also possible that the "2ul" vs "1ul" case doesn't matter.
-because the extra bit is always going to mask the byte that is
-actually zero, so being one bit off in the result is a non-event. I
-think that is what may actually be going on.
+V7:
+- Decoupled uci device and uci channel objects. uci device is
+  associated with device file node. uci channel is associated
+  with MHI channels. uci device refers to uci channel to perform
+  MHI channel operations for device file operations like read()
+  and write(). uci device increments its reference count for
+  every open(). uci device calls mhi_uci_dev_start_chan() to start
+  the MHI channel. uci channel object is tracking number of times
+  MHI channel is referred. This allows to keep the MHI channel in
+  start state until last release() is called. After that uci channel
+  reference count goes to 0 and uci channel clean up is performed
+  which stops the MHI channel. After the last call to release() if
+  driver is removed uci reference count becomes 0 and uci object is
+  cleaned up.
+- Use separate uci channel read and write lock to fine grain locking
+  between reader and writer.
+- Use uci device lock to synchronize open, release and driver remove.
+- Optimize for downlink only or uplink only UCI device.
 
-                Linus
+V6:
+- Moved uci.c to mhi directory.
+- Updated Kconfig to add module information.
+- Updated Makefile to rename uci object file name as mhi_uci
+- Removed kref for open count
+
+V5:
+- Removed mhi_uci_drv structure.
+- Used idr instead of creating global list of uci devices.
+- Used kref instead of local ref counting for uci device and
+  open count.
+- Removed unlikely macro.
+
+V4:
+- Fix locking to protect proper struct members.
+- Updated documentation describing uci client driver use cases.
+- Fixed uci ref counting in mhi_uci_open for error case.
+- Addressed style related review comments.
+
+V3: Added documentation for MHI UCI driver.
+
+V2:
+- Added mutex lock to prevent multiple readers to access same
+- mhi buffer which can result into use after free.
+
+Hemant Kumar (5):
+  bus: mhi: core: Add helper API to return number of free TREs
+  bus: mhi: core: Move MHI_MAX_MTU to external header file
+  docs: Add documentation for userspace client interface
+  bus: mhi: Add userspace client interface driver
+  selftest: mhi: Add support to test MHI LOOPBACK channel
+
+ Documentation/mhi/index.rst                        |   1 +
+ Documentation/mhi/uci.rst                          | 109 +++
+ drivers/bus/mhi/Kconfig                            |  13 +
+ drivers/bus/mhi/Makefile                           |   3 +
+ drivers/bus/mhi/core/internal.h                    |   1 -
+ drivers/bus/mhi/core/main.c                        |  12 +
+ drivers/bus/mhi/uci.c                              | 667 +++++++++++++++++
+ include/linux/mhi.h                                |  12 +
+ tools/testing/selftests/Makefile                   |   1 +
+ tools/testing/selftests/drivers/.gitignore         |   1 +
+ tools/testing/selftests/drivers/mhi/Makefile       |   8 +
+ tools/testing/selftests/drivers/mhi/config         |   2 +
+ .../testing/selftests/drivers/mhi/loopback_test.c  | 789 +++++++++++++++++++++
+ 13 files changed, 1618 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/mhi/uci.rst
+ create mode 100644 drivers/bus/mhi/uci.c
+ create mode 100644 tools/testing/selftests/drivers/mhi/Makefile
+ create mode 100644 tools/testing/selftests/drivers/mhi/config
+ create mode 100644 tools/testing/selftests/drivers/mhi/loopback_test.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
