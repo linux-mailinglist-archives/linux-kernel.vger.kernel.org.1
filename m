@@ -2,161 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A5F2B4321
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A612B4325
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgKPLt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:49:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48036 "EHLO
+        id S1729561AbgKPLuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:50:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgKPLt5 (ORCPT
+        with ESMTP id S1726487AbgKPLuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:49:57 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C053EC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:49:56 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 19so23447285wmf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:49:56 -0800 (PST)
+        Mon, 16 Nov 2020 06:50:13 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940E0C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:50:12 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id n11so15728487ota.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:50:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CFJEkUj6StvnCLf3zA4XSa8BJ3U9++NnIiul0HVC8DY=;
-        b=nTUfK2EitnQ5Q0QZZIJ6UfQATrjdCE4F3RuhLemICZ+FIa4eNeZj1jdUP59xrVtnyE
-         wsRGi8ju0E8yAAhUqKqi4ygMnWHUbuQeVqoTv1FkbIukrUqFbNGApXG4mxG5JFLAiEes
-         GEDmXKhmDHxx1AY5P4OHGfXHY307Dk63qu25+pSXuIsykolgBbqrylbhVDfRKQxutLfZ
-         FbbwuqINVrnNdiE4btGAzPw9SBXpMYboa6sAmb6xKaSLydR9dXJbLV8ZSGCj4vHlY5E4
-         GZC0xSP1mOsVLHma5ulVWJt6la+8lzkyh6mP1/A4UmV0RE8v56gUookImTFJyFIuvTMK
-         wFVw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fu3D6i8J61m+Cc7UW0OMX7Lqixc5Ynk1q+2LnV9wne0=;
+        b=Pt6jcPm5dU+criPa9cicLUvdCVAqkzUHWd1Hci2dnjSRsBYRh/3+LAWeXMACgDyzfp
+         X3VUJwro+hrGzVw+o5UzM8N8RHFFzHbYdGfQSYa/g7pXlgTE6ueKXT1FOiqLTMq3pKDS
+         fROvtumY/Iroc0+exJFyugUD6zfyWkaQxe5B67uhHV+0939l3i25Kx8psdW0paPFgxj3
+         +T6P7CsedKrkcbSEBlZm2Go3sn3Uj+/WQk8Dx2FZ3qP5pmVMWZPZcJ9nCBZ/pN3L6iwN
+         Y3ifA2JEguHbkSj6IeHkqk8IuKpu/B7/J9SOkZLacD9Qy8Yoo/CFykmmLOvoyZHFT6eq
+         gWIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CFJEkUj6StvnCLf3zA4XSa8BJ3U9++NnIiul0HVC8DY=;
-        b=o9htipujV9fAYoMaJKigRGBJs0ujIN9/5OB0u9wEAQPkJADnDLzOirabLha6Ekf5eB
-         XwPZMb1wLu1YGTOWArQT9P/2gCe7xjIYizjF2d4FrbFl5AXc0R51ixScO/rePyy3mk6/
-         uXo2dDLEyypzH9/1BzlaS3V0UCEO8ble7SbbmHCE2bEhhLUtlrKzS72bGBbS+44NpY2p
-         GCi4NjmRzmq9MO3WgDm6yfR61ytkVjABFv1xNHDaL8ntMbIFoYaU14e2jlMoyd7Hrjdk
-         d2yAz1jQCg5KgcgTkD3Hhe2skZRyqFOg2sa/O3sa4AyH/ZYgZ/xuGTt1/A+DZVDLpzuo
-         RLFw==
-X-Gm-Message-State: AOAM53313EPXLJunGS+UcGSO7nNS1MRLhwsgGDhXZRMb8EdQs/yVbT1n
-        qwMwOwHzlq6NYS7HfUo4QJ/W2mZKEHlaLkXp
-X-Google-Smtp-Source: ABdhPJw4YkJYmgRylLEqTzHlY0X6lACb5edwRo2U/kN+S0kiJOP4jgTMcfO+OOMCh+jui7yGQnaCsw==
-X-Received: by 2002:a1c:3b87:: with SMTP id i129mr15591490wma.134.1605527395152;
-        Mon, 16 Nov 2020 03:49:55 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:58a8:7836:6672:a072])
-        by smtp.gmail.com with ESMTPSA id c17sm19262018wml.14.2020.11.16.03.49.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 03:49:54 -0800 (PST)
-Date:   Mon, 16 Nov 2020 11:49:52 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v1 13/24] kvm: arm64: Add CPU entry point in nVHE hyp
-Message-ID: <20201116114952.ybj24wx44lofqs25@google.com>
-References: <20201109113233.9012-1-dbrazdil@google.com>
- <20201109113233.9012-14-dbrazdil@google.com>
- <7b8f9dec846f172c2919e1d3f3c65245@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fu3D6i8J61m+Cc7UW0OMX7Lqixc5Ynk1q+2LnV9wne0=;
+        b=NI1f4lr9AUv73fXJWMCP09Div75Y95XmYE/fZWGi+eG4WxAK6bb1WNHCvk3kOPfuKh
+         gjTBbN17UFPHmRmK75OrIWLC8d2Tqx4Fj0/FUyOHs19KnSQMOcikYAviJpUXYmnvINk4
+         qXGxDPwzg+0PEc0vggYrB8tPF/10jNoQoW4C1nXSaBTsRiOYGO2G4GqGdj9dlBeDyxLx
+         MYWwKYH/1tBQFEwIry3G2dx6bSzDeOi4BVaRSM65RBb2tkdL/PMG/LJelOP3GdPhmOjc
+         ifbVBhesQ+vU1KoP3rjWoWiPY6PmAFQhusn23p2+BK/Hv8LziXin2BEYCaIi2Sg7rkxY
+         lBMw==
+X-Gm-Message-State: AOAM53041dBfq9mnw77hnsR+B05XEclRWYtpqX8jkwS80MoJflcikf9o
+        54P/lL7cJh+UbRnzuxqIzkWAogAJzQryFbQ29oBljA==
+X-Google-Smtp-Source: ABdhPJz+UfTC8SjYm5XUzWC/G5ezY99GyqEI1qyVjf0RgCbCLEZvZQHFilyUs1hAtjFkctLuRk+6KIoRr8s/aujSQ1g=
+X-Received: by 2002:a9d:69:: with SMTP id 96mr6596676ota.233.1605527411731;
+ Mon, 16 Nov 2020 03:50:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7b8f9dec846f172c2919e1d3f3c65245@kernel.org>
+References: <cover.1603372719.git.andreyknvl@google.com> <ded454eeff88f631dc08eef76f0ad9f2daff0085.1603372719.git.andreyknvl@google.com>
+ <CACT4Y+Zys3+VUsO6GDWQEcjCS6Wx16W_+B6aNy-fyhPcir7eeA@mail.gmail.com>
+ <CAAeHK+xvGZNwTtvkzNnU7Hh7iUiPKFNDKDpKT8UPcqQk6Ah3yQ@mail.gmail.com> <CACT4Y+Z3UCwAY2Mm1KiQMBXVhc2Bobi-YrdiNYtToNgMRjOE4g@mail.gmail.com>
+In-Reply-To: <CACT4Y+Z3UCwAY2Mm1KiQMBXVhc2Bobi-YrdiNYtToNgMRjOE4g@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 16 Nov 2020 12:50:00 +0100
+Message-ID: <CANpmjNPNqHsOfcw7Wh+XQ_pPT1610-+B9By171t7KMS3aB2sBg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 04/21] kasan: unpoison stack only with CONFIG_KASAN_STACK
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >  #ifdef CONFIG_CPU_PM
-> >    DEFINE(CPU_CTX_SP,		offsetof(struct cpu_suspend_ctx, sp));
-> > diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-> > b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-> > index 1697d25756e9..f999a35b2c8c 100644
-> > --- a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-> > +++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-> > @@ -6,6 +6,7 @@
-> > 
-> >  #include <linux/arm-smccc.h>
-> >  #include <linux/linkage.h>
-> > +#include <linux/irqchip/arm-gic-v3.h>
-> 
-> This should probably be included from the file that provides init_el2_state.
+On Mon, 16 Nov 2020 at 11:59, Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Thu, Oct 29, 2020 at 8:57 PM 'Andrey Konovalov' via kasan-dev
+> <kasan-dev@googlegroups.com> wrote:
+> >
+> > On Tue, Oct 27, 2020 at 1:44 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > >
+> > > On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> > > >
+> > > > There's a config option CONFIG_KASAN_STACK that has to be enabled for
+> > > > KASAN to use stack instrumentation and perform validity checks for
+> > > > stack variables.
+> > > >
+> > > > There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
+> > > > Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
+> > > > enabled.
+> > > >
+> > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > > Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
+> > > > ---
+> > > >  arch/arm64/kernel/sleep.S        |  2 +-
+> > > >  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+> > > >  include/linux/kasan.h            | 10 ++++++----
+> > > >  mm/kasan/common.c                |  2 ++
+> > > >  4 files changed, 10 insertions(+), 6 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+> > > > index ba40d57757d6..bdadfa56b40e 100644
+> > > > --- a/arch/arm64/kernel/sleep.S
+> > > > +++ b/arch/arm64/kernel/sleep.S
+> > > > @@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
+> > > >          */
+> > > >         bl      cpu_do_resume
+> > > >
+> > > > -#ifdef CONFIG_KASAN
+> > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > >         mov     x0, sp
+> > > >         bl      kasan_unpoison_task_stack_below
+> > > >  #endif
+> > > > diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+> > > > index c8daa92f38dc..5d3a0b8fd379 100644
+> > > > --- a/arch/x86/kernel/acpi/wakeup_64.S
+> > > > +++ b/arch/x86/kernel/acpi/wakeup_64.S
+> > > > @@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+> > > >         movq    pt_regs_r14(%rax), %r14
+> > > >         movq    pt_regs_r15(%rax), %r15
+> > > >
+> > > > -#ifdef CONFIG_KASAN
+> > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > >         /*
+> > > >          * The suspend path may have poisoned some areas deeper in the stack,
+> > > >          * which we now need to unpoison.
+> > > > diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> > > > index 3f3f541e5d5f..7be9fb9146ac 100644
+> > > > --- a/include/linux/kasan.h
+> > > > +++ b/include/linux/kasan.h
+> > > > @@ -68,8 +68,6 @@ static inline void kasan_disable_current(void) {}
+> > > >
+> > > >  void kasan_unpoison_memory(const void *address, size_t size);
+> > > >
+> > > > -void kasan_unpoison_task_stack(struct task_struct *task);
+> > > > -
+> > > >  void kasan_alloc_pages(struct page *page, unsigned int order);
+> > > >  void kasan_free_pages(struct page *page, unsigned int order);
+> > > >
+> > > > @@ -114,8 +112,6 @@ void kasan_restore_multi_shot(bool enabled);
+> > > >
+> > > >  static inline void kasan_unpoison_memory(const void *address, size_t size) {}
+> > > >
+> > > > -static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+> > > > -
+> > > >  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+> > > >  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+> > > >
+> > > > @@ -167,6 +163,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+> > > >
+> > > >  #endif /* CONFIG_KASAN */
+> > > >
+> > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > >
+> > > && defined(CONFIG_KASAN_STACK) for consistency
+> >
+> > CONFIG_KASAN_STACK is different from other KASAN configs. It's always
+> > defined, and its value is what controls whether stack instrumentation
+> > is enabled.
+>
+> Not sure why we did this instead of the following, but okay.
+>
+>  config KASAN_STACK
+> -       int
+> -       default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
+> -       default 0
+> +       bool
+> +       default y if KASAN_STACK_ENABLE || CC_IS_GCC
+> +       default n
 
-Agreed. This is a workaround for the fact that the arm-gic* headers don't play
-nice with each other (define the same constants). Including arm-gic-v3.h in
-kvm_asm.h will trigger macro redefine warnings in vgic*-v2.c because they
-include arm-gic.h.
-
-Another option is to create a header just for el2 init. Would that be
-preferable? Other ideas?
-
-> 
-> > 
-> >  #include <asm/alternative.h>
-> >  #include <asm/assembler.h>
-> > @@ -159,6 +160,35 @@ alternative_else_nop_endif
-> >  	ret
-> >  SYM_CODE_END(___kvm_hyp_init)
-> > 
-> > +SYM_CODE_START(__kvm_hyp_cpu_entry)
-> > +	msr	SPsel, #1			// We want to use SP_EL{1,2}
-> > +
-> > +	/*
-> > +	 * Check that the core was booted in EL2. Loop indefinitely if not
-> > +	 * because it cannot be safely given to the host without installing
-> > KVM.
-> > +	 */
-> > +	mrs	x1, CurrentEL
-> > +	cmp	x1, #CurrentEL_EL2
-> > +	b.ne	.
-> 
-> This is a bit brutal. Consider using a WFE/WFI loop as we have in other
-> places already (see __secondary_too_slow for example).
-
-Ack
-
-> > +
-> > +	/* Initialize EL2 CPU state to sane values. */
-> > +	mov	x29, x0
-> > +	init_el2_state nvhe
-> > +	mov	x0, x29
-> > +
-> > +	/*
-> > +	 * Load hyp VA of C entry function. Must do so before switching on the
-> > +	 * MMU because the struct pointer is PA and not identity-mapped in
-> > hyp.
-> > +	 */
-> > +	ldr	x29, [x0, #NVHE_INIT_PSCI_CPU_ENTRY_FN]
-> > +
-> > +	/* Enable MMU, set vectors and stack. */
-> > +	bl	___kvm_hyp_init
-> > +
-> > +	/* Leave idmap. */
-> > +	br	x29
-> 
-> To a point I made against an earlier patch: psci_cpu_entry_fn seems to be a
-> HYP
-> VA, and really needs to be documented as such, because this is pretty hard
-> to
-> follow otherwise.
-> 
-> > +SYM_CODE_END(__kvm_hyp_cpu_entry)
-> > +
-> >  SYM_CODE_START(__kvm_handle_stub_hvc)
-> >  	cmp	x0, #HVC_SOFT_RESTART
-> >  	b.ne	1f
-> 
-> Thanks,
-> 
->         M.
-> -- 
-> Jazz is not dead. It just smells funny...
+I wondered the same, but then looking at scripts/Makefile.kasan I
+think it's because we directly pass it to the compiler:
+    ...
+    $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
+    ...
