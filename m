@@ -2,116 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669652B4445
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE382B445F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728650AbgKPNCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 08:02:08 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37704 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728583AbgKPNCI (ORCPT
+        id S1728352AbgKPNEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 08:04:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728150AbgKPNEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 08:02:08 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AGD1lKr072874;
-        Mon, 16 Nov 2020 07:01:47 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605531707;
-        bh=qOn9VBecldSCPtkfrayvV0l2cc/JVvoAqmkbFZ+As/A=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=bGPU51Cb9p4KckeEvI9sPoNtqV3fX1E6/YX8YXmum5L3fx2mriEjOkxLD8AByQRtd
-         pR0WP2G7fpl9l4l27YlaaWYsCOZku8DaUJ9ioxtdOzY7cAdavId4Hq0pylGAwidDtx
-         16Cqv7pilOk1iQ6kEVWbC0J7fEpxAZ0Gef3z/WK0=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AGD1ldX046622
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 16 Nov 2020 07:01:47 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 16
- Nov 2020 07:01:46 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 16 Nov 2020 07:01:46 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AGD1hsN035807;
-        Mon, 16 Nov 2020 07:01:44 -0600
-Subject: Re: [PATCH net-next 2/3] net: ethernet: ti: cpsw_new: enable
- broadcast/multicast rate limit support
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>
-References: <20201114035654.32658-1-grygorii.strashko@ti.com>
- <20201114035654.32658-3-grygorii.strashko@ti.com>
- <20201114190909.cc3rlnvom6wf2zkg@skbuf>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <7c288b6d-f32f-c5a9-8e8c-ab377423d4a8@ti.com>
-Date:   Mon, 16 Nov 2020 15:01:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 16 Nov 2020 08:04:23 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC57C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 05:04:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=y2+fePX5s1q400ecLa/bc0q1bI+HAKuYouqlzj1WmqA=; b=L2N7MUiqrObpZu6hdCCzthzLag
+        NOfFaoANDLtYiv6dHoIf8M/O/zxRbZMnhWv6NuKU6WMjccjkipv1ipajCK661hNcMW/V/jGI8/nwN
+        D2nvtFkad8RTwqOtCNFhJOiJAGigYHC1nku2PBlvN3VVn6opUttXHSuNgCpy+FLRFWtOucaeHEBRB
+        /MeiK5AXddM8n1CCLumoStPQbKshh65Tc1fkgL2qmLVJAwzVnP9hGPO4PUVIsva4w9ju3SxAqttUU
+        IoqbPqYAsq1c3C/ms+iJeriMmxeddZ2egLPhxLZEaE4fFNa5Y1cr67z2bOAIUA9AA8P8vDD0VUmxJ
+        HvqRdmUw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keeB4-0005Cg-2j; Mon, 16 Nov 2020 13:04:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7727A3012C3;
+        Mon, 16 Nov 2020 14:04:13 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5382720282DFC; Mon, 16 Nov 2020 14:04:13 +0100 (CET)
+Date:   Mon, 16 Nov 2020 14:04:13 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        X86 ML <x86@kernel.org>
+Subject: Re: WARNING: can't access registers at asm_common_interrupt
+Message-ID: <20201116130413.GC3121392@hirez.programming.kicks-ass.net>
+References: <20201111174736.GH2628@hirez.programming.kicks-ass.net>
+ <20201111181328.mbxcz2uap2vnqpxq@treble>
+ <33843b7f-ed8a-8fcb-19bc-c76cf00f453d@citrix.com>
+ <20201111194206.GK2628@hirez.programming.kicks-ass.net>
+ <20201111195900.2x7kfce2ejkmrzi3@treble>
+ <20201111200730.GM2628@hirez.programming.kicks-ass.net>
+ <20201111201506.bftpmx4svxn376tn@treble>
+ <61b2538f-7be6-8f4a-9395-03071b5cc6f0@citrix.com>
+ <CALCETrXcTKB_j9MQC1mcZobKGt_cZ5ivDPjU3zwRBmj7DAUCsA@mail.gmail.com>
+ <f105a63d-6b51-3afb-83e0-e899ea40813e@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20201114190909.cc3rlnvom6wf2zkg@skbuf>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
+Content-Disposition: inline
+In-Reply-To: <f105a63d-6b51-3afb-83e0-e899ea40813e@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 14/11/2020 21:09, Vladimir Oltean wrote:
-> On Sat, Nov 14, 2020 at 05:56:53AM +0200, Grygorii Strashko wrote:
->> This patch enables support for ingress broadcast(BC)/multicast(MC) rate limiting
->> in TI CPSW switchdev driver (the corresponding ALE support was added in previous
->> patch) by implementing HW offload for simple tc-flower policer with matches
->> on dst_mac:
->>   - ff:ff:ff:ff:ff:ff has to be used for BC rate limiting
->>   - 01:00:00:00:00:00 fixed value has to be used for MC rate limiting
->>
->> Hence tc policer defines rate limit in terms of bits per second, but the
->> ALE supports limiting in terms of packets per second - the rate limit
->> bits/sec is converted to number of packets per second assuming minimum
->> Ethernet packet size ETH_ZLEN=60 bytes.
->>
->> Examples:
->> - BC rate limit to 1000pps:
->>    tc qdisc add dev eth0 clsact
->>    tc filter add dev eth0 ingress flower skip_sw dst_mac ff:ff:ff:ff:ff:ff \
->>    action police rate 480kbit burst 64k
->>
->>    rate 480kbit - 1000pps * 60 bytes * 8, burst - not used.
->>
->> - MC rate limit to 20000pps:
->>    tc qdisc add dev eth0 clsact
->>    tc filter add dev eth0 ingress flower skip_sw dst_mac 01:00:00:00:00:00 \
->>    action police rate 9600kbit burst 64k
->>
->>    rate 9600kbit - 20000pps * 60 bytes * 8, burst - not used.
->>
->> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
->> ---
-> 
-> Your example for multicast would actually be correct if you specified
-> the mask as well. Like this:
-> 
-> tc filter add dev eth0 ingress flower skip_sw \
-> 	dst_mac 01:00:00:00:00:00/01:00:00:00:00:00 \
-> 	action police rate 9600kbit burst 64k
-> 
-> But as things stand, the flow rule would have a certain meaning in
-> software (rate-limit only that particular multicast MAC address) and a
-> different meaning in hardware. Please modify the driver code to also
-> match on the mask.
-> 
+On Mon, Nov 16, 2020 at 12:56:32PM +0100, J=FCrgen Gro=DF wrote:
+> > > > > > > static inline notrace unsigned long arch_local_save_flags(voi=
+d)
+> > > > > > > {
+> > > > > > >     PVOP_CALL_ARGS;
+> > > > > > >     PVOP_TEST_NULL(irq.save_fl);
+> > > > > > >     asm_inline volatile(ALTERNATIVE(paravirt_alt(PARAVIRT_CAL=
+L),
+> > > > > > >                                     "PUSHF; POP _ASM_AX",
+> > > > > > >                                     X86_FEATURE_NATIVE)
+>=20
+> I am wondering whether we really want a new feature (basically "not
+> XENPV). We could use ~X86_FEATURE_XENPV and teach apply_alternatives()
+> to understand negated features (yes, this limits the number of features
+> to 32767, but I don't think this is a real problem for quite some time).
+>=20
+> Thoughts?
 
-ok.
+I went with the simple thing for now... If we ever want/need another
+negative alternative I suppose we can do as you suggest...
 
--- 
-Best regards,
-grygorii
+I was still poking at objtool to actually dtrt though..
+
+---
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpuf=
+eatures.h
+index dad350d42ecf..cc88f358bac5 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -237,6 +237,7 @@
+ #define X86_FEATURE_VMCALL		( 8*32+18) /* "" Hypervisor supports the VMCAL=
+L instruction */
+ #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL h=
+ypercall instruction */
+ #define X86_FEATURE_SEV_ES		( 8*32+20) /* AMD Secure Encrypted Virtualizat=
+ion - Encrypted State */
++#define X86_FEATURE_NOT_XENPV		( 8*32+21) /* "" inverse of X86_FEATURE_XEN=
+PV */
+=20
+ /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
+ #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, =
+WRGSBASE instructions*/
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravir=
+t.h
+index d25cc6830e89..e2a9d3e6b7ad 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -645,22 +645,56 @@ bool __raw_callee_save___native_vcpu_is_preempted(lon=
+g cpu);
+ #ifdef CONFIG_PARAVIRT_XXL
+ static inline notrace unsigned long arch_local_save_flags(void)
+ {
+-	return PVOP_CALLEE0(unsigned long, irq.save_fl);
++	PVOP_CALL_ARGS;
++	PVOP_TEST_NULL(irq.save_fl);
++	asm_inline volatile(ALTERNATIVE(paravirt_alt(PARAVIRT_CALL),
++					"pushf; pop %%" _ASM_AX ";",
++					X86_FEATURE_NOT_XENPV)
++			    : PVOP_CALLEE_CLOBBERS, ASM_CALL_CONSTRAINT
++			    : paravirt_type(irq.save_fl.func),
++			      paravirt_clobber(CLBR_RET_REG)
++			    : "memory", "cc");
++	return __eax;
+ }
+=20
+ static inline notrace void arch_local_irq_restore(unsigned long f)
+ {
+-	PVOP_VCALLEE1(irq.restore_fl, f);
++	PVOP_CALL_ARGS;
++	PVOP_TEST_NULL(irq.restore_fl);
++	asm_inline volatile(ALTERNATIVE(paravirt_alt(PARAVIRT_CALL),
++					"push %%" _ASM_ARG1 "; popf;",
++					X86_FEATURE_NOT_XENPV)
++			    : PVOP_VCALLEE_CLOBBERS, ASM_CALL_CONSTRAINT
++			    : paravirt_type(irq.restore_fl.func),
++			      paravirt_clobber(CLBR_RET_REG),
++			      PVOP_CALL_ARG1(f)
++			    : "memory", "cc");
+ }
+=20
+ static inline notrace void arch_local_irq_disable(void)
+ {
+-	PVOP_VCALLEE0(irq.irq_disable);
++	PVOP_CALL_ARGS;
++	PVOP_TEST_NULL(irq.irq_disable);
++	asm_inline volatile(ALTERNATIVE(paravirt_alt(PARAVIRT_CALL),
++					"cli;",
++					X86_FEATURE_NOT_XENPV)
++			    : PVOP_VCALLEE_CLOBBERS, ASM_CALL_CONSTRAINT
++			    : paravirt_type(irq.irq_disable.func),
++			      paravirt_clobber(CLBR_RET_REG)
++			    : "memory", "cc");
+ }
+=20
+ static inline notrace void arch_local_irq_enable(void)
+ {
+-	PVOP_VCALLEE0(irq.irq_enable);
++	PVOP_CALL_ARGS;
++	PVOP_TEST_NULL(irq.irq_enable);
++	asm_inline volatile(ALTERNATIVE(paravirt_alt(PARAVIRT_CALL),
++					"sti;",
++					X86_FEATURE_NOT_XENPV)
++			    : PVOP_VCALLEE_CLOBBERS, ASM_CALL_CONSTRAINT
++			    : paravirt_type(irq.irq_enable.func),
++			      paravirt_clobber(CLBR_RET_REG)
++			    : "memory", "cc");
+ }
+=20
+ static inline notrace unsigned long arch_local_irq_save(void)
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 2400ad62f330..5bd8f5503652 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -723,6 +723,19 @@ void __init alternative_instructions(void)
+ 	 * patching.
+ 	 */
+=20
++	if (!boot_cpu_has(X86_FEATURE_XENPV))
++		setup_force_cpu_cap(X86_FEATURE_NOT_XENPV);
++
++	/*
++	 * First patch paravirt functions, such that we overwrite the indirect
++	 * call with the direct call.
++	 */
++	apply_paravirt(__parainstructions, __parainstructions_end);
++
++	/*
++	 * Then patch alternatives, such that those paravirt calls that are in
++	 * alternatives can be overwritten by their immediate fragments.
++	 */
+ 	apply_alternatives(__alt_instructions, __alt_instructions_end);
+=20
+ #ifdef CONFIG_SMP
+@@ -741,8 +754,6 @@ void __init alternative_instructions(void)
+ 	}
+ #endif
+=20
+-	apply_paravirt(__parainstructions, __parainstructions_end);
+-
+ 	restart_nmi();
+ 	alternatives_patched =3D 1;
+ }
+diff --git a/arch/x86/kernel/paravirt_patch.c b/arch/x86/kernel/paravirt_pa=
+tch.c
+index ace6e334cb39..867498db53ad 100644
+--- a/arch/x86/kernel/paravirt_patch.c
++++ b/arch/x86/kernel/paravirt_patch.c
+@@ -33,13 +33,9 @@ struct patch_xxl {
+ };
+=20
+ static const struct patch_xxl patch_data_xxl =3D {
+-	.irq_irq_disable	=3D { 0xfa },		// cli
+-	.irq_irq_enable		=3D { 0xfb },		// sti
+-	.irq_save_fl		=3D { 0x9c, 0x58 },	// pushf; pop %[re]ax
+ 	.mmu_read_cr2		=3D { 0x0f, 0x20, 0xd0 },	// mov %cr2, %[re]ax
+ 	.mmu_read_cr3		=3D { 0x0f, 0x20, 0xd8 },	// mov %cr3, %[re]ax
+ 	.mmu_write_cr3		=3D { 0x0f, 0x22, 0xdf },	// mov %rdi, %cr3
+-	.irq_restore_fl		=3D { 0x57, 0x9d },	// push %rdi; popfq
+ 	.cpu_wbinvd		=3D { 0x0f, 0x09 },	// wbinvd
+ 	.cpu_usergs_sysret64	=3D { 0x0f, 0x01, 0xf8,
+ 				    0x48, 0x0f, 0x07 },	// swapgs; sysretq
+@@ -76,11 +72,6 @@ unsigned int native_patch(u8 type, void *insn_buff, unsi=
+gned long addr,
+ 	switch (type) {
+=20
+ #ifdef CONFIG_PARAVIRT_XXL
+-	PATCH_CASE(irq, restore_fl, xxl, insn_buff, len);
+-	PATCH_CASE(irq, save_fl, xxl, insn_buff, len);
+-	PATCH_CASE(irq, irq_enable, xxl, insn_buff, len);
+-	PATCH_CASE(irq, irq_disable, xxl, insn_buff, len);
+-
+ 	PATCH_CASE(mmu, read_cr2, xxl, insn_buff, len);
+ 	PATCH_CASE(mmu, read_cr3, xxl, insn_buff, len);
+ 	PATCH_CASE(mmu, write_cr3, xxl, insn_buff, len);
+
+--6c2NcOVqGQ03X4Wi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEv3OU3/byMaA0LqWJdkfhpEvA5LoFAl+yeM0ACgkQdkfhpEvA
+5LoVvA/8COySXr0EN+4h9VezrN3m/QpzN5gFUhdh7hIC5xQ36QrCrihUVUFf5RWa
+OC3HcgoTXfU0zyClCbA/VKty9HQ5srqr0ASnxvISc+xZe+1flvkBGlF60jQf3qOA
+AAwCEUFFXLt8UYZfYQp+/p5FjyuCyaJspFM2OqYKWy3ZUmLc4VP0rPI6/wndEO8r
+Hw2WSct4uHVQd7CWx636mWkK4sJls9SC68Ql3zPAFKpj4t+bXyGKQSExabZyMTY8
+NuuVTAHaRVCad8/IElVekt/8/K6muu/CH9keeUygqEl4OdbF5Fe0Dcvk2QI8m8XE
+B4XcNmEzcF2f4J7BtLfmNiGU4Yfiom6ekQZ89KWq3t+c0atlzIrjwSwCZQAt7H9M
+LTKbVuMEeIBKGt30nrivDOIJ9BOnud+HSsWA1Cl8dUuQPeqG3+ZFvfjnnStUfXiv
+GPqqBmIpPvlhpJvqKnf8gyMcJaYfl6vx78KquZYiFzrhdWQNforxeQxL9EfBRwbP
+l15ohEelXl2vd7+TU5A+HYs8YTR/fjBBj3AHVlLDAEDYzLhK55AdtTXbNvKZ0jH7
++KP67RyS+SJ8B/UrqJWq+ekupkS+mzRM/hPogP32uXziHYw8n4WDh9/ZqXitnBR8
+uuYmr3lPGfNOJCsbfZvHbFKoPm5kjjVls/CuKVHk6pQkNtUKAl0=
+=dfCz
+-----END PGP SIGNATURE-----
+
+--6c2NcOVqGQ03X4Wi--
