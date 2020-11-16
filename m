@@ -2,171 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36C32B4214
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C41E2B41D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729627AbgKPLCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:02:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29916 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729613AbgKPLC0 (ORCPT
+        id S1729277AbgKPLAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726710AbgKPLAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:02:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605524545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MhjX1xdeElZvc/s7sgs405VJ1vEVIYhz1k37uHGfV1I=;
-        b=G/stdW2W4M+W0odx4sNwIYs9Wp6myZDmbmCzxmNkssLMUKSNoNDof413Z6ea3PrjXcDKxj
-        eJrEPGPvYeepxLZ6Ow+IvuDMo/uSVkwL7ginWZ4mpqD2pjBla7RMw3UNxdkFU3hQzaiY19
-        DifTcWEnrnwUjvwwQ/YLGXOGzSLIxM8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-kQyGVpalPNKUQKTIDLLDvw-1; Mon, 16 Nov 2020 06:02:21 -0500
-X-MC-Unique: kQyGVpalPNKUQKTIDLLDvw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC57C84639D;
-        Mon, 16 Nov 2020 11:02:18 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-113-230.ams2.redhat.com [10.36.113.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 32E9B5C5AF;
-        Mon, 16 Nov 2020 11:02:14 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
-        alex.williamson@redhat.com
-Cc:     jean-philippe@linaro.org, zhangfei.gao@linaro.org,
-        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com, tn@semihalf.com,
-        nicoleotsuka@gmail.com, yuzenghui@huawei.com
-Subject: [PATCH v11 13/13] vfio/pci: Inject page response upon response region fill
-Date:   Mon, 16 Nov 2020 12:00:30 +0100
-Message-Id: <20201116110030.32335-14-eric.auger@redhat.com>
-In-Reply-To: <20201116110030.32335-1-eric.auger@redhat.com>
-References: <20201116110030.32335-1-eric.auger@redhat.com>
+        Mon, 16 Nov 2020 06:00:44 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6B3C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:00:42 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id t5so12525479qtp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FX8GD+b8oMZGG7RMfkMYcB2Sb5EDK5FE7PKEweB+0bg=;
+        b=Ojt003UlpmkrS+sQ1TQUN2zeBxWoQgiHTyQyOraAFHTpOpuEz7EnHTOYMGbWE0fs0B
+         EF5O7dcxHUGo2tlteywoPZTgAuyQztFbOPomED6EGVvuLowGkFCbPXHs1Ol/fyjQjsc1
+         pn5cgVfOrt0iblSESh5xPqcL/mU+ZJGrHPnCpJ1Z7Niof6IVup10P22Vvq/VTHS4+hzJ
+         gZFYUvHtfjzo7Y5R2twqZFQpH2tDdd6CzWtxSiW8TOmesIyG02+2lpspMTvhNDl7Sb8J
+         71eG1H27trjJb4xeC8LjH8QhWd7TEQ6pQmRQrvmQs26Q3mfUqqhqkqFkwcJUHOA11Fsm
+         IsWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FX8GD+b8oMZGG7RMfkMYcB2Sb5EDK5FE7PKEweB+0bg=;
+        b=C0ONknAR7q+R4HMtm1oJLHubJp3cl7ezBP1zAvYa8XkEKy/GmNC4jPIs9VxYBEbATg
+         +HR7SgDdpptKjVsh3qqOt/nQTi0vKMVsE9K6FthkyPGJ9e9DUrwVCsBlKDdhxtFTrPZB
+         FF3uf4W5iMpgRY/EiJYWErcyzWDAYHqDOVjQmM/p9tX32zIdM34u2T/oYFPBknbmvkuq
+         BTAnnryZmPHZIrizEjgaMZZwgN6ksLRXUwlxxL4zecIbbTKmabuaB/EGYvIHVj07Iqt6
+         IcrXWXPxwl0MpX0A6BujjNqM/JCzg/spZBzfjbFt7LixFy/oXGiaWEAnYpa0wj0UJL4a
+         7xNg==
+X-Gm-Message-State: AOAM53225RcmN/L6f8vzlKGvFORYumxr0vtko/O6Ut7FXDZioZSTCwl0
+        D4IqP5ix1EHTWwyHoxogBaVKf1msnHoWVLiQeSKbOQ==
+X-Google-Smtp-Source: ABdhPJxCni13N4vuA3KlP+ykcZHvRiV94mZVfVD08+wGb2YPqeZdS5VQhMa8uyPTHN5SQXcnL/RPYTFZBQGAWOWAWwM=
+X-Received: by 2002:aed:2b47:: with SMTP id p65mr13025705qtd.337.1605524441642;
+ Mon, 16 Nov 2020 03:00:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <cover.1605305978.git.andreyknvl@google.com> <d65e2fc1d7fc03b7ced67e401ff1ea9143b3382d.1605305978.git.andreyknvl@google.com>
+In-Reply-To: <d65e2fc1d7fc03b7ced67e401ff1ea9143b3382d.1605305978.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 16 Nov 2020 12:00:30 +0100
+Message-ID: <CACT4Y+a4ZoBm3jC308kradyeYcXKMMux4uTSgs4cWkby5Th+bw@mail.gmail.com>
+Subject: Re: [PATCH mm v3 04/19] kasan, arm64: unpoison stack only with CONFIG_KASAN_STACK
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the userspace increments the head of the page response
-buffer ring, let's push the response into the iommu layer.
-This is done through a workqueue that pops the responses from
-the ring buffer and increment the tail.
+On Fri, Nov 13, 2020 at 11:20 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> There's a config option CONFIG_KASAN_STACK that has to be enabled for
+> KASAN to use stack instrumentation and perform validity checks for
+> stack variables.
+>
+> There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
+> Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
+> enabled.
+>
+> Note, that CONFIG_KASAN_STACK is an option that is currently always
+> defined when CONFIG_KASAN is enabled, and therefore has to be tested
+> with #if instead of #ifdef.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Reviewed-by: Marco Elver <elver@google.com>
 
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
----
- drivers/vfio/pci/vfio_pci.c         | 40 +++++++++++++++++++++++++++++
- drivers/vfio/pci/vfio_pci_private.h |  8 ++++++
- drivers/vfio/pci/vfio_pci_rdwr.c    |  1 +
- 3 files changed, 49 insertions(+)
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index e9a904ce3f0d..beea70d70151 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -542,6 +542,32 @@ static int vfio_pci_dma_fault_init(struct vfio_pci_device *vdev)
- 	return ret;
- }
- 
-+static void dma_response_inject(struct work_struct *work)
-+{
-+	struct vfio_pci_dma_fault_response_work *rwork =
-+		container_of(work, struct vfio_pci_dma_fault_response_work, inject);
-+	struct vfio_region_dma_fault_response *header = rwork->header;
-+	struct vfio_pci_device *vdev = rwork->vdev;
-+	struct iommu_page_response *resp;
-+	u32 tail, head, size;
-+
-+	mutex_lock(&vdev->fault_response_queue_lock);
-+
-+	tail = header->tail;
-+	head = header->head;
-+	size = header->nb_entries;
-+
-+	while (CIRC_CNT(head, tail, size) >= 1) {
-+		resp = (struct iommu_page_response *)(vdev->fault_response_pages + header->offset +
-+						tail * header->entry_size);
-+
-+		/* TODO: properly handle the return value */
-+		iommu_page_response(&vdev->pdev->dev, resp);
-+		header->tail = tail = (tail + 1) % size;
-+	}
-+	mutex_unlock(&vdev->fault_response_queue_lock);
-+}
-+
- #define DMA_FAULT_RESPONSE_RING_LENGTH 512
- 
- static int vfio_pci_dma_fault_response_init(struct vfio_pci_device *vdev)
-@@ -585,8 +611,22 @@ static int vfio_pci_dma_fault_response_init(struct vfio_pci_device *vdev)
- 	header->nb_entries = DMA_FAULT_RESPONSE_RING_LENGTH;
- 	header->offset = PAGE_SIZE;
- 
-+	vdev->response_work = kzalloc(sizeof(*vdev->response_work), GFP_KERNEL);
-+	if (!vdev->response_work)
-+		goto out;
-+	vdev->response_work->header = header;
-+	vdev->response_work->vdev = vdev;
-+
-+	/* launch the thread that will extract the response */
-+	INIT_WORK(&vdev->response_work->inject, dma_response_inject);
-+	vdev->dma_fault_response_wq =
-+		create_singlethread_workqueue("vfio-dma-fault-response");
-+	if (!vdev->dma_fault_response_wq)
-+		return -ENOMEM;
-+
- 	return 0;
- out:
-+	kfree(vdev->fault_response_pages);
- 	vdev->fault_response_pages = NULL;
- 	return ret;
- }
-diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
-index 035634521cd0..5944f96ced0c 100644
---- a/drivers/vfio/pci/vfio_pci_private.h
-+++ b/drivers/vfio/pci/vfio_pci_private.h
-@@ -52,6 +52,12 @@ struct vfio_pci_irq_ctx {
- 	struct irq_bypass_producer	producer;
- };
- 
-+struct vfio_pci_dma_fault_response_work {
-+	struct work_struct inject;
-+	struct vfio_region_dma_fault_response *header;
-+	struct vfio_pci_device *vdev;
-+};
-+
- struct vfio_pci_device;
- struct vfio_pci_region;
- 
-@@ -145,6 +151,8 @@ struct vfio_pci_device {
- 	struct eventfd_ctx	*req_trigger;
- 	u8			*fault_pages;
- 	u8			*fault_response_pages;
-+	struct workqueue_struct *dma_fault_response_wq;
-+	struct vfio_pci_dma_fault_response_work *response_work;
- 	struct mutex		fault_queue_lock;
- 	struct mutex		fault_response_queue_lock;
- 	struct list_head	dummy_resources_list;
-diff --git a/drivers/vfio/pci/vfio_pci_rdwr.c b/drivers/vfio/pci/vfio_pci_rdwr.c
-index efde0793360b..78c494fe35cc 100644
---- a/drivers/vfio/pci/vfio_pci_rdwr.c
-+++ b/drivers/vfio/pci/vfio_pci_rdwr.c
-@@ -430,6 +430,7 @@ size_t vfio_pci_dma_fault_response_rw(struct vfio_pci_device *vdev, char __user
- 		mutex_lock(&vdev->fault_response_queue_lock);
- 		header->head = new_head;
- 		mutex_unlock(&vdev->fault_response_queue_lock);
-+		queue_work(vdev->dma_fault_response_wq, &vdev->response_work->inject);
- 	} else {
- 		if (copy_to_user(buf, base + pos, count))
- 			return -EFAULT;
--- 
-2.21.3
-
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
+> ---
+>  arch/arm64/kernel/sleep.S        |  2 +-
+>  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+>  include/linux/kasan.h            | 10 ++++++----
+>  mm/kasan/common.c                |  2 ++
+>  4 files changed, 10 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+> index ba40d57757d6..bdadfa56b40e 100644
+> --- a/arch/arm64/kernel/sleep.S
+> +++ b/arch/arm64/kernel/sleep.S
+> @@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
+>          */
+>         bl      cpu_do_resume
+>
+> -#ifdef CONFIG_KASAN
+> +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+>         mov     x0, sp
+>         bl      kasan_unpoison_task_stack_below
+>  #endif
+> diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+> index c8daa92f38dc..5d3a0b8fd379 100644
+> --- a/arch/x86/kernel/acpi/wakeup_64.S
+> +++ b/arch/x86/kernel/acpi/wakeup_64.S
+> @@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+>         movq    pt_regs_r14(%rax), %r14
+>         movq    pt_regs_r15(%rax), %r15
+>
+> -#ifdef CONFIG_KASAN
+> +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+>         /*
+>          * The suspend path may have poisoned some areas deeper in the stack,
+>          * which we now need to unpoison.
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index 0c89e6fdd29e..f2109bf0c5f9 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -76,8 +76,6 @@ static inline void kasan_disable_current(void) {}
+>
+>  void kasan_unpoison_range(const void *address, size_t size);
+>
+> -void kasan_unpoison_task_stack(struct task_struct *task);
+> -
+>  void kasan_alloc_pages(struct page *page, unsigned int order);
+>  void kasan_free_pages(struct page *page, unsigned int order);
+>
+> @@ -122,8 +120,6 @@ void kasan_restore_multi_shot(bool enabled);
+>
+>  static inline void kasan_unpoison_range(const void *address, size_t size) {}
+>
+> -static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+> -
+>  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+>  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+>
+> @@ -175,6 +171,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+>
+>  #endif /* CONFIG_KASAN */
+>
+> +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> +void kasan_unpoison_task_stack(struct task_struct *task);
+> +#else
+> +static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+> +#endif
+> +
+>  #ifdef CONFIG_KASAN_GENERIC
+>
+>  void kasan_cache_shrink(struct kmem_cache *cache);
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 0a420f1dbc54..7648a2452a01 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -64,6 +64,7 @@ void kasan_unpoison_range(const void *address, size_t size)
+>         unpoison_range(address, size);
+>  }
+>
+> +#if CONFIG_KASAN_STACK
+>  static void __kasan_unpoison_stack(struct task_struct *task, const void *sp)
+>  {
+>         void *base = task_stack_page(task);
+> @@ -90,6 +91,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
+>
+>         unpoison_range(base, watermark - base);
+>  }
+> +#endif /* CONFIG_KASAN_STACK */
+>
+>  void kasan_alloc_pages(struct page *page, unsigned int order)
+>  {
+> --
+> 2.29.2.299.gdc1121823c-goog
+>
