@@ -2,67 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07B52B3F83
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239432B3F8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728525AbgKPJIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:08:50 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:56083 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728511AbgKPJIt (ORCPT
+        id S1728431AbgKPJLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:11:00 -0500
+Received: from outbound-smtp08.blacknight.com ([46.22.139.13]:50697 "EHLO
+        outbound-smtp08.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727789AbgKPJK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:08:49 -0500
-Received: by mail-wm1-f68.google.com with SMTP id c9so22983792wml.5;
-        Mon, 16 Nov 2020 01:08:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0KWD0bnj4k/0SSS3VjjzTSsaeo2Viy6TEj9KR57CckA=;
-        b=NeqR2+yoO4n8oBM84I54S6TdrDkI9U707uNguAlyZM3vl/ea2N5br8gjH1/0qUxD/H
-         mWOI21Pa43v8fiFTAmB475NBgprCkLUBoIa+YTNMKQD217p5NQXnlJ9moQhyX7BUYn9+
-         Bh99R5rZ1Ddm4EMJtppjVcC+AsJZL27QlHjxmoR7uumBdRayhU1ebQ9EyhuUuMcYFFzY
-         qJ3gqfdQ0BcMF4cTDo3/T123/uz+CMNwun+2yPqr8rECrxitk7sfpWfbjZ01Hj6QkKSP
-         q/xhHFXqtOWKVEquXzfkIGtGxacOssVu3b2QiNsB80HnS/+KsFPiEcHxBKRKQAwVqgGR
-         +ICQ==
-X-Gm-Message-State: AOAM53071xlMa8J+pQObYIAlHV/ej6RIGcUIfs7C8uNSAemLprr4uVW5
-        muOeEgYdCyRx8S53wmKKPCh8fjUUse4=
-X-Google-Smtp-Source: ABdhPJz/Lf2wqPhOxrZqNgUCCJkm0zp09JujFcjpcJD08dh6iRRnjH4y8BACbHylFmzfQqCiTza3IA==
-X-Received: by 2002:a1c:c2c3:: with SMTP id s186mr14756745wmf.160.1605517727932;
-        Mon, 16 Nov 2020 01:08:47 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id o205sm19078656wma.25.2020.11.16.01.08.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 01:08:47 -0800 (PST)
-Date:   Mon, 16 Nov 2020 10:08:45 +0100
-From:   "krzk@kernel.org" <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon@samsung.com>
-Cc:     Krzysztof Opasiak <k.opasiak@samsung.com>,
-        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 3/3] nfc: s3fwrn5: Change the error code
-Message-ID: <20201116090845.GC5937@kozik-lap>
-References: <CGME20201116011950epcms2p68117cc4a7228db2baecb7d4a4840b955@epcms2p6>
- <20201116011950epcms2p68117cc4a7228db2baecb7d4a4840b955@epcms2p6>
+        Mon, 16 Nov 2020 04:10:59 -0500
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp08.blacknight.com (Postfix) with ESMTPS id 923C71C43BF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:10:57 +0000 (GMT)
+Received: (qmail 12950 invoked from network); 16 Nov 2020 09:10:57 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Nov 2020 09:10:56 -0000
+Date:   Mon, 16 Nov 2020 09:10:54 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Loadavg accounting error on arm64
+Message-ID: <20201116091054.GL3371@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20201116011950epcms2p68117cc4a7228db2baecb7d4a4840b955@epcms2p6>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 10:19:50AM +0900, Bongsu Jeon wrote:
-> ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP.
-> 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> ---
->  drivers/nfc/s3fwrn5/s3fwrn5.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
+Hi,
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+I got cc'd internal bug report filed against a 5.8 and 5.9 kernel
+that loadavg was "exploding" on arch64 on a machines acting as a build
+servers. It happened on at least two different arm64 variants. That setup
+is complex to replicate but fortunately can be reproduced by running
+hackbench-process-pipes while heavily overcomitting a machine with 96
+logical CPUs and then checking if loadavg drops afterwards. With an
+MMTests clone, I reproduced it as follows
 
-Best regards,
-Krzysztof
+./run-mmtests.sh --config configs/config-workload-hackbench-process-pipes --no-monitor testrun; \
+    for i in `seq 1 60`; do cat /proc/loadavg; sleep 60; done
+
+Load should drop to 10 after about 10 minutes and it does on x86-64 but
+remained at around 200+ on arm64.
+
+The reproduction case simply hammers the case where a task can be
+descheduling while also being woken by another task at the same time. It
+takes a long time to run but it makes the problem very obvious. The
+expectation is that after hackbench has been running and saturating the
+machine for a long time.
+
+Commit dbfb089d360b ("sched: Fix loadavg accounting race") fixed a loadavg
+accounting race in the generic case. Later it was documented why the
+ordering of when p->sched_contributes_to_load is read/updated relative
+to p->on_cpu.  This is critical when a task is descheduling at the same
+time it is being activated on another CPU. While the load/stores happen
+under the RQ lock, the RQ lock on its own does not give any guarantees
+on the task state.
+
+Over the weekend I convinced myself that it must be because the
+implementation of smp_load_acquire and smp_store_release do not appear
+to implement acquire/release semantics because I didn't find something
+arm64 that was playing with p->state behind the schedulers back (I could
+have missed it if it was in an assembly portion as I can't reliablyh read
+arm assembler). Similarly, it's not clear why the arm64 implementation
+does not call smp_acquire__after_ctrl_dep in the smp_load_acquire
+implementation. Even when it was introduced, the arm64 implementation
+differed significantly from the arm implementation in terms of what
+barriers it used for non-obvious reasons.
+
+Unfortunately, making that work similar to the arch-independent version
+did not help but it's not helped that I know nothing about the arm64
+memory model.
+
+I'll be looking again today to see can I find a mistake in the ordering for
+how sched_contributes_to_load is handled but again, the lack of knowledge
+on the arm64 memory model means I'm a bit stuck and a second set of eyes
+would be nice :(
+
+-- 
+Mel Gorman
+SUSE Labs
