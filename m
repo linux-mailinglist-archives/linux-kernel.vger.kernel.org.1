@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D2E2B42DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687C52B42E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 12:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgKPLdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 06:33:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgKPLdM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 06:33:12 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1B1C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:33:12 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id c129so15333828yba.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 03:33:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NGE/8zZSbrMYM1BfuDIYlYWu/KQaD7nuUUEC61XDj5g=;
-        b=XHsS+MRqQF7/ddTQTacN4pm7PHH4Krd4KnI7MEHyyNDvd1NVVU39XWuGhqPjBt/FhR
-         CGJ6lq2+B20s2uW+B/mC6jj1mqFVaddyiyzNVA7ZOgFHQ1FU+gULjDPkgqeQeIJ9ZQ8K
-         gN8O1i6/InM4D/QpNBM+t0f1WsmTLUMD2mbVeeUV7dx9jySxYSw6OSam7ueewWWyj/ud
-         kHwkl83D9HFWayss20Adjwg+RKCJY1zC2opGqdbaxgWBeUNdZ1QPZvJvFUwZvGaCjVRa
-         dk8SvNYYmajFok3avNPpcPvJbFwPBGcM8LjIhsoWZeIbIbud8esTTfUyN5dFLRfkuAIz
-         hzCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NGE/8zZSbrMYM1BfuDIYlYWu/KQaD7nuUUEC61XDj5g=;
-        b=LMs1Ii4AkHEu39nvfZJD4dxa/f/+12JFiwXu0yNbgtX8Z+jkIQ9YgmyuPo64TeB/kg
-         4NxGYUGqZ61Ua3dZcDz4dP7H1oujVBhWbsQCfnnYv8jSTeqnXzzF7+jvYnzEUgjNfDnM
-         z0SvQVTtKJVmSPZqZQ/NEeLjXCtrrSoVNN19eHCUQYlf9moY567iyBazJk8QjtCCwlA5
-         +tPlBhPfDK5ghQoL5/JrkY1vcHocsTWdBtvBWsJ6/i0zu7DznW134EoXwLvMiRh8GRT9
-         FeuhrrVpw5Ik5a5EFFeA047imKcYJuWkB+8mhHyIkrJsciGGOzbL2QBsO8H2hOdhEKsX
-         TM8w==
-X-Gm-Message-State: AOAM532Kzg9YbtecmZ6bQ7nGJwJ/L3CWnoAWguuG7nm+fuurbueRkSud
-        kvWCi9mSbjorXpfvtboyhaHnL4KRmmX9R+q3IFc=
-X-Google-Smtp-Source: ABdhPJyi8dQ0hwCdbQgZlwbfhe98B1Ei/rMrpJkSgiik4CIVzXdGxmHNcANXDVSHrI0ev71EzKrRfRyA3NHmZKCzDi4=
-X-Received: by 2002:a25:2e0d:: with SMTP id u13mr11676325ybu.247.1605526391609;
- Mon, 16 Nov 2020 03:33:11 -0800 (PST)
+        id S1729401AbgKPLdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 06:33:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:38220 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728921AbgKPLdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 06:33:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EFF7C101E;
+        Mon, 16 Nov 2020 03:33:18 -0800 (PST)
+Received: from [10.57.26.102] (unknown [10.57.26.102])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB5D43F70D;
+        Mon, 16 Nov 2020 03:33:15 -0800 (PST)
+Subject: Re: [PATCH v3 3/3] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
+        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
+        chris.redpath@arm.com
+References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
+ <20201102120115.29993-4-nicola.mazzucato@arm.com>
+ <20201106092020.za3oxg7gutzc3y2b@vireshk-i7>
+ <0a334a73-45ef-58ff-7dfd-9df6f4ff290a@arm.com>
+ <20201106105514.bhtdklyhn7goml64@vireshk-i7>
+ <7f73bcd6-0f06-4ef0-7f02-0751e6c4d94b@arm.com>
+ <20201109065742.22czfgyjhsjmkytf@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <2fa8a5c0-f66d-34bc-7f1c-8462e7532e0a@arm.com>
+Date:   Mon, 16 Nov 2020 11:33:13 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20201116043532.4032932-1-ndesaulniers@google.com> <20201116043532.4032932-4-ndesaulniers@google.com>
-In-Reply-To: <20201116043532.4032932-4-ndesaulniers@google.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 16 Nov 2020 12:33:00 +0100
-Message-ID: <CANiq72=nTM9enY2pTm8aoR8grPiiODCif5d7DDnOLkivaY2fsg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] powerpc: fix -Wimplicit-fallthrough
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201109065742.22czfgyjhsjmkytf@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 5:35 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> The "fallthrough" pseudo-keyword was added as a portable way to denote
-> intentional fallthrough. Clang will still warn on cases where there is a
-> fallthrough to an immediate break. Add explicit breaks for those cases.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/236
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-It makes things clearer having a `break` added, so I like that warning.
 
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+On 11/9/20 6:57 AM, Viresh Kumar wrote:
+> On 06-11-20, 11:14, Lukasz Luba wrote:
+>> I also had similar doubts, because if we make frequency requests
+>> independently for each CPU, why not having N cooling devs, which
+>> will set independently QoS max freq for them...
+>>
+>> What convinced me:
+>> EAS and FIE would know the 'real' frequency of the cluster, IPA
+>> can use it also and have only one cooling device per cluster.
+>>
+>> We would like to keep this old style 'one cooling device per cpuset'.
+>> I don't have strong opinion and if it would appear that there are
+>> some errors in freq estimation for cluster, then maybe it does make
+>> more sense to have cdev per CPU...
+> 
+> Let me rephrase my question. What is it that doesn't work _correctly_
+> with cdev per cpufreq policy in your case? What doesn't work well if
+> the thermal stuff keeps looking at only the related_cpus thing and not
+> the cpu-perf-dependencies thing?
+> 
 
-Cheers,
-Miguel
+We don't have a platform which would be this per-cpu freq request, yet.
+Thus it's hard to answer your question. The EAS would work in 'old
+style' - cluster mode. I don't know how IPA would work on such HW
+and SW configuration. To figure this out I need a real platform.
