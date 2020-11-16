@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63D62B3ABD
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 419112B3ABE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgKPAYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 19:24:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55904 "EHLO
+        id S1728214AbgKPAYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 19:24:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727618AbgKPAYf (ORCPT
+        with ESMTP id S1727618AbgKPAYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 19:24:35 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC87C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 16:24:33 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id p8so16908918wrx.5
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 16:24:33 -0800 (PST)
+        Sun, 15 Nov 2020 19:24:46 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD2AC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 16:24:46 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id a3so22136107wmb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 16:24:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4tbtYPRVwe91AzaVofnak3fBr/OUB5Tnq78kbe0HEPE=;
-        b=oWDXG90b/E+THuTqnGX5t11UZnv3ESw8yGkloNnBAkooHieEFgcEzcOulq9Nwn7Adj
-         tMd/8Kf2G+iQSx3Jlle4sCtpdQEzpe9un7BSI+Qd4oGUytykNV8GUkHF0kPqxVqdZFg9
-         lXS4cwNY6sqb/HrAdTm9O4dUD29Krs3tvgJBizvgH0LumHoFMq/muzX6w44sPYtgX/4o
-         g9WUHwmWSSkqEKPR1IWhfF+HQuWa1T/DqDCmrvg4NRtU3PXXMM6pUOsMXeY+t946a6uS
-         Mw/C675Ll+aizQwI2EsSxj3TYxgCPh8gt0su9FQ25SJ3uFrQD1jZjuG9F0DbkNmXF7+K
-         qcXA==
+        bh=PUyT7HTicJllVKXgyA1Cwx+07UYSRPUlkv+F+qeualw=;
+        b=dB8ZpzvzFRUR6qFT8MaXdJo8wn/Lhz8NxKk24CPjLigntQbUGrBCr7Pu1BkgNqwl6z
+         qv6zEvWEzQhMzIUSW+NuTaDXW/SWP9YY4VTbotfeuOMxMua94zbBWgQjZ3f8+8L3o15w
+         a/5ZIfWgv/mi/o+tIX6glAss/M2kk1V28uLKN95vVUOIkFt4o5+kgajawIFuPF3xQwD/
+         j8Uv2wqBuKOniXnKxZovYFm9lx9o7kiHetfCAcu58G8CJhNU1nY/LCl1RUAgmPzghThO
+         7UUJsBWV+DbHgnKCjpgBJGRbAM3rSi1WtLRzQX5fzcpgYzx510zi3avB7G39yR6ZMZXP
+         kiVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4tbtYPRVwe91AzaVofnak3fBr/OUB5Tnq78kbe0HEPE=;
-        b=h+By1ZxJDxtB3tRZLJIODLX1GfhH+84KobZ6AjDKbAiT4tuI/C3IPL4d3p+GF0kCLg
-         VQxm9Au/zG43MTMjW2wHJIENyNKX2CoNm89i+JJ3KRcc6i+0fnz7WOYDwD97yne3xqwf
-         00O5gIqb7+BMjmhDd4VtmEmjSDYVpyScyRT/4LfoKj6trGjyd81grKM+lXsPWNZYtF4u
-         o29FBjqWqFkmyrSwx6bRS+jbjw5zDUvHSPjRwIYqY6adoRfFIJovR7a/lvExBJ5H0IMi
-         WAehVDzL0H4oVP+tcRlZt3KJ41I83euFeVgvl3lIfCAOR9COZkVDsOkxxngIbeAgKRaY
-         SqFw==
-X-Gm-Message-State: AOAM530YS/l8ySH/Kr8jA9FMOwlQ186LR3bikwhlosaHmQ3UiU7l38ZJ
-        uNvT3kNSF9/ardBDhBH/7hDunLGFGf2ubHjI+uI=
-X-Google-Smtp-Source: ABdhPJxCYH6jk4uoBN5NncU4HGs8yqTWDEzIsx88wTGAnERsBDJRBw9IqbpdqnDv7Hc7M8BUfOm5aWm1KYHWSNzBNcE=
-X-Received: by 2002:adf:eacb:: with SMTP id o11mr16377652wrn.208.1605486272652;
- Sun, 15 Nov 2020 16:24:32 -0800 (PST)
+        bh=PUyT7HTicJllVKXgyA1Cwx+07UYSRPUlkv+F+qeualw=;
+        b=pETTLWy56o9WlDerqx/IRVLDDARORqA9cAvcFCdkWUWGMwEKEk+hO2dkIW+kzgthhZ
+         h5FiYo/28BzwJ8GKtUgcKZZdS4348JgPaKPnU88CtvqTKA/MDBdcpf4TVNzM2SxeEUzE
+         4jFaHrDILxfnyFTnOPP0AN9YFiMBCJG/mdxc+jm68mjKjNvjbLlyEeoFWODKV6GT+wQZ
+         NtEmRL2KwqchvrzKL/jYHu3aosSREL+5CG3gZeskE97mHOnN9FKBVRLijc0KNL47Qa4a
+         uPkhkWsGRo96S0wI9CDHOgFUShmN3vbTA2QxAprSFGmiKk/7EwWxTtM9dezD0g1MPr9t
+         mdpw==
+X-Gm-Message-State: AOAM532vy628ZXjlTJ/qU8Fty8FNMPFnYOEIfU1D9/mTTwosWbbySSqP
+        kebXYv8WjOajDs5TPGPRFUS1qk/dIJac0rH6DeE=
+X-Google-Smtp-Source: ABdhPJykcujZq4xRwu+2v95YrVwzQup9pDYXTEx8ALY47iKInAFm0+4TaYD9Q33qlns64mpE/RjQ4bqXGdHt7FAIfHI=
+X-Received: by 2002:a7b:c0cc:: with SMTP id s12mr12453523wmh.41.1605486285009;
+ Sun, 15 Nov 2020 16:24:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20200919100850.1639111-1-liushixin2@huawei.com> <CAKGbVbuVo3a=Qs3PThrYszh9++D_D+dLVWhpAYOwpVd9_jDnUw@mail.gmail.com>
-In-Reply-To: <CAKGbVbuVo3a=Qs3PThrYszh9++D_D+dLVWhpAYOwpVd9_jDnUw@mail.gmail.com>
+References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-16-lee.jones@linaro.org>
+In-Reply-To: <20201113134938.4004947-16-lee.jones@linaro.org>
 From:   Qiang Yu <yuq825@gmail.com>
-Date:   Mon, 16 Nov 2020 08:24:21 +0800
-Message-ID: <CAKGbVbv4q7iwNe6g708_NXRGQ5zkQurR6AC82QrNL3eFPihqSQ@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/lima: simplify the return expression of lima_devfreq_target
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+Date:   Mon, 16 Nov 2020 08:24:33 +0800
+Message-ID: <CAKGbVbsubdPbZJfwXKEgRHn873sCHh98kd8pK+HVvKfpQXwXrA@mail.gmail.com>
+Subject: Re: [PATCH 15/40] drm/lima/lima_drv: Demote kernel-doc formatting abuse
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        lima@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        lima@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -63,47 +64,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied to drm-misc-next.
 
-On Sat, Sep 19, 2020 at 6:43 PM Qiang Yu <yuq825@gmail.com> wrote:
+On Fri, Nov 13, 2020 at 9:50 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> Looks good for me, patch is:
-> Reviewed-by: Qiang Yu <yuq825@gmail.com>
+> Fixes the following W=1 kernel build warning(s):
 >
-> Regards,
-> Qiang
+>  drivers/gpu/drm/lima/lima_drv.c:264: warning: cannot understand function prototype: 'const struct drm_driver lima_drm_driver = '
 >
-> On Sat, Sep 19, 2020 at 5:47 PM Liu Shixin <liushixin2@huawei.com> wrote:
-> >
-> > Simplify the return expression.
-> >
-> > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> > ---
-> >  drivers/gpu/drm/lima/lima_devfreq.c | 7 +------
-> >  1 file changed, 1 insertion(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
-> > index bbe02817721b..5914442936ed 100644
-> > --- a/drivers/gpu/drm/lima/lima_devfreq.c
-> > +++ b/drivers/gpu/drm/lima/lima_devfreq.c
-> > @@ -35,18 +35,13 @@ static int lima_devfreq_target(struct device *dev, unsigned long *freq,
-> >                                u32 flags)
-> >  {
-> >         struct dev_pm_opp *opp;
-> > -       int err;
-> >
-> >         opp = devfreq_recommended_opp(dev, freq, flags);
-> >         if (IS_ERR(opp))
-> >                 return PTR_ERR(opp);
-> >         dev_pm_opp_put(opp);
-> >
-> > -       err = dev_pm_opp_set_rate(dev, *freq);
-> > -       if (err)
-> > -               return err;
-> > -
-> > -       return 0;
-> > +       return dev_pm_opp_set_rate(dev, *freq);
-> >  }
-> >
-> >  static void lima_devfreq_reset(struct lima_devfreq *devfreq)
-> > --
-> > 2.25.1
-> >
+> Cc: Qiang Yu <yuq825@gmail.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: lima@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/lima/lima_drv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/lima/lima_drv.c b/drivers/gpu/drm/lima/lima_drv.c
+> index d497af91d8505..7b8d7178d09aa 100644
+> --- a/drivers/gpu/drm/lima/lima_drv.c
+> +++ b/drivers/gpu/drm/lima/lima_drv.c
+> @@ -255,7 +255,7 @@ static const struct drm_ioctl_desc lima_drm_driver_ioctls[] = {
+>
+>  DEFINE_DRM_GEM_FOPS(lima_drm_driver_fops);
+>
+> -/**
+> +/*
+>   * Changelog:
+>   *
+>   * - 1.1.0 - add heap buffer support
+> --
+> 2.25.1
+>
