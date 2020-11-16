@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA0C2B3F63
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5EA2B3F61
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728455AbgKPJHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:07:15 -0500
-Received: from lgeamrelo13.lge.com ([156.147.23.53]:56124 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728165AbgKPJHP (ORCPT
+        id S1728446AbgKPJGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:06:52 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:36075 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728434AbgKPJGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:07:15 -0500
-Received: from unknown (HELO lgemrelse7q.lge.com) (156.147.1.151)
-        by 156.147.23.53 with ESMTP; 16 Nov 2020 18:07:13 +0900
-X-Original-SENDERIP: 156.147.1.151
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.151 with ESMTP; 16 Nov 2020 18:07:13 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Mon, 16 Nov 2020 18:05:47 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Byungchul Park <max.byungchul.park@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        will@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        alexander.levin@microsoft.com,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>, duyuyang@gmail.com,
-        johannes.berg@intel.com, Tejun Heo <tj@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, willy@infradead.org,
-        david@fromorbit.com, Amir Goldstein <amir73il@gmail.com>,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team <kernel-team@lge.com>
-Subject: Re: [RFC] Are you good with Lockdep?
-Message-ID: <20201116090547.GC26078@X58A-UD3R>
-References: <20201111050559.GA24438@X58A-UD3R>
- <20201111105441.GA78848@gmail.com>
- <20201111093609.1bd2b637@gandalf.local.home>
- <87d00jo55p.fsf@nanos.tec.linutronix.de>
- <20201112081030.GB14554@X58A-UD3R>
- <20201112092612.00a19239@gandalf.local.home>
- <CANrsvRNr=JG=-oyYZxn+AXTMX9Ly4OJB0xY5F2Lmqo+1Q_S4fA@mail.gmail.com>
+        Mon, 16 Nov 2020 04:06:51 -0500
+Received: by mail-wr1-f65.google.com with SMTP id j7so17798860wrp.3;
+        Mon, 16 Nov 2020 01:06:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tfut9vbpdfv8HXF8bwI2zTYoeL/KwnRwgcqOdkpMjQM=;
+        b=nqxKsNrvd9qsY+Gx8fS43J0FeiNOVLE89HZGbgYXd0BjirldeuERZC/oaMybkt34TZ
+         fVGBLCaryXKOM8odjOLpJ5vhNV/5DwWBXklS7tfZ7tC3n0KctykKBDpCfkWPKfL/Y7kD
+         Jjr8CrvqxHrwy9LxAf8B+VSqLaLKaC0f4l1Qzm1hd5rPpvf1vSVL+8pb6zqmVzWRbiGM
+         w+rBmo0KhO8bHsdx0wNfCKX5fC/Woj9EIeKfzCJrPZSBSE5hroIBRA4VWk2sz/sOXQhr
+         4HGmusY0vfQ4wMY+snHuMntw+nc/cFO3QGEtZTbrYyEd0pdUvSuMgEi/hU7cXOgh+Q/V
+         j80A==
+X-Gm-Message-State: AOAM531hckKidwTTw1RvOGjPSfaVBbkr95lKlk16yaQWQECM6XnUO8Fl
+        nYNfxLiYMUePU3NMtcX2M50=
+X-Google-Smtp-Source: ABdhPJymJXtGdK1p6/QBa66dXs3Ikztq26pKrXwaX8dSdc06QcZrx7F9wwgxmGLGLUUkbDSWVt1dGQ==
+X-Received: by 2002:adf:f881:: with SMTP id u1mr19170576wrp.103.1605517609770;
+        Mon, 16 Nov 2020 01:06:49 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id c17sm22001179wro.19.2020.11.16.01.06.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 01:06:48 -0800 (PST)
+Date:   Mon, 16 Nov 2020 10:06:47 +0100
+From:   "krzk@kernel.org" <krzk@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon@samsung.com>
+Cc:     Krzysztof Opasiak <k.opasiak@samsung.com>,
+        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 1/3] nfc: s3fwrn5: Remove the max_payload
+Message-ID: <20201116090647.GA5937@kozik-lap>
+References: <CGME20201116011205epcms2p566dbc946d6c7a0198d09b3a872e85f33@epcms2p5>
+ <20201116011205epcms2p566dbc946d6c7a0198d09b3a872e85f33@epcms2p5>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CANrsvRNr=JG=-oyYZxn+AXTMX9Ly4OJB0xY5F2Lmqo+1Q_S4fA@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20201116011205epcms2p566dbc946d6c7a0198d09b3a872e85f33@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:58:44PM +0900, Byungchul Park wrote:
-> > > FYI, roughly Lockdep is doing:
-> > >
-> > >    1. Dependency check
-> > >    2. Lock usage correctness check (including RCU)
-> > >    3. IRQ related usage correctness check with IRQFLAGS
-> > >
-> > > 2 and 3 should be there forever which is subtle and have gotten matured.
-> > > But 1 is not. I've been talking about 1. But again, it's not about
-> > > replacing it right away but having both for a while. I'm gonna try my
-> > > best to make it better.
-> >
-> > And I believe lockdep does handle 1. Perhaps show some tangible use case
-> > that you want to cover that you do not believe that lockdep can handle. If
-> > lockdep cannot handle it, it will show us where lockdep is lacking. If it
-> > can handle it, it will educate you on other ways that lockdep can be
-> > helpful in your development ;-)
-
-1) OK. Lockdep might work with trylock well.
-2) Definitely Lockdep cannot do what Cross-release was doing.
-3) For readlock handling, let me be back later and give you examples. I
-   need check current Lockdep code first. But I have to all-stop what
-   I'm doing at the moment because of a very big personal issue, which
-   is a sad thing.
-
-Sorry for the late response.
-
-Thank you,
-Byungchul
-
+On Mon, Nov 16, 2020 at 10:12:05AM +0900, Bongsu Jeon wrote:
+> max_payload is unused.
 > 
-> Yes. That's the best thing I can do for all of us. I will.
-> 
-> I already did exactly the same thing while I was developing cross-release.
-> But I'm willing to do it again with the current Lockdep code.
-> 
-> But not today. It's over mid-night. Good night~
-> 
-> -- 
-> Thanks,
-> Byungchul
+> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+
+Please version your patches (this should be a v2) and describe changes
+between versions in changelog, either in cover letter or after ---
+separator.
+
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Best regards,
+Krzysztof
