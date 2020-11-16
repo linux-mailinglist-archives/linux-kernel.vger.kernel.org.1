@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD692B5536
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00062B552D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730922AbgKPXiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:38:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730834AbgKPXiT (ORCPT
+        id S1730755AbgKPXiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:38:12 -0500
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:46893 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729977AbgKPXiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:38:19 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F11C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:38:19 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id i18so17804624ioa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:38:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ibvkktNZHObaQcpICoKzhru5nZ1s0dOfq/+z59Thq90=;
-        b=PRYejMotlMrjs0eJGE1V3DsLE1A7XOXtVpntptTt4gC6Kn9g7/wRsrJ8L5hpcCq3iG
-         86ZepbczjQ+i8RxzWDEUfXeFAd/eAQvp354Q1cQrFK+dGRfb9yFGxR/URk0tOe3mKz7g
-         XIyDMdgVbftJ7Gko/vpHNN7YWzuTBykfyNLXWXnd3T6oHa7NYldvNzTqWwldKy8dWs8t
-         FKV4eqV+dZFazLpDrcZm6YbrnKg412FyH5SET9HLjBV6t93lTWEsll8cWfQKxhvxFNoM
-         8E7Swp63bm/M3TfAcTCs84I+VVcyGPhIZ6MWbG00DPGuR70XofOy+YCTSskEUO7Bz26U
-         lF9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ibvkktNZHObaQcpICoKzhru5nZ1s0dOfq/+z59Thq90=;
-        b=f/QXql+hKq8mBoU8yFv5ZXeqkP2seSosD1s7xG+RIQ1Yfjq4PPSCkoNHkGhnBl+ssc
-         KTtFAdiyHF1PfJ5NfaTXpwGbxlFJNNwEC3GISY5yHMTUVAKL5mJ3eU63xWt8TQQOSgmL
-         z65rxn1P8PCQhn+j+sWL836WVaM0mPsAr7lJHTKEgVaanlcU1qpG0czoOAjL0f2tQ+gN
-         X+6jnS1DdB5ixzL3eIQ1GoDusA7CAMxVqrg4ADzUycluMW7Wa3QAH+QJ8zzUtjK1aOLc
-         EIvNLdgBPtV9+HpJ+wEjkHhMJEpjSvqHNbTjFb1Z7ATt09G561uMDCyx/KrzXFIxax0e
-         HdQQ==
-X-Gm-Message-State: AOAM530a6RozqhnIOLYgTKcEas7wrPkTDjeWMj/nk46qNM7HVII1Guhm
-        D6X/AMWAA6aZ7CqbD7vbxSE7dQ==
-X-Google-Smtp-Source: ABdhPJw4qdh8NCJNcGBrafOS43FUhLk+aYch0J88kVZb3uPIdnZsZRQebl/8xqPrw3Yuf5obk1nYhg==
-X-Received: by 2002:a05:6638:3f1:: with SMTP id s17mr1542024jaq.102.1605569898517;
-        Mon, 16 Nov 2020 15:38:18 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id f18sm10180099ill.22.2020.11.16.15.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 15:38:18 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 03/11] net: ipa: support more versions for HOLB timer
-Date:   Mon, 16 Nov 2020 17:37:57 -0600
-Message-Id: <20201116233805.13775-4-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201116233805.13775-1-elder@linaro.org>
-References: <20201116233805.13775-1-elder@linaro.org>
+        Mon, 16 Nov 2020 18:38:12 -0500
+X-Greylist: delayed 5940 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Nov 2020 18:38:10 EST
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id BD383806A8;
+        Tue, 17 Nov 2020 12:38:08 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1605569888;
+        bh=PCTZxln1VKZDYtPBvimsiWg1lsnUSwv12kxkUAuwmrI=;
+        h=From:To:Cc:Subject:Date;
+        b=sJ+vgHjiIMKVl78mx6OaExKYrZRu0+9ffhe4d7d5hqJc98A0vHtZB1Pw5vqME7+9a
+         f8X/bgg6QditR1aHGK+rFJeKxEmSkIkSTtnNOTnQaVd4jrB7UX5n3ESbFD2KYGN/i0
+         d3CAp7KiD7YSXdWCWWmF8dw9MAQbdkDXQtJtPUOx5tfRutr6oPYLMtVW1qlxdUw/Kc
+         ryj2J05oDRiWJU+Nwnl4czHP6NJY646xJzrih/LsgJsnAOnFoZ66Zn2cQ9fvadj5J8
+         WG8AkzGdl8OAS162cSj8vVNxyCugJsS/8UQ12wvhrmVMXen0gfOll0OqBmlHPgudMj
+         ecESL+D6tvj3A==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5fb30d5b0000>; Tue, 17 Nov 2020 12:38:07 +1300
+Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
+        by smtp (Postfix) with ESMTP id D572E13ED56;
+        Tue, 17 Nov 2020 12:38:03 +1300 (NZDT)
+Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
+        id 14032340FC9; Tue, 17 Nov 2020 12:38:04 +1300 (NZDT)
+From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+To:     rjui@broadcom.com, sbranden@broadcom.com
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Subject: [PATCH] pinctrl: bcm: pinctrl-nsp-gpio: Fix setting GPIO as output
+Date:   Tue, 17 Nov 2020 12:37:57 +1300
+Message-Id: <20201116233757.15409-1-mark.tomlinson@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPA version 3.5.1 represents the timer used in avoiding head-of-line
-blocking with a simple tick count.  IPA v4.2 changes that, instead
-splitting the timer field into two parts (base and scale) to
-represent the ticks in the timer period.
+When setting a GPIO pin to an output, it is important to set the value
+correctly before enabling the output so that a glitch is not seen on the
+pin. This glitch may be very short, but can be important if this is a
+reset signal.
 
-IPA v4.0 and IPA v4.1 use the same method as IPA v3.5.1.  Change the
-test in ipa_reg_init_hol_block_timer_val() so the result is correct
-for those versions as well.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
+Fixes: 8bfcbbbcabe0 ("pinctrl: nsp: add gpio-a driver support for Broadco=
+m NSP SoC")
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 ---
- drivers/net/ipa/ipa_endpoint.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pinctrl/bcm/pinctrl-nsp-gpio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index 548121b1531b7..3c9bbe2bf81c9 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -665,8 +665,8 @@ static u32 ipa_reg_init_hol_block_timer_val(struct ipa *ipa, u32 microseconds)
- 	/* ...but we still need to fit into a 32-bit register */
- 	WARN_ON(ticks > U32_MAX);
- 
--	/* IPA v3.5.1 just records the tick count */
--	if (ipa->version == IPA_VERSION_3_5_1)
-+	/* IPA v3.5.1 through v4.1 just record the tick count */
-+	if (ipa->version < IPA_VERSION_4_2)
- 		return (u32)ticks;
- 
- 	/* For IPA v4.2, the tick count is represented by base and
--- 
-2.20.1
+diff --git a/drivers/pinctrl/bcm/pinctrl-nsp-gpio.c b/drivers/pinctrl/bcm=
+/pinctrl-nsp-gpio.c
+index a00a42a61a90..942f04ca4868 100644
+--- a/drivers/pinctrl/bcm/pinctrl-nsp-gpio.c
++++ b/drivers/pinctrl/bcm/pinctrl-nsp-gpio.c
+@@ -289,8 +289,8 @@ static int nsp_gpio_direction_output(struct gpio_chip=
+ *gc, unsigned gpio,
+ 	unsigned long flags;
+=20
+ 	raw_spin_lock_irqsave(&chip->lock, flags);
+-	nsp_set_bit(chip, REG, NSP_GPIO_OUT_EN, gpio, true);
+ 	nsp_set_bit(chip, REG, NSP_GPIO_DATA_OUT, gpio, !!(val));
++	nsp_set_bit(chip, REG, NSP_GPIO_OUT_EN, gpio, true);
+ 	raw_spin_unlock_irqrestore(&chip->lock, flags);
+=20
+ 	dev_dbg(chip->dev, "gpio:%u set output, value:%d\n", gpio, val);
+--=20
+2.29.2
 
