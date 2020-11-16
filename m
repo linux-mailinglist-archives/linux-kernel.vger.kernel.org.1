@@ -2,71 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6342B4622
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74AC2B4643
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730330AbgKPOpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:45:32 -0500
-Received: from mga02.intel.com ([134.134.136.20]:26603 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728041AbgKPOpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:45:31 -0500
-IronPort-SDR: SV0RgNc9V2rbNdYojCQwX8E2WXzCOvvTGTZ4sbSHvSqun1dmrUzXVBzk0wNLVXRZllNAHxEDTN
- XDddjRaxYNsg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157780272"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="157780272"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:45:30 -0800
-IronPort-SDR: 5OC54gy0gRe8XOTq+Vy7cP6Z9Lgy9X+1KcDyJ9xyyzZwQLChspDHQVniS6NuTI0gvKAFdp7B4u
- 4B86Di3pjGMA==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="531869408"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:45:28 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1kefm3-0075VI-35; Mon, 16 Nov 2020 16:46:31 +0200
-Date:   Mon, 16 Nov 2020 16:46:31 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Claudius Heine <ch@denx.de>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Henning Schild <henning.schild@siemens.com>,
-        Johannes Hahn <johannes-hahn@siemens.com>
-Subject: Re: [PATCH v2 2/3] rtc: rx6110: add ACPI bindings to I2C
-Message-ID: <20201116144631.GB1689012@smile.fi.intel.com>
-References: <20201112130734.331094-1-ch@denx.de>
- <20201112130734.331094-3-ch@denx.de>
+        id S1730452AbgKPOrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:47:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730424AbgKPOrS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:47:18 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C483C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 06:47:16 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id o21so24794276ejb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 06:47:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=37us/O2JuQQ2yWSt9utM2XNcG7HUXMnxEW//yI4vlLg=;
+        b=a9hRi/xbObOHWi15XDluUp/RuCjyo9TWYSNG5gEAfGZ6VbBTqZmZ9YNCZ03u0kWv4c
+         QeRDQYNgwQY+92LUH3CObQJQlkSR1J+uhAhM/I3RsJv1FSHfWkb4vh8QFdwyb62jrShP
+         4+wEWJnVFduAueJhJ07s0/iWyKS1lKegSBsRMPDhjx5KafioA+0hRv1oO0EZ+Q8sTbSD
+         jcVGlGgPvcg88V59EHvYILaLOu63eMQcA/FHbvfDtY4wBYK+/9YdMN/tDK4YUdiowysL
+         5/iemqpyYNXMml57MFxKRYN+VwY9lGReknnFNoTLkswUyRJQfzQdqW62MzN282dVnLBB
+         ZOvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=37us/O2JuQQ2yWSt9utM2XNcG7HUXMnxEW//yI4vlLg=;
+        b=qujSVH+SNz+baIm8P9NoOvuGOZTWNs4QOjX4M02N8EmVWb8Y/0j0HJym36CVvBblG/
+         MTfFpfp9epplN9hTN5OsmIUQ/zbyq77XwE8NRi3qL1SQqqE7/L9D0PpIlR/F0VBUHkyC
+         AFEBPMjAMh9JZcmzXjEmKljV3kh739+q9ZRRzzdsJeC/dViJNgnsJ/FgKnKZU+ZpED8Z
+         joxQvAVkzIPxJ6ywHvPeNY6l4axTap8ARDXviPlgNGf818ONENLdT1dg2e03Eo81uuTC
+         i+wPBs8Kr1QVU702msvZ4GLwJHonOp79QApW0qde+tjYiwxQXvapSnQg3IfSirwXt0U8
+         FCrg==
+X-Gm-Message-State: AOAM53346PIOVFdtxOfC3KN1aOOHiBcXtZop4qvC6vLyl5P/A8tux4r4
+        e7hQCtTUtT6u4ni8I8aTzyDDfJNeuQB0o0MykkU=
+X-Google-Smtp-Source: ABdhPJwpRbMQTvr0CF6s5x8FvX/SZKNXSWOieMKYK1Wr0yMxv/pThUC1Rupo6v3JraBPzPBenM8SMBQEzfFfxpG+++Q=
+X-Received: by 2002:a17:906:2313:: with SMTP id l19mr13373862eja.443.1605538035300;
+ Mon, 16 Nov 2020 06:47:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112130734.331094-3-ch@denx.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201113122328.22942-1-jcmvbkbc@gmail.com> <87zh3ll6hw.fsf@nanos.tec.linutronix.de>
+ <CAMo8BfKEr-89awEnV072uWR=4fniDRJ0drWmZrtnyvj-mANk0A@mail.gmail.com>
+ <87sg9dl3xk.fsf@nanos.tec.linutronix.de> <CAMo8Bf+2kGmg_SvJz8R=qXgPWbYWmf-PSeG71xKe5AB2LeyZ4Q@mail.gmail.com>
+ <87mtzklwc7.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87mtzklwc7.fsf@nanos.tec.linutronix.de>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Mon, 16 Nov 2020 06:47:03 -0800
+Message-ID: <CAMo8BfLFZ_X8y1XLZnBb-VkOPMhXT4Daau9ydKAU9L_64Zap4w@mail.gmail.com>
+Subject: Re: [PATCH] highmem: fix highmem for xtensa
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 02:07:33PM +0100, Claudius Heine wrote:
-> From: Johannes Hahn <johannes-hahn@siemens.com>
-> 
-> This allows the RX6110 driver to be automatically assigned to the right
-> device on the I2C bus.
+Hi Thomas,
 
-Before adding new ACPI ID, can you provide an evidence (either from vendor of
-the component, or a real snapshot of DSDT from device on market) that this is
-real ID?
+On Fri, Nov 13, 2020 at 2:34 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> I agree that the top down mechanics is not really intuitive, but that
+> does not justify the ifdeffery in the generic code.
 
-Before that happens, NAK.
+But then maybe xtensa did the right thing where everyone else just
+copied the not really intuitive implementation? If nobody else cares
+then maybe generic fix_to_virt/virt_to_fix can be changed for positive
+indexing?
 
-P.S. Seems to me that this is kinda cargo cult patch because proposed ID is
-against ACPI and PNP registry and ACPI specification.
+> xtensa can just use the generic fix_to_virt/virt_to_fix mechanics. All
+> it needs is to adjust the mapping defines and to adjust the color offset
+> to
+>
+>         NR_COLORS - color
+>
+> which is not an unreasonable ask. As a side effect all highmem inflicted
+> systems which do not have the cache aliasing problem can just use the
+> generic code as is. See untested patch below.
+
+Thanks. I'll test this patch and post the result.
+But still this change doesn't look like a step in the right direction to me:
+I can't find the reason why fixmap must be indexed backwards.
+
+> It builds for some configs, but the smp_lx200_defconfig (which has the
+> aliasing) it fails to build even without this patch (highmem.o at least
+> builds).
+>
+> Toolchain is the one from https://mirrors.edge.kernel.org/pub/tools/crosstool/
+
+xtensa toolchain must match the selected CPU core. For smp_lx200_defconfig
+the toolchain is available here:
+https://github.com/foss-xtensa/toolchain/releases/download/2020.07/x86_64-2020.07-xtensa-test_mmuhifi_c3-elf.tar.gz
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks.
+-- Max
