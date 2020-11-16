@@ -2,79 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4D32B3ABF
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E742B3AC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgKPAYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 19:24:48 -0500
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:42427 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727618AbgKPAYr (ORCPT
+        id S1728238AbgKPAY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 19:24:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727618AbgKPAY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 19:24:47 -0500
-Received: by mail-pf1-f169.google.com with SMTP id 131so1438437pfb.9;
-        Sun, 15 Nov 2020 16:24:47 -0800 (PST)
+        Sun, 15 Nov 2020 19:24:58 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D546BC0613CF;
+        Sun, 15 Nov 2020 16:24:57 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id k2so16944844wrx.2;
+        Sun, 15 Nov 2020 16:24:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cNyJaglsofCPPDAMR4S0Dh1T3D7plfuh++VKVtz7Hpo=;
+        b=ev8LtwyFSaNKRrRx7pPu2AaTYr+GoEQDc5ypjIypn8d3URLYWYepCKUD4jQ2HAfQyt
+         zUJDOZDSr3wPgmUnLQYtMOcAdNkHBFsDtdwmzl2dY5nblyMysxXdjqJRTA3kDiqmpr3N
+         R4UcZbeE+SAyVi55CQ8A1HHazqxrHohh1+lEiAOzshqR61OaDMJI3a1kpK4w4pB9k0hF
+         GM0J4g5PZfBJWAvBI/p99fhjXNY3NtC8xZqv1zdK+UhFZQD/OzBgUkRUt7qN4SU1KvJn
+         1Y79YPdGORcXaOhAbVNSUnAi6MU1pUmaJ3pcYrb7h7jEg9IZ9HphjDCRN1YaoSKgHOOJ
+         kTIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nIvBqkNHZoGMDnxUtw6GpyeKSPZCfiNrlQpFKraauoo=;
-        b=m3QxLNiT78BohDtOVy43jqZ0afEOxA0hHZQv5ESKlvuj6JajFjFzRFpqqOqwDqyWEN
-         nlICnfiua7Dl35MKK11nus/SNa9pvvwYcDcmP2JP8NdVGTCiWYji1S6x7ATsyYSmuhZh
-         rkAOpfNt6GdYqT/4XKehyu6V/sRdWSBRxDy0pCrRX3oDvQESxSLqZ04hTSAQlUEIKK9q
-         eHhP9hXhomWKjkBdN2LmudrjTzqJyorPs/R5N1twiObjln8N+2y3LRcCaEABytCyQQ1W
-         f+qvDHHgS7iggRJH01o/Gw8PYXZ4A9PNeLq408sRqXq0mOGr7MyJFYGsWiBNBfH9Y/3S
-         fyIA==
-X-Gm-Message-State: AOAM533g5Wg9pRXDxEnFTuBQPmaiafvu5IrgjMRuDVsa95j1crlUkrIC
-        f0lKHCvXPdjYV4znABaDY1Y=
-X-Google-Smtp-Source: ABdhPJw0BRnfdNJJ/fR4kJzx7vmF80SE72Bj8puzn42r6IyPTDotqhWej2HOT7kHxXiVHupKVLr8jA==
-X-Received: by 2002:a17:90b:3844:: with SMTP id nl4mr12727502pjb.93.1605486287135;
-        Sun, 15 Nov 2020 16:24:47 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id c2sm15959275pfb.196.2020.11.15.16.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Nov 2020 16:24:46 -0800 (PST)
-Date:   Sun, 15 Nov 2020 16:24:45 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the fpga tree
-Message-ID: <X7HGzW8kvimYCUO9@epycbox.lan>
-References: <20201116095240.52d70d6e@canb.auug.org.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cNyJaglsofCPPDAMR4S0Dh1T3D7plfuh++VKVtz7Hpo=;
+        b=jMNELDTXPToGDb678rCDQrrdFaEj82fTTVzifrqU0rM28gf2vZ03ri/sQcSE4mj5Zh
+         R0pILXYXFLWJH3InTBBLq0rb4giMh2er9BerHiEe/sIcPsr6+9Q9OQefPBxop3JjDJRU
+         AL/ZBWIybc0gKNVYumtD6kvwsFR/x9mK0T4Bqr/y/xIvwyCcwdlMk7e/yvsVh3P9L2Ir
+         FvQl6uDSbk5DDqUDyReFAKh7QmmepHZFfk9gbvutWAVYElCf5foL3OzveZE+l9FAKFRG
+         YntVaqCBs+/yj6wCob9gVeWixWypmhMQUY4krrYc126ZMn9hmKs43u7+srKLEFZQzIU8
+         XIfg==
+X-Gm-Message-State: AOAM532XDfMfk1tG/YVKnuC4FYfCThxJZ0O3AM9fnoF6InqsnZxvzG4o
+        JEAGrJXOpzX2x7il/3o3Ajc0p7wa253ZnuKcW5I=
+X-Google-Smtp-Source: ABdhPJzuP/OHR/ocOpMW01DpmGfyfswGucCY7SFqSWa8kgTGj1RtRDpRNA8MsNFvnXArM0aS8ovHypBm4nz5jxkK+L4=
+X-Received: by 2002:adf:fd0d:: with SMTP id e13mr15592102wrr.85.1605486296694;
+ Sun, 15 Nov 2020 16:24:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116095240.52d70d6e@canb.auug.org.au>
+References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-24-lee.jones@linaro.org>
+In-Reply-To: <20201113134938.4004947-24-lee.jones@linaro.org>
+From:   Qiang Yu <yuq825@gmail.com>
+Date:   Mon, 16 Nov 2020 08:24:45 +0800
+Message-ID: <CAKGbVbuy2eeQF_AuuoAVDtjPOD1pNsqdegva_hb9U1N2BqNoUw@mail.gmail.com>
+Subject: Re: [PATCH 23/40] drm/lima/lima_sched: Remove unused and unnecessary
+ variable 'ret'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lima@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 09:52:40AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Commits
-> 
->   aaf8fe39c952 ("Revert "fpga: dfl: fix the definitions of type & feature_id for dfl devices"")
->   9922e71f43ac ("Revert "fpga: dfl: move dfl_device_id to mod_devicetable.h"")
->   3ae706b58b0b ("Revert "fpga: dfl: add dfl bus support to MODULE_DEVICE_TABLE()"")
->   dd57ca7ddec5 ("Revert "fpga: dfl: move dfl bus related APIs to include/linux/dfl.h"")
-> 
-> are missing a Signed-off-by from their author and committer.
-> 
-> Reverts are commits, too.  It is also very useful for the commit message
-> of a revert to contain some reason(s) for the revert as this may help
-> future developers.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+Applied to drm-misc-next.
 
-Sorry, thanks for catching that, for posterity the reason was
-that Greg had some further comments and didn't take the pull-request
-as-is, so I wanted to have the next-tree reflect that.
-
-I'll be more careful next time,
-
-- Moritz
+On Fri, Nov 13, 2020 at 9:50 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/lima/lima_sched.c: In function =E2=80=98lima_sched_run_j=
+ob=E2=80=99:
+>  drivers/gpu/drm/lima/lima_sched.c:227:20: warning: variable =E2=80=98ret=
+=E2=80=99 set but not used [-Wunused-but-set-variable]
+>
+> Cc: Qiang Yu <yuq825@gmail.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: lima@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/lima/lima_sched.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lim=
+a_sched.c
+> index a070a85f8f368..63b4c5643f9cd 100644
+> --- a/drivers/gpu/drm/lima/lima_sched.c
+> +++ b/drivers/gpu/drm/lima/lima_sched.c
+> @@ -224,7 +224,6 @@ static struct dma_fence *lima_sched_run_job(struct dr=
+m_sched_job *job)
+>         struct lima_sched_pipe *pipe =3D to_lima_pipe(job->sched);
+>         struct lima_device *ldev =3D pipe->ldev;
+>         struct lima_fence *fence;
+> -       struct dma_fence *ret;
+>         int i, err;
+>
+>         /* after GPU reset */
+> @@ -246,7 +245,7 @@ static struct dma_fence *lima_sched_run_job(struct dr=
+m_sched_job *job)
+>         /* for caller usage of the fence, otherwise irq handler
+>          * may consume the fence before caller use it
+>          */
+> -       ret =3D dma_fence_get(task->fence);
+> +       dma_fence_get(task->fence);
+>
+>         pipe->current_task =3D task;
+>
+> --
+> 2.25.1
+>
