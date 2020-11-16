@@ -2,61 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BE82B44F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FB82B4507
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729357AbgKPNrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 08:47:35 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8093 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbgKPNre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 08:47:34 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CZVk81SnkzLncW;
-        Mon, 16 Nov 2020 21:47:12 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 16 Nov 2020
- 21:47:26 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <Jisheng.Zhang@synaptics.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] PCI: dwc: fix error return code in dw_pcie_host_init()
-Date:   Mon, 16 Nov 2020 21:50:23 +0800
-Message-ID: <20201116135023.57321-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729432AbgKPNus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 08:50:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37000 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728609AbgKPNus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 08:50:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7442FAC23;
+        Mon, 16 Nov 2020 13:50:46 +0000 (UTC)
+Date:   Mon, 16 Nov 2020 14:50:42 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 01/21] mm/memory_hotplug: Move bootmem info
+ registration API to bootmem_info.c
+Message-ID: <20201116135042.GB32129@linux>
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <20201113105952.11638-2-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113105952.11638-2-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+On Fri, Nov 13, 2020 at 06:59:32PM +0800, Muchun Song wrote:
+> Move bootmem info registration common API to individual bootmem_info.c
+> for later patch use. This is just code movement without any functional
+> change.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Fixes: 07940c369a6b ("PCI: dwc: Fix MSI page leakage in suspend/resume")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/pci/controller/dwc/pcie-designware-host.c | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index 44c2a6572199..7b3c91c6ae02 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -395,6 +395,7 @@ int dw_pcie_host_init(struct pcie_port *pp)
- 			if (dma_mapping_error(pci->dev, pp->msi_data)) {
- 				dev_err(pci->dev, "Failed to map MSI data\n");
- 				pp->msi_data = 0;
-+				ret = -ENOMEM;
- 				goto err_free_msi;
- 			}
- 		} else {
 -- 
-2.17.1
-
+Oscar Salvador
+SUSE L3
