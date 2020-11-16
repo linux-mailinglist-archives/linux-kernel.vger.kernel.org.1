@@ -2,93 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1CF2B4910
+	by mail.lfdr.de (Postfix) with ESMTP id 285912B490E
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730863AbgKPPW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:22:28 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2307 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729645AbgKPPW2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:22:28 -0500
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CZXqW6bQgz13TJm;
-        Mon, 16 Nov 2020 23:21:59 +0800 (CST)
-Received: from [10.140.157.68] (10.140.157.68) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 16 Nov 2020 23:22:23 +0800
-Subject: Re: [PATCH v3 1/2] dt-bindings: Document the hi3559a clock bindings
-To:     Rob Herring <robh@kernel.org>
-CC:     <sboyd@kernel.org>, <mturquette@baylibre.com>,
-        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
-References: <20201114002237.35962-1-gengdongjiu@huawei.com>
- <20201114002237.35962-2-gengdongjiu@huawei.com>
- <20201116150223.GA1645329@bogus>
-From:   Dongjiu Geng <gengdongjiu@huawei.com>
-Message-ID: <8071c22d-1a9f-6353-7dd0-026de6e465de@huawei.com>
-Date:   Mon, 16 Nov 2020 23:22:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        id S1730055AbgKPPXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:23:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54886 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729645AbgKPPXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 10:23:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605540191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=hXDPxLHhf2Wu81S1L0YOGGDmDdav6QELXVfWLp0Wriw=;
+        b=OVr7yeWC1WJ/1YNfjLfTDpzLFPM5irXSm+vTpdhhYWW0gyPttx4RWUmJDusvFHgGnUjA1f
+        6B9Q3UEWCc9Hfdns2tdN/wn130OzGduOD18wLIaCKu3fqq2TgVhL4IToyZS54mNBwyfRQD
+        XslVTZ7zthwQfSWOk5zXiuWG4F7uhpA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 30619AF37;
+        Mon, 16 Nov 2020 15:23:11 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>
+Subject: [PATCH 0/4] x86/xen: do some paravirt cleanup
+Date:   Mon, 16 Nov 2020 16:22:57 +0100
+Message-Id: <20201116152301.24558-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201116150223.GA1645329@bogus>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.140.157.68]
-X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Eliminate the usergs_sysret64 paravirt call completely and switch
+the swapgs one to use ALTERNATIVE instead. This requires to fix the
+IST based exception entries for Xen PV to use the same mechanism as
+NMI and debug exception already do.
 
+Juergen Gross (4):
+  x86/xen: use specific Xen pv interrupt entry for MCE
+  x86/xen: use specific Xen pv interrupt entry for DF
+  x86/pv: switch SWAPGS to ALTERNATIVE
+  x86/xen: drop USERGS_SYSRET64 paravirt call
 
-On 2020/11/16 23:02, Rob Herring wrote:
-> On Sat, 14 Nov 2020 00:22:36 +0000, Dongjiu Geng wrote:
->> Add DT bindings documentation for hi3559a SoC clock.
->>
->> Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
->> ---
->>  .../clock/hisilicon,hi3559av100-clock.yaml    |  65 +++++++
->>  include/dt-bindings/clock/hi3559av100-clock.h | 165 ++++++++++++++++++
->>  2 files changed, 230 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
->>  create mode 100644 include/dt-bindings/clock/hi3559av100-clock.h
->>
-> 
-> 
-> My bot found errors running 'make dt_binding_check' on your patch
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.example.dts:20.23-27.11: Warning (unit_address_vs_reg): /example-0/clock0: node has a reg or ranges property, but no unit name
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.example.dt.yaml: clock0: compatible: ['hisilicon,hi3559av100-clock', 'syscon'] is too long
-> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.example.dt.yaml: clock0: compatible: Additional items are not allowed ('syscon' was unexpected)
-> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.example.dt.yaml: clock0: #reset-cells:0:0: 1 was expected
-> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
-> 
-> 
-> See https://patchwork.ozlabs.org/patch/1399891
-> 
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-ok， thanks a lot for the reminder.
+ arch/x86/entry/entry_64.S             | 32 ++++++++++++---------------
+ arch/x86/include/asm/idtentry.h       |  6 +++++
+ arch/x86/include/asm/irqflags.h       | 26 +++++++---------------
+ arch/x86/include/asm/paravirt.h       | 25 ---------------------
+ arch/x86/include/asm/paravirt_types.h | 10 ---------
+ arch/x86/kernel/asm-offsets_64.c      |  3 ---
+ arch/x86/kernel/paravirt.c            |  6 +----
+ arch/x86/kernel/paravirt_patch.c      |  7 ------
+ arch/x86/xen/enlighten_pv.c           | 28 ++++++++++++++++++-----
+ arch/x86/xen/xen-asm.S                | 24 ++------------------
+ arch/x86/xen/xen-ops.h                |  2 --
+ 11 files changed, 53 insertions(+), 116 deletions(-)
 
-> 
-> .
-> 
+-- 
+2.26.2
+
