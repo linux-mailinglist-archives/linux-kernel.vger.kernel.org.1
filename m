@@ -2,100 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4562B5433
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F462B5438
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgKPWUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:20:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        id S1729080AbgKPWUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:20:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726016AbgKPWUB (ORCPT
+        with ESMTP id S1726016AbgKPWUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:20:01 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC79C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:20:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=rmbEOUuFUDWT2r+1h2dWrIdCOj079NG2OKQi9QhFvjo=; b=uMUcuSmEOxdvWusgeKZNV0Z0f9
-        SgXsrlfEMxCC2e6ojKy55SnEgSh+KeEe2wKJYWK/txvvRyur0+leAhE61oRPiAv8tMtf9RZNr4kCK
-        DSSEZACpbdMCNOUb/oyxPPec/Ftlc/NDcJPkqhcjxeswUXTplEo7HbObtI9fJse3Gt8LnSQ/qj4uq
-        dVxBmL6vfXDhYEAMSmR9Gk5mX9QkiKZorkd7vwX1TrKa9iqN3yGFBHD720f46rNKcpxjJSGH34B4n
-        pH3t+rgYArYo8gHcuVGozyscG9Wdik22z1OyfIbOxvJA6vMYA2Fm5O2MgmryMR8Y9msnjcpl/XFse
-        VIXva19Q==;
-Received: from [2601:1c0:6280:3f0::f32]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kemqs-0002AK-0r; Mon, 16 Nov 2020 22:19:58 +0000
-Subject: Re: [PATCH] compiler.h: Fix barrier_data() on clang
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20201014212631.207844-1-nivedita@alum.mit.edu>
- <87sg999ot0.fsf@igel.home>
- <0dbaca2d-9ad0-8c1a-a280-97be01cac2bd@infradead.org>
- <87k0ul9msr.fsf@igel.home>
- <3fff1eb9-83c0-1c29-6f57-fa50f1ec6ee7@infradead.org>
-Message-ID: <3c0a8d26-a95f-a7ca-60ee-203b67d07875@infradead.org>
-Date:   Mon, 16 Nov 2020 14:19:55 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 16 Nov 2020 17:20:48 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1097C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:20:46 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id m143so20511568oig.7
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 14:20:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DUgq39nfUV6cfcgfxfVRyyih0cIl6dnKtUhLRhxAR+8=;
+        b=U/k3Myy9d4B9JeG1yp4ijBWOlH6ytTjS1YEOx4zdkJtETmgqKqNIPx6ZqFcFFJ9jRd
+         c2L2mWUlTCFFepINyZ3ucBt3IZfTzyglFc3WgRNKApnVhzFLZKtRfctObxioosHL8q2u
+         ImWhWOXgEwyzpS4tUSftvGsokGC+f8veDL7AER9uzzvJ5g8Q79eLC3PaSw9Lwf4jofmM
+         TehjzoFP4TkqZE/fhHjOt+jXUTRHr61oSn5PZjvBsqo4DkHp/uDr8nHBk007+jCz72MO
+         nArnZRh6/SG8S2cyBcrHH4pkmB0wW17tQB2Wmer/vmbL6tV0VXBb/mQJEqcM0txm1ipb
+         FoWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DUgq39nfUV6cfcgfxfVRyyih0cIl6dnKtUhLRhxAR+8=;
+        b=eWbmqU6Jtib9PokazwSg0Pd+jFfsKLUpYQSLpTZ5Z0PDzzPwGsm6liqBmY2tKFSnY0
+         YE/L/VWvAywiq6pnx3KBeoM3OhLNOQvQF4IbCk1Rs0mG1IbjniepfsinSdirP/PC9jTI
+         v0OoGhCDMBGHdJyd3/V8dVDlns11jmv/pV85n564+uKv8yjJh4kA0wPkgxD43qxwF9aw
+         zUXYpVyuXh+04QVa0LjaDHkjCZihhipluAczHERB2+t+5UmXShAoZoM/3Qi1YIM/4EWh
+         ZFpMOLW8zaDgshI7DFzXggLafJzFCWtMynI6I+u5wZfBsmg9hgjw71mQYzqg8WUx+Xe0
+         C5/w==
+X-Gm-Message-State: AOAM5319XNamSp9FGuzLkxyVogLSDZHq5k4iULUlCrR+SJHJbmnMimdT
+        OiiE/hKwMjF/Ms1ELVEESLVQaaPfW63KB9pZoNKSTg==
+X-Google-Smtp-Source: ABdhPJyUjM+zLt2B3OGBnxsT7ATpDYYTApVyf7TUQUwSWiRBMbbX4VyNvQFc3N2VqTVdbNJhynBKyBHhukmOezD6aQ0=
+X-Received: by 2002:aca:4fc7:: with SMTP id d190mr579597oib.13.1605565245760;
+ Mon, 16 Nov 2020 14:20:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <3fff1eb9-83c0-1c29-6f57-fa50f1ec6ee7@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201116181126.2008838-1-pbonzini@redhat.com>
+In-Reply-To: <20201116181126.2008838-1-pbonzini@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Mon, 16 Nov 2020 14:20:34 -0800
+Message-ID: <CALMp9eTT64a7A+A+KLz04q9T0_GQ7EaytUZ6f+fkRRdfaQTnzQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SVM: check CR4 changes against vcpu->arch
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm list <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20 11:28 AM, Randy Dunlap wrote:
-> On 11/16/20 10:30 AM, Andreas Schwab wrote:
->> On Nov 16 2020, Randy Dunlap wrote:
->>
->>> What kernel version are you building?
->>
->> 5.10-rc4
->>
->> Andreas.
-> 
-> OK, thanks.
-> 
-> My build machine is slow, but I have a patch that I am testing:
-> 
-> ---
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> riscv's <vdso/processor.h> uses barrier() so it should
-> #include <asm/barrier.h> to prevent build errors.
-> 
-> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-> ---
->  arch/riscv/include/asm/vdso/processor.h |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> --- lnx-510-rc4.orig/arch/riscv/include/asm/vdso/processor.h
-> +++ lnx-510-rc4/arch/riscv/include/asm/vdso/processor.h
-> @@ -4,6 +4,8 @@
-> 
->  #ifndef __ASSEMBLY__
-> 
-> +#include <asm/barrier.h>
-> +
->  static inline void cpu_relax(void)
->  {
->  #ifdef __riscv_muldiv
-
-
-This fixes the emulex/benet/ driver build.
-I'm still building allmodconfig to see if there are any
-other issues.
-
--- 
-~Randy
-
+On Mon, Nov 16, 2020 at 10:11 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> Similarly to what vmx/vmx.c does, use vcpu->arch.cr4 to check if CR4
+> bits PGE, PKE and OSXSAVE have changed.  When switching between VMCB01
+> and VMCB02, CPUID has to be adjusted every time if CR4.PKE or CR4.OSXSAVE
+> change; without this patch, instead, CR4 would be checked against the
+> previous value for L2 on vmentry, and against the previous value for
+> L1 on vmexit, and CPUID would not be updated.
+>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
