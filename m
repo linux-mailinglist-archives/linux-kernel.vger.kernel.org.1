@@ -2,266 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DD42B3C5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 06:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066CA2B3C5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 06:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgKPFMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 00:12:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52970 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725994AbgKPFMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 00:12:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5A101ABDE;
-        Mon, 16 Nov 2020 05:12:39 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Date:   Mon, 16 Nov 2020 16:12:32 +1100
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] NFS: only invalidate dentrys that are clearly invalid.
-In-Reply-To: <b28216153179dd20c22aa164259d3f901099896c.camel@hammerspace.com>
-References: <87361aovm3.fsf@notabene.neil.brown.name>
- <d2fabd4b78dda3bd52519b84f50785dbcc2d40fb.camel@hammerspace.com>
- <87zh3hoqrx.fsf@notabene.neil.brown.name>
- <d208c9c085d8abf27a764e31a61e98f9c3743675.camel@hammerspace.com>
- <87wnylopyv.fsf@notabene.neil.brown.name>
- <b28216153179dd20c22aa164259d3f901099896c.camel@hammerspace.com>
-Message-ID: <87tutpopfj.fsf@notabene.neil.brown.name>
+        id S1726530AbgKPFTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 00:19:31 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:56876 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgKPFTa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 00:19:30 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AG5JCok040603;
+        Sun, 15 Nov 2020 23:19:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605503952;
+        bh=3oB89CbTYHpl2o9ZDiCY/Ic+iLDClTkUpWMbGhciyBQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=GYfchMo9v/DfW6ccVCdckXt4QZKgJrL3G5GMw28kA7JYyz4+K1RKIyv2vPK3lbKr3
+         ZLOzNKKyuxJCbpJx4GQD2KGQllnePA8bn5omu05e5fUJZ3DmF/xYaSYt6Z7lwzQI5/
+         6COYbZey3qpLaDR0yZjxfqZmD5s4S0UJ76Pf1zq8=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AG5JB5Y049190
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 15 Nov 2020 23:19:12 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 15
+ Nov 2020 23:19:11 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 15 Nov 2020 23:19:11 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AG5J6v5020556;
+        Sun, 15 Nov 2020 23:19:07 -0600
+Subject: Re: [PATCH v7 15/18] NTB: Add support for EPF PCI-Express
+ Non-Transparent Bridge
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Sherry Sun <sherry.sun@nxp.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "jdmason@kudzu.us" <jdmason@kudzu.us>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "allenbh@gmail.com" <allenbh@gmail.com>,
+        "tjoseph@cadence.com" <tjoseph@cadence.com>,
+        Rob Herring <robh@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
+References: <20200930153519.7282-16-kishon@ti.com>
+ <VI1PR04MB496061EAB6F249F1C394F01092EA0@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <d6d27475-3464-6772-2122-cc194b8ae022@ti.com>
+ <VI1PR04MB49602D24F65E11FF1F14294F92E90@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <30c8f7a1-baa5-1eb4-d2c2-9a13be896f0f@ti.com>
+ <CAK8P3a38vBXbAWE09H+TSoZUTkFdYDcQmXX97foT4qXQc8t5ZQ@mail.gmail.com>
+ <5a9115c8-322e-ffd4-6274-ae98c375b21d@ti.com>
+ <CAK8P3a33XSvenqBhuQpGmtLbYydyzY2OQh73150TJtpzW24DTw@mail.gmail.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <c720de5b-bf76-162f-24cb-07f6fe670bd2@ti.com>
+Date:   Mon, 16 Nov 2020 10:49:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <CAK8P3a33XSvenqBhuQpGmtLbYydyzY2OQh73150TJtpzW24DTw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Hi Arnd,
 
-On Mon, Nov 16 2020, Trond Myklebust wrote:
+On 12/11/20 6:54 pm, Arnd Bergmann wrote:
+> On Tue, Nov 10, 2020 at 4:42 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>> On 10/11/20 8:29 pm, Arnd Bergmann wrote:
+>>> On Tue, Nov 10, 2020 at 3:20 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>>>> On 10/11/20 7:55 am, Sherry Sun wrote:
+>>>
+>>>>> But for VOP, only two boards are needed(one board as host and one board as card) to realize the
+>>>>> communication between the two systems, so my question is what are the advantages of using NTB?
+>>>>
+>>>> NTB is a bridge that facilitates communication between two different
+>>>> systems. So it by itself will not be source or sink of any data unlike a
+>>>> normal EP to RP system (or the VOP) which will be source or sink of data.
+>>>>
+>>>>> Because I think the architecture of NTB seems more complicated. Many thanks!
+>>>>
+>>>> yeah, I think it enables a different use case all together. Consider you
+>>>> have two x86 HOST PCs (having RP) and they have to be communicate using
+>>>> PCIe. NTB can be used in such cases for the two x86 PCs to communicate
+>>>> with each other over PCIe, which wouldn't be possible without NTB.
+>>>
+>>> I think for VOP, we should have an abstraction that can work on either NTB
+>>> or directly on the endpoint framework but provide an interface that then
+>>> lets you create logical devices the same way.
+>>>
+>>> Doing VOP based on NTB plus the new NTB_EPF driver would also
+>>> work and just move the abstraction somewhere else, but I guess it
+>>> would complicate setting it up for those users that only care about the
+>>> simpler endpoint case.
+>>
+>> I'm not sure if you've got a chance to look at [1], where I added
+>> support for RP<->EP system both running Linux, with EP configured using
+>> Linux EP framework (as well as HOST ports connected to NTB switch,
+>> patches 20 and 21, that uses the Linux NTB framework) to communicate
+>> using virtio over PCIe.
+>>
+>> The cover-letter [1] shows a picture of the two use cases supported in
+>> that series.
+>>
+>> [1] -> http://lore.kernel.org/r/20200702082143.25259-1-kishon@ti.com
+> 
+> No, I missed, that, thanks for pointing me to it!
+> 
+> This looks very  promising indeed, I need to read up on the whole
+> discussion there. I also see your slides at [1]  that help do explain some
+> of it. I have one fundamental question that I can't figure out from
+> the description, maybe you can help me here:
+> 
+> How is the configuration managed, taking the EP case as an
+> example? Your UseCase1 example sounds like the system that owns
+> the EP hardware is the one that turns the EP into a vhost device,
+> and creates a vhost-rpmsg device on top, while the RC side would
+> probe the pci-vhost and then detect a virtio-rpmsg device to talk to.
 
-> On Mon, 2020-11-16 at 16:00 +1100, NeilBrown wrote:
->> On Mon, Nov 16 2020, Trond Myklebust wrote:
->>=20
->> > On Mon, 2020-11-16 at 15:43 +1100, NeilBrown wrote:
->> > > On Mon, Nov 16 2020, Trond Myklebust wrote:
->> > >=20
->> > > > On Mon, 2020-11-16 at 13:59 +1100, NeilBrown wrote:
->> > > > >=20
->> > > > > Prior to commit 5ceb9d7fdaaf ("NFS: Refactor
->> > > > > nfs_lookup_revalidate()")
->> > > > > and error from nfs_lookup_verify_inode() other than -ESTALE
->> > > > > would
->> > > > > result
->> > > > > in nfs_lookup_revalidate() returning that error code (-ESTALE
->> > > > > is
->> > > > > mapped
->> > > > > to zero).
->> > > > > Since that commit, all errors result in zero being returned.
->> > > > >=20
->> > > > > When nfs_lookup_revalidate() returns zero, the dentry is
->> > > > > invalidated
->> > > > > and, significantly, if the dentry is a directory that is
->> > > > > mounted
->> > > > > on,
->> > > > > that mountpoint is lost.
->> > > > >=20
->> > > > > If you:
->> > > > > =C2=A0- mount an NFS filesystem which contains a directory
->> > > > > =C2=A0- mount something (e.g. tmpfs) on that directory
->> > > > > =C2=A0- use iptables (or scissors) to block traffic to the server
->> > > > > =C2=A0- ls -l the-mounted-on-directory
->> > > > > =C2=A0- interrupt the 'ls -l'
->> > > > > you will find that the directory has been unmounted.
->> > > > >=20
->> > > > > This can be fixed by returning the actual error code from
->> > > > > nfs_lookup_verify_inode() rather then zero (except for -
->> > > > > ESTALE).
->> > > > >=20
->> > > > > Fixes: 5ceb9d7fdaaf ("NFS: Refactor nfs_lookup_revalidate()")
->> > > > > Signed-off-by: NeilBrown <neilb@suse.de>
->> > > > > ---
->> > > > > =C2=A0fs/nfs/dir.c | 8 +++++---
->> > > > > =C2=A01 file changed, 5 insertions(+), 3 deletions(-)
->> > > > >=20
->> > > > > diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
->> > > > > index cb52db9a0cfb..d24acf556e9e 100644
->> > > > > --- a/fs/nfs/dir.c
->> > > > > +++ b/fs/nfs/dir.c
->> > > > > @@ -1350,7 +1350,7 @@ nfs_do_lookup_revalidate(struct inode
->> > > > > *dir,
->> > > > > struct dentry *dentry,
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 unsigned int flags)
->> > > > > =C2=A0{
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct inode *in=
-ode;
->> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int error;
->> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int error =3D 0;
->> > > > > =C2=A0
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_inc_stats(di=
-r, NFSIOS_DENTRYREVALIDATE);
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0inode =3D d_inod=
-e(dentry);
->> > > > > @@ -1372,8 +1372,10 @@ nfs_do_lookup_revalidate(struct inode
->> > > > > *dir,
->> > > > > struct dentry *dentry,
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 nfs_check_verifier(dir, dentry, flags &
->> > > > > LOOKUP_RCU))
->> > > > > {
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0error =3D nfs_lookup_verify_inode(inode,
->> > > > > flags);
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (error) {
->> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-if (error =3D=3D -ESTALE)
->> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-if (error =3D=3D -ESTALE) {
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_zap_caches(dir);
->> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0error =3D 0;
->> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0goto out_bad;
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_advise_use_readdirplus(dir);
->> > > > > @@ -1395,7 +1397,7 @@ nfs_do_lookup_revalidate(struct inode
->> > > > > *dir,
->> > > > > struct dentry *dentry,
->> > > > > =C2=A0out_bad:
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (flags & LOOK=
-UP_RCU)
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ECHILD;
->> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return nfs_lookup_rev=
-alidate_done(dir, dentry, inode,
->> > > > > 0);
->> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return nfs_lookup_rev=
-alidate_done(dir, dentry, inode,
->> > > > > error);
->> > > >=20
->> > > > Which errors do we actually need to return here? As far as I
->> > > > can
->> > > > tell,
->> > > > the only errors that nfs_lookup_verify_inode() is supposed to
->> > > > return is
->> > > > ENOMEM, ESTALE, ECHILD, and possibly EIO or ETiMEDOUT.
->> > > >=20
->> > > > Why would it be better to return those errors rather than just
->> > > > a 0
->> > > > when
->> > > > we need to invalidate the inode, particularly since we already
->> > > > have
->> > > > a
->> > > > special case in nfs_lookup_revalidate_done() when the dentry is
->> > > > root?
->> > >=20
->> > > ERESTARTSYS is the error that easily causes problems.
->> > >=20
->> > > Returning 0 causes d_invalidate() to be called which is quite
->> > > heavy
->> > > handed in mountpoints.
->> >=20
->> > My point is that it shouldn't get returned for mountpoints. See
->> > nfs_lookup_revalidate_done().
->>=20
->> nfs_lookup_revalidate_done() only checks IS_ROOT(), and while many
->> mountpoints are IS_ROOT(), not all are (--bind easily makes others).
->>=20
->> But that isn't even really relevant here.=C2=A0 The dentry being
->> revalidated
->> is the underlying directory - that something else is mounted on.
->> step_into() which follows mount points is called in walk_component()
->> *after* lookup_fast or lookup_slow which will have revalidated the
->> dentry.
->
-> So then why is it not sufficient to just add a check for
-> d_mountpoint()? This is a revalidation, not a new lookup.
->
+That's correct. Slide no 9 in [1] should give the layering details.
 
-I guess you could do that.
-But why would you want to call d_invalidate() just because a signal was
-received, or a memory allocation failed?
+> Can it also do the opposite, so you end up with e.g. a virtio-net
+> device on the EP side and vhost-net on the RC?
 
-NeilBrown
+Unfortunately no. Again referring slide 9 in [1], we only have
+vhost-pci-epf on the EP side which only creates a "vhost_dev" to deal
+with vhost side of things. For doing the opposite, we'd need to create
+virtio-pci-epf for EP side that interacts with core virtio (and also the
+corresponding vhost back end on PCI host).
 
+Thanks
+Kishon
 
->>=20
->> NeilBrown
->>=20
->>=20
->> >=20
->> > > So it is only reasonable to return 0 when we have unambiguous
->> > > confirmation from the server that the object no longer exists.=C2=A0
->> > > ESTALE
->> > > is unambiguous. EIO might be unambiguous.=C2=A0 ERESTARTSYS, ENOMEM,
->> > > ETIMEDOUT are transient and don't justify d_invalidate() being
->> > > called.
->> > >=20
->> > > (BTW, Commit cc89684c9a26 ("NFS: only invalidate dentrys that are
->> > > clearly invalid.")
->> > > =C2=A0fixed much the same bug 3 years ago).
->> > > =C2=A0
->> > > Thanks,
->> > > NeilBrown
->> > >=20
->> > >=20
->> > > >=20
->> > > > > =C2=A0}
->> > > > > =C2=A0
->> > > > > =C2=A0static int
->> > > >=20
->> > > > --=20
->> > > > Trond Myklebust
->> > > > Linux NFS client maintainer, Hammerspace
->> > > > trond.myklebust@hammerspace.com
->> >=20
->> > --=20
->> > Trond Myklebust
->> > CTO, Hammerspace Inc
->> > 4984 El Camino Real, Suite 208
->> > Los Altos, CA 94022
->> > =E2=80=8B
->> > www.hammer.space
->
-> --=20
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl+yCkEOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigblUuw/9FvhK5EhkCXYlB90zl0jWRErZPjk0iZ7l+cfR
-GKy/c3UtR5Wli/vUAgvkQECVkw5CP5HZwNQJdsMU9Fh8u8XJzXoFIj7KRe90dpNE
-eM6FaH9IbAAFMM0YOHdjDa0vHuSbv5Zpe9fNAtGq6JvbEiYnWIbOd1r6SA4NtuaL
-u8KDiPLXz6fN1CbZ4GdTtPcws85oNQ/ej4QgiExIE6blQKRgIWkU4VSoMvO+/VJR
-GoIhELruH9P4PRtbrzk4azmUQdQ5W5aDRtxd9gxwtYua9ZdS6FLyrR8Ju1AzHwyb
-DVGSPn3RX7j7Ukrc3f2WO3nvfo79amEinXZ6nvTVMc4zVZVcgUdWVS/2JvVGuTC4
-gxrDkBklTeQoAlJVk9uI5cB2V+mFRgYVWYvxjaMlDymF1IGztpZnASKt2Xfbl+R/
-p7qrFc9iy1CaGyHx0tnau4FmK06+6BZ6qNTSmtzJ3A8YQbLlU8bpvLpzuNfNFQpf
-H2zZr4AhTMhM+Z54iQAFRNkLXXG+PIV5irami/2fGsfKaqtGisklNWbLNGyo0BRY
-f/T1vVXJRv9ZH9EHlm+SQ1Er7ohrq+Z6r98v/8NgIN/6aXG9Jb91yn33JPqUWrUX
-+rFD21bUKDjRonJJEwTygRHzC12eQpnVLesHNmG+2oNTEjeneJljaRjMbo793PPw
-bo4+DVo=
-=9xDI
------END PGP SIGNATURE-----
---=-=-=--
+> 
+>      Arnd
+> 
+> [1] https://linuxplumbersconf.org/event/7/contributions/849/attachments/642/1175/Virtio_for_PCIe_RC_EP_NTB.pdf
+> 
