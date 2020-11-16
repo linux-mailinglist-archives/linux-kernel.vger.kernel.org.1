@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3022B43F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620CE2B4403
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727805AbgKPMrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:47:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgKPMrQ (ORCPT
+        id S1726886AbgKPMuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:50:35 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41066 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgKPMuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:47:16 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9982AC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:47:14 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id p68so2650409pga.6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:47:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Hjz/pG1FXMNclKUbGQCgRGQRnKutMZdz2lW6yKssubA=;
-        b=KooEXHpP9BPJzYOzg3A0MdhsS2deEHUEnnFU3BBIn+0iw+BBuocqupBgv382HXDzjQ
-         Gg87WkmhmkusvAh1YDUCUAk4UKju5y3dFS+RrWOhAzfItdLmyTyQ2bOyKz9Zhy9iSsjA
-         Tutdr1BfzWdNXAWkP6e3Z4xqdC+VmrUiaq0SS8aSk1VbRYpzIC+iId9moBFFc5z32NL8
-         QGTJlU+LHD+hcWPOW5IYU1hVAViqVK2CGXOCXdMzPwQzMMtRidfgLL0YTzWQqlyqXrUR
-         S8xFhXQufNm4Ck6TGCOoGwHylxrggHoXjkD2dr6vxHVuU/mxeh96WLMwAjoIz732k2Mh
-         ICkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Hjz/pG1FXMNclKUbGQCgRGQRnKutMZdz2lW6yKssubA=;
-        b=OPg2omLMwIWWXqXIVU0vNm1KRhERxCB2oyHs7bABaHpNrR3mlJ9w9x/Ew8VjIJ4uFB
-         aDdC1JxTNFdrhgFPQQe7x7YyP1McV+CoLF4HHTGbW2Qr0doF/pJKfFZWX4YtLEs63Hjw
-         XJYfM8OAeBfHxLU7KS/AwDtNIWGTwhwyd9mMq5gJTlvPotinK5IrFYF0vnXE5jYkP/O+
-         QqkwEjNP1QWXHoyYU32QFWJP5uMRLywL4wNPPMzKMoWyExEjb3bZEU3x0sW3ERdyD9K9
-         HFIhLT8BebT5JPCSZ7nUvUcEq/QTbhZNvB+uG5hAds2ZFSBnjvaj3h/SBS0CmAPj2p5S
-         iNFg==
-X-Gm-Message-State: AOAM533/ETLtnw22iuzSUIQl94vsD2xvUCu2KwAnr0GOnqYKjY+yV44w
-        ud8YbsHLgRPxXLN3e5wWkOlt
-X-Google-Smtp-Source: ABdhPJxNw7SIpur2I8+FwPob3ZbSh0X23uAMFBndfW4XT94TUoy9uKQOmg+GNcS1lrfV8yUbuD/fvA==
-X-Received: by 2002:a63:2cc3:: with SMTP id s186mr4008863pgs.230.1605530834088;
-        Mon, 16 Nov 2020 04:47:14 -0800 (PST)
-Received: from Mani-XPS-13-9360 ([2409:4072:618e:9b0a:75fd:1290:bf5c:a350])
-        by smtp.gmail.com with ESMTPSA id gx24sm18002561pjb.38.2020.11.16.04.47.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 16 Nov 2020 04:47:13 -0800 (PST)
-Date:   Mon, 16 Nov 2020 18:17:06 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, loic.poulain@linaro.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] bus: mhi: core: Remove __ prefix for MHI channel
- unprepare function
-Message-ID: <20201116124706.GL3926@Mani-XPS-13-9360>
-References: <1605122473-12179-1-git-send-email-bbhatt@codeaurora.org>
- <1605122473-12179-6-git-send-email-bbhatt@codeaurora.org>
+        Mon, 16 Nov 2020 07:50:35 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605531033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0MZk8f05zzIV7Ttfy5YcrIRRf3Ks113ilZvj4y+g/U4=;
+        b=aEs2krwqPJ5mncHAdF1YpE/lMEDDjlcz7iqKbOyZpZsY/f5uD7btQ7ZtbVF1m0VUrxBBYY
+        /NmlpfD+lDAWr+jFZ1LI7D+baDhdxVQYvEThXbsaw0u/P505555eqUTPPkOmmgPEJC5c41
+        hLHY497BOs49EMjQsmeEa/TCmd/8IgbWp0mAIFg1I0rwBLiidqd2yawOVHTIIGblKki72P
+        uU7yHmaWFxb0GAzley08IBzxvR/UQqBaH0/M1weOTpxoKKMOnxYc6MfMQ07DTDY7/IjEcW
+        ajRYjH/sV8IyM6VR94qsA5AiV0NGIQc6GriZQmwK8Dm/89rxobYk6y6lztU2Cg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605531033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0MZk8f05zzIV7Ttfy5YcrIRRf3Ks113ilZvj4y+g/U4=;
+        b=2/MsSG7CjQLYFTCWmCzdOxzaBv33PtlagCdIBlyEhwQgyKbUIZyEh4xZmT0oEgioFkXStT
+        5cqgyGxf6iGQBnDQ==
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Ziyad Atiyyeh <ziyadat@nvidia.com>,
+        Itay Aveksis <itayav@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: iommu/vt-d: Cure VF irqdomain hickup
+In-Reply-To: <CAMuHMdXA7wfJovmfSH2nbAhN0cPyCiFHodTvg4a8Hm9rx5Dj-w@mail.gmail.com>
+References: <20200826111628.794979401@linutronix.de> <20201112125531.GA873287@nvidia.com> <87mtzmmzk6.fsf@nanos.tec.linutronix.de> <87k0uqmwn4.fsf@nanos.tec.linutronix.de> <87d00imlop.fsf@nanos.tec.linutronix.de> <CAMuHMdXA7wfJovmfSH2nbAhN0cPyCiFHodTvg4a8Hm9rx5Dj-w@mail.gmail.com>
+Date:   Mon, 16 Nov 2020 13:50:32 +0100
+Message-ID: <87lff1zcrr.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605122473-12179-6-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:21:12AM -0800, Bhaumik Bhatt wrote:
-> The __mhi_unprepare_channel() API does not require the __ prefix.
-> Get rid of it and make the internal function consistent with the
-> other function names.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Geert,
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Mon, Nov 16 2020 at 10:47, Geert Uytterhoeven wrote:
+> On Thu, Nov 12, 2020 at 8:16 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> The recent changes to store the MSI irqdomain pointer in struct device
+>> missed that Intel DMAR does not register virtual function devices.  Due to
+>> that a VF device gets the plain PCI-MSI domain assigned and then issues
+>> compat MSI messages which get caught by the interrupt remapping unit.
+>>
+>> Cure that by inheriting the irq domain from the physical function
+>> device.
+>>
+>> That's a temporary workaround. The correct fix is to inherit the irq domain
+>> from the bus, but that's a larger effort which needs quite some other
+>> changes to the way how x86 manages PCI and MSI domains.
+>>
+>> Fixes: 85a8dfc57a0b ("iommm/vt-d: Store irq domain in struct device")
+>> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>> ---
+>>  drivers/iommu/intel/dmar.c |   19 ++++++++++++++++++-
+>>  1 file changed, 18 insertions(+), 1 deletion(-)
+>>
+>> --- a/drivers/iommu/intel/dmar.c
+>> +++ b/drivers/iommu/intel/dmar.c
+>> @@ -333,6 +333,11 @@ static void  dmar_pci_bus_del_dev(struct
+>>         dmar_iommu_notify_scope_dev(info);
+>>  }
+>>
+>> +static inline void vf_inherit_msi_domain(struct pci_dev *pdev)
+>> +{
+>> +       dev_set_msi_domain(&pdev->dev, dev_get_msi_domain(&pdev->physfn->dev));
+>
+> If CONFIG_PCI_ATS is not set:
+>
+>     error: 'struct pci_dev' has no member named 'physfn'
+>
+
+thanks for pointing that out. Yet moar ifdeffery, oh well...
 
 Thanks,
-Mani
 
-> ---
->  drivers/bus/mhi/core/main.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index e8af85a..19156d4 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -1312,8 +1312,8 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->  	return -EINVAL;
->  }
->  
-> -static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
-> -				    struct mhi_chan *mhi_chan)
-> +static void mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
-> +				  struct mhi_chan *mhi_chan)
->  {
->  	int ret;
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> @@ -1433,7 +1433,7 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
->  
->  error_pre_alloc:
->  	mutex_unlock(&mhi_chan->mutex);
-> -	__mhi_unprepare_channel(mhi_cntrl, mhi_chan);
-> +	mhi_unprepare_channel(mhi_cntrl, mhi_chan);
->  
->  	return ret;
->  }
-> @@ -1550,7 +1550,7 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
->  		if (!mhi_chan)
->  			continue;
->  
-> -		__mhi_unprepare_channel(mhi_cntrl, mhi_chan);
-> +		mhi_unprepare_channel(mhi_cntrl, mhi_chan);
->  	}
->  
->  	return ret;
-> @@ -1568,7 +1568,7 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
->  		if (!mhi_chan)
->  			continue;
->  
-> -		__mhi_unprepare_channel(mhi_cntrl, mhi_chan);
-> +		mhi_unprepare_channel(mhi_cntrl, mhi_chan);
->  	}
->  }
->  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+        tglx
+
