@@ -2,177 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F7D2B4469
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 807E72B4476
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728639AbgKPNHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 08:07:44 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:27616 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbgKPNHo (ORCPT
+        id S1728524AbgKPNKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 08:10:06 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7938 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727248AbgKPNKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 08:07:44 -0500
-Date:   Mon, 16 Nov 2020 13:07:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1605532056; bh=8oVEkWwUGCZq1VBwSHjSrKA6sbt5877cWkL9X4cTHoA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Kq1bYk8/r3uZv2QoQqriIJn223K57uI2nZgMyAzeEM1UVUQpxzjk2Fm/p5mD4BQ8a
-         naNL+VRGgo7TEiN05NwbLucBTFoBhfdEe0C0l523jPXkrXJZR47DcNddBpsGu9d4An
-         RazR0OnVsm/rRa5F4xGu2BSpeTAtSOio+lWWEkicfI/mlr3KU/Gsl8xGOwR7lthVF5
-         LY81/L7421PqAPkHBMFwdkxChMQthTe7l8LmsNAZUKykllsHMZRd5d7HRy3SiSNC0b
-         4KvGcwB7iZjfVAKbvJZVfIef9BUIgC6iCnChOEnxc28zjgQ6ndwS4c1JnwPXcH0f/z
-         AuImkK3WzdeKQ==
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Amit Shah <amit@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc@vger.kernel.org, Suman Anna <s-anna@ti.com>,
-        virtualization@lists.linux-foundation.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation for rproc serial
-Message-ID: <u9RJBckNwnezQttAPrOyEqDYKu0rnhedUZYGpaS83qg@cp3-web-024.plabs.ch>
-In-Reply-To: <20201116071910-mutt-send-email-mst@kernel.org>
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch> <20201116091950.GA30524@infradead.org> <20201116071910-mutt-send-email-mst@kernel.org>
+        Mon, 16 Nov 2020 08:10:06 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CZTv61v1dzhbp6;
+        Mon, 16 Nov 2020 21:09:54 +0800 (CST)
+Received: from [10.174.185.179] (10.174.185.179) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 16 Nov 2020 21:09:53 +0800
+Subject: Re: [PATCH 1/2] KVM: arm64: vgic: Forbid invalid userspace
+ Redistributor accesses
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <eric.auger@redhat.com>,
+        <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
+        <suzuki.poulose@arm.com>, <wanghaibin.wang@huawei.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+References: <20201113142801.1659-1-yuzenghui@huawei.com>
+ <20201113142801.1659-2-yuzenghui@huawei.com>
+ <724c43702b52aac0d3c9beb9604d1bfb@kernel.org>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <584b7ff1-ecf2-b0ec-cea3-ccc29902f43a@huawei.com>
+Date:   Mon, 16 Nov 2020 21:09:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <724c43702b52aac0d3c9beb9604d1bfb@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.185.179]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Date: Mon, 16 Nov 2020 07:25:31 -0500
+Hi Marc,
 
-> On Mon, Nov 16, 2020 at 09:19:50AM +0000, Christoph Hellwig wrote:
->> I just noticed this showing up in Linus' tree and I'm not happy.
->
-> Are you sure? I think it's in next.
-
-Nope, it goes to fixes since it just fixes the regression introduced
-in 5.7.
-That's why it's not about any refactoring or rethinking the whole
-model.
-
->> This whole model of the DMA subdevices in remoteproc is simply broken.
+On 2020/11/16 1:04, Marc Zyngier wrote:
+> Hi Zenghui,
+> 
+> On 2020-11-13 14:28, Zenghui Yu wrote:
+>> It's expected that users will access registers in the redistributor *if*
+>> the RD has been initialized properly. Unfortunately userspace can be 
+>> bogus
+>> enough to access registers before setting the RD base address, and KVM
+>> implicitly allows it (we handle the access anyway, regardless of whether
+>> the base address is set).
 >>
->> We really need to change the virtio code pass an expicit DMA device (
->> similar to what e.g. the USB and RDMA code does), instead of faking up
->> devices with broken adhoc inheritance of DMA properties and magic poking
->> into device parent relationships.
-
-But lots of subsystems like netdev for example uses dev->parent for
-DMA operations. I know that their pointers go directly to the
-platform/PCI/etc. device, but still.
-
-The only reason behind "fake" DMA devices for rproc is to be able to
-reserve DMA memory through the Device Tree exclusively for only one
-virtio dev like virtio_console or virtio_rpmsg_bus. That's why
-they are present, are coercing DMA caps from physical dev
-representor, and why questinable dma_declare_coherent_memory()
-is still here and doesn't allow to build rproc core as a module.
-I agree that this is not the best model obviously, and we should take
-a look at it.
-
-> OK but we do have a regression since 5.7 and this looks like
-> a fix appropriate for e.g. stable, right?
->
->> Bjorn, I thought you were going to look into this a while ago?
+>> Bad thing happens when we're handling the user read of GICR_TYPER. We end
+>> up with an oops when deferencing the unset rdreg...
 >>
+>>     gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
+>>             (rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
 >>
->> On Wed, Nov 04, 2020 at 03:31:36PM +0000, Alexander Lobakin wrote:
->>> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
->>> specific dma memory pool"), every remoteproc has a DMA subdevice
->>> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
->>> DMA capabilities from the corresponding platform device. This allowed
->>> to associate different DMA pools with each vdev, and required from
->>> virtio drivers to perform DMA operations with the parent device
->>> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
->>>
->>> virtio_rpmsg_bus was already changed in the same merge cycle with
->>> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
->>> but virtio_console did not. In fact, operations using the grandparent
->>> worked fine while the grandparent was the platform device, but since
->>> commit c774ad010873 ("remoteproc: Fix and restore the parenting
->>> hierarchy for vdev") this was changed, and now the grandparent device
->>> is the remoteproc device without any DMA capabilities.
->>> So, starting v5.8-rc1 the following warning is observed:
->>>
->>> [    2.483925] ------------[ cut here ]------------
->>> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x8=
-0e7eee8
->>> [    2.489152] Modules linked in: virtio_console(+)
->>> [    2.503737]  virtio_rpmsg_bus rpmsg_core
->>> [    2.508903]
->>> [    2.528898] <Other modules, stack and call trace here>
->>> [    2.913043]
->>> [    2.914907] ---[ end trace 93ac8746beab612c ]---
->>> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
->>>
->>> kernel/dma/mapping.c:427 is:
->>>
->>> WARN_ON_ONCE(!dev->coherent_dma_mask);
->>>
->>> obviously because the grandparent now is remoteproc dev without any
->>> DMA caps:
->>>
->>> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc=
-0
->>>
->>> Fix this the same way as it was for virtio_rpmsg_bus, using just the
->>> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
->>> operations.
->>> This also allows now to reserve DMA pools/buffers for rproc serial
->>> via Device Tree.
->>>
->>> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarc=
-hy for vdev")
->>> Cc: stable@vger.kernel.org # 5.1+
->>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->>> ---
->>>  drivers/char/virtio_console.c | 8 ++++----
->>>  1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_consol=
-e.c
->>> index a2da8f768b94..1836cc56e357 100644
->>> --- a/drivers/char/virtio_console.c
->>> +++ b/drivers/char/virtio_console.c
->>> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virti=
-o_device *vdev, size_t buf_size
->>>  =09=09/*
->>>  =09=09 * Allocate DMA memory from ancestor. When a virtio
->>>  =09=09 * device is created by remoteproc, the DMA memory is
->>> -=09=09 * associated with the grandparent device:
->>> -=09=09 * vdev =3D> rproc =3D> platform-dev.
->>> +=09=09 * associated with the parent device:
->>> +=09=09 * virtioY =3D> remoteprocX#vdevYbuffer.
->>>  =09=09 */
->>> -=09=09if (!vdev->dev.parent || !vdev->dev.parent->parent)
->>> +=09=09buf->dev =3D vdev->dev.parent;
->>> +=09=09if (!buf->dev)
->>>  =09=09=09goto free_buf;
->>> -=09=09buf->dev =3D vdev->dev.parent->parent;
->>>
->>>  =09=09/* Increase device refcnt to avoid freeing it */
->>>  =09=09get_device(buf->dev);
->>> --
->>> 2.29.2
->>>
->>>
->> ---end quoted text---
+>> Fix this issue by informing userspace what had gone wrong (-ENXIO).
+> 
+> I'm worried about the "implicit" aspect of the access that this patch
+> now forbids.
+> 
+> The problem is that the existing documentation doesn't cover this case, > and -ENXIO's "Getting or setting this register is not yet supported"
+> is way too vague.
+
+Indeed. How about changing to
+
+     -ENXIO  Getting or setting this register is not yet supported
+             or VGIC not properly configured (e.g., [Re]Distributor base
+             address is unknown)
+
+> There is a precedent with the ITS, but that's 
+> undocumented
+> as well. Also, how about v2? If that's the wasy we are going to fix this,
+> we also nned to beef up the documentation.
+
+Sure, I plan to do so and hope it won't break the existing userspace.
+
+> Of course, the other horrible way to address the issue is to return a value
+> that doesn't have the Last bit set, since we can't synthetise it. It 
+> doesn't
+> change the userspace API, and I can even find some (admittedly  twisted)
+> logic to it (since there is no base address, there is no last RD...).
+
+I'm fine with it. But I'm afraid that there might be other issues due to
+the "unexpected" accesses since I haven't tested with all registers from
+userspace.
+
+My take is that only if the "[Re]Distributor base address" is specified
+in the system memory map, will the user-provided kvm_device_attr.offset
+make sense. And we can then handle the access to the register which is
+defined by "base address + offset".
+
 
 Thanks,
-Al
-
+Zenghui
