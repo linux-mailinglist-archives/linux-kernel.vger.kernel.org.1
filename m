@@ -2,177 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47982B4F12
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEFD2B4F1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731128AbgKPSTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732151AbgKPSTP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:19:15 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B42C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 10:19:15 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id n12so18433747ioc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 10:19:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mawIBEbmW13Wb93jlGPkuc98PSBX2ThA8W0B4AdhO8g=;
-        b=KlB9P3/w9K+RCwyqEbjeTcuBUAQy+k60v5qyhMubOZfbiNTk/uxjgojdaB7WCrAGVq
-         7876+2ZanbDRnrRRZBHBPxq2HF4R9HnLASaWx0xTaih/l7fQogC527LvquFkYrwqLaTy
-         Px9fuEymvKasfnnH51cQgwdbTrEiAap48x+0o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mawIBEbmW13Wb93jlGPkuc98PSBX2ThA8W0B4AdhO8g=;
-        b=E9c+X9TGQJNvcx6TYGSnrV66necv1B3DRhz9ZSWR9kK10/b7o/ELuINZJOYHQIywia
-         rpyNynKeFIReI24vVOoc2oxEq8jMbMXTbWir70L8D1zenTFhL9NqcHV27Y6suyDMyXjD
-         DXTwsFa/sfP3rDEPdpnyIFTmiN+bhevsNDejXwSY0P0jV1CyJF4gfaJSiPbzRUXVyiG4
-         YUUrVlSwpTBaKUSyj6t5KXnitgAMrY/fbgtajytNl+POywJCDvW9rhC7LAmxfa45bZTe
-         zcdRKiny5Kv9Heqg228pOKS10rU/rxVyWEsYvN3VCXKOxdvehB+pkv8G6yA4rmJmFrPz
-         ueBw==
-X-Gm-Message-State: AOAM531mPd4ZKksGgv1vWTPvBp2RBg/4NbXg5tDYBUPmXQQ7nZ+nDIn1
-        dLQ9c2nRhtOkLKm7fvu9/vA9eg==
-X-Google-Smtp-Source: ABdhPJywHMSsOjVB9f2b0CDslzlQYg3TaRoqp6gqm43EXgaf4HqklNg6d1T6TDYDdPV62kd3fcW26A==
-X-Received: by 2002:a5d:8ada:: with SMTP id e26mr4573701iot.15.1605550754601;
-        Mon, 16 Nov 2020 10:19:14 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 9sm12159541ila.61.2020.11.16.10.19.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 10:19:13 -0800 (PST)
-Subject: Re: [PATCH v41 20/24] selftests/x86: Add a selftest for SGX
-To:     Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-References: <20201112220135.165028-1-jarkko@kernel.org>
- <20201112220135.165028-21-jarkko@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <e58ee564-597a-336e-53dc-7c4d172d51f5@linuxfoundation.org>
-Date:   Mon, 16 Nov 2020 11:19:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1731885AbgKPSVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:21:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730310AbgKPSVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:21:09 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 435D3222EC;
+        Mon, 16 Nov 2020 18:21:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605550868;
+        bh=YbDlZ1AVwxN0te7sA32IG9U9jyzPODAXadHjBoIrExE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DhKMjcJ/PzKmehKHb2T1T3fxKu4VnNIIWzGCryDYJ1ZqOalvyK4wKS84O23uj01Q0
+         BMl/OMqq0xrrjh8o69mNBVxgwxdbBS4c2hoXoXzs0vOXwcEMllNqUW+D8se28fLeEW
+         9x1mBrduxQecypCEZazgOVEejuErSG8Qw4hSXyas=
+Date:   Mon, 16 Nov 2020 10:21:07 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Hendry <andrew.hendry@gmail.com>
+Subject: Re: [PATCH net-next] MAINTAINERS: Add Martin Schiller as a
+ maintainer for the X.25 stack
+Message-ID: <20201116102107.338f0a81@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <3a556cae7d869059fa3b30c921a91658@dev.tdt.de>
+References: <20201114111029.326972-1-xie.he.0141@gmail.com>
+        <3a556cae7d869059fa3b30c921a91658@dev.tdt.de>
 MIME-Version: 1.0
-In-Reply-To: <20201112220135.165028-21-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 3:01 PM, Jarkko Sakkinen wrote:
-> Add a selftest for SGX. It is a trivial test where a simple enclave copies
-> one 64-bit word of memory between two memory locations, but ensures that
-> all SGX hardware and software infrastructure is functioning.
+On Mon, 16 Nov 2020 10:01:20 +0100 Martin Schiller wrote:
+> On 2020-11-14 12:10, Xie He wrote:
+> > Martin Schiller is an active developer and reviewer for the X.25 code.
+> > His company is providing products based on the Linux X.25 stack.
+> > So he is a good candidate for maintainers of the X.25 code.
+> > 
+> > The original maintainer of the X.25 network layer (Andrew Hendry) has
+> > not sent any email to the netdev mail list since 2013. So he is 
+> > probably
+> > inactive now.
+> > 
+> > Cc: Martin Schiller <ms@dev.tdt.de>
+> > Cc: Andrew Hendry <andrew.hendry@gmail.com>
+> > Signed-off-by: Xie He <xie.he.0141@gmail.com>
 > 
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: linux-kselftest@vger.kernel.org
-> Acked-by: Jethro Beekman <jethro@fortanix.com> # v40
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
-> Changes from v40:
-> * Remove $(OUTPUT)/test_encl.elf from TEST_CUSTOM_PROGS, as otherwise
->    run_tests tries to execute it. Add it as a build dependency.
-> * Use the correct device path, /dev/sgx_enclave, instead of
->    /dev/sgx/enclave.
-> * Return kselftest framework expected return codes.
-> 
->   tools/testing/selftests/Makefile              |   1 +
->   tools/testing/selftests/sgx/.gitignore        |   2 +
->   tools/testing/selftests/sgx/Makefile          |  53 +++
->   tools/testing/selftests/sgx/call.S            |  44 ++
->   tools/testing/selftests/sgx/defines.h         |  21 +
->   tools/testing/selftests/sgx/load.c            | 277 +++++++++++++
->   tools/testing/selftests/sgx/main.c            | 246 +++++++++++
->   tools/testing/selftests/sgx/main.h            |  38 ++
->   tools/testing/selftests/sgx/sigstruct.c       | 391 ++++++++++++++++++
->   tools/testing/selftests/sgx/test_encl.c       |  20 +
->   tools/testing/selftests/sgx/test_encl.lds     |  40 ++
->   .../selftests/sgx/test_encl_bootstrap.S       |  89 ++++
->   12 files changed, 1222 insertions(+)
->   create mode 100644 tools/testing/selftests/sgx/.gitignore
->   create mode 100644 tools/testing/selftests/sgx/Makefile
->   create mode 100644 tools/testing/selftests/sgx/call.S
->   create mode 100644 tools/testing/selftests/sgx/defines.h
->   create mode 100644 tools/testing/selftests/sgx/load.c
->   create mode 100644 tools/testing/selftests/sgx/main.c
->   create mode 100644 tools/testing/selftests/sgx/main.h
->   create mode 100644 tools/testing/selftests/sgx/sigstruct.c
->   create mode 100644 tools/testing/selftests/sgx/test_encl.c
->   create mode 100644 tools/testing/selftests/sgx/test_encl.lds
->   create mode 100644 tools/testing/selftests/sgx/test_encl_bootstrap.S
-> 
-> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-> index d9c283503159..aa06e3ea0250 100644
-> --- a/tools/testing/selftests/Makefile
-> +++ b/tools/testing/selftests/Makefile
-> @@ -68,6 +68,7 @@ TARGETS += user
->   TARGETS += vm
->   TARGETS += x86
->   TARGETS += zram
-> +TARGETS += sgx
->   #Please keep the TARGETS list alphabetically sorted
+> Acked-by: Martin Schiller <ms@dev.tdt.de>
 
-Please keep the list sorted alphabetically as stated
-in the comment above.
-
-
-> +}
-> +
-> +int main(int argc, char *argv[], char *envp[])
-> +{
-> +	struct sgx_enclave_run run;
-> +	struct vdso_symtab symtab;
-> +	Elf64_Sym *eenter_sym;
-> +	uint64_t result = 0;
-> +	struct encl encl;
-> +	unsigned int i;
-> +	void *addr;
-> +	int ret;
-> +
-> +	memset(&run, 0, sizeof(run));
-> +
-> +	if (!encl_load("test_encl.elf", &encl)) {
-> +		encl_delete(&encl);
-> +		ksft_exit_skip("cannot load enclaves\n");
-> +	}
-> +
-> +	if (!encl_measure(&encl))
-> +		goto err;
-> +
-> +	if (!encl_build(&encl))
-> +		goto err;
-> +
-> +	/*
-> +	 * An enclave consumer only must do this.
-> +	 */
-> +	for (i = 0; i < encl.nr_segments; i++) {
-> +		struct encl_segment *seg = &encl.segment_tbl[i];
-> +
-> +		addr = mmap((void *)encl.encl_base + seg->offset, seg->size,
-> +			    seg->prot, MAP_SHARED | MAP_FIXED, encl.fd, 0);
-> +		if (addr == MAP_FAILED) {
-> +			fprintf(stderr, "mmap() failed, errno=%d.\n", errno);
-> +			exit(1);
-
-This should be KSFT_FAIL.
-
-thanks,
--- Shuah
+Applied to net, thanks everyone!
