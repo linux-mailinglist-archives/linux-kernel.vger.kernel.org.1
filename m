@@ -2,196 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC652B512F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D302B5131
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgKPTbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
+        id S1728007AbgKPTb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:31:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgKPTbQ (ORCPT
+        with ESMTP id S1726217AbgKPTb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:31:16 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C47C0613CF;
-        Mon, 16 Nov 2020 11:31:16 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id c17so20013412wrc.11;
-        Mon, 16 Nov 2020 11:31:16 -0800 (PST)
+        Mon, 16 Nov 2020 14:31:27 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A50CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:31:25 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id j19so7306078pgg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:31:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Gy+aFlZ+UlqhCXFPvBz8U6FZZuIx3dpLmw8zSmXA8bs=;
-        b=tktXMXSoQe00hopXFLEAQLRQeP9k+E/HKScf31HK6V6K/kUIQdXwkXtEbrAtZfqrOY
-         sCl6o3Y9g609bJ/iEVV9jV298vQSKRLohPxf8C7vhfvbqiPxp+aAIk2ZcnvFzCYpAvHs
-         iDO5D7Y1+vGVfu3W3BZatYGxDccjxYFlehNmo/VmlVmfK4JhyhyU8xWGNTB5cLzYyZYL
-         Jp8CaE4G2BF2vB1Fl8yzfItBiXXzgFv7zzav1bqo4q0tSoacJ1ODIaBRWXiPoEpqv+fg
-         Zo4OAPe46RgY3MRPfhVLnAFve4xxo7EjDOH4y3SsHMrhvITUAANpZ5y+8TYiuoqcrE4U
-         o4JA==
+         :cc;
+        bh=cGlOiQidYdOUuFpFQrkW0TeHEuSg5zbmdMF9LAJd9eM=;
+        b=QDAYt3WUDWZ9zhvjKOOkr+BRgXwoz9jg0reCZVaxi9z/UBM84zmHJIbN2KOOPXOnaU
+         6vuMv+XlaVvh16uX7o6HtA13aXcvYzOUSKw0B0TPTkfPtWhRdgl3f5+krfAnVoGJhx9K
+         iO5gfA01lkluE6E9JdRFgavcZgYX2LxgeLVEiwyX8cMw87vqbss9l/NqeXav0rbmBNtl
+         Og+aEIerF/darfGRu2IbWxb3M5osLqSGx3k+6dXNMg7UiiwgHNkbd1TCJg8qKjl+3/58
+         V4gJdlFY5TuK3LcZE1ZhS7Fi54NOjb09s2oG5Or18Y2U1dfur15Dq+LcFYxkzFvLEsRo
+         S61w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Gy+aFlZ+UlqhCXFPvBz8U6FZZuIx3dpLmw8zSmXA8bs=;
-        b=nWz9hkOhwa32kx83LENkFv+DtYxl0xsuOGxa7kJOxI9B8xMIseXsJ0xPMYfFeipBZp
-         tBBi7acLVqiHyZbAMTgBXLZjkmKmwWS8PF8IlLgMlbRPgfvtFBNzE2NH4qipU+3VB1nG
-         TDZIBYPhKfKmclUo+u/YQwCM7y/44dAYb7W5KmGWArJEhDCv1yHevCotNMfNbR3lA5/r
-         SLhsHRu5ytS42BuH+0uC2Qve4b7ZBa4q0uGF6nNbXaaX7aoz9cpkVAkkI+TDeqKsPxNT
-         K1J1r/1WsihN8YD3CMo8lip0cvP9uWQwBx/H4GSThsvSqHt2bFTRJvMr+c62sG8YZap/
-         18Lw==
-X-Gm-Message-State: AOAM533yaBCj+fpTE5IWkbtF5JweFV5N8VbnsyEAxTiAYMwEVrsgqlm4
-        E+Xqmyvs4+QBk7icb4rrz00ML6L0iEGt9byUy5A=
-X-Google-Smtp-Source: ABdhPJwP4kLb4gC4O9SvAVF/pYgU8WFFbMp3YumXDAJEWsu61ncuO3AZp3wNmBHUvb08R/hhAkRtZHxAg4t/T5B1He0=
-X-Received: by 2002:adf:e9c9:: with SMTP id l9mr22164333wrn.124.1605555074945;
- Mon, 16 Nov 2020 11:31:14 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=cGlOiQidYdOUuFpFQrkW0TeHEuSg5zbmdMF9LAJd9eM=;
+        b=pGLE+zyWrVvgREWyqaD3/wyhmhJWTK4aAPgcCS1/Py9JY87YSXNi3UX6xveESeXmaf
+         x0bYX8Q3+aWFVPAvgT/iJeN2R5xzn9+GrAVO1v/qwVTfXM7ez8f3ym37HAwt7ke3DGi5
+         A5R6FjLyCv248elhGd65LhtwOajDFNJ/tEAS3pkQloS7uprzn8PQhW0hJ/N6Bw60Sn8p
+         W5T8fVWXdlTrVH13Ao2FSNHU0FFjYUTd9K1YHgndzlF7VOo0m4nJd6AxSk+nv4geP989
+         XsP+Z42DKCtIYlyJvcia93Pt9z+RBCu6dkw2UzTgZ4wDEREjD28LwF/T71pmF8679BFm
+         rZCQ==
+X-Gm-Message-State: AOAM5335VY3Et2W9McIc9reSutVgd/gmatq0YpycHT4UNqzM7TwNhWVx
+        09k0pjNwCM929/LCHF5Ewo4aJtbX58sJJ6Kyz/3Lr20BYZn5cw==
+X-Google-Smtp-Source: ABdhPJzXg3takLX1phIDPuBdZ2SMXWEBlyJrWyLsVYjrVb+IsuRmX/tfjsnyMdZ1GtK3fdxA9Dp0E6u3WM5RE/fj4hk=
+X-Received: by 2002:a17:90a:4881:: with SMTP id b1mr493181pjh.32.1605555084999;
+ Mon, 16 Nov 2020 11:31:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20201116173005.1825880-1-lee.jones@linaro.org> <20201116173005.1825880-4-lee.jones@linaro.org>
-In-Reply-To: <20201116173005.1825880-4-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 16 Nov 2020 14:31:03 -0500
-Message-ID: <CADnq5_PDG_b4dtcPP-8_YM8wC9FQ6=owJFWn7DeRJmcETaLfFg@mail.gmail.com>
-Subject: Re: [PATCH 03/43] drm/radeon/radeon_kms: Move 'radeon_*_kms'
- prototypes to shared header
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
+References: <20201014212631.207844-1-nivedita@alum.mit.edu> <87sg999ot0.fsf@igel.home>
+In-Reply-To: <87sg999ot0.fsf@igel.home>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 16 Nov 2020 11:31:13 -0800
+Message-ID: <CAKwvOdn8aOr0=22idJ_KetgJ_rhk5-7i29VvxofoLrRo138f_g@mail.gmail.com>
+Subject: Re: [PATCH] compiler.h: Fix barrier_data() on clang
+To:     Andreas Schwab <schwab@linux-m68k.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
+        linux-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 12:30 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Mon, Nov 16, 2020 at 9:47 AM Andreas Schwab <schwab@linux-m68k.org> wrote:
 >
-> Fixes the following W=3D1 kernel build warning(s):
+> On Okt 14 2020, Arvind Sankar wrote:
 >
->  drivers/gpu/drm/radeon/radeon_kms.c:756:5: warning: no previous prototyp=
-e for =E2=80=98radeon_get_vblank_counter_kms=E2=80=99 [-Wmissing-prototypes=
-]
->  756 | u32 radeon_get_vblank_counter_kms(struct drm_crtc *crtc)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->  drivers/gpu/drm/radeon/radeon_kms.c:826:5: warning: no previous prototyp=
-e for =E2=80=98radeon_enable_vblank_kms=E2=80=99 [-Wmissing-prototypes]
->  826 | int radeon_enable_vblank_kms(struct drm_crtc *crtc)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~
->  drivers/gpu/drm/radeon/radeon_kms.c:853:6: warning: no previous prototyp=
-e for =E2=80=98radeon_disable_vblank_kms=E2=80=99 [-Wmissing-prototypes]
->  853 | void radeon_disable_vblank_kms(struct drm_crtc *crtc)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > Commit
+> >   815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
+> >
+> > neglected to copy barrier_data() from compiler-gcc.h into
+> > compiler-clang.h. The definition in compiler-gcc.h was really to work
+> > around clang's more aggressive optimization, so this broke
+> > barrier_data() on clang, and consequently memzero_explicit() as well.
+> >
+> > For example, this results in at least the memzero_explicit() call in
+> > lib/crypto/sha256.c:sha256_transform() being optimized away by clang.
+> >
+> > Fix this by moving the definition of barrier_data() into compiler.h.
+> >
+> > Also move the gcc/clang definition of barrier() into compiler.h,
+> > __memory_barrier() is icc-specific (and barrier() is already defined
+> > using it in compiler-intel.h) and doesn't belong in compiler.h.
+> >
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
 >
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> This breaks build on riscv:
+>
+>   CC [M]  drivers/net/ethernet/emulex/benet/be_main.o
+> In file included from ./include/vdso/processor.h:10,
+>                  from ./arch/riscv/include/asm/processor.h:11,
+>                  from ./include/linux/prefetch.h:15,
+>                  from drivers/net/ethernet/emulex/benet/be_main.c:14:
+> ./arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
+> ./arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
+>    14 |  barrier();
+>       |  ^~~~~~~
+> cc1: some warnings being treated as errors
+> make[5]: *** [scripts/Makefile.build:283: drivers/net/ethernet/emulex/benet/be_main.o] Error 1
+> make[4]: *** [scripts/Makefile.build:500: drivers/net/ethernet/emulex/benet] Error 2
+> make[3]: *** [scripts/Makefile.build:500: drivers/net/ethernet/emulex] Error 2
+> make[2]: *** [scripts/Makefile.build:500: drivers/net/ethernet] Error 2
+> make[1]: *** [scripts/Makefile.build:500: drivers/net] Error 2
+> make: *** [Makefile:1799: drivers] Error 2
+>
+> Andreas.
 
-Applied.  Thanks!
-
-Alex
-
-> ---
->  drivers/gpu/drm/radeon/radeon_display.c |  1 +
->  drivers/gpu/drm/radeon/radeon_kms.c     |  1 +
->  drivers/gpu/drm/radeon/radeon_kms.h     | 35 +++++++++++++++++++++++++
->  3 files changed, 37 insertions(+)
->  create mode 100644 drivers/gpu/drm/radeon/radeon_kms.h
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/ra=
-deon/radeon_display.c
-> index eb0d4cb95f0a6..3a6fedad002d7 100644
-> --- a/drivers/gpu/drm/radeon/radeon_display.c
-> +++ b/drivers/gpu/drm/radeon/radeon_display.c
-> @@ -44,6 +44,7 @@
->
->  #include "atom.h"
->  #include "radeon.h"
-> +#include "radeon_kms.h"
->
->  static void avivo_crtc_load_lut(struct drm_crtc *crtc)
->  {
-> diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon=
-/radeon_kms.c
-> index 3d31c04e4b3db..001940bca90a6 100644
-> --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> @@ -41,6 +41,7 @@
->  #include "radeon.h"
->  #include "radeon_asic.h"
->  #include "radeon_drv.h"
-> +#include "radeon_kms.h"
->
->  #if defined(CONFIG_VGA_SWITCHEROO)
->  bool radeon_has_atpx(void);
-> diff --git a/drivers/gpu/drm/radeon/radeon_kms.h b/drivers/gpu/drm/radeon=
-/radeon_kms.h
-> new file mode 100644
-> index 0000000000000..36e73cea92154
-> --- /dev/null
-> +++ b/drivers/gpu/drm/radeon/radeon_kms.h
-> @@ -0,0 +1,35 @@
-> +/* radeon_kms.h -- Private header for radeon driver -*- linux-c -*-
-> + *
-> + * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
-> + * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
-> + * All rights reserved.
-> + *
-> + * Permission is hereby granted, free of charge, to any person obtaining=
- a
-> + * copy of this software and associated documentation files (the "Softwa=
-re"),
-> + * to deal in the Software without restriction, including without limita=
-tion
-> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
-se,
-> + * and/or sell copies of the Software, and to permit persons to whom the
-> + * Software is furnished to do so, subject to the following conditions:
-> + *
-> + * The above copyright notice and this permission notice (including the =
-next
-> + * paragraph) shall be included in all copies or substantial portions of=
- the
-> + * Software.
-> + *
-> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
-SS OR
-> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
-TY,
-> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
-ALL
-> + * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAG=
-ES OR
-> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR=
- OTHER
-> + * DEALINGS IN THE SOFTWARE.
-> + *
-> + */
-> +
-> +#ifndef __RADEON_KMS_H__
-> +#define __RADEON_KMS_H__
-> +
-> +u32 radeon_get_vblank_counter_kms(struct drm_crtc *crtc);
-> +int radeon_enable_vblank_kms(struct drm_crtc *crtc);
-> +void radeon_disable_vblank_kms(struct drm_crtc *crtc);
-> +
-> +#endif                         /* __RADEON_KMS_H__ */
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+A lot of VDSO's reset KBUILD_CFLAGS or use a new variable for their
+compiler flags.  As such, they're missing `-include` command line flag
+that injects include/linux/compiler_types.h, which `#includes`
+numerous other headers if `__KERNEL__` is defined (`-D__KERNEL__`).
+So the RISCV VDSO Makefile might need to `-include
+$(srctree)/include/linux/compiler_types.h -D__KERNEL__`, or `#include
+<linux/compiler.h>"` directly in
+arch/riscv/include/asm/vdso/processor.h.
+-- 
+Thanks,
+~Nick Desaulniers
