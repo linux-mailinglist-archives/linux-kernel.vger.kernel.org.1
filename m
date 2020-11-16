@@ -2,194 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1612B5122
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F492B51BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbgKPTaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:30:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgKPTaE (ORCPT
+        id S1731337AbgKPT7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:59:37 -0500
+Received: from pbmsgap01.intersil.com ([192.157.179.201]:37126 "EHLO
+        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727393AbgKPT7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:30:04 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6376C0613CF;
-        Mon, 16 Nov 2020 11:30:03 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id d142so385622wmd.4;
-        Mon, 16 Nov 2020 11:30:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=baVdptJRCbDZjJ8DuZudh573ITj/FBuGjcAGOwxiymE=;
-        b=IuvYiIBdBzwE/ULUmhF38FiOnb7R4NGmVftrkFCqCOQR0O/KEd6bZXGyeJ1nJDgPr4
-         Y7kS8W0aDBBmijlFQQNnlEjiMXBqv5aZiDy0JiEijD6S2xWceJP976I+//bU8u8IKVw9
-         xNRKr3Sp8iVmL9vJVw7jcKdC6WVAiDGVC0jLk/JGmUwPv/QkwHe/lAvONDSq6rCbgrMn
-         YKrlBGaXfm5Vbs3u/829/sqTDC62+ekXnUJ+UxNZzXSivvtXFY/lQbLa23IfbT+nAfiM
-         PrqJtql+f4kzXPcxxW57BQIi03p6hGmE12/lcAfNPxvcTrQRhGzD2xX5QosSsXuRiiu5
-         47Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=baVdptJRCbDZjJ8DuZudh573ITj/FBuGjcAGOwxiymE=;
-        b=KfRHtiockJZx6gCP2Tep2nFgLqoKTaDK99ClyrY9GupyI+MMi0os+kXrpSvokrhHDr
-         MSBiGwb4MrLVAlwMPXwD+S4Vqe8dOdk3MMhXb7YHqWaSDDjsAuu2cjCOTFJ6N4nT/kQ2
-         368qe5SMHPQgDUQdd9V+JzTFlz/mvR2c+UPjmRvndu9pPnTUWdRpWjVZ2W0zqyZ7NbUD
-         Alx/WSofufl2HJ52K3k1rSo330+ZFXUR3RxhSf0JnzlJ7mavZ0vEujPvjp3F+DHTV9Rn
-         oT6v4oea0ixw4kXmt25daY+4d0Lt4GvuzStcGZ631koIxtdo5jTdZHuL1XLqX120fVUr
-         zKdA==
-X-Gm-Message-State: AOAM531AVxufOE0/z8A3aDf9pAz5GzEuQj07LwfVFBGKoTlyVnnUUw8A
-        jOJ9SmbKBoViKoR5Udv7wdkvvMduZvfMNnTDlNA=
-X-Google-Smtp-Source: ABdhPJyqLuVQBeAcZ0X7bNgq/BftyKAlmOzveP2UgPrWbROSjaHIRnbl5ejKqxG3FbJwSCmGSrlpiJAJ47st7HsMhrY=
-X-Received: by 2002:a7b:c157:: with SMTP id z23mr468742wmi.70.1605555002601;
- Mon, 16 Nov 2020 11:30:02 -0800 (PST)
+        Mon, 16 Nov 2020 14:59:37 -0500
+Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
+        by pbmsgap01.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0AGJN5Dr022716;
+        Mon, 16 Nov 2020 14:27:55 -0500
+Received: from pbmxdp03.intersil.corp (pbmxdp03.pb.intersil.com [132.158.200.224])
+        by pbmsgap01.intersil.com with ESMTP id 34tbn58xcm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 16 Nov 2020 14:27:55 -0500
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp03.intersil.corp (132.158.200.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Mon, 16 Nov 2020 14:27:54 -0500
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 16 Nov 2020 14:27:53 -0500
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net-next 2/5] ptp: clockmatrix: reset device and check BOOT_STATUS
+Date:   Mon, 16 Nov 2020 14:27:27 -0500
+Message-ID: <1605554850-14437-2-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1605554850-14437-1-git-send-email-min.li.xe@renesas.com>
+References: <1605554850-14437-1-git-send-email-min.li.xe@renesas.com>
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-References: <20201116173005.1825880-1-lee.jones@linaro.org> <20201116173005.1825880-3-lee.jones@linaro.org>
-In-Reply-To: <20201116173005.1825880-3-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 16 Nov 2020 14:29:51 -0500
-Message-ID: <CADnq5_MjjgY0mUKh81Qr6rsX8e52C_snz2-LXwpV-WGxuVnbFQ@mail.gmail.com>
-Subject: Re: [PATCH 02/43] drm/radeon/radeon: Move prototype into shared header
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-16_09:2020-11-13,2020-11-16 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 adultscore=0 malwarescore=0
+ bulkscore=0 spamscore=0 mlxlogscore=999 suspectscore=4 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011160114
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 12:30 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Unfortunately, a suitable one didn't already exist.
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/radeon/radeon_device.c:637:6: warning: no previous proto=
-type for =E2=80=98radeon_device_is_virtual=E2=80=99 [-Wmissing-prototypes]
->  637 | bool radeon_device_is_virtual(void)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+From: Min Li <min.li.xe@renesas.com>
 
-Applied.  Thanks!
+SM_RESET device only when loading full configuration and check
+for BOOT_STATUS. Also remove polling for write trigger done in
+_idtcm_settime().
 
-Alex
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+ drivers/ptp/idt8a340_reg.h    |   1 +
+ drivers/ptp/ptp_clockmatrix.c | 152 ++++++++++++++++++++++++++++++++----------
+ drivers/ptp/ptp_clockmatrix.h |   9 ++-
+ 3 files changed, 126 insertions(+), 36 deletions(-)
 
-> ---
->  drivers/gpu/drm/radeon/radeon_device.c |  1 +
->  drivers/gpu/drm/radeon/radeon_device.h | 32 ++++++++++++++++++++++++++
->  drivers/gpu/drm/radeon/radeon_drv.c    |  3 +--
->  3 files changed, 34 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/rad=
-eon/radeon_device.c
-> index 7f384ffe848a7..ad572f965190b 100644
-> --- a/drivers/gpu/drm/radeon/radeon_device.c
-> +++ b/drivers/gpu/drm/radeon/radeon_device.c
-> @@ -42,6 +42,7 @@
->  #include <drm/drm_probe_helper.h>
->  #include <drm/radeon_drm.h>
->
-> +#include "radeon_device.h"
->  #include "radeon_reg.h"
->  #include "radeon.h"
->  #include "atom.h"
-> diff --git a/drivers/gpu/drm/radeon/radeon_device.h b/drivers/gpu/drm/rad=
-eon/radeon_device.h
-> new file mode 100644
-> index 0000000000000..3112b99ae36f1
-> --- /dev/null
-> +++ b/drivers/gpu/drm/radeon/radeon_device.h
-> @@ -0,0 +1,32 @@
-> +/* radeon_device.h -- Private header for radeon device -*- linux-c -*-
-> + *
-> + * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
-> + * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
-> + * All rights reserved.
-> + *
-> + * Permission is hereby granted, free of charge, to any person obtaining=
- a
-> + * copy of this software and associated documentation files (the "Softwa=
-re"),
-> + * to deal in the Software without restriction, including without limita=
-tion
-> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
-se,
-> + * and/or sell copies of the Software, and to permit persons to whom the
-> + * Software is furnished to do so, subject to the following conditions:
-> + *
-> + * The above copyright notice and this permission notice (including the =
-next
-> + * paragraph) shall be included in all copies or substantial portions of=
- the
-> + * Software.
-> + *
-> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
-SS OR
-> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
-TY,
-> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
-ALL
-> + * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAG=
-ES OR
-> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR=
- OTHER
-> + * DEALINGS IN THE SOFTWARE.
-> + */
-> +
-> +#ifndef __RADEON_DEVICE_H__
-> +#define __RADEON_DEVICE_H__
-> +
-> +bool radeon_device_is_virtual(void);
-> +
-> +#endif                         /* __RADEON_DEVICE_H__ */
-> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon=
-/radeon_drv.c
-> index f813eb5e140dd..536b246b9a6aa 100644
-> --- a/drivers/gpu/drm/radeon/radeon_drv.c
-> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
-> @@ -52,6 +52,7 @@
->
->  #include "radeon_drv.h"
->  #include "radeon.h"
-> +#include "radeon_device.h"
->
->  /*
->   * KMS wrapper.
-> @@ -293,8 +294,6 @@ MODULE_DEVICE_TABLE(pci, pciidlist);
->
->  static const struct drm_driver kms_driver;
->
-> -bool radeon_device_is_virtual(void);
-> -
->  static int radeon_pci_probe(struct pci_dev *pdev,
->                             const struct pci_device_id *ent)
->  {
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+diff --git a/drivers/ptp/idt8a340_reg.h b/drivers/ptp/idt8a340_reg.h
+index b297c4a..a664dfe 100644
+--- a/drivers/ptp/idt8a340_reg.h
++++ b/drivers/ptp/idt8a340_reg.h
+@@ -103,6 +103,7 @@
+ #define SM_RESET_CMD                      0x5A
+ 
+ #define GENERAL_STATUS                    0xc014
++#define BOOT_STATUS                       0x0000
+ #define HW_REV_ID                         0x000A
+ #define BOND_ID                           0x000B
+ #define HW_CSR_ID                         0x000C
+diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+index bf2be50..5991f0f 100644
+--- a/drivers/ptp/ptp_clockmatrix.c
++++ b/drivers/ptp/ptp_clockmatrix.c
+@@ -33,6 +33,45 @@ module_param(firmware, charp, 0);
+ 
+ #define SETTIME_CORRECTION (0)
+ 
++static int contains_full_configuration(const struct firmware *fw)
++{
++	s32 full_count = FULL_FW_CFG_BYTES - FULL_FW_CFG_SKIPPED_BYTES;
++	struct idtcm_fwrc *rec = (struct idtcm_fwrc *) fw->data;
++	s32 count = 0;
++	u16 regaddr;
++	u8 loaddr;
++	s32 len;
++
++	/* If the firmware contains 'full configuration' SM_RESET can be used
++	 * to ensure proper configuration.
++	 *
++	 * Full configuration is defined as the number of programmable
++	 * bytes within the configuration range minus page offset addr range.
++	 */
++	for (len = fw->size; len > 0; len -= sizeof(*rec)) {
++		regaddr = rec->hiaddr << 8;
++		regaddr |= rec->loaddr;
++
++		loaddr = rec->loaddr;
++
++		rec++;
++
++		/* Top (status registers) and bottom are read-only */
++		if ((regaddr < GPIO_USER_CONTROL)
++		    || (regaddr >= SCRATCH))
++			continue;
++
++		/* Page size 128, last 4 bytes of page skipped */
++		if (((loaddr > 0x7b) && (loaddr <= 0x7f))
++		     || loaddr > 0xfb)
++			continue;
++
++		count++;
++	}
++
++	return (count >= full_count);
++}
++
+ static long set_write_phase_ready(struct ptp_clock_info *ptp)
+ {
+ 	struct idtcm_channel *channel =
+@@ -302,6 +341,53 @@ static int idtcm_write(struct idtcm *idtcm,
+ 	return _idtcm_rdwr(idtcm, module + regaddr, buf, count, true);
+ }
+ 
++static int clear_boot_status(struct idtcm *idtcm)
++{
++	int err;
++	u8 buf[4] = {0};
++
++	err = idtcm_write(idtcm, GENERAL_STATUS, BOOT_STATUS, buf, sizeof(buf));
++
++	return err;
++}
++
++static int read_boot_status(struct idtcm *idtcm, u32 *status)
++{
++	int err;
++	u8 buf[4] = {0};
++
++	err = idtcm_read(idtcm, GENERAL_STATUS, BOOT_STATUS, buf, sizeof(buf));
++
++	*status = (buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0];
++
++	return err;
++}
++
++static int wait_for_boot_status_ready(struct idtcm *idtcm)
++{
++	u32 status = 0;
++	u8 i = 30;	/* 30 * 100ms = 3s */
++	int err;
++
++	do {
++		err = read_boot_status(idtcm, &status);
++
++		if (err)
++			return err;
++
++		if (status == 0xA0)
++			return 0;
++
++		msleep(100);
++		i--;
++
++	} while (i);
++
++	dev_warn(&idtcm->client->dev, "%s timed out\n", __func__);
++
++	return -EBUSY;
++}
++
+ static int _idtcm_gettime(struct idtcm_channel *channel,
+ 			  struct timespec64 *ts)
+ {
+@@ -711,7 +797,7 @@ static int _idtcm_set_dpll_scsr_tod(struct idtcm_channel *channel,
+ 		if (err)
+ 			return err;
+ 
+-		if (cmd == 0)
++		if ((cmd & TOD_WRITE_SELECTION_MASK) == 0)
+ 			break;
+ 
+ 		if (++count > 20) {
+@@ -725,39 +811,16 @@ static int _idtcm_set_dpll_scsr_tod(struct idtcm_channel *channel,
+ }
+ 
+ static int _idtcm_settime(struct idtcm_channel *channel,
+-			  struct timespec64 const *ts,
+-			  enum hw_tod_write_trig_sel wr_trig)
++			  struct timespec64 const *ts)
+ {
+ 	struct idtcm *idtcm = channel->idtcm;
+ 	int err;
+-	int i;
+-	u8 trig_sel;
+-
+-	err = _idtcm_set_dpll_hw_tod(channel, ts, wr_trig);
+-
+-	if (err)
+-		return err;
+-
+-	/* Wait for the operation to complete. */
+-	for (i = 0; i < 10000; i++) {
+-		err = idtcm_read(idtcm, channel->hw_dpll_n,
+-				 HW_DPLL_TOD_CTRL_1, &trig_sel,
+-				 sizeof(trig_sel));
+-
+-		if (err)
+-			return err;
+ 
+-		if (trig_sel == 0x4a)
+-			break;
+-
+-		err = 1;
+-	}
++	err = _idtcm_set_dpll_hw_tod(channel, ts, HW_TOD_WR_TRIG_SEL_MSB);
+ 
+ 	if (err) {
+ 		dev_err(&idtcm->client->dev,
+-			"Failed at line %d in func %s!\n",
+-			__LINE__,
+-			__func__);
++			"%s: Set HW ToD failed\n", __func__);
+ 		return err;
+ 	}
+ 
+@@ -932,7 +995,7 @@ static int _idtcm_adjtime(struct idtcm_channel *channel, s64 delta)
+ 
+ 		ts = ns_to_timespec64(now);
+ 
+-		err = _idtcm_settime(channel, &ts, HW_TOD_WR_TRIG_SEL_MSB);
++		err = _idtcm_settime(channel, &ts);
+ 	}
+ 
+ 	return err;
+@@ -940,13 +1003,31 @@ static int _idtcm_adjtime(struct idtcm_channel *channel, s64 delta)
+ 
+ static int idtcm_state_machine_reset(struct idtcm *idtcm)
+ {
+-	int err;
+ 	u8 byte = SM_RESET_CMD;
++	u32 status = 0;
++	int err;
++	u8 i;
++
++	clear_boot_status(idtcm);
+ 
+ 	err = idtcm_write(idtcm, RESET_CTRL, SM_RESET, &byte, sizeof(byte));
+ 
+-	if (!err)
+-		msleep_interruptible(POST_SM_RESET_DELAY_MS);
++	if (!err) {
++		for (i = 0; i < 30; i++) {
++			msleep_interruptible(100);
++			read_boot_status(idtcm, &status);
++
++			if (status == 0xA0) {
++				dev_dbg(&idtcm->client->dev,
++					"SM_RESET completed in %d ms\n",
++					i * 100);
++				break;
++			}
++		}
++
++		if (!status)
++			dev_err(&idtcm->client->dev, "Timed out waiting for CM_RESET to complete\n");
++	}
+ 
+ 	return err;
+ }
+@@ -1140,7 +1221,7 @@ static int idtcm_load_firmware(struct idtcm *idtcm,
+ 
+ 	rec = (struct idtcm_fwrc *) fw->data;
+ 
+-	if (fw->size > 0)
++	if (contains_full_configuration(fw))
+ 		idtcm_state_machine_reset(idtcm);
+ 
+ 	for (len = fw->size; len > 0; len -= sizeof(*rec)) {
+@@ -1420,7 +1501,7 @@ static int idtcm_settime(struct ptp_clock_info *ptp,
+ 
+ 	mutex_lock(&idtcm->reg_lock);
+ 
+-	err = _idtcm_settime(channel, ts, HW_TOD_WR_TRIG_SEL_MSB);
++	err = _idtcm_settime(channel, ts);
+ 
+ 	if (err)
+ 		dev_err(&idtcm->client->dev,
+@@ -1851,7 +1932,7 @@ static int idtcm_enable_tod(struct idtcm_channel *channel)
+ 	if (err)
+ 		return err;
+ 
+-	return _idtcm_settime(channel, &ts, HW_TOD_WR_TRIG_SEL_MSB);
++	return _idtcm_settime(channel, &ts);
+ }
+ 
+ static void idtcm_display_version_info(struct idtcm *idtcm)
+@@ -2143,6 +2224,9 @@ static int idtcm_probe(struct i2c_client *client,
+ 		dev_warn(&idtcm->client->dev,
+ 			 "loading firmware failed with %d\n", err);
+ 
++	if (wait_for_boot_status_ready(idtcm))
++		dev_warn(&idtcm->client->dev, "BOOT_STATUS != 0xA0\n");
++
+ 	if (idtcm->tod_mask) {
+ 		for (i = 0; i < MAX_TOD; i++) {
+ 			if (idtcm->tod_mask & (1 << i)) {
+diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
+index 82840d7..713e41a 100644
+--- a/drivers/ptp/ptp_clockmatrix.h
++++ b/drivers/ptp/ptp_clockmatrix.h
+@@ -53,9 +53,14 @@
+ 
+ #define OUTPUT_MODULE_FROM_INDEX(index)	(OUTPUT_0 + (index) * 0x10)
+ 
+-#define PEROUT_ENABLE_OUTPUT_MASK		(0xdeadbeef)
++#define PEROUT_ENABLE_OUTPUT_MASK	(0xdeadbeef)
+ 
+-#define IDTCM_MAX_WRITE_COUNT			(512)
++#define IDTCM_MAX_WRITE_COUNT		(512)
++
++#define FULL_FW_CFG_BYTES		(SCRATCH - GPIO_USER_CONTROL)
++#define FULL_FW_CFG_SKIPPED_BYTES	(((SCRATCH >> 7) \
++					  - (GPIO_USER_CONTROL >> 7)) \
++					 * 4) /* 4 bytes skipped every 0x80 */
+ 
+ /* Values of DPLL_N.DPLL_MODE.PLL_MODE */
+ enum pll_mode {
+-- 
+2.7.4
+
