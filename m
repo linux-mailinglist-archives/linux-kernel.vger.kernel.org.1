@@ -2,94 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887FF2B4AD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9D22B4ADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732017AbgKPQXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:23:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731859AbgKPQXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:23:00 -0500
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FC9722263;
-        Mon, 16 Nov 2020 16:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605543779;
-        bh=Te2tFxY1BOS4uysqvA7qp8kR0pfzUS27egjsYkCWDd4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RnBgIZuPot9Cb2GQ0+l/sN1bbNyreTLkgw0ifz88NRTZ5C6c9oH4aYzGXCVpYnfXz
-         UKIDjDZBU7M5BBi5IW0Zl1GYVrtrOvmVbuP9TMazXP3OfHATD61H4+n4nR/T1H2kbE
-         Hf33rOgEZjrcA6onW5f5BGClDUn1LvBjtdbK1Jfo=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Chen Yu <yu.c.chen@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v2 2/2] Documentation: bootconfig: Update file format on initrd image
-Date:   Tue, 17 Nov 2020 01:22:55 +0900
-Message-Id: <160554377552.96595.9872059645320329905.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <160554375807.96595.16142008590130221699.stgit@devnote2>
-References: <160554375807.96595.16142008590130221699.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1732023AbgKPQXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731408AbgKPQXO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:23:14 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35989C0613CF;
+        Mon, 16 Nov 2020 08:23:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wC11BFLS0HKPwQDYmOMG66/U+ahe9yd42lCMXwv4QE8=; b=p5b/OlOPoWFD7iH9PzjPFWdyd5
+        katY9Q8Qryawj7Dd9i5Q2xNiaw5sqnhADtfH7aSyFDqoh6HOzlv92fTDTDSK/cKAQMGNQnB1/T/xS
+        gTjmm9N6EKqEjAtAl0xlN0QBYYbu/yGKq3+Pqp/HieNy38UQbZ3VM7NstEA32hDwGKSmd1EPBuhmi
+        NZbaAHMgPO7XX7CHUGKYR/xNkngx4pZHUKDlFaRB3sBUMbH//6Ni8fYAIU+k9y0fcUPRGhKIVwYBc
+        vahP4dAHLJizP9DB78d6qntiYJKc99dv/z/1Fh3SrvobnhAkIr/fEi/iMx/VNxV0eyELAU9qsl/+Q
+        AGxtXTWQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kehHb-000479-5d; Mon, 16 Nov 2020 16:23:11 +0000
+Date:   Mon, 16 Nov 2020 16:23:11 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Tal Zussman <tz2294@columbia.edu>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH] syscalls: Fix file comments for syscalls implemented in
+ kernel/sys.c
+Message-ID: <20201116162311.GA15585@infradead.org>
+References: <20201112215657.GA4539@charmander>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112215657.GA4539@charmander>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To align the total file size, add padding null character when appending
-the bootconfig to initrd image.
+On Thu, Nov 12, 2020 at 04:56:57PM -0500, Tal Zussman wrote:
+> The relevant syscalls were previously moved from kernel/timer.c to kernel/sys.c,
+> but the comments weren't updated to reflect this change.
+> 
+> Fixing these comments messes up the alphabetical ordering of syscalls by
+> filename. This could be fixed by merging the two groups of kernel/sys.c syscalls,
+> but that would require reordering the syscalls and renumbering them to maintain
+> the numerical order in unistd.h.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- 0 files changed
+Lots of overly long lines in your commit log.
 
-diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
-index a22024f9175e..363599683784 100644
---- a/Documentation/admin-guide/bootconfig.rst
-+++ b/Documentation/admin-guide/bootconfig.rst
-@@ -137,15 +137,22 @@ Boot Kernel With a Boot Config
- ==============================
- 
- Since the boot configuration file is loaded with initrd, it will be added
--to the end of the initrd (initramfs) image file with size, checksum and
--12-byte magic word as below.
-+to the end of the initrd (initramfs) image file with padding, size,
-+checksum and 12-byte magic word as below.
- 
--[initrd][bootconfig][size(u32)][checksum(u32)][#BOOTCONFIG\n]
-+[initrd][bootconfig][padding][size(u32)][checksum(u32)][#BOOTCONFIG\n]
-+
-+When the boot configuration is added to the initrd image, the total
-+file size is aligned to 4 bytes. To fill the gap, null characters
-+(``\0``) will be added. Thus the ``size`` is the length of the bootconfig
-+file + padding bytes.
- 
- The Linux kernel decodes the last part of the initrd image in memory to
- get the boot configuration data.
- Because of this "piggyback" method, there is no need to change or
--update the boot loader and the kernel image itself.
-+update the boot loader and the kernel image itself as long as the boot
-+loader passes the correct initrd file size. If by any chance, the boot
-+loader passes a longer size, the kernel feils to find the bootconfig data.
- 
- To do this operation, Linux kernel provides "bootconfig" command under
- tools/bootconfig, which allows admin to apply or delete the config file
-@@ -176,7 +183,8 @@ up to 512 key-value pairs. If keys contains 3 words in average, it can
- contain 256 key-value pairs. In most cases, the number of config items
- will be under 100 entries and smaller than 8KB, so it would be enough.
- If the node number exceeds 1024, parser returns an error even if the file
--size is smaller than 32KB.
-+size is smaller than 32KB. (Note that this maximum size is not including
-+the padding null characters.)
- Anyway, since bootconfig command verifies it when appending a boot config
- to initrd image, user can notice it before boot.
- 
-
+As for the patch itself:  IMHO we should just remove the comments
+about the files as that information is completely irrelevant.
