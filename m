@@ -2,120 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CF62B4A51
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1BE2B4A53
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731326AbgKPQIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:08:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728858AbgKPQIQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:08:16 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C06C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:08:16 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id n5so15750426ile.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:08:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TYESStGAKtRivaI7ala7/9w4Y1E5hiFC107ZMldjdA0=;
-        b=PIME04S2yuh00xcv/ew8BoRWNXcxwwXikY/oKGMYfQDfOhKMKqxbvI5zE0XEojzmIL
-         fP1Dq2ACY8i0tSuOowJ0pXcrqHpbNcMx/7cXaq1E4CQiYgHyOU0mW2oJo4D6jw4uEw0r
-         0YNdhoVexSnnIcnaiVgn8WuUjZqFa/8MlpLIk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TYESStGAKtRivaI7ala7/9w4Y1E5hiFC107ZMldjdA0=;
-        b=Y10mONzl/WLg+vu3o08U3tTPY+kAlilOIsrTUaKva3DyXDtkcyD/tJwt9hMSvuXCAM
-         deFp7KXLhBwxiyd8glJPpAQh3GpkZK8cgP4AtJvJA4cuJFAW6qfNExe2Z2HXHkqMjIyZ
-         kt983d/A8Pvy4sw4CDQ/5hA+QOUWSB9PN07iY6HNDqS66VAbKAoYHN8qia3cuOlcWvin
-         IAlh5owb61lMO3o9SX+avPajWynNYwNiAKWLTNzW0rxQ3JVYmGfduUgVeDOxDcQbMaKv
-         jksMDUcNOAqYEVQt9YXY5pfsF6DdNZWVbqvW7PvwchDZ4207JLRQm01YfXSe+49MMJpS
-         tHkA==
-X-Gm-Message-State: AOAM532Sdc78iflksm6AZfY5KqhejJdHjNANH1Lr2EZridXdRtFaKztb
-        Ydp5/qEWRiuPIzjt7pcxmxYNXU+XWPMkQkonSqXR
-X-Google-Smtp-Source: ABdhPJzUUHJyuXJ1duZZEAnozYsMbeM2qHFZmyqTe/AtJl9ylg9U5pPO43vAy8+qk+4tC/qsYULKaca4u7Xyar01sAs=
-X-Received: by 2002:a92:512:: with SMTP id q18mr8655253ile.147.1605542895690;
- Mon, 16 Nov 2020 08:08:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20201113202550.3693323-1-atish.patra@wdc.com> <20201113202550.3693323-3-atish.patra@wdc.com>
- <20201116150129.GA1643948@bogus>
-In-Reply-To: <20201116150129.GA1643948@bogus>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Mon, 16 Nov 2020 08:08:04 -0800
-Message-ID: <CAOnJCULj2F1ZMsWwA8KT-6yVi2bK7usw1EUJfrxTiVtrDqYAXQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/4] dt-bindings: riscv: microchip: Add YAML
- documentation for the PolarFire SoC
-To:     Rob Herring <robh@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>, devicetree@vger.kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>, Cyril.Jean@microchip.com,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Anup Patel <anup.patel@wdc.com>, Conor.Dooley@microchip.com,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Ivan.Griffin@microchip.com, Rob Herring <robh+dt@kernel.org>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731720AbgKPQJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:09:34 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:38293 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730962AbgKPQJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:09:34 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CZYtG2Bs9z9vDFh;
+        Mon, 16 Nov 2020 17:09:26 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id yKPDwfMvW28n; Mon, 16 Nov 2020 17:09:26 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CZYtG0w6Qz9vDFf;
+        Mon, 16 Nov 2020 17:09:26 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B852D8B7A5;
+        Mon, 16 Nov 2020 17:09:31 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 3MolZdsrsKwf; Mon, 16 Nov 2020 17:09:31 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5EDF28B7A3;
+        Mon, 16 Nov 2020 17:09:31 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 0A40766884; Mon, 16 Nov 2020 16:09:31 +0000 (UTC)
+Message-Id: <8a4ffe4798e9ea32aaaccdf85e411bb1beed3500.1605542955.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/32s: Handle PROTFAULT in hash_page() also for
+ CONFIG_PPC_KUAP
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 16 Nov 2020 16:09:31 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 7:23 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Fri, 13 Nov 2020 12:25:48 -0800, Atish Patra wrote:
-> > Add YAML DT binding documentation for the Microchip PolarFire SoC.
-> > It is documented at:
-> >
-> > https://www.microsemi.com/products/fpga-soc/polarfire-soc-icicle-quick-start-guide
-> >
-> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > ---
-> >  .../devicetree/bindings/riscv/microchip.yaml  | 27 +++++++++++++++++++
-> >  1 file changed, 27 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/riscv/microchip.yaml
-> >
->
->
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> ./Documentation/devicetree/bindings/riscv/microchip.yaml: $id: relative path/filename doesn't match actual path or filename
->         expected: http://devicetree.org/schemas/riscv/microchip.yaml#
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/sifive.yaml: duplicate '$id' value 'http://devicetree.org/schemas/riscv/sifive.yaml#'
->
->
+On hash 32 bits, handling minor protection faults like unsetting
+dirty flag is heavy if done from the normal page_fault processing,
+because it implies hash table software lookup for flushing the entry
+and then a DSI is taken anyway to add the entry back.
 
-Thanks for catching this. It was a copy paste error. I will fix it next version.
+When KUAP was implemented, as explained in commit a68c31fc01ef
+("powerpc/32s: Implement Kernel Userspace Access Protection"),
+protection faults has been diverted from hash_page() because
+hash_page() was not able to identify a KUAP fault.
 
-> See https://patchwork.ozlabs.org/patch/1400088
->
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Implement KUAP verification in hash_page(), by clearing write
+permission when the access is a kernel access and Ks is 1.
+This works regardless of the address because kernel segments always
+have Ks set to 0 while user segments have Ks set to 0 only
+when kernel write to userspace is granted.
 
+Then protection faults can be handled by hash_page() even for KUAP.
 
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/head_book3s_32.S |  8 --------
+ arch/powerpc/mm/book3s32/hash_low.S  | 13 +++++++++++--
+ 2 files changed, 11 insertions(+), 10 deletions(-)
 
+diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+index a0dda2a1f2df..a4b811044f97 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -294,11 +294,7 @@ BEGIN_MMU_FTR_SECTION
+ 	stw	r11, THR11(r10)
+ 	mfspr	r10, SPRN_DSISR
+ 	mfcr	r11
+-#ifdef CONFIG_PPC_KUAP
+-	andis.	r10, r10, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH | DSISR_PROTFAULT)@h
+-#else
+ 	andis.	r10, r10, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH)@h
+-#endif
+ 	mfspr	r10, SPRN_SPRG_THREAD
+ 	beq	hash_page_dsi
+ .Lhash_page_dsi_cont:
+@@ -323,11 +319,7 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
+ 	EXCEPTION_PROLOG handle_dar_dsisr=1
+ 	get_and_save_dar_dsisr_on_stack	r4, r5, r11
+ BEGIN_MMU_FTR_SECTION
+-#ifdef CONFIG_PPC_KUAP
+-	andis.	r0, r5, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH | DSISR_PROTFAULT)@h
+-#else
+ 	andis.	r0, r5, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH)@h
+-#endif
+ 	bne	handle_page_fault_tramp_2	/* if not, try to put a PTE */
+ 	rlwinm	r3, r5, 32 - 15, 21, 21		/* DSISR_STORE -> _PAGE_RW */
+ 	bl	hash_page
+diff --git a/arch/powerpc/mm/book3s32/hash_low.S b/arch/powerpc/mm/book3s32/hash_low.S
+index b2c912e517b9..9a56ba4f68f2 100644
+--- a/arch/powerpc/mm/book3s32/hash_low.S
++++ b/arch/powerpc/mm/book3s32/hash_low.S
+@@ -95,8 +95,6 @@ _GLOBAL(hash_page)
+ #else
+ 	rlwimi	r8,r4,23,20,28		/* compute pte address */
+ #endif
+-	rlwinm	r0,r3,32-3,24,24	/* _PAGE_RW access -> _PAGE_DIRTY */
+-	ori	r0,r0,_PAGE_ACCESSED|_PAGE_HASHPTE
+ 
+ 	/*
+ 	 * Update the linux PTE atomically.  We do the lwarx up-front
+@@ -112,7 +110,18 @@ _GLOBAL(hash_page)
+ #endif
+ .Lretry:
+ 	lwarx	r6,0,r8			/* get linux-style pte, flag word */
++#ifdef CONFIG_PPC_KUAP
++	mfsrin	r5,r4
++	rlwinm	r0,r9,28,_PAGE_RW	/* MSR[PR] => _PAGE_RW */
++	rlwinm	r5,r5,12,_PAGE_RW	/* Ks => _PAGE_RW */
++	andc	r5,r5,r0		/* Ks & ~MSR[PR] */
++	andc	r5,r6,r5		/* Clear _PAGE_RW when Ks = 1 && MSR[PR] = 0 */
++	andc.	r5,r3,r5		/* check access & ~permission */
++#else
+ 	andc.	r5,r3,r6		/* check access & ~permission */
++#endif
++	rlwinm	r0,r3,32-3,24,24	/* _PAGE_RW access -> _PAGE_DIRTY */
++	ori	r0,r0,_PAGE_ACCESSED|_PAGE_HASHPTE
+ #ifdef CONFIG_SMP
+ 	bne-	.Lhash_page_out		/* return if access not permitted */
+ #else
 -- 
-Regards,
-Atish
+2.25.0
+
