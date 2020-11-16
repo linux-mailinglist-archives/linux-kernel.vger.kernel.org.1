@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C229A2B4C8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B82A2B4C8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732740AbgKPRVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:21:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731167AbgKPRVE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:21:04 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8280FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:21:04 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id w24so24343936wmi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:21:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TVNxZXvAFGfvI59JHTRQIvmx9Brpc+QhKNZqlXN27jU=;
-        b=sgazbp/NsB8wEURe90/LiMH/0EqmS0+eHFiUVCcUXvBV7Zaa/frnYy5saNPCvV+zGq
-         z3lCXuN7LuVlZX29J9nQGi6BG1ahBIpyXoNm9plHVBj8K42qMLdXODPKANb79m1d0Ay3
-         NtukVdRqxO43sGyyfXWv/9yCDPD+ckUf9OGdSkS3Crn3yumizDZ9mK5YtNw2qGXz78tZ
-         o15lx2H9Fu2IT8Kbb1AArjG6efzDNeVqWJHu8vqA7W4xiGt0QyyPqMQ3cgn2DW15NJmg
-         e37xKWJ5hT7AHE9NuIUhjf7jMmDWVbReYDyzEGaqiXSvr55TqkzI5TAzO/0GYXz+Tj9E
-         xzFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TVNxZXvAFGfvI59JHTRQIvmx9Brpc+QhKNZqlXN27jU=;
-        b=eUvmJEck34KA2bfL0+jgkSGz+ocDBDfJQD9xQDw+eQmxZborPMmHSMuJ4S5Szaooxl
-         FHrkRrt9R59caSGV0aAf/LxmK4DSqpzXGNVZk6Py7Rk9iAVI5lYzRqXpajWSYer/tuRr
-         JnjBUtmx0ES28qkMfdbGinftKQTtq06rLeQMe8MlqQg0k77EwWlpBHG5xPXrmGIjAK4d
-         qZGgAnVGBo9C/wv9UFGjjteYuoHdE1e/HZJGWXJDetM4obYzt636PLdl+g22db+DoMXe
-         1QfvQebjrsdNYBoybCcbWOnwPPRArbIeJZAf1jA6oAh9CvI70lWW2PEvsqUPYVu/LEGa
-         Cqbg==
-X-Gm-Message-State: AOAM532bgiGmuI/ebiqecL0W06ec69Gk+tGWcmiRBAsUhFxWxJsHRSqJ
-        3Le7ehoENLgm7D7uPeg4Q6NBcQ==
-X-Google-Smtp-Source: ABdhPJwKXAH5BZYXrvvZIcd2M31ocnd8TGD8ZEgObeXRu5mlr0GO3843pNYIqy6d9J38kooRsprkDw==
-X-Received: by 2002:a1c:9ad3:: with SMTP id c202mr16034393wme.43.1605547263323;
-        Mon, 16 Nov 2020 09:21:03 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id z189sm15667693wme.23.2020.11.16.09.21.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Nov 2020 09:21:02 -0800 (PST)
-Subject: Re: [PATCH v3 0/2] nvmem: skip nodes with compatibles other than
- "nvmem-cell"
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, ceggers@arri.de,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-References: <20200428111829.2215-1-a.fatoum@pengutronix.de>
- <20200512141834.GA3023@bogus>
- <f03ecee7-c4b6-7a59-7ab8-42c5dfcaffc4@pengutronix.de>
- <3f050e96-8bd3-a77e-b1cf-1739a1be0c2d@pengutronix.de>
- <adb40d7d-c5e9-19b7-a561-10c33a6cf8ab@pengutronix.de>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <58738d86-7822-cd9f-6f05-6333d9251bf9@linaro.org>
-Date:   Mon, 16 Nov 2020 17:21:01 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1732752AbgKPRVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:21:20 -0500
+Received: from mga02.intel.com ([134.134.136.20]:41523 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731167AbgKPRVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 12:21:19 -0500
+IronPort-SDR: ZEjeT3vP1jQnxz+RQ6ew0/Bg91zRcphHWSu7VojpijAFNaSa1xF8XlxihM2xkqL19h+sfdWm3D
+ TAfRs41yV8GA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="157806620"
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="157806620"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 09:21:18 -0800
+IronPort-SDR: wOYpd/XKtoISEKfb603Y2X4wJ81oZKgJps83wze/231KkJKVbCD+WIPKUbpv77wUIZ2MoHXJWb
+ y76g/1yAsMMg==
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="358535567"
+Received: from pgao1-mobl1.amr.corp.intel.com (HELO [10.212.6.211]) ([10.212.6.211])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 09:21:17 -0800
+Subject: Re: [PATCH v41 00/24] Intel SGX foundations
+To:     Borislav Petkov <bp@alien8.de>, Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, sean.j.christopherson@intel.com,
+        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
+References: <20201112220135.165028-1-jarkko@kernel.org>
+ <20201116165544.GC1131@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <eb8100e8-1439-4dd3-ba7b-68e8919ab5b7@intel.com>
+Date:   Mon, 16 Nov 2020 09:21:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <adb40d7d-c5e9-19b7-a561-10c33a6cf8ab@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201116165544.GC1131@zn.tnic>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/16/20 8:55 AM, Borislav Petkov wrote:
+> On Fri, Nov 13, 2020 at 12:01:11AM +0200, Jarkko Sakkinen wrote:
+>> Sean Christopherson is a major contributor to this series.  However, he
+>> has left Intel and his @intel.com address will soon be bouncing.  He
+>> does not have a email he wants us to substitute or put in .mailmap for
+>> now.  To avoid subjecting everyone to bounces, we have commented out his
+>> tag lines in the commit messages.
+> Don't do that - there's a --suppress-cc=<category> cmdline switch to
+> git-send-email for exactly those things.
 
+That works when there is something universal across the set, like if
+Sean Signed-off-by on each patch and we didn't have any other SoB's.
+Sean is also mentioned in at least one of five different tags:
 
-On 16/11/2020 17:04, Ahmad Fatoum wrote:
->>> To allow for co-existence of NVMEM cells and other subnodes, would following patch be
->>> acceptable to you and Srini?
->> Gentle ping. Would the patch below be acceptable?
-> Did you have time to look at this?
-> 
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Tested-by: Sean Christopherson <sean.j.christopherson@intel.com>
 
-I did reply back to this thread way back in June saying that
-
-"Thanks for the patch, this looks good to me, lets wait for Rob to ack 
-the bindings! "
-
-
---srini
+The bounces aren't the end of the world, they're just annoying.
