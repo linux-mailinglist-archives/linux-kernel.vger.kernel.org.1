@@ -2,44 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3752B461C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3CE2B4654
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730270AbgKPOpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:45:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:40702 "EHLO foss.arm.com"
+        id S1730549AbgKPOsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:48:13 -0500
+Received: from mga11.intel.com ([192.55.52.93]:4038 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728041AbgKPOpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:45:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC84031B;
-        Mon, 16 Nov 2020 06:45:03 -0800 (PST)
-Received: from [10.37.12.42] (unknown [10.37.12.42])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84C973F718;
-        Mon, 16 Nov 2020 06:45:01 -0800 (PST)
-Subject: Re: [PATCH mm v3 00/19] kasan: boot parameters for hardware tag-based
- mode
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1605305978.git.andreyknvl@google.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <fd7ab51e-269b-fffc-f504-7f3af862c914@arm.com>
-Date:   Mon, 16 Nov 2020 14:48:08 +0000
+        id S1730274AbgKPOsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:48:11 -0500
+IronPort-SDR: LAJqivcHDpZ0px52oGkX/NKBWeX8XKGNmnbnxjfzF2dT1DILxS1BM7YIkDK5gr0gJLwQEL5SH5
+ jT+H3B+zPSQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="167243907"
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="167243907"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:48:11 -0800
+IronPort-SDR: Xaqfas80LAh/NU/b0N72/1M2eqTlErFT5vBqC4bzu57KwT2hl3j1jmAevXw/QQIyqZC7+MhrtD
+ IEQNbP5+zfcg==
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="358486017"
+Received: from pgao1-mobl1.amr.corp.intel.com (HELO [10.212.6.211]) ([10.212.6.211])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:48:10 -0800
+Subject: Re: [PATCH v6] lib: optimize cpumask_local_spread()
+To:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Yuqi Jin <jinyuqi@huawei.com>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Juergen Gross <jgross@suse.com>,
+        Paul Burton <paul.burton@mips.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+References: <1604410767-55947-1-git-send-email-zhangshaokun@hisilicon.com>
+ <3e2e760d-e4b9-8bd0-a279-b23bd7841ae7@intel.com>
+ <eec4c1b6-8dad-9d07-7ef4-f0fbdcff1785@hisilicon.com>
+ <5e8b0304-4de1-4bdc-41d2-79fa5464fbc7@intel.com>
+ <1ca0d77f-7cf3-57d8-af23-169975b63b32@hisilicon.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <11889127-21f0-bba9-7beb-5a07f263923e@intel.com>
+Date:   Mon, 16 Nov 2020 06:48:09 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <cover.1605305978.git.andreyknvl@google.com>
+In-Reply-To: <1ca0d77f-7cf3-57d8-af23-169975b63b32@hisilicon.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,202 +100,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/20 10:19 PM, Andrey Konovalov wrote:
-> === Overview
-> 
-> Hardware tag-based KASAN mode [1] is intended to eventually be used in
-> production as a security mitigation. Therefore there's a need for finer
-> control over KASAN features and for an existence of a kill switch.
-> 
-> This patchset adds a few boot parameters for hardware tag-based KASAN that
-> allow to disable or otherwise control particular KASAN features, as well
-> as provides some initial optimizations for running KASAN in production.
-> 
-> There's another planned patchset what will further optimize hardware
-> tag-based KASAN, provide proper benchmarking and tests, and will fully
-> enable tag-based KASAN for production use.
-> 
-> Hardware tag-based KASAN relies on arm64 Memory Tagging Extension (MTE)
-> [2] to perform memory and pointer tagging. Please see [3] and [4] for
-> detailed analysis of how MTE helps to fight memory safety problems.
-> 
-> The features that can be controlled are:
-> 
-> 1. Whether KASAN is enabled at all.
-> 2. Whether KASAN collects and saves alloc/free stacks.
-> 3. Whether KASAN panics on a detected bug or not.
-> 
-> The patch titled "kasan: add and integrate kasan boot parameters" of this
-> series adds a few new boot parameters.
-> 
-> kasan.mode allows to choose one of three main modes:
-> 
-> - kasan.mode=off - KASAN is disabled, no tag checks are performed
-> - kasan.mode=prod - only essential production features are enabled
-> - kasan.mode=full - all KASAN features are enabled
-> 
-> The chosen mode provides default control values for the features mentioned
-> above. However it's also possible to override the default values by
-> providing:
-> 
-> - kasan.stacktrace=off/on - enable stacks collection
->                             (default: on for mode=full, otherwise off)
-> - kasan.fault=report/panic - only report tag fault or also panic
->                              (default: report)
-> 
-> If kasan.mode parameter is not provided, it defaults to full when
-> CONFIG_DEBUG_KERNEL is enabled, and to prod otherwise.
-> 
-> It is essential that switching between these modes doesn't require
-> rebuilding the kernel with different configs, as this is required by
-> the Android GKI (Generic Kernel Image) initiative.
-> 
+On 11/15/20 11:59 PM, Shaokun Zhang wrote:
+>> Do you want to take another pass at submitting this patch?
+> 'Another pass'? Sorry for my bad understading, I don't follow it correctly.
 
-Tested-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-
-> === Benchmarks
-> 
-> For now I've only performed a few simple benchmarks such as measuring
-> kernel boot time and slab memory usage after boot. There's an upcoming
-> patchset which will optimize KASAN further and include more detailed
-> benchmarking results.
-> 
-> The benchmarks were performed in QEMU and the results below exclude the
-> slowdown caused by QEMU memory tagging emulation (as it's different from
-> the slowdown that will be introduced by hardware and is therefore
-> irrelevant).
-> 
-> KASAN_HW_TAGS=y + kasan.mode=off introduces no performance or memory
-> impact compared to KASAN_HW_TAGS=n.
-> 
-> kasan.mode=prod (manually excluding tagging) introduces 3% of performance
-> and no memory impact (except memory used by hardware to store tags)
-> compared to kasan.mode=off.
-> 
-> kasan.mode=full has about 40% performance and 30% memory impact over
-> kasan.mode=prod. Both come from alloc/free stack collection.
-> 
-> === Notes
-> 
-> This patchset is available here:
-> 
-> https://github.com/xairy/linux/tree/up-boot-mte-v3
-> 
-> This patchset is based on v10 of "kasan: add hardware tag-based mode for
-> arm64" patchset [1].
-> 
-> For testing in QEMU hardware tag-based KASAN requires:
-> 
-> 1. QEMU built from master [6] (use "-machine virt,mte=on -cpu max" arguments
->    to run).
-> 2. GCC version 10.
-> 
-> [1] https://lkml.org/lkml/2020/11/13/1154
-> [2] https://community.arm.com/developer/ip-products/processors/b/processors-ip-blog/posts/enhancing-memory-safety
-> [3] https://arxiv.org/pdf/1802.09517.pdf
-> [4] https://github.com/microsoft/MSRC-Security-Research/blob/master/papers/2020/Security%20analysis%20of%20memory%20tagging.pdf
-> [5] https://source.android.com/devices/architecture/kernel/generic-kernel-image
-> [6] https://github.com/qemu/qemu
-> 
-> === History
-> 
-> Changes v2 -> v3:
-> - Rebase onto v10 of the HW_TAGS series.
-> - Add missing return type for kasan_enabled().
-> - Always define random_tag() as a function.
-> - Mark kasan wrappers as __always_inline.
-> - Don't "kasan: simplify kasan_poison_kfree" as it's based on a false
->   assumption, add a comment instead.
-> - Address documentation comments.
-> - Use <linux/static_key.h> instead of <linux/jump_label.h>.
-> - Rework switches in mm/kasan/hw_tags.c.
-> - Don't init tag in ____kasan_kmalloc().
-> - Correctly check SLAB_TYPESAFE_BY_RCU flag in mm/kasan/common.c.
-> - Readability fixes for "kasan: clean up metadata allocation and usage".
-> - Change kasan_never_merge() to return SLAB_KASAN instead of excluding it
->   from flags.
-> - (Vincenzo) Address concerns from checkpatch.pl (courtesy of Marco Elver).
-> 
-> Changes v1 -> v2:
-> - Rebased onto v9 of the HW_TAGS patchset.
-> - Don't initialize static branches in kasan_init_hw_tags_cpu(), as
->   cpu_enable_mte() can't sleep; do in in kasan_init_hw_tags() instead.
-> - Rename kasan.stacks to kasan.stacktrace.
-> 
-> Changes RFC v2 -> v1:
-> - Rebrand the patchset from fully enabling production use to partially
->   addressing that; another optimization and testing patchset will be
->   required.
-> - Rebase onto v8 of KASAN_HW_TAGS series.
-> - Fix "ASYNC" -> "async" typo.
-> - Rework depends condition for VMAP_STACK and update config text.
-> - Remove unneeded reset_tag() macro, use kasan_reset_tag() instead.
-> - Rename kasan.stack to kasan.stacks to avoid confusion with stack
->   instrumentation.
-> - Introduce kasan_stack_collection_enabled() and kasan_is_enabled()
->   helpers.
-> - Simplify kasan_stack_collection_enabled() usage.
-> - Rework SLAB_KASAN flag and metadata allocation (see the corresponding
->   patch for details).
-> - Allow cache merging with KASAN_HW_TAGS when kasan.stacks is off.
-> - Use sync mode dy default for both prod and full KASAN modes.
-> - Drop kasan.trap=sync/async boot parameter, as async mode isn't supported
->   yet.
-> - Choose prod or full mode depending on CONFIG_DEBUG_KERNEL when no
->   kasan.mode boot parameter is provided.
-> - Drop krealloc optimization changes, those will be included in a separate
->   patchset.
-> - Update KASAN documentation to mention boot parameters.
-> 
-> Changes RFC v1 -> RFC v2:
-> - Rework boot parameters.
-> - Drop __init from empty kasan_init_tags() definition.
-> - Add cpu_supports_mte() helper that can be used during early boot and use
->   it in kasan_init_tags()
-> - Lots of new KASAN optimization commits.
-> 
-> Andrey Konovalov (19):
->   kasan: simplify quarantine_put call site
->   kasan: rename get_alloc/free_info
->   kasan: introduce set_alloc_info
->   kasan, arm64: unpoison stack only with CONFIG_KASAN_STACK
->   kasan: allow VMAP_STACK for HW_TAGS mode
->   kasan: remove __kasan_unpoison_stack
->   kasan: inline kasan_reset_tag for tag-based modes
->   kasan: inline random_tag for HW_TAGS
->   kasan: open-code kasan_unpoison_slab
->   kasan: inline (un)poison_range and check_invalid_free
->   kasan: add and integrate kasan boot parameters
->   kasan, mm: check kasan_enabled in annotations
->   kasan, mm: rename kasan_poison_kfree
->   kasan: don't round_up too much
->   kasan: simplify assign_tag and set_tag calls
->   kasan: clarify comment in __kasan_kfree_large
->   kasan: clean up metadata allocation and usage
->   kasan, mm: allow cache merging with no metadata
->   kasan: update documentation
-> 
->  Documentation/dev-tools/kasan.rst | 186 ++++++++++++--------
->  arch/Kconfig                      |   8 +-
->  arch/arm64/kernel/sleep.S         |   2 +-
->  arch/x86/kernel/acpi/wakeup_64.S  |   2 +-
->  include/linux/kasan.h             | 245 ++++++++++++++++++++------
->  include/linux/mm.h                |  22 ++-
->  mm/kasan/common.c                 | 283 ++++++++++++++++++------------
->  mm/kasan/generic.c                |  27 +--
->  mm/kasan/hw_tags.c                | 185 +++++++++++++++----
->  mm/kasan/kasan.h                  | 120 +++++++++----
->  mm/kasan/quarantine.c             |  13 +-
->  mm/kasan/report.c                 |  61 ++++---
->  mm/kasan/report_hw_tags.c         |   2 +-
->  mm/kasan/report_sw_tags.c         |  15 +-
->  mm/kasan/shadow.c                 |   5 +-
->  mm/kasan/sw_tags.c                |  17 +-
->  mm/mempool.c                      |   4 +-
->  mm/slab_common.c                  |   3 +-
->  18 files changed, 824 insertions(+), 376 deletions(-)
-> 
-
--- 
-Regards,
-Vincenzo
+Could you please incorporate the feedback that I've given about this
+version of the patch and write a new version?
