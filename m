@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371C62B3C14
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 05:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863872B3C16
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 05:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgKPEUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 23:20:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52053 "EHLO
+        id S1727019AbgKPEVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 23:21:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43496 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726198AbgKPEUK (ORCPT
+        by vger.kernel.org with ESMTP id S1726925AbgKPEVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 23:20:10 -0500
+        Sun, 15 Nov 2020 23:21:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605500408;
+        s=mimecast20190719; t=1605500506;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=b/zBHbSGh+sm8yLVC4/oST7xymuxq5Efw+Tm5E/iazs=;
-        b=S74Y2bIvYs04mB6Q5fE3KSZoShwjExvRhk7C6NEPMyeeRE+dozmpRReC12Xe9/o74dCBy/
-        0kMgrgvoGyWmHhyM370Oi4zB+TTPw3S9uj3YExZDhssRhyPwnDVkzL5EKvoKhXK5lsmucE
-        8hWkOLr5+68YJJ0JxkLVSvRle7ScsH0=
+        bh=jrOtbnB72prq10/Mp21JWfqhwYU9mLgYj1aTjQoBku4=;
+        b=XEp32Bemu7d+UpUqHXJYcQQLZM9CRJyoqLWHXyjZ/cQNNC/kwI5CgoP7GGBwnDL9wtD3uB
+        0Aaee+rALzj5r398o2tKIHswykons81N54FaD71xrbwi9GFzRfkJKHJvyQf0WpE0iUgWev
+        PFUnG19Gv/fqUtbYpP5rnbH8lneh3fM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-yEma_x8EPtyLRI7i3TqwDA-1; Sun, 15 Nov 2020 23:20:06 -0500
-X-MC-Unique: yEma_x8EPtyLRI7i3TqwDA-1
+ us-mta-537-2tUIL-GPMayRVNkL3_HVdw-1; Sun, 15 Nov 2020 23:21:44 -0500
+X-MC-Unique: 2tUIL-GPMayRVNkL3_HVdw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 989631074653;
-        Mon, 16 Nov 2020 04:20:05 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8840B427FE;
+        Mon, 16 Nov 2020 04:21:43 +0000 (UTC)
 Received: from [10.72.13.126] (ovpn-13-126.pek2.redhat.com [10.72.13.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 18EA860C84;
-        Mon, 16 Nov 2020 04:19:56 +0000 (UTC)
-Subject: Re: [PATCH RFC 09/12] vdpa_sim: make vdpasim->buffer size
- configurable
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A3E3C60C43;
+        Mon, 16 Nov 2020 04:21:34 +0000 (UTC)
+Subject: Re: [PATCH RFC 10/12] vdpa_sim: split vdpasim_virtqueue's iov field
+ in riov and wiov
 To:     Stefano Garzarella <sgarzare@redhat.com>,
         virtualization@lists.linux-foundation.org
 Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
@@ -44,14 +44,14 @@ Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Max Gurtovoy <mgurtovoy@nvidia.com>
 References: <20201113134712.69744-1-sgarzare@redhat.com>
- <20201113134712.69744-10-sgarzare@redhat.com>
+ <20201113134712.69744-11-sgarzare@redhat.com>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <433bbdf4-b69c-7ae8-a734-923ffac646eb@redhat.com>
-Date:   Mon, 16 Nov 2020 12:19:55 +0800
+Message-ID: <f19a5d14-72b4-4185-183d-84966ee2e5b3@redhat.com>
+Date:   Mon, 16 Nov 2020 12:21:33 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201113134712.69744-10-sgarzare@redhat.com>
+In-Reply-To: <20201113134712.69744-11-sgarzare@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -62,8 +62,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 2020/11/13 下午9:47, Stefano Garzarella wrote:
-> Allow each device to specify the size of the buffer allocated
-> in vdpa_sim.
+> vringh_getdesc_iotlb() manages 2 iovs for writable and readable
+> descriptors. This is very useful for the block device, where for
+> each request we have both types of descriptor.
+>
+> Let's split the vdpasim_virtqueue's iov field in riov and wiov
+> to use them with vringh_getdesc_iotlb().
 >
 > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 
@@ -72,59 +76,79 @@ Acked-by: Jason Wang <jasowang@redhat.com>
 
 
 > ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.h     | 1 +
->   drivers/vdpa/vdpa_sim/vdpa_sim.c     | 2 +-
->   drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 1 +
->   drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 1 +
->   4 files changed, 4 insertions(+), 1 deletion(-)
+>   drivers/vdpa/vdpa_sim/vdpa_sim.h     | 3 ++-
+>   drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 6 +++---
+>   drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 8 ++++----
+>   3 files changed, 9 insertions(+), 8 deletions(-)
 >
 > diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.h b/drivers/vdpa/vdpa_sim/vdpa_sim.h
-> index f7e1fe0a88d3..cc21e07aa2f7 100644
+> index cc21e07aa2f7..0d4629675e4b 100644
 > --- a/drivers/vdpa/vdpa_sim/vdpa_sim.h
 > +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.h
-> @@ -49,6 +49,7 @@ struct vdpasim_device {
+> @@ -27,7 +27,8 @@ struct vdpasim;
 >   
->   struct vdpasim_init_attr {
->   	struct vdpasim_device device;
-> +	size_t buffer_size;
->   	int batch_mapping;
->   
->   	work_func_t	work_fn;
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index bd034fbf4683..3863d49e0d6d 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -223,7 +223,7 @@ struct vdpasim *vdpasim_create(struct vdpasim_init_attr *attr)
->   	if (!vdpasim->iommu)
->   		goto err_iommu;
->   
-> -	vdpasim->buffer = kvmalloc(PAGE_SIZE, GFP_KERNEL);
-> +	vdpasim->buffer = kvmalloc(attr->buffer_size, GFP_KERNEL);
->   	if (!vdpasim->buffer)
->   		goto err_iommu;
->   
+>   struct vdpasim_virtqueue {
+>   	struct vringh vring;
+> -	struct vringh_kiov iov;
+> +	struct vringh_kiov riov;
+> +	struct vringh_kiov wiov;
+>   	unsigned short head;
+>   	bool ready;
+>   	u64 desc_addr;
 > diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-> index f456a0e4e097..122a3c039507 100644
+> index 122a3c039507..8e41b3ab98d5 100644
 > --- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
 > +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-> @@ -100,6 +100,7 @@ static int __init vdpasim_blk_init(void)
->   	attr.device.update_config = vdpasim_blk_update_config;
+> @@ -41,13 +41,13 @@ static void vdpasim_blk_work(struct work_struct *work)
+>   		if (!vq->ready)
+>   			continue;
 >   
->   	attr.work_fn = vdpasim_blk_work;
-> +	attr.buffer_size = PAGE_SIZE;
+> -		while (vringh_getdesc_iotlb(&vq->vring, &vq->iov, &vq->iov,
+> +		while (vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
+>   					    &vq->head, GFP_ATOMIC) > 0) {
 >   
->   	vdpasim_blk_dev = vdpasim_create(&attr);
->   	if (IS_ERR(vdpasim_blk_dev)) {
+>   			int write;
+>   
+> -			vq->iov.i = vq->iov.used - 1;
+> -			write = vringh_iov_push_iotlb(&vq->vring, &vq->iov, &status, 1);
+> +			vq->wiov.i = vq->wiov.used - 1;
+> +			write = vringh_iov_push_iotlb(&vq->vring, &vq->wiov, &status, 1);
+>   			if (write <= 0)
+>   				break;
+>   
 > diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-> index b9372fdf2415..d0a1403f64b2 100644
+> index d0a1403f64b2..783b1e85b09c 100644
 > --- a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
 > +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-> @@ -124,6 +124,7 @@ static int __init vdpasim_net_init(void)
+> @@ -47,12 +47,12 @@ static void vdpasim_net_work(struct work_struct *work)
 >   
->   	attr.work_fn = vdpasim_net_work;
->   	attr.batch_mapping = batch_mapping;
-> +	attr.buffer_size = PAGE_SIZE;
+>   	while (true) {
+>   		total_write = 0;
+> -		err = vringh_getdesc_iotlb(&txq->vring, &txq->iov, NULL,
+> +		err = vringh_getdesc_iotlb(&txq->vring, &txq->riov, NULL,
+>   					   &txq->head, GFP_ATOMIC);
+>   		if (err <= 0)
+>   			break;
 >   
->   	vdpasim_net_dev = vdpasim_create(&attr);
->   	if (IS_ERR(vdpasim_net_dev)) {
+> -		err = vringh_getdesc_iotlb(&rxq->vring, NULL, &rxq->iov,
+> +		err = vringh_getdesc_iotlb(&rxq->vring, NULL, &rxq->wiov,
+>   					   &rxq->head, GFP_ATOMIC);
+>   		if (err <= 0) {
+>   			vringh_complete_iotlb(&txq->vring, txq->head, 0);
+> @@ -60,13 +60,13 @@ static void vdpasim_net_work(struct work_struct *work)
+>   		}
+>   
+>   		while (true) {
+> -			read = vringh_iov_pull_iotlb(&txq->vring, &txq->iov,
+> +			read = vringh_iov_pull_iotlb(&txq->vring, &txq->riov,
+>   						     vdpasim->buffer,
+>   						     PAGE_SIZE);
+>   			if (read <= 0)
+>   				break;
+>   
+> -			write = vringh_iov_push_iotlb(&rxq->vring, &rxq->iov,
+> +			write = vringh_iov_push_iotlb(&rxq->vring, &rxq->wiov,
+>   						      vdpasim->buffer, read);
+>   			if (write <= 0)
+>   				break;
 
