@@ -2,181 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466BD2B41B4
+	by mail.lfdr.de (Postfix) with ESMTP id B3AB82B41B5
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729231AbgKPKrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:47:35 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:8944 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727107AbgKPKre (ORCPT
+        id S1729256AbgKPKsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:48:13 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:48364 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729200AbgKPKsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:47:34 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AGAbJbu017760;
-        Mon, 16 Nov 2020 11:47:04 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+        Mon, 16 Nov 2020 05:48:12 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AGAlebE025199;
+        Mon, 16 Nov 2020 04:47:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
  references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=ZnFMeOsKLgn0Gfn0T/aAv7kklPoIvURiSXIZWk2Z01I=;
- b=uik4X0nCyvzFs6usxbIyAHGmsY18uLomUO3eqmzoq8mPdJFLaCBkMcXCWAI3K6paJQzA
- bLv7QazcOlv9CGhejn15zM05SJbrsFyaxlg5g/bcDdgU7i0SgZM7MYNav6KQDvR96T21
- t/u1SqJ0K4/WlJBFMWNcGdtUaEBEmNogUBgDb/BhMsXTC+JN2BoTafVRop8dB/Optur7
- BGr0ijplwNRfNyZRnbgsUUz3tg1zGGAc+d4fzVuJwFflBbFCq/fpFxHLCbC3t28WzF0B
- BOmd1PzXmyN0Dv39/rQmC1O1+RAdJU1GNj7dPdX/qG5mApkYLAntx+5R7/JsIjKEqawO Tw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34t5k4tbbc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 11:47:04 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C9FA710002A;
-        Mon, 16 Nov 2020 11:47:01 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9D869251AEB;
-        Mon, 16 Nov 2020 11:47:01 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov
- 2020 11:47:00 +0100
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
- for rproc serial
-To:     Christoph Hellwig <hch@infradead.org>,
-        Alexander Lobakin <alobakin@pm.me>
-CC:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
- <20201116091950.GA30524@infradead.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <ca183081-5a9f-0104-bf79-5fea544c9271@st.com>
-Date:   Mon, 16 Nov 2020 11:46:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=po7HDvoELwneNBHq3Yb/YcprQmiFOlqAjo/qipMHhFE=;
+ b=Q5UOkcjsZ+pymsCfXOCgs+hkNHbQ95CDQf3PeWggUTSNSYzZ8s3E7HN1qF+dGUrwpCGS
+ fH82pO+X7LbBUwHlV2aqJreRJaio5UE2Vw0pqeMWsj7xNe5Koe5S29j580s4wtc/JAfh
+ L7YTX7q7IoCoZCYWJ6vfVa/rcR17X1h51CgvKJnduDYlpLQ6DIFk58Q8y++uMwfJ3+rk
+ 3QdQ/vfR8XdpDSi9HPTgp9weyU9UNp6yimQ3YUkSvbCIhzSVMwQbPi/IdTS7ORRzDzVS
+ EiCO6HEccgIZW7w/ixMatH/w+KiZbvwUvdmmNjWN4WDk6FkGKB/ZoI0v7MAXdBgwZTgZ JA== 
+Received: from ediex02.ad.cirrus.com ([5.172.152.52])
+        by mx0b-001ae601.pphosted.com with ESMTP id 34tchtj58p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 16 Nov 2020 04:47:39 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 16 Nov
+ 2020 10:47:38 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 16 Nov 2020 10:47:38 +0000
+Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.65.1])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2A6F12A1;
+        Mon, 16 Nov 2020 10:47:38 +0000 (UTC)
+Subject: Re: [PATCH] lib: vsprintf: Avoid 32-bit truncation in vsscanf number
+ parsing
+To:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+CC:     <sergey.senozhatsky@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+References: <20201112111759.16377-1-rf@opensource.cirrus.com>
+ <20201112103546.5981815b@gandalf.local.home>
+ <b200a554-be81-f8b0-28a4-39c6f3c6900f@opensource.cirrus.com>
+ <20201112120427.72c0a237@gandalf.local.home> <20201113140052.GM1602@alley>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <efd71e08-2df2-db4e-4448-a096bf05b667@opensource.cirrus.com>
+Date:   Mon, 16 Nov 2020 10:47:37 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201116091950.GA30524@infradead.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201113140052.GM1602@alley>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-16_03:2020-11-13,2020-11-16 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 mlxlogscore=999
+ mlxscore=0 bulkscore=0 adultscore=0 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 spamscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011160063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-On 11/16/20 10:19 AM, Christoph Hellwig wrote:
-> I just noticed this showing up in Linus' tree and I'm not happy.
+On 13/11/2020 14:00, Petr Mladek wrote:
+> On Thu 2020-11-12 12:04:27, Steven Rostedt wrote:
+>> On Thu, 12 Nov 2020 15:46:46 +0000
+>> Richard Fitzgerald <rf@opensource.cirrus.com> wrote:
+>>
+>>> See this thread from 2014 where the field width problem was raised and
+>>> explained:
+>>> http://lkml.iu.edu/hypermail/linux/kernel/1401.1/03443.html
+>>>
+>>> and the reply from Linus Torvalds that was against fixing field width
+>>> handling:
+>>> http://lkml.iu.edu/hypermail/linux/kernel/1401.1/03488.html
+>>
+>> Thanks for the pointers, but note, that references to older emails should
+>> use https://lore.kernel.org/ as these links format the output really
+>> horribly.
+>>
+>>>
+>>> which I assume is why the field handling wasn't unoptimized to be
+>>> strictly correct.
 > 
-> This whole model of the DMA subdevices in remoteproc is simply broken.
+> Honestly, the handling of the number width by div does not look like
+> a real optimization to me. It avoids the need of the temporary buffer
+> by expensive and error-prone operation.
 > 
-> We really need to change the virtio code pass an expicit DMA device (
-> similar to what e.g. the USB and RDMA code does), instead of faking up
-> devices with broken adhoc inheritance of DMA properties and magic poking
-> into device parent relationships.
-
-For your formation I started some stuff on my side to be able to declare the
-virtio device in DT as a remoteproc child node.
-
-https://lkml.org/lkml/2020/4/16/1817
-
-Quite big refactoring, but could be a way to answer...
-
-Regards,
-Arnaud
-
+> IMHO, it is safe to assume that the width will be limited so that
+> the value would never overflow.
 > 
-> Bjorn, I thought you were going to look into this a while ago?
-
-
+> The longest supported number would be (2^64 - 1) in octal. If I am
+> counting correctly, it is
 > 
+>       01777777777777777777777
 > 
-> On Wed, Nov 04, 2020 at 03:31:36PM +0000, Alexander Lobakin wrote:
->> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
->> specific dma memory pool"), every remoteproc has a DMA subdevice
->> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
->> DMA capabilities from the corresponding platform device. This allowed
->> to associate different DMA pools with each vdev, and required from
->> virtio drivers to perform DMA operations with the parent device
->> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
+> and it fits into buf[24] including the trailing '\0'.
+> 
+> We could call WARN_ON_ONCE() when the width >= 24 is higher.
+> And we could add a compiler check when long long is bigger
+> than 64-bit.
+> 
+>> Yes, but perhaps its time to fix the real problem and not just add
+>> band-aids. That thread is over 6 years old (the email was from Jan 14, 2014)
 >>
->> virtio_rpmsg_bus was already changed in the same merge cycle with
->> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
->> but virtio_console did not. In fact, operations using the grandparent
->> worked fine while the grandparent was the platform device, but since
->> commit c774ad010873 ("remoteproc: Fix and restore the parenting
->> hierarchy for vdev") this was changed, and now the grandparent device
->> is the remoteproc device without any DMA capabilities.
->> So, starting v5.8-rc1 the following warning is observed:
+>> $ git diff `git rev-list --before 'Jan 14 2014' HEAD --max-count=1` |
+>>    grep '^+' | grep sscanf | wc -l
+>> 622
 >>
->> [    2.483925] ------------[ cut here ]------------
->> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
->> [    2.489152] Modules linked in: virtio_console(+)
->> [    2.503737]  virtio_rpmsg_bus rpmsg_core
->> [    2.508903]
->> [    2.528898] <Other modules, stack and call trace here>
->> [    2.913043]
->> [    2.914907] ---[ end trace 93ac8746beab612c ]---
->> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
->>
->> kernel/dma/mapping.c:427 is:
->>
->> WARN_ON_ONCE(!dev->coherent_dma_mask);
->>
->> obviously because the grandparent now is remoteproc dev without any
->> DMA caps:
->>
->> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
->>
->> Fix this the same way as it was for virtio_rpmsg_bus, using just the
->> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
->> operations.
->> This also allows now to reserve DMA pools/buffers for rproc serial
->> via Device Tree.
->>
->> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
->> Cc: stable@vger.kernel.org # 5.1+
->> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->> ---
->>  drivers/char/virtio_console.c | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
->> index a2da8f768b94..1836cc56e357 100644
->> --- a/drivers/char/virtio_console.c
->> +++ b/drivers/char/virtio_console.c
->> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_device *vdev, size_t buf_size
->>  		/*
->>  		 * Allocate DMA memory from ancestor. When a virtio
->>  		 * device is created by remoteproc, the DMA memory is
->> -		 * associated with the grandparent device:
->> -		 * vdev => rproc => platform-dev.
->> +		 * associated with the parent device:
->> +		 * virtioY => remoteprocX#vdevYbuffer.
->>  		 */
->> -		if (!vdev->dev.parent || !vdev->dev.parent->parent)
->> +		buf->dev = vdev->dev.parent;
->> +		if (!buf->dev)
->>  			goto free_buf;
->> -		buf->dev = vdev->dev.parent->parent;
->>  
->>  		/* Increase device refcnt to avoid freeing it */
->>  		get_device(buf->dev);
->> -- 
->> 2.29.2
->>
->>
-> ---end quoted text---
+>> There's been over 600 new additions of sscanf(). Now is the time to just
+>> fix it correctly.
+> 
+> And the following one might suffer from this problem:
+> 
+> drivers/soundwire/slave.c:              ret = sscanf(compat, "sdw%01x%04hx%04hx%02hhx", &sdw_version,
+> 
+
+That's exactly the bug I have.
+I'll look at reworking the code to handle number field widths properly.
+
+> I agree with Steven that it is time to fix it properly.
+> 
+> Best Regards,
+> Petr
 > 
