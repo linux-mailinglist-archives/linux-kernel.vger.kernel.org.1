@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1BC2B4375
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB1F2B4381
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729966AbgKPMRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:17:20 -0500
-Received: from mga01.intel.com ([192.55.52.88]:15646 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727895AbgKPMRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:17:20 -0500
-IronPort-SDR: 6oq0t1bYNpKeW4lYCS5jkv7/YPgOOgOyDiG9F5pLuje8mK619CwZgVAaVW81RbqMn1K5TeYgeR
- MWpQI4UpZsrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="188780176"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="188780176"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:17:19 -0800
-IronPort-SDR: Whyn+cS//VO3c5R3MkkCVwvD9BJU6Z2pjXR3H+zOz3Q+y1CEPpLJHO42XMlzRklf5COYntBYYC
- ZrhjaeCNWDsg==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="543582898"
-Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.228.209]) ([10.249.228.209])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:17:16 -0800
-Subject: [PATCH v3 04/12] perf record: stop threads in the end of trace
- streaming
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>
-References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <d031b690-9554-f6e7-c406-bb7bc45c1d71@linux.intel.com>
-Date:   Mon, 16 Nov 2020 15:17:14 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1729983AbgKPMSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:18:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726754AbgKPMSP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:18:15 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B96C0613CF;
+        Mon, 16 Nov 2020 04:18:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bQMq5TZF86IM/5Y94jT9C5QIrKLF+iu+uQmY1bh2ZzQ=; b=eSQGkQEayKHgS/hoe3uDgFONQ3
+        Yx3Ye2/ArnTKwvDcz2D218ytbiMgxdS0bbWfiBz8QeeRvkZQ0O4rztVu5HZf9xGCumpsHiwSFSD+H
+        paVr3v8GPt4dfe6X+b31/j3tAFcg4wCSf68QkPbhqsiU7bkECtPA6pZjYd6FmPEQAluQOcTeWqCF3
+        IAnSgq2PdxWz1exvOeZ/5ONexQjsFidRpjCZ5audNW0X4a20/jahfZugICLYZSMJUyUOIy9V9M7lq
+        NIaJzH2pTgxAXElk7Jx8JdPKBqXA7T6sLwZBMobBCleos4MCeD5Bwb+QzPe632b7nSMkNUcmPtavH
+        LQQ3Q2oA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kedSB-0005Ul-Eg; Mon, 16 Nov 2020 12:17:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E9FFA307062;
+        Mon, 16 Nov 2020 13:17:48 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AE60220299B60; Mon, 16 Nov 2020 13:17:48 +0100 (CET)
+Date:   Mon, 16 Nov 2020 13:17:48 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [patch 10/19] preempt: Cleanup the macro maze a bit
+Message-ID: <20201116121748.GD3121378@hirez.programming.kicks-ass.net>
+References: <20201113140207.499353218@linutronix.de>
+ <20201113141733.864469886@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113141733.864469886@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 13, 2020 at 03:02:17PM +0100, Thomas Gleixner wrote:
 
-Signal thread to terminate by closing write fd of comm.msg pipe.
-Receive THREAD_MSG__READY message as the confirmation of the
-thread's termination. Stop threads created for parallel trace
-streaming prior their stats processing.
+> -#define irq_count()	(preempt_count() & (HARDIRQ_MASK | SOFTIRQ_MASK \
+> -				 | NMI_MASK))
+> +#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/perf/builtin-record.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index e41e1cd90168..d0b528cde68b 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -111,6 +111,16 @@ struct thread_data {
- 
- static __thread struct thread_data *thread;
- 
-+enum thread_msg {
-+	THREAD_MSG__UNDEFINED = 0,
-+	THREAD_MSG__READY,
-+	THREAD_MSG__MAX,
-+};
-+
-+static const char *thread_msg_tags[THREAD_MSG__MAX] = {
-+	"UNDEFINED", "READY"
-+};
-+
- struct record {
- 	struct perf_tool	tool;
- 	struct record_opts	opts;
-@@ -1818,6 +1828,23 @@ static void hit_auxtrace_snapshot_trigger(struct record *rec)
- 	}
- }
- 
-+static int record__terminate_thread(struct thread_data *thread_data)
-+{
-+	int res;
-+	enum thread_msg ack = THREAD_MSG__UNDEFINED;
-+	pid_t tid = thread_data->tid;
-+
-+	close(thread_data->comm.msg[1]);
-+	res = read(thread_data->comm.ack[0], &ack, sizeof(ack));
-+	if (res != -1)
-+		pr_debug("threads[%d]: sent %s\n", tid, thread_msg_tags[ack]);
-+	else
-+		pr_err("threads[%d]: failed to recv msg=%s from tid=%d\n",
-+		       thread->tid, thread_msg_tags[ack], tid);
-+
-+	return 0;
-+}
-+
- static int record__start_threads(struct record *rec)
- {
- 	struct thread_data *thread_data = rec->thread_data;
-@@ -1834,6 +1861,9 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
- 	int t;
- 	struct thread_data *thread_data = rec->thread_data;
- 
-+	for (t = 1; t < rec->nr_threads; t++)
-+		record__terminate_thread(&thread_data[t]);
-+
- 	for (t = 0; t < rec->nr_threads; t++) {
- 		rec->samples += thread_data[t].samples;
- 		*waking += thread_data[t].waking;
--- 
-2.24.1
+> +#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
+> -#define in_task()		(!(preempt_count() & \
+> -				   (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
 
+How horrible is the code-gen? Because preempt_count() is
+raw_cpu_read_4() and at least some old compilers will refuse to CSE it
+(consider the this_cpu_read_stable mess).
