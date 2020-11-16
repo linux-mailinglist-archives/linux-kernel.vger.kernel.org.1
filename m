@@ -2,72 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556BB2B4FF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EED2B4FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727560AbgKPSj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:39:27 -0500
-Received: from mx.der-flo.net ([193.160.39.236]:53404 "EHLO mx.der-flo.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbgKPSjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:39:25 -0500
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id 75959440D6; Mon, 16 Nov 2020 19:39:07 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:1751:4157:4d75:a5e2])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id 49374413E7;
-        Mon, 16 Nov 2020 19:38:14 +0100 (CET)
-From:   Florian Lehner <dev@der-flo.net>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        john.fastabend@gmail.com, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, Florian Lehner <dev@der-flo.net>
-Subject: [FIX bpf,perf] bpf,perf: return EOPNOTSUPP for bpf handler on PERF_COUNT_SW_DUMMY
-Date:   Mon, 16 Nov 2020 19:37:52 +0100
-Message-Id: <20201116183752.2716-1-dev@der-flo.net>
-X-Mailer: git-send-email 2.28.0
+        id S1727118AbgKPSiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:38:05 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:41646 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgKPSiF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:38:05 -0500
+Received: by mail-ot1-f67.google.com with SMTP id o3so6447861ota.8;
+        Mon, 16 Nov 2020 10:38:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7txsWknCiewn8OFUjAkOemwMtstyUm6JbL05uCaZO30=;
+        b=mwPwJfTytkIvoqE8WdgYnuYoBzNUSF9UCB6Yg4JovJsflfL4yUyyFdqSH5WDN6UdKB
+         1WhbKQgi/vzgvS9wwpjqlKzHYrrvb1ccbDB11lRThWLL3OllDZC1rSPa7RoYSX6oJApx
+         ob8vtaVkdPEn/BR8ThMiOMROC5za8PwjplIGVvzTMg269zskfNqGEZOZAc0LOF4pMaEi
+         43orJCs3aJm+WkafGE4l9v1BVwWAr3y0Mb88+lNxktUf9fbcFUzY15doNHY9rYfpGuHU
+         mOwSlHcY3NE1JtvzJsj0NFVbC/Wl2X8qMd0nC4Fqx328pYdujcATRhe8wgHhu2j2J2B1
+         e4vg==
+X-Gm-Message-State: AOAM532BzjsxbXwpZkUY3AwuiDRKndw549iszBky5mT6/hjpB0z5kmXd
+        qRGkhwvS4lrHRHR/UjMuMnMrIDimkHL+HtfKX0U=
+X-Google-Smtp-Source: ABdhPJydnVKU0HkvmtzkaJ8MXH5nibNJnfxF9XGbyqRGgQEVwOjyF9zM2XdFLOnFm4dfJ38vPNxHGWxqoWKpYDxzt7A=
+X-Received: by 2002:a9d:171a:: with SMTP id i26mr488714ota.260.1605551884287;
+ Mon, 16 Nov 2020 10:38:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201112131545.62628-1-f.suligoi@asem.it>
+In-Reply-To: <20201112131545.62628-1-f.suligoi@asem.it>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 16 Nov 2020 19:37:53 +0100
+Message-ID: <CAJZ5v0gZxWJdNjRVqznhcNqO-Ofc6dGGES4CKhuk3w-jBhdaKw@mail.gmail.com>
+Subject: Re: [PATCH v4] Documentation: ACPI: explain how to use gpio-line-names
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-gpio@vger.kernel.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bpf handlers for perf events other than tracepoints, kprobes or uprobes
-are attached to the overflow_handler of the perf event.
+On Thu, Nov 12, 2020 at 2:15 PM Flavio Suligoi <f.suligoi@asem.it> wrote:
+>
+> The "gpio-line-names" declaration is not fully
+> documented, so can be useful to add some important
+> information and one more example.
+>
+> This commit also fixes a trivial spelling mistake.
 
-Perf events of type software/dummy are placeholder events. So when
-attaching a bpf handle to an overflow_handler of such an event, the bpf
-handler will not be triggered.
+The spelling mistake has been fixed already, so I dropped this part of
+the patch and applied the rest as 5.11 material.
 
-This fix returns the error EOPNOTSUPP to indicate that attaching a bpf
-handler to a perf event of type software/dummy is not supported.
+Thanks!
 
-Signed-off-by: Florian Lehner <dev@der-flo.net>
----
- kernel/events/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index da467e1dd49a..4e8846b7ceda 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9668,6 +9668,10 @@ static int perf_event_set_bpf_handler(struct perf_event *event, u32 prog_fd)
- 	if (event->prog)
- 		return -EEXIST;
- 
-+	if (event->attr.type == PERF_TYPE_SOFTWARE &&
-+	    event->attr.config == PERF_COUNT_SW_DUMMY)
-+		return -EOPNOTSUPP;
-+
- 	prog = bpf_prog_get_type(prog_fd, BPF_PROG_TYPE_PERF_EVENT);
- 	if (IS_ERR(prog))
- 		return PTR_ERR(prog);
--- 
-2.28.0
-
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> ---
+>
+> v2: - fix commit spelling mistakes
+>     - add double back quotes to gpio-line-names
+>     - adjust documentation lines layout
+>     - add comma at the end of Package list names in the first example
+>
+> v3: - add: Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> v4: - add: Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+>
+>  .../firmware-guide/acpi/gpio-properties.rst   | 58 ++++++++++++++++++-
+>  1 file changed, 56 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/firmware-guide/acpi/gpio-properties.rst b/Documentation/firmware-guide/acpi/gpio-properties.rst
+> index bb6d74f23ee0..ae5396a1f092 100644
+> --- a/Documentation/firmware-guide/acpi/gpio-properties.rst
+> +++ b/Documentation/firmware-guide/acpi/gpio-properties.rst
+> @@ -107,7 +107,61 @@ Example::
+>
+>  - gpio-line-names
+>
+> -Example::
+> +The ``gpio-line-names`` declaration is a list of strings ("names"), which
+> +describes each line/pin of a GPIO controller/expander. This list, contained in
+> +a package, must be inserted inside the GPIO controller declaration of an ACPI
+> +table (typically inside the DSDT). The ``gpio-line-names`` list must respect the
+> +following rules (see also the examples):
+> +
+> +  - the first name in the list corresponds with the first line/pin of the GPIO
+> +    controller/expander
+> +  - the names inside the list must be consecutive (no "holes" are permitted)
+> +  - the list can be incomplete and can end before the last GPIO line: in
+> +    other words, it is not mandatory to fill all the GPIO lines
+> +  - empty names are allowed (two quotation marks ``""`` correspond to an empty
+> +    name)
+> +
+> +Example of a GPIO controller of 16 lines, with an incomplete list with two
+> +empty names::
+> +
+> +  Package () {
+> +      "gpio-line-names",
+> +      Package () {
+> +          "pin_0",
+> +          "pin_1",
+> +          "",
+> +          "",
+> +          "pin_3",
+> +          "pin_4_push_button",
+> +      }
+> +  }
+> +
+> +At runtime, the above declaration produces the following result (using the
+> +"libgpiod" tools)::
+> +
+> +  root@debian:~# gpioinfo gpiochip4
+> +  gpiochip4 - 16 lines:
+> +          line   0:      "pin_0"       unused   input  active-high
+> +          line   1:      "pin_1"       unused   input  active-high
+> +          line   2:      unnamed       unused   input  active-high
+> +          line   3:      unnamed       unused   input  active-high
+> +          line   4:      "pin_3"       unused   input  active-high
+> +          line   5: "pin_4_push_button" unused input active-high
+> +          line   6:      unnamed       unused   input  active-high
+> +          line   7       unnamed       unused   input  active-high
+> +          line   8:      unnamed       unused   input  active-high
+> +          line   9:      unnamed       unused   input  active-high
+> +          line  10:      unnamed       unused   input  active-high
+> +          line  11:      unnamed       unused   input  active-high
+> +          line  12:      unnamed       unused   input  active-high
+> +          line  13:      unnamed       unused   input  active-high
+> +          line  14:      unnamed       unused   input  active-high
+> +          line  15:      unnamed       unused   input  active-high
+> +  root@debian:~# gpiofind pin_4_push_button
+> +  gpiochip4 5
+> +  root@debian:~#
+> +
+> +Another example::
+>
+>    Package () {
+>        "gpio-line-names",
+> @@ -191,7 +245,7 @@ The driver might expect to get the right GPIO when it does::
+>  but since there is no way to know the mapping between "reset" and
+>  the GpioIo() in _CRS desc will hold ERR_PTR(-ENOENT).
+>
+> -The driver author can solve this by passing the mapping explictly
+> +The driver author can solve this by passing the mapping explicitly
+>  (the recommended way and documented in the above chapter).
+>
+>  The ACPI GPIO mapping tables should not contaminate drivers that are not
+> --
+> 2.25.1
+>
