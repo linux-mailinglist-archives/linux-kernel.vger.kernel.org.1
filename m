@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BE92B4953
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8BC2B4955
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731490AbgKPPaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:30:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52896 "EHLO mail.kernel.org"
+        id S1731379AbgKPPaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:30:39 -0500
+Received: from david.siemens.de ([192.35.17.14]:45163 "EHLO david.siemens.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728029AbgKPPaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:30:15 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9182620E65;
-        Mon, 16 Nov 2020 15:30:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605540615;
-        bh=WqZ4iJPv5KD34c2PuG2d+Tjpeq8OVk+TP0a/gky8J9I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=M1hy8c57fHmk0f8OIgev+ztHYbT8gbk/cOc8Q1a3s2jz14p063tA0+6TwGxR3g1CH
-         hKUSLEn1r5z6fmTiEAvUGNOIrXtMQ5thgZZhV2PoTUhPxJhVm6oN1XQrduS+gNXOZX
-         yeHc9ycHeVB8GouSmORbwmx8qO2QsFCaFWayqTvI=
-Date:   Mon, 16 Nov 2020 07:30:13 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        linux-next@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v4] net: linux/skbuff.h: combine SKB_EXTENSIONS
- + KCOV handling
-Message-ID: <20201116073013.24d45385@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201116143121.GC22792@breakpoint.cc>
-References: <20201116031715.7891-1-rdunlap@infradead.org>
-        <ffe01857-8609-bad7-ae89-acdaff830278@tessares.net>
-        <20201116143121.GC22792@breakpoint.cc>
+        id S1728029AbgKPPaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 10:30:39 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 0AGFUPI4013349
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 16 Nov 2020 16:30:25 +0100
+Received: from md1za8fc.ad001.siemens.net ([167.87.8.227])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0AGFUO1C017376;
+        Mon, 16 Nov 2020 16:30:24 +0100
+Date:   Mon, 16 Nov 2020 16:30:24 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Claudius Heine <ch@denx.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Johannes Hahn <johannes-hahn@siemens.com>,
+        "Zeh, Werner" <werner.zeh@siemens.com>
+Subject: Re: [PATCH v2 2/3] rtc: rx6110: add ACPI bindings to I2C
+Message-ID: <20201116163024.74c767b6@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20201116144631.GB1689012@smile.fi.intel.com>
+References: <20201112130734.331094-1-ch@denx.de>
+        <20201112130734.331094-3-ch@denx.de>
+        <20201116144631.GB1689012@smile.fi.intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -46,24 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 15:31:21 +0100 Florian Westphal wrote:
-> > > @@ -4151,12 +4150,11 @@ enum skb_ext_id {
-> > >   #if IS_ENABLED(CONFIG_MPTCP)
-> > >   	SKB_EXT_MPTCP,
-> > >   #endif
-> > > -#if IS_ENABLED(CONFIG_KCOV)
-> > >   	SKB_EXT_KCOV_HANDLE,
-> > > -#endif  
-> > 
-> > I don't think we should remove this #ifdef: the number of extensions are
-> > currently limited to 8, we might not want to always have KCOV there even if
-> > we don't want it. I think adding items in this enum only when needed was the
-> > intension of Florian (+cc) when creating these SKB extensions.
-> > Also, this will increase a tiny bit some structures, see "struct skb_ext()".  
-> 
-> Yes, I would also prefer to retrain the ifdef.
-> 
-> Another reason was to make sure that any skb_ext_add(..., MY_EXT) gives
-> a compile error if the extension is not enabled.
+Am Mon, 16 Nov 2020 16:46:31 +0200
+schrieb Andy Shevchenko <andriy.shevchenko@intel.com>:
 
-Oh well, sorry for taking you down the wrong path Randy!
+> On Thu, Nov 12, 2020 at 02:07:33PM +0100, Claudius Heine wrote:
+> > From: Johannes Hahn <johannes-hahn@siemens.com>
+> > 
+> > This allows the RX6110 driver to be automatically assigned to the
+> > right device on the I2C bus.  
+> 
+> Before adding new ACPI ID, can you provide an evidence (either from
+> vendor of the component, or a real snapshot of DSDT from device on
+> market) that this is real ID?
+> 
+> Before that happens, NAK.
+> 
+> P.S. Seems to me that this is kinda cargo cult patch because proposed
+> ID is against ACPI and PNP registry and ACPI specification.
+
+In fact we pushed it in coreboot and Linux at the same time.
+
+https://review.coreboot.org/c/coreboot/+/47235
+
+That is the evidence. But in case this is wrong we can probably still
+change coreboot, even though the patches have been merged there already.
+
+Maybe you can go into detail where you see the violations and maybe
+even suggest fixes that come to mind.
+
+Henning
