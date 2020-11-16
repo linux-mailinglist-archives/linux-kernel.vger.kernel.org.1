@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EFA2B4EF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 791E22B4EFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731502AbgKPSOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:14:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730628AbgKPSOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:14:06 -0500
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D955E2078E;
-        Mon, 16 Nov 2020 18:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605550446;
-        bh=rryR7gEWIpjU4vN8PjeQodDDv/FqOgqr5+c2J5MS73o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UwoPRnA1ZTXNbn9yuyqT4A+6bIRkE02jOB4LE7zvhPv0bxIK6coVhLIwBItPlmOnf
-         QCtWcFcfFvIoXffGdrKIP4t3gVQ/72/IzdIUxpFXb869k89agGwSjmyooEuVpmJCTs
-         XpaYSpj/jJyK4biO4tlobknPh8yoQVoMjP9RN/2A=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] drm/imx: depend on COMMON_CLK to fix compile tests
-Date:   Mon, 16 Nov 2020 19:14:00 +0100
-Message-Id: <20201116181400.543718-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1731935AbgKPSQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:16:42 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:47936 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731241AbgKPSQm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:16:42 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kej3M-0006bF-Ao; Mon, 16 Nov 2020 18:16:36 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: wireless: make a const array static, makes object smaller
+Date:   Mon, 16 Nov 2020 18:16:36 +0000
+Message-Id: <20201116181636.362729-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The iMX DRM drivers use Common Clock Framework thus they cannot be built
-on platforms without it (e.g. compile test on MIPS with RALINK and
-SOC_RT305X):
+From: Colin Ian King <colin.king@canonical.com>
 
-    /usr/bin/mips-linux-gnu-ld: drivers/gpu/drm/imx/imx-ldb.o: in function `imx_ldb_encoder_disable':
-    imx-ldb.c:(.text+0x400): undefined reference to `clk_set_parent'
+Don't populate the const array bws on the stack but instead it
+static. Makes the object code smaller by 80 bytes:
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Before:
+   text	   data	    bss	    dec	    hex	filename
+  85694	  16865	   1216	 103775	  1955f	./net/wireless/reg.o
+
+After:
+   text	   data	    bss	    dec	    hex	filename
+  85518	  16961	   1216	 103695	  1950f	./net/wireless/reg.o
+
+(gcc version 10.2.0)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/gpu/drm/imx/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/wireless/reg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/imx/Kconfig b/drivers/gpu/drm/imx/Kconfig
-index 6231048aa5aa..65f9ef625337 100644
---- a/drivers/gpu/drm/imx/Kconfig
-+++ b/drivers/gpu/drm/imx/Kconfig
-@@ -5,7 +5,8 @@ config DRM_IMX
- 	select VIDEOMODE_HELPERS
- 	select DRM_GEM_CMA_HELPER
- 	select DRM_KMS_CMA_HELPER
--	depends on DRM && (ARCH_MXC || ARCH_MULTIPLATFORM || COMPILE_TEST)
-+	depends on DRM
-+	depends on ARCH_MXC || ARCH_MULTIPLATFORM || COMPILE_TEST && COMMON_CLK
- 	depends on IMX_IPUV3_CORE
- 	help
- 	  enable i.MX graphics support
+diff --git a/net/wireless/reg.c b/net/wireless/reg.c
+index a04fdfb35f07..c037960e5a1a 100644
+--- a/net/wireless/reg.c
++++ b/net/wireless/reg.c
+@@ -1616,7 +1616,7 @@ static const struct ieee80211_reg_rule *
+ __freq_reg_info(struct wiphy *wiphy, u32 center_freq, u32 min_bw)
+ {
+ 	const struct ieee80211_regdomain *regd = reg_get_regdomain(wiphy);
+-	const u32 bws[] = {0, 1, 2, 4, 5, 8, 10, 16, 20};
++	static const u32 bws[] = {0, 1, 2, 4, 5, 8, 10, 16, 20};
+ 	const struct ieee80211_reg_rule *reg_rule;
+ 	int i = ARRAY_SIZE(bws) - 1;
+ 	u32 bw;
 -- 
-2.25.1
+2.28.0
 
