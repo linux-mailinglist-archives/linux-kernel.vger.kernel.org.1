@@ -2,137 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEEB2B52AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B385D2B52AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733026AbgKPUec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:34:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgKPUea (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:34:30 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435D1C0613CF;
-        Mon, 16 Nov 2020 12:34:29 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id s8so16819812yba.13;
-        Mon, 16 Nov 2020 12:34:29 -0800 (PST)
+        id S1733050AbgKPUeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:34:44 -0500
+Received: from mail-dm6nam11on2057.outbound.protection.outlook.com ([40.107.223.57]:50016
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726426AbgKPUeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 15:34:44 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GFiG9Z8puoCwGDxeoHG9Yrusa5HCvYoKS9B6inr3I7leLMuUpw7IAIgeT/p8sXRt+O1l6ytscHIqGhqB2bf6PsdoSxw+nRifwFOmjYYAae/HI+Nn005WW+VAI9+nqxDd9WrL71uSIw7iUKmTyUJOvtHFgCJe/RCszU3Z8ojoN7HV+Oypbiu/PvCRWuyVsFGsDC+DOE9M67uGEdtxaQ62fJK/KezXQ/CKhc2AfxMNV3tfUisRpvVexsfKEIwuHpC5aNKfgx0fv0wvG2UNJ+dz5feMDU1VOoxBtjnVv9gxTdbKph5d/DFw1tH6euw/jH+qjFvIdHYugU8c3oRxzH7iuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yBaEUnZe6Nd5+Ds0fxMVyyOF5KUoW19MdyIO8eusano=;
+ b=g86okH4FF0L3nV3t8kAZY/S7wYAy5xWAeu9lWryTaNN930URkeMzXKplXU0mPluYRvZPV3CcvGhWxL4i9Fu44RRmgxHkorrjf+IcmMUGHBVH+WGgbFQDB11pnfZgu6v93UorAICRsMYWIiHNLimM+PLqLorr4VUKT05AgodAtUwuxocMrdf/oh2/9Xwnm8UlyTb+TSw6GiT+ISPaDS2RaCGOZPfusBzyFVcreXf95zqarC/X1vjdqDxSwu36XdbryrN7q45c4Swxf9jwJmiW1KXG54ph3auFKOPYLVEZVCul4NyOFXXVKiYLlDOhHWEv4xYD4w/7hS0ETc/+IOoS1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c8o0lWTV5oFYZGA8cq/w+A4j784ox49dpPJ856/9JoM=;
-        b=i0uHo1Qo0705jAtRWcfkcq4XzbWhc0j+mLT2XM9K4XHtRrUnu/1geVgadH75aauxaS
-         hLSZ2K786RPSLX4dVSe8KOLb5X+9fi7crS1KkuWQeqgCHpXt/vF+HGQh/V9AqPnSo30J
-         WRha7bZ9J/MzVi6uhARO3bEV3M3W7W0lW8J+njB+mufdrgVi56PwMu1KhlxjAhBctbtm
-         3tOc0BwPD0DqC9KWe4D7seLJm7zHjbU73OUP7atwg3OjpLHGEQR6ZzsQNznup27J6ACr
-         1K2RX3ST3kPYc19ohBqm45gJsGw+GONXvoss+Fr4kkerBRd2UyBGLZAoPKIDWXPl67I5
-         EJRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c8o0lWTV5oFYZGA8cq/w+A4j784ox49dpPJ856/9JoM=;
-        b=g+5/otAy4mSvArGOmoABXBMiM8K2y2uiBRLGnYkz7dijJKX/co88Isn+vLs5+cymQL
-         bJHs323TjYhgzKV96ztZIu1eJXAgchCG94E5yWPl2BfI9NaobgWs7VVkOUhH59J2Zzzd
-         vNkDbqKBYe/nDEMkT4RL/XK3DKe4N34x+5J4x56/NrQs9XwTauxm1kbJXzKcvAGKcS+/
-         90tsxmwXxjExj9X/0Z9mJYcIDPYVDWza9k+Qje7bQPt5IHeBwv+c/b7z7ms1WiVeaupn
-         +NzC3WPXtu6/Hltnu6PlYh5WFKQuFv86YNF/sVJjF+mWeqUxSbvSzETmASoXRY2b4Cma
-         oEJA==
-X-Gm-Message-State: AOAM532JMImXdZhLo21AVsD95YR/Y8Oh3d7wbTLdwHEOPta7ADZ4WLEN
-        jm7l1uBjr2v+SQRk4LTV+pPYWTMUgGzqn6UX4o+7oNl//wM=
-X-Google-Smtp-Source: ABdhPJx6mICYvNnDIpxk6wLiDam/OieqWJa9sS6iJdU3ImLG8l0AQjgllc+chm4bBXbvrJpHXk+Cc3zGIWbFF/KBntg=
-X-Received: by 2002:a25:3d7:: with SMTP id 206mr23184703ybd.27.1605558868531;
- Mon, 16 Nov 2020 12:34:28 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yBaEUnZe6Nd5+Ds0fxMVyyOF5KUoW19MdyIO8eusano=;
+ b=Mhl5whHeO148uz5zuOsFbf6gokRbqop5mDhkkTVtw1nAwk7ZO3gpWxWlGNxg99tKY5Q5sC0knYZHdOM6sNDZfwz9TKu3BqYcSwflQGjYKkYPqGE+MO+12jW8+0l/iASDrFhSsJmIfH+XiZ6jexal2N8ii6VbY5/CUduQNMUQ5HY=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4239.namprd12.prod.outlook.com (2603:10b6:208:1d2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Mon, 16 Nov
+ 2020 20:34:41 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::1ccc:8a9a:45d3:dd31]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::1ccc:8a9a:45d3:dd31%7]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
+ 20:34:41 +0000
+Subject: Re: [PATCH 33/42] drm/ttm/ttm_range_manager: Demote non-conformant
+ kernel-doc header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+References: <20201116174112.1833368-1-lee.jones@linaro.org>
+ <20201116174112.1833368-34-lee.jones@linaro.org>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <5b334d3e-d890-4648-dd35-54449c4b6a39@amd.com>
+Date:   Mon, 16 Nov 2020 21:34:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201116174112.1833368-34-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM0PR01CA0096.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:10e::37) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <20201110011932.3201430-1-andrii@kernel.org> <20201110011932.3201430-4-andrii@kernel.org>
- <B51AA745-00B6-4F2A-A7F0-461E845C8414@fb.com> <SN6PR11MB2751CF60B28D5788B0C15B5AB5E30@SN6PR11MB2751.namprd11.prod.outlook.com>
-In-Reply-To: <SN6PR11MB2751CF60B28D5788B0C15B5AB5E30@SN6PR11MB2751.namprd11.prod.outlook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 Nov 2020 12:34:17 -0800
-Message-ID: <CAEf4BzYSN+XnaA4V3jTLEmoUZO=Yxwp7OAwAY+HOvVEKT5kRFA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/5] kbuild: build kernel module BTFs if BTF
- is enabled and pahole supports it
-To:     "Allan, Bruce W" <bruce.w.allan@intel.com>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "Starovoitov, Alexei" <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR01CA0096.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28 via Frontend Transport; Mon, 16 Nov 2020 20:34:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 25623463-b1f5-41c3-2f8b-08d88a6f0b23
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4239:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4239CDB0A41F245DDF5101EC83E30@MN2PR12MB4239.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dmkxL+ngMOryhArBGVZxyBlOa9Ei8UaoB6cSEXJT+udREwndOKWvlb+W+QXG5povjEqQibN8KDtBfO9MmVM5DmTzsglqrRGf+B1wJI4W/lXYrGdngabwLLvhoO7cOlD3GENdI/ztBstGQGFJztR72/luW29ThBdL1mFVxfB6yhYDWohYi+oUzDUqmirck8JWT/Nx2Fca/Qnyh8enx91pLK2GEcQngfs7OtnejxIe1VHD6EeyUFi7YuWXEV9Do6+gL6uRDh2T0CDflgDAo95USohgopCz6njHULFFPdjqHTikkEdn6UDkZqi+OcsTLNxSPTidEh2G3hSQ2VlnxojVuvw1p7sOXEAV8Mx4iN9Tkdfb4WMBvmDlgv/ZY8qDH+Z8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(366004)(396003)(66574015)(8936002)(5660300002)(316002)(66946007)(186003)(2906002)(6486002)(54906003)(86362001)(2616005)(66556008)(66476007)(16526019)(52116002)(8676002)(4326008)(6916009)(478600001)(83380400001)(31696002)(36756003)(31686004)(6666004)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YzFUZE5KLzcxNDY3V1hDclRDVmYzano5RFFtL0xNZ0MxaGx6YXdtVVJBMlVO?=
+ =?utf-8?B?d0p3d3kybkxIaklNcHgyT3VURE1KVURMU2dxNFdJVWxHWWJ2YnZnQitMTS82?=
+ =?utf-8?B?c0dHcVdkblhjVGUydDdmckF0eWlTTFlnaGJxYUkyZkUvMDQ0eFdLbTE5N1ZF?=
+ =?utf-8?B?VXNiZnNPbFBHK0FtSGpiUE1xdUdlR3h1SGM0VldzSTJmV0RzSVVVNmsrTEJU?=
+ =?utf-8?B?VCs4ajFSM0NIaEZ0V1l6bEZxc245NU9ZdDZ3L2JDZ3BGVHN6WUhBRVVwakc2?=
+ =?utf-8?B?ZytQOEppUTBmNU9UK3ZsSGc3R0VKdHk1Z3dwdVBsUEZzbUNYZEFoeXVYNCtS?=
+ =?utf-8?B?RUV4bFVTb1JMa3VSRG9pSG1HeFdHaDlZREN2Zk8reEVPaDNmempRZ3BRQWdH?=
+ =?utf-8?B?TTcvQTZ4ZDBpNm05S2pnRlBFQVVPaUgzbDdOckxoRU9uN2V0NHR2RHV3OEYv?=
+ =?utf-8?B?c3ZXQStxczMrRkwvSVc0YnNJWTl3eEU3d0N2YnpUdlBZeXBKaWpvQmxqM0pC?=
+ =?utf-8?B?VW91VEhJSWFCcjVpNmxRUGdndkZXZzcveitxRk0wOU1ka09PRGhPcy9TR2hM?=
+ =?utf-8?B?QkN0YkcrN3BvZW9CR1NCZUgzVXRJY1k1QlJwMDFsSmhyWmdhOFRGVkNqbmJP?=
+ =?utf-8?B?RE95eHlJZjlZaUxqeFhUY05uMlp5d0hBc000aUlrTWhBN3h1NVI2S0I3VE5U?=
+ =?utf-8?B?WmZJUStTVlhoSHFFN0o3dXRJSVdwTFpSZGJtd01GL3ZxSzRQZGkwRGQ3UGNi?=
+ =?utf-8?B?LzQvMTI2SGdPVHlIL1pyK3diaTVNdXVZdlFSSGZVdDhVRlVaam4yQkp3Z2ty?=
+ =?utf-8?B?TWhTUG43T2dqWVhGVVdMalJKRlZ4bWpDOVVUc3ZENGdiYUNNbGpEdVByUFUx?=
+ =?utf-8?B?T1UyaityVnZmcUpzR0lFT3lBbHJjcGY1NU1rUWNSVnVvMGZ3RysyOXFDS1B5?=
+ =?utf-8?B?YktQTWo5by9DN2FsamxjSTZnMUZHY2Nra2hqVER6ZWd0RnNyWk1kK2N5SDJw?=
+ =?utf-8?B?THpiQm1XV01uazVMZWZSeE92aUt2akNQR2dpdjVoSlNHT21aQkxmeFRiZ2pH?=
+ =?utf-8?B?OFVkbi80THZxQm5zelhvUkZGWk83Z2tLdDVDVlBkYmlwOW4zcjgvcUFrei81?=
+ =?utf-8?B?MFVmYUFzcTUrdFU0OVJGemVTdHZ4TmM2Y0ZxbzlZcGN3dytaMVA2TUl5NTdJ?=
+ =?utf-8?B?R0xudE5lNngvZ3QvMjJ4cDRBSzlSL3NUY0o4eUlWZkZFcDkwQnU2SXNMVndq?=
+ =?utf-8?B?a2lRTi9Vc2NIWHQzaEN4QUljaTZkYlVBU2tMbW1lcnpZMUc4QT09?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25623463-b1f5-41c3-2f8b-08d88a6f0b23
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2020 20:34:41.3039
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xmxL94UlsEhFO/HjIuyw96uvFWxm6ZL1Bop/RsytNv8PuGQFs+iwPQaklQHpn4ZF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4239
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 11:55 AM Allan, Bruce W <bruce.w.allan@intel.com> wrote:
+Am 16.11.20 um 18:41 schrieb Lee Jones:
+> Fixes the following W=1 kernel build warning(s):
 >
-> > -----Original Message-----
-> > From: Song Liu <songliubraving@fb.com>
-> > Sent: Tuesday, November 10, 2020 5:05 PM
-> > To: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: bpf <bpf@vger.kernel.org>; Networking <netdev@vger.kernel.org>;
-> > Starovoitov, Alexei <ast@fb.com>; Daniel Borkmann <daniel@iogearbox.net>;
-> > Kernel Team <Kernel-team@fb.com>; open list <linux-
-> > kernel@vger.kernel.org>; rafael@kernel.org; jeyu@kernel.org; Arnaldo
-> > Carvalho de Melo <acme@redhat.com>; Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org>; Masahiro Yamada
-> > <yamada.masahiro@socionext.com>
-> > Subject: Re: [PATCH v4 bpf-next 3/5] kbuild: build kernel module BTFs if BTF is
-> > enabled and pahole supports it
-> >
-> >
-> >
-> > > On Nov 9, 2020, at 5:19 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > [...]
-> >
-> > > SPLIT BTF
-> > > =========
-> > >
-> > > $ for f in $(find . -name '*.ko'); do size -A -d $f | grep BTF | awk '{print $2}';
-> > done | awk '{ s += $1 } END { print s }'
-> > > 5194047
-> > >
-> > > $ for f in $(find . -name '*.ko'); do printf "%s %d\n" $f $(size -A -d $f | grep
-> > BTF | awk '{print $2}'); done | sort -nr -k2 | head -n10
-> > > ./drivers/gpu/drm/i915/i915.ko 293206
-> > > ./drivers/gpu/drm/radeon/radeon.ko 282103
-> > > ./fs/xfs/xfs.ko 222150
-> > > ./drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko 198503
-> > > ./drivers/infiniband/hw/mlx5/mlx5_ib.ko 198356
-> > > ./drivers/net/ethernet/broadcom/bnx2x/bnx2x.ko 113444
-> > > ./fs/cifs/cifs.ko 109379
-> > > ./arch/x86/kvm/kvm.ko 100225
-> > > ./drivers/gpu/drm/drm.ko 94827
-> > > ./drivers/infiniband/core/ib_core.ko 91188
-> > >
-> > > Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > Acked-by: Song Liu <songliubraving@fb.com>
+>   drivers/gpu/drm/ttm/ttm_range_manager.c:46: warning: cannot understand function prototype: 'struct ttm_range_manager '
 >
-> This change, commit 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled and pahole
-> supports it") currently in net-next, linux-next, etc. breaks the use-case of compiling only a specific
-> kernel module (both in-tree and out-of-tree, e.g. 'make M=drivers/net/ethernet/intel/ice') after
-> first doing a 'make modules_prepare'.  Previously, that use-case would result in a warning noting
-> "Symbol info of vmlinux is missing. Unresolved symbol check will be entirely skipped" but now it
-> errors out after noting "No rule to make target 'vmlinux', needed by '<...>.ko'.  Stop."
->
-> Is that intentional?
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Huang Rui <ray.huang@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-I wasn't aware of such a use pattern, so definitely not intentional.
-But vmlinux is absolutely necessary to generate the module BTF. So I'm
-wondering what's the proper fix here? Leave it as is (that error
-message is actually surprisingly descriptive, btw)? Force vmlinux
-build? Or skip BTF generation for that module?
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
+> ---
+>   drivers/gpu/drm/ttm/ttm_range_manager.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Thanks,
-> Bruce.
+> diff --git a/drivers/gpu/drm/ttm/ttm_range_manager.c b/drivers/gpu/drm/ttm/ttm_range_manager.c
+> index ea77919569a2e..e0952444cea93 100644
+> --- a/drivers/gpu/drm/ttm/ttm_range_manager.c
+> +++ b/drivers/gpu/drm/ttm/ttm_range_manager.c
+> @@ -37,7 +37,7 @@
+>   #include <linux/spinlock.h>
+>   #include <linux/module.h>
+>   
+> -/**
+> +/*
+>    * Currently we use a spinlock for the lock, but a mutex *may* be
+>    * more appropriate to reduce scheduling latency if the range manager
+>    * ends up with very fragmented allocation patterns.
+
