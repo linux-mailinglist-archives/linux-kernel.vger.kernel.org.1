@@ -2,124 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534912B3D83
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F2A2B3D86
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgKPHIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 02:08:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725819AbgKPHIr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 02:08:47 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87BAC0613CF;
-        Sun, 15 Nov 2020 23:08:46 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id 11so18964017ljf.2;
-        Sun, 15 Nov 2020 23:08:46 -0800 (PST)
+        id S1727423AbgKPHJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 02:09:56 -0500
+Received: from mail-eopbgr690045.outbound.protection.outlook.com ([40.107.69.45]:31298
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725819AbgKPHJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 02:09:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mblr5f+bwnMLPf0N6RIGGw3JaVAl0RbfjqAaklQUnlROC0lq6xYfiW9HaUPIQlJfJN3egA0qjoZMGARsfywHQIOEUOPllXps7lQpoW72duVEY+LRfGLOkEo22YPnpYuicx4KT1/Yej+MhvuvspseODg1AoaOluHujoaJo+eAAnVKOr/DwmEnFHc6Nmqo9YJ6WLYwnPvZkSAEQqXGNQJS5Clm8ZTZbMEianKFd0IwRlgFDcyx1GY1Y/nBtsae6rYuvVrxP1UN4ezQp9QrpDAGeZsSgS/LqpQdJpX2vZILUj70pDsHWNykWj8anS1cUxzOWsGFLwLDTfolaiV+djCYRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OcHcLt0Ev+E1HSS3yHOLZZKcparKMg2b4rIFoFgGkBs=;
+ b=bvR3qsydjpw68VC5t96YfJtLUabkeY6ZcvmwY3iz/+H5O65Fp47GLB2UQugPJI0KW89yvxK+i5EeYIMW85ihQ27PwRZ8F//NszLRttbf9UHyHVA3drLgTtmJGe2EuYwqL6zJ/c3+9voDNP8S+QQthKQSEwNFWXr1p4b/KtJxRXEAQ6wDXo7qyIDceIbQ3jq/GqRN6vqyjuEtkg1C9ra458IBG9lw8lHdLzlannjQ1X8ba/hJMDAj6hpWM7niHxtQVkzHBPcN4TX1JKseokZmxJSDEYnOOp490zRr01cTK5Mi4/gPtngAalNsa0TnCswWNVcdrZ2HLc0Z7MhZK9avng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yiSVixBzWFRrc5F0VIHSOyW+ZLBve41qKR5fsnIR0cc=;
-        b=kp/kq64MevP2otQ4mOzUUPbmumwm/olcWFs2tn8XQ25HbaPVfWe/CRo0+hTXfxuBZy
-         3YQE2ojPjuOKYD0KuwRi/vd6qgB0GylXp8BlPmGZLiBObFxBI7MSMM2pwqCWlpZAO7LC
-         N84PGHgBxMTmZbUyOzojdzRVoneUyYZxgZq1GpBgPo3BIQDswb7Yglq6l2IW+F9X90NP
-         4HZ1Wm210Bm3hUBnXL+Gh3j/ZzsT5U6MTl/SAkOux9sQ2GqSkCATk7KWioFCBwwAc68V
-         st/KqcMttugibCjMluGI3b64OIMSRtEx4ydhrZ21sPpHyCk2AjMvpULRTyMKaDc5trQv
-         HCtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yiSVixBzWFRrc5F0VIHSOyW+ZLBve41qKR5fsnIR0cc=;
-        b=fsFrkuLdf9ijdPnENU2/LnU4rayVW8h3aILtEdDOb4aJV2K+dAv3yTHqVdeYSqWUKE
-         oJdmNuhcp29WWJBmrPebR0jN5H9e702E2tTirEX8lDhURdwOoraomnSWFNgo2QXWZZrs
-         p1wDaO+ItT2ZzipYQwxdcbXoCzk0ZXAi8OZVF/OTuiAV0ZUlh0Zo6REm+z2oPiuCYxgw
-         LwqZQ2tUNJP76TwZohKtmXHYiPdoa+ybofptuulZ1+Z8jI8WXFHNwKKtSU7YfivBpVeB
-         C0mfmNdlqJRsDYUB6Fi5hme9/tXNG0geDatkPRguSbewTHiJQtmgfCehbRb+cSa4i8S3
-         LYag==
-X-Gm-Message-State: AOAM530VzNgnL0arbDSwvdV42d/2pfWDppBo7pbcYikp6a75XTgQV9s/
-        vZqGZ1bHe7CAk4p9iliC+m88CCJQ017CjpyG558=
-X-Google-Smtp-Source: ABdhPJw4dMUsVH/zA8fDWR3XLDojnnHfwl/Scr8jxyVncyS2oZX6qzh6nwR375d2cINE/xjokB9mR1M7hYtzJvx7BkM=
-X-Received: by 2002:a2e:95cf:: with SMTP id y15mr5151725ljh.209.1605510525308;
- Sun, 15 Nov 2020 23:08:45 -0800 (PST)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OcHcLt0Ev+E1HSS3yHOLZZKcparKMg2b4rIFoFgGkBs=;
+ b=ToMnoqO8K+vda3oCrPPQck7yhcJdmM1+pH4boLVpE+eyq3UGCJJygXcqGeFwKs54zoSas8B0XB3252FOdeIrk4ywe1tzZVXdnw3ruVSOEbF6UyTo6Kr1aHP8Kjb2V/0GC0xPCcTh5dq+ate9JpOMS4Jv1kGLpIVxT8xe/JidnKU=
+Received: from MN2PR14CA0001.namprd14.prod.outlook.com (2603:10b6:208:23e::6)
+ by BL0PR02MB3890.namprd02.prod.outlook.com (2603:10b6:207:3e::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
+ 2020 07:09:50 +0000
+Received: from BL2NAM02FT044.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:23e:cafe::89) by MN2PR14CA0001.outlook.office365.com
+ (2603:10b6:208:23e::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28 via Frontend
+ Transport; Mon, 16 Nov 2020 07:09:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT044.mail.protection.outlook.com (10.152.77.35) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3564.22 via Frontend Transport; Mon, 16 Nov 2020 07:09:50 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Sun, 15 Nov 2020 23:09:35 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Sun, 15 Nov 2020 23:09:35 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ linux-kernel@vger.kernel.org,
+ linux-mmc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ ulf.hansson@linaro.org,
+ adrian.hunter@intel.com
+Received: from [172.30.17.110] (port=37256)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1keYdq-0005Y9-KV; Sun, 15 Nov 2020 23:09:34 -0800
+Subject: Re: [PATCH 2/2] mmc: sdhci-of-arasan: Issue DLL reset explicitly
+To:     Manish Narani <manish.narani@xilinx.com>,
+        <michal.simek@xilinx.com>, <adrian.hunter@intel.com>,
+        <ulf.hansson@linaro.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <git@xilinx.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+References: <1605507327-106818-1-git-send-email-manish.narani@xilinx.com>
+ <1605507327-106818-3-git-send-email-manish.narani@xilinx.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <62e86fcf-a50c-6e7a-3eb2-919f0cb34c01@xilinx.com>
+Date:   Mon, 16 Nov 2020 08:09:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-References: <20201026035710.593-1-zhenzhong.duan@gmail.com> <20201113224723.GA1139246@bjorn-Precision-5520>
-In-Reply-To: <20201113224723.GA1139246@bjorn-Precision-5520>
-From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Date:   Mon, 16 Nov 2020 15:08:26 +0800
-Message-ID: <CAFH1YnMV2b=HSNU838vaN+MrSCa-7L=HWXOhwpafbe6B9Ysopw@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: check also dynamic IDs for duplicate in new_id_store()
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1605507327-106818-3-git-send-email-manish.narani@xilinx.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 41cc7432-8713-454c-83e1-08d889fe9c1e
+X-MS-TrafficTypeDiagnostic: BL0PR02MB3890:
+X-Microsoft-Antispam-PRVS: <BL0PR02MB3890CB9A2979C35E9416E501C6E30@BL0PR02MB3890.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NBQcB++THDWCOB4JHt1pkzV5Fsfw0xTuLdzXMh29Pkf72en5zPw+IjAn9vdzy96cPF+etM+hblg2uiDtrZfowosEmkpdsKnYRRlnUHIftAKq+UOLpio+rvwJlf8hd0S02uUowh7w+wnMcrfaEfIXnEQLm5iYZfpuAn2WEVF22mrCARoezVVjZfwzta0VSBB2GPCClhJIzCSpAGqIPqwo9PoCcZ+DfgBJJT1wJpfoMQfjWZtaKRMK4DAQuvLqQsedEAEkTXcOTzBXwjb84JM3ywFbnGIWWj+WQ5IkE6vsTGTXLVChotYRa0befjj13+Pme8ZAc++jJBWSooi7fwlbKcbnOq2zy4wf4y1kBZMzxrMepfMMqQIinYV+FzWPBLPo6KUp5Eh8p2KLE9KVCu+WGScukU1RPhX3YPQjaiECGtDP1T7bGgBjfJR0AbTKuipxGfNEGEPHFmcQTW3MhiOlKQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(39850400004)(396003)(346002)(376002)(46966005)(26005)(54906003)(31696002)(8676002)(31686004)(9786002)(110136005)(83380400001)(356005)(2906002)(7636003)(8936002)(316002)(70586007)(336012)(107886003)(426003)(82740400003)(82310400003)(478600001)(44832011)(36906005)(186003)(5660300002)(2616005)(47076004)(70206006)(4326008)(36756003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2020 07:09:50.5449
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41cc7432-8713-454c-83e1-08d889fe9c1e
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT044.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB3890
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
 
-On Sat, Nov 14, 2020 at 6:47 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+cc Alex, Cornelia in case VFIO cares about new_id/remove_id
-> semantics]
->
-> On Mon, Oct 26, 2020 at 11:57:10AM +0800, Zhenzhong Duan wrote:
-> > When a device ID data is writen to /sys/bus/pci/drivers/.../new_id,
-> > only static ID table is checked for duplicate and multiple dynamic ID
-> > entries of same kind are allowed to exist in a dynamic linked list.
->
-> This doesn't quite say what the problem is.
->
-> I see that currently new_id_store() uses pci_match_id() to see if the
-> new device ID is in the static id_table, so adding the same ID twice
-> adds multiple entries to the dynids list.  That does seem wrong, and I
-> think we should fix it.
->
-> But I would like to clarify this commit log so we know whether the
-> current behavior causes user-visible broken behavior.  The dynids list
-> is mostly used by pci_match_device(), and it looks like duplicate
-> entries shouldn't cause it a problem.
->
-> I guess remove_id_store() will only remove one of the duplicate
-> entries, so if we add an ID several times, we would have to remove it
-> the same number of times before it's completely gone.
 
-Current behavior doesn't cause user-visible broken behavior, only not
-user friendly. One has to remove an ID at least twice to ensure it's
-really removed if he doesn't know how many times it has been added
-before.
+On 16. 11. 20 7:15, Manish Narani wrote:
+> In the current implementation DLL reset will be issued for
+> each ITAP and OTAP setting inside ATF, this is creating issues
+> in some scenarios and this sequence is not inline with the TRM.
+> To fix the issue, DLL reset should be removed from the ATF and
+> host driver will request it explicitly.
+> This patch update host driver to explicitly request for DLL reset
+> before ITAP (assert DLL) and after OTAP (release DLL) settings.
+> 
+> Fixes: a5c8b2ae2e51 ("mmc: sdhci-of-arasan: Add support for ZynqMP Platform Tap Delays Setup")
+> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+> ---
+>  drivers/mmc/host/sdhci-of-arasan.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+> index 3ec5ecad637c..e066d8f51954 100644
+> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> @@ -635,6 +635,9 @@ static int sdhci_zynqmp_sdcardclk_set_phase(struct clk_hw *hw, int degrees)
+>  	if (ret)
+>  		pr_err("Error setting Output Tap Delay\n");
+>  
+> +	eemi_ops->ioctl(node_id, IOCTL_SD_DLL_RESET,
+> +			PM_DLL_RESET_RELEASE, 0, NULL);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -794,6 +797,9 @@ static int sdhci_versal_sampleclk_set_phase(struct clk_hw *hw, int degrees)
+>  	if (host->version < SDHCI_SPEC_300)
+>  		return 0;
+>  
+> +	eemi_ops->ioctl(node_id, IOCTL_SD_DLL_RESET,
+> +			PM_DLL_RESET_ASSERT, 0, NULL);
+> +
+>  	switch (host->timing) {
+>  	case MMC_TIMING_MMC_HS:
+>  	case MMC_TIMING_SD_HS:
+> 
 
->
-> > Fix it by calling pci_match_device() which checks both dynamic and static
-> > IDs.
-> >
-> > After fix, it shows below result which is expected.
-> >
-> > echo "1af4:1000" > /sys/bus/pci/drivers/vfio-pci/new_id
-> > echo "1af4:1000" > /sys/bus/pci/drivers/vfio-pci/new_id
-> > -bash: echo: write error: File exists
-> >
-> > Drop the static specifier and add a prototype to avoid build error.
->
-> I don't get this part.  You added a prototype in include/linux/pci.h,
-> which means you expect callers outside drivers/pci.  But there aren't
-> any.
->
-> In fact, you're only adding a call in the same file where
-> pci_match_device() is defined.  The usual way to resolve that is to
-> move the pci_match_device() definition before the call, so no forward
-> declaration is needed and the function can remain static.
->
-> I think pci_match_id() and pci_match_device() should both be moved so
-> they remain together.  It would be nice if the move itself were a
-> no-op patch separate from the one that changes new_id_store().
+this won't apply. It needs to be fixed.
 
-Yes, that's better, will do, thanks for your suggestions.
-
-Zhenzhong
+Thanks,
+Michal
