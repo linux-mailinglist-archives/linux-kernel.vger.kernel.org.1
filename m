@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB752B4E40
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B70912B4E3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387998AbgKPRnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
+        id S2387988AbgKPRnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387864AbgKPRmQ (ORCPT
+        with ESMTP id S2387871AbgKPRmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:42:16 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA13C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:16 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id s8so19636987wrw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:16 -0800 (PST)
+        Mon, 16 Nov 2020 12:42:18 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E518C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:18 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so19676393wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:42:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3dpuU5BsT173A/3X/IKJ/RVPURrpJEnyWKPfCisq40U=;
-        b=R0c1VYZ4uhe952lSIq65QcDIkw0VaRxMNF3r12FkqKkCKP3mYeJAIhiOq132YdsaZ8
-         ZH1GB3ItUBwsx/qcAf9v2JrJgYX2Gx3ammOyg9wlPC9zFR8X6irCtvs/vZl47wPv0AyT
-         YRC9sdRNT3EwxeYAFc0qhB+Ef5RwwBinY99ti9yIsaYI822N9aAqQooU3JHaEL+9n+HP
-         Q6+FwmvbhSlkAM41JSELFusyxho3UvHUPX33fxH9hTxkXEMo04wDtOYDTQNWDl0I4ZK0
-         i0rj0ygI3EsYcYDEq+VF1Jy8Zd5CUxH6BCXECjSvOmwafl3PI6R0BTpY9mocgCRHPt49
-         49mQ==
+        bh=kwAPsdpVMxl/zDOaEKrvh3eBbThND3Sgn5s6wfB0Uyk=;
+        b=DKTVoYhLDkbUjmiKBiSxqN0EkzBLYyzyrkoqtuN6VulUimxRpI6QLv0OIHxkKaQQgU
+         KYLrGD874Ber7KTt6OJaUpi2vEOqawPyVBFY0niR1SkoQpbH0FGG2WodY9fl8grPOC7q
+         RqSW3DTkKBPSp1/YLd9RcWADeSJl8AGqcerHF/73w3pZyGN4NPmJ0ha5qJWTublG4eVP
+         FvWuTMIgTQVlzi1mJLNQgc+aO/NoIPqjaxzq3VlsC2bSDchoZBkqoBcDmPKQ3X5z4eXv
+         XWJrBqmGzKAQIh2YZjXrnie9qVgHj6SkltfZVcvXgBg7Cmg7I8oXBfuMB0NnR4ltofjK
+         +9SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3dpuU5BsT173A/3X/IKJ/RVPURrpJEnyWKPfCisq40U=;
-        b=P+3rQ0Ruv3k3sr8sTakAN+DYymiELeRM9pun6VBi01ZcX1LpGgQMGbEFK990mH7oX/
-         TX4oNuDxyx8QDYOC2/1tlD7Juy5nOS/zT71rKhQyqp5JtTAFBGmZCsCf6saiER46DGrH
-         NeAgKriil+9iDKyCv6hZAjfwM9AumGRDpu66OEpRgtxDrbQ/muCYJEaslOic5HJBD1f+
-         3G8iRr3fFhFk67UyCExT3QTkpT9ciVCWoIfp1gSCNMocru5Y9SVXkvnexgVnI5oMd/lF
-         mywPl+dKF1VKfwvklmxCD3mvaOyaL94nC05mZ7mt3awmuq/KCb6HlX38bY6S67uZY6hG
-         rq4w==
-X-Gm-Message-State: AOAM532nEUbWkQZ4rCTveWI4vrHHOf4XSQpr/5nTKmsOkQnlzhKHYh1k
-        aaKe9JasIPDK024ioo5AFkjKTA==
-X-Google-Smtp-Source: ABdhPJxtmaWM3VKZa7T15xSrO7rUuQXUBkW8QqK89gWx3Yq36M767nEaAOZciDjUhOSQTWtTeD/Fcw==
-X-Received: by 2002:adf:c847:: with SMTP id e7mr20667633wrh.346.1605548535413;
-        Mon, 16 Nov 2020 09:42:15 -0800 (PST)
+        bh=kwAPsdpVMxl/zDOaEKrvh3eBbThND3Sgn5s6wfB0Uyk=;
+        b=T8Ljl/D2ydSCudk+6G+eN4j/Zzj+29+idwoFgpmaU+xbWV5ufQbmTLa2d9eDwGjM5W
+         DrqeoSheSQBr71ah3LxXJ3m4FEXYU8lj7lEzVY2cQn0z3Nz0xVgSmgNCaqyPCKn7pQnp
+         WC7fiN9OQAzzI9BAD2YutIhKCVM7qDi0BBccTYePc+Is07V4H1XKnamOERn1p505WMtC
+         IW3golQj7w7IO5ZdIIeL1RGxgVHa4wcGoqsK2rqN6gxZzVYcxiCnH6HBOi0Ioms4gdnz
+         ECLZMJv9xzsa0FAufOPrkaWnIyKlq7OsXwAQp5bRPt6x3qKESmnKD/TxmsXuNLhR9TUe
+         eEuQ==
+X-Gm-Message-State: AOAM532a1Nua1wjHSZyUEFiRSs1WzBqjWcgDOfbNiCFZpILIA38ILYCN
+        h8x08A+nXeWtPAoNyffogk/WlQ==
+X-Google-Smtp-Source: ABdhPJxBcXflNnhznga0qA/1qGlXLsbwa73sxSXQZeI2NdqkAJACA5ixV1bOC5dXLeCi3pwSiE6mqA==
+X-Received: by 2002:a5d:4802:: with SMTP id l2mr19918921wrq.424.1605548536828;
+        Mon, 16 Nov 2020 09:42:16 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.42.14
+        by smtp.gmail.com with ESMTPSA id n10sm24667224wrx.9.2020.11.16.09.42.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:42:14 -0800 (PST)
+        Mon, 16 Nov 2020 09:42:16 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
         Maxime Ripard <mripard@kernel.org>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 39/42] drm/vc4/vc4_v3d: Demote non-conformant kernel-doc headers
-Date:   Mon, 16 Nov 2020 17:41:09 +0000
-Message-Id: <20201116174112.1833368-40-lee.jones@linaro.org>
+Subject: [PATCH 40/42] drm/vc4/vc4_debugfs: Demote non-conformant kernel-doc headers
+Date:   Mon, 16 Nov 2020 17:41:10 +0000
+Message-Id: <20201116174112.1833368-41-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116174112.1833368-1-lee.jones@linaro.org>
 References: <20201116174112.1833368-1-lee.jones@linaro.org>
@@ -70,42 +69,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vc4/vc4_v3d.c:131: warning: Function parameter or member 'vc4' not described in 'vc4_v3d_pm_get'
- drivers/gpu/drm/vc4/vc4_v3d.c:231: warning: Function parameter or member 'vc4' not described in 'bin_bo_alloc'
+ drivers/gpu/drm/vc4/vc4_debugfs.c:25: warning: Function parameter or member 'minor' not described in 'vc4_debugfs_init'
+ drivers/gpu/drm/vc4/vc4_debugfs.c:62: warning: Function parameter or member 'dev' not described in 'vc4_debugfs_add_file'
+ drivers/gpu/drm/vc4/vc4_debugfs.c:62: warning: Function parameter or member 'name' not described in 'vc4_debugfs_add_file'
+ drivers/gpu/drm/vc4/vc4_debugfs.c:62: warning: Function parameter or member 'show' not described in 'vc4_debugfs_add_file'
+ drivers/gpu/drm/vc4/vc4_debugfs.c:62: warning: Function parameter or member 'data' not described in 'vc4_debugfs_add_file'
 
 Cc: Eric Anholt <eric@anholt.net>
 Cc: Maxime Ripard <mripard@kernel.org>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Rob Clark <robdclark@gmail.com>
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/vc4/vc4_v3d.c | 4 ++--
+ drivers/gpu/drm/vc4/vc4_debugfs.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_v3d.c b/drivers/gpu/drm/vc4/vc4_v3d.c
-index 65d0dac69b0bc..73d63d72575b0 100644
---- a/drivers/gpu/drm/vc4/vc4_v3d.c
-+++ b/drivers/gpu/drm/vc4/vc4_v3d.c
-@@ -122,7 +122,7 @@ static int vc4_v3d_debugfs_ident(struct seq_file *m, void *unused)
+diff --git a/drivers/gpu/drm/vc4/vc4_debugfs.c b/drivers/gpu/drm/vc4/vc4_debugfs.c
+index 4fbbf980a299f..6da22af4ee911 100644
+--- a/drivers/gpu/drm/vc4/vc4_debugfs.c
++++ b/drivers/gpu/drm/vc4/vc4_debugfs.c
+@@ -16,7 +16,7 @@ struct vc4_debugfs_info_entry {
+ 	struct drm_info_list info;
+ };
+ 
+-/**
++/*
+  * Called at drm_dev_register() time on each of the minors registered
+  * by the DRM device, to attach the debugfs files.
+  */
+@@ -46,7 +46,7 @@ static int vc4_debugfs_regset32(struct seq_file *m, void *unused)
  	return 0;
  }
  
 -/**
 +/*
-  * Wraps pm_runtime_get_sync() in a refcount, so that we can reliably
-  * get the pm_runtime refcount to 0 in vc4_reset().
-  */
-@@ -205,7 +205,7 @@ int vc4_v3d_get_bin_slot(struct vc4_dev *vc4)
- 	return -ENOMEM;
- }
- 
--/**
-+/*
-  * bin_bo_alloc() - allocates the memory that will be used for
-  * tile binning.
+  * Registers a debugfs file with a callback function for a vc4 component.
   *
+  * This is like drm_debugfs_create_files(), but that can only be
 -- 
 2.25.1
 
