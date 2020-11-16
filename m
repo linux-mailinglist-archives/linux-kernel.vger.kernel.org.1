@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F119F2B4EF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FF92B4F8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731575AbgKPSOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730096AbgKPSOd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:14:33 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A6BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 10:14:32 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id w24so205629wmi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 10:14:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=2rS9fxYCxVx9DYn4jdTtBbQk4qg3DugBIFR+GZCZGTU=;
-        b=GPZnndKxah4Ct/6NzieAD5rngKfssSWQUu96LVcgvHUv0DLajx5rdw/GmCeR4v44u2
-         kLzTuUCOCZbTCkSAb2AEMWMazqrfGNCw2We1OEX/7luHMUYnA5IrSL7AenqyD2UWx7uf
-         alJwwUbzl83DZylH1cMvQDJPBWHjcOqcGByceZmxsj4/MxTJ1HCOn/atC4uRrboejabd
-         pI2sWuw/lcj8vHZFjleeFGWK18NYcf57Bql/IXlKVUejj57Yhx8HxNjTYo8RjMcBU+AW
-         gXqyKEeXwo0Igg2G8SG2DAiaGL2woFhp4meBlVURXYjFXRhEEzLA7iuwF8a8mZ9cx+je
-         Uiag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=2rS9fxYCxVx9DYn4jdTtBbQk4qg3DugBIFR+GZCZGTU=;
-        b=L0MupLzSb118bOkV8zpFlfAafGy4pWOVoNVkhHwRExEl3Cpurjr2+Qe5t6eAl82rfJ
-         AhBN7nLpkj5KoE2VYNwGc/DwHjM+ioQrVrbHN4EtDec6tTfilra00iqlWQQSi8nd+BYi
-         TxnGiBVCe67FBO5yHV7DLCevgYhMDwXMcxLcshF61OEW8LSuvacj+tqKq3N/ePZGLJbZ
-         YbSA+Mi5+6JQ3Uf1rux5Rj1UIpbgYk4yJs9s8heLZgAXUTbVDEQMTtm/m8dQW8bMB46K
-         hszawxpYFJdLA0pI/JcRciqTsddbAY2bIdX32M9mPHO6GHc+m5tSsdbE6QRdheNU8PsC
-         l97w==
-X-Gm-Message-State: AOAM53216P6OjGaCJDlawoFUtGSpYNH0PBCs7HuK/qPSjhjPMN5T0G+R
-        T3uPb3MntrSpey7x4LH99GAP9aQbXAUAIw==
-X-Google-Smtp-Source: ABdhPJxLtFIEVdK6tK8vs7No1zBXgriC1Oe/GkqswdW88j/zBWg6Wm7u570IP9IfbGSsIIY3J4QuNA==
-X-Received: by 2002:a7b:cd11:: with SMTP id f17mr127387wmj.127.1605550471580;
-        Mon, 16 Nov 2020 10:14:31 -0800 (PST)
-Received: from [192.168.2.14] ([156.38.87.148])
-        by smtp.gmail.com with ESMTPSA id v19sm24891509wrf.40.2020.11.16.10.14.23
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Mon, 16 Nov 2020 10:14:31 -0800 (PST)
-Message-ID: <5fb2c187.1c69fb81.23c29.ac36@mx.google.com>
-From:   ordern12@gmail.com
-X-Google-Original-From: Portomaso Business Tower Level 6, Portomaso
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: ATA Group 
-To:     Recipients <Portomaso@vger.kernel.org>
-Date:   Wed, 18 Nov 2020 03:33:56 -0800
-Reply-To: RecruitingofficerATA@usa.com
+        id S1732647AbgKPS1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:27:55 -0500
+Received: from mga06.intel.com ([134.134.136.31]:20622 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731107AbgKPS1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:27:54 -0500
+IronPort-SDR: 7mHO8jlN6Dn0HGliqXULyPj81wm/4iYjeFfNDUob6RnUJCM9UiAsW00f62CtrP0ai/HrRh3o0y
+ 0WKH4G9BuseA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232409990"
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="232409990"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:27:52 -0800
+IronPort-SDR: AYXSg0NKU9zQuWlZqFPWBZjv+zY822RMK8oxUZs0JuX8ax32iouwi6HYMmbi9MT8AKwv8SHWZ6
+ Dj0iZHxmX9dA==
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="400527729"
+Received: from ls.sc.intel.com (HELO localhost) ([143.183.96.54])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:27:52 -0800
+From:   isaku.yamahata@intel.com
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [RFC PATCH 01/67] x86/cpufeatures: Add synthetic feature flag for TDX (in host)
+Date:   Mon, 16 Nov 2020 10:25:46 -0800
+Message-Id: <9a74fb153bc21dc5cac46e84913b88182f216d1b.1605232743.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1605232743.git.isaku.yamahata@intel.com>
+References: <cover.1605232743.git.isaku.yamahata@intel.com>
+In-Reply-To: <cover.1605232743.git.isaku.yamahata@intel.com>
+References: <cover.1605232743.git.isaku.yamahata@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear sir/ madam
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-This is ATA GROUP TURKEY, can you represent our company in united states? O=
-ur salary is 2500 USD to 6000 USD per Month.  =
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
+ arch/x86/include/asm/cpufeatures.h | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index dad350d42ecf..1bd2a414dcc0 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -230,6 +230,7 @@
+ #define X86_FEATURE_FLEXPRIORITY	( 8*32+ 2) /* Intel FlexPriority */
+ #define X86_FEATURE_EPT			( 8*32+ 3) /* Intel Extended Page Table */
+ #define X86_FEATURE_VPID		( 8*32+ 4) /* Intel Virtual Processor ID */
++#define X86_FEATURE_TDX			( 8*32+ 5) /* Intel Trusted Domain Extensions */
+ 
+ #define X86_FEATURE_VMMCALL		( 8*32+15) /* Prefer VMMCALL to VMCALL */
+ #define X86_FEATURE_XENPV		( 8*32+16) /* "" Xen paravirtual guest */
+-- 
+2.17.1
 
-Best Ragards
-Mr.Steve Roger
-Recruiting officer ATA Group Turkey
-Address:Portomaso Business Tower Level 6, Portomaso =
-
-PTM 01 St Julians Malta
-Phone:+905098007787
-Fax:90.876 269 0967
