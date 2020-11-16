@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E5B2B4C65
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB8E2B4C6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732600AbgKPROu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:14:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731793AbgKPROt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:14:49 -0500
-Received: from localhost (unknown [122.171.203.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21FF720797;
-        Mon, 16 Nov 2020 17:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605546889;
-        bh=Do6LikazT2GPRsF4PjZgIWIMXnzhA/SSk92JoCfMLG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V/PPfYy+fVraJmzX0RDzARI4yPpVSeu+Oy83cU0rFyWc1/B/nhWFK+gECtLr1C7qm
-         TVyt6NwFmgV6JALFNsNP7bVzYB5hOBpqbTAVZuRdhYQpzzpgSEOCT8I1l97RSEkOe/
-         sLWhP2Kc80FumzzaasgjvK+D7S16ddfq+oLViDRA=
-Date:   Mon, 16 Nov 2020 22:44:44 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc:     linux-rockchip@lists.infradead.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: pl330: _prep_dma_memcpy: Fix wrong burst size
-Message-ID: <20201116171444.GA50232@vkoul-mobl>
-References: <1605326106-55681-1-git-send-email-sugar.zhang@rock-chips.com>
+        id S1732620AbgKPRQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:16:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730459AbgKPRQI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 12:16:08 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02524C0613CF;
+        Mon, 16 Nov 2020 09:16:08 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1kei6i-0007at-NP; Mon, 16 Nov 2020 18:16:00 +0100
+Date:   Mon, 16 Nov 2020 18:16:00 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Florian Westphal <fw@strlen.de>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        linux-next@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v4] net: linux/skbuff.h: combine SKB_EXTENSIONS
+ + KCOV handling
+Message-ID: <20201116171600.GD22792@breakpoint.cc>
+References: <20201116031715.7891-1-rdunlap@infradead.org>
+ <ffe01857-8609-bad7-ae89-acdaff830278@tessares.net>
+ <20201116143121.GC22792@breakpoint.cc>
+ <20201116073013.24d45385@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <53e73344-3a3a-4a11-9914-8490efa1a3b9@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1605326106-55681-1-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <53e73344-3a3a-4a11-9914-8490efa1a3b9@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-11-20, 11:55, Sugar Zhang wrote:
-> Actually, burst size is equal to '1 << desc->rqcfg.brst_size'.
-> we should use burst size, not desc->rqcfg.brst_size.
+Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 11/16/20 7:30 AM, Jakub Kicinski wrote:
+> > On Mon, 16 Nov 2020 15:31:21 +0100 Florian Westphal wrote:
+> >>>> @@ -4151,12 +4150,11 @@ enum skb_ext_id {
+> >>>>   #if IS_ENABLED(CONFIG_MPTCP)
+> >>>>   	SKB_EXT_MPTCP,
+> >>>>   #endif
+> >>>> -#if IS_ENABLED(CONFIG_KCOV)
+> >>>>   	SKB_EXT_KCOV_HANDLE,
+> >>>> -#endif  
+> >>>
+> >>> I don't think we should remove this #ifdef: the number of extensions are
+> >>> currently limited to 8, we might not want to always have KCOV there even if
+> >>> we don't want it. I think adding items in this enum only when needed was the
+> >>> intension of Florian (+cc) when creating these SKB extensions.
+> >>> Also, this will increase a tiny bit some structures, see "struct skb_ext()".  
+> >>
+> >> Yes, I would also prefer to retrain the ifdef.
+> >>
+> >> Another reason was to make sure that any skb_ext_add(..., MY_EXT) gives
+> >> a compile error if the extension is not enabled.
+> > 
+> > Oh well, sorry for taking you down the wrong path Randy!
 > 
-> dma memcpy performance on Rockchip RV1126
-> @ 1512MHz A7, 1056MHz LPDDR3, 200MHz DMA:
-> 
-> dmatest:
-> 
-> /# echo dma0chan0 > /sys/module/dmatest/parameters/channel
-> /# echo 4194304 > /sys/module/dmatest/parameters/test_buf_size
-> /# echo 8 > /sys/module/dmatest/parameters/iterations
-> /# echo y > /sys/module/dmatest/parameters/norandom
-> /# echo y > /sys/module/dmatest/parameters/verbose
-> /# echo 1 > /sys/module/dmatest/parameters/run
-> 
-> dmatest: dma0chan0-copy0: result #1: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-> dmatest: dma0chan0-copy0: result #2: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-> dmatest: dma0chan0-copy0: result #3: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-> dmatest: dma0chan0-copy0: result #4: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-> dmatest: dma0chan0-copy0: result #5: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-> dmatest: dma0chan0-copy0: result #6: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-> dmatest: dma0chan0-copy0: result #7: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-> dmatest: dma0chan0-copy0: result #8: 'test passed' with src_off=0x0 dst_off=0x0 len=0x400000
-> 
-> Before:
-> 
->   dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 48 iops 200338 KB/s (0)
-> 
-> After this patch:
-> 
->   dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 179 iops 734873 KB/s (0)
-> 
-> After this patch and increase dma clk to 400MHz:
-> 
->   dmatest: dma0chan0-copy0: summary 8 tests, 0 failures 259 iops 1062929 KB/s (0)
+> No problem.
+> So we are back to v2, right?
 
-Applied, thanks
+Yes, you can still drop the line
 
--- 
-~Vinod
+>> +#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
+
+for enum skb_ext_id (alreadyt under SKB_EXTENSIONS).
+
+Other than that v2 looks good to me.
+
+Thanks!
