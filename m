@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E7C2B4DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE692B4D60
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733188AbgKPRhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
+        id S1733222AbgKPRhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733183AbgKPRhK (ORCPT
+        with ESMTP id S1733183AbgKPRhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:37:10 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EEAC0613D3
+        Mon, 16 Nov 2020 12:37:11 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED069C0613CF
         for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:09 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id c17so19601529wrc.11
+Received: by mail-wr1-x443.google.com with SMTP id 23so19604359wrc.8
         for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XmKc1pxfWNIhhVZbat4IeYMq2SqMBDzsHL5Wfk03ato=;
-        b=j+ldD9rmaT6SeiUqabg7hZGWX7ysLDbYkfSm2AtognLMox9o+AH58OYgL2YeXXY79W
-         xDNWBXkEAKttVFiCe9VnQTLN2pHAy/nzubqM5xwwpHf/DVRczWgHYC0UNUcTvMIVchKU
-         pibCfX872RdJcV/lS54hsoB4UYzO50yTxaqWnXvCnCqmpVt06BmYl0UbC8LxcJEnYLLm
-         35s/1AJXP/ggRAxPfhRlNEYKbeecRLtoMTY7RzfR3OItnMnDZ66wLmtiyCrjuTJGG93V
-         ciXz2R7BoqATKtQj3vRXCll1mq36jv4/QUjn0y1GRvNu0s3rSNG2wFT/A0J4RvAFOehm
-         3TpA==
+        bh=brKpubI9m6t0/lslbRm7JoHNATZX8LOe9ERcjH2dq1I=;
+        b=d2v+UQdDsneXlTN6mpwGtQa1JII7loaPK7FtyMdxwBh94nR+RMRJ2sdDSYWiWA4Gdi
+         Fsfex/7l3c1d762P+eJfgiwtQweyGf+VyN6BqpR170YJE1cYPNRrZ2c4aQsXcc4rPdZJ
+         otnuSbCzU3hogR5xqxla71Y0DxcVOGr3gnwv3HURcr7LQCg51B+f6/qNZ//m5TOu71hA
+         gR9IG8kLM7fkPhoX4mWRd0t02ouUlxB7dBZQQN1h8Sc4P4hwG3Px8zuCPyOsPqB5Pz2m
+         lsqp/V2hrnhwY7hSpbuRGaQ44N+AU0CUgjVfNQhR9LEgD9IWQYmyikJu0q16dQ81tnF+
+         pGIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XmKc1pxfWNIhhVZbat4IeYMq2SqMBDzsHL5Wfk03ato=;
-        b=jqOohWIfDvhs8nX5AgGncurIPiRWl3DkOckD7smW2UrPzxRlwYim1O96fjf1aMFG3n
-         6E9Xe57CebXtCl53VamwaO/1WiJ49FMu818ZKTg0KCDn+B0K36Pyhho0kqyPOgsG0p9N
-         y2VzBKDN4ZUVbdwtD3pKDpDjxfhBfaggtPvY1V/Cn8xtfdCxnSqduQ81bqXvAPIVyqjD
-         H78w/NPre5xCfHEbSFEPegYJHazrWVvQ897kLCOrLuVr3lsB+yYbaZVzKRt60hgr7ZPd
-         YlPaw2wbBzS9nv7cuZprLoWjxP0kCzzwXSdmZzG2iI7qnK7r3q4CeUu4F6ZQdIULB2XT
-         c7FA==
-X-Gm-Message-State: AOAM532uhYNVn8G0vpEE6CJ/+fr8OUrddKHZ4uCINQJAbhJsdbt6Bpj0
-        jLJgCst4nNjCykkh5DCjqlkODw==
-X-Google-Smtp-Source: ABdhPJx4VTq2HkuliljVp17qCuKdebug0OBdMDlRIY3eahoxvBmB4PkmK2QLuiAl5GUY209T7kt5DA==
-X-Received: by 2002:a5d:488b:: with SMTP id g11mr21838475wrq.210.1605548227541;
-        Mon, 16 Nov 2020 09:37:07 -0800 (PST)
+        bh=brKpubI9m6t0/lslbRm7JoHNATZX8LOe9ERcjH2dq1I=;
+        b=GNKwQjvj2t3sUKWeNT0XX9cpEW11BI559s6CaTs7EpR95qpeA1kOPcNZLaK5yawYKb
+         HQoZ5nHMTCpq1jyRBziOI6iw35RO2kfWmNRJqm/l5mKpTIFqctEhFULzlh78kSTbw4kQ
+         lCJriry7IfWXrBBeXNx+S4PsIFqeT7TdHn+y0ri3cFz2xRu6Yyob30y//QKd9/OYd86M
+         lmpx5f1pHIl8rXxu8CAG//IBWMIRFMReRoEIOoqNeHWM2fdpa7m+dEMBvJdMlM2Ctk86
+         1D2guS77xoSHOhpTB0Bp9BFEnJtxXWXm3VKimeHOLRPmSrAyDDwjJspjC8fTooY+uCtF
+         5JOw==
+X-Gm-Message-State: AOAM5322wHHvSksU1LArGUKISt6khbRgz/gYxjQz88PLOgCEIcCqDjih
+        pQomEiOMyK+xKRufoZvu5nY0Sw==
+X-Google-Smtp-Source: ABdhPJyHYdBcdf6dmzu+ALix2+ZPddVQAxDPKulZ23x4FWjXmT0ZNsPvLa6uH2tvTXV3+CtTi1fmzA==
+X-Received: by 2002:a5d:4612:: with SMTP id t18mr20435374wrq.401.1605548228653;
+        Mon, 16 Nov 2020 09:37:08 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.06
+        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:37:06 -0800 (PST)
+        Mon, 16 Nov 2020 09:37:08 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 03/43] drm/radeon/radeon_kms: Move 'radeon_*_kms' prototypes to shared header
-Date:   Mon, 16 Nov 2020 17:36:20 +0000
-Message-Id: <20201116173700.1830487-4-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 04/43] drm/radeon/radeon_kms: Fix misnaming of 'radeon_info_ioctl's dev param
+Date:   Mon, 16 Nov 2020 17:36:21 +0000
+Message-Id: <20201116173700.1830487-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116173700.1830487-1-lee.jones@linaro.org>
 References: <20201116173700.1830487-1-lee.jones@linaro.org>
@@ -73,98 +71,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/radeon_kms.c:756:5: warning: no previous prototype for ‘radeon_get_vblank_counter_kms’ [-Wmissing-prototypes]
- 756 | u32 radeon_get_vblank_counter_kms(struct drm_crtc *crtc)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/radeon_kms.c:826:5: warning: no previous prototype for ‘radeon_enable_vblank_kms’ [-Wmissing-prototypes]
- 826 | int radeon_enable_vblank_kms(struct drm_crtc *crtc)
- | ^~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/radeon_kms.c:853:6: warning: no previous prototype for ‘radeon_disable_vblank_kms’ [-Wmissing-prototypes]
- 853 | void radeon_disable_vblank_kms(struct drm_crtc *crtc)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
+ drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/radeon_display.c |  1 +
- drivers/gpu/drm/radeon/radeon_kms.c     |  1 +
- drivers/gpu/drm/radeon/radeon_kms.h     | 35 +++++++++++++++++++++++++
- 3 files changed, 37 insertions(+)
- create mode 100644 drivers/gpu/drm/radeon/radeon_kms.h
+ drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
-index eb0d4cb95f0a6..3a6fedad002d7 100644
---- a/drivers/gpu/drm/radeon/radeon_display.c
-+++ b/drivers/gpu/drm/radeon/radeon_display.c
-@@ -44,6 +44,7 @@
- 
- #include "atom.h"
- #include "radeon.h"
-+#include "radeon_kms.h"
- 
- static void avivo_crtc_load_lut(struct drm_crtc *crtc)
- {
 diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-index 3d31c04e4b3db..001940bca90a6 100644
+index 001940bca90a6..50cee4880bb46 100644
 --- a/drivers/gpu/drm/radeon/radeon_kms.c
 +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-@@ -41,6 +41,7 @@
- #include "radeon.h"
- #include "radeon_asic.h"
- #include "radeon_drv.h"
-+#include "radeon_kms.h"
- 
- #if defined(CONFIG_VGA_SWITCHEROO)
- bool radeon_has_atpx(void);
-diff --git a/drivers/gpu/drm/radeon/radeon_kms.h b/drivers/gpu/drm/radeon/radeon_kms.h
-new file mode 100644
-index 0000000000000..36e73cea92154
---- /dev/null
-+++ b/drivers/gpu/drm/radeon/radeon_kms.h
-@@ -0,0 +1,35 @@
-+/* radeon_kms.h -- Private header for radeon driver -*- linux-c -*-
-+ *
-+ * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
-+ * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
-+ * All rights reserved.
-+ *
-+ * Permission is hereby granted, free of charge, to any person obtaining a
-+ * copy of this software and associated documentation files (the "Software"),
-+ * to deal in the Software without restriction, including without limitation
-+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-+ * and/or sell copies of the Software, and to permit persons to whom the
-+ * Software is furnished to do so, subject to the following conditions:
-+ *
-+ * The above copyright notice and this permission notice (including the next
-+ * paragraph) shall be included in all copies or substantial portions of the
-+ * Software.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-+ * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-+ * DEALINGS IN THE SOFTWARE.
-+ *
-+ */
-+
-+#ifndef __RADEON_KMS_H__
-+#define __RADEON_KMS_H__
-+
-+u32 radeon_get_vblank_counter_kms(struct drm_crtc *crtc);
-+int radeon_enable_vblank_kms(struct drm_crtc *crtc);
-+void radeon_disable_vblank_kms(struct drm_crtc *crtc);
-+
-+#endif				/* __RADEON_KMS_H__ */
+@@ -214,7 +214,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
+ /**
+  * radeon_info_ioctl - answer a device specific request.
+  *
+- * @rdev: radeon device pointer
++ * @dev: drm device pointer
+  * @data: request object
+  * @filp: drm filp
+  *
 -- 
 2.25.1
 
