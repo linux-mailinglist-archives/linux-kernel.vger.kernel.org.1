@@ -2,68 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4232B4B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 604362B4B71
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732203AbgKPQjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:39:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730490AbgKPQjT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:39:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15258C0613CF;
-        Mon, 16 Nov 2020 08:39:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/M9t61KOqi1MYTJyagjw+b8PgJisejej65ZgJ6XoswQ=; b=c3SQUeMiZ9CED8cEqQQLM9KkUB
-        6i+1ST71hFHKpE43MqROlgG6q/v+fN1xdBwUbfi7kGuSWOnKW7HquppFhlrUpXMC+x8MSeYgi37UR
-        9LBBGdeyY/8nwkhxPmFbQLe3jkmev9R6j1sWhUHZEyU9UaV1S+L6ALECNoE2Wm/h8QGJB/o+BgGiE
-        Xjx+vMS2QqGgXaI/0peIaY40ntlEgZDAxRq4lKfHUwtxzXj/E4/DyQiLGhY8bOZmuPqssbbDTEQWH
-        r9/u+8JGT/mB/b6VS7gAiB4jrKn9T34MMvHs6orCNCV+UONq4274s0z2zudslnnUolT2zBOWTklf2
-        1erZnp/Q==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kehX1-0005Cd-9h; Mon, 16 Nov 2020 16:39:07 +0000
-Date:   Mon, 16 Nov 2020 16:39:07 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
- for rproc serial
-Message-ID: <20201116163907.GA19209@infradead.org>
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
- <20201116091950.GA30524@infradead.org>
- <ca183081-5a9f-0104-bf79-5fea544c9271@st.com>
- <20201116162844.GB16619@infradead.org>
+        id S1732118AbgKPQje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:39:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730490AbgKPQjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:39:33 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C06720776;
+        Mon, 16 Nov 2020 16:39:32 +0000 (UTC)
+Date:   Mon, 16 Nov 2020 11:39:31 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] samples/ftrace: mark my_tramp[12]? global
+Message-ID: <20201116113931.2b60a191@gandalf.local.home>
+In-Reply-To: <20201113183414.1446671-1-samitolvanen@google.com>
+References: <20201113183414.1446671-1-samitolvanen@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116162844.GB16619@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Btw, I also still don't understand why remoteproc is using
-dma_declare_coherent_memory to start with.  The virtio code has exactly
-one call to dma_alloc_coherent vring_alloc_queue, a function that
-already switches between two different allocators.  Why can't we just
-add a third allocator specifically for these remoteproc memory carveouts
-and bypass dma_declare_coherent_memory entirely?
+On Fri, 13 Nov 2020 10:34:14 -0800
+Sami Tolvanen <samitolvanen@google.com> wrote:
+
+> my_tramp[12]? are declared as global functions in C, but they are not
+> marked global in the inline assembly definition. This mismatch confuses
+> Clang's Control-Flow Integrity checking. Fix the definitions by adding
+> .globl.
+> 
+
+Actually, since that function is not really global, would it work if you
+removed the "extern" from the my_tramp declaration?
+
+In other words, is there a way to tell C that a function is declared in an
+inline assembly block?
+
+-- Steve
+
+
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> ---
+>  samples/ftrace/ftrace-direct-modify.c | 2 ++
+>  samples/ftrace/ftrace-direct-too.c    | 1 +
+>  samples/ftrace/ftrace-direct.c        | 1 +
+>  3 files changed, 4 insertions(+)
+> 
+> diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
+> index c13a5bc5095b..5b9a09957c6e 100644
+> --- a/samples/ftrace/ftrace-direct-modify.c
+> +++ b/samples/ftrace/ftrace-direct-modify.c
+> @@ -21,6 +21,7 @@ static unsigned long my_ip = (unsigned long)schedule;
+>  asm (
+>  "	.pushsection    .text, \"ax\", @progbits\n"
+>  "	.type		my_tramp1, @function\n"
+> +"	.globl		my_tramp1\n"
+>  "   my_tramp1:"
+>  "	pushq %rbp\n"
+>  "	movq %rsp, %rbp\n"
+> @@ -29,6 +30,7 @@ asm (
+>  "	.size		my_tramp1, .-my_tramp1\n"
+>  "	ret\n"
+>  "	.type		my_tramp2, @function\n"
+> +"	.globl		my_tramp2\n"
+>  "   my_tramp2:"
+>  "	pushq %rbp\n"
+>  "	movq %rsp, %rbp\n"
+> diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
+> index d5c5022be664..3f0079c9bd6f 100644
+> --- a/samples/ftrace/ftrace-direct-too.c
+> +++ b/samples/ftrace/ftrace-direct-too.c
+> @@ -16,6 +16,7 @@ extern void my_tramp(void *);
+>  asm (
+>  "	.pushsection    .text, \"ax\", @progbits\n"
+>  "	.type		my_tramp, @function\n"
+> +"	.globl		my_tramp\n"
+>  "   my_tramp:"
+>  "	pushq %rbp\n"
+>  "	movq %rsp, %rbp\n"
+> diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
+> index 63ca06d42c80..a2729d1ef17f 100644
+> --- a/samples/ftrace/ftrace-direct.c
+> +++ b/samples/ftrace/ftrace-direct.c
+> @@ -14,6 +14,7 @@ extern void my_tramp(void *);
+>  asm (
+>  "	.pushsection    .text, \"ax\", @progbits\n"
+>  "	.type		my_tramp, @function\n"
+> +"	.globl		my_tramp\n"
+>  "   my_tramp:"
+>  "	pushq %rbp\n"
+>  "	movq %rsp, %rbp\n"
+> 
+> base-commit: 585e5b17b92dead8a3aca4e3c9876fbca5f7e0ba
+
