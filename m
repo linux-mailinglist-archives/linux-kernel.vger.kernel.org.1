@@ -2,225 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041182B5421
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5F72B5423
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 23:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727305AbgKPWK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 17:10:26 -0500
-Received: from mail-eopbgr770101.outbound.protection.outlook.com ([40.107.77.101]:30248
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726016AbgKPWKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:10:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SKxURucejhN94TIVJMVupYv9PZuN/CzUu3E7ceCdVd1GCyYWJPQz5IEbDLPU9i31R1PPqQTAD4FRhwqhCidy9dcmP/u73t2XXS6BkwWYWjNKWihj7c0fS6nm95OfI4AUMsyzEc55MSxmqMuVrrQm87JWgHcouU7Eff7CBFb/U9j0d4S8vnh/Um4/JjD+AzMvth25PonF2r1gsLg80E1t9VNTbcCyXgpj1q2u1ukKwP2019PCVBGw3uOhCeNcB02/2DrghVGlHPPsNliszKOo164NTFAxJ1Rl54LplYCHLcEyYAUAhcoYvpIoGV4EFcgrqsiqScizsow3v+sLZ8DhLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I7unqnR35j05lmlQ0jZwf7HsGLlgeeboAXXKUlRNyg8=;
- b=m+uRqecqoG1Q8n3YQNSj1bq21JId7gfdRP8LN6rE+sTXCSaQDu4YBHPweAul7FlQ/PhOhlfI8/07pkJ3FVCNgxqHAi9G1kJzK4Gocz9y5AHqtDXKrCloYT6jj0jvWv3YTO7AKx+QdC27IR/+ad0GvYtnSX9mFDrDpL2i7OOoub5aRW5S4/quCfFfijbPb8DK5XE7UTvbva5mSbJJCu6ZRCEFw2GwWc2ypvwWQY/581eL1VOAfgN8yVJqNkCBAr8lgGWB90IcZDMy1ZAcKoAXlwjTKc32MkpIvI+fNoKcpBJxY8oc9r2KvTh+PdWxfPT7cnCje/Esga/AVBLHZ+8bzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=concurrent-rt.com; dmarc=pass action=none
- header.from=concurrent-rt.com; dkim=pass header.d=concurrent-rt.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=concurrentrt.onmicrosoft.com; s=selector2-concurrentrt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I7unqnR35j05lmlQ0jZwf7HsGLlgeeboAXXKUlRNyg8=;
- b=WrrfV3DpkJFiwXxcQU28NAdsVlyaIz1bwyWhHi9JYzFCg2UIVLlzdmoTONbijnpFny1AMcy6x8JNAXcTOX8rWIJtTjWCFNtC26ZQ5a5X4c2SEXt2poG7WDUm+Gwc95AOMcjj3o3sIdkaS16x4WbSjwwUBwt59Rizh+cEBMrOmuU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=concurrent-rt.com;
-Received: from BN6PR11MB3874.namprd11.prod.outlook.com (2603:10b6:405:81::18)
- by BN6PR1101MB2210.namprd11.prod.outlook.com (2603:10b6:405:58::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.24; Mon, 16 Nov
- 2020 22:10:19 +0000
-Received: from BN6PR11MB3874.namprd11.prod.outlook.com
- ([fe80::8036:d1d5:1b59:ee34]) by BN6PR11MB3874.namprd11.prod.outlook.com
- ([fe80::8036:d1d5:1b59:ee34%7]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
- 22:10:19 +0000
-From:   siarhei.liakh@concurrent-rt.com
-To:     linux-kernel@vger.kernel.org
-Cc:     initramfs@vger.kernel.org, stable@vger.kernel.org,
-        kyungsik.lee@lge.com, yinghai@kernel.org,
-        4sschmid@informatik.uni-hamburg.de, JBeulich@suse.com
-Subject: [PATCH] unlz4: Handle 0-size chunks, discard trailing padding/garbage
-Date:   Mon, 16 Nov 2020 17:09:59 -0500
-Message-Id: <20201116220959.16593-1-siarhei.liakh@concurrent-rt.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [174.70.73.170]
-X-ClientProxiedBy: BN0PR03CA0031.namprd03.prod.outlook.com
- (2603:10b6:408:e7::6) To BN6PR11MB3874.namprd11.prod.outlook.com
- (2603:10b6:405:81::18)
+        id S1728203AbgKPWKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 17:10:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726016AbgKPWKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 17:10:31 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E85A223BF;
+        Mon, 16 Nov 2020 22:10:29 +0000 (UTC)
+Date:   Mon, 16 Nov 2020 17:10:27 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     paulmck <paulmck@kernel.org>, Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
+Message-ID: <20201116171027.458a6c17@gandalf.local.home>
+In-Reply-To: <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
+References: <00000000000004500b05b31e68ce@google.com>
+        <20201115055256.65625-1-mmullins@mmlx.us>
+        <20201116121929.1a7aeb16@gandalf.local.home>
+        <1889971276.46615.1605559047845.JavaMail.zimbra@efficios.com>
+        <20201116154437.254a8b97@gandalf.local.home>
+        <20201116160218.3b705345@gandalf.local.home>
+        <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from sl-s76.concurrent-rt.com (174.70.73.170) by BN0PR03CA0031.namprd03.prod.outlook.com (2603:10b6:408:e7::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Mon, 16 Nov 2020 22:10:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ffd2cfa3-2198-4146-51c2-08d88a7c6707
-X-MS-TrafficTypeDiagnostic: BN6PR1101MB2210:
-X-Microsoft-Antispam-PRVS: <BN6PR1101MB2210370F44544FBA6521C1F5B1E30@BN6PR1101MB2210.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: foVxKeWqyMsxDAGFmjNDclsQlmqouABWaT0R+6lx22h6ju8IjCshCqtPeVQ2TU/pJvs7ioDuqekHFS28inz2odiXtJw45WU4+RG057fQMiSc/nCm0wt/n01hxLHQaRL3bP5L1z4YatB6Nclrmm18PEn7YeOwOa0+Y+snyAkcBqpIlF4Bd1KGo1AmH9CLDZIUD8NQkLu6FhuDfEPJFsG7H6osXKm9l46en5QTY8+sVAkDNp6Tt+FAtYVNKm496EPOpOH9tkIth9pqowckWuD18m/DTl74iNDkhPn92JhKi13brwxM7EaU7gdgiADKQnoSzdHIV5oXmtel5uI3pskuWHxTEiwYkZ3UJwOzMBM7N7JWuIGY68MBKFQAeM5kwCDUkK9asZAqqMxB2gjhYMUC2w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR11MB3874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(346002)(39840400004)(366004)(7696005)(2616005)(52116002)(1076003)(186003)(6666004)(6486002)(86362001)(66946007)(956004)(5660300002)(16526019)(2906002)(83380400001)(36756003)(66476007)(8676002)(9686003)(966005)(316002)(8936002)(66556008)(26005)(4326008)(16799955002)(6916009)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: jhwsPPN5Hd6A0ra+dgkNkeXdJN3yQ+hN8+fTWSoicaZIdT6MtdSHx06H9c/YthVLSEAw4HZOuaRewQITisXq+tlDov8ohHI+6fkRTa87EL2r+KxL/f8FJhyvYGAqECJfGtRyQZ7qtgj8q9qRH4iPSns0DPJTpPHvuJR6Te817bLXS/Wo/xJFAhZgfyYQBuB5AoNk56OFLb6Dfgd1SP0Gda9xz2evZiJ/VgYx/pAQ1O6X/C9ug9LBF2+ht4FjPuaUhSaI7h6RG9vWe8+EoiUNDGVkqD/s2bfKukMFA14876aOE3qyMUxun5KDSXVUfiiNbWnyOGL9GmLkPICNOxtjWD37K2M8m8x5tD1f1/4Bd2ggKy9Qqu5YzPZKkcSI6g9IFnLTlTpr+rJ1j789YU0jzW7nml5BdoWnPQhN54RPKyrOfhoJst0rMmpXPXRfPxeoamld7cdE2Sb6+FhsQsn3glle+83g/ITPum1xazXpjtRLsawn8/e+mD9Mb2apZCI6OsxDzkidk8JM6oKicwz5sBfFF+DK+th+66PZ8Seafq7d2tSiJOKO/IxLd0ki7pIcdW0t+SY5LPWRtfS/WbDy9n4XKRZjJMjvpYCtDDYzoeQA+PdxMvTCtp1/rrGhz93g7bLLuCgH8e2LgpBuSLzJBI/NBGYPoevkKeng7AyvOYpEhvMWAMo7jtPjrlcdPeTekRlwELntAqpu3E7G9er+JyXYCX5umtKC9iQW2abWWLGF670gBBpnDV1B1iUPvuSS2xjb1NmjZ2qnClBw0oTXV9xfx5bT5mry3ft7PYaNSpqVQnk4r6PPSNSnkMsAcnddFGrL/V1LZNPP4/HKK4g3EGM02eMrUCeM3CatGaaHsugZZOV/+va2TJ84Y1KuwyDUe6P0voUqOU7ctV99NPyBLg==
-X-OriginatorOrg: concurrent-rt.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffd2cfa3-2198-4146-51c2-08d88a7c6707
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB3874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2020 22:10:19.2270
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38747689-e6b0-4933-86c0-1116ee3ef93e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eBEgFJq3sBbKtj5TaPpN0B7qe5iSe3BL8X0Vk03Br6uB8F2Zw+ZM5f284P40Cl5Tjfx4LAwlXZCJFTZfUBOawOgNmr9KngoJCl++Vl/6ua8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1101MB2210
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Siarhei Liakh <siarhei.liakh@concurrent-rt.com>
+On Mon, 16 Nov 2020 16:34:41 -0500 (EST)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-TL;DR:
+> ----- On Nov 16, 2020, at 4:02 PM, rostedt rostedt@goodmis.org wrote:
+> 
+> > On Mon, 16 Nov 2020 15:44:37 -0500
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> >   
+> >> If you use a stub function, it shouldn't affect anything. And the worse
+> >> that would happen is that you have a slight overhead of calling the stub
+> >> until you can properly remove the callback.  
+> > 
+> > Something like this:
+> > 
+> > (haven't compiled it yet, I'm about to though).
 
-There are two places in unlz4() function where reads beyond the end of a buffer
-might happen under certain conditions which had been observed in real life on
-stock Ubuntu 20.04 x86_64 with several vanilla mainline kernels, including 5.10.
-As a result of this issue, the kernel fails to decompress LZ4-compressed
-initramfs with following message showing up in the logs:
+Still need more accounting to work on. Almost finished though. ;-)
 
-initramfs unpacking failed: Decoding failed
+> > 
+> > -- Steve
+> > 
+> > diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> > index 3f659f855074..8eab40f9d388 100644
+> > --- a/kernel/tracepoint.c
+> > +++ b/kernel/tracepoint.c
+> > @@ -53,10 +53,16 @@ struct tp_probes {
+> > 	struct tracepoint_func probes[];
+> > };
+> > 
+> > -static inline void *allocate_probes(int count)
+> > +/* Called in removal of a func but failed to allocate a new tp_funcs */
+> > +static void tp_stub_func(void)  
+> 
+> I'm still not sure whether it's OK to call a (void) function with arguments.
 
-Note that in most cases the affected system is still able to proceed with the
-boot process to completion.
+Actually, I've done it. The thing is, what can actually happen? A void
+function that simply returns should not do anything. If anything, the only
+waste is that the caller would save more registers than necessary.
 
-LONG STORY:
+I can't think of anything that can actually happen, but perhaps there is. I
+wouldn't want to make a stub function for every trace point (it wouldn't be
+hard to do).
 
-Background.
+But perhaps we should ask the compiler people to make sure.
 
-Not so long ago we've noticed that some of our Ubuntu 20.04 x86_64 test systems
-often fail to boot newly generated initramfs image. After extensive
-investigation we determined that a failure required the following combination
-for our 5.4.66-rt38 kernel with some additional custom patches:
+> 
+> > +{
+> > +	return;
+> > +}
+> > +
+> > +static inline void *allocate_probes(int count, gfp_t extra_flags)
+> > {
+> > 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
+> > -				       GFP_KERNEL);
+> > +				       GFP_KERNEL | extra_flags);
+> > 	return p == NULL ? NULL : p->probes;
+> > }
+> > 
+> > @@ -150,7 +156,7 @@ func_add(struct tracepoint_func **funcs, struct
+> > tracepoint_func *tp_func,
+> > 		}
+> > 	}
+> > 	/* + 2 : one for new probe, one for NULL func */
+> > -	new = allocate_probes(nr_probes + 2);
+> > +	new = allocate_probes(nr_probes + 2, 0);
+> > 	if (new == NULL)
+> > 		return ERR_PTR(-ENOMEM);
+> > 	if (old) {
+> > @@ -188,8 +194,9 @@ static void *func_remove(struct tracepoint_func **funcs,
+> > 	/* (N -> M), (N > 1, M >= 0) probes */
+> > 	if (tp_func->func) {
+> > 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+> > -			if (old[nr_probes].func == tp_func->func &&
+> > -			     old[nr_probes].data == tp_func->data)
+> > +			if ((old[nr_probes].func == tp_func->func &&
+> > +			     old[nr_probes].data == tp_func->data) ||
+> > +			    old[nr_probes].func == tp_stub_func)
+> > 				nr_del++;
+> > 		}
+> > 	}
+> > @@ -207,15 +214,20 @@ static void *func_remove(struct tracepoint_func **funcs,
+> > 		int j = 0;
+> > 		/* N -> M, (N > 1, M > 0) */
+> > 		/* + 1 for NULL */
+> > -		new = allocate_probes(nr_probes - nr_del + 1);
+> > -		if (new == NULL)
+> > -			return ERR_PTR(-ENOMEM);
+> > -		for (i = 0; old[i].func; i++)
+> > -			if (old[i].func != tp_func->func
+> > -					|| old[i].data != tp_func->data)
+> > -				new[j++] = old[i];
+> > -		new[nr_probes - nr_del].func = NULL;
+> > -		*funcs = new;
+> > +		new = allocate_probes(nr_probes - nr_del + 1, __GFP_NOFAIL);
+> > +		if (new) {
+> > +			for (i = 0; old[i].func; i++)
+> > +				if (old[i].func != tp_func->func
+> > +				    || old[i].data != tp_func->data)  
+> 
+> as you point out in your reply, skip tp_stub_func here too.
+> 
+> > +					new[j++] = old[i];
+> > +			new[nr_probes - nr_del].func = NULL;
+> > +		} else {
+> > +			for (i = 0; old[i].func; i++)
+> > +				if (old[i].func == tp_func->func &&
+> > +				    old[i].data == tp_func->data)
+> > +					old[i].func = tp_stub_func;  
+> 
+> I think you'll want a WRITE_ONCE(old[i].func, tp_stub_func) here, matched
+> with a READ_ONCE() in __DO_TRACE. This introduces a new situation where the
+> func pointer can be updated and loaded concurrently.
 
-Real x86_64 hardware or QEMU
-UEFI boot
-Ubunutu 20.04 (or 20.04.1) x86_64
-CONFIG_BLK_DEV_RAM=y in .config
-COMPRESS=lz4 in initramfs.conf
-Freshly compiled and installed kernel
-Freshly generated and installed initramfs image
+I thought about this a little, and then only thing we really should worry
+about is synchronizing with those that unregister. Because when we make
+this update, there are now two states. the __DO_TRACE either reads the
+original func or the stub. And either should be OK to call.
 
-In our testing, such a combination would often produce a non-bootable system. It
-is important to note that [un]bootability of the system was later tracked down
-to particular instances of initramfs images, and would follow them if they were
-to be switched around/transferred to other systems. What is even more important
-is that consecutive re-generations of initramfs images from the same source and
-binary materials would yield about 75% of "bad" images. Further, once the image
-is identified as "bad",it always stays "bad"; once one is "good" it always stays
-"good". Reverting CONFIG_BLK_DEV_RAM to "m" (default in Ubuntu), or changing
-COMPRESS to "gzip" yields a 100% bootable system. Decompressing "bad" initramfs
-image with "unmkinitramfs" yields *exactly* the same set of binaries, as
-verified by matching MD5 sums to those from "good" image.
+Only the func gets updated and not the data. So what exactly are we worried
+about here?
 
-Speculation.
+> 
+> > +		}
+> > +		*funcs = old;  
+> 
+> The line above seems wrong for the successful allocate_probe case. You will likely
+> want *funcs = new on successful allocation, and *funcs = old for the failure case.
 
-Based on general observations, it appears that Ubuntu's userland toolchain
-cannot consistently generate exactly the same compressed initramfs image, likely
-due to some variations in timestamps between the runs. This causes variations in
-compressed lz4 data stream. Further, either initramfs tools or lz4 libraries
-appear to pad compressed lz4 output to closest 4-byte boundary. lz4 v1.9.2 that
-ships with Ubuntu 20.04 appears to be able to handle such padding just fine,
-while lz4 (supposedly v1.8.3) within Linux kernel cannot.
-Several reports of somewhat similar behavior had been recently circulation
-through different bug tracking systems and discussion forums [1-4].
-I also suspect only that systems which can mount permanent root directly (or
-with help of modules contained in first, supposedly uncompressed, part of
-initramfs, or the ones with statically linked modules) can actually complete the
-boot when LZ4 decompression fails. This would certainly explain why most of
-Ubuntu systems still manage to boot even after failing to decompress the image.
+Yeah, it crashed because of this ;-)
 
-The facts.
+Like I said, untested!
 
-Regardless of whether Ubuntu 20.04 toolchain produces a valid lz4-compressed
-initramfs image or not, current version of unlz4() function in kernel has two
-code paths which had been observed attempting to read beyond the buffer end when
-presented with one of the "padded"/"bad" initramfs images generated by stock
-Ubuntu 20.04 toolchain. Some configurations of some 5.4 kernels are known to
-fail to boot in such cases. This behavior also becomes evident on vanilla
-5.10.0-rc3 and 5.10.0-rc4 kernels with addition of two logging statements for
-corresponding edge cases, even though it does not prevent system from booting in
-most generic configurations.
-
-Further investigation is likely warranted to confirm whether userland toolchain
-contains any bugs and/or whether any of these cases constitute violation of LZ4
-and/or initramfs specification.
-
-References
-
-[1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1835660
-[2] https://github.com/linuxmint/mint20-beta/issues/90
-[3] https://askubuntu.com/questions/1245458/getting-the-message-0-283078-initramfs-unpacking-failed-decoding-failed-wh
-[4] https://forums.linuxmint.com/viewtopic.php?t=323152
-
-Signed-off-by: Siarhei Liakh <siarhei.liakh@concurrent-rt.com>
-
----
-
-Please CC: me directly on all replies.
-
- lib/decompress_unlz4.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/lib/decompress_unlz4.c b/lib/decompress_unlz4.c
-index c0cfcfd486be..a016643a6dc5 100644
---- a/lib/decompress_unlz4.c
-+++ b/lib/decompress_unlz4.c
-@@ -125,6 +125,21 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 			continue;
- 		}
- 
-+		if (chunksize == 0) {
-+			/*
-+			 * Nothing to decode...
-+			 * FIXME: this could be an error condition due
-+			 * to invalid or corrupt data. However, some
-+			 * userspace tools had been observed producing
-+			 * otherwise valid initramfs images which happen
-+			 * to hit this condition.
-+			 * TODO: need to figure out whether the latest
-+			 * LZ4 and initramfs specifications allows for
-+			 * zero-sized chunks.
-+			 * See similar message below.
-+			 */
-+			break;
-+		}
- 
- 		if (posp)
- 			*posp += 4;
-@@ -179,6 +194,20 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 			else if (size < 0) {
- 				error("data corrupted");
- 				goto exit_2;
-+			} else if (size < 4) {
-+				/*
-+				 * Ignore any undesized junk/padding...
-+				 * FIXME: this could be an error condition due
-+				 * to invalid or corrupt data. However, some
-+				 * userspace tools had been observed producing
-+				 * otherwise valid initramfs images which happen
-+				 * to hit this condition.
-+				 * TODO: need to figure out whether the latest
-+				 * LZ4 and initramfs specifications allows for
-+				 * small padding at the end of the chunk.
-+				 * See similar message above.
-+				 */
-+				break;
- 			}
- 			inp += chunksize;
- 		}
--- 
-2.17.1
-
+-- Steve
