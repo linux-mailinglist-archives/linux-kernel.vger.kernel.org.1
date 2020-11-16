@@ -2,108 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C125F2B5132
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 402B62B5134
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730359AbgKPTbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:31:55 -0500
-Received: from outbound-smtp45.blacknight.com ([46.22.136.57]:43975 "EHLO
-        outbound-smtp45.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727805AbgKPTby (ORCPT
+        id S1730445AbgKPTcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:32:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726849AbgKPTcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:31:54 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp45.blacknight.com (Postfix) with ESMTPS id A476FFB10C
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 19:31:52 +0000 (GMT)
-Received: (qmail 30325 invoked from network); 16 Nov 2020 19:31:52 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Nov 2020 19:31:51 -0000
-Date:   Mon, 16 Nov 2020 19:31:49 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: Loadavg accounting error on arm64
-Message-ID: <20201116193149.GW3371@techsingularity.net>
-References: <20201116091054.GL3371@techsingularity.net>
- <20201116131102.GA29992@willie-the-truck>
- <20201116133721.GQ3371@techsingularity.net>
- <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
+        Mon, 16 Nov 2020 14:32:17 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8015C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:32:16 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id u12so12831516wrt.0
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:32:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6u9glXg4zFrqO3lr0/xH7tuiEEcDV6G1EbJU8peXnog=;
+        b=l6awfJflMImqdSyvTdK7VUZ+M3PyAYjnu39cw6cDWUpMQSZCasiABE3hB3UYadQllM
+         349Ek5y/JhP/1gfWuzJFmDy7PM51yle94njMSqlfJiv7HT6Vrh0o3sRvrOdFY0icFQEn
+         adi2b5rZaQEtO28jhRgmEmX6a2F9X5B7g9iMoAooWVqC8iZm4bHildAg072vTnlmZG27
+         lwyg/cxWMAbqkWH6QpUPGMleR+X90XcPE1a7/oi5xgeHt3Rjh+pFcs3pZVLJXI0jlO9+
+         JHswZLSx/7EVbxXf8fIQTgIOkmd3S802N4+hRzT9HhkO6E+oR9yWNFc6jEPXBTdRmnxv
+         GZUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6u9glXg4zFrqO3lr0/xH7tuiEEcDV6G1EbJU8peXnog=;
+        b=UR4zx44h/VsQeqTD+UH24skN9Eb/N3O+VXV9laxP3ubZRx6uJYCUjCVHfb7L5/82uj
+         0Y8Xq2WMYvAok8IAs70qdu7bDYMcu22vg2gxL6Kz7l8XX0NvP5LjDwnsRjaAJBh2sTVF
+         VO3IPk30fbNQvrwT9DMxSOgS7d20DMuV5bXJfYOM7B17/FJoYlssvTScfTEpMMP8hEuS
+         56BjwwhQHcpd0w1OGDRUCikXxhWxjLolCJQezr0mGVDyTH6aLoB0fmoym1MZGZz4w6GM
+         o+KHDLCNkK+2sYJ9kgSRtSgivFyzXxFmxcTWS39dJK9wzwGwxqfTi7Cg8Ny6RSnZnfnm
+         +dQw==
+X-Gm-Message-State: AOAM531WosJ5oxzkx9JW9bt4lLnM43Abgq11A73Hy4hRr1XOV5xdOHlf
+        z4m2B2vtmkaEar7ihZOeTs9o4dxV+kdEUa8rwt+QbIMM
+X-Google-Smtp-Source: ABdhPJzBknI7uYfz2n9Qs2E2TcVmhlWZgbpKBGPFh7Il9hQIPB+ckfHn0EJY+HZFLCjHC+X2DZ7uFNogtHD02Xa+TkU=
+X-Received: by 2002:a5d:6992:: with SMTP id g18mr20887475wru.362.1605555135478;
+ Mon, 16 Nov 2020 11:32:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201116173005.1825880-1-lee.jones@linaro.org> <20201116173005.1825880-5-lee.jones@linaro.org>
+In-Reply-To: <20201116173005.1825880-5-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 16 Nov 2020 14:32:04 -0500
+Message-ID: <CADnq5_OQa=Pr8dnAFZ3uLNrY16nohckncDLLdJgdshdNc+NPBQ@mail.gmail.com>
+Subject: Re: [PATCH 04/43] drm/radeon/radeon_kms: Fix misnaming of
+ 'radeon_info_ioctl's dev param
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 03:20:05PM +0100, Peter Zijlstra wrote:
-> > I think this is at least one possibility. I think at least that one
-> > should only be explicitly set on WF_MIGRATED and explicitly cleared in
-> > sched_ttwu_pending. While I haven't audited it fully, it might be enough
-> > to avoid a double write outside of the rq lock on the bitfield but I
-> > still need to think more about the ordering of sched_contributes_to_load
-> > and whether it's ordered by p->on_cpu or not.
-> 
-> The scenario you're worried about is something like:
-> 
-> 	CPU0							CPU1
-> 
-> 	schedule()
-> 		prev->sched_contributes_to_load = X;
-> 		deactivate_task(prev);
-> 
-> 								try_to_wake_up()
-> 									if (p->on_rq &&) // false
-> 									if (smp_load_acquire(&p->on_cpu) && // true
-> 									    ttwu_queue_wakelist())
-> 										p->sched_remote_wakeup = Y;
-> 
-> 		smp_store_release(prev->on_cpu, 0);
-> 
+On Mon, Nov 16, 2020 at 12:30 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or =
+member 'dev' not described in 'radeon_info_ioctl'
+>  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parame=
+ter 'rdev' description in 'radeon_info_ioctl'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Yes.
+Applied.  Thanks!
 
-> And then the stores of X and Y clobber one another.. Hummph, seems
-> reasonable. One quick thing to test would be something like this:
-> 
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 7abbdd7f3884..9844e541c94c 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -775,7 +775,9 @@ struct task_struct {
->  	unsigned			sched_reset_on_fork:1;
->  	unsigned			sched_contributes_to_load:1;
->  	unsigned			sched_migrated:1;
-> +	unsigned			:0;
->  	unsigned			sched_remote_wakeup:1;
-> +	unsigned			:0;
->  #ifdef CONFIG_PSI
->  	unsigned			sched_psi_wake_requeue:1;
->  #endif
+Alex
 
-And this works.
-
-986.01 1008.17 1013.15 2/855 1212
-362.19 824.70 949.75 1/856 1564
-133.19 674.65 890.32 1/864 1958
-49.04 551.89 834.61 2/871 2339
-18.33 451.54 782.41 1/867 2686
-6.77 369.37 733.45 1/866 2929
-2.55 302.16 687.55 1/864 2931
-0.97 247.18 644.52 1/860 2933
-0.48 202.23 604.20 1/849 2935
-
-I should have gone with this after rereading the warning about bit fields
-having to be protected by the same lock in the "anti-guarantees" section
-of memory-barriers.txt :(
-
-sched_psi_wake_requeue can probably stay with the other three fields
-given they are under the rq lock but sched_remote_wakeup needs to move
-out.
-
--- 
-Mel Gorman
-SUSE Labs
+> ---
+>  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon=
+/radeon_kms.c
+> index 001940bca90a6..50cee4880bb46 100644
+> --- a/drivers/gpu/drm/radeon/radeon_kms.c
+> +++ b/drivers/gpu/drm/radeon/radeon_kms.c
+> @@ -214,7 +214,7 @@ static void radeon_set_filp_rights(struct drm_device =
+*dev,
+>  /**
+>   * radeon_info_ioctl - answer a device specific request.
+>   *
+> - * @rdev: radeon device pointer
+> + * @dev: drm device pointer
+>   * @data: request object
+>   * @filp: drm filp
+>   *
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
