@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DCB2B52C3
+	by mail.lfdr.de (Postfix) with ESMTP id C94752B52C4
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731562AbgKPUih convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 15:38:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728374AbgKPUig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:38:36 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C95B5208C3;
-        Mon, 16 Nov 2020 20:38:35 +0000 (UTC)
-Date:   Mon, 16 Nov 2020 15:38:34 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] samples/ftrace: mark my_tramp[12]? global
-Message-ID: <20201116153834.57ace64e@gandalf.local.home>
-In-Reply-To: <CABCJKudNGa2=65vATJMqo--8guvWHZ6-wMWHZQy-ZaH32dXdnA@mail.gmail.com>
-References: <20201113183414.1446671-1-samitolvanen@google.com>
-        <20201116113931.2b60a191@gandalf.local.home>
-        <CABCJKudNGa2=65vATJMqo--8guvWHZ6-wMWHZQy-ZaH32dXdnA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1733120AbgKPUjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:39:10 -0500
+Received: from maynard.decadent.org.uk ([95.217.213.242]:52632 "EHLO
+        maynard.decadent.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgKPUjK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 15:39:10 -0500
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126] helo=deadeye)
+        by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1kelHI-0003Bz-EW; Mon, 16 Nov 2020 21:39:08 +0100
+Received: from ben by deadeye with local (Exim 4.94)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1kelHH-00097f-Ag; Mon, 16 Nov 2020 20:39:07 +0000
+Message-ID: <e18107c14e59672a179b4fe4d9918c311c0aa9e9.camel@decadent.org.uk>
+Subject: Re: drivers/accessibility/speakup/serialio.c:48:19: warning:
+ variable 'quot' set but not used
+From:   Ben Hutchings <ben@decadent.org.uk>
+To:     Samuel Thibault <samuel.thibault@ens-lyon.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Mon, 16 Nov 2020 20:39:02 +0000
+In-Reply-To: <20201116203355.t7dboh6vlj57dsau@function>
+References: <202011160942.AmYkxiJv-lkp@intel.com>
+         <20201116190122.yslib3wicn45rbuo@function>
+         <ef625c1e21c492be8c423730e45e90d92b1ae899.camel@decadent.org.uk>
+         <20201116203355.t7dboh6vlj57dsau@function>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-zO1q+N+/584fGk3wK6e5"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 88.96.1.126
+X-SA-Exim-Mail-From: ben@decadent.org.uk
+X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 12:10:10 -0800
-Sami Tolvanen <samitolvanen@google.com> wrote:
 
-> On Mon, Nov 16, 2020 at 8:39 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Fri, 13 Nov 2020 10:34:14 -0800
-> > Sami Tolvanen <samitolvanen@google.com> wrote:
-> >  
-> > > my_tramp[12]? are declared as global functions in C, but they are not
-> > > marked global in the inline assembly definition. This mismatch confuses
-> > > Clang's Control-Flow Integrity checking. Fix the definitions by adding
-> > > .globl.
-> > >  
-> >
-> > Actually, since that function is not really global, would it work if you
-> > removed the "extern" from the my_tramp declaration?  
-> 
-> Unfortunately not, removing the "extern" doesn't seem to change anything.
-> 
-> > In other words, is there a way to tell C that a function is declared in an
-> > inline assembly block?  
-> 
-> I'm not sure if there's a way to tell C that a static function is
-> declared in inline assembly. At least I couldn't find a way that would
-> make the compiler happy.
+--=-zO1q+N+/584fGk3wK6e5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I'm trying to see the warning. What option makes clang trigger a warning on
-this?
+On Mon, 2020-11-16 at 21:33 +0100, Samuel Thibault wrote:
+> Ben Hutchings, le lun. 16 nov. 2020 19:51:23 +0000, a ecrit:
+> > On Mon, 2020-11-16 at 20:01 +0100, Samuel Thibault wrote:
+> > > Perhaps we should rather use
+> > >=20
+> > > depends on ISA || (X86 && COMPILE_TEST)
+> > >=20
+> > > ?
+> > > so that we have compile testing on x86 only (where the inb/outb macro=
+s
+> > > always behave fine) to avoid such issues on other archs?
+> >=20
+> > That seems reasonable though unusual.
+> >=20
+> > > Or we tell the architecture maintainers to fix their out macros into
+> > > consuming their parameters?
+> > [...]
+> >=20
+> > It does seem odd for parisc to define the I/O functions this way.  I
+> > don't know if it's really a bug.
+>=20
+> Sorry I wasn't clear: the problem here is when CONFIG_EISA is disabled,
+> the eisa_in/out calls are replaced by BUG() stubs, and the stubs do not
+> consume their input:
 
-From user space, I'm just using the following file:
+Yes, I did see that.
 
-#include <stdio.h>
+Ben.
 
-void my_direct_func(char *str)
-{
-	printf("%s\n", str);
-}
+> arch/parisc/include/asm/io.h
+>=20
+> #if defined(CONFIG_PCI)
+> extern void outb(unsigned char b, int addr);
+> #elif defined(CONFIG_EISA)
+> #define outb eisa_out8
+> #else
+> #define outb(x, y)	BUG()
+> #endif
+>=20
+> Samuel
+--=20
+Ben Hutchings
+Everything should be made as simple as possible, but not simpler.
+                                                      - Albert Einstein
 
-int test(char *str);
 
-asm (
-"	.pushsection    .text, \"ax\", @progbits\n"
-"	.type		test, @function\n"
-"   test:"
-"	pushq %rbp\n"
-"	movq %rsp, %rbp\n"
-"	pushq %rdi\n"
-"	call my_direct_func\n"
-"	popq %rdi\n"
-"	leave\n"
-"	ret\n"
-"	.size		test, .-test\n"
-"	.popsection\n"
-);
 
-int main (int argc, char **argv)
-{
-	test("hello");
-	return 0;
-}
+--=-zO1q+N+/584fGk3wK6e5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAl+y42YACgkQ57/I7JWG
+EQmeKQ/9HnaPJllzRlnZauq0VVAeVVEBvs6IHY4eVoOhRKITK2xyfu1bNLzTXXH+
+gQv0rFWaGz6ebtfujeyqYE3irQohX4o1EUTxypQPUWhBCg4Isg19DpYohWguZabd
+LURJWKjgiFCHC28+2qnW4uzoV7psQ6XmWOwcUlaEIEjJ+4AUBeM3mCA2hIfBDjty
+J7EHM/x+oyMp/aWj2avUcLDP7sOANzkw6QJHUSvA1RHFS3gTlVAz6ubHkKUyXB8m
+2BYd27AZpqq8DCCOf5KURRR1/TUEIwsYU8HyOsx8NL+jKQ3jA5m9qFpgAIOfMj8e
+dc9kNSgLS6daIgyvhr6yO9lKO5V3VQpKbFEA+vhByko8w+2pAmI09e8+75PMlmDb
+TnINz37PE0kD1DoRVw/ohKtQe8Dv8gJXxNR+SP7u/EbSOf34iH3GaaDmZ8ZFW8Zp
+exsBnXrEt4KgbrXNxLP74nHMgeZtPb3g9LOMk2SDp09uj+GWLzLdk/Jk2tiIAQeF
+gp+x+ViVaHXGjBkIqtZ8rG/wSKb/2/GuKlpjdr1PJRTtRz+jQRn+k7VbI5hG0EU/
+IKwbCfKtewUvQeo37fkaNQi9PVke4EqksSaPEjutlh05lSrWeXRuSWBKZspCalNs
+t43/PgxCQAXq58m3itcc5cPHu3GyQD8yLx/rxKRSX+m2/mHnuJs=
+=Bw8u
+-----END PGP SIGNATURE-----
+
+--=-zO1q+N+/584fGk3wK6e5--
