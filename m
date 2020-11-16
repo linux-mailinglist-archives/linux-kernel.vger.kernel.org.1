@@ -2,120 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E742B3AC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BE52B3AC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgKPAY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 19:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
+        id S1728252AbgKPAZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 19:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727618AbgKPAY6 (ORCPT
+        with ESMTP id S1728241AbgKPAZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 19:24:58 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D546BC0613CF;
-        Sun, 15 Nov 2020 16:24:57 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id k2so16944844wrx.2;
-        Sun, 15 Nov 2020 16:24:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cNyJaglsofCPPDAMR4S0Dh1T3D7plfuh++VKVtz7Hpo=;
-        b=ev8LtwyFSaNKRrRx7pPu2AaTYr+GoEQDc5ypjIypn8d3URLYWYepCKUD4jQ2HAfQyt
-         zUJDOZDSr3wPgmUnLQYtMOcAdNkHBFsDtdwmzl2dY5nblyMysxXdjqJRTA3kDiqmpr3N
-         R4UcZbeE+SAyVi55CQ8A1HHazqxrHohh1+lEiAOzshqR61OaDMJI3a1kpK4w4pB9k0hF
-         GM0J4g5PZfBJWAvBI/p99fhjXNY3NtC8xZqv1zdK+UhFZQD/OzBgUkRUt7qN4SU1KvJn
-         1Y79YPdGORcXaOhAbVNSUnAi6MU1pUmaJ3pcYrb7h7jEg9IZ9HphjDCRN1YaoSKgHOOJ
-         kTIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cNyJaglsofCPPDAMR4S0Dh1T3D7plfuh++VKVtz7Hpo=;
-        b=jMNELDTXPToGDb678rCDQrrdFaEj82fTTVzifrqU0rM28gf2vZ03ri/sQcSE4mj5Zh
-         R0pILXYXFLWJH3InTBBLq0rb4giMh2er9BerHiEe/sIcPsr6+9Q9OQefPBxop3JjDJRU
-         AL/ZBWIybc0gKNVYumtD6kvwsFR/x9mK0T4Bqr/y/xIvwyCcwdlMk7e/yvsVh3P9L2Ir
-         FvQl6uDSbk5DDqUDyReFAKh7QmmepHZFfk9gbvutWAVYElCf5foL3OzveZE+l9FAKFRG
-         YntVaqCBs+/yj6wCob9gVeWixWypmhMQUY4krrYc126ZMn9hmKs43u7+srKLEFZQzIU8
-         XIfg==
-X-Gm-Message-State: AOAM532XDfMfk1tG/YVKnuC4FYfCThxJZ0O3AM9fnoF6InqsnZxvzG4o
-        JEAGrJXOpzX2x7il/3o3Ajc0p7wa253ZnuKcW5I=
-X-Google-Smtp-Source: ABdhPJzuP/OHR/ocOpMW01DpmGfyfswGucCY7SFqSWa8kgTGj1RtRDpRNA8MsNFvnXArM0aS8ovHypBm4nz5jxkK+L4=
-X-Received: by 2002:adf:fd0d:: with SMTP id e13mr15592102wrr.85.1605486296694;
- Sun, 15 Nov 2020 16:24:56 -0800 (PST)
+        Sun, 15 Nov 2020 19:25:19 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196ECC0613CF;
+        Sun, 15 Nov 2020 16:25:19 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keSKX-006teB-7U; Mon, 16 Nov 2020 00:25:13 +0000
+Date:   Mon, 16 Nov 2020 00:25:13 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
+Message-ID: <20201116002513.GU3576660@ZenIV.linux.org.uk>
+References: <20201114035453.GM3576660@ZenIV.linux.org.uk>
+ <20201114041420.GA231@Ryzen-9-3900X.localdomain>
+ <20201114055048.GN3576660@ZenIV.linux.org.uk>
+ <20201114061934.GA658@Ryzen-9-3900X.localdomain>
+ <20201114070025.GO3576660@ZenIV.linux.org.uk>
+ <20201114205000.GP3576660@ZenIV.linux.org.uk>
+ <20201115155355.GR3576660@ZenIV.linux.org.uk>
+ <20201115214125.GA317@Ryzen-9-3900X.localdomain>
+ <20201115233814.GT3576660@ZenIV.linux.org.uk>
+ <20201115235149.GA252@Ryzen-9-3900X.localdomain>
 MIME-Version: 1.0
-References: <20201113134938.4004947-1-lee.jones@linaro.org> <20201113134938.4004947-24-lee.jones@linaro.org>
-In-Reply-To: <20201113134938.4004947-24-lee.jones@linaro.org>
-From:   Qiang Yu <yuq825@gmail.com>
-Date:   Mon, 16 Nov 2020 08:24:45 +0800
-Message-ID: <CAKGbVbuy2eeQF_AuuoAVDtjPOD1pNsqdegva_hb9U1N2BqNoUw@mail.gmail.com>
-Subject: Re: [PATCH 23/40] drm/lima/lima_sched: Remove unused and unnecessary
- variable 'ret'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lima@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201115235149.GA252@Ryzen-9-3900X.localdomain>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied to drm-misc-next.
+On Sun, Nov 15, 2020 at 04:51:49PM -0700, Nathan Chancellor wrote:
+> Looks good to me on top of d4d50710a8b46082224376ef119a4dbb75b25c56,
+> thanks for quickly looking into this!
+> 
+> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
 
-On Fri, Nov 13, 2020 at 9:50 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/lima/lima_sched.c: In function =E2=80=98lima_sched_run_j=
-ob=E2=80=99:
->  drivers/gpu/drm/lima/lima_sched.c:227:20: warning: variable =E2=80=98ret=
-=E2=80=99 set but not used [-Wunused-but-set-variable]
->
-> Cc: Qiang Yu <yuq825@gmail.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: lima@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/lima/lima_sched.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lim=
-a_sched.c
-> index a070a85f8f368..63b4c5643f9cd 100644
-> --- a/drivers/gpu/drm/lima/lima_sched.c
-> +++ b/drivers/gpu/drm/lima/lima_sched.c
-> @@ -224,7 +224,6 @@ static struct dma_fence *lima_sched_run_job(struct dr=
-m_sched_job *job)
->         struct lima_sched_pipe *pipe =3D to_lima_pipe(job->sched);
->         struct lima_device *ldev =3D pipe->ldev;
->         struct lima_fence *fence;
-> -       struct dma_fence *ret;
->         int i, err;
->
->         /* after GPU reset */
-> @@ -246,7 +245,7 @@ static struct dma_fence *lima_sched_run_job(struct dr=
-m_sched_job *job)
->         /* for caller usage of the fence, otherwise irq handler
->          * may consume the fence before caller use it
->          */
-> -       ret =3D dma_fence_get(task->fence);
-> +       dma_fence_get(task->fence);
->
->         pipe->current_task =3D task;
->
-> --
-> 2.25.1
->
+OK... a variant with (hopefully) better comments and cleaned up
+logics in the second loop (
+                if (seq_has_overflowed(m) || err) {
+                        m->count = offs;
+                        if (likely(err <= 0))
+                                break;
+                }
+replaced with
+                if (err > 0) {          // ->show() says "skip it"
+                        m->count = offs;
+                } else if (err || seq_has_overflowed(m)) {
+                        m->count = offs;
+                        break;
+                }
+) follows.  I'm quite certain that it is an equivalent transformation
+(seq_has_overflowed() has no side effects) and IMO it's slightly
+more readable that way.  Survives local beating; could you check if
+it's still OK with your testcase?  Equivalent transformation or not,
+I'd rather not slap anyone's Tested-by: on a modified variant of
+patch...
+
+BTW, is that call of readv() really coming from init?  And if it
+is, what version of init are you using?
+
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index 3b20e21604e7..03a369ccd28c 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -168,12 +168,14 @@ EXPORT_SYMBOL(seq_read);
+ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ {
+ 	struct seq_file *m = iocb->ki_filp->private_data;
+-	size_t size = iov_iter_count(iter);
+ 	size_t copied = 0;
+ 	size_t n;
+ 	void *p;
+ 	int err = 0;
+ 
++	if (!iov_iter_count(iter))
++		return 0;
++
+ 	mutex_lock(&m->lock);
+ 
+ 	/*
+@@ -206,36 +208,34 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 		if (!m->buf)
+ 			goto Enomem;
+ 	}
+-	/* if not empty - flush it first */
++	// something left in the buffer - copy it out first
+ 	if (m->count) {
+-		n = min(m->count, size);
+-		if (copy_to_iter(m->buf + m->from, n, iter) != n)
+-			goto Efault;
++		n = copy_to_iter(m->buf + m->from, m->count, iter);
+ 		m->count -= n;
+ 		m->from += n;
+-		size -= n;
+ 		copied += n;
+-		if (!size)
++		if (m->count)	// hadn't managed to copy everything
+ 			goto Done;
+ 	}
+-	/* we need at least one record in buffer */
++	// get a non-empty record in the buffer
+ 	m->from = 0;
+ 	p = m->op->start(m, &m->index);
+ 	while (1) {
+ 		err = PTR_ERR(p);
+-		if (!p || IS_ERR(p))
++		if (!p || IS_ERR(p))	// EOF or an error
+ 			break;
+ 		err = m->op->show(m, p);
+-		if (err < 0)
++		if (err < 0)		// hard error
+ 			break;
+-		if (unlikely(err))
++		if (unlikely(err))	// ->show() says "skip it"
+ 			m->count = 0;
+-		if (unlikely(!m->count)) {
++		if (unlikely(!m->count)) { // empty record
+ 			p = m->op->next(m, p, &m->index);
+ 			continue;
+ 		}
+-		if (m->count < m->size)
++		if (!seq_has_overflowed(m)) // got it
+ 			goto Fill;
++		// need a bigger buffer
+ 		m->op->stop(m, p);
+ 		kvfree(m->buf);
+ 		m->count = 0;
+@@ -244,11 +244,14 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 			goto Enomem;
+ 		p = m->op->start(m, &m->index);
+ 	}
++	// EOF or an error
+ 	m->op->stop(m, p);
+ 	m->count = 0;
+ 	goto Done;
+ Fill:
+-	/* they want more? let's try to get some more */
++	// one non-empty record is in the buffer; if they want more,
++	// try to fit more in, but in any case we need to advance
++	// the iterator once for every record shown.
+ 	while (1) {
+ 		size_t offs = m->count;
+ 		loff_t pos = m->index;
+@@ -259,30 +262,27 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 					    m->op->next);
+ 			m->index++;
+ 		}
+-		if (!p || IS_ERR(p)) {
+-			err = PTR_ERR(p);
++		if (!p || IS_ERR(p))	// no next record for us
+ 			break;
+-		}
+-		if (m->count >= size)
++		if (m->count >= iov_iter_count(iter))
+ 			break;
+ 		err = m->op->show(m, p);
+-		if (seq_has_overflowed(m) || err) {
++		if (err > 0) {		// ->show() says "skip it"
+ 			m->count = offs;
+-			if (likely(err <= 0))
+-				break;
++		} else if (err || seq_has_overflowed(m)) {
++			m->count = offs;
++			break;
+ 		}
+ 	}
+ 	m->op->stop(m, p);
+-	n = min(m->count, size);
+-	if (copy_to_iter(m->buf, n, iter) != n)
+-		goto Efault;
++	n = copy_to_iter(m->buf, m->count, iter);
+ 	copied += n;
+ 	m->count -= n;
+ 	m->from = n;
+ Done:
+-	if (!copied)
+-		copied = err;
+-	else {
++	if (unlikely(!copied)) {
++		copied = m->count ? -EFAULT : err;
++	} else {
+ 		iocb->ki_pos += copied;
+ 		m->read_pos += copied;
+ 	}
+@@ -291,9 +291,6 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ Enomem:
+ 	err = -ENOMEM;
+ 	goto Done;
+-Efault:
+-	err = -EFAULT;
+-	goto Done;
+ }
+ EXPORT_SYMBOL(seq_read_iter);
+ 
