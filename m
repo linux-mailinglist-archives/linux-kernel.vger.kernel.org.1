@@ -2,378 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F2A2B49D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4D92B49E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731538AbgKPPrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S1730762AbgKPPug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:50:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730348AbgKPPre (ORCPT
+        with ESMTP id S1730222AbgKPPug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:47:34 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5592AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:47:34 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id p8so19205170wrx.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:47:34 -0800 (PST)
+        Mon, 16 Nov 2020 10:50:36 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6D7C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:50:36 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id w13so25069880eju.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:50:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/B72MSgPAcGFOtHsFbzRv4hXre435lWI6Ni4s+kykJk=;
-        b=ShfON6UVsNZgOQHD1xyp9+4W7XLzRCXFpaDvkBd7K1EcKue1dX1hxN9pn+/YTF0FPS
-         Kv7PXx1anWqCuPjasBlWxkhrzBXTkCZG8IERV/F7zX/yfH0qM1tf1E6P7g4bXa8ePjoi
-         aaXoTh15bC7RsVnsrmAvJm7qjR1XxRvLKZujXNKuW11ZyKEgQPdOPnuExdmSnTc0emg7
-         Xe7PHIBqSgAkFn3ctGGtDHH71ohI0txAU43oHqz4Zhc+TKnsecbHAImYXbipGhLxfVUz
-         VBrNTheosmQRZ6BMQnxuo/AeuZmUE/BLHsHMmbs9i/IMXGmWhzDocYVHQj721qSsSmgq
-         ks6w==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NIl6OKgajPZ2VwIMALbBfQrvT3Qo8x6Qcgh1OwsRyEA=;
+        b=MEmRn7BT65f2gwRnTuEEmIYWJHHSAQFAyQjzUMOU6HDdkW99F895QaFdJ/YXzvApKp
+         E0Z0WxC9b6yHpBeuMRJJ5bTMSX5rbvsz6S8z1XkqbyjtvXD5P1svFBp3y+kx5gNmzmeO
+         0VVahk54AGIJArDpgUfOBcaQegBxH7MH+yf6/bSulI3AnoODfgLpQetAN32ijtRK9n7Z
+         PakXCHFhbA8XVq2tOhx5iD1e3WGnE9FDupYWHwCYjq/6Vuo6dfr+j9XSyZ1tVMV6xSTa
+         ZhnShJvF7IMIYpCH2IDdscwT7ArE1K6ExPaeASqymImRMqY2BdHQ2a6OmimWrrBR+QPX
+         Othg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/B72MSgPAcGFOtHsFbzRv4hXre435lWI6Ni4s+kykJk=;
-        b=IqfPS+AoUBnGJEmJoaJ6lJOXBrXEhGcvap/85lT462sYsrRE/7JYrHtYOcbbbLwxZL
-         KfPsF5meTQiDQSpdds7Di6+xLkwULHIk7+/zyaM0rT4dAVkx2a8eyRmH7c5Q3kLu4k76
-         2ebVZqucOdNRweIutb/8cH3OlN0AoftyWRC9KVIlrNLHDCVNyfbMmaP7tr4+cHahDhcy
-         oF4jYlbheCRXd3hQEeQVVD+AaS2xdib+VTb4IqAdpOPu53qPiTwfJhwyOxn9RbWPpI7z
-         jt5LEdlaAkdY/fuUP4zLS4UMXmWVC23wJWKltweYH4/MGTwmK8fAThFD5MxWEK/mgqHx
-         DLcw==
-X-Gm-Message-State: AOAM533O3iyYBzilQY7Me+aoV3AGEFY4aWwmDtofpMdA2EJoPmNSdPsZ
-        0eTScyubdp8teU4jpxBJTRP7ZA==
-X-Google-Smtp-Source: ABdhPJxTqdmXeH9efOZlnxKr7/PzB/GbyOWkjsiAU70Q1F4r19caIrV7CqxKDubn5UD22NTzr8jDAg==
-X-Received: by 2002:a05:6000:10c9:: with SMTP id b9mr21240865wrx.251.1605541652752;
-        Mon, 16 Nov 2020 07:47:32 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id t15sm19609192wmn.19.2020.11.16.07.47.31
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NIl6OKgajPZ2VwIMALbBfQrvT3Qo8x6Qcgh1OwsRyEA=;
+        b=pDC9Gb5owaIT1w3B7+4Bl5xYQSFDm9rdx1nMOWb5qS88wN78CZFvrIVHnFfSBWbAJY
+         FI5dPY3mb/+r758hQd3MuD2GVC39pqj/fzUgriIBXbShc/l5qAhUb3M1gnhaK5tSg7+6
+         2bEW9v0UblQofpSx/7+85ENzzkH4+9EpnFF8Iw4ufLXLFOZSVFmd/c/3AL0hGTwv4CRz
+         VXT059mWAdc3sXkcZctHPzfF5nT1Ntry/MvNTggol1ewB4uomrfor785vFsl1ZWG7+tE
+         5gMq8AiDV+yctrXkbocLGjZu336beXIq4DSD3yNBs3q7GZkz8j+dNJR4S0u58FRAOSoA
+         nkIA==
+X-Gm-Message-State: AOAM533c206Lu8KQDcL83zgXr7hy6S35vOqGKqr4pREY2/h1z7qcrAIo
+        T0P4Q9Tp4Esojsd7P43zEHvLTA==
+X-Google-Smtp-Source: ABdhPJwptfhtcrTJUWOgY83HSLRkpk+228izqlJgWhBzDA/A8UWmpl2MBiIDtLq9JShR8VW96zzpZg==
+X-Received: by 2002:a17:906:c41:: with SMTP id t1mr15060747ejf.19.1605541834834;
+        Mon, 16 Nov 2020 07:50:34 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:102f:d6a:fa2:d302:39cc:d633])
+        by smtp.gmail.com with ESMTPSA id m2sm10466689edp.48.2020.11.16.07.50.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 07:47:31 -0800 (PST)
-Date:   Mon, 16 Nov 2020 16:47:26 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mm v3 19/19] kasan: update documentation
-Message-ID: <20201116154726.GI1357314@elver.google.com>
-References: <cover.1605305978.git.andreyknvl@google.com>
- <1668fc1d020f9c1f2b8bf57467f0433bfd74d0a3.1605305978.git.andreyknvl@google.com>
+        Mon, 16 Nov 2020 07:50:34 -0800 (PST)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     dongchun.zhu@mediatek.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Ben Kao <ben.kao@intel.com>
+Cc:     Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH] media: ov8856: Remove 3280x2464 mode
+Date:   Mon, 16 Nov 2020 16:50:08 +0100
+Message-Id: <20201116155008.118124-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1668fc1d020f9c1f2b8bf57467f0433bfd74d0a3.1605305978.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> This change updates KASAN documentation to reflect the addition of boot
-> parameters and also reworks and clarifies some of the existing sections,
-> in particular: defines what a memory granule is, mentions quarantine,
-> makes Kunit section more readable.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/Ib1f83e91be273264b25f42b04448ac96b858849f
+Remove the 3280x2464 mode as it can't be reproduced and yields
+an output resolution of 3264x2448 instead of the desired one.
 
-Reviewed-by: Marco Elver <elver@google.com>
+Furthermore the 3264x2448 resolution is the highest resolution
+that the product brief lists.
 
-> ---
->  Documentation/dev-tools/kasan.rst | 186 +++++++++++++++++++-----------
->  1 file changed, 116 insertions(+), 70 deletions(-)
-> 
-> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-> index ffbae8ce5748..0d5d77919b1a 100644
-> --- a/Documentation/dev-tools/kasan.rst
-> +++ b/Documentation/dev-tools/kasan.rst
-> @@ -4,8 +4,9 @@ The Kernel Address Sanitizer (KASAN)
->  Overview
->  --------
->  
-> -KernelAddressSANitizer (KASAN) is a dynamic memory error detector designed to
-> -find out-of-bound and use-after-free bugs. KASAN has three modes:
-> +KernelAddressSANitizer (KASAN) is a dynamic memory safety error detector
-> +designed to find out-of-bound and use-after-free bugs. KASAN has three modes:
-> +
->  1. generic KASAN (similar to userspace ASan),
->  2. software tag-based KASAN (similar to userspace HWASan),
->  3. hardware tag-based KASAN (based on hardware memory tagging).
-> @@ -39,23 +40,13 @@ CONFIG_KASAN_INLINE. Outline and inline are compiler instrumentation types.
->  The former produces smaller binary while the latter is 1.1 - 2 times faster.
->  
->  Both software KASAN modes work with both SLUB and SLAB memory allocators,
-> -hardware tag-based KASAN currently only support SLUB.
-> -For better bug detection and nicer reporting, enable CONFIG_STACKTRACE.
-> +while the hardware tag-based KASAN currently only support SLUB.
-> +
-> +For better error reports that include stack traces, enable CONFIG_STACKTRACE.
->  
->  To augment reports with last allocation and freeing stack of the physical page,
->  it is recommended to enable also CONFIG_PAGE_OWNER and boot with page_owner=on.
->  
-> -To disable instrumentation for specific files or directories, add a line
-> -similar to the following to the respective kernel Makefile:
-> -
-> -- For a single file (e.g. main.o)::
-> -
-> -    KASAN_SANITIZE_main.o := n
-> -
-> -- For all files in one directory::
-> -
-> -    KASAN_SANITIZE := n
-> -
->  Error reports
->  ~~~~~~~~~~~~~
->  
-> @@ -140,22 +131,75 @@ freed (in case of a use-after-free bug report). Next comes a description of
->  the accessed slab object and information about the accessed memory page.
->  
->  In the last section the report shows memory state around the accessed address.
-> -Reading this part requires some understanding of how KASAN works.
-> -
-> -The state of each 8 aligned bytes of memory is encoded in one shadow byte.
-> -Those 8 bytes can be accessible, partially accessible, freed or be a redzone.
-> -We use the following encoding for each shadow byte: 0 means that all 8 bytes
-> -of the corresponding memory region are accessible; number N (1 <= N <= 7) means
-> -that the first N bytes are accessible, and other (8 - N) bytes are not;
-> -any negative value indicates that the entire 8-byte word is inaccessible.
-> -We use different negative values to distinguish between different kinds of
-> -inaccessible memory like redzones or freed memory (see mm/kasan/kasan.h).
-> +Internally KASAN tracks memory state separately for each memory granule, which
-> +is either 8 or 16 aligned bytes depending on KASAN mode. Each number in the
-> +memory state section of the report shows the state of one of the memory
-> +granules that surround the accessed address.
-> +
-> +For generic KASAN the size of each memory granule is 8. The state of each
-> +granule is encoded in one shadow byte. Those 8 bytes can be accessible,
-> +partially accessible, freed or be a part of a redzone. KASAN uses the following
-> +encoding for each shadow byte: 0 means that all 8 bytes of the corresponding
-> +memory region are accessible; number N (1 <= N <= 7) means that the first N
-> +bytes are accessible, and other (8 - N) bytes are not; any negative value
-> +indicates that the entire 8-byte word is inaccessible. KASAN uses different
-> +negative values to distinguish between different kinds of inaccessible memory
-> +like redzones or freed memory (see mm/kasan/kasan.h).
->  
->  In the report above the arrows point to the shadow byte 03, which means that
->  the accessed address is partially accessible.
->  
->  For tag-based KASAN this last report section shows the memory tags around the
-> -accessed address (see Implementation details section).
-> +accessed address (see `Implementation details`_ section).
-> +
-> +Boot parameters
-> +~~~~~~~~~~~~~~~
-> +
-> +Hardware tag-based KASAN mode (see the section about different mode below) is
-> +intended for use in production as a security mitigation. Therefore it supports
-> +boot parameters that allow to disable KASAN competely or otherwise control
-> +particular KASAN features.
-> +
-> +The things that can be controlled are:
-> +
-> +1. Whether KASAN is enabled at all.
-> +2. Whether KASAN collects and saves alloc/free stacks.
-> +3. Whether KASAN panics on a detected bug or not.
-> +
-> +The ``kasan.mode`` boot parameter allows to choose one of three main modes:
-> +
-> +- ``kasan.mode=off`` - KASAN is disabled, no tag checks are performed
-> +- ``kasan.mode=prod`` - only essential production features are enabled
-> +- ``kasan.mode=full`` - all KASAN features are enabled
-> +
-> +The chosen mode provides default control values for the features mentioned
-> +above. However it's also possible to override the default values by providing:
-> +
-> +- ``kasan.stacktrace=off`` or ``=on`` - enable alloc/free stack collection
-> +					(default: ``on`` for ``mode=full``,
-> +					 otherwise ``off``)
-> +- ``kasan.fault=report`` or ``=panic`` - only print KASAN report or also panic
-> +					 (default: ``report``)
-> +
-> +If ``kasan.mode`` parameter is not provided, it defaults to ``full`` when
-> +``CONFIG_DEBUG_KERNEL`` is enabled, and to ``prod`` otherwise.
-> +
-> +For developers
-> +~~~~~~~~~~~~~~
-> +
-> +Software KASAN modes use compiler instrumentation to insert validity checks.
-> +Such instrumentation might be incompatible with some part of the kernel, and
-> +therefore needs to be disabled. To disable instrumentation for specific files
-> +or directories, add a line similar to the following to the respective kernel
-> +Makefile:
-> +
-> +- For a single file (e.g. main.o)::
-> +
-> +    KASAN_SANITIZE_main.o := n
-> +
-> +- For all files in one directory::
-> +
-> +    KASAN_SANITIZE := n
->  
->  
->  Implementation details
-> @@ -164,10 +208,10 @@ Implementation details
->  Generic KASAN
->  ~~~~~~~~~~~~~
->  
-> -From a high level, our approach to memory error detection is similar to that
-> -of kmemcheck: use shadow memory to record whether each byte of memory is safe
-> -to access, and use compile-time instrumentation to insert checks of shadow
-> -memory on each memory access.
-> +From a high level perspective, KASAN's approach to memory error detection is
-> +similar to that of kmemcheck: use shadow memory to record whether each byte of
-> +memory is safe to access, and use compile-time instrumentation to insert checks
-> +of shadow memory on each memory access.
->  
->  Generic KASAN dedicates 1/8th of kernel memory to its shadow memory (e.g. 16TB
->  to cover 128TB on x86_64) and uses direct mapping with a scale and offset to
-> @@ -194,7 +238,10 @@ function calls GCC directly inserts the code to check the shadow memory.
->  This option significantly enlarges kernel but it gives x1.1-x2 performance
->  boost over outline instrumented kernel.
->  
-> -Generic KASAN prints up to 2 call_rcu() call stacks in reports, the last one
-> +Generic KASAN is the only mode that delays the reuse of freed object via
-> +quarantine (see mm/kasan/quarantine.c for implementation).
-> +
-> +Generic KASAN prints up to two call_rcu() call stacks in reports, the last one
->  and the second to last.
->  
->  Software tag-based KASAN
-> @@ -304,15 +351,15 @@ therefore be wasteful. Furthermore, to ensure that different mappings
->  use different shadow pages, mappings would have to be aligned to
->  ``KASAN_GRANULE_SIZE * PAGE_SIZE``.
->  
-> -Instead, we share backing space across multiple mappings. We allocate
-> +Instead, KASAN shares backing space across multiple mappings. It allocates
->  a backing page when a mapping in vmalloc space uses a particular page
->  of the shadow region. This page can be shared by other vmalloc
->  mappings later on.
->  
-> -We hook in to the vmap infrastructure to lazily clean up unused shadow
-> +KASAN hooks into the vmap infrastructure to lazily clean up unused shadow
->  memory.
->  
-> -To avoid the difficulties around swapping mappings around, we expect
-> +To avoid the difficulties around swapping mappings around, KASAN expects
->  that the part of the shadow region that covers the vmalloc space will
->  not be covered by the early shadow page, but will be left
->  unmapped. This will require changes in arch-specific code.
-> @@ -323,24 +370,31 @@ architectures that do not have a fixed module region.
->  CONFIG_KASAN_KUNIT_TEST & CONFIG_TEST_KASAN_MODULE
->  --------------------------------------------------
->  
-> -``CONFIG_KASAN_KUNIT_TEST`` utilizes the KUnit Test Framework for testing.
-> -This means each test focuses on a small unit of functionality and
-> -there are a few ways these tests can be run.
-> +KASAN tests consist on two parts:
-> +
-> +1. Tests that are integrated with the KUnit Test Framework. Enabled with
-> +``CONFIG_KASAN_KUNIT_TEST``. These tests can be run and partially verified
-> +automatically in a few different ways, see the instructions below.
->  
-> -Each test will print the KASAN report if an error is detected and then
-> -print the number of the test and the status of the test:
-> +2. Tests that are currently incompatible with KUnit. Enabled with
-> +``CONFIG_TEST_KASAN_MODULE`` and can only be run as a module. These tests can
-> +only be verified manually, by loading the kernel module and inspecting the
-> +kernel log for KASAN reports.
->  
-> -pass::
-> +Each KUnit-compatible KASAN test prints a KASAN report if an error is detected.
-> +Then the test prints its number and status.
-> +
-> +When a test passes::
->  
->          ok 28 - kmalloc_double_kzfree
->  
-> -or, if kmalloc failed::
-> +When a test fails due to a failed ``kmalloc``::
->  
->          # kmalloc_large_oob_right: ASSERTION FAILED at lib/test_kasan.c:163
->          Expected ptr is not null, but is
->          not ok 4 - kmalloc_large_oob_right
->  
-> -or, if a KASAN report was expected, but not found::
-> +When a test fails due to a missing KASAN report::
->  
->          # kmalloc_double_kzfree: EXPECTATION FAILED at lib/test_kasan.c:629
->          Expected kasan_data->report_expected == kasan_data->report_found, but
-> @@ -348,46 +402,38 @@ or, if a KASAN report was expected, but not found::
->          kasan_data->report_found == 0
->          not ok 28 - kmalloc_double_kzfree
->  
-> -All test statuses are tracked as they run and an overall status will
-> -be printed at the end::
-> +At the end the cumulative status of all KASAN tests is printed. On success::
->  
->          ok 1 - kasan
->  
-> -or::
-> +Or, if one of the tests failed::
->  
->          not ok 1 - kasan
->  
-> -(1) Loadable Module
-> -~~~~~~~~~~~~~~~~~~~~
-> +
-> +There are a few ways to run KUnit-compatible KASAN tests.
-> +
-> +1. Loadable module
-> +~~~~~~~~~~~~~~~~~~
->  
->  With ``CONFIG_KUNIT`` enabled, ``CONFIG_KASAN_KUNIT_TEST`` can be built as
-> -a loadable module and run on any architecture that supports KASAN
-> -using something like insmod or modprobe. The module is called ``test_kasan``.
-> +a loadable module and run on any architecture that supports KASAN by loading
-> +the module with insmod or modprobe. The module is called ``test_kasan``.
->  
-> -(2) Built-In
-> -~~~~~~~~~~~~~
-> +2. Built-In
-> +~~~~~~~~~~~
->  
->  With ``CONFIG_KUNIT`` built-in, ``CONFIG_KASAN_KUNIT_TEST`` can be built-in
-> -on any architecure that supports KASAN. These and any other KUnit
-> -tests enabled will run and print the results at boot as a late-init
-> -call.
-> +on any architecure that supports KASAN. These and any other KUnit tests enabled
-> +will run and print the results at boot as a late-init call.
->  
-> -(3) Using kunit_tool
-> -~~~~~~~~~~~~~~~~~~~~~
-> +3. Using kunit_tool
-> +~~~~~~~~~~~~~~~~~~~
->  
-> -With ``CONFIG_KUNIT`` and ``CONFIG_KASAN_KUNIT_TEST`` built-in, we can also
-> -use kunit_tool to see the results of these along with other KUnit
-> -tests in a more readable way. This will not print the KASAN reports
-> -of tests that passed. Use `KUnit documentation <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_ for more up-to-date
-> -information on kunit_tool.
-> +With ``CONFIG_KUNIT`` and ``CONFIG_KASAN_KUNIT_TEST`` built-in, it's also
-> +possible use ``kunit_tool`` to see the results of these and other KUnit tests
-> +in a more readable way. This will not print the KASAN reports of the tests that
-> +passed. Use `KUnit documentation <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_
-> +for more up-to-date information on ``kunit_tool``.
->  
->  .. _KUnit: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
-> -
-> -``CONFIG_TEST_KASAN_MODULE`` is a set of KASAN tests that could not be
-> -converted to KUnit. These tests can be run only as a module with
-> -``CONFIG_TEST_KASAN_MODULE`` built as a loadable module and
-> -``CONFIG_KASAN`` built-in. The type of error expected and the
-> -function being run is printed before the expression expected to give
-> -an error. Then the error is printed, if found, and that test
-> -should be interpretted to pass only if the error was the one expected
-> -by the test.
-> -- 
-> 2.29.2.299.gdc1121823c-goog
-> 
+Since 3280x2464 neither works correctly nor seems to be supported
+by the sensor, let's remove it.
+
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
+ drivers/media/i2c/ov8856.c | 202 -------------------------------------
+ 1 file changed, 202 deletions(-)
+
+diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+index 2f4ceaa80593..3365d19a303d 100644
+--- a/drivers/media/i2c/ov8856.c
++++ b/drivers/media/i2c/ov8856.c
+@@ -148,196 +148,6 @@ static const struct ov8856_reg mipi_data_rate_360mbps[] = {
+ 	{0x031e, 0x0c},
+ };
+ 
+-static const struct ov8856_reg mode_3280x2464_regs[] = {
+-	{0x3000, 0x20},
+-	{0x3003, 0x08},
+-	{0x300e, 0x20},
+-	{0x3010, 0x00},
+-	{0x3015, 0x84},
+-	{0x3018, 0x72},
+-	{0x3021, 0x23},
+-	{0x3033, 0x24},
+-	{0x3500, 0x00},
+-	{0x3501, 0x9a},
+-	{0x3502, 0x20},
+-	{0x3503, 0x08},
+-	{0x3505, 0x83},
+-	{0x3508, 0x01},
+-	{0x3509, 0x80},
+-	{0x350c, 0x00},
+-	{0x350d, 0x80},
+-	{0x350e, 0x04},
+-	{0x350f, 0x00},
+-	{0x3510, 0x00},
+-	{0x3511, 0x02},
+-	{0x3512, 0x00},
+-	{0x3600, 0x72},
+-	{0x3601, 0x40},
+-	{0x3602, 0x30},
+-	{0x3610, 0xc5},
+-	{0x3611, 0x58},
+-	{0x3612, 0x5c},
+-	{0x3613, 0xca},
+-	{0x3614, 0x20},
+-	{0x3628, 0xff},
+-	{0x3629, 0xff},
+-	{0x362a, 0xff},
+-	{0x3633, 0x10},
+-	{0x3634, 0x10},
+-	{0x3635, 0x10},
+-	{0x3636, 0x10},
+-	{0x3663, 0x08},
+-	{0x3669, 0x34},
+-	{0x366e, 0x10},
+-	{0x3706, 0x86},
+-	{0x370b, 0x7e},
+-	{0x3714, 0x23},
+-	{0x3730, 0x12},
+-	{0x3733, 0x10},
+-	{0x3764, 0x00},
+-	{0x3765, 0x00},
+-	{0x3769, 0x62},
+-	{0x376a, 0x2a},
+-	{0x376b, 0x30},
+-	{0x3780, 0x00},
+-	{0x3781, 0x24},
+-	{0x3782, 0x00},
+-	{0x3783, 0x23},
+-	{0x3798, 0x2f},
+-	{0x37a1, 0x60},
+-	{0x37a8, 0x6a},
+-	{0x37ab, 0x3f},
+-	{0x37c2, 0x04},
+-	{0x37c3, 0xf1},
+-	{0x37c9, 0x80},
+-	{0x37cb, 0x16},
+-	{0x37cc, 0x16},
+-	{0x37cd, 0x16},
+-	{0x37ce, 0x16},
+-	{0x3800, 0x00},
+-	{0x3801, 0x00},
+-	{0x3802, 0x00},
+-	{0x3803, 0x06},
+-	{0x3804, 0x0c},
+-	{0x3805, 0xdf},
+-	{0x3806, 0x09},
+-	{0x3807, 0xa7},
+-	{0x3808, 0x0c},
+-	{0x3809, 0xd0},
+-	{0x380a, 0x09},
+-	{0x380b, 0xa0},
+-	{0x380c, 0x07},
+-	{0x380d, 0x88},
+-	{0x380e, 0x09},
+-	{0x380f, 0xb8},
+-	{0x3810, 0x00},
+-	{0x3811, 0x00},
+-	{0x3812, 0x00},
+-	{0x3813, 0x01},
+-	{0x3814, 0x01},
+-	{0x3815, 0x01},
+-	{0x3816, 0x00},
+-	{0x3817, 0x00},
+-	{0x3818, 0x00},
+-	{0x3819, 0x10},
+-	{0x3820, 0x80},
+-	{0x3821, 0x46},
+-	{0x382a, 0x01},
+-	{0x382b, 0x01},
+-	{0x3830, 0x06},
+-	{0x3836, 0x02},
+-	{0x3862, 0x04},
+-	{0x3863, 0x08},
+-	{0x3cc0, 0x33},
+-	{0x3d85, 0x17},
+-	{0x3d8c, 0x73},
+-	{0x3d8d, 0xde},
+-	{0x4001, 0xe0},
+-	{0x4003, 0x40},
+-	{0x4008, 0x00},
+-	{0x4009, 0x0b},
+-	{0x400a, 0x00},
+-	{0x400b, 0x84},
+-	{0x400f, 0x80},
+-	{0x4010, 0xf0},
+-	{0x4011, 0xff},
+-	{0x4012, 0x02},
+-	{0x4013, 0x01},
+-	{0x4014, 0x01},
+-	{0x4015, 0x01},
+-	{0x4042, 0x00},
+-	{0x4043, 0x80},
+-	{0x4044, 0x00},
+-	{0x4045, 0x80},
+-	{0x4046, 0x00},
+-	{0x4047, 0x80},
+-	{0x4048, 0x00},
+-	{0x4049, 0x80},
+-	{0x4041, 0x03},
+-	{0x404c, 0x20},
+-	{0x404d, 0x00},
+-	{0x404e, 0x20},
+-	{0x4203, 0x80},
+-	{0x4307, 0x30},
+-	{0x4317, 0x00},
+-	{0x4503, 0x08},
+-	{0x4601, 0x80},
+-	{0x4800, 0x44},
+-	{0x4816, 0x53},
+-	{0x481b, 0x58},
+-	{0x481f, 0x27},
+-	{0x4837, 0x16},
+-	{0x483c, 0x0f},
+-	{0x484b, 0x05},
+-	{0x5000, 0x57},
+-	{0x5001, 0x0a},
+-	{0x5004, 0x04},
+-	{0x502e, 0x03},
+-	{0x5030, 0x41},
+-	{0x5780, 0x14},
+-	{0x5781, 0x0f},
+-	{0x5782, 0x44},
+-	{0x5783, 0x02},
+-	{0x5784, 0x01},
+-	{0x5785, 0x01},
+-	{0x5786, 0x00},
+-	{0x5787, 0x04},
+-	{0x5788, 0x02},
+-	{0x5789, 0x0f},
+-	{0x578a, 0xfd},
+-	{0x578b, 0xf5},
+-	{0x578c, 0xf5},
+-	{0x578d, 0x03},
+-	{0x578e, 0x08},
+-	{0x578f, 0x0c},
+-	{0x5790, 0x08},
+-	{0x5791, 0x04},
+-	{0x5792, 0x00},
+-	{0x5793, 0x52},
+-	{0x5794, 0xa3},
+-	{0x5795, 0x02},
+-	{0x5796, 0x20},
+-	{0x5797, 0x20},
+-	{0x5798, 0xd5},
+-	{0x5799, 0xd5},
+-	{0x579a, 0x00},
+-	{0x579b, 0x50},
+-	{0x579c, 0x00},
+-	{0x579d, 0x2c},
+-	{0x579e, 0x0c},
+-	{0x579f, 0x40},
+-	{0x57a0, 0x09},
+-	{0x57a1, 0x40},
+-	{0x59f8, 0x3d},
+-	{0x5a08, 0x02},
+-	{0x5b00, 0x02},
+-	{0x5b01, 0x10},
+-	{0x5b02, 0x03},
+-	{0x5b03, 0xcf},
+-	{0x5b05, 0x6c},
+-	{0x5e00, 0x00}
+-};
+-
+ static const struct ov8856_reg mode_3264x2448_regs[] = {
+ 	{0x0103, 0x01},
+ 	{0x0302, 0x3c},
+@@ -963,18 +773,6 @@ static const struct ov8856_link_freq_config link_freq_configs[] = {
+ };
+ 
+ static const struct ov8856_mode supported_modes[] = {
+-	{
+-		.width = 3280,
+-		.height = 2464,
+-		.hts = 1928,
+-		.vts_def = 2488,
+-		.vts_min = 2488,
+-		.reg_list = {
+-			.num_of_regs = ARRAY_SIZE(mode_3280x2464_regs),
+-			.regs = mode_3280x2464_regs,
+-		},
+-		.link_freq_index = OV8856_LINK_FREQ_720MBPS,
+-	},
+ 	{
+ 		.width = 3264,
+ 		.height = 2448,
+-- 
+2.27.0
+
