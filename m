@@ -2,58 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA302B5367
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4618E2B5368
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731578AbgKPVFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:05:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726219AbgKPVFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:05:12 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42AF7207BC;
-        Mon, 16 Nov 2020 21:05:10 +0000 (UTC)
-Date:   Mon, 16 Nov 2020 16:05:08 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peiyong Lin <lpy@google.com>
-Cc:     Amit Kucheria <amit.kucheria@linaro.org>,
-        android-kernel@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Prahlad Kilambi <prahladk@google.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        zzyiwei@android.com, Sidath Senanayake <sidaths@google.com>
-Subject: Re: [PATCH v4] Add power/gpu_frequency tracepoint.
-Message-ID: <20201116160508.3e86496f@gandalf.local.home>
-In-Reply-To: <CA+0soAkD7BG6CjhMW6PYR4yAgDykU2uUizcHx1QQdXqgesCFFg@mail.gmail.com>
-References: <20200820162738.33053904@oasis.local.home>
-        <20201022173434.910879-1-lpy@google.com>
-        <CA+0soAkD7BG6CjhMW6PYR4yAgDykU2uUizcHx1QQdXqgesCFFg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731699AbgKPVFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:05:51 -0500
+Received: from lilium.sigma-star.at ([109.75.188.150]:54304 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726219AbgKPVFu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 16:05:50 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lilium.sigma-star.at (Postfix) with ESMTP id 3BEF61816C728;
+        Mon, 16 Nov 2020 22:05:47 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id pj4MsuSeTHU4; Mon, 16 Nov 2020 22:05:46 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id MinQ-477CHIm; Mon, 16 Nov 2020 22:05:46 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     linux-mtd@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org
+Subject: [PATCH] ubifs: wbuf: Don't leak kernel memory to flash
+Date:   Mon, 16 Nov 2020 22:05:30 +0100
+Message-Id: <20201116210530.26230-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 12:55:29 -0800
-Peiyong Lin <lpy@google.com> wrote:
+Write buffers use a kmalloc()'ed buffer, they can leak
+up to seven bytes of kernel memory to flash if writes are not
+aligned.
+So use ubifs_pad() to fill these gaps with padding bytes.
+This was never a problem while scanning because the scanner logic
+manually aligns node lengths and skips over these gaps.
 
-> Hi there,
-> 
-> May I ask whether the merge window has passed? If so is it possible to
-> ask for a review?
+Cc: <stable@vger.kernel.org>
+Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/io.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-This is up to the maintainers of power management to accept this.
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index 7e4bfaf2871f..eae9cf5a57b0 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -319,7 +319,7 @@ void ubifs_pad(const struct ubifs_info *c, void *buf,=
+ int pad)
+ {
+ 	uint32_t crc;
+=20
+-	ubifs_assert(c, pad >=3D 0 && !(pad & 7));
++	ubifs_assert(c, pad >=3D 0);
+=20
+ 	if (pad >=3D UBIFS_PAD_NODE_SZ) {
+ 		struct ubifs_ch *ch =3D buf;
+@@ -764,6 +764,10 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf,=
+ void *buf, int len)
+ 		 * write-buffer.
+ 		 */
+ 		memcpy(wbuf->buf + wbuf->used, buf, len);
++		if (aligned_len > len) {
++			ubifs_assert(c, aligned_len - len < 8);
++			ubifs_pad(c, wbuf->buf + wbuf->used + len, aligned_len - len);
++		}
+=20
+ 		if (aligned_len =3D=3D wbuf->avail) {
+ 			dbg_io("flush jhead %s wbuf to LEB %d:%d",
+@@ -856,13 +860,18 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf=
+, void *buf, int len)
+ 	}
+=20
+ 	spin_lock(&wbuf->lock);
+-	if (aligned_len)
++	if (aligned_len) {
+ 		/*
+ 		 * And now we have what's left and what does not take whole
+ 		 * max. write unit, so write it to the write-buffer and we are
+ 		 * done.
+ 		 */
+ 		memcpy(wbuf->buf, buf + written, len);
++		if (aligned_len > len) {
++			ubifs_assert(c, aligned_len - len < 8);
++			ubifs_pad(c, wbuf->buf + len, aligned_len - len);
++		}
++	}
+=20
+ 	if (c->leb_size - wbuf->offs >=3D c->max_write_size)
+ 		wbuf->size =3D c->max_write_size;
+--=20
+2.26.2
 
-Rafael?
-
--- Steve
