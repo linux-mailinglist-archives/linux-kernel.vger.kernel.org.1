@@ -2,390 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F742B434D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A4A2B4350
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgKPMGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:06:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728400AbgKPMGO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:06:14 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2875C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:06:12 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id a65so23423529wme.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:06:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=singlestore.com; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=pNMBygHElZXIYaKXkjoCnVxplDArqBg0PPI2Ggh+Aus=;
-        b=LHVV2uCCqMrc4Lu74GkA1/z4l2LfvPWUbVer3w5UkVPDAolRfu9NQuBTDnFNkySSS+
-         fnXCc+JG8Nx3BfCDHrk7sFesavfTgtROnJqYeQIftQvoyVN/eAI62OPbIRjUc0d45u3Y
-         WoB9iPPu8bmp8FtV5x0ehyand+ZafCJyE7x/eOA7WtB/xUwujB1HF2aTZPmavGVfK02q
-         el7b5Ieb9SswEg1bg3TacR94jDmur6VJuZl4wpVTZP7yYMQC4NuadbwGBe31AK8PkuDx
-         rhQL3oUDQz0u+PZAe2fZVrVyvtkoOWQgqIMCC/FQILvjJoJCwryzyyE5k5N/7Yg4NllT
-         O9YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=pNMBygHElZXIYaKXkjoCnVxplDArqBg0PPI2Ggh+Aus=;
-        b=odxLvjoGB6ewJLbk7sYySaXzlH47LyaaUsl73wBBCnnRJ9iJk/8zaRVnSz8fgHrXCn
-         GdwrlbOMYzqNhUes35FRkAsht4AAqWD3EQO1seDZ5FkfrFN2H3L521lClO0URdov3NDZ
-         F9YsT99DYabaLM2dZA+JrFrdfSNtZH3aMK38V/8NMO44M+DijnBj35QOtY3LfFxpCVzr
-         0aAjtmm71jQAjtFgQCAGA+cSZKo7tJXlO288R6OiQdm4XqeeKi/8STq0VrZKIsv3NPLL
-         399y8hO5qaz6fP6xL/0fzzzaXaBXfhgwwNhBC/gJ6D9JvCObqf0VptOeIRjFmm4qtoqo
-         X9TQ==
-X-Gm-Message-State: AOAM530SiAAQkenSu5t7D1QAk4ALtPZiCqo5yhThWRD5XrwfpTfZLkLa
-        EyX+DMxF6KwQOB3rtUUvZXY8jPZm1eauj/c5
-X-Google-Smtp-Source: ABdhPJzBrK2tOFyd2B6AB0bcukVMmSszPabTX7yAQLGC95UO88nHnBg3BhpNgPsMPYfjUSJOysxSdA==
-X-Received: by 2002:a1c:9e0e:: with SMTP id h14mr1354558wme.63.1605528370617;
-        Mon, 16 Nov 2020 04:06:10 -0800 (PST)
-Received: from rdias-suse-pc.lan (bl13-26-148.dsl.telepac.pt. [85.246.26.148])
-        by smtp.gmail.com with ESMTPSA id t13sm23322096wru.67.2020.11.16.04.06.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 04:06:10 -0800 (PST)
-Date:   Mon, 16 Nov 2020 12:06:08 +0000
-From:   Ricardo Dias <rdias@singlestore.com>
-To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, edumazet@google.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5] tcp: fix race condition when creating child sockets from
- syncookies
-Message-ID: <20201116120608.GA187477@rdias-suse-pc.lan>
+        id S1729894AbgKPMHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:07:51 -0500
+Received: from gw.c-home.cz ([89.24.150.100]:33632 "EHLO dmz.c-home.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729143AbgKPMHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:07:51 -0500
+Received: from dmz.c-home.cz (localhost [127.0.0.1])
+        by dmz.c-home.cz (8.14.4+Sun/8.14.4) with ESMTP id 0AGC7TaW020515;
+        Mon, 16 Nov 2020 13:07:34 +0100 (CET)
+Received: from localhost (martin@localhost)
+        by dmz.c-home.cz (8.14.4+Sun/8.14.4/Submit) with ESMTP id 0AGC7RHu020511;
+        Mon, 16 Nov 2020 13:07:27 +0100 (CET)
+X-Authentication-Warning: dmz.c-home.cz: martin owned process doing -bs
+Date:   Mon, 16 Nov 2020 13:07:27 +0100 (CET)
+From:   Martin Cerveny <martin@c-home.cz>
+Reply-To: Martin Cerveny <M.Cerveny@computer.org>
+To:     Martin Cerveny <M.Cerveny@computer.org>
+cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 0/6] ARM: dts: sun8i: v3s: Enable video decoder
+In-Reply-To: <alpine.GSO.2.00.2011161031350.15706@dmz.c-home.cz>
+Message-ID: <alpine.GSO.2.00.2011161301500.15706@dmz.c-home.cz>
+References: <20200912143052.30952-1-m.cerveny@computer.org> <c8cc3529-3e21-2a11-d258-bb03885a5c91@xs4all.nl> <alpine.GSO.2.00.2011151911340.21646@dmz.c-home.cz> <19bbdf9f-3894-606b-728e-b41df27a4f5d@xs4all.nl>
+ <alpine.GSO.2.00.2011161031350.15706@dmz.c-home.cz>
+User-Agent: Alpine 2.00 (GSO 1167 2008-08-23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the TCP stack is in SYN flood mode, the server child socket is
-created from the SYN cookie received in a TCP packet with the ACK flag
-set.
+Hello.
 
-The child socket is created when the server receives the first TCP
-packet with a valid SYN cookie from the client. Usually, this packet
-corresponds to the final step of the TCP 3-way handshake, the ACK
-packet. But is also possible to receive a valid SYN cookie from the
-first TCP data packet sent by the client, and thus create a child socket
-from that SYN cookie.
+On Mon, 16 Nov 2020, Martin Cerveny wrote:
+> On Mon, 16 Nov 2020, Hans Verkuil wrote:
+>> On 15/11/2020 19:59, Martin Cerveny wrote:
+>>> On Thu, 5 Nov 2020, Hans Verkuil wrote:
+>>>> On 12/09/2020 16:30, Martin Cerveny wrote:
+>>>>> First patch extends cedrus capability to all decoders
+>>>>> because V3s missing MPEG2 decoder.
+>>>>> 
+>>>>> Next two patches add system control node (SRAM C1) and
+>>>>> next three patches add support for Cedrus VPU.
+>>>>> 
+>>>>> Tested on "Lichee Zero" V3s platform with testing LCD patch
+>>>>> ( https://github.com/mcerveny/linux/tree/v3s_videocodec_v4 )
+>>>>> and V4L2 raw API testing utility
+>>>>> ( https://github.com/mcerveny/v4l2-request-test ):
+>>>>> - enabled LCD (DRM dual VI and sigle UI planes)
+>>>>> - added RGB panel
+>>>>> - enabled PWM
+>>>>> 
+>>>>> There is low memory on V3s (64MB) and maximum must be available to CMA:
+>>>>> - CONFIG_CMA_SIZE_MBYTES=28
+>>>>> - add swap to swapout other processes
+>>>>> - decrease buffers in v4l2-request-test (.buffers_count from 16 to 6)
+>>>>> 
+>>>>> Only H.264 decoder working - MPEG and H.265 unsupported by V3s,
+>>>>> JPEG/MJPEG still unimplemented, encoder unimplemented
+>>>> 
+>>>> When I tried to merged these patches I got merge conflicts.
+>>>> 
+>>>> Possibly due to other 5.10 changes, but certainly because of conflicts
+>>>> with patches from Jernej:
+>>>> 
+>>>> https://patchwork.linuxtv.org/project/linux-media/patch/20200825173523.1289379-4-jernej.skrabec@siol.net/
+>>>> https://patchwork.linuxtv.org/project/linux-media/patch/20200825173523.1289379-5-jernej.skrabec@siol.net/
+>>>> 
+>>>> I've merged Jerne's patches and posted a PR for that:
+>>>> https://patchwork.linuxtv.org/project/linux-media/patch/f3b8e5e2-5f0e-fb6f-e5b2-7f44f7e365e7@xs4all.nl/
+>>>> 
+>>>> Can you rebase your patches on top of my branch that contains Jernej's 
+>>>> patches?
+>>>> 
+>>>> https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=for-v5.11e
+>>>> 
+>>>> Once my PR is merged into the media_tree master I can take your rebased
+>>>> patches.
+>>> 
+>>> I updated patches:
+>>> https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e
+>>> 
+>>> BUT, commit (555 commits) for v5.10-1
+>>> https://github.com/torvalds/linux/commit/fd5c32d80884268a381ed0e67cccef0b3d37750b
+>>> disrupts usability of Cedrus H.264 (at least for my Allwinner V3s):
+>>> 
+>>> 1) colors are disrupted
+>>> 
+>>> There are missing some initialization now.
+>>> 
+>>> If I use "5.9" compatible code
+>>> (last bisect good point 
+>>> https://github.com/torvalds/linux/commit/647412daeb454b6dad12a6c6961ab90aac9e5d29 
+>>> )
+>>> then reboot (not power-off!) and use new code
+>>> ( https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e )
+>>> and colors are OK.
+>> 
+>> Could this or the next issue be related to this bug fix?
+>> 
+>> https://git.linuxtv.org/media_tree.git/commit/?h=fixes&id=9ac924b98728c3733c91c6c59fc410827d0da49f
+>> 
+>> That fix isn't yet in our master tree.
+>
+> Confirmed. It recovers colors !
+>
+>>> 
+>>> 2) decoding of complex streams fails
+>>> 
+>>> ( https://github.com/mcerveny/v4l2-request-test/tree/v5.10 )
+>>> - bbb-h264-all-i-32 - OK
+>>> - bbb-h264-32 - bad from frame 5
+>>> - bbb-h264-high-32 - bad from frame 6
+>> 
+>> I think cedrus devs need to take a look at these issues.
+>
+> Maybe something wrong in my testing code,
+> problematic commit swapped some variables between structures :-(
+>
+> I try to investigate more, regards Martin
 
-Since a client socket is ready to send data as soon as it receives the
-SYN+ACK packet from the server, the client can send the ACK packet (sent
-by the TCP stack code), and the first data packet (sent by the userspace
-program) almost at the same time, and thus the server will equally
-receive the two TCP packets with valid SYN cookies almost at the same
-instant.
+Yes. I found new format in ref_pic_list.
+I updated test application. All H.264 tests are working now.
 
-When such event happens, the TCP stack code has a race condition that
-occurs between the momement a lookup is done to the established
-connections hashtable to check for the existence of a connection for the
-same client, and the moment that the child socket is added to the
-established connections hashtable. As a consequence, this race condition
-can lead to a situation where we add two child sockets to the
-established connections hashtable and deliver two sockets to the
-userspace program to the same client.
+https://github.com/mcerveny/v4l2-request-test
 
-This patch fixes the race condition by checking if an existing child
-socket exists for the same client when we are adding the second child
-socket to the established connections socket. If an existing child
-socket exists, we return that socket and use it to process the TCP
-packet received, and discard the second child socket to the same client.
+Is it necessary to release new "Patch V3" (rebased) series from 
+https://github.com/mcerveny/linux/tree/media_tree_for-v5.11e or not ?
 
-Signed-off-by: Ricardo Dias <rdias@singlestore.com>
----
- include/net/inet_hashtables.h   |  4 +--
- net/dccp/ipv4.c                 |  2 +-
- net/dccp/ipv6.c                 |  2 +-
- net/ipv4/inet_connection_sock.c |  2 +-
- net/ipv4/inet_hashtables.c      | 64 ++++++++++++++++++++++++++++-----
- net/ipv4/syncookies.c           |  5 ++-
- net/ipv4/tcp_ipv4.c             |  9 ++++-
- net/ipv6/tcp_ipv6.c             | 16 ++++++++-
- 8 files changed, 88 insertions(+), 16 deletions(-)
+Regards, Martin
 
-diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-index 92560974ea67..b0abc4dd6d49 100644
---- a/include/net/inet_hashtables.h
-+++ b/include/net/inet_hashtables.h
-@@ -247,8 +247,8 @@ void inet_hashinfo2_init(struct inet_hashinfo *h, const char *name,
- 			 unsigned long high_limit);
- int inet_hashinfo2_init_mod(struct inet_hashinfo *h);
- 
--bool inet_ehash_insert(struct sock *sk, struct sock *osk);
--bool inet_ehash_nolisten(struct sock *sk, struct sock *osk);
-+bool inet_ehash_insert(struct sock *sk, struct sock *osk, struct sock **esk);
-+bool inet_ehash_nolisten(struct sock *sk, struct sock *osk, struct sock **esk);
- int __inet_hash(struct sock *sk, struct sock *osk);
- int inet_hash(struct sock *sk);
- void inet_unhash(struct sock *sk);
-diff --git a/net/dccp/ipv4.c b/net/dccp/ipv4.c
-index 9c28c8251125..098bae35ab76 100644
---- a/net/dccp/ipv4.c
-+++ b/net/dccp/ipv4.c
-@@ -427,7 +427,7 @@ struct sock *dccp_v4_request_recv_sock(const struct sock *sk,
- 
- 	if (__inet_inherit_port(sk, newsk) < 0)
- 		goto put_and_exit;
--	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
-+	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), NULL);
- 	if (*own_req)
- 		ireq->ireq_opt = NULL;
- 	else
-diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
-index ef4ab28cfde0..78ee1b5acf1f 100644
---- a/net/dccp/ipv6.c
-+++ b/net/dccp/ipv6.c
-@@ -533,7 +533,7 @@ static struct sock *dccp_v6_request_recv_sock(const struct sock *sk,
- 		dccp_done(newsk);
- 		goto out;
- 	}
--	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
-+	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), NULL);
- 	/* Clone pktoptions received with SYN, if we own the req */
- 	if (*own_req && ireq->pktopts) {
- 		newnp->pktoptions = skb_clone(ireq->pktopts, GFP_ATOMIC);
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index b457dd2d6c75..df26489e4f6c 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -787,7 +787,7 @@ static void reqsk_queue_hash_req(struct request_sock *req,
- 	timer_setup(&req->rsk_timer, reqsk_timer_handler, TIMER_PINNED);
- 	mod_timer(&req->rsk_timer, jiffies + timeout);
- 
--	inet_ehash_insert(req_to_sk(req), NULL);
-+	inet_ehash_insert(req_to_sk(req), NULL, NULL);
- 	/* before letting lookups find us, make sure all req fields
- 	 * are committed to memory and refcnt initialized.
- 	 */
-diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-index 239e54474b65..c1eeffd14b59 100644
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -20,6 +20,9 @@
- #include <net/addrconf.h>
- #include <net/inet_connection_sock.h>
- #include <net/inet_hashtables.h>
-+#if IS_ENABLED(CONFIG_IPV6)
-+#include <net/inet6_hashtables.h>
-+#endif
- #include <net/secure_seq.h>
- #include <net/ip.h>
- #include <net/tcp.h>
-@@ -510,14 +513,17 @@ static u32 inet_sk_port_offset(const struct sock *sk)
- 					  inet->inet_dport);
- }
- 
--/* insert a socket into ehash, and eventually remove another one
-- * (The another one can be a SYN_RECV or TIMEWAIT
-+/* Insert a socket into ehash, and eventually remove another one
-+ * (The another one can be a SYN_RECV or TIMEWAIT)
-+ * If an existing socket already exists, it returns that socket
-+ * through the esk parameter.
-  */
--bool inet_ehash_insert(struct sock *sk, struct sock *osk)
-+bool inet_ehash_insert(struct sock *sk, struct sock *osk, struct sock **esk)
- {
- 	struct inet_hashinfo *hashinfo = sk->sk_prot->h.hashinfo;
- 	struct hlist_nulls_head *list;
- 	struct inet_ehash_bucket *head;
-+	struct sock *_esk;
- 	spinlock_t *lock;
- 	bool ret = true;
- 
-@@ -532,16 +538,58 @@ bool inet_ehash_insert(struct sock *sk, struct sock *osk)
- 	if (osk) {
- 		WARN_ON_ONCE(sk->sk_hash != osk->sk_hash);
- 		ret = sk_nulls_del_node_init_rcu(osk);
-+	} else if (esk) {
-+		const struct hlist_nulls_node *node;
-+		struct net *net = sock_net(sk);
-+		const int dif = sk->sk_bound_dev_if;
-+		const int sdif = sk->sk_bound_dev_if;
-+
-+		INET_ADDR_COOKIE(acookie, sk->sk_daddr, sk->sk_rcv_saddr);
-+		const __portpair ports = INET_COMBINED_PORTS(sk->sk_dport,
-+							     sk->sk_num);
-+
-+		sk_nulls_for_each_rcu(_esk, node, list) {
-+			if (_esk->sk_hash != sk->sk_hash)
-+				continue;
-+			if (sk->sk_family == AF_INET) {
-+				if (unlikely(INET_MATCH(_esk, net, acookie,
-+							sk->sk_daddr,
-+							sk->sk_rcv_saddr,
-+							ports, dif, sdif))) {
-+					refcount_inc(&_esk->sk_refcnt);
-+					goto found;
-+				}
-+			}
-+#if IS_ENABLED(CONFIG_IPV6)
-+			else if (sk->sk_family == AF_INET6) {
-+				if (unlikely(INET6_MATCH(_esk, net,
-+							 &sk->sk_v6_daddr,
-+							 &sk->sk_v6_rcv_saddr,
-+							 ports, dif, sdif))) {
-+					refcount_inc(&_esk->sk_refcnt);
-+					goto found;
-+				}
-+			}
-+#endif
-+		}
-+
- 	}
-+	_esk = NULL;
- 	if (ret)
- 		__sk_nulls_add_node_rcu(sk, list);
-+
-+found:
- 	spin_unlock(lock);
-+	if (_esk) {
-+		*esk = _esk;
-+		ret = false;
-+	}
- 	return ret;
- }
- 
--bool inet_ehash_nolisten(struct sock *sk, struct sock *osk)
-+bool inet_ehash_nolisten(struct sock *sk, struct sock *osk, struct sock **esk)
- {
--	bool ok = inet_ehash_insert(sk, osk);
-+	bool ok = inet_ehash_insert(sk, osk, esk);
- 
- 	if (ok) {
- 		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
-@@ -585,7 +633,7 @@ int __inet_hash(struct sock *sk, struct sock *osk)
- 	int err = 0;
- 
- 	if (sk->sk_state != TCP_LISTEN) {
--		inet_ehash_nolisten(sk, osk);
-+		inet_ehash_nolisten(sk, osk, NULL);
- 		return 0;
- 	}
- 	WARN_ON(!sk_unhashed(sk));
-@@ -681,7 +729,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
- 		tb = inet_csk(sk)->icsk_bind_hash;
- 		spin_lock_bh(&head->lock);
- 		if (sk_head(&tb->owners) == sk && !sk->sk_bind_node.next) {
--			inet_ehash_nolisten(sk, NULL);
-+			inet_ehash_nolisten(sk, NULL, NULL);
- 			spin_unlock_bh(&head->lock);
- 			return 0;
- 		}
-@@ -760,7 +808,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
- 	inet_bind_hash(sk, tb, port);
- 	if (sk_unhashed(sk)) {
- 		inet_sk(sk)->inet_sport = htons(port);
--		inet_ehash_nolisten(sk, (struct sock *)tw);
-+		inet_ehash_nolisten(sk, (struct sock *)tw, NULL);
- 	}
- 	if (tw)
- 		inet_twsk_bind_unhash(tw, hinfo);
-diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
-index e03756631541..c4bb895085f0 100644
---- a/net/ipv4/syncookies.c
-+++ b/net/ipv4/syncookies.c
-@@ -208,7 +208,7 @@ struct sock *tcp_get_cookie_sock(struct sock *sk, struct sk_buff *skb,
- 
- 	child = icsk->icsk_af_ops->syn_recv_sock(sk, skb, req, dst,
- 						 NULL, &own_req);
--	if (child) {
-+	if (child && own_req) {
- 		refcount_set(&req->rsk_refcnt, 1);
- 		tcp_sk(child)->tsoffset = tsoff;
- 		sock_rps_save_rxhash(child, skb);
-@@ -223,6 +223,9 @@ struct sock *tcp_get_cookie_sock(struct sock *sk, struct sk_buff *skb,
- 
- 		bh_unlock_sock(child);
- 		sock_put(child);
-+	}  else if (child && !own_req) {
-+		__reqsk_free(req);
-+		return child;
- 	}
- 	__reqsk_free(req);
- 
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 592c73962723..875b5310fc25 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -1501,6 +1501,7 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
- 	int l3index;
- #endif
- 	struct ip_options_rcu *inet_opt;
-+	struct sock *esk = NULL;
- 
- 	if (sk_acceptq_is_full(sk))
- 		goto exit_overflow;
-@@ -1565,11 +1566,17 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
- 
- 	if (__inet_inherit_port(sk, newsk) < 0)
- 		goto put_and_exit;
--	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
-+	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), &esk);
- 	if (likely(*own_req)) {
- 		tcp_move_syn(newtp, req);
- 		ireq->ireq_opt = NULL;
- 	} else {
-+		if (!req_unhash && esk) {
-+			/* This code path should only be executed in the
-+			 * syncookie case only
-+			 */
-+			newsk = esk;
-+		}
- 		newinet->inet_opt = NULL;
- 	}
- 	return newsk;
-diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-index 305870a72352..dd64ec3b8a43 100644
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -1190,6 +1190,7 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
- 	struct inet_sock *newinet;
- 	struct tcp_sock *newtp;
- 	struct sock *newsk;
-+	struct sock *esk = NULL;
- #ifdef CONFIG_TCP_MD5SIG
- 	struct tcp_md5sig_key *key;
- 	int l3index;
-@@ -1206,6 +1207,12 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
- 
- 		if (!newsk)
- 			return NULL;
-+		else if (!req_unhash && !own_req) {
-+			/* We're returning an existing child socket, probably
-+			 * created by a previous syncookie ACK.
-+			 */
-+			return newsk;
-+		}
- 
- 		inet_sk(newsk)->pinet6 = tcp_inet6_sk(newsk);
- 
-@@ -1359,7 +1366,7 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
- 		tcp_done(newsk);
- 		goto out;
- 	}
--	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
-+	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), &esk);
- 	if (*own_req) {
- 		tcp_move_syn(newtp, req);
- 
-@@ -1374,6 +1381,13 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
- 				skb_set_owner_r(newnp->pktoptions, newsk);
- 			}
- 		}
-+	} else {
-+		if (!req_unhash && esk) {
-+			/* This code path should only be executed in the
-+			 * syncookie case only
-+			 */
-+			newsk = esk;
-+		}
- 	}
- 
- 	return newsk;
--- 
-2.25.1
-
+>> Regards,
+>>
+>> 	Hans
+>> 
+>>> 
+>>> best regards,
+>>> Martin
+>>> 
+>>>>> Changes since v1:
+>>>>> - patch 0005 rename
+>>>>> - added testing description
+>>>>> 
+>>>>> Martin Cerveny (6):
+>>>>>   media: cedrus: Register all codecs as capability
+>>>>>   dt-bindings: sram: allwinner,sun4i-a10-system-control: Add V3s
+>>>>>     compatibles
+>>>>>   ARM: dts: sun8i: v3s: Add node for system control
+>>>>>   media: cedrus: Add support for V3s
+>>>>>   dt-bindings: media: cedrus: Add V3s compatible
+>>>>>   ARM: dts: sun8i: v3s: Add video engine node
+>>>>>
+>>>>>  .../allwinner,sun4i-a10-video-engine.yaml     |  1 +
+>>>>>  .../allwinner,sun4i-a10-system-control.yaml   |  6 ++++
+>>>>>  arch/arm/boot/dts/sun8i-v3s.dtsi              | 33 +++++++++++++++++++
+>>>>>  drivers/staging/media/sunxi/cedrus/cedrus.c   | 28 +++++++++++++++-
+>>>>>  drivers/staging/media/sunxi/cedrus/cedrus.h   |  2 ++
+>>>>>  .../staging/media/sunxi/cedrus/cedrus_video.c |  2 ++
+>>>>>  6 files changed, 71 insertions(+), 1 deletion(-)
+>>>>> 
+>>>> 
+>> 
+>
