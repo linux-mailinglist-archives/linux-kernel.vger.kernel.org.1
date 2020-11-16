@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBDD2B52B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F4F2B52BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733110AbgKPUg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:36:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730895AbgKPUg0 (ORCPT
+        id S2387507AbgKPUha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:37:30 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:43564 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728267AbgKPUh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:36:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90206C0613CF;
-        Mon, 16 Nov 2020 12:36:26 -0800 (PST)
+        Mon, 16 Nov 2020 15:37:29 -0500
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605558985;
+        s=2020; t=1605559047;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gXSHVKbd8G8tskYWByySCiOR7/WBbSL8QPOWjVNEWvc=;
-        b=iXDImUK3RinKYmmlQOfDDW4hI6pAtsc1AtcOeOZ8UQQ2fBZgWm1Zia9Npot9r5YJ/IVEm7
-        /FmfSLTy7hfavoIAbBXp+wh7I7zDMTKofH87R5kGS1pGzuEYbBVufB103vcXwCLIJp8HVq
-        DGTJ41tJsAtRK9CxPHkPnRuZU62IcLVInGq+hBPUHZGIAYB+IfzGFyGzBRHiHDB706uvN0
-        KY5/G2VChYFgwPjjsQtfvAUEkdUWeBqEAgFpMR4sFeY6tI50WGsO2901uTtixfWL4kPqYw
-        tg/uu2fWLw+K5ga4ECaTZd7lpke0jg8ZUwm/ifvsvjTZBg2wGqSqU7nfydd8Aw==
+        bh=wRrA+lIht8my3CpXkl+RcTt9wCOvgs6M6biuxMKPPfs=;
+        b=0O3c6wl9A3pt0rj+lllrojVHTJPUY29eP/RkvYTb/qw5Bvpc9Rf6iOVg8Y4ACe4inYzxmS
+        if7SzdPkrNEEwDOjbXa/MqDxKMgCbJ1GeqdiNbQzaJ5qTVToOdyqX/PyiybnfnC2Slkp0B
+        4HVK2iw//lfjfPQKTEnXytVkdZavWhInHOkWfBvAZY8+ELl/63qqlUV0K06wlfWfQxaMGA
+        1L3cqHHku2vVD02S27mvCKKWnpPMJZXfD/dVxm10SP26S7Zr3/NxEwy5aXxQR2F+Gk29Ir
+        rcB+TeYiGiV+MmFs+hfMTRbvFesNVLLzlVvr88IYbzRDFS9yYgRZYqFBDEYMNQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605558985;
+        s=2020e; t=1605559047;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gXSHVKbd8G8tskYWByySCiOR7/WBbSL8QPOWjVNEWvc=;
-        b=IuQwfP8hVspbuZD5CWYGKGeEGWiCjNyd1bMK4ypFeE1jL5NUVm0Phzi/t2Y7+U89FU7CF2
-        vOEu5WKh27Fa2wDw==
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 05/10] x86/entry: Pass irqentry_state_t by reference
-In-Reply-To: <20201116184916.GA722447@iweiny-DESK2.sc.intel.com>
-References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-6-ira.weiny@intel.com> <87mtzi8n0z.fsf@nanos.tec.linutronix.de> <20201116184916.GA722447@iweiny-DESK2.sc.intel.com>
-Date:   Mon, 16 Nov 2020 21:36:24 +0100
-Message-ID: <87lff1xcmv.fsf@nanos.tec.linutronix.de>
+        bh=wRrA+lIht8my3CpXkl+RcTt9wCOvgs6M6biuxMKPPfs=;
+        b=Il7WALV5BltLgft7vZnOUvuYTErqq51XvAB5JDAW9qI0X0YIy+wb7KRtriVh56Iwnaknd+
+        KLBMSFpxCdAtZ9Aw==
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian\, Kevin" <kevin.tian@intel.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Wilk\, Konrad" <konrad.wilk@oracle.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul\@kernel.org" <vkoul@kernel.org>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "maz\@kernel.org" <maz@kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
+        "parav\@mellanox.com" <parav@mellanox.com>,
+        "rafael\@kernel.org" <rafael@kernel.org>,
+        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain\, Mona" <mona.hossain@intel.com>,
+        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+In-Reply-To: <20201116180241.GP917484@nvidia.com>
+References: <877dqqmc2h.fsf@nanos.tec.linutronix.de> <20201114103430.GA9810@infradead.org> <20201114211837.GB12197@araj-mobl1.jf.intel.com> <877dqmamjl.fsf@nanos.tec.linutronix.de> <20201115193156.GB14750@araj-mobl1.jf.intel.com> <875z665kz4.fsf@nanos.tec.linutronix.de> <20201116002232.GA2440@araj-mobl1.jf.intel.com> <MWHPR11MB164539B8FDE63D5CBDA300E18CE30@MWHPR11MB1645.namprd11.prod.outlook.com> <20201116154635.GK917484@nvidia.com> <87y2j1xk1a.fsf@nanos.tec.linutronix.de> <20201116180241.GP917484@nvidia.com>
+Date:   Mon, 16 Nov 2020 21:37:27 +0100
+Message-ID: <87ima5xcl4.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ira,
-
-On Mon, Nov 16 2020 at 10:49, Ira Weiny wrote:
-> On Sun, Nov 15, 2020 at 07:58:52PM +0100, Thomas Gleixner wrote:
->> > Currently struct irqentry_state_t only contains a single bool value
->> > which makes passing it by value is reasonable.  However, future patches
->> > propose to add information to this struct, for example the PKRS
->> > register/thread state.
->> >
->> > Adding information to irqentry_state_t makes passing by value less
->> > efficient.  Therefore, change the entry/exit calls to pass irq_state by
->> > reference.
+On Mon, Nov 16 2020 at 14:02, Jason Gunthorpe wrote:
+> On Mon, Nov 16, 2020 at 06:56:33PM +0100, Thomas Gleixner wrote:
+>> On Mon, Nov 16 2020 at 11:46, Jason Gunthorpe wrote:
 >> 
->> The PKRS muck needs to add an u32 to that struct. So how is that a
->> problem?
+>> > On Mon, Nov 16, 2020 at 07:31:49AM +0000, Tian, Kevin wrote:
+>> >
+>> >> > The subdevices require PASID & IOMMU in native, but inside the guest there
+>> >> > is no
+>> >> > need for IOMMU unless you want to build SVM on top. subdevices work
+>> >> > without
+>> >> > any vIOMMU or hypercall in the guest. Only because they look like normal
+>> >> > PCI devices we could map interrupts to legacy MSIx.
+>> >> 
+>> >> Guest managed subdevices on PF/VF requires vIOMMU. 
+>> >
+>> > Why? I've never heard we need vIOMMU for our existing SRIOV flows in
+>> > VMs??
+>> 
+>> Handing PF/VF into the guest does not require it.
+>> 
+>> But if the PF/VF driver in the guest wants to create and manage the
+>> magic mdev subdevices which require PASID support then you surely need
+>> it.
 >
-> There are more fields to be added for the kmap/pmem support.  So this will be
-> needed eventually.  Even though it is not strictly necessary in the next patch.
-
-if you folks could start to write coherent changelogs with proper
-explanations why something is needed and why it's going beyond the
-immediate use case in the next patch, then getting stuff sorted would be
-way easier.
-
-Sorry my crystalball got lost years ago and I'm just not able to keep up
-with the flurry of patch sets which have dependencies in one way or the
-other.
-
->> The resulting struct still fits into 64bit which is by far more
->> efficiently passed by value than by reference. So which problem are you
->> solving here?
+> 'magic mdevs' are only one reason to use IMS in a guest. On mlx5 we
+> might want to use IMS for VPDA devices. mlx5 can spawn a VDPA device
+> in a guest, against a 'ADI', without ever requiring an IOMMU to do it.
 >
-> I'm getting ahead of myself a bit.  I will be adding more fields for the
-> kmap/pmem tracking.
+> We don't even need IOMMU in the hypervisor to create the ADI, mlx5 has
+> an internal secure IOMMU that can be used instead of the platform
+> IOMMU.
 >
-> Would you accept just a clean up for the variable names in this patch?  I could
-> then add the pass by reference when I add the new fields later.  Or would an
-> update to the commit message be ok to land this now?
+> Not saying this is a major use case, or a reason not to link things to
+> IOMMU detection, but lets be clear that a hard need for IOMMU is a
+> another IDXD thing, not general.
 
-Can you provide a coherent explanation for the full set of things which
-needs to be added here first please?
+Fair enough.
 
 Thanks,
 
