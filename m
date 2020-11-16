@@ -2,127 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368492B4407
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510792B440F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgKPMuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:50:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57494 "EHLO
+        id S1727442AbgKPMyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:54:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgKPMuy (ORCPT
+        with ESMTP id S1726199AbgKPMyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:50:54 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD95AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:50:54 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id p68so2661296pga.6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:50:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7NVm9BvVBmYQCNgQQp74TAPMn1leWF3FM+2xta7hMuY=;
-        b=jqyvXFfl+7++6tAN4nsmYV/Vt2ZGxvJTlGOaaEObz412JIHQQY68RJkBSqxaUclPRA
-         ZaxiXY9MMjUW/WGriIlsiScJtBY4ygzFiY2VVJp9pV87f7306H+iM3dBrozfyl4+jIt/
-         QqKreLaHrK7EIIx98mhDKzvYgg6enTpPX0XYNSDlgzShhbbydx+OiJuujcSf0xiAjQBB
-         JzXvofs7vO5LvlIQiFlRVG2mUw8hX0f0oTvtIRfM0io5gGEy0JTaUwDXA4zcB9JEUg7m
-         BUCQwq7sQdn0rnfd5glXYsaqmhtqyTY8Kql26/tQIRqDIUqTxF2h15GuiIi430m57rQl
-         PsgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7NVm9BvVBmYQCNgQQp74TAPMn1leWF3FM+2xta7hMuY=;
-        b=HHbI2ZrbtNYP1F83uYzdD/uhXLgsm3AKCteB4eLoQMSaT70WNyRgrgASxtt4CAqojL
-         qw0F7BIUaxjln+KAXNMfrIxzouZicRxCVTPQeQrVvCv0gaDc4nDIhnvyhCeMkMHteoNf
-         BclIS7XO9IKTkuFylIjJ8cxpUsyzb3ZJKBGgudY3mKbYu3zeiwEeCi/AcKDqnCmLUp/5
-         UH8YmYZhOUlkz01C87sHR6Jalr+3krQMg9AHoOFCEY6PhZVNk2izMT89jp3dbwTMsFab
-         QujuO/SWcK1Cyc+l50f9j/4T/d5LHAfs6lH1p3Lfr1c6b0YxOIU0ASg/3LUqsgPwpUNG
-         NmMQ==
-X-Gm-Message-State: AOAM532qfTv8Oxm9erX0+eOGYmPPVnidlcyeX4T3gZ5nPeSBawtbLHJl
-        X2r3wWbb4L5PRq3uQrjGNpU5
-X-Google-Smtp-Source: ABdhPJyAd3BVLnbppj5wJg+HV0XFLwniSB69CJoXOJklFmzPByWfddmVxqOzbRzyy0eKopea8f0nwA==
-X-Received: by 2002:a17:90a:e646:: with SMTP id ep6mr5281350pjb.218.1605531054291;
-        Mon, 16 Nov 2020 04:50:54 -0800 (PST)
-Received: from Mani-XPS-13-9360 ([2409:4072:618e:9b0a:75fd:1290:bf5c:a350])
-        by smtp.gmail.com with ESMTPSA id w13sm18151680pfd.49.2020.11.16.04.50.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 16 Nov 2020 04:50:53 -0800 (PST)
-Date:   Mon, 16 Nov 2020 18:20:45 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, loic.poulain@linaro.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] bus: mhi: Improve documentation on channel
- transfer setup APIs
-Message-ID: <20201116125045.GM3926@Mani-XPS-13-9360>
-References: <1605122473-12179-1-git-send-email-bbhatt@codeaurora.org>
- <1605122473-12179-7-git-send-email-bbhatt@codeaurora.org>
+        Mon, 16 Nov 2020 07:54:04 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6866CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:54:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kTUGIMj+xf9dxcnZPVWEpS4f+tMVOcGG3qYsy8JU/uo=; b=scKbyAZatnVBG2XU24NkUb3vRv
+        PdGXJbxA9fBOEjb/AouKq5XeBuTBdsHJvoUbyQXLdTa+AMldNOmg5Tk2MDTZ2t8F0jlHVSP7q8R2+
+        S7BPnJYihCn2lzdYZ8pqeRsf3dsiKx3azWgV1fkfX1PnCyaguG3hDPaTXp5l60cNBAgYIFNR3I1CK
+        DUNv85Au58d0tsH+9HWRHGPRYjsHdrpPmcUceMQWhVNb90dTkkTXpveSo/av1uyeFiLX4oQ+ryNRh
+        0ne4UAMa+5Z1CLGth5xvKJC5KNLXfIPzWBo9Y1tZzohKMdSzUvYtfyLXRHch7I8llvBgDrkeZJhR9
+        OcPF4O2w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kee16-0004NK-C1; Mon, 16 Nov 2020 12:53:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 64CE2301959;
+        Mon, 16 Nov 2020 13:53:55 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 54FA22025CA2A; Mon, 16 Nov 2020 13:53:55 +0100 (CET)
+Date:   Mon, 16 Nov 2020 13:53:55 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: Loadavg accounting error on arm64
+Message-ID: <20201116125355.GB3121392@hirez.programming.kicks-ass.net>
+References: <20201116091054.GL3371@techsingularity.net>
+ <20201116114938.GN3371@techsingularity.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1605122473-12179-7-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201116114938.GN3371@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:21:13AM -0800, Bhaumik Bhatt wrote:
-> The mhi_prepare_for_transfer() and mhi_unprepare_from_transfer()
-> APIs could use better explanation, especially with the addition
-> of two new APIs to start and stop the transfers on channels. Add
-> better set of information for those APIs to avoid confusion going
-> forward.
+On Mon, Nov 16, 2020 at 11:49:38AM +0000, Mel Gorman wrote:
+> On Mon, Nov 16, 2020 at 09:10:54AM +0000, Mel Gorman wrote:
+> > I'll be looking again today to see can I find a mistake in the ordering for
+> > how sched_contributes_to_load is handled but again, the lack of knowledge
+> > on the arm64 memory model means I'm a bit stuck and a second set of eyes
+> > would be nice :(
+> > 
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  include/linux/mhi.h | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
+> This morning, it's not particularly clear what orders the visibility of
+> sched_contributes_to_load exactly like other task fields in the schedule
+> vs try_to_wake_up paths. I thought the rq lock would have ordered them but
+> something is clearly off or loadavg would not be getting screwed. It could
+> be done with an rmb and wmb (testing and hasn't blown up so far) but that's
+> far too heavy.  smp_load_acquire/smp_store_release might be sufficient
+> on it although less clear if the arm64 gives the necessary guarantees.
 > 
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index aee8494..ee9537f 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -690,13 +690,27 @@ int mhi_device_get_sync(struct mhi_device *mhi_dev);
->  void mhi_device_put(struct mhi_device *mhi_dev);
->  
->  /**
-> - * mhi_prepare_for_transfer - Setup channel for data transfer
-> + * mhi_prepare_for_transfer - Setup UL and DL channels for data transfer.
-> + *                            Allocate and initialize the channel context and
-> + *                            also issue the START channel command to both
-> + *                            channels. Channels can be started only if both
-> + *                            host and device execution environments match and
-> + *                            channels are in a DISABLED state.
+> (This is still at the chucking out ideas as I haven't context switched
+> back in all the memory barrier rules).
 
-It'd be good if you can add a note about how this API differs from
-mhi_start_transfer() API. The content says the difference but an explicit
-comparision would be good.
+IIRC it should be so ordered by ->on_cpu.
 
-Thanks,
-Mani
+We have:
 
->   * @mhi_dev: Device associated with the channels
->   */
->  int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
->  
->  /**
-> - * mhi_unprepare_from_transfer - Unprepare the channels
-> + * mhi_unprepare_from_transfer - Reset UL and DL channels for data transfer.
-> + *                               Issue the RESET channel command and let the
-> + *                               device clean-up the context so no incoming
-> + *                               transfers are seen on the host. Free memory
-> + *                               associated with the context on host. If device
-> + *                               is unresponsive, only perform a host side
-> + *                               clean-up. Channels can be reset only if both
-> + *                               host and device execution environments match
-> + *                               and channels are in an ENABLED, STOPPED or
-> + *                               SUSPENDED state.
->   * @mhi_dev: Device associated with the channels
->   */
->  void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev);
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+	schedule()
+		prev->sched_contributes_to_load = X;
+		smp_store_release(prev->on_cpu, 0);
+
+
+on the one hand, and:
+
+	sched_ttwu_pending()
+		if (WARN_ON_ONCE(p->on_cpu))
+			smp_cond_load_acquire(&p->on_cpu)
+
+		ttwu_do_activate()
+			if (p->sched_contributes_to_load)
+				...
+
+on the other (for the remote case, which is the only 'interesting' one).
