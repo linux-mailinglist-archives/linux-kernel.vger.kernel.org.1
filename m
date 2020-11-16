@@ -2,106 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7362B4B9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D492B2B4BA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732342AbgKPQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:47:20 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60188 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731072AbgKPQrU (ORCPT
+        id S1731662AbgKPQtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727499AbgKPQtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:47:20 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AGGYHtu064243;
-        Mon, 16 Nov 2020 11:47:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=jqO+d259ulDvFX9AEnkvWujX/8WL9q6Z0z8HEpJp2a0=;
- b=gqVsnk72MirMEiBd4+tq6Ai0AXWrprdi8wN0UpZVrwChGv6t2yWv5A7Na8koUi6IpgbT
- 8cv0KVCI3TvkVStfCyorqi3SBm/fC0FaHRvvAbZEuBklSC+Y7+eFkWzFrLL/b9RlI+Mi
- sePtdrNq6mYD6ff64TUCxZR3LAhRvXIfHRqgY58IwFgsdYHIJ4rbNUlGYwrbHUbk2fBk
- LMD2y+OMMVtgpu4hIYDMY6UENn2jld8IAj47UNs/560H+uFa+L6E5zNS65xxermQHijA
- WFMMkQI5u5DrGJoSDYgKaaCvRjpwvTUmWMfwJej1FkaD2HVKwcUqtkriy205RT/h6rcW Lg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34uvuwgppb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 11:46:59 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AGGQpGJ003279;
-        Mon, 16 Nov 2020 16:46:58 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 34t6v8a9xm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 16:46:58 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AGGktip57540890
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Nov 2020 16:46:56 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA0A4A4057;
-        Mon, 16 Nov 2020 16:46:55 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C613CA4053;
-        Mon, 16 Nov 2020 16:46:53 +0000 (GMT)
-Received: from sig-9-65-237-154.ibm.com (unknown [9.65.237.154])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 16 Nov 2020 16:46:53 +0000 (GMT)
-Message-ID: <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
-Subject: Re: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Date:   Mon, 16 Nov 2020 11:46:52 -0500
-In-Reply-To: <20201116162202.GA15010@infradead.org>
-References: <20201113080132.16591-1-roberto.sassu@huawei.com>
-         <20201114111057.GA16415@infradead.org>
-         <0fd0fb3360194d909ba48f13220f9302@huawei.com>
-         <20201116162202.GA15010@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-16_08:2020-11-13,2020-11-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 suspectscore=3 malwarescore=0 mlxlogscore=885
- priorityscore=1501 adultscore=0 mlxscore=0 phishscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011160099
+        Mon, 16 Nov 2020 11:49:35 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4D4C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:49:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=t0yos457T5wRwKhkGOjffUVqgtsuUVWs8V/BkO8galU=; b=Hqt3072JNhTrHB71Gb+ZzdlIeU
+        W5H4QG1vpbv04ueqEHjVYA9KSKJVZKhdDf23f2xxX/niFASFgWqG5xALBo5HjLxAP/R+90TOMAdm2
+        egMYwxZ1e9DzDaWfxZMzNtZmSDBOsPt2YY4yJq7+aCG2YZyJc0cI0wquu66cqDbOfyU62tL8cF+DY
+        Q7Km+TRbn0CLdOEhBR84X3Jr2NgrbcNE46D3IxuGTVK2hx4Sny4ZM1p/AnYKQ8Gwsw8E8+lDmGoSG
+        kMY60cWGk3MT5+pbCmHQ+5IDpZklKkOOfs9d6mOPuceJaFlv9nT/zF1f8zFHXO7VPKCfcVAsNYvW+
+        I+a3wNgQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kehh4-0002Hc-H6; Mon, 16 Nov 2020 16:49:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 27A493012C3;
+        Mon, 16 Nov 2020 17:49:28 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1BA9A20282DFC; Mon, 16 Nov 2020 17:49:28 +0100 (CET)
+Date:   Mon, 16 Nov 2020 17:49:28 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: Loadavg accounting error on arm64
+Message-ID: <20201116164928.GF3121392@hirez.programming.kicks-ass.net>
+References: <20201116091054.GL3371@techsingularity.net>
+ <20201116114938.GN3371@techsingularity.net>
+ <20201116125355.GB3121392@hirez.programming.kicks-ass.net>
+ <20201116125803.GB3121429@hirez.programming.kicks-ass.net>
+ <20201116152946.GR3371@techsingularity.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116152946.GR3371@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-16 at 16:22 +0000, Christoph Hellwig wrote:
-> On Mon, Nov 16, 2020 at 08:52:19AM +0000, Roberto Sassu wrote:
-> > FMODE_CAN_READ was not set because f_mode does not have
-> > FMODE_READ. In the patch, I check if the former can be set
-> > similarly to the way it is done in file_table.c and open.c.
+On Mon, Nov 16, 2020 at 03:29:46PM +0000, Mel Gorman wrote:
+> On Mon, Nov 16, 2020 at 01:58:03PM +0100, Peter Zijlstra wrote:
+
+> > > 	sched_ttwu_pending()
+> > > 		if (WARN_ON_ONCE(p->on_cpu))
+> > > 			smp_cond_load_acquire(&p->on_cpu)
+> > > 
+> > > 		ttwu_do_activate()
+> > > 			if (p->sched_contributes_to_load)
+> > > 				...
+> > > 
+> > > on the other (for the remote case, which is the only 'interesting' one).
 > > 
-> > Is there a better way to read a file when the file was not opened
-> > for reading and a new file descriptor cannot be created?
 > 
-> You can't open a file not open for reading.  The file system or device
-> driver might have to prepare read-specific resources in ->open to
-> support reads.  So what you'll have to do is to open a new instance
-> of the file that is open for reading.
+> But this side is interesting because I'm having trouble convincing
+> myself it's 100% correct for sched_contributes_to_load. The write of
+> prev->sched_contributes_to_load in the schedule() path has a big gap
+> before it hits the smp_store_release(prev->on_cpu).
+> 
+> On the ttwu path, we have
+> 
+>         if (smp_load_acquire(&p->on_cpu) &&
+>             ttwu_queue_wakelist(p, task_cpu(p), wake_flags | WF_ON_CPU))
+>                 goto unlock;
+> 
+> 	ttwu_queue_wakelist queues task on the wakelist, sends IPI
+> 	and on the receiver side it calls ttwu_do_activate and reads
+> 	sched_contributes_to_load
+> 
+> sched_ttwu_pending() is not necessarily using the same rq lock so no
+> protection there. The smp_load_acquire() has just been hit but it still
+> leaves a gap between when sched_contributes_to_load is written and a
+> parallel read of sched_contributes_to_load.
+> 
+> So while we might be able to avoid a smp_rmb() before the read of
+> sched_contributes_to_load and rely on p->on_cpu ordering there,
+> we may still need a smp_wmb() after nr_interruptible() increments
+> instead of waiting until the smp_store_release() is hit while a task
+> is scheduling. That would be a real memory barrier on arm64 and a plain
+> compiler barrier on x86-64.
 
-This discussion seems to be going down the path of requiring an IMA
-filesystem hook for reading the file, again.  That solution was
-rejected, not by me.  What is new this time?
+I'm mighty confused by your words here; and the patch below. What actual
+scenario are you worried about?
 
-Mimi
+If we take the WF_ON_CPU path, we IPI the CPU the task is ->on_cpu on.
+So the IPI lands after the schedule() that clears ->on_cpu on the very
+same CPU.
 
+> 
+> > Also see the "Notes on Program-Order guarantees on SMP systems."
+> > comment.
+> 
+> I did, it was the on_cpu ordering for the blocking case that had me
+> looking at the smp_store_release and smp_cond_load_acquire in arm64 in
+> the first place thinking that something in there must be breaking the
+> on_cpu ordering. I'm re-reading it every so often while trying to figure
+> out where the gap is or whether I'm imagining things.
+> 
+> Not fully tested but did not instantly break either
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index d2003a7d5ab5..877eaeba45ac 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4459,14 +4459,26 @@ static void __sched notrace __schedule(bool preempt)
+>  		if (signal_pending_state(prev_state, prev)) {
+>  			prev->state = TASK_RUNNING;
+>  		} else {
+> -			prev->sched_contributes_to_load =
+> +			int acct_load =
+>  				(prev_state & TASK_UNINTERRUPTIBLE) &&
+>  				!(prev_state & TASK_NOLOAD) &&
+>  				!(prev->flags & PF_FROZEN);
+>  
+> -			if (prev->sched_contributes_to_load)
+> +			prev->sched_contributes_to_load = acct_load;
+> +			if (acct_load) {
+>  				rq->nr_uninterruptible++;
+>  
+> +				/*
+> +				 * Pairs with p->on_cpu ordering, either a
+> +				 * smp_load_acquire or smp_cond_load_acquire
+> +				 * in the ttwu path before ttwu_do_activate
+> +				 * p->sched_contributes_to_load. It's only
+> +				 * after the nr_interruptible update happens
+> +				 * that the ordering is critical.
+> +				 */
+> +				smp_wmb();
+> +			}
+
+Sorry, I can't follow, at all.
