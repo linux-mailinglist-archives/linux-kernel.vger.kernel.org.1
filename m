@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E72C2B4D92
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885DB2B4D76
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732973AbgKPRis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:38:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45840 "EHLO
+        id S2387482AbgKPRhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387462AbgKPRhs (ORCPT
+        with ESMTP id S2387460AbgKPRhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 16 Nov 2020 12:37:48 -0500
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8356C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:46 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id c17so19605246wrc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12508C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:48 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so19650887wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=c/TaDkB9aPGP5jIvVTMt5uJ/KkWKg3o08L440ECaIrc=;
-        b=H9fzVUYr61GkdepEkcKo4chSq6TsD6cuRJmXdrsP+VjRRNEvOQQX/IfJ52sG/AWhsh
-         EFRdfq3Dlg+axrP3DhsmqLb4m57yB9TVKIKxsJ0uDgUZORWETCnUubh/cXsWl8zsxOQ1
-         o/9J+jM+JTAJ1opy/ZR2C8WKVu8T394xmWN6haS6//h2fksNKepH0hCF4L0RS7i8WIS8
-         ThriN6lQhbMpGbEIWYKuT4VANbahux5F81Q/wy69QsmKqF4kktqGd/gfP9OhrIEd5Iz/
-         RzpxPw7HF4e7VfvvQLuSrr+A8vSFJPkA+FYLvcXnilM0rbX07wqAzzg43KI8MMoxUt1E
-         BEwA==
+        bh=a/Zj5V7ntHFWoK7hDL0KY4UUjT17GXd4P0At2oNvDPk=;
+        b=TFBPvHxiNg0J66sXloeHlwrOB5eWbndg3GWxnxNUY/l85QSylm74QsaOu6c9V0sLmG
+         gsrnImQVGr/vzI1O7BgbeoRNaysARDN0yLvRIL+qaCWtSVIL3Dki7e9FEDW8asTZVwZ6
+         +KbfAcOKEr1hxQUuXN22cD2h5KNqAixBIbRYq2Qf8CZUofHYwO2YGcYYuXget9TsJXwS
+         sSWUlQBWfMX4tksJumaQpklKT/jTnTL3slInD2HfyyF2gVExiphw0nn20uXiUWBwEc4T
+         9naALP835/24p4ry/5XCk+jssfHvQcCihUPctJQpGv51yNSp70AKMXPK/mHf3HRNuU1n
+         5s4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=c/TaDkB9aPGP5jIvVTMt5uJ/KkWKg3o08L440ECaIrc=;
-        b=j9yvlodN4OFJyOFuMhAJ7M5jSrRypcpzepSXhqzMu2CibUjiPmhh07gW2LZiDYEMRW
-         887yTfbcxQo4XFwTp5R+mjd4qiXIMekjx1LP+xGhUqIZQ+kWejY1aHZ0mV6+qLANaxJU
-         x5GF+QsT5t4gMHM+XgpQt22G5i1kzisNR7wW0B/8mc+vdu/LXAHNbvtP+T9kc/Yt/rUC
-         P+5qc2h37yFOS+c3dsKT8VE4ustdqBvCcfGeGW6/EtQAetH0nNlBFqKZ78R6mbb4nfBv
-         jxiDbriLYZcroKfslmOJiBhkZgK2P7Zj/CZSX2dhHzOzIQaxUDk4Mfnrr0XyotZZFDwv
-         O2BA==
-X-Gm-Message-State: AOAM531asEqNow2rkpS+wqPDeCR61Mql+J+scJ2dNA/Hq0RwYwisWmFX
-        WMo/3HPSQG0n8XVPI4vLd3BJuw==
-X-Google-Smtp-Source: ABdhPJz+sGVtIvHucgBcxMBTLe3HE9tgMEhDeD1NpTRCThOpVex2/FpBQ/EEQO9VAAJPzEWqq3i2CA==
-X-Received: by 2002:a5d:4612:: with SMTP id t18mr20438262wrq.401.1605548265478;
-        Mon, 16 Nov 2020 09:37:45 -0800 (PST)
+        bh=a/Zj5V7ntHFWoK7hDL0KY4UUjT17GXd4P0At2oNvDPk=;
+        b=tnVXNWXGQC6PYu9Gy5VqbJqgBsA33RQ2MQ3gMWDiJ+BKKuP61E6rPyVd4O9IXIEQpc
+         c+eXUpb8Y/1vmvhGcdQyg8Sy33C3CvxdQltTaCBf+MJUfgs+uGfcURlAfD2AHyFDcZ8g
+         RRzPGcFaq3A+NntIzwjGQR/KSBinLKBNW5DF+HFU0qbIpZNSczm59sSTuxL5JaIL4cQY
+         w0CaRPch8CW771cStoD1dwWsNWYSU5cw4QuhU7IsUExNdqDdvyrBbfC/nEBDNdsYVQYf
+         I3FuD4+Wg9QHJVTSLBEt1X+FqRLJ3TQ+KvZxXVEVPTqX4Fe80WI0tCriB734H60A+tMM
+         5vJw==
+X-Gm-Message-State: AOAM533ISTJomd/L443ZNEcmIw/Jx8abKKMYy0r7B1jvUCVT+LpCOMI7
+        blGTWGSjAp1jRakWNLKHoFZapQ==
+X-Google-Smtp-Source: ABdhPJyMK0Ji9phYwLd+YAD9fkz+za+2JWzXtRjSfGXUX56GVCuCSEw3Ah5D19tYN5hkRyKDaHQNxA==
+X-Received: by 2002:adf:e512:: with SMTP id j18mr21789945wrm.390.1605548266827;
+        Mon, 16 Nov 2020 09:37:46 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.44
+        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:37:44 -0800 (PST)
+        Mon, 16 Nov 2020 09:37:46 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 30/43] drm/radeon/si_dma: Move 'si_gpu_check_soft_reset()'s prototype to shared header
-Date:   Mon, 16 Nov 2020 17:36:47 +0000
-Message-Id: <20201116173700.1830487-31-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 31/43] drm/radeon/cik: Move 'si_*()'s prototypes to shared header
+Date:   Mon, 16 Nov 2020 17:36:48 +0000
+Message-Id: <20201116173700.1830487-32-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116173700.1830487-1-lee.jones@linaro.org>
 References: <20201116173700.1830487-1-lee.jones@linaro.org>
@@ -71,49 +73,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/si.c:3768:5: warning: no previous prototype for ‘si_gpu_check_soft_reset’ [-Wmissing-prototypes]
- 3768 | u32 si_gpu_check_soft_reset(struct radeon_device *rdev)
+ drivers/gpu/drm/radeon/si.c:4186:6: warning: no previous prototype for ‘si_vram_gtt_location’ [-Wmissing-prototypes]
+ 4186 | void si_vram_gtt_location(struct radeon_device *rdev,
+ | ^~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/si.c:5186:6: warning: no previous prototype for ‘si_init_uvd_internal_cg’ [-Wmissing-prototypes]
+ 5186 | void si_init_uvd_internal_cg(struct radeon_device *rdev)
  | ^~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/si.c:5801:6: warning: no previous prototype for ‘si_rlc_reset’ [-Wmissing-prototypes]
+ 5801 | void si_rlc_reset(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/si.h     | 1 +
- drivers/gpu/drm/radeon/si_dma.c | 3 +--
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/radeon/cik.c | 4 +---
+ drivers/gpu/drm/radeon/si.h  | 4 ++++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
+index ae020ad7b3185..cef0f3111cd3a 100644
+--- a/drivers/gpu/drm/radeon/cik.c
++++ b/drivers/gpu/drm/radeon/cik.c
+@@ -40,6 +40,7 @@
+ #include "radeon_asic.h"
+ #include "radeon_audio.h"
+ #include "radeon_ucode.h"
++#include "si.h"
+ 
+ #define SH_MEM_CONFIG_GFX_DEFAULT \
+ 	ALIGNMENT_MODE(SH_MEM_ALIGNMENT_MODE_UNALIGNED)
+@@ -127,9 +128,6 @@ MODULE_FIRMWARE("radeon/mullins_mec.bin");
+ MODULE_FIRMWARE("radeon/mullins_rlc.bin");
+ MODULE_FIRMWARE("radeon/mullins_sdma.bin");
+ 
+-extern void si_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc);
+-extern void si_rlc_reset(struct radeon_device *rdev);
+-extern void si_init_uvd_internal_cg(struct radeon_device *rdev);
+ static u32 cik_get_cu_active_bitmap(struct radeon_device *rdev, u32 se, u32 sh);
+ extern int cik_sdma_resume(struct radeon_device *rdev);
+ extern void cik_sdma_enable(struct radeon_device *rdev, bool enable);
 diff --git a/drivers/gpu/drm/radeon/si.h b/drivers/gpu/drm/radeon/si.h
-index 0a5018ef166e2..a1751ae560f02 100644
+index a1751ae560f02..f483a64d17050 100644
 --- a/drivers/gpu/drm/radeon/si.h
 +++ b/drivers/gpu/drm/radeon/si.h
-@@ -27,5 +27,6 @@
+@@ -25,8 +25,12 @@
+ #define __SI_H__
+ 
  struct radeon_device;
++struct radeon_mc;
  
  int si_mc_load_microcode(struct radeon_device *rdev);
-+u32 si_gpu_check_soft_reset(struct radeon_device *rdev);
+ u32 si_gpu_check_soft_reset(struct radeon_device *rdev);
++void si_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc);
++void si_rlc_reset(struct radeon_device *rdev);
++void si_init_uvd_internal_cg(struct radeon_device *rdev);
  
  #endif                         /* __SI_H__ */
-diff --git a/drivers/gpu/drm/radeon/si_dma.c b/drivers/gpu/drm/radeon/si_dma.c
-index d2fa302a5be9f..645897d1bfc31 100644
---- a/drivers/gpu/drm/radeon/si_dma.c
-+++ b/drivers/gpu/drm/radeon/si_dma.c
-@@ -25,10 +25,9 @@
- #include "radeon.h"
- #include "radeon_asic.h"
- #include "radeon_trace.h"
-+#include "si.h"
- #include "sid.h"
- 
--u32 si_gpu_check_soft_reset(struct radeon_device *rdev);
--
- /**
-  * si_dma_is_lockup - Check if the DMA engine is locked up
-  *
 -- 
 2.25.1
 
