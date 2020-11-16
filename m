@@ -2,270 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3B32B49EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E83542B49F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731512AbgKPPvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:51:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730396AbgKPPvh (ORCPT
+        id S1731557AbgKPPvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:51:47 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:39821 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730396AbgKPPvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:51:37 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867FEC0613CF;
-        Mon, 16 Nov 2020 07:51:37 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id 10so14520421pfp.5;
-        Mon, 16 Nov 2020 07:51:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L0xfL/n3M9jtte04xjeIvjNXBfbEgapxZwA8qK71lcA=;
-        b=ep66z+4vsNHbYmfYG60LBTX4UGqJPQKyBXvZGL8wCQIZXSZw4blxFnENz3ucAidizO
-         uye/N+TnkqWC45yguyDBQaDSYhWWJbsJ6BdyE8nQKs46tq26KIVXy9uQppHSy6gq/SrL
-         iM3+5nb/sCtcF5W7Jt7ji11jkO3bT13a9GnZOigxcVGSmoAOmR7d9rffQE1QxP/hlcxc
-         aFYUF7jNSu+MLqRdWLllQ/LXGIezK9XrDMw1AJ9PeHkQJ0qzs6Y6Bauoyz+8PhcGuAr+
-         7sTwZBiTpk+PJkT3C14z6G6epJx1PLVbwagn4GXvee625/qvVjaCa7z6D4lD0gbgVF1X
-         qJtA==
+        Mon, 16 Nov 2020 10:51:46 -0500
+Received: by mail-oi1-f193.google.com with SMTP id f11so5565313oij.6;
+        Mon, 16 Nov 2020 07:51:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=L0xfL/n3M9jtte04xjeIvjNXBfbEgapxZwA8qK71lcA=;
-        b=M9YzdhVF06uFdU7swZfS20gj4YQho4wA1VoxhfNERchERuREtY/vypwRpulhGE5474
-         HobAz1jNLv0/rEXmHWAUKRoaqwM/Co50h7J2p0BC5K52GkiJ3d8ndym2VBkLv/b4OsbP
-         DKaoBo4oF5VJRN9WhkQaec9gsQ6Ws1pSHSD9lp38Wms/TBVEcAC09m7jVM64EwDkExiW
-         yRdyvE9T0hVz2RGN9OQnpVCpDNmXl7SvXdfgbGbGb70iRNrzr9rwef3FLbqfVKNAxv5G
-         vAqWIBLKCNRb82HcCEa0yHu18Ibl+ENbi2S6Li2ATHTQ4e6Jn0Qh3SL+VvPvmKZ8SPww
-         aPWg==
-X-Gm-Message-State: AOAM530HBHpsTHyPAFjBdUUHbIWXYvdHMF1exBJ6U5xdXLRU0okULb0W
-        fwxakVxtxGov9+nJSKpw2aA=
-X-Google-Smtp-Source: ABdhPJydLx6ffMP9PurUpQWfvBe9Wyy9Mb1BzB9ATM0ZTamhDV/epntT20eGMJbdNDhXcgLDZpGfHA==
-X-Received: by 2002:a65:6205:: with SMTP id d5mr13483505pgv.76.1605541897062;
-        Mon, 16 Nov 2020 07:51:37 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id y9sm3502183pjn.24.2020.11.16.07.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 07:51:35 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 16 Nov 2020 07:51:32 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
-        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        John Dias <joaodias@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jann Horn <jannh@google.com>,
-        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
-        David Rientjes <rientjes@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Colascione <dancol@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        SeongJae Park <sjpark@amazon.de>, linux-man@vger.kernel.org
-Subject: Re: [PATCH v9 3/3] mm/madvise: introduce process_madvise() syscall:
- an external memory hinting API
-Message-ID: <20201116155132.GA3805951@google.com>
-References: <20200901000633.1920247-1-minchan@kernel.org>
- <20200901000633.1920247-4-minchan@kernel.org>
- <20200921065633.GA8070@infradead.org>
- <20200921175539.GB387368@google.com>
- <a376191d-908d-7d3c-a810-8ef51cc45f49@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+6BhWVUPlp+sxbhC/biJ0Qbq43f3USshsqWNEHivfAE=;
+        b=lICjOeDFzxVHOPB6nVzDwf0Y6n++w7NO/5jOYsU+MJsOgaUlXhqnlunHHhkCC4fDEl
+         x1rhZOt1vtT+xnTcX3Jy6yKQvNhE8mM0bA1a0mkgCYjHvhRs5f7vUeG+dasQkZhMcMlS
+         8EcK+aBjUkJcMz1MVQceXkmD2y9HlJqRQyMmGD5aX2yJBQ4vWGMrNTGBLBkQaIcQCRyD
+         ojlK6c1L7qVHdLbY/kI3HWC3fg7Pr/f8FJfmZ1Wl64gy5y5BcHW8e+t1vPmytuQHTNdt
+         I5g373OgcL03ACdfZWUhWXLfy+/D8VFcwtzLtomjFwbAJp/4wZ8ouBrfjxyppX0WVACL
+         K7/Q==
+X-Gm-Message-State: AOAM531SylM2VL1/8kz2ghRHHbZO9GGT0yukspo65KcSnT4tApB5zVuJ
+        KHE6raK18hvS+9bFjklQZ1yXipVsPuCE0/32xWA=
+X-Google-Smtp-Source: ABdhPJx7AZgd52Eraq7o5B0azLdJssVRdqorylldk6A9FqX6PvhOXf6BprbvnW3q+S/XElzb1tREm2QZDfKxIar4ZlM=
+X-Received: by 2002:aca:cf4b:: with SMTP id f72mr43045oig.157.1605541905112;
+ Mon, 16 Nov 2020 07:51:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a376191d-908d-7d3c-a810-8ef51cc45f49@gmail.com>
+References: <20201104232356.4038506-1-saravanak@google.com> <20201104232356.4038506-9-saravanak@google.com>
+In-Reply-To: <20201104232356.4038506-9-saravanak@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 16 Nov 2020 16:51:34 +0100
+Message-ID: <CAJZ5v0iKAzkP1jDo202J117Mb=NipEMiLiV0-C8b4LPLDyUSmw@mail.gmail.com>
+Subject: Re: [PATCH v1 08/18] driver core: Add fwnode link support
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 10:02:42AM +0100, Eric Dumazet wrote:
+On Thu, Nov 5, 2020 at 12:24 AM Saravana Kannan <saravanak@google.com> wrote:
+>
+> This patch adds support for creating supplier-consumer links between
 
-< snip >
+Generally speaking the "This patch" part is redundant.  It is
+sufficient to simply say "Add ...".
 
-> > From 02d63c6b3f61a1085f4eab80f5171bd2627b5ab0 Mon Sep 17 00:00:00 2001
-> > From: Minchan Kim <minchan@kernel.org>
-> > Date: Mon, 21 Sep 2020 09:31:25 -0700
-> > Subject: [PATCH] mm: do not use helper functions for process_madvise
-> > 
-> > This patch removes helper functions process_madvise_vec,
-> > do_process_madvise and madv_import_iovec and use them inline.
-> > 
-> > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > ---
-> >  mm/madvise.c | 97 +++++++++++++++++++++++-----------------------------
-> >  1 file changed, 43 insertions(+), 54 deletions(-)
-> > 
-> > diff --git a/mm/madvise.c b/mm/madvise.c
-> > index ae266dfede8a..aa8bc65dbdb6 100644
-> > --- a/mm/madvise.c
-> > +++ b/mm/madvise.c
-> > @@ -1166,37 +1166,40 @@ SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
-> >  	return do_madvise(current->mm, start, len_in, behavior);
-> >  }
-> >  
-> > -static int process_madvise_vec(struct mm_struct *mm, struct iov_iter *iter, int behavior)
-> > -{
-> > -	struct iovec iovec;
-> > -	int ret = 0;
-> > -
-> > -	while (iov_iter_count(iter)) {
-> > -		iovec = iov_iter_iovec(iter);
-> > -		ret = do_madvise(mm, (unsigned long)iovec.iov_base, iovec.iov_len, behavior);
-> > -		if (ret < 0)
-> > -			break;
-> > -		iov_iter_advance(iter, iovec.iov_len);
-> > -	}
-> > -
-> > -	return ret;
-> > -}
-> > -
-> > -static ssize_t do_process_madvise(int pidfd, struct iov_iter *iter,
-> > -				int behavior, unsigned int flags)
-> > +SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> > +		size_t, vlen, int, behavior, unsigned int, flags)
-> >  {
-> >  	ssize_t ret;
-> > +	struct iovec iovstack[UIO_FASTIOV], iovec;
-> > +	struct iovec *iov = iovstack;
-> > +	struct iov_iter iter;
-> >  	struct pid *pid;
-> >  	struct task_struct *task;
-> >  	struct mm_struct *mm;
-> > -	size_t total_len = iov_iter_count(iter);
-> > +	size_t total_len;
-> >  
-> > -	if (flags != 0)
-> > -		return -EINVAL;
-> > +	if (flags != 0) {
-> > +		ret = -EINVAL;
-> > +		goto out;
-> > +	}
-> > +
-> > +#ifdef CONFIG_COMPAT
-> > +	if (in_compat_syscall())
-> > +		ret = compat_import_iovec(READ,
-> > +				(struct compat_iovec __user *)vec, vlen,
-> > +				ARRAY_SIZE(iovstack), &iov, &iter);
-> > +	else
-> > +#endif
-> > +		ret = import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack),
-> > +				&iov, &iter);
-> > +	if (ret < 0)
-> > +		goto out;
-> >  
-> >  	pid = pidfd_get_pid(pidfd);
-> > -	if (IS_ERR(pid))
-> > -		return PTR_ERR(pid);
-> > +	if (IS_ERR(pid)) {
-> > +		ret = PTR_ERR(pid);
-> > +		goto free_iov;
-> > +	}
-> >  
-> >  	task = get_pid_task(pid, PIDTYPE_PID);
-> >  	if (!task) {
-> > @@ -1216,43 +1219,29 @@ static ssize_t do_process_madvise(int pidfd, struct iov_iter *iter,
-> >  		goto release_task;
-> >  	}
-> >  
-> > -	ret = process_madvise_vec(mm, iter, behavior);
-> > -	if (ret >= 0)
-> > -		ret = total_len - iov_iter_count(iter);
-> > +	total_len = iov_iter_count(&iter);
-> > +
-> > +	while (iov_iter_count(&iter)) {
-> > +		iovec = iov_iter_iovec(&iter);
-> > +		ret = do_madvise(mm, (unsigned long)iovec.iov_base,
-> > +					iovec.iov_len, behavior);
-> > +		if (ret < 0)
-> > +			break;
-> > +		iov_iter_advance(&iter, iovec.iov_len);
-> > +	}
-> > +
-> > +	if (ret == 0)
-> > +		ret = total_len - iov_iter_count(&iter);
-> >  
-> >  	mmput(mm);
-> > +	return ret;
-> 
-> This "return ret;" seems quite wrong...
+> fwnode.
 
-/me slaps self.
+fwnodes (plural)?
 
-> 
-> I will send the following :
-> 
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 416a56b8e757bf3465ab13cea51e0751ade2c745..cc9224a59e9fa07e41f9b4ad2e58b9c97889299b 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -1231,7 +1231,6 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
->                 ret = total_len - iov_iter_count(&iter);
->  
->         mmput(mm);
-> -       return ret;
->  
->  release_task:
->         put_task_struct(task);
-> 
-> 
-> 
-> 
-> > +
-> >  release_task:
-> >  	put_task_struct(task);
-> >  put_pid:
-> >  	put_pid(pid);
-> > -	return ret;
-> > -}
+> It is intentionally kept simple and with limited APIs as it is
+> meant to be used only by driver core and firmware code (Eg: device tree,
+> ACPI, etc).
 
-Thanks, Eric!
+I'd say "It is intended for internal use in the driver core and
+generic firmware support code (eg. Device Tree, ACPI), so it is simple
+by design and the API provided by it is limited."
 
-Let me send a patch with your SoB if you don't mind.
+>
+> We can expand the APIs later if there is ever a need for
+> drivers/frameworks to start using them.
 
-From 0f37d5295324721ee19a3ad40fe58e3002cd9934 Mon Sep 17 00:00:00 2001
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 16 Nov 2020 07:34:02 -0800
-Subject: [PATCH] mm/madvise: fix memory leak from process_madvise
+The above is totally redundant IMO.
 
-The eary return in process_madvise will produce memory leak.
-Fix it.
+>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  drivers/base/core.c    | 95 ++++++++++++++++++++++++++++++++++++++++++
+>  drivers/of/dynamic.c   |  1 +
+>  include/linux/fwnode.h | 14 +++++++
+>  3 files changed, 110 insertions(+)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 31a76159f118..1a1d9a55645c 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -50,6 +50,101 @@ static LIST_HEAD(wait_for_suppliers);
+>  static DEFINE_MUTEX(wfs_lock);
+>  static LIST_HEAD(deferred_sync);
+>  static unsigned int defer_sync_state_count = 1;
+> +static DEFINE_MUTEX(fwnode_link_lock);
+> +
+> +/**
+> + * fwnode_link_add - Create a link between two fwnode_handles.
+> + * @con: Consumer end of the link.
+> + * @sup: Supplier end of the link.
+> + *
+> + * Creates a fwnode link between two fwnode_handles. These fwnode links are
 
-Fixes: ecb8ac8b1f14 ("mm/madvise: introduce process_madvise() syscall: an external memory hinting API")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- mm/madvise.c | 2 --
- 1 file changed, 2 deletions(-)
+Why don't you refer to the arguments here, that is "Create a link
+between fwnode handles @con and @sup ..."
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 416a56b8e757..7e773f949ef9 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -1231,8 +1231,6 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
- 		ret = total_len - iov_iter_count(&iter);
- 
- 	mmput(mm);
--	return ret;
--
- release_task:
- 	put_task_struct(task);
- put_pid:
--- 
-2.29.2.299.gdc1121823c-goog
+> + * used by the driver core to automatically generate device links. Attempts to
+> + * create duplicate links are simply ignored and there is no refcounting.
 
+And I'd generally write it this way:
+
+"Create a link between fwnode handles @con and @sup representing a
+pair of devices the first of which uses certain resources provided by
+the second one, respectively.
+
+The driver core will use that link to create a device link between the
+two device objects corresponding to @con and @sup when they are
+created and it will automatically delete the link between @con and
+@sup after doing that.
+
+Attempts to create a duplicate link between the same pair of fwnode
+handles are ignored and there is no reference counting."
+
+> + *
+> + * These links are automatically deleted once they are converted to device
+> + * links or when the fwnode_handles (or their corresponding devices) are
+> + * deleted.
+> + */
+> +int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup)
+
+Why doesn't it return a pointer to the new link or NULL?
+
+That would be consistent with device_link_add().
+
+> +{
+> +       struct fwnode_link *link;
+> +       int ret = 0;
+> +
+> +       mutex_lock(&fwnode_link_lock);
+> +
+> +       /* Duplicate requests are intentionally not refcounted. */
+
+Is this comment really necessary?
+
+> +       list_for_each_entry(link, &sup->consumers, s_hook)
+> +               if (link->consumer == con)
+> +                       goto out;
+
+It is also necessary to look the other way around AFAICS, that is if
+there is a link between the two fwnode handles in the other direction
+already, the creation of a new one should fail.
+
+> +
+> +       link = kzalloc(sizeof(*link), GFP_KERNEL);
+> +       if (!link) {
+> +               ret = -ENOMEM;
+> +               goto out;
+> +       }
+> +
+> +       link->supplier = sup;
+> +       INIT_LIST_HEAD(&link->s_hook);
+> +       link->consumer = con;
+> +       INIT_LIST_HEAD(&link->c_hook);
+> +
+> +       list_add(&link->s_hook, &sup->consumers);
+> +       list_add(&link->c_hook, &con->suppliers);
+> +out:
+> +       mutex_unlock(&fwnode_link_lock);
+> +
+> +       return ret;
+> +}
+> +
+> +/**
+> + * fwnode_links_purge_suppliers - Delete all supplier links of fwnode_handle.
+> + * @fwnode: fwnode whose supplier links needs to be deleted
+
+s/needs/need/
+
+> + *
+> + * Deletes all supplier links connecting directly to a fwnode.
+
+I'd say "Delete all supplier links connecting directly to @fwnode."
+and analogously below.
+
+> + */
+> +static void fwnode_links_purge_suppliers(struct fwnode_handle *fwnode)
+> +{
+> +       struct fwnode_link *link, *tmp;
+> +
+> +       mutex_lock(&fwnode_link_lock);
+> +       list_for_each_entry_safe(link, tmp, &fwnode->suppliers, c_hook) {
+> +               list_del(&link->s_hook);
+> +               list_del(&link->c_hook);
+> +               kfree(link);
+> +       }
+> +       mutex_unlock(&fwnode_link_lock);
+> +}
+> +
+> +/**
+> + * fwnode_links_purge_consumers - Delete all consumer links of fwnode_handle.
+> + * @fwnode: fwnode whose consumer links needs to be deleted
+> + *
+> + * Deletes all consumer links connecting directly to a fwnode.
+> + */
+> +static void fwnode_links_purge_consumers(struct fwnode_handle *fwnode)
+> +{
+> +       struct fwnode_link *link, *tmp;
+> +
+> +       mutex_lock(&fwnode_link_lock);
+> +       list_for_each_entry_safe(link, tmp, &fwnode->consumers, s_hook) {
+> +               list_del(&link->s_hook);
+> +               list_del(&link->c_hook);
+> +               kfree(link);
+
+I'd avoid the code duplication, even though it doesn't appear to be
+significant ATM.
+
+> +       }
+> +       mutex_unlock(&fwnode_link_lock);
+> +}
+> +
+> +/**
+> + * fwnode_links_purge - Delete all links connected to a fwnode_handle.
+> + * @fwnode: fwnode whose links needs to be deleted
+> + *
+> + * Deletes all links connecting directly to a fwnode.
+> + */
+> +void fwnode_links_purge(struct fwnode_handle *fwnode)
+> +{
+> +       fwnode_links_purge_suppliers(fwnode);
+
+Dropping the lock here may turn out to be problematic at one point
+going forward.  IMO it is better to hold it throughout the entire
+operation.
+
+> +       fwnode_links_purge_consumers(fwnode);
+
+I'd get rid of the two functions above, add something like
+fwnode_link_del() and walk the lists directly here calling it for
+every link on the way.
+
+> +}
+>
+>  #ifdef CONFIG_SRCU
+>  static DEFINE_MUTEX(device_links_lock);
+> diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
+> index fe64430b438a..9a824decf61f 100644
+> --- a/drivers/of/dynamic.c
+> +++ b/drivers/of/dynamic.c
+> @@ -356,6 +356,7 @@ void of_node_release(struct kobject *kobj)
+>
+>         property_list_free(node->properties);
+>         property_list_free(node->deadprops);
+> +       fwnode_links_purge(of_fwnode_handle(node));
+>
+>         kfree(node->full_name);
+>         kfree(node->data);
+> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+> index 593fb8e58f21..afde643f37a2 100644
+> --- a/include/linux/fwnode.h
+> +++ b/include/linux/fwnode.h
+> @@ -10,6 +10,7 @@
+>  #define _LINUX_FWNODE_H_
+>
+>  #include <linux/types.h>
+> +#include <linux/list.h>
+>
+>  struct fwnode_operations;
+>  struct device;
+> @@ -18,6 +19,15 @@ struct fwnode_handle {
+>         struct fwnode_handle *secondary;
+>         const struct fwnode_operations *ops;
+>         struct device *dev;
+> +       struct list_head suppliers;
+> +       struct list_head consumers;
+> +};
+> +
+> +struct fwnode_link {
+> +       struct fwnode_handle *supplier;
+> +       struct list_head s_hook;
+> +       struct fwnode_handle *consumer;
+> +       struct list_head c_hook;
+>  };
+>
+>  /**
+> @@ -173,8 +183,12 @@ static inline void fwnode_init(struct fwnode_handle *fwnode,
+>                                const struct fwnode_operations *ops)
+>  {
+>         fwnode->ops = ops;
+> +       INIT_LIST_HEAD(&fwnode->consumers);
+> +       INIT_LIST_HEAD(&fwnode->suppliers);
+>  }
+>
+>  extern u32 fw_devlink_get_flags(void);
+> +int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
+> +void fwnode_links_purge(struct fwnode_handle *fwnode);
+>
+>  #endif
+> --
+> 2.29.1.341.ge80a0c044ae-goog
+>
