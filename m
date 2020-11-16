@@ -2,153 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5850F2B4081
+	by mail.lfdr.de (Postfix) with ESMTP id C6B962B4082
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728653AbgKPKJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:09:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726611AbgKPKJz (ORCPT
+        id S1728690AbgKPKKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:10:03 -0500
+Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:35165 "EHLO
+        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728661AbgKPKKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:09:55 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB35C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:09:53 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id c9so23158366wml.5
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:09:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4MLjK6J0k3buFVe3tEUAsMN0q98BNbXOGLlBrDEbH84=;
-        b=a6i4D5Y+4nk3y2ls3YB96MU9fUh3mrXTMUe7VWAWUO3gFEHiRJQkOBB1u+DeDeRvx1
-         eHxFOkkp52v2pmkNR/GLFPHURXZW/zkqIWmLE4cb76mndPZDbjTiwpngE6kr21lARrEO
-         GxzLEG61dbv150CtbZBkFr0qmeEUf0PnoJx+c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=4MLjK6J0k3buFVe3tEUAsMN0q98BNbXOGLlBrDEbH84=;
-        b=DmbiJpPuIH9NMbz4KFG0ReNKvi9kUYn2qwDw8677U6Ik/Ynw6r6MjQ0Vtxp7lV4TtI
-         SBDM9S5AwwUe7mLJhuoD2iL40yBg/UvsI99G69RYpYk5qLdh5LEhrWR3J8RUg/75Q/Lb
-         8iyN5QTRTIYjStqykyg8E1zXOBcXRffPNNOcpAVTuzZ94VvcaOaDCLRPdwqSl8Ec5lVg
-         TScPzPAi3B++pzM3OoqOLDZfUnQ9D2viL1/woikrz2d8Ta3JBSZgm5OO6mapKJbJenDU
-         42FMLKRTVMxNx9tyL/lQir7B443xx28rbXkfsnQbxRGH0yhRoJRJoCwE7Wm7Vhh0nv2a
-         /xVw==
-X-Gm-Message-State: AOAM532xxagw8XRPuoymzG5cmLGjsbHc6w6hVKG3WKw0Wl0nq/UUjtlW
-        dzK8wbpi7QFSuxH26tt9xOecUw==
-X-Google-Smtp-Source: ABdhPJwONcExmyTYHidHN0GxV7kDjejfxFlk6aedYSxZdK1kyQtA0Gq67bmGzc2T92ICVkGj4qFCXw==
-X-Received: by 2002:a1c:df04:: with SMTP id w4mr14508609wmg.3.1605521392276;
-        Mon, 16 Nov 2020 02:09:52 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u23sm20369149wmc.32.2020.11.16.02.09.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 02:09:51 -0800 (PST)
-Date:   Mon, 16 Nov 2020 11:09:49 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
- FNTCHARCNT() in fbcon.c
-Message-ID: <20201116100949.GA401619@phenom.ffwll.local>
-Mail-Followup-To: Peilin Ye <yepeilin.cs@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-References: <cover.1605169912.git.yepeilin.cs@gmail.com>
- <20201113211633.GY401619@phenom.ffwll.local>
- <X68NFzaAuImemnqh@kroah.com>
- <20201114081021.GA11811@PWN>
- <X6/K/S9V7rj2hI5p@kroah.com>
- <X6/L/lE2pA7csBwd@kroah.com>
- <20201114124716.GA12895@PWN>
+        Mon, 16 Nov 2020 05:10:03 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 694F11DCB
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 10:10:01 +0000 (GMT)
+Received: (qmail 19025 invoked from network); 16 Nov 2020 10:10:01 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Nov 2020 10:10:00 -0000
+Date:   Mon, 16 Nov 2020 10:09:57 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v41 10/24] mm: Add 'mprotect' hook to struct
+ vm_operations_struct
+Message-ID: <20201116100957.GM3371@techsingularity.net>
+References: <20201112220135.165028-1-jarkko@kernel.org>
+ <20201112220135.165028-11-jarkko@kernel.org>
+ <20201115173208.GR17076@casper.infradead.org>
+ <96318679-3320-8d7c-d178-7fa34ed11fdf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20201114124716.GA12895@PWN>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <96318679-3320-8d7c-d178-7fa34ed11fdf@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 07:47:16AM -0500, Peilin Ye wrote:
-> On Sat, Nov 14, 2020 at 01:22:22PM +0100, Greg Kroah-Hartman wrote:
-> > On Sat, Nov 14, 2020 at 01:18:06PM +0100, Greg Kroah-Hartman wrote:
-> > > On Sat, Nov 14, 2020 at 03:10:21AM -0500, Peilin Ye wrote:
-> > > > Thanks for reviewing!  Questions about the last patch [5/5] though, it
-> > > > depends on the following assumption:
-> > > > 
-> > > > """
-> > > > For each console `idx`, `vc_cons[idx].d->vc_font.data` and
-> > > > `fb_display[idx].fontdata` always point to the same buffer.
-> > > > """
-> > > > 
-> > > > Is this true?  I think it is true by grepping for `fontdata`.  I also
-> > > > noticed that fbcon.c is using `vc->vc_font.data` and `p->fontdata`
-> > > > interchangeably, see fbcon_get_requirement():
-> > > > 
-> > > > 		vc = vc_cons[fg_console].d;
-> > > > 		[...]
-> > > > 			p = &fb_display[fg_console];
-> > > > 			caps->x = 1 << (vc->vc_font.width - 1);
-> > > > 					^^^^^^^^^^^
-> > > > 			caps->y = 1 << (vc->vc_font.height - 1);
-> > > > 					^^^^^^^^^^^
-> > > > 			caps->len = (p->userfont) ?
-> > > > 				FNTCHARCNT(p->fontdata) : 256;
-> > > > 					   ^^^^^^^^^^^
-> > > > 
-> > > > If it is true, then what is the point of using `fontdata` in `struct
-> > > > fbcon_display`?  Just for the `userfont` flag?  Should we delete
-> > > > `fontdata`, when we no longer need the `userfont` flag?
-> > > 
-> > > Yes, after a quick look, I think your analysis here is correct.  So if
-> > > you can delete that, it would be nice if possible.
-> 
-> I see, at the moment we still need `userfont` for refcount handling, I
-> will try to delete both `fontdata` and `userfont` after refcount is
-> taken care of.
-
-+1 on sunsetting fondata. I think there's a bunch of these in fbcon code,
-because the console subsystem is older than the standard "allow drivers to
-embed the subsystem struct into their own private struct" subclassing
-model. So lots of global arrays indexed by the console id :-/
-
-> > > > In this sense I think [5/5] needs more testing.  Do we have test files
-> > > > for fbcon, or should I try to write some tests from scratch?
-> > > 
-> > > I don't know of any direct tests, I usually just booted into that mode
-> > > and saw if everything looked like it did before.  There must be some
-> > > tool that you can use to change the current font, as it seems to happen
-> > > at boot time on some distros.  I can't remember what it's called at the
-> > > moment...
+On Sun, Nov 15, 2020 at 10:36:51AM -0800, Dave Hansen wrote:
+> On 11/15/20 9:32 AM, Matthew Wilcox wrote:
+> > On Fri, Nov 13, 2020 at 12:01:21AM +0200, Jarkko Sakkinen wrote:
+> >> +++ b/include/linux/mm.h
+> >> @@ -559,6 +559,13 @@ struct vm_operations_struct {
+> >>  	void (*close)(struct vm_area_struct * area);
+> >>  	int (*split)(struct vm_area_struct * area, unsigned long addr);
+> >>  	int (*mremap)(struct vm_area_struct * area);
+> >> +	/*
+> >> +	 * Called by mprotect() to make driver-specific permission
+> >> +	 * checks before mprotect() is finalised.   The VMA must not
+> >> +	 * be modified.  Returns 0 if eprotect() can proceed.
+> >> +	 */
 > > 
-> > Ah, here's a hint:
-> > 	https://wiki.archlinux.org/index.php/Linux_console#Fonts
-> > 
-> > The setfont tool should help you out here.
+> > This is the wrong place for this documentation, and it's absurdly
+> > specific to your implementation.  It should be in
+> > Documentation/filesystems/locking.rst.
 > 
-> Oh, I didn't know about this one.  I'll go experimenting with it,
-> thank you!
+> I'll let you and Mel duke that one out:
+> 
 
-We're also trying to start some kind of test suite for fbdev chardev ioctl
-interface in the gpu test suite. fbcon tests are maybe more related to
-tty/vt, and I have no idea whether anything exists there already.
+I suggested placing the comment there to make it clear what the expected
+semantics of the hook was to reduce the chances of abuse or surprises. The
+hook does not affect locking so Documentation/filesystems/locking.rst
+didn't appear appropriate other than maybe adding a note there
+that it doesn't affect locks. The hook also is not expecting any
+filesystems-specific action that I aware of but a note could be added to
+the effect that filesystems should not need to take special action for it.
+Protections on the filesystem level are for the inode, I can't imagine what
+a filesystem would do with a protection change on the page table level
+but maybe I'm not particularly imaginative today.
 
-But if you want to do some automated testcases for fbcon and there's
-absolutely no other home for them, the gpu test suite might be an option
-of last resort too:
-
-https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#testing-and-validation
-
-Cheers, Daniel
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Mel Gorman
+SUSE Labs
