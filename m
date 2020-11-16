@@ -2,206 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1036E2B4348
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F742B434D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729269AbgKPMEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:04:37 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61500 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726210AbgKPMEg (ORCPT
+        id S1726204AbgKPMGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:06:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728400AbgKPMGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:04:36 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AGC27jV121478;
-        Mon, 16 Nov 2020 07:04:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=pC0Z5DbjDqzptEn3rhV5tiE9IHnrlKXx1UiLvXy9tlY=;
- b=PE8e02HGwFv5YcULxmYwRz5CJzckDTtGbT0u9MCIiP0uXCc7H/kD7HftbppVkXu8ki1q
- 5BKQbuGcA8hUJ3fp4gPxpcILGQekc3CClVABmYY3atpEO8tgE1VEs/4k+LRHzQVT0oOY
- nDW3Dl8oJB9dLLpPRNMjBOsNt9/t45QGu0P+1AgNTWodo+1+85xHZWDveAwXDPVFYSDO
- LEMrfMZapwO3cZnXi8IN18FcdW/CkJZuT0QHSyteJ3n4oW6ieJuqH+FNUqiTqgNJ/5j/
- S/62Nt7hkm+FCv1gDk/3EhUOvLrz7FCHLlX+qILceUSm1N6k4hNs8LGMcXuet308uvXX Kw== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34ujue14b8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 07:04:32 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AGC2vOJ028059;
-        Mon, 16 Nov 2020 12:04:31 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 34t6v8a266-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 16 Nov 2020 12:04:31 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AGC4S786816290
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Nov 2020 12:04:28 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 13D9552050;
-        Mon, 16 Nov 2020 12:04:28 +0000 (GMT)
-Received: from oc6887364776.ibm.com (unknown [9.145.43.134])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 7034152051;
-        Mon, 16 Nov 2020 12:04:27 +0000 (GMT)
-Subject: Re: [PATCH v4 04/27] s390: fix kernel-doc markups
-From:   Vineeth Vijayan <vneethv@linux.vnet.ibm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-References: <cover.1605521731.git.mchehab+huawei@kernel.org>
- <4a9df42dfb68aed6b4a4882f6dccabf00ce932cd.1605521731.git.mchehab+huawei@kernel.org>
- <358a9d80-da01-5d91-71d8-57f453ca8617@linux.vnet.ibm.com>
-Message-ID: <77b297ff-a5ee-9ba5-54d0-1930a78bd6e5@linux.vnet.ibm.com>
-Date:   Mon, 16 Nov 2020 13:04:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 16 Nov 2020 07:06:14 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2875C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:06:12 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id a65so23423529wme.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:06:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=singlestore.com; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=pNMBygHElZXIYaKXkjoCnVxplDArqBg0PPI2Ggh+Aus=;
+        b=LHVV2uCCqMrc4Lu74GkA1/z4l2LfvPWUbVer3w5UkVPDAolRfu9NQuBTDnFNkySSS+
+         fnXCc+JG8Nx3BfCDHrk7sFesavfTgtROnJqYeQIftQvoyVN/eAI62OPbIRjUc0d45u3Y
+         WoB9iPPu8bmp8FtV5x0ehyand+ZafCJyE7x/eOA7WtB/xUwujB1HF2aTZPmavGVfK02q
+         el7b5Ieb9SswEg1bg3TacR94jDmur6VJuZl4wpVTZP7yYMQC4NuadbwGBe31AK8PkuDx
+         rhQL3oUDQz0u+PZAe2fZVrVyvtkoOWQgqIMCC/FQILvjJoJCwryzyyE5k5N/7Yg4NllT
+         O9YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=pNMBygHElZXIYaKXkjoCnVxplDArqBg0PPI2Ggh+Aus=;
+        b=odxLvjoGB6ewJLbk7sYySaXzlH47LyaaUsl73wBBCnnRJ9iJk/8zaRVnSz8fgHrXCn
+         GdwrlbOMYzqNhUes35FRkAsht4AAqWD3EQO1seDZ5FkfrFN2H3L521lClO0URdov3NDZ
+         F9YsT99DYabaLM2dZA+JrFrdfSNtZH3aMK38V/8NMO44M+DijnBj35QOtY3LfFxpCVzr
+         0aAjtmm71jQAjtFgQCAGA+cSZKo7tJXlO288R6OiQdm4XqeeKi/8STq0VrZKIsv3NPLL
+         399y8hO5qaz6fP6xL/0fzzzaXaBXfhgwwNhBC/gJ6D9JvCObqf0VptOeIRjFmm4qtoqo
+         X9TQ==
+X-Gm-Message-State: AOAM530SiAAQkenSu5t7D1QAk4ALtPZiCqo5yhThWRD5XrwfpTfZLkLa
+        EyX+DMxF6KwQOB3rtUUvZXY8jPZm1eauj/c5
+X-Google-Smtp-Source: ABdhPJzBrK2tOFyd2B6AB0bcukVMmSszPabTX7yAQLGC95UO88nHnBg3BhpNgPsMPYfjUSJOysxSdA==
+X-Received: by 2002:a1c:9e0e:: with SMTP id h14mr1354558wme.63.1605528370617;
+        Mon, 16 Nov 2020 04:06:10 -0800 (PST)
+Received: from rdias-suse-pc.lan (bl13-26-148.dsl.telepac.pt. [85.246.26.148])
+        by smtp.gmail.com with ESMTPSA id t13sm23322096wru.67.2020.11.16.04.06.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 04:06:10 -0800 (PST)
+Date:   Mon, 16 Nov 2020 12:06:08 +0000
+From:   Ricardo Dias <rdias@singlestore.com>
+To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, edumazet@google.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5] tcp: fix race condition when creating child sockets from
+ syncookies
+Message-ID: <20201116120608.GA187477@rdias-suse-pc.lan>
 MIME-Version: 1.0
-In-Reply-To: <358a9d80-da01-5d91-71d8-57f453ca8617@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-16_03:2020-11-13,2020-11-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 clxscore=1015 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011160069
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Heiko/Vasily will pick this up and will be part of the s390-tree patchset.
+When the TCP stack is in SYN flood mode, the server child socket is
+created from the SYN cookie received in a TCP packet with the ACK flag
+set.
 
-Regards
-Vineeth
+The child socket is created when the server receives the first TCP
+packet with a valid SYN cookie from the client. Usually, this packet
+corresponds to the final step of the TCP 3-way handshake, the ACK
+packet. But is also possible to receive a valid SYN cookie from the
+first TCP data packet sent by the client, and thus create a child socket
+from that SYN cookie.
 
+Since a client socket is ready to send data as soon as it receives the
+SYN+ACK packet from the server, the client can send the ACK packet (sent
+by the TCP stack code), and the first data packet (sent by the userspace
+program) almost at the same time, and thus the server will equally
+receive the two TCP packets with valid SYN cookies almost at the same
+instant.
 
-On 11/16/20 11:38 AM, Vineeth Vijayan wrote:
-> Thank you very much for the fix.
->
-> Reviewed-by: Vineeth Vijayan <vneethv@linux.ibm.com>
->
->
->
-> On 11/16/20 11:18 AM, Mauro Carvalho Chehab wrote:
->> fix one typo:
->>     ccw driver -> ccw_driver
->>
->> and one function rename.
->>
->> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->> ---
->>   arch/s390/include/asm/ccwdev.h | 2 +-
->>   arch/s390/include/asm/cio.h    | 2 +-
->>   2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/s390/include/asm/ccwdev.h 
->> b/arch/s390/include/asm/ccwdev.h
->> index bf605e1fcf6a..0495ac635ed5 100644
->> --- a/arch/s390/include/asm/ccwdev.h
->> +++ b/arch/s390/include/asm/ccwdev.h
->> @@ -100,41 +100,41 @@ struct ccw_device {
->>    */
->>   #define PE_NONE                0x0
->>   #define PE_PATH_GONE            0x1 /* A path is no longer 
->> available. */
->>   #define PE_PATH_AVAILABLE        0x2 /* A path has become available 
->> and
->>                              was successfully verified. */
->>   #define PE_PATHGROUP_ESTABLISHED    0x4 /* A pathgroup was reset 
->> and had
->>                              to be established again. */
->>   #define PE_PATH_FCES_EVENT        0x8 /* The FCES Status of a path has
->>                            * changed. */
->>     /*
->>    * Possible CIO actions triggered by the unit check handler.
->>    */
->>   enum uc_todo {
->>       UC_TODO_RETRY,
->>       UC_TODO_RETRY_ON_NEW_PATH,
->>       UC_TODO_STOP
->>   };
->>     /**
->> - * struct ccw driver - device driver for channel attached devices
->> + * struct ccw_driver - device driver for channel attached devices
->>    * @ids: ids supported by this driver
->>    * @probe: function called on probe
->>    * @remove: function called on remove
->>    * @set_online: called when setting device online
->>    * @set_offline: called when setting device offline
->>    * @notify: notify driver of device state changes
->>    * @path_event: notify driver of channel path events
->>    * @shutdown: called at device shutdown
->>    * @prepare: prepare for pm state transition
->>    * @complete: undo work done in @prepare
->>    * @freeze: callback for freezing during hibernation snapshotting
->>    * @thaw: undo work done in @freeze
->>    * @restore: callback for restoring after hibernation
->>    * @uc_handler: callback for unit check handler
->>    * @driver: embedded device driver structure
->>    * @int_class: interruption class to use for accounting interrupts
->>    */
->>   struct ccw_driver {
->>       struct ccw_device_id *ids;
->>       int (*probe) (struct ccw_device *);
->> diff --git a/arch/s390/include/asm/cio.h b/arch/s390/include/asm/cio.h
->> index e36cb67d2441..ac02df906cae 100644
->> --- a/arch/s390/include/asm/cio.h
->> +++ b/arch/s390/include/asm/cio.h
->> @@ -312,41 +312,41 @@ struct node_descriptor {
->>   /* Device did not respond in time. */
->>   #define CIO_BOXED      0x0010
->>     /**
->>    * struct ccw_dev_id - unique identifier for ccw devices
->>    * @ssid: subchannel set id
->>    * @devno: device number
->>    *
->>    * This structure is not directly based on any hardware structure. The
->>    * hardware identifies a device by its device number and its 
->> subchannel,
->>    * which is in turn identified by its id. In order to get a unique 
->> identifier
->>    * for ccw devices across subchannel sets, @struct ccw_dev_id has been
->>    * introduced.
->>    */
->>   struct ccw_dev_id {
->>       u8 ssid;
->>       u16 devno;
->>   };
->>     /**
->> - * ccw_device_id_is_equal() - compare two ccw_dev_ids
->> + * ccw_dev_id_is_equal() - compare two ccw_dev_ids
->>    * @dev_id1: a ccw_dev_id
->>    * @dev_id2: another ccw_dev_id
->>    * Returns:
->>    *  %1 if the two structures are equal field-by-field,
->>    *  %0 if not.
->>    * Context:
->>    *  any
->>    */
->>   static inline int ccw_dev_id_is_equal(struct ccw_dev_id *dev_id1,
->>                         struct ccw_dev_id *dev_id2)
->>   {
->>       if ((dev_id1->ssid == dev_id2->ssid) &&
->>           (dev_id1->devno == dev_id2->devno))
->>           return 1;
->>       return 0;
->>   }
->>     /**
->>    * pathmask_to_pos() - find the position of the left-most bit in a 
->> pathmask
->>    * @mask: pathmask with at least one bit set
+When such event happens, the TCP stack code has a race condition that
+occurs between the momement a lookup is done to the established
+connections hashtable to check for the existence of a connection for the
+same client, and the moment that the child socket is added to the
+established connections hashtable. As a consequence, this race condition
+can lead to a situation where we add two child sockets to the
+established connections hashtable and deliver two sockets to the
+userspace program to the same client.
+
+This patch fixes the race condition by checking if an existing child
+socket exists for the same client when we are adding the second child
+socket to the established connections socket. If an existing child
+socket exists, we return that socket and use it to process the TCP
+packet received, and discard the second child socket to the same client.
+
+Signed-off-by: Ricardo Dias <rdias@singlestore.com>
+---
+ include/net/inet_hashtables.h   |  4 +--
+ net/dccp/ipv4.c                 |  2 +-
+ net/dccp/ipv6.c                 |  2 +-
+ net/ipv4/inet_connection_sock.c |  2 +-
+ net/ipv4/inet_hashtables.c      | 64 ++++++++++++++++++++++++++++-----
+ net/ipv4/syncookies.c           |  5 ++-
+ net/ipv4/tcp_ipv4.c             |  9 ++++-
+ net/ipv6/tcp_ipv6.c             | 16 ++++++++-
+ 8 files changed, 88 insertions(+), 16 deletions(-)
+
+diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
+index 92560974ea67..b0abc4dd6d49 100644
+--- a/include/net/inet_hashtables.h
++++ b/include/net/inet_hashtables.h
+@@ -247,8 +247,8 @@ void inet_hashinfo2_init(struct inet_hashinfo *h, const char *name,
+ 			 unsigned long high_limit);
+ int inet_hashinfo2_init_mod(struct inet_hashinfo *h);
+ 
+-bool inet_ehash_insert(struct sock *sk, struct sock *osk);
+-bool inet_ehash_nolisten(struct sock *sk, struct sock *osk);
++bool inet_ehash_insert(struct sock *sk, struct sock *osk, struct sock **esk);
++bool inet_ehash_nolisten(struct sock *sk, struct sock *osk, struct sock **esk);
+ int __inet_hash(struct sock *sk, struct sock *osk);
+ int inet_hash(struct sock *sk);
+ void inet_unhash(struct sock *sk);
+diff --git a/net/dccp/ipv4.c b/net/dccp/ipv4.c
+index 9c28c8251125..098bae35ab76 100644
+--- a/net/dccp/ipv4.c
++++ b/net/dccp/ipv4.c
+@@ -427,7 +427,7 @@ struct sock *dccp_v4_request_recv_sock(const struct sock *sk,
+ 
+ 	if (__inet_inherit_port(sk, newsk) < 0)
+ 		goto put_and_exit;
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), NULL);
+ 	if (*own_req)
+ 		ireq->ireq_opt = NULL;
+ 	else
+diff --git a/net/dccp/ipv6.c b/net/dccp/ipv6.c
+index ef4ab28cfde0..78ee1b5acf1f 100644
+--- a/net/dccp/ipv6.c
++++ b/net/dccp/ipv6.c
+@@ -533,7 +533,7 @@ static struct sock *dccp_v6_request_recv_sock(const struct sock *sk,
+ 		dccp_done(newsk);
+ 		goto out;
+ 	}
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), NULL);
+ 	/* Clone pktoptions received with SYN, if we own the req */
+ 	if (*own_req && ireq->pktopts) {
+ 		newnp->pktoptions = skb_clone(ireq->pktopts, GFP_ATOMIC);
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index b457dd2d6c75..df26489e4f6c 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -787,7 +787,7 @@ static void reqsk_queue_hash_req(struct request_sock *req,
+ 	timer_setup(&req->rsk_timer, reqsk_timer_handler, TIMER_PINNED);
+ 	mod_timer(&req->rsk_timer, jiffies + timeout);
+ 
+-	inet_ehash_insert(req_to_sk(req), NULL);
++	inet_ehash_insert(req_to_sk(req), NULL, NULL);
+ 	/* before letting lookups find us, make sure all req fields
+ 	 * are committed to memory and refcnt initialized.
+ 	 */
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 239e54474b65..c1eeffd14b59 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -20,6 +20,9 @@
+ #include <net/addrconf.h>
+ #include <net/inet_connection_sock.h>
+ #include <net/inet_hashtables.h>
++#if IS_ENABLED(CONFIG_IPV6)
++#include <net/inet6_hashtables.h>
++#endif
+ #include <net/secure_seq.h>
+ #include <net/ip.h>
+ #include <net/tcp.h>
+@@ -510,14 +513,17 @@ static u32 inet_sk_port_offset(const struct sock *sk)
+ 					  inet->inet_dport);
+ }
+ 
+-/* insert a socket into ehash, and eventually remove another one
+- * (The another one can be a SYN_RECV or TIMEWAIT
++/* Insert a socket into ehash, and eventually remove another one
++ * (The another one can be a SYN_RECV or TIMEWAIT)
++ * If an existing socket already exists, it returns that socket
++ * through the esk parameter.
+  */
+-bool inet_ehash_insert(struct sock *sk, struct sock *osk)
++bool inet_ehash_insert(struct sock *sk, struct sock *osk, struct sock **esk)
+ {
+ 	struct inet_hashinfo *hashinfo = sk->sk_prot->h.hashinfo;
+ 	struct hlist_nulls_head *list;
+ 	struct inet_ehash_bucket *head;
++	struct sock *_esk;
+ 	spinlock_t *lock;
+ 	bool ret = true;
+ 
+@@ -532,16 +538,58 @@ bool inet_ehash_insert(struct sock *sk, struct sock *osk)
+ 	if (osk) {
+ 		WARN_ON_ONCE(sk->sk_hash != osk->sk_hash);
+ 		ret = sk_nulls_del_node_init_rcu(osk);
++	} else if (esk) {
++		const struct hlist_nulls_node *node;
++		struct net *net = sock_net(sk);
++		const int dif = sk->sk_bound_dev_if;
++		const int sdif = sk->sk_bound_dev_if;
++
++		INET_ADDR_COOKIE(acookie, sk->sk_daddr, sk->sk_rcv_saddr);
++		const __portpair ports = INET_COMBINED_PORTS(sk->sk_dport,
++							     sk->sk_num);
++
++		sk_nulls_for_each_rcu(_esk, node, list) {
++			if (_esk->sk_hash != sk->sk_hash)
++				continue;
++			if (sk->sk_family == AF_INET) {
++				if (unlikely(INET_MATCH(_esk, net, acookie,
++							sk->sk_daddr,
++							sk->sk_rcv_saddr,
++							ports, dif, sdif))) {
++					refcount_inc(&_esk->sk_refcnt);
++					goto found;
++				}
++			}
++#if IS_ENABLED(CONFIG_IPV6)
++			else if (sk->sk_family == AF_INET6) {
++				if (unlikely(INET6_MATCH(_esk, net,
++							 &sk->sk_v6_daddr,
++							 &sk->sk_v6_rcv_saddr,
++							 ports, dif, sdif))) {
++					refcount_inc(&_esk->sk_refcnt);
++					goto found;
++				}
++			}
++#endif
++		}
++
+ 	}
++	_esk = NULL;
+ 	if (ret)
+ 		__sk_nulls_add_node_rcu(sk, list);
++
++found:
+ 	spin_unlock(lock);
++	if (_esk) {
++		*esk = _esk;
++		ret = false;
++	}
+ 	return ret;
+ }
+ 
+-bool inet_ehash_nolisten(struct sock *sk, struct sock *osk)
++bool inet_ehash_nolisten(struct sock *sk, struct sock *osk, struct sock **esk)
+ {
+-	bool ok = inet_ehash_insert(sk, osk);
++	bool ok = inet_ehash_insert(sk, osk, esk);
+ 
+ 	if (ok) {
+ 		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
+@@ -585,7 +633,7 @@ int __inet_hash(struct sock *sk, struct sock *osk)
+ 	int err = 0;
+ 
+ 	if (sk->sk_state != TCP_LISTEN) {
+-		inet_ehash_nolisten(sk, osk);
++		inet_ehash_nolisten(sk, osk, NULL);
+ 		return 0;
+ 	}
+ 	WARN_ON(!sk_unhashed(sk));
+@@ -681,7 +729,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 		tb = inet_csk(sk)->icsk_bind_hash;
+ 		spin_lock_bh(&head->lock);
+ 		if (sk_head(&tb->owners) == sk && !sk->sk_bind_node.next) {
+-			inet_ehash_nolisten(sk, NULL);
++			inet_ehash_nolisten(sk, NULL, NULL);
+ 			spin_unlock_bh(&head->lock);
+ 			return 0;
+ 		}
+@@ -760,7 +808,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 	inet_bind_hash(sk, tb, port);
+ 	if (sk_unhashed(sk)) {
+ 		inet_sk(sk)->inet_sport = htons(port);
+-		inet_ehash_nolisten(sk, (struct sock *)tw);
++		inet_ehash_nolisten(sk, (struct sock *)tw, NULL);
+ 	}
+ 	if (tw)
+ 		inet_twsk_bind_unhash(tw, hinfo);
+diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+index e03756631541..c4bb895085f0 100644
+--- a/net/ipv4/syncookies.c
++++ b/net/ipv4/syncookies.c
+@@ -208,7 +208,7 @@ struct sock *tcp_get_cookie_sock(struct sock *sk, struct sk_buff *skb,
+ 
+ 	child = icsk->icsk_af_ops->syn_recv_sock(sk, skb, req, dst,
+ 						 NULL, &own_req);
+-	if (child) {
++	if (child && own_req) {
+ 		refcount_set(&req->rsk_refcnt, 1);
+ 		tcp_sk(child)->tsoffset = tsoff;
+ 		sock_rps_save_rxhash(child, skb);
+@@ -223,6 +223,9 @@ struct sock *tcp_get_cookie_sock(struct sock *sk, struct sk_buff *skb,
+ 
+ 		bh_unlock_sock(child);
+ 		sock_put(child);
++	}  else if (child && !own_req) {
++		__reqsk_free(req);
++		return child;
+ 	}
+ 	__reqsk_free(req);
+ 
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 592c73962723..875b5310fc25 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1501,6 +1501,7 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
+ 	int l3index;
+ #endif
+ 	struct ip_options_rcu *inet_opt;
++	struct sock *esk = NULL;
+ 
+ 	if (sk_acceptq_is_full(sk))
+ 		goto exit_overflow;
+@@ -1565,11 +1566,17 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
+ 
+ 	if (__inet_inherit_port(sk, newsk) < 0)
+ 		goto put_and_exit;
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), &esk);
+ 	if (likely(*own_req)) {
+ 		tcp_move_syn(newtp, req);
+ 		ireq->ireq_opt = NULL;
+ 	} else {
++		if (!req_unhash && esk) {
++			/* This code path should only be executed in the
++			 * syncookie case only
++			 */
++			newsk = esk;
++		}
+ 		newinet->inet_opt = NULL;
+ 	}
+ 	return newsk;
+diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+index 305870a72352..dd64ec3b8a43 100644
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -1190,6 +1190,7 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 	struct inet_sock *newinet;
+ 	struct tcp_sock *newtp;
+ 	struct sock *newsk;
++	struct sock *esk = NULL;
+ #ifdef CONFIG_TCP_MD5SIG
+ 	struct tcp_md5sig_key *key;
+ 	int l3index;
+@@ -1206,6 +1207,12 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 
+ 		if (!newsk)
+ 			return NULL;
++		else if (!req_unhash && !own_req) {
++			/* We're returning an existing child socket, probably
++			 * created by a previous syncookie ACK.
++			 */
++			return newsk;
++		}
+ 
+ 		inet_sk(newsk)->pinet6 = tcp_inet6_sk(newsk);
+ 
+@@ -1359,7 +1366,7 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 		tcp_done(newsk);
+ 		goto out;
+ 	}
+-	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash));
++	*own_req = inet_ehash_nolisten(newsk, req_to_sk(req_unhash), &esk);
+ 	if (*own_req) {
+ 		tcp_move_syn(newtp, req);
+ 
+@@ -1374,6 +1381,13 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+ 				skb_set_owner_r(newnp->pktoptions, newsk);
+ 			}
+ 		}
++	} else {
++		if (!req_unhash && esk) {
++			/* This code path should only be executed in the
++			 * syncookie case only
++			 */
++			newsk = esk;
++		}
+ 	}
+ 
+ 	return newsk;
+-- 
+2.25.1
+
