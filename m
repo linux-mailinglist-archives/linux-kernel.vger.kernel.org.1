@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD632B508A
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F8B2B508E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgKPTHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:07:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725879AbgKPTHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:07:53 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 394732225B;
-        Mon, 16 Nov 2020 19:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605553672;
-        bh=yosXMLmSKHZhkAgd5D8vJ5A8qZi+NPfl8uhqpTpOj6k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nqKf9OldNsSdey8/QJeb1luOcd4HwBPSIVYjTLj4rB/CEnWdloMS9AvJgcRqaIgM2
-         mgirUWUsENniK2QwP3AomrpBweLg3Y6wSN+dQ54U4OIrdm5kUuW0WVBaLQs4D8sLIU
-         13UQXjlpCrGXInaBO3eJFoqP6K57yNj+VU9/tw68=
-Date:   Mon, 16 Nov 2020 19:07:33 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org, vigneshr@ti.com, p.yadav@ti.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com
-Subject: Re: [PATCH v7 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to
- cadence-quadspi.yaml
-Message-ID: <20201116190733.GF4739@sirena.org.uk>
-References: <20201116031003.19062-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201116031003.19062-6-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1728908AbgKPTKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:10:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgKPTKp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 14:10:45 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7240C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:10:45 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id 35so4704122ple.12
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:10:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=DGgJquhYYV+Tzh8ZT7w+8c+Lo4mKYMrSfopaj2Mm3nM=;
+        b=yF8JpZDrKkv9JICmK1vHZzm4fElvqZ4erpbXNJESXLtUZJXyjhTHjDe7GReFmryXAc
+         BCGRKKOFkWPun2+ghcwXfq44o1e1/9d6qwZ103iUN0GeLZnzHU5YTto8mAXs03QGBUl1
+         v1X16aHLn9RTF8OgGlYqaJ1DBWhurxAiAc8GqgdTRRQATMhCEH52o++qLHs/erZQV5FD
+         XdDi5NofFzy33vjBxiFVCvu1Z5eWRyF0YX1ShlTaFODxuwFYIK3BA0QiyROMT3rLi0g0
+         CR4T7BYuAMX80Nhul01Ut0e8XrOAnGjmu+PoIi8mS5e13s78eKSd8MsqWzt5yeFQLtj7
+         wfxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=DGgJquhYYV+Tzh8ZT7w+8c+Lo4mKYMrSfopaj2Mm3nM=;
+        b=DVKi7HLlqxXb9Kn/Xmm1Zwn3la5v3i+G43mbSHOklM/wN+1eQ7l9AUsgBuxI7YQjed
+         kVVmI/bO9/u6X2ve8s2HqDtgKwMX8E48rGUVA1oD+hPH0HIiiI4rvD/qj3FrQSzhG8AX
+         /w110gGqCkqcEhl19Eg64/aflIl92WAsXc6aKd8fyn9ShkF5n/jZND0VYih7NIxlMx5E
+         ++NXBp0/YsMeLJoWf+pypxZIVL/Hp9ABR4jYPkKgrkIbInYB3g/PVBXMvB3on5eixeLJ
+         srukUkulxHFRQOc+SR2+iJemKyFfBeiRroNUZlu38JxE0buJu6Fvmg2ZbTROlLGNk0Vl
+         paYg==
+X-Gm-Message-State: AOAM533NwWWADFRUEQmK64sDlDSuCcJg90uo7gi8eIjfE5CLpuPszc9R
+        tvKAJ1r2BDIqG5mYPbpHhv9Ok60Q2cLjYQ==
+X-Google-Smtp-Source: ABdhPJxFw/0Wd5j5UG+u3JOvfHbApC9lykSr3UwfR5lLoS0xR57D19MeWyytsAeWu2fLjcTZQbv3CQ==
+X-Received: by 2002:a17:902:c016:b029:d7:1a0:7cf0 with SMTP id v22-20020a170902c016b02900d701a07cf0mr13618172plx.64.1605553844604;
+        Mon, 16 Nov 2020 11:10:44 -0800 (PST)
+Received: from debian ([122.174.144.192])
+        by smtp.gmail.com with ESMTPSA id p15sm143488pjv.44.2020.11.16.11.10.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 11:10:44 -0800 (PST)
+Message-ID: <2f3d616bea4fca2f47f8db0564bbcc17169f8cfb.camel@rajagiritech.edu.in>
+Subject: Re: checking for "config" file existence.
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Date:   Tue, 17 Nov 2020 00:40:40 +0530
+In-Reply-To: <d6e1e346-ff95-74ef-7f43-1d2468d5330c@linuxfoundation.org>
+References: <2ea637f38be0d03d0e0c545a6d12f36217cededc.camel@rajagiritech.edu.in>
+         <d6e1e346-ff95-74ef-7f43-1d2468d5330c@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
-Content-Disposition: inline
-In-Reply-To: <20201116031003.19062-6-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Cookie: Immanuel doesn't pun, he Kant.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2020-11-16 at 11:32 -0700, Shuah Khan wrote:
+> On 11/12/20 10:40 AM, Jeffrin Jose T wrote:
+> > hello,
+> > 
+> > i wrote a  small program to check for the existence of "config"
+> > files
+> > for testing projects under kselftest framework.
+> > 
+> > chmod 755 test_config.py
+> > This file should be located in "tools/testing/selftests"
+> > This can be run as "./test_config.py"
+> > 
+> Why do we need a dedicated script when you can do it with:
+> 
+> cd tools/testing/selftests; find . -name config
+> 
+> I see that your script also prints if config doesn't exist.
+> It is not a failure not have config as config is necessary
+> only when a test has config option dependencies.
+> 
+> What does this script attempting to solve?
 
---eDB11BtaWSyaBkpc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+according to what  you said  this script may not be necessary
+thanks for the explanation :)
 
-On Mon, Nov 16, 2020 at 11:10:02AM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel=
-=2Ecom>
->=20
-> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
-> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
 
-As previously and repeatedly requested please make any conversions to
-YAML the *final* thing in serieses so that issues with the conversion do
-not hold up other development.
+-- 
+software engineer
+rajagiri school of engineering and technology - autonomous
 
---eDB11BtaWSyaBkpc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+yzfUACgkQJNaLcl1U
-h9Db5Af7BSeCmDzgNuAKNa2DAq6jwsMGG9DCDDfsoV8mVxxj88/2ctalltiwpuki
-WiVDc6AuNbqSQhFOWzh5kI1zqNra9A9s1YP8Z69Uld1B/ZrqL5LDr9a9xgWBvsE7
-Co768+PNi5fp1x2hoiFF1MgAUOMsGmKkALVxborYTqB4f3/CC9SJYh94yxYd2dRD
-wdtvJQr4gmGKdwhuhjwKcl+m5dyQ9uI9zWZZFmwkCXRzaW27ndw83utGRPd4Z6ht
-ExGxovoAX/V+HX/sI4133h+F3emUKGJi0c3jT5GLZPRgFDXVSx/B04FBzfn2qlE+
-uleRMfluu5LB/PQJzQrNCFNzeZSYHQ==
-=Hmhj
------END PGP SIGNATURE-----
-
---eDB11BtaWSyaBkpc--
