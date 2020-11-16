@@ -2,440 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2BD2B4A49
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1BC2B4A4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731675AbgKPQGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730648AbgKPQGm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:06:42 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779E7C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:06:42 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id l11so13794508lfg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:06:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eBI49tM4v1Bt7eLVCOqa1vopmhcAU6RnnYuW/UNt060=;
-        b=IrjIDB8vowk449uWh6E/266sIEKw0dGMFTK3piPEZkPqnHTniBV0eBaq9c6z2XL6Nk
-         ZLSlikntZzep/y5apbq+poU3quWwAfsH3NweRvq2j5ZJI1eHEUjBBX3IiVR3t59rUk1m
-         OH8/djLdprekzHaJuAJrKJl9nGLb/vRe5JhQsyvTNecPFw4MbMPGduqnN15IllZcTplh
-         y83olIpWE2P/Alt1nVPW0RSW2CfEmqcdbyI1a54jwWxpfBMdbk+nU8In5xPBSTgogc6q
-         cR47irLghuajqvSQKppLEQPLzl5Weo4atf0icl41W45PwtGtxyqTMUCHHhIb6N/fAHSC
-         U9lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eBI49tM4v1Bt7eLVCOqa1vopmhcAU6RnnYuW/UNt060=;
-        b=RRzwcOzAjF/+Vm2ELzXr4MKJMbl05cIvj0bsvD68M2dYUKX3t2BBhf+swlWQgw/RXD
-         Ff8UD10jMlgvbD1nlsRWStZACxVjgPmmYotwEjZ6VS6nOog9x3EAdViKLTcAUQGXLngP
-         txCDiw+s6gIlWWqSherOEcxqLNkJKoEvzN0fJNtoRqMlAVBHhOU71h1Pdb6FyWk/DfiM
-         AsE2RPOzheudtPOvwj3/rXpkV5D10iFtxtXuaju+XjroxAbY6T7ADSlv1KZf4Q/BrkTN
-         UQiqmvpYCdMPKCvNiVnbQCxWafRoiDYm2As0MXYMAxBMU5vunzinDZ9A2f3VzqBLME0a
-         tsqQ==
-X-Gm-Message-State: AOAM531XHCp6gNH30ERoBGIoLO737VP9h1P8yPMM1WrtfBKw787Okyxf
-        rNC6BpjIC3gT+GzL7CwfO4p80g==
-X-Google-Smtp-Source: ABdhPJyf85Zc/HOeEe2M/da3ODjNWj/3qMNCyaJUeKRlcFp6y/ksWYXK9VX8UMBURe0K2OgHkiNQPQ==
-X-Received: by 2002:a19:5f0b:: with SMTP id t11mr39565lfb.326.1605542799939;
-        Mon, 16 Nov 2020 08:06:39 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id o3sm2775331lfo.217.2020.11.16.08.06.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 08:06:39 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 161D8100F5E; Mon, 16 Nov 2020 19:06:38 +0300 (+03)
-Date:   Mon, 16 Nov 2020 19:06:38 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Yang Shi <shy828301@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>
-Subject: Re: [RFC PATCH 1/6] mm: huge_memory: add new debugfs interface to
- trigger split huge page on any page range.
-Message-ID: <20201116160638.po3euk3agkt4ragx@box>
-References: <20201111204008.21332-1-zi.yan@sent.com>
- <20201111204008.21332-2-zi.yan@sent.com>
+        id S1731687AbgKPQHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:07:08 -0500
+Received: from mga05.intel.com ([192.55.52.43]:51557 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731679AbgKPQHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:07:07 -0500
+IronPort-SDR: ezxLIDrI/T5g/EouNTaVyCS0C7AvqK+3SusOEUCsNzccTjzwK7+U9pLIr/DirkruZyUMkFX1W9
+ dTLlPKgkngkQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="255479093"
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="255479093"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 08:07:04 -0800
+IronPort-SDR: JGfEfNL+C3Clpyfm46g4KDNe1XzwvHA/E1Ua5W/N+tXZ/oPeAsICfQNhOqalHvCXiKMfdiE2gn
+ V2XBHDyc0nnw==
+X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
+   d="scan'208";a="533463212"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 08:07:02 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1keh2y-0076Iy-NC; Mon, 16 Nov 2020 18:08:04 +0200
+Date:   Mon, 16 Nov 2020 18:08:04 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Claudius Heine <ch@denx.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Hahn <johannes-hahn@siemens.com>,
+        "Zeh, Werner" <werner.zeh@siemens.com>
+Subject: Re: [PATCH v2 2/3] rtc: rx6110: add ACPI bindings to I2C
+Message-ID: <20201116160804.GB4077@smile.fi.intel.com>
+References: <20201112130734.331094-1-ch@denx.de>
+ <20201112130734.331094-3-ch@denx.de>
+ <20201116144631.GB1689012@smile.fi.intel.com>
+ <20201116163024.74c767b6@md1za8fc.ad001.siemens.net>
+ <20201116160509.GA4077@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111204008.21332-2-zi.yan@sent.com>
+In-Reply-To: <20201116160509.GA4077@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 03:40:03PM -0500, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
+On Mon, Nov 16, 2020 at 06:05:09PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 16, 2020 at 04:30:24PM +0100, Henning Schild wrote:
+> > Am Mon, 16 Nov 2020 16:46:31 +0200
+> > schrieb Andy Shevchenko <andriy.shevchenko@intel.com>:
+> > 
+> > > On Thu, Nov 12, 2020 at 02:07:33PM +0100, Claudius Heine wrote:
+> > > > From: Johannes Hahn <johannes-hahn@siemens.com>
+> > > > 
+> > > > This allows the RX6110 driver to be automatically assigned to the
+> > > > right device on the I2C bus.  
+> > > 
+> > > Before adding new ACPI ID, can you provide an evidence (either from
+> > > vendor of the component, or a real snapshot of DSDT from device on
+> > > market) that this is real ID?
+> > > 
+> > > Before that happens, NAK.
+> > > 
+> > > P.S. Seems to me that this is kinda cargo cult patch because proposed
+> > > ID is against ACPI and PNP registry and ACPI specification.
+> > 
+> > In fact we pushed it in coreboot and Linux at the same time.
+> > 
+> > https://review.coreboot.org/c/coreboot/+/47235
+> > 
+> > That is the evidence. But in case this is wrong we can probably still
+> > change coreboot, even though the patches have been merged there already.
 > 
-> Huge pages in the process with the given pid and virtual address range
-> are split. It is used to test split huge page function. In addition,
-> a testing program is added to tools/testing/selftests/vm to utilize the
-> interface by splitting PMD THPs.
+> Yes, first of all you must follow ACPI and PNP registry. You may use your
+> Google vendor ID for that (IIRC you have two of them). Ideally you need to
+> convince Seiko Epson to do the right thing.
+
+JFYI: According to the registry [1] they have their own vendor ID
+
+SEIKO EPSON CORPORATION	SEC	11/29/1996
+
+[1]: https://www.uefi.org/pnp_id_list
+
+> > Maybe you can go into detail where you see the violations and maybe
+> > even suggest fixes that come to mind.
 > 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->  mm/huge_memory.c                              |  98 +++++++++++
->  mm/internal.h                                 |   1 +
->  mm/migrate.c                                  |   2 +-
->  tools/testing/selftests/vm/Makefile           |   1 +
->  .../selftests/vm/split_huge_page_test.c       | 161 ++++++++++++++++++
->  5 files changed, 262 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/vm/split_huge_page_test.c
+> Please, read ACPI specification. In particular chapters 6.1.2 "_CID
+> (Compatible ID)", 6.1.5 "_HID (Hardware ID)". The latter clarifies
+> the rules used to define an ID. Note, chapter 6.1.2 uses in particular
+> "A valid HID value".
 > 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 207ebca8c654..c4fead5ead31 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -7,6 +7,7 @@
->  
->  #include <linux/mm.h>
->  #include <linux/sched.h>
-> +#include <linux/sched/mm.h>
->  #include <linux/sched/coredump.h>
->  #include <linux/sched/numa_balancing.h>
->  #include <linux/highmem.h>
-> @@ -2935,10 +2936,107 @@ static int split_huge_pages_set(void *data, u64 val)
->  DEFINE_DEBUGFS_ATTRIBUTE(split_huge_pages_fops, NULL, split_huge_pages_set,
->  		"%llu\n");
->  
-> +static ssize_t split_huge_pages_in_range_pid_write(struct file *file,
-> +		const char __user *buf, size_t count, loff_t *ppops)
-> +{
-> +	static DEFINE_MUTEX(mutex);
-> +	ssize_t ret;
-> +	char input_buf[80]; /* hold pid, start_vaddr, end_vaddr */
-> +	int pid;
-> +	unsigned long vaddr_start, vaddr_end, addr;
-> +	nodemask_t task_nodes;
-> +	struct mm_struct *mm;
-> +
-> +	ret = mutex_lock_interruptible(&mutex);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = -EFAULT;
-> +
-> +	memset(input_buf, 0, 80);
-> +	if (copy_from_user(input_buf, buf, min_t(size_t, count, 80)))
-> +		goto out;
-> +
-> +	input_buf[80] = '\0';
-
-Hm. Out-of-buffer access?
-
-> +	ret = sscanf(input_buf, "%d,%lx,%lx", &pid, &vaddr_start, &vaddr_end);
-
-Why hex without 0x prefix?
-
-> +	if (ret != 3) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +	vaddr_start &= PAGE_MASK;
-> +	vaddr_end &= PAGE_MASK;
-> +
-> +	ret = strlen(input_buf);
-> +	pr_debug("split huge pages in pid: %d, vaddr: [%lx - %lx]\n",
-> +		 pid, vaddr_start, vaddr_end);
-> +
-> +	mm = find_mm_struct(pid, &task_nodes);
-
-I don't follow why you need nodemask.
-
-> +	if (IS_ERR(mm)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	mmap_read_lock(mm);
-> +	for (addr = vaddr_start; addr < vaddr_end;) {
-> +		struct vm_area_struct *vma = find_vma(mm, addr);
-> +		unsigned int follflags;
-> +		struct page *page;
-> +
-> +		if (!vma || addr < vma->vm_start || !vma_migratable(vma))
-> +			break;
-> +
-> +		/* FOLL_DUMP to ignore special (like zero) pages */
-> +		follflags = FOLL_GET | FOLL_DUMP;
-> +		page = follow_page(vma, addr, follflags);
-> +
-> +		if (IS_ERR(page))
-> +			break;
-> +		if (!page)
-> +			break;
-> +
-> +		if (!is_transparent_hugepage(page))
-> +			goto next;
-> +
-> +		if (!can_split_huge_page(page, NULL))
-> +			goto next;
-> +
-> +		if (!trylock_page(page))
-> +			goto next;
-> +
-> +		addr += page_size(page) - PAGE_SIZE;
-
-Who said it was mapped as huge? mremap() allows to construct an PTE page
-table that filled with PTE-mapped THPs, each of them distinct.
-
-> +
-> +		/* reset addr if split fails */
-> +		if (split_huge_page(page))
-> +			addr -= (page_size(page) - PAGE_SIZE);
-> +
-> +		unlock_page(page);
-> +next:
-> +		/* next page */
-> +		addr += page_size(page);
-
-Isn't it the second time if split_huge_page() succeed.
-
-> +		put_page(page);
-> +	}
-> +	mmap_read_unlock(mm);
-> +
-> +
-> +	mmput(mm);
-> +out:
-> +	mutex_unlock(&mutex);
-> +	return ret;
-> +
-> +}
-> +
-> +static const struct file_operations split_huge_pages_in_range_pid_fops = {
-> +	.owner	 = THIS_MODULE,
-> +	.write	 = split_huge_pages_in_range_pid_write,
-> +	.llseek  = no_llseek,
-> +};
-> +
->  static int __init split_huge_pages_debugfs(void)
->  {
->  	debugfs_create_file("split_huge_pages", 0200, NULL, NULL,
->  			    &split_huge_pages_fops);
-> +	debugfs_create_file("split_huge_pages_in_range_pid", 0200, NULL, NULL,
-> +			    &split_huge_pages_in_range_pid_fops);
->  	return 0;
->  }
->  late_initcall(split_huge_pages_debugfs);
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 3ea43642b99d..fd841a38830f 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -624,4 +624,5 @@ struct migration_target_control {
->  
->  bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end);
->  void page_cache_free_page(struct address_space *mapping, struct page *page);
-> +struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes);
->  #endif	/* __MM_INTERNAL_H */
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index a50bbb0e029b..e35654d1087d 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1851,7 +1851,7 @@ static int do_pages_stat(struct mm_struct *mm, unsigned long nr_pages,
->  	return nr_pages ? -EFAULT : 0;
->  }
->  
-> -static struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes)
-> +struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes)
->  {
->  	struct task_struct *task;
->  	struct mm_struct *mm;
-> diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-> index 62fb15f286ee..d9ead0cdd3e9 100644
-> --- a/tools/testing/selftests/vm/Makefile
-> +++ b/tools/testing/selftests/vm/Makefile
-> @@ -42,6 +42,7 @@ TEST_GEN_FILES += on-fault-limit
->  TEST_GEN_FILES += thuge-gen
->  TEST_GEN_FILES += transhuge-stress
->  TEST_GEN_FILES += userfaultfd
-> +TEST_GEN_FILES += split_huge_page_test
->  
->  ifeq ($(ARCH),x86_64)
->  CAN_BUILD_I386 := $(shell ./../x86/check_cc.sh $(CC) ../x86/trivial_32bit_program.c -m32)
-> diff --git a/tools/testing/selftests/vm/split_huge_page_test.c b/tools/testing/selftests/vm/split_huge_page_test.c
-> new file mode 100644
-> index 000000000000..c8a32ae9e13a
-> --- /dev/null
-> +++ b/tools/testing/selftests/vm/split_huge_page_test.c
-> @@ -0,0 +1,161 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include "numa.h"
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <inttypes.h>
-> +#include <string.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
-> +#include <sys/mman.h>
-> +#include <sys/time.h>
-> +#include <sys/wait.h>
-> +#include <malloc.h>
-> +#include <stdbool.h>
-> +
-> +#define PAGE_4KB (4096UL)
-> +#define PAGE_2MB (512UL*PAGE_4KB)
-> +#define PAGE_1GB (512UL*PAGE_2MB)
-> +
-> +#define PRESENT_MASK (1UL<<63)
-> +#define SWAPPED_MASK (1UL<<62)
-> +#define PAGE_TYPE_MASK (1UL<<61)
-> +#define PFN_MASK     ((1UL<<55)-1)
-> +
-> +#define KPF_THP      (1UL<<22)
-> +#define KPF_PUD_THP      (1UL<<27)
-> +
-> +#define SPLIT_DEBUGFS "/sys/kernel/debug/split_huge_pages_in_range_pid"
-> +#define SMAP_PATH "/proc/self/smaps"
-> +#define INPUT_MAX 80
-> +
-> +static int write_file(const char *path, const char *buf, size_t buflen)
-> +{
-> +	int fd;
-> +	ssize_t numwritten;
-> +
-> +	fd = open(path, O_WRONLY);
-> +	if (fd == -1)
-> +		return 0;
-> +
-> +	numwritten = write(fd, buf, buflen - 1);
-> +	close(fd);
-> +	if (numwritten < 1)
-> +		return 0;
-> +
-> +	return (unsigned int) numwritten;
-> +}
-> +
-> +static void write_debugfs(int pid, uint64_t vaddr_start, uint64_t vaddr_end)
-> +{
-> +	char input[INPUT_MAX];
-> +	int ret;
-> +
-> +	ret = snprintf(input, INPUT_MAX, "%d,%lx,%lx", pid, vaddr_start,
-> +			vaddr_end);
-> +	if (ret >= INPUT_MAX) {
-> +		printf("%s: Debugfs input is too long\n", __func__);
-> +		exit(EXIT_FAILURE);
-> +	}
-> +
-> +	if (!write_file(SPLIT_DEBUGFS, input, ret + 1)) {
-> +		perror(SPLIT_DEBUGFS);
-> +		exit(EXIT_FAILURE);
-> +	}
-> +}
-> +
-> +#define MAX_LINE_LENGTH 500
-> +
-> +static bool check_for_pattern(FILE *fp, char *pattern, char *buf)
-> +{
-> +	while (fgets(buf, MAX_LINE_LENGTH, fp) != NULL) {
-> +		if (!strncmp(buf, pattern, strlen(pattern)))
-> +			return true;
-> +	}
-> +	return false;
-> +}
-> +
-> +static uint64_t check_huge(void *addr)
-> +{
-> +	uint64_t thp = 0;
-> +	int ret;
-> +	FILE *fp;
-> +	char buffer[MAX_LINE_LENGTH];
-> +	char addr_pattern[MAX_LINE_LENGTH];
-> +
-> +	ret = snprintf(addr_pattern, MAX_LINE_LENGTH, "%08lx-",
-> +		       (unsigned long) addr);
-> +	if (ret >= MAX_LINE_LENGTH) {
-> +		printf("%s: Pattern is too long\n", __func__);
-> +		exit(EXIT_FAILURE);
-> +	}
-> +
-> +
-> +	fp = fopen(SMAP_PATH, "r");
-> +	if (!fp) {
-> +		printf("%s: Failed to open file %s\n", __func__, SMAP_PATH);
-> +		exit(EXIT_FAILURE);
-> +	}
-> +	if (!check_for_pattern(fp, addr_pattern, buffer))
-> +		goto err_out;
-> +
-> +	/*
-> +	 * Fetch the AnonHugePages: in the same block and check the number of
-> +	 * hugepages.
-> +	 */
-> +	if (!check_for_pattern(fp, "AnonHugePages:", buffer))
-> +		goto err_out;
-> +
-> +	if (sscanf(buffer, "AnonHugePages:%10ld kB", &thp) != 1) {
-> +		printf("Reading smap error\n");
-> +		exit(EXIT_FAILURE);
-> +	}
-> +
-> +err_out:
-> +	fclose(fp);
-> +	return thp;
-> +}
-> +
-> +void split_pmd_thp(void)
-> +{
-> +	char *one_page;
-> +	size_t len = 4 * PAGE_2MB;
-> +	uint64_t thp_size;
-> +
-> +	one_page = memalign(PAGE_1GB, len);
-> +
-> +	madvise(one_page, len, MADV_HUGEPAGE);
-> +
-> +	memset(one_page, 1, len);
-> +
-> +	thp_size = check_huge(one_page);
-> +	if (!thp_size) {
-> +		printf("No THP is allocatd");
-> +		exit(EXIT_FAILURE);
-> +	}
-> +
-> +	/* split all possible huge pages */
-> +	write_debugfs(getpid(), (uint64_t)one_page, (uint64_t)one_page + len);
-> +
-> +	*one_page = 0;
-> +
-> +	thp_size = check_huge(one_page);
-> +	if (thp_size) {
-> +		printf("Still %ld kB AnonHugePages not split\n", thp_size);
-> +		exit(EXIT_FAILURE);
-> +	}
-> +
-> +	printf("Split huge pages successful\n");
-> +	free(one_page);
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	split_pmd_thp();
-> +
-> +	return 0;
-> +}
-> -- 
-> 2.28.0
-> 
-> 
+> I hope you are using as latest as possible ACPICA compiler (or at least
+> the one which follows the latest changes in it).
 
 -- 
- Kirill A. Shutemov
+With Best Regards,
+Andy Shevchenko
+
+
