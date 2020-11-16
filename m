@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A202B408C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADCB2B408D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgKPKNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
+        id S1728599AbgKPKN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 05:13:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727012AbgKPKNW (ORCPT
+        with ESMTP id S1727012AbgKPKNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:13:22 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B73C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:13:21 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id d12so17994717wrr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:13:21 -0800 (PST)
+        Mon, 16 Nov 2020 05:13:25 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B09C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:13:23 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id j7so18024536wrp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:13:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=X+jktKSyt59M1RlyoUXQDUiIneqQcY7EbqJCiazlG1Y=;
-        b=i5E0jmsmNyqdoUSm84mjuIsvNHBhir03FpDaC3SMoi9kLZUyAn5LtMejHw4iI2aD/C
-         kJkp37MNw6Il00+yD+5jr2D4No4GLU3VRbioOxxFlTNsT7y39QsT7tJ7Jz1aauH5VO+B
-         jizfQ79qJlsFiS+JhJiAZ+v0f5WBBOe74o045qBHQglWGuVPNGYGqHTVwSRZtWSFSWrk
-         GWfka0JgYa1hBg5Vf5CKdxFhWg0KB3NPBM6AOmOd+rcGPJz0W8LIv/UCPV/vnf9NILzV
-         WxpW5iWo0UTjYl5UbLc2gctXbyI+lYc7yeTcnzQxvm1tgO0KuRcaTrA3+HRwghvmYpzw
-         pa/g==
+        bh=04yWtbVQojNmzNh9sbSaFaPd7hDLCG+6GyyXEhNhYZk=;
+        b=P3LdFmer7ekhnqaP9F/ZsJF2soip/rUs1o0nvHmIKhZZbsYFw4EKZjOSDWgLzY1RbZ
+         2xwFYSrSFYW82mM0F8KWVhmO/dfNed7NjuDPNhwTv50Jpgu4P+mMYMM5ibk+aOnFdjS9
+         ph+Fg7AjOu2EaI1KuNHRGYm3ovs917C0U9g907F/pN+dRlJXmnW+D6Z7f81ITxysOHTQ
+         BPSylt6Bb9RXJ4X5cRtDZOxdWtX7OSy7M/Q4R6ttwCHP+ad2QowUJgaN718WdeosbSrB
+         JbPVm4pkH6BKwVPfETO69DwmnNxnf3RQABHfvQ22Cy1Y23usP/nVpxLWdxNi9oZJVQfu
+         VnrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=X+jktKSyt59M1RlyoUXQDUiIneqQcY7EbqJCiazlG1Y=;
-        b=aYjWPBrVJivq6fUvX32SJwjJS2B81c0Me/MI8OURkZj0HdoWSc5gQKjBjspd+ES8vF
-         VwxnrEuxa4Vb7hvJWkG/oA7TCjYLtvkqTAbywL593yKY9FNlQVmv8vF7I1F4kFh2UQZT
-         Z+T8PlMBuCgt/reTbwHPvOZz7jpAW9qA8krFDFvb3hn7rVMeU+knuLpnjOdUhdgSx21/
-         aKCiHxqGrWgvI3bBWZVBBw9WTHTx9xPuJMCTgj0KOXm0Ys434KP4m+rApp+/a8D/KkRv
-         +Bwq549rnsyd337F5hUNqM/SUOktJA6HmrrporA8hnDy6SpxyMjCJ/YMxzynYlHL0GcP
-         /GeA==
-X-Gm-Message-State: AOAM5302mdA1WIWhXSlRl/qpi0ulZ6XCOebuZL923CLfkxUpm1yaR++d
-        /LVsvswIjb28kPTdk09QpeOxJ503iHKweLX8
-X-Google-Smtp-Source: ABdhPJzzawClAU+KtOLWRR/v6L2Sy0PuBtshrLlL9wKHSAIMeuqAUnlakL7MgC7U+8MHRcgIcEiPrQ==
-X-Received: by 2002:adf:9407:: with SMTP id 7mr19583282wrq.182.1605521600399;
-        Mon, 16 Nov 2020 02:13:20 -0800 (PST)
+        bh=04yWtbVQojNmzNh9sbSaFaPd7hDLCG+6GyyXEhNhYZk=;
+        b=EDtLj8syKbyK7Ijz9IGEVU1WftHcgubZWVuaBJMZuCIjj9ZlfU2zMD8TBK64nU8+ww
+         VPtoxfGmiXuBjZisKT8sAikl2BdcWmd+9gGvT0OmrYYQ14VVM96PLLg3VEtjJIV3Ck1e
+         55n64hbdMW7tPKhDTQHtV2XZ3L7+O4z7ItXrP8W7ID7a/FoANjaKwzaOwjJq6vDbrJMo
+         uliPknz8xZqNkPPn0H1xkDK6lWIA/W9Ov1i7TCAC2z9CDYXtP8VmLUveB8dHypYXX4tt
+         IVx8XCcleKAESeH7EDwS0PujcPdhmUkIluUwRb3rzyUqXef8GamTu58od8uRt5zZygXT
+         8PiA==
+X-Gm-Message-State: AOAM530hVJZCK9iwj4H2q3KboID8PhXcYQiogawTJSv/QnKhJNRPqD8i
+        eqb1b8NPEEbctFOYA/nTidlb8g==
+X-Google-Smtp-Source: ABdhPJxc2CgKKe/oQnjpW82NHsNax252okcvHf5UnqWskhhneNKT8a7oWHUsIvGisAhHkR4hcndHXA==
+X-Received: by 2002:adf:f90f:: with SMTP id b15mr18649694wrr.343.1605521601943;
+        Mon, 16 Nov 2020 02:13:21 -0800 (PST)
 Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:edb9:72a:9e35:6eb])
-        by smtp.gmail.com with ESMTPSA id g66sm19082228wmg.37.2020.11.16.02.13.19
+        by smtp.gmail.com with ESMTPSA id g66sm19082228wmg.37.2020.11.16.02.13.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 02:13:19 -0800 (PST)
+        Mon, 16 Nov 2020 02:13:21 -0800 (PST)
 From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     devicetree@vger.kernel.org, kishon@ti.com, vkoul@kernel.org
+To:     kishon@ti.com, vkoul@kernel.org
 Cc:     Neil Armstrong <narmstrong@baylibre.com>,
         linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-Subject: [RESEND PATCH v3 1/2] dt-bindings: phy: add Amlogic AXG MIPI D-PHY bindings
-Date:   Mon, 16 Nov 2020 11:13:14 +0100
-Message-Id: <20201116101315.71720-2-narmstrong@baylibre.com>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v3 2/2] phy: amlogic: Add AXG MIPI D-PHY driver
+Date:   Mon, 16 Nov 2020 11:13:15 +0100
+Message-Id: <20201116101315.71720-3-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116101315.71720-1-narmstrong@baylibre.com>
 References: <20201116101315.71720-1-narmstrong@baylibre.com>
@@ -66,94 +65,465 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Amlogic AXg SoCs embeds a MIPI D-PHY to communicate with DSI
-panels, this adds the bindings.
-
-This D-PHY depends on a separate analog PHY.
+The Amlogic AXG SoCs embeds a MIPI D-PHY used to communicate with DSI
+panels.
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../bindings/phy/amlogic,axg-mipi-dphy.yaml   | 70 +++++++++++++++++++
- 1 file changed, 70 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/amlogic,axg-mipi-dphy.yaml
+ drivers/phy/amlogic/Kconfig                   |  12 +
+ drivers/phy/amlogic/Makefile                  |   1 +
+ drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c | 413 ++++++++++++++++++
+ 3 files changed, 426 insertions(+)
+ create mode 100644 drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c
 
-diff --git a/Documentation/devicetree/bindings/phy/amlogic,axg-mipi-dphy.yaml b/Documentation/devicetree/bindings/phy/amlogic,axg-mipi-dphy.yaml
+diff --git a/drivers/phy/amlogic/Kconfig b/drivers/phy/amlogic/Kconfig
+index 617cf073e9aa..99e8a4c7f1f3 100644
+--- a/drivers/phy/amlogic/Kconfig
++++ b/drivers/phy/amlogic/Kconfig
+@@ -70,3 +70,15 @@ config PHY_MESON_AXG_MIPI_PCIE_ANALOG
+ 	  Enable this to support the Meson MIPI + PCIE analog PHY
+ 	  found in Meson AXG SoCs.
+ 	  If unsure, say N.
++
++config PHY_MESON_AXG_MIPI_DPHY
++	tristate "Meson AXG MIPI DPHY driver"
++	default ARCH_MESON
++	depends on OF && (ARCH_MESON || COMPILE_TEST)
++	select GENERIC_PHY
++	select REGMAP_MMIO
++	select GENERIC_PHY_MIPI_DPHY
++	help
++	  Enable this to support the Meson MIPI DPHY found in Meson AXG
++	  SoCs.
++	  If unsure, say N.
+diff --git a/drivers/phy/amlogic/Makefile b/drivers/phy/amlogic/Makefile
+index 99702a45e9be..8fa07fbd0d92 100644
+--- a/drivers/phy/amlogic/Makefile
++++ b/drivers/phy/amlogic/Makefile
+@@ -5,3 +5,4 @@ obj-$(CONFIG_PHY_MESON_G12A_USB2)		+= phy-meson-g12a-usb2.o
+ obj-$(CONFIG_PHY_MESON_G12A_USB3_PCIE)		+= phy-meson-g12a-usb3-pcie.o
+ obj-$(CONFIG_PHY_MESON_AXG_PCIE)		+= phy-meson-axg-pcie.o
+ obj-$(CONFIG_PHY_MESON_AXG_MIPI_PCIE_ANALOG)	+= phy-meson-axg-mipi-pcie-analog.o
++obj-$(CONFIG_PHY_MESON_AXG_MIPI_DPHY)		+= phy-meson-axg-mipi-dphy.o
+diff --git a/drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c b/drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c
 new file mode 100644
-index 000000000000..be485f500887
+index 000000000000..cd2332bf0e31
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/amlogic,axg-mipi-dphy.yaml
-@@ -0,0 +1,70 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2020 BayLibre, SAS
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/phy/amlogic,axg-mipi-dphy.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++++ b/drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c
+@@ -0,0 +1,413 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Meson AXG MIPI DPHY driver
++ *
++ * Copyright (C) 2018 Amlogic, Inc. All rights reserved
++ * Copyright (C) 2020 BayLibre, SAS
++ * Author: Neil Armstrong <narmstrong@baylibre.com>
++ */
 +
-+title: Amlogic AXG MIPI D-PHY
++#include <linux/bitfield.h>
++#include <linux/bitops.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/regmap.h>
++#include <linux/reset.h>
++#include <linux/phy/phy.h>
++#include <linux/platform_device.h>
 +
-+maintainers:
-+  - Neil Armstrong <narmstrong@baylibre.com>
++/* [31] soft reset for the phy.
++ *		1: reset. 0: dessert the reset.
++ * [30] clock lane soft reset.
++ * [29] data byte lane 3 soft reset.
++ * [28] data byte lane 2 soft reset.
++ * [27] data byte lane 1 soft reset.
++ * [26] data byte lane 0 soft reset.
++ * [25] mipi dsi pll clock selection.
++ *		1:  clock from fixed 850Mhz clock source. 0: from VID2 PLL.
++ * [12] mipi HSbyteclk enable.
++ * [11] mipi divider clk selection.
++ *		1: select the mipi DDRCLKHS from clock divider.
++ *		0: from PLL clock.
++ * [10] mipi clock divider control.
++ *		1: /4. 0: /2.
++ * [9]  mipi divider output enable.
++ * [8]  mipi divider counter enable.
++ * [7]  PLL clock enable.
++ * [5]  LPDT data endian.
++ *		1 = transfer the high bit first. 0 : transfer the low bit first.
++ * [4]  HS data endian.
++ * [3]  force data byte lane in stop mode.
++ * [2]  force data byte lane 0 in receiver mode.
++ * [1]  write 1 to sync the txclkesc input. the internal logic have to
++ *	use txclkesc to decide Txvalid and Txready.
++ * [0]  enalbe the MIPI DPHY TxDDRClk.
++ */
++#define MIPI_DSI_PHY_CTRL				0x0
 +
-+properties:
-+  compatible:
-+    enum:
-+      - amlogic,axg-mipi-dphy
++/* [31] clk lane tx_hs_en control selection.
++ *		1: from register. 0: use clk lane state machine.
++ * [30] register bit for clock lane tx_hs_en.
++ * [29] clk lane tx_lp_en contrl selection.
++ *		1: from register. 0: from clk lane state machine.
++ * [28] register bit for clock lane tx_lp_en.
++ * [27] chan0 tx_hs_en control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [26] register bit for chan0 tx_hs_en.
++ * [25] chan0 tx_lp_en control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [24] register bit from chan0 tx_lp_en.
++ * [23] chan0 rx_lp_en control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [22] register bit from chan0 rx_lp_en.
++ * [21] chan0 contention detection enable control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [20] register bit from chan0 contention dectection enable.
++ * [19] chan1 tx_hs_en control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [18] register bit for chan1 tx_hs_en.
++ * [17] chan1 tx_lp_en control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [16] register bit from chan1 tx_lp_en.
++ * [15] chan2 tx_hs_en control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [14] register bit for chan2 tx_hs_en.
++ * [13] chan2 tx_lp_en control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [12] register bit from chan2 tx_lp_en.
++ * [11] chan3 tx_hs_en control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [10] register bit for chan3 tx_hs_en.
++ * [9]  chan3 tx_lp_en control selection.
++ *		1: from register. 0: from chan0 state machine.
++ * [8]  register bit from chan3 tx_lp_en.
++ * [4]  clk chan power down. this bit is also used as the power down
++ *	of the whole MIPI_DSI_PHY.
++ * [3]  chan3 power down.
++ * [2]  chan2 power down.
++ * [1]  chan1 power down.
++ * [0]  chan0 power down.
++ */
++#define MIPI_DSI_CHAN_CTRL				0x4
 +
-+  reg:
-+    maxItems: 1
++/* [24]   rx turn watch dog triggered.
++ * [23]   rx esc watchdog  triggered.
++ * [22]   mbias ready.
++ * [21]   txclkesc  synced and ready.
++ * [20:17] clk lane state. {mbias_ready, tx_stop, tx_ulps, tx_hs_active}
++ * [16:13] chan3 state{0, tx_stop, tx_ulps, tx_hs_active}
++ * [12:9]  chan2 state.{0, tx_stop, tx_ulps, tx_hs_active}
++ * [8:5]   chan1 state. {0, tx_stop, tx_ulps, tx_hs_active}
++ * [4:0]   chan0 state. {TX_STOP, tx_ULPS, hs_active, direction, rxulpsesc}
++ */
++#define MIPI_DSI_CHAN_STS				0x8
 +
-+  clocks:
-+    maxItems: 1
++/* [31:24] TCLK_PREPARE.
++ * [23:16] TCLK_ZERO.
++ * [15:8]  TCLK_POST.
++ * [7:0]   TCLK_TRAIL.
++ */
++#define MIPI_DSI_CLK_TIM				0xc
 +
-+  clock-names:
-+    items:
-+      - const: pclk
++/* [31:24] THS_PREPARE.
++ * [23:16] THS_ZERO.
++ * [15:8]  THS_TRAIL.
++ * [7:0]   THS_EXIT.
++ */
++#define MIPI_DSI_HS_TIM					0x10
 +
-+  resets:
-+    maxItems: 1
++/* [31:24] tTA_GET.
++ * [23:16] tTA_GO.
++ * [15:8]  tTA_SURE.
++ * [7:0]   tLPX.
++ */
++#define MIPI_DSI_LP_TIM					0x14
 +
-+  reset-names:
-+    items:
-+      - const: phy
++/* wait time to  MIPI DIS analog ready. */
++#define MIPI_DSI_ANA_UP_TIM				0x18
 +
-+  "#phy-cells":
-+    const: 0
++/* TINIT. */
++#define MIPI_DSI_INIT_TIM				0x1c
 +
-+  phys:
-+    maxItems: 1
++/* TWAKEUP. */
++#define MIPI_DSI_WAKEUP_TIM				0x20
 +
-+  phy-names:
-+    items:
-+      - const: analog
++/* when in RxULPS check state, after the the logic enable the analog,
++ *	how long we should wait to check the lP state .
++ */
++#define MIPI_DSI_LPOK_TIM				0x24
 +
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - resets
-+  - reset-names
-+  - phys
-+  - phy-names
-+  - "#phy-cells"
++/* Watchdog for RX low power state no finished. */
++#define MIPI_DSI_LP_WCHDOG				0x28
 +
-+additionalProperties: false
++/* tMBIAS,  after send power up signals to analog,
++ *	how long we should wait for analog powered up.
++ */
++#define MIPI_DSI_ANA_CTRL				0x2c
 +
-+examples:
-+  - |
-+    phy@ff640000 {
-+            compatible = "amlogic,axg-mipi-dphy";
-+            reg = <0xff640000 0x100>;
-+            clocks = <&clk_mipi_dsi_phy>;
-+            clock-names = "pclk";
-+            resets = <&reset_phy>;
-+            reset-names = "phy";
-+            phys = <&mipi_pcie_analog_dphy>;
-+            phy-names = "analog";
-+            #phy-cells = <0>;
-+    };
++/* [31:8]  reserved for future.
++ * [7:0]   tCLK_PRE.
++ */
++#define MIPI_DSI_CLK_TIM1				0x30
++
++/* watchdog for turn around waiting time. */
++#define MIPI_DSI_TURN_WCHDOG				0x34
++
++/* When in RxULPS state, how frequency we should to check
++ *	if the TX side out of ULPS state.
++ */
++#define MIPI_DSI_ULPS_CHECK				0x38
++#define MIPI_DSI_TEST_CTRL0				0x3c
++#define MIPI_DSI_TEST_CTRL1				0x40
++
++struct phy_meson_axg_mipi_dphy_priv {
++	struct device				*dev;
++	struct regmap				*regmap;
++	struct clk				*clk;
++	struct reset_control			*reset;
++	struct phy				*analog;
++	struct phy_configure_opts_mipi_dphy	config;
++};
++
++static const struct regmap_config phy_meson_axg_mipi_dphy_regmap_conf = {
++	.reg_bits = 8,
++	.val_bits = 32,
++	.reg_stride = 4,
++	.max_register = MIPI_DSI_TEST_CTRL1,
++};
++
++static int phy_meson_axg_mipi_dphy_init(struct phy *phy)
++{
++	struct phy_meson_axg_mipi_dphy_priv *priv = phy_get_drvdata(phy);
++	int ret;
++
++	ret = phy_init(priv->analog);
++	if (ret)
++		return ret;
++
++	ret = reset_control_reset(priv->reset);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static int phy_meson_axg_mipi_dphy_configure(struct phy *phy,
++					      union phy_configure_opts *opts)
++{
++	struct phy_meson_axg_mipi_dphy_priv *priv = phy_get_drvdata(phy);
++	int ret;
++
++	ret = phy_mipi_dphy_config_validate(&opts->mipi_dphy);
++	if (ret)
++		return ret;
++
++	ret = phy_configure(priv->analog, opts);
++	if (ret)
++		return ret;
++
++	memcpy(&priv->config, opts, sizeof(priv->config));
++
++	return 0;
++}
++
++static int phy_meson_axg_mipi_dphy_power_on(struct phy *phy)
++{
++	struct phy_meson_axg_mipi_dphy_priv *priv = phy_get_drvdata(phy);
++	int ret;
++	unsigned long temp;
++
++	ret = phy_power_on(priv->analog);
++	if (ret)
++		return ret;
++
++	/* enable phy clock */
++	regmap_write(priv->regmap, MIPI_DSI_PHY_CTRL,  0x1);
++	regmap_write(priv->regmap, MIPI_DSI_PHY_CTRL,
++		     BIT(0) | /* enable the DSI PLL clock . */
++		     BIT(7) | /* enable pll clock which connected to DDR clock path */
++		     BIT(8)); /* enable the clock divider counter */
++
++	/* enable the divider clock out */
++	regmap_update_bits(priv->regmap, MIPI_DSI_PHY_CTRL, BIT(9), BIT(9));
++
++	/* enable the byte clock generation. */
++	regmap_update_bits(priv->regmap, MIPI_DSI_PHY_CTRL, BIT(12), BIT(12));
++	regmap_update_bits(priv->regmap, MIPI_DSI_PHY_CTRL, BIT(31), BIT(31));
++	regmap_update_bits(priv->regmap, MIPI_DSI_PHY_CTRL, BIT(31), 0);
++
++	/* Calculate lanebyteclk period in ps */
++	temp = (1000000 * 100) / (priv->config.hs_clk_rate / 1000);
++	temp = temp * 8 * 10;
++
++	regmap_write(priv->regmap, MIPI_DSI_CLK_TIM,
++		     DIV_ROUND_UP(priv->config.clk_trail, temp) |
++		     (DIV_ROUND_UP(priv->config.clk_post +
++				   priv->config.hs_trail, temp) << 8) |
++		     (DIV_ROUND_UP(priv->config.clk_zero, temp) << 16) |
++		     (DIV_ROUND_UP(priv->config.clk_prepare, temp) << 24));
++	regmap_write(priv->regmap, MIPI_DSI_CLK_TIM1,
++		     DIV_ROUND_UP(priv->config.clk_pre, temp));
++
++	regmap_write(priv->regmap, MIPI_DSI_HS_TIM,
++		     DIV_ROUND_UP(priv->config.hs_exit, temp) |
++		     (DIV_ROUND_UP(priv->config.hs_trail, temp) << 8) |
++		     (DIV_ROUND_UP(priv->config.hs_zero, temp) << 16) |
++		     (DIV_ROUND_UP(priv->config.hs_prepare, temp) << 24));
++
++	regmap_write(priv->regmap, MIPI_DSI_LP_TIM,
++		     DIV_ROUND_UP(priv->config.lpx, temp) |
++		     (DIV_ROUND_UP(priv->config.ta_sure, temp) << 8) |
++		     (DIV_ROUND_UP(priv->config.ta_go, temp) << 16) |
++		     (DIV_ROUND_UP(priv->config.ta_get, temp) << 24));
++
++	regmap_write(priv->regmap, MIPI_DSI_ANA_UP_TIM, 0x0100);
++	regmap_write(priv->regmap, MIPI_DSI_INIT_TIM,
++		     DIV_ROUND_UP(priv->config.init * NSEC_PER_MSEC, temp));
++	regmap_write(priv->regmap, MIPI_DSI_WAKEUP_TIM,
++		     DIV_ROUND_UP(priv->config.wakeup * NSEC_PER_MSEC, temp));
++	regmap_write(priv->regmap, MIPI_DSI_LPOK_TIM, 0x7C);
++	regmap_write(priv->regmap, MIPI_DSI_ULPS_CHECK, 0x927C);
++	regmap_write(priv->regmap, MIPI_DSI_LP_WCHDOG, 0x1000);
++	regmap_write(priv->regmap, MIPI_DSI_TURN_WCHDOG, 0x1000);
++
++	/* Powerup the analog circuit */
++	switch (priv->config.lanes) {
++	case 1:
++		regmap_write(priv->regmap, MIPI_DSI_CHAN_CTRL, 0xe);
++		break;
++	case 2:
++		regmap_write(priv->regmap, MIPI_DSI_CHAN_CTRL, 0xc);
++		break;
++	case 3:
++		regmap_write(priv->regmap, MIPI_DSI_CHAN_CTRL, 0x8);
++		break;
++	case 4:
++	default:
++		regmap_write(priv->regmap, MIPI_DSI_CHAN_CTRL, 0);
++		break;
++	}
++
++	/* Trigger a sync active for esc_clk */
++	regmap_update_bits(priv->regmap, MIPI_DSI_PHY_CTRL, BIT(1), BIT(1));
++
++	return 0;
++}
++
++static int phy_meson_axg_mipi_dphy_power_off(struct phy *phy)
++{
++	struct phy_meson_axg_mipi_dphy_priv *priv = phy_get_drvdata(phy);
++
++	regmap_write(priv->regmap, MIPI_DSI_CHAN_CTRL, 0xf);
++	regmap_write(priv->regmap, MIPI_DSI_PHY_CTRL, BIT(31));
++
++	phy_power_off(priv->analog);
++
++	return 0;
++}
++
++static int phy_meson_axg_mipi_dphy_exit(struct phy *phy)
++{
++	struct phy_meson_axg_mipi_dphy_priv *priv = phy_get_drvdata(phy);
++	int ret;
++
++	ret = phy_exit(priv->analog);
++	if (ret)
++		return ret;
++
++	return reset_control_reset(priv->reset);
++}
++
++static const struct phy_ops phy_meson_axg_mipi_dphy_ops = {
++	.configure	= phy_meson_axg_mipi_dphy_configure,
++	.init		= phy_meson_axg_mipi_dphy_init,
++	.exit		= phy_meson_axg_mipi_dphy_exit,
++	.power_on	= phy_meson_axg_mipi_dphy_power_on,
++	.power_off	= phy_meson_axg_mipi_dphy_power_off,
++	.owner		= THIS_MODULE,
++};
++
++static int phy_meson_axg_mipi_dphy_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct phy_provider *phy_provider;
++	struct resource *res;
++	struct phy_meson_axg_mipi_dphy_priv *priv;
++	struct phy *phy;
++	void __iomem *base;
++	int ret;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->dev = dev;
++	platform_set_drvdata(pdev, priv);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	base = devm_ioremap_resource(dev, res);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
++	priv->regmap = devm_regmap_init_mmio(dev, base,
++					&phy_meson_axg_mipi_dphy_regmap_conf);
++	if (IS_ERR(priv->regmap))
++		return PTR_ERR(priv->regmap);
++
++	priv->clk = devm_clk_get(dev, "pclk");
++	if (IS_ERR(priv->clk))
++		return PTR_ERR(priv->clk);
++
++	priv->reset = devm_reset_control_get(dev, "phy");
++	if (IS_ERR(priv->reset))
++		return PTR_ERR(priv->reset);
++
++	priv->analog = devm_phy_get(dev, "analog");
++	if (IS_ERR(priv->analog))
++		return PTR_ERR(priv->analog);
++
++	ret = clk_prepare_enable(priv->clk);
++	if (ret)
++		return ret;
++
++	ret = reset_control_deassert(priv->reset);
++	if (ret)
++		return ret;
++
++	phy = devm_phy_create(dev, NULL, &phy_meson_axg_mipi_dphy_ops);
++	if (IS_ERR(phy)) {
++		ret = PTR_ERR(phy);
++		if (ret != -EPROBE_DEFER)
++			dev_err(dev, "failed to create PHY\n");
++
++		return ret;
++	}
++
++	phy_set_drvdata(phy, priv);
++
++	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
++
++	return PTR_ERR_OR_ZERO(phy_provider);
++}
++
++static const struct of_device_id phy_meson_axg_mipi_dphy_of_match[] = {
++	{ .compatible = "amlogic,axg-mipi-dphy", },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, phy_meson_axg_mipi_dphy_of_match);
++
++static struct platform_driver phy_meson_axg_mipi_dphy_driver = {
++	.probe	= phy_meson_axg_mipi_dphy_probe,
++	.driver	= {
++		.name		= "phy-meson-axg-mipi-dphy",
++		.of_match_table	= phy_meson_axg_mipi_dphy_of_match,
++	},
++};
++module_platform_driver(phy_meson_axg_mipi_dphy_driver);
++
++MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
++MODULE_DESCRIPTION("Meson AXG MIPI DPHY driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.25.1
 
