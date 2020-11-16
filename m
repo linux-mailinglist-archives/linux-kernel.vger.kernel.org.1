@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058512B4EEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810152B4EF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731246AbgKPSLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:11:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38916 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730997AbgKPSLc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:11:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605550292;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xf1LJn8hGte4D+k0k0YeB9oW653XA/c4TK7Y8k7TCcw=;
-        b=OXpaTSlRQlisd2LLVGYNkbeTRarapVHiGg/pwK38QgipXP71zdcFTDtZc/3PLvX+/sIZZj
-        8iPX0xPwG15wdyITpNphcCjrCv4mUcMHVlE0Z1egLNAuoLNN7d8IRPOpjNbaSmTQTgz20p
-        zgw6J0zz5uA+Rv3Hy848f5/Xd8b+Myg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-79-VP9hCMv8MP6yJjyKGGRZHw-1; Mon, 16 Nov 2020 13:11:28 -0500
-X-MC-Unique: VP9hCMv8MP6yJjyKGGRZHw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1731741AbgKPSMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:12:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730096AbgKPSMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:12:39 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C8571084D72;
-        Mon, 16 Nov 2020 18:11:27 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E0D8A5C1CF;
-        Mon, 16 Nov 2020 18:11:26 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Jim Mattson <jmattson@google.com>
-Subject: [PATCH] KVM: SVM: check CR4 changes against vcpu->arch
-Date:   Mon, 16 Nov 2020 13:11:26 -0500
-Message-Id: <20201116181126.2008838-1-pbonzini@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id D8F112078E;
+        Mon, 16 Nov 2020 18:12:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605550358;
+        bh=LjQ/MMjl64/Jl8ZPC785yG7LunzvzinO5RMl3P0oUys=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ijb8pVNTxyxIxJvRLjeK5Q6rVWlDY6hf9IYfVUTfZXEaE6WhgozgTe5f1ObpeRF8H
+         u5PktOGlunVmfYoCSKJDZol62284DlKxpxaiE0UDHzOUYusRK2XBTo1eCUafIKf86E
+         NqunYoyZBpoKfPdcRXG7fXVxOlGyFkhWN8UdaJGw=
+Date:   Mon, 16 Nov 2020 10:12:36 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     tanhuazhong <tanhuazhong@huawei.com>
+Cc:     Michal Kubecek <mkubecek@suse.cz>, Andrew Lunn <andrew@lunn.ch>,
+        Jiri Pirko <jiri@resnulli.us>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>
+Subject: Re: [PATCH V3 net-next 06/10] net: hns3: add ethtool priv-flag for
+ DIM
+Message-ID: <20201116101236.64fc9c49@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <370fe668-d719-6380-f172-ad01edeb666e@huawei.com>
+References: <1605151998-12633-1-git-send-email-tanhuazhong@huawei.com>
+        <1605151998-12633-7-git-send-email-tanhuazhong@huawei.com>
+        <20201114105423.07c2ce67@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <370fe668-d719-6380-f172-ad01edeb666e@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similarly to what vmx/vmx.c does, use vcpu->arch.cr4 to check if CR4
-bits PGE, PKE and OSXSAVE have changed.  When switching between VMCB01
-and VMCB02, CPUID has to be adjusted every time if CR4.PKE or CR4.OSXSAVE
-change; without this patch, instead, CR4 would be checked against the
-previous value for L2 on vmentry, and against the previous value for
-L1 on vmexit, and CPUID would not be updated.
+On Mon, 16 Nov 2020 16:41:45 +0800 tanhuazhong wrote:
+> On 2020/11/15 2:54, Jakub Kicinski wrote:
+> > On Thu, 12 Nov 2020 11:33:14 +0800 Huazhong Tan wrote:  
+> >> Add a control private flag in ethtool for enable/disable
+> >> DIM feature.
+> >>
+> >> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>  
+> > 
+> > Please work on a common ethtool API for the configuration instead of
+> > using private flags.
+> > 
+> > Private flags were overused because the old IOCTL-based ethtool was
+> > hard to extend, but we have a netlink API now.
+> > 
+> > For example here you're making a choice between device and DIM
+> > implementation of IRQ coalescing. You can add a new netlink attribute
+> > to the ETHTOOL_MSG_COALESCE_GET/ETHTOOL_MSG_COALESCE_SET commands which
+> > controls the type of adaptive coalescing (if enabled).
+> 
+> The device's implementation of IRQ coalescing will be removed, if DIM 
+> works ok for a long time. So could this private flag for DIM be 
+> uptreamed as a transition scheme? And adding a new netlink attrtibute to 
+> controls the type of adaptive coalescing seems useless for other drivers.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/svm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The information whether the adaptive behavior is implemented by DIM,
+device or custom driver implementation is useful regardless. Right now
+users only see "adaptive" and don't know what implements it - device,
+DIM or is it a custom implementation in the driver. So regardless if
+you remove the priv flag, the "read"/"get" side of the information will
+still be useful.
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 3b53a7ead04b..6dc337b9c231 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1691,7 +1691,7 @@ static bool svm_is_valid_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
- void svm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
- {
- 	unsigned long host_cr4_mce = cr4_read_shadow() & X86_CR4_MCE;
--	unsigned long old_cr4 = to_svm(vcpu)->vmcb->save.cr4;
-+	unsigned long old_cr4 = vcpu->arch.cr4;
- 
- 	if (npt_enabled && ((old_cr4 ^ cr4) & X86_CR4_PGE))
- 		svm_flush_tlb(vcpu);
--- 
-2.26.2
-
+Besides you have another priv flag in this set that needs to be
+converted to a generic attribute - the one for the timer reset
+behavior.
