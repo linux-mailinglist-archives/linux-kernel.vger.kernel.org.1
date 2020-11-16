@@ -2,367 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E902B436D
+	by mail.lfdr.de (Postfix) with ESMTP id 80BE42B436E
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729929AbgKPMPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:15:48 -0500
-Received: from mga02.intel.com ([134.134.136.20]:13482 "EHLO mga02.intel.com"
+        id S1729935AbgKPMQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:16:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727895AbgKPMPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:15:47 -0500
-IronPort-SDR: vinVxnR0ERlxNbEi1nM/+VssYK6n8VTWLuyz44W2mk5caQi4t6VM4SeS6wkS7KTvoSICiivHJ4
- TOYDwBmigzrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157761439"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="157761439"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:15:47 -0800
-IronPort-SDR: BwWJi5BeWiWZeKQVuJCxOzEXA5Q+cmEQEmTUCfHHgfdQTiBBCTbJ4HcgZ++OCbB6V9JKodZ4AY
- N3f2xwsxK78w==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="543582461"
-Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.228.209]) ([10.249.228.209])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:15:44 -0800
-Subject: [PATCH v3 02/12] perf record: introduce thread specific data array
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>
-References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <6ad03a01-a3a4-5df4-7cf5-cbc768764e75@linux.intel.com>
-Date:   Mon, 16 Nov 2020 15:15:42 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1728843AbgKPMQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:16:11 -0500
+Received: from trantor (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A17A622263;
+        Mon, 16 Nov 2020 12:16:07 +0000 (UTC)
+Date:   Mon, 16 Nov 2020 12:16:05 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 04/21] kasan: unpoison stack only with
+ CONFIG_KASAN_STACK
+Message-ID: <X7Jthb9D5Ekq93sS@trantor>
+References: <cover.1603372719.git.andreyknvl@google.com>
+ <ded454eeff88f631dc08eef76f0ad9f2daff0085.1603372719.git.andreyknvl@google.com>
+ <CACT4Y+Zys3+VUsO6GDWQEcjCS6Wx16W_+B6aNy-fyhPcir7eeA@mail.gmail.com>
+ <CAAeHK+xvGZNwTtvkzNnU7Hh7iUiPKFNDKDpKT8UPcqQk6Ah3yQ@mail.gmail.com>
+ <CACT4Y+Z3UCwAY2Mm1KiQMBXVhc2Bobi-YrdiNYtToNgMRjOE4g@mail.gmail.com>
+ <CANpmjNPNqHsOfcw7Wh+XQ_pPT1610-+B9By171t7KMS3aB2sBg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNPNqHsOfcw7Wh+XQ_pPT1610-+B9By171t7KMS3aB2sBg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 16, 2020 at 12:50:00PM +0100, Marco Elver wrote:
+> On Mon, 16 Nov 2020 at 11:59, Dmitry Vyukov <dvyukov@google.com> wrote:
+> > On Thu, Oct 29, 2020 at 8:57 PM 'Andrey Konovalov' via kasan-dev
+> > <kasan-dev@googlegroups.com> wrote:
+> > > On Tue, Oct 27, 2020 at 1:44 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > >
+> > > > On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> > > > >
+> > > > > There's a config option CONFIG_KASAN_STACK that has to be enabled for
+> > > > > KASAN to use stack instrumentation and perform validity checks for
+> > > > > stack variables.
+> > > > >
+> > > > > There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
+> > > > > Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
+> > > > > enabled.
+> > > > >
+> > > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > > > > Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
+> > > > > ---
+> > > > >  arch/arm64/kernel/sleep.S        |  2 +-
+> > > > >  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+> > > > >  include/linux/kasan.h            | 10 ++++++----
+> > > > >  mm/kasan/common.c                |  2 ++
+> > > > >  4 files changed, 10 insertions(+), 6 deletions(-)
+> > > > >
+> > > > > diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+> > > > > index ba40d57757d6..bdadfa56b40e 100644
+> > > > > --- a/arch/arm64/kernel/sleep.S
+> > > > > +++ b/arch/arm64/kernel/sleep.S
+> > > > > @@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
+> > > > >          */
+> > > > >         bl      cpu_do_resume
+> > > > >
+> > > > > -#ifdef CONFIG_KASAN
+> > > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > > >         mov     x0, sp
+> > > > >         bl      kasan_unpoison_task_stack_below
+> > > > >  #endif
+> > > > > diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+> > > > > index c8daa92f38dc..5d3a0b8fd379 100644
+> > > > > --- a/arch/x86/kernel/acpi/wakeup_64.S
+> > > > > +++ b/arch/x86/kernel/acpi/wakeup_64.S
+> > > > > @@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+> > > > >         movq    pt_regs_r14(%rax), %r14
+> > > > >         movq    pt_regs_r15(%rax), %r15
+> > > > >
+> > > > > -#ifdef CONFIG_KASAN
+> > > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > > >         /*
+> > > > >          * The suspend path may have poisoned some areas deeper in the stack,
+> > > > >          * which we now need to unpoison.
+> > > > > diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> > > > > index 3f3f541e5d5f..7be9fb9146ac 100644
+> > > > > --- a/include/linux/kasan.h
+> > > > > +++ b/include/linux/kasan.h
+> > > > > @@ -68,8 +68,6 @@ static inline void kasan_disable_current(void) {}
+> > > > >
+> > > > >  void kasan_unpoison_memory(const void *address, size_t size);
+> > > > >
+> > > > > -void kasan_unpoison_task_stack(struct task_struct *task);
+> > > > > -
+> > > > >  void kasan_alloc_pages(struct page *page, unsigned int order);
+> > > > >  void kasan_free_pages(struct page *page, unsigned int order);
+> > > > >
+> > > > > @@ -114,8 +112,6 @@ void kasan_restore_multi_shot(bool enabled);
+> > > > >
+> > > > >  static inline void kasan_unpoison_memory(const void *address, size_t size) {}
+> > > > >
+> > > > > -static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+> > > > > -
+> > > > >  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
+> > > > >  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
+> > > > >
+> > > > > @@ -167,6 +163,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+> > > > >
+> > > > >  #endif /* CONFIG_KASAN */
+> > > > >
+> > > > > +#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > >
+> > > > && defined(CONFIG_KASAN_STACK) for consistency
+> > >
+> > > CONFIG_KASAN_STACK is different from other KASAN configs. It's always
+> > > defined, and its value is what controls whether stack instrumentation
+> > > is enabled.
+> >
+> > Not sure why we did this instead of the following, but okay.
+> >
+> >  config KASAN_STACK
+> > -       int
+> > -       default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
+> > -       default 0
+> > +       bool
+> > +       default y if KASAN_STACK_ENABLE || CC_IS_GCC
+> > +       default n
+> 
+> I wondered the same, but then looking at scripts/Makefile.kasan I
+> think it's because we directly pass it to the compiler:
+>     ...
+>     $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
+>     ...
 
-Introduce thread specific data object and array of such objects
-to store and manage thread local data. Implement functions to
-allocate, initialize, finalize and release thread specific data.
+Try this instead:
 
-Thread local maps and overwrite_maps arrays keep pointers to
-mmap buffer objects to serve according to maps thread mask.
-Thread local pollfd array keeps event fds connected to mmaps
-buffers according to maps thread mask.
+      $(call cc-param,asan-stack=$(if $(CONFIG_KASAN_STACK),1,0)) \
 
-Thread control commands are delivered via thread local comm pipes
-and ctlfd_pos fd. External control commands (--control option)
-are delivered via evlist ctlfd_pos fd and handled by the main
-tool thread.
-
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/lib/api/fd/array.c    |  17 ++++
- tools/lib/api/fd/array.h    |   1 +
- tools/perf/builtin-record.c | 191 +++++++++++++++++++++++++++++++++++-
- 3 files changed, 206 insertions(+), 3 deletions(-)
-
-diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
-index 5e6cb9debe37..de8bcbaea3f1 100644
---- a/tools/lib/api/fd/array.c
-+++ b/tools/lib/api/fd/array.c
-@@ -88,6 +88,23 @@ int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags
- 	return pos;
- }
- 
-+int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base)
-+{
-+	struct pollfd *entry;
-+	int npos;
-+
-+	if (pos >= base->nr)
-+		return -EINVAL;
-+
-+	entry = &base->entries[pos];
-+
-+	npos = fdarray__add(fda, entry->fd, entry->events, base->priv[pos].flags);
-+	if (npos >= 0)
-+		fda->priv[npos] = base->priv[pos];
-+
-+	return npos;
-+}
-+
- int fdarray__filter(struct fdarray *fda, short revents,
- 		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
- 		    void *arg)
-diff --git a/tools/lib/api/fd/array.h b/tools/lib/api/fd/array.h
-index 7fcf21a33c0c..4a03da7f1fc1 100644
---- a/tools/lib/api/fd/array.h
-+++ b/tools/lib/api/fd/array.h
-@@ -42,6 +42,7 @@ struct fdarray *fdarray__new(int nr_alloc, int nr_autogrow);
- void fdarray__delete(struct fdarray *fda);
- 
- int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags flags);
-+int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base);
- int fdarray__poll(struct fdarray *fda, int timeout);
- int fdarray__filter(struct fdarray *fda, short revents,
- 		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 82f009703ad7..765a90e38f69 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -56,6 +56,7 @@
- #include <poll.h>
- #include <pthread.h>
- #include <unistd.h>
-+#include <sys/syscall.h>
- #include <sched.h>
- #include <signal.h>
- #ifdef HAVE_EVENTFD_SUPPORT
-@@ -90,6 +91,24 @@ struct thread_mask {
- 	struct mmap_cpu_mask	affinity;
- };
- 
-+struct thread_data {
-+	pid_t			tid;
-+	struct thread_mask	*mask;
-+	struct {
-+		int		msg[2];
-+		int		ack[2];
-+	} comm;
-+	struct fdarray		pollfd;
-+	int			ctlfd_pos;
-+	struct mmap		**maps;
-+	struct mmap		**overwrite_maps;
-+	int			nr_mmaps;
-+	struct record		*rec;
-+	unsigned long long	samples;
-+	unsigned long		waking;
-+	u64			bytes_written;
-+};
-+
- struct record {
- 	struct perf_tool	tool;
- 	struct record_opts	opts;
-@@ -114,6 +133,7 @@ struct record {
- 	struct mmap_cpu_mask	affinity_mask;
- 	unsigned long		output_max_size;	/* = 0: unlimited */
- 	struct thread_mask	*thread_masks;
-+	struct thread_data	*thread_data;
- 	int			nr_threads;
- };
- 
-@@ -842,9 +862,168 @@ static int record__kcore_copy(struct machine *machine, struct perf_data *data)
- 	return kcore_copy(from_dir, kcore_dir);
- }
- 
-+static int record__thread_data_init_comm(struct thread_data *thread_data)
-+{
-+	if (pipe(thread_data->comm.msg) || pipe(thread_data->comm.ack)) {
-+		pr_err("Failed to create thread comm pipes, error %m\n");
-+		return -ENOMEM;
-+	}
-+
-+	pr_debug("thread_data[%p]: msg=[%d,%d], ack=[%d,%d]\n", thread_data,
-+		 thread_data->comm.msg[0], thread_data->comm.msg[1],
-+		 thread_data->comm.ack[0], thread_data->comm.ack[1]);
-+
-+	return 0;
-+}
-+
-+static int record__thread_data_init_maps(struct thread_data *thread_data, struct evlist *evlist)
-+{
-+	int m, tm, nr_mmaps = evlist->core.nr_mmaps;
-+	struct mmap *mmap = evlist->mmap;
-+	struct mmap *overwrite_mmap = evlist->overwrite_mmap;
-+	struct perf_cpu_map *cpus = evlist->core.cpus;
-+
-+	thread_data->nr_mmaps = bitmap_weight(thread_data->mask->maps.bits, thread_data->mask->maps.nbits);
-+	if (mmap) {
-+		thread_data->maps = zalloc(thread_data->nr_mmaps * sizeof(struct mmap *));
-+		if (!thread_data->maps) {
-+			pr_err("Failed to allocate maps thread data\n");
-+			return -ENOMEM;
-+		}
-+	}
-+	if (overwrite_mmap) {
-+		thread_data->overwrite_maps = zalloc(thread_data->nr_mmaps * sizeof(struct mmap *));
-+		if (!thread_data->overwrite_maps) {
-+			pr_err("Failed to allocate overwrite maps thread data\n");
-+			return -ENOMEM;
-+		}
-+	}
-+	pr_debug("thread_data[%p]: nr_mmaps=%d, maps=%p, overwrite_maps=%p\n", thread_data,
-+		 thread_data->nr_mmaps, thread_data->maps, thread_data->overwrite_maps);
-+
-+	for (m = 0, tm = 0; m < nr_mmaps && tm < thread_data->nr_mmaps; m++) {
-+		if (test_bit(cpus->map[m], thread_data->mask->maps.bits)) {
-+			if (thread_data->maps) {
-+				thread_data->maps[tm] = &mmap[m];
-+				pr_debug("thread_data[%p]: maps[%d] -> mmap[%d], cpus[%d]\n",
-+					 thread_data, tm, m, cpus->map[m]);
-+			}
-+			if (thread_data->overwrite_maps) {
-+				thread_data->overwrite_maps[tm] = &overwrite_mmap[m];
-+				pr_debug("thread_data[%p]: overwrite_maps[%d] -> overwrite_mmap[%d], cpus[%d]\n",
-+					 thread_data, tm, m, cpus->map[m]);
-+			}
-+			tm++;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int record__thread_data_init_pollfd(struct thread_data *thread_data, struct evlist *evlist)
-+{
-+	int f, tm, pos;
-+	struct mmap *map, *overwrite_map;
-+
-+	fdarray__init(&thread_data->pollfd, 64);
-+
-+	for (tm = 0; tm < thread_data->nr_mmaps; tm++) {
-+		map = thread_data->maps ? thread_data->maps[tm] : NULL;
-+		overwrite_map = thread_data->overwrite_maps ? thread_data->overwrite_maps[tm] : NULL;
-+
-+		for (f = 0; f < evlist->core.pollfd.nr; f++) {
-+			void *ptr = evlist->core.pollfd.priv[f].ptr;
-+
-+			if ((map && ptr == map) || (overwrite_map && ptr == overwrite_map)) {
-+				pos = fdarray__clone(&thread_data->pollfd, f, &evlist->core.pollfd);
-+				if (pos < 0)
-+					return pos;
-+				pr_debug("thread_data[%p]: pollfd[%d] <- event_fd=%d\n",
-+					 thread_data, pos, evlist->core.pollfd.entries[f].fd);
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int record__alloc_thread_data(struct record *rec, struct evlist *evlist)
-+{
-+	int t, ret;
-+	struct thread_data *thread_data;
-+
-+	thread_data = zalloc(rec->nr_threads * sizeof(*(rec->thread_data)));
-+	if (!thread_data) {
-+		pr_err("Failed to allocate thread data\n");
-+		return -ENOMEM;
-+	}
-+
-+	for (t = 0; t < rec->nr_threads; t++) {
-+		thread_data[t].rec = rec;
-+		thread_data[t].mask = &rec->thread_masks[t];
-+		ret = record__thread_data_init_maps(&thread_data[t], evlist);
-+		if (ret)
-+			return ret;
-+		ret = record__thread_data_init_pollfd(&thread_data[t], evlist);
-+		if (ret)
-+			return ret;
-+		if (t) {
-+			thread_data[t].tid = -1;
-+			ret = record__thread_data_init_comm(&thread_data[t]);
-+			if (ret)
-+				return ret;
-+			thread_data[t].ctlfd_pos = fdarray__add(&thread_data[t].pollfd,
-+								thread_data[t].comm.msg[0],
-+								POLLIN | POLLERR | POLLHUP,
-+								fdarray_flag__nonfilterable);
-+			if (thread_data[t].ctlfd_pos < 0)
-+				return -ENOMEM;
-+			pr_debug("thread_data[%p]: pollfd[%d] <- ctl_fd=%d\n",
-+				 thread_data, thread_data[t].ctlfd_pos,
-+				 thread_data[t].comm.msg[0]);
-+		} else {
-+			thread_data[t].tid = syscall(SYS_gettid);
-+			if (evlist->ctl_fd.pos == -1)
-+				continue;
-+			thread_data[t].ctlfd_pos = fdarray__clone(&thread_data[t].pollfd,
-+								  evlist->ctl_fd.pos,
-+								  &evlist->core.pollfd);
-+			if (ret < 0)
-+				return ret;
-+			pr_debug("thread_data[%p]: pollfd[%d] <- ctl_fd=%d\n",
-+				 thread_data, thread_data[t].ctlfd_pos,
-+				 evlist->core.pollfd.entries[evlist->ctl_fd.pos].fd);
-+		}
-+	}
-+
-+	rec->thread_data = thread_data;
-+
-+	return 0;
-+}
-+
-+static int record__free_thread_data(struct record *rec)
-+{
-+	int t;
-+
-+	for (t = 0; t < rec->nr_threads; t++) {
-+		close(rec->thread_data[t].comm.msg[0]);
-+		close(rec->thread_data[t].comm.msg[1]);
-+		close(rec->thread_data[t].comm.ack[0]);
-+		close(rec->thread_data[t].comm.ack[1]);
-+		zfree(&rec->thread_data[t].maps);
-+		zfree(&rec->thread_data[t].overwrite_maps);
-+		fdarray__exit(&rec->thread_data[t].pollfd);
-+	}
-+
-+	zfree(&rec->thread_data);
-+
-+	return 0;
-+}
-+
- static int record__mmap_evlist(struct record *rec,
- 			       struct evlist *evlist)
- {
-+	int ret;
- 	struct record_opts *opts = &rec->opts;
- 	bool auxtrace_overwrite = opts->auxtrace_snapshot_mode ||
- 				  opts->auxtrace_sample_mode;
-@@ -875,6 +1054,14 @@ static int record__mmap_evlist(struct record *rec,
- 				return -EINVAL;
- 		}
- 	}
-+
-+	if (evlist__initialize_ctlfd(evlist, opts->ctl_fd, opts->ctl_fd_ack))
-+		return -1;
-+
-+	ret = record__alloc_thread_data(rec, evlist);
-+	if (ret)
-+		return ret;
-+
- 	return 0;
- }
- 
-@@ -1845,9 +2032,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		perf_evlist__start_workload(rec->evlist);
- 	}
- 
--	if (evlist__initialize_ctlfd(rec->evlist, opts->ctl_fd, opts->ctl_fd_ack))
--		goto out_child;
--
- 	if (opts->initial_delay) {
- 		pr_info(EVLIST_DISABLED_MSG);
- 		if (opts->initial_delay > 0) {
-@@ -1998,6 +2182,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		record__synthesize_workload(rec, true);
- 
- out_child:
-+	record__free_thread_data(rec);
- 	evlist__finalize_ctlfd(rec->evlist);
- 	record__mmap_read_all(rec, true);
- 	record__aio_mmap_read_sync(rec);
 -- 
-2.24.1
-
-
+Catalin
