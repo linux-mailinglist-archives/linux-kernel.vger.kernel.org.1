@@ -2,123 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C122B4A9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB012B4A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731813AbgKPQRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:17:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731378AbgKPQRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:17:14 -0500
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF3262227F
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 16:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605543434;
-        bh=q1HNWQlgqyDV4J+94bAX1fiF1L9E46ZR4cKIv+z263Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Dj5aAyQ1f5t4ajIRx09p+pzqAm9V9n/zJv9vYOtdh3E4cupE5WneWybBM8nlkxjrc
-         c08AIbC+ARdj5MO4GlOZ+dL7VvRZbBHsVZEU8oGdhSqVvdDXripbzytHPt9RM9OZXI
-         BaaD21da+IYcNePJxoOZRNpEG3pf/cX8onFrGfo8=
-Received: by mail-ed1-f52.google.com with SMTP id a15so19326875edy.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:17:13 -0800 (PST)
-X-Gm-Message-State: AOAM532WrtxSSmMXnMhmhU0Ermpa3jVW8xxoDB/+NhwWZoWfDGwRiJ0q
-        eieUestc4Vf8S2L/W2IMweTCMVWVW8T9M+3BdQ==
-X-Google-Smtp-Source: ABdhPJyPsbGQNAIpJqwexuf+/mGJEj4xArjOBxDL5Q/Sy+XEJHFSX6d1dq3TrtTA8UHG1sae7pvgH7U8o4j6Ylx5HZ4=
-X-Received: by 2002:aa7:d408:: with SMTP id z8mr16316296edq.166.1605543432331;
- Mon, 16 Nov 2020 08:17:12 -0800 (PST)
+        id S1731822AbgKPQRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731378AbgKPQRU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:17:20 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96645C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:17:18 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id o144so7260743ybg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:17:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qfMGBZE7z85lbUaeNNJmQZfi+sNA7mNJwV+OyH/GI9g=;
+        b=Ooe4WoFYkrQmfYFrj2bCrfE5vxFIweuSLSSE0nTMoRVFoE0+OuswAgTxdkTixIl94M
+         FtNZTFbFrdV5S2OanmcSJPBulunHG3q+UcsHnRsMauVxlQS4BfRkrLuevImbnhgIA2ip
+         2rId5EglaNg3LrVaTPpPOuwy6Ih6hEnMv8ShGRELzuPUc5YqWC3z5B3oWDiSBi7PxjzQ
+         t6R6eJPUVebeQox/+fo4JHOjaeayY6zsM3tTQk8QKE9bfq0JTfnlkvgDLW2o3d7e7jzq
+         0Vy6GjEvqqOVyQ2NnvD9s1hTiHpcm+5J+3NSjdrLOmNeTvhdpSPGlrcoHQ8kHbAm4j+e
+         7y5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qfMGBZE7z85lbUaeNNJmQZfi+sNA7mNJwV+OyH/GI9g=;
+        b=KlfG3mruk1Ipq2hrKBV8ssHlSFIL3it4A0yFt1G/rp14RuLBwimSVr/3vrPQ0LeJRC
+         tiCHvvjYdFnku4JAiT4soPzkgFWtwnZS3q65uaMoO31A7hVWYZrjx8WNUzKQjSDiBePD
+         b6RDO3OHJ0yKT42DkgrJFBq85aUsAJjqlMg334P1RlLnWT9GLEd/LajMBYoX8azOsUpU
+         q7Ic8fuBwXHeihXI2V+DYAhHZEa15qRF3Q4mFKB0XbLgif3PGfRAIKDO+So4wj71dtzN
+         gltnarwC1bqXLXezCyjo+W7Ey5xAMqLSaOX3OGm8xAQe8yBIbAB+e0UUJw8kWRKE7jqH
+         HxQQ==
+X-Gm-Message-State: AOAM532XdkvfTJxr2wVs2MC+16l3J//QBtbq/+F0QtZ62uOLJIUPQeOv
+        e38P55vVmirRye/JdJWk6jM2+jdI8KW9sJ7FiSA=
+X-Google-Smtp-Source: ABdhPJxzwZNx9nx6gDwrNLsljCWMiZgL4N8OxJdUSv2UeNWffDpweGDMIoVSMbe6lXA+zCLMZBkdqWXCFlF27aj9mRg=
+X-Received: by 2002:a25:2e0d:: with SMTP id u13mr13339063ybu.247.1605543437943;
+ Mon, 16 Nov 2020 08:17:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20201029152702.533-1-chunkuang.hu@kernel.org> <20201029152702.533-3-chunkuang.hu@kernel.org>
- <1604039049.31607.13.camel@mhfsdcap03> <CAAOTY_8Nf=Lh_JDojKY3oHdTigO=i+BHuvVA+9hYXCzgu-2Cfg@mail.gmail.com>
- <20201116072554.GH7499@vkoul-mobl>
-In-Reply-To: <20201116072554.GH7499@vkoul-mobl>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 17 Nov 2020 00:17:00 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8SyT87bSAmdrhwnEzRO_Yt0BQtDWnPrPahg4qTrUq1zQ@mail.gmail.com>
-Message-ID: <CAAOTY_8SyT87bSAmdrhwnEzRO_Yt0BQtDWnPrPahg4qTrUq1zQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] phy: mediatek: Move mtk_mipi_dsi_phy driver into
- drivers/phy/mediatek folder
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+References: <20201116134121.587563-1-poeschel@lemonage.de>
+In-Reply-To: <20201116134121.587563-1-poeschel@lemonage.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 16 Nov 2020 17:17:07 +0100
+Message-ID: <CANiq72=fvLe25_a2jHxg1R60ixkT09+Xqwo9b3WL1FY+qb4EYw@mail.gmail.com>
+Subject: Re: [PATCH] auxdisplay: panel: Remove redundant charlcd_ops structures
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Vinod:
-
-Vinod Koul <vkoul@kernel.org> =E6=96=BC 2020=E5=B9=B411=E6=9C=8816=E6=97=A5=
- =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:25=E5=AF=AB=E9=81=93=EF=BC=9A
+On Mon, Nov 16, 2020 at 2:41 PM <poeschel@lemonage.de> wrote:
 >
-> On 02-11-20, 07:08, Chun-Kuang Hu wrote:
-> > + Vinod:
-> >
-> > Hi, Chunfeng:
-> >
-> > Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2020=E5=B9=B410=E6=
-=9C=8830=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=882:24=E5=AF=AB=E9=81=
-=93=EF=BC=9A
-> > >
-> > > On Thu, 2020-10-29 at 23:27 +0800, Chun-Kuang Hu wrote:
-> > > > mtk_mipi_dsi_phy is currently placed inside mediatek drm driver, bu=
-t it's
-> > > > more suitable to place a phy driver into phy driver folder, so move
-> > > > mtk_mipi_dsi_phy driver into phy driver folder.
-> > > >
-> > > > Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> > > > ---
-> > > >  drivers/gpu/drm/mediatek/Kconfig                           | 7 ---=
-----
-> > > >  drivers/gpu/drm/mediatek/Makefile                          | 6 ---=
----
-> > > >  drivers/phy/mediatek/Kconfig                               | 7 +++=
-++++
-> > > >  drivers/phy/mediatek/Makefile                              | 5 +++=
-++
-> > > >  .../mediatek/phy-mtk-mipi-dsi-mt8173.c}                    | 2 +-
-> > > >  .../mediatek/phy-mtk-mipi-dsi-mt8183.c}                    | 2 +-
-> > > >  .../mtk_mipi_tx.c =3D> phy/mediatek/phy-mtk-mipi-dsi.c}      | 2 +=
--
-> > > >  .../mtk_mipi_tx.h =3D> phy/mediatek/phy-mtk-mipi-dsi.h}      | 0
-> > > >  8 files changed, 15 insertions(+), 16 deletions(-)
-> > > >  rename drivers/{gpu/drm/mediatek/mtk_mt8173_mipi_tx.c =3D> phy/med=
-iatek/phy-mtk-mipi-dsi-mt8173.c} (99%)
-> > > >  rename drivers/{gpu/drm/mediatek/mtk_mt8183_mipi_tx.c =3D> phy/med=
-iatek/phy-mtk-mipi-dsi-mt8183.c} (99%)
-> > > >  rename drivers/{gpu/drm/mediatek/mtk_mipi_tx.c =3D> phy/mediatek/p=
-hy-mtk-mipi-dsi.c} (99%)
-> > > >  rename drivers/{gpu/drm/mediatek/mtk_mipi_tx.h =3D> phy/mediatek/p=
-hy-mtk-mipi-dsi.h} (100%)
-> > >
-> > > Reviewed-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> >
-> > I would like to apply the whole series into my tree, would you please
-> > give an acked-by tag on this patch, so I could apply this patch into
-> > my tree.
+> From: Lars Poeschel <poeschel@lemonage.de>
 >
-> I would prefer this to go thru phy tree, unless there are dependencies,
-> which I am not clear looking at above
+> The three struct charlcd_ops contain the same data, so we only need one
+> of this structures. The other two are removed.
 >
+> Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
 
-Please apply this series to phy tree, and I would drop this series
-from my tree, thanks.
+Thanks Lars, picking this up.
 
-Regards,
-Chun-Kuang.
-
-> --
-> ~Vinod
+Cheers,
+Miguel
