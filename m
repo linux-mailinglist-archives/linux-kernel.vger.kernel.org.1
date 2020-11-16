@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16322B4D69
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 619442B4DEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732995AbgKPRh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:37:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
+        id S2387451AbgKPRjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:39:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732064AbgKPRh0 (ORCPT
+        with ESMTP id S1733279AbgKPRh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:37:26 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10ABC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:25 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id d12so19596548wrr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:25 -0800 (PST)
+        Mon, 16 Nov 2020 12:37:27 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12244C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:27 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id r17so19663259wrw.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=y2n5EAuxxaWf0Dm92MV4U7zHBQN4uYE06MkP3Ik/k8Q=;
-        b=BnwVbJwRHIrWiSelgE8VUORGPDGET5j5wYZz3HQcFJYdlMvspKOuspFebmEah8Hjz6
-         gr31bK0POXAE4z3LwjHafVrjp8+fYHxVWnm2p9z34efZ830IGvN9jlKtUbJcGYdha7En
-         xZXaENA81gYhIFOEhMERcLgH3znBEyebE00yYVb1zJ6NnnNzRoWmik/7PBmcPfB1TaGn
-         8j+nSptwK8yJ904NRY4L9MeSNKIm0mEVS8vfrkxgDP6BDDczdt9JbFF4myk3nh9Rh79S
-         H+8NNQZYtlq81stY+zFgFh3rmhvPAnYDZ93qgC1jbZDxICbEWjNQbSlwg0FLj0ak9QwW
-         iK5Q==
+        bh=ZB9hYDRdCmOkwqHlGjcs4P6f6PN70ruIEMJUcMVmENQ=;
+        b=hZVLMix1qZXuOVledxd2pSvUCKHQwD1kkJJOi+0dzOiRZWtJzU6UHoOXvxWRs0/GcW
+         yFlNWsBkdSrSq/mxr6HCuk6ZLzSLP3sSthyILxjtGJCBetdfhF9kSyv9F0CEQW7V6N1r
+         CZBQP/LlSmmkZWzV4UOV0pCYavCl/esO2zH3MHWnY8aK8hGIE5gH8a7mE3lc0HRsZxfR
+         f7Vkt/kyfkxpJg7u/yMSOHcb7IWtXceYip3tFAxmngjh/tsCk3Xph+1PeS1GTEXNqq3R
+         fSySmp9Ht+PyBmgCj5THCOIIZB7U/be1M7R15riXasVAZzNzd7561n1QB16RiepLN97K
+         dboQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=y2n5EAuxxaWf0Dm92MV4U7zHBQN4uYE06MkP3Ik/k8Q=;
-        b=ctHakwxc0UD9F6KJfP/rKTceeZR86b+Bk3iahhGYY7PUnwVS72dPuXOOw4qN0MJKeG
-         MgERylIBL/mggwcArDV734sC8qgE1FR4zks4DfEnZiJQ6FY/KCDc2eGbe/FKcMJnoMpx
-         w7P7+DUjYUYWuv3EbEYsW4AjOMlKwLQm97EFpY8ZcY5/w5ZL3CvBUWxKTvEci8avxb2I
-         4kGkMupOwlcJm71McVf5aiFeD1pd5VVx7Uy1JnEpgPI6rBz3TPiYALXRK3jVqQ7wjlru
-         ew4qKB5/XCWruCCY9JoR2b+fhPqUlcWVK8LAaKoic1lavDKAKHmpMvK22rDQ2lxhW801
-         v+gg==
-X-Gm-Message-State: AOAM531cxJC/2rEhTWUAcLCaS/jUYY5+HNLg8LHgfLiJ+p/z1c20jpSG
-        puD5JJEGiJ7kdgIkZBUtjXZ2nQ==
-X-Google-Smtp-Source: ABdhPJxvANXM3aKchSP4W3dRVCrfAA1T8q3gatRW71Sh24RLgAx9VaHVKFdu4fZkQBtH1WN6XZq8UA==
-X-Received: by 2002:a5d:6892:: with SMTP id h18mr20526445wru.49.1605548244607;
-        Mon, 16 Nov 2020 09:37:24 -0800 (PST)
+        bh=ZB9hYDRdCmOkwqHlGjcs4P6f6PN70ruIEMJUcMVmENQ=;
+        b=IXjXcXwJyAgDUMR+EO7gOvIhT3bScqiJYnEDNPHKcvRNEZbbUY8YjTUq2pvCi3pFX5
+         KNN1ofgcFJxcGPmP3jw8khdgg+KFcFwCjFkFtboi2vt9cPOTWJdudaQGRAozNaiaGZfw
+         X6ApmSDJn/zaSapabMxLKp8TF3p4bnhvdMb072P7YqM1g/1fcRQaa6+SJAR1o3e8Vd5S
+         5MaEg3Yelwzmm6GRTq2z/4oDhIQrBVL4wv/OWhEEAqKM9jrFvbUbd5aAs+piYZxl7LkY
+         6WG6QVyc2UQLH334TvC7Roq6hcG6sOy+Lt10Xi+ODJHErU32qDb5iGmEcIKDuYPFMhos
+         wG3Q==
+X-Gm-Message-State: AOAM532wHJ53k9T/SmY0xSx7sLqpqB7kE2zDWVRAIYofwSfjpnAt+eaP
+        LvLgVCSP10VMu3EaZCEzVpviqw==
+X-Google-Smtp-Source: ABdhPJydVhYVQplr9ob8iExHsLg/heD2iZQeiyoF2zK3gQ9KqSr1EMIhtlHB/PvQg1QOb8r4EHIfmw==
+X-Received: by 2002:adf:f881:: with SMTP id u1mr21825293wrp.103.1605548245824;
+        Mon, 16 Nov 2020 09:37:25 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.23
+        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:37:24 -0800 (PST)
+        Mon, 16 Nov 2020 09:37:25 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 15/43] drm/radeon/atom: Move 'radeon_atom_hw_i2c_*()'s prototypes into shared header
-Date:   Mon, 16 Nov 2020 17:36:32 +0000
-Message-Id: <20201116173700.1830487-16-lee.jones@linaro.org>
+Subject: [PATCH 16/43] drm/radeon/radeon_gem: Move 'radeon_gem_prime_*()'s prototypes to shared header
+Date:   Mon, 16 Nov 2020 17:36:33 +0000
+Message-Id: <20201116173700.1830487-17-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116173700.1830487-1-lee.jones@linaro.org>
 References: <20201116173700.1830487-1-lee.jones@linaro.org>
@@ -71,11 +71,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/atombios_i2c.c:100:5: warning: no previous prototype for ‘radeon_atom_hw_i2c_xfer’ [-Wmissing-prototypes]
- 100 | int radeon_atom_hw_i2c_xfer(struct i2c_adapter *i2c_adap,
+ drivers/gpu/drm/radeon/radeon_prime.c:34:18: warning: no previous prototype for ‘radeon_gem_prime_get_sg_table’ [-Wmissing-prototypes]
+ 34 | struct sg_table *radeon_gem_prime_get_sg_table(struct drm_gem_object *obj)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/radeon_prime.c:42:7: warning: no previous prototype for ‘radeon_gem_prime_vmap’ [-Wmissing-prototypes]
+ 42 | void *radeon_gem_prime_vmap(struct drm_gem_object *obj)
+ | ^~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/radeon_prime.c:55:6: warning: no previous prototype for ‘radeon_gem_prime_vunmap’ [-Wmissing-prototypes]
+ 55 | void radeon_gem_prime_vunmap(struct drm_gem_object *obj, void *vaddr)
  | ^~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/atombios_i2c.c:150:5: warning: no previous prototype for ‘radeon_atom_hw_i2c_func’ [-Wmissing-prototypes]
- 150 | u32 radeon_atom_hw_i2c_func(struct i2c_adapter *adap)
+ drivers/gpu/drm/radeon/radeon_prime.c:62:24: warning: no previous prototype for ‘radeon_gem_prime_import_sg_table’ [-Wmissing-prototypes]
+ 62 | struct drm_gem_object *radeon_gem_prime_import_sg_table(struct drm_device *dev,
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/radeon_prime.c:86:5: warning: no previous prototype for ‘radeon_gem_prime_pin’ [-Wmissing-prototypes]
+ 86 | int radeon_gem_prime_pin(struct drm_gem_object *obj)
+ | ^~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/radeon_prime.c:104:6: warning: no previous prototype for ‘radeon_gem_prime_unpin’ [-Wmissing-prototypes]
+ 104 | void radeon_gem_prime_unpin(struct drm_gem_object *obj)
+ | ^~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/radeon_prime.c:120:17: warning: no previous prototype for ‘radeon_gem_prime_export’ [-Wmissing-prototypes]
+ 120 | struct dma_buf *radeon_gem_prime_export(struct drm_gem_object *gobj,
  | ^~~~~~~~~~~~~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -86,43 +101,81 @@ Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/atom.h       | 7 +++++++
- drivers/gpu/drm/radeon/radeon_i2c.c | 4 ----
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/radeon/radeon_gem.c   |  1 +
+ drivers/gpu/drm/radeon/radeon_prime.c |  1 +
+ drivers/gpu/drm/radeon/radeon_prime.h | 39 +++++++++++++++++++++++++++
+ 3 files changed, 41 insertions(+)
+ create mode 100644 drivers/gpu/drm/radeon/radeon_prime.h
 
-diff --git a/drivers/gpu/drm/radeon/atom.h b/drivers/gpu/drm/radeon/atom.h
-index 1bf06c91cd959..5de0563b63d2e 100644
---- a/drivers/gpu/drm/radeon/atom.h
-+++ b/drivers/gpu/drm/radeon/atom.h
-@@ -154,6 +154,13 @@ bool atom_parse_data_header(struct atom_context *ctx, int index, uint16_t *size,
- bool atom_parse_cmd_header(struct atom_context *ctx, int index,
- 			   uint8_t *frev, uint8_t *crev);
- int atom_allocate_fb_scratch(struct atom_context *ctx);
-+
-+struct i2c_msg;
-+struct i2c_adapter;
-+int radeon_atom_hw_i2c_xfer(struct i2c_adapter *i2c_adap,
-+			    struct i2c_msg *msgs, int num);
-+u32 radeon_atom_hw_i2c_func(struct i2c_adapter *adap);
-+
- #include "atom-types.h"
- #include "atombios.h"
- #include "ObjectID.h"
-diff --git a/drivers/gpu/drm/radeon/radeon_i2c.c b/drivers/gpu/drm/radeon/radeon_i2c.c
-index aa61b3cb4049c..e543d993f73ee 100644
---- a/drivers/gpu/drm/radeon/radeon_i2c.c
-+++ b/drivers/gpu/drm/radeon/radeon_i2c.c
-@@ -34,10 +34,6 @@
- #include "radeon.h"
- #include "atom.h"
+diff --git a/drivers/gpu/drm/radeon/radeon_gem.c b/drivers/gpu/drm/radeon/radeon_gem.c
+index d2876ce3bc9e2..b6b21d2e72624 100644
+--- a/drivers/gpu/drm/radeon/radeon_gem.c
++++ b/drivers/gpu/drm/radeon/radeon_gem.c
+@@ -35,6 +35,7 @@
+ #include <drm/radeon_drm.h>
  
--extern int radeon_atom_hw_i2c_xfer(struct i2c_adapter *i2c_adap,
--				   struct i2c_msg *msgs, int num);
--extern u32 radeon_atom_hw_i2c_func(struct i2c_adapter *adap);
--
- bool radeon_ddc_probe(struct radeon_connector *radeon_connector, bool use_aux)
+ #include "radeon.h"
++#include "radeon_prime.h"
+ 
+ struct dma_buf *radeon_gem_prime_export(struct drm_gem_object *gobj,
+ 					int flags);
+diff --git a/drivers/gpu/drm/radeon/radeon_prime.c b/drivers/gpu/drm/radeon/radeon_prime.c
+index 088d39a51c0d2..dd482edc819c5 100644
+--- a/drivers/gpu/drm/radeon/radeon_prime.c
++++ b/drivers/gpu/drm/radeon/radeon_prime.c
+@@ -30,6 +30,7 @@
+ #include <drm/radeon_drm.h>
+ 
+ #include "radeon.h"
++#include "radeon_prime.h"
+ 
+ struct sg_table *radeon_gem_prime_get_sg_table(struct drm_gem_object *obj)
  {
- 	u8 out = 0x0;
+diff --git a/drivers/gpu/drm/radeon/radeon_prime.h b/drivers/gpu/drm/radeon/radeon_prime.h
+new file mode 100644
+index 0000000000000..11b7f80987834
+--- /dev/null
++++ b/drivers/gpu/drm/radeon/radeon_prime.h
+@@ -0,0 +1,39 @@
++/* radeon_prime.h -- Private header for radeon driver -*- linux-c -*-
++ *
++ * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
++ * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
++ * All rights reserved.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice (including the next
++ * paragraph) shall be included in all copies or substantial portions of the
++ * Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++ * DEALINGS IN THE SOFTWARE.
++ *
++ */
++
++#ifndef __RADEON_PRIME_H__
++#define __RADEON_PRIME_H__
++
++struct dma_buf *radeon_gem_prime_export(struct drm_gem_object *gobj,
++					int flags);
++struct sg_table *radeon_gem_prime_get_sg_table(struct drm_gem_object *obj);
++int radeon_gem_prime_pin(struct drm_gem_object *obj);
++void radeon_gem_prime_unpin(struct drm_gem_object *obj);
++void *radeon_gem_prime_vmap(struct drm_gem_object *obj);
++void radeon_gem_prime_vunmap(struct drm_gem_object *obj, void *vaddr);
++
++#endif				/* __RADEON_PRIME_H__ */
 -- 
 2.25.1
 
