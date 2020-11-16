@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89AE2B4CF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1072B4CF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732970AbgKPRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:30:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
+        id S1732996AbgKPRal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732951AbgKPRaT (ORCPT
+        with ESMTP id S1732959AbgKPRaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:30:19 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D559C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:30:18 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id m6so2429891wrg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:30:18 -0800 (PST)
+        Mon, 16 Nov 2020 12:30:20 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F71C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:30:19 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so19623153wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:30:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XYd0yK/RTvMALAHwJymskqLfNpbt6qhOE1pCsWZvd64=;
-        b=lDIlK2xaGwnzIz+QADs8o6Bo79L3RZPPz8VoCPoBcfthqdLDQPw8MO6yO/xZJQ+AvN
-         U5FYXK1M9NtFYOSvrc03rX/lLJ5sDK8K2tvTxpIGRbO0hU2a7vA9kPMLM2Wx5pa1umgs
-         SVQXaFlJd0LOiwLfm6Vd7w0r+4D6UUTOsWPfSwb66utl5bg/Dbb8t6gYcZlS4qt+QdZM
-         GlUPfcUz0K3rMn550b76K6Y/hFA/KmzeM+nivd+0YckiZXtpuCvU8l6E333ACnsr7yxq
-         Fsv/Ycmpzhi1MzqUT1drTicwjPwiKr9KzQKbIU0nzb4H6Zlxfs7g2AgD2lSQxi1An5vd
-         DZJQ==
+        bh=oQB5rAR+1+kEveAEir1T88yOeq9CZP66J4NDJ9xsMf8=;
+        b=qfvsLkNfBDVcez+mP8sjEQQ2PAy0RRLcrkAePUGE8FPOg5SROKwYV7r3WaEAHsSl8q
+         82z1+lEhHRxnJWYkIyDvOV/SBBEbIZ5LXw4FQCkFeL6yTqDc0iJ7p3uHVcgvkWj/1K3p
+         llSlffDSlSjk49XcQEMEPFfawSiO6P0lomMGwzZcl6YyrchqtiH15P9BE1jRABqhPS94
+         2oJz4PH9Vn3t5KP+9FtHMqRMCa1vPMBe5ituVb9WjxKv4gixjTE4YNYnMDSgRXv5ryhX
+         bInIpfnWVcgCL0dV3+zAS9swCq7gx/SrASVAc85BqnKz23zIrOuI4k5cV7JITZ5yyeTo
+         +FTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XYd0yK/RTvMALAHwJymskqLfNpbt6qhOE1pCsWZvd64=;
-        b=O6ZqGtyq75rWiJXlTUeXWY6wjbGqylxxHyrd05mNJ5FTbgoWtC3Q13HqhbasBaWcyY
-         qLUYXKs92ti7RM1N2t4ts2iavKOqb8DxsjtYVrH+J8tZCEgEEdhFBUisyQu11Md2BCfp
-         mWexIniBcsFHP8LGBlbeUNijw0iu9bdHfsv2iCuh1vwNBrsX1qLejpBREHRljUfn5qBx
-         8W0qqjsoK/un0+CcnP4SM5Ba6ju0lQ0JrA4gZEDAtvIyGmf1B2x54yc40LUFVsCjrgKQ
-         ltfY5ayrkqOc2WNcVLnkdoARTTbEGomeg8EA8UF+S+enDH94foO1x8r87TkrEFtka+5u
-         uqAQ==
-X-Gm-Message-State: AOAM533f4m21kHoStLeVWvV2lIoyxi22nyP3tkf7XtThCbc1ridHAkRc
-        pkfSLQ5FH3n9R2qGTiW/lV1UTQ==
-X-Google-Smtp-Source: ABdhPJxNnwwfVIVFwC1HbJsPcDz90XOXl0PIvrYJDAq7LbMVy0MJs++OUn9XFrPB1hSrWNurrLbtjA==
-X-Received: by 2002:a05:6000:1cf:: with SMTP id t15mr20965202wrx.92.1605547817138;
-        Mon, 16 Nov 2020 09:30:17 -0800 (PST)
+        bh=oQB5rAR+1+kEveAEir1T88yOeq9CZP66J4NDJ9xsMf8=;
+        b=PB32njm1NbuMSEQVcYbeZhTjOpG6zfZvSaKC1uRrpilGOaOmYQfQmd9RxyRTiG41yA
+         q+87HNJPVY6v4bQlJ5D7EsmBR2iohUMsD7ZgHRTtdTbUPlydHlf89MUwd7A5jKN/KHZe
+         cC8VRIggpg0ug4DnubzANln577iIow3P9paiUjCIdwGY/RtN8NFDMaVuEdH7WBKoww5N
+         NDLT/3xEMf4RUKQLnvzB1njl/MZIjQn2UCH/IUoYkhPgCtHa8O+mliCgtkxaomn1SS7R
+         jOGgCe9A6um6sJZMXRkPyL+v7TOseEi5I4e4InOkggJU1nMSw+kdOkZTxug9ZgWgMYLQ
+         mRZg==
+X-Gm-Message-State: AOAM533CyDPjM90vzmh5L2KqMAr/RL3h3CMJ95NtVftm+bqHbITwpJie
+        6k1Xt+MaiIm8JW8WnuwTBFIgAA==
+X-Google-Smtp-Source: ABdhPJx67FcvrUuJao/V/YluYnVebJQCRA/5ZbDROAXO4liKX3AvUnuGTXJX2Cwa9GTXjayZxyA4Sw==
+X-Received: by 2002:a5d:4e4e:: with SMTP id r14mr3868933wrt.308.1605547818474;
+        Mon, 16 Nov 2020 09:30:18 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id f23sm20054854wmb.43.2020.11.16.09.30.16
+        by smtp.gmail.com with ESMTPSA id f23sm20054854wmb.43.2020.11.16.09.30.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:30:16 -0800 (PST)
+        Mon, 16 Nov 2020 09:30:17 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Sumit Semwal <sumit.semwal@linaro.org>,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 06/43] drm/radeon/radeon_legacy_encoders: Move 'radeon_add_legacy_encoder' prototype to shared header
-Date:   Mon, 16 Nov 2020 17:29:28 +0000
-Message-Id: <20201116173005.1825880-7-lee.jones@linaro.org>
+Subject: [PATCH 07/43] drm/radeon/radeon_legacy_encoders: Move 'radeon_add_legacy_encoder's prototype to shared location
+Date:   Mon, 16 Nov 2020 17:29:29 +0000
+Message-Id: <20201116173005.1825880-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116173005.1825880-1-lee.jones@linaro.org>
 References: <20201116173005.1825880-1-lee.jones@linaro.org>
@@ -73,8 +73,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
-  drivers/gpu/drm/radeon/radeon_legacy_encoders.c:1745:1: warning: no previous prototype for ‘radeon_add_legacy_encoder’ [-Wmissing-prototypes]
- 1745 | radeon_add_legacy_encoder(struct drm_device *dev, uint32_t encoder_enum, uint32_t supported_device)
+ drivers/gpu/drm/radeon/radeon_legacy_encoders.c:1746:1: warning: no previous prototype for ‘radeon_add_legacy_encoder’ [-Wmissing-prototypes]
+ 1746 | radeon_add_legacy_encoder(struct drm_device *dev, uint32_t encoder_enum, uint32_t supported_device)
  | ^~~~~~~~~~~~~~~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -88,81 +88,69 @@ Cc: linux-media@vger.kernel.org
 Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/radeon_encoders.c      |  4 +--
- .../gpu/drm/radeon/radeon_legacy_encoders.c   |  1 +
- .../gpu/drm/radeon/radeon_legacy_encoders.h   | 34 +++++++++++++++++++
- 3 files changed, 36 insertions(+), 3 deletions(-)
- create mode 100644 drivers/gpu/drm/radeon/radeon_legacy_encoders.h
+ drivers/gpu/drm/radeon/radeon_atombios.c        | 6 +-----
+ drivers/gpu/drm/radeon/radeon_combios.c         | 6 +-----
+ drivers/gpu/drm/radeon/radeon_legacy_encoders.h | 2 ++
+ 3 files changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_encoders.c b/drivers/gpu/drm/radeon/radeon_encoders.c
-index ced022fae19d7..b60a373d3ead3 100644
---- a/drivers/gpu/drm/radeon/radeon_encoders.c
-+++ b/drivers/gpu/drm/radeon/radeon_encoders.c
-@@ -31,11 +31,9 @@
+diff --git a/drivers/gpu/drm/radeon/radeon_atombios.c b/drivers/gpu/drm/radeon/radeon_atombios.c
+index 71bf2ed172697..cc80651b25773 100644
+--- a/drivers/gpu/drm/radeon/radeon_atombios.c
++++ b/drivers/gpu/drm/radeon/radeon_atombios.c
+@@ -35,16 +35,12 @@
+ #include "atom-bits.h"
+ #include "radeon_asic.h"
+ #include "radeon_atombios.h"
++#include "radeon_legacy_encoders.h"
+ 
+ extern void
+ radeon_add_atom_encoder(struct drm_device *dev, uint32_t encoder_enum,
+ 			uint32_t supported_device, u16 caps);
+ 
+-/* from radeon_legacy_encoder.c */
+-extern void
+-radeon_add_legacy_encoder(struct drm_device *dev, uint32_t encoder_enum,
+-			  uint32_t supported_device);
+-
+ union atom_supported_devices {
+ 	struct _ATOM_SUPPORTED_DEVICES_INFO info;
+ 	struct _ATOM_SUPPORTED_DEVICES_INFO_2 info_2;
+diff --git a/drivers/gpu/drm/radeon/radeon_combios.c b/drivers/gpu/drm/radeon/radeon_combios.c
+index d3c04df7e75d7..ff2135059c071 100644
+--- a/drivers/gpu/drm/radeon/radeon_combios.c
++++ b/drivers/gpu/drm/radeon/radeon_combios.c
+@@ -31,6 +31,7 @@
  #include <drm/radeon_drm.h>
  
  #include "radeon.h"
 +#include "radeon_legacy_encoders.h"
  #include "atom.h"
  
--extern void
--radeon_legacy_backlight_init(struct radeon_encoder *radeon_encoder,
--			     struct drm_connector *drm_connector);
- extern void
- radeon_atom_backlight_init(struct radeon_encoder *radeon_encoder,
- 			   struct drm_connector *drm_connector);
-diff --git a/drivers/gpu/drm/radeon/radeon_legacy_encoders.c b/drivers/gpu/drm/radeon/radeon_legacy_encoders.c
-index 44d060f75318e..e64fd0ce67070 100644
---- a/drivers/gpu/drm/radeon/radeon_legacy_encoders.c
-+++ b/drivers/gpu/drm/radeon/radeon_legacy_encoders.c
-@@ -35,6 +35,7 @@
+ #ifdef CONFIG_PPC_PMAC
+@@ -40,11 +41,6 @@
+ #include <asm/prom.h>
+ #endif /* CONFIG_PPC_PMAC */
  
- #include "radeon.h"
- #include "radeon_asic.h"
-+#include "radeon_legacy_encoders.h"
- #include "atom.h"
- #ifdef CONFIG_PMAC_BACKLIGHT
- #include <asm/backlight.h>
+-/* from radeon_legacy_encoder.c */
+-extern void
+-radeon_add_legacy_encoder(struct drm_device *dev, uint32_t encoder_enum,
+-			  uint32_t supported_device);
+-
+ /* old legacy ATI BIOS routines */
+ 
+ /* COMBIOS table offsets */
 diff --git a/drivers/gpu/drm/radeon/radeon_legacy_encoders.h b/drivers/gpu/drm/radeon/radeon_legacy_encoders.h
-new file mode 100644
-index 0000000000000..a80b387559d4d
---- /dev/null
+index a80b387559d4d..f4c7432267e67 100644
+--- a/drivers/gpu/drm/radeon/radeon_legacy_encoders.h
 +++ b/drivers/gpu/drm/radeon/radeon_legacy_encoders.h
-@@ -0,0 +1,34 @@
-+/* radeon_legacy_encoders.h -- Private header for radeon driver -*- linux-c -*-
-+ *
-+ * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
-+ * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
-+ * All rights reserved.
-+ *
-+ * Permission is hereby granted, free of charge, to any person obtaining a
-+ * copy of this software and associated documentation files (the "Software"),
-+ * to deal in the Software without restriction, including without limitation
-+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-+ * and/or sell copies of the Software, and to permit persons to whom the
-+ * Software is furnished to do so, subject to the following conditions:
-+ *
-+ * The above copyright notice and this permission notice (including the next
-+ * paragraph) shall be included in all copies or substantial portions of the
-+ * Software.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-+ * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-+ * DEALINGS IN THE SOFTWARE.
-+ *
-+ */
-+
-+#ifndef __RADEON_LEGACY_ENCODERS_H__
-+#define __RADEON_LEGACY_ENCODERS_H__
-+
-+void radeon_legacy_backlight_init(struct radeon_encoder *radeon_encoder,
-+				  struct drm_connector *drm_connector);
-+
-+#endif				/* __RADEON_LEGACY_ENCODERS_H__ */
+@@ -30,5 +30,7 @@
+ 
+ void radeon_legacy_backlight_init(struct radeon_encoder *radeon_encoder,
+ 				  struct drm_connector *drm_connector);
++void radeon_add_legacy_encoder(struct drm_device *dev, uint32_t encoder_enum,
++			       uint32_t supported_device);
+ 
+ #endif				/* __RADEON_LEGACY_ENCODERS_H__ */
 -- 
 2.25.1
 
