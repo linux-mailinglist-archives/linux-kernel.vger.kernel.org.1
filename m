@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EFFD2B466D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB5A2B4670
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730357AbgKPOyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:54:01 -0500
-Received: from mga12.intel.com ([192.55.52.136]:31603 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728396AbgKPOyA (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:54:00 -0500
-IronPort-SDR: Lc1Kinf5u41R787EDdjstzAdkkYcbRhstwfwVWISYQKDwWW3YuCloAa3JklNj6virHMqiBa2ao
- iJYcppiuWqEA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="150025052"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="150025052"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:53:57 -0800
-IronPort-SDR: 4D3M3GrfcY3OGBuGYQE/mG5d7U2ks71wToYrCxIwJ+7269hMa00wyh2I1L3cyWPO78+4X5FXIR
- b9MEk69W5Jiw==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="367727077"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:53:57 -0800
-Date:   Mon, 16 Nov 2020 06:53:55 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     "Jin, Yao" <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-kernel <Linux-kernel@vger.kernel.org>,
-        "Liang, Kan" <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>
-Subject: Re: [PATCH] perf vendor events: Update Skylake client events to v50
-Message-ID: <20201116145355.GU894261@tassilo.jf.intel.com>
-References: <20201104015102.30363-1-yao.jin@linux.intel.com>
- <20201106030018.GA359712@google.com>
- <93fae76f-ce2b-ab0b-3ae9-cc9a2b4cbaec@linux.intel.com>
- <CAM9d7chhrYh1hmHkw8NKkwEHDoU0q2ArpOj3NGm0_RiQ7eSuxQ@mail.gmail.com>
- <38be0597-7f93-0aa1-b4c5-3c7f23b74f13@linux.intel.com>
- <20201115133558.GN894261@tassilo.jf.intel.com>
- <CAP-5=fW-9oj4PK=hBmvrCqfzLnoqTe502FRb74Jwqpo+3KoJKw@mail.gmail.com>
+        id S1730388AbgKPOyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:54:47 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:33822 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728396AbgKPOyr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:54:47 -0500
+Received: by mail-oi1-f195.google.com with SMTP id w188so19077067oib.1;
+        Mon, 16 Nov 2020 06:54:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H1fyXfriaU5b4SAeacTn2vCNWOWHstHOi6kBAkwLmps=;
+        b=Go7vaomOVVHxeTMKCsb/9a4of+7qRb7TrSFKzmwhQr6rZfcuAfwX4/tRrkvI8H2q06
+         DugXbHjPUAgbLiJwvCZ3ODBHYSra/B9A4KQjhld3EZMPYnJvlgGI2J7QGWFBFJKhWb/O
+         VfE7ivfxmEMHxsMwpz2ykJ5BGN1bRDDOb65r8e1Q4xcLi3PgDe2PgnjZ7x6AZUdrCM32
+         8yiduEs0El6oZC+YwOgnLJtqeg1O+HuH0QtXABAH5Ghxb2YZXFjAGsQq81m+AQ8WvhSR
+         cY6c5Iv187uad39hoMZg+BCB3NFtUygVwmmFtmYRV2jat1P9i6F6Qw4TioG+X6cLW0Ai
+         pVug==
+X-Gm-Message-State: AOAM5302Qo6wnv3ZFWemkFji+11KG1t5bSKIx2w/N/IYoghKxXknxPHk
+        yTbSj4N6IsYZEv04coqM8Q==
+X-Google-Smtp-Source: ABdhPJz5gWioJ8NqYo4oG9SUmUzRw7oWLBP2V+XP7Gx8sDtfeW4CefAXIkAElVf39xP91omtQMlQqg==
+X-Received: by 2002:aca:bdc4:: with SMTP id n187mr884007oif.154.1605538486308;
+        Mon, 16 Nov 2020 06:54:46 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k10sm4849639otb.81.2020.11.16.06.54.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 06:54:45 -0800 (PST)
+Received: (nullmailer pid 1635671 invoked by uid 1000);
+        Mon, 16 Nov 2020 14:54:44 -0000
+Date:   Mon, 16 Nov 2020 08:54:44 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Orson Zhai <orsonzhai@gmail.com>, linux-input@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        Nemo Han <nemo.han@unisoc.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: input: Convert sc27xx-vibra.txt to
+ json-schema
+Message-ID: <20201116145444.GA1635499@bogus>
+References: <20201113113451.52355-1-zhang.lyra@gmail.com>
+ <20201113113451.52355-2-zhang.lyra@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fW-9oj4PK=hBmvrCqfzLnoqTe502FRb74Jwqpo+3KoJKw@mail.gmail.com>
+In-Reply-To: <20201113113451.52355-2-zhang.lyra@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->    I'd prefer if we could make a copy of these scripts into the kernel tree
->    along with the data files from:
->    https://download.01.org/perfmon/
+On Fri, 13 Nov 2020 19:34:50 +0800, Chunyan Zhang wrote:
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> 
+> Convert the sprd sc27xx vibrator binding to DT schema using json-schema.
+> 
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> ---
+>  .../bindings/input/sprd,sc27xx-vibra.txt      | 23 ----------
+>  .../bindings/input/sprd,sc27xx-vibrator.yaml  | 44 +++++++++++++++++++
+>  2 files changed, 44 insertions(+), 23 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/input/sprd,sc27xx-vibra.txt
+>  create mode 100644 Documentation/devicetree/bindings/input/sprd,sc27xx-vibrator.yaml
+> 
 
-FWIW I originally tried this to include the raw JSON files, but Ingo objected
-and wanted the files to be split up[1] and avoiding redundant headers. 
-That's why we ended up with the "compiled" format.
 
-[1] https://lkml.org/lkml/2015/5/28/336
+My bot found errors running 'make dt_binding_check' on your patch:
 
->    Having a generated file that can't be edited, reviewed, .. I also worry
->    that if/when we change the json format then event-converter-for-linux-perf
->    will need to support a multitude of perf versions.
+yamllint warnings/errors:
 
-You mean for backports? The assumption was that perf backports would backport
-any perf changes for new formats too.
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/sprd,sc27xx-vibrator.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/sprd,sc27xx-vibrator.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/input/sprd,sc27xx-vibrator.yaml
 
-In general I generally discourage any perf tools backport, people should just use
-a new version of the perf tool on old kernels.
 
-In principle the scripts could be included, but without the raw files it would
-be somewhat pointless.
+See https://patchwork.ozlabs.org/patch/1399724
 
--andi
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
