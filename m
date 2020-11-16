@@ -2,100 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C4E2B5029
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6102B505A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbgKPStW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:49:22 -0500
-Received: from mga02.intel.com ([134.134.136.20]:50413 "EHLO mga02.intel.com"
+        id S1727233AbgKPSyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:54:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727701AbgKPStV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:49:21 -0500
-IronPort-SDR: isxPLhZX6e4/B74nh8z4uG3vOKzpEKkpbZyptzktclqw6xWlfNfccQ56UOcem5Mvd4UkjTQlnY
- R31xfgo1knuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="157821919"
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="157821919"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:49:18 -0800
-IronPort-SDR: QM3K1Df9J/Wg+oJAcVfa83qY/TNr4BOrYcj8zI8YrrZ97jsEsonZ8J/uK1N6DUXothgxIsiUVW
- Pzs792lhR6LA==
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="533514829"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:49:17 -0800
-Date:   Mon, 16 Nov 2020 10:49:16 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 05/10] x86/entry: Pass irqentry_state_t by reference
-Message-ID: <20201116184916.GA722447@iweiny-DESK2.sc.intel.com>
-References: <20201106232908.364581-1-ira.weiny@intel.com>
- <20201106232908.364581-6-ira.weiny@intel.com>
- <87mtzi8n0z.fsf@nanos.tec.linutronix.de>
+        id S1726540AbgKPSyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:54:53 -0500
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 76E252231B;
+        Mon, 16 Nov 2020 18:54:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605552892;
+        bh=VUgJn3gCDf8LQvqGJa0Q1W2ju75Kaw313SrTYPIIguA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=no7KwtrMBTttsCn1fg0tI1bOmdl35zp7bdNWYTgYRLZ1Avqp9sXhE5Xtu5LgDWkFI
+         x0mUv1e5sKqCguFn/uK09NdetwAut6wP8n2RmNcBrrlkKgFbrzRbTjXKR78hr9JJJk
+         tOcdml4xDl3FRHh1Oe7Jh6gmp3+YaIcT9cdgvNsY=
+Received: by mail-ot1-f48.google.com with SMTP id f16so16995792otl.11;
+        Mon, 16 Nov 2020 10:54:52 -0800 (PST)
+X-Gm-Message-State: AOAM532S3o+jbzuV6eJjHa5KSE2npB70FgoTYP7/1/7zIi7YeSZVrNLu
+        67yvJUiPOzz27dRSbweswFb8wxWgrvXL/qb/dg==
+X-Google-Smtp-Source: ABdhPJwGvsSVV4wVtv/wz445N2G+m7CZ57dR9o2XykijQzjw0jqj+bo8Xq6WnU3sswimSpwcaX3xfZQUJ4STsn0scJQ=
+X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr532760otd.192.1605552891767;
+ Mon, 16 Nov 2020 10:54:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mtzi8n0z.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20200916071950.1493-1-gilad@benyossef.com> <20200916071950.1493-2-gilad@benyossef.com>
+ <20200923015702.GA3676455@bogus> <CAOtvUMekoMjFij_xDnrwRj2PsfgO8tKx4Jk6d7C5vq-Vh+boWw@mail.gmail.com>
+ <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com>
+In-Reply-To: <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 16 Nov 2020 12:54:40 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
+Message-ID: <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
+To:     Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ofir Drang <ofir.drang@arm.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Robin Murphy <Robin.Murphy@arm.com>,
+        Steven Price <steven.price@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 07:58:52PM +0100, Thomas Gleixner wrote:
-> Ira,
-> 
-> On Fri, Nov 06 2020 at 15:29, ira weiny wrote:
-> 
-> Subject prefix wants to 'entry:'. This changes generic code and the x86
-> part is just required to fix the generic code change.
+On Thu, Oct 22, 2020 at 1:18 AM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
+>
+>
+> Hi again,
+>
+> Any opinion on the suggested below?
 
-Sorry, yes that was carried incorrectly from earlier versions.
+Sorry, lost in the pile...
 
-> 
-> > Currently struct irqentry_state_t only contains a single bool value
-> > which makes passing it by value is reasonable.  However, future patches
-> > propose to add information to this struct, for example the PKRS
-> > register/thread state.
-> >
-> > Adding information to irqentry_state_t makes passing by value less
-> > efficient.  Therefore, change the entry/exit calls to pass irq_state by
-> > reference.
-> 
-> The PKRS muck needs to add an u32 to that struct. So how is that a
-> problem?
+> Thanks!
+> Gilad
+>
+>
+> On Tue, Sep 29, 2020 at 9:08 PM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
+>>
+>>
+>> On Wed, Sep 23, 2020 at 4:57 AM Rob Herring <robh@kernel.org> wrote:
+>> >
+>> > On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
+>> > > Document ccree driver supporting new optional parameters allowing to
+>> > > customize the DMA transactions cache parameters and ACE bus sharability
+>> > > properties.
+>> > >
+>> > > Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+>> > > ---
+>> > >  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 ++++
+>> > >  1 file changed, 4 insertions(+)
+>> > >
+>> > > diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+>> > > index 6130e6eb4af8..1a1603e457a8 100644
+>> > > --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+>> > > +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+>> > > @@ -13,6 +13,10 @@ Required properties:
+>> > >  Optional properties:
+>> > >  - clocks: Reference to the crypto engine clock.
+>> > >  - dma-coherent: Present if dma operations are coherent.
+>> > > +- awcache: Set write transactions cache attributes
+>> > > +- arcache: Set read transactions cache attributes
+>> >
+>> > dma-coherent already implies these are 011x, 101x or 111x. In my limited
+>> > experience configuring these (Calxeda SATA and ethernet), writeback,
+>> > write-allocate was pretty much always optimal.
+>>
+>> Indeed and these are the default. But not all SoC are born equal and
+>> we got a request to allow setting these.
+>>
+>> Maybe instead of numerical values have three possible verbal setting
+>> would be better?
+>>
+>>
+>> > > +- awdomain: Set write transactions ACE sharability domain (712, 703, 713 only)
+>> > > +- ardomain: Set read transactions ACE sharability domain (712, 703, 713 only)
+>> >
+>> > This probably needs something common. We may need something for Mali,
+>> > too. I don't think different settings for read and write makes much
+>> > sense nor does anything beyond IS or OS.
+>>
+>> I agree. Maybe
+>>
+>> sharability_domain: either "IS" or "OS"?
 
-There are more fields to be added for the kmap/pmem support.  So this will be
-needed eventually.  Even though it is not strictly necessary in the next patch.
+It's still an Arm thing, so it would need at least an 'arm,' prefix.
+But ideally it wouldn't be Arm specific though I'm not sure if any
+such thing is needed for other arches. If common either for Arm or
+across arches, then it needs to be documented in a common doc with
+some wider agreement than what a device specific property needs.
 
-> 
-> The resulting struct still fits into 64bit which is by far more
-> efficiently passed by value than by reference. So which problem are you
-> solving here?
+>> > These could also just be implied by the compatible string (and requiring
+>> > an SoC specific one).
+>>
+>> hm... we could do it but this will require us to know (and publicly
+>> acknowledge) of every SoC making use of this piece of hardware design.
 
-I'm getting ahead of myself a bit.  I will be adding more fields for the
-kmap/pmem tracking.
+That's already a requirement in general. Sometimes we can avoid it,
+but that's cases of getting lucky.
 
-Would you accept just a clean up for the variable names in this patch?  I could
-then add the pass by reference when I add the new fields later.  Or would an
-update to the commit message be ok to land this now?
+>> There is currently no other part of the driver that needs this.
 
-Ira
+If your DT is part of firmware, then waiting until adding some driver
+feature or quirk based on a new DT property is too late. Whereas with
+a SoC specific compatible, you can handle any new feature or quirk
+without a DT change (e.g. just a stable kernel update). Some platforms
+may not care about that model, but in general that's the policy we
+follow. Not doing that, we end up with the DWC3 binding.
 
-> 
-> Thanks
-> 
->         tglx
-> 
+A fallback compatible is how we avoid updating drivers for every
+single SoC unless needed.
+
+Rob
