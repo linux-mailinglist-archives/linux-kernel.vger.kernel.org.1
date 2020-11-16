@@ -2,291 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE4E2B3CE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFA02B3CE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgKPGOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 01:14:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgKPGOd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 01:14:33 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A65CC0613D1
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 22:14:32 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id b3so7886879pls.11
-        for <linux-kernel@vger.kernel.org>; Sun, 15 Nov 2020 22:14:32 -0800 (PST)
+        id S1726860AbgKPGPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 01:15:41 -0500
+Received: from mail-bn8nam11on2076.outbound.protection.outlook.com ([40.107.236.76]:8831
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726748AbgKPGPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 01:15:40 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G6+K4QjuQX25TewrLNdAoYiQZ4Wk0HoMYzGMLAmVJKln2miv00BrxYP3Uq1doIWA2gH9OCI6mjYLIDl31B2Ar1wJI/xQkiBNZ0cCN+i+Mv1PK9dVO1N17dJNgvGmPm/v9HJascrdYd3ghFjCpXrCafDw1GukvBmrokiYiTDDSibaqNM0FV8TNdIMZDivln+7LqIW7XRLJGdI1UF2JkqmOjWuIjI4l9Fex9tD06fE876aAWeJkc4UBcgRh8opyRPzG4avuS2Q+9ZZkZ7x1GnH/pnZdqeJw6DqvBozbJlSxGZq26I8+mpajF52ycRtAsBZCQ4fMivNZr7paeJFfA5qjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+/rZFkA1ReZQJq1MrU7AyU031CP0ONooe6o9MpuNwrE=;
+ b=iH5zlvaYzBPyL/FlgNSlEoJILox8dKB7LSQ+Bkviddrrg2Z8GaQ2V2TvUMGVWzJCGXL6XQ26R6PHuvctXXHRWaR2NgOczrXwxzDe2X0yfOuzdZXh/tIPfhgS0F1CJ5VTuWMiSWxRiGXmU0t7NTE5ziQiLPsw53b4B4G31QRiWJvUnr0Wp5FBCNb0BzExIT609Y2AbmSxZ3iOlsu3ryMBM7PfX+zHiLMCN3yfZYz4joTCD5yhQiTXEX20is/tuGq9axhaEL1pDFbavex25JoAemhSgees/5sRQooZh2unutcaZLT1fGzj8aA3nby+l8gzwDz+09u2OGN6W2NN/4cGrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=intel.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ry3fN92EHHX1LD2rBzx6c9CA9/xGEWIQ9u5LUGulEmw=;
-        b=puP7aXdRTDJB81/WVp1ounZXgQBPPBhiWK0K99W3bblEv8WhG2u/YWsL4q0DKIfIyU
-         ioQYp2B3F+ucSm63gyuARuDChjEx8FYy+bVJQF/0+lImYnBNHmOaQOXnWePza4p+HUPO
-         KqnuT3RtcbfMwe9FXLj7ow8REXMjamk23L8HnaQCgm0K2oOsheXYbutfTA3sU3J7GXMN
-         maGbaePzve6cgpC4ZJUAlsr0bOlAHv9oK7H8cAOcSksIgbQoN5Ys7Io09wikllbFaykz
-         a+mz3EYhRcxKl5+7WNFVdEUU0fxV1luMaDqlqmvbhgKb+hM/mDFybyd2aX100cXaw3Cj
-         WkYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ry3fN92EHHX1LD2rBzx6c9CA9/xGEWIQ9u5LUGulEmw=;
-        b=Fm+GGMUKT83+ltoUF4wB7UQtn1Sar+ESvEhyuKpLoIhfpvnno1EthVtQBsMpe3W+l0
-         5Sj/sb70ApOPjss81QpFaQMzoL6rLDpLu7WG7P0e+F/y3v5+NGPW0zi9vwu232jvA2F5
-         SZP7muQ073vVKN9OhC0lZCScddiBil5mg/SuzrWjABxZqZiMoLrMVBBKnA6wcfj7BW0+
-         htutuOcYZd5sENtFdGaks7J2ZegKmBx7SeAGI0ccGrGA2chssccs3ZELTBjkaY+fnPDL
-         IIlA06oGhYkZ2Q6YRPbIptx/L+Xus55Xr2ImjLEQSetgKfkhV70cLraqHMeh/hXVTQTq
-         V6Ww==
-X-Gm-Message-State: AOAM5302QLdxDs0uUnipmCCEpL086aLBmPEJGmZ5EZTqArQ0vFBNwcBq
-        PfGH5hPVmhS2+zUEirq/qIbq
-X-Google-Smtp-Source: ABdhPJwNRacrsYd7Y0675KADIjDW72gVMLPdjRK4DVYoxcLBtTUAUa/GRD7WVYLd4/bnCVPkicyUpw==
-X-Received: by 2002:a17:902:c383:b029:d6:991c:671b with SMTP id g3-20020a170902c383b02900d6991c671bmr11598626plg.51.1605507271749;
-        Sun, 15 Nov 2020 22:14:31 -0800 (PST)
-Received: from Mani-XPS-13-9360 ([2409:4072:618e:9b0a:75fd:1290:bf5c:a350])
-        by smtp.gmail.com with ESMTPSA id mt2sm17638172pjb.7.2020.11.15.22.14.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 15 Nov 2020 22:14:31 -0800 (PST)
-Date:   Mon, 16 Nov 2020 11:44:23 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 10/12] bus: mhi: core: Separate system error and power
- down handling
-Message-ID: <20201116061423.GF3926@Mani-XPS-13-9360>
-References: <1604954851-23396-1-git-send-email-bbhatt@codeaurora.org>
- <1604954851-23396-11-git-send-email-bbhatt@codeaurora.org>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+/rZFkA1ReZQJq1MrU7AyU031CP0ONooe6o9MpuNwrE=;
+ b=lqIWoEu09Q9pQoPpJ9TH9FOugw2tr6JqPLe0GMROKWTBaYWb7L4l9gXxzlubamGfKcsMC+uRNIF0/MiFl1Iqoj8putvAyfYo7lK/Rfs1chYS7MdMnDMD8zLb9hjBOhH08j8av8SNUrVDyWYkCzG8KT3OMZG7s+wRwH/gIpCy7iw=
+Received: from CY4PR22CA0080.namprd22.prod.outlook.com (2603:10b6:903:ad::18)
+ by BY5PR02MB6755.namprd02.prod.outlook.com (2603:10b6:a03:205::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
+ 2020 06:15:37 +0000
+Received: from CY1NAM02FT024.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:ad:cafe::1f) by CY4PR22CA0080.outlook.office365.com
+ (2603:10b6:903:ad::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend
+ Transport; Mon, 16 Nov 2020 06:15:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT024.mail.protection.outlook.com (10.152.74.210) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3564.22 via Frontend Transport; Mon, 16 Nov 2020 06:15:36 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Sun, 15 Nov 2020 22:15:30 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Sun, 15 Nov 2020 22:15:30 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ adrian.hunter@intel.com,
+ ulf.hansson@linaro.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-mmc@vger.kernel.org
+Received: from [172.23.64.106] (port=44780 helo=xhdvnc125.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <manish.narani@xilinx.com>)
+        id 1keXnV-0005Al-HB; Sun, 15 Nov 2020 22:15:29 -0800
+Received: by xhdvnc125.xilinx.com (Postfix, from userid 16987)
+        id AF60E121191; Mon, 16 Nov 2020 11:45:28 +0530 (IST)
+From:   Manish Narani <manish.narani@xilinx.com>
+To:     <michal.simek@xilinx.com>, <adrian.hunter@intel.com>,
+        <ulf.hansson@linaro.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <git@xilinx.com>, Manish Narani <manish.narani@xilinx.com>
+Subject: [PATCH 0/2] Bug Fixes to Tap Delay code in SDHCI Arasan driver
+Date:   Mon, 16 Nov 2020 11:45:25 +0530
+Message-ID: <1605507327-106818-1-git-send-email-manish.narani@xilinx.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604954851-23396-11-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f1522600-cf54-45d0-9a05-08d889f70895
+X-MS-TrafficTypeDiagnostic: BY5PR02MB6755:
+X-Microsoft-Antispam-PRVS: <BY5PR02MB6755758BAE12B855B789AA57C1E30@BY5PR02MB6755.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eVcd8vZQ9QLAM75QHxNGn1p1lBFIsMAreZpa3vP9Gc0qX3vBCNFLlWCMXe3Q3W7XZLRXXCbbnZETKcC9XDGjelg3Gb8LeXXTxZlbgIBPKonrLZtTSukfwML9nGS1aIQloRWFoopSqMmT+muOVY7JmnQnOPsQkwtYTscraNaf5Io52f5G8mfevEm9L+9ambhQztC5PWWEXEkELqo4L0twx8i7Se3krg32LYefX+xF0DL7N00/E84SVs/5j4Y+X+iitNQnlec/omZdZNeynbMUv/JvoXlGCwnzsTr6B63kF3ATHe05odBxlQFyfsoqTYtaGoM7BBCpjbV2R0yTRpZmVFos51XntAeiImeeFUmf+yjb2EnBlEA3gj8e9LNrsPu98n7D5TDaMICnINq+0VkMSWZuD/C51DExkr2AQcHUliY=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39850400004)(346002)(136003)(376002)(396003)(46966005)(4744005)(186003)(2906002)(82310400003)(47076004)(26005)(478600001)(356005)(82740400003)(5660300002)(44832011)(2616005)(336012)(70586007)(110136005)(54906003)(107886003)(42186006)(8936002)(36906005)(7636003)(6266002)(4326008)(316002)(8676002)(426003)(70206006)(6666004)(36756003)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2020 06:15:36.6240
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1522600-cf54-45d0-9a05-08d889f70895
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT024.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6755
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 12:47:29PM -0800, Bhaumik Bhatt wrote:
-> Currently, there exist a set of if...else statements in the
-> mhi_pm_disable_transition() function which make handling system
-> error and disable transitions differently complex. To make that
-> cleaner and facilitate differences in behavior, separate these
-> two transitions for MHI host.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+This patch set consists a couple of minor bug fixes for SDHCI Arasan
+driver. The fixes are for tap delay programming where in some cases
+tuning is failing for some of the SD cards.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Manish Narani (2):
+  mmc: sdhci-of-arasan: Use Mask writes for Tap delays
+  mmc: sdhci-of-arasan: Issue DLL reset explicitly
 
-Thanks,
-Mani
+ drivers/mmc/host/sdhci-of-arasan.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-> ---
->  drivers/bus/mhi/core/pm.c | 159 +++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 137 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index 1d04e401..347ae7d 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -444,7 +444,7 @@ static int mhi_pm_mission_mode_transition(struct mhi_controller *mhi_cntrl)
->  	return ret;
->  }
->  
-> -/* Handle SYS_ERR and Shutdown transitions */
-> +/* Handle shutdown transitions */
->  static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  				      enum mhi_pm_state transition_state)
->  {
-> @@ -460,10 +460,6 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  		to_mhi_pm_state_str(mhi_cntrl->pm_state),
->  		to_mhi_pm_state_str(transition_state));
->  
-> -	/* We must notify MHI control driver so it can clean up first */
-> -	if (transition_state == MHI_PM_SYS_ERR_PROCESS)
-> -		mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_SYS_ERROR);
-> -
->  	mutex_lock(&mhi_cntrl->pm_mutex);
->  	write_lock_irq(&mhi_cntrl->pm_lock);
->  	prev_state = mhi_cntrl->pm_state;
-> @@ -502,11 +498,8 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  							    MHICTRL_RESET_SHIFT,
->  							    &in_reset) ||
->  					!in_reset, timeout);
-> -		if ((!ret || in_reset) && cur_state == MHI_PM_SYS_ERR_PROCESS) {
-> +		if (!ret || in_reset)
->  			dev_err(dev, "Device failed to exit MHI Reset state\n");
-> -			mutex_unlock(&mhi_cntrl->pm_mutex);
-> -			return;
-> -		}
->  
->  		/*
->  		 * Device will clear BHI_INTVEC as a part of RESET processing,
-> @@ -566,19 +559,142 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl,
->  		er_ctxt->wp = er_ctxt->rbase;
->  	}
->  
-> -	if (cur_state == MHI_PM_SYS_ERR_PROCESS) {
-> -		mhi_ready_state_transition(mhi_cntrl);
-> -	} else {
-> -		/* Move to disable state */
-> -		write_lock_irq(&mhi_cntrl->pm_lock);
-> -		cur_state = mhi_tryset_pm_state(mhi_cntrl, MHI_PM_DISABLE);
-> -		write_unlock_irq(&mhi_cntrl->pm_lock);
-> -		if (unlikely(cur_state != MHI_PM_DISABLE))
-> -			dev_err(dev, "Error moving from PM state: %s to: %s\n",
-> -				to_mhi_pm_state_str(cur_state),
-> -				to_mhi_pm_state_str(MHI_PM_DISABLE));
-> +	/* Move to disable state */
-> +	write_lock_irq(&mhi_cntrl->pm_lock);
-> +	cur_state = mhi_tryset_pm_state(mhi_cntrl, MHI_PM_DISABLE);
-> +	write_unlock_irq(&mhi_cntrl->pm_lock);
-> +	if (unlikely(cur_state != MHI_PM_DISABLE))
-> +		dev_err(dev, "Error moving from PM state: %s to: %s\n",
-> +			to_mhi_pm_state_str(cur_state),
-> +			to_mhi_pm_state_str(MHI_PM_DISABLE));
-> +
-> +	dev_dbg(dev, "Exiting with PM state: %s, MHI state: %s\n",
-> +		to_mhi_pm_state_str(mhi_cntrl->pm_state),
-> +		TO_MHI_STATE_STR(mhi_cntrl->dev_state));
-> +
-> +	mutex_unlock(&mhi_cntrl->pm_mutex);
-> +}
-> +
-> +/* Handle system error transitions */
-> +static void mhi_pm_sys_error_transition(struct mhi_controller *mhi_cntrl)
-> +{
-> +	enum mhi_pm_state cur_state, prev_state;
-> +	struct mhi_event *mhi_event;
-> +	struct mhi_cmd_ctxt *cmd_ctxt;
-> +	struct mhi_cmd *mhi_cmd;
-> +	struct mhi_event_ctxt *er_ctxt;
-> +	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> +	int ret, i;
-> +
-> +	dev_dbg(dev, "Transitioning from PM state: %s to: %s\n",
-> +		to_mhi_pm_state_str(mhi_cntrl->pm_state),
-> +		to_mhi_pm_state_str(MHI_PM_SYS_ERR_PROCESS));
-> +
-> +	/* We must notify MHI control driver so it can clean up first */
-> +	mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_SYS_ERROR);
-> +
-> +	mutex_lock(&mhi_cntrl->pm_mutex);
-> +	write_lock_irq(&mhi_cntrl->pm_lock);
-> +	prev_state = mhi_cntrl->pm_state;
-> +	cur_state = mhi_tryset_pm_state(mhi_cntrl, MHI_PM_SYS_ERR_PROCESS);
-> +	write_unlock_irq(&mhi_cntrl->pm_lock);
-> +
-> +	if (cur_state != MHI_PM_SYS_ERR_PROCESS) {
-> +		dev_err(dev, "Failed to transition from PM state: %s to: %s\n",
-> +			to_mhi_pm_state_str(cur_state),
-> +			to_mhi_pm_state_str(MHI_PM_SYS_ERR_PROCESS));
-> +		goto exit_sys_error_transition;
-> +	}
-> +
-> +	mhi_cntrl->ee = MHI_EE_DISABLE_TRANSITION;
-> +	mhi_cntrl->dev_state = MHI_STATE_RESET;
-> +
-> +	/* Wake up threads waiting for state transition */
-> +	wake_up_all(&mhi_cntrl->state_event);
-> +
-> +	/* Trigger MHI RESET so that the device will not access host memory */
-> +	if (MHI_REG_ACCESS_VALID(prev_state)) {
-> +		u32 in_reset = -1;
-> +		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
-> +
-> +		dev_dbg(dev, "Triggering MHI Reset in device\n");
-> +		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_RESET);
-> +
-> +		/* Wait for the reset bit to be cleared by the device */
-> +		ret = wait_event_timeout(mhi_cntrl->state_event,
-> +					 mhi_read_reg_field(mhi_cntrl,
-> +							    mhi_cntrl->regs,
-> +							    MHICTRL,
-> +							    MHICTRL_RESET_MASK,
-> +							    MHICTRL_RESET_SHIFT,
-> +							    &in_reset) ||
-> +					!in_reset, timeout);
-> +		if (!ret || in_reset) {
-> +			dev_err(dev, "Device failed to exit MHI Reset state\n");
-> +			goto exit_sys_error_transition;
-> +		}
-> +
-> +		/*
-> +		 * Device will clear BHI_INTVEC as a part of RESET processing,
-> +		 * hence re-program it
-> +		 */
-> +		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
-> +	}
-> +
-> +	dev_dbg(dev,
-> +		"Waiting for all pending event ring processing to complete\n");
-> +	mhi_event = mhi_cntrl->mhi_event;
-> +	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, mhi_event++) {
-> +		if (mhi_event->offload_ev)
-> +			continue;
-> +		tasklet_kill(&mhi_event->task);
->  	}
->  
-> +	/* Release lock and wait for all pending threads to complete */
-> +	mutex_unlock(&mhi_cntrl->pm_mutex);
-> +	dev_dbg(dev, "Waiting for all pending threads to complete\n");
-> +	wake_up_all(&mhi_cntrl->state_event);
-> +
-> +	dev_dbg(dev, "Reset all active channels and remove MHI devices\n");
-> +	device_for_each_child(mhi_cntrl->cntrl_dev, NULL, mhi_destroy_device);
-> +
-> +	mutex_lock(&mhi_cntrl->pm_mutex);
-> +
-> +	WARN_ON(atomic_read(&mhi_cntrl->dev_wake));
-> +	WARN_ON(atomic_read(&mhi_cntrl->pending_pkts));
-> +
-> +	/* Reset the ev rings and cmd rings */
-> +	dev_dbg(dev, "Resetting EV CTXT and CMD CTXT\n");
-> +	mhi_cmd = mhi_cntrl->mhi_cmd;
-> +	cmd_ctxt = mhi_cntrl->mhi_ctxt->cmd_ctxt;
-> +	for (i = 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++, cmd_ctxt++) {
-> +		struct mhi_ring *ring = &mhi_cmd->ring;
-> +
-> +		ring->rp = ring->base;
-> +		ring->wp = ring->base;
-> +		cmd_ctxt->rp = cmd_ctxt->rbase;
-> +		cmd_ctxt->wp = cmd_ctxt->rbase;
-> +	}
-> +
-> +	mhi_event = mhi_cntrl->mhi_event;
-> +	er_ctxt = mhi_cntrl->mhi_ctxt->er_ctxt;
-> +	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, er_ctxt++,
-> +	     mhi_event++) {
-> +		struct mhi_ring *ring = &mhi_event->ring;
-> +
-> +		/* Skip offload events */
-> +		if (mhi_event->offload_ev)
-> +			continue;
-> +
-> +		ring->rp = ring->base;
-> +		ring->wp = ring->base;
-> +		er_ctxt->rp = er_ctxt->rbase;
-> +		er_ctxt->wp = er_ctxt->rbase;
-> +	}
-> +
-> +	mhi_ready_state_transition(mhi_cntrl);
-> +
-> +exit_sys_error_transition:
->  	dev_dbg(dev, "Exiting with PM state: %s, MHI state: %s\n",
->  		to_mhi_pm_state_str(mhi_cntrl->pm_state),
->  		TO_MHI_STATE_STR(mhi_cntrl->dev_state));
-> @@ -666,8 +782,7 @@ void mhi_pm_st_worker(struct work_struct *work)
->  			mhi_ready_state_transition(mhi_cntrl);
->  			break;
->  		case DEV_ST_TRANSITION_SYS_ERR:
-> -			mhi_pm_disable_transition
-> -				(mhi_cntrl, MHI_PM_SYS_ERR_PROCESS);
-> +			mhi_pm_sys_error_transition(mhi_cntrl);
->  			break;
->  		case DEV_ST_TRANSITION_DISABLE:
->  			mhi_pm_disable_transition
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+-- 
+2.17.1
+
