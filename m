@@ -2,118 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB212B5160
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61B92B515F
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbgKPTlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:41:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
+        id S1730525AbgKPTmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:42:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726235AbgKPTlH (ORCPT
+        with ESMTP id S1727885AbgKPTmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:41:07 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ECCC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:41:07 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id q206so19980233oif.13
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:41:07 -0800 (PST)
+        Mon, 16 Nov 2020 14:42:31 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDADEC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:42:30 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id o15so20084899wru.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:42:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6keoknQ1MsKwnGp8atRoEQd/F72ZsuKmob9p0v6BNfM=;
-        b=tasZqXsCQKKnY90DDBOFueK9bf/kmpGBOAMyvne0z9yM75iExvuVlnIk0btPNoCiCW
-         yBmB+CMAN2cCImV2JGL6cpu714isOmHVLvsDEAO62hR3/dtTAQjN1lWQes+JEayo9rmB
-         500b83lVZ/U5gjKhj7DHSvEwv0Dq75nbcJd3BKzd82GcHv2oH0iq+catANFxSt/ijASr
-         sV5A7ECRSgg5x8ZJrv9XEQ94yyPRPGBZVW8MxWLb/Z4w5TaBkabO1CCmTtqPoREqgHS9
-         lE0Iqa6FxfaQU7AcM3ngJPdJSY0Hw/6W+vD+vLQepB7oE+fQA7uoAEuYolzsyADOj3AO
-         O8aQ==
+         :cc:content-transfer-encoding;
+        bh=KTZFJMoYQUZgdpI/19BGIebojU4ukZZTbwKHE00HlzU=;
+        b=elKJQiROtgbhrW+P9em1d5XxU/BilYkaRnYemQYBfQahAG2bLZwUDBqZvhqhOT6aBv
+         YNTp2ePqbl4IlN55TjGAwtpAqPJppKXso+l9ARj7I0j0vPcopCtcAUbeFbc9GNhwb6lO
+         L4RTJCqbAuxx36fSLavX4NIpJbitpBz86WgZ0kvbxQ7l+ykxcFd1r8Aw2tZk2N1m7Fp9
+         8eY5Y/uA6u0emHuP0RUGmAZdCJuI7LrGUjZz2J3naLOVexFgOkFOGFwoGbhI5tygua15
+         X8+dJBDnspmEi8aus4F0M3ZN/rpKN15hLXc5HAEhT8BiOhB+/NmeIUfE90Pam+0Lh4DG
+         qYlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6keoknQ1MsKwnGp8atRoEQd/F72ZsuKmob9p0v6BNfM=;
-        b=ZPr65qXUXajtNNc+/6pZCa2cSUZcnbF6zuyPeFy5OKcmulKyciK9+rzaLwu4pCkix9
-         Fzxn9Kx1kExQj2PvvHb0jTu3pscuBNAvcrLjxAALuCO7mW+wdcf5s277HfjhleWR6ZoA
-         /ecHXSoPAyuXscVDPBMNotLijlHhxbiMf/OCK4M27KQjD5r41BJ1691XSdQDFcHcMtaI
-         l/P3itACjAKk9jBZkNXGH8oInZfwQ8ahTYbSwH1EKL7rGp9q5A38Zf7dCf88fwLRmMVF
-         CHoWX53IOgS5Lbwlla6HX6dCNWoIDOSZfrFYQw3Hi2FXKgDjsTI5vnm9g0cvhvUl00Li
-         m1bA==
-X-Gm-Message-State: AOAM533IdtJwiKegBdUm8s0gQ47nEwQaT2wlRMX/tXSOMfAp9xCr6SO9
-        BsNZ5vGTnlFycGyLzl8XgddMHVMcla0ZklqMgmt2iw==
-X-Google-Smtp-Source: ABdhPJwJgF7lB1wdlG4FfTWlBxtm5nm8SQZOWNMyXCDlUcOypoXNgjIFwoE/Hheuqlcxou/pA7ro3Cacgg/Nbmah4fU=
-X-Received: by 2002:aca:c3d6:: with SMTP id t205mr218361oif.10.1605555666955;
- Mon, 16 Nov 2020 11:41:06 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KTZFJMoYQUZgdpI/19BGIebojU4ukZZTbwKHE00HlzU=;
+        b=UyapCjGqZtESxBHU+tydTyKABBYkE+kGgzQs7QnmiCQpiSGqqRNWBeOhCsrhwc0Hib
+         2TgiDrd/weDHHAA1jV85lNLf7b7rhnSLpnoTprSGHvrN6+HBB1IJPAUB2IyJeP3RIUx9
+         iuCAo0hVe8k/MiSzx0jPWU4MJ92urkoveQMWAt/bUDeI5i+Ud6HhapAU+8m7ZBpzO6QO
+         5yUI6G7tchmaCB0O7BCZ4dXI7tJSa8eptfkUjbPp+5NRFnZvA7XpzHnaBlKtn0epNWdq
+         W3Xveo/W4mAHWk1fZKdSh957EP4NJdJS5OKuXiGM+44RvUNgiPzV7S5mg+TQlgnW1OLR
+         GCsA==
+X-Gm-Message-State: AOAM532HUeJss5ytUGrFg5j6xBKOh93J1w/v0Q10QgSwysdCtXjivHlE
+        6ff3uGri28uov/1GStBOa24e0Vyiu8oIjqo1Ais=
+X-Google-Smtp-Source: ABdhPJyVPbHew5fCWEwOHXse2oFu567Pe91sSIpcscwdSsjiCFueLZnkVOJ15/LGoBJyU4EUV5wxg1hHEykVlixY1PY=
+X-Received: by 2002:adf:e9c9:: with SMTP id l9mr22208776wrn.124.1605555749750;
+ Mon, 16 Nov 2020 11:42:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20201106042710.55979-1-john.stultz@linaro.org>
- <20201106042710.55979-3-john.stultz@linaro.org> <20201116155936.GE2224373@ulmo>
-In-Reply-To: <20201116155936.GE2224373@ulmo>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 16 Nov 2020 11:40:55 -0800
-Message-ID: <CALAqxLXhpE-vw_jL-0_fc1eg-aU5_sLwoNAUiPdUUHx2ubxrkw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] firmware: QCOM_SCM: Allow qcom_scm driver to be
- loadable as a permenent module
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+References: <20201116173005.1825880-1-lee.jones@linaro.org> <20201116173005.1825880-10-lee.jones@linaro.org>
+In-Reply-To: <20201116173005.1825880-10-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 16 Nov 2020 14:42:18 -0500
+Message-ID: <CADnq5_O2PFLnsSTtDMhO+2a3_2z_s=gLHzF1JxLwqROgt8a2Ew@mail.gmail.com>
+Subject: Re: [PATCH 09/43] drm/radeon/rv770: Move 'rv770_set_clk_bypass_mode'
+ prototype to shared location
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 7:59 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+On Mon, Nov 16, 2020 at 12:30 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> On Fri, Nov 06, 2020 at 04:27:10AM +0000, John Stultz wrote:
-> > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> > index 04878caf6da49..c64d7a2b65134 100644
-> > --- a/drivers/iommu/Kconfig
-> > +++ b/drivers/iommu/Kconfig
-> > @@ -248,6 +248,7 @@ config SPAPR_TCE_IOMMU
-> >  config ARM_SMMU
-> >       tristate "ARM Ltd. System MMU (SMMU) Support"
-> >       depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
-> > +     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
-> >       select IOMMU_API
-> >       select IOMMU_IO_PGTABLE_LPAE
-> >       select ARM_DMA_USE_IOMMU if ARM
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> This, in conjunction with deferred probe timeout, causes mayhem on
-> Tegra186. The problem, as far as I can tell, is that there are various
-> devices that are hooked up to the ARM SMMU, but if ARM SMMU ends up
-> being built as a loadable module, then those devices will initialize
-> without IOMMU support (because deferred probe will timeout before the
-> ARM SMMU module can be loaded from the root filesystem).
+>  drivers/gpu/drm/radeon/rv770.c:1138:6: warning: no previous prototype fo=
+r =E2=80=98rv770_set_clk_bypass_mode=E2=80=99 [-Wmissing-prototypes]
+>  1138 | void rv770_set_clk_bypass_mode(struct radeon_device *rdev)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~~
 >
-> Unfortunately, the ARM SMMU module will eventually end up being loaded
-> once the root filesystem has been mounted (for example via SDHCI or
-> Ethernet, both with using just plain, non-IOMMU-backed DMA API) and then
-> initialize, configuring as "fault by default", which then results from a
-> slew of SMMU faults from all the devices that have previously configured
-> themselves without IOMMU support.
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Oof. My apologies for the trouble. Thanks so much for the report.
+Applied with minor changes.
 
-Out of curiosity, does booting with deferred_probe_timeout=30 avoid
-the issue for you?
+Thanks!
 
-thanks
--john
+Alex
+
+> ---
+>  drivers/gpu/drm/radeon/evergreen.c |  2 +-
+>  drivers/gpu/drm/radeon/r600.c      |  2 +-
+>  drivers/gpu/drm/radeon/rv770.c     |  1 +
+>  drivers/gpu/drm/radeon/rv770.h     | 35 ++++++++++++++++++++++++++++++
+>  4 files changed, 38 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/gpu/drm/radeon/rv770.h
+>
+> diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeon/=
+evergreen.c
+> index 1f2acca437abd..9a1e240b07234 100644
+> --- a/drivers/gpu/drm/radeon/evergreen.c
+> +++ b/drivers/gpu/drm/radeon/evergreen.c
+> @@ -31,6 +31,7 @@
+>
+>  #include "atom.h"
+>  #include "avivod.h"
+> +#include "rv770.h"
+>  #include "evergreen_blit_shaders.h"
+>  #include "evergreen_reg.h"
+>  #include "evergreend.h"
+> @@ -223,7 +224,6 @@ extern u32 si_get_csb_size(struct radeon_device *rdev=
+);
+>  extern void si_get_csb_buffer(struct radeon_device *rdev, volatile u32 *=
+buffer);
+>  extern u32 cik_get_csb_size(struct radeon_device *rdev);
+>  extern void cik_get_csb_buffer(struct radeon_device *rdev, volatile u32 =
+*buffer);
+> -extern void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
+>
+>  static const u32 evergreen_golden_registers[] =3D
+>  {
+> diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.=
+c
+> index 12a918335ac7b..f09b6dc5cbeb3 100644
+> --- a/drivers/gpu/drm/radeon/r600.c
+> +++ b/drivers/gpu/drm/radeon/r600.c
+> @@ -40,6 +40,7 @@
+>  #include "atom.h"
+>  #include "avivod.h"
+>  #include "r600d.h"
+> +#include "rv770.h"
+>  #include "radeon.h"
+>  #include "radeon_asic.h"
+>  #include "radeon_audio.h"
+> @@ -112,7 +113,6 @@ void r600_fini(struct radeon_device *rdev);
+>  void r600_irq_disable(struct radeon_device *rdev);
+>  static void r600_pcie_gen2_enable(struct radeon_device *rdev);
+>  extern int evergreen_rlc_resume(struct radeon_device *rdev);
+> -extern void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
+>
+>  /*
+>   * Indirect registers accessor
+> diff --git a/drivers/gpu/drm/radeon/rv770.c b/drivers/gpu/drm/radeon/rv77=
+0.c
+> index 21f653ae1e1bb..88e29ebaad467 100644
+> --- a/drivers/gpu/drm/radeon/rv770.c
+> +++ b/drivers/gpu/drm/radeon/rv770.c
+> @@ -39,6 +39,7 @@
+>  #include "radeon_asic.h"
+>  #include "radeon_audio.h"
+>  #include "rv770d.h"
+> +#include "rv770.h"
+>
+>  #define R700_PFP_UCODE_SIZE 848
+>  #define R700_PM4_UCODE_SIZE 1360
+> diff --git a/drivers/gpu/drm/radeon/rv770.h b/drivers/gpu/drm/radeon/rv77=
+0.h
+> new file mode 100644
+> index 0000000000000..a3f2bb44979fe
+> --- /dev/null
+> +++ b/drivers/gpu/drm/radeon/rv770.h
+> @@ -0,0 +1,35 @@
+> +/* radeon_rv770.h -- Private header for radeon driver -*- linux-c -*-
+> + *
+> + * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
+> + * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
+> + * All rights reserved.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining=
+ a
+> + * copy of this software and associated documentation files (the "Softwa=
+re"),
+> + * to deal in the Software without restriction, including without limita=
+tion
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
+se,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice (including the =
+next
+> + * paragraph) shall be included in all copies or substantial portions of=
+ the
+> + * Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
+SS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
+TY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
+ALL
+> + * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAG=
+ES OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR=
+ OTHER
+> + * DEALINGS IN THE SOFTWARE.
+> + *
+> + */
+> +
+> +#ifndef __RADEON_RV770_H__
+> +#define __RADEON_RV770_H__
+> +
+> +struct radeon_device;
+> +
+> +void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
+> +
+> +#endif                         /* __RADEON_RV770_H__ */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
