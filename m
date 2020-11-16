@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239432B3F8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132232B3F91
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgKPJLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:11:00 -0500
-Received: from outbound-smtp08.blacknight.com ([46.22.139.13]:50697 "EHLO
-        outbound-smtp08.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727789AbgKPJK7 (ORCPT
+        id S1728559AbgKPJLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:11:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728548AbgKPJLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:10:59 -0500
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp08.blacknight.com (Postfix) with ESMTPS id 923C71C43BF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:10:57 +0000 (GMT)
-Received: (qmail 12950 invoked from network); 16 Nov 2020 09:10:57 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Nov 2020 09:10:56 -0000
-Date:   Mon, 16 Nov 2020 09:10:54 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Loadavg accounting error on arm64
-Message-ID: <20201116091054.GL3371@techsingularity.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 16 Nov 2020 04:11:37 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92531C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:11:37 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id p68so2190634pga.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:11:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=WDZ0CXg1yGGGY1e+ZEpaxJ8BP4ehKDc93ZgVx1cWbq4=;
+        b=Fa03gclw6DQdj/8PiYVlZF2lcgcpa6b7ZQ50CFbBTiKC5dPzp+8N0tKBuHXqEv94pc
+         t5NvA46nADIWQv41ep14lcoZVlCjxH5WdvtTwYg24yi8i4Ts5e9UZfGsFL4UwqpBZ4Za
+         zYEA+bBqVlI7WZpcqTg0FopFVLi25I/mTqRtkNB706sCFzw6pW/Fm+Hf2wdv2F7jbIQI
+         Gs/ji/iNqoJQMyOXrz7v4L4pStyraWi2Rg4VFY8sj86Y9wzrXlFBVgGTwhdppv8wfIM1
+         QAIf0grkD5mAdQ2c/juJ9XF2VdhpGY+f1Azn8Qy2NHbjJ9/c5kgdvrZ4dal+/f6LxONR
+         XNZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WDZ0CXg1yGGGY1e+ZEpaxJ8BP4ehKDc93ZgVx1cWbq4=;
+        b=K7KdxPWv5w58izUJjHQUUSXuyHt7XaGvGyLdqPsf3DY2nCAwgzAOeoI9ypMFXjgDro
+         Zle81HrNOAGMeoTTTsQ4elQiojelwYjBEJeyKLDdWb6rFnHzHaXz0cNM9wDDa9j3l1qD
+         zkGh2UJkw1kSbm9zxtHLfpk0jVzXrzTw4/ICWqPi/XzIRpZ2/kzUpkGqQux4PCCoyCtq
+         s3Ff7n9a7UYoShWL3Bclmg+fS0P++9icVyKLKK8HPc+WW3YRGXr1Mz0iOOzsQAu2PgZA
+         GKv6sErrU9DOjGvmvl84saUEFjg+V1/Wfu19SWQ+xOXjdtsbSdIv0fr6r2JMHVGcZDgx
+         +Rxg==
+X-Gm-Message-State: AOAM530enKKSBBwmlrbBvIUk3Etm7+I2Zb0M/l8khZo2enBYguw0qXhI
+        oXBbFGHAOGRM0jFEkuqKpuMx/DMVKUVx
+X-Google-Smtp-Source: ABdhPJwpvZSo3BRdSWyTA54DfocBXkT8Uj4S8ZsdV/7zXYjPjjGVtKsRGtnK8m+N9BY71WUfIjta9w==
+X-Received: by 2002:a63:1d12:: with SMTP id d18mr12559140pgd.314.1605517896964;
+        Mon, 16 Nov 2020 01:11:36 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id s18sm15332635pgh.60.2020.11.16.01.11.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Nov 2020 01:11:36 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     kishon@ti.com, vkoul@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH v2] phy: mapphone-mdm6600: return error when timed out powering up
+Date:   Mon, 16 Nov 2020 17:11:31 +0800
+Message-Id: <1605517891-20357-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-I got cc'd internal bug report filed against a 5.8 and 5.9 kernel
-that loadavg was "exploding" on arch64 on a machines acting as a build
-servers. It happened on at least two different arm64 variants. That setup
-is complex to replicate but fortunately can be reproduced by running
-hackbench-process-pipes while heavily overcomitting a machine with 96
-logical CPUs and then checking if loadavg drops afterwards. With an
-MMTests clone, I reproduced it as follows
+The value of variable error is overwritten by the following call
+devm_request_threaded_irq() in phy_mdm6600_device_power_on(), actually
+we should return error when timed out powering up.
 
-./run-mmtests.sh --config configs/config-workload-hackbench-process-pipes --no-monitor testrun; \
-    for i in `seq 1 60`; do cat /proc/loadavg; sleep 60; done
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+v2:
+ -directly return error when timed out powering.
 
-Load should drop to 10 after about 10 minutes and it does on x86-64 but
-remained at around 200+ on arm64.
+ drivers/phy/motorola/phy-mapphone-mdm6600.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-The reproduction case simply hammers the case where a task can be
-descheduling while also being woken by another task at the same time. It
-takes a long time to run but it makes the problem very obvious. The
-expectation is that after hackbench has been running and saturating the
-machine for a long time.
-
-Commit dbfb089d360b ("sched: Fix loadavg accounting race") fixed a loadavg
-accounting race in the generic case. Later it was documented why the
-ordering of when p->sched_contributes_to_load is read/updated relative
-to p->on_cpu.  This is critical when a task is descheduling at the same
-time it is being activated on another CPU. While the load/stores happen
-under the RQ lock, the RQ lock on its own does not give any guarantees
-on the task state.
-
-Over the weekend I convinced myself that it must be because the
-implementation of smp_load_acquire and smp_store_release do not appear
-to implement acquire/release semantics because I didn't find something
-arm64 that was playing with p->state behind the schedulers back (I could
-have missed it if it was in an assembly portion as I can't reliablyh read
-arm assembler). Similarly, it's not clear why the arm64 implementation
-does not call smp_acquire__after_ctrl_dep in the smp_load_acquire
-implementation. Even when it was introduced, the arm64 implementation
-differed significantly from the arm implementation in terms of what
-barriers it used for non-obvious reasons.
-
-Unfortunately, making that work similar to the arch-independent version
-did not help but it's not helped that I know nothing about the arm64
-memory model.
-
-I'll be looking again today to see can I find a mistake in the ordering for
-how sched_contributes_to_load is handled but again, the lack of knowledge
-on the arm64 memory model means I'm a bit stuck and a second set of eyes
-would be nice :(
-
+diff --git a/drivers/phy/motorola/phy-mapphone-mdm6600.c b/drivers/phy/motorola/phy-mapphone-mdm6600.c
+index 5172971f4c36..2f461c0d7276 100644
+--- a/drivers/phy/motorola/phy-mapphone-mdm6600.c
++++ b/drivers/phy/motorola/phy-mapphone-mdm6600.c
+@@ -423,6 +423,7 @@ static int phy_mdm6600_device_power_on(struct phy_mdm6600 *ddata)
+ 		ddata->enabled = false;
+ 		error = -ETIMEDOUT;
+ 		dev_err(ddata->dev, "Timed out powering up\n");
++		return error;
+ 	}
+ 
+ 	/* Reconfigure mode1 GPIO as input for OOB wake */
 -- 
-Mel Gorman
-SUSE Labs
+2.20.0
+
