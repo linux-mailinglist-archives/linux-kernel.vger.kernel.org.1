@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2C72B436C
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E902B436D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729918AbgKPMO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:14:57 -0500
-Received: from mga07.intel.com ([134.134.136.100]:32675 "EHLO mga07.intel.com"
+        id S1729929AbgKPMPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:15:48 -0500
+Received: from mga02.intel.com ([134.134.136.20]:13482 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727895AbgKPMO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:14:57 -0500
-IronPort-SDR: voSIYMugpXKQtIK4VUEV7E1cpsHft+qPBi6MFalRijbhkVvjkgZu04qjWnqPf2bhpbzqeLKQK1
- ndRgHYWC/6dA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="234889752"
+        id S1727895AbgKPMPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:15:47 -0500
+IronPort-SDR: vinVxnR0ERlxNbEi1nM/+VssYK6n8VTWLuyz44W2mk5caQi4t6VM4SeS6wkS7KTvoSICiivHJ4
+ TOYDwBmigzrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157761439"
 X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="234889752"
+   d="scan'208";a="157761439"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:14:55 -0800
-IronPort-SDR: B+3mx4uj/VQNno/47KSRH4PCCVE6HiU6RqcRiXd/e82TH9gIXI0Z49ZqfS5kBLwTC6XV5KVxT/
- PFPijW79kdew==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:15:47 -0800
+IronPort-SDR: BwWJi5BeWiWZeKQVuJCxOzEXA5Q+cmEQEmTUCfHHgfdQTiBBCTbJ4HcgZ++OCbB6V9JKodZ4AY
+ N3f2xwsxK78w==
 X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="543582249"
+   d="scan'208";a="543582461"
 Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.228.209]) ([10.249.228.209])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:14:52 -0800
-Subject: [PATCH v3 01/12] perf record: introduce thread affinity and mmap
- masks
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:15:44 -0800
+Subject: [PATCH v3 02/12] perf record: introduce thread specific data array
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -41,8 +40,8 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>
 References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <e92d3f86-baa5-0e62-50bd-151f33969baa@linux.intel.com>
-Date:   Mon, 16 Nov 2020 15:14:50 +0300
+Message-ID: <6ad03a01-a3a4-5df4-7cf5-cbc768764e75@linux.intel.com>
+Date:   Mon, 16 Nov 2020 15:15:42 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
@@ -55,178 +54,315 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Introduce affinity and mmap thread masks. Thread affinity mask
-defines cpus that a thread is allowed to run on. Thread maps
-mask defines mmap data buffers the thread serves to stream
-profiling data from.
+Introduce thread specific data object and array of such objects
+to store and manage thread local data. Implement functions to
+allocate, initialize, finalize and release thread specific data.
+
+Thread local maps and overwrite_maps arrays keep pointers to
+mmap buffer objects to serve according to maps thread mask.
+Thread local pollfd array keeps event fds connected to mmaps
+buffers according to maps thread mask.
+
+Thread control commands are delivered via thread local comm pipes
+and ctlfd_pos fd. External control commands (--control option)
+are delivered via evlist ctlfd_pos fd and handled by the main
+tool thread.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 116 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 116 insertions(+)
+ tools/lib/api/fd/array.c    |  17 ++++
+ tools/lib/api/fd/array.h    |   1 +
+ tools/perf/builtin-record.c | 191 +++++++++++++++++++++++++++++++++++-
+ 3 files changed, 206 insertions(+), 3 deletions(-)
 
+diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
+index 5e6cb9debe37..de8bcbaea3f1 100644
+--- a/tools/lib/api/fd/array.c
++++ b/tools/lib/api/fd/array.c
+@@ -88,6 +88,23 @@ int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags
+ 	return pos;
+ }
+ 
++int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base)
++{
++	struct pollfd *entry;
++	int npos;
++
++	if (pos >= base->nr)
++		return -EINVAL;
++
++	entry = &base->entries[pos];
++
++	npos = fdarray__add(fda, entry->fd, entry->events, base->priv[pos].flags);
++	if (npos >= 0)
++		fda->priv[npos] = base->priv[pos];
++
++	return npos;
++}
++
+ int fdarray__filter(struct fdarray *fda, short revents,
+ 		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
+ 		    void *arg)
+diff --git a/tools/lib/api/fd/array.h b/tools/lib/api/fd/array.h
+index 7fcf21a33c0c..4a03da7f1fc1 100644
+--- a/tools/lib/api/fd/array.h
++++ b/tools/lib/api/fd/array.h
+@@ -42,6 +42,7 @@ struct fdarray *fdarray__new(int nr_alloc, int nr_autogrow);
+ void fdarray__delete(struct fdarray *fda);
+ 
+ int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags flags);
++int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base);
+ int fdarray__poll(struct fdarray *fda, int timeout);
+ int fdarray__filter(struct fdarray *fda, short revents,
+ 		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index adf311d15d3d..82f009703ad7 100644
+index 82f009703ad7..765a90e38f69 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -85,6 +85,11 @@ struct switch_output {
- 	int		 cur_file;
+@@ -56,6 +56,7 @@
+ #include <poll.h>
+ #include <pthread.h>
+ #include <unistd.h>
++#include <sys/syscall.h>
+ #include <sched.h>
+ #include <signal.h>
+ #ifdef HAVE_EVENTFD_SUPPORT
+@@ -90,6 +91,24 @@ struct thread_mask {
+ 	struct mmap_cpu_mask	affinity;
  };
  
-+struct thread_mask {
-+	struct mmap_cpu_mask	maps;
-+	struct mmap_cpu_mask	affinity;
++struct thread_data {
++	pid_t			tid;
++	struct thread_mask	*mask;
++	struct {
++		int		msg[2];
++		int		ack[2];
++	} comm;
++	struct fdarray		pollfd;
++	int			ctlfd_pos;
++	struct mmap		**maps;
++	struct mmap		**overwrite_maps;
++	int			nr_mmaps;
++	struct record		*rec;
++	unsigned long long	samples;
++	unsigned long		waking;
++	u64			bytes_written;
 +};
 +
  struct record {
  	struct perf_tool	tool;
  	struct record_opts	opts;
-@@ -108,6 +113,8 @@ struct record {
- 	unsigned long long	samples;
+@@ -114,6 +133,7 @@ struct record {
  	struct mmap_cpu_mask	affinity_mask;
  	unsigned long		output_max_size;	/* = 0: unlimited */
-+	struct thread_mask	*thread_masks;
-+	int			nr_threads;
+ 	struct thread_mask	*thread_masks;
++	struct thread_data	*thread_data;
+ 	int			nr_threads;
  };
  
- static volatile int done;
-@@ -2174,6 +2181,45 @@ static int record__parse_affinity(const struct option *opt, const char *str, int
- 	return 0;
+@@ -842,9 +862,168 @@ static int record__kcore_copy(struct machine *machine, struct perf_data *data)
+ 	return kcore_copy(from_dir, kcore_dir);
  }
  
-+static int record__mmap_cpu_mask_alloc(struct mmap_cpu_mask *mask, int nr_bits)
++static int record__thread_data_init_comm(struct thread_data *thread_data)
 +{
-+	mask->nbits = nr_bits;
-+	mask->bits = bitmap_alloc(mask->nbits);
-+	if (!mask->bits) {
-+		pr_err("Failed to allocate mmap_cpu mask\n");
++	if (pipe(thread_data->comm.msg) || pipe(thread_data->comm.ack)) {
++		pr_err("Failed to create thread comm pipes, error %m\n");
 +		return -ENOMEM;
++	}
++
++	pr_debug("thread_data[%p]: msg=[%d,%d], ack=[%d,%d]\n", thread_data,
++		 thread_data->comm.msg[0], thread_data->comm.msg[1],
++		 thread_data->comm.ack[0], thread_data->comm.ack[1]);
++
++	return 0;
++}
++
++static int record__thread_data_init_maps(struct thread_data *thread_data, struct evlist *evlist)
++{
++	int m, tm, nr_mmaps = evlist->core.nr_mmaps;
++	struct mmap *mmap = evlist->mmap;
++	struct mmap *overwrite_mmap = evlist->overwrite_mmap;
++	struct perf_cpu_map *cpus = evlist->core.cpus;
++
++	thread_data->nr_mmaps = bitmap_weight(thread_data->mask->maps.bits, thread_data->mask->maps.nbits);
++	if (mmap) {
++		thread_data->maps = zalloc(thread_data->nr_mmaps * sizeof(struct mmap *));
++		if (!thread_data->maps) {
++			pr_err("Failed to allocate maps thread data\n");
++			return -ENOMEM;
++		}
++	}
++	if (overwrite_mmap) {
++		thread_data->overwrite_maps = zalloc(thread_data->nr_mmaps * sizeof(struct mmap *));
++		if (!thread_data->overwrite_maps) {
++			pr_err("Failed to allocate overwrite maps thread data\n");
++			return -ENOMEM;
++		}
++	}
++	pr_debug("thread_data[%p]: nr_mmaps=%d, maps=%p, overwrite_maps=%p\n", thread_data,
++		 thread_data->nr_mmaps, thread_data->maps, thread_data->overwrite_maps);
++
++	for (m = 0, tm = 0; m < nr_mmaps && tm < thread_data->nr_mmaps; m++) {
++		if (test_bit(cpus->map[m], thread_data->mask->maps.bits)) {
++			if (thread_data->maps) {
++				thread_data->maps[tm] = &mmap[m];
++				pr_debug("thread_data[%p]: maps[%d] -> mmap[%d], cpus[%d]\n",
++					 thread_data, tm, m, cpus->map[m]);
++			}
++			if (thread_data->overwrite_maps) {
++				thread_data->overwrite_maps[tm] = &overwrite_mmap[m];
++				pr_debug("thread_data[%p]: overwrite_maps[%d] -> overwrite_mmap[%d], cpus[%d]\n",
++					 thread_data, tm, m, cpus->map[m]);
++			}
++			tm++;
++		}
 +	}
 +
 +	return 0;
 +}
 +
-+static void record__mmap_cpu_mask_free(struct mmap_cpu_mask *mask)
++static int record__thread_data_init_pollfd(struct thread_data *thread_data, struct evlist *evlist)
 +{
-+	bitmap_free(mask->bits);
-+	mask->nbits = 0;
-+}
++	int f, tm, pos;
++	struct mmap *map, *overwrite_map;
 +
-+static void record__thread_mask_clear(struct thread_mask *mask)
-+{
-+	bitmap_zero(mask->maps.bits, mask->maps.nbits);
-+	bitmap_zero(mask->affinity.bits, mask->affinity.nbits);
-+}
++	fdarray__init(&thread_data->pollfd, 64);
 +
-+static int record__thread_mask_alloc(struct thread_mask *mask, int nr_bits)
-+{
-+	if (record__mmap_cpu_mask_alloc(&mask->maps, nr_bits) ||
-+	    record__mmap_cpu_mask_alloc(&mask->affinity, nr_bits))
-+		return -ENOMEM;
++	for (tm = 0; tm < thread_data->nr_mmaps; tm++) {
++		map = thread_data->maps ? thread_data->maps[tm] : NULL;
++		overwrite_map = thread_data->overwrite_maps ? thread_data->overwrite_maps[tm] : NULL;
++
++		for (f = 0; f < evlist->core.pollfd.nr; f++) {
++			void *ptr = evlist->core.pollfd.priv[f].ptr;
++
++			if ((map && ptr == map) || (overwrite_map && ptr == overwrite_map)) {
++				pos = fdarray__clone(&thread_data->pollfd, f, &evlist->core.pollfd);
++				if (pos < 0)
++					return pos;
++				pr_debug("thread_data[%p]: pollfd[%d] <- event_fd=%d\n",
++					 thread_data, pos, evlist->core.pollfd.entries[f].fd);
++			}
++		}
++	}
 +
 +	return 0;
 +}
 +
-+static void record__thread_mask_free(struct thread_mask *mask)
-+{
-+	record__mmap_cpu_mask_free(&mask->maps);
-+	record__mmap_cpu_mask_free(&mask->affinity);
-+}
-+
- static int parse_output_max_size(const struct option *opt,
- 				 const char *str, int unset)
- {
-@@ -2603,6 +2649,69 @@ static struct option __record_options[] = {
- 
- struct option *record_options = __record_options;
- 
-+static void record__mmap_cpu_mask_init(struct mmap_cpu_mask *mask, struct perf_cpu_map *cpus)
-+{
-+	int c;
-+
-+	for (c = 0; c < cpus->nr; c++)
-+		set_bit(cpus->map[c], mask->bits);
-+}
-+
-+static int record__alloc_thread_masks(struct record *rec, int nr_threads, int nr_bits)
++static int record__alloc_thread_data(struct record *rec, struct evlist *evlist)
 +{
 +	int t, ret;
++	struct thread_data *thread_data;
 +
-+	rec->thread_masks = zalloc(nr_threads * sizeof(*(rec->thread_masks)));
-+	if (!rec->thread_masks) {
-+		pr_err("Failed to allocate thread masks\n");
++	thread_data = zalloc(rec->nr_threads * sizeof(*(rec->thread_data)));
++	if (!thread_data) {
++		pr_err("Failed to allocate thread data\n");
 +		return -ENOMEM;
 +	}
 +
-+	for (t = 0; t < nr_threads; t++) {
-+		ret = record__thread_mask_alloc(&rec->thread_masks[t], nr_bits);
++	for (t = 0; t < rec->nr_threads; t++) {
++		thread_data[t].rec = rec;
++		thread_data[t].mask = &rec->thread_masks[t];
++		ret = record__thread_data_init_maps(&thread_data[t], evlist);
 +		if (ret)
 +			return ret;
-+		record__thread_mask_clear(&rec->thread_masks[t]);
++		ret = record__thread_data_init_pollfd(&thread_data[t], evlist);
++		if (ret)
++			return ret;
++		if (t) {
++			thread_data[t].tid = -1;
++			ret = record__thread_data_init_comm(&thread_data[t]);
++			if (ret)
++				return ret;
++			thread_data[t].ctlfd_pos = fdarray__add(&thread_data[t].pollfd,
++								thread_data[t].comm.msg[0],
++								POLLIN | POLLERR | POLLHUP,
++								fdarray_flag__nonfilterable);
++			if (thread_data[t].ctlfd_pos < 0)
++				return -ENOMEM;
++			pr_debug("thread_data[%p]: pollfd[%d] <- ctl_fd=%d\n",
++				 thread_data, thread_data[t].ctlfd_pos,
++				 thread_data[t].comm.msg[0]);
++		} else {
++			thread_data[t].tid = syscall(SYS_gettid);
++			if (evlist->ctl_fd.pos == -1)
++				continue;
++			thread_data[t].ctlfd_pos = fdarray__clone(&thread_data[t].pollfd,
++								  evlist->ctl_fd.pos,
++								  &evlist->core.pollfd);
++			if (ret < 0)
++				return ret;
++			pr_debug("thread_data[%p]: pollfd[%d] <- ctl_fd=%d\n",
++				 thread_data, thread_data[t].ctlfd_pos,
++				 evlist->core.pollfd.entries[evlist->ctl_fd.pos].fd);
++		}
 +	}
 +
-+	return 0;
-+}
-+static int record__init_thread_default_masks(struct record *rec, struct perf_cpu_map *cpus)
-+{
-+	int ret;
-+
-+	ret = record__alloc_thread_masks(rec, 1, cpu__max_cpu());
-+	if (ret)
-+		return ret;
-+
-+	record__mmap_cpu_mask_init(&rec->thread_masks->maps, cpus);
-+
-+	rec->nr_threads = 1;
++	rec->thread_data = thread_data;
 +
 +	return 0;
 +}
 +
-+static int record__init_thread_masks(struct record *rec)
-+{
-+	struct perf_cpu_map *cpus = rec->evlist->core.cpus;
-+
-+	return record__init_thread_default_masks(rec, cpus);
-+}
-+
-+static int record__fini_thread_masks(struct record *rec)
++static int record__free_thread_data(struct record *rec)
 +{
 +	int t;
 +
-+	for (t = 0; t < rec->nr_threads; t++)
-+		record__thread_mask_free(&rec->thread_masks[t]);
++	for (t = 0; t < rec->nr_threads; t++) {
++		close(rec->thread_data[t].comm.msg[0]);
++		close(rec->thread_data[t].comm.msg[1]);
++		close(rec->thread_data[t].comm.ack[0]);
++		close(rec->thread_data[t].comm.ack[1]);
++		zfree(&rec->thread_data[t].maps);
++		zfree(&rec->thread_data[t].overwrite_maps);
++		fdarray__exit(&rec->thread_data[t].pollfd);
++	}
 +
-+	zfree(&rec->thread_masks);
-+
-+	rec->nr_threads = 0;
++	zfree(&rec->thread_data);
 +
 +	return 0;
 +}
 +
- int cmd_record(int argc, const char **argv)
+ static int record__mmap_evlist(struct record *rec,
+ 			       struct evlist *evlist)
  {
- 	int err;
-@@ -2821,6 +2930,12 @@ int cmd_record(int argc, const char **argv)
- 		goto out;
++	int ret;
+ 	struct record_opts *opts = &rec->opts;
+ 	bool auxtrace_overwrite = opts->auxtrace_snapshot_mode ||
+ 				  opts->auxtrace_sample_mode;
+@@ -875,6 +1054,14 @@ static int record__mmap_evlist(struct record *rec,
+ 				return -EINVAL;
+ 		}
+ 	}
++
++	if (evlist__initialize_ctlfd(evlist, opts->ctl_fd, opts->ctl_fd_ack))
++		return -1;
++
++	ret = record__alloc_thread_data(rec, evlist);
++	if (ret)
++		return ret;
++
+ 	return 0;
+ }
+ 
+@@ -1845,9 +2032,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		perf_evlist__start_workload(rec->evlist);
  	}
  
-+	err = record__init_thread_masks(rec);
-+	if (err) {
-+		pr_err("record__init_thread_masks failed, error %d\n", err);
-+		goto out;
-+	}
-+
- 	if (rec->opts.nr_cblocks > nr_cblocks_max)
- 		rec->opts.nr_cblocks = nr_cblocks_max;
- 	pr_debug("nr_cblocks: %d\n", rec->opts.nr_cblocks);
-@@ -2839,6 +2954,7 @@ int cmd_record(int argc, const char **argv)
- 	symbol__exit();
- 	auxtrace_record__free(rec->itr);
- out_opts:
-+	record__fini_thread_masks(rec);
- 	evlist__close_control(rec->opts.ctl_fd, rec->opts.ctl_fd_ack, &rec->opts.ctl_fd_close);
- 	return err;
- }
+-	if (evlist__initialize_ctlfd(rec->evlist, opts->ctl_fd, opts->ctl_fd_ack))
+-		goto out_child;
+-
+ 	if (opts->initial_delay) {
+ 		pr_info(EVLIST_DISABLED_MSG);
+ 		if (opts->initial_delay > 0) {
+@@ -1998,6 +2182,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		record__synthesize_workload(rec, true);
+ 
+ out_child:
++	record__free_thread_data(rec);
+ 	evlist__finalize_ctlfd(rec->evlist);
+ 	record__mmap_read_all(rec, true);
+ 	record__aio_mmap_read_sync(rec);
 -- 
 2.24.1
+
 
