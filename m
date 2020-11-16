@@ -2,96 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8312B4359
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61B52B4365
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729905AbgKPMKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728000AbgKPMKW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:10:22 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC2AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 04:10:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=CmE2FOjWEYC5WnpOls1pPjhrGIcCf1icAqSOrCIgJWo=; b=IpYU0RSouIDJ9+mGrXiy+zzbis
-        cThcEFq9ft+xAQgmS9lhbzg+mzY5oQ57SMj9A1rESnClFCdNrX/iAdNU4xET5D8jKgqmz2Tq0l59r
-        a6G77+U4hFn8tblTmA0tgPfPAh5JR9/C9AwQUYjrSJi2vhadeofgHyxtr0/XhCcuhcuCC8ITc9af0
-        AqDy4zu7y74r/DZc4U/2XI7xuiuDuIwhL1Z+N+N98AgR/dXeOxSnm04ImTj+edny2BaTKfh2Of5fr
-        TN6wQCEYx8e8M+VFt+0mEqoN7imRS3/osSZRww/m0JUc8QkFCW7NslrwLzdfxFdE33/RZgBarQYGK
-        Y0kfsgcg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kedKo-0001le-1V; Mon, 16 Nov 2020 12:10:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F17D63012C3;
-        Mon, 16 Nov 2020 13:10:12 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DD03D20299B60; Mon, 16 Nov 2020 13:10:12 +0100 (CET)
-Date:   Mon, 16 Nov 2020 13:10:12 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, eupm90@gmail.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH] rcu: Allow rcu_irq_enter_check_tick() from NMI
-Message-ID: <20201116121012.GC3121378@hirez.programming.kicks-ass.net>
-References: <20201113125332.GA2611@hirez.programming.kicks-ass.net>
- <87ima8luix.fsf@nanos.tec.linutronix.de>
- <20201114010526.GK3249@paulmck-ThinkPad-P72>
+        id S1729896AbgKPMMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:12:53 -0500
+Received: from mga02.intel.com ([134.134.136.20]:13342 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728150AbgKPMMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:12:53 -0500
+IronPort-SDR: N4j6sgxGCM2Febg0T02qh46YX5m7Nvgv5fpJxqJV5wMhZS0YUWUoZ1dUC0RzSvxQ/DyfvCbtul
+ fq5t12AXqIPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157761197"
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="157761197"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:12:52 -0800
+IronPort-SDR: D+oFpHDmNvFi2cCsLr0rkEleRnOJruithhIdO7S0DRBnlnbstrq/ZZr/Sm4vUZTwBZD+jKJYfJ
+ H72ggVpAuqqA==
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
+   d="scan'208";a="543581689"
+Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.228.209]) ([10.249.228.209])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:12:49 -0800
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: [PATCH v3 00/12] Introduce threaded trace streaming for basic perf
+ record operation
+Organization: Intel Corp.
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>
+Message-ID: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
+Date:   Mon, 16 Nov 2020 15:12:47 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201114010526.GK3249@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Any which way around; here's a proper patch...
+Changes in v3:
+- avoided skipped redundant patch 3/15
+- applied "data file" and "data directory" terms allover the patch set
+- captured Acked-by: tags by Namhyung Kim
+- avoided braces where don't needed
+- employed thread local variable for serial trace streaming 
+- added specs for --thread option - core, socket, numa and user defined
+- added parallel loading of data directory files similar to the prototype [1]
+
+v2: https://lore.kernel.org/lkml/1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com/
+
+Changes in v2:
+- explicitly added credit tags to patches 6/15 and 15/15,
+  additionally to cites [1], [2]
+- updated description of 3/15 to explicitly mention the reason
+  to open data directories in read access mode (e.g. for perf report)
+- implemented fix for compilation error of 2/15
+- explicitly elaborated on found issues to be resolved for
+  threaded AUX trace capture
+
+v1: https://lore.kernel.org/lkml/810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com/
+
+Patch set provides parallel threaded trace streaming mode for basic
+perf record operation. Provided mode mitigates profiling data losses
+and resolves scalability issues of serial and asynchronous (--aio)
+trace streaming modes on multicore server systems. The design and
+implementation are based on the prototype [1], [2].
+
+Parallel threaded mode executes trace streaming threads that read kernel
+data buffers and write captured data into several data files located at
+data directory. Layout of trace streaming threads and their mapping to data
+buffers to read can be configured using a value of --thread command line
+option. Specification value provides masks separated by colon so the masks
+define cpus to be monitored by one thread and thread affinity mask is
+separated by slash. <cpus mask 1>/<affinity mask 1>:<cpu mask 2>/<affinity mask 2>
+specifies parallel threads layout that consists of two threads with
+corresponding assigned cpus to be monitored. Specification value can be
+a string e.g. "cpu", "core" or "socket" meaning creation of data streaming
+thread for monitoring every cpu, whole core or socket. The option provided
+with no or empty value defaults to "cpu" layout creating data streaming
+thread for every cpu being monitored. Specification masks are filtered
+by the mask provided via -C option.
+
+Parallel streaming mode is compatible with Zstd compression/decompression
+(--compression-level) and external control commands (--control). The mode
+is not enabled for pipe mode. The mode is not enabled for AUX area tracing,
+related and derived modes like --snapshot or --aux-sample. --switch-output-*
+and --timestamp-filename options are not enabled for parallel streaming.
+Initial intent to enable AUX area tracing faced the need to define some
+optimal way to store index data in data directory. --switch-output-* and
+--timestamp-filename use cases are not clear for data directories.
+Asynchronous(--aio) trace streaming and affinity (--affinity) modes are
+mutually exclusive to parallel streaming mode.
+
+Basic analysis of data directories is provided in perf report mode.
+Raw dump and aggregated reports are available for data directories,
+still with no memory consumption optimizations.
+
+Tested:
+
+tools/perf/perf record -o prof.data --threads -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads= -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=cpu -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=core -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=socket -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=numa -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 2,5 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 3,4 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=core -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=numa -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 --compression-level=3 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -a
+tools/perf/perf record -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+tools/perf/perf record --threads -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+
+tools/perf/perf report -i prof.data
+tools/perf/perf report -i prof.data --call-graph=callee
+tools/perf/perf report -i prof.data --stdio --header
+tools/perf/perf report -i prof.data -D --header
+
+[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
 
 ---
+Alexey Budankov (12):
+  perf record: introduce thread affinity and mmap masks
+  perf record: introduce thread specific data array
+  perf record: introduce thread local variable
+  perf record: stop threads in the end of trace streaming
+  perf record: start threads in the beginning of trace streaming
+  perf record: introduce data file at mmap buffer object
+  perf record: init data file at mmap buffer object
+  perf record: introduce --threads=<spec> command line option
+  perf record: document parallel data streaming mode
+  perf report: output data file name in raw trace dump
+  perf session: load data directory files for analysis
+  perf session: use reader functions to load perf data file
 
-Subject: rcu: Allow rcu_irq_enter_check_tick() from NMI
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Mon Nov 16 12:54:56 CET 2020
+ tools/include/linux/bitmap.h             |   11 +
+ tools/lib/api/fd/array.c                 |   17 +
+ tools/lib/api/fd/array.h                 |    1 +
+ tools/lib/bitmap.c                       |   14 +
+ tools/perf/Documentation/perf-record.txt |   18 +
+ tools/perf/builtin-inject.c              |    3 +-
+ tools/perf/builtin-record.c              | 1019 ++++++++++++++++++++--
+ tools/perf/util/evlist.c                 |   16 +
+ tools/perf/util/evlist.h                 |    1 +
+ tools/perf/util/mmap.c                   |    6 +
+ tools/perf/util/mmap.h                   |    6 +
+ tools/perf/util/ordered-events.h         |    1 +
+ tools/perf/util/record.h                 |    2 +
+ tools/perf/util/session.c                |  484 +++++++---
+ tools/perf/util/session.h                |    5 +
+ tools/perf/util/tool.h                   |    3 +-
+ 16 files changed, 1398 insertions(+), 209 deletions(-)
 
-Eugenio managed to tickle #PF from NMI context which resulted in
-hitting a WARN in RCU through irqentry_enter() ->
-__rcu_irq_enter_check_tick().
+-- 
+2.24.1
 
-However, this situation is perfectly sane and does not warrant an
-WARN. The #PF will (necessarily) be atomic and not require messing
-with the tick state, so early return is correct.
-
-Fixes: aaf2bc50df1f ("rcu: Abstract out rcu_irq_enter_check_tick() from rcu_nmi_enter()")
-Reported-by: "Eugenio Pérez" <eupm90@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -928,8 +928,8 @@ void __rcu_irq_enter_check_tick(void)
- {
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 
--	 // Enabling the tick is unsafe in NMI handlers.
--	if (WARN_ON_ONCE(in_nmi()))
-+	// If we're here from NMI there's nothing to do.
-+	if (in_nmi())
- 		return;
- 
- 	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
