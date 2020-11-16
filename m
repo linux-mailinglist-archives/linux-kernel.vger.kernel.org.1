@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729B62B4656
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 107802B4657
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730560AbgKPOsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:48:22 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:56924 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730373AbgKPOsT (ORCPT
+        id S1730567AbgKPOs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:48:27 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:34478 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730563AbgKPOs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:48:19 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGEjoBP034380;
-        Mon, 16 Nov 2020 14:47:56 GMT
+        Mon, 16 Nov 2020 09:48:26 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGEiAxd131259;
+        Mon, 16 Nov 2020 14:48:06 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=03QHFwAq/2P3O+RVmQG3CAcyBBOG2xJ+ervXprnHoBY=;
- b=Qy5xD2QAeGPQG8JkIcr44oIZCGlBw7lyhDje9oOdCXfqymBZhoBWnX62br7tgKzdbYmV
- wcup/pgCoGepV8CSGmZpzCwbr75oISCK0P6F25fy+gv98Se8Nmy9IW1F+DLLyEBEJ0+H
- s47SCvDrVWD7V0TKccv1aEFbpQEsGy2PU48oSh3IeO/uhmQ6i6RQwbpSX7rQFLoAopTr
- M507J9Q69XXKma8LR9kRHTNi0+wlXZoW5YaiRqQVoKXi8fTEM9CDr36QRSkVJJbSHlKJ
- 3p2AZs8npKuIKjSgFZ94RDW0KO3/1t1vJid+OG0Q5Bk0CZoxCE4juOHlrnPQ0nLdQg0Q 1w== 
+ bh=sOl1NrqxnkQBFnwPcq/gtOcrZaMFHISy5WUH367/Sjo=;
+ b=LjW15mGAM+VZsIm9udkIhhsOKKMYTWuQqLk1Mx7b3Pav+WGPSGNDU4S2E1bhO8M22S6T
+ DxFyY03gpz1MfIhTq9DqxsYtcjmLnWrbqm0hpaHBgiL/U7BzrlCssM1e2SSQc0JDrdXD
+ wjiklOf+rca7CbSgOgt/+xzc6gP0Cjj1s8j5Mm2biKorii4lwHxFcGdpaYsjm2RKaWrC
+ 2v1kZ4Ajl/FRHQH10DPqdrecerSbb82h1YIvt6Vkr9YLCbJ+cjdF5wJygHqdQ4v3Pze+
+ x2q4tS/ekJ50ZFI+tqUNSej/Ytbr5S8S1gnNB4eoI+Zy9fXh7eT1O76WyLozlJHj8Izh Sw== 
 Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 34t7vmwb1h-1
+        by aserp2130.oracle.com with ESMTP id 34t4ranhr0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 16 Nov 2020 14:47:56 +0000
+        Mon, 16 Nov 2020 14:48:06 +0000
 Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGEjPdM051726;
-        Mon, 16 Nov 2020 14:47:56 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 34ts0phce9-1
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGEjQiu051832;
+        Mon, 16 Nov 2020 14:48:05 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 34ts0phcnp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 16 Nov 2020 14:47:55 +0000
+        Mon, 16 Nov 2020 14:48:05 +0000
 Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AGElsJ7025669;
-        Mon, 16 Nov 2020 14:47:54 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AGEm3vc016122;
+        Mon, 16 Nov 2020 14:48:04 GMT
 Received: from localhost.localdomain (/92.157.91.83)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 16 Nov 2020 06:47:53 -0800
+        with ESMTP ; Mon, 16 Nov 2020 06:48:02 -0800
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
         x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
@@ -49,9 +49,9 @@ Cc:     konrad.wilk@oracle.com, jan.setjeeilers@oracle.com,
         junaids@google.com, oweisse@google.com, rppt@linux.vnet.ibm.com,
         graf@amazon.de, mgross@linux.intel.com, kuzuno@gmail.com,
         alexandre.chartre@oracle.com
-Subject: [RFC][PATCH v2 20/21] x86/pti: Defer CR3 switch to C code for non-IST and syscall entries
-Date:   Mon, 16 Nov 2020 15:47:56 +0100
-Message-Id: <20201116144757.1920077-21-alexandre.chartre@oracle.com>
+Subject: [RFC][PATCH v2 21/21] x86/pti: Use a different stack canary with the user and kernel page-table
+Date:   Mon, 16 Nov 2020 15:47:57 +0100
+Message-Id: <20201116144757.1920077-22-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.4
 In-Reply-To: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
 References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
@@ -61,478 +61,264 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 a
  mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2011160090
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011160090
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011160090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With PTI, syscall/interrupt/exception entries switch the CR3 register
-to change the page-table in assembly code. Move the CR3 register switch
-inside the C code of syscall/interrupt/exception entry handlers.
+Using stack protector requires the stack canary to be mapped into
+the current page-table. Now that the page-table switch between the
+user and kernel page-table is deferred to C code, stack protector can
+be used while the user page-table is active and so the stack canary
+is mapped into the user page-table.
+
+To prevent leaking the stack canary used with the kernel page-table,
+use a different canary with the user and kernel page-table. The stack
+canary is changed when switching the page-table.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/entry/common.c             | 15 ++++++++++++---
- arch/x86/entry/entry_64.S           | 23 +++++------------------
- arch/x86/entry/entry_64_compat.S    | 22 ----------------------
- arch/x86/include/asm/entry-common.h | 13 +++++++++++++
- arch/x86/include/asm/idtentry.h     | 25 ++++++++++++++++++++-----
- arch/x86/kernel/cpu/mce/core.c      |  2 ++
- arch/x86/kernel/nmi.c               |  2 ++
- arch/x86/kernel/traps.c             |  6 ++++++
- arch/x86/mm/fault.c                 |  9 +++++++--
- 9 files changed, 67 insertions(+), 50 deletions(-)
+ arch/x86/include/asm/entry-common.h   | 56 ++++++++++++++++++++++++++-
+ arch/x86/include/asm/stackprotector.h | 35 +++++++++++------
+ arch/x86/kernel/sev-es.c              | 18 +++++++++
+ include/linux/sched.h                 |  8 ++++
+ kernel/fork.c                         |  3 ++
+ 5 files changed, 107 insertions(+), 13 deletions(-)
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 1aba02ecb806..6ef5afc42b82 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -51,6 +51,7 @@ __visible noinstr void return_from_fork(struct pt_regs *regs,
- 		regs->ax = 0;
- 	}
- 	syscall_exit_to_user_mode(regs);
-+	user_pagetable_enter();
- }
- 
- static __always_inline void run_syscall(sys_call_ptr_t sysfunc,
-@@ -74,6 +75,7 @@ static __always_inline void run_syscall(sys_call_ptr_t sysfunc,
- #ifdef CONFIG_X86_64
- __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
- {
-+	user_pagetable_exit();
- 	nr = syscall_enter_from_user_mode(regs, nr);
- 
- 	instrumentation_begin();
-@@ -91,12 +93,14 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
- 
- 	instrumentation_end();
- 	syscall_exit_to_user_mode(regs);
-+	user_pagetable_enter();
- }
- #endif
- 
- #if defined(CONFIG_X86_32) || defined(CONFIG_IA32_EMULATION)
- static __always_inline unsigned int syscall_32_enter(struct pt_regs *regs)
- {
-+	user_pagetable_exit();
- 	if (IS_ENABLED(CONFIG_IA32_EMULATION))
- 		current_thread_info()->status |= TS_COMPAT;
- 
-@@ -131,11 +135,11 @@ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
- 
- 	do_syscall_32_irqs_on(regs, nr);
- 	syscall_exit_to_user_mode(regs);
-+	user_pagetable_enter();
- }
- 
--static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
-+static noinstr bool __do_fast_syscall_32(struct pt_regs *regs, long nr)
- {
--	unsigned int nr = syscall_32_enter(regs);
- 	int res;
- 
- 	/*
-@@ -179,6 +183,9 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
- /* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
- __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
- {
-+	unsigned int nr = syscall_32_enter(regs);
-+	bool syscall_done;
-+
- 	/*
- 	 * Called using the internal vDSO SYSENTER/SYSCALL32 calling
- 	 * convention.  Adjust regs so it looks like we entered using int80.
-@@ -194,7 +201,9 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
- 	regs->ip = landing_pad;
- 
- 	/* Invoke the syscall. If it failed, keep it simple: use IRET. */
--	if (!__do_fast_syscall_32(regs))
-+	syscall_done = __do_fast_syscall_32(regs, nr);
-+	user_pagetable_enter();
-+	if (!syscall_done)
- 		return 0;
- 
- #ifdef CONFIG_X86_64
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 1715bc0cefff..b7d9a019d001 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -98,7 +98,6 @@ SYM_CODE_START(entry_SYSCALL_64)
- 	swapgs
- 	/* tss.sp2 is scratch space. */
- 	movq	%rsp, PER_CPU_VAR(cpu_tss_rw + TSS_sp2)
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rsp
- 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
- 
- SYM_INNER_LABEL(entry_SYSCALL_64_safe_stack, SYM_L_GLOBAL)
-@@ -192,18 +191,14 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
- 	 */
- syscall_return_via_sysret:
- 	/* rcx and r11 are already restored (see code above) */
--	POP_REGS pop_rdi=0 skip_r11rcx=1
-+	POP_REGS skip_r11rcx=1
- 
- 	/*
--	 * We are on the trampoline stack.  All regs except RDI are live.
- 	 * We are on the trampoline stack.  All regs except RSP are live.
- 	 * We can do future final exit work right here.
- 	 */
- 	STACKLEAK_ERASE_NOCLOBBER
- 
--	SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
--
--	popq	%rdi
- 	movq	RSP-ORIG_RAX(%rsp), %rsp
- 	USERGS_SYSRET64
- SYM_CODE_END(entry_SYSCALL_64)
-@@ -321,7 +316,6 @@ SYM_CODE_END(ret_from_fork)
- 	swapgs
- 	cld
- 	FENCE_SWAPGS_USER_ENTRY
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdx
- 	movq	%rsp, %rdx
- 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
- 	UNWIND_HINT_IRET_REGS base=%rdx offset=8
-@@ -594,19 +588,15 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
- 	ud2
- 1:
- #endif
--	POP_REGS pop_rdi=0
-+	POP_REGS
-+	addq	$8, %rsp	/* skip regs->orig_ax */
- 
- 	/*
--	 * We are on the trampoline stack.  All regs except RDI are live.
-+	 * We are on the trampoline stack.  All regs are live.
- 	 * We can do future final exit work right here.
- 	 */
- 	STACKLEAK_ERASE_NOCLOBBER
- 
--	SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
--
--	/* Restore RDI. */
--	popq	%rdi
--	addq	$8, %rsp	/* skip regs->orig_ax */
- 	SWAPGS
- 	INTERRUPT_RETURN
- 
-@@ -1009,8 +999,6 @@ SYM_CODE_START_LOCAL(error_entry)
- 	 */
- 	SWAPGS
- 	FENCE_SWAPGS_USER_ENTRY
--	/* We have user CR3.  Change to kernel CR3. */
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
- 
- .Lerror_entry_from_usermode_after_swapgs:
- 	/*
-@@ -1069,11 +1057,10 @@ SYM_CODE_START_LOCAL(error_entry)
- .Lerror_bad_iret:
- 	/*
- 	 * We came from an IRET to user mode, so we have user
--	 * gsbase and CR3.  Switch to kernel gsbase and CR3:
-+	 * gsbase and CR3.  Switch to kernel gsbase.
- 	 */
- 	SWAPGS
- 	FENCE_SWAPGS_USER_ENTRY
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
- 
- 	/*
- 	 * Pretend that the exception came from user mode: set up pt_regs
-diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index 541fdaf64045..a6fb5807bf42 100644
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -51,10 +51,6 @@ SYM_CODE_START(entry_SYSENTER_compat)
- 	/* Interrupts are off on entry. */
- 	SWAPGS
- 
--	pushq	%rax
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
--	popq	%rax
--
- 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
- 
- 	/* Construct struct pt_regs on stack */
-@@ -204,9 +200,6 @@ SYM_CODE_START(entry_SYSCALL_compat)
- 	/* Stash user ESP */
- 	movl	%esp, %r8d
- 
--	/* Use %rsp as scratch reg. User ESP is stashed in r8 */
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rsp
--
- 	/* Switch to the kernel stack */
- 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
- 
-@@ -291,18 +284,6 @@ sysret32_from_system_call:
- 	 * code.  We zero R8-R10 to avoid info leaks.
-          */
- 	movq	RSP-ORIG_RAX(%rsp), %rsp
--
--	/*
--	 * The original userspace %rsp (RSP-ORIG_RAX(%rsp)) is stored
--	 * on the process stack which is not mapped to userspace and
--	 * not readable after we SWITCH_TO_USER_CR3.  Delay the CR3
--	 * switch until after after the last reference to the process
--	 * stack.
--	 *
--	 * %r8/%r9 are zeroed before the sysret, thus safe to clobber.
--	 */
--	SWITCH_TO_USER_CR3_NOSTACK scratch_reg=%r8 scratch_reg2=%r9
--
- 	xorl	%r8d, %r8d
- 	xorl	%r9d, %r9d
- 	xorl	%r10d, %r10d
-@@ -357,9 +338,6 @@ SYM_CODE_START(entry_INT80_compat)
- 	pushq	%rax			/* pt_regs->orig_ax */
- 	pushq	%rdi			/* pt_regs->di */
- 
--	/* Need to switch before accessing the thread stack. */
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdi
--
- 	/* In the Xen PV case we already run on the thread stack. */
- 	ALTERNATIVE "", "jmp .Lint80_keep_stack", X86_FEATURE_XENPV
- 
 diff --git a/arch/x86/include/asm/entry-common.h b/arch/x86/include/asm/entry-common.h
-index 46682b1433a4..e01735a181b8 100644
+index e01735a181b8..5b4d0e3237a3 100644
 --- a/arch/x86/include/asm/entry-common.h
 +++ b/arch/x86/include/asm/entry-common.h
-@@ -193,6 +193,17 @@ static __always_inline void user_pagetable_exit(void)
- 	switch_to_kernel_cr3(__native_read_cr3());
- }
+@@ -96,6 +96,52 @@ static __always_inline void arch_exit_to_user_mode(void)
+ #define PTI_USER_PGTABLE_AND_PCID_MASK  \
+ 	(PTI_USER_PCID_MASK | PTI_USER_PGTABLE_MASK)
  
-+static __always_inline void user_pagetable_return(struct pt_regs *regs)
++/*
++ * Functions to set the stack canary to the kernel or user value:
++ *
++ * The kernel stack canary should be used when running with the kernel
++ * page-table, and the user stack canary should be used when running
++ * with the user page-table. Also the kernel stack canary should not
++ * leak to the user page-table.
++ *
++ * So the stack canary should be set to the kernel value when entering
++ * the kernel from userspace *after* switching to the kernel page-table.
++ * And the stack canary should be set to the user value when returning
++ * to userspace *before* switching to the user page-table.
++ *
++ * In both cases, there is a window (between the page-table switch and
++ * the stack canary setting) where we will be running with the kernel
++ * page-table and the user stack canary. This window should be as small
++ * as possible and, ideally, it should:
++ * - not call functions which require the stack protector to be used;
++ * - have interrupt disabled to prevent interrupt handlers from being
++ *   processed with the user stack canary (but there is nothing we can
++ *   do for NMIs).
++ */
++static __always_inline void set_stack_canary_kernel(void)
 +{
-+	if (user_mode(regs))
-+		user_pagetable_enter();
++	this_cpu_write(fixed_percpu_data.stack_canary,
++		       current->stack_canary);
 +}
 +
-+static __always_inline void user_pagetable_escape(struct pt_regs *regs)
++static __always_inline void set_stack_canary_user(void)
 +{
-+	if (user_mode(regs))
-+		user_pagetable_exit();
++	this_cpu_write(fixed_percpu_data.stack_canary,
++		       current->stack_canary_user);
 +}
- 
- #else /* CONFIG_PAGE_TABLE_ISOLATION */
- 
-@@ -204,6 +215,8 @@ static __always_inline void restore_cr3(unsigned long cr3) {}
- 
- static __always_inline void user_pagetable_enter(void) {};
- static __always_inline void user_pagetable_exit(void) {};
-+static __always_inline void user_pagetable_return(struct pt_regs *regs) {};
-+static __always_inline void user_pagetable_escape(struct pt_regs *regs) {};
- 
- #endif /* CONFIG_PAGE_TABLE_ISOLATION */
- #endif /* MODULE */
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index a6725afaaec0..f29bfc0700ff 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -132,12 +132,15 @@ static __always_inline void __##func(struct pt_regs *regs);		\
- 									\
- __visible noinstr void func(struct pt_regs *regs)			\
- {									\
--	irqentry_state_t state = irqentry_enter(regs);			\
-+	irqentry_state_t state;						\
- 									\
-+	user_pagetable_escape(regs);					\
-+	state = irqentry_enter(regs);					\
- 	instrumentation_begin();					\
- 	run_idt(__##func, regs);					\
- 	instrumentation_end();						\
- 	irqentry_exit(regs, state);					\
-+	user_pagetable_return(regs);					\
- }									\
- 									\
- static __always_inline void __##func(struct pt_regs *regs)
-@@ -179,12 +182,15 @@ static __always_inline void __##func(struct pt_regs *regs,		\
- __visible noinstr void func(struct pt_regs *regs,			\
- 			    unsigned long error_code)			\
- {									\
--	irqentry_state_t state = irqentry_enter(regs);			\
-+	irqentry_state_t state;						\
- 									\
-+	user_pagetable_escape(regs);					\
-+	state = irqentry_enter(regs);					\
- 	instrumentation_begin();					\
- 	run_idt_errcode(__##func, regs, error_code);			\
- 	instrumentation_end();						\
- 	irqentry_exit(regs, state);					\
-+	user_pagetable_return(regs);					\
- }									\
- 									\
- static __always_inline void __##func(struct pt_regs *regs,		\
-@@ -275,8 +281,10 @@ static __always_inline void __##func(struct pt_regs *regs, u8 vector);	\
- __visible noinstr void func(struct pt_regs *regs,			\
- 			    unsigned long error_code)			\
- {									\
--	irqentry_state_t state = irqentry_enter(regs);			\
-+	irqentry_state_t state;						\
- 									\
-+	user_pagetable_escape(regs);					\
-+	state = irqentry_enter(regs);					\
- 	instrumentation_begin();					\
- 	irq_enter_rcu();						\
- 	kvm_set_cpu_l1tf_flush_l1d();					\
-@@ -285,6 +293,7 @@ __visible noinstr void func(struct pt_regs *regs,			\
- 	irq_exit_rcu();							\
- 	instrumentation_end();						\
- 	irqentry_exit(regs, state);					\
-+	user_pagetable_return(regs);					\
- }									\
- 									\
- static __always_inline void __##func(struct pt_regs *regs, u8 vector)
-@@ -318,8 +327,10 @@ static void __##func(struct pt_regs *regs);				\
- 									\
- __visible noinstr void func(struct pt_regs *regs)			\
- {									\
--	irqentry_state_t state = irqentry_enter(regs);			\
-+	irqentry_state_t state;						\
- 									\
-+	user_pagetable_escape(regs);					\
-+	state = irqentry_enter(regs);					\
- 	instrumentation_begin();					\
- 	irq_enter_rcu();						\
- 	kvm_set_cpu_l1tf_flush_l1d();					\
-@@ -327,6 +338,7 @@ __visible noinstr void func(struct pt_regs *regs)			\
- 	irq_exit_rcu();							\
- 	instrumentation_end();						\
- 	irqentry_exit(regs, state);					\
-+	user_pagetable_return(regs);					\
- }									\
- 									\
- static noinline void __##func(struct pt_regs *regs)
-@@ -347,8 +359,10 @@ static __always_inline void __##func(struct pt_regs *regs);		\
- 									\
- __visible noinstr void func(struct pt_regs *regs)			\
- {									\
--	irqentry_state_t state = irqentry_enter(regs);			\
-+	irqentry_state_t state;						\
- 									\
-+	user_pagetable_escape(regs);					\
-+	state = irqentry_enter(regs);					\
- 	instrumentation_begin();					\
- 	__irq_enter_raw();						\
- 	kvm_set_cpu_l1tf_flush_l1d();					\
-@@ -356,6 +370,7 @@ __visible noinstr void func(struct pt_regs *regs)			\
- 	__irq_exit_raw();						\
- 	instrumentation_end();						\
- 	irqentry_exit(regs, state);					\
-+	user_pagetable_return(regs);					\
- }									\
- 									\
- static __always_inline void __##func(struct pt_regs *regs)
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 31ac01c1155d..0203e73711a3 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -2037,9 +2037,11 @@ DEFINE_IDTENTRY_MCE_USER(exc_machine_check)
++
++static __always_inline void switch_to_kernel_stack_canary(unsigned long cr3)
++{
++	if (cr3 & PTI_USER_PGTABLE_MASK)
++		set_stack_canary_kernel();
++}
++
++static __always_inline void restore_stack_canary(unsigned long cr3)
++{
++	if (cr3 & PTI_USER_PGTABLE_MASK)
++		set_stack_canary_user();
++}
++
+ static __always_inline void write_kernel_cr3(unsigned long cr3)
  {
- 	unsigned long dr7;
+ 	if (static_cpu_has(X86_FEATURE_PCID))
+@@ -155,8 +201,10 @@ static __always_inline unsigned long save_and_switch_to_kernel_cr3(void)
+ 		return 0;
  
-+	user_pagetable_exit();
- 	dr7 = local_db_save();
- 	run_idt(exc_machine_check_user, regs);
- 	local_db_restore(dr7);
-+	user_pagetable_enter();
- }
- #else
- /* 32bit unified entry point */
-diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index 523d88c3fea1..f5d0f5d0c626 100644
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -542,8 +542,10 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
- 
- __visible noinstr void exc_nmi_user(struct pt_regs *regs)
- {
-+	user_pagetable_exit();
- 	handle_nmi(regs);
- 	mds_user_clear_cpu_buffers();
-+	user_pagetable_enter();
- }
- 
- void stop_nmi(void)
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 14d2d6f15184..76db3d5a2965 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -255,11 +255,13 @@ DEFINE_IDTENTRY_RAW(exc_invalid_op)
- 	if (!user_mode(regs) && handle_bug(regs))
- 		return;
- 
-+	user_pagetable_escape(regs);
- 	state = irqentry_enter(regs);
- 	instrumentation_begin();
- 	run_idt(handle_invalid_op, regs);
- 	instrumentation_end();
- 	irqentry_exit(regs, state);
-+	user_pagetable_return(regs);
- }
- 
- DEFINE_IDTENTRY(exc_coproc_segment_overrun)
-@@ -663,11 +665,13 @@ DEFINE_IDTENTRY_RAW(exc_int3)
- 	 * including NMI.
- 	 */
- 	if (user_mode(regs)) {
-+		user_pagetable_exit();
- 		irqentry_enter_from_user_mode(regs);
- 		instrumentation_begin();
- 		run_idt(do_int3_user, regs);
- 		instrumentation_end();
- 		irqentry_exit_to_user_mode(regs);
-+		user_pagetable_enter();
- 	} else {
- 		bool irq_state = idtentry_enter_nmi(regs);
- 		instrumentation_begin();
-@@ -1001,7 +1005,9 @@ DEFINE_IDTENTRY_DEBUG(exc_debug)
- /* User entry, runs on regular task stack */
- DEFINE_IDTENTRY_DEBUG_USER(exc_debug)
- {
-+	user_pagetable_exit();
- 	run_idt_errcode(exc_debug_user, regs, debug_read_clear_dr6());
-+	user_pagetable_enter();
- }
- #else
- /* 32 bit does not have separate entry points. */
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index b9d03603d95d..9ca79e86d0f0 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -1440,9 +1440,11 @@ handle_page_fault(struct pt_regs *regs, unsigned long error_code,
- 
- DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
- {
--	unsigned long address = read_cr2();
-+	unsigned long address;
- 	irqentry_state_t state;
- 
-+	user_pagetable_escape(regs);
-+	address = read_cr2();
- 	prefetchw(&current->mm->mmap_lock);
- 
- 	/*
-@@ -1466,8 +1468,10 @@ DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
- 	 * The async #PF handling code takes care of idtentry handling
- 	 * itself.
- 	 */
--	if (kvm_handle_async_pf(regs, (u32)address))
-+	if (kvm_handle_async_pf(regs, (u32)address)) {
-+		user_pagetable_return(regs);
- 		return;
+ 	cr3 = __native_read_cr3();
+-	if (cr3 & PTI_USER_PGTABLE_MASK)
++	if (cr3 & PTI_USER_PGTABLE_MASK) {
+ 		switch_to_kernel_cr3(cr3);
++		set_stack_canary_kernel();
 +	}
  
- 	/*
- 	 * Entry handling for valid #PF from kernel mode is slightly
-@@ -1486,4 +1490,5 @@ DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
- 	instrumentation_end();
- 
- 	irqentry_exit(regs, state);
-+	user_pagetable_return(regs);
+ 	return cr3;
  }
+@@ -167,6 +215,7 @@ static __always_inline void restore_cr3(unsigned long cr3)
+ 		return;
+ 
+ 	if (cr3 & PTI_USER_PGTABLE_MASK) {
++		set_stack_canary_user();
+ 		switch_to_user_cr3(cr3);
+ 	} else {
+ 		/*
+@@ -182,6 +231,7 @@ static __always_inline void user_pagetable_enter(void)
+ 	if (!static_cpu_has(X86_FEATURE_PTI))
+ 		return;
+ 
++	set_stack_canary_user();
+ 	switch_to_user_cr3(__native_read_cr3());
+ }
+ 
+@@ -191,6 +241,7 @@ static __always_inline void user_pagetable_exit(void)
+ 		return;
+ 
+ 	switch_to_kernel_cr3(__native_read_cr3());
++	set_stack_canary_kernel();
+ }
+ 
+ static __always_inline void user_pagetable_return(struct pt_regs *regs)
+@@ -218,6 +269,9 @@ static __always_inline void user_pagetable_exit(void) {};
+ static __always_inline void user_pagetable_return(struct pt_regs *regs) {};
+ static __always_inline void user_pagetable_escape(struct pt_regs *regs) {};
+ 
++static __always_inline void switch_to_kernel_stack_canary(unsigned long cr3) {}
++static __always_inline void restore_stack_canary(unsigned long cr3) {}
++
+ #endif /* CONFIG_PAGE_TABLE_ISOLATION */
+ #endif /* MODULE */
+ 
+diff --git a/arch/x86/include/asm/stackprotector.h b/arch/x86/include/asm/stackprotector.h
+index 7fb482f0f25b..be6c051bafe3 100644
+--- a/arch/x86/include/asm/stackprotector.h
++++ b/arch/x86/include/asm/stackprotector.h
+@@ -52,6 +52,25 @@
+ #define GDT_STACK_CANARY_INIT						\
+ 	[GDT_ENTRY_STACK_CANARY] = GDT_ENTRY_INIT(0x4090, 0, 0x18),
+ 
++static __always_inline u64 boot_get_random_canary(void)
++{
++	u64 canary;
++	u64 tsc;
++
++	/*
++	 * We both use the random pool and the current TSC as a source
++	 * of randomness. The TSC only matters for very early init,
++	 * there it already has some randomness on most systems. Later
++	 * on during the bootup the random pool has true entropy too.
++	 */
++	get_random_bytes(&canary, sizeof(canary));
++	tsc = rdtsc();
++	canary += tsc + (tsc << 32UL);
++	canary &= CANARY_MASK;
++
++	return canary;
++}
++
+ /*
+  * Initialize the stackprotector canary value.
+  *
+@@ -66,23 +85,15 @@
+ static __always_inline void boot_init_stack_canary(void)
+ {
+ 	u64 canary;
+-	u64 tsc;
+ 
+ #ifdef CONFIG_X86_64
+ 	BUILD_BUG_ON(offsetof(struct fixed_percpu_data, stack_canary) != 40);
+ #endif
+-	/*
+-	 * We both use the random pool and the current TSC as a source
+-	 * of randomness. The TSC only matters for very early init,
+-	 * there it already has some randomness on most systems. Later
+-	 * on during the bootup the random pool has true entropy too.
+-	 */
+-	get_random_bytes(&canary, sizeof(canary));
+-	tsc = rdtsc();
+-	canary += tsc + (tsc << 32UL);
+-	canary &= CANARY_MASK;
+-
++	canary = boot_get_random_canary();
+ 	current->stack_canary = canary;
++#ifdef CONFIG_PAGE_TABLE_ISOLATION
++	current->stack_canary_user = boot_get_random_canary();
++#endif
+ #ifdef CONFIG_X86_64
+ 	this_cpu_write(fixed_percpu_data.stack_canary, canary);
+ #else
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 59fc7c472525..614fbef497bd 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -1387,6 +1387,14 @@ DEFINE_IDTENTRY_VC_SETUP_STACK(exc_vmm_communication)
+ 	frame->regs = *regs;
+ 	frame->saved_cr3 = saved_cr3;
+ 
++	/*
++	 * save_and_switch_to_kernel_cr3() has switched the stack canary
++	 * to the kernel stack canary. However, depending on the saved
++	 * CR3 value, this function may have been entered with the user
++	 * stack canary. So restore the stack canary before returning.
++	 */
++	restore_stack_canary(saved_cr3);
++
+ 	return sp;
+ }
+ 
+@@ -1394,6 +1402,16 @@ DEFINE_IDTENTRY_VC(exc_vmm_communication)
+ {
+ 	struct exc_vc_frame *frame = (struct exc_vc_frame *)regs;
+ 
++	/*
++	 * The VC setup stack function has switched to the kernel CR3
++	 * but not to the kernel stack canary. Switch to the kernel
++	 * stack canary now that we are using the kernel page-table.
++	 *
++	 * The original stack canary will be restored by the
++	 * restore_cr3() function.
++	 */
++	switch_to_kernel_stack_canary(frame->saved_cr3);
++
+ 	if (likely(!on_vc_fallback_stack(regs)))
+ 		safe_stack_exc_vmm_communication(regs, error_code);
+ 	else
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 063cd120b459..a0199c5d8ae1 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -816,6 +816,14 @@ struct task_struct {
+ #ifdef CONFIG_STACKPROTECTOR
+ 	/* Canary value for the -fstack-protector GCC feature: */
+ 	unsigned long			stack_canary;
++#ifdef CONFIG_PAGE_TABLE_ISOLATION
++	/*
++	 * With PTI, stack_canary_user is used when we are in the
++	 * kernel but using the user page-table. Once we have switched
++	 * to the kernel page-table, stack_canary is used instead.
++	 */
++	unsigned long			stack_canary_user;
++#endif
+ #endif
+ 	/*
+ 	 * Pointers to the (original) parent process, youngest child, younger sibling,
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 31cd77dbdba3..70eaba4d8191 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -909,6 +909,9 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
+ 
+ #ifdef CONFIG_STACKPROTECTOR
+ 	tsk->stack_canary = get_random_canary();
++#ifdef CONFIG_PAGE_TABLE_ISOLATION
++	tsk->stack_canary_user = get_random_canary();
++#endif
+ #endif
+ 	if (orig->cpus_ptr == &orig->cpus_mask)
+ 		tsk->cpus_ptr = &tsk->cpus_mask;
 -- 
 2.18.4
 
