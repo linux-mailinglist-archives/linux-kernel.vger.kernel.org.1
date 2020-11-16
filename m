@@ -2,155 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8172B3CC9
+	by mail.lfdr.de (Postfix) with ESMTP id DF0082B3CCA
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 07:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgKPGGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 01:06:31 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:49967 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725372AbgKPGGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 01:06:30 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZJVT5pSnz9sPB;
-        Mon, 16 Nov 2020 17:06:24 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1605506788;
-        bh=vqYCYo4MARa/47/zGrLgKczDlUHji65lqYdbUx/3osI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=DuqXwDq6U0b7naSqRQmRagUgb6qDI0kHN9U8xiS4ATTzm5VNnNhY2Jlay9CRTF8eU
-         kR5dblk1m7rLD2GaP88/AUsPePKENcZdk/XyIubpEcyY5SN68siZadygmgHKbAaxk5
-         hC8Mclnk1XiykNhfenWjZ0XGPbNjzce56uhhXfInzv8vkb7BtuPRZf0/lzwO2blwEY
-         tCa9rRt3d/PCw0fi3QDwn1BImmPAs24JeAHRBOfHObYvfcyER2eE6yp9U04EHphPx3
-         GCFKl8UGBNPFzBEnRtBYNPNhbzvOcj5boVd8IwGT51vnSOOTqhTKfR3YwJ5L/SgcU+
-         r4i73rYuMbxMQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        mihai.caraman@freescale.com
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: Error: invalid switch -me200
-In-Reply-To: <14e9ce2b-1a83-5353-44c7-b0709796c70e@csgroup.eu>
-References: <202011131146.g8dPLQDD-lkp@intel.com> <CAFP8O3LpSmxVnjHfQAN455k1ZRg3PbgZYhWr030evCq1T10k=Q@mail.gmail.com> <20201113190824.GA1477315@ubuntu-m3-large-x86> <CAKwvOdkEtTQhDRFRV_d66FyhQBe536vRbOW=fQjesiHz3dfeBA@mail.gmail.com> <20201113200444.GA1496675@ubuntu-m3-large-x86> <CAKwvOdkBSGPaKmQY1nERVe4_n19Q=MUtuwdond=FJAAF9N9Zhg@mail.gmail.com> <20201114002037.GW2672@gate.crashing.org> <14e9ce2b-1a83-5353-44c7-b0709796c70e@csgroup.eu>
-Date:   Mon, 16 Nov 2020 17:06:21 +1100
-Message-ID: <87h7pp4yzm.fsf@mpe.ellerman.id.au>
+        id S1726742AbgKPGHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 01:07:45 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8091 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgKPGHp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 01:07:45 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CZJWd6X6JzLp93;
+        Mon, 16 Nov 2020 14:07:25 +0800 (CST)
+Received: from [10.174.176.199] (10.174.176.199) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 16 Nov 2020 14:07:01 +0800
+Subject: Re: [PATCH] tick/nohz: Reduce the critical region for jiffies_seq
+To:     Thomas Gleixner <tglx@linutronix.de>, <fweisbec@gmail.com>,
+        <mingo@kernel.org>, <linux-kernel@vger.kernel.org>,
+        Shiyuan Hu <hushiyuan@huawei.com>,
+        Hewenliang <hewenliang4@huawei.com>
+References: <ac822c72-673e-73e1-9622-c5f12591b373@huawei.com>
+ <87h7pq8kyc.fsf@nanos.tec.linutronix.de>
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+Message-ID: <66c172ec-72a1-022a-d387-6c836a698912@huawei.com>
+Date:   Mon, 16 Nov 2020 14:07:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87h7pq8kyc.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.199]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 14/11/2020 =C3=A0 01:20, Segher Boessenkool a =C3=A9crit=C2=A0:
->> On Fri, Nov 13, 2020 at 12:14:18PM -0800, Nick Desaulniers wrote:
->>>>>> Error: invalid switch -me200
->>>>>> Error: unrecognized option -me200
->>>>>
->>>>> 251 cpu-as-$(CONFIG_E200)   +=3D -Wa,-me200
->>>>>
->>>>> Are those all broken configs, or is Kconfig messed up such that
->>>>> randconfig can select these when it should not?
->>>>
->>>> Hmmm, looks like this flag does not exist in mainline binutils? There =
-is
->>>> a thread in 2010 about this that Segher commented on:
->>>>
->>>> https://lore.kernel.org/linuxppc-dev/9859E645-954D-4D07-8003-FFCD2391A=
-B6E@kernel.crashing.org/
->>>>
->>>> Guess this config should be eliminated?
->>=20
->> The help text for this config options says that e200 is used in 55xx,
->> and there *is* an -me5500 GAS flag (which probably does this same
->> thing, too).  But is any of this tested, or useful, or wanted?
->>=20
->> Maybe Christophe knows, cc:ed.
->>=20
->
-> I don't have much clue on this.
-
-Me either.
-
-> But I see on wikipedia that e5500 is a 64 bits powerpc (https://en.wikipe=
-dia.org/wiki/PowerPC_e5500)
->
-> What I see is that NXP seems to provide a GCC version that includes aditi=
-onnal cpu (e200z0 e200z2=20
-> e200z3 e200z4 e200z6 e200z7):
->
-> valid arguments to '-mcpu=3D' are: 401 403 405 405fp 440 440fp 464 464fp =
-476 476fp 505 601 602 603=20
-> 603e 604 604e 620 630 740 7400 7450 750 801 821 823 8540 8548 860 970 G3 =
-G4 G5 a2 cell e200z0 e200z2=20
-> e200z3 e200z4 e200z6 e200z7 e300c2 e300c3 e500mc e500mc64 e5500 e6500 ec6=
-03e native power3 power4=20
-> power5 power5+ power6 power6x power7 power8 powerpc powerpc64 powerpc64le=
- rs64 titan "
->
-> https://community.nxp.com/t5/MPC5xxx/GCC-generating-not-implemented-instr=
-uctions/m-p/845049
->
-> Apparently based on binutils 2.28
->
-> https://www.nxp.com/docs/en/release-note/S32DS-POWER-v1-2-RN.pdf
->
-> But that's not exactly -me200 though.
->
-> Now, I can't see any defconfig that selects CONFIG_E200, so is that worth=
- keeping it in the kernel=20
-> at all ?
-
-There was a commit in 2014 that suggests it worked at least to some
-extent then:
-
-  3477e71d5319 ("powerpc/booke: Restrict SPE exception handlers to e200/e50=
-0 cores")
 
 
-Presumably there was a non-upstream toolchain where it was supported?
+On 2020/11/16 3:43, Thomas Gleixner wrote:
+> On Wed, Nov 11 2020 at 17:11, Yunfeng Ye wrote:
+>> When nohz or nohz_full is configured, the concurrency calls of
+>> tick_do_update_jiffies64 increases,
+> 
+> Why?
+> 
+When nohz=off, tick_do_update_jiffies64() is called by tick_sched_do_timer()
+on the tick_do_timer_cpu only. But when nohz and nohz_full is on, the
+concurrency calls of tick_do_update_jiffies64() increases, and it may be
+called on every cpu cores, for example:
 
-AFAICS the kernel builds OK with just the cpu-as modification removed:
+1)
+irq_enter
+    tick_irq_enter
+        tick_nohz_irq_enter
+            tick_nohz_update_jiffies
+2)
+irq_exit
+    irq_exit_rcu
+        tick_irq_exit
+            tick_nohz_irq_exit
+                tick_nohz_full_update_tick
+                    tick_nohz_restart_sched_tick
+                        tick_do_update_jiffies64
+3)
+tick_nohz_idle_exit
+    __tick_nohz_idle_restart_tick
+        tick_nohz_restart_sched_tick
+            tick_do_update_jiffies64
 
-diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-index a4d56f0a41d9..16b8336f91dd 100644
---- a/arch/powerpc/Makefile
-+++ b/arch/powerpc/Makefile
-@@ -248,7 +248,6 @@ KBUILD_CFLAGS               +=3D $(call cc-option,-mno-=
-string)
- cpu-as-$(CONFIG_40x)           +=3D -Wa,-m405
- cpu-as-$(CONFIG_44x)           +=3D -Wa,-m440
- cpu-as-$(CONFIG_ALTIVEC)       +=3D $(call as-option,-Wa$(comma)-maltivec)
--cpu-as-$(CONFIG_E200)          +=3D -Wa,-me200
- cpu-as-$(CONFIG_E500)          +=3D -Wa,-me500
+>> and the conflict between jiffies_lock and jiffies_seq increases,
+>> especially in multi-core scenarios.
+> 
+> This does not make sense. The sequence counter is updated when holding
+> the lock, so there is no conflict between the lock and the sequence
+> count.
+> 
+Yes, there is no conflict between the lock and the sequence count, but
+when tick_do_update_jiffies64() is called one by one, the sequence count
+will be updated, it will affect the latency of tick_nohz_next_event(),
+because the priority of read seqcount is less than writer.
 
- # When using '-many -mpower4' gas will first try and find a matching power4
+We meet a problem, the latency between irq_handler_exit and schedule cost
+up to 9us, or more, we want to schedule quickly. below is the trace:
 
+    =>262651:           <...>-87332 [013] dnh.  3773.487455: irq_handler_exit: irq=4 ret=handled
+    =>262666:           <...>-87332 [013] dn..  3773.487464: rcu_utilization: Start context switch
+      262667:           <...>-87332 [013] dn..  3773.487464: rcu_utilization: End context switch
 
-So that seems like the obvious fix for now.
+We use function_graph ftrace to find which function cost so much, and
+find that it is tick_nohz_irq_exit():
 
-I tried booting the resulting kernel in qemu, but I get:
+      80519.988765 |   31)               |  irq_exit() {
+      80519.988766 |   31)               |    tick_nohz_irq_exit() {
+    =>80519.988766 |   31)               |      tick_nohz_next_event() {
+    =>80519.988774 |   31)   0.570 us    |        get_next_timer_interrupt();
+      80519.988775 |   31)   0.390 us    |        timekeeping_max_deferment();
+      80519.988775 |   31)   9.200 us    |      }
+      80519.988776 |   31)   0.390 us    |      tick_nohz_stop_tick();
+      80519.988776 |   31) + 10.700 us   |    }
+      80519.988777 |   31) + 11.630 us   |  }
+      80519.988777 |   31)               |  /* rcu_utilization: Start context switch */
 
-  $ qemu-system-ppc -M none -cpu e200 -kernel build\~/vmlinux
-  Error: Trying to register SPR 574 (23e) twice !
+The time between timestamp 80519.988766 and 80519.988774 is most, in function
+tick_nohz_next_event(), there are the codes before calling
+get_next_timer_interrupt():
 
+    static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
+    {
+        u64 basemono, next_tick, next_tmr, next_rcu, delta, expires;
+        unsigned long basejiff;
+        unsigned int seq;
 
-Which is not related AFAIK and indicates the qemu support is broken.
+        /* Read jiffies and the time when jiffies were updated last */
+        do {
+            seq = read_seqcount_begin(&jiffies_seq);
+            basemono = last_jiffies_update;
+            basejiff = jiffies;
+        } while (read_seqcount_retry(&jiffies_seq, seq));
+        ts->last_jiffies = basejiff;
+        ts->timer_expires_base = basemono;
 
-Unless we hear from someone that they're using mainline on an e200 then
-it seems like it's a candidate for removal.
+So the reason is that the read_seqcount leading to the latency problem. we
+want to reduce the critical region of the jiffies_seq.
 
-cheers
+We still to trace tick_do_update_jiffies64 function:
+
+    167044.988746 |    5) + 34.720 us   |  } /* tick_do_update_jiffies64.part.2 */
+    167044.988747 |   90) + 24.920 us   |  } /* tick_nohz_next_event */
+    167044.988747 |    2) + 18.990 us   |  } /* tick_nohz_next_event */
+    167044.988747 |   84) + 17.430 us   |  } /* irq_exit */
+    167044.988748 |   92) + 34.150 us   |  } /* irq_exit */
+    167044.988749 |   63)   7.150 us    |  } /* generic_handle_irq */
+    167044.988750 |    5)   3.120 us    |  } /* generic_handle_irq */
+    167044.988750 |   14) + 38.940 us   |  } /* tick_do_update_jiffies64.part.2 */
+    167044.988751 |   61)   5.080 us    |  } /* tick_nohz_next_event */
+    167044.988751 |   23) + 35.010 us   |  } /* tick_nohz_next_event */
+    167044.988751 |   22) + 24.830 us   |  } /* tick_nohz_next_event */
+    167044.988751 |   28) + 40.140 us   |  } /* tick_do_update_jiffies64.part.2 */
+
+During a tick period, the tick_do_update_jiffies64() is called concurrency, and the
+time is up to 30+us. so the lockless quick check in tick_do_update_jiffies64()
+cannot intercept all concurrency.
+
+Currently we use the cmdline parameter "skew_tick=1" can reduce the the latency mostly,
+because the conflict is mainly caused by tick timer. But we still want to reduce the
+critical region of the jiffies_seq to reduce some latency, maybe many other
+interrupt or timer happens at the same will still trigger the conflict.
+
+>> However, it is unnecessary to update the jiffies_seq lock multiple
+>> times in a tick period, so the critical region of the jiffies_seq
+>> can be reduced to reduce latency overheads.
+> 
+> This does not make sense either. Before taking the lock we have:
+> 
+>         delta = ktime_sub(now, READ_ONCE(last_jiffies_update));
+>         if (delta < tick_period)
+>                 return;
+> 
+> as a lockless quick check.
+> 
+> We also have mechanisms to avoid that a gazillion of CPUs call this. Why
+> are they not working or are some of the callsites missing them?
+> 
+> I'm not against reducing the seqcount write scope per se, but it needs a
+> proper and correct explanation.
+> 
+Yes, there is a lockless quick check, but we have hundreds of cpu cores,
+this lockless detection cannot intercept all concurrency.
+
+>> By the way, last_jiffies_update is protected by jiffies_lock, so
+>> reducing the jiffies_seq critical area is safe.
+> 
+> This is misleading. The write to last_jiffies_update is serialized by
+> the jiffies lock, but the write has also to be inside the sequence write
+> held section because tick_nohz_next_event() does:
+> 
+> 	/* Read jiffies and the time when jiffies were updated last */
+> 	do {
+> 		seq = read_seqcount_begin(&jiffies_seq);
+> 		basemono = last_jiffies_update;
+> 		basejiff = jiffies;
+> 	} while (read_seqcount_retry(&jiffies_seq, seq));
+> 
+> So there is no 'By the way'.
+> 
+It is misleading indeed, I means when reducing the critical region of the jiffies_seq,
+the read of last_jiffies_update is still under the protected by jiffies_lock.
+
+Thanks.
+
+> Thanks,
+> 
+>         tglx
+> .
+> 
