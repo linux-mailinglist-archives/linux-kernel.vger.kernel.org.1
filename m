@@ -2,85 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EEA2B4B83
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BF42B4B8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732242AbgKPQn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:43:56 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:34921 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731504AbgKPQnz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:43:55 -0500
-Received: by mail-wm1-f68.google.com with SMTP id w24so24198829wmi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:43:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CU/ArYgUmsV0IxBE5kQnWgLCbAVJFNGDcMQi4/XhurY=;
-        b=sxoWw4yBR2oepvthbsA2yPqEfv0UroDJf96Z0ti2KLdN39oJHirtMGOoTlbGLsfQIO
-         Up1uYA/+Roxwwgs9/e+BqPuCQ53pBe2r9pRZmZd1X2BpgYYLYmfN5PfR3h3eEO/Fbins
-         kD23bsZvmyCmyerbO55qV7mLQEVvN1adideB3EGawHcq/wzvZY5LpJ59eZ9KJ1ArbxZS
-         DdaKnbLMqt9J/WVESZB4B6Jhwrx1ERnNGm3x5TdodQ/hI5pmUuBeHPpC+me6wxF1luYS
-         d0I1tpQfvKbIKntJ+ME3J+z/YGRMVJPdpg+U3NjHXz/eXLM3QY9j/b6NTzlKNyXys7wM
-         9SMQ==
-X-Gm-Message-State: AOAM530vQI1gz2Ul1HehDfpanHLSTdnm+GJH+iGT6KyFHRmT49VgUOiN
-        wJ0+u4NIhjrsK0IhYJy129Y=
-X-Google-Smtp-Source: ABdhPJwrytIY7dl2WyWJYJvj3sS0LfOC+VxR1BPCIAPEeDaBU+31icV0iu6ZfGFAJWOtzdtMFDXIMg==
-X-Received: by 2002:a05:600c:4147:: with SMTP id h7mr15502690wmm.146.1605545033868;
-        Mon, 16 Nov 2020 08:43:53 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y187sm20730377wmg.33.2020.11.16.08.43.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 08:43:52 -0800 (PST)
-Date:   Mon, 16 Nov 2020 17:43:51 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: drivers/mmc/host/tmio_mmc.c:177 tmio_mmc_probe() warn: argument
- 3 to %08lx specifier is cast from pointer
-Message-ID: <20201116164351.GA44776@kozik-lap>
-References: <20201116092236.GT29398@kadam>
+        id S1732285AbgKPQoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:44:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730503AbgKPQoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:44:17 -0500
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F59620E65;
+        Mon, 16 Nov 2020 16:44:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605545057;
+        bh=yTrjFuAFKEPr9WXf5xuld1Qh5lzQFn9zg5l6OTYrWDw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hhlvp98N6Y3zPHsB3OMhCFT1OIkTLJWhoLxSsVIpfbXOEQN1DT3+73+LRAYCQMPvi
+         RyEGr3IruZKcarP8LLcekaGl/rjQSYjdN8QuVwT4w3xUgwbd97MkLViqRM86lXtbsi
+         d8Gynz+6/9mH3Gax6dntcJxXVcPdspJHyRUf2UaY=
+Received: by mail-oo1-f52.google.com with SMTP id l20so4044905oot.3;
+        Mon, 16 Nov 2020 08:44:17 -0800 (PST)
+X-Gm-Message-State: AOAM5307bwApZRdv5e5k1m123Ne+udn4UI5amdXFuaxGGYA1jhzU7T9+
+        gmLoxOHXU/s/9IB3IEw0451hzR8SV/draBKjTGQ=
+X-Google-Smtp-Source: ABdhPJzcI0iU/kQZ6feELKQXs2iwC3Ud05OCSxkBb+ndz5nnaCz+I4BxAgPXoeidAIuJVCuFG/jhuPtisEOx6ED7VdM=
+X-Received: by 2002:a4a:7055:: with SMTP id b21mr175385oof.66.1605545056474;
+ Mon, 16 Nov 2020 08:44:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201116092236.GT29398@kadam>
+References: <20201112215657.GA4539@charmander> <20201116162311.GA15585@infradead.org>
+In-Reply-To: <20201116162311.GA15585@infradead.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 16 Nov 2020 17:44:00 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2JyaGj2GJXYac-hURK1Z54D6cnU4qYZmV3L4pVLifBLA@mail.gmail.com>
+Message-ID: <CAK8P3a2JyaGj2GJXYac-hURK1Z54D6cnU4qYZmV3L4pVLifBLA@mail.gmail.com>
+Subject: Re: [PATCH] syscalls: Fix file comments for syscalls implemented in kernel/sys.c
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Tal Zussman <tz2294@columbia.edu>, Arnd Bergmann <arnd@arndb.de>,
+        Linux API <linux-api@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 12:22:36PM +0300, Dan Carpenter wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   f01c30de86f1047e9bae1b1b1417b0ce8dcd15b1
-> commit: 54d8454436a205682bd89d66d8d9eedbc8452d15 mmc: host: Enable compile testing of multiple drivers
-> config: arm64-randconfig-m031-20201113 (attached as .config)
-> compiler: aarch64-linux-gcc (GCC) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> smatch warnings:
-> drivers/mmc/host/tmio_mmc.c:177 tmio_mmc_probe() warn: argument 3 to %08lx specifier is cast from pointer
-> 
-> vim +177 drivers/mmc/host/tmio_mmc.c
-> 
-> 94b110aff8679b1 Kuninori Morimoto     2015-01-13  170  
-> de501af98dfab9c Ian Molton            2015-04-27  171  	ret = devm_request_irq(&pdev->dev, irq, tmio_mmc_irq,
-> de501af98dfab9c Ian Molton            2015-04-27  172  			       IRQF_TRIGGER_FALLING,
-> d9618e9f1a057ef Yong Zhang            2011-09-22  173  			       dev_name(&pdev->dev), host);
-> 8e7bfdb37ac001c Magnus Damm           2011-05-06  174  	if (ret)
-> 8e7bfdb37ac001c Magnus Damm           2011-05-06  175  		goto host_remove;
-> 8e7bfdb37ac001c Magnus Damm           2011-05-06  176  
-> 311f3ac76826bfd Guennadi Liakhovetski 2010-05-19 @177  	pr_info("%s at 0x%08lx irq %d\n", mmc_hostname(host->mmc),
->                                                                        ^^^^^^^
-> These are supposed to be %p so that the kernel can hide them and avoid
-> showing kernel pointers to user space.
+On Mon, Nov 16, 2020 at 5:23 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Thu, Nov 12, 2020 at 04:56:57PM -0500, Tal Zussman wrote:
+> > The relevant syscalls were previously moved from kernel/timer.c to kernel/sys.c,
+> > but the comments weren't updated to reflect this change.
+> >
+> > Fixing these comments messes up the alphabetical ordering of syscalls by
+> > filename. This could be fixed by merging the two groups of kernel/sys.c syscalls,
+> > but that would require reordering the syscalls and renumbering them to maintain
+> > the numerical order in unistd.h.
+>
+> Lots of overly long lines in your commit log.
+>
+> As for the patch itself:  IMHO we should just remove the comments
+> about the files as that information is completely irrelevant.
 
-Thanks, I sent a patch.
+I noticed I already applied the patch last week to the asm-generic cleanups
+branch, but forgot to send out the email about it.
 
-Best regards,
-Krzysztof
+I do agree the file names are rather useless, and I would apply a follow-up
+patch to completely remove them as well. My real plan was to remove
+the file itself and replace it with the parsable syscall.tbl format that we
+use for all non-generic architectures, but I haven't gotten around to updating
+the patch that Firoz Khan did a long time ago.
 
+      arnd
