@@ -2,80 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D912B4668
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFE52B466A
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 15:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730089AbgKPOxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 09:53:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728396AbgKPOxQ (ORCPT
+        id S1730290AbgKPOxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 09:53:55 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:42163 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728396AbgKPOxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:53:16 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A7EC0613CF;
-        Mon, 16 Nov 2020 06:53:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zbANDMsxAnGY4qJHxu4bFJO67hGjNSt40DSg35mbbGk=; b=Rjhun6fXTUjpx8RHKiO/gk7Ssv
-        CahjIZzcLRXWFppQHaZacXVKNp8931tU0rIuAjPDYvptQJK9o5DSci2bcHvuSBMuK1NJrUZVSMxEc
-        ueIAA3tqhh7Xzbh9fPlkKERgKGuuaZraF9pionz3/ucjOZLsEE+kLMPbMs4E0WGQcv6dolC2MIxnE
-        Mr8cZnzVYzXtaUYwj0/NoRBoPKuExlqZmNxg1oQzqYC1LpqixVI9fYd1b5qjD+9cK/7CbLxmcwUA1
-        nnppXE13+HP+YxIdgaVkb/NBeJ/pDSWoiGdq151HFAx7eQJq3GAkxsHC/7dZxzanjWA6LvnIEMZPA
-        P3JJ+GCQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kefsV-0002vS-KB; Mon, 16 Nov 2020 14:53:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D1A5D301959;
-        Mon, 16 Nov 2020 15:53:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AF28120299B60; Mon, 16 Nov 2020 15:53:09 +0100 (CET)
-Date:   Mon, 16 Nov 2020 15:53:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/13] seqnum_ops: Introduce Sequence Number Ops
-Message-ID: <20201116145309.GF3121378@hirez.programming.kicks-ass.net>
-References: <cover.1605287778.git.skhan@linuxfoundation.org>
- <26cbcc431be5e3ab7d8e0e881d522605a27b1312.1605287778.git.skhan@linuxfoundation.org>
+        Mon, 16 Nov 2020 09:53:55 -0500
+Received: by mail-oi1-f194.google.com with SMTP id w145so19052521oie.9;
+        Mon, 16 Nov 2020 06:53:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YlpjPvTQYT+rqdni5qJzLiGhROd+f/379cy54KdKCm0=;
+        b=UdOkcRVeKkKulfhfAgp40GpUXlbmHBzCKUguCuO95nYxA9ASiDUEYr5CPA89WxW7cQ
+         +x/J/dZKZgjB2EW/GDwWBuJUDYK52ndSDmdS/xv43ypAUIcJIWe/UM+eTMjkCtZJusIT
+         Tzz4PIXxThWvx5YTrXOGE2kcgoF2YZ0rCEEOhx5SLQfXGb3bjkRrF7ORhO/i58pXwOH5
+         n5ICp68r0HYnFk+A0QQLe4US9qUiBJhb1F10Sll5VId95k5PrYnk9fvC/PNOM2GOMXAs
+         8HNhVKgOx5AQZciY0lljJ4N1de+Q/vnPRs4UCKR4pf/Tg4yCmn5UdnLpSFbQw5TuYANv
+         DOyA==
+X-Gm-Message-State: AOAM532EYrqPmk8ImgS/XBsRfzZyXEsCFT+TCQbhuPZgFfHJN6wpdKdY
+        b/b3ebLFT26YTc1L4RTxTXUY/Q+HNw==
+X-Google-Smtp-Source: ABdhPJysYAvyeMCmUOQIRzey6h9TQ6Yjr9KAi3Sw8KNdrUru374RMQwgv+i8cZ3MEKgNmhT2nujfMg==
+X-Received: by 2002:aca:1e13:: with SMTP id m19mr4492399oic.176.1605538434197;
+        Mon, 16 Nov 2020 06:53:54 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 64sm4702013otq.26.2020.11.16.06.53.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 06:53:53 -0800 (PST)
+Received: (nullmailer pid 1634415 invoked by uid 1000);
+        Mon, 16 Nov 2020 14:53:52 -0000
+Date:   Mon, 16 Nov 2020 08:53:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] dt-bindings: add vendor bindings for OnePlus
+Message-ID: <20201116145352.GB1625774@bogus>
+References: <20201112161920.2671430-1-caleb@connolly.tech>
+ <20201112161920.2671430-5-caleb@connolly.tech>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <26cbcc431be5e3ab7d8e0e881d522605a27b1312.1605287778.git.skhan@linuxfoundation.org>
+In-Reply-To: <20201112161920.2671430-5-caleb@connolly.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 10:46:03AM -0700, Shuah Khan wrote:
-
-> +Increment interface
-> +-------------------
+On Thu, Nov 12, 2020 at 04:21:54PM +0000, Caleb Connolly wrote:
+> Used by the OnePlus 6/T device trees
+> 
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+>  .../bindings/arm/oneplus/oneplus-boards.yaml  | 25 +++++++++++++++++++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |  2 ++
+>  2 files changed, 27 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/oneplus/oneplus-boards.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/oneplus/oneplus-boards.yaml b/Documentation/devicetree/bindings/arm/oneplus/oneplus-boards.yaml
+> new file mode 100644
+> index 000000000000..a4d9bbd5681f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/oneplus/oneplus-boards.yaml
+> @@ -0,0 +1,25 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/oneplus/oneplus-boards.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +Increments sequence number and returns the new value. ::
+> +title: OnePlus based boards
 > +
-> +        seqnum32_inc_return() --> (u32) atomic_inc_return(seqnum)
-> +        seqnum64_inc_return() --> (u64) atomic64_inc_return(seqnum)
-
-Did you think about the ordering?
-
-> +Fetch interface
-> +---------------
+> +maintainers:
+> +  - Caleb Connolly <caleb@connolly.tech>
 > +
-> +Fetched and returns current sequence number value. ::
+> +properties:
+> +  $nodename:
+> +    const: '/'
+> +  compatible:
+> +    oneOf:
+> +      - description: SDM845 based boards
+
+There should be a sdm845 fallback compatible. Also, board level 
+compatibles are documented in a per SoC family schema (qcom.yaml) which 
+should already define the fallback.
+
+> +        items:
+> +          - enum:
+> +              - oneplus,enchilada               # OnePlus 6
+> +              - oneplus,fajita                  # OnePlus 6T
+> +          - const: oneplus,oneplus6             # OnePlus 6 and derivatives
+
+With a SoC fallback, having this as a 3rd compatible probably isn't too 
+useful. 3 levels of compatible is mainly done when there's a SoM plus 
+baseboard.
+
 > +
-> +        seqnum32_fetch() --> (u32) atomic_add_return(0, seqnum)
-> +        seqnum64_fetch() --> (u64) atomic64_add_return(0, seqnum)
-
-That's horrible. Please explain how that is not broken garbage.
-
-Per the fact that it is atomic, nothing prevents the counter being
-incremented concurrently. There is no such thing as a 'current' sequence
-number.
-
-
+> +required:
+> +  - compatible
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 2735be1a8470..372c1136081e 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -768,6 +768,8 @@ patternProperties:
+>      description: OLIMEX Ltd.
+>    "^olpc,.*":
+>      description: One Laptop Per Child
+> +  "^oneplus,.*":
+> +    description: One Plus Technology (Shenzhen) Co., Ltd.
+>    "^onion,.*":
+>      description: Onion Corporation
+>    "^onnn,.*":
+> -- 
+> 2.29.2
+> 
+> 
