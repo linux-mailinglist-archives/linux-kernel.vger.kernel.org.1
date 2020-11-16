@@ -2,228 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4016E2B5349
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 340822B534B
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730742AbgKPU42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:56:28 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:34580 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730488AbgKPU40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:56:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605560185; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Xjkdxhx1322RAQKV663NGZFDklq/I5URrPDT1967820=;
- b=iEiXT1fStoUiIEeYkiD+qPvzg8FUJFRaaz55n17hlyFGDzpxOtguVgn94/KSjxlSEAvBJzcn
- fbkVM1F5U7s5xzBSRIVla4jw+50sorxF6Nd6iTXHQjCGUb0asJ9ZimoBoERkIgjrg07xqWkG
- 9K4t/I5Kje/gfSck8KlTPKW6fUg=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
- 5fb2e7718bd2e3c2225061e7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 16 Nov 2020 20:56:17
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BF667C43460; Mon, 16 Nov 2020 20:56:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9438C433ED;
-        Mon, 16 Nov 2020 20:56:16 +0000 (UTC)
+        id S1731043AbgKPU4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:56:35 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18411 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730488AbgKPU4f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 15:56:35 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb2e77a0000>; Mon, 16 Nov 2020 12:56:26 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov
+ 2020 20:56:35 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 16 Nov 2020 20:56:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aq7NMtKu/GOqqQ4ylwi4ucyD4bmL4Q6+OqM9hxrN+7aKmpf1gNMyxYNQOQMjE3jKGIQvM56takaaByNy0MTZQ5yYJB3RR/eNh35He2gGC5gecb5V9FIdjSkFCefXD6tQg9OnUqCtHNYbEuUTPjmekd2G4l+Agjv8nqA1jGuTrDGfDMSnHaPaiD/yV/DfNI/raIhPZlJwz8nmFGPm1f2gkCOIGl8YrJMj/UQb868ddMHSwBwxBC674JhQwg+K8v0GBslwQpvLR4D2fxap9ayVeWNPMNYFQZ8AXvfrlwnUoAFpLpZx01CHJC+lVtnGU2f6Y7w6Bx5DZ8rDhsX0UyCuHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RqRIZRFRscV+eepsLfhQ3kKnBmV/YQC0pyrNZuCNF2I=;
+ b=HtDy0vkG/WFr7ajWEP7GQ+0e3qWBkqzyL1xKN88kZRn2A2JefmTx7nriSKLTDA5HTeq8ecm8dqFrTOIY2ldU+ZiQ6iHHG9S/S9mFKbnLgwk4s3LUWYAiMseCY9juHMmsb4X3bVs6zbScNxVRqNVSUZ1mXOgPx7zVZgQ/EGpWgZ22vi5xaBsMzrB1OROfuAHoqRlAsxSleUSBtBwFpNgMHSn/voIuLCpevkbEBKeVXaoi2Go02PkkGMsT+w/8C4RIvXrPynpgl30RfdZXVpeSmbbVR9bKmjRQkCIignUf5nneS0v0T3fywDrUfFWh7wxEMD04R+OnvfYYbtVfJw+S0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3305.namprd12.prod.outlook.com (2603:10b6:5:189::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
+ 2020 20:56:33 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
+ 20:56:33 +0000
+Date:   Mon, 16 Nov 2020 16:56:31 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eli Cohen <eli@mellanox.com>,
+        Haggai Abramonvsky <hagaya@mellanox.com>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        "majd@mellanox.com" <majd@mellanox.com>,
+        Matan Barak <matanb@mellanox.com>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Roland Dreier <roland@purestorage.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: Re: [PATCH rdma-next v1 0/7] Use ib_umem_find_best_pgsz() for all
+ umems
+Message-ID: <20201116205631.GA1626752@nvidia.com>
+References: <20201115114311.136250-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201115114311.136250-1-leon@kernel.org>
+X-ClientProxiedBy: MN2PR07CA0005.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::15) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 16 Nov 2020 12:56:16 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, loic.poulain@linaro.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] bus: mhi: core: Add support to stop or start
- channel data transfers
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20201116124332.GK3926@Mani-XPS-13-9360>
-References: <1605122473-12179-1-git-send-email-bbhatt@codeaurora.org>
- <1605122473-12179-4-git-send-email-bbhatt@codeaurora.org>
- <20201116124332.GK3926@Mani-XPS-13-9360>
-Message-ID: <3bf88d90e4006ba17e2e86c76a926581@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR07CA0005.namprd07.prod.outlook.com (2603:10b6:208:1a0::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Mon, 16 Nov 2020 20:56:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kelY7-006pDA-TE; Mon, 16 Nov 2020 16:56:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605560186; bh=RqRIZRFRscV+eepsLfhQ3kKnBmV/YQC0pyrNZuCNF2I=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=rs6u9K3a/Pw+GTCxFzuD2OL5sWiKUz3SYc/q+078Bm7CZTMmxjpk7dwIzOXsyybgQ
+         9NnhLYxuyOqcEVb+QjoaDFXG/0zzXHE6JXC2Iji+bCSG9T74IcYRX3qEzwZyxzZr16
+         6i4T4HQL1wUT+ODhr53Y7iJ7ut/WPQ9EzXM57zDLcZ4tt7yHehPbecIisruW9Irx4v
+         d7KYaBrfcyn8TcgY7D0VyGGJr0B6mm3CUt10/32dNDrJrTnLpFUZeyk15G2pchs8bI
+         HX/fllQxLua6YCs1jxNK3CBv11ZiRtIWv8flMGXTgcq49HuTBbg2TCn6QU1PIIT+dH
+         NbPfdPIxtpAoA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
+On Sun, Nov 15, 2020 at 01:43:04PM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Changelog:
+> v1:
+>  * Added patch for raw QP
+>  * Fixed commit messages
+> v0: https://lore.kernel.org/lkml/20201026132635.1337663-1-leon@kernel.org
+> 
+> -------------------------
+> >From Jason:
+> 
+> Move the remaining cases working with umems to use versions of
+> ib_umem_find_best_pgsz() tailored to the calculations the devices
+> requires.
+> 
+> Unlike a MR there is no IOVA, instead a page offset from the starting page
+> is possible, with various restrictions.
+> 
+> Compute the best page size to meet the page_offset restrictions.
+> 
+> Thanks
+> 
+> Jason Gunthorpe (7):
+>   RDMA/mlx5: Use ib_umem_find_best_pgoff() for SRQ
+>   RDMA/mlx5: Use mlx5_umem_find_best_quantized_pgoff() for WQ
+>   RDMA/mlx5: Directly compute the PAS list for raw QP RQ's
+>   RDMA/mlx5: Use mlx5_umem_find_best_quantized_pgoff() for QP
+>   RDMA/mlx5: mlx5_umem_find_best_quantized_pgoff() for CQ
+>   RDMA/mlx5: Use ib_umem_find_best_pgsz() for devx
+>   RDMA/mlx5: Lower setting the umem's PAS for SRQ
 
-On 2020-11-16 04:43, Manivannan Sadhasivam wrote:
-> On Wed, Nov 11, 2020 at 11:21:10AM -0800, Bhaumik Bhatt wrote:
->> Some MHI client drivers may want to request a pause or halt of
->> data transfer activity on their channels. Support for this does
->> not exist and must be introduced, wherein the channel context is
->> not reset or cleared but only the STOP channel command is issued.
->> This would need to be paired with an API that allows resuming the
->> data transfer activity on channels by use of the START channel
->> command. This API assumes that the context information is already
->> setup. Enable this using two new APIs, mhi_start_transfer() and
->> mhi_stop_transfer().
->> 
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> ---
->>  drivers/bus/mhi/core/main.c | 41 
->> +++++++++++++++++++++++++++++++++++++++++
->>  include/linux/mhi.h         | 19 +++++++++++++++++++
->>  2 files changed, 60 insertions(+)
->> 
->> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
->> index 1226933..1a969f4 100644
->> --- a/drivers/bus/mhi/core/main.c
->> +++ b/drivers/bus/mhi/core/main.c
->> @@ -1560,6 +1560,47 @@ void mhi_unprepare_from_transfer(struct 
->> mhi_device *mhi_dev)
->>  }
->>  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
->> 
->> +static int mhi_update_transfer_state(struct mhi_device *mhi_dev,
->> +				     enum mhi_ch_state_type to_state)
->> +{
->> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
->> +	struct mhi_chan *mhi_chan;
->> +	int dir, ret;
->> +
->> +	for (dir = 0; dir < 2; dir++) {
->> +		mhi_chan = dir ? mhi_dev->ul_chan : mhi_dev->dl_chan;
->> +
->> +		if (!mhi_chan)
->> +			continue;
->> +
->> +		/*
->> +		 * Bail out if one of the channels fail as client will reset
->> +		 * both upon failure
->> +		 */
->> +		mutex_lock(&mhi_chan->mutex);
-> 
-> Hmm. The documentation about wait_for_completion*() used in
-> mhi_update_channel_state()says below,
-> 
-> "As all variants of wait_for_completion() can (obviously) block for a 
-> long
-> time depending on the nature of the activity they are waiting for, so 
-> in
-> most cases you probably don't want to call this with held mutexes."
-> 
-Yes, that is understood. The mhi_chan->mutex is only used to lock any 
-channel
-enable/start/stop/disable type operations, since these have to be in 
-order, it
-is essential that we wait for one of the operations to finish before the 
-next
-one.
+Applied to for-next
 
-Also we avoid a race, for example, at a time when a device crash forces 
-a driver
-"remove" call, while an operation to start/stop a channel is already 
-going on.
->> +		ret = mhi_update_channel_state(mhi_cntrl, mhi_chan, to_state);
->> +		if (ret) {
->> +			mutex_unlock(&mhi_chan->mutex);
->> +			return ret;
->> +		}
->> +		mutex_unlock(&mhi_chan->mutex);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +int mhi_stop_transfer(struct mhi_device *mhi_dev)
->> +{
->> +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_STOP);
->> +}
->> +EXPORT_SYMBOL_GPL(mhi_stop_transfer);
->> +
->> +int mhi_start_transfer(struct mhi_device *mhi_dev)
->> +{
->> +	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_START);
->> +}
->> +EXPORT_SYMBOL_GPL(mhi_start_transfer);
->> +
->>  int mhi_poll(struct mhi_device *mhi_dev, u32 budget)
->>  {
->>  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
->> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
->> index 52b3c60..aee8494 100644
->> --- a/include/linux/mhi.h
->> +++ b/include/linux/mhi.h
->> @@ -702,6 +702,25 @@ int mhi_prepare_for_transfer(struct mhi_device 
->> *mhi_dev);
->>  void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev);
->> 
->>  /**
->> + * mhi_stop_transfer - Pauses ongoing channel activity by issuing the 
->> STOP
->> + *                     channel command to both UL and DL channels. 
->> This command
->> + *                     does not reset the channel context and the 
->> client drivers
->> + *                     can issue mhi_start_transfer to resume 
->> activity.
->> + * @mhi_dev: Device associated with the channels
->> + */
->> +int mhi_stop_transfer(struct mhi_device *mhi_dev);
->> +
->> +/**
->> + * mhi_start_transfer - Resumes channel activity by issuing the START 
->> channel
->> + *                      command to both UL and DL channels. This 
->> command assumes
->> + *                      the channel context is already setup and the 
->> client
->> + *                      drivers can issue mhi_stop_transfer to pause 
->> activity if
->> + *                      required.
->> + * @mhi_dev: Device associated with the channels
->> + */
->> +int mhi_start_transfer(struct mhi_device *mhi_dev);
->> +
->> +/**
-> 
-> Align the comment header properly.
-> 
-So I am trying to follow the documentation style for other functions in 
-the same
-file. Is there any particular format you want me to refer to?
-
-I use all spaces for the lines after the first one to align them just 
-like the
-rest of them.
-
-> Thanks,
-> Mani
-> 
->>   * mhi_poll - Poll for any available data in DL direction
->>   * @mhi_dev: Device associated with the channels
->>   * @budget: # of events to process
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
-
-Thanks,
-Bhaumik
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Jason
