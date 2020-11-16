@@ -2,145 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D0C2B4016
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9012B4022
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbgKPJom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:44:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726598AbgKPJol (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:44:41 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24813C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 01:44:40 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id sxke2300U4C55Sk01xkely; Mon, 16 Nov 2020 10:44:38 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1keb3u-002rhx-F8
-        for linux-kernel@vger.kernel.org; Mon, 16 Nov 2020 10:44:38 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1keb3t-007sjP-Vv
-        for linux-kernel@vger.kernel.org; Mon, 16 Nov 2020 10:44:37 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.10-rc4
-Date:   Mon, 16 Nov 2020 10:44:37 +0100
-Message-Id: <20201116094437.1878639-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S1728651AbgKPJqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:46:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726598AbgKPJqQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:46:16 -0500
+Received: from localhost (unknown [122.171.203.152])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30AE420782;
+        Mon, 16 Nov 2020 09:46:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605519976;
+        bh=88dgvohs5sFfjwOsI6WM53YIqM3Q3dM9tg6dsFyp4bE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OWn7aaXR7ABabK9+RwFQUlkWeeIKuufY6m2/1e8PiAn4xkpyB9IZ9JqwlM6btiatf
+         pObXnDohcXpGz2QYMaRFGqRGOL5glx91V6RQ5XweEqTxUrgsAfqXKFCtv2nVN85nfc
+         Su5vBYtQZho8oyUhoP5Q1NdSeweG2J7LoYhW2z6I=
+Date:   Mon, 16 Nov 2020 15:16:11 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     kishon@ti.com, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] phy: amlogic: Add support for AXG MIPI D-PHY
+Message-ID: <20201116094611.GT7499@vkoul-mobl>
+References: <20201104134730.1545875-1-narmstrong@baylibre.com>
+ <b2aa7b6c-b590-ff4a-d161-364e4e968b26@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b2aa7b6c-b590-ff4a-d161-364e4e968b26@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.10-rc4[1] compared to v5.9[2].
+On 16-11-20, 09:47, Neil Armstrong wrote:
+> Hi Vinod, Kishon,
+> 
+> 
+> On 04/11/2020 14:47, Neil Armstrong wrote:
+> > The Amlogic AXg SoCs embeds a MIPI D-PHY to communicate with DSI
+> > panels, this adds the bindings.
+> > 
+> > This D-PHY depends on a separate analog PHY.
 
-Summarized:
-  - build errors: +2/-7
-  - build warnings: +23/-29
+Am not sure why but these two do not seem to be in my inbox, can you
+please resend this and the other one please
 
-JFYI, when comparing v5.10-rc4[1] to v5.10-rc3[3], the summaries are:
-  - build errors: +1/-0
-  - build warnings: +3/-9
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/09162bc32c880a791c6c0668ce0745cf7958f576/ (all 192 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/bbf5c979011a099af5dc76498918ed7df445635b/ (all 192 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f8394f232b1eab649ce2df5c5f15b0e528c92091/ (all 192 configs)
-
-
-*** ERRORS ***
-
-2 error regressions:
-  + /kisskb/src/drivers/iommu/intel/dmar.c: error: 'struct pci_dev' has no member named 'physfn':  => 338:57
-  + {standard input}: Error: inappropriate arguments for opcode 'adc':  => 170
-
-7 error improvements:
-  - error: modpost: "devm_ioremap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!: N/A => 
-  - error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource" [drivers/iio/adc/adi-axi-adc.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource" [drivers/ptp/ptp_ines.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource_byname" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!: N/A => 
-
-
-*** WARNINGS ***
-
-23 warning regressions:
-  + .config: warning: override: reassigning to symbol PPC_64K_PAGES:  => 13113
-  + /kisskb/src/arch/nds32/kernel/setup.c: warning: unused variable 'region' [-Wunused-variable]:  => 247:26
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: (near initialization for 'nv12_metrics.CurrClock') [-Wmissing-braces]:  => 2539:2
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2539:2
-  + /kisskb/src/drivers/media/pci/intel/ipu3/ipu3-cio2.h: warning: large integer implicitly truncated to unsigned type [-Woverflow]:  => 22:28
-  + /kisskb/src/drivers/media/platform/marvell-ccic/mmp-driver.c: warning: 'mmpcam_runtime_resume' defined but not used [-Wunused-function]:  => 310:12
-  + /kisskb/src/drivers/media/platform/marvell-ccic/mmp-driver.c: warning: 'mmpcam_runtime_suspend' defined but not used [-Wunused-function]:  => 324:12
-  + /kisskb/src/drivers/net/ethernet/chelsio/cxgb4/sge.c: warning: (near initialization for 'buf[0]') [-Wmissing-braces]:  => 910:9
-  + /kisskb/src/drivers/net/ethernet/chelsio/cxgb4/sge.c: warning: missing braces around initializer [-Wmissing-braces]:  => 910:9
-  + /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation:  => 441:1
-  + /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: (near initialization for 'etype.value') [-Wmissing-braces]:  => 755:11
-  + /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: missing braces around initializer [-Wmissing-braces]:  => 755:11
-  + /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation:  => 482:1
-  + /kisskb/src/fs/btrfs/tree-checker.c: warning: (near initialization for 'ri.inode') [-Wmissing-braces]:  => 1056:9
-  + /kisskb/src/fs/btrfs/tree-checker.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1056:9
-  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.14' uses dynamic stack allocation:  => 295:1
-  + /kisskb/src/kernel/rcu/tasks.h: warning: 'show_rcu_tasks_rude_gp_kthread' defined but not used [-Wunused-function]:  => 710:13
-  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.60' uses dynamic stack allocation:  => 2295:1
-  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.59' uses dynamic stack allocation:  => 1992:1
-  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.58' uses dynamic stack allocation:  => 2363:1
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA:  => 58
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA_PIIX:  => 59
-  + warning: unmet direct dependencies detected for MFD_CORE:  => N/A
-
-29 warning improvements:
-  - .config: warning: override: reassigning to symbol SMP: 4103 => 
-  - .config: warning: override: reassigning to symbol UML_NET_ETHERTAP: 4347, 4320 => 4361
-  - .config: warning: override: reassigning to symbol UML_NET_MCAST: 4325, 4352 => 4366
-  - .config: warning: override: reassigning to symbol UML_NET_SLIP: 4322, 4349 => 4363
-  - .config: warning: override: reassigning to symbol UML_NET_SLIRP: 4354, 4327 => 4368
-  - /kisskb/src/drivers/crypto/chelsio/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation: 435:1 => 
-  - /kisskb/src/drivers/crypto/sa2ul.c: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 1486:33 => 
-  - /kisskb/src/drivers/media/platform/fsl-viu.c: warning: "in_be32" redefined: 37 => 
-  - /kisskb/src/drivers/media/platform/fsl-viu.c: warning: "out_be32" redefined: 36 => 
-  - /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: (near initialization for 'cs_counters.cs_counters') [-Wmissing-braces]: 282:9 => 
-  - /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: missing braces around initializer [-Wmissing-braces]: 282:9 => 
-  - /kisskb/src/drivers/net/ethernet/intel/ice/ice_flow.h: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 197:33 => 
-  - /kisskb/src/drivers/net/ethernet/intel/ice/ice_flow.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 198:32 => 
-  - /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: (near initialization for 'cfg.reg_val') [-Wmissing-braces]: 103:8, 62:8 => 
-  - /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: missing braces around initializer [-Wmissing-braces]: 62:8, 103:8 => 
-  - /kisskb/src/drivers/staging/media/tegra-vde/vde.c: warning: 'tegra_vde_runtime_suspend' defined but not used [-Wunused-function]: 916:12 => 
-  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.39' uses dynamic stack allocation: 482:1 => 
-  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.15' uses dynamic stack allocation: 298:1 => 
-  - /kisskb/src/kernel/events/ring_buffer.c: warning: 'perf_output_begin' uses dynamic stack allocation: 283:1 => 
-  - /kisskb/src/kernel/events/ring_buffer.c: warning: 'perf_output_begin_backward' uses dynamic stack allocation: 275:1 => 
-  - /kisskb/src/kernel/events/ring_buffer.c: warning: 'perf_output_begin_forward' uses dynamic stack allocation: 269:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.59' uses dynamic stack allocation: 2293:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.58' uses dynamic stack allocation: 1992:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.57' uses dynamic stack allocation: 2361:1 => 
-  - /kisskb/src/net/bridge/br_device.c: warning: 'br_get_stats64' uses dynamic stack allocation: 230:1 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'add_llc.hd') [-Wmissing-braces]: 1212:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'del_llc.hd') [-Wmissing-braces]: 1245:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'delllc.hd') [-Wmissing-braces]: 1317:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: missing braces around initializer [-Wmissing-braces]: 1317:9, 1212:9, 1245:9 => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+~Vinod
