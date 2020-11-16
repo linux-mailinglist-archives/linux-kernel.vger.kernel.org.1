@@ -2,72 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280092B3AB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D11A2B3AB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 01:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgKPASf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 19:18:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54494 "EHLO mail.kernel.org"
+        id S1728169AbgKPAWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 15 Nov 2020 19:22:38 -0500
+Received: from mga02.intel.com ([134.134.136.20]:23253 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727701AbgKPASf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 19:18:35 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4786F222EC;
-        Mon, 16 Nov 2020 00:18:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605485914;
-        bh=32x/FuihwS5C6ddzVnph7HNF9npffyaAnq2MtvA6Kzw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=2Bv7ss8dSKNs51kzD1f4/utqWUIsKQC59Ft1h/EHNp734z24+B/RO/+4ngUUft/QG
-         CZLq4rollXMgFfz3rOeZXfLEzpyCjPd3Z2eD186l2m981M4A/mBZ9oBPPw92m7Jhjj
-         cPCpO67Wn0VEmIFdB9QWQvyKDWApv2QIqtCeuY9Y=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 278293522ABD; Sun, 15 Nov 2020 16:18:34 -0800 (PST)
-Date:   Sun, 15 Nov 2020 16:18:34 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:dev.2020.11.10a 39/46] ERROR: modpost:
- "get_state_synchronize_srcu" undefined!
-Message-ID: <20201116001834.GO3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <202011160746.rMeDMJQM-lkp@intel.com>
+        id S1727701AbgKPAWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 15 Nov 2020 19:22:38 -0500
+IronPort-SDR: gm6AEstgj4Q0/ZOPUsBsFpkZwRwNq6nYWNdCjFCSc3T41eKvjQRIJd/inLqZAdcWk6UckaCNyx
+ i/qidrFK2D0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157711128"
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
+   d="scan'208";a="157711128"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 16:22:37 -0800
+IronPort-SDR: PKeX57EzPGiFkket3HnFMlFWqaOFsr9vMVuHtHETuDPonv3uV0Rp1Nu+1QlgotdAcda/SXbjOu
+ 0eemmdBGIiug==
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; 
+   d="scan'208";a="543393873"
+Received: from araj-mobl1.jf.intel.com ([10.251.19.79])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2020 16:22:34 -0800
+Date:   Sun, 15 Nov 2020 16:22:32 -0800
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201116002232.GA2440@araj-mobl1.jf.intel.com>
+References: <875z6dik1a.fsf@nanos.tec.linutronix.de>
+ <20201110141323.GB22336@otc-nc-03>
+ <MWHPR11MB16455B594B1B48B6E3C97C108CE80@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201112193253.GG19638@char.us.oracle.com>
+ <877dqqmc2h.fsf@nanos.tec.linutronix.de>
+ <20201114103430.GA9810@infradead.org>
+ <20201114211837.GB12197@araj-mobl1.jf.intel.com>
+ <877dqmamjl.fsf@nanos.tec.linutronix.de>
+ <20201115193156.GB14750@araj-mobl1.jf.intel.com>
+ <875z665kz4.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202011160746.rMeDMJQM-lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <875z665kz4.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.1 (2017-09-22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 07:25:48AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2020.11.10a
-> head:   1bc2f285f9c940176cc2c231db1372d5b2f0c635
-> commit: 7c1d4bacb30f91a0962490cb9db98371aef1f4d6 [39/46] rcutorture: Add initial test for ->get_gp_state and ->poll_gp_state
-> config: x86_64-randconfig-s022-20201115 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-> reproduce:
->         # apt-get install sparse
->         # sparse version: v0.6.3-107-gaf3512a6-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=7c1d4bacb30f91a0962490cb9db98371aef1f4d6
->         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->         git fetch --no-tags rcu dev.2020.11.10a
->         git checkout 7c1d4bacb30f91a0962490cb9db98371aef1f4d6
->         # save the attached .config to linux build tree
->         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=x86_64 
+On Sun, Nov 15, 2020 at 11:11:27PM +0100, Thomas Gleixner wrote:
+> On Sun, Nov 15 2020 at 11:31, Ashok Raj wrote:
+> > On Sun, Nov 15, 2020 at 12:26:22PM +0100, Thomas Gleixner wrote:
+> >> > opt-in by device or kernel? The way we are planning to support this is:
+> >> >
+> >> > Device support for IMS - Can discover in device specific means
+> >> > Kernel support for IMS. - Supported by IOMMU driver.
+> >> 
+> >> And why exactly do we have to enforce IOMMU support? Please stop looking
+> >> at IMS purely from the IDXD perspective. We are talking about the
+> >> general concept here and not about the restricted Intel universe.
+> >
+> > I think you have mentioned it almost every reply :-)..Got that! Point taken
+> > several emails ago!! :-)
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
-> 
-> >> ERROR: modpost: "get_state_synchronize_srcu" [kernel/rcu/rcutorture.ko] undefined!
-> >> ERROR: modpost: "start_poll_synchronize_srcu" [kernel/rcu/rcutorture.ko] undefined!
-> >> ERROR: modpost: "poll_state_synchronize_srcu" [kernel/rcu/rcutorture.ko] undefined!
+> You sure? I _try_ to not mention it again then. No promise though. :)
 
-Good catch, fixed, thank you!
+Hey.. anything that's entertaining go for it :-)
 
-						Thanx, Paul
+> 
+> > I didn't mean just for idxd, I said for *ANY* device driver that wants to
+> > use IMS.
+> 
+> Which is wrong. Again:
+> 
+> A) For PF/VF on bare metal there is absolutely no IOMMU dependency
+>    because it does not have a PASID requirement. It's just an
+>    alternative solution to MSI[X], which allows optimizations like
+>    storing the message in driver manages queue memory or lifting the
+>    restriction of 2048 interrupts per device. Nothing else.
+
+You are right.. my eyes were clouded by virtualization.. no dependency for
+native absolutely.
+
+> 
+> B) For PF/VF in a guest the IOMMU dependency of IMS is a red herring.
+>    There is no direct dependency on the IOMMU.
+> 
+>    The problem is the inability of the VMM to trap the message write to
+>    the IMS storage if the storage is in guest driver managed memory.
+>    This can be solved with either
+> 
+>    - a hypercall which translates the guest MSI message
+>    or
+>    - a vIOMMU which uses a hypercall or whatever to translate the guest
+>      MSI message
+> 
+> C) Subdevices ala mdev are a different story. They require PASID which
+>    enforces IOMMU and the IMS part is not managed by the users anyway.
+
+You are right again :)
+
+The subdevices require PASID & IOMMU in native, but inside the guest there is no
+need for IOMMU unless you want to build SVM on top. subdevices work without
+any vIOMMU or hypercall in the guest. Only because they look like normal
+PCI devices we could map interrupts to legacy MSIx.
+
+> 
+> So we have a couple of problems to solve:
+> 
+>   1) Figure out whether the OS runs on bare metal
+> 
+>      There is no reliable answer to that, so we either:
+> 
+>       - Use heuristics and assume that failure is unlikely and in case
+>         of failure blame the incompetence of VMM authors and/or
+>         sysadmins
+> 
+>      or
+>      
+>       - Default to IMS disabled and let the sysadmin enable it via
+>         command line option.
+> 
+>         If the kernel detects to run in a VM it yells and disables it
+>         unless the OS and the hypervisor agree to provide support for
+>         that scenario (see #2).
+> 
+>         That's fails as well if the sysadmin does so when the OS runs on
+>         a VMM which is not identifiable, but at least we can rightfully
+>         blame the sysadmin in that case.
+
+cmdline isn't nice, best to have this functional out of box.
+
+> 
+>      or
+> 
+>       - Declare that IMS always depends on IOMMU
+
+As you had mentioned IMS has no real dependency on IOMMU in native.
+
+we just need to make sure if running in guest we have support for it
+plumbed.
+
+> 
+>         I personaly don't care, but people working on these kind of
+>         device already said, that they want to avoid it when possible.
+>         
+>         If you want to go that route, then please talk to those folks
+>         and ask them to agree in public.
+> 
+>      You also need to take into account that this must work on all
+>      architectures which support virtualization because IMS is
+>      architecture independent.
+
+What you suggest makes perfect sense. We can certainly get buy in from
+iommu list and have this co-ordinated between all existing iommu varients.
+
+> 
+>   2) Guest support for PF/VF
+> 
+>      Again we have several scenarios depending on the IMS storage
+>      type.
+> 
+>       - If the storage type is device memory then it's pretty much the
+>         same as MSI[X] just a different location.
+
+True, but still need to have some special handling for trapping those mmio
+access. Unlike for MSIx VFIO already traps them and everything is
+pre-plummbed. It isn't seamless as its for MSIx.
+
+> 
+>       - If the storage is in driver managed memory then this needs
+>         #1 plus guest OS and hypervisor support (hypercall/vIOMMU)
+
+Violent agreement here :-)
+
+>         
+>   3) Guest support for PF/VF and guest managed subdevice (mdev)
+> 
+>      Depends on #1 and #2 and is an orthogonal problem if I'm not
+>      missing something.
+> 
+> To move forward we need to make a decision about #1 and #2 now.
+
+Mostly in agreement. Except for mdev (current considered use case) have no
+need for IMS in the guest. (Don't get me wrong, I'm not saying some odd
+device managing sub-devices would need IMS in addition and that the 2048
+MSIx emulation. 
+> 
+> This needs to be well thought out as changing it after the fact is
+> going to be a nightmare.
+> 
+> /me grudgingly refrains from mentioning the obvious once more.
+> 
+
+So this isn't an idxd and Intel only thing :-)... 
+
+Cheers,
+Ashok
