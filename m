@@ -2,174 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61AA52B49A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DBEE2B49AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730758AbgKPPks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:40:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730683AbgKPPkr (ORCPT
+        id S1731324AbgKPPmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:42:11 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41583 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730586AbgKPPmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:40:47 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE78C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:40:47 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 62so13538368pgg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 07:40:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eVDk25klplgFEcpkGpaROXvrHpIQaG+lE/PmD3FQfsg=;
-        b=xV7xxuxw5Gq4YqNkxVYnjK/3wd86nAg3q01YVwVs772XbJqgJXRHSqrakRA81SM+IP
-         s0czxMzJp8633mbm3jlO//Kd6r5mWOqzbrnwqKF2PNyeYzVa66e0nu1dz6/uU4fc3/DB
-         FK4BkNhrJ6OK1MT+B+hsl51FimoMQ4b7GR52ZnDhWVLCuaJF4Pxdc2pgvc2OAjYqu6aB
-         xflOGqwfbYj0qwknHmBX8yRlFXoHqnifSoctAXrEHzpM/plnui5MXafe1Wz7UbECH6fo
-         KZZqo077rycOhEOextBkvm2jDXB6oCkzhXxGvvXVdV+4UbfEYDFz1P933iDi7+O5HeR3
-         9h9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eVDk25klplgFEcpkGpaROXvrHpIQaG+lE/PmD3FQfsg=;
-        b=hrtGILp3V6g8qzyIAsp4Ie17A6XXMkq2rGeCYrouZMaNzE/SXCsO3ud6Sj7II9SFAh
-         02aKQqRQjZhuDnijw+ZfmgpyrVQCYy9xiryK9xLiFe4aGXgbjdb7CDN6HiWQ+4VTQIv3
-         mWCo2123W5e/jPfWQCdmfa3XnX5bk8bC5xbSBEbF42kotwXGaiHbKFv79mqLuEJ5v1Fi
-         Uu9NgbVCIHnilwBFjC1c99DFm3SWGsxPwHerMrAjYbt3gZTii0GHoRR7eVtIhsZNSvBB
-         v/JEliEi+NMIVtkA10Dag+lAev3bPgimGbTT5G6mz99Cau+9SV3RFOY7NyVdH5ZrQbVU
-         dxgQ==
-X-Gm-Message-State: AOAM531FrmSeq4u1fbo4tnf/e46OnoTVTcHakugL65GY0/ZintyTgkG0
-        erUefJRGm4gq5jlcZzQ5Y+cef2uOp01oZ8FaCQVxYg==
-X-Google-Smtp-Source: ABdhPJyJg96R7CKAQR03WWFb674tV+f5dzjjcC6c1Jts1Yw7rBo8IWAFN54P/yT/Pp/gxo+9R2TrcBItgVpeQEdiqeI=
-X-Received: by 2002:a17:90a:8086:: with SMTP id c6mr16639456pjn.147.1605541246831;
- Mon, 16 Nov 2020 07:40:46 -0800 (PST)
+        Mon, 16 Nov 2020 10:42:09 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AGFXOLI030034;
+        Mon, 16 Nov 2020 16:42:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=n4Z6cOmuyWZ3+2oiSgb/gZnSp5m1Rsk8w+tHlYHMIRQ=;
+ b=J81fDplMLAklcuf251YD0CY27i4Gl84JgtlMdsk4V6YE5+hvTNUwIzJLyx2XxVC89OvW
+ F2wnkFZiw03QEybVDoptibop9geTpSaNKigY3T9E+zSPmFThaRgFdG/sfgrTnZMhgTcs
+ 701JaX2B2RT5EDHZLA+eOqQlhlKL+T41KjftMKcuLTknsdJeHSn6EcW2/EFkMy8HdVJI
+ k9LdbK7DDeXd/X8Fmfc4UVY/WfHvzPHb0TAgUcsjk6IeQRqcGMetb+dYbU2YNBkJhucl
+ k49qjmRNGE4PRn0Z85MQheHE03TpLVezJqf82sa1HVmv8JZiaLVY3+r6xvJabOFsOsJH mQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34t5k4uqg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Nov 2020 16:42:00 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 372B710002A;
+        Mon, 16 Nov 2020 16:42:00 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 29461264DCD;
+        Mon, 16 Nov 2020 16:42:00 +0100 (CET)
+Received: from localhost (10.75.127.46) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov 2020 16:41:59
+ +0100
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@st.com>
+Subject: [PATCH 1/1] mfd: stmfx: remove .of_compatible from stmfx_cells for idd and ts
+Date:   Mon, 16 Nov 2020 16:41:59 +0100
+Message-ID: <20201116154159.4342-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201113105952.11638-1-songmuchun@bytedance.com>
- <20201113105952.11638-5-songmuchun@bytedance.com> <20201116133310.GA32129@linux>
-In-Reply-To: <20201116133310.GA32129@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 16 Nov 2020 23:40:10 +0800
-Message-ID: <CAMZfGtU1v+6zje_-CqrvHLSbDYkcLeVpi=29-AMieOXQE5Qokg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v4 04/21] mm/hugetlb: Introduce
- nr_free_vmemmap_pages in the struct hstate
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-16_08:2020-11-13,2020-11-16 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 9:33 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Fri, Nov 13, 2020 at 06:59:35PM +0800, Muchun Song wrote:
-> > If the size of HugeTLB page is 2MB, we need 512 struct page structures
-> > (8 pages) to be associated with it. As far as I know, we only use the
-> > first 4 struct page structures. Use of first 4 struct page structures
-> > comes from HUGETLB_CGROUP_MIN_ORDER.
->
-> Once you mention 2MB HugeTLB page and its specific I would also mention
-> 1GB HugeTLB pages, maybe something along these lines.
-> I would supress "As far as I know", we __know__ that we only use
-> the first 4 struct page structures to track metadata information.
+idd and ts features are not described in stmfx bindings. Remove the
+.of_compatible field from relative mfd_cells to avoid having to add
+corresponding disabled node in device trees using stmfx:
+		stmfx_idd: idd {
+			status = "disabled";
+		};
+		stmfx_ts: stmfx_ts {
+			status = "disabled";
+		};
+Then, the warning "Failed to locate of_node [id: -1]" wont appear anymore.
+.of_compatible could be added as soon as idd or ts bindings are described
+and drivers available.
 
-Thanks. Will do.
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+---
+ drivers/mfd/stmfx.c | 2 --
+ 1 file changed, 2 deletions(-)
 
->
-> > +/*
-> > + * There are 512 struct page structures(8 pages) associated with each 2MB
-> > + * hugetlb page. For tail pages, the value of compound_head is the same.
-> > + * So we can reuse first page of tail page structures. We map the virtual
-> > + * addresses of the remaining 6 pages of tail page structures to the first
-> > + * tail page struct, and then free these 6 pages. Therefore, we need to
-> > + * reserve at least 2 pages as vmemmap areas.
-> > + */
-> > +#define RESERVE_VMEMMAP_NR           2U
->
-> Either I would include 1GB specific there as well, or I would not add
-> any specifics at all and just go by saying that first two pages are used,
-> and the rest can be remapped to the first page that contains the tails.
-
-Thanks. Will do.
-
->
->
-> > +void __init hugetlb_vmemmap_init(struct hstate *h)
-> > +{
-> > +     unsigned int order = huge_page_order(h);
-> > +     unsigned int vmemmap_pages;
-> > +
-> > +     vmemmap_pages = ((1 << order) * sizeof(struct page)) >> PAGE_SHIFT;
-> > +     /*
-> > +      * The head page and the first tail page are not to be freed to buddy
-> > +      * system, the others page will map to the first tail page. So there
-> "the remaining pages" might be more clear.
-
-Thanks.
-
->
-> > +      * are (@vmemmap_pages - RESERVE_VMEMMAP_NR) pages can be freed.
-> "that can be freed"
-
-Thanks.
-
->
-> > +      *
-> > +      * Could RESERVE_VMEMMAP_NR be greater than @vmemmap_pages? This is
-> > +      * not expected to happen unless the system is corrupted. So on the
-> > +      * safe side, it is only a safety net.
-> > +      */
-> > +     if (likely(vmemmap_pages > RESERVE_VMEMMAP_NR))
-> > +             h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
-> > +     else
-> > +             h->nr_free_vmemmap_pages = 0;
->
-> This made think of something.
-> Since struct hstate hstates is global, all the fields should be defined to 0.
-> So, the following assignments in hugetlb_add_hstate:
->
->         h->nr_huge_pages = 0;
->         h->free_huge_pages = 0;
->
-> should not be needed.
-> Actually, we do not initialize other values like resv_huge_pages
-> or surplus_huge_pages.
->
-> If that is the case, the "else" could go.
-
-Yeah, I agree with you.
-
->
-> Mike?
->
-> The changes itself look good to me.
-> I think that putting all the vemmap stuff into hugetlb-vmemmap.* was
-> the right choice.
->
->
-> --
-> Oscar Salvador
-> SUSE L3
-
-
-
+diff --git a/drivers/mfd/stmfx.c b/drivers/mfd/stmfx.c
+index 988e2ba6dd0f..39b2fc952b7d 100644
+--- a/drivers/mfd/stmfx.c
++++ b/drivers/mfd/stmfx.c
+@@ -81,13 +81,11 @@ static struct mfd_cell stmfx_cells[] = {
+ 		.num_resources = ARRAY_SIZE(stmfx_pinctrl_resources),
+ 	},
+ 	{
+-		.of_compatible = "st,stmfx-0300-idd",
+ 		.name = "stmfx-idd",
+ 		.resources = stmfx_idd_resources,
+ 		.num_resources = ARRAY_SIZE(stmfx_idd_resources),
+ 	},
+ 	{
+-		.of_compatible = "st,stmfx-0300-ts",
+ 		.name = "stmfx-ts",
+ 		.resources = stmfx_ts_resources,
+ 		.num_resources = ARRAY_SIZE(stmfx_ts_resources),
 -- 
-Yours,
-Muchun
+2.17.1
+
