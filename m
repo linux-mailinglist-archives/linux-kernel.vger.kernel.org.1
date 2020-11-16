@@ -2,138 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160E02B487A
+	by mail.lfdr.de (Postfix) with ESMTP id 840C82B487B
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 16:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731432AbgKPPFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 10:05:42 -0500
-Received: from mail-dm6nam10on2081.outbound.protection.outlook.com ([40.107.93.81]:5793
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726236AbgKPPFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 10:05:39 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IrOOis2ZkaEHVqGyP46wqh8BzQPnXmnbd58uut3rlYsdTIldM3KdFbbqUpiZCVdYd6JHacqcB+7dOH2C5CiAED1kwbC9AYf+GpWMdKcq1MGGSGK+XDke9nHnNI4cF/o43HxeqclouvKFksZbMQcrpekO5ppaduPlWWV331IQF5tj3lJdnw5wz9jiyIs8KQ2m5M4O/VGyXwsfDfPoMHQRx7YVsTnWFRNpEnjUvqAPPEX26jzkBMXyjy04xRHeCfa+c4U0C6uBUgeiNib8GI3zvXzqNsRPSAUHuXetBi6VEzGsHvw4vMbfrCg2UTuOo9RWxJ+sxurF0FZqvOgpEaBidw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D7umkqjbdYDKpjowREvP/18S9JrCnKsNmu0VXpmSDKg=;
- b=cTYqmLS4Zx65rM8QHhDIPwR+Nt6oEq/1Vwo55IdIqZRXuKyfNgrxdHmeo9cWJegTumzrmp6pEjes27HVkCityFvXO/Or4QWJXuU8QBketu5oyM1FTMgcMuXYo5lRKK7ljvg78CG7RFWEc6YDTlO8lFVitKr0V9M8gfRQagxtOmLk/nvgdKRLssK1/Kx0lU0oxQNUvJJLzEEQcsiRq1LzwwlfotAHpA2aOYn0JGpRN/HdS8BZAjTvZubJSvlUAP3GH9VqdRWeJCd81T6yItCTER+UiCiwx0ZwV5LPOz0eLyNOp/YvJ8ZhVXQysS4iL8l2K0OXr9LZd+1CyFxav1NkbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D7umkqjbdYDKpjowREvP/18S9JrCnKsNmu0VXpmSDKg=;
- b=BJfunxCFPReUnuLnZGQlB1E5CQyuJqUNT3ljZaUGNFU8kDc51AK3gMcwOem0IoRpcPrL7z8AIpU6IyIlLs1CAocOuU6iK0RUH+GeydhfYDGn79GLvntkXy6apm9gweTRAZB/242AO48Sb76A7s+L6hpyiRwwdj1Wm6/PjarkHQg=
-Received: from MN2PR19CA0052.namprd19.prod.outlook.com (2603:10b6:208:19b::29)
- by MWHPR0201MB3515.namprd02.prod.outlook.com (2603:10b6:301:7e::36) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Mon, 16 Nov
- 2020 15:05:35 +0000
-Received: from BL2NAM02FT015.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:19b:cafe::65) by MN2PR19CA0052.outlook.office365.com
- (2603:10b6:208:19b::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend
- Transport; Mon, 16 Nov 2020 15:05:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- BL2NAM02FT015.mail.protection.outlook.com (10.152.77.167) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3564.22 via Frontend Transport; Mon, 16 Nov 2020 15:05:34 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 16 Nov 2020 07:04:16 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Mon, 16 Nov 2020 07:04:16 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- linux-kernel@vger.kernel.org,
- linux-mmc@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- ulf.hansson@linaro.org,
- adrian.hunter@intel.com
-Received: from [172.30.17.110] (port=50904)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1keg3D-0003NE-K8; Mon, 16 Nov 2020 07:04:15 -0800
-Subject: Re: [PATCH v2 0/3] Bug Fixes to Tap Delay code in SDHCI Arasan driver
-To:     Manish Narani <manish.narani@xilinx.com>,
-        <michal.simek@xilinx.com>, <adrian.hunter@intel.com>,
-        <ulf.hansson@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>
-References: <1605515565-117562-1-git-send-email-manish.narani@xilinx.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <d757b5f4-bd5a-e73f-b171-7b18f544ee2f@xilinx.com>
-Date:   Mon, 16 Nov 2020 16:04:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1731440AbgKPPFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 10:05:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbgKPPFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 10:05:48 -0500
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65A60238E6;
+        Mon, 16 Nov 2020 15:05:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605539147;
+        bh=B25/AykvsH7pIjcKE7T5hO3i16WXyq68Ok3+3xJEM4w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q8NUMy6mPGhMrO7+yE6wTUbbBouMeVyRUefsIfBy9PTK/PPyloIRtB6P3v0uPXT8D
+         xsHTQ4CK0MjEIJL/+qvNqUj0X20eSwloVfZ2qDIzXRNEws3lshfnchtACyQ/MSlCpK
+         9UIYCpBK1mKgRCd/dqy8XnrF29vpIMpzuoddjSOo=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Chen Yu <yu.c.chen@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH 0/2] tools/bootconfig: Align the bootconfig applied initrd
+Date:   Tue, 17 Nov 2020 00:05:43 +0900
+Message-Id: <160553914311.90558.426504572691633862.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-In-Reply-To: <1605515565-117562-1-git-send-email-manish.narani@xilinx.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c50d089b-09b4-44cf-08c4-08d88a4111e1
-X-MS-TrafficTypeDiagnostic: MWHPR0201MB3515:
-X-Microsoft-Antispam-PRVS: <MWHPR0201MB3515E746D1DE5DB5AF8E6FFBC6E30@MWHPR0201MB3515.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: h/i5Z874zvcxKZ/tVjXDyRx2sUVG/v+/3tcYSP2Okt9ob0I/AfHiRWYjS+beFDZpyLBDxfwmF/HV6VwqNqtJYH3HdiJif1lY5IR78PPVr88uFD7ztZdah88gwbvJNxrutRetW7XBcsHB8x2RgX+dhkly3wnD5K8Pj/ePQ0NSbX1gGJAW1pPmpFQue7d/kI5rBq/SxIekZNqaeqtjtKVO85OhyJ1nRpDPU/bBtgA96KVtIq7D+G6E1anHAqwVQQN+KOZakRkjwtK15gaPh1PYM94lwrNCUnTu684JiwClxpq8gGON/jCLpfVOSOl+KJ+5CMCdTjjCFIbMg27+AwsoltdCXDW2KMlyC6f3MILD0iH0GAZcQtu8JXfFWddj7+kH0F2Wd763nI9PvagVuml5LBeWXDd/v80pnWQsx2vGc99YKiK2bI1IpQDrR4OFwYVeQyzX0PGjITdf05ljSG54WKK7f9HUoK4wedy7mH9s3VaTtq4rcup/xdqA1SkxHR8cr0mwbPvh8TqafaPK51+y3w==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(376002)(346002)(46966005)(107886003)(31686004)(70206006)(966005)(36756003)(336012)(426003)(8676002)(7636003)(82740400003)(83380400001)(31696002)(47076004)(2616005)(4744005)(4326008)(478600001)(356005)(8936002)(186003)(9786002)(44832011)(70586007)(5660300002)(82310400003)(2906002)(54906003)(26005)(316002)(110136005)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2020 15:05:34.7974
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c50d089b-09b4-44cf-08c4-08d88a4111e1
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT015.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0201MB3515
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+This updates bootconfig tool to align the total size of initrd + 
+bootconfig to 4. To adjust the file size, the bootconfig tool
+adds padding null characters in between the boot configuration
+data and the footer.
+
+This series include Documentation update. The changing points are
+- The bootconfig applied initrd image size is aligned to 4.
+- To insert the padding null ('\0') bytes, the size in the footer
+  can be bigger than the actual bootconfig file size.
+- But the max size of the boot configuration file is same, because
+  the max size doesn't include the last null characters.
+
+For this version I decided to keep 4 bytes aligned rather than
+longer size. It will be easy to expand it to e.g. 32 bytes (in this
+series, we just need to update 3 locations of the code), but I
+couldn't find any reason to expand it. Only I could found was
+that the grub can align the filesize to 4, and U-Boot/EDK2 will
+not change it. So I couldn't say what is the best size.
+
+Anyway, I updated the documentation too, which clearly says that
+the above changing points, and if the bootloader pass the wrong
+size, kernel will not find bootconfig from the initrd.
+
+Thank you,
+
+---
+
+Masami Hiramatsu (2):
+      tools/bootconfig: Align the bootconfig applied initrd image size to 4
+      Documentation: bootconfig: Update file format on initrd image
 
 
-On 16. 11. 20 9:32, Manish Narani wrote:
-> This patch set consists a couple of minor bug fixes for SDHCI Arasan
-> driver. The fixes are for tap delay programming where in some cases
-> tuning is failing for some of the SD cards.
-> 
-> Changes in v2:
-> 	- Fixed the eemi_ops call issue by replacing to an API call
-> 	  directly
-> 	- Merged https://lore.kernel.org/patchwork/patch/1336342/
-> 	  with this series of patches
-> 
-> Manish Narani (3):
->   mmc: sdhci-of-arasan: Allow configuring zero tap values
->   mmc: sdhci-of-arasan: Use Mask writes for Tap delays
->   mmc: sdhci-of-arasan: Issue DLL reset explicitly
-> 
->  drivers/mmc/host/sdhci-of-arasan.c | 51 +++++++++++-------------------
->  1 file changed, 19 insertions(+), 32 deletions(-)
-> 
+ Documentation/admin-guide/bootconfig.rst |   18 ++++++++++++----
+ include/linux/bootconfig.h               |    1 +
+ tools/bootconfig/main.c                  |   33 +++++++++++++++++++++++++-----
+ tools/bootconfig/test-bootconfig.sh      |    6 +++++
+ 4 files changed, 47 insertions(+), 11 deletions(-)
 
-Acked-by: Michal Simek <michal.simek@xilinx.com>
-
-Thanks,
-Michal
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
