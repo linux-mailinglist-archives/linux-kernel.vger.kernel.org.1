@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312982B4D65
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481FE2B4DED
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733259AbgKPRhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:37:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
+        id S2387612AbgKPRj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:39:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733233AbgKPRhV (ORCPT
+        with ESMTP id S1733255AbgKPRhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:37:21 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA918C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:20 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 23so19605433wrc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:20 -0800 (PST)
+        Mon, 16 Nov 2020 12:37:22 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AE5C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:22 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 10so28949wml.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Em7SluU2l3ftJ+gF09xUH3G2q3trrqCt+WUDKP2B/us=;
-        b=lPZeyl6uWi7xUQZkvOEt0UCMHVHP8990HNpdrvYMl0WHli7nvkcSvo+7bls/hlxqxT
-         qkgThfDFvUQ8SDqwIBkFEpuHOEUhvXzbRixLcrE6I/elSkxeC++BarR6XIfDpg4pP3nO
-         hBBh/5d2rUqef+FimPU5R7CTZX4OQkk3lHX4MsxeBA35z++/uBsA+Aa+Oa/wq+5pegqd
-         sULjOoyhyBSnknx+UyluYSKwpT/FBRQQaZ3zOcZlWnwPD3jNlj9ld2R1xSnL1WnvLBtV
-         b5eCsQaKfT6kCOCWgevMTEGEoRlmqmiOsnnsbzQ9jM2y2bwesu31jcvq8mlUqPxjw0os
-         BdKA==
+        bh=I1uDD7eJYKIFmY2+cEE1XxDSSI80DfvhehKV0mcsFfw=;
+        b=xwaRqeZ7quP0cWyeWhd8C6+hJKr/nYyRBXd5dcd/0xopFhUsnodBso0oGf7oip4HT5
+         CWT6wdh+uJgJBqvi0EEYxPVdELNx/M2yGoG2KAEoeMLoE9LJFe1WUqpcQY8KLAkNaGN8
+         SvB25e7lNzQ7Q0xQjnrx8YVp1hUbanOFrVvrIBSZi8RCgwbIhHf8fgiLGGTjo7XiQu39
+         6JxMmkENBQ/YeBPOMpvs+pK9pkDuHh+7tIk9gQ/zKXB1bz8LH3BQ1eILp4X29krtQeee
+         axdAUn7R6YssKyyop9XTX1yvlvTSl8KCMnSgrwEMFrsG/3LPLQdvF/27Wp58nwphtKPG
+         ZeNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Em7SluU2l3ftJ+gF09xUH3G2q3trrqCt+WUDKP2B/us=;
-        b=lip025V7HmifxO44nORK6kSwx+/p6FphCFeipT6pFx4hyvhnOFIMBktsOeZaN4rMW2
-         PLyOhQA3U7z3vZFdzWuvMZGB8f9YDclGL01B9Xba4unqcPOdq38cPU4nIyrB6SBFDxmJ
-         Eb1T7s3/Smm/9XT9flmWpP50d8wsL4Uxr0M97j/4433QpuOIlGJOgC6CZdppx8MTueSf
-         GQ+0lHbpoINBrwsSiQWcdS1sKHY7Lh8E99mw1ZyJMxHtarUBZ/+EG2FA1f4NKp+Vxisg
-         xzKzpcLX3xO2g0K2MflLQDPIw9pKvpiheGLV7/T5fU8uX7lWSS+PQIkkLtK4I3q2qeVb
-         zjVQ==
-X-Gm-Message-State: AOAM532D8oqZalK0xU8g3H624y1ExSfSeP7rFts/7Pre5M2RzzlvuVUC
-        /nrrY1huK3Mni13AjtZsTxuIDw==
-X-Google-Smtp-Source: ABdhPJwXIZLoXsynjbHEmc3+1z3zdclGhSCg3QJ1hmwzfWitxIHK8n69nRA+7CniOhIhL+gzgUOKkQ==
-X-Received: by 2002:a5d:4001:: with SMTP id n1mr13254833wrp.176.1605548239475;
-        Mon, 16 Nov 2020 09:37:19 -0800 (PST)
+        bh=I1uDD7eJYKIFmY2+cEE1XxDSSI80DfvhehKV0mcsFfw=;
+        b=DDDDkFPfC+mgYTFrsuG9AnbqyDwOl14tecWaiNEO0i/tsoLP3GZXH0vNFlJLjADZWC
+         obaYxOGCMg60QRZlIUht44cLiVj1p5DYpc4O/qI5VEJkoPXbuZnuDrxcbru6/udtcrCB
+         afC69e0qAnXYejqrs9oi3qSynhvGD5sX1Geg3lyA8lujYDxq61eWf5ocicJTU2gsn8qc
+         /hySaA1E/8hXhfmsdyC7kpLqk/vnadCOFOsqZENU/MS845qkWBO5rpGOD3fvFQqsWLK4
+         ErtUxV/+5jKJNnij0Yynr7EbvbHxTuUq2WsJY1QGKCKNJArgzeNSJUmmXQ5SlngBN/+V
+         KC5A==
+X-Gm-Message-State: AOAM530Xtzn1eHb9RL5PDNXipmb+B1a43q7rfuZX8jF424VsoDWPQdQk
+        RojBxdlbmHsLAzNh08ic9EhkqA==
+X-Google-Smtp-Source: ABdhPJyPyvX6KsLrBpMenVnxw9lp2ogJx9C5LPszyl+alzyLn0ibB1AcbIsYmL/pB+oAoVo8qw3y4A==
+X-Received: by 2002:a1c:b0c4:: with SMTP id z187mr16320374wme.113.1605548240726;
+        Mon, 16 Nov 2020 09:37:20 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.18
+        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:37:18 -0800 (PST)
+        Mon, 16 Nov 2020 09:37:20 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Slava Grigorev <slava.grigorev@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 11/43] drm/radeon/radeon_audio: Move 'dce3_2_*' prototypes to shared location
-Date:   Mon, 16 Nov 2020 17:36:28 +0000
-Message-Id: <20201116173700.1830487-12-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 12/43] drm/radeon/evergreen: Move 'evergreen_*' and 'sumo_*' prototypes out to shared location
+Date:   Mon, 16 Nov 2020 17:36:29 +0000
+Message-Id: <20201116173700.1830487-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201116173700.1830487-1-lee.jones@linaro.org>
 References: <20201116173700.1830487-1-lee.jones@linaro.org>
@@ -72,112 +71,213 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/dce3_1_afmt.c:30:6: warning: no previous prototype for ‘dce3_2_afmt_hdmi_write_speaker_allocation’ [-Wmissing-prototypes]
- 30 | void dce3_2_afmt_hdmi_write_speaker_allocation(struct drm_encoder *encoder,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/dce3_1_afmt.c:48:6: warning: no previous prototype for ‘dce3_2_afmt_dp_write_speaker_allocation’ [-Wmissing-prototypes]
- 48 | void dce3_2_afmt_dp_write_speaker_allocation(struct drm_encoder *encoder,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/dce3_1_afmt.c:66:6: warning: no previous prototype for ‘dce3_2_afmt_write_sad_regs’ [-Wmissing-prototypes]
- 66 | void dce3_2_afmt_write_sad_regs(struct drm_encoder *encoder,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/dce3_1_afmt.c:116:6: warning: no previous prototype for ‘dce3_2_audio_set_dto’ [-Wmissing-prototypes]
- 116 | void dce3_2_audio_set_dto(struct radeon_device *rdev,
+ drivers/gpu/drm/radeon/evergreen.c:1281:6: warning: no previous prototype for ‘evergreen_fix_pci_max_read_req_size’ [-Wmissing-prototypes]
+ 1281 | void evergreen_fix_pci_max_read_req_size(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:2664:6: warning: no previous prototype for ‘evergreen_mc_stop’ [-Wmissing-prototypes]
+ 2664 | void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save)
+ | ^~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:2762:6: warning: no previous prototype for ‘evergreen_mc_resume’ [-Wmissing-prototypes]
+ 2762 | void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save)
+ | ^~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:2850:6: warning: no previous prototype for ‘evergreen_mc_program’ [-Wmissing-prototypes]
+ 2850 | void evergreen_mc_program(struct radeon_device *rdev)
  | ^~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/dce3_1_afmt.c:170:6: warning: no previous prototype for ‘dce3_2_hdmi_update_acr’ [-Wmissing-prototypes]
- 170 | void dce3_2_hdmi_update_acr(struct drm_encoder *encoder, long offset,
- | ^~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/dce3_1_afmt.c:202:6: warning: no previous prototype for ‘dce3_2_set_audio_packet’ [-Wmissing-prototypes]
- 202 | void dce3_2_set_audio_packet(struct drm_encoder *encoder, u32 offset)
- | ^~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/dce3_1_afmt.c:223:6: warning: no previous prototype for ‘dce3_2_set_mute’ [-Wmissing-prototypes]
- 223 | void dce3_2_set_mute(struct drm_encoder *encoder, u32 offset, bool mute)
- | ^~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:3710:5: warning: no previous prototype for ‘evergreen_mc_init’ [-Wmissing-prototypes]
+ 3710 | int evergreen_mc_init(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:3769:6: warning: no previous prototype for ‘evergreen_print_gpu_status_regs’ [-Wmissing-prototypes]
+ 3769 | void evergreen_print_gpu_status_regs(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:3797:6: warning: no previous prototype for ‘evergreen_is_display_hung’ [-Wmissing-prototypes]
+ 3797 | bool evergreen_is_display_hung(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:4009:6: warning: no previous prototype for ‘evergreen_gpu_pci_config_reset’ [-Wmissing-prototypes]
+ 4009 | void evergreen_gpu_pci_config_reset(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:4110:6: warning: no previous prototype for ‘sumo_rlc_fini’ [-Wmissing-prototypes]
+ 4110 | void sumo_rlc_fini(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:4153:5: warning: no previous prototype for ‘sumo_rlc_init’ [-Wmissing-prototypes]
+ 4153 | int sumo_rlc_init(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:4381:5: warning: no previous prototype for ‘evergreen_rlc_resume’ [-Wmissing-prototypes]
+ 4381 | int evergreen_rlc_resume(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/evergreen.c:4670:6: warning: no previous prototype for ‘evergreen_irq_suspend’ [-Wmissing-prototypes]
+ 4670 | void evergreen_irq_suspend(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~~~~~
+
+NB: Lots more of these - snipped for brevity
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Slava Grigorev <slava.grigorev@amd.com>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/radeon_audio.c | 12 ------------
- drivers/gpu/drm/radeon/radeon_audio.h | 12 ++++++++++++
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/radeon/cik.c       |  6 +---
+ drivers/gpu/drm/radeon/evergreen.c |  1 +
+ drivers/gpu/drm/radeon/evergreen.h | 51 ++++++++++++++++++++++++++++++
+ drivers/gpu/drm/radeon/ni.c        | 16 +---------
+ drivers/gpu/drm/radeon/si.c        |  7 +---
+ 5 files changed, 55 insertions(+), 26 deletions(-)
+ create mode 100644 drivers/gpu/drm/radeon/evergreen.h
 
-diff --git a/drivers/gpu/drm/radeon/radeon_audio.c b/drivers/gpu/drm/radeon/radeon_audio.c
-index 8c63ccb8b6235..f6c783e19c988 100644
---- a/drivers/gpu/drm/radeon/radeon_audio.c
-+++ b/drivers/gpu/drm/radeon/radeon_audio.c
-@@ -38,16 +38,10 @@ void dce6_audio_enable(struct radeon_device *rdev, struct r600_audio_pin *pin,
- u32 dce6_endpoint_rreg(struct radeon_device *rdev, u32 offset, u32 reg);
- void dce6_endpoint_wreg(struct radeon_device *rdev,
- 		u32 offset, u32 reg, u32 v);
--void dce3_2_afmt_write_sad_regs(struct drm_encoder *encoder,
--		struct cea_sad *sads, int sad_count);
- void evergreen_hdmi_write_sad_regs(struct drm_encoder *encoder,
- 		struct cea_sad *sads, int sad_count);
- void dce6_afmt_write_sad_regs(struct drm_encoder *encoder,
- 		struct cea_sad *sads, int sad_count);
--void dce3_2_afmt_hdmi_write_speaker_allocation(struct drm_encoder *encoder,
--		u8 *sadb, int sad_count);
--void dce3_2_afmt_dp_write_speaker_allocation(struct drm_encoder *encoder,
--		u8 *sadb, int sad_count);
- void dce4_afmt_hdmi_write_speaker_allocation(struct drm_encoder *encoder,
- 		u8 *sadb, int sad_count);
- void dce4_afmt_dp_write_speaker_allocation(struct drm_encoder *encoder,
-@@ -65,8 +59,6 @@ struct r600_audio_pin* dce6_audio_get_pin(struct radeon_device *rdev);
- void dce6_afmt_select_pin(struct drm_encoder *encoder);
- void r600_hdmi_audio_set_dto(struct radeon_device *rdev,
- 	struct radeon_crtc *crtc, unsigned int clock);
--void dce3_2_audio_set_dto(struct radeon_device *rdev,
--	struct radeon_crtc *crtc, unsigned int clock);
- void dce4_hdmi_audio_set_dto(struct radeon_device *rdev,
- 	struct radeon_crtc *crtc, unsigned int clock);
- void dce4_dp_audio_set_dto(struct radeon_device *rdev,
-@@ -81,8 +73,6 @@ void evergreen_set_avi_packet(struct radeon_device *rdev, u32 offset,
- 	unsigned char *buffer, size_t size);
- void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset,
- 	const struct radeon_hdmi_acr *acr);
--void dce3_2_hdmi_update_acr(struct drm_encoder *encoder, long offset,
--	const struct radeon_hdmi_acr *acr);
- void evergreen_hdmi_update_acr(struct drm_encoder *encoder, long offset,
- 	const struct radeon_hdmi_acr *acr);
- void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset);
-@@ -90,10 +80,8 @@ void dce4_set_vbi_packet(struct drm_encoder *encoder, u32 offset);
- void dce4_hdmi_set_color_depth(struct drm_encoder *encoder,
- 	u32 offset, int bpc);
- void r600_set_audio_packet(struct drm_encoder *encoder, u32 offset);
--void dce3_2_set_audio_packet(struct drm_encoder *encoder, u32 offset);
- void dce4_set_audio_packet(struct drm_encoder *encoder, u32 offset);
- void r600_set_mute(struct drm_encoder *encoder, u32 offset, bool mute);
--void dce3_2_set_mute(struct drm_encoder *encoder, u32 offset, bool mute);
- void dce4_set_mute(struct drm_encoder *encoder, u32 offset, bool mute);
- static void radeon_audio_hdmi_mode_set(struct drm_encoder *encoder,
- 	struct drm_display_mode *mode);
-diff --git a/drivers/gpu/drm/radeon/radeon_audio.h b/drivers/gpu/drm/radeon/radeon_audio.h
-index 5c70cceaa4a6c..05e67867469b0 100644
---- a/drivers/gpu/drm/radeon/radeon_audio.h
-+++ b/drivers/gpu/drm/radeon/radeon_audio.h
-@@ -81,4 +81,16 @@ void radeon_audio_mode_set(struct drm_encoder *encoder,
- void radeon_audio_dpms(struct drm_encoder *encoder, int mode);
- unsigned int radeon_audio_decode_dfs_div(unsigned int div);
+diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
+index abf370e16bd9f..315c4f3df3656 100644
+--- a/drivers/gpu/drm/radeon/cik.c
++++ b/drivers/gpu/drm/radeon/cik.c
+@@ -30,6 +30,7 @@
+ #include <drm/drm_vblank.h>
  
-+void dce3_2_afmt_write_sad_regs(struct drm_encoder *encoder,
-+				struct cea_sad *sads, int sad_count);
-+void dce3_2_afmt_hdmi_write_speaker_allocation(struct drm_encoder *encoder,
-+					       u8 *sadb, int sad_count);
-+void dce3_2_afmt_dp_write_speaker_allocation(struct drm_encoder *encoder,
-+					     u8 *sadb, int sad_count);
-+void dce3_2_audio_set_dto(struct radeon_device *rdev,
-+			  struct radeon_crtc *crtc, unsigned int clock);
-+void dce3_2_hdmi_update_acr(struct drm_encoder *encoder, long offset,
-+			    const struct radeon_hdmi_acr *acr);
-+void dce3_2_set_audio_packet(struct drm_encoder *encoder, u32 offset);
-+void dce3_2_set_mute(struct drm_encoder *encoder, u32 offset, bool mute);
- #endif
+ #include "atom.h"
++#include "evergreen.h"
+ #include "cik_blit_shaders.h"
+ #include "cikd.h"
+ #include "clearstate_ci.h"
+@@ -126,11 +127,6 @@ MODULE_FIRMWARE("radeon/mullins_sdma.bin");
+ 
+ extern int r600_ih_ring_alloc(struct radeon_device *rdev);
+ extern void r600_ih_ring_fini(struct radeon_device *rdev);
+-extern void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
+-extern void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save);
+-extern bool evergreen_is_display_hung(struct radeon_device *rdev);
+-extern void sumo_rlc_fini(struct radeon_device *rdev);
+-extern int sumo_rlc_init(struct radeon_device *rdev);
+ extern void si_vram_gtt_location(struct radeon_device *rdev, struct radeon_mc *mc);
+ extern void si_rlc_reset(struct radeon_device *rdev);
+ extern void si_init_uvd_internal_cg(struct radeon_device *rdev);
+diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeon/evergreen.c
+index 9a1e240b07234..f860f5ef2df88 100644
+--- a/drivers/gpu/drm/radeon/evergreen.c
++++ b/drivers/gpu/drm/radeon/evergreen.c
+@@ -32,6 +32,7 @@
+ #include "atom.h"
+ #include "avivod.h"
+ #include "rv770.h"
++#include "evergreen.h"
+ #include "evergreen_blit_shaders.h"
+ #include "evergreen_reg.h"
+ #include "evergreend.h"
+diff --git a/drivers/gpu/drm/radeon/evergreen.h b/drivers/gpu/drm/radeon/evergreen.h
+new file mode 100644
+index 0000000000000..30c9ca99ced90
+--- /dev/null
++++ b/drivers/gpu/drm/radeon/evergreen.h
+@@ -0,0 +1,51 @@
++/* radeon_evergreen.h -- Private header for radeon driver -*- linux-c -*-
++ *
++ * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
++ * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
++ * All rights reserved.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice (including the next
++ * paragraph) shall be included in all copies or substantial portions of the
++ * Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++ * DEALINGS IN THE SOFTWARE.
++ *
++ */
++
++#ifndef __RADEON_EVERGREEN_H__
++#define __RADEON_EVERGREEN_H__
++
++struct evergreen_mc_save;
++struct radeon_device;
++
++bool evergreen_is_display_hung(struct radeon_device *rdev);
++void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
++void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
++void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save);
++int evergreen_mc_wait_for_idle(struct radeon_device *rdev);
++void evergreen_mc_program(struct radeon_device *rdev);
++void evergreen_irq_suspend(struct radeon_device *rdev);
++int evergreen_mc_init(struct radeon_device *rdev);
++void evergreen_fix_pci_max_read_req_size(struct radeon_device *rdev);
++void evergreen_pcie_gen2_enable(struct radeon_device *rdev);
++void evergreen_program_aspm(struct radeon_device *rdev);
++void sumo_rlc_fini(struct radeon_device *rdev);
++int sumo_rlc_init(struct radeon_device *rdev);
++void evergreen_gpu_pci_config_reset(struct radeon_device *rdev);
++u32 evergreen_get_number_of_dram_channels(struct radeon_device *rdev);
++void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
++
++#endif				/* __RADEON_EVERGREEN_H__ */
+diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
+index 564a775b4b90c..1c9030a4631b8 100644
+--- a/drivers/gpu/drm/radeon/ni.c
++++ b/drivers/gpu/drm/radeon/ni.c
+@@ -32,6 +32,7 @@
+ #include "atom.h"
+ #include "cayman_blit_shaders.h"
+ #include "clearstate_cayman.h"
++#include "evergreen.h"
+ #include "ni_reg.h"
+ #include "nid.h"
+ #include "radeon.h"
+@@ -190,21 +191,6 @@ static const u32 tn_rlc_save_restore_register_list[] =
+ 	0x802c,
+ };
+ 
+-extern bool evergreen_is_display_hung(struct radeon_device *rdev);
+-extern void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
+-extern void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
+-extern void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save);
+-extern int evergreen_mc_wait_for_idle(struct radeon_device *rdev);
+-extern void evergreen_mc_program(struct radeon_device *rdev);
+-extern void evergreen_irq_suspend(struct radeon_device *rdev);
+-extern int evergreen_mc_init(struct radeon_device *rdev);
+-extern void evergreen_fix_pci_max_read_req_size(struct radeon_device *rdev);
+-extern void evergreen_pcie_gen2_enable(struct radeon_device *rdev);
+-extern void evergreen_program_aspm(struct radeon_device *rdev);
+-extern void sumo_rlc_fini(struct radeon_device *rdev);
+-extern int sumo_rlc_init(struct radeon_device *rdev);
+-extern void evergreen_gpu_pci_config_reset(struct radeon_device *rdev);
+-
+ /* Firmware Names */
+ MODULE_FIRMWARE("radeon/BARTS_pfp.bin");
+ MODULE_FIRMWARE("radeon/BARTS_me.bin");
+diff --git a/drivers/gpu/drm/radeon/si.c b/drivers/gpu/drm/radeon/si.c
+index de0792842af89..45076c27d7ded 100644
+--- a/drivers/gpu/drm/radeon/si.c
++++ b/drivers/gpu/drm/radeon/si.c
+@@ -32,6 +32,7 @@
+ 
+ #include "atom.h"
+ #include "clearstate_si.h"
++#include "evergreen.h"
+ #include "radeon.h"
+ #include "radeon_asic.h"
+ #include "radeon_audio.h"
+@@ -129,12 +130,6 @@ extern void sumo_rlc_fini(struct radeon_device *rdev);
+ extern int sumo_rlc_init(struct radeon_device *rdev);
+ extern int r600_ih_ring_alloc(struct radeon_device *rdev);
+ extern void r600_ih_ring_fini(struct radeon_device *rdev);
+-extern void evergreen_fix_pci_max_read_req_size(struct radeon_device *rdev);
+-extern void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
+-extern void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save);
+-extern u32 evergreen_get_number_of_dram_channels(struct radeon_device *rdev);
+-extern void evergreen_print_gpu_status_regs(struct radeon_device *rdev);
+-extern bool evergreen_is_display_hung(struct radeon_device *rdev);
+ static void si_enable_gui_idle_interrupt(struct radeon_device *rdev,
+ 					 bool enable);
+ static void si_init_pg(struct radeon_device *rdev);
 -- 
 2.25.1
 
