@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD282B4FC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62F22B4FBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388377AbgKPScn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:32:43 -0500
+        id S2388716AbgKPScZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:32:25 -0500
 Received: from mga06.intel.com ([134.134.136.31]:20632 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387771AbgKPS2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:28:03 -0500
-IronPort-SDR: ZXajAuBrZ2koRQ28pD2moigbziGlX5TanRdDgllmNqAhUC1OpEKmBDabfHhaqe2DB2jd3nW74q
- oL90CDntHhzw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232410028"
+        id S2388071AbgKPS2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:28:04 -0500
+IronPort-SDR: xW2djYd6UIkYTVsm89L1yjIXtKJZgBEvrlrawqI9tIGcuVrY0jr8bAVSYA4lVlN0tG1HhWlwgw
+ lPQNWq4VqXmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="232410033"
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="232410028"
+   d="scan'208";a="232410033"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:02 -0800
-IronPort-SDR: HSmSmve9NahGtLT9P0ekBHeZ+ETPGer5F6hFhlc8Q5AxThCCdr1jMH67bHx+ERS18CDjE7zU2t
- i7x5r3Jy1dHw==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:03 -0800
+IronPort-SDR: 9VpXd3tfmiTiB2v42AVl1c4CsTDzG49xG8gcTbofRCACxUXSjLMK35E4OrfO5ttYRpxuxucSkZ
+ 33pCbPmc+L6A==
 X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="400527973"
+   d="scan'208";a="400527995"
 Received: from ls.sc.intel.com (HELO localhost) ([143.183.96.54])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:02 -0800
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 10:28:03 -0800
 From:   isaku.yamahata@intel.com
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -37,10 +37,11 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Kai Huang <kai.huang@linux.intel.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [RFC PATCH 22/67] KVM: Add per-VM flag to mark read-only memory as unsupported
-Date:   Mon, 16 Nov 2020 10:26:07 -0800
-Message-Id: <499bf4c92e07de7e27745cf8d266a1932d18d85f.1605232743.git.isaku.yamahata@intel.com>
+Subject: [RFC PATCH 24/67] KVM: x86: Add per-VM flag to disable in-kernel I/O APIC and level routes
+Date:   Mon, 16 Nov 2020 10:26:09 -0800
+Message-Id: <b379033c7cc157444993dac67755575b486cb232.1605232743.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1605232743.git.isaku.yamahata@intel.com>
 References: <cover.1605232743.git.isaku.yamahata@intel.com>
@@ -50,89 +51,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+From: Kai Huang <kai.huang@linux.intel.com>
 
-Add a flag for TDX to flag RO memory as unsupported and propagate it to
-KVM_MEM_READONLY to allow reporting RO memory as unsupported on a per-VM
-basis.  TDX1 doesn't expose permission bits to the VMM in the SEPT
-tables, i.e. doesn't support read-only private memory.
+Add a flag to let TDX disallow the in-kernel I/O APIC, level triggered
+routes for a userspace I/O APIC, and anything else that relies on being
+able to intercept EOIs.  TDX-SEAM does not allow intercepting EOI.
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Note, technically KVM could partially emulate the I/O APIC by allowing
+only edge triggered interrupts, but that adds a lot of complexity for
+basically zero benefit.  Ideally KVM wouldn't even allow I/O APIC route
+reservation, but disabling that is a train wreck for Qemu.
+
+Signed-off-by: Kai Huang <kai.huang@linux.intel.com>
 Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/x86/kvm/x86.c       | 4 +++-
- include/linux/kvm_host.h | 4 ++++
- virt/kvm/kvm_main.c      | 8 +++++---
- 3 files changed, 12 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/kvm_host.h | 1 +
+ arch/x86/kvm/ioapic.c           | 4 ++++
+ arch/x86/kvm/irq_comm.c         | 6 +++++-
+ arch/x86/kvm/lapic.c            | 3 ++-
+ arch/x86/kvm/x86.c              | 6 ++++++
+ 5 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 01380f057d9f..4060f3d91f74 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3695,7 +3695,6 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	case KVM_CAP_ASYNC_PF_INT:
- 	case KVM_CAP_GET_TSC_KHZ:
- 	case KVM_CAP_KVMCLOCK_CTRL:
--	case KVM_CAP_READONLY_MEM:
- 	case KVM_CAP_HYPERV_TIME:
- 	case KVM_CAP_IOAPIC_POLARITY_IGNORED:
- 	case KVM_CAP_TSC_DEADLINE_TIMER:
-@@ -3785,6 +3784,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		if (kvm_x86_ops.is_vm_type_supported(KVM_X86_TDX_VM))
- 			r |= BIT(KVM_X86_TDX_VM);
- 		break;
-+	case KVM_CAP_READONLY_MEM:
-+		r = kvm && kvm->readonly_mem_unsupported ? 0 : 1;
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 95371750c23f..1a0df7b83fd0 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -517,6 +517,10 @@ struct kvm {
- 	pid_t userspace_pid;
- 	unsigned int max_halt_poll_ns;
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index e5b706889d09..7537ba0bada2 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -977,6 +977,7 @@ struct kvm_arch {
  
-+#ifdef __KVM_HAVE_READONLY_MEM
-+	bool readonly_mem_unsupported;
-+#endif
+ 	enum kvm_irqchip_mode irqchip_mode;
+ 	u8 nr_reserved_ioapic_pins;
++	bool eoi_intercept_unsupported;
+ 
+ 	bool disabled_lapic_found;
+ 
+diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
+index 698969e18fe3..e2de6e552d25 100644
+--- a/arch/x86/kvm/ioapic.c
++++ b/arch/x86/kvm/ioapic.c
+@@ -311,6 +311,10 @@ void kvm_arch_post_irq_ack_notifier_list_update(struct kvm *kvm)
+ {
+ 	if (!ioapic_in_kernel(kvm))
+ 		return;
 +
- 	bool vm_bugged;
- };
- 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 3dc41b6e12a0..572a66a61c29 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1100,12 +1100,14 @@ static void update_memslots(struct kvm_memslots *slots,
- 	}
++	if (WARN_ON_ONCE(kvm->arch.eoi_intercept_unsupported))
++		return;
++
+ 	kvm_make_scan_ioapic_request(kvm);
  }
  
--static int check_memory_region_flags(const struct kvm_userspace_memory_region *mem)
-+static int check_memory_region_flags(struct kvm *kvm,
-+				     const struct kvm_userspace_memory_region *mem)
+diff --git a/arch/x86/kvm/irq_comm.c b/arch/x86/kvm/irq_comm.c
+index 4aa1c2e00e2a..1523e9d66867 100644
+--- a/arch/x86/kvm/irq_comm.c
++++ b/arch/x86/kvm/irq_comm.c
+@@ -307,6 +307,10 @@ int kvm_set_routing_entry(struct kvm *kvm,
+ 		e->msi.address_hi = ue->u.msi.address_hi;
+ 		e->msi.data = ue->u.msi.data;
+ 
++		if (kvm->arch.eoi_intercept_unsupported &&
++		    e->msi.data & (1 << MSI_DATA_TRIGGER_SHIFT))
++			return -EINVAL;
++
+ 		if (kvm_msi_route_invalid(kvm, e))
+ 			return -EINVAL;
+ 		break;
+@@ -390,7 +394,7 @@ int kvm_setup_empty_irq_routing(struct kvm *kvm)
+ 
+ void kvm_arch_post_irq_routing_update(struct kvm *kvm)
  {
- 	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
+-	if (!irqchip_split(kvm))
++	if (!irqchip_split(kvm) || kvm->arch.eoi_intercept_unsupported)
+ 		return;
+ 	kvm_make_scan_ioapic_request(kvm);
+ }
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 105e7859d1f2..e6c0aaf4044e 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -278,7 +278,8 @@ void kvm_recalculate_apic_map(struct kvm *kvm)
+ 	if (old)
+ 		call_rcu(&old->rcu, kvm_apic_map_free);
  
- #ifdef __KVM_HAVE_READONLY_MEM
--	valid_flags |= KVM_MEM_READONLY;
-+	if (!kvm->readonly_mem_unsupported)
-+		valid_flags |= KVM_MEM_READONLY;
- #endif
+-	kvm_make_scan_ioapic_request(kvm);
++	if (!kvm->arch.eoi_intercept_unsupported)
++		kvm_make_scan_ioapic_request(kvm);
+ }
  
- 	if (mem->flags & ~valid_flags)
-@@ -1278,7 +1280,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 	int as_id, id;
- 	int r;
+ static inline void apic_set_spiv(struct kvm_lapic *apic, u32 val)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 4060f3d91f74..8d58141256c5 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5454,6 +5454,9 @@ long kvm_arch_vm_ioctl(struct file *filp,
+ 			goto create_irqchip_unlock;
  
--	r = check_memory_region_flags(mem);
-+	r = check_memory_region_flags(kvm, mem);
- 	if (r)
- 		return r;
+ 		r = -EINVAL;
++		if (kvm->arch.eoi_intercept_unsupported)
++			goto create_irqchip_unlock;
++
+ 		if (kvm->created_vcpus)
+ 			goto create_irqchip_unlock;
  
+@@ -5484,6 +5487,9 @@ long kvm_arch_vm_ioctl(struct file *filp,
+ 		u.pit_config.flags = KVM_PIT_SPEAKER_DUMMY;
+ 		goto create_pit;
+ 	case KVM_CREATE_PIT2:
++		r = -EINVAL;
++		if (kvm->arch.eoi_intercept_unsupported)
++			goto out;
+ 		r = -EFAULT;
+ 		if (copy_from_user(&u.pit_config, argp,
+ 				   sizeof(struct kvm_pit_config)))
 -- 
 2.17.1
 
