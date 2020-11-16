@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1832B4397
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF0D2B4398
 	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 13:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730079AbgKPMWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 07:22:06 -0500
-Received: from mga09.intel.com ([134.134.136.24]:37745 "EHLO mga09.intel.com"
+        id S1729977AbgKPMWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 07:22:44 -0500
+Received: from mga04.intel.com ([192.55.52.120]:43605 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728843AbgKPMWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:22:06 -0500
-IronPort-SDR: XVhRKzWeYtLrEKvEKP5bixz/n0tZ9cYRnXbmwj6pKskTd1zW0xIGltWC0659RBURYDLygXXX2F
- D0lZ7O1acZbg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="170906715"
+        id S1727895AbgKPMWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:22:44 -0500
+IronPort-SDR: FNbr8NsobSeuTe0GS5/+121+2FlM3qmT7+ETeTUyG5vGtFFMFB3/UR7MxNFuPwKsm7iLrlkXSq
+ yXHUR04M7xww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="168160145"
 X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="170906715"
+   d="scan'208";a="168160145"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:22:05 -0800
-IronPort-SDR: xsmjpQmCq4Fydn+0pQPb4AORYv3IA066TJ+7AP/TRk3ioiVFlKQNOXBlyWOca8QMF/6GkPlofQ
- j+dd6qLvrG+w==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:22:43 -0800
+IronPort-SDR: plE/bk/9FfutrcK5xOYkGMWHXdU692O/RKdKBL3nKpsos1zxq9bNkVcevIuvxvi8r3XM53AvTw
+ TND6ZOAhC14A==
 X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="543584335"
+   d="scan'208";a="543584573"
 Received: from abudanko-mobl.ccr.corp.intel.com (HELO [10.249.228.209]) ([10.249.228.209])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:22:02 -0800
-Subject: [PATCH v3 10/12] perf report: output data file name in raw trace dump
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:22:40 -0800
+Subject: [PATCH v3 11/12] perf session: load data directory files for analysis
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -40,8 +40,8 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>
 References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <d1837e1b-734c-f2ce-c632-dfd36bc9eac3@linux.intel.com>
-Date:   Mon, 16 Nov 2020 15:22:00 +0300
+Message-ID: <e788567f-4774-f165-0a93-bcbf3f237451@linux.intel.com>
+Date:   Mon, 16 Nov 2020 15:22:38 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
@@ -54,331 +54,480 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Print path and name of a data file into raw dump (-D)
-<file_offset>@<path/file>. Print offset of PERF_RECORD_COMPRESSED
-record instead of zero for decompressed records:
-  0x2226a@perf.data [0x30]: event: 9
-or
-  0x15cc36@perf.data/data.7 [0x30]: event: 9
+Introduce decompressor into trace reader object so that decompression
+could be executed on per data file basis separately for every data
+file located in data directory.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Load data directory files and provide basic raw dump and aggregated
+analysis support of data directories in report mode, still with no
+memory consumption optimizations.
+
+Design and implementation are based on the prototype [1], [2].
+
+[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+
+Suggested-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/builtin-inject.c      |  3 +-
- tools/perf/util/ordered-events.h |  1 +
- tools/perf/util/session.c        | 77 +++++++++++++++++++-------------
- tools/perf/util/session.h        |  1 +
- tools/perf/util/tool.h           |  3 +-
- 5 files changed, 52 insertions(+), 33 deletions(-)
+ tools/perf/util/session.c | 350 +++++++++++++++++++++++++++++++++-----
+ tools/perf/util/session.h |   4 +
+ 2 files changed, 315 insertions(+), 39 deletions(-)
 
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 452a75fe68e5..037f8a98220c 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -106,7 +106,8 @@ static int perf_event__repipe_op2_synth(struct perf_session *session,
- 
- static int perf_event__repipe_op4_synth(struct perf_session *session,
- 					union perf_event *event,
--					u64 data __maybe_unused)
-+					u64 data __maybe_unused,
-+					const char *str __maybe_unused)
- {
- 	return perf_event__repipe_synth(session->tool, event);
- }
-diff --git a/tools/perf/util/ordered-events.h b/tools/perf/util/ordered-events.h
-index 75345946c4b9..42c9764c6b5b 100644
---- a/tools/perf/util/ordered-events.h
-+++ b/tools/perf/util/ordered-events.h
-@@ -9,6 +9,7 @@ struct perf_sample;
- struct ordered_event {
- 	u64			timestamp;
- 	u64			file_offset;
-+	const char		*file_path;
- 	union perf_event	*event;
- 	struct list_head	list;
- };
 diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 098080287c68..3c2fafb3a04d 100644
+index 3c2fafb3a04d..3cb30c1667c0 100644
 --- a/tools/perf/util/session.c
 +++ b/tools/perf/util/session.c
-@@ -36,7 +36,8 @@
+@@ -34,6 +34,55 @@
+ #include "arch/common.h"
+ #include <internal/lib.h>
  
- #ifdef HAVE_ZSTD_SUPPORT
- static int perf_session__process_compressed_event(struct perf_session *session,
--						  union perf_event *event, u64 file_offset)
-+						  union perf_event *event, u64 file_offset,
-+						  const char *file_path)
- {
- 	void *src;
- 	size_t decomp_size, src_size;
-@@ -58,6 +59,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
- 	}
- 
- 	decomp->file_pos = file_offset;
-+	decomp->file_path = file_path;
- 	decomp->mmap_len = mmap_len;
- 	decomp->head = 0;
- 
-@@ -98,7 +100,8 @@ static int perf_session__process_compressed_event(struct perf_session *session,
- static int perf_session__deliver_event(struct perf_session *session,
- 				       union perf_event *event,
- 				       struct perf_tool *tool,
--				       u64 file_offset);
-+				       u64 file_offset,
-+				       const char *file_path);
- 
- static int perf_session__open(struct perf_session *session)
- {
-@@ -180,7 +183,8 @@ static int ordered_events__deliver_event(struct ordered_events *oe,
- 						    ordered_events);
- 
- 	return perf_session__deliver_event(session, event->event,
--					   session->tool, event->file_offset);
-+					   session->tool, event->file_offset,
-+					   event->file_path);
- }
- 
- struct perf_session *perf_session__new(struct perf_data *data,
-@@ -452,7 +456,8 @@ static int process_stat_round_stub(struct perf_session *perf_session __maybe_unu
- 
- static int perf_session__process_compressed_event_stub(struct perf_session *session __maybe_unused,
- 						       union perf_event *event __maybe_unused,
--						       u64 file_offset __maybe_unused)
-+						       u64 file_offset __maybe_unused,
-+						       const char *file_path __maybe_unused)
- {
-        dump_printf(": unhandled!\n");
-        return 0;
-@@ -1241,13 +1246,14 @@ static void sample_read__printf(struct perf_sample *sample, u64 read_format)
- }
- 
- static void dump_event(struct evlist *evlist, union perf_event *event,
--		       u64 file_offset, struct perf_sample *sample)
-+		       u64 file_offset, struct perf_sample *sample,
-+		       const char *file_path)
- {
- 	if (!dump_trace)
- 		return;
- 
--	printf("\n%#" PRIx64 " [%#x]: event: %d\n",
--	       file_offset, event->header.size, event->header.type);
-+	printf("\n%#" PRIx64 "@%s [%#x]: event: %d\n",
-+	       file_offset, file_path, event->header.size, event->header.type);
- 
- 	trace_event(event);
- 	if (event->header.type == PERF_RECORD_SAMPLE && evlist->trace_event_sample_raw)
-@@ -1438,12 +1444,13 @@ static int machines__deliver_event(struct machines *machines,
- 				   struct evlist *evlist,
- 				   union perf_event *event,
- 				   struct perf_sample *sample,
--				   struct perf_tool *tool, u64 file_offset)
-+				   struct perf_tool *tool, u64 file_offset,
-+				   const char *file_path)
- {
- 	struct evsel *evsel;
- 	struct machine *machine;
- 
--	dump_event(evlist, event, file_offset, sample);
-+	dump_event(evlist, event, file_offset, sample, file_path);
- 
- 	evsel = perf_evlist__id2evsel(evlist, sample->id);
- 
-@@ -1520,7 +1527,8 @@ static int machines__deliver_event(struct machines *machines,
- static int perf_session__deliver_event(struct perf_session *session,
- 				       union perf_event *event,
- 				       struct perf_tool *tool,
--				       u64 file_offset)
-+				       u64 file_offset,
-+				       const char *file_path)
- {
- 	struct perf_sample sample;
- 	int ret;
-@@ -1538,7 +1546,7 @@ static int perf_session__deliver_event(struct perf_session *session,
- 		return 0;
- 
- 	ret = machines__deliver_event(&session->machines, session->evlist,
--				      event, &sample, tool, file_offset);
-+				      event, &sample, tool, file_offset, file_path);
- 
- 	if (dump_trace && sample.aux_sample.size)
- 		auxtrace__dump_auxtrace_sample(session, &sample);
-@@ -1548,7 +1556,8 @@ static int perf_session__deliver_event(struct perf_session *session,
- 
- static s64 perf_session__process_user_event(struct perf_session *session,
- 					    union perf_event *event,
--					    u64 file_offset)
-+					    u64 file_offset,
-+					    const char *file_path)
- {
- 	struct ordered_events *oe = &session->ordered_events;
- 	struct perf_tool *tool = session->tool;
-@@ -1558,7 +1567,7 @@ static s64 perf_session__process_user_event(struct perf_session *session,
- 
- 	if (event->header.type != PERF_RECORD_COMPRESSED ||
- 	    tool->compressed == perf_session__process_compressed_event_stub)
--		dump_event(session->evlist, event, file_offset, &sample);
-+		dump_event(session->evlist, event, file_offset, &sample, file_path);
- 
- 	/* These events are processed right away */
- 	switch (event->header.type) {
-@@ -1617,9 +1626,9 @@ static s64 perf_session__process_user_event(struct perf_session *session,
- 	case PERF_RECORD_HEADER_FEATURE:
- 		return tool->feature(session, event);
- 	case PERF_RECORD_COMPRESSED:
--		err = tool->compressed(session, event, file_offset);
-+		err = tool->compressed(session, event, file_offset, file_path);
- 		if (err)
--			dump_event(session->evlist, event, file_offset, &sample);
-+			dump_event(session->evlist, event, file_offset, &sample, file_path);
- 		return err;
- 	default:
- 		return -EINVAL;
-@@ -1636,9 +1645,9 @@ int perf_session__deliver_synth_event(struct perf_session *session,
- 	events_stats__inc(&evlist->stats, event->header.type);
- 
- 	if (event->header.type >= PERF_RECORD_USER_TYPE_START)
--		return perf_session__process_user_event(session, event, 0);
-+		return perf_session__process_user_event(session, event, 0, NULL);
- 
--	return machines__deliver_event(&session->machines, evlist, event, sample, tool, 0);
-+	return machines__deliver_event(&session->machines, evlist, event, sample, tool, 0, NULL);
- }
- 
- static void event_swap(union perf_event *event, bool sample_id_all)
-@@ -1734,7 +1743,8 @@ int perf_session__peek_events(struct perf_session *session, u64 offset,
- }
- 
- static s64 perf_session__process_event(struct perf_session *session,
--				       union perf_event *event, u64 file_offset)
-+				       union perf_event *event, u64 file_offset,
-+				       const char *file_path)
- {
- 	struct evlist *evlist = session->evlist;
- 	struct perf_tool *tool = session->tool;
-@@ -1749,7 +1759,7 @@ static s64 perf_session__process_event(struct perf_session *session,
- 	events_stats__inc(&evlist->stats, event->header.type);
- 
- 	if (event->header.type >= PERF_RECORD_USER_TYPE_START)
--		return perf_session__process_user_event(session, event, file_offset);
-+		return perf_session__process_user_event(session, event, file_offset, file_path);
- 
- 	if (tool->ordered_events) {
- 		u64 timestamp = -1ULL;
-@@ -1763,7 +1773,7 @@ static s64 perf_session__process_event(struct perf_session *session,
- 			return ret;
- 	}
- 
--	return perf_session__deliver_event(session, event, tool, file_offset);
-+	return perf_session__deliver_event(session, event, tool, file_offset, file_path);
- }
- 
- void perf_event_header__bswap(struct perf_event_header *hdr)
-@@ -2001,7 +2011,8 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
- 		}
- 	}
- 
--	if ((skip = perf_session__process_event(session, event, head)) < 0) {
-+	skip = perf_session__process_event(session, event, head, "pipe");
-+	if (skip < 0) {
- 		pr_err("%#" PRIx64 " [%#x]: failed to process type: %d\n",
- 		       head, event->header.size, event->header.type);
- 		err = -EINVAL;
-@@ -2082,7 +2093,7 @@ fetch_decomp_event(u64 head, size_t mmap_size, char *buf, bool needs_swap)
- static int __perf_session__process_decomp_events(struct perf_session *session)
- {
- 	s64 skip;
--	u64 size, file_pos = 0;
-+	u64 size;
- 	struct decomp *decomp = session->decomp_last;
- 
- 	if (!decomp)
-@@ -2096,9 +2107,9 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
- 			break;
- 
- 		size = event->header.size;
--
--		if (size < sizeof(struct perf_event_header) ||
--		    (skip = perf_session__process_event(session, event, file_pos)) < 0) {
-+		skip = perf_session__process_event(session, event, decomp->file_pos,
-+						   decomp->file_path);
-+		if (size < sizeof(struct perf_event_header) || skip < 0) {
- 			pr_err("%#" PRIx64 " [%#x]: failed to process type: %d\n",
- 				decomp->file_pos + decomp->head, event->header.size, event->header.type);
- 			return -EINVAL;
-@@ -2129,10 +2140,12 @@ struct reader;
- 
- typedef s64 (*reader_cb_t)(struct perf_session *session,
- 			   union perf_event *event,
--			   u64 file_offset);
++struct reader;
++
++typedef s64 (*reader_cb_t)(struct perf_session *session,
++			   union perf_event *event,
 +			   u64 file_offset,
 +			   const char *file_path);
- 
- struct reader {
- 	int		 fd;
++
++/*
++ * On 64bit we can mmap the data file in one go. No need for tiny mmap
++ * slices. On 32bit we use 32MB.
++ */
++#if BITS_PER_LONG == 64
++#define MMAP_SIZE ULLONG_MAX
++#define NUM_MMAPS 1
++#else
++#define MMAP_SIZE (32 * 1024 * 1024ULL)
++#define NUM_MMAPS 128
++#endif
++
++struct reader_state {
++	char	*mmaps[NUM_MMAPS];
++	size_t	 mmap_size;
++	int	 mmap_idx;
++	char	*mmap_cur;
++	u64	 file_pos;
++	u64	 file_offset;
++	u64	 data_size;
++	u64	 head;
++	bool	 eof;
++	u64	 size;
++};
++
++enum {
++	READER_EOF	=  0,
++	READER_OK	=  1,
++};
++
++struct reader {
++	int		 fd;
 +	const char	 *path;
- 	u64		 data_size;
- 	u64		 data_offset;
- 	reader_cb_t	 process;
-@@ -2211,9 +2224,9 @@ reader__process_events(struct reader *rd, struct perf_session *session,
- 	skip = -EINVAL;
++	u64		 data_size;
++	u64		 data_offset;
++	reader_cb_t	 process;
++	struct zstd_data zstd_data;
++	struct decomp	 *decomp;
++	struct decomp	 *decomp_last;
++	struct reader_state state;
++};
++
+ #ifdef HAVE_ZSTD_SUPPORT
+ static int perf_session__process_compressed_event(struct perf_session *session,
+ 						  union perf_event *event, u64 file_offset,
+@@ -43,7 +92,10 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 	size_t decomp_size, src_size;
+ 	u64 decomp_last_rem = 0;
+ 	size_t mmap_len, decomp_len = session->header.env.comp_mmap_len;
+-	struct decomp *decomp, *decomp_last = session->decomp_last;
++	struct decomp *decomp, *decomp_last = session->active_reader ?
++		session->active_reader->decomp_last : session->decomp_last;
++	struct zstd_data *zstd_data = session->active_reader ?
++		&session->active_reader->zstd_data: &session->zstd_data;
  
- 	if (size < sizeof(struct perf_event_header) ||
--	    (skip = rd->process(session, event, file_pos)) < 0) {
--		pr_err("%#" PRIx64 " [%#x]: failed to process type: %d [%s]\n",
--		       file_offset + head, event->header.size,
-+	    (skip = rd->process(session, event, file_pos, rd->path)) < 0) {
-+		pr_err("%#" PRIx64 " [%s] [%#x]: failed to process type: %d [%s]\n",
-+		       file_offset + head, rd->path, event->header.size,
- 		       event->header.type, strerror(-skip));
- 		err = skip;
- 		goto out;
-@@ -2243,9 +2256,10 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+ 	if (decomp_last) {
+ 		decomp_last_rem = decomp_last->size - decomp_last->head;
+@@ -71,7 +123,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 	src = (void *)event + sizeof(struct perf_record_compressed);
+ 	src_size = event->pack.header.size - sizeof(struct perf_record_compressed);
  
- static s64 process_simple(struct perf_session *session,
- 			  union perf_event *event,
--			  u64 file_offset)
-+			  u64 file_offset,
-+			  const char *file_path)
- {
--	return perf_session__process_event(session, event, file_offset);
-+	return perf_session__process_event(session, event, file_offset, file_path);
+-	decomp_size = zstd_decompress_stream(&(session->zstd_data), src, src_size,
++	decomp_size = zstd_decompress_stream(zstd_data, src, src_size,
+ 				&(decomp->data[decomp_last_rem]), decomp_len - decomp_last_rem);
+ 	if (!decomp_size) {
+ 		munmap(decomp, mmap_len);
+@@ -81,12 +133,22 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 
+ 	decomp->size += decomp_size;
+ 
+-	if (session->decomp == NULL) {
+-		session->decomp = decomp;
+-		session->decomp_last = decomp;
++	if (session->active_reader) {
++		if (session->active_reader->decomp == NULL) {
++			session->active_reader->decomp = decomp;
++			session->active_reader->decomp_last = decomp;
++		} else {
++			session->active_reader->decomp_last->next = decomp;
++			session->active_reader->decomp_last = decomp;
++		}
+ 	} else {
+-		session->decomp_last->next = decomp;
+-		session->decomp_last = decomp;
++		if (session->decomp == NULL) {
++			session->decomp = decomp;
++			session->decomp_last = decomp;
++		} else {
++			session->decomp_last->next = decomp;
++			session->decomp_last = decomp;
++		}
+ 	}
+ 
+ 	pr_debug("decomp (B): %zd to %zd\n", src_size, decomp_size);
+@@ -277,11 +339,10 @@ static void perf_session__delete_threads(struct perf_session *session)
+ 	machine__delete_threads(&session->machines.host);
  }
  
- static int __perf_session__process_events(struct perf_session *session)
-@@ -2255,6 +2269,7 @@ static int __perf_session__process_events(struct perf_session *session)
- 		.data_size	= session->header.data_size,
- 		.data_offset	= session->header.data_offset,
- 		.process	= process_simple,
+-static void perf_session__release_decomp_events(struct perf_session *session)
++static void perf_decomp__release_events(struct decomp *next)
+ {
+-	struct decomp *next, *decomp;
++	struct decomp *decomp;
+ 	size_t mmap_len;
+-	next = session->decomp;
+ 	do {
+ 		decomp = next;
+ 		if (decomp == NULL)
+@@ -294,13 +355,21 @@ static void perf_session__release_decomp_events(struct perf_session *session)
+ 
+ void perf_session__delete(struct perf_session *session)
+ {
++	int r;
++
+ 	if (session == NULL)
+ 		return;
+ 	auxtrace__free(session);
+ 	auxtrace_index__free(&session->auxtrace_index);
+ 	perf_session__destroy_kernel_maps(session);
+ 	perf_session__delete_threads(session);
+-	perf_session__release_decomp_events(session);
++	if (session->readers) {
++		for (r = 0; r < session->nr_readers; r++)
++			perf_decomp__release_events(session->readers[r].decomp);
++		zfree(&session->readers);
++		session->nr_readers = 0;
++	}
++	perf_decomp__release_events(session->decomp);
+ 	perf_env__exit(&session->header.env);
+ 	machines__exit(&session->machines);
+ 	if (session->data)
+@@ -2094,7 +2163,8 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
+ {
+ 	s64 skip;
+ 	u64 size;
+-	struct decomp *decomp = session->decomp_last;
++	struct decomp *decomp = session->active_reader ?
++		session->active_reader->decomp_last : session->decomp_last;
+ 
+ 	if (!decomp)
+ 		return 0;
+@@ -2124,33 +2194,6 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
+ 	return 0;
+ }
+ 
+-/*
+- * On 64bit we can mmap the data file in one go. No need for tiny mmap
+- * slices. On 32bit we use 32MB.
+- */
+-#if BITS_PER_LONG == 64
+-#define MMAP_SIZE ULLONG_MAX
+-#define NUM_MMAPS 1
+-#else
+-#define MMAP_SIZE (32 * 1024 * 1024ULL)
+-#define NUM_MMAPS 128
+-#endif
+-
+-struct reader;
+-
+-typedef s64 (*reader_cb_t)(struct perf_session *session,
+-			   union perf_event *event,
+-			   u64 file_offset,
+-			   const char *file_path);
+-
+-struct reader {
+-	int		 fd;
+-	const char	 *path;
+-	u64		 data_size;
+-	u64		 data_offset;
+-	reader_cb_t	 process;
+-};
+-
+ static int
+ reader__process_events(struct reader *rd, struct perf_session *session,
+ 		       struct ui_progress *prog)
+@@ -2308,6 +2351,232 @@ static int __perf_session__process_events(struct perf_session *session)
+ 	return err;
+ }
+ 
++static int
++reader__init(struct reader *rd, bool *one_mmap)
++{
++	struct reader_state *st = &rd->state;
++	char **mmaps = st->mmaps;
++
++	pr_debug("reader processing %s\n", rd->path);
++
++	st->head = rd->data_offset;
++
++	st->data_size = rd->data_size + rd->data_offset;
++
++	st->mmap_size = MMAP_SIZE;
++	if (st->mmap_size > st->data_size) {
++		st->mmap_size = st->data_size;
++		if (one_mmap)
++			*one_mmap = true;
++	}
++
++	memset(mmaps, 0, sizeof(st->mmaps));
++
++	if (zstd_init(&rd->zstd_data, 0))
++		return -1;
++
++	return 0;
++}
++
++static int
++reader__mmap(struct reader *rd, struct perf_session *session)
++{
++	struct reader_state *st = &rd->state;
++	int mmap_prot, mmap_flags;
++	char *buf, **mmaps = st->mmaps;
++	u64 page_offset;
++
++	if (st->file_pos >= st->data_size) {
++		st->eof = true;
++		return READER_EOF;
++	}
++
++	mmap_prot  = PROT_READ;
++	mmap_flags = MAP_SHARED;
++
++	if (session->header.needs_swap) {
++		mmap_prot  |= PROT_WRITE;
++		mmap_flags = MAP_PRIVATE;
++	}
++
++	if (mmaps[st->mmap_idx]) {
++		munmap(mmaps[st->mmap_idx], st->mmap_size);
++		mmaps[st->mmap_idx] = NULL;
++	}
++
++	page_offset = page_size * (st->head / page_size);
++	st->file_offset += page_offset;
++	st->head -= page_offset;
++
++	buf = mmap(NULL, st->mmap_size, mmap_prot, mmap_flags, rd->fd,
++		   st->file_offset);
++	if (buf == MAP_FAILED) {
++		pr_err("failed to mmap file\n");
++		return -errno;
++	}
++	mmaps[st->mmap_idx] = st->mmap_cur = buf;
++	st->mmap_idx = (st->mmap_idx + 1) & (ARRAY_SIZE(st->mmaps) - 1);
++	st->file_pos = st->file_offset + st->head;
++	return READER_OK;
++}
++
++static int
++reader__read_event(struct reader *rd, struct perf_session *session,
++		   struct ui_progress *prog)
++{
++	struct reader_state *st = &rd->state;
++	union perf_event *event;
++	int ret = READER_OK;
++	u64 size;
++	s64 skip;
++
++	event = fetch_mmaped_event(st->head, st->mmap_size, st->mmap_cur, session->header.needs_swap);
++	if (IS_ERR(event))
++		return PTR_ERR(event);
++
++	if (!event)
++		return READER_EOF;
++
++	session->active_reader = rd;
++	size = event->header.size;
++	skip = -EINVAL;
++
++	if (size < sizeof(struct perf_event_header) ||
++	    (skip = perf_session__process_event(session, event, st->file_pos, rd->path)) < 0) {
++		pr_err("%#" PRIx64 " [%s] [%#x]: failed to process type: %d [%s]\n",
++		       st->file_offset + st->head, rd->path, event->header.size,
++		       event->header.type, strerror(-skip));
++		ret = skip;
++		goto out;
++	}
++
++	if (skip)
++		size += skip;
++
++	st->size += size;
++	st->head += size;
++	st->file_pos += size;
++
++	skip = __perf_session__process_decomp_events(session);
++	if (skip)
++		ret = skip;
++
++	ui_progress__update(prog, size);
++
++out:
++	session->active_reader = NULL;;
++	return ret;
++}
++/*
++ * This function reads, merge and process directory data.
++ * It assumens the version 1 of directory data, where each
++ * data file holds per-cpu data, already sorted by kernel.
++ */
++static int __perf_session__process_dir_events(struct perf_session *session)
++{
++	struct perf_data *data = session->data;
++	struct perf_tool *tool = session->tool;
++	int i, ret = 0, readers = 1;
++	struct ui_progress prog;
++	u64 total_size = perf_data__size(session->data);
++	struct reader *rd;
++
++	perf_tool__fill_defaults(tool);
++
++	ui_progress__init_size(&prog, total_size, "Sorting events...");
++
++	for (i = 0; i < data->dir.nr; i++) {
++		if (data->dir.files[i].size)
++			readers++;
++	}
++
++	rd = session->readers = zalloc(readers * sizeof(struct reader));
++	if (!rd)
++		return -ENOMEM;
++	session->nr_readers = readers;
++	readers = 0;
++
++	rd[readers] = (struct reader) {
++		.fd		= perf_data__fd(session->data),
 +		.path		= session->data->file.path,
- 	};
- 	struct ordered_events *oe = &session->ordered_events;
- 	struct perf_tool *tool = session->tool;
++		.data_size	= session->header.data_size,
++		.data_offset	= session->header.data_offset,
++	};
++	reader__init(&rd[readers], &session->one_mmap);
++	if (reader__mmap(&rd[readers], session) != READER_OK)
++		goto out_err;
++	readers++;
++
++	for (i = 0; i < data->dir.nr; i++) {
++		if (data->dir.files[i].size) {
++			rd[readers] = (struct reader) {
++				.fd		= data->dir.files[i].fd,
++				.path		= data->dir.files[i].path,
++				.data_size	= data->dir.files[i].size,
++				.data_offset	= 0,
++			};
++			reader__init(&rd[readers], &session->one_mmap);
++			if (reader__mmap(&rd[readers], session) != READER_OK)
++				goto out_err;
++			readers++;
++		}
++	}
++
++	i = 0;
++
++	while ((ret >= 0) && readers) {
++		if (session_done())
++			return 0;
++
++		if (rd[i].state.eof) {
++			i = (i + 1) % session->nr_readers;
++			continue;
++		}
++
++		ret = reader__read_event(&rd[i], session, &prog);
++		if (ret < 0)
++			break;
++		if (ret == READER_EOF) {
++			ret = reader__mmap(&rd[i], session);
++			if (ret < 0)
++				goto out_err;
++			if (ret == READER_EOF)
++				readers--;
++		}
++
++		/*
++		 * Processing 10MBs of data from each reader in sequence,
++		 * because that's the way the ordered events sorting works
++		 * most efficiently.
++		 */
++		if (rd[i].state.size >= 10*1024*1024) {
++			rd[i].state.size = 0;
++			i = (i + 1) % session->nr_readers;
++		}
++	}
++
++	ret = ordered_events__flush(&session->ordered_events, OE_FLUSH__FINAL);
++	if (ret)
++		goto out_err;
++
++	ret = perf_session__flush_thread_stacks(session);
++out_err:
++	ui_progress__finish();
++
++	if (!tool->no_warn)
++		perf_session__warn_about_errors(session);
++
++	/*
++	 * We may switching perf.data output, make ordered_events
++	 * reusable.
++	 */
++	ordered_events__reinit(&session->ordered_events);
++
++	session->one_mmap = false;
++
++	return ret;
++}
++
+ int perf_session__process_events(struct perf_session *session)
+ {
+ 	if (perf_session__register_idle_thread(session) < 0)
+@@ -2316,6 +2585,9 @@ int perf_session__process_events(struct perf_session *session)
+ 	if (perf_data__is_pipe(session->data))
+ 		return __perf_session__process_pipe_events(session);
+ 
++	if (perf_data__is_dir(session->data))
++		return __perf_session__process_dir_events(session);
++
+ 	return __perf_session__process_events(session);
+ }
+ 
 diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
-index f76480166d38..378ffc3e2809 100644
+index 378ffc3e2809..cbc54615d155 100644
 --- a/tools/perf/util/session.h
 +++ b/tools/perf/util/session.h
-@@ -46,6 +46,7 @@ struct perf_session {
+@@ -19,6 +19,7 @@ struct thread;
+ 
+ struct auxtrace;
+ struct itrace_synth_opts;
++struct reader;
+ 
+ struct perf_session {
+ 	struct perf_header	header;
+@@ -41,6 +42,9 @@ struct perf_session {
+ 	struct zstd_data	zstd_data;
+ 	struct decomp		*decomp;
+ 	struct decomp		*decomp_last;
++	struct reader		*readers;
++	int			nr_readers;
++	struct reader		*active_reader;
+ };
+ 
  struct decomp {
- 	struct decomp *next;
- 	u64 file_pos;
-+	const char *file_path;
- 	size_t mmap_len;
- 	u64 head;
- 	size_t size;
-diff --git a/tools/perf/util/tool.h b/tools/perf/util/tool.h
-index bbbc0dcd461f..c966531d3eca 100644
---- a/tools/perf/util/tool.h
-+++ b/tools/perf/util/tool.h
-@@ -28,7 +28,8 @@ typedef int (*event_attr_op)(struct perf_tool *tool,
- 
- typedef int (*event_op2)(struct perf_session *session, union perf_event *event);
- typedef s64 (*event_op3)(struct perf_session *session, union perf_event *event);
--typedef int (*event_op4)(struct perf_session *session, union perf_event *event, u64 data);
-+typedef int (*event_op4)(struct perf_session *session, union perf_event *event, u64 data,
-+			 const char *str);
- 
- typedef int (*event_oe)(struct perf_tool *tool, union perf_event *event,
- 			struct ordered_events *oe);
 -- 
 2.24.1
-
