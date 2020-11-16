@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E979C2B53A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5522B53B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 22:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728741AbgKPVTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 16:19:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726774AbgKPVTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 16:19:16 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1053822240;
-        Mon, 16 Nov 2020 21:19:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605561555;
-        bh=SHY23h33dgv8QkmIOXbfR+0ymnh1DApjt1ZFMQXzwTI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MVAC0WhP2O+fs3GrwV/DVLOTVaTvNFQDQ1YEkTpeW4GpzoHpkC7VzoL5kimjr6EK+
-         FbhVQmHdNZwIwtXDDAbZB9xI6bGzJ7wyqkxfnGpw48w5coejnjZJ5kJ6T5b4VVY8e2
-         L7+bsvzJs3+ZYjIf1yoYAdUJbiVUz7pwM23hCJJQ=
-Date:   Mon, 16 Nov 2020 21:18:56 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lars@metafoo.de, robh+dt@kernel.org,
-        lgirdwood@gmail.com
-Subject: Re: [PATCH v2] dt-bindings: adau1977: convert text binding to yaml
- format
-Message-ID: <20201116211856.GM4739@sirena.org.uk>
-References: <20201106102052.32582-1-alexandru.ardelean@analog.com>
- <20201110084754.46756-1-alexandru.ardelean@analog.com>
+        id S1728757AbgKPVVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 16:21:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbgKPVVQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 16:21:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5587AC0613CF;
+        Mon, 16 Nov 2020 13:21:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=7IpcXVHeTBYT8USOupPyxcNDdXDsKJn0Vc/g3Vsna2E=; b=lvAlyYhuPS8XuPLKcwEqw4h/Lk
+        W2jM4Ibq8zLDIg1kBci01EjnwBvAi6aaYHcAtVcd8PalVcAJjqT+KkMi/umRu8Euk1rrs7iqGTWf+
+        CYJTPyjEJ3bhyvUkPSwSW79J9DzLLW/HHzNGqMwdI2Yx/kAf92g4jkvmvKmlBhgul333UwymFA1oJ
+        3CZROhxHLqiQCH5GLAKceOdJyOyLBlvZ1fa3pr/yr8TDENaDGtSpJFCK1T7M8hcJ1C+DaQH2BdcpG
+        lO+gj/BGTg2c6kBQHz2YUPSKAXOy+JrKW8i0rB0q1CWAoZ1zp1bVhHQP00GpB2b/2fiuCjd5gacXN
+        qwdtuELA==;
+Received: from [2601:1c0:6280:3f0::f32] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kelw0-0007T2-Ve; Mon, 16 Nov 2020 21:21:13 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org, Florian Westphal <fw@strlen.de>
+Subject: [PATCH net-next v5] net: linux/skbuff.h: combine SKB_EXTENSIONS + KCOV handling
+Date:   Mon, 16 Nov 2020 13:21:08 -0800
+Message-Id: <20201116212108.32465-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wAI/bQb0EMvlZCHl"
-Content-Disposition: inline
-In-Reply-To: <20201110084754.46756-1-alexandru.ardelean@analog.com>
-X-Cookie: Immanuel doesn't pun, he Kant.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The previous Kconfig patch led to some other build errors as
+reported by the 0day bot and my own overnight build testing.
 
---wAI/bQb0EMvlZCHl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+These are all in <linux/skbuff.h> when KCOV is enabled but
+SKB_EXTENSIONS is not enabled, so fix those by combining those conditions
+in the header file.
 
-On Tue, Nov 10, 2020 at 10:47:54AM +0200, Alexandru Ardelean wrote:
-> This change converts the old device-tree binding for ADAU1977 from text
-> format to the new yaml format.
+Fixes: 6370cc3bbd8a ("net: add kcov handle to skb extensions")
+Fixes: 85ce50d337d1 ("net: kcov: don't select SKB_EXTENSIONS when there is no NET")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Aleksandr Nogikh <nogikh@google.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-next@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: Florian Westphal <fw@strlen.de>
+---
+v2: (as suggested by Matthieu Baerts <matthieu.baerts@tessares.net>)
+  drop an extraneous space in a comment;
+  use CONFIG_SKB_EXTENSIONS instead of CONFIG_NET;
+v3, v4: dropped
+v5: drop a redundant IS_ENABLED(CONFIG_SKB_EXTENSIONS) in an enum;
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+ include/linux/skbuff.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---wAI/bQb0EMvlZCHl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+y7L8ACgkQJNaLcl1U
-h9BAwgf/YWLXXnZ0TekHKPuo3Pmjs/ILWyySMjpUzT1SzSNT7QyhFeVobu6IaeBP
-smT812NxLhwlQFkGneTbOJveZCqfX5qMJQ5CYLnZVyoHFOVhUL2veRA4+JWSwzjJ
-/dgf/Oijz5epN5cz20Gh8mNpfjJQoPfia7hpZLO/UeWKcbCIODBr9zWEdZs2IGyR
-dfPY5Ha9LbcpJhuAFg0rKu3j15hC1AHhtP+5bT6ilfwMEFnerP+2RS+yEHOJH9NX
-/4t7RyOkEGbktOKHNXMYB+Or3j+NyGJP0G814M3UJtGG7QvJIeMQUhg0SEdFbnFV
-ZSMy7Ozjlnp5KjN+/Tl3gncoYiOgmw==
-=xNKB
------END PGP SIGNATURE-----
-
---wAI/bQb0EMvlZCHl--
+--- linux-next-20201113.orig/include/linux/skbuff.h
++++ linux-next-20201113/include/linux/skbuff.h
+@@ -4608,7 +4608,7 @@ static inline void skb_reset_redirect(st
+ #endif
+ }
+ 
+-#ifdef CONFIG_KCOV
++#if IS_ENABLED(CONFIG_KCOV) && IS_ENABLED(CONFIG_SKB_EXTENSIONS)
+ static inline void skb_set_kcov_handle(struct sk_buff *skb,
+ 				       const u64 kcov_handle)
+ {
+@@ -4636,7 +4636,7 @@ static inline u64 skb_get_kcov_handle(st
+ static inline void skb_set_kcov_handle(struct sk_buff *skb,
+ 				       const u64 kcov_handle) { }
+ static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
+-#endif /* CONFIG_KCOV */
++#endif /* CONFIG_KCOV && CONFIG_SKB_EXTENSIONS */
+ 
+ #endif	/* __KERNEL__ */
+ #endif	/* _LINUX_SKBUFF_H */
