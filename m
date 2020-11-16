@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088992B3E2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 08:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726D62B3E33
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgKPH4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 02:56:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57794 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727812AbgKPH4x (ORCPT
+        id S1727985AbgKPH7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 02:59:32 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:60048 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727794AbgKPH7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 02:56:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605513413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/vIAOmfvFNMPmf8CjkNMglbCHByAHwkTLNsLVL8lU0U=;
-        b=QCTLVUZ+IOF+rH+1t9Z7s9rRiEg3/5p0PlpCX/7ynzA9voAPVSHpHWwYtoyzXD3GZHE/IJ
-        i8QdVHLKSxNOU1uyEjJ1MSSW271/nPGaoPDEHouHhhXAve2cv+Yn0Ysd82CFaBgStZ1ieU
-        LBDycZyRblYYVJxjAlw4/lAFSkB5C9E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-ilGDvEEHN3WJ_8GVhbQS1Q-1; Mon, 16 Nov 2020 02:56:48 -0500
-X-MC-Unique: ilGDvEEHN3WJ_8GVhbQS1Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A7945F9C0;
-        Mon, 16 Nov 2020 07:56:46 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-112-65.ams2.redhat.com [10.36.112.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D1D035B4CC;
-        Mon, 16 Nov 2020 07:56:45 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id C017916E31; Mon, 16 Nov 2020 08:56:44 +0100 (CET)
-Date:   Mon, 16 Nov 2020 08:56:44 +0100
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
+        Mon, 16 Nov 2020 02:59:32 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UFUsQKt_1605513567;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFUsQKt_1605513567)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 16 Nov 2020 15:59:28 +0800
+Subject: Re: [PATCH doc] doc: zh_CN: add tmpfs to index tree
+To:     Wang Qing <wangqing@vivo.com>, Harry Wei <harryxiyou@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wang Wenhu <wenhu.wang@vivo.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Chucheng Luo <luochucheng@vivo.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] drm/virtio: Make virtgpu_dmabuf_ops with static
- keyword
-Message-ID: <20201116075644.2kubdpmlowbevo3p@sirius.home.kraxel.org>
-References: <1605338173-22100-1-git-send-email-zou_wei@huawei.com>
+References: <1605509272-13770-1-git-send-email-wangqing@vivo.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <37199533-b975-bbfb-98d5-9e2052d2ff8e@linux.alibaba.com>
+Date:   Mon, 16 Nov 2020 15:58:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605338173-22100-1-git-send-email-zou_wei@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <1605509272-13770-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 03:16:13PM +0800, Zou Wei wrote:
-> Fix the following sparse warning:
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+
+在 2020/11/16 下午2:47, Wang Qing 写道:
+> Add temfs to the index tree while adding tempfs translation.
 > 
-> ./virtgpu_prime.c:46:33: warning: symbol 'virtgpu_dmabuf_ops' was not declared. Should it be static?
-
-Pushed to drm-misc-next.
-
-thanks,
-  Gerd
-
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  Documentation/translations/zh_CN/filesystems/index.rst | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
+> index 186501d..9f2a8b0
+> --- a/Documentation/translations/zh_CN/filesystems/index.rst
+> +++ b/Documentation/translations/zh_CN/filesystems/index.rst
+> @@ -25,4 +25,5 @@ Linux Kernel中的文件系统
+>  
+>     virtiofs
+>     debugfs
+> +   tmpfs
+>  
+> 
