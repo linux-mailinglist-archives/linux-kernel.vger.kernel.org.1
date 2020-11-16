@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256092B4009
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154CD2B4010
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 10:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728592AbgKPJmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 04:42:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726598AbgKPJmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:42:32 -0500
-Received: from localhost (unknown [122.171.203.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 219D222265;
-        Mon, 16 Nov 2020 09:42:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605519752;
-        bh=UBkv65hfzuuSmQHFZzYeD8z66QZxVVCRfSOPWbrwyJk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bcBcroOucNFoUzvWpwbfCGCqlZXWSazKuEKmiLG2zuTYuSS3c6Vlxz3YMwx3LpMRV
-         zCm+xxjOdfKdehh8QhEdu9iO7fJ70hyzhontxLelqcswqajVlhRqh64BzOc4HPaz8S
-         0d7f3XfL+vkL2TaD2c486jG1wjSDqPQ9eWRM72lQ=
-Date:   Mon, 16 Nov 2020 15:12:27 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     xiakaixu1987@gmail.com
-Cc:     kishon@ti.com, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: Re: [PATCH v2] phy: mapphone-mdm6600: return error when timed out
- powering up
-Message-ID: <20201116094227.GS7499@vkoul-mobl>
-References: <1605517891-20357-1-git-send-email-kaixuxia@tencent.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1605517891-20357-1-git-send-email-kaixuxia@tencent.com>
+        id S1728611AbgKPJmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 04:42:55 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:54454 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726598AbgKPJmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:42:55 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv9OYSbJfoOEPAA--.33384S2;
+        Mon, 16 Nov 2020 17:42:48 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     kgdb-bugreport@lists.sourceforge.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Subject: [PATCH] Documentation: kgdb: Fix a typo
+Date:   Mon, 16 Nov 2020 17:42:47 +0800
+Message-Id: <1605519767-25502-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxv9OYSbJfoOEPAA--.33384S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CrW7Zr4kur1fuFWDuFy5XFb_yoW8GrW5pr
+        s8C3saq3yDJw15K3y8Kr1UC343AFZ3X3yUCrZ2gF45XF15XwnYqry3K3WkZ3WDJF4IyFWj
+        vr9IgFyqk3Wqy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4f
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU0xhLUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-11-20, 17:11, xiakaixu1987@gmail.com wrote:
-> From: Kaixu Xia <kaixuxia@tencent.com>
-> 
-> The value of variable error is overwritten by the following call
-> devm_request_threaded_irq() in phy_mdm6600_device_power_on(), actually
-> we should return error when timed out powering up.
-> 
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> ---
-> v2:
->  -directly return error when timed out powering.
-> 
->  drivers/phy/motorola/phy-mapphone-mdm6600.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/phy/motorola/phy-mapphone-mdm6600.c b/drivers/phy/motorola/phy-mapphone-mdm6600.c
-> index 5172971f4c36..2f461c0d7276 100644
-> --- a/drivers/phy/motorola/phy-mapphone-mdm6600.c
-> +++ b/drivers/phy/motorola/phy-mapphone-mdm6600.c
-> @@ -423,6 +423,7 @@ static int phy_mdm6600_device_power_on(struct phy_mdm6600 *ddata)
->  		ddata->enabled = false;
->  		error = -ETIMEDOUT;
+"to into" -> "into"
 
-or drop this
->  		dev_err(ddata->dev, "Timed out powering up\n");
-> +		return error;
+Reported-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ Documentation/dev-tools/kgdb.rst | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-and do:
-                return -ETIMEDOUT;
-
-
->  	}
->  
->  	/* Reconfigure mode1 GPIO as input for OOB wake */
-> -- 
-> 2.20.0
-
+diff --git a/Documentation/dev-tools/kgdb.rst b/Documentation/dev-tools/kgdb.rst
+index 77b688e..4345624 100644
+--- a/Documentation/dev-tools/kgdb.rst
++++ b/Documentation/dev-tools/kgdb.rst
+@@ -63,10 +63,9 @@ will want to turn on ``CONFIG_DEBUG_INFO`` which is called
+ It is advised, but not required, that you turn on the
+ ``CONFIG_FRAME_POINTER`` kernel option which is called :menuselection:`Compile
+ the kernel with frame pointers` in the config menu. This option inserts code
+-to into the compiled executable which saves the frame information in
+-registers or on the stack at different points which allows a debugger
+-such as gdb to more accurately construct stack back traces while
+-debugging the kernel.
++into the compiled executable which saves the frame information in registers
++or on the stack at different points which allows a debugger such as gdb to
++more accurately construct stack back traces while debugging the kernel.
+ 
+ If the architecture that you are using supports the kernel option
+ ``CONFIG_STRICT_KERNEL_RWX``, you should consider turning it off. This
 -- 
-~Vinod
+2.1.0
+
