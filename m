@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771DE2B3E39
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1A92B3E3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:04:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgKPIB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:01:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbgKPIBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:01:25 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AB67206B7;
-        Mon, 16 Nov 2020 08:01:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605513684;
-        bh=+YuBH5NgvMdSGbHhfVMYwR2CKEj6o0vjeBiRlHGxZQk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LksTzPVMzCYnuzYbzF949ecfR9BAFFoHdrA9F8PbnPb9tLHG03Gqn9wTamyegNieH
-         xPc7fi+vr7hqS5HwbLhTYiTjr515FAJXp9hEEVYNaKCvIqx+mIovZo/nTNvy6u1IAw
-         XAd0Zjsv9X2/jrRBi4ACJhSBUOh46ZQf552X6JEA=
-Date:   Mon, 16 Nov 2020 16:01:19 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, krzk@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] arm64: dts: freescale: fix typo Makefile
-Message-ID: <20201116080118.GD5849@dragon>
-References: <20201110152631.3007779-1-anders.roxell@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110152631.3007779-1-anders.roxell@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728153AbgKPICH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727973AbgKPICF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 03:02:05 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C38C0613CF;
+        Mon, 16 Nov 2020 00:02:05 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q5so13389919pfk.6;
+        Mon, 16 Nov 2020 00:02:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=9Y1yLZPbBL2X5WIYzh0MGolabV4K2PbjAEx9PhCuf+Q=;
+        b=kpM8zXJ/HI3JAXzLtyf43BKIVH0eKHa0+/czdTViRIu70kSn8YwBwt5Rin3vQ1B/V5
+         7rXATO838psjNSblinn929eJATjAnVZjiR9bnBk7hZCcLju6mVRew6AJMrt7wFc1Fl7S
+         Z4caCceE4pIaUUNt8DXbXosT+gL+8NBJSi+6VSoqKw3MwAzoY9hX8xE/41NgWxBDT2cz
+         VytAjDZDgdc1kgxYrOIabmqd6Nab8eg0PTEn3nDiLhbeERmkgdQNx0QEg16oqQ+mrgae
+         1m0uVRk2yg2jAyfXUj0VOdFRGT45FT3oSt4te7MN+DRJpItPZs1OXwD4UwfwkMWN3IGD
+         R89A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9Y1yLZPbBL2X5WIYzh0MGolabV4K2PbjAEx9PhCuf+Q=;
+        b=LkYT4hJrH67LJBYpx57gTh5Tt94fcfTBzvBTge8zHr+x11mlFRSbbdyRT5jby3DWv4
+         y/Y2S8GxxuBj/9Iwa5Hlk3h9KLcnuVwJIsvQvoZ7tjmXrnsHFNjTP1FifFVTV89uolth
+         kjnsE90LxoiEggHM/EQUfqoqvhWGrfdWSpKIkj23kLRgnUJ5uaVw0z57J+k5L5Mq0luF
+         N2S0QBHMapTQa+7eGBnMmULSIPuie6QAfMVRX5x5DA07tXA/6zYQQg2UNKh6XkNLybod
+         ooS/kIbRxHY7aW5JI4pUKYV8mXe7+da/wyVjj/KOYM3H5NQAQb7ld8fFMbraFD9VRd/9
+         zEwg==
+X-Gm-Message-State: AOAM530tApaQ5VBKHuO0vPl9IUIo+Zh3BfBlJ3Zt9n1xkEIn9L2M0AJm
+        jGzEWRAZF1Hd8zZcjbtsl5k=
+X-Google-Smtp-Source: ABdhPJzhWi0/OjAlz2/BIbIgxQj1UreWhYu3egSm7uojQxyPCrwoHDeQL3pL61qwOodl2i14XkH5LA==
+X-Received: by 2002:a62:8857:0:b029:18b:cf28:9bbe with SMTP id l84-20020a6288570000b029018bcf289bbemr12903100pfd.45.1605513725298;
+        Mon, 16 Nov 2020 00:02:05 -0800 (PST)
+Received: from localhost.localdomain ([8.210.202.142])
+        by smtp.gmail.com with ESMTPSA id w10sm15031227pgj.91.2020.11.16.00.01.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Nov 2020 00:02:04 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     wensong@linux-vs.org, horms@verge.net.au, ja@ssi.bg,
+        pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] ipvs: replace atomic_add_return()
+Date:   Mon, 16 Nov 2020 16:01:47 +0800
+Message-Id: <1605513707-7579-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 04:26:31PM +0100, Anders Roxell wrote:
-> While trying to do 'make dtbs_install' the following error shows up
-> 
-> make[3]: *** No rule to make target
->   '/tmp/out/obj-dir/dtbinstallfreescale/imx8mm-kontron-n801x-s.dts', needed by '__dtbs_install'.
-> 
-> Fix typo in imx8mm-kontron-n801x-s.dts change file ending to *.dtb
-> 
-> Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+atomic_inc_return() looks better
 
-Thanks for the patch, Anders.  We have already applied the patch from
-Nathan Chancellor [1].
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ net/netfilter/ipvs/ip_vs_core.c | 2 +-
+ net/netfilter/ipvs/ip_vs_sync.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Shawn
+diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+index c0b8215..54e086c 100644
+--- a/net/netfilter/ipvs/ip_vs_core.c
++++ b/net/netfilter/ipvs/ip_vs_core.c
+@@ -2137,7 +2137,7 @@ static int ip_vs_in_icmp_v6(struct netns_ipvs *ipvs, struct sk_buff *skb,
+ 	if (cp->flags & IP_VS_CONN_F_ONE_PACKET)
+ 		pkts = sysctl_sync_threshold(ipvs);
+ 	else
+-		pkts = atomic_add_return(1, &cp->in_pkts);
++		pkts = atomic_inc_return(&cp->in_pkts);
+ 
+ 	if (ipvs->sync_state & IP_VS_STATE_MASTER)
+ 		ip_vs_sync_conn(ipvs, cp, pkts);
+diff --git a/net/netfilter/ipvs/ip_vs_sync.c b/net/netfilter/ipvs/ip_vs_sync.c
+index 16b4806..9d43277 100644
+--- a/net/netfilter/ipvs/ip_vs_sync.c
++++ b/net/netfilter/ipvs/ip_vs_sync.c
+@@ -615,7 +615,7 @@ static void ip_vs_sync_conn_v0(struct netns_ipvs *ipvs, struct ip_vs_conn *cp,
+ 	cp = cp->control;
+ 	if (cp) {
+ 		if (cp->flags & IP_VS_CONN_F_TEMPLATE)
+-			pkts = atomic_add_return(1, &cp->in_pkts);
++			pkts = atomic_inc_return(&cp->in_pkts);
+ 		else
+ 			pkts = sysctl_sync_threshold(ipvs);
+ 		ip_vs_sync_conn(ipvs, cp, pkts);
+@@ -776,7 +776,7 @@ void ip_vs_sync_conn(struct netns_ipvs *ipvs, struct ip_vs_conn *cp, int pkts)
+ 	if (!cp)
+ 		return;
+ 	if (cp->flags & IP_VS_CONN_F_TEMPLATE)
+-		pkts = atomic_add_return(1, &cp->in_pkts);
++		pkts = atomic_inc_return(&cp->in_pkts);
+ 	else
+ 		pkts = sysctl_sync_threshold(ipvs);
+ 	goto sloop;
+-- 
+1.9.1
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git/commit/?h=imx/dt64&id=889e0fb16e36d35bac443dede3ad203be97e042d
-
-> ---
->  arch/arm64/boot/dts/freescale/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index 876bf484bbe6..6f0777ee6cd6 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -32,7 +32,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
-> -dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dts
-> +dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
-> -- 
-> 2.28.0
-> 
