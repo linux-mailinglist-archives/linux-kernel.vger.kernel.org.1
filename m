@@ -2,163 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86FD2B506F
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6252B2B5078
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgKPS7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
+        id S1727349AbgKPTB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725879AbgKPS7X (ORCPT
+        with ESMTP id S1725879AbgKPTB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:59:23 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338B9C0613CF;
-        Mon, 16 Nov 2020 10:59:23 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id oq3so25920048ejb.7;
-        Mon, 16 Nov 2020 10:59:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PQX0+/2jm2WPhyg/O+Sa2ph8IDUqkD+pF2wWi8FvKXg=;
-        b=KG7JwzbjZcLfmysFvhJ6fUNI3p+2zk0k08DnQjsh422vklux1ATXCm1TALWOIL4Tsd
-         R8eJsNCmxBHk6LNx95WF6Z7mDKmrsB2rguF0CO89s88/rhx/nk8Ow/cjuDeu8gldbl27
-         jACYC6Gg2ITzvrE4py9OHz2TE+Op9cq9rtGAakSXu466QthwzXUfIcsyCieL6xTZWrdE
-         ZzIIGuXzYCDjh5FDjAvmDNkSPceqndZzu+CCeW60aKcmQNF6sNFxl2x+cAie3TL/N/uo
-         OfQ9jf/fWH2CSJBDnd68N+AycP7PxBCoRR4qpEQyPUnNhhqNJ0yJsTztBQrcGcirMU+L
-         r5XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PQX0+/2jm2WPhyg/O+Sa2ph8IDUqkD+pF2wWi8FvKXg=;
-        b=D5EWt7uY5VgUKI8B+EU4anPC839QRgavUrrBARBX//8Z513gBstds92Hzq7jDJSar4
-         shDqfDGGmW/gW0MFqLSr8qRnAIL+UWMyhpJ+Z5Hxcf+kpWUYmLPCe87MDYdqnWD2Y7mU
-         OEB+5JGzoLusJrL+/ZUKxLF7clURjgRSpED0FgAY0V5NnlkC+OeMAeA7iLxOXqPfoCkP
-         Io+hnPwBT/Yz2BlVa/2P91Xb0uLLMjs3gIJYNlOlIBBDj2pEIVUu+7Hipu73wF0RYSoj
-         +y7Yhfko4Wq/AlmpV1i9PqMkWZQkYlCfZS/DAHDFCoS6uwlhBsLLn8l33DcNtzkC6JED
-         ikgQ==
-X-Gm-Message-State: AOAM530dn4v83Y9CSE2B3JD1M/LVfKwqhmp+XQ7ZreTTkCfUeDBwVY3d
-        dL2xI+kpgXdm90hxA5IMrqE=
-X-Google-Smtp-Source: ABdhPJxS20smAlBBvg2X22JFkyvGXLbP6DnAIQmnhLFBphRtKXBZdW1A1FhIIkTg6eZfn4meOlxONg==
-X-Received: by 2002:a17:906:3daa:: with SMTP id y10mr15539426ejh.23.1605553161870;
-        Mon, 16 Nov 2020 10:59:21 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id z18sm10825331ejf.41.2020.11.16.10.59.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 10:59:21 -0800 (PST)
-Date:   Mon, 16 Nov 2020 20:59:19 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Subject: Re: [PATCH net-next 3/3] net: ethernet: ti: am65-cpsw: enable
- broadcast/multicast rate limit support
-Message-ID: <20201116185919.qwaklquxhhhtqttg@skbuf>
-References: <20201114035654.32658-1-grygorii.strashko@ti.com>
- <20201114035654.32658-4-grygorii.strashko@ti.com>
- <20201114191723.rvmhyrqinkhdjtpr@skbuf>
- <e9f2b153-d467-15fd-bd4a-601211601fca@ti.com>
+        Mon, 16 Nov 2020 14:01:28 -0500
+Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EECC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:01:27 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id BDEC4F01;
+        Mon, 16 Nov 2020 20:01:25 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HY7wajfAMYSj; Mon, 16 Nov 2020 20:01:24 +0100 (CET)
+Received: from function.youpi.perso.aquilenet.fr (unknown [IPv6:2a01:cb19:956:1b00:9eb6:d0ff:fe88:c3c7])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 10A8EDA3;
+        Mon, 16 Nov 2020 20:01:24 +0100 (CET)
+Received: from samy by function.youpi.perso.aquilenet.fr with local (Exim 4.94)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1kejkh-00FTP8-0u; Mon, 16 Nov 2020 20:01:23 +0100
+Date:   Mon, 16 Nov 2020 20:01:22 +0100
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Ben Hutchings <ben@decadent.org.uk>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: drivers/accessibility/speakup/serialio.c:48:19: warning:
+ variable 'quot' set but not used
+Message-ID: <20201116190122.yslib3wicn45rbuo@function>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Ben Hutchings <ben@decadent.org.uk>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <202011160942.AmYkxiJv-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e9f2b153-d467-15fd-bd4a-601211601fca@ti.com>
+In-Reply-To: <202011160942.AmYkxiJv-lkp@intel.com>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 08:39:54PM +0200, Grygorii Strashko wrote:
+Hello Ben,
+
+A long time ago you added a dependency for speakup drivers on
+CONFIG_ISA, and you also added || COMPILE_TEST as an alternative.
+
+It seems that some platform portability tests then think they should
+be able to build it, even if they don't enable ISA, but then we are
+getting warnings, or even errors, depending on the compatibility macros
+in <asm/io.h> in the !ISA case (here, the parisc compatibility macros do
+not consume their parameter).
+
+Perhaps we should rather use
+
+depends on ISA || (X86 && COMPILE_TEST)
+
+?
+so that we have compile testing on x86 only (where the inb/outb macros
+always behave fine) to avoid such issues on other archs?
+
+Or we tell the architecture maintainers to fix their out macros into
+consuming their parameters?
+
+Samuel
+
+kernel test robot, le lun. 16 nov. 2020 09:54:50 +0800, a ecrit:
+> First bad commit (maybe != root cause):
 > 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   a6af8718b98e1cd37a9ea9a02269c79577fc9138
+> commit: 2067fd92d75b6d9085a43caf050bca5d88c491b8 staging/speakup: Move out of staging
+> date:   4 months ago
+> config: parisc-randconfig-r023-20201116 (attached as .config)
+> compiler: hppa-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2067fd92d75b6d9085a43caf050bca5d88c491b8
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 2067fd92d75b6d9085a43caf050bca5d88c491b8
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc 
 > 
-> On 14/11/2020 21:17, Vladimir Oltean wrote:
-> > On Sat, Nov 14, 2020 at 05:56:54AM +0200, Grygorii Strashko wrote:
-> > > This patch enables support for ingress broadcast(BC)/multicast(MC) rate limiting
-> > > in TI AM65x CPSW driver (the corresponding ALE support was added in previous
-> > > patch) by implementing HW offload for simple tc-flower policer with matches
-> > > on dst_mac:
-> > >   - ff:ff:ff:ff:ff:ff has to be used for BC rate limiting
-> > >   - 01:00:00:00:00:00 fixed value has to be used for MC rate limiting
-> > > 
-> > > Hence tc policer defines rate limit in terms of bits per second, but the
-> > > ALE supports limiting in terms of packets per second - the rate limit
-> > > bits/sec is converted to number of packets per second assuming minimum
-> > > Ethernet packet size ETH_ZLEN=60 bytes.
-> > > 
-> > > Examples:
-> > > - BC rate limit to 1000pps:
-> > >    tc qdisc add dev eth0 clsact
-> > >    tc filter add dev eth0 ingress flower skip_sw dst_mac ff:ff:ff:ff:ff:ff \
-> > >    action police rate 480kbit burst 64k
-> > > 
-> > >    rate 480kbit - 1000pps * 60 bytes * 8, burst - not used.
-> > > 
-> > > - MC rate limit to 20000pps:
-> > >    tc qdisc add dev eth0 clsact
-> > >    tc filter add dev eth0 ingress flower skip_sw dst_mac 01:00:00:00:00:00 \
-> > >    action police rate 9600kbit burst 64k
-> > > 
-> > >    rate 9600kbit - 20000pps * 60 bytes * 8, burst - not used.
-> > > 
-> > > Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> > > ---
-> > 
-> > I understand this is unpleasant feedback, but don't you want to extend
-> > tc-police to have an option to rate-limit based on packet count and not
-> > based on byte count?
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> Huh.
-> I'd be appreciated if you could provide more detailed opinion of how it can look like?
-> Sry, it's my first experience with tc.
-
-Same as above, just in packets per second.
-
-tc qdisc add dev eth0 clsact
-tc filter add dev eth0 ingress flower skip_sw \
-	dst_mac 01:00:00:00:00:00/01:00:00:00:00:00 \
-	action police rate 20kpps
-
-> > The assumption you make in the driver that the
-> > packets are all going to be minimum-sized is not a great one.
-> > I can
-> > imagine that the user's policer budget is vastly exceeded if they enable
-> > jumbo frames and they put a policer at 9.6 Mbps, and this is not at all
-> > according to their expectation. 20Kpps assuming 60 bytes per packet
-> > might be 9.6 Mbps, and the user will assume this bandwidth profile is
-> > not exceeded, that's the whole point. But 20Kpps assuming 9KB per packet
-> > is 1.44Gbps. Weird.
+> All warnings (new ones prefixed by >>):
 > 
-> Sry, not sure I completely understood above. This is specific HW feature, which can
-> imit packet rate only. And it is expected to be applied by admin who know what he is doing.
-
-Yes but you're not helping the admin to "know what he's doing" if you're
-asking them to translate apples into oranges. A policer that counts
-packets is not equivalent to a policer that counts bytes, unless all
-packets are guaranteed to be of equal length, something which you cannot
-ensure.
-
-> The main purpose is to preserve CPU resource, which first of all affected by packet rate.
-> So, I see it as not "assumption", but requirement/agreement which will be reflected
-> in docs and works for a specific use case which is determined by presence of:
->  - skip_sw flag
->  - specific dst_mac/dst_mac_mask pair
-> in which case rate determines pps and not K/Mbps.
+>    drivers/accessibility/speakup/serialio.c: In function 'spk_serial_init':
+> >> drivers/accessibility/speakup/serialio.c:48:19: warning: variable 'quot' set but not used [-Wunused-but-set-variable]
+>       48 |  int baud = 9600, quot = 0;
+>          |                   ^~~~
+>    drivers/accessibility/speakup/serialio.c: In function 'spk_serial_tiocmset':
+>    drivers/accessibility/speakup/serialio.c:165:6: warning: unused variable 'old' [-Wunused-variable]
+>      165 |  int old = inb(speakup_info.port_tts + UART_MCR);
+>          |      ^~~
 > 
+> vim +/quot +48 drivers/accessibility/speakup/serialio.c
 > 
-> Also some ref on previous discussion [1] [2]
-> [1] https://www.spinics.net/lists/netdev/msg494630.html
-> [2] https://lore.kernel.org/patchwork/patch/481285/
+> 1e441594e509c3 drivers/staging/speakup/serialio.c Okash Khawaja          2017-03-14   45  
+> 3ee0017e03cd79 drivers/staging/speakup/serialio.c Jiri Slaby             2012-03-05   46  const struct old_serial_port *spk_serial_init(int index)
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   47  {
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  @48  	int baud = 9600, quot = 0;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   49  	unsigned int cval = 0;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   50  	int cflag = CREAD | HUPCL | CLOCAL | B9600 | CS8;
+> 327b882d3bcc1f drivers/staging/speakup/serialio.c Samuel Thibault        2016-01-15   51  	const struct old_serial_port *ser;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   52  	int err;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   53  
+> 327b882d3bcc1f drivers/staging/speakup/serialio.c Samuel Thibault        2016-01-15   54  	if (index >= ARRAY_SIZE(rs_table)) {
+> 327b882d3bcc1f drivers/staging/speakup/serialio.c Samuel Thibault        2016-01-15   55  		pr_info("no port info for ttyS%d\n", index);
+> 327b882d3bcc1f drivers/staging/speakup/serialio.c Samuel Thibault        2016-01-15   56  		return NULL;
+> 327b882d3bcc1f drivers/staging/speakup/serialio.c Samuel Thibault        2016-01-15   57  	}
+> 327b882d3bcc1f drivers/staging/speakup/serialio.c Samuel Thibault        2016-01-15   58  	ser = rs_table + index;
+> 327b882d3bcc1f drivers/staging/speakup/serialio.c Samuel Thibault        2016-01-15   59  
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   60  	/*	Divisor, bytesize and parity */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   61  	quot = ser->baud_base / baud;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   62  	cval = cflag & (CSIZE | CSTOPB);
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   63  #if defined(__powerpc__) || defined(__alpha__)
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   64  	cval >>= 8;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   65  #else /* !__powerpc__ && !__alpha__ */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   66  	cval >>= 4;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   67  #endif /* !__powerpc__ && !__alpha__ */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   68  	if (cflag & PARENB)
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   69  		cval |= UART_LCR_PARITY;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   70  	if (!(cflag & PARODD))
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   71  		cval |= UART_LCR_EPAR;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   72  	if (synth_request_region(ser->port, 8)) {
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   73  		/* try to take it back. */
+> 3a046c19158e89 drivers/staging/speakup/serialio.c Keerthimai Janarthanan 2014-03-18   74  		pr_info("Ports not available, trying to steal them\n");
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   75  		__release_region(&ioport_resource, ser->port, 8);
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   76  		err = synth_request_region(ser->port, 8);
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   77  		if (err) {
+> 3ee0017e03cd79 drivers/staging/speakup/serialio.c Jiri Slaby             2012-03-05   78  			pr_warn("Unable to allocate port at %x, errno %i",
+> baf9ac9ff8864c drivers/staging/speakup/serialio.c William Hubbs          2010-10-15   79  				ser->port, err);
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   80  			return NULL;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   81  		}
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   82  	}
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   83  
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   84  	/*	Disable UART interrupts, set DTR and RTS high
+> 13d825edd4441d drivers/staging/speakup/serialio.c Aleksei Fedotov        2015-08-14   85  	 *	and set speed.
+> 13d825edd4441d drivers/staging/speakup/serialio.c Aleksei Fedotov        2015-08-14   86  	 */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   87  	outb(cval | UART_LCR_DLAB, ser->port + UART_LCR);	/* set DLAB */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   88  	outb(quot & 0xff, ser->port + UART_DLL);	/* LS of divisor */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   89  	outb(quot >> 8, ser->port + UART_DLM);		/* MS of divisor */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   90  	outb(cval, ser->port + UART_LCR);		/* reset DLAB */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   91  
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   92  	/* Turn off Interrupts */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   93  	outb(0, ser->port + UART_IER);
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   94  	outb(UART_MCR_DTR | UART_MCR_RTS, ser->port + UART_MCR);
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   95  
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   96  	/* If we read 0xff from the LSR, there is no UART here. */
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   97  	if (inb(ser->port + UART_LSR) == 0xff) {
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   98  		synth_release_region(ser->port, 8);
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07   99  		serstate = NULL;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  100  		return NULL;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  101  	}
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  102  
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  103  	mdelay(1);
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  104  	speakup_info.port_tts = ser->port;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  105  	serstate = ser;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  106  
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  107  	start_serial_interrupt(ser->irq);
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  108  
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  109  	return ser;
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  110  }
+> c6e3fd22cd5383 drivers/staging/speakup/serialio.c William Hubbs          2010-10-07  111  
+> 
+> :::::: The code at line 48 was first introduced by commit
+> :::::: c6e3fd22cd538365bfeb82997d5b89562e077d42 Staging: add speakup to the staging directory
+> 
+> :::::: TO: William Hubbs <w.d.hubbs@gmail.com>
+> :::::: CC: Greg Kroah-Hartman <gregkh@suse.de>
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-ethtool coalescing as a tool to configure a policer makes zero sense.
-
-You are definitely on the right path with the tc-police action. This was
-just trying to be constructive feedback that the software implementation
-of tc-police needs more work before your hardware could offload its job
-in a way that would not violate its semantics.
