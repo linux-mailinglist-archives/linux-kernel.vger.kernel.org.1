@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1BC2B4A4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CF62B4A51
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 17:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731687AbgKPQHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 11:07:08 -0500
-Received: from mga05.intel.com ([192.55.52.43]:51557 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731679AbgKPQHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 11:07:07 -0500
-IronPort-SDR: ezxLIDrI/T5g/EouNTaVyCS0C7AvqK+3SusOEUCsNzccTjzwK7+U9pLIr/DirkruZyUMkFX1W9
- dTLlPKgkngkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="255479093"
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="255479093"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 08:07:04 -0800
-IronPort-SDR: JGfEfNL+C3Clpyfm46g4KDNe1XzwvHA/E1Ua5W/N+tXZ/oPeAsICfQNhOqalHvCXiKMfdiE2gn
- V2XBHDyc0nnw==
-X-IronPort-AV: E=Sophos;i="5.77,483,1596524400"; 
-   d="scan'208";a="533463212"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 08:07:02 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1keh2y-0076Iy-NC; Mon, 16 Nov 2020 18:08:04 +0200
-Date:   Mon, 16 Nov 2020 18:08:04 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Claudius Heine <ch@denx.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Hahn <johannes-hahn@siemens.com>,
-        "Zeh, Werner" <werner.zeh@siemens.com>
-Subject: Re: [PATCH v2 2/3] rtc: rx6110: add ACPI bindings to I2C
-Message-ID: <20201116160804.GB4077@smile.fi.intel.com>
-References: <20201112130734.331094-1-ch@denx.de>
- <20201112130734.331094-3-ch@denx.de>
- <20201116144631.GB1689012@smile.fi.intel.com>
- <20201116163024.74c767b6@md1za8fc.ad001.siemens.net>
- <20201116160509.GA4077@smile.fi.intel.com>
+        id S1731326AbgKPQIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 11:08:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728858AbgKPQIQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 11:08:16 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C06C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:08:16 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id n5so15750426ile.7
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 08:08:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TYESStGAKtRivaI7ala7/9w4Y1E5hiFC107ZMldjdA0=;
+        b=PIME04S2yuh00xcv/ew8BoRWNXcxwwXikY/oKGMYfQDfOhKMKqxbvI5zE0XEojzmIL
+         fP1Dq2ACY8i0tSuOowJ0pXcrqHpbNcMx/7cXaq1E4CQiYgHyOU0mW2oJo4D6jw4uEw0r
+         0YNdhoVexSnnIcnaiVgn8WuUjZqFa/8MlpLIk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TYESStGAKtRivaI7ala7/9w4Y1E5hiFC107ZMldjdA0=;
+        b=Y10mONzl/WLg+vu3o08U3tTPY+kAlilOIsrTUaKva3DyXDtkcyD/tJwt9hMSvuXCAM
+         deFp7KXLhBwxiyd8glJPpAQh3GpkZK8cgP4AtJvJA4cuJFAW6qfNExe2Z2HXHkqMjIyZ
+         kt983d/A8Pvy4sw4CDQ/5hA+QOUWSB9PN07iY6HNDqS66VAbKAoYHN8qia3cuOlcWvin
+         IAlh5owb61lMO3o9SX+avPajWynNYwNiAKWLTNzW0rxQ3JVYmGfduUgVeDOxDcQbMaKv
+         jksMDUcNOAqYEVQt9YXY5pfsF6DdNZWVbqvW7PvwchDZ4207JLRQm01YfXSe+49MMJpS
+         tHkA==
+X-Gm-Message-State: AOAM532Sdc78iflksm6AZfY5KqhejJdHjNANH1Lr2EZridXdRtFaKztb
+        Ydp5/qEWRiuPIzjt7pcxmxYNXU+XWPMkQkonSqXR
+X-Google-Smtp-Source: ABdhPJzUUHJyuXJ1duZZEAnozYsMbeM2qHFZmyqTe/AtJl9ylg9U5pPO43vAy8+qk+4tC/qsYULKaca4u7Xyar01sAs=
+X-Received: by 2002:a92:512:: with SMTP id q18mr8655253ile.147.1605542895690;
+ Mon, 16 Nov 2020 08:08:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116160509.GA4077@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201113202550.3693323-1-atish.patra@wdc.com> <20201113202550.3693323-3-atish.patra@wdc.com>
+ <20201116150129.GA1643948@bogus>
+In-Reply-To: <20201116150129.GA1643948@bogus>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 16 Nov 2020 08:08:04 -0800
+Message-ID: <CAOnJCULj2F1ZMsWwA8KT-6yVi2bK7usw1EUJfrxTiVtrDqYAXQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/4] dt-bindings: riscv: microchip: Add YAML
+ documentation for the PolarFire SoC
+To:     Rob Herring <robh@kernel.org>
+Cc:     Atish Patra <atish.patra@wdc.com>, devicetree@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>, Cyril.Jean@microchip.com,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Anup Patel <anup.patel@wdc.com>, Conor.Dooley@microchip.com,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Ivan.Griffin@microchip.com, Rob Herring <robh+dt@kernel.org>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 06:05:09PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 16, 2020 at 04:30:24PM +0100, Henning Schild wrote:
-> > Am Mon, 16 Nov 2020 16:46:31 +0200
-> > schrieb Andy Shevchenko <andriy.shevchenko@intel.com>:
-> > 
-> > > On Thu, Nov 12, 2020 at 02:07:33PM +0100, Claudius Heine wrote:
-> > > > From: Johannes Hahn <johannes-hahn@siemens.com>
-> > > > 
-> > > > This allows the RX6110 driver to be automatically assigned to the
-> > > > right device on the I2C bus.  
-> > > 
-> > > Before adding new ACPI ID, can you provide an evidence (either from
-> > > vendor of the component, or a real snapshot of DSDT from device on
-> > > market) that this is real ID?
-> > > 
-> > > Before that happens, NAK.
-> > > 
-> > > P.S. Seems to me that this is kinda cargo cult patch because proposed
-> > > ID is against ACPI and PNP registry and ACPI specification.
-> > 
-> > In fact we pushed it in coreboot and Linux at the same time.
-> > 
-> > https://review.coreboot.org/c/coreboot/+/47235
-> > 
-> > That is the evidence. But in case this is wrong we can probably still
-> > change coreboot, even though the patches have been merged there already.
-> 
-> Yes, first of all you must follow ACPI and PNP registry. You may use your
-> Google vendor ID for that (IIRC you have two of them). Ideally you need to
-> convince Seiko Epson to do the right thing.
+On Mon, Nov 16, 2020 at 7:23 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, 13 Nov 2020 12:25:48 -0800, Atish Patra wrote:
+> > Add YAML DT binding documentation for the Microchip PolarFire SoC.
+> > It is documented at:
+> >
+> > https://www.microsemi.com/products/fpga-soc/polarfire-soc-icicle-quick-start-guide
+> >
+> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > ---
+> >  .../devicetree/bindings/riscv/microchip.yaml  | 27 +++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/riscv/microchip.yaml
+> >
+>
+>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> ./Documentation/devicetree/bindings/riscv/microchip.yaml: $id: relative path/filename doesn't match actual path or filename
+>         expected: http://devicetree.org/schemas/riscv/microchip.yaml#
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/riscv/sifive.yaml: duplicate '$id' value 'http://devicetree.org/schemas/riscv/sifive.yaml#'
+>
+>
 
-JFYI: According to the registry [1] they have their own vendor ID
+Thanks for catching this. It was a copy paste error. I will fix it next version.
 
-SEIKO EPSON CORPORATION	SEC	11/29/1996
+> See https://patchwork.ozlabs.org/patch/1400088
+>
+> The base for the patch is generally the last rc1. Any dependencies
+> should be noted.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-[1]: https://www.uefi.org/pnp_id_list
 
-> > Maybe you can go into detail where you see the violations and maybe
-> > even suggest fixes that come to mind.
-> 
-> Please, read ACPI specification. In particular chapters 6.1.2 "_CID
-> (Compatible ID)", 6.1.5 "_HID (Hardware ID)". The latter clarifies
-> the rules used to define an ID. Note, chapter 6.1.2 uses in particular
-> "A valid HID value".
-> 
-> I hope you are using as latest as possible ACPICA compiler (or at least
-> the one which follows the latest changes in it).
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Regards,
+Atish
