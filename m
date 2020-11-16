@@ -2,224 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F7C2B54DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEBE2B54DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 00:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgKPXTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 18:19:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        id S1729187AbgKPXUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 18:20:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgKPXTy (ORCPT
+        with ESMTP id S1725710AbgKPXUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:19:54 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11732C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:19:54 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id s25so26803121ejy.6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 15:19:53 -0800 (PST)
+        Mon, 16 Nov 2020 18:20:42 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE961C0613CF;
+        Mon, 16 Nov 2020 15:20:41 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id w4so14575270pgg.13;
+        Mon, 16 Nov 2020 15:20:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rDdIk6WlWEtTD2Qka3gH6AjvLJ6me8YyVBGtt6+aSYw=;
-        b=tOVwTthF+oRBzodNyAt892de12QeK9YVh1NmdZDEO+ofR5XYuXmTL3i9RBUf1+aETa
-         RFVLgVUdfHsJXcJtqXevWAzkAtkndhrk79ZB22Fl8dcQotGg81UcrLrkDgUhpDOaSjHh
-         qf30FSMAco1R758G8XGSN9+HqOguswlRzXbLpMVGufhvficKr1nnXpS/BeLzuW5kOZ6H
-         uijgCE4hItLT9gGhIkQTXdNWeJkMYVAtXYtoOwJfCr6bcEYae5leuL9ItdATzLxakHVQ
-         4Rgjwz3eq5uaVsvwQM3cUacE/x49Pg3gkJjvuwNG3Ko7T9/bynZN8PNor+wMDpL/mDkz
-         6ZuA==
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rrDVDEnDH/iiVuvmKCir8fwE7q6Cx1qQiA3IFSfCGz0=;
+        b=PCW5GeqHITY3lFpIHJJ9B+pOiBiazK/kwVnAM6oktEt5yL/NW4UtI6RIpVyUxp8i4f
+         nIf5zNmvJXm5Nzoc59K9VgOl144ZwHjw7r7updK5fz0pveND7e8xo5N0xRckNhPkwC0X
+         J+ZcVVtLCF4E3lau3w+Hvwe6NGkFY7W3VqvPMGMTkSouhpzSR7I74dTXyoIWxeUWEdOY
+         0LL4sq2WGyQxB1AudQGbYsK2oUd5NNDh8NDyI+3xiywhzAQMhgRBPHB83+NQvs/jB2KL
+         0Ju+bcYiX32bo8kieqshKn2YA6piWQ0437rJ6SX+ESsoum6YUITn/vgNGAW+8FSgwO9x
+         ygCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rDdIk6WlWEtTD2Qka3gH6AjvLJ6me8YyVBGtt6+aSYw=;
-        b=gvPEvcPBwbxiv/eW5ZyEPHKT8EVFS5zBWn0hOfSrvS/RuVuRMsQNKuDmwfXDHVxyTe
-         UIes5RiMI/mPkKFRx788ZWVgk1qbi8mhlwO5BaQmfzoI1BIKiKDnCGe0N0xJ/ZgyM5JB
-         YmRd8rsfsRKJ8IF3OjoJGGIh+ko2jaio6Xg4HtCJyZ1NsOg77rlAmIDs5tVmr+hFPPUl
-         2PReVztW59/5bDCvXeRy5MO98p+CDICnVrjprrdQPtTdHiaz4iodo76BaTcRqwRtaCbf
-         6hCd6rkc+gbG6wRxUAfWWyuFVcKRNXtj5MQZNVlhxMkY5OuJt2CQSzRNw3hTyGlfGwpx
-         O4Bg==
-X-Gm-Message-State: AOAM5320m+ngStWuGGhDl1B86BPHRvI7oz3iUbFFFVBC7zQAc/M3i+JP
-        aGqk9C3bCubz6Zn4IpoTMVFvbthPA7ii3gAzEZ+rIA==
-X-Google-Smtp-Source: ABdhPJzPQBGGcW9pfRJd5nLo2pEUfKE5CqOYKsFWCIec639zZd/SeYHb1n/2m2TEOfzs9ZAm9D9yHborvu9fdysdK2A=
-X-Received: by 2002:a17:906:241b:: with SMTP id z27mr16049093eja.418.1605568792690;
- Mon, 16 Nov 2020 15:19:52 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=rrDVDEnDH/iiVuvmKCir8fwE7q6Cx1qQiA3IFSfCGz0=;
+        b=Jv32insD9Kf0MfRtUIKs2gydacQNCAXxF05PrgXNNiL+9VE43GQAa1hiskK0xmQkC0
+         q3NEeayatLLYp06BmUv/T9wdjTXM/QUtyy6uavmYOb4aqViz5lSriPZAXzGWEW1w6Iz8
+         u5PTnScBkk6CuIEuyM+HQor6cDAE/zCTuf1ll7Vw3zet3LWKymaN4LJa4ukP/vzUeY4F
+         yyoCTlp8V728Rvf3uovhHdbDR952kSJ2sr6p+M48KrHX0yarNKPpEk2fHaSHszGOyD8U
+         q7sJ5U2mOhL0s2hBtGJiar1Y4TdKpVHSuAmALdcT4zm4fBoLdT5gJEVBwAWMMnuDjO6Z
+         YENA==
+X-Gm-Message-State: AOAM530swPVqxS7FR8H2niip6VtoQsjQ9wlDK0D4DOqc8l0wv1sa5JUq
+        V+I42+K+l5/NzZ+gbFwM4d51RALrzRg=
+X-Google-Smtp-Source: ABdhPJwdn6n7imGuaY9Ts2ZhpaGhlerGnfYklTz1R/GHqNzm5wqkdNpl3JkstORn18YE9mXqHHUesw==
+X-Received: by 2002:aa7:8c55:0:b029:18c:45ed:d87e with SMTP id e21-20020aa78c550000b029018c45edd87emr15951872pfd.76.1605568841020;
+        Mon, 16 Nov 2020 15:20:41 -0800 (PST)
+Received: from [10.67.48.230] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id m68sm6476667pfm.173.2020.11.16.15.20.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Nov 2020 15:20:39 -0800 (PST)
+Subject: Re: [PATCH net] net: Have netpoll bring-up DSA management interface
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Yunjian Wang <wangyunjian@huawei.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201019171746.991720-1-f.fainelli@gmail.com>
+ <20201019200258.jrtymxikwrijkvpq@skbuf>
+ <58b07285-bb70-3115-eb03-5e43a4abeae6@gmail.com>
+ <20201019211916.j77jptfpryrhau4z@skbuf>
+ <20201020181247.7e1c161b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <a8d38b5b-ae85-b1a8-f139-ae75f7c01376@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <d2dbb984-604a-ecbd-e717-2e9942fdbdaa@gmail.com>
+Date:   Mon, 16 Nov 2020 15:20:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201111054356.793390-5-ben.widawsky@intel.com>
- <20201113181732.GA1121121@bjorn-Precision-5520> <20201114011225.lzhrbk3sszw2a7m6@intel.com>
-In-Reply-To: <20201114011225.lzhrbk3sszw2a7m6@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 16 Nov 2020 15:19:41 -0800
-Message-ID: <CAPcyv4j+zbns+WhnxWXCdoxa=QN40BFXUpmb=04q36H1sX-aBw@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/9] cxl/mem: Map memory device registers
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a8d38b5b-ae85-b1a8-f139-ae75f7c01376@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 5:12 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> On 20-11-13 12:17:32, Bjorn Helgaas wrote:
-> > On Tue, Nov 10, 2020 at 09:43:51PM -0800, Ben Widawsky wrote:
-> > > All the necessary bits are initialized in order to find and map the
-> > > register space for CXL Memory Devices. This is accomplished by using the
-> > > Register Locator DVSEC (CXL 2.0 - 8.1.9.1) to determine which PCI BAR to
-> > > use, and how much of an offset from that BAR should be added.
-> >
-> > "Initialize the necessary bits ..." to use the usual imperative
-> > sentence structure, as you did in the subject.
-> >
-> > > If the memory device registers are found and mapped a new internal data
-> > > structure tracking device state is allocated.
-> >
-> > "Allocate device state if we find device registers" or similar.
-> >
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > ---
-> > >  drivers/cxl/mem.c | 68 +++++++++++++++++++++++++++++++++++++++++++----
-> > >  drivers/cxl/pci.h |  6 +++++
-> > >  2 files changed, 69 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index aa7d881fa47b..8d9b9ab6c5ea 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> > > @@ -7,9 +7,49 @@
-> > >  #include "pci.h"
-> > >
-> > >  struct cxl_mem {
-> > > +   struct pci_dev *pdev;
-> > >     void __iomem *regs;
-> > >  };
-> > >
-> > > +static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo, u32 reg_hi)
-> > > +{
-> > > +   struct device *dev = &pdev->dev;
-> > > +   struct cxl_mem *cxlm;
-> > > +   void __iomem *regs;
-> > > +   u64 offset;
-> > > +   u8 bar;
-> > > +   int rc;
-> > > +
-> > > +   offset = ((u64)reg_hi << 32) | (reg_lo & 0xffff0000);
-> > > +   bar = reg_lo & 0x7;
-> > > +
-> > > +   /* Basic sanity check that BAR is big enough */
-> > > +   if (pci_resource_len(pdev, bar) < offset) {
-> > > +           dev_err(dev, "bar%d: %pr: too small (offset: %#llx)\n",
-> > > +                           bar, &pdev->resource[bar], (unsigned long long) offset);
-> >
-> > s/bar/BAR/
-> >
-> > > +           return ERR_PTR(-ENXIO);
-> > > +   }
-> > > +
-> > > +   rc = pcim_iomap_regions(pdev, 1 << bar, pci_name(pdev));
-> > > +   if (rc != 0) {
-> > > +           dev_err(dev, "failed to map registers\n");
-> > > +           return ERR_PTR(-ENXIO);
-> > > +   }
-> > > +
-> > > +   cxlm = devm_kzalloc(&pdev->dev, sizeof(*cxlm), GFP_KERNEL);
-> > > +   if (!cxlm) {
-> > > +           dev_err(dev, "No memory available\n");
-> > > +           return ERR_PTR(-ENOMEM);
-> > > +   }
-> > > +
-> > > +   regs = pcim_iomap_table(pdev)[bar];
-> > > +   cxlm->pdev = pdev;
-> > > +   cxlm->regs = regs + offset;
-> > > +
-> > > +   dev_dbg(dev, "Mapped CXL Memory Device resource\n");
-> > > +   return cxlm;
-> > > +}
-> > > +
-> > >  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
-> > >  {
-> > >     int pos;
-> > > @@ -34,9 +74,9 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
-> > >
-> > >  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> > >  {
-> > > +   struct cxl_mem *cxlm = ERR_PTR(-ENXIO);
-> > >     struct device *dev = &pdev->dev;
-> > > -   struct cxl_mem *cxlm;
-> >
-> > The order was better before ("dev", then "clxm").  Oh, I suppose this
-> > is a "reverse Christmas tree" thing.
-> >
->
-> I don't actually care either way as long as it's consistent. I tend to do
-> reverse Christmas tree for no particular reason.
+On 11/16/20 3:06 PM, Florian Fainelli wrote:
+> On 10/20/20 6:12 PM, Jakub Kicinski wrote:
+>> On Tue, 20 Oct 2020 00:19:16 +0300 Vladimir Oltean wrote:
+>>> On Mon, Oct 19, 2020 at 02:03:40PM -0700, Florian Fainelli wrote:
+>>>>> Completely crazy and outlandish idea, I know, but what's wrong with
+>>>>> doing this in DSA?  
+>>>>
+>>>> I really do not have a problem with that approach however other stacked
+>>>> devices like 802.1Q do not do that. It certainly scales a lot better to
+>>>> do this within DSA rather than sprinkling DSA specific knowledge
+>>>> throughout the network stack. Maybe for "configuration less" stacked
+>>>> devices such as DSA, 802.1Q (bridge ports?), bond etc. it would be
+>>>> acceptable to ensure that the lower device is always brought up?  
+>>>
+>>> For upper interfaces with more than one lower (bridge, bond) I'm not so
+>>> sure. For uppers with a single lower (DSA, 8021q), it's pretty much a
+>>> no-brainer to me. Question is, where to code this? I think it's ok to
+>>> leave it in DSA, then 8021q could copy it as well if there was a need.
+>>
+>> FWIW no strong preference here. Maybe I'd lean slightly towards
+>> Florian's approach since we can go to the always upping the CPU netdev
+>> from that, if we start with auto-upping CPU netdev - user space may
+>> depend on that in general so we can't go back.
+>>
+>> But up to you folks, this seems like a DSA-specific problem, vlans don't
+>> get created before user space is up (AFAIK), so there is no compelling
+>> reason to change them in my mind.
+> 
+> Right I remembered in my previous job we had a patch that would support
+> creating VLAN devices when specified over ipconfig on the kernel command
+> line, but that as never upstream AFAICT.
+> 
+>>
+>> Florian for you patch specifially - can't we use
+>> netdev_for_each_lower_dev()?
+> 
+> Looks like I forgot to respond here, yes we could do that because we do
+> call netdev_upper_dev_link() in net/dsa/slave.c. Let me re-post with
+> that done.
 
-Yeah, reverse Christmas tree for no particular reason.
+I remember now there was a reason for me to "open code" this, and this
+is because since the patch is intended to be a bug fix, I wanted it to
+be independent from: 2f1e8ea726e9 ("net: dsa: link interfaces with the
+DSA master to get rid of lockdep warnings")
 
->
-> > > -   int rc, regloc;
-> > > +   int rc, regloc, i;
-> > >
-> > >     rc = cxl_bus_prepared(pdev);
-> > >     if (rc != 0) {
-> > > @@ -44,15 +84,33 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> > >             return rc;
-> > >     }
-> > >
-> > > +   rc = pcim_enable_device(pdev);
-> > > +   if (rc)
-> > > +           return rc;
-> > > +
-> > >     regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
-> > >     if (!regloc) {
-> > >             dev_err(dev, "register location dvsec not found\n");
-> > >             return -ENXIO;
-> > >     }
-> > > +   regloc += 0xc; /* Skip DVSEC + reserved fields */
-> > > +
-> > > +   for (i = regloc; i < regloc + 0x24; i += 8) {
-> > > +           u32 reg_lo, reg_hi;
-> > > +
-> > > +           pci_read_config_dword(pdev, i, &reg_lo);
-> > > +           pci_read_config_dword(pdev, i + 4, &reg_hi);
-> > > +
-> > > +           if (CXL_REGLOG_IS_MEMDEV(reg_lo)) {
-> > > +                   cxlm = cxl_mem_create(pdev, reg_lo, reg_hi);
-> > > +                   break;
-> > > +           }
-> > > +   }
-> > > +
-> > > +   if (IS_ERR(cxlm))
-> > > +           return -ENXIO;
-> >
-> > I think this would be easier to read if cxl_mem_create() returned NULL
-> > on failure (it prints error messages and we throw away
-> > -ENXIO/-ENOMEM distinction here anyway) so you could do:
-> >
-> >   struct cxl_mem *cxlm = NULL;
-> >
-> >   for (...) {
-> >     if (...) {
-> >       cxlm = cxl_mem_create(pdev, reg_lo, reg_hi);
-> >       break;
-> >     }
-> >   }
-> >
-> >   if (!cxlm)
-> >     return -ENXIO;  /* -ENODEV might be more natural? */
-> >
->
-> I agree on both counts. Both of these came from Dan, so I will let him explain.
-
-I'm not attached to differentiating -ENOMEM from -ENXIO and am ok to
-drop the ERR_PTR() return. I do tend to use -ENXIO for failure to
-perform an initialization action vs failure to even find the device,
-but if -ENODEV seems more idiomatic to Bjorn, I won't argue.
+which we would be depending on and is only two-ish releases away. Let me
+know if you prefer different fixes for different branches.
+-- 
+Florian
