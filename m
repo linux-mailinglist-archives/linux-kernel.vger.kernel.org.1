@@ -2,294 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24BB02B4EC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2DA2B4EC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 19:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387939AbgKPSBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 13:01:33 -0500
-Received: from wind.enjellic.com ([76.10.64.91]:60792 "EHLO wind.enjellic.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731501AbgKPSBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 13:01:33 -0500
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 0AGI0Pib001075;
-        Mon, 16 Nov 2020 12:00:25 -0600
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 0AGI0NEQ001074;
-        Mon, 16 Nov 2020 12:00:23 -0600
-Date:   Mon, 16 Nov 2020 12:00:23 -0600
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
-        Mikko Ylinen <mikko.ylinen@intel.com>
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct vm_operations_struct
-Message-ID: <20201116180023.GA32481@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com> <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com> <20201106174359.GA24109@wind.enjellic.com> <e70c9e92-0bd4-59a4-21b1-bccf8621c6bb@intel.com> <20201107150930.GA29530@wind.enjellic.com> <c7157bc6-8a65-11f4-e961-17163730df5d@intel.com> <20201112205819.GA9172@wind.enjellic.com> <5c22300c-0956-48ed-578d-00cf62cb5c09@intel.com> <CALCETrWaUDO1eG7PE_bpA2C_OVeNZ7VbEVaznkg2U7Qx=X=oEw@mail.gmail.com>
+        id S2388151AbgKPSCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 13:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731246AbgKPSCd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 13:02:33 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC465C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 10:02:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YwChXHnVroVXG/9ctldNatkp2wqBQKiXxQWn7AHS2Fk=; b=SCcopAjLh7nKt3PdBw6IM/REZh
+        jv/61HL9XTkC4S931Nv9vvgmIyiNjirnbIEUugWhy19YLsmcZ4o7TVPMNK8ZrdxiN9YzOhWH8j7Z6
+        WamdiM25UzksllC4mC8TL5Kw9s5iyGFRBe17EFJQNyNW5PIbJOXSMq6EBVWMu/7dHOEd0WFujQj6H
+        h7hEzPZW5fjUueHmusalsPrLKc/voWOOo6fnwWM2iVQV9PNOKHzCsrGChcXSvZsFCrREPeH1qFtu3
+        2eBC6IDjocHz5nhXn+JrOBTIIg0f1N91UkPFSXwsYwuDCEC9to7s2xqGXnFo3yNHI6TVwJ4m9Wv3b
+        mtyPOJrg==;
+Received: from 54-240-197-235.amazon.com ([54.240.197.235] helo=u3832b3a9db3152.ant.amazon.com)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keipe-0004bV-NW; Mon, 16 Nov 2020 18:02:27 +0000
+Message-ID: <e782287271f8649a687dd6b5bb0ec6d00b2d062d.camel@infradead.org>
+Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup
+ trigger/polarity helpers
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
+        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Date:   Mon, 16 Nov 2020 18:02:24 +0000
+In-Reply-To: <05e3a5ba317f5ff48d2f8356f19e617f8b9d23a4.camel@infradead.org>
+References: <20201024213535.443185-20-dwmw2@infradead.org>
+         <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
+         <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
+         <20201110061046.GA7290@nazgul.tnic>
+         <87d00lgu13.fsf@nanos.tec.linutronix.de>
+         <9a003c2f-f59a-43ab-bbd5-861b14436d29@amd.com>
+         <87a6vpgqbt.fsf@nanos.tec.linutronix.de>
+         <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com>
+         <78be575e10034e546cc349d65fac2fcfc6f486b2.camel@infradead.org>
+         <877dqtgkzb.fsf@nanos.tec.linutronix.de>
+         <874klxghwu.fsf@nanos.tec.linutronix.de>
+         <45B3C20C-3BBB-40F3-8A7B-EB20EDD0706F@infradead.org>
+         <87y2j9exk2.fsf@nanos.tec.linutronix.de>
+         <8C2E184C-D069-4C60-96B5-0758FBC6E402@infradead.org>
+         <d4115cc7-3876-e012-b6ec-c525d608834f@amd.com>
+         <87tutwg76j.fsf@nanos.tec.linutronix.de>
+         <5c86570ce3bedb90514bc1e73b96011660f520b0.camel@infradead.org>
+         <87o8k4fcpc.fsf@nanos.tec.linutronix.de>
+         <6b44a048de974fb6e2ecb5bf688c122b3107537d.camel@infradead.org>
+         <20d99e1f359b448d042d27112e55f8070bf460bb.camel@infradead.org>
+         <13f8cb3c-713e-c26e-b2ef-4700f9f6ceac@amd.com>
+         <05e3a5ba317f5ff48d2f8356f19e617f8b9d23a4.camel@infradead.org>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-aDNzxM7IWTc5OQTKf+u7"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWaUDO1eG7PE_bpA2C_OVeNZ7VbEVaznkg2U7Qx=X=oEw@mail.gmail.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Mon, 16 Nov 2020 12:00:25 -0600 (CST)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 02:41:00PM -0800, Andy Lutomirski wrote:
 
-Good morning, I hope the week is starting well for everyone.
+--=-aDNzxM7IWTc5OQTKf+u7
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> On Thu, Nov 12, 2020 at 1:31 PM Dave Hansen <dave.hansen@intel.com> wrote:
-> >
-> > On 11/12/20 12:58 PM, Dr. Greg wrote:
-> > > @@ -270,11 +270,10 @@ static int sgx_vma_mprotect(struct vm_area_struct *vma,
-> > >                           struct vm_area_struct **pprev, unsigned long start,
-> > >                           unsigned long end, unsigned long newflags)
-> > >  {
-> > > -     int ret;
-> > > +     struct sgx_encl *encl = vma->vm_private_data;
-> > >
-> > > -     ret = sgx_encl_may_map(vma->vm_private_data, start, end, newflags);
-> > > -     if (ret)
-> > > -             return ret;
-> > > +     if ( test_bit(SGX_ENCL_INITIALIZED, &encl->flags) )
-> > > +             return -EACCES;
-> > >
-> > >       return mprotect_fixup(vma, pprev, start, end, newflags);
-> > >  }
-> >
-> > This rules out mprotect() on running enclaves.  Does that break any
-> > expectations from enclave authors, or take away capabilities that folks
-> > need?
+On Fri, 2020-11-13 at 15:14 +0000, David Woodhouse wrote:
+> On Wed, 2020-11-11 at 14:30 -0600, Tom Lendacky wrote:
+> > I had trouble cloning your tree for some reason, so just took the top
+> > three patches and applied them to the tip tree. This all appears to be
+> > working. I'll let the IOMMU experts take a closer look (adding Suravee)=
+.
+>=20
+> Thanks. I see Thomas has taken the first two into the tip.git x86/apic
+> branch already, so we're just looking for an ack on the third. Which is
+> this one...
+>=20
+> From 49ee4fa51b8c06d14b7c4c74d15a7d76f865a8ea Mon Sep 17 00:00:00 2001
+> From: David Woodhouse <dwmw@amazon.co.uk>
+> Date: Wed, 11 Nov 2020 12:09:01 +0000
+> Subject: [PATCH] iommu/amd: Fix IOMMU interrupt generation in X2APIC mode
 
-> It certainly prevents any scheme in which an enclave coordinates
-> with the outside world to do W-and-then-X JIT inside.  I'm also not
-> convinced it has any real effect at all unless there's some magic I
-> missed to prevent someone from using mmap(2) to effectively change
-> permissions.
+Ping?
 
-The patch that I posted yesterday addresses the security issue for
-both mmap and mprotect by trapping the permission change request at
-the level of the sgx_encl_may_map() function.
 
-With respect to the W-and-then-X JIT issue, the stated purpose of the
-driver is to implement basic SGX functionality, which is SGX1
-semantics, it has been stated formally for a year by the developers
-themselves that they are not entertaining a driver that addresses any
-of the issues associated with non-static memory permissions.
+--=-aDNzxM7IWTc5OQTKf+u7
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-As I've noted previously, the hardware itself is capable of enforcing
-that after initialization, if mmap/mprotect is blocked on hardware
-that supports SGX2 instructions.
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
+MTE2MTgwMjI0WjAvBgkqhkiG9w0BCQQxIgQgO1hNA8wuyBzvdQT4pr5UKN4+NwFQboXngDqe2o44
+e+Awgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAFFDCLxEyxGE5JZgt510QDp4mn+gOCPDMy9RZ63RHwoGjMqT9d0Tbz82iFaNzAPQ
+0f7MnEd7WARcuxY7xrFlOQA7l0hzQPpRXmASBVVwHXo4338yLzH6TurcNEXf9km4D8mBo5CHRSuT
+sdVY41E+IX1AqHVQOIU5ZfBClWBKDysuWWEVX2GzhRjmfztM1ftvboDTe05fpFlWXzsYLfGq3JRJ
+RXIeq7kzI/nrlyCPc6UQ1VOlAfAGFLWk5L7RIeVLQOnM47w1/NMYzzljr5v94LJks9J5ZbMpmzrx
+DuQLRBb1AvgCIaFpKjpCotOJ5Dt0f9NyJSmoKlyJ0eRAOEudCtsAAAAAAAA=
 
-> Everyone, IMO this SGX1 - vs - SGX2 - vs - EDMM discussion is
-> entirely missing the point and is a waste of everyone's time.  Let's
-> pretend we're building a system that has nothing to do with SGX and
-> requires no special hardware support at all.  It works like this:
 
-I don't doubt there is a potential bigger vision here, quite frankly
-it is probably an open question whether or not SGX is going to be a
-part of this future, for a variety of reasons.  I also do not doubt
-that you have the skills to define that vision.
+--=-aDNzxM7IWTc5OQTKf+u7--
 
-Right now, however, the issue is not about pretending but rather one
-of getting a driver into the kernel that provides a framework for
-building whatever future SGX may have.  Given GKH's comments on LWN
-last week in response to the RAPL vulnerability, I'm not sure if it is
-a politically done deal that the driver will go in.
-
-SGX has specific hardware characteristics that impact the driver, I
-don't see how fitting it into a generic trusted execution model
-advances the agenda immediately at hand.  Particularly given the fact
-that I'm not even sure people understand the questions that need to be
-answered about such a generic model.
-
-> A user program opens /dev/xyz and gets back an fd that represents 16
-> MB of memory.  The user program copies some data from disk (or
-> network or whatever) into fd (using write(2) or ioctl(2) or mmap(2)
-> and memcpy) and then mmaps some of the fd as R and some as RW and
-> some as RX, and then the user program jumps into the RX mapping.
-
-This is basically the SGX model in the new driver.  The important
-defining characteristic of the driver, that we can't wave away, is
-that the hardware requires a specific set of initial page permissions
-to be implemented in order for initialization of the memory range
-(enclave) to succeed.
-
-This is inherent to the way SGX hardware was designed to work.  The
-only difference between SGX1 and SGX2 is that the latter offers a
-small number of additional instructions that allow the page
-permissions to be dynamically manipulated after initialization is
-complete.
-
-From a security perspective, the issue at hand is that the executable
-material is not going to come in through the fd, it is going to be
-loaded by the enclave over the network.  This isn't fear mongering, it
-is the stated intent of what people want to do with the technology as
-a integral part of confidential computing.
-
-I've had the opportunity to brief DOD and other entities concerned
-with intelligence issues, about these type of potential capabilities.
-It isn't hard to envision scenarios of where having potentially
-sensitive code and data only ever handled and executed by a trusted
-entity, in an environment that is inherently ephemeral with respect to
-its persistence, is an important design characteristic.  Thermite has
-also been known to play a role in some of these designs prior to the
-greater elegance of trusted execution environments.
-
-Ultimately, if you believe the Confidential Computing Consortium, it
-is also what people want for their sensitive cloud workloads.  Absent
-the thermite of course.
-
-> If we replace /dev/xyz with /dev/zero, then this simply does not work
-> under a reasonably strict W^X policy -- a lot of people think it's
-> quite reasonable for an OS to prevent a user program from obtaining an
-> X mapping containing anything other than a mapping from a file on
-> disk.  To solve this, we can do one of at least three things:
-> 
-> a) You can't use /dev/xyz unless you have permission to create WX
-> memory or to at least create W memory and then change it to X.
-> 
-> b) You can do whatever you want with /dev/xyz, and LSM policies are
-> blatantly violated as a result.
-
-I think the important issue at hand is that classic LSM policies
-simply are not relevant with respect to how this technology was
-designed to operate, and perhaps more importantly, how people want to
-use it.
-
-That is why I have consistently stated that I think the only relevant
-knob is a binary decision as to whether or not a platform owner wants
-to entertain completely anonymous code execution.
-
-> c) The /dev/xyz API is clever and tracks, page-by-page, whether the
-> user intends to ever write and/or execute that page, and behaves
-> accordingly.
->
-> This patchset takes the approach (c).  The actual clever policy
-> isn't here yet, and we don't really know whether it will ever
-> appear, but the API is set up to enable such a policy to be written.
-> This appears to be a win for everyone, since the code is pretty
-> clean and the API is straightforward.
-
-I believe I have been clear in stating that I have never doubted the
-cleverness of the approach or its potential utility for the future.
-
-The issue at hand is that it simply isn't relevant at this stage of
-the driver.  Getting this new vision right is something that would
-benefit from a lot of conversations between runtime and kernel
-developers.  Arguably, the case can be made that it should have a
-second type of implementation to ensure that the approach is generic,
-extensible and most importantly secure.
-
-The 'cleverness' of the policy needs to be evaluated in the context of
-what does it mean with respect to the risk arbitration decisions that
-we are trying to support.  The open question comes down to, in
-essence, asking ourselves whether or not we believe that it makes
-sense to say that 15 pages of RWX memory is a security threat but 5
-are not.
-
-> Now, back to SGX.  There are only two things that are remotely
-> SGX-specific here.  First, SGX requires this unusual memory model in
-> which there is an executable mapping of (part of) a device node. [0]
-> Second, early SGX hardware had this oddity that the kernel could set
-> a per-backing-page (as opposed to per-PTE) bit to permanently
-> disable X on a given /dev/sgx page.  Building a security model
-> around that would have been a hack, and it DOES NOT WORK on new
-> hardware.  So can we please stop discussing it?  None of the actual
-> interesting parts of this have much to do with SGX per se and have
-> nothing whatsoever to do with EDMM or any other Intel buzzword.
-
-Just a clarification for everyone sitting in their recliners eating
-popcorn and following along at home.
-
-As I've stated before, I don't argue the potential utility of some new
-model, SGX however, has hardware characteristics that cannot be waved
-away in this discussion.  The technology was designed to have a
-cryptographic measurement that controls whether or not the memory
-image is suitable for execution.  The description of that image is
-defined by the enclave author when the enclave is signed.
-
-This is why the current EDMM implementation requires that a maximum
-aperture range be defined for dynamic memory regions.  Since the
-linear address of each page address in the enclave is encoded into the
-measurement, enclave initialization will fail unless the loaded memory
-image is consistent with the wishes of the enclave signer.  Having 40
-pages of potential heap memory when the author called for 39 would be
-considered an initialization defect that would be enforced by the
-hardware.
-
-The desired page permissions are also encoded into the enclave
-measurement.  Since the current implementation takes the maximum
-scoped permissions from the security information encoded in the
-enclave, it would require that the enclave encode for RWX permissions
-if the intent was to dynmically load executable or JIT code after the
-enclave was initialized.  If I understand your above analysis
-correctly, this would be problematic for current security
-models/practices.
-
-Obviously an API could be proposed that allowed this permissable
-memory map to be defined independently from the enclave.  This notion,
-based on my read of the security risk considerations that went into
-the design of SGX, would be problematic, since it would allow an
-untrusted party to modify the characteristics that were desired by the
-enclave author for the executable image.
-
-> Heck, if anyone actually cared to do so, something with essentially
-> the same semantics could probably be built using SEV hardware
-> instead of SGX, and it would have exactly the same issue if we
-> wanted it to work for tasks that didn't have access to /dev/kvm.
-
-As I noted above, perhaps whatever this driver may become in the
-future would benefit from the community creating something like this
-as a second reference to build an API on top of.
-
-> [0] SGX doesn't *really* require this.  We could set things up so that
-> you do mmap(..., MAP_ANONYMOUS, fd, ...) and then somehow introduce
-> that mapping to SGX.  I think the result would be too disgusting to
-> seriously consider.
-
-Let me be clear, I certainly would not advocate doing anything too
-disgusting to consider.
-
-Hopefully our proposal for simplifying the security model for the
-driver, while still allowing the framework for a still unspecified
-future pathway, doesn't fit this description.
-
-Best wishes for a productive week to everyone.
-
-Dr. Greg
-
-As always,
-Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: greg@enjellic.com
-------------------------------------------------------------------------------
-"Boy, it must not take much to make a phone work.  Looking at
- everthing else here it must be the same way with the INTERNET."
-                                -- Francis 'Fritz' Wettstein
