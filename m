@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD89A2B5328
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE342B532E
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388586AbgKPUqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 15:46:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S1730972AbgKPUrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 15:47:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731170AbgKPUqh (ORCPT
+        with ESMTP id S1726236AbgKPUre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 15:46:37 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5437C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:46:36 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id k2so20329073wrx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:46:36 -0800 (PST)
+        Mon, 16 Nov 2020 15:47:34 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7854EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:47:34 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id h21so595505wmb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 12:47:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=n7206K9tbQjrW9WffRhlFU03h2XPHVa1EJsFslHQZc8=;
-        b=V9P3O57JwSOXE4Z/U9mCTVsVxRev+UDzCjmh2+cmsy0VZx93J51SqMoOm+qkWXJ5by
-         Ta6k32mrflPo/zvmGzOGyGemF+8mqpkYwXPFoEVPT32HPJ5Pe2AG/jKVnrtu80CunmlE
-         Wysr8IuhYTkUWW54uorMR1E3kgN2l/D5GI4NBNCcK0/Fqc1sGhXqkAqa8MG/ZY0K5EKP
-         J0AwQnsCIf7K/3LTDU/vfviHCNbxImjv6fepY24rTQdiAu23kspNjuejCJEiavfBZAvc
-         t8aMbOvR1lWbTFqo47cLUEr1kdHWBPEiHg2wuGo2/CJmXQDvGuWLKMKqR2Dkm1uMIRVz
-         /LnA==
+        bh=1KG4FcyggD6yudjB0WPJp0njbrETKn5ez9zi8zrlX7A=;
+        b=bQPZ00v3TjGZI3OSdpSQ/TuZXNE4oWxyBezFbP1C1N+pZsj0gJskRXGb1Ex9VIQ6Zk
+         tJTGaaiovZvQOd9UQ/4D3aP0ozjgGelIbnJyKbdWnbHU1aGr6/rXLUULIRpcxeG1H6Tv
+         v10dfYA9pInLKL23cCSM94O3IYqRfa9am3qLlRRIEIqngxv3/wPO3vGmqevrpoSDF5O0
+         9DgBYHFHTVdWTwdhW33Ddc/l0nRE1vEf+85Yzvsb7SQ1wE08PbgooUDH7MUWG5ylnlXx
+         ySLu+qzYQqLJ1pjmG+RW1m/Q+UmkRg9vRPyp48i1vhPlBq9yq45jg+csS+EYyQTGuc/1
+         AOiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=n7206K9tbQjrW9WffRhlFU03h2XPHVa1EJsFslHQZc8=;
-        b=ZgoVyb1sbCdhLBg+8BS9RU2slghyho96OFeRjqqK+4akpC7SWPd13ZoyJqKSFj9Exb
-         42ayynV7RBH6Z0Jvb1t6LsRdJCpZ6C+exT0Zn7aYlNCHHvFNK+Ph1Dkyq3+3KpFg8nQO
-         LYKiZwB2Ih52P7b5ZlI35pOO86u7FjhljBl2uWBuk2tQptyh69ZOn995V6hkP/I0gqW+
-         LDON7iz1FYlck2vqYMR+pXt0FuIyoz5UdG3wKR6rtAyd5etzHHhNL+ZljWnDf+aKCYOJ
-         OdCkag1JjEdGq3/uenj8fr+IxplpjgppGKJO7FCr4D6DmSG9eiGkqwjgNagWadjHMPUB
-         Eyjg==
-X-Gm-Message-State: AOAM530GvS/GB6fFpQKbWy4IQogNLb9Flp1duHaWBIZZ/l7QWG2Lf5nm
-        IfNLrmJVTGQun5LtPSntRD5rYMiFYsEfMG5Ldas=
-X-Google-Smtp-Source: ABdhPJzBHUUYDmNrmFwgmzoxO2xlGZGD4FgVoxPR0v30R6cuqJYbuzlV+EyMqUJtGvEU0GUM+8xvcxtMPQVTDPk+sls=
-X-Received: by 2002:adf:e551:: with SMTP id z17mr21691708wrm.374.1605559595551;
- Mon, 16 Nov 2020 12:46:35 -0800 (PST)
+        bh=1KG4FcyggD6yudjB0WPJp0njbrETKn5ez9zi8zrlX7A=;
+        b=OrnkUqi4OCXvPmfxE+8Kwe2Ii61J3yQX/vjQFH8yJG1mTY0PG6zkAVxT+Ao8K37hPY
+         IlHEtuyasqbiTEJrigCfBOHFUz286EWD5PYfkiSM5SVV0PqLFfl4I0JH6A3ke0ZDI4Zi
+         o72ustk8pQ/LzAFNFZr3+fJmHau2VrmvnajnfXtcGDre2vC529q06Gm59rRG/sdLtSY/
+         CSUQiutd2RukI2fxyINsDqEX4cRcm2kWc8cjDemx2SaU499dt3yPDDC8chQTYezAIxTu
+         gEPbRYwPmwwuMBRELc4jC3OKO0Y5DOtuY3hDcXNTW/xAUTsLp/o4HYihQDLawXo2haMC
+         7kMg==
+X-Gm-Message-State: AOAM533jpGQFtzEQukkI9iXRbvQMc7T50m41+mJuB02k41YylAcy7XS9
+        4NRGkvakQTFkktV5jYGcYWFZD/lNdn3RTHv8RxQRDouf
+X-Google-Smtp-Source: ABdhPJyjzvq0NzyEt4o32vxnmLWyxFycYDXJhrjdxsD2J6njYdnIoeVhnNnA+PrrNzgSv75Rbn1JjXl/UUmDXURLf3Y=
+X-Received: by 2002:a1c:1c3:: with SMTP id 186mr714240wmb.39.1605559653234;
+ Mon, 16 Nov 2020 12:47:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201116173700.1830487-1-lee.jones@linaro.org> <20201116173700.1830487-42-lee.jones@linaro.org>
-In-Reply-To: <20201116173700.1830487-42-lee.jones@linaro.org>
+References: <20201116173700.1830487-1-lee.jones@linaro.org> <20201116173700.1830487-43-lee.jones@linaro.org>
+In-Reply-To: <20201116173700.1830487-43-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 16 Nov 2020 15:46:24 -0500
-Message-ID: <CADnq5_O6-AtbMtURHi+0mKgBv7W0PhRZKPNSi0qmEu_E-gj0rw@mail.gmail.com>
-Subject: Re: [PATCH 41/43] drm/radeon/evergreen_cs: Move 'r600_dma_cs_next_reloc()'s
- prototype to shared header
+Date:   Mon, 16 Nov 2020 15:47:22 -0500
+Message-ID: <CADnq5_N45=OE3etsQ2AgtLDKT5Ut1ZT44J=jZzBBKNgEz2Gt3g@mail.gmail.com>
+Subject: Re: [PATCH 42/43] drm/radeon/radeon_audio: Move 'r600_*' prototypes
+ into shared header
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -70,10 +70,37 @@ On Mon, Nov 16, 2020 at 12:38 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/radeon/r600_cs.c:2343:5: warning: no previous prototype =
-for =E2=80=98r600_dma_cs_next_reloc=E2=80=99 [-Wmissing-prototypes]
->  2343 | int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
->  | ^~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/r600_hdmi.c:177:6: warning: no previous prototype=
+ for =E2=80=98r600_hdmi_update_acr=E2=80=99 [-Wmissing-prototypes]
+>  177 | void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset=
+,
+>  | ^~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/r600_hdmi.c:217:6: warning: no previous prototype=
+ for =E2=80=98r600_set_avi_packet=E2=80=99 [-Wmissing-prototypes]
+>  217 | void r600_set_avi_packet(struct radeon_device *rdev, u32 offset,
+>  | ^~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/r600_hdmi.c:314:6: warning: no previous prototype=
+ for =E2=80=98r600_hdmi_audio_set_dto=E2=80=99 [-Wmissing-prototypes]
+>  314 | void r600_hdmi_audio_set_dto(struct radeon_device *rdev,
+>  | ^~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/r600_hdmi.c:340:6: warning: no previous prototype=
+ for =E2=80=98r600_set_vbi_packet=E2=80=99 [-Wmissing-prototypes]
+>  340 | void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset)
+>  | ^~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/r600_hdmi.c:351:6: warning: no previous prototype=
+ for =E2=80=98r600_set_audio_packet=E2=80=99 [-Wmissing-prototypes]
+>  351 | void r600_set_audio_packet(struct drm_encoder *encoder, u32 offset=
+)
+>  | ^~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/r600_hdmi.c:393:6: warning: no previous prototype=
+ for =E2=80=98r600_set_mute=E2=80=99 [-Wmissing-prototypes]
+>  393 | void r600_set_mute(struct drm_encoder *encoder, u32 offset, bool m=
+ute)
+>  | ^~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/r600_hdmi.c:469:6: warning: no previous prototype=
+ for =E2=80=98r600_hdmi_enable=E2=80=99 [-Wmissing-prototypes]
+>  469 | void r600_hdmi_enable(struct drm_encoder *encoder, bool enable)
+>  | ^~~~~~~~~~~~~~~~
 >
 > Cc: Alex Deucher <alexander.deucher@amd.com>
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
@@ -88,66 +115,98 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/radeon/evergreen_cs.c | 3 +--
->  drivers/gpu/drm/radeon/r600.h         | 4 ++++
->  drivers/gpu/drm/radeon/r600_cs.c      | 1 +
->  3 files changed, 6 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/radeon/r600.h         | 17 +++++++++++++++++
+>  drivers/gpu/drm/radeon/r600_hdmi.c    |  1 +
+>  drivers/gpu/drm/radeon/radeon_audio.c | 13 +------------
+>  3 files changed, 19 insertions(+), 12 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/radeon/evergreen_cs.c b/drivers/gpu/drm/rade=
-on/evergreen_cs.c
-> index 53b75cf201958..0de79f3a7e3ff 100644
-> --- a/drivers/gpu/drm/radeon/evergreen_cs.c
-> +++ b/drivers/gpu/drm/radeon/evergreen_cs.c
-> @@ -28,6 +28,7 @@
->
->  #include "radeon.h"
->  #include "radeon_asic.h"
-> +#include "r600.h"
->  #include "evergreend.h"
->  #include "evergreen_reg_safe.h"
->  #include "cayman_reg_safe.h"
-> @@ -37,8 +38,6 @@
->
->  #define REG_SAFE_BM_SIZE ARRAY_SIZE(evergreen_reg_safe_bm)
->
-> -int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
-> -                          struct radeon_bo_list **cs_reloc);
->  struct evergreen_cs_track {
->         u32                     group_size;
->         u32                     nbanks;
 > diff --git a/drivers/gpu/drm/radeon/r600.h b/drivers/gpu/drm/radeon/r600.=
 h
-> index e66ef58706cd8..dbdff4568516b 100644
+> index dbdff4568516b..22db13b256195 100644
 > --- a/drivers/gpu/drm/radeon/r600.h
 > +++ b/drivers/gpu/drm/radeon/r600.h
-> @@ -28,10 +28,14 @@
->  #ifndef __R600_H__
->  #define __R600_H__
+> @@ -30,12 +30,29 @@
 >
-> +struct radeon_bo_list;
-> +struct radeon_cs_parser;
+>  struct radeon_bo_list;
+>  struct radeon_cs_parser;
+> +struct r600_audio_pin;
+> +struct radeon_crtc;
 >  struct radeon_device;
+> +struct radeon_hdmi_acr;
 >
 >  u32 r600_gpu_check_soft_reset(struct radeon_device *rdev);
 >  int r600_ih_ring_alloc(struct radeon_device *rdev);
 >  void r600_ih_ring_fini(struct radeon_device *rdev);
 >
-> +int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
-> +                          struct radeon_bo_list **cs_reloc);
+> +void r600_audio_enable(struct radeon_device *rdev, struct r600_audio_pin=
+ *pin,
+> +                      u8 enable_mask);
+> +void r600_set_audio_packet(struct drm_encoder *encoder, u32 offset);
+> +void r600_set_mute(struct drm_encoder *encoder, u32 offset, bool mute);
+> +void r600_hdmi_audio_set_dto(struct radeon_device *rdev,
+> +                            struct radeon_crtc *crtc, unsigned int clock=
+);
+> +void r600_set_avi_packet(struct radeon_device *rdev, u32 offset,
+> +                        unsigned char *buffer, size_t size);
+> +void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset,
+> +                         const struct radeon_hdmi_acr *acr);
+> +void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset);
+> +void r600_hdmi_enable(struct drm_encoder *encoder, bool enable);
+> +
+>  int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
+>                            struct radeon_bo_list **cs_reloc);
+> +
 >  #endif                         /* __R600_H__ */
-> diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/r6=
-00_cs.c
-> index f20b619466816..dc68e538d5a97 100644
-> --- a/drivers/gpu/drm/radeon/r600_cs.c
-> +++ b/drivers/gpu/drm/radeon/r600_cs.c
-> @@ -29,6 +29,7 @@
->
+> diff --git a/drivers/gpu/drm/radeon/r600_hdmi.c b/drivers/gpu/drm/radeon/=
+r600_hdmi.c
+> index c09549d785b54..f3551ebaa2f08 100644
+> --- a/drivers/gpu/drm/radeon/r600_hdmi.c
+> +++ b/drivers/gpu/drm/radeon/r600_hdmi.c
+> @@ -30,6 +30,7 @@
 >  #include "radeon.h"
 >  #include "radeon_asic.h"
+>  #include "radeon_audio.h"
 > +#include "r600.h"
 >  #include "r600d.h"
->  #include "r600_reg_safe.h"
+>  #include "atom.h"
 >
+> diff --git a/drivers/gpu/drm/radeon/radeon_audio.c b/drivers/gpu/drm/rade=
+on/radeon_audio.c
+> index 785c23cb30589..7c5e80d03fc90 100644
+> --- a/drivers/gpu/drm/radeon/radeon_audio.c
+> +++ b/drivers/gpu/drm/radeon/radeon_audio.c
+> @@ -29,28 +29,17 @@
+>  #include "evergreen_hdmi.h"
+>  #include "radeon.h"
+>  #include "atom.h"
+> +#include "r600.h"
+>  #include "radeon_audio.h"
+>
+> -void r600_audio_enable(struct radeon_device *rdev, struct r600_audio_pin=
+ *pin,
+> -               u8 enable_mask);
+>  void dce6_audio_enable(struct radeon_device *rdev, struct r600_audio_pin=
+ *pin,
+>                 u8 enable_mask);
+>  struct r600_audio_pin* r600_audio_get_pin(struct radeon_device *rdev);
+>  struct r600_audio_pin* dce6_audio_get_pin(struct radeon_device *rdev);
+> -void r600_hdmi_audio_set_dto(struct radeon_device *rdev,
+> -       struct radeon_crtc *crtc, unsigned int clock);
+> -void r600_set_avi_packet(struct radeon_device *rdev, u32 offset,
+> -       unsigned char *buffer, size_t size);
+> -void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset,
+> -       const struct radeon_hdmi_acr *acr);
+> -void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset);
+> -void r600_set_audio_packet(struct drm_encoder *encoder, u32 offset);
+> -void r600_set_mute(struct drm_encoder *encoder, u32 offset, bool mute);
+>  static void radeon_audio_hdmi_mode_set(struct drm_encoder *encoder,
+>         struct drm_display_mode *mode);
+>  static void radeon_audio_dp_mode_set(struct drm_encoder *encoder,
+>         struct drm_display_mode *mode);
+> -void r600_hdmi_enable(struct drm_encoder *encoder, bool enable);
+>
+>  static const u32 pin_offsets[7] =3D
+>  {
 > --
 > 2.25.1
 >
