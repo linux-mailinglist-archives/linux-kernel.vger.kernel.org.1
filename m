@@ -2,120 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2CF2B51B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 20:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FE52B51BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 21:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731274AbgKPT5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 14:57:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727393AbgKPT5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 14:57:24 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80DF2208C7;
-        Mon, 16 Nov 2020 19:57:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605556644;
-        bh=Tfs6cbZVnkYc+nBVCxrS5FBsltXfH/+8hehmPguH45o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=LaAqytwN1/S3waX+8aY9h5yrPtd9FQYU9TiKKmlaFGglqpqPuYB2CKjHvxlN+KiFN
-         UAj0ko1VBahZiVZA5FVxvs64gRDUJ6fQwgrQIRK+JgqqSAqd0lKJlI0ARCUmaBi88U
-         CwbkgHZQmBhAZtyKAZGcdetDOVpPNAsu0Yb34LS8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 445B73522684; Mon, 16 Nov 2020 11:57:24 -0800 (PST)
-Date:   Mon, 16 Nov 2020 11:57:24 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Asif Rasheed <b00073877@aus.edu>,
-        Eric Dumazet <edumazet@google.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 20/27] list: fix a typo at the kernel-doc markup
-Message-ID: <20201116195724.GC1437@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <cover.1605521731.git.mchehab+huawei@kernel.org>
- <d0ef485aaaa648bf6ebbc26a4082ccb2ff6a8e5b.1605521731.git.mchehab+huawei@kernel.org>
+        id S1730952AbgKPT67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 14:58:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727393AbgKPT67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 14:58:59 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2BCC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:58:58 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id a3so451213wmb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 11:58:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bFL+h4NXuPoSuSMvtv0Sg7oT+u3rDrgDjKbEx0xnOLQ=;
+        b=G1YxsTRfhadIWkJ35dpSnDqo9LWwhKdQaIcnejb5DfAD3AGyGCkiA1gGKURMrO+5Jc
+         GMG7C/jJycfm1zeZSewyhBV51dcL1Ln42HJAv7J6WjUCtMQmx8ikqHHoe4aOj0+QqZv8
+         UmfIV5B0BfgOXts130m9E3XKCBDHKqUojNvTpy3Y5maklWnKr9SkmjBYizAZAe9AsRx/
+         Y5kBs3NKdH1H9tlgO8U6dAZ0PKLK2s1VaGUTpNkIyhqAjBTm05sjQ9tPQK/pYvmOr49a
+         RZWZy8jBhwNSeSl3dYYnVb4579Im27sDjp+kEG8eZwNG4taQlchcH3Lt2R+BnVWprLc3
+         8qpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bFL+h4NXuPoSuSMvtv0Sg7oT+u3rDrgDjKbEx0xnOLQ=;
+        b=Q2d5uATJk1KnH2VKK9pJ8Mw0XBEP6Zx/CzdJ+Xll5+MSfkUL4aSYVj3NFfuRbvbhpI
+         JWBgxLlGAszr3r1B3sc/w4xEqYIh/y82psIqFQ8vETeyozAaMx4tVbLh4SwqwCqSRUBO
+         VzukSF/ftDCBnSMCmRmuYKOui6J91vPJxkv/42YMKvCKahVRpvi7hw38rWfx+Xn+cynB
+         YBbLqFIG4K7PxQ/7Wtk+v9wXf43UREbeq7SYxV1H0/1QqxLkY8o24hDeYbvdywd3ATVA
+         DwOOu4UY2tLVPPrruw3kpE9Or5Zw7AurubApS3OmUyM0C5HaX2kuc8V2pk04FopLqryQ
+         JR0Q==
+X-Gm-Message-State: AOAM530qyIul9qijL8EFNgLtOhhRpD6UJNg7EkwwjFUKU3JfUWO4KV89
+        Fjj4+Z4wwWyvZ/yhI8UvfzJDBmO3/ENxXqlVJBRNVqum
+X-Google-Smtp-Source: ABdhPJwvYa7TiNdPz5rwvx37IifScNSPxNr4dkzrIRfYkQxxOqkKIIaP+wFQQNwGFK5z8itO4binMJvelPffV/FoIms=
+X-Received: by 2002:a7b:c157:: with SMTP id z23mr570479wmi.70.1605556737507;
+ Mon, 16 Nov 2020 11:58:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d0ef485aaaa648bf6ebbc26a4082ccb2ff6a8e5b.1605521731.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201116173700.1830487-1-lee.jones@linaro.org> <20201116173700.1830487-17-lee.jones@linaro.org>
+In-Reply-To: <20201116173700.1830487-17-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 16 Nov 2020 14:58:46 -0500
+Message-ID: <CADnq5_N_ip1nX7+QQckwAgrWox3emPj3TsCfgAMtEQVoG_BrWg@mail.gmail.com>
+Subject: Re: [PATCH 16/43] drm/radeon/radeon_gem: Move 'radeon_gem_prime_*()'s
+ prototypes to shared header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 11:18:16AM +0100, Mauro Carvalho Chehab wrote:
-> hlist_add_behing -> hlist_add_behind
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Mon, Nov 16, 2020 at 12:37 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/radeon_prime.c:34:18: warning: no previous protot=
+ype for =E2=80=98radeon_gem_prime_get_sg_table=E2=80=99 [-Wmissing-prototyp=
+es]
+>  34 | struct sg_table *radeon_gem_prime_get_sg_table(struct drm_gem_objec=
+t *obj)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/radeon_prime.c:42:7: warning: no previous prototy=
+pe for =E2=80=98radeon_gem_prime_vmap=E2=80=99 [-Wmissing-prototypes]
+>  42 | void *radeon_gem_prime_vmap(struct drm_gem_object *obj)
+>  | ^~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/radeon_prime.c:55:6: warning: no previous prototy=
+pe for =E2=80=98radeon_gem_prime_vunmap=E2=80=99 [-Wmissing-prototypes]
+>  55 | void radeon_gem_prime_vunmap(struct drm_gem_object *obj, void *vadd=
+r)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/radeon_prime.c:62:24: warning: no previous protot=
+ype for =E2=80=98radeon_gem_prime_import_sg_table=E2=80=99 [-Wmissing-proto=
+types]
+>  62 | struct drm_gem_object *radeon_gem_prime_import_sg_table(struct drm_=
+device *dev,
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/radeon_prime.c:86:5: warning: no previous prototy=
+pe for =E2=80=98radeon_gem_prime_pin=E2=80=99 [-Wmissing-prototypes]
+>  86 | int radeon_gem_prime_pin(struct drm_gem_object *obj)
+>  | ^~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/radeon_prime.c:104:6: warning: no previous protot=
+ype for =E2=80=98radeon_gem_prime_unpin=E2=80=99 [-Wmissing-prototypes]
+>  104 | void radeon_gem_prime_unpin(struct drm_gem_object *obj)
+>  | ^~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/radeon_prime.c:120:17: warning: no previous proto=
+type for =E2=80=98radeon_gem_prime_export=E2=80=99 [-Wmissing-prototypes]
+>  120 | struct dma_buf *radeon_gem_prime_export(struct drm_gem_object *gob=
+j,
+>  | ^~~~~~~~~~~~~~~~~~~~~~~
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Queued, thank you!
+Applied with minor changes.  Thanks!
 
-Or if you would prefer pushing it yourself:
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
-Either way, please let me know.
-
-							Thanx, Paul
+Alex
 
 > ---
->  include/linux/list.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/list.h b/include/linux/list.h
-> index 89bdc92e75c3..f2af4b4aa4e9 100644
-> --- a/include/linux/list.h
-> +++ b/include/linux/list.h
-> @@ -884,41 +884,41 @@ static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
->  		WRITE_ONCE(first->pprev, &n->next);
->  	WRITE_ONCE(h->first, n);
->  	WRITE_ONCE(n->pprev, &h->first);
->  }
->  
->  /**
->   * hlist_add_before - add a new entry before the one specified
->   * @n: new entry to be added
->   * @next: hlist node to add it before, which must be non-NULL
->   */
->  static inline void hlist_add_before(struct hlist_node *n,
->  				    struct hlist_node *next)
+>  drivers/gpu/drm/radeon/radeon_gem.c   |  1 +
+>  drivers/gpu/drm/radeon/radeon_prime.c |  1 +
+>  drivers/gpu/drm/radeon/radeon_prime.h | 39 +++++++++++++++++++++++++++
+>  3 files changed, 41 insertions(+)
+>  create mode 100644 drivers/gpu/drm/radeon/radeon_prime.h
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_gem.c b/drivers/gpu/drm/radeon=
+/radeon_gem.c
+> index d2876ce3bc9e2..b6b21d2e72624 100644
+> --- a/drivers/gpu/drm/radeon/radeon_gem.c
+> +++ b/drivers/gpu/drm/radeon/radeon_gem.c
+> @@ -35,6 +35,7 @@
+>  #include <drm/radeon_drm.h>
+>
+>  #include "radeon.h"
+> +#include "radeon_prime.h"
+>
+>  struct dma_buf *radeon_gem_prime_export(struct drm_gem_object *gobj,
+>                                         int flags);
+> diff --git a/drivers/gpu/drm/radeon/radeon_prime.c b/drivers/gpu/drm/rade=
+on/radeon_prime.c
+> index 088d39a51c0d2..dd482edc819c5 100644
+> --- a/drivers/gpu/drm/radeon/radeon_prime.c
+> +++ b/drivers/gpu/drm/radeon/radeon_prime.c
+> @@ -30,6 +30,7 @@
+>  #include <drm/radeon_drm.h>
+>
+>  #include "radeon.h"
+> +#include "radeon_prime.h"
+>
+>  struct sg_table *radeon_gem_prime_get_sg_table(struct drm_gem_object *ob=
+j)
 >  {
->  	WRITE_ONCE(n->pprev, next->pprev);
->  	WRITE_ONCE(n->next, next);
->  	WRITE_ONCE(next->pprev, &n->next);
->  	WRITE_ONCE(*(n->pprev), n);
->  }
->  
->  /**
-> - * hlist_add_behing - add a new entry after the one specified
-> + * hlist_add_behind - add a new entry after the one specified
->   * @n: new entry to be added
->   * @prev: hlist node to add it after, which must be non-NULL
->   */
->  static inline void hlist_add_behind(struct hlist_node *n,
->  				    struct hlist_node *prev)
->  {
->  	WRITE_ONCE(n->next, prev->next);
->  	WRITE_ONCE(prev->next, n);
->  	WRITE_ONCE(n->pprev, &prev->next);
->  
->  	if (n->next)
->  		WRITE_ONCE(n->next->pprev, &n->next);
->  }
->  
->  /**
->   * hlist_add_fake - create a fake hlist consisting of a single headless node
->   * @n: Node to make a fake list out of
->   *
->   * This makes @n appear to be its own predecessor on a headless hlist.
->   * The point of this is to allow things like hlist_del() to work correctly
-> -- 
-> 2.28.0
-> 
+> diff --git a/drivers/gpu/drm/radeon/radeon_prime.h b/drivers/gpu/drm/rade=
+on/radeon_prime.h
+> new file mode 100644
+> index 0000000000000..11b7f80987834
+> --- /dev/null
+> +++ b/drivers/gpu/drm/radeon/radeon_prime.h
+> @@ -0,0 +1,39 @@
+> +/* radeon_prime.h -- Private header for radeon driver -*- linux-c -*-
+> + *
+> + * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
+> + * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
+> + * All rights reserved.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining=
+ a
+> + * copy of this software and associated documentation files (the "Softwa=
+re"),
+> + * to deal in the Software without restriction, including without limita=
+tion
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
+se,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice (including the =
+next
+> + * paragraph) shall be included in all copies or substantial portions of=
+ the
+> + * Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
+SS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
+TY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
+ALL
+> + * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAG=
+ES OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR=
+ OTHER
+> + * DEALINGS IN THE SOFTWARE.
+> + *
+> + */
+> +
+> +#ifndef __RADEON_PRIME_H__
+> +#define __RADEON_PRIME_H__
+> +
+> +struct dma_buf *radeon_gem_prime_export(struct drm_gem_object *gobj,
+> +                                       int flags);
+> +struct sg_table *radeon_gem_prime_get_sg_table(struct drm_gem_object *ob=
+j);
+> +int radeon_gem_prime_pin(struct drm_gem_object *obj);
+> +void radeon_gem_prime_unpin(struct drm_gem_object *obj);
+> +void *radeon_gem_prime_vmap(struct drm_gem_object *obj);
+> +void radeon_gem_prime_vunmap(struct drm_gem_object *obj, void *vaddr);
+> +
+> +#endif                         /* __RADEON_PRIME_H__ */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
