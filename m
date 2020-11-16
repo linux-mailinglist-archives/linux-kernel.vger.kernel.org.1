@@ -2,89 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD85F2B4C12
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0002B4C08
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732371AbgKPREN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:04:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730396AbgKPREM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:04:12 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60217C0613CF;
-        Mon, 16 Nov 2020 09:04:12 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id s8so19456579wrw.10;
-        Mon, 16 Nov 2020 09:04:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Ytpy131YfXChkVefXBJj/npVul2elHiL0f/FvnDDRqw=;
-        b=LUQTrjLvqa+oFYh9d7QdGtvw/MJRzn6WZF0Hl7sEnrS5GjcsmCQ47uFMTRHIqPdS7/
-         Rj7v1g588YlDjPKHuC52ckaRQ5g6CCpdHo8GZ/DP04AQsOUrQYXW8ckDWTpDTyNe8fjV
-         EnBib8Bm8RPkYIAvY0LA3EV7VsIXDUytmBIyYhfEstUJWuGUBdVFQd0PMn2xr56Tx835
-         BvFS4nYMQwXbh+B+SVwGjzq/iBmxRauM0CX7eh0WzlsiuW6ARgaVEAV4F+9lo++wxHWD
-         oLxyRrxdhL3moXiYrvM1v7LGCNOOaXfV3o+0EC7Uis1SvY8q+MxWQbQWZXIUR6l0PTX8
-         vHcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Ytpy131YfXChkVefXBJj/npVul2elHiL0f/FvnDDRqw=;
-        b=GMTSMJXi1DaC8JZAXiuyYR4Mxx1qql/7h23PlWR9AOvDkSO/20ms+FRREezVyVTPSF
-         xQ9V4hJQGESK8Ysusq5rdr3Uf3WuV7i+A97gg02d5ISNYU/ikHKRpEWJ+fWFZN/YwxKZ
-         DErsvRNr16iDmoD4qKNBF2Tmz9OJUAND4k7AtzjGqFYJyCAOp27KrciE7fnkL9i8W6yY
-         v2hqD8jrkQZfhO5w/JwxkxdzIfj+bwisVJ8fspqBs6Tcd6Dd+iPXWciZ1WyZE7BGWUuy
-         yia3YMXtlSWtoM3ZjVcQ6DWRHNXojp8rP1LK/Yg/qAntFp76/2Jj6fWotIvUTNBFqnH/
-         NJrw==
-X-Gm-Message-State: AOAM530HTucJhSYveOAsPYFg/l+oZRv7liSEvLGG7Le2lmwEVauUIy4T
-        mfIITpJaz/kGoIPHUEIvNZysoTyndUhtjg==
-X-Google-Smtp-Source: ABdhPJyBD20h4gSwItZ8R2pPrHI19fmIM94YDXSAfDUr2+CwfUxkevo5dfQispvXccljoij57t2fRw==
-X-Received: by 2002:adf:f181:: with SMTP id h1mr19974392wro.267.1605546251120;
-        Mon, 16 Nov 2020 09:04:11 -0800 (PST)
-Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
-        by smtp.gmail.com with ESMTPSA id u16sm23347986wrn.55.2020.11.16.09.04.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Nov 2020 09:04:10 -0800 (PST)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-rtc@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] rtc: pcf8523: Use PTR_ERR_OR_ZERO
-Date:   Mon, 16 Nov 2020 17:02:09 +0000
-Message-Id: <20201116170209.31584-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S1732500AbgKPRCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:02:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730829AbgKPRCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 12:02:15 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1948820E65;
+        Mon, 16 Nov 2020 17:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605546134;
+        bh=sQej5KOQVuVF1FvtsQOqqJoHLX7QyI9vTnt1zwijLEs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C4V1QzVDVvuoBzZjWIkQbSrmIJz5uvHEq9jhSFUQQbP3y82wn9APnOOAX3dq01G85
+         e1BFyJ8mb0UPiFWgHjEsCLZxlZO8r3zsFotOqL5KNAIk66OZZ/1hsfvg8yKqpRBgpg
+         LoNobQfwHlZXTiCkEU1Bu0q/bi7UnTB2uufji+yE=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D9EF8411D1; Mon, 16 Nov 2020 14:02:11 -0300 (-03)
+Date:   Mon, 16 Nov 2020 14:02:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Fangrui Song <maskray@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] perf bench: Update arch/x86/lib/mem{cpy,set}_64.S
+Message-ID: <20201116170211.GF509215@kernel.org>
+References: <20201104005609.1316230-1-maskray@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104005609.1316230-1-maskray@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coccinelle suggested using PTR_ERR_OR_ZERO() and looking at the code,
-we can use PTR_ERR_OR_ZERO() instead of checking IS_ERR() and then
-doing 'return 0'.
+Em Tue, Nov 03, 2020 at 04:56:09PM -0800, Fangrui Song escreveu:
+> In memset_64.S, the macros expand to `.weak MEMSET ... .globl MEMSET`
+> which will produce a STB_WEAK MEMSET with GNU as but STB_GLOBAL MEMSET
+> with LLVM's integrated assembler before LLVM 12. LLVM 12 (since
+> https://reviews.llvm.org/D90108) will error on such an overridden symbol
+> binding. memcpy_64.S is similar.
+> 
+> Port http://lore.kernel.org/r/20201103012358.168682-1-maskray@google.com
+> ("x86_64: Change .weak to SYM_FUNC_START_WEAK for arch/x86/lib/mem*_64.S")
+> to fix the issue. Additionally, port SYM_L_WEAK and SYM_FUNC_START_WEAK
+> from include/linux/linkage.h to tools/perf/util/include/linux/linkage.h
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- drivers/rtc/rtc-pcf8523.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Sorry, I noticed this just now and I have done this update already, will
+send to Linus soon.
 
-diff --git a/drivers/rtc/rtc-pcf8523.c b/drivers/rtc/rtc-pcf8523.c
-index 57d351dfe272..94f182599438 100644
---- a/drivers/rtc/rtc-pcf8523.c
-+++ b/drivers/rtc/rtc-pcf8523.c
-@@ -358,10 +358,8 @@ static int pcf8523_probe(struct i2c_client *client,
+- Arnaldo
  
- 	rtc = devm_rtc_device_register(&client->dev, DRIVER_NAME,
- 				       &pcf8523_rtc_ops, THIS_MODULE);
--	if (IS_ERR(rtc))
--		return PTR_ERR(rtc);
- 
--	return 0;
-+	return PTR_ERR_OR_ZERO(rtc);
- }
- 
- static const struct i2c_device_id pcf8523_id[] = {
+> Fixes: 7d7d1bf1d1da ("perf bench: Copy kernel files needed to build mem{cpy,set} x86_64 benchmarks")
+> Link: https://lore.kernel.org/r/20201103012358.168682-1-maskray@google.com
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> ---
+>  tools/arch/x86/lib/memcpy_64.S          | 4 +---
+>  tools/arch/x86/lib/memset_64.S          | 4 +---
+>  tools/perf/util/include/linux/linkage.h | 7 +++++++
+>  3 files changed, 9 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/arch/x86/lib/memcpy_64.S b/tools/arch/x86/lib/memcpy_64.S
+> index 0b5b8ae56bd9..9428f251df0f 100644
+> --- a/tools/arch/x86/lib/memcpy_64.S
+> +++ b/tools/arch/x86/lib/memcpy_64.S
+> @@ -16,8 +16,6 @@
+>   * to a jmp to memcpy_erms which does the REP; MOVSB mem copy.
+>   */
+>  
+> -.weak memcpy
+> -
+>  /*
+>   * memcpy - Copy a memory block.
+>   *
+> @@ -30,7 +28,7 @@
+>   * rax original destination
+>   */
+>  SYM_FUNC_START_ALIAS(__memcpy)
+> -SYM_FUNC_START_LOCAL(memcpy)
+> +SYM_FUNC_START_WEAK(memcpy)
+>  	ALTERNATIVE_2 "jmp memcpy_orig", "", X86_FEATURE_REP_GOOD, \
+>  		      "jmp memcpy_erms", X86_FEATURE_ERMS
+>  
+> diff --git a/tools/arch/x86/lib/memset_64.S b/tools/arch/x86/lib/memset_64.S
+> index fd5d25a474b7..1f9b11f9244d 100644
+> --- a/tools/arch/x86/lib/memset_64.S
+> +++ b/tools/arch/x86/lib/memset_64.S
+> @@ -5,8 +5,6 @@
+>  #include <asm/cpufeatures.h>
+>  #include <asm/alternative-asm.h>
+>  
+> -.weak memset
+> -
+>  /*
+>   * ISO C memset - set a memory block to a byte value. This function uses fast
+>   * string to get better performance than the original function. The code is
+> @@ -18,7 +16,7 @@
+>   *
+>   * rax   original destination
+>   */
+> -SYM_FUNC_START_ALIAS(memset)
+> +SYM_FUNC_START_WEAK(memset)
+>  SYM_FUNC_START(__memset)
+>  	/*
+>  	 * Some CPUs support enhanced REP MOVSB/STOSB feature. It is recommended
+> diff --git a/tools/perf/util/include/linux/linkage.h b/tools/perf/util/include/linux/linkage.h
+> index b8a5159361b4..0e493bf3151b 100644
+> --- a/tools/perf/util/include/linux/linkage.h
+> +++ b/tools/perf/util/include/linux/linkage.h
+> @@ -25,6 +25,7 @@
+>  
+>  /* SYM_L_* -- linkage of symbols */
+>  #define SYM_L_GLOBAL(name)			.globl name
+> +#define SYM_L_WEAK(name)			.weak name
+>  #define SYM_L_LOCAL(name)			/* nothing */
+>  
+>  #define ALIGN __ALIGN
+> @@ -78,6 +79,12 @@
+>  	SYM_START(name, SYM_L_LOCAL, SYM_A_ALIGN)
+>  #endif
+>  
+> +/* SYM_FUNC_START_WEAK -- use for weak functions */
+> +#ifndef SYM_FUNC_START_WEAK
+> +#define SYM_FUNC_START_WEAK(name)			\
+> +	SYM_START(name, SYM_L_WEAK, SYM_A_ALIGN)
+> +#endif
+> +
+>  /* SYM_FUNC_END_ALIAS -- the end of LOCAL_ALIASed or ALIASed function */
+>  #ifndef SYM_FUNC_END_ALIAS
+>  #define SYM_FUNC_END_ALIAS(name)			\
+> -- 
+> 2.29.1.341.ge80a0c044ae-goog
+> 
+
 -- 
-2.11.0
 
+- Arnaldo
