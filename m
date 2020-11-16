@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050C52B44A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629D42B44A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 14:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgKPNWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 08:22:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
+        id S1728934AbgKPNXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 08:23:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728934AbgKPNWq (ORCPT
+        with ESMTP id S1727061AbgKPNXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 08:22:46 -0500
-Received: from smtp1.goneo.de (smtp1.goneo.de [IPv6:2001:1640:5::8:30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAFAC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 05:22:45 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp1.goneo.de (Postfix) with ESMTP id DB71623EFF1;
-        Mon, 16 Nov 2020 14:22:43 +0100 (CET)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.982
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.982 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.082, BAYES_00=-1.9] autolearn=ham
-Received: from smtp1.goneo.de ([127.0.0.1])
-        by localhost (smtp1.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Zn8rBJ5nAW0P; Mon, 16 Nov 2020 14:22:42 +0100 (CET)
-Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp1.goneo.de (Postfix) with ESMTPA id A0A4623F115;
-        Mon, 16 Nov 2020 14:22:42 +0100 (CET)
-From:   poeschel@lemonage.de
-To:     Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Lars Poeschel <poeschel@lemonage.de>,
-        linux-kernel@vger.kernel.org (open list)
-Cc:     kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH] auxdisplay: panel: Fix missing print function pointer
-Date:   Mon, 16 Nov 2020 14:21:55 +0100
-Message-Id: <20201116132155.555489-1-poeschel@lemonage.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201116100504.tccqktcgxwn4pyqd@lem-wkst-02.lemonage>
-References: <20201116100504.tccqktcgxwn4pyqd@lem-wkst-02.lemonage>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 16 Nov 2020 08:23:19 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65897C0613CF;
+        Mon, 16 Nov 2020 05:23:19 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id m16so3811167edr.3;
+        Mon, 16 Nov 2020 05:23:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=G0T5yMoydp6E6nfIQvkyLdPxpOSjZqvp9iT1QJ5MAdI=;
+        b=sm5O5h5tKDovkV/5mskWrX+P9iq6xa4y3wieGVnqK77Mw/fmWo0dC9ciHHIx8qsSXB
+         HXfYvmPSoFDCvRQB+wcrLdEEAZq0w1lbRBih+gJNLA9P0OX2YsFpgDPJeZSOssDeOGhs
+         0FqdFmYjkR5/7RmML/007eeScOLD+JFMo3YVtMxvsN/2vz/JBHFJyUIVn38Ry++PM3kU
+         F61o+7TeywzZ2XpdDvvTx/Zq83YuxSRMO7MVp3AS9dCyCLz2z4IbPtySnj862smoN8nD
+         3V+MkDg3TOoSFAWIFfZGITGF8sKdDb/LNObh+CvB41oDXgBjTucJvEovRyS/I9dD7j6x
+         t/3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=G0T5yMoydp6E6nfIQvkyLdPxpOSjZqvp9iT1QJ5MAdI=;
+        b=TlagNoAXtFKmwbJ2JqRyfF3zCSJRrMwfodHquUUq8b/zK1cNgEL+Lk5YNpjLrIBUfp
+         1W1dzc0z/odx3qanBlXFl7iBN5NJp2LdYMAVGV9yPzHPSbdqaY84NATynAhJopSUKFHM
+         7zb1fgL87BU0M0yfwaGzSKW7ukV/sCVY1uNyVJrk4HmhdMVpKXhD3qIVZCofm7qpnclV
+         XRkYOZ2YPwGJOwz5Qe2LjN6RSq+4Ufv9FF+6nqk6Eod52fwlUN7TQnAzSN45HuUiu8eM
+         biN640a+5U9iJIzHmZ0bGHXHpXwGms8oTNsw06GjzsUlb++lQKK14DZQwTD2wbeP9JLt
+         s2Cg==
+X-Gm-Message-State: AOAM531d6KbIbZXeH660liKIZxCuwIGhRPb7sQ87eOYSVmj+eul84vMS
+        BkdmNX7+IDXD7xWmkcdMoTk=
+X-Google-Smtp-Source: ABdhPJxKH+eJazMgAP6plRVNSIXMKel5IbKw8Yiu7z8hTL10hQo3Efm98BHivxowuJn4oaVgwGHvTg==
+X-Received: by 2002:a50:ab15:: with SMTP id s21mr15519457edc.88.1605532998207;
+        Mon, 16 Nov 2020 05:23:18 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id oh19sm10550650ejb.49.2020.11.16.05.23.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Nov 2020 05:23:17 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: rockchip: rename sdhci nodename to mmc in rk3399.dtsi
+Date:   Mon, 16 Nov 2020 14:23:11 +0100
+Message-Id: <20201116132311.8318-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Poeschel <poeschel@lemonage.de>
+A test with the command below gives for example this error:
 
-charlcd drivers need to provide some print function to charlcd. For
-hd44780 based panel driver this function was missing. We provide the
-generic hd44780_common_print function which should be suitable.
+/arch/arm64/boot/dts/rockchip/rk3399-evb.dt.yaml:
+sdhci@fe330000: $nodename:0: 'sdhci@fe330000'
+does not match '^mmc(@.*)?$'
 
-Fixes: b26deabb1d915fe87d395081bbd3058b938dee89 ("auxdisplay: hd44780_common_print")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+Fix it by renaming sdhci to mmc.
+
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/
+mmc/arasan,sdhci.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- drivers/auxdisplay/panel.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/auxdisplay/panel.c b/drivers/auxdisplay/panel.c
-index e07fadac281d..36848e464d1f 100644
---- a/drivers/auxdisplay/panel.c
-+++ b/drivers/auxdisplay/panel.c
-@@ -810,6 +810,7 @@ static void lcd_write_data_tilcd(struct hd44780_common *hdc, int data)
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 32e867179..6cba2c77e 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -328,7 +328,7 @@
+ 		status = "disabled";
+ 	};
  
- static const struct charlcd_ops charlcd_serial_ops = {
- 	.backlight	= lcd_backlight,
-+	.print		= hd44780_common_print,
- 	.gotoxy		= hd44780_common_gotoxy,
- 	.home		= hd44780_common_home,
- 	.clear_display	= hd44780_common_clear_display,
-@@ -826,6 +827,7 @@ static const struct charlcd_ops charlcd_serial_ops = {
- 
- static const struct charlcd_ops charlcd_parallel_ops = {
- 	.backlight	= lcd_backlight,
-+	.print		= hd44780_common_print,
- 	.gotoxy		= hd44780_common_gotoxy,
- 	.home		= hd44780_common_home,
- 	.clear_display	= hd44780_common_clear_display,
-@@ -842,6 +844,7 @@ static const struct charlcd_ops charlcd_parallel_ops = {
- 
- static const struct charlcd_ops charlcd_tilcd_ops = {
- 	.backlight	= lcd_backlight,
-+	.print		= hd44780_common_print,
- 	.gotoxy		= hd44780_common_gotoxy,
- 	.home		= hd44780_common_home,
- 	.clear_display	= hd44780_common_clear_display,
+-	sdhci: sdhci@fe330000 {
++	sdhci: mmc@fe330000 {
+ 		compatible = "rockchip,rk3399-sdhci-5.1", "arasan,sdhci-5.1";
+ 		reg = <0x0 0xfe330000 0x0 0x10000>;
+ 		interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH 0>;
 -- 
-2.29.2
+2.11.0
 
