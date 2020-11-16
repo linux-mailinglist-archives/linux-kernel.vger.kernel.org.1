@@ -2,171 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920CA2B4D5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C34502B4D59
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 18:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733182AbgKPRhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 12:37:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733171AbgKPRhI (ORCPT
+        id S1733113AbgKPRgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 12:36:24 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:45582 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731590AbgKPRgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:37:08 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C59DC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:07 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id s8so19607325wrw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 09:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=o9jTMX+lMkxyW4xpU+ilcx7gbWHjRBMJqKFY5D9XSUE=;
-        b=YrJA3W0C9dsPwTP/yfNgQAL9bO2bgqXFQArq4CGYlu7c0P+DN7wbawX9LjnxuhvONe
-         0quf3FrequM/kbem6PqJGbgOqmH4dK8JhvnywHvc14Exnz7jAqeyyf9bwYRWCxcSlbb8
-         e0VPOgEpGP757EDJ9zmk04yi14jhswRxOecc+Zamzk/uCgzYjg0t91Xi3v1zoTRpV08E
-         BlFq71iMwA3q6+kZpJPWrij4diWJje6TGuw8ZGjP5wrEK3YP7LRRiRJCo8uPb4D4CRiT
-         pScKHrntlfXnHZ75BhMpZ4l7sodrF3bTTSW32JnIQt/VeI5R4A36DnCBBPiSRCPhEmJY
-         219w==
+        Mon, 16 Nov 2020 12:36:22 -0500
+Received: by mail-ot1-f68.google.com with SMTP id k3so16754828otp.12;
+        Mon, 16 Nov 2020 09:36:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=o9jTMX+lMkxyW4xpU+ilcx7gbWHjRBMJqKFY5D9XSUE=;
-        b=okv13WAeD5NuP4czI6R37KS9kswScUhrHKdd35GTKgCmnZov7MRVMZL7OxvrQ0Eu6O
-         AjR0jPB0Njsa285NukT+xadoszHEajqWImJvr/tab82RBUo8jw/RFEAvGYb+jWVjUzW7
-         vkKfQjF68LN3NGimfplePr9puxpvqIyR4Xh7Xf4fltXK6Q5YExZNMkp8NbUuoYR9PAi1
-         DQYC8oHRxOav739kXneF6bKgAhQNZhK6LTWK/+qIiiKVZZKpOlYUqqpgJsumbPV8D6/o
-         UenAnxJ3Y11BXYOxHW0hFIAZkJjnCzpD0bbR3134E1gxRTdnhHua4pqbFJZ/XMTcIM+W
-         zk3Q==
-X-Gm-Message-State: AOAM533Z87/VaFsT0WLh0L7hiqE4VtlS+qoNJzind+mBjX6n+Ev70Ovc
-        uxVU8hsyS+vrWIDIhYhU1nnXQw==
-X-Google-Smtp-Source: ABdhPJwtiOEPOPwzQ5wAnO/EE8bSERvaF1LOYYr8RASu/2/tCRMZhqvPm8IGTArHT7ORS2Ednp76Fg==
-X-Received: by 2002:adf:c547:: with SMTP id s7mr20526713wrf.222.1605548226270;
-        Mon, 16 Nov 2020 09:37:06 -0800 (PST)
-Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id 30sm16942828wrd.88.2020.11.16.09.37.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Eu89zIOkkQ+RwpYfgoglgMZA8e7V2O4a44a0i8NV0Ww=;
+        b=uWz5skyCwca/Lw5bEb00tD4rsww1ygt+PSKDS/tY8PTd11z3uaVh7tbFPnvBqBM4gu
+         hpXuCT8m/vgW7MObbszDFJ5KaidNfmkZ+xZOGxo3pKUKXBdLWG8oySxl7QRKKMW2qXqv
+         BTDSshLG13X3gosSdKISEMjeofoYPkFzgJ6yUf0qKtubwO3urwMjdVKbIi9gnV2AUUBh
+         irHY1/Yq1/o9YtGAUF42xLV/6qD4ImLwDpA3vJmw1j/9moHQyIP/vwC0Bs1yhTgL3ll5
+         Ng+W09Rbbmv8Zng6Z8ReU1LTMij/TNke9bkUwTGGfeguGcYQ2Tr+PdCWWikXdtDJVQCX
+         SdoA==
+X-Gm-Message-State: AOAM533E54YwADmk2E4Vuxg7l6X/gXCp/tBeEcQ4itgRjB58RjRYH61q
+        1a/8gWRTGXq/aSOnX5kBeQ==
+X-Google-Smtp-Source: ABdhPJzcJKA6DG3DNaW7RINXauhrTJBWHQr9psD8GzmUDpKfVnqr1JGdZSSOZD10NyPP2yCcXifMAA==
+X-Received: by 2002:a05:6830:3151:: with SMTP id c17mr270339ots.336.1605548181631;
+        Mon, 16 Nov 2020 09:36:21 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id d26sm4944086ooh.19.2020.11.16.09.36.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 09:37:05 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 02/43] drm/radeon/radeon: Move prototype into shared header
-Date:   Mon, 16 Nov 2020 17:36:19 +0000
-Message-Id: <20201116173700.1830487-3-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201116173700.1830487-1-lee.jones@linaro.org>
-References: <20201116173700.1830487-1-lee.jones@linaro.org>
+        Mon, 16 Nov 2020 09:36:21 -0800 (PST)
+Received: (nullmailer pid 1852133 invoked by uid 1000);
+        Mon, 16 Nov 2020 17:36:20 -0000
+Date:   Mon, 16 Nov 2020 11:36:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-kernel@vger.kernel.org, mark.thoren@analog.com,
+        devicetree@vger.kernel.org, jdelvare@suse.com,
+        ardeleanalex@gmail.com, linux@roeck-us.net,
+        linux-hwmon@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v2 4/4] dt-bindings: hwmon: ltc2945: add device tree doc
+ for ltc2945
+Message-ID: <20201116173620.GA1852071@bogus>
+References: <20201111091259.46773-1-alexandru.ardelean@analog.com>
+ <20201111091259.46773-5-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111091259.46773-5-alexandru.ardelean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unfortunately, a suitable one didn't already exist.
+On Wed, 11 Nov 2020 11:12:59 +0200, Alexandru Ardelean wrote:
+> This change adds a device-tree binding documentation for the Linear
+> Technology (now Analog Devices) LTC2945 Wide Range I2C Power Monitor.
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  .../bindings/hwmon/adi,ltc2945.yaml           | 49 +++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2945.yaml
+> 
 
-Fixes the following W=1 kernel build warning(s):
-
- drivers/gpu/drm/radeon/radeon_device.c:637:6: warning: no previous prototype for ‘radeon_device_is_virtual’ [-Wmissing-prototypes]
- 637 | bool radeon_device_is_virtual(void)
- | ^~~~~~~~~~~~~~~~~~~~~~~~
-
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/gpu/drm/radeon/radeon_device.c |  1 +
- drivers/gpu/drm/radeon/radeon_device.h | 32 ++++++++++++++++++++++++++
- drivers/gpu/drm/radeon/radeon_drv.c    |  3 +--
- 3 files changed, 34 insertions(+), 2 deletions(-)
- create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
-
-diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/radeon/radeon_device.c
-index 7f384ffe848a7..ad572f965190b 100644
---- a/drivers/gpu/drm/radeon/radeon_device.c
-+++ b/drivers/gpu/drm/radeon/radeon_device.c
-@@ -42,6 +42,7 @@
- #include <drm/drm_probe_helper.h>
- #include <drm/radeon_drm.h>
- 
-+#include "radeon_device.h"
- #include "radeon_reg.h"
- #include "radeon.h"
- #include "atom.h"
-diff --git a/drivers/gpu/drm/radeon/radeon_device.h b/drivers/gpu/drm/radeon/radeon_device.h
-new file mode 100644
-index 0000000000000..3112b99ae36f1
---- /dev/null
-+++ b/drivers/gpu/drm/radeon/radeon_device.h
-@@ -0,0 +1,32 @@
-+/* radeon_device.h -- Private header for radeon device -*- linux-c -*-
-+ *
-+ * Copyright 1999 Precision Insight, Inc., Cedar Park, Texas.
-+ * Copyright 2000 VA Linux Systems, Inc., Fremont, California.
-+ * All rights reserved.
-+ *
-+ * Permission is hereby granted, free of charge, to any person obtaining a
-+ * copy of this software and associated documentation files (the "Software"),
-+ * to deal in the Software without restriction, including without limitation
-+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-+ * and/or sell copies of the Software, and to permit persons to whom the
-+ * Software is furnished to do so, subject to the following conditions:
-+ *
-+ * The above copyright notice and this permission notice (including the next
-+ * paragraph) shall be included in all copies or substantial portions of the
-+ * Software.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-+ * PRECISION INSIGHT AND/OR ITS SUPPLIERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-+ * DEALINGS IN THE SOFTWARE.
-+ */
-+
-+#ifndef __RADEON_DEVICE_H__
-+#define __RADEON_DEVICE_H__
-+
-+bool radeon_device_is_virtual(void);
-+
-+#endif				/* __RADEON_DEVICE_H__ */
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-index f813eb5e140dd..536b246b9a6aa 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -52,6 +52,7 @@
- 
- #include "radeon_drv.h"
- #include "radeon.h"
-+#include "radeon_device.h"
- 
- /*
-  * KMS wrapper.
-@@ -293,8 +294,6 @@ MODULE_DEVICE_TABLE(pci, pciidlist);
- 
- static const struct drm_driver kms_driver;
- 
--bool radeon_device_is_virtual(void);
--
- static int radeon_pci_probe(struct pci_dev *pdev,
- 			    const struct pci_device_id *ent)
- {
--- 
-2.25.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
