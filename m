@@ -2,285 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C862B3C42
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 05:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 338472B3C4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 06:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgKPEzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 15 Nov 2020 23:55:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKPEzD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 15 Nov 2020 23:55:03 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00468C0613CF;
-        Sun, 15 Nov 2020 20:55:02 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w6so13019985pfu.1;
-        Sun, 15 Nov 2020 20:55:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8y8EzNwAbA7Mk6zHCNBMz+8QqO4AkN7jfQ83GAtzKaw=;
-        b=JgXdNauNUS4omz7BJcV5u4oNPci5St150RSWKlbzPC67rcAoTFCDpyCPfn969zHHKq
-         br3c0R9j32AZyLzt/737eYU6x9YfHFlR4C/0Hf19aKKHDDJ4o1Uqvkv0+WiKWG4GYtvI
-         MHmLQkUq7GCOCzzsnPFxph29nTB3vG4RMXlp5XTU+H5f/Zy9+f3h/qZQyCJOB76l8J3G
-         4ZUDHNdIa+0Czki/65jxn1BxBuIDFLi9gEI8NqtPGc1hsAqlRp1k5b3ogLBKCcot2hM7
-         aXLLEBeN0WGLYrz/+rgENN2HpWaJBb+Sfb7dj1ZbfSZmqk9TDSxGGQLRylMrtznOcRUk
-         ckKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8y8EzNwAbA7Mk6zHCNBMz+8QqO4AkN7jfQ83GAtzKaw=;
-        b=i2lNF5YEKu9EFvXJisD1C2ileqLLIKh8W9eS0KGaEmT4YKsvQPGYsahvQOw/Ed17GF
-         wPXwizzVnFP2yQswbZgErGaNVMQqWQEzs28De5PWBIMWDjM4tclZ4VQC3LbcLLN2oQj5
-         58kZjgRAO/zNvrZFdjVBiKLl5QxEhuu175aelpT4nA31ZMkfO72HCPk8X1NzMpXV8yxH
-         xhrGpfxGEAZc67zr52lK69+x1o7yh0oNMMOSFDnwCsFEs3LfInHoGItmzkc1bWs8O4Jw
-         Z/T1g86WCD8iSUODjNLvdSeuHLEd2cY7F4V7SWrI3jH4dYwl7E0VKp+A6P9+d4csDmq0
-         dXuw==
-X-Gm-Message-State: AOAM532ZbOMaf43X8/qkWKzi03wmLZFCnmniX8nwi/nopWbiLWFjCr7O
-        MLZdNQJ7t5m1DecidRP0qGSIzE2d/jRKUQ==
-X-Google-Smtp-Source: ABdhPJzm9+O7++vo06zq3bbBabM8q2zCStmcQUezajR8hzGM3/m3V9f5M5CiE9CGkndjZ3OhwgL7ww==
-X-Received: by 2002:a05:6a00:80e:b029:196:1cad:b64 with SMTP id m14-20020a056a00080eb02901961cad0b64mr10545502pfk.5.1605502502059;
-        Sun, 15 Nov 2020 20:55:02 -0800 (PST)
-Received: from [192.168.86.81] ([106.51.140.48])
-        by smtp.gmail.com with ESMTPSA id x12sm15818385pjr.51.2020.11.15.20.54.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Nov 2020 20:55:01 -0800 (PST)
-Subject: Re: [PATCH v8 2/2] fs: ext4: Modify inode-test.c to use KUnit
- parameterized testing feature
-To:     Marco Elver <elver@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Tim Bird <Tim.Bird@sony.com>, David Gow <davidgow@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-References: <20201115185759.169279-1-98.arpi@gmail.com>
- <20201115185905.169349-1-98.arpi@gmail.com>
- <CANpmjNPKfPeiXUUPwz1aU6iKwOXpSZNV5ZJq22NkZZWEhE9r1w@mail.gmail.com>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <989852ba-2fb3-7570-ce79-a0db6cc7e99e@gmail.com>
-Date:   Mon, 16 Nov 2020 10:24:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725764AbgKPFBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 00:01:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50728 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgKPFBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 00:01:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 68ADCABDE;
+        Mon, 16 Nov 2020 05:01:01 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
+Date:   Mon, 16 Nov 2020 16:00:56 +1100
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] NFS: only invalidate dentrys that are clearly invalid.
+In-Reply-To: <d208c9c085d8abf27a764e31a61e98f9c3743675.camel@hammerspace.com>
+References: <87361aovm3.fsf@notabene.neil.brown.name>
+ <d2fabd4b78dda3bd52519b84f50785dbcc2d40fb.camel@hammerspace.com>
+ <87zh3hoqrx.fsf@notabene.neil.brown.name>
+ <d208c9c085d8abf27a764e31a61e98f9c3743675.camel@hammerspace.com>
+Message-ID: <87wnylopyv.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNPKfPeiXUUPwz1aU6iKwOXpSZNV5ZJq22NkZZWEhE9r1w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/20 1:14 am, Marco Elver wrote:
-> On Sun, 15 Nov 2020 at 19:59, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
->>
->> Modify fs/ext4/inode-test.c to use the parameterized testing
->> feature of KUnit.
->>
->> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
->> Signed-off-by: Marco Elver <elver@google.com>
->> ---
->> Changes v7->v8:
->> - Replace strcpy() with strncpy() in timestamp_expectation_to_desc()
->> Changes v6->v7:
->> - Introduce timestamp_expectation_to_desc() to convert param to
->>   description.
->> Changes v5->v6:
->> - No change to this patch of the patch series
->> Changes v4->v5:
->> - No change to this patch of the patch series
->> Changes v3->v4:
->> - Modification based on latest implementation of KUnit parameterized testing
->> Changes v2->v3:
->> - Marked hardcoded test data const
->> - Modification based on latest implementation of KUnit parameterized testing
->> Changes v1->v2:
->> - Modification based on latest implementation of KUnit parameterized testing
->>
->>  fs/ext4/inode-test.c | 323 ++++++++++++++++++++++---------------------
->>  1 file changed, 167 insertions(+), 156 deletions(-)
->>
->> diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
->> index d62d802c9c12..2c0c00c45c6b 100644
->> --- a/fs/ext4/inode-test.c
->> +++ b/fs/ext4/inode-test.c
->> @@ -80,6 +80,148 @@ struct timestamp_expectation {
->>         bool lower_bound;
->>  };
->>
->> +static const struct timestamp_expectation test_data[] = {
->> +       {
->> +               .test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
->> +               .msb_set = true,
->> +               .lower_bound = true,
->> +               .extra_bits = 0,
->> +               .expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
->> +               .msb_set = true,
->> +               .lower_bound = false,
->> +               .extra_bits = 0,
->> +               .expected = {.tv_sec = -1LL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = true,
->> +               .extra_bits = 0,
->> +               .expected = {0LL, 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = false,
->> +               .extra_bits = 0,
->> +               .expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
->> +               .msb_set = true,
->> +               .lower_bound = true,
->> +               .extra_bits = 1,
->> +               .expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
->> +               .msb_set = true,
->> +               .lower_bound = false,
->> +               .extra_bits = 1,
->> +               .expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = true,
->> +               .extra_bits = 1,
->> +               .expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = false,
->> +               .extra_bits = 1,
->> +               .expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
->> +               .msb_set = true,
->> +               .lower_bound = true,
->> +               .extra_bits =  2,
->> +               .expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
->> +               .msb_set = true,
->> +               .lower_bound = false,
->> +               .extra_bits = 2,
->> +               .expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = true,
->> +               .extra_bits = 2,
->> +               .expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = false,
->> +               .extra_bits = 2,
->> +               .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = false,
->> +               .extra_bits = 6,
->> +               .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = true,
->> +               .extra_bits = 0xFFFFFFFF,
->> +               .expected = {.tv_sec = 0x300000000LL,
->> +                            .tv_nsec = MAX_NANOSECONDS},
->> +       },
->> +
->> +       {
->> +               .test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = true,
->> +               .extra_bits = 3,
->> +               .expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
->> +       },
->> +
->> +       {
->> +               .test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
->> +               .msb_set = false,
->> +               .lower_bound = false,
->> +               .extra_bits = 3,
->> +               .expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
->> +       }
->> +};
->> +
->> +static void timestamp_expectation_to_desc(const struct timestamp_expectation *t,
->> +                                         char *desc)
->> +{
->> +       int desc_length = strlen(t->test_case_name);
->> +
->> +       strncpy(desc, t->test_case_name, desc_length);
->> +       desc[desc_length] = '\0';
->> +}
-> 
-> This unfortunately won't prevent out-of-bounds accesses if the
-> description is longer than KUNIT_PARAM_DESC_SIZE.
-> 
-> With strncpy() we want to avoid copying more bytes than the
-> destination buffer can hold. This can be done by simply a
-> strncpy(desc, t->test_case_name, KUNIT_PARAM_DESC_SIZE). But,
-> strncpy() is unsafe in certain cases, too, so the kernel introduced
-> strscpy() -- see the note about strncpy() in
-> Documentation/process/deprecated.rst. Also have a look at the
-> documentation about str{n,l,s}cpy() in lib/string.c.
-> 
-> So, finally, what we want here is just 1 line:
-> 
->     strscpy(desc, t->test_case_name, KUNIT_PARAM_DESC_SIZE);
-> 
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Okay, I'll look this up and make this change for v9.
+On Mon, Nov 16 2020, Trond Myklebust wrote:
 
-> Patch 1/2 looks fine though, so hopefully v9 will be final. :-)
-> 
-> Thanks,
-> -- Marco
-> 
+> On Mon, 2020-11-16 at 15:43 +1100, NeilBrown wrote:
+>> On Mon, Nov 16 2020, Trond Myklebust wrote:
+>>=20
+>> > On Mon, 2020-11-16 at 13:59 +1100, NeilBrown wrote:
+>> > >=20
+>> > > Prior to commit 5ceb9d7fdaaf ("NFS: Refactor
+>> > > nfs_lookup_revalidate()")
+>> > > and error from nfs_lookup_verify_inode() other than -ESTALE would
+>> > > result
+>> > > in nfs_lookup_revalidate() returning that error code (-ESTALE is
+>> > > mapped
+>> > > to zero).
+>> > > Since that commit, all errors result in zero being returned.
+>> > >=20
+>> > > When nfs_lookup_revalidate() returns zero, the dentry is
+>> > > invalidated
+>> > > and, significantly, if the dentry is a directory that is mounted
+>> > > on,
+>> > > that mountpoint is lost.
+>> > >=20
+>> > > If you:
+>> > > =C2=A0- mount an NFS filesystem which contains a directory
+>> > > =C2=A0- mount something (e.g. tmpfs) on that directory
+>> > > =C2=A0- use iptables (or scissors) to block traffic to the server
+>> > > =C2=A0- ls -l the-mounted-on-directory
+>> > > =C2=A0- interrupt the 'ls -l'
+>> > > you will find that the directory has been unmounted.
+>> > >=20
+>> > > This can be fixed by returning the actual error code from
+>> > > nfs_lookup_verify_inode() rather then zero (except for -ESTALE).
+>> > >=20
+>> > > Fixes: 5ceb9d7fdaaf ("NFS: Refactor nfs_lookup_revalidate()")
+>> > > Signed-off-by: NeilBrown <neilb@suse.de>
+>> > > ---
+>> > > =C2=A0fs/nfs/dir.c | 8 +++++---
+>> > > =C2=A01 file changed, 5 insertions(+), 3 deletions(-)
+>> > >=20
+>> > > diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
+>> > > index cb52db9a0cfb..d24acf556e9e 100644
+>> > > --- a/fs/nfs/dir.c
+>> > > +++ b/fs/nfs/dir.c
+>> > > @@ -1350,7 +1350,7 @@ nfs_do_lookup_revalidate(struct inode *dir,
+>> > > struct dentry *dentry,
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 unsigned int flags)
+>> > > =C2=A0{
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct inode *inode;
+>> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int error;
+>> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int error =3D 0;
+>> > > =C2=A0
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_inc_stats(dir, N=
+FSIOS_DENTRYREVALIDATE);
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0inode =3D d_inode(de=
+ntry);
+>> > > @@ -1372,8 +1372,10 @@ nfs_do_lookup_revalidate(struct inode
+>> > > *dir,
+>> > > struct dentry *dentry,
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 n=
+fs_check_verifier(dir, dentry, flags & LOOKUP_RCU))
+>> > > {
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0error =3D nfs_lookup_verify_inode(inode, flag=
+s);
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (error) {
+>> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if =
+(error =3D=3D -ESTALE)
+>> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if =
+(error =3D=3D -ESTALE) {
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_zap_caches(dir);
+>> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0error =3D 0;
+>> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0goto out_bad;
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nfs_advise_use_readdirplus(dir);
+>> > > @@ -1395,7 +1397,7 @@ nfs_do_lookup_revalidate(struct inode *dir,
+>> > > struct dentry *dentry,
+>> > > =C2=A0out_bad:
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (flags & LOOKUP_R=
+CU)
+>> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ECHILD;
+>> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return nfs_lookup_revalid=
+ate_done(dir, dentry, inode, 0);
+>> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return nfs_lookup_revalid=
+ate_done(dir, dentry, inode,
+>> > > error);
+>> >=20
+>> > Which errors do we actually need to return here? As far as I can
+>> > tell,
+>> > the only errors that nfs_lookup_verify_inode() is supposed to
+>> > return is
+>> > ENOMEM, ESTALE, ECHILD, and possibly EIO or ETiMEDOUT.
+>> >=20
+>> > Why would it be better to return those errors rather than just a 0
+>> > when
+>> > we need to invalidate the inode, particularly since we already have
+>> > a
+>> > special case in nfs_lookup_revalidate_done() when the dentry is
+>> > root?
+>>=20
+>> ERESTARTSYS is the error that easily causes problems.
+>>=20
+>> Returning 0 causes d_invalidate() to be called which is quite heavy
+>> handed in mountpoints.
+>
+> My point is that it shouldn't get returned for mountpoints. See
+> nfs_lookup_revalidate_done().
 
-Thanks!
+nfs_lookup_revalidate_done() only checks IS_ROOT(), and while many
+mountpoints are IS_ROOT(), not all are (--bind easily makes others).
 
+But that isn't even really relevant here.  The dentry being revalidated
+is the underlying directory - that something else is mounted on.
+step_into() which follows mount points is called in walk_component()
+*after* lookup_fast or lookup_slow which will have revalidated the
+dentry.
+
+NeilBrown
+
+
+>
+>> So it is only reasonable to return 0 when we have unambiguous
+>> confirmation from the server that the object no longer exists.=C2=A0
+>> ESTALE
+>> is unambiguous. EIO might be unambiguous.=C2=A0 ERESTARTSYS, ENOMEM,
+>> ETIMEDOUT are transient and don't justify d_invalidate() being
+>> called.
+>>=20
+>> (BTW, Commit cc89684c9a26 ("NFS: only invalidate dentrys that are
+>> clearly invalid.")
+>> =C2=A0fixed much the same bug 3 years ago).
+>> =C2=A0
+>> Thanks,
+>> NeilBrown
+>>=20
+>>=20
+>> >=20
+>> > > =C2=A0}
+>> > > =C2=A0
+>> > > =C2=A0static int
+>> >=20
+>> > --=20
+>> > Trond Myklebust
+>> > Linux NFS client maintainer, Hammerspace
+>> > trond.myklebust@hammerspace.com
+>
+> --=20
+> Trond Myklebust
+> CTO, Hammerspace Inc
+> 4984 El Camino Real, Suite 208
+> Los Altos, CA 94022
+> =E2=80=8B
+> www.hammer.space
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl+yB4gOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigbnK/RAAkuiAcVLvKi1Ezt0gPnhEz1OxkVARMvT6IyMz
+N9DZRfSg2vRVqswYp4yDvWy+2PpY1o2wQM+kDtWxw2wfwjMcnaERYQx2Lc5l6K/T
+OWUSWyja/uoSxAlffMB9KAUApj1xTlakhgPrg+DSMIHUB5SEyCUa8m4agNkGz6OG
+4O0+wgsUXdNwFO8k+ZZhT3iRjYV1mFT+pmL6fQU5dLvvA8ZBQRlw/h6XXg3nd3tM
+wKIH+g7VpsSfIcGfil4jxWy71cYR1d8xFncKgPuDaV/eWf+ELiBsMoI/GT/vqJHl
+8EQemkONLBk7+BK/Em2zf8JQgkjWFCe6W3F3ZmXBDMt86sQ8IYM3e2kaq6aDuRVH
+z7Oa91X2eF0krYvI7xAZWzjHShhnGwTWHpIXp8ZgOuP5GUjpZart0Z/FhxwYbtuG
+QPVnYCVk6/BcQ9MLaesYcG+OUKHwIzUhM1I63yELSijsOJGBkE1pdxZxcOk2Rcw8
+FhW31Cy/q79TLY0/dpVRiDhPTBcpGwhocz/x/wtgk86igQvQEKpxqkQK/84EbcAs
+3hKZvHmFqUvW8VWrAexJEVTNE3P/t8oyRF1wNJvq0lnOQQwkxc0pixayQ3jGnZCO
+8p/Oeb7JTLEPZoodmHeAa7/P0V5z1MrDUo/qnsz7jfbq/KHIv2wYfItL9UpemZeW
+zJD+qxo=
+=UPNe
+-----END PGP SIGNATURE-----
+--=-=-=--
