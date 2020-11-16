@@ -2,94 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3FA2B3F45
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6312B3F47
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 09:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728374AbgKPI7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 03:59:25 -0500
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:59471 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgKPI7Y (ORCPT
+        id S1728389AbgKPI7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 03:59:32 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:57569 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgKPI7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 03:59:24 -0500
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.51 with ESMTP; 16 Nov 2020 17:59:23 +0900
-X-Original-SENDERIP: 156.147.1.126
-X-Original-MAILFROM: byungchul.park@lge.com
-Received: from unknown (HELO X58A-UD3R) (10.177.222.33)
-        by 156.147.1.126 with ESMTP; 16 Nov 2020 17:59:23 +0900
-X-Original-SENDERIP: 10.177.222.33
-X-Original-MAILFROM: byungchul.park@lge.com
-Date:   Mon, 16 Nov 2020 17:57:57 +0900
-From:   Byungchul Park <byungchul.park@lge.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        david@fromorbit.com, amir73il@gmail.com, bfields@fieldses.org,
-        gregkh@linuxfoundation.org, kernel-team@lge.com
-Subject: Re: [RFC] Are you good with Lockdep?
-Message-ID: <20201116085757.GB26078@X58A-UD3R>
-References: <20201111050559.GA24438@X58A-UD3R>
- <20201111105441.GA78848@gmail.com>
- <20201111093609.1bd2b637@gandalf.local.home>
- <87d00jo55p.fsf@nanos.tec.linutronix.de>
- <20201112081030.GB14554@X58A-UD3R>
- <20201112092612.00a19239@gandalf.local.home>
- <20201112145251.GB17076@casper.infradead.org>
+        Mon, 16 Nov 2020 03:59:32 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1keaM9-0006M0-Jy; Mon, 16 Nov 2020 09:59:25 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1keaM7-00087T-Ic; Mon, 16 Nov 2020 09:59:23 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id E63B4240049;
+        Mon, 16 Nov 2020 09:59:22 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 68378240047;
+        Mon, 16 Nov 2020 09:59:22 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 2137D20438;
+        Mon, 16 Nov 2020 09:59:22 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112145251.GB17076@casper.infradead.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 16 Nov 2020 09:59:22 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] net/x25: add/remove x25_link_device by
+ NETDEV_REGISTER/UNREGISTER
+Organization: TDT AG
+In-Reply-To: <CAJht_ENxZhW9MK_HsY_6c_VjUbubQCYZwkVMYbHL-4aWJkaxuQ@mail.gmail.com>
+References: <20201116073149.23219-1-ms@dev.tdt.de>
+ <CAJht_ENxZhW9MK_HsY_6c_VjUbubQCYZwkVMYbHL-4aWJkaxuQ@mail.gmail.com>
+Message-ID: <10f8c81543962df2e35a54c08387c74e@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-ID: 151534::1605517165-000064E4-61D9A38E/0/0
+X-purgate: clean
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 02:52:51PM +0000, Matthew Wilcox wrote:
-> On Thu, Nov 12, 2020 at 09:26:12AM -0500, Steven Rostedt wrote:
-> > > FYI, roughly Lockdep is doing:
-> > > 
-> > >    1. Dependency check
-> > >    2. Lock usage correctness check (including RCU)
-> > >    3. IRQ related usage correctness check with IRQFLAGS
-> > > 
-> > > 2 and 3 should be there forever which is subtle and have gotten matured.
-> > > But 1 is not. I've been talking about 1. But again, it's not about
-> > > replacing it right away but having both for a while. I'm gonna try my
-> > > best to make it better.
-> > 
-> > And I believe lockdep does handle 1. Perhaps show some tangible use case
-> > that you want to cover that you do not believe that lockdep can handle. If
-> > lockdep cannot handle it, it will show us where lockdep is lacking. If it
-> > can handle it, it will educate you on other ways that lockdep can be
-> > helpful in your development ;-)
+On 2020-11-16 09:45, Xie He wrote:
+> Hi Martin,
 > 
-> Something I believe lockdep is missing is a way to annotate "This lock
-> will be released by a softirq".  If we had lockdep for lock_page(), this
-> would be a great case to show off.  The filesystem locks the page, then
-> submits it to a device driver.  On completion, the filesystem's bio
-> completion handler will be called in softirq context and unlock the page.
+> Thanks for the series. To get the series applied faster, could you
+> address the warnings and failures shown on this page?
+> https://patchwork.kernel.org/project/netdevbpf/list/?submitter=174539
+> Thanks!
 > 
-> So if the filesystem has another lock which is acquired by the completion
-> handler. we could get an ABBA deadlock that lockdep would be unable to see.
-> 
-> There are other similar things; if you look at the remaining semaphore
-> users in the kernel, you'll see the general pattern is that they're
-> acquired in process context and then released in interrupt context.
-> If we had a way to transfer ownership of the semaphore to a generic
-> "interrupt context", they could become mutexes and lockdep could check
-> that nothing else will cause a deadlock.
+> To let the netdev robot know which tree this series should be applied,
+> we can use [PATCH net-next 1/6] as the subject prefix.
 
-Yes. Those are exactly what Cross-release feature solves. Those problems
-can be achieved with Cross-release. But even with Cross-release, we
-still cannot solve the problem of (1) readlock handling (2) and false
-positives preventing further reporting.
+Hi Xie!
 
-Thanks,
-Byungchul
+Thanks. I will have a look at this.
