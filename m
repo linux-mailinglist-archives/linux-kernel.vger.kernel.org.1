@@ -2,198 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1C72B4092
-	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E672B4095
+	for <lists+linux-kernel@lfdr.de>; Mon, 16 Nov 2020 11:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728769AbgKPKNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 05:13:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728610AbgKPKNs (ORCPT
+        id S1728610AbgKPKPZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 05:15:25 -0500
+Received: from mail.fireflyinternet.com ([77.68.26.236]:60125 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727012AbgKPKPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:13:48 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F01C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:13:48 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id f20so23603295ejz.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 02:13:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=eUexxalWWW3sAgPdtJ+hwphCF2dSR9rNJsVsIvPlNVI=;
-        b=fxwkArX/oc4z9qAMJ9gSO7AYFOBvA3NpMKLIORKO3O3UCRnF+tkXMLoF8Tm59fuXZy
-         qUOTeGe75cH7xbQzG+gR/kcLnp6IhsD9iDs7fetgPMeD8va8+nVKILw2MBugKrqr3XI/
-         o3dLtIUA28vNWH80ic3GKB1S2lZyCKRN2XzjS5UkAjO6sjdZu+PSsyT2JRWDA8QsWj7I
-         Csff5+M5JCRThMF2jhQPvXWxuT2qhTQb07ucEDkvGYPzgG873dKb3/VWQ2kCKD1EAav+
-         6FZoizAUFl7PY4OipPZ34WfJX0yvhgz9bNzCoVvQKRl3S/7uf8TreaW93aPP0jfH98P3
-         pePA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=eUexxalWWW3sAgPdtJ+hwphCF2dSR9rNJsVsIvPlNVI=;
-        b=qnBWTr0wCYFIs4giQMB+OJW/pQtTQaqryTVKK3tod+dkQeRjBZhiQvzZQA09rngfnh
-         EGpsXEIaeztzyON88YGvJL5K6XvKwz14x2/BGrBCGm5y0hzbWiy9mZ1ImEwMDmOHAh8v
-         i9U43shME3/fSH4jevAjJaOdTT4ux/YWc2DYVN86rA0zfdC2uAHBB87mCdAqWDbC52S5
-         8a7ENMPDSVbIJAD0XGgQpDNTll4WQ9kHJgRS3dU+2BUdFurzZfijvZ4gboa+dCnqYvtJ
-         TQmyxdPO+5m8amrYlb6dPLWul05DCw++rcWc5EKdH1dhnhTLDCgGZFHnUTrYe2TGlOk1
-         BL1A==
-X-Gm-Message-State: AOAM530xFw2LCfoikQRx8t1dJzgp8w8V/I/TpJYg0xOth7NmLI2sGNtK
-        gnt+8WiszdpuC5LxT56rkMG8IG6FMsfBcu2DYqZbNbfmD2xBxg==
-X-Google-Smtp-Source: ABdhPJwYW4UN9olfKOirCbEp5W4OGDak+tLBs5uembWUdFg5O+XjgR/lXxi2UDmh240Z1CqCGE9N1fEH5xkjAwYiTsE=
-X-Received: by 2002:a17:906:1b09:: with SMTP id o9mr14429592ejg.79.1605521626845;
- Mon, 16 Nov 2020 02:13:46 -0800 (PST)
+        Mon, 16 Nov 2020 05:15:25 -0500
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23003528-1500050 
+        for multiple; Mon, 16 Nov 2020 10:15:03 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:a54:380d:0:0:0:0:0 with HTTP; Mon, 16 Nov 2020 02:13:45
- -0800 (PST)
-X-Originating-IP: [5.35.10.61]
-In-Reply-To: <5fb245b1.1c69fb81.e2685.976dSMTPIN_ADDED_MISSING@mx.google.com>
-References: <CAOJe8K3wz=-LC++N-Hvrturt46+AAK1cW8VYXK+VMT9y1OSzmQ@mail.gmail.com>
- <5fb245b1.1c69fb81.e2685.976dSMTPIN_ADDED_MISSING@mx.google.com>
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-Date:   Mon, 16 Nov 2020 13:13:45 +0300
-Message-ID: <CAOJe8K2dBdoviSi7j_6XXpntp8GCBWuMWeAbmHbeZqs_bvG5LQ@mail.gmail.com>
-Subject: Re: [PATCH] xsk: add cq event
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201116100837.GA29398@kadam>
+References: <20201116100837.GA29398@kadam>
+Subject: Re: drivers/gpu/drm/i915/gem/i915_gem_throttle.c:59 i915_gem_throttle_ioctl() error: double locked 'ctx->engines_mutex' (orig line 59)
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org
+Date:   Mon, 16 Nov 2020 10:15:04 +0000
+Message-ID: <160552170467.29277.2663645719015888596@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> On Mon, 16 Nov 2020 12:13:21 +0300, Denis Kirjanov <kda@linux-powerpc.org>
-> wrote:
->> On 11/16/20, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->> > When we write all cq items to tx, we have to wait for a new event based
->> > on poll to indicate that it is writable. But the current writability is
->> > triggered based on whether tx is full or not, and In fact, when tx is
->> > dissatisfied, the user of cq's item may not necessarily get it, because
->> > it
->> > may still be occupied by the network card. In this case, we need to
->> > know
->> > when cq is available, so this patch adds a socket option, When the user
->> > configures this option using setsockopt, when cq is available, a
->> > readable event is generated for all xsk bound to this umem.
->> >
->> > I can't find a better description of this event,
->> > I think it can also be 'readable', although it is indeed different from
->> > the 'readable' of the new data. But the overhead of xsk checking
->> > whether
->> > cq or rx is readable is small.
->> >
->> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->> > ---
->> >  include/net/xdp_sock.h      |  1 +
->> >  include/uapi/linux/if_xdp.h |  1 +
->> >  net/xdp/xsk.c               | 28 ++++++++++++++++++++++++++++
->> >  3 files changed, 30 insertions(+)
->> >
->> > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
->> > index 1a9559c..faf5b1a 100644
->> > --- a/include/net/xdp_sock.h
->> > +++ b/include/net/xdp_sock.h
->> > @@ -49,6 +49,7 @@ struct xdp_sock {
->> >  	struct xsk_buff_pool *pool;
->> >  	u16 queue_id;
->> >  	bool zc;
->> > +	bool cq_event;
->> >  	enum {
->> >  		XSK_READY = 0,
->> >  		XSK_BOUND,
->> > diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
->> > index a78a809..2dba3cb 100644
->> > --- a/include/uapi/linux/if_xdp.h
->> > +++ b/include/uapi/linux/if_xdp.h
->> > @@ -63,6 +63,7 @@ struct xdp_mmap_offsets {
->> >  #define XDP_UMEM_COMPLETION_RING	6
->> >  #define XDP_STATISTICS			7
->> >  #define XDP_OPTIONS			8
->> > +#define XDP_CQ_EVENT			9
->> >
->> >  struct xdp_umem_reg {
->> >  	__u64 addr; /* Start of packet data area */
->> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
->> > index cfbec39..0c53403 100644
->> > --- a/net/xdp/xsk.c
->> > +++ b/net/xdp/xsk.c
->> > @@ -285,7 +285,16 @@ void __xsk_map_flush(void)
->> >
->> >  void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
->> >  {
->> > +	struct xdp_sock *xs;
->> > +
->> >  	xskq_prod_submit_n(pool->cq, nb_entries);
->> > +
->> > +	rcu_read_lock();
->> > +	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
->> > +		if (xs->cq_event)
->> > +			sock_def_readable(&xs->sk);
->> > +	}
->> > +	rcu_read_unlock();
->> >  }
->> >  EXPORT_SYMBOL(xsk_tx_completed);
->> >
->> > @@ -495,6 +504,9 @@ static __poll_t xsk_poll(struct file *file, struct
->> > socket *sock,
->> >  			__xsk_sendmsg(sk);
->> >  	}
->> >
->> > +	if (xs->cq_event && pool->cq && !xskq_prod_is_empty(pool->cq))
->> > +		mask |= EPOLLIN | EPOLLRDNORM;
->> > +
->> >  	if (xs->rx && !xskq_prod_is_empty(xs->rx))
->> >  		mask |= EPOLLIN | EPOLLRDNORM;
->> >  	if (xs->tx && !xskq_cons_is_full(xs->tx))
->> > @@ -882,6 +894,22 @@ static int xsk_setsockopt(struct socket *sock, int
->> > level, int optname,
->> >  		mutex_unlock(&xs->mutex);
->> >  		return err;
->> >  	}
->> > +	case XDP_CQ_EVENT:
->> > +	{
->> > +		int cq_event;
->> > +
->> > +		if (optlen < sizeof(cq_event))
->> > +			return -EINVAL;
->> > +		if (copy_from_sockptr(&cq_event, optval, sizeof(cq_event)))
->> > +			return -EFAULT;
->> > +
->> > +		if (cq_event)
->> > +			xs->cq_event = true;
->> > +		else
->> > +			xs->cq_event = false;
->>
->> It's false by default, isn't it?
->
-> I add cq_event inside "xdp_sock", that is got by sk_alloc, this call
-> sk_prot_alloc by __GFP_ZERO. So I think it is false.
+Quoting Dan Carpenter (2020-11-16 10:08:38)
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   0062442ecfef0d82cd69e3e600d5006357f8d8e4
+> commit: 27a5dcfe73f4b696b3de8c23a560199bb1c193a4 drm/i915/gem: Remove disordered per-file request list for throttling
+> config: i386-randconfig-m021-20201115 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> smatch warnings:
+> drivers/gpu/drm/i915/gem/i915_gem_throttle.c:59 i915_gem_throttle_ioctl() error: double locked 'ctx->engines_mutex' (orig line 59)
+> 
+> vim +59 drivers/gpu/drm/i915/gem/i915_gem_throttle.c
+> 
+>     35  int
+>     36  i915_gem_throttle_ioctl(struct drm_device *dev, void *data,
+>     37                          struct drm_file *file)
+>     38  {
+>     39          const unsigned long recent_enough = jiffies - DRM_I915_THROTTLE_JIFFIES;
+>     40          struct drm_i915_file_private *file_priv = file->driver_priv;
+>     41          struct i915_gem_context *ctx;
+>     42          unsigned long idx;
+>     43          long ret;
+>     44  
+>     45          /* ABI: return -EIO if already wedged */
+>     46          ret = intel_gt_terminally_wedged(&to_i915(dev)->gt);
+>     47          if (ret)
+>     48                  return ret;
+>     49  
+>     50          rcu_read_lock();
+>     51          xa_for_each(&file_priv->context_xa, idx, ctx) {
+>     52                  struct i915_gem_engines_iter it;
+>     53                  struct intel_context *ce;
+>     54  
+>     55                  if (!kref_get_unless_zero(&ctx->ref))
+>     56                          continue;
+>     57                  rcu_read_unlock();
+>     58  
+>     59                  for_each_gem_engine(ce,
+>     60                                      i915_gem_context_lock_engines(ctx),
+>                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> I don't understand why this takes the lock every iteration through the
+> loop
 
-Right, I meant that what's the point to set it explicitly to 'false'?
+It doesn't.
 
->
-> Thanks.
->
->>
->> > +
->> > +		return 0;
->> > +	}
->> >  	default:
->> >  		break;
->> >  	}
->> > --
->> > 1.8.3.1
->> >
->> >
->
+static inline struct i915_gem_engines *
+i915_gem_context_lock_engines(struct i915_gem_context *ctx)
+        __acquires(&ctx->engines_mutex)
+{
+        mutex_lock(&ctx->engines_mutex);
+        return i915_gem_context_engines(ctx);
+}
+
+static inline void
+i915_gem_context_unlock_engines(struct i915_gem_context *ctx)
+        __releases(&ctx->engines_mutex)
+{
+        mutex_unlock(&ctx->engines_mutex);
+}
+
+with the i915_gem_engines stored as a local in the iterator at the start
+of the for loop.
+-Chris
