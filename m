@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067E62B6C77
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3F52B6C7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbgKQSCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:02:04 -0500
-Received: from elvis.franken.de ([193.175.24.41]:38928 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729970AbgKQSCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:02:03 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kf5In-0001Ut-00; Tue, 17 Nov 2020 19:02:01 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 50FCAC021B; Tue, 17 Nov 2020 19:01:54 +0100 (CET)
-Date:   Tue, 17 Nov 2020 19:01:54 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     torvalds@linux-foundation.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MIPS fixes for v5.10
-Message-ID: <20201117180154.GA21834@alpha.franken.de>
+        id S1730325AbgKQSDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:03:11 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:49750 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728251AbgKQSDK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:03:10 -0500
+Date:   Tue, 17 Nov 2020 18:03:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605636188;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=dzZ0aEGs6coGOHgitGQejdWgR+Ek+i4gwJADmHs3gmU=;
+        b=w9pcLThFGP4coG6dwg2iiLbSL3hU1eDAb+2ic3mY0Vo1zfyRTBUmZDm25qwpddYWbVekKT
+        nT4aHlHQFmq7hsenwccG6S/Hj8thjIMlntdu/A+/ImITav/dXtW0zR5BTwmO+Oi0GkiZ1q
+        jXE1H8Drv29KZYD506WWAUZ74A1OdvI/4XKsMiqUa7FTL+STwp8m4CbcFFww9axCsqFtgk
+        0gdEE/rpRS02mWRo2Ncbabr+3soLFnS6HY/i3eUcxNtgNR5q2Gh5AZnY3kqWdKylte4z32
+        Y1fZQyWfr64h1MnGOaSq5M3414ZidGv3TLx7RyLKCSIXRMbReCbAmNyf/sjYlQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605636188;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=dzZ0aEGs6coGOHgitGQejdWgR+Ek+i4gwJADmHs3gmU=;
+        b=MudrgGoZfg2PXVizIq1p0ec/wcEWAnb7yqfHR/09eJteVEAYWHMgyQHJ7u0SzJtTQI5rp0
+        z7cL75Pwu++3RXCw==
+From:   "tip-bot2 for Chester Lin" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/core] arm64/ima: add ima_arch support
+Cc:     Chester Lin <clin@suse.com>, Mimi Zohar <zohar@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <160563618769.11244.6834590867933252385.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+The following commit has been merged into the efi/core branch of tip:
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+Commit-ID:     8d39cee0592e0129280e5a3cc480d64649c5e63f
+Gitweb:        https://git.kernel.org/tip/8d39cee0592e0129280e5a3cc480d64649c5e63f
+Author:        Chester Lin <clin@suse.com>
+AuthorDate:    Fri, 30 Oct 2020 14:08:40 +08:00
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Tue, 17 Nov 2020 15:09:32 +01:00
 
-are available in the Git repository at:
+arm64/ima: add ima_arch support
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.10_1
+Add arm64 IMA arch support. The code and arch policy is mainly inherited
+from x86.
 
-for you to fetch changes up to ac3b57adf87ad9bac7e33ca26bbbb13fae1ed62b:
+Co-developed-by: Chester Lin <clin@suse.com>
+Signed-off-by: Chester Lin <clin@suse.com>
+Acked-by: Mimi Zohar <zohar@linux.ibm.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/arm64/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-  MIPS: Alchemy: Fix memleak in alchemy_clk_setup_cpu (2020-11-17 12:53:57 +0100)
-
-----------------------------------------------------------------
-- fix bug preventing booting on several platforms
-- fix for build error, when modules need has_transparent_hugepage
-- fix for memleak in alchemy clk setup
-
-----------------------------------------------------------------
-Randy Dunlap (1):
-      MIPS: export has_transparent_hugepage() for modules
-
-Thomas Bogendoerfer (1):
-      MIPS: kernel: Fix for_each_memblock conversion
-
-Zhang Qilong (1):
-      MIPS: Alchemy: Fix memleak in alchemy_clk_setup_cpu
-
- arch/mips/alchemy/common/clock.c | 9 ++++++++-
- arch/mips/kernel/setup.c         | 6 +++---
- arch/mips/mm/tlb-r4k.c           | 1 +
- 3 files changed, 12 insertions(+), 4 deletions(-)
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index f858c35..04e78a3 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1849,6 +1849,7 @@ config EFI
+ 	select EFI_RUNTIME_WRAPPERS
+ 	select EFI_STUB
+ 	select EFI_GENERIC_STUB
++	imply IMA_SECURE_AND_OR_TRUSTED_BOOT
+ 	default y
+ 	help
+ 	  This option provides support for runtime services provided
