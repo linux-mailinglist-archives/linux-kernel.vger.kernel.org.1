@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6FD2B6621
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FD32B6620
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733284AbgKQOBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:01:23 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:17386 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731126AbgKQOBK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:01:10 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHDvZEd013952;
-        Tue, 17 Nov 2020 15:00:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=jVvnEkcOSvoJYeMhxUbGozS73QUI6vmOLenEHz6g06g=;
- b=PV53Thje8eJpmKTSC2cAgUMoiFddEJyTaK/9fQINegu38IY7vRUIFI0+oEQe68cMI19o
- Sq0f0SLQjhlUsmSD+LIZZifim2jYCFDLswqi0OzPFQIYcctRMVMRdNA4aRlEaF6etNL6
- om7jCXTF4P6+fjNI71mjOhxaQb7u9tfLlzuOXpY0hkmKrDO3FakqSr+uMS97yfZhTJBU
- qdGO1kpKnzVIvhYuraB8vl/ADVgs3oBq5KeRoFRGqx+H0ISWPgh7U8Y80fVgiz0/rhq5
- VWxIq646yI60DUdZtJNOVZZDWG0th1TDV7SPU4tFiORSQJ024rKEZgwJbZ1UJ2J9dpOF hw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34t5k51mxd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 15:00:35 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AA2FB10002A;
-        Tue, 17 Nov 2020 15:00:33 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6DD5B205D19;
-        Tue, 17 Nov 2020 15:00:33 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
- 2020 15:00:32 +0100
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
- for rproc serial
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Alexander Lobakin <alobakin@pm.me>, Amit Shah <amit@kernel.org>,
+        id S2387467AbgKQOBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:01:34 -0500
+Received: from verein.lst.de ([213.95.11.211]:59557 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733003AbgKQOBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:01:25 -0500
+Received: by verein.lst.de (Postfix, from userid 2005)
+        id CF5AD6736F; Tue, 17 Nov 2020 15:01:18 +0100 (CET)
+Date:   Tue, 17 Nov 2020 15:01:18 +0100
+From:   Torsten Duwe <duwe@lst.de>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Stephan =?utf-8?Q?M=C3=BCller?= <smueller@chronox.de>,
+        Willy Tarreau <w@1wt.eu>, linux-crypto@vger.kernel.org,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
- <20201116091950.GA30524@infradead.org>
- <ca183081-5a9f-0104-bf79-5fea544c9271@st.com>
- <20201116162844.GB16619@infradead.org> <20201116163907.GA19209@infradead.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <79d2eb78-caad-9c0d-e130-51e628cedaaa@st.com>
-Date:   Tue, 17 Nov 2020 15:00:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        And y Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>, ardb@kernel.org,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
+Subject: Re: [PATCH v36 00/13] /dev/random - a new approach
+Message-ID: <20201117140118.GA31400@lst.de>
+References: <20200921075857.4424-1-nstange@suse.de> <2961243.vtBmWVcJkq@tauon.chronox.de> <20201016172619.GA18410@lst.de> <3073852.aeNJFYEL58@positron.chronox.de> <20201028185117.74300988@blackhole.lan> <20201028180728.GA2831268@kroah.com> <20201102154435.71cab8c0@blackhole>
 MIME-Version: 1.0
-In-Reply-To: <20201116163907.GA19209@infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_03:2020-11-17,2020-11-17 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102154435.71cab8c0@blackhole>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/16/20 5:39 PM, Christoph Hellwig wrote:
-> Btw, I also still don't understand why remoteproc is using
-> dma_declare_coherent_memory to start with.  The virtio code has exactly
-> one call to dma_alloc_coherent vring_alloc_queue, a function that
-> already switches between two different allocators.  Why can't we just
-> add a third allocator specifically for these remoteproc memory carveouts
-> and bypass dma_declare_coherent_memory entirely?
+On Mon, Nov 02, 2020 at 02:44:35PM +0100, Torsten Duwe wrote:
 > 
+> Ted, if you don't have the time any more to take care of /dev/random,
+> it's not a shame to hand over maintainership, especially given your
+> long history of Linux contributions.
+> 
+> Please do seriously consider to hand it over to someone new. This would
+> be a good opportunity.
 
-The dma_declare_coherent_memory allows to associate vdev0buffer memory region
-to the remoteproc virtio device (vdev parent). This region is used to allocated
-the rpmsg buffers.
-The memory for the rpmsg buffer is allocated by the rpmsg_virtio device in
-rpmsg_virtio_bus[1]. The size depends on the total size needed for the rpmsg
-buffers.
+I can see you are quite busy working on ext4, and there is a number of
+patches for drivers/char/random.c awaiting review. Wouldn't it be good
+to pass it on to someone more enthusiastic?
 
-The vrings are allocated directly by the remoteproc device.
+At least some sort of reply would be appreciated.
+Or are you already pondering the request ;-) ?
 
-[1]
-https://elixir.bootlin.com/linux/v5.10-rc3/source/drivers/rpmsg/virtio_rpmsg_bus.c#L925
+	Torsten
+
