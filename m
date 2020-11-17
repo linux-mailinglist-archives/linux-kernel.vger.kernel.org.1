@@ -2,79 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19ACB2B5EE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A07032B5EE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728325AbgKQMKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKQMKY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:10:24 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43EB0C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:10:23 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id v143so20082116qkb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:10:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5o0jeVSQmzUAmk1xbEshzaNLz0SjmeOddDRU/spmatk=;
-        b=qjxtY4L/pSZsKkQwzyQ6WPWLgfbeHzjz9s4p4X2Gvs722PBi6eL1lpTiMJBzQ/va/n
-         5ZlaCxDNa9s/U8dqmLJm27888YvgtSPNwjbIn5lrebZu+w4S9cZrMb/JhhYiglVlqdyt
-         P+TJNudUVjahKiRKQVMCmAHhSNdHt/BGcbFzjqsWOhnYGc9d5UIfhWUZORc8l2WZLsWM
-         c+JWjM6u7kePTGWtkh7shVB9PcMLCoiGRP5KDTa5p+HhncjRFxmWx0JGuweIqi97nW3I
-         qZQrINX0bHF7JgnrIUv309t0mFZbMeex58hGvdWWJ5mFL3Lx9dTxHzpdOo7fK6EKL6dH
-         NCHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5o0jeVSQmzUAmk1xbEshzaNLz0SjmeOddDRU/spmatk=;
-        b=eI/7w1RvubqSd0xLgFTr0TbsEzKDQRpCEqi7bMOIFB9FWYmn2Tfwm/OIbvQHTGCMIa
-         LWiHNm5J/mZv+pPqngn7K5DNtAOJDYooUr0QbeWsoonwbZ5BUOAzaM0sAzXUCpE7tnGH
-         3jmnsuBAnKi9EcpZfxHVWgXTOKxChKPM8pS3eXsGCIwNRxfZMK4kZT2XxJ7H66EWWdum
-         811mTZ2MlKN6TKmHK9DWWTnJ416aCDoJH8p9q0fQKX8omx1YakW7QMbZfQmMmGgRdCGk
-         jOHN9kotpLr3cqsUxA/zfQjHrjFblJ1GQ4g+ZyCun00Z9j25l6KMuvYY2+6Bijla8kRW
-         JuEQ==
-X-Gm-Message-State: AOAM530Ou8SoqX9bVZ/7FSxAuvdHOLA7TsLlxnCAAuqohoaPlqRg8bXX
-        06kXTKwkLxSlRj0DSL4quyx3ScgN5uyoBCxLTBgPWfQDkzc=
-X-Google-Smtp-Source: ABdhPJycvwWHeb8fzvv63MFpLzr6/5oraxZLR4rtjnfAvrxrXARcgoeFIsesUsHb924vobxAYepNl0zcIbqyuYX/+Jg=
-X-Received: by 2002:ae9:f715:: with SMTP id s21mr18936312qkg.467.1605615022569;
- Tue, 17 Nov 2020 04:10:22 -0800 (PST)
+        id S1728305AbgKQMKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:10:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:55144 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgKQMKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:10:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B11C101E;
+        Tue, 17 Nov 2020 04:10:18 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF44E3F719;
+        Tue, 17 Nov 2020 04:10:16 -0800 (PST)
+Date:   Tue, 17 Nov 2020 12:10:11 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
+Subject: Re: [PATCH 0/3] Add support to handle prefetchable memoryg
+Message-ID: <20201117121011.GA6050@e121166-lin.cambridge.arm.com>
+References: <20201023195655.11242-1-vidyas@nvidia.com>
+ <SLXP216MB04777D651A59246A60D036A8AA1B0@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
+ <20201026123012.GA356750@ulmo>
+ <53277a71-13e5-3e7e-7c51-aca367b99d31@nvidia.com>
+ <92d5ead4-a3d2-42ba-a542-3e305f3d5523@nvidia.com>
 MIME-Version: 1.0
-References: <160560676899.144950.4148778261999789656.stgit@devnote2> <160560677952.144950.8229834525319742454.stgit@devnote2>
-In-Reply-To: <160560677952.144950.8229834525319742454.stgit@devnote2>
-From:   Chen Yu <yu.chen.surf@gmail.com>
-Date:   Tue, 17 Nov 2020 20:10:10 +0800
-Message-ID: <CADjb_WS+tc-oHX7hXVoWGz9pP_e66DcMp1npKbdpcVa9DhPKPA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] tools/bootconfig: Fix to check the write failure correctly
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Chen Yu <yu.c.chen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <92d5ead4-a3d2-42ba-a542-3e305f3d5523@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 5:53 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> Fix to check the write(2) failure including partial write
-> correctly and try to rollback the partial write, because
-> if there is no BOOTCONFIG_MAGIC string, we can not remove it.
->
-> Fixes: 85c46b78da58 ("bootconfig: Add bootconfig magic word for indicating bootconfig explicitly")
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-For [1/3] and [2/3]
-Tested-by: Chen Yu <yu.chen.surf@gmail.com>
+On Tue, Nov 17, 2020 at 10:08:35AM +0530, Vidya Sagar wrote:
+> Hi Lorenzo & Bjorn,
+> Sorry to bother you.
+> Could you please take a look at the patches-1 & 2 from this series?
 
--- 
-Thanks,
-Chenyu
+IIUC we should:
+
+(1) apply https://patchwork.kernel.org/project/linux-pci/patch/20201026181652.418729-1-robh@kernel.org
+(2) apply [1,2] from this series
+
+For (2), are they rebased against v5.10-rc3 with (1) applied ? I need to
+check but I will probably have to use v5.10-rc3 as baseline owing to
+commit:
+
+9fff3256f93d
+
+(1) depends on it.
+
+Lorenzo
+
+> Thanks,
+> Vidya Sagar
+> 
+> On 11/4/2020 1:16 PM, Vidya Sagar wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > Lorenzo / Bjorn,
+> > Could you please review patches-1 & 2 in this series?
+> > For the third patch, we already went with Rob's patch @
+> > http://patchwork.ozlabs.org/project/linux-pci/patch/20201026154852.221483-1-robh@kernel.org/
+> > 
+> > 
+> > Thanks,
+> > Vidya Sagar
+> > 
+> > On 10/26/2020 6:02 PM, Thierry Reding wrote:
+> > > On Sat, Oct 24, 2020 at 04:03:41AM +0000, Jingoo Han wrote:
+> > > > On 10/23/20, 3:57 PM, Vidya Sagar wrote:
+> > > > > 
+> > > > > This patch series adds support for configuring the DesignWare IP's ATU
+> > > > > region for prefetchable memory translations.
+> > > > > It first starts by flagging a warning if the size of non-prefetchable
+> > > > > aperture goes beyond 32-bit as PCIe spec doesn't allow it.
+> > > > > And then adds required support for programming the ATU to handle higher
+> > > > > (i.e. >4GB) sizes and then finally adds support for differentiating
+> > > > > between prefetchable and non-prefetchable regions and
+> > > > > configuring one of
+> > > > > the ATU regions for prefetchable memory translations purpose.
+> > > > > 
+> > > > > Vidya Sagar (3):
+> > > > >    PCI: of: Warn if non-prefetchable memory aperture size is > 32-bit
+> > > > >    PCI: dwc: Add support to program ATU for >4GB memory aperture sizes
+> > > > >    PCI: dwc: Add support to handle prefetchable memory mapping
+> > > > 
+> > > > For 2nd & 3rd,
+> > > > Acked-by: Jingoo <jingoohan1@gmail.com>
+> > > > But, I still want someone to ack 1st patch, not me.
+> > > > 
+> > > > To Vidya,
+> > > > If possible, can you ask your coworker to give 'Tested-by'? It
+> > > > will be very helpful.
+> > > > Thank you.
+> > > 
+> > > On next-20201026 (but also going back quite a while) I'm seeing this
+> > > during boot on Jetson AGX Xavier (Tegra194):
+> > > 
+> > > [    3.493382] ahci 0001:01:00.0: version 3.0
+> > > [    3.493889] ahci 0001:01:00.0: SSS flag set, parallel bus scan
+> > > disabled
+> > > [    4.497706] ahci 0001:01:00.0: controller reset failed (0xffffffff)
+> > > [    4.498114] ahci: probe of 0001:01:00.0 failed with error -5
+> > > 
+> > > After applying this series, AHCI over PCI is back to normal:
+> > > 
+> > > [    3.543230] ahci 0001:01:00.0: AHCI 0001.0000 32 slots 1 ports 6
+> > > Gbps 0x1 impl SATA mode
+> > > [    3.550841] ahci 0001:01:00.0: flags: 64bit ncq sntf led only pmp
+> > > fbs pio slum part sxs
+> > > [    3.559747] scsi host0: ahci
+> > > [    3.561998] ata1: SATA max UDMA/133 abar m512@0x1230010000 port
+> > > 0x1230010100 irq 63
+> > > 
+> > > So for the series:
+> > > 
+> > > Tested-by: Thierry Reding <treding@nvidia.com>
+> > > 
