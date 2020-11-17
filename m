@@ -2,102 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86412B6079
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558B12B60DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgKQNJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:09:41 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7695 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728893AbgKQNJe (ORCPT
+        id S1729952AbgKQNNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:13:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728834AbgKQNNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:09:34 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cb5qs1QJ5zkZ6f;
-        Tue, 17 Nov 2020 21:09:13 +0800 (CST)
-Received: from [10.174.185.179] (10.174.185.179) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 17 Nov 2020 21:09:22 +0800
-Subject: Re: [PATCH 1/2] KVM: arm64: vgic: Forbid invalid userspace
- Redistributor accesses
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <eric.auger@redhat.com>,
-        <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
-        <suzuki.poulose@arm.com>, <wanghaibin.wang@huawei.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-References: <20201113142801.1659-1-yuzenghui@huawei.com>
- <20201113142801.1659-2-yuzenghui@huawei.com>
- <724c43702b52aac0d3c9beb9604d1bfb@kernel.org>
- <584b7ff1-ecf2-b0ec-cea3-ccc29902f43a@huawei.com>
- <cc45285fe491aff5c28a24f94c124508@kernel.org>
- <7e58200c-814e-3598-155a-9a7e6cc24374@huawei.com>
- <c20865a267e44d1e2c0d52ce4e012263@kernel.org>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <e7263d49-e80a-1ad2-c256-979c1ee213fa@huawei.com>
-Date:   Tue, 17 Nov 2020 21:09:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 17 Nov 2020 08:13:14 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737B0C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:13:14 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id s25so29314177ejy.6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:13:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=pg/yyi9JRP4LZiCpylSmbD4jIZutsHvW/MdxJPfPpUc=;
+        b=aYBMoo77/5cNRmKDqoRDn52XAF6qiK7a2CG8tcb9nCrnDdPwd9StGwg/UPm4gkWfGF
+         IpXgsBjhfRj+JzjmAtYinBAHUpclRlPRDF4+Sq/kG1c8ECezftKvqbb4UrqMu3NaR1r7
+         qQgF86VBPOqshZ0hqdaQz70pgz+Xrq8Ut+y1Nj+QtWTa0dLNBw7i5fuXl3apLFXTuPD9
+         tEji99OSDyT3xWx+m+ka8y9WO+/iP3YpyL2IJqUgOBwSfim9lckTd9mxSEpgYExCwqVH
+         ttmwxo+TJIHJSX8k+V9p769+N9ElTIg4K6BYMmPKvsXgo98JLEaGTpCQx5GJwh36CRPv
+         uubg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=pg/yyi9JRP4LZiCpylSmbD4jIZutsHvW/MdxJPfPpUc=;
+        b=CBnxObw9U+n1uIiBXh83wPpr6sltygtMRZWGANJXYbbjgsyUdjFpa/zQXGdAKL0eGC
+         Mx393+ss4Z/HpHQmpXQ0K2KgULJDkA4wpHyoEgwO0YKEvgG8enB4z6s7QmsVsSati3Vh
+         9E4+M2eThefSDOx4Nf6hfQA4SmYDrsVLUkoC0vSgfdCFrqa/dyYoHRiGCQIh2lmtT3bq
+         1c+SQTK0mp4KYj0WNQwhawlp5BsMXXf9X8g0iD5JKqIb5eiiIqOJ9Tx15O7DlQ7es09u
+         UFxewICe25DcVmdBiGajYtAJrZjg5GtKm+uaYOj/GUJaXGKaPyDKru2nkDEpB3teUfud
+         Od+A==
+X-Gm-Message-State: AOAM533UrHakmV/VnzH0lDSyQqrzaY998LlJ+D/qE++cgeT9R/aC1Dlv
+        ddSKoTx8aYyDTy8+3LusG2AhH5LSGJRg+tjjFpsfcA==
+X-Google-Smtp-Source: ABdhPJwYHXeILii9dacTYuuNdTsqcVHIh+cc1ehWXbhUtGjuEQ3DdoJwrDQx4o0HUxpKBFo31uFVOZC4HPSPVrtrVVc=
+X-Received: by 2002:a17:906:1b09:: with SMTP id o9mr20092638ejg.79.1605618793059;
+ Tue, 17 Nov 2020 05:13:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c20865a267e44d1e2c0d52ce4e012263@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.185.179]
-X-CFilter-Loop: Reflected
+Received: by 2002:a54:380d:0:0:0:0:0 with HTTP; Tue, 17 Nov 2020 05:13:12
+ -0800 (PST)
+X-Originating-IP: [5.35.10.61]
+In-Reply-To: <1605614877-5670-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+References: <1605614877-5670-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Tue, 17 Nov 2020 16:13:12 +0300
+Message-ID: <CAOJe8K3-x36TU2kuW-uR8eqkNyoPsLWZYvD53MPcWxA6i5g72g@mail.gmail.com>
+Subject: Re: [PATCH net v2] net: emaclite: Add error handling for of_address_
+ and _mdio_setup functions
+To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
+        michal.simek@xilinx.com, mchehab+samsung@kernel.org,
+        gregkh@linuxfoundation.org, nicolas.ferre@microchip.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        git@xilinx.com, Shravya Kumbham <shravya.kumbham@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/17 16:49, Marc Zyngier wrote:
-> Hi Zenghui,
-> 
-> On 2020-11-16 14:57, Zenghui Yu wrote:
->> Hi Marc,
->>
->> On 2020/11/16 22:10, Marc Zyngier wrote:
->>>> My take is that only if the "[Re]Distributor base address" is specified
->>>> in the system memory map, will the user-provided kvm_device_attr.offset
->>>> make sense. And we can then handle the access to the register which is
->>>> defined by "base address + offset".
->>>
->>> I'd tend to agree, but it is just that this is a large change at -rc4.
->>> I'd rather have a quick fix for 5.10, and a more invasive change for 
->>> 5.11,
->>> spanning all the possible vgic devices.
->>
->> So you prefer fixing it by "return a value that doesn't have the Last
->> bit set" for v5.10? I'm ok with it and can send v2 for it.
-> 
-> Cool. Thanks for that.
-> 
->> Btw, looking again at the way we handle the user-reading of GICR_TYPER
->>
->>     vgic_mmio_read_v3r_typer(vcpu, addr, len)
->>
->> it seems that @addr is actually the *offset* of GICR_TYPER (0x0008) and
->> @addr is unlikely to be equal to last_rdist_typer, which is the *GPA* of
->> the last RD. Looks like the user-reading of GICR_TYPER.Last is always
->> broken?
-> 
-> I think you are right. Somehow, we don't seem to track the index of
-> the RD in the region, so we can never compute the address of the RD
-> even if the base address is set.
-> 
-> Let's drop the reporting of Last for userspace for now, as it never
-> worked. If you post a patch addressing that quickly, I'll get it to
-> Paolo by the end of the week (there's another fix that needs merging).
+On 11/17/20, Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com> wrote:
+> From: Shravya Kumbham <shravya.kumbham@xilinx.com>
+>
+> Add ret variable, condition to check the return value and error
+> path for the of_address_to_resource() function. It also adds error
+> handling for mdio setup and decrement refcount of phy node.
+>
+> Addresses-Coverity: Event check_return value.
+> Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+> ---
+> Changes for v2:
+>
+> - Change subject_prefix to target net tree.
+> - Add error handling for mdio_setup and remove phy_read changes.
+>   Error checking of phy_read will be added along with phy_write
+>   in a followup patch. Document the changes in commit description.
+> ---
+>  drivers/net/ethernet/xilinx/xilinx_emaclite.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> index 0c26f5bcc523..4e0005164785 100644
+> --- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> +++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> @@ -820,7 +820,7 @@ static int xemaclite_mdio_write(struct mii_bus *bus, int
+> phy_id, int reg,
+>  static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
+>  {
+>  	struct mii_bus *bus;
+> -	int rc;
+> +	int rc, ret;
+>  	struct resource res;
+>  	struct device_node *np = of_get_parent(lp->phy_node);
+>  	struct device_node *npp;
+> @@ -834,7 +834,12 @@ static int xemaclite_mdio_setup(struct net_local *lp,
+> struct device *dev)
+>  	}
+>  	npp = of_get_parent(np);
+>
+> -	of_address_to_resource(npp, 0, &res);
+> +	ret = of_address_to_resource(npp, 0, &res);
+> +	if (ret) {
+> +		dev_err(dev, "%s resource error!\n",
+> +			dev->of_node->full_name);
+> +		return ret;
+> +	}
 
-OK. I'll fix it by providing a uaccess_read callback for GICR_TYPER.
+npp is not returned to of_node_put() in the error case below
 
-
-Thanks,
-Zenghui
-
-> 
-> Eric: do we have any test covering the userspace API?
-> 
-> Thanks,
-> 
->          M.
+>  	if (lp->ndev->mem_start != res.start) {
+>  		struct phy_device *phydev;
+>  		phydev = of_phy_find_device(lp->phy_node);
+> @@ -1173,7 +1178,11 @@ static int xemaclite_of_probe(struct platform_device
+> *ofdev)
+>  	xemaclite_update_address(lp, ndev->dev_addr);
+>
+>  	lp->phy_node = of_parse_phandle(ofdev->dev.of_node, "phy-handle", 0);
+> -	xemaclite_mdio_setup(lp, &ofdev->dev);
+> +	rc = xemaclite_mdio_setup(lp, &ofdev->dev);
+> +	if (rc) {
+> +		dev_warn(dev, "error registering MDIO bus: %d\n", rc);
+> +		goto error;
+> +	}
+>
+>  	dev_info(dev, "MAC address is now %pM\n", ndev->dev_addr);
+>
+> @@ -1197,6 +1206,7 @@ static int xemaclite_of_probe(struct platform_device
+> *ofdev)
+>  	return 0;
+>
+>  error:
+> +	of_node_put(lp->phy_node);
+>  	free_netdev(ndev);
+>  	return rc;
+>  }
+> --
+> 2.7.4
+>
+>
