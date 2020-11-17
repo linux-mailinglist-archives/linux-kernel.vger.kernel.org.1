@@ -2,189 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F002B65B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8E72B65E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730467AbgKQN6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:58:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728602AbgKQN6D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:58:03 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E08C0613CF;
-        Tue, 17 Nov 2020 05:58:02 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id z21so30193218lfe.12;
-        Tue, 17 Nov 2020 05:58:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DQvmYjbDLLBnHVdX+CylDIEuf6i9/j+JMwS6A3fnRDk=;
-        b=KfRYe7etr069x7vSrWYScAW2e9VlkU4yKQhSex+cMx5Durh9EmJxOm6voWPy5MIcat
-         fZNxV7/WPZZbKpBI3qt51fczpKwolC/iCrXeuiTE8tXPhqebTutkaaQnfJm7r+BbAY9m
-         oldHMXUH96jE5ERAE0vY2rjqCLrNgr6j+LGpFKKFxveu6Yp3GlPczoEDYvxSSjbi4s8J
-         QPki9Jnf8bXSXByZgBu4dAPcpb1c6lHMXKg/XTkbENIyma2xWmqQ0NxH2LF/kn419vjs
-         K7iLgfQuVzI/JwpDz7pNBmbNyGV4uyu3obP0E65YEpv3mLJsR13bzgWgfvhZvprc+wZz
-         XGZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DQvmYjbDLLBnHVdX+CylDIEuf6i9/j+JMwS6A3fnRDk=;
-        b=fgrU8ffFZUbg1FlTOm4Gw32jtwsfquih40EmFHnXGmt6y7kFPdtxHBFc+pGjn9MdhN
-         t5QkBFOBNvpRNWvec5aHNilW0Lhd5baFY1bzYca/c4xZoCHrgIcyZK5w4Lsw0OlKRn9g
-         Jsqfd3ZlNm0gv2kU5gLa777byONzwSqX/uyDFPTRhbJ0K02Pv8OnD6itb3Cln2E6Vsfa
-         Ybr0v0HhUoIW5o4R5Xp/jsSqcpFjZzxjQJ0pYSXuuIsiYuahrWVUgntDC3NwjhhoD28k
-         MkqBd5QJnbN3qh0u7CaWtTIh7lpuMcnQNqalzNovLDN44ZNOef40uiXeY7+m7s/P60rQ
-         oDPA==
-X-Gm-Message-State: AOAM531htdZEQXp3NOgFdIPSOyBoDY6e1xLOoV5M4DOVEankAcL4OdSU
-        FlF8oU2ACWUVPym1QTUYtJU=
-X-Google-Smtp-Source: ABdhPJx3NPYlcHefpv13+uwzcCiZxoxLv9hs8s6K2s2sKD8scEwyGNsxAWJAU21dGk/NyXeZL8HZFQ==
-X-Received: by 2002:a19:3d5:: with SMTP id 204mr1779266lfd.384.1605621481297;
-        Tue, 17 Nov 2020 05:58:01 -0800 (PST)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id r20sm3066853ljk.97.2020.11.17.05.58.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 05:58:00 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 17 Nov 2020 14:57:58 +0100
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH] Revert "mm/vunmap: add cond_resched() in
- vunmap_pmd_range"
-Message-ID: <20201117135758.GA11602@pc636>
-References: <20201105170249.387069-1-minchan@kernel.org>
- <20201106175933.90e4c8851010c9ce4dd732b6@linux-foundation.org>
- <20201107083939.GA1633068@google.com>
- <20201112200101.GC123036@google.com>
- <20201112144919.5f6b36876f4e59ebb4a99d6d@linux-foundation.org>
- <20201113162529.GA2378542@google.com>
- <20201116175323.GB3805951@google.com>
- <20201116152058.effcc5e6915cd9b98ba31348@linux-foundation.org>
+        id S1731746AbgKQN65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:58:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731343AbgKQN6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:58:54 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A15282468D
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605621532;
+        bh=h0tP/2EDBP+w629n4RIUFP0ww+ilNgg3bULmsl5N/go=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eO7ncMNKEnEk/C0m3RgjKwLdSouPFjHJwPBiE8nfas8R7lqi/yMmAXCOWSp3YpTyJ
+         z5KMePS+uNSarTpLyw/daiN/5UYiZvg2fPxYMwkOYO/tRm+jSGqlVUMxiVLIIkirCC
+         2OMu18Ps9RBdIzuMA3koS8dZNh1c+p4iPO77STR0=
+Received: by mail-ot1-f43.google.com with SMTP id l36so19454654ota.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:58:52 -0800 (PST)
+X-Gm-Message-State: AOAM5324Yj3Dc8NhjUt4rhrtZChiV9XFdWrB0k+V8xpcq3gLtMqNiNJU
+        naWtYlaTih2UU9CKzGu/bITh2K3qLQwj+LEg8EQ=
+X-Google-Smtp-Source: ABdhPJzWjY5Ize8OPQB6lZT19ylq0ipsqvKTMzVBF9gDabFABnJhhWpHeGx7Yx96l6oO+GI+kqjNKJtrAwz8bPTMKWw=
+X-Received: by 2002:a9d:65d5:: with SMTP id z21mr2829215oth.251.1605621531812;
+ Tue, 17 Nov 2020 05:58:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116152058.effcc5e6915cd9b98ba31348@linux-foundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <202011111443.lt7V48Ig-lkp@intel.com> <CACRpkdbYXyVGf9_6PjmPgw_KNSEfiFVrmXWWmqLD-8Hmxg1xmg@mail.gmail.com>
+ <20201113235801.GB6117@piout.net>
+In-Reply-To: <20201113235801.GB6117@piout.net>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 17 Nov 2020 14:58:36 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2MyLnULmUr4zgzkiWPiYfp+Xs8ruz9_q-PugVf_9DCCw@mail.gmail.com>
+Message-ID: <CAK8P3a2MyLnULmUr4zgzkiWPiYfp+Xs8ruz9_q-PugVf_9DCCw@mail.gmail.com>
+Subject: Re: ./include/generated/autoconf.h:1601:33: fatal error:
+ mach/debug-macro.S: No such file or directory
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Olof Johansson <olof@lixom.net>, kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
-> Let's cc Uladzislau on vmalloc things?
-> 
-> > How about this?
-> 
-> Well, lol, that's a simple approach to avoiding the problem ;)
-> 
-To me it looks like a specific workaround for a specific one user.
-
-> > unmap_kernel_range had been atomic operation and zsmalloc has used
-> > it in atomic context in zs_unmap_object.
-> > However, ("e47110e90584, mm/vunmap: add cond_resched() in vunmap_pmd_range")
-> > changed it into non-atomic operation via adding cond_resched.
-> > It causes zram decompresion failure by corrupting compressed buffer
-> > in atomic context.
-> > 
-> > This patch introduces unmap_kernel_range_atomic which works for
-> > only range less than PMD_SIZE to prevent cond_resched call.
-> > 
-> > ...
+On Sat, Nov 14, 2020 at 12:58 AM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+> On 11/11/2020 09:51:26+0100, Linus Walleij wrote:
+> > On Wed, Nov 11, 2020 at 7:18 AM kernel test robot <lkp@intel.com> wrote:
 > >
-> > --- a/include/linux/vmalloc.h
-> > +++ b/include/linux/vmalloc.h
-> > @@ -180,6 +180,7 @@ int map_kernel_range(unsigned long start, unsigned long size, pgprot_t prot,
-> >  		struct page **pages);
-> >  extern void unmap_kernel_range_noflush(unsigned long addr, unsigned long size);
-> >  extern void unmap_kernel_range(unsigned long addr, unsigned long size);
-> > +extern void unmap_kernel_range_atomic(unsigned long addr, unsigned long size);
-> >  static inline void set_vm_flush_reset_perms(void *addr)
-> >  {
-> >  	struct vm_struct *vm = find_vm_area(addr);
-> > @@ -200,6 +201,7 @@ unmap_kernel_range_noflush(unsigned long addr, unsigned long size)
-> >  {
-> >  }
-> >  #define unmap_kernel_range unmap_kernel_range_noflush
-> > +#define unmap_kernel_range_atomic unmap_kernel_range_noflush
-> >  static inline void set_vm_flush_reset_perms(void *addr)
-> >  {
-> >  }
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index d7075ad340aa..714e5425dc45 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -88,6 +88,7 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
-> >  	pmd_t *pmd;
-> >  	unsigned long next;
-> >  	int cleared;
-> > +	bool check_resched = (end - addr) > PMD_SIZE;
-> >  
-> >  	pmd = pmd_offset(pud, addr);
-> >  	do {
-> > @@ -102,8 +103,8 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
-> >  		if (pmd_none_or_clear_bad(pmd))
-> >  			continue;
-> >  		vunmap_pte_range(pmd, addr, next, mask);
-> > -
-> > -		cond_resched();
-> > +		if (check_resched)
-> > +			cond_resched();
-> >  	} while (pmd++, addr = next, addr != end);
-> >  }
-> >  
-> > @@ -2024,6 +2025,24 @@ void unmap_kernel_range(unsigned long addr, unsigned long size)
-> >  	flush_tlb_kernel_range(addr, end);
-> >  }
-> >  
-> > +/**
-> > + * unmap_kernel_range_atomic - unmap kernel VM area and flush cache and TLB
-> > + * @addr: start of the VM area to unmap
-> > + * @size: size of the VM area to unmap
-> > + *
-> > + * Similar to unmap_kernel_range_noflush() but it's atomic. @size should be
-> > + * less than PMD_SIZE.
-> > + */
-> > +void unmap_kernel_range_atomic(unsigned long addr, unsigned long size)
-> > +{
-> > +	unsigned long end = addr + size;
-> > +
-> > +	flush_cache_vunmap(addr, end);
-> > +	WARN_ON(size > PMD_SIZE);
-> 
-> WARN_ON_ONCE() would be better here - no point in creating a million
-> warnings where one would suffice.
-> 
-> > +	unmap_kernel_range_noflush(addr, size);
-> > +	flush_tlb_kernel_range(addr, end);
-> > +}
-> > +
-> >  static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
-> >  	struct vmap_area *va, unsigned long flags, const void *caller)
-> >  {
-> > diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-> > index 662ee420706f..9decc7634852 100644
-> > --- a/mm/zsmalloc.c
-> > +++ b/mm/zsmalloc.c
-> > @@ -1154,7 +1154,7 @@ static inline void __zs_unmap_object(struct mapping_area *area,
-> >  {
-> >  	unsigned long addr = (unsigned long)area->vm_addr;
-> >  
-> > -	unmap_kernel_range(addr, PAGE_SIZE * 2);
-> > +	unmap_kernel_range_atomic(addr, PAGE_SIZE * 2);
-> >  }
-> 
-> I suppose we could live with it if no better solutions are forthcoming.
->
-Maybe solve it on zsmalloc side? For example to add __zs_unmap_object_deferred(),
-so it schedules the work that calls unmap_kernel_range() on a list of mapping_area
-objects.
+> > >    In file included from include/linux/kconfig.h:7,
+> > >                     from <command-line>:
+> > > >> ./include/generated/autoconf.h:1601:33: fatal error: mach/debug-macro.S: No such file or directory
+> > >     1601 | #define CONFIG_DEBUG_LL_INCLUDE "mach/debug-macro.S"
+> > >          |                                 ^~~~~~~~~~~~~~~~~~~~
+> > >    compilation terminated.
+> >
+> > This is an interesting one!
+> >
+> > It happens when CONFIG_DEBUG_LL_INCLUDE does not have a custom
+> > debug header for the platform under arch/arm/include/debug and the
+> > KConfig falls through to the default value, which is <mach/debug-macro.S>.
+> >
+> > Only that the majority is not using <mach/*> anymore.
+> >
+> > I feel a bit like setting the default to debug/8250.S or something.
+> >
+> > Suggestions?
+> >
+> > Then the actual bug exposed:
+> >
+> > The config tested by the robot is using
+> > CONFIG_ARCH_AT91=y
+> > CONFIG_SOC_SAMV7=y
+> >
+> > When I look into Kconfig.debug it seems that this will define
+> > DEBUG_AT91_SAMV7_USART1 but only a physical address,
+> > no virtual address and and actually no debug header. It seems
+> > LL_DEBUG is broken on SAMV7 and never really worked
+> > so now that crops up.
 
---
-Vlad Rezki
+The last mach/debug-macro.S file was apparently removed in 2015,
+in commit 0045c0dd2f64 ("ARM: debug-ll: rework footbridge handling").
+At that point we should have changed the fallback
+
+> > Nicolas, something that should be fixed, I think?
+> >
+>
+> I confirm DEBUG_LL is not broken on SAMV7. The config used by lkp doen't
+> define DEBUG_AT91_SAMV7_USART1, it is not the culprit. Select it and the
+> problem is gone since DEBUG_AT91_SAMV7_USART1 selects DEBUG_AT91_UART
+> and DEBUG_LL_INCLUDE has:
+> default "debug/at91.S" if DEBUG_AT91_UART
+>
+> Your issue is CONFIG_DEBUG_SEMIHOSTING
+
+Right, in particular, semihosting is not handled in
+arch/arm/boot/compressed/head.S the way it is handled in
+arch/arm/boot/compressed/debug.S, arch/arm/kernel/debug.S
+and arch/arm/kernel/head.S.
+
+I wonder if we should move the semihosting code into a separate
+arch/arm/include/debug/semihosting.S to make the generic
+code treat it the same as all the other options.
+
+Alternatively, disabling CONFIG_DEBUG_UNCOMPRESS
+when SEMIHOSTING is set would be the cheapest workaround
+for the particular build failure.
+
+      Arnd
