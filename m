@@ -2,114 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DC52B6CBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269922B6D0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730666AbgKQSQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:16:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55370 "EHLO mail.kernel.org"
+        id S1731244AbgKQSRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:17:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729969AbgKQSQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:16:24 -0500
-Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        id S1730914AbgKQSQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:16:52 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EBDA2462E;
-        Tue, 17 Nov 2020 18:16:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8B352222E;
+        Tue, 17 Nov 2020 18:16:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605636983;
-        bh=bJdr/mD1349bpsi/8SdoMbm6aRAfX1Fhc0M1fMX3eHo=;
+        s=default; t=1605637011;
+        bh=LYmQa3sjmY4vGoc9PzmWfJg6D+u8panQLU6mw2v2bU0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jsWp9mQI+gnrXYDq+btYXtY0Bi56lY0qGElok2GpRHn22S5fHmAO8dO72QA3EcMmJ
-         IEMqNr23HbT4Ng+G0HcEK/t6mB5D1DJljhEnwr+I0LfmgK8imrHOuoQbBcok+y6iWp
-         dtXb1B5gzHnjj7dJIkG9SiVJTrqOUaIss7UPMtFI=
-Date:   Tue, 17 Nov 2020 20:16:14 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v41 10/24] mm: Add 'mprotect' hook to struct
- vm_operations_struct
-Message-ID: <20201117181614.GG8524@kernel.org>
-References: <20201112220135.165028-1-jarkko@kernel.org>
- <20201112220135.165028-11-jarkko@kernel.org>
- <20201113102543.GK3371@techsingularity.net>
+        b=BIyHtChuKC/1Z2hfN01FJL2lQedY2Jopd9Xk6ljOb8WSU5039BmyYLu1lS/JerWeZ
+         P+zilHNPhlrTLNiM1v44Y5EagbQsJhPY2JHB3h9CWIqeujkTkuhcWx5hjeDSPcyMf4
+         ccWF5nBSvvcF0BXkSIJq0FUknVkLg8jyR9SxjF2Y=
+Date:   Tue, 17 Nov 2020 10:16:49 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 1/3] libfs: Add generic function for setting dentry_ops
+Message-ID: <X7QTkSyiMojM6T10@sol.localdomain>
+References: <20201117040315.28548-1-drosen@google.com>
+ <20201117040315.28548-2-drosen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201113102543.GK3371@techsingularity.net>
+In-Reply-To: <20201117040315.28548-2-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 10:25:43AM +0000, Mel Gorman wrote:
-> On Fri, Nov 13, 2020 at 12:01:21AM +0200, Jarkko Sakkinen wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > Background
-> > ==========
-> > 
-> > 1. SGX enclave pages are populated with data by copying from normal memory
-> >    via ioctl() (SGX_IOC_ENCLAVE_ADD_PAGES), which will be added later in
-> >    this series.
-> > 2. It is desirable to be able to restrict those normal memory data sources.
-> >    For instance, to ensure that the source data is executable before
-> >    copying data to an executable enclave page.
-> > 3. Enclave page permissions are dynamic (just like normal permissions) and
-> >    can be adjusted at runtime with mprotect().
-> > 
-> > This creates a problem because the original data source may have long since
-> > vanished at the time when enclave page permissions are established (mmap()
-> > or mprotect()).
-> > 
-> > The solution (elsewhere in this series) is to force enclaves creators to
-> > declare their paging permission *intent* up front to the ioctl().  This
-> > intent can be immediately compared to the source data???s mapping and
-> > rejected if necessary.
-> > 
-> > The ???intent??? is also stashed off for later comparison with enclave
-> > PTEs. This ensures that any future mmap()/mprotect() operations
-> > performed by the enclave creator or done on behalf of the enclave
-> > can be compared with the earlier declared permissions.
-> > 
-> > Problem
-> > =======
-> > 
-> > There is an existing mmap() hook which allows SGX to perform this
-> > permission comparison at mmap() time.  However, there is no corresponding
-> > ->mprotect() hook.
-> > 
-> > Solution
-> > ========
-> > 
-> > Add a vm_ops->mprotect() hook so that mprotect() operations which are
-> > inconsistent with any page's stashed intent can be rejected by the driver.
-> > 
-> > Cc: linux-mm@kvack.org
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: Mel Gorman <mgorman@techsingularity.net>
-> > Acked-by: Jethro Beekman <jethro@fortanix.com> # v40
-> > Acked-by: Dave Hansen <dave.hansen@intel.com> # v40
-> > # Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Co-developed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+On Tue, Nov 17, 2020 at 04:03:13AM +0000, Daniel Rosenberg wrote:
 > 
-> Acked-by: Mel Gorman <mgorman@techsingularity.net>
+> Currently the casefolding dentry operation are always set if the
+> filesystem defines an encoding because the features is toggleable on
+> empty directories. Since we don't know what set of functions we'll
+> eventually need, and cannot change them later, we add just add them.
 
-Thank you.
+This isn't a very useful explanation, since encryption can be toggled on empty
+directories too (at least from off to on --- not the other way).  Why is
+casefolding different?
 
-/Jarkko
+> +static const struct dentry_operations generic_ci_dentry_ops = {
+> +	.d_hash = generic_ci_d_hash,
+> +	.d_compare = generic_ci_d_compare,
+> +};
+>  #endif
+> +
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +static const struct dentry_operations generic_encrypted_dentry_ops = {
+> +	.d_revalidate = fscrypt_d_revalidate,
+> +};
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_UNICODE) && IS_ENABLED(CONFIG_FS_ENCRYPTION)
+> +static const struct dentry_operations generic_encrypted_ci_dentry_ops = {
+> +	.d_hash = generic_ci_d_hash,
+> +	.d_compare = generic_ci_d_compare,
+> +	.d_revalidate = fscrypt_d_revalidate,
+> +};
+> +#endif
+> +
+> +/**
+> + * generic_set_encrypted_ci_d_ops - helper for setting d_ops for given dentry
+> + * @dentry:	dentry to set ops on
+> + *
+> + * This function sets the dentry ops for the given dentry to handle both
+> + * casefolded and encrypted dentry names.
+> + *
+> + * Encryption requires d_revalidate to remove nokey names once the key is present.
+> + * Casefolding is toggleable on an empty directory. Since we can't change the
+> + * operations later on, we just add the casefolding ops if the filesystem defines an
+> + * encoding.
+> + */
+
+There are some overly long lines here (> 80 columns).
+
+But more importantly this still isn't a good explanation.  Encryption can also
+be enabled on empty directories; what makes casefolding different?
+
+It's also not obvious why so many different copies of the dentry operations
+needed, instead of just using generic_encrypted_ci_dentry_ops on all.
+
+If I'm still struggling to understand this after following these patches for a
+long time, I expect everyone else will have trouble too...
+
+Here's a suggestion which I think explains it a lot better.  It's still possible
+I'm misunderstanding something, though, so please check it carefully:
+
+/**
+ * generic_set_encrypted_ci_d_ops - helper for setting d_ops for given dentry
+ * @dentry:	dentry to set ops on
+ *
+ * Casefolded directories need d_hash and d_compare set, so that the dentries
+ * contained in them are handled case-insensitively.  Note that these operations
+ * are needed on the parent directory rather than on the dentries in it, and the
+ * casefolding flag can be enabled on an empty directory later but the
+ * dentry_operations can't be changed later.  As a result, if the filesystem has
+ * casefolding support enabled at all, we have to give all dentries the
+ * casefolding operations even if their inode doesn't have the casefolding flag
+ * currently (and thus the casefolding ops would be no-ops for now).
+ *
+ * Encryption works differently in that the only dentry operation it needs is
+ * d_revalidate, which it only needs on dentries that have the no-key name flag.
+ * The no-key flag can't be set "later", so we don't have to worry about that.
+ *
+ * Finally, to maximize compatibility with overlayfs (which isn't compatible
+ * with certain dentry operations) and to avoid taking an unnecessary
+ * performance hit, we use custom dentry_operations for each possible
+ * combination rather always installing all operations.
+ */
+
+> +void generic_set_encrypted_ci_d_ops(struct dentry *dentry)
+> +{
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	bool needs_encrypt_ops = dentry->d_flags & DCACHE_NOKEY_NAME;
+> +#endif
+> +#ifdef CONFIG_UNICODE
+> +	bool needs_ci_ops = dentry->d_sb->s_encoding;
+> +#endif
+> +#if defined(CONFIG_FS_ENCRYPTION) && defined(CONFIG_UNICODE)
+> +	if (needs_encrypt_ops && needs_ci_ops) {
+> +		d_set_d_op(dentry, &generic_encrypted_ci_dentry_ops);
+> +			return;
+> +	}
+
+The return statement above has the wrong indentation level.
+
+> +#endif
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	if (needs_encrypt_ops) {
+> +		d_set_d_op(dentry, &generic_encrypted_dentry_ops);
+> +		return;
+> +	}
+> +#endif
+> +#ifdef CONFIG_UNICODE
+> +	if (needs_ci_ops) {
+> +		d_set_d_op(dentry, &generic_ci_dentry_ops);
+> +		return;
+> +	}
+> +#endif
+> +}
+> +EXPORT_SYMBOL(generic_set_encrypted_ci_d_ops);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 8667d0cdc71e..11345e66353b 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3202,6 +3202,7 @@ extern int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str);
+>  extern int generic_ci_d_compare(const struct dentry *dentry, unsigned int len,
+>  				const char *str, const struct qstr *name);
+>  #endif
+> +extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
+>  
+>  #ifdef CONFIG_MIGRATION
+>  extern int buffer_migrate_page(struct address_space *,
