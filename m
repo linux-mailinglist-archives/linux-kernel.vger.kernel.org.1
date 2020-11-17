@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC352B7000
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A202B6FF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgKQUXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:23:43 -0500
-Received: from mout.kundenserver.de ([212.227.17.13]:51667 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgKQUXl (ORCPT
+        id S1726296AbgKQUXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:23:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgKQUXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:23:41 -0500
-Received: from orion.localdomain ([95.118.38.12]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MPXMa-1ksvIj1mVO-00MgRQ; Tue, 17 Nov 2020 21:23:11 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dmitry.torokhov@gmail.com, derek.kiernan@xilinx.com,
-        dragan.cvetic@xilinx.com, richardcochran@gmail.com,
-        linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 2/2] x86: make hyperv support optional
-Date:   Tue, 17 Nov 2020 21:23:08 +0100
-Message-Id: <20201117202308.7568-2-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201117202308.7568-1-info@metux.net>
-References: <20201117202308.7568-1-info@metux.net>
-X-Provags-ID: V03:K1:BgMdxQqz+4cbD/qdDNJN3Ul44DDzOcucX7OQQF5mExr0hrvibj3
- jlliB9hkpyWQ7fm7aEw+TiHppj4aHIRMU9L4t32Dvpl/YQX1IyijLcrspy4r6AMsNX5hSv+
- jKNM76P58FwQhs/mng8MWZsJ9jRzkL7LU++z4Ob0TSqVS9WERPnzEbSFK0HrmEaRGuLvjHd
- jFm4lD/jJpv5uxAJr8nMA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3yLVPCypgnA=:XprJRzAno0MASne4OrR4Jl
- BvlRoNricagJ8yqm1/R8KWFUNWiw5MKakpnSNICGMP3BAKPjzauaR54ikOGfNdBPwk2BXnV3O
- xQtazhVh7AQRzZOGQGbj+1GeqCizu/94x8G7to+C9PdiEDI3JyrN2t/zyqdt290qxN3G7fteX
- L3klq1bkTACe7MnxhJqbfKe1HpCo053FYrXFqWvYbdfkJ4e/lRVSdvVbIJ+ZAiLRQiuYFMeQI
- RX8CKav8e/oAd53h+thfVKcq8FY583xS7mYYI2n3vo8sgkxarUrnXNlWEQf3EFeN7QyII4UZy
- ZARR0IKd+qTKmkS35p85LOljKdpJ7gKmWRvRan3/A+yxsFlao0w7a+V9MwkthXrPbcADoyCPY
- Rf55RS6yA+eoFnonzF6AE3bZN6QI0dnRpK002FaACaLrUwxxNiGwI7CFewuWK
+        Tue, 17 Nov 2020 15:23:36 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FA1C0613CF;
+        Tue, 17 Nov 2020 12:23:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=zW7PJS/kK75G8AdfaRvVDViJ861hr4mlWDOhVvzNbPs=; b=HGDME0EmiKRaW95KdNNyjYwM05
+        CWmwbgUDSx7/o1/Hjofufa3hzq37Rj4xzQe4yYLwWhzshQVGaHORvFB/FdSglxS1UOASi0myH+3Q9
+        aXmrxEsfockiLEoKeVuGSgcnKkozYBEEB8KRgRAra8nQc9QzKEfwP6xjjAcpWSbZhnFgiOjy67LKZ
+        J75tt70fbfCnr4784SYi8aELKaV3ce0KPlM8llzcQLAVLcDkFvxAHDhAmtnjaafwyvwOiFWn3q8ZC
+        piE6NIKevGXnvtGptNEHGMh8GQPla4NvtoELbGbip2X5fd59f1dpOF+P1oY76YW6O2RCYFn6l0xpK
+        2tX3K6XQ==;
+Received: from [2601:1c0:6280:3f0::bcc4]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kf7Vh-0000lA-CJ; Tue, 17 Nov 2020 20:23:32 +0000
+Subject: Re: [PATCH] drivers: acpi: add opt-out of apple specific property
+ parsing
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-acpi@vger.kernel.org
+References: <20201117201825.5407-1-info@metux.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <334dbf18-0e2d-ba15-0bb2-af217ec06b9c@infradead.org>
+Date:   Tue, 17 Nov 2020 12:23:26 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201117201825.5407-1-info@metux.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make it possible to opt-out from hyperv support.
+On 11/17/20 12:18 PM, Enrico Weigelt, metux IT consult wrote:
+> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> index edf1558c1105..398a9ae73705 100644
+> --- a/drivers/acpi/Kconfig
+> +++ b/drivers/acpi/Kconfig
+> @@ -79,6 +79,15 @@ config ACPI_DEBUGGER_USER
+>  
+>  endif
+>  
+> +config ACPI_APPLE
+> +	bool "Apple ACPI properties support"
+> +	default y if X86
+> +	help
+> +	  Extraction of apple specific ACPI properties.
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- arch/x86/Kconfig                 | 7 +++++++
- arch/x86/kernel/cpu/Makefile     | 4 ++--
- arch/x86/kernel/cpu/hypervisor.c | 2 ++
- drivers/hv/Kconfig               | 2 +-
- 4 files changed, 12 insertions(+), 3 deletions(-)
+	                Apple-specific
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index c227c1fa0091..60aab344d6ab 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -808,6 +808,13 @@ config VMWARE_GUEST
- 	  This option enables several optimizations for running under the
- 	  VMware hypervisor.
- 
-+config HYPERV_GUEST
-+	bool "HyperV Guest support"
-+	default y
-+	help
-+	  This option enables several optimizations for running under the
-+	  HyperV hypervisor.
-+
- config KVM_GUEST
- 	bool "KVM Guest support (including kvmclock)"
- 	depends on PARAVIRT
-diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
-index a615b0152bf0..5536b801cb44 100644
---- a/arch/x86/kernel/cpu/Makefile
-+++ b/arch/x86/kernel/cpu/Makefile
-@@ -51,9 +51,9 @@ obj-$(CONFIG_X86_CPU_RESCTRL)		+= resctrl/
- 
- obj-$(CONFIG_X86_LOCAL_APIC)		+= perfctr-watchdog.o
- 
--obj-$(CONFIG_HYPERVISOR_GUEST)		+= hypervisor.o mshyperv.o
-+obj-$(CONFIG_HYPERVISOR_GUEST)		+= hypervisor.o
- obj-$(CONFIG_VMWARE_GUEST)		+= vmware.o
--
-+obj-$(CONFIG_HYPERV_GUEST)		+= mshyperv.o
- obj-$(CONFIG_ACRN_GUEST)		+= acrn.o
- 
- ifdef CONFIG_X86_FEATURE_NAMES
-diff --git a/arch/x86/kernel/cpu/hypervisor.c b/arch/x86/kernel/cpu/hypervisor.c
-index c0e770a224aa..32d6b2084d05 100644
---- a/arch/x86/kernel/cpu/hypervisor.c
-+++ b/arch/x86/kernel/cpu/hypervisor.c
-@@ -37,7 +37,9 @@ static const __initconst struct hypervisor_x86 * const hypervisors[] =
- #ifdef CONFIG_VMWARE_GUEST
- 	&x86_hyper_vmware,
- #endif
-+#ifdef CONFIG_HYPERV_GUEST
- 	&x86_hyper_ms_hyperv,
-+#endif
- #ifdef CONFIG_KVM_GUEST
- 	&x86_hyper_kvm,
- #endif
-diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-index 79e5356a737a..7b3094c59a81 100644
---- a/drivers/hv/Kconfig
-+++ b/drivers/hv/Kconfig
-@@ -4,7 +4,7 @@ menu "Microsoft Hyper-V guest support"
- 
- config HYPERV
- 	tristate "Microsoft Hyper-V client drivers"
--	depends on X86 && ACPI && X86_LOCAL_APIC && HYPERVISOR_GUEST
-+	depends on X86 && ACPI && X86_LOCAL_APIC && HYPERV_GUEST
- 	select PARAVIRT
- 	select X86_HV_CALLBACK_VECTOR
- 	help
+> +
+> +	  Say N if you're sure the kernel won't be used on an Apple machine
+> +	  and wanna save a few kb of memory. (embedded or hi-density VMs)
+
+	      want to save a few KB                       high-
+
+
+> +
+>  config ACPI_SPCR_TABLE
+>  	bool "ACPI Serial Port Console Redirection Support"
+>  	default y if X86
+
+
 -- 
-2.11.0
+~Randy
 
