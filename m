@@ -2,83 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A282B5A6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F93D2B5A6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgKQHl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:41:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51860 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbgKQHl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:41:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 068ACAC23;
-        Tue, 17 Nov 2020 07:41:26 +0000 (UTC)
-Subject: Re: [PATCH] video: fbdev: atmel_lcdfb: fixe return error code in
- atmel_lcdfb_of_init()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     b.zolnierkie@samsung.com
-References: <20201117061350.3453742-1-yangyingliang@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <314d2531-5d9c-fa9d-82cd-cf0a35488a38@suse.de>
-Date:   Tue, 17 Nov 2020 08:41:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726989AbgKQHmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:42:13 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:45656 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgKQHmN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 02:42:13 -0500
+Received: by mail-wr1-f68.google.com with SMTP id p1so22088988wrf.12;
+        Mon, 16 Nov 2020 23:42:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V6lmdmyelkoEB9gzAp95iXGDLbWF/DQXwrl5ihHxXqg=;
+        b=MD8mW1seUQf7dPaDCKb5gZuT/xa4u1ilp1H5SVNH3Em1ZESkVp1UkDHToGI3EVYcgE
+         sR+Uv4etDVJfBKbxBWUTvYGuFiuJthJIKGLnz3sn1DC797BcY1tEsOi4ydZEThrScw2T
+         gpKxpbc8cFCoyWbfl+wwoyBKZNXUyUk6gQ9zXLidXyOxI3jGSQgCsJ6hMM4Lg6dGYM8E
+         c/9jRfRPzGl4q++3pSOca7BqBumpWR11ub03XhCu+F7+Mit0LMxa/o3W2O2t+RhF1TF6
+         N70nRggez5OKKwGl1camt6xjPBGh3eyZOh7m9DHmyk2EJ2QLve2ddUj6kd00naxsY5ZK
+         oKQg==
+X-Gm-Message-State: AOAM531QmAwySK6A8yS3OQ1noGbE0l/G6UyfQIn0fQL0y71yH5Udsn9T
+        8OP2O+BZI1Yc6ODaRuQP4U8=
+X-Google-Smtp-Source: ABdhPJwz7v/JwkX1NfdLdtvc4Gd0wHaN4a6K1NJBmsfKsXIKeWm7WCxP5OxJ4lTjZ+Tp39bypmoKAQ==
+X-Received: by 2002:a5d:474b:: with SMTP id o11mr22519988wrs.235.1605598930245;
+        Mon, 16 Nov 2020 23:42:10 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id z22sm2385254wml.9.2020.11.16.23.42.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 23:42:09 -0800 (PST)
+Date:   Tue, 17 Nov 2020 08:42:07 +0100
+From:   "krzk@kernel.org" <krzk@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon@samsung.com>
+Cc:     Krzysztof Opasiak <k.opasiak@samsung.com>,
+        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 1/3] nfc: s3fwrn5: Remove the max_payload
+Message-ID: <20201117074207.GC3436@kozik-lap>
+References: <CGME20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
+ <20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
 MIME-Version: 1.0
-In-Reply-To: <20201117061350.3453742-1-yangyingliang@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Tue, Nov 17, 2020 at 10:16:11AM +0900, Bongsu Jeon wrote:
+> max_payload is unused.
 
-Am 17.11.20 um 07:13 schrieb Yang Yingliang:
-> If devm_kzalloc() failed after first time, atmel_lcdfb_of_init()
-> cann't return -ENOMEM, fix this by putting the error code in loop.
-> 
-> Fixes: b985172b328a ("video: atmel_lcdfb: add device tree suport")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/video/fbdev/atmel_lcdfb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/fbdev/atmel_lcdfb.c b/drivers/video/fbdev/atmel_lcdfb.c
-> index 8c1d47e52b1a..355b6120dc4f 100644
-> --- a/drivers/video/fbdev/atmel_lcdfb.c
-> +++ b/drivers/video/fbdev/atmel_lcdfb.c
-> @@ -987,8 +987,8 @@ static int atmel_lcdfb_of_init(struct atmel_lcdfb_info *sinfo)
->  	}
->  
->  	INIT_LIST_HEAD(&pdata->pwr_gpios);
-> -	ret = -ENOMEM;
->  	for (i = 0; i < gpiod_count(dev, "atmel,power-control"); i++) {
-> +		ret = -ENOMEM;
+Why did you resend the patch ignoring my review? I already provided you
+with a tag, so you should include it.
 
-I think that a better fix would have been to put it into the alloc's
-error branch. But anyway
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html
 
-  Reviewed-by: Thomas Zimmermann <tzimmremann@suse.de>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Thanks for your patch. I'll add it to drm-misc-next.
-
-Best regards
-Thomas
-
->  		gpiod = devm_gpiod_get_index(dev, "atmel,power-control",
->  					     i, GPIOD_ASIS);
->  		if (IS_ERR(gpiod))
-> 
-
--- 
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
+Best regards,
+Krzysztof
