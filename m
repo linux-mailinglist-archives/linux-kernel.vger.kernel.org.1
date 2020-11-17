@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA452B60BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1972B60FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729350AbgKQNMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:12:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
+        id S1730100AbgKQNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:14:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729764AbgKQNMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:12:01 -0500
+        id S1730092AbgKQNOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:14:45 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9B38241A7;
-        Tue, 17 Nov 2020 13:11:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C511B2151B;
+        Tue, 17 Nov 2020 13:14:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618720;
-        bh=fdHiExIBCAOQ/abc1stNSW5WonDv6IjbpthKI0wu+mI=;
+        s=default; t=1605618884;
+        bh=NPaSKJTvN4c3s11lbTYIx43YmOXM/GFbTl+nQoi5tIg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nW+KM+tIIW0UV0GP0iLlP21fagJPD7rMA0cxAO4mI5S3lFxjmX9hcBXpRPGuu8yIs
-         8rnKAhW2QWLcuIE8lkdXq+8MSb6YDkzcOvW1CtFEdHIsSiJCNSNU0WJiE7/iYCiGcH
-         FlLf8QxZacqGKjHp5w6zLRw1WJlEpll+yLLbUKn8=
+        b=dI0UaDom3T4/fMSEbgW1MnQf5/1+wVmd+1FbBFT9k0uFYNzCVK+dC0+ejP+djaRAZ
+         iYjbXeLqJJvSUcplqyQHzH9i7nBABmDZ6lpvWKLmIaSLIKy9knFL/d8PxLLWhBfFfx
+         pPgCA0RCsocdWjsf+D36JjmYlwfLHjEcX58dPsP0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 36/78] pinctrl: aspeed: Fix GPI only function problem.
+        stable@vger.kernel.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 33/85] iommu/amd: Increase interrupt remapping table limit to 512 entries
 Date:   Tue, 17 Nov 2020 14:05:02 +0100
-Message-Id: <20201117122110.871999315@linuxfoundation.org>
+Message-Id: <20201117122112.656240647@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Billy Tsai <billy_tsai@aspeedtech.com>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-[ Upstream commit 9b92f5c51e9a41352d665f6f956bd95085a56a83 ]
+[ Upstream commit 73db2fc595f358460ce32bcaa3be1f0cce4a2db1 ]
 
-Some gpio pin at aspeed soc is input only and the prefix name of these
-pin is "GPI" only.
-This patch fine-tune the condition of GPIO check from "GPIO" to "GPI"
-and it will fix the usage error of banks D and E in the AST2400/AST2500
-and banks T and U in the AST2600.
+Certain device drivers allocate IO queues on a per-cpu basis.
+On AMD EPYC platform, which can support up-to 256 cpu threads,
+this can exceed the current MAX_IRQ_PER_TABLE limit of 256,
+and result in the error message:
 
-Fixes: 4d3d0e4272d8 ("pinctrl: Add core support for Aspeed SoCs")
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-Link: https://lore.kernel.org/r/20201030055450.29613-1-billy_tsai@aspeedtech.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+    AMD-Vi: Failed to allocate IRTE
+
+This has been observed with certain NVME devices.
+
+AMD IOMMU hardware can actually support upto 512 interrupt
+remapping table entries. Therefore, update the driver to
+match the hardware limit.
+
+Please note that this also increases the size of interrupt remapping
+table to 8KB per device when using the 128-bit IRTE format.
+
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Link: https://lore.kernel.org/r/20201015025002.87997-1-suravee.suthikulpanit@amd.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/aspeed/pinctrl-aspeed.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/iommu/amd_iommu_types.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-index 49aeba9125319..23d2f0ba12db5 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-@@ -387,13 +387,14 @@ int aspeed_pinmux_set_mux(struct pinctrl_dev *pctldev, unsigned int function,
- static bool aspeed_expr_is_gpio(const struct aspeed_sig_expr *expr)
- {
- 	/*
--	 * The signal type is GPIO if the signal name has "GPIO" as a prefix.
-+	 * The signal type is GPIO if the signal name has "GPI" as a prefix.
- 	 * strncmp (rather than strcmp) is used to implement the prefix
- 	 * requirement.
- 	 *
--	 * expr->signal might look like "GPIOT3" in the GPIO case.
-+	 * expr->signal might look like "GPIOB1" in the GPIO case.
-+	 * expr->signal might look like "GPIT0" in the GPI case.
- 	 */
--	return strncmp(expr->signal, "GPIO", 4) == 0;
-+	return strncmp(expr->signal, "GPI", 3) == 0;
- }
+diff --git a/drivers/iommu/amd_iommu_types.h b/drivers/iommu/amd_iommu_types.h
+index 74c8638aac2b9..ac3cac052af9d 100644
+--- a/drivers/iommu/amd_iommu_types.h
++++ b/drivers/iommu/amd_iommu_types.h
+@@ -404,7 +404,11 @@ extern bool amd_iommu_np_cache;
+ /* Only true if all IOMMUs support device IOTLBs */
+ extern bool amd_iommu_iotlb_sup;
  
- static bool aspeed_gpio_in_exprs(const struct aspeed_sig_expr **exprs)
+-#define MAX_IRQS_PER_TABLE	256
++/*
++ * AMD IOMMU hardware only support 512 IRTEs despite
++ * the architectural limitation of 2048 entries.
++ */
++#define MAX_IRQS_PER_TABLE	512
+ #define IRQ_TABLE_ALIGNMENT	128
+ 
+ struct irq_remap_table {
 -- 
 2.27.0
 
