@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903A22B6267
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 768752B6269
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730976AbgKQN2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:28:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36370 "EHLO mail.kernel.org"
+        id S1730784AbgKQN2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:28:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731363AbgKQN2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:28:14 -0500
+        id S1731841AbgKQN2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:28:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3A8A20867;
-        Tue, 17 Nov 2020 13:28:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A14F920781;
+        Tue, 17 Nov 2020 13:28:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619694;
-        bh=OGgY/kIWvDjIWT+DURNWDYh9dKovl9W4SOXdaheQ+08=;
+        s=default; t=1605619697;
+        bh=Q0RTIhGNqOyweI3/fgi/2oFcD95o3If9PgPCdlBtpOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qheJwEJRPr/BUTl7zkG3feafE2dRCPNgaOhjEsN+J2gDnXhK3flpiDVzLSs12O+BH
-         D9YiLNXywKRHdJTgZ8MeR8pAhnmE5UXAgB/E+kjaMQQa/bbcAIxR1AI8T2e7e/QYWf
-         PMDnjzYKsPEye5dVN3ieGN61wZaFwAqYPunSXMT8=
+        b=ylLQ8jqjqNR8d/QqSl9ELFf5e0DVAKtNUuIB+YrHna6i/N6I5gBc9L+PXwc08/grD
+         +KtJffyWEB6LmtV8o4aGcIML89UHT2QUsDNwMWSNYWD+JIbWny7h76QLULW+phdmPz
+         5u9TGxQ5RMNiphszdJmvOpIA9HeGu+1VV37npZ4M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
+        stable@vger.kernel.org, Wengang Wang <wen.gang.wang@oracle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabian Frederick <fabf@skynet.be>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Robin Holt <robinmholt@gmail.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 124/151] reboot: fix overflow parsing reboot cpu number
-Date:   Tue, 17 Nov 2020 14:05:54 +0100
-Message-Id: <20201117122127.454716690@linuxfoundation.org>
+Subject: [PATCH 5.4 125/151] ocfs2: initialize ip_next_orphan
+Date:   Tue, 17 Nov 2020 14:05:55 +0100
+Message-Id: <20201117122127.504723088@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
 References: <20201117122121.381905960@linuxfoundation.org>
@@ -51,74 +49,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+From: Wengang Wang <wen.gang.wang@oracle.com>
 
-commit df5b0ab3e08a156701b537809914b339b0daa526 upstream.
+commit f5785283dd64867a711ca1fb1f5bb172f252ecdf upstream.
 
-Limit the CPU number to num_possible_cpus(), because setting it to a
-value lower than INT_MAX but higher than NR_CPUS produces the following
-error on reboot and shutdown:
+Though problem if found on a lower 4.1.12 kernel, I think upstream has
+same issue.
 
-    BUG: unable to handle page fault for address: ffffffff90ab1bb0
-    #PF: supervisor read access in kernel mode
-    #PF: error_code(0x0000) - not-present page
-    PGD 1c09067 P4D 1c09067 PUD 1c0a063 PMD 0
-    Oops: 0000 [#1] SMP
-    CPU: 1 PID: 1 Comm: systemd-shutdow Not tainted 5.9.0-rc8-kvm #110
-    Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-    RIP: 0010:migrate_to_reboot_cpu+0xe/0x60
-    Code: ea ea 00 48 89 fa 48 c7 c7 30 57 f1 81 e9 fa ef ff ff 66 2e 0f 1f 84 00 00 00 00 00 53 8b 1d d5 ea ea 00 e8 14 33 fe ff 89 da <48> 0f a3 15 ea fc bd 00 48 89 d0 73 29 89 c2 c1 e8 06 65 48 8b 3c
-    RSP: 0018:ffffc90000013e08 EFLAGS: 00010246
-    RAX: ffff88801f0a0000 RBX: 0000000077359400 RCX: 0000000000000000
-    RDX: 0000000077359400 RSI: 0000000000000002 RDI: ffffffff81c199e0
-    RBP: ffffffff81c1e3c0 R08: ffff88801f41f000 R09: ffffffff81c1e348
-    R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-    R13: 00007f32bedf8830 R14: 00000000fee1dead R15: 0000000000000000
-    FS:  00007f32bedf8980(0000) GS:ffff88801f480000(0000) knlGS:0000000000000000
-    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-    CR2: ffffffff90ab1bb0 CR3: 000000001d057000 CR4: 00000000000006a0
-    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-    Call Trace:
-      __do_sys_reboot.cold+0x34/0x5b
-      do_syscall_64+0x2d/0x40
+In one node in the cluster, there is the following callback trace:
 
-Fixes: 1b3a5d02ee07 ("reboot: move arch/x86 reboot= handling to generic kernel")
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+   # cat /proc/21473/stack
+   __ocfs2_cluster_lock.isra.36+0x336/0x9e0 [ocfs2]
+   ocfs2_inode_lock_full_nested+0x121/0x520 [ocfs2]
+   ocfs2_evict_inode+0x152/0x820 [ocfs2]
+   evict+0xae/0x1a0
+   iput+0x1c6/0x230
+   ocfs2_orphan_filldir+0x5d/0x100 [ocfs2]
+   ocfs2_dir_foreach_blk+0x490/0x4f0 [ocfs2]
+   ocfs2_dir_foreach+0x29/0x30 [ocfs2]
+   ocfs2_recover_orphans+0x1b6/0x9a0 [ocfs2]
+   ocfs2_complete_recovery+0x1de/0x5c0 [ocfs2]
+   process_one_work+0x169/0x4a0
+   worker_thread+0x5b/0x560
+   kthread+0xcb/0xf0
+   ret_from_fork+0x61/0x90
+
+The above stack is not reasonable, the final iput shouldn't happen in
+ocfs2_orphan_filldir() function.  Looking at the code,
+
+  2067         /* Skip inodes which are already added to recover list, since dio may
+  2068          * happen concurrently with unlink/rename */
+  2069         if (OCFS2_I(iter)->ip_next_orphan) {
+  2070                 iput(iter);
+  2071                 return 0;
+  2072         }
+  2073
+
+The logic thinks the inode is already in recover list on seeing
+ip_next_orphan is non-NULL, so it skip this inode after dropping a
+reference which incremented in ocfs2_iget().
+
+While, if the inode is already in recover list, it should have another
+reference and the iput() at line 2070 should not be the final iput
+(dropping the last reference).  So I don't think the inode is really in
+the recover list (no vmcore to confirm).
+
+Note that ocfs2_queue_orphans(), though not shown up in the call back
+trace, is holding cluster lock on the orphan directory when looking up
+for unlinked inodes.  The on disk inode eviction could involve a lot of
+IOs which may need long time to finish.  That means this node could hold
+the cluster lock for very long time, that can lead to the lock requests
+(from other nodes) to the orhpan directory hang for long time.
+
+Looking at more on ip_next_orphan, I found it's not initialized when
+allocating a new ocfs2_inode_info structure.
+
+This causes te reflink operations from some nodes hang for very long
+time waiting for the cluster lock on the orphan directory.
+
+Fix: initialize ip_next_orphan as NULL.
+
+Signed-off-by: Wengang Wang <wen.gang.wang@oracle.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Fabian Frederick <fabf@skynet.be>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Robin Holt <robinmholt@gmail.com>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201103214025.116799-3-mcroce@linux.microsoft.com
+Link: https://lkml.kernel.org/r/20201109171746.27884-1-wen.gang.wang@oracle.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/reboot.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/ocfs2/super.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -558,6 +558,13 @@ static int __init reboot_setup(char *str
- 				reboot_cpu = simple_strtoul(str+3, NULL, 0);
- 			else
- 				*mode = REBOOT_SOFT;
-+			if (reboot_cpu >= num_possible_cpus()) {
-+				pr_err("Ignoring the CPU number in reboot= option. "
-+				       "CPU %d exceeds possible cpu number %d\n",
-+				       reboot_cpu, num_possible_cpus());
-+				reboot_cpu = 0;
-+				break;
-+			}
- 			break;
+--- a/fs/ocfs2/super.c
++++ b/fs/ocfs2/super.c
+@@ -1692,6 +1692,7 @@ static void ocfs2_inode_init_once(void *
  
- 		case 'g':
+ 	oi->ip_blkno = 0ULL;
+ 	oi->ip_clusters = 0;
++	oi->ip_next_orphan = NULL;
+ 
+ 	ocfs2_resv_init_once(&oi->ip_la_data_resv);
+ 
 
 
