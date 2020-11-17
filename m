@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEA32B5878
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539A92B5873
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727386AbgKQDrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 22:47:01 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:39398 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726938AbgKQDq7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 22:46:59 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH3fpKP138174;
-        Tue, 17 Nov 2020 03:46:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=IsUpn/dl214A80H/3v06PDx6DW/p/wuxnCWRIFCi2Cw=;
- b=WC2lQNpO9x4HlzfjEPacsf/jjOYVVxF+9DIg2yW7qCn7L4CXYFyl53yTXf3WVlE4OdVs
- lRPZgGJVsL9H6ApeZj28rzdMICbgSL3mP3sOuwoUXx/oKFBsTWM7fXYc+a3XPGoPjp3v
- 2XlOL7u40uew55bq4o2GSOodidDJmf+YXhIbiBDuoRiFSVBEC4f11JY8KvpmbWIximBq
- fjwa16zDlhTPDegEIyGRfcD5rtev0+3+ZjQ+R1HgI/GW2FuYKElaVC8EF/JN1/69+rgy
- PVZKYwMBYf0xPJ2bFoupQX9jr/OH4juK6RBHgTg86NR4E4s+EL427PJclfeErERJ7WL7 rg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34t76krd88-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 17 Nov 2020 03:46:53 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH3fIsL005305;
-        Tue, 17 Nov 2020 03:44:53 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 34umcxmebw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 03:44:53 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AH3ip0V004749;
-        Tue, 17 Nov 2020 03:44:52 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 16 Nov 2020 19:44:51 -0800
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Andrea Parri <parri.andrea@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        linux-hyperv@vger.kernel.org, Andres Beltran <lkmlabelt@gmail.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH v9 2/3] scsi: storvsc: Use vmbus_requestor to generate
- transaction IDs for VMBus hardening
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1lff06429.fsf@ca-mkp.ca.oracle.com>
-References: <20201109100402.8946-1-parri.andrea@gmail.com>
-        <20201109100402.8946-3-parri.andrea@gmail.com>
-        <20201113113327.dmium67e32iadqbz@liuwe-devbox-debian-v2>
-        <20201113185424.ujdfx6ot7siqr5qh@liuwe-devbox-debian-v2>
-        <20201113213933.GA4937@andrea>
-        <20201116110352.obbqxzxw6etdq4cl@liuwe-devbox-debian-v2>
-Date:   Mon, 16 Nov 2020 22:44:48 -0500
-In-Reply-To: <20201116110352.obbqxzxw6etdq4cl@liuwe-devbox-debian-v2> (Wei
-        Liu's message of "Mon, 16 Nov 2020 11:03:52 +0000")
+        id S1727245AbgKQDp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 22:45:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726437AbgKQDpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 22:45:22 -0500
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E12A6206C0;
+        Tue, 17 Nov 2020 03:45:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605584722;
+        bh=drQcFzeE83tYePhTQAMPI109uNcJDc7j2Dq1wNZibSE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VjjlEIGgDNDhib3HCD/ecC6ccR7GzEYF9OdOftw9gAYWzFub+Viwl4q+IUWmwlF2Y
+         urB1uwAis2lyOonRS8IIOXWG7VEZDmC46HVF66jLRVxYfRJMqqivSXdPv+26HnOiVm
+         AKMffiOwCL+v1YuqZgKBoeN/92pD/1KELFik5mvQ=
+Received: by mail-lf1-f52.google.com with SMTP id s30so28221660lfc.4;
+        Mon, 16 Nov 2020 19:45:21 -0800 (PST)
+X-Gm-Message-State: AOAM530SyYEIoB+lYsTP9NNUUYLxyv5fyX3QTWdfJV25e/7yZwrYQFIF
+        f0gLJDqRzzJBvk5DXbKUm9xsUAgVJbvVcDfb+p8=
+X-Google-Smtp-Source: ABdhPJwu9KvFb4x2d38z4QPfSz9ugM2w2KFYs5tx1WnJv/d/x+L//RCuQWZUkx1an8X909f+rrZEhLo/Hs797o1lGpM=
+X-Received: by 2002:a19:c354:: with SMTP id t81mr860303lff.283.1605584720130;
+ Mon, 16 Nov 2020 19:45:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011170027
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1011 mlxlogscore=999
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011170027
+References: <20201116075215.15303-2-wens@kernel.org> <20201116164159.GA1282970@bjorn-Precision-5520>
+In-Reply-To: <20201116164159.GA1282970@bjorn-Precision-5520>
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Tue, 17 Nov 2020 11:45:09 +0800
+X-Gmail-Original-Message-ID: <CAGb2v66mMMQmQYay0EVREiQYmSvefmvbsFSCN=C3qG22P8U5HA@mail.gmail.com>
+Message-ID: <CAGb2v66mMMQmQYay0EVREiQYmSvefmvbsFSCN=C3qG22P8U5HA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] PCI: rockchip: make ep_gpio optional
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Chen-Yu Tsai <wens@kernel.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 17, 2020 at 12:42 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> Run "git log --oneline drivers/pci/controller/pcie-rockchip.c" (or
+> even just look at the Fixes: commits you mention) and follow the
+> convention, e.g.,
+>
+>   PCI: rockchip: Make 'ep-gpios' DT property optional
+>
+> Also, you used 'ep_gpio' (singular, with an underline) in the subject
+> but 'ep-gpios' (plural, with hyphen) in the commit log.  The error
+> message and Documentation/devicetree/bindings/pci/rockchip-pcie-host.txt
+> both say 'ep-gpios' (plural, with hyphen).
 
-Wei,
+'ep_gpio' refers to the variable used within the driver. But reading it
+again, it does seem kind of weird. I will rewrite it to be more consistent.
 
-> Martin and James, are you happy with this change? I would assume you
-> are because that means this patch to storvsc is leaner.
+ChenYu
 
-Yes, that's fine.
-
-Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> Please fix so this is all consistent.  Details matter.
+>
+> On Mon, Nov 16, 2020 at 03:52:12PM +0800, Chen-Yu Tsai wrote:
+> > From: Chen-Yu Tsai <wens@csie.org>
+> >
+> > The Rockchip PCIe controller DT binding clearly states that ep-gpios is
+> > an optional property. And indeed there are boards that don't require it.
+> >
+> > Make the driver follow the binding by using devm_gpiod_get_optional()
+> > instead of devm_gpiod_get().
+> >
+> > Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller support")
+> > Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC driver")
+> > Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt() to parse DT")
+> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> > ---
+> >  drivers/pci/controller/pcie-rockchip.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/controller/pcie-rockchip.c
+> > index 904dec0d3a88..c95950e9004f 100644
+> > --- a/drivers/pci/controller/pcie-rockchip.c
+> > +++ b/drivers/pci/controller/pcie-rockchip.c
+> > @@ -118,7 +118,7 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *rockchip)
+> >       }
+> >
+> >       if (rockchip->is_rc) {
+> > -             rockchip->ep_gpio = devm_gpiod_get(dev, "ep", GPIOD_OUT_HIGH);
+> > +             rockchip->ep_gpio = devm_gpiod_get_optional(dev, "ep", GPIOD_OUT_HIGH);
+> >               if (IS_ERR(rockchip->ep_gpio)) {
+> >                       dev_err(dev, "missing ep-gpios property in node\n");
+> >                       return PTR_ERR(rockchip->ep_gpio);
+> > --
+> > 2.29.1
+> >
