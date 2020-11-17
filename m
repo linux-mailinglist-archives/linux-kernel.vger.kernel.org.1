@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7952B6BF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A81E2B6BFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729358AbgKQRjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:39:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726768AbgKQRjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:39:22 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86D9020678;
-        Tue, 17 Nov 2020 17:39:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605634761;
-        bh=8Y298WUPfpNgU5OeSR8YjRPSwhj59gCzY0Q8Rp1JKXI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rh330JgBlRDcdmzGCbne7Zn8yPG2WKKxT0JXScM9cjXAoCaG+TubdqRJt8qQlUJYT
-         3AzoaAo2/DeguxT5UkjGVaTQjpNWOyUpjxBG89w+B5mw959acewLs/kp1anEio6Lr5
-         Dv+7whUB5HzgehLCesAH1smeLgkkYSrtlq1X3KMM=
-Date:   Tue, 17 Nov 2020 17:39:01 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Viorel Suman <viorel.suman@nxp.com>,
-        Lee Jones <lee.jones@linaro.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] ASoC: ak4458: use reset control instead of reset gpio
-Message-ID: <20201117173901.GH5142@sirena.org.uk>
-References: <20201116222036.343635-1-viorel.suman@oss.nxp.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bpVaumkpfGNUagdU"
-Content-Disposition: inline
-In-Reply-To: <20201116222036.343635-1-viorel.suman@oss.nxp.com>
-X-Cookie: Pause for storage relocation.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729636AbgKQRjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729026AbgKQRjb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:39:31 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D10C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:39:31 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id ei22so895655pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:39:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=a081+5sEtLZdxVjnEsgO/mWDD8NzqZQtkeB5cfYLH30=;
+        b=kCPiliRHIVUfr3L65ip40e8uAZiZ43JMLQyUgVBVtUA29OXaMwbzaSiamP11wt0nLi
+         YVa3Qf38eA5gN/+rNsQ2yM+7QDY/yuP/UdK8t7jLdm57RGM4czTgeq4kP1cVpogmijvV
+         wVjnFT8FXE1vJP4YXScEOzp/B9Pef8KcRULWWV4OzUD2rdL3nK/eh3z2bTvZw7qs9an7
+         5QQE5YXAMymBZT4ZOuhJAS7VyRoE8JXOX2V/jyfYemcIdNu/N3KtrbCHfJ/sb+LCu0/B
+         4xh1S+Bz4jEDDhMyHZgJGwX6DIIZ2Gr9XIAgLvexRPm71kwn/sfBOs90yUGokUHCxsoU
+         E3Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=a081+5sEtLZdxVjnEsgO/mWDD8NzqZQtkeB5cfYLH30=;
+        b=E6vUCOCrD4gkpF/Z+uXCxdlGmD/lHj71ScmS4X059gjKw4D3oDnYzokkK3YpgyUhHK
+         eGL8OPuscAtBWZutjVWmolsMc5yL0kXVOBPyXZixRCVNxD+YQwlgPxYCM/i9IiM6VO1u
+         66HIT5LDJMEyMrfYOX+/SUEBTAIYkcWDdzEQQ9VFYLmss9lBuAcLijYPHHv3jkazlRCb
+         aPmHxu+jOc1PPerWGe9RbMU5PLrvcu7d/tnCflDJjRAZvZUR1XMeBHSLWo1bE1apbNIB
+         /i6jXTkcNiQK5oodR5f+iCnz+msbE9uYlkIkzjea4oeakJ7NyOScDv2PzU4iyARDplUC
+         Av0Q==
+X-Gm-Message-State: AOAM532NclL6pwIoIbSyw1iPpRtL7Cno0VQBvqQWCk0scf/vkWUDxEKV
+        C3BpIpIoxg9F0+D3m2Ip8iN/
+X-Google-Smtp-Source: ABdhPJzen4z1mH9hBVGR9pVV33DpCmvTAdG0rBun1a5GKDaehYXQ3z704Mh6UStGa5Zhwit7VNd1Xw==
+X-Received: by 2002:a17:90b:a02:: with SMTP id gg2mr149355pjb.225.1605634770702;
+        Tue, 17 Nov 2020 09:39:30 -0800 (PST)
+Received: from localhost.localdomain ([103.59.133.81])
+        by smtp.googlemail.com with ESMTPSA id a21sm1751330pjq.37.2020.11.17.09.39.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 09:39:29 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     bjorn.andersson@linaro.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/4] Add support for Qcom SMEM based NAND parser
+Date:   Tue, 17 Nov 2020 23:09:05 +0530
+Message-Id: <20201117173909.23585-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---bpVaumkpfGNUagdU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This series adds support for parsing the partitions defined in Shared
+Memory (SMEM) of the Qualcomm platforms supporting NAND interface.
+Current parser only supports V3 and V4 of the partition tables.
 
-On Tue, Nov 17, 2020 at 12:20:36AM +0200, Viorel Suman (OSS) wrote:
+This series has been tested on SDX55 MTP board which has an onboard NAND
+device.
 
->  static void ak4458_power_off(struct ak4458_priv *ak4458)
->  {
-> -	if (ak4458->reset_gpiod) {
-> -		gpiod_set_value_cansleep(ak4458->reset_gpiod, 0);
-> -		usleep_range(1000, 2000);
-> +	if (ak4458->reset) {
-> +		reset_control_assert(ak4458->reset);
-> +		msleep(20);
+Thanks,
+Mani
 
-We should really leave the support for doing this via GPIO in place for
-backwards compatibility I think, we could mark it as deprecated in the
-binding document.  Otherwise this makes sense to me and solves a real
-problem we have with the handling of resets so we should look into doing
-this for new bindings.
+Manivannan Sadhasivam (4):
+  dt-bindings: mtd: partitions: Add binding for Qcom SMEM parser
+  mtd: parsers: Add Qcom SMEM parser
+  mtd: rawnand: qcom: Add support for Qcom SMEM parser
+  mtd: parsers: afs: Fix freeing the part name memory in failure
 
-One thing I'm not clear on is if there's some way to ensure that we
-don't have different instances of the device resetting each other
-without them noticing?  Shouldn't be an issue in practice for the use
-here.
+ .../mtd/partitions/qcom,smem-part.yaml        |  31 ++++
+ drivers/mtd/nand/raw/qcom_nandc.c             |   4 +-
+ drivers/mtd/parsers/Kconfig                   |   8 +
+ drivers/mtd/parsers/Makefile                  |   1 +
+ drivers/mtd/parsers/afs.c                     |   4 +-
+ drivers/mtd/parsers/qcomsmempart.c            | 169 ++++++++++++++++++
+ 6 files changed, 213 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+ create mode 100644 drivers/mtd/parsers/qcomsmempart.c
 
---bpVaumkpfGNUagdU
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+0CrQACgkQJNaLcl1U
-h9DIeAf+Mk60aGQVQY93Dm7fXGJgMzSKeAF/RY8WkFrPKQqZzaFA3OS3lpW/gij6
-MwtpXcN3Cqe6CkMB8Do5x2QX9Hyen2WugykcBHZXYpYyxDTFklh0nmFepoXtQl8B
-RpNC6LrJNiXgvG9wPIt0g8KhO6Ymzz7Z1ZQUQGPsCS6/4rYyHtWJ9ntXOWSbBsfx
-9/7Zd0RaHGOEdP1VlCJkdUBWOaQTkwvm8bNLw3cmqfHMWyGwBw0SfLJJCVWgwDN4
-Axx3ycQeNzIuh5NYfbdQ+qj9bWxXic8t4rSPpzuuFRDMYSsi5C5O3OYUaufGESWM
-1pPc0lCRGEw80sjyH5pDBV+NkkiVhA==
-=KK9w
------END PGP SIGNATURE-----
-
---bpVaumkpfGNUagdU--
