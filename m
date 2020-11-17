@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81762B65EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42F02B655F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731355AbgKQN7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:59:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50464 "EHLO mail.kernel.org"
+        id S1731653AbgKQNyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:54:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730623AbgKQNSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:18:01 -0500
+        id S1731067AbgKQNZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:25:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 677DE206D5;
-        Tue, 17 Nov 2020 13:18:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BEA82463D;
+        Tue, 17 Nov 2020 13:24:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619080;
-        bh=yqqX88Y5IQcAqP0bDmpDsPmoEFbLBsTzRMdGaaS4Ad8=;
+        s=default; t=1605619500;
+        bh=rUc+BVflGJsD1pz07uVY2tGI4476FfBtZJhQNw/cxvQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZANRZFFppsbGCyq0PZ2e8VeaA0PKHxjvjDDgBXAcafVXF3OsqauYtfgegNLlVcwl8
-         eVnUOuspYAemgY0dyPejQ4Itnfuo0i3cTkKYrteHHr0TFbhWUSZ50VfUX+5sRbDm0j
-         MamyCfmGwEIuyRVhqkEmTMifS/PwKLWPulG22jH4=
+        b=dryhW6AN67qmUh7ARNNcbKLBAdg1NvmYZQG4mDCZfVJ16bev6O9tkJZtBxLErN7DK
+         lTptehqf03XV4gQnX9xqe9S+l/ejesVEHmDrV7xeuKuLvYUKv1sAuLAOz7NFBPV2LA
+         z7Q1PYNWOqrDUybux8TxDbrSYh5rrVztgg6pwj7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pankaj Bansal <pankaj.bansal@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Sandeep Raghuraman <sandy.8925@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 022/101] can: flexcan: remove FLEXCAN_QUIRK_DISABLE_MECR quirk for LS1021A
+Subject: [PATCH 5.4 059/151] drm/amdgpu: perform srbm soft reset always on SDMA resume
 Date:   Tue, 17 Nov 2020 14:04:49 +0100
-Message-Id: <20201117122114.171253098@linuxfoundation.org>
+Message-Id: <20201117122124.301093982@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Evan Quan <evan.quan@amd.com>
 
-[ Upstream commit 018799649071a1638c0c130526af36747df4355a ]
+[ Upstream commit 253475c455eb5f8da34faa1af92709e7bb414624 ]
 
-After double check with Layerscape CAN owner (Pankaj Bansal), confirm that
-LS1021A doesn't support ECC feature, so remove FLEXCAN_QUIRK_DISABLE_MECR
-quirk.
+This can address the random SDMA hang after pci config reset
+seen on Hawaii.
 
-Fixes: 99b7668c04b27 ("can: flexcan: adding platform specific details for LS1021A")
-Cc: Pankaj Bansal <pankaj.bansal@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20201020155402.30318-4-qiangqing.zhang@nxp.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Tested-by: Sandeep Raghuraman <sandy.8925@gmail.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/flexcan.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/cik_sdma.c | 27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 0be8db6ab3195..92fe345e48ab7 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -301,8 +301,7 @@ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
+diff --git a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c b/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
+index 4af9acc2dc4f9..450ad7d5e21a0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
++++ b/drivers/gpu/drm/amd/amdgpu/cik_sdma.c
+@@ -1071,22 +1071,19 @@ static int cik_sdma_soft_reset(void *handle)
+ {
+ 	u32 srbm_soft_reset = 0;
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+-	u32 tmp = RREG32(mmSRBM_STATUS2);
++	u32 tmp;
  
- static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
--		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
--		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
-+		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
- };
+-	if (tmp & SRBM_STATUS2__SDMA_BUSY_MASK) {
+-		/* sdma0 */
+-		tmp = RREG32(mmSDMA0_F32_CNTL + SDMA0_REGISTER_OFFSET);
+-		tmp |= SDMA0_F32_CNTL__HALT_MASK;
+-		WREG32(mmSDMA0_F32_CNTL + SDMA0_REGISTER_OFFSET, tmp);
+-		srbm_soft_reset |= SRBM_SOFT_RESET__SOFT_RESET_SDMA_MASK;
+-	}
+-	if (tmp & SRBM_STATUS2__SDMA1_BUSY_MASK) {
+-		/* sdma1 */
+-		tmp = RREG32(mmSDMA0_F32_CNTL + SDMA1_REGISTER_OFFSET);
+-		tmp |= SDMA0_F32_CNTL__HALT_MASK;
+-		WREG32(mmSDMA0_F32_CNTL + SDMA1_REGISTER_OFFSET, tmp);
+-		srbm_soft_reset |= SRBM_SOFT_RESET__SOFT_RESET_SDMA1_MASK;
+-	}
++	/* sdma0 */
++	tmp = RREG32(mmSDMA0_F32_CNTL + SDMA0_REGISTER_OFFSET);
++	tmp |= SDMA0_F32_CNTL__HALT_MASK;
++	WREG32(mmSDMA0_F32_CNTL + SDMA0_REGISTER_OFFSET, tmp);
++	srbm_soft_reset |= SRBM_SOFT_RESET__SOFT_RESET_SDMA_MASK;
++
++	/* sdma1 */
++	tmp = RREG32(mmSDMA0_F32_CNTL + SDMA1_REGISTER_OFFSET);
++	tmp |= SDMA0_F32_CNTL__HALT_MASK;
++	WREG32(mmSDMA0_F32_CNTL + SDMA1_REGISTER_OFFSET, tmp);
++	srbm_soft_reset |= SRBM_SOFT_RESET__SOFT_RESET_SDMA1_MASK;
  
- static const struct can_bittiming_const flexcan_bittiming_const = {
+ 	if (srbm_soft_reset) {
+ 		tmp = RREG32(mmSRBM_SOFT_RESET);
 -- 
 2.27.0
 
