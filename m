@@ -2,584 +2,526 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67ADC2B6929
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE6B2B692D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgKQP5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:57:04 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2122 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgKQP5D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:57:03 -0500
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cb9WM5GfHz67F6b;
-        Tue, 17 Nov 2020 23:55:11 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 17 Nov 2020 16:57:00 +0100
-Received: from localhost (10.47.31.177) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 17 Nov
- 2020 15:56:59 +0000
-Date:   Tue, 17 Nov 2020 15:56:51 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [RFC PATCH 8/9] cxl/mem: Register CXL memX devices
-Message-ID: <20201117155651.0000368b@Huawei.com>
-In-Reply-To: <20201111054356.793390-9-ben.widawsky@intel.com>
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
-        <20201111054356.793390-9-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.31.177]
-X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+        id S1726644AbgKQP5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:57:49 -0500
+Received: from foss.arm.com ([217.140.110.172]:60322 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726417AbgKQP5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 10:57:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA23E1FB;
+        Tue, 17 Nov 2020 07:57:46 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49B653F719;
+        Tue, 17 Nov 2020 07:57:45 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        cristian.marussi@arm.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, robh@kernel.org
+Subject: [PATCH v3] firmware: arm_scmi: Add SCMI System Power Control driver
+Date:   Tue, 17 Nov 2020 15:57:25 +0000
+Message-Id: <20201117155725.13502-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 21:43:55 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+Add an SCMI System Power control driver to handle platform's requests
+carried by SYSTEM_POWER_STATE_NOTIFIER notifications: such platform
+requested system-wide power state transitions are handled accordingly,
+gracefully or forcefully, depending on the notifications' message flags.
 
-> From: Dan Williams <dan.j.williams@intel.com>
-> 
-> Create the /sys/bus/cxl hierarchy to enumerate memory devices
-> (per-endpoint control devices), memory address space devices (platform
-> address ranges with interleaving, performance, and persistence
-> attributes), and memory regions (active provisioned memory from an
-> address space device that is in use as System RAM or delegated to
-> libnvdimm as Persistent Memory regions).
-> 
-> For now, only the per-endpoint control devices are registered on the
-> 'cxl' bus.
+Graceful requests are by default relayed to userspace using the same
+Kernel API used to handle ACPI Shutdown bus events: alternatively, a few
+available module parameters can be used to tunnel insted such requests to
+userspace via signals addressed to CAD pid.
 
-Reviewing ABI without documentation is challenging even when it's simple
-so please add that for v2.
+When handling graceful requests, grant userspace processes a maximum
+(configurable) time to perform their duties and then revert to a forceful
+transition, so avoiding completely timing out platform's maximum grace time
+and hitting possible abrupt power-cuts.
 
-This patch feels somewhat unpolished, but I guess it is mainly here to
-give an illustration of how stuff might fit together rather than
-any expectation of detailed review.
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+This patch, building on top of the recently introduced SCMI System Power
+Protocol support, adds a new SCMI driver which, registering for such SCMI
+System Power notifications, acts accordingly to satisfy such SCMI plaform
+system-wide transition requests.
 
-So in that spirit I've just pointed out stuff that jumped out at me
-during a quick read through.
+The basic assumption here is that the SCMI fw platform is finally in charge
+of such system-wide power state transitions and can notify Kernel about
+shutdown/reboot requests via notifications (graceful of forceful in kind),
+so this driver can act accordingly to satisfy such requests as soon as they
+are received but the SCMI fw implements the policy (and the timings) and
+can anyway decide to brutally poweroff the system in conditions deemed
+particularly critical or if Kernel delays too much the transition on its
+side: so this driver just attempts to relay this request to userspace in
+order to perform such transitions in the most possible clean way, but it's
+a best effort attempt given the SCMI fw has anyway the last word on pulling
+plug.
+
+Given that this driver is called to react on SCMI System Power events, it
+is potentially needed very early on during boot, so it has not been made
+configurable as a loadable module: if you decide to use it, makes no sense
+not have it buitin immediately ready once SCMI subsystem is activated; as
+an additional side benefit of being builtin-only, it can call on some non
+exported function (emergency_sync) when having to deal with some corner
+case conditions. (this could be dropped anyway if full modularization was
+to be preferred)
+
+It is currently based on for-next/scmi [1] on top of:
+
+commit e342bd145d76 ("firmware: arm_scmi: Fix missing destroy_workqueue()")
 
 Thanks,
 
-Jonathan
+Cristian
 
+v2 --> v3
+- rebased
+- some minor cleanup in codestyle and commit message
 
-> 
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> ---
->  drivers/cxl/Makefile |   2 +
->  drivers/cxl/bus.c    |  35 ++++++
->  drivers/cxl/bus.h    |   8 ++
->  drivers/cxl/cxl.h    |  33 +++++
->  drivers/cxl/mem.c    | 287 ++++++++++++++++++++++++++++++++++++++++++-
->  5 files changed, 359 insertions(+), 6 deletions(-)
->  create mode 100644 drivers/cxl/bus.c
->  create mode 100644 drivers/cxl/bus.h
-> 
-> diff --git a/drivers/cxl/Makefile b/drivers/cxl/Makefile
-> index 97fdffb00f2d..1cc032092852 100644
-> --- a/drivers/cxl/Makefile
-> +++ b/drivers/cxl/Makefile
-> @@ -1,7 +1,9 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_CXL_ACPI) += cxl_acpi.o
->  obj-$(CONFIG_CXL_MEM) += cxl_mem.o
-> +obj-$(CONFIG_CXL_BUS_PROVIDER) += cxl_bus.o
->  
->  ccflags-y += -DDEFAULT_SYMBOL_NAMESPACE=CXL
->  cxl_acpi-y := acpi.o
->  cxl_mem-y := mem.o
-> +cxl_bus-y := bus.o
-> diff --git a/drivers/cxl/bus.c b/drivers/cxl/bus.c
-> new file mode 100644
-> index 000000000000..8594366955f7
-> --- /dev/null
-> +++ b/drivers/cxl/bus.c
-> @@ -0,0 +1,35 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
-> +#include <linux/device.h>
-> +#include <linux/module.h>
-> +
-> +static struct bus_type cxl_bus_type = {
-> +	.name = "cxl",
-> +};
-> +
-> +int cxl_register(struct device *dev)
-> +{
-> +	int rc;
-> +
-> +	dev->bus = &cxl_bus_type;
-> +	rc = device_add(dev);
-> +	if (rc)
-> +		put_device(dev);
-> +	return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(cxl_register);
-> +
-> +static __init int cxl_bus_init(void)
-> +{
-> +	return bus_register(&cxl_bus_type);
-> +}
-> +
-> +static void cxl_bus_exit(void)
-> +{
-> +	bus_unregister(&cxl_bus_type);
-> +}
-> +
-> +module_init(cxl_bus_init);
-> +module_exit(cxl_bus_exit);
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Intel Corporation");
-> diff --git a/drivers/cxl/bus.h b/drivers/cxl/bus.h
-> new file mode 100644
-> index 000000000000..fe2bea2bbc3c
-> --- /dev/null
-> +++ b/drivers/cxl/bus.h
-> @@ -0,0 +1,8 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
-> +#ifndef __CXL_BUS_H__
-> +#define __CXL_BUS_H__
-> +
-> +int cxl_register(struct device *dev);
-> +
-> +#endif /* __CXL_BUS_H__ */
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index f49ab80f68bd..cef5fd9ea68b 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -3,6 +3,7 @@
->  
->  #ifndef __CXL_H__
->  #define __CXL_H__
-> +#include <linux/range.h>
->  
->  /* Device */
->  #define CXLDEV_CAP_ARRAY_REG 0x0
-> @@ -52,12 +53,24 @@
->  #define CXLMDEV_RESET_NEEDED_HOT 3
->  #define CXLMDEV_RESET_NEEDED_CXL 4
->  
-> +struct cxl_memdev;
->  struct cxl_mem {
->  	struct pci_dev *pdev;
->  	void __iomem *regs;
-> +	struct cxl_memdev *cxlmd;
->  
->  	spinlock_t mbox_lock; /* Protects device mailbox and firmware */
->  
-> +	struct {
-> +		struct range range;
-> +	} pmem;
-> +
-> +	struct {
-> +		struct range range;
-> +	} ram;
-> +
-> +	char firmware_version[0x10];
-> +
->  	/* Cap 0000h */
->  	struct {
->  		void __iomem *regs;
-> @@ -130,4 +143,24 @@ static inline void cxl_mbox_payload_drain(struct cxl_mem *cxlm,
->  {
->  	memcpy_fromio(output, cxlm->mbox.regs + CXLDEV_MB_PAYLOAD, length);
->  }
-> +
-> +#define CXL_MBOX_IDENTIFY 0x4000
-> +
-> +struct cxl_mbox_identify {
-> +	char fw_revision[0x10];
-> +	__le64 total_capacity;
-> +	__le64 volatile_capacity;
-> +	__le64 persistent_capacity;
-> +	__le64 partition_align;
-> +	__le16 info_event_log_size;
-> +	__le16 warning_event_log_size;
-> +	__le16 failure_event_log_size;
-> +	__le16 fatal_event_log_size;
-> +	__le32 lsa_size;
-> +	u8 poison_list_max_mer[3];
-> +	__le16 inject_poison_limit;
-> +	u8 poison_caps;
-> +	u8 qos_telemetry_caps;
-> +} __packed;
-> +
->  #endif /* __CXL_H__ */
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index 08913360d500..54743d196feb 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -2,11 +2,15 @@
->  // Copyright(c) 2020 Intel Corporation. All rights reserved.
->  #include <linux/sched/clock.h>
->  #include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/cdev.h>
-> +#include <linux/idr.h>
->  #include <linux/pci.h>
->  #include <linux/io.h>
->  #include "acpi.h"
->  #include "pci.h"
->  #include "cxl.h"
-> +#include "bus.h"
->  
->  struct mbox_cmd {
->  	u16 cmd;
-> @@ -15,6 +19,53 @@ struct mbox_cmd {
->  	u16 return_code;
->  };
->  
-> +/*
-> + * An entire PCI topology full of devices should be enough for any
-> + * config
-> + */
-> +#define CXL_MEM_MAX_DEVS 65536
-> +
-> +struct cxl_memdev {
-> +	struct device dev;
-> +	struct cxl_mem *cxlm;
-> +	int id;
-> +};
-> +
-> +static int cxl_mem_major;
-> +static struct cdev cxl_mem_cdev;
-> +static DEFINE_IDR(cxl_mem_idr);
-> +static DEFINE_MUTEX(cxl_memdev_lock);
+v1 --> v2
+- split out of SCMI System Power Protocol series now merged
 
-Define scope of this lock with a comment.
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+---
+ drivers/firmware/Kconfig                      |  12 +
+ drivers/firmware/arm_scmi/Makefile            |   1 +
+ .../firmware/arm_scmi/scmi_power_control.c    | 387 ++++++++++++++++++
+ 3 files changed, 400 insertions(+)
+ create mode 100644 drivers/firmware/arm_scmi/scmi_power_control.c
 
-> +
-> +static int cxl_mem_open(struct inode *inode, struct file *file)
-> +{
-> +	long minor = iminor(inode);
-> +	struct cxl_memdev *cxlmd;
-> +
-> +	rcu_read_lock();
-> +	cxlmd = idr_find(&cxl_mem_idr, minor);
-> +	rcu_read_unlock();
-> +
-> +	if (!cxlmd)
-> +		return -ENXIO;
-> +
-> +	file->private_data = cxlmd;
-> +
-> +	return 0;
-> +}
-> +
-> +static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> +{
-> +	return -ENOTTY;
-> +}
-> +
-> +static const struct file_operations cxl_mem_fops = {
-> +	.owner = THIS_MODULE,
-> +	.open = cxl_mem_open,
-> +	.unlocked_ioctl = cxl_mem_ioctl,
-> +	.compat_ioctl = compat_ptr_ioctl,
-> +	.llseek = noop_llseek,
-> +};
-> +
->  static int cxldev_wait_for_doorbell(struct cxl_mem *cxlm)
->  {
->  	u64 start, now;
-> @@ -53,7 +104,7 @@ static int cxldev_wait_for_doorbell(struct cxl_mem *cxlm)
->   * Returns 0 if the doorbell transaction was successful from a protocol level.
->   * Caller should check the return code in @mbox_cmd to make sure it succeeded.
->   */
-> -static int __maybe_unused cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, struct mbox_cmd *mbox_cmd)
-> +static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, struct mbox_cmd *mbox_cmd)
->  {
->  	u64 cmd, status;
->  	int rc;
-> @@ -277,10 +328,185 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->  	return 0;
->  }
->  
-> +static struct cxl_memdev *to_cxl_memdev(struct device *dev)
-> +{
-> +	return container_of(dev, struct cxl_memdev, dev);
-> +}
-> +
-> +static void cxl_memdev_release(struct device *dev)
-> +{
-> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-> +
-> +	mutex_lock(&cxl_memdev_lock);
-> +	idr_remove(&cxl_mem_idr, cxlmd->id);
-> +	mutex_unlock(&cxl_memdev_lock);
-> +
-> +	kfree(cxlmd);
-> +}
-> +
-> +static char *cxl_memdev_devnode(struct device *dev, umode_t *mode, kuid_t *uid, kgid_t *gid)
-> +{
-> +	return kasprintf(GFP_KERNEL, "cxl/%s", dev_name(dev));
-> +}
-> +
-> +static ssize_t firmware_version_show(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-> +	struct cxl_mem *cxlm = cxlmd->cxlm;
-> +
-> +	return sprintf(buf, "%.16s\n", cxlm->firmware_version);
-> +}
-> +static DEVICE_ATTR_RO(firmware_version);
-> +
-> +static ssize_t ram_size_show(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-> +	struct cxl_mem *cxlm = cxlmd->cxlm;
-> +
-> +	return sprintf(buf, "%#llx\n", (unsigned long long) range_len(&cxlm->ram.range));
-> +}
-> +static struct device_attribute dev_attr_ram_size = __ATTR(size, 0444, ram_size_show, NULL);
-> +
-> +static ssize_t pmem_size_show(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-> +	struct cxl_mem *cxlm = cxlmd->cxlm;
-> +
-> +	return sprintf(buf, "%#llx\n", (unsigned long long) range_len(&cxlm->pmem.range));
-> +}
-> +static struct device_attribute dev_attr_pmem_size = __ATTR(size, 0444, pmem_size_show, NULL);
-> +
-> +static struct attribute *cxl_memdev_attributes[] = {
-> +	&dev_attr_firmware_version.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute *cxl_memdev_pmem_attributes[] = {
-> +	&dev_attr_pmem_size.attr,
-
-It's simple, but should still have docs in Documentation/ABI/testing/sysfs...
-
-> +	NULL,
-> +};
-> +
-> +static struct attribute *cxl_memdev_ram_attributes[] = {
-> +	&dev_attr_ram_size.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group cxl_memdev_attribute_group = {
-> +	.attrs = cxl_memdev_attributes,
-> +};
-> +
-> +static struct attribute_group cxl_memdev_ram_attribute_group = {
-> +	.name = "ram",
-> +	.attrs = cxl_memdev_ram_attributes,
-> +};
-> +
-> +static struct attribute_group cxl_memdev_pmem_attribute_group = {
-> +	.name = "pmem",
-> +	.attrs = cxl_memdev_pmem_attributes,
-> +};
-> +
-> +static const struct attribute_group *cxl_memdev_attribute_groups[] = {
-> +	&cxl_memdev_attribute_group,
-> +	&cxl_memdev_ram_attribute_group,
-> +	&cxl_memdev_pmem_attribute_group,
-> +	NULL,
-> +};
-> +
-> +static const struct device_type cxl_memdev_type = {
-> +	.name = "cxl_memdev",
-> +	.release = cxl_memdev_release,
-> +	.devnode = cxl_memdev_devnode,
-> +	.groups = cxl_memdev_attribute_groups,
-> +};
-> +
-> +static struct cxl_memdev *cxl_mem_add_memdev(struct cxl_mem *cxlm)
-> +{
-> +	struct pci_dev *pdev = cxlm->pdev;
-> +	struct cxl_memdev *cxlmd;
-> +	struct device *dev;
-> +	int id, rc;
-> +
-> +	cxlmd = kzalloc(sizeof(*cxlmd), GFP_KERNEL);
-
-Maybe I missed it, but I'm not seeing this freed anywhere.
-
-> +	if (!cxlmd)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	cxlmd->cxlm = cxlm;
-> +	cxlm->cxlmd = cxlmd;
-> +
-> +	mutex_lock(&cxl_memdev_lock);
-> +	id = idr_alloc(&cxl_mem_idr, cxlmd, 0, CXL_MEM_MAX_DEVS, GFP_KERNEL);
-> +	mutex_unlock(&cxl_memdev_lock);
-> +	if (id < 0) {
-> +		rc = id;
-> +		goto err_idr;
-> +	}
-> +
-> +	cxlmd->id = id;
-> +
-> +	dev = &cxlmd->dev;
-> +
-> +	device_initialize(dev);
-> +	dev->parent = &pdev->dev;
-> +	dev->devt = MKDEV(cxl_mem_major, id);
-> +	dev->type = &cxl_memdev_type;
-> +	dev_set_name(dev, "mem%d", id);
-
-blank line here
-
-> +	rc = cxl_register(dev);
-> +	if (rc)
-> +		return ERR_PTR(rc);
-> +
-> +	return cxlmd;
-> +
-> +err_idr:
-> +	kfree(cxlmd);
-> +
-> +	return ERR_PTR(rc);
-> +}
-> +
-
-...
-
->  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  {
->  	struct cxl_mem *cxlm = ERR_PTR(-ENXIO);
->  	struct device *dev = &pdev->dev;
-> +	struct cxl_memdev *cxlmd;
->  	int rc, regloc, i;
->  
->  	rc = cxl_bus_prepared(pdev);
-> @@ -319,20 +545,31 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	if (rc)
->  		return rc;
->  
-> -	/* Check that hardware "looks" okay. */
-> -	rc = cxl_mem_mbox_get(cxlm);
-> +	rc = cxl_mem_identify(cxlm);
->  	if (rc)
->  		return rc;
-> -
-> -	cxl_mem_mbox_put(cxlm);
-
-It was kind of nice to see the flow earlier, but I'm also thinking it made
-a slightly harder to read patch.  Hmm.  Maybe just drop the version earlier
-in favour of a todo comment that you then do here?
-
->  	dev_dbg(&pdev->dev, "CXL Memory Device Interface Up\n");
-> +
-
-Nice to tidy that up by moving to earlier patch.
-
->  	pci_set_drvdata(pdev, cxlm);
->  
-> +	cxlmd = cxl_mem_add_memdev(cxlm);
-> +	if (IS_ERR(cxlmd))
-> +		return PTR_ERR(cxlmd);
-
-Given we don't actually use cxlmd perhaps a simple return value
-of 0 or error would be better from cxl_mem_add_memdev()
-
-(I guess you may have follow up patches that do something with it
- here, though it feels wrong to ever do so given it is now registered
- and hence exposed to the system).
-
-> +
->  	return 0;
->  }
->  
->  static void cxl_mem_remove(struct pci_dev *pdev)
->  {
-> +	struct cxl_mem *cxlm = pci_get_drvdata(pdev);
-> +	struct cxl_memdev *cxlmd = cxlm->cxlmd;
-> +
-> +	device_lock(&cxlmd->dev);
-> +	cxlm->cxlmd = NULL;
-> +	cxlmd->cxlm = NULL;
-> +	device_unlock(&cxlmd->dev);
-> +
-> +	device_unregister(&cxlmd->dev);
-
-Why device_unregister last? Normally removing exposure to the
-system is the first thing you do in a remove() call.
-Particularly as you'll get NULL ptr dereferences if anyone
-manages a sysfs read between the pointers being set to NULL above
-and the device_unregister() taking away the sysfs files.
-
-
-
->  }
->  
->  static const struct pci_device_id cxl_mem_pci_tbl[] = {
-> @@ -350,7 +587,45 @@ static struct pci_driver cxl_mem_driver = {
->  	.remove			= cxl_mem_remove,
->  };
->  
-> +static __init int cxl_mem_init(void)
-> +{
-> +	int rc;
-> +	dev_t devt;
-> +
-> +	rc = alloc_chrdev_region(&devt, 0, CXL_MEM_MAX_DEVS, "cxl");
-> +	if (rc)
-> +		return rc;
-> +
-> +	cxl_mem_major = MAJOR(devt);
-> +
-> +	cdev_init(&cxl_mem_cdev, &cxl_mem_fops);
-> +	rc = cdev_add(&cxl_mem_cdev, MKDEV(cxl_mem_major, 0), CXL_MEM_MAX_DEVS);
-> +	if (rc)
-> +		goto err_cdev;
-> +
-> +	rc = pci_register_driver(&cxl_mem_driver);
-> +	if (rc)
-> +		goto err_driver;
-> +
-> +	return 0;
-> +
-> +err_driver:
-> +	cdev_del(&cxl_mem_cdev);
-> +err_cdev:
-> +	unregister_chrdev_region(MKDEV(cxl_mem_major, 0), CXL_MEM_MAX_DEVS);
-> +
-> +	return rc;
-> +}
-> +
-> +static __exit void cxl_mem_exit(void)
-> +{
-> +	pci_unregister_driver(&cxl_mem_driver);
-> +	unregister_chrdev_region(MKDEV(cxl_mem_major, 0), CXL_MEM_MAX_DEVS);
-> +	cdev_del(&cxl_mem_cdev);
-
-Ordering?  cdev_dev should be before unregister_chrdev_region to match
-error handling in init()
-
-> +}
-> +
->  MODULE_LICENSE("GPL v2");
->  MODULE_AUTHOR("Intel Corporation");
-> -module_pci_driver(cxl_mem_driver);
-> +module_init(cxl_mem_init);
-> +module_exit(cxl_mem_exit);
->  MODULE_IMPORT_NS(CXL);
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index 3315e3c21586..2c7eb5eff568 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -40,6 +40,18 @@ config ARM_SCMI_POWER_DOMAIN
+ 	  will be called scmi_pm_domain. Note this may needed early in boot
+ 	  before rootfs may be available.
+ 
++config ARM_SCMI_POWER_CONTROL
++	bool "SCMI system power control driver"
++	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
++	default n
++	help
++	  This enables System Power control logic which binds system shutdown or
++	  reboot actions to SCMI System Power notifications generated by SCP
++	  firmware.
++
++	  Graceful requests' methods and timeout and can be configured using
++	  a few available module parameters.
++
+ config ARM_SCPI_PROTOCOL
+ 	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
+ 	depends on ARM || ARM64 || COMPILE_TEST
+diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
+index bc0d54f8e861..ec2645f7cb7f 100644
+--- a/drivers/firmware/arm_scmi/Makefile
++++ b/drivers/firmware/arm_scmi/Makefile
+@@ -9,3 +9,4 @@ scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
+ 		    $(scmi-transport-y)
+ obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
+ obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
++obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
+diff --git a/drivers/firmware/arm_scmi/scmi_power_control.c b/drivers/firmware/arm_scmi/scmi_power_control.c
+new file mode 100644
+index 000000000000..5d5ce9e061b8
+--- /dev/null
++++ b/drivers/firmware/arm_scmi/scmi_power_control.c
+@@ -0,0 +1,387 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * SCMI Generic System Power Control driver.
++ *
++ * Copyright (C) 2020 ARM Ltd.
++ */
++/**
++ * DOC: Theory of operation
++ *
++ * In order to handle platform originated SCMI System Power requests (like
++ * shutdowns or cold/warm resets) we register an SCMI Notification notifier
++ * block to react when such SCMI System Power events are emitted.
++ *
++ * Once such a notification is received we act accordingly to perform the
++ * required system transition depending on the kind of request.
++ *
++ * By default graceful requests are routed to userspace through the same
++ * API methods (orderly_poweroff/reboot()) used by ACPI when handling ACPI
++ * Shutdown bus events: alternatively, by properly setting a couple of module
++ * parameters, it is possible to choose to use signals to CAD pid as a mean
++ * to communicate such graceful requests.
++ *
++ * Forceful requests instead simply cause an immediate emergency_sync() and
++ * subsequent Kernel-only shutdown/reboot.
++ *
++ * The assumption here is that even graceful requests can be upper-bound by a
++ * maximum final timeout strictly enforced by the platform itself which can
++ * finally cuts the power off at will: in such a scenario, which we want to
++ * avoid, we track the graceful requests progress through the means of a
++ * reboot_notifier and promptly convert a timed-out graceful request to a
++ * forceful one when userspace is late, in order to at least perform a clean
++ * sync and shutdown/restart.
++ *
++ * Given that such platform hard-timeout, when present, is anyway highly
++ * platform/event specific and not exposed at run-time, we make it configurable
++ * via the Kernel module param @scmi_graceful_request_tmo_ms.
++ */
++
++#include <linux/atomic.h>
++#include <linux/bitfield.h>
++#include <linux/err.h>
++#include <linux/fs.h>
++#include <linux/module.h>
++#include <linux/reboot.h>
++#include <linux/sched/signal.h>
++#include <linux/scmi_protocol.h>
++#include <linux/slab.h>
++#include <linux/timer.h>
++#include <linux/types.h>
++#include <linux/workqueue.h>
++
++#define DEFAULT_GRACE_TMO_MS	5000
++static unsigned int scmi_graceful_request_tmo_ms = DEFAULT_GRACE_TMO_MS;
++static unsigned int scmi_graceful_poweroff_signum;
++static unsigned int scmi_graceful_reboot_signum;
++
++enum scmi_system_request_status {
++	SCMI_SYSPOWER_IDLE,
++	SCMI_SYSPOWER_SERVED,
++	SCMI_SYSPOWER_INPROGRESS,
++	SCMI_SYSPOWER_FORCING,
++};
++
++struct scmi_syspower_config {
++	struct device *dev;
++
++	atomic_t status;
++
++	u32 required_state;
++
++	void (*request_graceful_transition)(struct scmi_syspower_config *conf);
++	void (*request_forceful_transition)(struct scmi_syspower_config *conf);
++
++	struct notifier_block userspace_nb;
++	struct notifier_block reboot_nb;
++
++	struct timer_list request_timer;
++	struct work_struct forceful_work;
++};
++
++static void scmi_forceful_work_func(struct work_struct *work)
++{
++	struct scmi_syspower_config *conf =
++		container_of(work, struct scmi_syspower_config, forceful_work);
++
++	conf->request_forceful_transition(conf);
++}
++
++/**
++ * scmi_request_timeout  - On timeout trigger a forceful transition
++ * @t: The timer reference
++ *
++ * Actual work is deferred out of the timer IRQ context since shutdown/reboot
++ * code do not play well when !in_task().
++ */
++static void scmi_request_timeout(struct timer_list *t)
++{
++	struct scmi_syspower_config *conf = from_timer(conf, t, request_timer);
++
++	dev_warn(conf->dev,
++		 "SCMI Graceful System Transition request timed out !\n");
++	atomic_set(&conf->status, SCMI_SYSPOWER_FORCING);
++	/* Ensure atomic values are updated */
++	smp_mb__after_atomic();
++	schedule_work(&conf->forceful_work);
++}
++
++/**
++ * scmi_reboot_notifier  - A reboot_notifier to catch an ongoing successful
++ * system transition
++ * @nb: Reference to the related notifier block
++ * @reason: The reason for the ongoing reboot
++ * @__unused: The cmd being executed on a restart request (unused)
++ *
++ * When an ongoing system transition is detected, compatible with the requested
++ * one, cancel the timer work.
++ *
++ * Return: NOTIFY_OK in any case
++ */
++static int scmi_reboot_notifier(struct notifier_block *nb,
++				unsigned long reason, void *__unused)
++{
++	struct scmi_syspower_config *conf;
++
++	conf = container_of(nb, struct scmi_syspower_config, reboot_nb);
++
++	/* Ensure atomic values are updated */
++	smp_mb__before_atomic();
++	if (unlikely(atomic_read(&conf->status) == SCMI_SYSPOWER_FORCING))
++		return NOTIFY_OK;
++
++	switch (reason) {
++	case SYS_HALT:
++	case SYS_POWER_OFF:
++		if (conf->required_state == SCMI_SYSTEM_SHUTDOWN)
++			atomic_set(&conf->status, SCMI_SYSPOWER_INPROGRESS);
++		break;
++	case SYS_RESTART:
++		if (conf->required_state == SCMI_SYSTEM_COLDRESET ||
++		    conf->required_state == SCMI_SYSTEM_WARMRESET)
++			atomic_set(&conf->status, SCMI_SYSPOWER_INPROGRESS);
++		break;
++	default:
++		break;
++	}
++
++	/* Ensure atomic values are updated */
++	smp_mb__after_atomic();
++	if (atomic_read(&conf->status) == SCMI_SYSPOWER_INPROGRESS) {
++		dev_info(conf->dev,
++			 "SCMI System State request in progress...\n");
++		del_timer_sync(&conf->request_timer);
++	}
++
++	return NOTIFY_OK;
++}
++
++static inline void scmi_send_cad_signal(struct device *dev, unsigned int sig)
++{
++	dev_info(dev, "SCMI Sending signal %d to CAD pid\n", sig);
++
++	kill_cad_pid(sig, 1);
++}
++
++/**
++ * scmi_request_graceful_transition  - Request graceful SystemPower transition
++ * @conf: The current SystemPower configuration descriptor
++ *
++ * Initiates the required SystemPower transition, requesting userspace
++ * co-operation using the same orderly_ methods used by ACPI Shutdown event
++ * processing.
++ *
++ * This takes care also to register a reboot notifier and a timer callback in
++ * order to detect if userspace actions are taking too long; in such a case
++ * the timeout callback will finally perform a forceful transition, ignoring
++ * lagging userspace: the aim here is to at least perform an emergency_sync()
++ * and a clean shutdown or reboot transition when userspace is late, avoiding
++ * the brutal final power-cut from platform.
++ */
++static void scmi_request_graceful_transition(struct scmi_syspower_config *conf)
++{
++	int ret;
++	u32 status;
++
++	if (conf->required_state >= SCMI_SYSTEM_POWERUP) {
++		dev_warn(conf->dev,
++			 "Received unexpected SYSTEM POWER request: %d\n",
++			 conf->required_state);
++		return;
++	}
++
++	status = atomic_cmpxchg(&conf->status, SCMI_SYSPOWER_IDLE,
++				SCMI_SYSPOWER_SERVED);
++	if (status != SCMI_SYSPOWER_IDLE)
++		return;
++
++	ret = devm_register_reboot_notifier(conf->dev, &conf->reboot_nb);
++	if (ret)
++		dev_warn(conf->dev, "Cannot register reboot notifier !\n");
++
++	INIT_WORK(&conf->forceful_work, scmi_forceful_work_func);
++	conf->request_timer.expires = jiffies +
++				msecs_to_jiffies(scmi_graceful_request_tmo_ms);
++	timer_setup(&conf->request_timer, scmi_request_timeout, 0);
++	add_timer(&conf->request_timer);
++
++	dev_info(conf->dev,
++		 "Serving SCMI Graceful request: %d (timeout_ms:%d)\n",
++		 conf->required_state, scmi_graceful_request_tmo_ms);
++
++	switch (conf->required_state) {
++	case SCMI_SYSTEM_SHUTDOWN:
++		/*
++		 * When received early at boot-time the 'orderly' part will
++		 * fail due to the lack of userspace itself, but the force=true
++		 * argument will anyway be able trigger a successful forced
++		 * shutdown.
++		 */
++		if (!scmi_graceful_poweroff_signum)
++			orderly_poweroff(true);
++		else
++			scmi_send_cad_signal(conf->dev,
++					     scmi_graceful_poweroff_signum);
++		break;
++	case SCMI_SYSTEM_COLDRESET:
++	case SCMI_SYSTEM_WARMRESET:
++		if (!scmi_graceful_reboot_signum)
++			orderly_reboot();
++		else
++			scmi_send_cad_signal(conf->dev,
++					     scmi_graceful_reboot_signum);
++		break;
++	default:
++		break;
++	}
++}
++
++static void scmi_request_forceful_transition(struct scmi_syspower_config *conf)
++{
++	/* Ensure atomic values are updated */
++	smp_mb__before_atomic();
++	if (unlikely(atomic_read(&conf->status) == SCMI_SYSPOWER_INPROGRESS))
++		return;
++
++	dev_info(conf->dev, "Serving SCMI FORCEFUL SystemPower request:%d\n",
++		 conf->required_state);
++
++	emergency_sync();
++	switch (conf->required_state) {
++	case SCMI_SYSTEM_SHUTDOWN:
++		kernel_power_off();
++		break;
++	case SCMI_SYSTEM_COLDRESET:
++	case SCMI_SYSTEM_WARMRESET:
++		kernel_restart(NULL);
++		break;
++	default:
++		break;
++	}
++}
++
++#define SCMI_IS_REQUEST_GRACEFUL(flags)		((flags) & BIT(0))
++
++/**
++ * scmi_userspace_notifier  - Notifier callback to act on SystemPower
++ * Notifications
++ * @nb: Reference to the related notifier block
++ * @event: The SystemPower notification event id
++ * @data: The SystemPower event report
++ *
++ * This callback is in charge of decoding the received SystemPower report
++ * and act accordingly triggering a graceful or forceful system transition.
++ *
++ * Return: NOTIFY_OK in any case
++ */
++static int scmi_userspace_notifier(struct notifier_block *nb,
++				   unsigned long event, void *data)
++{
++	struct scmi_system_power_state_notifier_report *er = data;
++	struct scmi_syspower_config *conf;
++
++	if (unlikely(system_state > SYSTEM_RUNNING))
++		return NOTIFY_OK;
++
++	conf = container_of(nb, struct scmi_syspower_config, userspace_nb);
++	conf->required_state = er->system_state;
++
++	if (conf->required_state >= SCMI_SYSTEM_MAX)
++		return NOTIFY_OK;
++
++	if (SCMI_IS_REQUEST_GRACEFUL(er->flags))
++		conf->request_graceful_transition(conf);
++	else
++		conf->request_forceful_transition(conf);
++
++	return NOTIFY_OK;
++}
++
++/**
++ * scmi_syspower_configure  - General SystemPower configuration init
++ * @dev: The associated struct device
++ *
++ * Return: SystemPower configuration descriptor on Success, NULL otherwise
++ */
++static void *scmi_syspower_configure(struct device *dev)
++{
++	struct scmi_syspower_config *conf;
++
++	conf = devm_kzalloc(dev, sizeof(*conf), GFP_KERNEL);
++	if (!conf)
++		return NULL;
++
++	conf->dev = dev;
++	conf->required_state = SCMI_SYSTEM_MAX;
++	conf->request_graceful_transition = &scmi_request_graceful_transition;
++	conf->request_forceful_transition = &scmi_request_forceful_transition;
++	conf->userspace_nb.notifier_call = &scmi_userspace_notifier;
++	conf->reboot_nb.notifier_call = &scmi_reboot_notifier;
++	atomic_set(&conf->status, SCMI_SYSPOWER_IDLE);
++	/* Ensure atomic values are updated */
++	smp_mb__after_atomic();
++
++	return conf;
++}
++
++static int scmi_syspower_probe(struct scmi_device *sdev)
++{
++	int ret;
++	struct scmi_handle *handle = sdev->handle;
++	struct scmi_syspower_config *syspower_conf;
++
++	if (!handle)
++		return -ENODEV;
++
++	syspower_conf = scmi_syspower_configure(&sdev->dev);
++	if (!syspower_conf)
++		return -ENOMEM;
++
++	dev_set_drvdata(&sdev->dev, syspower_conf);
++	ret = handle->notify_ops->register_event_notifier(handle,
++						SCMI_PROTOCOL_SYSTEM,
++					SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER,
++					    NULL, &syspower_conf->userspace_nb);
++	return ret;
++}
++
++static void scmi_syspower_remove(struct scmi_device *sdev)
++{
++	const struct scmi_handle *handle = sdev->handle;
++	struct scmi_syspower_config *syspower_conf;
++
++	syspower_conf = dev_get_drvdata(&sdev->dev);
++	handle->notify_ops->unregister_event_notifier(handle,
++						      SCMI_PROTOCOL_SYSTEM,
++					 SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER,
++					    NULL, &syspower_conf->userspace_nb);
++}
++
++static const struct scmi_device_id scmi_id_table[] = {
++	{ SCMI_PROTOCOL_SYSTEM, "syspower" },
++	{ },
++};
++MODULE_DEVICE_TABLE(scmi, scmi_id_table);
++
++static struct scmi_driver scmi_system_power_driver = {
++	.name = "scmi-system-power",
++	.probe = scmi_syspower_probe,
++	.remove = scmi_syspower_remove,
++	.id_table = scmi_id_table,
++};
++module_scmi_driver(scmi_system_power_driver);
++
++module_param(scmi_graceful_request_tmo_ms, uint, 0644);
++MODULE_PARM_DESC(scmi_graceful_request_tmo_ms,
++		 "Maximum time(ms) allowed to userspace for complying to the request.");
++
++module_param(scmi_graceful_poweroff_signum, uint, 0644);
++MODULE_PARM_DESC(scmi_graceful_poweroff_signum,
++		 "Signal to request graceful poweroff to CAD process. Ignored if zero.");
++
++module_param(scmi_graceful_reboot_signum, uint, 0644);
++MODULE_PARM_DESC(scmi_graceful_reboot_signum,
++		 "Signal to request graceful reboot to CAD process. Ignored if zero.");
++
++MODULE_AUTHOR("Cristian Marussi <cristian.marussi@arm.com>");
++MODULE_DESCRIPTION("ARM SCMI System Power Control driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.17.1
 
