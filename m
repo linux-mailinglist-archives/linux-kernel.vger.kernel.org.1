@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49EB2B5BA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248B92B5BA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbgKQJRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:17:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgKQJRB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:17:01 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC04EC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:16:59 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id p1so22359672wrf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:16:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=MDtk7CaVA2R3o2gPQYkO2PpHsr3cKxkUX8lkMgx4vWk=;
-        b=jCSg/LpM9T3TasQK0pOYLU2PdOBSCJ7rhx2ywbCucbK35JyfPpw4TsIeTKgrQ5K5A4
-         adeg0g/wSdtS/8A/fTMKmCFoIGMweGqpVivYLpnzjYNuKOV9Kagign9KKHaN2nnyLryK
-         tkbrbWKxXyHq8FevU+rMII3OLsKsFo6FguEHDfhm+bmT0oixa22i29HG5MB4mb+wU0bx
-         OxdN33czTGYhfmqTBm7hvtOUM/UBpVlJSfUzJfMoWZvI0w28g7PZ2K7AMR/B9G+2lH8X
-         mdyKW8Sz/sAi5r9Y1kRfAHPnbR7qs+SurdOIAydwebkFyCl8MTRsEvVDKMcL3n1ztlKS
-         YOeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=MDtk7CaVA2R3o2gPQYkO2PpHsr3cKxkUX8lkMgx4vWk=;
-        b=dxRiiqTpZS8ZY+VjYslhte7MdN1AlnQy9zpVwBcqlZvkt09o8TW82+tZSsOY2TB9Ap
-         oyXu81Asn6DzytENwkqx05nG7ADt/BOODK3Ba4LnbhkmJdRGuh1tG09a+zw8kVcgUUW/
-         uakBgmd/VQSrSqt3JAp4WjOI28n+xpLRj+fGsIQjc4nMXxMkLNTAgCqsxfC0BBSK85AS
-         Myu81Q1eJqeVVpMfM25h7C8VNw344RG4tyUgAd1qkCMlkxpdoEiRNYcIuXVcSRlp3U5J
-         /krgR0UdVgzSqtJagdbfsGiuRg8rwDf6VNFemOYPnepRcuCpMW5wc3uKfgwjcn7LEpSX
-         j4rA==
-X-Gm-Message-State: AOAM532AM6ptDSeG2SrQWAEweg9X9NuWIXeUkiGCx9thM+SrqQilDE6l
-        EGKPRScNzwgecDfYmrOHNdQRhpaGpiT6lbKu
-X-Google-Smtp-Source: ABdhPJycFFxJJ184g8hhJdy18ua9XwfcJ0b61PxrGHf3KdoaD1f5//kMGDhO47wCHXJ23ejf/LCtEA==
-X-Received: by 2002:adf:9066:: with SMTP id h93mr25171539wrh.166.1605604618486;
-        Tue, 17 Nov 2020 01:16:58 -0800 (PST)
-Received: from ?IPv6:2001:861:3a84:7260:b09f:f7de:c7af:258b? ([2001:861:3a84:7260:b09f:f7de:c7af:258b])
-        by smtp.gmail.com with ESMTPSA id 15sm2589534wmg.1.2020.11.17.01.16.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 01:16:57 -0800 (PST)
-Subject: Re: [PATCH 1/3] phy: amlogic: phy-meson-gxl-usb2: fix shared reset
- controller use
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Kevin Hilman <khilman@baylibre.com>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-amlogic@lists.infradead.org,
-        Jerome Brunet <jbrunet@baylibre.com>
-References: <20201113000508.14702-1-aouledameur@baylibre.com>
- <20201113000508.14702-2-aouledameur@baylibre.com>
- <CAFBinCC92FfvFt1aAspkF_Mrrtu_QpS327TN2=9Yc3tWMTcu_w@mail.gmail.com>
-From:   Amjad Ouled-Ameur <aouledameur@baylibre.com>
-Message-ID: <cdb9db35-6da3-259f-1c75-8d897f755571@baylibre.com>
-Date:   Tue, 17 Nov 2020 10:16:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726964AbgKQJSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:18:46 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:45382 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726035AbgKQJSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 04:18:45 -0500
+Received: from zn.tnic (p200300ec2f1013008dee3addeed0ca22.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:1300:8dee:3add:eed0:ca22])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1D5C01EC03D5;
+        Tue, 17 Nov 2020 10:18:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605604724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=rbikV7BXkOw+k4+ExJQ238GNgrFHk9HjzHfX7ZZpv4U=;
+        b=qkU3HYeNhT2a0N0WA4BP2rvjX8OoVJ9HcRc4S+/F4r9aF4g2AZUJvBxT+73uiaXlNHsz6B
+        G8lg97nc847JuWrg6apInBM7UJjNRHI1lavgpU8HwYtgOK2aATntYlqAnBP4WOk/VEfsox
+        WkrkWUOHYr/q1blerhad0xsNi9chnFc=
+Date:   Tue, 17 Nov 2020 10:18:37 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Ashok Raj <ashok.raj@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][v2] x86/microcode/intel: check cpu stepping and
+ processor flag before saving microcode
+Message-ID: <20201117091837.GA5719@zn.tnic>
+References: <20201113015923.13960-1-yu.c.chen@intel.com>
+ <20201116122735.GA1131@zn.tnic>
+ <20201117022518.GA17555@chenyu-office.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCC92FfvFt1aAspkF_Mrrtu_QpS327TN2=9Yc3tWMTcu_w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201117022518.GA17555@chenyu-office.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Tue, Nov 17, 2020 at 10:25:18AM +0800, Chen Yu wrote:
+> If I understand correctly, the only place that invokes
+> save_mc_for_early() is in generic_load_microcode(). While in
+> generic_load_microcode() only microcode has a newer version will be
+> saved by checking has_newer_microcode(), and this function leverages
+> find_matching_signature() to check if the candidate is of the same
+> signature. So when it comes to save_microcode_patch(), the signature
+> already matches. In case save_mc_for_early() will be invoked by other
+> function in the future, it is okay to add this check too.
 
-On 14/11/2020 20:13, Martin Blumenstingl wrote:
+The important aspect is that you need to save in intel_ucode_patch
+the *exact* patch for the CPU you're running on. The code above that
+in save_microcode_patch() adds patches of the same family/model but
+*not* same stepping to the microcode cache in case we want to support
+mixed-stepping revisions. And those you don't need to check for exact
+match.
 
-> Hi Amjad,
->
-> On Fri, Nov 13, 2020 at 1:06 AM Amjad Ouled-Ameur
-> <aouledameur@baylibre.com> wrote:
-> [...]
->> @@ -124,6 +126,7 @@ static int phy_meson_gxl_usb2_exit(struct phy *phy)
->>   {
->>          struct phy_meson_gxl_usb2_priv *priv = phy_get_drvdata(phy);
->>
->> +       reset_control_rearm(priv->reset);
-> please move reset_control_rearm after clk_disable_unprepare as
-> mentioned on the other patch to clean things up in reverse order of
-> initialization
+What I'd like, however, is to get rid of that mixed-stepping support -
+which is total nonsense anyway, if you ask me - and that would simplify
+the code a *lot* more.
 
-Agreed, will fix it in next change !
+Thx for testing.
 
->
->>          clk_disable_unprepare(priv->clk);
->
-> Thank you
-> Martin
->
-Thank you for the feedback !
+-- 
+Regards/Gruss,
+    Boris.
 
-Best,
-
-Amjad
-
+https://people.kernel.org/tglx/notes-about-netiquette
