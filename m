@@ -2,174 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893E62B59A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8EC2B59A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727127AbgKQGRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 01:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbgKQGRh (ORCPT
+        id S1727132AbgKQGSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 01:18:42 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21510 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726802AbgKQGSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 01:17:37 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BD5C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 22:17:36 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id 79so18373310otc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 22:17:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=XS8dxxvzXqHyhSnJeYWiMmMdvaRFstVe2miK9SNdJ8A=;
-        b=Hob4BGb4uJ/2tg2eIVEKPsyCU5Ghz1ujqJpPBWjC1k1O8iaxGv1C5PZSDOFkj79XH0
-         LPGbskncFA/yubrHVib8oPdx8/6gmeqgvTvql9DauuQkf/m8ulmZMjk20GBGcOvN+HN8
-         hDqAvTFY8FvrG6mbY4WZ8iZ1nJ+n5HPrdLBe0SpEqN0pTZpwlgJQJQk/WAPYvY7wiaKO
-         bg3AHmVMaosAX9tGC2egkoGe8omiEDmgQvJt6YOIJcHATDizC+LPHKpl0jNHyAChkjcU
-         N6RbbwM2Naiv+YLonq5NHGjNbkZ8L3ECr+XvMQHP5V0WIwXd/ez0EH9ZSChhWV9fOgYg
-         z9kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=XS8dxxvzXqHyhSnJeYWiMmMdvaRFstVe2miK9SNdJ8A=;
-        b=I5jqfTIKYzeTbOdoLzvXTuw3SK7PpVvKr52dVrBoehldymg/iJ9bsHW+1/UVyjyAXT
-         ednvlkJqMShPmRnsWqZPmpw+M4XhwI309qj1W8q7pH+uynKhJeJk210POsNkceh2s2pN
-         qPmcpHrXZtPdnMFq6h7cZzHuWGUOc2lIQKsMoSGM6Uk2Qe/XMxPcsHU8HRC5wLdTUKAl
-         IyBkry++mFvBBvLoZSTA1ofAK3L+vlmmKbA+fYSzHJ9H3Dhgkwd3xl9n29vxtFdSTMAr
-         ayap2s3kmYYsATETbtuProGp8NLZYlUeU0hW/z1GRgW0L5SPbJ+YxD30ZvOi2/3lKdea
-         QYxw==
-X-Gm-Message-State: AOAM530Fwhv+UZDjP7+jWaqFNUzjuunYJDh8Bb19WuHLXQW9jklKXvIL
-        nsDxm8S0VqTo/5CWT6+svoZO7A==
-X-Google-Smtp-Source: ABdhPJylatU3dtHMrFCyVFB6nlBVDHBkl3BMnWrz6zItu1ISz+YO2VszqoQi0UPXzC14Yo8YOXZY3Q==
-X-Received: by 2002:a9d:27e8:: with SMTP id c95mr2057356otb.262.1605593855434;
-        Mon, 16 Nov 2020 22:17:35 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id v8sm5861847ooh.6.2020.11.16.22.17.33
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 16 Nov 2020 22:17:34 -0800 (PST)
-Date:   Mon, 16 Nov 2020 22:17:20 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-cc:     hughd@google.com, mm-commits@vger.kernel.org, sh_def@163.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: + mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
- added to -mm tree
-In-Reply-To: <20201116230526.NkEfmeDCH%akpm@linux-foundation.org>
-Message-ID: <alpine.LSU.2.11.2011162149210.1082@eggly.anvils>
-References: <20201116230526.NkEfmeDCH%akpm@linux-foundation.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Tue, 17 Nov 2020 01:18:41 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AH6G2vU032216;
+        Mon, 16 Nov 2020 22:18:25 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=J2+DwgyuJf402HwxGALgcmzpMC/AYk4sg65k1+LJAIo=;
+ b=FW6FAurdujybhwkS9QvevsGq9UcDcX3Em2vK7DOsAV0l1MM6NE1ZsomOcEi6WfuXtRV9
+ 5EPirgyV9rTMrQItntgN9bN2jZvi9UJAuRQzNSseSi6Kq0Va+K8BDkQ7NxRRkjBxTQtU
+ wU8r4G3Z1sgS6IhjcPRSmMA9MZZzbiZauOo= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34v7wf093t-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 16 Nov 2020 22:18:25 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 16 Nov 2020 22:18:23 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bTRvei964TXGzNtP5X+lHjKB+CoZ69Ki/50RCZ6DwhXZUgAyXdQq4lsz33F7URJ7+4VkOFJe/epHjiJY992jNH5wGZXfCPkZAjA2+4vWvfojJAnaLzHwF36VeaGOpy/3kml/AORIDiwMT9N2P9QQGdD2SEJPVWOPjA0gwRIawuiyOjBJq21/Bk5o2Y6QorYDF6RCwUQlqeQOOvOX2CJyKJ7KMh3zj4+pxEYwytj8C9VYvXqQml3ss+5dYP38zzT+6/UVt9ugxGjEdVTPvE4RC/OLANPvJisX0wAX1KO0Ankog13qE0/Kvm9RcvcSCOj3ngCNSy2cFyepcaxDgJRgww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J2+DwgyuJf402HwxGALgcmzpMC/AYk4sg65k1+LJAIo=;
+ b=QrjjlZshOT6h0EU38zKTVOCCn70i8Sbf6FxO+3bd+T/T2e/5lzzt7kowyMXenN/3b2Mxmiqyz7fvj1WeZ3wTOfuVnxRDcIgULaXjWZrYsbKwAJ4eVBs97j/Zj8H3AED0Q/LfCxh+ym7UK3/ofU0qeunEa6aBjYyqYzCaSukn1eZfaYaBf8E8CFLEb65ahudjhwBh9KzYatIx9C9DqGYGyzmqZJEXKTGi0Iz8GdTMzLmSvQXdqwCJovz+55ppdqh6C/oApJb0osFja1+8gBvef8KBYt0zIafMTkPtaDaWJCzRH05gxHz3O5qkvvmj0mAztBu16pecOkZnyGmpl4dxMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J2+DwgyuJf402HwxGALgcmzpMC/AYk4sg65k1+LJAIo=;
+ b=cIA63DlIvb4Eo0mSAfQ0qur1OFomFIc/PU5MeTBkgocNWLnJbR3VpsJs/7On73Qz+tJE5DvORFdFrUGau6fzgigXe96P0KwawP8mWls4GYKpiiEBnnoLkMNY6R6NL9eDwoE3O7tewTpK3Z8UkbTyvc0muIu/Yruc+3rXe3yzs9U=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2824.namprd15.prod.outlook.com (2603:10b6:a03:158::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Tue, 17 Nov
+ 2020 06:18:23 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3564.028; Tue, 17 Nov 2020
+ 06:18:23 +0000
+Date:   Mon, 16 Nov 2020 22:18:16 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+Subject: Re: [PATCH bpf-next v3 2/2] bpf: Add tests for bpf_lsm_set_bprm_opts
+Message-ID: <20201117061816.z446lhcdjkuswtmg@kafai-mbp.dhcp.thefacebook.com>
+References: <20201117021307.1846300-1-kpsingh@chromium.org>
+ <20201117021307.1846300-2-kpsingh@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117021307.1846300-2-kpsingh@chromium.org>
+X-Originating-IP: [2620:10d:c090:400::5:8f7f]
+X-ClientProxiedBy: MW3PR06CA0017.namprd06.prod.outlook.com
+ (2603:10b6:303:2a::22) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:8f7f) by MW3PR06CA0017.namprd06.prod.outlook.com (2603:10b6:303:2a::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Tue, 17 Nov 2020 06:18:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 80915a86-810f-40af-bbb3-08d88ac09614
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2824:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB28243D02EE320824C04B70D9D5E20@BYAPR15MB2824.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bYZVUPmMLQS5hl6etQNbuxJiifjoPH4WpiJ/0UWu8hSVZZ0+50nGBtZpmn6Ev2z7AsDhVWvvQJdTuVTMgb3YOzx3Sm0EeGRqHxAjQiKASYj+866cDF/FZAN0La7ZWefsjGOFLMTMplf/ry2Yzc4zfcjY/XXZOXOM4DIvSC4J6ddlcvQHMOWDvNaMRE1GAzcbVOYElrZI1fErV8W7PVi+6s9aSofeaa2RQKPzgvju6RbJXceIxGc94XAWHw9GfhmAsiroQ0uqi8REKE75Bq7qzq4QyqLyUys2zoNN2yjF+4jYCkeJqNSky5XLPuaSirPVNh01d5EgtIxu1AWNcl05bg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(346002)(376002)(366004)(16526019)(83380400001)(6916009)(186003)(86362001)(4744005)(54906003)(316002)(52116002)(7696005)(55016002)(9686003)(478600001)(8676002)(2906002)(66476007)(66946007)(66556008)(8936002)(6506007)(1076003)(4326008)(5660300002)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: zD9x+WWvy2dj8bZVLrN6nCD93rAQWrx9fksIK1TlEtVNHUtZNSkcsIxmdtu3yVYycCpf/C4KNx4mDD9JBnZYWdn9G6FWyiTYkLuJj0lQkRN2BTT7yof6OEg7WsBnS2SLkFxHLSNTaRuKSzJDOcl62SPSY4KOA1Od5bSm3IKsyAlNd6kqfMr6QPTIHsxUvo8Q0joGDSzRG10qAdyrTTL+2QjDZ1YU8ArdUXJbX/b9TGz064oWgDCMs6sOYSM252RVaPPo7NM/6ceEtS38LiypDizLVUJUv0uOTjFtCGVywTXCvyj7P/9uZ9ZulnmWzKf82eSUaD+sS+3IeH4omBP4/j3HrbMKFmV4eRZtwP8GyjdOxmJlUNPQ4FmJGO4HrwD8afaoQ+g3jOcBpIQLUKP0SZu8PiCtIJcgHCe2FXQVlh7p7+2t/p2IHxltnCvAcOn8Oim/sKTnmniasjctjIvp41hySqlX4eOit9A9qqod7u5fNFRi/CgU3tTwtpcy1j9ATkGM7gtTTclsL7Bj1V7wFSWCEWhwrf9bE1IAlI3MeHjjLKThkPXteQMEcSKNE1PG97gyydqT2DRtzv3AA2Vu4T8VIBPwSN96aqjKgmu9Ii6WPuiIradXxGcppGwEf/YSu4jhVxNBnjVF9RWMf8ufjUrdQ9RY9BlBBl5d9hwKDbbxkXu8sFPSGU7LdXVevm3QMB8/5Z/xhbxPGcutrN/Xjz8qaUdkNslE4MGYzpb82LV2sDs/obSvMIZ1y12A5p2jU8CD7VDQv2eGi0trk2tE3o62/pDKmDSV/SvBtDUuZFXogg2QpjemPW6dMuk7qk/2e6DFHe6JrG96oLpd28fT7BoCGZurAWUzoFyH0FNpUPBG3cypdk183Tkf9M/8PEtGgzEyh+FHTgFkVjDAD1j082UOgnrL+Hc+PevPmUWSi9A=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80915a86-810f-40af-bbb3-08d88ac09614
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 06:18:23.0189
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MysuKV89sz/V45/I28XPk237xBA47UIHCo6fu67izqZ4+L5EVrCWUAYttnQwU+9k
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2824
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_02:2020-11-13,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 mlxscore=0
+ spamscore=0 suspectscore=1 phishscore=0 adultscore=0 malwarescore=0
+ lowpriorityscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=959
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170045
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020, akpm@linux-foundation.org wrote:
+On Tue, Nov 17, 2020 at 02:13:07AM +0000, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
 > 
-> The patch titled
->      Subject: mm/shmem: use kmem_cache_zalloc in shmem_alloc_inode()
-> has been added to the -mm tree.  Its filename is
->      mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
+> The test forks a child process, updates the local storage to set/unset
+> the securexec bit.
 > 
-> This patch should soon appear at
->     https://ozlabs.org/~akpm/mmots/broken-out/mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
-> and later at
->     https://ozlabs.org/~akpm/mmotm/broken-out/mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
+> The BPF program in the test attaches to bprm_creds_for_exec which checks
+> the local storage of the current task to set the secureexec bit on the
+> binary parameters (bprm).
 > 
-> Before you just go and hit "reply", please:
->    a) Consider who else should be cc'ed
->    b) Prefer to cc a suitable mailing list as well
->    c) Ideally: find the original patch on the mailing list and do a
->       reply-to-all to that, adding suitable additional cc's
+> The child then execs a bash command with the environment variable
+> TMPDIR set in the envp.  The bash command returns a different exit code
+> based on its observed value of the TMPDIR variable.
 > 
-> *** Remember to use Documentation/process/submit-checklist.rst when testing your code ***
+> Since TMPDIR is one of the variables that is ignored by the dynamic
+> loader when the secureexec bit is set, one should expect the
+> child execution to not see this value when the secureexec bit is set.
 > 
-> The -mm tree is included into linux-next and is updated
-> there every 3-4 working days
-> 
-> ------------------------------------------------------
-> From: Hui Su <sh_def@163.com>
-> Subject: mm/shmem: use kmem_cache_zalloc in shmem_alloc_inode()
-
-Andrew, Stephen, please revert this untested "cleanup" from your
-trees a.s.a.p: it's a disaster for anyone using shmem/tmpfs.
-
-> 
-> in shmem_get_inode():
-> new_inode();
->   new_inode_pseudo();
->     alloc_inode();
->       ops->alloc_inode(); -> shmem_alloc_inode()
->         kmem_cache_alloc();
-> 
-> memset(info, 0, (char *)inode - (char *)info);
-> 
-> So use kmem_cache_zalloc() in shmem_alloc_inode(),
-> and remove the memset in shmem_get_inode().
-
-I could not follow that argument at all.  The shmem_inode_cachep
-uses a constructor, and the memset shown is of only a portion of
-the whole inode.  zeroing the entire inode quickly crashes the
-kernel, after showing errors.
-
-(If you're lucky enough to have a readable display at that point:
-I did not, but got on better with framebuffer than drm/i915; and
-I wonder if there's a separate bug in that area too, because fixing
-this shmem issue is not enough to get my drm/i915 rc4-mm1 booting.)
-
-> 
-> Link: https://lkml.kernel.org/r/20201115174026.GA365412@rlk
-> Signed-off-by: Hui Su <sh_def@163.com>
-
-NAK.  Hui Su, please test your "cleanups" before sending them.
-
-I'm sorry for being slow to respond, but the priority appeared
-to be to get Matthew Wilcox's series running reliably, so I had not
-got around to checking the less urgent shmem patches before they
-slipped into mmotm - there may well be more that I want to NAK,
-but this is the dangerous one.
-
-Thanks,
-Hugh
-
-> Cc: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> ---
-> 
->  mm/shmem.c |    3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> --- a/mm/shmem.c~mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode
-> +++ a/mm/shmem.c
-> @@ -2331,7 +2331,6 @@ static struct inode *shmem_get_inode(str
->  		inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
->  		inode->i_generation = prandom_u32();
->  		info = SHMEM_I(inode);
-> -		memset(info, 0, (char *)inode - (char *)info);
->  		spin_lock_init(&info->lock);
->  		atomic_set(&info->stop_eviction, 0);
->  		info->seals = F_SEAL_SEAL;
-> @@ -3851,7 +3850,7 @@ static struct kmem_cache *shmem_inode_ca
->  static struct inode *shmem_alloc_inode(struct super_block *sb)
->  {
->  	struct shmem_inode_info *info;
-> -	info = kmem_cache_alloc(shmem_inode_cachep, GFP_KERNEL);
-> +	info = kmem_cache_zalloc(shmem_inode_cachep, GFP_KERNEL);
->  	if (!info)
->  		return NULL;
->  	return &info->vfs_inode;
-> _
-> 
-> Patches currently in -mm which might be from sh_def@163.com are
-> 
-> mmslab_common-use-list_for_each_entry-in-dump_unreclaimable_slab.patch
-> mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
-> mm-page_counter-use-page_counter_read-in-page_counter_set_max.patch
-> mm-hugetlbc-just-use-put_page_testzero-instead-of-page_count.patch
-> mm-compaction-move-compaction_suitables-comment-to-right-place.patch
-> mm-oom_kill-change-comment-and-rename-is_dump_unreclaim_slabs.patch
-> acctc-use-elif-instead-of-end-and-elif.patch
-> mm-memcontrol-rewrite-mem_cgroup_page_lruvec.patch
+> Signed-off-by: KP Singh <kpsingh@google.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
