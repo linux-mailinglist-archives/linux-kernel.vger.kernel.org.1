@@ -2,112 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5966C2B6F82
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031F62B6F8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730469AbgKQUCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:02:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730251AbgKQUCP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:02:15 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9669AC061A04
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:02:14 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id s9so25664576ljo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:02:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GSCHMMM0D0q85Saw3BGZ1mrSdRqytsRtsFlwlLFUG1Q=;
-        b=U5ZlwbFbW6wzZ9SjWFK+Je9NtJURJfuA+CBtm8mpTtA3OAFV31Gt7/PVFooFI3hJSJ
-         FPe5GnyQ9vo+K8E4DGvg2CmIfBjU80aj+PwOMi9JxkBrfyCFhmQwE8yG25tVzzpwHM/G
-         +SLjkMHpsWn0eetojTcyUPdUG+YBEUlN6bkAREdia0RwgRe5Az5vSyoEcUpsdqwdqQS2
-         wQsiqbs+NFvyybKCLcEoNJlXX+Q79meG+WhN0TKvoL+R5ZHI5kwQtcSrRMvmI503HpW4
-         iQFfKDV7kGEefpCno1fqlRK8X77oqYAJVuKjI7LR9wx0wgLXu6vuCzgHwKA6G32zuy1F
-         Z/Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GSCHMMM0D0q85Saw3BGZ1mrSdRqytsRtsFlwlLFUG1Q=;
-        b=RGX4U+0eHSlPL/jlBhQijaI2qTr75+tauXKQvFCA5I9A/KX9NlBi0XnaRtc59R+A/O
-         GZ5euftYzHjkxuJJC1xaWmRVuDYAUAQXBAZsC69YRMWkWgaf7O1FaFQOfX0KQJ5XlzFQ
-         05j/RV7hD6SxPNvaDsYmEaiZRyhfPXZZEFKaPAC9R5fvlOyubUsjpxGqawRFIDmgIWx0
-         0dPap1g0BWqpAvhUCsqlainHdRIyiaz8ECKh2EmW3iD6xIGUPkqYxXlupJB4LedYj9Iy
-         Xij0E1ztTkI6k/JhgZ+ZVBeu8xb4g8vt7dBCxbiXJKvyTbrxccuH79LZlqm3/4upVzqz
-         pl9w==
-X-Gm-Message-State: AOAM530BMvqUSpcyZsstvoDUGG807IUFbuvEqD1DWrPSv26X0W++yJ3z
-        Navdeih5Nzn/gk75TfP2xB4gvIgw3rCcbNyY0vh/+g==
-X-Google-Smtp-Source: ABdhPJzrteo1SoLGHTARp2PUs3U3i4VQkUG29Mj40M+A73s5OoqlPLDhJ7M0v+3kzosqo9RIkW4zU8tz5/C7FbMtdpI=
-X-Received: by 2002:a05:651c:204c:: with SMTP id t12mr2581977ljo.347.1605643332643;
- Tue, 17 Nov 2020 12:02:12 -0800 (PST)
+        id S1730751AbgKQUE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:04:26 -0500
+Received: from mga18.intel.com ([134.134.136.126]:45863 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726352AbgKQUE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:04:26 -0500
+IronPort-SDR: QCVKiSIsYMpDw/g6KayBlWwxUGoL2y2XcORnq378V3bSf4Uvltip696kUEt6NFmglZPb9+OMeA
+ BEmbEcdqG59g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="158774857"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="158774857"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:04:21 -0800
+IronPort-SDR: eoV4n4Q664zgr0m30tzsETZlN1h4pMhlGMovlxmsFIYu4NFnYMb4BnVapRfvfVqsLg6Qc+I/Ue
+ DaMXhJ76ac0Q==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="544190637"
+Received: from chimtrax-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.222])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:04:21 -0800
+Subject: Re: [PATCH v11 01/16] AER: aer_root_reset() non-native handling
+To:     Sean V Kelley <sean.v.kelley@intel.com>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, xerces.zhao@gmail.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        qiuxu.zhuo@intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201117191954.1322844-1-sean.v.kelley@intel.com>
+ <20201117191954.1322844-2-sean.v.kelley@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <4c652293-7f5d-7c80-0c20-3677ec651446@linux.intel.com>
+Date:   Tue, 17 Nov 2020 12:04:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201117162932.13649-1-rppt@kernel.org> <20201117162932.13649-7-rppt@kernel.org>
- <20201117193358.GB109785@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20201117193358.GB109785@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 17 Nov 2020 12:02:01 -0800
-Message-ID: <CALvZod5mJnR2DXoYTbp9RX4uR7zVyqAPfD+XKpqXKgxaNyJ1VA@mail.gmail.com>
-Subject: Re: [PATCH v9 6/9] secretmem: add memcg accounting
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201117191954.1322844-2-sean.v.kelley@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:49 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Tue, Nov 17, 2020 at 06:29:29PM +0200, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> >
-> > Account memory consumed by secretmem to memcg. The accounting is updated
-> > when the memory is actually allocated and freed.
-> >
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-[snip]
-> >
-> > +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
-> > +{
-> > +     int err;
-> > +
-> > +     err = memcg_kmem_charge_page(page, gfp, order);
 
-I haven't looked at the whole series but it seems like these pages
-will be mapped into the userspace, so this patch has dependency on
-Roman's "mm: allow mapping
-accounted kernel pages to userspace" patch series.
+
+On 11/17/20 11:19 AM, Sean V Kelley wrote:
+> If an OS has not been granted AER control via _OSC, then
+> the OS should not make changes to PCI_ERR_ROOT_COMMAND and
+> PCI_ERR_ROOT_STATUS related registers. Per section 4.5.1 of
+> the System Firmware Intermediary (SFI) _OSC and DPC Updates
+> ECN [1], this bit also covers these aspects of the PCI
+> Express Advanced Error Reporting. Based on the above and
+> earlier discussion [2], make the following changes:
+> 
+> Add a check for the native case (i.e., AER control via _OSC)
+> 
+> Note that the current "clear, reset, enable" order suggests that the
+> reset might cause errors that we should ignore. Lacking historical
+> context, these will be retained.
+> 
+> [1] System Firmware Intermediary (SFI) _OSC and DPC Updates ECN, Feb 24,
+>      2020, affecting PCI Firmware Specification, Rev. 3.2
+>      https://members.pcisig.com/wg/PCI-SIG/document/14076
+> [2] https://lore.kernel.org/linux-pci/20201020162820.GA370938@bjorn-Precision-5520/
+
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
