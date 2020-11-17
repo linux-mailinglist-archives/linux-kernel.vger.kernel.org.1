@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1033B2B586F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEA32B5878
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727696AbgKQDo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 22:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgKQDoT (ORCPT
+        id S1727386AbgKQDrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 22:47:01 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:39398 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726938AbgKQDq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 22:44:19 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A656AC0613CF;
-        Mon, 16 Nov 2020 19:44:19 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id r12so19743916iot.4;
-        Mon, 16 Nov 2020 19:44:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=57lbXEPj7jmNMETWFLeFaZrg6lk8ttcI8EA76YL2pTI=;
-        b=eSKEDg7flLp4D1xoqZ18+arU7NXV4g8oO1m1RWGJoWcR2z06I7q55NoUPBmwfyCpmY
-         +M0SWFotPWRCiX+TGv0Ttx7lTJEds1dHPK++mDc6ARujz/A21t6WD07GwzrMliseeOLs
-         2kIW+eYOKvnBiB+GL0POaDVXQXP5Rw3Qy/YywlPunIKsXoY3iWzC67AhVzbskHYCqo+C
-         zvFSrBQ6aJ+MVua6yhNS7xQK9GOnhdhEF1x/vtNMg++yM2rVIt9MoikEDr3xmyZoDI0T
-         3UyAi3N3JdADZkQLkz34egyA6lP9k1pe18zesJ13e3dyDZS5Cl7zowqhxx4jpqaExgqp
-         vO8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=57lbXEPj7jmNMETWFLeFaZrg6lk8ttcI8EA76YL2pTI=;
-        b=uK0RsIVkMG01/CZAP/dC/i0zGcROmpmgr6eaVZapZjJA7sNo4dFgmD1tVPlKOw+/m5
-         YBLD/45pHN7PdR48ZgdCbRf3yxLviO+AiePXyph3I2Jn732KwWmgXVJL8+zS6Ztdv7iT
-         Ot4HrJmjt1AHxHrS6Hx5dMSp1a6QH9Ii3HeEm+yLYltgfsj8JMyLm24giUFjHODMAdl6
-         v6JbMFpEnisPkKygLYaUtJpJ5RxN5XzDcgHcwc3AFuKEd+40Yvoz2JxlBWlLs/VWFM4D
-         T3ddJ57MMoo3F2cPaZl6lA1DexQiZNQreEq74WB/dK9kr8IKPyzmbPznZMWzL+2zxuIZ
-         qztg==
-X-Gm-Message-State: AOAM5300+1bHwR2LskTvr0LdxCJLk5n69I5mZVS9qpXmgbqOLqdi3/p+
-        lslsfO0CBelO8J5uhg6ywts8dAq1cH4=
-X-Google-Smtp-Source: ABdhPJw/yEB+ALCGdMUZTF7R+rcBxaLw/KLDk/LjnT/LhqsFVjxtGZJGtYSIsdkP62NeXytg4aZCaQ==
-X-Received: by 2002:a6b:4401:: with SMTP id r1mr10057525ioa.78.1605584659034;
-        Mon, 16 Nov 2020 19:44:19 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:c472:ae53:db1e:5dd0])
-        by smtp.googlemail.com with ESMTPSA id c89sm12728838ilf.26.2020.11.16.19.44.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 19:44:18 -0800 (PST)
-Subject: Re: [PATCH v4 bpf-next 3/5] kbuild: build kernel module BTFs if BTF
- is enabled and pahole supports it
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     kernel-team@fb.com, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, jeyu@kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net
-References: <20201110011932.3201430-1-andrii@kernel.org>
- <20201110011932.3201430-4-andrii@kernel.org>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <f52c83a9-c350-5ba8-e178-10a0d7d0fed6@gmail.com>
-Date:   Mon, 16 Nov 2020 20:44:15 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+        Mon, 16 Nov 2020 22:46:59 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH3fpKP138174;
+        Tue, 17 Nov 2020 03:46:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=IsUpn/dl214A80H/3v06PDx6DW/p/wuxnCWRIFCi2Cw=;
+ b=WC2lQNpO9x4HlzfjEPacsf/jjOYVVxF+9DIg2yW7qCn7L4CXYFyl53yTXf3WVlE4OdVs
+ lRPZgGJVsL9H6ApeZj28rzdMICbgSL3mP3sOuwoUXx/oKFBsTWM7fXYc+a3XPGoPjp3v
+ 2XlOL7u40uew55bq4o2GSOodidDJmf+YXhIbiBDuoRiFSVBEC4f11JY8KvpmbWIximBq
+ fjwa16zDlhTPDegEIyGRfcD5rtev0+3+ZjQ+R1HgI/GW2FuYKElaVC8EF/JN1/69+rgy
+ PVZKYwMBYf0xPJ2bFoupQX9jr/OH4juK6RBHgTg86NR4E4s+EL427PJclfeErERJ7WL7 rg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34t76krd88-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 03:46:53 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH3fIsL005305;
+        Tue, 17 Nov 2020 03:44:53 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34umcxmebw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 03:44:53 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AH3ip0V004749;
+        Tue, 17 Nov 2020 03:44:52 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 16 Nov 2020 19:44:51 -0800
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Andrea Parri <parri.andrea@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        linux-hyperv@vger.kernel.org, Andres Beltran <lkmlabelt@gmail.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v9 2/3] scsi: storvsc: Use vmbus_requestor to generate
+ transaction IDs for VMBus hardening
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1lff06429.fsf@ca-mkp.ca.oracle.com>
+References: <20201109100402.8946-1-parri.andrea@gmail.com>
+        <20201109100402.8946-3-parri.andrea@gmail.com>
+        <20201113113327.dmium67e32iadqbz@liuwe-devbox-debian-v2>
+        <20201113185424.ujdfx6ot7siqr5qh@liuwe-devbox-debian-v2>
+        <20201113213933.GA4937@andrea>
+        <20201116110352.obbqxzxw6etdq4cl@liuwe-devbox-debian-v2>
+Date:   Mon, 16 Nov 2020 22:44:48 -0500
+In-Reply-To: <20201116110352.obbqxzxw6etdq4cl@liuwe-devbox-debian-v2> (Wei
+        Liu's message of "Mon, 16 Nov 2020 11:03:52 +0000")
 MIME-Version: 1.0
-In-Reply-To: <20201110011932.3201430-4-andrii@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011170027
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1011 mlxlogscore=999
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011170027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/20 6:19 PM, Andrii Nakryiko wrote:
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index d7a7bc3b6098..1e78faaf20a5 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -274,6 +274,15 @@ config DEBUG_INFO_BTF
->  	  Turning this on expects presence of pahole tool, which will convert
->  	  DWARF type info into equivalent deduplicated BTF type info.
->  
-> +config PAHOLE_HAS_SPLIT_BTF
-> +	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
-> +
-> +config DEBUG_INFO_BTF_MODULES
-> +	def_bool y
-> +	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> +	help
-> +	  Generate compact split BTF type information for kernel modules.
-> +
->  config GDB_SCRIPTS
->  	bool "Provide GDB scripts for kernel debugging"
->  	help
 
-Thank you for adding a config option for this feature vs bumping the
-required pahole version in scripts/link-vmlinux.sh. This is a much more
-friendly way of handling kernel features that require support from build
-tools.
+Wei,
+
+> Martin and James, are you happy with this change? I would assume you
+> are because that means this patch to storvsc is leaner.
+
+Yes, that's fine.
+
+Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
