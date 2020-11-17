@@ -2,116 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CFD2B6E31
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05D72B6E37
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgKQTNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:13:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
+        id S1727166AbgKQTO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:14:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKQTNJ (ORCPT
+        with ESMTP id S1726098AbgKQTOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:13:09 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA61C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:13:09 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a3so4267755wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:13:08 -0800 (PST)
+        Tue, 17 Nov 2020 14:14:55 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3666AC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:14:55 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id c17so24320923wrc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:14:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=WNUVTXMmnykufcQ4Q8lOWcJVUiIN3QeGQB95A76tQ+8=;
-        b=i0YBLj2HBs3hcsN/sjWp36dXpyzOLonq5s71qRK7+wGLc3Xp1HvfGP8JlWZH5JAY9H
-         NAepCFPBk+/LY4QzQ+pSU0XFUCVkhBP7o5kblNYIG29TWf1zyq2gPuPh/f3PeMpk7tsa
-         Qxeiz28OVxAkTt5us3nJPXFCdykpxw9J7ni2c=
+        bh=HeTcjS/dd0NEqamTnE+1Ub8o0IkKzsWK8FFem51/YMU=;
+        b=Y08Epjyl0jv752OAzfMzijr+QPSBQZvxPmJB73xMBGTQ7catufmLM8vobZzdseitJ+
+         mqNBHjjJhvo/8Mjajlnm+MCG5V4xVT9IP1pRMdrltgKlNaVUFL630be158TXSWqhoTaA
+         7q4y8bHLolzBmRg2J/GE026V5BtEulCYFECXw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
          :content-transfer-encoding:in-reply-to;
-        bh=WNUVTXMmnykufcQ4Q8lOWcJVUiIN3QeGQB95A76tQ+8=;
-        b=eCzaGpaVgZJgAFRY1NtmTRNkRsnMrhxq5UCWRysSSeTQiqrJkpq0cYLtXxZ9G3ufNl
-         GJI7XiMt27Z7ZBhCVbI9vk9DkJuhKxCDRa6tZ3Tmr64ttKl9Kl4ijW5LYcbzDj80VqmW
-         kkU3Lq6WZsbECDd7jUIdk/bVI07dCR5q0VzZAOOqkZB9VEKo6wXiQm5kwyCxw5xu9bqg
-         eIDWulIl8Q6L3CpbSFR/efjYZgxJYGro1VUWUtIfIfGTkq0S9KPnL5UcZBWdJBh7dfiw
-         hEBV2CLDTk+0MWrJGkiAelzKkBPWUXsRaWkpaFWMzy6pe/LoDIHgf20oLvvqNWr8rmcn
-         MxZQ==
-X-Gm-Message-State: AOAM530q/n0KKxBrrC6Eiw01rCpvHpHEqBirRMgcrxsfbJk2Qd0t0vw1
-        v3s0XY2+OtxdFX0B/TsEvGM5+Q==
-X-Google-Smtp-Source: ABdhPJweuOOwDW8ob2fCJCgh19KgYC/5yerZWUwLSSEiJpkdEJlwJjHbZ0Lfpao9PySksN69RQprUg==
-X-Received: by 2002:a1c:ddd7:: with SMTP id u206mr590340wmg.27.1605640387840;
-        Tue, 17 Nov 2020 11:13:07 -0800 (PST)
+        bh=HeTcjS/dd0NEqamTnE+1Ub8o0IkKzsWK8FFem51/YMU=;
+        b=SJNujuW+TEp8KoDjvpCArbm56ayo8SpHg72waFONg+zlUAmutmNmCX4ULQfHnJIIF6
+         +7pKnDiYFwjyenCU0Dlm6EJ6bCKOgKodisCW01xd/Ix+HhA8DSBZjm5Z3KFVWPWhEA9F
+         mEWZDpSNaxJS6KJU0mH6pPXAmavV8ACKbtd/WUMFkVAVotlUP3t1d1sZqCtvJZKdvWsA
+         /SI09RoMp9nT1RUld/SEjO4jFl+tRW2D/eBLvM2/+41JU8hrKOzDqbKv8aUtg3Of7W/w
+         CkkC5B+ZcF2+7mN0kOosZWH682F2qQNp5kqDKDFr/u42z0ioQZMgHSnqoZlMduEIWwmT
+         qK/w==
+X-Gm-Message-State: AOAM530sDpR1XQnPpNySe7cQH3/j1fkMrMMgskKz3Ws0YYZDZG7Seo03
+        9Clr19i5X9aCeLaBa4B/URUFzg==
+X-Google-Smtp-Source: ABdhPJxwGv9J2uCXaMCQag4+rIx+29M/rQeIQQVZBJw+rPjxUyGFygtXGZEg9n2MqtBn8+E5HjCATg==
+X-Received: by 2002:a5d:4d02:: with SMTP id z2mr1050907wrt.109.1605640493957;
+        Tue, 17 Nov 2020 11:14:53 -0800 (PST)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c5sm19496393wrb.64.2020.11.17.11.13.06
+        by smtp.gmail.com with ESMTPSA id q66sm5489733wme.6.2020.11.17.11.14.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 11:13:06 -0800 (PST)
-Date:   Tue, 17 Nov 2020 20:13:04 +0100
+        Tue, 17 Nov 2020 11:14:53 -0800 (PST)
+Date:   Tue, 17 Nov 2020 20:14:51 +0100
 From:   Daniel Vetter <daniel@ffwll.ch>
 To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linux-kernel@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
         David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch
-Subject: Re: [PATCH 03/42] drm/drm_dp_mst_topology: Remove set but never used
- variable 'len'
-Message-ID: <20201117191304.GS401619@phenom.ffwll.local>
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 32/42] drm/ttm/ttm_tt: Demote kernel-doc header format
+ abuses
+Message-ID: <20201117191451.GT401619@phenom.ffwll.local>
 Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linux-kernel@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
         David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org
 References: <20201116174112.1833368-1-lee.jones@linaro.org>
- <20201116174112.1833368-4-lee.jones@linaro.org>
- <20201117172925.GN401619@phenom.ffwll.local>
- <20201117181250.GL1869941@dell>
- <20201117181340.GM1869941@dell>
+ <20201116174112.1833368-33-lee.jones@linaro.org>
+ <bcb40255-312f-8cdb-28a8-7ee2e6596f90@amd.com>
+ <20201117083346.GB1869941@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201117181340.GM1869941@dell>
+In-Reply-To: <20201117083346.GB1869941@dell>
 X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:13:40PM +0000, Lee Jones wrote:
-> On Tue, 17 Nov 2020, Lee Jones wrote:
+On Tue, Nov 17, 2020 at 08:33:46AM +0000, Lee Jones wrote:
+> On Mon, 16 Nov 2020, Christian König wrote:
 > 
-> > On Tue, 17 Nov 2020, Daniel Vetter wrote:
-> > 
-> > > On Mon, Nov 16, 2020 at 05:40:33PM +0000, Lee Jones wrote:
-> > > > Fixes the following W=1 kernel build warning(s):
-> > > > 
-> > > >  drivers/gpu/drm/drm_dp_mst_topology.c: In function ‘drm_dp_send_query_stream_enc_status’:
-> > > >  drivers/gpu/drm/drm_dp_mst_topology.c:3263:6: warning: variable ‘len’ set but not used [-Wunused-but-set-variable]
-> > > > 
-> > > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > > > Cc: Maxime Ripard <mripard@kernel.org>
-> > > > Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> > > > Cc: David Airlie <airlied@linux.ie>
-> > > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > > Cc: dri-devel@lists.freedesktop.org
-> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > Am 16.11.20 um 18:41 schrieb Lee Jones:
+> > > Fixes the following W=1 kernel build warning(s):
 > > > 
-> > > Going to apply this, but I noticed that the return value of the
-> > > build_query_stream_enc_status() is pointless. Can you pls follow up with
-> > > an additional patch to change that to void?
+> > >   drivers/gpu/drm/ttm/ttm_tt.c:45: warning: Function parameter or member 'bo' not described in 'ttm_tt_create'
+> > >   drivers/gpu/drm/ttm/ttm_tt.c:45: warning: Function parameter or member 'zero_alloc' not described in 'ttm_tt_create'
+> > >   drivers/gpu/drm/ttm/ttm_tt.c:83: warning: Function parameter or member 'ttm' not described in 'ttm_tt_alloc_page_directory'
 > > 
-> > I can.
+> > Couldn't we rather describe the missing parameters? Shouldn't be much work.
 > 
-> Looks like you're getting dropped again!
+> My rule is; if a substantial attempt has been made to document
+> something, I'll patch it up.  If little or no attempt has been made,
+> then it gets demoted.
+> 
+> Please feel free to document and upgrade them once more.
+> 
+> Bear in mind however, there is a script that reports on all files
+> which utilise kernel-doc notation but do not have matching references
+> from the Documentation area.
+> 
+> See: scripts/find-unused-docs.sh
 
-I get it on list. So not lost.
-
-tbh my personal cc: is such a disastrous mess it's actually easier to ping
-me with an interesting subject on dri-devel here ...
+ttm docs need some serious love anyway, so I think this is fine. I applied
+it.
 -Daniel
+
+> 
+> > > Cc: Christian Koenig <christian.koenig@amd.com>
+> > > Cc: Huang Rui <ray.huang@amd.com>
+> > > Cc: David Airlie <airlied@linux.ie>
+> > > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > > Cc: dri-devel@lists.freedesktop.org
+> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > ---
+> > >   drivers/gpu/drm/ttm/ttm_tt.c | 4 ++--
+> > >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
+> > > index cfd633c7e7643..da9eeffe0c6d7 100644
+> > > --- a/drivers/gpu/drm/ttm/ttm_tt.c
+> > > +++ b/drivers/gpu/drm/ttm/ttm_tt.c
+> > > @@ -38,7 +38,7 @@
+> > >   #include <drm/drm_cache.h>
+> > >   #include <drm/ttm/ttm_bo_driver.h>
+> > > -/**
+> > > +/*
+> > >    * Allocates a ttm structure for the given BO.
+> > >    */
+> > >   int ttm_tt_create(struct ttm_buffer_object *bo, bool zero_alloc)
+> > > @@ -73,7 +73,7 @@ int ttm_tt_create(struct ttm_buffer_object *bo, bool zero_alloc)
+> > >   	return 0;
+> > >   }
+> > > -/**
+> > > +/*
+> > >    * Allocates storage for pointers to the pages that back the ttm.
+> > >    */
+> > >   static int ttm_tt_alloc_page_directory(struct ttm_tt *ttm)
+> > 
+> 
+> -- 
+> Lee Jones [李琼斯]
+> Senior Technical Lead - Developer Services
+> Linaro.org │ Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+
 -- 
 Daniel Vetter
 Software Engineer, Intel Corporation
