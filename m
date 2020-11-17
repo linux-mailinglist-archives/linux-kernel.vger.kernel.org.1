@@ -2,91 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589422B6BAF
+	by mail.lfdr.de (Postfix) with ESMTP id C5E622B6BB0
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727728AbgKQR0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:26:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726584AbgKQR0M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:26:12 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299FFC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:26:12 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id m9so6880736pgb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:26:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mXY01vYqSIFKCXp0IDMP/PsFb63uKbgbyX0xqNFjPx8=;
-        b=Ui84wE1DPycMuErhBKrJglxCN+6U2dIsJ8AXIsquTnLJwX7valeZ/Wj4u13g/P7cca
-         hCCwyq37SCXL+glSjaLy48q3Es/ccTZPdji18Jc19ouRkm25CJBTDoKB2hq56S1gsxJT
-         CgkNQMv/DyTA8jUzzWDYbwu+gOE/Q4fpQMkqA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mXY01vYqSIFKCXp0IDMP/PsFb63uKbgbyX0xqNFjPx8=;
-        b=UmXhn4vdbF0mBc2CK/AslwFY7JZqbBgcMtGRhGs1nHvifPloVNSnMEjLzV7m6hltMv
-         RP76qt1fY/o4Ci49zONl3R5KoBoZfRyaLy6bbbxhdYthWqVnh8d7mduqmFDE2VXGB/Ib
-         ZlMJ+l5VGmxjT1giW8lAAP29PLIOxgznxzAHwNLit/O8kpsIjKNq9V6ZOnoKFSKNzNPu
-         E4jfv0Onw7xOpF+OPCRqNZ1NN+c+EGeYM67twoTco1v6tvp1S2/vILLsV7SRxCYaP+Dy
-         qiAl/zi2DM7Ay/HytaNT0MNX9oSwqUlg3wzxAWOwovHHgj0KLDXTLVJKoTUbp/xshjkc
-         mgXw==
-X-Gm-Message-State: AOAM530i70ZekAxCl+/N1Gare0uq3rTXQkoBYI/ieI3t58PX0nTIZ3Vz
-        twpHWnPqc8qrDDDmxCtAnrNAFg==
-X-Google-Smtp-Source: ABdhPJx6BBjXdUQptGLanbbvON0/vIPEQPGdKUos1T5nRqRB9kJFXWbLNYc4fRG2VpF08DlYFiAz3w==
-X-Received: by 2002:a65:4485:: with SMTP id l5mr4316577pgq.10.1605633971667;
-        Tue, 17 Nov 2020 09:26:11 -0800 (PST)
-Received: from smtp.gmail.com ([100.99.132.239])
-        by smtp.gmail.com with ESMTPSA id y9sm3816846pjn.24.2020.11.17.09.26.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 09:26:11 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Sean Paul <sean@poorly.run>,
-        Abhinav Kumar <abhinavk@codeaurora.org>
-Subject: [PATCH] drm/msm/dpu: Remove chatty vbif debug print
-Date:   Tue, 17 Nov 2020 09:26:08 -0800
-Message-Id: <20201117172608.2091648-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+        id S1728859AbgKQR0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:26:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728065AbgKQR0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:26:45 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DB24241A7;
+        Tue, 17 Nov 2020 17:26:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605634005;
+        bh=kEvhJdW8Ltu5g1JuAFR+kuuoTrHM0uOyBgnlePDT1+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xWwl4+nYvEnKjTlvit50yZ7P3jW8lc2DUH+X9cf/qTygERRkb11WmGa3E1o8gtsnr
+         Q9PQgxWcVKbsRpoTJ8GXMF9DAawkI31w5aa+tqzV0sHj1Q7Tz+5Vo3QDPBLrPI0xzw
+         Uf94N/zX1rtFrnJB6XWAr2+DLUwGP58BQ5bPPZ24=
+Date:   Tue, 17 Nov 2020 19:26:36 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Hillf Danton <hdanton@sina.com>, linux-kernel@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v41 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+Message-ID: <20201117172636.GA8524@kernel.org>
+References: <20201115044044.11040-1-hdanton@sina.com>
+ <15c3349c-44dd-7057-395c-8fd8c674e87d@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15c3349c-44dd-7057-395c-8fd8c674e87d@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I don't know what this debug print is for but it is super chatty,
-throwing 8 lines of debug prints in the logs every time we update a
-plane. It looks like it has no value. Let's nuke it so we can get
-better logs.
+On Mon, Nov 16, 2020 at 09:54:47AM -0800, Dave Hansen wrote:
+> Hillf, I noticed that you removed a bunch of folks from cc, including
+> me.  Was there a reason for that?  I haven't been seeing your feedback
+> on these patches at all.
 
-Cc: Sean Paul <sean@poorly.run>
-Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c | 3 ---
- 1 file changed, 3 deletions(-)
+I used the same script as for previous versions as '--cc-cmd', which
+simply outputs a static text file. Zero differences what I've done
+previously:
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-index 5e8c3f3e6625..5eb2b2ee09f5 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-@@ -245,9 +245,6 @@ void dpu_vbif_set_qos_remap(struct dpu_kms *dpu_kms,
- 	forced_on = mdp->ops.setup_clk_force_ctrl(mdp, params->clk_ctrl, true);
- 
- 	for (i = 0; i < qos_tbl->npriority_lvl; i++) {
--		DPU_DEBUG("vbif:%d xin:%d lvl:%d/%d\n",
--				params->vbif_idx, params->xin_id, i,
--				qos_tbl->priority_lvl[i]);
- 		vbif->ops.set_qos_remap(vbif, params->xin_id, i,
- 				qos_tbl->priority_lvl[i]);
- 	}
--- 
-Sent by a computer, using git, on the internet
+git send-email --envelope-sender=jarkko@kernel.org --cc-cmd
+../patches/cc-list.sh --cc linux-kernel@vger.kernel.org --to
+x86@kernel.org --to linux-sgx@vger.kernel.org
+~/Desktop/sgx-v41-fixed/*.patch 
 
+/Jarkko
