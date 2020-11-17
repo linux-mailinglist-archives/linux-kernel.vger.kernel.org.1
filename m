@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DE32B7090
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9282B7098
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbgKQU7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:59:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKQU7T (ORCPT
+        id S1726807AbgKQVDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:03:25 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:49812 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbgKQVDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:59:19 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F763C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:59:18 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id h23so25883077ljg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:59:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lhOVKceVBv7kVKCgOWNBzO70XQrC0EF5U4LspVOWhdQ=;
-        b=jFWNWp2TgwOeIaJn/jRrE7BtuYTGCLhCbYE1gTAv9xgjHbnUiLNIEgwBwRvKlTP/bW
-         EYstaUc5JEc0i4QC2VMllWpVxHobX2i95V0FGI/LQF35NIJjY9Pn96rE2RzgO588ungl
-         EXiEGgjrT3HGHa4BzkBHA5XlatVXLUwTAANULsOvBtkNeGKIFfqsqwrxasdbzxiFLpoZ
-         jOhE37cjXz3dN7vSaw2HY19SCUhSz0AkicBVW49Ovamx3xoTaRKO7MgaJkI+oTEcIeoY
-         k9GBD+p52hRY5liL5DAx6xBuZH1JDEFrh6/uuxfbnU+tma0kHkEcZX2ImRsdqCo9WCZN
-         t7rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lhOVKceVBv7kVKCgOWNBzO70XQrC0EF5U4LspVOWhdQ=;
-        b=Eh/5HoVC0D6iAyiuP6kFAxNjgMtICmPVYjWJHBZk3PyTXa+nnp0LeYie8NNVizVPZ+
-         hYwVcOz+LNMMM/onEORitfk9ionLrBRufwoYfnaoH61jkIq1Opc64F3RI7Hr+CiDrmqO
-         cnZucaGKi+x7AVFweZPYRmalo7TyIZB23GWJX1F7gGHtxREvALxoqyq7Ima/h6R8gFZ/
-         jCYA6rBfShLnBkD/roOMxfLQJccgkd0Hyl8k6vXgArKqqkEnrMXKFuOItxU5HxaL5Eg7
-         dGmZCjHUVo99xhcHlA1trpQ2+SxRo3qap7+WIxZuw7teBgEpVZQ9naeDWzKn36IoixZU
-         W0iQ==
-X-Gm-Message-State: AOAM533OiB+Jrcam3ocMXeafPe8Mb+K1AJcVWnQT6wf7EYgREuXtTssH
-        VrqNP/1nr1XHGp9dW2p09ThK7NwCvCPgaZoy9fjRog==
-X-Google-Smtp-Source: ABdhPJxjUwnRMlyZ1I6GdoT/R74osOxNheL4gleSpdaSISqhkb43ujnEF7gLzIuthlDegCWIFpbwtFMORGY7wdDa0eU=
-X-Received: by 2002:a2e:321a:: with SMTP id y26mr2883348ljy.293.1605646757115;
- Tue, 17 Nov 2020 12:59:17 -0800 (PST)
+        Tue, 17 Nov 2020 16:03:25 -0500
+Received: from relay8-d.mail.gandi.net (unknown [217.70.183.201])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 5D05F3A2217
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:00:42 +0000 (UTC)
+X-Originating-IP: 62.210.143.248
+Received: from weirdfishes.localdomain (62-210-143-248.rev.poneytelecom.eu [62.210.143.248])
+        (Authenticated sender: m@thi.eu.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id DA6F61BF208;
+        Tue, 17 Nov 2020 21:00:18 +0000 (UTC)
+Received: by weirdfishes.localdomain (Postfix, from userid 1000)
+        id 8111872214948; Tue, 17 Nov 2020 22:00:18 +0100 (CET)
+Date:   Tue, 17 Nov 2020 22:00:18 +0100
+From:   Mathieu Chouquet-Stringer <me@mathieu.digital>
+To:     Matthew Garrett <mjg59@google.com>
+Cc:     Chris Down <chris@chrisdown.name>, Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        sean.j.christopherson@intel.com, tony.luck@intel.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        the arch/x86 maintainers <x86@kernel.org>, kernel-team@fb.com
+Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
+Message-ID: <20201117210018.GA4247@weirdfishes>
+Mail-Followup-To: Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Matthew Garrett <mjg59@google.com>,
+        Chris Down <chris@chrisdown.name>, Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        sean.j.christopherson@intel.com, tony.luck@intel.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        the arch/x86 maintainers <x86@kernel.org>, kernel-team@fb.com
+References: <20200615063837.GA14668@zn.tnic>
+ <20200714121955.GA2080@chrisdown.name>
+ <20200714154728.GA3101@nazgul.tnic>
+ <20200714160448.GC2080@chrisdown.name>
+ <CACdnJuvfhjMNQUYNYWpPMfwTE3xHi7UNPm7HEwUMv_1F3KT4gA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201112084057.1399983-1-nobuhiro1.iwamatsu@toshiba.co.jp> <20201112084057.1399983-3-nobuhiro1.iwamatsu@toshiba.co.jp>
-In-Reply-To: <20201112084057.1399983-3-nobuhiro1.iwamatsu@toshiba.co.jp>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Nov 2020 21:59:06 +0100
-Message-ID: <CACRpkdbtkLjzMqRKzd3ppmwZ9hZESL4+zGOf7-uqjuF==Wm=3A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] gpio: visoconti: Add Toshiba Visconti GPIO support
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        yuji2.ishikawa@toshiba.co.jp,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACdnJuvfhjMNQUYNYWpPMfwTE3xHi7UNPm7HEwUMv_1F3KT4gA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nobuhiro,
+Hello all,
 
-On Thu, Nov 12, 2020 at 12:42 AM Nobuhiro Iwamatsu
-<nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
+On Tue, Jul 14, 2020 at 12:17:50PM -0700, Matthew Garrett wrote:
+> On Tue, Jul 14, 2020 at 9:04 AM Chris Down <chris@chrisdown.name> wrote:
+> > Either way, again, this isn't really the point. :-) The point is that there
+> > _are_ currently widespread cases involving poking MSRs from userspace, however
+> > sacrilegious or ugly (which I agree with!), and while people should be told
+> > about that, it's excessive to have the potential to take up 80% of kmsg in the
+> > default configuration. It doesn't take thousands of messages to get the message
+> > across, that's what a custom printk ratelimit is for.
 
-> Add the GPIO driver for Toshiba Visconti ARM SoCs.
->
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> Agreed - we should now offer all the necessary interfaces to avoid
+> userspace having to hit MSRs directly for thermal management, but that
+> wasn't always the case, and as a result there's tooling that still
+> behaves this way.
 
-I just noticed this:
+I'm late to the party but it seems allowing MSR_IA32_ENERGY_PERF_BIAS
+has the downside of flagging the kernel as tainted without telling you
+why if you use something like x86_energy_perf_policy (from
+tools/power/x86/x86_energy_perf_policy) which itself is used by tuned.
 
-> +config GPIO_VISCONTI
-> +       tristate "Toshiba Visconti GPIO support"
-> +       depends on ARCH_VISCONTI || COMPILE_TEST
-> +       depends on OF_GPIO
-> +       select GPIOLIB_IRQCHIP
-> +       help
-> +         Say yes here to support GPIO on Tohisba Visconti.
+I can taint my kernel manually by just running:
+x86_energy_perf_policy -c all performance
 
-Add:
-select GPIO_GENERIC
+The net impact is an OOPS triggered on such kernel won't necessarily be
+read by anyone nor analyzed by reporting tools as the kernel is now
+considered tainted.
 
-Then all of these:
+For instance abrt reports the following:
+===========8<===========8<===========8<===========8<===========8<===========8<
+A kernel problem occurred, but your kernel has been tainted (flags:GS).
+Explanation:
+S - SMP with CPUs not designed for SMP.
+Kernel maintainers are unable to diagnose tainted reports.
+===========8<===========8<===========8<===========8<===========8<===========8<
 
-> +static int visconti_gpio_get(struct gpio_chip *chip, unsigned int offset)
-> +static void visconti_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
-> +static int visconti_gpio_get_dir(struct gpio_chip *chip, unsigned int offset)
-> +static int visconti_gpio_dir_in(struct gpio_chip *chip, unsigned int offset)
-> +static int visconti_gpio_dir_out(struct gpio_chip *chip, unsigned int offset, int value)
+To add to the confusion, kernel documentation
+(Documentation/admin-guide/tainted-kernels.rst) is not up to date so
+while looking for an explanation, one gets to wonder how what used to be
+a regular average computer can now be classified as something using "an
+officially SMP incapable processor"...
 
-Can be implemented by the genric MMIO GPIO library.
+So while both documentation and tools should be updated as to be clearer
+and to not taint the kernel respectively, there's something that remains
+to be done to explain why or how the kernel got tainted because of
+poking into MSRs...
 
-> +       gpio_chip = &priv->gpio_chip;
-> +       gpio_chip->label = name;
-> +       gpio_chip->owner = THIS_MODULE;
-> +       gpio_chip->parent = dev;
-> +       gpio_chip->request = gpiochip_generic_request;
-> +       gpio_chip->free = gpiochip_generic_free;
-> +       gpio_chip->get = visconti_gpio_get;
-> +       gpio_chip->set = visconti_gpio_set;
-> +       gpio_chip->get_direction = visconti_gpio_get_dir;
-> +       gpio_chip->direction_input = visconti_gpio_dir_in;
-> +       gpio_chip->direction_output = visconti_gpio_dir_out;
-> +       gpio_chip->base = 0;
-> +       gpio_chip->ngpio = VISCONTI_GPIO_NR;
-> +       gpio_chip->irq.init_valid_mask = visconti_init_irq_valid_mask;
-
-Initialized the generic helpers using the addresses of the
-GPIO registers here by a call to bgpio_init().
-
-Check this driver for an example:
-drivers/gpio/gpio-ftgpio010.c
-
-If you get uncertain about the arguments to bgpio_init()
-check drivers/gpio/gpio-mmio.c, there is kerneldoc for the
-function.
-
-By doing this you get implementations of gpio_[get|set]_multiple()
-for free.
-
-Yours,
-Linus Walleij
+-- 
+Mathieu Chouquet-Stringer
+            The sun itself sees not till heaven clears.
+	             -- William Shakespeare --
