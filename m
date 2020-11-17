@@ -2,274 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7A72B569A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C60E2B56A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727138AbgKQCMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:12:15 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:57762 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgKQCMN (ORCPT
+        id S1726924AbgKQCNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:13:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgKQCNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:12:13 -0500
-Date:   Tue, 17 Nov 2020 02:12:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1605579130;
-        bh=UMnSTuCY+a5A80tX+uzBN07w6tNxlUDMZ0lpQ+92y2o=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=amCSGJHtH/4iSSPc6F43dAHfojR5vvNaVgfaPnVNV1dkWjbZqAWy0xqq+q3V2VN/6
-         cPp8qXW6v4P+XY+knOSQyWpg1Tzf5+vVsol6maFHqD1OyuWGS+0IGNn+qw9nyIpOBX
-         wknX7Rg/ryj6dDqR+IgLT/REZwdNs6oHaADSX77c=
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@protonmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-          <nfraprado@protonmail.com>
-Subject: [PATCH v2] docs: automarkup.py: Allow automatic cross-reference inside C namespace
-Message-ID: <20201117021107.214704-1-nfraprado@protonmail.com>
+        Mon, 16 Nov 2020 21:13:13 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78955C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:13:11 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id j7so21457304wrp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:13:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jCloNKbMkToJ9Mk9/+OpMDkl1WAHnjlarpErfCnvWfI=;
+        b=P40HCWm1qA2a7108A8dIoPbqkWrPz9Swy/e2nLmTJsLlcX+3gFumvPqk3FTo3xgpRc
+         xPh3o6C9bvVjwHMKGB1uekA9IX+s3WVYDmLCjXOhn4wd/W4hRbc14muO+QIRE8Qu+BOJ
+         dbIszWk1Z8MEUioM/PnhZihJ6CFUiWm+5RGPg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jCloNKbMkToJ9Mk9/+OpMDkl1WAHnjlarpErfCnvWfI=;
+        b=dK7izrgwRBZ8E3Sgll3A3e8ijaoKENO1JfRHvV3FgcqHRaUnQO5z910MuzRbQBg5A5
+         tRU157edxzqqpnBey53uaXmi6ibyn6SMLYjzuQRKMMMcpdWrhrFhnHLfzulFQMvYW3Ae
+         4cs1Yj5cxpzQu7o52bK7yVhmhFLxdvkioNnKYxCXx5lKiBuiUIewJeaPr7NakL5s/PEt
+         TX67KxXtKG0vPWBxAAbMIfyjMVyQMj9TxzV0EDtJlqH9d2c/47Da/Uszgmnyy56mCM51
+         tBv+l+wkpFGe9HGo6wYr7TDPktCw6rs3cUFY6ckjX6J9Qa53Krjw/KcNRe7epUCb3dVX
+         Qgbw==
+X-Gm-Message-State: AOAM5312qJT3Bkjilfg9Z6ONhmgdUdgynxWd909jxZEgCTbWKVgWO5YC
+        XpCn0DbcrcghGLT4vBTlmJknNcdLuuROaNkQ
+X-Google-Smtp-Source: ABdhPJxdl9LiIt200IA8WggJuIzTrDxoN4FurLbbfAauDxnISbNqdAy5V3PhOV9nTOX7CctKmEfY0Q==
+X-Received: by 2002:a05:6000:1088:: with SMTP id y8mr24398397wrw.207.1605579189854;
+        Mon, 16 Nov 2020 18:13:09 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id u7sm1470001wmb.20.2020.11.16.18.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 18:13:09 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+Subject: [PATCH bpf-next v3 1/2] bpf: Add bpf_lsm_set_bprm_opts helper
+Date:   Tue, 17 Nov 2020 02:13:06 +0000
+Message-Id: <20201117021307.1846300-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sphinx 3.1 introduced namespaces for C cross-references. With this,
-each C domain type/function declaration is put inside the namespace that
-was active at the time of its declaration.
+From: KP Singh <kpsingh@google.com>
 
-Add support for automatic cross-referencing inside C namespaces by
-checking whether the corresponding source file had a C namespace Sphinx
-directive, and if so, try cross-referencing inside of it before going to
-the global scope.
+The helper allows modification of certain bits on the linux_binprm
+struct starting with the secureexec bit which can be updated using the
+BPF_LSM_F_BPRM_SECUREEXEC flag.
 
-This assumes there's only one namespace (if any) per rst file.
+secureexec can be set by the LSM for privilege gaining executions to set
+the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
+use of certain environment variables (like LD_PRELOAD).
 
-Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
+Signed-off-by: KP Singh <kpsingh@google.com>
 ---
+ include/uapi/linux/bpf.h       | 18 ++++++++++++++++++
+ kernel/bpf/bpf_lsm.c           | 27 +++++++++++++++++++++++++++
+ scripts/bpf_helpers_doc.py     |  2 ++
+ tools/include/uapi/linux/bpf.h | 18 ++++++++++++++++++
+ 4 files changed, 65 insertions(+)
 
-To those following from v1:
-
-I ended up doing the simplest solution possible, which is to just directly =
-read
-the rst source corresponding to the doc page right before doing the automar=
-kup.
-It's not very efficient in the sense that the source is being read
-twice (first by Sphinx, then by this), but it sidesteps the "data sharing
-between processes" issue, so parallel_read_safe can be reenabled, and I did=
-n't
-notice any performance hit from this patch (as opposed to the big hit from =
-v1).
-Works with both Sphinx 2 and 3.
-
-Changes in v2:
-- Get C namespace from reading the corresponding source at the time of doin=
-g
-  automarkup instead of storing all namespaces beforehand at the source-rea=
-d
-  phase
-    - Add get_c_namespace()
-    - Remove save_c_namespace()
-- Reenabled Sphinx's parallel_read_safe
-
-v1: https://lore.kernel.org/linux-doc/20201013231218.2750109-6-nfraprado@pr=
-otonmail.com/
-
- Documentation/sphinx/automarkup.py | 122 ++++++++++++++++++-----------
- 1 file changed, 75 insertions(+), 47 deletions(-)
-
-diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/auto=
-markup.py
-index 3e81ebab26ed..953b24b6e2b4 100644
---- a/Documentation/sphinx/automarkup.py
-+++ b/Documentation/sphinx/automarkup.py
-@@ -53,6 +53,8 @@ RE_typedef =3D re.compile(r'\b(typedef)\s+([a-zA-Z_]\w+)'=
-, flags=3Dascii_p3)
- #
- RE_doc =3D re.compile(r'\bDocumentation(/[\w\-_/]+)(\.\w+)*')
-=20
-+RE_namespace =3D re.compile(r'^\s*..\s*c:namespace::\s*(\S+)\s*$')
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 162999b12790..bfa79054d106 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3787,6 +3787,18 @@ union bpf_attr {
+  *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
+  *	Return
+  *		Pointer to the current task.
++ *
++ * long bpf_lsm_set_bprm_opts(struct linux_binprm *bprm, u64 flags)
++ *
++ *	Description
++ *		Set or clear certain options on *bprm*:
++ *
++ *		**BPF_LSM_F_BPRM_SECUREEXEC** Set the secureexec bit
++ *		which sets the **AT_SECURE** auxv for glibc. The bit
++ *		is cleared if the flag is not specified.
++ *	Return
++ *		**-EINVAL** if invalid *flags* are passed.
++ *
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3948,6 +3960,7 @@ union bpf_attr {
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
+ 	FN(get_current_task_btf),	\
++	FN(lsm_set_bprm_opts),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+@@ -4119,6 +4132,11 @@ enum bpf_lwt_encap_mode {
+ 	BPF_LWT_ENCAP_IP,
+ };
+ 
++/* Flags for LSM helpers */
++enum {
++	BPF_LSM_F_BPRM_SECUREEXEC	= (1ULL << 0),
++};
 +
- #
- # Reserved C words that we should skip when cross-referencing
- #
-@@ -70,6 +72,8 @@ Skipfuncs =3D [ 'open', 'close', 'read', 'write', 'fcntl'=
-, 'mmap',
-               'select', 'poll', 'fork', 'execve', 'clone', 'ioctl',
-               'socket' ]
-=20
-+c_namespace =3D ''
+ #define __bpf_md_ptr(type, name)	\
+ union {					\
+ 	type name;			\
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index 553107f4706a..cd85482228a0 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -7,6 +7,7 @@
+ #include <linux/filter.h>
+ #include <linux/bpf.h>
+ #include <linux/btf.h>
++#include <linux/binfmts.h>
+ #include <linux/lsm_hooks.h>
+ #include <linux/bpf_lsm.h>
+ #include <linux/kallsyms.h>
+@@ -51,6 +52,30 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 	return 0;
+ }
+ 
++/* Mask for all the currently supported BPRM option flags */
++#define BPF_LSM_F_BRPM_OPTS_MASK	BPF_LSM_F_BPRM_SECUREEXEC
 +
- def markup_refs(docname, app, node):
-     t =3D node.astext()
-     done =3D 0
-@@ -128,30 +132,38 @@ def markup_func_ref_sphinx3(docname, app, match):
-     #
-     # Go through the dance of getting an xref out of the C domain
-     #
--    target =3D match.group(2)
-+    base_target =3D match.group(2)
-     target_text =3D nodes.Text(match.group(0))
-     xref =3D None
--    if not (target in Skipfuncs or target in Skipnames):
--        for class_s, reftype_s in zip(class_str, reftype_str):
--            lit_text =3D nodes.literal(classes=3D['xref', 'c', class_s])
--            lit_text +=3D target_text
--            pxref =3D addnodes.pending_xref('', refdomain =3D 'c',
--                                          reftype =3D reftype_s,
--                                          reftarget =3D target, modname =
-=3D None,
--                                          classname =3D None)
--            #
--            # XXX The Latex builder will throw NoUri exceptions here,
--            # work around that by ignoring them.
--            #
--            try:
--                xref =3D cdom.resolve_xref(app.env, docname, app.builder,
--                                         reftype_s, target, pxref,
--                                         lit_text)
--            except NoUri:
--                xref =3D None
-+    possible_targets =3D [base_target]
-+    # Check if this document has a namespace, and if so, try
-+    # cross-referencing inside it first.
-+    if c_namespace:
-+        possible_targets.insert(0, c_namespace + "." + base_target)
-=20
--            if xref:
--                return xref
-+    if base_target not in Skipnames:
-+        for target in possible_targets:
-+            if target not in Skipfuncs:
-+                for class_s, reftype_s in zip(class_str, reftype_str):
-+                    lit_text =3D nodes.literal(classes=3D['xref', 'c', cla=
-ss_s])
-+                    lit_text +=3D target_text
-+                    pxref =3D addnodes.pending_xref('', refdomain =3D 'c',
-+                                                  reftype =3D reftype_s,
-+                                                  reftarget =3D target, mo=
-dname =3D None,
-+                                                  classname =3D None)
-+                    #
-+                    # XXX The Latex builder will throw NoUri exceptions he=
-re,
-+                    # work around that by ignoring them.
-+                    #
-+                    try:
-+                        xref =3D cdom.resolve_xref(app.env, docname, app.b=
-uilder,
-+                                                 reftype_s, target, pxref,
-+                                                 lit_text)
-+                    except NoUri:
-+                        xref =3D None
++BPF_CALL_2(bpf_lsm_set_bprm_opts, struct linux_binprm *, bprm, u64, flags)
++{
 +
-+                    if xref:
-+                        return xref
-=20
-     return target_text
-=20
-@@ -179,34 +191,39 @@ def markup_c_ref(docname, app, match):
-     #
-     # Go through the dance of getting an xref out of the C domain
-     #
--    target =3D match.group(2)
-+    base_target =3D match.group(2)
-     target_text =3D nodes.Text(match.group(0))
-     xref =3D None
--    if not ((match.re =3D=3D RE_function and target in Skipfuncs)
--            or (target in Skipnames)):
--        lit_text =3D nodes.literal(classes=3D['xref', 'c', class_str[match=
-.re]])
--        lit_text +=3D target_text
--        pxref =3D addnodes.pending_xref('', refdomain =3D 'c',
--                                      reftype =3D reftype_str[match.re],
--                                      reftarget =3D target, modname =3D No=
-ne,
--                                      classname =3D None)
--        #
--        # XXX The Latex builder will throw NoUri exceptions here,
--        # work around that by ignoring them.
--        #
--        try:
--            xref =3D cdom.resolve_xref(app.env, docname, app.builder,
--                                     reftype_str[match.re], target, pxref,
--                                     lit_text)
--        except NoUri:
--            xref =3D None
--    #
--    # Return the xref if we got it; otherwise just return the plain text.
--    #
--    if xref:
--        return xref
--    else:
--        return target_text
-+    possible_targets =3D [base_target]
-+    # Check if this document has a namespace, and if so, try
-+    # cross-referencing inside it first.
-+    if c_namespace:
-+        possible_targets.insert(0, c_namespace + "." + base_target)
++	if (flags & ~BPF_LSM_F_BRPM_OPTS_MASK)
++		return -EINVAL;
 +
-+    if base_target not in Skipnames:
-+        for target in possible_targets:
-+            if not (match.re =3D=3D RE_function and target in Skipfuncs):
-+                lit_text =3D nodes.literal(classes=3D['xref', 'c', class_s=
-tr[match.re]])
-+                lit_text +=3D target_text
-+                pxref =3D addnodes.pending_xref('', refdomain =3D 'c',
-+                                              reftype =3D reftype_str[matc=
-h.re],
-+                                              reftarget =3D target, modnam=
-e =3D None,
-+                                              classname =3D None)
-+                #
-+                # XXX The Latex builder will throw NoUri exceptions here,
-+                # work around that by ignoring them.
-+                #
-+                try:
-+                    xref =3D cdom.resolve_xref(app.env, docname, app.build=
-er,
-+                                             reftype_str[match.re], target=
-, pxref,
-+                                             lit_text)
-+                except NoUri:
-+                    xref =3D None
++	bprm->secureexec = (flags & BPF_LSM_F_BPRM_SECUREEXEC);
++	return 0;
++}
 +
-+                if xref:
-+                    return xref
++BTF_ID_LIST_SINGLE(bpf_lsm_set_bprm_opts_btf_ids, struct, linux_binprm)
 +
-+    return target_text
-=20
- #
- # Try to replace a documentation reference of the form Documentation/... w=
-ith a
-@@ -239,7 +256,18 @@ def markup_doc_ref(docname, app, match):
-     else:
-         return nodes.Text(match.group(0))
-=20
-+def get_c_namespace(app, docname):
-+    source =3D app.env.doc2path(docname)
-+    with open(source) as f:
-+        for l in f:
-+            match =3D RE_namespace.search(l)
-+            if match:
-+                return match.group(1)
-+    return ''
++const static struct bpf_func_proto bpf_lsm_set_bprm_opts_proto = {
++	.func		= bpf_lsm_set_bprm_opts,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_BTF_ID,
++	.arg1_btf_id	= &bpf_lsm_set_bprm_opts_btf_ids[0],
++	.arg2_type	= ARG_ANYTHING,
++};
 +
- def auto_markup(app, doctree, name):
-+    global c_namespace
-+    c_namespace =3D get_c_namespace(app, name)
-     #
-     # This loop could eventually be improved on.  Someday maybe we
-     # want a proper tree traversal with a lot of awareness of which
---=20
-2.29.2
-
+ static const struct bpf_func_proto *
+ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+@@ -71,6 +96,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_task_storage_get_proto;
+ 	case BPF_FUNC_task_storage_delete:
+ 		return &bpf_task_storage_delete_proto;
++	case BPF_FUNC_lsm_set_bprm_opts:
++		return &bpf_lsm_set_bprm_opts_proto;
+ 	default:
+ 		return tracing_prog_func_proto(func_id, prog);
+ 	}
+diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
+index 31484377b8b1..c5bc947a70ad 100755
+--- a/scripts/bpf_helpers_doc.py
++++ b/scripts/bpf_helpers_doc.py
+@@ -418,6 +418,7 @@ class PrinterHelpers(Printer):
+             'struct bpf_tcp_sock',
+             'struct bpf_tunnel_key',
+             'struct bpf_xfrm_state',
++            'struct linux_binprm',
+             'struct pt_regs',
+             'struct sk_reuseport_md',
+             'struct sockaddr',
+@@ -465,6 +466,7 @@ class PrinterHelpers(Printer):
+             'struct bpf_tcp_sock',
+             'struct bpf_tunnel_key',
+             'struct bpf_xfrm_state',
++            'struct linux_binprm',
+             'struct pt_regs',
+             'struct sk_reuseport_md',
+             'struct sockaddr',
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 162999b12790..bfa79054d106 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3787,6 +3787,18 @@ union bpf_attr {
+  *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
+  *	Return
+  *		Pointer to the current task.
++ *
++ * long bpf_lsm_set_bprm_opts(struct linux_binprm *bprm, u64 flags)
++ *
++ *	Description
++ *		Set or clear certain options on *bprm*:
++ *
++ *		**BPF_LSM_F_BPRM_SECUREEXEC** Set the secureexec bit
++ *		which sets the **AT_SECURE** auxv for glibc. The bit
++ *		is cleared if the flag is not specified.
++ *	Return
++ *		**-EINVAL** if invalid *flags* are passed.
++ *
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3948,6 +3960,7 @@ union bpf_attr {
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
+ 	FN(get_current_task_btf),	\
++	FN(lsm_set_bprm_opts),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+@@ -4119,6 +4132,11 @@ enum bpf_lwt_encap_mode {
+ 	BPF_LWT_ENCAP_IP,
+ };
+ 
++/* Flags for LSM helpers */
++enum {
++	BPF_LSM_F_BPRM_SECUREEXEC	= (1ULL << 0),
++};
++
+ #define __bpf_md_ptr(type, name)	\
+ union {					\
+ 	type name;			\
+-- 
+2.29.2.299.gdc1121823c-goog
 
