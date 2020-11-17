@@ -2,208 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629F52B6F6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 655812B6F80
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731304AbgKQT5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:57:18 -0500
-Received: from mga06.intel.com ([134.134.136.31]:17421 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728273AbgKQT5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:57:17 -0500
-IronPort-SDR: Zd72MtliA27wpIOaH+3219c6sRfsjWpfQsjv5Fn39l4ZxjTgvAshE0UnjjtQoODACuwoSsVRuN
- nypBdKP6n/uQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="232614297"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="232614297"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 11:57:14 -0800
-IronPort-SDR: EEfAP5uPnsEiAZODd9IHKaEYN2jvTzg4ndBD6D0VqiHyzEMs2hiMa6mGP8XaMWRiz+HEBmeoGM
- ye+MRz0XH1Ow==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="430576843"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.24.101]) ([10.212.24.101])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 11:57:13 -0800
-Subject: Re: [PATCH 03/24] x86/resctrl: Add resctrl_arch_get_num_closid()
-To:     James Morse <james.morse@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-References: <20201030161120.227225-1-james.morse@arm.com>
- <20201030161120.227225-4-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <0d34167f-17b6-61f8-aa3e-7d49747ca95a@intel.com>
-Date:   Tue, 17 Nov 2020 11:57:12 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1728452AbgKQUBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:01:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49397 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726685AbgKQUBd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:01:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605643285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ND73jfjt6Cg0vVbxjFwNhOqlMoziW1VRnPfbZwD42HI=;
+        b=M/d5ylnaZDn9cCuDsU3Cfo+WX4sGGAa4/9bAdQJM5QbyPUZGzYyLvPystTz2ugb27MyxhC
+        ammyqoAgQYmLhNRhAXsxtL6uVfwRTmT8WKOwOtT1jI/iubIP2gJf3wOW8OHA6k46KvdyOz
+        szKoGBZZbs9wwDiACE+8Uyl0jmz3Y0s=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-gqkescO-NWaIulJGxCcy4g-1; Tue, 17 Nov 2020 15:01:23 -0500
+X-MC-Unique: gqkescO-NWaIulJGxCcy4g-1
+Received: by mail-qv1-f70.google.com with SMTP id c18so1273254qvm.19
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:01:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ND73jfjt6Cg0vVbxjFwNhOqlMoziW1VRnPfbZwD42HI=;
+        b=GQiTSwV4MlFFl1P2kjUoBJBEu/7j3dLXMXYvxpCxfGCXrbs/a1IZak5bJO0HOzWM//
+         YFSgduNPilMMCBWRrDIkOBKhAHQVBr++81gCbXDanWPZWo7GiEAfNDwGOgAIy7DbGAYR
+         9I9rDK17wP/577vtaRZqI910d0jVSQElLYUuemCgHV02GlhujGEl1+wJ9BkLJ7Ye9Xk6
+         mPCtd4fd9aYKJ0eMR7RfKe08fLXBMQMxTWDWYcWkmCGSs9+coeFQglQA93BDHamDf9e+
+         CVgUObhCMeT3DHvO0kib4vd/B5GCHVswHEgmImpIsEkp8FBT536MPrYWno1z7gE86AH6
+         NSfA==
+X-Gm-Message-State: AOAM532gXkrnYux18fiYdxB843zL3NbenLo85lbEMSvP1nWCIes9zJAK
+        71Wvv7QbIlelyLlFKufNBGviPIdFJAdVNWs8YufZZeQqk3U07OZR1uNwjf5BAvqeQwgyX2AXI6/
+        SKlUk8pjJx16ou/0dE8ASjCgx
+X-Received: by 2002:ac8:425a:: with SMTP id r26mr882715qtm.294.1605643283261;
+        Tue, 17 Nov 2020 12:01:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxpFqI4NgZYCgW6oTJavU4GxsEw9QFGdZkruOuOOSrq41bMODuFBbrl9IVKUKQjUfPCI/qpgg==
+X-Received: by 2002:ac8:425a:: with SMTP id r26mr882686qtm.294.1605643282988;
+        Tue, 17 Nov 2020 12:01:22 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id c14sm15069168qko.29.2020.11.17.12.01.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 12:01:22 -0800 (PST)
+Subject: Re: [PATCH 1/2] fpga: dfl: refactor cci_enumerate_feature_devs()
+To:     matthew.gerlach@linux.intel.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mdf@kernel.org, hao.wu@intel.com,
+        linux-doc@vger.kernel.org, corbet@lwn.net
+References: <20201117012552.262149-1-matthew.gerlach@linux.intel.com>
+ <20201117012552.262149-2-matthew.gerlach@linux.intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <82385a1c-66c6-c311-e504-068be13bbf0e@redhat.com>
+Date:   Tue, 17 Nov 2020 12:01:20 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201030161120.227225-4-james.morse@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20201117012552.262149-2-matthew.gerlach@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
 
-On 10/30/2020 9:10 AM, James Morse wrote:
-> resctrl chooses whether to enable CDP, once it does, half the number
-> of closid are available. MPAM doesn't behave like this, an in-kernel user
-> of MPAM could be 'using CDP' while resctrl is not.
-> 
-> To move the 'half the closids' behaviour to be part of the core code,
-> each schema would have a num_closids. This may be different from the
-> single resources num_closid if CDP is in use.
-> 
-> Add a helper to read the resource's num_closid, this should return the
-> number of closid that the resource supports, regardless of whether CDP
-> is in use.
-> 
-> For now return the hw_res->num_closid, which is already adjusted for CDP.
-> Once the CODE/DATA/BOTH resources are merged, resctrl can make the
-> adjustment when copying the value to the schema's num_closid.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
+On 11/16/20 5:25 PM, matthew.gerlach@linux.intel.com wrote:
+> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>
+> In preparation of looking for dfls based on a vendor
+> specific pcie capability, move code that assumes
+> Bar0/offset0 as start of DFL to its own function.
+>
+> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 > ---
->   arch/x86/kernel/cpu/resctrl/core.c        |  5 +++++
->   arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  9 +++------
->   arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 14 +++++---------
->   include/linux/resctrl.h                   |  3 +++
->   4 files changed, 16 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-> index 97040a54cc9a..5d5b566c4359 100644
-> --- a/arch/x86/kernel/cpu/resctrl/core.c
-> +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -443,6 +443,11 @@ struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r)
->   	return NULL;
->   }
->   
-> +u32 resctrl_arch_get_num_closid(struct rdt_resource *r)
-> +{
-> +	return resctrl_to_arch_res(r)->num_closid;
+>  drivers/fpga/dfl-pci.c | 86 ++++++++++++++++++++++++------------------
+>  1 file changed, 49 insertions(+), 37 deletions(-)
+>
+> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> index a2203d03c9e2..b1b157b41942 100644
+> --- a/drivers/fpga/dfl-pci.c
+> +++ b/drivers/fpga/dfl-pci.c
+> @@ -119,49 +119,20 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
+>  	return table;
+>  }
+>  
+> -/* enumerate feature devices under pci device */
+> -static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
+> +static int find_dfl_in_bar0(struct pci_dev *pcidev,
+> +			    struct dfl_fpga_enum_info *info)
+>  {
+> -	struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
+> -	int port_num, bar, i, nvec, ret = 0;
+> -	struct dfl_fpga_enum_info *info;
+> -	struct dfl_fpga_cdev *cdev;
+>  	resource_size_t start, len;
+> +	int port_num, bar, i;
+>  	void __iomem *base;
+> -	int *irq_table;
+> +	int ret = 0;
+>  	u32 offset;
+>  	u64 v;
+>  
+> -	/* allocate enumeration info via pci_dev */
+> -	info = dfl_fpga_enum_info_alloc(&pcidev->dev);
+> -	if (!info)
+> -		return -ENOMEM;
+> -
+> -	/* add irq info for enumeration if the device support irq */
+> -	nvec = cci_pci_alloc_irq(pcidev);
+> -	if (nvec < 0) {
+> -		dev_err(&pcidev->dev, "Fail to alloc irq %d.\n", nvec);
+> -		ret = nvec;
+> -		goto enum_info_free_exit;
+> -	} else if (nvec) {
+> -		irq_table = cci_pci_create_irq_table(pcidev, nvec);
+> -		if (!irq_table) {
+> -			ret = -ENOMEM;
+> -			goto irq_free_exit;
+> -		}
+> -
+> -		ret = dfl_fpga_enum_info_add_irq(info, nvec, irq_table);
+> -		kfree(irq_table);
+> -		if (ret)
+> -			goto irq_free_exit;
+> -	}
+> -
+> -	/* start to find Device Feature List in Bar 0 */
+> +	/* start to find Device Feature List from Bar 0 */
+>  	base = cci_pci_ioremap_bar0(pcidev);
+> -	if (!base) {
+> -		ret = -ENOMEM;
+> -		goto irq_free_exit;
+> -	}
+> +	if (!base)
+> +		return -ENOMEM;
+>  
+>  	/*
+>  	 * PF device has FME and Ports/AFUs, and VF device only has one
+> @@ -208,12 +179,53 @@ static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
+>  		dfl_fpga_enum_info_add_dfl(info, start, len);
+>  	} else {
+>  		ret = -ENODEV;
+> -		goto irq_free_exit;
+>  	}
+>  
+>  	/* release I/O mappings for next step enumeration */
+>  	pcim_iounmap_regions(pcidev, BIT(0));
+This ws was already commented on.
+>  
+> +
+> +	return ret;
 > +}
 > +
-
-Helper returns the value but also changes the type. Could you please add 
-motivation for this in a comment?
-
-
->   void rdt_ctrl_update(void *arg)
->   {
->   	struct msr_param *m = arg;
-> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> index 2e7466659af3..14ea6a40993f 100644
-> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> @@ -286,12 +286,11 @@ int update_domains(struct rdt_resource *r, int closid)
->   static int rdtgroup_parse_resource(char *resname, char *tok,
->   				   struct rdtgroup *rdtgrp)
->   {
-> -	struct rdt_hw_resource *hw_res;
->   	struct rdt_resource *r;
->   
->   	for_each_alloc_enabled_rdt_resource(r) {
-> -		hw_res = resctrl_to_arch_res(r);
-> -		if (!strcmp(resname, r->name) && rdtgrp->closid < hw_res->num_closid)
-> +		if (!strcmp(resname, r->name) &&
-> +		     rdtgrp->closid < resctrl_arch_get_num_closid(r))
-
-Please let alignment match open parenthesis.
-
->   			return parse_line(tok, r, rdtgrp);
->   	}
->   	rdt_last_cmd_printf("Unknown or unsupported resource name '%s'\n", resname);
-> @@ -400,7 +399,6 @@ static void show_doms(struct seq_file *s, struct rdt_resource *r, int closid)
->   int rdtgroup_schemata_show(struct kernfs_open_file *of,
->   			   struct seq_file *s, void *v)
->   {
-> -	struct rdt_hw_resource *hw_res;
->   	struct rdtgroup *rdtgrp;
->   	struct rdt_resource *r;
->   	int ret = 0;
-> @@ -425,8 +423,7 @@ int rdtgroup_schemata_show(struct kernfs_open_file *of,
->   		} else {
->   			closid = rdtgrp->closid;
->   			for_each_alloc_enabled_rdt_resource(r) {
-> -				hw_res = resctrl_to_arch_res(r);
-> -				if (closid < hw_res->num_closid)
-> +				if (closid < resctrl_arch_get_num_closid(r))
->   					show_doms(s, r, closid);
->   			}
->   		}
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index b55861ff4e34..df10135f021e 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -100,15 +100,13 @@ int closids_supported(void)
->   
->   static void closid_init(void)
->   {
-> -	struct rdt_hw_resource *hw_res;
-> +	u32 rdt_min_closid = 32;
->   	struct rdt_resource *r;
-> -	int rdt_min_closid = 32;
->   
->   	/* Compute rdt_min_closid across all resources */
-> -	for_each_alloc_enabled_rdt_resource(r) {
-> -		hw_res = resctrl_to_arch_res(r);
-> -		rdt_min_closid = min(rdt_min_closid, hw_res->num_closid);
-> -	}
-> +	for_each_alloc_enabled_rdt_resource(r)
-> +		rdt_min_closid = min(rdt_min_closid,
-> +				     resctrl_arch_get_num_closid(r));
->   
->   	closid_free_map = BIT_MASK(rdt_min_closid) - 1;
->   
-> @@ -847,10 +845,8 @@ static int rdt_num_closids_show(struct kernfs_open_file *of,
->   				struct seq_file *seq, void *v)
->   {
->   	struct rdt_resource *r = of->kn->parent->priv;
-> -	struct rdt_hw_resource *hw_res;
->   
-> -	hw_res = resctrl_to_arch_res(r);
-> -	seq_printf(seq, "%d\n", hw_res->num_closid);
-> +	seq_printf(seq, "%d\n", resctrl_arch_get_num_closid(r));
->   	return 0;
-
-Now that this type is changed this will need to be %u?
-
->   }
->   
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index f5af59b8f2a9..dfb0f32b73a1 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -163,4 +163,7 @@ struct rdt_resource {
->   
->   };
->   
-> +/* The number of closid supported by this resource regardless of CDP */
-> +u32 resctrl_arch_get_num_closid(struct rdt_resource *r);
+> +/* enumerate feature devices under pci device */
+> +static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
+> +{
+> +	struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
+> +	struct dfl_fpga_enum_info *info;
+> +	struct dfl_fpga_cdev *cdev;
+> +	int nvec, ret = 0;
+> +	int *irq_table;
 > +
->   #endif /* _RESCTRL_H */
-> 
+> +	/* allocate enumeration info via pci_dev */
+> +	info = dfl_fpga_enum_info_alloc(&pcidev->dev);
+> +	if (!info)
+> +		return -ENOMEM;
+> +
+> +	/* add irq info for enumeration if the device support irq */
+> +	nvec = cci_pci_alloc_irq(pcidev);
+> +	if (nvec < 0) {
+> +		dev_err(&pcidev->dev, "Fail to alloc irq %d.\n", nvec);
+> +		ret = nvec;
+> +		goto enum_info_free_exit;
+> +	} else if (nvec) {
+> +		irq_table = cci_pci_create_irq_table(pcidev, nvec);
+> +		if (!irq_table) {
+> +			ret = -ENOMEM;
+> +			goto irq_free_exit;
+> +		}
+> +
+> +		ret = dfl_fpga_enum_info_add_irq(info, nvec, irq_table);
+> +		kfree(irq_table);
+> +		if (ret)
+> +			goto irq_free_exit;
+> +	}
+> +
+> +	ret = find_dfl_in_bar0(pcidev, info);
+> +
+> +	if (ret)
+> +		goto irq_free_exit;
+> +
+>  	/* start enumeration with prepared enumeration information */
+>  	cdev = dfl_fpga_feature_devs_enumerate(info);
+>  	if (IS_ERR(cdev)) {
 
+This looks fine.
 
-The purpose of this change is unclear and introducing confusion. It 
-introduces a helper that returns the num_closid associated with a 
-resource but it does not use the helper in all the cases where this 
-value is needed. After this change some code uses this new helper while 
-other code continue to access the value directly.
+Reviewed-by: Tom Rix <trix@redhat.com>
 
-Could you please elaborate in the commit message why this helper is not 
-used everywhere and how the places that were changed were chosen? Seems 
-like the places that _don't_ need the (eventual) value of 
-resctrl_arch_get_num_closid() are changed (so that it is easier to move 
-to the schema's num_closid later) while the places that actually do need 
-the helper are not changed?
-
-Reinette
