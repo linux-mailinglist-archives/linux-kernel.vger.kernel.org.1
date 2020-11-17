@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D462B5E37
+	by mail.lfdr.de (Postfix) with ESMTP id DD1D32B5E39
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgKQL0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
+        id S1727988AbgKQL1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727286AbgKQL0L (ORCPT
+        with ESMTP id S1725355AbgKQL1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:26:11 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BEBC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:26:11 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id i13so15911388pgm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:26:11 -0800 (PST)
+        Tue, 17 Nov 2020 06:27:37 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB061C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:27:37 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id t8so10865957vsr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:27:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5QH8l3HzZjblS+KPiXb77NBbNTh6S8myLIAJDUGNsj8=;
-        b=O5bBWmVTPEBh/wG/pGQE0dEyVrFSP9Ty3BF956K66kZY8Ga5Bv0ZO+dPKZdFwQnUU6
-         8Re+odTtvmBPW/Pe/ey4gvN2NwnMSTVjO0THOf/mTGSSmHPJE1u1htYGpGgjUweZl0hu
-         Y3d/hvn8/ZvmSbXbLF2FhktSTDJEfHaB5FbPU=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yJ6od9McrPMmdAw4AV7uEvRIjejlQ+vKJRvVg9MI4ko=;
+        b=K36hufdysbVWhCU4svS8Pc3+yb0iT4gKHBu5uOJokNvd6bDdJeWvsW7l33U1uIPh4a
+         ZGRaGsmbSN0/iZvaDH57KJUchoU6Ii5WDoP6RzUMRq6cycTP5d/dFqU0T4Y74jH5vFMH
+         EfvIpyeGcAVQjQcVXQ+Ci21MF962YwiYYRU88yn93KMHaw527KGXD0xEJfQ+1wKzi4ra
+         Tlbu7mGyYhwTuQCcXwTcbGwOtOMNtkzcwgpPKrhIKMcxkw11n67HPt+DbynsXiC5oec3
+         6l5sj2B571995pIrmsds6NzXl9sRSnkdEV1NqFW+k3eOavvkOBhjdbgkTw5/upeAlncd
+         Slgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5QH8l3HzZjblS+KPiXb77NBbNTh6S8myLIAJDUGNsj8=;
-        b=fxEy4Z+bHmDVcyMivKLRAnqa1qnbRD4o9/akrH+rK7scYeCjFxrvk9PqUkZNkDUvvW
-         nLC5NPGtStwHGqCpkyarmnH6HjMr9R0DxFfR30oVUvGKABdCUmu7zpDhLvBN/q0EZiV4
-         R8Ska9I3kGo3RMROcbkJ8Z4fluEIa5qYK3bJi1xxSWrKpynvKKjTwbo9fl+fCXZUt+Jb
-         w89JrcGt/pLZ3W0g9shq1DdSgekhrymuZnJWK6Erf/j9vZ+jwJYtxuY1L/ZYGyPTEgA8
-         uwPERItbMyVywAVeAqufsXQTwa5EZ6EKRpYBgkjzwqNAj3NkFt9cKLWcq3gCHoe/C/Pn
-         yXLg==
-X-Gm-Message-State: AOAM533XaveFu3A2rrcGJE7p204I9MWyh8QYI1L2ZU0JbjRtjbznuxwf
-        NkG3Se2XwtsP9i6rGIjnnBp+rAoKYezpJw==
-X-Google-Smtp-Source: ABdhPJyrnAjBQ/jtFgnI1ZSF/1TLY+kjZEhSgcrRqfC80FgaKc4a5J8gFviPhqMlAnXOMeI4QK8f7A==
-X-Received: by 2002:aa7:9414:0:b029:18c:23f6:bc6d with SMTP id x20-20020aa794140000b029018c23f6bc6dmr18205106pfo.21.1605612370295;
-        Tue, 17 Nov 2020 03:26:10 -0800 (PST)
-Received: from localhost ([100.102.99.29])
-        by smtp.gmail.com with ESMTPSA id t20sm2843368pjg.25.2020.11.17.03.26.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 03:26:09 -0800 (PST)
-From:   Cheng-Yi Chiang <cychiang@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>, dianders@chromium.org,
-        dgreid@chromium.org, tzungbi@chromium.org, judyhsiao@chromium.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH] ASoC: hdmi-codec: Get ELD in before reporting plugged event
-Date:   Tue, 17 Nov 2020 19:26:03 +0800
-Message-Id: <20201117112603.210620-1-cychiang@chromium.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yJ6od9McrPMmdAw4AV7uEvRIjejlQ+vKJRvVg9MI4ko=;
+        b=OmgC4uvZqSV1jdvMnbGBLbK73PFUI74H3F3bXkBo1ntVuePnfm4ifc6Qaus6rEyFaP
+         J9xBpx2g+9sYM9jPG7SZd7UjWrq7OXVljm7+HIcyMrEDDWr4QRpWyayoS90dZY3t66hb
+         6XwfZ3vdMfYakW4wAiSkPHAHmIMXMKZiV9S2QHxPEgrKQyxdqWD1mxrwOEqKqawT6pBs
+         MClPo3oFX101ucJUnftdXwUc0YPy1IwXp2cNl0KgvbturWqBNzlOWG8uKmhGIXGBVlkM
+         Ztgx5N8JdsPaY90DWjmX09nAazE5hr7FS+hFRv+xE+To4VZj2+IMEaKG94VPZyXRY/r1
+         m2mg==
+X-Gm-Message-State: AOAM5326MoBpsUrxIeJPTs6pY2cfkEmRZpMAs85KGKOgdomDAyoejmzA
+        8WIqSrNTQ7Nzsygg9G5k/PT0CdyC0SYHKr+LpFhFoQ==
+X-Google-Smtp-Source: ABdhPJxkXnes2p6YHECDrKrrBG2GDdqrp5ut8s6gultvQTB+ovgHt1SMWFt+SHDNj4iDrRQdHuskHjfUkly50tbEFQY=
+X-Received: by 2002:a67:8c44:: with SMTP id o65mr3329095vsd.55.1605612456743;
+ Tue, 17 Nov 2020 03:27:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201106120933.7190-1-muhammad.husaini.zulkifli@intel.com>
+ <20201106120933.7190-2-muhammad.husaini.zulkifli@intel.com>
+ <CAPDyKFrq0Wsc7bNS0QPMitNqpkzK87VAuTnjDqrqTrVDGCwxgg@mail.gmail.com> <DM6PR11MB2876BB714DF701E81866B13EB8E30@DM6PR11MB2876.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB2876BB714DF701E81866B13EB8E30@DM6PR11MB2876.namprd11.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 17 Nov 2020 12:27:00 +0100
+Message-ID: <CAPDyKFpVJ0jGkqa2j9W-Z-su3vT2eSKHkObYj1Z0C3MvRQrKwg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem
+ Bay SOC
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In plugged callback, ELD should be updated from display driver so that
-user space can query information from ELD immediately after receiving jack
-plugged event.
+On Mon, 16 Nov 2020 at 15:22, Zulkifli, Muhammad Husaini
+<muhammad.husaini.zulkifli@intel.com> wrote:
+>
+> Hi Ulf,
+>
+> Thanks for your review comments. I replied inline
+>
+> >-----Original Message-----
+> >From: Ulf Hansson <ulf.hansson@linaro.org>
+> >Sent: Monday, November 16, 2020 7:41 PM
+> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
+> >Cc: linux-mmc@vger.kernel.org; Linux ARM <linux-arm-
+> >kernel@lists.infradead.org>; Linux Kernel Mailing List <linux-
+> >kernel@vger.kernel.org>; Hunter, Adrian <adrian.hunter@intel.com>; Raja
+> >Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>; Wan
+> >Mohamad, Wan Ahmad Zainie
+> ><wan.ahmad.zainie.wan.mohamad@intel.com>; David E. Box
+> ><david.e.box@linux.intel.com>
+> >Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem
+> >Bay SOC
+> >
+> >On Fri, 6 Nov 2020 at 05:10, <muhammad.husaini.zulkifli@intel.com> wrote:
+> >>
+> >> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> >>
+> >> Commit 16ada730a759 ("mmc: sdhci-of-arasan: Modify clock operations
+> >> handling") introduces platform specific SDHCI clock operation.
+> >>
+> >> This patch declares the clock operation for Keem Bay.
+> >> Add clk_ops for SD, EMMC and SDIO operations.
+> >
+> >The above commit message doesn't really tell why or what goes on here.
+> >Can please try to clarify that.
+>
+> We missed out the clock operation handling patch (Commit 16ada730a759)
+> and did not handle the clk_ops  for Keem Bay SOC devices.
+> These 2 patches (Commit 16ada730a759) and (Commit 36c6aadaae86)  are merged at around the same time.
+> We catch the issue later when trying to boot into v5.10-rc1 with Keem Bay EVM.
+> That is why I created this patch to handle the clk_ops for Keem Bay devices.
 
-When jack is unplugged, clear ELD buffer so that user space does not get
-obsolete information of unplugged HDMI.
+Alright, so the previous changes were simply not sufficient to
+complete the support.
 
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
----
- sound/soc/codecs/hdmi-codec.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> >
+> >>
+> >> Fixes: 36c6aadaae86 ("mmc: sdhci-of-arasan: Add support for Intel Keem
+> >> Bay")
+> >
+> >Is $subject patch fixing a bug/regression?
+>
+> This is to fix issue on previous commit. It is a bug fix.
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 403d4c6a49a8..f0e0e1836000 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -692,10 +692,16 @@ static void plugged_cb(struct device *dev, bool plugged)
- {
- 	struct hdmi_codec_priv *hcp = dev_get_drvdata(dev);
- 
--	if (plugged)
-+	if (plugged) {
-+		if (hcp->hcd.ops->get_eld) {
-+			hcp->hcd.ops->get_eld(dev->parent, hcp->hcd.data,
-+					    hcp->eld, sizeof(hcp->eld));
-+		}
- 		hdmi_codec_jack_report(hcp, SND_JACK_LINEOUT);
--	else
-+	} else {
-+		memset(hcp->eld, 0, sizeof(hcp->eld));
- 		hdmi_codec_jack_report(hcp, 0);
-+	}
- }
- 
- static int hdmi_codec_set_jack(struct snd_soc_component *component,
--- 
-2.29.2.299.gdc1121823c-goog
+Has it ever worked?
 
+Did the commit you point to with the fixes tag, break some other
+existing functionality?
+
+[...]
+
+Kind regards
+Uffe
