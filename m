@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21112B6131
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542132B6048
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730320AbgKQNQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:16:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S1729141AbgKQNHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:07:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730293AbgKQNQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:16:19 -0500
+        id S1729121AbgKQNHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:07:35 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 948462225B;
-        Tue, 17 Nov 2020 13:16:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 205C9246A7;
+        Tue, 17 Nov 2020 13:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618978;
-        bh=iIbL3yXcO0qPZsTOZyqByBDm/eL4KmJNFj69ccpbTXk=;
+        s=default; t=1605618454;
+        bh=Kh8c0m6N03l8QJ9+LJA5cGqBX12ys8wOY1jAnKUWrG4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ICgEJ9BJWiVe1LCAxEE6gXb8V7nFy8kSpql6clJN2OvLkZv1O4sYq8dW0mAgO0wh4
-         55odjvNy2j2GQEzyP8wUGDAN1PBxcqTUXpnX1RqcJS8rt2i2OsZGAtUoBSlKNFiLhR
-         SoQdwlv7ye7JqCYnGiOFdTY+r+lVDw/0q3LvHTF8=
+        b=mWId2e4TMUvDxSZRBfqqZIYFK7LDCyrcIxWC5kUyadfEKK/kVPZRoCGObomoxvMx/
+         n6CM/1XIW7HXhUY3jFF1V1tni5NJ6G/7FgFx7gTvELyRLJg3DCuOz+zoOOK0mCobCH
+         4DNtR3G/13AJmllXrfJwESEYemlHWzvtQIt3rcs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Bunker <brian@purestorage.com>,
-        Jitendra Khasdev <jitendra.khasdev@oracle.com>,
-        Hannes Reinecke <hare@suse.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 32/85] scsi: scsi_dh_alua: Avoid crash during alua_bus_detach()
-Date:   Tue, 17 Nov 2020 14:05:01 +0100
-Message-Id: <20201117122112.605798393@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 4.4 39/64] pinctrl: amd: use higher precision for 512 RtcClk
+Date:   Tue, 17 Nov 2020 14:05:02 +0100
+Message-Id: <20201117122108.094251071@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,73 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Coiby Xu <coiby.xu@gmail.com>
 
-[ Upstream commit 5faf50e9e9fdc2117c61ff7e20da49cd6a29e0ca ]
+commit c64a6a0d4a928c63e5bc3b485552a8903a506c36 upstream.
 
-alua_bus_detach() might be running concurrently with alua_rtpg_work(), so
-we might trip over h->sdev == NULL and call BUG_ON().  The correct way of
-handling it is to not set h->sdev to NULL in alua_bus_detach(), and call
-rcu_synchronize() before the final delete to ensure that all concurrent
-threads have left the critical section.  Then we can get rid of the
-BUG_ON() and replace it with a simple if condition.
+RTC is 32.768kHz thus 512 RtcClk equals 15625 usec. The documentation
+likely has dropped precision and that's why the driver mistakenly took
+the slightly deviated value.
 
-Link: https://lore.kernel.org/r/1600167537-12509-1-git-send-email-jitendra.khasdev@oracle.com
-Link: https://lore.kernel.org/r/20200924104559.26753-1-hare@suse.de
-Cc: Brian Bunker <brian@purestorage.com>
-Acked-by: Brian Bunker <brian@purestorage.com>
-Tested-by: Jitendra Khasdev <jitendra.khasdev@oracle.com>
-Reviewed-by: Jitendra Khasdev <jitendra.khasdev@oracle.com>
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Suggested-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/linux-gpio/2f4706a1-502f-75f0-9596-cc25b4933b6c@redhat.com/
+Link: https://lore.kernel.org/r/20201105231912.69527-3-coiby.xu@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/device_handler/scsi_dh_alua.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/pinctrl/pinctrl-amd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/device_handler/scsi_dh_alua.c b/drivers/scsi/device_handler/scsi_dh_alua.c
-index 135376ee2cbf0..ba68454109bae 100644
---- a/drivers/scsi/device_handler/scsi_dh_alua.c
-+++ b/drivers/scsi/device_handler/scsi_dh_alua.c
-@@ -653,8 +653,8 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
- 					rcu_read_lock();
- 					list_for_each_entry_rcu(h,
- 						&tmp_pg->dh_list, node) {
--						/* h->sdev should always be valid */
--						BUG_ON(!h->sdev);
-+						if (!h->sdev)
-+							continue;
- 						h->sdev->access_state = desc[0];
- 					}
- 					rcu_read_unlock();
-@@ -700,7 +700,8 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
- 			pg->expiry = 0;
- 			rcu_read_lock();
- 			list_for_each_entry_rcu(h, &pg->dh_list, node) {
--				BUG_ON(!h->sdev);
-+				if (!h->sdev)
-+					continue;
- 				h->sdev->access_state =
- 					(pg->state & SCSI_ACCESS_STATE_MASK);
- 				if (pg->pref)
-@@ -1138,7 +1139,6 @@ static void alua_bus_detach(struct scsi_device *sdev)
- 	spin_lock(&h->pg_lock);
- 	pg = rcu_dereference_protected(h->pg, lockdep_is_held(&h->pg_lock));
- 	rcu_assign_pointer(h->pg, NULL);
--	h->sdev = NULL;
- 	spin_unlock(&h->pg_lock);
- 	if (pg) {
- 		spin_lock_irq(&pg->lock);
-@@ -1147,6 +1147,7 @@ static void alua_bus_detach(struct scsi_device *sdev)
- 		kref_put(&pg->kref, release_port_group);
- 	}
- 	sdev->handler_data = NULL;
-+	synchronize_rcu();
- 	kfree(h);
- }
- 
--- 
-2.27.0
-
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -144,7 +144,7 @@ static int amd_gpio_set_debounce(struct
+ 			pin_reg |= BIT(DB_TMR_OUT_UNIT_OFF);
+ 			pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
+ 		} else if (debounce < 250000) {
+-			time = debounce / 15600;
++			time = debounce / 15625;
+ 			pin_reg |= time & DB_TMR_OUT_MASK;
+ 			pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
+ 			pin_reg |= BIT(DB_TMR_LARGE_OFF);
 
 
