@@ -2,94 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE55B2B6ACB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E14A22B6AC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgKQQ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:57:40 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:35263 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgKQQ5j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:57:39 -0500
-Received: by mail-ot1-f49.google.com with SMTP id n11so20124324ota.2;
-        Tue, 17 Nov 2020 08:57:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7NLRFj8nHCygasEBHceubBbH3HeMeHr99Ml1bGtCW9o=;
-        b=N5aNtxPcylGbM7jh2INd3qvaC2FQvMEQJUNcoC2Isb+oovuuhULsTKJfVzNgjVu1oa
-         //h7p7GWTg9wbRmD8/8aCuycjv5fxjsnGkD2s3j2TyjRVLII3ZN0XKFbW8VHUznWgmT2
-         af1Q/U5SLoPQug9airMTihl8382tk5lfCGm9uiH60lDHgiWHA7AaY251NTHCBpw6K9Ul
-         /KGo3Iqz3i8hYy0VW64EGqmY5MMDYFUdRXllWQiIC/pI40bARewAIqGe5dgoaDljvS1/
-         +D+GNtn8hrpRmcfLy6fVcwVn4BrF65wyUVyOvIlC5zuCCllheJyqhWXl2QTzEOZCsY56
-         BGbg==
-X-Gm-Message-State: AOAM531yvQqzPpk50ipQrIXigzHWbqhnqZX3g2YSSSL2MSxRE+xkts1V
-        p93PizmXCLRHpdeJ5u5ZTD0eERFf26GXHs7cvdo=
-X-Google-Smtp-Source: ABdhPJzociPk59c3aEW92lx5PQkRb0ADhjgmmggbLMdVyRcJQxet3/KWpklyWaGp1kYUDAKDDMgxsfmnnXhX+JFoXo8=
-X-Received: by 2002:a9d:16f:: with SMTP id 102mr3851962otu.206.1605632258611;
- Tue, 17 Nov 2020 08:57:38 -0800 (PST)
+        id S1728184AbgKQQ5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:57:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727070AbgKQQ5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:57:35 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B41422447;
+        Tue, 17 Nov 2020 16:57:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605632254;
+        bh=9YRqsxQ2usGvEt2meH9lhvEXpcTOviy8taZs/VJohUM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pU/xwNuFBJ++tk+KbBaiLmoAm+Qqa30OahDDtH5y/GcbS0mJ6tKITuUEFG23l0BD/
+         MmGCY3oU+KQBoEBZQQisTlo4ka/NFvqBjkPPsAvTPeqNpTosj8N+A3xGnzEjukqQA5
+         Y71qpStax2oLIrQnwWCbmpSEOXbBoM41HPPCOuUA=
+Date:   Tue, 17 Nov 2020 08:57:32 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        robh+dt@kernel.org, sboyd@kernel.org, mturquette@baylibre.com,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH 0/6] Enable Qualcomm Crypto Engine on sdm845
+Message-ID: <X7QA/BMr/A/jjayk@sol.localdomain>
+References: <20201117134714.3456446-1-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-References: <79940973-b631-90f9-dbc4-9579c6000816@gmail.com> <20201117163817.GA1397220@bjorn-Precision-5520>
-In-Reply-To: <20201117163817.GA1397220@bjorn-Precision-5520>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 17 Nov 2020 17:57:27 +0100
-Message-ID: <CAJZ5v0ipMJ1gCB7okpROG_yAUi5Q8LknqeH+Jpdrjbb4D_vfuQ@mail.gmail.com>
-Subject: Re: Time to re-enable Runtime PM per default for PCI devcies?
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kai Heng Feng <kai.heng.feng@canonical.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117134714.3456446-1-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 5:38 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+to Rafael, author of the commit you mentioned,
-> +cc Mika, Kai Heng, Lukas, linux-pm, linux-kernel]
->
-> On Tue, Nov 17, 2020 at 04:56:09PM +0100, Heiner Kallweit wrote:
-> > More than 10 yrs ago Runtime PM was disabled per default by bb910a7040
-> > ("PCI/PM Runtime: Make runtime PM of PCI devices inactive by default").
-> >
-> > Reason given: "avoid breakage on systems where ACPI-based wake-up is
-> > known to fail for some devices"
-> > Unfortunately the commit message doesn't mention any affected  devices
-> > or systems.
+On Tue, Nov 17, 2020 at 08:47:08AM -0500, Thara Gopinath wrote:
+> Qualcomm crypto engine supports hardware accelerated algorithms for
+> encryption and authentication. Enable support for aes,des,3des encryption
+> algorithms and sha1,sha256, hmac(sha1),hmac(sha256) authentication
+> algorithms on sdm845.The patch series has been tested using the kernel
+> crypto testing module tcrypto.ko.
 
-Even if it did that, it wouldn't have been a full list almost for sure.
+Did you do this testing with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled?
+Do all tests pass with it enabled?
 
-We had received multiple problem reports related to that, most likely
-because the ACPI PM in BIOSes at that time was tailored for
-system-wide PM transitions only.
-
-> > With Runtime PM disabled e.g. the PHY on network devices may remain
-> > powered up even with no cable plugged in, affecting battery lifetime
-> > on mobile devices. Currently we have to rely on the respective distro
-> > or user to enable Runtime PM via sysfs (echo auto > power/control).
-> > Some devices work around this restriction by calling pm_runtime_allow
-> > in their probe routine, even though that's not recommended by
-> > https://www.kernel.org/doc/Documentation/power/pci.txt
-> >
-> > Disabling Runtime PM per default seems to be a big hammer, a quirk
-> > for affected devices / systems may had been better. And we still
-> > have the option to disable Runtime PM for selected devices via sysfs.
-> >
-> > So, to cut a long story short: Wouldn't it be time to remove this
-> > restriction?
->
-> I don't know the history of this, but maybe Rafael or the others can
-> shed some light on it.
-
-The systems that had those problems 10 years ago would still have
-them, but I expect there to be more systems where runtime PM can be
-enabled by default for PCI devices without issues.
+- Eric
