@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F4F2B6505
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEE62B65D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731731AbgKQN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:27:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35016 "EHLO mail.kernel.org"
+        id S1728734AbgKQN6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:58:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731701AbgKQN1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:27:17 -0500
+        id S1729399AbgKQNS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:18:56 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC8A4206D5;
-        Tue, 17 Nov 2020 13:27:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44760206D5;
+        Tue, 17 Nov 2020 13:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619637;
-        bh=/hZ9nWbGGjFN9qdOakvapm58eAu1ac2ctQXS8eUyNkg=;
+        s=default; t=1605619134;
+        bh=WvWDUe7Efs3/UaLV6ZcsfA0N93uLYypki29yXvVf2ec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Vrv52u86W1nyb2GjSwydOX4frucsCNnS3yVgRWxmGxV1iEFU413V/zQ15Kj2swfv
-         oTDeVhsBYiWR5HCTWQPT1LuSHCcS1fgWpkUVG5Aig5nWcb+eMuy3qQmMh8QuGjdjcT
-         iDPMdWy+eM0FTqm+ubv/8xZGudYFTGSRkfwfbDIA=
+        b=Rpjh2UuH7FOwLcqjz/yOOLZvRnoopUfichfIqZPLqJ5ODrJjMNqFPa6Dyom+0/o8p
+         t7gTZ+xa7YvJZ0JGNnk0Wpdhs4cOhpPI0Sd/NgSiV2uMPsv56E3Ii+UBj3IT+yjHcn
+         rJAdykEvTZMMucPps+BaR8XY7C8RDBjv3P338pw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Sandeep Raghuraman <sandy.8925@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 075/151] s390/smp: move rcu_cpu_starting() earlier
+Subject: [PATCH 4.19 038/101] drm/amd/pm: do not use ixFEATURE_STATUS for checking smc running
 Date:   Tue, 17 Nov 2020 14:05:05 +0100
-Message-Id: <20201117122125.067675414@linuxfoundation.org>
+Message-Id: <20201117122114.950471960@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,69 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@redhat.com>
+From: Evan Quan <evan.quan@amd.com>
 
-[ Upstream commit de5d9dae150ca1c1b5c7676711a9ca139d1a8dec ]
+[ Upstream commit 786436b453001dafe81025389f96bf9dac1e9690 ]
 
-The call to rcu_cpu_starting() in smp_init_secondary() is not early
-enough in the CPU-hotplug onlining process, which results in lockdep
-splats as follows:
+This reverts commit f87812284172a9809820d10143b573d833cd3f75 ("drm/amdgpu:
+Fix bug where DPM is not enabled after hibernate and resume").
+It was intended to fix Hawaii S4(hibernation) issue but break S3. As
+ixFEATURE_STATUS is filled with garbage data on resume which can be
+only cleared by reloading smc firmware(but that will involve many
+changes). So, we will revert this S4 fix and seek a new way.
 
- WARNING: suspicious RCU usage
- -----------------------------
- kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
-
- other info that might help us debug this:
-
- RCU used illegally from offline CPU!
- rcu_scheduler_active = 1, debug_locks = 1
- no locks held by swapper/1/0.
-
- Call Trace:
- show_stack+0x158/0x1f0
- dump_stack+0x1f2/0x238
- __lock_acquire+0x2640/0x4dd0
- lock_acquire+0x3a8/0xd08
- _raw_spin_lock_irqsave+0xc0/0xf0
- clockevents_register_device+0xa8/0x528
- init_cpu_timer+0x33e/0x468
- smp_init_secondary+0x11a/0x328
- smp_start_secondary+0x82/0x88
-
-This is avoided by moving the call to rcu_cpu_starting up near the
-beginning of the smp_init_secondary() function. Note that the
-raw_smp_processor_id() is required in order to avoid calling into
-lockdep before RCU has declared the CPU to be watched for readers.
-
-Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
-Signed-off-by: Qian Cai <cai@redhat.com>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Tested-by: Sandeep Raghuraman <sandy.8925@gmail.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/smp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
-index ad426cc656e56..66d7ba61803c8 100644
---- a/arch/s390/kernel/smp.c
-+++ b/arch/s390/kernel/smp.c
-@@ -845,13 +845,14 @@ void __init smp_detect_cpus(void)
+diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
+index 0d4dd607e85c8..c05bec5effb2e 100644
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
+@@ -2723,10 +2723,7 @@ static int ci_initialize_mc_reg_table(struct pp_hwmgr *hwmgr)
  
- static void smp_init_secondary(void)
+ static bool ci_is_dpm_running(struct pp_hwmgr *hwmgr)
  {
--	int cpu = smp_processor_id();
-+	int cpu = raw_smp_processor_id();
+-	return (1 == PHM_READ_INDIRECT_FIELD(hwmgr->device,
+-					     CGS_IND_REG__SMC, FEATURE_STATUS,
+-					     VOLTAGE_CONTROLLER_ON))
+-		? true : false;
++	return ci_is_smc_ram_running(hwmgr);
+ }
  
- 	S390_lowcore.last_update_clock = get_tod_clock();
- 	restore_access_regs(S390_lowcore.access_regs_save_area);
- 	set_cpu_flag(CIF_ASCE_PRIMARY);
- 	set_cpu_flag(CIF_ASCE_SECONDARY);
- 	cpu_init();
-+	rcu_cpu_starting(cpu);
- 	preempt_disable();
- 	init_cpu_timer();
- 	vtime_init();
+ static int ci_smu_init(struct pp_hwmgr *hwmgr)
 -- 
 2.27.0
 
