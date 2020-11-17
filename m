@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA3E2B5B29
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A37192B5B28
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgKQInD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:43:03 -0500
-Received: from mga11.intel.com ([192.55.52.93]:13710 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725770AbgKQInC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:43:02 -0500
-IronPort-SDR: 9RP4StRMtdbY97SQV3Bjq5NjTsjlEty9QOYfYJmvfY2Ix1pdI7VMLCvYLyzUybNshTGGYR9ZS2
- msqZGa1k/O7g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="167377202"
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="167377202"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 00:43:02 -0800
-IronPort-SDR: FFTrmY4XmRjdf/G9khiTYwk1jESs2494duNzVO8cvfLmSVVDGV7QGJyKD8zuMZoN9V1Mp5EF8b
- cVNUJ1LLY9PQ==
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="475845267"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.117])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 00:43:00 -0800
-Date:   Tue, 17 Nov 2020 16:42:14 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: drivers/iio/adc/at91_adc.c:450:16: warning: Shifting signed 32-bit
- value by 31 bits is undefined behaviour
-Message-ID: <20201117084214.GC3723@shao2-debian>
+        id S1726544AbgKQImr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:42:47 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:43216 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgKQImr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 03:42:47 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH8f8nc182454;
+        Tue, 17 Nov 2020 08:42:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=+aRie4tbBexDEFv2DScd8LHVGxXLgZpvnvLkUlXSVqg=;
+ b=KmmCginOQbqewQa9euOtiN2INLwoIq9PiJ8qp8CJ4wOk54HrGu/XYIwEJzmTScVGTg5U
+ H6yJBBTrOp2z3usaWdQZ6Anvko7+rGF9xDN6zvJHJ578NkuvC3de8lPjOKpBkHf8KRpT
+ r+CJQtQGYxTvkHLJLpFpSef8JAP8n/4bN81lxgsm3TqpYUA0j/E7sbnnrqwBpdXJ6as3
+ yYkp10wKr16rgR82MKeaJHv/bH+gyL9/HEGQwgWjtHZ7Lqu7Tjj8JyDvMsfmyfgrVOkH
+ DWhEV1FGU1+4P8zRvMuaVGikGkOiaFdisKNoJKsGkzjDDos/KDktVvP6QjDLYmndyZ1Q og== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 34t4rasbva-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 08:42:23 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH8TZ18126090;
+        Tue, 17 Nov 2020 08:40:23 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 34uspt30sp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 08:40:23 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AH8eLpG000530;
+        Tue, 17 Nov 2020 08:40:21 GMT
+Received: from linux.home (/92.157.91.83)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 17 Nov 2020 00:40:20 -0800
+Subject: Re: [RFC][PATCH v2 11/21] x86/pti: Extend PTI user mappings
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
+        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
+        kuzuno@gmail.com
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
+ <20201116144757.1920077-12-alexandre.chartre@oracle.com>
+ <CALCETrXoykRjRPYPfZr6gBKoMnHuRYiJTDOcFYMq8GLef00j1A@mail.gmail.com>
+ <820278dc-5f8e-6224-71b4-7c61819f68d1@oracle.com>
+ <CALCETrXYP13pPcRfDDkwetLgzA3quYOBg7OTo5nbpLpPfSqaLw@mail.gmail.com>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <d4be0149-1a28-24e8-7821-e8c96f98a7ac@oracle.com>
+Date:   Tue, 17 Nov 2020 09:42:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CALCETrXYP13pPcRfDDkwetLgzA3quYOBg7OTo5nbpLpPfSqaLw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 bulkscore=0 suspectscore=2 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170063
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=2 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9c87c9f41245baa3fc4716cf39141439cf405b01
-commit: 4027860dcc4cd0c45c36bae21e45bee5a17f2f0f iio: Kconfig: at91_adc: add COMPILE_TEST dependency to driver
-compiler: s390-linux-gcc (GCC) 9.3.0
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <rong.a.chen@intel.com>
+On 11/17/20 12:06 AM, Andy Lutomirski wrote:
+> On Mon, Nov 16, 2020 at 12:18 PM Alexandre Chartre
+> <alexandre.chartre@oracle.com> wrote:
+>>
+>>
+>> On 11/16/20 8:48 PM, Andy Lutomirski wrote:
+>>> On Mon, Nov 16, 2020 at 6:49 AM Alexandre Chartre
+>>> <alexandre.chartre@oracle.com> wrote:
+>>>>
+>>>> Extend PTI user mappings so that more kernel entry code can be executed
+>>>> with the user page-table. To do so, we need to map syscall and interrupt
+>>>> entry code, per cpu offsets (__per_cpu_offset, which is used some in
+>>>> entry code), the stack canary, and the PTI stack (which is defined per
+>>>> task).
+>>>
+>>> Does anything unmap the PTI stack?  Mapping is easy, and unmapping
+>>> could be a pretty big mess.
+>>>
+>>
+>> No, there's no unmap. The mapping exists as long as the task page-table
+>> does (i.e. as long as the task mm exits). I assume that the task stack
+>> and mm are freed at the same time but that's not something I have checked.
+>>
+> 
+> Nope.  A multi-threaded mm will free task stacks when the task exits,
+> but the mm may outlive the individual tasks.  Additionally, if you
+> allocate page tables as part of mapping PTI stacks, you need to make
+> sure the pagetables are freed.
+
+So I think I just need to unmap the PTI stack from the user page-table
+when the task exits. Everything else is handled because the kernel and
+PTI stack are allocated in a single chunk (referenced by task->stack).
 
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+>  Finally, you need to make sure that
+> the PTI stacks have appropriate guard pages -- just doubling the
+> allocation is not safe enough.
 
->> drivers/iio/adc/at91_adc.c:450:16: warning: Shifting signed 32-bit value by 31 bits is undefined behaviour [shiftTooManyBitsSigned]
-     if (status & AT91_ADC_ISR_PENS) {
-                  ^
+The PTI stack does have guard pages because it maps only a part of the task
+stack into the user page-table, so pages around the PTI stack are not mapped
+into the user-pagetable (the page below is the task stack guard, and the page
+above is part of the kernel-only stack so it's never mapped into the user
+page-table).
 
-vim +450 drivers/iio/adc/at91_adc.c
++ *   +-------------+
++ *   |             | ^                       ^
++ *   | kernel-only | | KERNEL_STACK_SIZE     |
++ *   |    stack    | |                       |
++ *   |             | V                       |
++ *   +-------------+ <- top of kernel stack  | THREAD_SIZE
++ *   |             | ^                       |
++ *   | kernel and  | | KERNEL_STACK_SIZE     |
++ *   | PTI stack   | |                       |
++ *   |             | V                       v
++ *   +-------------+ <- top of stack
 
-84882b060301c35 Alexandre Belloni 2014-04-15  417  
-84882b060301c35 Alexandre Belloni 2014-04-15  418  static irqreturn_t at91_adc_9x5_interrupt(int irq, void *private)
-c8b11de0404d318 Josh Wu           2013-10-08  419  {
-c8b11de0404d318 Josh Wu           2013-10-08  420  	struct iio_dev *idev = private;
-c8b11de0404d318 Josh Wu           2013-10-08  421  	struct at91_adc_state *st = iio_priv(idev);
-c8b11de0404d318 Josh Wu           2013-10-08  422  	u32 status = at91_adc_readl(st, st->registers->status_register);
-c8b11de0404d318 Josh Wu           2013-10-08  423  	const uint32_t ts_data_irq_mask =
-c8b11de0404d318 Josh Wu           2013-10-08  424  		AT91_ADC_IER_XRDY |
-c8b11de0404d318 Josh Wu           2013-10-08  425  		AT91_ADC_IER_YRDY |
-c8b11de0404d318 Josh Wu           2013-10-08  426  		AT91_ADC_IER_PRDY;
-c8b11de0404d318 Josh Wu           2013-10-08  427  
-d4f51956ac8ad30 Ludovic Desroches 2014-10-09  428  	if (status & GENMASK(st->num_channels - 1, 0))
-c8b11de0404d318 Josh Wu           2013-10-08  429  		handle_adc_eoc_trigger(irq, idev);
-c8b11de0404d318 Josh Wu           2013-10-08  430  
-c8b11de0404d318 Josh Wu           2013-10-08  431  	if (status & AT91_ADC_IER_PEN) {
-c8b11de0404d318 Josh Wu           2013-10-08  432  		at91_adc_writel(st, AT91_ADC_IDR, AT91_ADC_IER_PEN);
-c8b11de0404d318 Josh Wu           2013-10-08  433  		at91_adc_writel(st, AT91_ADC_IER, AT91_ADC_IER_NOPEN |
-c8b11de0404d318 Josh Wu           2013-10-08  434  			ts_data_irq_mask);
-c8b11de0404d318 Josh Wu           2013-10-08  435  		/* Set up period trigger for sampling */
-c8b11de0404d318 Josh Wu           2013-10-08  436  		at91_adc_writel(st, st->registers->trigger_register,
-c8b11de0404d318 Josh Wu           2013-10-08  437  			AT91_ADC_TRGR_MOD_PERIOD_TRIG |
-c8b11de0404d318 Josh Wu           2013-10-08  438  			AT91_ADC_TRGR_TRGPER_(st->ts_sample_period_val));
-c8b11de0404d318 Josh Wu           2013-10-08  439  	} else if (status & AT91_ADC_IER_NOPEN) {
-c8b11de0404d318 Josh Wu           2013-10-08  440  		at91_adc_writel(st, st->registers->trigger_register, 0);
-c8b11de0404d318 Josh Wu           2013-10-08  441  		at91_adc_writel(st, AT91_ADC_IDR, AT91_ADC_IER_NOPEN |
-c8b11de0404d318 Josh Wu           2013-10-08  442  			ts_data_irq_mask);
-c8b11de0404d318 Josh Wu           2013-10-08  443  		at91_adc_writel(st, AT91_ADC_IER, AT91_ADC_IER_PEN);
-c8b11de0404d318 Josh Wu           2013-10-08  444  
-c8b11de0404d318 Josh Wu           2013-10-08  445  		input_report_key(st->ts_input, BTN_TOUCH, 0);
-c8b11de0404d318 Josh Wu           2013-10-08  446  		input_sync(st->ts_input);
-c8b11de0404d318 Josh Wu           2013-10-08  447  	} else if ((status & ts_data_irq_mask) == ts_data_irq_mask) {
-c8b11de0404d318 Josh Wu           2013-10-08  448  		/* Now all touchscreen data is ready */
-c8b11de0404d318 Josh Wu           2013-10-08  449  
-c8b11de0404d318 Josh Wu           2013-10-08 @450  		if (status & AT91_ADC_ISR_PENS) {
-c8b11de0404d318 Josh Wu           2013-10-08  451  			/* validate data by pen contact */
-c8b11de0404d318 Josh Wu           2013-10-08  452  			at91_ts_sample(st);
-c8b11de0404d318 Josh Wu           2013-10-08  453  		} else {
-c8b11de0404d318 Josh Wu           2013-10-08  454  			/* triggered by event that is no pen contact, just read
-c8b11de0404d318 Josh Wu           2013-10-08  455  			 * them to clean the interrupt and discard all.
-c8b11de0404d318 Josh Wu           2013-10-08  456  			 */
-c8b11de0404d318 Josh Wu           2013-10-08  457  			at91_adc_readl(st, AT91_ADC_TSXPOSR);
-c8b11de0404d318 Josh Wu           2013-10-08  458  			at91_adc_readl(st, AT91_ADC_TSYPOSR);
-c8b11de0404d318 Josh Wu           2013-10-08  459  			at91_adc_readl(st, AT91_ADC_TSPRESSR);
-c8b11de0404d318 Josh Wu           2013-10-08  460  		}
-c8b11de0404d318 Josh Wu           2013-10-08  461  	}
-0e589d5fb3172b0 Maxime Ripard     2012-05-11  462  
-0e589d5fb3172b0 Maxime Ripard     2012-05-11  463  	return IRQ_HANDLED;
-0e589d5fb3172b0 Maxime Ripard     2012-05-11  464  }
-0e589d5fb3172b0 Maxime Ripard     2012-05-11  465  
+> My intuition is that this is going to be far more complexity than is justified.
 
-:::::: The code at line 450 was first introduced by commit
-:::::: c8b11de0404d318c4a67bf6b9066663b9d93786c iio: at91: introduce touch screen support in iio adc driver
+Sounds like only the PTI stack unmap is missing, which is hopefully not
+that bad. I will check that.
 
-:::::: TO: Josh Wu <josh.wu@atmel.com>
-:::::: CC: Jonathan Cameron <jic23@kernel.org>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+alex.
