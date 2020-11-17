@@ -2,87 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA1B2B7141
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A83B82B719A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728838AbgKQWH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:07:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728161AbgKQWH7 (ORCPT
+        id S1729186AbgKQWbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:31:48 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18356 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728726AbgKQWbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:07:59 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5725C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:07:58 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id w24so140210wmi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:07:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=URvCGNr5k1+GzznmsJpB6SNe04WSGrxWUmVDQcvgcZ4=;
-        b=I03DxdCD92qsINhuEikYZ0TIzqvVS7L/jHcBxIb+ciBI6o/XpoFgfYLo+YsbNS+16P
-         P4RqgCb031+L8tTs9IR1wLVE3u5AST/aEAbtHj+iMtmlo1X4rYS/KdOebq4OprAEicUo
-         Hpya8WtKC9srGXWOOXOwcVtHIQ8XPvACMYi3q8pzxiB7DOOo2qJ/LMe8t8cwOhlkrqhX
-         HkUAUjH+DQqtDKyLANkCqJr8lNqBXPZsmBBolet3QG1dGzyfIvBEA/W5PmtYxMFN5+rA
-         oxmm0kQxjx4bCnLzI4WwvofizGbr/vU97Fx1NDF9MxCeAVpso+Rkl3WE1SHtJUCZpil5
-         3/TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=URvCGNr5k1+GzznmsJpB6SNe04WSGrxWUmVDQcvgcZ4=;
-        b=TyUSKZWr+oy8ejiPQ99691pg3wxreeA5m7yHg5uwdMTqp2nYgjSnIuEXbKly1xuInG
-         oebr6FNH7J2Gd+fqGnCMYYUHYyqfv2A/zJ+3Edmy1GYK//wHhB9L2w44YcEA6aD0MP0o
-         NLIRJ5lX9zAUShmnINM0FVhKubOusxhMs56+Oo5UubeWMUJ3lNJNu/8mzEVGqno99wqs
-         oQfqTs4ctLgCr6x6JJAXdidrUa8A7efc5ujDTZNi2m93erUWkiL4vaLHH7O8Cuo6eS1m
-         oXT1cMPLY/9pXjhnQj+Iot6B38azGG1/e7dryIj6odPWL4wdbzS+BZ6/QnNVKeoqXA7n
-         nXLQ==
-X-Gm-Message-State: AOAM533dKJxjZzkJZzSffFGWjP6l6qfbOcJGEGVTk3xiJZa2StBueoNZ
-        v/mkJA+jioqjYEyHuqfkGR4=
-X-Google-Smtp-Source: ABdhPJxUjPspH7cJSSAMqBmrepuOgh4/9AxibRwo13eCtSmnpO/CFhmYNovsBMRKF5dpXWnVbE/wVQ==
-X-Received: by 2002:a1c:e3d4:: with SMTP id a203mr1177352wmh.177.1605650877448;
-        Tue, 17 Nov 2020 14:07:57 -0800 (PST)
-Received: from localhost.localdomain ([46.166.142.216])
-        by smtp.gmail.com with ESMTPSA id h20sm133352wmb.29.2020.11.17.14.07.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 14:07:57 -0800 (PST)
-From:   Armin Gholampoor <armingh379@gmail.com>
-To:     davem@davemloft.net
-Cc:     linux-kernel@vger.kernel.org,
-        Armin Gholampoor <armingh379@gmail.com>
-Subject: [PATCH] net: ipv4: fixed a brace coding style issue
-Date:   Wed, 18 Nov 2020 01:37:44 -0500
-Message-Id: <20201118063744.214744-1-armingh379@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 17 Nov 2020 17:31:47 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHM38vf190903;
+        Tue, 17 Nov 2020 17:31:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=7MrrKV5Y2QJgd8GDuAPq+YmtMal0O5LLBFJHp8Cfj3M=;
+ b=eqX9VAuQsxKFBrQe54iXwmzlG1I14skqNrnbKmxC+KrLwXjtOtheXEVo3nYIlg8RqwIU
+ RKaSEn+pxIOHL+fuS6LrsGWUrKKq139taOitPXxbHl7gsbkRfe3kXdYqZZjIWlNI8Wvs
+ Q03EUEV/Sp6fU51dj+lWjP5wNwK1GBeKks/wHTaciuAmx+2UZoOogs6q8k0FMMPMi+j0
+ HVYwdH/L1N7txcq7dzpYLhTZxMy34mmCIpyiS83IUQvdwPcspJtyfFayooe8SiVPaXht
+ vxvcs4nCy1ePD978sPJvaewo/DirSpi0bk54/Apm3dsuvIZTTqYkGBOB5oNa1ZAUVNqP YQ== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34vcs3jyg5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 17:31:43 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AHMS3m6005430;
+        Tue, 17 Nov 2020 22:31:41 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma03wdc.us.ibm.com with ESMTP id 34t6v91ube-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 22:31:41 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AHMVVFR41025976
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 22:31:31 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3F351367BD;
+        Tue, 17 Nov 2020 22:14:10 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7C6481367BB;
+        Tue, 17 Nov 2020 22:14:10 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.163.40.231])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 17 Nov 2020 22:14:10 +0000 (GMT)
+Subject: Re: [PATCH 4/6] ibmvfc: add FC payload retrieval routines for
+ versioned vfcFrames
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201112010442.102589-1-tyreld@linux.ibm.com>
+ <20201112010442.102589-4-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <9e38f449-d2e6-6408-4fef-cfb5351393cc@linux.vnet.ibm.com>
+Date:   Tue, 17 Nov 2020 16:14:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112010442.102589-4-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_09:2020-11-17,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ spamscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015 phishscore=0
+ mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170162
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed bracing style issue.
+On 11/11/20 7:04 PM, Tyrel Datwyler wrote:
+> The FC iu and response payloads are located at different offsets
+> depending on the ibmvfc_cmd version. This is a result of the version 2
+> vfcFrame definition adding an extra 64bytes of reserved space to the
+> structure prior to the payloads.
+> 
+> Add helper routines to determine the current vfcFrame version and
+> returning pointers to the proper iu or response structures within that
+> ibmvfc_cmd.
+> 
+> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> ---
+>  drivers/scsi/ibmvscsi/ibmvfc.c | 76 ++++++++++++++++++++++++----------
+>  1 file changed, 53 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+> index aa3445bec42c..5e666f7c9266 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> @@ -138,6 +138,22 @@ static void ibmvfc_tgt_move_login(struct ibmvfc_target *);
+>  
+>  static const char *unknown_error = "unknown error";
+>  
+> +static struct ibmvfc_fcp_cmd_iu *ibmvfc_get_fcp_iu(struct ibmvfc_host *vhost, struct ibmvfc_cmd *vfc_cmd)
+> +{
+> +	if (be64_to_cpu(vhost->login_buf->resp.capabilities) & IBMVFC_HANDLE_VF_WWPN)
 
-Signed-off-by: Armin Gholampoor <armingh379@gmail.com>
----
- net/ipv4/tcp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Suggest adding a flag to the vhost structure that you setup after login in order to
+simplify this check and avoid chasing multiple pointers along with a byte swap.
 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index b2bc3d7fe..37bc91e4a 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -3170,8 +3170,7 @@ static int do_tcp_setsockopt(struct sock *sk, int level, int optname,
- 		else if (tp->repair_queue == TCP_RECV_QUEUE) {
- 			WRITE_ONCE(tp->rcv_nxt, val);
- 			WRITE_ONCE(tp->copied_seq, val);
--		}
--		else
-+		} else
- 			err = -EINVAL;
- 		break;
- 
+Maybe something like:
+
+vhost->is_v2
+
+> +		return &vfc_cmd->v2.iu;
+> +	else
+> +		return &vfc_cmd->v1.iu;
+> +}
+> +
+> +static struct ibmvfc_fcp_rsp *ibmvfc_get_fcp_rsp(struct ibmvfc_host *vhost, struct ibmvfc_cmd *vfc_cmd)
+> +{
+> +	if (be64_to_cpu(vhost->login_buf->resp.capabilities) & IBMVFC_HANDLE_VF_WWPN)
+
+Same here
+
+> +		return &vfc_cmd->v2.rsp;
+> +	else
+> +		return &vfc_cmd->v1.rsp;
+> +}
+> +
+>  #ifdef CONFIG_SCSI_IBMVFC_TRACE
+>  /**
+>   * ibmvfc_trc_start - Log a start trace entry
+
+
+
 -- 
-2.29.2
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
