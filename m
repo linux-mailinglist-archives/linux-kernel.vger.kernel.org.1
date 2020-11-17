@@ -2,100 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC082B6F68
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EADB82B6F4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731162AbgKQTyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:54:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730096AbgKQTyO (ORCPT
+        id S1730448AbgKQTtW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 14:49:22 -0500
+Received: from mailoutvs20.siol.net ([185.57.226.211]:57695 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728309AbgKQTtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:54:14 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF56DC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:54:12 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id a18so18015879pfl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:54:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=pctb8DZxtQNRAIgFwGxL6HThY7Qo5czv9hhFdmCOUCU=;
-        b=O5mWd20Xs/3dcQrzF6J14yQTnLVWSgPokP3F+wo9dwngYEYRGJ3r8rUZHq5vDLINw6
-         kebTyskd9CYy5zMYhpq+oHOflmLG/WU7CUA2Dtj2xQwiU/OOWNcPbmgxevqArjMsM4+A
-         V5AwPU1tliR/N9xq832QBcmXdn8wkQWTWWugDYYnForohG0nbIub1V3wCrKF2v9D7pDA
-         zT6CE5WsRU5mvST8DvqZPvZQf+6vM2DsJYPEko64h4jxxqQn5pwv2fQ1svE/aFTrFMog
-         R68DMjQxjf2aBzQY1JxXaBR965IxcgKssK6wUW9DPZokQP7S4uY4X4AEfbqdz+MI6JmX
-         lqjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=pctb8DZxtQNRAIgFwGxL6HThY7Qo5czv9hhFdmCOUCU=;
-        b=ZeGf4kfuYh6FN/jEhyEgY0hccq11Mqv2cvTxFmAthj/hnx3L4K5pW3pgMmjwt7ebN4
-         rjrgUbXBguhWo3ssaNhCeYHSABfTDZKjHCGVjSInJFAHtxEftE+iOLZQD3lOhsZSH1oS
-         Nlv6vZsOeZyx8g62i5vV++7Y1kziA3DNOUiMw7nykJjT6cUmgLpJNWxUrwQoLwJFWT3v
-         uUWi4g2veVo6x4jPQzqr16D+6nSq4M7NZc1CmETTy0wWzEAs3oQZV0xbRdolnav5pJcW
-         QJZ7nRWd5fZY5OmZP1UptpJBufHln8odcvA7ifEtU9fB6Xcuz6ziX3bOF7Q1c/cnO3w+
-         Njbw==
-X-Gm-Message-State: AOAM532Y4wuL0U2dMbuRv1VY8y6emURxiwglTEoaOF9S6ZF7oXr687QX
-        Ahd69+vmDNyta7hIv/dzaKPT9w==
-X-Google-Smtp-Source: ABdhPJy9OH48Odlyss7DdMCAM9w2Jdni4HQHC/m0mph+4FeA1BQ5rY3yEAx0pUxCeFPXAaszNHU37w==
-X-Received: by 2002:a63:658:: with SMTP id 85mr1994791pgg.315.1605642852429;
-        Tue, 17 Nov 2020 11:54:12 -0800 (PST)
-Received: from debian ([122.174.173.2])
-        by smtp.gmail.com with ESMTPSA id d9sm22050057pfn.191.2020.11.17.11.54.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 11:54:12 -0800 (PST)
-Message-ID: <9c06482d12ca652f14e142409cae727bb3425485.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.9 000/255] 5.9.9-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Date:   Wed, 18 Nov 2020 01:24:07 +0530
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Tue, 17 Nov 2020 14:49:22 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 70A1452215C;
+        Tue, 17 Nov 2020 20:49:19 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id gLuD8r2gUYyF; Tue, 17 Nov 2020 20:49:18 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id CC87F522159;
+        Tue, 17 Nov 2020 20:49:18 +0100 (CET)
+Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id 54561522154;
+        Tue, 17 Nov 2020 20:49:18 +0100 (CET)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: Re: Re: [PATCH v2 2/9] media: cedrus: h264: Support profile and level controls
+Date:   Tue, 17 Nov 2020 20:55:14 +0100
+Message-ID: <2278543.vxa8QGFfu4@kista>
+In-Reply-To: <22e909c7fe5722a7edf0828521c5a43f79ab70e3.camel@collabora.com>
+References: <20201113215121.505173-1-ezequiel@collabora.com> <1725677.6jS8d4RcRb@kista> <22e909c7fe5722a7edf0828521c5a43f79ab70e3.camel@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-17 at 14:02 +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.9.9 release.
-> There are 255 patches in this series, all will be posted as a
-> response
-> to this one.  If anyone has any issues with these being applied,
-> please
-> let me know.
+Dne torek, 17. november 2020 ob 20:40:09 CET je Ezequiel Garcia napisal(a):
+> On Tue, 2020-11-17 at 20:24 +0100, Jernej Škrabec wrote:
+> > Hi Ezequiel,
+> > 
+> > sorry for late review.
+> > 
+> > First of all, this patch doesn't break anything. However, see comment 
+below.
+> > 
+> > Dne petek, 13. november 2020 ob 22:51:14 CET je Ezequiel Garcia 
+napisal(a):
+> > > Cedrus supports H.264 profiles from Baseline to High,
+> > > up to Level 5.1, except for the Extended profile
+> > > 
+> > > Expose the V4L2_CID_MPEG_VIDEO_H264_PROFILE and
+> > > V4L2_CID_MPEG_VIDEO_H264_LEVEL so that userspace can
+> > > query the driver for the supported profiles and levels.
+> > > 
+> > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > > ---
+> > >  drivers/staging/media/sunxi/cedrus/cedrus.c | 21 +++++++++++++++++++++
+> > >  1 file changed, 21 insertions(+)
+> > > 
+> > > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/
+staging/
+> > media/sunxi/cedrus/cedrus.c
+> > > index 9a102b7c1bb9..8b0e97752d27 100644
+> > > --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
+> > > +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
+> > > @@ -103,6 +103,27 @@ static const struct cedrus_control 
+cedrus_controls[] = 
+> > {
+> > >  		.codec		= CEDRUS_CODEC_H264,
+> > >  		.required	= false,
+> > >  	},
+> > > +	{
+> > > +		.cfg = {
+> > > +			.id	= 
+> > V4L2_CID_MPEG_VIDEO_H264_PROFILE,
+> > > +			.min	= 
+> > V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE,
+> > > +			.def	= 
+> > V4L2_MPEG_VIDEO_H264_PROFILE_MAIN,
+> > > +			.max	= 
+> > V4L2_MPEG_VIDEO_H264_PROFILE_HIGH,
+> > > +			.menu_skip_mask =
+> > > +				
+> > BIT(V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED),
+> > > +		},
+> > > +		.codec		= CEDRUS_CODEC_H264,
+> > > +		.required	= false,
+> > > +	},
+> > > +	{
+> > > +		.cfg = {
+> > > +			.id = V4L2_CID_MPEG_VIDEO_H264_LEVEL,
+> > > +			.min = V4L2_MPEG_VIDEO_H264_LEVEL_1_0,
+> > > +			.max = V4L2_MPEG_VIDEO_H264_LEVEL_5_1,
+> > 
+> > I went through several datasheets and only newer ones (H6, H616) state 
+max. 
+> > supported level, which is 4.2. Please change it in next revision.
+> > 
+> > After that, you can add
+> > Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > 
 > 
-> Responses should be made by Thu, 19 Nov 2020 12:20:51 +0000.
-> Anything received after that time might be too late.
+> Note that I used level 5.1 based on a commit from you:
+> """
+>     media: cedrus: h264: Fix 4K decoding on H6
+>     
+>     Due to unknown reason, H6 needs larger intraprediction buffer for 4K
+>     videos than other SoCs. This was discovered by playing 4096x2304 video,
+>     which is maximum what H6 VPU is supposed to support.
+> """
 > 
-> The whole patch series can be found in one patch at:
-> 	
-> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.9-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> stable-rc.git linux-5.9.y
-> and the diffstat can be found below.
+> I guessed this meant it supported level 5 or higher.
+> (Now that I think about it, I meant at least H6, does).
 > 
-> thanks,
-> 
-> greg k-h
-> 
-> 
-Compiled and booted 5.9.9-rc1+. No typical dmesg regression or
-regressions.
+> According to https://en.wikipedia.org/wiki/Advanced_Video_Coding#Levels,
+> level 4.2 is up to 2,048×1,080@60.0.
 
-Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
+Strange, then I guess datasheet is wrong (wouldn't be first time). 
+Unfortunatelly there is no documentation for Cedrus capabilities, so 
+everything is either educated guess or tested on HW. Documentation for older 
+than H6 SoCs always mention only 1080p @ 60fps limit, even though several of 
+them are capable of decoding 4K H264 videos (I'm not sure about max. fps 
+though).
+
+> 
+> Frankly, I'm open to put whatever value makes you happy.
+
+To be honest, I'm not sure what is correct value here. It may depend on Cedrus 
+core variant.
+
+Best regards,
+Jernej
+
+>   
+> Thanks,
+> Ezequiel
+> 
+> > Best regards,
+> > Jernej
+> > 
+> > > +		},
+> > > +		.codec		= CEDRUS_CODEC_H264,
+> > > +		.required	= false,
+> > > +	},
+> > >  	{
+> > >  		.cfg = {
+> > >  			.id	= V4L2_CID_MPEG_VIDEO_HEVC_SPS,
+> > > -- 
+> > > 2.27.0
+> > > 
+> > > 
+> > 
+> > 
+> 
+> 
+> 
+
 
