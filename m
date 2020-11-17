@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32702B7036
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE0A2B7038
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgKQUgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:36:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33481 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727480AbgKQUgV (ORCPT
+        id S1728597AbgKQUgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:36:50 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:55294 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgKQUgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:36:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605645380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=G8/wxJoq12QfdqHJtRO4GIpzD5Y227qifeERfdJXT9A=;
-        b=DQhs56ri9ZfSjAEDJ9TexE2Djbe9BXpCIo57UzulI7bQf/op5bslFzxO7R21IN7tcPp/y/
-        Uz4TFc+W+ByBFYAWXGMVn5M24GzuGwU/36yz4xKJeGgFTeImbqny+/+C3+pBudFyCLFr5j
-        3zMKbDSDHY5z/xHT6eOaF1uFektFr5A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-zg-lqcXVP2uA9_nkr76IBA-1; Tue, 17 Nov 2020 15:36:18 -0500
-X-MC-Unique: zg-lqcXVP2uA9_nkr76IBA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28A918030DA;
-        Tue, 17 Nov 2020 20:36:17 +0000 (UTC)
-Received: from sulaco.redhat.com (ovpn-112-190.rdu2.redhat.com [10.10.112.190])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9180E5C1CF;
-        Tue, 17 Nov 2020 20:36:16 +0000 (UTC)
-From:   Tony Asleson <tasleson@redhat.com>
-To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [v2] buffer_io_error: Use dev_err_ratelimited
-Date:   Tue, 17 Nov 2020 14:36:16 -0600
-Message-Id: <20201117203616.307787-1-tasleson@redhat.com>
+        Tue, 17 Nov 2020 15:36:49 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AHKaihr072887;
+        Tue, 17 Nov 2020 14:36:44 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605645404;
+        bh=7g8+febBysogqn0CrrzambHHvshikLPusWzANaG4ARM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=WzvjfoShrXMk2Oaw229UmzxJt/tpCFx90MecnbO11SqjKHmyE0Qbw2Nq7VTS1YkMO
+         vZ8Zp74GzEvy1fjyG94uj7+GFN1h0gc/GhhsWGDBKnkUKiAzxFqkoDRf9BaXJqCH5E
+         2mQNOExw1W4B6ACKTeGe6pENbOmXikxsoLakBHlk=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AHKaiFg048577
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 14:36:44 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 17
+ Nov 2020 14:36:43 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 17 Nov 2020 14:36:43 -0600
+Received: from [10.250.40.192] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AHKahRp018100;
+        Tue, 17 Nov 2020 14:36:43 -0600
+Subject: Re: [PATCH net-next v4 2/4] dt-bindings: net: Add Rx/Tx output
+ configuration for 10base T1L
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
+        <hkallweit1@gmail.com>, <robh@kernel.org>,
+        <ciorneiioana@gmail.com>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201117201555.26723-1-dmurphy@ti.com>
+ <20201117201555.26723-3-dmurphy@ti.com> <20201117203150.GA1800835@lunn.ch>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <553087de-e6e4-23b9-e8c0-d77b430703f3@ti.com>
+Date:   Tue, 17 Nov 2020 14:36:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20201117203150.GA1800835@lunn.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace printk_ratelimited with dev_err_ratelimited which
-adds dev_printk meta data. This is used by journald to
-add disk ID information to the journal entry.
+Andrew
 
-Signed-off-by: Tony Asleson <tasleson@redhat.com>
----
+On 11/17/20 2:31 PM, Andrew Lunn wrote:
+> On Tue, Nov 17, 2020 at 02:15:53PM -0600, Dan Murphy wrote:
+>> Per the 802.3cg spec the 10base T1L can operate at 2 different
+>> differential voltages 1v p2p and 2.4v p2p. The abiility of the PHY to
+> ability
+Ack
+>
+>> drive that output is dependent on the PHY's on board power supply.
+>> This common feature is applicable to all 10base T1L PHYs so this binding
+>> property belongs in a top level ethernet document.
+>>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   Documentation/devicetree/bindings/net/ethernet-phy.yaml | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/ethernet-phy.yaml b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+>> index 6dd72faebd89..bda1ce51836b 100644
+>> --- a/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+>> +++ b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+>> @@ -174,6 +174,12 @@ properties:
+>>         PHY's that have configurable TX internal delays. If this property is
+>>         present then the PHY applies the TX delay.
+>>   
+>> +  max-tx-rx-p2p-microvolt:
+>> +    description: |
+>> +      Configures the Tx/Rx p2p differential output voltage for 10base-T1L PHYs.
+> Does it configure, or does it limit? I _think_ this is a negotiation
+> parameter, so the PHY might decide to do 1100mV if the link peer is
+> near by even when max-tx-rx-p2p-microvolt has the higher value.
 
-V2: 
+For this device we can configure or force it to only work at 1.1v p2p 
+otherwise 2.4 is the default.
 
-- Move change log to after marker line (Andy Shevchenko)
-- Remove printk cast (Andy Shevchenko)
-    
-V1: 
+But each LP's have to be configured for the same voltage. unless auto 
+negotiation is on then it negotiates the voltage.
 
-This re-worked change is from a different patch series
-and utilizes the following suggestions.
-    
-- Reduce indentation level (Andy Shevchenko)
-- Remove unneeded () for conditional operator (Sergei Shtylyov)
+Dan
 
- fs/buffer.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 50bbc99e3d96..32f237e350bf 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -125,10 +125,17 @@ EXPORT_SYMBOL(__wait_on_buffer);
- 
- static void buffer_io_error(struct buffer_head *bh, char *msg)
- {
--	if (!test_bit(BH_Quiet, &bh->b_state))
--		printk_ratelimited(KERN_ERR
--			"Buffer I/O error on dev %pg, logical block %llu%s\n",
--			bh->b_bdev, (unsigned long long)bh->b_blocknr, msg);
-+	struct device *gendev;
-+
-+	if (test_bit(BH_Quiet, &bh->b_state))
-+		return;
-+
-+	gendev = bh->b_bdev->bd_disk ?
-+		disk_to_dev(bh->b_bdev->bd_disk) : NULL;
-+
-+	dev_err_ratelimited(gendev,
-+		"Buffer I/O error, logical block %llu%s\n",
-+		bh->b_blocknr, msg);
- }
- 
- /*
-
-base-commit: bbf5c979011a099af5dc76498918ed7df445635b
--- 
-2.26.2
-
+>
+>       Andrew
