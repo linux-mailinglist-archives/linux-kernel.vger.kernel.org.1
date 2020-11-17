@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6624D2B5B5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0148F2B5B63
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgKQIyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:54:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
+        id S1726514AbgKQIzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:55:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQIyG (ORCPT
+        with ESMTP id S1726340AbgKQIzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:54:06 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6344BC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:54:04 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id d12so22286913wrr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:54:04 -0800 (PST)
+        Tue, 17 Nov 2020 03:55:10 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE362C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:55:08 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id d12so22290332wrr.13
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:55:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:autocrypt:organization:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=SJNDblWPfJcMPax/ShMWRSk4LiBhCAShu7n9VV+CwDc=;
-        b=0vmNgY5u5213uHwl7B14l+StQ5XzMnrHfXxRrSq1r/p8/7tlxAzVinkznyomQDeJ45
-         C9nzOq4bWFT94lwK0SQWqW34+Lg8Rp+YSgaf9zIDnRkev9zjyMie8WT5Wl2h8caMv4k7
-         7IA/t04+utCPHQPpHjSW8Qz5BVb9HQONYQBf+Zxro2cy9L2wTUp2o6XC3LTpvwvHHQq6
-         tj6tfWgoq88g4QRYh+xfJu2ZCp2y7/7qcILNFjzeaWgMAA7MyW+NaL8pa0vx/uhhI9CP
-         olMWe7HsJBgykSfczk3czTVPXh+v0F8MW7SmE+UJ0QBAjJoSsSP6zwzwNdrEEScGL3vd
-         10wg==
+        bh=RtxIAxEZISmwL9Tvj9Gd08JgoH0+MMiWxX80iMCHZDc=;
+        b=bErZpINFuyZnGZ8F8evjNC8fUls4APjWAmOWfFL/IPZVCCeNdOZlv+evABOB4FKGVR
+         oFEyQ4GEioUoHmwnNPWIeeuxNuJG/Dgneaf8P1E/0nUX+IhaH8vTxFeeLgU3kDNC5iIP
+         eWyUp0k2Aolkb9ZIOoYNu4M5zAtlas1A3ZYX5xkqL/GPn9IA0mWkVvgsjq8ABmu9p0wZ
+         F5n3j3a/NzpE0gQwnvorRzqGvrO2aqO3vCz/CqKSgssK0f53t4/1VcOIkgckNo4TqQt4
+         EWVIqQzdXqweKAaS+NxtWlSisozFu06duy5hO0zNEFKLOoquoHCUsm/RFvfw9WXf8frT
+         eoEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=SJNDblWPfJcMPax/ShMWRSk4LiBhCAShu7n9VV+CwDc=;
-        b=L3fVxWwsYJ9bP13vIvtSn8HsEGVaccqXIB9rYRzpXorsFtHjxVgE+8H3cWQL59z4gR
-         Nsg/MwLOeXHQEgcNDjcbqguDI51W50+1i59J5JCAGnuEw6AGgLaXIzQ/RVqf2XSL+Q58
-         U1SzuDtzvaDuBCYBSg5OZh7xcKpsDZ6cZR2l/nYpFRjM6tmRzV5vSiPglp10Hk/q0sR4
-         DvQkLZeJTeRsx0+zZ3X3Wd9xDqu/MG0hOFYTOfkgd/YHIBhcLfTOLvvAFg2LQUk7HAYc
-         85UqJ8eQFAuOdNceZd0XaxWkTWlXbyuewA09Xiar7Iq+Ypj7xTVKKqKkvzmRg4RV1hss
-         tL/w==
-X-Gm-Message-State: AOAM5302ipKZCjZMqT4jHBVs1Tv6HD3H3luCBP2rwIkkcTuawV36FaG7
-        jdZj5M1DAfZnd2RYttWuABAc00gFlK7ej6WD
-X-Google-Smtp-Source: ABdhPJyLqMtL4fV2UrcN1zMaWmEWQktfKi57GbleZ4Ka+DZs/x+qF2LiShGJsNaZGLEEx2wAcv6+2w==
-X-Received: by 2002:adf:e551:: with SMTP id z17mr24210995wrm.374.1605603242019;
-        Tue, 17 Nov 2020 00:54:02 -0800 (PST)
+        bh=RtxIAxEZISmwL9Tvj9Gd08JgoH0+MMiWxX80iMCHZDc=;
+        b=ix3dn/EKs+VL6Ok6mCDbohWAsmMjKSmpbFNNCp7aIdBM/tmwXqHOAraRDrUlQYz2En
+         RLrjLyL5kFJgF9sAV5TZOlqG4BG5d6Mer90qYFJMP3IqOCU/nUxfTUIImZedLRAy5R2I
+         pWqyI7YIAKOOg8yBNEa2S+QPC10HqfCdgA3aGJgxvZ0Nl+cK/LG9aKVgAaC3Korp+Mv1
+         HTSCFF7UeSV2HQOyZr2JVo/SaAEmKLrQZmTL/9rBuAMUGe98TmhDKkqC7+EbmpTQm7de
+         VoItfhF0QL6VLw+ggNvY9xy1RU6hjrdTzTrIcDOa6xUw+gCPqCq5mgD0g7gMyvXB10oC
+         rhjA==
+X-Gm-Message-State: AOAM5333b88lwRb75meByNgsg5nhSYVjPFOYpwVpi3E5v4GA762KIic5
+        Ry1k/+tO4kT0xc+3yHdcGoWvLEKtR3jxKDS2
+X-Google-Smtp-Source: ABdhPJytrGcqZ3nwt9VI+MkVjJZck/vlmrILQNa6R7F0ckrifFniUjchV6BcDBI7c/hGJrwxcLqwSA==
+X-Received: by 2002:adf:cd8d:: with SMTP id q13mr24353280wrj.61.1605603306792;
+        Tue, 17 Nov 2020 00:55:06 -0800 (PST)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:1561:9f4b:5829:8e26? ([2a01:e35:2ec0:82b0:1561:9f4b:5829:8e26])
-        by smtp.gmail.com with ESMTPSA id g23sm2561986wmh.21.2020.11.17.00.54.00
+        by smtp.gmail.com with ESMTPSA id a17sm28722073wra.61.2020.11.17.00.55.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 00:54:01 -0800 (PST)
-Subject: Re: [PATCH 2/4] drm/meson: Unbind all connectors on module removal
+        Tue, 17 Nov 2020 00:55:06 -0800 (PST)
+Subject: Re: [PATCH 3/4] drm/meson: dw-hdmi: Register a callback to disable
+ the regulator
 To:     Marc Zyngier <maz@kernel.org>, Kevin Hilman <khilman@baylibre.com>
 Cc:     Jerome Brunet <jbrunet@baylibre.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
@@ -58,7 +59,7 @@ Cc:     Jerome Brunet <jbrunet@baylibre.com>,
         linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20201116200744.495826-1-maz@kernel.org>
- <20201116200744.495826-3-maz@kernel.org>
+ <20201116200744.495826-4-maz@kernel.org>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -110,12 +111,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
  ZaTUOEkgIor5losDrePdPgE=
 Organization: Baylibre
-Message-ID: <56a8ea19-fb89-8430-032d-774c89a66ae7@baylibre.com>
-Date:   Tue, 17 Nov 2020 09:53:59 +0100
+Message-ID: <35fc622c-bebb-6111-9d08-e6b5433e75c5@baylibre.com>
+Date:   Tue, 17 Nov 2020 09:55:04 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201116200744.495826-3-maz@kernel.org>
+In-Reply-To: <20201116200744.495826-4-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -124,97 +125,70 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 16/11/2020 21:07, Marc Zyngier wrote:
-> Removing the meson DRM module results in the following splats:
+> Removing the meson-dw-hdmi module results in the following splat:
 > 
-> [   42.689228] WARNING: CPU: 0 PID: 572 at drivers/gpu/drm/drm_irq.c:192 drm_irq_uninstall+0x130/0x160 [drm]
+> i[   43.340509] WARNING: CPU: 0 PID: 572 at drivers/regulator/core.c:2125 _regulator_put.part.0+0x16c/0x174
 > [...]
-> [   42.812820] Hardware name:  , BIOS 2021.01-rc2-00012-gde865f7ee1 11/16/2020
-> [   42.819723] pstate: 80400089 (Nzcv daIf +PAN -UAO -TCO BTYPE=--)
-> [   42.825737] pc : drm_irq_uninstall+0x130/0x160 [drm]
-> [   42.830647] lr : drm_irq_uninstall+0xc4/0x160 [drm]
+> [   43.454870] CPU: 0 PID: 572 Comm: modprobe Tainted: G        W   E     5.10.0-rc4-00049-gd274813a4de3-dirty #2147
+> [   43.465042] Hardware name:  , BIOS 2021.01-rc2-00012-gde865f7ee1 11/16/2020
+> [   43.471945] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
+> [   43.477896] pc : _regulator_put.part.0+0x16c/0x174
+> [   43.482638] lr : regulator_put+0x44/0x60
 > [...]
-> [   42.917614] Call trace:
-> [   42.920086]  drm_irq_uninstall+0x130/0x160 [drm]
-> [   42.924612]  meson_drv_unbind+0x68/0xa4 [meson_drm]
-> [   42.929436]  component_del+0xc0/0x180
-> [   42.933058]  meson_dw_hdmi_remove+0x28/0x40 [meson_dw_hdmi]
-> [   42.938576]  platform_drv_remove+0x38/0x60
-> [   42.942628]  __device_release_driver+0x190/0x23c
-> [   42.947198]  driver_detach+0xcc/0x160
-> [   42.950822]  bus_remove_driver+0x68/0xe0
-> [   42.954702]  driver_unregister+0x3c/0x6c
-> [   42.958583]  platform_driver_unregister+0x20/0x2c
-> [   42.963243]  meson_dw_hdmi_platform_driver_exit+0x18/0x4a8 [meson_dw_hdmi]
-> [   42.970057]  __arm64_sys_delete_module+0x1bc/0x294
-> [   42.974801]  el0_svc_common.constprop.0+0x80/0x240
-> [   42.979542]  do_el0_svc+0x30/0xa0
-> [   42.982821]  el0_svc+0x18/0x50
-> [   42.985839]  el0_sync_handler+0x198/0x404
-> [   42.989806]  el0_sync+0x158/0x180
+> [   43.568715] Call trace:
+> [   43.571132]  _regulator_put.part.0+0x16c/0x174
+> [   43.575529]  regulator_put+0x44/0x60
+> [   43.579067]  devm_regulator_release+0x20/0x2c
+> [   43.583380]  release_nodes+0x1c8/0x2b4
+> [   43.587087]  devres_release_all+0x44/0x6c
+> [   43.591056]  __device_release_driver+0x1a0/0x23c
+> [   43.595626]  driver_detach+0xcc/0x160
+> [   43.599249]  bus_remove_driver+0x68/0xe0
+> [   43.603130]  driver_unregister+0x3c/0x6c
+> [   43.607011]  platform_driver_unregister+0x20/0x2c
+> [   43.611678]  meson_dw_hdmi_platform_driver_exit+0x18/0x4a8 [meson_dw_hdmi]
+> [   43.618485]  __arm64_sys_delete_module+0x1bc/0x294
 > 
-> immediatelly followed by
+> as the HDMI regulator is still enabled on release.
 > 
-> [   43.002296] WARNING: CPU: 0 PID: 572 at drivers/gpu/drm/drm_mode_config.c:504 drm_mode_config_cleanup+0x2a8/0x304 [drm]
-> [...]
-> [   43.128150] Hardware name:  , BIOS 2021.01-rc2-00012-gde865f7ee1 11/16/2020
-> [   43.135052] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
-> [   43.141062] pc : drm_mode_config_cleanup+0x2a8/0x304 [drm]
-> [   43.146492] lr : drm_mode_config_cleanup+0xac/0x304 [drm]
-> [...]
-> [   43.233979] Call trace:
-> [   43.236451]  drm_mode_config_cleanup+0x2a8/0x304 [drm]
-> [   43.241538]  drm_mode_config_init_release+0x1c/0x2c [drm]
-> [   43.246886]  drm_managed_release+0xa8/0x120 [drm]
-> [   43.251543]  drm_dev_put+0x94/0xc0 [drm]
-> [   43.255380]  meson_drv_unbind+0x78/0xa4 [meson_drm]
-> [   43.260204]  component_del+0xc0/0x180
-> [   43.263829]  meson_dw_hdmi_remove+0x28/0x40 [meson_dw_hdmi]
-> [   43.269344]  platform_drv_remove+0x38/0x60
-> [   43.273398]  __device_release_driver+0x190/0x23c
-> [   43.277967]  driver_detach+0xcc/0x160
-> [   43.281590]  bus_remove_driver+0x68/0xe0
-> [   43.285471]  driver_unregister+0x3c/0x6c
-> [   43.289352]  platform_driver_unregister+0x20/0x2c
-> [   43.294011]  meson_dw_hdmi_platform_driver_exit+0x18/0x4a8 [meson_dw_hdmi]
-> [   43.300826]  __arm64_sys_delete_module+0x1bc/0x294
-> [   43.305570]  el0_svc_common.constprop.0+0x80/0x240
-> [   43.310312]  do_el0_svc+0x30/0xa0
-> [   43.313590]  el0_svc+0x18/0x50
-> [   43.316608]  el0_sync_handler+0x198/0x404
-> [   43.320574]  el0_sync+0x158/0x180
-> [   43.323852] ---[ end trace d796a3072dab01da ]---
-> [   43.328561] [drm:drm_mode_config_cleanup [drm]] *ERROR* connector HDMI-A-1 leaked!
-> 
-> both triggered by the fact that the HDMI subsystem is still active,
-> and the DRM removal doesn't result in the connectors being torn down.
-> 
-> Call drm_atomic_helper_shutdown() and component_unbind_all() to safely
-> tear the module down.
+> In order to address this, register a callback that will deal with
+> the disabling when the driver is unbound, solving the problem.
 > 
 > Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-Fixes: 2d8f92897ad8 ("drm/meson: Uninstall IRQ handler")
+Fixes: 161a803fe32d ("drm/meson: dw_hdmi: Add support for an optional external 5V regulator")
 
 > ---
->  drivers/gpu/drm/meson/meson_drv.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/gpu/drm/meson/meson_dw_hdmi.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
-> index 324fa489f1c4..3d1de9cbb1c8 100644
-> --- a/drivers/gpu/drm/meson/meson_drv.c
-> +++ b/drivers/gpu/drm/meson/meson_drv.c
-> @@ -390,8 +390,10 @@ static void meson_drv_unbind(struct device *dev)
+> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> index 29a8ff41595d..68826cf9993f 100644
+> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> @@ -941,6 +941,11 @@ static void meson_dw_hdmi_init(struct meson_dw_hdmi *meson_dw_hdmi)
+>  
+>  }
+>  
+> +static void meson_disable_regulator(void *data)
+> +{
+> +	regulator_disable(data);
+> +}
+> +
+>  static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>  				void *data)
+>  {
+> @@ -989,6 +994,10 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>  		ret = regulator_enable(meson_dw_hdmi->hdmi_supply);
+>  		if (ret)
+>  			return ret;
+> +		ret = devm_add_action_or_reset(dev, meson_disable_regulator,
+> +					       meson_dw_hdmi->hdmi_supply);
+> +		if (ret)
+> +			return ret;
 >  	}
 >  
->  	drm_dev_unregister(drm);
-> -	drm_irq_uninstall(drm);
->  	drm_kms_helper_poll_fini(drm);
-> +	drm_atomic_helper_shutdown(drm);
-> +	component_unbind_all(dev, drm);
-> +	drm_irq_uninstall(drm);
->  	drm_dev_put(drm);
->  
->  	if (priv->afbcd.ops) {
+>  	meson_dw_hdmi->hdmitx_apb = devm_reset_control_get_exclusive(dev,
 > 
 
 Acked-by: Neil Armstrong <narmstrong@baylibre.com>
