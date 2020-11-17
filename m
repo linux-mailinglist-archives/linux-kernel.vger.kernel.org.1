@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A0E2B606E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF2D2B6152
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgKQNJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:09:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37654 "EHLO mail.kernel.org"
+        id S1730108AbgKQNSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:18:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729361AbgKQNJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:09:02 -0500
+        id S1729863AbgKQNSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:18:04 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50F0A2468F;
-        Tue, 17 Nov 2020 13:08:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D50DD21734;
+        Tue, 17 Nov 2020 13:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618539;
-        bh=PtWS5JQdcHf7A2O5Y6BAIDZZNeS1HsuG+qSUFLdveZU=;
+        s=default; t=1605619083;
+        bh=73v0EOQjcde8hJakrc5xSwi/UdtVZt5BJHRBGRCCFBw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gv7VmUx9nXLOKSqb8rfcfCtgEQ4P4zH+qxou7so2YY4XpOjnTRzzsj1Hk9O68eiCR
-         q7RkHeq7jjxKo8FDHfWF/MLRKmeIl5ZsgWt/eaUMUcxWbN8jBMCnmGsR7RC6jiZH0Q
-         +65w3Inp6O3GVewp3uefAmlalHUEhQQKK8qjyy44=
+        b=GOXs3rOxAjr5juxR59OsQFDkooSFHIg29LpVMzKbMGuf6U8Z4qdBB6eWMh2RNXX5F
+         D2ZqvuYn3Pw++yrT5DGJmyKpLJOh1A/pP9Yokm5Yrcqvu7ZlBMYBixgOgtjarD51CJ
+         22kodK819ULZCe009prTMw4ivIFUrUfXw8a3XcMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 27/64] iommu/amd: Increase interrupt remapping table limit to 512 entries
+        stable@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 023/101] xfs: flush new eof page on truncate to avoid post-eof corruption
 Date:   Tue, 17 Nov 2020 14:04:50 +0100
-Message-Id: <20201117122107.477510462@linuxfoundation.org>
+Message-Id: <20201117122114.217521144@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+From: Brian Foster <bfoster@redhat.com>
 
-[ Upstream commit 73db2fc595f358460ce32bcaa3be1f0cce4a2db1 ]
+[ Upstream commit 869ae85dae64b5540e4362d7fe4cd520e10ec05c ]
 
-Certain device drivers allocate IO queues on a per-cpu basis.
-On AMD EPYC platform, which can support up-to 256 cpu threads,
-this can exceed the current MAX_IRQ_PER_TABLE limit of 256,
-and result in the error message:
+It is possible to expose non-zeroed post-EOF data in XFS if the new
+EOF page is dirty, backed by an unwritten block and the truncate
+happens to race with writeback. iomap_truncate_page() will not zero
+the post-EOF portion of the page if the underlying block is
+unwritten. The subsequent call to truncate_setsize() will, but
+doesn't dirty the page. Therefore, if writeback happens to complete
+after iomap_truncate_page() (so it still sees the unwritten block)
+but before truncate_setsize(), the cached page becomes inconsistent
+with the on-disk block. A mapped read after the associated page is
+reclaimed or invalidated exposes non-zero post-EOF data.
 
-    AMD-Vi: Failed to allocate IRTE
+For example, consider the following sequence when run on a kernel
+modified to explicitly flush the new EOF page within the race
+window:
 
-This has been observed with certain NVME devices.
+$ xfs_io -fc "falloc 0 4k" -c fsync /mnt/file
+$ xfs_io -c "pwrite 0 4k" -c "truncate 1k" /mnt/file
+  ...
+$ xfs_io -c "mmap 0 4k" -c "mread -v 1k 8" /mnt/file
+00000400:  00 00 00 00 00 00 00 00  ........
+$ umount /mnt/; mount <dev> /mnt/
+$ xfs_io -c "mmap 0 4k" -c "mread -v 1k 8" /mnt/file
+00000400:  cd cd cd cd cd cd cd cd  ........
 
-AMD IOMMU hardware can actually support upto 512 interrupt
-remapping table entries. Therefore, update the driver to
-match the hardware limit.
+Update xfs_setattr_size() to explicitly flush the new EOF page prior
+to the page truncate to ensure iomap has the latest state of the
+underlying block.
 
-Please note that this also increases the size of interrupt remapping
-table to 8KB per device when using the 128-bit IRTE format.
-
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Link: https://lore.kernel.org/r/20201015025002.87997-1-suravee.suthikulpanit@amd.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Fixes: 68a9f5e7007c ("xfs: implement iomap based buffered write path")
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd_iommu_types.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/xfs/xfs_iops.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/iommu/amd_iommu_types.h b/drivers/iommu/amd_iommu_types.h
-index 695d4e235438c..90832bf00538e 100644
---- a/drivers/iommu/amd_iommu_types.h
-+++ b/drivers/iommu/amd_iommu_types.h
-@@ -351,7 +351,11 @@ extern bool amd_iommu_np_cache;
- /* Only true if all IOMMUs support device IOTLBs */
- extern bool amd_iommu_iotlb_sup;
- 
--#define MAX_IRQS_PER_TABLE	256
-+/*
-+ * AMD IOMMU hardware only support 512 IRTEs despite
-+ * the architectural limitation of 2048 entries.
-+ */
-+#define MAX_IRQS_PER_TABLE	512
- #define IRQ_TABLE_ALIGNMENT	128
- 
- struct irq_remap_table {
+diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+index e427ad097e2ee..948ac1290121b 100644
+--- a/fs/xfs/xfs_iops.c
++++ b/fs/xfs/xfs_iops.c
+@@ -895,6 +895,16 @@ xfs_setattr_size(
+ 		error = iomap_zero_range(inode, oldsize, newsize - oldsize,
+ 				&did_zeroing, &xfs_iomap_ops);
+ 	} else {
++		/*
++		 * iomap won't detect a dirty page over an unwritten block (or a
++		 * cow block over a hole) and subsequently skips zeroing the
++		 * newly post-EOF portion of the page. Flush the new EOF to
++		 * convert the block before the pagecache truncate.
++		 */
++		error = filemap_write_and_wait_range(inode->i_mapping, newsize,
++						     newsize);
++		if (error)
++			return error;
+ 		error = iomap_truncate_page(inode, newsize, &did_zeroing,
+ 				&xfs_iomap_ops);
+ 	}
 -- 
 2.27.0
 
