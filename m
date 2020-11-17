@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70BD2B61A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04382B61AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730830AbgKQNVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:21:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54750 "EHLO mail.kernel.org"
+        id S1730840AbgKQNVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:21:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730824AbgKQNVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:21:05 -0500
+        id S1730835AbgKQNVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:21:08 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B46152464E;
-        Tue, 17 Nov 2020 13:21:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91E8A2463D;
+        Tue, 17 Nov 2020 13:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619265;
-        bh=wjNwfYlUfR5/nAez3SWIMYvLe24Zu7xaKkTQKgEDCig=;
+        s=default; t=1605619268;
+        bh=EToaU/VKICbx+ZOTvHcjhyy5Bx3pOpF9ha4m/ozKKww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tqKwzUiR1n/f80S41v0yUDxproVF814NZTuwpbWwAx1QKDysB2VzfFoIHX18XVNxp
-         GKgDPvXrF0HJcADNmnbeIcrpg5fnpy3bESnqrE3jO7knfOQnhAKdgmJzQBE2wupyhD
-         fFHxppMZFENNWVLeB1rzIJJAuo8O9yP3ey+uv/oU=
+        b=hotGb/cpHPHBYA3t2CpeKHQKBe57qBmBt9Vg2uiDO7Rdgob+coQaKFiXeOeCwajkS
+         uQYDhUFIwPsbSrwMQNXOcQkMh0f1vshlngrJrug05iTJNulTfCJbpf2u6ZMfQn8IEX
+         BslWinzZeDEnxo2JlqQ2mqnMi54bLlAnHgvu7GC0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@vger.kerne.org,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 4.19 084/101] pinctrl: amd: fix incorrect way to disable debounce filter
-Date:   Tue, 17 Nov 2020 14:05:51 +0100
-Message-Id: <20201117122117.218348279@linuxfoundation.org>
+        stable@vger.kernel.org, nl6720 <nl6720@gmail.com>,
+        Chao Yu <yuchao0@huawei.com>, Gao Xiang <hsiangkao@redhat.com>
+Subject: [PATCH 4.19 085/101] erofs: derive atime instead of leaving it empty
+Date:   Tue, 17 Nov 2020 14:05:52 +0100
+Message-Id: <20201117122117.267551596@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
 References: <20201117122113.128215851@linuxfoundation.org>
@@ -44,44 +42,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coiby Xu <coiby.xu@gmail.com>
+From: Gao Xiang <hsiangkao@redhat.com>
 
-commit 06abe8291bc31839950f7d0362d9979edc88a666 upstream.
+commit d3938ee23e97bfcac2e0eb6b356875da73d700df upstream.
 
-The correct way to disable debounce filter is to clear bit 5 and 6
-of the register.
+EROFS has _only one_ ondisk timestamp (ctime is currently
+documented and recorded, we might also record mtime instead
+with a new compat feature if needed) for each extended inode
+since EROFS isn't mainly for archival purposes so no need to
+keep all timestamps on disk especially for Android scenarios
+due to security concerns. Also, romfs/cramfs don't have their
+own on-disk timestamp, and squashfs only records mtime instead.
 
-Cc: stable@vger.kerne.org
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/linux-gpio/df2c008b-e7b5-4fdd-42ea-4d1c62b52139@redhat.com/
-Link: https://lore.kernel.org/r/20201105231912.69527-2-coiby.xu@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Let's also derive access time from ondisk timestamp rather than
+leaving it empty, and if mtime/atime for each file are really
+needed for specific scenarios as well, we can also use xattrs
+to record them then.
+
+Link: https://lore.kernel.org/r/20201031195102.21221-1-hsiangkao@aol.com
+[ Gao Xiang: It'd be better to backport for user-friendly concern. ]
+Fixes: 431339ba9042 ("staging: erofs: add inode operations")
+Cc: stable <stable@vger.kernel.org> # 4.19+
+Reported-by: nl6720 <nl6720@gmail.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+[ Gao Xiang: Manually backport to 4.19.y due to trivial conflicts. ]
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/pinctrl/pinctrl-amd.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/erofs/inode.c |   21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -167,14 +167,14 @@ static int amd_gpio_set_debounce(struct
- 			pin_reg |= BIT(DB_TMR_OUT_UNIT_OFF);
- 			pin_reg |= BIT(DB_TMR_LARGE_OFF);
- 		} else {
--			pin_reg &= ~DB_CNTRl_MASK;
-+			pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
- 			ret = -EINVAL;
- 		}
+--- a/drivers/staging/erofs/inode.c
++++ b/drivers/staging/erofs/inode.c
+@@ -53,11 +53,9 @@ static int read_inode(struct inode *inod
+ 		i_gid_write(inode, le32_to_cpu(v2->i_gid));
+ 		set_nlink(inode, le32_to_cpu(v2->i_nlink));
+ 
+-		/* ns timestamp */
+-		inode->i_mtime.tv_sec = inode->i_ctime.tv_sec =
+-			le64_to_cpu(v2->i_ctime);
+-		inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec =
+-			le32_to_cpu(v2->i_ctime_nsec);
++		/* extended inode has its own timestamp */
++		inode->i_ctime.tv_sec = le64_to_cpu(v2->i_ctime);
++		inode->i_ctime.tv_nsec = le32_to_cpu(v2->i_ctime_nsec);
+ 
+ 		inode->i_size = le64_to_cpu(v2->i_size);
+ 	} else if (__inode_version(advise) == EROFS_INODE_LAYOUT_V1) {
+@@ -83,11 +81,9 @@ static int read_inode(struct inode *inod
+ 		i_gid_write(inode, le16_to_cpu(v1->i_gid));
+ 		set_nlink(inode, le16_to_cpu(v1->i_nlink));
+ 
+-		/* use build time to derive all file time */
+-		inode->i_mtime.tv_sec = inode->i_ctime.tv_sec =
+-			sbi->build_time;
+-		inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec =
+-			sbi->build_time_nsec;
++		/* use build time for compact inodes */
++		inode->i_ctime.tv_sec = sbi->build_time;
++		inode->i_ctime.tv_nsec = sbi->build_time_nsec;
+ 
+ 		inode->i_size = le32_to_cpu(v1->i_size);
  	} else {
- 		pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
- 		pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
- 		pin_reg &= ~DB_TMR_OUT_MASK;
--		pin_reg &= ~DB_CNTRl_MASK;
-+		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
+@@ -97,6 +93,11 @@ static int read_inode(struct inode *inod
+ 		return -EIO;
  	}
- 	writel(pin_reg, gpio_dev->base + offset * 4);
- 	raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
+ 
++	inode->i_mtime.tv_sec = inode->i_ctime.tv_sec;
++	inode->i_atime.tv_sec = inode->i_ctime.tv_sec;
++	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
++	inode->i_atime.tv_nsec = inode->i_ctime.tv_nsec;
++
+ 	/* measure inode.i_blocks as the generic filesystem */
+ 	inode->i_blocks = ((inode->i_size - 1) >> 9) + 1;
+ 	return 0;
 
 
