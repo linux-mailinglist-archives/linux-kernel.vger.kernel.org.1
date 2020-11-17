@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75432B606A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E103B2B60F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgKQNJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:09:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37442 "EHLO mail.kernel.org"
+        id S1729004AbgKQNOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:14:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729315AbgKQNIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:08:46 -0500
+        id S1730004AbgKQNOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:14:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA1252225B;
-        Tue, 17 Nov 2020 13:08:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70344246BB;
+        Tue, 17 Nov 2020 13:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618525;
-        bh=WFDBWOgLtPYNsgKmA17pqWgI3dxOGvpaXe70blMXWHQ=;
+        s=default; t=1605618844;
+        bh=xHtHxHLneM+lzVtuTAj5osNF9mLgijJbvh8/npJ0IIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MP4XwT6c44srEX7SavXe4qtCx4PkkWMSgPD7Q3ZbtpblgAZo7FFiSALT29l75lUFL
-         6L6dfXR+x+iMqz1W5zAgZ0gz9EI4uL/lTTc3yryawNg5o/YdJhkAk7QEOk9LISpXej
-         ZeDyLiFYmfvR2qwXy852bQWDBZ6lkZMv4aSAceac=
+        b=Q4aD5XAqI2yq0zqYPU818RkB6Xz6xbdMtvgyD9CHa2Cze1ER3lw/tg3qhbMZeWXqz
+         iygqLzhVI5AnYaZuG4skP+uZu8uesAeuZJw7dXv8JkR6mxh3NEFNqeLwYGTgTgUBjL
+         L03e/T6FVJLn9Fkg8SSttHOhnxCJgOL2x5Duq1o8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 4.4 32/64] ext4: correctly report "not supported" for {usr,grp}jquota when !CONFIG_QUOTA
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 26/85] gfs2: check for live vs. read-only file system in gfs2_fitrim
 Date:   Tue, 17 Nov 2020 14:04:55 +0100
-Message-Id: <20201117122107.737917783@linuxfoundation.org>
+Message-Id: <20201117122112.317551089@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,46 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit 174fe5ba2d1ea0d6c5ab2a7d4aa058d6d497ae4d upstream.
+[ Upstream commit c5c68724696e7d2f8db58a5fce3673208d35c485 ]
 
-The macro MOPT_Q is used to indicates the mount option is related to
-quota stuff and is defined to be MOPT_NOSUPPORT when CONFIG_QUOTA is
-disabled.  Normally the quota options are handled explicitly, so it
-didn't matter that the MOPT_STRING flag was missing, even though the
-usrjquota and grpjquota mount options take a string argument.  It's
-important that's present in the !CONFIG_QUOTA case, since without
-MOPT_STRING, the mount option matcher will match usrjquota= followed
-by an integer, and will otherwise skip the table entry, and so "mount
-option not supported" error message is never reported.
+Before this patch, gfs2_fitrim was not properly checking for a "live" file
+system. If the file system had something to trim and the file system
+was read-only (or spectator) it would start the trim, but when it starts
+the transaction, gfs2_trans_begin returns -EROFS (read-only file system)
+and it errors out. However, if the file system was already trimmed so
+there's no work to do, it never called gfs2_trans_begin. That code is
+bypassed so it never returns the error. Instead, it returns a good
+return code with 0 work. All this makes for inconsistent behavior:
+The same fstrim command can return -EROFS in one case and 0 in another.
+This tripped up xfstests generic/537 which reports the error as:
 
-[ Fixed up the commit description to better explain why the fix
-  works. --TYT ]
+    +fstrim with unrecovered metadata just ate your filesystem
 
-Fixes: 26092bf52478 ("ext4: use a table-driven handler for mount options")
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-Link: https://lore.kernel.org/r/1603986396-28917-1-git-send-email-kaixuxia@tencent.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch adds a check for a "live" (iow, active journal, iow, RW)
+file system, and if not, returns the error properly.
 
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/super.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/gfs2/rgrp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1452,8 +1452,8 @@ static const struct mount_opts {
- 							MOPT_SET | MOPT_Q},
- 	{Opt_noquota, (EXT4_MOUNT_QUOTA | EXT4_MOUNT_USRQUOTA |
- 		       EXT4_MOUNT_GRPQUOTA), MOPT_CLEAR | MOPT_Q},
--	{Opt_usrjquota, 0, MOPT_Q},
--	{Opt_grpjquota, 0, MOPT_Q},
-+	{Opt_usrjquota, 0, MOPT_Q | MOPT_STRING},
-+	{Opt_grpjquota, 0, MOPT_Q | MOPT_STRING},
- 	{Opt_offusrjquota, 0, MOPT_Q},
- 	{Opt_offgrpjquota, 0, MOPT_Q},
- 	{Opt_jqfmt_vfsold, QFMT_VFS_OLD, MOPT_QFMT},
+diff --git a/fs/gfs2/rgrp.c b/fs/gfs2/rgrp.c
+index 70a344d864447..c4eb6a5fcea99 100644
+--- a/fs/gfs2/rgrp.c
++++ b/fs/gfs2/rgrp.c
+@@ -1361,6 +1361,9 @@ int gfs2_fitrim(struct file *filp, void __user *argp)
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
++	if (!test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags))
++		return -EROFS;
++
+ 	if (!blk_queue_discard(q))
+ 		return -EOPNOTSUPP;
+ 
+-- 
+2.27.0
+
 
 
