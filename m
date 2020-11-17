@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E482B6429
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C10D82B6581
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727811AbgKQNhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:37:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46548 "EHLO mail.kernel.org"
+        id S1730709AbgKQNXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:23:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732501AbgKQNfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:35:41 -0500
+        id S1730909AbgKQNXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:23:32 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD82F207BC;
-        Tue, 17 Nov 2020 13:35:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6D532463D;
+        Tue, 17 Nov 2020 13:23:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620141;
-        bh=K50d19qP/F886/2Ft2H5yb441enUZkoFfD7ULSsqUn0=;
+        s=default; t=1605619412;
+        bh=47IPrL0asU8oi80tS8IPYiYgSn7isRtz8jqSsZg4gV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HRsweZaoIJpr8HElqDdTWwWFrZA81yW+YEeOTSvr4TV8oH9aY9UEctTWumUWr/KPZ
-         2xirT2DTn4z8+Id50038ZrPgi8PSzcUvg2AhemhyGhxhLfEMnsf0ubMBe9KvEgvOv+
-         7+ZRHOk2b0PAFIUyEaddtiAQ+1IAvS8lLX9iT4nE=
+        b=gwvsSBziH5BHNk4izrtRLQEY3Lm8ntLt74WzJL7A6Jq3+aedVDLF1OAdPw2nOEgNH
+         fK9979vcweTPa8daweNndewSdCYm/gQ9n90lvBXD+KGrxES3wPBJgXSqlfDgzRhwTx
+         QFBlEDDLBuzWLva73dpgRdPn5M9Vxq8OKitz2fsE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Yegor Yefremov <yegorslists@googlemail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 119/255] selftests: proc: fix warning: _GNU_SOURCE redefined
-Date:   Tue, 17 Nov 2020 14:04:19 +0100
-Message-Id: <20201117122144.732848628@linuxfoundation.org>
+Subject: [PATCH 5.4 030/151] can: j1939: swap addr and pgn in the send example
+Date:   Tue, 17 Nov 2020 14:04:20 +0100
+Message-Id: <20201117122122.884808733@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tommi Rantala <tommi.t.rantala@nokia.com>
+From: Yegor Yefremov <yegorslists@googlemail.com>
 
-[ Upstream commit f3ae6c6e8a3ea49076d826c64e63ea78fbf9db43 ]
+[ Upstream commit ea780d39b1888ed5afc243c29b23d9bdb3828c7a ]
 
-Makefile already contains -D_GNU_SOURCE, so we can remove it from the
-*.c files.
+The address was wrongly assigned to the PGN field and vice versa.
 
-Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+Link: https://lore.kernel.org/r/20201022083708.8755-1-yegorslists@googlemail.com
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/proc/proc-loadavg-001.c  | 1 -
- tools/testing/selftests/proc/proc-self-syscall.c | 1 -
- tools/testing/selftests/proc/proc-uptime-002.c   | 1 -
- 3 files changed, 3 deletions(-)
+ Documentation/networking/j1939.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/proc/proc-loadavg-001.c b/tools/testing/selftests/proc/proc-loadavg-001.c
-index 471e2aa280776..fb4fe9188806e 100644
---- a/tools/testing/selftests/proc/proc-loadavg-001.c
-+++ b/tools/testing/selftests/proc/proc-loadavg-001.c
-@@ -14,7 +14,6 @@
-  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-  */
- /* Test that /proc/loadavg correctly reports last pid in pid namespace. */
--#define _GNU_SOURCE
- #include <errno.h>
- #include <sched.h>
- #include <sys/types.h>
-diff --git a/tools/testing/selftests/proc/proc-self-syscall.c b/tools/testing/selftests/proc/proc-self-syscall.c
-index 9f6d000c02455..8511dcfe67c75 100644
---- a/tools/testing/selftests/proc/proc-self-syscall.c
-+++ b/tools/testing/selftests/proc/proc-self-syscall.c
-@@ -13,7 +13,6 @@
-  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-  */
--#define _GNU_SOURCE
- #include <unistd.h>
- #include <sys/syscall.h>
- #include <sys/types.h>
-diff --git a/tools/testing/selftests/proc/proc-uptime-002.c b/tools/testing/selftests/proc/proc-uptime-002.c
-index 30e2b78490898..e7ceabed7f51f 100644
---- a/tools/testing/selftests/proc/proc-uptime-002.c
-+++ b/tools/testing/selftests/proc/proc-uptime-002.c
-@@ -15,7 +15,6 @@
-  */
- // Test that values in /proc/uptime increment monotonically
- // while shifting across CPUs.
--#define _GNU_SOURCE
- #undef NDEBUG
- #include <assert.h>
- #include <unistd.h>
+diff --git a/Documentation/networking/j1939.rst b/Documentation/networking/j1939.rst
+index f5be243d250a4..4b0db514b2010 100644
+--- a/Documentation/networking/j1939.rst
++++ b/Documentation/networking/j1939.rst
+@@ -414,8 +414,8 @@ Send:
+ 		.can_family = AF_CAN,
+ 		.can_addr.j1939 = {
+ 			.name = J1939_NO_NAME;
+-			.pgn = 0x30,
+-			.addr = 0x12300,
++			.addr = 0x30,
++			.pgn = 0x12300,
+ 		},
+ 	};
+ 
 -- 
 2.27.0
 
