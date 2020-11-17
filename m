@@ -2,69 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA2A2B71E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA062B71E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729473AbgKQW5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:57:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728521AbgKQW5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:57:22 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC03522202;
-        Tue, 17 Nov 2020 22:57:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605653841;
-        bh=KgP6kIuW2/56O4LdccOpIcXq+RuiisQme+VZtaE2LFk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D73w5s+6pbC0lfIN6P0E9PzWBfZfNHkLIspBx7xGiSb9StntWhr6b+6rRYzmOTmmC
-         SlPll7ltr48r+vg3hewCLk0famlOjGYTs1XdwidEEC0KWezG0bnkr/X10ifPYFzy2n
-         +sa/U5hVGNMnYarhrP3GfLUORm9edCExp+AOfs30=
-Date:   Tue, 17 Nov 2020 22:57:17 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        joro@8bytes.org, Jon.Grimm@amd.com, brijesh.singh@amd.com
-Subject: Re: [PATCH] iommu/amd: Enforce 4k mapping for certain IOMMU data
- structures
-Message-ID: <20201117225717.GF524@willie-the-truck>
-References: <20201028231824.56504-1-suravee.suthikulpanit@amd.com>
+        id S1729489AbgKQW5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:57:24 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:39207 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729434AbgKQW5X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:57:23 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kf9ub-003JCJ-Ca; Tue, 17 Nov 2020 23:57:21 +0100
+Received: from p5b13ac4a.dip0.t-ipconnect.de ([91.19.172.74] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kf9ub-003Fux-5w; Tue, 17 Nov 2020 23:57:21 +0100
+To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        Rich Felker <dalias@libc.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kselftest@vger.kernel.org
+References: <20201117205656.1000223-1-keescook@chromium.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Re: [PATCH] selftests/seccomp: sh: Fix register names
+Message-ID: <a36d7b48-6598-1642-e403-0c77a86f416d@physik.fu-berlin.de>
+Date:   Tue, 17 Nov 2020 23:57:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028231824.56504-1-suravee.suthikulpanit@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201117205656.1000223-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.172.74
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 11:18:24PM +0000, Suravee Suthikulpanit wrote:
-> AMD IOMMU requires 4k-aligned pages for the event log, the PPR log,
-> and the completion wait write-back regions. However, when allocating
-> the pages, they could be part of large mapping (e.g. 2M) page.
-> This causes #PF due to the SNP RMP hardware enforces the check based
-> on the page level for these data structures.
+On 11/17/20 9:56 PM, Kees Cook wrote:
+> It looks like the seccomp selftests were never actually built for sh.
+> This fixes it, though I don't have an environment to do a runtime test
+> of it yet.
+> 
+> Fixes: 0bb605c2c7f2b4b3 ("sh: Add SECCOMP_FILTER")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  tools/testing/selftests/seccomp/seccomp_bpf.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> index 7f7ecfcd66db..26c72f2b61b1 100644
+> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> @@ -1804,8 +1804,8 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+>  #define SYSCALL_RET(_regs)	(_regs).a[(_regs).windowbase * 4 + 2]
+>  #elif defined(__sh__)
+>  # define ARCH_REGS		struct pt_regs
+> -# define SYSCALL_NUM(_regs)	(_regs).gpr[3]
+> -# define SYSCALL_RET(_regs)	(_regs).gpr[0]
+> +# define SYSCALL_NUM(_regs)	(_regs).regs[3]
+> +# define SYSCALL_RET(_regs)	(_regs).regs[0]
+>  #else
+>  # error "Do not know how to find your architecture's registers and syscalls"
+>  #endif
 
-Please could you include an example backtrace here?
+Yes, this fix is indeed necessary. However, there is another build issue that I ran into
+and I'm not sure why it happens, but commenting out "#include <linux/sched.h>" in
+../clone3/clone3_selftests.h fixes it.
 
-> So, fix by calling set_memory_4k() on the allocated pages.
+root@tirpitz:..selftests/seccomp> make
+gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c /usr/src/linux-5.9.8/tools/testing/selftests/kselftest_harness.h /usr/src/linux-5.9.8/tools/testing/selftests/kselftest.h  -o /usr/src/linux-5.9.8/tools/testing/selftests/seccomp/seccomp_bpf
+In file included from seccomp_bpf.c:55:
+../clone3/clone3_selftests.h:28:8: error: redefinition of ‘struct clone_args’
+   28 | struct clone_args {
+      |        ^~~~~~~~~~
+In file included from ../clone3/clone3_selftests.h:8,
+                 from seccomp_bpf.c:55:
+/usr/include/linux/sched.h:92:8: note: originally defined here
+   92 | struct clone_args {
+      |        ^~~~~~~~~~
+make: *** [../lib.mk:140: /usr/src/linux-5.9.8/tools/testing/selftests/seccomp/seccomp_bpf] Error 1
+root@tirpitz:..selftests/seccomp>
 
-I think I'm missing something here. set_memory_4k() will break the kernel
-linear mapping up into page granular mappings, but the IOMMU isn't using
-that mapping, right? It's just using the physical address returned by
-iommu_virt_to_phys(), so why does it matter?
+Your actual register naming fix is correct in any case as without your patch, building the seccomp
+selftest fails with:
 
-Just be nice to capture some of this rationale in the log, especially as
-I'm not familiar with this device.
+seccomp_bpf.c: In function ‘get_syscall’:
+seccomp_bpf.c:1741:37: error: ‘struct pt_regs’ has no member named ‘gpr’; did you mean ‘pr’?
+ 1741 | # define SYSCALL_NUM(_regs) (_regs).gpr[3]
+      |                                     ^~~
+seccomp_bpf.c:1794:9: note: in expansion of macro ‘SYSCALL_NUM’
+ 1794 |  return SYSCALL_NUM(regs);
+      |         ^~~~~~~~~~~
+seccomp_bpf.c: In function ‘change_syscall’:
+seccomp_bpf.c:1741:37: error: ‘struct pt_regs’ has no member named ‘gpr’; did you mean ‘pr’?
+ 1741 | # define SYSCALL_NUM(_regs) (_regs).gpr[3]
+      |                                     ^~~
+seccomp_bpf.c:1817:3: note: in expansion of macro ‘SYSCALL_NUM’
+ 1817 |   SYSCALL_NUM(regs) = syscall;
+      |   ^~~~~~~~~~~
+seccomp_bpf.c:1742:37: error: ‘struct pt_regs’ has no member named ‘gpr’; did you mean ‘pr’?
+ 1742 | # define SYSCALL_RET(_regs) (_regs).gpr[0]
+      |                                     ^~~
+seccomp_bpf.c:1859:3: note: in expansion of macro ‘SYSCALL_RET’
+ 1859 |   SYSCALL_RET(regs) = result;
+      |   ^~~~~~~~~~~
+seccomp_bpf.c: In function ‘get_syscall’:
+seccomp_bpf.c:1795:1: warning: control reaches end of non-void function [-Wreturn-type]
+ 1795 | }
+      | ^
+make: *** [../lib.mk:140: /usr/src/linux-5.9.8/tools/testing/selftests/seccomp/seccomp_bpf] Error 1
 
-> Fixes: commit c69d89aff393 ("iommu/amd: Use 4K page for completion wait write-back semaphore")
+Adrian
 
-I couldn't figure out how that commit could cause this problem. Please can
-you explain that to me?
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
-Cheers,
-
-Will
