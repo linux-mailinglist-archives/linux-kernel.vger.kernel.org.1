@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6AA2B6F12
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695262B6F16
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730127AbgKQTpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:45:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727955AbgKQTpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:45:06 -0500
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D93CA24654;
-        Tue, 17 Nov 2020 19:45:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605642306;
-        bh=qNozKMsilVGHcKuDFqYgNc1oR4jJ69WTtekuHemKsA4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uzOYWmAFsp5u8A1goye7laB+uln8gqXV99XauIwSEYwYTGXnrkndJ1sdA0QPbsHW/
-         uXFPVcvnzkLe+GYCOMvNnDStRP9jwZYNOFkt+AwKP1ltA3sG4bxugT2gpWZQD9Krqq
-         7zwau8mE4xSeZENQKfIlP12S23rRKNZejLI/7ECQ=
-Received: by mail-ot1-f52.google.com with SMTP id a15so20644085otf.5;
-        Tue, 17 Nov 2020 11:45:05 -0800 (PST)
-X-Gm-Message-State: AOAM5326K/lD+bUu0rZXSicp8roCoOvGJGIWq/L/L6aMsWuVHJNWs9DA
-        UVPV6DhTCQZhkIOKRcpSoDzegIK1SfXcWlGQBQ==
-X-Google-Smtp-Source: ABdhPJw7Y8/Ws5bUvi26+LLUZzk81vYwcXh6i4hVHe44wC1JXmPPzqpT+2F4tA2/k2KaDRk1Kh11f9DUxexOONIhShQ=
-X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr4284277otd.192.1605642305060;
- Tue, 17 Nov 2020 11:45:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20201117181607.1761516-1-qperret@google.com> <20201117181607.1761516-16-qperret@google.com>
-In-Reply-To: <20201117181607.1761516-16-qperret@google.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 17 Nov 2020 13:44:53 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+xAy9+HjH6vqfmaAEKBe9MMm+wWvUtiz5dFnHmMneqNw@mail.gmail.com>
-Message-ID: <CAL_Jsq+xAy9+HjH6vqfmaAEKBe9MMm+wWvUtiz5dFnHmMneqNw@mail.gmail.com>
-Subject: Re: [RFC PATCH 15/27] of/fdt: Introduce early_init_dt_add_memory_hyp()
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        android-kvm@google.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1730422AbgKQTpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727955AbgKQTpR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:45:17 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0E8C0613CF;
+        Tue, 17 Nov 2020 11:45:17 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id v22so23736330edt.9;
+        Tue, 17 Nov 2020 11:45:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=7FuTWq4BSG35jYcVC2y/aAokRjHupx3BOtYk6g9sB7k=;
+        b=bEGG7+pWjohHYGCns+rU7864961TKkiTrUm42uvT6LxfEO1YbnvJekuitA/BWkBKCo
+         qsN7cTlm7OY2hRiTAQmLfnUp5/8RZkKp3Z1cgY6qHSkU2RUHKqAoAI1oAj92qbp+41pe
+         b6MjEliAQcKXdDVxBibvY1dzSUPVoAUuBdgwaCY1IAT2zds2yNeNwWnKqoWmVMTxDpmU
+         Akl7TpvzvH5UZnc2SzUfp1e4+K8aIFpDLyllv88lW4vf7WvlidV+fOa2lO/WErCtz9Eb
+         wrQ/xv8kRnYDHyi6GvBxmPENKiQuoaJ2MA8DAOb2WxOwi6mr7o/5gY81Y8VYrIQ0wr9s
+         1piQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7FuTWq4BSG35jYcVC2y/aAokRjHupx3BOtYk6g9sB7k=;
+        b=JAp6rLSDz8xSSKqpNf0dKOYpmnfXdCd6f/RMZzBqBkNcVA/xrJP86Ea2TD46X7YJKl
+         RFKRxO0bu4o9XOunvrSyZZDiNfS7f7jGcWWl6GbrpaIGWMz+GLksPhOnYyx+P0ZfwuRd
+         JIZm5PFFxXglEYxYIQnu3IRH4j1SKim4+hmzHNJqSptYRvhooY7z9RG1c2T+BJ/f6tdE
+         qydrTeqmgPNwqgH0/R1YGCXzoOtqwN5w21ecwiY5RZ5v3t08LemA/UUuguE8Y/QDqXBq
+         /6jKJbg4J1N9u5ghFNYyoiyYyfUaSlwVgyB8aCfBcVFNwIu7otzJPZ7ebzuYYAX/BR2a
+         04IA==
+X-Gm-Message-State: AOAM533W0Q0l/jdZDLvWWgLZItY3fGngUjbE7fDBqotSExvZNOKvqAiN
+        8ReXT93OYkqdnBWGnpbyznfqUawlL14Big==
+X-Google-Smtp-Source: ABdhPJwioSe6dJaxInh8X3IisG9hWd9obKO0KYfxQKA8qdRvbEI9nQjadusnXlOz4yN8QPtxAn5+Fg==
+X-Received: by 2002:aa7:df82:: with SMTP id b2mr21560851edy.251.1605642316279;
+        Tue, 17 Nov 2020 11:45:16 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id w2sm727972ejc.109.2020.11.17.11.45.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Nov 2020 11:45:15 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     hjc@rock-chips.com, robh+dt@kernel.org, airlied@linux.ie,
+        daniel@ffwll.ch, mturquette@baylibre.com, sboyd@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org, linux-clk@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/7] Enable rk3066a HDMI sound
+Date:   Tue, 17 Nov 2020 20:45:00 +0100
+Message-Id: <20201117194507.14843-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 12:16 PM Quentin Perret <qperret@google.com> wrote:
->
-> Introduce early_init_dt_add_memory_hyp() to allow KVM to conserve a copy
-> of the memory regions parsed from DT. This will be needed in the context
-> of the protected nVHE feature of KVM/arm64 where the code running at EL2
-> will be cleanly separated from the host kernel during boot, and will
-> need its own representation of memory.
->
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  drivers/of/fdt.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index 4602e467ca8b..af2b5a09c5b4 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -1099,6 +1099,10 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
->  #define MAX_MEMBLOCK_ADDR      ((phys_addr_t)~0)
->  #endif
->
-> +void __init __weak early_init_dt_add_memory_hyp(u64 base, u64 size)
-> +{
-> +}
-> +
->  void __init __weak early_init_dt_add_memory_arch(u64 base, u64 size)
->  {
->         const u64 phys_offset = MIN_MEMBLOCK_ADDR;
-> @@ -1139,6 +1143,7 @@ void __init __weak early_init_dt_add_memory_arch(u64 base, u64 size)
->                 base = phys_offset;
->         }
->         memblock_add(base, size);
-> +       early_init_dt_add_memory_hyp(base, size);
+First fix some legacy things in clk-rk3188.c that was never updated,
+because probably nobody used rk3066a I2S before in the mainline kernel.
+Update the rk3066a HDMI documents with a #sound-dai-cells property.
+Include the code for sound in the HDMI driver.
+Add a simple-sound-card compatible node to rk3066a.dtsi,
+because I2S0 and HDMI TX are connected internally.
+And as last enable rk3066a HDMI sound in the rk3066a-mk808.dts file.
 
-Can this be done right after we add all the memblocks using the
-memblock API? I thought EFI would also need to be handled, but looks
-like it just calls early_init_dt_add_memory_arch(). That's odd
-especially for ACPI systems...
+Johan Jonker (6):
+  clk: rockchip: add CLK_SET_RATE_PARENT to sclk for rk3066a i2s and
+    uart clocks
+  clk: rockchip: fix i2s gate bits on rk3066 and rk3188
+  dt-bindings: display: add #sound-dai-cells property to rockchip rk3066
+    hdmi
+  ARM: dts: rockchip: rk3066a: add #sound-dai-cells to hdmi node
+  ARM: dts: rockchip: add hdmi-sound node to rk3066a.dtsi
+  ARM: dts: rockchip: enable hdmi_sound and i2s0 for rk3066a-mk808
 
-I don't really like putting what looks like an arm64 only hook here,
-but then I don't want an arm64 version of
-early_init_dt_add_memory_arch() either. We're almost to the point of
-getting rid of the arch specific ones. But I don't have a better
-suggestion currently.
+Zheng Yang (1):
+  drm: rockchip: add sound support to rk3066 hdmi driver
 
-Rob
+ .../display/rockchip/rockchip,rk3066-hdmi.yaml     |   4 +
+ arch/arm/boot/dts/rk3066a-mk808.dts                |   8 +
+ arch/arm/boot/dts/rk3066a.dtsi                     |  17 ++
+ drivers/clk/rockchip/clk-rk3188.c                  |  35 +--
+ drivers/gpu/drm/rockchip/Kconfig                   |   2 +
+ drivers/gpu/drm/rockchip/rk3066_hdmi.c             | 272 ++++++++++++++++++++-
+ 6 files changed, 320 insertions(+), 18 deletions(-)
+
+--
+2.11.0
+
