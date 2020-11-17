@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8822B71CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547002B71CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729043AbgKQWrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:47:43 -0500
-Received: from www62.your-server.de ([213.133.104.62]:60098 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726498AbgKQWrn (ORCPT
+        id S1729271AbgKQWup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgKQWuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:47:43 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kf9lF-00070i-5Z; Tue, 17 Nov 2020 23:47:41 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kf9lE-000Muh-Ve; Tue, 17 Nov 2020 23:47:41 +0100
-Subject: Re: [PATCH bpf-next v3 2/2] bpf: Add tests for bpf_lsm_set_bprm_opts
-To:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Pauline Middelink <middelin@google.com>
-References: <20201117021307.1846300-1-kpsingh@chromium.org>
- <20201117021307.1846300-2-kpsingh@chromium.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <edfe92b9-c97e-b36c-eee1-0fe099d2b596@iogearbox.net>
-Date:   Tue, 17 Nov 2020 23:47:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 17 Nov 2020 17:50:44 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C7AC0613CF;
+        Tue, 17 Nov 2020 14:50:44 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id a15so24252943edy.1;
+        Tue, 17 Nov 2020 14:50:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wVFMj1y28y9lr6i3Dua9IiKKVDRLL249TgbSSA9JSCo=;
+        b=REHKISixART/wrV+ZOVp3ijOYlxb3WgEeV1AGG0ndKx8Vp1KielOgtykVIScLLiILW
+         eHQvntNLmDdkKqNHFQ5t/zDYDKnPV02kl9WeYKzCODIjQtae5+aRQrjaAtkIAuc/CAao
+         mXcqjOJm8nM++k8Rf4hg6TsSVCjS06iPMVx2yu08U7AXFKeYJyTAcXOj0cgxT+lhPH+S
+         foZbO7ZAshb9uO3lzqd9D6FLjzkzFEILKOY+Uz67HmR6eFZIiPGnboNtNNzALtm3Ffky
+         pQbsdK56pX2bw0ZDHDhauYB1EJ5+aPw5bWE1sdFw4TD1TuNbWDQgjx/AtW536hK+IIx8
+         Yo2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wVFMj1y28y9lr6i3Dua9IiKKVDRLL249TgbSSA9JSCo=;
+        b=nW7DOnCpIgv1HJxHOYVKDTto2KQhZujepKwnctQIsL4ljhQwmr/OqYAPsivbfo1kgF
+         TpoT3j/UhvnyVHaAb9paRirhDzdwdo9Vva1KA+BZrs43gPB6+L1l5JmAvCpndAv1I3f+
+         AzR6EYPBspnOmFtxBT93b5kKH2cvH0jx1pcLRTThYuovCPUOPF648RNZ2k5Jz2SQkHEO
+         pH+4IkJKGZtzaKC9seerxBlqcwmJ3qKW/pf9Ha/w7RSAmPM83O8RON+cSL34IssTnza4
+         avNrf6wFAPzOr+et3Bapzlf9XHSH0sd0YIC+BM9D3c0CiqmJ7YCfS+y3Rllx/cfXpm0y
+         nH2A==
+X-Gm-Message-State: AOAM532F+GXuH/nMOvvw8Piu/DzVU4e/f/wAtTl7OX0VmNtC2T3bbXdr
+        wtUymlojVPcsm4mzpsiXMFa/xLXHda7iHSxYEGg=
+X-Google-Smtp-Source: ABdhPJwxnZw7fIrQBMEeIJ22JQkOmnYSBJCCB1bD2WqJ0lVQ2RE3nYgJiV9dfPiwS1OUR85WGbfkhGf+bUYog4KweqA=
+X-Received: by 2002:a05:6402:3d9:: with SMTP id t25mr23308333edw.338.1605653442816;
+ Tue, 17 Nov 2020 14:50:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201117021307.1846300-2-kpsingh@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25991/Tue Nov 17 14:12:35 2020)
+References: <20201115185210.573739-1-martin.blumenstingl@googlemail.com>
+ <20201115185210.573739-4-martin.blumenstingl@googlemail.com> <88c043ba-e7a4-6b4d-f93f-efdf6c525e95@gmail.com>
+In-Reply-To: <88c043ba-e7a4-6b4d-f93f-efdf6c525e95@gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 17 Nov 2020 23:50:31 +0100
+Message-ID: <CAFBinCDM=COSpZLSaqqDwpk48QC-sjASwD9O3VJU_SRgB_H_1A@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 3/5] net: stmmac: dwmac-meson8b: use picoseconds
+ for the RGMII RX delay
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, netdev@vger.kernel.org,
+        jianxin.pan@amlogic.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, khilman@baylibre.com,
+        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+        andrew@lunn.ch
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/20 3:13 AM, KP Singh wrote:
-[...]
-> +
-> +static int run_set_secureexec(int map_fd, int secureexec)
-> +{
-> +
+Hi Florian,
 
-^ same here
+On Tue, Nov 17, 2020 at 7:36 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> On 11/15/20 10:52 AM, Martin Blumenstingl wrote:
+> > Amlogic Meson G12A, G12B and SM1 SoCs have a more advanced RGMII RX
+> > delay register which allows picoseconds precision. Parse the new
+> > "amlogic,rgmii-rx-delay-ps" property or fall back to the old
+> > "amlogic,rx-delay-ns".
+> >
+> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+first of all: thanks for reviewing this (and the rest of the series)!
 
-> +	int child_pid, child_status, ret, null_fd;
-> +
-> +	child_pid = fork();
-> +	if (child_pid == 0) {
-> +		null_fd = open("/dev/null", O_WRONLY);
-> +		if (null_fd == -1)
-> +			exit(errno);
-> +		dup2(null_fd, STDOUT_FILENO);
-> +		dup2(null_fd, STDERR_FILENO);
-> +		close(null_fd);
-> +
-> +		/* Ensure that all executions from hereon are
-> +		 * secure by setting a local storage which is read by
-> +		 * the bprm_creds_for_exec hook and sets bprm->secureexec.
-> +		 */
-> +		ret = update_storage(map_fd, secureexec);
-> +		if (ret)
-> +			exit(ret);
-> +
-> +		/* If the binary is executed with securexec=1, the dynamic
-> +		 * loader ingores and unsets certain variables like LD_PRELOAD,
-> +		 * TMPDIR etc. TMPDIR is used here to simplify the example, as
-> +		 * LD_PRELOAD requires a real .so file.
-> +		 *
-> +		 * If the value of TMPDIR is set, the bash command returns 10
-> +		 * and if the value is unset, it returns 20.
-> +		 */
-> +		execle("/bin/bash", "bash", "-c",
-> +		       "[[ -z \"${TMPDIR}\" ]] || exit 10 && exit 20", NULL,
-> +		       bash_envp);
-> +		exit(errno);
-> +	} else if (child_pid > 0) {
-> +		waitpid(child_pid, &child_status, 0);
-> +		ret = WEXITSTATUS(child_status);
-> +
-> +		/* If a secureexec occured, the exit status should be 20.
-> +		 */
-> +		if (secureexec && ret == 20)
-> +			return 0;
-> +
-> +		/* If normal execution happened the exit code should be 10.
-> +		 */
-> +		if (!secureexec && ret == 10)
-> +			return 0;
-> +
+> Maybe also issue a warning when the 'amlogic,rx-delay-ns' property is
+> found in addition to the 'amlogic,rgmii-rx-delay-ps'? Up to you how to
+> manage existing DTBs being deployed.
+none of the upstream DTBs uses amlogic,rx-delay-ns - and I am also not
+aware of anything being in use "downstream".
+I will add a sentence to the commit description when I re-send this
+without RFC, something along those lines: "No upstream DTB uses the
+old amlogic,rx-delay-ns (yet). Only include minimalistic logic to fall
+back to the old property, without any special validation (for example:
+old and new property are given at the same time)"
 
-and here (rest looks good to me)
+What do you think?
 
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
+
+Best regards,
+Martin
