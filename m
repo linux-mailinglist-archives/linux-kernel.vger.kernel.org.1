@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE812B6109
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9C72B6182
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730150AbgKQNPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:15:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46330 "EHLO mail.kernel.org"
+        id S1730372AbgKQNTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:19:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730131AbgKQNPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:15:08 -0500
+        id S1730089AbgKQNTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:19:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89343246BB;
-        Tue, 17 Nov 2020 13:15:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23546241A6;
+        Tue, 17 Nov 2020 13:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618908;
-        bh=+rgwgfGorZpGwIOPV5zY/fKHJ4P2fVNO+fpHvwOEpZg=;
+        s=default; t=1605619170;
+        bh=otGF3tFWRZuxgNpNpyVXE9oMqbgHk+Af2ftSH8muxbw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jdn9haYs1la3d3BI6pXL/8cqALudYZnwQSvPOtJN8/yk2LmXPD+vtrpxDWtxRVQ3O
-         uUBorG7m79wFTR43ZPWmIhjhM6GxaQf3mn8SyEsU/qBV+z80kGgMbMmLNX9l0Pb2YK
-         WhPPw5hRwYpLe0VQzfT8Rx0ZZfalD2Wdolt8jI8M=
+        b=TKtvbpaA8Ov02J8oEqWd1W/Z97AfMZ7VTUNfFTjLqZlywYgm+tQSvbiRMDdtYhiac
+         im9uUr9PHSrwglVMzvb5iEG3O2AHtUBBGjrBcHMEscxI75AnI0iQJ1X+yj+cynox2M
+         A5fZJziDSFttHfpaRKaafnf7iFGXLieMAQZ8QYpU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH 4.14 49/85] mei: protect mei_cl_mtu from null dereference
-Date:   Tue, 17 Nov 2020 14:05:18 +0100
-Message-Id: <20201117122113.434485262@linuxfoundation.org>
+        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 052/101] pinctrl: aspeed: Fix GPI only function problem.
+Date:   Tue, 17 Nov 2020 14:05:19 +0100
+Message-Id: <20201117122115.629811440@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+From: Billy Tsai <billy_tsai@aspeedtech.com>
 
-commit bcbc0b2e275f0a797de11a10eff495b4571863fc upstream.
+[ Upstream commit 9b92f5c51e9a41352d665f6f956bd95085a56a83 ]
 
-A receive callback is queued while the client is still connected
-but can still be called after the client was disconnected. Upon
-disconnect cl->me_cl is set to NULL, hence we need to check
-that ME client is not-NULL in mei_cl_mtu to avoid
-null dereference.
+Some gpio pin at aspeed soc is input only and the prefix name of these
+pin is "GPI" only.
+This patch fine-tune the condition of GPIO check from "GPIO" to "GPI"
+and it will fix the usage error of banks D and E in the AST2400/AST2500
+and banks T and U in the AST2600.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Link: https://lore.kernel.org/r/20201029095444.957924-2-tomas.winkler@intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 4d3d0e4272d8 ("pinctrl: Add core support for Aspeed SoCs")
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Link: https://lore.kernel.org/r/20201030055450.29613-1-billy_tsai@aspeedtech.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/mei/client.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pinctrl/aspeed/pinctrl-aspeed.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/misc/mei/client.h
-+++ b/drivers/misc/mei/client.h
-@@ -138,11 +138,11 @@ static inline u8 mei_cl_me_id(const stru
-  *
-  * @cl: host client
-  *
-- * Return: mtu
-+ * Return: mtu or 0 if client is not connected
-  */
- static inline size_t mei_cl_mtu(const struct mei_cl *cl)
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+index aefe3c33dffd8..8dec302dc067a 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+@@ -458,13 +458,14 @@ int aspeed_pinmux_set_mux(struct pinctrl_dev *pctldev, unsigned int function,
+ static bool aspeed_expr_is_gpio(const struct aspeed_sig_expr *expr)
  {
--	return cl->me_cl->props.max_msg_length;
-+	return cl->me_cl ? cl->me_cl->props.max_msg_length : 0;
+ 	/*
+-	 * The signal type is GPIO if the signal name has "GPIO" as a prefix.
++	 * The signal type is GPIO if the signal name has "GPI" as a prefix.
+ 	 * strncmp (rather than strcmp) is used to implement the prefix
+ 	 * requirement.
+ 	 *
+-	 * expr->signal might look like "GPIOT3" in the GPIO case.
++	 * expr->signal might look like "GPIOB1" in the GPIO case.
++	 * expr->signal might look like "GPIT0" in the GPI case.
+ 	 */
+-	return strncmp(expr->signal, "GPIO", 4) == 0;
++	return strncmp(expr->signal, "GPI", 3) == 0;
  }
  
- /**
+ static bool aspeed_gpio_in_exprs(const struct aspeed_sig_expr **exprs)
+-- 
+2.27.0
+
 
 
