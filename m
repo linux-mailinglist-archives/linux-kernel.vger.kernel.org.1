@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A502B557B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E682B5579
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731350AbgKQACW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 19:02:22 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:35754 "EHLO z5.mailgun.us"
+        id S1731149AbgKQACP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 19:02:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730772AbgKQACV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 19:02:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605571341; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=rMqrd9bN3U/F6oR7C3Q9Rgk6zXcCW8Cf85L9usMdYJU=; b=DK58guNZasGev/3RahBSzFJv74eJ7ujyDTZIbKTovILQC2rQGFzfdmk1ikeaNvzj4CfneR5+
- BdVjuiSktU5YajeErJaUWLcEKwdZyTA4rCzjitQT2CiqeMT/l2BMGDUhG2mb/Z3cOVpy379h
- 9iezasKaTBD0rEa3KAXgxOrzhKY=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fb312ebe9dd187f53905091 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Nov 2020 00:01:47
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C3768C43460; Tue, 17 Nov 2020 00:01:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1730322AbgKQACP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 19:02:15 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B459DC433C6;
-        Tue, 17 Nov 2020 00:01:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B459DC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, kvalo@codeaurora.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH] ath11k: use MHI provided APIs to allocate and free MHI controller
-Date:   Mon, 16 Nov 2020 16:01:40 -0800
-Message-Id: <1605571300-4438-1-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id CD6D02463F;
+        Tue, 17 Nov 2020 00:02:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605571334;
+        bh=XDEKzXHVHD1gwy3D3kVdGbY5bLC8iHPoeZJ1eT4YG/4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=boDjBxHXKKd0sX9VK8Ls2NQLZahOK1uVP+4WHpIYLuuGFmwX8GWq6G9wd5T346Zyb
+         zZY52oEA4RcmeRxfQBsVD/FNe/mlrekLFQPCnbAdF9DPheJBONPjWOMt9Ysnj+KphV
+         qBX5pTtTgSH8fql+jIS1IcdiOExuFO2bxox442tI=
+Date:   Mon, 16 Nov 2020 16:02:13 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v1 net-next] net: dsa: qca: ar9331: add ethtool stats
+ support
+Message-ID: <20201116160213.3de5280c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <7cb26c4f-0c5d-0e08-5bbe-676f5d66a858@gmail.com>
+References: <20201115073533.1366-1-o.rempel@pengutronix.de>
+        <20201116133453.270b8db5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201116222146.znetv5u2q2q2vk2j@skbuf>
+        <20201116143544.036baf58@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201116230053.ddub7p6lvvszz7ic@skbuf>
+        <20201116151347.591925ca@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201116232731.4utpige7fguzghsi@skbuf>
+        <7cb26c4f-0c5d-0e08-5bbe-676f5d66a858@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use MHI provided APIs to allocate and free MHI controller to
-improve MHI host driver handling. This also fixes a memory leak
-as the MHI controller was allocated but never freed.
+On Mon, 16 Nov 2020 15:30:39 -0800 Florian Fainelli wrote:
+> > What about RMON/RFC2819 style etherStatsPkts65to127Octets? We have a
+> > number of switches supporting that style of counters, including the one
+> > that Oleksij is adding support for, apparently (but not all switches
+> > though). I suppose your M.O. is that anything standardizable is welcome
+> > to be standardized via rtnetlink?
+> > 
+> > Andrew, Florian, any opinions here?
+> 
+> Settling on RMON/RFC2819 statistics would work for me, and hopefully is
+> not too hard to get the various drivers converted to.
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/net/wireless/ath/ath11k/mhi.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+That would be grate! For RMON stats you may have slightly more legwork
+to do on ethtool side, since IIRC the plumbing for stats over netlink
+is (intentionally?) not there until we settle on how to handle
+standardize-able counters.
 
-diff --git a/drivers/net/wireless/ath/ath11k/mhi.c b/drivers/net/wireless/ath/ath11k/mhi.c
-index aded9a7..1c9d9dc 100644
---- a/drivers/net/wireless/ath/ath11k/mhi.c
-+++ b/drivers/net/wireless/ath/ath11k/mhi.c
-@@ -218,7 +218,7 @@ int ath11k_mhi_register(struct ath11k_pci *ab_pci)
- 	struct mhi_controller *mhi_ctrl;
- 	int ret;
- 
--	mhi_ctrl = kzalloc(sizeof(*mhi_ctrl), GFP_KERNEL);
-+	mhi_ctrl = mhi_alloc_controller();
- 	if (!mhi_ctrl)
- 		return -ENOMEM;
- 
-@@ -234,7 +234,7 @@ int ath11k_mhi_register(struct ath11k_pci *ab_pci)
- 	ret = ath11k_mhi_get_msi(ab_pci);
- 	if (ret) {
- 		ath11k_err(ab, "failed to get msi for mhi\n");
--		kfree(mhi_ctrl);
-+		mhi_free_controller(mhi_ctrl);
- 		return ret;
- 	}
- 
-@@ -252,7 +252,7 @@ int ath11k_mhi_register(struct ath11k_pci *ab_pci)
- 	ret = mhi_register_controller(mhi_ctrl, &ath11k_mhi_config);
- 	if (ret) {
- 		ath11k_err(ab, "failed to register to mhi bus, err = %d\n", ret);
--		kfree(mhi_ctrl);
-+		mhi_free_controller(mhi_ctrl);
- 		return ret;
- 	}
- 
-@@ -265,6 +265,7 @@ void ath11k_mhi_unregister(struct ath11k_pci *ab_pci)
- 
- 	mhi_unregister_controller(mhi_ctrl);
- 	kfree(mhi_ctrl->irq);
-+	mhi_free_controller(mhi_ctrl);
- }
- 
- static char *ath11k_mhi_state_to_str(enum ath11k_mhi_state mhi_state)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+I've only done pause stats 'cause those and FEC are the primary HW
+stats my employer cares about :) I'm sure people would actually find
+use for the RMON stats once they get standardized tho!
 
+> With respect to Oleksij's patch, I would tend to accept it so we
+> actually have more visibility into what standardized counters are
+> available across switch drivers.
+
+For a while now we have been pushing back on stats which have a proper
+interface to be added to ethtool -S. So I'd expect the list of stats
+exposed via ethtool will end up being shorter than in this patch.
