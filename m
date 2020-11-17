@@ -2,122 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBFA2B70BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAC72B70BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgKQVN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:13:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727672AbgKQVN0 (ORCPT
+        id S1727980AbgKQVMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:12:14 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8120 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727300AbgKQVMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:13:26 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48BBC0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:13:26 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id b3so10932131pls.11
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:13:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cUL+9SvzrRzllFEAM5OhpKctCqgJfj/sR/XV7GWar0I=;
-        b=MWHmfYIY9ch9OvmV2riVcHnEmRpuPVUXqLW0gkD2sszZU8xssgw1NP5X1ShxEm8HJa
-         0hsVkK3fKE20KdO6VmXkfWW+cgXtGbCsjVnNFMstYf+pK2L5LTkbrAxCuUfBB/WpAjAt
-         75tDLdzwv7U0UzXqesHtuAuhick5Z8a/RrA2E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cUL+9SvzrRzllFEAM5OhpKctCqgJfj/sR/XV7GWar0I=;
-        b=P6uUheI+UXU9jvDi7cX4Pgrlgy+FlulCIK3d7xDetx5TvrmcuiKMTC0czcagsd+v5s
-         DZx43TsPNqE2BIxdcmMJ3FN1l5KT1H2k4x3/AgXmd67GNpElmLXS/BgN2Ydd0IuAfJF8
-         O/Eb5C9TIrYy12WqSXJatbK94k5DcvKkpRbzHXrGeRfIyGnEPxyuDIsE2ys0SEJKcta+
-         W5EVYCpCiNqRZuUVRE229NngYUAPL+xst+tIAAje50MqjbQG9TMB5L3RHKsaqNU/MFdh
-         /oDoFsRy2Gl3sNamSEqLvUdPAbP4yyhSeex4Ho/rvAZ1LEv3LYpvaLFsTiq5orEBPF4l
-         iTvg==
-X-Gm-Message-State: AOAM532UweAyVGrt6A8zfpv3SiLeK9icGu8fVo4vAES/FrjP5sJXrZQk
-        qWWH4nK51ENvxF47fYUEvhry+g==
-X-Google-Smtp-Source: ABdhPJylohww9dg1GYyIbVMq/Nw8ytFEu6RVmpEehQbjLtvam+DWoalMEAMP5jppFr2nQ0E9S6IUIA==
-X-Received: by 2002:a17:90b:80f:: with SMTP id bk15mr934491pjb.119.1605647606216;
-        Tue, 17 Nov 2020 13:13:26 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d18sm19469582pgm.68.2020.11.17.13.13.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 13:13:25 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     containers@lists.linux-foundation.org,
-        YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        linux-riscv@lists.infradead.org,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-sh@vger.kernel.org, Hubertus Franke <frankeh@us.ibm.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, linux-parisc@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        linux-csky@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        linux-xtensa@linux-xtensa.org, Jann Horn <jannh@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org, Will Drewry <wad@chromium.org>,
-        linux-s390@vger.kernel.org,
-        Valentin Rothberg <vrothber@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH seccomp v2 0/8] seccomp: add bitmap cache support on remaining arches and report cache in procfs
-Date:   Tue, 17 Nov 2020 13:11:13 -0800
-Message-Id: <160564746555.1001899.9792418917631139658.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1605101222.git.yifeifz2@illinois.edu>
-References: <cover.1605101222.git.yifeifz2@illinois.edu>
+        Tue, 17 Nov 2020 16:12:12 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb43cb60000>; Tue, 17 Nov 2020 13:12:22 -0800
+Received: from [10.2.160.29] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 21:12:06 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Roman Gushchin <guro@fb.com>, <linux-mm@kvack.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>
+Subject: Re: [RFC PATCH 3/6] mm: page_owner: add support for splitting to any
+ order in split page_owner.
+Date:   Tue, 17 Nov 2020 16:12:03 -0500
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <3E32BC50-700F-471E-89FD-35414610B84E@nvidia.com>
+In-Reply-To: <20201117210532.GX29991@casper.infradead.org>
+References: <20201111204008.21332-1-zi.yan@sent.com>
+ <20201111204008.21332-4-zi.yan@sent.com>
+ <20201114001505.GA3047204@carbon.dhcp.thefacebook.com>
+ <F55878E8-22B1-443E-9CC8-E97B3DAA7EA4@nvidia.com>
+ <20201114013801.GA3069806@carbon.dhcp.thefacebook.com>
+ <20201117210532.GX29991@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed;
+        boundary="=_MailMate_6ED5853A-954C-4A59-A97B-624560A842DC_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605647542; bh=64ZjmSxGb8MyZ3UfPriBNWjeYtQYIH36eeoMM2kPilA=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=TcmRVMpNSIktWPyybX14aE24EuOExJXE+mwuer9UoVFqeNXEjZE1+JbaFzkl4QGxk
+         o1/QnQawQ0JDFCDsSBM0B5PnsNMeX/u36KK/PHsGVplQPiLiSl8deG9bPpqG6RongU
+         nTN8XCnn/1hwx318BlbVZJbLGa5ahodj3VWMpPIO2ssMSeigUikq0Tp7IG7QJiRW6S
+         h5MOo+ggnWjamE2Ho9f+nkFomPcNqORDIH2/kNMHror66MKFNL8jfczVaScY8EZq3u
+         ihbAwus1VX5aYsm9Z8Ihs/NrGDzMngJjDWqkjbe5U0Lae/muGJ5i62jAj+Oxm61VVl
+         jO7F5BXPZiguw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 07:33:46 -0600, YiFei Zhu wrote:
-> This patch series enables bitmap cache for the remaining arches with
-> SECCOMP_FILTER, other than MIPS.
-> 
-> I was unable to find any of the arches having subarch-specific NR_syscalls
-> macros, so generic NR_syscalls is used. SH's syscall_get_arch seems to
-> only have the 32-bit subarch implementation. I'm not sure if this is
-> expected.
-> 
-> [...]
+--=_MailMate_6ED5853A-954C-4A59-A97B-624560A842DC_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Applied to for-next/seccomp, thanks!
+On 17 Nov 2020, at 16:05, Matthew Wilcox wrote:
 
-I made a small tweak to the last patch to add more details to the per-ARCH
-help text, and to drop the needless "depends on SECCOMP" (which "depends
-on SECCOMP_FILTER" was already present).
+> On Fri, Nov 13, 2020 at 05:38:01PM -0800, Roman Gushchin wrote:
+>> On Fri, Nov 13, 2020 at 08:08:58PM -0500, Zi Yan wrote:
+>>> Matthew recently converted split_page_owner to take nr instead of ord=
+er.[1]
+>>> But I am not
+>>> sure why, since it seems to me that two call sites (__split_huge_page=
+ in
+>>> mm/huge_memory.c and split_page in mm/page_alloc.c) can pass the orde=
+r
+>>> information.
+>>
+>> Yeah, I'm not sure why too. Maybe Matthew has some input here?
+>> You can also pass new_nr, but IMO orders look so much better here.
+>
+> If only I'd written that information in the changelog ... oh wait, I di=
+d!
+>
+>     mm/page_owner: change split_page_owner to take a count
+>
+>     The implementation of split_page_owner() prefers a count rather tha=
+n the
+>     old order of the page.  When we support a variable size THP, we won=
+'t
+>     have the order at this point, but we will have the number of pages.=
 
-I successfully build-tested on parisc, powerpc, riscv, s390, and
-sh. xtensa doesn't build using the existing Debian cross-compiler, and
-I can't make csky with clang work, but they look correct. *cross fingers*
+>     So change the interface to what the caller and callee would prefer.=
 
-[1/8] csky: Enable seccomp architecture tracking
-      https://git.kernel.org/kees/c/ee7ce951028f
-[2/8] parisc: Enable seccomp architecture tracking
-      https://git.kernel.org/kees/c/7f049cc068a3
-[3/8] powerpc: Enable seccomp architecture tracking
-      https://git.kernel.org/kees/c/95f8ae2624a0
-[4/8] riscv: Enable seccomp architecture tracking
-      https://git.kernel.org/kees/c/8f9f0f44a37b
-[5/8] s390: Enable seccomp architecture tracking
-      https://git.kernel.org/kees/c/5897106c6902
-[6/8] sh: Enable seccomp architecture tracking
-      https://git.kernel.org/kees/c/75186111c257
-[7/8] xtensa: Enable seccomp architecture tracking
-      https://git.kernel.org/kees/c/4f408bc643aa
-[8/8] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-      https://git.kernel.org/kees/c/49a6968cc78f
 
--- 
-Kees Cook
+There are two callers, split_page in mm/page_alloc.c and __split_huge_pag=
+e in
+mm/huge_memory.c. The former has the page order. The latter has the page =
+order
+information before __split_huge_page_tail is called, so we can do
+old_order =3D thp_order(head) instead of nr =3D thp_nr_page(head) and use=
+ old_order.
+What am I missing there?
 
+Thanks.
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_6ED5853A-954C-4A59-A97B-624560A842DC_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+0PKMPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKOR0QAKRcSZsmJeAgfo2cCv8MH/fo4aZ1Sjnu6YXo
+30nKjYrVRJfrKwy5EZDObhz30InCvQBgV5rVwhleWlpstFYhy92otQVGh/i6R4US
+PTtm/CwyVISKU9NqlEN8UM1rvpg6OU8/cbvlUKuKPn8UXH0SWy0bu/tY6JAqfFlk
+nMfSohWDzU2OKxehLOvnTWRNFX8iGU10GjP5xYmwJGAMunUGlJzm9xFPO05XQvmb
+TW+khRXyBWUur97Uc68a+hvAbWPkKvAtL65LDmiJGX24FgE3i1TpkeHCaGaEyk/y
+XEs3aq/BoCVpcc/sEut38PovBjVZ4gSLrDX0rcFAFpxcqvyrGWUcSf7aS9+lhry0
+7z4N3bZtm8UGQsNUWFE350tyOBdCiPe+jbi8ghZWEamkmFoaoFSc3iHhPyO6fXcK
+8TXaYnQ6yXMP7womnp5p8qheC5vx2JpNLaq9bxPmfxaPdRUAUU+CR3uoHap4i4LG
+aDl+1aZYS7RGwZ1IfZLmu4OWOtQ3drj9U43C3K2dwhEKiSm8OdBWaW54WfUN6OEP
+0kBoqpH3AGZ5BqU0vFNABqU9KL/iZtzskk7/j5o38J1XdgkNj7EZJQVtqXIXyI4K
+zRD/WKkwlT1RB7mdsXNnRbgMRmBxJDsBZa9rcrRSy+IqIP35w1AB8SnoJhM1rzVq
+XDoWNj7A
+=Mn3h
+-----END PGP SIGNATURE-----
+
+--=_MailMate_6ED5853A-954C-4A59-A97B-624560A842DC_=--
