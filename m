@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD652B5DDA
+	by mail.lfdr.de (Postfix) with ESMTP id AA0AD2B5DDB
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728439AbgKQLC1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 06:02:27 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:55885 "EHLO
+        id S1728451AbgKQLC2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 06:02:28 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:39132 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728430AbgKQLC0 (ORCPT
+        by vger.kernel.org with ESMTP id S1728244AbgKQLC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Nov 2020 06:02:26 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-GVlaqeElMT2_cw_7rgVx4Q-1; Tue, 17 Nov 2020 06:02:17 -0500
-X-MC-Unique: GVlaqeElMT2_cw_7rgVx4Q-1
+ us-mta-362-_GDK0vTWNeeflQFST4f50Q-1; Tue, 17 Nov 2020 06:02:19 -0500
+X-MC-Unique: _GDK0vTWNeeflQFST4f50Q-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A15746D257;
-        Tue, 17 Nov 2020 11:02:14 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0898A10B9CA6;
+        Tue, 17 Nov 2020 11:02:18 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A367F5C1CF;
-        Tue, 17 Nov 2020 11:02:11 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 06CE85C1CF;
+        Tue, 17 Nov 2020 11:02:14 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -39,9 +39,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 21/24] perf buildid-cache: Add support to add build ids from perf data
-Date:   Tue, 17 Nov 2020 12:00:50 +0100
-Message-Id: <20201117110053.1303113-22-jolsa@kernel.org>
+Subject: [PATCH 22/24] perf buildid-cache: Add --debuginfod option
+Date:   Tue, 17 Nov 2020 12:00:51 +0100
+Message-Id: <20201117110053.1303113-23-jolsa@kernel.org>
 In-Reply-To: <20201117110053.1303113-1-jolsa@kernel.org>
 References: <20201117110053.1303113-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -56,342 +56,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding support to specify perf data file as -a option file
-argument,
+Adding --debuginfod option to specify debuginfod url and
+support to do that through config file as well.
 
-If the file is detected to be perf data file, it is processed
-and all dso objects with sample hit are stored to the build
-id cache.
+Use following in ~/.perfconfig file:
 
-  $ DEBUGINFOD_URLS=http://192.168.122.174:8002 perf buildid-cache -a perf.data
-  OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /home/jolsa/.debug/.build-id/5d/cec522abf136fcfd3128f47e131f2365834dd7/elf
-  OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
-
-By default we store only dso with hits, but it's possible to
-specify 'all' to store all dso objects, like:
-    -a perf.data,all
-
-  $ DEBUGINFOD_URLS=http://192.168.122.174:8002 perf buildid-cache -a perf.data,all
-  OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /home/jolsa/.debug/.build-id/5d/cec522abf136fcfd3128f47e131f2365834dd7/elf
-  OK   6ce92dc7c31f12fe5b7775a2bb8b14a3546ce2cd /lib/modules/5.10.0-rc2speed+/kernel/drivers/firmware/qemu_fw_cfg.ko
-  OK   bf3f6d32dccc159f841fc3658c241d0e74c61fbb /lib/modules/5.10.0-rc2speed+/kernel/drivers/block/virtio_blk.ko
-  OK   e896b4329cf9f190f1a0fae933f425ff8f71b052 /lib/modules/5.10.0-rc2speed+/kernel/drivers/char/virtio_console.ko
-  OK   5bedc933cb59e053ecb472f327bd73c548364479 /lib/modules/5.10.0-rc2speed+/kernel/drivers/input/serio/serio_raw.ko
-  OK   cecc506368a8b7a473a5f900d26f0d3d914a9c23 /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/crc32c-intel.ko
-  OK   91076fb3646d061a0a42cf7bddb339a665ee4f80 /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/ghash-clmulni-intel.ko
-  OK   4e2a304d788bb8e2e950bc82a5944e042afa0bf2 /lib/modules/5.10.0-rc2speed+/kernel/drivers/media/cec/core/cec.ko
-  OK   31ab0da5ad81e6803280177f507a95f3053d585e /lib/modules/5.10.0-rc2speed+/kernel/lib/libcrc32c.ko
-  OK   f6154bca47c149f48c942fcc3d653041dd285c65 /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/ttm/ttm.ko
-  OK   723f5852de81590d54b23b38c160d3618b41951b /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/crct10dif-pclmul.ko
-  OK   06b1eab7f141cbc3e5a5db47909c8ab5cb242e40 /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/drm_ttm_helper.ko
-  OK   38292b862cf3ff87489508fdb4895efa45780813 /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/qxl/qxl.ko
-  OK   cdf51e58609bf2ce4837a7b195e0ccae0a930907 /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/crc32-pclmul.ko
-  OK   5ca8958388f6688452ecc2cb83d6031394c659ad /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/drm.ko
-  OK   236bc4e4f38bf3559007566cb32b3dcc1bc28d2d /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/drm_kms_helper.ko
-  OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
-  OK   66db2be3efaa43bb5a5c481986e9554e1885cc69 /usr/lib/systemd/systemd
-  OK   7db607d9f2de89860d9639712da64c8bacd31e4b /usr/lib64/libm-2.30.so
-  OK   55b5f9652e1d17c1dd58f62628d5063428e5db91 /usr/lib64/libudev.so.1.6.15
-  OK   63b97070bf097130713bb6c89cf7100b5f3c9b17 /usr/lib64/libunistring.so.2.1.0
-  ...
-
-Once perf data is specified, no other file can be specified in
-the option, otherwise it causes syntax error.
+  [buildid-cache]
+  debuginfod=http://192.168.122.174:8002
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../perf/Documentation/perf-buildid-cache.txt |  12 +-
- tools/perf/builtin-buildid-cache.c            | 215 +++++++++++++++++-
- tools/perf/util/probe-event.c                 |   6 +-
- 3 files changed, 227 insertions(+), 6 deletions(-)
+ .../perf/Documentation/perf-buildid-cache.txt |  6 ++++
+ tools/perf/Documentation/perf-config.txt      |  7 +++++
+ tools/perf/builtin-buildid-cache.c            | 28 +++++++++++++++++--
+ 3 files changed, 38 insertions(+), 3 deletions(-)
 
 diff --git a/tools/perf/Documentation/perf-buildid-cache.txt b/tools/perf/Documentation/perf-buildid-cache.txt
-index f6de0952ff3c..b77da5138bca 100644
+index b77da5138bca..75385f4dc11f 100644
 --- a/tools/perf/Documentation/perf-buildid-cache.txt
 +++ b/tools/perf/Documentation/perf-buildid-cache.txt
-@@ -23,7 +23,17 @@ OPTIONS
- -------
- -a::
- --add=::
--        Add specified file to the cache.
-+        Add specified file or perf.data binaries to the cache.
+@@ -84,6 +84,12 @@ OPTIONS
+ 	used when creating a uprobe for a process that resides in a
+ 	different mount namespace from the perf(1) utility.
+ 
++--debuginfod=URL::
++	Specify debuginfod URL to be used when retrieving perf.data binaries,
++	it follows the same syntax as the DEBUGINFOD_URLS variable, like:
 +
-+        If the file is detected to be perf data file, it is processed
-+        and all dso objects with sample hit are stored to the cache.
++	  buildid-cache.debuginfod=http://192.168.122.174:8002
 +
-+        It's possible to specify 'all' to store all dso objects, like:
-+            -a perf.data,all
+ SEE ALSO
+ --------
+ linkperf:perf-record[1], linkperf:perf-report[1], linkperf:perf-buildid-list[1]
+diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
+index 31069d8a5304..15fad32b9885 100644
+--- a/tools/perf/Documentation/perf-config.txt
++++ b/tools/perf/Documentation/perf-config.txt
+@@ -238,6 +238,13 @@ buildid.*::
+ 		cache location, or to disable it altogether. If you want to disable it,
+ 		set buildid.dir to /dev/null. The default is $HOME/.debug
+ 
++buildid-cache.*::
++	buildid-cache.debuginfod=URL
++		Specify debuginfod URL to be used when retrieving perf.data binaries,
++		it follows the same syntax as the DEBUGINFOD_URLS variable, like:
 +
-+        Once perf data is specified, no other file can be specified in
-+        the option, otherwise it causes syntax error.
++		  buildid-cache.debuginfod=http://192.168.122.174:8002
 +
- -f::
- --force::
- 	Don't complain, do it.
+ annotate.*::
+ 	These are in control of addresses, jump function, source code
+ 	in lines of assembly code from a specific program.
 diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
-index a25411926e48..0bfb54ee1e5e 100644
+index 0bfb54ee1e5e..fc03de7d2a28 100644
 --- a/tools/perf/builtin-buildid-cache.c
 +++ b/tools/perf/builtin-buildid-cache.c
-@@ -29,6 +29,11 @@
+@@ -27,6 +27,7 @@
+ #include "util/time-utils.h"
+ #include "util/util.h"
  #include "util/probe-file.h"
++#include "util/config.h"
  #include <linux/string.h>
  #include <linux/err.h>
-+#include <linux/zalloc.h>
-+#include <sys/stat.h>
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+#include <elfutils/debuginfod.h>
-+#endif
- 
- static int build_id_cache__kcore_buildid(const char *proc_dir, char *sbuildid)
- {
-@@ -348,6 +353,205 @@ static int build_id_cache__show_all(void)
- 	return 0;
+ #include <linux/zalloc.h>
+@@ -552,12 +553,21 @@ build_id_cache__add_perf_data(const char *path, bool all)
+ 	return err;
  }
  
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+static int call_debuginfod(const char *sbuild_id, char **path, bool debuginfo)
++static int perf_buildid_cache_config(const char *var, const char *value, void *cb)
 +{
-+	debuginfod_client *c;
-+	int fd;
++	const char **debuginfod = cb;
 +
-+	c = debuginfod_begin();
-+	if (c == NULL)
-+		return -1;
++	if (!strcmp(var, "buildid-cache.debuginfod"))
++		*debuginfod = strdup(value);
 +
-+	pr_debug("trying debuginfod for executable <%s> ... ", sbuild_id);
-+
-+	if (debuginfo) {
-+		fd = debuginfod_find_debuginfo(c, (const unsigned char *) sbuild_id,
-+					       0, path);
-+	} else {
-+		fd = debuginfod_find_executable(c, (const unsigned char *) sbuild_id,
-+						0, path);
-+	}
-+	if (fd >= 0)
-+		close(fd); /* retaining reference by realname */
-+
-+	debuginfod_end(c);
-+	pr_debug("%s%s\n", *path ? "OK " : "FAILED", *path ? *path : "");
-+	return *path ? 0 : -1;
-+}
-+#else
-+static int call_debuginfod(const char *sbuild_id __maybe_unused,
-+			   char **path __maybe_unused,
-+			   bool debuginfo __maybe_unused)
-+{
-+	return -1;
-+}
-+#endif
-+
-+struct dso_store_data {
-+	bool	 hits;
-+	bool	 force_download;
-+};
-+
-+static int dso_store(struct dso *dso, struct machine *machine, void *priv)
-+{
-+	struct dso_store_data *data = priv;
-+	char sbuild_id[SBUILD_ID_SIZE];
-+	struct build_id bid;
-+	char *path = NULL, *link = NULL;
-+	bool is_kallsyms;
-+	int err = -1;
-+
-+	/*
-+	 * There's no build id in dso, nothing to do..
-+	 */
-+	if (!dso->has_build_id || !build_id__is_defined(&dso->bid))
-+		return 0;
-+
-+	if (data->hits && !dso->hit)
-+		return 0;
-+
-+	/*
-+	 * The storing process is:
-+	 *   - get build id of the dso
-+	 *   - check if it is already in cache
-+	 *   - check if it matches provided build id from mmap2 event
-+	 *   - if not, try debuginfod to download the binary
-+	 *   - store binary to build id database
-+	 */
-+	is_kallsyms = !strcmp(machine->mmap_name, dso->short_name);
-+	build_id__sprintf(&dso->bid, sbuild_id);
-+
-+	link = build_id_cache__linkname(sbuild_id, NULL, 0);
-+	if (!link)
-+		return -ENOMEM;
-+
-+	if (!data->force_download && !access(link, X_OK)) {
-+		pr_debug("already in cache - %s <%s>\n", dso->long_name, sbuild_id);
-+		err = 0;
-+		goto out;
-+	}
-+
-+	path = strdup(dso->long_name);
-+	if (!path)
-+		goto out;
-+
-+	if (is_kallsyms) {
-+		/*
-+		 * Find out if we are on the same kernel as perf.data
-+		 * and store kallsyms in that case.
-+		 */
-+		err = sysfs__read_build_id("/sys/kernel/notes", &bid);
-+		if (err < 0)
-+			goto out;
-+	} else {
-+		struct nscookie nsc;
-+		struct stat st;
-+
-+		nsinfo__mountns_enter(dso->nsinfo, &nsc);
-+
-+		/*
-+		 * Does the file exists in the first place, if it does,
-+		 * resolve path and read the build id.
-+		 */
-+		if (stat(dso->long_name, &st)) {
-+			nsinfo__mountns_exit(&nsc);
-+			zfree(&path);
-+			goto try_download;
-+		}
-+
-+		err = filename__read_build_id(dso->long_name, &bid);
-+		nsinfo__mountns_exit(&nsc);
-+
-+		if (err <= 0)
-+			goto out;
-+	}
-+
-+	/*
-+	 * If we match, then what we want in mmap2 event
-+	 * is what we got in the binary,
-+	 */
-+	if (bid.size != dso->bid.size || memcmp(&bid, &dso->bid, bid.size)) {
-+		char sbid[SBUILD_ID_SIZE];
-+
-+		build_id__sprintf(&bid, sbid);
-+		pr_debug("mmap build id <%s> does not match for %s <%s>\n",
-+			 sbuild_id, path, sbid);
-+		zfree(&path);
-+	}
-+
-+try_download:
-+	/*
-+	 * We did not match build id or did not find the
-+	 * binary - try debuginfod as last resort.
-+	 */
-+	if (!path) {
-+		bool debuginfo;
-+		char *tmp = NULL;
-+
-+		/*
-+		 * The debuginfo retrieval for standard binaries
-+		 * is handled within build_id_cache__add function.
-+		 *
-+		 * For kernel and kernel modules we have to ask
-+		 * for debuginfo directly, because debuginfod
-+		 * does not treat them as binaries.
-+		 */
-+		debuginfo = is_kallsyms ||
-+			    is_kernel_module(dso->long_name, PERF_RECORD_MISC_CPUMODE_UNKNOWN);
-+
-+		if (call_debuginfod(sbuild_id, &tmp, debuginfo)) {
-+			err = -1;
-+			goto out;
-+		}
-+
-+		path = tmp;
-+
-+		/*
-+		 * The kernel dso is now elf binary, so disable is_kallsyms
-+		 * so build_id_cache__add can prepare proper file names.
-+		 */
-+		is_kallsyms = false;
-+	}
-+
-+	pr_debug("linking %s %s <%s>\n", dso->short_name, path, sbuild_id);
-+
-+	err = build_id_cache__add(sbuild_id, path, path,
-+				  dso->nsinfo, is_kallsyms, false);
-+out:
-+	free(path);
-+	fprintf(stderr, "%s %s %s\n", err ? "FAIL" : "OK  ", sbuild_id, dso->long_name);
 +	return 0;
-+}
-+
-+static int
-+build_id_cache__add_perf_data(const char *path, bool all)
-+{
-+	struct perf_session *session;
-+	struct dso_store_data priv = {
-+		.hits = !all,
-+		.force_download = false,
-+	};
-+	struct perf_data data = {
-+		.path  = path,
-+		.mode  = PERF_DATA_MODE_READ,
-+	};
-+	int err;
-+
-+	session = perf_session__new(&data, false, &build_id__mark_dso_hit_ops);
-+	if (IS_ERR(session))
-+		return PTR_ERR(session);
-+
-+	err = perf_session__process_events(session);
-+	if (err)
-+		goto out;
-+
-+	err = __perf_session__cache_build_ids(session, dso_store, &priv);
-+out:
-+	perf_session__delete(session);
-+	return err;
 +}
 +
  int cmd_buildid_cache(int argc, const char **argv)
  {
  	struct strlist *list;
-@@ -440,7 +644,15 @@ int cmd_buildid_cache(int argc, const char **argv)
- 		list = strlist__new(add_name_list_str, NULL);
- 		if (list) {
- 			strlist__for_each_entry(pos, list)
--				if (build_id_cache__add_file(pos->s, nsi)) {
-+				if (is_perf_data(pos->s)) {
-+					struct str_node *all_pos = strlist__next(pos);
-+					bool all = !strcmp("all", all_pos ? all_pos->s : "");
+ 	struct str_node *pos;
+-	int ret = 0;
+-	int ns_id = -1;
++	int ret, ns_id = -1;
+ 	bool force = false;
+ 	bool list_files = false;
+ 	bool opts_flag = false;
+@@ -567,7 +577,8 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 		   *purge_name_list_str = NULL,
+ 		   *missing_filename = NULL,
+ 		   *update_name_list_str = NULL,
+-		   *kcore_filename = NULL;
++		   *kcore_filename = NULL,
++		   *debuginfod = NULL;
+ 	char sbuf[STRERR_BUFSIZE];
+ 
+ 	struct perf_data data = {
+@@ -592,6 +603,8 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 	OPT_BOOLEAN('f', "force", &force, "don't complain, do it"),
+ 	OPT_STRING('u', "update", &update_name_list_str, "file list",
+ 		    "file(s) to update"),
++	OPT_STRING(0, "debuginfod", &debuginfod, "debuginfod url",
++		    "set debuginfod url"),
+ 	OPT_INCR('v', "verbose", &verbose, "be more verbose"),
+ 	OPT_INTEGER(0, "target-ns", &ns_id, "target pid for namespace context"),
+ 	OPT_END()
+@@ -601,6 +614,10 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 		NULL
+ 	};
+ 
++	ret = perf_config(perf_buildid_cache_config, &debuginfod);
++	if (ret)
++		return ret;
 +
-+					if (build_id_cache__add_perf_data(pos->s, all))
-+						pr_warning("Couldn't add build ids from %s\n", pos->s);
-+					if (all)
-+						pos = all_pos;
-+				} else if (build_id_cache__add_file(pos->s, nsi)) {
- 					if (errno == EEXIST) {
- 						pr_debug("%s already in the cache\n",
- 							 pos->s);
-@@ -449,7 +661,6 @@ int cmd_buildid_cache(int argc, const char **argv)
- 					pr_warning("Couldn't add %s: %s\n",
- 						   pos->s, str_error_r(errno, sbuf, sizeof(sbuf)));
- 				}
--
- 			strlist__delete(list);
- 		}
- 	}
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index 8eae2afff71a..e821bb977c9b 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -1616,9 +1616,9 @@ static int parse_perf_probe_point(char *arg, struct perf_probe_event *pev)
- 		return -EINVAL;
- 	}
+ 	argc = parse_options(argc, argv, buildid_cache_options,
+ 			     buildid_cache_usage, 0);
  
--	pr_debug("symbol:%s file:%s line:%d offset:%lu return:%d lazy:%s\n",
--		 pp->function, pp->file, pp->line, pp->offset, pp->retprobe,
--		 pp->lazy_line);
-+	pr_debug2("symbol:%s file:%s line:%d offset:%lu return:%d lazy:%s\n",
-+		  pp->function, pp->file, pp->line, pp->offset, pp->retprobe,
-+		  pp->lazy_line);
- 	return 0;
- }
+@@ -612,6 +629,11 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 	if (argc || !(list_files || opts_flag))
+ 		usage_with_options(buildid_cache_usage, buildid_cache_options);
  
++	if (debuginfod) {
++		pr_debug("DEBUGINFOD_URLS=%s\n", debuginfod);
++		setenv("DEBUGINFOD_URLS", debuginfod, 1);
++	}
++
+ 	/* -l is exclusive. It can not be used with other options. */
+ 	if (list_files && opts_flag) {
+ 		usage_with_options_msg(buildid_cache_usage,
 -- 
 2.26.2
 
