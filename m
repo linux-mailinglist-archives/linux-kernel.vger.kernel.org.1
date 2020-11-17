@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D0C2B6398
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 147BC2B65E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732760AbgKQNjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:39:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51064 "EHLO mail.kernel.org"
+        id S1733248AbgKQN7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:59:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732547AbgKQNjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:39:12 -0500
+        id S1730692AbgKQNSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:18:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4E0420870;
-        Tue, 17 Nov 2020 13:39:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77A50206D5;
+        Tue, 17 Nov 2020 13:18:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620352;
-        bh=NufzcBppMVNG8MgCZ4bFd6nvzpCYI0Il9pxAXi1pMaE=;
+        s=default; t=1605619114;
+        bh=VA+y975yS8kWIx+XMVvfAypuGIsmBZ4s9vz4ij4d3dU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CGMY+yP4/lJW54+GeAA+dEhWt5OwbISaJTD6Ss17SCGR29QuW3QoIy2xxacbjGm4L
-         H7VgthCAFJbjIBspKiwcKvziEITknuA4Xdzjv2c9LlUt+1LZCLXI8/vapSkzIP4Abx
-         VQMLLOQPGjfyKHSOWApW9G7a8Z4FeAs0ot8D1JFc=
+        b=hpJPkb67SN7d920AfDd+sYBgEUMqn8n7k+eI2jIkbU5k5a9nUGMbPEQSlKV3sJxgP
+         BeYenAxbpdaEl4x/6tVyND6EhpioMs6nvCU1NHS5CP6anIPd4h2kEuy+1neMTr7cAi
+         RJiRi+Wtu+AZIAoNl2roaJcmXrRFjW2MWNPQYlys=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 159/255] xfs: set the unwritten bit in rmap lookup flags in xchk_bmap_get_rmapextents
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 032/101] gfs2: Free rd_bits later in gfs2_clear_rgrpd to fix use-after-free
 Date:   Tue, 17 Nov 2020 14:04:59 +0100
-Message-Id: <20201117122146.692206712@linuxfoundation.org>
+Message-Id: <20201117122114.653211832@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 5dda3897fd90783358c4c6115ef86047d8c8f503 ]
+[ Upstream commit d0f17d3883f1e3f085d38572c2ea8edbd5150172 ]
 
-When the bmbt scrubber is looking up rmap extents, we need to set the
-extent flags from the bmbt record fully.  This will matter once we fix
-the rmap btree comparison functions to check those flags correctly.
+Function gfs2_clear_rgrpd calls kfree(rgd->rd_bits) before calling
+return_all_reservations, but return_all_reservations still dereferences
+rgd->rd_bits in __rs_deltree.  Fix that by moving the call to kfree below the
+call to return_all_reservations.
 
-Fixes: d852657ccfc0 ("xfs: cross-reference reverse-mapping btree")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/scrub/bmap.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/gfs2/rgrp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/xfs/scrub/bmap.c b/fs/xfs/scrub/bmap.c
-index 955302e7cdde9..412e2ec55e388 100644
---- a/fs/xfs/scrub/bmap.c
-+++ b/fs/xfs/scrub/bmap.c
-@@ -113,6 +113,8 @@ xchk_bmap_get_rmap(
+diff --git a/fs/gfs2/rgrp.c b/fs/gfs2/rgrp.c
+index c94c4ac1ae78b..1686a40099f21 100644
+--- a/fs/gfs2/rgrp.c
++++ b/fs/gfs2/rgrp.c
+@@ -739,9 +739,9 @@ void gfs2_clear_rgrpd(struct gfs2_sbd *sdp)
+ 		}
  
- 	if (info->whichfork == XFS_ATTR_FORK)
- 		rflags |= XFS_RMAP_ATTR_FORK;
-+	if (irec->br_state == XFS_EXT_UNWRITTEN)
-+		rflags |= XFS_RMAP_UNWRITTEN;
- 
- 	/*
- 	 * CoW staging extents are owned (on disk) by the refcountbt, so
+ 		gfs2_free_clones(rgd);
++		return_all_reservations(rgd);
+ 		kfree(rgd->rd_bits);
+ 		rgd->rd_bits = NULL;
+-		return_all_reservations(rgd);
+ 		kmem_cache_free(gfs2_rgrpd_cachep, rgd);
+ 	}
+ }
 -- 
 2.27.0
 
