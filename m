@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360462B6389
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6D02B65F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732716AbgKQNi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:38:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47932 "EHLO mail.kernel.org"
+        id S1730587AbgKQN73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:59:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732853AbgKQNgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:36:55 -0500
+        id S1730596AbgKQNRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:17:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C624120780;
-        Tue, 17 Nov 2020 13:36:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13DE02463D;
+        Tue, 17 Nov 2020 13:17:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620215;
-        bh=5chNI52tjZEY8XlpZjeJ7rSm/KurCIeRPXa6E6EFi/4=;
+        s=default; t=1605619066;
+        bh=0iwJuiQzlg0IcIRmnTjdvR37SNEbZGygc+Kl6YTufgk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bkbEwXrl2pyK3SzmSDQ/FBgHC/ARHOk81UyQZqvHjETzmyWr4k6lgngA/nMSRTX9W
-         Za65Syk+IgkIqTtyLphVDpdLiBanGCP/+FKoJNVo4vDyWHKAzs9q8iGXCg2agEBs8P
-         cWlFaxecIT6TFlHsX72Spz2JpC8WMqYTADNqV+JI=
+        b=FfELSIec9AR3G9Yw2CSO7F3/GK148jlnE3lj9n0PByJsxwrX96UNAtgSiAFLG7b+d
+         oafsoRl3aUeJkaXVVVIqGkTe/+WE5OAzGTAbMU6ByZNe2CM1IWRWAQjMLcoFxTs2oV
+         wxh8hQIz31wOcGpPhYBJA/Q/vhMD1xWIAi+yiyxE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dai Ngo <dai.ngo@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
+        stable@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 144/255] NFSD: Fix use-after-free warning when doing inter-server copy
+Subject: [PATCH 4.19 017/101] can: dev: __can_get_echo_skb(): fix real payload length return value for RTR frames
 Date:   Tue, 17 Nov 2020 14:04:44 +0100
-Message-Id: <20201117122145.959037674@linuxfoundation.org>
+Message-Id: <20201117122113.934953076@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dai Ngo <dai.ngo@oracle.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-[ Upstream commit 36e1e5ba90fb3fba6888fae26e4dfc28bf70aaf1 ]
+[ Upstream commit ed3320cec279407a86bc4c72edc4a39eb49165ec ]
 
-The source file nfsd_file is not constructed the same as other
-nfsd_file's via nfsd_file_alloc. nfsd_file_put should not be
-called to free the object; nfsd_file_put is not the inverse of
-kzalloc, instead kfree is called by nfsd4_do_async_copy when done.
+The can_get_echo_skb() function returns the number of received bytes to
+be used for netdev statistics. In the case of RTR frames we get a valid
+(potential non-zero) data length value which has to be passed for further
+operations. But on the wire RTR frames have no payload length. Therefore
+the value to be used in the statistics has to be zero for RTR frames.
 
-Fixes: ce0887ac96d3 ("NFSD add nfs4 inter ssc to nfsd4_copy")
-Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Reported-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/r/20201020064443.80164-1-socketcan@hartkopp.net
+Fixes: cf5046b309b3 ("can: dev: let can_get_echo_skb() return dlc of CAN frame")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfs4proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/dev.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-index 84e10aef14175..80effaa18b7b2 100644
---- a/fs/nfsd/nfs4proc.c
-+++ b/fs/nfsd/nfs4proc.c
-@@ -1299,7 +1299,7 @@ nfsd4_cleanup_inter_ssc(struct vfsmount *ss_mnt, struct nfsd_file *src,
- 			struct nfsd_file *dst)
- {
- 	nfs42_ssc_close(src->nf_file);
--	nfsd_file_put(src);
-+	/* 'src' is freed by nfsd4_do_async_copy */
- 	nfsd_file_put(dst);
- 	mntput(ss_mnt);
- }
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index be532eb64baa2..1950b13f22dfc 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -493,9 +493,13 @@ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8
+ 		 */
+ 		struct sk_buff *skb = priv->echo_skb[idx];
+ 		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+-		u8 len = cf->len;
+ 
+-		*len_ptr = len;
++		/* get the real payload length for netdev statistics */
++		if (cf->can_id & CAN_RTR_FLAG)
++			*len_ptr = 0;
++		else
++			*len_ptr = cf->len;
++
+ 		priv->echo_skb[idx] = NULL;
+ 
+ 		return skb;
 -- 
 2.27.0
 
