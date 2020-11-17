@@ -2,204 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFF52B6827
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 596852B682C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733088AbgKQPAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:00:41 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2118 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728662AbgKQPAl (ORCPT
+        id S1729510AbgKQPDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:03:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728662AbgKQPDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:00:41 -0500
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cb8Gd5GrCz67DS4;
-        Tue, 17 Nov 2020 22:59:05 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 17 Nov 2020 16:00:38 +0100
-Received: from localhost (10.47.31.177) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 17 Nov
- 2020 15:00:37 +0000
-Date:   Tue, 17 Nov 2020 15:00:29 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [RFC PATCH 4/9] cxl/mem: Map memory device registers
-Message-ID: <20201117150029.000018a9@Huawei.com>
-In-Reply-To: <20201111054356.793390-5-ben.widawsky@intel.com>
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
-        <20201111054356.793390-5-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 17 Nov 2020 10:03:19 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED631C0613CF;
+        Tue, 17 Nov 2020 07:03:19 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id r12so21442657iot.4;
+        Tue, 17 Nov 2020 07:03:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XafKqgWOlqV0B4UFtBBC/BN1qaFCNv2WWmGeQ8KThYY=;
+        b=oJsHTJ+R9YAPP9dXLGee0Lptfm4kvyzFtLHxk/drb2L6jbGaTW097adw7koMmM4yTm
+         okKggpdmzNqPPM8NZdTTznMgQAPyAEVx2um1AuqjAJBiVewP0S22N+vYM512fQE5zA9X
+         yLqZCtT7s6aGCMDYim7iBoNfnXx2F0q6sSvLRMyupyX/bupuvbHYo7bWQ4sZbXXUDniR
+         jr8U1eRdg6pXsx5JR6PDt3nkPKlhjj7DWQbXEzWI7N0sX19VD0myGV2AZDAbnUOQiqOJ
+         WlLjP4Ig1Ie6DjBQWd+KsNV5ZK7pYBOSAMXFqxlH982KORONIqw64g1YWUKVqFy0K6tT
+         O7CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XafKqgWOlqV0B4UFtBBC/BN1qaFCNv2WWmGeQ8KThYY=;
+        b=m21RreFkb8guUvz7LJok9NtSTU0UWX8wmYb+LCJ8ctpJhtfNuNpRJrmg+fGN6PSUYs
+         hGFrEJbXicRU+wXhMUAvopeyylTkfxSDMOT+qWnBVXY5wciEc4D2lxANqxPlJKt0gcdt
+         ux9JzWpsdL5hzcwHaREBzG3HNlkb1RfRrUcuTLN1eHMTJHCAWQUJHnXsdY7EXi6AuU4L
+         Fzg33J3bdkt9KVZibNpUuFBYK+wKwnkNQyAfrONx2oJdj7jcSSLdDvP4+UVAOzROuL9t
+         BTVtzUA+yvlu0R79+hQoCPhN7HVz403sWazWlpm2V1UxhHHwzDe07A5LtiKb1r0C7ZRv
+         NubA==
+X-Gm-Message-State: AOAM532qDrtBk8eih5tn+YG5m6xtLPVyEEWTTfuO54BnGZSQfgW+jfDK
+        ulsOqnJojyqy3eay0Z6ZDVUXW3hGU+tf1aAcgNs=
+X-Google-Smtp-Source: ABdhPJzFPoCzdY6jhqL1GT/IzI+254UhNFEm2qTiXxOCMawqHX0kKAlIQfmPvhR8kvqfgsYT7Jq6tY6+OyABTQS3dtU=
+X-Received: by 2002:a02:cbde:: with SMTP id u30mr4128549jaq.69.1605625398650;
+ Tue, 17 Nov 2020 07:03:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.31.177]
-X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20201117075254.4861-1-alexandru.ardelean@analog.com>
+ <20201117075254.4861-2-alexandru.ardelean@analog.com> <20201117110111.0000468a@Huawei.com>
+ <20201117110447.0000393c@Huawei.com>
+In-Reply-To: <20201117110447.0000393c@Huawei.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 17 Nov 2020 17:03:06 +0200
+Message-ID: <CA+U=DsoXG3JderYJL8_7Vu+UYZf9jiW-tW4pRiRY3a0p-y2peg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] iio: adc: ad7887: convert driver to full DT probing
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vaishnav M A <vaishnav@beagleboard.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 21:43:51 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+On Tue, Nov 17, 2020 at 1:06 PM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Tue, 17 Nov 2020 11:01:11 +0000
+> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+>
+> > On Tue, 17 Nov 2020 09:52:53 +0200
+> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> >
+> > > This change removes the SPI device table, adds an OF device table ins=
+tead.
+> > > This should also be usable for ACPI via PRP0001.
+> > >
+> > > This device is usually probed via device-tree, so it makes more sense=
+ to
+> > > use the OF device table.
+> > >
+> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > So, we've had a few cases of having to put the device_id table
+> > back again recently.
+> > https://lore.kernel.org/linux-iio/20201101152613.2c37581a@archlinux/
+> >
+> > They tend to be due to greybus doing it's probing in yet another fashio=
+n.
+> > So far they've been all i2c devices, but I kind of assume it does the s=
+ame for spi.
+> > https://elixir.bootlin.com/linux/latest/source/drivers/staging/greybus/=
+spilib.c#L437
+> >
+> > How device_get_match_data() plays with that I'm not sure. It probably
+> > doesn't right now given swnode doesn't have a device_get_match_data() c=
+allback.
+> >
+> > https://elixir.bootlin.com/linux/latest/source/drivers/base/swnode.c#L5=
+39
+> >
+> > So after all that I think I've argued myself around to thinking what yo=
+u have
+> > here is fine.  If someone wants to support this via a swnode then they =
+can
+> > figure out how to make that work.
+> >
+> > +CC Vaishnav and Andy for their input.
+> >
+> > Otherwise looks fine to me.
+>
+> Having said that.... Why are we going through this dance for driver with
+> only one compatible?   Are there other parts on their way?
+> If not, perhaps we should just rip out the matching code entirely in
+> the interests of simplicity.
 
-> All the necessary bits are initialized in order to find and map the
-> register space for CXL Memory Devices. This is accomplished by using the
-> Register Locator DVSEC (CXL 2.0 - 8.1.9.1) to determine which PCI BAR to
-> use, and how much of an offset from that BAR should be added.
-> 
-> If the memory device registers are found and mapped a new internal data
-> structure tracking device state is allocated.
-> 
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> ---
->  drivers/cxl/mem.c | 68 +++++++++++++++++++++++++++++++++++++++++++----
->  drivers/cxl/pci.h |  6 +++++
->  2 files changed, 69 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index aa7d881fa47b..8d9b9ab6c5ea 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -7,9 +7,49 @@
->  #include "pci.h"
->  
->  struct cxl_mem {
-> +	struct pci_dev *pdev;
->  	void __iomem *regs;
->  };
->  
-> +static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo, u32 reg_hi)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct cxl_mem *cxlm;
-> +	void __iomem *regs;
-> +	u64 offset;
-> +	u8 bar;
-> +	int rc;
-> +
-> +	offset = ((u64)reg_hi << 32) | (reg_lo & 0xffff0000);
-> +	bar = reg_lo & 0x7;
-> +
-> +	/* Basic sanity check that BAR is big enough */
-> +	if (pci_resource_len(pdev, bar) < offset) {
-> +		dev_err(dev, "bar%d: %pr: too small (offset: %#llx)\n",
-> +				bar, &pdev->resource[bar], (unsigned long long) offset);
-> +		return ERR_PTR(-ENXIO);
-> +	}
-> +
-> +	rc = pcim_iomap_regions(pdev, 1 << bar, pci_name(pdev));
-> +	if (rc != 0) {
-> +		dev_err(dev, "failed to map registers\n");
-> +		return ERR_PTR(-ENXIO);
-> +	}
-> +
-> +	cxlm = devm_kzalloc(&pdev->dev, sizeof(*cxlm), GFP_KERNEL);
-> +	if (!cxlm) {
-> +		dev_err(dev, "No memory available\n");
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> +
-> +	regs = pcim_iomap_table(pdev)[bar];
-> +	cxlm->pdev = pdev;
-> +	cxlm->regs = regs + offset;
-> +
-> +	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
-> +	return cxlm;
-> +}
-> +
->  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->  {
->  	int pos;
-> @@ -34,9 +74,9 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->  
->  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  {
-> +	struct cxl_mem *cxlm = ERR_PTR(-ENXIO);
->  	struct device *dev = &pdev->dev;
-> -	struct cxl_mem *cxlm;
-> -	int rc, regloc;
-> +	int rc, regloc, i;
->  
->  	rc = cxl_bus_prepared(pdev);
->  	if (rc != 0) {
-> @@ -44,15 +84,33 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  		return rc;
->  	}
->  
-> +	rc = pcim_enable_device(pdev);
-> +	if (rc)
-> +		return rc;
-> +
->  	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
->  	if (!regloc) {
->  		dev_err(dev, "register location dvsec not found\n");
->  		return -ENXIO;
->  	}
-> +	regloc += 0xc; /* Skip DVSEC + reserved fields */
-> +
-> +	for (i = regloc; i < regloc + 0x24; i += 8) {
-> +		u32 reg_lo, reg_hi;
+So, this one has a bit of a funny story.
+There's an AD7888 which is similar in terms of registers but with more chan=
+nels.
+Lars did a patch to support it on top of AD7887:
+    https://github.com/analogdevicesinc/linux/commits/iio-ad7888
 
-Hmm. That "register offset low" naming in the spec is just designed to confuse
-given lots of other things packed in the register.
-Perhaps a comment here to say it contains other information?
-Also possibly some docs for cxl_mem_create to make the same point there.
+We tried to order a part for this to test the changes, but we got a
+reply that it's obsolete.
+The website says it is still in production.
+So, I was confused about the answer we got. =C2=AF\_(=E3=83=84)_/=C2=AF
 
-> +
-> +		pci_read_config_dword(pdev, i, &reg_lo);
-> +		pci_read_config_dword(pdev, i + 4, &reg_hi);
-> +
-> +		if (CXL_REGLOG_IS_MEMDEV(reg_lo)) {
-> +			cxlm = cxl_mem_create(pdev, reg_lo, reg_hi);
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (IS_ERR(cxlm))
-> +		return -ENXIO;
->  
-> -	cxlm = devm_kzalloc(dev, sizeof(*cxlm), GFP_KERNEL);
-> -	if (!cxlm)
-> -		return -ENOMEM;
-> +	pci_set_drvdata(pdev, cxlm);
+In the meantime, I thought I'd take some of the cleanup value of Lars'
+work and do the cleanup only.
+We may still find that part somewhere and maybe add it, or maybe
+another one would come along.
+I don't know at this point. I'm mostly looking at some of my backlog
+stuff and trying to cleanup old stuff.
 
-I could be wrong but don't think this is used yet.  I'd prefer to see
-it introduced only when it is.  Makes it easy to match up without
-having to search back in earlier patches.
+I'm fine to simplify the driver now and add the matching bits later.
 
->  
->  	return 0;
->  }
-> diff --git a/drivers/cxl/pci.h b/drivers/cxl/pci.h
-> index beb03921e6da..be87f62e9132 100644
-> --- a/drivers/cxl/pci.h
-> +++ b/drivers/cxl/pci.h
-> @@ -12,4 +12,10 @@
->  #define PCI_DVSEC_ID_CXL	0x0
->  #define PCI_DVSEC_ID_CXL_REGLOC	0x8
->  
-> +#define CXL_REGLOG_RBI_EMPTY 0
-
-As in the QEMU patches, please add a comment on what RBI means
-here. It's non obvious even just after you've read through the spec!
-
-> +#define CXL_REGLOG_RBI_COMPONENT 1
-> +#define CXL_REGLOG_RBI_VIRT 2
-> +#define CXL_REGLOG_RBI_MEMDEV 3
-> +#define CXL_REGLOG_IS_MEMDEV(x) ((((x) >> 8) & 0xff) == CXL_REGLOG_RBI_MEMDEV)
-> +
->  #endif /* __CXL_PCI_H__ */
-
+>
+> Jonathan
+>
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >
+> >
+> > > ---
+> > >  drivers/iio/adc/ad7887.c | 23 +++++++++++++++--------
+> > >  1 file changed, 15 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
+> > > index 06f684c053a0..4f68a1b17ec8 100644
+> > > --- a/drivers/iio/adc/ad7887.c
+> > > +++ b/drivers/iio/adc/ad7887.c
+> > > @@ -40,6 +40,7 @@ enum ad7887_channels {
+> > >
+> > >  /**
+> > >   * struct ad7887_chip_info - chip specifc information
+> > > + * @name:          the name of the part
+> > >   * @int_vref_mv:   the internal reference voltage
+> > >   * @channels:              channels specification
+> > >   * @num_channels:  number of channels
+> > > @@ -47,6 +48,7 @@ enum ad7887_channels {
+> > >   * @num_dual_channels:     number of channels in dual mode
+> > >   */
+> > >  struct ad7887_chip_info {
+> > > +   const char                      *name;
+> > >     u16                             int_vref_mv;
+> > >     const struct iio_chan_spec      *channels;
+> > >     unsigned int                    num_channels;
+> > > @@ -218,6 +220,7 @@ static const struct ad7887_chip_info ad7887_chip_=
+info_tbl[] =3D {
+> > >      * More devices added in future
+> > >      */
+> > >     [ID_AD7887] =3D {
+> > > +           .name =3D "ad7887",
+> > >             .channels =3D ad7887_channels,
+> > >             .num_channels =3D ARRAY_SIZE(ad7887_channels),
+> > >             .dual_channels =3D ad7887_dual_channels,
+> > > @@ -239,12 +242,17 @@ static void ad7887_reg_disable(void *data)
+> > >
+> > >  static int ad7887_probe(struct spi_device *spi)
+> > >  {
+> > > +   const struct ad7887_chip_info *info;
+> > >     struct ad7887_state *st;
+> > >     struct iio_dev *indio_dev;
+> > >     bool dual_mode;
+> > >     uint8_t mode;
+> > >     int ret;
+> > >
+> > > +   info =3D device_get_match_data(&spi->dev);
+> > > +   if (!info)
+> > > +           return -ENODEV;
+> > > +
+> > >     indio_dev =3D devm_iio_device_alloc(&spi->dev, sizeof(*st));
+> > >     if (indio_dev =3D=3D NULL)
+> > >             return -ENOMEM;
+> > > @@ -269,13 +277,12 @@ static int ad7887_probe(struct spi_device *spi)
+> > >                     return ret;
+> > >     }
+> > >
+> > > -   st->chip_info =3D
+> > > -           &ad7887_chip_info_tbl[spi_get_device_id(spi)->driver_data=
+];
+> > > +   st->chip_info =3D info;
+> > >
+> > >     spi_set_drvdata(spi, indio_dev);
+> > >     st->spi =3D spi;
+> > >
+> > > -   indio_dev->name =3D spi_get_device_id(spi)->name;
+> > > +   indio_dev->name =3D st->chip_info->name;
+> > >     indio_dev->info =3D &ad7887_info;
+> > >     indio_dev->modes =3D INDIO_DIRECT_MODE;
+> > >
+> > > @@ -336,18 +343,18 @@ static int ad7887_probe(struct spi_device *spi)
+> > >     return devm_iio_device_register(&spi->dev, indio_dev);
+> > >  }
+> > >
+> > > -static const struct spi_device_id ad7887_id[] =3D {
+> > > -   {"ad7887", ID_AD7887},
+> > > -   {}
+> > > +static const struct of_device_id ad7887_of_match[] =3D {
+> > > +   { .compatible =3D "adi,ad7887", .data =3D &ad7887_chip_info_tbl[I=
+D_AD7887] },
+> > > +   { }
+> > >  };
+> > > -MODULE_DEVICE_TABLE(spi, ad7887_id);
+> > > +MODULE_DEVICE_TABLE(of, ad7887_of_match);
+> > >
+> > >  static struct spi_driver ad7887_driver =3D {
+> > >     .driver =3D {
+> > >             .name   =3D "ad7887",
+> > > +           .of_match_table =3D ad7887_of_match,
+> > >     },
+> > >     .probe          =3D ad7887_probe,
+> > > -   .id_table       =3D ad7887_id,
+> > >  };
+> > >  module_spi_driver(ad7887_driver);
+> > >
+> >
+>
