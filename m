@@ -2,27 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335012B6B94
+	by mail.lfdr.de (Postfix) with ESMTP id A07E92B6B95
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728742AbgKQRTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:19:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58800 "EHLO mail.kernel.org"
+        id S1729143AbgKQRTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:19:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbgKQRTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:19:51 -0500
+        id S1726289AbgKQRTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:19:52 -0500
 Received: from localhost.localdomain (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C71A238E6;
-        Tue, 17 Nov 2020 17:19:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F098624654;
+        Tue, 17 Nov 2020 17:19:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605633590;
-        bh=D3rUQgrB9CUpnuLawSq5Q64bmWGHbHkutgQ+4ybYmIM=;
-        h=From:To:Subject:Date:From;
-        b=03QPdgo3Fs9OtCR+ktyOvfhRjC/GJ9BpAXYmdl4JobXL82tZX64Gd4pGpLfRFWMVo
-         da4L7v+hye71/SIiyA8dJbRRKEA/JAn5Wy8u+autTidFnHcaHar6a+s03JMASYjXcT
-         rj25oMOR62bHcU0V126pwExy3gLPEzlqGn0Fo2Rs=
+        s=default; t=1605633592;
+        bh=daJLU3n02mJ6i0JpeUafqSjeQahZMcJAuVKF7BfNorg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
+         References:From;
+        b=hyVhRArxhBJv1lLMLg8aDWsMd+avk0FDIhgJpBPiQwzCrafHBqfbGejiDZ9gAyP38
+         1MHHzFHMseNIb/8M3noYXl8kRMSi95ZCa8mr/9wJnvORzdYmJ4DKfwVvuwX8h8yGg1
+         JmzQVLzGM7O9LOqPrJaKIrXkWUtUPcvJCaHk/cqw=
 From:   zanussi@kernel.org
 To:     LKML <linux-kernel@vger.kernel.org>,
         linux-rt-users <linux-rt-users@vger.kernel.org>,
@@ -34,65 +35,67 @@ To:     LKML <linux-kernel@vger.kernel.org>,
         Daniel Wagner <wagi@monom.org>,
         Clark Williams <williams@redhat.com>,
         Pavel Machek <pavel@denx.de>, Tom Zanussi <zanussi@kernel.org>
-Subject: [PATCH RT 0/3] Linux v4.19.152-rt66-rc1
-Date:   Tue, 17 Nov 2020 11:19:45 -0600
-Message-Id: <cover.1605633581.git.zanussi@kernel.org>
+Cc:     stable-rt@vger.kernel.org
+Subject: [PATCH RT 1/3] mm/memcontrol: Disable preemption in __mod_memcg_lruvec_state()
+Date:   Tue, 17 Nov 2020 11:19:46 -0600
+Message-Id: <46fc7bbf28dfbafd2f6e87b736458c4ba060728c.1605633581.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1605633581.git.zanussi@kernel.org>
+References: <cover.1605633581.git.zanussi@kernel.org>
+In-Reply-To: <cover.1605633581.git.zanussi@kernel.org>
+References: <cover.1605633581.git.zanussi@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Zanussi <zanussi@kernel.org>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Dear RT Folks,
+v4.19.152-rt66-rc1 stable review patch.
+If anyone has any objections, please let me know.
 
-This is the RT stable review cycle of patch 4.19.152-rt66-rc1.
-
-Please scream at me if I messed something up. Please test the patches
-too.
-
-The -rc release will be uploaded to kernel.org and will be deleted
-when the final release is out. This is just a review release (or
-release candidate).
-
-The pre-releases will not be pushed to the git repository, only the
-final release is.
-
-If all goes well, this patch will be converted to the next main
-release on 2020-11-20.
-
-To build 4.19.152-rt66-rc1 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.152.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.152-rt66-rc1.patch.xz
-
-You can also build from 4.19.152-rt65 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.152-rt65-rt66-rc1.patch.xz
+-----------
 
 
-Enjoy,
+[ Upstream commit 74858f0d38a8d3c069a0745ff53ae084c8e7cabb ]
 
--- Tom
+The callers expect disabled preemption/interrupts while invoking
+__mod_memcg_lruvec_state(). This works mainline because a lock of
+somekind is acquired.
 
+Use preempt_disable_rt() where per-CPU variables are accessed and a
+stable pointer is expected. This is also done in __mod_zone_page_state()
+for the same reason.
 
-Oleg Nesterov (1):
-  ptrace: fix ptrace_unfreeze_traced() race with rt-lock
+Cc: stable-rt@vger.kernel.org
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 
-Sebastian Andrzej Siewior (1):
-  mm/memcontrol: Disable preemption in __mod_memcg_lruvec_state()
+ Conflicts:
+	mm/memcontrol.c
+---
+ include/linux/memcontrol.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Tom Zanussi (1):
-  Linux 4.19.152-rt66-rc1
-
- include/linux/memcontrol.h |  2 ++
- kernel/ptrace.c            | 23 +++++++++++++++--------
- localversion-rt            |  2 +-
- 3 files changed, 18 insertions(+), 9 deletions(-)
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index cc6b6532eb56..dbb2c4e27277 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -665,6 +665,7 @@ static inline void __mod_lruvec_state(struct lruvec *lruvec,
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+ 
++	preempt_disable_rt();
+ 	/* Update memcg */
+ 	__mod_memcg_state(pn->memcg, idx, val);
+ 
+@@ -675,6 +676,7 @@ static inline void __mod_lruvec_state(struct lruvec *lruvec,
+ 		x = 0;
+ 	}
+ 	__this_cpu_write(pn->lruvec_stat_cpu->count[idx], x);
++	preempt_enable_rt();
+ }
+ 
+ static inline void mod_lruvec_state(struct lruvec *lruvec,
 -- 
 2.17.1
 
