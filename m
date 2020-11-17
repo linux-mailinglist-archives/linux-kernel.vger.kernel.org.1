@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3EB2B5748
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C012B5791
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgKQC40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:56:26 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8099 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbgKQC4Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:56:24 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CZrDN2H3tzLntq;
-        Tue, 17 Nov 2020 10:56:04 +0800 (CST)
-Received: from compute.localdomain (10.175.112.70) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 17 Nov 2020 10:56:17 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     <jcliburn@gmail.com>, <chris.snook@gmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <christophe.jaillet@wanadoo.fr>, <mst@redhat.com>,
-        <leon@kernel.org>, <hkallweit1@gmail.com>, <tglx@linutronix.de>,
-        <jesse.brandeburg@intel.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] atl1e: fix error return code in atl1e_probe()
-Date:   Tue, 17 Nov 2020 10:57:55 +0800
-Message-ID: <1605581875-36281-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+        id S1728074AbgKQC6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:58:54 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:53821 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728026AbgKQC6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 21:58:36 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605581916; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=PasZo35wv2lzlVgDMf8xo6luIQOrH87IVunXMHfnqIU=; b=PRLezcXd8DVBnlNI5xXQZePg+t/fpUrJa3vqvn/i+nDuj0J2CC7V2tGT2pklmMTPBOZgpMuF
+ liWE341vOphb07OLLoGcrJX2MGrWbbjMH6Mk2X+dr2UsiIOMfzTrjRVjm8ywVaAOWV8b6JeZ
+ HNKj08udn8MkJy+EUL3LVvSiV4k=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5fb33c55135ce186e9db7163 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Nov 2020 02:58:29
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 72AD9C4347F; Tue, 17 Nov 2020 02:58:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DE1FFC4346E;
+        Tue, 17 Nov 2020 02:58:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DE1FFC4346E
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     carl.yin@quectel.com, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v1 0/2] Serialize execution environment changes for MHI
+Date:   Mon, 16 Nov 2020 18:58:16 -0800
+Message-Id: <1605581898-4181-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+During full boot chain firmware download, the PM state worker downloads the AMSS
+image after waiting for the SBL execution environment change in PBL mode itself.
+Since getting rid of the firmware load worker thread, this design needs to
+change and MHI host must download the AMSS image from the SBL mode of PM state
+worker thread instead.
 
-Fixes: 85eb5bc33717 ("net: atheros: switch from 'pci_' to 'dma_' API")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/net/ethernet/atheros/atl1e/atl1e_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Also ensure that EE changes are handled only from appropriate places and occur
+one after another and handle only PBL or RDDM EE changes as critical events
+directly from the interrupt handler and the status callback is given to the
+controller drivers promptly.
 
-diff --git a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
-index 098b032..ff9f96d 100644
---- a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
-+++ b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
-@@ -2312,8 +2312,8 @@ static int atl1e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	 * various kernel subsystems to support the mechanics required by a
- 	 * fixed-high-32-bit system.
- 	 */
--	if ((dma_set_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0) ||
--	    (dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0)) {
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-+	if (err) {
- 		dev_err(&pdev->dev, "No usable DMA configuration,aborting\n");
- 		goto err_dma;
- 	}
+Bhaumik Bhatt (2):
+  bus: mhi: core: Download AMSS image from appropriate function
+  bus: mhi: core: Process execution environment changes serially
+
+ drivers/bus/mhi/core/boot.c     | 44 ++++++++++++++++++++---------------------
+ drivers/bus/mhi/core/internal.h |  1 +
+ drivers/bus/mhi/core/main.c     | 14 +++++++------
+ drivers/bus/mhi/core/pm.c       | 14 +++++++++----
+ 4 files changed, 40 insertions(+), 33 deletions(-)
+
 -- 
-2.9.5
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
