@@ -2,41 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1606B2B6534
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A04C2B65E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387639AbgKQNwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:52:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37770 "EHLO mail.kernel.org"
+        id S1733134AbgKQN6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:58:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731464AbgKQN3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:29:07 -0500
+        id S1729771AbgKQNVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:21:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC5D22078D;
-        Tue, 17 Nov 2020 13:29:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FEE32464E;
+        Tue, 17 Nov 2020 13:21:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619747;
-        bh=juE6iuSA1t62Gy995uukaf3S7jWxNWn/uGhW3aEWx50=;
+        s=default; t=1605619310;
+        bh=yqHezGp2K5VIdKSu1R5xqEoOp9qfb0OsKkdIQoDQsIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WZPv6xS0+kIG8BrQFOPkqB879AJj42UhGP+qf69yB9XhkalJuPslisyHWztr/u03K
-         PCn9fKUfcuUBIZ0sXXKbXRdj6UUH09kmvq0MlHwVNoaoHiCH4PHrxuTlnwrCAlkRGv
-         j3YWdcIA6HWBRsdkdb5uFqGWb1a4MOlBR2l3qsJA=
+        b=BYwyZY7zMcCcD9eOJ6MVT/Y+eaOUheMa8SqLN3q3EQ7wtrYYTgC1c+oCOBGcMsDAJ
+         RqMxJOCv0kS+B8nFxglbrO0uJzLhZpf4pkE3QUutzaVeMmvg0ENEUNvjje0m3aRRIt
+         z2Z3EvJEfUcwpBesruY6HcVifZLPNXaH2iLyNzQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.4 135/151] pinctrl: amd: use higher precision for 512 RtcClk
+        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Petr Mladek <pmladek@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Fabian Frederick <fabf@skynet.be>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.19 098/101] Revert "kernel/reboot.c: convert simple_strtoul to kstrtoint"
 Date:   Tue, 17 Nov 2020 14:06:05 +0100
-Message-Id: <20201117122127.996312036@linuxfoundation.org>
+Message-Id: <20201117122117.909452999@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +51,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coiby Xu <coiby.xu@gmail.com>
+From: Matteo Croce <mcroce@microsoft.com>
 
-commit c64a6a0d4a928c63e5bc3b485552a8903a506c36 upstream.
+commit 8b92c4ff4423aa9900cf838d3294fcade4dbda35 upstream.
 
-RTC is 32.768kHz thus 512 RtcClk equals 15625 usec. The documentation
-likely has dropped precision and that's why the driver mistakenly took
-the slightly deviated value.
+Patch series "fix parsing of reboot= cmdline", v3.
 
-Cc: stable@vger.kernel.org
-Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Suggested-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/linux-gpio/2f4706a1-502f-75f0-9596-cc25b4933b6c@redhat.com/
-Link: https://lore.kernel.org/r/20201105231912.69527-3-coiby.xu@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+The parsing of the reboot= cmdline has two major errors:
+
+ - a missing bound check can crash the system on reboot
+
+ - parsing of the cpu number only works if specified last
+
+Fix both.
+
+This patch (of 2):
+
+This reverts commit 616feab753972b97.
+
+kstrtoint() and simple_strtoul() have a subtle difference which makes
+them non interchangeable: if a non digit character is found amid the
+parsing, the former will return an error, while the latter will just
+stop parsing, e.g.  simple_strtoul("123xyx") = 123.
+
+The kernel cmdline reboot= argument allows to specify the CPU used for
+rebooting, with the syntax `s####` among the other flags, e.g.
+"reboot=warm,s31,force", so if this flag is not the last given, it's
+silently ignored as well as the subsequent ones.
+
+Fixes: 616feab75397 ("kernel/reboot.c: convert simple_strtoul to kstrtoint")
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Robin Holt <robinmholt@gmail.com>
+Cc: Fabian Frederick <fabf@skynet.be>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201103214025.116799-2-mcroce@linux.microsoft.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[sudip: use reboot_mode instead of mode]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/pinctrl/pinctrl-amd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/reboot.c |   21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -153,7 +153,7 @@ static int amd_gpio_set_debounce(struct
- 			pin_reg |= BIT(DB_TMR_OUT_UNIT_OFF);
- 			pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
- 		} else if (debounce < 250000) {
--			time = debounce / 15600;
-+			time = debounce / 15625;
- 			pin_reg |= time & DB_TMR_OUT_MASK;
- 			pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
- 			pin_reg |= BIT(DB_TMR_LARGE_OFF);
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -539,22 +539,15 @@ static int __init reboot_setup(char *str
+ 			break;
+ 
+ 		case 's':
+-		{
+-			int rc;
+-
+-			if (isdigit(*(str+1))) {
+-				rc = kstrtoint(str+1, 0, &reboot_cpu);
+-				if (rc)
+-					return rc;
+-			} else if (str[1] == 'm' && str[2] == 'p' &&
+-				   isdigit(*(str+3))) {
+-				rc = kstrtoint(str+3, 0, &reboot_cpu);
+-				if (rc)
+-					return rc;
+-			} else
++			if (isdigit(*(str+1)))
++				reboot_cpu = simple_strtoul(str+1, NULL, 0);
++			else if (str[1] == 'm' && str[2] == 'p' &&
++							isdigit(*(str+3)))
++				reboot_cpu = simple_strtoul(str+3, NULL, 0);
++			else
+ 				reboot_mode = REBOOT_SOFT;
+ 			break;
+-		}
++
+ 		case 'g':
+ 			reboot_mode = REBOOT_GPIO;
+ 			break;
 
 
