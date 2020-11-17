@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A99B2B6F66
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC082B6F68
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730818AbgKQTxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:53:31 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:19339 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730096AbgKQTxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:53:31 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605642810; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=I8Uoa9WMfOpRw2GhOBpzrpwBUS+efGBMbXmJ+Bhf1nQ=;
- b=uHSHXIh4r10LzVlLBB673SUgknqxM2jQEsa+euhX4W0LqOvixfs38NDyI3j980vEVHFx4g0K
- hozIYWvT4I3Xeii1bfvgZr1+2lNpi0zp0Z3NOQEDYDaNHPSNFT5A5MD2KMksYtkGdIzVyL37
- rCjLuh5iPgcXuSDNf4DUtWANUeM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fb42a2f8bd2e3c222a75451 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Nov 2020 19:53:19
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EAA03C43469; Tue, 17 Nov 2020 19:53:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8327FC43462;
-        Tue, 17 Nov 2020 19:53:17 +0000 (UTC)
+        id S1731162AbgKQTyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:54:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730096AbgKQTyO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:54:14 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF56DC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:54:12 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id a18so18015879pfl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:54:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=pctb8DZxtQNRAIgFwGxL6HThY7Qo5czv9hhFdmCOUCU=;
+        b=O5mWd20Xs/3dcQrzF6J14yQTnLVWSgPokP3F+wo9dwngYEYRGJ3r8rUZHq5vDLINw6
+         kebTyskd9CYy5zMYhpq+oHOflmLG/WU7CUA2Dtj2xQwiU/OOWNcPbmgxevqArjMsM4+A
+         V5AwPU1tliR/N9xq832QBcmXdn8wkQWTWWugDYYnForohG0nbIub1V3wCrKF2v9D7pDA
+         zT6CE5WsRU5mvST8DvqZPvZQf+6vM2DsJYPEko64h4jxxqQn5pwv2fQ1svE/aFTrFMog
+         R68DMjQxjf2aBzQY1JxXaBR965IxcgKssK6wUW9DPZokQP7S4uY4X4AEfbqdz+MI6JmX
+         lqjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=pctb8DZxtQNRAIgFwGxL6HThY7Qo5czv9hhFdmCOUCU=;
+        b=ZeGf4kfuYh6FN/jEhyEgY0hccq11Mqv2cvTxFmAthj/hnx3L4K5pW3pgMmjwt7ebN4
+         rjrgUbXBguhWo3ssaNhCeYHSABfTDZKjHCGVjSInJFAHtxEftE+iOLZQD3lOhsZSH1oS
+         Nlv6vZsOeZyx8g62i5vV++7Y1kziA3DNOUiMw7nykJjT6cUmgLpJNWxUrwQoLwJFWT3v
+         uUWi4g2veVo6x4jPQzqr16D+6nSq4M7NZc1CmETTy0wWzEAs3oQZV0xbRdolnav5pJcW
+         QJZ7nRWd5fZY5OmZP1UptpJBufHln8odcvA7ifEtU9fB6Xcuz6ziX3bOF7Q1c/cnO3w+
+         Njbw==
+X-Gm-Message-State: AOAM532Y4wuL0U2dMbuRv1VY8y6emURxiwglTEoaOF9S6ZF7oXr687QX
+        Ahd69+vmDNyta7hIv/dzaKPT9w==
+X-Google-Smtp-Source: ABdhPJy9OH48Odlyss7DdMCAM9w2Jdni4HQHC/m0mph+4FeA1BQ5rY3yEAx0pUxCeFPXAaszNHU37w==
+X-Received: by 2002:a63:658:: with SMTP id 85mr1994791pgg.315.1605642852429;
+        Tue, 17 Nov 2020 11:54:12 -0800 (PST)
+Received: from debian ([122.174.173.2])
+        by smtp.gmail.com with ESMTPSA id d9sm22050057pfn.191.2020.11.17.11.54.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 11:54:12 -0800 (PST)
+Message-ID: <9c06482d12ca652f14e142409cae727bb3425485.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.9 000/255] 5.9.9-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Date:   Wed, 18 Nov 2020 01:24:07 +0530
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 17 Nov 2020 11:53:17 -0800
-From:   abhinavk@codeaurora.org
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     robdclark@gmail.com, airlied@linux.ie,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: Fix error return code in
- dpu_mdss_init()
-In-Reply-To: <20201117025617.168259-1-chenzhou10@huawei.com>
-References: <20201117025617.168259-1-chenzhou10@huawei.com>
-Message-ID: <c33b123fb1893a3c972f724e4cd1ff08@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-16 18:56, Chen Zhou wrote:
-> Fix to return a negative error code from the error handling case
-> instead of 0 in function dpu_mdss_init(), as done elsewhere in this
-> function.
+On Tue, 2020-11-17 at 14:02 +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.9 release.
+> There are 255 patches in this series, all will be posted as a
+> response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
 > 
-> Fixes: 070e64dc1bbc ("drm/msm/dpu: Convert to a chained irq chip")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Responses should be made by Thu, 19 Nov 2020 12:20:51 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> index cd4078807db1..6e600b4ca995 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> @@ -297,8 +297,10 @@ int dpu_mdss_init(struct drm_device *dev)
->  		goto irq_domain_error;
+> The whole patch series can be found in one patch at:
+> 	
+> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.9-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
 > 
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq < 0)
-> +	if (irq < 0) {
-> +		ret = irq;
->  		goto irq_error;
-> +	}
+> thanks,
 > 
->  	irq_set_chained_handler_and_data(irq, dpu_mdss_irq,
->  					 dpu_mdss);
+> greg k-h
+> 
+> 
+Compiled and booted 5.9.9-rc1+. No typical dmesg regression or
+regressions.
+
+Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+-- 
+software engineer
+rajagiri school of engineering and technology - autonomous
+
