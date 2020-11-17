@@ -2,185 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680292B5ED8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23F32B5EDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgKQMIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:08:46 -0500
-Received: from mail-bn7nam10on2088.outbound.protection.outlook.com ([40.107.92.88]:4576
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725446AbgKQMIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:08:46 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MR3OksGE+iS13BRwIddkuWQOPl6cBNCGFCTYpbT+CAPR1m2CrLeAiuh7SexTqpyTvLa6RfApVuOGhTr3wXazwNVTamuA1ppKaF0O7bCf9dhKkkf8MUsjZnJI6PCXuBj+Cy/g2EmFCdLrfDonsw96MPTr5nK1JN4dKPBdA7b4jWWYRsV7xuj7kQ3GlxZhjnv+qSxWvtL16YK7eCDvNGCBy1SCC3pxMQdBoJ0foBGi5QOOvKXhANTNAZ5eGq/sUnJctuYad5Qp86dyjX0CYI+y4Y0wE+vZdM4dWS8fzmEUOaGey4x65n4erN7pNS5Et6N3s54pC2VUJR/gFNhLoheaXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gPlJUK4TPJkN6hQ3N92zr++dT/2zCXtL72BxYRNjg3I=;
- b=hpiMpW1RSZwFcnsay3uTTwuk6FPeVBJXuwEgqqBWASxEznW+EPwx8+wr+THwWyFx2NOnTDqXEjP9QocM9e3PcnPN+IAwX1uRD1pXimtxBg+sr6uHp0wzEJrUTIyGfkieFyilIkWyvF67Dg3w/A/PRCOJpfk8cykksXA8BHIRwPbmcVI7BwkcOHb5C7PdmJcjuxlAp3uyadx4SR5qZk3qG3a/fep0Tgb76akhd8kXwU/UcftB1+G9nvh0FnYV1uErMeOuOLuC6NaTL47f0IApTYRM4etCx6QoiXPJMWN/PH40PHI2fIARr2O48h5AHjaZpbg5NVwev5IwjW0WASZNwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=davemloft.net smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gPlJUK4TPJkN6hQ3N92zr++dT/2zCXtL72BxYRNjg3I=;
- b=T/caYAeuKCmsmLhm5fWLOXOWf9T5uTIBYMKwZSF/PR851CRQOMwQPtQGsKpjRNAqbyfBo/DHu6yKxNeFAMXZ9EFwH50yMK6J8MYX6egwxppYISt5OEVrG3nyCOHomwZGfs7LaK2zqPD8u68fKrr0z1rzShtALuL7AN2L2S2CZj8=
-Received: from DM6PR06CA0023.namprd06.prod.outlook.com (2603:10b6:5:120::36)
- by DM6PR02MB6329.namprd02.prod.outlook.com (2603:10b6:5:1d4::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Tue, 17 Nov
- 2020 12:08:37 +0000
-Received: from CY1NAM02FT054.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:120:cafe::14) by DM6PR06CA0023.outlook.office365.com
- (2603:10b6:5:120::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28 via Frontend
- Transport; Tue, 17 Nov 2020 12:08:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT054.mail.protection.outlook.com (10.152.74.100) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3564.22 via Frontend Transport; Tue, 17 Nov 2020 12:08:36 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 17 Nov 2020 04:08:02 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Tue, 17 Nov 2020 04:08:02 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- davem@davemloft.net,
- kuba@kernel.org,
- mchehab+samsung@kernel.org,
- gregkh@linuxfoundation.org,
- linux-arm-kernel@lists.infradead.org,
- nicolas.ferre@microchip.com,
- linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org
-Received: from [172.23.64.106] (port=41946 helo=xhdvnc125.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <radhey.shyam.pandey@xilinx.com>)
-        id 1kezmC-0003wG-Un; Tue, 17 Nov 2020 04:08:01 -0800
-Received: by xhdvnc125.xilinx.com (Postfix, from userid 13245)
-        id 1E6CF121216; Tue, 17 Nov 2020 17:38:00 +0530 (IST)
-From:   Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-To:     <davem@davemloft.net>, <netdev@vger.kernel.org>
-CC:     <kuba@kernel.org>, <michal.simek@xilinx.com>,
-        <mchehab+samsung@kernel.org>, <gregkh@linuxfoundation.org>,
-        <nicolas.ferre@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <git@xilinx.com>,
-        Shravya Kumbham <shravya.kumbham@xilinx.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Subject: [PATCH net v2] net: emaclite: Add error handling for of_address_ and _mdio_setup functions
-Date:   Tue, 17 Nov 2020 17:37:57 +0530
-Message-ID: <1605614877-5670-1-git-send-email-radhey.shyam.pandey@xilinx.com>
-X-Mailer: git-send-email 2.1.1
+        id S1728170AbgKQMIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:08:53 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:45751 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgKQMIw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:08:52 -0500
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id BE3B61BF203;
+        Tue, 17 Nov 2020 12:08:48 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 13:08:51 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Eugen.Hristev@microchip.com
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        sakari.ailus@iki.fi, laurent.pinchart@ideasonboard.com
+Subject: Re: [PATCH v5 1/3] dt-bindings: media: atmel: csi2dc: add bindings
+ for microchip csi2dc
+Message-ID: <20201117120851.ra7f2szm3cqgnfaw@uno.localdomain>
+References: <20201112133437.372475-1-eugen.hristev@microchip.com>
+ <20201117103702.2h77qvh7ebqx4yaq@uno.localdomain>
+ <812d92e6-e595-7cf0-b1a4-3eded08bf737@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 07a492b3-74a0-4a22-0f28-08d88af182ee
-X-MS-TrafficTypeDiagnostic: DM6PR02MB6329:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB63296D6C2A0293675C20CAACC7E20@DM6PR02MB6329.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:747;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9vUv/YrfE37l5MWEhEcL7jSe5tkvNaQcvn3D8cS/VtHAdyMW+l4courUmF7bkiaLcRrvI/PbQMJWTIVrkALY+lmWiwNDFskRVp0uJj0mgq9eIqkA+ZO2JLDk6NGZXIcstMtUcDjKzVrzBPhPvLzNhfw/WZIasnMUJNlLCSaxVm+3UUq6TaA47qCh5ag/VumtsS5pyuGaLKgumRxjBdwJJ15wwBTzXS0BoCvMagGBOknxzOwBaDFZanQkT07uWCObpFF0AZEeAISHHUs9wlqZfyBQKUn5YZcL3QJqRSvStPhmt6xgjxkrcY7g7yL0CWHcCBFLNSn7zOeE4aZON2jgzIrINBibTmbYAeLeT/2BXIeivYHYmhMjgDfxAbPubX/nyQfsHsVs54tJb1BTik8edcC3aLdPRC0ELi5IeJ4wc0o=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(46966005)(82740400003)(47076004)(7636003)(6266002)(54906003)(110136005)(356005)(478600001)(70586007)(70206006)(82310400003)(2616005)(426003)(26005)(336012)(36756003)(2906002)(6666004)(42186006)(4326008)(83380400001)(316002)(36906005)(8936002)(8676002)(5660300002)(107886003)(186003)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 12:08:36.0016
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07a492b3-74a0-4a22-0f28-08d88af182ee
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT054.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6329
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <812d92e6-e595-7cf0-b1a4-3eded08bf737@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shravya Kumbham <shravya.kumbham@xilinx.com>
+Hi Eugen,
 
-Add ret variable, condition to check the return value and error
-path for the of_address_to_resource() function. It also adds error
-handling for mdio setup and decrement refcount of phy node.
+On Tue, Nov 17, 2020 at 11:14:18AM +0000, Eugen.Hristev@microchip.com wrote:
+> On 17.11.2020 12:37, Jacopo Mondi wrote:
+> > Hi again,
+> >
+> > On Thu, Nov 12, 2020 at 03:34:35PM +0200, Eugen Hristev wrote:
+> >> Add bindings documentation for Microchip CSI2 Demultiplexer controller.
+> >>
+> >> CSI2DC is a demultiplexer from Synopsys IDI interface specification to
+> >> parallel interface connection or direct memory access.
+> >>
+> >> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> >> ---
+> >> Changes in v5:
+> >> - modified bindings as per Rob Herring review
+> >>
+> >> Changes in v4:
+> >> - Removed property for inter-line-delay and for clock continuous/non-continuous
+> >> - Removed virtual channel by reg for second endpoint
+> >>
+> >> Changes in v3:
+> >> - Removed some text from description, as it was explained in the schema
+> >> - fixed other things as per Rob's review
+> >> - moved some text inside the schema, like the clock description
+> >>
+> >> Changes in v2:
+> >> - fixed warnings reported by dt_binding_check
+> >>
+> >>   .../bindings/media/microchip,csi2dc.yaml      | 119 ++++++++++++++++++
+> >>   1 file changed, 119 insertions(+)
+> >>   create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> >> new file mode 100644
+> >> index 000000000000..e79f0d6ba9db
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> >> @@ -0,0 +1,119 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/media/microchip,csi2dc.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Microchip CSI2 Demux Controller (CSI2DC)
+> >> +
+> >> +maintainers:
+> >> +  - Eugen Hristev <eugen.hristev@microchip.com>
+> >> +
+> >> +description:
+> >> +  CSI2DC - Camera Serial Interface 2 Demux Controller
+> >> +
+> >> +  CSI2DC is a hardware block that receives incoming data from an IDI interface
+> >> +  and filters packets based on their data type and virtual channel identifier,
+> >> +  then converts the byte stream into a cross clock domain to a pixel stream
+> >> +  to a parallel interface that can be read by a sensor controller.
+> >> +
+> >> +  CSI2DC provides two pipes, one video pipe and one data pipe. Video pipe
+> >> +  is connected to a sensor controller and the data pipe is accessible
+> >> +  as a DMA slave port to a DMA controller.
+> >> +
+> >> +  CSI2DC supports a single 'port' node as a source pad with Synopsys 32-bit
+> >> +  IDI interface. The connected endpoint must be a IDI interface compatible
+> >> +  device (like Synopsys CSI2HOST) , that can provide 32-bit IDI interface
+> >> +  connection as sink pad.
+> >> +  For media entity and endpoints please refer to the bindings defined in
+> >> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> >> +  For Synopsys IDI interface please refer to
+> >> +  Documentation/devicetree/bindings/media/snps,dw-csi-plat.txt
+> >
+> > Is it me or this file doesn't exists on the most recent media/master
+> > and on v5.10-rc4 ?
+>
+> Hi Jacopo,
+>
+> Thanks for reviewing this patch.
+> You are right. As I said at some point during the review, actually this
+> controller has an input the IDI interface which is not currently in
+> kernel. There is a patch series that adds the Synopsys platform driver,
+> but nobody worked on it anymore and I use it for testing my driver.
+> You can see the last version that was sent here:
+>
+> https://patchwork.linuxtv.org/project/linux-media/patch/1560280855-18085-2-git-send-email-luis.oliveira@synopsys.com/
+>
+>
+> I sent this series to understand how to improve and how to get my driver
+> in kernel, but indeed there are holes, especially this input type of bus
+> which is not in the subsystem either.
+>
+> So how would you suggest to move forward ? Remove the reference to the
+> synopsys binding and just leave 'IDI interface' which is undocumented ?
 
-Addresses-Coverity: Event check_return value.
-Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
----
-Changes for v2:
+mmm, I see... I was hoping it was a simple CSI-2 tx :)
 
-- Change subject_prefix to target net tree.
-- Add error handling for mdio_setup and remove phy_read changes.
-  Error checking of phy_read will be added along with phy_write
-  in a followup patch. Document the changes in commit description.
----
- drivers/net/ethernet/xilinx/xilinx_emaclite.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+The Synopsys proposed bindings do not tell much as they don't describe
+the csi2host output port. I would just mention "Synopsys IDI
+compatible interface" without mentioning a file that cannot be
+accessed :)
 
-diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-index 0c26f5bcc523..4e0005164785 100644
---- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-+++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-@@ -820,7 +820,7 @@ static int xemaclite_mdio_write(struct mii_bus *bus, int phy_id, int reg,
- static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
- {
- 	struct mii_bus *bus;
--	int rc;
-+	int rc, ret;
- 	struct resource res;
- 	struct device_node *np = of_get_parent(lp->phy_node);
- 	struct device_node *npp;
-@@ -834,7 +834,12 @@ static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
- 	}
- 	npp = of_get_parent(np);
- 
--	of_address_to_resource(npp, 0, &res);
-+	ret = of_address_to_resource(npp, 0, &res);
-+	if (ret) {
-+		dev_err(dev, "%s resource error!\n",
-+			dev->of_node->full_name);
-+		return ret;
-+	}
- 	if (lp->ndev->mem_start != res.start) {
- 		struct phy_device *phydev;
- 		phydev = of_phy_find_device(lp->phy_node);
-@@ -1173,7 +1178,11 @@ static int xemaclite_of_probe(struct platform_device *ofdev)
- 	xemaclite_update_address(lp, ndev->dev_addr);
- 
- 	lp->phy_node = of_parse_phandle(ofdev->dev.of_node, "phy-handle", 0);
--	xemaclite_mdio_setup(lp, &ofdev->dev);
-+	rc = xemaclite_mdio_setup(lp, &ofdev->dev);
-+	if (rc) {
-+		dev_warn(dev, "error registering MDIO bus: %d\n", rc);
-+		goto error;
-+	}
- 
- 	dev_info(dev, "MAC address is now %pM\n", ndev->dev_addr);
- 
-@@ -1197,6 +1206,7 @@ static int xemaclite_of_probe(struct platform_device *ofdev)
- 	return 0;
- 
- error:
-+	of_node_put(lp->phy_node);
- 	free_netdev(ndev);
- 	return rc;
- }
--- 
-2.7.4
+Thanks
+   j
 
+>
+> Eugen
+>
+> >
+> >> +
+> >> +  CSI2DC supports one 'port' node as sink pad with parallel interface. This is
+> >> +  called video pipe.
+> >> +  This port has an 'endpoint' can then be used as a source pad for another
+> >> +  controller (next in pipeline).
+> >> +  Please refer to the bindings defined in
+> >> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> >> +
+> >> +  CSI2DC also supports direct access to the data through AHB, via DMA channel,
+> >> +  called data pipe.
+> >> +  Because of this, the sink 'port' child node (second) is not mandatory.
+> >> +  If the sink 'port' child node is missing, only data pipe is available.
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    const: microchip,sama7g5-csi2dc
+> >> +
+> >> +  reg:
+> >> +    maxItems: 1
+> >> +
+> >> +  clocks:
+> >> +    maxItems: 2
+> >> +
+> >> +  clock-names:
+> >> +    description:
+> >> +      CSI2DC must have two clocks to function correctly. One clock is the
+> >> +      peripheral clock for the inside functionality of the hardware block.
+> >> +      This is named 'pclk'. The second clock must be the cross domain clock,
+> >> +      in which CSI2DC will perform clock crossing. This clock must be fed
+> >> +      by the next controller in pipeline, which usually is a sensor controller.
+> >> +      Normally this clock should be given by this sensor controller who
+> >> +      is also a clock source. This clock is named 'scck', sensor controller clock.
+> >> +    items:
+> >> +      - const: pclk
+> >> +      - const: scck
+> >> +
+> >> +  ports:
+> >> +    type: object
+> >> +    description:
+> >> +      List of ports
+> >> +
+> >> +    properties:
+> >> +      port@0:
+> >> +        type: object
+> >> +        description:
+> >> +          Input port node, single endpoint describing the input pad.
+> >> +      port@1:
+> >> +        type: object
+> >> +        description:
+> >> +          Output port node, single endpoint, describing the output pad.
+> >> +
+> >> +additionalProperties: false
+> >> +
+> >> +required:
+> >> +  - compatible
+> >> +  - reg
+> >> +  - clocks
+> >> +  - clock-names
+> >> +  - ports
+> >> +
+> >> +examples:
+> >> +  - |
+> >> +    csi2dc@e1404000 {
+> >> +        compatible = "microchip,sama7g5-csi2dc";
+> >> +        reg = <0xe1404000 0x500>;
+> >> +        clocks = <&pclk>, <&scck>;
+> >> +        clock-names = "pclk", "scck";
+> >> +
+> >> +        ports {
+> >> +               #address-cells = <1>;
+> >> +               #size-cells = <0>;
+> >> +               port@0 {
+> >> +                       reg = <0>; /* must be 0, first child port */
+> >> +                       csi2dc_in: endpoint { /* input from IDI interface */
+> >> +                               remote-endpoint = <&csi2host_out>;
+> >> +                       };
+> >> +               };
+> >> +
+> >> +               port@1 {
+> >> +                       reg = <1>; /* must be 1, second child port */
+> >> +                       csi2dc_out: endpoint {
+> >> +                               remote-endpoint = <&xisc_in>; /* output to sensor controller */
+> >> +                       };
+> >> +               };
+> >> +        };
+> >> +    };
+> >> +
+> >> +...
+> >> --
+> >> 2.25.1
+> >>
+>
