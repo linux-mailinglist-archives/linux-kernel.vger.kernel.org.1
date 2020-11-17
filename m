@@ -2,169 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2027D2B6293
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:30:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6492B6264
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731631AbgKQN3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:29:50 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8105 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731594AbgKQN3a (ORCPT
+        id S1731837AbgKQN2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:28:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731287AbgKQN2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:29:30 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cb6Gn0jHFzLpDr;
-        Tue, 17 Nov 2020 21:29:05 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Tue, 17 Nov 2020
- 21:29:18 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>
-CC:     <dmitry.torokhov@gmail.com>, <yangyingliang@huawei.com>
-Subject: [PATCH] Input: sunkbd - fix UAF in sunkbd_reinit()
-Date:   Tue, 17 Nov 2020 21:27:51 +0800
-Message-ID: <20201117132751.14863-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 17 Nov 2020 08:28:13 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86256C0613CF;
+        Tue, 17 Nov 2020 05:28:13 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h2so3263359wmm.0;
+        Tue, 17 Nov 2020 05:28:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=z5nRMWqZ/QN9od2roRxZfjfshzdwEOeik0u1h7RtLqk=;
+        b=LnUVFJQudTGPlJLNQZt7o64p1he3iEd7YJ3J7L8W3PbzVfyvvRAf/x7q3jBC//Vg3T
+         ZvN0qwGSJuBC8FKB9onCNPhrylSwWKmtNc73E8eumXOVwQzxzssSMuvlHF3loy9AoGnf
+         /+gA68keY+49yUb62QkdLRxS8E6eXeZIiL4Yg/hhvDDuiCdtqs6RhOc1cza/85lVEL26
+         MBxM0WjtvSnpijicIuRgO9LdJZXABaXbqKl94cx4u0fihizDeWNIoCnfLVkrj+saCkBh
+         SdvAlqsPcH5fx4uEiXjDYcrMkXByv9vawkXhSyorOnQvNTaRa1IpzDtWQ77IzV2W0uKW
+         VfsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=z5nRMWqZ/QN9od2roRxZfjfshzdwEOeik0u1h7RtLqk=;
+        b=TfIGTUxQ2aiYA7/6ORviJBQ4r/q3X+Iv8SZX/BZfvZOnncdwZNMkRIahRvV5fWpYA+
+         lw0rG35nHo84F4tgfktlAJc5BJjOsZgV8dJJlvqQSZgLy8kJ7rKANYy6VTNYJCWMgEwH
+         7xldgsRubfAoV+fSzq0X2QTYJON8hr8AYFeIgath2Cf8yR0dTANweJu57tlTUShyhIpw
+         3Dki6qcnBLMywUzDe7+U7i8aGK0Kc0mHuOzRY1qNv+CNSWxjLeabFgKVBcvGfKxTJU7W
+         cxcAYFESKD46JSDQvnoIWB0Z1Uh7SM3ICGUGb5KmHDjO2JEBd9R6X56iFeVSgc85kRR8
+         pzrA==
+X-Gm-Message-State: AOAM531musz9z3pl3oBlWpZJxgZjj0w657ktiELrH6gwE8ne4tCsEimV
+        +6RMHQCmlgDS1r1sUtFmMzgLgYwtpGI=
+X-Google-Smtp-Source: ABdhPJwxZd5OKOFCfzdN5THixhJIOUQljAUuFfJBmIWkACqNW8fk7frok9BvJUtCzHC7pWUyx7mB9A==
+X-Received: by 2002:a7b:c24b:: with SMTP id b11mr4222312wmj.109.1605619692243;
+        Tue, 17 Nov 2020 05:28:12 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id r8sm27375773wrq.14.2020.11.17.05.28.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 05:28:10 -0800 (PST)
+Date:   Tue, 17 Nov 2020 14:28:09 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] phy: fix ptr_ret.cocci warnings
+Message-ID: <20201117132809.GA2589875@ulmo>
+References: <202011170710.Dsd9lxrR-lkp@intel.com>
+ <20201116230032.GA34534@8312513de428>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
+Content-Disposition: inline
+In-Reply-To: <20201116230032.GA34534@8312513de428>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According the PoC in link:
-https://www.openwall.com/lists/oss-security/2020/11/05/2
 
-Here is UAF log:
-[  235.504246] ==================================================================
-[  235.508297] BUG: KASAN: use-after-free in __lock_acquire+0x2c75/0x34e0
-[  235.511906] Read of size 8 at addr ffff88812d4754f0 by task kworker/2:1/124
-[  235.515752]
-[  235.516641] CPU: 2 PID: 124 Comm: kworker/2:1 Not tainted 5.10.0-rc4 #1169
-[  235.520390] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
-[  235.526648] Workqueue: events sunkbd_reinit
-[  235.528869] Call Trace:
-[  235.530140]  dump_stack+0xe6/0x136
-[  235.531881]  ? __lock_acquire+0x2c75/0x34e0
-[  235.533954]  print_address_description.constprop.8+0x3e/0x60
-[  235.536781]  ? rcu_read_lock_bh_held+0xc0/0xc0
-[  235.539005]  ? vprintk_func+0xaf/0x1b0
-[  235.540830]  ? __lock_acquire+0x2c75/0x34e0
-[  235.542709]  ? __lock_acquire+0x2c75/0x34e0
-[  235.544613]  kasan_report.cold.10+0x1f/0x37
-[  235.546506]  ? __lock_acquire+0x2c75/0x34e0
-[  235.548410]  __lock_acquire+0x2c75/0x34e0
-[  235.550241]  ? lock_is_held_type+0xae/0xe0
-[  235.552130]  ? rcu_read_lock_sched_held+0xaf/0xe0
-[  235.554237]  ? rcu_read_lock_bh_held+0xc0/0xc0
-[  235.556239]  lock_acquire+0x19c/0x8f0
-[  235.557908]  ? prepare_to_wait_event+0x73/0x660
-[  235.559946]  ? rcu_read_unlock+0x50/0x50
-[  235.561715]  ? del_timer_sync+0xe3/0x130
-[  235.563548]  ? schedule_timeout+0x43b/0x950
-[  235.565278]  _raw_spin_lock_irqsave+0x43/0x60
-[  235.567047]  ? prepare_to_wait_event+0x73/0x660
-[  235.568910]  prepare_to_wait_event+0x73/0x660
-[  235.570701]  ? __next_timer_interrupt+0x1b0/0x1b0
-[  235.572647]  ? wait_woken+0x280/0x280
-[  235.574187]  sunkbd_reinit+0x579/0x700
-[  235.575744]  ? sunkbd_event+0x3d0/0x3d0
-[  235.577189]  ? finish_wait+0x280/0x280
-[  235.578623]  ? rcu_read_lock_bh_held+0xc0/0xc0
-[  235.580303]  ? lockdep_hardirqs_on_prepare+0x294/0x3e0
-[  235.582253]  process_one_work+0x8ef/0x1560
-[  235.583815]  ? pwq_dec_nr_in_flight+0x330/0x330
-[  235.585537]  ? do_raw_spin_lock+0x126/0x290
-[  235.587133]  worker_thread+0x91/0xc30
-[  235.588601]  ? process_one_work+0x1560/0x1560
-[  235.590233]  kthread+0x37a/0x450
-[  235.591487]  ? _raw_spin_unlock_irq+0x24/0x40
-[  235.593131]  ? kthread_mod_delayed_work+0x190/0x190
-[  235.594965]  ret_from_fork+0x22/0x30
-[  235.596346]
-[  235.596945] Allocated by task 85:
-[  235.598200]  kasan_save_stack+0x19/0x40
-[  235.599685]  __kasan_kmalloc.constprop.13+0xc1/0xd0
-[  235.601389]  kmem_cache_alloc_trace+0x11b/0x1d0
-[  235.602969]  sunkbd_connect+0xa7/0x10e0
-[  235.604330]  serio_connect_driver+0x50/0x70
-[  235.605810]  really_probe+0x287/0xd90
-[  235.607102]  driver_probe_device+0x267/0x3d0
-[  235.608611]  __device_attach_driver+0x1cc/0x280
-[  235.610209]  bus_for_each_drv+0x154/0x1d0
-[  235.611638]  __device_attach+0x234/0x3a0
-[  235.612912]  bus_probe_device+0x1dd/0x290
-[  235.614223]  device_add+0xc5f/0x1880
-[  235.615415]  serio_handle_event+0x4ae/0x8f0
-[  235.616788]  process_one_work+0x8ef/0x1560
-[  235.618124]  worker_thread+0x91/0xc30
-[  235.619351]  kthread+0x37a/0x450
-[  235.620427]  ret_from_fork+0x22/0x30
-[  235.621582]
-[  235.622097] Freed by task 2609:
-[  235.623130]  kasan_save_stack+0x19/0x40
-[  235.624396]  kasan_set_track+0x1c/0x30
-[  235.625612]  kasan_set_free_info+0x1b/0x30
-[  235.626944]  __kasan_slab_free+0x111/0x160
-[  235.628282]  slab_free_freelist_hook+0x5a/0x150
-[  235.629754]  kfree+0xe5/0x660
-[  235.630731]  serio_disconnect_driver+0x78/0xa0
-[  235.632187]  serio_driver_remove+0x1a/0x20
-[  235.633537]  device_release_driver_internal+0x239/0x520
-[  235.635250]  serio_unregister_port+0x24/0x40
-[  235.636634]  serport_ldisc_read+0x416/0x5f0
-[  235.638008]  tty_read+0x17d/0x270
-[  235.639096]  vfs_read+0x156/0x4c0
-[  235.640203]  ksys_read+0x104/0x200
-[  235.641318]  do_syscall_64+0x33/0x40
-[  235.642475]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  235.644099]
-[  235.644631] The buggy address belongs to the object at ffff88812d475400
-[  235.644631]  which belongs to the cache kmalloc-512 of size 512
-[  235.648610] The buggy address is located 240 bytes inside of
-[  235.648610]  512-byte region [ffff88812d475400, ffff88812d475600)
-[  235.652304] The buggy address belongs to the page:
-[  235.653862] page:(____ptrval____) refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12d470
-[  235.656841] head:(____ptrval____) order:3 compound_mapcount:0 compound_pincount:0
-[  235.659232] flags: 0x2fffff80010200(slab|head)
-[  235.660688] raw: 002fffff80010200 dead000000000100 dead000000000122 ffff8881000432c0
-[  235.663141] raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
-[  235.665605] page dumped because: kasan: bad access detected
-[  235.667390]
-[  235.667898] Memory state around the buggy address:
-[  235.669433]  ffff88812d475380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  235.671755]  ffff88812d475400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  235.674072] >ffff88812d475480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  235.676390]                                                              ^
-[  235.678576]  ffff88812d475500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  235.680880]  ffff88812d475580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  235.683221] ==================================================================
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-After sunkbd->tq is added to workqueue, before scheduled work finish, sunkbd is
-freed by sunkbd_disconnect(), when sunkbd is used in sunkbd_reinit(), it causes
-a UAF. Fix this by calling flush_scheduled_work() before free sunkbd.
+On Tue, Nov 17, 2020 at 07:00:32AM +0800, kernel test robot wrote:
+> From: kernel test robot <lkp@intel.com>
+>=20
+> drivers/phy/tegra/phy-tegra194-p2u.c:95:1-3: WARNING: PTR_ERR_OR_ZERO can=
+ be used
+>=20
+>=20
+>  Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
+>=20
+> Generated by: scripts/coccinelle/api/ptr_ret.cocci
+>=20
+> Fixes: 133552bf03ed ("phy: Remove CONFIG_ARCH_* check for related subdir =
+in Makefile")
+> CC: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> ---
+>=20
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   09162bc32c880a791c6c0668ce0745cf7958f576
+> commit: 133552bf03edbe3892767a4b64c56e3bed746374 phy: Remove CONFIG_ARCH_=
+* check for related subdir in Makefile
+>=20
+>  phy-tegra194-p2u.c |    5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 
-This fixes CVE-2020-25669.
+A similar patch was recently sent out against the pci-tegra driver. That
+was perhaps the third time or so that it happened and both the Bjorn
+(the PCI maintainer) and I have agreed multiple times in the past that
+this isn't an actual improvement.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/input/keyboard/sunkbd.c | 1 +
- 1 file changed, 1 insertion(+)
+There are two reasons why I think this is actually worse than the
+original: 1) this doesn't look like regular error handling and therefore
+becomes more difficult to read and 2) if we ever need to add code
+between the devm_of_phy_provider_register() and the final successful
+return, we need to go and effectively revert this patch again.
 
-diff --git a/drivers/input/keyboard/sunkbd.c b/drivers/input/keyboard/sunkbd.c
-index 27126e621eb6..b6222896acdf 100644
---- a/drivers/input/keyboard/sunkbd.c
-+++ b/drivers/input/keyboard/sunkbd.c
-@@ -316,6 +316,7 @@ static void sunkbd_disconnect(struct serio *serio)
- {
- 	struct sunkbd *sunkbd = serio_get_drvdata(serio);
- 
-+	flush_scheduled_work();
- 	sunkbd_enable(sunkbd, false);
- 	input_unregister_device(sunkbd->dev);
- 	serio_close(serio);
--- 
-2.17.1
+I wonder if there's enough consensus that PTR_ERR_OR_ZERO() is really
+that useful.
 
+Thierry
+
+>=20
+> --- a/drivers/phy/tegra/phy-tegra194-p2u.c
+> +++ b/drivers/phy/tegra/phy-tegra194-p2u.c
+> @@ -92,10 +92,7 @@ static int tegra_p2u_probe(struct platfo
+>  	phy_set_drvdata(generic_phy, phy);
+> =20
+>  	phy_provider =3D devm_of_phy_provider_register(dev, of_phy_simple_xlate=
+);
+> -	if (IS_ERR(phy_provider))
+> -		return PTR_ERR(phy_provider);
+> -
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(phy_provider);
+>  }
+> =20
+>  static const struct of_device_id tegra_p2u_id_table[] =3D {
+
+--ReaqsoxgOBHFXBhH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+zz+YACgkQ3SOs138+
+s6H3qA//T55kxtKknEYR7KaVhn2x64lQhioo/LzvB8cgfUaUNm6MC4jCRLLKWjAD
+V0T2XG3qn50sZBZVqbhKJ4T0ULQGB1GHUJquUBhh/VPIQTsJXt3pI7kqLJU5n8oQ
+D8KQJQAWMPuPr3vbsTnMxM7YAzDB+FCZjazVByZ/T0wEhdCZqHYT6XkJ4nhA79cN
+LV9GnpxDKsHHjEae50TT7VVvvhaTmlOT30wVLpYqqrAu+kY7as6KbxgsSgpEbJz7
+/OH8PHVvvsHs8Lmz8kVP1mbZmQxeZeyf422btsA9sANdxXHyUS/hUK93tAD7h3dN
+lqrRCG1tDK9NUR9u5/fIdLIIhjahrzmtPsGGDDDF9+Wz84SQ/0nK1ZhksIDYVm4X
+g4BUtmoNlrdsr5yRAw5ke52qZbm3FANRpnkF/727duD8d+rXxf5TOurvhNqqJqre
+Kk+OJ2Gy8BFNBbZFp+cLdYSrrudyFG8bfczafUjnxeSAlInWMpFjIT+eAV9h0sUU
+KrZl5lrcVVN0+p0CGFCWwawsUcMrGDGxaJGIhz0iJ4EVEcSThPEEXABVezq9VTDE
+3stXCZjQgVrMfDyxHcTKaXU09WFwOwQPdXANN++73ksp0WwPvzzDWwXdOqDGbjUc
+VZi4wjF1SkyglN4DokQoL8OxojozJP1o2XDmJT91V2PUvRKPZEw=
+=vWPq
+-----END PGP SIGNATURE-----
+
+--ReaqsoxgOBHFXBhH--
