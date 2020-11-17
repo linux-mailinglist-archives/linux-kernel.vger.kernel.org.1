@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EEB2B5A2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 806D12B5A32
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgKQHQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:16:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36342 "EHLO mail.kernel.org"
+        id S1726479AbgKQHTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:19:02 -0500
+Received: from mga09.intel.com ([134.134.136.24]:64092 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgKQHQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:16:47 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 668112463B;
-        Tue, 17 Nov 2020 07:16:45 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 09:16:41 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Dave Ertman <david.m.ertman@intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        parav@mellanox.com, shiraz.saleem@intel.com,
-        dan.j.williams@intel.com, kiran.patil@intel.com,
+        id S1726199AbgKQHTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 02:19:02 -0500
+IronPort-SDR: q/XLf/syn0pkLSChM1xhZkMf8uWsw47gVT5B5twViLsomDWgmx/aX0S7FJxhMvU6WWmF0S7Hih
+ ZE56prMT8IHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="171046561"
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="171046561"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 23:19:01 -0800
+IronPort-SDR: OJyEAJwupTcejrNgP+arSDCBG3RV0nzIt3rzpr4dk9U72ehub4eMTKsIRitC5+hhJHKjPzP6f3
+ MCebQDWd9zZA==
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="543923046"
+Received: from lil6-mobl1.ccr.corp.intel.com ([10.255.30.220])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 23:18:59 -0800
+Message-ID: <4e28affd89ba8a852e0fb7ace076458b3d43839a.camel@intel.com>
+Subject: Re: [PATCH] thermal: Fix NULL pointer dereference issue
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     Mukesh Ojha <mojha@codeaurora.org>, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
-Message-ID: <20201117071641.GN47002@unreal>
-References: <20201113161859.1775473-1-david.m.ertman@intel.com>
- <20201113161859.1775473-2-david.m.ertman@intel.com>
- <20201117053000.GM47002@unreal>
- <X7N1naYOXodPsP/I@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X7N1naYOXodPsP/I@kroah.com>
+Cc:     daniel.lezcano@linaro.org, amitk@kernel.org
+Date:   Tue, 17 Nov 2020 15:18:57 +0800
+In-Reply-To: <1605544181-5348-1-git-send-email-mojha@codeaurora.org>
+References: <1605544181-5348-1-git-send-email-mojha@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 08:02:53AM +0100, Greg KH wrote:
-> On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
-> > On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
-> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> > > It enables drivers to create an auxiliary_device and bind an
-> > > auxiliary_driver to it.
-> > >
-> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > > Each auxiliary_device has a unique string based id; driver binds to
-> > > an auxiliary_device based on this id through the bus.
-> > >
-> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > ---
-> >
-> > Greg,
-> >
-> > This horse was beaten to death, can we please progress with this patch?
-> > Create special topic branch or ack so I'll prepare this branch.
-> >
-> > We are in -rc4 now and we (Mellanox) can't hold our submissions anymore.
-> > My mlx5_core probe patches [1] were too intrusive and they are ready to
-> > be merged, Parav's patches got positive review as well [2] and will be
-> > taken next.
-> >
-> > We delayed and have in our internal queues the patches for VDPA, eswitch
-> > and followup for mlx5_core probe rework, but trapped due to this AUX bus
-> > patch.
->
-> There are no deadlines for kernel patches here, sorry.  Give me some
-> time to properly review this, core kernel changes should not be rushed.
+On Mon, 2020-11-16 at 21:59 +0530, Mukesh Ojha wrote:
+> Cooling stats variable inside thermal_cooling_device_stats_update()
+> can get NULL. We should add a NULL check on stat inside for sanity.
+> 
+> Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
+> ---
+>  drivers/thermal/thermal_sysfs.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/thermal/thermal_sysfs.c
+> b/drivers/thermal/thermal_sysfs.c
+> index a6f371f..f52708f 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -754,6 +754,9 @@ void thermal_cooling_device_stats_update(struct
+> thermal_cooling_device *cdev,
+>  {
+>  	struct cooling_dev_stats *stats = cdev->stats;
+>  
+> +	if (!stats)
+> +		return;
+> +
+May I know in which case stats can be NULL?
+The only possibility I can see is that cdev->ops->get_max_state() fails
+in cooling_device_stats_setup(), right?
 
-And here comes the difference between our views, from my POV it is not
-core kernel change that must to be done perfectly from the beginning,
-but change that will need to be improved/extended over time once more
-users will come.
+thanks,
+rui
 
->
-> Also, if you really want to blame someone for the delay, look at the
-> patch submitters, not the reviewers, as they are the ones that took a
-> very long time with this over the lifecycle of this patchset, not me.  I
-> have provided many "instant" reviews of this patchset, and then months
-> went by between updates from them.
+>  	spin_lock(&stats->lock);
+>  
+>  	if (stats->state == new_state)
 
-I'm not blaming anyone and especially you. It is just unfair that I
-found myself in the middle of this disaster while care enough to remind
-about the series.
-
-Thanks
-
->
-> greg k-h
