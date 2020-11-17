@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F3C2B6103
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361F82B61D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgKQNPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:15:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
+        id S1731201AbgKQNWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:22:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729619AbgKQNO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:14:59 -0500
+        id S1730806AbgKQNUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:20:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5528824199;
-        Tue, 17 Nov 2020 13:14:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACBB6246A5;
+        Tue, 17 Nov 2020 13:20:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618898;
-        bh=izF+elQ26elw2jNO80SKQ3Nb4pi7Y/9SOcKgmddyf3E=;
+        s=default; t=1605619251;
+        bh=QgUQ5NcIl8C+hQrGgM2TC+BjeOwK1xrU9BSHfieixZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QsvpK8xDYQG3hJ7V5dY0vuy0YvoGBXrV0IazL6KUlJFX8yj2M0CPb365ZN0Uc5bIc
-         rnb/SY9l6nklYj67H3ftmVgRm3JBGn5+2sACNjEnJNKruVfUTVAl+ff5SejtIqeqes
-         PFuudXZjEd4ixqWPU3uM5oomACqrKUR7v1uAVzdk=
+        b=GOat90344d9reRyhJPhm2ccB9UV+7sjBNtDGxq2GnMv/L8ltE4DfSAjh+MgzTfX4B
+         h+ehyQs1RYRtQaPieuxCPdRtmbVv/pDo4hd9GcutCyfjq0YLesseIXVsTrYeMj+T7p
+         IIKXQB7xU4VLdEZMuTE0IKLZPUeS7mjwjY8Zfgto=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH 4.14 46/85] thunderbolt: Add the missed ida_simple_remove() in ring_request_msix()
-Date:   Tue, 17 Nov 2020 14:05:15 +0100
-Message-Id: <20201117122113.281274505@linuxfoundation.org>
+        stable@vger.kernel.org, Chunyan Zhang <zhang.lyra@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 4.19 049/101] mfd: sprd: Add wakeup capability for PMIC IRQ
+Date:   Tue, 17 Nov 2020 14:05:16 +0100
+Message-Id: <20201117122115.483287415@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +44,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Baolin Wang <baolin.wang7@gmail.com>
 
-commit 7342ca34d931a357d408aaa25fadd031e46af137 upstream.
+commit a75bfc824a2d33f57ebdc003bfe6b7a9e11e9cb9 upstream.
 
-ring_request_msix() misses to call ida_simple_remove() in an error path.
-Add a label 'err_ida_remove' and jump to it.
+When changing to use suspend-to-idle to save power, the PMIC irq can not
+wakeup the system due to lack of wakeup capability, which will cause
+the sub-irqs (such as power key) of the PMIC can not wake up the system.
+Thus we can add the wakeup capability for PMIC irq to solve this issue,
+as well as removing the IRQF_NO_SUSPEND flag to allow PMIC irq to be
+a wakeup source.
 
-Fixes: 046bee1f9ab8 ("thunderbolt: Add MSI-X support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reported-by: Chunyan Zhang <zhang.lyra@gmail.com>
+Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+Tested-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/thunderbolt/nhi.c |   19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/mfd/sprd-sc27xx-spi.c |   28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
---- a/drivers/thunderbolt/nhi.c
-+++ b/drivers/thunderbolt/nhi.c
-@@ -315,12 +315,23 @@ static int ring_request_msix(struct tb_r
+--- a/drivers/mfd/sprd-sc27xx-spi.c
++++ b/drivers/mfd/sprd-sc27xx-spi.c
+@@ -212,7 +212,7 @@ static int sprd_pmic_probe(struct spi_de
+ 	}
  
- 	ring->vector = ret;
+ 	ret = devm_regmap_add_irq_chip(&spi->dev, ddata->regmap, ddata->irq,
+-				       IRQF_ONESHOT | IRQF_NO_SUSPEND, 0,
++				       IRQF_ONESHOT, 0,
+ 				       &ddata->irq_chip, &ddata->irq_data);
+ 	if (ret) {
+ 		dev_err(&spi->dev, "Failed to add PMIC irq chip %d\n", ret);
+@@ -228,9 +228,34 @@ static int sprd_pmic_probe(struct spi_de
+ 		return ret;
+ 	}
  
--	ring->irq = pci_irq_vector(ring->nhi->pdev, ring->vector);
--	if (ring->irq < 0)
--		return ring->irq;
-+	ret = pci_irq_vector(ring->nhi->pdev, ring->vector);
-+	if (ret < 0)
-+		goto err_ida_remove;
-+
-+	ring->irq = ret;
- 
- 	irqflags = no_suspend ? IRQF_NO_SUSPEND : 0;
--	return request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
-+	ret = request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
-+	if (ret)
-+		goto err_ida_remove;
-+
-+	return 0;
-+
-+err_ida_remove:
-+	ida_simple_remove(&nhi->msix_ida, ring->vector);
-+
-+	return ret;
++	device_init_wakeup(&spi->dev, true);
+ 	return 0;
  }
  
- static void ring_release_msix(struct tb_ring *ring)
++#ifdef CONFIG_PM_SLEEP
++static int sprd_pmic_suspend(struct device *dev)
++{
++	struct sprd_pmic *ddata = dev_get_drvdata(dev);
++
++	if (device_may_wakeup(dev))
++		enable_irq_wake(ddata->irq);
++
++	return 0;
++}
++
++static int sprd_pmic_resume(struct device *dev)
++{
++	struct sprd_pmic *ddata = dev_get_drvdata(dev);
++
++	if (device_may_wakeup(dev))
++		disable_irq_wake(ddata->irq);
++
++	return 0;
++}
++#endif
++
++static SIMPLE_DEV_PM_OPS(sprd_pmic_pm_ops, sprd_pmic_suspend, sprd_pmic_resume);
++
+ static const struct of_device_id sprd_pmic_match[] = {
+ 	{ .compatible = "sprd,sc2731", .data = &sc2731_data },
+ 	{},
+@@ -242,6 +267,7 @@ static struct spi_driver sprd_pmic_drive
+ 		.name = "sc27xx-pmic",
+ 		.bus = &spi_bus_type,
+ 		.of_match_table = sprd_pmic_match,
++		.pm = &sprd_pmic_pm_ops,
+ 	},
+ 	.probe = sprd_pmic_probe,
+ };
 
 
