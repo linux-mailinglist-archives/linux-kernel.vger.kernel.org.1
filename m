@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C9A2B5EEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FF72B5EFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgKQMLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:11:04 -0500
-Received: from mga01.intel.com ([192.55.52.88]:4366 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgKQMLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:11:03 -0500
-IronPort-SDR: h8Fp81H8lsv9RKkM8MkJsKx4Fukj0XKWe17p9goJc2A0rvk+BQ5Nq85b9cpY8jOESyL/CLhPzI
- Ap84GPx6TIkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="188966521"
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="188966521"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 04:11:03 -0800
-IronPort-SDR: VWOLiyCAE5HtdFruh/KAFYL27GmWPJmuTXb6+Igzyx0J4mZ/4RsuhGk6yj6zqaJHF4ad0WNHOf
- OEBdWOx0zhYg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="430458762"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 17 Nov 2020 04:11:00 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Nov 2020 14:10:59 +0200
-Date:   Tue, 17 Nov 2020 14:10:59 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        pmalani@chromium.org, enric.balletbo@collabora.com,
-        rajmohan.mani@intel.com, azhar.shaikh@intel.com
-Subject: Re: [PATCH v2 6/8] platform/chrome: cros_ec_typec: Use Thunderbolt 3
- cable discover mode VDO in USB4 mode
-Message-ID: <20201117121059.GF3437448@kuha.fi.intel.com>
-References: <20201113202503.6559-1-utkarsh.h.patel@intel.com>
- <20201113202503.6559-7-utkarsh.h.patel@intel.com>
+        id S1728056AbgKQMSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:18:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727928AbgKQMSg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:18:36 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65882C0613CF;
+        Tue, 17 Nov 2020 04:18:36 -0800 (PST)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4Cb4jP3HW9z1rxY6;
+        Tue, 17 Nov 2020 13:18:33 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4Cb4jP1q3Tz1qvgf;
+        Tue, 17 Nov 2020 13:18:33 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id u3XrPKpAHP6C; Tue, 17 Nov 2020 13:18:32 +0100 (CET)
+X-Auth-Info: oYQqwkth/zyd/eo2Jiby/5RnRCkMyClN4crdrNFuVpk=
+Received: from localhost (dslb-084-056-254-185.084.056.pools.vodafone-ip.de [84.56.254.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue, 17 Nov 2020 13:18:32 +0100 (CET)
+From:   Claudius Heine <ch@denx.de>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Henning Schild <henning.schild@siemens.com>,
+        Johannes Hahn <johannes-hahn@siemens.com>,
+        Werner Zeh <werner.zeh@siemens.com>,
+        Claudius Heine <ch@denx.de>
+Subject: [PATCH v3 0/2] Adding I2C support to RX6110 RTC
+Date:   Tue, 17 Nov 2020 13:18:15 +0100
+Message-Id: <20201117121817.953924-1-ch@denx.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113202503.6559-7-utkarsh.h.patel@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:25:01PM -0800, Utkarsh Patel wrote:
-> Configure Thunderbolt3/USB4 cable generation value by filing Thunderbolt 3
-> cable discover mode VDO to support rounded and non-rounded Thunderbolt3/
-> USB4 cables.
-> While we are here use Thunderbolt 3 cable discover mode VDO to fill active
-> cable plug link training value.
-> 
-> Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+Hi,
 
-FWIW:
+based on the last feedback round we decided to remove the ACPI patch from this
+patchset for now until we have the correct one. I have also moved the typo fix
+to the front, so it can be applied independently.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+best regards,
+Claudius
 
-> --
-> Changes in v2:
-> - No change.
-> --
-> ---
->  drivers/platform/chrome/cros_ec_typec.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index 8111ed1fc574..b7416e82c3b3 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -514,8 +514,18 @@ static int cros_typec_enable_usb4(struct cros_typec_data *typec,
->  	else if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_CABLE)
->  		data.eudo |= EUDO_CABLE_TYPE_RE_TIMER << EUDO_CABLE_TYPE_SHIFT;
->  
-> -	data.active_link_training = !!(pd_ctrl->control_flags &
-> -				       USB_PD_CTRL_ACTIVE_LINK_UNIDIR);
-> +	/*
-> +	 * This driver does not have access to the identity information or
-> +	 * capabilities of the cable, so we don't know is it a real USB4 or
-> +	 * TBT3 cable. Therefore pretending that it's always TBT3 cable by
-> +	 * filling the TBT3 Cable VDO.
-> +	 */
-> +	data.tbt_cable_vdo = TBT_MODE;
-> +
-> +	if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_LINK_UNIDIR)
-> +		data.tbt_cable_vdo |= TBT_CABLE_LINK_TRAINING;
-> +
-> +	data.tbt_cable_vdo |= TBT_SET_CABLE_ROUNDED(pd_ctrl->cable_gen);
->  
->  	port->state.alt = NULL;
->  	port->state.data = &data;
-> -- 
-> 2.17.1
+Changes from v2:
+- removed unused variables
+- reordered patches for easy partial application
+- removed ACPI patch, because we are investigating ACPI name change
+
+Changes from v1:
+- moved common probing code into its own function `rx6110_probe`
+- added a small patch to fix a type in the Kconfig
+
+Claudius Heine (2):
+  rtc: Kconfig: Fix typo in help message of rx 6110
+  rtc: rx6110: add i2c support
+
+ drivers/rtc/Kconfig      |  20 ++---
+ drivers/rtc/rtc-rx6110.c | 165 +++++++++++++++++++++++++++++++++------
+ 2 files changed, 153 insertions(+), 32 deletions(-)
 
 -- 
-heikki
+2.20.1
+
