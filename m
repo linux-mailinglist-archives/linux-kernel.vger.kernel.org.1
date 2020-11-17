@@ -2,280 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854D82B5A98
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F64C2B5A8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbgKQH4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:56:42 -0500
-Received: from mailout09.rmx.de ([94.199.88.74]:51416 "EHLO mailout09.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726511AbgKQH4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:56:41 -0500
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout09.rmx.de (Postfix) with ESMTPS id 4CZyv72fsqzbgVh;
-        Tue, 17 Nov 2020 08:56:35 +0100 (CET)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4CZytk4lHHz2xbk;
-        Tue, 17 Nov 2020 08:56:14 +0100 (CET)
-Received: from n95hx1g2.localnet (192.168.54.122) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 17 Nov
- 2020 08:55:11 +0100
-From:   Christian Eggers <ceggers@arri.de>
-To:     Rob Herring <robh@kernel.org>
-CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Vivien Didelot" <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Woojung Huh" <woojung.huh@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        <netdev@vger.kernel.org>, "David S . Miller" <davem@davemloft.net>,
-        Richard Cochran <richardcochran@gmail.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Marek Vasut <marex@denx.de>,
-        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-Subject: Re: [PATCH net-next v2 01/11] dt-bindings: net: dsa: convert ksz bindings document to yaml
-Date:   Tue, 17 Nov 2020 08:55:10 +0100
-Message-ID: <7522726.5jB9HK481P@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20201116143720.GA1611573@bogus>
-References: <20201112153537.22383-1-ceggers@arri.de> <20201112153537.22383-2-ceggers@arri.de> <20201116143720.GA1611573@bogus>
+        id S1726794AbgKQH42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726249AbgKQH41 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 02:56:27 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A122FC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:56:27 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id y197so19582172qkb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:56:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=H3l9soqm+SREQlc2IEV9Idb1VORHh3SoM0Ng1Iin3Dc=;
+        b=vr6WiLEj6tAgdFqp8DIxItu5ALuLwg5H3eYuzD7j+uatZ4C4eKiUbT+iEZ9/EpFUWK
+         4TR9TKVUhgAMbbNw7dtsPQy8IgImKzjGAYDzXIzcR97WWfJ643GCQzKaPRRZYyQ4mKxp
+         8+oJCAhIYn0eKUFpUQakgVHsrmP42OW/15444w8IQDgBv0RJyi79iwYyHMG97SFYT/JT
+         ZWFdO527yh16ZkaRMhEcDJsYA4O7WzCiPlScZhc+PiN+UiphivffRfHeLpZ8V3rRKY4o
+         eEilw/r3h6MoPZatEz5gUwDVmtWfKnehx5CtjJkPwbPsHUeYibXKRx0pDo1bYyqvn0ti
+         Ym5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=H3l9soqm+SREQlc2IEV9Idb1VORHh3SoM0Ng1Iin3Dc=;
+        b=JNlXaV0K3KrRmC3Gn7BohPOd8H61VtjOHTN7gsGyzKJhTeeUW1lFhIZAYTiX+jSg9L
+         LvGTep2Z3YkLfF7H2LTLh4UTgP4Xvt93JRx4XHogGdIfJdZ1UGa50rFUtYsHBSB/XDIj
+         wFzDXtJJfshOjHQHvnE27ZayzZogJm9DXRf5CT+8d8Os3heJyH7nREOUF7YeQmf6gMaI
+         8v90fDWAfXJ7t1HBzPsJiC8YcGIJAYGxJnVSfZCjzqKxtqsMHtI/h+JbNaWEu2QQlkMY
+         HlgAX+zZAOfa9bvI1XTieDNNVi/0mv7kujIxoMqoZMQTsV6vJjtzuPYWkVDC8UCFnBFC
+         joPA==
+X-Gm-Message-State: AOAM531Q2TWNnj/cH4PZb1XxO5zzJdL4USd7ua7KYVBQd2+p49DUEh1D
+        DvTqO7Mf1uBgJyXh+K8wsR+pkiasfCwg9RBaR9o1qw==
+X-Google-Smtp-Source: ABdhPJwL37DcZAHwPAwGzv7dlhmnzGGHY07oktBGxXahSXeeXy9RHAITbjODhOe6w9v8GDK8fQ7Ue4Xm4a8RfzsD0aE=
+X-Received: by 2002:a37:9747:: with SMTP id z68mr17899362qkd.424.1605599786651;
+ Mon, 16 Nov 2020 23:56:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.122]
-X-RMX-ID: 20201117-085616-4CZytk4lHHz2xbk-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 17 Nov 2020 08:56:15 +0100
+Message-ID: <CACT4Y+bUfavwMVv2SEMve5pabE_AwsDO0YsRBGZtYqX59a77vA@mail.gmail.com>
+Subject: suspicious capability check in ovl_ioctl_set_flags
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Merna Zakaria <mernazakaria@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, 16 November 2020, 15:37:20 CET, Rob Herring wrote:
-> On Thu, 12 Nov 2020 16:35:27 +0100, Christian Eggers wrote:
-> > Convert the bindings document for Microchip KSZ Series Ethernet switches
-> > from txt to yaml.
-> > 
-> > Signed-off-by: Christian Eggers <ceggers@arri.de>
-> > ---
-> > 
-> >  .../devicetree/bindings/net/dsa/ksz.txt       | 125 ---------------
-> >  .../bindings/net/dsa/microchip,ksz.yaml       | 150 ++++++++++++++++++
-> >  MAINTAINERS                                   |   2 +-
-> >  3 files changed, 151 insertions(+), 126 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/net/dsa/ksz.txt
-> >  create mode 100644
-> >  Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> My bot found errors running 'make dt_binding_check' on your patch:
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/dsa
-> /microchip,ksz.yaml: 'oneOf' conditional failed, one must be fixed:
-> 'unevaluatedProperties' is a required property
-> 	'additionalProperties' is a required property
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/dsa
-> /microchip,ksz.yaml: ignoring, error in schema: warning: no schema found in
-> file: ./Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> 
-> 
-> See https://patchwork.ozlabs.org/patch/1399036
-> 
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
+Hi Miklos,
 
-with the latest dtschema I get further warnings:
+We've detected a suspicious double-fetch of user-space data in
+ovl_ioctl_set_flags using a prototype tool (see report below [1]).
 
-/home/.../build-net-next/Documentation/devicetree/bindings/net/dsa/microchip,ksz.example.dt.yaml: switch@0: 'ethernet-ports', 'reg', 'spi-cpha', 'spi-cpol', 'spi-max-frequency' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /home/.../Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-/home/.../build-net-next/Documentation/devicetree/bindings/net/dsa/microchip,ksz.example.dt.yaml: switch@1: 'ethernet-ports', 'reg', 'spi-cpha', 'spi-cpol', 'spi-max-frequency' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /home/.../Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+It points to ovl_ioctl_set_flags that does a capability check using
+flags, but then the real ioctl double-fetches flags and uses
+potentially different value:
 
-Which schema requires the regex 'pinctrl-[0-9]+'? I have tried to add pinctrl-0
-properties to the switch@0 and switch@1 nodes, but that didn't help.
-
-Current version of microchip,ksz.yaml is below.
-
-regards
-Christian
-
-
-# SPDX-License-Identifier: GPL-2.0-only
-%YAML 1.2
----
-$id: http://devicetree.org/schemas/net/dsa/microchip,ksz.yaml#
-$schema: http://devicetree.org/meta-schemas/core.yaml#
-
-title: Microchip KSZ Series Ethernet switches
-
-allOf:
-  - $ref: dsa.yaml#
-
-maintainers:
-  - Marek Vasut <marex@denx.de>
-  - Woojung Huh <Woojung.Huh@microchip.com>
-
-properties:
-  # See Documentation/devicetree/bindings/net/dsa/dsa.yaml for a list of additional
-  # required and optional properties.
-  compatible:
-    enum:
-      - microchip,ksz8765
-      - microchip,ksz8794
-      - microchip,ksz8795
-      - microchip,ksz9477
-      - microchip,ksz9897
-      - microchip,ksz9896
-      - microchip,ksz9567
-      - microchip,ksz8565
-      - microchip,ksz9893
-      - microchip,ksz9563
-      - microchip,ksz8563
-
-  reset-gpios:
-    description:
-      Should be a gpio specifier for a reset line.
-    maxItems: 1
-
-  interrupts:
-    description:
-      Interrupt specifier for the INTRP_N line from the device.
-    maxItems: 1
-
-  microchip,synclko-125:
-    $ref: /schemas/types.yaml#/definitions/flag
-    description:
-      Set if the output SYNCLKO frequency should be set to 125MHz instead of 25MHz.
-
-required:
-  - compatible
-  - reg
-
-additionalProperties: false
-
-examples:
-  - |
-    #include <dt-bindings/gpio/gpio.h>
-    #include <dt-bindings/interrupt-controller/irq.h>
-
-    // Ethernet switch connected via SPI to the host, CPU port wired to eth0:
-    eth0 {
-        fixed-link {
-            speed = <1000>;
-            full-duplex;
-        };
-    };
-
-    spi0 {
-        #address-cells = <1>;
-        #size-cells = <0>;
-
-        pinctrl-0 = <&pinctrl_spi_ksz>;
-        cs-gpios = <&pioC 25 0>;
-        id = <1>;
-
-        ksz9477: switch@0 {
-            compatible = "microchip,ksz9477";
-            reg = <0>;
-            reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
-            interrupts-extended = <&gpio5 1 IRQ_TYPE_LEVEL_LOW>;  /* INTRP_N line */
-
-            spi-max-frequency = <44000000>;
-            spi-cpha;
-            spi-cpol;
-
-            ethernet-ports {
-                #address-cells = <1>;
-                #size-cells = <0>;
-                port@0 {
-                    reg = <0>;
-                    label = "lan1";
-                };
-                port@1 {
-                    reg = <1>;
-                    label = "lan2";
-                };
-                port@2 {
-                    reg = <2>;
-                    label = "lan3";
-                };
-                port@3 {
-                    reg = <3>;
-                    label = "lan4";
-                };
-                port@4 {
-                    reg = <4>;
-                    label = "lan5";
-                };
-                port@5 {
-                    reg = <5>;
-                    label = "cpu";
-                    ethernet = <&eth0>;
-                    fixed-link {
-                        speed = <1000>;
-                        full-duplex;
-                    };
-                };
-            };
-        };
-
-        ksz8565: switch@1 {
-            compatible = "microchip,ksz8565";
-            reg = <1>;
-
-            spi-max-frequency = <44000000>;
-            spi-cpha;
-            spi-cpol;
-
-            ethernet-ports {
-                #address-cells = <1>;
-                #size-cells = <0>;
-                port@0 {
-                    reg = <0>;
-                    label = "lan1";
-                };
-                port@1 {
-                    reg = <1>;
-                    label = "lan2";
-                };
-                port@2 {
-                    reg = <2>;
-                    label = "lan3";
-                };
-                port@3 {
-                    reg = <3>;
-                    label = "lan4";
-                };
-                port@6 {
-                    reg = <6>;
-                    label = "cpu";
-                    ethernet = <&eth0>;
-                    fixed-link {
-                        speed = <1000>;
-                        full-duplex;
-                    };
-                };
-            };
-        };
-    };
+static long ovl_ioctl_set_flags(struct file *file, unsigned int cmd,
+                unsigned long arg, unsigned int flags)
+{
 ...
+    /* Check the capability before cred override */
+    oldflags = ovl_iflags_to_fsflags(READ_ONCE(inode->i_flags));
+    ret = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+    if (ret)
+        goto unlock;
+...
+    ret = ovl_real_ioctl(file, cmd, arg);
 
+All fs impls call vfs_ioc_setflags_prepare again, so the capability is
+checked again.
 
+But I think this makes the vfs_ioc_setflags_prepare check in overlayfs
+pointless (?) and the "Check the capability before cred override"
+comment misleading, user can skip this check by presenting benign
+flags first and then overwriting them to non-benign flags. Or, if this
+check is still needed... it is wrong (?). The code would need to
+arrange for both ioctl's to operate on the same data then.
+Does it make any sense?
+Thanks
 
+[1] BUG: multi-read in __x64_sys_ioctl  between ovl_ioctl and ext4_ioctl
+======= First Address Range Stack =======
+ df_save_stack+0x33/0x70 lib/df-detection.c:208
+ add_address+0x2ac/0x352 lib/df-detection.c:47
+ ovl_ioctl_set_fsflags fs/overlayfs/file.c:607 [inline]
+ ovl_ioctl+0x7d/0x290 fs/overlayfs/file.c:654
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+======= Second Address Range Stack =======
+ df_save_stack+0x33/0x70 lib/df-detection.c:208
+ add_address+0x2ac/0x352 lib/df-detection.c:47
+ ext4_ioctl+0x13b1/0x27f0 fs/ext4/ioctl.c:833
+ vfs_ioctl+0x30/0x80 fs/ioctl.c:48
+ ovl_real_ioctl+0xed/0x100 fs/overlayfs/file.c:539
+ ovl_ioctl_set_flags+0x11d/0x180 fs/overlayfs/file.c:574
+ ovl_ioctl_set_fsflags fs/overlayfs/file.c:610 [inline]
+ ovl_ioctl+0x11e/0x290 fs/overlayfs/file.c:654
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+syscall number 16  System Call: __x64_sys_ioctl+0x0/0x140 fs/ioctl.c:800
+First 0000000020000000 len 4 Caller vfs_ioctl fs/ioctl.c:48 [inline]
+First 0000000020000000 len 4 Caller __do_sys_ioctl fs/ioctl.c:753 [inline]
+First 0000000020000000 len 4 Caller __se_sys_ioctl fs/ioctl.c:739 [inline]
+First 0000000020000000 len 4 Caller __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
+Second 0000000020000000 len 4 Caller vfs_ioctl+0x30/0x80 fs/ioctl.c:48
+==================================================================
