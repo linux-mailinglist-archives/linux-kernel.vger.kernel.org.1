@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5EF92B63C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E6E2B6513
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733111AbgKQNld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:41:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53722 "EHLO mail.kernel.org"
+        id S1731196AbgKQN33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:29:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733092AbgKQNl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:41:27 -0500
+        id S1731563AbgKQN3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:29:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74A2A206A5;
-        Tue, 17 Nov 2020 13:41:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BEB12078E;
+        Tue, 17 Nov 2020 13:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620487;
-        bh=9IrT82M9DQYhzeoNHKJMJKpQDzlamVxhafriOdQlUgY=;
+        s=default; t=1605619759;
+        bh=96sll2MtNT8gau431j6340Qmmpw4xbItvxX7Bvk4ZD0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SwrklAdARzlZNhytYwiNc14e+0eCQNrBM7clJk70pY43sLax5ImS4txaUdUviLk2K
-         37NSRwZApzHDQCeGIQ0srhbNct19E1qTpJih2gDISniwt96lLtJw4AZX/Vq8Kg6YIk
-         3/0tLlXSol1aU0ayzUNIbvt+QXSo3LvDTQLtPR0g=
+        b=Xzkt02lvVFV9MTYi1JEacYoWA32GlJorAlNdDMcp12P8I+Y7i1L3x5UmdHAwOySrz
+         TEaVnnLoXWMnnZZ7/jYT3nQQFnJM06kUZ3ikGuggcJa1Sb3Nj9+qLIRhU9aXnWqWi2
+         VCCnVUntWqK+7hs9Igndn/sMDQ8i3HgT2srxXDXA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: [PATCH 5.9 236/255] cpufreq: Introduce CPUFREQ_GOV_STRICT_TARGET
-Date:   Tue, 17 Nov 2020 14:06:16 +0100
-Message-Id: <20201117122150.424011551@linuxfoundation.org>
+        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH 5.4 147/151] x86/speculation: Allow IBPB to be conditionally enabled on CPUs with always-on STIBP
+Date:   Tue, 17 Nov 2020 14:06:17 +0100
+Message-Id: <20201117122128.578986293@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +44,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Anand K Mistry <amistry@google.com>
 
-commit 218f66870181bec7aaa6e3c72f346039c590c3c2 upstream.
+commit 1978b3a53a74e3230cd46932b149c6e62e832e9a upstream.
 
-Introduce a new governor flag, CPUFREQ_GOV_STRICT_TARGET, for the
-governors that want the target frequency to be set exactly to the
-given value without leaving any room for adjustments on the hardware
-side and set this flag for the powersave and performance governors.
+On AMD CPUs which have the feature X86_FEATURE_AMD_STIBP_ALWAYS_ON,
+STIBP is set to on and
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
+
+At the same time, IBPB can be set to conditional.
+
+However, this leads to the case where it's impossible to turn on IBPB
+for a process because in the PR_SPEC_DISABLE case in ib_prctl_set() the
+
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
+
+condition leads to a return before the task flag is set. Similarly,
+ib_prctl_get() will return PR_SPEC_DISABLE even though IBPB is set to
+conditional.
+
+More generally, the following cases are possible:
+
+1. STIBP = conditional && IBPB = on for spectre_v2_user=seccomp,ibpb
+2. STIBP = on && IBPB = conditional for AMD CPUs with
+   X86_FEATURE_AMD_STIBP_ALWAYS_ON
+
+The first case functions correctly today, but only because
+spectre_v2_user_ibpb isn't updated to reflect the IBPB mode.
+
+At a high level, this change does one thing. If either STIBP or IBPB
+is set to conditional, allow the prctl to change the task flag.
+Also, reflect that capability when querying the state. This isn't
+perfect since it doesn't take into account if only STIBP or IBPB is
+unconditionally on. But it allows the conditional feature to work as
+expected, without affecting the unconditional one.
+
+ [ bp: Massage commit message and comment; space out statements for
+   better readability. ]
+
+Fixes: 21998a351512 ("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.")
+Signed-off-by: Anand K Mistry <amistry@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lkml.kernel.org/r/20201105163246.v2.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- drivers/cpufreq/cpufreq_performance.c |    1 +
- drivers/cpufreq/cpufreq_powersave.c   |    1 +
- include/linux/cpufreq.h               |    3 +++
- 3 files changed, 5 insertions(+)
 
---- a/drivers/cpufreq/cpufreq_performance.c
-+++ b/drivers/cpufreq/cpufreq_performance.c
-@@ -20,6 +20,7 @@ static void cpufreq_gov_performance_limi
- static struct cpufreq_governor cpufreq_gov_performance = {
- 	.name		= "performance",
- 	.owner		= THIS_MODULE,
-+	.flags		= CPUFREQ_GOV_STRICT_TARGET,
- 	.limits		= cpufreq_gov_performance_limits,
- };
+---
+ arch/x86/kernel/cpu/bugs.c |   52 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 19 deletions(-)
+
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1252,6 +1252,14 @@ static int ssb_prctl_set(struct task_str
+ 	return 0;
+ }
  
---- a/drivers/cpufreq/cpufreq_powersave.c
-+++ b/drivers/cpufreq/cpufreq_powersave.c
-@@ -21,6 +21,7 @@ static struct cpufreq_governor cpufreq_g
- 	.name		= "powersave",
- 	.limits		= cpufreq_gov_powersave_limits,
- 	.owner		= THIS_MODULE,
-+	.flags		= CPUFREQ_GOV_STRICT_TARGET,
- };
- 
- MODULE_AUTHOR("Dominik Brodowski <linux@brodo.de>");
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -575,6 +575,9 @@ struct cpufreq_governor {
- /* For governors which change frequency dynamically by themselves */
- #define CPUFREQ_GOV_DYNAMIC_SWITCHING	BIT(0)
- 
-+/* For governors wanting the target frequency to be set exactly */
-+#define CPUFREQ_GOV_STRICT_TARGET	BIT(1)
++static bool is_spec_ib_user_controlled(void)
++{
++	return spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP;
++}
 +
+ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ {
+ 	switch (ctrl) {
+@@ -1259,17 +1267,26 @@ static int ib_prctl_set(struct task_stru
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return 0;
+-		/*
+-		 * Indirect branch speculation is always disabled in strict
+-		 * mode. It can neither be enabled if it was force-disabled
+-		 * by a  previous prctl call.
  
- /* Pass a target to the cpufreq driver */
- unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
++		/*
++		 * With strict mode for both IBPB and STIBP, the instruction
++		 * code paths avoid checking this task flag and instead,
++		 * unconditionally run the instruction. However, STIBP and IBPB
++		 * are independent and either can be set to conditionally
++		 * enabled regardless of the mode of the other.
++		 *
++		 * If either is set to conditional, allow the task flag to be
++		 * updated, unless it was force-disabled by a previous prctl
++		 * call. Currently, this is possible on an AMD CPU which has the
++		 * feature X86_FEATURE_AMD_STIBP_ALWAYS_ON. In this case, if the
++		 * kernel is booted with 'spectre_v2_user=seccomp', then
++		 * spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP and
++		 * spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED.
+ 		 */
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ||
++		if (!is_spec_ib_user_controlled() ||
+ 		    task_spec_ib_force_disable(task))
+ 			return -EPERM;
++
+ 		task_clear_spec_ib_disable(task);
+ 		task_update_spec_tif(task);
+ 		break;
+@@ -1282,10 +1299,10 @@ static int ib_prctl_set(struct task_stru
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return -EPERM;
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++
++		if (!is_spec_ib_user_controlled())
+ 			return 0;
++
+ 		task_set_spec_ib_disable(task);
+ 		if (ctrl == PR_SPEC_FORCE_DISABLE)
+ 			task_set_spec_ib_force_disable(task);
+@@ -1350,20 +1367,17 @@ static int ib_prctl_get(struct task_stru
+ 	if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 	    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 		return PR_SPEC_ENABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
+-		return PR_SPEC_DISABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP) {
++	else if (is_spec_ib_user_controlled()) {
+ 		if (task_spec_ib_force_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE;
+ 		if (task_spec_ib_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
+ 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
+-	} else
++	} else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++		return PR_SPEC_DISABLE;
++	else
+ 		return PR_SPEC_NOT_AFFECTED;
+ }
+ 
 
 
