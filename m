@@ -2,255 +2,633 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8854C2B6A85
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 955AB2B6A87
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727617AbgKQQoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:44:13 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:57112 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727010AbgKQQoN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:44:13 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHGLdbS011324;
-        Tue, 17 Nov 2020 17:44:07 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=gOq8PtsLPl8YcQWlI24WYrhhhkl3V8mDV43l6Fi6+4A=;
- b=txKTnx/gC3wOu0FfqhLo0//opUonK0mem30dBKDvihXJ1+Khhs56A0GlEIthIFSTxt4F
- JDhrNmNOJdcHBV9ibpbUu5iEvAr0yaGkHPjsBVUb+KyGFje3Ar6nlTcUJfmCVyKgVIqA
- 4W2LRQ8a/vvbyUOWSHApoaDqmvOnzpk2dKjuJDR/BoiCH/tDUc+KVZPaSzr2vg/pPQNF
- LudocrTE6IG75W9fOUJvwphi+hTox6l7Vl312ccEgrbVTBD3p86ty5vEFyikrFgqlecD
- KyJFxFMs1Mp0X1RA62Aj9GvDZ8mwwPukRL6yLPAvINODIIE8WapNQAkwSD6jHXnQNNrU QQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34t70gjndt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 17:44:07 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EBFBB100034;
-        Tue, 17 Nov 2020 17:44:06 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D97A8215D13;
-        Tue, 17 Nov 2020 17:44:06 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
- 2020 17:44:05 +0100
-Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <eb7f6707-4483-3e1a-1e39-7f32fbf437e0@st.com>
- <20201111144942.GA6403@ubuntu> <c31b8427-baca-5c77-6420-b592c57a3a7b@st.com>
- <20201112115115.GA11069@ubuntu> <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
- <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com> <20201116151028.GA1519@ubuntu>
- <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
- <20201116224003.GC3892875@xps15>
- <50549519-d9ff-9048-a3d8-dab02bfda096@st.com> <20201117160330.GA15538@ubuntu>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <a653c503-7fd1-7b87-88a5-88c9002ba410@st.com>
-Date:   Tue, 17 Nov 2020 17:44:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728014AbgKQQoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:44:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727010AbgKQQoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:44:15 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7870C221F9;
+        Tue, 17 Nov 2020 16:44:13 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 11:44:11 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        =?UTF-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 4/9] platform/surface: aggregator: Add trace points
+Message-ID: <20201117114411.30af7078@gandalf.local.home>
+In-Reply-To: <20201115192143.21571-5-luzmaximilian@gmail.com>
+References: <20201115192143.21571-1-luzmaximilian@gmail.com>
+        <20201115192143.21571-5-luzmaximilian@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201117160330.GA15538@ubuntu>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_06:2020-11-17,2020-11-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 15 Nov 2020 20:21:38 +0100
+Maximilian Luz <luzmaximilian@gmail.com> wrote:
 
-
-On 11/17/20 5:03 PM, Guennadi Liakhovetski wrote:
-> On Tue, Nov 17, 2020 at 12:42:30PM +0100, Arnaud POULIQUEN wrote:
+> Add trace points to the Surface Aggregator subsystem core. These trace
+> points can be used to track packets, requests, and allocations. They are
+> further intended for debugging and testing/validation, specifically in
+> combination with the error injection capabilities introduced in the
+> subsequent commit.
 > 
-> [snip]
-> 
->> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
->> index 5bda7cb44618..80c2cc23bada 100644
->> --- a/drivers/rpmsg/rpmsg_ns.c
->> +++ b/drivers/rpmsg/rpmsg_ns.c
->> @@ -55,6 +55,39 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
->> *data, int len,
->>  	return 0;
->>  }
->>
->> +/**
->> + * rpmsg_ns_register_device() - register name service device based on rpdev
->> + * @rpdev: prepared rpdev to be used for creating endpoints
->> + *
->> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
->> + * basis for the rpmsg name service device.
->> + */
->> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
->> +{
->> +#ifdef MODULES
->> +	int ret;
->> +	struct module *rpmsg_ns;
->> +
->> +	mutex_lock(&module_mutex);
->> +	rpmsg_ns = find_module(KBUILD_MODNAME);
->> +	mutex_unlock(&module_mutex);
->> +
->> +	if (!rpmsg_ns) {
->> +		ret = request_module(KBUILD_MODNAME);
-> 
-> Is this code requesting the module in which it is located?.. I must be missing 
-> something...
-
-Right this is stupid...Thanks to highlight this!
-
-That being said, your remark is very interesting: we need to load the module to
-access to this function. This means that calling this function ensures that the
-module is loaded. In this case no need to add the piece of code to find
-module... here is the call stack associated (associated patch is available below):
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> ---
 
 
-(rpmsg_ns_probe+0x5c/0xe0 [rpmsg_ns])
-[   11.858748] [<bf00a0a0>] (rpmsg_ns_probe [rpmsg_ns]) from [<bf0005cc>]
-(rpmsg_dev_probe+0x14c/0x1b0 [rpmsg_core])
-[   11.869047] [<bf0005cc>] (rpmsg_dev_probe [rpmsg_core]) from [<c067cd44>]
-(really_probe+0x208/0x4f0)
-[   11.878117] [<c067cd44>] (really_probe) from [<c067d1f4>]
-(driver_probe_device+0x78/0x16c)
-[   11.886404] [<c067d1f4>] (driver_probe_device) from [<c067ad48>]
-(bus_for_each_drv+0x84/0xd0)
-[   11.894887] [<c067ad48>] (bus_for_each_drv) from [<c067ca9c>]
-(__device_attach+0xf0/0x188)
-[   11.903142] [<c067ca9c>] (__device_attach) from [<c067bb10>]
-(bus_probe_device+0x84/0x8c)
-[   11.911314] [<c067bb10>] (bus_probe_device) from [<c0678094>]
-(device_add+0x3b0/0x7b0)
-[   11.919227] [<c0678094>] (device_add) from [<bf0003dc>]
-(rpmsg_register_device+0x54/0x88 [rpmsg_core])
-[   11.928541] [<bf0003dc>] (rpmsg_register_device [rpmsg_core]) from
-[<bf011b58>] (rpmsg_probe+0x298/0x3c8 [virtio_rpmsg_bus])
-[   11.939748] [<bf011b58>] (rpmsg_probe [virtio_rpmsg_bus]) from [<c05cd648>]
-(virtio_dev_probe+0x1f4/0x2c4)
-[   11.949377] [<c05cd648>] (virtio_dev_probe) from [<c067cd44>]
-(really_probe+0x208/0x4f0)
-[   11.957454] [<c067cd44>] (really_probe) from [<c067d1f4>]
-(driver_probe_device+0x78/0x16c)
-[   11.965710] [<c067d1f4>] (driver_probe_device) from [<c067d548>]
-(device_driver_attach+0x58/0x60)
-[   11.974574] [<c067d548>] (device_driver_attach) from [<c067d604>]
-(__driver_attach+0xb4/0x154)
-[   11.983177] [<c067d604>] (__driver_attach) from [<c067ac68>]
-(bus_for_each_dev+0x78/0xc0)
-[   11.991344] [<c067ac68>] (bus_for_each_dev) from [<c067bdc0>]
-(bus_add_driver+0x170/0x20c)
-[   11.999600] [<c067bdc0>] (bus_add_driver) from [<c067e12c>]
-(driver_register+0x74/0x108)
-[   12.007693] [<c067e12c>] (driver_register) from [<bf017010>]
-(rpmsg_init+0x10/0x1000 [virtio_rpmsg_bus])
-[   12.017168] [<bf017010>] (rpmsg_init [virtio_rpmsg_bus]) from [<c0102090>]
-(do_one_initcall+0x58/0x2bc)
-[
+>  	/*
+>  	 * Lock packet and commit with memory barrier. If this packet has
+>  	 * already been locked, it's going to be removed and completed by
+> @@ -1154,6 +1167,8 @@ static void ssh_ptl_timeout_reap(struct work_struct *work)
+>  	ktime_t next = KTIME_MAX;
+>  	bool resub = false;
+>  
+> +	trace_ssam_ptl_timeout_reap("pending", atomic_read(&ptl->pending.count));
 
-This would make the patch very simple. I tested following patch on my platform,
-applying it, i do not reproduce the initial issue.
+I noticed that the only two places that use timeout_reap, both have
+"pending" as a string. Is this necessary to save? Would an enum work?
 
 
-diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-index c3fc75e6514b..1394114782d2 100644
---- a/drivers/rpmsg/Kconfig
-+++ b/drivers/rpmsg/Kconfig
-@@ -71,5 +71,6 @@ config RPMSG_VIRTIO
- 	depends on HAS_DMA
- 	select RPMSG
- 	select VIRTIO
-+	select RPMSG_NS
+> +
+>  	/*
+>  	 * Mark reaper as "not pending". This is done before checking any
+>  	 * packets to avoid lost-update type problems.
+> @@ -1185,6 +1200,8 @@ static void ssh_ptl_timeout_reap(struct work_struct *work)
+>  		// check if we still have some tries left
+>  		try = ssh_packet_priority_get_try(READ_ONCE(p->priority));
+>  		if (likely(try < SSH_PTL_MAX_PACKET_TRIES)) {
+> +			trace_ssam_packet_timeout(p);
+> +
+>  			/*
+>  			 * Submission fails if the packet has been locked, is
+>  			 * already queued, or the layer is being shut down.
+> @@ -1202,6 +1219,8 @@ static void ssh_ptl_timeout_reap(struct work_struct *work)
+>  		if (test_and_set_bit(SSH_PACKET_SF_LOCKED_BIT, &p->state))
+>  			continue;
+>  
+> +		trace_ssam_packet_timeout(p);
+> +
+>  		/*
+>  		 * We have now marked the packet as locked. Thus it cannot be
+>  		 * added to the pending list again after we've removed it here.
+> @@ -1366,6 +1385,8 @@ static size_t ssh_ptl_rx_eval(struct ssh_ptl *ptl, struct ssam_span *source)
+>  	if (!frame)	// not enough data
+>  		return aligned.ptr - source->ptr;
+>  
+> +	trace_ssam_rx_frame_received(frame);
+> +
+>  	switch (frame->type) {
+>  	case SSH_FRAME_TYPE_ACK:
+>  		ssh_ptl_acknowledge(ptl, frame->seq);
+> diff --git a/drivers/platform/surface/aggregator/ssh_request_layer.c b/drivers/platform/surface/aggregator/ssh_request_layer.c
+> index 2b0368bb2d79..0d3384fd2d4c 100644
+> --- a/drivers/platform/surface/aggregator/ssh_request_layer.c
+> +++ b/drivers/platform/surface/aggregator/ssh_request_layer.c
+> @@ -21,6 +21,8 @@
+>  #include "ssh_packet_layer.h"
+>  #include "ssh_request_layer.h"
+>  
+> +#include "trace.h"
+> +
+>  
+>  /*
+>   * SSH_RTL_REQUEST_TIMEOUT - Request timeout.
+> @@ -141,6 +143,8 @@ static void ssh_rtl_complete_with_status(struct ssh_request *rqst, int status)
+>  {
+>  	struct ssh_rtl *rtl = ssh_request_rtl(rqst);
+>  
+> +	trace_ssam_request_complete(rqst, status);
+> +
+>  	// rtl/ptl may not be set if we're cancelling before submitting
+>  	rtl_dbg_cond(rtl, "rtl: completing request (rqid: 0x%04x, status: %d)\n",
+>  		     ssh_request_get_rqid_safe(rqst), status);
+> @@ -154,6 +158,8 @@ static void ssh_rtl_complete_with_rsp(struct ssh_request *rqst,
+>  {
+>  	struct ssh_rtl *rtl = ssh_request_rtl(rqst);
+>  
+> +	trace_ssam_request_complete(rqst, 0);
+> +
+>  	rtl_dbg(rtl, "rtl: completing request with response (rqid: 0x%04x)\n",
+>  		ssh_request_get_rqid(rqst));
+>  
+> @@ -326,6 +332,8 @@ static void ssh_rtl_tx_work_fn(struct work_struct *work)
+>   */
+>  int ssh_rtl_submit(struct ssh_rtl *rtl, struct ssh_request *rqst)
+>  {
+> +	trace_ssam_request_submit(rqst);
+> +
+>  	/*
+>  	 * Ensure that requests expecting a response are sequenced. If this
+>  	 * invariant ever changes, see the comment in ssh_rtl_complete() on what
+> @@ -438,6 +446,8 @@ static void ssh_rtl_complete(struct ssh_rtl *rtl,
+>  	struct ssh_request *p, *n;
+>  	u16 rqid = get_unaligned_le16(&command->rqid);
+>  
+> +	trace_ssam_rx_response_received(command, command_data->len);
+> +
+>  	/*
+>  	 * Get request from pending based on request ID and mark it as response
+>  	 * received and locked.
+> @@ -688,6 +698,8 @@ bool ssh_rtl_cancel(struct ssh_request *rqst, bool pending)
+>  	if (test_and_set_bit(SSH_REQUEST_SF_CANCELED_BIT, &rqst->state))
+>  		return true;
+>  
+> +	trace_ssam_request_cancel(rqst);
+> +
+>  	if (pending)
+>  		canceled = ssh_rtl_cancel_pending(rqst);
+>  	else
+> @@ -777,6 +789,8 @@ static void ssh_rtl_timeout_reap(struct work_struct *work)
+>  	ktime_t timeout = rtl->rtx_timeout.timeout;
+>  	ktime_t next = KTIME_MAX;
+>  
+> +	trace_ssam_rtl_timeout_reap("pending", atomic_read(&rtl->pending.count));
+> +
+>  	/*
+>  	 * Mark reaper as "not pending". This is done before checking any
+>  	 * requests to avoid lost-update type problems.
+> @@ -825,6 +839,8 @@ static void ssh_rtl_timeout_reap(struct work_struct *work)
+>  
+>  	// cancel and complete the request
+>  	list_for_each_entry_safe(r, n, &claimed, node) {
+> +		trace_ssam_request_timeout(r);
+> +
+>  		/*
+>  		 * At this point we've removed the packet from pending. This
+>  		 * means that we've obtained the last (only) reference of the
+> @@ -850,6 +866,8 @@ static void ssh_rtl_timeout_reap(struct work_struct *work)
+>  static void ssh_rtl_rx_event(struct ssh_rtl *rtl, const struct ssh_command *cmd,
+>  			     const struct ssam_span *data)
+>  {
+> +	trace_ssam_rx_event_received(cmd, data->len);
+> +
+>  	rtl_dbg(rtl, "rtl: handling event (rqid: 0x%04x)\n",
+>  		get_unaligned_le16(&cmd->rqid));
+>  
+> diff --git a/drivers/platform/surface/aggregator/trace.h b/drivers/platform/surface/aggregator/trace.h
+> new file mode 100644
+> index 000000000000..ead052c1ffab
+> --- /dev/null
+> +++ b/drivers/platform/surface/aggregator/trace.h
+> @@ -0,0 +1,616 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+> +/*
+> + * Trace points for SSAM/SSH.
+> + *
+> + * Copyright (C) 2020 Maximilian Luz <luzmaximilian@gmail.com>
+> + */
+> +
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM surface_aggregator
+> +
+> +#if !defined(_SURFACE_AGGREGATOR_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _SURFACE_AGGREGATOR_TRACE_H
+> +
+> +#include <linux/surface_aggregator/serial_hub.h>
+> +
+> +#include <asm/unaligned.h>
+> +#include <linux/tracepoint.h>
+> +
+> +
+> +TRACE_DEFINE_ENUM(SSH_FRAME_TYPE_DATA_SEQ);
+> +TRACE_DEFINE_ENUM(SSH_FRAME_TYPE_DATA_NSQ);
+> +TRACE_DEFINE_ENUM(SSH_FRAME_TYPE_ACK);
+> +TRACE_DEFINE_ENUM(SSH_FRAME_TYPE_NAK);
+> +
+> +TRACE_DEFINE_ENUM(SSH_PACKET_SF_LOCKED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_SF_QUEUED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_SF_PENDING_BIT);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_SF_TRANSMITTING_BIT);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_SF_TRANSMITTED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_SF_ACKED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_SF_CANCELED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_SF_COMPLETED_BIT);
+> +
+> +TRACE_DEFINE_ENUM(SSH_PACKET_TY_FLUSH_BIT);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_TY_SEQUENCED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_TY_BLOCKING_BIT);
+> +
+> +TRACE_DEFINE_ENUM(SSH_PACKET_FLAGS_SF_MASK);
+> +TRACE_DEFINE_ENUM(SSH_PACKET_FLAGS_TY_MASK);
+> +
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_SF_LOCKED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_SF_QUEUED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_SF_PENDING_BIT);
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_SF_TRANSMITTING_BIT);
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_SF_TRANSMITTED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_SF_RSPRCVD_BIT);
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_SF_CANCELED_BIT);
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_SF_COMPLETED_BIT);
+> +
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_TY_FLUSH_BIT);
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_TY_HAS_RESPONSE_BIT);
+> +
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_FLAGS_SF_MASK);
+> +TRACE_DEFINE_ENUM(SSH_REQUEST_FLAGS_TY_MASK);
+> +
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_SAM);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_BAT);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_TMP);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_PMC);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_FAN);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_PoM);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_DBG);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_KBD);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_FWU);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_UNI);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_LPC);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_TCL);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_SFL);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_KIP);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_EXT);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_BLD);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_BAS);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_SEN);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_SRQ);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_MCU);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_HID);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_TCH);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_BKL);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_TAM);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_ACC);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_UFI);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_USC);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_PEN);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_VID);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_AUD);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_SMC);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_KPD);
+> +TRACE_DEFINE_ENUM(SSAM_SSH_TC_REG);
+> +
+> +
+> +#define SSAM_PTR_UID_LEN		9
+> +#define SSAM_U8_FIELD_NOT_APPLICABLE	((u16)-1)
+> +#define SSAM_SEQ_NOT_APPLICABLE		((u16)-1)
+> +#define SSAM_RQID_NOT_APPLICABLE	((u32)-1)
+> +#define SSAM_SSH_TC_NOT_APPLICABLE	0
+> +
+> +
+> +#ifndef _SURFACE_AGGREGATOR_TRACE_HELPERS
+> +#define _SURFACE_AGGREGATOR_TRACE_HELPERS
+> +
+> +/**
+> + * ssam_trace_ptr_uid() - Convert the pointer to a non-pointer UID string.
+> + * @ptr: The pointer to convert.
+> + * @uid_str: A buffer of length SSAM_PTR_UID_LEN where the UID will be stored.
+> + *
+> + * Converts the given pointer into a UID string that is safe to be shared
+> + * with userspace and logs, i.e. doesn't give away the real memory location.
+> + */
+> +static inline void ssam_trace_ptr_uid(const void *ptr, char *uid_str)
+> +{
+> +	char buf[2 * sizeof(void *) + 1];
+> +
+> +	snprintf(buf, ARRAY_SIZE(buf), "%p", ptr);
+> +	memcpy(uid_str, &buf[ARRAY_SIZE(buf) - SSAM_PTR_UID_LEN],
+> +	       SSAM_PTR_UID_LEN);
 
- endmenu
-diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-index 5bda7cb44618..5867281188de 100644
---- a/drivers/rpmsg/rpmsg_ns.c
-+++ b/drivers/rpmsg/rpmsg_ns.c
-@@ -55,6 +55,24 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
-*data, int len,
- 	return 0;
- }
+Is the above snprintf() to have the ptr turn into a hash?
 
-+/**
-+ * rpmsg_ns_register_device() - register name service device based on rpdev
-+ * @rpdev: prepared rpdev to be used for creating endpoints
-+ *
-+ * This function wraps rpmsg_register_device() preparing the rpdev for use as
-+ * basis for the rpmsg name service device.
-+ */
-+int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
-+{
-+	strcpy(rpdev->id.name, KBUILD_MODNAME);
-+	rpdev->driver_override = KBUILD_MODNAME;
-+	rpdev->src = RPMSG_NS_ADDR;
-+	rpdev->dst = RPMSG_NS_ADDR;
-+
-+	return rpmsg_register_device(rpdev);
-+}
-+EXPORT_SYMBOL(rpmsg_ns_register_device);
-+
- static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
- {
- 	struct rpmsg_endpoint *ns_ept;
-@@ -80,7 +98,7 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
- }
+Otherwise, couldn't you just truncate the value of ptr?
 
- static struct rpmsg_driver rpmsg_ns_driver = {
--	.drv.name = "rpmsg_ns",
-+	.drv.name = KBUILD_MODNAME,
- 	.probe = rpmsg_ns_probe,
- };
+In any case, you want to make sure that ARRAY_SIZE(buf) is always bigger
+than, or equal to, SSAM_PTR_UID_LEN, and you should probably stick a:
 
-@@ -104,5 +122,5 @@ module_exit(rpmsg_ns_exit);
+	BUILD_BUG_ON(ARRAY_SIZE(buf) < SSAM_PTR_UID_LEN);
 
- MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
- MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
--MODULE_ALIAS("rpmsg_ns");
-+MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
- MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/rpmsg/ns.h b/include/linux/rpmsg/ns.h
-index bdc1ea278814..68eac2b42075 100644
---- a/include/linux/rpmsg/ns.h
-+++ b/include/linux/rpmsg/ns.h
-@@ -41,21 +41,6 @@ enum rpmsg_ns_flags {
- /* Address 53 is reserved for advertising remote services */
- #define RPMSG_NS_ADDR			(53)
+in there, which would cause the build to fail if that was ever the case.
 
--/**
-- * rpmsg_ns_register_device() - register name service device based on rpdev
-- * @rpdev: prepared rpdev to be used for creating endpoints
-- *
-- * This function wraps rpmsg_register_device() preparing the rpdev for use as
-- * basis for the rpmsg name service device.
-- */
--static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
--{
--	strcpy(rpdev->id.name, "rpmsg_ns");
--	rpdev->driver_override = "rpmsg_ns";
--	rpdev->src = RPMSG_NS_ADDR;
--	rpdev->dst = RPMSG_NS_ADDR;
--
--	return rpmsg_register_device(rpdev);
--}
-+int rpmsg_ns_register_device(struct rpmsg_device *rpdev);
+> +}
+> +
+> +/**
+> + * ssam_trace_get_packet_seq() - Read the packet's sequence ID.
+> + * @p: The packet.
+> + *
+> + * Return: Returns the packet's sequence ID (SEQ) field if present, or
+> + * %SSAM_SEQ_NOT_APPLICABLE if not (e.g. flush packet).
+> + */
+> +static inline u16 ssam_trace_get_packet_seq(const struct ssh_packet *p)
+> +{
+> +	if (!p->data.ptr || p->data.len < SSH_MESSAGE_LENGTH(0))
+> +		return SSAM_SEQ_NOT_APPLICABLE;
+> +
+> +	return p->data.ptr[SSH_MSGOFFSET_FRAME(seq)];
+> +}
+> +
+> +/**
+> + * ssam_trace_get_request_id() - Read the packet's request ID.
+> + * @p: The packet.
+> + *
+> + * Return: Returns the packet's request ID (RQID) field if the packet
+> + * represents a request with command data, or %SSAM_RQID_NOT_APPLICABLE if not
+> + * (e.g. flush request, control packet).
+> + */
+> +static inline u32 ssam_trace_get_request_id(const struct ssh_packet *p)
+> +{
+> +	if (!p->data.ptr || p->data.len < SSH_COMMAND_MESSAGE_LENGTH(0))
+> +		return SSAM_RQID_NOT_APPLICABLE;
+> +
+> +	return get_unaligned_le16(&p->data.ptr[SSH_MSGOFFSET_COMMAND(rqid)]);
+> +}
+> +
+> +/**
+> + * ssam_trace_get_request_tc() - Read the packet's request target category.
+> + * @p: The packet.
+> + *
+> + * Return: Returns the packet's request target category (TC) field if the
+> + * packet represents a request with command data, or %SSAM_TC_NOT_APPLICABLE
+> + * if not (e.g. flush request, control packet).
+> + */
+> +static inline u32 ssam_trace_get_request_tc(const struct ssh_packet *p)
+> +{
+> +	if (!p->data.ptr || p->data.len < SSH_COMMAND_MESSAGE_LENGTH(0))
+> +		return SSAM_SSH_TC_NOT_APPLICABLE;
+> +
+> +	return get_unaligned_le16(&p->data.ptr[SSH_MSGOFFSET_COMMAND(tc)]);
+> +}
+> +
+> +#endif /* _SURFACE_AGGREGATOR_TRACE_HELPERS */
+> +
+> +#define ssam_trace_get_command_field_u8(packet, field) \
+> +	((!packet || packet->data.len < SSH_COMMAND_MESSAGE_LENGTH(0)) \
+> +	 ? 0 : p->data.ptr[SSH_MSGOFFSET_COMMAND(field)])
 
- #endif
+I think you want the above to be:
 
-Thanks,
-Arnaud
+	? 0 : packet->data.ptr[SSH_MSGOFFSET_COMMAND(field)])
 
-> 
-> Thanks
-> Guennadi
-> 
+The only reason it worked, is because the caller passed in "p".
+
+> +
+> +#define ssam_show_generic_u8_field(value)				\
+> +	__print_symbolic(value,						\
+> +		{ SSAM_U8_FIELD_NOT_APPLICABLE,		"N/A" }		\
+> +	)
+> +
+> +
+> +#define ssam_show_frame_type(ty)					\
+> +	__print_symbolic(ty,						\
+> +		{ SSH_FRAME_TYPE_DATA_SEQ,		"DSEQ" },	\
+> +		{ SSH_FRAME_TYPE_DATA_NSQ,		"DNSQ" },	\
+> +		{ SSH_FRAME_TYPE_ACK,			"ACK"  },	\
+> +		{ SSH_FRAME_TYPE_NAK,			"NAK"  }	\
+> +	)
+> +
+> +#define ssam_show_packet_type(type)					\
+> +	__print_flags(flags & SSH_PACKET_FLAGS_TY_MASK, "",		\
+> +		{ BIT(SSH_PACKET_TY_FLUSH_BIT),		"F" },		\
+> +		{ BIT(SSH_PACKET_TY_SEQUENCED_BIT),	"S" },		\
+> +		{ BIT(SSH_PACKET_TY_BLOCKING_BIT),	"B" }		\
+> +	)
+> +
+> +#define ssam_show_packet_state(state)					\
+> +	__print_flags(flags & SSH_PACKET_FLAGS_SF_MASK, "",		\
+> +		{ BIT(SSH_PACKET_SF_LOCKED_BIT),	"L" },		\
+> +		{ BIT(SSH_PACKET_SF_QUEUED_BIT),	"Q" },		\
+> +		{ BIT(SSH_PACKET_SF_PENDING_BIT),	"P" },		\
+> +		{ BIT(SSH_PACKET_SF_TRANSMITTING_BIT),	"S" },		\
+> +		{ BIT(SSH_PACKET_SF_TRANSMITTED_BIT),	"T" },		\
+> +		{ BIT(SSH_PACKET_SF_ACKED_BIT),		"A" },		\
+> +		{ BIT(SSH_PACKET_SF_CANCELED_BIT),	"C" },		\
+> +		{ BIT(SSH_PACKET_SF_COMPLETED_BIT),	"F" }		\
+> +	)
+> +
+> +#define ssam_show_packet_seq(seq)					\
+> +	__print_symbolic(seq,						\
+> +		{ SSAM_SEQ_NOT_APPLICABLE,		"N/A" }		\
+> +	)
+> +
+> +
+> +#define ssam_show_request_type(flags)					\
+> +	__print_flags(flags & SSH_REQUEST_FLAGS_TY_MASK, "",		\
+> +		{ BIT(SSH_REQUEST_TY_FLUSH_BIT),	"F" },		\
+> +		{ BIT(SSH_REQUEST_TY_HAS_RESPONSE_BIT),	"R" }		\
+> +	)
+> +
+> +#define ssam_show_request_state(flags)					\
+> +	__print_flags(flags & SSH_REQUEST_FLAGS_SF_MASK, "",		\
+> +		{ BIT(SSH_REQUEST_SF_LOCKED_BIT),	"L" },		\
+> +		{ BIT(SSH_REQUEST_SF_QUEUED_BIT),	"Q" },		\
+> +		{ BIT(SSH_REQUEST_SF_PENDING_BIT),	"P" },		\
+> +		{ BIT(SSH_REQUEST_SF_TRANSMITTING_BIT),	"S" },		\
+> +		{ BIT(SSH_REQUEST_SF_TRANSMITTED_BIT),	"T" },		\
+> +		{ BIT(SSH_REQUEST_SF_RSPRCVD_BIT),	"A" },		\
+> +		{ BIT(SSH_REQUEST_SF_CANCELED_BIT),	"C" },		\
+> +		{ BIT(SSH_REQUEST_SF_COMPLETED_BIT),	"F" }		\
+> +	)
+> +
+> +#define ssam_show_request_id(rqid)					\
+> +	__print_symbolic(rqid,						\
+> +		{ SSAM_RQID_NOT_APPLICABLE,		"N/A" }		\
+> +	)
+> +
+> +#define ssam_show_ssh_tc(rqid)						\
+> +	__print_symbolic(rqid,						\
+> +		{ SSAM_SSH_TC_NOT_APPLICABLE,		"N/A" },	\
+> +		{ SSAM_SSH_TC_SAM,			"SAM" },	\
+> +		{ SSAM_SSH_TC_BAT,			"BAT" },	\
+> +		{ SSAM_SSH_TC_TMP,			"TMP" },	\
+> +		{ SSAM_SSH_TC_PMC,			"PMC" },	\
+> +		{ SSAM_SSH_TC_FAN,			"FAN" },	\
+> +		{ SSAM_SSH_TC_PoM,			"PoM" },	\
+> +		{ SSAM_SSH_TC_DBG,			"DBG" },	\
+> +		{ SSAM_SSH_TC_KBD,			"KBD" },	\
+> +		{ SSAM_SSH_TC_FWU,			"FWU" },	\
+> +		{ SSAM_SSH_TC_UNI,			"UNI" },	\
+> +		{ SSAM_SSH_TC_LPC,			"LPC" },	\
+> +		{ SSAM_SSH_TC_TCL,			"TCL" },	\
+> +		{ SSAM_SSH_TC_SFL,			"SFL" },	\
+> +		{ SSAM_SSH_TC_KIP,			"KIP" },	\
+> +		{ SSAM_SSH_TC_EXT,			"EXT" },	\
+> +		{ SSAM_SSH_TC_BLD,			"BLD" },	\
+> +		{ SSAM_SSH_TC_BAS,			"BAS" },	\
+> +		{ SSAM_SSH_TC_SEN,			"SEN" },	\
+> +		{ SSAM_SSH_TC_SRQ,			"SRQ" },	\
+> +		{ SSAM_SSH_TC_MCU,			"MCU" },	\
+> +		{ SSAM_SSH_TC_HID,			"HID" },	\
+> +		{ SSAM_SSH_TC_TCH,			"TCH" },	\
+> +		{ SSAM_SSH_TC_BKL,			"BKL" },	\
+> +		{ SSAM_SSH_TC_TAM,			"TAM" },	\
+> +		{ SSAM_SSH_TC_ACC,			"ACC" },	\
+> +		{ SSAM_SSH_TC_UFI,			"UFI" },	\
+> +		{ SSAM_SSH_TC_USC,			"USC" },	\
+> +		{ SSAM_SSH_TC_PEN,			"PEN" },	\
+> +		{ SSAM_SSH_TC_VID,			"VID" },	\
+> +		{ SSAM_SSH_TC_AUD,			"AUD" },	\
+> +		{ SSAM_SSH_TC_SMC,			"SMC" },	\
+> +		{ SSAM_SSH_TC_KPD,			"KPD" },	\
+> +		{ SSAM_SSH_TC_REG,			"REG" }		\
+> +	)
+> +
+> +
+> +DECLARE_EVENT_CLASS(ssam_frame_class,
+> +	TP_PROTO(const struct ssh_frame *frame),
+> +
+> +	TP_ARGS(frame),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u8, type)
+> +		__field(u8, seq)
+> +		__field(u16, len)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->type = frame->type;
+> +		__entry->seq = frame->seq;
+> +		__entry->len = get_unaligned_le16(&frame->len);
+> +	),
+> +
+> +	TP_printk("ty=%s, seq=0x%02x, len=%u",
+> +		ssam_show_frame_type(__entry->type),
+> +		__entry->seq,
+> +		__entry->len
+> +	)
+> +);
+> +
+> +#define DEFINE_SSAM_FRAME_EVENT(name)				\
+> +	DEFINE_EVENT(ssam_frame_class, ssam_##name,		\
+> +		TP_PROTO(const struct ssh_frame *frame),	\
+> +		TP_ARGS(frame)					\
+> +	)
+> +
+> +
+> +DECLARE_EVENT_CLASS(ssam_command_class,
+> +	TP_PROTO(const struct ssh_command *cmd, u16 len),
+> +
+> +	TP_ARGS(cmd, len),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u16, rqid)
+> +		__field(u16, len)
+> +		__field(u8, tc)
+> +		__field(u8, cid)
+> +		__field(u8, iid)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->rqid = get_unaligned_le16(&cmd->rqid);
+> +		__entry->tc = cmd->tc;
+> +		__entry->cid = cmd->cid;
+> +		__entry->iid = cmd->iid;
+> +		__entry->len = len;
+> +	),
+> +
+> +	TP_printk("rqid=0x%04x, tc=%s, cid=0x%02x, iid=0x%02x, len=%u",
+> +		__entry->rqid,
+> +		ssam_show_ssh_tc(__entry->tc),
+> +		__entry->cid,
+> +		__entry->iid,
+> +		__entry->len
+> +	)
+> +);
+> +
+> +#define DEFINE_SSAM_COMMAND_EVENT(name)					\
+> +	DEFINE_EVENT(ssam_command_class, ssam_##name,			\
+> +		TP_PROTO(const struct ssh_command *cmd, u16 len),	\
+> +		TP_ARGS(cmd, len)					\
+> +	)
+> +
+> +
+> +DECLARE_EVENT_CLASS(ssam_packet_class,
+> +	TP_PROTO(const struct ssh_packet *packet),
+> +
+> +	TP_ARGS(packet),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(unsigned long, state)
+> +		__array(char, uid, SSAM_PTR_UID_LEN)
+> +		__field(u8, priority)
+> +		__field(u16, length)
+> +		__field(u16, seq)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->state = READ_ONCE(packet->state);
+> +		ssam_trace_ptr_uid(packet, __entry->uid);
+> +		__entry->priority = READ_ONCE(packet->priority);
+
+I'm curious about the need for the read once here.
+
+The rest seems fine.
+
+-- Steve
+
+> +		__entry->length = packet->data.len;
+> +		__entry->seq = ssam_trace_get_packet_seq(packet);
+> +	),
+> +
+> +	TP_printk("uid=%s, seq=%s, ty=%s, pri=0x%02x, len=%u, sta=%s",
+> +		__entry->uid,
+> +		ssam_show_packet_seq(__entry->seq),
+> +		ssam_show_packet_type(__entry->state),
+> +		__entry->priority,
+> +		__entry->length,
+> +		ssam_show_packet_state(__entry->state)
+> +	)
+> +);
+> +
+> +#define DEFINE_SSAM_PACKET_EVENT(name)				\
+> +	DEFINE_EVENT(ssam_packet_class, ssam_##name,		\
+> +		TP_PROTO(const struct ssh_packet *packet),	\
+> +		TP_ARGS(packet)					\
+> +	)
+> +
+> +
+> +DECLARE_EVENT_CLASS(ssam_packet_status_class,
+> +	TP_PROTO(const struct ssh_packet *packet, int status),
+> +
+> +	TP_ARGS(packet, status),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(unsigned long, state)
+> +		__field(int, status)
+> +		__array(char, uid, SSAM_PTR_UID_LEN)
+> +		__field(u8, priority)
+> +		__field(u16, length)
+> +		__field(u16, seq)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->state = READ_ONCE(packet->state);
+> +		__entry->status = status;
+> +		ssam_trace_ptr_uid(packet, __entry->uid);
+> +		__entry->priority = READ_ONCE(packet->priority);
+> +		__entry->length = packet->data.len;
+> +		__entry->seq = ssam_trace_get_packet_seq(packet);
+> +	),
+> +
+> +	TP_printk("uid=%s, seq=%s, ty=%s, pri=0x%02x, len=%u, sta=%s, status=%d",
+> +		__entry->uid,
+> +		ssam_show_packet_seq(__entry->seq),
+> +		ssam_show_packet_type(__entry->state),
+> +		__entry->priority,
+> +		__entry->length,
+> +		ssam_show_packet_state(__entry->state),
+> +		__entry->status
+> +	)
+> +);
+> +
+> +#define DEFINE_SSAM_PACKET_STATUS_EVENT(name)				\
+> +	DEFINE_EVENT(ssam_packet_status_class, ssam_##name,		\
+> +		TP_PROTO(const struct ssh_packet *packet, int status),	\
+> +		TP_ARGS(packet, status)					\
+> +	)
+> +
+> +
