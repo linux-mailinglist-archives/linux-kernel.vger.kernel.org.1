@@ -2,147 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F35F2B588D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7258C2B5894
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgKQDxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 22:53:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgKQDxL (ORCPT
+        id S1727287AbgKQD4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 22:56:47 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:46164 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727156AbgKQD4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 22:53:11 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9EEC0613CF;
-        Mon, 16 Nov 2020 19:53:11 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id cp9so9514344plb.1;
-        Mon, 16 Nov 2020 19:53:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rnq0FD2NfJKSKIx+lFv4Z3fz9FpdZvTnhCYs6byLT8o=;
-        b=UasFGDKDAJUlQ0x4b4RKB7sXi0bVOi3lWg5vEVNXzOBdE0RNSIcxUnmBjFFMdE8ZQE
-         Z47nQhrswOCNIYGYfMK8+CNPFl2GUmqc8TZE6zAduiMp28FrGxp/BnEzsSPHv5GOSxBT
-         j8BBs4axKSjTTzBX994hPfQCrZ2YRC7o3nsctVGEDSy6O0/vBnnwsgYAYvCtGdwAs+O5
-         QWa+0LwrEzP3UF8DHhb3jh3TlagZdvqDDYHn9NaSbl2KyerehsvdnpfrM6rgfGRkpkBY
-         N8EW7XCWfwZB4gSschiRsdKRUGTK/825oUhEtl9Azu0PBS2GT9qjg76TyXpzzEPSSGZ+
-         lWJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rnq0FD2NfJKSKIx+lFv4Z3fz9FpdZvTnhCYs6byLT8o=;
-        b=ih+btKghAtrRTYyeZAm2GtJlDXNEEr0qlVQV/Qcv6heaj3zOu3TuAuXLiXGqN/Hdym
-         pEfZ1mF5WC40/rib1ahn+jGLSIUJt3rv/eD18EAQkjM5tNVnzRi1lp2KxGV5EtuO8sbz
-         E5i18LXJLerxz7xDKKpi0vy1FEimbME9n6WduTNRqUGy2Q7gnH1i9+0yaN92vLk5U23a
-         KaY7qAKV15a7Z//h2uPflZXL5gfPAwJgOQ+KLYXktzqlkNbLcjc+I6XFMQhQG7XReqLE
-         rLIxTA1CtdT7TLSDXSjaSVyGzCyBlcWOr+ENdrStM1Vqn8jMWHUusG6j49V0mNXhC63j
-         pG1g==
-X-Gm-Message-State: AOAM532vf/GNcvciM57HKKVG/CzwUerzhKko/R/rFEvZJqXBfKy+ovRd
-        KHxXm4NrFncLcfMeN9UAh5xQZUFwtL4=
-X-Google-Smtp-Source: ABdhPJx1pUbInrYnMvsoWQeK8Y1g55Jyh0NuutkOpY6iK0kH53x0LUdMXdw42BsqbuToEAB2cu8RoQ==
-X-Received: by 2002:a17:902:244:b029:d6:c451:8566 with SMTP id 62-20020a1709020244b02900d6c4518566mr15452803plc.46.1605585191027;
-        Mon, 16 Nov 2020 19:53:11 -0800 (PST)
-Received: from 1G5JKC2.Broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id d12sm1034965pjs.27.2020.11.16.19.53.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 19:53:10 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Yunjian Wang <wangyunjian@huawei.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net v2] net: Have netpoll bring-up DSA management interface
-Date:   Mon, 16 Nov 2020 19:52:34 -0800
-Message-Id: <20201117035236.22658-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 16 Nov 2020 22:56:46 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH3dvHZ166136;
+        Tue, 17 Nov 2020 03:56:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=k78HJVH6abX6dGonUUcLQUJZtzYGy/GNj74+82yaRGk=;
+ b=XajkD24v0gKNwpvuAJQznAsfeMmscrSVcbHIZT0Qs8CyT9gmHUDXfSxGHX2Z1qvwJ3D8
+ 9mzlXB4RPbJJIeN3GSlM2dPhuOjQK234IrXCQ7B3LB+zG7LA3euqL7/Mkg18Y2jA115n
+ W+h0nR3dVa2nUmGNAtWbZIUYL0h7EBUmeneowhzyDg+OSKn+WmcVxPx2uvur+iHdAJVg
+ tQRPpv55/W74wcA/6gtTyUg748jViM8G1OtuTGw6T5GHHU5ovn/ektUyHTHV1Md11CR9
+ jF4Ju2vcpk+AG7/bu38j0Ze7bh88TegGV7WG5o+Y/9wbspQsFu8CsbebQORDIg/pT/z/ EA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 34t7vn0cdf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 03:56:30 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH3db4f117417;
+        Tue, 17 Nov 2020 03:54:29 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 34uspsu1ct-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 03:54:29 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AH3sJhq022399;
+        Tue, 17 Nov 2020 03:54:19 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 16 Nov 2020 19:54:19 -0800
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: sd: remove obsolete variable in sd_remove()
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1ft5863ku.fsf@ca-mkp.ca.oracle.com>
+References: <20201116070035.11870-1-lukas.bulwahn@gmail.com>
+Date:   Mon, 16 Nov 2020 22:54:16 -0500
+In-Reply-To: <20201116070035.11870-1-lukas.bulwahn@gmail.com> (Lukas Bulwahn's
+        message of "Mon, 16 Nov 2020 08:00:35 +0100")
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 bulkscore=0 suspectscore=1 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170027
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=1
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011170027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DSA network devices rely on having their DSA management interface up and
-running otherwise their ndo_open() will return -ENETDOWN. Without doing
-this it would not be possible to use DSA devices as netconsole when
-configured on the command line. These devices also do not utilize the
-upper/lower linking so the check about the netpoll device having upper
-is not going to be a problem.
 
-The solution adopted here is identical to the one done for
-net/ipv4/ipconfig.c with 728c02089a0e ("net: ipv4: handle DSA enabled
-master network devices"), with the network namespace scope being
-restricted to that of the process configuring netpoll.
+Lukas,
 
-Fixes: 04ff53f96a93 ("net: dsa: Add netconsole support")
-Tested-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v2:
+> Commit 140ea3bbf39a ("sd: use __register_blkdev to avoid a modprobe
+> for an unregistered dev_t") removed blk_register_region(devt, ...) in
+> sd_remove() and since then, devt is unused in sd_remove().
 
-- added Vladimir's Tested-by tag
-- resubmit for the new patchwork to pick up the patch
+Applied to 5.11/scsi-staging, thanks!
 
- net/core/netpoll.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
-
-diff --git a/net/core/netpoll.c b/net/core/netpoll.c
-index c310c7c1cef7..960948290001 100644
---- a/net/core/netpoll.c
-+++ b/net/core/netpoll.c
-@@ -29,6 +29,7 @@
- #include <linux/slab.h>
- #include <linux/export.h>
- #include <linux/if_vlan.h>
-+#include <net/dsa.h>
- #include <net/tcp.h>
- #include <net/udp.h>
- #include <net/addrconf.h>
-@@ -657,15 +658,15 @@ EXPORT_SYMBOL_GPL(__netpoll_setup);
- 
- int netpoll_setup(struct netpoll *np)
- {
--	struct net_device *ndev = NULL;
-+	struct net_device *ndev = NULL, *dev = NULL;
-+	struct net *net = current->nsproxy->net_ns;
- 	struct in_device *in_dev;
- 	int err;
- 
- 	rtnl_lock();
--	if (np->dev_name[0]) {
--		struct net *net = current->nsproxy->net_ns;
-+	if (np->dev_name[0])
- 		ndev = __dev_get_by_name(net, np->dev_name);
--	}
-+
- 	if (!ndev) {
- 		np_err(np, "%s doesn't exist, aborting\n", np->dev_name);
- 		err = -ENODEV;
-@@ -673,6 +674,19 @@ int netpoll_setup(struct netpoll *np)
- 	}
- 	dev_hold(ndev);
- 
-+	/* bring up DSA management network devices up first */
-+	for_each_netdev(net, dev) {
-+		if (!netdev_uses_dsa(dev))
-+			continue;
-+
-+		err = dev_change_flags(dev, dev->flags | IFF_UP, NULL);
-+		if (err < 0) {
-+			np_err(np, "%s failed to open %s\n",
-+			       np->dev_name, dev->name);
-+			goto put;
-+		}
-+	}
-+
- 	if (netdev_master_upper_dev_get(ndev)) {
- 		np_err(np, "%s is a slave device, aborting\n", np->dev_name);
- 		err = -EBUSY;
 -- 
-2.25.1
-
+Martin K. Petersen	Oracle Linux Engineering
