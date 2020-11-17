@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD8B2B602B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D86412B6079
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729016AbgKQNG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:06:59 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:33621 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728994AbgKQNG5 (ORCPT
+        id S1728015AbgKQNJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:09:41 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7695 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728893AbgKQNJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:06:57 -0500
-Received: by mail-ot1-f67.google.com with SMTP id i18so19317500ots.0;
-        Tue, 17 Nov 2020 05:06:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vx363AuLp2YHu/Au97d1IEai6/qQ+kpifGY4zjpjUps=;
-        b=Iho2Mcf3NPvNVzHtlGCViYeEEiC1ISjT0y3CH5tIMx7Xb8ixyl5lLADtWauz1qwUwG
-         xzKrV1LApirBMNO7uMOsaoTivUPuNXIgoLJVs8KJwsGVKYAJld5tgk9e6QXCV/ig8BdA
-         hBjETxJ0MF/cwJskp8WdMS/V23iSdOqmId4DaZdzq4j8WfZCJ8Loj44uU1vnPd5GkuN5
-         ajrBwBCQ82JOqnNE8PLJ+EbPEMVzS3TuQE8xNMoSkqGIQUILXX6/3Jj3HumjvIZy7hP3
-         KhCCCgDNRCrT7Pv67jF8Eyup3CrqNqv5XjhRnQL4tTpjqQnMWIBfbWwBl3GQCC1WY+Xz
-         93Kw==
-X-Gm-Message-State: AOAM532PvxJy0NyRcB+6w/4Jb2d5p82akPzmJ6iplvDgXjR2MYOe2fuV
-        igY+jQO6BsJ5H0A9XoFIpjN/ENmHC0k3l3xa/KE=
-X-Google-Smtp-Source: ABdhPJw0kEA0CejHn7npo46g6UwVxuglhYgclZCRsoNtl0/5eOKVMO5VMz+mMyVWkd+NbGTUPCj4Yk31y8xMeSfb3DA=
-X-Received: by 2002:a9d:171a:: with SMTP id i26mr3073375ota.260.1605618416372;
- Tue, 17 Nov 2020 05:06:56 -0800 (PST)
+        Tue, 17 Nov 2020 08:09:34 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cb5qs1QJ5zkZ6f;
+        Tue, 17 Nov 2020 21:09:13 +0800 (CST)
+Received: from [10.174.185.179] (10.174.185.179) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 17 Nov 2020 21:09:22 +0800
+Subject: Re: [PATCH 1/2] KVM: arm64: vgic: Forbid invalid userspace
+ Redistributor accesses
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <eric.auger@redhat.com>,
+        <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
+        <suzuki.poulose@arm.com>, <wanghaibin.wang@huawei.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+References: <20201113142801.1659-1-yuzenghui@huawei.com>
+ <20201113142801.1659-2-yuzenghui@huawei.com>
+ <724c43702b52aac0d3c9beb9604d1bfb@kernel.org>
+ <584b7ff1-ecf2-b0ec-cea3-ccc29902f43a@huawei.com>
+ <cc45285fe491aff5c28a24f94c124508@kernel.org>
+ <7e58200c-814e-3598-155a-9a7e6cc24374@huawei.com>
+ <c20865a267e44d1e2c0d52ce4e012263@kernel.org>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <e7263d49-e80a-1ad2-c256-979c1ee213fa@huawei.com>
+Date:   Tue, 17 Nov 2020 21:09:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
- <20201102120115.29993-4-nicola.mazzucato@arm.com> <20201106092020.za3oxg7gutzc3y2b@vireshk-i7>
- <0a334a73-45ef-58ff-7dfd-9df6f4ff290a@arm.com> <20201106105514.bhtdklyhn7goml64@vireshk-i7>
- <7f73bcd6-0f06-4ef0-7f02-0751e6c4d94b@arm.com> <20201109065742.22czfgyjhsjmkytf@vireshk-i7>
- <2fa8a5c0-f66d-34bc-7f1c-8462e7532e0a@arm.com> <20201117101128.6uapqg56arwqmm5p@vireshk-i7>
- <0858962e-3a30-d177-594b-bb8e3149dd8d@arm.com> <20201117105337.vjwtig3qxpc6owmw@vireshk-i7>
-In-Reply-To: <20201117105337.vjwtig3qxpc6owmw@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 17 Nov 2020 14:06:44 +0100
-Message-ID: <CAJZ5v0iRs-uxzdV4vikN1VOwGuoorkRt2uqFSvbN2kySG-6duA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] [RFC] CPUFreq: Add support for cpu-perf-dependencies
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Chris Redpath <chris.redpath@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c20865a267e44d1e2c0d52ce4e012263@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.185.179]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:53 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 17-11-20, 10:47, Nicola Mazzucato wrote:
-> > Freq-invariance has been mentioned. I suppose the fix will depend on which
-> > strategy we prefer to solve this.
->
-> I am not sure how FIE will use this information, as I thought the
-> problem is about knowing the current frequency on a CPU instead of
-> which CPUs are related. Anyway, EM is good enough to get this stuff
-> going.
->
-> > As a reminder, two solutions:
-> > 1) dependent_cpus cpumask in cpufreq and involved entities pick this info
->
-> Yeah, this one. And it will be called freqdomain_cpus. Add support for
-> freqdomain_cpus in core, update acpi-cpufreq to reuse it instead of
-> adding its own and you can have it in other drivers then.
+On 2020/11/17 16:49, Marc Zyngier wrote:
+> Hi Zenghui,
+> 
+> On 2020-11-16 14:57, Zenghui Yu wrote:
+>> Hi Marc,
+>>
+>> On 2020/11/16 22:10, Marc Zyngier wrote:
+>>>> My take is that only if the "[Re]Distributor base address" is specified
+>>>> in the system memory map, will the user-provided kvm_device_attr.offset
+>>>> make sense. And we can then handle the access to the register which is
+>>>> defined by "base address + offset".
+>>>
+>>> I'd tend to agree, but it is just that this is a large change at -rc4.
+>>> I'd rather have a quick fix for 5.10, and a more invasive change for 
+>>> 5.11,
+>>> spanning all the possible vgic devices.
+>>
+>> So you prefer fixing it by "return a value that doesn't have the Last
+>> bit set" for v5.10? I'm ok with it and can send v2 for it.
+> 
+> Cool. Thanks for that.
+> 
+>> Btw, looking again at the way we handle the user-reading of GICR_TYPER
+>>
+>>     vgic_mmio_read_v3r_typer(vcpu, addr, len)
+>>
+>> it seems that @addr is actually the *offset* of GICR_TYPER (0x0008) and
+>> @addr is unlikely to be equal to last_rdist_typer, which is the *GPA* of
+>> the last RD. Looks like the user-reading of GICR_TYPER.Last is always
+>> broken?
+> 
+> I think you are right. Somehow, we don't seem to track the index of
+> the RD in the region, so we can never compute the address of the RD
+> even if the base address is set.
+> 
+> Let's drop the reporting of Last for userspace for now, as it never
+> worked. If you post a patch addressing that quickly, I'll get it to
+> Paolo by the end of the week (there's another fix that needs merging).
 
-Is this really a cpufreq thing, though, or is it arch stuff?  I think
-the latter, because it is not necessary for anything in cpufreq.
+OK. I'll fix it by providing a uaccess_read callback for GICR_TYPER.
 
-Yes, acpi-cpufreq happens to know this information, because it uses
-processor_perflib, but the latter may as well be used by the arch
-enumeration of CPUs and the freqdomain_cpus mask may be populated from
-there.
 
-As far as cpufreq is concerned, if the interface to the hardware is
-per-CPU, there is one CPU per policy and cpufreq has no business
-knowing anything about the underlying hardware coordination.
+Thanks,
+Zenghui
+
+> 
+> Eric: do we have any test covering the userspace API?
+> 
+> Thanks,
+> 
+>          M.
