@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A852B614E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87892B6088
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729106AbgKQNR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:17:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50348 "EHLO mail.kernel.org"
+        id S1729434AbgKQNKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:10:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730626AbgKQNRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:17:55 -0500
+        id S1729326AbgKQNKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:10:01 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3C70206D5;
-        Tue, 17 Nov 2020 13:17:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0789B221EB;
+        Tue, 17 Nov 2020 13:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619075;
-        bh=NDPKSAD52SgAlMx77kp/2Gk0mOp4yqDn6IjkPkSJRsk=;
+        s=default; t=1605618600;
+        bh=T/tTvQfw3hQXAWHMRLCHm4MshaDwFWZB0e7GYNevo/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jCOm22BR2JGxMYgkVrqIWxk4JkJtECRXSKx2aIEsZFz622Eur9jHbeeYkAI5/Fw7h
-         PzzCtlSD/1hcpGkZFci8HzWA5EjEp5mbiKL9dqRg8slDidL4+RyrV5WfASLESQDxdQ
-         95za8d7e9uYdufD54k690vHS4IJB9QBFWsRl2+LU=
+        b=DCUL50UunovORQl8STOKi8g3CyNNj3eqLviKgp/2b6XY3e9Zfoj8Ch86uPaGSghFk
+         bu8bCKrA/ecPyj0lvFWlAl4kDnrP5c84oBfUgAJSzjnxqv3i02v6fHbFbiQ7YBwIKg
+         5EIVTWr+nFivPi8jxNuzqarRVvdnTpcMkogbVduY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Fabian Inostroza <fabianinostrozap@gmail.com>,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Martyna Szapar <martyna.szapar@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 020/101] can: peak_usb: peak_usb_get_ts_time(): fix timestamp wrapping
-Date:   Tue, 17 Nov 2020 14:04:47 +0100
-Message-Id: <20201117122114.081392035@linuxfoundation.org>
+Subject: [PATCH 4.9 22/78] i40e: Fix of memory leak and integer truncation in i40e_virtchnl.c
+Date:   Tue, 17 Nov 2020 14:04:48 +0100
+Message-Id: <20201117122110.193860895@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,94 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Martyna Szapar <martyna.szapar@intel.com>
 
-[ Upstream commit ecc7b4187dd388549544195fb13a11b4ea8e6a84 ]
+commit 24474f2709af6729b9b1da1c5e160ab62e25e3a4 upstream.
 
-Fabian Inostroza <fabianinostrozap@gmail.com> has discovered a potential
-problem in the hardware timestamp reporting from the PCAN-USB USB CAN interface
-(only), related to the fact that a timestamp of an event may precede the
-timestamp used for synchronization when both records are part of the same USB
-packet. However, this case was used to detect the wrapping of the time counter.
+Fixed possible memory leak in i40e_vc_add_cloud_filter function:
+cfilter is being allocated and in some error conditions
+the function returns without freeing the memory.
 
-This patch details and fixes the two identified cases where this problem can
-occur.
+Fix of integer truncation from u16 (type of queue_id value) to u8
+when calling i40e_vc_isvalid_queue_id function.
 
-Reported-by: Fabian Inostroza <fabianinostrozap@gmail.com>
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-Link: https://lore.kernel.org/r/20201014085631.15128-1-s.grosjean@peak-system.com
-Fixes: bb4785551f64 ("can: usb: PEAK-System Technik USB adapters driver core")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Martyna Szapar <martyna.szapar@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+[bwh: Backported to 4.9: i40e_vc_add_cloud_filter() does not exist
+ but the integer truncation is still possible]
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_core.c | 51 ++++++++++++++++++--
- 1 file changed, 46 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index afc8d978124ef..db156a11e6db5 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -138,14 +138,55 @@ void peak_usb_get_ts_time(struct peak_time_ref *time_ref, u32 ts, ktime_t *time)
- 	/* protect from getting time before setting now */
- 	if (ktime_to_ns(time_ref->tv_host)) {
- 		u64 delta_us;
-+		s64 delta_ts = 0;
-+
-+		/* General case: dev_ts_1 < dev_ts_2 < ts, with:
-+		 *
-+		 * - dev_ts_1 = previous sync timestamp
-+		 * - dev_ts_2 = last sync timestamp
-+		 * - ts = event timestamp
-+		 * - ts_period = known sync period (theoretical)
-+		 *             ~ dev_ts2 - dev_ts1
-+		 * *but*:
-+		 *
-+		 * - time counters wrap (see adapter->ts_used_bits)
-+		 * - sometimes, dev_ts_1 < ts < dev_ts2
-+		 *
-+		 * "normal" case (sync time counters increase):
-+		 * must take into account case when ts wraps (tsw)
-+		 *
-+		 *      < ts_period > <          >
-+		 *     |             |            |
-+		 *  ---+--------+----+-------0-+--+-->
-+		 *     ts_dev_1 |    ts_dev_2  |
-+		 *              ts             tsw
-+		 */
-+		if (time_ref->ts_dev_1 < time_ref->ts_dev_2) {
-+			/* case when event time (tsw) wraps */
-+			if (ts < time_ref->ts_dev_1)
-+				delta_ts = 1 << time_ref->adapter->ts_used_bits;
-+
-+		/* Otherwise, sync time counter (ts_dev_2) has wrapped:
-+		 * handle case when event time (tsn) hasn't.
-+		 *
-+		 *      < ts_period > <          >
-+		 *     |             |            |
-+		 *  ---+--------+--0-+---------+--+-->
-+		 *     ts_dev_1 |    ts_dev_2  |
-+		 *              tsn            ts
-+		 */
-+		} else if (time_ref->ts_dev_1 < ts) {
-+			delta_ts = -(1 << time_ref->adapter->ts_used_bits);
-+		}
- 
--		delta_us = ts - time_ref->ts_dev_2;
--		if (ts < time_ref->ts_dev_2)
--			delta_us &= (1 << time_ref->adapter->ts_used_bits) - 1;
-+		/* add delay between last sync and event timestamps */
-+		delta_ts += (signed int)(ts - time_ref->ts_dev_2);
- 
--		delta_us += time_ref->ts_total;
-+		/* add time from beginning to last sync */
-+		delta_ts += time_ref->ts_total;
- 
--		delta_us *= time_ref->adapter->us_per_ts_scale;
-+		/* convert ticks number into microseconds */
-+		delta_us = delta_ts * time_ref->adapter->us_per_ts_scale;
- 		delta_us >>= time_ref->adapter->us_per_ts_shift;
- 
- 		*time = ktime_add_us(time_ref->tv_host_0, delta_us);
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index 8499fe7cff3bb..e6798b0d1cae0 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -188,7 +188,7 @@ static inline bool i40e_vc_isvalid_vsi_id(struct i40e_vf *vf, u16 vsi_id)
+  * check for the valid queue id
+  **/
+ static inline bool i40e_vc_isvalid_queue_id(struct i40e_vf *vf, u16 vsi_id,
+-					    u8 qid)
++					    u16 qid)
+ {
+ 	struct i40e_pf *pf = vf->pf;
+ 	struct i40e_vsi *vsi = i40e_find_vsi_from_id(pf, vsi_id);
 -- 
 2.27.0
 
