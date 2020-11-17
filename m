@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320792B6CAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C932B6CAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730288AbgKQSNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgKQSNo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:13:44 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A031C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:13:44 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 23so24112202wrc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:13:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XUZThx36p3R01Q+OVZgC7ap+liimQUklKkO3YYLInjI=;
-        b=pX+RHuLMITy1MSvnEX1opAwiuvv2Np3vNifM0kwC8d6WVZyNg+AdihEsvkn3hXp8Re
-         3nBbUAVATInJR21EJkc3p2bhareTwPXUWAqpw3/ekms5J0snEHbv1p3d8Pf4tG9SibXa
-         3xGqQ+c/ywhiljpumUxG/N0OvVpjKfnVfY+PDKgNl9bkbp7LXGKyQpU+UPGAbZKmftbs
-         Xdg0s+53b/b0+soH3/rDaMDGMfoxhU1m+5HRXA/7rJ+DW6UpwiJ5JID0XfGZUu6vvv37
-         z5/KEC+pCxOXh0K1GaG0zl8YJUUco+0GjP+hYtzEoOriVXLN1y84GdGqcVaBQwmm7vDq
-         kAbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XUZThx36p3R01Q+OVZgC7ap+liimQUklKkO3YYLInjI=;
-        b=h55SvTleW/MjgaauF7umQZedkhh8/y1IERT0+yKoOXv9cnNX3pd/rQAQwRYyRBOjky
-         +D5hxL1HBQUPr/8uYPxmk+0IQrBimFSGJyG/hzTF70Lb2D4uMYp8BRljsjJkoRdHowV+
-         3zJMf9+lIWoGFEPn2Iz+P6Akep5bqiaUdyP9bj1xVFxt0OfK4/erVAscBH6vvdFYc68h
-         GX6j7Z91e9BK0UnaIy1a6deNspL1540d9/cRcpURAFHmjiBLEYn4z0IcIlcCABZBkhcY
-         UJqJQLzPuyqobTspXBFsIQotijYl8j2GNR74mj+30k5yNqSPUxXY+cKkInVKcKhAMiUk
-         byPQ==
-X-Gm-Message-State: AOAM533WgPMN3TFEYlZnTZf+R7hH6egxEGnUFmxdeG4vt9txqNUQy0ds
-        qfjnwI/IRmOIdPAi+ZLZkPJjFygxAg/qLn0y
-X-Google-Smtp-Source: ABdhPJzdDhitlcjhywQsflVnI9g5fvH8tJ02VlY73QUwKH2fOOZiML4WaajFIWJsxc97BVGkQwFU0Q==
-X-Received: by 2002:a5d:6050:: with SMTP id j16mr897945wrt.158.1605636822648;
-        Tue, 17 Nov 2020 10:13:42 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id x6sm4815167wmc.48.2020.11.17.10.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 10:13:41 -0800 (PST)
-Date:   Tue, 17 Nov 2020 18:13:40 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch
-Subject: Re: [PATCH 03/42] drm/drm_dp_mst_topology: Remove set but never used
- variable 'len'
-Message-ID: <20201117181340.GM1869941@dell>
-References: <20201116174112.1833368-1-lee.jones@linaro.org>
- <20201116174112.1833368-4-lee.jones@linaro.org>
- <20201117172925.GN401619@phenom.ffwll.local>
- <20201117181250.GL1869941@dell>
+        id S1730431AbgKQSOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:14:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726731AbgKQSOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:14:47 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCDF42462E;
+        Tue, 17 Nov 2020 18:14:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605636886;
+        bh=Zo7ZhZu4hr8dzjmIJAUlUJ3adtcEXpkIdPJcQMt35fo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MqKVL5Z3z6XJugchnRsrPdGtTqFSAwKErinRMrpKjlsllktUog87TeKw/xbg9Ghgo
+         fTYz7EN8IV6XNHNq22DIIBuEVjnQVYo+dWZ35LcmQEyPHO+RJ15g5FgBIEOLvKYvW4
+         iqr3beMOKSzENA7F0tgAWvxN2thwEGjXQfV3QB9k=
+Date:   Tue, 17 Nov 2020 20:14:41 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org
+Subject: Re: [PATCH v41 09/24] x86/sgx: Add SGX page allocator functions
+Message-ID: <20201117181426.GF8524@kernel.org>
+References: <20201112220135.165028-1-jarkko@kernel.org>
+ <20201114093256.7800-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201117181250.GL1869941@dell>
+In-Reply-To: <20201114093256.7800-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020, Lee Jones wrote:
-
-> On Tue, 17 Nov 2020, Daniel Vetter wrote:
-> 
-> > On Mon, Nov 16, 2020 at 05:40:33PM +0000, Lee Jones wrote:
-> > > Fixes the following W=1 kernel build warning(s):
-> > > 
-> > >  drivers/gpu/drm/drm_dp_mst_topology.c: In function ‘drm_dp_send_query_stream_enc_status’:
-> > >  drivers/gpu/drm/drm_dp_mst_topology.c:3263:6: warning: variable ‘len’ set but not used [-Wunused-but-set-variable]
-> > > 
-> > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > > Cc: Maxime Ripard <mripard@kernel.org>
-> > > Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> > > Cc: David Airlie <airlied@linux.ie>
-> > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > Cc: dri-devel@lists.freedesktop.org
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Sat, Nov 14, 2020 at 05:32:56PM +0800, Hillf Danton wrote:
+> On Fri, 13 Nov 2020 00:01:20 +0200 Jarkko Sakkinen wrote:
 > > 
-> > Going to apply this, but I noticed that the return value of the
-> > build_query_stream_enc_status() is pointless. Can you pls follow up with
-> > an additional patch to change that to void?
+> > The previous patch initialized a simple SGX page allocator.  Add functions
+> > for runtime allocation and free.
+> > 
+> > This allocator and its algorithms are as simple as it gets.  They do a
+> > linear search across all EPC sections and find the first free page.  They
+> > are not NUMA aware and only hand out individual pages.  The SGX hardware
+> > does not support large pages, so something more complicated like a buddy
+> > allocator is unwarranted.
+> > 
+> > The free function (sgx_free_epc_page()) implicitly calls ENCLS[EREMOVE],
+> > which returns the page to the uninitialized state.  This ensures that the
+> > page is ready for use at the next allocation.
+> > 
+> > Acked-by: Jethro Beekman <jethro@fortanix.com> # v40
+> > # Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > # Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> >  arch/x86/kernel/cpu/sgx/main.c | 65 ++++++++++++++++++++++++++++++++++
+> >  arch/x86/kernel/cpu/sgx/sgx.h  |  3 ++
+> >  2 files changed, 68 insertions(+)
+> > 
+> > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > index 187a237eec38..2e53afc288a4 100644
+> > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > @@ -85,6 +85,71 @@ static bool __init sgx_page_reclaimer_init(void)
+> >  	return true;
+> >  }
+> >  
+> > +static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_section *section)
+> > +{
+> > +	struct sgx_epc_page *page;
+> > +
+> > +	spin_lock(&section->lock);
+> > +
+> > +	if (list_empty(&section->page_list)) {
+> > +		spin_unlock(&section->lock);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	page = list_first_entry(&section->page_list, struct sgx_epc_page, list);
+> > +	list_del_init(&page->list);
+> > +
+> > +	spin_unlock(&section->lock);
+> > +	return page;
+> > +}
+> > +
+> > +/**
+> > + * __sgx_alloc_epc_page() - Allocate an EPC page
+> > + *
+> > + * Iterate through EPC sections and borrow a free EPC page to the caller. When a
+> > + * page is no longer needed it must be released with sgx_free_epc_page().
+> > + *
+> > + * Return:
+> > + *   an EPC page,
+> > + *   -errno on error
+> > + */
+> > +struct sgx_epc_page *__sgx_alloc_epc_page(void)
+> > +{
+> > +	struct sgx_epc_section *section;
+> > +	struct sgx_epc_page *page;
+> > +	int i;
+> > +
+> > +	for (i = 0; i < sgx_nr_epc_sections; i++) {
+> > +		section = &sgx_epc_sections[i];
+> > +
+> > +		page = __sgx_alloc_epc_page_from_section(section);
+> > +		if (page)
+> > +			return page;
+> > +	}
+> > +
+> > +	return ERR_PTR(-ENOMEM);
+> > +}
+> > +
+> > +/**
+> > + * sgx_free_epc_page() - Free an EPC page
+> > + * @page:	an EPC page
+> > + *
+> > + * Call EREMOVE for an EPC page and insert it back to the list of free pages.
+> > + */
+> > +void sgx_free_epc_page(struct sgx_epc_page *page)
+> > +{
+> > +	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
+> > +	int ret;
+> > +
+> > +	ret = __eremove(sgx_get_epc_virt_addr(page));
+> > +	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
+> > +		return;
+> > +
+> > +	spin_lock(&section->lock);
+> > +	list_add_tail(&page->list, &section->page_list);
 > 
-> I can.
+> Add head in favor of allocators coming before LLC becomes cold.
 
-Looks like you're getting dropped again!
+Nice suggestion, thank you.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+/Jarkko
