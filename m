@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA47A2B645B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F4F2B6505
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733125AbgKQNqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:46:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49134 "EHLO mail.kernel.org"
+        id S1731731AbgKQN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:27:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732989AbgKQNhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:37:52 -0500
+        id S1731701AbgKQN1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:27:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE5A52465E;
-        Tue, 17 Nov 2020 13:37:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC8A4206D5;
+        Tue, 17 Nov 2020 13:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620272;
-        bh=FLKBhWs9ZpMgIeeKx//TqHn6fR7JZ2pl0UdIwnGlBcI=;
+        s=default; t=1605619637;
+        bh=/hZ9nWbGGjFN9qdOakvapm58eAu1ac2ctQXS8eUyNkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ej1Hz39sGhCEF0i1nCYhdGJhDHS79zxAD9i9AxgYH3H0dPLGrVpM+HcXCCSeLhlwU
-         KLJzqOrsrVSsv+rFR2O2gCseuaUPcn6KCGL6/iMyHMobwDoaHj8QtL7RkC0w1mFfaa
-         719IvnuodCIAEQw9HWh5Uv/FFCbbJCU6HCoFjV5g=
+        b=1Vrv52u86W1nyb2GjSwydOX4frucsCNnS3yVgRWxmGxV1iEFU413V/zQ15Kj2swfv
+         oTDeVhsBYiWR5HCTWQPT1LuSHCcS1fgWpkUVG5Aig5nWcb+eMuy3qQmMh8QuGjdjcT
+         iDPMdWy+eM0FTqm+ubv/8xZGudYFTGSRkfwfbDIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 164/255] of/address: Fix of_node memory leak in of_dma_is_coherent
-Date:   Tue, 17 Nov 2020 14:05:04 +0100
-Message-Id: <20201117122146.919134873@linuxfoundation.org>
+        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 075/151] s390/smp: move rcu_cpu_starting() earlier
+Date:   Tue, 17 Nov 2020 14:05:05 +0100
+Message-Id: <20201117122125.067675414@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+From: Qian Cai <cai@redhat.com>
 
-[ Upstream commit a5bea04fcc0b3c0aec71ee1fd58fd4ff7ee36177 ]
+[ Upstream commit de5d9dae150ca1c1b5c7676711a9ca139d1a8dec ]
 
-Commit dabf6b36b83a ("of: Add OF_DMA_DEFAULT_COHERENT & select it on
-powerpc") added a check to of_dma_is_coherent which returns early
-if OF_DMA_DEFAULT_COHERENT is enabled. This results in the of_node_put()
-being skipped causing a memory leak. Moved the of_node_get() below this
-check so we now we only get the node if OF_DMA_DEFAULT_COHERENT is not
-enabled.
+The call to rcu_cpu_starting() in smp_init_secondary() is not early
+enough in the CPU-hotplug onlining process, which results in lockdep
+splats as follows:
 
-Fixes: dabf6b36b83a ("of: Add OF_DMA_DEFAULT_COHERENT & select it on powerpc")
-Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-Link: https://lore.kernel.org/r/20201110022825.30895-1-evan.nimmo@alliedtelesis.co.nz
-Signed-off-by: Rob Herring <robh@kernel.org>
+ WARNING: suspicious RCU usage
+ -----------------------------
+ kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
+
+ other info that might help us debug this:
+
+ RCU used illegally from offline CPU!
+ rcu_scheduler_active = 1, debug_locks = 1
+ no locks held by swapper/1/0.
+
+ Call Trace:
+ show_stack+0x158/0x1f0
+ dump_stack+0x1f2/0x238
+ __lock_acquire+0x2640/0x4dd0
+ lock_acquire+0x3a8/0xd08
+ _raw_spin_lock_irqsave+0xc0/0xf0
+ clockevents_register_device+0xa8/0x528
+ init_cpu_timer+0x33e/0x468
+ smp_init_secondary+0x11a/0x328
+ smp_start_secondary+0x82/0x88
+
+This is avoided by moving the call to rcu_cpu_starting up near the
+beginning of the smp_init_secondary() function. Note that the
+raw_smp_processor_id() is required in order to avoid calling into
+lockdep before RCU has declared the CPU to be watched for readers.
+
+Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
+Signed-off-by: Qian Cai <cai@redhat.com>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/address.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/s390/kernel/smp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index da4f7341323f2..37ac311843090 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -1043,11 +1043,13 @@ out:
-  */
- bool of_dma_is_coherent(struct device_node *np)
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index ad426cc656e56..66d7ba61803c8 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -845,13 +845,14 @@ void __init smp_detect_cpus(void)
+ 
+ static void smp_init_secondary(void)
  {
--	struct device_node *node = of_node_get(np);
-+	struct device_node *node;
+-	int cpu = smp_processor_id();
++	int cpu = raw_smp_processor_id();
  
- 	if (IS_ENABLED(CONFIG_OF_DMA_DEFAULT_COHERENT))
- 		return true;
- 
-+	node = of_node_get(np);
-+
- 	while (node) {
- 		if (of_property_read_bool(node, "dma-coherent")) {
- 			of_node_put(node);
+ 	S390_lowcore.last_update_clock = get_tod_clock();
+ 	restore_access_regs(S390_lowcore.access_regs_save_area);
+ 	set_cpu_flag(CIF_ASCE_PRIMARY);
+ 	set_cpu_flag(CIF_ASCE_SECONDARY);
+ 	cpu_init();
++	rcu_cpu_starting(cpu);
+ 	preempt_disable();
+ 	init_cpu_timer();
+ 	vtime_init();
 -- 
 2.27.0
 
