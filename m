@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441372B6369
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3532B636B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732053AbgKQNh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:37:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49160 "EHLO mail.kernel.org"
+        id S1732352AbgKQNiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:38:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732995AbgKQNh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:37:56 -0500
+        id S1733020AbgKQNh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:37:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 957B4207BC;
-        Tue, 17 Nov 2020 13:37:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77598207BC;
+        Tue, 17 Nov 2020 13:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620275;
-        bh=iaaVi/kG/GEXKUfnpdvNXmq4FIzllGf18xVtxHBoDFw=;
+        s=default; t=1605620278;
+        bh=GVkkd3xbSyokIMZbTFu7jGFjPbtezSYtLEbImUcav24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rsl6Z9az2DE6pAfNRET3LBihF0UU6OWkdQ8ngYOB0F2v7fOXBe/+/pFnjhEDYOL+h
-         dBEfbnJ3fajsQgLXl2LlDVZ7dnaWw+dKloWeySK4G+X3NvdzBcMzzoZZSb+bJhlZKs
-         QEcDiwywYdB2WLd9oW6VTYQ8AXjen+8GegxEuLK8=
+        b=d6iSXguyUh1bykmtkvk6RK+mKIYXknQnLlRfjsFAiRO6krzgoOy8cEcv1KVojRZiQ
+         Y0n4gS+8LZ/ljV4ynYvcWNz+cUQTN6QrPGmCFGFmWYm0WAtGHKTQvQpOHJImazTMs8
+         rrzwDC+4ENW7vqk7R6WG0HhygXs86I4EdRZuuflY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Rohit Maheshwari <rohitm@chelsio.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 165/255] ch_ktls: Update cheksum information
-Date:   Tue, 17 Nov 2020 14:05:05 +0100
-Message-Id: <20201117122146.967639603@linuxfoundation.org>
+Subject: [PATCH 5.9 166/255] ch_ktls: tcb update fails sometimes
+Date:   Tue, 17 Nov 2020 14:05:06 +0100
+Message-Id: <20201117122147.015779525@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -45,63 +45,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rohit Maheshwari <rohitm@chelsio.com>
 
-[ Upstream commit 86716b51d14fc2201938939b323ba3ad99186910 ]
+[ Upstream commit 7d01c428c86b525dc780226924d74df2048cf411 ]
 
-Checksum update was missing in the WR.
+context id and port id should be filled while sending tcb update.
 
-Fixes: 429765a149f1 ("chcr: handle partial end part of a record")
+Fixes: 5a4b9fe7fece ("cxgb4/chcr: complete record tx handling")
 Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/chelsio/chcr_ktls.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/crypto/chelsio/chcr_ktls.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/crypto/chelsio/chcr_ktls.c b/drivers/crypto/chelsio/chcr_ktls.c
-index c5cce024886ac..026689d091102 100644
+index 026689d091102..dc5e22bc64b39 100644
 --- a/drivers/crypto/chelsio/chcr_ktls.c
 +++ b/drivers/crypto/chelsio/chcr_ktls.c
-@@ -926,6 +926,7 @@ chcr_ktls_write_tcp_options(struct chcr_ktls_info *tx_info, struct sk_buff *skb,
- 	struct iphdr *ip;
- 	int credits;
- 	u8 buf[150];
-+	u64 cntrl1;
- 	void *pos;
+@@ -659,7 +659,8 @@ int chcr_ktls_cpl_set_tcb_rpl(struct adapter *adap, unsigned char *input)
+ }
  
- 	iplen = skb_network_header_len(skb);
-@@ -964,22 +965,28 @@ chcr_ktls_write_tcp_options(struct chcr_ktls_info *tx_info, struct sk_buff *skb,
- 			   TXPKT_PF_V(tx_info->adap->pf));
- 	cpl->pack = 0;
- 	cpl->len = htons(pktlen);
--	/* checksum offload */
--	cpl->ctrl1 = 0;
--
--	pos = cpl + 1;
+ static void *__chcr_write_cpl_set_tcb_ulp(struct chcr_ktls_info *tx_info,
+-					u32 tid, void *pos, u16 word, u64 mask,
++					u32 tid, void *pos, u16 word,
++					struct sge_eth_txq *q, u64 mask,
+ 					u64 val, u32 reply)
+ {
+ 	struct cpl_set_tcb_field_core *cpl;
+@@ -668,7 +669,10 @@ static void *__chcr_write_cpl_set_tcb_ulp(struct chcr_ktls_info *tx_info,
  
- 	memcpy(buf, skb->data, pktlen);
- 	if (tx_info->ip_family == AF_INET) {
- 		/* we need to correct ip header len */
- 		ip = (struct iphdr *)(buf + maclen);
- 		ip->tot_len = htons(pktlen - maclen);
-+		cntrl1 = TXPKT_CSUM_TYPE_V(TX_CSUM_TCPIP);
- #if IS_ENABLED(CONFIG_IPV6)
- 	} else {
- 		ip6 = (struct ipv6hdr *)(buf + maclen);
- 		ip6->payload_len = htons(pktlen - maclen - iplen);
-+		cntrl1 = TXPKT_CSUM_TYPE_V(TX_CSUM_TCPIP6);
- #endif
+ 	/* ULP_TXPKT */
+ 	txpkt = pos;
+-	txpkt->cmd_dest = htonl(ULPTX_CMD_V(ULP_TX_PKT) | ULP_TXPKT_DEST_V(0));
++	txpkt->cmd_dest = htonl(ULPTX_CMD_V(ULP_TX_PKT) |
++				ULP_TXPKT_CHANNELID_V(tx_info->port_id) |
++				ULP_TXPKT_FID_V(q->q.cntxt_id) |
++				ULP_TXPKT_RO_F);
+ 	txpkt->len = htonl(DIV_ROUND_UP(CHCR_SET_TCB_FIELD_LEN, 16));
+ 
+ 	/* ULPTX_IDATA sub-command */
+@@ -723,7 +727,7 @@ static void *chcr_write_cpl_set_tcb_ulp(struct chcr_ktls_info *tx_info,
+ 		} else {
+ 			u8 buf[48] = {0};
+ 
+-			__chcr_write_cpl_set_tcb_ulp(tx_info, tid, buf, word,
++			__chcr_write_cpl_set_tcb_ulp(tx_info, tid, buf, word, q,
+ 						     mask, val, reply);
+ 
+ 			return chcr_copy_to_txd(buf, &q->q, pos,
+@@ -731,7 +735,7 @@ static void *chcr_write_cpl_set_tcb_ulp(struct chcr_ktls_info *tx_info,
+ 		}
  	}
-+
-+	cntrl1 |= T6_TXPKT_ETHHDR_LEN_V(maclen - ETH_HLEN) |
-+		  TXPKT_IPHDR_LEN_V(iplen);
-+	/* checksum offload */
-+	cpl->ctrl1 = cpu_to_be64(cntrl1);
-+
-+	pos = cpl + 1;
-+
- 	/* now take care of the tcp header, if fin is not set then clear push
- 	 * bit as well, and if fin is set, it will be sent at the last so we
- 	 * need to update the tcp sequence number as per the last packet.
+ 
+-	pos = __chcr_write_cpl_set_tcb_ulp(tx_info, tid, pos, word,
++	pos = __chcr_write_cpl_set_tcb_ulp(tx_info, tid, pos, word, q,
+ 					   mask, val, reply);
+ 
+ 	/* check again if we are at the end of the queue */
 -- 
 2.27.0
 
