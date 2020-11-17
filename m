@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250862B6640
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85ABA2B6604
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729739AbgKQNLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:11:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
+        id S1730326AbgKQOAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:00:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729647AbgKQNLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:11:37 -0500
+        id S1730168AbgKQNPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:15:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53C1A246BE;
-        Tue, 17 Nov 2020 13:11:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7FE5246DD;
+        Tue, 17 Nov 2020 13:15:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618697;
-        bh=KIjxkzgdOwMJoSiRdDNpZiJS6sgnIB69WrDcBfVwplk=;
+        s=default; t=1605618919;
+        bh=uqGE8wpkaITO0ex9MMrcYTpJWm9L9GH831zZi00LWIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZSBRLoUrpd+th3JeuErdtw1eAxPF1Ys7RtaGcWlLYMxEcsHc9clKZOWrtGBitwM9c
-         QLBajTXwtFZ+txg+XdiGDtxhCA9Sa7ZSWZk7lCAKR7Cg8AmlR3/rUdGPZXaVbbuejD
-         xozm3SVQLPl5KOfC3cHKKAzlFVupXmAwRwCipzug=
+        b=etPmTn/HOl2ffu+mk6WoNm/doyDCdAgDohgFnU6NzFRxPEBZKTxWiqD8uk4VUNGJe
+         AB34JHTq2enUjn0+iWP6GiYayWHyruphy+aTkWiREDR+n+COBWSJ7SBlJ2/XBTO9pW
+         kCC+5Jzp6TUlzfBYGGRbfnZmDzZvYjNTVtOEiEmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
-        Xie He <xie.he.0141@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 55/78] net/x25: Fix null-ptr-deref in x25_connect
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Chen Zhou <chenzhou10@huawei.com>,
+        Paul Moore <paul@paul-moore.com>
+Subject: [PATCH 4.14 52/85] selinux: Fix error return code in sel_ib_pkey_sid_slow()
 Date:   Tue, 17 Nov 2020 14:05:21 +0100
-Message-Id: <20201117122111.815695041@linuxfoundation.org>
+Message-Id: <20201117122113.589598006@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Schiller <ms@dev.tdt.de>
+From: Chen Zhou <chenzhou10@huawei.com>
 
-[ Upstream commit 361182308766a265b6c521879b34302617a8c209 ]
+commit c350f8bea271782e2733419bd2ab9bf4ec2051ef upstream.
 
-This fixes a regression for blocking connects introduced by commit
-4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect").
+Fix to return a negative error code from the error handling case
+instead of 0 in function sel_ib_pkey_sid_slow(), as done elsewhere
+in this function.
 
-The x25->neighbour is already set to "NULL" by x25_disconnect() now,
-while a blocking connect is waiting in
-x25_wait_for_connection_establishment(). Therefore x25->neighbour must
-not be accessed here again and x25->state is also already set to
-X25_STATE_0 by x25_disconnect().
-
-Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
-Signed-off-by: Martin Schiller <ms@dev.tdt.de>
-Reviewed-by: Xie He <xie.he.0141@gmail.com>
-Link: https://lore.kernel.org/r/20201109065449.9014-1-ms@dev.tdt.de
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 409dcf31538a ("selinux: Add a cache for quicker retreival of PKey SIDs")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/x25/af_x25.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -823,7 +823,7 @@ static int x25_connect(struct socket *so
- 	sock->state = SS_CONNECTED;
- 	rc = 0;
- out_put_neigh:
--	if (rc) {
-+	if (rc && x25->neighbour) {
- 		read_lock_bh(&x25_list_lock);
- 		x25_neigh_put(x25->neighbour);
- 		x25->neighbour = NULL;
+---
+ security/selinux/ibpkey.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/security/selinux/ibpkey.c
++++ b/security/selinux/ibpkey.c
+@@ -160,8 +160,10 @@ static int sel_ib_pkey_sid_slow(u64 subn
+ 	 * is valid, it just won't be added to the cache.
+ 	 */
+ 	new = kzalloc(sizeof(*new), GFP_ATOMIC);
+-	if (!new)
++	if (!new) {
++		ret = -ENOMEM;
+ 		goto out;
++	}
+ 
+ 	new->psec.subnet_prefix = subnet_prefix;
+ 	new->psec.pkey = pkey_num;
 
 
