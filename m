@@ -2,122 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62F12B66F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BECF2B6722
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730513AbgKQOHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387936AbgKQOHl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:07:41 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244EBC061A47
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 06:07:42 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id y5so12474193qtb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 06:07:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=yJkkPo7d0J6NtmBv7rzIbrBkhqskC5NsYDTAoyAGSwU=;
-        b=CRCbMwpu14Qny/Fey+w65l3KTXcgMu/wKgUqWyt7la+sSuhY3Qh3bSLfvbmNmy2ohN
-         d6CLetvPjrxg9HdcLQrwcUJI/t7E3dhAItIG3xDBSGqno0iPXS+Up8TqksLE2sx9De7b
-         RnDWU7ZU+TwovEWzFLtOxWOaWhir5AxQO2FAkbTw00c9UXWqh58duX34o1osKQfPEqVH
-         kKqjD9fQyxlm+X97TMmYjnC8FTr0DpcoshYQpZMqrkZkd8QOZGD/NcSiuteoNG9hyOLX
-         0VnfOnPnKTkbYUbPzPkiA75vd3hEs8SLeW/KWNERv36yx+7UQx03bI8wWQFRjgua6eps
-         yiDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=yJkkPo7d0J6NtmBv7rzIbrBkhqskC5NsYDTAoyAGSwU=;
-        b=GaPp15DYpBNpeTgoedi8wo6h+cXSctUXZPquOFZI152NstBQ9sODLRC0NYc1+/sCjN
-         SGriSbDC2FCioS3FKf4nZsAX0D07ehJw1biXqa9OHfQsu5WnoQ24TU435DcqKXjxQ22K
-         /shO48CNFoUKNLVW9L/5hAVlG5f9LlpcUOWMeYvtGZmA05qDdxggEwgqpO6XzmM0phkn
-         7hwN7TQ40vbz9U0sgTVsMaYZqPhIKX3rTGIUKHMYUvJxB+arbUC+0gkd3YsUgqZqoh5b
-         xOcEnsJ0hq2DNeliA68UudHVgygBlyBH6Q09txfPi/sxEQUMn1YsJHfeL1teqEG/UQPj
-         VPCg==
-X-Gm-Message-State: AOAM532LPqmQyODkJCNpjn3e875iAtGAGFy9o+NsSU//YI2LSIZkXw0e
-        k3JSQecN0kzC1HjB4vJEuUYsq/ig55k=
-X-Google-Smtp-Source: ABdhPJxEG4c+F9yJyuTls+kfuLbDaGW8pmeOfu1t4VEHHtaVEi94dVbJaunxNyEQ37dnM4o0k+oO8Td4NSk=
-Sender: "satyat via sendgmr" <satyat@satyaprateek.c.googlers.com>
-X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
- (user=satyat job=sendgmr) by 2002:a05:6214:386:: with SMTP id
- l6mr21357187qvy.49.1605622061201; Tue, 17 Nov 2020 06:07:41 -0800 (PST)
-Date:   Tue, 17 Nov 2020 14:07:08 +0000
-In-Reply-To: <20201117140708.1068688-1-satyat@google.com>
-Message-Id: <20201117140708.1068688-9-satyat@google.com>
-Mime-Version: 1.0
-References: <20201117140708.1068688-1-satyat@google.com>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH v7 8/8] fscrypt: update documentation for direct I/O support
-From:   Satya Tangirala <satyat@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Satya Tangirala <satyat@google.com>,
-        Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729810AbgKQOJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:09:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:58580 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729498AbgKQOH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:07:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C0635101E;
+        Tue, 17 Nov 2020 06:07:55 -0800 (PST)
+Received: from [10.57.60.109] (unknown [10.57.60.109])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 572773F718;
+        Tue, 17 Nov 2020 06:07:54 -0800 (PST)
+Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
+To:     Rob Herring <robh@kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ofir Drang <ofir.drang@arm.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Steven Price <steven.price@arm.com>
+References: <20200916071950.1493-1-gilad@benyossef.com>
+ <20200916071950.1493-2-gilad@benyossef.com> <20200923015702.GA3676455@bogus>
+ <CAOtvUMekoMjFij_xDnrwRj2PsfgO8tKx4Jk6d7C5vq-Vh+boWw@mail.gmail.com>
+ <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com>
+ <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <1450044c-5150-1da2-11e0-2ae48d8b4d0c@arm.com>
+Date:   Tue, 17 Nov 2020 14:07:19 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+MIME-Version: 1.0
+In-Reply-To: <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update fscrypt documentation to reflect the addition of direct I/O support
-and document the necessary conditions for direct I/O on encrypted files.
+On 2020-11-16 18:54, Rob Herring wrote:
+> On Thu, Oct 22, 2020 at 1:18 AM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
+>>
+>>
+>> Hi again,
+>>
+>> Any opinion on the suggested below?
+> 
+> Sorry, lost in the pile...
+> 
+>> Thanks!
+>> Gilad
+>>
+>>
+>> On Tue, Sep 29, 2020 at 9:08 PM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
+>>>
+>>>
+>>> On Wed, Sep 23, 2020 at 4:57 AM Rob Herring <robh@kernel.org> wrote:
+>>>>
+>>>> On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
+>>>>> Document ccree driver supporting new optional parameters allowing to
+>>>>> customize the DMA transactions cache parameters and ACE bus sharability
+>>>>> properties.
+>>>>>
+>>>>> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+>>>>> ---
+>>>>>   Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 ++++
+>>>>>   1 file changed, 4 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+>>>>> index 6130e6eb4af8..1a1603e457a8 100644
+>>>>> --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+>>>>> +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+>>>>> @@ -13,6 +13,10 @@ Required properties:
+>>>>>   Optional properties:
+>>>>>   - clocks: Reference to the crypto engine clock.
+>>>>>   - dma-coherent: Present if dma operations are coherent.
+>>>>> +- awcache: Set write transactions cache attributes
+>>>>> +- arcache: Set read transactions cache attributes
+>>>>
+>>>> dma-coherent already implies these are 011x, 101x or 111x. In my limited
+>>>> experience configuring these (Calxeda SATA and ethernet), writeback,
+>>>> write-allocate was pretty much always optimal.
+>>>
+>>> Indeed and these are the default. But not all SoC are born equal and
+>>> we got a request to allow setting these.
+>>>
+>>> Maybe instead of numerical values have three possible verbal setting
+>>> would be better?
+>>>
+>>>
+>>>>> +- awdomain: Set write transactions ACE sharability domain (712, 703, 713 only)
+>>>>> +- ardomain: Set read transactions ACE sharability domain (712, 703, 713 only)
+>>>>
+>>>> This probably needs something common. We may need something for Mali,
+>>>> too. I don't think different settings for read and write makes much
+>>>> sense nor does anything beyond IS or OS.
+>>>
+>>> I agree. Maybe
+>>>
+>>> sharability_domain: either "IS" or "OS"?
+> 
+> It's still an Arm thing, so it would need at least an 'arm,' prefix.
+> But ideally it wouldn't be Arm specific though I'm not sure if any
+> such thing is needed for other arches. If common either for Arm or
+> across arches, then it needs to be documented in a common doc with
+> some wider agreement than what a device specific property needs.
 
-Signed-off-by: Satya Tangirala <satyat@google.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- Documentation/filesystems/fscrypt.rst | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+"dma-coherent" already encapsulates the shareability. To claim coherency 
+you need to be able to access memory with inner shareable inner-outer 
+write back attributes, because that's how regular kernel memory is 
+mapped. If you don't claim coherency, then you should be using 
+non-cacheable (and thus implicitly outer shareable) attributes, because 
+there may still be cacheable aliases hanging around and if you 
+inadvertently snoop those instead of going direct to DRAM as everything 
+else expects, you're going to have a bad time.
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 44b67ebd6e40..757b8aa2af9b 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -1047,8 +1047,10 @@ astute users may notice some differences in behavior:
-   may be used to overwrite the source files but isn't guaranteed to be
-   effective on all filesystems and storage devices.
- 
--- Direct I/O is not supported on encrypted files.  Attempts to use
--  direct I/O on such files will fall back to buffered I/O.
-+- Direct I/O is supported on encrypted files only under some
-+  circumstances (see `Direct I/O support`_ for details). When these
-+  circumstances are not met, attempts to use direct I/O on encrypted
-+  files will fall back to buffered I/O.
- 
- - The fallocate operations FALLOC_FL_COLLAPSE_RANGE and
-   FALLOC_FL_INSERT_RANGE are not supported on encrypted files and will
-@@ -1121,6 +1123,21 @@ It is not currently possible to backup and restore encrypted files
- without the encryption key.  This would require special APIs which
- have not yet been implemented.
- 
-+Direct I/O support
-+==================
-+
-+Direct I/O on encrypted files is supported through blk-crypto. In
-+particular, this means the kernel must have CONFIG_BLK_INLINE_ENCRYPTION
-+enabled, the filesystem must have had the 'inlinecrypt' mount option
-+specified, and either hardware inline encryption must be present, or
-+CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK must have been enabled. Further,
-+the length of any I/O must be aligned to the filesystem block size
-+(*not* necessarily the same as the block device's block size). If any of
-+these conditions isn't met, attempts to do direct I/O on an encrypted file
-+will fall back to buffered I/O. However, there aren't any additional
-+requirements on user buffer alignment (apart from those already present
-+when using direct I/O on unencrypted files).
-+
- Encryption policy enforcement
- =============================
- 
--- 
-2.29.2.299.gdc1121823c-goog
+Essentially, Linux only uses two sets of memory attributes for DMA 
+memory, so any perceived need for more than that is already something 
+sufficiently esoteric that it probably doesn't need a generic binding. 
+I'm aware that it's against type for me to be arguing Linux details in a 
+DT binding, but I checked the TRMs for some of these devices and they 
+essentially say "you don't program the hardware directly, you use the 
+Linux driver we give you", so it seems like this binding is specifically 
+intended never to be consumed by anything else.
 
+>>>> These could also just be implied by the compatible string (and requiring
+>>>> an SoC specific one).
+>>>
+>>> hm... we could do it but this will require us to know (and publicly
+>>> acknowledge) of every SoC making use of this piece of hardware design.
+> 
+> That's already a requirement in general. Sometimes we can avoid it,
+> but that's cases of getting lucky.
+> 
+>>> There is currently no other part of the driver that needs this.
+> 
+> If your DT is part of firmware, then waiting until adding some driver
+> feature or quirk based on a new DT property is too late. Whereas with
+> a SoC specific compatible, you can handle any new feature or quirk
+> without a DT change (e.g. just a stable kernel update). Some platforms
+> may not care about that model, but in general that's the policy we
+> follow. Not doing that, we end up with the DWC3 binding.
+> 
+> A fallback compatible is how we avoid updating drivers for every
+> single SoC unless needed.
+
+IMO if this is like PL330 where you just stick some raw AXI attributes 
+in a register and that's what goes out on transactions then it's not 
+really part of the platform description anyway, it's just driver policy. 
+If folks want to tweak the driver's behaviour for secret SoC-specific 
+performance optimisation, then give them some module parameters or a 
+sysfs interface. I'm assuming this has to be purely a performance thing, 
+because I can't see how two different integrations could reasonably 
+depend on different baseline attributes for correctness, and even if 
+they did then you'd be able to determine that from the compatible 
+strings, because they would be different, because those integrations 
+would be fundamentally *not* compatible with each other.
+
+Robin.
