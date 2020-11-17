@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B88402B6550
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 228722B65D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731020AbgKQNyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:54:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33168 "EHLO mail.kernel.org"
+        id S1730671AbgKQNS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:18:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731365AbgKQNZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:25:48 -0500
+        id S1730129AbgKQNSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:18:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58D272465E;
-        Tue, 17 Nov 2020 13:25:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 326C5206D5;
+        Tue, 17 Nov 2020 13:18:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619547;
-        bh=FMWQJ4lahrISE8QnBwTCGxGSH1tt32tcmINfITuIt2U=;
+        s=default; t=1605619096;
+        bh=bqpHObbJ090xM+SmrGUKYDDJv7QDnCajvOALt3Cm7+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Py3eRxWsUqjXAQrBsArz71VVdPraqZQVjGiUlD1oWK6WI7iap0TV9WrKIqVUPYY91
-         cIciImrpy8TO8QaP7LHm7RKrCVkAsDkhwkz5q3WLuJsC3lcEl1JmVGcA8gOdQwWnVX
-         bUPfCPtsGv2vofaxlQDCX4PgSD80MlYXv5uQ3uZY=
+        b=eKEgLoQRbzAWI8Luuk9wGoNnstVyjZLpeo/ktHD/lWDThMW5HR1OYcXAbkZ8xC611
+         G73ts0LYLHG3b7l4pQpUhk+3C3VVzAur6DNZm/ufwtbrrmDex+SIPjnF0gDF/JkWqv
+         gCA2rMbGMzf/41b/mw727gSLAyqzNB5kH2USEi5s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/151] ASoC: qcom: sdm845: set driver name correctly
+        stable@vger.kernel.org, Olaf Hering <olaf@aepfle.de>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 009/101] hv_balloon: disable warning when floor reached
 Date:   Tue, 17 Nov 2020 14:04:36 +0100
-Message-Id: <20201117122123.668746794@linuxfoundation.org>
+Message-Id: <20201117122113.557753779@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Olaf Hering <olaf@aepfle.de>
 
-[ Upstream commit 3f48b6eba15ea342ef4cb420b580f5ed6605669f ]
+[ Upstream commit 2c3bd2a5c86fe744e8377733c5e511a5ca1e14f5 ]
 
-With the current state of code, we would endup with something like
-below in /proc/asound/cards for 2 machines based on this driver.
+It is not an error if the host requests to balloon down, but the VM
+refuses to do so. Without this change a warning is logged in dmesg
+every five minutes.
 
-Machine 1:
- 0 [DB845c            ]: DB845c - DB845c
-                       DB845c
-Machine 2:
- 0 [LenovoYOGAC6301]: Lenovo-YOGA-C63 - Lenovo-YOGA-C630-13Q50
-                     LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
+Fixes:  b3bb97b8a49f3 ("Drivers: hv: balloon: Add logging for dynamic memory operations")
 
-This is not very UCM friendly both w.r.t to common up configs and
-card identification, and UCM2 became totally not usefull with just
-one ucm sdm845.conf for two machines which have different setups
-w.r.t HDMI and other dais.
-
-Reasons for such thing is partly because Qualcomm machine drivers never
-cared to set driver_name.
-
-This patch sets up driver name for the this driver to sort out the
-UCM integration issues!
-
-after this patch contents of /proc/asound/cards:
-
-Machine 1:
- 0 [DB845c         ]: sdm845 - DB845c
-                      DB845c
-Machine 2:
- 0 [LenovoYOGAC6301]: sdm845 - Lenovo-YOGA-C630-13Q50
-                     LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
-
-with this its possible to align with what UCM2 expects and we can have
-sdm845/DB845.conf
-sdm845/LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216.conf
-... for board variants. This should scale much better!
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20201023095849.22894-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Olaf Hering <olaf@aepfle.de>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Link: https://lore.kernel.org/r/20201008071216.16554-1-olaf@aepfle.de
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/sdm845.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hv/hv_balloon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 7e6c41e63d8e1..23e1de61e92e4 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -16,6 +16,7 @@
- #include "qdsp6/q6afe.h"
- #include "../codecs/rt5663.h"
+diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+index 9ca0706a9d402..e5fc719a34e70 100644
+--- a/drivers/hv/hv_balloon.c
++++ b/drivers/hv/hv_balloon.c
+@@ -1275,7 +1275,7 @@ static void balloon_up(struct work_struct *dummy)
  
-+#define DRIVER_NAME	"sdm845"
- #define DEFAULT_SAMPLE_RATE_48K		48000
- #define DEFAULT_MCLK_RATE		24576000
- #define TDM_BCLK_RATE		6144000
-@@ -407,6 +408,7 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 		goto data_alloc_fail;
- 	}
+ 	/* Refuse to balloon below the floor. */
+ 	if (avail_pages < num_pages || avail_pages - num_pages < floor) {
+-		pr_warn("Balloon request will be partially fulfilled. %s\n",
++		pr_info("Balloon request will be partially fulfilled. %s\n",
+ 			avail_pages < num_pages ? "Not enough memory." :
+ 			"Balloon floor reached.");
  
-+	card->driver_name = DRIVER_NAME;
- 	card->dapm_widgets = sdm845_snd_widgets;
- 	card->num_dapm_widgets = ARRAY_SIZE(sdm845_snd_widgets);
- 	card->dev = dev;
 -- 
 2.27.0
 
