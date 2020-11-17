@@ -2,131 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF3D2B6F30
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BB02B6F3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730735AbgKQTqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729462AbgKQTq3 (ORCPT
+        id S1731284AbgKQTrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:47:23 -0500
+Received: from mail.efficios.com ([167.114.26.124]:40818 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728948AbgKQTrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:46:29 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72179C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:46:29 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id q10so18020255pfn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:46:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nWLn5FutqVhu6C2envdImtz3KsoVlAIGjTIx4c1QXNg=;
-        b=RWwNYKUJ8FHrbEAF2X7STaEV0pLcso44r/P15V8Qw9UoO+Uu5XaR3xyuYg8SMZY5MB
-         6O0nhled1fN8K81Rsb0gHRvoW8w1YJvmAgRq1KlsgbdLIb7bLbmqofZ+Q115kxkSDVuc
-         poX1jX5OMLYnvAWbT+R6Eyu4Pxy4nXfwsOaYFx9UiUrFm1tUwogK7jzvRzF4AgxvDGrf
-         iBjOqLPLynUKCIftZocEKRrDWH92FloVkxHYgPM75KjV05sudUTl82bXfrSY119Bzcgx
-         MXOrrCiejU0KKMfmLTPOTt9vpO6s8wvQoux4Ud47/mOc2lGTa9pGLz1PqijS2/Q77Ygw
-         K/ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nWLn5FutqVhu6C2envdImtz3KsoVlAIGjTIx4c1QXNg=;
-        b=XxiVY4sDaJE/rYehEJsbrlYRLGVGDamo34xzwq+lHDH9l7NZ+v09l43N3ssgh6PS9G
-         s9vY4395UvT+30P1HYKmOMQ6ONL1TkK6qotg1PCJBKuhYyUpZg8wqkE7UdB87XWrB42K
-         +WULXwSLx6PZOeXGncBYp4RkxCFxZgmOJHspq5cUdkPa/4o9HaU64VEF2/e61RPxj01I
-         pq7js2EQy7lBXADNPNtQVucn9quPNRjtjsv5X1itdTszaqiQK8obz6eGIPLIVb6E30wF
-         6dRrG3y2DELgI76MxU3ImIzfEUZZwxYpEMcl4yWzSzxtQN15JEU2AsTUE7HDivMvrfpz
-         41kQ==
-X-Gm-Message-State: AOAM533ngBgFIA/cHNpSAotUVYwTNlv4c6wTp0svD7UOOSbia3/E1uqW
-        9h1cjR1RNzeUEEzd0KRl0LkSNyH7XFBusEvJryb4Lw==
-X-Google-Smtp-Source: ABdhPJyDrcELE42tedArMs204mY5PQM+V4W1fuc8fBPXx/V/yrIUb8NjyaPqo5jxCNkKPfw2LRZFqLy1QtS2JF7B58Q=
-X-Received: by 2002:a65:4485:: with SMTP id l5mr4795692pgq.10.1605642388738;
- Tue, 17 Nov 2020 11:46:28 -0800 (PST)
+        Tue, 17 Nov 2020 14:47:22 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 4A8EB2E36C2;
+        Tue, 17 Nov 2020 14:47:21 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id GR3dE06nSY_Y; Tue, 17 Nov 2020 14:47:20 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id C2DBA2E3946;
+        Tue, 17 Nov 2020 14:47:20 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C2DBA2E3946
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1605642440;
+        bh=+B59aLsvKUka/9WP6zUbeiECXbkqSfWKHUa+MS2yq28=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=c9pI2WHhQqyR0JFf55+95q5YT43Kp1xWnub2hm9BSUNVibjMfp+odXZ8TQ7ueM5ea
+         1DAT01hpE3YoCwl9Qbswo5oN4Dftd0GalhskDcxOr4pCn2ynpg/8lFSxh6WQH/DFch
+         aj3m2uC+ToZ3LAO9lE4UttmWlgmfVz9mTnYyVFUTmXy2NCIcXcTcI8BpzhF7VHbJte
+         h3vwS6tQc6gTF+RkvYKJbDC4PVvxoZVHP672k6E3UPaUUSzV7Y80ijSYKtG+ooW+fL
+         ZUKJ0Gypovl3miO3ZqOxeqDxnKIHlizesapoAGKwTblWyCOBbUXGjd6km7wL19ziG+
+         wRmCIAIysei6w==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id iuc9IeOT2QZf; Tue, 17 Nov 2020 14:47:20 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id AE1BB2E3945;
+        Tue, 17 Nov 2020 14:47:20 -0500 (EST)
+Date:   Tue, 17 Nov 2020 14:47:20 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Message-ID: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201117142145.43194f1a@gandalf.local.home>
+References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com> <20201117142145.43194f1a@gandalf.local.home>
+Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
+ memory allocation
 MIME-Version: 1.0
-References: <20201117193053.18990-1-rdunlap@infradead.org>
-In-Reply-To: <20201117193053.18990-1-rdunlap@infradead.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 17 Nov 2020 11:46:18 -0800
-Message-ID: <CAKwvOdnAHqNkN2yRPnSSbe=C6Uc0MJXH=VU2KFRyE3AtHpcXXg@mail.gmail.com>
-Subject: Re: [PATCH v2] RISC-V: fix barrier() use in <vdso/processor.h>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-riscv@lists.infradead.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
+Thread-Topic: tracepoint: Do not fail unregistering a probe due to memory allocation
+Thread-Index: cU8QSyXnFie0NdnbNChYpOJ7ycvfPg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:31 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> riscv's <vdso/processor.h> uses barrier() so it should
-> #include <asm/barrier.h> to prevent build errors.
->
-> Fixes this build error:
->   CC [M]  drivers/net/ethernet/emulex/benet/be_main.o
-> In file included from ./include/vdso/processor.h:10,
->                  from ./arch/riscv/include/asm/processor.h:11,
->                  from ./include/linux/prefetch.h:15,
->                  from drivers/net/ethernet/emulex/benet/be_main.c:14:
-> ./arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
-> ./arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
->    14 |  barrier();
->
-> This happens with a total of 5 networking drivers -- they all use
-> <linux/prefetch.h>.
->
-> rv64 and rv32 allmodconfig now build cleanly after this patch.
->
-> Fixes: 3347acc6fcd4 ("compiler.h: fix barrier_data() on clang")
-> Fixes: ad5d1122b82f ("riscv: use vDSO common flow to reduce the latency of the time-related functions")
-> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Arvind Sankar <nivedita@alum.mit.edu>
-> Cc: linux-riscv@lists.infradead.org
-> Cc: clang-built-linux@googlegroups.com
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Nathan Chancellor <natechancellor@gmail.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
+----- On Nov 17, 2020, at 2:21 PM, rostedt rostedt@goodmis.org wrote:
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1202
+> On Tue, 17 Nov 2020 14:15:10 -0500 (EST)
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+> 
+>> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
+>> index e7c2276be33e..e0351bb0b140 100644
+>> --- a/include/linux/tracepoint-defs.h
+>> +++ b/include/linux/tracepoint-defs.h
+>> @@ -38,6 +38,7 @@ struct tracepoint {
+>>         int (*regfunc)(void);
+>>         void (*unregfunc)(void);
+>>         struct tracepoint_func __rcu *funcs;
+>> +       void *stub_func;
+>>  };
+>>  
+>>  #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
+>> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+>> index 0f21617f1a66..b0b805de3779 100644
+>> --- a/include/linux/tracepoint.h
+>> +++ b/include/linux/tracepoint.h
+>> @@ -287,6 +287,9 @@ static inline struct tracepoint
+>> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>  #define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)              \
+>>         static const char __tpstrtab_##_name[]                          \
+>>         __section("__tracepoints_strings") = #_name;                    \
+>> +       static void __cold __tracepoint_stub_func_##_name(void *__data, proto) \
+>> +       {                                                               \
+>> +       }                                                               \
+> 
+> The thing is, tracepoints are already bloated. I do not want to add
+> something like this that will unnecessarily add more text.
 
-> ---
-> v2: update Fixes: tags (Nick);
->     also built allmodconfig cleanly on rv32;
->
->  arch/riscv/include/asm/vdso/processor.h |    2 ++
->  1 file changed, 2 insertions(+)
->
-> --- lnx-510-rc4.orig/arch/riscv/include/asm/vdso/processor.h
-> +++ lnx-510-rc4/arch/riscv/include/asm/vdso/processor.h
-> @@ -4,6 +4,8 @@
->
->  #ifndef __ASSEMBLY__
->
-> +#include <asm/barrier.h>
-> +
->  static inline void cpu_relax(void)
->  {
->  #ifdef __riscv_muldiv
+I've measured the impact of adding these stubs to kernel/sched/core.o, and
+it's entirely lost in the code alignment (it effectively adds 0 byte of text
+to my build) when using the "cold" attribute.
 
+Over an entire vmlinux, it adds 256 bytes of text overall, for a 0.008% code size
+increase.
 
+Can you measure any significant code size increase with this approach ?
+
+There seems to be more effect on the data size: adding the "stub_func" field
+in struct tracepoint adds 8320 bytes of data to my vmlinux. But considering
+the layout of struct tracepoint:
+
+struct tracepoint {
+        const char *name;               /* Tracepoint name */
+        struct static_key key;
+        struct static_call_key *static_call_key;
+        void *static_call_tramp;
+        void *iterator;
+        int (*regfunc)(void);
+        void (*unregfunc)(void);
+        struct tracepoint_func __rcu *funcs;
+        void *stub_func;
+};
+
+I would argue that we have many other things to optimize there if we want to
+shrink the bloat, starting with static keys and system call reg/unregfunc pointers.
+
+> 
+> Since all tracepoints callbacks have at least one parameter (__data), we
+> could declare tp_stub_func as:
+> 
+> static void tp_stub_func(void *data, ...)
+> {
+>	return;
+> }
+> 
+> And now C knows that tp_stub_func() can be called with one or more
+> parameters, and had better be able to deal with it!
+
+AFAIU this won't work.
+
+C99 6.5.2.2 Function calls
+
+"If the function is defined with a type that is not compatible with the type (of the
+expression) pointed to by the expression that denotes the called function, the behavior is
+undefined."
+
+and
+
+6.7.5.3 Function declarators (including prototypes), item 15:
+
+"For two function types to be compatible, both shall specify compatible return types.
+
+Moreover, the parameter type lists, if both are present, shall agree in the number of
+parameters and in use of the ellipsis terminator; corresponding parameters shall have
+compatible types. [...]"
+
+What you suggest here is to use the ellipsis in the stub definition, but the caller
+prototype does not use the ellipsis, which brings us into undefined behavior territory
+again.
+
+Thanks,
+
+Mathieu
 
 -- 
-Thanks,
-~Nick Desaulniers
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
