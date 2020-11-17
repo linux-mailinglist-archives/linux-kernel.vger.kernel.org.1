@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358DD2B6467
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 868AF2B6361
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733067AbgKQNrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:47:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48524 "EHLO mail.kernel.org"
+        id S1732942AbgKQNhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:37:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732958AbgKQNhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:37:31 -0500
+        id S1732464AbgKQNhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:37:32 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4E3C2466D;
-        Tue, 17 Nov 2020 13:37:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 835712468E;
+        Tue, 17 Nov 2020 13:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620249;
-        bh=s+8Zbm6GDao8cUOKUQEChQnn8W1y35LvzL/lOxA9zWQ=;
+        s=default; t=1605620252;
+        bh=wBCGJoC6DRausSoyvfuzZK2ihaMc0VAMnRmBzhpIhmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=edAJQ9CI2W1EDSWGhRKhdHtzFyW/KrOQFug9Oq3M71njqyxg1zcCdahFXr+FZzgXy
-         7PrqHfx1GSaeAP3miGZ37UEg/rehx3b7ydoHDPcCDVNtH7aOYyq6d6lYGXsGkZAqWU
-         bdh8UAJihv3/rYymN+RTc8I0Ns6czyKtlw3Vknp0=
+        b=ByMdVORj+H147NSHjVB/XpZDq7B47E727xQFlF27MiNo59bDeYjPhbo+5Rs1+t0o2
+         53nTYakHSig1p/eZbW4YsxuwFGxZnN4xMfFYr/wr8GeCzQJPavTRcRLx6ts+0p+gYM
+         qItF9zLliLXYQOsqVxI+9YgDek2/+Uc+ZoLWXu2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH 5.9 126/255] spi: bcm2835: remove use of uninitialized gpio flags variable
-Date:   Tue, 17 Nov 2020 14:04:26 +0100
-Message-Id: <20201117122145.065791791@linuxfoundation.org>
+        stable@vger.kernel.org, Chunyan Zhang <zhang.lyra@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 5.9 127/255] mfd: sprd: Add wakeup capability for PMIC IRQ
+Date:   Tue, 17 Nov 2020 14:04:27 +0100
+Message-Id: <20201117122145.114280552@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -44,44 +44,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Hundebøll <martin@geanix.com>
+From: Baolin Wang <baolin.wang7@gmail.com>
 
-commit bc7f2cd7559c5595dc38b909ae9a8d43e0215994 upstream.
+commit a75bfc824a2d33f57ebdc003bfe6b7a9e11e9cb9 upstream.
 
-Removing the duplicate gpio chip select level handling in
-bcm2835_spi_setup() left the lflags variable uninitialized. Avoid trhe
-use of such variable by passing default flags to
-gpiochip_request_own_desc().
+When changing to use suspend-to-idle to save power, the PMIC irq can not
+wakeup the system due to lack of wakeup capability, which will cause
+the sub-irqs (such as power key) of the PMIC can not wake up the system.
+Thus we can add the wakeup capability for PMIC irq to solve this issue,
+as well as removing the IRQF_NO_SUSPEND flag to allow PMIC irq to be
+a wakeup source.
 
-Fixes: 5e31ba0c0543 ("spi: bcm2835: fix gpio cs level inversion")
-Signed-off-by: Martin Hundebøll <martin@geanix.com>
-Link: https://lore.kernel.org/r/20201105090615.620315-1-martin@geanix.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: Nathan Chancellor <natechancellor@gmail.com>
+Reported-by: Chunyan Zhang <zhang.lyra@gmail.com>
+Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+Tested-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-bcm2835.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mfd/sprd-sc27xx-spi.c |   28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -1193,7 +1193,6 @@ static int bcm2835_spi_setup(struct spi_
- 	struct spi_controller *ctlr = spi->controller;
- 	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
- 	struct gpio_chip *chip;
--	enum gpio_lookup_flags lflags;
- 	u32 cs;
+--- a/drivers/mfd/sprd-sc27xx-spi.c
++++ b/drivers/mfd/sprd-sc27xx-spi.c
+@@ -189,7 +189,7 @@ static int sprd_pmic_probe(struct spi_de
+ 		ddata->irqs[i].mask = BIT(i);
  
- 	/*
-@@ -1261,7 +1260,7 @@ static int bcm2835_spi_setup(struct spi_
+ 	ret = devm_regmap_add_irq_chip(&spi->dev, ddata->regmap, ddata->irq,
+-				       IRQF_ONESHOT | IRQF_NO_SUSPEND, 0,
++				       IRQF_ONESHOT, 0,
+ 				       &ddata->irq_chip, &ddata->irq_data);
+ 	if (ret) {
+ 		dev_err(&spi->dev, "Failed to add PMIC irq chip %d\n", ret);
+@@ -202,9 +202,34 @@ static int sprd_pmic_probe(struct spi_de
+ 		return ret;
+ 	}
  
- 	spi->cs_gpiod = gpiochip_request_own_desc(chip, 8 - spi->chip_select,
- 						  DRV_NAME,
--						  lflags,
-+						  GPIO_LOOKUP_FLAGS_DEFAULT,
- 						  GPIOD_OUT_LOW);
- 	if (IS_ERR(spi->cs_gpiod))
- 		return PTR_ERR(spi->cs_gpiod);
++	device_init_wakeup(&spi->dev, true);
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int sprd_pmic_suspend(struct device *dev)
++{
++	struct sprd_pmic *ddata = dev_get_drvdata(dev);
++
++	if (device_may_wakeup(dev))
++		enable_irq_wake(ddata->irq);
++
++	return 0;
++}
++
++static int sprd_pmic_resume(struct device *dev)
++{
++	struct sprd_pmic *ddata = dev_get_drvdata(dev);
++
++	if (device_may_wakeup(dev))
++		disable_irq_wake(ddata->irq);
++
++	return 0;
++}
++#endif
++
++static SIMPLE_DEV_PM_OPS(sprd_pmic_pm_ops, sprd_pmic_suspend, sprd_pmic_resume);
++
+ static const struct of_device_id sprd_pmic_match[] = {
+ 	{ .compatible = "sprd,sc2731", .data = &sc2731_data },
+ 	{},
+@@ -215,6 +240,7 @@ static struct spi_driver sprd_pmic_drive
+ 	.driver = {
+ 		.name = "sc27xx-pmic",
+ 		.of_match_table = sprd_pmic_match,
++		.pm = &sprd_pmic_pm_ops,
+ 	},
+ 	.probe = sprd_pmic_probe,
+ };
 
 
