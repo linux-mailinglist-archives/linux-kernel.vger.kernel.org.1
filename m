@@ -2,113 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E072B6942
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDE22B6948
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:03:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgKQQBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:01:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726544AbgKQQBR (ORCPT
+        id S1726948AbgKQQCf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 11:02:35 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2123 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbgKQQCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:01:17 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2A7C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:01:17 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id h2so3765337wmm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:01:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ZgH/N6mYWhDCoyFl6noMveCuC9qdA1oQrCHI6Be4/O0=;
-        b=jjlttYG6IQC31dMZ14jB1N1t+o/y64mwNqlUUgR395EpocMaqgaplT3X2k4IAQ7LEz
-         YJxAi0oK8N1vTgGGVkqSSyM/sas/I0DMTpVsM1AUZn9dxqRiFgToPuIdyPGUMc4u13ns
-         Hf9ggBIL2Y1odExKxByo1Dc2vaEKKI/7oui6AEwnVIe/F1MUgVQCddJBXvp8aw6x/L82
-         kNLZ/SYen7+mbwd/cv5b7ydYnHzGKoTAAmN4upFES5n8UhxoOx1Y4g9Iicp/9IU+IgaQ
-         Mf6fsYiHA+WPwVe2fAC2SJD0pTjr/OO3pTDMGbC6JduTqgKv3qbkO0OzqYg3Uj3GPnMJ
-         uOvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ZgH/N6mYWhDCoyFl6noMveCuC9qdA1oQrCHI6Be4/O0=;
-        b=R19PifrtoGSnIxAoDBf6pbnJ/FnFmHfddlFyrzbizXU748fuwY4AYZaq6KkJbEkFIA
-         quBBGooPpWb0sDsjk2lOs/XGdD3gJqatEuNI3TlEWMY9fokkAdP5LbptGUA9IAa2MlYe
-         pc9lEDrjwuPx04qbHbqBe+ymCp31vA0tDIgj0bqyqusdDAc7tbewsPXM5/9fS7G6dfVK
-         /7jn71kJkzpedh+InKxj88QD7ajfLg1uYn0fzFy/ynxRofjaiCGDhQaauZDStYp8u65O
-         cBpAqrgCRfoDJbeG8NArPHFoyon1y4kB5tFYDLCRBAY5iahaTxm7dz8OtL6YPqK3Dgs+
-         PxhA==
-X-Gm-Message-State: AOAM530wkTsASeU2lliizm9z1eHLRTllhNfQ9fEv0vmwPA4NyCeZWj8n
-        2Eu5bSH43R4Mlf+MVme9gYt6kQ==
-X-Google-Smtp-Source: ABdhPJw+IJui6xmfuWvFKYQIozIBKgjgneFFocPgBjc2qQfRc8skQL8WXrJCSSa1HiXfx8uKpXIo3A==
-X-Received: by 2002:a1c:208f:: with SMTP id g137mr342521wmg.116.1605628875733;
-        Tue, 17 Nov 2020 08:01:15 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id d8sm4077249wmb.11.2020.11.17.08.01.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 08:01:15 -0800 (PST)
-Date:   Tue, 17 Nov 2020 16:01:12 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, andrew@aj.id.au, albeu@free.fr,
-        f.fainelli@gmail.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        Eugeniy.Paltsev@synopsys.com, hoan@os.amperecomputing.com,
-        fancer.lancer@gmail.com, orsonzhai@gmail.com,
-        baolin.wang7@gmail.com, zhang.lyra@gmail.com, vz@mleia.com,
-        marek.behun@nic.cz, matthias.bgg@gmail.com,
-        u.kleine-koenig@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, grygorii.strashko@ti.com, ssantosh@kernel.org,
-        khilman@kernel.org, manivannan.sadhasivam@linaro.org,
-        p.zabel@pengutronix.de, linux-gpio@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
-Message-ID: <20201117160112.GI1869941@dell>
-References: <20201117154340.18216-1-info@metux.net>
- <20201117155401.GC2589875@ulmo>
+        Tue, 17 Nov 2020 11:02:34 -0500
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cb9dy45Ndz67FMm;
+        Wed, 18 Nov 2020 00:00:54 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 17 Nov 2020 17:02:27 +0100
+Received: from localhost (10.47.31.177) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 17 Nov
+ 2020 16:02:27 +0000
+Date:   Tue, 17 Nov 2020 16:02:18 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+CC:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Vaishnav M A <vaishnav@beagleboard.org>,
+        "Andy Shevchenko" <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH 2/3] iio: adc: ad7887: convert driver to full DT probing
+Message-ID: <20201117160218.0000274b@Huawei.com>
+In-Reply-To: <CA+U=DsoXG3JderYJL8_7Vu+UYZf9jiW-tW4pRiRY3a0p-y2peg@mail.gmail.com>
+References: <20201117075254.4861-1-alexandru.ardelean@analog.com>
+        <20201117075254.4861-2-alexandru.ardelean@analog.com>
+        <20201117110111.0000468a@Huawei.com>
+        <20201117110447.0000393c@Huawei.com>
+        <CA+U=DsoXG3JderYJL8_7Vu+UYZf9jiW-tW4pRiRY3a0p-y2peg@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201117155401.GC2589875@ulmo>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.47.31.177]
+X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020, Thierry Reding wrote:
+On Tue, 17 Nov 2020 17:03:06 +0200
+Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
 
-> On Tue, Nov 17, 2020 at 04:43:40PM +0100, Enrico Weigelt, metux IT consult wrote:
-> > The of_match_ptr(foo) macro evaluates to foo, only if
-> > CONFIG_OF is set, otherwise to NULL. Same does ACPI_PTR with
-> > CONFIG_ACPI. That's very helpful for drivers that can be used
-> > with or without oftree / acpi.
-> > 
-> > Even though most of the drivers touched here probably don't
-> > actually need that, it's also nice for consistency to make it
-> > the de-facto standard and change all drivers to use the
-> > of_match_ptr() and ACPI_PTR() macros.
-> > 
-> > A nice side effect: in some situations, when compiled w/o
-> > CONFIG_OF/CONFIG_ACPI, the corresponding match tables could
-> > automatically become unreferenced and optimized-away by the
-> > compiler, w/o explicitly cluttering the code w/ ifdef's.
+> On Tue, Nov 17, 2020 at 1:06 PM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Tue, 17 Nov 2020 11:01:11 +0000
+> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> >  
+> > > On Tue, 17 Nov 2020 09:52:53 +0200
+> > > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> > >  
+> > > > This change removes the SPI device table, adds an OF device table instead.
+> > > > This should also be usable for ACPI via PRP0001.
+> > > >
+> > > > This device is usually probed via device-tree, so it makes more sense to
+> > > > use the OF device table.
+> > > >
+> > > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>  
+> > > So, we've had a few cases of having to put the device_id table
+> > > back again recently.
+> > > https://lore.kernel.org/linux-iio/20201101152613.2c37581a@archlinux/
+> > >
+> > > They tend to be due to greybus doing it's probing in yet another fashion.
+> > > So far they've been all i2c devices, but I kind of assume it does the same for spi.
+> > > https://elixir.bootlin.com/linux/latest/source/drivers/staging/greybus/spilib.c#L437
+> > >
+> > > How device_get_match_data() plays with that I'm not sure. It probably
+> > > doesn't right now given swnode doesn't have a device_get_match_data() callback.
+> > >
+> > > https://elixir.bootlin.com/linux/latest/source/drivers/base/swnode.c#L539
+> > >
+> > > So after all that I think I've argued myself around to thinking what you have
+> > > here is fine.  If someone wants to support this via a swnode then they can
+> > > figure out how to make that work.
+> > >
+> > > +CC Vaishnav and Andy for their input.
+> > >
+> > > Otherwise looks fine to me.  
+> >
+> > Having said that.... Why are we going through this dance for driver with
+> > only one compatible?   Are there other parts on their way?
+> > If not, perhaps we should just rip out the matching code entirely in
+> > the interests of simplicity.  
 > 
-> Isn't this going to cause a lot of "defined but unused" warnings when
-> built without OF support, for example?
+> So, this one has a bit of a funny story.
+> There's an AD7888 which is similar in terms of registers but with more channels.
+> Lars did a patch to support it on top of AD7887:
+>     https://github.com/analogdevicesinc/linux/commits/iio-ad7888
+> 
+> We tried to order a part for this to test the changes, but we got a
+> reply that it's obsolete.
+> The website says it is still in production.
+> So, I was confused about the answer we got. ¯\_(ツ)_/¯
+> 
+> In the meantime, I thought I'd take some of the cleanup value of Lars'
+> work and do the cleanup only.
+> We may still find that part somewhere and maybe add it, or maybe
+> another one would come along.
+> I don't know at this point. I'm mostly looking at some of my backlog
+> stuff and trying to cleanup old stuff.
+> 
+> I'm fine to simplify the driver now and add the matching bits later.
 
-Yes, it will.
+Sounds good to me.
 
-It also looks like there are some whitespace changes in the patch,
-unless of course that's just Git playing tricks!
+> 
+> >
+> > Jonathan
+> >  
+> > >
+> > > Thanks,
+> > >
+> > > Jonathan
+> > >
+> > >  
+> > > > ---
+> > > >  drivers/iio/adc/ad7887.c | 23 +++++++++++++++--------
+> > > >  1 file changed, 15 insertions(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
+> > > > index 06f684c053a0..4f68a1b17ec8 100644
+> > > > --- a/drivers/iio/adc/ad7887.c
+> > > > +++ b/drivers/iio/adc/ad7887.c
+> > > > @@ -40,6 +40,7 @@ enum ad7887_channels {
+> > > >
+> > > >  /**
+> > > >   * struct ad7887_chip_info - chip specifc information
+> > > > + * @name:          the name of the part
+> > > >   * @int_vref_mv:   the internal reference voltage
+> > > >   * @channels:              channels specification
+> > > >   * @num_channels:  number of channels
+> > > > @@ -47,6 +48,7 @@ enum ad7887_channels {
+> > > >   * @num_dual_channels:     number of channels in dual mode
+> > > >   */
+> > > >  struct ad7887_chip_info {
+> > > > +   const char                      *name;
+> > > >     u16                             int_vref_mv;
+> > > >     const struct iio_chan_spec      *channels;
+> > > >     unsigned int                    num_channels;
+> > > > @@ -218,6 +220,7 @@ static const struct ad7887_chip_info ad7887_chip_info_tbl[] = {
+> > > >      * More devices added in future
+> > > >      */
+> > > >     [ID_AD7887] = {
+> > > > +           .name = "ad7887",
+> > > >             .channels = ad7887_channels,
+> > > >             .num_channels = ARRAY_SIZE(ad7887_channels),
+> > > >             .dual_channels = ad7887_dual_channels,
+> > > > @@ -239,12 +242,17 @@ static void ad7887_reg_disable(void *data)
+> > > >
+> > > >  static int ad7887_probe(struct spi_device *spi)
+> > > >  {
+> > > > +   const struct ad7887_chip_info *info;
+> > > >     struct ad7887_state *st;
+> > > >     struct iio_dev *indio_dev;
+> > > >     bool dual_mode;
+> > > >     uint8_t mode;
+> > > >     int ret;
+> > > >
+> > > > +   info = device_get_match_data(&spi->dev);
+> > > > +   if (!info)
+> > > > +           return -ENODEV;
+> > > > +
+> > > >     indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+> > > >     if (indio_dev == NULL)
+> > > >             return -ENOMEM;
+> > > > @@ -269,13 +277,12 @@ static int ad7887_probe(struct spi_device *spi)
+> > > >                     return ret;
+> > > >     }
+> > > >
+> > > > -   st->chip_info =
+> > > > -           &ad7887_chip_info_tbl[spi_get_device_id(spi)->driver_data];
+> > > > +   st->chip_info = info;
+> > > >
+> > > >     spi_set_drvdata(spi, indio_dev);
+> > > >     st->spi = spi;
+> > > >
+> > > > -   indio_dev->name = spi_get_device_id(spi)->name;
+> > > > +   indio_dev->name = st->chip_info->name;
+> > > >     indio_dev->info = &ad7887_info;
+> > > >     indio_dev->modes = INDIO_DIRECT_MODE;
+> > > >
+> > > > @@ -336,18 +343,18 @@ static int ad7887_probe(struct spi_device *spi)
+> > > >     return devm_iio_device_register(&spi->dev, indio_dev);
+> > > >  }
+> > > >
+> > > > -static const struct spi_device_id ad7887_id[] = {
+> > > > -   {"ad7887", ID_AD7887},
+> > > > -   {}
+> > > > +static const struct of_device_id ad7887_of_match[] = {
+> > > > +   { .compatible = "adi,ad7887", .data = &ad7887_chip_info_tbl[ID_AD7887] },
+> > > > +   { }
+> > > >  };
+> > > > -MODULE_DEVICE_TABLE(spi, ad7887_id);
+> > > > +MODULE_DEVICE_TABLE(of, ad7887_of_match);
+> > > >
+> > > >  static struct spi_driver ad7887_driver = {
+> > > >     .driver = {
+> > > >             .name   = "ad7887",
+> > > > +           .of_match_table = ad7887_of_match,
+> > > >     },
+> > > >     .probe          = ad7887_probe,
+> > > > -   .id_table       = ad7887_id,
+> > > >  };
+> > > >  module_spi_driver(ad7887_driver);
+> > > >  
+> > >  
+> >  
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
