@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909182B5B37
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B712B5B3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727208AbgKQIoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:44:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727161AbgKQIox (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:44:53 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62B5C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:44:52 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id d12so22259688wrr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:44:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MLQVEogLPpntY7/K46szj62exzsJj4q8MDOgKu+50fs=;
-        b=UwXYEJojzUWxuZWpoyALqr99KGTx93FqzgQE0G5qJdDTQq4GMPGDSFwSpEeMm/xeXp
-         Hl099niw1Dj7HM0JGkXGcXV2NY/Ojnrg5xr7g00JeztTpcgM2Q7HOwIl/32oCg2rCvzP
-         Mjvd8ZytXAMUIEgWGndAVc625d/Zm/t3W2wEln66xGXULcLjz8EHZKcw9dgiP4eAPlJi
-         rfhvftbtYSlWVm92G8MGHc5PQ/KiDN8MRWbvEAmCdfpjKgCZpZAtdsQ59SwkyU0DtxA9
-         3qsQP9DhgXVix2xiTF31NQaK+H7G00lLxmqE8Okonti3Dvy0zA+uToYhYTCoMMz7WZft
-         4J0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MLQVEogLPpntY7/K46szj62exzsJj4q8MDOgKu+50fs=;
-        b=LCLQM9Fzycie3M3/im3V5ZoWCgQTIVYQimuNiuno8bnYGsU5yzpSPkCLooSr2+3Z93
-         ixr2UfHdA1O6BK3nuHTUgV5CQvjCPn/4BBukt8R6fWKsFzRF1SxHEjtkY8ebPrYO82kb
-         vRwhOqCv2NZqb8zF5Asr0cTH8xuMHFzG9DP16mkw0dOxkPiET94lnc8ShwgIYhQ7S9ta
-         PvzISVrmOlPwaODSHN+Kdi99rlW/+8OLLjoCmBtcosvAXtkLFqIZBchVbucyGUp0jot2
-         +4/j/gyPKnVBmogK+LHAEtsbTvA6Wh2+tCm/7niTHNZ9c/YoCFf4/31Hj4QTfMJWQY1M
-         +MXw==
-X-Gm-Message-State: AOAM532NdE+QWJf38xGmepYL8JEnGYHi3nnztf58lzn6ajIqPT+/OzOs
-        siE6soztC7iY4jm8a9HwvrTxGg==
-X-Google-Smtp-Source: ABdhPJy4mPCg/pB0fVmr1u4LTHLg4BZ8blydsOJL6dwkknwKcwDSczWGuEad0rzYeHrP98k4eq/aGw==
-X-Received: by 2002:adf:f607:: with SMTP id t7mr23588748wrp.169.1605602691496;
-        Tue, 17 Nov 2020 00:44:51 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:1561:9f4b:5829:8e26])
-        by smtp.gmail.com with ESMTPSA id s4sm25631423wro.10.2020.11.17.00.44.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 00:44:50 -0800 (PST)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     hverkuil@xs4all.nl, khilman@baylibre.com
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] arm64: dts: meson-axg: add GE2D node
-Date:   Tue, 17 Nov 2020 09:44:40 +0100
-Message-Id: <20201117084440.578540-5-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201117084440.578540-1-narmstrong@baylibre.com>
-References: <20201117084440.578540-1-narmstrong@baylibre.com>
+        id S1726417AbgKQIrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:47:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725792AbgKQIrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 03:47:03 -0500
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BDF82222E
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:47:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605602822;
+        bh=8mKP2PnMrXb8pSAFGjkUhR+y2OSQJy+Trmhkg0W7hpI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fdmNQDuEiGHH46IjOLmJt9wa7LV4cw0Bd/lKBgyQbnlm+E8u6L4sKiI4fMY9Fbq8z
+         3i1FtjyHLtJOIdAD7bYyOgtUsQWCM6dAQLZ61BDBE2AJaN7AC1GgO1xuolo+VHr6XH
+         +c2ha47R73VAVLu1f8fO0f4BQlKashOt0duHQudE=
+Received: by mail-oi1-f182.google.com with SMTP id c80so21842599oib.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:47:02 -0800 (PST)
+X-Gm-Message-State: AOAM532YuDy3EAn+tk6eiDi3DsAyjoLlZrDJA9+5Ugj5Je+T02FuRV7t
+        AkaeVkppzFmfsAysGIqEP744sS8YmMpbl1QOen4=
+X-Google-Smtp-Source: ABdhPJy5rB97+CycGiCUgJFFfUgyRHTiWOe3TzWvRjnUoqr7eQTRND3JQTQmMnyskkIyldZwfB21jtR4kbCQh3cOmiQ=
+X-Received: by 2002:aca:5c82:: with SMTP id q124mr1772480oib.33.1605602821777;
+ Tue, 17 Nov 2020 00:47:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201117032015.11805-1-cbz@baozis.org>
+In-Reply-To: <20201117032015.11805-1-cbz@baozis.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 17 Nov 2020 09:46:49 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF+QoUwCdG=HL6Geyv8mxPTZF4PqEiFCXZm2kFQDC4N+Q@mail.gmail.com>
+Message-ID: <CAMj1kXF+QoUwCdG=HL6Geyv8mxPTZF4PqEiFCXZm2kFQDC4N+Q@mail.gmail.com>
+Subject: Re: [PATCH] irqchip/exiu: Fix the index of fwspec for IRQ type
+To:     Chen Baozi <cbz@baozis.org>, Marc Zyngier <maz@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the node for the GE2D accelerator unit.
+(+ Marc)
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+On Tue, 17 Nov 2020 at 04:20, Chen Baozi <cbz@baozis.org> wrote:
+>
+> From: Chen Baozi <chenbaozi@phytium.com.cn>
+>
+> Since fwspec->param_count of ACPI node is two, the index of IRQ type
+> in fwspec->param[] should be 1 rather than 2.
+>
+> Signed-off-by: Chen Baozi <chenbaozi@phytium.com.cn>
+> ---
+>  drivers/irqchip/irq-sni-exiu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/irqchip/irq-sni-exiu.c b/drivers/irqchip/irq-sni-exiu.c
+> index 1d027623c776..abd011fcecf4 100644
+> --- a/drivers/irqchip/irq-sni-exiu.c
+> +++ b/drivers/irqchip/irq-sni-exiu.c
+> @@ -136,7 +136,7 @@ static int exiu_domain_translate(struct irq_domain *domain,
+>                 if (fwspec->param_count != 2)
+>                         return -EINVAL;
+>                 *hwirq = fwspec->param[0];
+> -               *type = fwspec->param[2] & IRQ_TYPE_SENSE_MASK;
+> +               *type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+>         }
+>         return 0;
+>  }
+> --
+> 2.28.0
+>
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-index b9efc8469265..376f5c3f6188 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-@@ -1563,6 +1563,15 @@ saradc: adc@9000 {
- 			};
- 		};
- 
-+		ge2d: ge2d@ff940000 {
-+			compatible = "amlogic,axg-ge2d";
-+			reg = <0x0 0xff940000 0x0 0x10000>;
-+			interrupts = <GIC_SPI 150 IRQ_TYPE_EDGE_RISING>;
-+			clocks = <&clkc CLKID_VAPB>;
-+			resets = <&reset RESET_GE2D>;
-+			reset-names = "core";
-+		};
-+
- 		gic: interrupt-controller@ffc01000 {
- 			compatible = "arm,gic-400";
- 			reg = <0x0 0xffc01000 0 0x1000>,
--- 
-2.25.1
-
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
