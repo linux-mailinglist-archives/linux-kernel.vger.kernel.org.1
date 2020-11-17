@@ -2,91 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC2C2B717D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82272B717C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgKQWX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:23:26 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63196 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728928AbgKQWXZ (ORCPT
+        id S1728781AbgKQWXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:23:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgKQWXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:23:25 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHM2UQO141041;
-        Tue, 17 Nov 2020 17:23:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=h8IAoc/2erbo5y/+8cyz47rQpuAVhFzgrZwxWyqbEdI=;
- b=J8TGxg8JywvTfanKjYuUmisaPaZ3E+QHqrXOc5BlNvTwzgtDNtMlUgRhHtjAmJYLZyP6
- KlLg9blb5KTr8CYGZ4YEWhBEaMezpG1dTUUUzGQ8UeT7m6VtYorySptM1CjI/9QE6Wjx
- MSGdMwX7HqmN2wcsVoP7cDrdMMkVW7Shsty9YlBfXV+QThV4L1mnIzjmqdKNnWfmc4uX
- +KcZtqLDwVYE+bT4U7kGRvJqLhKKgKlheL0wS41QKT+3BjgBuvoXhjEyzIzD3Hz7fSFT
- z747UuLEEayjJGIVXw+Vv8R253aOBcdFl5/5tYh+OzhclmFQsp3CgNdyIcnU6Q94BPPR 0Q== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34vb0w0eyj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 17:23:20 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AHMMcrw007260;
-        Tue, 17 Nov 2020 22:23:19 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma02dal.us.ibm.com with ESMTP id 34vgjmb5ue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 22:23:19 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AHMNH3g11076114
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 22:23:17 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76D42BE053;
-        Tue, 17 Nov 2020 22:23:17 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09655BE051;
-        Tue, 17 Nov 2020 22:23:16 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.40.231])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Nov 2020 22:23:16 +0000 (GMT)
-Subject: Re: [PATCH 6/6] ibmvfc: advertise client support for targetWWPN using
- v2 commands
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201112010442.102589-1-tyreld@linux.ibm.com>
- <20201112010442.102589-6-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <b7662270-4875-0a25-d1f3-ea778059f64e@linux.vnet.ibm.com>
-Date:   Tue, 17 Nov 2020 16:23:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Tue, 17 Nov 2020 17:23:22 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3844DC0613CF;
+        Tue, 17 Nov 2020 14:23:22 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a3so183240wmb.5;
+        Tue, 17 Nov 2020 14:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BU/2+3u+luBOSXVp26vtF5n5fKDVDjUKSzy/0F4KkWs=;
+        b=McsHoyqeY80me+1FIBowkh72trNtTMsAYvE2LKLn57Zvl7/96S+thZ4gsRNkuvsQan
+         V15/M6VJy0jWDH8Zeo7481kHykA0zBpg8x13eLhGSWtdsUS72W40tfTos6rXQVy86C9K
+         5zwIzTh6i2rGD/uDHg+8K1jhA2uMEdMaWPf8y4gEPrZmxtApdvoARSgvKhGpVYLuj62f
+         mV+qxkRkj7d485rAi2lYewkCytkLeNi5HYVuo7rLE0s4PPgU56F+jLtbUQfkuSKrU2dt
+         mFXk3uRBQgUKZi1O70stLikRK/4t6bejXw6R7VU7UdzXZfQXskB9DeC9rGIWCt3O+cWt
+         B2vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BU/2+3u+luBOSXVp26vtF5n5fKDVDjUKSzy/0F4KkWs=;
+        b=tAHJ/dd7RAH6LCn5hoi1UsQbyiFykrsP7nOloJ0PaopAJUjY59Jf1fFmKbxt+GhLbH
+         S0pdyQ749uI1uGDT5nTBCpDKInWeFTYCsunyrBXppkDR0UCWRCz4YnqH3DYEu14qnf4m
+         WI+g2G6Ky9YCsl73OVn1OWhAAc2oZ/IH4AIpdTDXqytkYUqtCihih5UO6WDTvejtcNkf
+         YPZkIBaYrpRcXTzoJF2zkpJOMV7zIuPyTTX69EZ4nirIJ3lvTbDEqi07oqb4wVaNsOtB
+         vddutAuqw632Wbtg5oREAw+B1H+2fpnUmm4Ea64iF/9WvnTAnW7IrBCHUobFgrURzlZQ
+         k+6g==
+X-Gm-Message-State: AOAM533PiiHQCG+N31Xg6gkXwi2Zsnkh2D9yiB3hRoZ32FWTAg58NuBn
+        RrEf2S8NmV4BviD7QDfwfVw=
+X-Google-Smtp-Source: ABdhPJwq5jr42ekRr2apUJ9sQM02jL4V/btNO/erGaRO2KrnB0jVHlqKui51RV/CU3w8xnrIBGbWHg==
+X-Received: by 2002:a1c:a70b:: with SMTP id q11mr1251771wme.90.1605651800944;
+        Tue, 17 Nov 2020 14:23:20 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id u203sm176958wme.32.2020.11.17.14.23.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 14:23:20 -0800 (PST)
+Subject: Ping(3): [PATCH v4] <sys/param.h>: Add nitems()
+To:     libc-alpha@sourceware.org, libc-coord@lists.openwall.com
+Cc:     libstdc++@gcc.gnu.org, gcc@gcc.gnu.org,
+        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
+        jwakely@redhat.com, fweimer@redhat.com,
+        ville.voutilainen@gmail.com, enh@google.com, rusty@rustcorp.com.au
+References: <20200928191237.32063-1-colomar.6.4.3@gmail.com>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <e23782c8-2bee-a4dd-1bcc-d67cfd9f47d3@gmail.com>
+Date:   Tue, 17 Nov 2020 23:23:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201112010442.102589-6-tyreld@linux.ibm.com>
+In-Reply-To: <20200928191237.32063-1-colomar.6.4.3@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_09:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- priorityscore=1501 adultscore=0 lowpriorityscore=0 mlxlogscore=931
- malwarescore=0 impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170158
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Everything else in this series looks OK to me.
+Hi,
+
+Do you think the patch is ready,
+or is there anything else I should do before merging it?
 
 Thanks,
 
-Brian
+Alex
 
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+On 9/28/20 9:12 PM, Alejandro Colomar wrote:
+> 'nitems()' calculates the length of an array in number of items.
+> It is safe: if a pointer is passed to the macro (or function, in C++),
+> the compilation is broken due to:
+>  - In >= C11: _Static_assert()
+>  - In C89, C99: Negative anonymous bitfield
+>  - In C++: The template requires an array
+> 
+> Some BSDs already provide a macro nitems() in <sys/param.h>,
+> although it usually doesn't provide safety against pointers.
+> 
+> This patch uses the same name for compatibility reasons,
+> and to be the least disruptive with existing code.
+> 
+> This patch also adds some other macros, which are required by 'nitems()':
+> 
+> __is_same_type(a, b):
+> Returns non-zero if the two input arguments are of the same type.
+> 
+> __is_array(arr):
+> Returns non-zero if the input argument is of an array type.
+> 
+> __must_be(expr, msg):
+> Allows using _Static_assert() everywhere an expression can be used.
+> It evaluates '(int)0' or breaks the compilation.
+> 
+> __must_be_array(arr):
+> It evaluates to '(int)0' if the argument is of an array type.
+> Else, it breaks compilation.
+> 
+> __nitems(arr):
+> It implements the basic sizeof division needed to calculate the array length.
+> 
+> 
+> P.S.: I'd like to put this patch in the public domain.
+> 
+> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+> ---
+> 
+> A few changes since v3:
+> 
+> - Macros don't need reserved names in their parameters,
+> so I simplified those names.
+> 
+> - I fixed some wrong indentation levels.
+> 
+> - Renamed __array_len() to __nitems() for consistency.
+> 
+> 
+>  misc/sys/param.h | 47 +++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+> 
+> diff --git a/misc/sys/param.h b/misc/sys/param.h
+> index d7c319b157..08d4093961 100644
+> --- a/misc/sys/param.h
+> +++ b/misc/sys/param.h
+> @@ -102,5 +102,52 @@
+>  #define MIN(a,b) (((a)<(b))?(a):(b))
+>  #define MAX(a,b) (((a)>(b))?(a):(b))
+>  
+> +/* Macros related to the types of variables */
+> +#define __is_same_type(a, b)                                                  \
+> +	__builtin_types_compatible_p(__typeof__(a), __typeof__(b))
+> +#define __is_array(arr)	(!__is_same_type((arr), &(arr)[0]))
+> +
+> +/* Macros for embedding _Static_assert() in expressions */
+> +#if __STDC_VERSION__ >= 201112L
+> +# define __must_be(expr, msg)   (                                             \
+> +        0 * (int)sizeof(                                                      \
+> +          struct {                                                            \
+> +            _Static_assert((expr), msg);                                      \
+> +            char _ISO_C_forbids_a_struct_with_no_members;                     \
+> +          }                                                                   \
+> +        )                                                                     \
+> +)
+> +#else
+> +# define __must_be(expr, msg)   (                                             \
+> +        0 * (int)sizeof(                                                      \
+> +          struct {                                                            \
+> +            int  : (-!(expr));                                                \
+> +            char _ISO_C_forbids_a_struct_with_no_members;                     \
+> +          }                                                                   \
+> +        )                                                                     \
+> +)
+> +#endif
+> +#define __must_be_array(arr)	__must_be(__is_array(arr), "Must be an array!")
+> +
+> +/* Macros for array sizes */
+> +#if defined(__cplusplus)
+> +# if __cplusplus >= 201103L
+> +template<typename _Tp, std::size_t _Len>
+> +  constexpr inline std::size_t
+> +  nitems(const _Tp(&)[_Len]) __THROW
+> +  {
+> +    return _Len;
+> +  }
+> +# else /* __cplusplus < 201103L */
+> +template<typename _Tp, std::size_t _Len>
+> +  char
+> +  (&__nitems_chararr(const _Tp(&)[_Len]))[_Len];
+> +#  define nitems(arr)	(sizeof(__nitems_chararr(arr)))
+> +# endif /* __cplusplus < 201103L */
+> +#else /* !defined(__cplusplus) */
+> +# define __nitems(arr)	(sizeof((arr)) / sizeof((arr)[0]))
+> +# define nitems(arr)	(__nitems(arr) + __must_be_array(arr))
+> +#endif /* !defined(__cplusplus) */
+> +
+>  
+>  #endif  /* sys/param.h */
+> 
