@@ -2,86 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E7B2B5E2E
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2312B5E2F
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727402AbgKQLWz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 06:22:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQLWz (ORCPT
+        id S1727927AbgKQLXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:23:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58492 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725355AbgKQLXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:22:55 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400EDC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:22:55 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kez4X-0007Gt-Td; Tue, 17 Nov 2020 12:22:53 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kez4X-00088v-L0; Tue, 17 Nov 2020 12:22:53 +0100
-Message-ID: <0c6a3ced0012d05bb33bb3ea765de359e480ad4a.camel@pengutronix.de>
-Subject: Re: [PATCH 41/42] gpu/ipu-v3/ipu-di: Strip out 2 unused
- 'di_sync_config' entries
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        dri-devel@lists.freedesktop.org
-Date:   Tue, 17 Nov 2020 12:22:53 +0100
-In-Reply-To: <20201116174112.1833368-42-lee.jones@linaro.org>
-References: <20201116174112.1833368-1-lee.jones@linaro.org>
-         <20201116174112.1833368-42-lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Tue, 17 Nov 2020 06:23:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605612193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dS7znSw5g8o6/lg1YdPszQ5ItVhBgNxvcUYvJULhaMY=;
+        b=I/jQYD/ll5TIUkhTxkdraObx9SYb+K2cojc4Ov5noQd5BtbO6Y/Y1DHjkI1j25HOVZuyLk
+        3x3NDgk16uhIafGxLlMZcScU93JKb2j9hsjtx5NxFrsBQkhz49Wao02viOF4FoIGdLdP1E
+        zKDurfngeK+b+uBlWqigTcgom52pChk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-6aTCZUfEMembvr5360JvOA-1; Tue, 17 Nov 2020 06:23:11 -0500
+X-MC-Unique: 6aTCZUfEMembvr5360JvOA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8FC68030C5;
+        Tue, 17 Nov 2020 11:23:09 +0000 (UTC)
+Received: from localhost (ovpn-113-172.ams2.redhat.com [10.36.113.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 79BA419C78;
+        Tue, 17 Nov 2020 11:23:06 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 11:23:05 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 06/12] vdpa_sim: add struct vdpasim_device to store
+ device properties
+Message-ID: <20201117112305.GE131917@stefanha-x1.localdomain>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-7-sgarzare@redhat.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201113134712.69744-7-sgarzare@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KuLpqunXa7jZSBt+"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+--KuLpqunXa7jZSBt+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2020-11-16 at 17:41 +0000, Lee Jones wrote:
-> They're taking up too much space on the stack.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/ipu-v3/ipu-di.c: In function ‘ipu_di_sync_config_noninterlaced’:
->  drivers/gpu/ipu-v3/ipu-di.c:391:1: warning: the frame size of 1064 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> 
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Fri, Nov 13, 2020 at 02:47:06PM +0100, Stefano Garzarella wrote:
+> Move device properties used during the entire life cycle in a new
+> structure to simplify the copy of these fields during the vdpasim
+> initialization.
+>=20
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 > ---
->  drivers/gpu/ipu-v3/ipu-di.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/ipu-v3/ipu-di.c b/drivers/gpu/ipu-v3/ipu-di.c
-> index b4a31d506fccf..e617f60afeea3 100644
-> --- a/drivers/gpu/ipu-v3/ipu-di.c
-> +++ b/drivers/gpu/ipu-v3/ipu-di.c
-> @@ -310,10 +310,6 @@ static void ipu_di_sync_config_noninterlaced(struct ipu_di *di,
->  			/* unused */
->  		} , {
->  			/* unused */
-> -		} , {
-> -			/* unused */
-> -		} , {
-> -			/* unused */
->  		},
->  	};
->  	/* can't use #7 and #8 for line active and pixel active counters */
+>  drivers/vdpa/vdpa_sim/vdpa_sim.h     | 17 ++++++++------
+>  drivers/vdpa/vdpa_sim/vdpa_sim.c     | 33 ++++++++++++++--------------
+>  drivers/vdpa/vdpa_sim/vdpa_sim_blk.c |  8 +++++--
+>  drivers/vdpa/vdpa_sim/vdpa_sim_net.c |  9 +++++---
+>  4 files changed, 38 insertions(+), 29 deletions(-)
+>=20
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.h b/drivers/vdpa/vdpa_sim/vdp=
+a_sim.h
+> index 6a1267c40d5e..76e642042eb0 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.h
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.h
+> @@ -40,12 +40,17 @@ struct vdpasim_virtqueue {
+>  =09irqreturn_t (*cb)(void *data);
+>  };
+> =20
+> +struct vdpasim_device {
+> +=09u64 supported_features;
+> +=09u32 id;
+> +=09int nvqs;
+> +};
+> +
+>  struct vdpasim_init_attr {
+> -=09u32=09=09device_id;
+> -=09u64=09=09features;
+> +=09struct vdpasim_device device;
 
-Thank you, applied to imx-drm/next.
+It's unclear to me what the exact purpose of struct vdpasim_device is.
+At least the name reminds me of struct device, which this is not.
 
-regards
-Philipp
+Should this be called just struct vdpasim_attr or struct
+vdpasim_dev_attr? In other words, the attributes that are needed even
+after intialization?
+
+--KuLpqunXa7jZSBt+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl+zspkACgkQnKSrs4Gr
+c8gFPwf9EKotDJQ7Se2GaXlaY0nCpGIeqdUBQaX5Et7tpXyDxXzsIKTYIfqAsqU1
+Ww4kBfcM9jPqPjLZSdlMLdWqysoQ0teBSSNuCcb+uOC3O9N9c4eh3o7lO1SQpvya
+OSfsYqw8bDmohwhxKYPTpjbM5fxcO7HiKrneufqBnSgJcubmQt7nJkCWNX+73r/g
+xn4baxIxEAWEWFrBLeDtKfVBr/kk9dj6uXSMKMvWIwFibGN1b36n555O5sd8MenZ
+iT4SJJuKdfQZE4vj743dAR7F8qyVYBHYyvEieRXZN4qAz5bEAPnmULAlYTzlJUh/
+vpYRvzcmyXImaHN+a+uRHcG+7lJSEA==
+=VNtu
+-----END PGP SIGNATURE-----
+
+--KuLpqunXa7jZSBt+--
+
