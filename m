@@ -2,263 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053B42B5A52
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7282B5A54
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgKQHeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:34:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725978AbgKQHeU (ORCPT
+        id S1726509AbgKQHgP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 02:36:15 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:40471 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgKQHgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:34:20 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7B6C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:34:19 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id l12so17728941ilo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:34:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6HDQ36IQmVwckUFR1jBquv3GATc8YP+i067nuhtqXMU=;
-        b=FkJC1QkzBGq1xiw3ZYZUvrgU3D/qhzlZFl95blKrpdFb0mMjRtHTGcsKULzeSqxcLD
-         TcJtuOPAQKUv0SRgMRAb2Z390dosWlnmIoZX2RRjoNzGmW3ofFHJCaJ9FOP1FI+nBpb+
-         9dJ7L2uxkDZN8uJKmzLsnnFBlw4TCwwcwwkmk=
+        Tue, 17 Nov 2020 02:36:14 -0500
+Received: by mail-wm1-f68.google.com with SMTP id a3so2249700wmb.5;
+        Mon, 16 Nov 2020 23:36:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6HDQ36IQmVwckUFR1jBquv3GATc8YP+i067nuhtqXMU=;
-        b=mexdKoeoQGRB+NdlG0VD3OHKNtQLUDvSaIVxlhSnZQqU/GHgQiQhQ0cG20LnCkym/B
-         ZQlH+m3YY6Lj4bler8S09FefCXx5lXEm3PQVeJolR2CfEu+UVzuIuy/SI6SUbyjWRsMG
-         0SQYiFTA1pAye0evnZ+R4x1b5WpcqLAWkSAv2Kugqxn4C6skXRgaoCVhQ0C2/EHM3/7x
-         FyYGkN76rBg2zK0sN22a7xK9NwnemYvzhkHTFVAjSL+74hUgX/gE2tYrhouGcWwjXYIL
-         0R4xQlO1H4B8omKm3FHptcHl1wm7gCSLYfeySzbuTufW60fgeI4l/ZiAfiMhp9QvNiai
-         SoxQ==
-X-Gm-Message-State: AOAM532R1fYtQ6Z01n4en6/3FeFjrm69qzyoFzqYx5iwY/UystGY4RU/
-        Dxt5hEUXygioKwvycepIjoeyr7uNwtN7NN2+DiDZEg==
-X-Google-Smtp-Source: ABdhPJyhldjhwb1mLZC438M7LVHuxra/t1HCNICdkNriJ7L2AIbB4FEpFKlINz1Bn9qS+8p5dsClFMJU1CAg1+wejAE=
-X-Received: by 2002:a92:dd87:: with SMTP id g7mr12363454iln.102.1605598458861;
- Mon, 16 Nov 2020 23:34:18 -0800 (PST)
-MIME-Version: 1.0
-References: <1596855231-5782-1-git-send-email-yongqiang.niu@mediatek.com> <1596855231-5782-5-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1596855231-5782-5-git-send-email-yongqiang.niu@mediatek.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 17 Nov 2020 15:33:53 +0800
-Message-ID: <CAJMQK-hAhu00a4X3SWZVFJLodDqAdTMZi4TmZPFJN=O6VM=DCQ@mail.gmail.com>
-Subject: Re: [RESEND v7, PATCH 4/7] mtk-mmsys: add mt8183 mmsys support
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9MPQ28eRVEZoeAfW6tqzwdTMKkuu3vxDE3zbTGm+kt8=;
+        b=RhDYMHSxm6+CP4RZIuSvf4Z7yG7z7Yi3yvwnoqVq4PiLsGBY6goiYrEZjGiTx+CG/3
+         tGlPPw8xjf4xtAsKv414nsKXOLxNGQk9h7j59n7hFmK37Rs4nywSgKhwYrMGnI/CFO6Y
+         BE4n0YkSZi90S9JNpHpvthLZl3eGsQSB+I5PDdOeGP9NnAJVuEQYiSihaDAAoDJFgBpc
+         3Hz5k2eWbbNCYa7EcA14KWRRaU07VT8t7InhXqGS8j1Dm2vsDe+7tfU1CupY91UWQP/Q
+         VNMxLlUoFJntpmz+Ahn2ocF310fhZs/RPI2SHS6gvo1OdvIWkcKqlqW8XbCSM21CSddw
+         9s4w==
+X-Gm-Message-State: AOAM532L+xmqWhQhW/lL2KMLArIlOidJrxMt/0TaTPcX0ygluw3r2z8n
+        VgWs14X9ct9GQ/nCmz+gAu4=
+X-Google-Smtp-Source: ABdhPJwdQB+H6BgFI1QGO/+y7B87Ik2Fqrj1kQIreMHp3NfwdFDpfZ4JoZpHxjmghG10HkbgHsfEdg==
+X-Received: by 2002:a7b:c202:: with SMTP id x2mr2754290wmi.48.1605598572563;
+        Mon, 16 Nov 2020 23:36:12 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id 89sm27113016wrp.58.2020.11.16.23.36.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 23:36:11 -0800 (PST)
+Date:   Tue, 17 Nov 2020 08:36:09 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Alice Guo <alice.guo@nxp.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [EXT] Re: [PATCH v3 1/4] dt-bindings: soc: imx8m: add DT Binding
+ doc for soc unique ID
+Message-ID: <20201117073609.GA3436@kozik-lap>
+References: <AM6PR04MB605309F95A4BBD29DFA42B61E2E20@AM6PR04MB6053.eurprd04.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <AM6PR04MB605309F95A4BBD29DFA42B61E2E20@AM6PR04MB6053.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 8, 2020 at 2:53 AM Yongqiang Niu <yongqiang.niu@mediatek.com> wrote:
->
-> add mt8183 mmsys support
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/soc/mediatek/mmsys/Makefile       |   1 +
->  drivers/soc/mediatek/mmsys/mt8183-mmsys.c | 154 ++++++++++++++++++++++++++++++
->  drivers/soc/mediatek/mtk-mmsys.c          |   1 +
->  3 files changed, 156 insertions(+)
->  create mode 100644 drivers/soc/mediatek/mmsys/mt8183-mmsys.c
->
-> diff --git a/drivers/soc/mediatek/mmsys/Makefile b/drivers/soc/mediatek/mmsys/Makefile
-> index 33b0dab..62cfedf 100644
-> --- a/drivers/soc/mediatek/mmsys/Makefile
-> +++ b/drivers/soc/mediatek/mmsys/Makefile
-> @@ -1,2 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-y += mt2701-mmsys.o
-> +obj-y += mt8183-mmsys.o
-> diff --git a/drivers/soc/mediatek/mmsys/mt8183-mmsys.c b/drivers/soc/mediatek/mmsys/mt8183-mmsys.c
-> new file mode 100644
-> index 0000000..e5170b5
-> --- /dev/null
-> +++ b/drivers/soc/mediatek/mmsys/mt8183-mmsys.c
-> @@ -0,0 +1,154 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Copyright (c) 2020 MediaTek Inc.
+On Tue, Nov 17, 2020 at 07:10:28AM +0000, Alice Guo wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Krzysztof Kozlowski <krzk@kernel.org>
+> > Sent: 2020年11月17日 0:03
+> > To: Alice Guo <alice.guo@nxp.com>
+> > Cc: robh+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
+> > dl-linux-imx <linux-imx@nxp.com>; Peng Fan <peng.fan@nxp.com>;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > linux-arm-kernel@lists.infradead.org
+> > Subject: Re: [EXT] Re: [PATCH v3 1/4] dt-bindings: soc: imx8m: add DT Binding
+> > doc for soc unique ID
+> > 
+> > Caution: EXT Email
+> > 
+> > On Mon, Nov 16, 2020 at 07:04:13AM +0000, Alice Guo wrote:
+> > >
+> > > > -----Original Message-----
+> > > > From: Krzysztof Kozlowski <krzk@kernel.org>
+> > > > Sent: 2020年11月15日 0:50
+> > > > To: Alice Guo <alice.guo@nxp.com>
+> > > > Cc: robh+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
+> > > > dl-linux-imx <linux-imx@nxp.com>; Peng Fan <peng.fan@nxp.com>;
+> > > > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > > > linux-arm-kernel@lists.infradead.org
+> > > > Subject: [EXT] Re: [PATCH v3 1/4] dt-bindings: soc: imx8m: add DT
+> > > > Binding doc for soc unique ID
+> > > >
+> > > > Caution: EXT Email
+> > > >
+> > > > On Fri, Nov 13, 2020 at 07:04:06PM +0800, Alice Guo wrote:
+> > > > > Add DT Binding doc for the Unique ID of i.MX 8M series.
+> > > > >
+> > > > > Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> > > > > ---
+> > > > >  .../devicetree/bindings/arm/fsl.yaml          | 25
+> > > > +++++++++++++++++++
+> > > > >  1 file changed, 25 insertions(+)
+> > > > >
+> > > > > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > > b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > > index e4db0f9ed664..f4faebbb57da 100644
+> > > > > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > > @@ -901,6 +901,31 @@ properties:
+> > > > >                - fsl,s32v234-evb           # S32V234-EVB2
+> > Customer
+> > > > Evaluation Board
+> > > > >            - const: fsl,s32v234
+> > > > >
+> > > > > +  soc:
+> > > > > +    type: object
+> > > > > +    properties:
+> > > > > +      compatible:
+> > > > > +        oneOf:
+> > > > > +          - description: i.MX8M SoCs
+> > > > > +            items:
+> > > > > +              - enum:
+> > > > > +                  - fsl,imx8mm-soc
+> > > > > +                  - fsl,imx8mn-soc
+> > > > > +                  - fsl,imx8mp-soc
+> > > > > +                  - fsl,imx8mq-soc
+> > > > > +              - const: simple-bus
+> > > > > +
+> > > > > +          - description: Other SoCs
+> > > > > +            items:
+> > > > > +              - const: simple-bus
+> > > > > +
+> > > > > +      nvmem-cells:
+> > > > > +        maxItems: 1
+> > > > > +        description: Phandle to the SOC Unique ID provided by a
+> > > > > + nvmem node
+> > > > > +
+> > > > > +      nvmem-cells-names:
+> > > > > +        const: soc_unique_id
+> > > > > +
+> > > > >  additionalProperties: true
+> > > >
+> > > > The "soc" node should be required for these compatibles. Otherwise
+> > > > you will have to stay with this
+> > > > backwards-compatible-DTB-device-initcall-glue for many years... I think you
+> > can achieve it with allOf.
+> > > >
+> > > [Alice Guo]Hi,
+> > > I find that my description for compatible is ambiguous. There are two kinds of
+> > compatible of the "soc" node:
+> > > 1. For dtsi files used for SoCs other than imx8m series SoCs and old
+> > > version dtsi files used for imx8m series SoCs, compatible of the "soc" node is
+> > "simple-bus".
+> > > 2. For new version dtsi files used for imx8m series SoCs, compatible of the
+> > "soc" node is {"fsl,imx8mX-soc","simple-bus"}.
+> > >
+> > > "nvmem-cell" is an optional property.
+> > >
+> > > I do not understand what you mean. You mean that limit the compatible of
+> > "soc" node must include " fsl,imx8mX-soc" in new version dts files. Is my
+> > understanding correct?
+> > 
+> > All new DTS files should have soc node with "fsl,imx8mX-soc" and this should be
+> > required by dtschema. The nvmem-cells and related properties do not look like
+> > optional. From the hardware perspective - they are always present. From the
+> > driver point of view: they are required and driver will fail to work.
+> 
+> [Alice Guo] 
+> +  soc:
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        oneOf:
+> +          - description: new version DTS for i.MX8M SoCs
+> +            items:
+> +              - enum:
+> +                  - fsl,imx8mm-soc
+> +                  - fsl,imx8mn-soc
+> +                  - fsl,imx8mp-soc
+> +                  - fsl,imx8mq-soc
+> +              - const: simple-bus
 > +
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/soc/mediatek/mtk-mmsys.h>
+> +          - description: other SoCs and old version DTS for i.MX8M SoCs
+> +            items:
+> +              - const: simple-bus
 > +
-> +#define DISP_OVL0_MOUT_EN              0xf00
-> +#define DISP_OVL0_2L_MOUT_EN           0xf04
-> +#define DISP_OVL1_2L_MOUT_EN           0xf08
-> +#define DISP_DITHER0_MOUT_EN           0xf0c
-> +#define DISP_PATH0_SEL_IN              0xf24
-> +#define DISP_DSI0_SEL_IN               0xf2c
-> +#define DISP_DPI0_SEL_IN               0xf30
-> +#define DISP_RDMA0_SOUT_SEL_IN         0xf50
-> +#define DISP_RDMA1_SOUT_SEL_IN         0xf54
+> +      nvmem-cells:
+> +        maxItems: 1
+> +        description: Phandle to the SOC Unique ID provided by a nvmem node
 > +
-> +#define OVL0_MOUT_EN_OVL0_2L                   BIT(4)
-> +#define OVL0_2L_MOUT_EN_DISP_PATH0             BIT(0)
-> +#define OVL1_2L_MOUT_EN_RDMA1                  BIT(4)
-> +#define DITHER0_MOUT_IN_DSI0                   BIT(0)
-> +#define DISP_PATH0_SEL_IN_OVL0_2L              0x1
-> +#define DSI0_SEL_IN_RDMA0                      0x1
-> +#define DSI0_SEL_IN_RDMA1                      0x3
-> +#define DPI0_SEL_IN_RDMA0                      0x1
-> +#define DPI0_SEL_IN_RDMA1                      0x2
-> +#define RDMA0_SOUT_COLOR0                      0x1
-> +#define RDMA1_SOUT_DSI0                                0x1
+> +      nvmem-cells-names:
+> +        const: soc_unique_id
 > +
-> +struct mmsys_path_sel {
-> +       enum mtk_ddp_comp_id cur;
-> +       enum mtk_ddp_comp_id next;
-> +       u32 addr;
-> +       u32 val;
-> +};
+> +    allOf:
+> +      - if:
+> +          properties:
+> +            compatible:
+> +              contains:
+> +                enum:
+> +                  - fsl,imx8mm-soc
+> +                  - fsl,imx8mn-soc
+> +                  - fsl,imx8mp-soc
+> +                  - fsl,imx8mq-soc
+> +                const: simple-bus
 > +
-> +static struct mmsys_path_sel mmsys_mout_en[] = {
-> +       {
-> +               DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
-> +               DISP_OVL0_MOUT_EN, OVL0_MOUT_EN_OVL0_2L,
-> +       },
-> +       {
-> +               DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-> +               DISP_OVL0_2L_MOUT_EN, OVL0_2L_MOUT_EN_DISP_PATH0,
-> +       },
-> +       {
-> +               DDP_COMPONENT_OVL_2L1, DDP_COMPONENT_RDMA1,
-> +               DISP_OVL1_2L_MOUT_EN, OVL1_2L_MOUT_EN_RDMA1,
-> +       },
-> +       {
-> +               DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-> +               DISP_DITHER0_MOUT_EN, DITHER0_MOUT_IN_DSI0,
-> +       },
-> +};
-> +
-> +static struct mmsys_path_sel mmsys_sel_in[] = {
-> +       {
-> +               DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-> +               DISP_PATH0_SEL_IN, DISP_PATH0_SEL_IN_OVL0_2L,
-> +       },
-> +       {
-> +               DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
-> +               DISP_DPI0_SEL_IN, DPI0_SEL_IN_RDMA1,
-> +       },
-> +};
-> +
-> +static struct mmsys_path_sel mmsys_sout_sel[] = {
-> +       {
-> +               DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
-> +               DISP_RDMA0_SOUT_SEL_IN, RDMA0_SOUT_COLOR0,
-> +       },
-> +};
-> +
-> +static unsigned int mtk_mmsys_ddp_mout_en(enum mtk_ddp_comp_id cur,
-> +                                         enum mtk_ddp_comp_id next,
-> +                                         unsigned int *addr)
-> +{
-> +       u32 i;
-> +       struct mmsys_path_sel *path;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(mmsys_mout_en); i++) {
-> +               path = &mmsys_mout_en[i];
-> +               if (cur == path->cur && next == path->next) {
-> +                       *addr = path->addr;
-> +                       return path->val;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static unsigned int mtk_mmsys_ddp_sel_in(enum mtk_ddp_comp_id cur,
-> +                                        enum mtk_ddp_comp_id next,
-> +                                        unsigned int *addr)
-> +{
-> +       u32 i;
-> +       struct mmsys_path_sel *path;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(mmsys_sel_in); i++) {
-> +               path = &mmsys_sel_in[i];
-> +               if (cur == path->cur && next == path->next) {
-> +                       *addr = path->addr;
-> +                       return path->val;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static void mtk_mmsys_ddp_sout_sel(void __iomem *config_regs,
-> +                                  enum mtk_ddp_comp_id cur,
-> +                                  enum mtk_ddp_comp_id next)
-> +{
-> +       u32 i;
-> +       u32 val = 0;
+> +        then:
+> +          required:
+> +            - nvmem-cells
+> +            - nvmem-cells-names
+> 
+> The above is my modification. Is that ok?
 
-This variable is unused.
+Does not look like solving anything.
 
-> +       u32 addr = 0;
-> +       struct mmsys_path_sel *path;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(mmsys_sout_sel); i++) {
-> +               path = &mmsys_sout_sel[i];
-> +               if (cur == path->cur && next == path->next) {
-> +                       addr = path->addr;
-> +                       writel_relaxed(path->val, config_regs + addr);
-> +                       return;
-> +               }
-> +       }
-> +}
-> +
-> +static struct mtk_mmsys_conn_funcs mmsys_funcs = {
-> +       .mout_en = mtk_mmsys_ddp_mout_en,
-> +       .sel_in = mtk_mmsys_ddp_sel_in,
-> +       .sout_sel = mtk_mmsys_ddp_sout_sel,
-> +};
-> +
-> +static int mmsys_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +
-> +       mtk_mmsys_register_conn_funcs(dev->parent, &mmsys_funcs);
-> +
-> +       return 0;
-> +}
-> +
-> +static struct platform_driver mmsys_drv = {
-> +       .probe = mmsys_probe,
-> +       .driver = {
-> +               .name = "mt8183-mmsys",
-> +       },
-> +};
-> +
-> +builtin_platform_driver(mmsys_drv);
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-> index 605b992..6a451ac 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -47,6 +47,7 @@ struct mtk_mmsys_private_data {
->
->  static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
->         .clk_driver = "clk-mt8183-mm",
-> +       .mmsys_driver = "mt8183-mmsys",
->  };
->
->  void mtk_mmsys_ddp_connect(struct device *dev,
+Best regards,
+Krzysztof
+
