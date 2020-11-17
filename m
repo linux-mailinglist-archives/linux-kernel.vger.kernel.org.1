@@ -2,127 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29242B57A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2749C2B57AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgKQDCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 22:02:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgKQDCg (ORCPT
+        id S1726847AbgKQDEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 22:04:48 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16112 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbgKQDEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 22:02:36 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95C7C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 19:02:36 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id q5so19167856qkc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 19:02:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OrFb4zM53elIT7cUSmZjOKhggxTeko72lh8gYsva7hU=;
-        b=iU3kKuyvQRxAJ2xeOPjzmOu8Jcu8QJfJocxHmvGc++AIp+Sw7/xgGEvQo9PkL7IkFP
-         cdWcbSK/MT+F5maLoEsLzJMRr0l0AYumPN/MnS3EEGJ0GpxGZO5OatPg8zgESabJ442L
-         uSTBA0pUo0RCTarpFKrQEIX8cYheEEQMDJwP1Ep43mQT94oC2AjOLFNVf4W8DF8Ms3FT
-         Y6+4jq51wy1cLKa+ik2QCaHAEYcZm8UxI3cw7GxFA6jp8y9wYYnaBwADLFqZwySRz6XZ
-         J+eO9finfZ6fXsmmyRgDvFPwbM2Tse75go2iIAnH8r0CLqd7cFwZuB0yL4smoarr3tO7
-         c2tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OrFb4zM53elIT7cUSmZjOKhggxTeko72lh8gYsva7hU=;
-        b=HAofltRZL4m9wkMsWvIG5C+HjhOyYuAWM3dshODjDO6l0X6DItsUhKXe/C7CxgOYee
-         /HXf0bTdS6cwzfDMAzpUC3C0vmRrBFb61QDr93Z+3+X9ThZaBlRfhZnEyWP7E8SQQYX8
-         AtApmzSDtCIqrjcbis7bVlutUQ2/YrZUM4p4CDLYZSLRNWXs5e1PdnrS4shZhI6pxbsp
-         PU+Lt+r2p47+yU4M3rNYSuChPIafSaGkt0dZ4rphmF8owTw+0MNKQ+RmFDuShwzR2lHt
-         xKsfZN/unu8R+Ki10kekQ3KI3RKlTiZYH0Uyyffnyf243JRtxBdTBTuTUllbd+yFY0lR
-         NCOQ==
-X-Gm-Message-State: AOAM533+4TVPE3AEz6lRZliZJmOXQE3BkESi2RjAbppSbM6cbYpy8Li4
-        9IRYo42hFcQBNuO+bJS/OHs=
-X-Google-Smtp-Source: ABdhPJzF6HfIdmdD/B8loBrHQSKslXMtaSiE0xSd3YLxEd32d4j8tZVQ20B35c/cct/Bndyi3mdE+g==
-X-Received: by 2002:a37:6854:: with SMTP id d81mr17624635qkc.230.1605582156017;
-        Mon, 16 Nov 2020 19:02:36 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id v14sm13948831qkb.15.2020.11.16.19.02.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 19:02:35 -0800 (PST)
-Date:   Mon, 16 Nov 2020 20:02:34 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        clang-built-linux@googlegroups.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] powerpc: fix -Wimplicit-fallthrough
-Message-ID: <20201117030234.GC1340689@ubuntu-m3-large-x86>
-References: <20201116043532.4032932-1-ndesaulniers@google.com>
- <20201116043532.4032932-4-ndesaulniers@google.com>
+        Mon, 16 Nov 2020 22:04:48 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb33dd40000>; Mon, 16 Nov 2020 19:04:52 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 03:04:43 +0000
+Received: from sandstorm.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 17 Nov 2020 03:04:42 +0000
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     <jarkko.sakkinen@iki.fi>
+CC:     <akpm@linux-foundation.org>, <andreyknvl@google.com>,
+        <ast@kernel.org>, <clang-built-linux@googlegroups.com>,
+        <daniel@iogearbox.net>, <elver@google.com>, <jarkko@kernel.org>,
+        <keescook@chromium.org>, <linux-kernel@vger.kernel.org>,
+        <masahiroy@kernel.org>, <miguel.ojeda.sandonis@gmail.com>,
+        <natechancellor@gmail.com>, <ndesaulniers@google.com>,
+        <sedat.dilek@gmail.com>, <vincenzo.frascino@arm.com>,
+        <will@kernel.org>, John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH v3 1/7] compiler-clang: add build check for clang 10.0.1
+Date:   Mon, 16 Nov 2020 19:04:27 -0800
+Message-ID: <20201117030427.61981-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201104013447.GA21728@kapsi.fi>
+References: <20201104013447.GA21728@kapsi.fi>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116043532.4032932-4-ndesaulniers@google.com>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605582292; bh=p723JtS1pJNVabNwPxJOJJ9MW40U8eP5btKJWk1846o=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+         References:MIME-Version:X-NVConfidentiality:
+         Content-Transfer-Encoding:Content-Type;
+        b=h6SG+P3fwWiJQPLj7/ZIQAwecBaI1oNF0DJ6T+ljGCzRXbkm8LFDMApUWRLcoPMqM
+         udVkSjFASc2KiIHWG/eQ1cWu99N031pnd49g2iwvmoT6tUAFQ85OpxA1fT7puID4/g
+         hyUKn5vjMowxvpworxMFWf+h2EtmA10Cx+H0Ty4UESclYA8iHrOcpV1OQICgELptyJ
+         dXo80uKYV69tuxm0SIIro3gd0kgfJwWQiMLTgGkOjSt2xKtk/UBYj/30byeBDz11Zw
+         DRfAQwgJOlQGNiBep3Gv5ArmOAuok6zr62JLwKVRl08LHBJRX2yJWoDFlGMoDt5asd
+         B0BPpzS6Ys/TQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 08:35:32PM -0800, Nick Desaulniers wrote:
-> The "fallthrough" pseudo-keyword was added as a portable way to denote
-> intentional fallthrough. Clang will still warn on cases where there is a
-> fallthrough to an immediate break. Add explicit breaks for those cases.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/236
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Hi,
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+I just ran into this and it's a real pain to figure out, because even
+with the very latest Fedora 33 on my test machine, which provides clang
+version 11.0.0:
 
-> ---
->  arch/powerpc/kernel/prom_init.c | 1 +
->  arch/powerpc/kernel/uprobes.c   | 1 +
->  arch/powerpc/perf/imc-pmu.c     | 1 +
->  3 files changed, 3 insertions(+)
-> 
-> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-> index 38ae5933d917..e9d4eb6144e1 100644
-> --- a/arch/powerpc/kernel/prom_init.c
-> +++ b/arch/powerpc/kernel/prom_init.c
-> @@ -355,6 +355,7 @@ static int __init prom_strtobool(const char *s, bool *res)
->  		default:
->  			break;
->  		}
-> +		break;
->  	default:
->  		break;
->  	}
-> diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
-> index d200e7df7167..e8a63713e655 100644
-> --- a/arch/powerpc/kernel/uprobes.c
-> +++ b/arch/powerpc/kernel/uprobes.c
-> @@ -141,6 +141,7 @@ int arch_uprobe_exception_notify(struct notifier_block *self,
->  	case DIE_SSTEP:
->  		if (uprobe_post_sstep_notifier(regs))
->  			return NOTIFY_STOP;
-> +		break;
->  	default:
->  		break;
->  	}
-> diff --git a/arch/powerpc/perf/imc-pmu.c b/arch/powerpc/perf/imc-pmu.c
-> index 7b25548ec42b..e106909ff9c3 100644
-> --- a/arch/powerpc/perf/imc-pmu.c
-> +++ b/arch/powerpc/perf/imc-pmu.c
-> @@ -1500,6 +1500,7 @@ static int update_pmu_ops(struct imc_pmu *pmu)
->  		pmu->pmu.stop = trace_imc_event_stop;
->  		pmu->pmu.read = trace_imc_event_read;
->  		pmu->attr_groups[IMC_FORMAT_ATTR] = &trace_imc_format_group;
-> +		break;
->  	default:
->  		break;
->  	}
-> -- 
-> 2.29.2.299.gdc1121823c-goog
-> 
+$ clang --version
+clang version 11.0.0 (Fedora 11.0.0-2.fc33)
+Target: x86_64-unknown-linux-gnu
+
+...the bpftrace program still chokes on some, but not all commands, in
+ways that invisible to normal debugging. For example:
+
+$ sudo bpftrace -e 'tracepoint:syscalls:sys_enter_vmsplice { @[kstack()]
+=3D count(); }'
+/lib/modules/5.10.0-rc4-hubbard-github+/source/include/linux/compiler-clang=
+.h:12:3:
+error: Sorry, your version of Clang is too old - please use 10.0.1 or
+newer.
+
+But Jarkko's recommended fix works! In other words, applying the diff
+below fixes it for me. So I'm replying in order to note that the problem
+is real and hoping that the fix is applied soon.
+
+
+diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.=
+h
+index dd7233c48bf3..c2228b957fd7 100644
+--- a/include/linux/compiler-clang.h
++++ b/include/linux/compiler-clang.h
+@@ -7,9 +7,11 @@
+ 		     + __clang_minor__ * 100	\
+ 		     + __clang_patchlevel__)
+=20
++#ifndef __BPF_TRACING__
+ #if CLANG_VERSION < 100001
+ # error Sorry, your version of Clang is too old - please use 10.0.1 or new=
+er.
+ #endif
++#endif
+=20
+ /* Compiler specific definitions for Clang compiler */
+=20
+
+
+thanks,
+--
+John Hubbard
+NVIDIA
