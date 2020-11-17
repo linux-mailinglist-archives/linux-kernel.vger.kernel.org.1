@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3884A2B65A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9243C2B638C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730427AbgKQNTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:19:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52568 "EHLO mail.kernel.org"
+        id S1732741AbgKQNjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:39:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730415AbgKQNTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:19:33 -0500
+        id S1732672AbgKQNis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:38:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F05B1206D5;
-        Tue, 17 Nov 2020 13:19:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 099FC207BC;
+        Tue, 17 Nov 2020 13:38:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619173;
-        bh=1JM3XUMBgFSq2lQJHO/MI3V8t3AmxGTiwB7rTLk1RKE=;
+        s=default; t=1605620327;
+        bh=ukp620K4yYyVPbyJ05RHjLjLRFfL43RGcfN+nHHVND8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zmSwaz8+F2G17+NLaJNLJDefnDnjDzDrGgliw8LaIRaut84kIeOY+jh8rw1qtlbqK
-         ohGkGFbfbxwJMtNsuhtTy9YjGCaxC4Tl36KQzQS6mpUVMiNiFUX3Upf5tnStLiBCwL
-         99W0Wr93ds5sA5s3QJP7pKVnjfKrrL8vNQrgnvFk=
+        b=Lhzip1FqOA1JgtoKA38vNNnRAOk3zS/PNP9giMY4H5reqtaHy5Q7PeoAoeZXOBIBL
+         G8EIHRk56NnDqz2R6xMyQWPqnNTghN9GQhCjn7F/o5pWC7nHvLi+VY4icC4EjB9T+2
+         ic0AzGFzzVRcAZOtsD8Ry9konhccEJ/gDv1xZJhY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 053/101] nbd: fix a block_device refcount leak in nbd_release
-Date:   Tue, 17 Nov 2020 14:05:20 +0100
-Message-Id: <20201117122115.680231335@linuxfoundation.org>
+        stable@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 181/255] perf: Fix event multiplexing for exclusive groups
+Date:   Tue, 17 Nov 2020 14:05:21 +0100
+Message-Id: <20201117122147.736654851@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 2bd645b2d3f0bacadaa6037f067538e1cd4e42ef ]
+[ Upstream commit 2714c3962f304d031d5016c963c4b459337b0749 ]
 
-bdget_disk needs to be paired with bdput to not leak a reference
-on the block device inode.
+Commit 9e6302056f80 ("perf: Use hrtimers for event multiplexing")
+placed the hrtimer (re)start call in the wrong place.  Instead of
+capturing all scheduling failures, it only considered the PMU failure.
 
-Fixes: 08ba91ee6e2c ("nbd: Add the nbd NBD_DISCONNECT_ON_CLOSE config flag.")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+The result is that groups using perf_event_attr::exclusive are no
+longer rotated.
+
+Fixes: 9e6302056f80 ("perf: Use hrtimers for event multiplexing")
+Reported-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20201029162902.038667689@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/nbd.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/events/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 706115ecd9bee..517318bb350cf 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1448,6 +1448,7 @@ static void nbd_release(struct gendisk *disk, fmode_t mode)
- 	if (test_bit(NBD_DISCONNECT_ON_CLOSE, &nbd->config->runtime_flags) &&
- 			bdev->bd_openers == 0)
- 		nbd_disconnect_and_put(nbd);
-+	bdput(bdev);
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index c245ccd426b71..a06ac60d346f1 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -2597,7 +2597,6 @@ group_error:
  
- 	nbd_config_put(nbd);
- 	nbd_put(nbd);
+ error:
+ 	pmu->cancel_txn(pmu);
+-	perf_mux_hrtimer_restart(cpuctx);
+ 	return -EAGAIN;
+ }
+ 
+@@ -3653,6 +3652,7 @@ static int merge_sched_in(struct perf_event *event, void *data)
+ 
+ 		*can_add_hw = 0;
+ 		ctx->rotate_necessary = 1;
++		perf_mux_hrtimer_restart(cpuctx);
+ 	}
+ 
+ 	return 0;
 -- 
 2.27.0
 
