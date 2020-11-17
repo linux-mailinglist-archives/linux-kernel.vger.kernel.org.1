@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27422B6075
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF392B601B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728926AbgKQNJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:09:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38366 "EHLO mail.kernel.org"
+        id S1728583AbgKQNG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:06:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728790AbgKQNJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:09:28 -0500
+        id S1728524AbgKQNGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:06:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E420221EB;
-        Tue, 17 Nov 2020 13:09:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 241EE2225B;
+        Tue, 17 Nov 2020 13:06:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618566;
-        bh=qYeusgve8HX7DVQR4Mh8DhbB1QEiWWIevr9yclRTS4g=;
+        s=default; t=1605618384;
+        bh=gX7lXTOqy6dORx5kNRcSKoDtSGDjCw3IyicCcF93E3o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hd1VEeMD3KDIepDXvgRe+qkg9MsFv1J0yr6GTGFQdwIcHzRPdGstCXKrn7UjF5dlC
-         5Q2Geo8j87z/gaUG9DJswClclkcTDH5g+gdlaCrupo9brSZdmtlMe3NsVH8hvSKKoz
-         fmYPscwj2PanHIIBqUVszhNavB4ycBCWBanezeCI=
+        b=VVCUsiFI1AUfMrVIPUfqz886xx3RlMfTPPzs5ihJnCLmSv4IgEpHsPb269gywztZ6
+         i0aUkLRyS5DWHK/hjsOsBdplUgR9hXJakKy7+zW9SUgWUrxIaLIQlSEFbrRL//P8Lr
+         qReemGupCxc3aBmYi4at1tjgFzz3ZqAIncJyQXmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Elena Petrova <lenaptr@google.com>,
+        Will Deacon <will@kernel.org>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 12/78] can: dev: __can_get_echo_skb(): fix real payload length return value for RTR frames
+Subject: [PATCH 4.4 15/64] pinctrl: devicetree: Avoid taking direct reference to device name string
 Date:   Tue, 17 Nov 2020 14:04:38 +0100
-Message-Id: <20201117122109.705386592@linuxfoundation.org>
+Message-Id: <20201117122106.879814674@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +45,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Will Deacon <will@kernel.org>
 
-[ Upstream commit ed3320cec279407a86bc4c72edc4a39eb49165ec ]
+commit be4c60b563edee3712d392aaeb0943a768df7023 upstream.
 
-The can_get_echo_skb() function returns the number of received bytes to
-be used for netdev statistics. In the case of RTR frames we get a valid
-(potential non-zero) data length value which has to be passed for further
-operations. But on the wire RTR frames have no payload length. Therefore
-the value to be used in the statistics has to be zero for RTR frames.
+When populating the pinctrl mapping table entries for a device, the
+'dev_name' field for each entry is initialised to point directly at the
+string returned by 'dev_name()' for the device and subsequently used by
+'create_pinctrl()' when looking up the mappings for the device being
+probed.
 
-Reported-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://lore.kernel.org/r/20201020064443.80164-1-socketcan@hartkopp.net
-Fixes: cf5046b309b3 ("can: dev: let can_get_echo_skb() return dlc of CAN frame")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+This is unreliable in the presence of calls to 'dev_set_name()', which may
+reallocate the device name string leaving the pinctrl mappings with a
+dangling reference. This then leads to a use-after-free every time the
+name is dereferenced by a device probe:
+
+  | BUG: KASAN: invalid-access in strcmp+0x20/0x64
+  | Read of size 1 at addr 13ffffc153494b00 by task modprobe/590
+  | Pointer tag: [13], memory tag: [fe]
+  |
+  | Call trace:
+  |  __kasan_report+0x16c/0x1dc
+  |  kasan_report+0x10/0x18
+  |  check_memory_region
+  |  __hwasan_load1_noabort+0x4c/0x54
+  |  strcmp+0x20/0x64
+  |  create_pinctrl+0x18c/0x7f4
+  |  pinctrl_get+0x90/0x114
+  |  devm_pinctrl_get+0x44/0x98
+  |  pinctrl_bind_pins+0x5c/0x450
+  |  really_probe+0x1c8/0x9a4
+  |  driver_probe_device+0x120/0x1d8
+
+Follow the example of sysfs, and duplicate the device name string before
+stashing it away in the pinctrl mapping entries.
+
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Reported-by: Elena Petrova <lenaptr@google.com>
+Tested-by: Elena Petrova <lenaptr@google.com>
+Signed-off-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20191002124206.22928-1-will@kernel.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+[bwh: Backported to 4.4: adjust context]
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/dev.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/pinctrl/devicetree.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index aa2158fabf2ac..617eb75c7c0ce 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -469,9 +469,13 @@ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8
- 		 */
- 		struct sk_buff *skb = priv->echo_skb[idx];
- 		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
--		u8 len = cf->len;
- 
--		*len_ptr = len;
-+		/* get the real payload length for netdev statistics */
-+		if (cf->can_id & CAN_RTR_FLAG)
-+			*len_ptr = 0;
-+		else
-+			*len_ptr = cf->len;
+diff --git a/drivers/pinctrl/devicetree.c b/drivers/pinctrl/devicetree.c
+index fe04e748dfe4b..eb8c29f3e16ef 100644
+--- a/drivers/pinctrl/devicetree.c
++++ b/drivers/pinctrl/devicetree.c
+@@ -40,6 +40,13 @@ struct pinctrl_dt_map {
+ static void dt_free_map(struct pinctrl_dev *pctldev,
+ 		     struct pinctrl_map *map, unsigned num_maps)
+ {
++	int i;
 +
- 		priv->echo_skb[idx] = NULL;
++	for (i = 0; i < num_maps; ++i) {
++		kfree_const(map[i].dev_name);
++		map[i].dev_name = NULL;
++	}
++
+ 	if (pctldev) {
+ 		const struct pinctrl_ops *ops = pctldev->desc->pctlops;
+ 		ops->dt_free_map(pctldev, map, num_maps);
+@@ -73,7 +80,13 @@ static int dt_remember_or_free_map(struct pinctrl *p, const char *statename,
  
- 		return skb;
+ 	/* Initialize common mapping table entry fields */
+ 	for (i = 0; i < num_maps; i++) {
+-		map[i].dev_name = dev_name(p->dev);
++		const char *devname;
++
++		devname = kstrdup_const(dev_name(p->dev), GFP_KERNEL);
++		if (!devname)
++			goto err_free_map;
++
++		map[i].dev_name = devname;
+ 		map[i].name = statename;
+ 		if (pctldev)
+ 			map[i].ctrl_dev_name = dev_name(pctldev->dev);
+@@ -81,11 +94,8 @@ static int dt_remember_or_free_map(struct pinctrl *p, const char *statename,
+ 
+ 	/* Remember the converted mapping table entries */
+ 	dt_map = kzalloc(sizeof(*dt_map), GFP_KERNEL);
+-	if (!dt_map) {
+-		dev_err(p->dev, "failed to alloc struct pinctrl_dt_map\n");
+-		dt_free_map(pctldev, map, num_maps);
+-		return -ENOMEM;
+-	}
++	if (!dt_map)
++		goto err_free_map;
+ 
+ 	dt_map->pctldev = pctldev;
+ 	dt_map->map = map;
+@@ -93,6 +103,10 @@ static int dt_remember_or_free_map(struct pinctrl *p, const char *statename,
+ 	list_add_tail(&dt_map->node, &p->dt_maps);
+ 
+ 	return pinctrl_register_map(map, num_maps, false);
++
++err_free_map:
++	dt_free_map(pctldev, map, num_maps);
++	return -ENOMEM;
+ }
+ 
+ struct pinctrl_dev *of_pinctrl_get(struct device_node *np)
 -- 
 2.27.0
 
