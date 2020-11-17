@@ -2,320 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C912B69DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959CC2B69FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgKQQTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:19:03 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:36964 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727877AbgKQQTC (ORCPT
+        id S1727006AbgKQQ03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:26:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgKQQ03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:19:02 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHGImGs028498;
-        Tue, 17 Nov 2020 11:18:49 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34td199y85-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 11:18:48 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AHGIjcx044690
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 17 Nov 2020 11:18:45 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 17 Nov 2020 11:18:44 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 17 Nov 2020 11:18:44 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 17 Nov 2020 11:18:44 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AHGIRTY032565;
-        Tue, 17 Nov 2020 11:18:42 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lars@metafoo.de>, <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [RFC PATCH 12/12] iio: buffer: add ioctl() to support opening extra buffers for IIO device
-Date:   Tue, 17 Nov 2020 18:23:40 +0200
-Message-ID: <20201117162340.43924-13-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201117162340.43924-1-alexandru.ardelean@analog.com>
-References: <20201117162340.43924-1-alexandru.ardelean@analog.com>
+        Tue, 17 Nov 2020 11:26:29 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE60FC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:26:28 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id l10so4872685oom.6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:26:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=z75qkcvTDD7D5ZVAs+uCqlqVE13UoCxrYrBW5Z0YsDk=;
+        b=NbWG5mavXseC8TwQhZgdUwUaEBWIg13azPa/dMhqYJ71H7R1Z/qeTEhVaPbUVfXyE7
+         cuuDbCoMHIkFBt9qXX+uZsQB+89riqdLmQ+Ffxx0ad4LOr351/dC7ap3Si3KFvSK4Mbu
+         qKKfB3tCkpSSeKQ40lQuoVQzZYl8KLmUe7l8MnAJpt/8rqT5/DrPdYZfW0upTES0dNdI
+         a6Yxcj79g/bjpQENWeUZUTpbfKlPhhN0tzEyTZrTW7+jaOqhRfIEw5d0vt2cZc8xGLWG
+         VGnbiU/hV7wmCd9cvERoCxcrALe9HXxE5vyEiqOzyoKTFOR/LBmkiop+NMI7MROxwuoU
+         oyAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=z75qkcvTDD7D5ZVAs+uCqlqVE13UoCxrYrBW5Z0YsDk=;
+        b=caex4Ra9kkHJa6PrwHW+3k0CtUiFpFsf/URkl6k0Vs9P6tRfhtIWN69ChTCwjDvpJm
+         Q/zLY9Hh9nKHJW8n3J7dKSHZUuru5MtoiZ2l1POhwexCm1CYogq4EGrc0slwd6emkCxt
+         haJ2QOY+1V0q11v/HAjxwGDRQgn4g90U7RhcG4p42zFtxAiJk/a7fOKhdPB+SemQNxp3
+         NGRAR7CNpyAPIX3+GPTsfTfuf2ZANgUZXlBdtJk6xT7bk/olstRD8Qcc2QZhfsGBzPVx
+         JWdrj3+WKVJiptnGbSzm6caGosMWvYX9QFnJDkn2hUwC2Ivd23f158CXG0AKmJO1EvUs
+         oTpg==
+X-Gm-Message-State: AOAM530NoiTrvMTdsbNxy8jBa7tl5RFn8m7wXITnuQFlvq80ixkiK9/A
+        JfMhi14jtLMlLRctIrHk0TqoLQ==
+X-Google-Smtp-Source: ABdhPJwEbtJaSAIffWbfsiQiaPRdu+CN3ysGQxSh48oJAho68bZkA6+kWULhGCBChKSe1hVhZ9aP1w==
+X-Received: by 2002:a4a:e5ce:: with SMTP id r14mr3587297oov.11.1605630387621;
+        Tue, 17 Nov 2020 08:26:27 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id b123sm6262913oii.47.2020.11.17.08.26.25
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 17 Nov 2020 08:26:26 -0800 (PST)
+Date:   Tue, 17 Nov 2020 08:26:03 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
+        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
+        dchinner@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
+In-Reply-To: <20201117153947.GL29991@casper.infradead.org>
+Message-ID: <alpine.LSU.2.11.2011170820030.1014@eggly.anvils>
+References: <20201112212641.27837-1-willy@infradead.org> <alpine.LSU.2.11.2011160128001.1206@eggly.anvils> <20201117153947.GL29991@casper.infradead.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_06:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=2
- impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0 clxscore=1015
- phishscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170117
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With this change, an ioctl() call is added to open a character device for a
-buffer.
-The ioctl() will not work for the first buffer, as that buffer is already
-opened/reserved for the IIO device's character device.
-This is also to preserve backwards compatibility.
+On Tue, 17 Nov 2020, Matthew Wilcox wrote:
+> On Mon, Nov 16, 2020 at 02:34:34AM -0800, Hugh Dickins wrote:
+> > Fix to [PATCH v4 15/16] mm/truncate,shmem: Handle truncates that split THPs.
+> > One machine ran fine, swapping and building in ext4 on loop0 on huge tmpfs;
+> > one machine got occasional pages of zeros in its .os; one machine couldn't
+> > get started because of ext4_find_dest_de errors on the newly mkfs'ed fs.
+> > The partial_end case was decided by PAGE_SIZE, when there might be a THP
+> > there.  The below patch has run well (for not very long), but I could
+> > easily have got it slightly wrong, off-by-one or whatever; and I have
+> > not looked into the similar code in mm/truncate.c, maybe that will need
+> > a similar fix or maybe not.
+> 
+> Thank you for the explanation in your later email!  There is indeed an
+> off-by-one, although in the safe direction.
+> 
+> > --- 5103w/mm/shmem.c	2020-11-12 15:46:21.075254036 -0800
+> > +++ 5103wh/mm/shmem.c	2020-11-16 01:09:35.431677308 -0800
+> > @@ -874,7 +874,7 @@ static void shmem_undo_range(struct inod
+> >  	long nr_swaps_freed = 0;
+> >  	pgoff_t index;
+> >  	int i;
+> > -	bool partial_end;
+> > +	bool same_page;
+> >  
+> >  	if (lend == -1)
+> >  		end = -1;	/* unsigned, so actually very big */
+> > @@ -907,16 +907,12 @@ static void shmem_undo_range(struct inod
+> >  		index++;
+> >  	}
+> >  
+> > -	partial_end = ((lend + 1) % PAGE_SIZE) > 0;
+> > +	same_page = (lstart >> PAGE_SHIFT) == end;
+> 
+> 'end' is exclusive, so this is always false.  Maybe something "obvious":
+> 
+> 	same_page = (lstart >> PAGE_SHIFT) == (lend >> PAGE_SHIFT);
+> 
+> (lend is inclusive, so lend in 0-4095 are all on the same page)
 
-For any other extra buffer (after the first buffer) this ioctl() will be
-required.
+My brain is not yet in gear this morning, so I haven't given this the
+necessary thought: but I do have to question what you say there, and
+throw it back to you for the further thought -
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/industrialio-buffer.c | 111 ++++++++++++++++++++++++++++++
- drivers/iio/industrialio-core.c   |   8 +++
- include/linux/iio/buffer_impl.h   |   5 ++
- include/linux/iio/iio-opaque.h    |   2 +
- include/uapi/linux/iio/buffer.h   |  16 +++++
- 5 files changed, 142 insertions(+)
- create mode 100644 include/uapi/linux/iio/buffer.h
+the first shmem_getpage(inode, lstart >> PAGE_SHIFT, &page, SGP_READ);
+the second shmem_getpage(inode, end, &page, SGP_READ).
+So same_page = (lstart >> PAGE_SHIFT) == end
+had seemed right to me.
 
-diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-index daa68822cea7..77f02870cd18 100644
---- a/drivers/iio/industrialio-buffer.c
-+++ b/drivers/iio/industrialio-buffer.c
-@@ -9,6 +9,7 @@
-  * - Better memory allocation techniques?
-  * - Alternative access techniques?
-  */
-+#include <linux/anon_inodes.h>
- #include <linux/kernel.h>
- #include <linux/export.h>
- #include <linux/device.h>
-@@ -1399,6 +1400,99 @@ static void iio_sysfs_del_attrs(struct kobject *kobj, struct attribute **ptr)
- 		sysfs_remove_file(kobj, ptr[i]);
- }
- 
-+static int iio_buffer_chrdev_release(struct inode *inode, struct file *filep)
-+{
-+	struct iio_dev_buffer_pair *ib = filep->private_data;
-+	struct iio_dev *indio_dev = ib->indio_dev;
-+	struct iio_buffer *buffer = ib->buffer;
-+
-+	clear_bit(IIO_BUSY_BIT_POS, &buffer->flags);
-+	iio_device_put(indio_dev);
-+	kfree(ib);
-+
-+	return 0;
-+}
-+
-+static const struct file_operations iio_buffer_chrdev_fileops = {
-+	.owner = THIS_MODULE,
-+	.llseek = noop_llseek,
-+	.read = iio_buffer_read_outer_addr,
-+	.poll = iio_buffer_poll_addr,
-+	.compat_ioctl = compat_ptr_ioctl,
-+	.release = iio_buffer_chrdev_release,
-+};
-+
-+static long iio_device_buffer_getfd(struct iio_dev *indio_dev, unsigned long arg)
-+{
-+	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-+	int __user *ival = (int __user *)arg;
-+	char buf_name[sizeof("iio:buffer:xxx")];
-+	struct iio_dev_buffer_pair *ib;
-+	struct iio_buffer *buffer;
-+	int fd, idx;
-+
-+	if (copy_from_user(&idx, ival, sizeof(idx)))
-+		return -EFAULT;
-+
-+	if (idx >= iio_dev_opaque->attached_buffers_cnt)
-+		return -ENOENT;
-+
-+	fd = mutex_lock_interruptible(&indio_dev->mlock);
-+	if (fd)
-+		return fd;
-+
-+	buffer = iio_dev_opaque->attached_buffers[idx];
-+
-+	if (test_and_set_bit(IIO_BUSY_BIT_POS, &buffer->flags)) {
-+		fd = -EBUSY;
-+		goto error_unlock;
-+	}
-+
-+	iio_device_get(indio_dev);
-+
-+	ib = kzalloc(sizeof(*ib), GFP_KERNEL);
-+	if (!ib) {
-+		fd = -ENOMEM;
-+		goto error_iio_dev_put;
-+	}
-+
-+	ib->indio_dev = indio_dev;
-+	ib->buffer = buffer;
-+
-+	fd = anon_inode_getfd(buf_name, &iio_buffer_chrdev_fileops,
-+			      ib, O_RDWR | O_CLOEXEC);
-+	if (fd < 0)
-+		goto error_free_ib;
-+
-+	if (copy_to_user(ival, &fd, sizeof(fd))) {
-+		fd = -EFAULT;
-+		goto error_free_ib;
-+	}
-+
-+	mutex_unlock(&indio_dev->mlock);
-+	return fd;
-+
-+error_free_ib:
-+	kfree(ib);
-+error_iio_dev_put:
-+	iio_device_put(indio_dev);
-+	clear_bit(IIO_BUSY_BIT_POS, &buffer->flags);
-+error_unlock:
-+	mutex_unlock(&indio_dev->mlock);
-+	return fd;
-+}
-+
-+static long iio_device_buffer_ioctl(struct iio_dev *indio_dev, struct file *filp,
-+				    unsigned int cmd, unsigned long arg)
-+{
-+	switch (cmd) {
-+	case IIO_BUFFER_GET_FD_IOCTL:
-+		return iio_device_buffer_getfd(indio_dev, arg);
-+	default:
-+		return IIO_IOCTL_UNHANDLED;
-+	}
-+}
-+
- static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
- 					     struct iio_dev *indio_dev,
- 					     unsigned int idx)
-@@ -1549,8 +1643,21 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
- 	if (ret)
- 		goto error_remove_buffer_dir_link;
- 
-+	i = sizeof(*(iio_dev_opaque->buffer_ioctl_handler));
-+	iio_dev_opaque->buffer_ioctl_handler = kzalloc(i, GFP_KERNEL);
-+	if (!iio_dev_opaque->buffer_ioctl_handler) {
-+		ret = -ENOMEM;
-+		goto error_remove_scan_el_dir;
-+	}
-+
-+	iio_dev_opaque->buffer_ioctl_handler->ioctl = iio_device_buffer_ioctl;
-+	iio_device_ioctl_handler_register(indio_dev,
-+					  iio_dev_opaque->buffer_ioctl_handler);
-+
- 	return 0;
- 
-+error_remove_scan_el_dir:
-+	sysfs_remove_link(&indio_dev->dev.kobj, "scan_elements");
- error_remove_buffer_dir_link:
- 	sysfs_remove_link(&indio_dev->dev.kobj, "buffer");
- 	i = iio_dev_opaque->attached_buffers_cnt - 1;
-@@ -1585,6 +1692,10 @@ void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
- 	if (!buffer)
- 		return;
- 
-+	iio_device_ioctl_handler_unregister(iio_dev_opaque->buffer_ioctl_handler);
-+	kfree(iio_dev_opaque->buffer_ioctl_handler);
-+	iio_dev_opaque->buffer_ioctl_handler = NULL;
-+
- 	sysfs_remove_link(&indio_dev->dev.kobj, "scan_elements");
- 	sysfs_remove_link(&indio_dev->dev.kobj, "buffer");
- 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 9e7a76723f00..b4f7dd75bef5 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1685,6 +1685,9 @@ static int iio_chrdev_open(struct inode *inode, struct file *filp)
- 	ib->indio_dev = indio_dev;
- 	ib->buffer = indio_dev->buffer;
- 
-+	if (indio_dev->buffer)
-+		test_and_set_bit(IIO_BUSY_BIT_POS, &indio_dev->buffer->flags);
-+
- 	filp->private_data = ib;
- 
- 	return 0;
-@@ -1702,6 +1705,11 @@ static int iio_chrdev_release(struct inode *inode, struct file *filp)
- 	struct iio_dev_buffer_pair *ib = filp->private_data;
- 	struct iio_dev *indio_dev = container_of(inode->i_cdev,
- 						struct iio_dev, chrdev);
-+	struct iio_buffer *buffer = ib->buffer;
-+
-+	if (buffer)
-+		clear_bit(IIO_BUSY_BIT_POS, &buffer->flags);
-+
- 	clear_bit(IIO_BUSY_BIT_POS, &indio_dev->flags);
- 	iio_device_put(indio_dev);
- 	kfree(ib);
-diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
-index e25d26a7f601..78da590b5607 100644
---- a/include/linux/iio/buffer_impl.h
-+++ b/include/linux/iio/buffer_impl.h
-@@ -6,6 +6,8 @@
- 
- #ifdef CONFIG_IIO_BUFFER
- 
-+#include <uapi/linux/iio/buffer.h>
-+
- struct iio_dev;
- struct iio_buffer;
- 
-@@ -75,6 +77,9 @@ struct iio_buffer {
- 	/** @length: Number of datums in buffer. */
- 	unsigned int length;
- 
-+	/** @flags: File ops flags including busy flag. */
-+	unsigned long flags;
-+
- 	/**  @bytes_per_datum: Size of individual datum including timestamp. */
- 	size_t bytes_per_datum;
- 
-diff --git a/include/linux/iio/iio-opaque.h b/include/linux/iio/iio-opaque.h
-index 1db0ea09520e..d0429b13afa8 100644
---- a/include/linux/iio/iio-opaque.h
-+++ b/include/linux/iio/iio-opaque.h
-@@ -9,6 +9,7 @@
-  * @event_interface:		event chrdevs associated with interrupt lines
-  * @attached_buffers:		array of buffers statically attached by the driver
-  * @attached_buffers_cnt:	number of buffers in the array of statically attached buffers
-+ * @buffer_ioctl_handler:	ioctl() handler for this IIO device's buffer interface
-  * @buffer_list:		list of all buffers currently attached
-  * @channel_attr_list:		keep track of automatically created channel
-  *				attributes
-@@ -24,6 +25,7 @@ struct iio_dev_opaque {
- 	struct iio_event_interface	*event_interface;
- 	struct iio_buffer		**attached_buffers;
- 	unsigned int			attached_buffers_cnt;
-+	struct iio_ioctl_handler	*buffer_ioctl_handler;
- 	struct list_head		buffer_list;
- 	struct list_head		channel_attr_list;
- 	struct attribute_group		chan_attr_group;
-diff --git a/include/uapi/linux/iio/buffer.h b/include/uapi/linux/iio/buffer.h
-new file mode 100644
-index 000000000000..3794eca78dad
---- /dev/null
-+++ b/include/uapi/linux/iio/buffer.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/* industrial I/O buffer definitions needed both in and out of kernel
-+ *
-+ * Copyright (c) 2020 Alexandru Ardelean
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ */
-+
-+#ifndef _UAPI_IIO_BUFFER_H_
-+#define _UAPI_IIO_BUFFER_H_
-+
-+#define IIO_BUFFER_GET_FD_IOCTL		_IOWR('i', 0xa0, int)
-+
-+#endif /* _UAPI_IIO_BUFFER_H_ */
--- 
-2.17.1
-
+> 
+> >  	page = NULL;
+> >  	shmem_getpage(inode, lstart >> PAGE_SHIFT, &page, SGP_READ);
+> >  	if (page) {
+> > -		bool same_page;
+> > -
+> >  		page = thp_head(page);
+> >  		same_page = lend < page_offset(page) + thp_size(page);
+> > -		if (same_page)
+> > -			partial_end = false;
+> >  		set_page_dirty(page);
+> >  		if (!truncate_inode_partial_page(page, lstart, lend)) {
+> >  			start = page->index + thp_nr_pages(page);
+> > @@ -928,7 +924,7 @@ static void shmem_undo_range(struct inod
+> >  		page = NULL;
+> >  	}
+> >  
+> > -	if (partial_end)
+> > +	if (!same_page)
+> >  		shmem_getpage(inode, end, &page, SGP_READ);
+> >  	if (page) {
+> >  		page = thp_head(page);
+> 
