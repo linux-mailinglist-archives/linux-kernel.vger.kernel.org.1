@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B852B704C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6ED52B704E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgKQUkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:40:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726685AbgKQUkg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:40:36 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C06C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:40:35 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id j205so32029838lfj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5O26wK6ZwRs5vg1Qkg4ioltHAshqMgwowNUpC8UIpCI=;
-        b=kDoygA1AHcokY8M9AQIkp8xfBXm6+EPG0LfAD1aNHZSw/+ciWKhohQ5+/dhPHIKyFc
-         Tkt7+xjxoHvcJ2I5FQTtU0FfLf2vlCTX4kBbd9OFw51Fw0jmBuGWHne6RjyyKxBuMVhA
-         KMaTCPGh2WB/kFwaJ7fLjenfJ+9rCyrNIjqCMb2wC3sM65/0aHp8GvPDaW6b4JS1NyIY
-         TfHEGFPR7e946MbKcdgUqmDqS+rs86qINmqtK60vjikTRi0ex6QTXIZFDRiLKo1uzY0e
-         hE3xytSNoUn76SV7/UfGvRXFmni8esyP8ddpiH5uuqD05qxWPYIxAaDOr2XpbvyPNb6i
-         eu3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5O26wK6ZwRs5vg1Qkg4ioltHAshqMgwowNUpC8UIpCI=;
-        b=Yi/lExbPhRmuTbb5sfjGszmdwH+SqAnPfOScsoHyYACClNFLJCmrqLSAUKFRotbHyb
-         W5YhnBXY6UdPV3TB+egRZaMaxAP/esS8w0hjRYPyX4WrHGMyxuY+MHvAT7IY97JRqPlb
-         0wNew16lcedSaViIWRvkHAW8OHdI3rqmrCb7Fr8x9YzAITNUrAJq6agV8V3A/qFDSy83
-         LgjsL4Sc8xaj372bSKVeMDaDTMNy5vMOxs00i3vRtkJ2oVxFx91srGkhio1xPXKYTr+u
-         0RJRqF1iKaeoMWCO2CIxjsZ+qAxOMgO2ur0+ljp2SHoJQHUBgBiNqAPa9AUq9ruDwifp
-         DUrw==
-X-Gm-Message-State: AOAM532EBwS9BWNCOMqxPyrVpqEzQt1JIAzD/E4pDY7/ExotdFvDeM2y
-        bWVpbdz9m66uPkvCRj97Fx7NoTmjI/3wfqyE+IvWAQ==
-X-Google-Smtp-Source: ABdhPJy1rf9o0mryoLstKB7uDAsq71sImAeQEGBms3pp2vMP18NF/F1WATntf+diyrbKzkPyXkX/swGk3hzNqzyKpCA=
-X-Received: by 2002:ac2:4ac7:: with SMTP id m7mr2260698lfp.572.1605645634325;
- Tue, 17 Nov 2020 12:40:34 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1605635248.git.agx@sigxcpu.org> <905595a5a25c6b8fb7760877fb93d057e98ce717.1605635248.git.agx@sigxcpu.org>
-In-Reply-To: <905595a5a25c6b8fb7760877fb93d057e98ce717.1605635248.git.agx@sigxcpu.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Nov 2020 21:40:23 +0100
-Message-ID: <CACRpkdY84ppTs1MLUm3qHng622VDSWejaZC5M-fkpnmeOR9xZA@mail.gmail.com>
-Subject: Re: [PATCH v1 4/6] drm/panel: mantix: Support panel from Shenzhen
- Yashi Changhua Intelligent Technology Co
-To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+        id S1728968AbgKQUkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:40:42 -0500
+Received: from mga03.intel.com ([134.134.136.65]:19638 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726685AbgKQUkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:40:41 -0500
+IronPort-SDR: azWK+q+exYxhbsvL6CFkA1uokF15Silq0/KRqVnahBFML5JZABYIkHeCSF7iGd3dBmLj8ujAUt
+ XeE1z50V0irw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="171103547"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="171103547"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:40:39 -0800
+IronPort-SDR: TSx5QXqK9wP0dqSvKoHiVm3SypOSWWd0FF3Tz7HYDxWTjjGe0qDjnb+Z3VdA5moPvIre84FcAA
+ uihhRCqli/RQ==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="544202466"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.34.253])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:40:37 -0800
+Date:   Tue, 17 Nov 2020 21:40:33 +0100
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+Message-ID: <20201117204032.GC15538@ubuntu>
+References: <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
+ <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com>
+ <20201116151028.GA1519@ubuntu>
+ <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
+ <20201116224003.GC3892875@xps15>
+ <50549519-d9ff-9048-a3d8-dab02bfda096@st.com>
+ <20201117160330.GA15538@ubuntu>
+ <a653c503-7fd1-7b87-88a5-88c9002ba410@st.com>
+ <20201117165816.GB15538@ubuntu>
+ <16e07968-d783-8bcc-cec1-fd02cd717ddd@st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16e07968-d783-8bcc-cec1-fd02cd717ddd@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 6:49 PM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
+On Tue, Nov 17, 2020 at 06:30:54PM +0100, Arnaud POULIQUEN wrote:
 
-> The panel uses the same driver IC and has the same resolution but a
-> slightly different default mode. It seems it can work with the same
-> init sequence.
->
-> Signed-off-by: Guido G=C3=BCnther <agx@sigxcpu.org>
+[snip]
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> It's not a good day for me today... it seems I read your explanation too quickly
+> this morning, which is, however, very clear.
+> My apologies
 
-Yours,
-Linus Walleij
+Oh, I did the same to one of your earlier emails one of these days - 
+I missed a paragraph at the end and then "re-discovered" it in a 
+later email, so, I can do that too! :-D
+
+Cheers
+Guennadi
