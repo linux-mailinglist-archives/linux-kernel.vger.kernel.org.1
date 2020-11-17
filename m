@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E962B7145
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4935A2B7149
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgKQWIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:08:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34302 "EHLO mail.kernel.org"
+        id S1728892AbgKQWIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:08:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726182AbgKQWIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:08:16 -0500
+        id S1726182AbgKQWIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:08:18 -0500
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C69D2417E;
-        Tue, 17 Nov 2020 22:08:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1A0C2463B;
+        Tue, 17 Nov 2020 22:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605650895;
-        bh=R1pOBvGvWekAeZiIx18MTxN73pD71p2KQlMAqkn9JuE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jhtwsAIsEnfI7hZFU/Jd+KcXVg/cwpD1Eaqmqn7ug+HpZb+51NK3hV8ALpMzrxtI3
-         8g3Gp7cvIynpuZcmoJ6imI3B/VfZBdXlbabFa87Obbq2vPSW7MUUvshqm6y/WkY789
-         /SHCnfExLjEIfhjunlFiyA8wc+Dp20iMpkPavic0=
+        s=default; t=1605650897;
+        bh=JOZkuiu9GUDMmzBxJ8dLr8lnFOVINfPlnEmDixPOTcs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BHuCO4jFfG5ySyxB8MOlllDJDXXE3usIsNMl/UqypODE6r6mXC+UpL5plzU/2S4HN
+         Y0MIm6KH7jtRrLk1PEP1mnufH0apzSBmrJOwj/l6/nT/4+TTe3ywJtLCF8THXoAVwU
+         TRG7nym7auagp0Dby8MrOZSwYbPQ+zkf2/rp1sHk=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Jean Delvare <jdelvare@suse.com>,
         Guenter Roeck <linux@roeck-us.net>,
@@ -33,99 +33,76 @@ To:     Jean Delvare <jdelvare@suse.com>,
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Kun Yi <kunyi@google.com>,
         Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 1/4] dt-bindings: hwmon: convert TI INA2xx bindings to dt-schema
-Date:   Tue, 17 Nov 2020 23:08:04 +0100
-Message-Id: <20201117220807.208747-1-krzk@kernel.org>
+Subject: [PATCH 2/4] dt-bindings: hwmon: convert AD AD741x bindings to dt-schema
+Date:   Tue, 17 Nov 2020 23:08:05 +0100
+Message-Id: <20201117220807.208747-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201117220807.208747-1-krzk@kernel.org>
+References: <20201117220807.208747-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the TI INA2xx bindings to dt-schema.
+Convert the Analog Devices AD741x bindings to dt-schema.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- .../devicetree/bindings/hwmon/ina2xx.txt      | 24 --------
- .../devicetree/bindings/hwmon/ti,ina2xx.yaml  | 55 +++++++++++++++++++
- MAINTAINERS                                   |  2 +-
- 3 files changed, 56 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/hwmon/ina2xx.txt
- create mode 100644 Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
+ .../devicetree/bindings/hwmon/ad741x.txt      | 15 -------
+ .../devicetree/bindings/hwmon/adi,ad741x.yaml | 39 +++++++++++++++++++
+ 2 files changed, 39 insertions(+), 15 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/hwmon/ad741x.txt
+ create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ad741x.yaml
 
-diff --git a/Documentation/devicetree/bindings/hwmon/ina2xx.txt b/Documentation/devicetree/bindings/hwmon/ina2xx.txt
+diff --git a/Documentation/devicetree/bindings/hwmon/ad741x.txt b/Documentation/devicetree/bindings/hwmon/ad741x.txt
 deleted file mode 100644
-index 02af0d94e921..000000000000
---- a/Documentation/devicetree/bindings/hwmon/ina2xx.txt
+index 9102152c8410..000000000000
+--- a/Documentation/devicetree/bindings/hwmon/ad741x.txt
 +++ /dev/null
-@@ -1,24 +0,0 @@
--ina2xx properties
+@@ -1,15 +0,0 @@
+-* AD7416/AD7417/AD7418 Temperature Sensor Device Tree Bindings
 -
 -Required properties:
--- compatible: Must be one of the following:
--	- "ti,ina209" for ina209
--	- "ti,ina219" for ina219
--	- "ti,ina220" for ina220
--	- "ti,ina226" for ina226
--	- "ti,ina230" for ina230
--	- "ti,ina231" for ina231
+-- compatible: one of
+-		"adi,ad7416"
+-		"adi,ad7417"
+-		"adi,ad7418"
 -- reg: I2C address
--
--Optional properties:
--
--- shunt-resistor
--	Shunt resistor value in micro-Ohm
 -
 -Example:
 -
--ina220@44 {
--	compatible = "ti,ina220";
--	reg = <0x44>;
--	shunt-resistor = <1000>;
+-hwmon@28 {
+-	compatible = "adi,ad7418";
+-	reg = <0x28>;
 -};
-diff --git a/Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml b/Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
+diff --git a/Documentation/devicetree/bindings/hwmon/adi,ad741x.yaml b/Documentation/devicetree/bindings/hwmon/adi,ad741x.yaml
 new file mode 100644
-index 000000000000..6f0443322a36
+index 000000000000..ce7f8ce9da0a
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
-@@ -0,0 +1,55 @@
++++ b/Documentation/devicetree/bindings/hwmon/adi,ad741x.yaml
+@@ -0,0 +1,39 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
 +
-+$id: http://devicetree.org/schemas/hwmon/ti,ina2xx.yaml#
++$id: http://devicetree.org/schemas/hwmon/adi,ad741x.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Texas Instruments INA209 family of power/voltage monitors
++title: Analog Devices AD7416/AD7417/AD7418 temperature sensors
 +
 +maintainers:
 +  - Krzysztof Kozlowski <krzk@kernel.org>
 +
-+description: |
-+  The INA209 is a high-side current shunt and power monitor with
-+  an I2C interface.
-+
-+  Datasheets:
-+    https://www.ti.com/product/INA209
-+
 +properties:
 +  compatible:
 +    enum:
-+      - ti,ina209
-+      - ti,ina219
-+      - ti,ina220
-+      - ti,ina226
-+      - ti,ina230
-+      - ti,ina231
++      - adi,ad7416
++      - adi,ad7417
++      - adi,ad7418
 +
 +  reg:
 +    maxItems: 1
-+
-+  shunt-resistor:
-+    description:
-+      Shunt resistor value in micro-Ohm.
-+    $ref: /schemas/types.yaml#/definitions/uint32
 +
 +required:
 +  - compatible
@@ -139,25 +116,11 @@ index 000000000000..6f0443322a36
 +        #address-cells = <1>;
 +        #size-cells = <0>;
 +
-+        power-sensor@44 {
-+            compatible = "ti,ina220";
-+            reg = <0x44>;
-+            shunt-resistor = <1000>;
++        temperature-sensor@28 {
++            compatible = "adi,ad7418";
++            reg = <0x28>;
 +        };
 +    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0818a5b03832..e9ba2e555679 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8669,7 +8669,7 @@ INA209 HARDWARE MONITOR DRIVER
- M:	Guenter Roeck <linux@roeck-us.net>
- L:	linux-hwmon@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/hwmon/ina2xx.txt
-+F:	Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
- F:	Documentation/hwmon/ina209.rst
- F:	drivers/hwmon/ina209.c
- 
 -- 
 2.25.1
 
