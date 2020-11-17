@@ -2,17 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111B52B6C1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2683F2B6C1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730000AbgKQRrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:47:15 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:49682 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727838AbgKQRrO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729987AbgKQRrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 17 Nov 2020 12:47:14 -0500
-Date:   Tue, 17 Nov 2020 17:47:09 -0000
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728330AbgKQRrN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:47:13 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2646DC0613CF;
+        Tue, 17 Nov 2020 09:47:13 -0800 (PST)
+Date:   Tue, 17 Nov 2020 17:47:10 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1605635231;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o4O87AnU5hneBS3mjSaT0iMcb9LaTdka39Ud6mJbR/o=;
-        b=rfjVlpsMnAoUGTUTBPwvWD3eFgCfWFOdDSD/KkwATcwvaFgy3VexZMs/66QgfK9Weco94n
-        sZ3NpA9JfYv52gU43WYW5L8A/sTMWoGsCa3Vf+2+3f3tnkgnaVa8EDsdOf1gcYJjDv7692
-        +caS+K+JMQcuca9RHYcu3/XKgkfkhGSWvynW4SERkh2dSg5WziI9Kqb3RABUlztCmEe6VS
-        TCsgCqxgEwbiFLmTqRVA4jWq/tpqSAZvpcDoEhcVVlYPTEjydLFSxX2fD2+E7ynF7qv9wp
-        r4hecTg/91oqSIOC9OqPAt/9e+KzkZuzLJWspoqhE7gQioB0mRsHdFy4D/QBng==
+        bh=5TtcJ/Dhuz1KukPIcUPXcf25NvLw1I8V/R0UBTaSf6c=;
+        b=h67FLW+MBNaga4uIUQkLpERbff8jiuI07FrAX/+XfJOMhuDvP4wxanAj/4eMP8FtnqX8yH
+        K27mfj1hvKmEHcIrlKhH/dRgt6ubzpWxgRcnjo+Om2q1La4Dic68i6j1EAYQT4h9O5h9Mi
+        qbAx78ZA2+2Fa+a5QmBjR6aRpId8lUATokH4jKnkq6II7kkGtbTeem1L0jAoElzlEEyCq9
+        o+40tWf3u9QgAOw6AbIhaL364BrnS5ng/kLBRoLwxv0442jg4Y+xeYsK6ZjD4jmXwk94Or
+        lwTQpdq0aQdKjZt0HIo89PpGh3YgSdKyU7mTazgAny4x6qs181EvoYFNz/Z3yA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1605635231;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +36,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o4O87AnU5hneBS3mjSaT0iMcb9LaTdka39Ud6mJbR/o=;
-        b=E1IQErOhjtB1UdbbcDxtdoIkjziPjfYFBvht1TmqCJnbgeVVebOR3wptSMQwc3+Zw1IqKH
-        pnP6zxq8VJ3kYPAQ==
-From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+        bh=5TtcJ/Dhuz1KukPIcUPXcf25NvLw1I8V/R0UBTaSf6c=;
+        b=AjOBiTchlV7Kpw4YmF0fu+2f72GRsyTvEKD9l2yib8z+4SuX89C11E5Rcakht1kkBsWh/g
+        2m+zxyfLAGelpAAw==
+From:   "tip-bot2 for Vamshi K Sthambamkadi" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/urgent] efi/x86: Free efi_pgd with free_pages()
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+Subject: [tip: efi/urgent] efivarfs: fix memory leak in efivarfs_create()
+Cc:     <stable@vger.kernel.org>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
         Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201110163919.1134431-1-nivedita@alum.mit.edu>
-References: <20201110163919.1134431-1-nivedita@alum.mit.edu>
+In-Reply-To: <20201023115429.GA2479@cosmos>
+References: <20201023115429.GA2479@cosmos>
 MIME-Version: 1.0
-Message-ID: <160563522966.11244.17449598594182315880.tip-bot2@tip-bot2>
+Message-ID: <160563523031.11244.13285027603206176660.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,82 +62,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the efi/urgent branch of tip:
 
-Commit-ID:     c2fe61d8be491ff8188edaf22e838f819999146b
-Gitweb:        https://git.kernel.org/tip/c2fe61d8be491ff8188edaf22e838f819999146b
-Author:        Arvind Sankar <nivedita@alum.mit.edu>
-AuthorDate:    Tue, 10 Nov 2020 11:39:19 -05:00
+Commit-ID:     fe5186cf12e30facfe261e9be6c7904a170bd822
+Gitweb:        https://git.kernel.org/tip/fe5186cf12e30facfe261e9be6c7904a170bd822
+Author:        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+AuthorDate:    Fri, 23 Oct 2020 17:24:39 +05:30
 Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Tue, 10 Nov 2020 19:18:11 +01:00
+CommitterDate: Mon, 26 Oct 2020 08:15:24 +01:00
 
-efi/x86: Free efi_pgd with free_pages()
+efivarfs: fix memory leak in efivarfs_create()
 
-Commit
+kmemleak report:
+  unreferenced object 0xffff9b8915fcb000 (size 4096):
+  comm "efivarfs.sh", pid 2360, jiffies 4294920096 (age 48.264s)
+  hex dump (first 32 bytes):
+    2d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -...............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000cc4d897c>] kmem_cache_alloc_trace+0x155/0x4b0
+    [<000000007d1dfa72>] efivarfs_create+0x6e/0x1a0
+    [<00000000e6ee18fc>] path_openat+0xe4b/0x1120
+    [<000000000ad0414f>] do_filp_open+0x91/0x100
+    [<00000000ce93a198>] do_sys_openat2+0x20c/0x2d0
+    [<000000002a91be6d>] do_sys_open+0x46/0x80
+    [<000000000a854999>] __x64_sys_openat+0x20/0x30
+    [<00000000c50d89c9>] do_syscall_64+0x38/0x90
+    [<00000000cecd6b5f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-  d9e9a6418065 ("x86/mm/pti: Allocate a separate user PGD")
+In efivarfs_create(), inode->i_private is setup with efivar_entry
+object which is never freed.
 
-changed the PGD allocation to allocate PGD_ALLOCATION_ORDER pages, so in
-the error path it should be freed using free_pages() rather than
-free_page().
-
-Commit
-
-    06ace26f4e6f ("x86/efi: Free efi_pgd with free_pages()")
-
-fixed one instance of this, but missed another.
-
-Move the freeing out-of-line to avoid code duplication and fix this bug.
-
-Fixes: d9e9a6418065 ("x86/mm/pti: Allocate a separate user PGD")
-Link: https://lore.kernel.org/r/20201110163919.1134431-1-nivedita@alum.mit.edu
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+Link: https://lore.kernel.org/r/20201023115429.GA2479@cosmos
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/platform/efi/efi_64.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ fs/efivarfs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
-index 8f5759d..e1e8d4e 100644
---- a/arch/x86/platform/efi/efi_64.c
-+++ b/arch/x86/platform/efi/efi_64.c
-@@ -78,28 +78,30 @@ int __init efi_alloc_page_tables(void)
- 	gfp_mask = GFP_KERNEL | __GFP_ZERO;
- 	efi_pgd = (pgd_t *)__get_free_pages(gfp_mask, PGD_ALLOCATION_ORDER);
- 	if (!efi_pgd)
--		return -ENOMEM;
-+		goto fail;
- 
- 	pgd = efi_pgd + pgd_index(EFI_VA_END);
- 	p4d = p4d_alloc(&init_mm, pgd, EFI_VA_END);
--	if (!p4d) {
--		free_page((unsigned long)efi_pgd);
--		return -ENOMEM;
--	}
-+	if (!p4d)
-+		goto free_pgd;
- 
- 	pud = pud_alloc(&init_mm, p4d, EFI_VA_END);
--	if (!pud) {
--		if (pgtable_l5_enabled())
--			free_page((unsigned long) pgd_page_vaddr(*pgd));
--		free_pages((unsigned long)efi_pgd, PGD_ALLOCATION_ORDER);
--		return -ENOMEM;
--	}
-+	if (!pud)
-+		goto free_p4d;
- 
- 	efi_mm.pgd = efi_pgd;
- 	mm_init_cpumask(&efi_mm);
- 	init_new_context(NULL, &efi_mm);
- 
- 	return 0;
-+
-+free_p4d:
-+	if (pgtable_l5_enabled())
-+		free_page((unsigned long)pgd_page_vaddr(*pgd));
-+free_pgd:
-+	free_pages((unsigned long)efi_pgd, PGD_ALLOCATION_ORDER);
-+fail:
-+	return -ENOMEM;
+diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+index 15880a6..f943fd0 100644
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -21,6 +21,7 @@ LIST_HEAD(efivarfs_list);
+ static void efivarfs_evict_inode(struct inode *inode)
+ {
+ 	clear_inode(inode);
++	kfree(inode->i_private);
  }
  
- /*
+ static const struct super_operations efivarfs_ops = {
