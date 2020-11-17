@@ -2,132 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4187C2B5B8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 140A32B5B8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgKQJMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:12:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
+        id S1726917AbgKQJOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:14:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgKQJMl (ORCPT
+        with ESMTP id S1725730AbgKQJN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:12:41 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB92EC0613CF;
-        Tue, 17 Nov 2020 01:12:40 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id l11so17024060lfg.0;
-        Tue, 17 Nov 2020 01:12:40 -0800 (PST)
+        Tue, 17 Nov 2020 04:13:59 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE7CC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:13:58 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p1so22350340wrf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:13:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R/grZXeeQBbyIRmHKwTjb+NXuOPdZoPUr6jxYZAJ9Oo=;
-        b=LN9hXE4iTXsI1UPR8/RwRNDh1jzttL1eDWT16/0t7pHmec9POqsUJ7NZC/bEK3it+r
-         75uWRo8S1GSQ1cnVVbcL8c2DNaPA2pa3bNLseatrQmZn8k7KqVX5QB7MhAmgOcO7VzRZ
-         iY1TuPDWxwXpvePEImjrKqf6q7b5MhnDVS3kF2Kjc7ZRl2Xw/CYDutuLVxZO11V/Uh3m
-         J5EUVAfdxJZ2wHSm/Z46V1ogbhfMDfqSCv+H1fs8dGUbnjIa+4Q/0snIeVH/5G4jg2hx
-         TTBl+bfElYcifLIPJ2Xw/X0M9mc9o5N8lKaG3ObC7Lk4BZ957lwjsNIlnbA9hSUfaUGh
-         UKWw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=OR30Ri59Ax7IpNJY8Gv39vgzGLTXJgPp4Uy2vKvkYFc=;
+        b=igklpoADzxrfYaKjM1Xzrl/jf85gx3y8/wrQJOxcjxSojDSr6dSuPGnqkUBOYWsj1B
+         rSwsm8PeQqB8/+IxJeAgZEcZl/uNa+R227MDPS4buybyWxk+iJCahEiIMH4rPRsIEl6V
+         V74st9bagynVU8PbpM09agbKKMJyTfkkWS6QG/jGrpu1+eHs9C/w7L4jVD5e8xTag0o8
+         blLXh9wAfdV2k637jP/4AYLLSBJ068+i6gyqZCEoPGx1EUs/N88KuO6BfjZF+q4kYFku
+         lJcrZWBb16K0hjXXFxx3t81YDdP3lvaHbp81r1DSdhu5vXfQhXbVxgs2tPnib9efXwdi
+         AXnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R/grZXeeQBbyIRmHKwTjb+NXuOPdZoPUr6jxYZAJ9Oo=;
-        b=UQCC63xoaNAkUv2r2SZDktQDTfJVJAF5ZC8ulAQhLm8uGuX5DkNcYBdIgXl1jk7rv9
-         Dj0A7BH94DuSOgSeRJIK7k+wKP1m61uWd5Q6RRIqiFUBswTQ0gDRtZTTyYnVGG/Pxcb0
-         RiseQ3d8IlcrMeZpeNhPVXlxnHefeh6kZP3Wvl3vFBqAxGjz0QSCexGZPk3k4TVKHeg+
-         lUxbyzpFqQVoyFHDQShmP2L/yWHTLXU0/nnZwTk0DSm89D7AkQR9ez+o48MLtdcxM+pp
-         yQ0jo8SgWCmDPEFddF+02YYR61TlA6Sh665qo1+jJjWcIAN28IqQNt1XBlr9keThanKE
-         X68g==
-X-Gm-Message-State: AOAM533Ic6rMAm3qHUChvAbVzM+tKMR75raQgx4zmglOZn3Of977qzgo
-        6yrgOdUP/CrxjqP3hgXo5itpc0fJuh6mTUyf
-X-Google-Smtp-Source: ABdhPJzek9GQJWfg8c0Ahjd6dZbhNwvenQvCScEtcBtHUB2Hm0UsjS+p8w0qmv/KKhGC/ooNYVtn/A==
-X-Received: by 2002:ac2:5e91:: with SMTP id b17mr1292343lfq.442.1605604359353;
-        Tue, 17 Nov 2020 01:12:39 -0800 (PST)
-Received: from mobilestation ([95.79.141.114])
-        by smtp.gmail.com with ESMTPSA id t22sm3123567lfb.180.2020.11.17.01.12.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 01:12:38 -0800 (PST)
-Date:   Tue, 17 Nov 2020 12:12:34 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: kernel: Fix for_each_memblock conversion
-Message-ID: <20201117091234.zeq655p7lo6cxzny@mobilestation>
-References: <20201116174516.144243-1-tsbogend@alpha.franken.de>
- <20201116200554.rhbyvfmdzmchwwbs@mobilestation>
- <20201117080518.GH370813@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=OR30Ri59Ax7IpNJY8Gv39vgzGLTXJgPp4Uy2vKvkYFc=;
+        b=Ocqat5tJWAQtKXgb6OS5+uovnFcT7c2zwSS2ciTEvY3aUIZ0+EQB07/QxtS4VSj7MC
+         adZJMA56kW2EkxwuE03lwIMezBWx+zLY47py6ZmUCHd5tDqnd4arG4oIWEMC6yud96xf
+         QT2LCxXoghDbjv6WSKQVB0mliNLyo7w4uaQDYaNZwROplw//ZIB6qNALVPkZyLSkM2+t
+         Em4DHdyfoLudvzYmya0xPZLZSoa0h7hHTuzXPf/hQXcZ7sZ/nudOZOihfMjVSZh1QlDA
+         DL4a5OcQ/auN+xAH6mG4ThgfB9uncg/ygFEPq414FGRCYAlEIPwR9jo1x5SzFnyFltQb
+         oU9Q==
+X-Gm-Message-State: AOAM530wm/KqQGegftlV9B1b1czxbBJpcCxB/ZU4oikF9nW5M2g7odrR
+        RFci4a/q8BCqNCT4azx7mq8KtA==
+X-Google-Smtp-Source: ABdhPJwUOdjKDl9430Lx6lmJNchpAdC2x/s14wJ3qQ4YyvTROcQ7NihVTDZjeiONwjI2nXYp3pjQxA==
+X-Received: by 2002:a5d:548b:: with SMTP id h11mr24421181wrv.306.1605604436755;
+        Tue, 17 Nov 2020 01:13:56 -0800 (PST)
+Received: from ?IPv6:2001:861:3a84:7260:b09f:f7de:c7af:258b? ([2001:861:3a84:7260:b09f:f7de:c7af:258b])
+        by smtp.gmail.com with ESMTPSA id a18sm2484557wme.18.2020.11.17.01.13.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 01:13:56 -0800 (PST)
+Subject: Re: [PATCH 3/3] phy: amlogic: meson8b-usb2: fix shared reset control
+ use
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-amlogic@lists.infradead.org,
+        Jerome Brunet <jbrunet@baylibre.com>
+References: <20201113000508.14702-1-aouledameur@baylibre.com>
+ <20201113000508.14702-4-aouledameur@baylibre.com>
+ <CAFBinCA6_Cei5QdiVRTX14S5QFoyDgAOhFUXtnx5uiAxuTRs9A@mail.gmail.com>
+From:   Amjad Ouled-Ameur <aouledameur@baylibre.com>
+Message-ID: <b7989575-e7f0-a4c4-9f00-7500b432571e@baylibre.com>
+Date:   Tue, 17 Nov 2020 10:13:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117080518.GH370813@kernel.org>
+In-Reply-To: <CAFBinCA6_Cei5QdiVRTX14S5QFoyDgAOhFUXtnx5uiAxuTRs9A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:05:18AM +0200, Mike Rapoport wrote:
-> On Mon, Nov 16, 2020 at 11:05:54PM +0300, Serge Semin wrote:
-> > On Mon, Nov 16, 2020 at 06:45:15PM +0100, Thomas Bogendoerfer wrote:
-> > > The loop over all memblocks works with PFN numbers and not physical
-> > > addresses, so we need for_each_mem_pfn_range().
-> > 
-> > Great catch! Don't know how that has been working so far. Anyway
-> 
+Hi Martin,
 
-> The loop is relevant only for systems with highmem, apparently there are
-> not many highmem users out there.
+Thank you for the review !
 
-That has been mostly a rhetorical question. The thing is that our
-platform is 32bit and it is active user of highmem.) So I am very
-puzzled how I haven't noticed a effect caused by that bug before.
-Most likely that happened due to our platform having a first memory
-chunk starting with physical address 0x0. That's why we always have a
-low memory defined.
+On 14/11/2020 20:11, Martin Blumenstingl wrote:
 
--Sergey
+> Hi Amjad,
+>
+> On Fri, Nov 13, 2020 at 1:07 AM Amjad Ouled-Ameur
+> <aouledameur@baylibre.com> wrote:
+> [...]
+>>          ret = clk_prepare_enable(priv->clk_usb);
+>>          if (ret) {
+>>                  dev_err(&phy->dev, "Failed to enable USB DDR clock\n");
+>> +               reset_control_rearm(priv->reset);
+> this should come after reset_control_rearm so we're cleaning up in
+> reverse order of initializing things
+> (in this case it probably makes no difference since
+> reset_control_rearm is not touching any registers, but I'd still have
+> it in the correct order to not confuse future developers)
 
-> 
-> > Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> > 
-> > -Sergey
-> > 
-> > > 
-> > > Fixes: b10d6bca8720 ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
-> > > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > > ---
-> > >  arch/mips/kernel/setup.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> > > index 0d4253208bde..ca579deef939 100644
-> > > --- a/arch/mips/kernel/setup.c
-> > > +++ b/arch/mips/kernel/setup.c
-> > > @@ -262,8 +262,8 @@ static void __init bootmem_init(void)
-> > >  static void __init bootmem_init(void)
-> > >  {
-> > >  	phys_addr_t ramstart, ramend;
-> > > -	phys_addr_t start, end;
-> > > -	u64 i;
-> > > +	unsigned long start, end;
-> > > +	int i;
-> > >  
-> > >  	ramstart = memblock_start_of_DRAM();
-> > >  	ramend = memblock_end_of_DRAM();
-> > > @@ -300,7 +300,7 @@ static void __init bootmem_init(void)
-> > >  
-> > >  	min_low_pfn = ARCH_PFN_OFFSET;
-> > >  	max_pfn = PFN_DOWN(ramend);
-> > > -	for_each_mem_range(i, &start, &end) {
-> > > +	for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, NULL) {
-> > >  		/*
-> > >  		 * Skip highmem here so we get an accurate max_low_pfn if low
-> > >  		 * memory stops short of high memory.
-> > > -- 
-> > > 2.16.4
-> > > 
-> 
-> -- 
-> Sincerely yours,
-> Mike.
+Agreed, it works in this current order since the two lines do not
+interfere with each other, but it is cleaner to do it in the reverse
+order of initialization. Will fix it in next change.
+
+>>                  clk_disable_unprepare(priv->clk_usb_general);
+>>                  return ret;
+>>          }
+>> @@ -197,6 +199,7 @@ static int phy_meson8b_usb2_power_on(struct phy *phy)
+>>                          regmap_read(priv->regmap, REG_ADP_BC, &reg);
+>>                          if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
+>>                                  dev_warn(&phy->dev, "USB ID detect failed!\n");
+>> +                               reset_control_rearm(priv->reset);
+> same here, reset_control_rearm should be after clk_disable_unprepare
+
+Ditto, will fix it in next change.
+
+>
+>>                                  clk_disable_unprepare(priv->clk_usb);
+>>                                  clk_disable_unprepare(priv->clk_usb_general);
+>>                                  return -EINVAL;
+>> @@ -216,6 +219,7 @@ static int phy_meson8b_usb2_power_off(struct phy *phy)
+>>                                     REG_DBG_UART_SET_IDDQ,
+>>                                     REG_DBG_UART_SET_IDDQ);
+>>
+>> +       reset_control_rearm(priv->reset);
+> same here, reset_control_rearm should be after clk_disable_unprepare
+
+Ditto, will fix it in next change.
+
+>
+>>          clk_disable_unprepare(priv->clk_usb);
+>>          clk_disable_unprepare(priv->clk_usb_general);
+>
+> Best regards,
+> Martin
+>
+
+Sincerely,
+Amjad
+
