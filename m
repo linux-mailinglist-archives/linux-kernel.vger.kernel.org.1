@@ -2,335 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FC32B5C58
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BF12B5C5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727746AbgKQJzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:55:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
+        id S1727758AbgKQJz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:55:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727724AbgKQJzK (ORCPT
+        with ESMTP id S1726925AbgKQJz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:55:10 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29DCC0613CF;
-        Tue, 17 Nov 2020 01:55:10 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id t16so21923434oie.11;
-        Tue, 17 Nov 2020 01:55:10 -0800 (PST)
+        Tue, 17 Nov 2020 04:55:56 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F3FC0613CF;
+        Tue, 17 Nov 2020 01:55:56 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id w24so2635049wmi.0;
+        Tue, 17 Nov 2020 01:55:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=g6cFr1GWe/3eh4NUqXWAinlK5cgfPVLY2u3q3tSx53o=;
-        b=CzawzkGYSM3k6pL0T1hbwyHjk6lf4OIJYruDp2QL9npIt9xSBOSoriYK+lZN9iL+1X
-         Rcg9c8kQYukPpCN7TI/x193Dnvx9ojNTqpQD9pRj/8HF9pLMqS+OHXMcCkLl9uqVDXOg
-         +dpwSRi5RPt+5kwajoY5fEgEg6mIUXRavCobmMSmukmp+kmUagl1I+8xeqZCMAm2dOKj
-         5GapsgPY+wOutrJEWvwAD9zyseIihpDzWEpMAAonb1aiZ8MVdJRJOZdKhxs/Q7I5VokN
-         eAVT1dU8mjcSJsiklHSwc26Qpa+BWC/Hdg3gS1B8COd1jgrAbqvhKWTj+NzoaSwfKFSJ
-         /C8g==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OkcHvoC9h7XnzKKVDJ1PQHmwjVn7AwnuwH67E4ZJXKg=;
+        b=GCbgEIdlb48DiO/AChdy8hwFfHHbhQ0BVWCpt2kPmfWWha3y1aE7XF8XTWT4DAIo6B
+         Brm9GABSbiaQFoRRG7K7x0V4AxFyYosXLaDSqw/1fGO6bhU0963iesiy0YGG/QvvGKbM
+         fW31Q/XFEBybJMGtVVezISrkBNn55MJj0RB2VXJT4GHlJKHGqXeffxQPrj6pxRAAhxm5
+         KTOQ7vM77++oAJZIhW4pnQpMvb8r6bbYOFzdurd7NRug7PAxx3KOJtNUxMCJSPgqKTNa
+         FvnPFM3s8uDt78fIZWR7nRqUINakYxeFg4tvehcGeEVGD7lLOb5/L1haBlK793qtWZDZ
+         yFlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=g6cFr1GWe/3eh4NUqXWAinlK5cgfPVLY2u3q3tSx53o=;
-        b=AbUlJZPlCQqjuwh8j+YjzFrFuivBjD5/uGpOQI4OPWbflbQ9ZGAMxkreyys97ulHqM
-         KDhWOaBPNv15HeIzJmqqS8Ikk44TBB3c9O62m6FzG7NqnrGam+rwNlJvQSD3fIJtoheK
-         1d+eIOsJmN+sNjLZv86mhWbt7Lg2cfjhvgSeBd8ZHVzdLAyacrugIQ1w1wsF/4MTworJ
-         bLQxw8lYZy+2HDdrWVrZ+tsgT9NPgkzTlvw9LieRorJqOpE57PrFeg+rXTfxSdKGO8A8
-         d0gQpGMxoM0EtdqPRrpN3P7YA4mHoUJNpDA6JyhwuAtXDuOgWLfGEg2UzvsAe/+/9EuT
-         zmtw==
-X-Gm-Message-State: AOAM5325/E6iPrcgvN/cRJnmaDYApXHuUIKR71Ie25A0ubtq+i37xRN/
-        z5sb+tmD1SggmlEIN+rfZINsvMSS0rJ4GCLnOOs=
-X-Google-Smtp-Source: ABdhPJya8F6HqaXOxv32vLbvDlmGZZUV8Q00KUBZXfRPq3qbh5S+PA3y0CdQ8g7uWdODqTVA4V0Epe3FABZHNroWpjk=
-X-Received: by 2002:aca:4783:: with SMTP id u125mr1917664oia.23.1605606909920;
- Tue, 17 Nov 2020 01:55:09 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OkcHvoC9h7XnzKKVDJ1PQHmwjVn7AwnuwH67E4ZJXKg=;
+        b=skZgZQ7+myd5Hu2FtOCWfFiGxGKHlFHvz41a5ywUoZG6vMuGXIboe4aV1ZyvvRHV84
+         GkKRkcihhPDX0Yi8L6lpbSGOLDwmoPL9mL+YSaVTHgdTg/4okE4mZM0615PNa1bydQDR
+         XgbIw5+BXEf1yT4DB8FdB7eNTGRU14R9tnRXrTYhDTIScPvhXQNPGph9lHee5lp2j3Fc
+         Sw/uf7N7bqlZNBuWHSZ/dutI7egtYrbMxCVzNlI4aSlzQv91r/aCRGVhqCPm8+2RHqMy
+         qGJYo6+vPTDN8e3POXKClKXGQBxhrIjAWflCxekRbxnMI7gFc/3kKvB0qd1CMU9/AR79
+         Q2bQ==
+X-Gm-Message-State: AOAM531jQ2A4dmBTSc10Uj9WwaQ0M058F6z18OrpLFqg+MAawxYj+eQ0
+        xWfvZWe5uNcOdWdORCOmln8960uj+NM=
+X-Google-Smtp-Source: ABdhPJx9i49JfIzqbWnR8bDQWe4GMj8kNh83/pphhmGfBiSgttCjeyecQ50WyltC4OTZaVjq4TsirQ==
+X-Received: by 2002:a1c:2643:: with SMTP id m64mr3523353wmm.28.1605606954393;
+        Tue, 17 Nov 2020 01:55:54 -0800 (PST)
+Received: from [192.168.8.114] ([37.172.222.211])
+        by smtp.gmail.com with ESMTPSA id m21sm5979264wmi.3.2020.11.17.01.55.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 01:55:53 -0800 (PST)
+Subject: Re: [PATCH v6] tcp: fix race condition when creating child sockets
+ from syncookies
+To:     Ricardo Dias <rdias@singlestore.com>, davem@davemloft.net,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        edumazet@google.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201117072955.GA1611867@rdias-suse-pc.lan>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <305d00e2-c3db-3621-33a6-c1377b1aca63@gmail.com>
+Date:   Tue, 17 Nov 2020 10:55:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <1602034966-3524-1-git-send-email-gene.chen.richtek@gmail.com>
- <1602034966-3524-3-git-send-email-gene.chen.richtek@gmail.com>
- <5a9b31c4-739c-06fc-2015-ed474993ad22@gmail.com> <CAE+NS35Y41mFKNhj+54BeeSYFu2J9BtvMWOxyMcf9a==39cbdA@mail.gmail.com>
- <8925db23-5cc4-3c5f-932a-461fe6450dad@gmail.com> <CAE+NS379bgtRotqzioR+Ya3mE1kZrKfe9qV=W2p=hH7Omrn8Hw@mail.gmail.com>
- <1bb76c54-14af-6c78-4623-77c6678b262e@gmail.com> <CAE+NS35z7_ZUdm6gRNw2z7Ozs+1A8_Vtj_9x-F65RLd4QqDFDA@mail.gmail.com>
- <af17141f-23ae-063d-ade2-42dfdf611d81@gmail.com> <CAE+NS37-vQ4LLbCv-1+WsLe7qEQdVvBhhNKK4=oDj5VtWuaeoQ@mail.gmail.com>
- <aab50d87-c696-6480-b5c7-2f75df19f50f@gmail.com>
-In-Reply-To: <aab50d87-c696-6480-b5c7-2f75df19f50f@gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Tue, 17 Nov 2020 17:54:58 +0800
-Message-ID: <CAE+NS36aqhNwF=+n=-UHTgLvb+PTt1VHR1pV5+rxR7d3p3N2zA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] leds: mt6360: Add LED driver for MT6360
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201117072955.GA1611867@rdias-suse-pc.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=
-=9C=8817=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=882:25=E5=AF=AB=E9=81=
-=93=EF=BC=9A
->
-> On 11/16/20 11:01 AM, Gene Chen wrote:
-> > Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B410=
-=E6=9C=8831=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=886:34=E5=AF=AB=E9=
-=81=93=EF=BC=9A
-> >>
-> >> On 10/30/20 9:51 AM, Gene Chen wrote:
-> >>> Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B4=
-10=E6=9C=8828=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:28=E5=AF=AB=
-=E9=81=93=EF=BC=9A
-> >>>>
-> >>>> On 10/27/20 10:28 AM, Gene Chen wrote:
-> >>>>> Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=
-=B410=E6=9C=8821=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=885:47=E5=AF=
-=AB=E9=81=93=EF=BC=9A
-> >>>>>>
-> >>>>>> On 10/20/20 8:44 AM, Gene Chen wrote:
-> >>>>>>> Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=
-=B9=B410=E6=9C=889=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=885:51=E5=AF=
-=AB=E9=81=93=EF=BC=9A
-> >>>>>>>>
-> >>>>>>>> Hi Gene,
-> >>>>>>>>
-> >>>>>>>> On 10/7/20 3:42 AM, Gene Chen wrote:
-> >>>>>>>>> From: Gene Chen <gene_chen@richtek.com>
-> >>>>>>>>>
-> >>>>>>>>> Add MT6360 LED driver include 2-channel Flash LED with torch/st=
-robe mode,
-> >>>>>>>>> 3-channel RGB LED support Register/Flash/Breath Mode, and 1-cha=
-nnel for
-> >>>>>>>>> moonlight LED.
-> >>>>>>>>>
-> >>>>>>>>> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> >>>>>>>>> ---
-> >>>>>>>>>       drivers/leds/Kconfig       |  12 +
-> >>>>>>>>>       drivers/leds/Makefile      |   1 +
-> >>>>>>>>>       drivers/leds/leds-mt6360.c | 783 ++++++++++++++++++++++++=
-+++++++++++++++++++++
-> >>>>>>>>>       3 files changed, 796 insertions(+)
-> >>>>>>>>>       create mode 100644 drivers/leds/leds-mt6360.c
-> >>>>>>>>>
-> >>>>>>>>> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> >>>>>>>>> index 1c181df..c7192dd 100644
-> >>>>>>>>> --- a/drivers/leds/Kconfig
-> >>>>>>>>> +++ b/drivers/leds/Kconfig
-> >>>>>>>>> @@ -271,6 +271,18 @@ config LEDS_MT6323
-> >>>>>>>>>             This option enables support for on-chip LED drivers=
- found on
-> >>>>>>>>>             Mediatek MT6323 PMIC.
-> >>>>>>>>>
-> >>>>>>>>> +config LEDS_MT6360
-> >>>>>>>>> +     tristate "LED Support for Mediatek MT6360 PMIC"
-> >>>>>>>>> +     depends on LEDS_CLASS_FLASH && OF
-> >>>>>>>>> +     depends on LEDS_CLASS_MULTICOLOR
-> >>>>>>>>
-> >>>>>>>> Since CONFIG_LED_CLASS_MULTICOLOR can be turned off you need to =
-have
-> >>>>>>>> below instead:
-> >>>>>>>>
-> >>>>>>>> depends on LEDS_CLASS_MULTICOLOR || !!LEDS_CLASS_MULTICOLOR
-> >>>>
-> >>>> My typo here, should be one "!":
-> >>>>
-> >>>> depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
-> >>>>
-> >>>> And you should also have
-> >>>>
-> >>>> depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
-> >>>>
-> >>>> But to make it work correctly you would have to add registration
-> >>>> stubs to include/linux/led-class-flash.h similarly to LED mc stubs
-> >>>> in include/linux/led-class-multicolor.h.
-> >>>>
-> >>>>>>>>
-> >>>>>>>> Unless you want to prevent enabling the driver without RGB LED,
-> >>>>>>>> but that does not seem to be reasonable at first glance.
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> May I change to "select LEDS_CLASS_MULTICOLOR"?
-> >>>>>>> I suppose RGB always use multicolor mode.
-> >>>>>>
-> >>>>>> You will also have moonlight LED that will not need multicolor
-> >>>>>> framework. Is it somehow troublesome to keep "depends on"?
-> >>>>>>
-> >>>>>
-> >>>>> If only use ML LED and FLED,  DTSI will only define ML LED and FLED=
-.
-> >>>>> Therefore, the drivers probe will not register rgb multicolor devic=
-e.
-> >>>>
-> >>>> Please test your use case again with my fixed "depends on".
-> >>>>
-> >>>> In case when there is only ML LED and FLED in the DT it should
-> >>>> register both devices if LEDS_CLASS_FLASH is turned on.
-> >>>> Multicolor framework has nothing to do in this case.
-> >>>>
-> >>>> But if you additionally had MC LED node, then it should
-> >>>> be registered only if LEDS_CLASS_MULTICOLOR is enabled.
-> >>>>
-> >>>> Similarly, when FLED node is present, but LEDS_CLASS_FLASH
-> >>>> is off, and LEDS_CLASS_MULTICOLOR is on, the driver should still
-> >>>> compile, but register only LED MC device (if its node is present).
-> >>>>
-> >>>
-> >>> I think this case only register LED device, not LED "MC" device.
-> >>> Because our FLASH is not a multicolor device.
-> >>
-> >> No, here I was describing following setup:
-> >>
-> >> - DT FLED node is present, CONFIG_LEDS_CLASS_FLASH is off
-> >> - DT MC node is present, CONFIG_LEDS_CLASS_MULTICOLOR is on
-> >>
-> >> ML LED presence in DT is irrelevant in this case.
-> >> It should be always registered if there is corresponding DT node
-> >> and LEDS_CLASS is on.
-> >>
-> >
-> > As a long time discussion, we conclude some rules about MT6360 LED driv=
-er.
-> > FLED is necessary, so Kconfig depends on LED_CLASS_FLASH
->
-> Maybe it is necessary in your use case, but probably it is possible to
-> use the device without FLED. If so, then you should allow users
-> disabling it. Therefore you should have:
->
-> depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
->
 
-ACK
 
-> > ML LED is optional, which is registered as led class device.
-> > RGB LED can be either simple led class device or multicolor device,
-> > which is decided in DT node
-> > If Multicolor LED DT node is exist, it should be register multicolor
-> > device success.
->
-> But only if CONFIG_LEDS_CLASS_MULTICOLOR is enabled.
->
-> > Maybe it is more specific to send a new patch?
-> >
-> > Sample DT as below
-> > LED "red" is simple led class device, LED "green&blue" is multicolor de=
-vices.
-> > led@0 {
-> >          reg =3D <0>;
-> >          function =3D LED_FUNCTION_INDICATOR;
-> >          color =3D <LED_COLOR_ID_RED>;
-> >          led-max-microamp =3D <24000>;
-> > };
-> > led@6 {
-> >          reg =3D <6>;
-> >          function =3D LED_FUNCTION_INDICATOR;
-> >          color =3D <LED_COLOR_ID_MULTI>;
-> >
-> >          led@1 {
-> >                  reg =3D <1>;
-> >                  function =3D LED_FUNCTION_INDICATOR;
-> >                  color =3D <LED_COLOR_ID_GREEN>;
-> >                  led-max-microamp =3D <24000>;
-> >          };
-> >          led@2 {
-> >                  reg =3D <2>;
-> >                  function =3D LED_FUNCTION_INDICATOR;
-> >                  color =3D <LED_COLOR_ID_BLUE>;
-> >                  led-max-microamp =3D <24000>;
-> >          };
-> > };
->
-> It looks OK.
->
-> >>>> Possible should be also the case when both LEDS_CLASS_FLASH
-> >>>> and LEDS_CLASS_MULTICOLOR are off. Then only LED class device
-> >>>> for ML LED will be registered (provided there is ML DT node).
-> >>>> But to make it possible you should have also "depends on LEDS_CLASS"
-> >>>> in the Kconfig entry.
-> >>>>
-> >>>
-> >>> According to your suggestion,
-> >>> depends on LED_CLASS && LEDS_CLASS_FLASH && OF
-> >>
-> >> s/LED_CLASS/LEDS_CLASS/
-> >>
-> >> And you have to remove LEDS_CLASS_FLASH from above line.
-> >>
-> >>> depends on LEDS_CLASS_MULTICOLOR || !!LEDS_CLASS_MULTICOLOR
-> >>
-> >> s/!!LEDS_CLASS_MULTICOLOR/!LEDS_CLASS_MULTICOLOR/
-> >>
-> >>> depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
-> >>> depends on MFD_MT6360
-> >>
-> >> You will need V4L2_FLASH_LED_CLASS dependency as well, to avoid
-> >> build break, when it is set to 'm'.
-> >>
-> >> To recap, following block of dependencies is required:
-> >>
-> >> depends on LEDS_CLASS && OF
-> >> depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
-> >> depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
-> >> depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
-> >> depends on MFD_MT6360
-> >>
-> >
-> > LEDS_MT6360 depends on LEDS_CLASS_FLASH, and LEDS_CLASS_FLASH depends
-> > on LEDS_CLASS
-> > Is "depends on LEDS_CLASS" still needed?
->
-> Yes, because you should allow disabling CONFIG_LEDS_CLASS_FLASH.
-> In such a case driver should still compile and register ML LED class
-> device when it has corresponding DT node.
->
+On 11/17/20 8:29 AM, Ricardo Dias wrote:
+> When the TCP stack is in SYN flood mode, the server child socket is
+> created from the SYN cookie received in a TCP packet with the ACK flag
+> set.
+> 
 
-ACK
+...
 
-> >>> and source code add constraint
-> >>>
-> >>> #if IS_ENABLED(CONFIG_LEDS_CLASS_MULTICOLOR)
-> >>>       ret =3D devm_led_classdev_multicolor_register_ext(parent, &led-=
->rgb,
-> >>> init_data);
-> >>> #endif
-> >>>
-> >>> #if IS_ENABLED(CONFIG_LEDS_CLASS_FLASH)
-> >>>       ret =3D devm_led_classdev_flash_register_ext(parent, &led->flas=
-h, init_data);
-> >>> #endif
-> >>
-> >> No, the guards should be in headers. That's why I recommended adding
-> >> no ops for LED flash class registration functions in previous email.
-> >>
-> >> Please compare include/linux/led-class-multicolor.h and do similar
-> >> changes in include/linux/led-class-flash.h.
-> >>
-> >
-> > ACK, I will submit a fixed patch about leds-class-flash.h.
-> >
-> > By the way, if CONFIG_LED_CLASS_MULTICOLOR is not enabled and we don't
-> > use #if IS_ENABLED,
-> > according to led-class-multicolor.h return -EINVAL,
-> > we will register multicolor device fail and cause probe fail.
->
-> Good point. So led-class-multicolor.h no-ops need to be fixed to return
-> 0 instead of -EINVAL.
->
-> And no-ops in include/linux/led-class-flash.h should also return 0.
+>  
+> @@ -1374,6 +1381,13 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
+>  				skb_set_owner_r(newnp->pktoptions, newsk);
+>  			}
+>  		}
+> +	} else {
+> +		if (!req_unhash && esk) {
+> +			/* This code path should only be executed in the
+> +			 * syncookie case only
+> +			 */
+> +			newsk = esk;
 
-DT node is first priority to decide how leds work.
-If RGB LED use multicolor form in DT, CONFIG_LEDS_CLASS_FLASH should be def=
-ined.
-Otherwise It is right action to probe fail.
+What happens to the socket we just created and was stored in @newsk ?
 
->
-> --
-> Best regards,
-> Jacek Anaszewski
+We are going to leak kernel memory quite fast, if we just forget about it.
+
+> +		}
+>  	}
+>  
+>  	return newsk;
+> 
+
+Anyway, I have tested your patch (see below) and had many errors in 
+
+[  669.578597] cleanup rbuf bug: copied 1A5AD52D seq 1A5AD52D rcvnxt 1A5AD52D
+[  669.578604] WARNING: CPU: 30 PID: 13267 at net/ipv4/tcp.c:1553 tcp_cleanup_rbuf+0x48/0x100
+[  669.578604] Modules linked in: vfat fat w1_therm wire i2c_mux_pca954x i2c_mux cdc_acm ehci_pci ehci_hcd mlx4_en mlx4_ib ib_uverbs ib_core mlx4_core
+[  669.578610] CPU: 30 PID: 13267 Comm: ld-2.15.so.orig Tainted: G S      W         5.10.0-smp-DEV #394
+[  669.578611] Hardware name: Intel RML,PCH/Iota_QC_19, BIOS 2.60.0 10/02/2019
+[  669.578612] RIP: 0010:tcp_cleanup_rbuf+0x48/0x100
+[  669.578612] Code: f3 48 39 d0 74 26 48 85 c0 74 21 8b 50 2c 8b b7 7c 05 00 00 39 d6 78 14 8b 8f 78 05 00 00 48 c7 c7 08 8a 57 a5 e8 1d b6 10 00 <0f> 0b 41 0f b6 84 24 c8 04 00 00 a8 01 74 2a 41 0f b7 8c 24 de 04
+[  669.578613] RSP: 0018:ffff893bd898fca8 EFLAGS: 00010286
+[  669.578614] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000ffff7fff
+[  669.578615] RDX: 00000000ffff7fff RSI: 00000000ffffffea RDI: 0000000000000000
+[  669.578615] RBP: ffff893bd898fcb8 R08: ffffffffa5bed108 R09: 0000000000027ffb
+[  669.578616] R10: 00000000ffff8000 R11: 3fffffffffffffff R12: ffff891cd3530140
+[  669.578617] R13: ffff891cd3530140 R14: 0000000000000000 R15: 0000000000000000
+[  669.578618] FS:  00007fb7908ea700(0000) GS:ffff893affc80000(0000) knlGS:0000000000000000
+[  669.578619] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  669.578620] CR2: 000034fedd58981c CR3: 00000020d87b2001 CR4: 00000000001706e0
+[  669.578620] Call Trace:
+[  669.578621]  tcp_recvmsg+0x21f/0xac0
+[  669.578624]  inet6_recvmsg+0x5f/0x120
+[  669.578625]  ? add_wait_queue_exclusive+0x80/0x80
+[  669.578627]  sock_recvmsg+0x54/0x80
+[  669.578628]  __sys_recvfrom+0x19e/0x1d0
+[  669.578630]  ? __fput+0x11c/0x240
+[  669.578632]  __x64_sys_recvfrom+0x29/0x30
+[  669.578634]  do_syscall_64+0x38/0x50
+[  669.578635]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+I have used following method on DUT host, and patch [1] in get_rps_cpus()
+
+DUT has 48 hyper threads, I force RPS to spread packets on all of them.
+
+for q in {0..15}; do echo ffff,ffffffff >/sys/class/net/eth0/queues/rx-$q/rps_cpus; done
+echo 2 >/proc/sys/net/ipv4/tcp_syncookies
+netserver
+
+Then from another host : 
+
+for i in {1..20}
+do
+ super_netperf 200 -H DUT -t TCP_CRR -l2 -- -p0
+done
+
+After the test, I had more than 100,000 TCPv6 sockets that were mem leaked.
+
+
+[1]
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 60d325bda0d7b4a1ecb7bf7b3352d58bed8b96a2..ae99206bd05126eef8cf4490bb197a3c781012ed 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4344,7 +4344,7 @@ static int get_rps_cpu(struct net_device *dev, struct sk_buff *skb,
+                goto done;
+ 
+        skb_reset_network_header(skb);
+-       hash = skb_get_hash(skb);
++       hash = prandom_u32();
+        if (!hash)
+                goto done;
+ 
+
