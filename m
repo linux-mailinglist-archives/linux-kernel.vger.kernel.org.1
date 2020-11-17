@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1762B655A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71ED82B6390
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731370AbgKQNyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:54:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60650 "EHLO mail.kernel.org"
+        id S1732468AbgKQNjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:39:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731165AbgKQNZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:25:18 -0500
+        id S1732705AbgKQNiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:38:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3EDE520781;
-        Tue, 17 Nov 2020 13:25:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC2BD207BC;
+        Tue, 17 Nov 2020 13:38:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619517;
-        bh=MLrSMe0LNFlLFy9vkLziluBQnqB5lpVCd2LuDcTLal4=;
+        s=default; t=1605620333;
+        bh=l+wsoJgfUfgvzlDek9engkXVQN+ljoEi2Iw75rjm3PA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X/1XvQU4MQpHASRyybKwCEkn5yZFzvHC15T/Ftk6NBFa42b4S2j56Pjj8IKRvWYI6
-         mstF/Lv8SJhpn2gangCVj3i3TdOQ4srJtpgtj2yS/DsWXsmUNCH7ymQRI6znDobSgh
-         Ppgyuib5v7h+1fn6kZ+thW3wrFCSomdBoK8B4zrI=
+        b=CZ46/ayTbbY1DCg0MLFn2FvBIYTbMZiClX9b2WApCg2Ix3DS6tUopPZxWduYjGZ2l
+         KBvjow+SzbLO1NWdR1ve7mDIgBmGaIaU4vK+gABp2wsw/dGrjdHPhVEarJ41v2Q0gz
+         oGq/X3/0u/44Z0XqrZiDL1C4Y2pP57vv+VYy3OUc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Ye Bin <yebin10@huawei.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 065/151] cfg80211: regulatory: Fix inconsistent format argument
-Date:   Tue, 17 Nov 2020 14:04:55 +0100
-Message-Id: <20201117122124.583605201@linuxfoundation.org>
+Subject: [PATCH 5.9 156/255] lan743x: correctly handle chips with internal PHY
+Date:   Tue, 17 Nov 2020 14:04:56 +0100
+Message-Id: <20201117122146.541160651@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +44,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-[ Upstream commit db18d20d1cb0fde16d518fb5ccd38679f174bc04 ]
+[ Upstream commit 902a66e08ceaadb9a7a1ab3a4f3af611cd1d8cba ]
 
-Fix follow warning:
-[net/wireless/reg.c:3619]: (warning) %d in format string (no. 2)
-requires 'int' but the argument type is 'unsigned int'.
+Commit 6f197fb63850 ("lan743x: Added fixed link and RGMII support")
+assumes that chips with an internal PHY will never have a devicetree
+entry. This is incorrect: even for these chips, a devicetree entry
+can be useful e.g. to pass the mac address from bootloader to chip:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Link: https://lore.kernel.org/r/20201009070215.63695-1-yebin10@huawei.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+    &pcie {
+            status = "okay";
+
+            host@0 {
+                    reg = <0 0 0 0 0>;
+
+                    #address-cells = <3>;
+                    #size-cells = <2>;
+
+                    lan7430: ethernet@0 {
+                            /* LAN7430 with internal PHY */
+                            compatible = "microchip,lan743x";
+                            status = "okay";
+                            reg = <0 0 0 0 0>;
+                            /* filled in by bootloader */
+                            local-mac-address = [00 00 00 00 00 00];
+                    };
+            };
+    };
+
+If a devicetree entry is present, the driver will not attach the chip
+to its internal phy, and the chip will be non-operational.
+
+Fix by tweaking the phy connection algorithm:
+- first try to connect to a phy specified in the devicetree
+  (could be 'real' phy, or just a 'fixed-link')
+- if that doesn't succeed, try to connect to an internal phy, even
+  if the chip has a devnode
+
+Tested on a LAN7430 with internal PHY. I cannot test a device using
+fixed-link, as I do not have access to one.
+
+Fixes: 6f197fb63850 ("lan743x: Added fixed link and RGMII support")
+Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+Link: https://lore.kernel.org/r/20201108171224.23829-1-TheSven73@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/reg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/microchip/lan743x_main.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/net/wireless/reg.c b/net/wireless/reg.c
-index 20a8e6af88c45..0f3b57a73670b 100644
---- a/net/wireless/reg.c
-+++ b/net/wireless/reg.c
-@@ -3405,7 +3405,7 @@ static void print_rd_rules(const struct ieee80211_regdomain *rd)
- 		power_rule = &reg_rule->power_rule;
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index de93cc6ebc1ac..be58a941965b1 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1027,9 +1027,9 @@ static int lan743x_phy_open(struct lan743x_adapter *adapter)
  
- 		if (reg_rule->flags & NL80211_RRF_AUTO_BW)
--			snprintf(bw, sizeof(bw), "%d KHz, %d KHz AUTO",
-+			snprintf(bw, sizeof(bw), "%d KHz, %u KHz AUTO",
- 				 freq_range->max_bandwidth_khz,
- 				 reg_get_max_bandwidth(rd, reg_rule));
- 		else
+ 	netdev = adapter->netdev;
+ 	phynode = of_node_get(adapter->pdev->dev.of_node);
+-	adapter->phy_mode = PHY_INTERFACE_MODE_GMII;
+ 
+ 	if (phynode) {
++		/* try devicetree phy, or fixed link */
+ 		of_get_phy_mode(phynode, &adapter->phy_mode);
+ 
+ 		if (of_phy_is_fixed_link(phynode)) {
+@@ -1045,13 +1045,15 @@ static int lan743x_phy_open(struct lan743x_adapter *adapter)
+ 					lan743x_phy_link_status_change, 0,
+ 					adapter->phy_mode);
+ 		of_node_put(phynode);
+-		if (!phydev)
+-			goto return_error;
+-	} else {
++	}
++
++	if (!phydev) {
++		/* try internal phy */
+ 		phydev = phy_find_first(adapter->mdiobus);
+ 		if (!phydev)
+ 			goto return_error;
+ 
++		adapter->phy_mode = PHY_INTERFACE_MODE_GMII;
+ 		ret = phy_connect_direct(netdev, phydev,
+ 					 lan743x_phy_link_status_change,
+ 					 adapter->phy_mode);
 -- 
 2.27.0
 
