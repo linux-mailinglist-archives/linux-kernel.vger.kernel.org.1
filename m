@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2042B64B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C752B64B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387797AbgKQNsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:48:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:57912 "EHLO foss.arm.com"
+        id S2387785AbgKQNsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:48:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387658AbgKQNsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:48:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 180BF101E;
-        Tue, 17 Nov 2020 05:48:37 -0800 (PST)
-Received: from e123648.arm.com (unknown [10.57.25.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 220C13F718;
-        Tue, 17 Nov 2020 05:48:34 -0800 (PST)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rafael@kernel.org
-Cc:     daniel.lezcano@linaro.org, rjw@rjwysocki.net, lukasz.luba@arm.com
-Subject: [PATCH v2] powercap: Adjust printing the constraint name with new line
-Date:   Tue, 17 Nov 2020 13:47:59 +0000
-Message-Id: <20201117134759.26797-1-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1732407AbgKQNs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:48:29 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 823E7221F8;
+        Tue, 17 Nov 2020 13:48:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605620908;
+        bh=OS86M0fSuRYOLM26EPZccF7FmZm2Eb5pCK+q9/AU8CA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bDyIDhCvTB2jn19fp4cy1NAMyTUIp5sxOJXlNeSHlcH+YOQbGdBMkDvJrB3HVOIZe
+         419kmajtMLDjUGsw6kR1ONgE3AgGYRT7kNIWr6/smOilauicF5hTuYyBGrG8RTeZTu
+         N8ugy3Vbd/JkPQ7ZMA6Oa5MR2F9Pf4/ZDPSictZo=
+Date:   Tue, 17 Nov 2020 13:48:08 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Dave Ertman <david.m.ertman@intel.com>, gregkh@linuxfoundation.org,
+        alsa-devel@alsa-project.org, tiwai@suse.de,
+        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        parav@mellanox.com, shiraz.saleem@intel.com,
+        dan.j.williams@intel.com, kiran.patil@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
+Message-ID: <20201117134808.GC5142@sirena.org.uk>
+References: <20201113161859.1775473-1-david.m.ertman@intel.com>
+ <20201113161859.1775473-2-david.m.ertman@intel.com>
+ <20201117053000.GM47002@unreal>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="H8ygTp4AXg6deix2"
+Content-Disposition: inline
+In-Reply-To: <20201117053000.GM47002@unreal>
+X-Cookie: Pause for storage relocation.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The constrain name has limit of size 30, which sometimes might be hit.
-When this happens the new line might get lost. Prevent this and set the
-max limit for name string length equal 29. This would result is proper
-string clamping (when needed) and storing '\n' at index 29 and '\0' at 30,
-so similarly as desired originally.
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
-Hi Rafael,
+--H8ygTp4AXg6deix2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It is based on top of you current pm/linux-next branch.
+On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
+> On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
 
-Change log:
-v2:
-- switched to sprintf() with "%.*s\n" pattern
-v1 [1]
+> > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> > It enables drivers to create an auxiliary_device and bind an
+> > auxiliary_driver to it.
 
-Regards,
-Lukasz
+> This horse was beaten to death, can we please progress with this patch?
+> Create special topic branch or ack so I'll prepare this branch.
 
-[1] https://lore.kernel.org/linux-pm/20201109172452.6923-1-lukasz.luba@arm.com/
+It's been about 2 working days since the patch was last posted.
 
+--H8ygTp4AXg6deix2
+Content-Type: application/pgp-signature; name="signature.asc"
 
- drivers/powercap/powercap_sys.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/powercap/powercap_sys.c b/drivers/powercap/powercap_sys.c
-index 3f0b8e2ef3d4..f0654a932b37 100644
---- a/drivers/powercap/powercap_sys.c
-+++ b/drivers/powercap/powercap_sys.c
-@@ -170,9 +170,8 @@ static ssize_t show_constraint_name(struct device *dev,
- 	if (pconst && pconst->ops && pconst->ops->get_name) {
- 		name = pconst->ops->get_name(power_zone, id);
- 		if (name) {
--			snprintf(buf, POWERCAP_CONSTRAINT_NAME_LEN,
--								"%s\n", name);
--			buf[POWERCAP_CONSTRAINT_NAME_LEN] = '\0';
-+			sprintf(buf, "%.*s\n", POWERCAP_CONSTRAINT_NAME_LEN - 1,
-+				name);
- 			len = strlen(buf);
- 		}
- 	}
--- 
-2.17.1
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+z1JcACgkQJNaLcl1U
+h9DrPAgAhoKtJY3JUvyt5umyqYMB91rbKCdWbOcvmCUH3Onp6sIN6bjvKLZEieE3
+yGf9wpM7/qbfovb2WB+pv2sk+V4T6q/eEKqB9ggRpnRHGH4xLqQP3UHMWPpXYOsY
+3+SemZd6NgGXAVfbOXdZWeuikkj4X9xP48T5h4YuVLFqUIjKx58grErSkvNe16hp
+mbeQkw/Wobr4XZr2nFxMupK6+IcpQP34roZRYX62FAx1Gp1+322QlTRn3rboC1Hn
+3B3uf6qq2HC29TmYGBS2BOntIuOVyQOKrFn8u6oKPZ73OXr+vPU2wLjs83sXJjy5
+Uc/MykNHE2TvTYJXkoVnE5i1t4bryg==
+=Xd9v
+-----END PGP SIGNATURE-----
 
+--H8ygTp4AXg6deix2--
