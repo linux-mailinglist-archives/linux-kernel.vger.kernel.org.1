@@ -2,190 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A142B5E70
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8D12B5E77
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgKQLdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:33:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727759AbgKQLdk (ORCPT
+        id S1728125AbgKQLgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:36:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48073 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727928AbgKQLgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:33:40 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C43C0613CF;
-        Tue, 17 Nov 2020 03:33:39 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id t18so10091737plo.0;
-        Tue, 17 Nov 2020 03:33:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=D+OKJ+4fv/qJ7XgTFRASaeF6lYZ3wO/Nm8qIoQpWUGs=;
-        b=dG6wD1KoAWEe9+WWXcsI+25PehGSrjHFFzj5S3wZaH30zNdkKVRXFLwrGbfaGMAu3E
-         jAgrBCHZyAzP9OM6tamN94fmEKy4gGS36RM8W/MJ6qsDhVBSL+PaHsISME+zOPXiMsQt
-         TGA/vGq0UFO7ZkFOqow3ZmPONyz3oDaeK8I3xxAz+4kbkM56fl6OVi9sD0aMP8uLZIkF
-         fd37tiKW0b34ESfeEMASp4Jfw+6oRge1TjlHqI8DEAbFuS8Ww+grGd0FVk8c7mxOXBGa
-         UxYe886Gb331ApGiXiVJRZSivmm1AfoWZ0Ub9QPUu/RvjthlUcVyli9N5i6sHlHmH94e
-         PLlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=D+OKJ+4fv/qJ7XgTFRASaeF6lYZ3wO/Nm8qIoQpWUGs=;
-        b=l4XaGTK9+T0fMMeFpVyylI7XD4FH0uituIFT6x/tiWXvAWotfAUwmCE/sa1Po6g6IS
-         1GM/WrCr70Bv+t4YcycZquHq7waNHp6JlISfj+T5OWfywYjpzG/o42imlnEMxKUWpQ/y
-         Nd82Ye5kS1ocKMhZkvsgl0w3V1cPNfp2QKrch8iOtndIDjBenfA2GCUFXWNd3Yl0R3EO
-         kMhS5fFXS6jTfFyNYRPtnSV45UbxhbPkr13OuRoMosLwyukepxvGjBU3fp6XwgITdoDC
-         tt2P8DDfbVv6237nLM+j3mhLGrowRmpdyMtqOeSKAJa/6H7H1NA0bg77Mo6AvH61lT4/
-         w8xQ==
-X-Gm-Message-State: AOAM532iXc4EIs/soqjRNXnciS0N08+T4NqknezT+CDKapDImEqy9zXk
-        jYwQKO6adPTS/qup0AFwzXv/Uu3qPuraVUdH/lM=
-X-Google-Smtp-Source: ABdhPJxHkLW9Tae3mVz2iF/cvEv2iOo+XTBU2AKTv+V8ttoooptwYZL9ewQnyP9rBUpxiWDgvzHNDZU4kJLwQNsdPJ8=
-X-Received: by 2002:a17:90a:9f8e:: with SMTP id o14mr4019653pjp.181.1605612819486;
- Tue, 17 Nov 2020 03:33:39 -0800 (PST)
+        Tue, 17 Nov 2020 06:36:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605613005;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ojbyE0PcDtW26NIEQPg/SaNisXd9lAY9pA+BqplcSlc=;
+        b=RiuWGSr0oqnj8skx6zZpRfGSw8VprJvT/nqbx8EF5ElHwDVazoQqJEPvahuXXTP8PEDXVT
+        eeYKX9gOERN4lxB3B/jzrlyOKLFQ6caGPLWnz5xT59D/hWBFvM2CZHmcGT4vxDgEnjrNVN
+        bvvjY+KiHTv1Hs6am8FdqL9nuYMYRsw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-XjfEPL-VPQumwALw6W0xUg-1; Tue, 17 Nov 2020 06:36:43 -0500
+X-MC-Unique: XjfEPL-VPQumwALw6W0xUg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA4501084C8B;
+        Tue, 17 Nov 2020 11:36:41 +0000 (UTC)
+Received: from localhost (ovpn-113-172.ams2.redhat.com [10.36.113.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D41295C1D0;
+        Tue, 17 Nov 2020 11:36:37 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 11:36:36 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 12/12] vdpa_sim_blk: implement ramdisk behaviour
+Message-ID: <20201117113636.GG131917@stefanha-x1.localdomain>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-13-sgarzare@redhat.com>
 MIME-Version: 1.0
-References: <20201112130734.331094-1-ch@denx.de> <20201112130734.331094-3-ch@denx.de>
- <20201116144631.GB1689012@smile.fi.intel.com> <20201116163024.74c767b6@md1za8fc.ad001.siemens.net>
- <AM0PR10MB3169089EF445E785C363A0B4E7E20@AM0PR10MB3169.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <AM0PR10MB3169089EF445E785C363A0B4E7E20@AM0PR10MB3169.EURPRD10.PROD.OUTLOOK.COM>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 17 Nov 2020 13:33:23 +0200
-Message-ID: <CAHp75Vdxj0tgn6P8Nfi5mMd=e9Q1+hzt4bquzB93zg0vOeMopw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] rtc: rx6110: add ACPI bindings to I2C
-To:     "johannes-hahn@siemens.com" <johannes-hahn@siemens.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Brown, Len" <len.brown@intel.com>
-Cc:     "val.krutov@erd.epson.com" <val.krutov@erd.epson.com>,
-        Claudius Heine <ch@denx.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "werner.zeh@siemens.com" <werner.zeh@siemens.com>,
-        "henning.schild@siemens.com" <henning.schild@siemens.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        "martin.mantel@siemens.com" <martin.mantel@siemens.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201113134712.69744-13-sgarzare@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="NPukt5Otb9an/u20"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:51 AM johannes-hahn@siemens.com
-<johannes-hahn@siemens.com> wrote:
->
-> Hello Val,
->
-> my name is Johannes Hahn from Siemens AG in Germany.
-> Our product Open Controller II (OCII)[1] uses the Realtime Clock RX6110SA=
- from SEIKO EPSON.
+--NPukt5Otb9an/u20
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Nice to hear from you!
+On Fri, Nov 13, 2020 at 02:47:12PM +0100, Stefano Garzarella wrote:
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim=
+/vdpa_sim_blk.c
+> index 8e41b3ab98d5..68e74383322f 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> @@ -7,6 +7,7 @@
+>   */
+> =20
+>  #include <linux/module.h>
+> +#include <linux/blkdev.h>
+>  #include <uapi/linux/virtio_blk.h>
+> =20
+>  #include "vdpa_sim.h"
+> @@ -24,10 +25,137 @@
+> =20
+>  static struct vdpasim *vdpasim_blk_dev;
+> =20
+> +static int vdpasim_blk_handle_req(struct vdpasim *vdpasim,
+> +=09=09=09=09  struct vdpasim_virtqueue *vq)
 
-> Currently there is a merge request ongoing for the Linux Kernel master br=
-anch[2] which adds I=C2=B2C and ACPI support to your original driver implem=
-entation.
->
-> Simultaneously there is an already merged patch-set for coreboot[3] avail=
-able creating the ACPI (SSDT) table entries for the RX6110SA.
+This function has a non-standard int return value. Please document it.
 
-Thanks for pointers, I commented there. The ACPI ID change must be reverted=
-!
+> +{
+> +=09size_t wrote =3D 0, to_read =3D 0, to_write =3D 0;
+> +=09struct virtio_blk_outhdr hdr;
+> +=09uint8_t status;
+> +=09uint32_t type;
+> +=09ssize_t bytes;
+> +=09loff_t offset;
+> +=09int i, ret;
+> +
+> +=09vringh_kiov_cleanup(&vq->riov);
+> +=09vringh_kiov_cleanup(&vq->wiov);
+> +
+> +=09ret =3D vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
+> +=09=09=09=09   &vq->head, GFP_ATOMIC);
+> +=09if (ret !=3D 1)
+> +=09=09return ret;
+> +
+> +=09for (i =3D 0; i < vq->wiov.used; i++)
+> +=09=09to_write +=3D vq->wiov.iov[i].iov_len;
+> +=09to_write -=3D 1; /* last byte is the status */
 
-> The OCII uses coreboot for firmware initialization.
->
-> During the merge request the eligible objection arose that the ACPI ID us=
-ed in the Linux driver patch is not conforming the ACPI Specification.
-> Indeed it does not. But when searching for a  product identifier of RX611=
-0SA I was not able to find a sufficient one with respect to the ACPI Specif=
-ication (see [4] chapter 6.1.5 _HID (Hardware ID),[5]).
+What if vq->wiov.used =3D=3D 0?
 
-Unfortunately many vendors, even being registered in the ACPI/PNP
-registry, are still neglecting the process.
+> +
+> +=09for (i =3D 0; i < vq->riov.used; i++)
+> +=09=09to_read +=3D vq->riov.iov[i].iov_len;
+> +
+> +=09bytes =3D vringh_iov_pull_iotlb(&vq->vring, &vq->riov, &hdr, sizeof(h=
+dr));
+> +=09if (bytes !=3D sizeof(hdr))
+> +=09=09return 0;
+> +
+> +=09to_read -=3D bytes;
+> +
+> +=09type =3D le32_to_cpu(hdr.type);
+> +=09offset =3D le64_to_cpu(hdr.sector) << SECTOR_SHIFT;
+> +=09status =3D VIRTIO_BLK_S_OK;
+> +
+> +=09switch (type) {
+> +=09case VIRTIO_BLK_T_IN:
+> +=09=09if (offset + to_write > VDPASIM_BLK_CAPACITY << SECTOR_SHIFT) {
 
-> According to the fact that there are other Linux RTC drivers on the Kerne=
-l mainline[6] which support ACPI matching that also do not have ACPI Specif=
-ication compatible IDs we used that as an example for our first patch attem=
-pt.
+Integer overflow is not handled.
 
-I answered this in previous mail.
+--NPukt5Otb9an/u20
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> A PNP ID for SEIKO EPSON is already registered at UEFI database[7].
->
-> What I kindly ask your for is an ACPI Specification conforming Product Id=
-entifier for the RX6110SA RTC ?
-> According to [5] this Product Identifier should be "... always four-chara=
-cter hexadecimal numbers (0-9 and A-F)".
->
-> In case you do not know it our can not acquire/create one could you pleas=
-e redirect me to someone from SEIKO EPSON who can help me with that demand =
-?
+-----BEGIN PGP SIGNATURE-----
 
-So, to be on the constructive page (I thought initially you are from G
-company, but anyway) you may do the following:
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl+ztcQACgkQnKSrs4Gr
+c8iolAgApTBD1PaVo9UuMIiHwUOHDFHckP5/xzilctMNmZYAzMd60k7GRTsYu0z2
+eTkPw8Ik1Z5PXqgtSa8w2alDtWE7kJV6x2K+D4Xs3Y4miArXfd8NlozeFYsJCScf
+b37DkWKR7sXDLWv/ITGqH5M+HjT6hIbXA4hrOtrUsF9S07OfzwwS7T0HmBxreiom
+IUaloJ95O+c8WzhlHzoyxJeC/MSV4wPyivmuJZ6FzrtPMvPhAJwjWa5Xark5s3bM
+A9iDFP1eikLSn0zrn03cWy7FzA14QAyO/Ppnv0sllpLDLWx5flHXnyQRIZx74JNh
+yuLDV+JjZJroWZYLpKPWdZQ+xoQ/Fw==
+=TgK+
+-----END PGP SIGNATURE-----
 
-- (for prototyping only) you may use the PRP0001 approach, described in [8]
-- you may issue an ID under your (Siemens) vendor ID
-- you may insist G company to issue the ID under their vendor space
-(thru coreboot)
-- (the best option) to communicate to Seiko Epson to get official ID
-from them for this component (and ID mustn't abuse 6.1.5)
+--NPukt5Otb9an/u20--
 
-Unfortunately I have no contacts there, but I think the best effort is
-to contact their support and at the same time ask ASWG [9] how to
-proceed. I Cc'ed this to ACPI people in Linux kernel, maybe they can
-help.
-
-Of course you have choice to push bad ID forward and use precedence
-(like many other companies, even Intel in past, do with firmwares and
-Linux kernel is full of badly formed IDs), but since the change is not
-existed in read devices I would really like to see proper process to
-be followed.
-
-In the Linux kernel I'm in principle trying to prevent bad IDs from
-happening as much as I can.
-
-> [1]: (https://mall.industry.siemens.com/mall/en/WW/Catalog/Product/6ES767=
-7-2DB42-0GB0)
-> [2]: https://lkml.org/lkml/2020/11/12/561
-> [3]: https://review.coreboot.org/c/coreboot/+/47235
-> [4]: https://uefi.org/sites/default/files/resources/ACPI_6_3_final_Jan30.=
-pdf
-> [5]: https://www.uefi.org/PNP_ACPI_Registry
-> [6]: https://elixir.bootlin.com/linux/latest/source/drivers/rtc/rtc-ds130=
-7.c#L1142
-> [7]: https://www.uefi.org/PNP_ID_List?search=3DSEIKO+EPSON
-
-[8]: https://elixir.bootlin.com/linux/latest/source/Documentation/firmware-=
-guide/acpi/enumeration.rst
-[9]: https://www.uefi.org/workinggroups
-
-> > Before adding new ACPI ID, can you provide an evidence (either from
-> > vendor of the component, or a real snapshot of DSDT from device on
-> > market) that this is real ID?
-> >
-> > Before that happens, NAK.
-> >
-> > P.S. Seems to me that this is kinda cargo cult patch because proposed
-> > ID is against ACPI and PNP registry and ACPI specification.
->
-> In fact we pushed it in coreboot and Linux at the same time.
->
-> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Frevie=
-w.coreboot.org%2Fc%2Fcoreboot%2F%2B%2F47235&amp;data=3D04%7C01%7Cjohannes-h=
-ahn%40siemens.com%7C21c9e1fe99274df7951a08d88a448af5%7C38ae3bcd95794fd4adda=
-b42e1495d55a%7C1%7C0%7C637411374276831534%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM=
-C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=
-=3D7EVdO%2F77LNyvux0y3m9nEf2HZO%2BDm2WkWMfxzaJUoto%3D&amp;reserved=3D0
->
-> That is the evidence. But in case this is wrong we can probably still cha=
-nge coreboot, even though the patches have been merged there already.
->
-> Maybe you can go into detail where you see the violations and maybe even =
-suggest fixes that come to mind.
-
---=20
-With Best Regards,
-Andy Shevchenko
