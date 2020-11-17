@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488EB2B654F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7422B63B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731955AbgKQNyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:54:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34864 "EHLO mail.kernel.org"
+        id S1732917AbgKQNkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:40:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731684AbgKQN1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:27:08 -0500
+        id S1732894AbgKQNkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:40:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3ADE221534;
-        Tue, 17 Nov 2020 13:27:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64CE62465E;
+        Tue, 17 Nov 2020 13:40:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619628;
-        bh=O8Ob1sptsY0HiOvxNcLs5zTEtY+1UyMP+M9La1bL620=;
+        s=default; t=1605620446;
+        bh=hDm07hmMZqMdno+nmMKZ5DeVXRppk4ddKQGEXEM6S1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XNFY8eHDrKq6HWeiOadNG8p6YkoRHa5ePWAD0Qt0ty0ulfpUKggn+kWOFQt2Z6AOK
-         xnpuwRKgRFtUt8U5ECuCeAVCWn44phESMZDUVl6JxKMTvcWdcMR3YYi/pEMP9FmiJ+
-         +MFonIRKGVgKXO1HfRX+C1M+k0bGcB5qy+KLa/JI=
+        b=qEVMnZyG0UhKaK79dC1xD03UqFNRfMB2gizs4nYF9PMLP+Xf7DpBGhvPGuKxOJz+G
+         WqYNjsCxkTbiC4Xadt7zgOk1cLu5BSeuxKqiteGBYCyBbD39Rmm/8V14u0q1Jr383m
+         tAKynDXzU1HaJoyRy2io5WcULshQyh7Jq36vJGew=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 101/151] xfs: fix a missing unlock on error in xfs_fs_map_blocks
-Date:   Tue, 17 Nov 2020 14:05:31 +0100
-Message-Id: <20201117122126.324304115@linuxfoundation.org>
+        stable@vger.kernel.org, Kirk Reiser <kirk@reisers.ca>,
+        Gregory Nowak <greg@gregn.net>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: [PATCH 5.9 192/255] speakup: Fix var_id_t values and thus keymap
+Date:   Tue, 17 Nov 2020 14:05:32 +0100
+Message-Id: <20201117122148.272346908@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-[ Upstream commit 2bd3fa793aaa7e98b74e3653fdcc72fa753913b5 ]
+commit d7012df3c9aecdcfb50f7a2ebad766952fd1410e upstream.
 
-We also need to drop the iolock when invalidate_inode_pages2 fails, not
-only on all other error or successful cases.
+commit d97a9d7aea04 ("staging/speakup: Add inflection synth parameter")
+introduced a new "inflection" speakup parameter next to "pitch", but
+the values of the var_id_t enum are actually used by the keymap tables
+so we must not renumber them. The effect was that notably the volume
+control shortcut (speakup-1 or 2) was actually changing the inflection.
 
-Fixes: 527851124d10 ("xfs: implement pNFS export operations")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This moves the INFLECTION value at the end of the var_id_t enum to
+fix back the enum values. This also adds a warning about it.
+
+Fixes: d97a9d7aea04 ("staging/speakup: Add inflection synth parameter")
+Cc: stable@vger.kernel.org
+Reported-by: Kirk Reiser <kirk@reisers.ca>
+Reported-by: Gregory Nowak <greg@gregn.net>
+Tested-by: Gregory Nowak <greg@gregn.net>
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Link: https://lore.kernel.org/r/20201012160646.qmdo4eqtj24hpch4@function
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/xfs/xfs_pnfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/accessibility/speakup/spk_types.h |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/fs/xfs/xfs_pnfs.c b/fs/xfs/xfs_pnfs.c
-index a339bd5fa2604..f63fe8d924a36 100644
---- a/fs/xfs/xfs_pnfs.c
-+++ b/fs/xfs/xfs_pnfs.c
-@@ -134,7 +134,7 @@ xfs_fs_map_blocks(
- 		goto out_unlock;
- 	error = invalidate_inode_pages2(inode->i_mapping);
- 	if (WARN_ON_ONCE(error))
--		return error;
-+		goto out_unlock;
+--- a/drivers/accessibility/speakup/spk_types.h
++++ b/drivers/accessibility/speakup/spk_types.h
+@@ -32,6 +32,10 @@ enum {
+ 	E_NEW_DEFAULT,
+ };
  
- 	end_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)offset + length);
- 	offset_fsb = XFS_B_TO_FSBT(mp, offset);
--- 
-2.27.0
-
++/*
++ * Note: add new members at the end, speakupmap.h depends on the values of the
++ * enum starting from SPELL_DELAY (see inc_dec_var)
++ */
+ enum var_id_t {
+ 	VERSION = 0, SYNTH, SILENT, SYNTH_DIRECT,
+ 	KEYMAP, CHARS,
+@@ -42,9 +46,9 @@ enum var_id_t {
+ 	SAY_CONTROL, SAY_WORD_CTL, NO_INTERRUPT, KEY_ECHO,
+ 	SPELL_DELAY, PUNC_LEVEL, READING_PUNC,
+ 	ATTRIB_BLEEP, BLEEPS,
+-	RATE, PITCH, INFLECTION, VOL, TONE, PUNCT, VOICE, FREQUENCY, LANG,
++	RATE, PITCH, VOL, TONE, PUNCT, VOICE, FREQUENCY, LANG,
+ 	DIRECT, PAUSE,
+-	CAPS_START, CAPS_STOP, CHARTAB,
++	CAPS_START, CAPS_STOP, CHARTAB, INFLECTION,
+ 	MAXVARS
+ };
+ 
 
 
