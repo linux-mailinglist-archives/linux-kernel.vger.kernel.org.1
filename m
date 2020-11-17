@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652CB2B6756
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B372B675A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgKQOZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:25:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728441AbgKQOZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:25:45 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B186221FC;
-        Tue, 17 Nov 2020 14:25:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605623143;
-        bh=56cvIXZlMxNuswpAfZ65Rr7eBSVJPUrqGNADm+IBwWs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X9BdSDn1bCJJol0UpEdN286Nb4foJ7ftIK5rvFKwynYpMD2vR5eXxJZ8LXq5yRmF1
-         wW0D7R7GgU8OkKiVi0tBjbMFIFiAazNCpyOSXm/i3LgAIK009QEUrg6Ybpc/GFlBAE
-         elsGhNTGmjSze8G/XncgGS77mVgin3Ry78Ib7kqM=
-Date:   Tue, 17 Nov 2020 14:25:24 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mayulong <mayulong1@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] regulator: hi6421v600-regulator: move it from staging
-Message-ID: <20201117142523.GD5142@sirena.org.uk>
-References: <cover.1605530560.git.mchehab+huawei@kernel.org>
- <471362653f22a8748202c55babd2b462056a5797.1605530560.git.mchehab+huawei@kernel.org>
- <20201116183833.GC4739@sirena.org.uk>
- <20201117090724.4ade833a@coco.lan>
+        id S1728677AbgKQO1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:27:52 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:20648 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728063AbgKQO1v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:27:51 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHEQqZ1010083;
+        Tue, 17 Nov 2020 15:27:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=Vj2Fn4LsQM5ZirBQzqSd0b6wK1xakoRZ2IbWQcg5ueM=;
+ b=rbqG/WSH/9tr2HVMjWfNRa+kUFmfjS5xNVpt6zDkF+erzglU/6bW8x5JYTJH0WEv70uP
+ CECOTXKis00OqVw0MfL4YU1106RxL6ma7wcJIZQ9YjwaL8E1FSX8NUkzOXHVyH1T0G0Y
+ c4Ltlxy/tZLbVbttrXhfkC3eihEZ8KExcsaGKUhpDCvgYHaHWquIiWVOy+9j/TKZ/l5H
+ jM67ePa0OVcYw8JhPtEgiuQDzhroumBfE/g0Jd+yy8Jmmp1UbggUiJosptFapMFz7f09
+ V6F4ODZmEKR7aTK290PItG1pVA7o98vCP7oyVaQSqaDLnYh96YeSibwG861v0vOClLMd 3Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34t58cj7et-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 15:27:38 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EDB8C100038;
+        Tue, 17 Nov 2020 15:27:37 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D99D6231294;
+        Tue, 17 Nov 2020 15:27:37 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.51) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 15:27:37 +0100
+Subject: Re: [PATCH v2 3/3] ARM: dts: stm32: lxa-mc1: add OSD32MP15x to list
+ of compatibles
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC:     <kernel@pengutronix.de>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201110102552.7270-1-a.fatoum@pengutronix.de>
+ <20201110102552.7270-3-a.fatoum@pengutronix.de>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <f98a412c-d64f-e9b7-cfe4-a92b12806a28@st.com>
+Date:   Tue, 17 Nov 2020 15:26:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="n/aVsWSeQ4JHkrmm"
-Content-Disposition: inline
-In-Reply-To: <20201117090724.4ade833a@coco.lan>
-X-Cookie: Pause for storage relocation.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201110102552.7270-3-a.fatoum@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_04:2020-11-17,2020-11-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ahmad
 
---n/aVsWSeQ4JHkrmm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 11/10/20 11:25 AM, Ahmad Fatoum wrote:
+> Earlier commit modified the binding, so the SiP is to be specified
+> as well. Adjust the device tree accordingly.
+> 
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> ---
+> v1 -> v2:
+>    - split up binding and device tree change
+> ---
+>   arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+> index 1e5333fd437f..cda8e871f999 100644
+> --- a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+> +++ b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+> @@ -15,7 +15,7 @@
+>   
+>   / {
+>   	model = "Linux Automation MC-1 board";
+> -	compatible = "lxa,stm32mp157c-mc1", "st,stm32mp157";
+> +	compatible = "lxa,stm32mp157c-mc1", "oct,stm32mp15xx-osd32", "st,stm32mp157";
+>   
+>   	aliases {
+>   		ethernet0 = &ethernet0;
+> 
 
-On Tue, Nov 17, 2020 at 09:08:22AM +0100, Mauro Carvalho Chehab wrote:
-> Mark Brown <broonie@kernel.org> escreveu:
+Series applied on stm32-next.
 
-> > This probe code looks very different to other regulator drivers, this
-> > alone should have been a warning that the driver needs some substantial
-> > refactoring here.  As indicated information about what regulators are
-> > present on devices and their properties should be in the driver not the
-> > DT, the driver should just be able to register them unconditionally and
-> > use of_match and regulators_node to allow the core to find any
-> > constraints that are provided by the platform.
-
-> The setup for MFD/regulator is different than almost all other
-> regulator drivers currently upstreamed[1].=20
-
-It really shouldn't be doing anything unusual.
-
-> It means that, for the regulator driver to work, two drivers
-> should be probed first: the SPMI bus controller driver
-> (hisi-spmi-controller.c) and the SPMI bus client driver, which is
-> at the MFD driver(hi6421-spmi-pmic.c).
-
-> Only after having both probed, the regulator driver can be
-> probed.
-
-This is totally fine and very common for drivers in general, a
-combination of probe deferral and fw_devlink exists to sort this stuff
-out.
-
-> Also, as all the communication between the PM chip
-> and the SoC happens via a single serial bus, there's no
-> sense on probing the regulators in parallel.
-
-> That's mainly the reason why I opted to serialize the probe
-> inside hi6421v600-regulator.c.=20
-
-I can't think of a regulator driver that doesn't have an entirly
-serialized probe routine, that's not the issue.  The issue is that
-almost nothing that the probe routine is doing is done by other
-regulator drivers.
-
---n/aVsWSeQ4JHkrmm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+z3VMACgkQJNaLcl1U
-h9AIlwf9GtLYXFKKGNEQWjdf/Itfjnh8gyQP+5GihjpkiYch3YtDrIDWxsjxEfPD
-/MtvxLPT52m1NP/del1x35eLeqyJTsNKHLB+GAzcV7DKUxmbXJUeE130hFt0SO9J
-d8nWU69yRROMIdqZ5F3CI3nfGtLa7eYn+aDEVihW3MItIeORc7M1VdvPHR4Rlh88
-MZvJ/PQodMtkPiuVB4kGN8jDTcXyiUMPu95cuvly7iwCzcYWAasBvZ3zkXoee98a
-38W5FEMxjqDvRhRz+ivnolxRemKjtFS5z7YuBCWmpmUrp/LT0QNXrKhZh1qJNHPL
-wcX3dQ3Zbmq9qFWjHn4nCh5WuUtXwQ==
-=pWHl
------END PGP SIGNATURE-----
-
---n/aVsWSeQ4JHkrmm--
+Regards
+Alex
