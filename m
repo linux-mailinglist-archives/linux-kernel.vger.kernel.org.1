@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E512E2B6C62
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDF42B6C6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729863AbgKQRzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:55:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgKQRzF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:55:05 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05ECFC0613CF;
-        Tue, 17 Nov 2020 09:55:04 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id t8so1476377pfg.8;
-        Tue, 17 Nov 2020 09:55:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uhyLHwpbsyME5LkYkNpSVqv4MkcAmSRgTObHS1dyZ50=;
-        b=kJ15ahOxZWO5BriZH67oGM8ZH3pCxo6h80tRyv59Ej5nWGlPm79XDSpApd+6BdZpIg
-         2M6qJSe1gUT8w09U6cH/2arRHsXVkXS7VG7psqZYOAPNmXfmSNqzkm9FlUO1G8XH3YJM
-         0zube0AM8EYwziXHUmcWXKWo/zvom2M2ErYyDyrqwJ41ALGGYX8FhRwXkN7oZstBz9PA
-         yqEZ9+B8zyqKLlwWyocgSD64fa4vUAZRHP5c+97UAIFJMHGEkGki0SPvO8AG40vp4ibD
-         GS5XkXjA5WxiCmnh65zxlSPKt5hodWot7nuSrliQnDp2PXf+zpwWhLUve6vw4Q/EllJQ
-         CBSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uhyLHwpbsyME5LkYkNpSVqv4MkcAmSRgTObHS1dyZ50=;
-        b=P+5bZsN15lYIsH899WhvsgPD33bc3SIUsl7Bqxd7WfzepDvRo4RDMM8sDu0jm919bn
-         gQNSACgSNqiTfTbN7zkMEXnyYr1i9QKD4DCzEMPPP3zphugZttbTMKeQwTBIsXcvYwcD
-         mJUUHQLvmdn7bt/tuHAP/wAnL74/jyKSfIW/43fyDX/dUJIbJf1Cw+/liCOSqDHbL40B
-         m/hFpLyRHrU/6LVMxwTaQt7iDuBTZmIKUbtquc1Q8anNgycp8tkIu7hCOaeVWUYavpG+
-         3S7teOKpJV5zF/VZFeiIfFTpWBTkPpDCsiGfVCeDvz/AcaPjBhaUBdXQU1hGA8Md1h7U
-         +esA==
-X-Gm-Message-State: AOAM532ctsgEteUcO8+sK3nWjI7ze4g3PKh//MTb+BmHzG89EzhFJV3r
-        5je3ulm0ePf2RTHOrAbmvYb1VuePa04ddrsY
-X-Google-Smtp-Source: ABdhPJy0EbydG/ia89pTIzK7Cghr0k36U7UuBPsqxpeY/ui8LIV9xQvNJMQzCQ3KlOZMvvbrL1E1fQ==
-X-Received: by 2002:a63:5421:: with SMTP id i33mr4626506pgb.316.1605635703590;
-        Tue, 17 Nov 2020 09:55:03 -0800 (PST)
-Received: from manjaro.domain.name ([202.142.93.91])
-        by smtp.gmail.com with ESMTPSA id 21sm22446764pfv.122.2020.11.17.09.55.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 09:55:02 -0800 (PST)
-From:   Soham Biswas <sohambiswas41@gmail.com>
-To:     thierry.reding@gmail.com
-Cc:     lee.jones@linaro.org, u.kleine-koenig@pengutronix.de,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Soham Biswas <sohambiswas41@gmail.com>
-Subject: [PATCH] pwm: core: Use octal permission
-Date:   Tue, 17 Nov 2020 23:24:52 +0530
-Message-Id: <20201117175452.26914-1-sohambiswas41@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1728940AbgKQR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:58:52 -0500
+Received: from m12-17.163.com ([220.181.12.17]:39457 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726697AbgKQR6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:58:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=zYfSK
+        VqhkOwN92ARjGk5n2dO2Y2pWB7jMUjWrrx7zIM=; b=XplTe1URYIydFZOHgokrZ
+        SwmT2Z0xzc8PEIcpg7A22AE7LrKdKM8lPi4nuIYdqsVCL5fK1Wn+RQ6wRqGju/hF
+        kOcLBAn2a91Bhf9zA1mDZBO09iqdYWNJ9tASlgesYMz4ab4QISdkmxgvUDgkitZ8
+        FAlsgMYSz+A9B3fb4fg+eQ=
+Received: from localhost (unknown [101.86.213.141])
+        by smtp13 (Coremail) with SMTP id EcCowACHA7bqDrRf3jfcUQ--.61818S2;
+        Wed, 18 Nov 2020 01:56:58 +0800 (CST)
+Date:   Wed, 18 Nov 2020 01:56:58 +0800
+From:   Hui Su <sh_def@163.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/lru: simplify is_file_lru() and is_active_lru()
+Message-ID: <20201117175658.GA158143@rlk>
+References: <20201117171242.GA120587@rlk>
+ <20201117174117.GQ29991@casper.infradead.org>
+ <20201117174633.GA158014@rlk>
+ <20201117174727.GR29991@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117174727.GR29991@casper.infradead.org>
+X-CM-TRANSID: EcCowACHA7bqDrRf3jfcUQ--.61818S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF48Ar45GryUGFy8CF18Grg_yoWkXFcEqr
+        yj9a9Fyw45JrZF9wnxCw4rXrsYka1DtFnIq34fJrykAr9xtFZ3KFWkXryFvrnYya1ftrs3
+        uw1Yv3sI93W7tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1wZ2PUUUUU==
+X-Originating-IP: [101.86.213.141]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiORTfX1XlverpvgABsc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed Warning.
-Replaced symbolic permission 'S_IRUGO' with octal permission '0444'.
+On Tue, Nov 17, 2020 at 05:47:27PM +0000, Matthew Wilcox wrote:
+> On Wed, Nov 18, 2020 at 01:46:33AM +0800, Hui Su wrote:
+> > On Tue, Nov 17, 2020 at 05:41:17PM +0000, Matthew Wilcox wrote:
+> > > On Wed, Nov 18, 2020 at 01:12:42AM +0800, Hui Su wrote:
+> > > > lru_list lru bit 0 can tell whether the list is
+> > > > avtive lru-list or not.
+> > > > lru_list lru bit 1 can tell whether the list is
+> > > > file lru-list or not.
+> > > > 
+> > > > And fix some define type in shrink_active_list()
+> > > > and get_scan_count().
+> > > > 
+> > > > v1->v2:
+> > > > correct the commit message, and fix the define type.
+> > > 
+> > > No, still incorrect.
+> > 
+> > I am a little confused, can you tell in detail?
+> 
+> Have you booted a kernel with this change?  Have you run any kind of
+> tests on it?
 
-Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
----
- drivers/pwm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, I boot it with qemu-system-x86_64-4.1.50 on ubuntu20.04:
+qemu-system-x86_64 -kernel /home/rlk/workspace/compile/out/arch/x86_64/boot/bzImage -hda \
+ /home/rlk/myspace/qemu_build/rootfs.img -append "root=/dev/sda console=ttyS0" -nographic
 
-diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-index 1f16f5365d3c..a8eff4b3ee36 100644
---- a/drivers/pwm/core.c
-+++ b/drivers/pwm/core.c
-@@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
- 
- static int __init pwm_debugfs_init(void)
- {
--	debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-+	debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
- 			    &pwm_debugfs_fops);
- 
- 	return 0;
--- 
-2.29.2
+using the kernel compiled with ubuntu20.04's default .config.
+
+It seems nothing abnormal.
+And i did not do other test.
 
