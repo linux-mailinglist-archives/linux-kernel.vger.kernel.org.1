@@ -2,107 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4A02B5AFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651BC2B5AFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgKQI37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:29:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
+        id S1726612AbgKQIa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:30:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQI37 (ORCPT
+        with ESMTP id S1725355AbgKQIa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:29:59 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4483C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:29:58 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id h21so2396091wmb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:29:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0AoYHW7lMZzkTQ6BnvkiA74s9JiSHbIiy02gKpfefxk=;
-        b=ouKgk1yasb8tfHmx4anuX+qm2kqIPUj4/8c6jf4bkP4LeF8hOAvtGE5WWDQ65ml129
-         5YMClxsCnewFUtABCONGd/7eKMO8g3PiQ2HohthbTvxswPTMcDHfLEL74D9m0CrkFybr
-         gOx9fKxx1G+L2v/9x109RHOMtbc3oJrwlrHhRCJxMJ7H8RRB5XTdzrGFz0YEBvWXeqQf
-         /uFQItOjN4UEbjdZltBmKVkBR/Y9/cwCWMdOpecekpZ4yyhYQKDNlOg6tK3Y0xENxPOX
-         bGyHTV4zLQ5SMeA7PrCG7lpTopRg9YGWRN9EDgIq2P37DduwtmnXsMMl9wrZZCd57g3I
-         QE3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0AoYHW7lMZzkTQ6BnvkiA74s9JiSHbIiy02gKpfefxk=;
-        b=OfyoX656CB2vLoSoHT5g4N/YrHlAenhpAlKrTWtJ09Dmone2Dy8Ib/erfq8lQPwpQn
-         /oJzPnpz1V4viwCfB0zNtgMQb4KkwfaqOvp1+tX+elGENdt1+A3J+LMbheQr3LGSmfFP
-         GvypFS28kXzF7w1/GZzQdiUSd6f+/3n49H9u6UgfOY1KSovrIEEesBgIW5VFsUEDgCxS
-         /TjRARCiDnTNd/iYEBB6WvsfDzFWsNHxWqqtf8x4+XF75x9d+cxL1+3NiDUXdJ0yt/q5
-         WGyaxDQs1GRFzQbdK7lqQrns+JCpScq6i+q89af7hWD+GRNKRuflERGuszRvoLHhH660
-         vITg==
-X-Gm-Message-State: AOAM531qJh/kZq2H4H3q3WmzO14ER5HvlFb+MEDReFfwkP4Pibjos1Ol
-        I9iKkxdIJU+VbAZJ7sDJrHk5gw==
-X-Google-Smtp-Source: ABdhPJw8DTAOsUr5WU8Vpd+v0a+yBmTCtwLVBO7SW0hLGXW07nvSR0O4uxCMpwl6vZZg8UEpdLJJzQ==
-X-Received: by 2002:a1c:bac1:: with SMTP id k184mr2938223wmf.76.1605601797569;
-        Tue, 17 Nov 2020 00:29:57 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t74sm2523552wmt.8.2020.11.17.00.29.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 00:29:56 -0800 (PST)
-Date:   Tue, 17 Nov 2020 08:29:55 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Francis <David.Francis@amd.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 29/42] drm/selftests/test-drm_dp_mst_helper: Place
- 'struct drm_dp_sideband_msg_req_body' onto the heap
-Message-ID: <20201117082955.GA1869941@dell>
-References: <20201116174112.1833368-1-lee.jones@linaro.org>
- <20201116174112.1833368-30-lee.jones@linaro.org>
- <2dad68f011c7cd8a7c3754457c192f9dc2f504ed.camel@redhat.com>
+        Tue, 17 Nov 2020 03:30:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B73BC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:30:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qrM57Vqpe5PlbsXpdoBXSd/3FAipesafHhH3I2g1pD4=; b=K9cyBI3Xd179Jod1LNIGmEB0IV
+        sWLcoxX67RM50qK0e0jSXJ9xpgdY6SHAg4BeHMOaI/IVjMNIZCbKBv6jP9wxBSJaKVhifpV0QCp7H
+        x5cHaTNLhY8lAoZ0uBG6Vk3yQiIxwr0bmI2lYmR8MoloSc01HZPvkshppc/C0tCmHEGOcWEZ/NUm6
+        bZdZG3UbdPKK111wii4wnar5oUvY5LTNJVKRbKr5Gpva2jjjpxu4t7wrltYQw3+FVzA8Wj/V4CqqL
+        NKpEReuLO+vk3vYPf30buifYdfJqF46i+y6QgkqIYw1fXzW+JLJiX9TBg5geynNTPrafRXwlDFt2/
+        gn1P1STQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kewNW-00022B-9a; Tue, 17 Nov 2020 08:30:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 70B80301959;
+        Tue, 17 Nov 2020 09:30:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5B2642364166A; Tue, 17 Nov 2020 09:30:16 +0100 (CET)
+Date:   Tue, 17 Nov 2020 09:30:16 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] sched: Fix data-race in wakeup
+Message-ID: <20201117083016.GK3121392@hirez.programming.kicks-ass.net>
+References: <20201116091054.GL3371@techsingularity.net>
+ <20201116131102.GA29992@willie-the-truck>
+ <20201116133721.GQ3371@techsingularity.net>
+ <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
+ <20201116193149.GW3371@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2dad68f011c7cd8a7c3754457c192f9dc2f504ed.camel@redhat.com>
+In-Reply-To: <20201116193149.GW3371@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020, Lyude Paul wrote:
+On Mon, Nov 16, 2020 at 07:31:49PM +0000, Mel Gorman wrote:
 
-> Huh-could have sworn I had reviewed this one already.
-> 
-> Reviewed-by: Lyude Paul <lyude@redhat.com>
+> And this works.
 
-Yes, you're right.
+Yay!
 
-It was masked by the discussion with Ville.  Apologies.
+> sched_psi_wake_requeue can probably stay with the other three fields
+> given they are under the rq lock but sched_remote_wakeup needs to move
+> out.
 
-> On Mon, 2020-11-16 at 17:40 +0000, Lee Jones wrote:V
-> > The stack is too full.
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c: In function
-> > ‘sideband_msg_req_encode_decode’:
-> >  drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c:161:1: warning: the
-> > frame size of 1176 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> > 
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Lyude Paul <lyude@redhat.com>
-> > Cc: David Francis <David.Francis@amd.com>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  .../drm/selftests/test-drm_dp_mst_helper.c    | 31 ++++++++++++-------
-> >  1 file changed, 20 insertions(+), 11 deletions(-)
+I _think_ we can move the bit into the unserialized section below.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+It's a bit cheecky, but it should work I think because the only time we
+actually use this bit, we're guaranteed the task isn't actually running,
+so current doesn't exist.
+
+I suppose the question is wether this is worth saving 31 bits over...
+
+How's this?
+
+---
+Subject: sched: Fix data-race in wakeup
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Tue Nov 17 09:08:41 CET 2020
+
+Mel reported that on some ARM64 platforms loadavg goes bananas and
+tracked it down to the following data race:
+
+  CPU0					CPU1
+
+  schedule()
+    prev->sched_contributes_to_load = X;
+    deactivate_task(prev);
+
+					try_to_wake_up()
+					  if (p->on_rq &&) // false
+					  if (smp_load_acquire(&p->on_cpu) && // true
+					      ttwu_queue_wakelist())
+					        p->sched_remote_wakeup = Y;
+
+    smp_store_release(prev->on_cpu, 0);
+
+where both p->sched_contributes_to_load and p->sched_remote_wakeup are
+in the same word, and thus the stores X and Y race (and can clobber
+one another's data).
+
+Whereas prior to commit c6e7bd7afaeb ("sched/core: Optimize ttwu()
+spinning on p->on_cpu") the p->on_cpu handoff serialized access to
+p->sched_remote_wakeup (just as it still does with
+p->sched_contributes_to_load) that commit broke that by calling
+ttwu_queue_wakelist() with p->on_cpu != 0.
+
+However, due to
+
+  p->XXX			ttwu()
+  schedule()			  if (p->on_rq && ...) // false
+    smp_mb__after_spinlock()	  if (smp_load_acquire(&p->on_cpu) &&
+    deactivate_task()		      ttwu_queue_wakelist())
+      p->on_rq = 0;		        p->sched_remote_wakeup = X;
+
+We can be sure any 'current' store is complete and 'current' is
+guaranteed asleep. Therefore we can move p->sched_remote_wakeup into
+the current flags word.
+
+Note: while the observed failure was loadavg accounting gone wrong due
+to ttwu() cobbering p->sched_contributes_to_load, the reverse problem
+is also possible where schedule() clobbers p->sched_remote_wakeup,
+this could result in enqueue_entity() wrecking ->vruntime and causing
+scheduling artifacts.
+
+Fixes: c6e7bd7afaeb ("sched/core: Optimize ttwu() spinning on p->on_cpu")
+Reported-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ include/linux/sched.h |   13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -775,7 +775,6 @@ struct task_struct {
+ 	unsigned			sched_reset_on_fork:1;
+ 	unsigned			sched_contributes_to_load:1;
+ 	unsigned			sched_migrated:1;
+-	unsigned			sched_remote_wakeup:1;
+ #ifdef CONFIG_PSI
+ 	unsigned			sched_psi_wake_requeue:1;
+ #endif
+@@ -785,6 +784,18 @@ struct task_struct {
+ 
+ 	/* Unserialized, strictly 'current' */
+ 
++	/*
++	 * p->in_iowait = 1;		ttwu()
++	 * schedule()			  if (p->on_rq && ..) // false
++	 *   smp_mb__after_spinlock();	  if (smp_load_acquire(&p->on_cpu) && //true
++	 *   deactivate_task()		      ttwu_queue_wakelist())
++	 *     p->on_rq = 0;			p->sched_remote_wakeup = X;
++	 *
++	 * Guarantees all stores of 'current' are visible before
++	 * ->sched_remote_wakeup gets used.
++	 */
++	unsigned			sched_remote_wakeup:1;
++
+ 	/* Bit to tell LSMs we're in execve(): */
+ 	unsigned			in_execve:1;
+ 	unsigned			in_iowait:1;
