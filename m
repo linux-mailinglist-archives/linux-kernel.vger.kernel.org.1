@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14492B5BDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:39:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF2F2B5BE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgKQJiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:38:03 -0500
-Received: from mga01.intel.com ([192.55.52.88]:57794 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbgKQJiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:38:02 -0500
-IronPort-SDR: CmVeAxJX6sCmDwgOnJxM5l3LbrlcKeRBBq+zfAyojWZwSqbL7ttjGDkD5RZ/a/s7yL2PQqqF+D
- he6xXVuHyYlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="188948140"
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="188948140"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 01:38:02 -0800
-IronPort-SDR: 9Wb/Cym2213UyVcj5mi74cfc0lLAdtzPdRhFanxLYRQnQZ3Z18AHfBKRaupYDmSYGKSFT1Y8Uu
- J8rzXAJQztXw==
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="543972342"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 01:37:59 -0800
-Date:   Tue, 17 Nov 2020 17:40:38 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][v2] x86/microcode/intel: check cpu stepping and
- processor flag before saving microcode
-Message-ID: <20201117094038.GA22602@chenyu-office.sh.intel.com>
-References: <20201113015923.13960-1-yu.c.chen@intel.com>
- <20201116122735.GA1131@zn.tnic>
- <20201117022518.GA17555@chenyu-office.sh.intel.com>
- <20201117091837.GA5719@zn.tnic>
+        id S1727346AbgKQJlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:41:04 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:41582 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgKQJlE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 04:41:04 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 591598030718;
+        Tue, 17 Nov 2020 09:41:01 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id S30F3aBmHmzX; Tue, 17 Nov 2020 12:41:00 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Serge Semin <fancer.lancer@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] spi: dw: Set transfer handler before unmasking the IRQs
+Date:   Tue, 17 Nov 2020 12:40:54 +0300
+Message-ID: <20201117094054.4696-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117091837.GA5719@zn.tnic>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:18:37AM +0100, Borislav Petkov wrote:
-> On Tue, Nov 17, 2020 at 10:25:18AM +0800, Chen Yu wrote:
-> > If I understand correctly, the only place that invokes
-> > save_mc_for_early() is in generic_load_microcode(). While in
-> > generic_load_microcode() only microcode has a newer version will be
-> > saved by checking has_newer_microcode(), and this function leverages
-> > find_matching_signature() to check if the candidate is of the same
-> > signature. So when it comes to save_microcode_patch(), the signature
-> > already matches. In case save_mc_for_early() will be invoked by other
-> > function in the future, it is okay to add this check too.
-> 
-> The important aspect is that you need to save in intel_ucode_patch
-> the *exact* patch for the CPU you're running on. The code above that
-> in save_microcode_patch() adds patches of the same family/model but
-> *not* same stepping to the microcode cache in case we want to support
-> mixed-stepping revisions. And those you don't need to check for exact
-> match.
-> 
-> What I'd like, however, is to get rid of that mixed-stepping support -
-> which is total nonsense anyway, if you ask me - and that would simplify
-> the code a *lot* more.
->
-Ok, got it, thanks.
+It turns out the IRQs most like can be unmasked before the controller is
+enabled with no problematic consequences. The manual doesn't explicitly
+state that, but the examples perform the controller initialization
+procedure in that order. So the commit da8f58909e7e ("spi: dw: Unmask IRQs
+after enabling the chip") hasn't been that required as I thought. But
+anyway setting the IRQs up after the chip enabling still worth adding
+since it has simplified the code a bit. The problem is that it has
+introduced a potential bug. The transfer handler pointer is now
+initialized after the IRQs are enabled. That may and eventually will cause
+an invalid or uninitialized callback invocation. Fix that just by
+performing the callback initialization before the IRQ unmask procedure.
 
-Best,
-Chenyu
+Fixes: da8f58909e7e ("spi: dw: Unmask IRQs after enabling the chip")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+---
+ drivers/spi/spi-dw-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+index 2e50cc0a9291..0b2236ade412 100644
+--- a/drivers/spi/spi-dw-core.c
++++ b/drivers/spi/spi-dw-core.c
+@@ -357,11 +357,11 @@ static void dw_spi_irq_setup(struct dw_spi *dws)
+ 	dw_writel(dws, DW_SPI_TXFTLR, level);
+ 	dw_writel(dws, DW_SPI_RXFTLR, level - 1);
+ 
++	dws->transfer_handler = dw_spi_transfer_handler;
++
+ 	imask = SPI_INT_TXEI | SPI_INT_TXOI | SPI_INT_RXUI | SPI_INT_RXOI |
+ 		SPI_INT_RXFI;
+ 	spi_umask_intr(dws, imask);
+-
+-	dws->transfer_handler = dw_spi_transfer_handler;
+ }
+ 
+ /*
+-- 
+2.29.2
+
