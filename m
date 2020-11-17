@@ -2,137 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7AF2B57F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1033B2B586F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgKQDem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 22:34:42 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:56540 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726379AbgKQDel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 22:34:41 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 66F821A01D1;
-        Tue, 17 Nov 2020 04:34:39 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 62ED21A0678;
-        Tue, 17 Nov 2020 04:34:36 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0C2D5402ED;
-        Tue, 17 Nov 2020 04:34:31 +0100 (CET)
-From:   andy.tang@nxp.com
-To:     shawnguo@kernel.org
-Cc:     leoyang.li@nxp.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yuantian Tang <andy.tang@nxp.com>
-Subject: [PATCH 2/2] ARM: dts: ls1021a: update calibration table for TMU module
-Date:   Tue, 17 Nov 2020 11:43:05 +0800
-Message-Id: <20201117034305.42546-2-andy.tang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201117034305.42546-1-andy.tang@nxp.com>
-References: <20201117034305.42546-1-andy.tang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727696AbgKQDo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 22:44:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgKQDoT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 22:44:19 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A656AC0613CF;
+        Mon, 16 Nov 2020 19:44:19 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id r12so19743916iot.4;
+        Mon, 16 Nov 2020 19:44:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=57lbXEPj7jmNMETWFLeFaZrg6lk8ttcI8EA76YL2pTI=;
+        b=eSKEDg7flLp4D1xoqZ18+arU7NXV4g8oO1m1RWGJoWcR2z06I7q55NoUPBmwfyCpmY
+         +M0SWFotPWRCiX+TGv0Ttx7lTJEds1dHPK++mDc6ARujz/A21t6WD07GwzrMliseeOLs
+         2kIW+eYOKvnBiB+GL0POaDVXQXP5Rw3Qy/YywlPunIKsXoY3iWzC67AhVzbskHYCqo+C
+         zvFSrBQ6aJ+MVua6yhNS7xQK9GOnhdhEF1x/vtNMg++yM2rVIt9MoikEDr3xmyZoDI0T
+         3UyAi3N3JdADZkQLkz34egyA6lP9k1pe18zesJ13e3dyDZS5Cl7zowqhxx4jpqaExgqp
+         vO8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=57lbXEPj7jmNMETWFLeFaZrg6lk8ttcI8EA76YL2pTI=;
+        b=uK0RsIVkMG01/CZAP/dC/i0zGcROmpmgr6eaVZapZjJA7sNo4dFgmD1tVPlKOw+/m5
+         YBLD/45pHN7PdR48ZgdCbRf3yxLviO+AiePXyph3I2Jn732KwWmgXVJL8+zS6Ztdv7iT
+         Ot4HrJmjt1AHxHrS6Hx5dMSp1a6QH9Ii3HeEm+yLYltgfsj8JMyLm24giUFjHODMAdl6
+         v6JbMFpEnisPkKygLYaUtJpJ5RxN5XzDcgHcwc3AFuKEd+40Yvoz2JxlBWlLs/VWFM4D
+         T3ddJ57MMoo3F2cPaZl6lA1DexQiZNQreEq74WB/dK9kr8IKPyzmbPznZMWzL+2zxuIZ
+         qztg==
+X-Gm-Message-State: AOAM5300+1bHwR2LskTvr0LdxCJLk5n69I5mZVS9qpXmgbqOLqdi3/p+
+        lslsfO0CBelO8J5uhg6ywts8dAq1cH4=
+X-Google-Smtp-Source: ABdhPJw/yEB+ALCGdMUZTF7R+rcBxaLw/KLDk/LjnT/LhqsFVjxtGZJGtYSIsdkP62NeXytg4aZCaQ==
+X-Received: by 2002:a6b:4401:: with SMTP id r1mr10057525ioa.78.1605584659034;
+        Mon, 16 Nov 2020 19:44:19 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:c472:ae53:db1e:5dd0])
+        by smtp.googlemail.com with ESMTPSA id c89sm12728838ilf.26.2020.11.16.19.44.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Nov 2020 19:44:18 -0800 (PST)
+Subject: Re: [PATCH v4 bpf-next 3/5] kbuild: build kernel module BTFs if BTF
+ is enabled and pahole supports it
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@fb.com, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, jeyu@kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net
+References: <20201110011932.3201430-1-andrii@kernel.org>
+ <20201110011932.3201430-4-andrii@kernel.org>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <f52c83a9-c350-5ba8-e178-10a0d7d0fed6@gmail.com>
+Date:   Mon, 16 Nov 2020 20:44:15 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.3
+MIME-Version: 1.0
+In-Reply-To: <20201110011932.3201430-4-andrii@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuantian Tang <andy.tang@nxp.com>
+On 11/9/20 6:19 PM, Andrii Nakryiko wrote:
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index d7a7bc3b6098..1e78faaf20a5 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -274,6 +274,15 @@ config DEBUG_INFO_BTF
+>  	  Turning this on expects presence of pahole tool, which will convert
+>  	  DWARF type info into equivalent deduplicated BTF type info.
+>  
+> +config PAHOLE_HAS_SPLIT_BTF
+> +	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+> +
+> +config DEBUG_INFO_BTF_MODULES
+> +	def_bool y
+> +	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+> +	help
+> +	  Generate compact split BTF type information for kernel modules.
+> +
+>  config GDB_SCRIPTS
+>  	bool "Provide GDB scripts for kernel debugging"
+>  	help
 
-Update the calibration table to make the temperature more accurate.
-
-Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
----
- arch/arm/boot/dts/ls1021a.dtsi | 77 ++++++++++++++++------------------
- 1 file changed, 37 insertions(+), 40 deletions(-)
-
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index 827373ef1a54..0d569be0d2b2 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -288,46 +288,43 @@
- 			compatible = "fsl,qoriq-tmu";
- 			reg = <0x0 0x1f00000 0x0 0x10000>;
- 			interrupts = <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>;
--			fsl,tmu-range = <0xb0000 0xa0026 0x80048 0x30061>;
--			fsl,tmu-calibration = <0x00000000 0x0000000f
--					       0x00000001 0x00000017
--					       0x00000002 0x0000001e
--					       0x00000003 0x00000026
--					       0x00000004 0x0000002e
--					       0x00000005 0x00000035
--					       0x00000006 0x0000003d
--					       0x00000007 0x00000044
--					       0x00000008 0x0000004c
--					       0x00000009 0x00000053
--					       0x0000000a 0x0000005b
--					       0x0000000b 0x00000064
--
--					       0x00010000 0x00000011
--					       0x00010001 0x0000001c
--					       0x00010002 0x00000024
--					       0x00010003 0x0000002b
--					       0x00010004 0x00000034
--					       0x00010005 0x00000039
--					       0x00010006 0x00000042
--					       0x00010007 0x0000004c
--					       0x00010008 0x00000051
--					       0x00010009 0x0000005a
--					       0x0001000a 0x00000063
--
--					       0x00020000 0x00000013
--					       0x00020001 0x00000019
--					       0x00020002 0x00000024
--					       0x00020003 0x0000002c
--					       0x00020004 0x00000035
--					       0x00020005 0x0000003d
--					       0x00020006 0x00000046
--					       0x00020007 0x00000050
--					       0x00020008 0x00000059
--
--					       0x00030000 0x00000002
--					       0x00030001 0x0000000d
--					       0x00030002 0x00000019
--					       0x00030003 0x00000024>;
-+			fsl,tmu-range = <0xb0000 0x9002c 0x6004e 0x30066>;
-+			fsl,tmu-calibration = <0x00000000 0x00000020
-+					       0x00000001 0x00000024
-+					       0x00000002 0x0000002a
-+					       0x00000003 0x00000032
-+					       0x00000004 0x00000038
-+					       0x00000005 0x0000003e
-+					       0x00000006 0x00000043
-+					       0x00000007 0x0000004a
-+					       0x00000008 0x00000050
-+					       0x00000009 0x00000059
-+					       0x0000000a 0x0000005f
-+					       0x0000000b 0x00000066
-+
-+					       0x00010000 0x00000023
-+					       0x00010001 0x0000002b
-+					       0x00010002 0x00000033
-+					       0x00010003 0x0000003a
-+					       0x00010004 0x00000042
-+					       0x00010005 0x0000004a
-+					       0x00010006 0x00000054
-+					       0x00010007 0x0000005c
-+					       0x00010008 0x00000065
-+					       0x00010009 0x0000006f
-+
-+					       0x00020000 0x00000029
-+					       0x00020001 0x00000033
-+					       0x00020002 0x0000003d
-+					       0x00020003 0x00000048
-+					       0x00020004 0x00000054
-+					       0x00020005 0x00000060
-+					       0x00020006 0x0000006c
-+
-+					       0x00030000 0x00000025
-+					       0x00030001 0x00000033
-+					       0x00030002 0x00000043
-+					       0x00030003 0x00000055>;
- 			#thermal-sensor-cells = <1>;
- 		};
- 
--- 
-2.17.1
-
+Thank you for adding a config option for this feature vs bumping the
+required pahole version in scripts/link-vmlinux.sh. This is a much more
+friendly way of handling kernel features that require support from build
+tools.
