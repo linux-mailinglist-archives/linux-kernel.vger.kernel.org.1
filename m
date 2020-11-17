@@ -2,94 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FE52B5AAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:05:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CFC2B5AB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgKQIFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:05:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbgKQIFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:05:25 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E15E6208FE;
-        Tue, 17 Nov 2020 08:05:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605600324;
-        bh=Vh/0IhA+MvqR21aqMI4dmvPUVbdKKG3QZglHTIWwbi0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C7Wn2nbdiGYPr/2qOOlCVeRIrSBqIjCFoN/isTfHeRAjrs4J1HqwtXxFjkfxnjYVF
-         PrukUuOUOOwTSSVMKs56fMaPcVZx8HEoCcwNvlGftBEGvg7yK996qaaDUMZc4mbD+n
-         1dKH5vJTHtncCQXjj00taKx8BT4pwo7e84DgtVpA=
-Date:   Tue, 17 Nov 2020 10:05:18 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: kernel: Fix for_each_memblock conversion
-Message-ID: <20201117080518.GH370813@kernel.org>
-References: <20201116174516.144243-1-tsbogend@alpha.franken.de>
- <20201116200554.rhbyvfmdzmchwwbs@mobilestation>
+        id S1726740AbgKQIGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:06:23 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:59754 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgKQIGW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 03:06:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1605600382; x=1637136382;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=K8f6ETiEAQNHhAiPwTTzrZ8ML7xCbvOY3ECTsRFRiDw=;
+  b=r7irN8HXOePiw8itlFDd5gb3hL3YeETeaXsJdAlDeBaUBYy5VDpSPiuf
+   83yNJprTAvNCM69IGU+Df3ESvfYa49xuSXBGpHwULXNPhbsfQZLMlYwGA
+   H7PapC9yjTN3OLBrhQoaq6cB6sSf4b+qmWh5T4wXCo3vvRoR4N3fverR+
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.77,484,1596499200"; 
+   d="scan'208";a="64147388"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 17 Nov 2020 08:06:13 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id C43A8A1C14;
+        Tue, 17 Nov 2020 08:06:09 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.144) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 17 Nov 2020 08:05:53 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     SeongJae Park <sjpark@amazon.com>
+CC:     <Jonathan.Cameron@Huawei.com>, <aarcange@redhat.com>,
+        <acme@kernel.org>, <alexander.shishkin@linux.intel.com>,
+        <amit@kernel.org>, <benh@kernel.crashing.org>,
+        <brendan.d.gregg@gmail.com>, <brendanhiggins@google.com>,
+        <cai@lca.pw>, <colin.king@canonical.com>, <corbet@lwn.net>,
+        <david@redhat.com>, <dwmw@amazon.com>, <elver@google.com>,
+        <fan.du@intel.com>, <foersleo@amazon.de>, <gthelen@google.com>,
+        <irogers@google.com>, <jolsa@redhat.com>, <kirill@shutemov.name>,
+        <mark.rutland@arm.com>, <mgorman@suse.de>, <minchan@kernel.org>,
+        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v22 00/18] Introduce Data Access MONitor (DAMON)
+Date:   Tue, 17 Nov 2020 09:05:39 +0100
+Message-ID: <20201117080539.31334-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201111164113.23245-1-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116200554.rhbyvfmdzmchwwbs@mobilestation>
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.144]
+X-ClientProxiedBy: EX13D46UWB001.ant.amazon.com (10.43.161.16) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 11:05:54PM +0300, Serge Semin wrote:
-> On Mon, Nov 16, 2020 at 06:45:15PM +0100, Thomas Bogendoerfer wrote:
-> > The loop over all memblocks works with PFN numbers and not physical
-> > addresses, so we need for_each_mem_pfn_range().
-> 
-> Great catch! Don't know how that has been working so far. Anyway
+Another week, another ping.  I'm waiting for _any_ comments.
 
-The loop is relevant only for systems with highmem, apparently there are
-not many highmem users out there.
 
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> 
-> -Sergey
-> 
-> > 
-> > Fixes: b10d6bca8720 ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
-> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > ---
-> >  arch/mips/kernel/setup.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> > index 0d4253208bde..ca579deef939 100644
-> > --- a/arch/mips/kernel/setup.c
-> > +++ b/arch/mips/kernel/setup.c
-> > @@ -262,8 +262,8 @@ static void __init bootmem_init(void)
-> >  static void __init bootmem_init(void)
-> >  {
-> >  	phys_addr_t ramstart, ramend;
-> > -	phys_addr_t start, end;
-> > -	u64 i;
-> > +	unsigned long start, end;
-> > +	int i;
-> >  
-> >  	ramstart = memblock_start_of_DRAM();
-> >  	ramend = memblock_end_of_DRAM();
-> > @@ -300,7 +300,7 @@ static void __init bootmem_init(void)
-> >  
-> >  	min_low_pfn = ARCH_PFN_OFFSET;
-> >  	max_pfn = PFN_DOWN(ramend);
-> > -	for_each_mem_range(i, &start, &end) {
-> > +	for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, NULL) {
-> >  		/*
-> >  		 * Skip highmem here so we get an accurate max_low_pfn if low
-> >  		 * memory stops short of high memory.
-> > -- 
-> > 2.16.4
-> > 
+Thanks,
+SeongJae Park
 
--- 
-Sincerely yours,
-Mike.
+On Wed, 11 Nov 2020 17:41:13 +0100 SeongJae Park <sjpark@amazon.com> wrote:
+
+> Hi, I'd like to remind you that I'm still waiting more reviews.  Any comments
+> are welcome.
+> 
+> 
+> Thanks,
+> SeongJae Park
+> 
+> On Tue, 20 Oct 2020 10:59:22 +0200 SeongJae Park <sjpark@amazon.com> wrote:
+> 
+> > From: SeongJae Park <sjpark@amazon.de>
+> > 
+> > Changes from Previous Version (v21)
+> > ===================================
+> > 
+> > This version contains below minor changes.
+> > 
+> > - Fix build warnings and errors (kernel test robot)
+> > - Fix a memory leak (kmemleak)
+> > - Respect KUNIT_ALL_TESTS
+> > - Rebase on v5.9
+> > - Update the evaluation results
+> > 
+> > Introduction
+> > ============
+> > 
+> > DAMON is a data access monitoring framework for the Linux kernel.  The core
+> > mechanisms of DAMON called 'region based sampling' and 'adaptive regions
+> > adjustment' (refer to 'mechanisms.rst' in the 11th patch of this patchset for
+> > the detail) make it
+> > 
+> >  - accurate (The monitored information is useful for DRAM level memory
+> >    management. It might not appropriate for Cache-level accuracy, though.),
+> >  - light-weight (The monitoring overhead is low enough to be applied online
+> >    while making no impact on the performance of the target workloads.), and
+> >  - scalable (the upper-bound of the instrumentation overhead is controllable
+> >    regardless of the size of target workloads.).
+> > 
+> > Using this framework, therefore, several memory management mechanisms such as
+> > reclamation and THP can be optimized to aware real data access patterns.
+> > Experimental access pattern aware memory management optimization works that
+> > incurring high instrumentation overhead will be able to have another try.
+> > 
+> > Though DAMON is for kernel subsystems, it can be easily exposed to the user
+> > space by writing a DAMON-wrapper kernel subsystem.  Then, user space users who
+> > have some special workloads will be able to write personalized tools or
+> > applications for deeper understanding and specialized optimizations of their
+> > systems.
+> > 
+> > Evaluations
+> > ===========
+> > 
+> > We evaluated DAMON's overhead, monitoring quality and usefulness using 24
+> > realistic workloads on my QEMU/KVM based virtual machine running a kernel that
+> > v22 DAMON patchset is applied.
+> > 
+> > DAMON is lightweight.  It increases system memory usage by 0.25% and slows
+> > target workloads down by 0.89%.
+> > 
+> > DAMON is accurate and useful for memory management optimizations.  An
+> > experimental DAMON-based operation scheme for THP, 'ethp', removes 81.73% of
+> > THP memory overheads while preserving 95.29% of THP speedup.  Another
+> > experimental DAMON-based 'proactive reclamation' implementation, 'prcl',
+> > reduces 91.30% of residential sets and 23.45% of system memory footprint while
+> > incurring only 2.08% runtime overhead in the best case (parsec3/freqmine).
+> > 
+> > NOTE that the experimentail THP optimization and proactive reclamation are not
+> > for production but only for proof of concepts.
+> > 
+> > Please refer to the official document[1] or "Documentation/admin-guide/mm: Add
+> > a document for DAMON" patch in this patchset for detailed evaluation setup and
+> > results.
+> > 
+> > [1] https://damonitor.github.io/doc/html/latest-damon/admin-guide/mm/damon/eval.html
+> > 
