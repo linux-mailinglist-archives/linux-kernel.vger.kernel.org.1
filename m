@@ -2,193 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987F12B5995
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8D52B599C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgKQGOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 01:14:38 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16269 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQGOi (ORCPT
+        id S1726950AbgKQGP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 01:15:28 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43228 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726391AbgKQGP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 01:14:38 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb36a570000>; Mon, 16 Nov 2020 22:14:47 -0800
-Received: from [10.19.109.31] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
- 2020 06:14:34 +0000
-Subject: Re: [PATCH v4 00/16] Tegra XHCI controller ELPG support
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <gregkh@linuxfoundation.org>, <robh@kernel.org>,
-        <jonathanh@nvidia.com>, <kishon@ti.com>,
-        <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nkristam@nvidia.com>
-References: <20201016130726.1378666-1-jckuo@nvidia.com>
- <20201113164455.GG1408970@ulmo>
-X-Nvconfidentiality: public
-From:   JC Kuo <jckuo@nvidia.com>
-Message-ID: <9b64c181-1c5b-f6bd-d9db-03e30b4479a5@nvidia.com>
-Date:   Tue, 17 Nov 2020 14:14:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 17 Nov 2020 01:15:28 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AH69TDJ005664;
+        Mon, 16 Nov 2020 22:15:09 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=MsfmEl6SGvYGo7NbuUchWr2H2wzfJhOWEVEcaNiC1Ng=;
+ b=Lrg8V6K0qSZ6qUVBbqJBlm/krpnmSUI8fkw5KU/YRezakIlwD3CyrYnQqwAorOr2jAHn
+ tnfb8sY7natGrPevlAcx/N25ZE3CtuQtLTFmWA5STjZAdhYmVPtbu48xJWnO5/B3tu0j
+ ila/KIAZxi5mMizbopn3quO+t9Qt9sFoLfk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34tyxqsanu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 16 Nov 2020 22:15:09 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 16 Nov 2020 22:15:08 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K22pbAmcvcXl6O7UIaHg3nUFW48yF7qBXYizECuv8doPvPhKuVqG7b6UIyb3wfVMdTI/BG2tRxyRMyNZK6wY6djp5ylf6gevvPJ/ePS6SWHDlTCgL8iJrIjQXexhDKpPNHEiZxnVg7XHjPI/Wkwo0VIcOK5VqR4320TYaDZl74kLX9Pu377lbKsRi1W34zRwOzD8aNiJ4yPhGrRiqiCXsn1ne5Ri/7UesF/8JQVP3om5XLCIyAKnY0Qi65PXfjawwQOaQrhg8/7v6NyHwr2QpoxSydKxSZBxv26YCaWuEl4bJZ6zIxbzq3yCyLJwPoeqa6JsIo6o5Z2jxr63TVyQ2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MsfmEl6SGvYGo7NbuUchWr2H2wzfJhOWEVEcaNiC1Ng=;
+ b=EdVXAYt15tvp70mcJ3xOLMN3ewvnqZuOLc/q6Q10/FSODEKqeCzUFO+V0nalDZ2n09CtHW0PBpiE/2ecOVwm8Z949vcxSKBnulXL4kztEQy5GqeajdtWzEHgjMSJG6dH98EYCO5MolVTV35AuwD9Bnoa+v4uOq9uCxeDGMGI7oPwsTMt01P7ziNaBJivoB50tFmmv7ZxJXB3uaogcTwYWRDU4Mli0koxJ7HdORrQjMbJEjkov1slLVW5X3vpgJzGmn9+R7oUNLKDcMBZCMdGI7lifBzGQMTzcG2BItIoRKfH7YiLLdai4KyeEK2d+QqdX+UeEVEXSOKNuSU/NN7Kwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MsfmEl6SGvYGo7NbuUchWr2H2wzfJhOWEVEcaNiC1Ng=;
+ b=NnLhgRatD3H22uLVM5dKJuj3jKWpRP8wRSzdafHOnIqLKxfFbPJNYJkouCdQNV/RUyvexcM1P3a3RDk1Y9nnNkFcQgUMeEzhrbnhDG/GM3urk01GhmHSiXAiFzZgzMvC0/iQnp845sda/01SzHgUfJTBYI3fPWbD8yBxkoXvRMY=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2728.namprd15.prod.outlook.com (2603:10b6:a03:14c::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.26; Tue, 17 Nov
+ 2020 06:14:53 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3564.028; Tue, 17 Nov 2020
+ 06:14:53 +0000
+Date:   Mon, 16 Nov 2020 22:14:46 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Add bpf_lsm_set_bprm_opts helper
+Message-ID: <20201117061446.pbszrrezas4wn2kf@kafai-mbp.dhcp.thefacebook.com>
+References: <20201117021307.1846300-1-kpsingh@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117021307.1846300-1-kpsingh@chromium.org>
+X-Originating-IP: [2620:10d:c090:400::5:8f7f]
+X-ClientProxiedBy: CO2PR04CA0116.namprd04.prod.outlook.com
+ (2603:10b6:104:7::18) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-In-Reply-To: <20201113164455.GG1408970@ulmo>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605593687; bh=QZtXCGM+q2rMWr9GD4knohnZaY8gE+YhOGU4SliD8f8=;
-        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=dtSwXK3cExvCd5/vTA9KS9ceZHJWqbCCJa4ZWUTa4B2WYCKvBD0pGUhZh+XOpkEbw
-         XKsJ53r5QU1m9ySB+upTh02wQdd/2JgtB73483lcdBDjcfLPWLQA+iBZL8idK7zl/g
-         NqULrQGmwqok51Ojg7ggUzHnig3pMVECDQGtZhWmnuM/z3QGOLWWk3E0eAyRfid3DP
-         m0621WgNKcA72Ip8dpyq+eyWzutgpO7Ks7ALYf8/K/06CFYV2gYsOkLL8L1WTm/84B
-         iPHlBIfBsvgIBGtO0Mq1VaGNSaNTnDxWWhp+1INzj4aH4K6fAgYlxbRQU3Zv9151Pi
-         /9+IOMtJO5qvQ==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:8f7f) by CO2PR04CA0116.namprd04.prod.outlook.com (2603:10b6:104:7::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28 via Frontend Transport; Tue, 17 Nov 2020 06:14:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c1497ccd-4ca6-4b76-a94b-08d88ac01912
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2728:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2728AD589488FBAE5F375E45D5E20@BYAPR15MB2728.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xNIzO4w3OuX/jZUenFqAa9ebci0Y7PyGxxfSK6kPOxljuf210l7GbGSOXVdGgYv31TXZD7lqcJfG/Enxp59C8ZwsUVjQnJP2tbvVCABoTuXvP1DJbIL2z8bUsGDzh4Y6JeW2RIwx14XokPN+CXBXa3wZFwE+aJYW5z58Es9DQ7glVJSkc45tQVnInVGPYnc7Xng/8sUTvn25Cy3+VMRXeHpUbEaTN9VvSnJrHYPyd5YnLf7+qNjpkQjV983Is8+AITfDVN08akMe19cx7hiEwLEBDCME3LV9UTgFNZUgXdbF7+ES4Ua9M85POH2IIpl1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(376002)(366004)(396003)(4326008)(186003)(7696005)(66556008)(52116002)(66476007)(6666004)(6506007)(83380400001)(8676002)(16526019)(55016002)(8936002)(2906002)(9686003)(478600001)(86362001)(1076003)(54906003)(6916009)(66946007)(316002)(5660300002)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: /DlIoZzkTFpAkcExMz86JaXES+UHKOuF4kxNEbIcRkqqGI9w8/j/RLs8f4scNAJ51ngrswr5fKam2rWciFYCK5wP53619ZXASkhBY8YepmvGE0VflqMu3b0zwt4jp5axT1z5TTL3f5vcSjDh9rq7dIi4PCddPUfjLD3MXfgvU7wIQL41+ve24J+BsDhm/Ntbbs6K8E0WyrkL/YBMB8zH4Itq5uUMfhNSgi705H3ocD1nVhKVTb3Wpj95c5nHD7j7AUv++wD0Stbwvt1jea6wRBZyE+ob06m4TJHoJRwcrXKYqH150pYJMfH5RF0GTIh5CG1apyA7mlnZELitlSOrbO0TuVhRVUudYq5vOeW8y+A/Xw8bJjh2dGY87muF72uiuWsSYg+RJH62ilEUET09C8PhEJJgjP8F2eWWzPdS4uQNAHyyxwnx+pQ5Ja9XIal2d2Et5e+kmzJIrn2EjOBuwFJuMctFtp4aUaXS/aST0mG7WVpUmVG9Kmi7jEpaAmVQyhC+qerLxVQn795PVJeZa1AfWIww4GhDZXN0wihM2+udHVAKqafOc45nfPL+6/XNz8bkTLzHqbuGMR7GWI4xqBUz6bwU8hLzdMp8xNBsCc7/7r1+6eoEdqTvrkmALsCeqv+u1EtOsVIxqVpGn0eUz4Q8Rd1MJQIw2PkRfyxxIk8fYyIHY4xj+tRGbm6SSKSmalkAh3rWvdo7Kz5oQ7V+iG27ElsBcLn6DxO1BY8kSGK5bQpDns3kB4NWcH2GXNeVBH0J8qHj3lkN2BjZFRoc3h4dubm+EUBPOdG/IgPiawbYXVSCK/Cp7+UlGednjwR9JbrgH9ONqnglvYFDyNYRlefW+mQnV4xExKQygyxbaVcEetvS9iO3jgDhFgAQyW+wMJlsaTZ8W9Ro5K2mE6Sr2g+05PmSjxOrRIVOtH953Qw=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1497ccd-4ca6-4b76-a94b-08d88ac01912
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 06:14:53.5890
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VrYsTo9AzK525hMdOYzaShf7uwfbU6uVJK9ARK8bHXeMDMVZuTgDD4455lBQzXmZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2728
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_01:2020-11-13,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 phishscore=0 spamscore=0 bulkscore=0 suspectscore=1
+ malwarescore=0 priorityscore=1501 adultscore=0 mlxlogscore=944
+ clxscore=1015 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011170045
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/14/20 12:44 AM, Thierry Reding wrote:
-> On Fri, Oct 16, 2020 at 09:07:10PM +0800, JC Kuo wrote:
->> Tegra XHCI controler can be placed in ELPG (Engine Level PowerGated)
->> state for power saving when all of the connected USB devices are in
->> suspended state. This patch series includes clk, phy and pmc changes
->> that are required for properly place controller in ELPG and bring
->> controller out of ELPG.
->>
->> JC Kuo (16):
->>   clk: tegra: Add PLLE HW power sequencer control
->>   clk: tegra: Don't enable PLLE HW sequencer at init
->>   phy: tegra: xusb: Move usb3 port init for Tegra210
->>   phy: tegra: xusb: tegra210: Do not reset UPHY PLL
->>   phy: tegra: xusb: Rearrange UPHY init on Tegra210
->>   phy: tegra: xusb: Add Tegra210 lane_iddq operation
->>   phy: tegra: xusb: Add sleepwalk and suspend/resume
->>   soc/tegra: pmc: Provide USB sleepwalk register map
->>   arm64: tegra210: XUSB PADCTL add "nvidia,pmc" prop
->>   dt-bindings: phy: tegra-xusb: Add nvidia,pmc prop
->>   phy: tegra: xusb: Add wake/sleepwalk for Tegra210
->>   phy: tegra: xusb: Tegra210 host mode VBUS control
->>   phy: tegra: xusb: Add wake/sleepwalk for Tegra186
->>   arm64: tegra210/tegra186/tegra194: XUSB PADCTL irq
->>   usb: host: xhci-tegra: Unlink power domain devices
->>   xhci: tegra: Enable ELPG for runtime/system PM
->>
->>  .../phy/nvidia,tegra124-xusb-padctl.txt       |    1 +
->>  arch/arm64/boot/dts/nvidia/tegra186.dtsi      |    1 +
->>  arch/arm64/boot/dts/nvidia/tegra194.dtsi      |    1 +
->>  arch/arm64/boot/dts/nvidia/tegra210.dtsi      |    2 +
->>  drivers/clk/tegra/clk-pll.c                   |   12 -
->>  drivers/clk/tegra/clk-tegra210.c              |   53 +-
->>  drivers/phy/tegra/xusb-tegra186.c             |  558 ++++-
->>  drivers/phy/tegra/xusb-tegra210.c             | 1889 +++++++++++++----
->>  drivers/phy/tegra/xusb.c                      |   92 +-
->>  drivers/phy/tegra/xusb.h                      |   22 +-
->>  drivers/soc/tegra/pmc.c                       |   94 +
->>  drivers/usb/host/xhci-tegra.c                 |  610 ++++--
->>  include/linux/clk/tegra.h                     |    4 +-
->>  include/linux/phy/tegra/xusb.h                |   10 +-
->>  14 files changed, 2785 insertions(+), 564 deletions(-)
+On Tue, Nov 17, 2020 at 02:13:06AM +0000, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
 > 
-> I've been testing this, but I keep seeing the following oops on suspend
-> on a Jetson TX1:
+> The helper allows modification of certain bits on the linux_binprm
+> struct starting with the secureexec bit which can be updated using the
+> BPF_LSM_F_BPRM_SECUREEXEC flag.
 > 
-> [  153.451108] tegra-xusb-padctl phy-usb2.0: > tegra_xusb_padctl_suspend_noirq(dev=ffff000080917000)
-> [  153.460353] tegra-xusb-padctl phy-usb2.0:   driver: ffff8000114453e0 (tegra_xusb_padctl_driver)
-> [  153.469245] tegra-xusb-padctl phy-usb2.0:   padctl: ffff0000829f6480
-> [  153.475772] tegra-xusb-padctl phy-usb2.0:     soc: ef7bdd7fffffffff (0xef7bdd7fffffffff)
-> [  153.484061] Unable to handle kernel paging request at virtual address 007bdd800000004f
-> [  153.492132] Mem abort info:
-> [  153.495083]   ESR = 0x96000004
-> [  153.498308]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [  153.503771]   SET = 0, FnV = 0
-> [  153.506979]   EA = 0, S1PTW = 0
-> [  153.510260] Data abort info:
-> [  153.513200]   ISV = 0, ISS = 0x00000004
-> [  153.517181]   CM = 0, WnR = 0
-> [  153.520302] [007bdd800000004f] address between user and kernel address ranges
-> [  153.527600] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> [  153.533231] Modules linked in: nouveau panel_simple tegra_video(C) tegra_drm drm_ttm_helper videobuf2_dma_contig ttm videobuf2_memops cec videobuf2_v4l2 videobuf2_common drm_kms_helper v4l2_fwnode videodev drm mc snd_hda_codec_hdmi cdc_ether usbnet snd_hda_tegra r8152 crct10dif_ce snd_hda_codec snd_hda_core tegra_xudc host1x lp855x_bl at24 ip_tables x_tables ipv6
-> [  153.566417] CPU: 0 PID: 300 Comm: systemd-sleep Tainted: G         C        5.10.0-rc3-next-20201113-00019-g5c064d5372b0-dirty #624
-> [  153.578283] Hardware name: NVIDIA Jetson TX1 Developer Kit (DT)
-> [  153.584281] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-> [  153.590381] pc : tegra_xusb_padctl_suspend_noirq+0x88/0x100
-> [  153.596016] lr : tegra_xusb_padctl_suspend_noirq+0x80/0x100
-> [  153.601632] sp : ffff8000120dbb60
-> [  153.604999] x29: ffff8000120dbb60 x28: ffff000080a1df00
-> [  153.610430] x27: 0000000000000002 x26: ffff8000106f8540
-> [  153.615858] x25: ffff8000113ac4a4 x24: ffff80001148c198
-> [  153.621277] x23: ffff800010c4538c x22: 0000000000000002
-> [  153.626692] x21: ffff800010ccde80 x20: ffff0000829f6480
-> [  153.632107] x19: ffff000080917000 x18: 0000000000000030
-> [  153.637521] x17: 0000000000000000 x16: 0000000000000000
-> [  153.642933] x15: ffff000080a1e380 x14: 74636461702d6273
-> [  153.648346] x13: ffff8000113ad058 x12: 0000000000000f39
-> [  153.653759] x11: 0000000000000513 x10: ffff800011405058
-> [  153.659176] x9 : 00000000fffff000 x8 : ffff8000113ad058
-> [  153.664590] x7 : ffff800011405058 x6 : 0000000000000000
-> [  153.670002] x5 : 0000000000000000 x4 : ffff0000fe908bc0
-> [  153.675414] x3 : ffff0000fe910228 x2 : 162ef67e0581e700
-> [  153.680826] x1 : 162ef67e0581e700 x0 : ef7bdd7fffffffff
-> [  153.686241] Call trace:
-> [  153.688769]  tegra_xusb_padctl_suspend_noirq+0x88/0x100
-> [  153.694077]  __device_suspend_noirq+0x68/0x1cc
-> [  153.698594]  dpm_noirq_suspend_devices+0x10c/0x1d0
-> [  153.703456]  dpm_suspend_noirq+0x28/0xa0
-> [  153.707461]  suspend_devices_and_enter+0x234/0x4bc
-> [  153.712314]  pm_suspend+0x1e4/0x270
-> [  153.715868]  state_store+0x8c/0x110
-> [  153.719440]  kobj_attr_store+0x1c/0x30
-> [  153.723259]  sysfs_kf_write+0x4c/0x7c
-> [  153.726981]  kernfs_fop_write+0x124/0x240
-> [  153.731065]  vfs_write+0xe4/0x204
-> [  153.734449]  ksys_write+0x6c/0x100
-> [  153.737925]  __arm64_sys_write+0x20/0x30
-> [  153.741931]  el0_svc_common.constprop.0+0x78/0x1a0
-> [  153.746789]  do_el0_svc+0x24/0x90
-> [  153.750181]  el0_sync_handler+0x254/0x260
-> [  153.754251]  el0_sync+0x174/0x180
-> [  153.757663] Code: aa0303e2 94000f64 f9405680 b40000e0 (f9402803)
-> [  153.763826] ---[ end trace 81543a3394cb409d ]---
+> secureexec can be set by the LSM for privilege gaining executions to set
+> the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
+> use of certain environment variables (like LD_PRELOAD).
 > 
-> Note that I've added a bit of debug information there to show what's
-> going on. See how tegra_xusb_padctl_suspend_noirq() is being called for
-> the phy-usb2.0 device? That's one of the PHYs that's being created for
-> the USB2 lanes. Sometimes I do see that padctl->soc ends up being NULL
-> for that device and in that case the function just aborts early and then
-> tegra_xusb_padctl_suspend_noirq() will get called again for the padctl
-> device and succeed.
-> 
-> I can't explain what's happening here. tegra_xusb_padctl_driver never
-> binds to the phy-usb2.0 device, so I don't understand how it could end
-> up suspending the device with that set of dev_pm_ops. Perhaps this is
-> some weird type of corruption somewhere?
-> 
-> Thierry
-> 
-
-Hi Thierry,
-I figured out that phy-usb2.0 device is bound to tegra-xusb-padctl driver by
-those two lines in tegra_xusb_setup_usb_role_switch()
-
-	port->usb_phy.dev = &lane->pad->lanes[port->index]->dev;
-	port->usb_phy.dev->driver = port->padctl->dev->driver;
-
-Instead of assigning lane (phy) device to 'struct usb_phy', I think it should be
-the port device (port->dev) since the 'usb-role-switch' capability belongs to
-port device.
-
-	port->usb_phy.dev = &port->dev;
-
-I will submit a patch and ask for your review.
-
-Thanks,
-JC
+> Signed-off-by: KP Singh <kpsingh@google.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
