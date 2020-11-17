@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD9F2B6637
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35222B661B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbgKQNKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:10:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39956 "EHLO mail.kernel.org"
+        id S1731841AbgKQOBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:01:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729480AbgKQNKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:10:33 -0500
+        id S1730036AbgKQNOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:14:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 329A624698;
-        Tue, 17 Nov 2020 13:10:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B5242225B;
+        Tue, 17 Nov 2020 13:14:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618632;
-        bh=7y1FuVyjxr2ugCCeDo7vnYcqlQj71agm0WBc/48hLCg=;
+        s=default; t=1605618858;
+        bh=Dfgg1Zhwokh20GcGy7w+kYaS9x+RYxcfE22/X3DR9yk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u4fdrHhkX503ohs9kjdUrx/o9YW+g+s2u9I3IAc/GW11O9vcC2mWMnu6PIXlkyqBX
-         ZV3VcopzXPFnXKRacgenlu2K+P7WCPsKJCTOgOBTTv7ukmE94HrLLZ2x3s8lUuTvsc
-         5MdxSaWBabTlJYVa5XjdHRGIi2NlRnxkNl2436nk=
+        b=KmrxrpBNz+Vga0tqe6pDY+28hqEY92aeCzjQrAPxC9Fi5nlIHEhKJs3uqiNQxioSC
+         IkW6Li2ivzIbqRSGMDTwgmJspaX68AW35M9uVosft2WE2e888BtEf0nyNTHPIyVIQA
+         jwXNPS+Gml2ix+sOo4b9ZdJ7mFdu91aIkfK/4aH8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         syzbot+2e293dbd67de2836ba42@syzkaller.appspotmail.com,
         Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 32/78] mac80211: always wind down STA state
-Date:   Tue, 17 Nov 2020 14:04:58 +0100
-Message-Id: <20201117122110.674780454@linuxfoundation.org>
+Subject: [PATCH 4.14 30/85] mac80211: always wind down STA state
+Date:   Tue, 17 Nov 2020 14:04:59 +0100
+Message-Id: <20201117122112.505581852@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -72,10 +72,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 18 insertions(+)
 
 diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
-index fef8d7758dae9..8a9bbcfefbca6 100644
+index 2a18687019003..b74551323f5fb 100644
 --- a/net/mac80211/sta_info.c
 +++ b/net/mac80211/sta_info.c
-@@ -243,6 +243,24 @@ struct sta_info *sta_info_get_by_idx(struct ieee80211_sub_if_data *sdata,
+@@ -244,6 +244,24 @@ struct sta_info *sta_info_get_by_idx(struct ieee80211_sub_if_data *sdata,
   */
  void sta_info_free(struct ieee80211_local *local, struct sta_info *sta)
  {
