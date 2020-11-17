@@ -2,92 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A562B571C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B83722B5710
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgKQCxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:53:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgKQCxd (ORCPT
+        id S1726255AbgKQCtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:49:55 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7546 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgKQCty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:53:33 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C453C0613CF;
-        Mon, 16 Nov 2020 18:53:33 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id a18so16115139pfl.3;
-        Mon, 16 Nov 2020 18:53:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=e+k0NNbbIJsnWb6/NawsT3reeEAv80LjdOayORgiKkw=;
-        b=qN9UIVQUq4Be03GE6EviCnPDGjHnCsMNttJ3B/t4/rxYCSJF8IWjyOdx+h56EF/4eh
-         3/oGDvVtHWXSZDu3WrA7K6aEIH3dq1JNJ5XMNZBb86bvlT9o25j9UfAm6vP//9IAyI4N
-         CjyvlFt/nIkwXLctXNABaXe/yWXU4WMxuWg5P6/f2BEw2ejuV2zOkdtdFF1u5kOvTbTi
-         NChaNVQgVKmVExWzvTHmLq0sNL5HSWo8alzAnKq+OlYJP9M6H+fnQqqgN6hSMg9OJf5a
-         BjNwI8q13Y3mhfB4vZ0hKzErbTNmN6Bbut6nwwiWxnBdmRq35s1WnpnkAAOiud9gXxpj
-         o1mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e+k0NNbbIJsnWb6/NawsT3reeEAv80LjdOayORgiKkw=;
-        b=Jk2tGcx5dIe1sjkl/HmS8i8bMmF7O2dXSTItEmzJky4x+cC2x9kRYsbbcXau5fLuLf
-         crhAiNXWGwXqDSeb0AwcFGjPXMEbPw1h6fISSORssYEuJ3/82LebEEbJzZxbVU143WA/
-         PF3SG8vnplWJAtlVbWNMOBk9sg3wHGJ9Vg/2fvjGu8uAxW3E4vgxzwI1Q9+f+tT9loSz
-         b7C01cOw5udmUpvLYhjOq8gvcrX6A+Ialqvo2dW7JCfIcDo3JacjrxC5doy29F2r1EQr
-         SfXRM7nfes25KNEwL8yMq3RQXHKDZGfKe5zIAgXZLDtHS6UXV3YTUdO8REaiEO/QHzGQ
-         f0ZA==
-X-Gm-Message-State: AOAM533IGDwGn0wFU+6cXu9Yzs+GZ3EiCpQ+fDEN9+g9X4jJTQjdWHMd
-        O2xplaETyYKRyb2q2HZqKg==
-X-Google-Smtp-Source: ABdhPJxZSKuhMuASGc9aDRyMhsK2eQZxwHJ5qil+KbEa7c2RNPGiAovjVlPHN/G++oi4+JdAaq2jSw==
-X-Received: by 2002:a17:90a:fe0a:: with SMTP id ck10mr2148420pjb.233.1605581612707;
-        Mon, 16 Nov 2020 18:53:32 -0800 (PST)
-Received: from [10.76.131.47] ([103.7.29.6])
-        by smtp.gmail.com with ESMTPSA id h9sm863647pjs.26.2020.11.16.18.53.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 18:53:32 -0800 (PST)
-Subject: Re: [PATCH] btrfs: remove the useless value assignment in
- btrfs_defrag_file
-To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-References: <1605344781-10362-1-git-send-email-kaixuxia@tencent.com>
- <20201116151338.GI6756@twin.jikos.cz>
-From:   kaixuxia <xiakaixu1987@gmail.com>
-Message-ID: <9a60330f-ae5e-ba78-ef34-69ab2b7ee0df@gmail.com>
-Date:   Tue, 17 Nov 2020 10:53:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Mon, 16 Nov 2020 21:49:54 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CZr4y23RgzhYvN;
+        Tue, 17 Nov 2020 10:49:38 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 17 Nov 2020 10:49:42 +0800
+From:   Chen Zhou <chenzhou10@huawei.com>
+To:     <pbonzini@redhat.com>, <rkrcmar@redhat.com>, <tglx@linutronix.de>,
+        <mingo@redhat.com>
+CC:     <hpa@zytor.com>, <x86@kernel.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <chenzhou10@huawei.com>
+Subject: [PATCH] KVM: SVM: fix error return code in svm_create_vcpu()
+Date:   Tue, 17 Nov 2020 10:54:26 +0800
+Message-ID: <20201117025426.167824-1-chenzhou10@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20201116151338.GI6756@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix to return a negative error code from the error handling case
+instead of 0 in function svm_create_vcpu(), as done elsewhere in this
+function.
 
+Fixes: f4c847a95654 ("KVM: SVM: refactor msr permission bitmap allocation")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+---
+ arch/x86/kvm/svm/svm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On 2020/11/16 23:13, David Sterba wrote:
-> On Sat, Nov 14, 2020 at 05:06:21PM +0800, xiakaixu1987@gmail.com wrote:
->> From: Kaixu Xia <kaixuxia@tencent.com>
->>
->> The variable ret is overwritten by the following variable defrag_count
->> and this assignment is useless, so remove it.
-> 
-> This could be actually pointing to a bug, please explain why you think
-> it's correct to remove it and not to return EAGAIN.
-
-The right fix should be goto out_ra and return EAGAIN. I will do it
-in the next version.
-
-Thanks,
-Kaixu
-> 
-
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 1e81cfebd491..79b3a564f1c9 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1309,8 +1309,10 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+ 		svm->avic_is_running = true;
+ 
+ 	svm->msrpm = svm_vcpu_alloc_msrpm();
+-	if (!svm->msrpm)
++	if (!svm->msrpm) {
++		err = -ENOMEM;
+ 		goto error_free_vmcb_page;
++	}
+ 
+ 	svm_vcpu_init_msrpm(vcpu, svm->msrpm);
+ 
 -- 
-kaixuxia
+2.20.1
+
