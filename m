@@ -2,174 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1531C2B5B12
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4AF2B5B15
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbgKQIgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQIgL (ORCPT
+        id S1726644AbgKQIiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:38:09 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6970 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgKQIiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:36:11 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F38C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:36:09 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a3so2390230wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:36:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oCpWij6gQyPaU0VsGijaHqphTca/arxfImIfEjChlFk=;
-        b=H4WJcFMk7ybStripjq6pImq7T4vKPCDBqz9gxHbKlbwxlcJgqxvkoUQ0GKHthVOzb+
-         wMvVVoSzUQryWumh/dPk07y941+4xUxY62F3o48hIJLf9LbGNltrK+oMiWKRv3MgqnTL
-         D1W8LzyNfZ48OtFx/83H1iFYFwqP+dr7abNy89Iq43dePt1+ZL2/NR0ITGZW8PMbmWFn
-         cfebziSlQdydAIV6M9bqV1mzDa3pnpvVqhF3F/xOMh6dSzvHAUIDJmw1gEslc3J7DE49
-         QoQlmM7sn2v5w/jVWNaUBI3ulbovQlBnuO280VWVtWjP8BaJ7W7qZEvVcX5X7+oukhtN
-         CAOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=oCpWij6gQyPaU0VsGijaHqphTca/arxfImIfEjChlFk=;
-        b=ZuSOf6hfZgXRQa1+YGscYXYrY6szJjvVei9z85rYTlLbvzXWcS3KhVR2ihE2Ferz3q
-         DgPQ7L1gLNa8LJatnEyCy32toxrZgDgLDieiM8/1Ltkwl1HCTx9QWC2cBki8txuDury1
-         i4Qktleohxt6mHbXBe2TI4LQJ0tYiXWZAyn83u3i0bITjWyPyf6StQ8lzhXXtjVR7hQj
-         D1xIX6EdxJljv/b2JR0nGGM9pdEdXtrBdbQT1FsGhO8cb2NQbhOMwexQXTJjytrJyVbA
-         zsl/sf8l1CFwcuVRrbjmY611Fd2BqLGPo8h5VUBqGF/ux0ogOzndiL0qUS0JoB7lRTuM
-         H4xQ==
-X-Gm-Message-State: AOAM531jwmqCXCcMbSx8LVVan5/JU7u2eWK9Y9/edcPrvevBcMUDBq3Q
-        J68WCGRrUuwb5kpEg+NHpL0Jig==
-X-Google-Smtp-Source: ABdhPJzYK/i1ToG58uJL5Cw871V01CgeVejEN/wGuWFWUMips8GzYBv83TCZCupcrwucrJMY9b+rsA==
-X-Received: by 2002:a1c:dd06:: with SMTP id u6mr3222912wmg.155.1605602168327;
-        Tue, 17 Nov 2020 00:36:08 -0800 (PST)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:1561:9f4b:5829:8e26? ([2a01:e35:2ec0:82b0:1561:9f4b:5829:8e26])
-        by smtp.gmail.com with ESMTPSA id p4sm26794274wrm.51.2020.11.17.00.36.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 00:36:07 -0800 (PST)
-Subject: Re: [PATCH] PCI: dwc/meson: Use PTR_ERR_OR_ZERO
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Yue Wang <yue.wang@Amlogic.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-pci@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20201116163418.10529-1-sudipm.mukherjee@gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <b28005c3-de6d-79db-34e6-b5298b9f0224@baylibre.com>
-Date:   Tue, 17 Nov 2020 09:36:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 17 Nov 2020 03:38:09 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb38be70000>; Tue, 17 Nov 2020 00:37:59 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 08:38:07 +0000
+Received: from jckuo-lt.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 17 Nov 2020 08:38:05 +0000
+From:   JC Kuo <jckuo@nvidia.com>
+To:     <kishon@ti.com>, <vkoul@kernel.org>, <gregkh@linuxfoundation.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <nkristam@nvidia.com>, JC Kuo <jckuo@nvidia.com>
+Subject: [PATCH v1] phy: tegra: xusb: Fix usb_phy device driver field
+Date:   Tue, 17 Nov 2020 16:38:03 +0800
+Message-ID: <20201117083803.185209-1-jckuo@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201116163418.10529-1-sudipm.mukherjee@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605602279; bh=eRjgCKXXvY73ClLCAEsF2Rjn8XJRFex977OZk+wXtq4=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=M+f2iO3llrdDlcM/KChFW8YcvFpgFY9oRBYtCF6bZThSPg7/Y+F4TdzHiLz5QSDV0
+         BovKSQsowASiEwpp/Buub/kh4+wZ7s0vlZ2Nqz3EV/WoFsnZhBdLAnFC4UMVbgwaDd
+         /eXRd6Ri783ag/IUR/MFVain5m4jQg1+NKxZWER6FVKmgqAwFGQxzWKP0mmz6OWXp4
+         /YhWkm58E91mgWhFr6uaVnNU8oylUFmbA/fEJdwid6V0nbk9jh3+mPOMOQKjg4Oq3k
+         2teRzPhFC3NJqs03QcFv6pIm+yZWSoZc/XAMyIFd2fQIFwj328PrwLOMe8YzrFBeSO
+         omnrVLZ7RNivQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2020 17:34, Sudip Mukherjee wrote:
-> Coccinelle suggested using PTR_ERR_OR_ZERO() and looking at the code,
-> we can use PTR_ERR_OR_ZERO() instead of checking IS_ERR() and then
-> doing 'return 0'.
-> 
-> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> ---
->  drivers/pci/controller/dwc/pci-meson.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
-> index 1913dc2c8fa0..f4261f5aceb1 100644
-> --- a/drivers/pci/controller/dwc/pci-meson.c
-> +++ b/drivers/pci/controller/dwc/pci-meson.c
-> @@ -115,10 +115,8 @@ static int meson_pcie_get_mems(struct platform_device *pdev,
->  		return PTR_ERR(pci->dbi_base);
->  
->  	mp->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
-> -	if (IS_ERR(mp->cfg_base))
-> -		return PTR_ERR(mp->cfg_base);
->  
-> -	return 0;
-> +	return PTR_ERR_OR_ZERO(mp->cfg_base);
->  }
->  
->  static int meson_pcie_power_on(struct meson_pcie *mp)
-> @@ -208,10 +206,8 @@ static int meson_pcie_probe_clocks(struct meson_pcie *mp)
->  		return PTR_ERR(res->general_clk);
->  
->  	res->clk = meson_pcie_probe_clock(dev, "pclk", 0);
-> -	if (IS_ERR(res->clk))
-> -		return PTR_ERR(res->clk);
->  
-> -	return 0;
-> +	return PTR_ERR_OR_ZERO(res->clk);
->  }
->  
->  static inline u32 meson_cfg_readl(struct meson_pcie *mp, u32 reg)
-> 
+In commit "phy: tegra: xusb: Add usb-phy support", an OTG capable PHY
+device, such as phy-usb2.0 device of Jetson-TX1 platform, will be
+bound to the tegra-xusb-padctl driver by the following line in
+tegra_xusb_setup_usb_role_switch().
 
-Hi,
+	port->usb_phy.dev->driver =3D port->padctl->dev->driver;
 
-This has been nacked multiple times already:
-https://lore.kernel.org/linux-pci/20190527140952.GB7202@ulmo/
+With this, dev_pm_ops set of tegra-xusb-padctl driver will be invoked
+for the OTG capable PHY incorrectly as below logs show.
 
-Neil
+This commit fixes the issue by assigning an empty driver to it.
+
+[  153.451108] tegra-xusb-padctl phy-usb2.0: > tegra_xusb_padctl_suspend_no=
+irq(dev=3Dffff000080917000)
+[  153.460353] tegra-xusb-padctl phy-usb2.0:   driver: ffff8000114453e0 (te=
+gra_xusb_padctl_driver)
+[  153.469245] tegra-xusb-padctl phy-usb2.0:   padctl: ffff0000829f6480
+[  153.475772] tegra-xusb-padctl phy-usb2.0:     soc: ef7bdd7fffffffff (0xe=
+f7bdd7fffffffff)
+[  153.484061] Unable to handle kernel paging request at virtual address 00=
+7bdd800000004f
+[  153.492132] Mem abort info:
+[  153.495083]   ESR =3D 0x96000004
+[  153.498308]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+[  153.503771]   SET =3D 0, FnV =3D 0
+[  153.506979]   EA =3D 0, S1PTW =3D 0
+[  153.510260] Data abort info:
+[  153.513200]   ISV =3D 0, ISS =3D 0x00000004
+[  153.517181]   CM =3D 0, WnR =3D 0
+[  153.520302] [007bdd800000004f] address between user and kernel address r=
+anges
+[  153.527600] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[  153.533231] Modules linked in: nouveau panel_simple tegra_video(C) tegra=
+_drm drm_ttm_helper videobuf2_dma_contig ttm videobuf2_memops cec videobuf2=
+_v4l2 videobuf2_common drm_kms_helper v4l2_fwnode videodev drm mc snd_hda_c=
+odec_hdmi cdc_ether usbnet snd_hda_tegra r8152 crct10dif_ce snd_hda_codec s=
+nd_hda_core tegra_xudc host1x lp855x_bl at24 ip_tables x_tables ipv6
+[  153.566417] CPU: 0 PID: 300 Comm: systemd-sleep Tainted: G         C    =
+    5.10.0-rc3-next-20201113-00019-g5c064d5372b0-dirty #624
+[  153.578283] Hardware name: NVIDIA Jetson TX1 Developer Kit (DT)
+[  153.584281] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=3D--)
+[  153.590381] pc : tegra_xusb_padctl_suspend_noirq+0x88/0x100
+[  153.596016] lr : tegra_xusb_padctl_suspend_noirq+0x80/0x100
+[  153.601632] sp : ffff8000120dbb60
+[  153.604999] x29: ffff8000120dbb60 x28: ffff000080a1df00
+[  153.610430] x27: 0000000000000002 x26: ffff8000106f8540
+[  153.615858] x25: ffff8000113ac4a4 x24: ffff80001148c198
+[  153.621277] x23: ffff800010c4538c x22: 0000000000000002
+[  153.626692] x21: ffff800010ccde80 x20: ffff0000829f6480
+[  153.632107] x19: ffff000080917000 x18: 0000000000000030
+[  153.637521] x17: 0000000000000000 x16: 0000000000000000
+[  153.642933] x15: ffff000080a1e380 x14: 74636461702d6273
+[  153.648346] x13: ffff8000113ad058 x12: 0000000000000f39
+[  153.653759] x11: 0000000000000513 x10: ffff800011405058
+[  153.659176] x9 : 00000000fffff000 x8 : ffff8000113ad058
+[  153.664590] x7 : ffff800011405058 x6 : 0000000000000000
+[  153.670002] x5 : 0000000000000000 x4 : ffff0000fe908bc0
+[  153.675414] x3 : ffff0000fe910228 x2 : 162ef67e0581e700
+[  153.680826] x1 : 162ef67e0581e700 x0 : ef7bdd7fffffffff
+[  153.686241] Call trace:
+[  153.688769]  tegra_xusb_padctl_suspend_noirq+0x88/0x100
+[  153.694077]  __device_suspend_noirq+0x68/0x1cc
+[  153.698594]  dpm_noirq_suspend_devices+0x10c/0x1d0
+[  153.703456]  dpm_suspend_noirq+0x28/0xa0
+[  153.707461]  suspend_devices_and_enter+0x234/0x4bc
+[  153.712314]  pm_suspend+0x1e4/0x270
+[  153.715868]  state_store+0x8c/0x110
+[  153.719440]  kobj_attr_store+0x1c/0x30
+[  153.723259]  sysfs_kf_write+0x4c/0x7c
+[  153.726981]  kernfs_fop_write+0x124/0x240
+[  153.731065]  vfs_write+0xe4/0x204
+[  153.734449]  ksys_write+0x6c/0x100
+[  153.737925]  __arm64_sys_write+0x20/0x30
+[  153.741931]  el0_svc_common.constprop.0+0x78/0x1a0
+[  153.746789]  do_el0_svc+0x24/0x90
+[  153.750181]  el0_sync_handler+0x254/0x260
+[  153.754251]  el0_sync+0x174/0x180
+[  153.757663] Code: aa0303e2 94000f64 f9405680 b40000e0 (f9402803)
+[  153.763826] ---[ end trace 81543a3394cb409d ]---
+
+Fixes: e8f7d2f409a1 ("phy: tegra: xusb: Add usb-phy support")
+
+Signed-off-by: JC Kuo <jckuo@nvidia.com>
+---
+ drivers/phy/tegra/xusb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
+index ad88d74c1884..181a1be5f491 100644
+--- a/drivers/phy/tegra/xusb.c
++++ b/drivers/phy/tegra/xusb.c
+@@ -688,7 +688,7 @@ static int tegra_xusb_setup_usb_role_switch(struct tegr=
+a_xusb_port *port)
+ 	 * reference to retrieve usb-phy details.
+ 	 */
+ 	port->usb_phy.dev =3D &lane->pad->lanes[port->index]->dev;
+-	port->usb_phy.dev->driver =3D port->padctl->dev->driver;
++	port->usb_phy.dev->driver =3D port->dev.driver;
+ 	port->usb_phy.otg->usb_phy =3D &port->usb_phy;
+ 	port->usb_phy.otg->set_peripheral =3D tegra_xusb_set_peripheral;
+ 	port->usb_phy.otg->set_host =3D tegra_xusb_set_host;
+--=20
+2.25.1
+
