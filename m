@@ -2,156 +2,584 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90962B6926
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67ADC2B6929
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgKQPzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:55:31 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:48815
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725767AbgKQPza (ORCPT
+        id S1726812AbgKQP5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:57:04 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2122 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgKQP5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:55:30 -0500
-X-IronPort-AV: E=Sophos;i="5.77,485,1596492000"; 
-   d="scan'208";a="364824567"
-Received: from 91-160-5-165.subs.proxad.net (HELO [192.168.44.21]) ([91.160.5.165])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 17 Nov 2020 16:55:26 +0100
-Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        x86@kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
- <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
- <20201003085345.GA114893@kroah.com>
- <20201006005736.GD6041@ranerica-svr.sc.intel.com>
- <20201006073744.GA6753@kroah.com>
- <20201007031447.GB27938@ranerica-svr.sc.intel.com>
- <20201007051546.GA47583@kroah.com>
- <7233394d-982b-72cd-ceb9-d81161bd826f@gmail.com> <X6zZaKt57Xl9NnuN@kroah.com>
- <d7ac96f2-10e8-209d-2903-1bbe8fc552f4@gmail.com> <X60TJ2u47WK3yY/y@kroah.com>
-From:   Brice Goglin <brice.goglin@gmail.com>
-Autocrypt: addr=brice.goglin@gmail.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <33efde37-562f-4c6a-72ba-2277533e3781@gmail.com>
-Date:   Tue, 17 Nov 2020 16:55:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 17 Nov 2020 10:57:03 -0500
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cb9WM5GfHz67F6b;
+        Tue, 17 Nov 2020 23:55:11 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 17 Nov 2020 16:57:00 +0100
+Received: from localhost (10.47.31.177) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 17 Nov
+ 2020 15:56:59 +0000
+Date:   Tue, 17 Nov 2020 15:56:51 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [RFC PATCH 8/9] cxl/mem: Register CXL memX devices
+Message-ID: <20201117155651.0000368b@Huawei.com>
+In-Reply-To: <20201111054356.793390-9-ben.widawsky@intel.com>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+        <20201111054356.793390-9-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <X60TJ2u47WK3yY/y@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.31.177]
+X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 10 Nov 2020 21:43:55 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-Le 12/11/2020 à 11:49, Greg Kroah-Hartman a écrit :
-> On Thu, Nov 12, 2020 at 10:10:57AM +0100, Brice Goglin wrote:
->> Le 12/11/2020 à 07:42, Greg Kroah-Hartman a écrit :
->>> On Thu, Nov 12, 2020 at 07:19:48AM +0100, Brice Goglin wrote:
->>>>
->>>> Hello
->>>>
->>>> Sorry for the late reply. As the first userspace consumer of this
->>>> interface [1], I can confirm that reading a single file to get the mask
->>>> would be better, at least for performance reason. On large platforms, we
->>>> already have to read thousands of sysfs files to get CPU topology and
->>>> cache information, I'd be happy not to read one more file per cpu.
->>>>
->>>> Reading these sysfs files is slow, and it does not scale well when
->>>> multiple processes read them in parallel.
->>> Really?  Where is the slowdown?  Would something like readfile() work
->>> better for you for that?
->>> 	https://lore.kernel.org/linux-api/20200704140250.423345-1-gregkh@linuxfoundation.org/
->>
->> I guess readfile would improve the sequential case by avoiding syscalls
->> but it would not improve the parallel case since syscalls shouldn't have
->> any parallel issue?
-> syscalls should not have parallel issues at all.
->
->> We've been watching the status of readfile() since it was posted on LKML
->> 6 months ago, but we were actually wondering if it would end up being
->> included at some point.
-> It needs a solid reason to be merged.  My "test" benchmarks are fun to
-> run, but I have yet to find a real need for it anywhere as the
-> open/read/close syscall overhead seems to be lost in the noise on any
-> real application workload that I can find.
->
-> If you have a real need, and it reduces overhead and cpu usage, I'm more
-> than willing to update the patchset and resubmit it.
->
->
+> From: Dan Williams <dan.j.williams@intel.com>
+> 
+> Create the /sys/bus/cxl hierarchy to enumerate memory devices
+> (per-endpoint control devices), memory address space devices (platform
+> address ranges with interleaving, performance, and persistence
+> attributes), and memory regions (active provisioned memory from an
+> address space device that is in use as System RAM or delegated to
+> libnvdimm as Persistent Memory regions).
+> 
+> For now, only the per-endpoint control devices are registered on the
+> 'cxl' bus.
 
-Hello
+Reviewing ABI without documentation is challenging even when it's simple
+so please add that for v2.
 
-I updated hwloc to use readfile instead of open+read+close on all those
-small sysfs/procfs files. Unfortunately the improvement is very small,
-only a couple percents. On a 40 core server, our library starts in 38ms
-instead of 39ms. I can't deploy your patches on larger machines, but I
-tested our code on a copy of their sysfs files saved on a local disk :
-For a 256-thread KNL, we go from 15ms to 14ms. For a 896-core SGI
-machine, from 73ms to 71ms.
+This patch feels somewhat unpolished, but I guess it is mainly here to
+give an illustration of how stuff might fit together rather than
+any expectation of detailed review.
 
-I see 200ns improvement for readfile (2300) vs open+read+close (2500) on
-my server when reading a single cpu topology file. With several
-thousands of sysfs files to read in the above large hwloc tests, it
-confirms an overall improvement in the order of 1ms.
+So in that spirit I've just pointed out stuff that jumped out at me
+during a quick read through.
 
-So, just like you said, the overhead seems to be pretty much lost in the
-noise of hwloc doing its own stuff after reading hundreds of sysfs files :/
+Thanks,
 
-Brice
+Jonathan
 
+
+> 
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> ---
+>  drivers/cxl/Makefile |   2 +
+>  drivers/cxl/bus.c    |  35 ++++++
+>  drivers/cxl/bus.h    |   8 ++
+>  drivers/cxl/cxl.h    |  33 +++++
+>  drivers/cxl/mem.c    | 287 ++++++++++++++++++++++++++++++++++++++++++-
+>  5 files changed, 359 insertions(+), 6 deletions(-)
+>  create mode 100644 drivers/cxl/bus.c
+>  create mode 100644 drivers/cxl/bus.h
+> 
+> diff --git a/drivers/cxl/Makefile b/drivers/cxl/Makefile
+> index 97fdffb00f2d..1cc032092852 100644
+> --- a/drivers/cxl/Makefile
+> +++ b/drivers/cxl/Makefile
+> @@ -1,7 +1,9 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_CXL_ACPI) += cxl_acpi.o
+>  obj-$(CONFIG_CXL_MEM) += cxl_mem.o
+> +obj-$(CONFIG_CXL_BUS_PROVIDER) += cxl_bus.o
+>  
+>  ccflags-y += -DDEFAULT_SYMBOL_NAMESPACE=CXL
+>  cxl_acpi-y := acpi.o
+>  cxl_mem-y := mem.o
+> +cxl_bus-y := bus.o
+> diff --git a/drivers/cxl/bus.c b/drivers/cxl/bus.c
+> new file mode 100644
+> index 000000000000..8594366955f7
+> --- /dev/null
+> +++ b/drivers/cxl/bus.c
+> @@ -0,0 +1,35 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
+> +#include <linux/device.h>
+> +#include <linux/module.h>
+> +
+> +static struct bus_type cxl_bus_type = {
+> +	.name = "cxl",
+> +};
+> +
+> +int cxl_register(struct device *dev)
+> +{
+> +	int rc;
+> +
+> +	dev->bus = &cxl_bus_type;
+> +	rc = device_add(dev);
+> +	if (rc)
+> +		put_device(dev);
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(cxl_register);
+> +
+> +static __init int cxl_bus_init(void)
+> +{
+> +	return bus_register(&cxl_bus_type);
+> +}
+> +
+> +static void cxl_bus_exit(void)
+> +{
+> +	bus_unregister(&cxl_bus_type);
+> +}
+> +
+> +module_init(cxl_bus_init);
+> +module_exit(cxl_bus_exit);
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_AUTHOR("Intel Corporation");
+> diff --git a/drivers/cxl/bus.h b/drivers/cxl/bus.h
+> new file mode 100644
+> index 000000000000..fe2bea2bbc3c
+> --- /dev/null
+> +++ b/drivers/cxl/bus.h
+> @@ -0,0 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright(c) 2020 Intel Corporation. All rights reserved.
+> +#ifndef __CXL_BUS_H__
+> +#define __CXL_BUS_H__
+> +
+> +int cxl_register(struct device *dev);
+> +
+> +#endif /* __CXL_BUS_H__ */
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index f49ab80f68bd..cef5fd9ea68b 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -3,6 +3,7 @@
+>  
+>  #ifndef __CXL_H__
+>  #define __CXL_H__
+> +#include <linux/range.h>
+>  
+>  /* Device */
+>  #define CXLDEV_CAP_ARRAY_REG 0x0
+> @@ -52,12 +53,24 @@
+>  #define CXLMDEV_RESET_NEEDED_HOT 3
+>  #define CXLMDEV_RESET_NEEDED_CXL 4
+>  
+> +struct cxl_memdev;
+>  struct cxl_mem {
+>  	struct pci_dev *pdev;
+>  	void __iomem *regs;
+> +	struct cxl_memdev *cxlmd;
+>  
+>  	spinlock_t mbox_lock; /* Protects device mailbox and firmware */
+>  
+> +	struct {
+> +		struct range range;
+> +	} pmem;
+> +
+> +	struct {
+> +		struct range range;
+> +	} ram;
+> +
+> +	char firmware_version[0x10];
+> +
+>  	/* Cap 0000h */
+>  	struct {
+>  		void __iomem *regs;
+> @@ -130,4 +143,24 @@ static inline void cxl_mbox_payload_drain(struct cxl_mem *cxlm,
+>  {
+>  	memcpy_fromio(output, cxlm->mbox.regs + CXLDEV_MB_PAYLOAD, length);
+>  }
+> +
+> +#define CXL_MBOX_IDENTIFY 0x4000
+> +
+> +struct cxl_mbox_identify {
+> +	char fw_revision[0x10];
+> +	__le64 total_capacity;
+> +	__le64 volatile_capacity;
+> +	__le64 persistent_capacity;
+> +	__le64 partition_align;
+> +	__le16 info_event_log_size;
+> +	__le16 warning_event_log_size;
+> +	__le16 failure_event_log_size;
+> +	__le16 fatal_event_log_size;
+> +	__le32 lsa_size;
+> +	u8 poison_list_max_mer[3];
+> +	__le16 inject_poison_limit;
+> +	u8 poison_caps;
+> +	u8 qos_telemetry_caps;
+> +} __packed;
+> +
+>  #endif /* __CXL_H__ */
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index 08913360d500..54743d196feb 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -2,11 +2,15 @@
+>  // Copyright(c) 2020 Intel Corporation. All rights reserved.
+>  #include <linux/sched/clock.h>
+>  #include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/cdev.h>
+> +#include <linux/idr.h>
+>  #include <linux/pci.h>
+>  #include <linux/io.h>
+>  #include "acpi.h"
+>  #include "pci.h"
+>  #include "cxl.h"
+> +#include "bus.h"
+>  
+>  struct mbox_cmd {
+>  	u16 cmd;
+> @@ -15,6 +19,53 @@ struct mbox_cmd {
+>  	u16 return_code;
+>  };
+>  
+> +/*
+> + * An entire PCI topology full of devices should be enough for any
+> + * config
+> + */
+> +#define CXL_MEM_MAX_DEVS 65536
+> +
+> +struct cxl_memdev {
+> +	struct device dev;
+> +	struct cxl_mem *cxlm;
+> +	int id;
+> +};
+> +
+> +static int cxl_mem_major;
+> +static struct cdev cxl_mem_cdev;
+> +static DEFINE_IDR(cxl_mem_idr);
+> +static DEFINE_MUTEX(cxl_memdev_lock);
+
+Define scope of this lock with a comment.
+
+> +
+> +static int cxl_mem_open(struct inode *inode, struct file *file)
+> +{
+> +	long minor = iminor(inode);
+> +	struct cxl_memdev *cxlmd;
+> +
+> +	rcu_read_lock();
+> +	cxlmd = idr_find(&cxl_mem_idr, minor);
+> +	rcu_read_unlock();
+> +
+> +	if (!cxlmd)
+> +		return -ENXIO;
+> +
+> +	file->private_data = cxlmd;
+> +
+> +	return 0;
+> +}
+> +
+> +static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> +{
+> +	return -ENOTTY;
+> +}
+> +
+> +static const struct file_operations cxl_mem_fops = {
+> +	.owner = THIS_MODULE,
+> +	.open = cxl_mem_open,
+> +	.unlocked_ioctl = cxl_mem_ioctl,
+> +	.compat_ioctl = compat_ptr_ioctl,
+> +	.llseek = noop_llseek,
+> +};
+> +
+>  static int cxldev_wait_for_doorbell(struct cxl_mem *cxlm)
+>  {
+>  	u64 start, now;
+> @@ -53,7 +104,7 @@ static int cxldev_wait_for_doorbell(struct cxl_mem *cxlm)
+>   * Returns 0 if the doorbell transaction was successful from a protocol level.
+>   * Caller should check the return code in @mbox_cmd to make sure it succeeded.
+>   */
+> -static int __maybe_unused cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, struct mbox_cmd *mbox_cmd)
+> +static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, struct mbox_cmd *mbox_cmd)
+>  {
+>  	u64 cmd, status;
+>  	int rc;
+> @@ -277,10 +328,185 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+>  	return 0;
+>  }
+>  
+> +static struct cxl_memdev *to_cxl_memdev(struct device *dev)
+> +{
+> +	return container_of(dev, struct cxl_memdev, dev);
+> +}
+> +
+> +static void cxl_memdev_release(struct device *dev)
+> +{
+> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+> +
+> +	mutex_lock(&cxl_memdev_lock);
+> +	idr_remove(&cxl_mem_idr, cxlmd->id);
+> +	mutex_unlock(&cxl_memdev_lock);
+> +
+> +	kfree(cxlmd);
+> +}
+> +
+> +static char *cxl_memdev_devnode(struct device *dev, umode_t *mode, kuid_t *uid, kgid_t *gid)
+> +{
+> +	return kasprintf(GFP_KERNEL, "cxl/%s", dev_name(dev));
+> +}
+> +
+> +static ssize_t firmware_version_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+> +	struct cxl_mem *cxlm = cxlmd->cxlm;
+> +
+> +	return sprintf(buf, "%.16s\n", cxlm->firmware_version);
+> +}
+> +static DEVICE_ATTR_RO(firmware_version);
+> +
+> +static ssize_t ram_size_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+> +	struct cxl_mem *cxlm = cxlmd->cxlm;
+> +
+> +	return sprintf(buf, "%#llx\n", (unsigned long long) range_len(&cxlm->ram.range));
+> +}
+> +static struct device_attribute dev_attr_ram_size = __ATTR(size, 0444, ram_size_show, NULL);
+> +
+> +static ssize_t pmem_size_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+> +	struct cxl_mem *cxlm = cxlmd->cxlm;
+> +
+> +	return sprintf(buf, "%#llx\n", (unsigned long long) range_len(&cxlm->pmem.range));
+> +}
+> +static struct device_attribute dev_attr_pmem_size = __ATTR(size, 0444, pmem_size_show, NULL);
+> +
+> +static struct attribute *cxl_memdev_attributes[] = {
+> +	&dev_attr_firmware_version.attr,
+> +	NULL,
+> +};
+> +
+> +static struct attribute *cxl_memdev_pmem_attributes[] = {
+> +	&dev_attr_pmem_size.attr,
+
+It's simple, but should still have docs in Documentation/ABI/testing/sysfs...
+
+> +	NULL,
+> +};
+> +
+> +static struct attribute *cxl_memdev_ram_attributes[] = {
+> +	&dev_attr_ram_size.attr,
+> +	NULL,
+> +};
+> +
+> +static struct attribute_group cxl_memdev_attribute_group = {
+> +	.attrs = cxl_memdev_attributes,
+> +};
+> +
+> +static struct attribute_group cxl_memdev_ram_attribute_group = {
+> +	.name = "ram",
+> +	.attrs = cxl_memdev_ram_attributes,
+> +};
+> +
+> +static struct attribute_group cxl_memdev_pmem_attribute_group = {
+> +	.name = "pmem",
+> +	.attrs = cxl_memdev_pmem_attributes,
+> +};
+> +
+> +static const struct attribute_group *cxl_memdev_attribute_groups[] = {
+> +	&cxl_memdev_attribute_group,
+> +	&cxl_memdev_ram_attribute_group,
+> +	&cxl_memdev_pmem_attribute_group,
+> +	NULL,
+> +};
+> +
+> +static const struct device_type cxl_memdev_type = {
+> +	.name = "cxl_memdev",
+> +	.release = cxl_memdev_release,
+> +	.devnode = cxl_memdev_devnode,
+> +	.groups = cxl_memdev_attribute_groups,
+> +};
+> +
+> +static struct cxl_memdev *cxl_mem_add_memdev(struct cxl_mem *cxlm)
+> +{
+> +	struct pci_dev *pdev = cxlm->pdev;
+> +	struct cxl_memdev *cxlmd;
+> +	struct device *dev;
+> +	int id, rc;
+> +
+> +	cxlmd = kzalloc(sizeof(*cxlmd), GFP_KERNEL);
+
+Maybe I missed it, but I'm not seeing this freed anywhere.
+
+> +	if (!cxlmd)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	cxlmd->cxlm = cxlm;
+> +	cxlm->cxlmd = cxlmd;
+> +
+> +	mutex_lock(&cxl_memdev_lock);
+> +	id = idr_alloc(&cxl_mem_idr, cxlmd, 0, CXL_MEM_MAX_DEVS, GFP_KERNEL);
+> +	mutex_unlock(&cxl_memdev_lock);
+> +	if (id < 0) {
+> +		rc = id;
+> +		goto err_idr;
+> +	}
+> +
+> +	cxlmd->id = id;
+> +
+> +	dev = &cxlmd->dev;
+> +
+> +	device_initialize(dev);
+> +	dev->parent = &pdev->dev;
+> +	dev->devt = MKDEV(cxl_mem_major, id);
+> +	dev->type = &cxl_memdev_type;
+> +	dev_set_name(dev, "mem%d", id);
+
+blank line here
+
+> +	rc = cxl_register(dev);
+> +	if (rc)
+> +		return ERR_PTR(rc);
+> +
+> +	return cxlmd;
+> +
+> +err_idr:
+> +	kfree(cxlmd);
+> +
+> +	return ERR_PTR(rc);
+> +}
+> +
+
+...
+
+>  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  {
+>  	struct cxl_mem *cxlm = ERR_PTR(-ENXIO);
+>  	struct device *dev = &pdev->dev;
+> +	struct cxl_memdev *cxlmd;
+>  	int rc, regloc, i;
+>  
+>  	rc = cxl_bus_prepared(pdev);
+> @@ -319,20 +545,31 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	if (rc)
+>  		return rc;
+>  
+> -	/* Check that hardware "looks" okay. */
+> -	rc = cxl_mem_mbox_get(cxlm);
+> +	rc = cxl_mem_identify(cxlm);
+>  	if (rc)
+>  		return rc;
+> -
+> -	cxl_mem_mbox_put(cxlm);
+
+It was kind of nice to see the flow earlier, but I'm also thinking it made
+a slightly harder to read patch.  Hmm.  Maybe just drop the version earlier
+in favour of a todo comment that you then do here?
+
+>  	dev_dbg(&pdev->dev, "CXL Memory Device Interface Up\n");
+> +
+
+Nice to tidy that up by moving to earlier patch.
+
+>  	pci_set_drvdata(pdev, cxlm);
+>  
+> +	cxlmd = cxl_mem_add_memdev(cxlm);
+> +	if (IS_ERR(cxlmd))
+> +		return PTR_ERR(cxlmd);
+
+Given we don't actually use cxlmd perhaps a simple return value
+of 0 or error would be better from cxl_mem_add_memdev()
+
+(I guess you may have follow up patches that do something with it
+ here, though it feels wrong to ever do so given it is now registered
+ and hence exposed to the system).
+
+> +
+>  	return 0;
+>  }
+>  
+>  static void cxl_mem_remove(struct pci_dev *pdev)
+>  {
+> +	struct cxl_mem *cxlm = pci_get_drvdata(pdev);
+> +	struct cxl_memdev *cxlmd = cxlm->cxlmd;
+> +
+> +	device_lock(&cxlmd->dev);
+> +	cxlm->cxlmd = NULL;
+> +	cxlmd->cxlm = NULL;
+> +	device_unlock(&cxlmd->dev);
+> +
+> +	device_unregister(&cxlmd->dev);
+
+Why device_unregister last? Normally removing exposure to the
+system is the first thing you do in a remove() call.
+Particularly as you'll get NULL ptr dereferences if anyone
+manages a sysfs read between the pointers being set to NULL above
+and the device_unregister() taking away the sysfs files.
+
+
+
+>  }
+>  
+>  static const struct pci_device_id cxl_mem_pci_tbl[] = {
+> @@ -350,7 +587,45 @@ static struct pci_driver cxl_mem_driver = {
+>  	.remove			= cxl_mem_remove,
+>  };
+>  
+> +static __init int cxl_mem_init(void)
+> +{
+> +	int rc;
+> +	dev_t devt;
+> +
+> +	rc = alloc_chrdev_region(&devt, 0, CXL_MEM_MAX_DEVS, "cxl");
+> +	if (rc)
+> +		return rc;
+> +
+> +	cxl_mem_major = MAJOR(devt);
+> +
+> +	cdev_init(&cxl_mem_cdev, &cxl_mem_fops);
+> +	rc = cdev_add(&cxl_mem_cdev, MKDEV(cxl_mem_major, 0), CXL_MEM_MAX_DEVS);
+> +	if (rc)
+> +		goto err_cdev;
+> +
+> +	rc = pci_register_driver(&cxl_mem_driver);
+> +	if (rc)
+> +		goto err_driver;
+> +
+> +	return 0;
+> +
+> +err_driver:
+> +	cdev_del(&cxl_mem_cdev);
+> +err_cdev:
+> +	unregister_chrdev_region(MKDEV(cxl_mem_major, 0), CXL_MEM_MAX_DEVS);
+> +
+> +	return rc;
+> +}
+> +
+> +static __exit void cxl_mem_exit(void)
+> +{
+> +	pci_unregister_driver(&cxl_mem_driver);
+> +	unregister_chrdev_region(MKDEV(cxl_mem_major, 0), CXL_MEM_MAX_DEVS);
+> +	cdev_del(&cxl_mem_cdev);
+
+Ordering?  cdev_dev should be before unregister_chrdev_region to match
+error handling in init()
+
+> +}
+> +
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_AUTHOR("Intel Corporation");
+> -module_pci_driver(cxl_mem_driver);
+> +module_init(cxl_mem_init);
+> +module_exit(cxl_mem_exit);
+>  MODULE_IMPORT_NS(CXL);
 
