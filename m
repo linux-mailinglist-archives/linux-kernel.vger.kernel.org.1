@@ -2,429 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7137F2B5A62
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6C62B5A65
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgKQHiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
+        id S1726868AbgKQHjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:39:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKQHiO (ORCPT
+        with ESMTP id S1725771AbgKQHjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:38:14 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C3BC0613CF;
-        Mon, 16 Nov 2020 23:38:14 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id 131so6205422pfb.9;
-        Mon, 16 Nov 2020 23:38:14 -0800 (PST)
+        Tue, 17 Nov 2020 02:39:35 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F64C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:39:35 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id 2so18045602ybc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:39:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l76dlHaWHc7Dq0KUHTpkImuQmVGCHAejP3hYRowTn7Y=;
-        b=pcCWfSZIES4jLntu5jyJnjl1l8gXPzlA6OJZVcO8jEjaBRqLf8dbv9S9GYigT3qTUC
-         5HMANmvj7pnDRFsOsdcPblDJ6Vg8ZbXpwDbyilda4SlqTLtzJxz7MPBqMV2l3WN0tbw4
-         mQ6W4rhJ5ee41wah7vHUiIZnTgr9jdWZAWD2YmaTWetNHd1u1Qh2b1JaiKw00uIKLbxs
-         +cFg3WEbMNks63lAWAeki0Ilk5bO/pS3CL+m1XaXpvXWzYcOVZz3hJ3/nZdHtMc2UqG+
-         WIgJFeEleo+gWaWXZgV9mUvE/p+DPUyvBThSlDcPbcgJxSyKjnpNEOpwOpUbuFtFNiWe
-         SLgQ==
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=81ys4Af4st2C7XlSsqfW1vjLoryjipiQwkJBYd8Bo1U=;
+        b=qPO31PsA3+HYL9IisFSxJrvBZLmIsrkN8o/iV2M3AOUHsepg70/TfKn0eS8qY+TxQi
+         ej+Bp4N1qNv+itrMiWmkurTzf8Z0yHtm60c/6Vr6+n8pkDmnynE1F5wCZNqPC1u5dnby
+         dKG+hNM5L+uPwAPk+svJaiZT8hQfCH3fqzth6l8+Kr3X4UDCunB9uYtZHUpr/SptrDYH
+         ecGWIM01/Up1MhaMoemLFK8FDHIyOFPv2NtqnYz7d3He52aPPKVirz4pdHU4P6OU5nMO
+         crL6KY6HYqCEJCYEIYrpuW7c+38mKemrZK3MBpVK8ai3eVskkm6PpFEtf5dlDlTVOoyL
+         +UZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=l76dlHaWHc7Dq0KUHTpkImuQmVGCHAejP3hYRowTn7Y=;
-        b=tfb59xz3gw3et3IsMQZ0ijxeEvxKQimPcaL098Czc18xYSWRvQKUxwNt+fojxaFLo0
-         3UoePlozKgoOqgREMBbun38fRk3iYPfM2+35pWclBveOv/THsWqWUr8fQqdh9Iv6BBoA
-         xnHsSc4be2ynrQC9xu/WUzhmMdGIxwmjpKgo3limCLsTNiDVCGMroKqJqsG08k7bQgKq
-         bTnbyM5hf4EvH1/FllotMvgBNP+RCbroufMDkZ7Ia4Apa3PZ+bZI2s9ZH4fNGQ1HtQIr
-         iNA/9HqXHZtX+h9dRDmlZ+Z1H/4KETeUxJkzhu2jylt6m33ep6X8CIM9zSitj+vGKjjQ
-         PIZA==
-X-Gm-Message-State: AOAM533C9LDn6GJEOnNIRV8rKHiOL+KwASB8ShzMWBFAaok5Xp1WHxAO
-        5BJDnTH1vF+yjGj59hN2V/Y=
-X-Google-Smtp-Source: ABdhPJze0yLJJu4frrXj1/BPOqjGHWn0knEzuolWnJ5xKdRRuYuzamTe/+Szg3/ZKmjvQyZpy2LwXQ==
-X-Received: by 2002:a63:db18:: with SMTP id e24mr2441696pgg.155.1605598693408;
-        Mon, 16 Nov 2020 23:38:13 -0800 (PST)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id q200sm20547029pfq.95.2020.11.16.23.38.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 23:38:12 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, mtk.manpages@gmail.com,
-        Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        linux-perf-users@vger.kernel.org, linux-man@vger.kernel.org,
-        Namhyung Kim <namhyung@gmail.com>
-Subject: [PATCH v5] perf_event_open.2: Update man page with recent changes
-Date:   Tue, 17 Nov 2020 16:37:58 +0900
-Message-Id: <20201117073758.346744-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=81ys4Af4st2C7XlSsqfW1vjLoryjipiQwkJBYd8Bo1U=;
+        b=IOiMbqp9sRj9MmRcNbYE108HlDTPuoISccRkbszKpfadCPw7KYAGwAh9fUYceOBodU
+         hNU/MEVtJJP26PyZfYt0b1plWkVQa65mD4Ij7ashx4VQ6MiNys5osOfIdmYpS83izGYP
+         vrwdESwJ4kX/1ZAZjj9tptkueM76K+1QVNXSsr+GCAcX7vzlpO2IW1ex+d57fKpqCGAY
+         XLO93RlCDQA/ZZADhVaFfuJOUEwxTVB2CuRrJdj9GU0f3w9mpov/lzFU5/5RCXoeiPiY
+         eDNFWQ74iGr92abz0zeGyO+9qweoQ+JeLRLY4CgZ6rSKu/daG2M9yUtdO36fyIepFri1
+         zBTg==
+X-Gm-Message-State: AOAM533oDQuMtyLR5HrmpC6RBEMvJyaKetIIeJ/f2aCfajZ6r6tTLOZa
+        +Hlssgwudkgyn92v+q1LmfU2HgMHu3e0a/RXUX72hA==
+X-Google-Smtp-Source: ABdhPJzDnZMr2YRtv9cPXx5CTKyXfN/NpaliyWDLrR2posEVPhRIdfPrLI3ancUlJyJxW4OfYDMnCrpcotjbsg0YoZ0=
+X-Received: by 2002:a25:e7cd:: with SMTP id e196mr23631737ybh.375.1605598772788;
+ Mon, 16 Nov 2020 23:39:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200916071950.1493-1-gilad@benyossef.com> <20200916071950.1493-2-gilad@benyossef.com>
+ <20200923015702.GA3676455@bogus> <CAOtvUMekoMjFij_xDnrwRj2PsfgO8tKx4Jk6d7C5vq-Vh+boWw@mail.gmail.com>
+ <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com> <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
+In-Reply-To: <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Tue, 17 Nov 2020 09:39:21 +0200
+Message-ID: <CAOtvUMdN2NOJ+7g=XnjOyW7W=77OM=d-d69YDk-a-QmO8Wze5w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
+To:     Rob Herring <robh@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ofir Drang <ofir.drang@arm.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Robin Murphy <Robin.Murphy@arm.com>,
+        Steven Price <steven.price@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@gmail.com>
+On Mon, Nov 16, 2020 at 8:54 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Oct 22, 2020 at 1:18 AM Gilad Ben-Yossef <gilad@benyossef.com> wr=
+ote:
+> >
+> >
+> > Hi again,
+> >
+> > Any opinion on the suggested below?
+>
+> Sorry, lost in the pile...
 
-There are lots of changes as usual.  I've tried to fill some missing
-bits in the man page but it'd be nice if you could take a look and put
-more info there.
+No problem at all. I know how it is...
 
-Signed-off-by: Namhyung Kim <namhyung@gmail.com>
-[alx: ffix + tfix]
-Cowritten-by : Alejandro Colomar <alx.manpages@gmail.com>
-Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
----
- man2/perf_event_open.2 | 280 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 278 insertions(+), 2 deletions(-)
 
-diff --git a/man2/perf_event_open.2 b/man2/perf_event_open.2
-index e7b0aa132..62731bbac 100644
---- a/man2/perf_event_open.2
-+++ b/man2/perf_event_open.2
-@@ -247,8 +247,17 @@ struct perf_event_attr {
-                                    due to exec */
-           use_clockid    :  1,  /* use clockid for time fields */
-           context_switch :  1,  /* context switch data */
-+          write_backward :  1,  /* Write ring buffer from end
-+                                   to beginning */
-+          namespaces     :  1,  /* include namespaces data */
-+          ksymbol        :  1,  /* include ksymbol events */
-+          bpf_event      :  1,  /* include bpf events */
-+          aux_output     :  1,  /* generate AUX records
-+                                   instead of events */
-+          cgroup         :  1,  /* include cgroup events */
-+          text_poke      :  1,  /* include text poke events */
- 
--          __reserved_1   : 37;
-+          __reserved_1   : 30;
- 
-     union {
-         __u32 wakeup_events;    /* wakeup every n events */
-@@ -867,6 +876,20 @@ is set higher than zero then the register
- values returned are those captured by
- hardware at the time of the sampled
- instruction's retirement.
-+.TP
-+.BR PERF_SAMPLE_PHYS_ADDR " (since Linux 4.13)"
-+.\" commit fc7ce9c74c3ad232b084d80148654f926d01ece7
-+Records physical address of data like in
-+.B PERF_SAMPLE_ADDR .
-+.TP
-+.BR PERF_SAMPLE_CGROUP " (since Linux 5.7)"
-+.\" commit 96aaab686505c449e24d76e76507290dcc30e008
-+Records (perf_event) cgroup id of the process.
-+This corresponds to the
-+.I id
-+field in the
-+.B PERF_RECORD_CGROUP
-+event.
- .RE
- .TP
- .I read_format
-@@ -1202,6 +1225,49 @@ information even with strict
- .I perf_event_paranoid
- settings.
- .TP
-+.IR write_backward " (since Linux 4.6)"
-+.\" commit 9ecda41acb971ebd07c8fb35faf24005c0baea12
-+This makes the ring buffer is written from end to beginning.
-+This is to support reading from overwritable ring buffer.
-+.TP
-+.IR namespaces " (since Linux 4.11)"
-+.\" commit e422267322cd319e2695a535e47c5b1feeac45eb
-+This enables the generation of
-+.B PERF_RECORD_NAMESPACES
-+records when a task is entering to a new namespace.
-+Each namespace has a combination of device and inode numbers.
-+.TP
-+.IR ksymbol " (since Linux 5.0)"
-+.\" commit 76193a94522f1d4edf2447a536f3f796ce56343b
-+This enables the generation of
-+.B PERF_RECORD_KSYMBOL
-+records when a new kernel symbols are registered or unregistered.
-+This is analyzing dynamic kernel functions like eBPF.
-+.TP
-+.IR bpf_event " (since Linux 5.0)"
-+.\" commit 6ee52e2a3fe4ea35520720736e6791df1fb67106
-+This enables the generation of
-+.B PERF_RECORD_BPF_EVENT
-+records when a eBPF program is loaded or unloaded.
-+.TP
-+.IR auxevent " (since Linux 5.4)"
-+.\" commit ab43762ef010967e4ccd53627f70a2eecbeafefb
-+This allows normal (non-AUX) events to generate data for AUX events
-+if the hardware supports it.
-+.TP
-+.IR cgroup " (since Linux 5.7)"
-+.\" commit 96aaab686505c449e24d76e76507290dcc30e008
-+This enables the generation of
-+.B PERF_RECORD_CGROUP
-+records when a new cgroup is created (and activated).
-+.TP
-+.IR text_poke " (since Linux 5.8)"
-+.\" commit e17d43b93e544f5016c0251d2074c15568d5d963
-+This enables the generation of
-+.B PERF_RECORD_TEXT_POKE
-+records when there's a changes to the kernel text
-+(i.e. self-modifying code).
-+.TP
- .IR wakeup_events ", " wakeup_watermark
- This union sets how many samples
- .RI ( wakeup_events )
-@@ -2131,7 +2197,7 @@ struct {
-     u64    nr;          /* if PERF_SAMPLE_CALLCHAIN */
-     u64    ips[nr];     /* if PERF_SAMPLE_CALLCHAIN */
-     u32    size;        /* if PERF_SAMPLE_RAW */
--    char  data[size];   /* if PERF_SAMPLE_RAW */
-+    char   data[size];  /* if PERF_SAMPLE_RAW */
-     u64    bnr;         /* if PERF_SAMPLE_BRANCH_STACK */
-     struct perf_branch_entry lbr[bnr];
-                         /* if PERF_SAMPLE_BRANCH_STACK */
-@@ -2148,6 +2214,8 @@ struct {
-     u64    abi;         /* if PERF_SAMPLE_REGS_INTR */
-     u64    regs[weight(mask)];
-                         /* if PERF_SAMPLE_REGS_INTR */
-+    u64    phys_addr;   /* if PERF_SAMPLE_PHYS_ADDR */
-+    u64    cgroup;      /* if PERF_SAMPLE_CGROUP */
- };
- .EE
- .in
-@@ -2570,6 +2638,18 @@ attr field.
- The number of values is the number of bits set in the
- .I sample_regs_intr
- bit mask.
-+.TP
-+.I phys_addr
-+If the
-+.B PERF_SAMPLE_PHYS_ADDR
-+flag is set, then 64-bit physical address is recorded.
-+.TP
-+.I cgroup
-+If the
-+.B PERF_SAMPLE_CGROUP
-+flag is set, then 64-bit cgroup id (for the perf_event subsystem) is recorded.
-+To get the pathname of the cgroup, the id should match to one in a
-+.B PERF_RECORD_CGROUP .
- .RE
- .TP
- .B PERF_RECORD_MMAP2
-@@ -2776,6 +2856,202 @@ or next (if switching out) process on the CPU.
- The thread ID of the previous (if switching in)
- or next (if switching out) thread on the CPU.
- .RE
-+.TP
-+.BR PERF_RECORD_NAMESPACES " (since Linux 4.11)"
-+.\" commit e422267322cd319e2695a535e47c5b1feeac45eb
-+This record includes various namespace information of a process.
-+.IP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u32 pid;
-+    u32 tid;
-+    u64 nr_namespaces;
-+    struct { u64 dev, inode } [nr_namespaces];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.RS
-+.TP
-+.I pid
-+is the process ID
-+.TP
-+.I tid
-+is the thread ID
-+.TP
-+.I nr_namespace
-+is the number of namespaces in this record
-+.RE
-+.IP
-+Each namespace has
-+.I dev
-+and
-+.I inode
-+fields and is recorded in the
-+fixed position like below:
-+.RS
-+.TP
-+.BR NET_NS_INDEX = 0
-+Network namespace
-+.TP
-+.BR UTS_NS_INDEX = 1
-+UTS namespace
-+.TP
-+.BR IPC_NS_INDEX = 2
-+IPC namespace
-+.TP
-+.BR PID_NS_INDEX = 3
-+PID namespace
-+.TP
-+.BR USER_NS_INDEX = 4
-+User namespace
-+.TP
-+.BR MNT_NS_INDEX = 5
-+Mount namespace
-+.TP
-+.BR CGROUP_NS_INDEX = 6
-+Cgroup namespace
-+.RE
-+.TP
-+.BR PERF_RECORD_KSYMBOL " (since Linux 5.0)"
-+.\" commit 76193a94522f1d4edf2447a536f3f796ce56343b
-+This record indicates kernel symbol register/unregister events.
-+.IP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u64 addr;
-+    u32 len;
-+    u16 ksym_type;
-+    u16 flags;
-+    char name[];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.RS
-+.TP
-+.I addr
-+is the address of the kernel symbol
-+.TP
-+.I len
-+is the length of the kernel symbol
-+.TP
-+.I ksym_type
-+is the type of the kernel symbol.
-+Currently following types are available:
-+.RS
-+.TP
-+.B PERF_RECORD_KSYMBOL_TYPE_BPF
-+The kernel symbols is a BPF function.
-+.RE
-+.TP
-+.I flags
-+If the
-+.B PERF_RECORD_KSYMBOL_FLAGS_UNREGISTER
-+is set, then this event is for unregistering the kernel symbol.
-+.RE
-+.TP
-+.BR PERF_RECORD_BPF_EVENT " (since Linux 5.0)"
-+.\" commit 6ee52e2a3fe4ea35520720736e6791df1fb67106
-+This record indicates BPF program is loaded or unloaded.
-+.IP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u16 type;
-+    u16 flags;
-+    u32 id;
-+    u8 tag[BPF_TAG_SIZE];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.RS
-+.TP
-+.I type
-+is one of the following values:
-+.RS
-+.TP
-+.B PERF_BPF_EVENT_PROG_LOAD
-+A BPF program is loaded
-+.TP
-+.B PERF_BPF_EVENT_PROG_UNLOAD
-+A BPF program is unloaded
-+.RE
-+.TP
-+.I id
-+is the id of the BPF program.
-+.TP
-+.I tag
-+is the tag of the BPF program.
-+Currently,
-+.B BPF_TAG_SIZE
-+is defined as 8.
-+.RE
-+.TP
-+.BR PERF_RECORD_CGROUP " (since Linux 5.7)"
-+.\" commit 96aaab686505c449e24d76e76507290dcc30e008
-+This record indicates a new cgroup is created and activated.
-+.IP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u64 id;
-+    char path[];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.RS
-+.TP
-+.I id
-+is the cgroup identifier.
-+This can be also retreived by
-+.BR name_to_handle_at (2)
-+on the cgroup path (as a file handle).
-+.TP
-+.I path
-+is the path of the cgroup from the root.
-+.RE
-+.TP
-+.BR PERF_RECORD_TEXT_POKE " (since Linux 5.8)"
-+.\" commit e17d43b93e544f5016c0251d2074c15568d5d963
-+This record indicates a change in the kernel text.
-+This includes addition and removal of the text
-+and the corresponding length is zero in this case.
-+.IP
-+.in +4n
-+.EX
-+struct {
-+    struct perf_event_header header;
-+    u64 addr;
-+    u16 old_len;
-+    u16 new_len;
-+    u8 bytes[];
-+    struct sample_id sample_id;
-+};
-+.EE
-+.in
-+.RS
-+.TP
-+.I addr
-+is the address of the change
-+.TP
-+.I old_len
-+is the old length
-+.TP
-+.I new_len
-+is the new length
-+.TP
-+.I bytes
-+contains old bytes immediately followed by new bytes.
-+.RE
- .RE
- .SS Overflow handling
- Events can be set to notify when a threshold is crossed,
--- 
-2.29.2.299.gdc1121823c-goog
+> >
+> >
+> > On Tue, Sep 29, 2020 at 9:08 PM Gilad Ben-Yossef <gilad@benyossef.com> =
+wrote:
+> >>
+> >>
+> >> On Wed, Sep 23, 2020 at 4:57 AM Rob Herring <robh@kernel.org> wrote:
+> >> >
+> >> > On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
+> >> > > Document ccree driver supporting new optional parameters allowing =
+to
+> >> > > customize the DMA transactions cache parameters and ACE bus sharab=
+ility
+> >> > > properties.
+> >> > >
+> >> > > Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+> >> > > ---
+> >> > >  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 +=
++++
+> >> > >  1 file changed, 4 insertions(+)
+> >> > >
+> >> > > diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptoce=
+ll.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+> >> > > index 6130e6eb4af8..1a1603e457a8 100644
+> >> > > --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+> >> > > +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+> >> > > @@ -13,6 +13,10 @@ Required properties:
+> >> > >  Optional properties:
+> >> > >  - clocks: Reference to the crypto engine clock.
+> >> > >  - dma-coherent: Present if dma operations are coherent.
+> >> > > +- awcache: Set write transactions cache attributes
+> >> > > +- arcache: Set read transactions cache attributes
+> >> >
 
+<snip>
+
+> >> > These could also just be implied by the compatible string (and requi=
+ring
+> >> > an SoC specific one).
+> >>
+> >> hm... we could do it but this will require us to know (and publicly
+> >> acknowledge) of every SoC making use of this piece of hardware design.
+>
+> That's already a requirement in general. Sometimes we can avoid it,
+> but that's cases of getting lucky.
+>
+> >> There is currently no other part of the driver that needs this.
+>
+> If your DT is part of firmware, then waiting until adding some driver
+> feature or quirk based on a new DT property is too late. Whereas with
+> a SoC specific compatible, you can handle any new feature or quirk
+> without a DT change (e.g. just a stable kernel update). Some platforms
+> may not care about that model, but in general that's the policy we
+> follow. Not doing that, we end up with the DWC3 binding.
+>
+> A fallback compatible is how we avoid updating drivers for every
+> single SoC unless needed.
+
+OK, I now better understand what you meant and that does make some
+sense and I will defer to your better judgment  about the proper way
+to do this.
+
+Having said that, there is still something that bugs me about this,
+even just at the level of better understanding why we do things:
+
+Way back when, before DT, we had SoC specific code that identified the
+SoC somehow and set things up in a SoC specific way.
+Then we introduced DT as a way to say - "hey look, this is how my
+busses looks like, these are the devices I have, deal with it" and I
+always assumed that this was meant as a way to release us from having
+SoC specific setup code.
+
+It seems now potentially every SoC vendor needs to modify not just the
+device tree source (which makes sense of course) but also the driver
+supporting their platform.
+It now looks like we've come a full circle to me :-)
+
+Thanks!
+Gilad
+
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
