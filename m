@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6B22B58C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9321F2B58C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgKQEUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 23:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726266AbgKQEUZ (ORCPT
+        id S1726993AbgKQEUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 23:20:45 -0500
+Received: from smtprelay0039.hostedemail.com ([216.40.44.39]:33848 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726826AbgKQEUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 23:20:25 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53C4C0613CF;
-        Mon, 16 Nov 2020 20:20:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=VJ/8WYCytLsitHhMZNrjI6xJw+7NDmdyC47TyOP1Bss=; b=l3+xTcuopylvTuEGmi4iZmy6xj
-        tN7JrXmI1Z8PooKGQaqatc9m1hH4HazWhVyxH9wnyjhxiazUlzIj0Yg16pDP5rAhj0hIC9gxASLxd
-        lgr+EJOrTWV04jutNYtx0PcVhk1yw/FqPtyKS2kCdPLiNApt9hWhGCHb7CVQfNGKzk2Web1QVavyg
-        GExq2P0Ug5XttjxL2l8xSni/9bWtbgNmmTiGDoauwMGfBnPF/iyXIaCZClx26Pl8SO+rytKvZazfA
-        dyzbPMJqEA4N68HXTF5v5ayMS4W3lOw5aN4n9eENTL0U1aP7SCGa6XlGhgXwPNVpndOlK7yrANcD7
-        md48QyPg==;
-Received: from [2601:1c0:6280:3f0::f32]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kesTZ-0001CQ-M5; Tue, 17 Nov 2020 04:20:18 +0000
-Subject: Re: mmotm 2020-11-16-16-47 uploaded (m/secretmem.c)
-To:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        Mike Rapoport <rppt@kernel.org>
-References: <20201117004837.VMxSd_ozW%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e7cc79ce-2448-98bc-6ae9-306f6991986f@infradead.org>
-Date:   Mon, 16 Nov 2020 20:20:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 16 Nov 2020 23:20:45 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 83C7A837F24A;
+        Tue, 17 Nov 2020 04:20:44 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2689:2731:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3867:3868:3870:4321:4362:5007:6119:7514:7875:7903:9010:10004:10400:10848:11232:11658:11914:12297:12555:12740:12895:13095:13439:13894:14181:14659:14721:21080:21433:21451:21627:21740:21741:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: birth03_35059fb2732e
+X-Filterd-Recvd-Size: 3269
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 17 Nov 2020 04:20:43 +0000 (UTC)
+Message-ID: <477496bed101ed007e7e8db6d511ece2fa2d119c.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: add fix option for MAINTAINERS_STYLE
+From:   Joe Perches <joe@perches.com>
+To:     Aditya Srivastava <yashsri421@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Mon, 16 Nov 2020 20:20:42 -0800
+In-Reply-To: <20201117040501.21914-1-yashsri421@gmail.com>
+References: <20201117040501.21914-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20201117004837.VMxSd_ozW%akpm@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20 4:48 PM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2020-11-16-16-47 has been uploaded to
+On Tue, 2020-11-17 at 09:35 +0530, Aditya Srivastava wrote:
+> Checkpatch expects entries in MAINTAINERS file in a specific order and
+> warns if the changes made do not follow the specified order.
 > 
->    https://www.ozlabs.org/~akpm/mmotm/
+> E.g., running checkpatch on commit b33bc2b878e0 ("nexthop: Add entry to
+> MAINTAINERS") reports this warning:
 > 
-> mmotm-readme.txt says
+> WARNING: Misordered MAINTAINERS entry - list file patterns in
+> alphabetic order
+> +F:	include/uapi/linux/nexthop.h
+> +F:	include/net/netns/nexthop.h
+
+OK, this should work.
+Thanks Aditya.
+
+Acked-by: Joe Perches <joe@perches.com>
+
 > 
-> README for mm-of-the-moment:
+> Provide a simple fix by swapping the unordered lines, if both the lines
+> are additions (start with '+')
 > 
-> https://www.ozlabs.org/~akpm/mmotm/
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+> ---
+> Changes in v2:
+> modified commit message
 > 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
+> Changes in v3:
+> add check if both the lines are additions(ie start with '+')
 > 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
+>  scripts/checkpatch.pl | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
 > 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
-> 
-> This tree is partially included in linux-next.  To see which patches are
-> included in linux-next, consult the `series' file.  Only the patches
-> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-> linux-next.
-> 
-> 
-> A full copy of the full kernel tree with the linux-next and mmotm patches
-> already applied is available through git within an hour of the mmotm
-> release.  Individual mmotm releases are tagged.  The master branch always
-> points to the latest release, so it's constantly rebasing.
-> 
-> 	https://github.com/hnaz/linux-mm
-> 
-> The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
-> contains daily snapshots of the -mm tree.  It is updated more frequently
-> than mmotm, and is untested.
-> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 2749f32dffe9..7ee3f05c354d 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3299,13 +3299,22 @@ sub process {
+>  					     "Unknown MAINTAINERS entry type: '$cur'\n" . $herecurr);
+>  				} else {
+>  					if ($previndex >= 0 && $curindex < $previndex) {
+> -						WARN("MAINTAINERS_STYLE",
+> -						     "Misordered MAINTAINERS entry - list '$cur:' before '$prev:'\n" . $hereprev);
+> +						if (WARN("MAINTAINERS_STYLE",
+> +							 "Misordered MAINTAINERS entry - list '$cur:' before '$prev:'\n" . $hereprev) &&
+> +						    $fix && $prevrawline =~ /^\+[A-Z]:/) {
+> +							# swap these lines
+> +							$fixed[$fixlinenr - 1] = $rawline;
+> +							$fixed[$fixlinenr] = $prevrawline;
+> +						}
+>  					} elsif ((($prev eq 'F' && $cur eq 'F') ||
+>  						  ($prev eq 'X' && $cur eq 'X')) &&
+>  						 ($prevval cmp $curval) > 0) {
+> -						WARN("MAINTAINERS_STYLE",
+> -						     "Misordered MAINTAINERS entry - list file patterns in alphabetic order\n" . $hereprev);
+> +						if (WARN("MAINTAINERS_STYLE",
+> +							 "Misordered MAINTAINERS entry - list file patterns in alphabetic order\n" . $hereprev) &&
+> +						    $fix && $prevrawline =~ /^\+[A-Z]:/) {
+> +							$fixed[$fixlinenr - 1] = $rawline;
+> +							$fixed[$fixlinenr] = $prevrawline;
+> +						}
+>  					}
+>  				}
+>  			}
 
 
-on x86_64:
-
-as reported on 2020-11-12:
-
-when CONFIG_MEMCG is not set:
-
-../mm/secretmem.c: In function â€˜secretmem_memcg_chargeâ€™:
-../mm/secretmem.c:72:4: error: â€˜struct pageâ€™ has no member named â€˜memcg_dataâ€™
-   p->memcg_data = page->memcg_data;
-    ^~
-../mm/secretmem.c:72:23: error: â€˜struct pageâ€™ has no member named â€˜memcg_dataâ€™
-   p->memcg_data = page->memcg_data;
-                       ^~
-../mm/secretmem.c: In function â€˜secretmem_memcg_unchargeâ€™:
-../mm/secretmem.c:86:4: error: â€˜struct pageâ€™ has no member named â€˜memcg_dataâ€™
-   p->memcg_data = 0;
-    ^~
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
