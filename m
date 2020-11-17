@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C102B611B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A46CB2B624B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730242AbgKQNPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:15:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47242 "EHLO mail.kernel.org"
+        id S1731223AbgKQN1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:27:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730230AbgKQNPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:15:46 -0500
+        id S1731068AbgKQN1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:27:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99AA12151B;
-        Tue, 17 Nov 2020 13:15:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F26821534;
+        Tue, 17 Nov 2020 13:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618945;
-        bh=+7L50U+Rn6mR4jkCLVSeMWUE0ZRWHO0AgzJuyfTF9gs=;
+        s=default; t=1605619626;
+        bh=qwdpYe9dQvbElnJFGEYTs27gqFA8bL7Z7XqD5aqNAf8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rWyiW1ybHT/kdwJMhheUg2x7/7UWwRqdJr8ZqpScULb/Vs/zFHwt8dekqPO4ualLp
-         IPwN2yzj8+ZR+o5e7YL8LcbCpmfnsn5PAhIXZC02nwbHUC+gCHAI+DwWSjYbBcKwrH
-         18svpIfL9vb6kDEP+YyUMH5RTP4xGQCxPVnqAytA=
+        b=LMJHC/Ir8Uf0dakl2SD8eDXt6u9+Z9G7n+TkYyj1U61atfOPuqnmcMCvVi7zU8Bse
+         NY+RjLwmsEIChthI/1gvdgiI9aUMtYQX1zoFMeeeQtsPM5V+M80VFwzvLmsWL5VW8z
+         jN2Hzutnc1UVIkRIgdyEYfWJrJs1c3J9IYyrcsq8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Willi <martin@strongswan.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 61/85] vrf: Fix fast path output packet handling with async Netfilter rules
+        stable@vger.kernel.org, Sven Van Asbroeck <thesven73@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 100/151] lan743x: fix "BUG: invalid wait context" when setting rx mode
 Date:   Tue, 17 Nov 2020 14:05:30 +0100
-Message-Id: <20201117122114.029087415@linuxfoundation.org>
+Message-Id: <20201117122126.275599872@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,192 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Willi <martin@strongswan.org>
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-[ Upstream commit 9e2b7fa2df4365e99934901da4fb4af52d81e820 ]
+[ Upstream commit 2b52a4b65bc8f14520fe6e996ea7fb3f7e400761 ]
 
-VRF devices use an optimized direct path on output if a default qdisc
-is involved, calling Netfilter hooks directly. This path, however, does
-not consider Netfilter rules completing asynchronously, such as with
-NFQUEUE. The Netfilter okfn() is called for asynchronously accepted
-packets, but the VRF never passes that packet down the stack to send
-it out over the slave device. Using the slower redirect path for this
-seems not feasible, as we do not know beforehand if a Netfilter hook
-has asynchronously completing rules.
+In the net core, the struct net_device_ops -> ndo_set_rx_mode()
+callback is called with the dev->addr_list_lock spinlock held.
 
-Fix the use of asynchronously completing Netfilter rules in OUTPUT and
-POSTROUTING by using a special completion function that additionally
-calls dst_output() to pass the packet down the stack. Also, slightly
-adjust the use of nf_reset_ct() so that is called in the asynchronous
-case, too.
+However, this driver's ndo_set_rx_mode callback eventually calls
+lan743x_dp_write(), which acquires a mutex. Mutex acquisition
+may sleep, and this is not allowed when holding a spinlock.
 
-Fixes: dcdd43c41e60 ("net: vrf: performance improvements for IPv4")
-Fixes: a9ec54d1b0cd ("net: vrf: performance improvements for IPv6")
-Signed-off-by: Martin Willi <martin@strongswan.org>
-Link: https://lore.kernel.org/r/20201106073030.3974927-1-martin@strongswan.org
+Fix by removing the dp_lock mutex entirely. Its purpose is to
+prevent concurrent accesses to the data port. No concurrent
+accesses are possible, because the dev->addr_list_lock
+spinlock in the core only lets through one thread at a time.
+
+Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+Link: https://lore.kernel.org/r/20201109203828.5115-1-TheSven73@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/vrf.c |   92 ++++++++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 69 insertions(+), 23 deletions(-)
+ drivers/net/ethernet/microchip/lan743x_main.c | 12 +++---------
+ drivers/net/ethernet/microchip/lan743x_main.h |  3 ---
+ 2 files changed, 3 insertions(+), 12 deletions(-)
 
---- a/drivers/net/vrf.c
-+++ b/drivers/net/vrf.c
-@@ -334,8 +334,7 @@ static netdev_tx_t vrf_xmit(struct sk_bu
- 	return ret;
- }
- 
--static int vrf_finish_direct(struct net *net, struct sock *sk,
--			     struct sk_buff *skb)
-+static void vrf_finish_direct(struct sk_buff *skb)
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index a43140f7b5eb8..b8e0e08b79de2 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -672,14 +672,12 @@ clean_up:
+ static int lan743x_dp_write(struct lan743x_adapter *adapter,
+ 			    u32 select, u32 addr, u32 length, u32 *buf)
  {
- 	struct net_device *vrf_dev = skb->dev;
+-	int ret = -EIO;
+ 	u32 dp_sel;
+ 	int i;
  
-@@ -354,7 +353,8 @@ static int vrf_finish_direct(struct net
- 		skb_pull(skb, ETH_HLEN);
+-	mutex_lock(&adapter->dp_lock);
+ 	if (lan743x_csr_wait_for_bit(adapter, DP_SEL, DP_SEL_DPRDY_,
+ 				     1, 40, 100, 100))
+-		goto unlock;
++		return -EIO;
+ 	dp_sel = lan743x_csr_read(adapter, DP_SEL);
+ 	dp_sel &= ~DP_SEL_MASK_;
+ 	dp_sel |= select;
+@@ -691,13 +689,10 @@ static int lan743x_dp_write(struct lan743x_adapter *adapter,
+ 		lan743x_csr_write(adapter, DP_CMD, DP_CMD_WRITE_);
+ 		if (lan743x_csr_wait_for_bit(adapter, DP_SEL, DP_SEL_DPRDY_,
+ 					     1, 40, 100, 100))
+-			goto unlock;
++			return -EIO;
  	}
+-	ret = 0;
  
--	return 1;
-+	/* reset skb device */
-+	nf_reset(skb);
+-unlock:
+-	mutex_unlock(&adapter->dp_lock);
+-	return ret;
++	return 0;
  }
  
- #if IS_ENABLED(CONFIG_IPV6)
-@@ -433,15 +433,41 @@ static struct sk_buff *vrf_ip6_out_redir
- 	return skb;
- }
+ static u32 lan743x_mac_mii_access(u16 id, u16 index, int read)
+@@ -2674,7 +2669,6 @@ static int lan743x_hardware_init(struct lan743x_adapter *adapter,
  
-+static int vrf_output6_direct_finish(struct net *net, struct sock *sk,
-+				     struct sk_buff *skb)
-+{
-+	vrf_finish_direct(skb);
-+
-+	return vrf_ip6_local_out(net, sk, skb);
-+}
-+
- static int vrf_output6_direct(struct net *net, struct sock *sk,
- 			      struct sk_buff *skb)
- {
-+	int err = 1;
-+
- 	skb->protocol = htons(ETH_P_IPV6);
+ 	adapter->intr.irq = adapter->pdev->irq;
+ 	lan743x_csr_write(adapter, INT_EN_CLR, 0xFFFFFFFF);
+-	mutex_init(&adapter->dp_lock);
  
--	return NF_HOOK_COND(NFPROTO_IPV6, NF_INET_POST_ROUTING,
--			    net, sk, skb, NULL, skb->dev,
--			    vrf_finish_direct,
--			    !(IPCB(skb)->flags & IPSKB_REROUTED));
-+	if (!(IPCB(skb)->flags & IPSKB_REROUTED))
-+		err = nf_hook(NFPROTO_IPV6, NF_INET_POST_ROUTING, net, sk, skb,
-+			      NULL, skb->dev, vrf_output6_direct_finish);
-+
-+	if (likely(err == 1))
-+		vrf_finish_direct(skb);
-+
-+	return err;
-+}
-+
-+static int vrf_ip6_out_direct_finish(struct net *net, struct sock *sk,
-+				     struct sk_buff *skb)
-+{
-+	int err;
-+
-+	err = vrf_output6_direct(net, sk, skb);
-+	if (likely(err == 1))
-+		err = vrf_ip6_local_out(net, sk, skb);
-+
-+	return err;
- }
+ 	ret = lan743x_gpio_init(adapter);
+ 	if (ret)
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.h b/drivers/net/ethernet/microchip/lan743x_main.h
+index 3b02eeae5f45d..1fbcef3910989 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.h
++++ b/drivers/net/ethernet/microchip/lan743x_main.h
+@@ -706,9 +706,6 @@ struct lan743x_adapter {
+ 	struct lan743x_csr      csr;
+ 	struct lan743x_intr     intr;
  
- static struct sk_buff *vrf_ip6_out_direct(struct net_device *vrf_dev,
-@@ -454,18 +480,15 @@ static struct sk_buff *vrf_ip6_out_direc
- 	skb->dev = vrf_dev;
+-	/* lock, used to prevent concurrent access to data port */
+-	struct mutex		dp_lock;
+-
+ 	struct lan743x_gpio	gpio;
+ 	struct lan743x_ptp	ptp;
  
- 	err = nf_hook(NFPROTO_IPV6, NF_INET_LOCAL_OUT, net, sk,
--		      skb, NULL, vrf_dev, vrf_output6_direct);
-+		      skb, NULL, vrf_dev, vrf_ip6_out_direct_finish);
- 
- 	if (likely(err == 1))
- 		err = vrf_output6_direct(net, sk, skb);
- 
--	/* reset skb device */
- 	if (likely(err == 1))
--		nf_reset(skb);
--	else
--		skb = NULL;
-+		return skb;
- 
--	return skb;
-+	return NULL;
- }
- 
- static struct sk_buff *vrf_ip6_out(struct net_device *vrf_dev,
-@@ -649,15 +672,41 @@ static struct sk_buff *vrf_ip_out_redire
- 	return skb;
- }
- 
-+static int vrf_output_direct_finish(struct net *net, struct sock *sk,
-+				    struct sk_buff *skb)
-+{
-+	vrf_finish_direct(skb);
-+
-+	return vrf_ip_local_out(net, sk, skb);
-+}
-+
- static int vrf_output_direct(struct net *net, struct sock *sk,
- 			     struct sk_buff *skb)
- {
-+	int err = 1;
-+
- 	skb->protocol = htons(ETH_P_IP);
- 
--	return NF_HOOK_COND(NFPROTO_IPV4, NF_INET_POST_ROUTING,
--			    net, sk, skb, NULL, skb->dev,
--			    vrf_finish_direct,
--			    !(IPCB(skb)->flags & IPSKB_REROUTED));
-+	if (!(IPCB(skb)->flags & IPSKB_REROUTED))
-+		err = nf_hook(NFPROTO_IPV4, NF_INET_POST_ROUTING, net, sk, skb,
-+			      NULL, skb->dev, vrf_output_direct_finish);
-+
-+	if (likely(err == 1))
-+		vrf_finish_direct(skb);
-+
-+	return err;
-+}
-+
-+static int vrf_ip_out_direct_finish(struct net *net, struct sock *sk,
-+				    struct sk_buff *skb)
-+{
-+	int err;
-+
-+	err = vrf_output_direct(net, sk, skb);
-+	if (likely(err == 1))
-+		err = vrf_ip_local_out(net, sk, skb);
-+
-+	return err;
- }
- 
- static struct sk_buff *vrf_ip_out_direct(struct net_device *vrf_dev,
-@@ -670,18 +719,15 @@ static struct sk_buff *vrf_ip_out_direct
- 	skb->dev = vrf_dev;
- 
- 	err = nf_hook(NFPROTO_IPV4, NF_INET_LOCAL_OUT, net, sk,
--		      skb, NULL, vrf_dev, vrf_output_direct);
-+		      skb, NULL, vrf_dev, vrf_ip_out_direct_finish);
- 
- 	if (likely(err == 1))
- 		err = vrf_output_direct(net, sk, skb);
- 
--	/* reset skb device */
- 	if (likely(err == 1))
--		nf_reset(skb);
--	else
--		skb = NULL;
-+		return skb;
- 
--	return skb;
-+	return NULL;
- }
- 
- static struct sk_buff *vrf_ip_out(struct net_device *vrf_dev,
+-- 
+2.27.0
+
 
 
