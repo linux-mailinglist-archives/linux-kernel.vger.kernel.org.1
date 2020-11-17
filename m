@@ -2,172 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721D22B55CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB3E2B55D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731614AbgKQAlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 19:41:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731524AbgKQAkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 19:40:55 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79EAC24688;
-        Tue, 17 Nov 2020 00:40:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605573655;
-        bh=zy1oFEgMJUVu4hzpgFNmiXp++QJuetTp4a7pb1RTsBg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wuP8JLlvV/sUazCwxnpvcI8NrbFGv66s9Mm4aA0JxhXsM+HszHe8OReVrH3AfmTbI
-         cSJgl/bjfZHjUxpHgbfIwxlPD5hr4BQRhVzne0tDDU0bslzrAuuodIOe/kq9JjCHSB
-         NrlQDui5NOjzAgwARTZblmBqxm68uVM9qYHcQCwA=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC tip/core/rcu 5/5] srcu: Provide polling interfaces for Tree SRCU grace periods
-Date:   Mon, 16 Nov 2020 16:40:52 -0800
-Message-Id: <20201117004052.14758-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20201117004017.GA7444@paulmck-ThinkPad-P72>
-References: <20201117004017.GA7444@paulmck-ThinkPad-P72>
+        id S1731632AbgKQAnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 19:43:46 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4734 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730583AbgKQAnp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 19:43:45 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AH0hSqq032321;
+        Mon, 16 Nov 2020 16:43:29 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=S00pb+GeQU1Zfd1U4XC+4/fXk0CPOz08L1s0Vb5ICjQ=;
+ b=VnSlpwZl1GPM4Be+TnhnVRkoRH7EoEGiUDokhsU1tURZwfIHQVy2dFy6rBXWFDA1rEzy
+ McWUaBiemZW4qmutdLIx5bHV6rMa1UfqZC224gZYWVydWusyvzEctUPYFuplD1mWpqkL
+ WxUmdGVUCo3A7WHB9F0Plu1z6CkhZGbv+wk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34uwyg27cf-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 16 Nov 2020 16:43:29 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 16 Nov 2020 16:43:11 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Blzg/DETaosO0D2IVVxTLgl6ukHOgVe9lwrO6arQ09++EMGT4YiReT1Qet36OJrV2Lmuu0/GMIxmIgwtXb2+o50HIFpGXufFV7skCL7LjtqGY2laxT1/+2g/E8Rukxodw4snLlZoyYcY4WnyPJRqT/qxQePIKWQ4xHnNhxrW0FsdW7cpcVHR92qz6U3U3oozFHnrsm8TWBEzhIc/Xy3PzS0s56JniJyLwQHmz2D68DAe/F6tAPkAz8CMKu1L4I7RCz0Is8BQlvhjotU87zLsmvFn4/ozn4VcbDhJ3O3QnUgJ0DKWaRaxhlBxlvDYt9ZhTkrXbYrOeNaOGFv9CVuiwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S00pb+GeQU1Zfd1U4XC+4/fXk0CPOz08L1s0Vb5ICjQ=;
+ b=c0399vLEqGEWz7QP7xi68zSP88kcbpgNZ4DCVU3TeQo2FYR3/uBupvSLl3ivSsM/W+umM1Hp7KsnNHqEmqKdNd/OZBtnCYFF7E1IXUgw8TKJcu8yBjrzlq8uPG19aYOJ4TlDCP3QQpqnA1KKMQyGuF8NpaGk3Z5zGWpM1mM6sISV+Ex30HuEOU5sU6nyo8bMWFFGOkb5W3uz1D6zPU+Z2pmrJTJzcwYpvpRlJLjTJ2ToEzstaZi+d1PHIn12mB8HrP+FKV+UQltqxUmf57xaa5+8cRNoq41njxUJ/GxItGb0Ou5x/LpBgXiiBo3ohd33vmhEGjNqZcYzhciDHRHCIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S00pb+GeQU1Zfd1U4XC+4/fXk0CPOz08L1s0Vb5ICjQ=;
+ b=cYXEQh3CVK+iYu5cZdGy4Aw8zpp4pOuTUbQZFpY80u/JGXfc5iRyHBrlLiTjLgj4X/AECh+RaRAd1TM4i25J/GdK/ujET/JMthVJ1xapLcgqVBcwQkQGeENOEqkH/Qzajqnx/a6z5GTcOnXp+7ZezNuBnrP62p5bZJE3qlVWCMc=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2373.namprd15.prod.outlook.com (2603:10b6:a02:92::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.23; Tue, 17 Nov
+ 2020 00:43:09 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3564.028; Tue, 17 Nov 2020
+ 00:43:09 +0000
+Date:   Mon, 16 Nov 2020 16:43:03 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: Add tests for bpf_lsm_set_bprm_opts
+Message-ID: <20201117004303.zpzoqluhslwbp7ce@kafai-mbp.dhcp.thefacebook.com>
+References: <20201116232536.1752908-1-kpsingh@chromium.org>
+ <20201116232536.1752908-2-kpsingh@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116232536.1752908-2-kpsingh@chromium.org>
+X-Originating-IP: [2620:10d:c090:400::5:8f7f]
+X-ClientProxiedBy: MWHPR19CA0069.namprd19.prod.outlook.com
+ (2603:10b6:300:94::31) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:8f7f) by MWHPR19CA0069.namprd19.prod.outlook.com (2603:10b6:300:94::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Tue, 17 Nov 2020 00:43:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4177c7c8-71fd-42b3-7816-08d88a91c191
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2373:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB23736B1AF4D3C658154D34A0D5E20@BYAPR15MB2373.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XFVT64jIlcwObSbDf0il/rnBr0cMx2lRPU5Q7sJ9vJxN+qM+ozc5SBs2Wfmm9Zrn0hoOCAwqHz/51ocz3146+VM5DexIT4wW26P8LdJkzSTHplmQN6mxHJkC0KrfR6x0bfuxgkOqk9Oy5rpQgQpO5EbJ31WYztM67uCY18kaynyYOK4os0ZnBzgnn5aR6zptALVBXpSXUhgvJI2pMRUJ8RhNWwtJ2VQat879MeCRTYHigH5JeNhdmtLmMUlU8OmrXfL5qbF7WAfOlvb6yrm5jCr8qInxpvK+MPdhlnVveB4eY8GXEZPpAf+G+8d3SH/rGCYrGBMAWutWcF2ZVwuoaQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(376002)(136003)(346002)(366004)(478600001)(55016002)(54906003)(86362001)(8676002)(9686003)(83380400001)(2906002)(6506007)(6666004)(1076003)(16526019)(66476007)(7696005)(66556008)(5660300002)(66946007)(6916009)(186003)(52116002)(8936002)(316002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: W5G5T7yDTWoHJdRN2bfsX5ZYWpzp3fV7S7rRv6X8JA/AzfXtI178Zeq1FT7w+ekgycc9fZXgaCVd46YDK3cRm5MPBHOGlM6iTvyc3pJuye/TWw8lRuawz+Ufly0axWaIKNOfYVlHxmtOj197vBq2oeQiny0Q+GJ9EYT/L1kWeeFc4p+8fGxaZuhQIZrVZm5Futw2r+VKGsXyBsLUUpr6gbztgXA2KqY1ox67Uw3JtTPHzNmxsf6UuAK+T+qy3oMNf4NMERJc0njZOSsSMV0uTdZ+qftEh75ZUGe75D035Jpzu9juE4FwNbds/rcROt33nsYkMKDwbKSiOpvxwqzg+2lSYhfiVLOXlR1yI6HiJCsfIe4U8cCIqwcG5Yxzj4r+o5DvGBTUhQK3c7rDhim8/EG8JWYylfEVQE1aWPhE3tVj6LtJGIxVJTAZvkPC5mBas3gCS1N+Ip3XO2w73FBPxF/pGCXI3UirVzR9z2Py/ncM6S7UshmjKttxjSNkuk8bDDthKjE1tg42CpVC6DIfGu+IHsL8hjG6ZSrqElgGnwTMHskBai1NBNLCcu5V4QiNRn3uS4qJItXHJer/TfdSoexcQO8THmW4TY+l9R6PBTiYcsUtdgLmEDnI9is6/GpwW17kYJxNr//StjSoAzibtKt8zZODE0M1YCGNl6aGljrAMYWPedFF722qjwn1pjszsAbbqxWyxULmZHAJlbuFK97P//p2msB+0+s3AbWrM+ASmfjnUvzLia78qc5N7+VOUCzQRNbF2ie4hVObn6hS4IapDZSLkSwM5jVqCSq+TmaxZZyF0chOIjtTxfmbMjx4glqfkkqPGOLNF9C6DvCHmNEolUjQSKs2h7r5nQrHp9Ak7IjGyGSMCVgGKRRSCvDwEbgQUvZzCTJntT+5qecLP3DPglgKpf0+6MabvfFxf3M=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4177c7c8-71fd-42b3-7816-08d88a91c191
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 00:43:09.7211
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l4S+u1Uh4UI7bKsJqdWKD1cg3JWVR54FIO3JZ/GZU2GUY9qcib+E3RXbBeCLGSvW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2373
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-16_13:2020-11-13,2020-11-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ mlxlogscore=999 priorityscore=1501 clxscore=1015 mlxscore=0
+ impostorscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0 spamscore=0
+ phishscore=0 suspectscore=1 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011170005
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Mon, Nov 16, 2020 at 11:25:36PM +0000, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> The test forks a child process, updates the local storage to set/unset
+> the securexec bit.
+> 
+> The BPF program in the test attaches to bprm_creds_for_exec which checks
+> the local storage of the current task to set the secureexec bit on the
+> binary parameters (bprm).
+> 
+> The child then execs a bash command with the environment variable
+> TMPDIR set in the envp.  The bash command returns a different exit code
+> based on its observed value of the TMPDIR variable.
+> 
+> Since TMPDIR is one of the variables that is ignored by the dynamic
+> loader when the secureexec bit is set, one should expect the
+> child execution to not see this value when the secureexec bit is set.
+> 
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
+>  .../selftests/bpf/prog_tests/test_bprm_opts.c | 124 ++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/bprm_opts.c |  34 +++++
+>  2 files changed, 158 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bprm_opts.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
+> new file mode 100644
+> index 000000000000..cba1ef3dc8b4
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
+> @@ -0,0 +1,124 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * Copyright (C) 2020 Google LLC.
+> + */
+> +
+> +#include <asm-generic/errno-base.h>
+> +#include <sys/stat.h>
+Is it needed?
 
-There is a need for a polling interface for SRCU grace
-periods, so this commit supplies get_state_synchronize_srcu(),
-start_poll_synchronize_srcu(), and poll_state_synchronize_srcu() for this
-purpose.  The first can be used if future grace periods are inevitable
-(perhaps due to a later call_srcu() invocation), the second if future
-grace periods might not otherwise happen, and the third to check if a
-grace period has elapsed since the corresponding call to either of the
-first two.
+> +#include <test_progs.h>
+> +#include <linux/limits.h>
+> +
+> +#include "bprm_opts.skel.h"
+> +#include "network_helpers.h"
+> +
+> +#ifndef __NR_pidfd_open
+> +#define __NR_pidfd_open 434
+> +#endif
+> +
+> +static const char * const bash_envp[] = { "TMPDIR=shouldnotbeset", NULL };
+> +
+> +static inline int sys_pidfd_open(pid_t pid, unsigned int flags)
+> +{
+> +	return syscall(__NR_pidfd_open, pid, flags);
+> +}
+> +
+> +static int update_storage(int map_fd, int secureexec)
+> +{
+> +	int task_fd, ret = 0;
+> +
+> +	task_fd = sys_pidfd_open(getpid(), 0);
+> +	if (task_fd < 0)
+> +		return errno;
+> +
+> +	ret = bpf_map_update_elem(map_fd, &task_fd, &secureexec, BPF_NOEXIST);
+> +	if (ret)
+> +		ret = errno;
+> +
+> +	close(task_fd);
+> +	return ret;
+> +}
+> +
+> +static int run_set_secureexec(int map_fd, int secureexec)
+> +{
+> +
+> +	int child_pid, child_status, ret, null_fd;
+> +
+> +	child_pid = fork();
+> +	if (child_pid == 0) {
+> +		null_fd = open("/dev/null", O_WRONLY);
+> +		if (null_fd == -1)
+> +			exit(errno);
+> +		dup2(null_fd, STDOUT_FILENO);
+> +		dup2(null_fd, STDERR_FILENO);
+> +		close(null_fd);
+> +
+> +		/* Ensure that all executions from hereon are
+> +		 * secure by setting a local storage which is read by
+> +		 * the bprm_creds_for_exec hook and sets bprm->secureexec.
+> +		 */
+> +		ret = update_storage(map_fd, secureexec);
+> +		if (ret)
+> +			exit(ret);
+> +
+> +		/* If the binary is executed with securexec=1, the dynamic
+> +		 * loader ingores and unsets certain variables like LD_PRELOAD,
+> +		 * TMPDIR etc. TMPDIR is used here to simplify the example, as
+> +		 * LD_PRELOAD requires a real .so file.
+> +		 *
+> +		 * If the value of TMPDIR is set, the bash command returns 10
+> +		 * and if the value is unset, it returns 20.
+> +		 */
+> +		ret = execle("/bin/bash", "bash", "-c",
+> +			     "[[ -z \"${TMPDIR}\" ]] || exit 10 && exit 20",
+> +			     NULL, bash_envp);
+> +		if (ret)
+It should never reach here?  May be just exit() unconditionally
+instead of having a chance to fall-through and then return -EINVAL.
 
-As with get_state_synchronize_rcu() and cond_synchronize_rcu(),
-the return value from either get_state_synchronize_srcu() or
-start_poll_synchronize_srcu() must be passed in to a later call to
-poll_state_synchronize_srcu().
+> +			exit(errno);
+> +	} else if (child_pid > 0) {
+> +		waitpid(child_pid, &child_status, 0);
+> +		ret = WEXITSTATUS(child_status);
+> +
+> +		/* If a secureexec occured, the exit status should be 20.
+> +		 */
+> +		if (secureexec && ret == 20)
+> +			return 0;
+> +
+> +		/* If normal execution happened the exit code should be 10.
+> +		 */
+> +		if (!secureexec && ret == 10)
+> +			return 0;
+> +
+> +		return ret;
+Any chance that ret may be 0?
 
-Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-[ paulmck: Add EXPORT_SYMBOL_GPL() per kernel test robot feedback. ]
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/srcutree.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 60 insertions(+), 3 deletions(-)
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +void test_test_bprm_opts(void)
+> +{
+> +	int err, duration = 0;
+> +	struct bprm_opts *skel = NULL;
+> +
+> +	skel = bprm_opts__open_and_load();
+> +	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
+> +		goto close_prog;
+> +
+> +	err = bprm_opts__attach(skel);
+> +	if (CHECK(err, "attach", "attach failed: %d\n", err))
+> +		goto close_prog;
+> +
+> +	/* Run the test with the secureexec bit unset */
+> +	err = run_set_secureexec(bpf_map__fd(skel->maps.secure_exec_task_map),
+> +				 0 /* secureexec */);
+> +	if (CHECK(err, "run_set_secureexec:0", "err = %d", err))
+nit. err = %d"\n"
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index d930ece..015d80e 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -810,7 +810,8 @@ static void srcu_leak_callback(struct rcu_head *rhp)
- /*
-  * Start an SRCU grace period, and also queue the callback if non-NULL.
-  */
--static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rhp, bool do_norm)
-+static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-+					     struct rcu_head *rhp, bool do_norm)
- {
- 	unsigned long flags;
- 	int idx;
-@@ -822,7 +823,8 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
- 	idx = srcu_read_lock(ssp);
- 	sdp = raw_cpu_ptr(ssp->sda);
- 	spin_lock_irqsave_rcu_node(sdp, flags);
--	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-+	if (rhp)
-+		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
- 	rcu_segcblist_advance(&sdp->srcu_cblist,
- 			      rcu_seq_current(&ssp->srcu_gp_seq));
- 	s = rcu_seq_snap(&ssp->srcu_gp_seq);
-@@ -841,6 +843,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
- 	else if (needexp)
- 		srcu_funnel_exp_start(ssp, sdp->mynode, s);
- 	srcu_read_unlock(ssp, idx);
-+	return s;
- }
- 
- /*
-@@ -882,7 +885,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 		return;
- 	}
- 	rhp->func = func;
--	srcu_gp_start_if_needed(ssp, rhp, do_norm);
-+	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
- }
- 
- /**
-@@ -1011,6 +1014,60 @@ void synchronize_srcu(struct srcu_struct *ssp)
- }
- EXPORT_SYMBOL_GPL(synchronize_srcu);
- 
-+/**
-+ * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
-+ * @ssp: srcu_struct to provide cookie for.
-+ *
-+ * This function returns a cookie that can be passed to
-+ * poll_state_synchronize_srcu(), which will return true if a full grace
-+ * period has elapsed in the meantime.  It is the caller's responsibility
-+ * to make sure that grace period happens, for example, by invoking
-+ * call_srcu() after return from get_state_synchronize_srcu().
-+ */
-+unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
-+{
-+	// Any prior manipulation of SRCU-protected data must happen
-+        // before the load from ->srcu_gp_seq.
-+	smp_mb();
-+	return rcu_seq_snap(&ssp->srcu_gp_seq);
-+}
-+EXPORT_SYMBOL_GPL(get_state_synchronize_srcu);
-+
-+/**
-+ * start_poll_synchronize_srcu - Provide cookie and start grace period
-+ * @ssp: srcu_struct to provide cookie for.
-+ *
-+ * This function returns a cookie that can be passed to
-+ * poll_state_synchronize_srcu(), which will return true if a full grace
-+ * period has elapsed in the meantime.  Unlike get_state_synchronize_srcu(),
-+ * this function also ensures that any needed SRCU grace period will be
-+ * started.  This convenience does come at a cost in terms of CPU overhead.
-+ */
-+unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
-+{
-+	return srcu_gp_start_if_needed(ssp, NULL, true);
-+}
-+EXPORT_SYMBOL_GPL(start_poll_synchronize_srcu);
-+
-+/**
-+ * poll_state_synchronize_srcu - Has cookie's grace period ended?
-+ * @ssp: srcu_struct to provide cookie for.
-+ * @cookie: Return value from get_state_synchronize_srcu() or start_poll_synchronize_srcu().
-+ *
-+ * This function takes the cookie that was returned from either
-+ * get_state_synchronize_srcu() or start_poll_synchronize_srcu(), and
-+ * returns @true if an SRCU grace period elapsed since the time that the
-+ * cookie was created.
-+ */
-+bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
-+{
-+	if (!rcu_seq_done(&ssp->srcu_gp_seq, cookie))
-+		return false;
-+	smp_mb(); // ^^^
-+	return true;
-+}
-+EXPORT_SYMBOL_GPL(poll_state_synchronize_srcu);
-+
- /*
-  * Callback function for srcu_barrier() use.
-  */
--- 
-2.9.5
+> +		goto close_prog;
+> +
+> +	/* Run the test with the secureexec bit set */
+> +	err = run_set_secureexec(bpf_map__fd(skel->maps.secure_exec_task_map),
+> +				 1 /* secureexec */);
+> +	if (CHECK(err, "run_set_secureexec:1", "err = %d", err))
+Same here.
 
+Others LGTM.
