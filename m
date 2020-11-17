@@ -2,147 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431102B69F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C862B69C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgKQQW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:22:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727235AbgKQQW1 (ORCPT
+        id S1727305AbgKQQSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:18:45 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:6998 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727132AbgKQQSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:22:27 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC5BC0613CF;
-        Tue, 17 Nov 2020 08:22:27 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id v143so20944512qkb.2;
-        Tue, 17 Nov 2020 08:22:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9JS/uYKk8GrJCTbc2FAe05O+XJ9e/pB4+Xwp7tXwPZ0=;
-        b=aJlDOBsATEWSe1rlycoHMeV4ei94yuVwrrm65Xysp4oVHYz7irZb27aTwZ7IgeMrMO
-         rwVNaVpE25sjKuSTnOO7NmkzBWOBSTx4fb3R/DCWK4SogrXa2AC7enZkjLsyuNjXxuvM
-         NTnekDgslWYIalrCbTxJ86SdaNtQP3cHwjrypdeVUFonoFUCuScqV6kG/ZkGwOFtl6yH
-         GGnqDGXXV/Rp0vgelpRy+c9ngWmBiSSV1q/ABKAKx6pMiIrVNRaIq9LBAGHm9r1XHYPX
-         JJd8Mz5c3TX5hRrGoRqUPlThTtb3gM5hidlGyqicc9LqyBTLzcNk5GjMNiGQAYvcDs09
-         OmmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9JS/uYKk8GrJCTbc2FAe05O+XJ9e/pB4+Xwp7tXwPZ0=;
-        b=jIWr4prY5Tkb16Q2zqWthSJ1cFELIbXYuBlUBYbfALNAxmVEvM7X04EGUW1ltfLR71
-         NV6SzL+TFLhBAvy/OTs9fA19gkrM5d7bvf/VdMnj7i9dilIHscOoGhI1Z1MeAOGFjGQ3
-         Og54KMZFxkGriMBdgcdk4R3B+ZhjDApgqvrG9PVnkXglMDInXH2IbThSGT+1NCDn4Y7l
-         BopOjqFZ+hvyaaGSCL4gNDX33wPa8TvJxTK7WLHCDnGYW7ICdxiEIydbxk8USia3hkIk
-         5RT1D2r1jQ9kKTEIpnJEYdY97stxMuew5Au6k5/9qcyCyZcLZH5s0t3CaFtJYtwebaiD
-         W0iQ==
-X-Gm-Message-State: AOAM533eyOx2KFvZTNATDVjb4ryKQ6CHz3p058VmFiUk3ZPZHFbP/dH/
-        ztksbbhm86edvlPvKV14DzOkKfC8ZMdCyQ==
-X-Google-Smtp-Source: ABdhPJxFV05KKJ6XDlOOAOJnsbl9Wf8WKTjRzQrKCSJ0EvUBlKv7/HeKNXgdCIuMoNy2WooiBd+UYw==
-X-Received: by 2002:a37:8542:: with SMTP id h63mr366329qkd.102.1605630146479;
-        Tue, 17 Nov 2020 08:22:26 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id v16sm15074576qka.72.2020.11.17.08.22.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 08:22:25 -0800 (PST)
-Date:   Tue, 17 Nov 2020 09:22:23 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Kees Cook <keescook@chromium.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 1/2] kbuild: Hoist '--orphan-handling' into Kconfig
-Message-ID: <20201117162223.GA1428250@ubuntu-m3-large-x86>
-References: <20201113195553.1487659-1-natechancellor@gmail.com>
- <87tuto2qke.fsf@mpe.ellerman.id.au>
+        Tue, 17 Nov 2020 11:18:45 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHGEPIx001175;
+        Tue, 17 Nov 2020 11:18:32 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34t9ybjdff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 11:18:31 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AHGIUiu044672
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 17 Nov 2020 11:18:30 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 17 Nov
+ 2020 11:18:29 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 17 Nov 2020 11:18:29 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AHGIRTM032565;
+        Tue, 17 Nov 2020 11:18:28 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <lars@metafoo.de>, <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [RFC PATCH 00/12] iio: core,buffer: add support for multiple IIO buffers per IIO device
+Date:   Tue, 17 Nov 2020 18:23:28 +0200
+Message-ID: <20201117162340.43924-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87tuto2qke.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_06:2020-11-17,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 suspectscore=0 impostorscore=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1015 spamscore=0 adultscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:03:29PM +1100, Michael Ellerman wrote:
-> Nathan Chancellor <natechancellor@gmail.com> writes:
-> > Currently, '--orphan-handling=warn' is spread out across four different
-> > architectures in their respective Makefiles, which makes it a little
-> > unruly to deal with in case it needs to be disabled for a specific
-> > linker version (in this case, ld.lld 10.0.1).
-> >
-> > To make it easier to control this, hoist this warning into Kconfig and
-> > the main Makefile so that disabling it is simpler, as the warning will
-> > only be enabled in a couple places (main Makefile and a couple of
-> > compressed boot folders that blow away LDFLAGS_vmlinx) and making it
-> > conditional is easier due to Kconfig syntax. One small additional
-> > benefit of this is saving a call to ld-option on incremental builds
-> > because we will have already evaluated it for CONFIG_LD_ORPHAN_WARN.
-> >
-> > To keep the list of supported architectures the same, introduce
-> > CONFIG_ARCH_WANT_LD_ORPHAN_WARN, which an architecture can select to
-> > gain this automatically after all of the sections are specified and size
-> > asserted. A special thanks to Kees Cook for the help text on this
-> > config.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1187
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> >  Makefile                          | 6 ++++++
-> >  arch/Kconfig                      | 9 +++++++++
-> >  arch/arm/Kconfig                  | 1 +
-> >  arch/arm/Makefile                 | 4 ----
-> >  arch/arm/boot/compressed/Makefile | 4 +++-
-> >  arch/arm64/Kconfig                | 1 +
-> >  arch/arm64/Makefile               | 4 ----
-> >  arch/powerpc/Kconfig              | 1 +
-> >  arch/powerpc/Makefile             | 1 -
-> 
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-> 
-> 
-> >  arch/x86/Kconfig                  | 1 +
-> >  arch/x86/Makefile                 | 3 ---
-> >  arch/x86/boot/compressed/Makefile | 4 +++-
-> >  init/Kconfig                      | 3 +++
-> >  13 files changed, 28 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 008aba5f1a20..c443afd61886 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -984,6 +984,12 @@ ifeq ($(CONFIG_RELR),y)
-> >  LDFLAGS_vmlinux	+= --pack-dyn-relocs=relr
-> >  endif
-> >  
-> > +# We never want expected sections to be placed heuristically by the
-> > +# linker. All sections should be explicitly named in the linker script.
-> > +ifeq ($(CONFIG_LD_ORPHAN_WARN),y)
-> > +LDFLAGS_vmlinux += --orphan-handling=warn
-> > +endif
-> 
-> This is a nit, but you can use ifdef with bool CONFIG symbols in
-> Makefiles, which reads a bit nicer, eg:
-> 
-> ifdef CONFIG_LD_ORPHAN_WARN
-> LDFLAGS_vmlinux += --orphan-handling=warn
-> endif
+Continuing from:
+  https://lore.kernel.org/linux-iio/20200517144023.6c5cb169@archlinux/
 
-That is indeed cleaner, I did not realize I could do that as long as the
-config was a boolean. I will use that in v2, which I will send along
-within the next few days to give Masahiro some time to comment.
+This is a V2 of the initial attempt in the discussion above.
+But it did not occur to me that I should mark it as V2 when I generated
+the patches.
+I've only tested [so far] that the current IIO buffer mechnism still works.
+And decided to show this sketch patchset.
 
-Cheers,
-Nathan
+This requires the ioctl() centralization mechanism, for which I sent a
+fix earlier.
+  https://lore.kernel.org/linux-iio/CA+U=Dsqf3UgyM666Gg9EmehpWiucDx2P0bmsC9JR--JJDT_eWQ@mail.gmail.com/T/#t
+  https://lore.kernel.org/linux-iio/20201117095154.7189-1-alexandru.ardelean@analog.com/T/#u
+
+The gist of this is that now, the first IIO buffer should work as
+before, but all extra buffers should go through the anon inodes
+mechanism.
+I'd need to find a device or a way or a chip to test these extra buffers
+stuff. But I'm confident that this current form should eventually work
+with multiple IIO buffers per 1 IIO device and with anon inodes.
+
+Maybe I'll take some of the patches in this set separately and send them
+individually. The problem with patchsets like this that tackle changes
+in a framework (like IIO) is that I become unsure after the 5th-7th patch,
+that the approach is correct. And I get even more unsure after that.
+
+I'll create some userspace code to test this a bit, but I thought I'd
+send an RFC in the meantime.
+
+Alexandru Ardelean (12):
+  iio: core: register chardev only if needed
+  iio: buffer: add back-ref from iio_buffer to iio_dev
+  iio: buffer: rework buffer & scan_elements dir creation
+  iio: buffer: add index to the first IIO buffer dir and symlink it back
+  iio: core: split __iio_device_attr_init() to init only the attr object
+  iio: buffer: re-route scan_elements via it's kobj_type
+  iio: buffer: re-route core buffer attributes via it's new kobj_type
+  iio: buffer: add helper to get the IIO device to which a buffer
+    belongs
+  iio: re-route all buffer attributes through new buffer kobj_type
+  iio: core: wrap iio device & buffer into struct for character devices
+  iio: buffer: introduce support for attaching more IIO buffers
+  iio: buffer: add ioctl() to support opening extra buffers for IIO
+    device
+
+ drivers/iio/accel/adxl372.c                   |  36 +-
+ drivers/iio/accel/bmc150-accel-core.c         |  34 +-
+ drivers/iio/adc/at91-sama5d2_adc.c            |  30 +-
+ .../buffer/industrialio-buffer-dmaengine.c    |  13 +-
+ .../cros_ec_sensors/cros_ec_sensors_core.c    |  30 +-
+ .../common/hid-sensors/hid-sensor-trigger.c   |  32 +-
+ drivers/iio/iio_core.h                        |  11 +
+ drivers/iio/industrialio-buffer.c             | 582 ++++++++++++++----
+ drivers/iio/industrialio-core.c               | 117 ++--
+ include/linux/iio/buffer.h                    |   2 +
+ include/linux/iio/buffer_impl.h               |  25 +-
+ include/linux/iio/iio-opaque.h                |   6 +
+ include/linux/iio/iio.h                       |   2 +-
+ include/linux/iio/sysfs.h                     |  50 ++
+ include/uapi/linux/iio/buffer.h               |  16 +
+ 15 files changed, 735 insertions(+), 251 deletions(-)
+ create mode 100644 include/uapi/linux/iio/buffer.h
+
+-- 
+2.17.1
+
