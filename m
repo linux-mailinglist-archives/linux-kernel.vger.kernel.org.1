@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724992B6228
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336F02B6033
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730897AbgKQNZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:25:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33202 "EHLO mail.kernel.org"
+        id S1728793AbgKQNHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:07:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731374AbgKQNZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:25:51 -0500
+        id S1729034AbgKQNHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:07:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 500E824654;
-        Tue, 17 Nov 2020 13:25:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89B3E2465E;
+        Tue, 17 Nov 2020 13:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619550;
-        bh=J4eQ66ZRzp2e+63i+hwuE+trO38UsK3aWld2psY1ipQ=;
+        s=default; t=1605618426;
+        bh=+ik/dmEYMup5DcNgxfoB/2tUIfGLVh9dNRL1JaFZg3s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sfnoa079APALBvshIv195LJG6DVklT3qoAxFckCltq4n57f1AlPxm0yFVT76y9o/X
-         oy8NFD57VuldwBUM1vw+aIAsFXkiYwSPhdEciillN6eLEGTbOoooquzb1O8aiOne8E
-         XGULge6jlaHNRpbYs7qq9yPPGwAYgrS+5cHeDMDc=
+        b=17GCvp9aSqail48snOjdLyXXKuX14ddOOMXtFCWGtJPXSaGL5RLjS4Ro8aWzoWgHv
+         aLjAdglXvDXcJkLOkkmsm5YOIzqXH6yyFb3KJeSBSqPpJg1T+biMORuLrcR7ntA4vA
+         f5W4grdzUtF+2IAaNpG1SGWb+W8bWrAj79sq2+wg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pankaj Bansal <pankaj.bansal@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/151] can: flexcan: remove FLEXCAN_QUIRK_DISABLE_MECR quirk for LS1021A
+        stable@vger.kernel.org, Zeng Tao <prime.zeng@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 04/64] time: Prevent undefined behaviour in timespec64_to_ns()
 Date:   Tue, 17 Nov 2020 14:04:27 +0100
-Message-Id: <20201117122123.232443167@linuxfoundation.org>
+Message-Id: <20201117122106.344550754@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Zeng Tao <prime.zeng@hisilicon.com>
 
-[ Upstream commit 018799649071a1638c0c130526af36747df4355a ]
+[ Upstream commit cb47755725da7b90fecbb2aa82ac3b24a7adb89b ]
 
-After double check with Layerscape CAN owner (Pankaj Bansal), confirm that
-LS1021A doesn't support ECC feature, so remove FLEXCAN_QUIRK_DISABLE_MECR
-quirk.
+UBSAN reports:
 
-Fixes: 99b7668c04b27 ("can: flexcan: adding platform specific details for LS1021A")
-Cc: Pankaj Bansal <pankaj.bansal@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Link: https://lore.kernel.org/r/20201020155402.30318-4-qiangqing.zhang@nxp.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Undefined behaviour in ./include/linux/time64.h:127:27
+signed integer overflow:
+17179869187 * 1000000000 cannot be represented in type 'long long int'
+Call Trace:
+ timespec64_to_ns include/linux/time64.h:127 [inline]
+ set_cpu_itimer+0x65c/0x880 kernel/time/itimer.c:180
+ do_setitimer+0x8e/0x740 kernel/time/itimer.c:245
+ __x64_sys_setitimer+0x14c/0x2c0 kernel/time/itimer.c:336
+ do_syscall_64+0xa1/0x540 arch/x86/entry/common.c:295
+
+Commit bd40a175769d ("y2038: itimer: change implementation to timespec64")
+replaced the original conversion which handled time clamping correctly with
+timespec64_to_ns() which has no overflow protection.
+
+Fix it in timespec64_to_ns() as this is not necessarily limited to the
+usage in itimers.
+
+[ tglx: Added comment and adjusted the fixes tag ]
+
+Fixes: 361a3bf00582 ("time64: Add time64.h header and define struct timespec64")
+Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/flexcan.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/linux/time64.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index d59c6c87164f4..fbf812cf4f5da 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -321,8 +321,7 @@ static const struct flexcan_devtype_data fsl_vf610_devtype_data = {
+diff --git a/include/linux/time64.h b/include/linux/time64.h
+index 367d5af899e81..10239cffd70f8 100644
+--- a/include/linux/time64.h
++++ b/include/linux/time64.h
+@@ -197,6 +197,10 @@ static inline bool timespec64_valid_strict(const struct timespec64 *ts)
+  */
+ static inline s64 timespec64_to_ns(const struct timespec64 *ts)
+ {
++	/* Prevent multiplication overflow */
++	if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
++		return KTIME_MAX;
++
+ 	return ((s64) ts->tv_sec * NSEC_PER_SEC) + ts->tv_nsec;
+ }
  
- static const struct flexcan_devtype_data fsl_ls1021a_r2_devtype_data = {
- 	.quirks = FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_RRS |
--		FLEXCAN_QUIRK_DISABLE_MECR | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
--		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
-+		FLEXCAN_QUIRK_BROKEN_PERR_STATE | FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
- };
- 
- static const struct can_bittiming_const flexcan_bittiming_const = {
 -- 
 2.27.0
 
