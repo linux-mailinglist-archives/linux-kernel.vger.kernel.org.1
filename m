@@ -2,157 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30052B5797
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6A72B5760
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727475AbgKQC7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:59:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgKQCzj (ORCPT
+        id S1727773AbgKQC45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:56:57 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51602 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727182AbgKQCzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:55:39 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A08DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:55:39 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id c137so6775615ybf.21
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:55:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=vsK84Ng+Z4z4Uq7LdUN/Nr2gJYEHbnenP5+by4dnRzk=;
-        b=qSrzyW9nLdh9bU+bPUOYF/5Q4aN8fANryQkOSHHLcw2ofOoVR+SwnF0ipnFzRphAXP
-         UGT4Qc8ABYEZ+uxjoqDP2vY/w8JXHr5qC6TQM/F+ZqdsHSE6qmHpTJjnwHIgT+b3K3c1
-         EgH5uycjdZIfX77aTSSPgRTi3KwNogNoJcO7uJB3IhbIvSLQEXsltgNL2p1sGHXzSu8o
-         Ma2wRIyH1566PrAyVkFgU2cNspRg5y3a9ZRQa2oSa4xuNZd3og//5wln7vz9qyxyqOjm
-         TaMqPy/hvRNSj7z3Whn7YE7FnLXNWLo1sW9eGHzmJPVDTyaY44w+INn0pegKoUU1jwKd
-         wSAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=vsK84Ng+Z4z4Uq7LdUN/Nr2gJYEHbnenP5+by4dnRzk=;
-        b=b/d4Ldq/ZhqeT1FUUOR7Lo3TLyYjyAsJEzA9j/9Ee2lCtC9ktIIuBwWumXxNdzEf2q
-         QbfxnKE1qWgWMoax+6cTc+QJ1r3adHH+Hz3X4l4coAabiW2rk/USnKwys5aBrMaWqVvM
-         xqfH32qfnoY01WjrPrRnB4iietvq9G+2Q2Z+mcW2p/DY1pBS3rFvVyo/HGeFEkUwn3bO
-         tSzT7fyuM0igEnae23mhLVK3mrzblBBinKWv+kG/xbD224rkWI6GemjvrOYiUXSOjKN5
-         ZcK3uYXixgh1SE3Or5GmAEsFpibbg8tKk0oMn0EgbQM3VoXkJeZnirF/AJaTsJg+IhNt
-         IgBQ==
-X-Gm-Message-State: AOAM532yPiDVg4LyPffTjkeH+4tb8ezGL0yXi8CE7+J22DBCBq+ZXLe7
-        rdD1CJX/ZCbDyNBuj7TCYfp4W+0+
-X-Google-Smtp-Source: ABdhPJxq7FoafmMJ37cwrScaa9fL85uvDt3+7HUyrD5C7ncM4/DsdLAS/c4Pezj14hOhYyGIveghQXhb
-Sender: "rkir via sendgmr" <rkir@rkir.kir.corp.google.com>
-X-Received: from rkir.kir.corp.google.com ([2620:15c:29:200:3e52:82ff:fe5f:f95])
- (user=rkir job=sendgmr) by 2002:a25:a86:: with SMTP id 128mr21027336ybk.370.1605581738797;
- Mon, 16 Nov 2020 18:55:38 -0800 (PST)
-Date:   Mon, 16 Nov 2020 18:55:22 -0800
-Message-Id: <20201117025522.1874864-1-rkir@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [PATCH] arch: x86: platform: retire arch/x86/platform/goldfish
-From:   rkir@google.com
-To:     dvhart@infradead.org, andy@infradead.org
-Cc:     linux-kernel@vger.kernel.org, lfy@google.com,
-        Roman Kiryanov <rkir@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 16 Nov 2020 21:55:46 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AH2sDYh023493
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:55:46 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=VhHa5gszG9R4T/IasTotDuefG6HkPOwLYD8EfJMNV9Y=;
+ b=VujtXjsaABJulPTsV9YFyIEkZsc0Zhul/O66VrE0i7oBOj0bUK0axwyxifzvU2V0/Htu
+ K7pZfMSFIOo0RUT7F064boDJPgkWK8CY8PFIoGS6hEDIPlDQ+2xaiVhg8JETe4clGPPv
+ /Gw2W2/mBXVxPwlCUXXGUSlyGTrzYmqwR2k= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34uphj4xw4-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:55:46 -0800
+Received: from intmgw004.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 16 Nov 2020 18:55:42 -0800
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id 3D713C5F7F8; Mon, 16 Nov 2020 18:55:34 -0800 (PST)
+From:   Roman Gushchin <guro@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <andrii@kernel.org>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-team@fb.com>
+Subject: [PATCH v6 28/34] bpf: eliminate rlimit-based memory accounting for sockmap and sockhash maps
+Date:   Mon, 16 Nov 2020 18:55:23 -0800
+Message-ID: <20201117025529.1034387-29-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20201117025529.1034387-1-guro@fb.com>
+References: <20201117025529.1034387-1-guro@fb.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-16_13:2020-11-13,2020-11-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=646 priorityscore=1501
+ malwarescore=0 clxscore=1015 suspectscore=38 adultscore=0 spamscore=0
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170023
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Kiryanov <rkir@google.com>
+Do not use rlimit-based memory accounting for sockmap and sockhash maps.
+It has been replaced with the memcg-based memory accounting.
 
-The Android Studio Emulator (aka goldfish) does not
-use arch/x86/platform/goldfish since 5.4 kernel.
-
-Signed-off-by: Roman Kiryanov <rkir@google.com>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Acked-by: Song Liu <songliubraving@fb.com>
 ---
- arch/x86/platform/Makefile            |  1 -
- arch/x86/platform/goldfish/Makefile   |  2 -
- arch/x86/platform/goldfish/goldfish.c | 54 ---------------------------
- 3 files changed, 57 deletions(-)
- delete mode 100644 arch/x86/platform/goldfish/Makefile
- delete mode 100644 arch/x86/platform/goldfish/goldfish.c
+ net/core/sock_map.c | 33 ++++++---------------------------
+ 1 file changed, 6 insertions(+), 27 deletions(-)
 
-diff --git a/arch/x86/platform/Makefile b/arch/x86/platform/Makefile
-index d0e835470d01..b2f90a1a89f1 100644
---- a/arch/x86/platform/Makefile
-+++ b/arch/x86/platform/Makefile
-@@ -4,7 +4,6 @@ obj-y	+= atom/
- obj-y	+= ce4100/
- obj-y	+= efi/
- obj-y	+= geode/
--obj-y	+= goldfish/
- obj-y	+= iris/
- obj-y	+= intel/
- obj-y	+= intel-mid/
-diff --git a/arch/x86/platform/goldfish/Makefile b/arch/x86/platform/goldfish/Makefile
-deleted file mode 100644
-index 072c395379ac..000000000000
---- a/arch/x86/platform/goldfish/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_GOLDFISH)	+= goldfish.o
-diff --git a/arch/x86/platform/goldfish/goldfish.c b/arch/x86/platform/goldfish/goldfish.c
-deleted file mode 100644
-index 6b6f8b4360dd..000000000000
---- a/arch/x86/platform/goldfish/goldfish.c
-+++ /dev/null
-@@ -1,54 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Copyright (C) 2007 Google, Inc.
-- * Copyright (C) 2011 Intel, Inc.
-- * Copyright (C) 2013 Intel, Inc.
-- */
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 30455d1952e7..1552eceaa01b 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -27,8 +27,6 @@ struct bpf_stab {
+ static struct bpf_map *sock_map_alloc(union bpf_attr *attr)
+ {
+ 	struct bpf_stab *stab;
+-	u64 cost;
+-	int err;
+=20
+ 	if (!capable(CAP_NET_ADMIN))
+ 		return ERR_PTR(-EPERM);
+@@ -46,22 +44,15 @@ static struct bpf_map *sock_map_alloc(union bpf_attr =
+*attr)
+ 	bpf_map_init_from_attr(&stab->map, attr);
+ 	raw_spin_lock_init(&stab->lock);
+=20
+-	/* Make sure page count doesn't overflow. */
+-	cost =3D (u64) stab->map.max_entries * sizeof(struct sock *);
+-	err =3D bpf_map_charge_init(&stab->map.memory, cost);
+-	if (err)
+-		goto free_stab;
 -
--#include <linux/kernel.h>
--#include <linux/irq.h>
--#include <linux/platform_device.h>
--
--/*
-- * Where in virtual device memory the IO devices (timers, system controllers
-- * and so on)
-- */
--
--#define GOLDFISH_PDEV_BUS_BASE	(0xff001000)
--#define GOLDFISH_PDEV_BUS_END	(0xff7fffff)
--#define GOLDFISH_PDEV_BUS_IRQ	(4)
--
--#define GOLDFISH_TTY_BASE	(0x2000)
--
--static struct resource goldfish_pdev_bus_resources[] = {
--	{
--		.start  = GOLDFISH_PDEV_BUS_BASE,
--		.end    = GOLDFISH_PDEV_BUS_END,
--		.flags  = IORESOURCE_MEM,
--	},
--	{
--		.start	= GOLDFISH_PDEV_BUS_IRQ,
--		.end	= GOLDFISH_PDEV_BUS_IRQ,
--		.flags	= IORESOURCE_IRQ,
+ 	stab->sks =3D bpf_map_area_alloc(stab->map.max_entries *
+ 				       sizeof(struct sock *),
+ 				       stab->map.numa_node);
+-	if (stab->sks)
+-		return &stab->map;
+-	err =3D -ENOMEM;
+-	bpf_map_charge_finish(&stab->map.memory);
+-free_stab:
+-	kfree(stab);
+-	return ERR_PTR(err);
++	if (!stab->sks) {
++		kfree(stab);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	return &stab->map;
+ }
+=20
+ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *pr=
+og)
+@@ -1104,7 +1095,6 @@ static struct bpf_map *sock_hash_alloc(union bpf_at=
+tr *attr)
+ {
+ 	struct bpf_shtab *htab;
+ 	int i, err;
+-	u64 cost;
+=20
+ 	if (!capable(CAP_NET_ADMIN))
+ 		return ERR_PTR(-EPERM);
+@@ -1132,21 +1122,10 @@ static struct bpf_map *sock_hash_alloc(union bpf_=
+attr *attr)
+ 		goto free_htab;
+ 	}
+=20
+-	cost =3D (u64) htab->buckets_num * sizeof(struct bpf_shtab_bucket) +
+-	       (u64) htab->elem_size * htab->map.max_entries;
+-	if (cost >=3D U32_MAX - PAGE_SIZE) {
+-		err =3D -EINVAL;
+-		goto free_htab;
 -	}
--};
+-	err =3D bpf_map_charge_init(&htab->map.memory, cost);
+-	if (err)
+-		goto free_htab;
 -
--static bool goldfish_enable __initdata;
--
--static int __init goldfish_setup(char *str)
--{
--	goldfish_enable = true;
--	return 0;
--}
--__setup("goldfish", goldfish_setup);
--
--static int __init goldfish_init(void)
--{
--	if (!goldfish_enable)
--		return -ENODEV;
--
--	platform_device_register_simple("goldfish_pdev_bus", -1,
--					goldfish_pdev_bus_resources, 2);
--	return 0;
--}
--device_initcall(goldfish_init);
--- 
-2.29.2.299.gdc1121823c-goog
+ 	htab->buckets =3D bpf_map_area_alloc(htab->buckets_num *
+ 					   sizeof(struct bpf_shtab_bucket),
+ 					   htab->map.numa_node);
+ 	if (!htab->buckets) {
+-		bpf_map_charge_finish(&htab->map.memory);
+ 		err =3D -ENOMEM;
+ 		goto free_htab;
+ 	}
+--=20
+2.26.2
 
