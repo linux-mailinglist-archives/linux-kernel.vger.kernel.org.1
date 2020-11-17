@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BA22B69EB
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2CD2B69EC
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbgKQQUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:20:07 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46956 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgKQQUG (ORCPT
+        id S1727746AbgKQQUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:20:12 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50708 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727287AbgKQQUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:20:06 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AHGJvoa008064;
-        Tue, 17 Nov 2020 10:19:57 -0600
+        Tue, 17 Nov 2020 11:20:09 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AHGK16e106104;
+        Tue, 17 Nov 2020 10:20:01 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605629997;
-        bh=ifcNSzzf23ROqHfitJpA5x5k6H1tLGXv5n+XJV61G3U=;
+        s=ti-com-17Q1; t=1605630001;
+        bh=CRfJLmwRdnflO8lygGqJY8mmenaAvc3pCSqw/PILXs0=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=tIigqH905tc9B4a4+E4ryY1Z+pUqdbTP4jUQ5fW4lbJfFAmaxyjN8yyzzuKQYUTCf
-         8vPHF8m266SEA/PrlUXvaZ6gd2FPIdvPgiABHob4vNbDvaFLwiqtClK8EVCS08JFv1
-         7FrzZWKoQ/R8al+el8egSWe5Ir00kf5cOlvyt3Jg=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AHGJve6098496
+        b=cF4Pl4xTjN6vADU6VZlx3WBKGWzueexwzhxfS8e6J8kccSi36QsiZCasiEk55YlB4
+         Obfo6MGBM0HXWv1VGLZMK+Qj8c95rUAbUjFkseebJZJrYl+zw9z8w9LHY170aYsNCl
+         lfsLkJzQdXmqbPoQ6MyTnmNVgvqaEQS+3zqrZj60=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AHGK1fV099530
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 17 Nov 2020 10:19:57 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 17 Nov 2020 10:20:01 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 17
- Nov 2020 10:19:57 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ Nov 2020 10:20:00 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 17 Nov 2020 10:19:57 -0600
+ Frontend Transport; Tue, 17 Nov 2020 10:20:00 -0600
 Received: from pxplinux063.india.englab.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AHGJhwJ032251;
-        Tue, 17 Nov 2020 10:19:54 -0600
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AHGJhwK032251;
+        Tue, 17 Nov 2020 10:19:57 -0600
 From:   Sekhar Nori <nsekhar@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Tero Kristo <t-kristo@ti.com>
 CC:     Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
@@ -46,9 +46,9 @@ CC:     Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
         Grygorii Strashko <grygorii.strashko@ti.com>,
         Lokesh Vutla <lokeshvutla@ti.com>,
         Andre Przywara <andre.przywara@arm.com>
-Subject: [PATCH v2 3/4] arm64: dts: ti: k3-j7200: Add gpio nodes
-Date:   Tue, 17 Nov 2020 21:49:41 +0530
-Message-ID: <20201117161942.38754-4-nsekhar@ti.com>
+Subject: [PATCH v2 4/4] arm64: dts: ti: k3-j7200-common-proc-board: Disable unused gpio modules
+Date:   Tue, 17 Nov 2020 21:49:42 +0530
+Message-ID: <20201117161942.38754-5-nsekhar@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201117161942.38754-1-nsekhar@ti.com>
 References: <20201117161942.38754-1-nsekhar@ti.com>
@@ -61,156 +61,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Faiz Abbas <faiz_abbas@ti.com>
 
-There are 4 instances of gpio modules in main domain:
-	gpio0, gpio2, gpio4 and gpio6
+There are 6 gpio instances inside SoC with 2 groups as show below:
+	Group one: wkup_gpio0, wkup_gpio1
+	Group two: main_gpio0, main_gpio2, main_gpio4, main_gpio6
 
-Groups are created to provide protection between different processor
-virtual worlds. Each of these modules I/O pins are muxed within the
-group. Exactly one module can be selected to control the corresponding
-pin by selecting it in the pad mux configuration registers.
-
-This group pins out 69 lines (5 banks). Add DT modes for each module
-instance in the main domain.
-
-Similar to the gpio groups in main domain, there is one gpio group in
-wakeup domain with 2 mdoules instances in it.
-
-The gpio group pins out 73 pins (5 banks). Add DT nodes for each module
-instance in the wakeup domain.
+Only one instance from each group can be used at a time. So use main_gpio0
+and wkup_gpio0 in current linux context and disable the rest of the nodes.
 
 Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 Signed-off-by: Sekhar Nori <nsekhar@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 72 +++++++++++++++++++
- .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 34 +++++++++
- 2 files changed, 106 insertions(+)
+ .../boot/dts/ti/k3-j7200-common-proc-board.dts   | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index d07081b20aee..b313b895fd31 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -449,4 +449,76 @@
- 			dr_mode = "otg";
- 		};
- 	};
-+
-+	main_gpio0: gpio@600000 {
-+		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-+		reg = <0x00 0x00600000 0x00 0x100>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		interrupt-parent = <&main_gpio_intr>;
-+		interrupts = <145>, <146>, <147>, <148>,
-+			     <149>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+		#address-cells = <0>;
-+		ti,ngpio = <69>;
-+		ti,davinci-gpio-unbanked = <0>;
-+		power-domains = <&k3_pds 105 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 105 0>;
-+		clock-names = "gpio";
-+	};
-+
-+	main_gpio2: gpio@610000 {
-+		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-+		reg = <0x00 0x00610000 0x00 0x100>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		interrupt-parent = <&main_gpio_intr>;
-+		interrupts = <154>, <155>, <156>, <157>,
-+			     <158>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+		#address-cells = <0>;
-+		ti,ngpio = <69>;
-+		ti,davinci-gpio-unbanked = <0>;
-+		power-domains = <&k3_pds 107 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 107 0>;
-+		clock-names = "gpio";
-+	};
-+
-+	main_gpio4: gpio@620000 {
-+		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-+		reg = <0x00 0x00620000 0x00 0x100>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		interrupt-parent = <&main_gpio_intr>;
-+		interrupts = <163>, <164>, <165>, <166>,
-+			     <167>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+		#address-cells = <0>;
-+		ti,ngpio = <69>;
-+		ti,davinci-gpio-unbanked = <0>;
-+		power-domains = <&k3_pds 109 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 109 0>;
-+		clock-names = "gpio";
-+	};
-+
-+	main_gpio6: gpio@630000 {
-+		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-+		reg = <0x00 0x00630000 0x00 0x100>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		interrupt-parent = <&main_gpio_intr>;
-+		interrupts = <172>, <173>, <174>, <175>,
-+			     <176>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+		#address-cells = <0>;
-+		ti,ngpio = <69>;
-+		ti,davinci-gpio-unbanked = <0>;
-+		power-domains = <&k3_pds 111 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 111 0>;
-+		clock-names = "gpio";
-+	};
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+index ef03e7636b66..0bc4170225d5 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+@@ -127,6 +127,22 @@
+ 	status = "disabled";
  };
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index 4801876bd107..a09e2157d80f 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -108,6 +108,40 @@
- 		ti,interrupt-ranges = <16 960 16>;
- 	};
  
-+	wkup_gpio0: gpio@42110000 {
-+		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-+		reg = <0x00 0x42110000 0x00 0x100>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		interrupt-parent = <&wkup_gpio_intr>;
-+		interrupts = <103>, <104>, <105>, <106>, <107>, <108>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+		#address-cells = <0>;
-+		ti,ngpio = <73>;
-+		ti,davinci-gpio-unbanked = <0>;
-+		power-domains = <&k3_pds 113 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 113 0>;
-+		clock-names = "gpio";
-+	};
++&main_gpio2 {
++	status = "disabled";
++};
 +
-+	wkup_gpio1: gpio@42100000 {
-+		compatible = "ti,j721e-gpio", "ti,keystone-gpio";
-+		reg = <0x00 0x42100000 0x00 0x100>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		interrupt-parent = <&wkup_gpio_intr>;
-+		interrupts = <112>, <113>, <114>, <115>, <116>, <117>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+		#address-cells = <0>;
-+		ti,ngpio = <73>;
-+		ti,davinci-gpio-unbanked = <0>;
-+		power-domains = <&k3_pds 114 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 114 0>;
-+		clock-names = "gpio";
-+	};
++&main_gpio4 {
++	status = "disabled";
++};
 +
- 	mcu_navss: bus@28380000 {
- 		compatible = "simple-mfd";
- 		#address-cells = <2>;
++&main_gpio6 {
++	status = "disabled";
++};
++
++&wkup_gpio1 {
++	status = "disabled";
++};
++
+ &mcu_cpsw {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&mcu_cpsw_pins_default &mcu_mdio_pins_default>;
 -- 
 2.17.1
 
