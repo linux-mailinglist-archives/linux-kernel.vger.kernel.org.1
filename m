@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71412B60E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4742B6036
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729431AbgKQNNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:13:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44326 "EHLO mail.kernel.org"
+        id S1729090AbgKQNHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:07:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729722AbgKQNNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:13:44 -0500
+        id S1729071AbgKQNHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:07:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08614221EB;
-        Tue, 17 Nov 2020 13:13:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15BF024699;
+        Tue, 17 Nov 2020 13:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618823;
-        bh=8ob0CyxlvL7lTuw+NAc1Pp9r/zR7825ePp7woDTRSX4=;
+        s=default; t=1605618437;
+        bh=XIty7VzwezHwWmMmxLNHSnMMIojTImj0Axn482Y+CK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0v2YHzDzQ5r+xqnA49G6oibdkCU1/SeqoqFg0q6lzcIWMq+ESUX7eEek4u0IaPP+f
-         aRhgz8zDVvboEnzDeWMPgNL9bLDf9XgLLoC1rEUU9TK8i7idQo5JxIcBcuCAtErup4
-         NIU12WIMRdsCPVQMGE1rVnfJ0OMTpARbbXeliWzE=
+        b=EVV1AjsenAVVTWktqVt3p33xbDCJXRbvVwNkhusEEX+NrJIhyIOswm20j6YaJP5qk
+         wTFAzn44sW00TO1DC1JzYEB53va3iMq7MF9QF2jZzEjUWGsY6/5J7ggOkfkJYVsqN+
+         StvmHFQ3zK4VS8J9vTe+hxLDkKow30ELv0zhkYJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 02/85] ring-buffer: Fix recursion protection transitions between interrupt context
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 08/64] ALSA: hda: prevent undefined shift in snd_hdac_ext_bus_get_link()
 Date:   Tue, 17 Nov 2020 14:04:31 +0100
-Message-Id: <20201117122111.139672659@linuxfoundation.org>
+Message-Id: <20201117122106.548075540@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,117 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit b02414c8f045ab3b9afc816c3735bc98c5c3d262 ]
+[ Upstream commit 158e1886b6262c1d1c96a18c85fac5219b8bf804 ]
 
-The recursion protection of the ring buffer depends on preempt_count() to be
-correct. But it is possible that the ring buffer gets called after an
-interrupt comes in but before it updates the preempt_count(). This will
-trigger a false positive in the recursion code.
+This is harmless, but the "addr" comes from the user and it could lead
+to a negative shift or to shift wrapping if it's too high.
 
-Use the same trick from the ftrace function callback recursion code which
-uses a "transition" bit that gets set, to allow for a single recursion for
-to handle transitions between contexts.
-
-Cc: stable@vger.kernel.org
-Fixes: 567cd4da54ff4 ("ring-buffer: User context bit recursion checking")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: 0b00a5615dc4 ("ALSA: hdac_ext: add hdac extended controller")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20201103101807.GC1127762@mwanda
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ring_buffer.c | 54 +++++++++++++++++++++++++++++++-------
- 1 file changed, 44 insertions(+), 10 deletions(-)
+ sound/hda/ext/hdac_ext_controller.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index b9b71e7fb6979..8082328eb01a4 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -416,14 +416,16 @@ struct rb_event_info {
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index 63215b17247c8..379250dd0668e 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -221,6 +221,8 @@ struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *ebus,
+ 		return NULL;
+ 	if (ebus->idx != bus_idx)
+ 		return NULL;
++	if (addr < 0 || addr > 31)
++		return NULL;
  
- /*
-  * Used for which event context the event is in.
-- *  NMI     = 0
-- *  IRQ     = 1
-- *  SOFTIRQ = 2
-- *  NORMAL  = 3
-+ *  TRANSITION = 0
-+ *  NMI     = 1
-+ *  IRQ     = 2
-+ *  SOFTIRQ = 3
-+ *  NORMAL  = 4
-  *
-  * See trace_recursive_lock() comment below for more details.
-  */
- enum {
-+	RB_CTX_TRANSITION,
- 	RB_CTX_NMI,
- 	RB_CTX_IRQ,
- 	RB_CTX_SOFTIRQ,
-@@ -2553,10 +2555,10 @@ rb_wakeups(struct ring_buffer *buffer, struct ring_buffer_per_cpu *cpu_buffer)
-  * a bit of overhead in something as critical as function tracing,
-  * we use a bitmask trick.
-  *
-- *  bit 0 =  NMI context
-- *  bit 1 =  IRQ context
-- *  bit 2 =  SoftIRQ context
-- *  bit 3 =  normal context.
-+ *  bit 1 =  NMI context
-+ *  bit 2 =  IRQ context
-+ *  bit 3 =  SoftIRQ context
-+ *  bit 4 =  normal context.
-  *
-  * This works because this is the order of contexts that can
-  * preempt other contexts. A SoftIRQ never preempts an IRQ
-@@ -2579,6 +2581,30 @@ rb_wakeups(struct ring_buffer *buffer, struct ring_buffer_per_cpu *cpu_buffer)
-  * The least significant bit can be cleared this way, and it
-  * just so happens that it is the same bit corresponding to
-  * the current context.
-+ *
-+ * Now the TRANSITION bit breaks the above slightly. The TRANSITION bit
-+ * is set when a recursion is detected at the current context, and if
-+ * the TRANSITION bit is already set, it will fail the recursion.
-+ * This is needed because there's a lag between the changing of
-+ * interrupt context and updating the preempt count. In this case,
-+ * a false positive will be found. To handle this, one extra recursion
-+ * is allowed, and this is done by the TRANSITION bit. If the TRANSITION
-+ * bit is already set, then it is considered a recursion and the function
-+ * ends. Otherwise, the TRANSITION bit is set, and that bit is returned.
-+ *
-+ * On the trace_recursive_unlock(), the TRANSITION bit will be the first
-+ * to be cleared. Even if it wasn't the context that set it. That is,
-+ * if an interrupt comes in while NORMAL bit is set and the ring buffer
-+ * is called before preempt_count() is updated, since the check will
-+ * be on the NORMAL bit, the TRANSITION bit will then be set. If an
-+ * NMI then comes in, it will set the NMI bit, but when the NMI code
-+ * does the trace_recursive_unlock() it will clear the TRANSTION bit
-+ * and leave the NMI bit set. But this is fine, because the interrupt
-+ * code that set the TRANSITION bit will then clear the NMI bit when it
-+ * calls trace_recursive_unlock(). If another NMI comes in, it will
-+ * set the TRANSITION bit and continue.
-+ *
-+ * Note: The TRANSITION bit only handles a single transition between context.
-  */
- 
- static __always_inline int
-@@ -2597,8 +2623,16 @@ trace_recursive_lock(struct ring_buffer_per_cpu *cpu_buffer)
- 	} else
- 		bit = RB_CTX_NORMAL;
- 
--	if (unlikely(val & (1 << bit)))
--		return 1;
-+	if (unlikely(val & (1 << bit))) {
-+		/*
-+		 * It is possible that this was called by transitioning
-+		 * between interrupt context, and preempt_count() has not
-+		 * been updated yet. In this case, use the TRANSITION bit.
-+		 */
-+		bit = RB_CTX_TRANSITION;
-+		if (val & (1 << bit))
-+			return 1;
-+	}
- 
- 	val |= (1 << bit);
- 	cpu_buffer->current_context = val;
+ 	list_for_each_entry(hlink, &ebus->hlink_list, list) {
+ 		for (i = 0; i < HDA_MAX_CODECS; i++) {
 -- 
 2.27.0
 
