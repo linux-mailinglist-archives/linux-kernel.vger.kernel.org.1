@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C2D2B6E93
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:25:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C49A02B6E53
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729172AbgKQTX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:23:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgKQTXz (ORCPT
+        id S1728750AbgKQTS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:18:27 -0500
+Received: from mailoutvs24.siol.net ([185.57.226.215]:42215 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726906AbgKQTS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:23:55 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDA5C0613CF;
-        Tue, 17 Nov 2020 11:23:55 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id gv24so1005742pjb.3;
-        Tue, 17 Nov 2020 11:23:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=7wVntsemP9ehEOdhhr5hryJE+zcAnqwcXyn/Apa6u1U=;
-        b=Gf94uDrcjVCw3DXaDvrYJe58+u7oMM9GM5zpDhEO9dZrPvQFztlYtaGKREFA/LFvAu
-         9S/1Kx/ZbAmmAB1puly3yH6z5N2nxD8x05INw1v7UHB6ym2fNnIKO9tQKFqx9MgaCiq2
-         nQaA55pT5SOp4VQFoVEcMAXoZM7OP+/5q+mr1KzKpn/ui/g4yuhrxpSbzKcK0nASIacL
-         fg6wP5xUbvJWDAqfcyfr8zEnLMaZM91Ami/2Q5Rf0Sfhkj5rqg1PcPoVvkEetH8U4y4R
-         KrlUx5sxT593XyTONH5Fve0Ft1IQkyML9QeC+2rbJf5t9qIxKSoWEuuKhsAFP4AehQmO
-         mryA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=7wVntsemP9ehEOdhhr5hryJE+zcAnqwcXyn/Apa6u1U=;
-        b=XQr38XPOEA1xzY1bUHnD6fL017YF1Pp13p89eTHd4UCbOkLnTt/CGOxr9eP+gYWxRR
-         auHqU9fvl6uUfZ+HQv9CSaWvg8W2Xrr0sUEtcg5GzJSI7xJh+lznkGKz1IEWcohnAxhY
-         PPVUaMJgq+oHQRr9CN3GDZt5+RpltRoq6Lzvv3RnWnCf3G1RK0OVtnDp5qC2ubTsJ+ki
-         6BRUIiK/NCxflf5q3340vHese1O5jMrVheUakSBExUIYrIBNZcaWis4zVqaFcuqjf7Mi
-         397wvl+1mjoTJyzoFSY9luTHDNGZNoYEQXzCKJ08EpMSSQsYibTtLJfHG22/zKT5N50S
-         3wmA==
-X-Gm-Message-State: AOAM531evlcZWUBLOI3PLjWlPMsXlqq2qDQWr4QFSLdpCmdoCE9YjXbn
-        QiEBjsG4NHu8rg98Ku+eilYuumF5cXg=
-X-Google-Smtp-Source: ABdhPJyh8sCb9S7eltGpOELVvblOW2VIehziBfPaQcmQnX2zuW8Otp4c+xGslJplIrSzp8Ix1ZifkQ==
-X-Received: by 2002:a17:90a:62c1:: with SMTP id k1mr548612pjs.135.1605641034799;
-        Tue, 17 Nov 2020 11:23:54 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id 5sm23934106pfx.63.2020.11.17.11.23.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 11:23:54 -0800 (PST)
-Date:   Tue, 17 Nov 2020 11:23:51 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [git pull] Input updates for v5.10-rc4
-Message-ID: <20201117192351.GA2362934@dtor-ws>
+        Tue, 17 Nov 2020 14:18:26 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 098A9521E4B;
+        Tue, 17 Nov 2020 20:18:23 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id SK40C-NDIV1s; Tue, 17 Nov 2020 20:18:22 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id AD6B4521ED0;
+        Tue, 17 Nov 2020 20:18:22 +0100 (CET)
+Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id 0CB7D521ECE;
+        Tue, 17 Nov 2020 20:18:22 +0100 (CET)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: Re: [PATCH v2 2/9] media: cedrus: h264: Support profile and level controls
+Date:   Tue, 17 Nov 2020 20:24:18 +0100
+Message-ID: <1725677.6jS8d4RcRb@kista>
+In-Reply-To: <20201113215121.505173-3-ezequiel@collabora.com>
+References: <20201113215121.505173-1-ezequiel@collabora.com> <20201113215121.505173-3-ezequiel@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Ezequiel,
 
-Please pull from:
+sorry for late review.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+First of all, this patch doesn't break anything. However, see comment below.
 
-to receive updates for the input subsystem. You will get a fix for
-"use-after-free" in Sun keyboard driver, a fix to firmware updates on
-newer ICs in Elan touchpad diver, and a couple more of drover fixes.
+Dne petek, 13. november 2020 ob 22:51:14 CET je Ezequiel Garcia napisal(a):
+> Cedrus supports H.264 profiles from Baseline to High,
+> up to Level 5.1, except for the Extended profile
+> 
+> Expose the V4L2_CID_MPEG_VIDEO_H264_PROFILE and
+> V4L2_CID_MPEG_VIDEO_H264_LEVEL so that userspace can
+> query the driver for the supported profiles and levels.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  drivers/staging/media/sunxi/cedrus/cedrus.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/staging/
+media/sunxi/cedrus/cedrus.c
+> index 9a102b7c1bb9..8b0e97752d27 100644
+> --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
+> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
+> @@ -103,6 +103,27 @@ static const struct cedrus_control cedrus_controls[] = 
+{
+>  		.codec		= CEDRUS_CODEC_H264,
+>  		.required	= false,
+>  	},
+> +	{
+> +		.cfg = {
+> +			.id	= 
+V4L2_CID_MPEG_VIDEO_H264_PROFILE,
+> +			.min	= 
+V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE,
+> +			.def	= 
+V4L2_MPEG_VIDEO_H264_PROFILE_MAIN,
+> +			.max	= 
+V4L2_MPEG_VIDEO_H264_PROFILE_HIGH,
+> +			.menu_skip_mask =
+> +				
+BIT(V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED),
+> +		},
+> +		.codec		= CEDRUS_CODEC_H264,
+> +		.required	= false,
+> +	},
+> +	{
+> +		.cfg = {
+> +			.id = V4L2_CID_MPEG_VIDEO_H264_LEVEL,
+> +			.min = V4L2_MPEG_VIDEO_H264_LEVEL_1_0,
+> +			.max = V4L2_MPEG_VIDEO_H264_LEVEL_5_1,
 
-Changelog:
----------
+I went through several datasheets and only newer ones (H6, H616) state max. 
+supported level, which is 4.2. Please change it in next revision.
 
-Dan Carpenter (1):
-      Input: adxl34x - clean up a data type in adxl34x_probe()
+After that, you can add
+Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-Dmitry Torokhov (1):
-      Input: sunkbd - avoid use-after-free in teardown paths
+Best regards,
+Jernej
 
-Hans de Goede (1):
-      Input: i8042 - allow insmod to succeed on devices without an i8042 controller
-
-Necip Fazil Yildiran (1):
-      Input: resistive-adc-touch - fix kconfig dependency on IIO_BUFFER
-
-jingle.wu (1):
-      Input: elan_i2c - fix firmware update on newer ICs
-
-Diffstat:
---------
-
- drivers/input/keyboard/sunkbd.c      | 41 +++++++++++++++++++++++++++++-------
- drivers/input/misc/adxl34x.c         |  2 +-
- drivers/input/mouse/elan_i2c.h       |  2 +-
- drivers/input/mouse/elan_i2c_core.c  |  3 ++-
- drivers/input/mouse/elan_i2c_i2c.c   | 10 ++++-----
- drivers/input/mouse/elan_i2c_smbus.c |  2 +-
- drivers/input/serio/i8042.c          | 12 ++++++++++-
- drivers/input/touchscreen/Kconfig    |  1 +
- 8 files changed, 55 insertions(+), 18 deletions(-)
-
-Thanks.
+> +		},
+> +		.codec		= CEDRUS_CODEC_H264,
+> +		.required	= false,
+> +	},
+>  	{
+>  		.cfg = {
+>  			.id	= V4L2_CID_MPEG_VIDEO_HEVC_SPS,
+> -- 
+> 2.27.0
+> 
+> 
 
 
--- 
-Dmitry
