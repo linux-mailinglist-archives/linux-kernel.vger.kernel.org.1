@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FF92B6019
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F27422B6075
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728558AbgKQNGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:06:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60620 "EHLO mail.kernel.org"
+        id S1728926AbgKQNJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:09:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728524AbgKQNGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:06:22 -0500
+        id S1728790AbgKQNJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:09:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3899221EB;
-        Tue, 17 Nov 2020 13:06:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E420221EB;
+        Tue, 17 Nov 2020 13:09:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618382;
-        bh=Am6Fb1ha9CqL6Ygoc8p8yH7JyPN9dzWPlHGqqaIAKbQ=;
+        s=default; t=1605618566;
+        bh=qYeusgve8HX7DVQR4Mh8DhbB1QEiWWIevr9yclRTS4g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N+aJkmLjecXjym0VpyTlQFZAhNTaLO8kQMy5oSZkDaNZwe3VA34xAy2TslJLc2qf1
-         5fc6hWFjpS5T0XROKlHOibJE1qhXOLYK+Q/El6bWqGyGmD8sLYoJ72UpXTbTTNN/aO
-         0KJ9v17l4rzRDFpSruD3vyNWmH+cLT97CeIggyfE=
+        b=hd1VEeMD3KDIepDXvgRe+qkg9MsFv1J0yr6GTGFQdwIcHzRPdGstCXKrn7UjF5dlC
+         5Q2Geo8j87z/gaUG9DJswClclkcTDH5g+gdlaCrupo9brSZdmtlMe3NsVH8hvSKKoz
+         fmYPscwj2PanHIIBqUVszhNavB4ycBCWBanezeCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 14/64] Btrfs: fix missing error return if writeback for extent buffer never started
-Date:   Tue, 17 Nov 2020 14:04:37 +0100
-Message-Id: <20201117122106.835732234@linuxfoundation.org>
+Subject: [PATCH 4.9 12/78] can: dev: __can_get_echo_skb(): fix real payload length return value for RTR frames
+Date:   Tue, 17 Nov 2020 14:04:38 +0100
+Message-Id: <20201117122109.705386592@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-[ Upstream commit 0607eb1d452d45c5ac4c745a9e9e0d95152ea9d0 ]
+[ Upstream commit ed3320cec279407a86bc4c72edc4a39eb49165ec ]
 
-If lock_extent_buffer_for_io() fails, it returns a negative value, but its
-caller btree_write_cache_pages() ignores such error. This means that a
-call to flush_write_bio(), from lock_extent_buffer_for_io(), might have
-failed. We should make btree_write_cache_pages() notice such error values
-and stop immediatelly, making sure filemap_fdatawrite_range() returns an
-error to the transaction commit path. A failure from flush_write_bio()
-should also result in the endio callback end_bio_extent_buffer_writepage()
-being invoked, which sets the BTRFS_FS_*_ERR bits appropriately, so that
-there's no risk a transaction or log commit doesn't catch a writeback
-failure.
+The can_get_echo_skb() function returns the number of received bytes to
+be used for netdev statistics. In the case of RTR frames we get a valid
+(potential non-zero) data length value which has to be passed for further
+operations. But on the wire RTR frames have no payload length. Therefore
+the value to be used in the statistics has to be zero for RTR frames.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Reported-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://lore.kernel.org/r/20201020064443.80164-1-socketcan@hartkopp.net
+Fixes: cf5046b309b3 ("can: dev: let can_get_echo_skb() return dlc of CAN frame")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/can/dev.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 97a80238fdee3..b28bc7690d4b3 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4000,6 +4000,10 @@ int btree_write_cache_pages(struct address_space *mapping,
- 			if (!ret) {
- 				free_extent_buffer(eb);
- 				continue;
-+			} else if (ret < 0) {
-+				done = 1;
-+				free_extent_buffer(eb);
-+				break;
- 			}
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index aa2158fabf2ac..617eb75c7c0ce 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -469,9 +469,13 @@ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8
+ 		 */
+ 		struct sk_buff *skb = priv->echo_skb[idx];
+ 		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+-		u8 len = cf->len;
  
- 			ret = write_one_eb(eb, fs_info, wbc, &epd);
+-		*len_ptr = len;
++		/* get the real payload length for netdev statistics */
++		if (cf->can_id & CAN_RTR_FLAG)
++			*len_ptr = 0;
++		else
++			*len_ptr = cf->len;
++
+ 		priv->echo_skb[idx] = NULL;
+ 
+ 		return skb;
 -- 
 2.27.0
 
