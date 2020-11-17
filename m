@@ -2,74 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC452B6C55
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2558F2B6C58
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730411AbgKQRt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:49:58 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:34918 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730350AbgKQRtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:49:49 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 2F941FB07;
-        Tue, 17 Nov 2020 18:49:48 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RH-yvqaDcr5H; Tue, 17 Nov 2020 18:49:47 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 3DD0843F74; Tue, 17 Nov 2020 18:49:38 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 6/6] dt-binding: display: mantix: Add compatible for panel from YS
-Date:   Tue, 17 Nov 2020 18:49:37 +0100
-Message-Id: <31b1013d78f539537a6e9e2b70bd9865b430a69e.1605635248.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1605635248.git.agx@sigxcpu.org>
-References: <cover.1605635248.git.agx@sigxcpu.org>
+        id S1730483AbgKQRuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729314AbgKQRuT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:50:19 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730F8C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:50:18 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id o9so30668533ejg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:50:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=JJqDHNpW+EExX8os1KPAj0lcUd8ypgKzU8yc4TKVjZw=;
+        b=GauslhXzjdh1C5lihGYN2uFl0D5pqIpOvJb2x9+LUnohhLTnW3/9jlhBb7SOsSXgvx
+         B/J5/4XwMs0obc2pSujb12E8ejQ8a5BKhfXLkY7ombRpeHZSe2W1tcS/TrpKX1h1HKAH
+         i9m0AgFFb9wgIpLOwqpsvXxRdWJbS/1WpDUvmP6YMT0wqiVYt8tHEb3me4SLq+C0Isng
+         JrU9rqo2j8j48WjRWNiqJHsMoSNTfY9fxbP9Zw3GbO07BL+OMu7Ge7oF/UusvTXBIy2n
+         xLkvujsZh4Hamm0C/mhQlDtnHiJiTskI07Fz/3j4tZvdr4ZVQpQdE4YHtj/3cKDKnRCY
+         HY1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=JJqDHNpW+EExX8os1KPAj0lcUd8ypgKzU8yc4TKVjZw=;
+        b=M18QRs38tk7MtZxxkZHFlhTQaajZISXAjhh2Phcxqm/1ayO8UAUUzd48Ucydk3JIpa
+         2Sk6RepigOnD762IAoGa7MOv2n2hDuXWGpyxyvl7pQLEBwAfr8Yg22Mj4HKKD9/6SfpJ
+         +9RAR/0XeCk24XuQUznGwaqpXCZdf6uyYwno4jX4TfC4qPzkZgyldF2KVcDduJSJjvzo
+         zc7LMtYEt0pWEJA5Fyy4U7c5Pu2+P9xbhCMkloWI1qQnNf+Oj0/OWFCqCR7tOl4XHHou
+         6JWPb1W/6l4b8lhVPRXfXQyYFinh6VcXd+j4oICvJBkRUNpkQNN961jHBspkfmsuQdO8
+         v6zQ==
+X-Gm-Message-State: AOAM531vx94dlE5WRH6somayvH0f51DmiygdOwSHiyxoPo6aXPT1eSPv
+        1dzBNaVlIHF+Z4ziSPLGUJHZU3RBPi3irFBYalY=
+X-Google-Smtp-Source: ABdhPJwv1OhvKGEJEe6yDZ9I0wBm3UH9wVACVELW3Wx4ps0jKS+1YF8c4pq8vpE//peRLU4hLAJIjMo1kJDLFzAu2Bc=
+X-Received: by 2002:a17:906:5e45:: with SMTP id b5mr20263948eju.46.1605635416888;
+ Tue, 17 Nov 2020 09:50:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Reply-To: bashamzebdani@gmail.com
+Sender: latifakoumbousi2007@gmail.com
+Received: by 2002:a17:906:f908:0:0:0:0 with HTTP; Tue, 17 Nov 2020 09:50:16
+ -0800 (PST)
+From:   "Mr.Basham Zebdani" <bashamzebdani@gmail.com>
+Date:   Tue, 17 Nov 2020 09:50:16 -0800
+X-Google-Sender-Auth: RSlP_1RTvx75ZQN9s38YVGWlinE
+Message-ID: <CAHdUPYGxiNpJgEMoLrLNf+y38_i6D17sDCN2R9PGz2rV-vP2Hw@mail.gmail.com>
+Subject: VERY VERY URGENT,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This panel from Shenzhen Yashi Changhua Intelligent Technology Co
-uses the same driver IC but a different LCD.
+FROM MR.BASHAM ZEBDANI
+AUDIT& ACCOUNT MANAGER
+BANK OF AFRICA (B.O.A)
+OUAGADOUGOU BURKINA FASO
+WEST AFRICA.
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- .../devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml  | 1 +
- 1 file changed, 1 insertion(+)
+Dear Friend,
 
-diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-index 51f423297ec8..9e78f2e60f99 100644
---- a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
-@@ -20,6 +20,7 @@ properties:
-   compatible:
-     enum:
-       - mantix,mlaf057we51-x
-+      - ys,ys57pss36bh5gq
- 
-   port: true
-   reg:
--- 
-2.29.2
+With due respect, I have decided to contact you on abusiness
+transaction  that will be beneficial to both of us. At the bank last
+account and  auditing evaluation, my staffs came across an old account
+which was being maintained by a foreign client who we learn was among
+the deceased passengers of motor accident on November.2003, the
+deceased was unable to run this account since his death. Theaccount
+has  remained dormant without the knowledge of his family since it was
+put in a  safe deposit account in the bank for future investment by
+the client.
 
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit account
+until I discovered that it cannot be claimed since our client
+isaforeign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to bedone.I
+decided to seek ways through which to transfer this money out of the
+bank and out of the country too.
+
+The total amount in the account is USD $18.6 million with my positions
+as staffs of the bank,I am handicapped because I cannot operate
+foreign accounts and cannot lay bonafide claim over this money. The
+client was a foreign  national and you will only be asked to act as
+his next of kin and I will supply you with all the necessary
+information and bank data to assist you in being able to transfer this
+money to any bank of your  choice where this money could be
+transferred into.The total sum will be shared as follows: 50% for me,
+50% for you and expenses incidental occur  during the transfer will be
+incur by both of us. The transfer is risk free on both sides hence you
+are going to follow my instruction till the fund  transfer to your
+account. Since I work in this bank that is why you should  be
+confident in the success of this transaction because you will be
+updated with information as at when desired.
+
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of
+transaction  which will be when this money is safety in your account.I
+will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May  God help you to help me to a restive retirement,Amen,And
+You have to  contact me through my private e-mail
+at(bashamzebdani@gmail.com)Please for further information and inquires
+feel free to contact me back immediately for more explanation and
+better understanding I want you to assure me your capability of
+handling this  project with trust by providing me your following
+information details such as:
+
+(1)NAME..............
+(2)AGE:................
+(3)SEX:.....................
+(4)PHONE NUMBER:.................
+(5)OCCUPATION:.....................
+(6)YOUR COUNTRY:.....................
+
+Yours sincerely,
+Mr.Basham Zebdani
