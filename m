@@ -2,94 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F502B6C88
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AABE32B6C8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730542AbgKQSDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:03:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730419AbgKQSDN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:03:13 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28164C0613CF;
-        Tue, 17 Nov 2020 10:03:13 -0800 (PST)
-Date:   Tue, 17 Nov 2020 18:03:10 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605636191;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B/dJMwqo7xhCBqTBeXGaMj6Ru9Srug3/W1FhWiQG36o=;
-        b=YiYtxCZKotXhalnfzkaUnfGrGQTP1/7QtprNPEukiKQUz1caSxJ6q5jYf3cu2jGxY0WZCt
-        /S06w+F/VH6UwmbiO/RlhY33mDXulK18vxvvP9u4SYtgH+12rn5A4I6RVe2rbU+2nq4w6O
-        4uWT949sIUOAkS3kFFWfPIQwLMlEi+bvLIYcdfUrASqVmpb4MMw7z1xAv/aRiunaIhUJOs
-        dsBg0W5BvoUNjcfQQZFhXeJ5wNYF8j6p2RthspiBbn7RpmMVHgEA651mWSn7ROjTjxkoUW
-        Cly00ySVAcV2fKZBcjQ7VYWKoz7sc0PlSimk9B0M1P1oFXdeuP7rnsE0OptLew==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605636191;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B/dJMwqo7xhCBqTBeXGaMj6Ru9Srug3/W1FhWiQG36o=;
-        b=uiTgXwCRdjSgqU4WWuOidcN9cRFoYLlEsjNSu5jtga660KV6ejle5/vVk/AqCLbtu0O49g
-        VSss8Ly9eyhWCiBw==
-From:   "tip-bot2 for Heinrich Schuchardt" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] efi/libstub/x86: simplify efi_is_native()
-Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201003060356.4913-1-xypron.glpk@gmx.de>
-References: <20201003060356.4913-1-xypron.glpk@gmx.de>
+        id S1729834AbgKQSFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:05:17 -0500
+Received: from mga03.intel.com ([134.134.136.65]:5483 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725808AbgKQSFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:05:16 -0500
+IronPort-SDR: VDEJwy+vHvt/nsZOUUIbpr1L0S5o2hKQj1Z6jvsTJAkkAfnLTIsACCAd65f/42hPeJvg5P4/zn
+ 88Y0KUjMPObw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="171075780"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="171075780"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 10:04:17 -0800
+IronPort-SDR: cYXAPD2WmBzP4e9fps4JN9ZeNfrkm8AblXNjmvv2r3mtj0KgIl03LmIJprn3PsqSWFm5l6Epm7
+ wo1QBJkfPCjw==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="476011145"
+Received: from rhweight-wrk1.ra.intel.com ([137.102.106.140])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 10:04:15 -0800
+Date:   Tue, 17 Nov 2020 10:05:12 -0800 (PST)
+From:   matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@rhweight-WRK1
+To:     "Wu, Hao" <hao.wu@intel.com>
+cc:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>
+Subject: RE: [PATCH 1/2] fpga: dfl: refactor cci_enumerate_feature_devs()
+In-Reply-To: <DM6PR11MB3819F764DE20B0050A548C1F85E20@DM6PR11MB3819.namprd11.prod.outlook.com>
+Message-ID: <alpine.DEB.2.22.394.2011170934400.296481@rhweight-WRK1>
+References: <20201117012552.262149-1-matthew.gerlach@linux.intel.com> <20201117012552.262149-2-matthew.gerlach@linux.intel.com> <DM6PR11MB3819F764DE20B0050A548C1F85E20@DM6PR11MB3819.namprd11.prod.outlook.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Message-ID: <160563619080.11244.12370946188022666812.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/core branch of tip:
 
-Commit-ID:     bc13809f1c47245cd584f4ad31ad06a5c5f40e54
-Gitweb:        https://git.kernel.org/tip/bc13809f1c47245cd584f4ad31ad06a5c5f40e54
-Author:        Heinrich Schuchardt <xypron.glpk@gmx.de>
-AuthorDate:    Sat, 03 Oct 2020 08:03:56 +02:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Mon, 26 Oct 2020 08:06:36 +01:00
 
-efi/libstub/x86: simplify efi_is_native()
+On Tue, 17 Nov 2020, Wu, Hao wrote:
 
-CONFIG_EFI_MIXED depends on CONFIG_X86_64=y.
-There is no need to check CONFIG_X86_64 again.
+>> Subject: [PATCH 1/2] fpga: dfl: refactor cci_enumerate_feature_devs()
+>>
+>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>
+>> In preparation of looking for dfls based on a vendor
+>> specific pcie capability, move code that assumes
+>> Bar0/offset0 as start of DFL to its own function.
+>>
+>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>> ---
+>>  drivers/fpga/dfl-pci.c | 86 ++++++++++++++++++++++++------------------
+>>  1 file changed, 49 insertions(+), 37 deletions(-)
+>>
+>> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+>> index a2203d03c9e2..b1b157b41942 100644
+>> --- a/drivers/fpga/dfl-pci.c
+>> +++ b/drivers/fpga/dfl-pci.c
+>> @@ -119,49 +119,20 @@ static int *cci_pci_create_irq_table(struct pci_dev
+>> *pcidev, unsigned int nvec)
+>>  	return table;
+>>  }
+>>
+>> -/* enumerate feature devices under pci device */
+>> -static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
+>> +static int find_dfl_in_bar0(struct pci_dev *pcidev,
+>> +			    struct dfl_fpga_enum_info *info)
+>>  {
+>> -	struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
+>> -	int port_num, bar, i, nvec, ret = 0;
+>> -	struct dfl_fpga_enum_info *info;
+>> -	struct dfl_fpga_cdev *cdev;
+>>  	resource_size_t start, len;
+>> +	int port_num, bar, i;
+>>  	void __iomem *base;
+>> -	int *irq_table;
+>> +	int ret = 0;
+>>  	u32 offset;
+>>  	u64 v;
+>>
+>> -	/* allocate enumeration info via pci_dev */
+>> -	info = dfl_fpga_enum_info_alloc(&pcidev->dev);
+>> -	if (!info)
+>> -		return -ENOMEM;
+>> -
+>> -	/* add irq info for enumeration if the device support irq */
+>> -	nvec = cci_pci_alloc_irq(pcidev);
+>> -	if (nvec < 0) {
+>> -		dev_err(&pcidev->dev, "Fail to alloc irq %d.\n", nvec);
+>> -		ret = nvec;
+>> -		goto enum_info_free_exit;
+>> -	} else if (nvec) {
+>> -		irq_table = cci_pci_create_irq_table(pcidev, nvec);
+>> -		if (!irq_table) {
+>> -			ret = -ENOMEM;
+>> -			goto irq_free_exit;
+>> -		}
+>> -
+>> -		ret = dfl_fpga_enum_info_add_irq(info, nvec, irq_table);
+>> -		kfree(irq_table);
+>> -		if (ret)
+>> -			goto irq_free_exit;
+>> -	}
+>> -
+>> -	/* start to find Device Feature List in Bar 0 */
+>> +	/* start to find Device Feature List from Bar 0 */
+>>  	base = cci_pci_ioremap_bar0(pcidev);
+>> -	if (!base) {
+>> -		ret = -ENOMEM;
+>> -		goto irq_free_exit;
+>> -	}
+>> +	if (!base)
+>> +		return -ENOMEM;
+>>
+>>  	/*
+>>  	 * PF device has FME and Ports/AFUs, and VF device only has one
+>> @@ -208,12 +179,53 @@ static int cci_enumerate_feature_devs(struct
+>> pci_dev *pcidev)
+>>  		dfl_fpga_enum_info_add_dfl(info, start, len);
+>>  	} else {
+>>  		ret = -ENODEV;
+>> -		goto irq_free_exit;
+>>  	}
+>>
+>>  	/* release I/O mappings for next step enumeration */
+>>  	pcim_iounmap_regions(pcidev, BIT(0));
+>>
+>> +
+>
+> We don't need 2 blank line here, remove one please.
 
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-Link: https://lore.kernel.org/r/20201003060356.4913-1-xypron.glpk@gmx.de
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/x86/include/asm/efi.h | 2 --
- 1 file changed, 2 deletions(-)
+I will remove this line in v2.
+>
+>> +	return ret;
+>> +}
+>> +
+>> +/* enumerate feature devices under pci device */
+>> +static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
+>> +{
+>> +	struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
+>> +	struct dfl_fpga_enum_info *info;
+>> +	struct dfl_fpga_cdev *cdev;
+>> +	int nvec, ret = 0;
+>> +	int *irq_table;
+>> +
+>> +	/* allocate enumeration info via pci_dev */
+>> +	info = dfl_fpga_enum_info_alloc(&pcidev->dev);
+>> +	if (!info)
+>> +		return -ENOMEM;
+>> +
+>> +	/* add irq info for enumeration if the device support irq */
+>> +	nvec = cci_pci_alloc_irq(pcidev);
+>> +	if (nvec < 0) {
+>> +		dev_err(&pcidev->dev, "Fail to alloc irq %d.\n", nvec);
+>> +		ret = nvec;
+>> +		goto enum_info_free_exit;
+>> +	} else if (nvec) {
+>> +		irq_table = cci_pci_create_irq_table(pcidev, nvec);
+>> +		if (!irq_table) {
+>> +			ret = -ENOMEM;
+>> +			goto irq_free_exit;
+>> +		}
+>> +
+>> +		ret = dfl_fpga_enum_info_add_irq(info, nvec, irq_table);
+>> +		kfree(irq_table);
+>> +		if (ret)
+>> +			goto irq_free_exit;
+>> +	}
+>> +
+>> +	ret = find_dfl_in_bar0(pcidev, info);
+>> +
+>
+> Remove this blank line, and maybe switch to a better function name here.
 
-diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
-index bc9758e..7673dc8 100644
---- a/arch/x86/include/asm/efi.h
-+++ b/arch/x86/include/asm/efi.h
-@@ -213,8 +213,6 @@ static inline bool efi_is_64bit(void)
- 
- static inline bool efi_is_native(void)
- {
--	if (!IS_ENABLED(CONFIG_X86_64))
--		return true;
- 	return efi_is_64bit();
- }
- 
+I will remove blank line in v2 and use your suggested function name, 
+find_dfls_by_default.
+>
+> Thanks
+> Hao
+>
+>> +	if (ret)
+>> +		goto irq_free_exit;
+>> +
+>>  	/* start enumeration with prepared enumeration information */
+>>  	cdev = dfl_fpga_feature_devs_enumerate(info);
+>>  	if (IS_ERR(cdev)) {
+>> --
+>> 2.25.2
+>
+>
