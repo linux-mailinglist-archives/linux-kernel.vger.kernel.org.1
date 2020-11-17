@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504C32B5B0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1531C2B5B12
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgKQIe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:34:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
+        id S1727187AbgKQIgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:36:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQIe4 (ORCPT
+        with ESMTP id S1725355AbgKQIgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:34:56 -0500
+        Tue, 17 Nov 2020 03:36:11 -0500
 Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A4FC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:34:54 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id w24so2413055wmi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:34:54 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F38C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:36:09 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id a3so2390230wmb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:36:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:autocrypt:organization:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=roGP5mtDqxI55hJ9MkwC62bf62HGkGdNDSySlnX36OM=;
-        b=iMaclrlJcxiJUoYxefxENfVZ/ZNa4XC9/VKom3TB9qm9jUi8YbdgDEwDgOpDVUgwJp
-         fMrpl0ekb6HuHzPeqcT2ZgTnh21ufegEUYoU0pvIheDgyZNxus7oHz3emomHkgxM1KH5
-         068KKMZithkH/BwyXD1N2vp4oLLZ0+OtIAaC4jZpon3ERk8pvDmLsiBvqrmh5k0sxXlf
-         Tq4UcXPFWTsveNVukx7ze77ONjF/FBdhCrsNmm/QL8z36YYl70gbjPQoXQ473LH9Uwyb
-         vXC+4Syi1rl6V/vctwX5H8wcJcXtGKPHDAHkK9JTFoRKJjuCU/xe+dX0MVAZD52bQU8v
-         ImFg==
+        bh=oCpWij6gQyPaU0VsGijaHqphTca/arxfImIfEjChlFk=;
+        b=H4WJcFMk7ybStripjq6pImq7T4vKPCDBqz9gxHbKlbwxlcJgqxvkoUQ0GKHthVOzb+
+         wMvVVoSzUQryWumh/dPk07y941+4xUxY62F3o48hIJLf9LbGNltrK+oMiWKRv3MgqnTL
+         D1W8LzyNfZ48OtFx/83H1iFYFwqP+dr7abNy89Iq43dePt1+ZL2/NR0ITGZW8PMbmWFn
+         cfebziSlQdydAIV6M9bqV1mzDa3pnpvVqhF3F/xOMh6dSzvHAUIDJmw1gEslc3J7DE49
+         QoQlmM7sn2v5w/jVWNaUBI3ulbovQlBnuO280VWVtWjP8BaJ7W7qZEvVcX5X7+oukhtN
+         CAOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=roGP5mtDqxI55hJ9MkwC62bf62HGkGdNDSySlnX36OM=;
-        b=cCZYBOC1kt61M/Wv38DT/sV3GYR9TLNlV5GJWjyocSYDoCY/IpnxJs934Y9Q8U6VjV
-         0rLC23uHPcMs/P/fwInY6vPJQlYz4Z1KA+JHqSATSlwxG9zK+gRrV/o4qPrCCgbl39+X
-         8gxG2qpaZm56tAGk93MQJLM1TX+6WpAPvU1AdXFCofiCD90xZvlCq2mBAa5lSE5fkSAQ
-         U6GIMUGwOrDd/4lrAFF4slmgF2Ojf8zzU6VcGY5BIUXVltthsol1PgQOatNlUqiA0b02
-         DkBA6ffaPqibwFgBGZXBHia8mP5a/nTczfU5yDpVPi+XOf8d5DKvhg4LtZTHuMCB4oG+
-         yaGQ==
-X-Gm-Message-State: AOAM530IkKt682L8X8U7qp2ll05vIMpv2AC5pj3bOj7IVuHXMlOw1ooG
-        XA/AAQfCxIKiOFZgFLPL43wY2A==
-X-Google-Smtp-Source: ABdhPJy7wgCr9fJBl9sBT9uuF8jk6+GdWeRPbqKU2uE6PcJjKDmdGg0eRYPjIVU8Uaw9VILjObldOQ==
-X-Received: by 2002:a7b:cb13:: with SMTP id u19mr3054777wmj.89.1605602093397;
-        Tue, 17 Nov 2020 00:34:53 -0800 (PST)
+        bh=oCpWij6gQyPaU0VsGijaHqphTca/arxfImIfEjChlFk=;
+        b=ZuSOf6hfZgXRQa1+YGscYXYrY6szJjvVei9z85rYTlLbvzXWcS3KhVR2ihE2Ferz3q
+         DgPQ7L1gLNa8LJatnEyCy32toxrZgDgLDieiM8/1Ltkwl1HCTx9QWC2cBki8txuDury1
+         i4Qktleohxt6mHbXBe2TI4LQJ0tYiXWZAyn83u3i0bITjWyPyf6StQ8lzhXXtjVR7hQj
+         D1xIX6EdxJljv/b2JR0nGGM9pdEdXtrBdbQT1FsGhO8cb2NQbhOMwexQXTJjytrJyVbA
+         zsl/sf8l1CFwcuVRrbjmY611Fd2BqLGPo8h5VUBqGF/ux0ogOzndiL0qUS0JoB7lRTuM
+         H4xQ==
+X-Gm-Message-State: AOAM531jwmqCXCcMbSx8LVVan5/JU7u2eWK9Y9/edcPrvevBcMUDBq3Q
+        J68WCGRrUuwb5kpEg+NHpL0Jig==
+X-Google-Smtp-Source: ABdhPJzYK/i1ToG58uJL5Cw871V01CgeVejEN/wGuWFWUMips8GzYBv83TCZCupcrwucrJMY9b+rsA==
+X-Received: by 2002:a1c:dd06:: with SMTP id u6mr3222912wmg.155.1605602168327;
+        Tue, 17 Nov 2020 00:36:08 -0800 (PST)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:1561:9f4b:5829:8e26? ([2a01:e35:2ec0:82b0:1561:9f4b:5829:8e26])
-        by smtp.gmail.com with ESMTPSA id s188sm2462816wmf.45.2020.11.17.00.34.51
+        by smtp.gmail.com with ESMTPSA id p4sm26794274wrm.51.2020.11.17.00.36.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 00:34:52 -0800 (PST)
-Subject: Re: [PATCH] phy: amlogic: Replace devm_reset_control_array_get()
-To:     Yejune Deng <yejune.deng@gmail.com>, kishon@ti.com,
-        vkoul@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, p.zabel@pengutronix.de
-Cc:     lorenzo.pieralisi@arm.com, repk@triplefau.lt,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
-References: <1605592689-10108-1-git-send-email-yejune.deng@gmail.com>
+        Tue, 17 Nov 2020 00:36:07 -0800 (PST)
+Subject: Re: [PATCH] PCI: dwc/meson: Use PTR_ERR_OR_ZERO
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Yue Wang <yue.wang@Amlogic.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-pci@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20201116163418.10529-1-sudipm.mukherjee@gmail.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -108,12 +114,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
  ZaTUOEkgIor5losDrePdPgE=
 Organization: Baylibre
-Message-ID: <9be419cc-ffbf-c260-e804-bc29887781ed@baylibre.com>
-Date:   Tue, 17 Nov 2020 09:34:51 +0100
+Message-ID: <b28005c3-de6d-79db-34e6-b5298b9f0224@baylibre.com>
+Date:   Tue, 17 Nov 2020 09:36:06 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1605592689-10108-1-git-send-email-yejune.deng@gmail.com>
+In-Reply-To: <20201116163418.10529-1-sudipm.mukherjee@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -121,70 +127,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2020 06:58, Yejune Deng wrote:
-> devm_reset_control_array_get_exclusive() looks more readable
+On 16/11/2020 17:34, Sudip Mukherjee wrote:
+> Coccinelle suggested using PTR_ERR_OR_ZERO() and looking at the code,
+> we can use PTR_ERR_OR_ZERO() instead of checking IS_ERR() and then
+> doing 'return 0'.
 > 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 > ---
->  drivers/phy/amlogic/phy-meson-axg-pcie.c       | 2 +-
->  drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c | 2 +-
->  drivers/soc/amlogic/meson-ee-pwrc.c            | 3 +--
->  drivers/soc/amlogic/meson-gx-pwrc-vpu.c        | 2 +-
->  4 files changed, 4 insertions(+), 5 deletions(-)
+>  drivers/pci/controller/dwc/pci-meson.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/phy/amlogic/phy-meson-axg-pcie.c b/drivers/phy/amlogic/phy-meson-axg-pcie.c
-> index 377ed0d..3204f02 100644
-> --- a/drivers/phy/amlogic/phy-meson-axg-pcie.c
-> +++ b/drivers/phy/amlogic/phy-meson-axg-pcie.c
-> @@ -155,7 +155,7 @@ static int phy_axg_pcie_probe(struct platform_device *pdev)
->  	if (IS_ERR(priv->regmap))
->  		return PTR_ERR(priv->regmap);
+> diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+> index 1913dc2c8fa0..f4261f5aceb1 100644
+> --- a/drivers/pci/controller/dwc/pci-meson.c
+> +++ b/drivers/pci/controller/dwc/pci-meson.c
+> @@ -115,10 +115,8 @@ static int meson_pcie_get_mems(struct platform_device *pdev,
+>  		return PTR_ERR(pci->dbi_base);
 >  
-> -	priv->reset = devm_reset_control_array_get(dev, false, false);
-> +	priv->reset = devm_reset_control_array_get_exclusive(dev);
->  	if (IS_ERR(priv->reset))
->  		return PTR_ERR(priv->reset);
+>  	mp->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
+> -	if (IS_ERR(mp->cfg_base))
+> -		return PTR_ERR(mp->cfg_base);
 >  
-> diff --git a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
-> index 08e3227..bab6345 100644
-> --- a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
-> +++ b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
-> @@ -418,7 +418,7 @@ static int phy_g12a_usb3_pcie_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_disable_clk_ref;
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(mp->cfg_base);
+>  }
 >  
-> -	priv->reset = devm_reset_control_array_get(dev, false, false);
-> +	priv->reset = devm_reset_control_array_get_exclusive(dev);
->  	if (IS_ERR(priv->reset))
->  		return PTR_ERR(priv->reset);
+>  static int meson_pcie_power_on(struct meson_pcie *mp)
+> @@ -208,10 +206,8 @@ static int meson_pcie_probe_clocks(struct meson_pcie *mp)
+>  		return PTR_ERR(res->general_clk);
 >  
-> diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
-> index ed7d2fb..3a879a4 100644
-> --- a/drivers/soc/amlogic/meson-ee-pwrc.c
-> +++ b/drivers/soc/amlogic/meson-ee-pwrc.c
-> @@ -413,8 +413,7 @@ static int meson_ee_pwrc_init_domain(struct platform_device *pdev,
->  			dev_warn(&pdev->dev, "Invalid resets count %d for domain %s\n",
->  				 count, dom->desc.name);
+>  	res->clk = meson_pcie_probe_clock(dev, "pclk", 0);
+> -	if (IS_ERR(res->clk))
+> -		return PTR_ERR(res->clk);
 >  
-> -		dom->rstc = devm_reset_control_array_get(&pdev->dev, false,
-> -							 false);
-> +		dom->rstc = devm_reset_control_array_get_exclusive(&pdev->dev);
->  		if (IS_ERR(dom->rstc))
->  			return PTR_ERR(dom->rstc);
->  	}
-> diff --git a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
-> index 8790627..b4615b2 100644
-> --- a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
-> +++ b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
-> @@ -304,7 +304,7 @@ static int meson_gx_pwrc_vpu_probe(struct platform_device *pdev)
->  		return PTR_ERR(regmap_hhi);
->  	}
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(res->clk);
+>  }
 >  
-> -	rstc = devm_reset_control_array_get(&pdev->dev, false, false);
-> +	rstc = devm_reset_control_array_get_exclusive(&pdev->dev);
->  	if (IS_ERR(rstc)) {
->  		if (PTR_ERR(rstc) != -EPROBE_DEFER)
->  			dev_err(&pdev->dev, "failed to get reset lines\n");
+>  static inline u32 meson_cfg_readl(struct meson_pcie *mp, u32 reg)
 > 
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Hi,
+
+This has been nacked multiple times already:
+https://lore.kernel.org/linux-pci/20190527140952.GB7202@ulmo/
+
+Neil
