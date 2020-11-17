@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C459E2B6EB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25932B6EB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729388AbgKQTcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:32:41 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:42507 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727019AbgKQTck (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:32:40 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 33896200009;
-        Tue, 17 Nov 2020 19:32:31 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Claudius Heine <ch@denx.de>, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Johannes Hahn <johannes-hahn@siemens.com>,
-        Werner Zeh <werner.zeh@siemens.com>,
-        Henning Schild <henning.schild@siemens.com>
-Subject: Re: [PATCH v3 0/2] Adding I2C support to RX6110 RTC
-Date:   Tue, 17 Nov 2020 20:32:30 +0100
-Message-Id: <160564143104.1267360.6956466409291115159.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201117121817.953924-1-ch@denx.de>
-References: <20201117121817.953924-1-ch@denx.de>
+        id S1728893AbgKQTdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:33:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725613AbgKQTdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:33:53 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97A6E24248;
+        Tue, 17 Nov 2020 19:33:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605641633;
+        bh=xiFTO+xtMId5Mc1ydGqE7ry0Mj0N+6Jalzdl0AnD3zE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Xpzw0tIDQ4CDHP6mQaixSQ+1SFjYxHhZzrtEgV0Zu6iw3VIsMoy5JG/8iqFySu5OP
+         FKSht2qYexAm2YiiPMS7rdGrt/VYey3lAYpPxM9yg2jcLEpnNmUFj5Xq954cnTerSZ
+         gQ4RW4IW+GBdd77hVxLse7BVstbHeu0NKFbrd7rA=
+Date:   Tue, 17 Nov 2020 11:33:51 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        linux-next@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v5] net: linux/skbuff.h: combine SKB_EXTENSIONS
+ + KCOV handling
+Message-ID: <20201117113351.144ddb79@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201117063626.GF22792@breakpoint.cc>
+References: <20201116212108.32465-1-rdunlap@infradead.org>
+        <20201117063626.GF22792@breakpoint.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 13:18:15 +0100, Claudius Heine wrote:
-> based on the last feedback round we decided to remove the ACPI patch from this
-> patchset for now until we have the correct one. I have also moved the typo fix
-> to the front, so it can be applied independently.
+On Tue, 17 Nov 2020 07:36:26 +0100 Florian Westphal wrote:
+> Randy Dunlap <rdunlap@infradead.org> wrote:
+> > The previous Kconfig patch led to some other build errors as
+> > reported by the 0day bot and my own overnight build testing.
+> > 
+> > These are all in <linux/skbuff.h> when KCOV is enabled but
+> > SKB_EXTENSIONS is not enabled, so fix those by combining those conditions
+> > in the header file.  
 > 
-> best regards,
-> Claudius
-> 
-> [...]
+> Acked-by: Florian Westphal <fw@strlen.de>
 
-Applied, thanks!
-
-[1/2] rtc: Kconfig: Fix typo in help message of rx 6110
-      commit: 7e6066ca1f1fa5c79915dfb4720ca20c5e62edcc
-[2/2] rtc: rx6110: add i2c support
-      commit: afa819c2c6bf0d6b99d3e41217a2c7d3b3b53228
-
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+Applied, thanks1
