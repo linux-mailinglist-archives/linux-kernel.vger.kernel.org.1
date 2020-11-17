@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 874212B7117
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD3D2B711A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgKQVt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:49:59 -0500
-Received: from mga09.intel.com ([134.134.136.24]:13199 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726182AbgKQVt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:49:59 -0500
-IronPort-SDR: HkV4DXCwNGLeYbS1lFtBk+kf4yNqabEDRRU8qeHni02Zxs+aDer54qRbBdQ9QWJzmNdLdD6kq6
- 4FonDhL62O7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="171188739"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="171188739"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 13:49:58 -0800
-IronPort-SDR: MUd20WUGZZeJjp6AuhQpcd3n/IobUluRO429CzN5vARY7hVDAGJbFVnFP7PVyQJ244X9Cgx27A
- n94xsVh9qW3w==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="430599755"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.24.101]) ([10.212.24.101])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 13:49:57 -0800
-Subject: Re: [PATCH 05/24] x86/resctrl: Pass the schema in resdir's private
- pointer
-To:     James Morse <james.morse@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        id S1728638AbgKQVvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727701AbgKQVvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 16:51:46 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6FBC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:51:46 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id q28so6408269pgk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:51:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ky/CMCEHw6W83Pli0RSEtI4judjYnXP8NLTqyncoiBE=;
+        b=dZSJWDKnArBdBXCgAIPNiaxvh5LCZwCDL6Ymkj44p0R8yL+KgQAfKZKf1lt2KfdnvV
+         bLD1xeFdcoEmB+Z3tmSxV7RnFUrRITgkpS48Ri05VZa2xyqn5gWggufKXfTSH6J5m6de
+         NMkUQrd2oc7jz3d1V4DoMoucn5sXNnsH3BN6Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ky/CMCEHw6W83Pli0RSEtI4judjYnXP8NLTqyncoiBE=;
+        b=RY0DsNNvstfv3KPE50VA4sb044HgABR2Fcjm7Dtk867J6UPehZ+W2E7PcmYz1Lubad
+         fYxD0FZsy6g6LcHDsxFOjTT2NI8bydXkEjZuk4chT8NYKUWS5o683AeEwb2S+eA7JEXm
+         N6s2gFxOxYIyiNNt3FgBntrnLXRRhAglVl+NGYkj6MmFoKMG/+M7X+rSHW0fxx3JEBF1
+         XqQaxoRSvFqlZpv656s71kyVt3KRLORt2nDOeH2xH8Mggbi+x6TsQmi/axlL8jLVcW2s
+         MWK5MTA2PhywFn21SUDrd+OTtnx0hC/ti2OCLFg1QQANq0CDlQHFX8nnGkV8js8LV8LN
+         DgdA==
+X-Gm-Message-State: AOAM533vZNXRuG1D83vqp5bmDVIAsBehJnI90mSyf3vNcdicEnntKfR8
+        P6IEUCUxQbot2FxkqUO1QGmunw==
+X-Google-Smtp-Source: ABdhPJxqggVKuH8HMTgHzwSVLvkZKhOmwN0EoIzciqR8uEi7NDnZHbJFTVTL+MdWrPbHDgwOP+UNwA==
+X-Received: by 2002:a63:7847:: with SMTP id t68mr5290408pgc.422.1605649905676;
+        Tue, 17 Nov 2020 13:51:45 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m9sm42912pjf.20.2020.11.17.13.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 13:51:44 -0800 (PST)
+Date:   Tue, 17 Nov 2020 13:51:43 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-References: <20201030161120.227225-1-james.morse@arm.com>
- <20201030161120.227225-6-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <f2726df3-a694-3265-16e3-057f8b7e2d92@intel.com>
-Date:   Tue, 17 Nov 2020 13:49:56 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        x86@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, clang-built-linux@googlegroups.com,
+        "kernelci . org bot" <bot@kernelci.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] kbuild: Disable CONFIG_LD_ORPHAN_WARN for ld.lld
+ 10.0.1
+Message-ID: <202011171350.F95127F@keescook>
+References: <20201113195553.1487659-1-natechancellor@gmail.com>
+ <20201113195553.1487659-2-natechancellor@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201030161120.227225-6-james.morse@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113195553.1487659-2-natechancellor@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+On Fri, Nov 13, 2020 at 12:55:53PM -0700, Nathan Chancellor wrote:
+>  config LD_ORPHAN_WARN
+> -	def_bool ARCH_WANT_LD_ORPHAN_WARN && $(ld-option,--orphan-handling=warn)
+> +	def_bool ARCH_WANT_LD_ORPHAN_WARN && $(ld-option,--orphan-handling=warn) && (!LD_IS_LLD || LLD_VERSION >= 110000)
 
-It is not clear what "resdir" mentioned in subject line refers to. Could 
-it be changed to "info dir"?
+Readability nit-pick... I prefer separate "depends" lines to make things
+a little easier to parse, change, etc:
 
+config LD_ORPHAN_WARN
+	def_bool y
+	depends on ARCH_WANT_LD_ORPHAN_WARN
+	depends on !LD_IS_LLD || LLD_VERSION >= 110000
+	depends on $(ld-option,--orphan-handling=warn)
 
-On 10/30/2020 9:11 AM, James Morse wrote:
-> Moving properties that resctrl exposes to user-space into the core
-> 'fs' code, (e.g. the name of the schema), means some of the functions
-> that back the filesystem need the schema struct, but currently take the
-> resource.
+Otherwise, yeah, looks good to me. With this and the other suggestions,
+please consider it:
 
-I think a simple addition would help to parse the above ...
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-" ... need the schema struct (to where the properties are moved), ..."
-
-> 
-> Once the CDP resources are merged, the resource doesn't reflect the
-> right level of information.
-> 
-> For the info dirs that represent a control, the information needed
-> is in the schema, as this is how the resource is being used. For the
-> monitors, its the resource as L3CODE_MON doesn't make sense, and would
-> monitor data too.
-> 
-> This difference means the type of the private pointers varies
-> between control and monitor info dirs.
-> 
-> If the flags are RF_MON_INFO, its a struct rdt_resource. If the
-> flags are RF_CTRL_INFO, its a struct resctrl_schema. Nothing in
-> res_common_files[] has both flags.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> 
-> ---
-> Fake schema for monitors may simplify this if anyone thinks that is
-> preferable.
-> ---
->   arch/x86/kernel/cpu/resctrl/rdtgroup.c | 37 +++++++++++++++++---------
->   1 file changed, 24 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index f79a5e548138..cb16454a6b0e 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-
-...
-
-> @@ -1794,6 +1803,7 @@ static int rdtgroup_mkdir_info_resdir(struct rdt_resource *r, char *name,
->   
->   static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
->   {
-> +	struct resctrl_schema *s;
->   	struct rdt_resource *r;
->   	unsigned long fflags;
->   	char name[32];
-> @@ -1809,9 +1819,10 @@ static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
->   	if (ret)
->   		goto out_destroy;
->   
-> -	for_each_alloc_enabled_rdt_resource(r) {
-> +	list_for_each_entry(s, &resctrl_all_schema, list) {
-> +		r = s->res;
->   		fflags =  r->fflags | RF_CTRL_INFO;
-> -		ret = rdtgroup_mkdir_info_resdir(r, r->name, fflags);
-> +		ret = rdtgroup_mkdir_info_resdir(s, r->name, fflags);
->   		if (ret)
->   			goto out_destroy;
->   	}
-> 
-
-I think it would be helpful to add a comment here to compensate for the 
-symmetry that is removed ("for_each_alloc_enabled_rdt_resource()" 
-followed by a "for_each_mon_enabled_rdt_resource()").
-
-
-Reinette
+-- 
+Kees Cook
