@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E082B6E4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C022B6DF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgKQTRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:17:49 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:60565 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgKQTRs (ORCPT
+        id S1728269AbgKQTAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:00:45 -0500
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:55105 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726644AbgKQTAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:17:48 -0500
-Received: from 3.general.kamal.us.vpn ([10.172.68.53] helo=ascalon)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kamal@canonical.com>)
-        id 1kf6U6-0001CR-Fg
-        for linux-kernel@vger.kernel.org; Tue, 17 Nov 2020 19:17:46 +0000
-Received: from kamal by ascalon with local (Exim 4.90_1)
-        (envelope-from <kamal@ascalon>)
-        id 1kf6U3-0008JL-QY
-        for linux-kernel@vger.kernel.org; Tue, 17 Nov 2020 11:17:43 -0800
+        Tue, 17 Nov 2020 14:00:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605639643; x=1637175643;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uJGo6j8ljzoyAXtuqCtiWI7gZtN1UjVC/lwvJf0+CrE=;
+  b=jyEpGExGLrxrCeWlSub5hZStpLLfucObUPzH0eYr91BJyrNwH7EqwTp4
+   /2ChQ6/aqKB/ckxN3Q7zB/o8nL4nOPCrWDSt+gFNux56SlDB64IH3j65+
+   gtqAMjOqL84zPK/EB3iSL820RtdaOnnjLShaCRtVRmrpps1shcGLs3KqS
+   hvNqsUdc1qKRg0JnZkjjl50gsndiLrUWImwgQxU+OuuWa7T0wuIdTYV9a
+   ErrsDeU9RqhxBokADAhrpjsCyJIlfTqjuBSKdL5XnKu8jt27+t5OwvTKQ
+   BYwiruDSYUQbkyEAEYT/rmYKFrbk35pLGe01+P2DHuYEhKggs+D7GMJRO
+   A==;
+IronPort-SDR: wq5GUw4ZcCdWfdFbnT+sTxxoOtlAtdlJ3i488p4VgXIX82brdwCzyRFxJAm0BmPrcgq55k9PQK
+ fi8hilKi43EKoV3ZzqIyxBksIoZLOsMi0va4REXx5XUKpQWo4TM437C7v27095HvY/FHOxwdUK
+ quDPxconGD/+CUBqHDdRF9HkVQzg5dzjjsq46SQYqF+wCeU/J7aRpQ0/jrb2wXMmrUzoWz864Q
+ 0/ZspERyU+2JEKChag6ggk+WRasQbSYw9UeKWk8eHP6jeVnWPnjCypXGwWqOkkFZHFUGkNKG9Z
+ AJU=
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="96659063"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Nov 2020 12:00:43 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 17 Nov 2020 12:00:42 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 17 Nov 2020 12:00:42 -0700
+Date:   Tue, 17 Nov 2020 20:00:41 +0100
+From:   Joergen Andreasen <joergen.andreasen@microchip.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <Arvid.Brodin@xdin.com>,
+        <m-karicheri2@ti.com>, <vinicius.gomes@intel.com>,
+        <michael.chan@broadcom.com>, <vishal@chelsio.com>,
+        <saeedm@mellanox.com>, <jiri@mellanox.com>, <idosch@mellanox.com>,
+        <alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>,
+        <ivan.khoronzhuk@linaro.org>, <andre.guedes@linux.intel.com>,
+        <allan.nielsen@microchip.com>, <po.liu@nxp.com>,
+        <mingkai.hu@nxp.com>, <claudiu.manoil@nxp.com>,
+        <vladimir.oltean@nxp.com>, <leoyang.li@nxp.com>
+Subject: Re: [RFC, net-next] net: qos: introduce a redundancy flow action
+Message-ID: <20201117190041.dejmwpi4kvgrcotj@soft-dev16>
+References: <20201117063013.37433-1-xiaoliang.yang_1@nxp.com>
 MIME-Version: 1.0
-Date:   Tue, 17 Nov 2020 10:51:16 -0800
-References: <20201103203232.656475008@linuxfoundation.org>
-        <20201103203239.940977599@linuxfoundation.org>
-        <87361qug5a.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87361qug5a.fsf@mpe.ellerman.id.au>
-Message-ID: <CAEO-eVMZ-qjZfdum=NQCq-hur=KkHvFgJO1maHw7C1S4NFbczw@mail.gmail.com>
-Subject: Same problem for 4.14.y and a concern: Re: [PATCH 4.19 056/191]
- powerpc: select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
-From:   Kamal Mostafa <kamal@canonical.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Content-Type: multipart/alternative; boundary="000000000000ccf01a05b451fae9"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20201117063013.37433-1-xiaoliang.yang_1@nxp.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000ccf01a05b451fae9
-Content-Type: text/plain; charset="UTF-8"
+The 11/17/2020 14:30, Xiaoliang Yang wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> This patch introduce a redundancy flow action to implement frame
+> replication and elimination for reliability, which is defined in
+> IEEE P802.1CB.
+> 
+> There are two modes for redundancy action: generator and recover mode.
+> Generator mode add redundancy tag and replicate the frame to different
+> egress ports. Recover mode drop the repeat frames and remove redundancy
+> tag from the frame.
+> 
+> Below is the setting example in user space:
+>         > tc qdisc add dev swp0 clsact
+>         > tc filter add dev swp0 ingress protocol 802.1Q flower \
+>                 skip_hw dst_mac 00:01:02:03:04:05 vlan_id 1 \
+>                 action redundancy generator split dev swp1 dev swp2
+> 
+>         > tc filter add dev swp0 ingress protocol 802.1Q flower
+>                 skip_hw dst_mac 00:01:02:03:04:06 vlan_id 1 \
+>                 action redundancy recover
+> 
+> Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
 
-On Tue, Nov 3, 2020 at 4:22 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+Hi Xiaoliang,
 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> > From: Nicholas Piggin <npiggin@gmail.com>
-> >
-> > [ Upstream commit 66acd46080bd9e5ad2be4b0eb1d498d5145d058e ]
-> >
-> > powerpc uses IPIs in some situations to switch a kernel thread away
-> > from a lazy tlb mm, which is subject to the TLB flushing race
-> > described in the changelog introducing ARCH_WANT_IRQS_OFF_ACTIVATE_MM.
-> >
-> > Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> > Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> > Link:
-> https://lore.kernel.org/r/20200914045219.3736466-3-npiggin@gmail.com
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> >  arch/powerpc/Kconfig                   | 1 +
-> >  arch/powerpc/include/asm/mmu_context.h | 2 +-
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> > index f38d153d25861..0bc53f0e37c0f 100644
-> > --- a/arch/powerpc/Kconfig
-> > +++ b/arch/powerpc/Kconfig
-> > @@ -152,6 +152,7 @@ config PPC
-> >       select ARCH_USE_BUILTIN_BSWAP
-> >       select ARCH_USE_CMPXCHG_LOCKREF         if PPC64
-> >       select ARCH_WANT_IPC_PARSE_VERSION
-> > +     select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
->
-> This depends on upstream commit:
->
->   d53c3dfb23c4 ("mm: fix exec activate_mm vs TLB shootdown and lazy tlb
-> switching race")
->
->
-> Which I don't see in 4.19 stable, or in the email thread here.
->
-> So this shouldn't be backported to 4.19 unless that commit is also
-> backported.
->
-> cheers
->
+I like your idea about using filter actions for FRER configuration.
 
-Hi-
+I think this is a good starting point but I think that this approach will only
+allow us to configure end systems and not relay systems in bridges/switches.
 
-This glitch has made its way into 4.14.y ...
-    [4.14.y] c2bca8712a19 powerpc: select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
-But 4.14.y does not carry the prereq that introduces that config.
+In the following I refer to sections and figures in 802.1CB-2017.
 
-That said, I have a more general concern about the new config (in mainline
-and the stable backports):
-    [mainline] d53c3dfb23c4 mm: fix exec activate_mm vs TLB shootdown and
-lazy tlb switching race
-It would seem that the intent is that it should be *only* enabled
-(currently at least) for arches that will explicitly select it, but the
-config advice does not make that very clear.  Could that new config get an
-explicit "default n" line?
+I am missing the following possibilities:
+Configure split without adding an r-tag (Figure C-4 Relay system C).
+Configure recovery without popping the r-tag (Figure C4 Relay system F).
+Disable flooding and learning per VLAN (Section C.7).
+Select between vector and match recovery algorithm (Section 7.4.3.4 and 7.4.3.5).
+Configure history length if vector algorithm is used (Section 10.4.1.6).
+Configure reset timeout (Section 10.4.1.7).
+Adding an individual recovery function (Section 7.5).
+Counters to be used for latent error detection (Section 7.4.4).
 
- -Kamal
-
---000000000000ccf01a05b451fae9
-Content-Type: message/external-body; access-type=x-mutt-deleted;
-	expiration="Tue, 17 Nov 2020 11:03:37 -0800"; length=86
-
-Content-Type: message/external-body; access-type=x-mutt-deleted;
-	expiration="Tue, 17 Nov 2020 11:03:06 -0800"; length=3672
-
-
---000000000000ccf01a05b451fae9--
+I would prefer to use the term 'frer' instead of 'red' or 'redundancy'
+in all definitions and functions except for 'redundancy-tag'.
+-- 
+Joergen Andreasen, Microchip
