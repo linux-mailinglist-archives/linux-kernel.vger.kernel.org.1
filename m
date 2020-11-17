@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E21A2B637E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6730E2B65A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731847AbgKQNij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:38:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50046 "EHLO mail.kernel.org"
+        id S1730455AbgKQNTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:19:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732630AbgKQNid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:38:33 -0500
+        id S1730402AbgKQNTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:19:24 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E5622465E;
-        Tue, 17 Nov 2020 13:38:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FBE0241A5;
+        Tue, 17 Nov 2020 13:19:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620312;
-        bh=qeIyqqkWX7d1kJMq8ezJbMcHRmb3APJs0cXSCidvDCU=;
+        s=default; t=1605619163;
+        bh=v8MsClufYvTK/t6qcxQVvhqC2wC2CEu2WCZ5DyiZeyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWxtiWvH9n0GF3xfQM5sya/7l8RpOZdJ8s25NMkk6rNufV9CEgAeXDQC9dm8o62iY
-         Z9+MfkXU7jiYNwL9oUDWaDOLTO0zazSvLI4VfaIshiFLTkPQGvjR2XnTFiIrfOFbsj
-         F1CnUyiPZzmYa6yx0hgxWGCvDclMSUws3Gio2brI=
+        b=ViJderJ7YevJBzW5N3dsniDAgJgSHQP1aBwLTslDX9ewAA/Xt1QWqgzsbjuLzbhND
+         CM+tJ/NXtuvErOioBNrtyAABsB9JaiqqrkwLOLgV+ste+oGv6VHqZR1He3xbStH8g6
+         yvJCr3kPrVGiTZp1ZkwbMrvVRVws4e++eddP/3/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Jamie McClymont <jamie@kwiius.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 176/255] perf: Fix get_recursion_context()
-Date:   Tue, 17 Nov 2020 14:05:16 +0100
-Message-Id: <20201117122147.493663328@linuxfoundation.org>
+Subject: [PATCH 4.19 050/101] pinctrl: intel: Set default bias in case no particular value given
+Date:   Tue, 17 Nov 2020 14:05:17 +0100
+Message-Id: <20201117122115.531617980@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit ce0f17fc93f63ee91428af10b7b2ddef38cd19e5 ]
+[ Upstream commit f3c75e7a9349d1d33eb53ddc1b31640994969f73 ]
 
-One should use in_serving_softirq() to detect SoftIRQ context.
+When GPIO library asks pin control to set the bias, it doesn't pass
+any value of it and argument is considered boolean (and this is true
+for ACPI GpioIo() / GpioInt() resources, by the way). Thus, individual
+drivers must behave well, when they got the resistance value of 1 Ohm,
+i.e. transforming it to sane default.
 
-Fixes: 96f6d4444302 ("perf_counter: avoid recursion")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201030151955.120572175@infradead.org
+In case of Intel pin control hardware the 5 kOhm sounds plausible
+because on one hand it's a minimum of resistors present in all
+hardware generations and at the same time it's high enough to minimize
+leakage current (will be only 200 uA with the above choice).
+
+Fixes: e57725eabf87 ("pinctrl: intel: Add support for hardware debouncer")
+Reported-by: Jamie McClymont <jamie@kwiius.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/events/internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/intel/pinctrl-intel.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/kernel/events/internal.h b/kernel/events/internal.h
-index fcbf5616a4411..402054e755f27 100644
---- a/kernel/events/internal.h
-+++ b/kernel/events/internal.h
-@@ -211,7 +211,7 @@ static inline int get_recursion_context(int *recursion)
- 		rctx = 3;
- 	else if (in_irq())
- 		rctx = 2;
--	else if (in_softirq())
-+	else if (in_serving_softirq())
- 		rctx = 1;
- 	else
- 		rctx = 0;
+diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+index 89ff2795a8b55..5e0adb00b4307 100644
+--- a/drivers/pinctrl/intel/pinctrl-intel.c
++++ b/drivers/pinctrl/intel/pinctrl-intel.c
+@@ -621,6 +621,10 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned pin,
+ 
+ 		value |= PADCFG1_TERM_UP;
+ 
++		/* Set default strength value in case none is given */
++		if (arg == 1)
++			arg = 5000;
++
+ 		switch (arg) {
+ 		case 20000:
+ 			value |= PADCFG1_TERM_20K << PADCFG1_TERM_SHIFT;
+@@ -643,6 +647,10 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned pin,
+ 	case PIN_CONFIG_BIAS_PULL_DOWN:
+ 		value &= ~(PADCFG1_TERM_UP | PADCFG1_TERM_MASK);
+ 
++		/* Set default strength value in case none is given */
++		if (arg == 1)
++			arg = 5000;
++
+ 		switch (arg) {
+ 		case 20000:
+ 			value |= PADCFG1_TERM_20K << PADCFG1_TERM_SHIFT;
 -- 
 2.27.0
 
