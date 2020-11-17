@@ -2,133 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10E62B6E00
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6BD2B6DFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729983AbgKQTCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:02:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728170AbgKQTCg (ORCPT
+        id S1729384AbgKQTBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:01:03 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:40994 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726644AbgKQTBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:02:36 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8A7C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:02:35 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a65so4249994wme.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:02:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aB3RzbF3m+Z6/FqXxyXIhr+Vt8dqXl3DQEjdVHMAUy0=;
-        b=bjFj8+TPtQ91/C4v+b7Q3YX2K36GbTX82dI9b4XJJyTVGANQGMae74PG7x4101XdKE
-         YsUWmw7CIPHamCogS+tsfuM3qEL0q4Ur1cJaA/GPPBhNVajADE4yS0DE4HLaVGjSmAzC
-         3MYk/b8xWFtlxRwxIOvSUvuA385V+kiL1S4dE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=aB3RzbF3m+Z6/FqXxyXIhr+Vt8dqXl3DQEjdVHMAUy0=;
-        b=bE5EmLovGRbiOQBJfoum3rno73IuQSsKHGhvC2aNZnvKN74UroQzMKqEbmelO5fT/F
-         31dR3DdQ7JiBhTR2Cb8072EHu6TfKX4xGp1BsaK7iFioujRi7n+uerRvHxNjTFtuYtlr
-         q7vtd/INbL05n+poypZcK1UnMU7fXpO3XZOOya2YntrFr9Vgl764iiTfrn4lbKaN2rK3
-         +0gSVaoIM/FIstTw8eK8mUdyn92pu2Y5kYllb9gF7ccVigykR7mtycEyNV51lJEi1jjY
-         sI3O4bGjK7lVQKr1HDNXseO+LBqyMKQ7c+Bzti2rhraQN77m7819BbNtJcS3g+vMksRv
-         GFVQ==
-X-Gm-Message-State: AOAM5303Mcym17JYPAvrHApHDi6GQukV+tksWubxlCFAespT3XopME5M
-        IyUDNVLGigqjndIlN5Ek9VOGEqUZC2kNRA==
-X-Google-Smtp-Source: ABdhPJy33P35zG5c/C2euGoTdmYRuFwy2hKncNNGdVb5M/FEMoYCCXo0rdgmO/wiGFMvk6EwL//oAQ==
-X-Received: by 2002:a7b:c8c5:: with SMTP id f5mr542288wml.174.1605639754375;
-        Tue, 17 Nov 2020 11:02:34 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v19sm5020653wmj.31.2020.11.17.11.02.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 11:02:33 -0800 (PST)
-Date:   Tue, 17 Nov 2020 20:02:31 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: Re: [PATCH 21/42] drm/nouveau/nvkm/core/firmware: Fix formatting,
- provide missing param description
-Message-ID: <20201117190231.GQ401619@phenom.ffwll.local>
-Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org
-References: <20201116174112.1833368-1-lee.jones@linaro.org>
- <20201116174112.1833368-22-lee.jones@linaro.org>
+        Tue, 17 Nov 2020 14:01:02 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AHIxq70028846;
+        Tue, 17 Nov 2020 19:00:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=kFhpvmVlIgv+wqtZAim1r+yLEWpAFdL90ENg0K3Wbp0=;
+ b=KeampoBcYOqID7YX4N/DVLeiW5HCBfFU9MQ5u+yXNBbXoumb+5VzoJxp0Fpn3Lu0t/AK
+ Obn17Ieg0ZTZhyoFnv7rYpCWuHqWuWpfMZrL4abYWhS0twYQjMW2XNatfUMU7/NICaIA
+ RxIgd5kZcSjLkoM63JZh2DFzAHaLsP1NB5eoywX9RBA6nka8Ci1t1rpmWiaKPwJoLFMM
+ iY43rAKoKjDoC+WtrkZ7l+tNVIsCI0mkH7eUyCiodffyKArsAefKHdt92++aIAAjcEwa
+ gF+T8ogJn9Tir/yzfeQjCCARYfzq9yrQnV6MMRQUUUiwedyZlv4pzMKFV2uvJVBzMpEz Qw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 34t7vn483x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 19:00:41 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AHItTO1027581;
+        Tue, 17 Nov 2020 19:00:41 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 34ts0ra84x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 19:00:41 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AHJ0Wf0011449;
+        Tue, 17 Nov 2020 19:00:37 GMT
+Received: from linux.home (/92.157.91.83)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 17 Nov 2020 11:00:32 -0800
+Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
+        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
+        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
+        kuzuno@gmail.com
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
+ <20201116201711.GE1131@zn.tnic>
+ <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
+ <20201117165539.GG5719@zn.tnic>
+ <890f6b7e-a268-2257-edcb-5eacc7db3d8e@oracle.com>
+ <20201117182809.GK5719@zn.tnic>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <33a1c6ee-0122-0b0c-ed2d-1578b29ef7c1@oracle.com>
+Date:   Tue, 17 Nov 2020 20:02:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116174112.1833368-22-lee.jones@linaro.org>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20201117182809.GK5719@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170136
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011170137
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 05:40:51PM +0000, Lee Jones wrote:
-> ... and demote non-conformant kernel-doc header.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:71: warning: Function parameter or member 'subdev' not described in 'nvkm_firmware_get'
->  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:71: warning: Function parameter or member 'fwname' not described in 'nvkm_firmware_get'
->  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:71: warning: Function parameter or member 'ver' not described in 'nvkm_firmware_get'
->  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:71: warning: Function parameter or member 'fw' not described in 'nvkm_firmware_get'
->  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:106: warning: Function parameter or member 'fw' not described in 'nvkm_firmware_put'
-> 
-> Cc: Ben Skeggs <bskeggs@redhat.com>
 
-Ben fyi I smashed this into drm-misc-next, seemed trivial enough to not be
-a bother.
--Daniel
 
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: nouveau@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/nouveau/nvkm/core/firmware.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+On 11/17/20 7:28 PM, Borislav Petkov wrote:
+> On Tue, Nov 17, 2020 at 07:12:07PM +0100, Alexandre Chartre wrote:
+>> Yes. L1TF/MDS allow some inter cpu-thread attacks which are not mitigated at
+>> the moment. In particular, this allows a guest VM to attack another guest VM
+>> or the host kernel running on a sibling cpu-thread. Core Scheduling will
+>> mitigate the guest-to-guest attack but not the guest-to-host attack.
 > 
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/core/firmware.c b/drivers/gpu/drm/nouveau/nvkm/core/firmware.c
-> index 8b25367917ca0..ca1f8463cff51 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/core/firmware.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/core/firmware.c
-> @@ -58,9 +58,10 @@ nvkm_firmware_load_blob(const struct nvkm_subdev *subdev, const char *base,
->  
->  /**
->   * nvkm_firmware_get - load firmware from the official nvidia/chip/ directory
-> - * @subdev	subdevice that will use that firmware
-> - * @fwname	name of firmware file to load
-> - * @fw		firmware structure to load to
-> + * @subdev:	subdevice that will use that firmware
-> + * @fwname:	name of firmware file to load
-> + * @ver:	firmware version to load
-> + * @fw:		firmware structure to load to
->   *
->   * Use this function to load firmware files in the form nvidia/chip/fwname.bin.
->   * Firmware files released by NVIDIA will always follow this format.
-> @@ -98,7 +99,7 @@ nvkm_firmware_get(const struct nvkm_subdev *subdev, const char *fwname, int ver,
->  	return -ENOENT;
->  }
->  
-> -/**
-> +/*
->   * nvkm_firmware_put - release firmware loaded with nvkm_firmware_get
->   */
->  void
-> -- 
-> 2.25.1
+> I see in vmx_vcpu_enter_exit():
 > 
+>          /* L1D Flush includes CPU buffer clear to mitigate MDS */
+>          if (static_branch_unlikely(&vmx_l1d_should_flush))
+>                  vmx_l1d_flush(vcpu);
+>          else if (static_branch_unlikely(&mds_user_clear))
+>                  mds_clear_cpu_buffers();
+> 
+> Is that not enough?
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+No. This prevents the guest VM from gathering data from the host kernel on the
+same cpu-thread. But there's no mitigation for a guest VM running on a cpu-thread
+attacking another cpu-thread (which can be running another guest VM or the
+host kernel) from the same cpu-core. You cannot use flush/clear barriers because
+the two cpu-threads are running in parallel.
+
+alex.
