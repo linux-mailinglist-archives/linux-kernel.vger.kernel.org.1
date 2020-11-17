@@ -2,139 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5A82B58F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FC82B58F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgKQEsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 23:48:41 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:35821 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726339AbgKQEsl (ORCPT
+        id S1727133AbgKQEtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 23:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbgKQEtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 23:48:41 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id D2E4A133C;
-        Mon, 16 Nov 2020 23:48:39 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 16 Nov 2020 23:48:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=U
-        664ImZm7nx3wttpQWP2v553YO5GQB0UIUFjQe/fRSE=; b=bjV5VA6ypKU8XqzUf
-        3uzwl9UiWxGJj0nondnuYmEEJx7egRCPOZiml3zpv3fSXZILD+nWfxb1hmRmKNFP
-        d0d7dU1K/T378nmfhEoXzAoSNySgyP3B+FKGROFkR3u6nTR8bJPHrmwmImjigeWs
-        vdJzLy6ShLrjHLLwwqcQbEVogNKL/FRetpvE6/jMSHUrANo/nQwHo2D/8cBtyVuv
-        GO2vQ307KF6mljcQVDmwFXharjryfe0uDZPGiol1xIDWHdaw3pckX2u6Tg6PFasV
-        7dr/pPaqoHkuFcPO4jvUVs/ZB68rajFaRv34MouQewRP6eFn/7ZX+PlzoKQ33wmG
-        ayzHw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=U664ImZm7nx3wttpQWP2v553YO5GQB0UIUFjQe/fR
-        SE=; b=jxgbeDiHC6UqxHT89BqFAM3uaFrMvjzmpybgOMzfnaHyM6JNgSiB8YLxf
-        30f4oF61cCSNxAZES5YvG8UxjLxHMn4fivSR5QPuMuV97Wpug5VtjAV2aRPlaAsj
-        DuYmjkC7oEC76bGLggRdgK2o1Mu1Msd5dt1oE++WC1gFppouXfnVkUBvb5DlP4zM
-        LiXS9QyZa+jlHI6Da7xPJ7w3zPzLbw/AQTJTHMaDtO9szcw/5fsQIOTc3TtcJvdS
-        ojba0/bB6o++mxN+7GoethAt246DXI+vNPilgFknHbahhHctIZdblY70oP7lmFkO
-        BkNpfA64AQomNt0fYG8TU0aIMG0qg==
-X-ME-Sender: <xms:JlazX5femDJ18hLmukX67eanDrEia-lkvMejW-GVXtXSmgjElkM6ag>
-    <xme:JlazX3OMPFDxBPZxxV-PTnJAhsT3H8871cZBdNa3-0disQR39g4o1DipXEFW5-wRt
-    XagKucaeL1aGnRd2g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudefvddgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepjeelteehieekgefgieejueejjeekhfejvddtieevleefjeehleev
-    tdejkedtheffnecuffhomhgrihhnpegsohhothhlihhnrdgtohhmnecukfhppeejtddrud
-    efhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:JlazXyh3W7uL-O1ulx4uXWrDRMpXEIVHksQmWeLUtL86S99R5QdEjA>
-    <xmx:JlazXy8Yw8CD8-gE0hzRZO0RA3Pw1xb7qesBiqwAnnu0qnNml9i0sQ>
-    <xmx:JlazX1tKY6TvcIdPwOD9y_v3vg-YQd3K8G0QBpsTMYxmmon_uKNp5Q>
-    <xmx:J1azX5gXZzLEXGT34I3r8GsnViJ4uBRZYAQ2Ohyjd2Kw6AS_toMnOg>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C94C43280063;
-        Mon, 16 Nov 2020 23:48:37 -0500 (EST)
-Subject: Re: [PATCH 3/3] phy: sun4i-usb: Use power efficient workqueue for
- debounce and poll
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Frank Lee <frank@allwinnertech.com>, vkoul@kernel.org,
-        wens@csie.org, krzk@kernel.org, colin.king@canonical.com,
-        tiny.windzz@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20201109121214.19012-1-frank@allwinnertech.com>
- <fba49549-9a78-32ee-a55c-97499f24fe62@sholland.org>
- <20201112095307.pblcmrn6smyecvqi@gilmour.lan>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <971979a1-a69e-c3fe-6799-805407315885@sholland.org>
-Date:   Mon, 16 Nov 2020 22:48:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 16 Nov 2020 23:49:16 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC86C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 20:49:14 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id x15so9586246pll.2
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 20:49:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Jf2aIjShD4iVmybDcbPAalYnkGJJs6/Mleod0uBw2fY=;
+        b=fNNmCb/RMfl+hVapIhliNSCowc/j3+etgB5FbEZj64xErDnZJ2c12LUB04PQGqwT0v
+         +UcGieBgB0gK0q3dNsIGgpi9ckbZfg4mf0PJf4TZ6si2R/TDvzH7NTBPgEYj4KeCJxb+
+         ogNwHjpKAdYqnQGMu+ZsV5pR+mSHrx2o+Sxlw9AinlfrHhSU0aHOXSnTGXwFMCEQe0wO
+         VFcvrEd5T53igZeUk7GOcaRrLH+0VkZ1uwyoGY5owIzno3s/h9+VZPw+icGqITliND+b
+         Ic9iNRsNmgmcnaObzvNtiCtYSmOfjPsWd4WsxcHfW2bEvgfiLc369iH+mNV9HSyRHEt0
+         Y9VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Jf2aIjShD4iVmybDcbPAalYnkGJJs6/Mleod0uBw2fY=;
+        b=KsiJ01WvW1zLZ4OoTwIfgfAnzAbx1yTtntTNZqewdOP7yYQBP9rpIRCpOPVJRhsuGU
+         qA+L5AxzFyMDRE8102OldvcyxtVSEZijQ0FfLczvqZbnALKu+94tLjbaiitHbXIGNmuX
+         TkJV+kGBx0wjS5I1AqtI/X6DjIHuV69DWvrZ9FbzUayhgLX8cWJ8FU1Tbmj4AJQk9KnE
+         VnaOp2f9E7cOeRV+7VREzuaC98ZM2HO21kOw7nBmo+qy/QKF2qqWA8bg0ZB3mZQ0FClr
+         9/ntFhBDkoEIhQJgZxeZ5jIZe1GPhYpwzw4iYYZiWSf9rFK/pSnUXu9uOLHy2FGVtuzp
+         KdsQ==
+X-Gm-Message-State: AOAM5329lvcn6clMEnSk5AFoFzkV1P5xgepcr+J2TjF4Jn8qrxGxkgAn
+        gkCrQTJozPNh7H46Bh2yMg5hoQ==
+X-Google-Smtp-Source: ABdhPJyJDEC5MnNQUCPJkJoEmtBD+pIRYGL2cGyoD+1qZHidQRQsal2JsGoVIIOS6nv4xXksggE3Fg==
+X-Received: by 2002:a17:902:be07:b029:d8:afa1:3d76 with SMTP id r7-20020a170902be07b02900d8afa13d76mr16093356pls.14.1605588554383;
+        Mon, 16 Nov 2020 20:49:14 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id c15sm1257489pjc.43.2020.11.16.20.49.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Nov 2020 20:49:13 -0800 (PST)
+Date:   Tue, 17 Nov 2020 10:19:11 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2] dt-bindings: dvfs: Add support for generic
+ performance domains
+Message-ID: <20201117044911.hzmmkasmgpnaxu3m@vireshk-i7>
+References: <20201116181356.804590-1-sudeep.holla@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201112095307.pblcmrn6smyecvqi@gilmour.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116181356.804590-1-sudeep.holla@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 3:53 AM, Maxime Ripard wrote:
-> On Tue, Nov 10, 2020 at 09:44:37PM -0600, Samuel Holland wrote:
->> On 11/9/20 6:12 AM, Frank Lee wrote:
->>> From: Yangtao Li <frank@allwinnertech.com>
->>>
->>> The debounce and poll time is generally quite long and the work not
->>> performance critical so allow the scheduler to run the work anywhere
->>> rather than in the normal per-CPU workqueue.
->>>
->>> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
->>> ---
->>>  drivers/phy/allwinner/phy-sun4i-usb.c | 14 +++++++-------
->>>  1 file changed, 7 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
->>> index 651d5e2a25ce..4787ad13b255 100644
->>> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
->>> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
->>> @@ -326,7 +326,7 @@ static int sun4i_usb_phy_init(struct phy *_phy)
->>>  		/* Force ISCR and cable state updates */
->>>  		data->id_det = -1;
->>>  		data->vbus_det = -1;
->>> -		queue_delayed_work(system_wq, &data->detect, 0);
->>> +		queue_delayed_work(system_power_efficient_wq, &data->detect, 0);
->>>  	}
->>>  
->>>  	return 0;
->>> @@ -444,7 +444,7 @@ static int sun4i_usb_phy_power_on(struct phy *_phy)
->>>  
->>>  	/* We must report Vbus high within OTG_TIME_A_WAIT_VRISE msec. */
->>
->> This doesn't sound like "not performance critical" to me. My understanding is
->> the debouncing has a deadline from the USB spec. Maybe this is more flexible
->> than the comment makes it sound?
+On 16-11-20, 18:13, Sudeep Holla wrote:
+> The CLKSCREW attack [0] exposed security vulnerabilities in energy management
+> implementations where untrusted software had direct access to clock and
+> voltage hardware controls. In this attack, the malicious software was able to
+> place the platform into unsafe overclocked or undervolted configurations. Such
+> configurations then enabled the injection of predictable faults to reveal
+> secrets.
 > 
-> It's not really clear to me what the power_efficient workqueue brings to
-> the table exactly from the comments on WQ_POWER_EFFICIENT (and the
-> associated gmane link is long dead).
+> Many Arm-based systems used to or still use voltage regulator and clock
+> frameworks in the kernel. These frameworks allow callers to independently
+> manipulate frequency and voltage settings. Such implementations can render
+> systems susceptible to this form of attack.
 > 
-> It's only effect seems to be that it sets WQ_UNBOUND when the proper
-> command line option is set, and WQ_UNBOUND allows for the scheduled work
-> to run on any CPU instead of the local one.
+> Attacks such as CLKSCREW are now being mitigated by not having direct and
+> independent control of clock and voltage in the kernel and moving that
+> control to a trusted entity, such as the SCP firmware or secure world
+> firmware/software which are to perform sanity checking on the requested
+> performance levels, thereby preventing any attempted malicious programming.
 > 
-> Given that we don't have any constraint on the CPU here, and the CPU
-> locality shouldn't really make any difference, I'm not sure we should
-> expect any meaningful difference.
+> With the advent of such an abstraction, there is a need to replace the
+> generic clock and regulator bindings used by such devices with a generic
+> performance domains bindings.
 > 
-> This is also what the rest of the similar drivers seem to be using:
-> https://elixir.bootlin.com/linux/v5.10-rc3/source/drivers/usb/common/usb-conn-gpio.c#L119
-> https://elixir.bootlin.com/linux/v5.10-rc3/source/drivers/usb/core/hub.c#L1254
+> [0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
+> 
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  .../bindings/dvfs/performance-domain.yaml     | 76 +++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dvfs/performance-domain.yaml
 
-Thanks for the explanation. Then the patch looks fine to me.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Reviewed-by: Samuel Holland <samuel@sholland.org>
-
-Cheers,
-Samuel
+-- 
+viresh
