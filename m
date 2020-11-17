@@ -2,212 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21A92B6E2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9272B6E2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbgKQTL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:11:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725771AbgKQTL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:11:26 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44D79221FC;
-        Tue, 17 Nov 2020 19:11:23 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 14:11:21 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     tglx@linutronix.de, hch@infradead.org, mingo@redhat.com,
-        keescook@chromium.org, arnd@arndb.de, luto@amacapital.net,
-        wad@chromium.org, paul@paul-moore.com, eparis@redhat.com,
-        oleg@redhat.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kernel@collabora.com,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH v2 05/10] tracepoints: Migrate to use SYSCALL_WORK flag
-Message-ID: <20201117141121.4f1f792a@gandalf.local.home>
-In-Reply-To: <20201116174206.2639648-6-krisman@collabora.com>
-References: <20201116174206.2639648-1-krisman@collabora.com>
-        <20201116174206.2639648-6-krisman@collabora.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727648AbgKQTLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:11:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgKQTLi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:11:38 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E285C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:11:38 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a3so4261272wmb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:11:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hu7bOYUgtnFLMBiA1U9xKBu85h7yzSk1KLbNCN463rI=;
+        b=X5xkpElnuKlOphb7oubo5uykS6+OI+php6jhCFtFcZhmtzzwWArV8Df6/gG5zzJ117
+         AYrkJBx9rLECsYAk6+Z/lS3xFE5GUhpCTUDLmj4v406RilyJDbUB9Uyu+0VSDGYgvm2l
+         jukkd1AGe1UjqosgfxOcW7pjmYpNky0Zfc6wQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=hu7bOYUgtnFLMBiA1U9xKBu85h7yzSk1KLbNCN463rI=;
+        b=aK1tiDTi0G1J106RwViV90fe8tdt+cpj8EssA73Y07++r+ak6mQwMJi4C9SLS2gS8/
+         QMsBVhWoUUvpbUm8xfMJibGev1GLKGQZw/dKyXx/RYJYO3jq8M8mA/WgV8QNaV9+zpFm
+         Pif6q9/Sglntxv41CGGxQXdCFAdo4eCY654w1Zv9gonSapWuXPALLB9lDUWt9KCz0s73
+         IjXh3NEEG9DlXISVC0x4WFX6kLAtDyScpmbNDM03QHsVH3gG2q/kKzR/Ae2D3Dsz/Kc/
+         s8okxjaU4nGQfrXXmRa4z/M+njG392DimYaDRpFOuHfWl+HdhgdIS5k82pcATC2Pygr4
+         FVEg==
+X-Gm-Message-State: AOAM5306ka3wPLJ751+5UYnMuN4wYVSAq4B/NQ9ZJJMJ/9Dwz+WEEZuO
+        EPn192AWUxDi/7JtU/eQEv++HQ==
+X-Google-Smtp-Source: ABdhPJwbYqX7pbIz2K9J0KeaqAR4C73oOOuRTBZ3QqO4swjxEvr2VoxyUPHO42dNRwlmR9/xM6NPWg==
+X-Received: by 2002:a7b:c1d2:: with SMTP id a18mr604240wmj.41.1605640297385;
+        Tue, 17 Nov 2020 11:11:37 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a14sm4774135wmj.40.2020.11.17.11.11.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 11:11:36 -0800 (PST)
+Date:   Tue, 17 Nov 2020 20:11:34 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH 31/42] drm/ttm/ttm_bo: Fix one function header - demote
+ lots of kernel-doc abuses
+Message-ID: <20201117191134.GR401619@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+References: <20201116174112.1833368-1-lee.jones@linaro.org>
+ <20201116174112.1833368-32-lee.jones@linaro.org>
+ <7745c8a0-12ad-8dcd-3740-51c640ea4ef2@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7745c8a0-12ad-8dcd-3740-51c640ea4ef2@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 12:42:01 -0500
-Gabriel Krisman Bertazi <krisman@collabora.com> wrote:
-
-> For architectures that rely on the generic syscall entry code, use the
-> syscall_work field in struct thread_info and the specific SYSCALL_WORK
-> flag.  This set of flags has the advantage of being architecture
-> independent.
+On Mon, Nov 16, 2020 at 09:33:48PM +0100, Christian König wrote:
+> Am 16.11.20 um 18:41 schrieb Lee Jones:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >   drivers/gpu/drm/ttm/ttm_bo.c:51: warning: Function parameter or member 'ttm_global_mutex' not described in 'DEFINE_MUTEX'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:286: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_memtype_use'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_refs'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'interruptible' not described in 'ttm_bo_cleanup_refs'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_cleanup_refs'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'unlock_resv' not described in 'ttm_bo_cleanup_refs'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'bdev' not described in 'ttm_bo_delayed_delete'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'remove_all' not described in 'ttm_bo_delayed_delete'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'bo' not described in 'ttm_bo_evict_swapout_allowable'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'ctx' not described in 'ttm_bo_evict_swapout_allowable'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'locked' not described in 'ttm_bo_evict_swapout_allowable'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'busy' not described in 'ttm_bo_evict_swapout_allowable'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'bo' not described in 'ttm_bo_add_move_fence'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'man' not described in 'ttm_bo_add_move_fence'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'mem' not described in 'ttm_bo_add_move_fence'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_add_move_fence'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_force_space'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'place' not described in 'ttm_bo_mem_force_space'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_force_space'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_force_space'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_space'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'placement' not described in 'ttm_bo_mem_space'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_space'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_space'
+> >   drivers/gpu/drm/ttm/ttm_bo.c:1387: warning: Function parameter or member 'ctx' not described in 'ttm_bo_swapout'
+> > 
+> > Cc: Christian Koenig <christian.koenig@amd.com>
+> > Cc: Huang Rui <ray.huang@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linaro-mm-sig@lists.linaro.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > 
-> Users of the flag outside of the generic entry code should rely on the
-> accessor macros, such that the flag is still correctly resolved for
-> architectures that don't use the generic entry code and still rely on
-> TIF flags for system call work.
+> Reviewed-by: Christian König <christian.koenig@amd.com>
 > 
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Going to pick that one up for upstreaming.
 
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-Also added Mathieu to Cc.
-
--- Steve
+I mass applied this pile, so also this one. Thanks for patch&review.
+-Daniel
 
 > 
-> ---
-> Changes since v2:
->   - Drop explicit value assignment in enum (tglx)
->   - Avoid FLAG/_FLAG defines (tglx)
->   - Fix comment to refer to SYSCALL_WORK_SECCOMP (me)
-> ---
->  include/linux/entry-common.h | 13 +++++--------
->  include/linux/thread_info.h  |  2 ++
->  include/trace/syscall.h      |  6 +++---
->  kernel/entry/common.c        |  4 ++--
->  kernel/trace/trace_events.c  |  8 ++++----
->  kernel/tracepoint.c          |  4 ++--
->  6 files changed, 18 insertions(+), 19 deletions(-)
+> Thanks,
+> Christian.
 > 
-> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-> index f3fc4457f63f..8aba367e5c79 100644
-> --- a/include/linux/entry-common.h
-> +++ b/include/linux/entry-common.h
-> @@ -17,10 +17,6 @@
->  # define _TIF_SYSCALL_EMU		(0)
->  #endif
->  
-> -#ifndef _TIF_SYSCALL_TRACEPOINT
-> -# define _TIF_SYSCALL_TRACEPOINT	(0)
-> -#endif
-> -
->  #ifndef _TIF_SYSCALL_AUDIT
->  # define _TIF_SYSCALL_AUDIT		(0)
->  #endif
-> @@ -46,7 +42,7 @@
->  
->  #define SYSCALL_ENTER_WORK						\
->  	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT  |			\
-> -	 _TIF_SYSCALL_TRACEPOINT | _TIF_SYSCALL_EMU |			\
-> +	 _TIF_SYSCALL_EMU |						\
->  	 ARCH_SYSCALL_ENTER_WORK)
->  
->  /*
-> @@ -58,10 +54,11 @@
->  
->  #define SYSCALL_EXIT_WORK						\
->  	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT |			\
-> -	 _TIF_SYSCALL_TRACEPOINT | ARCH_SYSCALL_EXIT_WORK)
-> +	 ARCH_SYSCALL_EXIT_WORK)
->  
-> -#define SYSCALL_WORK_ENTER	(SYSCALL_WORK_SECCOMP)
-> -#define SYSCALL_WORK_EXIT	(0)
-> +#define SYSCALL_WORK_ENTER	(SYSCALL_WORK_SECCOMP |			\
-> +				 SYSCALL_WORK_SYSCALL_TRACEPOINT)
-> +#define SYSCALL_WORK_EXIT	(SYSCALL_WORK_SYSCALL_TRACEPOINT)
->  
->  /*
->   * TIF flags handled in exit_to_user_mode_loop()
-> diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
-> index 1d6488130b5c..ff0ac2ebb4ff 100644
-> --- a/include/linux/thread_info.h
-> +++ b/include/linux/thread_info.h
-> @@ -37,9 +37,11 @@ enum {
->  
->  enum syscall_work_bit {
->  	SYSCALL_WORK_BIT_SECCOMP,
-> +	SYSCALL_WORK_BIT_SYSCALL_TRACEPOINT,
->  };
->  
->  #define SYSCALL_WORK_SECCOMP		BIT(SYSCALL_WORK_BIT_SECCOMP)
-> +#define SYSCALL_WORK_SYSCALL_TRACEPOINT	BIT(SYSCALL_WORK_BIT_SYSCALL_TRACEPOINT)
->  
->  #include <asm/thread_info.h>
->  
-> diff --git a/include/trace/syscall.h b/include/trace/syscall.h
-> index dc8ac27d27c1..8e193f3a33b3 100644
-> --- a/include/trace/syscall.h
-> +++ b/include/trace/syscall.h
-> @@ -37,10 +37,10 @@ struct syscall_metadata {
->  #if defined(CONFIG_TRACEPOINTS) && defined(CONFIG_HAVE_SYSCALL_TRACEPOINTS)
->  static inline void syscall_tracepoint_update(struct task_struct *p)
->  {
-> -	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
-> -		set_tsk_thread_flag(p, TIF_SYSCALL_TRACEPOINT);
-> +	if (test_syscall_work(SYSCALL_TRACEPOINT))
-> +		set_task_syscall_work(p, SYSCALL_TRACEPOINT);
->  	else
-> -		clear_tsk_thread_flag(p, TIF_SYSCALL_TRACEPOINT);
-> +		clear_task_syscall_work(p, SYSCALL_TRACEPOINT);
->  }
->  #else
->  static inline void syscall_tracepoint_update(struct task_struct *p)
-> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-> index c321056c73d7..4e2b3c08d939 100644
-> --- a/kernel/entry/common.c
-> +++ b/kernel/entry/common.c
-> @@ -63,7 +63,7 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
->  	/* Either of the above might have changed the syscall number */
->  	syscall = syscall_get_nr(current, regs);
->  
-> -	if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
-> +	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
->  		trace_sys_enter(regs, syscall);
->  
->  	syscall_enter_audit(regs, syscall);
-> @@ -233,7 +233,7 @@ static void syscall_exit_work(struct pt_regs *regs, unsigned long ti_work,
->  
->  	audit_syscall_exit(regs);
->  
-> -	if (ti_work & _TIF_SYSCALL_TRACEPOINT)
-> +	if (work & SYSCALL_WORK_SYSCALL_TRACEPOINT)
->  		trace_sys_exit(regs, syscall_get_return_value(current, regs));
->  
->  	step = report_single_step(ti_work);
-> diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-> index 47a71f96e5bc..adf65b502453 100644
-> --- a/kernel/trace/trace_events.c
-> +++ b/kernel/trace/trace_events.c
-> @@ -3428,10 +3428,10 @@ static __init int event_trace_enable(void)
->   * initialize events and perhaps start any events that are on the
->   * command line. Unfortunately, there are some events that will not
->   * start this early, like the system call tracepoints that need
-> - * to set the TIF_SYSCALL_TRACEPOINT flag of pid 1. But event_trace_enable()
-> - * is called before pid 1 starts, and this flag is never set, making
-> - * the syscall tracepoint never get reached, but the event is enabled
-> - * regardless (and not doing anything).
-> + * to set the %SYSCALL_WORK_SYSCALL_TRACEPOINT flag of pid 1. But
-> + * event_trace_enable() is called before pid 1 starts, and this flag
-> + * is never set, making the syscall tracepoint never get reached, but
-> + * the event is enabled regardless (and not doing anything).
->   */
->  static __init int event_trace_enable_again(void)
->  {
-> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> index 3f659f855074..7261fa0f5e3c 100644
-> --- a/kernel/tracepoint.c
-> +++ b/kernel/tracepoint.c
-> @@ -594,7 +594,7 @@ int syscall_regfunc(void)
->  	if (!sys_tracepoint_refcount) {
->  		read_lock(&tasklist_lock);
->  		for_each_process_thread(p, t) {
-> -			set_tsk_thread_flag(t, TIF_SYSCALL_TRACEPOINT);
-> +			set_task_syscall_work(t, SYSCALL_TRACEPOINT);
->  		}
->  		read_unlock(&tasklist_lock);
->  	}
-> @@ -611,7 +611,7 @@ void syscall_unregfunc(void)
->  	if (!sys_tracepoint_refcount) {
->  		read_lock(&tasklist_lock);
->  		for_each_process_thread(p, t) {
-> -			clear_tsk_thread_flag(t, TIF_SYSCALL_TRACEPOINT);
-> +			clear_task_syscall_work(t, SYSCALL_TRACEPOINT);
->  		}
->  		read_unlock(&tasklist_lock);
->  	}
+> > ---
+> >   drivers/gpu/drm/ttm/ttm_bo.c | 23 ++++++++++++-----------
+> >   1 file changed, 12 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+> > index e6bcbfe530ecc..9a03c7834b1ed 100644
+> > --- a/drivers/gpu/drm/ttm/ttm_bo.c
+> > +++ b/drivers/gpu/drm/ttm/ttm_bo.c
+> > @@ -45,7 +45,7 @@
+> >   static void ttm_bo_global_kobj_release(struct kobject *kobj);
+> > -/**
+> > +/*
+> >    * ttm_global_mutex - protecting the global BO state
+> >    */
+> >   DEFINE_MUTEX(ttm_global_mutex);
+> > @@ -278,7 +278,7 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
+> >   	return ret;
+> >   }
+> > -/**
+> > +/*
+> >    * Call bo::reserved.
+> >    * Will release GPU memory type usage on destruction.
+> >    * This is the place to put in driver specific hooks to release
+> > @@ -352,9 +352,10 @@ static void ttm_bo_flush_all_fences(struct ttm_buffer_object *bo)
+> >    * Must be called with lru_lock and reservation held, this function
+> >    * will drop the lru lock and optionally the reservation lock before returning.
+> >    *
+> > - * @interruptible         Any sleeps should occur interruptibly.
+> > - * @no_wait_gpu           Never wait for gpu. Return -EBUSY instead.
+> > - * @unlock_resv           Unlock the reservation lock as well.
+> > + * @bo:                    The buffer object to clean-up
+> > + * @interruptible:         Any sleeps should occur interruptibly.
+> > + * @no_wait_gpu:           Never wait for gpu. Return -EBUSY instead.
+> > + * @unlock_resv:           Unlock the reservation lock as well.
+> >    */
+> >   static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+> > @@ -420,7 +421,7 @@ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
+> >   	return 0;
+> >   }
+> > -/**
+> > +/*
+> >    * Traverse the delayed list, and call ttm_bo_cleanup_refs on all
+> >    * encountered buffers.
+> >    */
+> > @@ -628,7 +629,7 @@ bool ttm_bo_eviction_valuable(struct ttm_buffer_object *bo,
+> >   }
+> >   EXPORT_SYMBOL(ttm_bo_eviction_valuable);
+> > -/**
+> > +/*
+> >    * Check the target bo is allowable to be evicted or swapout, including cases:
+> >    *
+> >    * a. if share same reservation object with ctx->resv, have assumption
+> > @@ -767,7 +768,7 @@ int ttm_mem_evict_first(struct ttm_bo_device *bdev,
+> >   	return ret;
+> >   }
+> > -/**
+> > +/*
+> >    * Add the last move fence to the BO and reserve a new shared slot.
+> >    */
+> >   static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
+> > @@ -803,7 +804,7 @@ static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
+> >   	return 0;
+> >   }
+> > -/**
+> > +/*
+> >    * Repeatedly evict memory from the LRU for @mem_type until we create enough
+> >    * space, or we've evicted everything and there isn't enough space.
+> >    */
+> > @@ -865,7 +866,7 @@ static int ttm_bo_mem_placement(struct ttm_buffer_object *bo,
+> >   	return 0;
+> >   }
+> > -/**
+> > +/*
+> >    * Creates space for memory region @mem according to its type.
+> >    *
+> >    * This function first searches for free space in compatible memory types in
+> > @@ -1430,7 +1431,7 @@ int ttm_bo_wait(struct ttm_buffer_object *bo,
+> >   }
+> >   EXPORT_SYMBOL(ttm_bo_wait);
+> > -/**
+> > +/*
+> >    * A buffer object shrink method that tries to swap out the first
+> >    * buffer object on the bo_global::swap_lru list.
+> >    */
+> 
 
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
