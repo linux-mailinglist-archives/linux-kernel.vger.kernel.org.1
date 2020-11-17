@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0542B721E
+	by mail.lfdr.de (Postfix) with ESMTP id AF5112B721F
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgKQXU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:20:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
+        id S1728684AbgKQXU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:20:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728505AbgKQXUZ (ORCPT
+        with ESMTP id S1728505AbgKQXU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:20:25 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8D3C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:24 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id a13so28014qkl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:24 -0800 (PST)
+        Tue, 17 Nov 2020 18:20:27 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41E9C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:26 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id u23so127637qvf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LbYtXlj95+iXlJkOqVIu3kgn38kg+QwVgoGVckAPFDU=;
-        b=R9dcBfwj5h/EPk4ro1H1W5vgw50dgJdtrfn0aiTUD7OSjd1ZOHIsVOQHzwCDj77oyo
-         4hE/0wwO9kXgXLWY66MFrLNyJe1HsmvzkG2ZC0803cp/NZgctuwqJUSdAyYnjdZ8d4EZ
-         lc26TcdQoEdfQQRBSfDbSoqTQ17arStB3RMjE=
+        bh=gBL0ffzMWo2qflOjDKn58RdKAwil9uEuJ5Fytp4Ouds=;
+        b=puYtNeBtnnAw9FJDjk3sv5zGbgUgSjyqhnSj7d8ZSbxuZjcI6SZ51tOJoM2EeawJuC
+         CXZOeBKz1//RXtf/nZUUJz8mzt1vCXXz+46H7ERg/0fRM7Xda33wv7t2fFzWnB05vfSB
+         QzWR8V4k7ZShAlvKLj8rKlhZN15KK4wD9Ama0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LbYtXlj95+iXlJkOqVIu3kgn38kg+QwVgoGVckAPFDU=;
-        b=SmIirX0JTu4CsUDCY4frNnPt88XnDoxOZXaOL7vgxlYROElfWjq3KfBq1xpDWEy7Md
-         0ctZm4xmK8PpeXT9GoAKegr3JiTkvT/q66Ih0znDH+MJzOU7oNlzNqtDUMxLVHLTvWDj
-         GifPzkQxj4W6MbItxFhabTH0EBPRENn5dsAeRbKrZzx4iYF5408hJKwtYH7exEpnzOo4
-         diRFeKQvuMwkWzqze68nJbU5+qDQkSYIp5G3ob5a7BkDSbYZHx+RBF3MKrb2yZwb/W0K
-         sA2Wo3/Ic7VxGL2TSjq5E9Squtg2XhFJRe0NK0kSAY16VhiEyLtkZGtMLavJwXNUO1ia
-         oy1Q==
-X-Gm-Message-State: AOAM530jf/L3OFifSGbHce2hv51ZY8Ax5lCxoTmnTS/GE6+x80lOmJxe
-        O4H9EKESE5nYAlxiC1dQwgyJjw==
-X-Google-Smtp-Source: ABdhPJyK3lmAa/g5+Kovuk8bmzpev+XpypQvI6OXonnfAxJjUcZ2zGjZsLFU/utEbmAMsdq8s5lovQ==
-X-Received: by 2002:a37:bd5:: with SMTP id 204mr1983512qkl.377.1605655224007;
-        Tue, 17 Nov 2020 15:20:24 -0800 (PST)
+        bh=gBL0ffzMWo2qflOjDKn58RdKAwil9uEuJ5Fytp4Ouds=;
+        b=DMZKAelnDcK4ZPlNtvcbOBJXXT7IYFne7YH4wcoaThPz+Qv6oYb9yuohDqQtumUvLA
+         G2UuOtYRNAV7STjyQXKXwJjMDNjAzeS5AN9ADYKUTGbSI+mNK8HEeVFfpp7Rso3B+UtB
+         VHjTF2nh6d2Kn7BwvPQsVT3BBsBSLkYpiuqxx07KexFplr7i7YBzc3JQZe1lzQwtxFy4
+         6REJSzR+sGWYfg9gjmpssvZJnqc/A3tNRoZrMNXC+3Wftf6rZk4NxduqFI+XnrOfz9WF
+         mZnPMFCzl5Yg2ztx/h8CGP8ztbqg3DVq7vqlCl6CRRdYSr/ZDI4DEXd8OpjiziHg07/o
+         EuLA==
+X-Gm-Message-State: AOAM533X/hCyqCPv/jnlGXqL+0g6iRMIeJxtOAckhqqzfCROfFU/jv1x
+        jC3R3hfT7QfL5BHRKMJrQLLDYw==
+X-Google-Smtp-Source: ABdhPJxUW2lgFoyhFzJtyxuYPKrWC8/sxRuek9CGkFi6RyeyrZD9E0pSO3llrEJdk7Uz3aFFbiQWxQ==
+X-Received: by 2002:a05:6214:54f:: with SMTP id ci15mr1761292qvb.49.1605655226086;
+        Tue, 17 Nov 2020 15:20:26 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id d12sm14555544qtp.77.2020.11.17.15.20.22
+        by smtp.gmail.com with ESMTPSA id d12sm14555544qtp.77.2020.11.17.15.20.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 15:20:23 -0800 (PST)
+        Tue, 17 Nov 2020 15:20:25 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -78,9 +78,9 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         Aubrey Li <aubrey.li@linux.intel.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Tim Chen <tim.c.chen@intel.com>
-Subject: [PATCH -tip 05/32] sched/fair: Add a few assertions
-Date:   Tue, 17 Nov 2020 18:19:35 -0500
-Message-Id: <20201117232003.3580179-6-joel@joelfernandes.org>
+Subject: [PATCH -tip 06/32] sched: Basic tracking of matching tasks
+Date:   Tue, 17 Nov 2020 18:19:36 -0500
+Message-Id: <20201117232003.3580179-7-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 In-Reply-To: <20201117232003.3580179-1-joel@joelfernandes.org>
 References: <20201117232003.3580179-1-joel@joelfernandes.org>
@@ -92,49 +92,379 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
+Introduce task_struct::core_cookie as an opaque identifier for core
+scheduling. When enabled; core scheduling will only allow matching
+task to be on the core; where idle matches everything.
+
+When task_struct::core_cookie is set (and core scheduling is enabled)
+these tasks are indexed in a second RB-tree, first on cookie value
+then on scheduling function, such that matching task selection always
+finds the most elegible match.
+
+NOTE: *shudder* at the overhead...
+
+NOTE: *sigh*, a 3rd copy of the scheduling function; the alternative
+is per class tracking of cookies and that just duplicates a lot of
+stuff for no raisin (the 2nd copy lives in the rt-mutex PI code).
+
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Vineeth Remanan Pillai <viremana@linux.microsoft.com>
+Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/sched/fair.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ include/linux/sched.h |   8 ++-
+ kernel/sched/core.c   | 146 ++++++++++++++++++++++++++++++++++++++++++
+ kernel/sched/fair.c   |  46 -------------
+ kernel/sched/sched.h  |  55 ++++++++++++++++
+ 4 files changed, 208 insertions(+), 47 deletions(-)
 
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 7abbdd7f3884..344499ab29f2 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -683,10 +683,16 @@ struct task_struct {
+ 	const struct sched_class	*sched_class;
+ 	struct sched_entity		se;
+ 	struct sched_rt_entity		rt;
++	struct sched_dl_entity		dl;
++
++#ifdef CONFIG_SCHED_CORE
++	struct rb_node			core_node;
++	unsigned long			core_cookie;
++#endif
++
+ #ifdef CONFIG_CGROUP_SCHED
+ 	struct task_group		*sched_task_group;
+ #endif
+-	struct sched_dl_entity		dl;
+ 
+ #ifdef CONFIG_UCLAMP_TASK
+ 	/*
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 6d88bc9a6818..9d521033777f 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -78,6 +78,141 @@ __read_mostly int scheduler_running;
+ 
+ DEFINE_STATIC_KEY_FALSE(__sched_core_enabled);
+ 
++/* kernel prio, less is more */
++static inline int __task_prio(struct task_struct *p)
++{
++	if (p->sched_class == &stop_sched_class) /* trumps deadline */
++		return -2;
++
++	if (rt_prio(p->prio)) /* includes deadline */
++		return p->prio; /* [-1, 99] */
++
++	if (p->sched_class == &idle_sched_class)
++		return MAX_RT_PRIO + NICE_WIDTH; /* 140 */
++
++	return MAX_RT_PRIO + MAX_NICE; /* 120, squash fair */
++}
++
++/*
++ * l(a,b)
++ * le(a,b) := !l(b,a)
++ * g(a,b)  := l(b,a)
++ * ge(a,b) := !l(a,b)
++ */
++
++/* real prio, less is less */
++static inline bool prio_less(struct task_struct *a, struct task_struct *b)
++{
++
++	int pa = __task_prio(a), pb = __task_prio(b);
++
++	if (-pa < -pb)
++		return true;
++
++	if (-pb < -pa)
++		return false;
++
++	if (pa == -1) /* dl_prio() doesn't work because of stop_class above */
++		return !dl_time_before(a->dl.deadline, b->dl.deadline);
++
++	if (pa == MAX_RT_PRIO + MAX_NICE)  { /* fair */
++		u64 vruntime = b->se.vruntime;
++
++		/*
++		 * Normalize the vruntime if tasks are in different cpus.
++		 */
++		if (task_cpu(a) != task_cpu(b)) {
++			vruntime -= task_cfs_rq(b)->min_vruntime;
++			vruntime += task_cfs_rq(a)->min_vruntime;
++		}
++
++		return !((s64)(a->se.vruntime - vruntime) <= 0);
++	}
++
++	return false;
++}
++
++static inline bool __sched_core_less(struct task_struct *a, struct task_struct *b)
++{
++	if (a->core_cookie < b->core_cookie)
++		return true;
++
++	if (a->core_cookie > b->core_cookie)
++		return false;
++
++	/* flip prio, so high prio is leftmost */
++	if (prio_less(b, a))
++		return true;
++
++	return false;
++}
++
++static void sched_core_enqueue(struct rq *rq, struct task_struct *p)
++{
++	struct rb_node *parent, **node;
++	struct task_struct *node_task;
++
++	rq->core->core_task_seq++;
++
++	if (!p->core_cookie)
++		return;
++
++	node = &rq->core_tree.rb_node;
++	parent = *node;
++
++	while (*node) {
++		node_task = container_of(*node, struct task_struct, core_node);
++		parent = *node;
++
++		if (__sched_core_less(p, node_task))
++			node = &parent->rb_left;
++		else
++			node = &parent->rb_right;
++	}
++
++	rb_link_node(&p->core_node, parent, node);
++	rb_insert_color(&p->core_node, &rq->core_tree);
++}
++
++static void sched_core_dequeue(struct rq *rq, struct task_struct *p)
++{
++	rq->core->core_task_seq++;
++
++	if (!p->core_cookie)
++		return;
++
++	rb_erase(&p->core_node, &rq->core_tree);
++}
++
++/*
++ * Find left-most (aka, highest priority) task matching @cookie.
++ */
++static struct task_struct *sched_core_find(struct rq *rq, unsigned long cookie)
++{
++	struct rb_node *node = rq->core_tree.rb_node;
++	struct task_struct *node_task, *match;
++
++	/*
++	 * The idle task always matches any cookie!
++	 */
++	match = idle_sched_class.pick_task(rq);
++
++	while (node) {
++		node_task = container_of(node, struct task_struct, core_node);
++
++		if (cookie < node_task->core_cookie) {
++			node = node->rb_left;
++		} else if (cookie > node_task->core_cookie) {
++			node = node->rb_right;
++		} else {
++			match = node_task;
++			node = node->rb_left;
++		}
++	}
++
++	return match;
++}
++
+ /*
+  * The static-key + stop-machine variable are needed such that:
+  *
+@@ -136,6 +271,11 @@ void sched_core_put(void)
+ 	mutex_unlock(&sched_core_mutex);
+ }
+ 
++#else /* !CONFIG_SCHED_CORE */
++
++static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
++static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
++
+ #endif /* CONFIG_SCHED_CORE */
+ 
+ /*
+@@ -1624,6 +1764,9 @@ static inline void init_uclamp(void) { }
+ 
+ static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
+ {
++	if (sched_core_enabled(rq))
++		sched_core_enqueue(rq, p);
++
+ 	if (!(flags & ENQUEUE_NOCLOCK))
+ 		update_rq_clock(rq);
+ 
+@@ -1638,6 +1781,9 @@ static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
+ 
+ static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
+ {
++	if (sched_core_enabled(rq))
++		sched_core_dequeue(rq, p);
++
+ 	if (!(flags & DEQUEUE_NOCLOCK))
+ 		update_rq_clock(rq);
+ 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 51483a00a755..ca35bfc0a368 100644
+index ca35bfc0a368..f53681cd263e 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -6245,6 +6245,11 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 		task_util = uclamp_task_util(p);
- 	}
- 
-+	/*
-+	 * per-cpu select_idle_mask usage
-+	 */
-+	lockdep_assert_irqs_disabled();
-+
- 	if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
- 	    asym_fits_capacity(task_util, target))
- 		return target;
-@@ -6710,8 +6715,6 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
-  * certain conditions an idle sibling CPU if the domain has SD_WAKE_AFFINE set.
-  *
-  * Returns the target CPU number.
-- *
-- * preempt must be disabled.
+@@ -258,33 +258,11 @@ const struct sched_class fair_sched_class;
   */
- static int
- select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
-@@ -6724,6 +6727,10 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
- 	/* SD_flags and WF_flags share the first nibble */
- 	int sd_flag = wake_flags & 0xF;
  
-+	/*
-+	 * required for stable ->cpus_allowed
-+	 */
-+	lockdep_assert_held(&p->pi_lock);
- 	if (wake_flags & WF_TTWU) {
- 		record_wakee(p);
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+-static inline struct task_struct *task_of(struct sched_entity *se)
+-{
+-	SCHED_WARN_ON(!entity_is_task(se));
+-	return container_of(se, struct task_struct, se);
+-}
  
+ /* Walk up scheduling entities hierarchy */
+ #define for_each_sched_entity(se) \
+ 		for (; se; se = se->parent)
+ 
+-static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
+-{
+-	return p->se.cfs_rq;
+-}
+-
+-/* runqueue on which this entity is (to be) queued */
+-static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
+-{
+-	return se->cfs_rq;
+-}
+-
+-/* runqueue "owned" by this group */
+-static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)
+-{
+-	return grp->my_q;
+-}
+-
+ static inline void cfs_rq_tg_path(struct cfs_rq *cfs_rq, char *path, int len)
+ {
+ 	if (!path)
+@@ -445,33 +423,9 @@ find_matching_se(struct sched_entity **se, struct sched_entity **pse)
+ 
+ #else	/* !CONFIG_FAIR_GROUP_SCHED */
+ 
+-static inline struct task_struct *task_of(struct sched_entity *se)
+-{
+-	return container_of(se, struct task_struct, se);
+-}
+-
+ #define for_each_sched_entity(se) \
+ 		for (; se; se = NULL)
+ 
+-static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
+-{
+-	return &task_rq(p)->cfs;
+-}
+-
+-static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
+-{
+-	struct task_struct *p = task_of(se);
+-	struct rq *rq = task_rq(p);
+-
+-	return &rq->cfs;
+-}
+-
+-/* runqueue "owned" by this group */
+-static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)
+-{
+-	return NULL;
+-}
+-
+ static inline void cfs_rq_tg_path(struct cfs_rq *cfs_rq, char *path, int len)
+ {
+ 	if (path)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 0dfccf988998..8ee0ca8ee5c3 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1066,6 +1066,10 @@ struct rq {
+ 	/* per rq */
+ 	struct rq		*core;
+ 	unsigned int		core_enabled;
++	struct rb_root		core_tree;
++
++	/* shared state */
++	unsigned int		core_task_seq;
+ #endif
+ };
+ 
+@@ -1156,6 +1160,57 @@ DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+ #define cpu_curr(cpu)		(cpu_rq(cpu)->curr)
+ #define raw_rq()		raw_cpu_ptr(&runqueues)
+ 
++#ifdef CONFIG_FAIR_GROUP_SCHED
++static inline struct task_struct *task_of(struct sched_entity *se)
++{
++	SCHED_WARN_ON(!entity_is_task(se));
++	return container_of(se, struct task_struct, se);
++}
++
++static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
++{
++	return p->se.cfs_rq;
++}
++
++/* runqueue on which this entity is (to be) queued */
++static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
++{
++	return se->cfs_rq;
++}
++
++/* runqueue "owned" by this group */
++static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)
++{
++	return grp->my_q;
++}
++
++#else
++
++static inline struct task_struct *task_of(struct sched_entity *se)
++{
++	return container_of(se, struct task_struct, se);
++}
++
++static inline struct cfs_rq *task_cfs_rq(struct task_struct *p)
++{
++	return &task_rq(p)->cfs;
++}
++
++static inline struct cfs_rq *cfs_rq_of(struct sched_entity *se)
++{
++	struct task_struct *p = task_of(se);
++	struct rq *rq = task_rq(p);
++
++	return &rq->cfs;
++}
++
++/* runqueue "owned" by this group */
++static inline struct cfs_rq *group_cfs_rq(struct sched_entity *grp)
++{
++	return NULL;
++}
++#endif
++
+ extern void update_rq_clock(struct rq *rq);
+ 
+ static inline u64 __rq_clock_broken(struct rq *rq)
 -- 
 2.29.2.299.gdc1121823c-goog
 
