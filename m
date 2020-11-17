@@ -2,126 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F64C2B5A8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CFB2B5A99
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgKQH42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbgKQH41 (ORCPT
+        id S1727032AbgKQH4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:56:42 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:39846 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726901AbgKQH4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:56:27 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A122FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:56:27 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id y197so19582172qkb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:56:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=H3l9soqm+SREQlc2IEV9Idb1VORHh3SoM0Ng1Iin3Dc=;
-        b=vr6WiLEj6tAgdFqp8DIxItu5ALuLwg5H3eYuzD7j+uatZ4C4eKiUbT+iEZ9/EpFUWK
-         4TR9TKVUhgAMbbNw7dtsPQy8IgImKzjGAYDzXIzcR97WWfJ643GCQzKaPRRZYyQ4mKxp
-         8+oJCAhIYn0eKUFpUQakgVHsrmP42OW/15444w8IQDgBv0RJyi79iwYyHMG97SFYT/JT
-         ZWFdO527yh16ZkaRMhEcDJsYA4O7WzCiPlScZhc+PiN+UiphivffRfHeLpZ8V3rRKY4o
-         eEilw/r3h6MoPZatEz5gUwDVmtWfKnehx5CtjJkPwbPsHUeYibXKRx0pDo1bYyqvn0ti
-         Ym5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=H3l9soqm+SREQlc2IEV9Idb1VORHh3SoM0Ng1Iin3Dc=;
-        b=JNlXaV0K3KrRmC3Gn7BohPOd8H61VtjOHTN7gsGyzKJhTeeUW1lFhIZAYTiX+jSg9L
-         LvGTep2Z3YkLfF7H2LTLh4UTgP4Xvt93JRx4XHogGdIfJdZ1UGa50rFUtYsHBSB/XDIj
-         wFzDXtJJfshOjHQHvnE27ZayzZogJm9DXRf5CT+8d8Os3heJyH7nREOUF7YeQmf6gMaI
-         8v90fDWAfXJ7t1HBzPsJiC8YcGIJAYGxJnVSfZCjzqKxtqsMHtI/h+JbNaWEu2QQlkMY
-         HlgAX+zZAOfa9bvI1XTieDNNVi/0mv7kujIxoMqoZMQTsV6vJjtzuPYWkVDC8UCFnBFC
-         joPA==
-X-Gm-Message-State: AOAM531Q2TWNnj/cH4PZb1XxO5zzJdL4USd7ua7KYVBQd2+p49DUEh1D
-        DvTqO7Mf1uBgJyXh+K8wsR+pkiasfCwg9RBaR9o1qw==
-X-Google-Smtp-Source: ABdhPJwL37DcZAHwPAwGzv7dlhmnzGGHY07oktBGxXahSXeeXy9RHAITbjODhOe6w9v8GDK8fQ7Ue4Xm4a8RfzsD0aE=
-X-Received: by 2002:a37:9747:: with SMTP id z68mr17899362qkd.424.1605599786651;
- Mon, 16 Nov 2020 23:56:26 -0800 (PST)
+        Tue, 17 Nov 2020 02:56:41 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH7sOfD105916;
+        Tue, 17 Nov 2020 07:56:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=xAhqxGCZLoi1O5NTHsmK7a/tHEhJ7cD7DaijvEC5Br8=;
+ b=h2KNyezJ0JwMsxpFzGNoSrtLr2vY+TlUuzwNK0PMU7IJkk6NjP2eac8p156pydyUDAdz
+ bdObjgsp3sY3PWuL2nhRtF3Wy9yCui+eqA66BdRTS+jrJf1ETbcN585SwGw5Z/H8ksdr
+ Xoq4PwxgWi3EVVFA6C0gFVoblO9RSWLFeW03wrronuXv6lMMmJd50M8F0A1E+oPDVcrg
+ HGwiaWZTW0Ix64wUCgyNsdO9fOwclqYEz/YWXhe3GHv1QWeDUcUvYOup3LgUZB98Av+i
+ kpXDGmSA/JcXZAOYEFzx8jGV2SKsGgbim1UIicex0aHvaf5v5WpmbZ16ep1yDsAJ4f/k vw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 34t4ras6gt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 07:56:16 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH7pZfB002302;
+        Tue, 17 Nov 2020 07:54:15 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 34uspt1abk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 07:54:15 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AH7s405015257;
+        Tue, 17 Nov 2020 07:54:05 GMT
+Received: from linux.home (/92.157.91.83)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 16 Nov 2020 23:54:03 -0800
+Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
+        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
+        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
+        kuzuno@gmail.com
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
+ <20201116201711.GE1131@zn.tnic>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
+Date:   Tue, 17 Nov 2020 08:56:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 17 Nov 2020 08:56:15 +0100
-Message-ID: <CACT4Y+bUfavwMVv2SEMve5pabE_AwsDO0YsRBGZtYqX59a77vA@mail.gmail.com>
-Subject: suspicious capability check in ovl_ioctl_set_flags
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Merna Zakaria <mernazakaria@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201116201711.GE1131@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 bulkscore=0 suspectscore=0 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170056
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miklos,
 
-We've detected a suspicious double-fetch of user-space data in
-ovl_ioctl_set_flags using a prototype tool (see report below [1]).
+On 11/16/20 9:17 PM, Borislav Petkov wrote:
+> On Mon, Nov 16, 2020 at 03:47:36PM +0100, Alexandre Chartre wrote:
+>> This RFC proposes to defer the PTI CR3 switch until we reach C code.
+>> The benefit is that this simplifies the assembly entry code, and make
+>> the PTI CR3 switch code easier to understand. This also paves the way
+>> for further possible projects such an easier integration of Address
+>> Space Isolation (ASI), or the possibility to execute some selected
+>> syscall or interrupt handlers without switching to the kernel page-table
+> 
+> What for? What is this going to be used for in the end?
+> 
 
-It points to ovl_ioctl_set_flags that does a capability check using
-flags, but then the real ioctl double-fetches flags and uses
-potentially different value:
+In addition to simplify the assembly entry code, this will also simplify
+the integration of Address Space Isolation (ASI) which will certainly be
+the primary beneficiary of this change. The main goal of ASI is to provide
+KVM address space isolation to mitigate guest-to-host speculative attacks
+like L1TF or MDS. Current proposal of ASI is plugged into the CR3 switch
+assembly macro which make the code brittle and complex. (see [1])
 
-static long ovl_ioctl_set_flags(struct file *file, unsigned int cmd,
-                unsigned long arg, unsigned int flags)
-{
-...
-    /* Check the capability before cred override */
-    oldflags = ovl_iflags_to_fsflags(READ_ONCE(inode->i_flags));
-    ret = vfs_ioc_setflags_prepare(inode, oldflags, flags);
-    if (ret)
-        goto unlock;
-...
-    ret = ovl_real_ioctl(file, cmd, arg);
+I am also expected this might help with some other ideas like having
+syscall (or interrupt handler) which can run without switching the
+page-table.
 
-All fs impls call vfs_ioc_setflags_prepare again, so the capability is
-checked again.
 
-But I think this makes the vfs_ioc_setflags_prepare check in overlayfs
-pointless (?) and the "Check the capability before cred override"
-comment misleading, user can skip this check by presenting benign
-flags first and then overwriting them to non-benign flags. Or, if this
-check is still needed... it is wrong (?). The code would need to
-arrange for both ioctl's to operate on the same data then.
-Does it make any sense?
-Thanks
+>> (and thus avoid the PTI page-table switch overhead).
+> 
+> Overhead of how much? Why do we care?
+> 
 
-[1] BUG: multi-read in __x64_sys_ioctl  between ovl_ioctl and ext4_ioctl
-======= First Address Range Stack =======
- df_save_stack+0x33/0x70 lib/df-detection.c:208
- add_address+0x2ac/0x352 lib/df-detection.c:47
- ovl_ioctl_set_fsflags fs/overlayfs/file.c:607 [inline]
- ovl_ioctl+0x7d/0x290 fs/overlayfs/file.c:654
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-======= Second Address Range Stack =======
- df_save_stack+0x33/0x70 lib/df-detection.c:208
- add_address+0x2ac/0x352 lib/df-detection.c:47
- ext4_ioctl+0x13b1/0x27f0 fs/ext4/ioctl.c:833
- vfs_ioctl+0x30/0x80 fs/ioctl.c:48
- ovl_real_ioctl+0xed/0x100 fs/overlayfs/file.c:539
- ovl_ioctl_set_flags+0x11d/0x180 fs/overlayfs/file.c:574
- ovl_ioctl_set_fsflags fs/overlayfs/file.c:610 [inline]
- ovl_ioctl+0x11e/0x290 fs/overlayfs/file.c:654
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-syscall number 16  System Call: __x64_sys_ioctl+0x0/0x140 fs/ioctl.c:800
-First 0000000020000000 len 4 Caller vfs_ioctl fs/ioctl.c:48 [inline]
-First 0000000020000000 len 4 Caller __do_sys_ioctl fs/ioctl.c:753 [inline]
-First 0000000020000000 len 4 Caller __se_sys_ioctl fs/ioctl.c:739 [inline]
-First 0000000020000000 len 4 Caller __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-Second 0000000020000000 len 4 Caller vfs_ioctl+0x30/0x80 fs/ioctl.c:48
-==================================================================
+PTI has a measured overhead of roughly 5% for most workloads, but it can
+be much higher in some cases. The overhead is mostly due to the page-table
+switch (even with PCID) so if we can run a syscall or an interrupt handler
+without switching the page-table then we can get this kind of performance
+back.
+
+
+> What is the big picture justfication for this diffstat
+> 
+>>   21 files changed, 874 insertions(+), 314 deletions(-)
+> 
+> and the diffstat for the ASI enablement?
+> 
+
+The latest ASI RFC (RFC v4) is here [1]. This RFC has ASI plugged directly into
+the CR3 switch assembly macro. We are working on a new implementation, based
+on these changes which avoid having to deal with assembly code and makes the
+implementation more robust.
+
+alex.
+
+[1] ASI RFCv4 - https://lore.kernel.org/lkml/20200504144939.11318-1-alexandre.chartre@oracle.com/
