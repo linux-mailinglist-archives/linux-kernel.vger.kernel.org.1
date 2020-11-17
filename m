@@ -2,108 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4870B2B5906
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB562B5908
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgKQFID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 00:08:03 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:59817 "EHLO pegase1.c-s.fr"
+        id S1726597AbgKQFIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 00:08:52 -0500
+Received: from mga14.intel.com ([192.55.52.115]:38231 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbgKQFIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 00:08:02 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CZv8b24L7z9vDG6;
-        Tue, 17 Nov 2020 06:07:59 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id x9UUr05vZLOG; Tue, 17 Nov 2020 06:07:59 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CZv8b1JzCz9vDG4;
-        Tue, 17 Nov 2020 06:07:59 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DFBEC8B773;
-        Tue, 17 Nov 2020 06:07:59 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 78yuI76GK0ll; Tue, 17 Nov 2020 06:07:59 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 675458B75F;
-        Tue, 17 Nov 2020 06:07:59 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 5EDC166885; Tue, 17 Nov 2020 05:07:59 +0000 (UTC)
-Message-Id: <288b6048597c0fdc495b203fda57a223d89499d2.1605589460.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <34ebc3ba2c768d97f363bd5f2deea2356e9ae127.1605589460.git.christophe.leroy@csgroup.eu>
-References: <34ebc3ba2c768d97f363bd5f2deea2356e9ae127.1605589460.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 2/2] powerpc: Remove ucache_bsize
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 17 Nov 2020 05:07:59 +0000 (UTC)
+        id S1725355AbgKQFIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 00:08:52 -0500
+IronPort-SDR: ktIBitpLMIdG8mGpNGjnmZq+woz227auCDlkgKg2r33K2VcBP++YHyPwNGqLwTsH2vfepaL3XV
+ AqsuDa1JEEMQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="170080137"
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="170080137"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 21:08:50 -0800
+IronPort-SDR: i01Crj7irBcfQ7jzhdErDCJiTb3lyxWqUi5a/zEe7Dl+e9CsKxCJXNjNJCLktgC0V19sNOi/I5
+ DC+RIMUfmowg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="430375801"
+Received: from lkp-server01.sh.intel.com (HELO 345567a03a52) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 16 Nov 2020 21:08:49 -0800
+Received: from kbuild by 345567a03a52 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1ketEW-00001B-J5; Tue, 17 Nov 2020 05:08:48 +0000
+Date:   Tue, 17 Nov 2020 13:08:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:ras/core] BUILD SUCCESS
+ 098416e6986127f7e4c8ce4fd6bbbd80e55b0386
+Message-ID: <5fb35ad1.SUG3lk3raYWDaAfO%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ppc601 and e200 were the users of ucache_bsize.
-ppc601 and e200 are now gone.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
+branch HEAD: 098416e6986127f7e4c8ce4fd6bbbd80e55b0386  x86/mce: Use "safe" MSR functions when enabling additional error logging
 
-Remove ucache_bsize.
+elapsed time: 725m
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+configs tested: 165
+configs skipped: 60
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                     cu1830-neo_defconfig
+arm                         socfpga_defconfig
+nios2                         10m50_defconfig
+powerpc                 mpc8315_rdb_defconfig
+xtensa                  nommu_kc705_defconfig
+sh                          rsk7203_defconfig
+arm                       netwinder_defconfig
+arm                     am200epdkit_defconfig
+mips                           gcw0_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                     mpc512x_defconfig
+sh                        sh7785lcr_defconfig
+arm                        oxnas_v6_defconfig
+m68k                            q40_defconfig
+m68k                       m5475evb_defconfig
+arm                       cns3420vb_defconfig
+arm                        mini2440_defconfig
+arm                        vexpress_defconfig
+mips                  decstation_64_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                         bigsur_defconfig
+sh                           sh2007_defconfig
+mips                        bcm63xx_defconfig
+nios2                         3c120_defconfig
+sh                          landisk_defconfig
+arm                          ep93xx_defconfig
+arm                         lpc32xx_defconfig
+arm                  colibri_pxa270_defconfig
+arm                              alldefconfig
+arc                      axs103_smp_defconfig
+arm                      tct_hammer_defconfig
+arm                           u8500_defconfig
+powerpc                     tqm8560_defconfig
+powerpc64                        alldefconfig
+arm                        shmobile_defconfig
+openrisc                            defconfig
+sh                         microdev_defconfig
+sh                             espt_defconfig
+powerpc                     tqm8555_defconfig
+mips                          rm200_defconfig
+mips                       lemote2f_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                     ppa8548_defconfig
+sh                     magicpanelr2_defconfig
+arm                            zeus_defconfig
+arm                           omap1_defconfig
+arm                        neponset_defconfig
+mips                           ip22_defconfig
+arm                     eseries_pxa_defconfig
+sh                               alldefconfig
+arm                           h3600_defconfig
+mips                      bmips_stb_defconfig
+powerpc                   lite5200b_defconfig
+sh                        apsh4ad0a_defconfig
+s390                             alldefconfig
+arm                           sunxi_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                     powernv_defconfig
+arm                            mmp2_defconfig
+ia64                      gensparse_defconfig
+powerpc                    amigaone_defconfig
+sh                           se7724_defconfig
+arc                    vdk_hs38_smp_defconfig
+arm                           h5000_defconfig
+arm                          simpad_defconfig
+sh                          rsk7264_defconfig
+powerpc                     tqm5200_defconfig
+mips                            e55_defconfig
+sh                     sh7710voipgw_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201116
+x86_64               randconfig-a005-20201116
+x86_64               randconfig-a004-20201116
+x86_64               randconfig-a002-20201116
+x86_64               randconfig-a001-20201116
+x86_64               randconfig-a006-20201116
+i386                 randconfig-a006-20201116
+i386                 randconfig-a005-20201116
+i386                 randconfig-a001-20201116
+i386                 randconfig-a002-20201116
+i386                 randconfig-a004-20201116
+i386                 randconfig-a003-20201116
+i386                 randconfig-a006-20201115
+i386                 randconfig-a005-20201115
+i386                 randconfig-a001-20201115
+i386                 randconfig-a002-20201115
+i386                 randconfig-a004-20201115
+i386                 randconfig-a003-20201115
+x86_64               randconfig-a015-20201115
+x86_64               randconfig-a011-20201115
+x86_64               randconfig-a016-20201115
+x86_64               randconfig-a012-20201115
+i386                 randconfig-a012-20201116
+i386                 randconfig-a014-20201116
+i386                 randconfig-a016-20201116
+i386                 randconfig-a011-20201116
+i386                 randconfig-a015-20201116
+i386                 randconfig-a013-20201116
+i386                 randconfig-a012-20201115
+i386                 randconfig-a014-20201115
+i386                 randconfig-a016-20201115
+i386                 randconfig-a011-20201115
+i386                 randconfig-a015-20201115
+i386                 randconfig-a013-20201115
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20201115
+x86_64               randconfig-a005-20201115
+x86_64               randconfig-a004-20201115
+x86_64               randconfig-a002-20201115
+x86_64               randconfig-a001-20201115
+x86_64               randconfig-a006-20201115
+x86_64               randconfig-a015-20201116
+x86_64               randconfig-a011-20201116
+x86_64               randconfig-a014-20201116
+x86_64               randconfig-a013-20201116
+x86_64               randconfig-a016-20201116
+x86_64               randconfig-a012-20201116
+
 ---
- arch/powerpc/include/asm/elf.h     | 2 +-
- arch/powerpc/kernel/setup-common.c | 4 ----
- arch/powerpc/kernel/setup_32.c     | 1 -
- 3 files changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/elf.h b/arch/powerpc/include/asm/elf.h
-index 53ed2ca40151..900b8d7fdffa 100644
---- a/arch/powerpc/include/asm/elf.h
-+++ b/arch/powerpc/include/asm/elf.h
-@@ -168,7 +168,7 @@ do {									\
- 	/* Cache size items */						\
- 	NEW_AUX_ENT(AT_DCACHEBSIZE, dcache_bsize);			\
- 	NEW_AUX_ENT(AT_ICACHEBSIZE, icache_bsize);			\
--	NEW_AUX_ENT(AT_UCACHEBSIZE, ucache_bsize);			\
-+	NEW_AUX_ENT(AT_UCACHEBSIZE, 0);					\
- 	VDSO_AUX_ENT(AT_SYSINFO_EHDR, current->mm->context.vdso_base);	\
- 	ARCH_DLINFO_CACHE_GEOMETRY;					\
- } while (0)
-diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-index 808ec9fab605..c23449a93fef 100644
---- a/arch/powerpc/kernel/setup-common.c
-+++ b/arch/powerpc/kernel/setup-common.c
-@@ -90,8 +90,6 @@ EXPORT_SYMBOL_GPL(boot_cpuid);
-  */
- int dcache_bsize;
- int icache_bsize;
--int ucache_bsize;
--
- 
- unsigned long klimit = (unsigned long) _end;
- 
-@@ -802,8 +800,6 @@ static __init void print_system_info(void)
- 
- 	pr_info("dcache_bsize      = 0x%x\n", dcache_bsize);
- 	pr_info("icache_bsize      = 0x%x\n", icache_bsize);
--	if (ucache_bsize != 0)
--		pr_info("ucache_bsize      = 0x%x\n", ucache_bsize);
- 
- 	pr_info("cpu_features      = 0x%016lx\n", cur_cpu_spec->cpu_features);
- 	pr_info("  possible        = 0x%016lx\n",
-diff --git a/arch/powerpc/kernel/setup_32.c b/arch/powerpc/kernel/setup_32.c
-index 416e2c7a8b0a..8ba49a6bf515 100644
---- a/arch/powerpc/kernel/setup_32.c
-+++ b/arch/powerpc/kernel/setup_32.c
-@@ -222,5 +222,4 @@ __init void initialize_cache_info(void)
- 	 */
- 	dcache_bsize = cur_cpu_spec->dcache_bsize;
- 	icache_bsize = cur_cpu_spec->icache_bsize;
--	ucache_bsize = 0;
- }
--- 
-2.25.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
