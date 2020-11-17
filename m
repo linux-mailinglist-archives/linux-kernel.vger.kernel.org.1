@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21E02B6434
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2692B65A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732753AbgKQNjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:39:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50332 "EHLO mail.kernel.org"
+        id S1731856AbgKQN5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:57:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732693AbgKQNiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:38:51 -0500
+        id S1730308AbgKQNTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:19:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D889A20870;
-        Tue, 17 Nov 2020 13:38:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B894324631;
+        Tue, 17 Nov 2020 13:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620330;
-        bh=NCblQ7PM6uHO7cLp6xTKZV2eFlzXy84C7Jk0apAPbDY=;
+        s=default; t=1605619182;
+        bh=KwYkJC3COhSWJHnWUdpaelGcfET4+71FmFtMFzMMIr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UaIbV9GMla3i6VygIaorGuUW2kiG+C0aHmy4lAlNzbznAwAd5M1gR6CHkkQeIvJ1F
-         MJo89c20Bo1R5QAIvoYybrYTQl/siedgq0ariI6cWbDjhRNWGA7ywsWA7n523czQe+
-         cDXRgj7yVd1DrbrNhfHefJHFlBqWR1IFs4J9CJvU=
+        b=vJQQEIKTP/GFPtNwjxIqUJeMkn4QjwpqX5LA/+bPFsuaeef+DNhBYp4azPWuXLnJl
+         teT81NjxXF6u0MMgcvAGcL13M6LvSxg6I8r4BoL2UzpGUhh9JefMlOn95fHjNKWXed
+         a3jhFJq/nxvWg/gmm/6QeGVojKSRhTMpCFcdGJDk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 5.9 182/255] firmware: xilinx: fix out-of-bounds access
-Date:   Tue, 17 Nov 2020 14:05:22 +0100
-Message-Id: <20201117122147.777135834@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 056/101] xfs: fix rmap key and record comparison functions
+Date:   Tue, 17 Nov 2020 14:05:23 +0100
+Message-Id: <20201117122115.827859082@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-commit f3217d6f2f7a76b36a3326ad58c8897f4d5fbe31 upstream.
+[ Upstream commit 6ff646b2ceb0eec916101877f38da0b73e3a5b7f ]
 
-The zynqmp_pm_set_suspend_mode() and zynqmp_pm_get_trustzone_version()
-functions pass values as api_id into zynqmp_pm_invoke_fn
-that are beyond PM_API_MAX, resulting in an out-of-bounds access:
+Keys for extent interval records in the reverse mapping btree are
+supposed to be computed as follows:
 
-drivers/firmware/xilinx/zynqmp.c: In function 'zynqmp_pm_set_suspend_mode':
-drivers/firmware/xilinx/zynqmp.c:150:24: warning: array subscript 2562 is above array bounds of 'u32[64]' {aka 'unsigned int[64]'} [-Warray-bounds]
-  150 |  if (zynqmp_pm_features[api_id] != PM_FEATURE_UNCHECKED)
-      |      ~~~~~~~~~~~~~~~~~~^~~~~~~~
-drivers/firmware/xilinx/zynqmp.c:28:12: note: while referencing 'zynqmp_pm_features'
-   28 | static u32 zynqmp_pm_features[PM_API_MAX];
-      |            ^~~~~~~~~~~~~~~~~~
+(physical block, owner, fork, is_btree, is_unwritten, offset)
 
-Replace the resulting undefined behavior with an error return.
-This may break some things that happen to work at the moment
-but seems better than randomly overwriting kernel data.
+This provides users the ability to look up a reverse mapping from a bmbt
+record -- start with the physical block; then if there are multiple
+records for the same block, move on to the owner; then the inode fork
+type; and so on to the file offset.
 
-I assume we need additional fixes for the two functions that now
-return an error.
+However, the key comparison functions incorrectly remove the
+fork/btree/unwritten information that's encoded in the on-disk offset.
+This means that lookup comparisons are only done with:
 
-Fixes: 76582671eb5d ("firmware: xilinx: Add Zynqmp firmware driver")
-Fixes: e178df31cf41 ("firmware: xilinx: Implement ZynqMP power management APIs")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20201026155449.3703142-1-arnd@kernel.org
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+(physical block, owner, offset)
 
+This means that queries can return incorrect results.  On consistent
+filesystems this hasn't been an issue because blocks are never shared
+between forks or with bmbt blocks; and are never unwritten.  However,
+this bug means that online repair cannot always detect corruption in the
+key information in internal rmapbt nodes.
+
+Found by fuzzing keys[1].attrfork = ones on xfs/371.
+
+Fixes: 4b8ed67794fe ("xfs: add rmap btree operations")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/xilinx/zynqmp.c |    3 +++
- 1 file changed, 3 insertions(+)
+ fs/xfs/libxfs/xfs_rmap_btree.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -147,6 +147,9 @@ static int zynqmp_pm_feature(u32 api_id)
+diff --git a/fs/xfs/libxfs/xfs_rmap_btree.c b/fs/xfs/libxfs/xfs_rmap_btree.c
+index f79cf040d7450..77528f413286b 100644
+--- a/fs/xfs/libxfs/xfs_rmap_btree.c
++++ b/fs/xfs/libxfs/xfs_rmap_btree.c
+@@ -247,8 +247,8 @@ xfs_rmapbt_key_diff(
+ 	else if (y > x)
+ 		return -1;
+ 
+-	x = XFS_RMAP_OFF(be64_to_cpu(kp->rm_offset));
+-	y = rec->rm_offset;
++	x = be64_to_cpu(kp->rm_offset);
++	y = xfs_rmap_irec_offset_pack(rec);
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -279,8 +279,8 @@ xfs_rmapbt_diff_two_keys(
+ 	else if (y > x)
+ 		return -1;
+ 
+-	x = XFS_RMAP_OFF(be64_to_cpu(kp1->rm_offset));
+-	y = XFS_RMAP_OFF(be64_to_cpu(kp2->rm_offset));
++	x = be64_to_cpu(kp1->rm_offset);
++	y = be64_to_cpu(kp2->rm_offset);
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -393,8 +393,8 @@ xfs_rmapbt_keys_inorder(
+ 		return 1;
+ 	else if (a > b)
  		return 0;
- 
- 	/* Return value if feature is already checked */
-+	if (api_id > ARRAY_SIZE(zynqmp_pm_features))
-+		return PM_FEATURE_INVALID;
-+
- 	if (zynqmp_pm_features[api_id] != PM_FEATURE_UNCHECKED)
- 		return zynqmp_pm_features[api_id];
- 
+-	a = XFS_RMAP_OFF(be64_to_cpu(k1->rmap.rm_offset));
+-	b = XFS_RMAP_OFF(be64_to_cpu(k2->rmap.rm_offset));
++	a = be64_to_cpu(k1->rmap.rm_offset);
++	b = be64_to_cpu(k2->rmap.rm_offset);
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
+@@ -423,8 +423,8 @@ xfs_rmapbt_recs_inorder(
+ 		return 1;
+ 	else if (a > b)
+ 		return 0;
+-	a = XFS_RMAP_OFF(be64_to_cpu(r1->rmap.rm_offset));
+-	b = XFS_RMAP_OFF(be64_to_cpu(r2->rmap.rm_offset));
++	a = be64_to_cpu(r1->rmap.rm_offset);
++	b = be64_to_cpu(r2->rmap.rm_offset);
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
+-- 
+2.27.0
+
 
 
