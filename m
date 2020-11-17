@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CED42B622A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D81C82B6047
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730909AbgKQN0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:26:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33250 "EHLO mail.kernel.org"
+        id S1729129AbgKQNHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:07:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731383AbgKQNZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:25:54 -0500
+        id S1729107AbgKQNHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:07:30 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 464812465E;
-        Tue, 17 Nov 2020 13:25:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C5832468F;
+        Tue, 17 Nov 2020 13:07:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619554;
-        bh=HUI+pB8AF3EcykAaxGVHAFhpWEHcOjeRP49d47paSLc=;
+        s=default; t=1605618449;
+        bh=SYfwzIgWl8g1P/EmMrMx3AnqOwe83/QwaaKVAqhaHWE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d2uTTjAFqoQPsd9lvfr0PfEmnRrAOPOUWSwAxSV8rxy3KSzNWUs+wnxbmuvBrw0t9
-         Rup+blH3GH4KIxwHjoLrH7dPppyzG2UAOgnmQKz4ve0f70fDhfcQhYvVZdbpTH6UaN
-         AZU2SChRQ52KlfNk5Ky+LKnuizEPdKXx6wuUeCcQ=
+        b=LoJTf0+s4NP4FwDl9mcs7T9qWwjmrW01D7iLrpIS2++PZIl1++3qqx9Eid1ahvlWD
+         zHMy0luTSlPc+I7ROkUjepEUbjOn1+B83WQMChP8NfGC3or5Z1VY5XyhFaT7fX/HBw
+         /JSyCsVumaxlYWOOwim/eGD/teKVP6WVy/nsWEro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Leng <lengchao@huawei.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/151] nvme-rdma: avoid race between time out and tear down
+        stable@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 4.4 37/64] dont dump the threads that had been already exiting when zapped.
 Date:   Tue, 17 Nov 2020 14:05:00 +0100
-Message-Id: <20201117122124.831567536@linuxfoundation.org>
+Message-Id: <20201117122107.990579548@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,103 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Leng <lengchao@huawei.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit 3017013dcc82a4862bd1e140f8b762cfc594008d ]
+commit 77f6ab8b7768cf5e6bdd0e72499270a0671506ee upstream.
 
-Now use teardown_lock to serialize for time out and tear down. This may
-cause abnormal: first cancel all request in tear down, then time out may
-complete the request again, but the request may already be freed or
-restarted.
+Coredump logics needs to report not only the registers of the dumping
+thread, but (since 2.5.43) those of other threads getting killed.
 
-To avoid race between time out and tear down, in tear down process,
-first we quiesce the queue, and then delete the timer and cancel
-the time out work for the queue. At the same time we need to delete
-teardown_lock.
+Doing that might require extra state saved on the stack in asm glue at
+kernel entry; signal delivery logics does that (we need to be able to
+save sigcontext there, at the very least) and so does seccomp.
 
-Signed-off-by: Chao Leng <lengchao@huawei.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+That covers all callers of do_coredump().  Secondary threads get hit with
+SIGKILL and caught as soon as they reach exit_mm(), which normally happens
+in signal delivery, so those are also fine most of the time.  Unfortunately,
+it is possible to end up with secondary zapped when it has already entered
+exit(2) (or, worse yet, is oopsing).  In those cases we reach exit_mm()
+when mm->core_state is already set, but the stack contents is not what
+we would have in signal delivery.
+
+At least on two architectures (alpha and m68k) it leads to infoleaks - we
+end up with a chunk of kernel stack written into coredump, with the contents
+consisting of normal C stack frames of the call chain leading to exit_mm()
+instead of the expected copy of userland registers.  In case of alpha we
+leak 312 bytes of stack.  Other architectures (including the regset-using
+ones) might have similar problems - the normal user of regsets is ptrace
+and the state of tracee at the time of such calls is special in the same
+way signal delivery is.
+
+Note that had the zapper gotten to the exiting thread slightly later,
+it wouldn't have been included into coredump anyway - we skip the threads
+that have already cleared their ->mm.  So let's pretend that zapper always
+loses the race.  IOW, have exit_mm() only insert into the dumper list if
+we'd gotten there from handling a fatal signal[*]
+
+As the result, the callers of do_exit() that have *not* gone through get_signal()
+are not seen by coredump logics as secondary threads.  Which excludes voluntary
+exit()/oopsen/traps/etc.  The dumper thread itself is unaffected by that,
+so seccomp is fine.
+
+[*] originally I intended to add a new flag in tsk->flags, but ebiederman pointed
+out that PF_SIGNALED is already doing just what we need.
+
+Cc: stable@vger.kernel.org
+Fixes: d89f3847def4 ("[PATCH] thread-aware coredumps, 2.5.43-C3")
+History-tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/nvme/host/rdma.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ kernel/exit.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index e957ad0a07f58..cfd437f7750e1 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -110,7 +110,6 @@ struct nvme_rdma_ctrl {
- 	struct sockaddr_storage src_addr;
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -408,7 +408,10 @@ static void exit_mm(struct task_struct *
+ 		up_read(&mm->mmap_sem);
  
- 	struct nvme_ctrl	ctrl;
--	struct mutex		teardown_lock;
- 	bool			use_inline_data;
- 	u32			io_queues[HCTX_MAX_TYPES];
- };
-@@ -933,8 +932,8 @@ out_free_io_queues:
- static void nvme_rdma_teardown_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 		bool remove)
- {
--	mutex_lock(&ctrl->teardown_lock);
- 	blk_mq_quiesce_queue(ctrl->ctrl.admin_q);
-+	blk_sync_queue(ctrl->ctrl.admin_q);
- 	nvme_rdma_stop_queue(&ctrl->queues[0]);
- 	if (ctrl->ctrl.admin_tagset) {
- 		blk_mq_tagset_busy_iter(ctrl->ctrl.admin_tagset,
-@@ -944,16 +943,15 @@ static void nvme_rdma_teardown_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 	if (remove)
- 		blk_mq_unquiesce_queue(ctrl->ctrl.admin_q);
- 	nvme_rdma_destroy_admin_queue(ctrl, remove);
--	mutex_unlock(&ctrl->teardown_lock);
- }
- 
- static void nvme_rdma_teardown_io_queues(struct nvme_rdma_ctrl *ctrl,
- 		bool remove)
- {
--	mutex_lock(&ctrl->teardown_lock);
- 	if (ctrl->ctrl.queue_count > 1) {
- 		nvme_start_freeze(&ctrl->ctrl);
- 		nvme_stop_queues(&ctrl->ctrl);
-+		nvme_sync_io_queues(&ctrl->ctrl);
- 		nvme_rdma_stop_io_queues(ctrl);
- 		if (ctrl->ctrl.tagset) {
- 			blk_mq_tagset_busy_iter(ctrl->ctrl.tagset,
-@@ -964,7 +962,6 @@ static void nvme_rdma_teardown_io_queues(struct nvme_rdma_ctrl *ctrl,
- 			nvme_start_queues(&ctrl->ctrl);
- 		nvme_rdma_destroy_io_queues(ctrl, remove);
- 	}
--	mutex_unlock(&ctrl->teardown_lock);
- }
- 
- static void nvme_rdma_free_ctrl(struct nvme_ctrl *nctrl)
-@@ -1728,16 +1725,12 @@ static void nvme_rdma_complete_timed_out(struct request *rq)
- {
- 	struct nvme_rdma_request *req = blk_mq_rq_to_pdu(rq);
- 	struct nvme_rdma_queue *queue = req->queue;
--	struct nvme_rdma_ctrl *ctrl = queue->ctrl;
- 
--	/* fence other contexts that may complete the command */
--	mutex_lock(&ctrl->teardown_lock);
- 	nvme_rdma_stop_queue(queue);
- 	if (!blk_mq_request_completed(rq)) {
- 		nvme_req(rq)->status = NVME_SC_HOST_ABORTED_CMD;
- 		blk_mq_complete_request(rq);
- 	}
--	mutex_unlock(&ctrl->teardown_lock);
- }
- 
- static enum blk_eh_timer_return
-@@ -2029,7 +2022,6 @@ static struct nvme_ctrl *nvme_rdma_create_ctrl(struct device *dev,
- 		return ERR_PTR(-ENOMEM);
- 	ctrl->ctrl.opts = opts;
- 	INIT_LIST_HEAD(&ctrl->list);
--	mutex_init(&ctrl->teardown_lock);
- 
- 	if (!(opts->mask & NVMF_OPT_TRSVCID)) {
- 		opts->trsvcid =
--- 
-2.27.0
-
+ 		self.task = tsk;
+-		self.next = xchg(&core_state->dumper.next, &self);
++		if (self.task->flags & PF_SIGNALED)
++			self.next = xchg(&core_state->dumper.next, &self);
++		else
++			self.task = NULL;
+ 		/*
+ 		 * Implies mb(), the result of xchg() must be visible
+ 		 * to core_state->dumper.
 
 
