@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1F02B6363
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE062B6562
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732982AbgKQNhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:37:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48762 "EHLO mail.kernel.org"
+        id S1731783AbgKQNyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:54:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732969AbgKQNhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:37:35 -0500
+        id S1731042AbgKQNYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:24:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 844072469D;
-        Tue, 17 Nov 2020 13:37:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80D2324654;
+        Tue, 17 Nov 2020 13:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620255;
-        bh=6ApJEoX/IvjqEPCeHzJNnAXX3VgpsxxHxzsC58U8le0=;
+        s=default; t=1605619491;
+        bh=nBUAPjoRaEwFWxkzFj7XDog9tRvrbsoXyFg3ASJmxgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sl7ke0ccRQ9XZYiNUzsz95EJ7JeS3trxmz0dHbeZ1MMOjvDnsDJPHPXW+p5ps5pDY
-         JkIGqZ5jPiHRPsS4hfe3MUT/nrlX9VWz4twr/7zpBrY5DOnsK6i/8ka+ZiTntmsgOA
-         VSDDxZqqJ+mIbY5mI58FxDZKvOwEBmP76FDmyypw=
+        b=MEarD58o7nKDyWlip/N593dDPCV2D/5UYpCPNQ42D6RRgE9kQzaHQUaUAHYkHvAE4
+         UT6DdqMgvShnXeTcMx+ko2KqfkV+SHTdujWR3CqXUacSQkgqemdW6Duu5ZIbFZnslp
+         pP0lLw1z/pUvjh+AJUVRlCCqNnAf4XrWDj4crtL0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jamie McClymont <jamie@kwiius.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        stable@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 128/255] pinctrl: intel: Fix 2 kOhm bias which is 833 Ohm
-Date:   Tue, 17 Nov 2020 14:04:28 +0100
-Message-Id: <20201117122145.162352736@linuxfoundation.org>
+Subject: [PATCH 5.4 039/151] xfs: flush new eof page on truncate to avoid post-eof corruption
+Date:   Tue, 17 Nov 2020 14:04:29 +0100
+Message-Id: <20201117122123.321079352@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,118 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Brian Foster <bfoster@redhat.com>
 
-[ Upstream commit dd26209bc56886cacdbd828571e54a6bca251e55 ]
+[ Upstream commit 869ae85dae64b5540e4362d7fe4cd520e10ec05c ]
 
-2 kOhm bias was never an option in Intel GPIO hardware, the available
-matrix is:
+It is possible to expose non-zeroed post-EOF data in XFS if the new
+EOF page is dirty, backed by an unwritten block and the truncate
+happens to race with writeback. iomap_truncate_page() will not zero
+the post-EOF portion of the page if the underlying block is
+unwritten. The subsequent call to truncate_setsize() will, but
+doesn't dirty the page. Therefore, if writeback happens to complete
+after iomap_truncate_page() (so it still sees the unwritten block)
+but before truncate_setsize(), the cached page becomes inconsistent
+with the on-disk block. A mapped read after the associated page is
+reclaimed or invalidated exposes non-zero post-EOF data.
 
-	000	none
-	001	1 kOhm (if available)
-	010	5 kOhm
-	100	20 kOhm
+For example, consider the following sequence when run on a kernel
+modified to explicitly flush the new EOF page within the race
+window:
 
-As easy to get the 3 resistors are gated separately and according to
-parallel circuits calculations we may get combinations of the above where
-the result is always strictly less than minimal resistance. Hence,
-additional values can be:
+$ xfs_io -fc "falloc 0 4k" -c fsync /mnt/file
+$ xfs_io -c "pwrite 0 4k" -c "truncate 1k" /mnt/file
+  ...
+$ xfs_io -c "mmap 0 4k" -c "mread -v 1k 8" /mnt/file
+00000400:  00 00 00 00 00 00 00 00  ........
+$ umount /mnt/; mount <dev> /mnt/
+$ xfs_io -c "mmap 0 4k" -c "mread -v 1k 8" /mnt/file
+00000400:  cd cd cd cd cd cd cd cd  ........
 
-	011	~833.3 Ohm
-	101	~952.4 Ohm
-	110	~4 kOhm
-	111	~800 Ohm
+Update xfs_setattr_size() to explicitly flush the new EOF page prior
+to the page truncate to ensure iomap has the latest state of the
+underlying block.
 
-That said, convert TERM definitions to be the bit masks to reflect the above.
-
-While at it, enable the same setting for pull down case.
-
-Fixes: 7981c0015af2 ("pinctrl: intel: Add Intel Sunrisepoint pin controller and GPIO support")
-Cc: Jamie McClymont <jamie@kwiius.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Fixes: 68a9f5e7007c ("xfs: implement iomap based buffered write path")
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/intel/pinctrl-intel.c | 32 ++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 10 deletions(-)
+ fs/xfs/xfs_iops.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-index b64997b303e0c..b738b28239bd4 100644
---- a/drivers/pinctrl/intel/pinctrl-intel.c
-+++ b/drivers/pinctrl/intel/pinctrl-intel.c
-@@ -62,10 +62,10 @@
- #define PADCFG1_TERM_UP			BIT(13)
- #define PADCFG1_TERM_SHIFT		10
- #define PADCFG1_TERM_MASK		GENMASK(12, 10)
--#define PADCFG1_TERM_20K		4
--#define PADCFG1_TERM_2K			3
--#define PADCFG1_TERM_5K			2
--#define PADCFG1_TERM_1K			1
-+#define PADCFG1_TERM_20K		BIT(2)
-+#define PADCFG1_TERM_5K			BIT(1)
-+#define PADCFG1_TERM_1K			BIT(0)
-+#define PADCFG1_TERM_833		(BIT(1) | BIT(0))
- 
- #define PADCFG2				0x008
- #define PADCFG2_DEBEN			BIT(0)
-@@ -549,12 +549,12 @@ static int intel_config_get_pull(struct intel_pinctrl *pctrl, unsigned int pin,
- 			return -EINVAL;
- 
- 		switch (term) {
-+		case PADCFG1_TERM_833:
-+			*arg = 833;
-+			break;
- 		case PADCFG1_TERM_1K:
- 			*arg = 1000;
- 			break;
--		case PADCFG1_TERM_2K:
--			*arg = 2000;
--			break;
- 		case PADCFG1_TERM_5K:
- 			*arg = 5000;
- 			break;
-@@ -570,6 +570,11 @@ static int intel_config_get_pull(struct intel_pinctrl *pctrl, unsigned int pin,
- 			return -EINVAL;
- 
- 		switch (term) {
-+		case PADCFG1_TERM_833:
-+			if (!(community->features & PINCTRL_FEATURE_1K_PD))
-+				return -EINVAL;
-+			*arg = 833;
-+			break;
- 		case PADCFG1_TERM_1K:
- 			if (!(community->features & PINCTRL_FEATURE_1K_PD))
- 				return -EINVAL;
-@@ -685,12 +690,12 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned int pin,
- 		case 5000:
- 			value |= PADCFG1_TERM_5K << PADCFG1_TERM_SHIFT;
- 			break;
--		case 2000:
--			value |= PADCFG1_TERM_2K << PADCFG1_TERM_SHIFT;
--			break;
- 		case 1000:
- 			value |= PADCFG1_TERM_1K << PADCFG1_TERM_SHIFT;
- 			break;
-+		case 833:
-+			value |= PADCFG1_TERM_833 << PADCFG1_TERM_SHIFT;
-+			break;
- 		default:
- 			ret = -EINVAL;
- 		}
-@@ -714,6 +719,13 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned int pin,
- 			}
- 			value |= PADCFG1_TERM_1K << PADCFG1_TERM_SHIFT;
- 			break;
-+		case 833:
-+			if (!(community->features & PINCTRL_FEATURE_1K_PD)) {
-+				ret = -EINVAL;
-+				break;
-+			}
-+			value |= PADCFG1_TERM_833 << PADCFG1_TERM_SHIFT;
-+			break;
- 		default:
- 			ret = -EINVAL;
- 		}
+diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+index fe285d123d69f..dec511823fcbc 100644
+--- a/fs/xfs/xfs_iops.c
++++ b/fs/xfs/xfs_iops.c
+@@ -885,6 +885,16 @@ xfs_setattr_size(
+ 		error = iomap_zero_range(inode, oldsize, newsize - oldsize,
+ 				&did_zeroing, &xfs_iomap_ops);
+ 	} else {
++		/*
++		 * iomap won't detect a dirty page over an unwritten block (or a
++		 * cow block over a hole) and subsequently skips zeroing the
++		 * newly post-EOF portion of the page. Flush the new EOF to
++		 * convert the block before the pagecache truncate.
++		 */
++		error = filemap_write_and_wait_range(inode->i_mapping, newsize,
++						     newsize);
++		if (error)
++			return error;
+ 		error = iomap_truncate_page(inode, newsize, &did_zeroing,
+ 				&xfs_iomap_ops);
+ 	}
 -- 
 2.27.0
 
