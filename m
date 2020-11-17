@@ -2,214 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DFD2B5E05
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBE72B5E04
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbgKQLJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:09:36 -0500
-Received: from mga07.intel.com ([134.134.136.100]:11853 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727267AbgKQLJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:09:36 -0500
-IronPort-SDR: zHYszNrADx0WTy3rnBWfRGEAPeOilmYWmrOOQH4cnpZ2TqaXmeVvpwydu0bqaGC0ArByyeaN8A
- T71w3iXun1CA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="235052617"
+        id S1728297AbgKQLJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:09:28 -0500
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:10704 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727267AbgKQLJ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 06:09:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605611367; x=1637147367;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=EH841G87dGNBNV2s4l1T/JKSnRrnO9+AX7+FxZUsGfA=;
+  b=VXM2Z//ssFcynFDUCh3LsuMsH+Reo3RT6Ye23+xPyupb6/yzhVvRCGug
+   U1qYqsFm+5lYfUojcurHLqWdRW4v/Cd5dMbdDu0nZusU3h5ZtsL9RmwWb
+   zSl9QJsKXC8HwNLvUrpqqYmKfbPavbnaLmfFK4EcwU6O918DWwFVbTjeC
+   zhwGsrIWRSuGymmIiihxUaboYU2wqsKwPMcZhuPpcV45IJqgmyBN3NBI0
+   sYrjCMDNiasi26QQTDNXm43sigwOZwk+TsG5NapD60ATjtpP6QBQFaOJu
+   k69cmlmVBIc3PWBA6M0a/Qk7MGqyatXsgwHGcZwPtJhXZetRBPjYsNmvW
+   Q==;
+IronPort-SDR: SLbY2ruvV7EnKhrDAyNn8E7FJ9mQE5Rnwqs0yPBy8qD8PibdwCBTM7lkmeWy1iF5tPDyWERv+Y
+ ATnEllerhduQNfY2EteykTO2wTuzh0i2up5jrMF/UCocCqDDNbjsohFnaoGkgK9LpoYvrlNqGY
+ ngiI6Re/cQaUjIBXWx4Owc9C4M9QY2tn2WddJdzTFW1v+I5XhzZOffmiV4kP19XaOzrTkRN+Nu
+ 9M17SJuzgZg3f8oK0b99hRaaCk9h5jUifcqDSNfGoU+FpAy4Jdb8/9TOz+meTjZnpexFDod5Bd
+ itY=
 X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="235052617"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 03:09:34 -0800
-IronPort-SDR: Eh4LA9Mi8SlxT6FwvqQSJ95lAgywV1/jqgAVCilVEEo9A5LV0qN8gLwuKh04Ch4/VX2HSn2Aa8
- eFtr/wwDSFqQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="325122951"
-Received: from lkp-server01.sh.intel.com (HELO 45561eaec37e) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 17 Nov 2020 03:09:33 -0800
-Received: from kbuild by 45561eaec37e with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1keyrc-00003f-C5; Tue, 17 Nov 2020 11:09:32 +0000
-Date:   Tue, 17 Nov 2020 19:08:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 6741d61618cf8f7aa805f62c5eeb1a0859712d94
-Message-ID: <5fb3af48.WXSTjJoJp1zfG6jH%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="98732930"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Nov 2020 04:09:27 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 17 Nov 2020 04:09:26 -0700
+Received: from soft-dev2.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Tue, 17 Nov 2020 04:09:24 -0700
+References: <20201110100642.2153-1-bjarni.jonasson@microchip.com> <20201110102552.GZ1551@shell.armlinux.org.uk> <87blg5qou5.fsf@microchip.com> <20201110151248.GA1551@shell.armlinux.org.uk> <87a6voqntq.fsf@microchip.com> <20201115121921.GI1551@shell.armlinux.org.uk>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH] phy: phylink: Fix CuSFP issue in phylink
+In-Reply-To: <20201115121921.GI1551@shell.armlinux.org.uk>
+Date:   Tue, 17 Nov 2020 12:09:22 +0100
+Message-ID: <877dqkqly5.fsf@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: 6741d61618cf8f7aa805f62c5eeb1a0859712d94  rcu: Allow rcu_irq_enter_check_tick() from NMI
 
-elapsed time: 725m
+Russell King - ARM Linux admin writes:
 
-configs tested: 150
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                     cu1830-neo_defconfig
-arm                         socfpga_defconfig
-nios2                         10m50_defconfig
-powerpc                 mpc8315_rdb_defconfig
-xtensa                  nommu_kc705_defconfig
-m68k                            q40_defconfig
-m68k                       m5475evb_defconfig
-arm                        mini2440_defconfig
-arm                        vexpress_defconfig
-mips                  decstation_64_defconfig
-arm                         shannon_defconfig
-mips                           gcw0_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                          iop32x_defconfig
-sh                           sh2007_defconfig
-nds32                               defconfig
-mips                          rm200_defconfig
-mips                       lemote2f_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                     ppa8548_defconfig
-sh                     magicpanelr2_defconfig
-arc                          axs101_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                     sbc8548_defconfig
-arm                            zeus_defconfig
-arm                           omap1_defconfig
-arm                        neponset_defconfig
-mips                           ip22_defconfig
-mips                         tb0219_defconfig
-arc                      axs103_smp_defconfig
-mips                        qi_lb60_defconfig
-m68k                            mac_defconfig
-mips                          ath79_defconfig
-sh                         ecovec24_defconfig
-m68k                          hp300_defconfig
-arm                          gemini_defconfig
-arm                      tct_hammer_defconfig
-mips                        bcm47xx_defconfig
-sh                      rts7751r2d1_defconfig
-mips                            gpr_defconfig
-powerpc                        icon_defconfig
-sh                           se7721_defconfig
-mips                      loongson3_defconfig
-powerpc                     stx_gp3_defconfig
-arc                     nsimosci_hs_defconfig
-mips                        jmr3927_defconfig
-powerpc                       holly_defconfig
-xtensa                          iss_defconfig
-powerpc                     mpc83xx_defconfig
-mips                        bcm63xx_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                     powernv_defconfig
-arm                            mmp2_defconfig
-arm                       cns3420vb_defconfig
-arm                         lpc32xx_defconfig
-ia64                      gensparse_defconfig
-powerpc                    amigaone_defconfig
-sh                           se7724_defconfig
-arc                    vdk_hs38_smp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20201116
-x86_64               randconfig-a005-20201116
-x86_64               randconfig-a004-20201116
-x86_64               randconfig-a002-20201116
-x86_64               randconfig-a001-20201116
-x86_64               randconfig-a006-20201116
-i386                 randconfig-a006-20201116
-i386                 randconfig-a005-20201116
-i386                 randconfig-a001-20201116
-i386                 randconfig-a002-20201116
-i386                 randconfig-a004-20201116
-i386                 randconfig-a003-20201116
-x86_64               randconfig-a015-20201115
-x86_64               randconfig-a011-20201115
-x86_64               randconfig-a014-20201115
-x86_64               randconfig-a013-20201115
-x86_64               randconfig-a016-20201115
-x86_64               randconfig-a012-20201115
-i386                 randconfig-a012-20201116
-i386                 randconfig-a014-20201116
-i386                 randconfig-a016-20201116
-i386                 randconfig-a011-20201116
-i386                 randconfig-a015-20201116
-i386                 randconfig-a013-20201116
-i386                 randconfig-a012-20201115
-i386                 randconfig-a014-20201115
-i386                 randconfig-a016-20201115
-i386                 randconfig-a011-20201115
-i386                 randconfig-a015-20201115
-i386                 randconfig-a013-20201115
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201115
-x86_64               randconfig-a005-20201115
-x86_64               randconfig-a004-20201115
-x86_64               randconfig-a002-20201115
-x86_64               randconfig-a001-20201115
-x86_64               randconfig-a006-20201115
-x86_64               randconfig-a015-20201116
-x86_64               randconfig-a011-20201116
-x86_64               randconfig-a014-20201116
-x86_64               randconfig-a013-20201116
-x86_64               randconfig-a016-20201116
-x86_64               randconfig-a012-20201116
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> On Wed, Nov 11, 2020 at 09:52:18AM +0100, Bjarni Jonasson wrote:
+>>
+>> Russell King - ARM Linux admin writes:
+>>
+>> > On Tue, Nov 10, 2020 at 03:16:34PM +0100, Bjarni Jonasson wrote:
+>> >>
+>> >> Russell King - ARM Linux admin writes:
+>> >>
+>> >> > On Tue, Nov 10, 2020 at 11:06:42AM +0100, Bjarni Jonasson wrote:
+>> >> >> There is an issue with the current phylink driver and CuSFPs which
+>> >> >> results in a callback to the phylink validate function without any
+>> >> >> advertisement capabilities.  The workaround (in this changeset)
+>> >> >> is to assign capabilities if a 1000baseT SFP is identified.
+>> >> >
+>> >> > How does this happen?  Which PHY is being used?
+>> >>
+>> >> This occurs just by plugging in the CuSFP.
+>> >> None of the CuSFPs we have tested are working.
+>> >> This is a dump from 3 different CuSFPs, phy regs 0-3:
+>> >> FS SFP: 01:40:79:49
+>> >> HP SFP: 01:40:01:49
+>> >> Marvel SFP: 01:40:01:49
+>> >> This was working before the delayed mac config was implemented (in dec
+>> >> 2019).
+>> >
+>> > You're dumping PHY registers 0 and 1 there, not 0 through 3, which
+>> > the values confirm. I don't recognise the format either. PHY registers
+>> > are always 16-bit.
+>> Sorry about that. Here is it again:
+>> Marvell SFP : 0x0140 0x0149 0x0141 0x0cc1
+>> FS SFP      : 0x1140 0x7949 0x0141 0x0cc2
+>> Cisco SFP   : 0x0140 0x0149 0x0141 0x0cc1
+>> I.e. its seems to be a Marvell phy (0x0141) in all cases.
+>> And this occurs when phylink_start() is called.
+>
+> So they're all 88E1111 devices, which is the most common PHY for
+> CuSFPs.
+>
+> Do you have the Marvell PHY driver either built-in or available as a
+> module? I suspect the problem is you don't. You will need the Marvell
+> PHY driver to correctly drive the PHY, you can't rely on the fallback
+> driver for SFPs.
+Correct.  I was using the generic driver and that does clearly not
+work.  After including the Marvell driver the callback to the validate
+function happens as expected.  Thanks for the support.
+--
+Bjarni Jonasson Microchip
