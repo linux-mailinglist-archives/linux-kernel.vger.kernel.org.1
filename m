@@ -2,149 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541DA2B712E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8B22B7130
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728606AbgKQWCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:02:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
+        id S1728585AbgKQWEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:04:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgKQWCh (ORCPT
+        with ESMTP id S1726182AbgKQWEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:02:37 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBA0C0613CF;
-        Tue, 17 Nov 2020 14:02:36 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id b17so16550ljf.12;
-        Tue, 17 Nov 2020 14:02:36 -0800 (PST)
+        Tue, 17 Nov 2020 17:04:06 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D33C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:04:04 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id d17so339610ion.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:04:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linuxfoundation.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W5om3zQzsHiBGMpHdWoQikEGL2r18KBMb1Ag+GnaG08=;
-        b=aUPTRertfb05h4PXQBp+XblhFmhkq3dYxYo19vCMmRFRwFfo3o1IW4o98iLAok03IX
-         SB7/dAIf/DxDZrSAmId3g1EI40aBDac3fFJ5YPVvSW4ZcmMmQ1/fZT7zXo9ji1tnSBH2
-         2ryoHGWBmcPCOGGdekoRik9gvEfoJIq1jigT730xbZyGcrmpeGU4NrOrXGvOplzotgE/
-         YujRyvzI7YgCBSKphSJsvHJdJaz64JVUE1DdR45WFz0QWc2ezvGHPVWoY5Lg6HFf46Nl
-         0V2nRoj5jQVYhYcul1ZHcmKsPqCQgZ5dqIGEIVHgEXRfIfsykIDOct6IpeM1FbHDQTJX
-         oN4g==
+        bh=iuyG7enSLH3C+ylnXG8w+GbI5uwYKAX52vWcxedXXNw=;
+        b=gTsO8g6IRE9TIWivpeuOir/sHEb6hYeljejWhQ3teem3n1kbgjnIvYRRUwwNOobOv9
+         yuBpIKv1h9qWu1jR/ZcAPGBZbDWHaSSdRVHtwnfvwVvfY6Zwipoj0IVtUV3L9JAkkdbb
+         zIAjDjyccm3J9X+sjFReu41Qg2Ltf1HvKmgzA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=W5om3zQzsHiBGMpHdWoQikEGL2r18KBMb1Ag+GnaG08=;
-        b=Ue1BuOWJ5esZvC4xTAbhknFSXbd5ZEjvBF0Z0EzmHKQgLAE25nteGP60PitT7U5xtx
-         Ni30aY5XdRyyLCCu/O+8xujmhLSTUsadauTIfMhnlMCIvMHo8frwgV8A8DEMTAZmFJBz
-         tZQglRBPi8FxjI8pW2YUTvpnZAb9/QTcLmm6qqZnIkasyKMcOkxjxJWQSkPMa3zv/T4l
-         92w7keejWhlc7RZqID5OF412FqEmlrOWT+iHEmHgHnjG5Itkan8NjB+6VOC10FM9nPKe
-         HYqGCYlRUvrSi1PT53jYoQLbtw+5mAqRncx5i/auDPd2zVOMN6cSXlOmvN4h76fHcvCV
-         3iqg==
-X-Gm-Message-State: AOAM530Q/iTPEWsZaEltAKuHfYU0u5d7Uyr3uI8BYoD46z3NTII/bZgu
-        LZw8EnL0BcEwmj4QYxQ5kKE=
-X-Google-Smtp-Source: ABdhPJxGxTDDbi0d8oMMgkGSyKhMr/XNvJc72UcmGlAMm4SW4FF2fTuHTUsirRfiv8AMfkDsmlK1rg==
-X-Received: by 2002:a05:651c:30d:: with SMTP id a13mr2849268ljp.386.1605650555139;
-        Tue, 17 Nov 2020 14:02:35 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id v16sm3215544ljj.0.2020.11.17.14.02.33
+        bh=iuyG7enSLH3C+ylnXG8w+GbI5uwYKAX52vWcxedXXNw=;
+        b=NtW3UkLDbaaXms7wjimPdtNdkAj6ySGtt9TecgY98dSstHMLqr2gTVDESp3/u5/pPy
+         TErUnp/HiYzcGjA0A9Fl7J9w0B4lICb3CqR4lF+t07byA0SfoBff9xRldfilb0MzKqQ4
+         2KfatjHrEKt6oxpPxJRBKbi9m4pe5ZTGixMb7xUBC8fO6SJkbCTpR4ZXlL60zZafbm/Z
+         /S8gXqIVFT5C2X9m9wF7pWL4+1YQi9nsh1Mms1EB+JEWQZUbNPRNPCjwvpRG8LE95fiL
+         Klrio1LzUkXRtKXBuz/wW4VykQ4HwEp13y3xu5oMqE5uz37+Xg7oZ8eFJyu6LvIqSTAP
+         YhTQ==
+X-Gm-Message-State: AOAM533ZfpzgUQLB1PDxMARTq99xRUDdIRu0pAfjRySYT2ARjXIsEaGP
+        HX7mEzUxYz96FfV2bgac04GwnA==
+X-Google-Smtp-Source: ABdhPJxQ62X3gAi9jbh6oOCZlHIC57zxknCpvMk1Hq+LKPgYCpgZvfpJV2SlwaX+gXn2kj/gEYC3hg==
+X-Received: by 2002:a02:ccd6:: with SMTP id k22mr5283838jaq.93.1605650644043;
+        Tue, 17 Nov 2020 14:04:04 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id w81sm14271467ilk.38.2020.11.17.14.04.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 14:02:34 -0800 (PST)
-Subject: Re: [PATCH v9 01/17] memory: tegra30: Support interconnect framework
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201115212922.4390-1-digetx@gmail.com>
- <20201115212922.4390-2-digetx@gmail.com>
- <61e777d9-b730-02c6-cedf-cf0aa1a50fb8@linaro.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7e484678-43cc-e612-1017-73ed580f9840@gmail.com>
-Date:   Wed, 18 Nov 2020 01:02:33 +0300
+        Tue, 17 Nov 2020 14:04:02 -0800 (PST)
+Subject: Re: [PATCH 5.9 000/255] 5.9.9-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org, skhan@linuxfoundation.org
+References: <20201117122138.925150709@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <06bf0c38-a484-86c7-5a6b-5191c79c143b@linuxfoundation.org>
+Date:   Tue, 17 Nov 2020 15:04:01 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <61e777d9-b730-02c6-cedf-cf0aa1a50fb8@linaro.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.11.2020 23:24, Georgi Djakov пишет:
-> Hi Dmitry,
+On 11/17/20 6:02 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.9 release.
+> There are 255 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Thank you working on this!
+> Responses should be made by Thu, 19 Nov 2020 12:20:51 +0000.
+> Anything received after that time might be too late.
 > 
-> On 15.11.20 23:29, Dmitry Osipenko wrote:
->> Now Internal and External memory controllers are memory interconnection
->> providers. This allows us to use interconnect API for tuning of memory
->> configuration. EMC driver now supports OPPs and DVFS. MC driver now
->> supports tuning of memory arbitration latency, which needs to be done
->> for ISO memory clients, like a Display client for example.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>   drivers/memory/tegra/Kconfig       |   1 +
->>   drivers/memory/tegra/tegra30-emc.c | 349 +++++++++++++++++++++++++++--
->>   drivers/memory/tegra/tegra30.c     | 173 +++++++++++++-
->>   3 files changed, 501 insertions(+), 22 deletions(-)
->>
-> [..]> diff --git a/drivers/memory/tegra/tegra30.c
-> b/drivers/memory/tegra/tegra30.c
->> index d0314f29608d..ea849003014b 100644
->> --- a/drivers/memory/tegra/tegra30.c
->> +++ b/drivers/memory/tegra/tegra30.c
-> [..]
->> +
->> +static int tegra30_mc_icc_set(struct icc_node *src, struct icc_node
->> *dst)
->> +{
->> +    struct tegra_mc *mc = icc_provider_to_tegra_mc(src->provider);
->> +    const struct tegra_mc_client *client = &mc->soc->clients[src->id];
->> +    u64 peak_bandwidth = icc_units_to_bps(src->peak_bw);
->> +
->> +    /*
->> +     * Skip pre-initialization that is done by icc_node_add(), which
->> sets
->> +     * bandwidth to maximum for all clients before drivers are loaded.
->> +     *
->> +     * This doesn't make sense for us because we don't have drivers
->> for all
->> +     * clients and it's okay to keep configuration left from bootloader
->> +     * during boot, at least for today.
->> +     */
->> +    if (src == dst)
->> +        return 0;
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.9-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
 > 
-> Nit: The "proper" way to express this should be to implement the
-> .get_bw() callback to return zero as initial average/peak bandwidth.
-> I'm wondering if this will work here?
+> thanks,
 > 
-> The rest looks good to me!
+> greg k-h
+> 
 
-Hello Georgi,
+Compiled and booted on my test system. No dmesg regressions.
 
-Returning zeros doesn't allow us to skip the initialization that is done
-by provider->set(node, node) in icc_node_add(). It will reconfigure
-memory latency in accordance to a zero memory bandwidth, which is wrong
-to do.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-It actually should be more preferred to preset bandwidth to a maximum
-before all drivers are synced, but this should be done only once we will
-wire up all drivers to use ICC framework. For now it's safer to keep the
-default hardware configuration untouched.
+thanks,
+-- Shuah
