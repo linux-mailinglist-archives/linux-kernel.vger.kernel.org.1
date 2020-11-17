@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406CA2B5DC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BA62B5DC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbgKQLBj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 06:01:39 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:21113 "EHLO
+        id S1728337AbgKQLBn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 06:01:43 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:56783 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727162AbgKQLBj (ORCPT
+        by vger.kernel.org with ESMTP id S1727526AbgKQLBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:01:39 -0500
+        Tue, 17 Nov 2020 06:01:42 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-aZSkdECZMdSIQiDkjTlB_w-1; Tue, 17 Nov 2020 06:01:32 -0500
-X-MC-Unique: aZSkdECZMdSIQiDkjTlB_w-1
+ us-mta-224-FMG3eFp6PmuR72ep-9Pd-Q-1; Tue, 17 Nov 2020 06:01:35 -0500
+X-MC-Unique: FMG3eFp6PmuR72ep-9Pd-Q-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5747680EFA5;
-        Tue, 17 Nov 2020 11:01:30 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9F97108E1A5;
+        Tue, 17 Nov 2020 11:01:33 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E0B05C1CF;
-        Tue, 17 Nov 2020 11:01:27 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AFD7C5C1CF;
+        Tue, 17 Nov 2020 11:01:30 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -39,9 +39,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 08/24] perf tools: Add support to read build id from compressed elf
-Date:   Tue, 17 Nov 2020 12:00:37 +0100
-Message-Id: <20201117110053.1303113-9-jolsa@kernel.org>
+Subject: [PATCH 09/24] perf tools: Add check for existing link in buildid dir
+Date:   Tue, 17 Nov 2020 12:00:38 +0100
+Message-Id: <20201117110053.1303113-10-jolsa@kernel.org>
 In-Reply-To: <20201117110053.1303113-1-jolsa@kernel.org>
 References: <20201117110053.1303113-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -56,99 +56,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding support to decompress file before reading build id.
-
-Adding filename__read_build_id and change its current
-versions to read_build_id.
-
-Shutting down stderr output of perf list in the shell test:
-  82: Check open filename arg using perf trace + vfs_getname          : Ok
-
-because with decompression code in the place we the
-filename__read_build_id function is more verbose in case
-of error and the test did not account for that.
+When adding new build id link we fail if the link is already
+there. Adding check for existing link and output debug message
+that the build id is already linked.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../tests/shell/trace+probe_vfs_getname.sh    |  2 +-
- tools/perf/util/symbol-elf.c                  | 37 ++++++++++++++++++-
- 2 files changed, 36 insertions(+), 3 deletions(-)
+ tools/perf/util/build-id.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/shell/trace+probe_vfs_getname.sh b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-index 11cc2af13f2b..3660fcc02fef 100755
---- a/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-+++ b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-@@ -20,7 +20,7 @@ skip_if_no_perf_trace || exit 2
- file=$(mktemp /tmp/temporary_file.XXXXX)
+diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+index 7d9ecc37849c..ef9a31b54ba2 100644
+--- a/tools/perf/util/build-id.c
++++ b/tools/perf/util/build-id.c
+@@ -754,8 +754,21 @@ int build_id_cache__add_s(const char *sbuild_id, const char *name,
+ 	tmp = dir_name + strlen(buildid_dir) - 5;
+ 	memcpy(tmp, "../..", 5);
  
- trace_open_vfs_getname() {
--	evts=$(echo $(perf list syscalls:sys_enter_open* 2>&1 | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
-+	evts=$(echo $(perf list syscalls:sys_enter_open* >&1 2>/dev/nul | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
- 	perf trace -e $evts touch $file 2>&1 | \
- 	egrep " +[0-9]+\.[0-9]+ +\( +[0-9]+\.[0-9]+ ms\): +touch\/[0-9]+ open(at)?\((dfd: +CWD, +)?filename: +${file}, +flags: CREAT\|NOCTTY\|NONBLOCK\|WRONLY, +mode: +IRUGO\|IWUGO\) += +[0-9]+$"
- }
-diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-index 44dd86a4f25f..f3577f7d72fe 100644
---- a/tools/perf/util/symbol-elf.c
-+++ b/tools/perf/util/symbol-elf.c
-@@ -534,7 +534,7 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
- 
- #ifdef HAVE_LIBBFD_BUILDID_SUPPORT
- 
--int filename__read_build_id(const char *filename, struct build_id *bid)
-+static int read_build_id(const char *filename, struct build_id *bid)
- {
- 	size_t size = sizeof(bid->data);
- 	int err = -1;
-@@ -563,7 +563,7 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
- 
- #else // HAVE_LIBBFD_BUILDID_SUPPORT
- 
--int filename__read_build_id(const char *filename, struct build_id *bid)
-+static int read_build_id(const char *filename, struct build_id *bid)
- {
- 	size_t size = sizeof(bid->data);
- 	int fd, err = -1;
-@@ -595,6 +595,39 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
- 
- #endif // HAVE_LIBBFD_BUILDID_SUPPORT
- 
-+int filename__read_build_id(const char *filename, struct build_id *bid)
-+{
-+	struct kmod_path m = { .name = NULL, };
-+	char path[PATH_MAX];
-+	int err;
+-	if (symlink(tmp, linkname) == 0)
++	if (symlink(tmp, linkname) == 0) {
+ 		err = 0;
++	} else if (errno == EEXIST) {
++		char path[PATH_MAX];
 +
-+	if (!filename)
-+		return -EFAULT;
-+
-+	err = kmod_path__parse(&m, filename);
-+	if (err)
-+		return -1;
-+
-+	if (m.comp) {
-+		int error = 0, fd;
-+
-+		fd = filename__decompress(filename, path, sizeof(path), m.comp, &error);
-+		if (fd < 0) {
-+			pr_debug("Failed to decompress (error %d) %s\n",
-+				 error, filename);
-+			return -1;
++		if (readlink(linkname, path, sizeof(path)) == -1) {
++			pr_err("Cant read link: %s\n", linkname);
++			goto out_free;
 +		}
-+		close(fd);
-+		filename = path;
++		if (strcmp(tmp, path)) {
++			pr_debug("build <%s> already linked to %s\n",
++				 sbuild_id, linkname);
++		}
++		err = 0;
 +	}
-+
-+	err = read_build_id(filename, bid);
-+
-+	if (m.comp)
-+		unlink(filename);
-+	return err;
-+}
-+
- int sysfs__read_build_id(const char *filename, struct build_id *bid)
- {
- 	size_t size = sizeof(bid->data);
+ 
+ 	/* Update SDT cache : error is just warned */
+ 	if (realname &&
 -- 
 2.26.2
 
