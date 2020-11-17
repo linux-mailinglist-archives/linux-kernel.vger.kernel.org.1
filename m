@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D7C2B6395
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 617482B63BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732665AbgKQNjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:39:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50706 "EHLO mail.kernel.org"
+        id S1732690AbgKQNlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:41:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732746AbgKQNjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:39:05 -0500
+        id S1732492AbgKQNk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:40:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE4C824695;
-        Tue, 17 Nov 2020 13:39:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DFA9B2465E;
+        Tue, 17 Nov 2020 13:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620343;
-        bh=4DNCZ6+FMinlU++vDarM+jhq+IRWGEFaJP+yXy8rkN8=;
+        s=default; t=1605620457;
+        bh=75z2t+QUNBIOpXc83sGcGDzanMkc6ileK2AbocwA2Cs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mRPvMT1qfj1iM+REc+BnwPUPYjzpUnzQnGrGQfHii1l2T90T1NDDAHoxr92Wm3Kas
-         fba82F5nzQl4gjDy7np6z3245TT5yAKYTprWhNtB730zo3BsaY9k0VFR4DVquqEjDx
-         uoEY9YJtt53D8KAQ2+0CSmIZ9QFJW3y3dgZhIVXQ=
+        b=iVO51PAJpQHu5xzzIBcUAjqgEdPEJnnyTicabWMsugXUA6v0o+KT1TbBB0rxMuh9i
+         Zc3Jtn4Y43HbTLaeWEhbnQqG1dSpLUX3LG0EgTnKCBzk4iVr9nkDCrVmgpbFvyEGrd
+         23cFMHoayxgEsI50BAnDZB/KT9yUHzpf7DV/Lw8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Tao Ma <boyu.mt@taobao.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Andreas Dilger <adilger@dilger.ca>,
         Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 5.9 185/255] ext4: correctly report "not supported" for {usr,grp}jquota when !CONFIG_QUOTA
-Date:   Tue, 17 Nov 2020 14:05:25 +0100
-Message-Id: <20201117122147.925602954@linuxfoundation.org>
+Subject: [PATCH 5.9 186/255] ext4: unlock xattr_sem properly in ext4_inline_data_truncate()
+Date:   Tue, 17 Nov 2020 14:05:26 +0100
+Message-Id: <20201117122147.976874100@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -42,46 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+From: Joseph Qi <joseph.qi@linux.alibaba.com>
 
-commit 174fe5ba2d1ea0d6c5ab2a7d4aa058d6d497ae4d upstream.
+commit 7067b2619017d51e71686ca9756b454de0e5826a upstream.
 
-The macro MOPT_Q is used to indicates the mount option is related to
-quota stuff and is defined to be MOPT_NOSUPPORT when CONFIG_QUOTA is
-disabled.  Normally the quota options are handled explicitly, so it
-didn't matter that the MOPT_STRING flag was missing, even though the
-usrjquota and grpjquota mount options take a string argument.  It's
-important that's present in the !CONFIG_QUOTA case, since without
-MOPT_STRING, the mount option matcher will match usrjquota= followed
-by an integer, and will otherwise skip the table entry, and so "mount
-option not supported" error message is never reported.
+It takes xattr_sem to check inline data again but without unlock it
+in case not have. So unlock it before return.
 
-[ Fixed up the commit description to better explain why the fix
-  works. --TYT ]
-
-Fixes: 26092bf52478 ("ext4: use a table-driven handler for mount options")
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-Link: https://lore.kernel.org/r/1603986396-28917-1-git-send-email-kaixuxia@tencent.com
+Fixes: aef1c8513c1f ("ext4: let ext4_truncate handle inline data correctly")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Tao Ma <boyu.mt@taobao.com>
+Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Link: https://lore.kernel.org/r/1604370542-124630-1-git-send-email-joseph.qi@linux.alibaba.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Cc: stable@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/super.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ext4/inline.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1829,8 +1829,8 @@ static const struct mount_opts {
- 	{Opt_noquota, (EXT4_MOUNT_QUOTA | EXT4_MOUNT_USRQUOTA |
- 		       EXT4_MOUNT_GRPQUOTA | EXT4_MOUNT_PRJQUOTA),
- 							MOPT_CLEAR | MOPT_Q},
--	{Opt_usrjquota, 0, MOPT_Q},
--	{Opt_grpjquota, 0, MOPT_Q},
-+	{Opt_usrjquota, 0, MOPT_Q | MOPT_STRING},
-+	{Opt_grpjquota, 0, MOPT_Q | MOPT_STRING},
- 	{Opt_offusrjquota, 0, MOPT_Q},
- 	{Opt_offgrpjquota, 0, MOPT_Q},
- 	{Opt_jqfmt_vfsold, QFMT_VFS_OLD, MOPT_QFMT},
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -1880,6 +1880,7 @@ int ext4_inline_data_truncate(struct ino
+ 
+ 	ext4_write_lock_xattr(inode, &no_expand);
+ 	if (!ext4_has_inline_data(inode)) {
++		ext4_write_unlock_xattr(inode, &no_expand);
+ 		*has_inline = 0;
+ 		ext4_journal_stop(handle);
+ 		return 0;
 
 
