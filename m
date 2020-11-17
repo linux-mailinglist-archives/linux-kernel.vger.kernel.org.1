@@ -2,167 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978BE2B6C17
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 114852B6C0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729589AbgKQRot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:44:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgKQRor (ORCPT
+        id S1729955AbgKQRlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:41:16 -0500
+Received: from mailoutvs38.siol.net ([185.57.226.229]:41926 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726597AbgKQRlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:44:47 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A1DC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:44:46 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id k2so24100561wrx.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:44:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2KngzT5ko8rC3OE2ve8gvahOiuba+uhDRJQ9LOXl0+U=;
-        b=U26KxbAXVUUUUL1n5lEOI+uP+pQIx39CGrKbakbVvqZkamGw28UVz32cC9lesi6lRN
-         DnJF9yjA3ZI8kYVJclfFfFyDGAGn5xWyQIDffoZEVhpf0mkP1VzJ7LhYgua60W/ZollW
-         0X7rqlIdAmvayvJPqL/lS5ZN9kDohVdOqdJ8z/KNTygSOkXxahF6ek5qVzoo+dsH/k63
-         OyTe0Ly/CEP7C180c3iNgNVAgwzZLoDTs+ULga4gFfNVEhl+n1x7EaNujowpADJt5t28
-         rbi6TPAcwU+XNmiTh2JCMxQV8Niy+g60OEC7RJtuDeO3d7vL7aY0YlQ0EbTyArlm5mTF
-         1PIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2KngzT5ko8rC3OE2ve8gvahOiuba+uhDRJQ9LOXl0+U=;
-        b=UlS79L0ulL7KQgL+GLSuCLx0fP08RGrj4/qhyQfEyIaWun+tbTJ8F5zKUAxrWYx0Kr
-         zFFPU/FnTyY2le16WCpPruwmpeVFFF1Wpulgl2aqC39Gh8aQo27GrVoJWrjVJLj6CGSA
-         lf8g4hEH6vXtar9oGgvzCC1vy243TeQFAcsx0UNu6Z0D1lnKJg7mzWBCBxIDpGhNypQ6
-         gjaDyBOtw1c8YsGwXSPYtKLq/OEDzA630ZW9verCKeWAUU2J/i8HjOT6M1Fkr6EbAc/s
-         eJtAjXTgqef6Jtcmm0NQm4B+6bppRZgQRi6r/FZhfHzjg42M2+juS+lZwkE0Q58kDPXD
-         pIqg==
-X-Gm-Message-State: AOAM530N0YoehSt+B9JSCKmTfO2PWY/j4tagt7YFw4tWv2Vpan+djmA1
-        RN1pS3XPZ0d10jZMFsxz046xUQ==
-X-Google-Smtp-Source: ABdhPJxxEywh7zcSdCOpHrh5uQpARJrYhQeE0KoFgQi1md4vXIramoI6QvgWCCjx/ZqOFlHoqWGY9g==
-X-Received: by 2002:adf:ebc6:: with SMTP id v6mr597996wrn.427.1605635084716;
-        Tue, 17 Nov 2020 09:44:44 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5150:1004:6c70:8db9? ([2a01:e34:ed2f:f020:5150:1004:6c70:8db9])
-        by smtp.googlemail.com with ESMTPSA id n11sm27882644wru.38.2020.11.17.09.44.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 09:44:43 -0800 (PST)
-Subject: Re: [PATCH v2 4/4] powercap/drivers/dtpm: Add CPU energy model based
- support
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rjw@rjwysocki.net, ilina@codeaurora.org, ulf.hansson@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, rkumbako@codeaurora.org,
-        rui.zhang@intel.com
-References: <20201116152649.11482-1-daniel.lezcano@linaro.org>
- <20201116152649.11482-5-daniel.lezcano@linaro.org>
- <c467cb4d-2226-e558-e340-cd5764490078@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6c9db999-0846-cd42-a061-c638197b5661@linaro.org>
-Date:   Tue, 17 Nov 2020 18:44:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 17 Nov 2020 12:41:15 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 4709252209F;
+        Tue, 17 Nov 2020 18:41:12 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ey-XaGR21hHq; Tue, 17 Nov 2020 18:41:12 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id ED433522170;
+        Tue, 17 Nov 2020 18:41:11 +0100 (CET)
+Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id E534F52209F;
+        Tue, 17 Nov 2020 18:41:08 +0100 (CET)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     airlied@linux.ie, daniel@ffwll.ch,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, wangxiongfeng2@huawei.com,
+        chenzhou10@huawei.com
+Subject: Re: [PATCH v2] drm/sun4i: dw-hdmi: fix error return code in sun8i_dw_hdmi_bind()
+Date:   Tue, 17 Nov 2020 18:47:05 +0100
+Message-ID: <2294800.5ACB0rnJnf@kista>
+In-Reply-To: <1605488969-5211-1-git-send-email-wangxiongfeng2@huawei.com>
+References: <1605488969-5211-1-git-send-email-wangxiongfeng2@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <c467cb4d-2226-e558-e340-cd5764490078@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2020 14:15, Lukasz Luba wrote:
-> Hi Daniel,
+Dne ponedeljek, 16. november 2020 ob 02:09:29 CET je Xiongfeng Wang 
+napisal(a):
+> Fix to return a negative error code from the error handling case instead
+> of 0 in function sun8i_dw_hdmi_bind().
 > 
-> Only one small comment regarding the setup of 'power_limit'.
-> 
-> On 11/16/20 3:26 PM, Daniel Lezcano wrote:
->> With the powercap dtpm controller, we are able to plug devices with
->> power limitation features in the tree.
->>
->> The following patch introduces the CPU power limitation based on the
->> energy model and the performance states.
->>
->> The power limitation is done at the performance domain level. If some
->> CPUs are unplugged, the corresponding power will be subtracted from
->> the performance domain total power.
->>
->> It is up to the platform to initialize the dtpm tree and add the CPU.
->>
+> Fixes: b7c7436a5ff0 ("drm/sun4i: Implement A83T HDMI driver")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+> Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-[ ... ]
+Applied to drm-misc-fixes, thanks!
 
->> +
->> +    dtpm = per_cpu(dtpm_per_cpu, cpu);
->> +    if (dtpm)
->> +        return power_add(dtpm, pd);
-> 
-> The dtpm->power_limit is not incremented in this path, when a new
-> CPU joins the cluster.
-> Is it correct?
+In future, please CC all people given by get_maintainer.pl script. In this 
+case you missed Maxime Ripard and Chen-Yu Tsai.
 
-Yes, you are right, there is something missing here. It does not change
-the behavior of the power capping, but the value will be inconsistent in
-the tree.
-
-> Or maybe we need something like:
-> ------------------------------>8---------------------
->         if (dtpm) {
->                 ret = power_add(dtpm, pd);
->                 if (!ret)
->                         dtpm->power_limit = dtpm->power_max;
->                 return ret;
->         }
-> ------------------------8<---------------
-> 
-> The power_max should be updated after successful power_add().
-> It would disturb user set value in power_limit, though (described
-> below).
-> 
-> 
->> +
->> +    dtpm = dtpm_alloc();
->> +    if (!dtpm)
->> +        return -EINVAL;
->> +
->> +    dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
->> +    if (!dtpm_cpu) {
->> +        kfree(dtpm);
->> +        return -ENOMEM;
->> +    }
->> +
->> +    dtpm->private = dtpm_cpu;
->> +    dtpm_cpu->cpu = cpu;
->> +
->> +    for_each_cpu(cpu, policy->related_cpus)
->> +        per_cpu(dtpm_per_cpu, cpu) = dtpm;
->> +
->> +    ret = power_add(dtpm, pd);
->> +    if (ret)
->> +        goto out_kfree_dtpm_cpu;
->> +
->> +    dtpm->power_limit = dtpm->power_max;
-> 
-> Here, the power_limit will be set only once with power_max
-> for a single CPU. I am not sure, but maybe we can simple say:
-> 
-> dtpm->power_limit = dtpm->power_max * cpumask_weight(policy->related_cpus)
-> 
-> an avoid touching it later (?)
-> 
-> Because this function can be called in runtime, when the power_limit
-> was already set by userspace, the hotpluging in/out/in... CPU shouldn't
-> change this limit.
-
-Hmm, I have to think about it because the power_limit is always less or
-equal to power_max.
+Best regards,
+Jernej
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
