@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DB12B60AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 915DA2B605E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729635AbgKQNLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:11:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40896 "EHLO mail.kernel.org"
+        id S1729295AbgKQNIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:08:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729616AbgKQNLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:11:19 -0500
+        id S1729272AbgKQNIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:08:24 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C42492468F;
-        Tue, 17 Nov 2020 13:11:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C69F4221EB;
+        Tue, 17 Nov 2020 13:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618679;
-        bh=IF1+o75ZbOaKYN6cnXpp0kuY4VhZp4Y3AhUdekGb76U=;
+        s=default; t=1605618502;
+        bh=8AI+wv/0W4+FExRGgwH8qDs9IV9XEX+dQkaWQqLRWMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mNIY9cL5+hlBva6qdRSGgA6ek0JM69sKjjZrbRaAKXY3K6z4LQyG9f78FhwOLQ2iT
-         ay8r+cF2zVSlHrtmG4jsYU8+SvZU5wbSFw1NYvHROWNe63R1ZF/upsNmjTBXij/9mL
-         tnRpXuOMKled1giwvxPB3PRuL3ZqjcbgplgFceMw=
+        b=l+XFc2dS0dWIpUTxl1eic84KMfvxSp+0FGUu/Pg4WI9I6C9Z5A4jdQWkkvTZDQiMk
+         9RQAlSZ0kLwwy5ERAdwx6eLW1C7sOcmOXP3GPdPM0Y0bDcBJvjSSR8m3fXiNrya9dn
+         ey67/6so5U6EQ3KvdMkrt0EMac79qET5XqGnaqyU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 4.9 50/78] pinctrl: amd: use higher precision for 512 RtcClk
-Date:   Tue, 17 Nov 2020 14:05:16 +0100
-Message-Id: <20201117122111.562547424@linuxfoundation.org>
+        Julien Grall <julien@xen.org>, Juergen Gross <jgross@suse.com>,
+        Jan Beulich <jbeulich@suse.com>, Wei Liu <wl@xen.org>
+Subject: [PATCH 4.4 54/64] xen/scsiback: use lateeoi irq binding
+Date:   Tue, 17 Nov 2020 14:05:17 +0100
+Message-Id: <20201117122108.834543616@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +42,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coiby Xu <coiby.xu@gmail.com>
+From: Juergen Gross <jgross@suse.com>
 
-commit c64a6a0d4a928c63e5bc3b485552a8903a506c36 upstream.
+commit 86991b6e7ea6c613b7692f65106076943449b6b7 upstream.
 
-RTC is 32.768kHz thus 512 RtcClk equals 15625 usec. The documentation
-likely has dropped precision and that's why the driver mistakenly took
-the slightly deviated value.
+In order to reduce the chance for the system becoming unresponsive due
+to event storms triggered by a misbehaving scsifront use the lateeoi
+irq binding for scsiback and unmask the event channel only just before
+leaving the event handling function.
+
+In case of a ring protocol error don't issue an EOI in order to avoid
+the possibility to use that for producing an event storm. This at once
+will result in no further call of scsiback_irq_fn(), so the ring_error
+struct member can be dropped and scsiback_do_cmd_fn() can signal the
+protocol error via a negative return value.
+
+This is part of XSA-332.
 
 Cc: stable@vger.kernel.org
-Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Suggested-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/linux-gpio/2f4706a1-502f-75f0-9596-cc25b4933b6c@redhat.com/
-Link: https://lore.kernel.org/r/20201105231912.69527-3-coiby.xu@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Reported-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Wei Liu <wl@xen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/pinctrl/pinctrl-amd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/xen/xen-scsiback.c |   23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -140,7 +140,7 @@ static int amd_gpio_set_debounce(struct
- 			pin_reg |= BIT(DB_TMR_OUT_UNIT_OFF);
- 			pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
- 		} else if (debounce < 250000) {
--			time = debounce / 15600;
-+			time = debounce / 15625;
- 			pin_reg |= time & DB_TMR_OUT_MASK;
- 			pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
- 			pin_reg |= BIT(DB_TMR_LARGE_OFF);
+--- a/drivers/xen/xen-scsiback.c
++++ b/drivers/xen/xen-scsiback.c
+@@ -91,7 +91,6 @@ struct vscsibk_info {
+ 	unsigned int irq;
+ 
+ 	struct vscsiif_back_ring ring;
+-	int ring_error;
+ 
+ 	spinlock_t ring_lock;
+ 	atomic_t nr_unreplied_reqs;
+@@ -698,7 +697,8 @@ static int prepare_pending_reqs(struct v
+ 	return 0;
+ }
+ 
+-static int scsiback_do_cmd_fn(struct vscsibk_info *info)
++static int scsiback_do_cmd_fn(struct vscsibk_info *info,
++			      unsigned int *eoi_flags)
+ {
+ 	struct vscsiif_back_ring *ring = &info->ring;
+ 	struct vscsiif_request ring_req;
+@@ -715,11 +715,12 @@ static int scsiback_do_cmd_fn(struct vsc
+ 		rc = ring->rsp_prod_pvt;
+ 		pr_warn("Dom%d provided bogus ring requests (%#x - %#x = %u). Halting ring processing\n",
+ 			   info->domid, rp, rc, rp - rc);
+-		info->ring_error = 1;
+-		return 0;
++		return -EINVAL;
+ 	}
+ 
+ 	while ((rc != rp)) {
++		*eoi_flags &= ~XEN_EOI_FLAG_SPURIOUS;
++
+ 		if (RING_REQUEST_CONS_OVERFLOW(ring, rc))
+ 			break;
+ 		pending_req = kmem_cache_alloc(scsiback_cachep, GFP_KERNEL);
+@@ -782,13 +783,16 @@ static int scsiback_do_cmd_fn(struct vsc
+ static irqreturn_t scsiback_irq_fn(int irq, void *dev_id)
+ {
+ 	struct vscsibk_info *info = dev_id;
++	int rc;
++	unsigned int eoi_flags = XEN_EOI_FLAG_SPURIOUS;
+ 
+-	if (info->ring_error)
+-		return IRQ_HANDLED;
+-
+-	while (scsiback_do_cmd_fn(info))
++	while ((rc = scsiback_do_cmd_fn(info, &eoi_flags)) > 0)
+ 		cond_resched();
+ 
++	/* In case of a ring error we keep the event channel masked. */
++	if (!rc)
++		xen_irq_lateeoi(irq, eoi_flags);
++
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -809,7 +813,7 @@ static int scsiback_init_sring(struct vs
+ 	sring = (struct vscsiif_sring *)area;
+ 	BACK_RING_INIT(&info->ring, sring, PAGE_SIZE);
+ 
+-	err = bind_interdomain_evtchn_to_irq(info->domid, evtchn);
++	err = bind_interdomain_evtchn_to_irq_lateeoi(info->domid, evtchn);
+ 	if (err < 0)
+ 		goto unmap_page;
+ 
+@@ -1210,7 +1214,6 @@ static int scsiback_probe(struct xenbus_
+ 
+ 	info->domid = dev->otherend_id;
+ 	spin_lock_init(&info->ring_lock);
+-	info->ring_error = 0;
+ 	atomic_set(&info->nr_unreplied_reqs, 0);
+ 	init_waitqueue_head(&info->waiting_to_free);
+ 	info->dev = dev;
 
 
