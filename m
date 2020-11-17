@@ -2,116 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5BB2B69AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817E52B69BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727590AbgKQQPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:15:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727210AbgKQQPh (ORCPT
+        id S1727687AbgKQQQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:16:05 -0500
+Received: from smtprelay0190.hostedemail.com ([216.40.44.190]:38320 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727127AbgKQQQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:15:37 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09840C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:15:37 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id m9so21694039iox.10
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:15:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Xs5k6YmbTpMovlIFJB8mdshUmOv20DI0EOKiJyCm2p8=;
-        b=RqPHXFKC0r07EUj3VDcH44zvE4ccrWVVfCttCRK9UoI2TgwDNQBdZdboesMHvSaobF
-         j3xKWyla3OTvIL3oWpC/u07BBWaqSRKc1aKdihR5KaniKEhFtrFRTsxIVDeVza93G12C
-         Nc4ZAWQPtwO1+lCH+Tu9yc+kZnCSKCadNtqV0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xs5k6YmbTpMovlIFJB8mdshUmOv20DI0EOKiJyCm2p8=;
-        b=l0q7am7PVvEb5tjnA5tUs0Ga8IZAPwxZwGWz4bAh1cHF+Yhj6OWUXB04OasCgOtN9L
-         7GFMJTm/+iJAfPuVgEx5i/0gG+EIt2Wq5HAEo88Z172HBg8UK2SINiSRLzcqtVArLZms
-         3i5CydC7IxaEbeka+Pr0ccStfboGNX7BO5GCANCMolHRoOekKbRVJ9fhLPEZWOOJP75R
-         9OvHzvXhPiOmGZenn8Tq/vkU/6h3TMz8o9Up0aNwGRi1PbUixhbvBQYqAD0cuvjgdxj0
-         OggGjUN+r+GQGudMIxTKWcpyLhG3aP+iB4T/rgzD44Uy6peE5GRC+a8ulZGWWo7s2/Zj
-         YKGg==
-X-Gm-Message-State: AOAM5309XI8Jdk8L5BE37FhL1r/lIELI/S/P5g0/ztBAJeNZnjPyJnNA
-        wAGFSwGgVJlc+XYM5JxpNcrXaMdD20fM1A==
-X-Google-Smtp-Source: ABdhPJzPxtjW4UEbWguV0tGH3zB08KjlVyyfqkpm6Q82roW+c92WTHp3RBzgnBHcoeKGOPtNlA9tXg==
-X-Received: by 2002:a6b:fb07:: with SMTP id h7mr12048193iog.163.1605629736300;
-        Tue, 17 Nov 2020 08:15:36 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y3sm10847573ioq.18.2020.11.17.08.15.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 08:15:35 -0800 (PST)
-Subject: Re: [PATCH v2 01/13] seqnum_ops: Introduce Sequence Number Ops
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org
-References: <cover.1605287778.git.skhan@linuxfoundation.org>
- <26cbcc431be5e3ab7d8e0e881d522605a27b1312.1605287778.git.skhan@linuxfoundation.org>
- <20201116145309.GF3121378@hirez.programming.kicks-ass.net>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <105a8806-7a44-1b1e-f77c-4471cc9e1f17@linuxfoundation.org>
-Date:   Tue, 17 Nov 2020 09:15:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Tue, 17 Nov 2020 11:16:04 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id B98D51822563C;
+        Tue, 17 Nov 2020 16:16:02 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:5007:6119:7903:9025:10004:10400:10848:11232:11658:11914:12043:12048:12297:12555:12698:12737:12740:12760:12895:13069:13311:13357:13439:13845:14181:14659:14721:21080:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: rake43_3008f7827332
+X-Filterd-Recvd-Size: 1517
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 17 Nov 2020 16:16:00 +0000 (UTC)
+Message-ID: <b9989e7d048765111826d1df549a364485ea546f.camel@perches.com>
+Subject: Re: [PATCH][next] mwifiex: Fix fall-through warnings for Clang
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Date:   Tue, 17 Nov 2020 08:15:59 -0800
+In-Reply-To: <20201117160958.GA18807@embeddedor>
+References: <20201117160958.GA18807@embeddedor>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20201116145309.GF3121378@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20 7:53 AM, Peter Zijlstra wrote:
-> On Fri, Nov 13, 2020 at 10:46:03AM -0700, Shuah Khan wrote:
-> 
->> +Increment interface
->> +-------------------
->> +
->> +Increments sequence number and returns the new value. ::
->> +
->> +        seqnum32_inc_return() --> (u32) atomic_inc_return(seqnum)
->> +        seqnum64_inc_return() --> (u64) atomic64_inc_return(seqnum)
-> 
-> Did you think about the ordering?
-> 
+On Tue, 2020-11-17 at 10:09 -0600, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+> warnings by explicitly adding multiple break statements instead of
+> letting the code fall through to the next case.
 
-Looking at atomic_t.txt _inc_return() can be fully ordered without
-loosing or making the intermediate state visible. This is good for
-this sequence number use-case. Is there something I am overlooking?
+Thanks Gustavo.
 
->> +Fetch interface
->> +---------------
->> +
->> +Fetched and returns current sequence number value. ::
->> +
->> +        seqnum32_fetch() --> (u32) atomic_add_return(0, seqnum)
->> +        seqnum64_fetch() --> (u64) atomic64_add_return(0, seqnum)
-> 
-> That's horrible. Please explain how that is not broken garbage.
-> 
-> Per the fact that it is atomic, nothing prevents the counter being
-> incremented concurrently. There is no such thing as a 'current' sequence
-> number.
-> 
+I think this is better style than the gcc allowed
+undescribed fallthrough to break;
 
-Correct. Some usages of this _fecth() in this patch series are for
-printing sequence numbers in debug message and others are stats.
+gcc developers disagree though:
 
-I will review the patches in this series and drop the ones that use
-read/fetch - the reason being sequence numbers are strictly up counters
-and don't need read/fetch.
-
-thanks,
--- Shuah
-
-
-
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91432
 
 
