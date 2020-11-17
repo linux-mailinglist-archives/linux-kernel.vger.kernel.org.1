@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10DA2B60A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7ADF2B605A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgKQNL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:11:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40832 "EHLO mail.kernel.org"
+        id S1728228AbgKQNIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:08:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729600AbgKQNLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:11:14 -0500
+        id S1729252AbgKQNIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:08:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5C242225B;
-        Tue, 17 Nov 2020 13:11:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B0DB246AE;
+        Tue, 17 Nov 2020 13:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618674;
-        bh=W/ZyvxqhtECWPimroT5kkThLCF0T68U3xugO1d+a6L4=;
+        s=default; t=1605618493;
+        bh=veXENsrRIOaQVBwz5LIpI4oR7OHEYgCF1JiaF14ENrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cKnSd3+QbNjG5F34+lZmOjWbLztesmsR7IfmSHgwmjzwZATfIN+pvAk1C8jrNCpV7
-         RFNfCQVAAt7aYIXnhBZG2ydVCTpOA1UoVv7KV+t/l2pijrMPi3/yscwvvMB4kJu0SV
-         K0nuZA6mgJ+o+h1SKzCh+Nci8eO50stSuW7y/g30=
+        b=RensoHAnODcqd9kgkbJYry/IlKs6llk37rTOpxCnVRPNU2f+3O7vAyjyMmfNUhu3K
+         MHTBQ1K7GvMiTjUtAei6N7Gv/+PeVKxV+3m9JPOgE9r0ScGfsEkZ1IPNO9waevFR3n
+         Oh0aX6cDdRkVQNl2zocz/GMhaU/dXuuJo7xRO3dY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.9 48/78] dont dump the threads that had been already exiting when zapped.
+        Julien Grall <julien@xen.org>, Juergen Gross <jgross@suse.com>,
+        Jan Beulich <jbeulich@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Wei Liu <wl@xen.org>
+Subject: [PATCH 4.4 51/64] xen/events: add a new "late EOI" evtchn framework
 Date:   Tue, 17 Nov 2020 14:05:14 +0100
-Message-Id: <20201117122111.455899012@linuxfoundation.org>
+Message-Id: <20201117122108.680087812@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,72 +44,342 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Juergen Gross <jgross@suse.com>
 
-commit 77f6ab8b7768cf5e6bdd0e72499270a0671506ee upstream.
+commit 54c9de89895e0a36047fcc4ae754ea5b8655fb9d upstream.
 
-Coredump logics needs to report not only the registers of the dumping
-thread, but (since 2.5.43) those of other threads getting killed.
+In order to avoid tight event channel related IRQ loops add a new
+framework of "late EOI" handling: the IRQ the event channel is bound
+to will be masked until the event has been handled and the related
+driver is capable to handle another event. The driver is responsible
+for unmasking the event channel via the new function xen_irq_lateeoi().
 
-Doing that might require extra state saved on the stack in asm glue at
-kernel entry; signal delivery logics does that (we need to be able to
-save sigcontext there, at the very least) and so does seccomp.
+This is similar to binding an event channel to a threaded IRQ, but
+without having to structure the driver accordingly.
 
-That covers all callers of do_coredump().  Secondary threads get hit with
-SIGKILL and caught as soon as they reach exit_mm(), which normally happens
-in signal delivery, so those are also fine most of the time.  Unfortunately,
-it is possible to end up with secondary zapped when it has already entered
-exit(2) (or, worse yet, is oopsing).  In those cases we reach exit_mm()
-when mm->core_state is already set, but the stack contents is not what
-we would have in signal delivery.
+In order to support a future special handling in case a rogue guest
+is sending lots of unsolicited events, add a flag to xen_irq_lateeoi()
+which can be set by the caller to indicate the event was a spurious
+one.
 
-At least on two architectures (alpha and m68k) it leads to infoleaks - we
-end up with a chunk of kernel stack written into coredump, with the contents
-consisting of normal C stack frames of the call chain leading to exit_mm()
-instead of the expected copy of userland registers.  In case of alpha we
-leak 312 bytes of stack.  Other architectures (including the regset-using
-ones) might have similar problems - the normal user of regsets is ptrace
-and the state of tracee at the time of such calls is special in the same
-way signal delivery is.
-
-Note that had the zapper gotten to the exiting thread slightly later,
-it wouldn't have been included into coredump anyway - we skip the threads
-that have already cleared their ->mm.  So let's pretend that zapper always
-loses the race.  IOW, have exit_mm() only insert into the dumper list if
-we'd gotten there from handling a fatal signal[*]
-
-As the result, the callers of do_exit() that have *not* gone through get_signal()
-are not seen by coredump logics as secondary threads.  Which excludes voluntary
-exit()/oopsen/traps/etc.  The dumper thread itself is unaffected by that,
-so seccomp is fine.
-
-[*] originally I intended to add a new flag in tsk->flags, but ebiederman pointed
-out that PF_SIGNALED is already doing just what we need.
+This is part of XSA-332.
 
 Cc: stable@vger.kernel.org
-Fixes: d89f3847def4 ("[PATCH] thread-aware coredumps, 2.5.43-C3")
-History-tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Reported-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Reviewed-by: Wei Liu <wl@xen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/exit.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/xen/events/events_base.c |  151 ++++++++++++++++++++++++++++++++++-----
+ include/xen/events.h             |   29 ++++++-
+ 2 files changed, 159 insertions(+), 21 deletions(-)
 
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -483,7 +483,10 @@ static void exit_mm(struct task_struct *
- 		up_read(&mm->mmap_sem);
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -112,6 +112,7 @@ static bool (*pirq_needs_eoi)(unsigned i
+ static struct irq_info *legacy_info_ptrs[NR_IRQS_LEGACY];
  
- 		self.task = tsk;
--		self.next = xchg(&core_state->dumper.next, &self);
-+		if (self.task->flags & PF_SIGNALED)
-+			self.next = xchg(&core_state->dumper.next, &self);
-+		else
-+			self.task = NULL;
- 		/*
- 		 * Implies mb(), the result of xchg() must be visible
- 		 * to core_state->dumper.
+ static struct irq_chip xen_dynamic_chip;
++static struct irq_chip xen_lateeoi_chip;
+ static struct irq_chip xen_percpu_chip;
+ static struct irq_chip xen_pirq_chip;
+ static void enable_dynirq(struct irq_data *data);
+@@ -404,6 +405,33 @@ void notify_remote_via_irq(int irq)
+ }
+ EXPORT_SYMBOL_GPL(notify_remote_via_irq);
+ 
++static void xen_irq_lateeoi_locked(struct irq_info *info)
++{
++	evtchn_port_t evtchn;
++
++	evtchn = info->evtchn;
++	if (!VALID_EVTCHN(evtchn))
++		return;
++
++	unmask_evtchn(evtchn);
++}
++
++void xen_irq_lateeoi(unsigned int irq, unsigned int eoi_flags)
++{
++	struct irq_info *info;
++	unsigned long flags;
++
++	read_lock_irqsave(&evtchn_rwlock, flags);
++
++	info = info_for_irq(irq);
++
++	if (info)
++		xen_irq_lateeoi_locked(info);
++
++	read_unlock_irqrestore(&evtchn_rwlock, flags);
++}
++EXPORT_SYMBOL_GPL(xen_irq_lateeoi);
++
+ static void xen_irq_init(unsigned irq)
+ {
+ 	struct irq_info *info;
+@@ -875,7 +903,7 @@ int xen_pirq_from_irq(unsigned irq)
+ }
+ EXPORT_SYMBOL_GPL(xen_pirq_from_irq);
+ 
+-int bind_evtchn_to_irq(unsigned int evtchn)
++static int bind_evtchn_to_irq_chip(evtchn_port_t evtchn, struct irq_chip *chip)
+ {
+ 	int irq;
+ 	int ret;
+@@ -892,7 +920,7 @@ int bind_evtchn_to_irq(unsigned int evtc
+ 		if (irq < 0)
+ 			goto out;
+ 
+-		irq_set_chip_and_handler_name(irq, &xen_dynamic_chip,
++		irq_set_chip_and_handler_name(irq, chip,
+ 					      handle_edge_irq, "event");
+ 
+ 		ret = xen_irq_info_evtchn_setup(irq, evtchn);
+@@ -913,8 +941,19 @@ out:
+ 
+ 	return irq;
+ }
++
++int bind_evtchn_to_irq(evtchn_port_t evtchn)
++{
++	return bind_evtchn_to_irq_chip(evtchn, &xen_dynamic_chip);
++}
+ EXPORT_SYMBOL_GPL(bind_evtchn_to_irq);
+ 
++int bind_evtchn_to_irq_lateeoi(evtchn_port_t evtchn)
++{
++	return bind_evtchn_to_irq_chip(evtchn, &xen_lateeoi_chip);
++}
++EXPORT_SYMBOL_GPL(bind_evtchn_to_irq_lateeoi);
++
+ static int bind_ipi_to_irq(unsigned int ipi, unsigned int cpu)
+ {
+ 	struct evtchn_bind_ipi bind_ipi;
+@@ -956,8 +995,9 @@ static int bind_ipi_to_irq(unsigned int
+ 	return irq;
+ }
+ 
+-int bind_interdomain_evtchn_to_irq(unsigned int remote_domain,
+-				   unsigned int remote_port)
++static int bind_interdomain_evtchn_to_irq_chip(unsigned int remote_domain,
++					       evtchn_port_t remote_port,
++					       struct irq_chip *chip)
+ {
+ 	struct evtchn_bind_interdomain bind_interdomain;
+ 	int err;
+@@ -968,10 +1008,26 @@ int bind_interdomain_evtchn_to_irq(unsig
+ 	err = HYPERVISOR_event_channel_op(EVTCHNOP_bind_interdomain,
+ 					  &bind_interdomain);
+ 
+-	return err ? : bind_evtchn_to_irq(bind_interdomain.local_port);
++	return err ? : bind_evtchn_to_irq_chip(bind_interdomain.local_port,
++					       chip);
++}
++
++int bind_interdomain_evtchn_to_irq(unsigned int remote_domain,
++				   evtchn_port_t remote_port)
++{
++	return bind_interdomain_evtchn_to_irq_chip(remote_domain, remote_port,
++						   &xen_dynamic_chip);
+ }
+ EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irq);
+ 
++int bind_interdomain_evtchn_to_irq_lateeoi(unsigned int remote_domain,
++					   evtchn_port_t remote_port)
++{
++	return bind_interdomain_evtchn_to_irq_chip(remote_domain, remote_port,
++						   &xen_lateeoi_chip);
++}
++EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irq_lateeoi);
++
+ static int find_virq(unsigned int virq, unsigned int cpu)
+ {
+ 	struct evtchn_status status;
+@@ -1067,14 +1123,15 @@ static void unbind_from_irq(unsigned int
+ 	mutex_unlock(&irq_mapping_update_lock);
+ }
+ 
+-int bind_evtchn_to_irqhandler(unsigned int evtchn,
+-			      irq_handler_t handler,
+-			      unsigned long irqflags,
+-			      const char *devname, void *dev_id)
++static int bind_evtchn_to_irqhandler_chip(evtchn_port_t evtchn,
++					  irq_handler_t handler,
++					  unsigned long irqflags,
++					  const char *devname, void *dev_id,
++					  struct irq_chip *chip)
+ {
+ 	int irq, retval;
+ 
+-	irq = bind_evtchn_to_irq(evtchn);
++	irq = bind_evtchn_to_irq_chip(evtchn, chip);
+ 	if (irq < 0)
+ 		return irq;
+ 	retval = request_irq(irq, handler, irqflags, devname, dev_id);
+@@ -1085,18 +1142,38 @@ int bind_evtchn_to_irqhandler(unsigned i
+ 
+ 	return irq;
+ }
++
++int bind_evtchn_to_irqhandler(evtchn_port_t evtchn,
++			      irq_handler_t handler,
++			      unsigned long irqflags,
++			      const char *devname, void *dev_id)
++{
++	return bind_evtchn_to_irqhandler_chip(evtchn, handler, irqflags,
++					      devname, dev_id,
++					      &xen_dynamic_chip);
++}
+ EXPORT_SYMBOL_GPL(bind_evtchn_to_irqhandler);
+ 
+-int bind_interdomain_evtchn_to_irqhandler(unsigned int remote_domain,
+-					  unsigned int remote_port,
+-					  irq_handler_t handler,
+-					  unsigned long irqflags,
+-					  const char *devname,
+-					  void *dev_id)
++int bind_evtchn_to_irqhandler_lateeoi(evtchn_port_t evtchn,
++				      irq_handler_t handler,
++				      unsigned long irqflags,
++				      const char *devname, void *dev_id)
++{
++	return bind_evtchn_to_irqhandler_chip(evtchn, handler, irqflags,
++					      devname, dev_id,
++					      &xen_lateeoi_chip);
++}
++EXPORT_SYMBOL_GPL(bind_evtchn_to_irqhandler_lateeoi);
++
++static int bind_interdomain_evtchn_to_irqhandler_chip(
++		unsigned int remote_domain, evtchn_port_t remote_port,
++		irq_handler_t handler, unsigned long irqflags,
++		const char *devname, void *dev_id, struct irq_chip *chip)
+ {
+ 	int irq, retval;
+ 
+-	irq = bind_interdomain_evtchn_to_irq(remote_domain, remote_port);
++	irq = bind_interdomain_evtchn_to_irq_chip(remote_domain, remote_port,
++						  chip);
+ 	if (irq < 0)
+ 		return irq;
+ 
+@@ -1108,8 +1185,33 @@ int bind_interdomain_evtchn_to_irqhandle
+ 
+ 	return irq;
+ }
++
++int bind_interdomain_evtchn_to_irqhandler(unsigned int remote_domain,
++					  evtchn_port_t remote_port,
++					  irq_handler_t handler,
++					  unsigned long irqflags,
++					  const char *devname,
++					  void *dev_id)
++{
++	return bind_interdomain_evtchn_to_irqhandler_chip(remote_domain,
++				remote_port, handler, irqflags, devname,
++				dev_id, &xen_dynamic_chip);
++}
+ EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irqhandler);
+ 
++int bind_interdomain_evtchn_to_irqhandler_lateeoi(unsigned int remote_domain,
++						  evtchn_port_t remote_port,
++						  irq_handler_t handler,
++						  unsigned long irqflags,
++						  const char *devname,
++						  void *dev_id)
++{
++	return bind_interdomain_evtchn_to_irqhandler_chip(remote_domain,
++				remote_port, handler, irqflags, devname,
++				dev_id, &xen_lateeoi_chip);
++}
++EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irqhandler_lateeoi);
++
+ int bind_virq_to_irqhandler(unsigned int virq, unsigned int cpu,
+ 			    irq_handler_t handler,
+ 			    unsigned long irqflags, const char *devname, void *dev_id)
+@@ -1639,6 +1741,21 @@ static struct irq_chip xen_dynamic_chip
+ 	.irq_mask_ack		= mask_ack_dynirq,
+ 
+ 	.irq_set_affinity	= set_affinity_irq,
++	.irq_retrigger		= retrigger_dynirq,
++};
++
++static struct irq_chip xen_lateeoi_chip __read_mostly = {
++	/* The chip name needs to contain "xen-dyn" for irqbalance to work. */
++	.name			= "xen-dyn-lateeoi",
++
++	.irq_disable		= disable_dynirq,
++	.irq_mask		= disable_dynirq,
++	.irq_unmask		= enable_dynirq,
++
++	.irq_ack		= mask_ack_dynirq,
++	.irq_mask_ack		= mask_ack_dynirq,
++
++	.irq_set_affinity	= set_affinity_irq,
+ 	.irq_retrigger		= retrigger_dynirq,
+ };
+ 
+--- a/include/xen/events.h
++++ b/include/xen/events.h
+@@ -12,11 +12,16 @@
+ 
+ unsigned xen_evtchn_nr_channels(void);
+ 
+-int bind_evtchn_to_irq(unsigned int evtchn);
+-int bind_evtchn_to_irqhandler(unsigned int evtchn,
++int bind_evtchn_to_irq(evtchn_port_t evtchn);
++int bind_evtchn_to_irq_lateeoi(evtchn_port_t evtchn);
++int bind_evtchn_to_irqhandler(evtchn_port_t evtchn,
+ 			      irq_handler_t handler,
+ 			      unsigned long irqflags, const char *devname,
+ 			      void *dev_id);
++int bind_evtchn_to_irqhandler_lateeoi(evtchn_port_t evtchn,
++				      irq_handler_t handler,
++				      unsigned long irqflags, const char *devname,
++				      void *dev_id);
+ int bind_virq_to_irq(unsigned int virq, unsigned int cpu, bool percpu);
+ int bind_virq_to_irqhandler(unsigned int virq, unsigned int cpu,
+ 			    irq_handler_t handler,
+@@ -29,13 +34,21 @@ int bind_ipi_to_irqhandler(enum ipi_vect
+ 			   const char *devname,
+ 			   void *dev_id);
+ int bind_interdomain_evtchn_to_irq(unsigned int remote_domain,
+-				   unsigned int remote_port);
++				   evtchn_port_t remote_port);
++int bind_interdomain_evtchn_to_irq_lateeoi(unsigned int remote_domain,
++					   evtchn_port_t remote_port);
+ int bind_interdomain_evtchn_to_irqhandler(unsigned int remote_domain,
+-					  unsigned int remote_port,
++					  evtchn_port_t remote_port,
+ 					  irq_handler_t handler,
+ 					  unsigned long irqflags,
+ 					  const char *devname,
+ 					  void *dev_id);
++int bind_interdomain_evtchn_to_irqhandler_lateeoi(unsigned int remote_domain,
++						  evtchn_port_t remote_port,
++						  irq_handler_t handler,
++						  unsigned long irqflags,
++						  const char *devname,
++						  void *dev_id);
+ 
+ /*
+  * Common unbind function for all event sources. Takes IRQ to unbind from.
+@@ -44,6 +57,14 @@ int bind_interdomain_evtchn_to_irqhandle
+  */
+ void unbind_from_irqhandler(unsigned int irq, void *dev_id);
+ 
++/*
++ * Send late EOI for an IRQ bound to an event channel via one of the *_lateeoi
++ * functions above.
++ */
++void xen_irq_lateeoi(unsigned int irq, unsigned int eoi_flags);
++/* Signal an event was spurious, i.e. there was no action resulting from it. */
++#define XEN_EOI_FLAG_SPURIOUS	0x00000001
++
+ #define XEN_IRQ_PRIORITY_MAX     EVTCHN_FIFO_PRIORITY_MAX
+ #define XEN_IRQ_PRIORITY_DEFAULT EVTCHN_FIFO_PRIORITY_DEFAULT
+ #define XEN_IRQ_PRIORITY_MIN     EVTCHN_FIFO_PRIORITY_MIN
 
 
