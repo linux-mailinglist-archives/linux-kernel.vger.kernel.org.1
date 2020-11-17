@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F082B7097
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B712B709B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgKQVBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
+        id S1726205AbgKQVFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:05:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKQVBK (ORCPT
+        with ESMTP id S1726136AbgKQVFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:01:10 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A22DC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:01:09 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id y7so18091894pfq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:01:09 -0800 (PST)
+        Tue, 17 Nov 2020 16:05:08 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B44C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:05:08 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id oq3so31394112ejb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:05:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AGpDbeOLIQYmDecfUyHhqhfmNTQyLQY1DSvv/8hSQSY=;
-        b=LZZ72TSctc9SPaHEneVA0C8y9Do+GmeSSzCzpVAoV6LoS3pSkZ+6wLlWZ84VwB+6Vj
-         SFKAYixXtdL931CiM3bCEacnRru2VZ7Nym0sHol4DIKXVffLRTm7IcgVsA59QvtSFGBb
-         h+jEVAYEw7/2w/CGhFNoxWlpdpEWu6Zm23EyQ=
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kPEScT6gyGX81QUKHxjlw3b2BBUYfWDEeiwl2fVm1wc=;
+        b=p+pnzb/QV2PtGwSdlBCCfgAyW8YeNSqAdFBepLZnfBYuN8ZsISPTLreqLJrA1uF2a7
+         JIXpiidK8x1BZ3q54txbRPbxcTBDky4tJDzlsTVAhQKBxJoobg/6zPaXV7Vl+QSryYTW
+         soZx7D0rcc+lDUmhEejuFMzf1msPmPpBn+PNoxSblv6bfenihydjzscQsDUgo2sREyOU
+         qvJ+nDebS94wyW7FnAt3NR3eDkvEdqhOn/DNfQmD7fC/TZImL/cMErCXf/K8W5yTtYga
+         1ue9DHOUJDF5V2UGiwF6AIAXecxfsnCmkUuDOPjFFBFpbofxmE7TOC7SUS5j4hF6t4B1
+         rXoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AGpDbeOLIQYmDecfUyHhqhfmNTQyLQY1DSvv/8hSQSY=;
-        b=f5wsxJY5kP67mavs0ogvtOrmgjiv9NBe65LCiwfsmpU+den8DE3PQKBGO6yjcvexVv
-         IqPiizig4gWPPr/GzuPM1YAHNGhgnWzrXi+RinmpoMrEj2Ni/+fYbgJmimTZWKwfudhB
-         sl/cdDR90XLsPg3z0Ui0vHvBst0Y0TllYSWfVFYfGzCUwpk7yU5w/UyOd5bV8OJk/ofG
-         UnKhTgNcIW7kqjXaWXDpNGYH0as4yFUkRPcMJu+jdiJthdVXxeuZQZCwk60T7LJ+6sxK
-         NxxaBGTorHPXbo7iDvl3it1Tqpa1ipug29lO/nqT3LTWCXKfZVC2VW0xrU2+ydFGx+/M
-         /oeg==
-X-Gm-Message-State: AOAM533vsNJpYXheF2mW6XmWooegS9CKG8u6nfbdvIQJVbsm8RPqiTER
-        pRxcSBLeCVSfwfhyMxTorpyElQ==
-X-Google-Smtp-Source: ABdhPJyf/AKFS14sUQ6AHtjxlqAaFb5lczA1nMZh7LMW08O/410rO9l4mbPTPxGg7on/J8wkmrvTJQ==
-X-Received: by 2002:a62:1506:0:b029:18b:44dd:6325 with SMTP id 6-20020a6215060000b029018b44dd6325mr1462999pfv.30.1605646868521;
-        Tue, 17 Nov 2020 13:01:08 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t36sm19772615pfg.55.2020.11.17.13.01.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 13:01:07 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, linux-kselftest@vger.kernel.org
-Subject: [PATCH] selftests/seccomp: powerpc: Fix typo in macro variable name
-Date:   Tue, 17 Nov 2020 13:01:04 -0800
-Message-Id: <20201117210104.1000661-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kPEScT6gyGX81QUKHxjlw3b2BBUYfWDEeiwl2fVm1wc=;
+        b=LpQfsiqLKrL0ADrg7EV4VV2kw96gpicunE2oN0qkTnb7Nfoel5EAAmTA8WBMP2ahNO
+         sEsTHeMKzBd8pR0J08AaBbBEJ5vlnx4BWdZR8NUTasCJ6Z2qzIjEBPT8kkTwigi2jDSy
+         eom+gr46JMlvK7Ysst2NB6yA6oPRnfnwI8c+/FolO2UZe4PY/qLLHwkkjOx06PZLgCE2
+         F5eRXqujGMUXOB5SM1l1KPJGc0UJvOdxiqUrfaCSZAXxRzwIAPgbNwKTjPiOuqrHqRaT
+         dsmgQWSQrRXO7svb9CgNhoxd3Zs1dyIEAsoFUeyXaT6xlyVeMnvBh84WLTOzOCzNnnup
+         LVjg==
+X-Gm-Message-State: AOAM531OpA24oRjmWLwPOfLpWn9Za6Lk5ItcaAjEf484Hw0R5mdOZUzG
+        tMHc9PRbPlGFOQBxz8DD3wDkKiHTDGrF6CbdJuCenw==
+X-Google-Smtp-Source: ABdhPJxIPEbRet7rRI98nHMy4znmKu8Wwkus/v7GOUPBHi9d8SdQldIDo6o+qUCd10IbSYlqVfJ2O+BKKa6GUrV8c6Y=
+X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr17989866ejb.264.1605647107261;
+ Tue, 17 Nov 2020 13:05:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201113161859.1775473-1-david.m.ertman@intel.com>
+ <20201113161859.1775473-2-david.m.ertman@intel.com> <20201117053000.GM47002@unreal>
+ <X7N1naYOXodPsP/I@kroah.com>
+In-Reply-To: <X7N1naYOXodPsP/I@kroah.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 17 Nov 2020 13:04:56 -0800
+Message-ID: <CAPcyv4jXinvaLgtdpXTLLQ3sDOhvoBjF=7v7pba5rAd0g_rdow@mail.gmail.com>
+Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A typo sneaked into the powerpc selftest. Fix the name so it builds again.
+On Mon, Nov 16, 2020 at 11:02 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
+> > On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
+> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> > > It enables drivers to create an auxiliary_device and bind an
+> > > auxiliary_driver to it.
+> > >
+> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
+> > > Each auxiliary_device has a unique string based id; driver binds to
+> > > an auxiliary_device based on this id through the bus.
+> > >
+> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
+> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > > ---
+> >
+> > Greg,
+> >
+> > This horse was beaten to death, can we please progress with this patch?
+> > Create special topic branch or ack so I'll prepare this branch.
+> >
+> > We are in -rc4 now and we (Mellanox) can't hold our submissions anymore.
+> > My mlx5_core probe patches [1] were too intrusive and they are ready to
+> > be merged, Parav's patches got positive review as well [2] and will be
+> > taken next.
+> >
+> > We delayed and have in our internal queues the patches for VDPA, eswitch
+> > and followup for mlx5_core probe rework, but trapped due to this AUX bus
+> > patch.
+>
+> There are no deadlines for kernel patches here, sorry.  Give me some
+> time to properly review this, core kernel changes should not be rushed.
+>
+> Also, if you really want to blame someone for the delay, look at the
+> patch submitters not the reviewers, as they are the ones that took a
+> very long time with this over the lifecycle of this patchset, not me.  I
+> have provided many "instant" reviews of this patchset, and then months
+> went by between updates from them.
 
-Fixes: 46138329faea ("selftests/seccomp: powerpc: Fix seccomp return value testing")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 76c458055c54..26c72f2b61b1 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1758,10 +1758,10 @@ TEST_F(TRACE_poke, getpid_runs_normally)
- 		 * and the code is stored as a positive value.	\
- 		 */						\
- 		if (_result < 0) {				\
--			SYSCALL_RET(_regs) = -result;		\
-+			SYSCALL_RET(_regs) = -_result;		\
- 			(_regs).ccr |= 0x10000000;		\
- 		} else {					\
--			SYSCALL_RET(_regs) = result;		\
-+			SYSCALL_RET(_regs) = _result;		\
- 			(_regs).ccr &= ~0x10000000;		\
- 		}						\
- 	} while (0)
--- 
-2.25.1
-
+Please stop this finger pointing. It was already noted that the team,
+out of abundance of caution / deference to the process, decided not to
+push the patches while I was out on family leave. It's cruel to hold
+that against them, and if anyone is to blame it's me for not
+clarifying it was ok to proceed while I was out.
