@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171592B5713
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3EB2B5748
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbgKQCvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:51:46 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7692 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbgKQCvq (ORCPT
+        id S1726459AbgKQC40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:56:26 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8099 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726321AbgKQC4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:51:46 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CZr713ZY4zkYgG;
-        Tue, 17 Nov 2020 10:51:25 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 17 Nov 2020 10:51:32 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <robdclark@gmail.com>, <airlied@linux.ie>
-CC:     <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <chenzhou10@huawei.com>
-Subject: [PATCH] drm/msm/dpu: Fix error return code in dpu_mdss_init()
-Date:   Tue, 17 Nov 2020 10:56:17 +0800
-Message-ID: <20201117025617.168259-1-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 16 Nov 2020 21:56:24 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CZrDN2H3tzLntq;
+        Tue, 17 Nov 2020 10:56:04 +0800 (CST)
+Received: from compute.localdomain (10.175.112.70) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Tue, 17 Nov 2020 10:56:17 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     <jcliburn@gmail.com>, <chris.snook@gmail.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <christophe.jaillet@wanadoo.fr>, <mst@redhat.com>,
+        <leon@kernel.org>, <hkallweit1@gmail.com>, <tglx@linutronix.de>,
+        <jesse.brandeburg@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] atl1e: fix error return code in atl1e_probe()
+Date:   Tue, 17 Nov 2020 10:57:55 +0800
+Message-ID: <1605581875-36281-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function dpu_mdss_init(), as done elsewhere in this
-function.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: 070e64dc1bbc ("drm/msm/dpu: Convert to a chained irq chip")
+Fixes: 85eb5bc33717 ("net: atheros: switch from 'pci_' to 'dma_' API")
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/atheros/atl1e/atl1e_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-index cd4078807db1..6e600b4ca995 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-@@ -297,8 +297,10 @@ int dpu_mdss_init(struct drm_device *dev)
- 		goto irq_domain_error;
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
-+	if (irq < 0) {
-+		ret = irq;
- 		goto irq_error;
-+	}
- 
- 	irq_set_chained_handler_and_data(irq, dpu_mdss_irq,
- 					 dpu_mdss);
+diff --git a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+index 098b032..ff9f96d 100644
+--- a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
++++ b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+@@ -2312,8 +2312,8 @@ static int atl1e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	 * various kernel subsystems to support the mechanics required by a
+ 	 * fixed-high-32-bit system.
+ 	 */
+-	if ((dma_set_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0) ||
+-	    (dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0)) {
++	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
++	if (err) {
+ 		dev_err(&pdev->dev, "No usable DMA configuration,aborting\n");
+ 		goto err_dma;
+ 	}
 -- 
-2.20.1
+2.9.5
 
