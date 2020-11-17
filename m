@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625982B617F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B05E2B6024
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgKQNTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:19:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52256 "EHLO mail.kernel.org"
+        id S1728967AbgKQNGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:06:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730382AbgKQNTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:19:17 -0500
+        id S1728954AbgKQNGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:06:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A04D7206D5;
-        Tue, 17 Nov 2020 13:19:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9132B2464E;
+        Tue, 17 Nov 2020 13:06:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619155;
-        bh=MZk2mRD1qjys7a2I8jirLXucMTlVvT1r3XsMOo29Jjc=;
+        s=default; t=1605618406;
+        bh=fsW6bgFU3buu5xvx3D94Li6vVxUF4G38khvZ+rUjhDU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=COdd6PQTSrmQnPaAKS4tIvLtWC75pWMAnNXklR+FAci4+gdALVDoUkRSIwD54Hv3/
-         bjNsYrlUSvAi2do52cgwZUM9m3CstKU6fG3UwR48K4web5rN2+S4Xpo8fKWEgcyn6Y
-         3rIPV5+SaHQ72KlnynGEr9GoRKRLEGltzqKUBva4=
+        b=tfcSDCGWpkupokNmSg3R11is5pBuYz3QbDqNbeFXS/7lkrx1oLJf5z9VHmuRrG6VG
+         CmciaE/PNA/BeGl25Eq5SzfPmzncE3BcpeTZbFe+Jc0LX3v0DKh/sXquR09sIkvUfm
+         xhRL/lN3qhE70OZY1yJbjqSfKVMMEdILb/SxRNEE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 016/101] can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ context
-Date:   Tue, 17 Nov 2020 14:04:43 +0100
-Message-Id: <20201117122113.885320075@linuxfoundation.org>
+Subject: [PATCH 4.4 21/64] gfs2: Free rd_bits later in gfs2_clear_rgrpd to fix use-after-free
+Date:   Tue, 17 Nov 2020 14:04:44 +0100
+Message-Id: <20201117122107.174939565@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 2283f79b22684d2812e5c76fc2280aae00390365 ]
+[ Upstream commit d0f17d3883f1e3f085d38572c2ea8edbd5150172 ]
 
-If a driver calls can_get_echo_skb() during a hardware IRQ (which is often, but
-not always, the case), the 'WARN_ON(in_irq)' in
-net/core/skbuff.c#skb_release_head_state() might be triggered, under network
-congestion circumstances, together with the potential risk of a NULL pointer
-dereference.
+Function gfs2_clear_rgrpd calls kfree(rgd->rd_bits) before calling
+return_all_reservations, but return_all_reservations still dereferences
+rgd->rd_bits in __rs_deltree.  Fix that by moving the call to kfree below the
+call to return_all_reservations.
 
-The root cause of this issue is the call to kfree_skb() instead of
-dev_kfree_skb_irq() in net/core/dev.c#enqueue_to_backlog().
-
-This patch prevents the skb to be freed within the call to netif_rx() by
-incrementing its reference count with skb_get(). The skb is finally freed by
-one of the in-irq-context safe functions: dev_consume_skb_any() or
-dev_kfree_skb_any(). The "any" version is used because some drivers might call
-can_get_echo_skb() in a normal context.
-
-The reason for this issue to occur is that initially, in the core network
-stack, loopback skb were not supposed to be received in hardware IRQ context.
-The CAN stack is an exeption.
-
-This bug was previously reported back in 2017 in [1] but the proposed patch
-never got accepted.
-
-While [1] directly modifies net/core/dev.c, we try to propose here a
-smoother modification local to CAN network stack (the assumption
-behind is that only CAN devices are affected by this issue).
-
-[1] http://lore.kernel.org/r/57a3ffb6-3309-3ad5-5a34-e93c3fe3614d@cetitec.com
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201002154219.4887-2-mailhol.vincent@wanadoo.fr
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/dev.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/gfs2/rgrp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 1545f2b299d06..be532eb64baa2 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -520,7 +520,11 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
- 	if (!skb)
- 		return 0;
+diff --git a/fs/gfs2/rgrp.c b/fs/gfs2/rgrp.c
+index 2736e9cfc2ee9..99dcbdc1ff3a4 100644
+--- a/fs/gfs2/rgrp.c
++++ b/fs/gfs2/rgrp.c
+@@ -747,9 +747,9 @@ void gfs2_clear_rgrpd(struct gfs2_sbd *sdp)
+ 		}
  
--	netif_rx(skb);
-+	skb_get(skb);
-+	if (netif_rx(skb) == NET_RX_SUCCESS)
-+		dev_consume_skb_any(skb);
-+	else
-+		dev_kfree_skb_any(skb);
- 
- 	return len;
+ 		gfs2_free_clones(rgd);
++		return_all_reservations(rgd);
+ 		kfree(rgd->rd_bits);
+ 		rgd->rd_bits = NULL;
+-		return_all_reservations(rgd);
+ 		kmem_cache_free(gfs2_rgrpd_cachep, rgd);
+ 	}
  }
 -- 
 2.27.0
