@@ -2,101 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0243C2B5641
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66D02B563A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731736AbgKQBZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 20:25:14 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7690 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgKQBZN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:25:13 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CZpC86y4JzkYxZ;
-        Tue, 17 Nov 2020 09:24:52 +0800 (CST)
-Received: from [10.174.176.185] (10.174.176.185) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 17 Nov 2020 09:25:09 +0800
-Subject: Re: [PATCH] ubifs: wbuf: Don't leak kernel memory to flash
-To:     Richard Weinberger <richard@nod.at>,
-        <linux-mtd@lists.infradead.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20201116210530.26230-1-richard@nod.at>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <bfea268f-b5c2-5467-7b17-5eef7b0269ce@huawei.com>
-Date:   Tue, 17 Nov 2020 09:25:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1731535AbgKQBYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:24:42 -0500
+Received: from mga07.intel.com ([134.134.136.100]:34910 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729010AbgKQBYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 20:24:41 -0500
+IronPort-SDR: 0Ey+jwTV14flv/wZALKcnX1xVr71KKOZTazLM2srUy6feXlh+bwZGCm4HBZD2xBHvYfZerIy2q
+ TUTQiTsbd6Zw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="234994417"
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="234994417"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 17:24:36 -0800
+IronPort-SDR: eq8Jk1xxVewgG/mOeWuAVxYJH+D6addsIAIPYPO9H9kkgKj+yejwZzQVpZJl9bxAOzKgll9GbJ
+ ulNiGxk9SVOw==
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="310060646"
+Received: from rhweight-wrk1.ra.intel.com ([137.102.106.140])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 17:24:36 -0800
+From:   matthew.gerlach@linux.intel.com
+To:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mdf@kernel.org, hao.wu@intel.com, trix@redhat.com,
+        linux-doc@vger.kernel.org, corbet@lwn.net
+Cc:     Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Subject: [PATCH 0/2] fpga: dfl: optional VSEC for start of dfl
+Date:   Mon, 16 Nov 2020 17:25:50 -0800
+Message-Id: <20201117012552.262149-1-matthew.gerlach@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201116210530.26230-1-richard@nod.at>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.185]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2020/11/17 5:05, Richard Weinberger Ð´µÀ:
-> Write buffers use a kmalloc()'ed buffer, they can leak
-> up to seven bytes of kernel memory to flash if writes are not
-> aligned.
-> So use ubifs_pad() to fill these gaps with padding bytes.
-> This was never a problem while scanning because the scanner logic
-> manually aligns node lengths and skips over these gaps.
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->   fs/ubifs/io.c | 13 +++++++++++--
->   1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-> index 7e4bfaf2871f..eae9cf5a57b0 100644
-> --- a/fs/ubifs/io.c
-> +++ b/fs/ubifs/io.c
-> @@ -319,7 +319,7 @@ void ubifs_pad(const struct ubifs_info *c, void *buf, int pad)
->   {
->   	uint32_t crc;
->   
-> -	ubifs_assert(c, pad >= 0 && !(pad & 7));
-> +	ubifs_assert(c, pad >= 0);
->   
->   	if (pad >= UBIFS_PAD_NODE_SZ) {
->   		struct ubifs_ch *ch = buf;
-> @@ -764,6 +764,10 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
->   		 * write-buffer.
->   		 */
->   		memcpy(wbuf->buf + wbuf->used, buf, len);
-> +		if (aligned_len > len) {
-> +			ubifs_assert(c, aligned_len - len < 8);
-> +			ubifs_pad(c, wbuf->buf + wbuf->used + len, aligned_len - len);
-> +		}
->   
->   		if (aligned_len == wbuf->avail) {
->   			dbg_io("flush jhead %s wbuf to LEB %d:%d",
-> @@ -856,13 +860,18 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
->   	}
->   
->   	spin_lock(&wbuf->lock);
-> -	if (aligned_len)
-> +	if (aligned_len) {
->   		/*
->   		 * And now we have what's left and what does not take whole
->   		 * max. write unit, so write it to the write-buffer and we are
->   		 * done.
->   		 */
->   		memcpy(wbuf->buf, buf + written, len);
-> +		if (aligned_len > len) {
-> +			ubifs_assert(c, aligned_len - len < 8);
-> +			ubifs_pad(c, wbuf->buf + len, aligned_len - len);
-> +		}
-> +	}
->   
->   	if (c->leb_size - wbuf->offs >= c->max_write_size)
->   		wbuf->size = c->max_write_size;
-> 
+From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+The start of a Device Feature List (DFL) is currently assumed to be at
+Bar0/Offset 0 on the PCIe bus by drivers/fpga/dfl-pci.c.  This patchset
+adds support for the start of one or more DFLs to be specified in a
+Vendor-Specific Capability (VSEC) structure in PCIe config space.  If no
+such VSEC structure exists, then the start of the DFL is assumed to be 
+Bar0/Offset 0 for backward compatibility.
+
+Matthew Gerlach (2):
+  fpga: dfl: refactor cci_enumerate_feature_devs()
+  fpga: dfl: look for vendor specific capability
+
+ Documentation/fpga/dfl.rst |  10 +++
+ drivers/fpga/dfl-pci.c     | 168 +++++++++++++++++++++++++++++--------
+ 2 files changed, 143 insertions(+), 35 deletions(-)
+
+-- 
+2.25.2
+
