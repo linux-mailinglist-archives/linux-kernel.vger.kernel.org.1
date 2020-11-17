@@ -2,157 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF6E2B5BB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4949E2B5BB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727327AbgKQJWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        id S1727293AbgKQJV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:21:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726561AbgKQJWB (ORCPT
+        with ESMTP id S1726561AbgKQJVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:22:01 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62576C0613CF;
-        Tue, 17 Nov 2020 01:22:01 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id p12so23450823ljc.9;
-        Tue, 17 Nov 2020 01:22:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=anMWulhUxUbQQi+cP5uhburhWI4XjIxePPyIvO0m7GU=;
-        b=PUgWnMmn/WYeE53XTcSvVHyIUxmxcHij3+gsaJpdmfry1KE/gwpRVDVLqx7tz8v5CR
-         KXmzPirr07EhOgPEQyf4O04FhlXMciudEwlJ0j7OPfj181YuyY+1R/jfIVNKn/xXaUwU
-         2/jwvqVwZ8eVbDQ8+03RVJ/Jgv/ojKFddhFlkgQ9j7DGrOZk+J6t8Ol937P7kFWWip+q
-         wbPD+3ThJa015yc7f0G8loM29qZR8qQJRQTo49Kdj18NV9m2RBnkviSk6ZYMy9j3lyau
-         x+pyQK0l+lpGRGp8QUVWOE/Z91a7m5H0mYJdc49xmtHtHDTl0KK+wDs0woa35e71DnqQ
-         LJlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=anMWulhUxUbQQi+cP5uhburhWI4XjIxePPyIvO0m7GU=;
-        b=mhPSIasDglWWdaS5d+IQP20pTWThqEdbTPSrj4nGYpP8CuPu3TKE2+X/Q6Up0jgvtW
-         HyFOdo00fNJk8lFQRpljq7dN6WA4oABCQSaWsyc2ptkbV+XtggKBC77c/vTfi9e6QLqm
-         GNUJ5jVAuln19ZSBoK12vADaOAtVBI0fJaNaHZKGW7FjGOjFJUp7L+jhzLg2pFCebtYm
-         vnAXoWYyZGgXGnBlg3lc4rfxqNCVs7rR6Yq3s6izwxX6oKLX/LRKmQw79PDQS6+X/UKS
-         sSAJgg5NqgyNnWCjZLkORZ9JdN6dLHRd7w2B1hQVW8OIfzIekskKR2+UUvHJIVIVY4Vm
-         pM4w==
-X-Gm-Message-State: AOAM531AIdMEZCzqvFWCrVjzxDd/RqC53Wl+stp7kpdU5y4ok6XDq1q/
-        o6Lcj7LWfPIyarHw4h/o0CEBiYJnHaezt7GPz0Y=
-X-Google-Smtp-Source: ABdhPJxz+8YUSmb6HMJ9ExSKuO6QmI8VFlrnHIjn+QEPjPmVr0gVmLwx77X+qiTlytwBYEnNljtvIrYqhKA9/c3IMIo=
-X-Received: by 2002:a2e:6c11:: with SMTP id h17mr1547129ljc.25.1605604919844;
- Tue, 17 Nov 2020 01:21:59 -0800 (PST)
+        Tue, 17 Nov 2020 04:21:55 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ACCC0613CF;
+        Tue, 17 Nov 2020 01:21:55 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605604913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+oNN0MQgkiBnCbtfwugoj2ueCMN1m2mxEsnINrDLEe0=;
+        b=DwBmeWJShTfSxI7/bv9yMVNbyXuplY6dNWaJqhWyEBj0NEoUnDzm/Q61zBRx/jvfVqMab3
+        YqSSqciJOklmsPQhLhvFcAhDaCgdtLjlgDx1WVoEJhofYrTb+HZOhHdBmFYZ8sOC2J+3rF
+        kkEshToFTkEciOfblmWCrEZp5P6IbtwlfRxWHlsTJbeLlyWYtXZ7SdaRZeP8Ae+vxzSOqK
+        eStnMibR6Ryujt1YDKfPzB2cupuDgeXiLMpjrk89EkPjUsUGpsAGsIueuBeEINhXacrsmY
+        QdeJkh0tBpaCWJVw6wHbr0zQo5UbpJ4Qszu9RndP91TowUjpuEanGAb23BvW1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605604913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+oNN0MQgkiBnCbtfwugoj2ueCMN1m2mxEsnINrDLEe0=;
+        b=YCVL+0Qrok4yb6+AmGU6uun36CXW4zeVISlAXjUYay+MYF25xqVx1q5xsECe4BULShPhcB
+        gQiiXXhWd1DZjrAg==
+To:     "Tian\, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Raj\, Ashok" <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Wilk\, Konrad" <konrad.wilk@oracle.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul\@kernel.org" <vkoul@kernel.org>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "maz\@kernel.org" <maz@kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
+        "parav\@mellanox.com" <parav@mellanox.com>,
+        "rafael\@kernel.org" <rafael@kernel.org>,
+        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain\, Mona" <mona.hossain@intel.com>,
+        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: RE: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+In-Reply-To: <MWHPR11MB1645E87DBEFFCC017C4849CC8CE30@MWHPR11MB1645.namprd11.prod.outlook.com>
+References: <877dqqmc2h.fsf@nanos.tec.linutronix.de> <20201114103430.GA9810@infradead.org> <20201114211837.GB12197@araj-mobl1.jf.intel.com> <877dqmamjl.fsf@nanos.tec.linutronix.de> <20201115193156.GB14750@araj-mobl1.jf.intel.com> <875z665kz4.fsf@nanos.tec.linutronix.de> <20201116002232.GA2440@araj-mobl1.jf.intel.com> <MWHPR11MB164539B8FDE63D5CBDA300E18CE30@MWHPR11MB1645.namprd11.prod.outlook.com> <20201116154635.GK917484@nvidia.com> <87y2j1xk1a.fsf@nanos.tec.linutronix.de> <20201116180241.GP917484@nvidia.com> <MWHPR11MB1645E87DBEFFCC017C4849CC8CE30@MWHPR11MB1645.namprd11.prod.outlook.com>
+Date:   Tue, 17 Nov 2020 10:21:52 +0100
+Message-ID: <875z64xrrj.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <1605581721-36028-1-git-send-email-zhangchangzhong@huawei.com>
- <34800149-ce40-b993-1d82-5f26abc61b28@gmail.com> <CAMXMK6v+nAdcChQ4wkc8gRt6i1uwGHgnmqBvZf9k-HFmPkSWcQ@mail.gmail.com>
- <7fae4733-570c-6cb1-5537-de6469afbea5@gmail.com>
-In-Reply-To: <7fae4733-570c-6cb1-5537-de6469afbea5@gmail.com>
-From:   Chris Snook <chris.snook@gmail.com>
-Date:   Tue, 17 Nov 2020 01:21:48 -0800
-Message-ID: <CAMXMK6uZvCJxUwgXth4sJxSN2-5KF9m9x6bADtKjuN5xVommSA@mail.gmail.com>
-Subject: Re: [PATCH net] atl1c: fix error return code in atl1c_probe()
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, yanaijie@huawei.com,
-        christophe.jaillet@wanadoo.fr, mst@redhat.com,
-        Leon Romanovsky <leon@kernel.org>, jesse.brandeburg@intel.com,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 1:01 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->
-> Am 17.11.2020 um 08:43 schrieb Chris Snook:
-> > The full text of the preceding comment explains the need:
-> >
-> > /*
-> > * The atl1c chip can DMA to 64-bit addresses, but it uses a single
-> > * shared register for the high 32 bits, so only a single, aligned,
-> > * 4 GB physical address range can be used at a time.
-> > *
-> > * Supporting 64-bit DMA on this hardware is more trouble than it's
-> > * worth.  It is far easier to limit to 32-bit DMA than update
-> > * various kernel subsystems to support the mechanics required by a
-> > * fixed-high-32-bit system.
-> > */
-> >
-> > Without this, we get data corruption and crashes on machines with 4 GB
-> > of RAM or more.
-> >
-> > - Chris
-> >
-> > On Mon, Nov 16, 2020 at 11:14 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> >>
-> >> Am 17.11.2020 um 03:55 schrieb Zhang Changzhong:
-> >>> Fix to return a negative error code from the error handling
-> >>> case instead of 0, as done elsewhere in this function.
-> >>>
-> >>> Fixes: 85eb5bc33717 ("net: atheros: switch from 'pci_' to 'dma_' API")
-> >>> Reported-by: Hulk Robot <hulkci@huawei.com>
-> >>> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> >>> ---
-> >>>  drivers/net/ethernet/atheros/atl1c/atl1c_main.c | 4 ++--
-> >>>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> >>> index 0c12cf7..3f65f2b 100644
-> >>> --- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> >>> +++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> >>> @@ -2543,8 +2543,8 @@ static int atl1c_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >>>        * various kernel subsystems to support the mechanics required by a
-> >>>        * fixed-high-32-bit system.
-> >>>        */
-> >>> -     if ((dma_set_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0) ||
-> >>> -         (dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0)) {
-> >>> +     err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
-> >>
-> >> I wonder whether you need this call at all, because 32bit is the default.
-> >> See following
-> >>
-> >> "By default, the kernel assumes that your device can address 32-bits
-> >> of DMA addressing."
-> >>
-> >> in https://www.kernel.org/doc/Documentation/DMA-API-HOWTO.txt
-> >>
-> >>> +     if (err) {
-> >>>               dev_err(&pdev->dev, "No usable DMA configuration,aborting\n");
-> >>>               goto err_dma;
-> >>>       }
-> >>>
-> >>
->
-> Please don't top-post.
-> >From what I've seen the kernel configures 32bit as default DMA size.
-> See beginning of pci_device_add(), there the coherent mask is set to 32bit.
->
-> And in pci_setup_device() see the following:
->   /*
->          * Assume 32-bit PCI; let 64-bit PCI cards (which are far rarer)
->          * set this higher, assuming the system even supports it.
->          */
->         dev->dma_mask = 0xffffffff;
->
->
-> That means if you would like to use 64bit DMA then you'd need to configure this explicitly.
-> You could check to which mask dev->dma_mask and dev->coherent_dma_mask are set
-> w/o the call to dma_set_mask_and_coherent.
+On Mon, Nov 16 2020 at 23:51, Kevin Tian wrote:
+>> From: Jason Gunthorpe <jgg@nvidia.com>
+> btw Jason/Thomas, how do you think about the proposal down in this
+> thread (ims=[auto|on|off])? Does it sound a good tradeoff to move forward?
 
-I don't remember the exact history with atl1c, but we really did hit
-this bug with atl1 and atl2. I'm not sure if that's because this
-default wasn't there or if it's because because another call was
-replaced with this call, but either way it's quite likely that at some
-point in the future someone who doesn't even have test hardware will
-try to port this to a newer interface that doesn't make the same
-assumption, and bad things will happen. This isn't a hot path, so it's
-better to be explicit. If dma_set_mask_and_coherent() ever takes a
-long time or fails, something is seriously wrong and we probably want
-to know about it before we start DMAing.
+What does it solve? It defaults to auto and then you still need to solve
+the problem of figuring out whether it's safe to use it or not.
 
-- Chris
+The command line option is not a solution per se. It's the last resort
+when the logic which decides whether IMS can be used or not fails to do
+the right thing. Nothing more.
+
+We clearly have outlined what needs to be done and you can come up with
+as many magic bullets you want, they won't make the real problems go
+away.
+
+Thanks,
+
+        tglx
