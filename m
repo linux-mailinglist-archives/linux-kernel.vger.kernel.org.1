@@ -2,112 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D262B6E85
+	by mail.lfdr.de (Postfix) with ESMTP id C09272B6E86
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730154AbgKQTVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:21:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35682 "EHLO mail.kernel.org"
+        id S1730182AbgKQTWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:22:11 -0500
+Received: from mga11.intel.com ([192.55.52.93]:7697 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726817AbgKQTVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:21:48 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92242221FC;
-        Tue, 17 Nov 2020 19:21:46 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 14:21:45 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
- memory allocation
-Message-ID: <20201117142145.43194f1a@gandalf.local.home>
-In-Reply-To: <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
-References: <20201116175107.02db396d@gandalf.local.home>
-        <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726575AbgKQTWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:22:10 -0500
+IronPort-SDR: QdT/Sw9GFux44eCMUAp7c98RpIkHCnaH8DDqct6rbplp1/WJBxfCxU4+Ef9kJDW2ah1zec7gH3
+ f7B5qp/2vOEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="167482954"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="167482954"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 11:22:09 -0800
+IronPort-SDR: Bv0yVfud6ralZwiMWbWeglRPlJuJAQjp7KpwGJsIEt4QkB9tSsPA0X5ysQLHFpx79/R2HOP+8L
+ VWU+zaTKdQUw==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="430567196"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.24.101]) ([10.212.24.101])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 11:22:09 -0800
+Subject: Re: [PATCH 02/24] x86/resctrl: Split struct rdt_domain
+To:     James Morse <james.morse@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>
+References: <20201030161120.227225-1-james.morse@arm.com>
+ <20201030161120.227225-3-james.morse@arm.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <768d3fe3-336f-70d6-d406-1d3f25b7f3bf@intel.com>
+Date:   Tue, 17 Nov 2020 11:22:08 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201030161120.227225-3-james.morse@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 14:15:10 -0500 (EST)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+Hi James,
 
+On 10/30/2020 9:10 AM, James Morse wrote:
+> resctrl is the defacto Linux ABI for SoC resource partitioning features.
+> To support it on another architecture, it needs to be abstracted from
+> Intel RDT, and moved it to /fs/.
 
-> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
-> index e7c2276be33e..e0351bb0b140 100644
-> --- a/include/linux/tracepoint-defs.h
-> +++ b/include/linux/tracepoint-defs.h
-> @@ -38,6 +38,7 @@ struct tracepoint {
->         int (*regfunc)(void);
->         void (*unregfunc)(void);
->         struct tracepoint_func __rcu *funcs;
-> +       void *stub_func;
->  };
->  
->  #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
-> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-> index 0f21617f1a66..b0b805de3779 100644
-> --- a/include/linux/tracepoint.h
-> +++ b/include/linux/tracepoint.h
-> @@ -287,6 +287,9 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->  #define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)              \
->         static const char __tpstrtab_##_name[]                          \
->         __section("__tracepoints_strings") = #_name;                    \
-> +       static void __cold __tracepoint_stub_func_##_name(void *__data, proto) \
-> +       {                                                               \
-> +       }                                                               \
+Same comments as previous patch regarding "Intel RDT" and "moved it to"
 
-The thing is, tracepoints are already bloated. I do not want to add
-something like this that will unnecessarily add more text.
-
-Since all tracepoints callbacks have at least one parameter (__data), we
-could declare tp_stub_func as:
-
-static void tp_stub_func(void *data, ...)
-{
-	return;
-}
-
-And now C knows that tp_stub_func() can be called with one or more
-parameters, and had better be able to deal with it!
-
--- Steve
-
-
-
->         extern struct static_call_key STATIC_CALL_KEY(tp_func_##_name); \
->         int __traceiter_##_name(void *__data, proto);                   \
->         struct tracepoint __tracepoint_##_name  __used                  \
-> @@ -298,7 +301,8 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->                 .iterator = &__traceiter_##_name,                       \
->                 .regfunc = _reg,                                        \
->                 .unregfunc = _unreg,                                    \
-> -               .funcs = NULL };                                        \
-> +               .funcs = NULL,                                          \
-> +               .stub_func = __tracepoint_stub_func_##_name, };         \
->         __TRACEPOINT_ENTRY(_name);                                      \
->         int __traceiter_##_name(void *__data, proto)                    \
->         {                                                               \
 > 
-> Thanks,
+> Split struct rdt_domain up too. Move everything that that is particular
+
+s/that that/that/
+
+> to resctrl into a new header file. resctrl code paths touching a 'hw'
+> struct indicates where an abstraction is needed.
 > 
-> Mathieu
+> No change in behaviour, this patch just moves types around.
+
+Please remove the "this patch" term.
+
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>   arch/x86/kernel/cpu/resctrl/core.c        | 32 +++++++++++-------
+>   arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 10 ++++--
+>   arch/x86/kernel/cpu/resctrl/internal.h    | 40 +++++------------------
+>   arch/x86/kernel/cpu/resctrl/monitor.c     |  8 +++--
+>   arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 29 ++++++++++------
+>   include/linux/resctrl.h                   | 35 +++++++++++++++++++-
+>   6 files changed, 94 insertions(+), 60 deletions(-)
 > 
 
+...
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index bcae86138cad..f7aab9245259 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -299,44 +299,22 @@ struct mbm_state {
+>   };
+>   
+>   /**
+> - * struct rdt_domain - group of cpus sharing an RDT resource
+> - * @list:	all instances of this resource
+> - * @id:		unique id for this instance
+> - * @cpu_mask:	which cpus share this resource
+> - * @rmid_busy_llc:
+> - *		bitmap of which limbo RMIDs are above threshold
+> - * @mbm_total:	saved state for MBM total bandwidth
+> - * @mbm_local:	saved state for MBM local bandwidth
+> - * @mbm_over:	worker to periodically read MBM h/w counters
+> - * @cqm_limbo:	worker to periodically read CQM h/w counters
+> - * @mbm_work_cpu:
+> - *		worker cpu for MBM h/w counters
+> - * @cqm_work_cpu:
+> - *		worker cpu for CQM h/w counters
+> + * struct rdt_hw_domain - group of cpus sharing an RDT resource
+
+s/RDT/resctrl/?
+
+Even so, looking ahead, struct rdt_hw_domain and struct rdt_domain are 
+receiving duplicate descriptions that needs to be adjusted.
+
+Also, CPU is preferred instead of cpu. I understand that in some cases 
+you copy existing usage and I am actually not sure if this would be 
+insisted upon when going to the next level of review. Since these are 
+comments changing it does seem like a good time to use preferred term.
+
+> + * @resctrl:    Properties exposed to the resctrl file system
+
+Please use tabs and spaces consistently.
+
+>    * @ctrl_val:	array of cache or mem ctrl values (indexed by CLOSID)
+>    * @mbps_val:	When mba_sc is enabled, this holds the bandwidth in MBps
+> - * @new_ctrl:	new ctrl value to be loaded
+> - * @have_new_ctrl: did user provide new_ctrl for this domain
+> - * @plr:	pseudo-locked region (if any) associated with domain
+>    */
+> -struct rdt_domain {
+> -	struct list_head		list;
+> -	int				id;
+> -	struct cpumask			cpu_mask;
+> -	unsigned long			*rmid_busy_llc;
+> -	struct mbm_state		*mbm_total;
+> -	struct mbm_state		*mbm_local;
+> -	struct delayed_work		mbm_over;
+> -	struct delayed_work		cqm_limbo;
+> -	int				mbm_work_cpu;
+> -	int				cqm_work_cpu;
+> +struct rdt_hw_domain {
+> +	struct rdt_domain		resctrl;
+>   	u32				*ctrl_val;
+>   	u32				*mbps_val;
+> -	u32				new_ctrl;
+> -	bool				have_new_ctrl;
+> -	struct pseudo_lock_region	*plr;
+>   };
+>   
+> +static inline struct rdt_hw_domain *resctrl_to_arch_dom(struct rdt_domain *r)
+> +{
+> +	return container_of(r, struct rdt_hw_domain, resctrl);
+> +}
+> +
+>   /**
+>    * struct msr_param - set a range of MSRs from a domain
+>    * @res:       The resource to use
+
+...
+
+> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+> index b2c2b7386d28..f5af59b8f2a9 100644
+> --- a/include/linux/resctrl.h
+> +++ b/include/linux/resctrl.h
+> @@ -15,7 +15,40 @@ int proc_resctrl_show(struct seq_file *m,
+>   
+>   #endif
+>   
+> -struct rdt_domain;
+> +/**
+> + * struct rdt_domain - group of cpus sharing an RDT resource
+
+Duplicate description here (same as rdt_hw_domain). Please use CPUs 
+instead and resctrl instead of RDT.
+
+> + * @list:		all instances of this resource
+> + * @id:			unique id for this instance
+> + * @cpu_mask:		which cpus share this resource
+> + * @new_ctrl:		new ctrl value to be loaded
+> + * @have_new_ctrl:	did user provide new_ctrl for this domain
+> + * @rmid_busy_llc:	bitmap of which limbo RMIDs are above threshold
+> + * @mbm_total:		saved state for MBM total bandwidth
+> + * @mbm_local:		saved state for MBM local bandwidth
+> + * @mbm_over:		worker to periodically read MBM h/w counters
+> + * @cqm_limbo:		worker to periodically read CQM h/w counters
+> + * @mbm_work_cpu:	worker cpu for MBM h/w counters
+> + * @cqm_work_cpu:	worker cpu for CQM h/w counters
+> + * @plr:		pseudo-locked region (if any) associated with domain
+> + */
+
+The above usages of cpu is what I considered earlier. I know that the 
+x86 area prefers CPU but I also understand that you are just copying 
+existing comments. I do not know if the x86 maintainers would require a 
+change to CPU at this time but it seems like a good time to transition.
+
+> +struct rdt_domain {
+> +	struct list_head		list;
+> +	int				id;
+> +	struct cpumask			cpu_mask;
+> +
+> +	u32				new_ctrl;
+> +	bool				have_new_ctrl;
+> +
+> +	unsigned long			*rmid_busy_llc;
+> +	struct mbm_state		*mbm_total;
+> +	struct mbm_state		*mbm_local;
+> +	struct delayed_work		mbm_over;
+> +	struct delayed_work		cqm_limbo;
+> +	int				mbm_work_cpu;
+> +	int				cqm_work_cpu;
+> +
+> +	struct pseudo_lock_region	*plr;
+> +};
+>   
+
+Please remove the empty lines.
+
+>   /**
+>    * struct resctrl_cache - Cache allocation related data
+> 
+
+Reinette
