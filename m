@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92BF2B6261
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D7A2B6147
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731388AbgKQN2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:28:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36178 "EHLO mail.kernel.org"
+        id S1729873AbgKQNRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:17:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730248AbgKQN2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:28:05 -0500
+        id S1730548AbgKQNRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:17:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2866E20781;
-        Tue, 17 Nov 2020 13:28:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F30C206D5;
+        Tue, 17 Nov 2020 13:17:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619684;
-        bh=W4ujVFZMVGSls48lVuWY05a3Hd+W4YtH45S76gwbNHM=;
+        s=default; t=1605619040;
+        bh=WykamFwSaoVYwnsxF5tPWtaS0PuocJ8lmONazfOkTKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LDeyyHeK5DAg+z04+qZrWWygAwI+A0EWSa38wTedwge+j/JP5kSOMC+3Rdrdgur18
-         AF0Zvg2W6iaCOxXxL7E9+8skDOTkNXlvmKMbxcHsSeHFV7MCypwyv/hAL+g3c6saoZ
-         Ecn9Yke4dYcQPAD4GvjhpY5w6lcAfT0mrpaPEhm0=
+        b=YDCRdt7tng365NtDB9I4KDhUzGGwY6LcGwz2IY8M262DrtzXXcvUjx+S3vpFAlOm4
+         YVuWoI/gfNPnKuAogiPzBD8J5XynDpPLqYi2DJxBAGlQ+kXOTDMRUYiKdyqq2LFsdI
+         Qwn64lO0AoqDLs57S01LPBZYvM8L1UUvJT7xOoiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Willi <martin@strongswan.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 104/151] vrf: Fix fast path output packet handling with async Netfilter rules
+        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH 4.14 65/85] x86/speculation: Allow IBPB to be conditionally enabled on CPUs with always-on STIBP
 Date:   Tue, 17 Nov 2020 14:05:34 +0100
-Message-Id: <20201117122126.473501130@linuxfoundation.org>
+Message-Id: <20201117122114.217089408@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,197 +44,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Willi <martin@strongswan.org>
+From: Anand K Mistry <amistry@google.com>
 
-[ Upstream commit 9e2b7fa2df4365e99934901da4fb4af52d81e820 ]
+commit 1978b3a53a74e3230cd46932b149c6e62e832e9a upstream.
 
-VRF devices use an optimized direct path on output if a default qdisc
-is involved, calling Netfilter hooks directly. This path, however, does
-not consider Netfilter rules completing asynchronously, such as with
-NFQUEUE. The Netfilter okfn() is called for asynchronously accepted
-packets, but the VRF never passes that packet down the stack to send
-it out over the slave device. Using the slower redirect path for this
-seems not feasible, as we do not know beforehand if a Netfilter hook
-has asynchronously completing rules.
+On AMD CPUs which have the feature X86_FEATURE_AMD_STIBP_ALWAYS_ON,
+STIBP is set to on and
 
-Fix the use of asynchronously completing Netfilter rules in OUTPUT and
-POSTROUTING by using a special completion function that additionally
-calls dst_output() to pass the packet down the stack. Also, slightly
-adjust the use of nf_reset_ct() so that is called in the asynchronous
-case, too.
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
 
-Fixes: dcdd43c41e60 ("net: vrf: performance improvements for IPv4")
-Fixes: a9ec54d1b0cd ("net: vrf: performance improvements for IPv6")
-Signed-off-by: Martin Willi <martin@strongswan.org>
-Link: https://lore.kernel.org/r/20201106073030.3974927-1-martin@strongswan.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+At the same time, IBPB can be set to conditional.
+
+However, this leads to the case where it's impossible to turn on IBPB
+for a process because in the PR_SPEC_DISABLE case in ib_prctl_set() the
+
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
+
+condition leads to a return before the task flag is set. Similarly,
+ib_prctl_get() will return PR_SPEC_DISABLE even though IBPB is set to
+conditional.
+
+More generally, the following cases are possible:
+
+1. STIBP = conditional && IBPB = on for spectre_v2_user=seccomp,ibpb
+2. STIBP = on && IBPB = conditional for AMD CPUs with
+   X86_FEATURE_AMD_STIBP_ALWAYS_ON
+
+The first case functions correctly today, but only because
+spectre_v2_user_ibpb isn't updated to reflect the IBPB mode.
+
+At a high level, this change does one thing. If either STIBP or IBPB
+is set to conditional, allow the prctl to change the task flag.
+Also, reflect that capability when querying the state. This isn't
+perfect since it doesn't take into account if only STIBP or IBPB is
+unconditionally on. But it allows the conditional feature to work as
+expected, without affecting the unconditional one.
+
+ [ bp: Massage commit message and comment; space out statements for
+   better readability. ]
+
+Fixes: 21998a351512 ("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.")
+Signed-off-by: Anand K Mistry <amistry@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lkml.kernel.org/r/20201105163246.v2.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/vrf.c | 92 +++++++++++++++++++++++++++++++++++------------
- 1 file changed, 69 insertions(+), 23 deletions(-)
+ arch/x86/kernel/cpu/bugs.c |   52 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
-index 6716deeb35e33..0c7d746c03304 100644
---- a/drivers/net/vrf.c
-+++ b/drivers/net/vrf.c
-@@ -332,8 +332,7 @@ static netdev_tx_t vrf_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return ret;
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1240,6 +1240,14 @@ static int ssb_prctl_set(struct task_str
+ 	return 0;
  }
  
--static int vrf_finish_direct(struct net *net, struct sock *sk,
--			     struct sk_buff *skb)
-+static void vrf_finish_direct(struct sk_buff *skb)
++static bool is_spec_ib_user_controlled(void)
++{
++	return spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP;
++}
++
+ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
  {
- 	struct net_device *vrf_dev = skb->dev;
+ 	switch (ctrl) {
+@@ -1247,17 +1255,26 @@ static int ib_prctl_set(struct task_stru
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return 0;
+-		/*
+-		 * Indirect branch speculation is always disabled in strict
+-		 * mode. It can neither be enabled if it was force-disabled
+-		 * by a  previous prctl call.
  
-@@ -352,7 +351,8 @@ static int vrf_finish_direct(struct net *net, struct sock *sk,
- 		skb_pull(skb, ETH_HLEN);
- 	}
- 
--	return 1;
-+	/* reset skb device */
-+	nf_reset_ct(skb);
++		/*
++		 * With strict mode for both IBPB and STIBP, the instruction
++		 * code paths avoid checking this task flag and instead,
++		 * unconditionally run the instruction. However, STIBP and IBPB
++		 * are independent and either can be set to conditionally
++		 * enabled regardless of the mode of the other.
++		 *
++		 * If either is set to conditional, allow the task flag to be
++		 * updated, unless it was force-disabled by a previous prctl
++		 * call. Currently, this is possible on an AMD CPU which has the
++		 * feature X86_FEATURE_AMD_STIBP_ALWAYS_ON. In this case, if the
++		 * kernel is booted with 'spectre_v2_user=seccomp', then
++		 * spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP and
++		 * spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED.
+ 		 */
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ||
++		if (!is_spec_ib_user_controlled() ||
+ 		    task_spec_ib_force_disable(task))
+ 			return -EPERM;
++
+ 		task_clear_spec_ib_disable(task);
+ 		task_update_spec_tif(task);
+ 		break;
+@@ -1270,10 +1287,10 @@ static int ib_prctl_set(struct task_stru
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return -EPERM;
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++
++		if (!is_spec_ib_user_controlled())
+ 			return 0;
++
+ 		task_set_spec_ib_disable(task);
+ 		if (ctrl == PR_SPEC_FORCE_DISABLE)
+ 			task_set_spec_ib_force_disable(task);
+@@ -1336,20 +1353,17 @@ static int ib_prctl_get(struct task_stru
+ 	if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 	    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 		return PR_SPEC_ENABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
+-		return PR_SPEC_DISABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP) {
++	else if (is_spec_ib_user_controlled()) {
+ 		if (task_spec_ib_force_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE;
+ 		if (task_spec_ib_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
+ 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
+-	} else
++	} else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++		return PR_SPEC_DISABLE;
++	else
+ 		return PR_SPEC_NOT_AFFECTED;
  }
  
- #if IS_ENABLED(CONFIG_IPV6)
-@@ -431,15 +431,41 @@ static struct sk_buff *vrf_ip6_out_redirect(struct net_device *vrf_dev,
- 	return skb;
- }
- 
-+static int vrf_output6_direct_finish(struct net *net, struct sock *sk,
-+				     struct sk_buff *skb)
-+{
-+	vrf_finish_direct(skb);
-+
-+	return vrf_ip6_local_out(net, sk, skb);
-+}
-+
- static int vrf_output6_direct(struct net *net, struct sock *sk,
- 			      struct sk_buff *skb)
- {
-+	int err = 1;
-+
- 	skb->protocol = htons(ETH_P_IPV6);
- 
--	return NF_HOOK_COND(NFPROTO_IPV6, NF_INET_POST_ROUTING,
--			    net, sk, skb, NULL, skb->dev,
--			    vrf_finish_direct,
--			    !(IPCB(skb)->flags & IPSKB_REROUTED));
-+	if (!(IPCB(skb)->flags & IPSKB_REROUTED))
-+		err = nf_hook(NFPROTO_IPV6, NF_INET_POST_ROUTING, net, sk, skb,
-+			      NULL, skb->dev, vrf_output6_direct_finish);
-+
-+	if (likely(err == 1))
-+		vrf_finish_direct(skb);
-+
-+	return err;
-+}
-+
-+static int vrf_ip6_out_direct_finish(struct net *net, struct sock *sk,
-+				     struct sk_buff *skb)
-+{
-+	int err;
-+
-+	err = vrf_output6_direct(net, sk, skb);
-+	if (likely(err == 1))
-+		err = vrf_ip6_local_out(net, sk, skb);
-+
-+	return err;
- }
- 
- static struct sk_buff *vrf_ip6_out_direct(struct net_device *vrf_dev,
-@@ -452,18 +478,15 @@ static struct sk_buff *vrf_ip6_out_direct(struct net_device *vrf_dev,
- 	skb->dev = vrf_dev;
- 
- 	err = nf_hook(NFPROTO_IPV6, NF_INET_LOCAL_OUT, net, sk,
--		      skb, NULL, vrf_dev, vrf_output6_direct);
-+		      skb, NULL, vrf_dev, vrf_ip6_out_direct_finish);
- 
- 	if (likely(err == 1))
- 		err = vrf_output6_direct(net, sk, skb);
- 
--	/* reset skb device */
- 	if (likely(err == 1))
--		nf_reset_ct(skb);
--	else
--		skb = NULL;
-+		return skb;
- 
--	return skb;
-+	return NULL;
- }
- 
- static struct sk_buff *vrf_ip6_out(struct net_device *vrf_dev,
-@@ -643,15 +666,41 @@ static struct sk_buff *vrf_ip_out_redirect(struct net_device *vrf_dev,
- 	return skb;
- }
- 
-+static int vrf_output_direct_finish(struct net *net, struct sock *sk,
-+				    struct sk_buff *skb)
-+{
-+	vrf_finish_direct(skb);
-+
-+	return vrf_ip_local_out(net, sk, skb);
-+}
-+
- static int vrf_output_direct(struct net *net, struct sock *sk,
- 			     struct sk_buff *skb)
- {
-+	int err = 1;
-+
- 	skb->protocol = htons(ETH_P_IP);
- 
--	return NF_HOOK_COND(NFPROTO_IPV4, NF_INET_POST_ROUTING,
--			    net, sk, skb, NULL, skb->dev,
--			    vrf_finish_direct,
--			    !(IPCB(skb)->flags & IPSKB_REROUTED));
-+	if (!(IPCB(skb)->flags & IPSKB_REROUTED))
-+		err = nf_hook(NFPROTO_IPV4, NF_INET_POST_ROUTING, net, sk, skb,
-+			      NULL, skb->dev, vrf_output_direct_finish);
-+
-+	if (likely(err == 1))
-+		vrf_finish_direct(skb);
-+
-+	return err;
-+}
-+
-+static int vrf_ip_out_direct_finish(struct net *net, struct sock *sk,
-+				    struct sk_buff *skb)
-+{
-+	int err;
-+
-+	err = vrf_output_direct(net, sk, skb);
-+	if (likely(err == 1))
-+		err = vrf_ip_local_out(net, sk, skb);
-+
-+	return err;
- }
- 
- static struct sk_buff *vrf_ip_out_direct(struct net_device *vrf_dev,
-@@ -664,18 +713,15 @@ static struct sk_buff *vrf_ip_out_direct(struct net_device *vrf_dev,
- 	skb->dev = vrf_dev;
- 
- 	err = nf_hook(NFPROTO_IPV4, NF_INET_LOCAL_OUT, net, sk,
--		      skb, NULL, vrf_dev, vrf_output_direct);
-+		      skb, NULL, vrf_dev, vrf_ip_out_direct_finish);
- 
- 	if (likely(err == 1))
- 		err = vrf_output_direct(net, sk, skb);
- 
--	/* reset skb device */
- 	if (likely(err == 1))
--		nf_reset_ct(skb);
--	else
--		skb = NULL;
-+		return skb;
- 
--	return skb;
-+	return NULL;
- }
- 
- static struct sk_buff *vrf_ip_out(struct net_device *vrf_dev,
--- 
-2.27.0
-
 
 
