@@ -2,113 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3942B5BF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00E42B5C0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727464AbgKQJlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:41:53 -0500
-Received: from mail-eopbgr10119.outbound.protection.outlook.com ([40.107.1.119]:42912
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727218AbgKQJlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:41:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BYlBg+XbUyMLGVcbm+yBlgqCFWk+S2DbRbKzc4eGR5kum/6pVnOp+vgg7XSBofnyki3kgTZZjRMX0z5djeKXMRNLU0cRP4z++fYTA2wQ763L9aFAz8VRsOrqvm31K91+Ir2rRbAaiJstwB5DQXWLApHNdfS46C81oP0UdvT401i11vTlknQ+I/W5cxoUTPTLYPtkZW8Y4EHGtCkFRVMKKnOrITwIM/ghVENmNgQi/sfICXV6SlHwijsZqCtoBgVWvoT8dOTWIQSC3FGL6oy/Cn1/EwgrUE4cjAXJEdXypON9IgwQKM3O4N1S1P0uu53XVYRiTeMILshwSf8JdGoWKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1RreXzbGPQ4JKBG2M/8g7I78ZTL1xWtJujzF05GANiw=;
- b=XSotGpnqr+CkQ/5iBHhEc/m6QTfYaULLVAiF9ejeQbvwe5JJQK7wcmIpp2Q6SsIoBg+d13whCi8Y0gupzWMMFc2cOEKYQcVugs0za1SM+qA9HmVKsZoN5Eu/ne8a8gT6fy5WbwDgdImDtGDfg2gYa+mdmS3291v0lRqzL96dfUlqqOABlDghZJP8LNNJU9vPzXZpA+Nu6iUcNp45pv3KWf2yTiC1RnRdeH98n+e9qB69CJUAvbDjA2KQulMcH7vo5UiaJLU3yApnbIUhwl6ZZ/GauHN1gsbb1tJbKOJitEZNHymZ3sC/Udtvf59Ceqk45DXWu5amy9Je1HHloYNCQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1RreXzbGPQ4JKBG2M/8g7I78ZTL1xWtJujzF05GANiw=;
- b=thzfCLTPI7CNaHjpuhJcEHzmskzpGeAEI7K3mNCKjIILWq0mobybXmfZooIv8LgIZaR9uK5Zo5Yq8Yr2OFcoHwLD4j2WJ1784N6Wy0yusjLgkRFdG7/6CBrB4GhtWtmQHiyWOSlNEfcREr1AIWTRYOv1N+n2oVfYZAAIBZ9x84E=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
- by AM0PR0702MB3825.eurprd07.prod.outlook.com (2603:10a6:208:23::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.12; Tue, 17 Nov
- 2020 09:41:48 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::d527:e75b:546c:a85b]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::d527:e75b:546c:a85b%6]) with mapi id 15.20.3564.021; Tue, 17 Nov 2020
- 09:41:48 +0000
-Subject: Re: [PATCH] MIPS: reserve the memblock right after the kernel
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20201106141001.57637-1-alexander.sverdlin@nokia.com>
- <20201107094028.GA4918@alpha.franken.de>
- <1d6a424e-944e-7f21-1f30-989fb61018a8@nokia.com>
- <20201110095503.GA10357@alpha.franken.de>
- <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
- <20201111145240.lok3q5g3pgcvknqr@mobilestation>
- <4c58b551-b07f-d217-c683-615f7b54ea30@nokia.com>
- <13fff200-660a-27b8-6507-82124eee51c5@nokia.com>
- <20201116223146.cmb6myelohnlbw7y@mobilestation>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <e1c594d7-d746-d0ce-2c55-fa3169f9bef1@nokia.com>
-Date:   Tue, 17 Nov 2020 10:41:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <20201116223146.cmb6myelohnlbw7y@mobilestation>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.228.32.167]
-X-ClientProxiedBy: AM0PR04CA0055.eurprd04.prod.outlook.com
- (2603:10a6:208:1::32) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
+        id S1726476AbgKQJpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:45:25 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:41620 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQJpY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 04:45:24 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id D9B0B8030718;
+        Tue, 17 Nov 2020 09:45:21 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7D0ZcDkkRORN; Tue, 17 Nov 2020 12:45:21 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH] spi: Take the SPI IO-mutex in the spi_setup() method
+Date:   Tue, 17 Nov 2020 12:45:17 +0300
+Message-ID: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.167) by AM0PR04CA0055.eurprd04.prod.outlook.com (2603:10a6:208:1::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28 via Frontend Transport; Tue, 17 Nov 2020 09:41:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 6436f188-4dbc-4889-d650-08d88add00bc
-X-MS-TrafficTypeDiagnostic: AM0PR0702MB3825:
-X-Microsoft-Antispam-PRVS: <AM0PR0702MB3825EE77D046228077A5146988E20@AM0PR0702MB3825.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3W6Ba/+L6D1Rtj3KXuw4xPV/bDMBpS+m39GZsmeRdBssh5gPI0dsqQD//Zk1FH1FTiXpPV619dY3buWTz6T+9SLPWjTk3+CeIYUOuMw7qJakP9uMSzojsbYorLAcT3rDSOvARUyZgNH1ThAVK14qLG9mFXJrOClzhztcuRILxky2HN/J5bAX01W3khyvBtGruI22QiN4Kp3KZqK2mzl5E+ckMXbcZW6B5fovtzBbav0QkEen+VfrTY/R5Ix2jYaOgUZnF476yq+fLIENIrGqVZkkMBIh1Uz/jK0XNSvze1h1oMGUyKUnVYNaLMYQ02Zawr45SuSK9yl7gahLt2+/UGngabmLcTbJN6cUWZex7Lfn7RA+FPqmG4awyGDc9Sv9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(39860400002)(346002)(136003)(31686004)(186003)(956004)(2906002)(16526019)(31696002)(26005)(6916009)(36756003)(4744005)(44832011)(6486002)(52116002)(6506007)(54906003)(53546011)(2616005)(4326008)(5660300002)(478600001)(83380400001)(86362001)(316002)(6512007)(66556008)(6666004)(8936002)(66946007)(66476007)(8676002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: kgD/twuoJBtDwTKoyD0GtXNAJwrMwKC/IzG38t28Bax5UB+AbUov+vtF77W8SSr6xyX4GVDwlVv0jIul+Vo4QxPgd1GIZcAOPNGrMisSnzs4ff4RRzJpg3og5uz0Ij2uwz5MoLALVV/QG2iVqzSw5bgbHxPVJJU8BkNy4Jkf3HobhjjF76hTFrG4KyDRGREg61w7ahnyELeiALjT8udCyZ4RwVSZN+2uB8o6mrWlSCUfi1JENbBurJ3GFa9xoInjKVLpFr1dCibe5t2er9PEIOnlGa7UJmnewccmWUXuS/SppQ7w5Xl01QQVFlObq7sQO2oVnlwg2UpY73/u7Bq4pIdaMW4Mxb6zDczfqRf+4LyRVEHszUl+IVjNZZK/SbhpvixPsNAS2nE4xBetnoeV+7L5qYJW4gM4MCHN8q5NKpIgE72jDR0SYecjxmx9I9Ar0PTOOygFTJ3TGFud/Lha9X97y2yILMnueLLhITcikB/0yVaj5W1rUrT99A8ivFb+ah7sBn9EiD8HhABLNLmZhfNyhjdejrUfaVLz0Ef4Rf5kRQVmGCFIgLzsnI+e31ZVPImpLRXWCP4Q1TH83eNh3dzLVDbI4N4GJ/9w5Ybr2F5v6YtieCVBt8CN6ENaeb/HjgyMmLVoFLzgUEJ5+TOfF7jkOhoEMtnzVUq6fj9D2an4Zuzyy29xCaTElAqJZebzB248rXh7mA9ixY3Kjf7wBJD1uirN2O1Guwrg+jtSnmKBzGBWE1trz3+YzKgxWouHqW8K2l9jjAPmfTWJhN+o09ugRKBzv1YSb/omjFHAGOGZrgWiRu8x24E8hHE2X+EuF/P/K0Gg3VmR0M0NR+EDsnJxI4NV7w1YJ9laFIOvGh1wJJpuDusP68TLemLJ/3Plpl622IGfDiaeXue1qWUyfg==
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6436f188-4dbc-4889-d650-08d88add00bc
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 09:41:47.9243
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 15+FDjStrDtGpgsT3UeMq1OWhkEGOVeKA9AJvdHCShML2D7U3XpjFHCg3at/amrmIkIL46UjIQI8ylnni3G7yMUbjYhW6LOEXxlT2xTfDcQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0702MB3825
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Serge,
+I've discovered that due to the recent commit 49d7d695ca4b ("spi: dw:
+Explicitly de-assert CS on SPI transfer completion") a concurrent usage of
+the spidev devices with different chip-selects causes the "SPI transfer
+timed out" error. The root cause of the problem has turned to be in a race
+condition of the SPI-transfer execution procedure and the spi_setup()
+method being called at the same time. In particular in calling the
+spi_set_cs(false) while there is an SPI-transfer being executed. In my
+case due to the commit cited above all CSs get to be switched off by
+calling the spi_setup() for /dev/spidev0.1 while there is an concurrent
+SPI-transfer execution performed on /dev/spidev0.0. Of course a situation
+of the spi_setup() being called while there is an SPI-transfer being
+executed for two different SPI peripheral devices of the same controller
+may happen not only for the spidev driver, but for instance for MMC SPI +
+some another device, or spi_setup() being called from an SPI-peripheral
+probe method while some other device has already been probed and is being
+used by a corresponding driver...
 
-On 16/11/2020 23:31, Serge Semin wrote:
->> As completely unrelated optimization I can remove the same memblock_add() of the
->> kernel sections from the Octeon platform code. 
-> Why not as long as it will work. AFAICS the octeon platform code does
-> some kernel start address adjustment while the generic MIPS code
-> doesn't. Are you sure using the generic version for octeon won't cause
-> any problem?
+Of course I could have provided a fix affecting the DW APB SSI driver
+only, for instance, by creating a mutual exclusive access to the set_cs
+callback and setting/clearing only the bit responsible for the
+corresponding chip-select. But after a short research I've discovered that
+the problem most likely affects a lot of the other drivers:
+- drivers/spi/spi-sun4i.c - RMW the chip-select register;
+- drivers/spi/spi-rockchip.c - RMW the chip-select register;
+- drivers/spi/spi-qup.c - RMW a generic force-CS flag in a CSR.
+- drivers/spi/spi-sifive.c - set a generic CS-mode flag in a CSR.
+- drivers/spi/spi-bcm63xx-hsspi.c - uses an internal mutex to serialize
+  the bus config changes, but still isn't protected from the race
+  condition described above;
+- drivers/spi/spi-geni-qcom.c - RMW a chip-select internal flag and set the
+  CS state in HW;
+- drivers/spi/spi-orion.c - RMW a chip-select register;
+- drivers/spi/spi-cadence.c - RMW a chip-select register;
+- drivers/spi/spi-armada-3700.c - RMW a chip-select register;
+- drivers/spi/spi-lantiq-ssc.c - overwrites the chip-select register;
+- drivers/spi/spi-sun6i.c - RMW a chip-select register;
+- drivers/spi/spi-synquacer.c - RMW a chip-select register;
+- drivers/spi/spi-altera.c - directly sets the chip-select state;
+- drivers/spi/spi-omap2-mcspi.c - RMW an internally cached CS state and
+  writes it to HW;
+- drivers/spi/spi-mt65xx.c - RMW some CSR;
+- drivers/spi/spi-jcore.c - directly sets the chip-selects state;
+- drivers/spi/spi-mt7621.c - RMW a chip-select register;
 
-as I interpret this adjustment, this is open-coded virt_to_phys.
-In my tests both code blocks reserve the same memory (well, generic code claims the rest of the last page,
-and I'm going to fix this).
+I could have missed some drivers, but a scale of the problem is obvious.
+As you can see most of the drivers perform an unprotected
+Read-modify-write chip-select register modification in the set_cs callback.
+Seeing the spi_setup() function is calling the spi_set_cs() and it can be
+executed concurrently with SPI-transfers exec procedure, which also calls
+spi_set_cs() in the SPI core spi_transfer_one_message() method, the race
+condition of the register modification turns to be obvious.
 
+To sum up the problem denoted above affects each driver for a controller
+having more than one chip-select lane and which:
+1) performs the RMW to some CS-related register with no serialization;
+2) directly disables any CS on spi_set_cs(dev, false).
+* the later is the case of the DW APB SSI driver.
+
+The controllers which equipped with a single CS theoretically can also
+experience the problem, but in practice will not since normally the
+spi_setup() isn't called concurrently with the SPI-transfers executed on
+the same SPI peripheral device.
+
+In order to generically fix the denoted bug I'd suggest to serialize an
+access to the controller IO by taking the IO mutex in the spi_setup()
+callback. The mutex is held while there is an SPI communication going on
+on the SPI-bus of the corresponding SPI-controller. So calling the
+spi_setup() method and disabling/updating the CS state within it would be
+safe while there is no any SPI-transfers being executed. Also note I
+suppose it would be safer to protect the spi_controller->setup() callback
+invocation too, seeing some of the SPI-controller drivers update a HW
+state in there.
+
+Fixes: 49d7d695ca4b ("spi: dw: Explicitly de-assert CS on SPI transfer completion")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+---
+ drivers/spi/spi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 0cab239d8e7f..353fa178e39b 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -3327,12 +3327,15 @@ int spi_setup(struct spi_device *spi)
+ 	if (!spi->max_speed_hz)
+ 		spi->max_speed_hz = spi->controller->max_speed_hz;
+ 
++	mutex_lock(&spi->controller->io_mutex);
++
+ 	if (spi->controller->setup)
+ 		status = spi->controller->setup(spi);
+ 
+ 	if (spi->controller->auto_runtime_pm && spi->controller->set_cs) {
+ 		status = pm_runtime_get_sync(spi->controller->dev.parent);
+ 		if (status < 0) {
++			mutex_unlock(&spi->controller->io_mutex);
+ 			pm_runtime_put_noidle(spi->controller->dev.parent);
+ 			dev_err(&spi->controller->dev, "Failed to power device: %d\n",
+ 				status);
+@@ -3354,6 +3357,8 @@ int spi_setup(struct spi_device *spi)
+ 		spi_set_cs(spi, false);
+ 	}
+ 
++	mutex_unlock(&spi->controller->io_mutex);
++
+ 	if (spi->rt && !spi->controller->rt) {
+ 		spi->controller->rt = true;
+ 		spi_set_thread_rt(spi->controller);
 -- 
-Best regards,
-Alexander Sverdlin.
+2.29.2
+
