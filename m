@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BC22B610B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB502B6274
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730161AbgKQNPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:15:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46414 "EHLO mail.kernel.org"
+        id S1731463AbgKQN2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:28:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730149AbgKQNPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:15:14 -0500
+        id S1731218AbgKQN0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:26:33 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1699A221EB;
-        Tue, 17 Nov 2020 13:15:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97CD62078D;
+        Tue, 17 Nov 2020 13:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618913;
-        bh=ae/Vjyqzmrs+5emgSO6m4U3q0C8ZhW9q71LqXTkC+Tw=;
+        s=default; t=1605619593;
+        bh=WEW9WBG8tdkhI3KFgCR/Z3gUpDrjHq7F/pa6hhfoDTQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OToPaQtoXzz7uaA4YOgd/Dddoc0CV5aMTQ4b0Rg/ZTMUujhWxnpxzRduB9K3w+pOd
-         bk+SXY5wl1gE2P21Ju8svWlgYN4oLaLwuivmvYvqrCRVGGRmIdmiaA/FCIJhqZ8AcN
-         3udQJnaeFWMGeTCK7g3gVlmvfO/WpopSUlo8Di34=
+        b=PZuSpwCmEF0vo3GOUq0rLfrLf9xKrKKeoWjM4cYZ7bsu+i3T8Yzg3XeyVqCeLlK7d
+         rIOK/o8k8qm5WyxPGhnyMN3M6BJpI9gX/wlATV3vQ00HZSuAIlKsik+vjsuhMsLd6z
+         cx4XRL3k/eXMzswzSzBvaXSrvYkXn/vV8hjRENgs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wengang Wang <wen.gang.wang@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 51/85] ocfs2: initialize ip_next_orphan
+        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 090/151] pinctrl: aspeed: Fix GPI only function problem.
 Date:   Tue, 17 Nov 2020 14:05:20 +0100
-Message-Id: <20201117122113.534778370@linuxfoundation.org>
+Message-Id: <20201117122125.785018271@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,93 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wengang Wang <wen.gang.wang@oracle.com>
+From: Billy Tsai <billy_tsai@aspeedtech.com>
 
-commit f5785283dd64867a711ca1fb1f5bb172f252ecdf upstream.
+[ Upstream commit 9b92f5c51e9a41352d665f6f956bd95085a56a83 ]
 
-Though problem if found on a lower 4.1.12 kernel, I think upstream has
-same issue.
+Some gpio pin at aspeed soc is input only and the prefix name of these
+pin is "GPI" only.
+This patch fine-tune the condition of GPIO check from "GPIO" to "GPI"
+and it will fix the usage error of banks D and E in the AST2400/AST2500
+and banks T and U in the AST2600.
 
-In one node in the cluster, there is the following callback trace:
-
-   # cat /proc/21473/stack
-   __ocfs2_cluster_lock.isra.36+0x336/0x9e0 [ocfs2]
-   ocfs2_inode_lock_full_nested+0x121/0x520 [ocfs2]
-   ocfs2_evict_inode+0x152/0x820 [ocfs2]
-   evict+0xae/0x1a0
-   iput+0x1c6/0x230
-   ocfs2_orphan_filldir+0x5d/0x100 [ocfs2]
-   ocfs2_dir_foreach_blk+0x490/0x4f0 [ocfs2]
-   ocfs2_dir_foreach+0x29/0x30 [ocfs2]
-   ocfs2_recover_orphans+0x1b6/0x9a0 [ocfs2]
-   ocfs2_complete_recovery+0x1de/0x5c0 [ocfs2]
-   process_one_work+0x169/0x4a0
-   worker_thread+0x5b/0x560
-   kthread+0xcb/0xf0
-   ret_from_fork+0x61/0x90
-
-The above stack is not reasonable, the final iput shouldn't happen in
-ocfs2_orphan_filldir() function.  Looking at the code,
-
-  2067         /* Skip inodes which are already added to recover list, since dio may
-  2068          * happen concurrently with unlink/rename */
-  2069         if (OCFS2_I(iter)->ip_next_orphan) {
-  2070                 iput(iter);
-  2071                 return 0;
-  2072         }
-  2073
-
-The logic thinks the inode is already in recover list on seeing
-ip_next_orphan is non-NULL, so it skip this inode after dropping a
-reference which incremented in ocfs2_iget().
-
-While, if the inode is already in recover list, it should have another
-reference and the iput() at line 2070 should not be the final iput
-(dropping the last reference).  So I don't think the inode is really in
-the recover list (no vmcore to confirm).
-
-Note that ocfs2_queue_orphans(), though not shown up in the call back
-trace, is holding cluster lock on the orphan directory when looking up
-for unlinked inodes.  The on disk inode eviction could involve a lot of
-IOs which may need long time to finish.  That means this node could hold
-the cluster lock for very long time, that can lead to the lock requests
-(from other nodes) to the orhpan directory hang for long time.
-
-Looking at more on ip_next_orphan, I found it's not initialized when
-allocating a new ocfs2_inode_info structure.
-
-This causes te reflink operations from some nodes hang for very long
-time waiting for the cluster lock on the orphan directory.
-
-Fix: initialize ip_next_orphan as NULL.
-
-Signed-off-by: Wengang Wang <wen.gang.wang@oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201109171746.27884-1-wen.gang.wang@oracle.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 4d3d0e4272d8 ("pinctrl: Add core support for Aspeed SoCs")
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Link: https://lore.kernel.org/r/20201030055450.29613-1-billy_tsai@aspeedtech.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ocfs2/super.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/pinctrl/aspeed/pinctrl-aspeed.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -1733,6 +1733,7 @@ static void ocfs2_inode_init_once(void *
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+index 54933665b5f8b..93b5654ff2828 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+@@ -277,13 +277,14 @@ int aspeed_pinmux_set_mux(struct pinctrl_dev *pctldev, unsigned int function,
+ static bool aspeed_expr_is_gpio(const struct aspeed_sig_expr *expr)
+ {
+ 	/*
+-	 * The signal type is GPIO if the signal name has "GPIO" as a prefix.
++	 * The signal type is GPIO if the signal name has "GPI" as a prefix.
+ 	 * strncmp (rather than strcmp) is used to implement the prefix
+ 	 * requirement.
+ 	 *
+-	 * expr->signal might look like "GPIOT3" in the GPIO case.
++	 * expr->signal might look like "GPIOB1" in the GPIO case.
++	 * expr->signal might look like "GPIT0" in the GPI case.
+ 	 */
+-	return strncmp(expr->signal, "GPIO", 4) == 0;
++	return strncmp(expr->signal, "GPI", 3) == 0;
+ }
  
- 	oi->ip_blkno = 0ULL;
- 	oi->ip_clusters = 0;
-+	oi->ip_next_orphan = NULL;
- 
- 	ocfs2_resv_init_once(&oi->ip_la_data_resv);
- 
+ static bool aspeed_gpio_in_exprs(const struct aspeed_sig_expr **exprs)
+-- 
+2.27.0
+
 
 
