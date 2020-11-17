@@ -2,310 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D59E2B5B1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F002B5B1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbgKQIij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:38:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
+        id S1726861AbgKQIjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:39:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725804AbgKQIii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:38:38 -0500
-Received: from coco.lan (ip5f5ad5cc.dynamic.kabel-deutschland.de [95.90.213.204])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725355AbgKQIjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 03:39:10 -0500
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E6C224671;
-        Tue, 17 Nov 2020 08:38:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87B9F2467B;
+        Tue, 17 Nov 2020 08:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605602316;
-        bh=bhWYF4jKpjhdrI34GVPV7kwXAMqL8l607VbvTjslYBw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wOSj/vB5MvBoER2dul+k29HA9Cxjkr/leSPSXkJ8d+p4x6ZHX1ctLeAnRYyEhbQNj
-         fPFo4TIPNFHhwIRjCj6SYyQ9A7dh2FJ1xeDM+7AAkhHvLv9eb2NtyiQ+sVy88A92Fv
-         y0HdW2xOxALoqiqQchZCYJChoMJXE+4GkU05TQME=
-Date:   Tue, 17 Nov 2020 09:38:30 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mayulong <mayulong1@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] regulator: hi6421v600-regulator: move it from
- staging
-Message-ID: <20201117093830.29861118@coco.lan>
-In-Reply-To: <20201116183833.GC4739@sirena.org.uk>
-References: <cover.1605530560.git.mchehab+huawei@kernel.org>
-        <471362653f22a8748202c55babd2b462056a5797.1605530560.git.mchehab+huawei@kernel.org>
-        <20201116183833.GC4739@sirena.org.uk>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        s=default; t=1605602349;
+        bh=Cy4GXcCCTrzvouUawUb+lUVg0c61NgYMg4LCDAnSajg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pcBulDDViZFjtMVmHT8AROBaOm7zOqxMnlHZUfQnkAiaWRYwukO4goGfGYrfAD/5D
+         MaP/qBQ9LcbOUjfPxBT/WYZfNC/lWwVqJUf/tt1hw4O1ryYPFlQ03LWY0kgX7k0qf3
+         wIT3jMvyh5RenR3wLOwPCGPob6idio6ltD0Rua80=
+Received: by mail-ed1-f48.google.com with SMTP id v22so21540422edt.9;
+        Tue, 17 Nov 2020 00:39:09 -0800 (PST)
+X-Gm-Message-State: AOAM530SDoKsohndazhyGb4F4GFm13eyYp/DLfAiOCOOsBqnBRe9Cw/J
+        qNubWNtC0T5FWWy+4sfTEbFP6WS2cgZTPLZejMc=
+X-Google-Smtp-Source: ABdhPJxvy7lCCxsJGnRs2AsQAgaEPb8MUllAkLTlRtx6a6g4tlOHxhV2zK5kJo+XicMxbmEMQt9ABULEMBwP46a/IFg=
+X-Received: by 2002:a05:6402:31b6:: with SMTP id dj22mr20391396edb.348.1605602348036;
+ Tue, 17 Nov 2020 00:39:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CGME20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
+ <20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
+ <20201117074207.GC3436@kozik-lap> <CAEx-X7epecwBYV7UYoesQ9+Q8ir+kjYGyysiyDtCa0BzKiCGtA@mail.gmail.com>
+In-Reply-To: <CAEx-X7epecwBYV7UYoesQ9+Q8ir+kjYGyysiyDtCa0BzKiCGtA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 17 Nov 2020 09:38:56 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPdH49zOQ2caOvDDiZPkEptYiCjUmXw+O2dCC1tKHZgPag@mail.gmail.com>
+Message-ID: <CAJKOXPdH49zOQ2caOvDDiZPkEptYiCjUmXw+O2dCC1tKHZgPag@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 1/3] nfc: s3fwrn5: Remove the max_payload
+To:     Bongsu Jeon <bs.jeon87@gmail.com>
+Cc:     Bongsu Jeon <bongsu.jeon@samsung.com>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>,
+        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 16 Nov 2020 18:38:33 +0000
-Mark Brown <broonie@kernel.org> escreveu:
+On Tue, 17 Nov 2020 at 09:14, Bongsu Jeon <bs.jeon87@gmail.com> wrote:
+>
+> 2020-11-17 16:42 GMT+09:00, krzk@kernel.org <krzk@kernel.org>:
+> > On Tue, Nov 17, 2020 at 10:16:11AM +0900, Bongsu Jeon wrote:
+> >> max_payload is unused.
+> >
+> > Why did you resend the patch ignoring my review? I already provided you
+> > with a tag, so you should include it.
+> >
+> > https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+> >
+> > Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> >
+> > Best regards,
+> > Krzysztof
+> >
+>
+> Sorry about that. I included the tag.
 
-> On Mon, Nov 16, 2020 at 01:59:30PM +0100, Mauro Carvalho Chehab wrote:
-> 
-> > This driver is ready for mainstream. Move it out of staging.  
-> 
-> There's quite a few issues here, to be honest I'm disappointed some of
-> them weren't caught during staging review, this needs fairly substantial
-> work and there's signs that this also applies to at least the MFD
-> portion.
-> 
-> This also appears to be missing a DT binding document, binding
-> documentation is required for anything with DT support.
+You need to reduce the rate of sending new patches. You sent v1. Then
+you sent again v1, which I reviewed. Then you send v2 without my
+review. So I provided a review. Then you sent again a v2 with my
+reviewed tags. So there are two v1 patches and two v2. Since I
+provided you the review tags for v2, no need to send v2 again. It
+confuses.
 
-The DT binding is documented on patch 3/8, together with MFD.
-
-As there's just one compatible for MFD and regulators altogether,
-I opted to have just one DT binding document for both.
-
-> 
-> > +config REGULATOR_HI6421V600
-> > +	tristate "HiSilicon Hi6421v600 PMIC voltage regulator support"
-> > +	depends on MFD_HI6421_SPMI && OF
-> > +	depends on REGULATOR  
-> 
-> This is inside an if REGULATOR block, as with all the other regulator
-> drivers it doesn't need a dependency on REGULATOR.
-
-I'll drop it. This was needed while this was inside staging.
-
-> 
-> > --- /dev/null
-> > +++ b/drivers/regulator/hi6421v600-regulator.c
-> > @@ -0,0 +1,478 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Device driver for regulators in Hisi IC  
-> 
-> Please make the entire comment a C++ one so things look more
-> intentional.
-
-Ok.
-
-> 
-> > +#include <linux/delay.h>
-> > +#include <linux/device.h>
-> > +#include <linux/err.h>
-> > +#include <linux/io.h>
-> > +#include <linux/mfd/hi6421-spmi-pmic.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of_address.h>
-> > +#include <linux/of_device.h>
-> > +#include <linux/of.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/regulator/driver.h>
-> > +#include <linux/regulator/machine.h>
-> > +#include <linux/regulator/of_regulator.h>
-> > +#include <linux/seq_file.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/spmi.h>
-> > +#include <linux/time.h>
-> > +#include <linux/uaccess.h>  
-> 
-> Are we sure about *all* these includes?
-
-I'll double check and do some cleanups.
-
-> 
-> > +#define rdev_dbg(rdev, fmt, arg...)	\
-> > +		 pr_debug("%s: %s: " fmt, (rdev)->desc->name, __func__, ##arg)  
-> 
-> If it is useful to copy this then put it in a header rather than
-> cut'n'pasting it.  I'm not sure I see a pressing need for most of the
-> trace here, it looks to be duplicating a lot of things the core does for
-> you.
-
-I'll cleanup the debug messages, and place this on a header.
-
-Due to SPMI bus, the standard debug macros don't work fine on
-this file.
-
-> 
-> > +static DEFINE_MUTEX(enable_mutex);  
-> 
-> Drivers shouldn't be declaring global variables, if this is required it
-> should be allocated in driver data.
-
-I'll try to see a better place for this, but in this case, the
-mutex should be global anyway, as the access to the SPMI bus
-should be serialized.
-
-I suspect that a change like that will likely require touching
-the SPMI bus core, but I can't foresee the side effects to the
-Qualcomm SPMI drivers that would likely have their own ways
-to serialize access to the bus.
-
-> 
-> > +/*
-> > + * helper function to ensure when it returns it is at least 'delay_us'
-> > + * microseconds after 'since'.
-> > + */
-> > +
-> > +static int hi6421_spmi_regulator_is_enabled(struct regulator_dev *rdev)  
-> 
-> The helper function appears to have been removed?
-
-I'll drop the comment.
-
-> 
-> > +{
-> > +	struct hi6421v600_regulator *sreg = rdev_get_drvdata(rdev);
-> > +	struct hi6421_spmi_pmic *pmic = sreg->pmic;
-> > +	u32 reg_val;
-> > +
-> > +	reg_val = hi6421_spmi_pmic_read(pmic, rdev->desc->enable_reg);
-> > +
-> > +	rdev_dbg(rdev,
-> > +		 "enable_reg=0x%x, val= 0x%x, enable_state=%d\n",
-> > +		 rdev->desc->enable_reg,
-> > +		 reg_val, (reg_val & rdev->desc->enable_mask));
-> > +
-> > +	return ((reg_val & rdev->desc->enable_mask) != 0);
-> > +}  
-> 
-> It looks like it would be less code overall to just implement a regmap
-> for the MFD, even if it were only used in this driver - almost
-> everything in here is just a carbon copy of standard helpers that the
-> core provides for regmap devices.  Doing it in the MFD would be more
-> idiomatic for everything though.
-
-I tried to use regmap for this driver while porting it from Linaro's
-OOT to upstream, but it turns that adding support for it is not trivial.
-
-I suspect that, just like I2C has their own set of regmap functions
-(regmap_init_i2c, devm_regmap_init_i2c), if we want to properly support
-regmap, we need first to add a SPMI variant to it, as the locking
-should be bus-aware.
-
-> 
-> > +static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
-> > +{
-> > +	struct hi6421v600_regulator *sreg = rdev_get_drvdata(rdev);
-> > +	struct hi6421_spmi_pmic *pmic = sreg->pmic;
-> > +
-> > +	/* cannot enable more than one regulator at one time */
-> > +	mutex_lock(&enable_mutex);
-> > +	usleep_range(HISI_REGS_ENA_PROTECT_TIME,
-> > +		     HISI_REGS_ENA_PROTECT_TIME + 1000);
-> > +
-> > +	/* set enable register */
-> > +	rdev_dbg(rdev,
-> > +		 "off_on_delay=%d us, enable_reg=0x%x, enable_mask=0x%x\n",
-> > +		 rdev->desc->off_on_delay, rdev->desc->enable_reg,
-> > +		 rdev->desc->enable_mask);
-> > +
-> > +	hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
-> > +			     rdev->desc->enable_mask,
-> > +			     rdev->desc->enable_mask);  
-> 
-> This is the one operation which is doing anything unusual and which I'd
-> expect to be open coded in the driver - obviously this is a pretty
-> simplistic implementation but it will work though as indicated above it
-> shouldn't be using a global, the mutex should be in driver data.  I
-> guess you could use the mutex to protect a timestamp and use that to
-> figure out if a delay is actually needed?
-
-I'll rework this logic.
-
-> > +static int hi6421_spmi_dt_parse(struct platform_device *pdev,
-> > +				struct hi6421v600_regulator *sreg,
-> > +			 struct regulator_desc *rdesc)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	struct device_node *np = dev->of_node;
-> > +	unsigned int *v_table;
-> > +	int ret;
-> > +
-> > +	ret = of_property_read_u32(np, "reg", &rdesc->enable_reg);
-> > +	if (ret) {
-> > +		dev_err(dev, "missing reg property\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = of_property_read_u32(np, "vsel-reg", &rdesc->vsel_reg);  
-> 
-> There is no way this stuff should be being parsed out of DT, we should
-> know the register map for the device and what regulators it has based
-> purely off knowing what device we have.  Baking the register map into
-> the ABI is bad practice, it prevents us from improving our support for
-> the hardware without going and updating people's DTs.
-
-Well, I can move the existing registers out of DT, but, as I don't
-have any datasheet for this device, it means that I can implement
-there only a subset of the available LDOs. So, from the 36 LDOs that
-this chip support, we only know the registers for 8 of them:
-
-	ldo3, ldo4, ldo9, ldo15, ldo16, ldo17, ldo33 and ldo34.
-
-> > +	/*
-> > +	 * Not all regulators work on idle mode
-> > +	 */
-> > +	ret = of_property_read_u32(np, "idle-mode-mask", &sreg->eco_mode_mask);
-> > +	if (ret) {
-> > +		dev_dbg(dev, "LDO doesn't support economy mode.\n");
-> > +		sreg->eco_mode_mask = 0;
-> > +		sreg->eco_uA = 0;
-> > +	} else {
-> > +		ret = of_property_read_u32(np, "eco-microamp", &sreg->eco_uA);  
-> 
-> There's no conditional code to not register the mode operations if the
-> mode information is not available (and again this should be done based 
-> on knowing the properties of the device, this is unlikely to be system
-> dependent).
-
-This is the same case as before: as we don't have any datasheets,
-I only know what's there at the DT for just one device (Hikey 970).
-
-Again, we could hardcode those assuming Hikey 970 settings, but,
-if some other device using the same chip will ever be added, and
-they use some different configuration then we may face some
-backward-compatibility issues.
-
-> 
-> > +static int hi6421_spmi_regulator_probe_ldo(struct platform_device *pdev,
-> > +                                          struct device_node *np,
-> > +                                          struct hi6421_spmi_pmic *pmic)
-> > +{  
-> 
-> This probe code looks very different to other regulator drivers, this
-> alone should have been a warning that the driver needs some substantial
-> refactoring here.  As indicated information about what regulators are
-> present on devices and their properties should be in the driver not the
-> DT, the driver should just be able to register them unconditionally and
-> use of_match and regulators_node to allow the core to find any
-> constraints that are provided by the platform.
-
-(already commented on a separate e-mail)
-
-> 
-> > +	constraint->valid_modes_mask = REGULATOR_MODE_NORMAL;
-> > +	if (sreg->eco_mode_mask) {
-> > +		constraint->valid_modes_mask |= REGULATOR_MODE_IDLE;
-> > +		constraint->valid_ops_mask |= REGULATOR_CHANGE_MODE;
-> > +	}  
-> 
-> This is absolutely not OK, a regulator driver should *not* be modifying
-> the constraints that the machine has set.  If it is safe to change modes
-> on a platform and the system integrator wants to do that then they will
-> set the constraints appropriately, there is no way the regulator driver
-> can tell what is appropriate on a given system.  The fact that the
-> driver is including machine.h at all ought to have been an indicator
-> that there's an abstraction problem here.
-
-Ok. Where such constraints should be instead? at the Hikey 970 DT
-file?
-
-Thanks,
-Mauro
+Best regards,
+Krzysztof
