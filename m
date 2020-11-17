@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C943B2B67ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBF22B67EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729209AbgKQOxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:53:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:59508 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728718AbgKQOxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:53:07 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 909DB30E;
-        Tue, 17 Nov 2020 06:53:06 -0800 (PST)
-Received: from [10.57.59.185] (unknown [10.57.59.185])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 164713F718;
-        Tue, 17 Nov 2020 06:53:04 -0800 (PST)
-Subject: Re: [PATCH 13/13 v4] perf tools: add thread field
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>
-References: <20201113172654.989-1-james.clark@arm.com>
- <20201113172654.989-14-james.clark@arm.com> <20201115211714.GA1081385@krava>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <c8673aed-4cf6-780b-de96-e6d8987fc3a1@arm.com>
-Date:   Tue, 17 Nov 2020 16:53:03 +0200
+        id S1729321AbgKQOxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:53:11 -0500
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:44825 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728718AbgKQOxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:53:11 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id f2LvkpAwd6LFvf2LzkVPo0; Tue, 17 Nov 2020 15:53:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1605624787; bh=FgYMdJ0sPBUZnT5EFt4WPhZomwazgiq6pKDnyizwbWw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=NBm0whW/kc5GpOJmNqSIiRoogyGGYzzS4p17k5rF7dENQ/iz8jMeuoz85+k2Jpszc
+         CMApivFhzox7UC3J7FeIr4f8EFd/JglSzCd7keIebk/jLYWflbSjlDIkpnrBht/c1c
+         webkXYrq68LczZAz2XmkLhrJhHhlcO8LYdmN3gLIXHrdgmPeX3ft9dBoKE9TNOrIjd
+         opehsw/9H2H9f8ZP9aNLXsd2W23BylNXyZ72WNOO2GWczUl5bzsNYJLpAZov8ixq0S
+         3U2BD6wv6yDGZAo9l6MqwjL6qubh3ZKXBBsYNNpsfqhgyDIxjLh8AhlV/GrXKV8Nmc
+         CaglER5RyjjTQ==
+Subject: Re: [PATCH v2] media: v4l2-ctrl: Add base layer priority id control.
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     mchehab@kernel.org, ezequiel@collabora.com,
+        stanimir.varbanov@linaro.org, vgarodia@codeaurora.org,
+        majja@codeaurora.org, Nicolas Dufresne <nicolas@ndufresne.ca>
+References: <1602759935-12965-1-git-send-email-dikshita@codeaurora.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <35f31a15-25b2-73d5-4bdd-c57431070d9b@xs4all.nl>
+Date:   Tue, 17 Nov 2020 15:53:03 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201115211714.GA1081385@krava>
+In-Reply-To: <1602759935-12965-1-git-send-email-dikshita@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfLGsgaswyYUn9GhQmIgEUIQgNBuz6FvlDktq1vY0YsDOHMm4pDkhV3HppSazUBCypsvvC7RiO2wAnxy6wKE2d8oZ9GD63rJQZ6s9AFVTkGG1DVg4ECd3
+ u3X8HeY9T/d9k9SW9/Y1+k4/k2t4ApXTCtA708whIa/auv3qeuJswm0i9DJhMPqoUyOAWVdFhHvxeF+TXXwqoh1uKpka7a0O5jpFm0w17VRXfZq/tLQAZ8fC
+ OZj0IHwNY4CAmJEJaj7Pj0r7dO7NxLECD3CDW022LGE4dk7RZFVWm+sV82kxDhAhThQ9eUaIB19zuIR46rP1u6XGCS9wbafC2ylIxfzwdcBwGMFEcpo3M9uN
+ gBue7J4mGNsq6GJ8XxcVbi43i3rcBfwFZsNxWaCT+SjEGkrxHz//OrbRA2K+gNi7PC4r/GUixZ60EV6LZ9p5uHIH9zHppybOOLrxHhxiD3enFwb4YfBgoGWo
+ ijbEmNSaOhq4NCBuXip20NBKwTkRG9zUEV3OI7NRCd0lsjTjg6SCm/S9gbs=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Nicolas, can you take a look at this with your codec knowledge?
 
+Some other review comments below:
 
-On 15/11/2020 23:17, Jiri Olsa wrote:
-> On Fri, Nov 13, 2020 at 07:26:54PM +0200, James Clark wrote:
->> A separate field isn't strictly required. The core
->> field could be re-used for thread IDs as a single
->> field was used previously.
->>
->> But separating them will avoid confusion and catch
->> potential errors where core IDs are read as thread
->> IDs and vice versa.
->>
->> Also remove the placeholder id field which is now
->> no longer used.
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->> Cc: Jiri Olsa <jolsa@redhat.com>
->> Cc: Namhyung Kim <namhyung@kernel.org>
->> Cc: Thomas Richter <tmricht@linux.ibm.com>
->> Cc: John Garry <john.garry@huawei.com>
->> ---
->>  tools/perf/tests/topology.c    |  8 ++++----
->>  tools/perf/util/cpumap.c       | 14 +++++++-------
->>  tools/perf/util/cpumap.h       |  2 +-
->>  tools/perf/util/stat-display.c |  8 ++++----
->>  4 files changed, 16 insertions(+), 16 deletions(-)
->>
->> diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
->> index 694f786a77f3..2276db0b1b6f 100644
->> --- a/tools/perf/tests/topology.c
->> +++ b/tools/perf/tests/topology.c
->> @@ -119,7 +119,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
->>  		TEST_ASSERT_VAL("Core map - Die ID doesn't match",
->>  			session->header.env.cpu[map->map[i]].die_id == id.die);
->>  		TEST_ASSERT_VAL("Core map - Node ID is set", id.node == -1);
->> -		TEST_ASSERT_VAL("Core map - ID is set", id.id == -1);
->> +		TEST_ASSERT_VAL("Core map - Thread is set", id.thread == -1);
->>  	}
->>  
->>  	// Test that die ID contains socket and die
->> @@ -131,7 +131,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
->>  		TEST_ASSERT_VAL("Die map - Die ID doesn't match",
->>  			session->header.env.cpu[map->map[i]].die_id == id.die);
->>  		TEST_ASSERT_VAL("Die map - Node ID is set", id.node == -1);
->> -		TEST_ASSERT_VAL("Die map - ID is set", id.id == -1);
->> +		TEST_ASSERT_VAL("Die map - Thread is set", id.thread == -1);
->>  	}
->>  
->>  	// Test that socket ID contains only socket
->> @@ -141,7 +141,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
->>  			session->header.env.cpu[map->map[i]].socket_id == id.socket);
->>  		TEST_ASSERT_VAL("Socket map - Node ID is set", id.node == -1);
->>  		TEST_ASSERT_VAL("Socket map - Die ID is set", id.die == -1);
->> -		TEST_ASSERT_VAL("Socket map - ID is set", id.id == -1);
->> +		TEST_ASSERT_VAL("Socket map - Thread is set", id.thread == -1);
->>  	}
->>  
->>  	// Test that node ID contains only node
->> @@ -149,7 +149,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
->>  		id = cpu_map__get_node(map, i, NULL);
->>  		TEST_ASSERT_VAL("Node map - Node ID doesn't match",
->>  			cpu__get_node(map->map[i]) == id.node);
->> -		TEST_ASSERT_VAL("Node map - ID shouldn't be set", id.id == -1);
->> +		TEST_ASSERT_VAL("Node map - Thread shouldn't be set", id.thread == -1);
->>  		TEST_ASSERT_VAL("Node map - Die ID is set", id.die == -1);
->>  	}
+On 15/10/2020 13:05, Dikshita Agarwal wrote:
+> This control indicates the priority id to be applied
+> to base layer.
 > 
-> should we test all unset parts are -1, like here id.core,
-> id.socket and there are missing tests also in above code
-
-Yes I think that's a good idea. I added all the missing ones in V5.
-
-Thanks for the review.
-
-James
-
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 9 +++++++++
+>  drivers/media/v4l2-core/v4l2-ctrls.c                      | 1 +
+>  include/uapi/linux/v4l2-controls.h                        | 1 +
+>  3 files changed, 11 insertions(+)
 > 
-> jirka
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 6e9240a..aac1ea3 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -4407,3 +4407,12 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>         to the LTR index max LTR count-1.
+>         This is applicable to H264 and HEVC encoder and can be applied using
+>         request api.
+> +
+> +``V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITYID (integer)``
+
+I'd add a_ before the ID, so: V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID.
+
+> +       Specifies a priority identifier for the NAL unit,
+> +       which will be applied to base layer.
+> +       By default this value is set to 0 for base layer.
+> +       And the next layer will have priority ID assigned as 1,2,3 and so on.
+> +       Video encode can't decide the priority id to be applied to a layer
+> +       so this has to come from client.
+> +       Valid Range: from 0 to 63
+
+I'm slightly rephrasing the text above:
+
+       Specifies a priority identifier for the NAL unit, which will be applied to
+       the base layer. By default this value is set to 0 for the base layer,
+       and the next layer will have the priority ID assigned as 1, 2, 3 and so on.
+       The video encoder can't decide the priority id to be applied to a layer,
+       so this has to come from client.
+       Valid Range: from 0 to 63.
+
+For which codecs is this applicable? H264 and HEVC? That should be stated. If you
+have a reference to the corresponding sections that describe this, then that would
+be nice to add.
+
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index 046198f..c973058 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -952,6 +952,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
+>  	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "Mark LTR frame index";
+>  	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME:			return "Use LTR Frame";
+> +	case V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITYID:		return "Base Layer Priority ID";
+>  	case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:		return "MPEG-2 Slice Parameters";
+>  	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:		return "MPEG-2 Quantization Matrices";
+>  	case V4L2_CID_MPEG_VIDEO_FWHT_PARAMS:			return "FWHT Stateless Parameters";
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 3801372..433e119 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -418,6 +418,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
+>  #define V4L2_CID_MPEG_VIDEO_LTR_COUNT                  (V4L2_CID_MPEG_BASE+230)
+>  #define V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX            (V4L2_CID_MPEG_BASE+231)
+>  #define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME              (V4L2_CID_MPEG_BASE+232)
+> +#define V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITYID       (V4L2_CID_MPEG_BASE+233)
+>  
+>  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
+>  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_MPEG_BASE+270)
 > 
+
+Regards,
+
+	Hans
