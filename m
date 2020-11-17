@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F132B58D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEC02B58DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgKQEfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 23:35:46 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:37792 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgKQEfq (ORCPT
+        id S1727235AbgKQEgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 23:36:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgKQEgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 23:35:46 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH4Xn4D057847;
-        Tue, 17 Nov 2020 04:35:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=I2SuI0FlryjUNxtdB53M6t41ZCMvVryVylVSGwDiXvc=;
- b=uX1UISkZgAAva6Iv2lvnzq2qcSBsDemHrABwwkFr8dZ+z8jlRjc1tgLF3z5Hq1Jqqadk
- 6/GnOti4dNp1bmta60nrYKUQ9B4OUxMp1C8v4JDt+cwotVHzdSlUyoVGYklCrIy400Sa
- f0ZFvVOXGOVeO31hcyUkckje/kqMtfWuUsWJdDGohvJ4yVaxJhPa6QaZDRrpmj2J+30y
- RImgtuLMyVZU4hezl31lIFZBan7m98nPAyqP2PypTNhuN2Jd9Zp1CjYQhtmzhO7/D+7+
- ESfRd7zXnoHuB22hKn7qCAQplyWBAf4r/hMt3yEUaZcd1+Zme3AeebYtd0A989quk+OK 9Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 34t7vn0egn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 17 Nov 2020 04:35:41 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH4VZwU039964;
-        Tue, 17 Nov 2020 04:35:40 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 34uspsv2ek-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 04:35:40 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AH4ZcK1007646;
-        Tue, 17 Nov 2020 04:35:39 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 16 Nov 2020 20:35:38 -0800
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Don Brace <don.brace@microchip.com>,
-        Bugfixes to <esc.storagedev@microsemi.com>,
-        storagedev@microchip.com
-Subject: Re: [PATCH v2 19/19] scsi: hpsa: Strip out a bunch of set but
- unused variables
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1mtzg4n3j.fsf@ca-mkp.ca.oracle.com>
-References: <20201102142359.561122-1-lee.jones@linaro.org>
-        <20201102142359.561122-20-lee.jones@linaro.org>
-        <20201112101929.GC1997862@dell>
-Date:   Mon, 16 Nov 2020 23:35:36 -0500
-In-Reply-To: <20201112101929.GC1997862@dell> (Lee Jones's message of "Thu, 12
-        Nov 2020 10:19:29 +0000")
+        Mon, 16 Nov 2020 23:36:04 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B256C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 20:36:03 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f18so15211427pgi.8
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 20:36:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GXmmDGf+Ql390cIFcG7bVcYsBCCOZ8KyowjvFWUw4do=;
+        b=W5MwZyGZouVl3P4IMf7TuS8nrhz1X2sfj6Tx5PDGw7b8zEslxsX4DD6Wc/d3f63Lh9
+         jWuWdWnKjhrPsWfHRRG4PBQGyGJ4gARr+xcJ+fDBV10gD9O0ywrJctsAlOh+eCHYt380
+         bzwzHipfMZ9fWxQHyTTW7W0CgL6g9GyPCHhQvY/sn3Kci005p1xeb7svbNFUBnkQWB1K
+         S+JbwwJ4vgukWB3zFnNPzpBUMctsk+ItOa1aYjRhg8WlLhJyOSmTgmXKb2rf4YVqLD4Q
+         vWuVV9rzvNyzLsqVQjPtSXH9KpRlK9lLFOmSBLGMLYsu2xFhlCOYDC4j6PjH5ceqDKBB
+         wqMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GXmmDGf+Ql390cIFcG7bVcYsBCCOZ8KyowjvFWUw4do=;
+        b=FR+yuafIZTPbyF8Wjv6lyik6d7ba7o4Ftn46mxhCGbs8j71FwxEILjcqVzk1ylH9db
+         Zf6HWo5QF9cX+BT+lVOZzhkQ6UiVgkggBnDmAetmCQlsuzKHb5ZS5rgEqNDAsUbX3l0a
+         L9cWlZc3dyC6SD+SCLbq5q2HRC6hIlHx54hU3/kqaO8ly5UhIKnppuog0J5P0y3oUXHP
+         K84dtArcPZJJXTHpgV478qXLB9ORdZOFasOqEJ6cAPRfh90yT9VjVG3YXBVihE9OI9NJ
+         un81VUCBnFBYzQK296BQ8uelaGLgq9RKyIEfZYwDh9pQw8Jlij3FxaUJrTPgNT51tYEg
+         NNWA==
+X-Gm-Message-State: AOAM531WX/GBBRdtTj6t/Zl1t1f4kZUEhf75g5Wvm/BpSPJQCGwHpW0a
+        zhRwI4GKb0ltOpofNgmu3W7FUQ==
+X-Google-Smtp-Source: ABdhPJwCsvKqJnATAFc1CG4/cKeaAaFwvK+9nVK27eKk0paNUS1Td2ckt/DKW6KQHHvYpgHJu2bbmg==
+X-Received: by 2002:a17:90a:df93:: with SMTP id p19mr2783061pjv.170.1605587762764;
+        Mon, 16 Nov 2020 20:36:02 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id s21sm5726680pgm.65.2020.11.16.20.36.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Nov 2020 20:36:01 -0800 (PST)
+Date:   Tue, 17 Nov 2020 10:06:00 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sumit Gupta <sumitg@nvidia.com>, linux-pm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: tegra186: Fix get frequency callback
+Message-ID: <20201117043600.bqzr3zmw6n7vj3fj@vireshk-i7>
+References: <20201103115514.547047-1-jonathanh@nvidia.com>
+ <20201104093349.l3r3eftwyvaoqjf2@vireshk-i7>
+ <c4c384cd-2d8f-6f19-cd6b-18450cbf957b@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 bulkscore=0 suspectscore=1 adultscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170033
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=1
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011170033
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4c384cd-2d8f-6f19-cd6b-18450cbf957b@nvidia.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16-11-20, 15:55, Jon Hunter wrote:
+> Hi Rafael,
+> 
+> On 04/11/2020 09:33, Viresh Kumar wrote:
+> > On 03-11-20, 11:55, Jon Hunter wrote:
+> >> Commit b89c01c96051 ("cpufreq: tegra186: Fix initial frequency")
+> >> implemented the CPUFREQ 'get' callback to determine the current
+> >> operating frequency for each CPU. This implementation used a simple
+> >> looked up to determine the current operating frequency. The problem
+> >> with this is that frequency table for different Tegra186 devices may
+> >> vary and so the default boot frequency for Tegra186 device may or may
+> >> not be present in the frequency table. If the default boot frequency is
+> >> not present in the frequency table, this causes the function
+> >> tegra186_cpufreq_get() to return 0 and in turn causes cpufreq_online()
+> >> to fail which prevents CPUFREQ from working.
+> >>
+> >> Fix this by always calculating the CPU frequency based upon the current
+> >> 'ndiv' setting for the CPU. Note that the CPU frequency for Tegra186 is
+> >> calculated by reading the current 'ndiv' setting, multiplying by the
+> >> CPU reference clock and dividing by a constant divisor.
+> >>
+> >> Fixes: b89c01c96051 ("cpufreq: tegra186: Fix initial frequency")
+> >>
+> >> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> >> ---
+> >>  drivers/cpufreq/tegra186-cpufreq.c | 33 +++++++++++++++++++-----------
+> >>  1 file changed, 21 insertions(+), 12 deletions(-)
+> > 
+> > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > 
+> > Rafael: This needs to go in the next rc and so I am not applying it
+> > in my tree as this is the only fix I have for now.
+> 
+> 
+> Are you able to pick this up for v5.10 fixes?
 
-Lee,
+Applied to my tree now, will send a PULL request soon.
 
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/scsi/hpsa.c: In function =E2=80=98hpsa_volume_offline=E2=80=99:
->  drivers/scsi/hpsa.c:3885:5: warning: variable =E2=80=98scsi_status=E2=80=
-=99 set but not used [-Wunused-but-set-variable]
->  drivers/scsi/hpsa.c:3884:6: warning: variable =E2=80=98cmd_status=E2=80=
-=99 set but not used [-Wunused-but-set-variable]
->  drivers/scsi/hpsa.c: In function =E2=80=98hpsa_update_scsi_devices=E2=80=
-=99:
->  drivers/scsi/hpsa.c:4354:9: warning: variable =E2=80=98n_ext_target_devs=
-=E2=80=99 set but not used [-Wunused-but-set-variable]
->  drivers/scsi/hpsa.c: In function =E2=80=98hpsa_scatter_gather=E2=80=99:
->  drivers/scsi/hpsa.c:4583:36: warning: variable =E2=80=98last_sg=E2=80=99=
- set but not used [-Wunused-but-set-variable]
->  drivers/scsi/hpsa.c: In function =E2=80=98hpsa_init_one=E2=80=99:
->  drivers/scsi/hpsa.c:8639:6: warning: variable =E2=80=98dac=E2=80=99 set =
-but not used [-Wunused-but-set-variable]
->  drivers/scsi/hpsa.c: In function =E2=80=98hpsa_enter_performant_mode=E2=
-=80=99:
->  drivers/scsi/hpsa.c:9300:7: warning: variable =E2=80=98rc=E2=80=99 set b=
-ut not used [-Wunused-but-set-variable]
-
-Applied to 5.11/scsi-staging, thanks!
-
---=20
-Martin K. Petersen	Oracle Linux Engineering
+-- 
+viresh
