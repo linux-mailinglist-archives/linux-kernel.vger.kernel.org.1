@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DC82B620D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431682B607E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731059AbgKQNY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:24:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59840 "EHLO mail.kernel.org"
+        id S1728941AbgKQNJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:09:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729991AbgKQNYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:24:40 -0500
+        id S1728798AbgKQNJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:09:42 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5B2D20781;
-        Tue, 17 Nov 2020 13:24:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1377221EB;
+        Tue, 17 Nov 2020 13:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619479;
-        bh=TFrJW6a9UUjUwImt42Mg5iBf6opdqu0VUOvPnYS+uic=;
+        s=default; t=1605618582;
+        bh=vO8JCKU3bzh8Urw8R6HQRs3tGw5adVMSYMNzdvtTwEI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eSBP5IVBowiwEKlV+asLAyWxioIgXXkR6TztsEHxgWNim3X8a80HLhtrrjdE23GaH
-         zraMLtlHhC08TI485SaajubNQa8tKgUyf0nELTCzXhnci1e+qJd08xnDpMHt+phNdI
-         A2BGZYKsrNZFv48millbdhybYW7T0a16pA/F9Sc8=
+        b=jw6cM7gsXifLCqn0MLh46+YAYDakt012pGZdP3TuMM2ySJfoX+s9XPklwlEqMhg41
+         v9y+EGvi9GvT6xSj18LRh7I3dLUDidTRHXVF435nRUz4MJd2OVqPR/AEWszaS+spEG
+         l5KPmHq9Q56SnqVrw/Lv7soT1o4QGd+Fcb7j1uj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 053/151] ALSA: hda: Separate runtime and system suspend
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 17/78] Btrfs: fix missing error return if writeback for extent buffer never started
 Date:   Tue, 17 Nov 2020 14:04:43 +0100
-Message-Id: <20201117122124.011532133@linuxfoundation.org>
+Message-Id: <20201117122109.948718444@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,192 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit f5dac54d9d93826a776dffc848df76746f7135bb ]
+[ Upstream commit 0607eb1d452d45c5ac4c745a9e9e0d95152ea9d0 ]
 
-Both pm_runtime_force_suspend() and pm_runtime_force_resume() have
-some implicit checks, so it can make code flow more straightforward if
-we separate runtime and system suspend callbacks.
+If lock_extent_buffer_for_io() fails, it returns a negative value, but its
+caller btree_write_cache_pages() ignores such error. This means that a
+call to flush_write_bio(), from lock_extent_buffer_for_io(), might have
+failed. We should make btree_write_cache_pages() notice such error values
+and stop immediatelly, making sure filemap_fdatawrite_range() returns an
+error to the transaction commit path. A failure from flush_write_bio()
+should also result in the endio callback end_bio_extent_buffer_writepage()
+being invoked, which sets the BTRFS_FS_*_ERR bits appropriately, so that
+there's no risk a transaction or log commit doesn't catch a writeback
+failure.
 
-High Definition Audio Specification, 4.5.9.3 Codec Wake From System S3
-states that codec can wake the system up from S3 if WAKEEN is toggled.
-Since HDA controller has different wakeup settings for runtime and
-system susend, we also need to explicitly disable direct-complete which
-can be enabled automatically by PCI core. In addition to that, avoid
-waking up codec if runtime resume is for system suspend, to not break
-direct-complete for codecs.
-
-While at it, also remove AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP, as the
-original bug commit a6630529aecb ("ALSA: hda: Workaround for spurious
-wakeups on some Intel platforms") solves doesn't happen with this
-patch.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20201027130038.16463-3-kai.heng.feng@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_controller.h |  3 +-
- sound/pci/hda/hda_intel.c      | 62 +++++++++++++++++++---------------
- 2 files changed, 36 insertions(+), 29 deletions(-)
+ fs/btrfs/extent_io.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index a356fb0e57738..9da7a06d024f1 100644
---- a/sound/pci/hda/hda_controller.h
-+++ b/sound/pci/hda/hda_controller.h
-@@ -41,7 +41,7 @@
- /* 24 unused */
- #define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
- #define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
--#define AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP (1 << 27) /* Workaround for spurious wakeups after suspend */
-+/* 27 unused */
- #define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears itself after reset */
- #define AZX_DCAPS_NO_MSI64      (1 << 29)	/* Stick to 32-bit MSIs */
- #define AZX_DCAPS_SEPARATE_STREAM_TAG	(1 << 30) /* capture and playback use separate stream tag */
-@@ -143,6 +143,7 @@ struct azx {
- 	unsigned int align_buffer_size:1;
- 	unsigned int region_requested:1;
- 	unsigned int disabled:1; /* disabled by vga_switcheroo */
-+	unsigned int pm_prepared:1;
- 
- 	/* GTS present */
- 	unsigned int gts_present:1;
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 9a1968932b783..ab32d4811c9ef 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -295,8 +295,7 @@ enum {
- /* PCH for HSW/BDW; with runtime PM */
- /* no i915 binding for this as HSW/BDW has another controller for HDMI */
- #define AZX_DCAPS_INTEL_PCH \
--	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME |\
--	 AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
-+	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME)
- 
- /* HSW HDMI */
- #define AZX_DCAPS_INTEL_HASWELL \
-@@ -984,7 +983,7 @@ static void __azx_runtime_suspend(struct azx *chip)
- 	display_power(chip, false);
- }
- 
--static void __azx_runtime_resume(struct azx *chip, bool from_rt)
-+static void __azx_runtime_resume(struct azx *chip)
- {
- 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
- 	struct hdac_bus *bus = azx_bus(chip);
-@@ -1001,7 +1000,8 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
- 	azx_init_pci(chip);
- 	hda_intel_init_chip(chip, true);
- 
--	if (from_rt) {
-+	/* Avoid codec resume if runtime resume is for system suspend */
-+	if (!chip->pm_prepared) {
- 		list_for_each_codec(codec, &chip->bus) {
- 			if (codec->relaxed_resume)
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index d6c827a9ebc56..5c2f4f58da8ff 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3879,6 +3879,10 @@ int btree_write_cache_pages(struct address_space *mapping,
+ 			if (!ret) {
+ 				free_extent_buffer(eb);
  				continue;
-@@ -1017,6 +1017,29 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
- }
++			} else if (ret < 0) {
++				done = 1;
++				free_extent_buffer(eb);
++				break;
+ 			}
  
- #ifdef CONFIG_PM_SLEEP
-+static int azx_prepare(struct device *dev)
-+{
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct azx *chip;
-+
-+	chip = card->private_data;
-+	chip->pm_prepared = 1;
-+
-+	/* HDA controller always requires different WAKEEN for runtime suspend
-+	 * and system suspend, so don't use direct-complete here.
-+	 */
-+	return 0;
-+}
-+
-+static void azx_complete(struct device *dev)
-+{
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct azx *chip;
-+
-+	chip = card->private_data;
-+	chip->pm_prepared = 0;
-+}
-+
- static int azx_suspend(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
-@@ -1028,15 +1051,7 @@ static int azx_suspend(struct device *dev)
- 
- 	chip = card->private_data;
- 	bus = azx_bus(chip);
--	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
--	/* An ugly workaround: direct call of __azx_runtime_suspend() and
--	 * __azx_runtime_resume() for old Intel platforms that suffer from
--	 * spurious wakeups after S3 suspend
--	 */
--	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
--		__azx_runtime_suspend(chip);
--	else
--		pm_runtime_force_suspend(dev);
-+	__azx_runtime_suspend(chip);
- 	if (bus->irq >= 0) {
- 		free_irq(bus->irq, chip);
- 		bus->irq = -1;
-@@ -1064,11 +1079,7 @@ static int azx_resume(struct device *dev)
- 	if (azx_acquire_irq(chip, 1) < 0)
- 		return -EIO;
- 
--	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
--		__azx_runtime_resume(chip, false);
--	else
--		pm_runtime_force_resume(dev);
--	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
-+	__azx_runtime_resume(chip);
- 
- 	trace_azx_resume(chip);
- 	return 0;
-@@ -1116,10 +1127,7 @@ static int azx_runtime_suspend(struct device *dev)
- 	chip = card->private_data;
- 
- 	/* enable controller wake up event */
--	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
--		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
--			   STATESTS_INT_MASK);
--	}
-+	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) | STATESTS_INT_MASK);
- 
- 	__azx_runtime_suspend(chip);
- 	trace_azx_runtime_suspend(chip);
-@@ -1130,18 +1138,14 @@ static int azx_runtime_resume(struct device *dev)
- {
- 	struct snd_card *card = dev_get_drvdata(dev);
- 	struct azx *chip;
--	bool from_rt = snd_power_get_state(card) == SNDRV_CTL_POWER_D0;
- 
- 	if (!azx_is_pm_ready(card))
- 		return 0;
- 	chip = card->private_data;
--	__azx_runtime_resume(chip, from_rt);
-+	__azx_runtime_resume(chip);
- 
- 	/* disable controller Wake Up event*/
--	if (from_rt) {
--		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
--			   ~STATESTS_INT_MASK);
--	}
-+	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) & ~STATESTS_INT_MASK);
- 
- 	trace_azx_runtime_resume(chip);
- 	return 0;
-@@ -1175,6 +1179,8 @@ static int azx_runtime_idle(struct device *dev)
- static const struct dev_pm_ops azx_pm = {
- 	SET_SYSTEM_SLEEP_PM_OPS(azx_suspend, azx_resume)
- #ifdef CONFIG_PM_SLEEP
-+	.prepare = azx_prepare,
-+	.complete = azx_complete,
- 	.freeze_noirq = azx_freeze_noirq,
- 	.thaw_noirq = azx_thaw_noirq,
- #endif
+ 			ret = write_one_eb(eb, fs_info, wbc, &epd);
 -- 
 2.27.0
 
