@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D562B60C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4C52B604A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729855AbgKQNMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:12:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42426 "EHLO mail.kernel.org"
+        id S1728393AbgKQNHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:07:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729351AbgKQNMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:12:18 -0500
+        id S1729163AbgKQNHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:07:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBA6C241A5;
-        Tue, 17 Nov 2020 13:12:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9312E238E6;
+        Tue, 17 Nov 2020 13:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618737;
-        bh=5pwO4RszZwEylTEY+LpX9We65N5IVLJRKdlPIdtvKC4=;
+        s=default; t=1605618466;
+        bh=baNtvZpiappr025bWo+l4iL67JcL2QnChO9tnfoTZZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=frBY5eyYs7rZKp8xHJF+7imQgUgHz0FJjrJVXaMuWUlRVnO2I+Faoh0p0L9oLFrkO
-         6Z3CkpHh/UWrlniqFnWFjJROhi2owxgo4zYbT0HGnNsJt8tUiHWbYSdSAMzcCtKcsD
-         k9zRU35sT2ggyfecxQR0DHwh1qde8XxkZlLGRnxs=
+        b=gn06Nawc+TRUMRLul8TVh8ECINTPtYB61fx0fZUDoc+wgahXdsShl4kNTHoHzM7IS
+         0zV+g5tYL0nGlx9FbIO6okK5CqLoi3KYGx5VBDO7ZL8Gg7lvjjNLYMvBu9MmKWaPEE
+         kqT15lLtCIFC9z49sRKFY77VMXVMKE/k35Bx+oHo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 40/78] of/address: Fix of_node memory leak in of_dma_is_coherent
+        stable@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Ursula Braun <ubraun@linux.ibm.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 43/64] net/af_iucv: fix null pointer dereference on shutdown
 Date:   Tue, 17 Nov 2020 14:05:06 +0100
-Message-Id: <20201117122111.066720881@linuxfoundation.org>
+Message-Id: <20201117122108.285620771@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,47 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+From: Ursula Braun <ubraun@linux.ibm.com>
 
-[ Upstream commit a5bea04fcc0b3c0aec71ee1fd58fd4ff7ee36177 ]
+[ Upstream commit 4031eeafa71eaf22ae40a15606a134ae86345daf ]
 
-Commit dabf6b36b83a ("of: Add OF_DMA_DEFAULT_COHERENT & select it on
-powerpc") added a check to of_dma_is_coherent which returns early
-if OF_DMA_DEFAULT_COHERENT is enabled. This results in the of_node_put()
-being skipped causing a memory leak. Moved the of_node_get() below this
-check so we now we only get the node if OF_DMA_DEFAULT_COHERENT is not
-enabled.
+syzbot reported the following KASAN finding:
 
-Fixes: dabf6b36b83a ("of: Add OF_DMA_DEFAULT_COHERENT & select it on powerpc")
-Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-Link: https://lore.kernel.org/r/20201110022825.30895-1-evan.nimmo@alliedtelesis.co.nz
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BUG: KASAN: nullptr-dereference in iucv_send_ctrl+0x390/0x3f0 net/iucv/af_iucv.c:385
+Read of size 2 at addr 000000000000021e by task syz-executor907/519
+
+CPU: 0 PID: 519 Comm: syz-executor907 Not tainted 5.9.0-syzkaller-07043-gbcf9877ad213 #0
+Hardware name: IBM 3906 M04 701 (KVM/Linux)
+Call Trace:
+ [<00000000c576af60>] unwind_start arch/s390/include/asm/unwind.h:65 [inline]
+ [<00000000c576af60>] show_stack+0x180/0x228 arch/s390/kernel/dumpstack.c:135
+ [<00000000c9dcd1f8>] __dump_stack lib/dump_stack.c:77 [inline]
+ [<00000000c9dcd1f8>] dump_stack+0x268/0x2f0 lib/dump_stack.c:118
+ [<00000000c5fed016>] print_address_description.constprop.0+0x5e/0x218 mm/kasan/report.c:383
+ [<00000000c5fec82a>] __kasan_report mm/kasan/report.c:517 [inline]
+ [<00000000c5fec82a>] kasan_report+0x11a/0x168 mm/kasan/report.c:534
+ [<00000000c98b5b60>] iucv_send_ctrl+0x390/0x3f0 net/iucv/af_iucv.c:385
+ [<00000000c98b6262>] iucv_sock_shutdown+0x44a/0x4c0 net/iucv/af_iucv.c:1457
+ [<00000000c89d3a54>] __sys_shutdown+0x12c/0x1c8 net/socket.c:2204
+ [<00000000c89d3b70>] __do_sys_shutdown net/socket.c:2212 [inline]
+ [<00000000c89d3b70>] __s390x_sys_shutdown+0x38/0x48 net/socket.c:2210
+ [<00000000c9e36eac>] system_call+0xe0/0x28c arch/s390/kernel/entry.S:415
+
+There is nothing to shutdown if a connection has never been established.
+Besides that iucv->hs_dev is not yet initialized if a socket is in
+IUCV_OPEN state and iucv->path is not yet initialized if socket is in
+IUCV_BOUND state.
+So, just skip the shutdown calls for a socket in these states.
+
+Fixes: eac3731bd04c ("[S390]: Add AF_IUCV socket support")
+Fixes: 82492a355fac ("af_iucv: add shutdown for HS transport")
+Reviewed-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Ursula Braun <ubraun@linux.ibm.com>
+[jwi: correct one Fixes tag]
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/of/address.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/iucv/af_iucv.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 37619bb2c97ad..d188eacbd3b80 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -901,11 +901,13 @@ EXPORT_SYMBOL_GPL(of_dma_get_range);
-  */
- bool of_dma_is_coherent(struct device_node *np)
- {
--	struct device_node *node = of_node_get(np);
-+	struct device_node *node;
+--- a/net/iucv/af_iucv.c
++++ b/net/iucv/af_iucv.c
+@@ -1513,7 +1513,8 @@ static int iucv_sock_shutdown(struct soc
+ 		break;
+ 	}
  
- 	if (IS_ENABLED(CONFIG_OF_DMA_DEFAULT_COHERENT))
- 		return true;
- 
-+	node = of_node_get(np);
-+
- 	while (node) {
- 		if (of_property_read_bool(node, "dma-coherent")) {
- 			of_node_put(node);
--- 
-2.27.0
-
+-	if (how == SEND_SHUTDOWN || how == SHUTDOWN_MASK) {
++	if ((how == SEND_SHUTDOWN || how == SHUTDOWN_MASK) &&
++	    sk->sk_state == IUCV_CONNECTED) {
+ 		if (iucv->transport == AF_IUCV_TRANS_IUCV) {
+ 			txmsg.class = 0;
+ 			txmsg.tag = 0;
 
 
