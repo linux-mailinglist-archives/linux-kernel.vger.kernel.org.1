@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207262B6223
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CDC2B6099
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731368AbgKQNZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:25:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32952 "EHLO mail.kernel.org"
+        id S1729551AbgKQNKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:10:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731146AbgKQNZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:25:39 -0500
+        id S1729514AbgKQNKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:10:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9BC92465E;
-        Tue, 17 Nov 2020 13:25:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4CF524698;
+        Tue, 17 Nov 2020 13:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619539;
-        bh=l8T1BxpdWMGORtkMch0zBnZHthm9bcp8z4QUo4Yj+JU=;
+        s=default; t=1605618644;
+        bh=d2WD2upIBhI0qBf6ii5Qv8GdhRGrj9vGi/dFfjY7N50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R+esQwYogPHGle+VIdUYQZlLrGpVWsKmQWmCSSREu+PT6quGxUqF5JXBCeG4+ugCr
-         ihjfom4CQMJ4irsH//asnJpbTB/s5WJYpAF+RE9K/r1yAgadYdJK9XlH9yCpcjDiPZ
-         RMw2wrTjRODGaFuDuw2WaTu0xvnSTfv8PqZAogmo=
+        b=IJ9v2bKwXbHqP9Bz+fk1nRChtVlFLwl+0KcNP8i/YqqT+7z2T3N4Kq1AQRF6BRWxU
+         pis7hYw7oYti7QaUpSRS04qGVUPw+aH56WSm2m6Liq1vrYOiD977BolSrQM6nxTSIO
+         0JT3C4fD1V1BX5Ghq5KNLudHw1I8oRhlRq72U1dA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Steven Price <steven.price@arm.com>
-Subject: [PATCH 5.4 043/151] KVM: arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesnt return SMCCC_RET_NOT_REQUIRED
+        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 07/78] genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
 Date:   Tue, 17 Nov 2020 14:04:33 +0100
-Message-Id: <20201117122123.520604734@linuxfoundation.org>
+Message-Id: <20201117122109.455203463@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,83 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 1de111b51b829bcf01d2e57971f8fd07a665fa3f upstream.
+[ Upstream commit 151a535171be6ff824a0a3875553ea38570f4c05 ]
 
-According to the SMCCC spec[1](7.5.2 Discovery) the
-ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
-SMCCC_RET_NOT_SUPPORTED.
+kernel/irq/ipi.c otherwise fails to compile if nothing else
+selects it.
 
- 0 is "workaround required and safe to call this function"
- 1 is "workaround not required but safe to call this function"
- SMCCC_RET_NOT_SUPPORTED is "might be vulnerable or might not be, who knows, I give up!"
-
-SMCCC_RET_NOT_SUPPORTED might as well mean "workaround required, except
-calling this function may not work because it isn't implemented in some
-cases". Wonderful. We map this SMC call to
-
- 0 is SPECTRE_MITIGATED
- 1 is SPECTRE_UNAFFECTED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
-
-For KVM hypercalls (hvc), we've implemented this function id to return
-SMCCC_RET_NOT_SUPPORTED, 0, and SMCCC_RET_NOT_REQUIRED. One of those
-isn't supposed to be there. Per the code we call
-arm64_get_spectre_v2_state() to figure out what to return for this
-feature discovery call.
-
- 0 is SPECTRE_MITIGATED
- SMCCC_RET_NOT_REQUIRED is SPECTRE_UNAFFECTED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
-
-Let's clean this up so that KVM tells the guest this mapping:
-
- 0 is SPECTRE_MITIGATED
- 1 is SPECTRE_UNAFFECTED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
-
-Note: SMCCC_RET_NOT_AFFECTED is 1 but isn't part of the SMCCC spec
-
-Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround state to KVM guests")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Will Deacon <will@kernel.org>
-Cc: Andre Przywara <andre.przywara@arm.com>
-Cc: Steven Price <steven.price@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://developer.arm.com/documentation/den0028/latest [1]
-Link: https://lore.kernel.org/r/20201023154751.1973872-1-swboyd@chromium.org
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 379b656446a3 ("genirq: Add GENERIC_IRQ_IPI Kconfig symbol")
+Reported-by: Pavel Machek <pavel@ucw.cz>
+Tested-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20201015101222.GA32747@amd
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/arm-smccc.h |    2 ++
- virt/kvm/arm/psci.c       |    2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ kernel/irq/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/include/linux/arm-smccc.h
-+++ b/include/linux/arm-smccc.h
-@@ -76,6 +76,8 @@
- 			   ARM_SMCCC_SMC_32,				\
- 			   0, 0x7fff)
+diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
+index 3bbfd6a9c4756..bb3a46cbe034c 100644
+--- a/kernel/irq/Kconfig
++++ b/kernel/irq/Kconfig
+@@ -67,6 +67,7 @@ config IRQ_DOMAIN_HIERARCHY
+ # Generic IRQ IPI support
+ config GENERIC_IRQ_IPI
+ 	bool
++	select IRQ_DOMAIN_HIERARCHY
  
-+#define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
-+
- #ifndef __ASSEMBLY__
- 
- #include <linux/linkage.h>
---- a/virt/kvm/arm/psci.c
-+++ b/virt/kvm/arm/psci.c
-@@ -408,7 +408,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu
- 				val = SMCCC_RET_SUCCESS;
- 				break;
- 			case KVM_BP_HARDEN_NOT_REQUIRED:
--				val = SMCCC_RET_NOT_REQUIRED;
-+				val = SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED;
- 				break;
- 			}
- 			break;
+ # Generic MSI interrupt support
+ config GENERIC_MSI_IRQ
+-- 
+2.27.0
+
 
 
