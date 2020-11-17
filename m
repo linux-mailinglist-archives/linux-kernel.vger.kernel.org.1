@@ -2,175 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26112B6B98
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAAC2B6AF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbgKQRUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:20:40 -0500
-Received: from gateway31.websitewelcome.com ([192.185.143.46]:38004 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726174AbgKQRUk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:20:40 -0500
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 8BAFA2F507
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:56:50 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id f4HiktruenPrxf4HikQUjv; Tue, 17 Nov 2020 10:56:50 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=IhNGcOEImUDHyustGK/ZfTJ9VsajcqHefgQ+kV2kjPI=; b=JrYv+GPmlgleERA9aQ80O4wt5V
-        KXGu46HDSYfkUrOQexHUziOosf+QX0lG0p+a8JKC92oRsPut51J7HjdARz4DNcES/BZXFYmyIMCpz
-        0CtoKCipVk0+ynue3sTurEMndSD16btaybLpdqdgaA7hmd/XM22TN9qgforFYSH1TqG6/3qVODOnH
-        kO0fWaVXhyHj7oyX7vNI4y8gdfFSD33ShcUKZdlkTDw1+uBVERlWGasER4qgnfibZwvg1DodsgWtI
-        HDgm0cosmkTM6RMLWZ6DQS1e2oQ36Jo5gSlD1Nlr9Hy5vFrxxJRRqhW45Gz4EmEO+dnWToyhe6SHl
-        ZLS9d//w==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:42942 helo=[192.168.15.4])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1kf4Hi-000WJq-5w; Tue, 17 Nov 2020 10:56:50 -0600
-Subject: Re: drivers/net/ethernet/netronome/nfp/crypto/tls.c:477:18: warning:
- variable 'ipv6h' set but not used
-To:     kernel test robot <lkp@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-References: <202011180053.kKv4MbVt-lkp@intel.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <3c0c3c7d-2dc6-3c16-747c-2dd0b7511e0d@embeddedor.com>
-Date:   Tue, 17 Nov 2020 10:56:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728522AbgKQQ7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:59:11 -0500
+Received: from mga07.intel.com ([134.134.136.100]:43263 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727653AbgKQQ7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:59:10 -0500
+IronPort-SDR: 0K/fLg12ZJOLMYlowLaCX8O1hiilIwBQy4gsPt8bERS4HZ9CNxDt0jf31UQ/MEOWi1lOOKOaMS
+ 3eCOP8owC+mA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="235110966"
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="235110966"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 08:58:22 -0800
+IronPort-SDR: W8mhrInwfX5NO792DuVW7vAbg0zvPzhzo8/psiL3qmOqw1O+Qz1/oOSyOXQf+FMAsh/emuanQf
+ 8fUxurkeaI+w==
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="544123584"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.34.253])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 08:58:20 -0800
+Date:   Tue, 17 Nov 2020 17:58:16 +0100
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+Message-ID: <20201117165816.GB15538@ubuntu>
+References: <c31b8427-baca-5c77-6420-b592c57a3a7b@st.com>
+ <20201112115115.GA11069@ubuntu>
+ <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
+ <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com>
+ <20201116151028.GA1519@ubuntu>
+ <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
+ <20201116224003.GC3892875@xps15>
+ <50549519-d9ff-9048-a3d8-dab02bfda096@st.com>
+ <20201117160330.GA15538@ubuntu>
+ <a653c503-7fd1-7b87-88a5-88c9002ba410@st.com>
 MIME-Version: 1.0
-In-Reply-To: <202011180053.kKv4MbVt-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1kf4Hi-000WJq-5w
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.4]) [187.162.31.110]:42942
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a653c503-7fd1-7b87-88a5-88c9002ba410@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/17/20 10:39, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   9c87c9f41245baa3fc4716cf39141439cf405b01
-> commit: b142083b585c2c03af24cca4d274f797796a4064 mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP instead of selecting it
-> date:   4 weeks ago
-> config: arc-randconfig-r005-20201117 (attached as .config)
-> compiler: arceb-elf-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b142083b585c2c03af24cca4d274f797796a4064
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout b142083b585c2c03af24cca4d274f797796a4064
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arc 
+On Tue, Nov 17, 2020 at 05:44:05PM +0100, Arnaud POULIQUEN wrote:
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> All warnings (new ones prefixed by >>):
+> On 11/17/20 5:03 PM, Guennadi Liakhovetski wrote:
+> > On Tue, Nov 17, 2020 at 12:42:30PM +0100, Arnaud POULIQUEN wrote:
+> > 
+> > [snip]
+> > 
+> >> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+> >> index 5bda7cb44618..80c2cc23bada 100644
+> >> --- a/drivers/rpmsg/rpmsg_ns.c
+> >> +++ b/drivers/rpmsg/rpmsg_ns.c
+> >> @@ -55,6 +55,39 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
+> >> *data, int len,
+> >>  	return 0;
+> >>  }
+> >>
+> >> +/**
+> >> + * rpmsg_ns_register_device() - register name service device based on rpdev
+> >> + * @rpdev: prepared rpdev to be used for creating endpoints
+> >> + *
+> >> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
+> >> + * basis for the rpmsg name service device.
+> >> + */
+> >> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+> >> +{
+> >> +#ifdef MODULES
+> >> +	int ret;
+> >> +	struct module *rpmsg_ns;
+> >> +
+> >> +	mutex_lock(&module_mutex);
+> >> +	rpmsg_ns = find_module(KBUILD_MODNAME);
+> >> +	mutex_unlock(&module_mutex);
+> >> +
+> >> +	if (!rpmsg_ns) {
+> >> +		ret = request_module(KBUILD_MODNAME);
+> > 
+> > Is this code requesting the module in which it is located?.. I must be missing 
+> > something...
 > 
-
-[..]
-
->    drivers/net/ethernet/netronome/nfp/crypto/tls.c: In function 'nfp_net_tls_add':
->    include/linux/compiler_attributes.h:208:41: warning: statement will never be executed [-Wswitch-unreachable]
->      208 | # define fallthrough                    __attribute__((__fallthrough__))
->          |                                         ^~~~~~~~~~~~~
->    drivers/net/ethernet/netronome/nfp/crypto/tls.c:299:3: note: in expansion of macro 'fallthrough'
->      299 |   fallthrough;
->          |   ^~~~~~~~~~~
+> Right this is stupid...Thanks to highlight this!
 > 
+> That being said, your remark is very interesting: we need to load the module to
+> access to this function. This means that calling this function ensures that the
+> module is loaded. In this case no need to add the piece of code to find
+> module... here is the call stack associated (associated patch is available below):
 
-This should fix the issue reported above:
+Yes, as I wrote 10 hours ago:
 
-diff --git a/drivers/net/ethernet/netronome/nfp/crypto/tls.c b/drivers/net/ethernet/netronome/nfp/crypto/tls.c
-index 76c51da5b66f..9b32ae46011c 100644
---- a/drivers/net/ethernet/netronome/nfp/crypto/tls.c
-+++ b/drivers/net/ethernet/netronome/nfp/crypto/tls.c
-@@ -295,8 +295,8 @@ nfp_net_tls_add(struct net_device *netdev, struct sock *sk,
-                        ipv6 = true;
-                        break;
-                }
--#endif
-                fallthrough;
-+#endif
-        case AF_INET:
-                req_sz = sizeof(struct nfp_crypto_req_add_v4);
-                ipv6 = false;
+> Now, as for how to actually load the
+> module, I'd really propose to move rpmsg_ns_register_device() into the .c
+> file and then the problem will be resolved automatically: as a symbol
+> dependence the module will be loaded whenever another module, calling
+> rpmsg_ns_register_device() is loaded.
 
---
-Gustavo
+Thanks
+Guennadi
+
+> (rpmsg_ns_probe+0x5c/0xe0 [rpmsg_ns])
+> [   11.858748] [<bf00a0a0>] (rpmsg_ns_probe [rpmsg_ns]) from [<bf0005cc>]
+> (rpmsg_dev_probe+0x14c/0x1b0 [rpmsg_core])
+> [   11.869047] [<bf0005cc>] (rpmsg_dev_probe [rpmsg_core]) from [<c067cd44>]
+> (really_probe+0x208/0x4f0)
+> [   11.878117] [<c067cd44>] (really_probe) from [<c067d1f4>]
+> (driver_probe_device+0x78/0x16c)
+> [   11.886404] [<c067d1f4>] (driver_probe_device) from [<c067ad48>]
+> (bus_for_each_drv+0x84/0xd0)
+> [   11.894887] [<c067ad48>] (bus_for_each_drv) from [<c067ca9c>]
+> (__device_attach+0xf0/0x188)
+> [   11.903142] [<c067ca9c>] (__device_attach) from [<c067bb10>]
+> (bus_probe_device+0x84/0x8c)
+> [   11.911314] [<c067bb10>] (bus_probe_device) from [<c0678094>]
+> (device_add+0x3b0/0x7b0)
+> [   11.919227] [<c0678094>] (device_add) from [<bf0003dc>]
+> (rpmsg_register_device+0x54/0x88 [rpmsg_core])
+> [   11.928541] [<bf0003dc>] (rpmsg_register_device [rpmsg_core]) from
+> [<bf011b58>] (rpmsg_probe+0x298/0x3c8 [virtio_rpmsg_bus])
+> [   11.939748] [<bf011b58>] (rpmsg_probe [virtio_rpmsg_bus]) from [<c05cd648>]
+> (virtio_dev_probe+0x1f4/0x2c4)
+> [   11.949377] [<c05cd648>] (virtio_dev_probe) from [<c067cd44>]
+> (really_probe+0x208/0x4f0)
+> [   11.957454] [<c067cd44>] (really_probe) from [<c067d1f4>]
+> (driver_probe_device+0x78/0x16c)
+> [   11.965710] [<c067d1f4>] (driver_probe_device) from [<c067d548>]
+> (device_driver_attach+0x58/0x60)
+> [   11.974574] [<c067d548>] (device_driver_attach) from [<c067d604>]
+> (__driver_attach+0xb4/0x154)
+> [   11.983177] [<c067d604>] (__driver_attach) from [<c067ac68>]
+> (bus_for_each_dev+0x78/0xc0)
+> [   11.991344] [<c067ac68>] (bus_for_each_dev) from [<c067bdc0>]
+> (bus_add_driver+0x170/0x20c)
+> [   11.999600] [<c067bdc0>] (bus_add_driver) from [<c067e12c>]
+> (driver_register+0x74/0x108)
+> [   12.007693] [<c067e12c>] (driver_register) from [<bf017010>]
+> (rpmsg_init+0x10/0x1000 [virtio_rpmsg_bus])
+> [   12.017168] [<bf017010>] (rpmsg_init [virtio_rpmsg_bus]) from [<c0102090>]
+> (do_one_initcall+0x58/0x2bc)
+> [
+> 
+> This would make the patch very simple. I tested following patch on my platform,
+> applying it, i do not reproduce the initial issue.
+> 
+> 
+> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+> index c3fc75e6514b..1394114782d2 100644
+> --- a/drivers/rpmsg/Kconfig
+> +++ b/drivers/rpmsg/Kconfig
+> @@ -71,5 +71,6 @@ config RPMSG_VIRTIO
+>  	depends on HAS_DMA
+>  	select RPMSG
+>  	select VIRTIO
+> +	select RPMSG_NS
+> 
+>  endmenu
+> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+> index 5bda7cb44618..5867281188de 100644
+> --- a/drivers/rpmsg/rpmsg_ns.c
+> +++ b/drivers/rpmsg/rpmsg_ns.c
+> @@ -55,6 +55,24 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
+> *data, int len,
+>  	return 0;
+>  }
+> 
+> +/**
+> + * rpmsg_ns_register_device() - register name service device based on rpdev
+> + * @rpdev: prepared rpdev to be used for creating endpoints
+> + *
+> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
+> + * basis for the rpmsg name service device.
+> + */
+> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+> +{
+> +	strcpy(rpdev->id.name, KBUILD_MODNAME);
+> +	rpdev->driver_override = KBUILD_MODNAME;
+> +	rpdev->src = RPMSG_NS_ADDR;
+> +	rpdev->dst = RPMSG_NS_ADDR;
+> +
+> +	return rpmsg_register_device(rpdev);
+> +}
+> +EXPORT_SYMBOL(rpmsg_ns_register_device);
+> +
+>  static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+>  {
+>  	struct rpmsg_endpoint *ns_ept;
+> @@ -80,7 +98,7 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+>  }
+> 
+>  static struct rpmsg_driver rpmsg_ns_driver = {
+> -	.drv.name = "rpmsg_ns",
+> +	.drv.name = KBUILD_MODNAME,
+>  	.probe = rpmsg_ns_probe,
+>  };
+> 
+> @@ -104,5 +122,5 @@ module_exit(rpmsg_ns_exit);
+> 
+>  MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
+>  MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
+> -MODULE_ALIAS("rpmsg_ns");
+> +MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
+>  MODULE_LICENSE("GPL v2");
+> diff --git a/include/linux/rpmsg/ns.h b/include/linux/rpmsg/ns.h
+> index bdc1ea278814..68eac2b42075 100644
+> --- a/include/linux/rpmsg/ns.h
+> +++ b/include/linux/rpmsg/ns.h
+> @@ -41,21 +41,6 @@ enum rpmsg_ns_flags {
+>  /* Address 53 is reserved for advertising remote services */
+>  #define RPMSG_NS_ADDR			(53)
+> 
+> -/**
+> - * rpmsg_ns_register_device() - register name service device based on rpdev
+> - * @rpdev: prepared rpdev to be used for creating endpoints
+> - *
+> - * This function wraps rpmsg_register_device() preparing the rpdev for use as
+> - * basis for the rpmsg name service device.
+> - */
+> -static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+> -{
+> -	strcpy(rpdev->id.name, "rpmsg_ns");
+> -	rpdev->driver_override = "rpmsg_ns";
+> -	rpdev->src = RPMSG_NS_ADDR;
+> -	rpdev->dst = RPMSG_NS_ADDR;
+> -
+> -	return rpmsg_register_device(rpdev);
+> -}
+> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev);
+> 
+>  #endif
+> 
+> Thanks,
+> Arnaud
+> 
+> > 
+> > Thanks
+> > Guennadi
+> > 
