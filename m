@@ -2,137 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07032B5EE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C9A2B5EEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgKQMKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:10:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:55144 "EHLO foss.arm.com"
+        id S1728343AbgKQMLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:11:04 -0500
+Received: from mga01.intel.com ([192.55.52.88]:4366 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgKQMKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:10:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B11C101E;
-        Tue, 17 Nov 2020 04:10:18 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF44E3F719;
-        Tue, 17 Nov 2020 04:10:16 -0800 (PST)
-Date:   Tue, 17 Nov 2020 12:10:11 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kthota@nvidia.com" <kthota@nvidia.com>,
-        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
-        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
-Subject: Re: [PATCH 0/3] Add support to handle prefetchable memoryg
-Message-ID: <20201117121011.GA6050@e121166-lin.cambridge.arm.com>
-References: <20201023195655.11242-1-vidyas@nvidia.com>
- <SLXP216MB04777D651A59246A60D036A8AA1B0@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
- <20201026123012.GA356750@ulmo>
- <53277a71-13e5-3e7e-7c51-aca367b99d31@nvidia.com>
- <92d5ead4-a3d2-42ba-a542-3e305f3d5523@nvidia.com>
+        id S1725446AbgKQMLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:11:03 -0500
+IronPort-SDR: h8Fp81H8lsv9RKkM8MkJsKx4Fukj0XKWe17p9goJc2A0rvk+BQ5Nq85b9cpY8jOESyL/CLhPzI
+ Ap84GPx6TIkQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="188966521"
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="188966521"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 04:11:03 -0800
+IronPort-SDR: VWOLiyCAE5HtdFruh/KAFYL27GmWPJmuTXb6+Igzyx0J4mZ/4RsuhGk6yj6zqaJHF4ad0WNHOf
+ OEBdWOx0zhYg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="430458762"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 17 Nov 2020 04:11:00 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Nov 2020 14:10:59 +0200
+Date:   Tue, 17 Nov 2020 14:10:59 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        pmalani@chromium.org, enric.balletbo@collabora.com,
+        rajmohan.mani@intel.com, azhar.shaikh@intel.com
+Subject: Re: [PATCH v2 6/8] platform/chrome: cros_ec_typec: Use Thunderbolt 3
+ cable discover mode VDO in USB4 mode
+Message-ID: <20201117121059.GF3437448@kuha.fi.intel.com>
+References: <20201113202503.6559-1-utkarsh.h.patel@intel.com>
+ <20201113202503.6559-7-utkarsh.h.patel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <92d5ead4-a3d2-42ba-a542-3e305f3d5523@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201113202503.6559-7-utkarsh.h.patel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:08:35AM +0530, Vidya Sagar wrote:
-> Hi Lorenzo & Bjorn,
-> Sorry to bother you.
-> Could you please take a look at the patches-1 & 2 from this series?
-
-IIUC we should:
-
-(1) apply https://patchwork.kernel.org/project/linux-pci/patch/20201026181652.418729-1-robh@kernel.org
-(2) apply [1,2] from this series
-
-For (2), are they rebased against v5.10-rc3 with (1) applied ? I need to
-check but I will probably have to use v5.10-rc3 as baseline owing to
-commit:
-
-9fff3256f93d
-
-(1) depends on it.
-
-Lorenzo
-
-> Thanks,
-> Vidya Sagar
+On Fri, Nov 13, 2020 at 12:25:01PM -0800, Utkarsh Patel wrote:
+> Configure Thunderbolt3/USB4 cable generation value by filing Thunderbolt 3
+> cable discover mode VDO to support rounded and non-rounded Thunderbolt3/
+> USB4 cables.
+> While we are here use Thunderbolt 3 cable discover mode VDO to fill active
+> cable plug link training value.
 > 
-> On 11/4/2020 1:16 PM, Vidya Sagar wrote:
-> > External email: Use caution opening links or attachments
-> > 
-> > 
-> > Lorenzo / Bjorn,
-> > Could you please review patches-1 & 2 in this series?
-> > For the third patch, we already went with Rob's patch @
-> > http://patchwork.ozlabs.org/project/linux-pci/patch/20201026154852.221483-1-robh@kernel.org/
-> > 
-> > 
-> > Thanks,
-> > Vidya Sagar
-> > 
-> > On 10/26/2020 6:02 PM, Thierry Reding wrote:
-> > > On Sat, Oct 24, 2020 at 04:03:41AM +0000, Jingoo Han wrote:
-> > > > On 10/23/20, 3:57 PM, Vidya Sagar wrote:
-> > > > > 
-> > > > > This patch series adds support for configuring the DesignWare IP's ATU
-> > > > > region for prefetchable memory translations.
-> > > > > It first starts by flagging a warning if the size of non-prefetchable
-> > > > > aperture goes beyond 32-bit as PCIe spec doesn't allow it.
-> > > > > And then adds required support for programming the ATU to handle higher
-> > > > > (i.e. >4GB) sizes and then finally adds support for differentiating
-> > > > > between prefetchable and non-prefetchable regions and
-> > > > > configuring one of
-> > > > > the ATU regions for prefetchable memory translations purpose.
-> > > > > 
-> > > > > Vidya Sagar (3):
-> > > > >    PCI: of: Warn if non-prefetchable memory aperture size is > 32-bit
-> > > > >    PCI: dwc: Add support to program ATU for >4GB memory aperture sizes
-> > > > >    PCI: dwc: Add support to handle prefetchable memory mapping
-> > > > 
-> > > > For 2nd & 3rd,
-> > > > Acked-by: Jingoo <jingoohan1@gmail.com>
-> > > > But, I still want someone to ack 1st patch, not me.
-> > > > 
-> > > > To Vidya,
-> > > > If possible, can you ask your coworker to give 'Tested-by'? It
-> > > > will be very helpful.
-> > > > Thank you.
-> > > 
-> > > On next-20201026 (but also going back quite a while) I'm seeing this
-> > > during boot on Jetson AGX Xavier (Tegra194):
-> > > 
-> > > [    3.493382] ahci 0001:01:00.0: version 3.0
-> > > [    3.493889] ahci 0001:01:00.0: SSS flag set, parallel bus scan
-> > > disabled
-> > > [    4.497706] ahci 0001:01:00.0: controller reset failed (0xffffffff)
-> > > [    4.498114] ahci: probe of 0001:01:00.0 failed with error -5
-> > > 
-> > > After applying this series, AHCI over PCI is back to normal:
-> > > 
-> > > [    3.543230] ahci 0001:01:00.0: AHCI 0001.0000 32 slots 1 ports 6
-> > > Gbps 0x1 impl SATA mode
-> > > [    3.550841] ahci 0001:01:00.0: flags: 64bit ncq sntf led only pmp
-> > > fbs pio slum part sxs
-> > > [    3.559747] scsi host0: ahci
-> > > [    3.561998] ata1: SATA max UDMA/133 abar m512@0x1230010000 port
-> > > 0x1230010100 irq 63
-> > > 
-> > > So for the series:
-> > > 
-> > > Tested-by: Thierry Reding <treding@nvidia.com>
-> > > 
+> Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+
+FWIW:
+
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> --
+> Changes in v2:
+> - No change.
+> --
+> ---
+>  drivers/platform/chrome/cros_ec_typec.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index 8111ed1fc574..b7416e82c3b3 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -514,8 +514,18 @@ static int cros_typec_enable_usb4(struct cros_typec_data *typec,
+>  	else if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_CABLE)
+>  		data.eudo |= EUDO_CABLE_TYPE_RE_TIMER << EUDO_CABLE_TYPE_SHIFT;
+>  
+> -	data.active_link_training = !!(pd_ctrl->control_flags &
+> -				       USB_PD_CTRL_ACTIVE_LINK_UNIDIR);
+> +	/*
+> +	 * This driver does not have access to the identity information or
+> +	 * capabilities of the cable, so we don't know is it a real USB4 or
+> +	 * TBT3 cable. Therefore pretending that it's always TBT3 cable by
+> +	 * filling the TBT3 Cable VDO.
+> +	 */
+> +	data.tbt_cable_vdo = TBT_MODE;
+> +
+> +	if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_LINK_UNIDIR)
+> +		data.tbt_cable_vdo |= TBT_CABLE_LINK_TRAINING;
+> +
+> +	data.tbt_cable_vdo |= TBT_SET_CABLE_ROUNDED(pd_ctrl->cable_gen);
+>  
+>  	port->state.alt = NULL;
+>  	port->state.data = &data;
+> -- 
+> 2.17.1
+
+-- 
+heikki
