@@ -2,206 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3DB2B67C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCE52B67C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgKQOrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:47:49 -0500
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:41923 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728198AbgKQOrs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:47:48 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id f2Ggkp8TI6LFvf2GkkVOGC; Tue, 17 Nov 2020 15:47:42 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1605624462; bh=ZNewCv5yw7gPIQ0uSlqYOilU68r1FGtpMr8cSacnusU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=YgwZqsD4HRTVnQ0dDtiFdaAHBn/AZYQ0MzW0blpykx7khRlBuH3HTQBsSKlRvOrI+
-         TltB8HjGLGEaupxoOwBJO1g6gGocrv+KmVganiMhEJClYzuncAOTj/n3rzMw68vhtu
-         W9pp/JHXiIJMDENvXRN+iSlodeId5YqZABkunaZYoJFkG+IrePCgapoM/zHqNF0hkz
-         oVXouPdIwOk+C2HOGKYQwy3AIELZIAECuz6ViT9LLr8hz0MITGU1FsJHSfoGx5qt4B
-         5iGk7iXRH0Y5QKhpmasGX6aQRPewxwoInk5kRMsurXEOoEPLeF3xVihhnCIWXNTe2n
-         b2QLEjqbzxbiA==
-Subject: Re: [PATCH v3] media: v4l2-ctrl: add control for long term reference.
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     mchehab@kernel.org, ezequiel@collabora.com,
-        stanimir.varbanov@linaro.org, vgarodia@codeaurora.org,
-        majja@codeaurora.org
-References: <1602759716-7584-1-git-send-email-dikshita@codeaurora.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <395c52eb-e100-7d10-646d-c77b4238d392@xs4all.nl>
-Date:   Tue, 17 Nov 2020 15:47:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729155AbgKQOse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:48:34 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:35778 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728198AbgKQOsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:48:33 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A9A141A1380;
+        Tue, 17 Nov 2020 15:48:28 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9A01E1A137A;
+        Tue, 17 Nov 2020 15:48:28 +0100 (CET)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 838BD20340;
+        Tue, 17 Nov 2020 15:48:28 +0100 (CET)
+Date:   Tue, 17 Nov 2020 16:48:28 +0200
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Dong Aisheng <dongas86@gmail.com>
+Cc:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        Anson Huang <anson.huang@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v5 10/14] clk: imx: Add generic blk-ctl driver
+Message-ID: <20201117144828.omlwhu5y7cwsf5ci@fsr-ub1664-175>
+References: <1604402306-5348-1-git-send-email-abel.vesa@nxp.com>
+ <1604402306-5348-11-git-send-email-abel.vesa@nxp.com>
+ <CAA+hA=TfyW6Ya9adcQFd1=-sJyoCgMyaENmGumtV1ZYar1Ud2g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1602759716-7584-1-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfL6qFHQvvhBxkrpgoWbOTgBrqfhbdzDJxG7Y122FjkFOBE9216LMW/M0l8YUYCPrCxnFLny6loWGM7LHAbNmf4VLvIEI+mxse7JokFxDEd39WOSyxgZZ
- u0flTXt0mUmHmJXlyowdAPamoWqc6tcM8f6WLyUZAOviVR5Vb6JuZ+GkOMudb2TjHz3wj8z5NCLqY6uqvEY7vmEStoIQRpOjSPBEYkwMjMVH2WvhkeEuDxzm
- sMdh5FAL/1SRJ6Na8wEUIgq0kaKJqxzMyVAFxdeVXTWyRV49ujChLzZq4BZl/92WroLL+lyOg63qBRhn0lFYmyzJqsFbR3pjRpKio1YMg0cmqGDeLh+C4qXQ
- 7mI1kqxXdBySoDlRaEpaXi2+dU2cPtH5LQVnwigiKk/IrL1IEF/bwkIqhJMrtpS/I4cerzVA/jd+26a01zBnECzz0nNfxEHQT1FFjfmLjXA/dq/yCuqwVS7n
- ZVwtaYTfNwjwn8mos1yrsR6jdkWjW78IrBWNwg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA+hA=TfyW6Ya9adcQFd1=-sJyoCgMyaENmGumtV1ZYar1Ud2g@mail.gmail.com>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dikshita,
-
-I'm happy with the controls themselves, but the documentation needs more work:
-
-On 15/10/2020 13:01, Dikshita Agarwal wrote:
-> LTR (Long Term Reference) frames are the frames that are encoded
-> sometime in the past and stored in the DPB buffer list to be used
-> as reference to encode future frames.
-> This change adds controls to enable this feature.
+On 20-11-11 17:13:25, Dong Aisheng wrote:
+> On Tue, Nov 3, 2020 at 7:22 PM Abel Vesa <abel.vesa@nxp.com> wrote:
+> ...
+> > +static int imx_blk_ctl_reset_set(struct reset_controller_dev *rcdev,
+> > +                                 unsigned long id, bool assert)
+> > +{
+> > +       struct imx_blk_ctl_drvdata *drvdata = container_of(rcdev,
+> > +                       struct imx_blk_ctl_drvdata, rcdev);
+> > +       unsigned int offset = drvdata->rst_hws[id].offset;
+> > +       unsigned int shift = drvdata->rst_hws[id].shift;
+> > +       unsigned int mask = drvdata->rst_hws[id].mask;
+> > +       void __iomem *reg_addr = drvdata->base + offset;
+> > +       unsigned long flags;
+> > +       u32 reg;
+> > +
+> > +       if (!assert && !test_bit(1, &drvdata->rst_hws[id].asserted))
+> > +               return -ENODEV;
 > 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 25 ++++++++++++++++++++++
->  drivers/media/v4l2-core/v4l2-ctrls.c               | 12 +++++++++++
->  include/uapi/linux/v4l2-controls.h                 |  3 +++
->  3 files changed, 40 insertions(+)
+> What if consumers call deassert first in probe which seems common in kernel?
+> It seems will fail.
+> e.g.
+> probe() {
+>     reset_control_get()
+>     reset_control_deassert()
+> }
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index ce728c75..6e9240a 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -4382,3 +4382,28 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->        - Selecting this value specifies that HEVC slices are expected
->          to be prefixed by Annex B start codes. According to :ref:`hevc`
->          valid start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001.
-> +
-> +``V4L2_CID_MPEG_VIDEO_LTR_COUNT (integer)``
-> +       Specifies the number of LTR frames encoder needs to generate or keep.
-
-The term "LTR" isn't explained at all in this and the next two controls.
-
-It is better to replace the first occurrence of "LTR" by:
-"Long Term Reference (LTR)".
-
-> +       This control is used to query or configure the number of LTR frames.
-> +       If LTR Count is more than max supported LTR count by driver,
-> +       it will be rejected.
-
-You can drop this sentence: the driver will specify the maximum value, so you
-can't set it to a value larger than the maximum.
-
-> +       This is applicable to H264 and HEVC encoder and can be applied using
-> +       request api.
-
-request API -> Request API.
-
-Does this control require the Request API? The next two control do need it, but
-is it needed for this one?
-
-Do you have a reference to the section of the H264 and HEVC documentation where
-LTR is discussed? It is useful to refer to those sections to help the reader.
-
-> +
-> +``V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX (integer)``
-> +       This control is used to mark current frame as LTR frame.
-> +       this provides a LTR index that ranges from 0 to LTR count-1 and
-> +       then the particular frame will be marked with that LTR index.
-
-Rephrase this as:
-
-"The current frame is marked as a Long Term Reference (LTR) frame and given this
- LTR index which ranges from 0 to LTR_COUNT-1."
-
-> +       This is applicable to H264 and HEVC encoder and can be applied using
-> +       request api.
-
-Request API.
-
-> +
-> +``V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME (bitmask)``
-
-I'd rename this control to V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES since you can select
-multiple frames.
-
-> +       Specifies the LTR frame(s) to be used for encoding the current frame.
-> +       This provides a bitmask which consists of bits [0, 15]. A total of N
-
-Actually, I expect that the bits range from [0, LTR_COUNT-1], right?
-
-> +       LSB bits of this field are valid, where N is the maximum number of
-> +       LTRs supported. All the other bits are invalid and should be rejected.
-
-I'd drop these two lines. This too is implicit in the control range information,
-i.e. it is simply impossible to select bits outside the range.
-
-> +       The LSB corresponds to the LTR index 0. Bit N-1 from the LSB corresponds
-> +       to the LTR index max LTR count-1.
-
-I would rephrase this to simply: "Bit N corresponds to LTR index N."
-
-> +       This is applicable to H264 and HEVC encoder and can be applied using
-> +       request api.
-
-Request API.
-
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-> index bd7f330..046198f 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -949,6 +949,9 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
->  	case V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER:		return "Repeat Sequence Header";
->  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:		return "Force Key Frame";
-> +	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
-> +	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "Mark LTR frame index";
-
-Wouldn't "Frame LTR Index" be a better name?
-
-> +	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME:			return "Use LTR Frame";
-
-If USE_LTR_FRAME is renamed to USE_LTR_FRAMES, then so should the description.
-
->  	case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:		return "MPEG-2 Slice Parameters";
->  	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:		return "MPEG-2 Quantization Matrices";
->  	case V4L2_CID_MPEG_VIDEO_FWHT_PARAMS:			return "FWHT Stateless Parameters";
-> @@ -1258,6 +1261,15 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
->  		*type = V4L2_CTRL_TYPE_INTEGER;
->  		break;
-> +	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
-
-Does this need the V4L2_CTRL_FLAG_EXECUTE_ON_WRITE flag?
-
-> +	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
-> +		*type = V4L2_CTRL_TYPE_INTEGER;
-> +		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-> +		break;
-> +	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME:
-> +		*type = V4L2_CTRL_TYPE_BITMASK;
-> +		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-> +		break;
->  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
->  	case V4L2_CID_PAN_RESET:
->  	case V4L2_CID_TILT_RESET:
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index a184c49..3801372 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -415,6 +415,9 @@ enum v4l2_mpeg_video_multi_slice_mode {
->  #define V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE		(V4L2_CID_MPEG_BASE+227)
->  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_MPEG_BASE+228)
->  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_MPEG_BASE+229)
-> +#define V4L2_CID_MPEG_VIDEO_LTR_COUNT                  (V4L2_CID_MPEG_BASE+230)
-> +#define V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX            (V4L2_CID_MPEG_BASE+231)
-> +#define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME              (V4L2_CID_MPEG_BASE+232)
->  
->  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
->  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_MPEG_BASE+270)
+> Regards
+> Aisheng
 > 
 
-Regards,
+OK, I'm trying to explain here how I know the resets are supposed to be working
+and how the BLK_CTL IP is working.
 
-	Hans
+
+First of, the BLK_CTL bits (resets and clocks) all have the HW init (default) values
+as 0. Basically, after the blk_ctl PD is powered on, the resets are deasserted and
+clocks are gated by default. Since the blk_ctl is not the parent of any of the
+consumers in devicetree (the reg maps are entirely different anyway), there is no
+way of ordering the runtime callbacks between the consumer and the blk_ctl. So we
+might end up having the runtime resume callback after the one from EARC (consumer),
+for example, which will basically overwrite the value written by EARC driver with
+whatever was saved on suspend.
+
+Now, about the usage of the reset bits. AFAICT, it would make more sense to assert
+the reset, then enable the clock, then deassert. This way, you're keeping the
+EARC (consumer) in reset (with the clocks on) until you eventually release it out of
+reset by deasserting. This is how the runtime resume should deal with the reset
+and the clock. As for the runtime suspend, the reset can be entirely ignored as long
+as you're disabling the clock.
+
+This last part will allow the blk_ctl to make the following assumption:
+if all the clocks are disabled and none of the reset bits are asserted, I can power off.
+
+Now, I know there are drivers outthere that do assert on suspend, but as long as the 
+clocks are disabled, the assert will have no impact. But maybe in their case the reset
+controller cannot power down itself.
+
+As for the safekeeping of the register, I'll just drop it due to the following arguments:
+1. all the clocks are gated by default
+2. all resets are deasserted by default
+3. when blk_ctl goes down, all the consumers go down. (all have the same PD)
+
+From 1 and 2 results the IP will not be running and from 3 results the HW state
+of every IP becomes HW init state.
+
+> > +
+> > +       if (assert && !test_and_set_bit(1, &drvdata->rst_hws[id].asserted))
+> > +               pm_runtime_get_sync(rcdev->dev)
+> > +
+> > +       spin_lock_irqsave(&drvdata->lock, flags);
+> > +
+> > +       reg = readl(reg_addr);
+> > +       if (assert)
+> > +               writel(reg & ~(mask << shift), reg_addr);
+> > +       else
+> > +               writel(reg | (mask << shift), reg_addr);
+> > +
+> > +       spin_unlock_irqrestore(&drvdata->lock, flags);
+> > +
+> > +       if (!assert && test_and_clear_bit(1, &drvdata->rst_hws[id].asserted))
+> > +               pm_runtime_put(rcdev->dev)
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int imx_blk_ctl_reset_assert(struct reset_controller_dev *rcdev,
+> > +                                          unsigned long id)
+> > +{
+> > +       return imx_blk_ctl_reset_set(rcdev, id, true);
+> > +}
+> > +
+> > +static int imx_blk_ctl_reset_deassert(struct reset_controller_dev *rcdev,
+> > +                                            unsigned long id)
+> > +{
+> > +       return imx_blk_ctl_reset_set(rcdev, id, false);
+> > +}
+> > +
+> > +static const struct reset_control_ops imx_blk_ctl_reset_ops = {
+> > +       .assert         = imx_blk_ctl_reset_assert,
+> > +       .deassert       = imx_blk_ctl_reset_deassert,
+> > +};
+> > +
+> > +static int imx_blk_ctl_register_reset_controller(struct device *dev)
+> > +{
+> > +       const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
+> > +       struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
+> > +       int max = dev_data->resets_max;
+> > +       struct imx_reset_hw *hws;
+> > +       int i;
+> > +
+> > +       spin_lock_init(&drvdata->lock);
+> > +
+> > +       drvdata->rcdev.owner     = THIS_MODULE;
+> > +       drvdata->rcdev.nr_resets = max;
+> > +       drvdata->rcdev.ops       = &imx_blk_ctl_reset_ops;
+> > +       drvdata->rcdev.of_node   = dev->of_node;
+> > +       drvdata->rcdev.dev       = dev;
+> > +
+> > +       drvdata->rst_hws = devm_kcalloc(dev, max, sizeof(struct imx_reset_hw),
+> > +                                       GFP_KERNEL);
+> > +       hws = drvdata->rst_hws;
+> > +
+> > +       for (i = 0; i < dev_data->hws_num; i++) {
+> > +               struct imx_blk_ctl_hw *hw = &dev_data->hws[i];
+> > +
+> > +               if (hw->type != BLK_CTL_RESET)
+> > +                       continue;
+> > +
+> > +               hws[hw->id].offset = hw->offset;
+> > +               hws[hw->id].shift = hw->shift;
+> > +               hws[hw->id].mask = hw->mask;
+> > +       }
+> > +
+> > +       return devm_reset_controller_register(dev, &drvdata->rcdev);
+> > +}
+> > +static struct clk_hw *imx_blk_ctl_register_one_clock(struct device *dev,
+> > +                                               struct imx_blk_ctl_hw *hw)
+> > +{
+> > +       struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
+> > +       void __iomem *base = drvdata->base;
+> > +       struct clk_hw *clk_hw = NULL;
+> > +
+> > +       switch (hw->type) {
+> > +       case BLK_CTL_CLK_MUX:
+> > +               clk_hw = imx_dev_clk_hw_mux_flags(dev, hw->name,
+> > +                                                 base + hw->offset,
+> > +                                                 hw->shift, hw->width,
+> > +                                                 hw->parents,
+> > +                                                 hw->parents_count,
+> > +                                                 hw->flags);
+> > +               break;
+> > +       case BLK_CTL_CLK_GATE:
+> > +               clk_hw = imx_dev_clk_hw_gate(dev, hw->name, hw->parents,
+> > +                                            base + hw->offset, hw->shift);
+> > +               break;
+> > +       case BLK_CTL_CLK_SHARED_GATE:
+> > +               clk_hw = imx_dev_clk_hw_gate_shared(dev, hw->name,
+> > +                                                   hw->parents,
+> > +                                                   base + hw->offset,
+> > +                                                   hw->shift,
+> > +                                                   hw->shared_count);
+> > +               break;
+> > +       case BLK_CTL_CLK_PLL14XX:
+> > +               clk_hw = imx_dev_clk_hw_pll14xx(dev, hw->name, hw->parents,
+> > +                                               base + hw->offset, hw->pll_tbl);
+> > +               break;
+> > +       };
+> > +
+> > +       return clk_hw;
+> > +}
+> > +
+> > +static int imx_blk_ctl_register_clock_controller(struct device *dev)
+> > +{
+> > +       const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
+> > +       struct clk_hw_onecell_data *clk_hw_data;
+> > +       struct clk_hw **hws;
+> > +       int i;
+> > +
+> > +       clk_hw_data = devm_kzalloc(dev, struct_size(clk_hw_data, hws,
+> > +                               dev_data->hws_num), GFP_KERNEL);
+> > +       if (WARN_ON(!clk_hw_data))
+> > +               return -ENOMEM;
+> > +
+> > +       clk_hw_data->num = dev_data->clocks_max;
+> > +       hws = clk_hw_data->hws;
+> > +
+> > +       for (i = 0; i < dev_data->hws_num; i++) {
+> > +               struct imx_blk_ctl_hw *hw = &dev_data->hws[i];
+> > +
+> > +               if (hw->type == BLK_CTL_RESET)
+> > +                       continue;
+> > +
+> > +               hws[hw->id] = imx_blk_ctl_register_one_clock(dev, hw);
+> > +       }
+> > +
+> > +       imx_check_clk_hws(hws, dev_data->clocks_max);
+> > +
+> > +       return of_clk_add_hw_provider(dev->of_node, of_clk_hw_onecell_get,
+> > +                                       clk_hw_data);
+> > +}
+> > +
+> > +static int imx_blk_ctl_init_runtime_pm_safekeeping(struct device *dev)
+> > +{
+> > +       const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
+> > +       struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
+> > +       struct imx_pm_safekeep_info *pm_info = &drvdata->pm_info;
+> > +       u32 regs_num = dev_data->pm_runtime_saved_regs_num;
+> > +       const u32 *regs_offsets = dev_data->pm_runtime_saved_regs;
+> > +
+> > +       if (!dev_data->pm_runtime_saved_regs_num)
+> > +               return 0;
+> > +
+> > +       pm_info->regs_values = devm_kzalloc(dev,
+> > +                                           sizeof(u32) * regs_num,
+> > +                                           GFP_KERNEL);
+> > +       if (WARN_ON(IS_ERR(pm_info->regs_values)))
+> > +               return PTR_ERR(pm_info->regs_values);
+> > +
+> > +       pm_info->regs_offsets = kmemdup(regs_offsets,
+> > +                                       regs_num * sizeof(u32), GFP_KERNEL);
+> > +       if (WARN_ON(IS_ERR(pm_info->regs_offsets)))
+> > +               return PTR_ERR(pm_info->regs_offsets);
+> > +
+> > +       pm_info->regs_num = regs_num;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +int imx_blk_ctl_register(struct platform_device *pdev)
+> > +{
+> > +       struct imx_blk_ctl_drvdata *drvdata;
+> > +       struct device *dev = &pdev->dev;
+> > +       int ret;
+> > +
+> > +       drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+> > +       if (WARN_ON(!drvdata))
+> > +               return -ENOMEM;
+> > +
+> > +       drvdata->base = devm_platform_ioremap_resource(pdev, 0);
+> > +       if (WARN_ON(IS_ERR(drvdata->base)))
+> > +               return PTR_ERR(drvdata->base);
+> > +
+> > +       dev_set_drvdata(dev, drvdata);
+> > +
+> > +       ret = imx_blk_ctl_init_runtime_pm_safekeeping(dev);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       pm_runtime_get_noresume(dev);
+> > +       pm_runtime_set_active(dev);
+> > +       pm_runtime_enable(dev);
+> > +
+> > +       ret = imx_blk_ctl_register_clock_controller(dev);
+> > +       if (ret) {
+> > +               pm_runtime_put(dev);
+> > +               return ret;
+> > +       }
+> > +
+> > +       ret = imx_blk_ctl_register_reset_controller(dev);
+> > +
+> > +       pm_runtime_put(dev);
+> > +
+> > +       return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(imx_blk_ctl_register);
+> > diff --git a/drivers/clk/imx/clk-blk-ctl.h b/drivers/clk/imx/clk-blk-ctl.h
+> > new file mode 100644
+> > index 00000000..3f14a47
+> > --- /dev/null
+> > +++ b/drivers/clk/imx/clk-blk-ctl.h
+> > @@ -0,0 +1,80 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef __MACH_IMX_CLK_BLK_CTL_H
+> > +#define __MACH_IMX_CLK_BLK_CTL_H
+> > +
+> > +enum imx_blk_ctl_hw_type {
+> > +       BLK_CTL_CLK_MUX,
+> > +       BLK_CTL_CLK_GATE,
+> > +       BLK_CTL_CLK_SHARED_GATE,
+> > +       BLK_CTL_CLK_PLL14XX,
+> > +       BLK_CTL_RESET,
+> > +};
+> > +
+> > +struct imx_blk_ctl_hw {
+> > +       int type;
+> > +       char *name;
+> > +       u32 offset;
+> > +       u32 shift;
+> > +       u32 mask;
+> > +       u32 width;
+> > +       u32 flags;
+> > +       u32 id;
+> > +       const void *parents;
+> > +       u32 parents_count;
+> > +       int *shared_count;
+> > +       const struct imx_pll14xx_clk *pll_tbl;
+> > +};
+> > +
+> > +struct imx_blk_ctl_dev_data {
+> > +       struct imx_blk_ctl_hw *hws;
+> > +       u32 hws_num;
+> > +
+> > +       u32 clocks_max;
+> > +       u32 resets_max;
+> > +
+> > +       u32 pm_runtime_saved_regs_num;
+> > +       u32 pm_runtime_saved_regs[];
+> > +};
+> > +
+> > +#define IMX_BLK_CTL(_type, _name, _id, _offset, _shift, _width, _mask, _parents, _parents_count, _flags, sh_count, _pll_tbl) \
+> > +       {                                               \
+> > +               .type = _type,                          \
+> > +               .name = _name,                          \
+> > +               .id = _id,                              \
+> > +               .offset = _offset,                      \
+> > +               .shift = _shift,                        \
+> > +               .width = _width,                        \
+> > +               .mask = _mask,                          \
+> > +               .parents = _parents,                    \
+> > +               .parents_count = _parents_count,        \
+> > +               .flags = _flags,                        \
+> > +               .shared_count = sh_count,               \
+> > +               .pll_tbl = _pll_tbl,                    \
+> > +       }
+> > +
+> > +#define IMX_BLK_CTL_CLK_MUX(_name, _id, _offset, _shift, _width, _parents) \
+> > +       IMX_BLK_CTL(BLK_CTL_CLK_MUX, _name, _id, _offset, _shift, _width, 0, _parents, ARRAY_SIZE(_parents), 0, NULL, NULL)
+> > +
+> > +#define IMX_BLK_CTL_CLK_MUX_FLAGS(_name, _id, _offset, _shift, _width, _parents, _flags) \
+> > +       IMX_BLK_CTL(BLK_CTL_CLK_MUX, _name, _id, _offset, _shift, _width, 0, _parents, ARRAY_SIZE(_parents), _flags, NULL, NULL)
+> > +
+> > +#define IMX_BLK_CTL_CLK_GATE(_name, _id, _offset, _shift, _parents) \
+> > +       IMX_BLK_CTL(BLK_CTL_CLK_GATE, _name, _id, _offset, _shift, 1, 0, _parents, 1, 0, NULL, NULL)
+> > +
+> > +#define IMX_BLK_CTL_CLK_SHARED_GATE(_name, _id, _offset, _shift, _parents, sh_count) \
+> > +       IMX_BLK_CTL(BLK_CTL_CLK_SHARED_GATE, _name, _id, _offset, _shift, 1, 0, _parents, 1, 0, sh_count, NULL)
+> > +
+> > +#define IMX_BLK_CTL_CLK_PLL14XX(_name, _id, _offset, _parents, _pll_tbl) \
+> > +       IMX_BLK_CTL(BLK_CTL_CLK_PLL14XX, _name, _id, _offset, 0, 0, 0, _parents, 1, 0, NULL, _pll_tbl)
+> > +
+> > +#define IMX_BLK_CTL_RESET(_id, _offset, _shift) \
+> > +       IMX_BLK_CTL(BLK_CTL_RESET, NULL, _id, _offset, _shift, 0, 1, NULL, 0, 0, NULL, NULL)
+> > +
+> > +#define IMX_BLK_CTL_RESET_MASK(_id, _offset, _shift, mask) \
+> > +       IMX_BLK_CTL(BLK_CTL_RESET, NULL, _id, _offset, _shift, 0, mask, NULL, 0, 0, NULL, NULL)
+> > +
+> > +extern const struct dev_pm_ops imx_blk_ctl_pm_ops;
+> > +
+> > +int imx_blk_ctl_register(struct platform_device *pdev);
+> > +
+> > +#endif
+> > --
+> > 2.7.4
+> >
