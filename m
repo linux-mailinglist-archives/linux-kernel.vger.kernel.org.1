@@ -2,199 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDA32B5CB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2242B5CBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbgKQKQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQKQa (ORCPT
+        id S1727448AbgKQKRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:17:11 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:54942 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgKQKRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:16:30 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4568C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:16:30 -0800 (PST)
-Received: from [2a0a:edc0:0:900:2e4d:54ff:fe67:bfa5] (helo=ginster)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <jbe@pengutronix.de>)
-        id 1key2G-00021H-3e; Tue, 17 Nov 2020 11:16:29 +0100
-Message-ID: <315838324eb25d3a1ab37ee90fa28fa1cdc48cae.camel@pengutronix.de>
-From:   Juergen Borleis <jbe@pengutronix.de>
-Reply-To: jbe@pengutronix.de
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>, Han Xu <han.xu@nxp.com>,
-        kernel@pengutronix.de
-Date:   Tue, 17 Nov 2020 11:16:26 +0100
-Organization: Pengutronix e.K.
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        Tue, 17 Nov 2020 05:17:11 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AHAH1Rb104903;
+        Tue, 17 Nov 2020 04:17:01 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605608221;
+        bh=5PzqAjOn9hqrl9Xboz9UFRMFNQDjVdOmm7f31tzlDxw=;
+        h=From:To:CC:Subject:Date;
+        b=r9ayo/7x2gfjwhubJ+ZzTelcV1NmgWqBV0wJBGD+MFvLXaPF9TEJDBFdC07YcO1eb
+         7EKDmay2N/SGeShMTEgcvjgRv+MtKPpai9meYoYw2slKi5NlFq3iEuMfZk0r039dBr
+         dBnxc85ANMpy40Jnxe82em5NbOoux2ceeuEhVpc4=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AHAH14o080415
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 04:17:01 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 17
+ Nov 2020 04:17:00 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 17 Nov 2020 04:17:01 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AHAGwie017469;
+        Tue, 17 Nov 2020 04:16:59 -0600
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <ssantosh@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nsekhar@ti.com>, <tomi.valkeinen@ti.com>, <jsarha@ti.com>
+Subject: [PATCH] ARM: dts: keystone-k2g-evm: add HDMI and analog audio data
+Date:   Tue, 17 Nov 2020 12:17:49 +0200
+Message-ID: <20201117101749.26187-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:2e4d:54ff:fe67:bfa5
-X-SA-Exim-Mail-From: jbe@pengutronix.de
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
-        metis.ext.pengutronix.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=4.0 tests=AWL,BAYES_00,
-        FSL_HELO_NON_FQDN_1,HELO_NO_DOMAIN,RDNS_NONE,SPF_SOFTFAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-Subject: mtd: rawnand: gpmi: regression since
- e5e5631cc88987a6f3cd8304660bd9190da95916
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on metis.ext.pengutronix.de)
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The board is using McASP2 for both analog (tlv320aic3106) and
+HDMI (SiI9022) audio.
 
-reading a NAND page in raw mode is required to check the consistence of the so-
-called FCBs (used to boot the SoC from NAND content).
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ arch/arm/boot/dts/keystone-k2g-evm.dts | 112 +++++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
 
-Before e5e5631cc88987a6f3cd8304660bd9190da95916 ("mtd: rawnand: gpmi: Use
-nand_extract_bits()") it reads the first page of the NAND correctly as:
-
-00000000  00 00 88 fb ff ff 46 43  42 20 00 00 00 01 50 3c  |......FCB ....P<|
-00000010  19 06 00 00 00 00 00 08  00 00 80 08 00 00 40 00  |..............@.|
-00000020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 09 00  |................|
-00000030  00 00 00 02 00 00 00 02  00 00 09 00 00 00 0a 00  |................|
-00000040  00 00 03 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-00000050  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-00000060  00 00 00 00 00 00 00 00  00 00 00 01 00 00 80 10  |................|
-00000070  00 00 55 01 00 00 55 01  00 00 01 00 00 00 9e 07  |..U...U.........|
-00000080  00 00 02 00 00 00 00 08  00 00 00 00 00 00 00 00  |................|
-00000090  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-00000200  40 05 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |@...............|
-00000210  40 01 00 00 00 80 05 00  00 80 05 00 40 01 00 00  |@...........@...|
-00000220  c0 03 00 00 80 02 00 00  00 00 00 00 00 00 00 00  |................|
-00000230  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-00000240  00 00 00 00 00 00 00 00  00 00 00 00 00 00 07 00  |................|
-00000250  80 83 06 00 00 00 07 00  00 00 07 00 00 07 00 00  |................|
-00000260  00 42 06 00 80 05 00 00  00 40 06 00 00 00 00 00  |.B.......@......|
-00000270  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-00000790  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 fc  |................|
-000007a0  03 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-000007b0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-00000800  ff 00 00 00 00 00 00 00  00 00 00 00 17 15 06 06  |................|
-00000810  10 1f 03 07 00 00 00 1c  0f 17 1f 05 00 00 00 00  |................|
-00000820  00 19 00 00 0e 19 00 00  00 00 00 00 00 00 00 00  |................|
-00000830  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-00000880
-
-After applying e5e5631cc88987a6f3cd8304660bd9190da95916 reading the same page
-the reported content is broken (the NAND page still contains correct data):
-
-00000000  00 00 88 fb ff ff 46 43  42 20 00 00 00 01 50 3c  |......FCB ....P<|
-00000010  19 06 00 00 00 00 00 08  00 00 80 08 00 00 40 00  |..............@.|
-00000020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 09 00  |................|
-00000030  00 00 00 02 00 00 00 02  00 00 09 00 00 00 0a 00  |................|
-00000040  40 05 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |@...............|
-00000050  40 01 00 00 00 80 05 00  00 80 05 00 40 01 00 00  |@...........@...|
-00000060  c0 03 00 00 80 02 00 00  00 00 00 00 00 00 00 00  |................|
-00000070  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-00000250  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 fc  |................|
-00000260  03 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-00000270  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-000002c0  06 70 c0 a8 00 00 00 00  00 00 00 00 40 00 00 00  |.p..........@...|
-000002d0  10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-000002e0  00 00 00 00 00 01 00 00  10 00 00 00 fe 80 00 00  |................|
-000002f0  00 00 00 00 52 2d f4 ff  fe 0a f9 6b 80 00 00 00  |....R-.....k....|
-00000300  10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-00000310  00 00 00 00 00 00 00 00  10 00 00 00 fe 80 00 00  |................|
-00000320  00 00 00 00 00 00 00 00  00 00 00 00 40 00 00 00  |............@...|
-00000330  10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-00000340  00 00 00 00 00 01 00 00  10 00 00 00 ff 00 00 00  |................|
-00000350  00 00 00 00 00 00 00 00  00 00 00 00 08 00 00 00  |................|
-00000360  10 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-00000370  00 00 00 00 00 01 00 00  09 00 00 00 52 6f 75 74  |............Rout|
-00000380  65 44 61 74 61 00 06 61  61 7b 73 76 7d 00 00 00  |eData..aa{sv}...|
-00000390  28 02 00 00 64 00 00 00  04 00 00 00 64 65 73 74  |(...d.......dest|
-000003a0  00 01 73 00 25 00 00 00  32 30 30 31 3a 36 37 63  |..s.%...2001:67c|
-000003b0  3a 36 37 30 3a 63 30 61  38 3a 35 32 32 64 3a 66  |:670:c0a8:522d:f|
-000003c0  34 66 66 3a 66 65 30 61  3a 66 39 36 62 00 00 00  |4ff:fe0a:f96b...|
-000003d0  06 00 00 00 70 72 65 66  69 78 00 01 75 00 00 00  |....prefix..u...|
-000003e0  80 00 00 00 00 00 00 00  06 00 00 00 6d 65 74 72  |............metr|
-000003f0  69 63 00 01 75 00 00 00  00 00 00 00 54 00 00 00  |ic..u.......T...|
-00000400  00 b0 c8 ec 64 65 73 74  00 01 73 00 13 00 00 00  |....dest..s.....|
-00000410  32 30 30 31 3a 36 37 63  3a 36 37 30 3a 63 30 61  |2001:67c:670:c0a|
-00000420  38 3a 3a 00 00 00 00 00  06 00 00 00 70 72 65 66  |8::.........pref|
-00000430  69 78 00 01 75 00 00 00  40 00 00 00 00 00 00 00  |ix..u...@.......|
-00000440  06 00 00 00 6d 65 74 72  69 63 00 01 75 00 00 00  |....metric..u...|
-00000450  00 01 00 00 5c 00 00 00  04 00 00 00 64 65 73 74  |....\.......dest|
-00000460  00 01 73 00 19 00 00 00  66 65 38 30 3a 3a 35 32  |..s.....fe80::52|
-00000470  32 64 3a 66 34 66 66 3a  66 65 30 61 3a 66 39 36  |2d:f4ff:fe0a:f96|
-00000480  62 00 00 00 00 00 00 00  06 00 00 00 70 72 65 66  |b...........pref|
-00000490  69 78 00 01 75 00 00 00  80 00 00 00 00 00 00 00  |ix..u...........|
-000004a0  06 00 00 00 6d 65 74 72  69 63 00 01 75 00 00 00  |....metric..u...|
-000004b0  00 00 00 00 44 00 00 00  04 00 00 00 64 65 73 74  |....D.......dest|
-000004c0  00 01 73 00 06 00 00 00  66 65 38 30 3a 3a 00 00  |..s.....fe80::..|
-000004d0  06 00 00 00 70 72 65 66  69 78 00 01 75 00 00 00  |....prefix..u...|
-000004e0  40 00 00 00 00 00 00 00  06 00 00 00 6d 65 74 72  |@...........metr|
-000004f0  69 63 00 01 75 00 00 00  00 01 00 00 44 00 00 00  |ic..u.......D...|
-00000500  04 00 00 00 64 65 73 74  00 01 73 00 06 00 00 00  |....dest..s.....|
-00000510  66 66 30 30 3a 3a 00 00  06 00 00 00 70 72 65 66  |ff00::......pref|
-00000520  69 78 00 01 75 00 00 00  08 00 00 00 00 00 00 00  |ix..u...........|
-00000530  06 00 00 00 6d 65 74 72  69 63 00 01 75 00 00 00  |....metric..u...|
-00000540  00 01 00 00 74 00 00 00  04 00 00 00 64 65 73 74  |....t.......dest|
-00000550  00 01 73 00 02 00 00 00  3a 3a 00 00 00 00 00 00  |..s.....::......|
-00000560  06 00 00 00 70 72 65 66  69 78 00 01 75 00 00 00  |....prefix..u...|
-00000570  00 00 00 00 00 00 00 00  08 00 00 00 6e 65 78 74  |............next|
-00000580  2d 68 6f 70 00 01 73 00  17 00 00 00 66 65 38 30  |-hop..s.....fe80|
-00000590  3a 3a 35 30 35 34 3a 66  66 3a 66 65 62 33 3a 61  |::5054:ff:feb3:a|
-000005a0  35 66 62 00 00 00 00 00  06 00 00 00 6d 65 74 72  |5fb.........metr|
-000005b0  69 63 00 01 75 00 00 00  00 04 00 00 00 00 00 00  |ic..u...........|
-000005c0  0b 00 00 00 4e 61 6d 65  73 65 72 76 65 72 73 00  |....Nameservers.|
-000005d0  03 61 61 79 00 00 00 00  00 00 00 00 00 00 00 00  |.aay............|
-000005e0  07 00 00 00 44 6f 6d 61  69 6e 73 00 02 61 73 00  |....Domains..as.|
-000005f0  00 00 00 00 00 00 00 00  08 00 00 00 53 65 61 72  |............Sear|
-00000600  63 68 65 73 00 02 61 73  00 00 00 00 00 00 00 00  |ches..as........|
-00000610  0a 00 00 00 44 6e 73 4f  70 74 69 6f 6e 73 00 02  |....DnsOptions..|
-00000620  61 73 00 00 00 00 00 00  0b 00 00 00 44 6e 73 50  |as..........DnsP|
-00000630  72 69 6f 72 69 74 79 00  01 69 00 00 64 00 00 00  |riority..i..d...|
-00000640  09 00 00 00 46 6c 6f 77  4c 61 62 65 6c 00 01 75  |....FlowLabel..u|
-00000650  00 00 00 00 00 00 00 00  05 00 00 00 46 6c 61 67  |............Flag|
-00000660  73 00 01 75 00 00 00 00  00 00 00 00 30 02 30 02  |s..u........0.0.|
-00000670  30 02 30 02 30 02 30 02  30 02 30 02 30 02 30 02  |0.0.0.0.0.0.0.0.|
-00000680  30 02 30 02 30 02 30 02  30 02 30 02 30 02 72 00  |0.0.0.0.0.0.0.r.|
-00000690  72 00 72 00 31 02 31 02  31 02 31 02 31 02 31 02  |r.r.1.1.1.1.1.1.|
-000006a0  31 02 31 02 31 02 31 02  31 02 31 02 31 02 31 02  |1.1.1.1.1.1.1.1.|
-*
-000006f0  31 02 31 02 31 02 72 00  72 00 72 00 72 00 72 00  |1.1.1.r.r.r.r.r.|
-00000700  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-*
-00000720  01 00 00 00 00 00 00 00  17 00 17 00 17 00 17 00  |................|
-00000730  17 00 17 00 17 00 17 00  17 00 17 00 17 00 17 00  |................|
-00000740  17 00 17 00 17 00 17 00  17 00 17 00 72 00 72 00  |............r.r.|
-00000750  72 00 72 00 32 02 32 02  32 02 32 02 32 02 32 02  |r.r.2.2.2.2.2.2.|
-00000760  32 02 32 02 32 02 32 02  32 02 32 02 32 02 32 02  |2.2.2.2.2.2.2.2.|
-*
-00000790  32 02 32 02 33 02 33 02  33 02 33 02 72 00 72 00  |2.2.3.3.3.3.r.r.|
-000007a0  72 00 72 00 72 00 72 00  72 00 72 00 72 00 72 00  |r.r.r.r.r.r.r.r.|
-000007b0  72 00 72 00 34 02 34 02  34 02 34 02 34 02 34 02  |r.r.4.4.4.4.4.4.|
-000007c0  34 02 34 02 34 02 34 02  34 02 34 02 34 02 34 02  |4.4.4.4.4.4.4.4.|
-000007d0  34 02 34 02 34 02 35 02  34 02 34 02 34 02 34 02  |4.4.4.5.4.4.4.4.|
-000007e0  34 02 34 02 34 02 34 02  35 02 72 00 72 00 72 00  |4.4.4.4.5.r.r.r.|
-000007f0  72 00 72 00 36 02 36 02  36 02 36 02 36 02 36 02  |r.r.6.6.6.6.6.6.|
-00000800  ff 00 00 00 00 00 00 00  00 00 00 00 17 15 06 06  |................|
-00000810  10 1f 03 07 00 00 00 1c  0f 17 1f 05 00 00 00 00  |................|
-00000820  00 19 00 00 0e 19 00 00  00 00 00 00 00 00 00 00  |................|
-00000830  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-
-Juergen
-
+diff --git a/arch/arm/boot/dts/keystone-k2g-evm.dts b/arch/arm/boot/dts/keystone-k2g-evm.dts
+index 8b3d64c913d8..4d7e3514a3a7 100644
+--- a/arch/arm/boot/dts/keystone-k2g-evm.dts
++++ b/arch/arm/boot/dts/keystone-k2g-evm.dts
+@@ -46,6 +46,14 @@ vcc1v8_ldo1_reg: fixedregulator-vcc1v8-ldo1 {
+ 		regulator-always-on;
+ 	};
+ 
++	vcc1v8_ldo2_reg: fixedregulator-vcc1v8-ldo2 {
++		compatible = "regulator-fixed";
++		regulator-name = "ldo2";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++	};
++
+ 	hdmi: connector {
+ 		compatible = "hdmi-connector";
+ 		label = "hdmi";
+@@ -58,6 +66,57 @@ hdmi_connector_in: endpoint {
+ 			};
+ 		};
+ 	};
++
++	sound0: sound@0 {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "K2G-EVM";
++		simple-audio-card,widgets =
++			"Headphone", "Headphone Jack",
++			"Line", "Line In";
++		simple-audio-card,routing =
++			"Headphone Jack",	"HPLOUT",
++			"Headphone Jack",	"HPROUT",
++			"LINE1L",		"Line In",
++			"LINE1R",		"Line In";
++
++		simple-audio-card,dai-link@0 {
++			format = "i2s";
++			bitclock-master = <&sound0_0_master>;
++			frame-master = <&sound0_0_master>;
++			sound0_0_master: cpu {
++				sound-dai = <&mcasp2>;
++				clocks = <&k2g_clks 0x6 1>;
++				system-clock-direction-out;
++			};
++
++			codec {
++				sound-dai = <&tlv320aic3106>;
++				system-clock-frequency = <12288000>;
++			};
++		};
++
++		simple-audio-card,dai-link@1 {
++			format = "i2s";
++			bitclock-master = <&sound0_1_master>;
++			frame-master = <&sound0_1_master>;
++			sound0_1_master: cpu {
++				sound-dai = <&mcasp2>;
++				clocks = <&k2g_clks 0x6 1>;
++				system-clock-direction-out;
++			};
++
++			codec {
++				sound-dai = <&sii9022>;
++				system-clock-frequency = <12288000>;
++			};
++		};
++	};
++
++	sii9022_mclk: sii9022_mclk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <12288000>;
++	};
+ };
+ 
+ &k2g_pinctrl {
+@@ -214,6 +273,15 @@ K2G_CORE_IOPAD(0x10e4) (BUFFER_CLASS_B | PULL_DISABLE | MUX_MODE0) /* dssde.dssd
+ 			K2G_CORE_IOPAD(0x10e8) (BUFFER_CLASS_B | PULL_DISABLE | MUX_MODE0) /* dssfid.dssfid */
+ 		>;
+ 	};
++
++	mcasp2_pins: pinmux_mcasp2_pins {
++		pinctrl-single,pins = <
++			K2G_CORE_IOPAD(0x1234) (BUFFER_CLASS_B | PIN_PULLDOWN | MUX_MODE4) /* pr0_pru_gpo2.mcasp2_axr2 */
++			K2G_CORE_IOPAD(0x1238) (BUFFER_CLASS_B | PIN_PULLDOWN | MUX_MODE4) /* pr0_pru_gpo3.mcasp2_axr3 */
++			K2G_CORE_IOPAD(0x1254) (BUFFER_CLASS_B | PIN_PULLDOWN | MUX_MODE4) /* pr0_pru_gpo10.mcasp2_afsx */
++			K2G_CORE_IOPAD(0x125c) (BUFFER_CLASS_B | PIN_PULLDOWN | MUX_MODE4) /* pr0_pru_gpo12.mcasp2_aclkx */
++		>;
++	};
+ };
+ 
+ &uart0 {
+@@ -423,6 +491,10 @@ sii9022: sii9022@3b {
+ 		compatible = "sil,sii9022";
+ 		reg = <0x3b>;
+ 
++		sil,i2s-data-lanes = < 0 >;
++		clocks = <&sii9022_mclk>;
++		clock-names = "mclk";
++
+ 		ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+@@ -444,6 +516,19 @@ sii9022_out: endpoint {
+ 			};
+ 		};
+ 	};
++
++	tlv320aic3106: tlv320aic3106@1b {
++		#sound-dai-cells = <0>;
++		compatible = "ti,tlv320aic3106";
++		reg = <0x1b>;
++		status = "okay";
++
++		/* Regulators */
++		AVDD-supply = <&vcc3v3_dcin_reg>;
++		IOVDD-supply = <&vcc3v3_dcin_reg>;
++		DRVDD-supply = <&vcc3v3_dcin_reg>;
++		DVDD-supply = <&vcc1v8_ldo2_reg>;
++	};
+ };
+ 
+ &dss {
+@@ -458,3 +543,30 @@ dpi_out: endpoint {
+ 		};
+ 	};
+ };
++
++&k2g_clks {
++	/* on the board 22.5792MHz is connected to AUDOSC_IN */
++	assigned-clocks = <&k2g_clks 0x4c 2>;
++	assigned-clock-rates = <22579200>;
++};
++
++&mcasp2 {
++	#sound-dai-cells = <0>;
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcasp2_pins>;
++
++	assigned-clocks = <&k2g_clks 0x6 1>;
++	assigned-clock-parents = <&k2g_clks 0x6 2>;
++
++	status = "okay";
++
++	op-mode = <0>;		/* MCASP_IIS_MODE */
++	tdm-slots = <2>;
++	/* 6 serializer */
++	serial-dir = <	/* 0: INACTIVE, 1: TX, 2: RX */
++		0 0 1 2 0 0 // AXR2: TX, AXR3: rx
++	>;
++	tx-num-evt = <32>;
++	rx-num-evt = <32>;
++};
 -- 
-Pengutronix e.K.                       | Juergen Borleis             |
-Steuerwalder Str. 21                   | https://www.pengutronix.de/ |
-31137 Hildesheim, Germany              | Phone: +49-5121-206917-128  |
-Amtsgericht Hildesheim, HRA 2686       | Fax:   +49-5121-206917-9    |
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
