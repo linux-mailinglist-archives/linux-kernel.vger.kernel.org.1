@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9AC2B6D99
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876042B6D68
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbgKQSlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:41:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727007AbgKQSlK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:41:10 -0500
-X-Greylist: delayed 1127 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 17 Nov 2020 10:41:10 PST
-Received: from mail.rc.ru (mail.rc.ru [IPv6:2a01:7e00:e000:1bf::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7113C0613CF;
-        Tue, 17 Nov 2020 10:41:10 -0800 (PST)
-Received: from mail.rc.ru ([2a01:7e00:e000:1bf::1]:57724)
-        by mail.rc.ru with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ink@jurassic.park.msu.ru>)
-        id 1kf5cO-0004JI-KT; Tue, 17 Nov 2020 18:22:16 +0000
-Date:   Tue, 17 Nov 2020 18:22:15 +0000
-From:   Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Matt Turner <mattst88@gmail.com>,
-        Richard Henderson <rth@twiddle.net>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com
-Subject: Re: [PATCH bpf v6 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-Message-ID: <20201117182215.GA15956@mail.rc.ru>
-References: <cover.1605560917.git.dxu@dxuuu.xyz>
- <470ffc3c76414443fc359b884080a5394dcccec3.1605560917.git.dxu@dxuuu.xyz>
- <CAHk-=wggUw3XYffJ-od8Dbfh-JkXkEuCPjSRR2Z+8HrNUNxJ=g@mail.gmail.com>
- <CAHk-=wiEgTXYgLXg8YxRHnH+eZno800pEp8caskKgDCgq55s+g@mail.gmail.com>
+        id S1731084AbgKQSbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:31:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726591AbgKQSbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:31:20 -0500
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92D812222E;
+        Tue, 17 Nov 2020 18:31:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605637879;
+        bh=ao2XoyFvOst/o/NixL3wR1q1+HrjIW+xRos2auX+cis=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fAff5vQTLS6o1LdCvxQyE8canT3iWN4lhOjqOGcJvd1BEB21bCVXFSHoF5miY2Gel
+         79iEFHbzmxHaiCXtfzsJPMSKIhcmI/q+eODrQqe3gNsV6Hx+n0ZoUYbyeZyH63OkED
+         kRJNByTFXR1CQLcQyIyq+lVu8j/Kdfzeo2frG81U=
+Date:   Tue, 17 Nov 2020 10:31:17 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 2/3] fscrypt: Have filesystems handle their d_ops
+Message-ID: <X7QW9aqdF9ivHKBe@sol.localdomain>
+References: <20201117040315.28548-1-drosen@google.com>
+ <20201117040315.28548-3-drosen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiEgTXYgLXg8YxRHnH+eZno800pEp8caskKgDCgq55s+g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201117040315.28548-3-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 02:44:56PM -0800, Linus Torvalds wrote:
-> On Mon, Nov 16, 2020 at 2:15 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > So I've verified that at least on x86-64, this doesn't really make
-> > code generation any worse, and I'm ok with the patch from that
-> > standpoint.
-> 
-> .. looking closer, it will generate extra code on big-endian
-> architectures and on alpha, because of the added "zero_bytemask()".
-> But on the usual LE machines, zero_bytemask() will already be the same
-> as "mask", so all it adds is that "and" operation with values it
-> already had access to.
-> 
-> I don't think anybody cares about alpha and BE - traditional BE
-> architectures have moved to LE anyway. And looking at the alpha
-> word-at-a-time code, I don't even understand how it works at all.
-> 
-> Adding matt/rth/ivan to the cc, just so that maybe one of them can
-> educate me on how that odd alpha zero_bytemask() could possibly work.
-> The "2ul << .." part confuses me, I think it should be "1ul << ...".
-> 
-> I get the feeling that the alpha "2ul" constant might have come from
-> the tile version, but in the tile version, the " __builtin_ctzl()"
-> counts the leading zeroes to the top bit of any bytes in 'mask'. But
-> the alpha version actually uses "find_zero(mask) * 8", so rather than
-> have values of 7/15/23/... (for zero byte in byte 0/1/2/..
-> respectively), it has values 0/8/16/....
-> 
-> But it's entirely possible that I'm completely confused, and alpha
-> does it right, and I'm just not understanding the code.
+On Tue, Nov 17, 2020 at 04:03:14AM +0000, Daniel Rosenberg wrote:
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index a8f7a43f031b..df2c66ca370e 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -741,8 +741,9 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
+>   * directory's encryption key is available, then the lookup is assumed to be by
+>   * plaintext name; otherwise, it is assumed to be by no-key name.
+>   *
+> - * This also installs a custom ->d_revalidate() method which will invalidate the
+> - * dentry if it was created without the key and the key is later added.
+> + * After calling this function, a filesystem should ensure that its dentry
+> + * operations contain fscrypt_d_revalidate if DCACHE_ENCRYPTED_NAME was set,
+> + * so that the dentry can be invalidated if the key is later added.
+>   *
+>   * Return: 0 on success; -ENOENT if the directory's key is unavailable but the
+>   * filename isn't a valid no-key name, so a negative dentry should be created;
 
-No, you are right, it should be "1ul". Indeed, seems like it came from
-the tile version which looks incorrect either, BTW. The tile-gx ISA
-(https://studylib.net/doc/18755547/tile-gx-instruction-set-architecture)
-says that clz/ctz instructions count up to the first "1", not to the
-last "0", so the shift values in tile's zero_bytemask() are 0/8/16/...
-as well.
+This should say DCACHE_NOKEY_NAME, not DCACHE_ENCRYPTED_NAME.
 
-> It's also possible that the "2ul" vs "1ul" case doesn't matter.
-> because the extra bit is always going to mask the byte that is
-> actually zero, so being one bit off in the result is a non-event. I
-> think that is what may actually be going on.
+But more importantly, the explanation here isn't very clear.  How about the
+following instead:
 
-Yes, looks like that.
-
-Ivan.
+ * This will set DCACHE_NOKEY_NAME on the dentry if the lookup is by no-key
+ * name.  In this case the filesystem must assign the dentry a dentry_operations
+ * which contains fscrypt_d_revalidate (or contains a d_revalidate method that
+ * calls fscrypt_d_revalidate), so that the dentry will be invalidated if the
+ * directory's encryption key is later added.
