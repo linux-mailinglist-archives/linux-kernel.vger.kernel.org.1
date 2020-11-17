@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8FB2B5F5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D37302B5F61
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbgKQMuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:50:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgKQMuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:50:44 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15D202222A;
-        Tue, 17 Nov 2020 12:50:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605617443;
-        bh=nufKKNFjFQgQkEMjmPmhWQ5WpTuzpxY2cQYNBOxXtvw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N69vzxl0MfEp6K0J8nWD/oHBlrXt2aKh63pblyDpKkFy4aM2J6J3oOjS/ifj3npx7
-         tzUyJXJRI43WVfUVFrNNpVHKKyH+471CyxE3OuIpaSb8RPF/Dvd4kwhfLrLfcdRoI9
-         1rO9b7QpdIfk0tsDRm2jojwPk5vt3fWCSY9CwG/8=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0744D40E29; Tue, 17 Nov 2020 09:50:41 -0300 (-03)
-Date:   Tue, 17 Nov 2020 09:50:40 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 23/24] perf buildid-list: Add support for mmap2's buildid
- events
-Message-ID: <20201117125040.GT614220@kernel.org>
-References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-24-jolsa@kernel.org>
+        id S1728369AbgKQMvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:51:16 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:35723 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727473AbgKQMvQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:51:16 -0500
+Received: by mail-oi1-f194.google.com with SMTP id c80so22440697oib.2;
+        Tue, 17 Nov 2020 04:51:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4RzG7JgPEfJ1zdsuzJd2/nDlwOmQ1Nm5XN5Yd5K0U3k=;
+        b=bq16nF3KNUW5//6lNkskrbdA6aXYI4UfgdDogY0d27GGLelSXh+Wi/W2J1reuXEYBq
+         tp/UXo75wzavxH4jrN0CdaqGrKDL4g0I+LUa7S1Jb3/vGEDQ8Dr+xKto+6ahBBF5CG3v
+         nBmOuujbCGnSwja+pb35b0RKu/biKDKZRa93svYELNBBJ2l0Ljs5sksmiCK7tXmDdV9h
+         yI55WjhmXHwEArC6ts64RqKU2KcG7nX5aoPfhHpfG2zPYiIsfq300COpSt73OBNqs972
+         ne1WlMaTghQ9vlLE3UDcf/t3nVz03vVcARkybJOjsamijonM9iBidYHei0Puvj+KIGf8
+         FRvg==
+X-Gm-Message-State: AOAM533pSDkmKMkg30D6zyVwjslquGXwTWWE4DujDo05RMYsxwerr9dd
+        wyWdoe7Semy6Mb0qzQ4tYz09qb5WVdkjR2o3Ca8=
+X-Google-Smtp-Source: ABdhPJycjJvWLLOzIkYryRsKNGU/QCsrjU86hRE0u6fiqEXxKWgSQxNT3XVT9m0cNOmOgy+nuS+fiZsgp0TduM6sUUg=
+X-Received: by 2002:aca:c4c9:: with SMTP id u192mr2207887oif.69.1605617474068;
+ Tue, 17 Nov 2020 04:51:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117110053.1303113-24-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20201109172452.6923-1-lukasz.luba@arm.com> <CAJZ5v0gQj8cNHgXkgwGeNcegAmP2xxqPQXz1kGNqFFDDCgfX_w@mail.gmail.com>
+ <6d29b192-bad4-3abc-96fd-dfe12cc402e4@arm.com>
+In-Reply-To: <6d29b192-bad4-3abc-96fd-dfe12cc402e4@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 17 Nov 2020 13:51:02 +0100
+Message-ID: <CAJZ5v0ihFzzmcN1c-Oo2ELkJZcLhfsrQTh+Yd5bgo3yrnjZPuA@mail.gmail.com>
+Subject: Re: [PATCH] powercap: Adjust printing the constraint name with new line
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 17, 2020 at 12:00:52PM +0100, Jiri Olsa escreveu:
-> Add buildid-list support for mmap2's build id data, so we can
-> display build ids for dso objects for data without the build
-> id cache update.
+On Tue, Nov 17, 2020 at 10:22 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> Hi Rafael,
+>
+> On 11/10/20 7:19 PM, Rafael J. Wysocki wrote:
+> > On Mon, Nov 9, 2020 at 6:25 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >> The constraint name has limit of size 30, which sometimes might be hit.
+> >> When this happens the new line might be lost. Prevent this and set the
+> >> new line when the name string is too long."
+> >>
+> >> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> >> ---
+> >>   drivers/powercap/powercap_sys.c | 4 ++++
+> >>   1 file changed, 4 insertions(+)
+> >>
+> >> diff --git a/drivers/powercap/powercap_sys.c b/drivers/powercap/powercap_sys.c
+> >> index f808c5fa9838..575f9fdb810e 100644
+> >> --- a/drivers/powercap/powercap_sys.c
+> >> +++ b/drivers/powercap/powercap_sys.c
+> >> @@ -174,6 +174,10 @@ static ssize_t show_constraint_name(struct device *dev,
+> >>                                                                  "%s\n", name);
+> >>                          buf[POWERCAP_CONSTRAINT_NAME_LEN] = '\0';
+> >>                          len = strlen(buf);
+> >> +
+> >> +                       /* When the 'name' is too long, don't lose new line */
+> >> +                       if (strlen(name) >= POWERCAP_CONSTRAINT_NAME_LEN)
+> >> +                               buf[POWERCAP_CONSTRAINT_NAME_LEN - 1] = '\n';
+> >
+> > Wouldn't it be better to pass POWERCAP_CONSTRAINT_NAME_LEN - 1 to
+> > snprintf() above?
+>
+> My apologies for delay, I was on holidays.
+>
+> The snprintf() overwrites the '\n' in that case also.
 
->   $ perf buildid-list
->   1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
->   d278249792061c6b74d1693ca59513be1def13f2 /usr/lib64/libc-2.31.so
-> 
-> By default only dso objects with hits are shown.
+The snprintf() doesn't do that AFAICS, but the next assignment
+overwrites the newline with the zero character.
 
-Would be interesting to be able to show all the build ids that are
-there. a 'perf buildid-list --all' or make this under --force?
+Anyway, it should have been POWERCAP_CONSTRAINT_NAME_LEN - 2, because
+it needs to leave space for 2 characters, the newline and the
+terminating zero.
 
-- Arnaldo
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/builtin-buildid-list.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/perf/builtin-buildid-list.c b/tools/perf/builtin-buildid-list.c
-> index e3ef75583514..87f5b1a4a7fa 100644
-> --- a/tools/perf/builtin-buildid-list.c
-> +++ b/tools/perf/builtin-buildid-list.c
-> @@ -77,6 +77,9 @@ static int perf_session__list_build_ids(bool force, bool with_hits)
->  	    perf_header__has_feat(&session->header, HEADER_AUXTRACE))
->  		with_hits = false;
->  
-> +	if (!perf_header__has_feat(&session->header, HEADER_BUILD_ID))
-> +		with_hits = true;
-> +
->  	/*
->  	 * in pipe-mode, the only way to get the buildids is to parse
->  	 * the record stream. Buildids are stored as RECORD_HEADER_BUILD_ID
-> -- 
-> 2.26.2
-> 
+> I've experimented with it a bit more and tried to come with a bit 'cleaner' solution.
+>
+> What we are looking is probably: "%.*s\n" semantic.
+> Another solution would be:
+> ------------------------------8<---------------------------
+>                  if (name) {
+> -                       snprintf(buf, POWERCAP_CONSTRAINT_NAME_LEN,
+> -                                                               "%s\n",
+> name);
+> -                       buf[POWERCAP_CONSTRAINT_NAME_LEN] = '\0';
+> +                       sprintf(buf, "%.*s\n",
+> POWERCAP_CONSTRAINT_NAME_LEN -1,
+> +                               name);
+>                          len = strlen(buf);
+>                  }
+>
+> ----------------------------->8----------------------------
+>
+> I've check this and it behaves very well.
+>
+> It looks cleaner and it is a used pattern in the kernel.
+> What do you think? Is it good for v2?
 
--- 
+This works for me too.
 
-- Arnaldo
+Thanks!
