@@ -2,92 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DA02B5E85
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB362B5E89
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgKQLli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:41:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728190AbgKQLlh (ORCPT
+        id S1728265AbgKQLmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:42:40 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:6138 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728063AbgKQLmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:41:37 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7173C0613CF;
-        Tue, 17 Nov 2020 03:41:35 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id mn12so254858pjb.1;
-        Tue, 17 Nov 2020 03:41:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yK3guKziVoImJRhpkshknGVxmHiW95ym33CYvh9hWIg=;
-        b=iAHVYAOVqqisGtYQ1zLY0u5RV/IpSgDvGtHY1zSzhYT9KvPCYxuNdAunM+7uEjoFom
-         lBX2sOiIKtsoUpPB0B7BV76aN70jI5fFWwzYRD31JMCXP4VbREULcfWlywAHWQd3ZL5w
-         2mJbP8rHhnFr6kvAEdxqyi28oM+a0wnOhDymiLhVM09ENww3vx+wgfreo0t0V/8aQqbZ
-         TaK4/x77n4c6aR8488P0z2ZbTTjvDD6Q2Ir+2k930YktFjt5W0yMrZ2C2SKq93/s7B8V
-         gy0nLp6SWcVavACgJo+o3lvZpvlWKPSrPkkWAhLb5IMCzWmc29cBHeWcKf5xe1T825QT
-         wRhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yK3guKziVoImJRhpkshknGVxmHiW95ym33CYvh9hWIg=;
-        b=L341BxavWC1HkeNKYY7lMRNDTsuJH6BfsaODgChf44AiY/9Dwe1meW1EfEr/lxabtM
-         AJudFCTU6kHBrU5+NZCI95h/p3iQ6k62vRtEvzaVHjqyb6asu/DDxGyPLBD3geMshHL9
-         GJdWmq7C5iA33+Km6qr6pSa8QqhhUJ9PKdbdk4ejO7z1HlU7tlp7JHXLSYqnwysKQfSo
-         8WTYBywLOWipegGQF4+3e512CnF8EQDqMIB59CgyaT8+/orrfxkUZayBrTLe+ErwWHzj
-         65aWzvvgmropPecaY8V6zao5sVVz3wh74Z/4+kaax2sA0aEyz9XODeX5w+C+qBlKjDRk
-         GJjw==
-X-Gm-Message-State: AOAM530Dvoz2w9JCfuVYBRgM20q45HdeNuvsqEoYHEZoGWiBsdh2iz2d
-        TFHjCZR8QOFqhxJwLAJkUJSUoBYKWCWGb1Zx+aU=
-X-Google-Smtp-Source: ABdhPJzScNXrJOYgnPFaNtKAot0MXcj2P1ewsfdZXeYwIDnhGYiMFRqdo/5lv2zFx2verObteWcqkz7iJeMfjXkU+dU=
-X-Received: by 2002:a17:902:9890:b029:d8:e265:57ae with SMTP id
- s16-20020a1709029890b02900d8e26557aemr12757128plp.78.1605613295524; Tue, 17
- Nov 2020 03:41:35 -0800 (PST)
+        Tue, 17 Nov 2020 06:42:39 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHBajvG013666;
+        Tue, 17 Nov 2020 12:42:32 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=/O21ehixegwzLT0zbXiZEy0jXqK7hVnX6K1d1Ah0oZI=;
+ b=BH4bx7kak76C6vcGBJ598wgINY2u2Co8Q1500+ZHehW0A/lqVdQPiq1ozCx1uNoh30Il
+ vDSw55w6nr0gejuipthMatVRPlB7ic3Sk8cRyDv8vjn6UeMJrEJjkBq9sIeQUFTi9A9h
+ YjSafTBBivfOSHKoTQs60kDkaH+vGfmi+8oqH4wo4kwrawt8/I13gPuqR1D886tWaU99
+ 4T6gNurWEQI/9hV/DLK41NlKSP+PO5xAaA3m2tRnLhiEuIOos6myXmZZ9ENig7ghqVHg
+ XKWn34vrKnmyXGZmN6Io24O5ARMvVi1YzFLloDcqQxVwuGNJ6zC1sv59xRAorpwEYwZH pA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34t58chbye-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 12:42:32 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EF579100034;
+        Tue, 17 Nov 2020 12:42:31 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DE17B247725;
+        Tue, 17 Nov 2020 12:42:31 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.47) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 12:42:31 +0100
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201109102023.GA17692@ubuntu> <20201109175536.GD3395222@xps15>
+ <eb7f6707-4483-3e1a-1e39-7f32fbf437e0@st.com> <20201111144942.GA6403@ubuntu>
+ <c31b8427-baca-5c77-6420-b592c57a3a7b@st.com> <20201112115115.GA11069@ubuntu>
+ <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
+ <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com> <20201116151028.GA1519@ubuntu>
+ <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
+ <20201116224003.GC3892875@xps15>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <50549519-d9ff-9048-a3d8-dab02bfda096@st.com>
+Date:   Tue, 17 Nov 2020 12:42:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201116135522.21791-1-ms@dev.tdt.de> <20201116135522.21791-5-ms@dev.tdt.de>
-In-Reply-To: <20201116135522.21791-5-ms@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Tue, 17 Nov 2020 03:41:24 -0800
-Message-ID: <CAJht_ENE5fGr-rgOd-5Tk_g5RJibaWBn_ey5Avo-2R2opMGcDA@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 4/6] net/x25: support NETDEV_CHANGE notifier
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201116224003.GC3892875@xps15>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_03:2020-11-17,2020-11-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 6:00 AM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> This makes it possible to handle carrier lost and detection.
-> In case of carrier lost, we shutdown layer 3 and flush all sessions.
->
-> @@ -275,6 +275,19 @@ static int x25_device_event(struct notifier_block *this, unsigned long event,
->                                  dev->name);
->                         x25_link_device_remove(dev);
->                         break;
-> +               case NETDEV_CHANGE:
-> +                       pr_debug("X.25: got event NETDEV_CHANGE for device: %s\n",
-> +                                dev->name);
-> +                       if (!netif_carrier_ok(dev)) {
-> +                               pr_debug("X.25: Carrier lost -> set link state down: %s\n",
-> +                                        dev->name);
-> +                               nb = x25_get_neigh(dev);
-> +                               if (nb) {
-> +                                       x25_link_terminated(nb);
-> +                                       x25_neigh_put(nb);
-> +                               }
-> +                       }
-> +                       break;
->                 }
->         }
+Hi Mathieu,
 
-I think L2 will notify L3 if the L2 connection is terminated. Is this
-patch necessary?
+On 11/16/20 11:40 PM, Mathieu Poirier wrote:
+> On Mon, Nov 16, 2020 at 04:51:52PM +0100, Arnaud POULIQUEN wrote:
+>> Hi Guennadi,
+>>
+>> On 11/16/20 4:10 PM, Guennadi Liakhovetski wrote:
+
+[snip]
+
+> I did a lot of probing, went deep in the bowels of the user mode helper
+> subsystem and looked at sys_load_module().  Especially at do_init_module() where
+> function do_one_initcall()[1] is called on mod->init, which happens to be
+> rpmsg_ns_init() where the name space driver is registered.  I am confident we
+> can rely on this mechanism.
+> 
+> More comments below...
+> 
+> [1]. https://elixir.bootlin.com/linux/v5.10-rc3/source/kernel/module.c#L3604
+> 
+>> So if we can't conclude, adding completion would be OK for me.
+>>
+>> Thanks,
+>> Arnaud
+>>
+
+[snip]
+
+> 
+> We came up with almost exactly the same thing:>
+> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+> index 5bda7cb44618..ab86b603c54e 100644
+> --- a/drivers/rpmsg/rpmsg_ns.c
+> +++ b/drivers/rpmsg/rpmsg_ns.c
+> @@ -81,6 +81,7 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+>  
+>  static struct rpmsg_driver rpmsg_ns_driver = {
+>         .drv.name = "rpmsg_ns",
+> +       .drv.mod_name = "rpmsg_ns",
+
+This does not work for me, in built-in the kernel freezes on start
+i just have the " Starting kernel ..." print
+
+Are you sure that is useful? it working for me without this.
+
+>         .probe = rpmsg_ns_probe,
+>  };
+>  
+> @@ -104,5 +105,5 @@ module_exit(rpmsg_ns_exit);
+>  
+>  MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
+>  MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
+> -MODULE_ALIAS("rpmsg_ns");
+> +MODULE_ALIAS("rpmsg:rpmsg_ns");
+>  MODULE_LICENSE("GPL v2");
+> diff --git a/include/linux/rpmsg/ns.h b/include/linux/rpmsg/ns.h
+> index e267dd5f909b..28251fd1b2e0 100644
+> --- a/include/linux/rpmsg/ns.h
+> +++ b/include/linux/rpmsg/ns.h
+> @@ -3,6 +3,7 @@
+>  #ifndef _LINUX_RPMSG_NS_H
+>  #define _LINUX_RPMSG_NS_H
+>  
+> +#include <linux/module.h>
+>  #include <linux/mod_devicetable.h>
+>  #include <linux/rpmsg.h>
+>  #include <linux/rpmsg/byteorder.h>
+> @@ -49,11 +50,27 @@ enum rpmsg_ns_flags {
+>   */
+>  static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+Agree with the Guennadi's pertinent remarks, better to put this in rpmsg_ns.c
+
+>  {
+> +       int ret;
+> +       struct module *rpmsg_ns;
+> +       const char name[] = "rpmsg_ns";
+> +
+>         strcpy(rpdev->id.name, "rpmsg_ns");
+>         rpdev->driver_override = "rpmsg_ns";
+>         rpdev->src = RPMSG_NS_ADDR;
+>         rpdev->dst = RPMSG_NS_ADDR;
+>  
+> +#ifdef CONFIG_MODULES
+
+This piece of code is executed also if rppmsg_ns is built-in
+
+> +       mutex_lock(&module_mutex);
+> +       rpmsg_ns = find_module(name);
+> +       mutex_unlock(&module_mutex);
+> +
+> +       if (!rpmsg_ns) {
+> +               ret = request_module(name);
+> +               if (ret)
+> +                       pr_err("Can not find module %s (err %d)\n", name, ret);
+
+As consequence for built-in this error is printed.
+To avoid this
+- #ifdef CONFIG_MODULES
++ #ifdef MODULES
+
+Then for me here we should return the error.
+
+> +       }
+> +#endif
+> +
+> 
+> I think it is better to be in rpmsg_ns_register_devices() because it makes the
+> solution stand by itself, i.e no need to call the registration code from another
+> driver.  Everything is self contained.
+
+That's a very good idea!
+
+In addition I would keep dependency between virtio and rpmsg_ns in kconfig. This
+would ensure that rpmsg ns is built for the virtio bus. Then the device will be
+probed on demand.
+
+> 
+> Also note the drv.mod_name = "rpmsg_ns" part.  I took a look at find_module()
+> and that is what is supposed to be used.
+> 
+> That works on my side - please test on your setup.  
+
+Please find update of your patch integrating my remarks:
+- suppress drv.mod_name,
+- migrate rpmsg_ns_register_device in rpmsg_ns.c,
+- use KBUILD_MODNAME for the module name,
+- add select RPMSG_NS for RPMSG_VIRTIO config.
+
+diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+index c3fc75e6514b..1394114782d2 100644
+--- a/drivers/rpmsg/Kconfig
++++ b/drivers/rpmsg/Kconfig
+@@ -71,5 +71,6 @@ config RPMSG_VIRTIO
+ 	depends on HAS_DMA
+ 	select RPMSG
+ 	select VIRTIO
++	select RPMSG_NS
+
+ endmenu
+diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+index 5bda7cb44618..80c2cc23bada 100644
+--- a/drivers/rpmsg/rpmsg_ns.c
++++ b/drivers/rpmsg/rpmsg_ns.c
+@@ -55,6 +55,39 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
+*data, int len,
+ 	return 0;
+ }
+
++/**
++ * rpmsg_ns_register_device() - register name service device based on rpdev
++ * @rpdev: prepared rpdev to be used for creating endpoints
++ *
++ * This function wraps rpmsg_register_device() preparing the rpdev for use as
++ * basis for the rpmsg name service device.
++ */
++int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
++{
++#ifdef MODULES
++	int ret;
++	struct module *rpmsg_ns;
++
++	mutex_lock(&module_mutex);
++	rpmsg_ns = find_module(KBUILD_MODNAME);
++	mutex_unlock(&module_mutex);
++
++	if (!rpmsg_ns) {
++		ret = request_module(KBUILD_MODNAME);
++	if (ret)
++		pr_err("Can not find module %s (err %d)\n", KBUILD_MODNAME, ret);
++	}
++#endif
++
++	strcpy(rpdev->id.name, KBUILD_MODNAME);
++	rpdev->driver_override = KBUILD_MODNAME;
++	rpdev->src = RPMSG_NS_ADDR;
++	rpdev->dst = RPMSG_NS_ADDR;
++
++	return rpmsg_register_device(rpdev);
++}
++EXPORT_SYMBOL(rpmsg_ns_register_device);
++
+ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+ {
+ 	struct rpmsg_endpoint *ns_ept;
+@@ -80,7 +113,7 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+ }
+
+ static struct rpmsg_driver rpmsg_ns_driver = {
+-	.drv.name = "rpmsg_ns",
++	.drv.name = KBUILD_MODNAME,
+ 	.probe = rpmsg_ns_probe,
+ };
+
+@@ -104,5 +137,5 @@ module_exit(rpmsg_ns_exit);
+
+ MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
+ MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
+-MODULE_ALIAS("rpmsg_ns");
++MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
+ MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/rpmsg/ns.h b/include/linux/rpmsg/ns.h
+index bdc1ea278814..68eac2b42075 100644
+--- a/include/linux/rpmsg/ns.h
++++ b/include/linux/rpmsg/ns.h
+@@ -41,21 +41,6 @@ enum rpmsg_ns_flags {
+ /* Address 53 is reserved for advertising remote services */
+ #define RPMSG_NS_ADDR			(53)
+
+-/**
+- * rpmsg_ns_register_device() - register name service device based on rpdev
+- * @rpdev: prepared rpdev to be used for creating endpoints
+- *
+- * This function wraps rpmsg_register_device() preparing the rpdev for use as
+- * basis for the rpmsg name service device.
+- */
+-static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+-{
+-	strcpy(rpdev->id.name, "rpmsg_ns");
+-	rpdev->driver_override = "rpmsg_ns";
+-	rpdev->src = RPMSG_NS_ADDR;
+-	rpdev->dst = RPMSG_NS_ADDR;
+-
+-	return rpmsg_register_device(rpdev);
+-}
++int rpmsg_ns_register_device(struct rpmsg_device *rpdev);
+
+ #endif
+
+Regards,
+Arnaud
+
