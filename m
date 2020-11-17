@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7D22B5642
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5F82B5657
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731610AbgKQB1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 20:27:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728534AbgKQB1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:27:44 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9004A2468F;
-        Tue, 17 Nov 2020 01:27:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605576463;
-        bh=47TEkotzt3F/LTmw1Gm/QSF0wkfHZUX07oPBgXjQUeg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AH8Z82mDw5vxnNF2Q0AHlhLi72YipYyuDpVL7fOcH1Rwp4kUJ5GzwmxJwcJLHbyh+
-         ZlUB6pBO322shxSkmgEl3GkWk05bfH1/mnA+cOmcN06mn+Q0OWup9S2w/SrlBV/GGe
-         i8Vdtc5bmjEKVbVQpkk/nnNwEBPSurIsN6sfGz0o=
-Date:   Mon, 16 Nov 2020 17:27:42 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     <min.li.xe@renesas.com>
-Cc:     <richardcochran@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 1/5] ptp: clockmatrix: bug fix for
- idtcm_strverscmp
-Message-ID: <20201116172742.5f86a49b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1605554850-14437-1-git-send-email-min.li.xe@renesas.com>
-References: <1605554850-14437-1-git-send-email-min.li.xe@renesas.com>
+        id S1726306AbgKQBkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:40:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgKQBkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 20:40:00 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72BEC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 17:39:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=jvqxGYjFQsaLtu5EXBK7p5m45joX49ZCWSOOd/T3udE=; b=bEW/mOR3h0K8l0u4AaVy1R1+zI
+        ROf2Ll3aPiGI3P2HtNWM1WVjyLD65MQmAbOMqj5jeA9eUqU1MQng0s0KgIxnOw0nvWFaWdKXBu/Y7
+        j1LKeEo2epEIY1YPuOL2SRQHznhjCJPAIiLA8EIWPtWLD9T5lBJAHl1MtOftYYNd7StE3aGTzGqs3
+        esw7grI8ENWCUz7Nii9TGCZ9qRkx/MpRjNw3NCSU50bDkc85SVO35KAXw9iTvY/tJxWKvRawmjWw1
+        qSAQXp3GcOYMphZXOUoMmXYpAUjo2QMqMk0UH/tWUxY2AfWv+zNzkoszX/FSiO0LTSQvc3vj6v5MX
+        T7SuX1hQ==;
+Received: from [2601:1c0:6280:3f0::f32] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kepyN-00042a-Uc; Tue, 17 Nov 2020 01:39:56 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-riscv@lists.infradead.org,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: [PATCH] RISC-V: fix barrier() use in <vdso/processor.h>
+Date:   Mon, 16 Nov 2020 17:39:51 -0800
+Message-Id: <20201117013951.7827-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 14:27:26 -0500 min.li.xe@renesas.com wrote:
-> From: Min Li <min.li.xe@renesas.com>
->=20
-> Feed kstrtou8 with NULL terminated string.
+riscv's <vdso/processor.h> uses barrier() so it should
+#include <asm/barrier.h> to prevent build errors.
 
-Is this a fix? Does it need to be backported to stable?
+Fixes this build error:
+  CC [M]  drivers/net/ethernet/emulex/benet/be_main.o
+In file included from ./include/vdso/processor.h:10,
+                 from ./arch/riscv/include/asm/processor.h:11,
+                 from ./include/linux/prefetch.h:15,
+                 from drivers/net/ethernet/emulex/benet/be_main.c:14:
+./arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
+./arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
+   14 |  barrier();
 
-Also please add a cover letter for the series describing the overall
-goal of this work, what testing has been done etc.
+This happens with a total of 5 networking drivers -- they all use
+<linux/prefetch.h>.
 
->  drivers/ptp/ptp_clockmatrix.c | 52 +++++++++++++++++++++++++++++++------=
-------
->  1 file changed, 38 insertions(+), 14 deletions(-)
->=20
-> diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-> index e020faf..bf2be50 100644
-> --- a/drivers/ptp/ptp_clockmatrix.c
-> +++ b/drivers/ptp/ptp_clockmatrix.c
-> @@ -103,42 +103,66 @@ static int timespec_to_char_array(struct timespec64=
- const *ts,
->  	return 0;
->  }
-> =20
-> -static int idtcm_strverscmp(const char *ver1, const char *ver2)
-> +static int idtcm_strverscmp(const char *version1, const char *version2)
->  {
->  	u8 num1;
->  	u8 num2;
->  	int result =3D 0;
-> +	char ver1[16];
-> +	char ver2[16];
-> +	char *cur1;
-> +	char *cur2;
-> +	char *next1;
-> +	char *next2;
-> +
-> +	strncpy(ver1, version1, 16);
-> +	strncpy(ver2, version2, 16);
+rv64 allmodconfig now builds cleanly after this patch.
 
-This patch triggers the following warning on a 32bit build:
+Fixes fallout from:
+815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
 
-In file included from ../arch/x86/include/asm/page_32.h:35,
-                 from ../arch/x86/include/asm/page.h:14,
-                 from ../arch/x86/include/asm/thread_info.h:12,
-                 from ../include/linux/thread_info.h:38,
-                 from ../arch/x86/include/asm/preempt.h:7,
-                 from ../include/linux/preempt.h:78,
-                 from ../include/linux/spinlock.h:51,
-                 from ../include/linux/mmzone.h:8,
-                 from ../include/linux/gfp.h:6,
-                 from ../include/linux/firmware.h:7,
-                 from ../drivers/ptp/ptp_clockmatrix.c:8:
-In function =E2=80=98strncpy=E2=80=99,
-    inlined from =E2=80=98idtcm_strverscmp.constprop=E2=80=99 at ../drivers=
-/ptp/ptp_clockmatrix.c:118:2:
-../include/linux/string.h:290:30: warning: =E2=80=98__builtin_strncpy=E2=80=
-=99 specified bound 16 equals destination size [-Wstringop-truncation]
-  290 | #define __underlying_strncpy __builtin_strncpy
-      |                              ^
-../include/linux/string.h:300:9: note: in expansion of macro =E2=80=98__und=
-erlying_strncpy=E2=80=99
-  300 |  return __underlying_strncpy(p, q, size);
-      |         ^~~~~~~~~~~~~~~~~~~~
+Fixes: ad5d1122b82f ("riscv: use vDSO common flow to reduce the latency of the time-related functions")
+Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: linux-riscv@lists.infradead.org
+Cc: clang-built-linux@googlegroups.com
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nathan Chancellor <natechancellor@gmail.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+---
+ arch/riscv/include/asm/vdso/processor.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- lnx-510-rc4.orig/arch/riscv/include/asm/vdso/processor.h
++++ lnx-510-rc4/arch/riscv/include/asm/vdso/processor.h
+@@ -4,6 +4,8 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
++#include <asm/barrier.h>
++
+ static inline void cpu_relax(void)
+ {
+ #ifdef __riscv_muldiv
