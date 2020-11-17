@@ -2,117 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE63D2B687D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B3F2B687E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387583AbgKQPRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:17:45 -0500
-Received: from outbound-smtp10.blacknight.com ([46.22.139.15]:38697 "EHLO
-        outbound-smtp10.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728883AbgKQPRo (ORCPT
+        id S2387587AbgKQPRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728855AbgKQPRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:17:44 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp10.blacknight.com (Postfix) with ESMTPS id EF6F71C4B70
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:17:42 +0000 (GMT)
-Received: (qmail 19707 invoked from network); 17 Nov 2020 15:17:42 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 17 Nov 2020 15:17:42 -0000
-Date:   Tue, 17 Nov 2020 15:17:40 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 3/3] sched/numa: Limit the amount of imbalance that can
- exist at fork time
-Message-ID: <20201117151740.GB3371@techsingularity.net>
-References: <20201117134222.31482-1-mgorman@techsingularity.net>
- <20201117134222.31482-4-mgorman@techsingularity.net>
- <20201117141814.GN3121392@hirez.programming.kicks-ass.net>
- <CAKfTPtDQgv8RCe1RRCGg0px0Bp6GbdAhXbRKTH5zeVaRDmK+vg@mail.gmail.com>
+        Tue, 17 Nov 2020 10:17:54 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC7FC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:17:54 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id m6so6360698wrg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:17:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/gRT7DCZRAs7WkGjd79rZ+jaFHWSdQwkgcdc9HOkaGU=;
+        b=jZ/ZpeqkBpBc9230T6VHfN1GV9J6RTOUYGwJ0rAkQTv/oaBJgTD4C/kH4bJh/z3XYn
+         xUdkpcKyPPi3+Lopyw0E6KBexuivDeIHfPQuBQdyBhOqWrZLY54RZ+aA340ZQatHxDr9
+         RGZe/I5RpyEergoZUVbjdbDkBzT0k4/bK+xlUER+k3b7lR/lb5+7cprJRHxSisGwz5YC
+         b8SttCqEIP39iNOY5XeilFut8K4hBKyUDCUJLxqPd0C+SauHyM30lkWb9giwQEQRBl7E
+         QLWcbzG0QC9qbvdBtCXmVSnX+qHIFys5/Pb0D3AzA7ZhmDHB1bHy7qa+X5WCiYLEOS+f
+         k6xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/gRT7DCZRAs7WkGjd79rZ+jaFHWSdQwkgcdc9HOkaGU=;
+        b=W6iyMq7BlicloisXfX6HLiSGZXAni4NMt3dNg9WU0EQQ01aBc4UAaDVYJxBNZnvBTM
+         rAAM37DDILckgRKKK34y15u4536O2flogM0nOgKz9u34fG0c+jFZ7d1bUYGHtafb+lCn
+         h9KXvrYIK5vAwB0F2mhLGa5p+RGGEyeXXCXouQH4NGZBuKyJz/YgP0cI4eSh6wpl5fL5
+         5tsCKcghYSKdN5JmutCzHH7/rlRmV2Bqa9Y/sLV+9EB8oq8/0dBEdrSog0QxMmsynInp
+         a6XQRTSygXT7RZxiqSLpjtUF1SI0uyp6MmV/V2fYfmV35LMm2HaxzB4oOJGLSv0Orm54
+         niMQ==
+X-Gm-Message-State: AOAM531I64WppgZJHrCJS+2Ti9k2EWKGqop614wIJ8X2oRccgRkihKzu
+        ncXUNAmwPmIwikxworRsH68=
+X-Google-Smtp-Source: ABdhPJx90u7WQtKsYcDCE+7DdFXIMB7zJeaePcKNQZim/TM+MCwlt87fvc1kz272+oHkbgm7iudikg==
+X-Received: by 2002:adf:e74d:: with SMTP id c13mr26678420wrn.277.1605626273150;
+        Tue, 17 Nov 2020 07:17:53 -0800 (PST)
+Received: from ziggy.stardust ([213.195.112.112])
+        by smtp.gmail.com with ESMTPSA id f16sm28505102wrp.66.2020.11.17.07.17.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 07:17:52 -0800 (PST)
+Subject: Re: [PATCH v2] mfd: syscon: Add
+ syscon_regmap_lookup_by_phandle_optional() function.
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20201110161338.18198-1-enric.balletbo@collabora.com>
+ <20201113101940.GH3718728@dell>
+ <c4ed34d5-83a1-98d1-580f-8f8504c5ca0a@gmail.com>
+ <20201117123741.GH1869941@dell>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <d4424323-25a9-9f70-b2c8-ce464180f788@gmail.com>
+Date:   Tue, 17 Nov 2020 16:17:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDQgv8RCe1RRCGg0px0Bp6GbdAhXbRKTH5zeVaRDmK+vg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201117123741.GH1869941@dell>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 03:31:19PM +0100, Vincent Guittot wrote:
-> On Tue, 17 Nov 2020 at 15:18, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Tue, Nov 17, 2020 at 01:42:22PM +0000, Mel Gorman wrote:
-> > > -                     if (local_sgs.idle_cpus)
-> > > +                     if (local_sgs.idle_cpus >= (sd->span_weight >> 2))
-> > >                               return NULL;
-> >
-> > Is that the same 25% ?
+
+
+On 17/11/2020 13:37, Lee Jones wrote:
+> On Tue, 17 Nov 2020, Matthias Brugger wrote:
 > 
-> same question for me
+>> Hi Lee,
+>>
+>> On 13/11/2020 11:19, Lee Jones wrote:
+>>> On Tue, 10 Nov 2020, Enric Balletbo i Serra wrote:
+>>>
+>>>> This adds syscon_regmap_lookup_by_phandle_optional() function to get an
+>>>> optional regmap.
+>>>>
+>>>> It behaves the same as syscon_regmap_lookup_by_phandle() except where
+>>>> there is no regmap phandle. In this case, instead of returning -ENODEV,
+>>>> the function returns NULL. This makes error checking simpler when the
+>>>> regmap phandle is optional.
+>>>>
+>>>> Suggested-by: Nicolas Boichat <drinkcat@chromium.org>
+>>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>>>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+>>>> ---
+>>>>
+>>>> Changes in v2:
+>>>> - Add Matthias r-b tag.
+>>>> - Add the explanation from the patch description to the code.
+>>>> - Return NULL instead of -ENOTSUPP when regmap helpers are not enabled.
+>>>>
+>>>>    drivers/mfd/syscon.c       | 18 ++++++++++++++++++
+>>>>    include/linux/mfd/syscon.h | 11 +++++++++++
+>>>>    2 files changed, 29 insertions(+)
+>>>
+>>> Applied, thanks.
+>>>
+>>
+>> I've a series [1] that's based on this patch, could you provide a stable
+>> branch for it, so that I can take the series.
+> 
+> Why can't you base it off of for-mfd-next?
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/log/?h=for-mfd-next
+> 
 
-It's the same 25%. It's in the comment as -- utilisation is not too high
-where "high" is related to adjust_numa_imbalance.
+I can do that, if you are willing to not overwrite the commit history. In my 
+case it can happen that I drop a patch from my for-next branch as I realize that 
+it e.g. breaks something. I think that's the reason why normally a stable branch 
+get's created, as the commit ID won't change although you change the commit 
+history of your for-mfd-next branch.
 
-> could we encapsulate this 25% allowed imbalance like for adjust_numa_imbalance
+If you want to go the route for me rebasing my tree on top of for-mfd-next then 
+I'd like to have at least a stable tag, so that it will be easier to provide the 
+pull-request later on. Would that be a compromise?
 
-Using adjust_numa_imbalance() directly in this context would be awkward
-but the threshold could be shared with something like the additional
-diff below. Is that what you had in mind or something different?
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index adfab218a498..49ef3484c56c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5878,6 +5878,8 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
- static struct sched_group *
- find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu);
- 
-+static inline int numa_imbalance_threshold(int weight);
-+
- /*
-  * find_idlest_group_cpu - find the idlest CPU among the CPUs in the group.
-  */
-@@ -8894,7 +8896,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 			 * If there is a real need of migration, periodic load
- 			 * balance will take care of it.
- 			 */
--			if (local_sgs.idle_cpus >= (sd->span_weight >> 2))
-+			if (local_sgs.idle_cpus >= numa_imbalance_threshold(sd->span_weight))
- 				return NULL;
- 		}
- 
-@@ -8998,6 +9000,14 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 
- #define NUMA_IMBALANCE_MIN 2
- 
-+/* Allows imbalances until active CPUs hits 25% of a domain */
-+#define IMBALANCE_THRESHOLD_SHIFT 2
-+
-+static inline int numa_imbalance_threshold(int weight)
-+{
-+	return weight >> IMBALANCE_THRESHOLD_SHIFT;
-+}
-+
- static inline long adjust_numa_imbalance(int imbalance,
- 				int dst_running, int dst_weight)
- {
-@@ -9006,8 +9016,10 @@ static inline long adjust_numa_imbalance(int imbalance,
- 	 * when the destination is lightly loaded so that pairs of
- 	 * communicating tasks may remain local.
- 	 */
--	if (dst_running < (dst_weight >> 2) && imbalance <= NUMA_IMBALANCE_MIN)
-+	if (dst_running < numa_imbalance_threshold(dst_weight) &&
-+	    imbalance <= NUMA_IMBALANCE_MIN) {
- 		return 0;
-+	}
- 
- 	return imbalance;
- }
-
--- 
-Mel Gorman
-SUSE Labs
+Regards,
+Matthias
