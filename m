@@ -2,84 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F552B6601
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C80B2B66CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732306AbgKQOAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:00:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729577AbgKQNQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:16:55 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A58A424248;
-        Tue, 17 Nov 2020 13:16:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619015;
-        bh=xkxCDZrvI81kovN52nHtM7xfGI8a26IvSOwrGz1V8sQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jmM10PjbfAdKyhcrhxV6HjaHzQ6TiP5ge/pJIsvrp3j2cj+5BiLhck4jp/Jd68ja1
-         xqCChegcwn9/VDo0L9/eOq/w/tBIcqsqHdI2pii5mJo/ztoBC0e1a9cTSq0dwJSTdD
-         sGb6LclnE4ePuPGivlHJizEwDH6ALLx53u6KXBMs=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boris Protopopov <pboris@amazon.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.14 85/85] Convert trailing spaces and periods in path components
-Date:   Tue, 17 Nov 2020 14:05:54 +0100
-Message-Id: <20201117122115.221452982@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729769AbgKQOHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:07:01 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:47164 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729021AbgKQNHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:07:09 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kf0hM-00087K-NP; Tue, 17 Nov 2020 13:07:04 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] btrfs: fix spelling mistake "inititialize" -> "initialize"
+Date:   Tue, 17 Nov 2020 13:07:04 +0000
+Message-Id: <20201117130704.420088-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Protopopov <pboris@amazon.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 57c176074057531b249cf522d90c22313fa74b0b upstream.
+There is a spelling mistake in a btrfs_err error message. Fix it.
 
-When converting trailing spaces and periods in paths, do so
-for every component of the path, not just the last component.
-If the conversion is not done for every path component, then
-subsequent operations in directories with trailing spaces or
-periods (e.g. create(), mkdir()) will fail with ENOENT. This
-is because on the server, the directory will have a special
-symbol in its name, and the client needs to provide the same.
-
-Signed-off-by: Boris Protopopov <pboris@amazon.com>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- fs/cifs/cifs_unicode.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/btrfs/disk-io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/cifs/cifs_unicode.c
-+++ b/fs/cifs/cifs_unicode.c
-@@ -501,7 +501,13 @@ cifsConvertToUTF16(__le16 *target, const
- 		else if (map_chars == SFM_MAP_UNI_RSVD) {
- 			bool end_of_string;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 4402dcb00cb5..70633fafff54 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3310,7 +3310,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
  
--			if (i == srclen - 1)
-+			/**
-+			 * Remap spaces and periods found at the end of every
-+			 * component of the path. The special cases of '.' and
-+			 * '..' do not need to be dealt with explicitly because
-+			 * they are addressed in namei.c:link_path_walk().
-+			 **/
-+			if ((i == srclen - 1) || (source[i+1] == '\\'))
- 				end_of_string = true;
- 			else
- 				end_of_string = false;
-
+ 	ret = btrfs_check_zoned_mode(fs_info);
+ 	if (ret) {
+-		btrfs_err(fs_info, "failed to inititialize zoned mode: %d",
++		btrfs_err(fs_info, "failed to initialize zoned mode: %d",
+ 			  ret);
+ 		goto fail_block_groups;
+ 	}
+-- 
+2.28.0
 
