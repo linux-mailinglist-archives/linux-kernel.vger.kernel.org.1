@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F8C2B6DEA
+	by mail.lfdr.de (Postfix) with ESMTP id 907EB2B6DEB
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgKQSys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:54:48 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42166 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726812AbgKQSyr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:54:47 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0AHIsPvi031521
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 13:54:25 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 276FF420107; Tue, 17 Nov 2020 13:54:25 -0500 (EST)
-Date:   Tue, 17 Nov 2020 13:54:25 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-Message-ID: <20201117185425.GG445084@mit.edu>
-References: <20201113080132.16591-1-roberto.sassu@huawei.com>
- <20201114111057.GA16415@infradead.org>
- <0fd0fb3360194d909ba48f13220f9302@huawei.com>
- <20201116162202.GA15010@infradead.org>
- <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
- <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
- <20201116174127.GA4578@infradead.org>
- <CAHk-=wjd0RNthZQTLVsnK_d9SFYH0rug2tkezLLB0J-YZzVC+Q@mail.gmail.com>
- <3f8cc7c9462353ac2eef58e39beee079bdd9c7b4.camel@linux.ibm.com>
- <CAHk-=wih-ibNUxeiKpuKrw3Rd2=QEAZ8zgRWt_CORAjbZykRWQ@mail.gmail.com>
+        id S1729088AbgKQSzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:55:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726812AbgKQSzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:55:09 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 158B224181;
+        Tue, 17 Nov 2020 18:55:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605639309;
+        bh=Y038uP7ZmK0OgVTrSPxcTbp4HJmlOnmzfn1DGhUpwzY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gJc+yO30XfLbM5fHLoIjw2WFot+3s9M7MQwMQX4e8ZXlGvcevLiPtBnK6ROzAYe6T
+         vuhsgzTSamnbCG5jRvECoiUvMziSPV1N7aBYKRVRE7MxnfFsqHbmPzHI4N/yCFNeiZ
+         BMq7xIHyCl2MbnVIc7DRm6opaL2oGtsKELm/Bz4g=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kf68A-00BSb2-Rv; Tue, 17 Nov 2020 18:55:07 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Zenghui Yu <yuzenghui@huawei.com>, kvmarm@lists.cs.columbia.edu
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: vgic-v3: Drop the reporting of GICR_TYPER.Last for userspace
+Date:   Tue, 17 Nov 2020 18:55:01 +0000
+Message-Id: <160563920752.4179306.18040812749709622838.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201117151629.1738-1-yuzenghui@huawei.com>
+References: <20201117151629.1738-1-yuzenghui@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wih-ibNUxeiKpuKrw3Rd2=QEAZ8zgRWt_CORAjbZykRWQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: yuzenghui@huawei.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:23:58AM -0800, Linus Torvalds wrote:
-> On Mon, Nov 16, 2020 at 10:35 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> >
-> > We need to differentiate between signed files, which by definition are
-> > immutable, and those that are mutable.  Appending to a mutable file,
-> > for example, would result in the file hash not being updated.
-> > Subsequent reads would fail.
+On Tue, 17 Nov 2020 23:16:29 +0800, Zenghui Yu wrote:
+> It was recently reported that if GICR_TYPER is accessed before the RD base
+> address is set, we'll suffer from the unset @rdreg dereferencing. Oops...
 > 
-> Why would that require any reading of the file at all AT WRITE TIME?
+> 	gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
+> 			(rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
 > 
-> Don't do it. Really.
+> It's "expected" that users will access registers in the redistributor if
+> the RD has been properly configured (e.g., the RD base address is set). But
+> it hasn't yet been covered by the existing documentation.
 > 
-> When opening the file write-only, you just invalidate the hash. It
-> doesn't matter anyway - you're only writing.
-> 
-> Later on, when reading, only at that point does the hash matter, and
-> then you can do the verification.
-> 
-> Although honestly, I don't even see the point. You know the hash won't
-> match, if you wrote to the file.
+> [...]
 
-I think the use case the IMA folks might be thinking about is where
-they want to validate the file at open time, *before* the userspace
-application starts writing to the file, since there might be some
-subtle attacks where Boris changes the first part of the file before
-Alice appends "I agree" to said file.
+Applied to kvm-arm64/fixes-5.10, thanks!
 
-Of course, Boris will be able to modify the file after Alice has
-modified it, so it's a bit of a moot point, but one could imagine a
-scenario where the file is modified while the system is not running
-(via an evil hotel maid) and then after Alice modifies the file, of
-*course* the hash will be invalid, so no one would notice.  A sane
-application would have read the file to make sure it contained the
-proper contents before appending "I agree" to said file, so it's a bit
-of an esoteric point.
+[1/1] KVM: arm64: vgic-v3: Drop the reporting of GICR_TYPER.Last for userspace
+      commit: 23bde34771f1ea92fb5e6682c0d8c04304d34b3b
 
-The other case I could imagine is if the file is marked execute-only,
-without read access, and IMA wanted to be able to read the file to
-check the hash.  But we already make an execption for allowing the
-file to be read during page faults, so that's probably less
-controversial.
+I have added a Cc stable, as this definitely wants to be backported.
 
-						- Ted
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
 
