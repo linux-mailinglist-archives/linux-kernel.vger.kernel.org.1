@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339272B6414
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA0D2B65D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733168AbgKQNoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:44:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52354 "EHLO mail.kernel.org"
+        id S1729776AbgKQNSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:18:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732850AbgKQNkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:40:20 -0500
+        id S1730448AbgKQNQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:16:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30EBE2467A;
-        Tue, 17 Nov 2020 13:40:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2448621734;
+        Tue, 17 Nov 2020 13:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620419;
-        bh=yJzKDwnp94Q/L/qdDqO8mmVFGg1PNfnZcPHUCBIo92g=;
+        s=default; t=1605619006;
+        bh=EboRDqWR0ty8njnVhjop7TgETSHaZFTP5a+mimYOoqo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QwwOusEmiODXIGjc5SVAy6KpV5lX9f5SO0DY5U7rWJDN7I9LTFFXlnN7qlxdCzj5+
-         EnXBwemPgZ736fXxHIWJ9bDd/xwTI+ZNBhXeEtyC2+CkY7L51UtCPKbYO27T5JpEcG
-         p3lqbKC+i8u8+4bYCGIU8nnh2SGgfPvDBqRg1RnI=
+        b=YSltLXkdwF7XlgQ3KQXjEy38fCo+WCzXvUNAK+SOc0Irad2/OeFHTkAIGZJFGpvCF
+         lAf7rj7ccs1AK3VFAZw/d+WRN79N0mQ/CnK6gBGp6OWW9uRjReEeZemvl0+0gu1iBq
+         /lkEt8Ip8YdUaoUqxVPJsHi+OwcRxaxd9a3j1QrY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vaneet Narang <v.narang@samsung.com>,
-        Maninder Singh <maninder1.s@samsung.com>,
-        Amit Sahrawat <a.sahrawat@samsung.com>,
-        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.9 212/255] mm/vmscan: fix NR_ISOLATED_FILE corruption on 64-bit
+        Guenter Roeck <linux@roeck-us.net>,
+        Petr Mladek <pmladek@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Fabian Frederick <fabf@skynet.be>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.14 83/85] Revert "kernel/reboot.c: convert simple_strtoul to kstrtoint"
 Date:   Tue, 17 Nov 2020 14:05:52 +0100
-Message-Id: <20201117122149.253216909@linuxfoundation.org>
+Message-Id: <20201117122115.119788080@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,59 +51,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Matteo Croce <mcroce@microsoft.com>
 
-commit 2da9f6305f306ffbbb44790675799328fb73119d upstream.
+commit 8b92c4ff4423aa9900cf838d3294fcade4dbda35 upstream.
 
-Previously the negated unsigned long would be cast back to signed long
-which would have the correct negative value.  After commit 730ec8c01a2b
-("mm/vmscan.c: change prototype for shrink_page_list"), the large
-unsigned int converts to a large positive signed long.
+Patch series "fix parsing of reboot= cmdline", v3.
 
-Symptoms include CMA allocations hanging forever holding the cma_mutex
-due to alloc_contig_range->...->isolate_migratepages_block waiting
-forever in "while (unlikely(too_many_isolated(pgdat)))".
+The parsing of the reboot= cmdline has two major errors:
 
-[akpm@linux-foundation.org: fix -stat.nr_lazyfree_fail as well, per Michal]
+ - a missing bound check can crash the system on reboot
 
-Fixes: 730ec8c01a2b ("mm/vmscan.c: change prototype for shrink_page_list")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+ - parsing of the cpu number only works if specified last
+
+Fix both.
+
+This patch (of 2):
+
+This reverts commit 616feab753972b97.
+
+kstrtoint() and simple_strtoul() have a subtle difference which makes
+them non interchangeable: if a non digit character is found amid the
+parsing, the former will return an error, while the latter will just
+stop parsing, e.g.  simple_strtoul("123xyx") = 123.
+
+The kernel cmdline reboot= argument allows to specify the CPU used for
+rebooting, with the syntax `s####` among the other flags, e.g.
+"reboot=warm,s31,force", so if this flag is not the last given, it's
+silently ignored as well as the subsequent ones.
+
+Fixes: 616feab75397 ("kernel/reboot.c: convert simple_strtoul to kstrtoint")
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Vaneet Narang <v.narang@samsung.com>
-Cc: Maninder Singh <maninder1.s@samsung.com>
-Cc: Amit Sahrawat <a.sahrawat@samsung.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Robin Holt <robinmholt@gmail.com>
+Cc: Fabian Frederick <fabf@skynet.be>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201029032320.1448441-1-npiggin@gmail.com
+Link: https://lkml.kernel.org/r/20201103214025.116799-2-mcroce@linux.microsoft.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[sudip: use reboot_mode instead of mode]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- mm/vmscan.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/reboot.c |   21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1514,7 +1514,8 @@ unsigned int reclaim_clean_pages_from_li
- 	nr_reclaimed = shrink_page_list(&clean_pages, zone->zone_pgdat, &sc,
- 			TTU_IGNORE_ACCESS, &stat, true);
- 	list_splice(&clean_pages, page_list);
--	mod_node_page_state(zone->zone_pgdat, NR_ISOLATED_FILE, -nr_reclaimed);
-+	mod_node_page_state(zone->zone_pgdat, NR_ISOLATED_FILE,
-+			    -(long)nr_reclaimed);
- 	/*
- 	 * Since lazyfree pages are isolated from file LRU from the beginning,
- 	 * they will rotate back to anonymous LRU in the end if it failed to
-@@ -1524,7 +1525,7 @@ unsigned int reclaim_clean_pages_from_li
- 	mod_node_page_state(zone->zone_pgdat, NR_ISOLATED_ANON,
- 			    stat.nr_lazyfree_fail);
- 	mod_node_page_state(zone->zone_pgdat, NR_ISOLATED_FILE,
--			    -stat.nr_lazyfree_fail);
-+			    -(long)stat.nr_lazyfree_fail);
- 	return nr_reclaimed;
- }
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -512,22 +512,15 @@ static int __init reboot_setup(char *str
+ 			break;
  
+ 		case 's':
+-		{
+-			int rc;
+-
+-			if (isdigit(*(str+1))) {
+-				rc = kstrtoint(str+1, 0, &reboot_cpu);
+-				if (rc)
+-					return rc;
+-			} else if (str[1] == 'm' && str[2] == 'p' &&
+-				   isdigit(*(str+3))) {
+-				rc = kstrtoint(str+3, 0, &reboot_cpu);
+-				if (rc)
+-					return rc;
+-			} else
++			if (isdigit(*(str+1)))
++				reboot_cpu = simple_strtoul(str+1, NULL, 0);
++			else if (str[1] == 'm' && str[2] == 'p' &&
++							isdigit(*(str+3)))
++				reboot_cpu = simple_strtoul(str+3, NULL, 0);
++			else
+ 				reboot_mode = REBOOT_SOFT;
+ 			break;
+-		}
++
+ 		case 'g':
+ 			reboot_mode = REBOOT_GPIO;
+ 			break;
 
 
