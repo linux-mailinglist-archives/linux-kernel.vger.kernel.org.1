@@ -2,119 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C48E2B5C67
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BB42B5C6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgKQJ7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:59:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41455 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725770AbgKQJ7h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:59:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605607176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8mOqkemx80iqAEbsvZPEHgtzkP43+VniYkthIUbTgE4=;
-        b=jUPyGd/h/Yjs7Ang6PQCCDLLUksFeJqpDaTdh8U5+SASUpaA/GRF5eUq02rIGs67isbGuj
-        MdROD4rYVPFzjJFv50J53Mab4PoUeSNQbAmiy/mY9XIiQZBj0OhD7gViX9o9AV8sMTlgCD
-        OKOVCx3Zk0p9iZ3MSIauVvNewsi6WoA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-_3BCSZ60ORWuvma_yhqS-Q-1; Tue, 17 Nov 2020 04:59:34 -0500
-X-MC-Unique: _3BCSZ60ORWuvma_yhqS-Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A5EA91899422;
-        Tue, 17 Nov 2020 09:59:32 +0000 (UTC)
-Received: from [10.36.113.230] (ovpn-113-230.ams2.redhat.com [10.36.113.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B5A335D9CC;
-        Tue, 17 Nov 2020 09:59:29 +0000 (UTC)
-Subject: Re: [PATCH 1/2] KVM: arm64: vgic: Forbid invalid userspace
- Redistributor accesses
-To:     Marc Zyngier <maz@kernel.org>, Zenghui Yu <yuzenghui@huawei.com>
-Cc:     suzuki.poulose@arm.com, linux-kernel@vger.kernel.org,
-        james.morse@arm.com, linux-arm-kernel@lists.infradead.org,
-        wanghaibin.wang@huawei.com, Keqian Zhu <zhukeqian1@huawei.com>,
-        kvmarm@lists.cs.columbia.edu, julien.thierry.kdev@gmail.com
-References: <20201113142801.1659-1-yuzenghui@huawei.com>
- <20201113142801.1659-2-yuzenghui@huawei.com>
- <724c43702b52aac0d3c9beb9604d1bfb@kernel.org>
- <584b7ff1-ecf2-b0ec-cea3-ccc29902f43a@huawei.com>
- <cc45285fe491aff5c28a24f94c124508@kernel.org>
- <7e58200c-814e-3598-155a-9a7e6cc24374@huawei.com>
- <c20865a267e44d1e2c0d52ce4e012263@kernel.org>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <5ba4a98e-276b-2462-0580-fe0e007e9b38@redhat.com>
-Date:   Tue, 17 Nov 2020 10:59:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727397AbgKQKAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:00:15 -0500
+Received: from mga11.intel.com ([192.55.52.93]:20070 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725770AbgKQKAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 05:00:15 -0500
+IronPort-SDR: Ib9f74fJNhbQhSSVyMY6o8ej0oI3HU4yUg4UafjOmzu6IqXQoGEB3PHm4IFPKVte/9IoQMCZ45
+ HSufaRhZez/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="167385655"
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="167385655"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 02:00:13 -0800
+IronPort-SDR: FP65aetSCR/Lm30uZbIbLXVN5ZvVrep09gqVwZhMnSGu3snl3+Ibv7wfAY+yGWqo2Q9SS8SIxG
+ +UHPiz0Edrcw==
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="543978397"
+Received: from wrzedzic-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.36.164])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 02:00:09 -0800
+Subject: Re: [PATCH] xsk: add cq event
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <964677c6-442c-485e-9268-3a801dbd4bd3@orsmsx607.amr.corp.intel.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <3306b4d8-8689-b0e7-3f6d-c3ad873b7093@intel.com>
+Date:   Tue, 17 Nov 2020 11:00:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <c20865a267e44d1e2c0d52ce4e012263@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <964677c6-442c-485e-9268-3a801dbd4bd3@orsmsx607.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On 11/17/20 9:49 AM, Marc Zyngier wrote:
-> Hi Zenghui,
+On 2020-11-16 17:12, Xuan Zhuo wrote:
+> On Mon, 16 Nov 2020 15:31:20 +0100, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com> wrote:
 > 
-> On 2020-11-16 14:57, Zenghui Yu wrote:
->> Hi Marc,
->>
->> On 2020/11/16 22:10, Marc Zyngier wrote:
->>>> My take is that only if the "[Re]Distributor base address" is specified
->>>> in the system memory map, will the user-provided kvm_device_attr.offset
->>>> make sense. And we can then handle the access to the register which is
->>>> defined by "base address + offset".
+>> On 2020-11-16 09:10, Xuan Zhuo wrote:
+> 
+>>> When we write all cq items to tx, we have to wait for a new event based
+> 
+>>> on poll to indicate that it is writable. But the current writability is
+> 
+>>> triggered based on whether tx is full or not, and In fact, when tx is
+> 
+>>> dissatisfied, the user of cq's item may not necessarily get it, because it
+> 
+>>> may still be occupied by the network card. In this case, we need to know
+> 
+>>> when cq is available, so this patch adds a socket option, When the user
+> 
+>>> configures this option using setsockopt, when cq is available, a
+> 
+>>> readable event is generated for all xsk bound to this umem.
+> 
 >>>
->>> I'd tend to agree, but it is just that this is a large change at -rc4.
->>> I'd rather have a quick fix for 5.10, and a more invasive change for
->>> 5.11,
->>> spanning all the possible vgic devices.
+> 
+>>> I can't find a better description of this event,
+> 
+>>> I think it can also be 'readable', although it is indeed different from
+> 
+>>> the 'readable' of the new data. But the overhead of xsk checking whether
+> 
+>>> cq or rx is readable is small.
+> 
+>>>
+> 
+>>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> 
 >>
->> So you prefer fixing it by "return a value that doesn't have the Last
->> bit set" for v5.10? I'm ok with it and can send v2 for it.
 > 
-> Cool. Thanks for that.
+>> Thanks for the patch!
 > 
->> Btw, looking again at the way we handle the user-reading of GICR_TYPER
 >>
->>     vgic_mmio_read_v3r_typer(vcpu, addr, len)
+> 
+>> I'm not a fan of having two different "readable" event (both Rx and cq).
+> 
+>> Could you explain a bit what the use case is, so I get a better
+> 
+>> understanding.
+> 
 >>
->> it seems that @addr is actually the *offset* of GICR_TYPER (0x0008) and
->> @addr is unlikely to be equal to last_rdist_typer, which is the *GPA* of
->> the last RD. Looks like the user-reading of GICR_TYPER.Last is always
->> broken?
 > 
-> I think you are right. Somehow, we don't seem to track the index of
-> the RD in the region, so we can never compute the address of the RD
-> even if the base address is set.
+>> The Tx queues has a back-pressure mechanism, determined of the number of
 > 
-> Let's drop the reporting of Last for userspace for now, as it never
-> worked. If you post a patch addressing that quickly, I'll get it to
-> Paolo by the end of the week (there's another fix that needs merging).
+>> elements in cq. Is it related to that?
 > 
-> Eric: do we have any test covering the userspace API?
+>>
+> 
+>> Please explain a bit more what you're trying to solve, and maybe we can
+> 
+>> figure out a better way forward!
+> 
+>>
+> 
+>>
+> 
+>> Thanks!
+> 
+>> Björn
+> 
+> I want to implement a tool for mass sending. For example, the size of cq is
+> 
+> 1024, and I set the size of tx also to 1024, so that I will put all cq in tx at
+> 
+> once, and then I have to wait for an event, come Indicates that there is new
+> 
+> write space or new cq is available.
+> 
+> 
+> 
+> At present, we can only monitor the event of write able. This indicates whether
+> 
+> tx is full, but in fact, tx is basically not full, because the full state is
+> 
+> very short, and those tx items are being used by the network card. And
+> 
+> epoll_wait will be awakened directly every time, without waiting, but I cannot
+> 
+> get the cq item, so I still cannot successfully send the package again.
+> 
+> 
+> 
+> Of course, I don't like the "readable" event very much. This is a suitable
+> 
+> one I found in the existing epoll event. ^_^
+>
 
-So as this issue seems related to the changes made when implementing the
-multiple RDIST regions, I volunteer to write those KVM selftests :-)
+More questions! By "Mass sending" do you mean maximum throughput, or
+does that mean "in very large batches"?
 
-Thanks
+For the latter to do 1k batches, you could increase the Tx/cq buffer
+size to say 4k.
 
-Eric
+For maximum thoughput it's better to use smaller batches (e.g. what the
+txpush scenario in samples/xdpsock does).
+
+You're right that even if there's space in the Tx ring, it wont be sent
+unless there's sufficient space in the cq ring. Maybe it would make
+sense to be more restrictive when triggering the "writable" socket
+event? E.g. only trigger it when there's space in Tx *and* sufficient cq
+space?
+
+
+Björn
 
 > 
-> Thanks,
 > 
->         M.
-
+> Thanks.
+> 
