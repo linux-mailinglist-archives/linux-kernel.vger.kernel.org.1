@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53722B56F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5522B56BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbgKQCjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:39:25 -0500
-Received: from mga04.intel.com ([192.55.52.120]:52576 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727482AbgKQCjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:39:23 -0500
-IronPort-SDR: rI1IP4Nmlgs9G9NHAKTJV0lOd7RwtgMHKBMKn2OZu8dqzCLnGnNh2o70KU6knzljgCdM1IWu1b
- TFBApSpZJsSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="168274117"
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="168274117"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 18:39:23 -0800
-IronPort-SDR: pnQnnQoUht6oCx03o1gFgST3/vExmvYCidK67wZqAoN72d+Av75JUVeJZ727/XlEb+KICfusIC
- /Au0COsKUwGA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="358706155"
-Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Nov 2020 18:39:21 -0800
-From:   Sia Jee Heng <jee.heng.sia@intel.com>
-To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
-Cc:     andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v4 15/15] dmaengine: dw-axi-dmac: Set constraint to the Max segment size
-Date:   Tue, 17 Nov 2020 10:22:15 +0800
-Message-Id: <20201117022215.2461-16-jee.heng.sia@intel.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201117022215.2461-1-jee.heng.sia@intel.com>
-References: <20201117022215.2461-1-jee.heng.sia@intel.com>
+        id S1726619AbgKQCaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:30:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20243 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726519AbgKQCaG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 21:30:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605580205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CmZ1mGxlAVYrel/KK7OgqUxp4N3oZUIGmB1egO/JG/0=;
+        b=W1bcZiRuFYzkNidavFq+0znMaIfQfhmnH5Y3OeCS9iLhrqI8vZzh7XbeULemi9hIdHS/dv
+        is432aE2lxmPW1rZtJXkGnlrcn9wiwHGrVhfX2btWxFyBraP9O9UHAgjUrHJvGRAkmRCqL
+        w1BN8RiIqEGWWx5IPWiT5oRIEA2605E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-69-M2lvSCNmNwiLwy4MuK1gcQ-1; Mon, 16 Nov 2020 21:30:03 -0500
+X-MC-Unique: M2lvSCNmNwiLwy4MuK1gcQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91968107ACF5;
+        Tue, 17 Nov 2020 02:30:02 +0000 (UTC)
+Received: from [10.72.13.201] (ovpn-13-201.pek2.redhat.com [10.72.13.201])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B214760C04;
+        Tue, 17 Nov 2020 02:29:57 +0000 (UTC)
+Subject: Re: [PATCH] vringh: fix vringh_iov_push_*() documentation
+To:     Stefano Garzarella <sgarzare@redhat.com>, mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20201116161653.102904-1-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3aa02874-1c7f-d516-b80b-c79b33c0b1fd@redhat.com>
+Date:   Tue, 17 Nov 2020 10:29:56 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201116161653.102904-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for DMA Scatter-Gather (SG) constraint so that DMA clients can
-handle the AxiDMA limitation.
 
-Without supporting DMA constraint the default Max segment size reported by
-dmaengine is 64KB, which is not supported by Intel KeemBay AxiDMA.
+On 2020/11/17 上午12:16, Stefano Garzarella wrote:
+> vringh_iov_push_*() functions don't have 'dst' parameter, but have
+> the 'src' parameter.
+>
+> Replace 'dst' description with 'src' description.
+>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
----
- drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 8 ++++++++
- drivers/dma/dw-axi-dmac/dw-axi-dmac.h          | 1 +
- 2 files changed, 9 insertions(+)
 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index cc05f66c7a4f..e20d8d4b1dff 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -12,6 +12,7 @@
- #include <linux/device.h>
- #include <linux/dmaengine.h>
- #include <linux/dmapool.h>
-+#include <linux/dma-mapping.h>
- #include <linux/err.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-@@ -1347,6 +1348,13 @@ static int dw_probe(struct platform_device *pdev)
- 	dw->dma.device_prep_slave_sg = dw_axi_dma_chan_prep_slave_sg;
- 	dw->dma.device_prep_dma_cyclic = dw_axi_dma_chan_prep_cyclic;
- 
-+	/*
-+	 * Synopsis DesignWare AxiDMA datasheet mentioned Maximum
-+	 * supported blocks is 1024. Device register width is 4 bytes.
-+	 * Therefore, set constraint to 1024 * 4.
-+	 */
-+	dw->dma.dev->dma_parms = &dw->dma_parms;
-+	dma_set_max_seg_size(&pdev->dev, MAX_BLOCK_SIZE);
- 	platform_set_drvdata(pdev, chip);
- 
- 	pm_runtime_enable(chip->dev);
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index f64e8d33b127..67669049cead 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-@@ -54,6 +54,7 @@ struct axi_dma_chan {
- struct dw_axi_dma {
- 	struct dma_device	dma;
- 	struct dw_axi_dma_hcfg	*hdata;
-+	struct device_dma_parameters	dma_parms;
- 
- 	/* channels */
- 	struct axi_dma_chan	*chan;
--- 
-2.18.0
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+> ---
+>   drivers/vhost/vringh.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> index 8bd8b403f087..b7403ba8e7f7 100644
+> --- a/drivers/vhost/vringh.c
+> +++ b/drivers/vhost/vringh.c
+> @@ -730,7 +730,7 @@ EXPORT_SYMBOL(vringh_iov_pull_user);
+>   /**
+>    * vringh_iov_push_user - copy bytes into vring_iov.
+>    * @wiov: the wiov as passed to vringh_getdesc_user() (updated as we consume)
+> - * @dst: the place to copy.
+> + * @src: the place to copy from.
+>    * @len: the maximum length to copy.
+>    *
+>    * Returns the bytes copied <= len or a negative errno.
+> @@ -976,7 +976,7 @@ EXPORT_SYMBOL(vringh_iov_pull_kern);
+>   /**
+>    * vringh_iov_push_kern - copy bytes into vring_iov.
+>    * @wiov: the wiov as passed to vringh_getdesc_kern() (updated as we consume)
+> - * @dst: the place to copy.
+> + * @src: the place to copy from.
+>    * @len: the maximum length to copy.
+>    *
+>    * Returns the bytes copied <= len or a negative errno.
+> @@ -1333,7 +1333,7 @@ EXPORT_SYMBOL(vringh_iov_pull_iotlb);
+>    * vringh_iov_push_iotlb - copy bytes into vring_iov.
+>    * @vrh: the vring.
+>    * @wiov: the wiov as passed to vringh_getdesc_iotlb() (updated as we consume)
+> - * @dst: the place to copy.
+> + * @src: the place to copy from.
+>    * @len: the maximum length to copy.
+>    *
+>    * Returns the bytes copied <= len or a negative errno.
 
