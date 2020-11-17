@@ -2,152 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4AF2B5B15
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D59E2B5B1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgKQIiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:38:09 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6970 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725823AbgKQIiJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:38:09 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb38be70000>; Tue, 17 Nov 2020 00:37:59 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
- 2020 08:38:07 +0000
-Received: from jckuo-lt.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 17 Nov 2020 08:38:05 +0000
-From:   JC Kuo <jckuo@nvidia.com>
-To:     <kishon@ti.com>, <vkoul@kernel.org>, <gregkh@linuxfoundation.org>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <nkristam@nvidia.com>, JC Kuo <jckuo@nvidia.com>
-Subject: [PATCH v1] phy: tegra: xusb: Fix usb_phy device driver field
-Date:   Tue, 17 Nov 2020 16:38:03 +0800
-Message-ID: <20201117083803.185209-1-jckuo@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726503AbgKQIij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:38:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725804AbgKQIii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 03:38:38 -0500
+Received: from coco.lan (ip5f5ad5cc.dynamic.kabel-deutschland.de [95.90.213.204])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E6C224671;
+        Tue, 17 Nov 2020 08:38:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605602316;
+        bh=bhWYF4jKpjhdrI34GVPV7kwXAMqL8l607VbvTjslYBw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wOSj/vB5MvBoER2dul+k29HA9Cxjkr/leSPSXkJ8d+p4x6ZHX1ctLeAnRYyEhbQNj
+         fPFo4TIPNFHhwIRjCj6SYyQ9A7dh2FJ1xeDM+7AAkhHvLv9eb2NtyiQ+sVy88A92Fv
+         y0HdW2xOxALoqiqQchZCYJChoMJXE+4GkU05TQME=
+Date:   Tue, 17 Nov 2020 09:38:30 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] regulator: hi6421v600-regulator: move it from
+ staging
+Message-ID: <20201117093830.29861118@coco.lan>
+In-Reply-To: <20201116183833.GC4739@sirena.org.uk>
+References: <cover.1605530560.git.mchehab+huawei@kernel.org>
+        <471362653f22a8748202c55babd2b462056a5797.1605530560.git.mchehab+huawei@kernel.org>
+        <20201116183833.GC4739@sirena.org.uk>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605602279; bh=eRjgCKXXvY73ClLCAEsF2Rjn8XJRFex977OZk+wXtq4=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=M+f2iO3llrdDlcM/KChFW8YcvFpgFY9oRBYtCF6bZThSPg7/Y+F4TdzHiLz5QSDV0
-         BovKSQsowASiEwpp/Buub/kh4+wZ7s0vlZ2Nqz3EV/WoFsnZhBdLAnFC4UMVbgwaDd
-         /eXRd6Ri783ag/IUR/MFVain5m4jQg1+NKxZWER6FVKmgqAwFGQxzWKP0mmz6OWXp4
-         /YhWkm58E91mgWhFr6uaVnNU8oylUFmbA/fEJdwid6V0nbk9jh3+mPOMOQKjg4Oq3k
-         2teRzPhFC3NJqs03QcFv6pIm+yZWSoZc/XAMyIFd2fQIFwj328PrwLOMe8YzrFBeSO
-         omnrVLZ7RNivQ==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit "phy: tegra: xusb: Add usb-phy support", an OTG capable PHY
-device, such as phy-usb2.0 device of Jetson-TX1 platform, will be
-bound to the tegra-xusb-padctl driver by the following line in
-tegra_xusb_setup_usb_role_switch().
+Em Mon, 16 Nov 2020 18:38:33 +0000
+Mark Brown <broonie@kernel.org> escreveu:
 
-	port->usb_phy.dev->driver =3D port->padctl->dev->driver;
+> On Mon, Nov 16, 2020 at 01:59:30PM +0100, Mauro Carvalho Chehab wrote:
+> 
+> > This driver is ready for mainstream. Move it out of staging.  
+> 
+> There's quite a few issues here, to be honest I'm disappointed some of
+> them weren't caught during staging review, this needs fairly substantial
+> work and there's signs that this also applies to at least the MFD
+> portion.
+> 
+> This also appears to be missing a DT binding document, binding
+> documentation is required for anything with DT support.
 
-With this, dev_pm_ops set of tegra-xusb-padctl driver will be invoked
-for the OTG capable PHY incorrectly as below logs show.
+The DT binding is documented on patch 3/8, together with MFD.
 
-This commit fixes the issue by assigning an empty driver to it.
+As there's just one compatible for MFD and regulators altogether,
+I opted to have just one DT binding document for both.
 
-[  153.451108] tegra-xusb-padctl phy-usb2.0: > tegra_xusb_padctl_suspend_no=
-irq(dev=3Dffff000080917000)
-[  153.460353] tegra-xusb-padctl phy-usb2.0:   driver: ffff8000114453e0 (te=
-gra_xusb_padctl_driver)
-[  153.469245] tegra-xusb-padctl phy-usb2.0:   padctl: ffff0000829f6480
-[  153.475772] tegra-xusb-padctl phy-usb2.0:     soc: ef7bdd7fffffffff (0xe=
-f7bdd7fffffffff)
-[  153.484061] Unable to handle kernel paging request at virtual address 00=
-7bdd800000004f
-[  153.492132] Mem abort info:
-[  153.495083]   ESR =3D 0x96000004
-[  153.498308]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-[  153.503771]   SET =3D 0, FnV =3D 0
-[  153.506979]   EA =3D 0, S1PTW =3D 0
-[  153.510260] Data abort info:
-[  153.513200]   ISV =3D 0, ISS =3D 0x00000004
-[  153.517181]   CM =3D 0, WnR =3D 0
-[  153.520302] [007bdd800000004f] address between user and kernel address r=
-anges
-[  153.527600] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[  153.533231] Modules linked in: nouveau panel_simple tegra_video(C) tegra=
-_drm drm_ttm_helper videobuf2_dma_contig ttm videobuf2_memops cec videobuf2=
-_v4l2 videobuf2_common drm_kms_helper v4l2_fwnode videodev drm mc snd_hda_c=
-odec_hdmi cdc_ether usbnet snd_hda_tegra r8152 crct10dif_ce snd_hda_codec s=
-nd_hda_core tegra_xudc host1x lp855x_bl at24 ip_tables x_tables ipv6
-[  153.566417] CPU: 0 PID: 300 Comm: systemd-sleep Tainted: G         C    =
-    5.10.0-rc3-next-20201113-00019-g5c064d5372b0-dirty #624
-[  153.578283] Hardware name: NVIDIA Jetson TX1 Developer Kit (DT)
-[  153.584281] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=3D--)
-[  153.590381] pc : tegra_xusb_padctl_suspend_noirq+0x88/0x100
-[  153.596016] lr : tegra_xusb_padctl_suspend_noirq+0x80/0x100
-[  153.601632] sp : ffff8000120dbb60
-[  153.604999] x29: ffff8000120dbb60 x28: ffff000080a1df00
-[  153.610430] x27: 0000000000000002 x26: ffff8000106f8540
-[  153.615858] x25: ffff8000113ac4a4 x24: ffff80001148c198
-[  153.621277] x23: ffff800010c4538c x22: 0000000000000002
-[  153.626692] x21: ffff800010ccde80 x20: ffff0000829f6480
-[  153.632107] x19: ffff000080917000 x18: 0000000000000030
-[  153.637521] x17: 0000000000000000 x16: 0000000000000000
-[  153.642933] x15: ffff000080a1e380 x14: 74636461702d6273
-[  153.648346] x13: ffff8000113ad058 x12: 0000000000000f39
-[  153.653759] x11: 0000000000000513 x10: ffff800011405058
-[  153.659176] x9 : 00000000fffff000 x8 : ffff8000113ad058
-[  153.664590] x7 : ffff800011405058 x6 : 0000000000000000
-[  153.670002] x5 : 0000000000000000 x4 : ffff0000fe908bc0
-[  153.675414] x3 : ffff0000fe910228 x2 : 162ef67e0581e700
-[  153.680826] x1 : 162ef67e0581e700 x0 : ef7bdd7fffffffff
-[  153.686241] Call trace:
-[  153.688769]  tegra_xusb_padctl_suspend_noirq+0x88/0x100
-[  153.694077]  __device_suspend_noirq+0x68/0x1cc
-[  153.698594]  dpm_noirq_suspend_devices+0x10c/0x1d0
-[  153.703456]  dpm_suspend_noirq+0x28/0xa0
-[  153.707461]  suspend_devices_and_enter+0x234/0x4bc
-[  153.712314]  pm_suspend+0x1e4/0x270
-[  153.715868]  state_store+0x8c/0x110
-[  153.719440]  kobj_attr_store+0x1c/0x30
-[  153.723259]  sysfs_kf_write+0x4c/0x7c
-[  153.726981]  kernfs_fop_write+0x124/0x240
-[  153.731065]  vfs_write+0xe4/0x204
-[  153.734449]  ksys_write+0x6c/0x100
-[  153.737925]  __arm64_sys_write+0x20/0x30
-[  153.741931]  el0_svc_common.constprop.0+0x78/0x1a0
-[  153.746789]  do_el0_svc+0x24/0x90
-[  153.750181]  el0_sync_handler+0x254/0x260
-[  153.754251]  el0_sync+0x174/0x180
-[  153.757663] Code: aa0303e2 94000f64 f9405680 b40000e0 (f9402803)
-[  153.763826] ---[ end trace 81543a3394cb409d ]---
+> 
+> > +config REGULATOR_HI6421V600
+> > +	tristate "HiSilicon Hi6421v600 PMIC voltage regulator support"
+> > +	depends on MFD_HI6421_SPMI && OF
+> > +	depends on REGULATOR  
+> 
+> This is inside an if REGULATOR block, as with all the other regulator
+> drivers it doesn't need a dependency on REGULATOR.
 
-Fixes: e8f7d2f409a1 ("phy: tegra: xusb: Add usb-phy support")
+I'll drop it. This was needed while this was inside staging.
 
-Signed-off-by: JC Kuo <jckuo@nvidia.com>
----
- drivers/phy/tegra/xusb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> > --- /dev/null
+> > +++ b/drivers/regulator/hi6421v600-regulator.c
+> > @@ -0,0 +1,478 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Device driver for regulators in Hisi IC  
+> 
+> Please make the entire comment a C++ one so things look more
+> intentional.
 
-diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
-index ad88d74c1884..181a1be5f491 100644
---- a/drivers/phy/tegra/xusb.c
-+++ b/drivers/phy/tegra/xusb.c
-@@ -688,7 +688,7 @@ static int tegra_xusb_setup_usb_role_switch(struct tegr=
-a_xusb_port *port)
- 	 * reference to retrieve usb-phy details.
- 	 */
- 	port->usb_phy.dev =3D &lane->pad->lanes[port->index]->dev;
--	port->usb_phy.dev->driver =3D port->padctl->dev->driver;
-+	port->usb_phy.dev->driver =3D port->dev.driver;
- 	port->usb_phy.otg->usb_phy =3D &port->usb_phy;
- 	port->usb_phy.otg->set_peripheral =3D tegra_xusb_set_peripheral;
- 	port->usb_phy.otg->set_host =3D tegra_xusb_set_host;
---=20
-2.25.1
+Ok.
 
+> 
+> > +#include <linux/delay.h>
+> > +#include <linux/device.h>
+> > +#include <linux/err.h>
+> > +#include <linux/io.h>
+> > +#include <linux/mfd/hi6421-spmi-pmic.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_address.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/of.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/regulator/driver.h>
+> > +#include <linux/regulator/machine.h>
+> > +#include <linux/regulator/of_regulator.h>
+> > +#include <linux/seq_file.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/spmi.h>
+> > +#include <linux/time.h>
+> > +#include <linux/uaccess.h>  
+> 
+> Are we sure about *all* these includes?
+
+I'll double check and do some cleanups.
+
+> 
+> > +#define rdev_dbg(rdev, fmt, arg...)	\
+> > +		 pr_debug("%s: %s: " fmt, (rdev)->desc->name, __func__, ##arg)  
+> 
+> If it is useful to copy this then put it in a header rather than
+> cut'n'pasting it.  I'm not sure I see a pressing need for most of the
+> trace here, it looks to be duplicating a lot of things the core does for
+> you.
+
+I'll cleanup the debug messages, and place this on a header.
+
+Due to SPMI bus, the standard debug macros don't work fine on
+this file.
+
+> 
+> > +static DEFINE_MUTEX(enable_mutex);  
+> 
+> Drivers shouldn't be declaring global variables, if this is required it
+> should be allocated in driver data.
+
+I'll try to see a better place for this, but in this case, the
+mutex should be global anyway, as the access to the SPMI bus
+should be serialized.
+
+I suspect that a change like that will likely require touching
+the SPMI bus core, but I can't foresee the side effects to the
+Qualcomm SPMI drivers that would likely have their own ways
+to serialize access to the bus.
+
+> 
+> > +/*
+> > + * helper function to ensure when it returns it is at least 'delay_us'
+> > + * microseconds after 'since'.
+> > + */
+> > +
+> > +static int hi6421_spmi_regulator_is_enabled(struct regulator_dev *rdev)  
+> 
+> The helper function appears to have been removed?
+
+I'll drop the comment.
+
+> 
+> > +{
+> > +	struct hi6421v600_regulator *sreg = rdev_get_drvdata(rdev);
+> > +	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+> > +	u32 reg_val;
+> > +
+> > +	reg_val = hi6421_spmi_pmic_read(pmic, rdev->desc->enable_reg);
+> > +
+> > +	rdev_dbg(rdev,
+> > +		 "enable_reg=0x%x, val= 0x%x, enable_state=%d\n",
+> > +		 rdev->desc->enable_reg,
+> > +		 reg_val, (reg_val & rdev->desc->enable_mask));
+> > +
+> > +	return ((reg_val & rdev->desc->enable_mask) != 0);
+> > +}  
+> 
+> It looks like it would be less code overall to just implement a regmap
+> for the MFD, even if it were only used in this driver - almost
+> everything in here is just a carbon copy of standard helpers that the
+> core provides for regmap devices.  Doing it in the MFD would be more
+> idiomatic for everything though.
+
+I tried to use regmap for this driver while porting it from Linaro's
+OOT to upstream, but it turns that adding support for it is not trivial.
+
+I suspect that, just like I2C has their own set of regmap functions
+(regmap_init_i2c, devm_regmap_init_i2c), if we want to properly support
+regmap, we need first to add a SPMI variant to it, as the locking
+should be bus-aware.
+
+> 
+> > +static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
+> > +{
+> > +	struct hi6421v600_regulator *sreg = rdev_get_drvdata(rdev);
+> > +	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+> > +
+> > +	/* cannot enable more than one regulator at one time */
+> > +	mutex_lock(&enable_mutex);
+> > +	usleep_range(HISI_REGS_ENA_PROTECT_TIME,
+> > +		     HISI_REGS_ENA_PROTECT_TIME + 1000);
+> > +
+> > +	/* set enable register */
+> > +	rdev_dbg(rdev,
+> > +		 "off_on_delay=%d us, enable_reg=0x%x, enable_mask=0x%x\n",
+> > +		 rdev->desc->off_on_delay, rdev->desc->enable_reg,
+> > +		 rdev->desc->enable_mask);
+> > +
+> > +	hi6421_spmi_pmic_rmw(pmic, rdev->desc->enable_reg,
+> > +			     rdev->desc->enable_mask,
+> > +			     rdev->desc->enable_mask);  
+> 
+> This is the one operation which is doing anything unusual and which I'd
+> expect to be open coded in the driver - obviously this is a pretty
+> simplistic implementation but it will work though as indicated above it
+> shouldn't be using a global, the mutex should be in driver data.  I
+> guess you could use the mutex to protect a timestamp and use that to
+> figure out if a delay is actually needed?
+
+I'll rework this logic.
+
+> > +static int hi6421_spmi_dt_parse(struct platform_device *pdev,
+> > +				struct hi6421v600_regulator *sreg,
+> > +			 struct regulator_desc *rdesc)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	struct device_node *np = dev->of_node;
+> > +	unsigned int *v_table;
+> > +	int ret;
+> > +
+> > +	ret = of_property_read_u32(np, "reg", &rdesc->enable_reg);
+> > +	if (ret) {
+> > +		dev_err(dev, "missing reg property\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = of_property_read_u32(np, "vsel-reg", &rdesc->vsel_reg);  
+> 
+> There is no way this stuff should be being parsed out of DT, we should
+> know the register map for the device and what regulators it has based
+> purely off knowing what device we have.  Baking the register map into
+> the ABI is bad practice, it prevents us from improving our support for
+> the hardware without going and updating people's DTs.
+
+Well, I can move the existing registers out of DT, but, as I don't
+have any datasheet for this device, it means that I can implement
+there only a subset of the available LDOs. So, from the 36 LDOs that
+this chip support, we only know the registers for 8 of them:
+
+	ldo3, ldo4, ldo9, ldo15, ldo16, ldo17, ldo33 and ldo34.
+
+> > +	/*
+> > +	 * Not all regulators work on idle mode
+> > +	 */
+> > +	ret = of_property_read_u32(np, "idle-mode-mask", &sreg->eco_mode_mask);
+> > +	if (ret) {
+> > +		dev_dbg(dev, "LDO doesn't support economy mode.\n");
+> > +		sreg->eco_mode_mask = 0;
+> > +		sreg->eco_uA = 0;
+> > +	} else {
+> > +		ret = of_property_read_u32(np, "eco-microamp", &sreg->eco_uA);  
+> 
+> There's no conditional code to not register the mode operations if the
+> mode information is not available (and again this should be done based 
+> on knowing the properties of the device, this is unlikely to be system
+> dependent).
+
+This is the same case as before: as we don't have any datasheets,
+I only know what's there at the DT for just one device (Hikey 970).
+
+Again, we could hardcode those assuming Hikey 970 settings, but,
+if some other device using the same chip will ever be added, and
+they use some different configuration then we may face some
+backward-compatibility issues.
+
+> 
+> > +static int hi6421_spmi_regulator_probe_ldo(struct platform_device *pdev,
+> > +                                          struct device_node *np,
+> > +                                          struct hi6421_spmi_pmic *pmic)
+> > +{  
+> 
+> This probe code looks very different to other regulator drivers, this
+> alone should have been a warning that the driver needs some substantial
+> refactoring here.  As indicated information about what regulators are
+> present on devices and their properties should be in the driver not the
+> DT, the driver should just be able to register them unconditionally and
+> use of_match and regulators_node to allow the core to find any
+> constraints that are provided by the platform.
+
+(already commented on a separate e-mail)
+
+> 
+> > +	constraint->valid_modes_mask = REGULATOR_MODE_NORMAL;
+> > +	if (sreg->eco_mode_mask) {
+> > +		constraint->valid_modes_mask |= REGULATOR_MODE_IDLE;
+> > +		constraint->valid_ops_mask |= REGULATOR_CHANGE_MODE;
+> > +	}  
+> 
+> This is absolutely not OK, a regulator driver should *not* be modifying
+> the constraints that the machine has set.  If it is safe to change modes
+> on a platform and the system integrator wants to do that then they will
+> set the constraints appropriately, there is no way the regulator driver
+> can tell what is appropriate on a given system.  The fact that the
+> driver is including machine.h at all ought to have been an indicator
+> that there's an abstraction problem here.
+
+Ok. Where such constraints should be instead? at the Hikey 970 DT
+file?
+
+Thanks,
+Mauro
