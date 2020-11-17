@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9321F2B58C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3D32B58C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgKQEUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 23:20:45 -0500
-Received: from smtprelay0039.hostedemail.com ([216.40.44.39]:33848 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726826AbgKQEUp (ORCPT
+        id S1726655AbgKQEYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 23:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgKQEYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 23:20:45 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 83C7A837F24A;
-        Tue, 17 Nov 2020 04:20:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2689:2731:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3867:3868:3870:4321:4362:5007:6119:7514:7875:7903:9010:10004:10400:10848:11232:11658:11914:12297:12555:12740:12895:13095:13439:13894:14181:14659:14721:21080:21433:21451:21627:21740:21741:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: birth03_35059fb2732e
-X-Filterd-Recvd-Size: 3269
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 17 Nov 2020 04:20:43 +0000 (UTC)
-Message-ID: <477496bed101ed007e7e8db6d511ece2fa2d119c.camel@perches.com>
-Subject: Re: [PATCH v3] checkpatch: add fix option for MAINTAINERS_STYLE
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Mon, 16 Nov 2020 20:20:42 -0800
-In-Reply-To: <20201117040501.21914-1-yashsri421@gmail.com>
-References: <20201117040501.21914-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 16 Nov 2020 23:24:08 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA599C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 20:24:06 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id p68so4739383pga.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 20:24:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kym+WIvXEwEsWSxB5yZoBkT204D8P+KoJQqNQejcuVw=;
+        b=mkFlrCFoPs0LlKesu/WwzsFx5VtSaiENlfxp+37eTSD+dhkURoSDqP97G3N7kc70Un
+         4pm143z99NLSjXrff27+FKCqgXTjnbMtzGpKTjko1aWZKlwZ7HYLX+oZYUpMjuQC6xf3
+         InASiv+B9idCVVckduOORbbikhDWJKfXbwihETqLn4dOzcMXqUIjXecCVic4n78pW98c
+         CPhLK+wkScc+zxI9BuxIa4KWPQdTi//I/zvdj0QlUb9u8mLLxBKX3Z75eZszU1mZF2TG
+         NHHwFplRYj7foBqFGiks+yhYT3iLDSljmGuB6wAgIGKWOmeHwP1ohfRtUzy/ejd2/Ph8
+         NiUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kym+WIvXEwEsWSxB5yZoBkT204D8P+KoJQqNQejcuVw=;
+        b=oAvpA/79EVDU7EJujMLir+I0psq5cuhNzfLxFTNRCCpxcC0+/BF8kHJAXzno8ougpw
+         URRG+p/4I6DPqshwmur1mTtt0enEJXXPlXrUkYRDQWnd4giVf+hACy+1ru9sjd0ntTVj
+         Q1VETdrI4dQdhpl5BzvZStlpPsOdwjIEvxM6NzNTqiRw+SfbFEYnaNDutszaWhVAslcR
+         ep2wi+uKLZPKEzUaDyg+IDbuI1CTAcK2bgN3Do7dvtGDVA2a4+qwgFPs+VdO8o2uWZSQ
+         90UJiwO5hTa19xUBrNd6jsp8G0HgE0ct4mCji951lpB828tEd6yVkg4AYZXuV2nsDuV/
+         ec6Q==
+X-Gm-Message-State: AOAM533sVoi4fO9sc7K8SsEmrez9NWMGebiEI+F/cvcmdMLNudiU85pb
+        ye/eWgI9kz7U/wu0cDVMppVc
+X-Google-Smtp-Source: ABdhPJzTMEa2+7tU5c/2ocVkXIntNnCrqCgdfDc9zBt++t6tk3ibWKn2y/2NSpyZy3oeJmp2hZPQuw==
+X-Received: by 2002:a17:90a:ab91:: with SMTP id n17mr2632797pjq.23.1605587046251;
+        Mon, 16 Nov 2020 20:24:06 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id 17sm15180667pfi.180.2020.11.16.20.24.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 16 Nov 2020 20:24:04 -0800 (PST)
+Date:   Tue, 17 Nov 2020 09:53:59 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mhi tree
+Message-ID: <20201117042359.GB7787@work>
+References: <20201117151225.6a50abf8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117151225.6a50abf8@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-17 at 09:35 +0530, Aditya Srivastava wrote:
-> Checkpatch expects entries in MAINTAINERS file in a specific order and
-> warns if the changes made do not follow the specified order.
-> 
-> E.g., running checkpatch on commit b33bc2b878e0 ("nexthop: Add entry to
-> MAINTAINERS") reports this warning:
-> 
-> WARNING: Misordered MAINTAINERS entry - list file patterns in
-> alphabetic order
-> +F:	include/uapi/linux/nexthop.h
-> +F:	include/net/netns/nexthop.h
++ath11k list, kalle
 
-OK, this should work.
-Thanks Aditya.
+On Tue, Nov 17, 2020 at 03:12:25PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the mhi tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+> 
+> drivers/net/wireless/ath/ath11k/mhi.c:27:4: error: 'struct mhi_channel_config' has no member named 'auto_start'
+>    27 |   .auto_start = false,
+>       |    ^~~~~~~~~~
+> drivers/net/wireless/ath/ath11k/mhi.c:42:4: error: 'struct mhi_channel_config' has no member named 'auto_start'
+>    42 |   .auto_start = false,
+>       |    ^~~~~~~~~~
+> drivers/net/wireless/ath/ath11k/mhi.c:57:4: error: 'struct mhi_channel_config' has no member named 'auto_start'
+>    57 |   .auto_start = true,
+>       |    ^~~~~~~~~~
+> drivers/net/wireless/ath/ath11k/mhi.c:72:4: error: 'struct mhi_channel_config' has no member named 'auto_start'
+>    72 |   .auto_start = true,
+>       |    ^~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   0cc1f3a385b2 ("bus: mhi: Remove auto-start option")
+> 
 
-Acked-by: Joe Perches <joe@perches.com>
+The fixing patch [1] should've landed in ath-next. Kalle can you please
+apply the patch on top of immutable branch?
 
+Stephen, feel free to pick it up in the meantime.
+
+Thanks,
+Mani
+
+[1] https://lore.kernel.org/netdev/1601369799-22328-1-git-send-email-kvalo@codeaurora.org/
+
+
+> I have used the mhi tree from next-20201116 for today.
 > 
-> Provide a simple fix by swapping the unordered lines, if both the lines
-> are additions (start with '+')
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
-> Changes in v2:
-> modified commit message
-> 
-> Changes in v3:
-> add check if both the lines are additions(ie start with '+')
-> 
->  scripts/checkpatch.pl | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 2749f32dffe9..7ee3f05c354d 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3299,13 +3299,22 @@ sub process {
->  					     "Unknown MAINTAINERS entry type: '$cur'\n" . $herecurr);
->  				} else {
->  					if ($previndex >= 0 && $curindex < $previndex) {
-> -						WARN("MAINTAINERS_STYLE",
-> -						     "Misordered MAINTAINERS entry - list '$cur:' before '$prev:'\n" . $hereprev);
-> +						if (WARN("MAINTAINERS_STYLE",
-> +							 "Misordered MAINTAINERS entry - list '$cur:' before '$prev:'\n" . $hereprev) &&
-> +						    $fix && $prevrawline =~ /^\+[A-Z]:/) {
-> +							# swap these lines
-> +							$fixed[$fixlinenr - 1] = $rawline;
-> +							$fixed[$fixlinenr] = $prevrawline;
-> +						}
->  					} elsif ((($prev eq 'F' && $cur eq 'F') ||
->  						  ($prev eq 'X' && $cur eq 'X')) &&
->  						 ($prevval cmp $curval) > 0) {
-> -						WARN("MAINTAINERS_STYLE",
-> -						     "Misordered MAINTAINERS entry - list file patterns in alphabetic order\n" . $hereprev);
-> +						if (WARN("MAINTAINERS_STYLE",
-> +							 "Misordered MAINTAINERS entry - list file patterns in alphabetic order\n" . $hereprev) &&
-> +						    $fix && $prevrawline =~ /^\+[A-Z]:/) {
-> +							$fixed[$fixlinenr - 1] = $rawline;
-> +							$fixed[$fixlinenr] = $prevrawline;
-> +						}
->  					}
->  				}
->  			}
+> -- 
+> Cheers,
+> Stephen Rothwell
 
 
