@@ -2,238 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4982B7268
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2412B726A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbgKQX3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:29:00 -0500
-Received: from mga12.intel.com ([192.55.52.136]:64716 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbgKQX27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:28:59 -0500
-IronPort-SDR: 0YHpqjGFDPM/TTFqyvVGK4726H3E12qQ9S1P0PU/nQDJdZkwQxM6QSgRBEGm6ifMx05UMAPCTf
- NP1mjfQ+oajQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="150301990"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="150301990"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 15:28:59 -0800
-IronPort-SDR: ah5dh/LTZZz6W9ZTKidE+bnS6QmsgOIMMDjQ/3sOQLNX6KpayiUUez3N5NoLhMzc4HnnZx1Nyt
- Z2hr4oKLwAXg==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="430618313"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.24.101]) ([10.212.24.101])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 15:28:58 -0800
-Subject: Re: [PATCH 11/24] x86/resctrl: Group staged configuration into a
- separate struct
-To:     James Morse <james.morse@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-References: <20201030161120.227225-1-james.morse@arm.com>
- <20201030161120.227225-12-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <28586ec7-608f-4857-19f9-f9a9d5c927f5@intel.com>
-Date:   Tue, 17 Nov 2020 15:28:57 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726523AbgKQX3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:29:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgKQX3d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 18:29:33 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E298DC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:29:32 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id s13so412180wmh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:29:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GlGLdU3rd5bCgeYAdwEbTNrseBnDwGqmsLX/kx+4ztU=;
+        b=l5TmlNBF02C508yahqVzzJu2xsij69rRfVf2qWik3okKS2tJAgFzBfe6w/C+qNcS3W
+         YZc/gQhFziRnRC2PACisFj5Sm2l2hnm4ETf57wZ7900v5Tcf5dksa9XONy1Bkjpw7l6q
+         4pwcLWiZzya+0cfxH42hXBvjaAXyKSckYpP7g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GlGLdU3rd5bCgeYAdwEbTNrseBnDwGqmsLX/kx+4ztU=;
+        b=WqHr/R3/R5vl8DH103SqnOMITIdG/GgOvHV/z5SGLkFx7ly+pYIQmajmhqsH+xGVeH
+         qBJodXzqTrXwv6WqV7MG5zDYYqTfRDqxMiXF8AKLlI1a35a5IptjTzMD3kQBQ306ttJn
+         Ji/OqQgNM5+fiWc1b2fhzC/0ywcshwASySZSJgY8EG8efWgFRS+9DdofgIoyOi1zE7zB
+         cHFzmZzPRyKCjm1SLoSzapJQLy/MNu2H0nceEETKU3t0VTcfMXs0K2aBimgClCLItc+I
+         Xc4eowiJ899ZKwIrEyxwFsL3n+1l2C8RWaMLKIG7/eeW1MGEKEhzpBQlbd0gBfZjDex+
+         /HUQ==
+X-Gm-Message-State: AOAM533XJe+5sSxEosumQhlIyBopa5uhd8NOet8U87U8wa8mkpsfhxoS
+        Ku9dsrMO90f2JDxEoqqXeX5p1ohs0FPqzUHv
+X-Google-Smtp-Source: ABdhPJznFa5U6v0MtEpALP5uFBcZyFe4ubh6gG66TwACrqbQvTqcVQLSXITdUZbfHH7kAdzMio6b9w==
+X-Received: by 2002:a1c:4d03:: with SMTP id o3mr1410139wmh.150.1605655771321;
+        Tue, 17 Nov 2020 15:29:31 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id k3sm10212083wrn.81.2020.11.17.15.29.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 15:29:30 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+Subject: [PATCH bpf-next v4 1/2] bpf: Add bpf_bprm_opts_set helper
+Date:   Tue, 17 Nov 2020 23:29:28 +0000
+Message-Id: <20201117232929.2156341-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 MIME-Version: 1.0
-In-Reply-To: <20201030161120.227225-12-james.morse@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+From: KP Singh <kpsingh@google.com>
 
-On 10/30/2020 9:11 AM, James Morse wrote:
-> Arm's MPAM may have surprisingly large bitmaps for its cache
-> portions as the architecture allows up to 4K portions. The size
-> exposed via resctrl may not be the same, some scaling may
-> occur.
-> 
-> The values written to hardware may be unlike the values received
-> from resctrl, e.g. MBA percentages may be backed by a bitmap,
-> or a maximum value that isn't a percentage.
-> 
-> Today resctrl's ctrlval arrays are written to directly by the
+The helper allows modification of certain bits on the linux_binprm
+struct starting with the secureexec bit which can be updated using the
+BPF_F_BPRM_SECUREEXEC flag.
 
-If using a cryptic word like "ctrlval" it would be easier to understand 
-what is meant if it matches the variable in the code, "ctrl_val".
+secureexec can be set by the LSM for privilege gaining executions to set
+the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
+use of certain environment variables (like LD_PRELOAD).
 
-> resctrl filesystem code. e.g. apply_config(). This is a problem
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: KP Singh <kpsingh@google.com>
+---
+ include/uapi/linux/bpf.h       | 16 ++++++++++++++++
+ kernel/bpf/bpf_lsm.c           | 26 ++++++++++++++++++++++++++
+ scripts/bpf_helpers_doc.py     |  2 ++
+ tools/include/uapi/linux/bpf.h | 16 ++++++++++++++++
+ 4 files changed, 60 insertions(+)
 
-This sentence starts with "Today" implying what code does before this 
-change but the example function, apply_config() is introduced in this patch.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 162999b12790..a52299b80b9d 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3787,6 +3787,16 @@ union bpf_attr {
+  *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
+  *	Return
+  *		Pointer to the current task.
++ *
++ * long bpf_bprm_opts_set(struct linux_binprm *bprm, u64 flags)
++ *	Description
++ *		Set or clear certain options on *bprm*:
++ *
++ *		**BPF_F_BPRM_SECUREEXEC** Set the secureexec bit
++ *		which sets the **AT_SECURE** auxv for glibc. The bit
++ *		is cleared if the flag is not specified.
++ *	Return
++ *		**-EINVAL** if invalid *flags* are passed, zero otherwise.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3948,6 +3958,7 @@ union bpf_attr {
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
+ 	FN(get_current_task_btf),	\
++	FN(bprm_opts_set),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+@@ -4119,6 +4130,11 @@ enum bpf_lwt_encap_mode {
+ 	BPF_LWT_ENCAP_IP,
+ };
+ 
++/* Flags for bpf_bprm_opts_set helper */
++enum {
++	BPF_F_BPRM_SECUREEXEC	= (1ULL << 0),
++};
++
+ #define __bpf_md_ptr(type, name)	\
+ union {					\
+ 	type name;			\
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index 553107f4706a..b4f27a874092 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -7,6 +7,7 @@
+ #include <linux/filter.h>
+ #include <linux/bpf.h>
+ #include <linux/btf.h>
++#include <linux/binfmts.h>
+ #include <linux/lsm_hooks.h>
+ #include <linux/bpf_lsm.h>
+ #include <linux/kallsyms.h>
+@@ -51,6 +52,29 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 	return 0;
+ }
+ 
++/* Mask for all the currently supported BPRM option flags */
++#define BPF_F_BRPM_OPTS_MASK	BPF_F_BPRM_SECUREEXEC
++
++BPF_CALL_2(bpf_bprm_opts_set, struct linux_binprm *, bprm, u64, flags)
++{
++	if (flags & ~BPF_F_BRPM_OPTS_MASK)
++		return -EINVAL;
++
++	bprm->secureexec = (flags & BPF_F_BPRM_SECUREEXEC);
++	return 0;
++}
++
++BTF_ID_LIST_SINGLE(bpf_bprm_opts_set_btf_ids, struct, linux_binprm)
++
++const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
++	.func		= bpf_bprm_opts_set,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_BTF_ID,
++	.arg1_btf_id	= &bpf_bprm_opts_set_btf_ids[0],
++	.arg2_type	= ARG_ANYTHING,
++};
++
+ static const struct bpf_func_proto *
+ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+@@ -71,6 +95,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_task_storage_get_proto;
+ 	case BPF_FUNC_task_storage_delete:
+ 		return &bpf_task_storage_delete_proto;
++	case BPF_FUNC_bprm_opts_set:
++		return &bpf_bprm_opts_set_proto;
+ 	default:
+ 		return tracing_prog_func_proto(func_id, prog);
+ 	}
+diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
+index 31484377b8b1..c5bc947a70ad 100755
+--- a/scripts/bpf_helpers_doc.py
++++ b/scripts/bpf_helpers_doc.py
+@@ -418,6 +418,7 @@ class PrinterHelpers(Printer):
+             'struct bpf_tcp_sock',
+             'struct bpf_tunnel_key',
+             'struct bpf_xfrm_state',
++            'struct linux_binprm',
+             'struct pt_regs',
+             'struct sk_reuseport_md',
+             'struct sockaddr',
+@@ -465,6 +466,7 @@ class PrinterHelpers(Printer):
+             'struct bpf_tcp_sock',
+             'struct bpf_tunnel_key',
+             'struct bpf_xfrm_state',
++            'struct linux_binprm',
+             'struct pt_regs',
+             'struct sk_reuseport_md',
+             'struct sockaddr',
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 162999b12790..a52299b80b9d 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3787,6 +3787,16 @@ union bpf_attr {
+  *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
+  *	Return
+  *		Pointer to the current task.
++ *
++ * long bpf_bprm_opts_set(struct linux_binprm *bprm, u64 flags)
++ *	Description
++ *		Set or clear certain options on *bprm*:
++ *
++ *		**BPF_F_BPRM_SECUREEXEC** Set the secureexec bit
++ *		which sets the **AT_SECURE** auxv for glibc. The bit
++ *		is cleared if the flag is not specified.
++ *	Return
++ *		**-EINVAL** if invalid *flags* are passed, zero otherwise.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3948,6 +3958,7 @@ union bpf_attr {
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
+ 	FN(get_current_task_btf),	\
++	FN(bprm_opts_set),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+@@ -4119,6 +4130,11 @@ enum bpf_lwt_encap_mode {
+ 	BPF_LWT_ENCAP_IP,
+ };
+ 
++/* Flags for bpf_bprm_opts_set helper */
++enum {
++	BPF_F_BPRM_SECUREEXEC	= (1ULL << 0),
++};
++
+ #define __bpf_md_ptr(type, name)	\
+ union {					\
+ 	type name;			\
+-- 
+2.29.2.299.gdc1121823c-goog
 
-> if scaling or conversion is needed by the architecture.
-> 
-> The arch code should own the ctrlval array (to allow scaling and
-> conversion), and should only need a single copy of the array for the
-> values currently applied in hardware.
-
-ok, but that is the case, no?
-
-> 
-> Move the new_ctrl bitmap value and flag into a struct for staged
-> configuration changes. This is created as an array to allow one per type
-
-This is a bit cryptic as the reader may not know while reading this 
-commit message what "new_ctrl" is or where it is currently hosted.
-
-> of configuration. Today there is only one element in the array, but
-> eventually resctrl will use the array slots for CODE/DATA/BOTH to detect
-> a duplicate schema being written.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->   arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 49 ++++++++++++++++-------
->   arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 22 +++++-----
->   include/linux/resctrl.h                   | 17 +++++---
->   3 files changed, 60 insertions(+), 28 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> index 28d69c78c29e..0c95ed83eb05 100644
-> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-
-...
-
-> @@ -240,15 +244,30 @@ static int parse_line(char *line, struct resctrl_schema *s,
->   	return -EINVAL;
->   }
->   
-> +static void apply_config(struct rdt_hw_domain *hw_dom,
-> +			 struct resctrl_staged_config *cfg, int closid,
-> +			 cpumask_var_t cpu_mask, bool mba_sc)
-> +{
-> +	struct rdt_domain *dom = &hw_dom->resctrl;
-> +	u32 *dc = mba_sc ? hw_dom->mbps_val : hw_dom->ctrl_val;
-> +
-> +	if (cfg->new_ctrl != dc[closid]) {
-> +		cpumask_set_cpu(cpumask_any(&dom->cpu_mask), cpu_mask);
-> +		dc[closid] = cfg->new_ctrl;
-> +	}
-> +
-> +	cfg->have_new_ctrl = false;
-
-Why is this necessary?
-
-> +}
-> +
->   int update_domains(struct rdt_resource *r, int closid)
->   {
-> +	struct resctrl_staged_config *cfg;
->   	struct rdt_hw_domain *hw_dom;
->   	struct msr_param msr_param;
->   	cpumask_var_t cpu_mask;
->   	struct rdt_domain *d;
->   	bool mba_sc;
-> -	u32 *dc;
-> -	int cpu;
-> +	int cpu, i;
->   
->   	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
->   		return -ENOMEM;
-> @@ -260,10 +279,12 @@ int update_domains(struct rdt_resource *r, int closid)
->   	mba_sc = is_mba_sc(r);
->   	list_for_each_entry(d, &r->domains, list) {
->   		hw_dom = resctrl_to_arch_dom(d);
-> -		dc = !mba_sc ? hw_dom->ctrl_val : hw_dom->mbps_val;
-> -		if (d->have_new_ctrl && d->new_ctrl != dc[closid]) {
-> -			cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
-> -			dc[closid] = d->new_ctrl;
-> +		for (i = 0; i < ARRAY_SIZE(d->staged_config); i++) {
-
-I understand it may make later patches easier but it seems too early to 
-introduce this loop because apply_config() does not seem to be ready for 
-it yet (it would just keep overwriting a closid's config).
-
-> +			cfg = &hw_dom->resctrl.staged_config[i];
-> +			if (!cfg->have_new_ctrl)
-> +				continue;
-> +
-> +			apply_config(hw_dom, cfg, closid, cpu_mask, mba_sc);
->   		}
->   	}
->   
-> @@ -338,7 +359,7 @@ ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
->   
->   	list_for_each_entry(s, &resctrl_all_schema, list) {
->   		list_for_each_entry(dom, &s->res->domains, list)
-> -			dom->have_new_ctrl = false;
-> +			memset(dom->staged_config, 0, sizeof(dom->staged_config));
->   	}
->   
->   	while ((tok = strsep(&buf, "\n")) != NULL) {
-
-...
-
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 9f71f0238239..f1164bbb66c5 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -26,13 +26,21 @@ enum resctrl_conf_type {
->   	CDP_DATA,
->   };
->   
-> +/**
-> + * struct resctrl_staged_config - parsed configuration to be applied
-> + * @new_ctrl:		new ctrl value to be loaded
-> + * @have_new_ctrl:	did user provide new_ctrl for this domain
-
-The "for this domain" in this description is no longer appropriate after 
-the copy.
-
-> + */
-> +struct resctrl_staged_config {
-> +	u32			new_ctrl;
-> +	bool			have_new_ctrl;
-> +};
-> +
->   /**
->    * struct rdt_domain - group of cpus sharing an RDT resource
->    * @list:		all instances of this resource
->    * @id:			unique id for this instance
->    * @cpu_mask:		which cpus share this resource
-> - * @new_ctrl:		new ctrl value to be loaded
-> - * @have_new_ctrl:	did user provide new_ctrl for this domain
->    * @rmid_busy_llc:	bitmap of which limbo RMIDs are above threshold
->    * @mbm_total:		saved state for MBM total bandwidth
->    * @mbm_local:		saved state for MBM local bandwidth
-> @@ -41,15 +49,13 @@ enum resctrl_conf_type {
->    * @mbm_work_cpu:	worker cpu for MBM h/w counters
->    * @cqm_work_cpu:	worker cpu for CQM h/w counters
->    * @plr:		pseudo-locked region (if any) associated with domain
-> + * @staged_config:	parsed configuration to be applied
->    */
->   struct rdt_domain {
->   	struct list_head		list;
->   	int				id;
->   	struct cpumask			cpu_mask;
->   
-> -	u32				new_ctrl;
-> -	bool				have_new_ctrl;
-> -
->   	unsigned long			*rmid_busy_llc;
->   	struct mbm_state		*mbm_total;
->   	struct mbm_state		*mbm_local;
-> @@ -59,6 +65,7 @@ struct rdt_domain {
->   	int				cqm_work_cpu;
->   
->   	struct pseudo_lock_region	*plr;
-> +	struct resctrl_staged_config	staged_config[1];
->   };
->   
->   /**
-> 
-
-Reinette
