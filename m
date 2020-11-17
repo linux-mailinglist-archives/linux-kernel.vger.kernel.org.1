@@ -2,167 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EDF2B56B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2A02B56B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgKQCWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:22:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgKQCV7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:21:59 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7399AC0613CF;
-        Mon, 16 Nov 2020 18:21:59 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id e18so20851241edy.6;
-        Mon, 16 Nov 2020 18:21:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dWYfLnaz7eMh4mk9Ol5H/DxPsxeYULGyXYIpX0n46ZY=;
-        b=hm/6HF8AZx32MH6GUqGN22VPT+YjCqDtPQgDboGPJyisZ+iw8IDSJ4wdxa+ogCFOY4
-         Bl5C6CPYjMTfSxv8c4GFXYCxNWO1/TGtpXlaciIEP6bShnWD9NwWmfpepAtxl3VOWQaT
-         TPGE50sFAMXfrAOlUgGs4dHavEeMA8RASdW5VqlLfRmq6XnrXd7hShg3kTRK8SqPbC9Q
-         AUmabIyuq5TIgbie7tQK+Sd1T7MMSoXswU7ofZOkVY3isDuCWNzlVkh/pUkzHElTzuxo
-         EqsfxCZWY6uS8wkJLPE+KI18F00pX0MLhdpyPJC2w3i13SEQDkzdnziE4CzGGzNn/DOZ
-         0iIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dWYfLnaz7eMh4mk9Ol5H/DxPsxeYULGyXYIpX0n46ZY=;
-        b=doXybDVTMLF4qIHP4olKe16O45oVJSSKpr4zY0fcnL8W3uXKaF02px6Q4cCkGce+Sd
-         8xopveedjYPlCcmI/gAV+ohRfUAf3H5a+7hPmXs21riPW6xn3I40t1W320TTpNUeh0Ot
-         LUD9Dd5B/FWWfjjjIe53+cn07oW9kFBKNwRTQ+wdQr34tp8jDDM3VorG5+T+UZiaViXW
-         Yq+02xPf3xrUsd8m4+7dGeOxZoMPPbdFrOa/t27mojUFHOhTLAlwqz2kJBr6bHIEEEpe
-         X+qVqBmTFV+pGnQTHFpaR6InyPVmvk5D/z1w/X9kaPKkqm4CxmqyQdgl8BxJ7DCd4e7n
-         bvlw==
-X-Gm-Message-State: AOAM531P8JDcPre3s/eLsyz5daJbCrSt54dBjtha989M1OmMGdx/DVVP
-        M1e4y6GUuQlQSxgiJsfgk/i8owgHSs0qRmj2kHA=
-X-Google-Smtp-Source: ABdhPJzSZXbhNXs83jk0r2otHhgUsPbc2WydjS8m4+L0VpJzODtwqENSPE3ZC3wLDQFvMt8PSwY2ZBCQvr5WBW14NC4=
-X-Received: by 2002:aa7:c713:: with SMTP id i19mr18366608edq.296.1605579718211;
- Mon, 16 Nov 2020 18:21:58 -0800 (PST)
+        id S1726504AbgKQC3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:29:13 -0500
+Received: from mga18.intel.com ([134.134.136.126]:19890 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726085AbgKQC3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 21:29:13 -0500
+IronPort-SDR: Vo16YMykxqZOAGwG5BxUt95COAAVHopNRSaOH3NS5iWHlhc/hu/FY/z1KTbFUHs41jSO7he+vU
+ YAlqm+20H2ng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="158624643"
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="158624643"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 18:29:05 -0800
+IronPort-SDR: Aj04aXMVaFnJd12GjLocklNkx3hmw2yvyRkKElVAxBE4+7ci5C0P0L89EL2lULxCpp1HPhGIlL
+ fCdoTHq6BZAw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="533638321"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Nov 2020 18:29:02 -0800
+Date:   Tue, 17 Nov 2020 10:24:54 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Richard Gong <richard.gong@linux.intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, trix@redhat.com,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinguyen@kernel.org, sridhar.rajagopal@intel.com,
+        Richard Gong <richard.gong@intel.com>, yilun.xu@intel.com
+Subject: Re: [PATCHv1 3/4] dt-bindings: fpga: add authenticate-fpga-config
+  property
+Message-ID: <20201117022453.GA12837@yilunxu-OptiPlex-7050>
+References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
+ <1605204403-6663-4-git-send-email-richard.gong@linux.intel.com>
+ <20201115192106.GB283592@epycbox.lan>
+ <20201116024758.GA6810@yilunxu-OptiPlex-7050>
+ <d83b37c2-2baa-b366-8ca4-bb2924bcd4f9@linux.intel.com>
 MIME-Version: 1.0
-References: <20201116161001.1606608-1-willemdebruijn.kernel@gmail.com>
- <20201116120445.7359b0053778c1a4492d1057@linux-foundation.org>
- <CAF=yD-JJtAwse5keH5MxxtA1EY3nxV=Ormizzvd2FHOjWROk4A@mail.gmail.com>
- <CAF=yD-JFjoYEiqNLMqM-mTFQ1qYsw7Py5oggyVesHo7burwumA@mail.gmail.com> <20201116163754.ab6ff2ad8f797705db15cc1f@linux-foundation.org>
-In-Reply-To: <20201116163754.ab6ff2ad8f797705db15cc1f@linux-foundation.org>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 16 Nov 2020 21:21:20 -0500
-Message-ID: <CAF=yD-+Wrr6F78k-cEANo2JeYR9daTj7UjxUbL_vy4u-PJo1xg@mail.gmail.com>
-Subject: Re: [PATCH v2] epoll: add nsec timeout support
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
-        Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d83b37c2-2baa-b366-8ca4-bb2924bcd4f9@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 7:37 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Mon, 16 Nov 2020 18:51:16 -0500 Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
->
-> > On Mon, Nov 16, 2020 at 6:36 PM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > >
-> > > On Mon, Nov 16, 2020 at 3:04 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > >
-> > > > On Mon, 16 Nov 2020 11:10:01 -0500 Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
-> > > >
-> > > > > From: Willem de Bruijn <willemb@google.com>
-> > > > >
-> > > > > Add epoll_create1 flag EPOLL_NSTIMEO. When passed, this changes the
-> > > > > interpretation of argument timeout in epoll_wait from msec to nsec.
-> > > > >
-> > > > > Use cases such as datacenter networking operate on timescales well
-> > > > > below milliseconds. Shorter timeouts bounds their tail latency.
-> > > > > The underlying hrtimer is already programmed with nsec resolution.
-> > > >
-> > > > hm, maybe.  It's not very nice to be using one syscall to alter the
-> > > > interpretation of another syscall's argument in this fashion.  For
-> > > > example, one wonders how strace(1) is to properly interpret & display
-> > > > this argument?
-> > > >
-> > > > Did you consider adding epoll_wait2()/epoll_pwait2() syscalls which
-> > > > take a nsec timeout?  Seems simpler.
-> > >
-> > > I took a first stab. The patch does become quite a bit more complex.
+On Mon, Nov 16, 2020 at 08:14:52AM -0600, Richard Gong wrote:
+> 
+> Hi Yilun,
+> 
+> On 11/15/20 8:47 PM, Xu Yilun wrote:
+> >On Sun, Nov 15, 2020 at 11:21:06AM -0800, Moritz Fischer wrote:
+> >>Hi Richard,
+> >>
+> >>On Thu, Nov 12, 2020 at 12:06:42PM -0600, richard.gong@linux.intel.com wrote:
+> >>>From: Richard Gong <richard.gong@intel.com>
+> >>>
+> >>>Add authenticate-fpga-config property for FPGA bitstream authentication.
+> >>>
+> >>>Signed-off-by: Richard Gong <richard.gong@intel.com>
+> >>>---
+> >>>  Documentation/devicetree/bindings/fpga/fpga-region.txt | 1 +
+> >>>  1 file changed, 1 insertion(+)
+> >>>
+> >>>diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> >>>index e811cf8..7a512bc 100644
+> >>>--- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> >>>+++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> >>>@@ -187,6 +187,7 @@ Optional properties:
+> >>>  - external-fpga-config : boolean, set if the FPGA has already been configured
+> >>>  	prior to OS boot up.
+> >>>  - encrypted-fpga-config : boolean, set if the bitstream is encrypted
+> >>>+- authenticate-fpga-config : boolean, set if do bitstream authentication
+> >>It is unclear to me from the description whether this entails
+> >>authentication + reconfiguration or just authentication.
+> >>
+> >>If the latter is the case this should probably be described as such.
 > >
-> > Not complex in terms of timeout logic. Just a bigger patch, taking as
-> > example the recent commit ecb8ac8b1f14 that added process_madvise.
->
-> That's OK - it's mainly syscall table patchery.  The fs/ changes are
-> what matters.  And the interface.
->
-> > > I was not aware of how uncommon syscall argument interpretation
-> > > contingent on internal object state really is. Yes, that can
-> > > complicate inspection with strace, seccomp, ... This particular case
-> > > seems benign to me. But perhaps it sets a precedent.
-> > >
-> > > A new nsec resolution epoll syscall would be analogous to pselect and
-> > > ppoll, both of which switched to nsec resolution timespec.
-> > >
-> > > Since creating new syscalls is rare, add a flags argument at the same time?
->
-> Adding a syscall is pretty cheap - it's just a table entry.
+> >If it is just authentication, do we still need to disable bridges in
+> >fpga_region_program_fpga?
+> >
+> 
+> Yes.
+> 
+> Except for the actual configuration of the device, the authentication
+> feature is the same as FPGA configuration.
 
-Okay. Then I won't add a flags argument now.
+FPGA Bridges gate bus signals between a host and FPGA. So the FPGA
+region could not be accessed by host when doing configuration. But for
+this authentication, we are just writing the flash, we don't actually
+touch the FPGA soft logic. The host should still be able to operate on
+the old logic before reboot, is it?
 
-> > >
-> > > Then I would split the change in two: (1) add the new syscall with
-> > > extra flags argument, (2) define flag EPOLL_WAIT_NSTIMEO to explicitly
-> > > change the time scale of the timeout argument. To avoid easy mistakes
-> > > by callers in absence of stronger typing.
->
-> I don't understand this.  You're proposing that the new epoll_pwait2() be
-> able to take either msec or nsec, based on the flags argument?
+Thanks,
+Yilun
 
-It wasn't elegant. Superseded by the below alternative to add a timespec.
-
-> With a
-> longer-term plan to deprecate the old epoll_pwait()?
-
-> If so, that's not likely to be viable - how can we ever know that the
-> whole world stopped using the old syscall?
-
-I don't mean to deprecate it. I noticed that epoll_wait was removed
-from asm-generic/unistd.h in favor of epoll_pwait on the argument that
-this should list the minimally needed syscall set. Removed in commit
-a0673fdbcd42 ("asm-generic: clean up asm/unistd.h"), a descriptive
-comment was earlier added in commit e64a1617eca3 ("asm-generic: add a
-generic unistd.h"). If the same argument still holds, when adding
-epoll_pwait2 there, I should remove epoll_pwait. But I'm admittedly
-not very familiar with the implications of touching this uapi file.
-Will read up.
-
-> > Come to think of it, better to convert to timespec to both have actual
-> > typing and consistency with ppoll/pselect.
->
-> Sure.
->
-> > > epoll_wait is missing from include/uapi/asm-generic/unistd.h as it is
-> > > superseded by epoll_pwait. Following the same rationale, add
-> > > epoll_pwait2 (only).
->
-> Sure.
->
-> > A separate RFC patch against manpages/master sent at the same time?
->
-> That's the common approach - a followup saying "here's what I'll send
-> to the manpages people if this gets merged".
->
-> And something under tools/testing/sefltests/ would be nice, if only so
-> that the various arch maintainers can verify that their new syscall is
-> working correctly.  Perhaps by adding a please-use-epoll_pwait2 arg to
-> the existing
-> tools/testing/selftests/filesystems/epoll/epoll_wakeup_test.c, if that
-> looks like a suitable testcase.
-
-Will do both. Thanks!
+> 
+> Regards,
+> Richard
+> 
+> >I'm wondering if the FPGA functionalities could still be working when
+> >the authenticating is ongoing, or when the authenticating is failed.
+> >
+> 
+> 
+> 
+> >Thanks,
+> >Yilun
+> >
+> >>
+> >>>  - region-unfreeze-timeout-us : The maximum time in microseconds to wait for
+> >>>  	bridges to successfully become enabled after the region has been
+> >>>  	programmed.
+> >>>-- 
+> >>>2.7.4
+> >>>
+> >>
+> >>Thanks
