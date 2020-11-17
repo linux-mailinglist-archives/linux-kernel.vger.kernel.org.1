@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC502B5F66
+	by mail.lfdr.de (Postfix) with ESMTP id 895042B5F67
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:53:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbgKQMwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:52:46 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:50430 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727350AbgKQMwq (ORCPT
+        id S1728408AbgKQMw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728391AbgKQMw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:52:46 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AHCqbYq053910;
-        Tue, 17 Nov 2020 06:52:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605617557;
-        bh=DGMIL9bjshIBnyCRIB0aJStK052SCWOqCEtJuYD63dA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=gOf7UQvvP/nupM8xdhGmnj9rVHHvVqJ8Hd9q/4ipEdPBUk1ZL7HBbN86hLs7/hXlD
-         m5dBLshi4sOA2VJNpC783fJaF/XnYhZ+YRl2WPhSH3x+TAdbHMo0qCPtH0LNPWPHe8
-         i8y6MCZzcWJzhVRSzTx2loQineSwhda8h7xwpfMc=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AHCqbjP036824
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 17 Nov 2020 06:52:37 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 17
- Nov 2020 06:52:36 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 17 Nov 2020 06:52:37 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AHCqaMw119516;
-        Tue, 17 Nov 2020 06:52:37 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Roger Quadros <rogerq@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, Keerthy <j-keerthy@ti.com>,
-        Nishanth Menon <nm@ti.com>, Jyri Sarha <jsarha@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V4 0/5] arm64: dts: ti: Cleanup mix of "okay" and "disabled"
-Date:   Tue, 17 Nov 2020 06:52:35 -0600
-Message-ID: <160561743968.22347.10185221222649723152.b4-ty@ti.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201113211826.13087-1-nm@ti.com>
-References: <20201113211826.13087-1-nm@ti.com>
+        Tue, 17 Nov 2020 07:52:57 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD496C0613CF;
+        Tue, 17 Nov 2020 04:52:56 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id o71so18514648ybc.2;
+        Tue, 17 Nov 2020 04:52:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=396qJVY6ErHdgJBEcIkB7PgsMbRLrKyXYL9zfaRd/qI=;
+        b=ljuzswvwjOBJz6QVKdgFaDEJ//ZSe2x78P2n3bpFsDydu66PaCJZj9mm9rolc7GESg
+         U+buqkde9mhtuDxCFvE0Z67DmE1W5N9rq2MY6RXx1Eds6Gl7Uw0MLBTFANRsv3e4UIKZ
+         ijps7KojO+B+tR1aNLiSNZqGuB9Inswy0UqT2wpkXflfHi9bJG8Y6lKZFlsZ7SQhZ1fE
+         EXbEgnG47XBehfKp06WLHyy0zj8hIAIGVpnGMWvPbqqPl9sFrknerdiovMTrNdOxdLMy
+         RuARZhOcBwEL4che7mJupjD4aiGosuU6TslLUbliUHKSNKOOnSUyeVWuZDZIAV+khh4s
+         11vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=396qJVY6ErHdgJBEcIkB7PgsMbRLrKyXYL9zfaRd/qI=;
+        b=VfRYeaJbhyvC7WJdFYUiagTAiwtc7nJi5Gv1D7T2pExV38UKEzpe83R6vUqyH9PDma
+         kp18Kl/TiTJ5vtltZWNMzGx1QZu0XGcEWYXOSxzgELOZ9dYi/zYLMPNf+fYJYK1ayKJa
+         qjZCKdsuY8wHvwhXvOKMr/euG5/wwBRNBIRkKjUIMm8tOncX3obSSNHySOj/0zaq5oRW
+         NBpnG7uiixGX0OEOGrrA3BsMDT0w5ZgqBcczQrr8SesYJI+MzNcXnQOedeq26xMAj2IY
+         tM//a++0nFJ51DIYClVxlrs0vQ9ZLimUcKgerUBiVeEJocq4xuXOfk53ZmYKdGEJdeYe
+         k1Lg==
+X-Gm-Message-State: AOAM5319zPbVib355uEIDHCjpm5HT5CuyrUKUzFO+WYC72oJnqLrxMTx
+        l1RqQzIidPng69UFiLWrRgnwRyA+eLb1NBuqja0=
+X-Google-Smtp-Source: ABdhPJy+tdbnrh5Atxyg1T06ymJ1SZqSL1AyP5t5SJlfh8h5YbXSVsku5ZXdl158y5y1HDHNNXjPCviqAeJeZk41j5A=
+X-Received: by 2002:a25:2d55:: with SMTP id s21mr23025144ybe.389.1605617576209;
+ Tue, 17 Nov 2020 04:52:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CGME20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
+ <20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
+ <20201117074207.GC3436@kozik-lap> <CAEx-X7epecwBYV7UYoesQ9+Q8ir+kjYGyysiyDtCa0BzKiCGtA@mail.gmail.com>
+ <CAJKOXPdH49zOQ2caOvDDiZPkEptYiCjUmXw+O2dCC1tKHZgPag@mail.gmail.com>
+In-Reply-To: <CAJKOXPdH49zOQ2caOvDDiZPkEptYiCjUmXw+O2dCC1tKHZgPag@mail.gmail.com>
+From:   Bongsu Jeon <bs.jeon87@gmail.com>
+Date:   Tue, 17 Nov 2020 21:52:45 +0900
+Message-ID: <CAEx-X7eMXK5DuxEae2rbHaKOceUHNS3Ubx-2tpMET0ofSsy+pQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 1/3] nfc: s3fwrn5: Remove the max_payload
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Bongsu Jeon <bongsu.jeon@samsung.com>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>,
+        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 13 Nov 2020 15:18:21 -0600, Nishanth Menon wrote:
-> V4 changes:
-> - drops the fixes tags (as this is not strictly a stable fix)
-> 
-> Repost. older versions v3[3] v2[2] v1[1]
-> 
-> Summarising the blurb of the discussion[4] we have had, there are few
-> options one could take when dealing with SoC dtsi and board dts:
-> 
-> [...]
+On Tue, Nov 17, 2020 at 5:39 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Tue, 17 Nov 2020 at 09:14, Bongsu Jeon <bs.jeon87@gmail.com> wrote:
+> >
+> > 2020-11-17 16:42 GMT+09:00, krzk@kernel.org <krzk@kernel.org>:
+> > > On Tue, Nov 17, 2020 at 10:16:11AM +0900, Bongsu Jeon wrote:
+> > >> max_payload is unused.
+> > >
+> > > Why did you resend the patch ignoring my review? I already provided you
+> > > with a tag, so you should include it.
+> > >
+> > > https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+> > >
+> > > Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > >
+> > > Best regards,
+> > > Krzysztof
+> > >
+> >
+> > Sorry about that. I included the tag.
+>
+> You need to reduce the rate of sending new patches. You sent v1. Then
+> you sent again v1, which I reviewed. Then you send v2 without my
+> review. So I provided a review. Then you sent again a v2 with my
+> reviewed tags. So there are two v1 patches and two v2. Since I
+> provided you the review tags for v2, no need to send v2 again. It
+> confuses.
+>
+> Best regards,
+> Krzysztof
 
-I have applied this revision to branch ti-k3-dts-next on [1].
-Thank you!
+Sorry to confuse you.
+I made a mistake because I thought that you asked me
+ to resend the patches with the new version(v2).
+I think you intended that I need to version the patches and
+describe changes when I update the patches next time.
 
-[1/5] arm64: dts: ti: k3-am65*: Cleanup disabled nodes at SoC dtsi level
-      commit: af03de2b9b908e776c233744b84ce9dbb70dcafb
-[2/5] arm64: dts: ti: k3-j721e*: Cleanup disabled nodes at SoC dtsi level
-      commit: 5d1bedf252db3ec2becb9f43c55e0f33af1fd7fc
-[3/5] arm64: dts: ti: am65/j721e: Fix up un-necessary status set to "okay" for crypto
-      commit: bfbf9be725d8effdbb60eb2ece44c06ae87a54de
-[4/5] arm64: dts: ti: k3-am654-base-board: Fix up un-necessary status set to "okay" for USB
-      commit: 90e6c38848f8e86047e0e758c0725b155e2e349b
-[5/5] arm64: dts: ti: am65/j721e/j7200: Mark firmware used uart as "reserved"
-      commit: 4cc34aa8a208665aa0362a615deefc3db6a5d7bd
-
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+Thanks a lot for reviewing my patches.
