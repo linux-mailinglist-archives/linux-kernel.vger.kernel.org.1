@@ -2,62 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD1E2B6FE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BE32B6FEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgKQUSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:18:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgKQUR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:17:58 -0500
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32D1A221F1;
-        Tue, 17 Nov 2020 20:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605644277;
-        bh=6obH9wgf0CI4GdXTdHi0svSf0RAJjqk23/EE2KzNxRo=;
-        h=From:To:Subject:Date:From;
-        b=pz6tNKtCuaZlZRO1g4rit7dMv1XdfU3f4RZFdiX775zdaPfkuWw9k7Qfx/6Z8bOC1
-         JNpDO1qi5sMOhXEixSlvNe5R6rYzPzj6Am1xwXCsRxeqS/4Wp5/UoCZxf8fVb1/YSW
-         UOMsIUBDDWxQiGK7g39T9wNUqMWqmJyxfMn8RpPg=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Tony Prisk <linux@prisktech.co.nz>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: arm: vt8500: remove redundant white-spaces
-Date:   Tue, 17 Nov 2020 21:17:52 +0100
-Message-Id: <20201117201752.129766-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1726344AbgKQUS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgKQUS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:18:27 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0873FC0613CF;
+        Tue, 17 Nov 2020 12:18:27 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id oq3so31222555ejb.7;
+        Tue, 17 Nov 2020 12:18:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fIU0MW88AbSfhYMosxAQzBN+NCriw7f/UYq8KSXIzWQ=;
+        b=dbLF8W5KNsmWOmz2qHRlSyZrHZvARH78/rsiE1Ma8Niv1s8yloadlFdv7A+d208B7d
+         KrsBLhHgSCjmCTzUMkxa/cvwYcp/mluAq893fGgxVV2EF6v2woH8PA581PcsnhYRYn8U
+         MsL9laTiPe65EcA2aBkn1HbAsn0fZZQhtCfO63ZHiLX0RYYkRcIFhLb2krKJkgfX9k4R
+         41S1af+g7TFncbr+pEIck5Rmm5CgUzne8gOGlOdxA/J9dzTBoLeFY8ogaijvJJBmPNhI
+         MGei7xMLZIPEAfui+gsFwzpd41grOxWIY2uHMFcbNBy3BJOragQRYf/uumtOB91SLI/F
+         feLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fIU0MW88AbSfhYMosxAQzBN+NCriw7f/UYq8KSXIzWQ=;
+        b=oLmn6SuvXZvyyZN6bH3hr2Dln3XdvB40HG5yLOl8+It18sN/IDnnwbje7jj6jdjC97
+         OqucpvEwo/VwKRJ6buqbq5ZXb/vIJnMiDvi05RRFqHQsPjW0YYQGizbytn4S8AsusHzO
+         LBMLykxKBOTQ0Lw5CGg8dz8WyS9WGoKJVROnVBIorNOasrif6JiOCs3JmbzmVvxEXT5+
+         CVsn0Mqpt9MRAv9dogxnSH8jm3Xn4yVIdK8Ip7AH/7LH/VbWfxMcHYTkC4Ujpg/gHkUs
+         OqAjTcyN/W+maXovcIq9GaGjzHZyRM0GvPD5xKFQcdQjSRF9FAH3pX3Pm7qXD2lRRwTn
+         bNDw==
+X-Gm-Message-State: AOAM531uqq/S2wuMxPoEQuv5TKI89Rzho73zYnnOlPUIplp5H1SDJZZ4
+        JcqVYLar4+koXGyNN8tjCCB4vngPEQQ=
+X-Google-Smtp-Source: ABdhPJxLrJlp7h5qgyl7mUVpHsvV6ExijuEYUfKBsdwo5prZ+eJGBuK8fm6AhkH+mYE44QtYQU392w==
+X-Received: by 2002:a17:906:6a57:: with SMTP id n23mr22331059ejs.315.1605644305444;
+        Tue, 17 Nov 2020 12:18:25 -0800 (PST)
+Received: from [192.168.2.202] (pd9e5afac.dip0.t-ipconnect.de. [217.229.175.172])
+        by smtp.gmail.com with ESMTPSA id fy4sm776820ejb.91.2020.11.17.12.18.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 12:18:24 -0800 (PST)
+Subject: Re: [PATCH 9/9] platform/surface: Add Surface ACPI Notify driver
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20201115192143.21571-1-luzmaximilian@gmail.com>
+ <20201115192143.21571-10-luzmaximilian@gmail.com>
+ <4ad59722-6834-a0f9-8d7a-16b8f22a1f26@infradead.org>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <7973f3e1-40f3-4795-bdea-719fecaa3448@gmail.com>
+Date:   Tue, 17 Nov 2020 21:18:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4ad59722-6834-a0f9-8d7a-16b8f22a1f26@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove redundant white-spaces, no functional change.
+On 11/17/20 9:09 PM, Randy Dunlap wrote:
+> On 11/15/20 11:21 AM, Maximilian Luz wrote:
+>> diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
+>> index cecad7a0cb7b..3b0da86546fa 100644
+>> --- a/drivers/platform/surface/Kconfig
+>> +++ b/drivers/platform/surface/Kconfig
+>> @@ -40,6 +40,26 @@ config SURFACE_3_POWER_OPREGION
+>>   	  This driver provides support for ACPI operation
+>>   	  region of the Surface 3 battery platform driver.
+>>   
+>> +config SURFACE_ACPI_NOTIFY
+>> +	tristate "Surface ACPI Notify Driver"
+>> +	depends on ACPI
+>> +	depends on SURFACE_AGGREGATOR
+>> +	help
+>> +	  Surface ACPI Notify (SAN) driver for Microsoft Surface devices.
+> 
+> Drop "depends on ACPI" since SURFACE_AGGREGATOR already depends on ACPI.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- Documentation/devicetree/bindings/arm/vt8500.yaml | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Okay, will do that.
 
-diff --git a/Documentation/devicetree/bindings/arm/vt8500.yaml b/Documentation/devicetree/bindings/arm/vt8500.yaml
-index 29ff399551ca..7b762bfc11e7 100644
---- a/Documentation/devicetree/bindings/arm/vt8500.yaml
-+++ b/Documentation/devicetree/bindings/arm/vt8500.yaml
-@@ -21,6 +21,5 @@ properties:
-           - wm,wm8650
-           - wm,wm8750
-           - wm,wm8850
--          
--additionalProperties: true
- 
-+additionalProperties: true
--- 
-2.25.1
-
+Thanks,
+Max
