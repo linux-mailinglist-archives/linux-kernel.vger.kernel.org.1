@@ -2,313 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571392B5D74
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101212B5D8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgKQK4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728143AbgKQK4u (ORCPT
+        id S1727976AbgKQK4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:56:21 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59604 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727377AbgKQK4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:56:50 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5139C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:56:48 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id y11so10336426qvu.10
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:56:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6ELfOh3o2Oz00GU28PxWEqBY//Oi7TOLxsG1nguiQlU=;
-        b=V/pl5jqIh+2ezoffKlNITSMBE0cztAbTM+xvLzTsn+2LWIa2+mhS/l/P2vxcQhj8M6
-         htu/SliDlpXQDIXZutlBibaqXHG/jXytFbOgRrA4r6wPZ/ne35vx4cMg104hQi61rujX
-         yBvhh4hKGvZkV7P2WxykAOH6xwLyhmNtWT9Q5pgLnUi6/tIHqJjFz8Bet/Q8PI9YqlbE
-         nNXLQuSbymSqn5+UOY/4lzVv120jtyXv2caC86g2sr4Mhq2UPXV3hT4S+vsuWPZJyY7d
-         XHnpSaW4NZznafoOpG1kXPT7mX+DnQAdJapvgqZJfs6IGlXgUhGgNK2LZsWEamgEf2Ao
-         RoVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6ELfOh3o2Oz00GU28PxWEqBY//Oi7TOLxsG1nguiQlU=;
-        b=cFBdTc+DIvJhkpERwY57vHSeUl4F3BHw0yBvxHX+/bvCIag28DJeTMsvJiQNC/wG8f
-         TU2u0asp+dXkVCkrDgKkn8yovB/WekfHdTcVe4DhQqPnCzUYihSa+SPDFYbvxiRFS7By
-         0Ur670uq++yxkrzFrl8hv4srIjz2a+cZ46bNuxzlCyu2R62kwyxE1SMDyhFnkGU0YKXp
-         f9nwcmsjgTi/ZfrVy+aUFqgyNsRIqqUlJTOB8QFjzpYTieaSXThV67i+esRQUKtdL2x+
-         6tqylQFQGD8KRObDiQkidaC9mJtqPGdX3REEihZuJB344kZJqNSphPWHsuEdUHkqul0e
-         tsdA==
-X-Gm-Message-State: AOAM5301XkFgY8I85ylfSIaJcsUKeXob8GB+RS3vFblgrSfGGvrnP0QQ
-        ryBRNEhLaG8bC+WwAA9OrygMzBn236N3U1LQ2H/CiA==
-X-Google-Smtp-Source: ABdhPJxOpGPOi9L+fxrQF4m5lulcs6Mojw3PctNg0DwDGHv8FpOzPPM7+6WQHYQF9xcA2a+jDhrSZtMS2VLAlanH6Uk=
-X-Received: by 2002:a05:6214:20a3:: with SMTP id 3mr253140qvd.13.1605610607646;
- Tue, 17 Nov 2020 02:56:47 -0800 (PST)
+        Tue, 17 Nov 2020 05:56:19 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AHAuATS019433;
+        Tue, 17 Nov 2020 04:56:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605610570;
+        bh=uojGoC+4V+ruFKLwnhOGRYm/brx/kPI3bmv1GZhqgQM=;
+        h=From:To:CC:Subject:Date;
+        b=COghXEMcM8o+5cbb1YEpoyIvctTM3tQjtbSbAfzcAXoMnkQzgok7xGlfqWLuFLK/w
+         wl1xzwChMF2NRgAFIRqQn9OUEoOPp0zG9s5gBW5zBhrnbL0kkugyAvgxX6jsrYOITz
+         TzLpo08610hBhcda+UQ+GHptHDJ9LJ7W7Nexp+Kw=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AHAuAEq004922
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 04:56:10 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 17
+ Nov 2020 04:56:09 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 17 Nov 2020 04:56:09 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AHAu6tk087311;
+        Tue, 17 Nov 2020 04:56:06 -0600
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>,
+        <robh+dt@kernel.org>
+CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>,
+        <grygorii.strashko@ti.com>
+Subject: [PATCH v2 00/19] dmaengine/soc: k3-udma: Add support for BCDMA and PKTDMA
+Date:   Tue, 17 Nov 2020 12:56:37 +0200
+Message-ID: <20201117105656.5236-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <cover.1605305978.git.andreyknvl@google.com> <4c2a23ccb3572459da7585a776d2d45f6e8b8580.1605305978.git.andreyknvl@google.com>
-In-Reply-To: <4c2a23ccb3572459da7585a776d2d45f6e8b8580.1605305978.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 17 Nov 2020 11:56:36 +0100
-Message-ID: <CACT4Y+a8DFk_CqAV0JWSG57D-gQkSgEERYaHQwZAcPNUtZDvdQ@mail.gmail.com>
-Subject: Re: [PATCH mm v3 07/19] kasan: inline kasan_reset_tag for tag-based modes
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 11:20 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> Using kasan_reset_tag() currently results in a function call. As it's
-> called quite often from the allocator code, this leads to a noticeable
-> slowdown. Move it to include/linux/kasan.h and turn it into a static
-> inline function. Also remove the now unneeded reset_tag() internal KASAN
-> macro and use kasan_reset_tag() instead.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Marco Elver <elver@google.com>
+Hi,
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+The series have build dependency on ti_sci/soc series (v2):
+https://lore.kernel.org/lkml/20201008115224.1591-1-peter.ujfalusi@ti.com/
 
-> Link: https://linux-review.googlesource.com/id/I4d2061acfe91d480a75df00b07c22d8494ef14b5
-> ---
->  include/linux/kasan.h     | 5 ++++-
->  mm/kasan/common.c         | 6 +++---
->  mm/kasan/hw_tags.c        | 9 ++-------
->  mm/kasan/kasan.h          | 4 ----
->  mm/kasan/report.c         | 4 ++--
->  mm/kasan/report_hw_tags.c | 2 +-
->  mm/kasan/report_sw_tags.c | 4 ++--
->  mm/kasan/shadow.c         | 4 ++--
->  mm/kasan/sw_tags.c        | 9 ++-------
->  9 files changed, 18 insertions(+), 29 deletions(-)
->
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index f2109bf0c5f9..1594177f86bb 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -193,7 +193,10 @@ static inline void kasan_record_aux_stack(void *ptr) {}
->
->  #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
->
-> -void *kasan_reset_tag(const void *addr);
-> +static inline void *kasan_reset_tag(const void *addr)
-> +{
-> +       return (void *)arch_kasan_reset_tag(addr);
-> +}
->
->  bool kasan_report(unsigned long addr, size_t size,
->                 bool is_write, unsigned long ip);
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index fabd843eff3d..1ac4f435c679 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -180,14 +180,14 @@ size_t kasan_metadata_size(struct kmem_cache *cache)
->  struct kasan_alloc_meta *kasan_get_alloc_meta(struct kmem_cache *cache,
->                                               const void *object)
->  {
-> -       return (void *)reset_tag(object) + cache->kasan_info.alloc_meta_offset;
-> +       return kasan_reset_tag(object) + cache->kasan_info.alloc_meta_offset;
->  }
->
->  struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
->                                             const void *object)
->  {
->         BUILD_BUG_ON(sizeof(struct kasan_free_meta) > 32);
-> -       return (void *)reset_tag(object) + cache->kasan_info.free_meta_offset;
-> +       return kasan_reset_tag(object) + cache->kasan_info.free_meta_offset;
->  }
->
->  void kasan_poison_slab(struct page *page)
-> @@ -284,7 +284,7 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
->
->         tag = get_tag(object);
->         tagged_object = object;
-> -       object = reset_tag(object);
-> +       object = kasan_reset_tag(object);
->
->         if (is_kfence_address(object))
->                 return false;
-> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> index 68e77363e58b..a34476764f1d 100644
-> --- a/mm/kasan/hw_tags.c
-> +++ b/mm/kasan/hw_tags.c
-> @@ -31,18 +31,13 @@ void __init kasan_init_hw_tags(void)
->         pr_info("KernelAddressSanitizer initialized\n");
->  }
->
-> -void *kasan_reset_tag(const void *addr)
-> -{
-> -       return reset_tag(addr);
-> -}
-> -
->  void poison_range(const void *address, size_t size, u8 value)
->  {
->         /* Skip KFENCE memory if called explicitly outside of sl*b. */
->         if (is_kfence_address(address))
->                 return;
->
-> -       hw_set_mem_tag_range(reset_tag(address),
-> +       hw_set_mem_tag_range(kasan_reset_tag(address),
->                         round_up(size, KASAN_GRANULE_SIZE), value);
->  }
->
-> @@ -52,7 +47,7 @@ void unpoison_range(const void *address, size_t size)
->         if (is_kfence_address(address))
->                 return;
->
-> -       hw_set_mem_tag_range(reset_tag(address),
-> +       hw_set_mem_tag_range(kasan_reset_tag(address),
->                         round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
->  }
->
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 0eab7e4cecb8..5e8cd2080369 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -248,15 +248,11 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
->         return addr;
->  }
->  #endif
-> -#ifndef arch_kasan_reset_tag
-> -#define arch_kasan_reset_tag(addr)     ((void *)(addr))
-> -#endif
->  #ifndef arch_kasan_get_tag
->  #define arch_kasan_get_tag(addr)       0
->  #endif
->
->  #define set_tag(addr, tag)     ((void *)arch_kasan_set_tag((addr), (tag)))
-> -#define reset_tag(addr)                ((void *)arch_kasan_reset_tag(addr))
->  #define get_tag(addr)          arch_kasan_get_tag(addr)
->
->  #ifdef CONFIG_KASAN_HW_TAGS
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index df16bef0d810..76a0e3ae2049 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -328,7 +328,7 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
->         unsigned long flags;
->         u8 tag = get_tag(object);
->
-> -       object = reset_tag(object);
-> +       object = kasan_reset_tag(object);
->
->  #if IS_ENABLED(CONFIG_KUNIT)
->         if (current->kunit_test)
-> @@ -361,7 +361,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
->         disable_trace_on_warning();
->
->         tagged_addr = (void *)addr;
-> -       untagged_addr = reset_tag(tagged_addr);
-> +       untagged_addr = kasan_reset_tag(tagged_addr);
->
->         info.access_addr = tagged_addr;
->         if (addr_has_metadata(untagged_addr))
-> diff --git a/mm/kasan/report_hw_tags.c b/mm/kasan/report_hw_tags.c
-> index da543eb832cd..57114f0e14d1 100644
-> --- a/mm/kasan/report_hw_tags.c
-> +++ b/mm/kasan/report_hw_tags.c
-> @@ -22,7 +22,7 @@ const char *get_bug_type(struct kasan_access_info *info)
->
->  void *find_first_bad_addr(void *addr, size_t size)
->  {
-> -       return reset_tag(addr);
-> +       return kasan_reset_tag(addr);
->  }
->
->  void metadata_fetch_row(char *buffer, void *row)
-> diff --git a/mm/kasan/report_sw_tags.c b/mm/kasan/report_sw_tags.c
-> index 317100fd95b9..7604b46239d4 100644
-> --- a/mm/kasan/report_sw_tags.c
-> +++ b/mm/kasan/report_sw_tags.c
-> @@ -41,7 +41,7 @@ const char *get_bug_type(struct kasan_access_info *info)
->         int i;
->
->         tag = get_tag(info->access_addr);
-> -       addr = reset_tag(info->access_addr);
-> +       addr = kasan_reset_tag(info->access_addr);
->         page = kasan_addr_to_page(addr);
->         if (page && PageSlab(page)) {
->                 cache = page->slab_cache;
-> @@ -72,7 +72,7 @@ const char *get_bug_type(struct kasan_access_info *info)
->  void *find_first_bad_addr(void *addr, size_t size)
->  {
->         u8 tag = get_tag(addr);
-> -       void *p = reset_tag(addr);
-> +       void *p = kasan_reset_tag(addr);
->         void *end = p + size;
->
->         while (p < end && tag == *(u8 *)kasan_mem_to_shadow(p))
-> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-> index d8a122f887a0..37153bd1c126 100644
-> --- a/mm/kasan/shadow.c
-> +++ b/mm/kasan/shadow.c
-> @@ -82,7 +82,7 @@ void poison_range(const void *address, size_t size, u8 value)
->          * some of the callers (e.g. kasan_poison_object_data) pass tagged
->          * addresses to this function.
->          */
-> -       address = reset_tag(address);
-> +       address = kasan_reset_tag(address);
->
->         /* Skip KFENCE memory if called explicitly outside of sl*b. */
->         if (is_kfence_address(address))
-> @@ -103,7 +103,7 @@ void unpoison_range(const void *address, size_t size)
->          * some of the callers (e.g. kasan_unpoison_object_data) pass tagged
->          * addresses to this function.
->          */
-> -       address = reset_tag(address);
-> +       address = kasan_reset_tag(address);
->
->         /*
->          * Skip KFENCE memory if called explicitly outside of sl*b. Also note
-> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-> index 6d7648cc3b98..e17de2619bbf 100644
-> --- a/mm/kasan/sw_tags.c
-> +++ b/mm/kasan/sw_tags.c
-> @@ -67,11 +67,6 @@ u8 random_tag(void)
->         return (u8)(state % (KASAN_TAG_MAX + 1));
->  }
->
-> -void *kasan_reset_tag(const void *addr)
-> -{
-> -       return reset_tag(addr);
-> -}
-> -
->  bool check_memory_region(unsigned long addr, size_t size, bool write,
->                                 unsigned long ret_ip)
->  {
-> @@ -107,7 +102,7 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
->         if (tag == KASAN_TAG_KERNEL)
->                 return true;
->
-> -       untagged_addr = reset_tag((const void *)addr);
-> +       untagged_addr = kasan_reset_tag((const void *)addr);
->         if (unlikely(untagged_addr <
->                         kasan_shadow_to_mem((void *)KASAN_SHADOW_START))) {
->                 return !kasan_report(addr, size, write, ret_ip);
-> @@ -126,7 +121,7 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
->  bool check_invalid_free(void *addr)
->  {
->         u8 tag = get_tag(addr);
-> -       u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(reset_tag(addr)));
-> +       u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(kasan_reset_tag(addr)));
->
->         return (shadow_byte == KASAN_TAG_INVALID) ||
->                 (tag != KASAN_TAG_KERNEL && tag != shadow_byte);
-> --
-> 2.29.2.299.gdc1121823c-goog
->
+Santosh kindly created immutable branch holdinf the series:
+git://git.kernel.org/pub/scm/linux/kernel/git/ssantosh/linux-keystone.git for_5.11/drivers-soc 
+
+The unmapped event handling in INTA is already mainline.
+
+Changes since v1:
+- Both DT binding document has been updated to address all comments and
+  suggestions from Rob, all checks are passing on them
+- included new patch to fix the normal channel start offset when ultra-high
+  capacity channels are available for the UDMA and updated the BCDMA/PKTDMA
+  patches along the same line
+- Re-arranged the patches for Vinod so that the preparational patches and fixes
+  can be picked up separately (they still have dependency on Santosh's branch):
+
+  patch 1-5: Fixes and new features for existing devices using UDMA, but the
+             the BCDMA/PKTDMA support is building on top of these.
+             Build dependency on Santosh's branch
+  patch 6: Optional second stage router configuration callback support in core
+  patch 7-9: Per channel coherency support in core and use it in dmatest.
+  patch 10-: Initial AM64 BCDMA and PKTDMA support
+
+The DMSS introduced within AM64 as a simplified Data movement engine is built
+on similar grounds as the K3 NAVSS and UDMAP, but with significant architectural
+changes.
+
+- Rings are built into the DMAs
+The DMAs no longer use the general purpose ringacc, all rings has been moved
+inside of the DMAs. The new rings within the DMAs are simplified to be dual
+directional compared to the uni-directional rings in ringacc.
+There is no more of a concept of generic purpose rings, all rings are assigned
+to specific channels or flows.
+
+- Per channel coherency support
+The DMAs use the 'ASEL' bits to select data and configuration fetch path. The
+ASEL bits are placed at the unused parts of any address field used by the
+DMAs (pointers to descriptors, addresses in descriptors, ring base addresses).
+The ASEL is not part of the address (the DMAs can address 48bits).
+Individual channels can be configured to be coherent (via ACP port) or non
+coherent individually by configuring the ASEL to appropriate value.
+
+- Two different DMAs (well, three actually)
+PKTDMA
+Similar to UDMAP channels configured in packet mode.
+The flow configuration of the channels has changed significantly in a way that
+each channel have at least one flow assigned at design time and each flow is
+directly mapped to corresponding ring.
+When multiple flows are set, the channel can only use the flows within it's
+assigned range.
+PKTDMA also introduced multiple tflows which did not existed in UDMAP.
+
+BCDMA
+It has two types of channels:
+- split channels (tchan/rchan): Similar to UDMAP channels configured in TR mode.
+- Block copy channels (bchan): Similar to EDMA or traditional DMA channels, they
+  can be used for mem2mem type of transfers or to service peripherals not
+  accessible via PSI-L by using external triggers for the TR.
+BCDMA channels do not have support for multiple flows
+
+With the introduction of the new DMAs (especially the BCDMA) we also need to
+update the resource manager code to support the second range from sysfw for
+UDMA channels.
+
+The two outstanding change in the series in my view is
+the handling of the DMAs sideband signal of ASEL to select path to provide
+coherency or non coherency.
+
+The smaller one is the device_router_config callback to allow the configuration
+of the triggers when BCDMA is servicing a triggering peripheral to solve a
+chicken-egg situation:
+The router needs to know the event number to send which in turn depends on the
+channel we got for servicing the peripheral.
+
+Regards,
+Peter
+---
+Grygorii Strashko (1):
+  soc: ti: k3-ringacc: add AM64 DMA rings support.
+
+Peter Ujfalusi (17):
+  dmaengine: ti: k3-udma: Correct normal channel offset when uchan_cnt
+    is not 0
+  dmaengine: ti: k3-udma: Wait for peer teardown completion if supported
+  dmaengine: ti: k3-udma: Add support for second resource range from
+    sysfw
+  dmaengine: ti: k3-udma-glue: Add function to get device pointer for
+    DMA API
+  dmaengine: ti: k3-udma-glue: Configure the dma_dev for rings
+  dmaengine: of-dma: Add support for optional router configuration
+    callback
+  dmaengine: Add support for per channel coherency handling
+  dmaengine: doc: client: Update for dmaengine_get_dma_device() usage
+  dmaengine: dmatest: Use dmaengine_get_dma_device
+  dt-bindings: dma: ti: Add document for K3 BCDMA
+  dt-bindings: dma: ti: Add document for K3 PKTDMA
+  dmaengine: ti: k3-psil: Extend psil_endpoint_config for K3 PKTDMA
+  dmaengine: ti: k3-psil: Add initial map for AM64
+  dmaengine: ti: Add support for k3 event routers
+  dmaengine: ti: k3-udma: Initial support for K3 BCDMA
+  dmaengine: ti: k3-udma: Add support for BCDMA channel TPL handling
+  dmaengine: ti: k3-udma: Initial support for K3 PKTDMA
+
+Vignesh Raghavendra (1):
+  dmaengine: ti: k3-udma-glue: Add support for K3 PKTDMA
+
+ .../devicetree/bindings/dma/ti/k3-bcdma.yaml  |  175 ++
+ .../devicetree/bindings/dma/ti/k3-pktdma.yaml |  183 ++
+ Documentation/driver-api/dmaengine/client.rst |    4 +-
+ drivers/dma/dmatest.c                         |   13 +-
+ drivers/dma/of-dma.c                          |   10 +
+ drivers/dma/ti/Makefile                       |    3 +-
+ drivers/dma/ti/k3-psil-am64.c                 |   75 +
+ drivers/dma/ti/k3-psil-priv.h                 |    1 +
+ drivers/dma/ti/k3-psil.c                      |    1 +
+ drivers/dma/ti/k3-udma-glue.c                 |  294 ++-
+ drivers/dma/ti/k3-udma-private.c              |   39 +
+ drivers/dma/ti/k3-udma.c                      | 1968 +++++++++++++++--
+ drivers/dma/ti/k3-udma.h                      |   27 +-
+ drivers/soc/ti/k3-ringacc.c                   |  325 ++-
+ include/linux/dma/k3-event-router.h           |   16 +
+ include/linux/dma/k3-psil.h                   |   16 +
+ include/linux/dma/k3-udma-glue.h              |   12 +
+ include/linux/dmaengine.h                     |   14 +
+ include/linux/soc/ti/k3-ringacc.h             |   17 +
+ 19 files changed, 2973 insertions(+), 220 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+ create mode 100644 Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
+ create mode 100644 drivers/dma/ti/k3-psil-am64.c
+ create mode 100644 include/linux/dma/k3-event-router.h
+
+-- 
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
