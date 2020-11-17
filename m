@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6D02B65F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AAE2B64AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730587AbgKQN73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:59:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50132 "EHLO mail.kernel.org"
+        id S2387769AbgKQNsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:48:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730596AbgKQNRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:17:47 -0500
+        id S1732086AbgKQNg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:36:59 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13DE02463D;
-        Tue, 17 Nov 2020 13:17:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDBE620870;
+        Tue, 17 Nov 2020 13:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619066;
-        bh=0iwJuiQzlg0IcIRmnTjdvR37SNEbZGygc+Kl6YTufgk=;
+        s=default; t=1605620218;
+        bh=tL9HrRRDNxQggAbsm76sO+mn2lqsQvEHl8qyqqMWOsQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FfELSIec9AR3G9Yw2CSO7F3/GK148jlnE3lj9n0PByJsxwrX96UNAtgSiAFLG7b+d
-         oafsoRl3aUeJkaXVVVIqGkTe/+WE5OAzGTAbMU6ByZNe2CM1IWRWAQjMLcoFxTs2oV
-         wxh8hQIz31wOcGpPhYBJA/Q/vhMD1xWIAi+yiyxE=
+        b=wfO2x9aRu6vuMFzl0QzepNEcb0UZYqU9EPb+dqHWUvfksVH4hZ34Q+8DAoJizNTvS
+         zxBs1+ORU4+ehBgaTglTk7ST0qa7R7nnxaybUV7nHOLEcLmn7fiVhtoeW7bzh/+fxb
+         1FjSUeRLpA7fSGUGEE6Rab5Ei3MtNaWEoHtkf7dg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Dai Ngo <dai.ngo@oracle.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 017/101] can: dev: __can_get_echo_skb(): fix real payload length return value for RTR frames
-Date:   Tue, 17 Nov 2020 14:04:44 +0100
-Message-Id: <20201117122113.934953076@linuxfoundation.org>
+Subject: [PATCH 5.9 145/255] NFSD: fix missing refcount in nfsd4_copy by nfsd4_do_async_copy
+Date:   Tue, 17 Nov 2020 14:04:45 +0100
+Message-Id: <20201117122146.020280520@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Dai Ngo <dai.ngo@oracle.com>
 
-[ Upstream commit ed3320cec279407a86bc4c72edc4a39eb49165ec ]
+[ Upstream commit 49a361327332c9221438397059067f9b205f690d ]
 
-The can_get_echo_skb() function returns the number of received bytes to
-be used for netdev statistics. In the case of RTR frames we get a valid
-(potential non-zero) data length value which has to be passed for further
-operations. But on the wire RTR frames have no payload length. Therefore
-the value to be used in the statistics has to be zero for RTR frames.
+Need to initialize nfsd4_copy's refcount to 1 to avoid use-after-free
+warning when nfs4_put_copy is called from nfsd4_cb_offload_release.
 
-Reported-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://lore.kernel.org/r/20201020064443.80164-1-socketcan@hartkopp.net
-Fixes: cf5046b309b3 ("can: dev: let can_get_echo_skb() return dlc of CAN frame")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: ce0887ac96d3 ("NFSD add nfs4 inter ssc to nfsd4_copy")
+Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/dev.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/nfsd/nfs4proc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index be532eb64baa2..1950b13f22dfc 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -493,9 +493,13 @@ struct sk_buff *__can_get_echo_skb(struct net_device *dev, unsigned int idx, u8
- 		 */
- 		struct sk_buff *skb = priv->echo_skb[idx];
- 		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
--		u8 len = cf->len;
- 
--		*len_ptr = len;
-+		/* get the real payload length for netdev statistics */
-+		if (cf->can_id & CAN_RTR_FLAG)
-+			*len_ptr = 0;
-+		else
-+			*len_ptr = cf->len;
-+
- 		priv->echo_skb[idx] = NULL;
- 
- 		return skb;
+diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+index 80effaa18b7b2..3ba17b5fc9286 100644
+--- a/fs/nfsd/nfs4proc.c
++++ b/fs/nfsd/nfs4proc.c
+@@ -1486,6 +1486,7 @@ do_callback:
+ 	cb_copy = kzalloc(sizeof(struct nfsd4_copy), GFP_KERNEL);
+ 	if (!cb_copy)
+ 		goto out;
++	refcount_set(&cb_copy->refcount, 1);
+ 	memcpy(&cb_copy->cp_res, &copy->cp_res, sizeof(copy->cp_res));
+ 	cb_copy->cp_clp = copy->cp_clp;
+ 	cb_copy->nfserr = copy->nfserr;
 -- 
 2.27.0
 
