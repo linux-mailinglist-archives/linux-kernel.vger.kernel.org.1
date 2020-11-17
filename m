@@ -2,111 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9957D2B7014
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB6A2B7017
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727407AbgKQUbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:31:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgKQUbt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:31:49 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4E6C0613CF;
-        Tue, 17 Nov 2020 12:31:49 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id d17so9379174plr.5;
-        Tue, 17 Nov 2020 12:31:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8cdKo8emujq1Wb525bn0DzNPJmgQ0Dh8TmozREDSzEI=;
-        b=iiyQhRWWvT1CDUQz8aDVUwS7YgbLGIX+Ds6H0J0ePTsjb3nxU5f324yBiimcmq4zSV
-         KyYn+KNlmRNS6fK15BnqW4YD0VA6NFQ++fabtrcl+Dc1FxTSJ/qNiqNthJrCBavj6ElL
-         KmuQ8vDGh4kfOagFZk1cEunPlNtJU3vjsXfPwswK6kLHnlgAG8yWLV2wc8EN7xpdovZ+
-         7busx8RPyGkMDIxrdMuUqoyVF16UtKcrZ5XvK1OwE/Yxind+H/iENSOU1t8ubdEWW0fM
-         PZwzqgYFF+HTCcECotUkcH139tRa4G0IOfwe8Fy4I7AaZSahn4HfUNug7aaUHRWgUxIy
-         e8eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=8cdKo8emujq1Wb525bn0DzNPJmgQ0Dh8TmozREDSzEI=;
-        b=fi8zY8CsyakfnaKRLLXxia2uxWdw0Yh6Z16PF/5xJyQlZOd+mBNZdrb5bN14CXqxGY
-         2VFvZ+YKqS6HDeBj/hFYTpII5nggLWzxv5NGv+1Es5mIJL7ENP+3gGniApPF5+Q8oD1b
-         Khl7bDl1/mZPLnpLB2qSQbl3GsZlpRlvOJyUZemqMX4acrfLZGWMC06NV0+HzQU+xES8
-         OFp7/QFsGA/Bj7pA7tizk10tK0mNKpMFnCJO8Ihsx6MZrwZEdr8injRrIqEJgUrgTG9u
-         2Y0sbq0nFMuRlqqU1A1lzJ0w+HSVSsNmrcKk+SF3ZfiOUTiUQ/3YT4l2Ksj5kxH9/zHj
-         mRzA==
-X-Gm-Message-State: AOAM531QzzugU+7Y+ulGU3Tqt0lEQUjmX0bG15yeuVZV5yxfyLvTfnUe
-        q2fAXkhaJbhNDicSZM18DyQ=
-X-Google-Smtp-Source: ABdhPJzzxdmwJ+fUaWkJUKc72hmerP4FBFAD0+bIYQoND4GH/Iu7aeYUY9VGZJZ4iowN7aM7H/uEjg==
-X-Received: by 2002:a17:90a:8402:: with SMTP id j2mr820597pjn.120.1605645109029;
-        Tue, 17 Nov 2020 12:31:49 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id p7sm12446826pfn.83.2020.11.17.12.31.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 12:31:48 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 17 Nov 2020 12:31:45 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Oleksandr Natalenko <oleksandr@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        John Dias <joaodias@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jann Horn <jannh@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        sj38.park@gmail.com, David Rientjes <rientjes@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Colascione <dancol@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        linux-man <linux-man@vger.kernel.org>
-Subject: Re: [PATCH v9 3/3] mm/madvise: introduce process_madvise() syscall:
- an external memory hinting API
-Message-ID: <20201117203145.GB3856507@google.com>
-References: <20200901000633.1920247-1-minchan@kernel.org>
- <20200901000633.1920247-4-minchan@kernel.org>
- <20200921065633.GA8070@infradead.org>
- <20200921175539.GB387368@google.com>
- <a376191d-908d-7d3c-a810-8ef51cc45f49@gmail.com>
- <20201116155132.GA3805951@google.com>
- <CAHk-=whTctybeY7GSc+f--FVLKKUQicTq-jfEmdku+cO_VdiVg@mail.gmail.com>
+        id S1727590AbgKQUcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:32:01 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:33328 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgKQUcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:32:00 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kf7dm-007b82-FA; Tue, 17 Nov 2020 21:31:50 +0100
+Date:   Tue, 17 Nov 2020 21:31:50 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     davem@davemloft.net, f.fainelli@gmail.com, hkallweit1@gmail.com,
+        robh@kernel.org, ciorneiioana@gmail.com,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4 2/4] dt-bindings: net: Add Rx/Tx output
+ configuration for 10base T1L
+Message-ID: <20201117203150.GA1800835@lunn.ch>
+References: <20201117201555.26723-1-dmurphy@ti.com>
+ <20201117201555.26723-3-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whTctybeY7GSc+f--FVLKKUQicTq-jfEmdku+cO_VdiVg@mail.gmail.com>
+In-Reply-To: <20201117201555.26723-3-dmurphy@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 12:06:48PM -0800, Linus Torvalds wrote:
-> On Mon, Nov 16, 2020 at 7:51 AM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > Let me send a patch with your SoB if you don't mind.
-> 
-> Eric, can you ack this SoB and I'll apply it to me tree?
-> 
-> Or is it already queued up somewhere else?
+On Tue, Nov 17, 2020 at 02:15:53PM -0600, Dan Murphy wrote:
+> Per the 802.3cg spec the 10base T1L can operate at 2 different
+> differential voltages 1v p2p and 2.4v p2p. The abiility of the PHY to
 
-Andrew, picked it up.
-https://ozlabs.org/~akpm/mmots/broken-out/mm-madvise-fix-memory-leak-from-process_madvise.patch
+ability
+
+> drive that output is dependent on the PHY's on board power supply.
+> This common feature is applicable to all 10base T1L PHYs so this binding
+> property belongs in a top level ethernet document.
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  Documentation/devicetree/bindings/net/ethernet-phy.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/ethernet-phy.yaml b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> index 6dd72faebd89..bda1ce51836b 100644
+> --- a/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> +++ b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> @@ -174,6 +174,12 @@ properties:
+>        PHY's that have configurable TX internal delays. If this property is
+>        present then the PHY applies the TX delay.
+>  
+> +  max-tx-rx-p2p-microvolt:
+> +    description: |
+> +      Configures the Tx/Rx p2p differential output voltage for 10base-T1L PHYs.
+
+Does it configure, or does it limit? I _think_ this is a negotiation
+parameter, so the PHY might decide to do 1100mV if the link peer is
+near by even when max-tx-rx-p2p-microvolt has the higher value.
+
+     Andrew
