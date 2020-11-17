@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5942B71AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA3E2B71B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729234AbgKQWh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:37:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41246 "EHLO mail.kernel.org"
+        id S1729248AbgKQWiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:38:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729217AbgKQWh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:37:57 -0500
+        id S1728044AbgKQWiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:38:03 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E05C1206E0;
-        Tue, 17 Nov 2020 22:37:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91B3020715;
+        Tue, 17 Nov 2020 22:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605652676;
-        bh=Mtz9tEmVoqD4BFiEPcLYBQ3rkMPTjLGFyqnatHxG7oo=;
+        s=default; t=1605652683;
+        bh=xJ9Pd7l3GU/MkR4nj1eWuIVcIYyomVZnVKN9YEHBkVc=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=OVvtbHHk6tPrHyUE+ie1iMjBcVh8oXsJiWDXXN9WG2bH54rfXjCLUbe28cOr9gEah
-         sSsCIAUOIIomo3S8ZY7eCQcAGFbh6RxtZjVVi4PBQ191BayTtuIvaGN6tIuxWD6B7l
-         pzKhhR6nrohBm0QGjUvvhejCLUKbK1sPxmhvrWxQ=
-Date:   Tue, 17 Nov 2020 22:37:37 +0000
+        b=Bc4R7dxUzVahvleAMpXicdadc7Wg5xSUEkrMntGqA8v6GyvUQHPwYkgiwBpxJCESl
+         DWkfNPYo71fveHES6NAUwr3Sxkwu+wvVu4KdH2sUSqmLPSpqpM3aXFNNnMSKqMasCf
+         EAKiZbGVPSjnCVgis0N5nTvBc9jaVzZJnH5QpAoc=
+Date:   Tue, 17 Nov 2020 22:37:43 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
+To:     Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Takashi Iwai <tiwai@suse.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20201110145120.3280658-1-geert+renesas@glider.be>
-References: <20201110145120.3280658-1-geert+renesas@glider.be>
-Subject: Re: [PATCH] ASoC: fsl: SND_SOC_FSL_AUD2HTX should depend on ARCH_MXC
-Message-Id: <160565265703.23689.12029405282658577742.b4-ty@kernel.org>
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20201110174904.3413846-1-geert@linux-m68k.org>
+References: <20201110174904.3413846-1-geert@linux-m68k.org>
+Subject: Re: [PATCH] ASoC: Fix 7/8 spaces indentation in Kconfig
+Message-Id: <160565265704.23689.7331273235338322880.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,11 +41,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 15:51:20 +0100, Geert Uytterhoeven wrote:
-> The Freescale/NXP AUDIO TO HDMI TX module is only present on NXP i.MX 8
-> Series SoCs.  Hence add a dependency on ARCH_MXC, to prevent asking the
-> user about this driver when configuring a kernel without i.MX 8 platform
-> support.
+On Tue, 10 Nov 2020 18:49:04 +0100, Geert Uytterhoeven wrote:
+> Some entries used 7 or 8 spaces instead if a single TAB.
 
 Applied to
 
@@ -55,8 +50,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: SND_SOC_FSL_AUD2HTX should depend on ARCH_MXC
-      commit: 674226db62ec758c4575bcdb933a2410f1a29bbf
+[1/1] ASoC: Fix 7/8 spaces indentation in Kconfig
+      commit: 5268e0bf7123c422892fec362f5be2bcae9bbb95
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
