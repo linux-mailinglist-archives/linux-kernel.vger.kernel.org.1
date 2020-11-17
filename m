@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EABE2B5E29
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E7B2B5E2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgKQLTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:19:51 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:54598 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725355AbgKQLTv (ORCPT
+        id S1727402AbgKQLWz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 06:22:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQLWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:19:51 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHBHdIH013698;
-        Tue, 17 Nov 2020 12:19:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=RjgGdVvBAqG4pUc+emH48DVA7ViLFerpkVk7vIIeH4s=;
- b=RTfkfHL9k98Nt494o7k7V+RvYCbQ/cig6R2k9SHyWtGqSubOaiiRogtZ0fsbuyb9Ig23
- t8F9eEF5Gv4JHC0ItWFQFBHRagD0LJXsiQr/y25iOD+kP7DkFsUmtuZeJPNr9WY5sXBT
- 2GsvbDlNdcw/4C80TaJYdOA7bu1+tKZ9s/auHVurtfW1ie0OtE24+1UqMFrQznbe1o/1
- HGps3SxeelSxMYHAGwmmsDASI+W2S9lFjPEvjgj6y/kcfw45Wo61FQuBFVrg+mASlNOu
- HJZ0WkNYPcDlso42VGuLJ4JPjzWeWa17PZlHFMPdp5VuVO4Kf4CKFoDB5MHfx1N1nvG9 ag== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34t5w1rqun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 12:19:41 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E497810002A;
-        Tue, 17 Nov 2020 12:19:40 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CDE5E241A55;
-        Tue, 17 Nov 2020 12:19:40 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.50) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
- 2020 12:19:39 +0100
-Subject: Re: [PATCH v2 2/2] ARM: dts: stm32: support child mfd cells for the
- stm32mp1 TAMP syscon
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <kernel@pengutronix.de>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201021102855.18026-1-a.fatoum@pengutronix.de>
- <20201021102855.18026-2-a.fatoum@pengutronix.de>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <352478be-cd69-2089-baaf-6f796cfc6cfd@st.com>
-Date:   Tue, 17 Nov 2020 12:18:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 17 Nov 2020 06:22:55 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400EDC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:22:55 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kez4X-0007Gt-Td; Tue, 17 Nov 2020 12:22:53 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kez4X-00088v-L0; Tue, 17 Nov 2020 12:22:53 +0100
+Message-ID: <0c6a3ced0012d05bb33bb3ea765de359e480ad4a.camel@pengutronix.de>
+Subject: Re: [PATCH 41/42] gpu/ipu-v3/ipu-di: Strip out 2 unused
+ 'di_sync_config' entries
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        dri-devel@lists.freedesktop.org
+Date:   Tue, 17 Nov 2020 12:22:53 +0100
+In-Reply-To: <20201116174112.1833368-42-lee.jones@linaro.org>
+References: <20201116174112.1833368-1-lee.jones@linaro.org>
+         <20201116174112.1833368-42-lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <20201021102855.18026-2-a.fatoum@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_03:2020-11-17,2020-11-17 signatures=0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ahmad
+Hi Lee,
 
-On 10/21/20 12:28 PM, Ahmad Fatoum wrote:
-> The stm32mp1 TAMP peripheral has 32 backup registers that survive
-> a warm reset. This makes them suitable for storing a reboot
-> mode, which the vendor's kernel tree is already doing[0].
+On Mon, 2020-11-16 at 17:41 +0000, Lee Jones wrote:
+> They're taking up too much space on the stack.
 > 
-> The actual syscon-reboot-mode child node can be added by a board.dts or
-> fixed up by the bootloader. For the child node to be probed, the
-> compatible needs to include simple-mfd. The binding now specifies this,
-> so have the SoC dtsi adhere to it.
+> Fixes the following W=1 kernel build warning(s):
 > 
-> [0]: https://github.com/STMicroelectronics/linux/commit/2e9bfc29dd
+>  drivers/gpu/ipu-v3/ipu-di.c: In function ‘ipu_di_sync_config_noninterlaced’:
+>  drivers/gpu/ipu-v3/ipu-di.c:391:1: warning: the frame size of 1064 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 > 
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
-> v1 -> v2:
->    - Dropped simple-bus. simple-mfd is all that's needed
->    - reworded commit message
-> ---
->   arch/arm/boot/dts/stm32mp151.dtsi | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/ipu-v3/ipu-di.c | 4 ----
+>  1 file changed, 4 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-> index 842ecffae73a..662c2408d41b 100644
-> --- a/arch/arm/boot/dts/stm32mp151.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-> @@ -1542,7 +1542,7 @@ i2c6: i2c@5c009000 {
->   		};
->   
->   		tamp: tamp@5c00a000 {
-> -			compatible = "st,stm32-tamp", "syscon";
-> +			compatible = "st,stm32-tamp", "syscon", "simple-mfd";
->   			reg = <0x5c00a000 0x400>;
->   		};
->   
-> 
+> diff --git a/drivers/gpu/ipu-v3/ipu-di.c b/drivers/gpu/ipu-v3/ipu-di.c
+> index b4a31d506fccf..e617f60afeea3 100644
+> --- a/drivers/gpu/ipu-v3/ipu-di.c
+> +++ b/drivers/gpu/ipu-v3/ipu-di.c
+> @@ -310,10 +310,6 @@ static void ipu_di_sync_config_noninterlaced(struct ipu_di *di,
+>  			/* unused */
+>  		} , {
+>  			/* unused */
+> -		} , {
+> -			/* unused */
+> -		} , {
+> -			/* unused */
+>  		},
+>  	};
+>  	/* can't use #7 and #8 for line active and pixel active counters */
 
-Series applied on stm32-next.
+Thank you, applied to imx-drm/next.
 
-Regards
-Alex
+regards
+Philipp
