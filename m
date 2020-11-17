@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B9A2B60E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A852B614E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729961AbgKQNNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:13:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44262 "EHLO mail.kernel.org"
+        id S1729106AbgKQNR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:17:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729705AbgKQNNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:13:39 -0500
+        id S1730626AbgKQNRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:17:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E653221EB;
-        Tue, 17 Nov 2020 13:13:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3C70206D5;
+        Tue, 17 Nov 2020 13:17:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618818;
-        bh=V5ywhdFexZ2lzsszBRk/PjPOjjFqAJiPYgHmtk9czhM=;
+        s=default; t=1605619075;
+        bh=NDPKSAD52SgAlMx77kp/2Gk0mOp4yqDn6IjkPkSJRsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eMsTnbbTq7rSYjBdudgUbpJiHv0dt4PbugpWhdqaQmCQ+z6BqxKil8leGtnZvz9Jh
-         Amlbl7oqW9nYR8QJj9naUccxW4j/8UV6KVJC1IPeNoQUWBaCm87NcoiErR2TOp7SzA
-         0FlRTHN/7HxxbgB4YEqdB7KGrc/WqJo+mwge2M74=
+        b=jCOm22BR2JGxMYgkVrqIWxk4JkJtECRXSKx2aIEsZFz622Eur9jHbeeYkAI5/Fw7h
+         PzzCtlSD/1hcpGkZFci8HzWA5EjEp5mbiKL9dqRg8slDidL4+RyrV5WfASLESQDxdQ
+         95za8d7e9uYdufD54k690vHS4IJB9QBFWsRl2+LU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,12 +31,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Stephane Grosjean <s.grosjean@peak-system.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 18/85] can: peak_usb: peak_usb_get_ts_time(): fix timestamp wrapping
+Subject: [PATCH 4.19 020/101] can: peak_usb: peak_usb_get_ts_time(): fix timestamp wrapping
 Date:   Tue, 17 Nov 2020 14:04:47 +0100
-Message-Id: <20201117122111.932876525@linuxfoundation.org>
+Message-Id: <20201117122114.081392035@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -69,12 +69,12 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 46 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-index 85d92f129af2d..9d78ba7776140 100644
+index afc8d978124ef..db156a11e6db5 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-@@ -154,14 +154,55 @@ void peak_usb_get_ts_tv(struct peak_time_ref *time_ref, u32 ts,
- 	/* protect from getting timeval before setting now */
- 	if (time_ref->tv_host.tv_sec > 0) {
+@@ -138,14 +138,55 @@ void peak_usb_get_ts_time(struct peak_time_ref *time_ref, u32 ts, ktime_t *time)
+ 	/* protect from getting time before setting now */
+ 	if (ktime_to_ns(time_ref->tv_host)) {
  		u64 delta_us;
 +		s64 delta_ts = 0;
 +
@@ -132,7 +132,7 @@ index 85d92f129af2d..9d78ba7776140 100644
 +		delta_us = delta_ts * time_ref->adapter->us_per_ts_scale;
  		delta_us >>= time_ref->adapter->us_per_ts_shift;
  
- 		*tv = time_ref->tv_host_0;
+ 		*time = ktime_add_us(time_ref->tv_host_0, delta_us);
 -- 
 2.27.0
 
