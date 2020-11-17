@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78222B6034
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A562B614A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729070AbgKQNHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:07:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34370 "EHLO mail.kernel.org"
+        id S1730597AbgKQNRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:17:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729059AbgKQNHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:07:15 -0500
+        id S1728534AbgKQNRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:17:30 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 276EF246B8;
-        Tue, 17 Nov 2020 13:07:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF95721734;
+        Tue, 17 Nov 2020 13:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618434;
-        bh=aKgEmp1TqCnKHC2LUaP9Mb4OZ2n5J8n3ognTMoa3l24=;
+        s=default; t=1605619049;
+        bh=xZPzoopCaItned10T96lNiFu375H5EO0HDd3vezoKEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mba19lDCimwHm4KCPmbP3TFEtyvOD7wxDPB7y5w4ckrDMh2shlPbAVoibSGI2JVkj
-         Gj9R+4k+Qi57P8eu2UD8QBkSZuT2bet4FoFTTnzPTyGgkUognkcdRFoOxB7CgOK2DR
-         EeS1sGgopqNUaLEMpssaajLhzM+vhs/vkmRtZ+IE=
+        b=mBFsHzYnNXvTdwoU2ihKRRV9bPY87+Pvg+t4fk2VLo8sCrNat8EXSXNHkD1Eiojbk
+         7eW/4RXwh6Cmazi6n+1PWyvJiOzfHc2oNfPpkTAFPemibpKAL4asuyZukpcTt5/Ybb
+         5LCmJypofo5jk9HKpRIuDkt61jIGzenjWiuy650M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 07/64] perf tools: Add missing swap for ino_generation
+        stable@vger.kernel.org, lining <lining2020x@163.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 003/101] nbd: dont update block size after device is started
 Date:   Tue, 17 Nov 2020 14:04:30 +0100
-Message-Id: <20201117122106.497185081@linuxfoundation.org>
+Message-Id: <20201117122113.283475129@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit fe01adb72356a4e2f8735e4128af85921ca98fa1 ]
+[ Upstream commit b40813ddcd6bf9f01d020804e4cb8febc480b9e4 ]
 
-We are missing swap for ino_generation field.
+Mounted NBD device can be resized, one use case is rbd-nbd.
 
-Fixes: 5c5e854bc760 ("perf tools: Add attr->mmap2 support")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/r/20201101233103.3537427-2-jolsa@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fix the issue by setting up default block size, then not touch it
+in nbd_size_update() any more. This kind of usage is aligned with loop
+which has same use case too.
+
+Cc: stable@vger.kernel.org
+Fixes: c8a83a6b54d0 ("nbd: Use set_blocksize() to set device blocksize")
+Reported-by: lining <lining2020x@163.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Jan Kara <jack@suse.cz>
+Tested-by: lining <lining2020x@163.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/session.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/block/nbd.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 0ae4f73dc8eb5..5b392662d100b 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -415,6 +415,7 @@ static void perf_event__mmap2_swap(union perf_event *event,
- 	event->mmap2.maj   = bswap_32(event->mmap2.maj);
- 	event->mmap2.min   = bswap_32(event->mmap2.min);
- 	event->mmap2.ino   = bswap_64(event->mmap2.ino);
-+	event->mmap2.ino_generation = bswap_64(event->mmap2.ino_generation);
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 52e1e71e81241..706115ecd9bee 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -276,7 +276,7 @@ static void nbd_size_clear(struct nbd_device *nbd)
+ 	}
+ }
  
- 	if (sample_id_all) {
- 		void *data = &event->mmap2.filename;
+-static void nbd_size_update(struct nbd_device *nbd)
++static void nbd_size_update(struct nbd_device *nbd, bool start)
+ {
+ 	struct nbd_config *config = nbd->config;
+ 	struct block_device *bdev = bdget_disk(nbd->disk, 0);
+@@ -292,7 +292,8 @@ static void nbd_size_update(struct nbd_device *nbd)
+ 	if (bdev) {
+ 		if (bdev->bd_disk) {
+ 			bd_set_size(bdev, config->bytesize);
+-			set_blocksize(bdev, config->blksize);
++			if (start)
++				set_blocksize(bdev, config->blksize);
+ 		} else
+ 			bdev->bd_invalidated = 1;
+ 		bdput(bdev);
+@@ -307,7 +308,7 @@ static void nbd_size_set(struct nbd_device *nbd, loff_t blocksize,
+ 	config->blksize = blocksize;
+ 	config->bytesize = blocksize * nr_blocks;
+ 	if (nbd->task_recv != NULL)
+-		nbd_size_update(nbd);
++		nbd_size_update(nbd, false);
+ }
+ 
+ static void nbd_complete_rq(struct request *req)
+@@ -1244,7 +1245,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 		args->index = i;
+ 		queue_work(nbd->recv_workq, &args->work);
+ 	}
+-	nbd_size_update(nbd);
++	nbd_size_update(nbd, true);
+ 	return error;
+ }
+ 
 -- 
 2.27.0
 
