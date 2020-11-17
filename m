@@ -2,155 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6B32B6754
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 652CB2B6756
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728841AbgKQOZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:25:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727952AbgKQOZJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:25:09 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B21DC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 06:25:09 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id y16so24476408ljh.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 06:25:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vWI3LLwloLUflMf7A3rivV83Ohj1YpOmVJiOHPhQIAo=;
-        b=ObP8tcAornYjCLuIysW8XvPs935n7nZMF1iePDnPqCGV27/OlV5TB6kYOC6pR9MslG
-         kwoKcM7COsCuMtbn4P4C4Ibxq5cc88DoTIi88ncR/ePgwaMQ/eKZQ5Oskrf3vXEJfgV3
-         6/AOFvbWDcfIg/dzyx+qXVeiT8903u8LnJ/k5/DSdf/YDKVXJUvXUe+/SiJh8oAZJMi+
-         E30HcCeuxs45aHDVeeAfpylDC9r4QSxWtMyjjIb7VGREfvSRCPCMJtcxm1t5EKladPj6
-         6YGcxJsQZtd60pfAMNhFw/gHmvArYoS+5h3YDPGCOQ5PUaDjpB2g8G38lhXwlJrBA9T3
-         N9DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vWI3LLwloLUflMf7A3rivV83Ohj1YpOmVJiOHPhQIAo=;
-        b=fIVwdRXMZn1tGf3oKDTly4z6iS/wZt7zvASWuHQjS1JIVTim624MKuATqqeTWSFJY6
-         4LuXEKnF5Q7SCPTyNWSn1OiiDXNSCUW37GKrhm8N93C3hqQEG7skVvUB1VuHwGEPkFjo
-         DIqZKWrmAHbR5GSzR5TgFzgyY2rFMd6SAGfDjvYVghXZBbEBhU2yXC+cR2cHJaKIo6Q+
-         8SBtThOrBsZrt/cqGk7gmFqW/dVufpyqs6hfeKSDNJc6dz4Tv9bKLpQhbspqpxeb690i
-         O/c2I68KluyHWww5hImgj69iqReGVPd7Eooh5IWzOv3miqZhZCqJFclcwZOokG2v9SLH
-         Jung==
-X-Gm-Message-State: AOAM530mXInoCh2haPV77kcCe+4a5gTby7P5c2dsGqzzonNbCitYsCaF
-        iPopsq/dr9LXgm4+X+VoX5kqmNtghokGqaHBOB6boA==
-X-Google-Smtp-Source: ABdhPJw4//KAMoyS7tV+iwzF5w/c0dJvEzNjm/uLm87l42C9vpoAmLenDSzrSaKp4vz+1haIdlViehOpvfbGZAlKASY=
-X-Received: by 2002:a2e:b8d4:: with SMTP id s20mr2088392ljp.226.1605623107534;
- Tue, 17 Nov 2020 06:25:07 -0800 (PST)
+        id S1727952AbgKQOZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:25:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728441AbgKQOZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:25:45 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B186221FC;
+        Tue, 17 Nov 2020 14:25:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605623143;
+        bh=56cvIXZlMxNuswpAfZ65Rr7eBSVJPUrqGNADm+IBwWs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X9BdSDn1bCJJol0UpEdN286Nb4foJ7ftIK5rvFKwynYpMD2vR5eXxJZ8LXq5yRmF1
+         wW0D7R7GgU8OkKiVi0tBjbMFIFiAazNCpyOSXm/i3LgAIK009QEUrg6Ybpc/GFlBAE
+         elsGhNTGmjSze8G/XncgGS77mVgin3Ry78Ib7kqM=
+Date:   Tue, 17 Nov 2020 14:25:24 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] regulator: hi6421v600-regulator: move it from staging
+Message-ID: <20201117142523.GD5142@sirena.org.uk>
+References: <cover.1605530560.git.mchehab+huawei@kernel.org>
+ <471362653f22a8748202c55babd2b462056a5797.1605530560.git.mchehab+huawei@kernel.org>
+ <20201116183833.GC4739@sirena.org.uk>
+ <20201117090724.4ade833a@coco.lan>
 MIME-Version: 1.0
-References: <20201117134222.31482-1-mgorman@techsingularity.net> <20201117134222.31482-3-mgorman@techsingularity.net>
-In-Reply-To: <20201117134222.31482-3-mgorman@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 17 Nov 2020 15:24:56 +0100
-Message-ID: <CAKfTPtBj1nJhQrsAoH0mBrc9Md+_icNJuWx7P=yQbqM2fYCAwg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] sched/numa: Allow a floating imbalance between NUMA nodes
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n/aVsWSeQ4JHkrmm"
+Content-Disposition: inline
+In-Reply-To: <20201117090724.4ade833a@coco.lan>
+X-Cookie: Pause for storage relocation.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 at 14:42, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> Currently, an imbalance is only allowed when a destination node
-> is almost completely idle. This solved one basic class of problems
-> and was the cautious approach.
->
-> This patch revisits the possibility that NUMA nodes can be imbalanced
-> until 25% of the CPUs are occupied. The reasoning behind 25% is somewhat
-> superficial -- it's half the cores when HT is enabled.  At higher
-> utilisations, balancing should continue as normal and keep things even
-> until scheduler domains are fully busy or over utilised.
 
-This reminds me previous discussions on the same topic: how much
-imbalance is allowed that will not screw up the bandwidth of the node
-I'm worried that there is no topology insight in the decision like
-hyperthreading, or number of cpus in the LLC
+--n/aVsWSeQ4JHkrmm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Note that this is not expected to be a universal win. Any benchmark
-> that prefers spreading as wide as possible with limited communication
-> will favour the old behaviour as there is more memory bandwidth.
-> Workloads that communicate heavily in pairs such as netperf or tbench
-> benefit. For the tests I ran, the vast majority of workloads saw
-> a benefit so it seems to be a worthwhile tradeoff.
->
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> ---
->  kernel/sched/fair.c | 22 ++++++++++++----------
->  1 file changed, 12 insertions(+), 10 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 5fbed29e4001..33709dfac24d 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1550,7 +1550,8 @@ struct task_numa_env {
->  static unsigned long cpu_load(struct rq *rq);
->  static unsigned long cpu_runnable(struct rq *rq);
->  static unsigned long cpu_util(int cpu);
-> -static inline long adjust_numa_imbalance(int imbalance, int dst_running);
-> +static inline long adjust_numa_imbalance(int imbalance,
-> +                                       int dst_running, int dst_weight);
->
->  static inline enum
->  numa_type numa_classify(unsigned int imbalance_pct,
-> @@ -1930,7 +1931,8 @@ static void task_numa_find_cpu(struct task_numa_env *env,
->                 src_running = env->src_stats.nr_running - 1;
->                 dst_running = env->dst_stats.nr_running + 1;
->                 imbalance = max(0, dst_running - src_running);
-> -               imbalance = adjust_numa_imbalance(imbalance, dst_running);
-> +               imbalance = adjust_numa_imbalance(imbalance, dst_running,
-> +                                                       env->dst_stats.weight);
->
->                 /* Use idle CPU if there is no imbalance */
->                 if (!imbalance) {
-> @@ -8993,16 +8995,15 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
->
->  #define NUMA_IMBALANCE_MIN 2
->
-> -static inline long adjust_numa_imbalance(int imbalance, int dst_running)
-> +static inline long adjust_numa_imbalance(int imbalance,
-> +                               int dst_running, int dst_weight)
->  {
-> -       unsigned int imbalance_min;
-> -
->         /*
->          * Allow a small imbalance based on a simple pair of communicating
-> -        * tasks that remain local when the source domain is almost idle.
-> +        * when the destination is lightly loaded so that pairs of
-> +        * communicating tasks may remain local.
->          */
-> -       imbalance_min = NUMA_IMBALANCE_MIN;
-> -       if (dst_running <= imbalance_min)
-> +       if (dst_running < (dst_weight >> 2) && imbalance <= NUMA_IMBALANCE_MIN)
->                 return 0;
->
->         return imbalance;
-> @@ -9105,9 +9106,10 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
->                 }
->
->                 /* Consider allowing a small imbalance between NUMA groups */
-> -               if (env->sd->flags & SD_NUMA)
-> +               if (env->sd->flags & SD_NUMA) {
->                         env->imbalance = adjust_numa_imbalance(env->imbalance,
-> -                                               busiest->sum_nr_running);
-> +                               busiest->sum_nr_running, busiest->group_weight);
-> +               }
->
->                 return;
->         }
-> --
-> 2.26.2
->
+On Tue, Nov 17, 2020 at 09:08:22AM +0100, Mauro Carvalho Chehab wrote:
+> Mark Brown <broonie@kernel.org> escreveu:
+
+> > This probe code looks very different to other regulator drivers, this
+> > alone should have been a warning that the driver needs some substantial
+> > refactoring here.  As indicated information about what regulators are
+> > present on devices and their properties should be in the driver not the
+> > DT, the driver should just be able to register them unconditionally and
+> > use of_match and regulators_node to allow the core to find any
+> > constraints that are provided by the platform.
+
+> The setup for MFD/regulator is different than almost all other
+> regulator drivers currently upstreamed[1].=20
+
+It really shouldn't be doing anything unusual.
+
+> It means that, for the regulator driver to work, two drivers
+> should be probed first: the SPMI bus controller driver
+> (hisi-spmi-controller.c) and the SPMI bus client driver, which is
+> at the MFD driver(hi6421-spmi-pmic.c).
+
+> Only after having both probed, the regulator driver can be
+> probed.
+
+This is totally fine and very common for drivers in general, a
+combination of probe deferral and fw_devlink exists to sort this stuff
+out.
+
+> Also, as all the communication between the PM chip
+> and the SoC happens via a single serial bus, there's no
+> sense on probing the regulators in parallel.
+
+> That's mainly the reason why I opted to serialize the probe
+> inside hi6421v600-regulator.c.=20
+
+I can't think of a regulator driver that doesn't have an entirly
+serialized probe routine, that's not the issue.  The issue is that
+almost nothing that the probe routine is doing is done by other
+regulator drivers.
+
+--n/aVsWSeQ4JHkrmm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+z3VMACgkQJNaLcl1U
+h9AIlwf9GtLYXFKKGNEQWjdf/Itfjnh8gyQP+5GihjpkiYch3YtDrIDWxsjxEfPD
+/MtvxLPT52m1NP/del1x35eLeqyJTsNKHLB+GAzcV7DKUxmbXJUeE130hFt0SO9J
+d8nWU69yRROMIdqZ5F3CI3nfGtLa7eYn+aDEVihW3MItIeORc7M1VdvPHR4Rlh88
+MZvJ/PQodMtkPiuVB4kGN8jDTcXyiUMPu95cuvly7iwCzcYWAasBvZ3zkXoee98a
+38W5FEMxjqDvRhRz+ivnolxRemKjtFS5z7YuBCWmpmUrp/LT0QNXrKhZh1qJNHPL
+wcX3dQ3Zbmq9qFWjHn4nCh5WuUtXwQ==
+=pWHl
+-----END PGP SIGNATURE-----
+
+--n/aVsWSeQ4JHkrmm--
