@@ -2,75 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848022B6B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809032B6B7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbgKQRNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:13:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728356AbgKQRNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:13:51 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD4F5238E6;
-        Tue, 17 Nov 2020 17:13:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605633231;
-        bh=7WkRxK5arTeUCAbPIL8VlU4xOQ6TguSLJpKy9GcF8H0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Pcoq605PrL84qpEFbT01Hud2NgXAAZUjgPcHRukkdgwNJUMl44XxbwOg+zHwGFvqu
-         0rjX/N87jauhH6oDcKVqD5khZIQVOX21mokbUowHFirCUHcRz2Jn5uRAAu4PRW8rVS
-         JeP8bM87Sp1lRlHhmIOB3Wc1dOWvRCLIduqqE8Qw=
-Date:   Tue, 17 Nov 2020 11:13:47 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Simon Horman <simon.horman@netronome.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     oss-drivers@netronome.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] nfp: tls: Fix unreachable code issue
-Message-ID: <20201117171347.GA27231@embeddedor>
+        id S1728605AbgKQRPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:15:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726174AbgKQRPZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:15:25 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C540EC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:15:23 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id x13so6762346uar.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:15:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CYSb0M0fe9VUi0Yz4rN2g/1snkt7mWNkgZy0eLYCtxw=;
+        b=T/laoseh6koUPxSpKTpKUbL/ofH4XlN3e6fbu4/QbEK1o2Xmq7cJt/tP66EXZtFiBa
+         DwUNIkT2bd5fl3g+LgEritIPR3J86JOYC3X4kEs8dawSy9q480jQD63ZgvdANMRNNnuB
+         7UXrLsOUdIopkr1Z0KYMrHOoWFu+z2a9ic/AsQVnBCJYRTvTzSilQmUAJTUffr7cDhpQ
+         PfLJT4np+Cbyift0EAxQ7IQJuJ0r19pDREoQQiwehj8VZfGv9QUitIfnlPyaWkAoIhNA
+         K9tzDtRXlQSaYLQhsBPAet2WRlN/PWx5yNEU+c+eZ1G3BCQBXaHL8mUr2ZecH7QdeLn+
+         ASiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CYSb0M0fe9VUi0Yz4rN2g/1snkt7mWNkgZy0eLYCtxw=;
+        b=jUXPEaY5iZqRskphSsDWq/iktFUgk8aSNM68az4/vQZUwAF3sMMLwH75YVGNWMvzAm
+         v9Uru5iTrwaNOgrO17FAPTO0c87dlpUsqxHwmDGGjd5jkuJEyIwJ6h1hl3q4nAzqDIRl
+         dcmSMve6QGF9bN7KodxBxn56ApAZzz/AeZFbSOeWx91ryIPFZJ+a27EFTBjoZsuFjhVI
+         y23rlAu4Y5iyoJ+1ffuC2NGQX2Yn5gtw5OUH2++XDvKSgcENekfWvDXEjHEba1IxcP7D
+         hmKEujHg84qZKASUvb5HQ6BoQf74YbP6kkNDDzmcsqEqHX6GuGcMsy2RtD0Qo/zUJs7C
+         xcEA==
+X-Gm-Message-State: AOAM531mh/QVsWbp+2MJKKp1cTXv/YhrI30y2Ttno5m+VxieKjrskuue
+        I3JGrEcjqtsty1x7R2BO25+vUhv4tGOe0MImx0qeBQ==
+X-Google-Smtp-Source: ABdhPJwmehKHszhtCrvkt107pRksUJsS/ubL0KFY0b6kTiGnGtqW1O2aFcJhTI5DeQaBzbUxtzy41vhjXrzVvPZEfOs=
+X-Received: by 2002:a9f:2f15:: with SMTP id x21mr593298uaj.104.1605633322970;
+ Tue, 17 Nov 2020 09:15:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201106120933.7190-1-muhammad.husaini.zulkifli@intel.com>
+ <20201106120933.7190-2-muhammad.husaini.zulkifli@intel.com>
+ <CAPDyKFrq0Wsc7bNS0QPMitNqpkzK87VAuTnjDqrqTrVDGCwxgg@mail.gmail.com>
+ <DM6PR11MB2876BB714DF701E81866B13EB8E30@DM6PR11MB2876.namprd11.prod.outlook.com>
+ <CAPDyKFpVJ0jGkqa2j9W-Z-su3vT2eSKHkObYj1Z0C3MvRQrKwg@mail.gmail.com> <DM6PR11MB2876A043535B8EDE5286FBB0B8E20@DM6PR11MB2876.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB2876A043535B8EDE5286FBB0B8E20@DM6PR11MB2876.namprd11.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 17 Nov 2020 18:14:29 +0100
+Message-ID: <CAPDyKFp1nR_Qx5p+ou1cZns9MvLVWD5bTuFCkMpu_EbHxh1Opw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem
+ Bay SOC
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following unreachable code issue:
+On Tue, 17 Nov 2020 at 14:46, Zulkifli, Muhammad Husaini
+<muhammad.husaini.zulkifli@intel.com> wrote:
+>
+> Hi Ulf,
+>
+> >-----Original Message-----
+> >From: Ulf Hansson <ulf.hansson@linaro.org>
+> >Sent: Tuesday, November 17, 2020 7:27 PM
+> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
+> >Cc: linux-mmc@vger.kernel.org; Linux ARM <linux-arm-
+> >kernel@lists.infradead.org>; Linux Kernel Mailing List <linux-
+> >kernel@vger.kernel.org>; Hunter, Adrian <adrian.hunter@intel.com>; Raja
+> >Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>; Wan
+> >Mohamad, Wan Ahmad Zainie
+> ><wan.ahmad.zainie.wan.mohamad@intel.com>; David E. Box
+> ><david.e.box@linux.intel.com>
+> >Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-arasan: Specify .clk_ops for Keem Bay
+> >SOC
+> >
+> >On Mon, 16 Nov 2020 at 15:22, Zulkifli, Muhammad Husaini
+> ><muhammad.husaini.zulkifli@intel.com> wrote:
+> >>
+> >> Hi Ulf,
+> >>
+> >> Thanks for your review comments. I replied inline
+> >>
+> >> >-----Original Message-----
+> >> >From: Ulf Hansson <ulf.hansson@linaro.org>
+> >> >Sent: Monday, November 16, 2020 7:41 PM
+> >> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
+> >> >Cc: linux-mmc@vger.kernel.org; Linux ARM <linux-arm-
+> >> >kernel@lists.infradead.org>; Linux Kernel Mailing List <linux-
+> >> >kernel@vger.kernel.org>; Hunter, Adrian <adrian.hunter@intel.com>;
+> >> >Raja Subramanian, Lakshmi Bai
+> >> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
+> >> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; David E. Box
+> >> ><david.e.box@linux.intel.com>
+> >> >Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-arasan: Specify .clk_ops
+> >> >for Keem Bay SOC
+> >> >
+> >> >On Fri, 6 Nov 2020 at 05:10, <muhammad.husaini.zulkifli@intel.com> wrote:
+> >> >>
+> >> >> From: Muhammad Husaini Zulkifli
+> >> >> <muhammad.husaini.zulkifli@intel.com>
+> >> >>
+> >> >> Commit 16ada730a759 ("mmc: sdhci-of-arasan: Modify clock operations
+> >> >> handling") introduces platform specific SDHCI clock operation.
+> >> >>
+> >> >> This patch declares the clock operation for Keem Bay.
+> >> >> Add clk_ops for SD, EMMC and SDIO operations.
+> >> >
+> >> >The above commit message doesn't really tell why or what goes on here.
+> >> >Can please try to clarify that.
+> >>
+> >> We missed out the clock operation handling patch (Commit 16ada730a759)
+> >> and did not handle the clk_ops  for Keem Bay SOC devices.
+> >> These 2 patches (Commit 16ada730a759) and (Commit 36c6aadaae86)  are
+> >merged at around the same time.
+> >> We catch the issue later when trying to boot into v5.10-rc1 with Keem Bay
+> >EVM.
+> >> That is why I created this patch to handle the clk_ops for Keem Bay devices.
+> >
+> >Alright, so the previous changes were simply not sufficient to complete the
+> >support.
+> >
+> >>
+> >> >
+> >> >>
+> >> >> Fixes: 36c6aadaae86 ("mmc: sdhci-of-arasan: Add support for Intel
+> >> >> Keem
+> >> >> Bay")
+> >> >
+> >> >Is $subject patch fixing a bug/regression?
+> >>
+> >> This is to fix issue on previous commit. It is a bug fix.
+> >
+> >Has it ever worked?
+>
+> Yes it is working. Tested with Keem Bay EVM.
+> SD/EMMC/SDIO devices registered successfully with this fix.
 
-   drivers/net/ethernet/netronome/nfp/crypto/tls.c: In function 'nfp_net_tls_add':
-   include/linux/compiler_attributes.h:208:41: warning: statement will never be executed [-Wswitch-unreachable]
-     208 | # define fallthrough                    __attribute__((__fallthrough__))
-         |                                         ^~~~~~~~~~~~~
-   drivers/net/ethernet/netronome/nfp/crypto/tls.c:299:3: note: in expansion of macro 'fallthrough'
-     299 |   fallthrough;
-         |   ^~~~~~~~~~~
+I am not asking if $subject patch makes it work, I understand that it does.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/netronome/nfp/crypto/tls.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> >
+> >Did the commit you point to with the fixes tag, break some other existing
+> >functionality?
+>
+> It should not break other existing functionality.
+> This is specific for Keem Bay SOC only.
 
-diff --git a/drivers/net/ethernet/netronome/nfp/crypto/tls.c b/drivers/net/ethernet/netronome/nfp/crypto/tls.c
-index 76c51da5b66f..9b32ae46011c 100644
---- a/drivers/net/ethernet/netronome/nfp/crypto/tls.c
-+++ b/drivers/net/ethernet/netronome/nfp/crypto/tls.c
-@@ -295,8 +295,8 @@ nfp_net_tls_add(struct net_device *netdev, struct sock *sk,
- 			ipv6 = true;
- 			break;
- 		}
--#endif
- 		fallthrough;
-+#endif
- 	case AF_INET:
- 		req_sz = sizeof(struct nfp_crypto_req_add_v4);
- 		ipv6 = false;
--- 
-2.27.0
+So, you are saying that it has never worked for Keem Bay? But $subject
+patch makes it work?
 
+Can you please re-spin and update the commit message to better reflect
+what goes on, then I can apply.
+
+Kind regards
+Uffe
