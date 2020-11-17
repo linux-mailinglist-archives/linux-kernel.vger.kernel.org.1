@@ -2,144 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E462B6BBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D07C72B6BC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbgKQRaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:30:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39816 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726174AbgKQRaB (ORCPT
+        id S1728757AbgKQRbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:31:04 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:34716 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726174AbgKQRbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:30:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605634199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vro1buifvm686BzsfyYs3/2N9XyBtnxtRecQ5TGBeE8=;
-        b=ehC1Fgf2a+mWlctiiiJWLsMD1ZVZdY/fH6LnWIls+dQLwGTrm0p8sVwRTrijaRjuTq5zlb
-        njvGb5jzlNtW+z5ELh/EnbZQF7EIhFN8j0c9qsrSDctxmiuK3MBIJaaHvU0HsLUn3qFAhk
-        hm+NU1Mnt2lrMzWtoll1+wk+xUaLlLk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-117-Ewue8X--PqmxoBXd4NNcFg-1; Tue, 17 Nov 2020 12:29:56 -0500
-X-MC-Unique: Ewue8X--PqmxoBXd4NNcFg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAEEFF6CF5;
-        Tue, 17 Nov 2020 17:29:54 +0000 (UTC)
-Received: from [10.36.115.104] (ovpn-115-104.ams2.redhat.com [10.36.115.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E65B10013C4;
-        Tue, 17 Nov 2020 17:29:51 +0000 (UTC)
-Subject: Re: [PATCH] KVM: arm64: vgic-v3: Drop the reporting of
- GICR_TYPER.Last for userspace
-To:     Zenghui Yu <yuzenghui@huawei.com>, kvmarm@lists.cs.columbia.edu,
-        maz@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, wanghaibin.wang@huawei.com,
-        Keqian Zhu <zhukeqian1@huawei.com>
-References: <20201117151629.1738-1-yuzenghui@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <4c9c10f9-fc6d-2725-168e-db6442b74574@redhat.com>
-Date:   Tue, 17 Nov 2020 18:29:50 +0100
+        Tue, 17 Nov 2020 12:31:03 -0500
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHHRc10025009;
+        Tue, 17 Nov 2020 18:30:56 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=G1km15/ZX6Llqy+PBQyCV6YdEOqHXkacz97pi+37VDA=;
+ b=TdY3yCjSkNcUetXKLhrGBQqfgdZJXgkoy8Oaya/ZMHRehF0VKBITPeg1MF2oCHLWkEtk
+ Sd4DmVtt0Qw9jN2ZiocNnwsIV6M97bgx5WTLv3JWUQU7LfBVIjXc0AF9jcs9xOR28j6R
+ sRU85M9YvqgsrlVkntY7vBNy1Q9kVVO8DbF7Z7p3YeYaBCwt5jqoDXC0tBy1Gr5obsh8
+ SbODt5dF3Ij6y9WbQquQn2KLOEen+uTbe+ulE7W4xo0osIug4rxT+OOzwPrSziSmXzUT
+ n1xyLQ7b4/Nuz3Lrl/sCQ+LsNA+jJwYe9p3DT3/wNBfPnFzs7Gt2LQBdUqVgec33tLiZ Xw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34t5w1tndg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 18:30:56 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6C00410002A;
+        Tue, 17 Nov 2020 18:30:55 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 554282457CA;
+        Tue, 17 Nov 2020 18:30:55 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.45) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 18:30:54 +0100
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <c31b8427-baca-5c77-6420-b592c57a3a7b@st.com>
+ <20201112115115.GA11069@ubuntu> <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
+ <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com> <20201116151028.GA1519@ubuntu>
+ <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
+ <20201116224003.GC3892875@xps15>
+ <50549519-d9ff-9048-a3d8-dab02bfda096@st.com> <20201117160330.GA15538@ubuntu>
+ <a653c503-7fd1-7b87-88a5-88c9002ba410@st.com> <20201117165816.GB15538@ubuntu>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <16e07968-d783-8bcc-cec1-fd02cd717ddd@st.com>
+Date:   Tue, 17 Nov 2020 18:30:54 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201117151629.1738-1-yuzenghui@huawei.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201117165816.GB15538@ubuntu>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_06:2020-11-17,2020-11-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zenghui,
-
-On 11/17/20 4:16 PM, Zenghui Yu wrote:
-> It was recently reported that if GICR_TYPER is accessed before the RD base
-> address is set, we'll suffer from the unset @rdreg dereferencing. Oops...
-> 
-> 	gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
-> 			(rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
-> 
-> It's "expected" that users will access registers in the redistributor if
-> the RD has been properly configured (e.g., the RD base address is set). But
-> it hasn't yet been covered by the existing documentation.
-> 
-> Per discussion on the list [1], the reporting of the GICR_TYPER.Last bit
-> for userspace never actually worked. And it's difficult for us to emulate
-> it correctly given that userspace has the flexibility to access it any
-> time. Let's just drop the reporting of the Last bit for userspace for now
-> (userspace should have full knowledge about it anyway) and it at least
-> prevents kernel from panic ;-)
-> 
-> [1] https://lore.kernel.org/kvmarm/c20865a267e44d1e2c0d52ce4e012263@kernel.org/
-> 
-> Fixes: ba7b3f1275fd ("KVM: arm/arm64: Revisit Redistributor TYPER last bit computation")
-> Reported-by: Keqian Zhu <zhukeqian1@huawei.com>
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Given the state of last bit, it looks sensible atm.
-
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-
-Thanks
-
-Eric
 
 
-> ---
+On 11/17/20 5:58 PM, Guennadi Liakhovetski wrote:
+> On Tue, Nov 17, 2020 at 05:44:05PM +0100, Arnaud POULIQUEN wrote:
+>>
+>>
+>> On 11/17/20 5:03 PM, Guennadi Liakhovetski wrote:
+>>> On Tue, Nov 17, 2020 at 12:42:30PM +0100, Arnaud POULIQUEN wrote:
+>>>
+>>> [snip]
+>>>
+>>>> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+>>>> index 5bda7cb44618..80c2cc23bada 100644
+>>>> --- a/drivers/rpmsg/rpmsg_ns.c
+>>>> +++ b/drivers/rpmsg/rpmsg_ns.c
+>>>> @@ -55,6 +55,39 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
+>>>> *data, int len,
+>>>>  	return 0;
+>>>>  }
+>>>>
+>>>> +/**
+>>>> + * rpmsg_ns_register_device() - register name service device based on rpdev
+>>>> + * @rpdev: prepared rpdev to be used for creating endpoints
+>>>> + *
+>>>> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
+>>>> + * basis for the rpmsg name service device.
+>>>> + */
+>>>> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+>>>> +{
+>>>> +#ifdef MODULES
+>>>> +	int ret;
+>>>> +	struct module *rpmsg_ns;
+>>>> +
+>>>> +	mutex_lock(&module_mutex);
+>>>> +	rpmsg_ns = find_module(KBUILD_MODNAME);
+>>>> +	mutex_unlock(&module_mutex);
+>>>> +
+>>>> +	if (!rpmsg_ns) {
+>>>> +		ret = request_module(KBUILD_MODNAME);
+>>>
+>>> Is this code requesting the module in which it is located?.. I must be missing 
+>>> something...
+>>
+>> Right this is stupid...Thanks to highlight this!
+>>
+>> That being said, your remark is very interesting: we need to load the module to
+>> access to this function. This means that calling this function ensures that the
+>> module is loaded. In this case no need to add the piece of code to find
+>> module... here is the call stack associated (associated patch is available below):
 > 
-> This may be the easiest way to fix the issue and to get the fix backported
-> to stable tree. There is still some work can be done since (at least) we
-> have code duplicates between the MMIO and uaccess callbacks.
+> Yes, as I wrote 10 hours ago:
 > 
->  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 22 ++++++++++++++++++++--
->  1 file changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> index 52d6f24f65dc..15a6c98ee92f 100644
-> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> @@ -273,6 +273,23 @@ static unsigned long vgic_mmio_read_v3r_typer(struct kvm_vcpu *vcpu,
->  	return extract_bytes(value, addr & 7, len);
->  }
->  
-> +static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
-> +						 gpa_t addr, unsigned int len)
-> +{
-> +	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
-> +	int target_vcpu_id = vcpu->vcpu_id;
-> +	u64 value;
-> +
-> +	value = (u64)(mpidr & GENMASK(23, 0)) << 32;
-> +	value |= ((target_vcpu_id & 0xffff) << 8);
-> +
-> +	if (vgic_has_its(vcpu->kvm))
-> +		value |= GICR_TYPER_PLPIS;
-> +
-> +	/* reporting of the Last bit is not supported for userspace */
-> +	return extract_bytes(value, addr & 7, len);
-> +}
-> +
->  static unsigned long vgic_mmio_read_v3r_iidr(struct kvm_vcpu *vcpu,
->  					     gpa_t addr, unsigned int len)
->  {
-> @@ -593,8 +610,9 @@ static const struct vgic_register_region vgic_v3_rd_registers[] = {
->  	REGISTER_DESC_WITH_LENGTH(GICR_IIDR,
->  		vgic_mmio_read_v3r_iidr, vgic_mmio_write_wi, 4,
->  		VGIC_ACCESS_32bit),
-> -	REGISTER_DESC_WITH_LENGTH(GICR_TYPER,
-> -		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi, 8,
-> +	REGISTER_DESC_WITH_LENGTH_UACCESS(GICR_TYPER,
-> +		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi,
-> +		vgic_uaccess_read_v3r_typer, vgic_mmio_uaccess_write_wi, 8,
->  		VGIC_ACCESS_64bit | VGIC_ACCESS_32bit),
->  	REGISTER_DESC_WITH_LENGTH(GICR_WAKER,
->  		vgic_mmio_read_raz, vgic_mmio_write_wi, 4,
-> 
+>> Now, as for how to actually load the
+>> module, I'd really propose to move rpmsg_ns_register_device() into the .c
+>> file and then the problem will be resolved automatically: as a symbol
+>> dependence the module will be loaded whenever another module, calling
+>> rpmsg_ns_register_device() is loaded.
 
+It's not a good day for me today... it seems I read your explanation too quickly
+this morning, which is, however, very clear.
+My apologies
+
+Arnaud
+
+> 
+> Thanks
+> Guennadi
+> 
+>> (rpmsg_ns_probe+0x5c/0xe0 [rpmsg_ns])
+>> [   11.858748] [<bf00a0a0>] (rpmsg_ns_probe [rpmsg_ns]) from [<bf0005cc>]
+>> (rpmsg_dev_probe+0x14c/0x1b0 [rpmsg_core])
+>> [   11.869047] [<bf0005cc>] (rpmsg_dev_probe [rpmsg_core]) from [<c067cd44>]
+>> (really_probe+0x208/0x4f0)
+>> [   11.878117] [<c067cd44>] (really_probe) from [<c067d1f4>]
+>> (driver_probe_device+0x78/0x16c)
+>> [   11.886404] [<c067d1f4>] (driver_probe_device) from [<c067ad48>]
+>> (bus_for_each_drv+0x84/0xd0)
+>> [   11.894887] [<c067ad48>] (bus_for_each_drv) from [<c067ca9c>]
+>> (__device_attach+0xf0/0x188)
+>> [   11.903142] [<c067ca9c>] (__device_attach) from [<c067bb10>]
+>> (bus_probe_device+0x84/0x8c)
+>> [   11.911314] [<c067bb10>] (bus_probe_device) from [<c0678094>]
+>> (device_add+0x3b0/0x7b0)
+>> [   11.919227] [<c0678094>] (device_add) from [<bf0003dc>]
+>> (rpmsg_register_device+0x54/0x88 [rpmsg_core])
+>> [   11.928541] [<bf0003dc>] (rpmsg_register_device [rpmsg_core]) from
+>> [<bf011b58>] (rpmsg_probe+0x298/0x3c8 [virtio_rpmsg_bus])
+>> [   11.939748] [<bf011b58>] (rpmsg_probe [virtio_rpmsg_bus]) from [<c05cd648>]
+>> (virtio_dev_probe+0x1f4/0x2c4)
+>> [   11.949377] [<c05cd648>] (virtio_dev_probe) from [<c067cd44>]
+>> (really_probe+0x208/0x4f0)
+>> [   11.957454] [<c067cd44>] (really_probe) from [<c067d1f4>]
+>> (driver_probe_device+0x78/0x16c)
+>> [   11.965710] [<c067d1f4>] (driver_probe_device) from [<c067d548>]
+>> (device_driver_attach+0x58/0x60)
+>> [   11.974574] [<c067d548>] (device_driver_attach) from [<c067d604>]
+>> (__driver_attach+0xb4/0x154)
+>> [   11.983177] [<c067d604>] (__driver_attach) from [<c067ac68>]
+>> (bus_for_each_dev+0x78/0xc0)
+>> [   11.991344] [<c067ac68>] (bus_for_each_dev) from [<c067bdc0>]
+>> (bus_add_driver+0x170/0x20c)
+>> [   11.999600] [<c067bdc0>] (bus_add_driver) from [<c067e12c>]
+>> (driver_register+0x74/0x108)
+>> [   12.007693] [<c067e12c>] (driver_register) from [<bf017010>]
+>> (rpmsg_init+0x10/0x1000 [virtio_rpmsg_bus])
+>> [   12.017168] [<bf017010>] (rpmsg_init [virtio_rpmsg_bus]) from [<c0102090>]
+>> (do_one_initcall+0x58/0x2bc)
+>> [
+>>
+>> This would make the patch very simple. I tested following patch on my platform,
+>> applying it, i do not reproduce the initial issue.
+>>
+>>
+>> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+>> index c3fc75e6514b..1394114782d2 100644
+>> --- a/drivers/rpmsg/Kconfig
+>> +++ b/drivers/rpmsg/Kconfig
+>> @@ -71,5 +71,6 @@ config RPMSG_VIRTIO
+>>  	depends on HAS_DMA
+>>  	select RPMSG
+>>  	select VIRTIO
+>> +	select RPMSG_NS
+>>
+>>  endmenu
+>> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+>> index 5bda7cb44618..5867281188de 100644
+>> --- a/drivers/rpmsg/rpmsg_ns.c
+>> +++ b/drivers/rpmsg/rpmsg_ns.c
+>> @@ -55,6 +55,24 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
+>> *data, int len,
+>>  	return 0;
+>>  }
+>>
+>> +/**
+>> + * rpmsg_ns_register_device() - register name service device based on rpdev
+>> + * @rpdev: prepared rpdev to be used for creating endpoints
+>> + *
+>> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
+>> + * basis for the rpmsg name service device.
+>> + */
+>> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+>> +{
+>> +	strcpy(rpdev->id.name, KBUILD_MODNAME);
+>> +	rpdev->driver_override = KBUILD_MODNAME;
+>> +	rpdev->src = RPMSG_NS_ADDR;
+>> +	rpdev->dst = RPMSG_NS_ADDR;
+>> +
+>> +	return rpmsg_register_device(rpdev);
+>> +}
+>> +EXPORT_SYMBOL(rpmsg_ns_register_device);
+>> +
+>>  static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+>>  {
+>>  	struct rpmsg_endpoint *ns_ept;
+>> @@ -80,7 +98,7 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+>>  }
+>>
+>>  static struct rpmsg_driver rpmsg_ns_driver = {
+>> -	.drv.name = "rpmsg_ns",
+>> +	.drv.name = KBUILD_MODNAME,
+>>  	.probe = rpmsg_ns_probe,
+>>  };
+>>
+>> @@ -104,5 +122,5 @@ module_exit(rpmsg_ns_exit);
+>>
+>>  MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
+>>  MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
+>> -MODULE_ALIAS("rpmsg_ns");
+>> +MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
+>>  MODULE_LICENSE("GPL v2");
+>> diff --git a/include/linux/rpmsg/ns.h b/include/linux/rpmsg/ns.h
+>> index bdc1ea278814..68eac2b42075 100644
+>> --- a/include/linux/rpmsg/ns.h
+>> +++ b/include/linux/rpmsg/ns.h
+>> @@ -41,21 +41,6 @@ enum rpmsg_ns_flags {
+>>  /* Address 53 is reserved for advertising remote services */
+>>  #define RPMSG_NS_ADDR			(53)
+>>
+>> -/**
+>> - * rpmsg_ns_register_device() - register name service device based on rpdev
+>> - * @rpdev: prepared rpdev to be used for creating endpoints
+>> - *
+>> - * This function wraps rpmsg_register_device() preparing the rpdev for use as
+>> - * basis for the rpmsg name service device.
+>> - */
+>> -static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+>> -{
+>> -	strcpy(rpdev->id.name, "rpmsg_ns");
+>> -	rpdev->driver_override = "rpmsg_ns";
+>> -	rpdev->src = RPMSG_NS_ADDR;
+>> -	rpdev->dst = RPMSG_NS_ADDR;
+>> -
+>> -	return rpmsg_register_device(rpdev);
+>> -}
+>> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev);
+>>
+>>  #endif
+>>
+>> Thanks,
+>> Arnaud
+>>
+>>>
+>>> Thanks
+>>> Guennadi
+>>>
