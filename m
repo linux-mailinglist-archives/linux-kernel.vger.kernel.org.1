@@ -2,182 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6F82B59D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A4C2B59DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgKQGqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 01:46:33 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:60419 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725792AbgKQGqd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 01:46:33 -0500
-X-UUID: 4319619206784ed88c895eb25ae18e31-20201117
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=P0hBz/eNIE1si2tntwhLbvvsKCxvPoGSYMCr0jXLKx8=;
-        b=jd9X6gOgeoJDMRomj7O5zZfk/Jfwv4mcTPRlBLeTM9kpLHbicA64cRYZE5WN6fpEs5KOzUXfj3sOegUXt/D7IE18AuV1/pSDk0Bh1qYgQ7zD5N/Wsg3HsbGEeUoJlIUyRQGIycS6CAoX/cLV1EnAfIfkkP146HfJbGbE1Z199jc=;
-X-UUID: 4319619206784ed88c895eb25ae18e31-20201117
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 636884911; Tue, 17 Nov 2020 14:46:24 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 17 Nov 2020 14:46:22 +0800
-Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 17 Nov 2020 14:46:22 +0800
-Message-ID: <1605595583.29084.24.camel@mtksdccf07>
-Subject: Re: [PATCH v2 1/1] kasan: fix object remain in offline per-cpu
- quarantine
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-CC:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <nicholas.tang@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>,
-        <guangye.yang@mediatek.com>,
-        wsd_upstream <wsd_upstream@mediatek.com>
-Date:   Tue, 17 Nov 2020 14:46:23 +0800
-In-Reply-To: <CACT4Y+Zy_JQ3y7_P2NXffiijTuxcnh7VPcAGL66Ks2LaLTj-eg@mail.gmail.com>
-References: <1605508168-7418-1-git-send-email-Kuan-Ying.Lee@mediatek.com>
-         <1605508168-7418-2-git-send-email-Kuan-Ying.Lee@mediatek.com>
-         <CACT4Y+Zy_JQ3y7_P2NXffiijTuxcnh7VPcAGL66Ks2LaLTj-eg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1726238AbgKQGvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 01:51:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725792AbgKQGvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 01:51:49 -0500
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1383B20E65;
+        Tue, 17 Nov 2020 06:51:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605595907;
+        bh=kUJigiiTkavmqGW3s56EQ8ngS+3tX1p+Tj5xIbYeUIg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aYLJ3pWR4vUlqyIXg2KH7Hr6kCfguRs2MTU8bzOsfWDuZtfRcHtahiZXKOH/62ug8
+         BBiyS+TVKpFQ/1fxiycj5TXpHdJWiryVncBAbF9WfL0ovzbrRDxd7IsDN/YlIjHMfL
+         RhIaoj9UNQ/iU3w0zwV+wEGdvkOohD9cCy3IRqZc=
+Received: by mail-oi1-f178.google.com with SMTP id k26so21610870oiw.0;
+        Mon, 16 Nov 2020 22:51:47 -0800 (PST)
+X-Gm-Message-State: AOAM531+3zJil8cMtOahlmLT4DOmKV8g8/Dzs4dhaQH4fGgyzo5oNHBT
+        UUmuZNCQ2b0goCrFMJlCZdhgBzDVCzm5TvqEFZI=
+X-Google-Smtp-Source: ABdhPJxiJ6bLQO0ENCNywSJr8FP9WwKXD9oDI9KpCPNgAGwPLLCMBAQhm3SgTMlpb+Hcy5f8Wa1Dl/+IKPGxK21Jrc8=
+X-Received: by 2002:aca:d583:: with SMTP id m125mr1426899oig.47.1605595906203;
+ Mon, 16 Nov 2020 22:51:46 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <5fadef1f.1c69fb81.9166e.093c@mx.google.com> <e16e2ce5-dc21-d159-ecf2-e0a430d772e1@collabora.com>
+ <CAMj1kXFrxYqTARLprws6ja2=C1xZNC+TNr0Vvayr6sReqsUhyg@mail.gmail.com>
+ <ce91a878-5ce3-614d-d10c-569b891b12d0@collabora.com> <20201113155825.GD1551@shell.armlinux.org.uk>
+ <CAMj1kXHMBNK4ke3j0=h-xkxR9sWe3x_D2TLsPtDZv-sWCW4eWQ@mail.gmail.com>
+ <CAMj1kXH6_-tNuhOVDJA4mhEUQBDTDLjJA8CUkb4mRFsAZSy9ig@mail.gmail.com>
+ <CAMj1kXEFMgRZ1QgaAfwvg7Um-=UdiG-THGAySwrBHhQX=tMPeQ@mail.gmail.com>
+ <CAMj1kXE-c+7yFwqxZ2WDBG5LOtLbnSgacuGgG1P+CY3PUwu+GA@mail.gmail.com>
+ <CAMj1kXH-BKvykS0wL5BCv5Eh4FWMZxHmM6nHV8MeRACUbWjCPw@mail.gmail.com> <0e0da2b3-4751-5491-7972-67223e8fe0ba@collabora.com>
+In-Reply-To: <0e0da2b3-4751-5491-7972-67223e8fe0ba@collabora.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 17 Nov 2020 07:51:33 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF1W+TqskQt-aD2nSkyQzsxtq5tD0C0NyLqZ0H2SBEA+A@mail.gmail.com>
+Message-ID: <CAMj1kXF1W+TqskQt-aD2nSkyQzsxtq5tD0C0NyLqZ0H2SBEA+A@mail.gmail.com>
+Subject: Re: rmk/for-next bisection: baseline.login on bcm2836-rpi-2-b
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernelci-results@groups.io,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mike Rapoport <rppt@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTExLTE2IGF0IDEwOjI2ICswMTAwLCBEbWl0cnkgVnl1a292IHdyb3RlOg0K
-PiBPbiBNb24sIE5vdiAxNiwgMjAyMCBhdCA3OjMwIEFNIEt1YW4tWWluZyBMZWUNCj4gPEt1YW4t
-WWluZy5MZWVAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IFdlIGhpdCB0aGlzIGlzc3Vl
-IGluIG91ciBpbnRlcm5hbCB0ZXN0Lg0KPiA+IFdoZW4gZW5hYmxpbmcgZ2VuZXJpYyBrYXNhbiwg
-YSBrZnJlZSgpJ2Qgb2JqZWN0IGlzIHB1dCBpbnRvIHBlci1jcHUNCj4gPiBxdWFyYW50aW5lIGZp
-cnN0LiBJZiB0aGUgY3B1IGdvZXMgb2ZmbGluZSwgb2JqZWN0IHN0aWxsIHJlbWFpbnMgaW4NCj4g
-PiB0aGUgcGVyLWNwdSBxdWFyYW50aW5lLiBJZiB3ZSBjYWxsIGttZW1fY2FjaGVfZGVzdHJveSgp
-IG5vdywgc2x1Yg0KPiA+IHdpbGwgcmVwb3J0ICJPYmplY3RzIHJlbWFpbmluZyIgZXJyb3IuDQo+
-ID4NCj4gPiBbICAgNzQuOTgyNjI1XSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPiA+IFsgICA3NC45
-ODMzODBdIEJVRyB0ZXN0X21vZHVsZV9zbGFiIChOb3QgdGFpbnRlZCk6IE9iamVjdHMgcmVtYWlu
-aW5nIGluIHRlc3RfbW9kdWxlX3NsYWIgb24gX19rbWVtX2NhY2hlX3NodXRkb3duKCkNCj4gPiBb
-ICAgNzQuOTg0MTQ1XSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+IFsgICA3NC45ODQxNDVdDQo+
-ID4gWyAgIDc0Ljk4NDg4M10gRGlzYWJsaW5nIGxvY2sgZGVidWdnaW5nIGR1ZSB0byBrZXJuZWwg
-dGFpbnQNCj4gPiBbICAgNzQuOTg1NTYxXSBJTkZPOiBTbGFiIDB4KF9fX19wdHJ2YWxfX19fKSBv
-YmplY3RzPTM0IHVzZWQ9MSBmcD0weChfX19fcHRydmFsX19fXykgZmxhZ3M9MHgyZmZmZjAwMDAw
-MDEwMjAwDQo+ID4gWyAgIDc0Ljk4NjYzOF0gQ1BVOiAzIFBJRDogMTc2IENvbW06IGNhdCBUYWlu
-dGVkOiBHICAgIEIgICAgICAgICAgICAgNS4xMC4wLXJjMS0wMDAwNy1nNDUyNWM4NzgxZWMwLWRp
-cnR5ICMxMA0KPiA+IFsgICA3NC45ODcyNjJdIEhhcmR3YXJlIG5hbWU6IGxpbnV4LGR1bW15LXZp
-cnQgKERUKQ0KPiA+IFsgICA3NC45ODc2MDZdIENhbGwgdHJhY2U6DQo+ID4gWyAgIDc0Ljk4Nzky
-NF0gIGR1bXBfYmFja3RyYWNlKzB4MC8weDJiMA0KPiA+IFsgICA3NC45ODgyOTZdICBzaG93X3N0
-YWNrKzB4MTgvMHg2OA0KPiA+IFsgICA3NC45ODg2OThdICBkdW1wX3N0YWNrKzB4ZmMvMHgxNjgN
-Cj4gPiBbICAgNzQuOTg5MDMwXSAgc2xhYl9lcnIrMHhhYy8weGQ0DQo+ID4gWyAgIDc0Ljk4OTM0
-Nl0gIF9fa21lbV9jYWNoZV9zaHV0ZG93bisweDFlNC8weDNjOA0KPiA+IFsgICA3NC45ODk3Nzld
-ICBrbWVtX2NhY2hlX2Rlc3Ryb3krMHg2OC8weDEzMA0KPiA+IFsgICA3NC45OTAxNzZdICB0ZXN0
-X3ZlcnNpb25fc2hvdysweDg0LzB4ZjANCj4gPiBbICAgNzQuOTkwNjc5XSAgbW9kdWxlX2F0dHJf
-c2hvdysweDQwLzB4NjANCj4gPiBbICAgNzQuOTkxMjE4XSAgc3lzZnNfa2Zfc2VxX3Nob3crMHgx
-MjgvMHgxYzANCj4gPiBbICAgNzQuOTkxNjU2XSAga2VybmZzX3NlcV9zaG93KzB4YTAvMHhiOA0K
-PiA+IFsgICA3NC45OTIwNTldICBzZXFfcmVhZCsweDFmMC8weDdlOA0KPiA+IFsgICA3NC45OTI0
-MTVdICBrZXJuZnNfZm9wX3JlYWQrMHg3MC8weDMzOA0KPiA+IFsgICA3NC45OTMwNTFdICB2ZnNf
-cmVhZCsweGU0LzB4MjUwDQo+ID4gWyAgIDc0Ljk5MzQ5OF0gIGtzeXNfcmVhZCsweGM4LzB4MTgw
-DQo+ID4gWyAgIDc0Ljk5MzgyNV0gIF9fYXJtNjRfc3lzX3JlYWQrMHg0NC8weDU4DQo+ID4gWyAg
-IDc0Ljk5NDIwM10gIGVsMF9zdmNfY29tbW9uLmNvbnN0cHJvcC4wKzB4YWMvMHgyMjgNCj4gPiBb
-ICAgNzQuOTk0NzA4XSAgZG9fZWwwX3N2YysweDM4LzB4YTANCj4gPiBbICAgNzQuOTk1MDg4XSAg
-ZWwwX3N5bmNfaGFuZGxlcisweDE3MC8weDE3OA0KPiA+IFsgICA3NC45OTU0OTddICBlbDBfc3lu
-YysweDE3NC8weDE4MA0KPiA+IFsgICA3NC45OTYwNTBdIElORk86IE9iamVjdCAweChfX19fcHRy
-dmFsX19fXykgQG9mZnNldD0xNTg0OA0KPiA+IFsgICA3NC45OTY3NTJdIElORk86IEFsbG9jYXRl
-ZCBpbiB0ZXN0X3ZlcnNpb25fc2hvdysweDk4LzB4ZjAgYWdlPTgxODggY3B1PTYgcGlkPTE3Mg0K
-PiA+IFsgICA3NS4wMDA4MDJdICBzdGFja190cmFjZV9zYXZlKzB4OWMvMHhkMA0KPiA+IFsgICA3
-NS4wMDI0MjBdICBzZXRfdHJhY2srMHg2NC8weGYwDQo+ID4gWyAgIDc1LjAwMjc3MF0gIGFsbG9j
-X2RlYnVnX3Byb2Nlc3NpbmcrMHgxMDQvMHgxYTANCj4gPiBbICAgNzUuMDAzMTcxXSAgX19fc2xh
-Yl9hbGxvYysweDYyOC8weDY0OA0KPiA+IFsgICA3NS4wMDQyMTNdICBfX3NsYWJfYWxsb2MuaXNy
-YS4wKzB4MmMvMHg1OA0KPiA+IFsgICA3NS4wMDQ3NTddICBrbWVtX2NhY2hlX2FsbG9jKzB4NTYw
-LzB4NTg4DQo+ID4gWyAgIDc1LjAwNTM3Nl0gIHRlc3RfdmVyc2lvbl9zaG93KzB4OTgvMHhmMA0K
-PiA+IFsgICA3NS4wMDU3NTZdICBtb2R1bGVfYXR0cl9zaG93KzB4NDAvMHg2MA0KPiA+IFsgICA3
-NS4wMDcwMzVdICBzeXNmc19rZl9zZXFfc2hvdysweDEyOC8weDFjMA0KPiA+IFsgICA3NS4wMDc0
-MzNdICBrZXJuZnNfc2VxX3Nob3crMHhhMC8weGI4DQo+ID4gWyAgIDc1LjAwNzgwMF0gIHNlcV9y
-ZWFkKzB4MWYwLzB4N2U4DQo+ID4gWyAgIDc1LjAwODEyOF0gIGtlcm5mc19mb3BfcmVhZCsweDcw
-LzB4MzM4DQo+ID4gWyAgIDc1LjAwODUwN10gIHZmc19yZWFkKzB4ZTQvMHgyNTANCj4gPiBbICAg
-NzUuMDA4OTkwXSAga3N5c19yZWFkKzB4YzgvMHgxODANCj4gPiBbICAgNzUuMDA5NDYyXSAgX19h
-cm02NF9zeXNfcmVhZCsweDQ0LzB4NTgNCj4gPiBbICAgNzUuMDEwMDg1XSAgZWwwX3N2Y19jb21t
-b24uY29uc3Rwcm9wLjArMHhhYy8weDIyOA0KPiA+IFsgICA3NS4wMTEwMDZdIGttZW1fY2FjaGVf
-ZGVzdHJveSB0ZXN0X21vZHVsZV9zbGFiOiBTbGFiIGNhY2hlIHN0aWxsIGhhcyBvYmplY3RzDQo+
-ID4NCj4gPiBSZWdpc3RlciBhIGNwdSBob3RwbHVnIGZ1bmN0aW9uIHRvIHJlbW92ZSBhbGwgb2Jq
-ZWN0cyBpbiB0aGUgb2ZmbGluZQ0KPiA+IHBlci1jcHUgcXVhcmFudGluZSB3aGVuIGNwdSBpcyBn
-b2luZyBvZmZsaW5lLiBTZXQgYSBwZXItY3B1IHZhcmlhYmxlDQo+ID4gdG8gaW5kaWNhdGUgdGhp
-cyBjcHUgaXMgb2ZmbGluZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEt1YW4tWWluZyBMZWUg
-PEt1YW4tWWluZy5MZWVAbWVkaWF0ZWsuY29tPg0KPiA+IFN1Z2dlc3RlZC1ieTogRG1pdHJ5IFZ5
-dWtvdiA8ZHZ5dWtvdkBnb29nbGUuY29tPg0KPiA+IFJlcG9ydGVkLWJ5OiBHdWFuZ3llIFlhbmcg
-PGd1YW5neWUueWFuZ0BtZWRpYXRlay5jb20+DQo+ID4gQ2M6IEFuZHJleSBSeWFiaW5pbiA8YXJ5
-YWJpbmluQHZpcnR1b3p6by5jb20+DQo+ID4gQ2M6IEFsZXhhbmRlciBQb3RhcGVua28gPGdsaWRl
-ckBnb29nbGUuY29tPg0KPiA+IENjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4LWZvdW5kYXRp
-b24ub3JnPg0KPiA+IENjOiBNYXR0aGlhcyBCcnVnZ2VyIDxtYXR0aGlhcy5iZ2dAZ21haWwuY29t
-Pg0KPiA+IC0tLQ0KPiA+ICBtbS9rYXNhbi9xdWFyYW50aW5lLmMgfCAzNSArKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMzUgaW5zZXJ0aW9u
-cygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL21tL2thc2FuL3F1YXJhbnRpbmUuYyBiL21tL2th
-c2FuL3F1YXJhbnRpbmUuYw0KPiA+IGluZGV4IDRjNTM3NTgxMDQ0OS4uMTZlNjE4ZWE4MDVlIDEw
-MDY0NA0KPiA+IC0tLSBhL21tL2thc2FuL3F1YXJhbnRpbmUuYw0KPiA+ICsrKyBiL21tL2thc2Fu
-L3F1YXJhbnRpbmUuYw0KPiA+IEBAIC0yOSw2ICsyOSw3IEBADQo+ID4gICNpbmNsdWRlIDxsaW51
-eC9zcmN1Lmg+DQo+ID4gICNpbmNsdWRlIDxsaW51eC9zdHJpbmcuaD4NCj4gPiAgI2luY2x1ZGUg
-PGxpbnV4L3R5cGVzLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9jcHVob3RwbHVnLmg+DQo+ID4N
-Cj4gPiAgI2luY2x1ZGUgIi4uL3NsYWIuaCINCj4gPiAgI2luY2x1ZGUgImthc2FuLmgiDQo+ID4g
-QEAgLTQzLDYgKzQ0LDcgQEAgc3RydWN0IHFsaXN0X2hlYWQgew0KPiA+ICAgICAgICAgc3RydWN0
-IHFsaXN0X25vZGUgKmhlYWQ7DQo+ID4gICAgICAgICBzdHJ1Y3QgcWxpc3Rfbm9kZSAqdGFpbDsN
-Cj4gPiAgICAgICAgIHNpemVfdCBieXRlczsNCj4gPiArICAgICAgIGJvb2wgb2ZmbGluZTsNCj4g
-PiAgfTsNCj4gPg0KPiA+ICAjZGVmaW5lIFFMSVNUX0lOSVQgeyBOVUxMLCBOVUxMLCAwIH0NCj4g
-PiBAQCAtMTg4LDYgKzE5MCwxMSBAQCB2b2lkIHF1YXJhbnRpbmVfcHV0KHN0cnVjdCBrYXNhbl9m
-cmVlX21ldGEgKmluZm8sIHN0cnVjdCBrbWVtX2NhY2hlICpjYWNoZSkNCj4gPiAgICAgICAgIGxv
-Y2FsX2lycV9zYXZlKGZsYWdzKTsNCj4gPg0KPiA+ICAgICAgICAgcSA9IHRoaXNfY3B1X3B0cigm
-Y3B1X3F1YXJhbnRpbmUpOw0KPiA+ICsgICAgICAgaWYgKHEtPm9mZmxpbmUpIHsNCj4gPiArICAg
-ICAgICAgICAgICAgcWxpbmtfZnJlZSgmaW5mby0+cXVhcmFudGluZV9saW5rLCBjYWNoZSk7DQo+
-ID4gKyAgICAgICAgICAgICAgIGxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsNCj4gPiArICAgICAg
-ICAgICAgICAgcmV0dXJuOw0KPiA+ICsgICAgICAgfQ0KDQpJIHRoaW5rIHdlIG5lZWQgdG8gbWFr
-ZSBzdXJlIG9iamVjdHMgd2lsbCBub3QgYmUgcHV0IGluIHBlci1jcHUNCnF1YXJhbnRpbmUgd2hp
-Y2ggaXMgb2ZmbGluZS4NCg0KPiA+ICAgICAgICAgcWxpc3RfcHV0KHEsICZpbmZvLT5xdWFyYW50
-aW5lX2xpbmssIGNhY2hlLT5zaXplKTsNCj4gPiAgICAgICAgIGlmICh1bmxpa2VseShxLT5ieXRl
-cyA+IFFVQVJBTlRJTkVfUEVSQ1BVX1NJWkUpKSB7DQo+ID4gICAgICAgICAgICAgICAgIHFsaXN0
-X21vdmVfYWxsKHEsICZ0ZW1wKTsNCj4gPiBAQCAtMzI4LDMgKzMzNSwzMSBAQCB2b2lkIHF1YXJh
-bnRpbmVfcmVtb3ZlX2NhY2hlKHN0cnVjdCBrbWVtX2NhY2hlICpjYWNoZSkNCj4gPg0KPiA+ICAg
-ICAgICAgc3luY2hyb25pemVfc3JjdSgmcmVtb3ZlX2NhY2hlX3NyY3UpOw0KPiA+ICB9DQo+ID4g
-Kw0KPiA+ICtzdGF0aWMgaW50IGthc2FuX2NwdV9vbmxpbmUodW5zaWduZWQgaW50IGNwdSkNCj4g
-PiArew0KPiA+ICsgICAgICAgdGhpc19jcHVfcHRyKCZjcHVfcXVhcmFudGluZSktPm9mZmxpbmUg
-PSBmYWxzZTsNCj4gPiArICAgICAgIHJldHVybiAwOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0
-aWMgaW50IGthc2FuX2NwdV9vZmZsaW5lKHVuc2lnbmVkIGludCBjcHUpDQo+ID4gK3sNCj4gPiAr
-ICAgICAgIHN0cnVjdCBxbGlzdF9oZWFkICpxOw0KPiA+ICsNCj4gPiArICAgICAgIHEgPSB0aGlz
-X2NwdV9wdHIoJmNwdV9xdWFyYW50aW5lKTsNCj4gPiArICAgICAgIHEtPm9mZmxpbmUgPSB0cnVl
-Ow0KPiA+ICsgICAgICAgcWxpc3RfZnJlZV9hbGwocSwgTlVMTCk7DQo+IA0KPiBMb29rcyBtdWNo
-IG5pY2VyIG5vdyENCj4gDQo+IFdoYXQgaXMgdGhlIHN0b3J5IHdpdGggaW50ZXJydXB0cyBpbiB0
-aGVzZSBjYWxsYmFja3M/DQo+IEluIHRoZSBwcmV2aW91cyBwYXRjaCB5b3UgbWVudGlvbmVkIHRo
-YXQgdGhpcyBDUFUgY2FuIHN0aWxsIHJlY2VpdmUNCj4gaW50ZXJydXB0cyBmb3IgYSBicmllZiBw
-ZXJpb2Qgb2YgdGltZS4gSWYgdGhlc2UgaW50ZXJydXB0cyBhbHNvIGZyZWUNCj4gc29tZXRoaW5n
-LCBjYW4ndCB3ZSBjb3JydXB0IHRoZSBwZXItY3B1IHF1YXJhbnRpbmU/IEluIHF1YXJhbnRpbmVf
-cHV0DQo+IHdlIHByb3RlY3QgaXQgYnkgZGlzYWJsaW5nIGludGVycnVwdHMgSSB0aGluay4NCj4g
-DQoNCkhlcmUgaXMgYSBzaXR1YXRpb24uDQpBZnRlciB3ZSBmcmVlZCBhbGwgb2JqZWN0cyBmcm9t
-IHRoZSBwZXItY3B1IHF1YXJhbnRpbmUgd2hpY2ggaXMgZ29pbmcNCm9mZmxpbmUsIHRoZSBpbnRl
-cnJ1cHRzIGhhcHBlbmVkLiBUaGVzZSBpbnRlcnJ1cHRzIGZyZWUgc29tZXRoaW5nIGFuZA0KcHV0
-IG9iamVjdHMgaW50byB0aGlzIHBlci1jcHUgcXVhcmFudGluZS4gSWYgd2UgY2FsbA0Ka21lbV9j
-YWNoZV9kZXN0cm95KCkgbm93LCBzbHViIHN0aWxsIGRldGVjdCBvYmplY3RzIHJlbWFpbiBpbg0K
-dGhlIHBlci1jcHUgcXVhcmFudGluZSBhbmQgcmVwb3J0ICJPYmplY3QgcmVtYWluaW5nIiBlcnJv
-ci4NCg0KVGh1cywgd2UgbmVlZCB0byBjaGVjayBxLT5vZmZsaW5lIGluIHF1YXJhbnRpbmVfcHV0
-IGFuZCBtYWtlIHN1cmUNCnRoZSBvZmZsaW5lIHBlci1jcHUgcXVhcmFudGluZSBpcyBub3QgY29y
-cnVwdGVkLg0KDQo+IA0KPiA+ICsgICAgICAgcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4g
-K3N0YXRpYyBpbnQgX19pbml0IGthc2FuX2NwdV9vZmZsaW5lX3F1YXJhbnRpbmVfaW5pdCh2b2lk
-KQ0KPiA+ICt7DQo+ID4gKyAgICAgICBpbnQgcmV0ID0gMDsNCj4gPiArDQo+ID4gKyAgICAgICBy
-ZXQgPSBjcHVocF9zZXR1cF9zdGF0ZShDUFVIUF9BUF9PTkxJTkVfRFlOLCAibW0va2FzYW46b25s
-aW5lIiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGthc2FuX2NwdV9vbmxp
-bmUsIGthc2FuX2NwdV9vZmZsaW5lKTsNCj4gPiArICAgICAgIGlmIChyZXQgPCAwKQ0KPiA+ICsg
-ICAgICAgICAgICAgICBwcl9lcnIoImthc2FuIG9mZmxpbmUgY3B1IHF1YXJhbnRpbmUgcmVnaXN0
-ZXIgZmFpbGVkIFslZF1cbiIsIHJldCk7DQo+ID4gKyAgICAgICByZXR1cm4gcmV0Ow0KPiA+ICt9
-DQo+ID4gK2xhdGVfaW5pdGNhbGwoa2FzYW5fY3B1X29mZmxpbmVfcXVhcmFudGluZV9pbml0KTsN
-Cj4gPiAtLQ0KPiA+IDIuMTguMA0KDQo=
+On Mon, 16 Nov 2020 at 23:13, Guillaume Tucker
+<guillaume.tucker@collabora.com> wrote:
+>
+> On 16/11/2020 12:20, Ard Biesheuvel wrote:
+> > On Mon, 16 Nov 2020 at 12:20, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >>
+> >> On Sun, 15 Nov 2020 at 15:11, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >>>
+> >>> On Fri, 13 Nov 2020 at 17:25, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >>>>
+> >>>> On Fri, 13 Nov 2020 at 17:15, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >>>>>
+> >>>>> On Fri, 13 Nov 2020 at 16:58, Russell King - ARM Linux admin
+> >>>>> <linux@armlinux.org.uk> wrote:
+> >>>>>>
+> >>>>>> On Fri, Nov 13, 2020 at 03:43:27PM +0000, Guillaume Tucker wrote:
+> >>>>>>> On 13/11/2020 10:35, Ard Biesheuvel wrote:
+> >>>>>>>> On Fri, 13 Nov 2020 at 11:31, Guillaume Tucker
+> >>>>>>>> <guillaume.tucker@collabora.com> wrote:
+> >>>>>>>>>
+> >>>>>>>>> Hi Ard,
+> >>>>>>>>>
+> >>>>>>>>> Please see the bisection report below about a boot failure on
+> >>>>>>>>> RPi-2b.
+> >>>>>>>>>
+> >>>>>>>>> Reports aren't automatically sent to the public while we're
+> >>>>>>>>> trialing new bisection features on kernelci.org but this one
+> >>>>>>>>> looks valid.
+> >>>>>>>>>
+> >>>>>>>>> There's nothing in the serial console log, probably because it's
+> >>>>>>>>> crashing too early during boot.  I'm not sure if other platforms
+> >>>>>>>>> on kernelci.org were hit by this in the same way, but there
+> >>>>>>>>> doesn't seem to be any.
+> >>>>>>>>>
+> >>>>>>>>> The same regression can be see on rmk's for-next branch as well
+> >>>>>>>>> as in linux-next.  It happens with both bcm2835_defconfig and
+> >>>>>>>>> multi_v7_defconfig.
+> >>>>>>>>>
+> >>>>>>>>> Some more details can be found here:
+> >>>>>>>>>
+> >>>>>>>>>   https://kernelci.org/test/case/id/5fae44823818ee918adb8864/
+> >>>>>>>>>
+> >>>>>>>>> If this looks like a real issue but you don't have a platform at
+> >>>>>>>>> hand to reproduce it, please let us know if you would like the
+> >>>>>>>>> KernelCI test to be re-run with earlyprintk or some debug config
+> >>>>>>>>> turned on, or if you have a fix to try.
+> >>>>>>>>>
+> >>>>>>>>> Best wishes,
+> >>>>>>>>> Guillaume
+> >>>>>>>>>
+> >>>>>>>>
+> >>>>>>>> Hello Guillaume,
+> >>>>>>>>
+> >>>>>>>> That patch did have an issue, but it was already fixed by
+> >>>>>>>>
+> >>>>>>>> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9020/1
+> >>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=fc2933c133744305236793025b00c2f7d258b687
+> >>>>>>>>
+> >>>>>>>> Could you please double check whether cherry-picking that on top of
+> >>>>>>>> the first bad commit fixes the problem?
+> >>>>>>>
+> >>>>>>> Sadly this doesn't appear to be fixing the issue.  I've
+> >>>>>>> cherry-picked your patch on top of the commit found by the
+> >>>>>>> bisection but it still didn't boot, here's the git log
+> >>>>>>>
+> >>>>>>> cbb9656e83ca ARM: 9020/1: mm: use correct section size macro to describe the FDT virtual address
+> >>>>>>> 7a1be318f579 ARM: 9012/1: move device tree mapping out of linear region
+> >>>>>>> e9a2f8b599d0 ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+> >>>>>>> 3650b228f83a Linux 5.10-rc1
+> >>>>>>>
+> >>>>>>> Test log: https://people.collabora.com/~gtucker/lava/boot/rpi-2-b/v5.10-rc1-3-gcbb9656e83ca/
+> >>>>>>>
+> >>>>>>> There's no output so it's hard to tell what is going on, but
+> >>>>>>> reverting the bad commmit does make the board to boot (that's
+> >>>>>>> what "revert: PASS" means in the bisect report).  So it's
+> >>>>>>> unlikely that there is another issue causing the boot failure.
+> >>>>>>
+> >>>>>> These silent boot failures are precisely what the DEBUG_LL stuff (and
+> >>>>>> early_printk) is supposed to help with - getting the kernel messages
+> >>>>>> out when there is an oops before the serial console is initialised.
+> >>>>>>
+> >>>>>
+> >>>>> If this is indeed related to the FDT mapping, I would assume
+> >>>>> earlycon=... to be usable here.
+> >>>>>
+> >>>>> I will try to reproduce this on a RPi3 but I don't have a RPi2 at
+> >>>>> hand, unfortunately.
+> >>>>>
+> >>>>> Would you mind having a quick try whether you can reproduce this on
+> >>>>> QEMU, using the raspi2 machine model? If so, that would be a *lot*
+> >>>>> easier to diagnose.
+> >>>>
+> >>>> Also, please have a go with 'earlycon=pl011,0x3f201000' added to the
+> >>>> kernel command line.
+> >>>
+> >>> I cannot reproduce this - I don't have the exact same hardware, but
+> >>> for booting the kernel, I think RPi2 and RPi3 should be sufficiently
+> >>> similar, and I can boot on Rpi3 using a u-boot built for rpi2 using
+> >>> your provided dtb for RPi2.
+>
+> There's a RPi 3b in BayLibre's lab and it's booting fine, here in
+> 32-bit mode from the exact same kernel build as the earlier link
+> showing the problem on RPi 2b:
+>
+>   https://kernelci.org/test/plan/id/5fae3fa710b60de7d2db8859/
+>
+> >>> What puzzles me is that u-boot reports itself as
+> >>>
+> >>> U-Boot 2016.03-rc1-00131-g39af3d8-dirty
+> >>>
+> >>> RPI Model B+ (0x10)
+> >>>
+> >>> which is the ARMv6 model not the ARMv7, but then the kernel reports
+> >>>
+> >>> CPU: ARMv7 Processor [410fc075] revision 5 (ARMv7), cr=10c53c7d
+>
+> That is rather puzzling indeed.  Either the bootloader is wrong,
+> or we're booting a RPi 1B+ with a RPi 2B device tree...  but I
+> wouldn't expect that to be compatible.  I'm pretty sure it is
+> really a RPI 2B (BCM2836 ARMv7) and for some reason the
+> bootloader is printing the wrong message.  I can try to take a
+> look at the version of u-boot that was flashed on that board.
+>
+> >> Another thing I noticed is that the bootloader on these boards loads
+> >> the FDT at address 0x100, which is described by the FDT itself as
+> >> reserved memory, and which typically holds the spin tables used for
+> >> SMP boot.
+> >>
+> >> Could you try loading the DT elsewhere, and see if that changes anything?
+>
+> OK, I think it's worth trying that in any case.  I'll see if I
+> can do it tomorrow.  I'll just have to stop kernelci.org tests on
+> that board while changing the bootloader configuration to avoid
+> inconsistent behaviour.
+>
+> > I think I narrowed this down to the early DT mapping code, which
+> > considers any DT address that falls inside the first section as 'no
+> > DT', and then relies on the first section mapping of the decompressed
+> > kernel to cover it instead.
+> >
+> > Could you please try the following change?
+> >
+> >
+> > diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+> > index 28687fd1240a..7f62c5eccdf3 100644
+> > --- a/arch/arm/kernel/head.S
+> > +++ b/arch/arm/kernel/head.S
+> > @@ -265,10 +265,10 @@ __create_page_tables:
+> >          * We map 2 sections in case the ATAGs/DTB crosses a section boundary.
+> >          */
+> >         mov     r0, r2, lsr #SECTION_SHIFT
+> > -       movs    r0, r0, lsl #SECTION_SHIFT
+> > +       cmp     r2, #0
+> >         ldrne   r3, =FDT_FIXED_BASE >> (SECTION_SHIFT - PMD_ORDER)
+> >         addne   r3, r3, r4
+> > -       orrne   r6, r7, r0
+> > +       orrne   r6, r7, r0, lsl #SECTION_SHIFT
+> >         strne   r6, [r3], #1 << PMD_ORDER
+> >         addne   r6, r6, #1 << SECTION_SHIFT
+> >         strne   r6, [r3]
+> >
+>
+> The kernel is now starting to boot with this change (from the
+> patch you sent today), but then it fails to load the ramdisk.
+> Here's the git history I have now:
+>
+> 7d4093dffe16 ARM: head.S: explicitly map DT even if it lives in the first physical section
+> 7a1be318f579 ARM: 9012/1: move device tree mapping out of linear region
+> e9a2f8b599d0 ARM: 9011/1: centralize phys-to-virt conversion of DT/ATAGS address
+> 3650b228f83a Linux 5.10-rc1
+>
+> Test log: https://people.collabora.com/~gtucker/lava/boot/rpi-2-b/v5.10-rc1-3-g7d4093dffe16/2830681.log
+> Plain log: https://people.collabora.com/~gtucker/lava/boot/rpi-2-b/v5.10-rc1-3-g7d4093dffe16/2830681-console.log
+>
 
+Is this bcm2835_defconfig or multi_v7_defconfig?
+
+
+The former seems fundamentally broken on that platform, given that
+
+2020-11-16T21:30:13    Using Device Tree in place at 00000100, end 00006646
+
+whereas the kernel proper starts at 0x8000, which puts its page tables
+at start-0x4000, which collides with the DT memory. And I have already
+pointed out that the DT itself describes the first 0x1000 bytes of
+memory as 'reserved', which means the DT should not be loaded there.
+
+Of course, that does not explain why this change in particular
+triggers a failure, but we *really* ought to fix that platform so it
+doesn't do crazy things like that.
