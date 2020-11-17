@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412EA2B669F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC072B6661
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgKQNJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:09:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S1731375AbgKQOCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:02:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729317AbgKQNIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:08:48 -0500
+        id S1728762AbgKQNOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:14:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9BC4238E6;
-        Tue, 17 Nov 2020 13:08:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47FF42225B;
+        Tue, 17 Nov 2020 13:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618528;
-        bh=htQs+Zjnuk/vZn7s9XxNdJaGv3PG71BxdwzGEUq8XI4=;
+        s=default; t=1605618847;
+        bh=hfVjhpLdemkw7Vf4tF+lJ893noreThwlUGghtIhaEXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ToAop64pJtO/Vhq31nIJkC4jmWm2aR90jKeWCGjZDyfNukKIoRD7f4HJN78Ek4C5W
-         1Ih8qPDN9ug2XJ5RKaAG79u2YWBFZeZ11A6p/dZQEsGbTSz6vAj8yhirW6VwA2SA+i
-         BeB3rv8nV86ve7plHuF5m4obobutOOnHOiAehEzI=
+        b=Y8wZI/uKs0jTPWAT7LaDHA3ujkToa8DHgayUT+zqRX99zwEmYYGuqSpUgC8nG3NmM
+         K8W/SjBU0xJoV9zA/OFo1s+VpYwc1WcKJyeJniOewvysvLODrSMNcehJz1tyPUhSEs
+         AJOzrWYBUXOQt10OhUzSxNu/RsVMeVnZGpj5FBE0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Tao Ma <boyu.mt@taobao.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 4.4 33/64] ext4: unlock xattr_sem properly in ext4_inline_data_truncate()
+        stable@vger.kernel.org, Don Brace <don.brace@microchip.com>,
+        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 27/85] scsi: hpsa: Fix memory leak in hpsa_init_one()
 Date:   Tue, 17 Nov 2020 14:04:56 +0100
-Message-Id: <20201117122107.788461293@linuxfoundation.org>
+Message-Id: <20201117122112.368900483@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joseph Qi <joseph.qi@linux.alibaba.com>
+From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
 
-commit 7067b2619017d51e71686ca9756b454de0e5826a upstream.
+[ Upstream commit af61bc1e33d2c0ec22612b46050f5b58ac56a962 ]
 
-It takes xattr_sem to check inline data again but without unlock it
-in case not have. So unlock it before return.
+When hpsa_scsi_add_host() fails, h->lastlogicals is leaked since it is
+missing a free() in the error handler.
 
-Fixes: aef1c8513c1f ("ext4: let ext4_truncate handle inline data correctly")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Tao Ma <boyu.mt@taobao.com>
-Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Link: https://lore.kernel.org/r/1604370542-124630-1-git-send-email-joseph.qi@linux.alibaba.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by adding free() when hpsa_scsi_add_host() fails.
 
+Link: https://lore.kernel.org/r/20201027073125.14229-1-keitasuzuki.park@sslab.ics.keio.ac.jp
+Tested-by: Don Brace <don.brace@microchip.com>
+Acked-by: Don Brace <don.brace@microchip.com>
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/inline.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/hpsa.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -1892,6 +1892,7 @@ void ext4_inline_data_truncate(struct in
+diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
+index 3b892918d8219..9ad9910cc0855 100644
+--- a/drivers/scsi/hpsa.c
++++ b/drivers/scsi/hpsa.c
+@@ -8549,7 +8549,7 @@ reinit_after_soft_reset:
+ 	/* hook into SCSI subsystem */
+ 	rc = hpsa_scsi_add_host(h);
+ 	if (rc)
+-		goto clean7; /* perf, sg, cmd, irq, shost, pci, lu, aer/h */
++		goto clean8; /* lastlogicals, perf, sg, cmd, irq, shost, pci, lu, aer/h */
  
- 	ext4_write_lock_xattr(inode, &no_expand);
- 	if (!ext4_has_inline_data(inode)) {
-+		ext4_write_unlock_xattr(inode, &no_expand);
- 		*has_inline = 0;
- 		ext4_journal_stop(handle);
- 		return;
+ 	/* Monitor the controller for firmware lockups */
+ 	h->heartbeat_sample_interval = HEARTBEAT_SAMPLE_INTERVAL;
+@@ -8564,6 +8564,8 @@ reinit_after_soft_reset:
+ 				HPSA_EVENT_MONITOR_INTERVAL);
+ 	return 0;
+ 
++clean8: /* lastlogicals, perf, sg, cmd, irq, shost, pci, lu, aer/h */
++	kfree(h->lastlogicals);
+ clean7: /* perf, sg, cmd, irq, shost, pci, lu, aer/h */
+ 	hpsa_free_performant_mode(h);
+ 	h->access.set_intr_mask(h, HPSA_INTR_OFF);
+-- 
+2.27.0
+
 
 
