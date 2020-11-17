@@ -2,176 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B257B2B5F4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 513A12B5F4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgKQMom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:44:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgKQMol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:44:41 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1727369AbgKQMpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:45:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQMpL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:45:11 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4526BC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:45:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L6YLBlkW6W7l/DjGRUeegpN2Sts9zkEATW3WfyM92jI=; b=zhXiGoKud8aVcPw381ah8troIn
+        T2mDi2pD03wus+BOUUJm7izR3PDf/hlfZAA7f+SoOK37Qq35HT6PsrXwuVEbKI3TScvpqBy4daJ1B
+        tRt9uy4tDgs1uT5yocxmUWt47eAa1tZ6rEzeD3knoraVzb+9n5goVI1itaIdK/tBwKAKukKES+WGZ
+        WNWgZoDmvxagRwhvYmUXKRTUQmkaXQQ1dU+UL+IKaPonPQkxCV2jzylp+C+D8neGTaI/6XBk1efCc
+        9TAPcQWY23Hf7WyXLSZXM2rpryr+76PePxcl5KT1e+4biHMcoEyfBQQd7YweZiw35OBoK/6cgEda1
+        A2SOMvYg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kf0M5-0006yv-6b; Tue, 17 Nov 2020 12:45:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49EC822203;
-        Tue, 17 Nov 2020 12:44:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605617080;
-        bh=6ZPOxKQN7EfoEKtx0si1zr5srH8ZGaPNaNtUAepHEEw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=csuMErfks4eN5jKlRXEV1mTFIQZ6/9ELdix9VvaxRl8HMlZ6Ypv1zxY2FsETVNZOP
-         qWqlAwKTkm7lD83Wvc+z+7JUov6w/9tZpYy7bEpv+T59d6xVMtuQGy4NSf18QcorHr
-         F/nY0YIc2AXQnWcYS5f+udKAxCuPmRH1ZOArcGrM=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D5C9440E29; Tue, 17 Nov 2020 09:44:37 -0300 (-03)
-Date:   Tue, 17 Nov 2020 09:44:37 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 13/24] perf tools: Allow mmap2 event to synthesize kernel
- image
-Message-ID: <20201117124437.GO614220@kernel.org>
-References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-14-jolsa@kernel.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8B3313069B1;
+        Tue, 17 Nov 2020 13:45:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6EF40203DDBF7; Tue, 17 Nov 2020 13:45:03 +0100 (CET)
+Date:   Tue, 17 Nov 2020 13:45:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/2] kthread: Move prio/affinite change into the newly
+ created thread
+Message-ID: <20201117124503.GI3121406@hirez.programming.kicks-ass.net>
+References: <20201110113848.801379-1-bigeasy@linutronix.de>
+ <20201110113848.801379-2-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117110053.1303113-14-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201110113848.801379-2-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 17, 2020 at 12:00:42PM +0100, Jiri Olsa escreveu:
-> Allow mmap2 event to synthesize kernel image,
-> so we can synthesize kernel build id data in
-> following changes.
+On Tue, Nov 10, 2020 at 12:38:47PM +0100, Sebastian Andrzej Siewior wrote:
+> With enabled threaded interrupts the nouveau driver reported the
+> following:
+> | Chain exists of:
+> |   &mm->mmap_lock#2 --> &device->mutex --> &cpuset_rwsem
+> |
+> |  Possible unsafe locking scenario:
+> |
+> |        CPU0                    CPU1
+> |        ----                    ----
+> |   lock(&cpuset_rwsem);
+> |                                lock(&device->mutex);
+> |                                lock(&cpuset_rwsem);
+> |   lock(&mm->mmap_lock#2);
 > 
-> It's enabled by new symbol_conf.buildid_mmap2
-> bool, which will be switched in following
-> changes.
+> The device->mutex is nvkm_device::mutex.
+> 
+> Unblocking the lockchain at `cpuset_rwsem' is probably the easiest thing
+> to do.
+> Move the priority reset to the start of the newly created thread.
+> 
+> Fixes: 710da3c8ea7df ("sched/core: Prevent race condition between cpuset and __sched_setscheduler()")
+> Reported-by: Mike Galbraith <efault@gmx.de>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Link: https://lkml.kernel.org/r/a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de
 
-Why make this an option? MMAP2 goes back years:
+Moo... yes this is certainly the easiest solution, because nouveau is a
+horrible rats nest. But when I spoke to Greg KH about this, he suggested
+nouveau ought to be fixed.
 
-13d7a2410fa637f45 (Stephane Eranian         2013-08-21 12:10:24 +0200  904)      * The MMAP2 records are an augmented version of MMAP, they add
-13d7a2410fa637f45 (Stephane Eranian         2013-08-21 12:10:24 +0200  905)      * maj, min, ino numbers to be used to uniquely identify each mapping
+Ben, I got terminally lost when trying to untangle nouvea init, is there
+any chance this can be fixed to not hold that nvkm_device::mutex thing
+while doing request_irq() ?
 
-Also we unconditionally generate MMAP2 events if the kernel supports it,
-from evsel__config():
-
-  attr->mmap  = track;
-  attr->mmap2 = track && !perf_missing_features.mmap2;
-
-So perhaps we should reuse that logic? I.e. use mmap2 if the kernel
-supports it?
-
-- Arnaldo
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/perf/util/symbol_conf.h      |  3 ++-
->  tools/perf/util/synthetic-events.c | 40 ++++++++++++++++++++----------
->  2 files changed, 29 insertions(+), 14 deletions(-)
+>  kernel/kthread.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
-> index b916afb95ec5..b18f9c8dbb75 100644
-> --- a/tools/perf/util/symbol_conf.h
-> +++ b/tools/perf/util/symbol_conf.h
-> @@ -42,7 +42,8 @@ struct symbol_conf {
->  			report_block,
->  			report_individual_block,
->  			inline_name,
-> -			disable_add2line_warn;
-> +			disable_add2line_warn,
-> +			buildid_mmap2;
->  	const char	*vmlinux_name,
->  			*kallsyms_name,
->  			*source_prefix,
-> diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-> index 8a23391558cf..872df6d6dbef 100644
-> --- a/tools/perf/util/synthetic-events.c
-> +++ b/tools/perf/util/synthetic-events.c
-> @@ -988,11 +988,12 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
->  						perf_event__handler_t process,
->  						struct machine *machine)
+> diff --git a/kernel/kthread.c b/kernel/kthread.c
+> index 933a625621b8d..4a31127c6efbf 100644
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -243,6 +243,7 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
+>  
+>  static int kthread(void *_create)
 >  {
-> -	size_t size;
-> +	union perf_event *event;
-> +	size_t size = symbol_conf.buildid_mmap2 ?
-> +			sizeof(event->mmap2) : sizeof(event->mmap);
->  	struct map *map = machine__kernel_map(machine);
->  	struct kmap *kmap;
->  	int err;
-> -	union perf_event *event;
+> +	static const struct sched_param param = { .sched_priority = 0 };
+>  	/* Copy data: it's on kthread's stack */
+>  	struct kthread_create_info *create = _create;
+>  	int (*threadfn)(void *data) = create->threadfn;
+> @@ -273,6 +274,13 @@ static int kthread(void *_create)
+>  	init_completion(&self->parked);
+>  	current->vfork_done = &self->exited;
 >  
->  	if (map == NULL)
->  		return -1;
-> @@ -1006,7 +1007,7 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
->  	 * available use this, and after it is use this as a fallback for older
->  	 * kernels.
->  	 */
-> -	event = zalloc((sizeof(event->mmap) + machine->id_hdr_size));
-> +	event = zalloc(size + machine->id_hdr_size);
->  	if (event == NULL) {
->  		pr_debug("Not enough memory synthesizing mmap event "
->  			 "for kernel modules\n");
-> @@ -1023,16 +1024,29 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
->  		event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
+> +	/*
+> +	 * The new thread inherited kthreadd's priority and CPU mask. Reset
+> +	 * back to default in case they have been changed.
+> +	 */
+> +	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
+> +	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_KTHREAD));
+> +
+>  	/* OK, tell user we're spawned, wait for stop or wakeup */
+>  	__set_current_state(TASK_UNINTERRUPTIBLE);
+>  	create->result = current;
+> @@ -370,7 +378,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
 >  	}
+>  	task = create->result;
+>  	if (!IS_ERR(task)) {
+> -		static const struct sched_param param = { .sched_priority = 0 };
+>  		char name[TASK_COMM_LEN];
 >  
-> -	size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
-> -			"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
-> -	size = PERF_ALIGN(size, sizeof(u64));
-> -	event->mmap.header.type = PERF_RECORD_MMAP;
-> -	event->mmap.header.size = (sizeof(event->mmap) -
-> -			(sizeof(event->mmap.filename) - size) + machine->id_hdr_size);
-> -	event->mmap.pgoff = kmap->ref_reloc_sym->addr;
-> -	event->mmap.start = map->start;
-> -	event->mmap.len   = map->end - event->mmap.start;
-> -	event->mmap.pid   = machine->pid;
-> +	if (symbol_conf.buildid_mmap2) {
-> +		size = snprintf(event->mmap2.filename, sizeof(event->mmap2.filename),
-> +				"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
-> +		size = PERF_ALIGN(size, sizeof(u64));
-> +		event->mmap2.header.type = PERF_RECORD_MMAP2;
-> +		event->mmap2.header.size = (sizeof(event->mmap2) -
-> +				(sizeof(event->mmap2.filename) - size) + machine->id_hdr_size);
-> +		event->mmap2.pgoff = kmap->ref_reloc_sym->addr;
-> +		event->mmap2.start = map->start;
-> +		event->mmap2.len   = map->end - event->mmap.start;
-> +		event->mmap2.pid   = machine->pid;
-> +	} else {
-> +		size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
-> +				"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
-> +		size = PERF_ALIGN(size, sizeof(u64));
-> +		event->mmap.header.type = PERF_RECORD_MMAP;
-> +		event->mmap.header.size = (sizeof(event->mmap) -
-> +				(sizeof(event->mmap.filename) - size) + machine->id_hdr_size);
-> +		event->mmap.pgoff = kmap->ref_reloc_sym->addr;
-> +		event->mmap.start = map->start;
-> +		event->mmap.len   = map->end - event->mmap.start;
-> +		event->mmap.pid   = machine->pid;
-> +	}
->  
->  	err = perf_tool__process_synth_event(tool, event, machine, process);
->  	free(event);
+>  		/*
+> @@ -379,13 +386,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+>  		 */
+>  		vsnprintf(name, sizeof(name), namefmt, args);
+>  		set_task_comm(task, name);
+> -		/*
+> -		 * root may have changed our (kthreadd's) priority or CPU mask.
+> -		 * The kernel thread should not inherit these properties.
+> -		 */
+> -		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
+> -		set_cpus_allowed_ptr(task,
+> -				     housekeeping_cpumask(HK_FLAG_KTHREAD));
+>  	}
+>  	kfree(create);
+>  	return task;
 > -- 
-> 2.26.2
+> 2.29.2
 > 
-
--- 
-
-- Arnaldo
