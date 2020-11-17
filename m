@@ -2,140 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C042B6C5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1812B6C60
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730171AbgKQRwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:52:02 -0500
-Received: from sonic305-27.consmr.mail.ne1.yahoo.com ([66.163.185.153]:35762
-        "EHLO sonic305-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726697AbgKQRwB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:52:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605635520; bh=pI/WchJRmyl847uwCAvChdR2r36oS7nZko9ZeCBmai0=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=QscYiw/h137vBtgvE7sKRGFIz/Jt9PKxb+oYtRZQ7c2fGOq4SIWijh/PZjPxfb9L+mKQGWZ0IkNuI/UF6TjDevbKeqO57hV2HrvCqiVTzhENXxRtx+YaQwgWyYfNc3Ws4fIWNSmv1psdTtoQ3g5bj4KEF2o86nvLpA3p+iLk4NSGzU0PWZPwyPTFi0LGlzWdQzQigfSvN/vyhwO6twE1fa0tB9UYLU86kZXqVeaaGPPHGIuGwCSsX2sPWaR2O5dgL0wfcWUu2k8fQp9j8mcuL709OdUvhiKXbOE5iiSk7hua5a53JKlhhtYdoqurJoEPzMDzzBidiH+hbY1FZtbYPQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605635520; bh=7lBbhgRNL3N7my4dxD/pW/k6S6jQ025c67SnmVCcEuq=; h=Subject:To:From:Date:From:Subject; b=rwipkdT2IImsrjCy6ILt/RY/MdKxTnozlzGzI1l0TnTEhtrkcvwqcMAc2M1ikBMtJtFFDXrfgoE4THbDRhwbUP47UQ1VRM/q9oAwC6zh/SrIgV6617LQxvovxud7oC/UdZHIlhnoA9a38CA5xb068d7Rp0iVcIz6hpJeusO2A0ssm+cGL39Gam9mxkXJSO8xlX/BzjhffGWBSx8Hb9IYF3cGlH814V9e3RERNaQedyDPMiVv+avOLyo/BKGuaH2vBLIYXOcziCbqCOVzqi1EdvoIBMlw+PQHHnpT9Q94tX4JYOjS3v1odRJnKVubVxyFnxA8buUWKxMb6KRAnBPEfw==
-X-YMail-OSG: J4DU.RoVM1krrAKgC4g8vnktCc_zC_6XF5l37YYOzZ37vIzc0yhylenyuH3.PTp
- maCirYX.CnKFEeDOtDsKJO8.HaaM7LX6CfgL1j5U3Xu4sgYrSNIBsYQbGPA6gX1byaI3v.X7q1jK
- dCFT.W0DsaLXC3RJpgB9Bm2.g96TyWmTiKApBeHqi7LzgOXtGKLbd_7Zxqm4ElnPvT2lhuvMnX5r
- 6LcP0G2zFJ9UrjaRII4qG1ItaL0Qbcz_UQfUBLMrwRyYVoXvVdMl_qI9ZdVo9SEILDlBji191MVg
- 1pD9PbIUs35OI46AncziFlGrtZmCz2vEkZls9E3OXDpfZaK7vGYomnP8zVCrDLAFBgcrXDuctyhM
- w8wbaxa9hRlvo3xBjlCY6rViBnAUuGEJnBtLr53FaZa_diW8p2PUwar0_hKdztsmiCEVqNEzVNfq
- CQciek.gfONr3_l0aMND8T_x4x1qQSv_y_GYT0H4jKWCjPXDzxGALI4PE0J3Ht9RUwgC8OhRZfyr
- D6tyvuDjT4AzJ370dxRBFViBR9wufeJWx6imJYPfTx50kjQQ9GgBbUBtBt4MXZJ_7li.4Fbl..f7
- S0sjdxk27P85Vd5hvhgXs45z3Nz1rgERaIxW.kzch2Jdh67h8gbcBavkY.1V8iQM1l.jGmmBHokA
- PZfaGyJPMK0gwiq3bL1rxFYtn0d63PzKzuvMDJvI06T1kPwqecNE5O9W73nwVrYVEnRURMMvOKRd
- NCV0nv2rkiUZ2mWgcuSpLKTH9MyxiYitOzCZTKj2x7q2f7VLydz8oBiXQY0gvI7gaphpUNR7EDpR
- 5SHuIX1bTnk3LaRzeDugOmPxoMDpYlIzBAhfvErGXxRgoSrG3FEB6XT_yaPNHjovP_k5yIzEty5D
- _HAvWPDntca_Dr9f3Gdmd5R9vHY4wUUax6pfzhOl7l_mmO7_SmrundRtNvbtu10HJUyINSUC_x8S
- zwAFh78APL4tH0JMgtHeVQYB6YSd0lSAVb51nVDts.jcsOmSpvO4.4vr67_hTOhxpDonexIMHMhK
- I7cP4pvuc2hNPFRahhR1DNDI5Cdg14VsRLCCPRqxwAhTPq20mApwoCLw3PBySYSYVzNSJgCEDBEU
- SkvnFaMAXc1QxnOn17ONu.8aguv8i7Q0C3OXPhcNyqIMVkGDA81XAnp_Z2Cqu1DJRjTHDuBCE1Hw
- Oh3v67zGck69K4fuGZuA7J1SRe.Niaah_V7OUTwtlq43e5EGM5hig_l37._g3ET3SmMmegGgJyx6
- FDrhCr8VJ3TlG0uigPewkZC2ncPCv_2IiDaR74aWLPJZI0JjGdfLEZ6A2oIM3wKY_OMn.KRRq2gD
- HhwVHw2770_5acAfSoBn.Fh2IPPH98hJMgQDluLUugtm53UExjCt8MJW8SrYIKGBrtloacqx_8_8
- 4gAl2NUDVoSc.UPtVHbWi8Cn6eFj3dkomLeuUisARBpL5uRmhML9SYD26puhhOdnVjQsDcs9aV1y
- mFmt7x.QzCnN.5W.NMv8W0mB0DhiYSiZ2nn68Mizw3du5_LtdLCJXNzNKeNXHlN06zSB7910M0B9
- ifNTdt9vsmc.mxmv3BBVH7yDGnK7q7hxmvDPllNSu_OtM6WWPXk1g1h6Ngf4yWqF8TB6tUrJL0w9
- AWGEzNDgErerXiK8ymhQNYTlgaai3J4M5dmld68ijoI1hXfhRjSz9tqKCgf.ZevnFFhLzG6vvYDQ
- fN7SdWgCNobTdiPx8gV7Xdq9k9THk8NwUu7ZRFXrbPE1cSQjtLTs6AOn1NzxtYRcvsPCeLRxKrGg
- AnBqufezhRJjg_fZBVfIwBkM3nD7dnd7yO9TV1da68sArS_W9GfzCA1RCNOYZ.Az_51M_KwFtT8m
- FEgG0I269Os28gFwUMeAFu9q2ErmK.e60Rc2qAVCStpGOVrOcOC0nvFqMT_0wdH7sdgNGseczrni
- at2PxV19JFo7TroYgT4mphblsp3P7qCpNYCFM1npYueE2_Kf9z_Z8aIa_k1SbX3lHE_vpIgdOxC_
- uZA8jFBVDkghuurJPYV7SKyFhhdKoWLGiTstcKg8ObmDxzHJLS3uJXjQmVRAo9SA..L5o7zrxBZU
- 9Tv5UP70EkrOHSqh0E6XplA5NmQogwQkzqgB1YXR5V1iNONihrNJ.j7E4LPUwF2gvH9cuG1r8lxT
- IZJO06slVlt6Bgc_kxDEPzW3TDNUNGB4Jqo2JaV5Osnp1pc32YZxxVWRdDEi2TNk1OUZW_uUCEoK
- dMpjF8ijnzYf3wAdTV_pl0CqWRHQFcv3ximbdFO9iFIdsBzUimm233daZNhBkWrVmSzNo_v.Jrgr
- jwN7QhDlQOwpO0J2Jc8D6TTx3WV.PS2DgA.0JOCb.XsN6pwQOe75oDobcQwnjG0MjK0lExBlQ3Ob
- yYYpNF1Z2wA.dLGhj_aAF7ECp.1ouknnlUczKgTTobi58j78MYVBq_NUwjGu7jrLLxUS8Vd8g971
- 8lPyl4k1z9JcOg4PScIk7MJyQU9a0GwSSfTVofng0KU86onVrVHtHClTlDRoXSj0EAWZ118I758V
- ZcBRhVFyAzKbtq918ctHh4UDJGYQ3NSt8DUfihO8U7JW.bgUdAboWkcDZXfxKLelw_5z8pkFL7cO
- D2_0a7WKEWYe3lI2dq.l5guOEcF5ppcwUjGAxuS2JzHOgjEFN0LCC7GXexxAy5oxlAq2klD7hqFb
- 41QiP8O0eXwWLvga2FkZTs2rSa2fyRYPhdOxouFh18spZAD99sZK_D7.ubiYJD1fsrCfGlXUousY
- 5d.uiqcq8E81yT8kw_QgRUharSx2X6Cof53c1St8Fe4LJxBp7.9hi8fQulEb_uddSLox7XFBtfa9
- a6Oy.GrecYW4LTeprppubb6SKuYl1IaeHxnc5TC.AL4fAZCA59Sqv4mDvVl3KT4DG9XZBbWijPnL
- 1.NAyidpWKl17e4UQ9GMd6hvl7VcKYiUAlT5174mKAU4r1Wz_.d0cxdXlvaqf1ypbOBQ5aHgf6yA
- ZmG3hjZuJ6ikcihIl_8H9aQJMEiNpMJwXCfgW
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.ne1.yahoo.com with HTTP; Tue, 17 Nov 2020 17:52:00 +0000
-Received: by smtp403.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 86769df53fb1d1ddcd034f8c77b963b8;
-          Tue, 17 Nov 2020 17:51:54 +0000 (UTC)
-Subject: Re: [PATCH] fix namespaced fscaps when !CONFIG_SECURITY
-To:     "Serge E. Hallyn" <serge@hallyn.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Herv=c3=a9_Guillemet?= <herve@guillemet.org>,
-        "Andrew G. Morgan" <morgan@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20201117150856.GA12240@mail.hallyn.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <611aad55-90f4-ee49-6f95-7b2219eeecb2@schaufler-ca.com>
-Date:   Tue, 17 Nov 2020 09:51:52 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1728890AbgKQRyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:54:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726846AbgKQRyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:54:05 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5731B22202;
+        Tue, 17 Nov 2020 17:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605635643;
+        bh=rgF0U88Kwfu3xZ3v4Wq/M1IGNiDLELUJTFymISSr95o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DB8zeZmm1bnNGRVjlWBFtk50PmzYoh/PU+5LL0DxoqZp0CpL5Cix1SKYfp3gETPCR
+         ywtcYY4wNIjWZwAhmMpZdv2Xl9gGKYxkhADP75Z53+vF7y5Oqc4j8xwTMmMjTUuPF2
+         9a6HnzWad9UsdsQhIgFtbwxtUUn+ubzVQxTvoWuk=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8623940E29; Tue, 17 Nov 2020 14:54:00 -0300 (-03)
+Date:   Tue, 17 Nov 2020 14:54:00 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 23/24] perf buildid-list: Add support for mmap2's buildid
+ events
+Message-ID: <20201117175400.GV614220@kernel.org>
+References: <20201117110053.1303113-1-jolsa@kernel.org>
+ <20201117110053.1303113-24-jolsa@kernel.org>
+ <20201117125040.GT614220@kernel.org>
+ <20201117152140.GE1216482@krava>
 MIME-Version: 1.0
-In-Reply-To: <20201117150856.GA12240@mail.hallyn.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.16944 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.8)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117152140.GE1216482@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/2020 7:08 AM, Serge E. Hallyn wrote:
-> Namespaced file capabilities were introduced in 8db6c34f1dbc .
-> When userspace reads an xattr for a namespaced capability, a
-> virtualized representation of it is returned if the caller is
-> in a user namespace owned by the capability's owning rootid.
-> The function which performs this virtualization was not hooked
-> up if CONFIG_SECURITY=n.  Therefore in that case the original
-> xattr was shown instead of the virtualized one.
->
-> To test this using libcap-bin (*1),
->
-> $ v=$(mktemp)
-> $ unshare -Ur setcap cap_sys_admin-eip $v
-> $ unshare -Ur setcap -v cap_sys_admin-eip $v
-> /tmp/tmp.lSiIFRvt8Y: OK
->
-> "setcap -v" verifies the values instead of setting them, and
-> will check whether the rootid value is set.  Therefore, with
-> this bug un-fixed, and with CONFIG_SECURITY=n, setcap -v will
-> fail:
->
-> $ v=$(mktemp)
-> $ unshare -Ur setcap cap_sys_admin=eip $v
-> $ unshare -Ur setcap -v cap_sys_admin=eip $v
-> nsowner[got=1000, want=0],/tmp/tmp.HHDiOOl9fY differs in []
->
-> Fix this bug by calling cap_inode_getsecurity() in
-> security_inode_getsecurity() instead of returning
-> -EOPNOTSUPP, when CONFIG_SECURITY=n.
->
-> *1 - note, if libcap is too old for getcap to have the '-n'
-> option, then use verify-caps instead.
->
-> Signed-off-by: Serge Hallyn <serge@hallyn.com>
-> Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1593431
-> Cc: Hervé Guillemet <herve@guillemet.org>
-> Cc: Andrew G. Morgan <morgan@kernel.org>
-> Cc: Casey Schaufler <casey@schaufler-ca.com>
+Em Tue, Nov 17, 2020 at 04:21:40PM +0100, Jiri Olsa escreveu:
+> On Tue, Nov 17, 2020 at 09:50:40AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Nov 17, 2020 at 12:00:52PM +0100, Jiri Olsa escreveu:
+> > > Add buildid-list support for mmap2's build id data, so we can
+> > > display build ids for dso objects for data without the build
+> > > id cache update.
+> > 
+> > >   $ perf buildid-list
+> > >   1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
+> > >   d278249792061c6b74d1693ca59513be1def13f2 /usr/lib64/libc-2.31.so
+> > > 
+> > > By default only dso objects with hits are shown.
+> > 
+> > Would be interesting to be able to show all the build ids that are
+> > there. a 'perf buildid-list --all' or make this under --force?
+> 
+> ok, will check.. one other tool I think would be handy is
+> to show which debuginfo is not available, because it can
+> change the report a lot - missing symbols are not getting
+> accounted, and their hits are accounted only as separated
+> addresses
 
-Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+Right, as below.
 
-> ---
->  include/linux/security.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index bc2725491560..39642626a707 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -869,7 +869,7 @@ static inline int security_inode_killpriv(struct dentry *dentry)
->  
->  static inline int security_inode_getsecurity(struct inode *inode, const char *name, void **buffer, bool alloc)
->  {
-> -	return -EOPNOTSUPP;
-> +	return cap_inode_getsecurity(inode, name, buffer, alloc);
->  }
->  
->  static inline int security_inode_setsecurity(struct inode *inode, const char *name, const void *value, size_t size, int flags)
+So you suggest something like:
+
+  # perf buildid-cache --fetch-missing-debuginfo
+
+?
+
+- Arnaldo
+
+[root@quaco ~]# rpm -qf `which stress-ng`
+stress-ng-0.11.21-1.fc32.x86_64
+[root@quaco ~]# rpm -q stress-ng-debuginfo
+stress-ng-debuginfo-0.07.29-10.fc31.x86_64
+[root@quaco ~]# perf record stress-ng -t 1 -c 1
+stress-ng: info:  [656926] dispatching hogs: 1 cpu
+stress-ng: info:  [656926] successful run completed in 1.02s
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.204 MB perf.data (4082 samples) ]
+[root@quaco ~]# perf report | head -20
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 4K of event 'cycles'
+# Event count (approx.): 3997318603
+#
+# Overhead  Command        Shared Object     Symbol                        
+# ........  .............  ................  ..............................
+#
+     7.91%  stress-ng-cpu  stress-ng         [.] 0x0000000000035ed9
+     7.15%  stress-ng-cpu  stress-ng         [.] 0x0000000000035ecc
+     6.54%  stress-ng-cpu  stress-ng         [.] 0x000000000003bbf6
+     4.39%  stress-ng-cpu  stress-ng         [.] 0x000000000003a083
+     4.15%  stress-ng-cpu  stress-ng         [.] 0x0000000000065ed8
+     3.67%  stress-ng-cpu  stress-ng         [.] 0x0000000000065ecf
+     3.41%  stress-ng-cpu  stress-ng         [.] 0x0000000000065ee1
+     3.11%  stress-ng-cpu  stress-ng         [.] 0x000000000003bbf2
+     2.65%  stress-ng-cpu  stress-ng         [.] 0x000000000003a07b
+[root@quaco ~]#
+
+
+So the above is with a stress-ng-debuginfo package that doesn't matches
+the binary installed, so build-id checkign fails, resolving symbols
+fail, then:
+
+[root@quaco ~]# rpm -q stress-ng-debuginfo
+stress-ng-debuginfo-0.11.21-1.fc32.x86_64
+[root@quaco ~]# rpm -q stress-ng
+stress-ng-0.11.21-1.fc32.x86_64
+[root@quaco ~]#
+
+[root@quaco ~]# rpm -q stress-ng-debuginfo
+stress-ng-debuginfo-0.11.21-1.fc32.x86_64
+[root@quaco ~]# rpm -q stress-ng
+stress-ng-0.11.21-1.fc32.x86_64
+[root@quaco ~]# perf report | head -20
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 4K of event 'cycles'
+# Event count (approx.): 3997318603
+#
+# Overhead  Command        Shared Object  Symbol
+# ........  .............  .............  .........................................
+#
+    21.48%  stress-ng-cpu  stress-ng      [.] is_prime
+    16.02%  stress-ng-cpu  stress-ng      [.] stress_cpu_sieve
+    12.61%  stress-ng-cpu  stress-ng      [.] stress_cpu_cpuid.sse2.2
+    11.94%  stress-ng-cpu  stress-ng      [.] ackermann
+     8.24%  stress-ng-cpu  stress-ng      [.] stress_cpu_correlate
+     3.82%  stress-ng-cpu  stress-ng      [.] queens_try
+     2.63%  stress-ng-cpu  stress-ng      [.] stress_cpu_nsqrt.sse2.2
+     2.46%  stress-ng-cpu  stress-ng      [.] ccitt_crc16
+     2.25%  stress-ng-cpu  stress-ng      [.] stress_cpu_complex_long_double.sse2.2
+[root@quaco ~]#
+
+[root@quaco ~]# perf report -v | head -20
+build id event received for vmlinux: f72ec65d81949c5ba63ccaa16b59c79d1696bc4d [20]
+build id event received for /usr/bin/stress-ng: 82b81bd823dcac393292faaaf40997723ce358a8 [20]
+build id event received for [vdso]: a1f89b9b9d2093ae926c550a7de060d435277fbf [20]
+build id event received for /usr/lib64/libm-2.31.so: fdf1f1d0761b7392e419d5d72e43d3fd3db6e184 [20]
+build id event received for /usr/lib64/libc-2.31.so: d278249792061c6b74d1693ca59513be1def13f2 [20]
+Looking at the vmlinux_path (8 entries long)
+symsrc__init: build id mismatch for vmlinux.
+Using /usr/lib/debug/lib/modules/5.8.14-200.fc32.x86_64/vmlinux for symbols
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 4K of event 'cycles'
+# Event count (approx.): 3997318603
+#
+# Overhead  Command        Shared Object       Symbol                                              
+# ........  .............  ..................  ....................................................
+#
+    21.48%  stress-ng-cpu  /usr/bin/stress-ng  0x35e80  l [.] is_prime
+    16.02%  stress-ng-cpu  /usr/bin/stress-ng  0x3bbf6  l [.] stress_cpu_sieve
+    12.61%  stress-ng-cpu  /usr/bin/stress-ng  0x65ec6  l [.] stress_cpu_cpuid.sse2.2
+    11.94%  stress-ng-cpu  /usr/bin/stress-ng  0x3c66b  l [.] ackermann
+     8.24%  stress-ng-cpu  /usr/bin/stress-ng  0x39fd8  l [.] stress_cpu_correlate
+     3.82%  stress-ng-cpu  /usr/bin/stress-ng  0x64742  l [.] queens_try
+     2.63%  stress-ng-cpu  /usr/bin/stress-ng  0x7a0a8  l [.] stress_cpu_nsqrt.sse2.2
+     2.46%  stress-ng-cpu  /usr/bin/stress-ng  0x3400e  l [.] ccitt_crc16
+     2.25%  stress-ng-cpu  /usr/bin/stress-ng  0x71761  l [.] stress_cpu_complex_long_double.sse2.2
+[root@quaco ~]#
+> 
+> jirka
+> 
+> > 
+> > - Arnaldo
+> >  
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/perf/builtin-buildid-list.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/tools/perf/builtin-buildid-list.c b/tools/perf/builtin-buildid-list.c
+> > > index e3ef75583514..87f5b1a4a7fa 100644
+> > > --- a/tools/perf/builtin-buildid-list.c
+> > > +++ b/tools/perf/builtin-buildid-list.c
+> > > @@ -77,6 +77,9 @@ static int perf_session__list_build_ids(bool force, bool with_hits)
+> > >  	    perf_header__has_feat(&session->header, HEADER_AUXTRACE))
+> > >  		with_hits = false;
+> > >  
+> > > +	if (!perf_header__has_feat(&session->header, HEADER_BUILD_ID))
+> > > +		with_hits = true;
+> > > +
+> > >  	/*
+> > >  	 * in pipe-mode, the only way to get the buildids is to parse
+> > >  	 * the record stream. Buildids are stored as RECORD_HEADER_BUILD_ID
+> > > -- 
+> > > 2.26.2
+> > > 
+> > 
+> > -- 
+> > 
+> > - Arnaldo
+> > 
+> 
+
+-- 
+
+- Arnaldo
