@@ -2,87 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CBD2B5DE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEB22B5DEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgKQLEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgKQLEp (ORCPT
+        id S1728168AbgKQLE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:04:59 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2114 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727218AbgKQLE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:04:45 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C969C0613CF;
-        Tue, 17 Nov 2020 03:04:44 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id 1so1321019wme.3;
-        Tue, 17 Nov 2020 03:04:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rOaJF6sxlfFSahGzMed0tR7LlFvBke/MI1WU7Gd8cdk=;
-        b=NFPX05QKHgHmo7GME58le2xewfdkwEflb3rY9BaSq+L3qzh6T+2i+sQ4TADpUb2+Ze
-         Y5yZfE7ZRKtwwYCIXVDI3aLjCF2nQaJ+6FwyPP7R1WcXeBe1CYtMk3mZ39RXCcwsulIu
-         g82v65KKB+JlXL4/WhEtaBFMArHzDDtiY32aYtQwnuThw8l1kDKlILpCrv/pzBWi0Fed
-         R5TUyVEmJ8wIwMRSGq06hhtJ44IXctkzSY3GoA+V/nhyk0tut6r2KGajEuRbr/ENfD3i
-         RCWiwUeFVYpOf2RojV3ZMr6o8csQohwsKqP8+wQUGY2OyfIaRsEwcV612jognuV0INcr
-         VKTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:references:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rOaJF6sxlfFSahGzMed0tR7LlFvBke/MI1WU7Gd8cdk=;
-        b=sffI2Tt5EXqXzpKAksakU2bNPL7a0ZQTPjbfdyNiEyT9Klqwf/8+gH77XYJahC8YTB
-         oj0faQKxJfLuo+AMyZdZpKMPtxwBYaf/2j9lIi1DhdeSFq68TxXGAUCu6cbFuxF9bOtq
-         ChjBjgxHZL1YhHV/xgZ7ATB6Q9CUkF2UuCWRBvnu4R+a+MHIFAjc1qE7rdZP3wfr9k3u
-         GstrjqWrn/pjrYT4M1hxwRxdJEcb2ViNBQce/E01TIanOPPYw4QqyWyUnQ2f21OhVjFv
-         hUgAthyOWoQvtu1ZoNvsAGytItLGw4soxPw0+XLv4pNJURC1Nx/QpcE2ZqTMLQhg5epY
-         wedg==
-X-Gm-Message-State: AOAM53193fMkUahkfzNJfFCNDcdTQfRI/wn1j8/ic/JivZ7PUo/RPJub
-        QugcAgzGnKuwJqtObdGWFas=
-X-Google-Smtp-Source: ABdhPJwOAgFYO4Mpln0IO7uONcF1bnKVn80AtWHkGz/Yiu3U4Nwe3vYitCywHhvciVa0p0YiuxQNcQ==
-X-Received: by 2002:a1c:3907:: with SMTP id g7mr3683736wma.176.1605611083335;
-        Tue, 17 Nov 2020 03:04:43 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.googlemail.com with ESMTPSA id t7sm1886255wrp.26.2020.11.17.03.04.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 03:04:42 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Subject: Re: [PATCH 1/2] kvm: x86/mmu: Add existing trace points to TDP MMU
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     Ben Gardon <bgardon@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Peter Feiner <pfeiner@google.com>
-References: <20201027175944.1183301-1-bgardon@google.com>
- <CANgfPd8FkNL-05P7us6sPq8pXPJ1jedXGMPkR2OrvTtg8+WSLg@mail.gmail.com>
- <0751cea5-9f4a-1bb9-b023-f9e5eece1d01@redhat.com>
-Message-ID: <4f18ac24-6c81-f8c2-8f88-bc33cb7c3cba@redhat.com>
-Date:   Tue, 17 Nov 2020 12:04:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 17 Nov 2020 06:04:58 -0500
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cb32M51mWz67DDf;
+        Tue, 17 Nov 2020 19:03:07 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 17 Nov 2020 12:04:56 +0100
+Received: from localhost (10.47.31.177) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 17 Nov
+ 2020 11:04:55 +0000
+Date:   Tue, 17 Nov 2020 11:04:47 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jic23@kernel.org>,
+        <robh+dt@kernel.org>, Vaishnav M A <vaishnav@beagleboard.org>,
+        <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH 2/3] iio: adc: ad7887: convert driver to full DT probing
+Message-ID: <20201117110447.0000393c@Huawei.com>
+In-Reply-To: <20201117110111.0000468a@Huawei.com>
+References: <20201117075254.4861-1-alexandru.ardelean@analog.com>
+        <20201117075254.4861-2-alexandru.ardelean@analog.com>
+        <20201117110111.0000468a@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <0751cea5-9f4a-1bb9-b023-f9e5eece1d01@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.31.177]
+X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/20 20:25, Paolo Bonzini wrote:
-> On 16/11/20 20:15, Ben Gardon wrote:
->> If anyone has time to review this short series, I'd appreciate it. I
->> don't want these to get lost in the shuffle.
->> Thanks!
+On Tue, 17 Nov 2020 11:01:11 +0000
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+
+> On Tue, 17 Nov 2020 09:52:53 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 > 
-> Yup, it's on the list. :)
+> > This change removes the SPI device table, adds an OF device table instead.
+> > This should also be usable for ACPI via PRP0001.
+> > 
+> > This device is usually probed via device-tree, so it makes more sense to
+> > use the OF device table.
+> > 
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>  
+> So, we've had a few cases of having to put the device_id table
+> back again recently.
+> https://lore.kernel.org/linux-iio/20201101152613.2c37581a@archlinux/
+> 
+> They tend to be due to greybus doing it's probing in yet another fashion.
+> So far they've been all i2c devices, but I kind of assume it does the same for spi.
+> https://elixir.bootlin.com/linux/latest/source/drivers/staging/greybus/spilib.c#L437
+> 
+> How device_get_match_data() plays with that I'm not sure. It probably
+> doesn't right now given swnode doesn't have a device_get_match_data() callback.
+> 
+> https://elixir.bootlin.com/linux/latest/source/drivers/base/swnode.c#L539
+> 
+> So after all that I think I've argued myself around to thinking what you have
+> here is fine.  If someone wants to support this via a swnode then they can
+> figure out how to make that work.
+> 
+> +CC Vaishnav and Andy for their input.
+> 
+> Otherwise looks fine to me.
 
-Queued, thanks.
+Having said that.... Why are we going through this dance for driver with
+only one compatible?   Are there other parts on their way?
+If not, perhaps we should just rip out the matching code entirely in
+the interests of simplicity.
 
-Paolo
+Jonathan
+
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> 
+> > ---
+> >  drivers/iio/adc/ad7887.c | 23 +++++++++++++++--------
+> >  1 file changed, 15 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
+> > index 06f684c053a0..4f68a1b17ec8 100644
+> > --- a/drivers/iio/adc/ad7887.c
+> > +++ b/drivers/iio/adc/ad7887.c
+> > @@ -40,6 +40,7 @@ enum ad7887_channels {
+> >  
+> >  /**
+> >   * struct ad7887_chip_info - chip specifc information
+> > + * @name:		the name of the part
+> >   * @int_vref_mv:	the internal reference voltage
+> >   * @channels:		channels specification
+> >   * @num_channels:	number of channels
+> > @@ -47,6 +48,7 @@ enum ad7887_channels {
+> >   * @num_dual_channels:	number of channels in dual mode
+> >   */
+> >  struct ad7887_chip_info {
+> > +	const char			*name;
+> >  	u16				int_vref_mv;
+> >  	const struct iio_chan_spec	*channels;
+> >  	unsigned int			num_channels;
+> > @@ -218,6 +220,7 @@ static const struct ad7887_chip_info ad7887_chip_info_tbl[] = {
+> >  	 * More devices added in future
+> >  	 */
+> >  	[ID_AD7887] = {
+> > +		.name = "ad7887",
+> >  		.channels = ad7887_channels,
+> >  		.num_channels = ARRAY_SIZE(ad7887_channels),
+> >  		.dual_channels = ad7887_dual_channels,
+> > @@ -239,12 +242,17 @@ static void ad7887_reg_disable(void *data)
+> >  
+> >  static int ad7887_probe(struct spi_device *spi)
+> >  {
+> > +	const struct ad7887_chip_info *info;
+> >  	struct ad7887_state *st;
+> >  	struct iio_dev *indio_dev;
+> >  	bool dual_mode;
+> >  	uint8_t mode;
+> >  	int ret;
+> >  
+> > +	info = device_get_match_data(&spi->dev);
+> > +	if (!info)
+> > +		return -ENODEV;
+> > +
+> >  	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+> >  	if (indio_dev == NULL)
+> >  		return -ENOMEM;
+> > @@ -269,13 +277,12 @@ static int ad7887_probe(struct spi_device *spi)
+> >  			return ret;
+> >  	}
+> >  
+> > -	st->chip_info =
+> > -		&ad7887_chip_info_tbl[spi_get_device_id(spi)->driver_data];
+> > +	st->chip_info = info;
+> >  
+> >  	spi_set_drvdata(spi, indio_dev);
+> >  	st->spi = spi;
+> >  
+> > -	indio_dev->name = spi_get_device_id(spi)->name;
+> > +	indio_dev->name = st->chip_info->name;
+> >  	indio_dev->info = &ad7887_info;
+> >  	indio_dev->modes = INDIO_DIRECT_MODE;
+> >  
+> > @@ -336,18 +343,18 @@ static int ad7887_probe(struct spi_device *spi)
+> >  	return devm_iio_device_register(&spi->dev, indio_dev);
+> >  }
+> >  
+> > -static const struct spi_device_id ad7887_id[] = {
+> > -	{"ad7887", ID_AD7887},
+> > -	{}
+> > +static const struct of_device_id ad7887_of_match[] = {
+> > +	{ .compatible = "adi,ad7887", .data = &ad7887_chip_info_tbl[ID_AD7887] },
+> > +	{ }
+> >  };
+> > -MODULE_DEVICE_TABLE(spi, ad7887_id);
+> > +MODULE_DEVICE_TABLE(of, ad7887_of_match);
+> >  
+> >  static struct spi_driver ad7887_driver = {
+> >  	.driver = {
+> >  		.name	= "ad7887",
+> > +		.of_match_table	= ad7887_of_match,
+> >  	},
+> >  	.probe		= ad7887_probe,
+> > -	.id_table	= ad7887_id,
+> >  };
+> >  module_spi_driver(ad7887_driver);
+> >    
+> 
+
