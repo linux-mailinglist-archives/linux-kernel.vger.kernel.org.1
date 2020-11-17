@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10DA2B5F06
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA632B5F0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgKQMWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:22:18 -0500
-Received: from mga12.intel.com ([192.55.52.136]:3862 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727727AbgKQMWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:22:18 -0500
-IronPort-SDR: GmFaV83VZ23ZQr+ZPloQ7LPmkfQZwf23lv2Hc1U8tcsOkwCF9B7CCIwvnEskL9qmJlH6XCgzmB
- /8vMBTUO3ecQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="150181253"
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="150181253"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 04:22:17 -0800
-IronPort-SDR: miAZPVwrpHpJscqHx2/kEHFdPtyMZnWKDxLFg5/ByrctyXOMEaoQFxsagjY/Kjp4W6luey785H
- PYJIUTMKB4SA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="430461244"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 17 Nov 2020 04:22:15 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Nov 2020 14:22:14 +0200
-Date:   Tue, 17 Nov 2020 14:22:14 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        pmalani@chromium.org, enric.balletbo@collabora.com,
-        rajmohan.mani@intel.com, azhar.shaikh@intel.com
-Subject: Re: [PATCH v2 8/8] usb: typec: Remove active_link_training variable
- from Enter_USB message
-Message-ID: <20201117122214.GH3437448@kuha.fi.intel.com>
-References: <20201113202503.6559-1-utkarsh.h.patel@intel.com>
- <20201113202503.6559-9-utkarsh.h.patel@intel.com>
+        id S1727037AbgKQMZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:25:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQMZI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:25:08 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A896CC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:25:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DvYt+WD3IHi6VoXoeuxoqSgNL9/bqPVrK/sQVb4claM=; b=d9eAvwRaqjGLWkQwHn+1GTMOk1
+        o5ucvibTbFL8MqKQxx77d+7NFbCt23wkuYoBFsjj1KoJgFx3cpC8aZi8IWpm9gZ3h0YT4UWZaDhQM
+        4vwI/N5AGXedd41qqapBjk3/91dLR2hOu0lmqsmyseTdts/Q5X1NDgqlYo19ZmNX3+nBn6n+lGXJI
+        bG26Mkhbfl7d3fgb6OyIVwzMDATL5cDA54exRMNCIzdVpV+0dBXW9OzO3jNejF0z+Xi/IIf7ytn0Y
+        4IncRtTtei8/mMzVHJLwlEUKtZtRBa7JPJLwylWFyy2sweZYdVuKnEV2z25wsXpv260bnhu99HPge
+        RE2LfcCQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kf02b-0008CY-Fm; Tue, 17 Nov 2020 12:24:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BADC83012DC;
+        Tue, 17 Nov 2020 13:24:55 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ABB8F203C45DF; Tue, 17 Nov 2020 13:24:55 +0100 (CET)
+Date:   Tue, 17 Nov 2020 13:24:55 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
+Subject: Re: [PATCH v2 2/4] x86/bus_lock: Handle warn and fatal in #DB for
+ bus lock
+Message-ID: <20201117122455.GG3121406@hirez.programming.kicks-ass.net>
+References: <20201111192048.2602065-1-fenghua.yu@intel.com>
+ <20201111192048.2602065-3-fenghua.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201113202503.6559-9-utkarsh.h.patel@intel.com>
+In-Reply-To: <20201111192048.2602065-3-fenghua.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:25:03PM -0800, Utkarsh Patel wrote:
-> Thunderbolt 3 cable discover mode VDO support has been added as part of
-> Enter_USB message to fill details of active cable plug link training.
-> Hence, removing unused variable active_link_training from Enter_USB
-> message data structure.
+On Wed, Nov 11, 2020 at 07:20:46PM +0000, Fenghua Yu wrote:
+> #DB for bus lock is enabled by bus lock detection bit 2 in DEBUGCTL MSR
+> while #AC for split lock is enabled by split lock detection bit 29 in
+> TEST_CTRL MSR.
 > 
-> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> --
-> Changes in v2:
-> - No change.
-> --
-> ---
->  include/linux/usb/typec.h | 6 ------
->  1 file changed, 6 deletions(-)
+> Delivery of #DB for bus lock in userspace clears DR6[11]. To avoid
+> confusion in identifying #DB, #DB handler sets the bit to 1 before
+> returning to the interrupted task.
 > 
-> diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-> index d91e09d9d91c..4a9608a15ac1 100644
-> --- a/include/linux/usb/typec.h
-> +++ b/include/linux/usb/typec.h
-> @@ -76,16 +76,10 @@ enum typec_orientation {
->   * struct enter_usb_data - Enter_USB Message details
->   * @eudo: Enter_USB Data Object
->   * @tbt_cable_vdo: TBT3 Cable Discover Mode Response
-> - * @active_link_training: Active Cable Plug Link Training
-> - *
-> - * @active_link_training is a flag that should be set with uni-directional SBRX
-> - * communication, and left 0 with passive cables and with bi-directional SBRX
-> - * communication.
->   */
->  struct enter_usb_data {
->  	u32			eudo;
->  	u32			tbt_cable_vdo;
-> -	unsigned char		active_link_training:1;
->  };
->  
->  /*
-> -- 
-> 2.17.1
+> Use the existing kernel command line option "split_lock_detect=" to handle
+> #DB for bus lock:
+> 
+> split_lock_detect=
+> 		#AC for split lock		#DB for bus lock
+> 
+> off		Do nothing			Do nothing
+> 
+> warn		Kernel OOPs			Warn once per task and
+> 		Warn once per task and		and continues to run.
+> 		disable future checking 	When both features are
+> 						supported, warn in #DB
+> 
+> fatal		Kernel OOPs			Send SIGBUS to user
+> 		Send SIGBUS to user
+> 		When both features are
+> 		supported, fatal in #AC.
+> 
+> Default option is "warn".
+> 
+> Hardware only generates #DB for bus lock detect when CPL>0 to avoid
+> nested #DB from multiple bus locks while the first #DB is being handled.
+> So no need to handle #DB for bus lock detected in the kernel.
+> 
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
 
-thanks,
+Sane enough I suppose,
 
--- 
-heikki
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+
+The one thing I found still missing is a better description of the
+things tickling SLD vs BLD. IIRC BLD detects a wider range of issues.
+Therefore it _might_ make sense to allow SLD && BLD when fatal, instead
+of only SLD.
+
+Still, that's nitpicking.
