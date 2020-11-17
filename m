@@ -2,139 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8E02B5EE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A782B5EDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbgKQMJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:09:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgKQMJC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728234AbgKQMJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 17 Nov 2020 07:09:02 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DABC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:09:02 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id c17so22896965wrc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:09:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=R8dAViY8msWj5ESa9dcD3pUSNcXzBcfrUpBmPTelzyc=;
-        b=ZEd4OKYk3irAFmWaAXOmUTa8XmNwL88+FAsivIc4nfLbCqetziHZqTzfXNo9txn3sO
-         nTTc0D7HQdG0IeDZ4LcGxJtIhgyssJ4uYSV10b/W8p6LrijC/ZPTH9CdthDuZhEbSe2w
-         DCtQrW9qjekN74A0u9xZ//F7yFZkKtVEfICMxXJAgzu5oh39+205XNjI8qYBitBfwWRN
-         Y7xUVSoTFce9h3yS/88QC82d8h6MUwlGXQwnJ5WtdzrPFSTnI4jO3hbEfQejQG3Kul9S
-         F7CZoTwyGi0aqdE8iLVThZOMwH3FRg/PHBbHi2nl3smAx9/CR5kJVGJqt5k0cCrKS2fh
-         Csqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=R8dAViY8msWj5ESa9dcD3pUSNcXzBcfrUpBmPTelzyc=;
-        b=imhuxhwg8qQYyY2uKbbjiOM37Z/7AvWR/TCChZvRYO1Hg6Gh+ngu/HePwtWZ3s8glQ
-         G0wX9OGbWuBURamqUGZO7XnuwSaAxZOD0uZuASm6K9dWBtK8XT0q5G2S8tiLaJ0ipJ7A
-         zFjVUKRUD8liUNhedRSvEodNemhqqfgDZTXetxoA027tsBU1m8E4hQuZh8+dbJodTzwk
-         49yKp4cKNGQ9bUkcf0kjel2fGv0aswhfhsih4N/Q+aMrn3YU4l5K51H8gkYKUVBQ8ite
-         eNiLz03BqRAWnBQhewNgwfJZWNXpPjDxhOCRsyCTP76OSvBu1by4fe0y5GVQFGpp9EIu
-         i4WA==
-X-Gm-Message-State: AOAM530l/A0SxVe6nDd6IpkETG7uVjyIgsWNsB+gdj0E8dnAbDtUlmJS
-        kmvpFpzZRDKDO1/uXJGO4kEshnrm013iNw==
-X-Google-Smtp-Source: ABdhPJzvnQM767MDO2iPjxVy07/dEBSpvVqRLyRjykXZJG0tG5GIdts8miBt60QlPflRrcE7z4INDg==
-X-Received: by 2002:adf:cf0b:: with SMTP id o11mr24131017wrj.162.1605614940689;
-        Tue, 17 Nov 2020 04:09:00 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6186:703a:2abc:2187? ([2a01:e34:ed2f:f020:6186:703a:2abc:2187])
-        by smtp.googlemail.com with ESMTPSA id u5sm22560954wro.56.2020.11.17.04.08.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 04:09:00 -0800 (PST)
-Subject: Re: [PATCH] thermal: Fix NULL pointer dereference issue
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Mukesh Ojha <mojha@codeaurora.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     amitk@kernel.org
-References: <1605544181-5348-1-git-send-email-mojha@codeaurora.org>
- <4e28affd89ba8a852e0fb7ace076458b3d43839a.camel@intel.com>
- <f8c436ae-0f4c-5d2e-51a8-0e856fbf8f44@linaro.org>
- <fd11744b16a91428303fe848ef8f72fd8f5c9a5e.camel@intel.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <ae8a6805-7071-269d-f49a-7e1051cfb399@linaro.org>
-Date:   Tue, 17 Nov 2020 13:08:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from mail.kernel.org ([198.145.29.99]:37590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgKQMJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:09:01 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37C632223C;
+        Tue, 17 Nov 2020 12:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605614941;
+        bh=u0txQvZKgwUDR0paMwBrrjn1YIL2hMbwIWCn1eLaN/I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vyMk5vYvqIfUwIYaYa3xmdLwAAAWO2zG+a+vxvyk3wAWHpUWbeg7dJmMH2bHxZPru
+         NbOomYqBm1WJM6BlG2Bo3ZufuHdv8b6Y8QzSZY8imqeNdWPqcU8bYOWOoP4hpImsS9
+         vEeEYwSUbQCVDAXO9cHG7hFYJRd+pOlZIs8Uhujs=
+Date:   Tue, 17 Nov 2020 13:09:49 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     stable@vger.kernel.org, vpai@akamai.com,
+        Joakim.Tjernlund@infinera.com, xiyou.wangcong@gmail.com,
+        johunt@akamai.com, jhs@mojatatu.com, jiri@resnulli.us,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        john.fastabend@gmail.com, eric.dumazet@gmail.com, dsahern@gmail.com
+Subject: Re: [PATCH stable] net: sch_generic: fix the missing new qdisc
+ assignment bug
+Message-ID: <X7O9jdlTgs7IbSGT@kroah.com>
+References: <1604373938-211588-1-git-send-email-linyunsheng@huawei.com>
+ <20201109124658.GC1834954@kroah.com>
+ <3deb16a8-bdb1-3c31-2722-404f271f41d8@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <fd11744b16a91428303fe848ef8f72fd8f5c9a5e.camel@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3deb16a8-bdb1-3c31-2722-404f271f41d8@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2020 12:27, Zhang Rui wrote:
-> On Tue, 2020-11-17 at 09:57 +0100, Daniel Lezcano wrote:
->> On 17/11/2020 08:18, Zhang Rui wrote:
->>> On Mon, 2020-11-16 at 21:59 +0530, Mukesh Ojha wrote:
->>>> Cooling stats variable inside
->>>> thermal_cooling_device_stats_update()
->>>> can get NULL. We should add a NULL check on stat inside for
->>>> sanity.
->>>>
->>>> Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
->>>> ---
->>>>  drivers/thermal/thermal_sysfs.c | 3 +++
->>>>  1 file changed, 3 insertions(+)
->>>>
->>>> diff --git a/drivers/thermal/thermal_sysfs.c
->>>> b/drivers/thermal/thermal_sysfs.c
->>>> index a6f371f..f52708f 100644
->>>> --- a/drivers/thermal/thermal_sysfs.c
->>>> +++ b/drivers/thermal/thermal_sysfs.c
->>>> @@ -754,6 +754,9 @@ void
->>>> thermal_cooling_device_stats_update(struct
->>>> thermal_cooling_device *cdev,
->>>>  {
->>>>  	struct cooling_dev_stats *stats = cdev->stats;
->>>>  
->>>> +	if (!stats)
->>>> +		return;
->>>> +
->>>
->>> May I know in which case stats can be NULL?
->>> The only possibility I can see is that cdev->ops->get_max_state()
->>> fails
->>> in cooling_device_stats_setup(), right?
->>
->> A few lines below, the allocation could fail.
->>
->>         stats = kzalloc(var, GFP_KERNEL);
->>         if (!stats)
->>                 return;
->>
->> Some drivers define themselves as a cooling device state to let the
->> userspace to act on their power. The screen brightness is one example
->> with a cdev with 1024 states, the resulting stats table to be
->> allocated
->> is very big and the kzalloc is prone to fail.
->>
-> Oh, right.
-> As we're not going to fix the cdev, so I think we do need this patch,
-> right?
+On Tue, Nov 10, 2020 at 08:58:17AM +0800, Yunsheng Lin wrote:
+> On 2020/11/9 20:46, Greg KH wrote:
+> > On Tue, Nov 03, 2020 at 11:25:38AM +0800, Yunsheng Lin wrote:
+> >> commit 2fb541c862c9 ("net: sch_generic: aviod concurrent reset and enqueue op for lockless qdisc")
+> >>
+> >> When the above upstream commit is backported to stable kernel,
+> >> one assignment is missing, which causes two problems reported
+> >> by Joakim and Vishwanath, see [1] and [2].
+> >>
+> >> So add the assignment back to fix it.
+> >>
+> >> 1. https://www.spinics.net/lists/netdev/msg693916.html
+> >> 2. https://www.spinics.net/lists/netdev/msg695131.html
+> >>
+> >> Fixes: 749cc0b0c7f3 ("net: sch_generic: aviod concurrent reset and enqueue op for lockless qdisc")
+> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> >> ---
+> >>  net/sched/sch_generic.c | 3 +++
+> >>  1 file changed, 3 insertions(+)
+> > 
+> > What kernel tree(s) does this need to be backported to?
+> 
+> 4.19.x and 5.4.x
 
-If the allocation fails at this level if initialization there is clearly
-something wrong. I'm wondering if it would make sense to report back an
-error and make thermal_cooling_device_register to fail.
+Now queued up, thanks.
 
-Having an allocation failing and silently ignore it sounds like not very
-robust IMO.
-
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+greg k-h
