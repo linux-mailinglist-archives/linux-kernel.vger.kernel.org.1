@@ -2,118 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337FF2B6FBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AC82B6FC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731487AbgKQUKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:10:55 -0500
-Received: from mga02.intel.com ([134.134.136.20]:47971 "EHLO mga02.intel.com"
+        id S1731602AbgKQULN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:11:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725771AbgKQUKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:10:41 -0500
-IronPort-SDR: RTY3pewITNH9P1e29O3A2kOgtnuq8tzLhs23QpPHnp5MEIWD6/7PT1PpQ8lxXxAYLrAeCwFZ1L
- xImRK6L/w6wA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="158033899"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="158033899"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:10:38 -0800
-IronPort-SDR: 4OHLaR8PqVGEgsWMQQj6l6s8DzfRVg7aJFG0PVgrL4/tln6zbSbJ9OYLdIvjXPwiKeK6L6inPO
- mAtn4U7GFG3A==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="544192441"
-Received: from chimtrax-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.222])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:10:38 -0800
-Subject: Re: [PATCH v11 05/16] PCI/ERR: Rename reset_link() to
- reset_subordinates()
-To:     Sean V Kelley <sean.v.kelley@intel.com>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, xerces.zhao@gmail.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201117191954.1322844-1-sean.v.kelley@intel.com>
- <20201117191954.1322844-6-sean.v.kelley@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <80f4244a-5d1a-7b47-3f89-d97d0a589b30@linux.intel.com>
-Date:   Tue, 17 Nov 2020 12:10:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725771AbgKQULL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:11:11 -0500
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8829204EC;
+        Tue, 17 Nov 2020 20:11:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605643871;
+        bh=8HWyKvGDgZHotW6gzkecqpL2zTAPO0Z8/+rsf/h4zUw=;
+        h=From:To:Subject:Date:From;
+        b=e/RtBqy35hhyVrdBRG5zjsUCzTW1nBiY4eqG6lyQbUdyh2n4DIMg0iiRigOZIeS3y
+         4gG1acJ1KYJPo5N7NUAOpoo/KrjzrrohFmyURwXOx9F2RKqdcT6Ju8I+sQxaKlajGp
+         CSAHxbrHtpj01+c+9rM366pRNyiHKKgjRiI+0Fr8=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] dt-bindings: arm: samsung: document SMDK2416 board binding
+Date:   Tue, 17 Nov 2020 21:11:03 +0100
+Message-Id: <20201117201106.128813-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201117191954.1322844-6-sean.v.kelley@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add binding for the SMDK2416 board.
 
-On 11/17/20 11:19 AM, Sean V Kelley wrote:
-> reset_link() appears to be misnamed.  The point is to reset any devices
-> below a given bridge, so rename it to reset_subordinates() to make it clear
-> that we are passing a bridge with the intent to reset the devices below it.
-> 
-> [bhelgaas: fix reset_subordinate_device() typo, shorten name]
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Link: https://lore.kernel.org/r/20201002184735.1229220-5-seanvk.dev@oregontracks.org
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
->   drivers/pci/pci.h      | 4 ++--
->   drivers/pci/pcie/err.c | 8 ++++----
->   2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 12dcad8f3635..3c4570a3058f 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -572,8 +572,8 @@ static inline int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
->   
->   /* PCI error reporting and recovery */
->   pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> -			pci_channel_state_t state,
-> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
-> +		pci_channel_state_t state,
-> +		pci_ers_result_t (*reset_subordinates)(struct pci_dev *pdev));
->   
->   bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
->   #ifdef CONFIG_PCIEASPM
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index c543f419d8f9..db149c6ce4fb 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -147,8 +147,8 @@ static int report_resume(struct pci_dev *dev, void *data)
->   }
->   
->   pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> -			pci_channel_state_t state,
-> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
-> +		pci_channel_state_t state,
-> +		pci_ers_result_t (*reset_subordinates)(struct pci_dev *pdev))
->   {
->   	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
->   	struct pci_bus *bus;
-> @@ -165,9 +165,9 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->   	pci_dbg(dev, "broadcast error_detected message\n");
->   	if (state == pci_channel_io_frozen) {
->   		pci_walk_bus(bus, report_frozen_detected, &status);
-> -		status = reset_link(dev);
-> +		status = reset_subordinates(dev);
->   		if (status != PCI_ERS_RESULT_RECOVERED) {
-> -			pci_warn(dev, "link reset failed\n");
-> +			pci_warn(dev, "subordinate device reset failed\n");
->   			goto failed;
->   		}
->   	} else {
-> 
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ .../devicetree/bindings/arm/samsung/samsung-boards.yaml     | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/arm/samsung/samsung-boards.yaml b/Documentation/devicetree/bindings/arm/samsung/samsung-boards.yaml
+index 272508010b02..332b07b7f4fb 100644
+--- a/Documentation/devicetree/bindings/arm/samsung/samsung-boards.yaml
++++ b/Documentation/devicetree/bindings/arm/samsung/samsung-boards.yaml
+@@ -14,6 +14,12 @@ properties:
+     const: '/'
+   compatible:
+     oneOf:
++      - description: S3C2416 based boards
++        items:
++          - enum:
++              - samsung,smdk2416                # Samsung SMDK2416
++          - const: samsung,s3c2416
++
+       - description: S5PV210 based boards
+         items:
+           - enum:
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.25.1
+
