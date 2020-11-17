@@ -2,157 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C002B57F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF1B2B57F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgKQDgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 22:36:05 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:29747 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726204AbgKQDgF (ORCPT
+        id S1726736AbgKQDg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 22:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726300AbgKQDgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 22:36:05 -0500
-X-UUID: e2e476d0fc7c4aa1b81ec5cb1d41de9c-20201117
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9lXqFzp2pUfNGG0hxIdRdfJ3T4i/tYEZMqpOmdgUWe4=;
-        b=PlXc2vZCG1asH23R0XHoXCPmhg31bWBatZXlQMm/ZAShr/xFuvZ/8hNgtwF6mBOYQb5bk38TGoBbY3sMXAS2GBj1+7Eyf4PB3RMSSbKZdTlcEstJXnQPUiLGASoogJ2WdGBoWc0cZ1+S9qc7WrwgBFH+j0/dLbFF+Jelx91nbNo=;
-X-UUID: e2e476d0fc7c4aa1b81ec5cb1d41de9c-20201117
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 240982908; Tue, 17 Nov 2020 11:35:56 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33DR.mediatek.inc
- (172.27.6.106) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 17 Nov
- 2020 11:35:52 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 17 Nov 2020 11:35:50 +0800
-Message-ID: <1605584151.31607.35.camel@mhfsdcap03>
-Subject: Re: [RESEND PATCH 2/3] phy: mediatek: Move mtk_mipi_dsi_phy driver
- into drivers/phy/mediatek folder
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        "Kishon Vijay Abraham I" <kishon@ti.com>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Tue, 17 Nov 2020 11:35:51 +0800
-In-Reply-To: <20201116231407.94-3-chunkuang.hu@kernel.org>
-References: <20201116231407.94-1-chunkuang.hu@kernel.org>
-         <20201116231407.94-3-chunkuang.hu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 16 Nov 2020 22:36:55 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF60C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 19:36:55 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id q28so4596580pgk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 19:36:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wP7FCG1Wf0qn1DM+IVox0EpzSIazGVCq2Pj59RjIqV4=;
+        b=lz/bZsWDwkxUXSrkhvSsaVR/4m+Z0lHCP/+kRr5uB5pE0BTrWLRlH59S+Y//14SlHR
+         F0Itj8TaegxtGVQ4nFccBLEK4Y+ALotHSKuNInN9A4URtXH+bghwxveIFrJeNSCyfdaG
+         0NeJLpAo5JrVdbzOvQdeUTMrVARca9KWj7r7cmXCCwfDyoJaKCzurtqmYm9D0xd6cFH4
+         1KT7t63hrUuf9GcsM8VWZZlBSXXs2QQeUCdcJxWOgqYb35gPHAbTH3HrFQLdfhX9wanS
+         4DWndQYeIJgy3YdFkZXRApHuN+q9dWMFI/Lyiw6phGZQ//blU+02Lo0BbPXVlFhRfRn8
+         h5lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wP7FCG1Wf0qn1DM+IVox0EpzSIazGVCq2Pj59RjIqV4=;
+        b=EElqlaIYb8LkZxMVjera1e9ykOJXA/OLytVYZT5wubttwdNsElU+8U92gxGHrtUAEx
+         0ieBbepv9G9WymUa43xfTWePdZuF7r/XCSv6HSVuniC9Fo6h6nYSHrAbxDSpEuo3Le9X
+         kY6FkaRo66KHXJZEqg2d43ng12oESDsKrwsB/IH2oTsQrVf47NPYpDjkOg1pNaC/wVaj
+         /mTPrB70xerTd4zXunh1YeTZXULk4B+WPJLsMyCRvh7ikywdQpcSDnPoTZSrTnzKY3z9
+         vB24iZ7oEl3dbhJ+Qcd95wnJzZJnH3Nc9Y3jRuHj9F/g/IqCdGuBXYXo/cEegoAV1KuC
+         f8Kg==
+X-Gm-Message-State: AOAM531CbECJqdvRw3R7Vqu57HIVmn+6fJPKf2DxBNd1qapeiusBuhAu
+        9J615wKkfg+kTbBHCrDUlAEI
+X-Google-Smtp-Source: ABdhPJwNJazrLPDzWtcde/AiF/+ByrUOQqQipVTVBwThLv3zZBPLZNBzSDNalcitfSeZeTzEAaRZ5A==
+X-Received: by 2002:a17:90a:2c46:: with SMTP id p6mr2404774pjm.166.1605584214882;
+        Mon, 16 Nov 2020 19:36:54 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id x4sm2719589pgg.94.2020.11.16.19.36.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 16 Nov 2020 19:36:54 -0800 (PST)
+Date:   Tue, 17 Nov 2020 09:06:48 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     kvalo@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH] ath11k: use MHI provided APIs to allocate and free MHI
+ controller
+Message-ID: <20201117033648.GA7787@work>
+References: <1605571300-4438-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: B95D2D481DAC4A3038D14ED72C3D9D030F57D0A6ED6B197E021B229AAED557D92000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605571300-4438-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ0ssDQpPbiBUdWUsIDIwMjAtMTEtMTcgYXQgMDc6MTQgKzA4MDAsIENodW4tS3VhbmcgSHUg
-d3JvdGU6DQo+IG10a19taXBpX2RzaV9waHkgaXMgY3VycmVudGx5IHBsYWNlZCBpbnNpZGUgbWVk
-aWF0ZWsgZHJtIGRyaXZlciwgYnV0IGl0J3MNCj4gbW9yZSBzdWl0YWJsZSB0byBwbGFjZSBhIHBo
-eSBkcml2ZXIgaW50byBwaHkgZHJpdmVyIGZvbGRlciwgc28gbW92ZQ0KPiBtdGtfbWlwaV9kc2lf
-cGh5IGRyaXZlciBpbnRvIHBoeSBkcml2ZXIgZm9sZGVyLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
-Q2h1bi1LdWFuZyBIdSA8Y2h1bmt1YW5nLmh1QGtlcm5lbC5vcmc+DQpZb3UgZm9yZ290IHRvIGFk
-ZCBhY2tlZC1ieSBtZQ0KDQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL0tjb25m
-aWcgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDcgLS0tLS0tLQ0KPiAgZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICB8IDYgLS0tLS0t
-DQo+ICBkcml2ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgNyArKysrKysrDQo+ICBkcml2ZXJzL3BoeS9tZWRpYXRlay9NYWtlZmlsZSAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgNSArKysrKw0KPiAgLi4uL21lZGlhdGVrL3BoeS1t
-dGstbWlwaS1kc2ktbXQ4MTczLmN9ICAgICAgICAgICAgICAgICAgICB8IDIgKy0NCj4gIC4uLi9t
-ZWRpYXRlay9waHktbXRrLW1pcGktZHNpLW10ODE4My5jfSAgICAgICAgICAgICAgICAgICAgfCAy
-ICstDQo+ICAuLi4vbXRrX21pcGlfdHguYyA9PiBwaHkvbWVkaWF0ZWsvcGh5LW10ay1taXBpLWRz
-aS5jfSAgICAgIHwgMiArLQ0KPiAgLi4uL210a19taXBpX3R4LmggPT4gcGh5L21lZGlhdGVrL3Bo
-eS1tdGstbWlwaS1kc2kuaH0gICAgICB8IDANCj4gIDggZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0
-aW9ucygrKSwgMTYgZGVsZXRpb25zKC0pDQo+ICByZW5hbWUgZHJpdmVycy97Z3B1L2RybS9tZWRp
-YXRlay9tdGtfbXQ4MTczX21pcGlfdHguYyA9PiBwaHkvbWVkaWF0ZWsvcGh5LW10ay1taXBpLWRz
-aS1tdDgxNzMuY30gKDk5JSkNCj4gIHJlbmFtZSBkcml2ZXJzL3tncHUvZHJtL21lZGlhdGVrL210
-a19tdDgxODNfbWlwaV90eC5jID0+IHBoeS9tZWRpYXRlay9waHktbXRrLW1pcGktZHNpLW10ODE4
-My5jfSAoOTklKQ0KPiAgcmVuYW1lIGRyaXZlcnMve2dwdS9kcm0vbWVkaWF0ZWsvbXRrX21pcGlf
-dHguYyA9PiBwaHkvbWVkaWF0ZWsvcGh5LW10ay1taXBpLWRzaS5jfSAoOTklKQ0KPiAgcmVuYW1l
-IGRyaXZlcnMve2dwdS9kcm0vbWVkaWF0ZWsvbXRrX21pcGlfdHguaCA9PiBwaHkvbWVkaWF0ZWsv
-cGh5LW10ay1taXBpLWRzaS5ofSAoMTAwJSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dw
-dS9kcm0vbWVkaWF0ZWsvS2NvbmZpZyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9LY29uZmln
-DQo+IGluZGV4IDI0YzQ4OTBhNmU2NS4uMjk3NmQyMWU5YTM0IDEwMDY0NA0KPiAtLS0gYS9kcml2
-ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvS2NvbmZpZw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVk
-aWF0ZWsvS2NvbmZpZw0KPiBAQCAtMjgsMTAgKzI4LDMgQEAgY29uZmlnIERSTV9NRURJQVRFS19I
-RE1JDQo+ICAJc2VsZWN0IFBIWV9NVEtfSERNSQ0KPiAgCWhlbHANCj4gIAkgIERSTS9LTVMgSERN
-SSBkcml2ZXIgZm9yIE1lZGlhdGVrIFNvQ3MNCj4gLQ0KPiAtY29uZmlnIFBIWV9NVEtfTUlQSV9E
-U0kNCj4gLQl0cmlzdGF0ZSAiTWVkaWF0ZWsgTUlQSS1EU0ktUEhZIERyaXZlciINCj4gLQlkZXBl
-bmRzIG9uIEFSQ0hfTUVESUFURUsgJiYgT0YNCj4gLQlzZWxlY3QgR0VORVJJQ19QSFkNCj4gLQlo
-ZWxwDQo+IC0JICBTdXBwb3J0IE1JUEkgRFNJIFBIWSBmb3IgTWVkaWF0ZWsgU29Dcy4NCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9NYWtlZmlsZSBiL2RyaXZlcnMvZ3B1
-L2RybS9tZWRpYXRlay9NYWtlZmlsZQ0KPiBpbmRleCBiYWExODgwMDA1NDMuLmE4OTJlZGVjNTU2
-MyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL01ha2VmaWxlDQo+ICsr
-KyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9NYWtlZmlsZQ0KPiBAQCAtMTksOSArMTksMyBA
-QCBtZWRpYXRlay1kcm0taGRtaS1vYmpzIDo9IG10a19jZWMubyBcDQo+ICAJCQkgIG10a19oZG1p
-X2RkYy5vDQo+ICANCj4gIG9iai0kKENPTkZJR19EUk1fTUVESUFURUtfSERNSSkgKz0gbWVkaWF0
-ZWstZHJtLWhkbWkubw0KPiAtDQo+IC1waHktbXRrLW1pcGktZHNpLWRydi1vYmpzIDo9IG10a19t
-aXBpX3R4Lm8gXA0KPiAtCQkJICAgICBtdGtfbXQ4MTczX21pcGlfdHgubyBcDQo+IC0JCQkgICAg
-IG10a19tdDgxODNfbWlwaV90eC5vDQo+IC0NCj4gLW9iai0kKENPTkZJR19QSFlfTVRLX01JUElf
-RFNJKSArPSBwaHktbXRrLW1pcGktZHNpLWRydi5vDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Bo
-eS9tZWRpYXRlay9LY29uZmlnIGIvZHJpdmVycy9waHkvbWVkaWF0ZWsvS2NvbmZpZw0KPiBpbmRl
-eCA1MGM1ZTkzMDZlMTkuLjU3NGI4ZTYzOThkMiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9waHkv
-bWVkaWF0ZWsvS2NvbmZpZw0KPiArKysgYi9kcml2ZXJzL3BoeS9tZWRpYXRlay9LY29uZmlnDQo+
-IEBAIC00MiwzICs0MiwxMCBAQCBjb25maWcgUEhZX01US19IRE1JDQo+ICAJc2VsZWN0IEdFTkVS
-SUNfUEhZDQo+ICAJaGVscA0KPiAgCSAgU3VwcG9ydCBIRE1JIFBIWSBmb3IgTWVkaWF0ZWsgU29D
-cy4NCj4gKw0KPiArY29uZmlnIFBIWV9NVEtfTUlQSV9EU0kNCj4gKwl0cmlzdGF0ZSAiTWVkaWFU
-ZWsgTUlQSS1EU0kgRHJpdmVyIg0KPiArCWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyAmJiBPRg0K
-PiArCXNlbGVjdCBHRU5FUklDX1BIWQ0KPiArCWhlbHANCj4gKwkgIFN1cHBvcnQgTUlQSSBEU0kg
-Zm9yIE1lZGlhdGVrIFNvQ3MuDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9N
-YWtlZmlsZSBiL2RyaXZlcnMvcGh5L21lZGlhdGVrL01ha2VmaWxlDQo+IGluZGV4IDYzMjVlMzg3
-MDllZC4uYWNlNjYwZmJlZDNhIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3BoeS9tZWRpYXRlay9N
-YWtlZmlsZQ0KPiArKysgYi9kcml2ZXJzL3BoeS9tZWRpYXRlay9NYWtlZmlsZQ0KPiBAQCAtMTEs
-MyArMTEsOCBAQCBwaHktbXRrLWhkbWktZHJ2LXkJCQk6PSBwaHktbXRrLWhkbWkubw0KPiAgcGh5
-LW10ay1oZG1pLWRydi15CQkJKz0gcGh5LW10ay1oZG1pLW10MjcwMS5vDQo+ICBwaHktbXRrLWhk
-bWktZHJ2LXkJCQkrPSBwaHktbXRrLWhkbWktbXQ4MTczLm8NCj4gIG9iai0kKENPTkZJR19QSFlf
-TVRLX0hETUkpCQkrPSBwaHktbXRrLWhkbWktZHJ2Lm8NCj4gKw0KPiArcGh5LW10ay1taXBpLWRz
-aS1kcnYteQkJCTo9IHBoeS1tdGstbWlwaS1kc2kubw0KPiArcGh5LW10ay1taXBpLWRzaS1kcnYt
-eQkJCSs9IHBoeS1tdGstbWlwaS1kc2ktbXQ4MTczLm8NCj4gK3BoeS1tdGstbWlwaS1kc2ktZHJ2
-LXkJCQkrPSBwaHktbXRrLW1pcGktZHNpLW10ODE4My5vDQo+ICtvYmotJChDT05GSUdfUEhZX01U
-S19NSVBJX0RTSSkJCSs9IHBoeS1tdGstbWlwaS1kc2ktZHJ2Lm8NCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfbXQ4MTczX21pcGlfdHguYyBiL2RyaXZlcnMvcGh5
-L21lZGlhdGVrL3BoeS1tdGstbWlwaS1kc2ktbXQ4MTczLmMNCj4gc2ltaWxhcml0eSBpbmRleCA5
-OSUNCj4gcmVuYW1lIGZyb20gZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19tdDgxNzNfbWlw
-aV90eC5jDQo+IHJlbmFtZSB0byBkcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLW1pcGktZHNp
-LW10ODE3My5jDQo+IGluZGV4IGYxOGRiMTRkOGI2My4uN2E4NDc5NTQ1OTRmIDEwMDY0NA0KPiAt
-LS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX210ODE3M19taXBpX3R4LmMNCj4gKysr
-IGIvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay1taXBpLWRzaS1tdDgxNzMuYw0KPiBAQCAt
-NCw3ICs0LDcgQEANCj4gICAqIEF1dGhvcjogaml0YW8uc2hpIDxqaXRhby5zaGlAbWVkaWF0ZWsu
-Y29tPg0KPiAgICovDQo+ICANCj4gLSNpbmNsdWRlICJtdGtfbWlwaV90eC5oIg0KPiArI2luY2x1
-ZGUgInBoeS1tdGstbWlwaS1kc2kuaCINCj4gIA0KPiAgI2RlZmluZSBNSVBJVFhfRFNJX0NPTgkJ
-MHgwMA0KPiAgI2RlZmluZSBSR19EU0lfTERPQ09SRV9FTgkJQklUKDApDQo+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX210ODE4M19taXBpX3R4LmMgYi9kcml2ZXJz
-L3BoeS9tZWRpYXRlay9waHktbXRrLW1pcGktZHNpLW10ODE4My5jDQo+IHNpbWlsYXJpdHkgaW5k
-ZXggOTklDQo+IHJlbmFtZSBmcm9tIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfbXQ4MTgz
-X21pcGlfdHguYw0KPiByZW5hbWUgdG8gZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay1taXBp
-LWRzaS1tdDgxODMuYw0KPiBpbmRleCA5ZjNlNTVhZWViYjIuLjk5MTA4NDI2ZDU3YyAxMDA2NDQN
-Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19tdDgxODNfbWlwaV90eC5jDQo+
-ICsrKyBiL2RyaXZlcnMvcGh5L21lZGlhdGVrL3BoeS1tdGstbWlwaS1kc2ktbXQ4MTgzLmMNCj4g
-QEAgLTQsNyArNCw3IEBADQo+ICAgKiBBdXRob3I6IGppdGFvLnNoaSA8aml0YW8uc2hpQG1lZGlh
-dGVrLmNvbT4NCj4gICAqLw0KPiAgDQo+IC0jaW5jbHVkZSAibXRrX21pcGlfdHguaCINCj4gKyNp
-bmNsdWRlICJwaHktbXRrLW1pcGktZHNpLmgiDQo+ICANCj4gICNkZWZpbmUgTUlQSVRYX0xBTkVf
-Q09OCQkweDAwMGMNCj4gICNkZWZpbmUgUkdfRFNJX0NQSFlfVDFEUlZfRU4JCUJJVCgwKQ0KPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19taXBpX3R4LmMgYi9kcml2
-ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLW1pcGktZHNpLmMNCj4gc2ltaWxhcml0eSBpbmRleCA5
-OSUNCj4gcmVuYW1lIGZyb20gZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19taXBpX3R4LmMN
-Cj4gcmVuYW1lIHRvIGRyaXZlcnMvcGh5L21lZGlhdGVrL3BoeS1tdGstbWlwaS1kc2kuYw0KPiBp
-bmRleCBmMmE4OTJlMTZjMjcuLjE4YzQ4MTI1MWYwNCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9n
-cHUvZHJtL21lZGlhdGVrL210a19taXBpX3R4LmMNCj4gKysrIGIvZHJpdmVycy9waHkvbWVkaWF0
-ZWsvcGh5LW10ay1taXBpLWRzaS5jDQo+IEBAIC0zLDcgKzMsNyBAQA0KPiAgICogQ29weXJpZ2h0
-IChjKSAyMDE1IE1lZGlhVGVrIEluYy4NCj4gICAqLw0KPiAgDQo+IC0jaW5jbHVkZSAibXRrX21p
-cGlfdHguaCINCj4gKyNpbmNsdWRlICJwaHktbXRrLW1pcGktZHNpLmgiDQo+ICANCj4gIGlubGlu
-ZSBzdHJ1Y3QgbXRrX21pcGlfdHggKm10a19taXBpX3R4X2Zyb21fY2xrX2h3KHN0cnVjdCBjbGtf
-aHcgKmh3KQ0KPiAgew0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
-a19taXBpX3R4LmggYi9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLW1pcGktZHNpLmgNCj4g
-c2ltaWxhcml0eSBpbmRleCAxMDAlDQo+IHJlbmFtZSBmcm9tIGRyaXZlcnMvZ3B1L2RybS9tZWRp
-YXRlay9tdGtfbWlwaV90eC5oDQo+IHJlbmFtZSB0byBkcml2ZXJzL3BoeS9tZWRpYXRlay9waHkt
-bXRrLW1pcGktZHNpLmgNCg0K
++ath11k list
 
+On Mon, Nov 16, 2020 at 04:01:40PM -0800, Bhaumik Bhatt wrote:
+> Use MHI provided APIs to allocate and free MHI controller to
+> improve MHI host driver handling. This also fixes a memory leak
+> as the MHI controller was allocated but never freed.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
+> ---
+>  drivers/net/wireless/ath/ath11k/mhi.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath11k/mhi.c b/drivers/net/wireless/ath/ath11k/mhi.c
+> index aded9a7..1c9d9dc 100644
+> --- a/drivers/net/wireless/ath/ath11k/mhi.c
+> +++ b/drivers/net/wireless/ath/ath11k/mhi.c
+> @@ -218,7 +218,7 @@ int ath11k_mhi_register(struct ath11k_pci *ab_pci)
+>  	struct mhi_controller *mhi_ctrl;
+>  	int ret;
+>  
+> -	mhi_ctrl = kzalloc(sizeof(*mhi_ctrl), GFP_KERNEL);
+> +	mhi_ctrl = mhi_alloc_controller();
+>  	if (!mhi_ctrl)
+>  		return -ENOMEM;
+>  
+> @@ -234,7 +234,7 @@ int ath11k_mhi_register(struct ath11k_pci *ab_pci)
+>  	ret = ath11k_mhi_get_msi(ab_pci);
+>  	if (ret) {
+>  		ath11k_err(ab, "failed to get msi for mhi\n");
+> -		kfree(mhi_ctrl);
+> +		mhi_free_controller(mhi_ctrl);
+>  		return ret;
+>  	}
+>  
+> @@ -252,7 +252,7 @@ int ath11k_mhi_register(struct ath11k_pci *ab_pci)
+>  	ret = mhi_register_controller(mhi_ctrl, &ath11k_mhi_config);
+>  	if (ret) {
+>  		ath11k_err(ab, "failed to register to mhi bus, err = %d\n", ret);
+> -		kfree(mhi_ctrl);
+> +		mhi_free_controller(mhi_ctrl);
+>  		return ret;
+>  	}
+>  
+> @@ -265,6 +265,7 @@ void ath11k_mhi_unregister(struct ath11k_pci *ab_pci)
+>  
+>  	mhi_unregister_controller(mhi_ctrl);
+>  	kfree(mhi_ctrl->irq);
+> +	mhi_free_controller(mhi_ctrl);
+>  }
+>  
+>  static char *ath11k_mhi_state_to_str(enum ath11k_mhi_state mhi_state)
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
