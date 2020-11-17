@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71ED82B6390
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F10AD2B65EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732468AbgKQNjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:39:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50370 "EHLO mail.kernel.org"
+        id S1732101AbgKQN7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:59:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732705AbgKQNiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:38:54 -0500
+        id S1730670AbgKQNS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:18:26 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC2BD207BC;
-        Tue, 17 Nov 2020 13:38:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52B5B24654;
+        Tue, 17 Nov 2020 13:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620333;
-        bh=l+wsoJgfUfgvzlDek9engkXVQN+ljoEi2Iw75rjm3PA=;
+        s=default; t=1605619105;
+        bh=O8sN/Fj7w+5g61Gjf9SEq4lrUkuxb/eAuuxjUzW77+s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CZ46/ayTbbY1DCg0MLFn2FvBIYTbMZiClX9b2WApCg2Ix3DS6tUopPZxWduYjGZ2l
-         KBvjow+SzbLO1NWdR1ve7mDIgBmGaIaU4vK+gABp2wsw/dGrjdHPhVEarJ41v2Q0gz
-         oGq/X3/0u/44Z0XqrZiDL1C4Y2pP57vv+VYy3OUc=
+        b=qfgn3NbvhhyTc8spwsyTYbNl+XWrzkULpLIt/vN31h3pUKD3Ayzfuwh+s4oRFhj6F
+         Tyj8SknAex9ICLU1tygWOiO7IcgpGUzFcMQpacyIOyJhJBM6/XXN7V3mdPHwKyOhJT
+         7sUPGFlzNxu0USkQH0OHBXQG23b85Yx3Tq9aTfak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 156/255] lan743x: correctly handle chips with internal PHY
+        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 4.19 029/101] crypto: arm64/aes-modes - get rid of literal load of addend vector
 Date:   Tue, 17 Nov 2020 14:04:56 +0100
-Message-Id: <20201117122146.541160651@linuxfoundation.org>
+Message-Id: <20201117122114.510330023@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,94 +43,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Van Asbroeck <thesven73@gmail.com>
+From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-[ Upstream commit 902a66e08ceaadb9a7a1ab3a4f3af611cd1d8cba ]
+commit ed6ed11830a9ded520db31a6e2b69b6b0a1eb0e2 upstream.
 
-Commit 6f197fb63850 ("lan743x: Added fixed link and RGMII support")
-assumes that chips with an internal PHY will never have a devicetree
-entry. This is incorrect: even for these chips, a devicetree entry
-can be useful e.g. to pass the mac address from bootloader to chip:
+Replace the literal load of the addend vector with a sequence that
+performs each add individually. This sequence is only 2 instructions
+longer than the original, and 2% faster on Cortex-A53.
 
-    &pcie {
-            status = "okay";
+This is an improvement by itself, but also works around a Clang issue,
+whose integrated assembler does not implement the GNU ARM asm syntax
+completely, and does not support the =literal notation for FP registers
+(more info at https://bugs.llvm.org/show_bug.cgi?id=38642)
 
-            host@0 {
-                    reg = <0 0 0 0 0>;
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-                    #address-cells = <3>;
-                    #size-cells = <2>;
-
-                    lan7430: ethernet@0 {
-                            /* LAN7430 with internal PHY */
-                            compatible = "microchip,lan743x";
-                            status = "okay";
-                            reg = <0 0 0 0 0>;
-                            /* filled in by bootloader */
-                            local-mac-address = [00 00 00 00 00 00];
-                    };
-            };
-    };
-
-If a devicetree entry is present, the driver will not attach the chip
-to its internal phy, and the chip will be non-operational.
-
-Fix by tweaking the phy connection algorithm:
-- first try to connect to a phy specified in the devicetree
-  (could be 'real' phy, or just a 'fixed-link')
-- if that doesn't succeed, try to connect to an internal phy, even
-  if the chip has a devnode
-
-Tested on a LAN7430 with internal PHY. I cannot test a device using
-fixed-link, as I do not have access to one.
-
-Fixes: 6f197fb63850 ("lan743x: Added fixed link and RGMII support")
-Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
-Link: https://lore.kernel.org/r/20201108171224.23829-1-TheSven73@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/microchip/lan743x_main.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/arm64/crypto/aes-modes.S |   16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index de93cc6ebc1ac..be58a941965b1 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -1027,9 +1027,9 @@ static int lan743x_phy_open(struct lan743x_adapter *adapter)
- 
- 	netdev = adapter->netdev;
- 	phynode = of_node_get(adapter->pdev->dev.of_node);
--	adapter->phy_mode = PHY_INTERFACE_MODE_GMII;
- 
- 	if (phynode) {
-+		/* try devicetree phy, or fixed link */
- 		of_get_phy_mode(phynode, &adapter->phy_mode);
- 
- 		if (of_phy_is_fixed_link(phynode)) {
-@@ -1045,13 +1045,15 @@ static int lan743x_phy_open(struct lan743x_adapter *adapter)
- 					lan743x_phy_link_status_change, 0,
- 					adapter->phy_mode);
- 		of_node_put(phynode);
--		if (!phydev)
--			goto return_error;
--	} else {
-+	}
-+
-+	if (!phydev) {
-+		/* try internal phy */
- 		phydev = phy_find_first(adapter->mdiobus);
- 		if (!phydev)
- 			goto return_error;
- 
-+		adapter->phy_mode = PHY_INTERFACE_MODE_GMII;
- 		ret = phy_connect_direct(netdev, phydev,
- 					 lan743x_phy_link_status_change,
- 					 adapter->phy_mode);
--- 
-2.27.0
-
+--- a/arch/arm64/crypto/aes-modes.S
++++ b/arch/arm64/crypto/aes-modes.S
+@@ -232,17 +232,19 @@ AES_ENTRY(aes_ctr_encrypt)
+ 	bmi		.Lctr1x
+ 	cmn		w6, #4			/* 32 bit overflow? */
+ 	bcs		.Lctr1x
+-	ldr		q8, =0x30000000200000001	/* addends 1,2,3[,0] */
+-	dup		v7.4s, w6
++	add		w7, w6, #1
+ 	mov		v0.16b, v4.16b
+-	add		v7.4s, v7.4s, v8.4s
++	add		w8, w6, #2
+ 	mov		v1.16b, v4.16b
+-	rev32		v8.16b, v7.16b
++	add		w9, w6, #3
+ 	mov		v2.16b, v4.16b
++	rev		w7, w7
+ 	mov		v3.16b, v4.16b
+-	mov		v1.s[3], v8.s[0]
+-	mov		v2.s[3], v8.s[1]
+-	mov		v3.s[3], v8.s[2]
++	rev		w8, w8
++	mov		v1.s[3], w7
++	rev		w9, w9
++	mov		v2.s[3], w8
++	mov		v3.s[3], w9
+ 	ld1		{v5.16b-v7.16b}, [x20], #48	/* get 3 input blocks */
+ 	bl		aes_encrypt_block4x
+ 	eor		v0.16b, v5.16b, v0.16b
 
 
