@@ -2,114 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EC92B5E6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A142B5E70
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgKQLcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:32:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
+        id S1728108AbgKQLdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbgKQLcy (ORCPT
+        with ESMTP id S1727759AbgKQLdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:32:54 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CD8C0613CF;
-        Tue, 17 Nov 2020 03:32:54 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id gi3so317426pjb.3;
-        Tue, 17 Nov 2020 03:32:54 -0800 (PST)
+        Tue, 17 Nov 2020 06:33:40 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C43C0613CF;
+        Tue, 17 Nov 2020 03:33:39 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id t18so10091737plo.0;
+        Tue, 17 Nov 2020 03:33:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=72x/SS97yDfmKLyCblUhiX5oYip81rPZoaO4o1zpdcE=;
-        b=QYCtPyfG2qFh0OJrrWVRwzza/HzYapdghDvIWgBjSs0tzC2P/Tjvz6lhf/Z5H8UVSK
-         TAZgqLInQcOla/xUWe6c8BCbJ5jBp2Nna9sG9Z9Oz5yHFe2yBhsJPUXqF284+pAr6ZBb
-         zEp1HcXR5ioGnQmHofxF9N00KelVB/bHkqYlZ8vMSQqKj0IwF75tUU1EK0Kb7bBKrTh0
-         KtXIkhi3h0j97ExIE2xTdjeOMbsha/AdmzMsCOVhY1dmourL2tMX/1mtqyOuarCCZdTQ
-         SEgTW0lEhMipPMZIHcWLmlWj8rW7bGvuLDqF2Nq0XRFXiOmPxto83LzA15a94H5Rr/Ov
-         r10A==
+         :cc:content-transfer-encoding;
+        bh=D+OKJ+4fv/qJ7XgTFRASaeF6lYZ3wO/Nm8qIoQpWUGs=;
+        b=dG6wD1KoAWEe9+WWXcsI+25PehGSrjHFFzj5S3wZaH30zNdkKVRXFLwrGbfaGMAu3E
+         jAgrBCHZyAzP9OM6tamN94fmEKy4gGS36RM8W/MJ6qsDhVBSL+PaHsISME+zOPXiMsQt
+         TGA/vGq0UFO7ZkFOqow3ZmPONyz3oDaeK8I3xxAz+4kbkM56fl6OVi9sD0aMP8uLZIkF
+         fd37tiKW0b34ESfeEMASp4Jfw+6oRge1TjlHqI8DEAbFuS8Ww+grGd0FVk8c7mxOXBGa
+         UxYe886Gb331ApGiXiVJRZSivmm1AfoWZ0Ub9QPUu/RvjthlUcVyli9N5i6sHlHmH94e
+         PLlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=72x/SS97yDfmKLyCblUhiX5oYip81rPZoaO4o1zpdcE=;
-        b=ome3cI8xsidUsx5gdeynFApQw5xohjgHjkICre+pII22fpJKdU7xsKVT+HRX/2KR70
-         uHDcoBsrJOIAyPEOZNzy2yEh5ns2f/OaAHFC93b6IzS84aR03enAcQu/5krVIyTz8+mC
-         kBE7AcTFll+z1DmRMTpo62XAHbhuTW7Z2g7EVgLLYTutrI5J12X5xt1L8CNlhaJOw6VV
-         vhoGUW7tvsOCNLYJ3v4nxKUtD3x9obfYl0Wzmjn8gWSfVYnEOQr6+AgByNc1tJWnBHYG
-         dYlBYvxJYrfqgrYEweRY/N2vmt4HZBg2BDuMndSZW+3BoUjQ2+Ns0IbjkMwdBTJr4aGO
-         wmlQ==
-X-Gm-Message-State: AOAM531JnT8jp/I/b0N5IvTb8yZz9AjBFVwH/RKqTj72LKlkQI1cLu75
-        KJZiddSraw20suwOxyW7RF/5n3a5q/37CeDlJKE=
-X-Google-Smtp-Source: ABdhPJwScfY/DjPQFEd2vle+6muce5HTlh4+Cd4an9aVfQxa4b0pB9vs22o3uZaRC33Ba6uDx1dzrxl4REXaI5hLfAE=
-X-Received: by 2002:a17:902:aa4b:b029:d8:f87e:1f3c with SMTP id
- c11-20020a170902aa4bb02900d8f87e1f3cmr3339205plr.23.1605612773875; Tue, 17
- Nov 2020 03:32:53 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=D+OKJ+4fv/qJ7XgTFRASaeF6lYZ3wO/Nm8qIoQpWUGs=;
+        b=l4XaGTK9+T0fMMeFpVyylI7XD4FH0uituIFT6x/tiWXvAWotfAUwmCE/sa1Po6g6IS
+         1GM/WrCr70Bv+t4YcycZquHq7waNHp6JlISfj+T5OWfywYjpzG/o42imlnEMxKUWpQ/y
+         Nd82Ye5kS1ocKMhZkvsgl0w3V1cPNfp2QKrch8iOtndIDjBenfA2GCUFXWNd3Yl0R3EO
+         kMhS5fFXS6jTfFyNYRPtnSV45UbxhbPkr13OuRoMosLwyukepxvGjBU3fp6XwgITdoDC
+         tt2P8DDfbVv6237nLM+j3mhLGrowRmpdyMtqOeSKAJa/6H7H1NA0bg77Mo6AvH61lT4/
+         w8xQ==
+X-Gm-Message-State: AOAM532iXc4EIs/soqjRNXnciS0N08+T4NqknezT+CDKapDImEqy9zXk
+        jYwQKO6adPTS/qup0AFwzXv/Uu3qPuraVUdH/lM=
+X-Google-Smtp-Source: ABdhPJxHkLW9Tae3mVz2iF/cvEv2iOo+XTBU2AKTv+V8ttoooptwYZL9ewQnyP9rBUpxiWDgvzHNDZU4kJLwQNsdPJ8=
+X-Received: by 2002:a17:90a:9f8e:: with SMTP id o14mr4019653pjp.181.1605612819486;
+ Tue, 17 Nov 2020 03:33:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201116135522.21791-1-ms@dev.tdt.de> <20201116135522.21791-6-ms@dev.tdt.de>
- <CAJht_EM-ic4-jtN7e9F6zcJgG3OTw_ePXiiH1i54M+Sc8zq6bg@mail.gmail.com> <f3ab8d522b2bcd96506352656a1ef513@dev.tdt.de>
-In-Reply-To: <f3ab8d522b2bcd96506352656a1ef513@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Tue, 17 Nov 2020 03:32:42 -0800
-Message-ID: <CAJht_EPN=hXsGLsCSxj1bB8yTYNOe=yUzwtrtnMzSybiWhL-9Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 5/6] net/lapb: support netdev events
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201112130734.331094-1-ch@denx.de> <20201112130734.331094-3-ch@denx.de>
+ <20201116144631.GB1689012@smile.fi.intel.com> <20201116163024.74c767b6@md1za8fc.ad001.siemens.net>
+ <AM0PR10MB3169089EF445E785C363A0B4E7E20@AM0PR10MB3169.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <AM0PR10MB3169089EF445E785C363A0B4E7E20@AM0PR10MB3169.EURPRD10.PROD.OUTLOOK.COM>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 17 Nov 2020 13:33:23 +0200
+Message-ID: <CAHp75Vdxj0tgn6P8Nfi5mMd=e9Q1+hzt4bquzB93zg0vOeMopw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] rtc: rx6110: add ACPI bindings to I2C
+To:     "johannes-hahn@siemens.com" <johannes-hahn@siemens.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Brown, Len" <len.brown@intel.com>
+Cc:     "val.krutov@erd.epson.com" <val.krutov@erd.epson.com>,
+        Claudius Heine <ch@denx.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "werner.zeh@siemens.com" <werner.zeh@siemens.com>,
+        "henning.schild@siemens.com" <henning.schild@siemens.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        "martin.mantel@siemens.com" <martin.mantel@siemens.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 1:53 AM Martin Schiller <ms@dev.tdt.de> wrote:
+On Tue, Nov 17, 2020 at 11:51 AM johannes-hahn@siemens.com
+<johannes-hahn@siemens.com> wrote:
 >
-> On 2020-11-16 21:16, Xie He wrote:
-> > Do you mean we will now automatically establish LAPB connections
-> > without upper layers instructing us to do so?
+> Hello Val,
 >
-> Yes, as soon as the physical link is established, the L2 and also the
-> L3 layer (restart handshake) is established.
+> my name is Johannes Hahn from Siemens AG in Germany.
+> Our product Open Controller II (OCII)[1] uses the Realtime Clock RX6110SA=
+ from SEIKO EPSON.
 
-I see. Looking at your code in Patch 1 and this patch, I see after the
-device goes up, L3 code will instruct L2 to establish the connection,
-and before the device goes down, L3 will instruct L2 to terminate the
-connection. But if there is a carrier up/down event, L2 will
-automatically handle this without being instructed by L3, and it will
-establish the connection automatically when the carrier goes up. L2
-will notify L3 on any L2 link status change.
+Nice to hear from you!
 
-Is this right? I think for a DCE, it doesn't need to initiate the L2
-connection on device-up. It just needs to wait for a connection to
-come. But L3 seems to be still instructing it to initiate the L2
-connection. This seems to be a problem.
-
-It feels unclean to me that the L2 connection will sometimes be
-initiated by L3 and sometimes by L2 itself. Can we make L2 connections
-always be initiated by L2 itself? If L3 needs to do something after L2
-links up, L2 will notify it anyway.
-
-> In this context I also noticed that I should add another patch to this
-> patch-set to correct the restart handling.
-
-Do you mean you will add code to let L3 restart any L3 connections
-previously abnormally terminated after L2 link up?
-
-> As already mentioned I have a stack of fixes and extensions lying around
-> that I would like to get upstream.
-
-Please do so! Thanks!
-
-I previously found a locking problem in X.25 code and tried to address it in:
-https://patchwork.kernel.org/project/netdevbpf/patch/20201114103625.323919-1-xie.he.0141@gmail.com/
-But later I found I needed to fix more code than I previously thought.
-Do you already have a fix for this problem?
-
-> > If that is the case, is the one-byte header for instructing the LAPB
-> > layer to connect / disconnect no longer needed?
+> Currently there is a merge request ongoing for the Linux Kernel master br=
+anch[2] which adds I=C2=B2C and ACPI support to your original driver implem=
+entation.
 >
-> The one-byte header is still needed to signal the status of the LAPB
-> connection to the upper layer.
+> Simultaneously there is an already merged patch-set for coreboot[3] avail=
+able creating the ACPI (SSDT) table entries for the RX6110SA.
+
+Thanks for pointers, I commented there. The ACPI ID change must be reverted=
+!
+
+> The OCII uses coreboot for firmware initialization.
+>
+> During the merge request the eligible objection arose that the ACPI ID us=
+ed in the Linux driver patch is not conforming the ACPI Specification.
+> Indeed it does not. But when searching for a  product identifier of RX611=
+0SA I was not able to find a sufficient one with respect to the ACPI Specif=
+ication (see [4] chapter 6.1.5 _HID (Hardware ID),[5]).
+
+Unfortunately many vendors, even being registered in the ACPI/PNP
+registry, are still neglecting the process.
+
+> According to the fact that there are other Linux RTC drivers on the Kerne=
+l mainline[6] which support ACPI matching that also do not have ACPI Specif=
+ication compatible IDs we used that as an example for our first patch attem=
+pt.
+
+I answered this in previous mail.
+
+> A PNP ID for SEIKO EPSON is already registered at UEFI database[7].
+>
+> What I kindly ask your for is an ACPI Specification conforming Product Id=
+entifier for the RX6110SA RTC ?
+> According to [5] this Product Identifier should be "... always four-chara=
+cter hexadecimal numbers (0-9 and A-F)".
+>
+> In case you do not know it our can not acquire/create one could you pleas=
+e redirect me to someone from SEIKO EPSON who can help me with that demand =
+?
+
+So, to be on the constructive page (I thought initially you are from G
+company, but anyway) you may do the following:
+
+- (for prototyping only) you may use the PRP0001 approach, described in [8]
+- you may issue an ID under your (Siemens) vendor ID
+- you may insist G company to issue the ID under their vendor space
+(thru coreboot)
+- (the best option) to communicate to Seiko Epson to get official ID
+from them for this component (and ID mustn't abuse 6.1.5)
+
+Unfortunately I have no contacts there, but I think the best effort is
+to contact their support and at the same time ask ASWG [9] how to
+proceed. I Cc'ed this to ACPI people in Linux kernel, maybe they can
+help.
+
+Of course you have choice to push bad ID forward and use precedence
+(like many other companies, even Intel in past, do with firmwares and
+Linux kernel is full of badly formed IDs), but since the change is not
+existed in read devices I would really like to see proper process to
+be followed.
+
+In the Linux kernel I'm in principle trying to prevent bad IDs from
+happening as much as I can.
+
+> [1]: (https://mall.industry.siemens.com/mall/en/WW/Catalog/Product/6ES767=
+7-2DB42-0GB0)
+> [2]: https://lkml.org/lkml/2020/11/12/561
+> [3]: https://review.coreboot.org/c/coreboot/+/47235
+> [4]: https://uefi.org/sites/default/files/resources/ACPI_6_3_final_Jan30.=
+pdf
+> [5]: https://www.uefi.org/PNP_ACPI_Registry
+> [6]: https://elixir.bootlin.com/linux/latest/source/drivers/rtc/rtc-ds130=
+7.c#L1142
+> [7]: https://www.uefi.org/PNP_ID_List?search=3DSEIKO+EPSON
+
+[8]: https://elixir.bootlin.com/linux/latest/source/Documentation/firmware-=
+guide/acpi/enumeration.rst
+[9]: https://www.uefi.org/workinggroups
+
+> > Before adding new ACPI ID, can you provide an evidence (either from
+> > vendor of the component, or a real snapshot of DSDT from device on
+> > market) that this is real ID?
+> >
+> > Before that happens, NAK.
+> >
+> > P.S. Seems to me that this is kinda cargo cult patch because proposed
+> > ID is against ACPI and PNP registry and ACPI specification.
+>
+> In fact we pushed it in coreboot and Linux at the same time.
+>
+> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Frevie=
+w.coreboot.org%2Fc%2Fcoreboot%2F%2B%2F47235&amp;data=3D04%7C01%7Cjohannes-h=
+ahn%40siemens.com%7C21c9e1fe99274df7951a08d88a448af5%7C38ae3bcd95794fd4adda=
+b42e1495d55a%7C1%7C0%7C637411374276831534%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM=
+C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=
+=3D7EVdO%2F77LNyvux0y3m9nEf2HZO%2BDm2WkWMfxzaJUoto%3D&amp;reserved=3D0
+>
+> That is the evidence. But in case this is wrong we can probably still cha=
+nge coreboot, even though the patches have been merged there already.
+>
+> Maybe you can go into detail where you see the violations and maybe even =
+suggest fixes that come to mind.
+
+--=20
+With Best Regards,
+Andy Shevchenko
