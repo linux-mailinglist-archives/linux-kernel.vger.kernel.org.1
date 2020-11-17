@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CC32B5BE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B7F2B5BE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbgKQJig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726502AbgKQJig (ORCPT
+        id S1727193AbgKQJlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:41:00 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:15068 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgKQJlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:38:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2CEC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:38:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ml+AWrO6PMqaRF0x0zELssnj5J1f5i17DJx7o/swHjw=; b=ecD4yzUIy4eHZvXRSm5fpFqGS1
-        IC1HOihF+b1EhuWTYh4ND4xzy0GC5e12hECr/FbJXKO1/UXCVRyAR2NRCH2DObzNJH+PMfi7cWdH6
-        1c5sy1x/jCrbL9VjcEt3yMdw8dAXWe5ipow4Y83SIcBwxmk+zW5IuYma241V9q9AumwfKNzII2W4L
-        TlITcNH1W/uoJ6GS3XDYMlK39cS1TiTUsAjYWQ8T5sxZx0AExhmbQEH3KhFlLkYJ8giebFH+WNSBm
-        Yo5HBq1+9JUBWlGF/bhc/5ejAQisl9GTcYDhZTE80F2RrYWJhSVQM5oQc9d69n2pWXVO1lsrae4EL
-        qNSEOHVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kexRW-00062f-Kt; Tue, 17 Nov 2020 09:38:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9AD29301959;
-        Tue, 17 Nov 2020 10:38:29 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8546C2012638E; Tue, 17 Nov 2020 10:38:29 +0100 (CET)
-Date:   Tue, 17 Nov 2020 10:38:29 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH] sched: Fix rq->nr_iowait ordering
-Message-ID: <20201117093829.GD3121429@hirez.programming.kicks-ass.net>
-References: <20201116091054.GL3371@techsingularity.net>
- <20201116131102.GA29992@willie-the-truck>
- <20201116133721.GQ3371@techsingularity.net>
- <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
- <20201116193149.GW3371@techsingularity.net>
- <20201117083016.GK3121392@hirez.programming.kicks-ass.net>
+        Tue, 17 Nov 2020 04:41:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1605606060; x=1637142060;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=Wca108g4Nk6XHkCSVKvOkGkT5Gv3I3upAbNqX3Q6J+c=;
+  b=duJqciKhr8hB+ry3uZOtEeg1nffLpHd7sP5hK0voFblPXJEZoDQs3mnZ
+   9zT5VTo5q9DJN1dUNbzESEFDDTPTlBaZhqN2dYLIl46wx6tz05hIWKe4P
+   PSGM2IMzQ/L3qn5kGu2UGRc49v1F5yCiM9fLqxsaH6z5Ali74FxKkrdFI
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.77,485,1596499200"; 
+   d="scan'208";a="94821401"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 17 Nov 2020 09:40:58 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id 13F03A1830;
+        Tue, 17 Nov 2020 09:40:55 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 17 Nov 2020 09:40:55 +0000
+Received: from 38f9d3582de7.ant.amazon.com.com (10.43.161.237) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 17 Nov 2020 09:40:51 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
+Date:   Tue, 17 Nov 2020 18:40:15 +0900
+Message-ID: <20201117094023.3685-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117083016.GK3121392@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D07UWA003.ant.amazon.com (10.43.160.35) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The SO_REUSEPORT option allows sockets to listen on the same port and to
+accept connections evenly. However, there is a defect in the current
+implementation. When a SYN packet is received, the connection is tied to a
+listening socket. Accordingly, when the listener is closed, in-flight
+requests during the three-way handshake and child sockets in the accept
+queue are dropped even if other listeners could accept such connections.
 
-And poking at this reminded me of an order email from TJ that seems to
-have stagnated.
+This situation can happen when various server management tools restart
+server (such as nginx) processes. For instance, when we change nginx
+configurations and restart it, it spins up new workers that respect the new
+configuration and closes all listeners on the old workers, resulting in
+in-flight ACK of 3WHS is responded by RST.
 
----
-Subject: sched: Fix rq->nr_iowait ordering
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Thu, 24 Sep 2020 13:50:42 +0200
+As a workaround for this issue, we can do connection draining by eBPF:
 
-  schedule()				ttwu()
-    deactivate_task();			  if (p->on_rq && ...) // false
-					    atomic_dec(&task_rq(p)->nr_iowait);
-    if (prev->in_iowait)
-      atomic_inc(&rq->nr_iowait);
+  1. Before closing a listener, stop routing SYN packets to it.
+  2. Wait enough time for requests to complete 3WHS.
+  3. Accept connections until EAGAIN, then close the listener.
 
-Allows nr_iowait to be decremented before it gets incremented,
-resulting in more dodgy IO-wait numbers than usual.
+Although this approach seems to work well, EAGAIN has nothing to do with
+how many requests are still during 3WHS. Thus, we have to know the number
+of such requests by counting SYN packets by eBPF to complete connection
+draining.
 
-Note that because we can now do ttwu_queue_wakelist() before
-p->on_cpu==0, we lose the natural ordering and have to further delay
-the decrement.
+  1. Start counting SYN packets and accept syscalls using eBPF map.
+  2. Stop routing SYN packets.
+  3. Accept connections up to the count, then close the listener.
 
-Fixes: Fixes: c6e7bd7afaeb ("sched/core: Optimize ttwu() spinning on p->on_cpu")
-Reported-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/sched/core.c |   15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+In cases that eBPF is used only for connection draining, it seems a bit
+expensive. Moreover, there is some situation that we cannot modify and
+build a server program to implement the workaround. This patchset
+introduces a new sysctl option to free userland programs from the kernel
+issue. If we enable net.ipv4.tcp_migrate_req before creating a reuseport
+group, we can redistribute requests and connections from a listener to
+others in the same reuseport group at close() or shutdown() syscalls.
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2949,7 +2949,12 @@ ttwu_do_activate(struct rq *rq, struct t
- #ifdef CONFIG_SMP
- 	if (wake_flags & WF_MIGRATED)
- 		en_flags |= ENQUEUE_MIGRATED;
-+	else
- #endif
-+	if (p->in_iowait) {
-+		delayacct_blkio_end(p);
-+		atomic_dec(&task_rq(p)->nr_iowait);
-+	}
- 
- 	activate_task(rq, p, en_flags);
- 	ttwu_do_wakeup(rq, p, wake_flags, rf);
-@@ -3336,11 +3341,6 @@ try_to_wake_up(struct task_struct *p, un
- 	if (READ_ONCE(p->on_rq) && ttwu_runnable(p, wake_flags))
- 		goto unlock;
- 
--	if (p->in_iowait) {
--		delayacct_blkio_end(p);
--		atomic_dec(&task_rq(p)->nr_iowait);
--	}
--
- #ifdef CONFIG_SMP
- 	/*
- 	 * Ensure we load p->on_cpu _after_ p->on_rq, otherwise it would be
-@@ -3411,6 +3411,11 @@ try_to_wake_up(struct task_struct *p, un
- 
- 	cpu = select_task_rq(p, p->wake_cpu, wake_flags | WF_TTWU);
- 	if (task_cpu(p) != cpu) {
-+		if (p->in_iowait) {
-+			delayacct_blkio_end(p);
-+			atomic_dec(&task_rq(p)->nr_iowait);
-+		}
-+
- 		wake_flags |= WF_MIGRATED;
- 		psi_ttwu_dequeue(p);
- 		set_task_cpu(p, cpu);
+Note that the source and destination listeners MUST have the same settings
+at the socket API level; otherwise, applications may face inconsistency and
+cause errors. In such a case, we have to use eBPF program to select a
+specific listener or to cancel migration.
+
+Kuniyuki Iwashima (8):
+  net: Introduce net.ipv4.tcp_migrate_req.
+  tcp: Keep TCP_CLOSE sockets in the reuseport group.
+  tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+  tcp: Migrate TFO requests causing RST during TCP_SYN_RECV.
+  tcp: Migrate TCP_NEW_SYN_RECV requests.
+  bpf: Add cookie in sk_reuseport_md.
+  bpf: Call bpf_run_sk_reuseport() for socket migration.
+  bpf: Test BPF_PROG_TYPE_SK_REUSEPORT for socket migration.
+
+ Documentation/networking/ip-sysctl.rst        |  15 ++
+ include/linux/bpf.h                           |   1 +
+ include/net/inet_connection_sock.h            |  13 ++
+ include/net/netns/ipv4.h                      |   1 +
+ include/net/request_sock.h                    |  13 ++
+ include/net/sock_reuseport.h                  |   8 +-
+ include/uapi/linux/bpf.h                      |   1 +
+ net/core/filter.c                             |  34 +++-
+ net/core/sock_reuseport.c                     | 110 +++++++++--
+ net/ipv4/inet_connection_sock.c               |  84 ++++++++-
+ net/ipv4/inet_hashtables.c                    |   9 +-
+ net/ipv4/sysctl_net_ipv4.c                    |   9 +
+ net/ipv4/tcp_ipv4.c                           |   9 +-
+ net/ipv6/tcp_ipv6.c                           |   9 +-
+ tools/include/uapi/linux/bpf.h                |   1 +
+ .../bpf/prog_tests/migrate_reuseport.c        | 175 ++++++++++++++++++
+ .../bpf/progs/test_migrate_reuseport_kern.c   |  53 ++++++
+ 17 files changed, 511 insertions(+), 34 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport_kern.c
+
+-- 
+2.17.2 (Apple Git-113)
+
