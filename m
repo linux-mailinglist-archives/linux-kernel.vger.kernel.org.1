@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A31B2B6102
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECA72B6055
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730122AbgKQNPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:15:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46002 "EHLO mail.kernel.org"
+        id S1729250AbgKQNIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:08:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730092AbgKQNOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:14:50 -0500
+        id S1729236AbgKQNIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:08:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6ADE0221EB;
-        Tue, 17 Nov 2020 13:14:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 330BA2225B;
+        Tue, 17 Nov 2020 13:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618890;
-        bh=mNAqbVfwzxwVLv5OJIEvWkdLx1W/tYkfvph6WE9topQ=;
+        s=default; t=1605618487;
+        bh=cBaCki1wSPt+czcXSB+QD0oaExPggu2lSlynJL3wzKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uQ2euSvUhlpXTnyU0ZBTLRVYNo2vvA2mhcTtQnaCIG8OzYGtICxd2/BtjGL6RPFUd
-         YRt2QHGjEYWB5YExC148WlXbmj7MIC2oL6a1XShx3TCFfxiumYUZx8DphDI/hNJ9Zb
-         1fstqN5claoNmKzOR/89PKayHAwAiGTtdp3LZ0Os=
+        b=GMkPwYYLSZtIvHMNMNsj1Xo7NxYrRkH3cf8N8yUZSpp+6LlvcXQlr9gqX1om+yP44
+         XDJePKLBoT0sgaKrZ2NwnMvIxd+6NJy9m7Sqv5aNtwfsmX0lBcu84utGD3lsP9UlVi
+         Rcz9Otz7b7P30wd2r0BVEZgKyKsOB6ONqobOsunw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 43/85] perf: Fix get_recursion_context()
+        Julien Grall <julien@xen.org>, Juergen Gross <jgross@suse.com>,
+        Julien Grall <jgrall@amazon.com>, Wei Liu <wl@xen.org>
+Subject: [PATCH 4.4 49/64] xen/events: add a proper barrier to 2-level uevent unmasking
 Date:   Tue, 17 Nov 2020 14:05:12 +0100
-Message-Id: <20201117122113.128571478@linuxfoundation.org>
+Message-Id: <20201117122108.587012647@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit ce0f17fc93f63ee91428af10b7b2ddef38cd19e5 ]
+commit 4d3fe31bd993ef504350989786858aefdb877daa upstream.
 
-One should use in_serving_softirq() to detect SoftIRQ context.
+A follow-up patch will require certain write to happen before an event
+channel is unmasked.
 
-Fixes: 96f6d4444302 ("perf_counter: avoid recursion")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201030151955.120572175@infradead.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+While the memory barrier is not strictly necessary for all the callers,
+the main one will need it. In order to avoid an extra memory barrier
+when using fifo event channels, mandate evtchn_unmask() to provide
+write ordering.
+
+The 2-level event handling unmask operation is missing an appropriate
+barrier, so add it. Fifo event channels are fine in this regard due to
+using sync_cmpxchg().
+
+This is part of XSA-332.
+
+Cc: stable@vger.kernel.org
+Suggested-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Julien Grall <jgrall@amazon.com>
+Reviewed-by: Wei Liu <wl@xen.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/events/internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/xen/events/events_2l.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/events/internal.h b/kernel/events/internal.h
-index 09b1537ae06cd..41317d04eeae2 100644
---- a/kernel/events/internal.h
-+++ b/kernel/events/internal.h
-@@ -213,7 +213,7 @@ static inline int get_recursion_context(int *recursion)
- 		rctx = 3;
- 	else if (in_irq())
- 		rctx = 2;
--	else if (in_softirq())
-+	else if (in_serving_softirq())
- 		rctx = 1;
- 	else
- 		rctx = 0;
--- 
-2.27.0
-
+--- a/drivers/xen/events/events_2l.c
++++ b/drivers/xen/events/events_2l.c
+@@ -90,6 +90,8 @@ static void evtchn_2l_unmask(unsigned po
+ 
+ 	BUG_ON(!irqs_disabled());
+ 
++	smp_wmb();	/* All writes before unmask must be visible. */
++
+ 	if (unlikely((cpu != cpu_from_evtchn(port))))
+ 		do_hypercall = 1;
+ 	else {
 
 
