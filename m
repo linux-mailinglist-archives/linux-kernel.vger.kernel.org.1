@@ -2,325 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302E52B69F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431102B69F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgKQQUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:20:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbgKQQUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:20:54 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66FBB20897;
-        Tue, 17 Nov 2020 16:20:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605630053;
-        bh=MCkCxtjdbXKmVpa3Mq70glLWA1y8JLZlnyO9D3o2IgA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yb3ZA2CLEaok577R8FHM+XIzGmMd4/KE5NrUKEcs9AV9sA4E8X39Scv6wsGRepw4Z
-         Sw1Vll8iJwzvhgA4/17WXDp2f1OB2y90zkyKAZSOxbGHIc+V//K+iVnQz7rExESt5O
-         xTjhJ55H3yLa/ib6TnfoqApLg/7aaoOgkFRATIZk=
-Date:   Tue, 17 Nov 2020 17:21:40 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@huawei.com,
-        arnd@arndb.de, robh@kernel.org
-Subject: Re: [PATCH v3] firmware: arm_scmi: Add SCMI System Power Control
- driver
-Message-ID: <X7P4lA1nITo58eFT@kroah.com>
-References: <20201117155725.13502-1-cristian.marussi@arm.com>
+        id S1727861AbgKQQW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:22:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727235AbgKQQW1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:22:27 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC5BC0613CF;
+        Tue, 17 Nov 2020 08:22:27 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id v143so20944512qkb.2;
+        Tue, 17 Nov 2020 08:22:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9JS/uYKk8GrJCTbc2FAe05O+XJ9e/pB4+Xwp7tXwPZ0=;
+        b=aJlDOBsATEWSe1rlycoHMeV4ei94yuVwrrm65Xysp4oVHYz7irZb27aTwZ7IgeMrMO
+         rwVNaVpE25sjKuSTnOO7NmkzBWOBSTx4fb3R/DCWK4SogrXa2AC7enZkjLsyuNjXxuvM
+         NTnekDgslWYIalrCbTxJ86SdaNtQP3cHwjrypdeVUFonoFUCuScqV6kG/ZkGwOFtl6yH
+         GGnqDGXXV/Rp0vgelpRy+c9ngWmBiSSV1q/ABKAKx6pMiIrVNRaIq9LBAGHm9r1XHYPX
+         JJd8Mz5c3TX5hRrGoRqUPlThTtb3gM5hidlGyqicc9LqyBTLzcNk5GjMNiGQAYvcDs09
+         OmmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9JS/uYKk8GrJCTbc2FAe05O+XJ9e/pB4+Xwp7tXwPZ0=;
+        b=jIWr4prY5Tkb16Q2zqWthSJ1cFELIbXYuBlUBYbfALNAxmVEvM7X04EGUW1ltfLR71
+         NV6SzL+TFLhBAvy/OTs9fA19gkrM5d7bvf/VdMnj7i9dilIHscOoGhI1Z1MeAOGFjGQ3
+         Og54KMZFxkGriMBdgcdk4R3B+ZhjDApgqvrG9PVnkXglMDInXH2IbThSGT+1NCDn4Y7l
+         BopOjqFZ+hvyaaGSCL4gNDX33wPa8TvJxTK7WLHCDnGYW7ICdxiEIydbxk8USia3hkIk
+         5RT1D2r1jQ9kKTEIpnJEYdY97stxMuew5Au6k5/9qcyCyZcLZH5s0t3CaFtJYtwebaiD
+         W0iQ==
+X-Gm-Message-State: AOAM533eyOx2KFvZTNATDVjb4ryKQ6CHz3p058VmFiUk3ZPZHFbP/dH/
+        ztksbbhm86edvlPvKV14DzOkKfC8ZMdCyQ==
+X-Google-Smtp-Source: ABdhPJxFV05KKJ6XDlOOAOJnsbl9Wf8WKTjRzQrKCSJ0EvUBlKv7/HeKNXgdCIuMoNy2WooiBd+UYw==
+X-Received: by 2002:a37:8542:: with SMTP id h63mr366329qkd.102.1605630146479;
+        Tue, 17 Nov 2020 08:22:26 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id v16sm15074576qka.72.2020.11.17.08.22.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 08:22:25 -0800 (PST)
+Date:   Tue, 17 Nov 2020 09:22:23 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Kees Cook <keescook@chromium.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 1/2] kbuild: Hoist '--orphan-handling' into Kconfig
+Message-ID: <20201117162223.GA1428250@ubuntu-m3-large-x86>
+References: <20201113195553.1487659-1-natechancellor@gmail.com>
+ <87tuto2qke.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117155725.13502-1-cristian.marussi@arm.com>
+In-Reply-To: <87tuto2qke.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 03:57:25PM +0000, Cristian Marussi wrote:
-> +/**
-> + * scmi_request_timeout  - On timeout trigger a forceful transition
-> + * @t: The timer reference
-> + *
-> + * Actual work is deferred out of the timer IRQ context since shutdown/reboot
-> + * code do not play well when !in_task().
-> + */
-> +static void scmi_request_timeout(struct timer_list *t)
-> +{
-> +	struct scmi_syspower_config *conf = from_timer(conf, t, request_timer);
-> +
-> +	dev_warn(conf->dev,
-> +		 "SCMI Graceful System Transition request timed out !\n");
+On Tue, Nov 17, 2020 at 10:03:29PM +1100, Michael Ellerman wrote:
+> Nathan Chancellor <natechancellor@gmail.com> writes:
+> > Currently, '--orphan-handling=warn' is spread out across four different
+> > architectures in their respective Makefiles, which makes it a little
+> > unruly to deal with in case it needs to be disabled for a specific
+> > linker version (in this case, ld.lld 10.0.1).
+> >
+> > To make it easier to control this, hoist this warning into Kconfig and
+> > the main Makefile so that disabling it is simpler, as the warning will
+> > only be enabled in a couple places (main Makefile and a couple of
+> > compressed boot folders that blow away LDFLAGS_vmlinx) and making it
+> > conditional is easier due to Kconfig syntax. One small additional
+> > benefit of this is saving a call to ld-option on incremental builds
+> > because we will have already evaluated it for CONFIG_LD_ORPHAN_WARN.
+> >
+> > To keep the list of supported architectures the same, introduce
+> > CONFIG_ARCH_WANT_LD_ORPHAN_WARN, which an architecture can select to
+> > gain this automatically after all of the sections are specified and size
+> > asserted. A special thanks to Kees Cook for the help text on this
+> > config.
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1187
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> > ---
+> >  Makefile                          | 6 ++++++
+> >  arch/Kconfig                      | 9 +++++++++
+> >  arch/arm/Kconfig                  | 1 +
+> >  arch/arm/Makefile                 | 4 ----
+> >  arch/arm/boot/compressed/Makefile | 4 +++-
+> >  arch/arm64/Kconfig                | 1 +
+> >  arch/arm64/Makefile               | 4 ----
+> >  arch/powerpc/Kconfig              | 1 +
+> >  arch/powerpc/Makefile             | 1 -
+> 
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> 
+> 
+> >  arch/x86/Kconfig                  | 1 +
+> >  arch/x86/Makefile                 | 3 ---
+> >  arch/x86/boot/compressed/Makefile | 4 +++-
+> >  init/Kconfig                      | 3 +++
+> >  13 files changed, 28 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 008aba5f1a20..c443afd61886 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -984,6 +984,12 @@ ifeq ($(CONFIG_RELR),y)
+> >  LDFLAGS_vmlinux	+= --pack-dyn-relocs=relr
+> >  endif
+> >  
+> > +# We never want expected sections to be placed heuristically by the
+> > +# linker. All sections should be explicitly named in the linker script.
+> > +ifeq ($(CONFIG_LD_ORPHAN_WARN),y)
+> > +LDFLAGS_vmlinux += --orphan-handling=warn
+> > +endif
+> 
+> This is a nit, but you can use ifdef with bool CONFIG symbols in
+> Makefiles, which reads a bit nicer, eg:
+> 
+> ifdef CONFIG_LD_ORPHAN_WARN
+> LDFLAGS_vmlinux += --orphan-handling=warn
+> endif
 
-Don't be noisy please, what can a user do about this?
+That is indeed cleaner, I did not realize I could do that as long as the
+config was a boolean. I will use that in v2, which I will send along
+within the next few days to give Masahiro some time to comment.
 
-
-> +	atomic_set(&conf->status, SCMI_SYSPOWER_FORCING);
-> +	/* Ensure atomic values are updated */
-> +	smp_mb__after_atomic();
-> +	schedule_work(&conf->forceful_work);
-
-Um, what is that smp_mb__after_atomic() and the whole mess here for?
-
-What exactly are you thinking this whole mess is needed for, and how is
-it working and why not just use a simple lock that handles everything
-instead?
-
-> +}
-> +
-> +/**
-> + * scmi_reboot_notifier  - A reboot_notifier to catch an ongoing successful
-> + * system transition
-> + * @nb: Reference to the related notifier block
-> + * @reason: The reason for the ongoing reboot
-> + * @__unused: The cmd being executed on a restart request (unused)
-> + *
-> + * When an ongoing system transition is detected, compatible with the requested
-> + * one, cancel the timer work.
-> + *
-> + * Return: NOTIFY_OK in any case
-> + */
-> +static int scmi_reboot_notifier(struct notifier_block *nb,
-> +				unsigned long reason, void *__unused)
-> +{
-> +	struct scmi_syspower_config *conf;
-> +
-> +	conf = container_of(nb, struct scmi_syspower_config, reboot_nb);
-> +
-> +	/* Ensure atomic values are updated */
-> +	smp_mb__before_atomic();
-
-What?
-
-> +	if (unlikely(atomic_read(&conf->status) == SCMI_SYSPOWER_FORCING))
-> +		return NOTIFY_OK;
-
-Unless you can benchmark the benifit of using likely/unlikely, do not
-use it, as the compiler/CPU will do it better for you.
-
-> +
-> +	switch (reason) {
-> +	case SYS_HALT:
-> +	case SYS_POWER_OFF:
-> +		if (conf->required_state == SCMI_SYSTEM_SHUTDOWN)
-> +			atomic_set(&conf->status, SCMI_SYSPOWER_INPROGRESS);
-
-Why are you trying to use an atomic variable for a state machine?  Why
-not a simple enum and a lock?
-
-> +		break;
-> +	case SYS_RESTART:
-> +		if (conf->required_state == SCMI_SYSTEM_COLDRESET ||
-> +		    conf->required_state == SCMI_SYSTEM_WARMRESET)
-> +			atomic_set(&conf->status, SCMI_SYSPOWER_INPROGRESS);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	/* Ensure atomic values are updated */
-> +	smp_mb__after_atomic();
-> +	if (atomic_read(&conf->status) == SCMI_SYSPOWER_INPROGRESS) {
-> +		dev_info(conf->dev,
-> +			 "SCMI System State request in progress...\n");
-> +		del_timer_sync(&conf->request_timer);
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static inline void scmi_send_cad_signal(struct device *dev, unsigned int sig)
-> +{
-> +	dev_info(dev, "SCMI Sending signal %d to CAD pid\n", sig);
-
-When drivers work properly, they are quiet, don't be noisy.
-
-You do that in many other places in this codebase, just remove them all,
-or make them dev_dbg() if you really want to see them in the future.
-
-> +
-> +	kill_cad_pid(sig, 1);
-> +}
-> +
-> +/**
-> + * scmi_request_graceful_transition  - Request graceful SystemPower transition
-> + * @conf: The current SystemPower configuration descriptor
-> + *
-> + * Initiates the required SystemPower transition, requesting userspace
-> + * co-operation using the same orderly_ methods used by ACPI Shutdown event
-> + * processing.
-> + *
-> + * This takes care also to register a reboot notifier and a timer callback in
-> + * order to detect if userspace actions are taking too long; in such a case
-> + * the timeout callback will finally perform a forceful transition, ignoring
-> + * lagging userspace: the aim here is to at least perform an emergency_sync()
-> + * and a clean shutdown or reboot transition when userspace is late, avoiding
-> + * the brutal final power-cut from platform.
-> + */
-> +static void scmi_request_graceful_transition(struct scmi_syspower_config *conf)
-> +{
-> +	int ret;
-> +	u32 status;
-> +
-> +	if (conf->required_state >= SCMI_SYSTEM_POWERUP) {
-> +		dev_warn(conf->dev,
-> +			 "Received unexpected SYSTEM POWER request: %d\n",
-> +			 conf->required_state);
-> +		return;
-> +	}
-> +
-> +	status = atomic_cmpxchg(&conf->status, SCMI_SYSPOWER_IDLE,
-> +				SCMI_SYSPOWER_SERVED);
-> +	if (status != SCMI_SYSPOWER_IDLE)
-> +		return;
-> +
-> +	ret = devm_register_reboot_notifier(conf->dev, &conf->reboot_nb);
-> +	if (ret)
-> +		dev_warn(conf->dev, "Cannot register reboot notifier !\n");
-
-And you keep going?  Why?
-
-> +
-> +	INIT_WORK(&conf->forceful_work, scmi_forceful_work_func);
-> +	conf->request_timer.expires = jiffies +
-> +				msecs_to_jiffies(scmi_graceful_request_tmo_ms);
-> +	timer_setup(&conf->request_timer, scmi_request_timeout, 0);
-> +	add_timer(&conf->request_timer);
-> +
-> +	dev_info(conf->dev,
-> +		 "Serving SCMI Graceful request: %d (timeout_ms:%d)\n",
-> +		 conf->required_state, scmi_graceful_request_tmo_ms);
-
-Again, be quiet.
-
-> +
-> +	switch (conf->required_state) {
-> +	case SCMI_SYSTEM_SHUTDOWN:
-> +		/*
-> +		 * When received early at boot-time the 'orderly' part will
-> +		 * fail due to the lack of userspace itself, but the force=true
-> +		 * argument will anyway be able trigger a successful forced
-> +		 * shutdown.
-> +		 */
-> +		if (!scmi_graceful_poweroff_signum)
-> +			orderly_poweroff(true);
-> +		else
-> +			scmi_send_cad_signal(conf->dev,
-> +					     scmi_graceful_poweroff_signum);
-> +		break;
-> +	case SCMI_SYSTEM_COLDRESET:
-> +	case SCMI_SYSTEM_WARMRESET:
-> +		if (!scmi_graceful_reboot_signum)
-> +			orderly_reboot();
-> +		else
-> +			scmi_send_cad_signal(conf->dev,
-> +					     scmi_graceful_reboot_signum);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +}
-> +
-> +static void scmi_request_forceful_transition(struct scmi_syspower_config *conf)
-> +{
-> +	/* Ensure atomic values are updated */
-> +	smp_mb__before_atomic();
-> +	if (unlikely(atomic_read(&conf->status) == SCMI_SYSPOWER_INPROGRESS))
-> +		return;
-> +
-> +	dev_info(conf->dev, "Serving SCMI FORCEFUL SystemPower request:%d\n",
-> +		 conf->required_state);
-
-{ssshhh}
-
-> +
-> +	emergency_sync();
-> +	switch (conf->required_state) {
-> +	case SCMI_SYSTEM_SHUTDOWN:
-> +		kernel_power_off();
-> +		break;
-> +	case SCMI_SYSTEM_COLDRESET:
-> +	case SCMI_SYSTEM_WARMRESET:
-> +		kernel_restart(NULL);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +}
-> +
-> +#define SCMI_IS_REQUEST_GRACEFUL(flags)		((flags) & BIT(0))
-> +
-> +/**
-> + * scmi_userspace_notifier  - Notifier callback to act on SystemPower
-> + * Notifications
-> + * @nb: Reference to the related notifier block
-> + * @event: The SystemPower notification event id
-> + * @data: The SystemPower event report
-> + *
-> + * This callback is in charge of decoding the received SystemPower report
-> + * and act accordingly triggering a graceful or forceful system transition.
-> + *
-> + * Return: NOTIFY_OK in any case
-> + */
-> +static int scmi_userspace_notifier(struct notifier_block *nb,
-> +				   unsigned long event, void *data)
-> +{
-> +	struct scmi_system_power_state_notifier_report *er = data;
-> +	struct scmi_syspower_config *conf;
-> +
-> +	if (unlikely(system_state > SYSTEM_RUNNING))
-> +		return NOTIFY_OK;
-
-no unlikely please.
-
-
-
-> +
-> +	conf = container_of(nb, struct scmi_syspower_config, userspace_nb);
-> +	conf->required_state = er->system_state;
-> +
-> +	if (conf->required_state >= SCMI_SYSTEM_MAX)
-> +		return NOTIFY_OK;
-> +
-> +	if (SCMI_IS_REQUEST_GRACEFUL(er->flags))
-> +		conf->request_graceful_transition(conf);
-> +	else
-> +		conf->request_forceful_transition(conf);
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +/**
-> + * scmi_syspower_configure  - General SystemPower configuration init
-> + * @dev: The associated struct device
-> + *
-> + * Return: SystemPower configuration descriptor on Success, NULL otherwise
-> + */
-> +static void *scmi_syspower_configure(struct device *dev)
-> +{
-> +	struct scmi_syspower_config *conf;
-> +
-> +	conf = devm_kzalloc(dev, sizeof(*conf), GFP_KERNEL);
-> +	if (!conf)
-> +		return NULL;
-> +
-> +	conf->dev = dev;
-> +	conf->required_state = SCMI_SYSTEM_MAX;
-> +	conf->request_graceful_transition = &scmi_request_graceful_transition;
-> +	conf->request_forceful_transition = &scmi_request_forceful_transition;
-> +	conf->userspace_nb.notifier_call = &scmi_userspace_notifier;
-> +	conf->reboot_nb.notifier_call = &scmi_reboot_notifier;
-> +	atomic_set(&conf->status, SCMI_SYSPOWER_IDLE);
-> +	/* Ensure atomic values are updated */
-> +	smp_mb__after_atomic();
-
-Why is this needed?
-
-thanks,
-
-greg k-h
+Cheers,
+Nathan
