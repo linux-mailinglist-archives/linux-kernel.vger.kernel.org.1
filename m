@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181862B622B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38242B612B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731405AbgKQN0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:26:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33290 "EHLO mail.kernel.org"
+        id S1729910AbgKQNQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:16:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731387AbgKQNZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:25:56 -0500
+        id S1730283AbgKQNQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:16:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4175620781;
-        Tue, 17 Nov 2020 13:25:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0FB5241A5;
+        Tue, 17 Nov 2020 13:16:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619556;
-        bh=CL50JTFToMBcWaIah6Cys4v0LlMFDyVrk5riRWy67pc=;
+        s=default; t=1605618972;
+        bh=m0KHRErsmLzLZOReWx04lHpUuScteSZcRZOFLi/rD30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eds5FCv3S3r0j5FQv3Sdt2x+cY7xMsQkjibmbPRC4YgT88km3Lgf1snBK2aMeYiE3
-         j7NH93nyW7ZZqDVEU6+/lHjKQ8J+929b1liGU6FGqk6WJ1qSwFLsFnB/Aq8VIKLItU
-         pj6xI7tr0e1NuTyQMogmMd2j77bJ7KCw6QTiStxo=
+        b=rweP9sxoLnGsoULJBeoeXUOZiZ8b8szsKGSV6P/+eNkk23RIrqtkfVr4L0Ig4iefX
+         QZ245YVPcKzKbx78BgS8PvS8wor7Xbm+JGVI7lx6EltQVdBWwrjASa41TVqGodw9+J
+         +f+OSeEp+Mo7vJv67ZbwazUw8r9IReVFEFLLay/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Veerabadhran Gopalakrishnan <veerabadhran.gopalakrishnan@amd.com>,
-        Leo Liu <leo.liu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 079/151] amd/amdgpu: Disable VCN DPG mode for Picasso
+Subject: [PATCH 4.14 40/85] xfs: fix a missing unlock on error in xfs_fs_map_blocks
 Date:   Tue, 17 Nov 2020 14:05:09 +0100
-Message-Id: <20201117122125.265361519@linuxfoundation.org>
+Message-Id: <20201117122112.988739666@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Veerabadhran Gopalakrishnan <veerabadhran.gopalakrishnan@amd.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit c6d2b0fbb893d5c7dda405aa0e7bcbecf1c75f98 ]
+[ Upstream commit 2bd3fa793aaa7e98b74e3653fdcc72fa753913b5 ]
 
-Concurrent operation of VCN and JPEG decoder in DPG mode is
-causing ring timeout due to power state.
+We also need to drop the iolock when invalidate_inode_pages2 fails, not
+only on all other error or successful cases.
 
-Signed-off-by: Veerabadhran Gopalakrishnan <veerabadhran.gopalakrishnan@amd.com>
-Reviewed-by: Leo Liu <leo.liu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 527851124d10 ("xfs: implement pNFS export operations")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/soc15.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/xfs/xfs_pnfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.c b/drivers/gpu/drm/amd/amdgpu/soc15.c
-index c086262cc181d..317aa257c06bb 100644
---- a/drivers/gpu/drm/amd/amdgpu/soc15.c
-+++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
-@@ -1144,8 +1144,7 @@ static int soc15_common_early_init(void *handle)
+diff --git a/fs/xfs/xfs_pnfs.c b/fs/xfs/xfs_pnfs.c
+index aa6c5c193f458..8538916d255ea 100644
+--- a/fs/xfs/xfs_pnfs.c
++++ b/fs/xfs/xfs_pnfs.c
+@@ -140,7 +140,7 @@ xfs_fs_map_blocks(
+ 		goto out_unlock;
+ 	error = invalidate_inode_pages2(inode->i_mapping);
+ 	if (WARN_ON_ONCE(error))
+-		return error;
++		goto out_unlock;
  
- 			adev->pg_flags = AMD_PG_SUPPORT_SDMA |
- 				AMD_PG_SUPPORT_MMHUB |
--				AMD_PG_SUPPORT_VCN |
--				AMD_PG_SUPPORT_VCN_DPG;
-+				AMD_PG_SUPPORT_VCN;
- 		} else {
- 			adev->cg_flags = AMD_CG_SUPPORT_GFX_MGCG |
- 				AMD_CG_SUPPORT_GFX_MGLS |
+ 	end_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)offset + length);
+ 	offset_fsb = XFS_B_TO_FSBT(mp, offset);
 -- 
 2.27.0
 
