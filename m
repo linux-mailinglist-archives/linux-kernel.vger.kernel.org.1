@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E362B63A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117332B63A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732814AbgKQNj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:39:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51762 "EHLO mail.kernel.org"
+        id S1732825AbgKQNkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:40:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732776AbgKQNjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:39:51 -0500
+        id S1732798AbgKQNjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:39:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 871B620870;
-        Tue, 17 Nov 2020 13:39:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60BE4207BC;
+        Tue, 17 Nov 2020 13:39:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620391;
-        bh=HswQOayRJA3M7pC77Ok4nA9JGibXpiliqFLdEbe2UjQ=;
+        s=default; t=1605620394;
+        bh=d8nCTxOSf7imVAKInrzj6zYbrEaG60l1D7WJ1t2ivz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BBIT95XchfARYyS3SYEK9uqUDwElNv23gRHpceSB3+2wo8NKCEkniR9jesoIyUbU3
-         naitKVahB3BwLYLsK9VWrx6GlScBWRuyG2tRzYxpUVeE1Q074p7TFC/dST8DOZDjFZ
-         hAW5fe5ZK0pygpxLJpj2qGSdIq3pskuR7nj+7i+E=
+        b=hP+cBQAMwh3WQQ0tTzuGN91DT37mGZaTe3dxWUDLcNPZ0OMoct2Myivt9EYCFo+Ad
+         5rkGsAW7Jbop400g6AIkkNApXFbGsqPxwRpxCh4ZRWTC3D9byY4tFL4nLmlVTRIUes
+         gJc+iy0Rjr5ckxhbCBSvbx0k6JEe/HxuS6OXJLFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>
-Subject: [PATCH 5.9 203/255] xhci: hisilicon: fix refercence leak in xhci_histb_probe
-Date:   Tue, 17 Nov 2020 14:05:43 +0100
-Message-Id: <20201117122148.811471287@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH 5.9 204/255] virtio: virtio_console: fix DMA memory allocation for rproc serial
+Date:   Tue, 17 Nov 2020 14:05:44 +0100
+Message-Id: <20201117122148.860766291@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -41,40 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Alexander Lobakin <alobakin@pm.me>
 
-commit 76255470ffa2795a44032e8b3c1ced11d81aa2db upstream.
+commit 9d516aa82b7d4fbe7f6303348697960ba03a530b upstream.
 
-pm_runtime_get_sync() will increment pm usage at first and it
-will resume the device later. We should decrease the usage count
-whetever it succeeded or failed(maybe runtime of the device has
-error, or device is in inaccessible state, or other error state).
-If we do not call put operation to decrease the reference, it will
-result in reference leak in xhci_histb_probe. Moreover, this
-device cannot enter the idle state and always stay busy or other
-non-idle state later. So we fixed it by jumping to error handling
-branch.
+Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
+specific dma memory pool"), every remoteproc has a DMA subdevice
+("remoteprocX#vdevYbuffer") for each virtio device, which inherits
+DMA capabilities from the corresponding platform device. This allowed
+to associate different DMA pools with each vdev, and required from
+virtio drivers to perform DMA operations with the parent device
+(vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
 
-Fixes: c508f41da0788 ("xhci: hisilicon: support HiSilicon STB xHCI host controller")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201106122221.2304528-1-zhangqilong3@huawei.com
-Cc: stable <stable@vger.kernel.org>
+virtio_rpmsg_bus was already changed in the same merge cycle with
+commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
+but virtio_console did not. In fact, operations using the grandparent
+worked fine while the grandparent was the platform device, but since
+commit c774ad010873 ("remoteproc: Fix and restore the parenting
+hierarchy for vdev") this was changed, and now the grandparent device
+is the remoteproc device without any DMA capabilities.
+So, starting v5.8-rc1 the following warning is observed:
+
+[    2.483925] ------------[ cut here ]------------
+[    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
+[    2.489152] Modules linked in: virtio_console(+)
+[    2.503737]  virtio_rpmsg_bus rpmsg_core
+[    2.508903]
+[    2.528898] <Other modules, stack and call trace here>
+[    2.913043]
+[    2.914907] ---[ end trace 93ac8746beab612c ]---
+[    2.920102] virtio-ports vport1p0: Error allocating inbufs
+
+kernel/dma/mapping.c:427 is:
+
+WARN_ON_ONCE(!dev->coherent_dma_mask);
+
+obviously because the grandparent now is remoteproc dev without any
+DMA caps:
+
+[    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
+
+Fix this the same way as it was for virtio_rpmsg_bus, using just the
+parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
+operations.
+This also allows now to reserve DMA pools/buffers for rproc serial
+via Device Tree.
+
+Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
+Cc: stable@vger.kernel.org # 5.1+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Date: Thu, 5 Nov 2020 11:10:24 +0800
+Link: https://lore.kernel.org/r/AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci-histb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/virtio_console.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/host/xhci-histb.c
-+++ b/drivers/usb/host/xhci-histb.c
-@@ -240,7 +240,7 @@ static int xhci_histb_probe(struct platf
- 	/* Initialize dma_mask and coherent_dma_mask to 32-bits */
- 	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
- 	if (ret)
--		return ret;
-+		goto disable_pm;
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(str
+ 		/*
+ 		 * Allocate DMA memory from ancestor. When a virtio
+ 		 * device is created by remoteproc, the DMA memory is
+-		 * associated with the grandparent device:
+-		 * vdev => rproc => platform-dev.
++		 * associated with the parent device:
++		 * virtioY => remoteprocX#vdevYbuffer.
+ 		 */
+-		if (!vdev->dev.parent || !vdev->dev.parent->parent)
++		buf->dev = vdev->dev.parent;
++		if (!buf->dev)
+ 			goto free_buf;
+-		buf->dev = vdev->dev.parent->parent;
  
- 	hcd = usb_create_hcd(driver, dev, dev_name(dev));
- 	if (!hcd) {
+ 		/* Increase device refcnt to avoid freeing it */
+ 		get_device(buf->dev);
 
 
