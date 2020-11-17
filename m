@@ -2,615 +2,625 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546762B7157
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEC02B7159
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgKQWQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:16:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43608 "EHLO mx2.suse.de"
+        id S1728650AbgKQWQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:16:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726182AbgKQWQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:16:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 04B56ABD1;
-        Tue, 17 Nov 2020 22:16:17 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     "tj@kernel.org" <tj@kernel.org>,
-        Trond Myklebust <trondmy@hammerspace.com>
-Date:   Wed, 18 Nov 2020 09:16:09 +1100
-Cc:     "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-        "mhocko@suse.com" <mhocko@suse.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rfc] workqueue: honour cond_resched() more effectively.
-In-Reply-To: <20201109161007.GF7496@mtj.duckdns.org>
-References: <87v9efp7cs.fsf@notabene.neil.brown.name>
- <20201109080038.GY2594@hirez.programming.kicks-ass.net>
- <aec65c71c09e803285688d5974193a98b4422428.camel@hammerspace.com>
- <20201109140141.GE7496@mtj.duckdns.org>
- <d2c79d91e29134ef6184138de5fc856ca530d2a5.camel@hammerspace.com>
- <20201109161007.GF7496@mtj.duckdns.org>
-Message-ID: <87o8jvocie.fsf@notabene.neil.brown.name>
+        id S1728498AbgKQWQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:16:34 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F50A2151B;
+        Tue, 17 Nov 2020 22:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605651392;
+        bh=5Y/LmqnyNxY21CT3vAT+AlmdsPrhOUNeVh+1x+q3Z8A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VHQkI2Dr5d+qfRWnkD5hbJwCqfDPKe9M8NJcCWAUhondk8kDuCgklvdb5tCIIPfXt
+         9xvknpF2J+8SOg9zsctEqAkEvEXi4j9OjzygIgxeF8eHAS55sgLh4svY+boHF06WBT
+         5G2PvGQuntFXo2I2jagu4U83mbYGcGsWdh4MrygE=
+Date:   Tue, 17 Nov 2020 16:16:29 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Subject: Re: [PATCH 2/3] Revert "lib: Revert use of fallthrough
+ pseudo-keyword in lib/"
+Message-ID: <20201117221629.GA4679@embeddedor>
+References: <20201116043532.4032932-1-ndesaulniers@google.com>
+ <20201116043532.4032932-3-ndesaulniers@google.com>
+ <20201117030214.GB1340689@ubuntu-m3-large-x86>
+ <CAKwvOdk_sphJGQarEWJLzGZWkdzO9dqmcRmys3Retw3vn2Fwag@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdk_sphJGQarEWJLzGZWkdzO9dqmcRmys3Retw3vn2Fwag@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 17, 2020 at 11:10:26AM -0800, Nick Desaulniers wrote:
+> On Mon, Nov 16, 2020 at 7:02 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > On Sun, Nov 15, 2020 at 08:35:31PM -0800, Nick Desaulniers wrote:
+> > > This reverts commit 6a9dc5fd6170 ("lib: Revert use of fallthrough
+> > > pseudo-keyword in lib/")
+> 
+> Gustavo, whose tree did 6a9dc5fd6170 and df561f6688fe go up to
 
-On Mon, Nov 09 2020, tj@kernel.org wrote:
+Mine.
 
-> Hello,
->
-> On Mon, Nov 09, 2020 at 02:11:42PM +0000, Trond Myklebust wrote:
->> That means changing all filesystem code to use cpu-intensive queues. As
->> far as I can tell, they all use workqueues (most of them using the
->> standard system queue) for fput(), dput() and/or iput() calls.
->
-> I suppose the assumption was that those operations couldn't possiby be
-> expensive enough to warrant other options, which doesn't seem to be the c=
-ase
-> unfortunately. Switching the users to system_unbound_wq, which should be
-> pretty trivial, seems to be the straight forward solution.
->
-> I can definitely see benefits in making workqueue smarter about
-> concurrency-managed work items taking a long time. Given that nothing on
-> these types of workqueues can be latency sensitive and the problem being
-> reported is on the scale of tens of seconds, I think a more palatable
-> approach could be through watchdog mechanism rather than hooking into
-> cond_resched(). Something like:
->
-> * Run watchdog timer more frequently - e.g. 1/4 of threshold.
->
-> * If a work item is occupying the local concurrency for too long, set
->   WORKER_CPU_INTENSIVE for the worker and, probably, generate a warning.
->
-> I still think this should generate a warning and thus can't replace
-> switching to unbound wq. The reason is that the concurrency limit isn't t=
-he
-> only problem. A kthread needing to run on one particular CPU for tens of
-> seconds just isn't great.
+> mainline in?  I'm not sure whether you or MPE (ppc) or someone else
+> should pick it this series?
 
-I don't think that using a timer to trigger a warning is sufficient.
-As justification I point to "might_sleep()".  This doesn't wait for
-atomic code to *actually* sleep, but produces a warning when atomic code
-calls other code that *might* sleep.  This means we catch problems
-during development rather that when in production.
+I'm happy to take this series in my tree.  I'm planing to send a
+pull-request for -rc5 with more related changes. So, I can include
+this in the same PR.
 
-For the same reasons, I think we need a warning when a CM-worker calls
-code that *might* consume a lot of CPU, only one when it actually *does*
-consume a lot of CPU.
-So I think that a warning from cond_resched() is the right thing to do.
-The patch below does this - it borrows CONFIG_WQ_WATCHDOG to desire whether
-to check for the warning.
+In the meantime I'll add this to my testing tree, so it can be
+build-tested by the 0-day folks. :)
 
-So I don't think that moving to workitems to system_unbound_wq is always
-appropriate.  Sometimes it certain is, as in patch below.  However in
-some cases it is not at all clear at the time the workitem is submitted,
-how much work will be down.
-nfs has a work queue (nfsiod) which handle the reply to an async RPC.
-In some cases there is a tiny amount of work to be done.  In rare cases
-there is a lot.  Rather than trying to deduce in advance, it is much
-easier if the worker can switch mode only when it finds that there is a
-lot of work to do.
-The patch below supports this with workqueue_prepare_use_cpu() which
-switches to CPU_INTENSIVE mode.  It doesn't unbind from the current
-CPU.  Maybe it should but I suspect that wouldn't be as easy to code,
-and I'm not at all sure of the benefit.
+Thanks
+--
+Gustavo
 
-So: I propose the patch below.  Thoughts?
-
-Thanks,
-NeilBrown
-
-
-
-From: NeilBrown <neilb@suse.de>
-Date: Mon, 9 Nov 2020 13:37:17 +1100
-Subject: [PATCH] workqueue: warn when cond_resched called from
- concurrency-managed worker
-
-Several workers in concurrency-managed work queues call cond_resched().
-This suggest that they might consume a lot of CPU time and are willing
-to allow other code to run concurrently.
-This *does* allow non-workqueue code to run but does *not* allow other
-concurrency-managed work items to run on the same CPU.
-
-In general such workers should not be run from a concurrency-managed
-workqueue however:
- 1/ there is no mechanism to alert coders to the fact that they are
-    using the wrong work queue, and
- 2/ sometimes it is not clear, when a work item is created, whether it
-    will end up in code that might consume at lot of CPU time.  So
-    choosing the best workqueue it not always easy.
-
-This patch addresses both these issues:
- 1/ If a concurrency-managed worker calls cond_resched() a warning
-    (WARN_ON_ONCE) is generated (if CONFIG_WQ_WATCHDOG is selected).
- 2/ A new interface - workqueue_prepare_use_cpu() - is provided which
-    may be called by low-level code which might be called in a workqueue
-    and might consume CPU.  This switches the worker to CPU_INTENSIVE
-    mode so that other work items can run on the same CPU.
-    This means there is no need to chose the required behaviour when
-    submitting a work item, as the code can switch behaviour when needed.
-
-This patch also changes some code to avoid the warning:
- - in some cases, system_unbound_wq is used instead of system_wq,
-   when the work item will normally call cond_resched()
- - in other cases, calls to workqueue_prepare_use_cpu() are inserted.
-
- - in slab.c, a cond_resched() call is replaced by
-     if (tif_need_resched())
-            break;
-   so that the worker will relinquish CPU and try again later.
-
-There are doubtless more changes needed, but these allow me to boot and
-access NFS files without warnings.
-
-Signed-off-by: NeilBrown <neilb@suse.de>
-=2D--
- fs/dcache.c                |  2 ++
- fs/nfs/delegation.c        |  5 +++++
- fs/nfs/write.c             |  6 ++++++
- include/linux/rhashtable.h |  4 ++--
- include/linux/sched.h      |  2 ++
- include/linux/workqueue.h  | 30 ++++++++++++++++++++++++++++++
- kernel/rcu/tree.c          |  2 +-
- kernel/workqueue.c         | 33 +++++++++++++++++++++++++++++++--
- lib/rhashtable.c           |  8 ++++----
- mm/page_alloc.c            | 14 ++++----------
- mm/slab.c                  |  3 ++-
- mm/truncate.c              |  3 +++
- net/sunrpc/clnt.c          |  2 +-
- security/keys/gc.c         |  8 ++++----
- security/keys/key.c        |  2 +-
- 15 files changed, 98 insertions(+), 26 deletions(-)
-
-diff --git a/fs/dcache.c b/fs/dcache.c
-index ea0485861d93..46c83f712ad3 100644
-=2D-- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -686,6 +686,8 @@ static struct dentry *dentry_kill(struct dentry *dentry)
- 	struct inode *inode =3D dentry->d_inode;
- 	struct dentry *parent =3D NULL;
-=20
-+	workqueue_prepare_use_cpu();
-+
- 	if (inode && unlikely(!spin_trylock(&inode->i_lock)))
- 		goto slow_positive;
-=20
-diff --git a/fs/nfs/delegation.c b/fs/nfs/delegation.c
-index 816e1427f17e..cbf4e586ee2c 100644
-=2D-- a/fs/nfs/delegation.c
-+++ b/fs/nfs/delegation.c
-@@ -573,6 +573,7 @@ static int nfs_server_return_marked_delegations(struct =
-nfs_server *server,
- 	struct nfs_delegation *place_holder_deleg =3D NULL;
- 	int err =3D 0;
-=20
-+	workqueue_prepare_use_cpu();
- restart:
- 	/*
- 	 * To avoid quadratic looping we hold a reference
-@@ -1097,6 +1098,8 @@ static int nfs_server_reap_unclaimed_delegations(stru=
-ct nfs_server *server,
- {
- 	struct nfs_delegation *delegation;
- 	struct inode *inode;
-+
-+	workqueue_prepare_use_cpu();
- restart:
- 	rcu_read_lock();
- restart_locked:
-@@ -1229,6 +1232,8 @@ static int nfs_server_reap_expired_delegations(struct=
- nfs_server *server,
- 	struct inode *inode;
- 	const struct cred *cred;
- 	nfs4_stateid stateid;
-+
-+	workqueue_prepare_use_cpu();
- restart:
- 	rcu_read_lock();
- restart_locked:
-diff --git a/fs/nfs/write.c b/fs/nfs/write.c
-index 639c34fec04a..e84df784acc6 100644
-=2D-- a/fs/nfs/write.c
-+++ b/fs/nfs/write.c
-@@ -1034,6 +1034,8 @@ nfs_scan_commit_list(struct list_head *src, struct li=
-st_head *dst,
- 	struct nfs_page *req, *tmp;
- 	int ret =3D 0;
-=20
-+	workqueue_prepare_use_cpu();
-+
- restart:
- 	list_for_each_entry_safe(req, tmp, src, wb_list) {
- 		kref_get(&req->wb_kref);
-@@ -1839,6 +1841,8 @@ static void nfs_commit_release_pages(struct nfs_commi=
-t_data *data)
- 	struct nfs_commit_info cinfo;
- 	struct nfs_server *nfss;
-=20
-+	workqueue_prepare_use_cpu();
-+
- 	while (!list_empty(&data->pages)) {
- 		req =3D nfs_list_entry(data->pages.next);
- 		nfs_list_remove_request(req);
-@@ -1924,6 +1928,8 @@ static int __nfs_commit_inode(struct inode *inode, in=
-t how,
- 	int may_wait =3D how & FLUSH_SYNC;
- 	int ret, nscan;
-=20
-+	workqueue_prepare_use_cpu();
-+
- 	nfs_init_cinfo_from_inode(&cinfo, inode);
- 	nfs_commit_begin(cinfo.mds);
- 	for (;;) {
-diff --git a/include/linux/rhashtable.h b/include/linux/rhashtable.h
-index 68dab3e08aad..01ab43d4b9bb 100644
-=2D-- a/include/linux/rhashtable.h
-+++ b/include/linux/rhashtable.h
-@@ -788,7 +788,7 @@ static inline void *__rhashtable_insert_fast(
- 	rht_assign_unlock(tbl, bkt, obj);
-=20
- 	if (rht_grow_above_75(ht, tbl))
-=2D		schedule_work(&ht->run_work);
-+		queue_work(system_unbound_wq, &ht->run_work);
-=20
- 	data =3D NULL;
- out:
-@@ -1056,7 +1056,7 @@ static inline int __rhashtable_remove_fast_one(
- 		atomic_dec(&ht->nelems);
- 		if (unlikely(ht->p.automatic_shrinking &&
- 			     rht_shrink_below_30(ht, tbl)))
-=2D			schedule_work(&ht->run_work);
-+			queue_work(system_unbound_wq, &ht->run_work);
- 		err =3D 0;
- 	}
-=20
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 063cd120b459..3a3f1d9c0bb9 100644
-=2D-- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1837,6 +1837,7 @@ static inline int _cond_resched(void) { return 0; }
-=20
- #define cond_resched() ({			\
- 	___might_sleep(__FILE__, __LINE__, 0);	\
-+	WARN_ON_ONCE(workqueue_mustnt_use_cpu());	\
- 	_cond_resched();			\
- })
-=20
-@@ -1844,6 +1845,7 @@ extern int __cond_resched_lock(spinlock_t *lock);
-=20
- #define cond_resched_lock(lock) ({				\
- 	___might_sleep(__FILE__, __LINE__, PREEMPT_LOCK_OFFSET);\
-+	WARN_ON_ONCE(workqueue_mustnt_use_cpu());			\
- 	__cond_resched_lock(lock);				\
- })
-=20
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index 26de0cae2a0a..6c6473ee02e1 100644
-=2D-- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -626,6 +626,36 @@ static inline bool schedule_delayed_work(struct delaye=
-d_work *dwork,
- 	return queue_delayed_work(system_wq, dwork, delay);
- }
-=20
-+
-+/* Following are #define rather than 'static inline' because
-+ * workqueue.h (this file) is included by sched.h, so it cannot
-+ * use types and macros defined in that file.
-+ *
-+ * If workqueue_mustnt_use_cpu() returns false and triggers a warning,
-+ * it means that a worker in a concurrency-managed workqueue is calling
-+ * cond_resched().  This does NOT allow other workers to run, so it can
-+ * block them unduly.  Such workers should either be run on some other
-+ * workqueue, such as system_unbound_wq, or must call
-+ * workqueue_prepare_use_cpu() so that the worker drops out of
-+ * concurrency management.
-+ */
-+
-+#define current_is_wq_worker() (current->flags & PF_WQ_WORKER)
-+#ifdef CONFIG_WQ_WATCHDOG
-+bool __workqueue_may_use_cpu(void);
-+#define workqueue_mustnt_use_cpu()	\
-+	(current_is_wq_worker() && !__workqueue_may_use_cpu())
-+#else
-+#define workqueue_mustnt_use_cpu() false
-+#endif
-+
-+void __workqueue_prepare_use_cpu(void);
-+#define workqueue_prepare_use_cpu()			\
-+	do {						\
-+		if (current_is_wq_worker())		\
-+			__workqueue_prepare_use_cpu();	\
-+	} while(0)
-+
- #ifndef CONFIG_SMP
- static inline long work_on_cpu(int cpu, long (*fn)(void *), void *arg)
- {
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 06895ef85d69..907707481d36 100644
-=2D-- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3302,7 +3302,7 @@ static inline bool queue_kfree_rcu_work(struct kfree_=
-rcu_cpu *krcp)
- 			 * channels have been detached following by each
- 			 * other.
- 			 */
-=2D			queue_rcu_work(system_wq, &krwp->rcu_work);
-+			queue_rcu_work(system_unbound_wq, &krwp->rcu_work);
- 		}
-=20
- 		// Repeat if any "free" corresponding channel is still busy.
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index ab593b20fb94..3f5ee4468493 100644
-=2D-- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -2295,12 +2295,12 @@ __acquires(&pool->lock)
- 	 * stop_machine. At the same time, report a quiescent RCU state so
- 	 * the same condition doesn't freeze RCU.
- 	 */
-=2D	cond_resched();
-+	_cond_resched();
-=20
- 	raw_spin_lock_irq(&pool->lock);
-=20
- 	/* clear cpu intensive status */
-=2D	if (unlikely(cpu_intensive))
-+	if (unlikely(worker->flags & WORKER_CPU_INTENSIVE))
- 		worker_clr_flags(worker, WORKER_CPU_INTENSIVE);
-=20
- 	/* tag the worker for identification in schedule() */
-@@ -5345,6 +5345,35 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpum=
-ask)
- 	return ret;
- }
-=20
-+#ifdef CONFIG_WQ_WATCHDOG
-+bool __workqueue_may_use_cpu(void)
-+{
-+	struct worker *worker =3D current_wq_worker();
-+	if (!worker)
-+		return true;
-+	/* If any flag in WORKER_NOT_RUNNING is set, the worker is not
-+	 * counted for concurrency control, so it can use as much CPU
-+	 * as it likes.
-+	 */
-+	return worker->flags & WORKER_NOT_RUNNING;
-+}
-+EXPORT_SYMBOL(__workqueue_may_use_cpu);
-+#endif
-+
-+void __workqueue_prepare_use_cpu(void)
-+{
-+	struct worker *worker =3D current_wq_worker();
-+
-+	if (worker && !(worker->flags & WORKER_CPU_INTENSIVE)) {
-+		struct worker_pool *pool =3D worker->pool;
-+
-+		worker_set_flags(worker, WORKER_CPU_INTENSIVE);
-+		if (need_more_worker(pool))
-+			wake_up_worker(pool);
-+	}
-+}
-+EXPORT_SYMBOL(__workqueue_prepare_use_cpu);
-+
- #ifdef CONFIG_SYSFS
- /*
-  * Workqueues with WQ_SYSFS flag set is visible to userland via
-diff --git a/lib/rhashtable.c b/lib/rhashtable.c
-index c949c1e3b87c..1ef41411cda7 100644
-=2D-- a/lib/rhashtable.c
-+++ b/lib/rhashtable.c
-@@ -433,7 +433,7 @@ static void rht_deferred_worker(struct work_struct *wor=
-k)
- 	mutex_unlock(&ht->mutex);
-=20
- 	if (err)
-=2D		schedule_work(&ht->run_work);
-+		queue_work(system_unbound_wq, &ht->run_work);
- }
-=20
- static int rhashtable_insert_rehash(struct rhashtable *ht,
-@@ -468,7 +468,7 @@ static int rhashtable_insert_rehash(struct rhashtable *=
-ht,
- 		if (err =3D=3D -EEXIST)
- 			err =3D 0;
- 	} else
-=2D		schedule_work(&ht->run_work);
-+		queue_work(system_unbound_wq, &ht->run_work);
-=20
- 	return err;
-=20
-@@ -479,7 +479,7 @@ static int rhashtable_insert_rehash(struct rhashtable *=
-ht,
-=20
- 	/* Schedule async rehash to retry allocation in process context. */
- 	if (err =3D=3D -ENOMEM)
-=2D		schedule_work(&ht->run_work);
-+		queue_work(system_unbound_wq, &ht->run_work);
-=20
- 	return err;
- }
-@@ -579,7 +579,7 @@ static struct bucket_table *rhashtable_insert_one(
-=20
- 	atomic_inc(&ht->nelems);
- 	if (rht_grow_above_75(ht, tbl))
-=2D		schedule_work(&ht->run_work);
-+		queue_work(system_unbound_wq, &ht->run_work);
-=20
- 	return NULL;
- }
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 23f5066bd4a5..69770135e8eb 100644
-=2D-- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4557,17 +4557,11 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
- 	}
-=20
- out:
-=2D	/*
-=2D	 * Memory allocation/reclaim might be called from a WQ context and the
-=2D	 * current implementation of the WQ concurrency control doesn't
-=2D	 * recognize that a particular WQ is congested if the worker thread is
-=2D	 * looping without ever sleeping. Therefore we have to do a short sleep
-=2D	 * here rather than calling cond_resched().
-+	/* This might take a while - allow workqueue to schedule other
-+	 * work in parallel.
- 	 */
-=2D	if (current->flags & PF_WQ_WORKER)
-=2D		schedule_timeout_uninterruptible(1);
-=2D	else
-=2D		cond_resched();
-+	workqueue_prepare_use_cpu();
-+	cond_resched();
- 	return ret;
- }
-=20
-diff --git a/mm/slab.c b/mm/slab.c
-index b1113561b98b..2e50603e1b26 100644
-=2D-- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -3994,7 +3994,8 @@ static void cache_reap(struct work_struct *w)
- 			STATS_ADD_REAPED(searchp, freed);
- 		}
- next:
-=2D		cond_resched();
-+		if (tif_need_resched())
-+			break;
- 	}
- 	check_irq_on();
- 	mutex_unlock(&slab_mutex);
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 18cec39a9f53..b333130a7629 100644
-=2D-- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -324,6 +324,7 @@ void truncate_inode_pages_range(struct address_space *m=
-apping,
- 	else
- 		end =3D (lend + 1) >> PAGE_SHIFT;
-=20
-+	workqueue_prepare_use_cpu();
- 	pagevec_init(&pvec);
- 	index =3D start;
- 	while (index < end && pagevec_lookup_entries(&pvec, mapping, index,
-@@ -538,6 +539,7 @@ unsigned long __invalidate_mapping_pages(struct address=
-_space *mapping,
- 	unsigned long count =3D 0;
- 	int i;
-=20
-+	workqueue_prepare_use_cpu();
- 	pagevec_init(&pvec);
- 	while (index <=3D end && pagevec_lookup_entries(&pvec, mapping, index,
- 			min(end - index, (pgoff_t)PAGEVEC_SIZE - 1) + 1,
-@@ -717,6 +719,7 @@ int invalidate_inode_pages2_range(struct address_space =
-*mapping,
- 	if (mapping->nrpages =3D=3D 0 && mapping->nrexceptional =3D=3D 0)
- 		goto out;
-=20
-+	workqueue_prepare_use_cpu();
- 	pagevec_init(&pvec);
- 	index =3D start;
- 	while (index <=3D end && pagevec_lookup_entries(&pvec, mapping, index,
-diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
-index 62e0b6c1e8cf..1ce66672481f 100644
-=2D-- a/net/sunrpc/clnt.c
-+++ b/net/sunrpc/clnt.c
-@@ -906,7 +906,7 @@ rpc_free_client(struct rpc_clnt *clnt)
- 	put_cred(clnt->cl_cred);
-=20
- 	INIT_WORK(&clnt->cl_work, rpc_free_client_work);
-=2D	schedule_work(&clnt->cl_work);
-+	queue_work(system_unbound_wq, &clnt->cl_work);
- 	return parent;
- }
-=20
-diff --git a/security/keys/gc.c b/security/keys/gc.c
-index 3c90807476eb..a4ad04b78833 100644
-=2D-- a/security/keys/gc.c
-+++ b/security/keys/gc.c
-@@ -57,7 +57,7 @@ void key_schedule_gc(time64_t gc_at)
-=20
- 	if (gc_at <=3D now || test_bit(KEY_GC_REAP_KEYTYPE, &key_gc_flags)) {
- 		kdebug("IMMEDIATE");
-=2D		schedule_work(&key_gc_work);
-+		queue_work(system_unbound_wq, &key_gc_work);
- 	} else if (gc_at < key_gc_next_run) {
- 		kdebug("DEFERRED");
- 		key_gc_next_run =3D gc_at;
-@@ -72,7 +72,7 @@ void key_schedule_gc(time64_t gc_at)
- void key_schedule_gc_links(void)
- {
- 	set_bit(KEY_GC_KEY_EXPIRED, &key_gc_flags);
-=2D	schedule_work(&key_gc_work);
-+	queue_work(system_unbound_wq, &key_gc_work);
- }
-=20
- /*
-@@ -106,7 +106,7 @@ void key_gc_keytype(struct key_type *ktype)
- 	set_bit(KEY_GC_REAP_KEYTYPE, &key_gc_flags);
-=20
- 	kdebug("schedule");
-=2D	schedule_work(&key_gc_work);
-+	queue_work(system_unbound_wq, &key_gc_work);
-=20
- 	kdebug("sleep");
- 	wait_on_bit(&key_gc_flags, KEY_GC_REAPING_KEYTYPE,
-@@ -319,7 +319,7 @@ static void key_garbage_collector(struct work_struct *w=
-ork)
- 	}
-=20
- 	if (gc_state & KEY_GC_REAP_AGAIN)
-=2D		schedule_work(&key_gc_work);
-+		queue_work(system_unbound_wq, &key_gc_work);
- 	kleave(" [end %x]", gc_state);
- 	return;
-=20
-diff --git a/security/keys/key.c b/security/keys/key.c
-index e282c6179b21..f990e226d74a 100644
-=2D-- a/security/keys/key.c
-+++ b/security/keys/key.c
-@@ -647,7 +647,7 @@ void key_put(struct key *key)
- 		key_check(key);
-=20
- 		if (refcount_dec_and_test(&key->usage))
-=2D			schedule_work(&key_gc_work);
-+			queue_work(system_unbound_wq, &key_gc_work);
- 	}
- }
- EXPORT_SYMBOL(key_put);
-=2D-=20
-2.29.2
-
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl+0S6kOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbl69hAAi8bKozrYYTt7ZdtmhEh6MPTmpsbsUeuPRm+C
-ygDaYSa1NVx9cc2eVE5GslLzu/NUfn4mR/oR69mIxph0+uq27uiB4MaxucRvuCPI
-TdWvhd0KSNGQ6KXUoKe/yr28k4idWDN5/nG/opW8LqBmkocM0nuvLSYb3Epvlo90
-zwV4KZ1DlV3BSGrl5YM9/IIVEx7GJVfJzEIVxL9QI3w+BDpnmTf1ssTKbIU3YB3F
-zxRtI9Nz1irtfs0gc+j84IjNf08bgweAMx8aoI/RYxY7v1yZNzEzTbE3zmNSDVtB
-L7v/cNZFi/WV78HEl2jv6ENPywanggD3A+QgQaw93lQ3nt2afUro0q7jd/8pT/qG
-4Yl4jUcrj0NPhBvPcxSgOVAOvFHKiZVP8qtyvLhct/iHLKkJwARtoEqLsbYbiqkM
-5t1hGZB+6D/HmM/gS9dxsyxIfbP8V71wQwicsyVDJyW+wz1l25hB3hasupYuJakg
-mUvl8ZXpybbyxGvRbWZpMUzdDCQveIKDU6poiWB7Ga8dc6grIOhPmLi4Fyn9oTLG
-m6UEGBGR2r1iZ3LpcPAQtZ9Efls23HQjSTObAsFrfw1JQJCGwmT0tHLQvbBlZvGk
-PR2rmGed35kGsfiBgeQcUWVrF6SLAVBgRbSOHpUXao81MMiLzllI+sRPANdaW8VH
-kO61cOQ=
-=WZZe
------END PGP SIGNATURE-----
---=-=-=--
+> 
+> > >
+> > > Now that we can build arch/powerpc/boot/ free of -Wimplicit-fallthrough,
+> > > re-enable these fixes for lib/.
+> > >
+> > > Link: https://github.com/ClangBuiltLinux/linux/issues/236
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> >
+> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> > Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+> >
+> > > ---
+> > >  lib/asn1_decoder.c      |  4 ++--
+> > >  lib/assoc_array.c       |  2 +-
+> > >  lib/bootconfig.c        |  4 ++--
+> > >  lib/cmdline.c           | 10 +++++-----
+> > >  lib/dim/net_dim.c       |  2 +-
+> > >  lib/dim/rdma_dim.c      |  4 ++--
+> > >  lib/glob.c              |  2 +-
+> > >  lib/siphash.c           | 36 ++++++++++++++++++------------------
+> > >  lib/ts_fsm.c            |  2 +-
+> > >  lib/vsprintf.c          | 14 +++++++-------
+> > >  lib/xz/xz_dec_lzma2.c   |  4 ++--
+> > >  lib/xz/xz_dec_stream.c  | 16 ++++++++--------
+> > >  lib/zstd/bitstream.h    | 10 +++++-----
+> > >  lib/zstd/compress.c     |  2 +-
+> > >  lib/zstd/decompress.c   | 12 ++++++------
+> > >  lib/zstd/huf_compress.c |  4 ++--
+> > >  16 files changed, 64 insertions(+), 64 deletions(-)
+> > >
+> > > diff --git a/lib/asn1_decoder.c b/lib/asn1_decoder.c
+> > > index 58f72b25f8e9..13da529e2e72 100644
+> > > --- a/lib/asn1_decoder.c
+> > > +++ b/lib/asn1_decoder.c
+> > > @@ -381,7 +381,7 @@ int asn1_ber_decoder(const struct asn1_decoder *decoder,
+> > >       case ASN1_OP_END_SET_ACT:
+> > >               if (unlikely(!(flags & FLAG_MATCHED)))
+> > >                       goto tag_mismatch;
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >
+> > >       case ASN1_OP_END_SEQ:
+> > >       case ASN1_OP_END_SET_OF:
+> > > @@ -448,7 +448,7 @@ int asn1_ber_decoder(const struct asn1_decoder *decoder,
+> > >                       pc += asn1_op_lengths[op];
+> > >                       goto next_op;
+> > >               }
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >
+> > >       case ASN1_OP_ACT:
+> > >               ret = actions[machine[pc + 1]](context, hdr, tag, data + tdp, len);
+> > > diff --git a/lib/assoc_array.c b/lib/assoc_array.c
+> > > index 6f4bcf524554..04c98799c3ba 100644
+> > > --- a/lib/assoc_array.c
+> > > +++ b/lib/assoc_array.c
+> > > @@ -1113,7 +1113,7 @@ struct assoc_array_edit *assoc_array_delete(struct assoc_array *array,
+> > >                                               index_key))
+> > >                               goto found_leaf;
+> > >               }
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case assoc_array_walk_tree_empty:
+> > >       case assoc_array_walk_found_wrong_shortcut:
+> > >       default:
+> > > diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+> > > index 649ed44f199c..9f8c70a98fcf 100644
+> > > --- a/lib/bootconfig.c
+> > > +++ b/lib/bootconfig.c
+> > > @@ -827,7 +827,7 @@ int __init xbc_init(char *buf, const char **emsg, int *epos)
+> > >                                                       q - 2);
+> > >                               break;
+> > >                       }
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case '=':
+> > >                       ret = xbc_parse_kv(&p, q, c);
+> > >                       break;
+> > > @@ -836,7 +836,7 @@ int __init xbc_init(char *buf, const char **emsg, int *epos)
+> > >                       break;
+> > >               case '#':
+> > >                       q = skip_comment(q);
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case ';':
+> > >               case '\n':
+> > >                       ret = xbc_parse_key(&p, q);
+> > > diff --git a/lib/cmdline.c b/lib/cmdline.c
+> > > index 9e186234edc0..46f2cb4ce6d1 100644
+> > > --- a/lib/cmdline.c
+> > > +++ b/lib/cmdline.c
+> > > @@ -144,23 +144,23 @@ unsigned long long memparse(const char *ptr, char **retptr)
+> > >       case 'E':
+> > >       case 'e':
+> > >               ret <<= 10;
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case 'P':
+> > >       case 'p':
+> > >               ret <<= 10;
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case 'T':
+> > >       case 't':
+> > >               ret <<= 10;
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case 'G':
+> > >       case 'g':
+> > >               ret <<= 10;
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case 'M':
+> > >       case 'm':
+> > >               ret <<= 10;
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case 'K':
+> > >       case 'k':
+> > >               ret <<= 10;
+> > > diff --git a/lib/dim/net_dim.c b/lib/dim/net_dim.c
+> > > index a4db51c21266..06811d866775 100644
+> > > --- a/lib/dim/net_dim.c
+> > > +++ b/lib/dim/net_dim.c
+> > > @@ -233,7 +233,7 @@ void net_dim(struct dim *dim, struct dim_sample end_sample)
+> > >                       schedule_work(&dim->work);
+> > >                       break;
+> > >               }
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case DIM_START_MEASURE:
+> > >               dim_update_sample(end_sample.event_ctr, end_sample.pkt_ctr,
+> > >                                 end_sample.byte_ctr, &dim->start_sample);
+> > > diff --git a/lib/dim/rdma_dim.c b/lib/dim/rdma_dim.c
+> > > index f7e26c7b4749..15462d54758d 100644
+> > > --- a/lib/dim/rdma_dim.c
+> > > +++ b/lib/dim/rdma_dim.c
+> > > @@ -59,7 +59,7 @@ static bool rdma_dim_decision(struct dim_stats *curr_stats, struct dim *dim)
+> > >                       break;
+> > >               case DIM_STATS_WORSE:
+> > >                       dim_turn(dim);
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case DIM_STATS_BETTER:
+> > >                       step_res = rdma_dim_step(dim);
+> > >                       if (step_res == DIM_ON_EDGE)
+> > > @@ -94,7 +94,7 @@ void rdma_dim(struct dim *dim, u64 completions)
+> > >                       schedule_work(&dim->work);
+> > >                       break;
+> > >               }
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case DIM_START_MEASURE:
+> > >               dim->state = DIM_MEASURE_IN_PROGRESS;
+> > >               dim_update_sample_with_comps(curr_sample->event_ctr, 0, 0,
+> > > diff --git a/lib/glob.c b/lib/glob.c
+> > > index 52e3ed7e4a9b..85ecbda45cd8 100644
+> > > --- a/lib/glob.c
+> > > +++ b/lib/glob.c
+> > > @@ -102,7 +102,7 @@ bool __pure glob_match(char const *pat, char const *str)
+> > >                       break;
+> > >               case '\\':
+> > >                       d = *pat++;
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               default:        /* Literal character */
+> > >  literal:
+> > >                       if (c == d) {
+> > > diff --git a/lib/siphash.c b/lib/siphash.c
+> > > index c47bb6ff2149..a90112ee72a1 100644
+> > > --- a/lib/siphash.c
+> > > +++ b/lib/siphash.c
+> > > @@ -68,11 +68,11 @@ u64 __siphash_aligned(const void *data, size_t len, const siphash_key_t *key)
+> > >                                                 bytemask_from_count(left)));
+> > >  #else
+> > >       switch (left) {
+> > > -     case 7: b |= ((u64)end[6]) << 48; /* fall through */
+> > > -     case 6: b |= ((u64)end[5]) << 40; /* fall through */
+> > > -     case 5: b |= ((u64)end[4]) << 32; /* fall through */
+> > > +     case 7: b |= ((u64)end[6]) << 48; fallthrough;
+> > > +     case 6: b |= ((u64)end[5]) << 40; fallthrough;
+> > > +     case 5: b |= ((u64)end[4]) << 32; fallthrough;
+> > >       case 4: b |= le32_to_cpup(data); break;
+> > > -     case 3: b |= ((u64)end[2]) << 16; /* fall through */
+> > > +     case 3: b |= ((u64)end[2]) << 16; fallthrough;
+> > >       case 2: b |= le16_to_cpup(data); break;
+> > >       case 1: b |= end[0];
+> > >       }
+> > > @@ -101,11 +101,11 @@ u64 __siphash_unaligned(const void *data, size_t len, const siphash_key_t *key)
+> > >                                                 bytemask_from_count(left)));
+> > >  #else
+> > >       switch (left) {
+> > > -     case 7: b |= ((u64)end[6]) << 48; /* fall through */
+> > > -     case 6: b |= ((u64)end[5]) << 40; /* fall through */
+> > > -     case 5: b |= ((u64)end[4]) << 32; /* fall through */
+> > > +     case 7: b |= ((u64)end[6]) << 48; fallthrough;
+> > > +     case 6: b |= ((u64)end[5]) << 40; fallthrough;
+> > > +     case 5: b |= ((u64)end[4]) << 32; fallthrough;
+> > >       case 4: b |= get_unaligned_le32(end); break;
+> > > -     case 3: b |= ((u64)end[2]) << 16; /* fall through */
+> > > +     case 3: b |= ((u64)end[2]) << 16; fallthrough;
+> > >       case 2: b |= get_unaligned_le16(end); break;
+> > >       case 1: b |= end[0];
+> > >       }
+> > > @@ -268,11 +268,11 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
+> > >                                                 bytemask_from_count(left)));
+> > >  #else
+> > >       switch (left) {
+> > > -     case 7: b |= ((u64)end[6]) << 48; /* fall through */
+> > > -     case 6: b |= ((u64)end[5]) << 40; /* fall through */
+> > > -     case 5: b |= ((u64)end[4]) << 32; /* fall through */
+> > > +     case 7: b |= ((u64)end[6]) << 48; fallthrough;
+> > > +     case 6: b |= ((u64)end[5]) << 40; fallthrough;
+> > > +     case 5: b |= ((u64)end[4]) << 32; fallthrough;
+> > >       case 4: b |= le32_to_cpup(data); break;
+> > > -     case 3: b |= ((u64)end[2]) << 16; /* fall through */
+> > > +     case 3: b |= ((u64)end[2]) << 16; fallthrough;
+> > >       case 2: b |= le16_to_cpup(data); break;
+> > >       case 1: b |= end[0];
+> > >       }
+> > > @@ -301,11 +301,11 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
+> > >                                                 bytemask_from_count(left)));
+> > >  #else
+> > >       switch (left) {
+> > > -     case 7: b |= ((u64)end[6]) << 48; /* fall through */
+> > > -     case 6: b |= ((u64)end[5]) << 40; /* fall through */
+> > > -     case 5: b |= ((u64)end[4]) << 32; /* fall through */
+> > > +     case 7: b |= ((u64)end[6]) << 48; fallthrough;
+> > > +     case 6: b |= ((u64)end[5]) << 40; fallthrough;
+> > > +     case 5: b |= ((u64)end[4]) << 32; fallthrough;
+> > >       case 4: b |= get_unaligned_le32(end); break;
+> > > -     case 3: b |= ((u64)end[2]) << 16; /* fall through */
+> > > +     case 3: b |= ((u64)end[2]) << 16; fallthrough;
+> > >       case 2: b |= get_unaligned_le16(end); break;
+> > >       case 1: b |= end[0];
+> > >       }
+> > > @@ -431,7 +431,7 @@ u32 __hsiphash_aligned(const void *data, size_t len, const hsiphash_key_t *key)
+> > >               v0 ^= m;
+> > >       }
+> > >       switch (left) {
+> > > -     case 3: b |= ((u32)end[2]) << 16; /* fall through */
+> > > +     case 3: b |= ((u32)end[2]) << 16; fallthrough;
+> > >       case 2: b |= le16_to_cpup(data); break;
+> > >       case 1: b |= end[0];
+> > >       }
+> > > @@ -454,7 +454,7 @@ u32 __hsiphash_unaligned(const void *data, size_t len,
+> > >               v0 ^= m;
+> > >       }
+> > >       switch (left) {
+> > > -     case 3: b |= ((u32)end[2]) << 16; /* fall through */
+> > > +     case 3: b |= ((u32)end[2]) << 16; fallthrough;
+> > >       case 2: b |= get_unaligned_le16(end); break;
+> > >       case 1: b |= end[0];
+> > >       }
+> > > diff --git a/lib/ts_fsm.c b/lib/ts_fsm.c
+> > > index ab749ec10ab5..64fd9015ad80 100644
+> > > --- a/lib/ts_fsm.c
+> > > +++ b/lib/ts_fsm.c
+> > > @@ -193,7 +193,7 @@ static unsigned int fsm_find(struct ts_config *conf, struct ts_state *state)
+> > >                               TOKEN_MISMATCH();
+> > >
+> > >                       block_idx++;
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case TS_FSM_ANY:
+> > >                       if (next == NULL)
+> > > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> > > index 14c9a6af1b23..d3c5c16f391c 100644
+> > > --- a/lib/vsprintf.c
+> > > +++ b/lib/vsprintf.c
+> > > @@ -1265,7 +1265,7 @@ char *mac_address_string(char *buf, char *end, u8 *addr,
+> > >
+> > >       case 'R':
+> > >               reversed = true;
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >
+> > >       default:
+> > >               separator = ':';
+> > > @@ -1682,7 +1682,7 @@ char *uuid_string(char *buf, char *end, const u8 *addr,
+> > >       switch (*(++fmt)) {
+> > >       case 'L':
+> > >               uc = true;
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case 'l':
+> > >               index = guid_index;
+> > >               break;
+> > > @@ -2219,7 +2219,7 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+> > >       case 'S':
+> > >       case 's':
+> > >               ptr = dereference_symbol_descriptor(ptr);
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case 'B':
+> > >               return symbol_string(buf, end, ptr, spec, fmt);
+> > >       case 'R':
+> > > @@ -2450,7 +2450,7 @@ int format_decode(const char *fmt, struct printf_spec *spec)
+> > >
+> > >       case 'x':
+> > >               spec->flags |= SMALL;
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >
+> > >       case 'X':
+> > >               spec->base = 16;
+> > > @@ -2468,7 +2468,7 @@ int format_decode(const char *fmt, struct printf_spec *spec)
+> > >                * utility, treat it as any other invalid or
+> > >                * unsupported format specifier.
+> > >                */
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >
+> > >       default:
+> > >               WARN_ONCE(1, "Please remove unsupported %%%c in format string\n", *fmt);
+> > > @@ -3411,10 +3411,10 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
+> > >                       break;
+> > >               case 'i':
+> > >                       base = 0;
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case 'd':
+> > >                       is_sign = true;
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case 'u':
+> > >                       break;
+> > >               case '%':
+> > > diff --git a/lib/xz/xz_dec_lzma2.c b/lib/xz/xz_dec_lzma2.c
+> > > index 65a1aad8c223..ca2603abee08 100644
+> > > --- a/lib/xz/xz_dec_lzma2.c
+> > > +++ b/lib/xz/xz_dec_lzma2.c
+> > > @@ -1043,7 +1043,7 @@ XZ_EXTERN enum xz_ret xz_dec_lzma2_run(struct xz_dec_lzma2 *s,
+> > >
+> > >                       s->lzma2.sequence = SEQ_LZMA_PREPARE;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_LZMA_PREPARE:
+> > >                       if (s->lzma2.compressed < RC_INIT_BYTES)
+> > > @@ -1055,7 +1055,7 @@ XZ_EXTERN enum xz_ret xz_dec_lzma2_run(struct xz_dec_lzma2 *s,
+> > >                       s->lzma2.compressed -= RC_INIT_BYTES;
+> > >                       s->lzma2.sequence = SEQ_LZMA_RUN;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_LZMA_RUN:
+> > >                       /*
+> > > diff --git a/lib/xz/xz_dec_stream.c b/lib/xz/xz_dec_stream.c
+> > > index 32ab2a08b7cb..fea86deaaa01 100644
+> > > --- a/lib/xz/xz_dec_stream.c
+> > > +++ b/lib/xz/xz_dec_stream.c
+> > > @@ -583,7 +583,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+> > >                       if (ret != XZ_OK)
+> > >                               return ret;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_BLOCK_START:
+> > >                       /* We need one byte of input to continue. */
+> > > @@ -608,7 +608,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+> > >                       s->temp.pos = 0;
+> > >                       s->sequence = SEQ_BLOCK_HEADER;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_BLOCK_HEADER:
+> > >                       if (!fill_temp(s, b))
+> > > @@ -620,7 +620,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+> > >
+> > >                       s->sequence = SEQ_BLOCK_UNCOMPRESS;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_BLOCK_UNCOMPRESS:
+> > >                       ret = dec_block(s, b);
+> > > @@ -629,7 +629,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+> > >
+> > >                       s->sequence = SEQ_BLOCK_PADDING;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_BLOCK_PADDING:
+> > >                       /*
+> > > @@ -651,7 +651,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+> > >
+> > >                       s->sequence = SEQ_BLOCK_CHECK;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_BLOCK_CHECK:
+> > >                       if (s->check_type == XZ_CHECK_CRC32) {
+> > > @@ -675,7 +675,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+> > >
+> > >                       s->sequence = SEQ_INDEX_PADDING;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_INDEX_PADDING:
+> > >                       while ((s->index.size + (b->in_pos - s->in_start))
+> > > @@ -699,7 +699,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+> > >
+> > >                       s->sequence = SEQ_INDEX_CRC32;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_INDEX_CRC32:
+> > >                       ret = crc32_validate(s, b);
+> > > @@ -709,7 +709,7 @@ static enum xz_ret dec_main(struct xz_dec *s, struct xz_buf *b)
+> > >                       s->temp.size = STREAM_HEADER_SIZE;
+> > >                       s->sequence = SEQ_STREAM_FOOTER;
+> > >
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case SEQ_STREAM_FOOTER:
+> > >                       if (!fill_temp(s, b))
+> > > diff --git a/lib/zstd/bitstream.h b/lib/zstd/bitstream.h
+> > > index 3a49784d5c61..7c65c66e41fd 100644
+> > > --- a/lib/zstd/bitstream.h
+> > > +++ b/lib/zstd/bitstream.h
+> > > @@ -259,15 +259,15 @@ ZSTD_STATIC size_t BIT_initDStream(BIT_DStream_t *bitD, const void *srcBuffer, s
+> > >               bitD->bitContainer = *(const BYTE *)(bitD->start);
+> > >               switch (srcSize) {
+> > >               case 7: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[6]) << (sizeof(bitD->bitContainer) * 8 - 16);
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case 6: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[5]) << (sizeof(bitD->bitContainer) * 8 - 24);
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case 5: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[4]) << (sizeof(bitD->bitContainer) * 8 - 32);
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case 4: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[3]) << 24;
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case 3: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[2]) << 16;
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case 2: bitD->bitContainer += (size_t)(((const BYTE *)(srcBuffer))[1]) << 8;
+> > >               default:;
+> > >               }
+> > > diff --git a/lib/zstd/compress.c b/lib/zstd/compress.c
+> > > index 5e0b67003e55..b080264ed3ad 100644
+> > > --- a/lib/zstd/compress.c
+> > > +++ b/lib/zstd/compress.c
+> > > @@ -3182,7 +3182,7 @@ static size_t ZSTD_compressStream_generic(ZSTD_CStream *zcs, void *dst, size_t *
+> > >                               zcs->outBuffFlushedSize = 0;
+> > >                               zcs->stage = zcss_flush; /* pass-through to flush stage */
+> > >                       }
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case zcss_flush: {
+> > >                       size_t const toFlush = zcs->outBuffContentSize - zcs->outBuffFlushedSize;
+> > > diff --git a/lib/zstd/decompress.c b/lib/zstd/decompress.c
+> > > index db6761ea4deb..66cd487a326a 100644
+> > > --- a/lib/zstd/decompress.c
+> > > +++ b/lib/zstd/decompress.c
+> > > @@ -442,7 +442,7 @@ size_t ZSTD_decodeLiteralsBlock(ZSTD_DCtx *dctx, const void *src, size_t srcSize
+> > >               case set_repeat:
+> > >                       if (dctx->litEntropy == 0)
+> > >                               return ERROR(dictionary_corrupted);
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >               case set_compressed:
+> > >                       if (srcSize < 5)
+> > >                               return ERROR(corruption_detected); /* srcSize >= MIN_CBLOCK_SIZE == 3; here we need up to 5 for case 3 */
+> > > @@ -1768,7 +1768,7 @@ size_t ZSTD_decompressContinue(ZSTD_DCtx *dctx, void *dst, size_t dstCapacity, c
+> > >                       return 0;
+> > >               }
+> > >               dctx->expected = 0; /* not necessary to copy more */
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >
+> > >       case ZSTDds_decodeFrameHeader:
+> > >               memcpy(dctx->headerBuffer + ZSTD_frameHeaderSize_prefix, src, dctx->expected);
+> > > @@ -2309,7 +2309,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
+> > >               switch (zds->stage) {
+> > >               case zdss_init:
+> > >                       ZSTD_resetDStream(zds); /* transparent reset on starting decoding a new frame */
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case zdss_loadHeader: {
+> > >                       size_t const hSize = ZSTD_getFrameParams(&zds->fParams, zds->headerBuffer, zds->lhSize);
+> > > @@ -2376,7 +2376,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
+> > >                       }
+> > >                       zds->stage = zdss_read;
+> > >               }
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case zdss_read: {
+> > >                       size_t const neededInSize = ZSTD_nextSrcSizeToDecompress(zds->dctx);
+> > > @@ -2405,7 +2405,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
+> > >                       zds->stage = zdss_load;
+> > >                       /* pass-through */
+> > >               }
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case zdss_load: {
+> > >                       size_t const neededInSize = ZSTD_nextSrcSizeToDecompress(zds->dctx);
+> > > @@ -2438,7 +2438,7 @@ size_t ZSTD_decompressStream(ZSTD_DStream *zds, ZSTD_outBuffer *output, ZSTD_inB
+> > >                               /* pass-through */
+> > >                       }
+> > >               }
+> > > -                     /* fall through */
+> > > +                     fallthrough;
+> > >
+> > >               case zdss_flush: {
+> > >                       size_t const toFlushSize = zds->outEnd - zds->outStart;
+> > > diff --git a/lib/zstd/huf_compress.c b/lib/zstd/huf_compress.c
+> > > index e727812d12aa..08b4ae80aed4 100644
+> > > --- a/lib/zstd/huf_compress.c
+> > > +++ b/lib/zstd/huf_compress.c
+> > > @@ -556,9 +556,9 @@ size_t HUF_compress1X_usingCTable(void *dst, size_t dstSize, const void *src, si
+> > >       n = srcSize & ~3; /* join to mod 4 */
+> > >       switch (srcSize & 3) {
+> > >       case 3: HUF_encodeSymbol(&bitC, ip[n + 2], CTable); HUF_FLUSHBITS_2(&bitC);
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case 2: HUF_encodeSymbol(&bitC, ip[n + 1], CTable); HUF_FLUSHBITS_1(&bitC);
+> > > -             /* fall through */
+> > > +             fallthrough;
+> > >       case 1: HUF_encodeSymbol(&bitC, ip[n + 0], CTable); HUF_FLUSHBITS(&bitC);
+> > >       case 0:
+> > >       default:;
+> > > --
+> > > 2.29.2.299.gdc1121823c-goog
+> > >
+> 
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
