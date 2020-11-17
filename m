@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FD32B6620
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DB02B6669
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387467AbgKQOBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:01:34 -0500
-Received: from verein.lst.de ([213.95.11.211]:59557 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733003AbgKQOBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:01:25 -0500
-Received: by verein.lst.de (Postfix, from userid 2005)
-        id CF5AD6736F; Tue, 17 Nov 2020 15:01:18 +0100 (CET)
-Date:   Tue, 17 Nov 2020 15:01:18 +0100
-From:   Torsten Duwe <duwe@lst.de>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Stephan =?utf-8?Q?M=C3=BCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>, linux-crypto@vger.kernel.org,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>, ardb@kernel.org,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
-Subject: Re: [PATCH v36 00/13] /dev/random - a new approach
-Message-ID: <20201117140118.GA31400@lst.de>
-References: <20200921075857.4424-1-nstange@suse.de> <2961243.vtBmWVcJkq@tauon.chronox.de> <20201016172619.GA18410@lst.de> <3073852.aeNJFYEL58@positron.chronox.de> <20201028185117.74300988@blackhole.lan> <20201028180728.GA2831268@kroah.com> <20201102154435.71cab8c0@blackhole>
+        id S1732288AbgKQOC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:02:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387477AbgKQOCy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:02:54 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BA5C0613CF;
+        Tue, 17 Nov 2020 06:02:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=m0hk7B27NeOlPrLY9cJvHDlIQhUidBou/7Utsa5IK1g=; b=dmPoiDU8T3nNQ2t/waEeUgrzZI
+        k5qNrx2A0lHyPcMXIWNDO0HshkfKPtpOVNdWQJYjkYcYByLttcMxJHgNzVu4a90Z78/r3OezLmBao
+        FU3EuqTrqylL4pd0zDJ5wo11G8mxUPs4VesrCfSMlYHNoCE8LZ2KA5caKj2Qe+IaFAGjBLzd9eXX5
+        bOQrnE7lBoJmrbAJcCv0y6TXYbj9qmzcmPHMyjfeECuKcA+1f9Yksr1Ij0vg0393q5JhoLioopfN0
+        tg4wklF1HbhnUL6sdcamNXOADkGJY5O/Hh8vYDxX9NMdbEV8SIRiV2R/YnhtFWW58o2fpWe2r/FqC
+        qMBg9a3w==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kf1Z0-00087I-Ri; Tue, 17 Nov 2020 14:02:30 +0000
+Date:   Tue, 17 Nov 2020 14:02:30 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
+ for rproc serial
+Message-ID: <20201117140230.GA30567@infradead.org>
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
+ <20201116091950.GA30524@infradead.org>
+ <ca183081-5a9f-0104-bf79-5fea544c9271@st.com>
+ <20201116162844.GB16619@infradead.org>
+ <20201116163907.GA19209@infradead.org>
+ <79d2eb78-caad-9c0d-e130-51e628cedaaa@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201102154435.71cab8c0@blackhole>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <79d2eb78-caad-9c0d-e130-51e628cedaaa@st.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 02:44:35PM +0100, Torsten Duwe wrote:
+On Tue, Nov 17, 2020 at 03:00:32PM +0100, Arnaud POULIQUEN wrote:
+> The dma_declare_coherent_memory allows to associate vdev0buffer memory region
+> to the remoteproc virtio device (vdev parent). This region is used to allocated
+> the rpmsg buffers.
+> The memory for the rpmsg buffer is allocated by the rpmsg_virtio device in
+> rpmsg_virtio_bus[1]. The size depends on the total size needed for the rpmsg
+> buffers.
 > 
-> Ted, if you don't have the time any more to take care of /dev/random,
-> it's not a shame to hand over maintainership, especially given your
-> long history of Linux contributions.
-> 
-> Please do seriously consider to hand it over to someone new. This would
-> be a good opportunity.
+> The vrings are allocated directly by the remoteproc device.
 
-I can see you are quite busy working on ext4, and there is a number of
-patches for drivers/char/random.c awaiting review. Wouldn't it be good
-to pass it on to someone more enthusiastic?
+Weird.  I thought virtio was pretty strict in not allowing diret DMA
+API usage in drivers to support the legacy no-mapping case.
 
-At least some sort of reply would be appreciated.
-Or are you already pondering the request ;-) ?
-
-	Torsten
-
+Either way, the point stands:  if you want these magic buffers handed
+out to specific rpmsg instances I think not having to detour through the
+DMA API is going to make everyones life easier.
