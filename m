@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B922B60E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F102B6032
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgKQNNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:13:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44366 "EHLO mail.kernel.org"
+        id S1729047AbgKQNHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:07:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729941AbgKQNNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:13:47 -0500
+        id S1728992AbgKQNHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:07:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E73EA2151B;
-        Tue, 17 Nov 2020 13:13:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B15E62464E;
+        Tue, 17 Nov 2020 13:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618826;
-        bh=j+q9e5I7bDq0E+WLqGswa+faDIMGj7OmgmhmlzHZOfY=;
+        s=default; t=1605618420;
+        bh=8XF7R//Yl6NH0VxVXke17EfNRQeotPb3MfGtIMyT23U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y+30f/YvTgzpLtngmn+qr/zHYyHMWZUCHcs3hYPnQ7DBu5FslV8yRB55LWCGQD0hA
-         DfCK5P4+SXWnIJvSe4OF+VbjcTxsxrd7v34VpN3zoUc/URpHBjCEF7G4maDrrF6Qry
-         R8r1XPhEsAgqgfXBTE2Z5m34Wkc35PJOEOpXffKQ=
+        b=AqlFBbrz+lYs93QMA9IU2mXmVU4MDr2EwDZBm3BWcaWqOYoJPyQ6KWwTak4hBx8Xp
+         bMiQ1e1rHsjgFPIH/6oTVN1v9o4qc4cE5sCbVEWYGBMFjX9YEDoQiXAJEFhIOy6I8Q
+         /I7TGOTQbSF2Nee9VEDO3MCVNPEHBEpDzISHdupY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Ye Bin <yebin10@huawei.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 20/85] xfs: flush new eof page on truncate to avoid post-eof corruption
+Subject: [PATCH 4.4 26/64] cfg80211: regulatory: Fix inconsistent format argument
 Date:   Tue, 17 Nov 2020 14:04:49 +0100
-Message-Id: <20201117122112.026112733@linuxfoundation.org>
+Message-Id: <20201117122107.427138656@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,68 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian Foster <bfoster@redhat.com>
+From: Ye Bin <yebin10@huawei.com>
 
-[ Upstream commit 869ae85dae64b5540e4362d7fe4cd520e10ec05c ]
+[ Upstream commit db18d20d1cb0fde16d518fb5ccd38679f174bc04 ]
 
-It is possible to expose non-zeroed post-EOF data in XFS if the new
-EOF page is dirty, backed by an unwritten block and the truncate
-happens to race with writeback. iomap_truncate_page() will not zero
-the post-EOF portion of the page if the underlying block is
-unwritten. The subsequent call to truncate_setsize() will, but
-doesn't dirty the page. Therefore, if writeback happens to complete
-after iomap_truncate_page() (so it still sees the unwritten block)
-but before truncate_setsize(), the cached page becomes inconsistent
-with the on-disk block. A mapped read after the associated page is
-reclaimed or invalidated exposes non-zero post-EOF data.
+Fix follow warning:
+[net/wireless/reg.c:3619]: (warning) %d in format string (no. 2)
+requires 'int' but the argument type is 'unsigned int'.
 
-For example, consider the following sequence when run on a kernel
-modified to explicitly flush the new EOF page within the race
-window:
-
-$ xfs_io -fc "falloc 0 4k" -c fsync /mnt/file
-$ xfs_io -c "pwrite 0 4k" -c "truncate 1k" /mnt/file
-  ...
-$ xfs_io -c "mmap 0 4k" -c "mread -v 1k 8" /mnt/file
-00000400:  00 00 00 00 00 00 00 00  ........
-$ umount /mnt/; mount <dev> /mnt/
-$ xfs_io -c "mmap 0 4k" -c "mread -v 1k 8" /mnt/file
-00000400:  cd cd cd cd cd cd cd cd  ........
-
-Update xfs_setattr_size() to explicitly flush the new EOF page prior
-to the page truncate to ensure iomap has the latest state of the
-underlying block.
-
-Fixes: 68a9f5e7007c ("xfs: implement iomap based buffered write path")
-Signed-off-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Link: https://lore.kernel.org/r/20201009070215.63695-1-yebin10@huawei.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_iops.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ net/wireless/reg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index 4e6f2c8574f7e..42c670a313518 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -879,6 +879,16 @@ xfs_setattr_size(
- 	if (newsize > oldsize) {
- 		error = xfs_zero_eof(ip, newsize, oldsize, &did_zeroing);
- 	} else {
-+		/*
-+		 * iomap won't detect a dirty page over an unwritten block (or a
-+		 * cow block over a hole) and subsequently skips zeroing the
-+		 * newly post-EOF portion of the page. Flush the new EOF to
-+		 * convert the block before the pagecache truncate.
-+		 */
-+		error = filemap_write_and_wait_range(inode->i_mapping, newsize,
-+						     newsize);
-+		if (error)
-+			return error;
- 		error = iomap_truncate_page(inode, newsize, &did_zeroing,
- 				&xfs_iomap_ops);
- 	}
+diff --git a/net/wireless/reg.c b/net/wireless/reg.c
+index 474923175b108..dcbf5cd44bb37 100644
+--- a/net/wireless/reg.c
++++ b/net/wireless/reg.c
+@@ -2775,7 +2775,7 @@ static void print_rd_rules(const struct ieee80211_regdomain *rd)
+ 		power_rule = &reg_rule->power_rule;
+ 
+ 		if (reg_rule->flags & NL80211_RRF_AUTO_BW)
+-			snprintf(bw, sizeof(bw), "%d KHz, %d KHz AUTO",
++			snprintf(bw, sizeof(bw), "%d KHz, %u KHz AUTO",
+ 				 freq_range->max_bandwidth_khz,
+ 				 reg_get_max_bandwidth(rd, reg_rule));
+ 		else
 -- 
 2.27.0
 
