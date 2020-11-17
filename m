@@ -2,125 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D04B2B727D
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE9F2B727F
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727453AbgKQXdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:33:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgKQXdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:33:18 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA252222E9;
-        Tue, 17 Nov 2020 23:33:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605655997;
-        bh=Y6O0hmdHN+QQnB04I7VkG/GmBcbPTiUeyQkoNJTfCXU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2OYboSBp/JjJysgOagASPLmEiBKUy7PIMPgkkTRLKAfgdAypk3RLPgC6t9ulrhGcP
-         1fxNZ8vVmurejx4nhLoKbI+BAKC9adI/GE+js4+KWqupGMBdhECG/HfO8EL1R3Qbkn
-         9YldUHo6+RySh8miCEYCi6ZYS77wl7xtFOXp4a5g=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 100A040E29; Tue, 17 Nov 2020 20:33:14 -0300 (-03)
-Date:   Tue, 17 Nov 2020 20:33:13 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 06/24] perf tools: Add build_id__is_defined function
-Message-ID: <20201117233313.GD657351@kernel.org>
-References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-7-jolsa@kernel.org>
- <CAP-5=fUrf9Kq3XwKALSZut3M6NXtnJCAMw0Pe2rh8_31a7tX4w@mail.gmail.com>
- <20201117205359.GJ1216482@krava>
+        id S1727667AbgKQXfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgKQXfq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 18:35:46 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F6EC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:35:45 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id 74so300073lfo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:35:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BeKKFBADpWN954+IsjWIr6cgEypB+tWqmR313eWsUZQ=;
+        b=WZyZegk3XS6jrNOhpP9XVbKY/k4lwQwrmxgAQthohq39GWVWjYSa37pMS8M9R+nA6q
+         jN5lLGlDohciyA5mc2sqEmyPaVEcYzWvJhJnDfHaJtClBXNaqssKMNoQQM1to3AKnxHU
+         o8G/h1a9oa7M3n8NtiEluAKT1GWyygLT0jhao=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BeKKFBADpWN954+IsjWIr6cgEypB+tWqmR313eWsUZQ=;
+        b=KNX69kOpfj88ALa94FkPd78FFIG9V65g1aUUftw92NMpzYaJuyPdr5zIIkRQtlIKXY
+         /ZP3M/+xPLbqVJfKzW6GGJBmJ6wAFNFqHHLFUffxBfaTS05mncY0+P1ilg3x9RNOpGKn
+         l82PMyjNc6lcNJ9FzyRqZUcckYDycxbTdxOhA428a9jhLF01uoFUJ/AeNAx1P6kLQF7G
+         KOa4yqLsjavX6l7fQOpT3dgIrMA/5WLExCAEAxMGoHdtTlxNwnbFudeR8OtFSAlrDO4t
+         gFMwqHOD5M3kDfK6+nPfYjhoYIn+fiyYi1CItdRDgvMZWfVXGqpNDUkCitBuNdFPZT4B
+         vr7Q==
+X-Gm-Message-State: AOAM531ylXmVrIlGhpBn10dKzPwHD8lZQki5o821WAARMsJYWYc/WzMv
+        eOaXOqerxk+qVNAWSHlxpCcteEzsHMjG1iYUJBybbw==
+X-Google-Smtp-Source: ABdhPJxYqW4KKC6wvgXSRVBXVMDStNeme+c99uG/OaKioLneRwupeJj+sC+B0/kqf9e+qh939D7483AjgJEoxO/41Jk=
+X-Received: by 2002:a19:418d:: with SMTP id o135mr2789233lfa.329.1605656144289;
+ Tue, 17 Nov 2020 15:35:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117205359.GJ1216482@krava>
-X-Url:  http://acmel.wordpress.com
+References: <20201117021307.1846300-1-kpsingh@chromium.org> <cc03ab7e-dee8-f717-7a4f-413a3a5f58b7@iogearbox.net>
+In-Reply-To: <cc03ab7e-dee8-f717-7a4f-413a3a5f58b7@iogearbox.net>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Wed, 18 Nov 2020 00:35:33 +0100
+Message-ID: <CACYkzJ54zxE2uefF3actr90OVdKeWTgREffw9TKc54yWeyjAPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Add bpf_lsm_set_bprm_opts helper
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 17, 2020 at 09:53:59PM +0100, Jiri Olsa escreveu:
-> On Tue, Nov 17, 2020 at 11:00:37AM -0800, Ian Rogers wrote:
-> > On Tue, Nov 17, 2020 at 3:01 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > 
-> > > Adding build_id__is_defined helper to check build id
-> > > is defined and is != zero build id.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/perf/util/build-id.c | 7 +++++++
-> > >  tools/perf/util/build-id.h | 1 +
-> > >  2 files changed, 8 insertions(+)
-> > >
-> > > diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-> > > index 6b410c3d52dc..7d9ecc37849c 100644
-> > > --- a/tools/perf/util/build-id.c
-> > > +++ b/tools/perf/util/build-id.c
-> > > @@ -912,3 +912,10 @@ void build_id__init(struct build_id *bid, const u8
-> > > *data, size_t size)
-> > >         memcpy(bid->data, data, size);
-> > >         bid->size = size;
-> > >  }
-> > > +
-> > > +bool build_id__is_defined(const struct build_id *bid)
-> > > +{
-> > > +       static u8 zero[BUILD_ID_SIZE];
-> > > +
-> > > +       return bid && bid->size ? memcmp(bid->data, &zero, bid->size) :
-> > > false;
+On Tue, Nov 17, 2020 at 11:41 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 11/17/20 3:13 AM, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > The helper allows modification of certain bits on the linux_binprm
+> > struct starting with the secureexec bit which can be updated using the
+> > BPF_LSM_F_BPRM_SECUREEXEC flag.
+> >
+> > secureexec can be set by the LSM for privilege gaining executions to set
+> > the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
+> > use of certain environment variables (like LD_PRELOAD).
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >   include/uapi/linux/bpf.h       | 18 ++++++++++++++++++
+> >   kernel/bpf/bpf_lsm.c           | 27 +++++++++++++++++++++++++++
+> >   scripts/bpf_helpers_doc.py     |  2 ++
+> >   tools/include/uapi/linux/bpf.h | 18 ++++++++++++++++++
+> >   4 files changed, 65 insertions(+)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 162999b12790..bfa79054d106 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3787,6 +3787,18 @@ union bpf_attr {
+> >    *          *ARG_PTR_TO_BTF_ID* of type *task_struct*.
+> >    *  Return
+> >    *          Pointer to the current task.
+> > + *
+> > + * long bpf_lsm_set_bprm_opts(struct linux_binprm *bprm, u64 flags)
+> > + *
+>
+> small nit: should have no extra newline (same for the tools/ copy)
+>
+> > + *   Description
+> > + *           Set or clear certain options on *bprm*:
+> > + *
+> > + *           **BPF_LSM_F_BPRM_SECUREEXEC** Set the secureexec bit
+> > + *           which sets the **AT_SECURE** auxv for glibc. The bit
+> > + *           is cleared if the flag is not specified.
+> > + *   Return
+> > + *           **-EINVAL** if invalid *flags* are passed.
+> > + *
+> >    */
+> >   #define __BPF_FUNC_MAPPER(FN)               \
+> >       FN(unspec),                     \
+> > @@ -3948,6 +3960,7 @@ union bpf_attr {
+> >       FN(task_storage_get),           \
+> >       FN(task_storage_delete),        \
+> >       FN(get_current_task_btf),       \
+> > +     FN(lsm_set_bprm_opts),          \
+> >       /* */
+> >
+> >   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > @@ -4119,6 +4132,11 @@ enum bpf_lwt_encap_mode {
+> >       BPF_LWT_ENCAP_IP,
+> >   };
+> >
+> > +/* Flags for LSM helpers */
+> > +enum {
+> > +     BPF_LSM_F_BPRM_SECUREEXEC       = (1ULL << 0),
+> > +};
+> > +
+> >   #define __bpf_md_ptr(type, name)    \
+> >   union {                                     \
+> >       type name;                      \
+> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > index 553107f4706a..cd85482228a0 100644
+> > --- a/kernel/bpf/bpf_lsm.c
+> > +++ b/kernel/bpf/bpf_lsm.c
+> > @@ -7,6 +7,7 @@
+> >   #include <linux/filter.h>
+> >   #include <linux/bpf.h>
+> >   #include <linux/btf.h>
+> > +#include <linux/binfmts.h>
+> >   #include <linux/lsm_hooks.h>
+> >   #include <linux/bpf_lsm.h>
+> >   #include <linux/kallsyms.h>
+> > @@ -51,6 +52,30 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+> >       return 0;
+> >   }
+> >
+> > +/* Mask for all the currently supported BPRM option flags */
+> > +#define BPF_LSM_F_BRPM_OPTS_MASK     BPF_LSM_F_BPRM_SECUREEXEC
+> > +
+> > +BPF_CALL_2(bpf_lsm_set_bprm_opts, struct linux_binprm *, bprm, u64, flags)
+> > +{
+> > +
+>
+> ditto
+>
+> Would have fixed up these things on the fly while applying, but one small item
+> I wanted to bring up here given uapi which will then freeze: it would be cleaner
+> to call the helper just bpf_bprm_opts_set() or so given it's implied that we
+> attach to lsm here and we don't use _lsm in the naming for the others either.
+> Similarly, I'd drop the _LSM from the flag/mask.
+>
 
-> > Fwiw, I find this method to test for zero a little hard to parse - I'm
-> 
-> heh, it's controversial one, Namhyung commented
-> on this one in previous version, so I changed it ;-)
->   https://lore.kernel.org/lkml/CAM9d7cjjGjTN8sDgLZ1PoQZ-sUXWjnVaNdyOVE1yHxq46PrPkw@mail.gmail.com/
+Thanks Daniel, this makes sense and is more future proof, I respun this and
+sent out another version with some minor fixes and the rename. Also added
+Martin's acks.
 
-So, the kernel has an idiom for this in lib/string.c:
-
-/**
- * memchr_inv - Find an unmatching character in an area of memory.
- * @start: The memory area
- * @c: Find a character other than c
- * @bytes: The size of the area.
- *
- * returns the address of the first character other than @c, or %NULL
- * if the whole buffer contains just @c.
- */
-void *memchr_inv(const void *start, int c, size_t bytes)
-
-No need for any array of some particular size :-)
-
-Its been there for a while:
-
-commit 798248206b59acc6e1238c778281419c041891a7
-Author: Akinobu Mita <akinobu.mita@gmail.com>
-Date:   Mon Oct 31 17:08:07 2011 -0700
-
-    lib/string.c: introduce memchr_inv()
-
-    memchr_inv() is mainly used to check whether the whole buffer is filled
-    with just a specified byte.
-
-- Arnaldo
- 
-> 
-> > failing as a C programmer :-) Nit, should zero be const?
-> 
-> right, should be const, will change
+- KP
