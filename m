@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8F82B6CAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F952B6CAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730030AbgKQSM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgKQSMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:12:55 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15E3C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:12:54 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id b6so24142080wrt.4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:12:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=sy11XZxk2UapLYKn4i4gXsIKXlY4QqHYxqwrkdcDSg4=;
-        b=wUafgPlH0pdlylG8w4VJtjz2eCiqI8uWYjuWKDcZerO7JqIH06BqNXcYPF+AfMM7RW
-         5qZLCajp6dntsBGiOp6L+s+uqRv7JCv0eHkT27tOhpdy3qQQl+TWbZZYCxRl/xqlSXPG
-         kq1ClL1K4yPBMzdZEpIF65EfPpcQwUlo1iQ6VXbhvbEg0xusMHYryjp9Pu7Rn307l0+a
-         8beTKUVURc/fuk6QAxqnCXwCT9m48ZrEcECxj0Y/czaXcAEt+rR38G0jm/lXeNvkvePe
-         hXm23B0BGeoJdmX66MKsmacvQFjwA/Y+oJCJEkg91pJkv2QBuaHOAYQpw0naV9KOb62J
-         yOyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sy11XZxk2UapLYKn4i4gXsIKXlY4QqHYxqwrkdcDSg4=;
-        b=VTO5t2IRNoRl9VvCBw7SxeqQXVM4CUnDUjhmUGQmz007MX+JKIjpenORjS6lWy6x/F
-         4yVZ4EuchorHs89qgb4vBG5F/9Z+XbZ+0KQ3pLc10jEDA9+l7Cmz5qvPiR/MgZqhK1yH
-         WLe6P60bU+Vt0iQT2TmjETc9tkkxUjazGEhbaKnLoY4fn7Sn8aVf0WrasrLCkJKeq4ee
-         C1dUWCIq7iU7LmnqTeV940747krfLqwn/x93O8gwJfxjJWFHcLa7pX4Y+jlJOz6xqFyd
-         AjwO+l+qF4D4crM9Wmc+SO9cSsj5yWqxAW9aWCGLRPDe+r8svWCfBF2JVcwasEDZpWXu
-         1nPQ==
-X-Gm-Message-State: AOAM533VXh9BD4X2YDXpsOgBwkK1QuTDdik+yar7Atyd9RgK64FZHwXA
-        ynpy8RJeX3yd1f5pMugaQ3fDYggFXejclHaW
-X-Google-Smtp-Source: ABdhPJxWNo3jDSMV6Q/igylxB209/03TI6WOA2HljuZCCtF8aRIy/XIUcF+ZPgfMNkk3gZ43jnJJiw==
-X-Received: by 2002:adf:b358:: with SMTP id k24mr725103wrd.388.1605636773200;
-        Tue, 17 Nov 2020 10:12:53 -0800 (PST)
-Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id t13sm29699403wru.67.2020.11.17.10.12.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 10:12:52 -0800 (PST)
-Date:   Tue, 17 Nov 2020 18:12:50 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 03/42] drm/drm_dp_mst_topology: Remove set but never used
- variable 'len'
-Message-ID: <20201117181250.GL1869941@dell>
-References: <20201116174112.1833368-1-lee.jones@linaro.org>
- <20201116174112.1833368-4-lee.jones@linaro.org>
- <20201117172925.GN401619@phenom.ffwll.local>
+        id S1730227AbgKQSNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:13:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729091AbgKQSNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:13:05 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 399592465E;
+        Tue, 17 Nov 2020 18:13:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605636784;
+        bh=j4n786X/dzDqCILY/BB0WGn53xdUqEaWzVDPSgU9zR4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k/JxMqz3aFCVnlvIAukoACL+vLQYQHMsho54NcS//LAySqJJqBNk9KcTy12QASC/d
+         9Jz2cHZKhRFTxQ1n/8vnoX12NR9cb7WjqYAnhSMnLGszdNAfoJ56013A28Vvus+LCi
+         bEh8lWj0rnMe8PfhClWBMdAoYV1fhVL3JIQg05j0=
+Date:   Tue, 17 Nov 2020 20:12:58 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org
+Subject: Re: [PATCH v41 06/24] x86/mm: x86/sgx: Signal SIGSEGV with PF_SGX
+Message-ID: <20201117181258.GE8524@kernel.org>
+References: <20201112220135.165028-1-jarkko@kernel.org>
+ <20201114090708.8684-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201117172925.GN401619@phenom.ffwll.local>
+In-Reply-To: <20201114090708.8684-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020, Daniel Vetter wrote:
-
-> On Mon, Nov 16, 2020 at 05:40:33PM +0000, Lee Jones wrote:
-> > Fixes the following W=1 kernel build warning(s):
+On Sat, Nov 14, 2020 at 05:07:08PM +0800, Hillf Danton wrote:
+> On Fri, 13 Nov 2020 00:01:17 +0200 
 > > 
-> >  drivers/gpu/drm/drm_dp_mst_topology.c: In function ‘drm_dp_send_query_stream_enc_status’:
-> >  drivers/gpu/drm/drm_dp_mst_topology.c:3263:6: warning: variable ‘len’ set but not used [-Wunused-but-set-variable]
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
 > > 
-> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> > Cc: Maxime Ripard <mripard@kernel.org>
-> > Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > The x86 architecture has a set of page fault error codes.  These indicate
+> > things like whether the fault occurred from a write, or whether it
+> > originated in userspace.
+> > 
+> > The SGX hardware architecture has its own per-page memory management
+> > metadata (EPCM) [*] and hardware which is separate from the normal x86 MMU.
+> > The architecture has a new page fault error code: PF_SGX.  This new error
+> > code bit is set whenever a page fault occurs as the result of the SGX MMU.
+> > 
+> > These faults occur for a variety of reasons.  For instance, an access
+> > attempt to enclave memory from outside the enclave causes a PF_SGX fault.
+> > PF_SGX would also be set for permission conflicts, such as if a write to an
+> > enclave page occurs and the page is marked read-write in the x86 page
+> > tables but is read-only in the EPCM.
+> > 
+> > These faults do not always indicate errors, though.  SGX pages are
+> > encrypted with a key that is destroyed at hardware reset, including
+> > suspend. Throwing a SIGSEGV allows user space software to react and recover
+> > when these events occur.
+> > 
+> > Include PF_SGX in the PF error codes list and throw SIGSEGV when it is
+> > encountered.
+> > 
+> > [*] Intel SDM: 36.5.1 Enclave Page Cache Map (EPCM)
+> > 
+> > Acked-by: Jethro Beekman <jethro@fortanix.com> # v40
+> > # Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> >  arch/x86/include/asm/trap_pf.h |  1 +
+> >  arch/x86/mm/fault.c            | 12 ++++++++++++
+> >  2 files changed, 13 insertions(+)
+> > 
+> > diff --git a/arch/x86/include/asm/trap_pf.h b/arch/x86/include/asm/trap_pf.h
+> > index 305bc1214aef..1794777b2a85 100644
+> > --- a/arch/x86/include/asm/trap_pf.h
+> > +++ b/arch/x86/include/asm/trap_pf.h
+> > @@ -19,6 +19,7 @@ enum x86_pf_error_code {
+> >  	X86_PF_RSVD	=		1 << 3,
+> >  	X86_PF_INSTR	=		1 << 4,
+> >  	X86_PF_PK	=		1 << 5,
+> > +	X86_PF_SGX	=		1 << 15,
+> >  };
+> >  
+> >  #endif /* _ASM_X86_TRAP_PF_H */
+> > diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> > index 82bf37a5c9ec..9339fee83784 100644
+> > --- a/arch/x86/mm/fault.c
+> > +++ b/arch/x86/mm/fault.c
+> > @@ -1101,6 +1101,18 @@ access_error(unsigned long error_code, struct vm_area_struct *vma)
+> >  	if (error_code & X86_PF_PK)
+> >  		return 1;
+> >  
+> > +	/*
+> > +	 * SGX hardware blocked the access.  This usually happens
+> > +	 * when the enclave memory contents have been destroyed, like
+> > +	 * after a suspend/resume cycle. In any case, the kernel can't
+> > +	 * fix the cause of the fault.  Handle the fault as an access
+> > +	 * error even in cases where no actual access violation
+> > +	 * occurred.  This allows userspace to rebuild the enclave in
+> > +	 * response to the signal.
+> > +	 */
 > 
-> Going to apply this, but I noticed that the return value of the
-> build_query_stream_enc_status() is pointless. Can you pls follow up with
-> an additional patch to change that to void?
+> Given SIGSEGV, it helps much understand PF_SGX to specify the rebuild
+> in userspace a bit more.
 
-I can.
+I'm sorry but I'm not exactly sure what you are suggesting.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+/Jarkko
