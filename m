@@ -2,79 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF0B2B562B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F27E2B562D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731224AbgKQBS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 20:18:28 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:44032 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726611AbgKQBS2 (ORCPT
+        id S1730524AbgKQBS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:18:57 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:17249 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726158AbgKQBS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:18:28 -0500
-Received: by mail-io1-f66.google.com with SMTP id o11so19465415ioo.11;
-        Mon, 16 Nov 2020 17:18:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0FWAP333w94hyR1l4hvmRMbP8VukKi52sst6NEV009g=;
-        b=qSjKN1YIIVwcXqoLWCJ9f/reVaI7Vtj4ZzAii+hmXOfSB8ghzEHqCdeDf4pXFcpO8o
-         xHEvUP0JrrcI73NNz9lTKsZpXl0MUZOEGTW47W3FMLuWvhDDrOF3KozTgKYUInSiwKNW
-         59xigv1TGzlzkS4DNBIW5v2HkbB5NhR4+8TH1GTq+iJZd9v3AoVEa7or7noJS59Bw9OR
-         +eqR5BY0LPFnMSOpWMkYNQEaQwJ8vEgWU2sIuHuV8hgj4xm9C4zVsQ4bN6wV2GOPDT07
-         At5xFZPobgSsbpUk6iJ33CIVoJnMuWfqtV3Ou2GbG5sYGWw6i2Bz/d8AfweBtf+pKAaz
-         Hrqw==
-X-Gm-Message-State: AOAM532+B1CfpvAlkl6yfODKkyFFFIlnOpTWaCjLkAJ3dob5QERCVLV+
-        M1oWlM0W446TG+kQM/dnXfI2fsHCrpNi8fqi9sg=
-X-Google-Smtp-Source: ABdhPJx2FY24KGOnWg678c/JvQfGvSMNswqrUSVq4vpE1J1Qku21XhcfegU08YzERDaLb3KcCespJK0dJfWJeV14uq8=
-X-Received: by 2002:a02:9987:: with SMTP id a7mr1896651jal.38.1605575907625;
- Mon, 16 Nov 2020 17:18:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20201113110952.68086-1-tsbogend@alpha.franken.de>
- <20201113110952.68086-2-tsbogend@alpha.franken.de> <CAAhV-H7Sc6tmsfRcxOkx3rPk85Ey6XtxqhDB0RWokk+XSGVJ9A@mail.gmail.com>
- <20201116123009.GA7555@alpha.franken.de>
-In-Reply-To: <20201116123009.GA7555@alpha.franken.de>
-From:   Huacai Chen <chenhc@lemote.com>
-Date:   Tue, 17 Nov 2020 09:18:15 +0800
-Message-ID: <CAAhV-H57XNHurOYw8PG4=praXEWQ7h_TKM08cGBVRgAth1Rx1A@mail.gmail.com>
-Subject: Re: [PATCH 2/4] MIPS: kvm: Use vm_get_page_prot to get protection bits
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 16 Nov 2020 20:18:56 -0500
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201117011853epoutp03030c89ce507fbb6b19a70c9c068298b6~IJs4bhVoe1871618716epoutp03J
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:18:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201117011853epoutp03030c89ce507fbb6b19a70c9c068298b6~IJs4bhVoe1871618716epoutp03J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1605575933;
+        bh=HH/NqwyXdWOgWXZb8phOo0tVJ5pPS37tojmhBry9IvY=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=dIABx3ZAVyQqIVCFRLvyTCBEo1AQYREtSbgbHKV2aeDAZKdpM4eK+TChezUI12uDu
+         BVa/HQ6jFuTuHX0anXXgu3hYidWF2VqUOPa2/RovsgiGzobAHWAoJaDntu5iJWWKcW
+         CxarGIcr8wvpv0gAyKprowK9u6/YS2dWKQaNGfT0=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20201117011853epcas2p1054586c2198805cb91d5cd0fcbe745ab~IJs38VKQD0664006640epcas2p1J;
+        Tue, 17 Nov 2020 01:18:53 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.181]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4CZp4D1HD7zMqYks; Tue, 17 Nov
+        2020 01:18:52 +0000 (GMT)
+X-AuditID: b6c32a46-1d9ff7000000dbf8-d9-5fb324fa09cf
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        20.04.56312.AF423BF5; Tue, 17 Nov 2020 10:18:50 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH net-next v2 3/3] nfc: s3fwrn5: Change the error code
+Reply-To: bongsu.jeon@samsung.com
+Sender: Bongsu Jeon <bongsu.jeon@samsung.com>
+From:   Bongsu Jeon <bongsu.jeon@samsung.com>
+To:     "krzk@kernel.org" <krzk@kernel.org>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>
+CC:     "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20201117011850epcms2p568af074144630cd0f02b3a7f7eff8d1a@epcms2p5>
+Date:   Tue, 17 Nov 2020 10:18:50 +0900
+X-CMS-MailID: 20201117011850epcms2p568af074144630cd0f02b3a7f7eff8d1a
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOJsWRmVeSWpSXmKPExsWy7bCmme4vlc3xBku7dCy2NE9it7g9cRqb
+        xfnzG9gtLu+aw2YxZ8NmdotjC8Qc2Dw2repk8+ie/Y/Fo2/LKkaPz5vkAliiGhhtEouSMzLL
+        UhVS85LzUzLz0m2VQkPcdC2UFDLyi0tslaINLYz0DC1N9Uws9YzMY60MDQyMTJUU8hJzU22V
+        KnShupUUipILgKpLUotLilKTU4FCRQ7FJYnpqXrFibnFpXnpesn5uUoKZYk5pUB9Svp2Nhmp
+        iSmpRQoJTxgzui5uZC5Yx1Pxp/0VcwPjGq4uRk4OCQETiSdnVrCC2EICOxglNk/W72Lk4OAV
+        EJT4u0MYJCws4CLR++QqG0SJosT/jnNsEHFdiRd/j4LZbALaEmuPNjKBtIoIhEh87KvtYuTi
+        YBZYzSjR+bOTGWIVr8SM9qcsELa0xPblWxkhbA2JH8t6oWpEJW6ufssOY78/Nh+qRkSi9d5Z
+        qBpBiQc/d0PFJSXe7pvHDrJMQqCdUeL8zx9sEM4MRolTm/9CdehLLD63ggnE5hXwlTi9+QPY
+        FSwCqhLndy6A2uYisf74PzCbWUBeYvvbOcwg3zALaEqs3wUOEwkBZYkjt1ggKvgkOg7/ZYf5
+        a8e8J0wQtqpEb/MXJpgfJ89ugbrTQ2LT+RXskDAMlLjb1MM2gVFhFiKkZyHZOwth7wJG5lWM
+        YqkFxbnpqcVGBUbI8byJEZw4tdx2ME55+0HvECMTB+MhRgkOZiURXheTjfFCvCmJlVWpRfnx
+        RaU5qcWHGKuAPp7ILCWanA9M3Xkl8YZmBkZmpsYmxsamJqZkC5samZkZWJpamJoZWSiJ84au
+        7IsXEkhPLEnNTk0tSC2CWc7EwSnVwFSUOr9NTIZTME7nRM1Z751Tz1kvlO2otviUZMQYPFn6
+        7ymd5qdvs9+ctPjKxbTi+YPdCbPurhHNkj/DocvU220/nXPJ1+DPOgY+yXmrnTc5WNzfnhT1
+        z61VRWZxQ26nYUrtmZXzps8QERUpNSz4uNy7/4lNmp7lLUM24cu9xj90X325ZHD4wcsZGoLT
+        TrWJbVps1fvJ5vkG8QTHFf0tD+ycZ6Scfu9vkJQzKS/cSsHocMllxjVml373pbU1Tn56dUdU
+        UcfkT/N09X9WSLzp3PRC6kvu15D/R6azftuxeLJ+Yf8s9/Qz7M0tit/1bh6MXZb3n2+e7ZEd
+        M+fL6+XO8m4quyJV80z5UtPDH8YbpyixFGckGmoxFxUnAgB3Oy1zagQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201117011850epcms2p568af074144630cd0f02b3a7f7eff8d1a
+References: <CGME20201117011850epcms2p568af074144630cd0f02b3a7f7eff8d1a@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas,
+ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP.
 
-On Mon, Nov 16, 2020 at 8:35 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Sat, Nov 14, 2020 at 03:34:14PM +0800, Huacai Chen wrote:
-> > Hi, Thomas,
-> >
-> > On Fri, Nov 13, 2020 at 7:13 PM Thomas Bogendoerfer
-> > <tsbogend@alpha.franken.de> wrote:
-> > >
-> > > MIPS protection bits are setup during runtime so using defines like
-> > > PAGE_SHARED ignores this runtime changes. Using vm_get_page_prot
-> > > to get correct page protection fixes this.
-> > Is there some visible bugs if without this fix?
->
-> no exec isn't enabled for these mappings, if cpu supports it.
-The whole series wants to set XI if supported?
+Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+---
+ drivers/nfc/s3fwrn5/s3fwrn5.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Huacai
+diff --git a/drivers/nfc/s3fwrn5/s3fwrn5.h b/drivers/nfc/s3fwrn5/s3fwrn5.h
+index 9d5f34759225..bb8f936d13a2 100644
+--- a/drivers/nfc/s3fwrn5/s3fwrn5.h
++++ b/drivers/nfc/s3fwrn5/s3fwrn5.h
+@@ -44,7 +44,7 @@ static inline int s3fwrn5_set_mode(struct s3fwrn5_info *info,
+ 	enum s3fwrn5_mode mode)
+ {
+ 	if (!info->phy_ops->set_mode)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	info->phy_ops->set_mode(info->phy_id, mode);
+ 
+@@ -54,7 +54,7 @@ static inline int s3fwrn5_set_mode(struct s3fwrn5_info *info,
+ static inline enum s3fwrn5_mode s3fwrn5_get_mode(struct s3fwrn5_info *info)
+ {
+ 	if (!info->phy_ops->get_mode)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	return info->phy_ops->get_mode(info->phy_id);
+ }
+@@ -62,7 +62,7 @@ static inline enum s3fwrn5_mode s3fwrn5_get_mode(struct s3fwrn5_info *info)
+ static inline int s3fwrn5_set_wake(struct s3fwrn5_info *info, bool wake)
+ {
+ 	if (!info->phy_ops->set_wake)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	info->phy_ops->set_wake(info->phy_id, wake);
+ 
+@@ -72,7 +72,7 @@ static inline int s3fwrn5_set_wake(struct s3fwrn5_info *info, bool wake)
+ static inline int s3fwrn5_write(struct s3fwrn5_info *info, struct sk_buff *skb)
+ {
+ 	if (!info->phy_ops->write)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	return info->phy_ops->write(info->phy_id, skb);
+ }
+-- 
+2.17.1
 
-
-Huacai
-
->
-> Thomas.
->
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
