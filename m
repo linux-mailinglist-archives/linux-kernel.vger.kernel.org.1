@@ -2,257 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DA62B726C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C322B7270
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgKQX3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:29:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        id S1727297AbgKQXaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:30:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgKQX3f (ORCPT
+        with ESMTP id S1727059AbgKQXaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:29:35 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F02C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:29:33 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 23so3008683wmg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:29:33 -0800 (PST)
+        Tue, 17 Nov 2020 18:30:19 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0F3C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:30:17 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id i17so279366ljd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:30:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pj9GAd6lPX1luvhTRtjAwGqzDzBvcBv8m7DVR+Is5uw=;
-        b=UAKmz27BMPIPbI0bWQo8kRhYVHct0edQpiEo4rQhkH4BwgyomWNfUA1Y7wFQ1iPgx9
-         Q7sEV+P93u7JGo1xzJrbcrqTPztosr7+bK26ORfOamwjtMZRBIx8bCmLv8B9xlhXEr2S
-         uS7ByHTyfDA8JDJEP2J6XkXGMYvEjc2WO0Sm4=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Em64QPCkGCLXZWoLObSIBhUC3x5oAVxDwnh90HcLMak=;
+        b=HeuQ3NoSPHMV5vKQqErsUpbPU0jCzVO1YYw049IBFq1aeufNNpzqJb5qaTS2ZHfFe+
+         WcUWdn6RMYtlbpqWvhE+FKQgR+SjxTvXaBlD3AxqZuA+NUcWqZcWsAHAfKnyuWsrg+Kw
+         I+44mfRUd+9oWmJWHMV2sPLHW/pUwKHciZkoM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pj9GAd6lPX1luvhTRtjAwGqzDzBvcBv8m7DVR+Is5uw=;
-        b=La+gZrXMfVDkokVpJx4FNbLZwGFnsQJFmYiY+qN90tNuNeZY5IfSZhRryr6HLZ0KQe
-         jTlKBqv8u65TF+k22cvPKk2zRE7b58F5dONe/jLhKI8N7s3SkTKuqxuplEzuJJ0d8Vyz
-         QJ8aHWks+ZNRxxpUN4Hz+jZSgnLdTO9u+/rGV+4J6YTnK8FwJgqhTLB1G0LI8hsqsxub
-         LD3p2q4Nz2iORRphgkqy6z1AQAvc/n1Y8PjrZnUZVkFGJTaaEyW5ktpWJDLJrpj+rV86
-         +hRFu5idVgS64ZX6DL7fEvXCvYqDJWWSrD+TfYJ7JXJHTKlcn6bdMDnhcxCNK97AVh2v
-         fg1A==
-X-Gm-Message-State: AOAM532kw6JWklS88Qn+nIe1zfrjG5VN0KXm+rbTSjlk5P3qhKSGw2zv
-        Fk3KRuUYqBqSIwm7vl7GCitZLjQT9kBpjVkI
-X-Google-Smtp-Source: ABdhPJzbgwwvQLLgNXiU4qs1FUcMhc/h3RfJiZXP6ECYiZWhZaxzr26Wf0leeiMoAq00m5jcGd4xeg==
-X-Received: by 2002:a1c:a344:: with SMTP id m65mr1396001wme.77.1605655771928;
-        Tue, 17 Nov 2020 15:29:31 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id k3sm10212083wrn.81.2020.11.17.15.29.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 15:29:31 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Pauline Middelink <middelin@google.com>
-Subject: [PATCH bpf-next v4 2/2] bpf: Add tests for bpf_bprm_opts_set helper
-Date:   Tue, 17 Nov 2020 23:29:29 +0000
-Message-Id: <20201117232929.2156341-2-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-In-Reply-To: <20201117232929.2156341-1-kpsingh@chromium.org>
-References: <20201117232929.2156341-1-kpsingh@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Em64QPCkGCLXZWoLObSIBhUC3x5oAVxDwnh90HcLMak=;
+        b=Hz/eJCs2eDGCTH1nLQXhkV//b+ID++NXhcMAuJp2wc4Pt06E/bUT31SvATvORwtcBx
+         vZ/NnYCavuGsY8Qu5lOl4yq0p59TkHKYY4tLYtxDROr+BS0dvV5dKiowaZRngi504Qt7
+         iQqxyCKHQ87aDRdcusEW/jdGXqei9RZdRediJAiEntQVebs5QgUqPGhToD3g0yBLRMts
+         y1LTIKiOT3EXhN2MZuQloKtuRpLkksJpbtiZaomOz1tv276mRzTqod7T4WdU5eqAJB6R
+         QLzlC8pd4d3Egq2YfXH9Oi2/PaGRZCXg4C1NhNSkEO99YELf/aNOBozhEf2ZK9YZVwMu
+         BTlg==
+X-Gm-Message-State: AOAM532N7aRC6CdYipNh6DTJaQdhbP6B+d7clWyYYq1R+oUtbyMbVdQj
+        ecoc73bKunu8lMNysCHcxY1GEH+NhdC/xA==
+X-Google-Smtp-Source: ABdhPJzQZ0dQzzIJeVlU6prhz3iKnXhxU7M23vLtK9uGSf89+nM+FcxZdRox8C+I7P/LHs6TW9OFQg==
+X-Received: by 2002:a2e:9dcd:: with SMTP id x13mr2680548ljj.329.1605655815483;
+        Tue, 17 Nov 2020 15:30:15 -0800 (PST)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id l26sm697335ljb.92.2020.11.17.15.30.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 15:30:11 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id y16so297114ljh.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:30:11 -0800 (PST)
+X-Received: by 2002:a2e:8701:: with SMTP id m1mr2679618lji.314.1605655810863;
+ Tue, 17 Nov 2020 15:30:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201113080132.16591-1-roberto.sassu@huawei.com>
+ <20201114111057.GA16415@infradead.org> <0fd0fb3360194d909ba48f13220f9302@huawei.com>
+ <20201116162202.GA15010@infradead.org> <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
+ <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
+ <20201116174127.GA4578@infradead.org> <CAHk-=wjd0RNthZQTLVsnK_d9SFYH0rug2tkezLLB0J-YZzVC+Q@mail.gmail.com>
+ <3f8cc7c9462353ac2eef58e39beee079bdd9c7b4.camel@linux.ibm.com>
+ <CAHk-=wih-ibNUxeiKpuKrw3Rd2=QEAZ8zgRWt_CORAjbZykRWQ@mail.gmail.com> <5d8fa26d376999f703aac9103166a572fc0df437.camel@linux.ibm.com>
+In-Reply-To: <5d8fa26d376999f703aac9103166a572fc0df437.camel@linux.ibm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 17 Nov 2020 15:29:55 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiPfWZYsAqhQry=mhAbKei8bHZDyVPJS0XHZz_FH9Jymw@mail.gmail.com>
+Message-ID: <CAHk-=wiPfWZYsAqhQry=mhAbKei8bHZDyVPJS0XHZz_FH9Jymw@mail.gmail.com>
+Subject: Re: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in ima_calc_file_hash()
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Tue, Nov 17, 2020 at 3:24 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+>
+> I really wish it wasn't needed.
 
-The test forks a child process, updates the local storage to set/unset
-the securexec bit.
+Seriously, I get the feeling that IMA is completely mis-designed, and
+is doing actively bad things.
 
-The BPF program in the test attaches to bprm_creds_for_exec which checks
-the local storage of the current task to set the secureexec bit on the
-binary parameters (bprm).
+Who uses this "feature", and who cares? Because I would suggest you
+just change the policy and be done with it.
 
-The child then execs a bash command with the environment variable
-TMPDIR set in the envp.  The bash command returns a different exit code
-based on its observed value of the TMPDIR variable.
-
-Since TMPDIR is one of the variables that is ignored by the dynamic
-loader when the secureexec bit is set, one should expect the
-child execution to not see this value when the secureexec bit is set.
-
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- .../selftests/bpf/prog_tests/test_bprm_opts.c | 116 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bprm_opts.c |  34 +++++
- 2 files changed, 150 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
- create mode 100644 tools/testing/selftests/bpf/progs/bprm_opts.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
-new file mode 100644
-index 000000000000..2559bb775762
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
-@@ -0,0 +1,116 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2020 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include <linux/limits.h>
-+
-+#include "bprm_opts.skel.h"
-+#include "network_helpers.h"
-+
-+#ifndef __NR_pidfd_open
-+#define __NR_pidfd_open 434
-+#endif
-+
-+static const char * const bash_envp[] = { "TMPDIR=shouldnotbeset", NULL };
-+
-+static inline int sys_pidfd_open(pid_t pid, unsigned int flags)
-+{
-+	return syscall(__NR_pidfd_open, pid, flags);
-+}
-+
-+static int update_storage(int map_fd, int secureexec)
-+{
-+	int task_fd, ret = 0;
-+
-+	task_fd = sys_pidfd_open(getpid(), 0);
-+	if (task_fd < 0)
-+		return errno;
-+
-+	ret = bpf_map_update_elem(map_fd, &task_fd, &secureexec, BPF_NOEXIST);
-+	if (ret)
-+		ret = errno;
-+
-+	close(task_fd);
-+	return ret;
-+}
-+
-+static int run_set_secureexec(int map_fd, int secureexec)
-+{
-+	int child_pid, child_status, ret, null_fd;
-+
-+	child_pid = fork();
-+	if (child_pid == 0) {
-+		null_fd = open("/dev/null", O_WRONLY);
-+		if (null_fd == -1)
-+			exit(errno);
-+		dup2(null_fd, STDOUT_FILENO);
-+		dup2(null_fd, STDERR_FILENO);
-+		close(null_fd);
-+
-+		/* Ensure that all executions from hereon are
-+		 * secure by setting a local storage which is read by
-+		 * the bprm_creds_for_exec hook and sets bprm->secureexec.
-+		 */
-+		ret = update_storage(map_fd, secureexec);
-+		if (ret)
-+			exit(ret);
-+
-+		/* If the binary is executed with securexec=1, the dynamic
-+		 * loader ingores and unsets certain variables like LD_PRELOAD,
-+		 * TMPDIR etc. TMPDIR is used here to simplify the example, as
-+		 * LD_PRELOAD requires a real .so file.
-+		 *
-+		 * If the value of TMPDIR is set, the bash command returns 10
-+		 * and if the value is unset, it returns 20.
-+		 */
-+		execle("/bin/bash", "bash", "-c",
-+		       "[[ -z \"${TMPDIR}\" ]] || exit 10 && exit 20", NULL,
-+		       bash_envp);
-+		exit(errno);
-+	} else if (child_pid > 0) {
-+		waitpid(child_pid, &child_status, 0);
-+		ret = WEXITSTATUS(child_status);
-+
-+		/* If a secureexec occurred, the exit status should be 20 */
-+		if (secureexec && ret == 20)
-+			return 0;
-+
-+		/* If normal execution happened, the exit code should be 10 */
-+		if (!secureexec && ret == 10)
-+			return 0;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+void test_test_bprm_opts(void)
-+{
-+	int err, duration = 0;
-+	struct bprm_opts *skel = NULL;
-+
-+	skel = bprm_opts__open_and_load();
-+	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
-+		goto close_prog;
-+
-+	err = bprm_opts__attach(skel);
-+	if (CHECK(err, "attach", "attach failed: %d\n", err))
-+		goto close_prog;
-+
-+	/* Run the test with the secureexec bit unset */
-+	err = run_set_secureexec(bpf_map__fd(skel->maps.secure_exec_task_map),
-+				 0 /* secureexec */);
-+	if (CHECK(err, "run_set_secureexec:0", "err = %d\n", err))
-+		goto close_prog;
-+
-+	/* Run the test with the secureexec bit set */
-+	err = run_set_secureexec(bpf_map__fd(skel->maps.secure_exec_task_map),
-+				 1 /* secureexec */);
-+	if (CHECK(err, "run_set_secureexec:1", "err = %d\n", err))
-+		goto close_prog;
-+
-+close_prog:
-+	bprm_opts__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bprm_opts.c b/tools/testing/selftests/bpf/progs/bprm_opts.c
-new file mode 100644
-index 000000000000..5bfef2887e70
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bprm_opts.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, int);
-+} secure_exec_task_map SEC(".maps");
-+
-+SEC("lsm/bprm_creds_for_exec")
-+int BPF_PROG(secure_exec, struct linux_binprm *bprm)
-+{
-+	int *secureexec;
-+
-+	secureexec = bpf_task_storage_get(&secure_exec_task_map,
-+				   bpf_get_current_task_btf(), 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+
-+	if (secureexec && *secureexec)
-+		bpf_bprm_opts_set(bprm, BPF_F_BPRM_SECUREEXEC);
-+
-+	return 0;
-+}
--- 
-2.29.2.299.gdc1121823c-goog
-
+            Linus
