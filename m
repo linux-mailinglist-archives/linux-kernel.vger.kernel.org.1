@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACAB2B6375
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9136D2B6377
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732563AbgKQNiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:38:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49638 "EHLO mail.kernel.org"
+        id S1732624AbgKQNib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:38:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733045AbgKQNiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:38:17 -0500
+        id S1732141AbgKQNiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:38:24 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23484246AB;
-        Tue, 17 Nov 2020 13:38:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 906E7207BC;
+        Tue, 17 Nov 2020 13:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620296;
-        bh=050kAai3rGkvt0932R2moPRhv1QradTBEV+TlPQtElA=;
+        s=default; t=1605620304;
+        bh=8Yj56os2CI7ZMPGldQMNyJxKKQeMsDZMotnx2ApuvEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1jNLsVseTVv2Bvv/WmJBtp4rgE354jndcxtvGSl9pzpvN8cuVzYMdBgEJvd7E7VhO
-         3WkZ3jnSH64aoIJ4keS04T/rzRNp2wab+QmWWiu47XgPxJVfVVkhcklCwY730Tvdzq
-         vZsJPRh1nZx/85EryWC+FDWemH0JIQBmNbl/vob4=
+        b=RuQWhAgFGYEVV1521DTb8RS0+T4l9UqqnOOYkKuCT75ZOcYFQqwwhXEBjsR3C3iw5
+         Hv+1duePL7mJn0mYAvcy3J/B3aB6k8t/0F+0wzLKkBIffmR0wmMbhK/8GcrlCib5sY
+         UPcQ19v3e+bESMYjkvPH42lD8rBEveMA6g9uiGJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Hildenbrand <david@redhat.com>,
+        stable@vger.kernel.org, Santosh Sivaraj <santosh@fossix.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org,
+        Petr Mladek <pmladek@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 172/255] arm64/mm: Validate hotplug range before creating linear mapping
-Date:   Tue, 17 Nov 2020 14:05:12 +0100
-Message-Id: <20201117122147.296989748@linuxfoundation.org>
+Subject: [PATCH 5.9 173/255] kernel/watchdog: fix watchdog_allowed_mask not used warning
+Date:   Tue, 17 Nov 2020 14:05:13 +0100
+Message-Id: <20201117122147.344601838@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -52,75 +46,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anshuman Khandual <anshuman.khandual@arm.com>
+From: Santosh Sivaraj <santosh@fossix.org>
 
-[ Upstream commit 58284a901b426e6130672e9f14c30dfd5a9dbde0 ]
+[ Upstream commit e7e046155af04cdca5e1157f28b07e1651eb317b ]
 
-During memory hotplug process, the linear mapping should not be created for
-a given memory range if that would fall outside the maximum allowed linear
-range. Else it might cause memory corruption in the kernel virtual space.
+Define watchdog_allowed_mask only when SOFTLOCKUP_DETECTOR is enabled.
 
-Maximum linear mapping region is [PAGE_OFFSET..(PAGE_END -1)] accommodating
-both its ends but excluding PAGE_END. Max physical range that can be mapped
-inside this linear mapping range, must also be derived from its end points.
-
-This ensures that arch_add_memory() validates memory hot add range for its
-potential linear mapping requirements, before creating it with
-__create_pgd_mapping().
-
-Fixes: 4ab215061554 ("arm64: Add memory hotplug support")
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Steven Price <steven.price@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Link: https://lore.kernel.org/r/1605252614-761-1-git-send-email-anshuman.khandual@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 7feeb9cd4f5b ("watchdog/sysctl: Clean up sysctl variable name space")
+Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20201106015025.1281561-1-santosh@fossix.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/mm/mmu.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ kernel/watchdog.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 75df62fea1b68..a834e7fb0e250 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1433,11 +1433,28 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
- 	free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
- }
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 5abb5b22ad130..71109065bd8eb 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -44,8 +44,6 @@ int __read_mostly soft_watchdog_user_enabled = 1;
+ int __read_mostly watchdog_thresh = 10;
+ static int __read_mostly nmi_watchdog_available;
  
-+static bool inside_linear_region(u64 start, u64 size)
-+{
-+	/*
-+	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
-+	 * accommodating both its ends but excluding PAGE_END. Max physical
-+	 * range which can be mapped inside this linear mapping range, must
-+	 * also be derived from its end points.
-+	 */
-+	return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
-+	       (start + size - 1) <= __pa(PAGE_END - 1);
-+}
+-static struct cpumask watchdog_allowed_mask __read_mostly;
+-
+ struct cpumask watchdog_cpumask __read_mostly;
+ unsigned long *watchdog_cpumask_bits = cpumask_bits(&watchdog_cpumask);
+ 
+@@ -162,6 +160,8 @@ static void lockup_detector_update_enable(void)
+ int __read_mostly sysctl_softlockup_all_cpu_backtrace;
+ #endif
+ 
++static struct cpumask watchdog_allowed_mask __read_mostly;
 +
- int arch_add_memory(int nid, u64 start, u64 size,
- 		    struct mhp_params *params)
- {
- 	int ret, flags = 0;
- 
-+	if (!inside_linear_region(start, size)) {
-+		pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
-+		return -EINVAL;
-+	}
-+
- 	if (rodata_full || debug_pagealloc_enabled())
- 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- 
+ /* Global variables, exported for sysctl */
+ unsigned int __read_mostly softlockup_panic =
+ 			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
 -- 
 2.27.0
 
