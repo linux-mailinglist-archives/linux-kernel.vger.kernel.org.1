@@ -2,409 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30C82B6A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 916192B6A50
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgKQQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:31:40 -0500
-Received: from pbmsgap01.intersil.com ([192.157.179.201]:43310 "EHLO
-        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727147AbgKQQbj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:31:39 -0500
-X-Greylist: delayed 1298 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Nov 2020 11:28:13 EST
-Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
-        by pbmsgap01.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0AHFsDN0028357;
-        Tue, 17 Nov 2020 11:06:36 -0500
-Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
-        by pbmsgap01.intersil.com with ESMTP id 34tbn59bc8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 11:06:36 -0500
-Received: from pbmxdp03.intersil.corp (132.158.200.224) by
- pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.1979.3; Tue, 17 Nov 2020 11:06:35 -0500
-Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
- (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 17 Nov 2020 11:06:34 -0500
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH v2 net-next 4/5] ptp: clockmatrix: Fix non-zero phase_adj is lost after snap
-Date:   Tue, 17 Nov 2020 11:06:01 -0500
-Message-ID: <1605629162-31876-5-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605629162-31876-1-git-send-email-min.li.xe@renesas.com>
-References: <1605629162-31876-1-git-send-email-min.li.xe@renesas.com>
-X-TM-AS-MML: disable
+        id S1728306AbgKQQcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:32:03 -0500
+Received: from m12-13.163.com ([220.181.12.13]:33119 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727147AbgKQQcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:32:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=2wc+1
+        4ynyBPMiY80AQ9rvbu5MPFWr0KvJuRIyUlPey8=; b=BS80uZHRXsRMHqF+ZvzHV
+        Ju73tpz+Ow0XAV3ui5sW64tYC6MDhTgvrSCPACzCq9Q56Trke4wlqU8IXca2EIjZ
+        CTcKPyd2Ayd75OKB8vK50e2FqpiASOYsiu9IiKUWAqURonshW0VNmmz2c2OlDPs7
+        Qpj2dRbOFDdB3ZiP9ji6Ik=
+Received: from localhost (unknown [101.86.213.141])
+        by smtp9 (Coremail) with SMTP id DcCowACHhQL39rNfOeHQRA--.4171S2;
+        Wed, 18 Nov 2020 00:14:47 +0800 (CST)
+Date:   Wed, 18 Nov 2020 00:14:47 +0800
+From:   Hui Su <sh_def@163.com>
+To:     tglx@linutronix.de, christian.brauner@ubuntu.com, serge@hallyn.com,
+        avagin@openvz.org, 0x7f454c46@gmail.com,
+        linux-kernel@vger.kernel.org
+Cc:     sh_def@163.com
+Subject: [PATCH] namespace: make timens_on_fork() return nothing
+Message-ID: <20201117161447.GA44938@rlk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_04:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 adultscore=0 malwarescore=0
- bulkscore=0 spamscore=0 mlxlogscore=999 suspectscore=4 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170115
-X-Proofpoint-Spam-Reason: mlx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: DcCowACHhQL39rNfOeHQRA--.4171S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWF4fGw4DXw4kJFy7GF43GFg_yoW5Zr1fpF
+        4Sy3srA3y7t34jg3W8Xr4DZ34akwnYg3WUG34ku3ySya1Igr1UCFnrA3WY9r45trs2grZ3
+        XFW8tws8tr1DX37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRKFAJUUUUU=
+X-Originating-IP: [101.86.213.141]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiJhjfX1v2fByKKwAAsS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+timens_on_fork() always return 0, and maybe not
+need to judge the return value in copy_namespaces().
 
-Fix non-zero phase_adj is lost after snap. Use ktime_sub
-to do ktime_t subtraction.
+So make timens_on_fork() return nothing and do not
+judge its return val in copy_namespaces().
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
+Signed-off-by: Hui Su <sh_def@163.com>
 ---
- drivers/ptp/ptp_clockmatrix.c | 210 +++++++++++++++++++++++++++++++++++++-----
- drivers/ptp/ptp_clockmatrix.h |   5 +-
- 2 files changed, 190 insertions(+), 25 deletions(-)
+ include/linux/time_namespace.h | 6 +++---
+ kernel/nsproxy.c               | 7 +------
+ kernel/time/namespace.c        | 6 ++----
+ 3 files changed, 6 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-index c06df61..b10c6b9 100644
---- a/drivers/ptp/ptp_clockmatrix.c
-+++ b/drivers/ptp/ptp_clockmatrix.c
-@@ -716,8 +716,9 @@ static int _idtcm_set_dpll_hw_tod(struct idtcm_channel *channel,
+diff --git a/include/linux/time_namespace.h b/include/linux/time_namespace.h
+index 5b6031385db0..74a88ce0cd3c 100644
+--- a/include/linux/time_namespace.h
++++ b/include/linux/time_namespace.h
+@@ -45,7 +45,7 @@ struct time_namespace *copy_time_ns(unsigned long flags,
+ 				    struct user_namespace *user_ns,
+ 				    struct time_namespace *old_ns);
+ void free_time_ns(struct kref *kref);
+-int timens_on_fork(struct nsproxy *nsproxy, struct task_struct *tsk);
++void timens_on_fork(struct nsproxy *nsproxy, struct task_struct *tsk);
+ struct vdso_data *arch_get_vdso_data(void *vvar_page);
  
- 		if (idtcm->calculate_overhead_flag) {
- 			/* Assumption: I2C @ 400KHz */
--			total_overhead_ns =  ktime_to_ns(ktime_get_raw()
--							 - idtcm->start_time)
-+			ktime_t diff = ktime_sub(ktime_get_raw(),
-+						 idtcm->start_time);
-+			total_overhead_ns =  ktime_to_ns(diff)
- 					     + idtcm->tod_write_overhead_ns
- 					     + SETTIME_CORRECTION;
+ static inline void put_time_ns(struct time_namespace *ns)
+@@ -122,10 +122,10 @@ struct time_namespace *copy_time_ns(unsigned long flags,
+ 	return old_ns;
+ }
  
-@@ -800,12 +801,154 @@ static int _idtcm_set_dpll_scsr_tod(struct idtcm_channel *channel,
+-static inline int timens_on_fork(struct nsproxy *nsproxy,
++static inline void timens_on_fork(struct nsproxy *nsproxy,
+ 				 struct task_struct *tsk)
+ {
+-	return 0;
++	return;
+ }
+ 
+ static inline void timens_add_monotonic(struct timespec64 *ts) { }
+diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
+index 12dd41b39a7f..e2e6c5dc433f 100644
+--- a/kernel/nsproxy.c
++++ b/kernel/nsproxy.c
+@@ -153,7 +153,6 @@ int copy_namespaces(unsigned long flags, struct task_struct *tsk)
+ 	struct nsproxy *old_ns = tsk->nsproxy;
+ 	struct user_namespace *user_ns = task_cred_xxx(tsk, user_ns);
+ 	struct nsproxy *new_ns;
+-	int ret;
+ 
+ 	if (likely(!(flags & (CLONE_NEWNS | CLONE_NEWUTS | CLONE_NEWIPC |
+ 			      CLONE_NEWPID | CLONE_NEWNET |
+@@ -180,11 +179,7 @@ int copy_namespaces(unsigned long flags, struct task_struct *tsk)
+ 	if (IS_ERR(new_ns))
+ 		return  PTR_ERR(new_ns);
+ 
+-	ret = timens_on_fork(new_ns, tsk);
+-	if (ret) {
+-		free_nsproxy(new_ns);
+-		return ret;
+-	}
++	timens_on_fork(new_ns, tsk);
+ 
+ 	tsk->nsproxy = new_ns;
+ 	return 0;
+diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
+index afc65e6be33e..e0f9509b17c3 100644
+--- a/kernel/time/namespace.c
++++ b/kernel/time/namespace.c
+@@ -308,22 +308,20 @@ static int timens_install(struct nsset *nsset, struct ns_common *new)
  	return 0;
  }
  
-+static int get_output_base_addr(u8 outn)
-+{
-+	int base;
-+
-+	switch (outn) {
-+	case 0:
-+		base = OUTPUT_0;
-+		break;
-+	case 1:
-+		base = OUTPUT_1;
-+		break;
-+	case 2:
-+		base = OUTPUT_2;
-+		break;
-+	case 3:
-+		base = OUTPUT_3;
-+		break;
-+	case 4:
-+		base = OUTPUT_4;
-+		break;
-+	case 5:
-+		base = OUTPUT_5;
-+		break;
-+	case 6:
-+		base = OUTPUT_6;
-+		break;
-+	case 7:
-+		base = OUTPUT_7;
-+		break;
-+	case 8:
-+		base = OUTPUT_8;
-+		break;
-+	case 9:
-+		base = OUTPUT_9;
-+		break;
-+	case 10:
-+		base = OUTPUT_10;
-+		break;
-+	case 11:
-+		base = OUTPUT_11;
-+		break;
-+	default:
-+		base = -EINVAL;
-+	}
-+
-+	return base;
-+}
-+
-+static void save_and_clear_output_phase_adj(struct idtcm_channel *channel)
-+{
-+	u16 output_mask = channel->output_mask;
-+	struct idtcm *idtcm = channel->idtcm;
-+	int delay_needed = 0;
-+	u8 zero[4] = {0};
-+	u8 outn = 0;
-+	int base;
-+
-+	while (output_mask) {
-+
-+		if (output_mask & 1) {
-+
-+			base = get_output_base_addr(outn);
-+
-+			if (!(base > 0)) {
-+				dev_err(&idtcm->client->dev,
-+					"%s - Unsupported out%d",
-+					__func__, outn);
-+				return;
-+			}
-+
-+			/* Save output_phase_adj for outn */
-+			idtcm_read(idtcm, (u16)base, OUT_PHASE_ADJ,
-+				   &channel->output_phase_adj[outn][0],
-+				   sizeof(channel->output_phase_adj[outn]));
-+
-+			if (channel->output_phase_adj[outn][0] |
-+			    channel->output_phase_adj[outn][1] |
-+			    channel->output_phase_adj[outn][2] |
-+			    channel->output_phase_adj[outn][3]) {
-+				delay_needed = 1;
-+
-+				idtcm_write(idtcm, base, OUT_PHASE_ADJ,
-+					    &zero[0], sizeof(zero));
-+			}
-+		}
-+
-+		output_mask = output_mask >> 1;
-+		outn += 1;
-+	}
-+
-+	/* Ensure output phase adjust has settled */
-+	if (delay_needed)
-+		msleep(5000);
-+}
-+
-+
-+static void restore_output_phase_adj(struct idtcm_channel *channel)
-+{
-+	u16 output_mask = channel->output_mask;
-+	struct idtcm *idtcm = channel->idtcm;
-+	u8 wait_once = 0;
-+	u8 outn = 0;
-+	int base;
-+
-+	while (output_mask) {
-+
-+		if ((output_mask & 1) &&
-+		    (channel->output_phase_adj[outn][0] |
-+		     channel->output_phase_adj[outn][1] |
-+		     channel->output_phase_adj[outn][2] |
-+		     channel->output_phase_adj[outn][3])) {
-+
-+			if (!wait_once) {
-+				/* Ensure idtcm_sync_pps_output() is done */
-+				msleep(5000);
-+				wait_once = 1;
-+			}
-+
-+			base = get_output_base_addr(outn);
-+
-+			if (!(base > 0)) {
-+				dev_err(&idtcm->client->dev,
-+					"%s - Unsupported out%d",
-+					__func__, outn);
-+				return;
-+			}
-+
-+			/* Restore non-zero output_phase_adj */
-+			idtcm_write(idtcm, base, OUT_PHASE_ADJ,
-+				    &channel->output_phase_adj[outn][0],
-+				    sizeof(channel->output_phase_adj[outn]));
-+		}
-+
-+		output_mask = output_mask >> 1;
-+		outn += 1;
-+	}
-+}
-+
- static int _idtcm_settime(struct idtcm_channel *channel,
- 			  struct timespec64 const *ts)
+-int timens_on_fork(struct nsproxy *nsproxy, struct task_struct *tsk)
++void timens_on_fork(struct nsproxy *nsproxy, struct task_struct *tsk)
  {
- 	struct idtcm *idtcm = channel->idtcm;
-+	int retval;
- 	int err;
+ 	struct ns_common *nsc = &nsproxy->time_ns_for_children->ns;
+ 	struct time_namespace *ns = to_time_ns(nsc);
  
-+	/* Save and clear out_phase_adj */
-+	save_and_clear_output_phase_adj(channel);
-+
- 	err = _idtcm_set_dpll_hw_tod(channel, ts, HW_TOD_WR_TRIG_SEL_MSB);
+ 	/* create_new_namespaces() already incremented the ref counter */
+ 	if (nsproxy->time_ns == nsproxy->time_ns_for_children)
+-		return 0;
++		return;
  
- 	if (err) {
-@@ -814,7 +957,12 @@ static int _idtcm_settime(struct idtcm_channel *channel,
- 		return err;
- 	}
+ 	get_time_ns(ns);
+ 	put_time_ns(nsproxy->time_ns);
+ 	nsproxy->time_ns = ns;
  
--	return idtcm_sync_pps_output(channel);
-+	retval = idtcm_sync_pps_output(channel);
-+
-+	/* Restore out_phase_adj */
-+	restore_output_phase_adj(channel);
-+
-+	return retval;
- }
- 
- static int _idtcm_settime_v487(struct idtcm_channel *channel,
-@@ -924,6 +1072,7 @@ static int set_tod_write_overhead(struct idtcm_channel *channel)
- 
- 	ktime_t start;
- 	ktime_t stop;
-+	ktime_t diff;
- 
- 	char buf[TOD_BYTE_COUNT] = {0};
- 
-@@ -943,7 +1092,9 @@ static int set_tod_write_overhead(struct idtcm_channel *channel)
- 
- 		stop = ktime_get_raw();
- 
--		current_ns = ktime_to_ns(stop - start);
-+		diff = ktime_sub(stop, start);
-+
-+		current_ns = ktime_to_ns(diff);
- 
- 		if (i == 0) {
- 			lowest_ns = current_ns;
-@@ -1263,11 +1414,19 @@ static int idtcm_output_enable(struct idtcm_channel *channel,
- 			       bool enable, unsigned int outn)
- {
- 	struct idtcm *idtcm = channel->idtcm;
-+	int base;
- 	int err;
- 	u8 val;
- 
--	err = idtcm_read(idtcm, OUTPUT_MODULE_FROM_INDEX(outn),
--			 OUT_CTRL_1, &val, sizeof(val));
-+	base = get_output_base_addr(outn);
-+
-+	if (!(base > 0)) {
-+		dev_err(&idtcm->client->dev,
-+			"%s - Unsupported out%d", __func__, outn);
-+		return base;
-+	}
-+
-+	err = idtcm_read(idtcm, (u16)base, OUT_CTRL_1, &val, sizeof(val));
- 
- 	if (err)
- 		return err;
-@@ -1277,8 +1436,7 @@ static int idtcm_output_enable(struct idtcm_channel *channel,
- 	else
- 		val &= ~SQUELCH_DISABLE;
- 
--	return idtcm_write(idtcm, OUTPUT_MODULE_FROM_INDEX(outn),
--			   OUT_CTRL_1, &val, sizeof(val));
-+	return idtcm_write(idtcm, (u16)base, OUT_CTRL_1, &val, sizeof(val));
- }
- 
- static int idtcm_output_mask_enable(struct idtcm_channel *channel,
-@@ -1321,6 +1479,23 @@ static int idtcm_perout_enable(struct idtcm_channel *channel,
- 	return idtcm_output_enable(channel, enable, perout->index);
- }
- 
-+static int idtcm_get_pll_mode(struct idtcm_channel *channel,
-+			      enum pll_mode *pll_mode)
-+{
-+	struct idtcm *idtcm = channel->idtcm;
-+	int err;
-+	u8 dpll_mode;
-+
-+	err = idtcm_read(idtcm, channel->dpll_n, DPLL_MODE,
-+			 &dpll_mode, sizeof(dpll_mode));
-+	if (err)
-+		return err;
-+
-+	*pll_mode = (dpll_mode >> PLL_MODE_SHIFT) & PLL_MODE_MASK;
-+
-+	return 0;
-+}
-+
- static int idtcm_set_pll_mode(struct idtcm_channel *channel,
- 			      enum pll_mode pll_mode)
- {
-@@ -1386,7 +1561,7 @@ static int _idtcm_adjphase(struct idtcm_channel *channel, s32 delta_ns)
- 	else if (offset_ps < -MAX_ABS_WRITE_PHASE_PICOSECONDS)
- 		offset_ps = -MAX_ABS_WRITE_PHASE_PICOSECONDS;
- 
--	phase_50ps = DIV_ROUND_CLOSEST(div64_s64(offset_ps, 50), 1);
-+	phase_50ps = div_s64(offset_ps, 50);
- 
- 	for (i = 0; i < 4; i++) {
- 		buf[i] = phase_50ps & 0xff;
-@@ -1403,7 +1578,6 @@ static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm)
- {
- 	struct idtcm *idtcm = channel->idtcm;
- 	u8 i;
--	bool neg_adj = 0;
- 	int err;
- 	u8 buf[6] = {0};
- 	s64 fcw;
-@@ -1427,18 +1601,11 @@ static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm)
- 	 * FCW = -------------
- 	 *         111 * 2^4
- 	 */
--	if (scaled_ppm < 0) {
--		neg_adj = 1;
--		scaled_ppm = -scaled_ppm;
--	}
- 
- 	/* 2 ^ -53 = 1.1102230246251565404236316680908e-16 */
- 	fcw = scaled_ppm * 244140625ULL;
- 
--	fcw = div_u64(fcw, 1776);
+ 	timens_commit(tsk, ns);
 -
--	if (neg_adj)
--		fcw = -fcw;
-+	fcw = div_s64(fcw, 1776);
+-	return 0;
+ }
  
- 	for (i = 0; i < 6; i++) {
- 		buf[i] = fcw & 0xff;
-@@ -2105,12 +2272,11 @@ static int idtcm_enable_channel(struct idtcm *idtcm, u32 index)
- 		}
- 	}
- 
--	err = idtcm_set_pll_mode(channel, PLL_MODE_WRITE_FREQUENCY);
-+	/* Sync pll mode with hardware */
-+	err = idtcm_get_pll_mode(channel, &channel->pll_mode);
- 	if (err) {
- 		dev_err(&idtcm->client->dev,
--			"Failed at line %d in func %s!\n",
--			__LINE__,
--			__func__);
-+			"Error: %s - Unable to read pll mode\n", __func__);
- 		return err;
- 	}
- 
-diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
-index dd3436e..3790dfa 100644
---- a/drivers/ptp/ptp_clockmatrix.h
-+++ b/drivers/ptp/ptp_clockmatrix.h
-@@ -15,6 +15,7 @@
- #define FW_FILENAME	"idtcm.bin"
- #define MAX_TOD		(4)
- #define MAX_PLL		(8)
-+#define MAX_OUTPUT	(12)
- 
- #define MAX_ABS_WRITE_PHASE_PICOSECONDS (107374182350LL)
- 
-@@ -49,9 +50,6 @@
- #define PHASE_PULL_IN_THRESHOLD_NS_V487	(15000)
- #define TOD_WRITE_OVERHEAD_COUNT_MAX	(2)
- #define TOD_BYTE_COUNT			(11)
--#define WR_PHASE_SETUP_MS		(5000)
--
--#define OUTPUT_MODULE_FROM_INDEX(index)	(OUTPUT_0 + (index) * 0x10)
- 
- #define PEROUT_ENABLE_OUTPUT_MASK	(0xdeadbeef)
- 
-@@ -125,6 +123,7 @@ struct idtcm_channel {
- 	enum pll_mode		pll_mode;
- 	u8			pll;
- 	u16			output_mask;
-+	u8			output_phase_adj[MAX_OUTPUT][4];
- };
- 
- struct idtcm {
+ static struct user_namespace *timens_owner(struct ns_common *ns)
 -- 
-2.7.4
+2.29.0
+
 
