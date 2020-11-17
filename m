@@ -2,214 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F362B70AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8842B70B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbgKQVIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:08:41 -0500
-Received: from mail.efficios.com ([167.114.26.124]:41020 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgKQVIk (ORCPT
+        id S1727869AbgKQVJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726513AbgKQVJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:08:40 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6F9432E47A5;
-        Tue, 17 Nov 2020 16:08:39 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id LO9Bn8O4dPT7; Tue, 17 Nov 2020 16:08:39 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 066222E47A3;
-        Tue, 17 Nov 2020 16:08:39 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 066222E47A3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1605647319;
-        bh=joXKuLCpettkfLPWQA9ObKq0PJ88vpgz9lbGcXrQyMA=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=UCarJfwVdzks5AyjoqhdSTXUk68cIUlBy38qr8peTeuToTfs8PYbU5UYD9L/pE3oV
-         +IjPh9zok1YLl02EZ4Fm9q42mS4EBLoZK/ZS/2WZFCvTHnpcpFXA6d6S/vf2rqsWxi
-         b4fgN+pYrKYI7bR8lh187Nn8EMFrA5WK0ZwAjsFhJeolxmDTrfBJjbhSROMhvQC1wu
-         PWWPNWY4CgJEkyJOQH6p3Q2vk8PFA3zZLVGfzz/fu4i2kTUrUJDO1DKe+utEt8gfQL
-         wxscORal2YRl0Xwa9QCjB4ewtMOinCoBtVSNp4nCtmUJj9xJ4vz0h4MBX9iv4gT9x5
-         hXI9806u7wyyg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Hdohe4PMzBeJ; Tue, 17 Nov 2020 16:08:38 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id E7F592E46A1;
-        Tue, 17 Nov 2020 16:08:38 -0500 (EST)
-Date:   Tue, 17 Nov 2020 16:08:38 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Message-ID: <1352757747.48575.1605647318836.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201117153451.3015c5c9@gandalf.local.home>
-References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com> <20201117142145.43194f1a@gandalf.local.home> <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com> <20201117153451.3015c5c9@gandalf.local.home>
-Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
- memory allocation
+        Tue, 17 Nov 2020 16:09:25 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A430C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:09:23 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id v21so4132218pgi.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:09:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hisjjNtZoO7NOVuGAk1qUZr/IgvJJn18Uj0ZEIcow+Y=;
+        b=MxpWns22cbB20JMiTDCrtAXIpvCTxjwziLw3tNk1Yg3NtENesu0G9MWtLZH6Qyt+Fj
+         Kz66VrSUHiIieW/Xmo1DmRs5sJuzE4e4p68gc4ek1434QtU+etEvdZov3QFPNsb7xubf
+         MlSfiYZ4UG+0fweUxlJgU5n3JHTVBGaueDhRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hisjjNtZoO7NOVuGAk1qUZr/IgvJJn18Uj0ZEIcow+Y=;
+        b=AEDG1MeZreZ+PAHyLo9AikxRqOcbH/sTE7INEHiHaO8RmoM23LXZ0bKwoiKhYZxi8d
+         mT6ehnJ9RGN4hLeE5woCdE3hGANx/xKaFYJcOhB3mt2w3P0vzcaG7xu1QC+68NhDM+4Q
+         5DyEPEPufHOHCoDOKoieu0tYzwPZTcOtCdQ+c0KbQWIHHak66ANPdZuA+CBYtr9nkkve
+         QRY9yiExjbu0ocdkbYyNaPjzBAs0B+6OWnb/WmmwjuT3ydScKK5Yti9nG1DdNgqRFCLb
+         UJVmTfpA5Yv9lJ0fSZqh4bX8F6AIA4QCLecQtQ8+zxCCgFREFniJeMcNqzVOCA6psIP7
+         J/pw==
+X-Gm-Message-State: AOAM531DdrkSqd/c8KFVVos+jtTU8zb3I4RrRrPVpWGskF5yx2qJBht1
+        uXqa0px3kEHQ9bWu+DRH9W79jg==
+X-Google-Smtp-Source: ABdhPJyFe5P3cl72SKMo4dGnUuYR7nTvkbg6k+Yb1NSUXm/UvTBg4X0ngL39se9S4oxlNiBIqe9U2Q==
+X-Received: by 2002:a63:2107:: with SMTP id h7mr4939574pgh.157.1605647363148;
+        Tue, 17 Nov 2020 13:09:23 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id mp16sm4255459pjb.13.2020.11.17.13.09.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 13:09:22 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Cc:     Kees Cook <keescook@chromium.org>, Eric Paris <eparis@redhat.com>,
+        Will Drewry <wad@chromium.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, stable@vger.kernel.org,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/2] Fix misuse of security_capable()
+Date:   Tue, 17 Nov 2020 13:08:45 -0800
+Message-Id: <160564731624.1001615.8892910904546455542.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201030123849.770769-1-mic@digikod.net>
+References: <20201030123849.770769-1-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
-Thread-Topic: tracepoint: Do not fail unregistering a probe due to memory allocation
-Thread-Index: dfXwPnJ9g3zb2UbAm/xFFNT2U71zQw==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Nov 17, 2020, at 3:34 PM, rostedt rostedt@goodmis.org wrote:
-
-> On Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On Fri, 30 Oct 2020 13:38:47 +0100, Mickaël Salaün wrote:
+> This series replaces all the use of security_capable(current_cred(),
+> ...) with ns_capable{,_noaudit}() which set PF_SUPERPRIV.
 > 
->> There seems to be more effect on the data size: adding the "stub_func" field
->> in struct tracepoint adds 8320 bytes of data to my vmlinux. But considering
->> the layout of struct tracepoint:
->> 
->> struct tracepoint {
->>         const char *name;               /* Tracepoint name */
->>         struct static_key key;
->>         struct static_call_key *static_call_key;
->>         void *static_call_tramp;
->>         void *iterator;
->>         int (*regfunc)(void);
->>         void (*unregfunc)(void);
->>         struct tracepoint_func __rcu *funcs;
->>         void *stub_func;
->> };
->> 
->> I would argue that we have many other things to optimize there if we want to
->> shrink the bloat, starting with static keys and system call reg/unregfunc
->> pointers.
+> This initially come from a review of Landlock by Jann Horn:
+> https://lore.kernel.org/lkml/CAG48ez1FQVkt78129WozBwFbVhAPyAr9oJAHFHAbbNxEBr9h1g@mail.gmail.com/
 > 
-> This is the part that I want to decrease, and yes there's other fish to fry
-> in that code, but I really don't want to be adding more.
-
-I agree on the goal of not bloating the code and data size of tracepoints, but
-I also don't want to introduce subtle hard-to-debug undefined behaviors.
-
+> Mickaël Salaün (2):
+>   ptrace: Set PF_SUPERPRIV when checking capability
+>   seccomp: Set PF_SUPERPRIV when checking capability
 > 
->> 
->> > 
->> > Since all tracepoints callbacks have at least one parameter (__data), we
->> > could declare tp_stub_func as:
->> > 
->> > static void tp_stub_func(void *data, ...)
->> > {
->> >	return;
->> > }
->> > 
->> > And now C knows that tp_stub_func() can be called with one or more
->> > parameters, and had better be able to deal with it!
->> 
->> AFAIU this won't work.
->> 
->> C99 6.5.2.2 Function calls
->> 
->> "If the function is defined with a type that is not compatible with the type (of
->> the
->> expression) pointed to by the expression that denotes the called function, the
->> behavior is
->> undefined."
-> 
-> But is it really a problem in practice. I'm sure we could create an objtool
-> function to check to make sure we don't break anything at build time.
+> [...]
 
-There are also tools like UBSAN which will trigger whenever an undefined behavior
-is executed. Having tools which can validate that the generated assembly happens to
-work does not make it OK to generate code with undefined behavior.
+Applied to for-linus/seccomp, thanks!
 
-> 
->> 
->> and
->> 
->> 6.7.5.3 Function declarators (including prototypes), item 15:
->> 
->> "For two function types to be compatible, both shall specify compatible return
->> types.
-> 
-> But all tracepoint callbacks have void return types, which means they are
-> compatible.
-
-Yes, my concern is about what follows just after:
-
-> 
->> 
->> Moreover, the parameter type lists, if both are present, shall agree in the
->> number of
->> parameters and in use of the ellipsis terminator; corresponding parameters shall
->> have
->> compatible types. [...]"
-> 
-> Which is why I gave the stub function's first parameter the same type that
-> all tracepoint callbacks have a prototype that starts with "void *data"
-> 
-> and my solution is to define:
-> 
->	void tp_stub_func(void *data, ...) { return; }
-> 
-> Which is in line with: "corresponding parameters shall have compatible
-> types". The corresponding parameter is simply "void *data".
-
-No, you forgot about the part "[...] shall agree [...] in use of the ellipsis
-terminator"
-
-That last part about agreeing about use of the ellipsis terminator is what
-makes your last solution run into undefined behavior territory. The caller
-and callee don't agree on the use of ellipsis terminator: the caller does not
-use it, but the callee expects it.
-
-> 
->> 
->> What you suggest here is to use the ellipsis in the stub definition, but the
->> caller
->> prototype does not use the ellipsis, which brings us into undefined behavior
->> territory
->> again.
-> 
-> And I believe the "undefined behavior" is that you can't trust what is in
-> the parameters if the callee chooses to look at them, and that is not the
-> case here.
-
-I am aware of no such definition of "undefined behavior". So you would be
-very much dependent on the compiler choosing a not-so-hurtful way to deal
-with this behavior then.
-
-> But since the called function doesn't care, I highly doubt it
-> will ever be an issue. I mean, the only way this can break is if the caller
-> places something in the stack that it expects the callee to fix.
-
-AFAIU an undefined behavior is something we really try to avoid in C. As I said
-earlier, it seems to work in practice because the cdecl calling convention leaves
-the stack cleanup to the caller. But I'm worried about subtle portability issues
-that may arise due to this.
-
-> With all the functions in assembly we have, I'm pretty confident that if a compiler
-> does something like this, it would break all over the place.
-
-Fair point. Then maybe we should write the stub in assembly ?
-
-Thanks,
-
-Mathieu
+[1/2] ptrace: Set PF_SUPERPRIV when checking capability
+      https://git.kernel.org/kees/c/cf23705244c9
+[2/2] seccomp: Set PF_SUPERPRIV when checking capability
+      https://git.kernel.org/kees/c/fb14528e4436
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Kees Cook
+
