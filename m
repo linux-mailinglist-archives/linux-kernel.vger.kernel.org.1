@@ -2,140 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916192B6A50
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733F02B6A2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgKQQcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:32:03 -0500
-Received: from m12-13.163.com ([220.181.12.13]:33119 "EHLO m12-13.163.com"
+        id S1728018AbgKQQap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:30:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727147AbgKQQcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:32:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=2wc+1
-        4ynyBPMiY80AQ9rvbu5MPFWr0KvJuRIyUlPey8=; b=BS80uZHRXsRMHqF+ZvzHV
-        Ju73tpz+Ow0XAV3ui5sW64tYC6MDhTgvrSCPACzCq9Q56Trke4wlqU8IXca2EIjZ
-        CTcKPyd2Ayd75OKB8vK50e2FqpiASOYsiu9IiKUWAqURonshW0VNmmz2c2OlDPs7
-        Qpj2dRbOFDdB3ZiP9ji6Ik=
-Received: from localhost (unknown [101.86.213.141])
-        by smtp9 (Coremail) with SMTP id DcCowACHhQL39rNfOeHQRA--.4171S2;
-        Wed, 18 Nov 2020 00:14:47 +0800 (CST)
-Date:   Wed, 18 Nov 2020 00:14:47 +0800
-From:   Hui Su <sh_def@163.com>
-To:     tglx@linutronix.de, christian.brauner@ubuntu.com, serge@hallyn.com,
-        avagin@openvz.org, 0x7f454c46@gmail.com,
-        linux-kernel@vger.kernel.org
-Cc:     sh_def@163.com
-Subject: [PATCH] namespace: make timens_on_fork() return nothing
-Message-ID: <20201117161447.GA44938@rlk>
+        id S1727960AbgKQQao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:30:44 -0500
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69CF224686;
+        Tue, 17 Nov 2020 16:30:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605630642;
+        bh=t8+CG9uImG+jx42xaZW3Lx0tl2DbM1OgovkRrtLhfSs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=zaaXR0s/jU+CecEBhCR62e5pV86qFRcQ6T2SiJkBK9g6d0Z0hEK9/D6/dnzDBzdd6
+         iG34tCa8xMZUvS/v7sVzxFPWE0ZQgekUWsp6r+yU+zdI7+2k8EOxYazfzEJ3M6myZ+
+         7wPFiBCTXZCM11tdzzXauargEM6I8DV7kzISZwl4=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: [PATCH v9 5/9] secretmem: use PMD-size pages to amortize direct map fragmentation
+Date:   Tue, 17 Nov 2020 18:29:28 +0200
+Message-Id: <20201117162932.13649-6-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201117162932.13649-1-rppt@kernel.org>
+References: <20201117162932.13649-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: DcCowACHhQL39rNfOeHQRA--.4171S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWF4fGw4DXw4kJFy7GF43GFg_yoW5Zr1fpF
-        4Sy3srA3y7t34jg3W8Xr4DZ34akwnYg3WUG34ku3ySya1Igr1UCFnrA3WY9r45trs2grZ3
-        XFW8tws8tr1DX37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRKFAJUUUUU=
-X-Originating-IP: [101.86.213.141]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiJhjfX1v2fByKKwAAsS
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-timens_on_fork() always return 0, and maybe not
-need to judge the return value in copy_namespaces().
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-So make timens_on_fork() return nothing and do not
-judge its return val in copy_namespaces().
+Removing a PAGE_SIZE page from the direct map every time such page is
+allocated for a secret memory mapping will cause severe fragmentation of
+the direct map. This fragmentation can be reduced by using PMD-size pages
+as a pool for small pages for secret memory mappings.
 
-Signed-off-by: Hui Su <sh_def@163.com>
+Add a gen_pool per secretmem inode and lazily populate this pool with
+PMD-size pages.
+
+As pages allocated by secretmem become unmovable, use CMA to back large
+page caches so that page allocator won't be surprised by failing attempt to
+migrate these pages.
+
+The CMA area used by secretmem is controlled by the "secretmem=" kernel
+parameter. This allows explicit control over the memory available for
+secretmem and provides upper hard limit for secretmem consumption.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- include/linux/time_namespace.h | 6 +++---
- kernel/nsproxy.c               | 7 +------
- kernel/time/namespace.c        | 6 ++----
- 3 files changed, 6 insertions(+), 13 deletions(-)
+ mm/Kconfig     |   2 +
+ mm/secretmem.c | 152 ++++++++++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 135 insertions(+), 19 deletions(-)
 
-diff --git a/include/linux/time_namespace.h b/include/linux/time_namespace.h
-index 5b6031385db0..74a88ce0cd3c 100644
---- a/include/linux/time_namespace.h
-+++ b/include/linux/time_namespace.h
-@@ -45,7 +45,7 @@ struct time_namespace *copy_time_ns(unsigned long flags,
- 				    struct user_namespace *user_ns,
- 				    struct time_namespace *old_ns);
- void free_time_ns(struct kref *kref);
--int timens_on_fork(struct nsproxy *nsproxy, struct task_struct *tsk);
-+void timens_on_fork(struct nsproxy *nsproxy, struct task_struct *tsk);
- struct vdso_data *arch_get_vdso_data(void *vvar_page);
+diff --git a/mm/Kconfig b/mm/Kconfig
+index d8d170fa5210..e0e789398421 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -886,5 +886,7 @@ config MAPPING_DIRTY_HELPERS
  
- static inline void put_time_ns(struct time_namespace *ns)
-@@ -122,10 +122,10 @@ struct time_namespace *copy_time_ns(unsigned long flags,
- 	return old_ns;
- }
+ config SECRETMEM
+ 	def_bool ARCH_HAS_SET_DIRECT_MAP && !EMBEDDED
++	select GENERIC_ALLOCATOR
++	select CMA
  
--static inline int timens_on_fork(struct nsproxy *nsproxy,
-+static inline void timens_on_fork(struct nsproxy *nsproxy,
- 				 struct task_struct *tsk)
+ endmenu
+diff --git a/mm/secretmem.c b/mm/secretmem.c
+index 4be4c9ecac45..d4c44fc568a4 100644
+--- a/mm/secretmem.c
++++ b/mm/secretmem.c
+@@ -7,12 +7,15 @@
+ 
+ #include <linux/mm.h>
+ #include <linux/fs.h>
++#include <linux/cma.h>
+ #include <linux/mount.h>
+ #include <linux/memfd.h>
+ #include <linux/bitops.h>
+ #include <linux/printk.h>
+ #include <linux/pagemap.h>
++#include <linux/genalloc.h>
+ #include <linux/syscalls.h>
++#include <linux/memblock.h>
+ #include <linux/pseudo_fs.h>
+ #include <linux/secretmem.h>
+ #include <linux/set_memory.h>
+@@ -41,25 +44,80 @@
+ #define SECRETMEM_FLAGS_MASK	SECRETMEM_MODE_MASK
+ 
+ struct secretmem_ctx {
++	struct gen_pool *pool;
+ 	unsigned int mode;
+ };
+ 
+-static struct page *secretmem_alloc_page(gfp_t gfp)
++static struct cma *secretmem_cma;
++
++static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
  {
--	return 0;
-+	return;
++	unsigned long nr_pages = (1 << PMD_PAGE_ORDER);
++	struct gen_pool *pool = ctx->pool;
++	unsigned long addr;
++	struct page *page;
++	int err;
++
++	page = cma_alloc(secretmem_cma, nr_pages, PMD_SIZE, gfp & __GFP_NOWARN);
++	if (!page)
++		return -ENOMEM;
++
++	err = set_direct_map_invalid_noflush(page, nr_pages);
++	if (err)
++		goto err_cma_release;
++
++	addr = (unsigned long)page_address(page);
++	err = gen_pool_add(pool, addr, PMD_SIZE, NUMA_NO_NODE);
++	if (err)
++		goto err_set_direct_map;
++
++	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
++
++	return 0;
++
++err_set_direct_map:
+ 	/*
+-	 * FIXME: use a cache of large pages to reduce the direct map
+-	 * fragmentation
++	 * If a split of PUD-size page was required, it already happened
++	 * when we marked the pages invalid which guarantees that this call
++	 * won't fail
+ 	 */
+-	return alloc_page(gfp);
++	set_direct_map_default_noflush(page, nr_pages);
++err_cma_release:
++	cma_release(secretmem_cma, page, nr_pages);
++	return err;
++}
++
++static struct page *secretmem_alloc_page(struct secretmem_ctx *ctx,
++					 gfp_t gfp)
++{
++	struct gen_pool *pool = ctx->pool;
++	unsigned long addr;
++	struct page *page;
++	int err;
++
++	if (gen_pool_avail(pool) < PAGE_SIZE) {
++		err = secretmem_pool_increase(ctx, gfp);
++		if (err)
++			return NULL;
++	}
++
++	addr = gen_pool_alloc(pool, PAGE_SIZE);
++	if (!addr)
++		return NULL;
++
++	page = virt_to_page(addr);
++	get_page(page);
++
++	return page;
  }
  
- static inline void timens_add_monotonic(struct timespec64 *ts) { }
-diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
-index 12dd41b39a7f..e2e6c5dc433f 100644
---- a/kernel/nsproxy.c
-+++ b/kernel/nsproxy.c
-@@ -153,7 +153,6 @@ int copy_namespaces(unsigned long flags, struct task_struct *tsk)
- 	struct nsproxy *old_ns = tsk->nsproxy;
- 	struct user_namespace *user_ns = task_cred_xxx(tsk, user_ns);
- 	struct nsproxy *new_ns;
--	int ret;
- 
- 	if (likely(!(flags & (CLONE_NEWNS | CLONE_NEWUTS | CLONE_NEWIPC |
- 			      CLONE_NEWPID | CLONE_NEWNET |
-@@ -180,11 +179,7 @@ int copy_namespaces(unsigned long flags, struct task_struct *tsk)
- 	if (IS_ERR(new_ns))
- 		return  PTR_ERR(new_ns);
- 
--	ret = timens_on_fork(new_ns, tsk);
--	if (ret) {
--		free_nsproxy(new_ns);
--		return ret;
--	}
-+	timens_on_fork(new_ns, tsk);
- 
- 	tsk->nsproxy = new_ns;
- 	return 0;
-diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
-index afc65e6be33e..e0f9509b17c3 100644
---- a/kernel/time/namespace.c
-+++ b/kernel/time/namespace.c
-@@ -308,22 +308,20 @@ static int timens_install(struct nsset *nsset, struct ns_common *new)
- 	return 0;
- }
- 
--int timens_on_fork(struct nsproxy *nsproxy, struct task_struct *tsk)
-+void timens_on_fork(struct nsproxy *nsproxy, struct task_struct *tsk)
+ static vm_fault_t secretmem_fault(struct vm_fault *vmf)
  {
- 	struct ns_common *nsc = &nsproxy->time_ns_for_children->ns;
- 	struct time_namespace *ns = to_time_ns(nsc);
++	struct secretmem_ctx *ctx = vmf->vma->vm_file->private_data;
+ 	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+ 	struct inode *inode = file_inode(vmf->vma->vm_file);
+ 	pgoff_t offset = vmf->pgoff;
+ 	vm_fault_t ret = 0;
+-	unsigned long addr;
+ 	struct page *page;
+ 	int err;
  
- 	/* create_new_namespaces() already incremented the ref counter */
- 	if (nsproxy->time_ns == nsproxy->time_ns_for_children)
--		return 0;
-+		return;
+@@ -68,8 +126,7 @@ static vm_fault_t secretmem_fault(struct vm_fault *vmf)
  
- 	get_time_ns(ns);
- 	put_time_ns(nsproxy->time_ns);
- 	nsproxy->time_ns = ns;
- 
- 	timens_commit(tsk, ns);
+ 	page = find_get_page(mapping, offset);
+ 	if (!page) {
 -
--	return 0;
+-		page = secretmem_alloc_page(vmf->gfp_mask);
++		page = secretmem_alloc_page(ctx, vmf->gfp_mask);
+ 		if (!page)
+ 			return vmf_error(-ENOMEM);
+ 
+@@ -77,14 +134,8 @@ static vm_fault_t secretmem_fault(struct vm_fault *vmf)
+ 		if (unlikely(err))
+ 			goto err_put_page;
+ 
+-		err = set_direct_map_invalid_noflush(page, 1);
+-		if (err)
+-			goto err_del_page_cache;
+-
+-		addr = (unsigned long)page_address(page);
+-		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+-
+ 		__SetPageUptodate(page);
++		set_page_private(page, (unsigned long)ctx);
+ 
+ 		ret = VM_FAULT_LOCKED;
+ 	}
+@@ -92,8 +143,6 @@ static vm_fault_t secretmem_fault(struct vm_fault *vmf)
+ 	vmf->page = page;
+ 	return ret;
+ 
+-err_del_page_cache:
+-	delete_from_page_cache(page);
+ err_put_page:
+ 	put_page(page);
+ 	return vmf_error(err);
+@@ -146,8 +195,11 @@ static int secretmem_migratepage(struct address_space *mapping,
+ 
+ static void secretmem_freepage(struct page *page)
+ {
+-	set_direct_map_default_noflush(page, 1);
+-	clear_highpage(page);
++	unsigned long addr = (unsigned long)page_address(page);
++	struct secretmem_ctx *ctx = (struct secretmem_ctx *)page_private(page);
++	struct gen_pool *pool = ctx->pool;
++
++	gen_pool_free(pool, addr, PAGE_SIZE);
  }
  
- static struct user_namespace *timens_owner(struct ns_common *ns)
+ static const struct address_space_operations secretmem_aops = {
+@@ -182,13 +234,18 @@ static struct file *secretmem_file_create(unsigned long flags)
+ 	if (!ctx)
+ 		goto err_free_inode;
+ 
++	ctx->pool = gen_pool_create(PAGE_SHIFT, NUMA_NO_NODE);
++	if (!ctx->pool)
++		goto err_free_ctx;
++
+ 	file = alloc_file_pseudo(inode, secretmem_mnt, "secretmem",
+ 				 O_RDWR, &secretmem_fops);
+ 	if (IS_ERR(file))
+-		goto err_free_ctx;
++		goto err_free_pool;
+ 
+ 	mapping_set_unevictable(inode->i_mapping);
+ 
++	inode->i_private = ctx;
+ 	inode->i_mapping->private_data = ctx;
+ 	inode->i_mapping->a_ops = &secretmem_aops;
+ 
+@@ -202,6 +259,8 @@ static struct file *secretmem_file_create(unsigned long flags)
+ 
+ 	return file;
+ 
++err_free_pool:
++	gen_pool_destroy(ctx->pool);
+ err_free_ctx:
+ 	kfree(ctx);
+ err_free_inode:
+@@ -220,6 +279,9 @@ SYSCALL_DEFINE1(memfd_secret, unsigned long, flags)
+ 	if (flags & ~(SECRETMEM_FLAGS_MASK | O_CLOEXEC))
+ 		return -EINVAL;
+ 
++	if (!secretmem_cma)
++		return -ENOMEM;
++
+ 	fd = get_unused_fd_flags(flags & O_CLOEXEC);
+ 	if (fd < 0)
+ 		return fd;
+@@ -240,11 +302,37 @@ SYSCALL_DEFINE1(memfd_secret, unsigned long, flags)
+ 	return err;
+ }
+ 
++static void secretmem_cleanup_chunk(struct gen_pool *pool,
++				    struct gen_pool_chunk *chunk, void *data)
++{
++	unsigned long start = chunk->start_addr;
++	unsigned long end = chunk->end_addr;
++	struct page *page = virt_to_page(start);
++	unsigned long nr_pages = (end - start + 1) / PAGE_SIZE;
++	int i;
++
++	set_direct_map_default_noflush(page, nr_pages);
++
++	for (i = 0; i < nr_pages; i++)
++		clear_highpage(page + i);
++
++	cma_release(secretmem_cma, page, nr_pages);
++}
++
++static void secretmem_cleanup_pool(struct secretmem_ctx *ctx)
++{
++	struct gen_pool *pool = ctx->pool;
++
++	gen_pool_for_each_chunk(pool, secretmem_cleanup_chunk, ctx);
++	gen_pool_destroy(pool);
++}
++
+ static void secretmem_evict_inode(struct inode *inode)
+ {
+ 	struct secretmem_ctx *ctx = inode->i_private;
+ 
+ 	truncate_inode_pages_final(&inode->i_data);
++	secretmem_cleanup_pool(ctx);
+ 	clear_inode(inode);
+ 	kfree(ctx);
+ }
+@@ -281,3 +369,29 @@ static int secretmem_init(void)
+ 	return ret;
+ }
+ fs_initcall(secretmem_init);
++
++static int __init secretmem_setup(char *str)
++{
++	phys_addr_t align = PMD_SIZE;
++	unsigned long reserved_size;
++	int err;
++
++	reserved_size = memparse(str, NULL);
++	if (!reserved_size)
++		return 0;
++
++	if (reserved_size * 2 > PUD_SIZE)
++		align = PUD_SIZE;
++
++	err = cma_declare_contiguous(0, reserved_size, 0, align, 0, false,
++				     "secretmem", &secretmem_cma);
++	if (err) {
++		pr_err("failed to create CMA: %d\n", err);
++		return err;
++	}
++
++	pr_info("reserved %luM\n", reserved_size >> 20);
++
++	return 0;
++}
++__setup("secretmem=", secretmem_setup);
 -- 
-2.29.0
-
+2.28.0
 
