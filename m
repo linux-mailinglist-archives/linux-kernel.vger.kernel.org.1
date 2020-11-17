@@ -2,38 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04382B61AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4110E2B6262
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730840AbgKQNVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:21:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54786 "EHLO mail.kernel.org"
+        id S1730883AbgKQN2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:28:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730835AbgKQNVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:21:08 -0500
+        id S1731287AbgKQN2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:28:08 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91E8A2463D;
-        Tue, 17 Nov 2020 13:21:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E494D2078D;
+        Tue, 17 Nov 2020 13:28:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619268;
-        bh=EToaU/VKICbx+ZOTvHcjhyy5Bx3pOpF9ha4m/ozKKww=;
+        s=default; t=1605619687;
+        bh=VUnCPG9XKt9T20v2bo8pj6aPEEz0Ou+/ZXoECj3vIP0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hotGb/cpHPHBYA3t2CpeKHQKBe57qBmBt9Vg2uiDO7Rdgob+coQaKFiXeOeCwajkS
-         uQYDhUFIwPsbSrwMQNXOcQkMh0f1vshlngrJrug05iTJNulTfCJbpf2u6ZMfQn8IEX
-         BslWinzZeDEnxo2JlqQ2mqnMi54bLlAnHgvu7GC0=
+        b=F5lWdS7sVHLztrwwlSZbiuirtslogPDT1Kcc3qBcP9CkCsrC7cLgOXUXZk2rVSmpD
+         rA7GrPP2A4fkinlgf1FbEok5z3JYwIzUFaiKFJyAaMHlTkJ1iexwEWGKtb6rZAsUzH
+         EevV0XfTrUvXWnyOVwzPYIUSeCp3+R2rE/U9Kdkc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, nl6720 <nl6720@gmail.com>,
-        Chao Yu <yuchao0@huawei.com>, Gao Xiang <hsiangkao@redhat.com>
-Subject: [PATCH 4.19 085/101] erofs: derive atime instead of leaving it empty
+        stable@vger.kernel.org, Laurent Dufour <ldufour@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Lameter <cl@linux.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 122/151] mm/slub: fix panic in slab_alloc_node()
 Date:   Tue, 17 Nov 2020 14:05:52 +0100
-Message-Id: <20201117122117.267551596@linuxfoundation.org>
+Message-Id: <20201117122127.357618103@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,79 +52,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+From: Laurent Dufour <ldufour@linux.ibm.com>
 
-commit d3938ee23e97bfcac2e0eb6b356875da73d700df upstream.
+commit 22e4663e916321b72972c69ca0c6b962f529bd78 upstream.
 
-EROFS has _only one_ ondisk timestamp (ctime is currently
-documented and recorded, we might also record mtime instead
-with a new compat feature if needed) for each extended inode
-since EROFS isn't mainly for archival purposes so no need to
-keep all timestamps on disk especially for Android scenarios
-due to security concerns. Also, romfs/cramfs don't have their
-own on-disk timestamp, and squashfs only records mtime instead.
+While doing memory hot-unplug operation on a PowerPC VM running 1024 CPUs
+with 11TB of ram, I hit the following panic:
 
-Let's also derive access time from ondisk timestamp rather than
-leaving it empty, and if mtime/atime for each file are really
-needed for specific scenarios as well, we can also use xattrs
-to record them then.
+    BUG: Kernel NULL pointer dereference on read at 0x00000007
+    Faulting instruction address: 0xc000000000456048
+    Oops: Kernel access of bad area, sig: 11 [#2]
+    LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS= 2048 NUMA pSeries
+    Modules linked in: rpadlpar_io rpaphp
+    CPU: 160 PID: 1 Comm: systemd Tainted: G      D           5.9.0 #1
+    NIP:  c000000000456048 LR: c000000000455fd4 CTR: c00000000047b350
+    REGS: c00006028d1b77a0 TRAP: 0300   Tainted: G      D            (5.9.0)
+    MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 24004228  XER: 00000000
+    CFAR: c00000000000f1b0 DAR: 0000000000000007 DSISR: 40000000 IRQMASK: 0
+    GPR00: c000000000455fd4 c00006028d1b7a30 c000000001bec800 0000000000000000
+    GPR04: 0000000000000dc0 0000000000000000 00000000000374ef c00007c53df99320
+    GPR08: 000007c53c980000 0000000000000000 000007c53c980000 0000000000000000
+    GPR12: 0000000000004400 c00000001e8e4400 0000000000000000 0000000000000f6a
+    GPR16: 0000000000000000 c000000001c25930 c000000001d62528 00000000000000c1
+    GPR20: c000000001d62538 c00006be469e9000 0000000fffffffe0 c0000000003c0ff8
+    GPR24: 0000000000000018 0000000000000000 0000000000000dc0 0000000000000000
+    GPR28: c00007c513755700 c000000001c236a4 c00007bc4001f800 0000000000000001
+    NIP [c000000000456048] __kmalloc_node+0x108/0x790
+    LR [c000000000455fd4] __kmalloc_node+0x94/0x790
+    Call Trace:
+      kvmalloc_node+0x58/0x110
+      mem_cgroup_css_online+0x10c/0x270
+      online_css+0x48/0xd0
+      cgroup_apply_control_enable+0x2c4/0x470
+      cgroup_mkdir+0x408/0x5f0
+      kernfs_iop_mkdir+0x90/0x100
+      vfs_mkdir+0x138/0x250
+      do_mkdirat+0x154/0x1c0
+      system_call_exception+0xf8/0x200
+      system_call_common+0xf0/0x27c
+    Instruction dump:
+    e93e0000 e90d0030 39290008 7cc9402a e94d0030 e93e0000 7ce95214 7f89502a
+    2fbc0000 419e0018 41920230 e9270010 <89290007> 7f994800 419e0220 7ee6bb78
 
-Link: https://lore.kernel.org/r/20201031195102.21221-1-hsiangkao@aol.com
-[ Gao Xiang: It'd be better to backport for user-friendly concern. ]
-Fixes: 431339ba9042 ("staging: erofs: add inode operations")
-Cc: stable <stable@vger.kernel.org> # 4.19+
-Reported-by: nl6720 <nl6720@gmail.com>
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-[ Gao Xiang: Manually backport to 4.19.y due to trivial conflicts. ]
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+This pointing to the following code:
+
+    mm/slub.c:2851
+            if (unlikely(!object || !node_match(page, node))) {
+    c000000000456038:       00 00 bc 2f     cmpdi   cr7,r28,0
+    c00000000045603c:       18 00 9e 41     beq     cr7,c000000000456054 <__kmalloc_node+0x114>
+    node_match():
+    mm/slub.c:2491
+            if (node != NUMA_NO_NODE && page_to_nid(page) != node)
+    c000000000456040:       30 02 92 41     beq     cr4,c000000000456270 <__kmalloc_node+0x330>
+    page_to_nid():
+    include/linux/mm.h:1294
+    c000000000456044:       10 00 27 e9     ld      r9,16(r7)
+    c000000000456048:       07 00 29 89     lbz     r9,7(r9)	<<<< r9 = NULL
+    node_match():
+    mm/slub.c:2491
+    c00000000045604c:       00 48 99 7f     cmpw    cr7,r25,r9
+    c000000000456050:       20 02 9e 41     beq     cr7,c000000000456270 <__kmalloc_node+0x330>
+
+The panic occurred in slab_alloc_node() when checking for the page's node:
+
+	object = c->freelist;
+	page = c->page;
+	if (unlikely(!object || !node_match(page, node))) {
+		object = __slab_alloc(s, gfpflags, node, addr, c);
+		stat(s, ALLOC_SLOWPATH);
+
+The issue is that object is not NULL while page is NULL which is odd but
+may happen if the cache flush happened after loading object but before
+loading page.  Thus checking for the page pointer is required too.
+
+The cache flush is done through an inter processor interrupt when a
+piece of memory is off-lined.  That interrupt is triggered when a memory
+hot-unplug operation is initiated and offline_pages() is calling the
+slub's MEM_GOING_OFFLINE callback slab_mem_going_offline_callback()
+which is calling flush_cpu_slab().  If that interrupt is caught between
+the reading of c->freelist and the reading of c->page, this could lead
+to such a situation.  That situation is expected and the later call to
+this_cpu_cmpxchg_double() will detect the change to c->freelist and redo
+the whole operation.
+
+In commit 6159d0f5c03e ("mm/slub.c: page is always non-NULL in
+node_match()") check on the page pointer has been removed assuming that
+page is always valid when it is called.  It happens that this is not
+true in that particular case, so check for page before calling
+node_match() here.
+
+Fixes: 6159d0f5c03e ("mm/slub.c: page is always non-NULL in node_match()")
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Christoph Lameter <cl@linux.com>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Scott Cheloha <cheloha@linux.ibm.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201027190406.33283-1-ldufour@linux.ibm.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/staging/erofs/inode.c |   21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
 
---- a/drivers/staging/erofs/inode.c
-+++ b/drivers/staging/erofs/inode.c
-@@ -53,11 +53,9 @@ static int read_inode(struct inode *inod
- 		i_gid_write(inode, le32_to_cpu(v2->i_gid));
- 		set_nlink(inode, le32_to_cpu(v2->i_nlink));
+---
+ mm/slub.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2763,7 +2763,7 @@ redo:
  
--		/* ns timestamp */
--		inode->i_mtime.tv_sec = inode->i_ctime.tv_sec =
--			le64_to_cpu(v2->i_ctime);
--		inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec =
--			le32_to_cpu(v2->i_ctime_nsec);
-+		/* extended inode has its own timestamp */
-+		inode->i_ctime.tv_sec = le64_to_cpu(v2->i_ctime);
-+		inode->i_ctime.tv_nsec = le32_to_cpu(v2->i_ctime_nsec);
- 
- 		inode->i_size = le64_to_cpu(v2->i_size);
- 	} else if (__inode_version(advise) == EROFS_INODE_LAYOUT_V1) {
-@@ -83,11 +81,9 @@ static int read_inode(struct inode *inod
- 		i_gid_write(inode, le16_to_cpu(v1->i_gid));
- 		set_nlink(inode, le16_to_cpu(v1->i_nlink));
- 
--		/* use build time to derive all file time */
--		inode->i_mtime.tv_sec = inode->i_ctime.tv_sec =
--			sbi->build_time;
--		inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec =
--			sbi->build_time_nsec;
-+		/* use build time for compact inodes */
-+		inode->i_ctime.tv_sec = sbi->build_time;
-+		inode->i_ctime.tv_nsec = sbi->build_time_nsec;
- 
- 		inode->i_size = le32_to_cpu(v1->i_size);
+ 	object = c->freelist;
+ 	page = c->page;
+-	if (unlikely(!object || !node_match(page, node))) {
++	if (unlikely(!object || !page || !node_match(page, node))) {
+ 		object = __slab_alloc(s, gfpflags, node, addr, c);
+ 		stat(s, ALLOC_SLOWPATH);
  	} else {
-@@ -97,6 +93,11 @@ static int read_inode(struct inode *inod
- 		return -EIO;
- 	}
- 
-+	inode->i_mtime.tv_sec = inode->i_ctime.tv_sec;
-+	inode->i_atime.tv_sec = inode->i_ctime.tv_sec;
-+	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
-+	inode->i_atime.tv_nsec = inode->i_ctime.tv_nsec;
-+
- 	/* measure inode.i_blocks as the generic filesystem */
- 	inode->i_blocks = ((inode->i_size - 1) >> 9) + 1;
- 	return 0;
 
 
