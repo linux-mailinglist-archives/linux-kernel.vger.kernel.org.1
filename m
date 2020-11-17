@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1602B6B9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCF12B6BA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbgKQRVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:21:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:33408 "EHLO foss.arm.com"
+        id S1729234AbgKQRXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:23:33 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:53128 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727043AbgKQRVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:21:30 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACBCC101E;
-        Tue, 17 Nov 2020 09:21:29 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DC9F13F718;
-        Tue, 17 Nov 2020 09:21:28 -0800 (PST)
-References: <20201117003123.GB3723@shao2-debian>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     kernel test robot <rong.a.chen@intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        LKP <lkp@lists.01.org>, lkp@intel.com
-Subject: Re: 5b9f8ff7b3 ("sched/debug: Output SD flag names rather than .."): [  320.831182] BUG: KASAN: double-free or invalid-free in sd_ctl_doflags
-In-reply-to: <20201117003123.GB3723@shao2-debian>
-Date:   Tue, 17 Nov 2020 17:21:26 +0000
-Message-ID: <jhjr1orx5k9.mognet@arm.com>
+        id S1728655AbgKQRXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:23:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605633812; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=HKBzQf+Wq3jLBX3M54k/nh+GCQY6+jg1bPUkUq9gsbU=; b=LluWHpnzYtmMB0Zy+XmmTbX8CkHfhbGNzsOE7/SgdiTGFVEAZwkF5G6p4SqEd5KnFxjN1+QE
+ eK2hu9tLVFjClhLbf+LzzPmh663PK27Ks+bRqq+GA8+OMRZO7dqkC9kpL9xu4lvUAywa4QzI
+ AOJiE4VH9WnFpXOXuoY4TAfUKR4=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fb407139a53d19da939e6e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Nov 2020 17:23:31
+ GMT
+Sender: asutoshd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 57530C43464; Tue, 17 Nov 2020 17:23:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6587C43460;
+        Tue, 17 Nov 2020 17:23:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A6587C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v3 3/3] scsi: ufs: Print host regs in IRQ handler when AH8
+ error happens
+To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1605596660-2987-1-git-send-email-cang@codeaurora.org>
+ <1605596660-2987-4-git-send-email-cang@codeaurora.org>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <1b2aacf0-ebc2-e541-2db5-2d595b4b392f@codeaurora.org>
+Date:   Tue, 17 Nov 2020 09:23:28 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1605596660-2987-4-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/16/2020 11:04 PM, Can Guo wrote:
+> When AH8 error happens, all the regs and states are dumped in err handler.
+> Sometime we need to look into host regs right after AH8 error happens,
+> which is before leaving the IRQ handler.
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> ---
 
-Hi,
+Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
 
-On 17/11/20 00:31, kernel test robot wrote:
-> Greetings,
->
-> 0day kernel testing robot got the below dmesg and the first bad commit is
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->
-> commit 5b9f8ff7b320a34af3dbcf04edb40d9b04f22f4a
-> Author:     Valentin Schneider <valentin.schneider@arm.com>
-> AuthorDate: Mon Aug 17 12:29:52 2020 +0100
-> Commit:     Ingo Molnar <mingo@kernel.org>
-> CommitDate: Wed Aug 19 10:49:48 2020 +0200
->
->     sched/debug: Output SD flag names rather than their values
->     
->     Decoding the output of /proc/sys/kernel/sched_domain/cpu*/domain*/flags has
->     always been somewhat annoying, as one needs to go fetch the bit -> name
->     mapping from the source code itself. This encoding can be saved in a script
->     somewhere, but that isn't safe from flags being added, removed or even
->     shuffled around.
->     
->     What matters for debugging purposes is to get *which* flags are set in a
->     given domain, their associated value is pretty much meaningless.
->     
->     Make the sd flags debug file output flag names.
->     
->     Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
->     Signed-off-by: Ingo Molnar <mingo@kernel.org>
->     Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
->     Link: https://lore.kernel.org/r/20200817113003.20802-7-valentin.schneider@arm.com
->
-> 65c5e25316  sched/topology: Verify SD_* flags setup when sched_debug is on
-> 5b9f8ff7b3  sched/debug: Output SD flag names rather than their values
-> 3cea11cd5e  Linux 5.10-rc2
-> +-------------------------------------------------+------------+------------+-----------+
-> |                                                 | 65c5e25316 | 5b9f8ff7b3 | v5.10-rc2 |
-> +-------------------------------------------------+------------+------------+-----------+
-> | boot_successes                                  | 824        | 523        | 322       |
-> | boot_failures                                   | 491        | 331        | 145       |
-> | WARNING:at_mm/usercopy.c:#usercopy_warn         | 439        | 292        | 143       |
-> | RIP:usercopy_warn                               | 439        | 292        | 143       |
-> | INFO:rcu_sched_self-detected_stall_on_CPU       | 38         | 22         |           |
-> | RIP:iov_iter_copy_from_user_atomic              | 26         | 15         |           |
-> | BUG:soft_lockup-CPU##stuck_for#s![trinity-c0:#] | 6          | 3          |           |
-> | Kernel_panic-not_syncing                        | 39         | 23         |           |
-> | RIP:ftrace_likely_update                        | 33         | 19         |           |
-> | BUG:soft_lockup-CPU##stuck_for#s![trinity-c6:#] | 5          | 3          |           |
-> | BUG:soft_lockup-CPU##stuck_for#s![trinity-c4:#] | 10         | 4          |           |
-> | WARNING:kernel_stack                            | 3          | 1          |           |
-> | BUG:soft_lockup-CPU##stuck_for#s![trinity-c2:#] | 6          | 2          |           |
-> | RIP:init_numa_balancing                         | 1          |            |           |
-> | BUG:soft_lockup-CPU##stuck_for#s![trinity-c5:#] | 5          | 2          |           |
-> | BUG:soft_lockup-CPU##stuck_for#s![trinity-c7:#] | 3          | 3          |           |
-> | RIP:default_idle                                | 2          | 2          |           |
-> | BUG:soft_lockup-CPU##stuck_for#s![trinity-c3:#] | 4          | 4          |           |
-> | BUG:kernel_hang_in_boot_stage                   | 8          | 1          | 1         |
-> | WARNING:at_fs/read_write.c:#vfs_copy_file_range | 1          |            |           |
-> | RIP:vfs_copy_file_range                         | 1          |            |           |
-> | invoked_oom-killer:gfp_mask=0x                  | 0          | 1          |           |
-> | Mem-Info                                        | 0          | 2          |           |
-> | BUG:KASAN:double-free_or_invalid-free_in_s      | 0          | 10         | 1         |
-> | RIP:_raw_spin_unlock_irq                        | 0          | 1          |           |
-> | BUG:kernel_reboot-without-warning_in_test_stage | 0          | 1          |           |
-> | BUG:soft_lockup-CPU##stuck_for#s![trinity-c1:#] | 0          | 1          |           |
-> | canonical_address#:#[##]                        | 0          | 1          |           |
-> | RIP:write_port                                  | 0          | 1          |           |
-> +-------------------------------------------------+------------+------------+-----------+
->
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
->
+>   drivers/scsi/ufs/ufshcd.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index cd7394e..a7857f6 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6057,7 +6057,8 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
+>   		hba->saved_uic_err |= hba->uic_error;
+>   
+>   		/* dump controller state before resetting */
+> -		if ((hba->saved_err & (INT_FATAL_ERRORS)) ||
+> +		if ((hba->saved_err &
+> +		     (INT_FATAL_ERRORS | UFSHCD_UIC_HIBERN8_MASK)) ||
+>   		    (hba->saved_uic_err &&
+>   		     (hba->saved_uic_err != UFSHCD_UIC_PA_GENERIC_ERROR))) {
+>   			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
+> 
 
-This has been fixed by Colin, and is in v5.10-rc4:
 
-8d4d9c7b4333 ("sched/debug: Fix memory corruption caused by multiple small reads of flags")
-
-Thanks.
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
