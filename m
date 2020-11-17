@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A942B6072
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAA92B60FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgKQNJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:09:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38278 "EHLO mail.kernel.org"
+        id S1728804AbgKQNOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:14:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728549AbgKQNJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:09:22 -0500
+        id S1730060AbgKQNOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:14:33 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C64F6221EB;
-        Tue, 17 Nov 2020 13:09:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C5C92151B;
+        Tue, 17 Nov 2020 13:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618560;
-        bh=WlzmG+qHL2OfuUUc0EBK53FhRG8eSth/4dH/xUMaf4U=;
+        s=default; t=1605618873;
+        bh=uUAW57XJhJ3sGqZ20OacJ7ygrsr1Dswg2XtyszM5HPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=usCx3rQ2b5A7bIqj+XkjKE2JCx7WKE5wnnXPunHFwusPD3161QvgHvLiA/Pmr325p
-         o7K+BTAXR7EYExOhcMm1u7SzyFgKKaEmzwCwD44e7qg48kDYv2z90RF1ezW3EtPMVw
-         zDNcEayG+GAbTgR6afUFicKcz7q1sAJ30i2ruBVY=
+        b=vyUwxXuf9bWFybGLindb4e1SmHVX+k8vQdXUccOx1JjOE7C2iuWtMnPR1nOH4fK2I
+         vIJ09S+93AFYDpvCPrYdMjWm5v9IAzmgnqGEvtulfHQIZPzu3Rdjr61215wSPn7jNn
+         clqVUIV3Cjjsn1clZ+wlDzaUcSd/lbtO3SS5JZZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 10/78] ALSA: hda: prevent undefined shift in snd_hdac_ext_bus_get_link()
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 07/85] btrfs: reschedule when cloning lots of extents
 Date:   Tue, 17 Nov 2020 14:04:36 +0100
-Message-Id: <20201117122109.604077029@linuxfoundation.org>
+Message-Id: <20201117122111.384338346@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-[ Upstream commit 158e1886b6262c1d1c96a18c85fac5219b8bf804 ]
+[ Upstream commit 6b613cc97f0ace77f92f7bc112b8f6ad3f52baf8 ]
 
-This is harmless, but the "addr" comes from the user and it could lead
-to a negative shift or to shift wrapping if it's too high.
+We have several occurrences of a soft lockup from fstest's generic/175
+testcase, which look more or less like this one:
 
-Fixes: 0b00a5615dc4 ("ALSA: hdac_ext: add hdac extended controller")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20201103101807.GC1127762@mwanda
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+  watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [xfs_io:10030]
+  Kernel panic - not syncing: softlockup: hung tasks
+  CPU: 0 PID: 10030 Comm: xfs_io Tainted: G             L    5.9.0-rc5+ #768
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
+  Call Trace:
+   <IRQ>
+   dump_stack+0x77/0xa0
+   panic+0xfa/0x2cb
+   watchdog_timer_fn.cold+0x85/0xa5
+   ? lockup_detector_update_enable+0x50/0x50
+   __hrtimer_run_queues+0x99/0x4c0
+   ? recalibrate_cpu_khz+0x10/0x10
+   hrtimer_run_queues+0x9f/0xb0
+   update_process_times+0x28/0x80
+   tick_handle_periodic+0x1b/0x60
+   __sysvec_apic_timer_interrupt+0x76/0x210
+   asm_call_on_stack+0x12/0x20
+   </IRQ>
+   sysvec_apic_timer_interrupt+0x7f/0x90
+   asm_sysvec_apic_timer_interrupt+0x12/0x20
+  RIP: 0010:btrfs_tree_unlock+0x91/0x1a0 [btrfs]
+  RSP: 0018:ffffc90007123a58 EFLAGS: 00000282
+  RAX: ffff8881cea2fbe0 RBX: ffff8881cea2fbe0 RCX: 0000000000000000
+  RDX: ffff8881d23fd200 RSI: ffffffff82045220 RDI: ffff8881cea2fba0
+  RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000032
+  R10: 0000160000000000 R11: 0000000000001000 R12: 0000000000001000
+  R13: ffff8882357fd5b0 R14: ffff88816fa76e70 R15: ffff8881cea2fad0
+   ? btrfs_tree_unlock+0x15b/0x1a0 [btrfs]
+   btrfs_release_path+0x67/0x80 [btrfs]
+   btrfs_insert_replace_extent+0x177/0x2c0 [btrfs]
+   btrfs_replace_file_extents+0x472/0x7c0 [btrfs]
+   btrfs_clone+0x9ba/0xbd0 [btrfs]
+   btrfs_clone_files.isra.0+0xeb/0x140 [btrfs]
+   ? file_update_time+0xcd/0x120
+   btrfs_remap_file_range+0x322/0x3b0 [btrfs]
+   do_clone_file_range+0xb7/0x1e0
+   vfs_clone_file_range+0x30/0xa0
+   ioctl_file_clone+0x8a/0xc0
+   do_vfs_ioctl+0x5b2/0x6f0
+   __x64_sys_ioctl+0x37/0xa0
+   do_syscall_64+0x33/0x40
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x7f87977fc247
+  RSP: 002b:00007ffd51a2f6d8 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
+  RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f87977fc247
+  RDX: 00007ffd51a2f710 RSI: 000000004020940d RDI: 0000000000000003
+  RBP: 0000000000000004 R08: 00007ffd51a79080 R09: 0000000000000000
+  R10: 00005621f11352f2 R11: 0000000000000206 R12: 0000000000000000
+  R13: 0000000000000000 R14: 00005621f128b958 R15: 0000000080000000
+  Kernel Offset: disabled
+  ---[ end Kernel panic - not syncing: softlockup: hung tasks ]---
+
+All of these lockup reports have the call chain btrfs_clone_files() ->
+btrfs_clone() in common. btrfs_clone_files() calls btrfs_clone() with
+both source and destination extents locked and loops over the source
+extent to create the clones.
+
+Conditionally reschedule in the btrfs_clone() loop, to give some time back
+to other processes.
+
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/ext/hdac_ext_controller.c | 2 ++
+ fs/btrfs/ioctl.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
-index 261469188566c..49d42971d90da 100644
---- a/sound/hda/ext/hdac_ext_controller.c
-+++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -155,6 +155,8 @@ struct hdac_ext_link *snd_hdac_ext_bus_get_link(struct hdac_ext_bus *ebus,
- 		return NULL;
- 	if (ebus->idx != bus_idx)
- 		return NULL;
-+	if (addr < 0 || addr > 31)
-+		return NULL;
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 56123ce3b9f0e..d3f76e3efd44c 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3863,6 +3863,8 @@ process_slot:
+ 			ret = -EINTR;
+ 			goto out;
+ 		}
++
++		cond_resched();
+ 	}
+ 	ret = 0;
  
- 	list_for_each_entry(hlink, &ebus->hlink_list, list) {
- 		for (i = 0; i < HDA_MAX_CODECS; i++) {
 -- 
 2.27.0
 
