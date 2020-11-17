@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D162B60DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DC82B620D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729714AbgKQNNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:13:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43952 "EHLO mail.kernel.org"
+        id S1731059AbgKQNY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:24:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728643AbgKQNN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:13:27 -0500
+        id S1729991AbgKQNYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:24:40 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 086C6246C3;
-        Tue, 17 Nov 2020 13:13:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5B2D20781;
+        Tue, 17 Nov 2020 13:24:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618806;
-        bh=L5VTr8X2OXy6sxrXyoXMwlZk1hPWPod3JAZrnp0UmKg=;
+        s=default; t=1605619479;
+        bh=TFrJW6a9UUjUwImt42Mg5iBf6opdqu0VUOvPnYS+uic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IfUy9VeSi3xVS6P64jshrfTxAtrma/YYvm0bwaeDOH6YU4z2EDHHM0daU2yBnDB2x
-         t5bUfTGK2XPxYqDW//XRBS5wVJopDv5ZDTElZJSB60yiitQ7fd39MJdED1NpbzZbFA
-         Z9lanvwfl1q9RT81o51NbzgHcYbXVdt+J76ZF+x0=
+        b=eSBP5IVBowiwEKlV+asLAyWxioIgXXkR6TztsEHxgWNim3X8a80HLhtrrjdE23GaH
+         zraMLtlHhC08TI485SaajubNQa8tKgUyf0nELTCzXhnci1e+qJd08xnDpMHt+phNdI
+         A2BGZYKsrNZFv48millbdhybYW7T0a16pA/F9Sc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 14/85] can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ context
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 053/151] ALSA: hda: Separate runtime and system suspend
 Date:   Tue, 17 Nov 2020 14:04:43 +0100
-Message-Id: <20201117122111.733175438@linuxfoundation.org>
+Message-Id: <20201117122124.011532133@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,64 +43,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 2283f79b22684d2812e5c76fc2280aae00390365 ]
+[ Upstream commit f5dac54d9d93826a776dffc848df76746f7135bb ]
 
-If a driver calls can_get_echo_skb() during a hardware IRQ (which is often, but
-not always, the case), the 'WARN_ON(in_irq)' in
-net/core/skbuff.c#skb_release_head_state() might be triggered, under network
-congestion circumstances, together with the potential risk of a NULL pointer
-dereference.
+Both pm_runtime_force_suspend() and pm_runtime_force_resume() have
+some implicit checks, so it can make code flow more straightforward if
+we separate runtime and system suspend callbacks.
 
-The root cause of this issue is the call to kfree_skb() instead of
-dev_kfree_skb_irq() in net/core/dev.c#enqueue_to_backlog().
+High Definition Audio Specification, 4.5.9.3 Codec Wake From System S3
+states that codec can wake the system up from S3 if WAKEEN is toggled.
+Since HDA controller has different wakeup settings for runtime and
+system susend, we also need to explicitly disable direct-complete which
+can be enabled automatically by PCI core. In addition to that, avoid
+waking up codec if runtime resume is for system suspend, to not break
+direct-complete for codecs.
 
-This patch prevents the skb to be freed within the call to netif_rx() by
-incrementing its reference count with skb_get(). The skb is finally freed by
-one of the in-irq-context safe functions: dev_consume_skb_any() or
-dev_kfree_skb_any(). The "any" version is used because some drivers might call
-can_get_echo_skb() in a normal context.
+While at it, also remove AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP, as the
+original bug commit a6630529aecb ("ALSA: hda: Workaround for spurious
+wakeups on some Intel platforms") solves doesn't happen with this
+patch.
 
-The reason for this issue to occur is that initially, in the core network
-stack, loopback skb were not supposed to be received in hardware IRQ context.
-The CAN stack is an exeption.
-
-This bug was previously reported back in 2017 in [1] but the proposed patch
-never got accepted.
-
-While [1] directly modifies net/core/dev.c, we try to propose here a
-smoother modification local to CAN network stack (the assumption
-behind is that only CAN devices are affected by this issue).
-
-[1] http://lore.kernel.org/r/57a3ffb6-3309-3ad5-5a34-e93c3fe3614d@cetitec.com
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201002154219.4887-2-mailhol.vincent@wanadoo.fr
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20201027130038.16463-3-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/dev.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_controller.h |  3 +-
+ sound/pci/hda/hda_intel.c      | 62 +++++++++++++++++++---------------
+ 2 files changed, 36 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 05ad5ed145a3a..926d663eed37a 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -519,7 +519,11 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
- 	if (!skb)
- 		return 0;
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index a356fb0e57738..9da7a06d024f1 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -41,7 +41,7 @@
+ /* 24 unused */
+ #define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
+ #define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
+-#define AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP (1 << 27) /* Workaround for spurious wakeups after suspend */
++/* 27 unused */
+ #define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears itself after reset */
+ #define AZX_DCAPS_NO_MSI64      (1 << 29)	/* Stick to 32-bit MSIs */
+ #define AZX_DCAPS_SEPARATE_STREAM_TAG	(1 << 30) /* capture and playback use separate stream tag */
+@@ -143,6 +143,7 @@ struct azx {
+ 	unsigned int align_buffer_size:1;
+ 	unsigned int region_requested:1;
+ 	unsigned int disabled:1; /* disabled by vga_switcheroo */
++	unsigned int pm_prepared:1;
  
--	netif_rx(skb);
-+	skb_get(skb);
-+	if (netif_rx(skb) == NET_RX_SUCCESS)
-+		dev_consume_skb_any(skb);
-+	else
-+		dev_kfree_skb_any(skb);
+ 	/* GTS present */
+ 	unsigned int gts_present:1;
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 9a1968932b783..ab32d4811c9ef 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -295,8 +295,7 @@ enum {
+ /* PCH for HSW/BDW; with runtime PM */
+ /* no i915 binding for this as HSW/BDW has another controller for HDMI */
+ #define AZX_DCAPS_INTEL_PCH \
+-	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME |\
+-	 AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
++	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME)
  
- 	return len;
+ /* HSW HDMI */
+ #define AZX_DCAPS_INTEL_HASWELL \
+@@ -984,7 +983,7 @@ static void __azx_runtime_suspend(struct azx *chip)
+ 	display_power(chip, false);
  }
+ 
+-static void __azx_runtime_resume(struct azx *chip, bool from_rt)
++static void __azx_runtime_resume(struct azx *chip)
+ {
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	struct hdac_bus *bus = azx_bus(chip);
+@@ -1001,7 +1000,8 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
+ 	azx_init_pci(chip);
+ 	hda_intel_init_chip(chip, true);
+ 
+-	if (from_rt) {
++	/* Avoid codec resume if runtime resume is for system suspend */
++	if (!chip->pm_prepared) {
+ 		list_for_each_codec(codec, &chip->bus) {
+ 			if (codec->relaxed_resume)
+ 				continue;
+@@ -1017,6 +1017,29 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
++static int azx_prepare(struct device *dev)
++{
++	struct snd_card *card = dev_get_drvdata(dev);
++	struct azx *chip;
++
++	chip = card->private_data;
++	chip->pm_prepared = 1;
++
++	/* HDA controller always requires different WAKEEN for runtime suspend
++	 * and system suspend, so don't use direct-complete here.
++	 */
++	return 0;
++}
++
++static void azx_complete(struct device *dev)
++{
++	struct snd_card *card = dev_get_drvdata(dev);
++	struct azx *chip;
++
++	chip = card->private_data;
++	chip->pm_prepared = 0;
++}
++
+ static int azx_suspend(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+@@ -1028,15 +1051,7 @@ static int azx_suspend(struct device *dev)
+ 
+ 	chip = card->private_data;
+ 	bus = azx_bus(chip);
+-	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+-	/* An ugly workaround: direct call of __azx_runtime_suspend() and
+-	 * __azx_runtime_resume() for old Intel platforms that suffer from
+-	 * spurious wakeups after S3 suspend
+-	 */
+-	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
+-		__azx_runtime_suspend(chip);
+-	else
+-		pm_runtime_force_suspend(dev);
++	__azx_runtime_suspend(chip);
+ 	if (bus->irq >= 0) {
+ 		free_irq(bus->irq, chip);
+ 		bus->irq = -1;
+@@ -1064,11 +1079,7 @@ static int azx_resume(struct device *dev)
+ 	if (azx_acquire_irq(chip, 1) < 0)
+ 		return -EIO;
+ 
+-	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
+-		__azx_runtime_resume(chip, false);
+-	else
+-		pm_runtime_force_resume(dev);
+-	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++	__azx_runtime_resume(chip);
+ 
+ 	trace_azx_resume(chip);
+ 	return 0;
+@@ -1116,10 +1127,7 @@ static int azx_runtime_suspend(struct device *dev)
+ 	chip = card->private_data;
+ 
+ 	/* enable controller wake up event */
+-	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
+-		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+-			   STATESTS_INT_MASK);
+-	}
++	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) | STATESTS_INT_MASK);
+ 
+ 	__azx_runtime_suspend(chip);
+ 	trace_azx_runtime_suspend(chip);
+@@ -1130,18 +1138,14 @@ static int azx_runtime_resume(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip;
+-	bool from_rt = snd_power_get_state(card) == SNDRV_CTL_POWER_D0;
+ 
+ 	if (!azx_is_pm_ready(card))
+ 		return 0;
+ 	chip = card->private_data;
+-	__azx_runtime_resume(chip, from_rt);
++	__azx_runtime_resume(chip);
+ 
+ 	/* disable controller Wake Up event*/
+-	if (from_rt) {
+-		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
+-			   ~STATESTS_INT_MASK);
+-	}
++	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) & ~STATESTS_INT_MASK);
+ 
+ 	trace_azx_runtime_resume(chip);
+ 	return 0;
+@@ -1175,6 +1179,8 @@ static int azx_runtime_idle(struct device *dev)
+ static const struct dev_pm_ops azx_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(azx_suspend, azx_resume)
+ #ifdef CONFIG_PM_SLEEP
++	.prepare = azx_prepare,
++	.complete = azx_complete,
+ 	.freeze_noirq = azx_freeze_noirq,
+ 	.thaw_noirq = azx_thaw_noirq,
+ #endif
 -- 
 2.27.0
 
