@@ -2,153 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94B42B58DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6CF2B58E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgKQEgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 23:36:19 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:55117 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726211AbgKQEgS (ORCPT
+        id S1726938AbgKQEit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 23:38:49 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3039 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726277AbgKQEis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 23:36:18 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 13E9C12DF;
-        Mon, 16 Nov 2020 23:36:16 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 16 Nov 2020 23:36:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=p
-        kszPB7jeuJ2s0wgF4vEobMXp32NtsKINiE+dXw3VWA=; b=faQ040BYeumwKBqS6
-        VAgIb8XEx/yt88bgcSSTyuSgg1Q5pyEZmTnJEbTiC4s4pePmK1u+vJH3bKt5aZxf
-        XW3VZ9Pb64FCp5XALSrSSy64yoR3ZJoi8/e3ZFmnBawHo6fSIKeki5mAud8PKC/w
-        Ii+6Sky1WOR9vNl3CcZjrX/gcd3g6Zv/DSMcxYwzDZPYRqq13lo0yuH4Ly7db1Vd
-        bkqjPkR2/Qq0uMk/zQktEidmdrJ8bNf8SQqlHcQdkSVoVHe5p5tVYGaVpJtGGwV8
-        H8e9QWoWiLC+647XqQo/FMGZuh9TPoWZpqBdFarSKUH+MgQ0WisQIsZNi/7rE9xN
-        /LQcw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=pkszPB7jeuJ2s0wgF4vEobMXp32NtsKINiE+dXw3V
-        WA=; b=mEqfsoGrOXn64UpvVznr0IwaETGuAhL2+cFv1OI8DwzMW77ixhdVGpdMN
-        vbbjCqXHZI3ftX7YRTEXh4j9tdX6C2d3qBB1zMZcD+4stis12XSzEK+oa9jTReMM
-        rObIAu9/GoMkhtlplDQ3gKrQoKHvBbAOTBm1ab5RFY5z5lOSCHBxRuhasVcflOZt
-        USPLpZHetF27YtYyyqVLoxcIJdRPioe09ZHdFK+XaYf5liRbwES3Xvik6OPsfVWu
-        EAUS8qwBnOsI4OtnPnaIBj9N4xH0Br5cMpME7Jyge/JWsJQMZfhczsVXnKibxoyX
-        UCfxT/7H5dcnMZSEvmMvLaCgPwkMQ==
-X-ME-Sender: <xms:PVOzXz6kXgyWcKgQjxAevdVgKQpWBF6dhptuhu2_khtd-9N8T8jUPg>
-    <xme:PVOzX46--cBuRWjUkte98zmS-9qkfNnEabFIoXDk2U_SX_NmSxLTsxU0a-pJoWhU4
-    XkzGqvpATX-3Vj_kg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudefvddgiedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
-    uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:PVOzX6cO0lFlBJXntTv3tGcR9iQZWWG7530idRXzM3N7fUF8-acCLA>
-    <xmx:PVOzX0KzcSio2QdVCCWApNH4gdajMeu7Z_TXHSOdkGDVJICDxBAJ7Q>
-    <xmx:PVOzX3Jjkhi5yiNbY5W4mRVc8Mq5jjB2y49yIGB24iXBZSUvduwC3A>
-    <xmx:P1OzXw6oI-JF_KyUNvkPBU0U7NPkZyzfoH3N--HMfZKlzYlSRjYYUg9gSSc>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D73E13280060;
-        Mon, 16 Nov 2020 23:36:12 -0500 (EST)
-Subject: Re: [RFC 2/3] ARM: sunxi: do not select COMMON_CLK to fix builds
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
-References: <20201115170950.304460-1-krzk@kernel.org>
- <20201115170950.304460-3-krzk@kernel.org>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <f637762e-0b02-1705-ea6b-24ac338fcd69@sholland.org>
-Date:   Mon, 16 Nov 2020 22:36:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 16 Nov 2020 23:38:48 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb353e20001>; Mon, 16 Nov 2020 20:38:58 -0800
+Received: from [10.25.99.52] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 04:38:39 +0000
+Subject: Re: [PATCH 0/3] Add support to handle prefetchable memory
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     Thierry Reding <treding@nvidia.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>
+CC:     "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
+References: <20201023195655.11242-1-vidyas@nvidia.com>
+ <SLXP216MB04777D651A59246A60D036A8AA1B0@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
+ <20201026123012.GA356750@ulmo>
+ <53277a71-13e5-3e7e-7c51-aca367b99d31@nvidia.com>
+Message-ID: <92d5ead4-a3d2-42ba-a542-3e305f3d5523@nvidia.com>
+Date:   Tue, 17 Nov 2020 10:08:35 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201115170950.304460-3-krzk@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <53277a71-13e5-3e7e-7c51-aca367b99d31@nvidia.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605587938; bh=LWTX7EIE05huuVD68czK2CHeNKaLvf8HX1JxbzKZqZ4=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=hlMpZPVK5IWiVWi4hFo60n3Z5dQl78lATnhNAnJ6T8ZAUJCg+LOqptVJJ5zF7HB/4
+         QOG09llSqyX93OQQgYSeTt+N6Gd78USCu7AZABR4UvTSJkMccU4JpfEzdJq9G88Xkh
+         tIHxJFAUw6A642o59EgP8Pm+jdDbQ2q8JXfIOo9qRBz0wwrwciuOqe54/e8KbSm/r5
+         WBn7qK/ogKGiLBLlUipVBv5rlMsezqqpHUsxbgDHRTrWXK9zJod+WludPVsmSbEj0/
+         o2TZVJbXJOhgwq8ZdyVbnh4Fse4WDSMIlac7hoOufMLxLRQnI+hOPOLpRGHPfgcaJo
+         jYemra8sL9H9g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/20 11:09 AM, Krzysztof Kozlowski wrote:
-> COMMON_CLK is a user-selectable option with its own dependencies.  The
-> most important dependency is !HAVE_LEGACY_CLK.  User-selectable drivers
-> should not select COMMON_CLK because they will create a dependency cycle
-> and build failures.  For example on MIPS a configuration with COMMON_CLK
-> (selected by SND_SUN8I_CODEC) and HAVE_LEGACY_CLK (selected by
-> SOC_RT305X) is possible:
-
-Ah, that makes sense.
-
-> 
->   WARNING: unmet direct dependencies detected for COMMON_CLK
->     Depends on [n]: !HAVE_LEGACY_CLK [=y]
->     Selected by [y]:
->     - SND_SUN8I_CODEC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
->       (ARCH_SUNXI || COMPILE_TEST [=y]) && OF [=y] && (MACH_SUN8I || ARM64 && ARCH_SUNXI || COMPILE_TEST [=y])
-> 
->     /usr/bin/mips-linux-gnu-ld: drivers/clk/clk.o: in function `clk_set_rate':
->     (.text+0xaeb4): multiple definition of `clk_set_rate'; arch/mips/ralink/clk.o:(.text+0x88): first defined here
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/mach-sunxi/Kconfig | 1 +
->  sound/soc/sunxi/Kconfig     | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-sunxi/Kconfig b/arch/arm/mach-sunxi/Kconfig
-> index eeadb1a4dcfe..4d9f9b6d329d 100644
-> --- a/arch/arm/mach-sunxi/Kconfig
-> +++ b/arch/arm/mach-sunxi/Kconfig
-> @@ -4,6 +4,7 @@ menuconfig ARCH_SUNXI
->  	depends on ARCH_MULTI_V5 || ARCH_MULTI_V7
->  	select ARCH_HAS_RESET_CONTROLLER
->  	select CLKSRC_MMIO
-> +	select COMMON_CLK
-
-This is not necessary, since ARCH_SUNXI depends (through ARCH_MULTI_V{5,7}) on
-ARCH_MULTIPLATFORM, which selects COMMON_CLK already.
-
->  	select GENERIC_IRQ_CHIP
->  	select GPIOLIB
->  	select PINCTRL
-> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-> index 69b9d8515335..ddcaaa98d3cb 100644
-> --- a/sound/soc/sunxi/Kconfig
-> +++ b/sound/soc/sunxi/Kconfig
-> @@ -14,7 +14,7 @@ config SND_SUN8I_CODEC
->  	tristate "Allwinner SUN8I audio codec"
->  	depends on OF
->  	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
-> -	select COMMON_CLK
-> +	depends on COMMON_CLK
->  	select REGMAP_MMIO
->  	help
->  	  This option enables the digital part of the internal audio codec for
-> 
-
-For this file:
-Reviewed-by: Samuel Holland <samuel@sholland.org>
+Hi Lorenzo & Bjorn,
+Sorry to bother you.
+Could you please take a look at the patches-1 & 2 from this series?
 
 Thanks,
-Samuel
+Vidya Sagar
+
+On 11/4/2020 1:16 PM, Vidya Sagar wrote:
+> External email: Use caution opening links or attachments
+>=20
+>=20
+> Lorenzo / Bjorn,
+> Could you please review patches-1 & 2 in this series?
+> For the third patch, we already went with Rob's patch @
+> http://patchwork.ozlabs.org/project/linux-pci/patch/20201026154852.221483=
+-1-robh@kernel.org/=20
+>=20
+>=20
+> Thanks,
+> Vidya Sagar
+>=20
+> On 10/26/2020 6:02 PM, Thierry Reding wrote:
+>> On Sat, Oct 24, 2020 at 04:03:41AM +0000, Jingoo Han wrote:
+>>> On 10/23/20, 3:57 PM, Vidya Sagar wrote:
+>>>>
+>>>> This patch series adds support for configuring the DesignWare IP's ATU
+>>>> region for prefetchable memory translations.
+>>>> It first starts by flagging a warning if the size of non-prefetchable
+>>>> aperture goes beyond 32-bit as PCIe spec doesn't allow it.
+>>>> And then adds required support for programming the ATU to handle highe=
+r
+>>>> (i.e. >4GB) sizes and then finally adds support for differentiating
+>>>> between prefetchable and non-prefetchable regions and configuring=20
+>>>> one of
+>>>> the ATU regions for prefetchable memory translations purpose.
+>>>>
+>>>> Vidya Sagar (3):
+>>>> =A0=A0 PCI: of: Warn if non-prefetchable memory aperture size is > 32-=
+bit
+>>>> =A0=A0 PCI: dwc: Add support to program ATU for >4GB memory aperture s=
+izes
+>>>> =A0=A0 PCI: dwc: Add support to handle prefetchable memory mapping
+>>>
+>>> For 2nd & 3rd,
+>>> Acked-by: Jingoo <jingoohan1@gmail.com>
+>>> But, I still want someone to ack 1st patch, not me.
+>>>
+>>> To Vidya,
+>>> If possible, can you ask your coworker to give 'Tested-by'? It will=20
+>>> be very helpful.
+>>> Thank you.
+>>
+>> On next-20201026 (but also going back quite a while) I'm seeing this
+>> during boot on Jetson AGX Xavier (Tegra194):
+>>
+>> [=A0=A0=A0 3.493382] ahci 0001:01:00.0: version 3.0
+>> [=A0=A0=A0 3.493889] ahci 0001:01:00.0: SSS flag set, parallel bus scan=
+=20
+>> disabled
+>> [=A0=A0=A0 4.497706] ahci 0001:01:00.0: controller reset failed (0xfffff=
+fff)
+>> [=A0=A0=A0 4.498114] ahci: probe of 0001:01:00.0 failed with error -5
+>>
+>> After applying this series, AHCI over PCI is back to normal:
+>>
+>> [=A0=A0=A0 3.543230] ahci 0001:01:00.0: AHCI 0001.0000 32 slots 1 ports =
+6=20
+>> Gbps 0x1 impl SATA mode
+>> [=A0=A0=A0 3.550841] ahci 0001:01:00.0: flags: 64bit ncq sntf led only p=
+mp=20
+>> fbs pio slum part sxs
+>> [=A0=A0=A0 3.559747] scsi host0: ahci
+>> [=A0=A0=A0 3.561998] ata1: SATA max UDMA/133 abar m512@0x1230010000 port=
+=20
+>> 0x1230010100 irq 63
+>>
+>> So for the series:
+>>
+>> Tested-by: Thierry Reding <treding@nvidia.com>
+>>
