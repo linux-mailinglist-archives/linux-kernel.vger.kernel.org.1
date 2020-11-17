@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768D02B596B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 720FA2B5971
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgKQFit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 00:38:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44606 "EHLO
+        id S1726274AbgKQFox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 00:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQFit (ORCPT
+        with ESMTP id S1725355AbgKQFow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 00:38:49 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71ADC0613CF;
-        Mon, 16 Nov 2020 21:38:48 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id k26so21468749oiw.0;
-        Mon, 16 Nov 2020 21:38:48 -0800 (PST)
+        Tue, 17 Nov 2020 00:44:52 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373FDC0613CF;
+        Mon, 16 Nov 2020 21:44:51 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id y22so9640751plr.6;
+        Mon, 16 Nov 2020 21:44:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rLinOapGuOZ7A3D9bbaR3AD8/7b7elhTbAVHcuXosMo=;
-        b=iXvdipyXlKjO7vkforOOErJKLT9l4kohPmwWzx4eNeAhWv2I9a7ZbqC9XZXGVZVzfw
-         retLRzNLwVhSlMhZHq9AP7fyn+PonHcaZfY57osuAJE6d95sWlhEOWQBL5H0RppGentn
-         CyhtliOdaassc48YU+yghUdgt23RT1peNURP1REIhw9BqP4ZKD2xFEr4llr5Lv6LEla8
-         cWKkwwWzQkiFba8dGx1hirKCEs+VdCLhJYhiH7USr8G2QHiDTl7XBUbEHpiirWCs3bCs
-         NTItdkuIvKOl0Wp2WhA5k4pfn0/GFuzczCHO4uXHxRvWLrmi3f+3E+XyFKRCGLToabS8
-         cPOw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i94+E5h3prUpXJMLneKcuPsyNNdqYemplY0Whp5G7XE=;
+        b=n7cbm+F7wxT7QRUDDlFn02n5oPgODXXyRwLHHU9eEXGlQ7IDZh0CcAVlQV1kATKqTw
+         H58E65s+wRaxqDLSdPkxPKV68X5w31FUcQTpbtblCEZijfJe/sV3QVV8B73O9BlrVYks
+         MDP3VIbPbhQckBRmsG0ljQrDpe2Q3YErgmmtkoSwRh0t6Y5iFmzt6Y70/O7kzn4iTkMy
+         b+hoMUKgdetTT4nbKKS6tbhNeRZmT5HmTa/jWys0zctoIyf4XeTfACMod+EbSgmZNiam
+         KtxoeSg2aXSC3EXzAmqesRG7fWr+T062rlqe0hf6ctQg9kQnytdwWvVoivqPv28Gj3mN
+         dQow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rLinOapGuOZ7A3D9bbaR3AD8/7b7elhTbAVHcuXosMo=;
-        b=s6IlFBuscevvdBf30GmZZzrozJFnLCdwRJibMoYpE7uOUVJ8lGIKAHPPF0QODRZKEx
-         ilENKGsrfczTcuRVDGMwykD9sXwI3/LFslQRfolYJnVsGnzjGNVJMix5bES9q9H4oYvJ
-         yxX2RNshLA6WusKsZd+prgTjxsL+uUywj4h0CXM0zq2ohsCG6bn05DQ1C1pK7eYKIQLL
-         GTGdKg8QvOawIGwLVAv2t8R02PIwuD5DYKC79p+Z8PXnSySWi6pOXsW7a/kWN7ZrYMF3
-         sZASq1t4pjd4bs9HJ9U3s3As+zNxXAvpZPUeGmV5xNC/Dx15cB43Qpqg2V9Yy8B1e8CR
-         1QZA==
-X-Gm-Message-State: AOAM5303TPSt0vwLQhx8vV9S2zaZ1eNhxkHp2EdOjs91jkWAjqI/UxXx
-        yn2ixoJyMl/vfDr8jEbMl7sZCI+LwnJtqzpvyS0Ka3XkFcmQfA==
-X-Google-Smtp-Source: ABdhPJxa3gnCClGBduWs8WfAYuHfg1PA10bCTWr3VOszhOIntH/xH1I3a3tV7gQnPMFYqO8/upkWQ8tDN51FXMvd3WY=
-X-Received: by 2002:aca:6106:: with SMTP id v6mr1521999oib.158.1605591528436;
- Mon, 16 Nov 2020 21:38:48 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i94+E5h3prUpXJMLneKcuPsyNNdqYemplY0Whp5G7XE=;
+        b=NDxCFbKe3thka1E0K1SPKx5cUCLqpzD7lpMi4bYXIC19UHHCvT5z3pORgCi++zRT/2
+         XXoLhbVdVPsXn97IEDetGtDFk8uvkFYxwVQ0pbcWtVb4zkYID67yl/Xx7RqvOF3sb5q9
+         F4WiEw530EUZOHB2qSojIkez9tEs4app4SzWyTMbmB3TTDwUePc4dMLQO16at+FPAiZ+
+         Z3G2PWc0yOTa4ChAOquGHYrG21xYC1BqsF/MUjOK9yaHZW53kW3wvGvY9J1p5E+yxdpP
+         Vn0o692Er5US+CaxhIV2XaAiNSZE5Q9RXAyZQuFzctx4pE0SXwsGHNVId28tJDhcK4Fk
+         A2Tw==
+X-Gm-Message-State: AOAM531GdYcUZdvVObHpyQ1HJyBnCd/GCEJvZk+Q6ZfjDEVOqUzRyn0s
+        y7BPqdx2glc/yzZGkBuAVbfXqDdY3rY=
+X-Google-Smtp-Source: ABdhPJybx6TXlKHXnkj+hcsxwuOi4RxfcHWiP/ORYDGNSK3qTLO2GPMP7ruRi+2bfSVSqd3QsgTPOw==
+X-Received: by 2002:a17:902:ab98:b029:d8:c5e8:978a with SMTP id f24-20020a170902ab98b02900d8c5e8978amr15686488plr.56.1605591890348;
+        Mon, 16 Nov 2020 21:44:50 -0800 (PST)
+Received: from ZB-PF0YQ8ZU.360buyad.local ([137.116.162.235])
+        by smtp.gmail.com with ESMTPSA id m3sm20392462pfd.217.2020.11.16.21.44.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 21:44:49 -0800 (PST)
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-pci@vger.kernel.org, bhelgaas@google.com, hch@infradead.org,
+        alex.williamson@redhat.com, cohuck@redhat.com,
+        Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Subject: [PATCH v3 0/2] avoid inserting duplicate IDs in dynids list
+Date:   Tue, 17 Nov 2020 13:44:07 +0800
+Message-Id: <20201117054409.3428-1-zhenzhong.duan@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201111163013.29412-1-sergio.paracuellos@gmail.com>
- <20201111163013.29412-3-sergio.paracuellos@gmail.com> <20201116191655.GA1981921@bogus>
-In-Reply-To: <20201116191655.GA1981921@bogus>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Tue, 17 Nov 2020 06:38:37 +0100
-Message-ID: <CAMhs-H-vgf7c9-mEi8vF3rWiTFq5wQbRUkQQ0tO0zKTjuV9oXw@mail.gmail.com>
-Subject: Re: [PATCH 2/7] dt: bindings: add mt7621-pll device tree binding documentation
-To:     Rob Herring <robh@kernel.org>
-Cc:     "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        John Crispin <john@phrozen.org>, jiaxun.yang@flygoat.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Weijie Gao <hackpascal@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+vfio-pci and pci-stub use new_id to bind devices. But one can add same IDs
+multiple times, for example:
 
-On Mon, Nov 16, 2020 at 8:16 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, 11 Nov 2020 17:30:08 +0100, Sergio Paracuellos wrote:
-> > Adds device tree binding documentation for PLL controller in
-> > the MT7621 SOC.
-> >
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
-> >  .../bindings/clock/mediatek,mt7621-pll.yaml   | 51 +++++++++++++++++++
-> >  1 file changed, 51 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-pll.yaml
-> >
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/new_id
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/new_id
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/new_id
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/remove_id
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/remove_id
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/remove_id
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/remove_id
+-bash: echo: write error: No such device
 
-Thanks for the review. In that series there were two clock bindings
-relating the pll and gates, There were finally joined in only one
-binding and driver. This is done in the v3 of this series sent on
-friday. Thanks for your time in looking also into this new version,
+This doesn't cause user-visible broken behavior, but not user friendly.
+he has to remove same IDs same times to ensure it's completely gone.
 
-Best regards,
-    Sergio Paracuellos
+Changed to only allow one dynamic entry of the same kind, after fix:
+
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/new_id
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/new_id
+-bash: echo: write error: File exists
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/remove_id
+# echo "1af4 1041" > /sys/bus/pci/drivers/vfio-pci/remove_id
+-bash: echo: write error: No such device
+
+
+v3: add a separate patch to process dependency issue per Bjorn
+    make commit log more clear per Bjorn
+v2: revert the export of pci_match_device() per Christoph
+    combind PATCH1 and PATCH2 into one.
+
+v2 link:https://lkml.org/lkml/2020/10/25/347
+
+Zhenzhong Duan (2):
+  PCI: move pci_match_device() ahead of new_id_store()
+  PCI: avoid duplicate IDs in dynamic IDs list
+
+ drivers/pci/pci-driver.c | 146 +++++++++++++++++++++++------------------------
+ 1 file changed, 73 insertions(+), 73 deletions(-)
+
+-- 
+1.8.3.1
+
+
+Zhenzhong Duan (2):
+  PCI: move pci_match_device() ahead of new_id_store()
+  PCI: avoid duplicate IDs in dynamic IDs list
+
+ drivers/pci/pci-driver.c | 146 +++++++++++++++++++++++------------------------
+ 1 file changed, 73 insertions(+), 73 deletions(-)
+
+-- 
+1.8.3.1
+
