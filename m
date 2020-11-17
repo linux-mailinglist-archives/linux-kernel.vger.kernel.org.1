@@ -2,109 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87662B6F51
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739C92B6F5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730685AbgKQTuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728309AbgKQTue (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:50:34 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4F0C0613CF;
-        Tue, 17 Nov 2020 11:50:34 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id v12so17967306pfm.13;
-        Tue, 17 Nov 2020 11:50:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LDAEmhNdku9VAWF7fGVJyr3eF+5Nl9MfyP1c5wCk+Qg=;
-        b=Lm0ry1bUCaP1i76eXxbXB695bO5Z9mRG8713U6+3u15LHetOu1oB3JAwSaD9bZtvcC
-         /wyLo0KKvWQTKGowO5utZS58GfnQC08x5pAJcm/ehyy5v3dciOXl6wptSQuqLxxzUmb3
-         8Tx/wikGTWiMWXarqZWrxvgIKWKM25YNwcQ370iQQEwRBe8r2EHpWoUKAo6lqYQM4XDB
-         hZPpPymDK7V3Uy9ON8H/9oODLOFcf98mfcG0bFSq4RKzXwiX35gQuGJH7/wEZCqDNtJd
-         Qj6QNC22AbtezIceA5870sZ3qKZlgw5FNFZ0LUM5GlRMb3QDQeRzpc4tboYr9s10VifI
-         Gvsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LDAEmhNdku9VAWF7fGVJyr3eF+5Nl9MfyP1c5wCk+Qg=;
-        b=OHw+OFZpAd2Vki/n/PWToApnn+bC+dwmcOPTmzFuibsaLffdxKoJ8XwmuuFspJ0Up+
-         WC/ZN64KW0uFnSEkufVh5bMaROI44CTaW3ZsFVAg0fXez71CW3QHYCg2xMyReoeXRZ0K
-         lqYyiIDhNtDQLVp6rlCQ19dKF2OlH8//naVdFwAz+ZcXUkEliBuFzVIEtoSFHT7HqlbH
-         JKFNuaqzcwcnzfwpvipFWiuZDCmoWw3bHJseKDAt8A3D+WvdQyyPqp4aH2YsInMFM7qM
-         bOCINaeZfpvWUDcODYl221ood3Ljl3frApGpIDUwZ4CvFgfGIUJEa2Yv4J3hn+OCPI3Q
-         w8KA==
-X-Gm-Message-State: AOAM532dhN3B75dGVXNPqMJSs7k5/HZ73mmY/2qpnf9sMch6x14rREot
-        ITRVRcvZrR8AHnYahRdrmB1nevwSWDFmm7+s7pwFUOZEDPM=
-X-Google-Smtp-Source: ABdhPJyrt2/yEdjoVLA8SLqCI1GEtqRtkALsHHeiQczj/+I6NgFaSf4UAPq4bnKwzIwZcwb4Wv1D8MJJCMcSeWnmZ9I=
-X-Received: by 2002:a63:1d0b:: with SMTP id d11mr2265333pgd.368.1605642634151;
- Tue, 17 Nov 2020 11:50:34 -0800 (PST)
+        id S1731382AbgKQTwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:52:42 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:19339 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730215AbgKQTwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:52:42 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605642761; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=WsdB/sygkwY69K8EUxR5sel252TRykGMrAFHmho0KQs=; b=Qb8g/5KZg37jdWXlSlJooagrZjuXrh7qKsXq58FXqQzE2zG3HpOIYNgA/6PN/9cqXnixsUlw
+ +o7gZ7pxiTFN6saLN5JXtcK0bTYoQgLN5MdbCYicA67Zpl8wByCGrdZknrVKjcUgVnlTcNS/
+ j8MxZfpsDwGE2rtNGVJd7U9HCeI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fb42a07d6e6336a4e1e354b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Nov 2020 19:52:39
+ GMT
+Sender: clew=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0B00AC433C6; Tue, 17 Nov 2020 19:52:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.142.6] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: clew)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CB420C433C6;
+        Tue, 17 Nov 2020 19:52:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CB420C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=clew@codeaurora.org
+Subject: Re: [PATCH 1/2] soc: qcom: aoss: Expose send for generic usecase
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1604373541-12641-1-git-send-email-clew@codeaurora.org>
+ <3ae3e00dd8a6c2aacd852fca1f343779@codeaurora.org>
+From:   Chris Lew <clew@codeaurora.org>
+Message-ID: <2d10c46c-19b9-d1c1-04b9-531570edd446@codeaurora.org>
+Date:   Tue, 17 Nov 2020 11:52:37 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201116135522.21791-1-ms@dev.tdt.de> <20201116135522.21791-4-ms@dev.tdt.de>
-In-Reply-To: <20201116135522.21791-4-ms@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Tue, 17 Nov 2020 11:50:23 -0800
-Message-ID: <CAJht_EN0fhD08+wH5kSBWvciHU7uM7iKJu_UcEXwZBKssuqNVw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 3/6] net/x25: replace x25_kill_by_device with x25_kill_by_neigh
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3ae3e00dd8a6c2aacd852fca1f343779@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 6:00 AM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> Remove unnecessary function x25_kill_by_device.
 
-> -/*
-> - *     Kill all bound sockets on a dropped device.
-> - */
-> -static void x25_kill_by_device(struct net_device *dev)
-> -{
-> -       struct sock *s;
-> -
-> -       write_lock_bh(&x25_list_lock);
-> -
-> -       sk_for_each(s, &x25_list)
-> -               if (x25_sk(s)->neighbour && x25_sk(s)->neighbour->dev == dev)
-> -                       x25_disconnect(s, ENETUNREACH, 0, 0);
-> -
-> -       write_unlock_bh(&x25_list_lock);
-> -}
-> -
->  /*
->   *     Handle device status changes.
->   */
-> @@ -273,7 +257,11 @@ static int x25_device_event(struct notifier_block *this, unsigned long event,
->                 case NETDEV_DOWN:
->                         pr_debug("X.25: got event NETDEV_DOWN for device: %s\n",
->                                  dev->name);
-> -                       x25_kill_by_device(dev);
-> +                       nb = x25_get_neigh(dev);
-> +                       if (nb) {
-> +                               x25_kill_by_neigh(nb);
-> +                               x25_neigh_put(nb);
-> +                       }
->                         x25_route_device_down(dev);
->                         x25_link_device_down(dev);
->                         break;
 
-This patch might not be entirely necessary. x25_kill_by_neigh and
-x25_kill_by_device are just two helper functions. One function takes
-nb as the argument and the other one takes dev as the argument. But
-they do almost the same things. It doesn't harm to keep both. In C++
-we often have different functions with the same name doing almost the
-same things.
+On 11/11/2020 10:33 AM, Sibi Sankar wrote:
+> Hey Chris,
+> Thanks for the patch.
+> 
+> On 2020-11-03 08:49, Chris Lew wrote:
+>> Not all upcoming usecases will have an interface to allow the aoss
+>> driver to hook onto. Expose the send api and create a get function to
+>> enable drivers to send their own messages to aoss.
+>>
+>> Signed-off-by: Chris Lew <clew@codeaurora.org>
+>> ---
+>>  drivers/soc/qcom/qcom_aoss.c       | 28 +++++++++++++++++++++++++++-
+>>  include/linux/soc/qcom/qcom_aoss.h | 33 
+>> +++++++++++++++++++++++++++++++++
+>>  2 files changed, 60 insertions(+), 1 deletion(-)
+>>  create mode 100644 include/linux/soc/qcom/qcom_aoss.h
+>>
+>> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+>> index ed2c687c16b3..8f052db1880a 100644
+>> --- a/drivers/soc/qcom/qcom_aoss.c
+>> +++ b/drivers/soc/qcom/qcom_aoss.c
+>> @@ -8,10 +8,12 @@
+>>  #include <linux/io.h>
+>>  #include <linux/mailbox_client.h>
+>>  #include <linux/module.h>
+>> +#include <linux/of_platform.h>
+>>  #include <linux/platform_device.h>
+>>  #include <linux/pm_domain.h>
+>>  #include <linux/thermal.h>
+>>  #include <linux/slab.h>
+>> +#include <linux/soc/qcom/qcom_aoss.h>
+>>
+>>  #define QMP_DESC_MAGIC            0x0
+>>  #define QMP_DESC_VERSION        0x4
+>> @@ -222,12 +224,15 @@ static bool qmp_message_empty(struct qmp *qmp)
+>>   *
+>>   * Return: 0 on success, negative errno on failure
+>>   */
+>> -static int qmp_send(struct qmp *qmp, const void *data, size_t len)
+>> +int qmp_send(struct qmp *qmp, const void *data, size_t len)
+>>  {
+>>      long time_left;
+>>      size_t tlen;
+>>      int ret;
+>>
+>> +    if (!qmp || !data)
+>> +        return -EINVAL;
+>> +
+>>      if (WARN_ON(len + sizeof(u32) > qmp->size))
+>>          return -EINVAL;
+>>
+>> @@ -261,6 +266,7 @@ static int qmp_send(struct qmp *qmp, const void
+>> *data, size_t len)
+>>
+>>      return ret;
+>>  }
+>> +EXPORT_SYMBOL_GPL(qmp_send);
+>>
+>>  static int qmp_qdss_clk_prepare(struct clk_hw *hw)
+>>  {
+>> @@ -515,6 +521,26 @@ static void qmp_cooling_devices_remove(struct qmp 
+>> *qmp)
+>>          thermal_cooling_device_unregister(qmp->cooling_devs[i].cdev);
+>>  }
+>>
+>> +/**
+>> + * qmp_get() - get a qmp handle from device tree node
+>> + * @np: of node of qmp device
+>> + *
+>> + * Return: handle to qmp device on success, ERR_PTR() on failure
+>> + */
+>> +struct qmp_device *qmp_get(struct device_node *np)
+>> +{
+>> +    struct platform_device *pdev;
+>> +    struct qmp *qmp;
+> 
+> Can we use this patch series to determine
+> the binding the client are expected to use
+> to point to the qmp phandle and have it
+> parsed here? This would mean that qmp_get
+> would take in device as input instead.
+> Bjorn suggested that clients use "qcom,qmp"
+> during an offline discussion. Let me know
+> what you think.
+> 
 
-The original code also seems to be a little more efficient than the new code.
+Hey Sibi,
+
+Yea I think that's a better implementation. I'll upload a second 
+revision using "qcom,qmp" as the binding.
+
+>> +
+>> +    pdev = of_find_device_by_node(np);
+>> +    if (!pdev)
+>> +        return ERR_PTR(-EINVAL);
+>> +
+>> +    qmp = platform_get_drvdata(pdev);
+>> +    return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
+>> +}
+>> +EXPORT_SYMBOL_GPL(qmp_get);
+>> +
+>>  static int qmp_probe(struct platform_device *pdev)
+>>  {
+>>      struct resource *res;
+>> diff --git a/include/linux/soc/qcom/qcom_aoss.h
+>> b/include/linux/soc/qcom/qcom_aoss.h
+>> new file mode 100644
+>> index 000000000000..05fc0ed3a10d
+>> --- /dev/null
+>> +++ b/include/linux/soc/qcom/qcom_aoss.h
+>> @@ -0,0 +1,33 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+>> + */
+>> +
+>> +#ifndef __QCOM_AOSS_H__
+>> +#define __QCOM_AOSS_H__
+>> +
+>> +#include <linux/err.h>
+>> +#include <linux/of.h>
+>> +
+>> +struct qmp;
+>> +
+>> +#if IS_ENABLED(CONFIG_QCOM_AOSS_QMP)
+>> +
+>> +int qmp_send(struct qmp *qmp, const void *data, size_t len);
+>> +struct qmp_device *qmp_get(struct device_node *np);
+>> +
+>> +#else
+>> +
+>> +int qmp_send(struct qmp *qmp, const void *data, size_t len)
+>> +{
+>> +    return -ENODEV;
+>> +}
+>> +
+>> +struct qmp *qmp_get(struct device_node *np)
+>> +{
+>> +    return ERR_PTR(-ENODEV);
+>> +}
+>> +
+>> +#endif
+>> +
+>> +#endif
+> 
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
+Linux Foundation Collaborative Project
