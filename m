@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5D32B6CA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8F82B6CAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730607AbgKQSMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:12:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
+        id S1730030AbgKQSM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730319AbgKQSMU (ORCPT
+        with ESMTP id S1725808AbgKQSMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:12:20 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1A4C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:12:18 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id c9so4141705wml.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:12:18 -0800 (PST)
+        Tue, 17 Nov 2020 13:12:55 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15E3C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:12:54 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id b6so24142080wrt.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:12:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+GMODFRfJweK1BmKOlqCCplRV7+nRN+C/GDs80/R6/k=;
-        b=Q0tnCgsSNeyMOVXH2RbaFvN2nyKJfMizM1foT+Cc9xTTj2/zsGeT20GhN05RtWZOqt
-         qnbZXUbA4Pua/+JP9h2U7kGOzOsxLrf2tH4K87o+qrKFmOiY//mB4C6nzSGyKQs9gRMk
-         dngOmLo0/lz7oe/z+JoBl9MyDr5T4WGRJhusSxsLqQ9eohqeH+xgHykC9sOvIw14nLgY
-         kYFNz9jp7efTADZZXxmCUX4acQ27KJ8fYF0bJn3z0CBdh1sFdHE5w3hlMV5e5Bt4sIen
-         yTUW+zzqq+GOJ2nAfvw7zqllYtZ/czhjR+Ajx6g9Ruq4w7tFWjOHAFVm0GUBM8aDTQai
-         YDYA==
+        bh=sy11XZxk2UapLYKn4i4gXsIKXlY4QqHYxqwrkdcDSg4=;
+        b=wUafgPlH0pdlylG8w4VJtjz2eCiqI8uWYjuWKDcZerO7JqIH06BqNXcYPF+AfMM7RW
+         5qZLCajp6dntsBGiOp6L+s+uqRv7JCv0eHkT27tOhpdy3qQQl+TWbZZYCxRl/xqlSXPG
+         kq1ClL1K4yPBMzdZEpIF65EfPpcQwUlo1iQ6VXbhvbEg0xusMHYryjp9Pu7Rn307l0+a
+         8beTKUVURc/fuk6QAxqnCXwCT9m48ZrEcECxj0Y/czaXcAEt+rR38G0jm/lXeNvkvePe
+         hXm23B0BGeoJdmX66MKsmacvQFjwA/Y+oJCJEkg91pJkv2QBuaHOAYQpw0naV9KOb62J
+         yOyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=+GMODFRfJweK1BmKOlqCCplRV7+nRN+C/GDs80/R6/k=;
-        b=HuWtHhaFMLYgEEGrpJXWsWjE6snCgq3134S9hcNBu+zJBc3IZtsW5qfATaZF4qtCYO
-         aZfDrgRyWEf6r25VE09QdlaIdOLxBzYvpi5A/SX1wGVPPmP2uT+1Z+xL19doJjxAegDD
-         s2yxBP3bxL0HCnPuiLZjqV2YGEiB6VH0DEZHLsgH0YxtuxX/IDZp5WaJiuCO+XF23TEk
-         iU6xf5Aimizg7LYlS1hBMcZokg1L6f/vIJa/2s5/B1cVsJcEngQCiK/F/phtWZ5JAiqd
-         XDbu+Vk+mL+cQHP5R1cBS446hkrN7AVJ2D4gItGhU1uPZzOgSk2S2oxbbb7ody7M8ewh
-         UaJw==
-X-Gm-Message-State: AOAM532JJTUY78fByVZGHP7BJFY/5hkb1GAEq/uY1g0Qbnec72IGaNha
-        vk9euWyxgxS+hE1sbZG+8PfbYg==
-X-Google-Smtp-Source: ABdhPJy7ge+5C9rkfzdiVd0scrS5/yY/Wibq6CDNBh8aQbUfFjanPblGPmyagIaAldj46qwF863JBQ==
-X-Received: by 2002:a05:600c:22c5:: with SMTP id 5mr341907wmg.25.1605636736943;
-        Tue, 17 Nov 2020 10:12:16 -0800 (PST)
+        bh=sy11XZxk2UapLYKn4i4gXsIKXlY4QqHYxqwrkdcDSg4=;
+        b=VTO5t2IRNoRl9VvCBw7SxeqQXVM4CUnDUjhmUGQmz007MX+JKIjpenORjS6lWy6x/F
+         4yVZ4EuchorHs89qgb4vBG5F/9Z+XbZ+0KQ3pLc10jEDA9+l7Cmz5qvPiR/MgZqhK1yH
+         WLe6P60bU+Vt0iQT2TmjETc9tkkxUjazGEhbaKnLoY4fn7Sn8aVf0WrasrLCkJKeq4ee
+         C1dUWCIq7iU7LmnqTeV940747krfLqwn/x93O8gwJfxjJWFHcLa7pX4Y+jlJOz6xqFyd
+         AjwO+l+qF4D4crM9Wmc+SO9cSsj5yWqxAW9aWCGLRPDe+r8svWCfBF2JVcwasEDZpWXu
+         1nPQ==
+X-Gm-Message-State: AOAM533VXh9BD4X2YDXpsOgBwkK1QuTDdik+yar7Atyd9RgK64FZHwXA
+        ynpy8RJeX3yd1f5pMugaQ3fDYggFXejclHaW
+X-Google-Smtp-Source: ABdhPJxWNo3jDSMV6Q/igylxB209/03TI6WOA2HljuZCCtF8aRIy/XIUcF+ZPgfMNkk3gZ43jnJJiw==
+X-Received: by 2002:adf:b358:: with SMTP id k24mr725103wrd.388.1605636773200;
+        Tue, 17 Nov 2020 10:12:53 -0800 (PST)
 Received: from dell ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id h4sm27507577wrq.3.2020.11.17.10.12.15
+        by smtp.gmail.com with ESMTPSA id t13sm29699403wru.67.2020.11.17.10.12.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 10:12:16 -0800 (PST)
-Date:   Tue, 17 Nov 2020 18:12:14 +0000
+        Tue, 17 Nov 2020 10:12:52 -0800 (PST)
+Date:   Tue, 17 Nov 2020 18:12:50 +0000
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Soham Biswas <sohambiswas41@gmail.com>
-Cc:     thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pwm: core: Use octal permission
-Message-ID: <20201117181214.GK1869941@dell>
-References: <20201117175452.26914-1-sohambiswas41@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 03/42] drm/drm_dp_mst_topology: Remove set but never used
+ variable 'len'
+Message-ID: <20201117181250.GL1869941@dell>
+References: <20201116174112.1833368-1-lee.jones@linaro.org>
+ <20201116174112.1833368-4-lee.jones@linaro.org>
+ <20201117172925.GN401619@phenom.ffwll.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201117175452.26914-1-sohambiswas41@gmail.com>
+In-Reply-To: <20201117172925.GN401619@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020, Soham Biswas wrote:
+On Tue, 17 Nov 2020, Daniel Vetter wrote:
 
-> Fixed Warning.
-
-Which warning does this fix?
-
-> Replaced symbolic permission 'S_IRUGO' with octal permission '0444'.
-
-This is semantically equivalent.
-
-Not sure what and/or how this fixes anything.
-
-> Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
-> ---
->  drivers/pwm/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon, Nov 16, 2020 at 05:40:33PM +0000, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/gpu/drm/drm_dp_mst_topology.c: In function ‘drm_dp_send_query_stream_enc_status’:
+> >  drivers/gpu/drm/drm_dp_mst_topology.c:3263:6: warning: variable ‘len’ set but not used [-Wunused-but-set-variable]
+> > 
+> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > Cc: Maxime Ripard <mripard@kernel.org>
+> > Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > 
-> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
-> index 1f16f5365d3c..a8eff4b3ee36 100644
-> --- a/drivers/pwm/core.c
-> +++ b/drivers/pwm/core.c
-> @@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
->  
->  static int __init pwm_debugfs_init(void)
->  {
-> -	debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
-> +	debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
->  			    &pwm_debugfs_fops);
->  
->  	return 0;
+> Going to apply this, but I noticed that the return value of the
+> build_query_stream_enc_status() is pointless. Can you pls follow up with
+> an additional patch to change that to void?
+
+I can.
 
 -- 
 Lee Jones [李琼斯]
