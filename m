@@ -2,133 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8EC2B59A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A44B2B59AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbgKQGSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 01:18:42 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21510 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726802AbgKQGSl (ORCPT
+        id S1726969AbgKQGVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 01:21:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726854AbgKQGVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 01:18:41 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AH6G2vU032216;
-        Mon, 16 Nov 2020 22:18:25 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=J2+DwgyuJf402HwxGALgcmzpMC/AYk4sg65k1+LJAIo=;
- b=FW6FAurdujybhwkS9QvevsGq9UcDcX3Em2vK7DOsAV0l1MM6NE1ZsomOcEi6WfuXtRV9
- 5EPirgyV9rTMrQItntgN9bN2jZvi9UJAuRQzNSseSi6Kq0Va+K8BDkQ7NxRRkjBxTQtU
- wU8r4G3Z1sgS6IhjcPRSmMA9MZZzbiZauOo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34v7wf093t-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 16 Nov 2020 22:18:25 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 16 Nov 2020 22:18:23 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bTRvei964TXGzNtP5X+lHjKB+CoZ69Ki/50RCZ6DwhXZUgAyXdQq4lsz33F7URJ7+4VkOFJe/epHjiJY992jNH5wGZXfCPkZAjA2+4vWvfojJAnaLzHwF36VeaGOpy/3kml/AORIDiwMT9N2P9QQGdD2SEJPVWOPjA0gwRIawuiyOjBJq21/Bk5o2Y6QorYDF6RCwUQlqeQOOvOX2CJyKJ7KMh3zj4+pxEYwytj8C9VYvXqQml3ss+5dYP38zzT+6/UVt9ugxGjEdVTPvE4RC/OLANPvJisX0wAX1KO0Ankog13qE0/Kvm9RcvcSCOj3ngCNSy2cFyepcaxDgJRgww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J2+DwgyuJf402HwxGALgcmzpMC/AYk4sg65k1+LJAIo=;
- b=QrjjlZshOT6h0EU38zKTVOCCn70i8Sbf6FxO+3bd+T/T2e/5lzzt7kowyMXenN/3b2Mxmiqyz7fvj1WeZ3wTOfuVnxRDcIgULaXjWZrYsbKwAJ4eVBs97j/Zj8H3AED0Q/LfCxh+ym7UK3/ofU0qeunEa6aBjYyqYzCaSukn1eZfaYaBf8E8CFLEb65ahudjhwBh9KzYatIx9C9DqGYGyzmqZJEXKTGi0Iz8GdTMzLmSvQXdqwCJovz+55ppdqh6C/oApJb0osFja1+8gBvef8KBYt0zIafMTkPtaDaWJCzRH05gxHz3O5qkvvmj0mAztBu16pecOkZnyGmpl4dxMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J2+DwgyuJf402HwxGALgcmzpMC/AYk4sg65k1+LJAIo=;
- b=cIA63DlIvb4Eo0mSAfQ0qur1OFomFIc/PU5MeTBkgocNWLnJbR3VpsJs/7On73Qz+tJE5DvORFdFrUGau6fzgigXe96P0KwawP8mWls4GYKpiiEBnnoLkMNY6R6NL9eDwoE3O7tewTpK3Z8UkbTyvc0muIu/Yruc+3rXe3yzs9U=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2824.namprd15.prod.outlook.com (2603:10b6:a03:158::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Tue, 17 Nov
- 2020 06:18:23 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3564.028; Tue, 17 Nov 2020
- 06:18:23 +0000
-Date:   Mon, 16 Nov 2020 22:18:16 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     KP Singh <kpsingh@chromium.org>
-CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Pauline Middelink <middelin@google.com>
-Subject: Re: [PATCH bpf-next v3 2/2] bpf: Add tests for bpf_lsm_set_bprm_opts
-Message-ID: <20201117061816.z446lhcdjkuswtmg@kafai-mbp.dhcp.thefacebook.com>
-References: <20201117021307.1846300-1-kpsingh@chromium.org>
- <20201117021307.1846300-2-kpsingh@chromium.org>
+        Tue, 17 Nov 2020 01:21:51 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E48C0613CF;
+        Mon, 16 Nov 2020 22:21:49 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id t8so258030pfg.8;
+        Mon, 16 Nov 2020 22:21:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HCO4Do1TIW6WV/IMbSI0sS4snTkErwGgRb9lWw/XdAg=;
+        b=Rr63UEzLxGfhz2R7lf/axt7voqBBoKNdMPe/zmgEAeo5ROdwghZGYIqmzQYotoRl2q
+         4Gj9PfviEklD8ew0JlFvaigE9lvgueJyFLb5wzLH93ESO+eRkp50NKM+ScK5E370QW5q
+         vF1I0D/bZgbXYrjVW/2gs30rFuHt9l0NOKZTdTBN/JcN4Ta9to2n1wd9sbDDF+EUMa2g
+         W5ndu3re91O+xMTu+AqL58r5uBnwykUpIuR1KOdax8l5MrMMABi8QyenWS5nBXSMyPg2
+         HQeDq/CFhGkSArBohdaeggOSSGoFKcXcJ5cDweuqddoIIhy7Gm+EnCtmYWL9lEZW5Cyz
+         jBCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HCO4Do1TIW6WV/IMbSI0sS4snTkErwGgRb9lWw/XdAg=;
+        b=r62hQRgApNSV6pUXZuT32rfP2t33ov7KbENIWOtGT37D1+cUPfUETx8IhMHnCuN4dJ
+         xK2YJqsJ5qwlK/Qzl9LANT+PpJa2emmh1ZISTKrfgR+tMUN5yfCExsW/qDylkZTtcXJE
+         UEjyX+pKY/70ecRWFRLvyGBlGMUvTAj5+2OkK2DR44bauM/SSo/wjjy5Ekv2UnjvpF14
+         n0l4FqEAeB7WvbMoJl0Kkpc3YNOr4CuA8mtNsKGfpjUtA/ZkdnSOMRv31aXfLAJWZErg
+         3HQjXlhnSzg8FJWiY0UrrMJORoAxnOHNeSqB4C8JP7TcWU7CYSDtTH/BsDSqoq39VCKz
+         AwOQ==
+X-Gm-Message-State: AOAM533Ie06wNEipzzePg5gpQRrgSjdAENtaPUAr9GzLcLyuewjmsLi2
+        f11H8fwrR/pv6xQ8up5Lmw==
+X-Google-Smtp-Source: ABdhPJynVMmV4480o8KA0uueSRkFm2Dde8Vp8IwxbZJtqWyUskYCET+gGac+0YqDVdnVW8v1cPO53A==
+X-Received: by 2002:aa7:9f9a:0:b029:18b:a203:3146 with SMTP id z26-20020aa79f9a0000b029018ba2033146mr17064311pfr.36.1605594109108;
+        Mon, 16 Nov 2020 22:21:49 -0800 (PST)
+Received: from PWN ([116.92.233.28])
+        by smtp.gmail.com with ESMTPSA id j11sm16908116pgp.82.2020.11.16.22.21.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 22:21:48 -0800 (PST)
+Date:   Tue, 17 Nov 2020 01:21:42 -0500
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
+ FNTCHARCNT() in fbcon.c
+Message-ID: <20201117062142.GA28766@PWN>
+References: <cover.1605169912.git.yepeilin.cs@gmail.com>
+ <20201113211633.GY401619@phenom.ffwll.local>
+ <X68NFzaAuImemnqh@kroah.com>
+ <20201114081021.GA11811@PWN>
+ <X6/K/S9V7rj2hI5p@kroah.com>
+ <X6/L/lE2pA7csBwd@kroah.com>
+ <20201114124716.GA12895@PWN>
+ <20201116100949.GA401619@phenom.ffwll.local>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117021307.1846300-2-kpsingh@chromium.org>
-X-Originating-IP: [2620:10d:c090:400::5:8f7f]
-X-ClientProxiedBy: MW3PR06CA0017.namprd06.prod.outlook.com
- (2603:10b6:303:2a::22) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:8f7f) by MW3PR06CA0017.namprd06.prod.outlook.com (2603:10b6:303:2a::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Tue, 17 Nov 2020 06:18:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 80915a86-810f-40af-bbb3-08d88ac09614
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2824:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB28243D02EE320824C04B70D9D5E20@BYAPR15MB2824.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bYZVUPmMLQS5hl6etQNbuxJiifjoPH4WpiJ/0UWu8hSVZZ0+50nGBtZpmn6Ev2z7AsDhVWvvQJdTuVTMgb3YOzx3Sm0EeGRqHxAjQiKASYj+866cDF/FZAN0La7ZWefsjGOFLMTMplf/ry2Yzc4zfcjY/XXZOXOM4DIvSC4J6ddlcvQHMOWDvNaMRE1GAzcbVOYElrZI1fErV8W7PVi+6s9aSofeaa2RQKPzgvju6RbJXceIxGc94XAWHw9GfhmAsiroQ0uqi8REKE75Bq7qzq4QyqLyUys2zoNN2yjF+4jYCkeJqNSky5XLPuaSirPVNh01d5EgtIxu1AWNcl05bg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(346002)(376002)(366004)(16526019)(83380400001)(6916009)(186003)(86362001)(4744005)(54906003)(316002)(52116002)(7696005)(55016002)(9686003)(478600001)(8676002)(2906002)(66476007)(66946007)(66556008)(8936002)(6506007)(1076003)(4326008)(5660300002)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: zD9x+WWvy2dj8bZVLrN6nCD93rAQWrx9fksIK1TlEtVNHUtZNSkcsIxmdtu3yVYycCpf/C4KNx4mDD9JBnZYWdn9G6FWyiTYkLuJj0lQkRN2BTT7yof6OEg7WsBnS2SLkFxHLSNTaRuKSzJDOcl62SPSY4KOA1Od5bSm3IKsyAlNd6kqfMr6QPTIHsxUvo8Q0joGDSzRG10qAdyrTTL+2QjDZ1YU8ArdUXJbX/b9TGz064oWgDCMs6sOYSM252RVaPPo7NM/6ceEtS38LiypDizLVUJUv0uOTjFtCGVywTXCvyj7P/9uZ9ZulnmWzKf82eSUaD+sS+3IeH4omBP4/j3HrbMKFmV4eRZtwP8GyjdOxmJlUNPQ4FmJGO4HrwD8afaoQ+g3jOcBpIQLUKP0SZu8PiCtIJcgHCe2FXQVlh7p7+2t/p2IHxltnCvAcOn8Oim/sKTnmniasjctjIvp41hySqlX4eOit9A9qqod7u5fNFRi/CgU3tTwtpcy1j9ATkGM7gtTTclsL7Bj1V7wFSWCEWhwrf9bE1IAlI3MeHjjLKThkPXteQMEcSKNE1PG97gyydqT2DRtzv3AA2Vu4T8VIBPwSN96aqjKgmu9Ii6WPuiIradXxGcppGwEf/YSu4jhVxNBnjVF9RWMf8ufjUrdQ9RY9BlBBl5d9hwKDbbxkXu8sFPSGU7LdXVevm3QMB8/5Z/xhbxPGcutrN/Xjz8qaUdkNslE4MGYzpb82LV2sDs/obSvMIZ1y12A5p2jU8CD7VDQv2eGi0trk2tE3o62/pDKmDSV/SvBtDUuZFXogg2QpjemPW6dMuk7qk/2e6DFHe6JrG96oLpd28fT7BoCGZurAWUzoFyH0FNpUPBG3cypdk183Tkf9M/8PEtGgzEyh+FHTgFkVjDAD1j082UOgnrL+Hc+PevPmUWSi9A=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80915a86-810f-40af-bbb3-08d88ac09614
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 06:18:23.0189
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MysuKV89sz/V45/I28XPk237xBA47UIHCo6fu67izqZ4+L5EVrCWUAYttnQwU+9k
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2824
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_02:2020-11-13,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 mlxscore=0
- spamscore=0 suspectscore=1 phishscore=0 adultscore=0 malwarescore=0
- lowpriorityscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=959
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170045
-X-FB-Internal: deliver
+In-Reply-To: <20201116100949.GA401619@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:13:07AM +0000, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
+On Mon, Nov 16, 2020 at 11:09:49AM +0100, Daniel Vetter wrote:
+> On Sat, Nov 14, 2020 at 07:47:16AM -0500, Peilin Ye wrote:
+> > On Sat, Nov 14, 2020 at 01:22:22PM +0100, Greg Kroah-Hartman wrote:
+> > > On Sat, Nov 14, 2020 at 01:18:06PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Sat, Nov 14, 2020 at 03:10:21AM -0500, Peilin Ye wrote:
+> > > > > Thanks for reviewing!  Questions about the last patch [5/5] though, it
+> > > > > depends on the following assumption:
+> > > > > 
+> > > > > """
+> > > > > For each console `idx`, `vc_cons[idx].d->vc_font.data` and
+> > > > > `fb_display[idx].fontdata` always point to the same buffer.
+> > > > > """
+> > > > > 
+> > > > > Is this true?  I think it is true by grepping for `fontdata`.  I also
+> > > > > noticed that fbcon.c is using `vc->vc_font.data` and `p->fontdata`
+> > > > > interchangeably, see fbcon_get_requirement():
+> > > > > 
+> > > > > 		vc = vc_cons[fg_console].d;
+> > > > > 		[...]
+> > > > > 			p = &fb_display[fg_console];
+> > > > > 			caps->x = 1 << (vc->vc_font.width - 1);
+> > > > > 					^^^^^^^^^^^
+> > > > > 			caps->y = 1 << (vc->vc_font.height - 1);
+> > > > > 					^^^^^^^^^^^
+> > > > > 			caps->len = (p->userfont) ?
+> > > > > 				FNTCHARCNT(p->fontdata) : 256;
+> > > > > 					   ^^^^^^^^^^^
+> > > > > 
+> > > > > If it is true, then what is the point of using `fontdata` in `struct
+> > > > > fbcon_display`?  Just for the `userfont` flag?  Should we delete
+> > > > > `fontdata`, when we no longer need the `userfont` flag?
+> > > > 
+> > > > Yes, after a quick look, I think your analysis here is correct.  So if
+> > > > you can delete that, it would be nice if possible.
+> > 
+> > I see, at the moment we still need `userfont` for refcount handling, I
+> > will try to delete both `fontdata` and `userfont` after refcount is
+> > taken care of.
 > 
-> The test forks a child process, updates the local storage to set/unset
-> the securexec bit.
+> +1 on sunsetting fondata. I think there's a bunch of these in fbcon code,
+> because the console subsystem is older than the standard "allow drivers to
+> embed the subsystem struct into their own private struct" subclassing
+> model. So lots of global arrays indexed by the console id :-/
+
+Yeah, I saw your comments about registered_fb[] :(
+
+> We're also trying to start some kind of test suite for fbdev chardev ioctl
+> interface in the gpu test suite. fbcon tests are maybe more related to
+> tty/vt, and I have no idea whether anything exists there already.
 > 
-> The BPF program in the test attaches to bprm_creds_for_exec which checks
-> the local storage of the current task to set the secureexec bit on the
-> binary parameters (bprm).
+> But if you want to do some automated testcases for fbcon and there's
+> absolutely no other home for them, the gpu test suite might be an option
+> of last resort too:
 > 
-> The child then execs a bash command with the environment variable
-> TMPDIR set in the envp.  The bash command returns a different exit code
-> based on its observed value of the TMPDIR variable.
-> 
-> Since TMPDIR is one of the variables that is ignored by the dynamic
-> loader when the secureexec bit is set, one should expect the
-> child execution to not see this value when the secureexec bit is set.
-> 
-> Signed-off-by: KP Singh <kpsingh@google.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+> https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#testing-and-validation
+
+Oh, I didn't know about igt-gpu-tools, thanks for the pointer!  Now,
+since charcount is taken care of, and font_desc now contains all fields
+of console_font, I think it is a good time to replace console_font with
+font_desc in vc_data.  Then we can get rid of FNTSUM(), FNTSIZE(), then
+(finally) REFCOUNT().
+
+I will start working on vc_data, after done enough testing on [5/5],
+ofc. Thanks,
+
+Peilin Ye
+
