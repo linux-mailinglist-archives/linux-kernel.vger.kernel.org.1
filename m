@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD072B61F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 063F82B61F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730980AbgKQNYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:24:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58884 "EHLO mail.kernel.org"
+        id S1730801AbgKQNYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:24:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730196AbgKQNYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:24:03 -0500
+        id S1730397AbgKQNYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:24:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19C252463D;
-        Tue, 17 Nov 2020 13:24:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9F9320781;
+        Tue, 17 Nov 2020 13:24:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619442;
-        bh=EvRVSk0w2J7lcggKGMUe/Sn/6V3HjP/gZkDhmzA0yjE=;
+        s=default; t=1605619445;
+        bh=5g2ZhXwgUbzbkLXLmr6Uhf57iuJVRJdnbvowoVgx+wY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gK5+q2sfIjw5LZc1BGD1sb0uyrtDz1QRQMsD1h3H36qpBE2bX8U+o152w3Dek3Prg
-         kAIZjkLy+fu5Scj1IkwNVSRPAagy4R27KJjTYTbB1evVUQr+1XIdXPWs/5sg1GE02O
-         Yi+zvBFBNsExVTnIlguDc2mTfi1oxCRE0jAqi+ao=
+        b=HHKIRoYfNB66iOHE7wvpuCiXK0P383rLk/FFmTs2VFH/GEloHeQ/xCKz3QMm/4nVF
+         SohM52iCgxtZ64bVVvEFvd9XrUwXaVjF9CG5wr2lliDPu0g8KROzOa+DNmkoPXJEgj
+         +JMmWd+XOuDx3dgPyQZfvM41vkMrorT5a23FP7mE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?=C5=81ukasz=20Majczak?= <lmajczak@google.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 010/151] btrfs: reschedule when cloning lots of extents
-Date:   Tue, 17 Nov 2020 14:04:00 +0100
-Message-Id: <20201117122121.903878523@linuxfoundation.org>
+Subject: [PATCH 5.4 011/151] ASoC: Intel: kbl_rt5663_max98927: Fix kabylake_ssp_fixup function
+Date:   Tue, 17 Nov 2020 14:04:01 +0100
+Message-Id: <20201117122121.953614432@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
 References: <20201117122121.381905960@linuxfoundation.org>
@@ -44,96 +46,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+From: Tomasz Figa <tfiga@chromium.org>
 
-[ Upstream commit 6b613cc97f0ace77f92f7bc112b8f6ad3f52baf8 ]
+[ Upstream commit 9fe9efd6924c9a62ebb759025bb8927e398f51f7 ]
 
-We have several occurrences of a soft lockup from fstest's generic/175
-testcase, which look more or less like this one:
+This is a copy of commit 5c5f1baee85a ("ASoC: Intel:
+kbl_rt5663_rt5514_max98927: Fix kabylake_ssp_fixup function") applied to
+the kbl_rt5663_max98927 board file.
 
-  watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [xfs_io:10030]
-  Kernel panic - not syncing: softlockup: hung tasks
-  CPU: 0 PID: 10030 Comm: xfs_io Tainted: G             L    5.9.0-rc5+ #768
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
-  Call Trace:
-   <IRQ>
-   dump_stack+0x77/0xa0
-   panic+0xfa/0x2cb
-   watchdog_timer_fn.cold+0x85/0xa5
-   ? lockup_detector_update_enable+0x50/0x50
-   __hrtimer_run_queues+0x99/0x4c0
-   ? recalibrate_cpu_khz+0x10/0x10
-   hrtimer_run_queues+0x9f/0xb0
-   update_process_times+0x28/0x80
-   tick_handle_periodic+0x1b/0x60
-   __sysvec_apic_timer_interrupt+0x76/0x210
-   asm_call_on_stack+0x12/0x20
-   </IRQ>
-   sysvec_apic_timer_interrupt+0x7f/0x90
-   asm_sysvec_apic_timer_interrupt+0x12/0x20
-  RIP: 0010:btrfs_tree_unlock+0x91/0x1a0 [btrfs]
-  RSP: 0018:ffffc90007123a58 EFLAGS: 00000282
-  RAX: ffff8881cea2fbe0 RBX: ffff8881cea2fbe0 RCX: 0000000000000000
-  RDX: ffff8881d23fd200 RSI: ffffffff82045220 RDI: ffff8881cea2fba0
-  RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000032
-  R10: 0000160000000000 R11: 0000000000001000 R12: 0000000000001000
-  R13: ffff8882357fd5b0 R14: ffff88816fa76e70 R15: ffff8881cea2fad0
-   ? btrfs_tree_unlock+0x15b/0x1a0 [btrfs]
-   btrfs_release_path+0x67/0x80 [btrfs]
-   btrfs_insert_replace_extent+0x177/0x2c0 [btrfs]
-   btrfs_replace_file_extents+0x472/0x7c0 [btrfs]
-   btrfs_clone+0x9ba/0xbd0 [btrfs]
-   btrfs_clone_files.isra.0+0xeb/0x140 [btrfs]
-   ? file_update_time+0xcd/0x120
-   btrfs_remap_file_range+0x322/0x3b0 [btrfs]
-   do_clone_file_range+0xb7/0x1e0
-   vfs_clone_file_range+0x30/0xa0
-   ioctl_file_clone+0x8a/0xc0
-   do_vfs_ioctl+0x5b2/0x6f0
-   __x64_sys_ioctl+0x37/0xa0
-   do_syscall_64+0x33/0x40
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  RIP: 0033:0x7f87977fc247
-  RSP: 002b:00007ffd51a2f6d8 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
-  RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f87977fc247
-  RDX: 00007ffd51a2f710 RSI: 000000004020940d RDI: 0000000000000003
-  RBP: 0000000000000004 R08: 00007ffd51a79080 R09: 0000000000000000
-  R10: 00005621f11352f2 R11: 0000000000000206 R12: 0000000000000000
-  R13: 0000000000000000 R14: 00005621f128b958 R15: 0000000080000000
-  Kernel Offset: disabled
-  ---[ end Kernel panic - not syncing: softlockup: hung tasks ]---
+Original explanation of the change:
 
-All of these lockup reports have the call chain btrfs_clone_files() ->
-btrfs_clone() in common. btrfs_clone_files() calls btrfs_clone() with
-both source and destination extents locked and loops over the source
-extent to create the clones.
+kabylake_ssp_fixup function uses snd_soc_dpcm to identify the
+codecs DAIs. The HW parameters are changed based on the codec DAI of the
+stream. The earlier approach to get snd_soc_dpcm was using container_of()
+macro on snd_pcm_hw_params.
 
-Conditionally reschedule in the btrfs_clone() loop, to give some time back
-to other processes.
+The structures have been modified over time and snd_soc_dpcm does not have
+snd_pcm_hw_params as a reference but as a copy. This causes the current
+driver to crash when used.
 
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+This patch changes the way snd_soc_dpcm is extracted. snd_soc_pcm_runtime
+holds 2 dpcm instances (one for playback and one for capture). 2 codecs
+on the SSP are dmic (capture) and speakers (playback). Based on the
+stream direction, snd_soc_dpcm is extracted from snd_soc_pcm_runtime.
+
+Fixes a boot crash on a HP Chromebook x2:
+
+[   16.582225] BUG: kernel NULL pointer dereference, address: 0000000000000050
+[   16.582231] #PF: supervisor read access in kernel mode
+[   16.582233] #PF: error_code(0x0000) - not-present page
+[   16.582234] PGD 0 P4D 0
+[   16.582238] Oops: 0000 [#1] PREEMPT SMP PTI
+[   16.582241] CPU: 0 PID: 1980 Comm: cras Tainted: G         C        5.4.58 #1
+[   16.582243] Hardware name: HP Soraka/Soraka, BIOS Google_Soraka.10431.75.0 08/30/2018
+[   16.582247] RIP: 0010:kabylake_ssp_fixup+0x19/0xbb [snd_soc_kbl_rt5663_max98927]
+[   16.582250] Code: c6 6f c5 80 c0 44 89 f2 31 c0 e8 3e c9 4c d6 eb de 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 53 48 89 f3 48 8b 46 c8 48 8b 4e d0 <48> 8b 49 10 4c 8b 78 10 4c 8b 31 4c 89 f7 48 c7 c6 4b c2 80 c0 e8
+[   16.582252] RSP: 0000:ffffaf7e81e0b958 EFLAGS: 00010282
+[   16.582254] RAX: ffffffff96f13e0d RBX: ffffaf7e81e0ba00 RCX: 0000000000000040
+[   16.582256] RDX: ffffaf7e81e0ba00 RSI: ffffaf7e81e0ba00 RDI: ffffa3b208558028
+[   16.582258] RBP: ffffaf7e81e0b970 R08: ffffa3b203b54160 R09: ffffaf7e81e0ba00
+[   16.582259] R10: 0000000000000000 R11: ffffffffc080b345 R12: ffffa3b209fb6e00
+[   16.582261] R13: ffffa3b1b1a47838 R14: ffffa3b1e6197f28 R15: ffffaf7e81e0ba00
+[   16.582263] FS:  00007eb3f25aaf80(0000) GS:ffffa3b236a00000(0000) knlGS:0000000000000000
+[   16.582265] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   16.582267] CR2: 0000000000000050 CR3: 0000000246bc8006 CR4: 00000000003606f0
+[   16.582269] Call Trace:
+[   16.582275]  snd_soc_link_be_hw_params_fixup+0x21/0x68
+[   16.582278]  snd_soc_dai_hw_params+0x25/0x94
+[   16.582282]  soc_pcm_hw_params+0x2d8/0x583
+[   16.582288]  dpcm_be_dai_hw_params+0x172/0x29e
+[   16.582291]  dpcm_fe_dai_hw_params+0x9f/0x12f
+[   16.582295]  snd_pcm_hw_params+0x137/0x41c
+[   16.582298]  snd_pcm_hw_params_user+0x3c/0x71
+[   16.582301]  snd_pcm_common_ioctl+0x2c6/0x565
+[   16.582304]  snd_pcm_ioctl+0x32/0x36
+[   16.582307]  do_vfs_ioctl+0x506/0x783
+[   16.582311]  ksys_ioctl+0x58/0x83
+[   16.582313]  __x64_sys_ioctl+0x1a/0x1e
+[   16.582316]  do_syscall_64+0x54/0x7e
+[   16.582319]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   16.582322] RIP: 0033:0x7eb3f1886157
+[   16.582324] Code: 8a 66 90 48 8b 05 11 dd 2b 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 dc 2b 00 f7 d8 64 89 01 48
+[   16.582326] RSP: 002b:00007ffff7559818 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[   16.582329] RAX: ffffffffffffffda RBX: 00005acc9188b140 RCX: 00007eb3f1886157
+[   16.582330] RDX: 00007ffff7559940 RSI: 00000000c2604111 RDI: 000000000000001e
+[   16.582332] RBP: 00007ffff7559840 R08: 0000000000000004 R09: 0000000000000000
+[   16.582333] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000bb80
+[   16.582335] R13: 00005acc91702e80 R14: 00007ffff7559940 R15: 00005acc91702e80
+[   16.582337] Modules linked in: rfcomm cmac algif_hash algif_skcipher af_alg uinput hid_google_hammer snd_soc_kbl_rt5663_max98927 snd_soc_hdac_hdmi snd_soc_dmic snd_soc_skl_ssp_clk snd_soc_skl snd_soc_sst_ipc snd_soc_sst_dsp snd_soc_hdac_hda snd_soc_acpi_intel_match snd_soc_acpi snd_hda_ext_core snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core ipu3_cio2 ipu3_imgu(C) videobuf2_v4l2 videobuf2_common videobuf2_dma_sg videobuf2_memops snd_soc_rt5663 snd_soc_max98927 snd_soc_rl6231 ov5670 ov13858 acpi_als v4l2_fwnode dw9714 fuse xt_MASQUERADE iio_trig_sysfs cros_ec_light_prox cros_ec_sensors cros_ec_sensors_core cros_ec_sensors_ring industrialio_triggered_buffer kfifo_buf industrialio cros_ec_sensorhub cdc_ether usbnet btusb btrtl btintel btbcm bluetooth ecdh_generic ecc lzo_rle lzo_compress iwlmvm zram iwl7000_mac80211 r8152 mii iwlwifi cfg80211 joydev
+[   16.584243] gsmi: Log Shutdown Reason 0x03
+[   16.584246] CR2: 0000000000000050
+[   16.584248] ---[ end trace c8511d090c11edff ]---
+
+Suggested-by: Łukasz Majczak <lmajczak@google.com>
+Fixes: 2e5894d73789e ("ASoC: pcm: Add support for DAI multicodec")
+Signed-off-by: Tomasz Figa <tfiga@chromium.org>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20201014141624.4143453-1-tfiga@chromium.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/ioctl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c | 39 ++++++++++++++++----
+ 1 file changed, 31 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 63394b450afcc..3fd6c9aed7191 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3752,6 +3752,8 @@ process_slot:
- 			ret = -EINTR;
- 			goto out;
- 		}
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 7cefda341fbf8..a540a2dad80c3 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -401,17 +401,40 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+-	struct snd_soc_dpcm *dpcm = container_of(
+-			params, struct snd_soc_dpcm, hw_params);
+-	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
+-	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
++	struct snd_soc_dpcm *dpcm, *rtd_dpcm = NULL;
 +
-+		cond_resched();
- 	}
- 	ret = 0;
++	/*
++	 * The following loop will be called only for playback stream
++	 * In this platform, there is only one playback device on every SSP
++	 */
++	for_each_dpcm_fe(rtd, SNDRV_PCM_STREAM_PLAYBACK, dpcm) {
++		rtd_dpcm = dpcm;
++		break;
++	}
++
++	/*
++	 * This following loop will be called only for capture stream
++	 * In this platform, there is only one capture device on every SSP
++	 */
++	for_each_dpcm_fe(rtd, SNDRV_PCM_STREAM_CAPTURE, dpcm) {
++		rtd_dpcm = dpcm;
++		break;
++	}
++
++	if (!rtd_dpcm)
++		return -EINVAL;
++
++	/*
++	 * The above 2 loops are mutually exclusive based on the stream direction,
++	 * thus rtd_dpcm variable will never be overwritten
++	 */
  
+ 	/*
+ 	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
+ 	 */
+-	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
+-	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
+-	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
++	if (!strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Port") ||
++	    !strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Headset Playback") ||
++	    !strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Capture Port")) {
+ 		rate->min = rate->max = 48000;
+ 		channels->min = channels->max = 2;
+ 		snd_mask_none(fmt);
+@@ -421,7 +444,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
+ 	 * thus changing the mask here
+ 	 */
+-	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
++	if (!strcmp(rtd_dpcm->be->dai_link->name, "SSP0-Codec"))
+ 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+ 
+ 	return 0;
 -- 
 2.27.0
 
