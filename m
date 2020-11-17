@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4F82B60EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E962B6090
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729997AbgKQNOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:14:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44460 "EHLO mail.kernel.org"
+        id S1729469AbgKQNK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:10:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729968AbgKQNNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:13:54 -0500
+        id S1729438AbgKQNKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:10:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF76F24199;
-        Tue, 17 Nov 2020 13:13:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A72FB221EB;
+        Tue, 17 Nov 2020 13:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618832;
-        bh=xeYpaxuO47D45EWr6Jn+S2bY+bmGk0f0UFnMwkgkJlE=;
+        s=default; t=1605618612;
+        bh=cG3vbnM8bx1OdB0QcQcJ72+101WCvZN42O7uuetWIYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qDDz72U/u8Cdfj6JBVZkZykOiXN6fJH1wkpd9pCrW3zeDCKHaVCjEyHNbFRuR1p+e
-         7QKaI/HYIGcP8DND0Xce+8SUBwpsqRpwdnBnm49ABYpV9tYxU9n+gLE2YBf+v1HfYl
-         W/l96TP0OwQ72HZMQm1na3gl3YoHNBKOqj7HuqOU=
+        b=zPmUVmLrJ1MJ5Kq6v6/LFwqduXbJf07SOav2RXpG54TwE2HVXNvwdW813AyI3Z7Cc
+         poahWdAr9Y9yV9meIg0ld1jReJKKZ4cXzqm9P6IsyYCk67d7aCEU8nf2FA7JLo4PaB
+         jcHShxNdV42P80PMg2GzachkI8jECzyfdlF57j7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Masashi Honma <masashi.honma@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.14 22/85] ath9k_htc: Use appropriate rs_datalen type
-Date:   Tue, 17 Nov 2020 14:04:51 +0100
-Message-Id: <20201117122112.119772978@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Andrianov <andrianov@ispras.ru>,
+        Evgeny Novikov <novikov@ispras.ru>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 26/78] usb: gadget: goku_udc: fix potential crashes in probe
+Date:   Tue, 17 Nov 2020 14:04:52 +0100
+Message-Id: <20201117122110.391863698@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masashi Honma <masashi.honma@gmail.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-commit 5024f21c159f8c1668f581fff37140741c0b1ba9 upstream.
+[ Upstream commit 0d66e04875c5aae876cf3d4f4be7978fa2b00523 ]
 
-kernel test robot says:
-drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:987:20: sparse: warning: incorrect type in assignment (different base types)
-drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:987:20: sparse:    expected restricted __be16 [usertype] rs_datalen
-drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:987:20: sparse:    got unsigned short [usertype]
-drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:988:13: sparse: warning: restricted __be16 degrades to integer
-drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:1001:13: sparse: warning: restricted __be16 degrades to integer
+goku_probe() goes to error label "err" and invokes goku_remove()
+in case of failures of pci_enable_device(), pci_resource_start()
+and ioremap(). goku_remove() gets a device from
+pci_get_drvdata(pdev) and works with it without any checks, in
+particular it dereferences a corresponding pointer. But
+goku_probe() did not set this device yet. So, one can expect
+various crashes. The patch moves setting the device just after
+allocation of memory for it.
 
-Indeed rs_datalen has host byte order, so modify it's own type.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: cd486e627e67 ("ath9k_htc: Discard undersized packets")
-Signed-off-by: Masashi Honma <masashi.honma@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200808233258.4596-1-masashi.honma@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Pavel Andrianov <andrianov@ispras.ru>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/htc_drv_txrx.c |    2 +-
+ drivers/usb/gadget/udc/goku_udc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-@@ -973,7 +973,7 @@ static bool ath9k_rx_prepare(struct ath9
- 	struct ath_htc_rx_status *rxstatus;
- 	struct ath_rx_status rx_stats;
- 	bool decrypt_error = false;
--	__be16 rs_datalen;
-+	u16 rs_datalen;
- 	bool is_phyerr;
+diff --git a/drivers/usb/gadget/udc/goku_udc.c b/drivers/usb/gadget/udc/goku_udc.c
+index 5107987bd3538..d363224dce6f5 100644
+--- a/drivers/usb/gadget/udc/goku_udc.c
++++ b/drivers/usb/gadget/udc/goku_udc.c
+@@ -1772,6 +1772,7 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto err;
+ 	}
  
- 	if (skb->len < HTC_RX_FRAME_HEADER_SIZE) {
++	pci_set_drvdata(pdev, dev);
+ 	spin_lock_init(&dev->lock);
+ 	dev->pdev = pdev;
+ 	dev->gadget.ops = &goku_ops;
+@@ -1805,7 +1806,6 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	}
+ 	dev->regs = (struct goku_udc_regs __iomem *) base;
+ 
+-	pci_set_drvdata(pdev, dev);
+ 	INFO(dev, "%s\n", driver_desc);
+ 	INFO(dev, "version: " DRIVER_VERSION " %s\n", dmastr());
+ 	INFO(dev, "irq %d, pci mem %p\n", pdev->irq, base);
+-- 
+2.27.0
+
 
 
