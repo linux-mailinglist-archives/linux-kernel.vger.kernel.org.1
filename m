@@ -2,143 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A44B2B59AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3C82B59B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgKQGVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 01:21:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgKQGVv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 01:21:51 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E48C0613CF;
-        Mon, 16 Nov 2020 22:21:49 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id t8so258030pfg.8;
-        Mon, 16 Nov 2020 22:21:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HCO4Do1TIW6WV/IMbSI0sS4snTkErwGgRb9lWw/XdAg=;
-        b=Rr63UEzLxGfhz2R7lf/axt7voqBBoKNdMPe/zmgEAeo5ROdwghZGYIqmzQYotoRl2q
-         4Gj9PfviEklD8ew0JlFvaigE9lvgueJyFLb5wzLH93ESO+eRkp50NKM+ScK5E370QW5q
-         vF1I0D/bZgbXYrjVW/2gs30rFuHt9l0NOKZTdTBN/JcN4Ta9to2n1wd9sbDDF+EUMa2g
-         W5ndu3re91O+xMTu+AqL58r5uBnwykUpIuR1KOdax8l5MrMMABi8QyenWS5nBXSMyPg2
-         HQeDq/CFhGkSArBohdaeggOSSGoFKcXcJ5cDweuqddoIIhy7Gm+EnCtmYWL9lEZW5Cyz
-         jBCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HCO4Do1TIW6WV/IMbSI0sS4snTkErwGgRb9lWw/XdAg=;
-        b=r62hQRgApNSV6pUXZuT32rfP2t33ov7KbENIWOtGT37D1+cUPfUETx8IhMHnCuN4dJ
-         xK2YJqsJ5qwlK/Qzl9LANT+PpJa2emmh1ZISTKrfgR+tMUN5yfCExsW/qDylkZTtcXJE
-         UEjyX+pKY/70ecRWFRLvyGBlGMUvTAj5+2OkK2DR44bauM/SSo/wjjy5Ekv2UnjvpF14
-         n0l4FqEAeB7WvbMoJl0Kkpc3YNOr4CuA8mtNsKGfpjUtA/ZkdnSOMRv31aXfLAJWZErg
-         3HQjXlhnSzg8FJWiY0UrrMJORoAxnOHNeSqB4C8JP7TcWU7CYSDtTH/BsDSqoq39VCKz
-         AwOQ==
-X-Gm-Message-State: AOAM533Ie06wNEipzzePg5gpQRrgSjdAENtaPUAr9GzLcLyuewjmsLi2
-        f11H8fwrR/pv6xQ8up5Lmw==
-X-Google-Smtp-Source: ABdhPJynVMmV4480o8KA0uueSRkFm2Dde8Vp8IwxbZJtqWyUskYCET+gGac+0YqDVdnVW8v1cPO53A==
-X-Received: by 2002:aa7:9f9a:0:b029:18b:a203:3146 with SMTP id z26-20020aa79f9a0000b029018ba2033146mr17064311pfr.36.1605594109108;
-        Mon, 16 Nov 2020 22:21:49 -0800 (PST)
-Received: from PWN ([116.92.233.28])
-        by smtp.gmail.com with ESMTPSA id j11sm16908116pgp.82.2020.11.16.22.21.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 22:21:48 -0800 (PST)
-Date:   Tue, 17 Nov 2020 01:21:42 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] console: Miscellaneous clean-ups, do not use
- FNTCHARCNT() in fbcon.c
-Message-ID: <20201117062142.GA28766@PWN>
-References: <cover.1605169912.git.yepeilin.cs@gmail.com>
- <20201113211633.GY401619@phenom.ffwll.local>
- <X68NFzaAuImemnqh@kroah.com>
- <20201114081021.GA11811@PWN>
- <X6/K/S9V7rj2hI5p@kroah.com>
- <X6/L/lE2pA7csBwd@kroah.com>
- <20201114124716.GA12895@PWN>
- <20201116100949.GA401619@phenom.ffwll.local>
+        id S1727109AbgKQGX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 01:23:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgKQGX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 01:23:27 -0500
+Received: from kernel.org (unknown [77.125.7.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DA1C223AB;
+        Tue, 17 Nov 2020 06:23:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605594206;
+        bh=i6knV0DMO2RXQJYhiZxatZGtoKHulkxOl5sSaGDS0gM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qAUA5RVCTP0npaeRBIO8YpdBuUTgIPD0QBwHOr2UeiElqlVtKRczsIc13jS9qXhSM
+         /m8cTkIY+QMvxEbuFwI36fTIAAvpIJ9fhQtB5SdUWJTnAGZetOklMyr9EQ9DA4BJIQ
+         QteWhvERMCEW1EUrOIOHXVbp4uevZfdG2TI7hGQ8=
+Date:   Tue, 17 Nov 2020 08:23:16 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
+Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
+Message-ID: <20201117062316.GB370813@kernel.org>
+References: <20201101170454.9567-1-rppt@kernel.org>
+ <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116100949.GA401619@phenom.ffwll.local>
+In-Reply-To: <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 11:09:49AM +0100, Daniel Vetter wrote:
-> On Sat, Nov 14, 2020 at 07:47:16AM -0500, Peilin Ye wrote:
-> > On Sat, Nov 14, 2020 at 01:22:22PM +0100, Greg Kroah-Hartman wrote:
-> > > On Sat, Nov 14, 2020 at 01:18:06PM +0100, Greg Kroah-Hartman wrote:
-> > > > On Sat, Nov 14, 2020 at 03:10:21AM -0500, Peilin Ye wrote:
-> > > > > Thanks for reviewing!  Questions about the last patch [5/5] though, it
-> > > > > depends on the following assumption:
-> > > > > 
-> > > > > """
-> > > > > For each console `idx`, `vc_cons[idx].d->vc_font.data` and
-> > > > > `fb_display[idx].fontdata` always point to the same buffer.
-> > > > > """
-> > > > > 
-> > > > > Is this true?  I think it is true by grepping for `fontdata`.  I also
-> > > > > noticed that fbcon.c is using `vc->vc_font.data` and `p->fontdata`
-> > > > > interchangeably, see fbcon_get_requirement():
-> > > > > 
-> > > > > 		vc = vc_cons[fg_console].d;
-> > > > > 		[...]
-> > > > > 			p = &fb_display[fg_console];
-> > > > > 			caps->x = 1 << (vc->vc_font.width - 1);
-> > > > > 					^^^^^^^^^^^
-> > > > > 			caps->y = 1 << (vc->vc_font.height - 1);
-> > > > > 					^^^^^^^^^^^
-> > > > > 			caps->len = (p->userfont) ?
-> > > > > 				FNTCHARCNT(p->fontdata) : 256;
-> > > > > 					   ^^^^^^^^^^^
-> > > > > 
-> > > > > If it is true, then what is the point of using `fontdata` in `struct
-> > > > > fbcon_display`?  Just for the `userfont` flag?  Should we delete
-> > > > > `fontdata`, when we no longer need the `userfont` flag?
-> > > > 
-> > > > Yes, after a quick look, I think your analysis here is correct.  So if
-> > > > you can delete that, it would be nice if possible.
+Hi Adrian,
+
+On Tue, Nov 17, 2020 at 06:24:51AM +0100, John Paul Adrian Glaubitz wrote:
+> Hi!
+> 
+> On 11/1/20 6:04 PM, Mike Rapoport wrote:
+> > It's been a while since DISCONTIGMEM is generally considered deprecated,
+> > but it is still used by four architectures. This set replaces DISCONTIGMEM
+> > with a different way to handle holes in the memory map and marks
+> > DISCONTIGMEM configuration as BROKEN in Kconfigs of these architectures with
+> > the intention to completely remove it in several releases.
 > > 
-> > I see, at the moment we still need `userfont` for refcount handling, I
-> > will try to delete both `fontdata` and `userfont` after refcount is
-> > taken care of.
+> > While for 64-bit alpha and ia64 the switch to SPARSEMEM is quite obvious
+> > and was a matter of moving some bits around, for smaller 32-bit arc and
+> > m68k SPARSEMEM is not necessarily the best thing to do.
+> > 
+> > On 32-bit machines SPARSEMEM would require large sections to make section
+> > index fit in the page flags, but larger sections mean that more memory is
+> > wasted for unused memory map.
+> > 
+> > Besides, pfn_to_page() and page_to_pfn() become less efficient, at least on
+> > arc.
+> > 
+> > So I've decided to generalize arm's approach for freeing of unused parts of
+> > the memory map with FLATMEM and enable it for both arc and m68k. The
+> > details are in the description of patches 10 (arc) and 13 (m68k).
 > 
-> +1 on sunsetting fondata. I think there's a bunch of these in fbcon code,
-> because the console subsystem is older than the standard "allow drivers to
-> embed the subsystem struct into their own private struct" subclassing
-> model. So lots of global arrays indexed by the console id :-/
-
-Yeah, I saw your comments about registered_fb[] :(
-
-> We're also trying to start some kind of test suite for fbdev chardev ioctl
-> interface in the gpu test suite. fbcon tests are maybe more related to
-> tty/vt, and I have no idea whether anything exists there already.
+> Apologies for the late reply. Is this still relevant for testing?
 > 
-> But if you want to do some automated testcases for fbcon and there's
-> absolutely no other home for them, the gpu test suite might be an option
-> of last resort too:
+> I have already successfully tested v1 of the patch set, shall I test v2?
+
+There were minor differences only for m68k between the versions. I've
+verified them on ARAnyM but if you have a real machine a run there would
+be nice.
+
+> Adrian
 > 
-> https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#testing-and-validation
+> -- 
+>  .''`.  John Paul Adrian Glaubitz
+> : :' :  Debian Developer - glaubitz@debian.org
+> `. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+>   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> 
+> 
 
-Oh, I didn't know about igt-gpu-tools, thanks for the pointer!  Now,
-since charcount is taken care of, and font_desc now contains all fields
-of console_font, I think it is a good time to replace console_font with
-font_desc in vc_data.  Then we can get rid of FNTSUM(), FNTSIZE(), then
-(finally) REFCOUNT().
-
-I will start working on vc_data, after done enough testing on [5/5],
-ofc. Thanks,
-
-Peilin Ye
-
+-- 
+Sincerely yours,
+Mike.
