@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53F62B5C46
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FF22B5C4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727317AbgKQJwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:52:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727267AbgKQJwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:52:55 -0500
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63F282168B;
-        Tue, 17 Nov 2020 09:52:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605606774;
-        bh=ggnpr+O+ulhNOCccALoUri6Fk2ZyffMjTgWfEg9lRbQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=U5lIN4U/6Nvt8rRibv0Eri3jJoY2wtKi1eIkQLY1G7SpkHiYjJq+pmJ2CQnORIhJI
-         JVHC/MuM3RJcmQQydgVQsHWduk/tMlU8LmxnU6JyYFbhKs1Xp0mRlGuVEvyE4NuY6t
-         MpUvf1VQeLb7VnerhcJWgZcyDLlToI8ypsmlnsTQ=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Chen Yu <yu.c.chen@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v3 0/3] tools/bootconfig: Align the bootconfig applied initrd
-Date:   Tue, 17 Nov 2020 18:52:49 +0900
-Message-Id: <160560676899.144950.4148778261999789656.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S1727485AbgKQJxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:53:08 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:49734 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727377AbgKQJxH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 04:53:07 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kexfY-000J4Z-WF; Tue, 17 Nov 2020 10:53:01 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kexfY-000Dne-4b; Tue, 17 Nov 2020 10:53:00 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 6539A240041;
+        Tue, 17 Nov 2020 10:52:59 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id DB331240040;
+        Tue, 17 Nov 2020 10:52:58 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id A2EED21E27;
+        Tue, 17 Nov 2020 10:52:58 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 17 Nov 2020 10:52:58 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 5/6] net/lapb: support netdev events
+Organization: TDT AG
+In-Reply-To: <CAJht_EM-ic4-jtN7e9F6zcJgG3OTw_ePXiiH1i54M+Sc8zq6bg@mail.gmail.com>
+References: <20201116135522.21791-1-ms@dev.tdt.de>
+ <20201116135522.21791-6-ms@dev.tdt.de>
+ <CAJht_EM-ic4-jtN7e9F6zcJgG3OTw_ePXiiH1i54M+Sc8zq6bg@mail.gmail.com>
+Message-ID: <f3ab8d522b2bcd96506352656a1ef513@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1605606780-000035B9-6429194D/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2020-11-16 21:16, Xie He wrote:
+> Do you mean we will now automatically establish LAPB connections
+> without upper layers instructing us to do so?
 
-This is the 3rd version of the bootconfig tool update to align
-the total size of initrd + bootconfig to 4.
+Yes, as soon as the physical link is established, the L2 and also the
+L3 layer (restart handshake) is established.
 
-Previous version is here;
+In this context I also noticed that I should add another patch to this
+patch-set to correct the restart handling.
 
- https://lkml.kernel.org/r/160554375807.96595.16142008590130221699.stgit@devnote2
+As already mentioned I have a stack of fixes and extensions lying around
+that I would like to get upstream.
 
-This version adds a new partial-write fix patch as [1/3], and
-update main patch [2/3] by unifying writeU) and check write error
-correctly as Linus pointed.
+> If that is the case, is the one-byte header for instructing the LAPB
+> layer to connect / disconnect no longer needed?
 
-To adjust the file size, the bootconfig tool adds padding null
-characters in between the boot configuration data and the footer.
-
-The changing points are
-- The bootconfig applied initrd image size is aligned to 4.
-- To insert the padding null ('\0') bytes, the size in the footer
-  can be bigger than the actual bootconfig file size.
-- But the max size of the boot configuration file is same, because
-  the max size doesn't include the last null characters.
-
-In this series I keep 4 bytes aligned instead of longer size,
-because only I could found was that the grub might align the initrd
-filesize to 4, and U-Boot/EDK2 would not change it. So I couldn't
-say what is the best size.
-
-Anyway, I updated the documentation too, which clearly says that
-the above changing points, and if the bootloader pass the wrong
-size, kernel will not find bootconfig from the initrd.
-
-Thank you,
-
----
-
-Masami Hiramatsu (3):
-      tools/bootconfig: Fix to check the write failure correctly
-      tools/bootconfig: Align the bootconfig applied initrd image size to 4
-      docs: bootconfig: Update file format on initrd image
-
-
- Documentation/admin-guide/bootconfig.rst |   18 +++++++--
- include/linux/bootconfig.h               |    1 +
- tools/bootconfig/main.c                  |   57 ++++++++++++++++++++++--------
- tools/bootconfig/test-bootconfig.sh      |    6 +++
- 4 files changed, 60 insertions(+), 22 deletions(-)
-
---
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+The one-byte header is still needed to signal the status of the LAPB
+connection to the upper layer.
