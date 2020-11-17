@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD0B2B5E14
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA2E2B5E15
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgKQLNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:13:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgKQLNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:13:40 -0500
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4E4A221FD
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:13:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605611620;
-        bh=V0x+1pEXNBlvGUPnKAReGNwIfbkuR60mZL6nJ7gbrnQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dv0evZp0cTeljFd/OiTsuDTJEZxffLbMi1q++hlVJwJe8P/rJ9MyRD7mYisMeI2pN
-         2Cabpf7UjyeGWM5UaQEnsn9EIG+83vLeFylFZSYEgvrpWT/hkfXOwbLzgpQfw/w+2Y
-         UmOFA7EIONfb1VILj3n4OXFQrM/7/k/uBL+fqbn8=
-Received: by mail-ej1-f49.google.com with SMTP id gj5so1364022ejb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:13:39 -0800 (PST)
-X-Gm-Message-State: AOAM531lfU4JrigfFrzw8e5ITwk1NThOJMGGHi5NE85A2rxdxXTbKubf
-        XjTTDAdo2f/NtT3yCPNCpl3OyryFgpvT5t2yxYg=
-X-Google-Smtp-Source: ABdhPJymrgfvDJlgkyYhZ5Wb8RW+1mCW3euZsQjWepsg9t0L4FnHN9gM+xXqCtB9tgGllPRjsB6hbrWMq4BPBPwvF+E=
-X-Received: by 2002:a17:906:491a:: with SMTP id b26mr19730991ejq.385.1605611618119;
- Tue, 17 Nov 2020 03:13:38 -0800 (PST)
+        id S1728150AbgKQLNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:13:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgKQLNt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 06:13:49 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E0CC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:13:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/2a/sPDlsWwmun8lGMBoMfY91XSPRk9t25Rnf1cJdJc=; b=mA7uo/bnEkMVo3K/a1r0gZBIXl
+        UHXkYmV2UNP88FBH+GzBT44jzqNhXRQsteMT24FP5bETOOW2VsvFqE1ytDYezw16IWY0c62A3mFm3
+        zf8JCxjuvZiXc4o/zBI3kfeOICgJ+xi0C4x0NCCUZl/BB8/0Y2Oh80vcNbthjkz7kAOzFcsXTh8v4
+        0hXBP6k4O3oi/OwfchLFvatlyB7GLM/nEE5IgyldRcPDsqLiK5xsGu9B/gaR0s0cjSCL73expha5+
+        W0qC15Q+8FXFkiyQrGFebYby1b2CQsb1iCKecfH01lmxawf0Hu+IadOj5EHzBL9DmGTW5Cthq3fCJ
+        Ijc139PA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keyvY-000483-Mf; Tue, 17 Nov 2020 11:13:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1AA38305CC3;
+        Tue, 17 Nov 2020 12:13:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E53E1200E61C9; Tue, 17 Nov 2020 12:13:34 +0100 (CET)
+Date:   Tue, 17 Nov 2020 12:13:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 03/24] perf: Add build id data in mmap2 event
+Message-ID: <20201117111334.GL3121392@hirez.programming.kicks-ass.net>
+References: <20201117110053.1303113-1-jolsa@kernel.org>
+ <20201117110053.1303113-4-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <20201116181400.543718-1-krzk@kernel.org> <3e91fe4dd8437ffbb02bdae85c7028dafc356df8.camel@pengutronix.de>
-In-Reply-To: <3e91fe4dd8437ffbb02bdae85c7028dafc356df8.camel@pengutronix.de>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 17 Nov 2020 12:13:26 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPeHAGF8iu8=D=n9Zrqurc7KWumw+d3bL2GoBWVJC7wsUw@mail.gmail.com>
-Message-ID: <CAJKOXPeHAGF8iu8=D=n9Zrqurc7KWumw+d3bL2GoBWVJC7wsUw@mail.gmail.com>
-Subject: Re: [PATCH] drm/imx: depend on COMMON_CLK to fix compile tests
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117110053.1303113-4-jolsa@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 at 11:56, Philipp Zabel <p.zabel@pengutronix.de> wrote:
->
-> On Mon, 2020-11-16 at 19:14 +0100, Krzysztof Kozlowski wrote:
-> > The iMX DRM drivers use Common Clock Framework thus they cannot be built
-> > on platforms without it (e.g. compile test on MIPS with RALINK and
-> > SOC_RT305X):
-> >
-> >     /usr/bin/mips-linux-gnu-ld: drivers/gpu/drm/imx/imx-ldb.o: in function `imx_ldb_encoder_disable':
-> >     imx-ldb.c:(.text+0x400): undefined reference to `clk_set_parent'
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> Thank you, but could this be added to
->
-> config DRM_IMX_LDB
->
-> instead?
->
-> The core DRM_IMX code does not use the Common Clock Framework directly.
-> DRM_IMX_TVE already depends on COMMON_CLK because it implements a clock.
+On Tue, Nov 17, 2020 at 12:00:32PM +0100, Jiri Olsa wrote:
+> Adding support to carry build id data in mmap2 event.
+> 
+> The build id data replaces maj/min/ino/ino_generation
+> fields, which are also used to identify map's binary,
+> so it's ok to replace them with build id data:
+> 
+>   union {
+>           struct {
+>                   u32       maj;
+>                   u32       min;
+>                   u64       ino;
+>                   u64       ino_generation;
+>           };
+>           struct {
+>                   u8        build_id_size;
+>                   u8        __reserved_1;
+>                   u16       __reserved_2;
+>                   u8        build_id[20];
+>           };
+>   };
+> 
+> Replaced maj/min/ino/ino_generation fields give us size
+> of 24 bytes. We use 20 bytes for build id data, 1 byte
+> for size and rest is unused.
+> 
+> There's new misc bit for mmap2 to signal there's build
+> id data in it:
+> 
+>   #define PERF_RECORD_MISC_MMAP_BUILD_ID   (1 << 14)
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-You're right, I even wanted to add it there but somehow it landed in
-the main entry... Thanks, I'll send a v2.
+Seems sane enough; how do we want to route this?
 
-Best regards,
-Krzysztof
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
