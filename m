@@ -2,103 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C0E2B6EE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88442B6EF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730087AbgKQTkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:40:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728691AbgKQTkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:40:35 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605642033;
-        bh=1IpPGUBKgNMR37W7Z6qKG+Dmg5G4JxvcQSYVhg+wY+I=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=19AHDQoLrYU6yuiMDfN6PAibWsUkDhcfclHZcSuIk8mqhanos/RNFTAL7l/bKylCz
-         Mit65pM03zs92VDvfSDB27K1NcnmMsdVcldgmwVBq9P+hmwj2ZqjUjuTVGOSo8mfC+
-         tHAF+F+QyVKV0WTMByX5koTjghlxr2oL32uMLomc=
+        id S1730362AbgKQTl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:41:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729594AbgKQTl1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:41:27 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F8DC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:41:27 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id d3so10823962plo.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:41:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3Ha3Pf7m43xGsOqdVk/c2fh9M5AzkQhemcyhlHdZ12E=;
+        b=dRx9LRqtNTIEGpbdDyf15y725bNfdo/TKBV27AztcI9HXmR3EvdD0CAGZSMmvl6Dfy
+         70FVnIF1ExZyAqsmYE5/5N3a3+ExBgngbr7ZbSeVOEYOHg5W3/mxPh7gjYu7zV7gnFLw
+         HbbVR856G85VrUeI22aF75L9XnbkWBI7l+RpMGNgJuGvegZulJGCQe9+XRorN47pNKBr
+         9UvQwR0KP9gRyKk3i8s5FonExGNLRDhAbnDFv9EhWFqphul4JiipLpwjnR0BrJcMfMnv
+         ZXthiqEgvHVcoqJnoS/DVun0sodQvm6v0yBPkWaf2q431cbMTJQYIx+7+EfTFvOl9IG0
+         VhGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3Ha3Pf7m43xGsOqdVk/c2fh9M5AzkQhemcyhlHdZ12E=;
+        b=T9j6gNQEoEW1/vTyxvxjf/doXYVFybZ9hXEShJWr6RIjlYLQcRDAHK39i52VCzY9Y4
+         8ruBO5Mm3+6G+3DJZCpxjIjjKBfiWnRx23PqGU50SlvUYtOAqU/SBPIMQI1RRqVXzkZK
+         VvOnmqbQgPEUbriaWp3flCqEn3ACPMD1vmUg3XLbOBCgJ2cALc3GmcD83KhOX7Rn3ORI
+         ah5t+U+Z4UOJI4RvJAnnXcdQXwiarbrz7iqdi2rcuMXV/IqZTuVEj15Vnu7LSD8oBT8O
+         8CatNvUerE5e6GjUGjZhLJYYADmwqMADsEUQPvbG9lB7YJcT2Gt2U4M9vJKDUAbDVIAx
+         53lw==
+X-Gm-Message-State: AOAM532ntaMT33OZ7J8PMyVIJ/85ucYvMjr873WZ+8T9B09cYp331o+q
+        XLLAQmkt/XNeKSkjuDNyOf8FLo7+I9Bx+co40oHdew==
+X-Google-Smtp-Source: ABdhPJwDity6T8yzzbWGKSDq/bdE3JNe9KWacLBcdOoRoKbH+pmtyjSTnlkogXOyLkkn+mwymDhBgdSpMrc0Vv23Rik=
+X-Received: by 2002:a17:902:221:b029:d8:f938:b112 with SMTP id
+ 30-20020a1709020221b02900d8f938b112mr1006063plc.10.1605642086810; Tue, 17 Nov
+ 2020 11:41:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH RESEND net-next 00/18] net: phy: add support for shared
- interrupts (part 2)
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160564203382.2721.8419154932238289208.git-patchwork-notify@kernel.org>
-Date:   Tue, 17 Nov 2020 19:40:33 +0000
-References: <20201113165226.561153-1-ciorneiioana@gmail.com>
-In-Reply-To: <20201113165226.561153-1-ciorneiioana@gmail.com>
-To:     Ioana Ciornei <ciorneiioana@gmail.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        f.fainelli@gmail.com, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ioana.ciornei@nxp.com,
-        alexandru.ardelean@analog.com, andre.edich@microchip.com,
-        baruch@tkos.co.il, christophe.leroy@c-s.fr,
-        kavyasree.kotagiri@microchip.com, linus.walleij@linaro.org,
-        m.felsch@pengutronix.de, marex@denx.de, fido_max@inbox.ru,
-        Nisar.Sayed@microchip.com, o.rempel@pengutronix.de,
-        robert.hancock@calian.com, yuiko.oshino@microchip.com
+References: <20201113195553.1487659-1-natechancellor@gmail.com> <20201113195553.1487659-2-natechancellor@gmail.com>
+In-Reply-To: <20201113195553.1487659-2-natechancellor@gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 17 Nov 2020 11:41:15 -0800
+Message-ID: <CAKwvOdni24b_70xm+xK_7r2N77WrsOk4_OgoLiwSzZ5f+6vqfA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: Disable CONFIG_LD_ORPHAN_WARN for ld.lld 10.0.1
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Kees Cook <keescook@chromium.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "kernelci . org bot" <bot@kernelci.org>,
+        Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, Nov 13, 2020 at 11:56 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> ld.lld 10.0.1 spews a bunch of various warnings about .rela sections,
+> along with a few others. Newer versions of ld.lld do not have these
+> warnings. As a result, do not add '--orphan-handling=warn' to
+> LDFLAGS_vmlinux if ld.lld's version is not new enough.
+>
+> Reported-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Reported-by: kernelci.org bot <bot@kernelci.org>
+> Reported-by: Mark Brown <broonie@kernel.org>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1187
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1193
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  MAINTAINERS            |  1 +
+>  init/Kconfig           |  6 +++++-
+>  scripts/lld-version.sh | 20 ++++++++++++++++++++
+>  3 files changed, 26 insertions(+), 1 deletion(-)
+>  create mode 100755 scripts/lld-version.sh
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3da6d8c154e4..4b83d3591ec7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4284,6 +4284,7 @@ B:        https://github.com/ClangBuiltLinux/linux/issues
+>  C:     irc://chat.freenode.net/clangbuiltlinux
+>  F:     Documentation/kbuild/llvm.rst
+>  F:     scripts/clang-tools/
+> +F:     scripts/lld-version.sh
+>  K:     \b(?i:clang|llvm)\b
+>
+>  CLEANCACHE API
+> diff --git a/init/Kconfig b/init/Kconfig
+> index a270716562de..40c9ca60ac1d 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -47,6 +47,10 @@ config CLANG_VERSION
+>         int
+>         default $(shell,$(srctree)/scripts/clang-version.sh $(CC))
+>
+> +config LLD_VERSION
+> +       int
+> +       default $(shell,$(srctree)/scripts/lld-version.sh $(LD))
+> +
+>  config CC_CAN_LINK
+>         bool
+>         default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag)) if 64BIT
+> @@ -1349,7 +1353,7 @@ config LD_DEAD_CODE_DATA_ELIMINATION
+>           own risk.
+>
+>  config LD_ORPHAN_WARN
+> -       def_bool ARCH_WANT_LD_ORPHAN_WARN && $(ld-option,--orphan-handling=warn)
+> +       def_bool ARCH_WANT_LD_ORPHAN_WARN && $(ld-option,--orphan-handling=warn) && (!LD_IS_LLD || LLD_VERSION >= 110000)
+>
+>  config SYSCTL
+>         bool
+> diff --git a/scripts/lld-version.sh b/scripts/lld-version.sh
+> new file mode 100755
+> index 000000000000..cc779f412e39
+> --- /dev/null
+> +++ b/scripts/lld-version.sh
+> @@ -0,0 +1,20 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# ld.lld-version ld.lld-command
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+^ it looks like this format was copied from scripts/gcc-version, but
+it's kind of curious/cryptic to me for a comment about usage.  Is it
+necessary?  A comment in the form:
 
-On Fri, 13 Nov 2020 18:52:08 +0200 you wrote:
-> From: Ioana Ciornei <ioana.ciornei@nxp.com>
-> 
-> This patch set aims to actually add support for shared interrupts in
-> phylib and not only for multi-PHY devices. While we are at it,
-> streamline the interrupt handling in phylib.
-> 
-> For a bit of context, at the moment, there are multiple phy_driver ops
-> that deal with this subject:
-> 
-> [...]
+# Usage: ./scripts/lld-version.sh ld.lld
 
-Here is the summary with links:
-  - [RESEND,net-next,01/18] net: phy: vitesse: implement generic .handle_interrupt() callback
-    https://git.kernel.org/netdev/net-next/c/b606ad8fa283
-  - [RESEND,net-next,02/18] net: phy: vitesse: remove the use of .ack_interrupt()
-    https://git.kernel.org/netdev/net-next/c/e96a0d977464
-  - [RESEND,net-next,03/18] net: phy: microchip: implement generic .handle_interrupt() callback
-    https://git.kernel.org/netdev/net-next/c/e01a3feb8f69
-  - [RESEND,net-next,04/18] net: phy: microchip: remove the use of .ack_interrupt()
-    https://git.kernel.org/netdev/net-next/c/cf499391982d
-  - [RESEND,net-next,05/18] net: phy: marvell: implement generic .handle_interrupt() callback
-    https://git.kernel.org/netdev/net-next/c/a0723b375f93
-  - [RESEND,net-next,06/18] net: phy: marvell: remove the use of .ack_interrupt()
-    https://git.kernel.org/netdev/net-next/c/1f6d0f267a14
-  - [RESEND,net-next,07/18] net: phy: lxt: implement generic .handle_interrupt() callback
-    https://git.kernel.org/netdev/net-next/c/01c4a00bf347
-  - [RESEND,net-next,08/18] net: phy: lxt: remove the use of .ack_interrupt()
-    https://git.kernel.org/netdev/net-next/c/9a12dd6f186c
-  - [RESEND,net-next,09/18] net: phy: nxp-tja11xx: implement generic .handle_interrupt() callback
-    https://git.kernel.org/netdev/net-next/c/52b1984a88ac
-  - [RESEND,net-next,10/18] net: phy: nxp-tja11xx: remove the use of .ack_interrupt()
-    https://git.kernel.org/netdev/net-next/c/45f52f123851
-  - [RESEND,net-next,11/18] net: phy: amd: implement generic .handle_interrupt() callback
-    https://git.kernel.org/netdev/net-next/c/d995a36b7e96
-  - [RESEND,net-next,12/18] net: phy: amd: remove the use of .ack_interrupt()
-    https://git.kernel.org/netdev/net-next/c/347917c7e06a
-  - [RESEND,net-next,13/18] net: phy: smsc: implement generic .handle_interrupt() callback
-    https://git.kernel.org/netdev/net-next/c/36b25c26e2ca
-  - [RESEND,net-next,14/18] net: phy: smsc: remove the use of .ack_interrupt()
-    https://git.kernel.org/netdev/net-next/c/824ef51f0871
-  - [RESEND,net-next,15/18] net: phy: ste10Xp: implement generic .handle_interrupt() callback
-    https://git.kernel.org/netdev/net-next/c/80ca9ee741da
-  - [RESEND,net-next,16/18] net: phy: ste10Xp: remove the use of .ack_interrupt()
-    https://git.kernel.org/netdev/net-next/c/e1bc534df855
-  - [RESEND,net-next,17/18] net: phy: adin: implement generic .handle_interrupt() callback
-    https://git.kernel.org/netdev/net-next/c/66d7439e8360
-  - [RESEND,net-next,18/18] net: phy: adin: remove the use of the .ack_interrupt()
-    https://git.kernel.org/netdev/net-next/c/1d8300d3ce9d
+Would be clearer to me.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +#
+> +# Print the linker version of `ld.lld-command' in a 5 or 6-digit form
+> +# such as `100001' for ld.lld 10.0.1 etc.
+> +
+> +linker="$*"
+> +
+> +if ! ( $linker --version | grep -q LLD ); then
+> +       echo 0
+> +       exit 1
+> +fi
+> +
+> +VERSION=$($linker --version | cut -d ' ' -f 2)
+
+This is going to invoke the linker potentially twice if it's LLD.
+Would it be nicer to capture the output of `$linker --version`, check
+which linker it is, then slice that up via `cut` to get the version?
+
+This version is fine to me, but if you're going to send a v2, that
+might be a nice slight cleanup.  Otherwise,
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+
+(Please drop those tags if you modify this for v2 and I'll rereview/retest).
+
+> +MAJOR=$(echo $VERSION | cut -d . -f 1)
+> +MINOR=$(echo $VERSION | cut -d . -f 2)
+> +PATCHLEVEL=$(echo $VERSION | cut -d . -f 3)
+> +printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
+> --
+> 2.29.2
+>
 
 
+-- 
+Thanks,
+~Nick Desaulniers
