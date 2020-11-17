@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605A82B6615
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E882B6639
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387551AbgKQOA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:00:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45322 "EHLO mail.kernel.org"
+        id S1729539AbgKQNKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:10:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729057AbgKQNO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:14:28 -0500
+        id S1728530AbgKQNKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:10:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACB2C241A5;
-        Tue, 17 Nov 2020 13:14:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84D1C2468F;
+        Tue, 17 Nov 2020 13:10:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618867;
-        bh=J4zeeKNy8JRtCJcZKOQEo10fGGyKWqDlH2ii/KXrWx4=;
+        s=default; t=1605618647;
+        bh=MyyVrVhxxSxMlX0j11555xj4CT/uRjIwpQ6kpo5EBFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k0r+6UNgStFWuz7Sv4S7C/pF9lDflw6plv6CgFkPh7uAa4L2Et1M6IP7Jjb2iGD/y
-         dz8gqZa31nfq4jrA8SCU0awS8CEirSW0aMVjv0R/2vSV8HHz3KATLt+BJw6U61d5Fy
-         78nMPe8BXq9E4jW/k2VxJoftln2gNd22z/wVND7s=
+        b=iyogoQY76u4s3q/d7T18eHTot0ZQO+vhmxorKKr1nfoint8+M6yNxKgItUpa8wVtx
+         YqwhajIM2V1fCGNt8+cYvRp/tcJ32CwlvUbz9WLBeCqcMc5AfYqzEojeuqho0t/D9H
+         IXeRUylfu7M4EEAV1B7m0+HfdObSwAeSobDteMsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, lining <lining2020x@163.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Josef Bacik <josef@toxicpanda.com>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 05/85] nbd: dont update block size after device is started
+        stable@vger.kernel.org,
+        zhuoliang zhang <zhuoliang.zhang@mediatek.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 08/78] net: xfrm: fix a race condition during allocing spi
 Date:   Tue, 17 Nov 2020 14:04:34 +0100
-Message-Id: <20201117122111.281487055@linuxfoundation.org>
+Message-Id: <20201117122109.506212727@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +45,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: zhuoliang zhang <zhuoliang.zhang@mediatek.com>
 
-[ Upstream commit b40813ddcd6bf9f01d020804e4cb8febc480b9e4 ]
+[ Upstream commit a779d91314ca7208b7feb3ad817b62904397c56d ]
 
-Mounted NBD device can be resized, one use case is rbd-nbd.
+we found that the following race condition exists in
+xfrm_alloc_userspi flow:
 
-Fix the issue by setting up default block size, then not touch it
-in nbd_size_update() any more. This kind of usage is aligned with loop
-which has same use case too.
+user thread                                    state_hash_work thread
+----                                           ----
+xfrm_alloc_userspi()
+ __find_acq_core()
+   /*alloc new xfrm_state:x*/
+   xfrm_state_alloc()
+   /*schedule state_hash_work thread*/
+   xfrm_hash_grow_check()   	               xfrm_hash_resize()
+ xfrm_alloc_spi                                  /*hold lock*/
+      x->id.spi = htonl(spi)                     spin_lock_bh(&net->xfrm.xfrm_state_lock)
+      /*waiting lock release*/                     xfrm_hash_transfer()
+      spin_lock_bh(&net->xfrm.xfrm_state_lock)      /*add x into hlist:net->xfrm.state_byspi*/
+	                                                hlist_add_head_rcu(&x->byspi)
+                                                 spin_unlock_bh(&net->xfrm.xfrm_state_lock)
 
-Cc: stable@vger.kernel.org
-Fixes: c8a83a6b54d0 ("nbd: Use set_blocksize() to set device blocksize")
-Reported-by: lining <lining2020x@163.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: Jan Kara <jack@suse.cz>
-Tested-by: lining <lining2020x@163.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+    /*add x into hlist:net->xfrm.state_byspi 2 times*/
+    hlist_add_head_rcu(&x->byspi)
+
+1. a new state x is alloced in xfrm_state_alloc() and added into the bydst hlist
+in  __find_acq_core() on the LHS;
+2. on the RHS, state_hash_work thread travels the old bydst and tranfers every xfrm_state
+(include x) into the new bydst hlist and new byspi hlist;
+3. user thread on the LHS gets the lock and adds x into the new byspi hlist again.
+
+So the same xfrm_state (x) is added into the same list_hash
+(net->xfrm.state_byspi) 2 times that makes the list_hash become
+an inifite loop.
+
+To fix the race, x->id.spi = htonl(spi) in the xfrm_alloc_spi() is moved
+to the back of spin_lock_bh, sothat state_hash_work thread no longer add x
+which id.spi is zero into the hash_list.
+
+Fixes: f034b5d4efdf ("[XFRM]: Dynamic xfrm_state hash table sizing.")
+Signed-off-by: zhuoliang zhang <zhuoliang.zhang@mediatek.com>
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/nbd.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ net/xfrm/xfrm_state.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index cdf62fb94fb15..9a0fb2d52a76c 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -268,7 +268,7 @@ static void nbd_size_clear(struct nbd_device *nbd)
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index 0eb85765d35a1..4d19f2ff6e052 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -1591,6 +1591,7 @@ int xfrm_alloc_spi(struct xfrm_state *x, u32 low, u32 high)
+ 	int err = -ENOENT;
+ 	__be32 minspi = htonl(low);
+ 	__be32 maxspi = htonl(high);
++	__be32 newspi = 0;
+ 	u32 mark = x->mark.v & x->mark.m;
+ 
+ 	spin_lock_bh(&x->lock);
+@@ -1609,21 +1610,22 @@ int xfrm_alloc_spi(struct xfrm_state *x, u32 low, u32 high)
+ 			xfrm_state_put(x0);
+ 			goto unlock;
+ 		}
+-		x->id.spi = minspi;
++		newspi = minspi;
+ 	} else {
+ 		u32 spi = 0;
+ 		for (h = 0; h < high-low+1; h++) {
+ 			spi = low + prandom_u32()%(high-low+1);
+ 			x0 = xfrm_state_lookup(net, mark, &x->id.daddr, htonl(spi), x->id.proto, x->props.family);
+ 			if (x0 == NULL) {
+-				x->id.spi = htonl(spi);
++				newspi = htonl(spi);
+ 				break;
+ 			}
+ 			xfrm_state_put(x0);
+ 		}
  	}
- }
- 
--static void nbd_size_update(struct nbd_device *nbd)
-+static void nbd_size_update(struct nbd_device *nbd, bool start)
- {
- 	struct nbd_config *config = nbd->config;
- 	struct block_device *bdev = bdget_disk(nbd->disk, 0);
-@@ -279,7 +279,8 @@ static void nbd_size_update(struct nbd_device *nbd)
- 	if (bdev) {
- 		if (bdev->bd_disk) {
- 			bd_set_size(bdev, config->bytesize);
--			set_blocksize(bdev, config->blksize);
-+			if (start)
-+				set_blocksize(bdev, config->blksize);
- 		} else
- 			bdev->bd_invalidated = 1;
- 		bdput(bdev);
-@@ -294,7 +295,7 @@ static void nbd_size_set(struct nbd_device *nbd, loff_t blocksize,
- 	config->blksize = blocksize;
- 	config->bytesize = blocksize * nr_blocks;
- 	if (nbd->task_recv != NULL)
--		nbd_size_update(nbd);
-+		nbd_size_update(nbd, false);
- }
- 
- static void nbd_complete_rq(struct request *req)
-@@ -1231,7 +1232,7 @@ static int nbd_start_device(struct nbd_device *nbd)
- 		args->index = i;
- 		queue_work(nbd->recv_workq, &args->work);
- 	}
--	nbd_size_update(nbd);
-+	nbd_size_update(nbd, true);
- 	return error;
- }
- 
+-	if (x->id.spi) {
++	if (newspi) {
+ 		spin_lock_bh(&net->xfrm.xfrm_state_lock);
++		x->id.spi = newspi;
+ 		h = xfrm_spi_hash(net, &x->id.daddr, x->id.spi, x->id.proto, x->props.family);
+ 		hlist_add_head_rcu(&x->byspi, net->xfrm.state_byspi + h);
+ 		spin_unlock_bh(&net->xfrm.xfrm_state_lock);
 -- 
 2.27.0
 
