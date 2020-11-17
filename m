@@ -2,135 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB522B724C
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D41172B725D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgKQXYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:24:01 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10272 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725779AbgKQXX7 (ORCPT
+        id S1729926AbgKQXYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:24:50 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59446 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728193AbgKQXYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:23:59 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHN79Cv010767;
-        Tue, 17 Nov 2020 18:23:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=QnPu4M8D5+1fcks5LVus2SVKUlv/MYaX277pWEPDS/c=;
- b=U6V6H2PwYDjRSO7UdIRQnF1bWmOV18qCPipv2I26DmyqF7vUVP1B6cWx2eWE0YJszsOP
- LWmOJkO3TWPTZTom7yOV+4l2ooJPAOylT0Aigx3Y2mx/yZt6r1EJkOQxiDq4AQTLjLpF
- Y9rrCs+IMaj3TDXE83aGaM5GGlw1hobLDeXPHN3P4cCrqrC5+iseHsu+otmt2DQCARQL
- J9cyNLMs/M+osx8CcbnvL+uJaAfrJvpJ3FLGuTu9CgoZ66PoIG79P/rTbRj9T7JrSZlP
- ZTiKkVCOgy837pYu/ApWwt0ItSiAQ7TL1ppzXH1KRmvyeBNXTN4zHSIp7gHs601Vl7Tz GA== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34veevjy77-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 18:23:48 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AHNNUIO016714;
-        Tue, 17 Nov 2020 23:23:46 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 34t6v8bj7w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 23:23:46 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AHNNi1C63766994
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 23:23:44 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 43D3B11C04A;
-        Tue, 17 Nov 2020 23:23:44 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 186C311C052;
-        Tue, 17 Nov 2020 23:23:42 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.75.12])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Nov 2020 23:23:41 +0000 (GMT)
-Message-ID: <5d8fa26d376999f703aac9103166a572fc0df437.camel@linux.ibm.com>
-Subject: Re: [RESEND][PATCH] ima: Set and clear FMODE_CAN_READ in
- ima_calc_file_hash()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Date:   Tue, 17 Nov 2020 18:23:41 -0500
-In-Reply-To: <CAHk-=wih-ibNUxeiKpuKrw3Rd2=QEAZ8zgRWt_CORAjbZykRWQ@mail.gmail.com>
-References: <20201113080132.16591-1-roberto.sassu@huawei.com>
-         <20201114111057.GA16415@infradead.org>
-         <0fd0fb3360194d909ba48f13220f9302@huawei.com>
-         <20201116162202.GA15010@infradead.org>
-         <c556508437ffc10d3873fe25cbbba3484ca574df.camel@linux.ibm.com>
-         <CAHk-=wiso=-Fhe2m042CfBNUGhoVB1Pry14DF64uUgztHVOW0g@mail.gmail.com>
-         <20201116174127.GA4578@infradead.org>
-         <CAHk-=wjd0RNthZQTLVsnK_d9SFYH0rug2tkezLLB0J-YZzVC+Q@mail.gmail.com>
-         <3f8cc7c9462353ac2eef58e39beee079bdd9c7b4.camel@linux.ibm.com>
-         <CAHk-=wih-ibNUxeiKpuKrw3Rd2=QEAZ8zgRWt_CORAjbZykRWQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_12:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- priorityscore=1501 adultscore=0 lowpriorityscore=0 spamscore=0
- phishscore=0 malwarescore=0 impostorscore=0 mlxlogscore=737 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170167
+        Tue, 17 Nov 2020 18:24:48 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AHNO712032017;
+        Tue, 17 Nov 2020 17:24:07 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605655447;
+        bh=BPjxYG10nNEarUm95nLoroA2ShGvg7pn52uDyKMVgAk=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=FSwxrQQQRtLBvw28CJ46qgx188WRV3MOSiS8tPYqf5tP7nzTgVkVVR2J+XabXPsFi
+         UZkGBZR6rnQcrAdtR64jgBMqWm4yccPbSr5txNDhSq2dp1jQ48P/VZe3av13KXWHTV
+         le/fM99rJgr6CGgztSZlgEDHkaq1qra7IYBpRBxI=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AHNO7hi097004
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 17:24:07 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 17
+ Nov 2020 17:24:06 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 17 Nov 2020 17:24:06 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AHNO6Am130347;
+        Tue, 17 Nov 2020 17:24:06 -0600
+Date:   Tue, 17 Nov 2020 17:24:06 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, <lkft-triage@lists.linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [arm] BUG: KASAN: slab-out-of-bounds in memcmp+0x30/0x5c
+Message-ID: <20201117232343.rg37fkacw43matmh@revered>
+References: <CA+G9fYuk4imvhyCN7D7T6PMDH6oNp6HDCRiTUKMQ6QXXjBa4ag@mail.gmail.com>
+ <CAK8P3a2MmA257e486D2hj_qj9Wk0ybkfg9yk9f5hR=h-KWUHVg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2MmA257e486D2hj_qj9Wk0ybkfg9yk9f5hR=h-KWUHVg@mail.gmail.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-17 at 10:23 -0800, Linus Torvalds wrote:
-> On Mon, Nov 16, 2020 at 10:35 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+On 16:25-20201117, Arnd Bergmann wrote:
+> On Tue, Nov 17, 2020 at 3:44 PM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
 > >
-> > We need to differentiate between signed files, which by definition are
-> > immutable, and those that are mutable.  Appending to a mutable file,
-> > for example, would result in the file hash not being updated.
-> > Subsequent reads would fail.
+> > While booting arm KASAN config enabled kernel on TI x15 device
+> > Linux version 5.10.0-rc3-next-20201116.
+> >
+> > The reported issue is not a regression since we have recently started testing
+> > arm+kasan builds on LKFT.
+> >
+> > The boot was not successful on x15 and qemu_arm  for some other reason.
+> > The kernel config and crash log attached to this email.
 > 
-> Why would that require any reading of the file at all AT WRITE TIME?
-
-On the (last) file close, the file hash is re-calculated and written
-out as security.ima.  The EVM hmac is re-calculated and written out as
-security.evm.
-
+> Nice find!
 > 
-> Don't do it. Really.
-
-I really wish it wasn't needed.
-
+> > [   13.071906] BUG: KASAN: slab-out-of-bounds in memcmp+0x30/0x5c
+> > [   13.077526] Synopsys Designware Multimedia Card Interface Driver
+> > [   13.077781] Read of size 1 at addr c5ae1d90 by task kworker/0:0/5
+> > [   13.089918]
+> > [   13.091433] CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted
+> > 5.10.0-rc3-next-20201116 #2
+> > [   13.093605] sdhci-pltfm: SDHCI platform and OF driver helper
+> > [   13.099135] Hardware name: Generic DRA74X (Flattened Device Tree)
+> > [   13.110942] Workqueue: events dbs_work_handler
+> > [   13.115442] [<c0315abc>] (unwind_backtrace) from [<c030ebf8>]
+> > (show_stack+0x10/0x14)
+> > [   13.123240] [<c030ebf8>] (show_stack) from [<c16c91cc>]
+> > (dump_stack+0xc8/0xe0)
+> > [   13.130518] [<c16c91cc>] (dump_stack) from [<c051b4ec>]
+> > (print_address_description.constprop.0+0x34/0x2dc)
+> > [   13.140238] [<c051b4ec>] (print_address_description.constprop.0)
+> > from [<c051b9e0>] (kasan_report+0x1a8/0x1c4)
+> > [   13.145871] omap_gpio 4805d000.gpio: Could not set line 27 debounce
+> > to 200000 microseconds (-22)
+> > [   13.150221] [<c051b9e0>] (kasan_report) from [<c0997704>] (memcmp+0x30/0x5c)
+> > [   13.159064] sdhci-omap 4809c000.mmc: Got CD GPIO
+> > [   13.166123] [<c0997704>] (memcmp) from [<c0c33694>]
+> > (ti_abb_set_voltage_sel+0x94/0x58c)
+> > [   13.166150] [<c0c33694>] (ti_abb_set_voltage_sel) from [<c0c0f0f8>]
+> > (_regulator_call_set_voltage_sel+0xd8/0x12c)
 > 
-> When opening the file write-only, you just invalidate the hash. It
-> doesn't matter anyway - you're only writing.
 > 
-> Later on, when reading, only at that point does the hash matter, and
-> then you can do the verification.
+> I see this code in ti_abb_set_voltage_sel():
 > 
-> Although honestly, I don't even see the point. You know the hash won't
-> match, if you wrote to the file.
+>         if (sel >= desc->n_voltages) {
+>                 dev_err(dev, "%s: sel idx(%d) >= n_voltages(%d)\n", __func__,
+>                         sel, desc->n_voltages);
+>                 return -EINVAL;
+>         }
+> 
+>         /* If we are in the same index as we were, nothing to do here! */
+>         if (sel == abb->current_info_idx) {
+>                 dev_dbg(dev, "%s: Already at sel=%d\n", __func__, sel);
+>                 return ret;
+>         }
+> 
+>         /* If data is exactly the same, then just update index, no change */
+>         info = &abb->info[sel];
+>         oinfo = &abb->info[abb->current_info_idx];
+>         if (!memcmp(info, oinfo, sizeof(*info))) {
+> 
+> One of the two pointers overflows the abb->info array that is allocated
+> with length 'desc->n_voltages'. The 'sel' argument is checked against
+> that limit, so I assume it's abb->current_info_idx, and this is indeed
+> initialized as
+> 
+>         /* We do not know where the OPP voltage is at the moment */
+>         abb->current_info_idx = -EINVAL;
+> 
+> Using the negative '-EINVAL' as an array index would indeed cause
+> an out-of-bounds access.
+> 
+> Could you try adding this extra bounds check?
+> 
+> index 3e60bff76194..c475a9461027 100644
+> --- a/drivers/regulator/ti-abb-regulator.c
+> +++ b/drivers/regulator/ti-abb-regulator.c
+> @@ -345,7 +345,8 @@ static int ti_abb_set_voltage_sel(struct
+> regulator_dev *rdev, unsigned sel)
+>         /* If data is exactly the same, then just update index, no change */
+>         info = &abb->info[sel];
+>         oinfo = &abb->info[abb->current_info_idx];
+> -       if (!memcmp(info, oinfo, sizeof(*info))) {
+> +       if (abb->current_info_idx >= 0 &&
+> +           !memcmp(info, oinfo, sizeof(*info))) {
+>                 dev_dbg(dev, "%s: Same data new idx=%d, old idx=%d\n", __func__,
+>                         sel, abb->current_info_idx);
+>                 goto out;
+> 
+>       Arnd
 
-On the local system, as Roberto mentioned, before updating a file, the
-existing file's data and metadata (EVM) should be verified to protect
-from an offline attack.
 
-The above scenario assumes calculating the file hash is only being used
-for verifying the integrity of the file (security.ima), but there are
-other reasons for calculating the file hash.  For example depending on
-the IMA measurement policy, just accessing a file could require
-including the file hash in the measurement list.  True that measurement
-will only be valid at the time of measurement, but it provides a base
-value.
+Yes, this was indeed a bug that has been around for some time now :(
 
-Mimi
+I tested with a variant of the above (did'nt like that
+oinfo was being assigned an invalid address)
+Boot log: https://pastebin.ubuntu.com/p/nZfz3HF8N6/ (with the same
+config as in the report): Would you prefer to me to send the following
+as a formal patch?
 
+diff --git a/drivers/regulator/ti-abb-regulator.c b/drivers/regulator/ti-abb-regulator.c
+index 3e60bff76194..9f0a4d50cead 100644
+--- a/drivers/regulator/ti-abb-regulator.c
++++ b/drivers/regulator/ti-abb-regulator.c
+@@ -342,8 +342,17 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
+ 		return ret;
+ 	}
+ 
+-	/* If data is exactly the same, then just update index, no change */
+ 	info = &abb->info[sel];
++	/*
++	 * When Linux kernel is starting up, we are'nt sure of the
++	 * Bias configuration that bootloader has configured.
++	 * So, we get to know the actual setting the first time
++	 * we are asked to transition.
++	 */
++	if (abb->current_info_idx == -EINVAL)
++		goto just_set_abb;
++
++	/* If data is exactly the same, then just update index, no change */
+ 	oinfo = &abb->info[abb->current_info_idx];
+ 	if (!memcmp(info, oinfo, sizeof(*info))) {
+ 		dev_dbg(dev, "%s: Same data new idx=%d, old idx=%d\n", __func__,
+@@ -351,6 +360,7 @@ static int ti_abb_set_voltage_sel(struct regulator_dev *rdev, unsigned sel)
+ 		goto out;
+ 	}
+ 
++just_set_abb:
+ 	ret = ti_abb_set_opp(rdev, abb, info);
+ 
+ out:
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
