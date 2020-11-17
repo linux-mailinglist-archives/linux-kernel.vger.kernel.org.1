@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515E92B5A28
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389852B5A2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgKQHPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:15:08 -0500
-Received: from mga04.intel.com ([192.55.52.120]:31188 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726802AbgKQHPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:15:07 -0500
-IronPort-SDR: nu7tpJqvoaAbwvDHcF3Zt6CvhTGJ9RwptoI7aO62NJ9TTnXKN9X48jEPU/LRweMB+hR+qMQlIl
- R1YFeo2cB3lw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="168298824"
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="168298824"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 23:15:07 -0800
-IronPort-SDR: sR8h+o7akjT61qOtzbZd64/FD6vJBKF7clfnMi8baqWtQQzuhTDi9yyL3jKGyxSSXRaoaX7eiD
- MYTzcLc3ZDig==
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="543921746"
-Received: from lil6-mobl1.ccr.corp.intel.com ([10.255.30.220])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 23:15:04 -0800
-Message-ID: <3776af7407728bc11428d887a9a7028919218f6b.camel@intel.com>
-Subject: Re: [PATCH] thermal: Fix slab-out-of-bounds in
- thermal_cooling_device_stats_update()
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     zhuguangqing83@gmail.com, daniel.lezcano@linaro.org,
-        amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhuguangqing@xiaomi.com
-Date:   Tue, 17 Nov 2020 15:15:02 +0800
-In-Reply-To: <20200915055837.498-1-zhuguangqing83@gmail.com>
-References: <20200915055837.498-1-zhuguangqing83@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726885AbgKQHPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:15:36 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:37208 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726266AbgKQHPf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 02:15:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UFfwQuB_1605597329;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFfwQuB_1605597329)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 17 Nov 2020 15:15:29 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] khugepaged: add couples parameter explanation for kernel-doc markup
+Date:   Tue, 17 Nov 2020 15:15:25 +0800
+Message-Id: <1605597325-25284-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-15 at 13:58 +0800, zhuguangqing83@gmail.com wrote:
-> From: zhuguangqing <zhuguangqing@xiaomi.com>
-> 
-> In function thermal_cooling_device_stats_update(), if the input
-> parameter
-> new_state is greater or equal to stats->max_states, then it will
-> cause
-> slab-out-of-bounds error when execute the code as follows:
-> stats->trans_table[stats->state * stats->max_states + new_state]++;
-> 
-> Two functions call the function
-> thermal_cooling_device_stats_update().
-> 1. cur_state_store()
-> 2. thermal_cdev_set_cur_state()
-> Both of the two functions call cdev->ops->set_cur_state(cdev, state)
-> before thermal_cooling_device_stats_update(), if the return value is
-> not 0, then thermal_cooling_device_stats_update() will not be called.
-> So if all cdev->ops->set_cur_state(cdev, state) check validity of the
-> parameter state, then it's ok. Unfortunately, it's not now.
-> 
-> We have two methods to avoid the slab-out-of-bounds error in
-> thermal_cooling_device_stats_update().
-> 1. Check the validity of the parameter state in all
-> cdev->ops->set_cur_state(cdev, state).
-> 2. Check the validity of the parameter state in
-> thermal_cooling_device_stats_update().
-> 
-> Use method 2 in this patch. Because the modification is simple and
-> resolve the problem in the scope of "#ifdef
-> CONFIG_THERMAL_STATISTICS".
-> 
-> Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
+Add missed parameter explanation for some kernel-doc warnings:
+mm/khugepaged.c:102: warning: Function parameter or member
+'nr_pte_mapped_thp' not described in 'mm_slot'
+mm/khugepaged.c:102: warning: Function parameter or member
+'pte_mapped_thp' not described in 'mm_slot'
+mm/khugepaged.c:1424: warning: Function parameter or member 'mm' not
+described in 'collapse_pte_mapped_thp'
+mm/khugepaged.c:1424: warning: Function parameter or member 'addr' not
+described in 'collapse_pte_mapped_thp'
+mm/khugepaged.c:1626: warning: Function parameter or member 'mm' not
+described in 'collapse_file'
+mm/khugepaged.c:1626: warning: Function parameter or member 'file' not
+described in 'collapse_file'
+mm/khugepaged.c:1626: warning: Function parameter or member 'start' not
+described in 'collapse_file'
+mm/khugepaged.c:1626: warning: Function parameter or member 'hpage' not
+described in 'collapse_file'
+mm/khugepaged.c:1626: warning: Function parameter or member 'node' not
+described in 'collapse_file'
 
-Hi, Daniel,
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/khugepaged.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-this patch is a similar fix as
-
-https://patchwork.kernel.org/project/linux-pm/patch/20200408041917.2329-4-rui.zhang@intel.com/
-
-I think we'd better take the original fix from Takashi Iwai.
-And I will refresh and submit the patches that supports dynamic cooling
-states later when I have time.
-
-thanks,
-rui
-> ---
->  drivers/thermal/thermal_sysfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/thermal/thermal_sysfs.c
-> b/drivers/thermal/thermal_sysfs.c
-> index 8c231219e15d..9c49f744d79d 100644
-> --- a/drivers/thermal/thermal_sysfs.c
-> +++ b/drivers/thermal/thermal_sysfs.c
-> @@ -756,7 +756,7 @@ void thermal_cooling_device_stats_update(struct
-> thermal_cooling_device *cdev,
->  
->  	spin_lock(&stats->lock);
->  
-> -	if (stats->state == new_state)
-> +	if (stats->state == new_state || new_state >= stats-
-> >max_states)
->  		goto unlock;
->  
->  	update_time_in_state(stats);
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 757292532767..8f7aee4efdc3 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -90,6 +90,8 @@ static struct kmem_cache *mm_slot_cache __read_mostly;
+  * @hash: hash collision list
+  * @mm_node: khugepaged scan list headed in khugepaged_scan.mm_head
+  * @mm: the mm that this information is valid for
++ * @nr_pte_mapped_thp: number of pte mapped THP
++ * @pte_mapped_thp: address array corresponding pte mapped THP
+  */
+ struct mm_slot {
+ 	struct hlist_node hash;
+@@ -1414,7 +1416,11 @@ static int khugepaged_add_pte_mapped_thp(struct mm_struct *mm,
+ }
+ 
+ /**
+- * Try to collapse a pte-mapped THP for mm at address haddr.
++ * collapse_pte_mapped_thp - Try to collapse a pte-mapped THP for mm at
++ * address haddr.
++ *
++ * @mm: process address space where collapse happens
++ * @addr: THP collapse address
+  *
+  * This function checks whether all the PTEs in the PMD are pointing to the
+  * right THP. If so, retract the page table so the THP can refault in with
+@@ -1605,6 +1611,12 @@ static void retract_page_tables(struct address_space *mapping, pgoff_t pgoff)
+ /**
+  * collapse_file - collapse filemap/tmpfs/shmem pages into huge one.
+  *
++ * @mm: process address space where collapse happens
++ * @file: file that collapse on
++ * @start: collapse start address 
++ * @hpage: new allocated huge page for collapse
++ * @node: appointed node the new huge page allocate from
++ *
+  * Basic scheme is simple, details are more complex:
+  *  - allocate and lock a new huge page;
+  *  - scan page cache replacing old pages with the new one
+-- 
+2.29.GIT
 
