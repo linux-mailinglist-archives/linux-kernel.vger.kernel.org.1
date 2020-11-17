@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D222B594E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19472B5949
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgKQFca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 00:32:30 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:46347 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726339AbgKQFc3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 00:32:29 -0500
-X-Greylist: delayed 449 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Nov 2020 00:32:28 EST
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1ketU5-001CTB-2k; Tue, 17 Nov 2020 06:24:53 +0100
-Received: from p57bd9382.dip0.t-ipconnect.de ([87.189.147.130] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1ketU4-000ZYQ-Qv; Tue, 17 Nov 2020 06:24:52 +0100
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-References: <20201101170454.9567-1-rppt@kernel.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
-Date:   Tue, 17 Nov 2020 06:24:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726313AbgKQFaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 00:30:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgKQFaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 00:30:05 -0500
+Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A3B9246AE;
+        Tue, 17 Nov 2020 05:30:04 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 07:30:00 +0200
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Dave Ertman <david.m.ertman@intel.com>, gregkh@linuxfoundation.org
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        parav@mellanox.com, shiraz.saleem@intel.com,
+        dan.j.williams@intel.com, kiran.patil@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
+Message-ID: <20201117053000.GM47002@unreal>
+References: <20201113161859.1775473-1-david.m.ertman@intel.com>
+ <20201113161859.1775473-2-david.m.ertman@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201101170454.9567-1-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.147.130
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113161859.1775473-2-david.m.ertman@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
+> Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> It enables drivers to create an auxiliary_device and bind an
+> auxiliary_driver to it.
+>
+> The bus supports probe/remove shutdown and suspend/resume callbacks.
+> Each auxiliary_device has a unique string based id; driver binds to
+> an auxiliary_device based on this id through the bus.
+>
+> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Reviewed-by: Parav Pandit <parav@mellanox.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> ---
 
-On 11/1/20 6:04 PM, Mike Rapoport wrote:
-> It's been a while since DISCONTIGMEM is generally considered deprecated,
-> but it is still used by four architectures. This set replaces DISCONTIGMEM
-> with a different way to handle holes in the memory map and marks
-> DISCONTIGMEM configuration as BROKEN in Kconfigs of these architectures with
-> the intention to completely remove it in several releases.
-> 
-> While for 64-bit alpha and ia64 the switch to SPARSEMEM is quite obvious
-> and was a matter of moving some bits around, for smaller 32-bit arc and
-> m68k SPARSEMEM is not necessarily the best thing to do.
-> 
-> On 32-bit machines SPARSEMEM would require large sections to make section
-> index fit in the page flags, but larger sections mean that more memory is
-> wasted for unused memory map.
-> 
-> Besides, pfn_to_page() and page_to_pfn() become less efficient, at least on
-> arc.
-> 
-> So I've decided to generalize arm's approach for freeing of unused parts of
-> the memory map with FLATMEM and enable it for both arc and m68k. The
-> details are in the description of patches 10 (arc) and 13 (m68k).
+Greg,
 
-Apologies for the late reply. Is this still relevant for testing?
+This horse was beaten to death, can we please progress with this patch?
+Create special topic branch or ack so I'll prepare this branch.
 
-I have already successfully tested v1 of the patch set, shall I test v2?
+We are in -rc4 now and we (Mellanox) can't hold our submissions anymore.
+My mlx5_core probe patches [1] were too intrusive and they are ready to
+be merged, Parav's patches got positive review as well [2] and will be
+taken next.
 
-Adrian
+We delayed and have in our internal queues the patches for VDPA, eswitch
+and followup for mlx5_core probe rework, but trapped due to this AUX bus
+patch.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Thanks
 
+[1] https://lore.kernel.org/linux-rdma/20201101201542.2027568-1-leon@kernel.org/
+[2] https://lore.kernel.org/linux-rdma/BY5PR12MB43229F23C101AFBCD2971534DCE20@BY5PR12MB4322.namprd12.prod.outlook.com/T/#md25b9a2feb4c60d3fef5d57da41db559af1062d8
