@@ -2,249 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D912B64F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0A32B6543
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387445AbgKQNvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:51:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731050AbgKQNu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:50:58 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4D4C24199;
-        Tue, 17 Nov 2020 13:50:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605621057;
-        bh=C+5bG4KX3/fZGLs0+wIdBpnRG2mZUL+RUp21th58uXs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=WUGfnv6OkDCxe5QIl45uawBGqaWIoCU7WWypvi4DsMvMH1rVJeP3kh7wtD3I2kS1m
-         R+c+E0g61uvM94jeXzXvbH0r0mWRS6kBYEhjQ7laJZV2w0riwil0VcT1ba3bafklcV
-         zWwB9/2AWoXgWqsSus+WNPyl/gKgJn7oOsA27Yow=
-Date:   Tue, 17 Nov 2020 07:50:53 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] iwlwifi: mvm: Fix fall-through warnings for Clang
-Message-ID: <20201117135053.GA13248@embeddedor>
+        id S1732924AbgKQNx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:53:28 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:23702 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731363AbgKQNxZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:53:25 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHDkYZ4022528;
+        Tue, 17 Nov 2020 08:52:56 -0500
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34td1999wd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 08:52:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fI2XhJgdFoJ7JriGuj47qhrY1rDNpyfWsnciz1s+LEFS958WHCGUszlbXBPV89STVXU1xM7Jw5TeuHGRaLNn/1H0PImX6AnJaws8cgUtiWZqrCuZ+Y73AaiOd7sJ0KR6LqQuXccCqgMADQOMZJPsmorh2tHg8KPpNlhPCSuuVVxWWrP7d5KLnV3GL3dSNrXbKdc6iKgVx1pfublzfCAdCH0KPVmeyKN7cOP0MWL9r4NnHJFLNUMQKFlRSL2Q1d38EV2CutWppw3AtD5fOlEBR20WM7Kz6Bfplic7EHY6GpgCs3FnBZJ5WdzWI3y8EQdzddLi6dP35DaI/3ZbIwd8DQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nj7OtAaXuRaWh4sGyypX/VGJXozCOjy0b/yDpCkAi/s=;
+ b=Nuy0rem3DMT9f2gF1/VivzwSXhNCHhuxL090lOgDCNKX+xfRHcIOvovSJFKmVgvSH4v0X4HCuJjpO/UX6RC0vN1diMWoaLPa5LpsNPy+46LAKJMuVR5M2yV50jS0y+/tzFbq8Km8MehCm1+vvVsJTy05F4wCLaqqrCwKpwu59dHU/WFm1uXTwGF/gwmS8WyIodwsroAWBMM21CUBFrVLTk0IAkv43omBvbwNuJFNd8/lbyS98R7aAeerXRpB9ZZ2WzYihWd1G3TIfy8JMq5PG3wmAfewVu5cxx2Ju2Lk10rvXJFlNGoEzYD+Tp649n6JCxt6RzTLmw4qPn5x9hb9KQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nj7OtAaXuRaWh4sGyypX/VGJXozCOjy0b/yDpCkAi/s=;
+ b=nxigKY00wWbqhawRgyoKbUs72KQm8yKQx282CY+NNRRDv/mzdUUxOZH/J8EfpbMSK4V7oUJkAi3g46qxcCRUA5Oj8/UrcM1z1xvajQfTGoGERLfQrSfg6RI38vEe915l8G13hHE22KiZDcBotLKJ4iygXrZhaTK9NGRZNMq/hLQ=
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com (2603:10b6:5:10f::14)
+ by DM6PR03MB3772.namprd03.prod.outlook.com (2603:10b6:5:48::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Tue, 17 Nov
+ 2020 13:52:52 +0000
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::f99d:8928:7e14:1a62]) by DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::f99d:8928:7e14:1a62%5]) with mapi id 15.20.3564.028; Tue, 17 Nov 2020
+ 13:52:51 +0000
+From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Subject: RE: [PATCH v2] dt-bindings: adau1977: convert text binding to yaml
+ format
+Thread-Topic: [PATCH v2] dt-bindings: adau1977: convert text binding to yaml
+ format
+Thread-Index: AQHWtz2F2OHInY62iU6R470BEYQkEqnLTbMAgAEUnaA=
+Date:   Tue, 17 Nov 2020 13:52:51 +0000
+Message-ID: <DM6PR03MB441127479BF5958B8871584AF9E20@DM6PR03MB4411.namprd03.prod.outlook.com>
+References: <20201106102052.32582-1-alexandru.ardelean@analog.com>
+ <20201110084754.46756-1-alexandru.ardelean@analog.com>
+ <20201116211856.GM4739@sirena.org.uk>
+In-Reply-To: <20201116211856.GM4739@sirena.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jWVdGeVpHVnNaV0ZjWVhCd1pHRjBZVnh5YjJGdGFXNW5YREE1WkRnME9X?=
+ =?utf-8?B?STJMVE15WkRNdE5HRTBNQzA0TldWbExUWmlPRFJpWVRJNVpUTTFZbHh0YzJk?=
+ =?utf-8?B?elhHMXpaeTB6TXpJNU9XTmpOQzB5T0dSakxURXhaV0l0WVRWak5DMDBNVFUy?=
+ =?utf-8?B?TkRVd01EQXdNekJjWVcxbExYUmxjM1JjTXpNeU9UbGpZell0TWpoa1l5MHhN?=
+ =?utf-8?B?V1ZpTFdFMVl6UXROREUxTmpRMU1EQXdNRE13WW05a2VTNTBlSFFpSUhONlBT?=
+ =?utf-8?B?SXhORGMzSWlCMFBTSXhNekkxTURBNU5EYzNPVEUwTkRjNU5UUWlJR2c5SW1N?=
+ =?utf-8?B?eFdrdGtRa1JzUm1JelJIWmpiVlJ4UlV4cVJtMDNhSGRoWXowaUlHbGtQU0lp?=
+ =?utf-8?B?SUdKc1BTSXdJaUJpYnowaU1TSWdZMms5SW1OQlFVRkJSVkpJVlRGU1UxSlZS?=
+ =?utf-8?B?azVEWjFWQlFVVnZRMEZCUTFOQ05GQXhOa3g2VjBGa0wxRXJhM016TVZwRVlU?=
+ =?utf-8?B?TTVSRFpUZW1aV2EwNXZSRUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRklRVUZCUVVSaFFWRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGRlFVRlJRVUpCUVVGQlMxWkpWMkpuUVVGQlFVRkJRVUZCUVVGQlFVRkJT?=
+ =?utf-8?B?alJCUVVGQ2FFRkhVVUZoVVVKbVFVaE5RVnBSUW1wQlNGVkJZMmRDYkVGR09F?=
+ =?utf-8?B?RmpRVUo1UVVjNFFXRm5RbXhCUjAxQlpFRkNla0ZHT0VGYVowSm9RVWQzUVdO?=
+ =?utf-8?B?M1FteEJSamhCV21kQ2RrRklUVUZoVVVJd1FVZHJRV1JuUW14QlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVWQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlowRkJRVUZCUVc1blFVRkJSMFZCV2tGQ2NFRkdPRUZqZDBKc1FVZE5RV1JS?=
+ =?utf-8?B?UW5sQlIxVkJXSGRDZDBGSVNVRmlkMEp4UVVkVlFWbDNRakJCU0UxQldIZENN?=
+ =?utf-8?B?RUZIYTBGYVVVSjVRVVJGUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRlJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRMEZCUVVGQlFVTmxRVUZCUVZsUlFtdEJSMnRCV0hkQ2Vr?=
+ =?utf-8?B?RkhWVUZaZDBJeFFVaEpRVnBSUW1aQlNFRkJZMmRDZGtGSGIwRmFVVUpxUVVo?=
+ =?utf-8?B?UlFXTjNRbVpCU0ZGQllWRkNiRUZJU1VGTlowRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZDUVVGQlFVRkJRVUZCUVVsQlFVRkJRVUZCUFQwaUx6NDhMMjFs?=
+ =?utf-8?Q?dGE+?=
+x-dg-rorf: true
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=analog.com;
+x-originating-ip: [188.27.128.26]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a23b646d-70e5-4c2e-00e0-08d88b0013a2
+x-ms-traffictypediagnostic: DM6PR03MB3772:
+x-microsoft-antispam-prvs: <DM6PR03MB3772899B715681214EED567EF9E20@DM6PR03MB3772.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:422;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qk5NOJQADIqBrHCfUfcPA2nprSkFfR1/oLGDpLdRaTCVACfDhuqLc+V0zxvaIK0cV0deqzcnGV/3OnFXtAPIffiPxKcB7UNkjSSQstAyiSr6CvtiX44Tg4pkRxioY5njc+TvJoFhAcQwYxK3eG2LROgVK0066Eyxs48qs8QugvMOQHjSop8dRWvJpPSWmh7ziSDFi1Sw+mn30j1wpQCrjI4US7gxCUDeWxrs8YFT5T59NaR4s3o1XWEt6Q79wx7d5ej8N9jfkIiSzbyS5wgNkzm1ykDS9THsPFGLXEmpNQZymAdEkqLBvuyrF5sl3Ag/WZv3feijeS7t2k5B8qk+fQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4411.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(376002)(366004)(136003)(86362001)(83380400001)(52536014)(66946007)(66446008)(33656002)(71200400001)(5660300002)(76116006)(66556008)(64756008)(66476007)(53546011)(6506007)(4326008)(8676002)(9686003)(2906002)(316002)(6916009)(54906003)(7696005)(26005)(186003)(8936002)(55016002)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 1eSvLiMJTmf400Z418PMkjWcKFMdTWbjSUn77P+wpJAFsfZGv/2hCzFbXlKY2/LZYIYdAefGSNJ2KbmMqi2BRDF13HKaePOo5DNWJncDlucKg7nAR3Az9vVr19G/AKizFhJbfypP4SVDBhytLoLqhlxW3MCMmhjyb5hPXQ8Hp8ozDZIPoJ1rvz54a8ufU5IJwWq/qzlKExlHqnzrq0rR0VMFSpKsMzBZDFwC+lm4MlXPMBUOzOAnOp0FT5XIXO9yADHFKEueaTyjGRLCm1Y20e4ZNdcQGcPb4sqoo7Lg3VtnaMNbe23xtSlpsQO9ooI2CXwhmi6scMmbGe0MOrV27blteTebgWDr3MthiQOaNpKpLnFzh+gVCkvuvoYBlyEpEtHq9QCbA4eeUlH3hGGfObVsqBuf1a8F9T2EUMHx0Rqr1dEYEynJziRnyyJ3dlgwHy75Rm02Ssusl+Fy5Z46UNX6eW2fDKDFcg1eE3gtYWasdbJpqAJ1vLxE1VwAyElnXnoe41h13vYemNGe3Pw2shuCVHAhfZYU4579PKjBNpKlDpoLe3YT6CNCJ8wDQmsmw13bGdckJp33KcAkZ2VfUVxu2Qopm/na4HPnWBaPKmREkrShYkAfqm4dxT2wQqmPDvBnlwj9AiynBnBlBbVs3A==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4411.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a23b646d-70e5-4c2e-00e0-08d88b0013a2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2020 13:52:51.6311
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BllKNaUyBU7x7ytdXn3BmiJkCs1M0jvSleGqgMchj0Fz/ytGTKUTS0Ql6Rt8zT4GvPFMpP2Yp9Tf/oCS2ksPtVhtL6W9j6Q0aEYGugfxRxU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB3772
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_03:2020-11-17,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0 clxscore=1015
+ phishscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-warnings by explicitly using the fallthrough pseudo-keyword as a
-replacement for a number of "fall through" markings.
-
-Notice that Clang doesn't recognize "fall through" comments as
-implicit fall-through.
-
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/intel/iwlwifi/mvm/led.c      |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/rx.c       |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c     |  8 ++++----
- drivers/net/wireless/intel/iwlwifi/mvm/scan.c     |  2 +-
- drivers/net/wireless/intel/iwlwifi/mvm/sta.c      | 10 +++++-----
- drivers/net/wireless/intel/iwlwifi/mvm/tx.c       |  4 ++--
- 9 files changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/led.c b/drivers/net/wireless/intel/iwlwifi/mvm/led.c
-index 72c4b2b8399d..6c910d681a92 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/led.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/led.c
-@@ -115,7 +115,7 @@ int iwl_mvm_leds_init(struct iwl_mvm *mvm)
- 	switch (mode) {
- 	case IWL_LED_BLINK:
- 		IWL_ERR(mvm, "Blink led mode not supported, used default\n");
--		/* fall through */
-+		fallthrough;
- 	case IWL_LED_DEFAULT:
- 	case IWL_LED_RF_STATE:
- 		mode = IWL_LED_RF_STATE;
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-index 8698ca4d30de..5fa76ed09c37 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-@@ -287,7 +287,7 @@ int iwl_mvm_mac_ctxt_init(struct iwl_mvm *mvm, struct ieee80211_vif *vif)
- 	case NL80211_IFTYPE_STATION:
- 		if (!vif->p2p)
- 			break;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		__clear_bit(0, data.available_mac_ids);
- 	}
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-index b627e7da7ac9..77a14a2fc281 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-@@ -4102,7 +4102,7 @@ static int __iwl_mvm_assign_vif_chanctx(struct iwl_mvm *mvm,
- 			mvmvif->ap_ibss_active = true;
- 			break;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case NL80211_IFTYPE_ADHOC:
- 		/*
- 		 * The AP binding flow is handled as part of the start_ap flow
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c
-index bf2fc44dcb8d..5bbcc8f082c2 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c
-@@ -109,7 +109,7 @@ u8 iwl_mvm_get_ctrl_pos(struct cfg80211_chan_def *chandef)
- 		return PHY_VHT_CTRL_POS_4_ABOVE;
- 	default:
- 		WARN(1, "Invalid channel definition");
--		/* fall through */
-+		fallthrough;
- 	case 0:
- 		/*
- 		 * The FW is expected to check the control channel position only
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rx.c b/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
-index 0059c83c2783..15ee8d2feaf7 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
-@@ -226,7 +226,7 @@ static u32 iwl_mvm_set_mac80211_rx_flag(struct iwl_mvm *mvm,
- 		    !(rx_pkt_status & RX_MPDU_RES_STATUS_TTAK_OK))
- 			return 0;
- 		*crypt_len = IEEE80211_TKIP_IV_LEN;
--		/* fall through */
-+		fallthrough;
- 
- 	case RX_MPDU_RES_STATUS_SEC_WEP_ENC:
- 		if (!(rx_pkt_status & RX_MPDU_RES_STATUS_ICV_OK))
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c b/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
-index 838734fec502..05edc02a0063 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
-@@ -379,7 +379,7 @@ static int iwl_mvm_rx_crypto(struct iwl_mvm *mvm, struct ieee80211_hdr *hdr,
- 			stats->flag |= RX_FLAG_MMIC_ERROR;
- 
- 		*crypt_len = IEEE80211_TKIP_IV_LEN;
--		/* fall through */
-+		fallthrough;
- 	case IWL_RX_MPDU_STATUS_SEC_WEP:
- 		if (!(status & IWL_RX_MPDU_STATUS_ICV_OK))
- 			return -1;
-@@ -1314,7 +1314,7 @@ static void iwl_mvm_decode_he_phy_data(struct iwl_mvm *mvm,
- 		he->data4 |= le16_encode_bits(le32_get_bits(phy_data->d2,
- 							    IWL_RX_PHY_DATA2_HE_TB_EXT_SPTL_REUSE4),
- 					      IEEE80211_RADIOTAP_HE_DATA4_TB_SPTL_REUSE4);
--		/* fall through */
-+		fallthrough;
- 	case IWL_RX_PHY_INFO_TYPE_HE_SU:
- 	case IWL_RX_PHY_INFO_TYPE_HE_MU:
- 	case IWL_RX_PHY_INFO_TYPE_HE_MU_EXT:
-@@ -1387,7 +1387,7 @@ static void iwl_mvm_decode_he_phy_data(struct iwl_mvm *mvm,
- 						       IWL_RX_PHY_DATA4_HE_MU_EXT_PREAMBLE_PUNC_TYPE_MASK),
- 					 IEEE80211_RADIOTAP_HE_MU_FLAGS2_PUNC_FROM_SIG_A_BW);
- 		iwl_mvm_decode_he_mu_ext(mvm, phy_data, rate_n_flags, he_mu);
--		/* fall through */
-+		fallthrough;
- 	case IWL_RX_PHY_INFO_TYPE_HE_MU:
- 		he_mu->flags2 |=
- 			le16_encode_bits(le32_get_bits(phy_data->d1,
-@@ -1397,7 +1397,7 @@ static void iwl_mvm_decode_he_phy_data(struct iwl_mvm *mvm,
- 			le16_encode_bits(le32_get_bits(phy_data->d1,
- 						       IWL_RX_PHY_DATA1_HE_MU_SIGB_COMPRESSION),
- 					 IEEE80211_RADIOTAP_HE_MU_FLAGS2_SIG_B_COMP);
--		/* fall through */
-+		fallthrough;
- 	case IWL_RX_PHY_INFO_TYPE_HE_TB:
- 	case IWL_RX_PHY_INFO_TYPE_HE_TB_EXT:
- 		iwl_mvm_decode_he_phy_ru_alloc(phy_data, rate_n_flags,
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-index 875281cf7fc0..4b21f27bd19d 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/scan.c
-@@ -2148,7 +2148,7 @@ static int iwl_mvm_check_running_scans(struct iwl_mvm *mvm, int type)
- 		/* Something is wrong if no scan was running but we
- 		 * ran out of scans.
- 		 */
--		/* fall through */
-+		fallthrough;
- 	default:
- 		WARN_ON(1);
- 		break;
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-index 799d8219463c..d2f2a95a34fe 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-@@ -144,13 +144,13 @@ int iwl_mvm_sta_send_to_fw(struct iwl_mvm *mvm, struct ieee80211_sta *sta,
- 	switch (sta->bandwidth) {
- 	case IEEE80211_STA_RX_BW_160:
- 		add_sta_cmd.station_flags |= cpu_to_le32(STA_FLG_FAT_EN_160MHZ);
--		/* fall through */
-+		fallthrough;
- 	case IEEE80211_STA_RX_BW_80:
- 		add_sta_cmd.station_flags |= cpu_to_le32(STA_FLG_FAT_EN_80MHZ);
--		/* fall through */
-+		fallthrough;
- 	case IEEE80211_STA_RX_BW_40:
- 		add_sta_cmd.station_flags |= cpu_to_le32(STA_FLG_FAT_EN_40MHZ);
--		/* fall through */
-+		fallthrough;
- 	case IEEE80211_STA_RX_BW_20:
- 		if (sta->ht_cap.ht_supported)
- 			add_sta_cmd.station_flags |=
-@@ -3286,14 +3286,14 @@ static int iwl_mvm_send_sta_key(struct iwl_mvm *mvm,
- 		break;
- 	case WLAN_CIPHER_SUITE_WEP104:
- 		key_flags |= cpu_to_le16(STA_KEY_FLG_WEP_13BYTES);
--		/* fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_WEP40:
- 		key_flags |= cpu_to_le16(STA_KEY_FLG_WEP);
- 		memcpy(u.cmd.common.key + 3, key->key, key->keylen);
- 		break;
- 	case WLAN_CIPHER_SUITE_GCMP_256:
- 		key_flags |= cpu_to_le16(STA_KEY_FLG_KEY_32BYTES);
--		/* fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_GCMP:
- 		key_flags |= cpu_to_le16(STA_KEY_FLG_GCMP);
- 		memcpy(u.cmd.common.key, key->key, key->keylen);
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-index fe1c538cd718..761e9e25c34b 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-@@ -459,7 +459,7 @@ static void iwl_mvm_set_tx_cmd_crypto(struct iwl_mvm *mvm,
- 
- 	case WLAN_CIPHER_SUITE_WEP104:
- 		tx_cmd->sec_ctl |= TX_CMD_SEC_KEY128;
--		/* fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_WEP40:
- 		tx_cmd->sec_ctl |= TX_CMD_SEC_WEP |
- 			((keyconf->keyidx << TX_CMD_SEC_WEP_KEY_IDX_POS) &
-@@ -470,7 +470,7 @@ static void iwl_mvm_set_tx_cmd_crypto(struct iwl_mvm *mvm,
- 	case WLAN_CIPHER_SUITE_GCMP:
- 	case WLAN_CIPHER_SUITE_GCMP_256:
- 		type = TX_CMD_SEC_GCMP;
--		/* Fall through */
-+		fallthrough;
- 	case WLAN_CIPHER_SUITE_CCMP_256:
- 		/* TODO: Taking the key from the table might introduce a race
- 		 * when PTK rekeying is done, having an old packets with a PN
--- 
-2.27.0
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyayBCcm93biA8YnJv
+b25pZUBrZXJuZWwub3JnPg0KPiBTZW50OiBNb25kYXksIE5vdmVtYmVyIDE2LCAyMDIwIDExOjE5
+IFBNDQo+IFRvOiBBcmRlbGVhbiwgQWxleGFuZHJ1IDxhbGV4YW5kcnUuQXJkZWxlYW5AYW5hbG9n
+LmNvbT4NCj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgZGV2aWNldHJlZUB2Z2Vy
+Lmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsYXJzQG1ldGFm
+b28uZGU7IHJvYmgrZHRAa2VybmVsLm9yZzsNCj4gbGdpcmR3b29kQGdtYWlsLmNvbQ0KPiBTdWJq
+ZWN0OiBSZTogW1BBVENIIHYyXSBkdC1iaW5kaW5nczogYWRhdTE5Nzc6IGNvbnZlcnQgdGV4dCBi
+aW5kaW5nIHRvIHlhbWwNCj4gZm9ybWF0DQo+IA0KPiBbRXh0ZXJuYWxdDQo+IA0KPiBPbiBUdWUs
+IE5vdiAxMCwgMjAyMCBhdCAxMDo0Nzo1NEFNICswMjAwLCBBbGV4YW5kcnUgQXJkZWxlYW4gd3Jv
+dGU6DQo+ID4gVGhpcyBjaGFuZ2UgY29udmVydHMgdGhlIG9sZCBkZXZpY2UtdHJlZSBiaW5kaW5n
+IGZvciBBREFVMTk3NyBmcm9tDQo+ID4gdGV4dCBmb3JtYXQgdG8gdGhlIG5ldyB5YW1sIGZvcm1h
+dC4NCj4gDQo+IFBsZWFzZSBzdWJtaXQgcGF0Y2hlcyB1c2luZyBzdWJqZWN0IGxpbmVzIHJlZmxl
+Y3RpbmcgdGhlIHN0eWxlIGZvciB0aGUgc3Vic3lzdGVtLA0KPiB0aGlzIG1ha2VzIGl0IGVhc2ll
+ciBmb3IgcGVvcGxlIHRvIGlkZW50aWZ5IHJlbGV2YW50IHBhdGNoZXMuDQo+IExvb2sgYXQgd2hh
+dCBleGlzdGluZyBjb21taXRzIGluIHRoZSBhcmVhIHlvdSdyZSBjaGFuZ2luZyBhcmUgZG9pbmcg
+YW5kIG1ha2UNCj4gc3VyZSB5b3VyIHN1YmplY3QgbGluZXMgdmlzdWFsbHkgcmVzZW1ibGUgd2hh
+dCB0aGV5J3JlIGRvaW5nLg0KPiBUaGVyZSdzIG5vIG5lZWQgdG8gcmVzdWJtaXQgdG8gZml4IHRo
+aXMgYWxvbmUuDQoNCkFwb2xvZ2llcy4NCkkgZGlkIGxvb2sgYXJvdW5kIGFuZCB0aGUgZ2l0IGxv
+ZyBvZiB0aGF0IGZvbGRlciBhbmQgbm90aWNlZCBhIGJpdCBvZiBtaXhlZCBzdHlsaW5nIGZvciB0
+aGUgY29tbWl0IHRpdGxlLg0KSSBhZG1pdCBJIHNob3VsZCBoYXZlIHByb2JhYmx5IHRha2VuIGEg
+Y2xvc2VyIGxvb2sgYW5kIGJldHRlciBndWVzc2VkIHRoZSBzdHlsaW5nIGEgYml0Lg0KSSdsbCB0
+cnkgdG8ga2VlcCBpbiBtaW5kIGZvciBBU29DIGJpbmRpbmdzLg0KSSBkbyByZW1lbWJlciBSb2Ig
+Y29tcGxhaW5pbmcgW29uIHNvbWUgb2xkZXIgYmluZGluZyBwYXRjaF0gdGhhdCB0aGUgc3R5bGlu
+ZyBmb3IgYmluZGluZ3Mgc2hvdWxkIGJlIGluIHRoZSBmb3JtYXQgSSBqdXN0IGRpZC4NCsKvXF8o
+44OEKV8vwq8NCg==
