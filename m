@@ -2,63 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DEC2B7178
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC2C2B717D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728697AbgKQWWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:22:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728397AbgKQWWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:22:33 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 256C920678;
-        Tue, 17 Nov 2020 22:22:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605651752;
-        bh=BkGt+44VK/Hsa4hyKjPNouLZQNX3V18+l8zXTgVURcI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L/BSdz3NJvUY/xkgcPvM62jPhjYYtOZKFF8W8fE+KE2hEnzTUlgF3ytopaqpW3NGc
-         QhMc0b/GrlAC4gYuw0XvYFQ88Mfq3C0tCOQEcqPr0YwPVL5JGUm5nwStNmUX8O8f3O
-         fmeW0/Gu3AjnTppszbXmEvSm1CSLSVJu36EkvlDQ=
-Date:   Tue, 17 Nov 2020 22:22:27 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: IOMMU Maintainership
-Message-ID: <20201117222227.GB524@willie-the-truck>
-References: <20201117100953.GR22888@8bytes.org>
+        id S1729033AbgKQWX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:23:26 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63196 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728928AbgKQWXZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:23:25 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHM2UQO141041;
+        Tue, 17 Nov 2020 17:23:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=h8IAoc/2erbo5y/+8cyz47rQpuAVhFzgrZwxWyqbEdI=;
+ b=J8TGxg8JywvTfanKjYuUmisaPaZ3E+QHqrXOc5BlNvTwzgtDNtMlUgRhHtjAmJYLZyP6
+ KlLg9blb5KTr8CYGZ4YEWhBEaMezpG1dTUUUzGQ8UeT7m6VtYorySptM1CjI/9QE6Wjx
+ MSGdMwX7HqmN2wcsVoP7cDrdMMkVW7Shsty9YlBfXV+QThV4L1mnIzjmqdKNnWfmc4uX
+ +KcZtqLDwVYE+bT4U7kGRvJqLhKKgKlheL0wS41QKT+3BjgBuvoXhjEyzIzD3Hz7fSFT
+ z747UuLEEayjJGIVXw+Vv8R253aOBcdFl5/5tYh+OzhclmFQsp3CgNdyIcnU6Q94BPPR 0Q== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34vb0w0eyj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 17:23:20 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AHMMcrw007260;
+        Tue, 17 Nov 2020 22:23:19 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma02dal.us.ibm.com with ESMTP id 34vgjmb5ue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 22:23:19 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AHMNH3g11076114
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 22:23:17 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 76D42BE053;
+        Tue, 17 Nov 2020 22:23:17 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 09655BE051;
+        Tue, 17 Nov 2020 22:23:16 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.163.40.231])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 17 Nov 2020 22:23:16 +0000 (GMT)
+Subject: Re: [PATCH 6/6] ibmvfc: advertise client support for targetWWPN using
+ v2 commands
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201112010442.102589-1-tyreld@linux.ibm.com>
+ <20201112010442.102589-6-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <b7662270-4875-0a25-d1f3-ea778059f64e@linux.vnet.ibm.com>
+Date:   Tue, 17 Nov 2020 16:23:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117100953.GR22888@8bytes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201112010442.102589-6-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_09:2020-11-17,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 adultscore=0 lowpriorityscore=0 mlxlogscore=931
+ malwarescore=0 impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170158
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:09:53AM +0100, Joerg Roedel wrote:
-> Luckily Will Deacon volunteered to handle incoming IOMMU patches and
-> send them upstream. So please Cc him on any patches that you want to
-> have merged upstream for the next release and on important fixes for
-> v5.10. The patches will go through another tree for the time being, Will
-> can share the details on that.
+Everything else in this series looks OK to me.
 
-Thanks Joerg, and please try to get some rest.
+Thanks,
 
-As for the temporary new workflow; I'll be queueing IOMMU patches on
-branches in the arm64 tree and merging them into a non-stable branch
-(for-next/iommu/core) which will go into -next. I'll send a separate pull
-for the IOMMU bits when the time comes.
+Brian
 
-If you have IOMMU patches targetting 5.10 or 5.11, then please CC me to
-make sure I don't miss them. Alex, Robin and Lu have also offered to help
-with review and I can pull from them too.
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
-Will
