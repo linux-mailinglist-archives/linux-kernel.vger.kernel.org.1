@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2440A2B624C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1922B610D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731717AbgKQN13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:27:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34894 "EHLO mail.kernel.org"
+        id S1730172AbgKQNPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:15:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731692AbgKQN1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:27:11 -0500
+        id S1730162AbgKQNPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:15:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E37F2168B;
-        Tue, 17 Nov 2020 13:27:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAD86246BF;
+        Tue, 17 Nov 2020 13:15:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619631;
-        bh=kV+qDBtDnP2542WwcfD5iDSQX3OY2/PuyoOpF9RD6+4=;
+        s=default; t=1605618916;
+        bh=EXnd/v92FTeYhAqhSbs36rm6Qfj6+smhBqqNFaS+fqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ppH3/ZOLVfA85OcecF3AU06b/w3whx9nGwas06Vn83GAHs7Tju9ppADN5Ce4JW0cN
-         vbcCPYblK+TiB0+GJyFgYdul5wHAu60ntiVBpFVl1m/DKymTMoVYUC8Qu+fK4U1jQT
-         EERp/MKKIvhFIIzWhoZXIr47XWiTk/sN0isOadIY=
+        b=duwb3jp470+u9N55hah5lphWw6r3yWJyXlBUFiX/g/BrZpPmpltGRgaBsZizIRgQF
+         Erq4LB7gtiEcDM2FfEoe60Vy4tT0BHGHegPreyD8EkOkOJM+L4/Eni0wfTe/Kaxs41
+         o106iv8+P97e0XnnWYy8qELBK61iUBjvrJGwax1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
-        Chao Leng <lengchao@huawei.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 073/151] nvme-tcp: avoid repeated request completion
+        stable@vger.kernel.org, Jamie McClymont <jamie@kwiius.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 34/85] pinctrl: intel: Set default bias in case no particular value given
 Date:   Tue, 17 Nov 2020 14:05:03 +0100
-Message-Id: <20201117122124.970481821@linuxfoundation.org>
+Message-Id: <20201117122112.699344401@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 0a8a2c85b83589a5c10bc5564b796836bf4b4984 ]
+[ Upstream commit f3c75e7a9349d1d33eb53ddc1b31640994969f73 ]
 
-The request may be executed asynchronously, and rq->state may be
-changed to IDLE. To avoid repeated request completion, only
-MQ_RQ_COMPLETE of rq->state is checked in nvme_tcp_complete_timed_out.
-It is not safe, so need adding check IDLE for rq->state.
+When GPIO library asks pin control to set the bias, it doesn't pass
+any value of it and argument is considered boolean (and this is true
+for ACPI GpioIo() / GpioInt() resources, by the way). Thus, individual
+drivers must behave well, when they got the resistance value of 1 Ohm,
+i.e. transforming it to sane default.
 
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Chao Leng <lengchao@huawei.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+In case of Intel pin control hardware the 5 kOhm sounds plausible
+because on one hand it's a minimum of resistors present in all
+hardware generations and at the same time it's high enough to minimize
+leakage current (will be only 200 uA with the above choice).
+
+Fixes: e57725eabf87 ("pinctrl: intel: Add support for hardware debouncer")
+Reported-by: Jamie McClymont <jamie@kwiius.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/tcp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/intel/pinctrl-intel.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index 76440f26c1453..a31c6e1f6063a 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -2071,7 +2071,7 @@ static void nvme_tcp_complete_timed_out(struct request *rq)
- 	struct nvme_ctrl *ctrl = &req->queue->ctrl->ctrl;
+diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+index 71df0f70b61f0..45b062b0d4188 100644
+--- a/drivers/pinctrl/intel/pinctrl-intel.c
++++ b/drivers/pinctrl/intel/pinctrl-intel.c
+@@ -602,6 +602,10 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned pin,
  
- 	nvme_tcp_stop_queue(ctrl, nvme_tcp_queue_id(req->queue));
--	if (!blk_mq_request_completed(rq)) {
-+	if (blk_mq_request_started(rq) && !blk_mq_request_completed(rq)) {
- 		nvme_req(rq)->status = NVME_SC_HOST_ABORTED_CMD;
- 		blk_mq_complete_request(rq);
- 	}
+ 		value |= PADCFG1_TERM_UP;
+ 
++		/* Set default strength value in case none is given */
++		if (arg == 1)
++			arg = 5000;
++
+ 		switch (arg) {
+ 		case 20000:
+ 			value |= PADCFG1_TERM_20K << PADCFG1_TERM_SHIFT;
+@@ -624,6 +628,10 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned pin,
+ 	case PIN_CONFIG_BIAS_PULL_DOWN:
+ 		value &= ~(PADCFG1_TERM_UP | PADCFG1_TERM_MASK);
+ 
++		/* Set default strength value in case none is given */
++		if (arg == 1)
++			arg = 5000;
++
+ 		switch (arg) {
+ 		case 20000:
+ 			value |= PADCFG1_TERM_20K << PADCFG1_TERM_SHIFT;
 -- 
 2.27.0
 
