@@ -2,168 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676452B5ECC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B817A2B5ED2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgKQMCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727267AbgKQMCD (ORCPT
+        id S1728037AbgKQMEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:04:48 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:45449 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726807AbgKQMEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:02:03 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8081C0613CF;
-        Tue, 17 Nov 2020 04:02:02 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id u12so15689479wrt.0;
-        Tue, 17 Nov 2020 04:02:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=FJtioFJbd5nxXYxwlEc0zZcWxs2yFJwIULJZ0UgOrKo=;
-        b=pRFRW3O9NGmppCka9bCNSqpILJF9CPN5IXNSD+FCPfkzLcWx6voAc6p2DDk0iFZd7n
-         vHWXTVRmjnnUB0lK0x200o/Sv0hqLP3vXzTawpfgLB5G33GVXWOupvfil4dEy75r7Dgj
-         43MXd09cB6JWY60SiV4kEQxRbpiw3Z3umAakv+LykOJh5Ay9g6rbHYM70jLy6otnMICT
-         uv95f1VaLPT7keYEsANCu2ErJ9Yruh/EQaKDO+E2vxwCZ2VfQUk9nc6ocudc06rhFZFo
-         9GKOcvxgstvDZWdp+Sk+5ASDBmJjfIcfHCMshj7ao6JvMeP4VWjtLLx4MPGfN6WKyvUp
-         iV/Q==
+        Tue, 17 Nov 2020 07:04:47 -0500
+Received: from mail-ed1-f70.google.com ([209.85.208.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <guilherme.piccoli@canonical.com>)
+        id 1kezj2-0003C6-Jk
+        for linux-kernel@vger.kernel.org; Tue, 17 Nov 2020 12:04:44 +0000
+Received: by mail-ed1-f70.google.com with SMTP id l12so9530576edw.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:04:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=FJtioFJbd5nxXYxwlEc0zZcWxs2yFJwIULJZ0UgOrKo=;
-        b=K4DboQt/itBbYJW2kGlhbQx+JED4AbQABO2G1t/jJL6IJOR/inKZNX+X4UjM0j1gcN
-         5bzYRVTAPViNp++9ftXxmJF4xs8DuBOVouaXM56j/Dy67utfUwhN/QcvbZ8porwvXSNX
-         qgGsMmSA4raFahATkZ6oI1Dh9Q0Bdc0EDTwM/0luFP9aqRY9lUXiP0AVNgoRDINa4S1v
-         ZWG5QUz/mfAFDg71RYfMfCjha2s1HQFRU/RF2MFiXFfHXggWpzcsXo5++zTeKxktRu6q
-         eWnlABNeX74KpjD+Mtx0Sm528Et/J1B411ZsqyXfjg/ITb6RnhyaeWb8P4CDo1ldkQxh
-         Hevg==
-X-Gm-Message-State: AOAM533r53Ksssoa+6pr1DqC3u7INrcJXQWmDU6A2i77+W01n+eRlsZ4
-        XsGDeAWZ6aC19OZ2W2URkAY=
-X-Google-Smtp-Source: ABdhPJzCsOHInE8e78d8f4Sh1xeqEz9NeoUlbRQ2wIQEP6vJd8F4BeyIA+uRdO2QlJg7nLDUIYz//Q==
-X-Received: by 2002:adf:f7ce:: with SMTP id a14mr24929705wrq.294.1605614521377;
-        Tue, 17 Nov 2020 04:02:01 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.225.98])
-        by smtp.gmail.com with ESMTPSA id n15sm27328823wrq.48.2020.11.17.04.01.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 04:02:00 -0800 (PST)
-Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>
-References: <20201029212930.GE15024@pendragon.ideasonboard.com>
- <20201029222215.GI4077@smile.fi.intel.com>
- <20201029225124.GI15024@pendragon.ideasonboard.com>
- <60b36af2-ad57-000b-76e4-379e1b58a3a0@gmail.com>
- <20201113162231.GO7524@pendragon.ideasonboard.com>
- <CAHp75VeGJKMeY-reNWgypVzJ6Myz5S2RXJPHqbPH5kzLYX3G4g@mail.gmail.com>
- <20201116085349.GA6540@pendragon.ideasonboard.com>
- <CAHp75Ve-O4u1B=dvC+HT-sg=YnoWSuV6kUkPmBSOx4w9OgoOoA@mail.gmail.com>
- <20201116141038.GJ6540@pendragon.ideasonboard.com>
- <3646e11c-a101-74e3-2eb4-7abf29937e9d@gmail.com>
- <20201116161636.GC4077@smile.fi.intel.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <3976eac8-2a21-a619-1dba-85212ac4b4b1@gmail.com>
-Date:   Tue, 17 Nov 2020 12:01:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SVhaLNmBtuqnmi4tGMJBvp0RPN7vCBWkGFN0wZbfqIU=;
+        b=mbYn/S7r2k4X1/z6EIdCvnSnMPijzE7XKNlRRqhbY1r6+92kZaA/GPHdaz5ti072r0
+         cn1SVkRQxvV5CnlBO2jcR2YvjfUn7iYyMwR2nTkbQ3tJhkshsjFk7BVNTBbg8Ir1sWqL
+         kz664PliYoi9mJz3Mb4J8J2R9n5oJGIik2QkoKKc2wSRFYm7MvNF87UbzJeWClj8s/p0
+         KRYVh5wWgfMlGvvrV2F/YANEDlu7XPS0O3DRvHZOHhX+3Q6Lqsw1LdBmNhZlC/Q8f90M
+         i3QIMWqz6FRgnASD3N+DxHsgXdvhX25Fj2JSWdFi8/4NpPbzaDcwjZo1WnrNXJ91Am5/
+         jJZQ==
+X-Gm-Message-State: AOAM533bnidDZTm+zwCQrDkKcZRyj7zp+vwkH61uqarHkhASmXhEnbjt
+        A5B34/zhZHzXwPMlDQIjP6EfYLtWcQPNkh0ujV3Czhp8azZUniM+4x/Qq9foBGXd6EemNiW6v9W
+        eQDCSNoVNXiieRGfTQlx5rCGbWDnPw+FRMhzV2lyYmTkBv8+txNeh6QUFdw==
+X-Received: by 2002:a17:906:fcdb:: with SMTP id qx27mr19442471ejb.470.1605614684124;
+        Tue, 17 Nov 2020 04:04:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyNjl3vH5wIqmDtDTI5xUTL95hPqz+4DoXqLbqHyC7et+hNdTOMMEjmG2P9V+/rCvbOS8n8iZnmmiiRjQEp+Us=
+X-Received: by 2002:a17:906:fcdb:: with SMTP id qx27mr19442435ejb.470.1605614683864;
+ Tue, 17 Nov 2020 04:04:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201116161636.GC4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20201117001907.GA1342260@bjorn-Precision-5520> <87h7poeqqn.fsf@x220.int.ebiederm.org>
+In-Reply-To: <87h7poeqqn.fsf@x220.int.ebiederm.org>
+From:   Guilherme Piccoli <gpiccoli@canonical.com>
+Date:   Tue, 17 Nov 2020 09:04:07 -0300
+Message-ID: <CAHD1Q_zS9Hs8mUsm=q0Ei0kQ+y+wQhkroD+M2eCPKo2xLO6hBw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     lukas@wunner.de, linux-pci@vger.kernel.org,
+        Pingfan Liu <kernelfans@gmail.com>, andi@firstfloor.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Baoquan He <bhe@redhat.com>,
+        x86@kernel.org, Sinan Kaya <okaya@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Dave Young <dyoung@redhat.com>,
+        Gavin Guo <gavin.guo@canonical.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Guowen Shan <gshan@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dan Streetman <ddstreet@canonical.com>,
+        Vivek Goyal <vgoyal@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2020 16:16, Andy Shevchenko wrote:
-> On Mon, Nov 16, 2020 at 02:15:01PM +0000, Dan Scally wrote:
->> On 16/11/2020 14:10, Laurent Pinchart wrote:
->>> I thought we were looking for ACPI devices, not companion devices, in
->>> order to extract information from the DSDT and store it in a software
->>> node. I could very well be wrong though.
->> This is correct - the code to fetch the various resources we're looking
->> at all uses acpi_device. Whether using Andy's iterator suggestions or
->> previous bus_for_each_dev(&acpi_bus_type...) I'm just getting the
->> acpi_device via to_acpi_dev() and using that.
-> If you try to get an I²C ore SPI device out of pure ACPI device (with given
-> APCI _HID) you will fail. So, it's not correct. You are retrieving companion
-> devices, while they are still in the struct acpi_device.
+On Mon, Nov 16, 2020 at 10:07 PM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
+> [...]
+> > I think we need to disable MSIs in the crashing kernel before the
+> > kexec.  It adds a little more code in the crash_kexec() path, but it
+> > seems like a worthwhile tradeoff.
 >
-> And don't ask me, why it's so. I wasn't designed that and didn't affect any
-> decision made there.
+> Disabling MSIs in the b0rken kernel is not possible.
+>
+> Walking the device tree or even a significant subset of it hugely
+> decreases the chances that we will run into something that is incorrect
+> in the known broken kernel.  I expect the code to do that would double
+> or triple the amount of code that must be executed in the known broken
+> kernel.  The last time something like that happened (switching from xchg
+> to ordinary locks) we had cases that stopped working.  Walking all of
+> the pci devices in the system is much more invasive.
+>
 
-Well, in terms of the actual device we're getting, I don't think we're
-fundamentally doing anything different between the methods...unless I'm
-really mistaken.
+I think we could try to decouple this problem in 2, if that makes
+sense. Bjorn/others can jump in and correct me if I'm wrong. So, the
+problem is to walk a PCI topology tree, identify every device and
+disable MSI(/INTx maybe) in them, and the big deal with doing that in
+the broken kernel before the kexec is that this task is complex due to
+the tree walk, mainly. But what if we keep a table (a simple 2-D
+array) with the address and data to be written to disable the MSIs,
+and before the kexec we could have a parameter enabling a function
+that just goes through this array and performs the writes?
 
+The table itself would be constructed by the PCI core (and updated in
+the hotplug path), when device discovery is happening. This table
+would live in a protected area in memory, with no write/execute
+access, this way if the kernel itself tries to corrupt that, we get a
+fault (yeah, I know DMAs can corrupt anywhere, but IOMMU could protect
+against that). If the parameter "kdump_clear_msi" is passed in the
+cmdline of the regular kernel, for example, then the function walks
+this simple table and performs the devices' writes before the kexec...
 
-Originally implementation was like:
+If that's not possible or a bad idea for any reason, I still think the
+early_quirks() idea hereby proposed is not something we should
+discard, because it'll help a lot of users even with its limitations
+(in our case it worked very well).
+Also, taking here the opportunity to clarify my understanding about
+the limitations of that approach: Bjorn, in our reproducer machine we
+had 3 parents in the PCI tree (as per lspci -t), 0000:00, 0000:ff and
+0000:80 - are those all under "segment 0" as per your verbiage? In our
+case the troublemaker was under 0000:80, and the early_quirks() shut
+the device up successfully.
 
-
-const char *supported_devices[] = {
-
-        "OVTI2680",
-
-};
-
-
-static int cio2_bridge_connect_supported_devices(void)
-
-{
-
-        struct acpi_device *adev;
-
-        int i;
-
-        for (i = 0; i < ARRAY_SIZE(supported_devices); i++) {
-
-                adev =
-acpi_dev_get_first_match_dev(supported_devices[i], NULL, -1);
-
-...
-
-}
-
-
-and acpi_dev_get_first_match_dev() likewise just returns adev via
-to_acpi_device(dev).
-
-
-So, maybe we don't need to do the iterating over all devices with
-matching _HID at all, in which case it can be dropped, but if we're
-doing it then I can't see that it's different to the original
-implementation in terms of the struct acpi_device we're working with or
-the route taken to get it.
+Thanks,
 
 
-Either way; ACPI maintainers asked to be CC'd on the next patchset
-anyway, so they'll see what we're doing and be able to weigh in.
-
-
-
+Guilherme
