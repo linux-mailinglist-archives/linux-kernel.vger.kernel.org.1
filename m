@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210BD2B6193
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F822B611F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730527AbgKQNUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:20:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53482 "EHLO mail.kernel.org"
+        id S1729432AbgKQNP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:15:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730485AbgKQNUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:20:11 -0500
+        id S1730245AbgKQNPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:15:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DEB52225B;
-        Tue, 17 Nov 2020 13:20:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 919542225B;
+        Tue, 17 Nov 2020 13:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619210;
-        bh=Zml1+0xJweNFSjXiesLawigWZ/ZrC5pMb+efHl+zArI=;
+        s=default; t=1605618952;
+        bh=h5VWCUOtijWFwdnCAgQlgw+aocOp9uhPcWoUd1h7kP4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iAVvGPPn4pkXJYyRzIY2R9K8W1ocIzYJHc/+dtT4qQL06DHcM/am47Vp/S24gVOXP
-         PB7CLqh2W26yH8PnDGnoHagbyHZavUDy0kyKuMInAibz1tCZ+RfYldU4oosjc0LKIu
-         xXgnUB7Zup1Jzx2WN5UzjhUFrWDSa494Zs4shqsA=
+        b=gSelzmst5hox4dPzgaZBftgrbWgTBNGGZaSITBcdBqp2CofatBs2GcsPPa7ntvlyz
+         PhNKBbkWTbbVesWxr89vcSYWxzzmxmuO/7QjoGkTGIpWE1HGa1w574dMWYMmtxJMpu
+         QMZklgxcwjwN7vv6+pjC+inW5aC/DjK1Oi8gjKX8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Tao Ma <boyu.mt@taobao.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 4.19 064/101] ext4: unlock xattr_sem properly in ext4_inline_data_truncate()
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH 4.14 62/85] r8169: fix potential skb double free in an error path
 Date:   Tue, 17 Nov 2020 14:05:31 +0100
-Message-Id: <20201117122116.221184832@linuxfoundation.org>
+Message-Id: <20201117122114.082163959@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joseph Qi <joseph.qi@linux.alibaba.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-commit 7067b2619017d51e71686ca9756b454de0e5826a upstream.
+[ Upstream commit cc6528bc9a0c901c83b8220a2e2617f3354d6dd9 ]
 
-It takes xattr_sem to check inline data again but without unlock it
-in case not have. So unlock it before return.
+The caller of rtl8169_tso_csum_v2() frees the skb if false is returned.
+eth_skb_pad() internally frees the skb on error what would result in a
+double free. Therefore use __skb_put_padto() directly and instruct it
+to not free the skb on error.
 
-Fixes: aef1c8513c1f ("ext4: let ext4_truncate handle inline data correctly")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Tao Ma <boyu.mt@taobao.com>
-Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Link: https://lore.kernel.org/r/1604370542-124630-1-git-send-email-joseph.qi@linux.alibaba.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
+Fixes: b423e9ae49d7 ("r8169: fix offloaded tx checksum for small packets.")
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Link: https://lore.kernel.org/r/f7e68191-acff-9ded-4263-c016428a8762@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/ext4/inline.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/realtek/r8169.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -1921,6 +1921,7 @@ int ext4_inline_data_truncate(struct ino
+--- a/drivers/net/ethernet/realtek/r8169.c
++++ b/drivers/net/ethernet/realtek/r8169.c
+@@ -7143,7 +7143,8 @@ static bool rtl8169_tso_csum_v2(struct r
+ 		opts[1] |= transport_offset << TCPHO_SHIFT;
+ 	} else {
+ 		if (unlikely(rtl_test_hw_pad_bug(tp, skb)))
+-			return !eth_skb_pad(skb);
++			/* eth_skb_pad would free the skb on error */
++			return !__skb_put_padto(skb, ETH_ZLEN, false);
+ 	}
  
- 	ext4_write_lock_xattr(inode, &no_expand);
- 	if (!ext4_has_inline_data(inode)) {
-+		ext4_write_unlock_xattr(inode, &no_expand);
- 		*has_inline = 0;
- 		ext4_journal_stop(handle);
- 		return 0;
+ 	return true;
 
 
