@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF442B657D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D0B2B64BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730636AbgKQNXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:23:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57118 "EHLO mail.kernel.org"
+        id S1732992AbgKQNsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:48:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731193AbgKQNWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:22:46 -0500
+        id S1727554AbgKQNew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:34:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B21624686;
-        Tue, 17 Nov 2020 13:22:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51B162078E;
+        Tue, 17 Nov 2020 13:34:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619366;
-        bh=bl0rta8rZ4nHmfk1/GDLmXaqXmKmzYohkIs5buIPXJI=;
+        s=default; t=1605620092;
+        bh=7lcMbKOxhN/Le0MESmUbQj5z7nRfEq6LZOAd40/ORv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G/TzIgDs/MVyF2yocZgj7Yx62fFQlt7O4aSm6s8ow3sDpMMC7CBBxy4gWBVlBeAmZ
-         i573ZS3RJBQo99+GZoDbAoIJ1IRih4QJiYeC2cmZrWCvOINjsJAYsow6jZchnve6sK
-         HKXwlDlxsBHpQTSQGO/60lTRgBkfN6n12//DsFOQ=
+        b=KYV9Dd6+H7lqcnC28QBQS6Qm2YGN9NYgIjGhJkkmXOXu0ZJwBdFL8vK2qIXTwGEaX
+         wDMqgSR3HUfT3ZaqJqQPdvLtw4oZc/fnU7qPCgY0aOIQUsVylxHP0SxUlaCprllAiQ
+         fbFfIs/0BMONlOFeGXuh3zfAArvtHN0c5zBeKdUs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Brian Bunker <brian@purestorage.com>,
+        Jitendra Khasdev <jitendra.khasdev@oracle.com>,
+        Hannes Reinecke <hare@suse.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 015/151] ASoC: codecs: wcd9335: Set digital gain range correctly
+Subject: [PATCH 5.9 105/255] scsi: scsi_dh_alua: Avoid crash during alua_bus_detach()
 Date:   Tue, 17 Nov 2020 14:04:05 +0100
-Message-Id: <20201117122122.144631784@linuxfoundation.org>
+Message-Id: <20201117122144.069004291@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +45,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit 6d6bc54ab4f2404d46078abc04bf4dee4db01def ]
+[ Upstream commit 5faf50e9e9fdc2117c61ff7e20da49cd6a29e0ca ]
 
-digital gain range is -84dB min to 40dB max, however this was not
-correctly specified in the range.
+alua_bus_detach() might be running concurrently with alua_rtpg_work(), so
+we might trip over h->sdev == NULL and call BUG_ON().  The correct way of
+handling it is to not set h->sdev to NULL in alua_bus_detach(), and call
+rcu_synchronize() before the final delete to ensure that all concurrent
+threads have left the critical section.  Then we can get rid of the
+BUG_ON() and replace it with a simple if condition.
 
-Fix this by with correct range!
-
-Fixes: 8c4f021d806a ("ASoC: wcd9335: add basic controls")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20201028154340.17090-2-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/1600167537-12509-1-git-send-email-jitendra.khasdev@oracle.com
+Link: https://lore.kernel.org/r/20200924104559.26753-1-hare@suse.de
+Cc: Brian Bunker <brian@purestorage.com>
+Acked-by: Brian Bunker <brian@purestorage.com>
+Tested-by: Jitendra Khasdev <jitendra.khasdev@oracle.com>
+Reviewed-by: Jitendra Khasdev <jitendra.khasdev@oracle.com>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wcd9335.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/device_handler/scsi_dh_alua.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index f318403133e96..81906c25e4a87 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -618,7 +618,7 @@ static const char * const sb_tx8_mux_text[] = {
- 	"ZERO", "RX_MIX_TX8", "DEC8", "DEC8_192"
- };
+diff --git a/drivers/scsi/device_handler/scsi_dh_alua.c b/drivers/scsi/device_handler/scsi_dh_alua.c
+index f32da0ca529e0..308bda2e9c000 100644
+--- a/drivers/scsi/device_handler/scsi_dh_alua.c
++++ b/drivers/scsi/device_handler/scsi_dh_alua.c
+@@ -658,8 +658,8 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
+ 					rcu_read_lock();
+ 					list_for_each_entry_rcu(h,
+ 						&tmp_pg->dh_list, node) {
+-						/* h->sdev should always be valid */
+-						BUG_ON(!h->sdev);
++						if (!h->sdev)
++							continue;
+ 						h->sdev->access_state = desc[0];
+ 					}
+ 					rcu_read_unlock();
+@@ -705,7 +705,8 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
+ 			pg->expiry = 0;
+ 			rcu_read_lock();
+ 			list_for_each_entry_rcu(h, &pg->dh_list, node) {
+-				BUG_ON(!h->sdev);
++				if (!h->sdev)
++					continue;
+ 				h->sdev->access_state =
+ 					(pg->state & SCSI_ACCESS_STATE_MASK);
+ 				if (pg->pref)
+@@ -1147,7 +1148,6 @@ static void alua_bus_detach(struct scsi_device *sdev)
+ 	spin_lock(&h->pg_lock);
+ 	pg = rcu_dereference_protected(h->pg, lockdep_is_held(&h->pg_lock));
+ 	rcu_assign_pointer(h->pg, NULL);
+-	h->sdev = NULL;
+ 	spin_unlock(&h->pg_lock);
+ 	if (pg) {
+ 		spin_lock_irq(&pg->lock);
+@@ -1156,6 +1156,7 @@ static void alua_bus_detach(struct scsi_device *sdev)
+ 		kref_put(&pg->kref, release_port_group);
+ 	}
+ 	sdev->handler_data = NULL;
++	synchronize_rcu();
+ 	kfree(h);
+ }
  
--static const DECLARE_TLV_DB_SCALE(digital_gain, 0, 1, 0);
-+static const DECLARE_TLV_DB_SCALE(digital_gain, -8400, 100, -8400);
- static const DECLARE_TLV_DB_SCALE(line_gain, 0, 7, 1);
- static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
- static const DECLARE_TLV_DB_SCALE(ear_pa_gain, 0, 150, 0);
 -- 
 2.27.0
 
