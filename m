@@ -2,78 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248B92B5BA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109E42B5BAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgKQJSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:18:46 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:45382 "EHLO mail.skyhub.de"
+        id S1727236AbgKQJTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:19:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgKQJSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:18:45 -0500
-Received: from zn.tnic (p200300ec2f1013008dee3addeed0ca22.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:1300:8dee:3add:eed0:ca22])
+        id S1726200AbgKQJTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 04:19:52 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1D5C01EC03D5;
-        Tue, 17 Nov 2020 10:18:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1605604724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=rbikV7BXkOw+k4+ExJQ238GNgrFHk9HjzHfX7ZZpv4U=;
-        b=qkU3HYeNhT2a0N0WA4BP2rvjX8OoVJ9HcRc4S+/F4r9aF4g2AZUJvBxT+73uiaXlNHsz6B
-        G8lg97nc847JuWrg6apInBM7UJjNRHI1lavgpU8HwYtgOK2aATntYlqAnBP4WOk/VEfsox
-        WkrkWUOHYr/q1blerhad0xsNi9chnFc=
-Date:   Tue, 17 Nov 2020 10:18:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][v2] x86/microcode/intel: check cpu stepping and
- processor flag before saving microcode
-Message-ID: <20201117091837.GA5719@zn.tnic>
-References: <20201113015923.13960-1-yu.c.chen@intel.com>
- <20201116122735.GA1131@zn.tnic>
- <20201117022518.GA17555@chenyu-office.sh.intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B4E02417E;
+        Tue, 17 Nov 2020 09:19:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605604791;
+        bh=W2obSm8Q5WV3J0n3YYVGmzEgDz3xGzgFoH4NhA880LY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qmSlsSfThTdhsSFxqYJ8Ssxf74VZV4gCGKJP6Xzh0J0UaDYFvOAcer//u1GVrLJcR
+         yUOwRen2klvD5MHwIVJBsDzZic9MqzCy4Xjw7vOaDH8wg53nUmusjicPu4fcpJqpyd
+         Bv8+6izebH3AYsBoF21oTj670rpQE/fJI9fgsGsI=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kex9Q-00BHax-U0; Tue, 17 Nov 2020 09:19:49 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201117022518.GA17555@chenyu-office.sh.intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 17 Nov 2020 09:19:48 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        kernel-team@android.com, dri-devel@lists.freedesktop.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] drm/meson: Module removal fixes
+In-Reply-To: <0b429c41-421a-2ae0-66a0-a142c56acadd@baylibre.com>
+References: <20201116200744.495826-1-maz@kernel.org>
+ <0b429c41-421a-2ae0-66a0-a142c56acadd@baylibre.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <09de6683eea499cfd83ab0c67e0cdca2@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: narmstrong@baylibre.com, khilman@baylibre.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com, kernel-team@android.com, dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:25:18AM +0800, Chen Yu wrote:
-> If I understand correctly, the only place that invokes
-> save_mc_for_early() is in generic_load_microcode(). While in
-> generic_load_microcode() only microcode has a newer version will be
-> saved by checking has_newer_microcode(), and this function leverages
-> find_matching_signature() to check if the candidate is of the same
-> signature. So when it comes to save_microcode_patch(), the signature
-> already matches. In case save_mc_for_early() will be invoked by other
-> function in the future, it is okay to add this check too.
+Hi Neil,
 
-The important aspect is that you need to save in intel_ucode_patch
-the *exact* patch for the CPU you're running on. The code above that
-in save_microcode_patch() adds patches of the same family/model but
-*not* same stepping to the microcode cache in case we want to support
-mixed-stepping revisions. And those you don't need to check for exact
-match.
+On 2020-11-17 08:49, Neil Armstrong wrote:
+> Hi Marc,
+> 
+> On 16/11/2020 21:07, Marc Zyngier wrote:
+>> Hi all,
+>> 
+>> Having recently moved over to a top-of-the-tree u-boot on one of my
+>> VIM3L systems in order to benefit from unrelated improvements
+>> (automatic PCIe detection, EFI...), I faced the issue that my kernel
+>> would hang like this:
+>> 
+>> [  OK  ] Finished Helper to synchronize boot up for ifupdown.
+>> [  OK  ] Started Rule-based Manager for Device Events and Files.
+>> [    7.114516] VDDCPU: supplied by regulator-dummy
+>> [  OK  ] Found device /dev/ttyAML0.
+>> [    7.146862] meson-drm ff900000.vpu: Queued 2 outputs on vpu
+>> [    7.169630] fb0: switching to meson-drm-fb from simple
+>> [    7.169944] Console: switching to colour dummy device 80x25
+>> [    7.179250] meson-drm ff900000.vpu: CVBS Output connector not 
+>> available
+>> 
+>> and that's it.
+>> 
+>> After some poking around, I figured out that it is in the
+>> meson-dw-hdmi module that the CPU was hanging...
+> 
+> I'll be interested in having your kernel config, I never had such 
+> report
+> since I enabled HDMI support in U-Boot a few years ago.
 
-What I'd like, however, is to get rid of that mixed-stepping support -
-which is total nonsense anyway, if you ask me - and that would simplify
-the code a *lot* more.
+Yeah, I was pretty surprised too. I have a hunch that this is caused
+by u-boot DT exposing an extra MMIO region (dubbed "hhi") that gets
+picked up by the kernel driver. *Not* having the region in the DT
+(as in the kernel's version of the same DT) makes the driver work
+exactly once:
 
-Thx for testing.
+Decompiled u-boot DT:
 
+         hdmi-tx@0 {
+                 compatible = "amlogic,meson-g12a-dw-hdmi";
+                 reg = <0x00 0x00 0x00 0x10000 0x00 0x3c000 0x00 0x1000>;
+                 [...]
+                 reg-names = "hdmitx\0hhi";
+
+Decompiled kernel DT:
+
+         hdmi-tx@0 {
+                 compatible = "amlogic,meson-g12a-dw-hdmi";
+                 reg = <0x00 0x00 0x00 0x10000>;
+
+There seem to be some complex interactions between the HDMI driver
+and the DRM driver, both using this MMIO region at any given time.
+But I admit not having tried very hard to follow the DRM maze of
+intricate callbacks. All I needed was this box to reliably boot with
+the firmware-provided DT.
+
+You can find a reasonably recent version of my config at [1].
+
+         M.
+
+[1] http://www.loen.fr/tmp/Config.full-arm64
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Jazz is not dead. It just smells funny...
