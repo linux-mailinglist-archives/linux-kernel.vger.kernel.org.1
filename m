@@ -2,139 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA952B6DFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F10E62B6E00
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729819AbgKQTBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
+        id S1729983AbgKQTCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:02:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgKQTBF (ORCPT
+        with ESMTP id S1728170AbgKQTCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:01:05 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D99C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:01:05 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id u2so10747944pls.10
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:01:05 -0800 (PST)
+        Tue, 17 Nov 2020 14:02:36 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8A7C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:02:35 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a65so4249994wme.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:02:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JYseXDP4i2Hhs9DKh0McOND6mIxwYGtf78PBSIeQhlo=;
-        b=chs8hXLcwd8v9y7yYPXw8+lpeD8ILMsYdq9M/QbiFunuKosgKrQiGFGhM/sdSNogEy
-         y5FfPEAmg+uQyaYiJjNGok+rMJ+0yycAVzRmf/9oduyoN8qTx/xfR7C2clvGuZlvrSWm
-         h6uHL4U70EPBHKI/1HFJ4P1SlY8UG/T8TjZodhVXNlUmiiElibOjwtnIlTngdpxF44l4
-         cCw9lczormZiwbDCu10NzFeEWNVXO6tTqdAGXJXhLoRCNJrtFD5N7lxotBuqMMngIfLn
-         LSexRkOzUEp0CuuC6tJX50yWmoeveA7MmM9ViI5QqXT9mS5bDX1jjDVGsQ0Z29y3/aVj
-         2q6A==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aB3RzbF3m+Z6/FqXxyXIhr+Vt8dqXl3DQEjdVHMAUy0=;
+        b=bjFj8+TPtQ91/C4v+b7Q3YX2K36GbTX82dI9b4XJJyTVGANQGMae74PG7x4101XdKE
+         YsUWmw7CIPHamCogS+tsfuM3qEL0q4Ur1cJaA/GPPBhNVajADE4yS0DE4HLaVGjSmAzC
+         3MYk/b8xWFtlxRwxIOvSUvuA385V+kiL1S4dE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JYseXDP4i2Hhs9DKh0McOND6mIxwYGtf78PBSIeQhlo=;
-        b=lOGkro0oWonmki75BIHrg17PNyd0Z7Y51xygB3vfoyBqHzANeYQMtD9+CHfX5ro23S
-         k1+2hQs8vGRJa+DyTZe2B6MJ24kDTFH25njjN69IjmG9gsQ/J8lZBF5urk0XC60WODyM
-         hrxcxFeWrW5pRbdJYEUfm16mLiE3WsJA+ssA6R2rAc0aLAlqv6F+zCfE7UEM3Hk3yqRz
-         BPStW1Xr2e6a3L47WAryEpmgO/a+4nDRV5C5lolpgGkBC0ER5m97pzciBZg0zTaExLFI
-         K6NqlZi9shkWk3l3chf55O1e0lOKJJZhoiray8SBNE7tUptvf8WjQ8Sc9NQwyxHZ3tjA
-         /xXw==
-X-Gm-Message-State: AOAM533tYhvhSnyN16SaCt18QqCsujyLZZc+mXHf+7y0h2HsB7USgS32
-        1e1OfS5/tJbICH0cUb/DauxKMf9Ct1CtF2qG/GnzkJ3R8lSqVg==
-X-Google-Smtp-Source: ABdhPJzOldRgN7SwijtAG+tyo1d3bxVSfLlQ9ioQKrAyDUF3ZWvrGjttGmCw3KlHNpWoKDPJBLlEPsGTDtV8hBGihh0=
-X-Received: by 2002:a17:90a:d250:: with SMTP id o16mr449165pjw.25.1605639664820;
- Tue, 17 Nov 2020 11:01:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=aB3RzbF3m+Z6/FqXxyXIhr+Vt8dqXl3DQEjdVHMAUy0=;
+        b=bE5EmLovGRbiOQBJfoum3rno73IuQSsKHGhvC2aNZnvKN74UroQzMKqEbmelO5fT/F
+         31dR3DdQ7JiBhTR2Cb8072EHu6TfKX4xGp1BsaK7iFioujRi7n+uerRvHxNjTFtuYtlr
+         q7vtd/INbL05n+poypZcK1UnMU7fXpO3XZOOya2YntrFr9Vgl764iiTfrn4lbKaN2rK3
+         +0gSVaoIM/FIstTw8eK8mUdyn92pu2Y5kYllb9gF7ccVigykR7mtycEyNV51lJEi1jjY
+         sI3O4bGjK7lVQKr1HDNXseO+LBqyMKQ7c+Bzti2rhraQN77m7819BbNtJcS3g+vMksRv
+         GFVQ==
+X-Gm-Message-State: AOAM5303Mcym17JYPAvrHApHDi6GQukV+tksWubxlCFAespT3XopME5M
+        IyUDNVLGigqjndIlN5Ek9VOGEqUZC2kNRA==
+X-Google-Smtp-Source: ABdhPJy33P35zG5c/C2euGoTdmYRuFwy2hKncNNGdVb5M/FEMoYCCXo0rdgmO/wiGFMvk6EwL//oAQ==
+X-Received: by 2002:a7b:c8c5:: with SMTP id f5mr542288wml.174.1605639754375;
+        Tue, 17 Nov 2020 11:02:34 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id v19sm5020653wmj.31.2020.11.17.11.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 11:02:33 -0800 (PST)
+Date:   Tue, 17 Nov 2020 20:02:31 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Subject: Re: [PATCH 21/42] drm/nouveau/nvkm/core/firmware: Fix formatting,
+ provide missing param description
+Message-ID: <20201117190231.GQ401619@phenom.ffwll.local>
+Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
+        linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org
+References: <20201116174112.1833368-1-lee.jones@linaro.org>
+ <20201116174112.1833368-22-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20201117013951.7827-1-rdunlap@infradead.org>
-In-Reply-To: <20201117013951.7827-1-rdunlap@infradead.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 17 Nov 2020 11:00:54 -0800
-Message-ID: <CAKwvOdmESwnF14TLjRfzJg8Dau8XW0LgoDvXtdPjPOqdf211SQ@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: fix barrier() use in <vdso/processor.h>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-riscv@lists.infradead.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116174112.1833368-22-lee.jones@linaro.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 5:40 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> riscv's <vdso/processor.h> uses barrier() so it should
-> #include <asm/barrier.h> to prevent build errors.
->
-> Fixes this build error:
->   CC [M]  drivers/net/ethernet/emulex/benet/be_main.o
-> In file included from ./include/vdso/processor.h:10,
->                  from ./arch/riscv/include/asm/processor.h:11,
->                  from ./include/linux/prefetch.h:15,
->                  from drivers/net/ethernet/emulex/benet/be_main.c:14:
-> ./arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
-> ./arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
->    14 |  barrier();
->
-> This happens with a total of 5 networking drivers -- they all use
-> <linux/prefetch.h>.
->
-> rv64 allmodconfig now builds cleanly after this patch.
->
-> Fixes fallout from:
-> 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
->
-> Fixes: ad5d1122b82f ("riscv: use vDSO common flow to reduce the latency of the time-related functions")
+On Mon, Nov 16, 2020 at 05:40:51PM +0000, Lee Jones wrote:
+> ... and demote non-conformant kernel-doc header.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:71: warning: Function parameter or member 'subdev' not described in 'nvkm_firmware_get'
+>  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:71: warning: Function parameter or member 'fwname' not described in 'nvkm_firmware_get'
+>  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:71: warning: Function parameter or member 'ver' not described in 'nvkm_firmware_get'
+>  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:71: warning: Function parameter or member 'fw' not described in 'nvkm_firmware_get'
+>  drivers/gpu/drm/nouveau/nvkm/core/firmware.c:106: warning: Function parameter or member 'fw' not described in 'nvkm_firmware_put'
+> 
+> Cc: Ben Skeggs <bskeggs@redhat.com>
 
-Hi Randy,
-Thanks for the patch, it looks good to me.  I only had a question on
-the commit message.
+Ben fyi I smashed this into drm-misc-next, seemed trivial enough to not be
+a bother.
+-Daniel
 
-Is this also related to:
-commit 3347acc6fcd4 ("compiler.h: fix barrier_data() on clang")
-
-I plan to backport 3347acc6fcd4, so it would be good if all of the
-follow ups are all tagged accordingly with fixes tags, so that I don't
-break anything backporting 3347acc6fcd4 because I forgot or missed any
-follow ups that also needed to be backported.
-
-> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Arvind Sankar <nivedita@alum.mit.edu>
-> Cc: linux-riscv@lists.infradead.org
-> Cc: clang-built-linux@googlegroups.com
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Nathan Chancellor <natechancellor@gmail.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: nouveau@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  arch/riscv/include/asm/vdso/processor.h |    2 ++
->  1 file changed, 2 insertions(+)
->
-> --- lnx-510-rc4.orig/arch/riscv/include/asm/vdso/processor.h
-> +++ lnx-510-rc4/arch/riscv/include/asm/vdso/processor.h
-> @@ -4,6 +4,8 @@
->
->  #ifndef __ASSEMBLY__
->
-> +#include <asm/barrier.h>
-> +
->  static inline void cpu_relax(void)
->  {
->  #ifdef __riscv_muldiv
-
-
+>  drivers/gpu/drm/nouveau/nvkm/core/firmware.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/core/firmware.c b/drivers/gpu/drm/nouveau/nvkm/core/firmware.c
+> index 8b25367917ca0..ca1f8463cff51 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/core/firmware.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/core/firmware.c
+> @@ -58,9 +58,10 @@ nvkm_firmware_load_blob(const struct nvkm_subdev *subdev, const char *base,
+>  
+>  /**
+>   * nvkm_firmware_get - load firmware from the official nvidia/chip/ directory
+> - * @subdev	subdevice that will use that firmware
+> - * @fwname	name of firmware file to load
+> - * @fw		firmware structure to load to
+> + * @subdev:	subdevice that will use that firmware
+> + * @fwname:	name of firmware file to load
+> + * @ver:	firmware version to load
+> + * @fw:		firmware structure to load to
+>   *
+>   * Use this function to load firmware files in the form nvidia/chip/fwname.bin.
+>   * Firmware files released by NVIDIA will always follow this format.
+> @@ -98,7 +99,7 @@ nvkm_firmware_get(const struct nvkm_subdev *subdev, const char *fwname, int ver,
+>  	return -ENOENT;
+>  }
+>  
+> -/**
+> +/*
+>   * nvkm_firmware_put - release firmware loaded with nvkm_firmware_get
+>   */
+>  void
+> -- 
+> 2.25.1
+> 
 
 -- 
-Thanks,
-~Nick Desaulniers
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
