@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3E72B6252
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDE52B6127
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731327AbgKQN1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:27:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35162 "EHLO mail.kernel.org"
+        id S1729905AbgKQNQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:16:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731711AbgKQN11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:27:27 -0500
+        id S1730258AbgKQNQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:16:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9D1C20781;
-        Tue, 17 Nov 2020 13:27:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF448221EB;
+        Tue, 17 Nov 2020 13:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619647;
-        bh=HTJPBbTXiaezYSYUFt1vEApllh2IIbW2iUeRUSn41C4=;
+        s=default; t=1605618969;
+        bh=QYyaOXSd0eKMFSKWkG83c+g8K5KcFa/XwJ/YmR8wgiQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cUD/TB6X6Z3OX2uUFLg6RYvPMLVslOz6EIFl14CDDMgaV/sndxct351YIqJq0Fr2B
-         wMuV1sg8dwvG9BxzqciHoV+YYNjV8mLH6CU5pnG0994cXAIF45Z+ILZLWXScPt5TQk
-         K3HRL0qHqetrv1o0rBx1lrgC+vDlhO2UOxkTqlkA=
+        b=Hnz+oliqHZ/ksY5mDkp48zV5Osmcv9CR4ma99JDQ76WNq/owsSCuraAwp+iHzM6/k
+         zhS9tPvFCfI6xr6pwpmxcX2LJ79SAeriJ9U4e16TdjmaY9rWv8vBhPnCDMtZ79b7YT
+         qRaPolMQpNHBmA/6k8Yr2mUD+kqbvFUW4WFO/cmw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 078/151] i2c: mediatek: move dma reset before i2c reset
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 39/85] xfs: fix rmap key and record comparison functions
 Date:   Tue, 17 Nov 2020 14:05:08 +0100
-Message-Id: <20201117122125.216296019@linuxfoundation.org>
+Message-Id: <20201117122112.940725240@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +43,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qii Wang <qii.wang@mediatek.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit aafced673c06b7c77040c1df42e2e965be5d0376 ]
+[ Upstream commit 6ff646b2ceb0eec916101877f38da0b73e3a5b7f ]
 
-The i2c driver default do dma reset after i2c reset, but sometimes
-i2c reset will trigger dma tx2rx, then apdma write data to dram
-which has been i2c_put_dma_safe_msg_buf(kfree). Move dma reset
-before i2c reset in mtk_i2c_init_hw to fix it.
+Keys for extent interval records in the reverse mapping btree are
+supposed to be computed as follows:
 
-Signed-off-by: Qii Wang <qii.wang@mediatek.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+(physical block, owner, fork, is_btree, is_unwritten, offset)
+
+This provides users the ability to look up a reverse mapping from a bmbt
+record -- start with the physical block; then if there are multiple
+records for the same block, move on to the owner; then the inode fork
+type; and so on to the file offset.
+
+However, the key comparison functions incorrectly remove the
+fork/btree/unwritten information that's encoded in the on-disk offset.
+This means that lookup comparisons are only done with:
+
+(physical block, owner, offset)
+
+This means that queries can return incorrect results.  On consistent
+filesystems this hasn't been an issue because blocks are never shared
+between forks or with bmbt blocks; and are never unwritten.  However,
+this bug means that online repair cannot always detect corruption in the
+key information in internal rmapbt nodes.
+
+Found by fuzzing keys[1].attrfork = ones on xfs/371.
+
+Fixes: 4b8ed67794fe ("xfs: add rmap btree operations")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-mt65xx.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/xfs/libxfs/xfs_rmap_btree.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index 2152ec5f535c1..5a9f0d17f52c8 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -389,6 +389,10 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
- {
- 	u16 control_reg;
+diff --git a/fs/xfs/libxfs/xfs_rmap_btree.c b/fs/xfs/libxfs/xfs_rmap_btree.c
+index 9d9c9192584c9..cd689d21d3af8 100644
+--- a/fs/xfs/libxfs/xfs_rmap_btree.c
++++ b/fs/xfs/libxfs/xfs_rmap_btree.c
+@@ -262,8 +262,8 @@ xfs_rmapbt_key_diff(
+ 	else if (y > x)
+ 		return -1;
  
-+	writel(I2C_DMA_HARD_RST, i2c->pdmabase + OFFSET_RST);
-+	udelay(50);
-+	writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
-+
- 	mtk_i2c_writew(i2c, I2C_SOFT_RST, OFFSET_SOFTRESET);
+-	x = XFS_RMAP_OFF(be64_to_cpu(kp->rm_offset));
+-	y = rec->rm_offset;
++	x = be64_to_cpu(kp->rm_offset);
++	y = xfs_rmap_irec_offset_pack(rec);
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -294,8 +294,8 @@ xfs_rmapbt_diff_two_keys(
+ 	else if (y > x)
+ 		return -1;
  
- 	/* Set ioconfig */
-@@ -419,10 +423,6 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
- 
- 	mtk_i2c_writew(i2c, control_reg, OFFSET_CONTROL);
- 	mtk_i2c_writew(i2c, I2C_DELAY_LEN, OFFSET_DELAY_LEN);
--
--	writel(I2C_DMA_HARD_RST, i2c->pdmabase + OFFSET_RST);
--	udelay(50);
--	writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
- }
- 
- /*
+-	x = XFS_RMAP_OFF(be64_to_cpu(kp1->rm_offset));
+-	y = XFS_RMAP_OFF(be64_to_cpu(kp2->rm_offset));
++	x = be64_to_cpu(kp1->rm_offset);
++	y = be64_to_cpu(kp2->rm_offset);
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -400,8 +400,8 @@ xfs_rmapbt_keys_inorder(
+ 		return 1;
+ 	else if (a > b)
+ 		return 0;
+-	a = XFS_RMAP_OFF(be64_to_cpu(k1->rmap.rm_offset));
+-	b = XFS_RMAP_OFF(be64_to_cpu(k2->rmap.rm_offset));
++	a = be64_to_cpu(k1->rmap.rm_offset);
++	b = be64_to_cpu(k2->rmap.rm_offset);
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
+@@ -430,8 +430,8 @@ xfs_rmapbt_recs_inorder(
+ 		return 1;
+ 	else if (a > b)
+ 		return 0;
+-	a = XFS_RMAP_OFF(be64_to_cpu(r1->rmap.rm_offset));
+-	b = XFS_RMAP_OFF(be64_to_cpu(r2->rmap.rm_offset));
++	a = be64_to_cpu(r1->rmap.rm_offset);
++	b = be64_to_cpu(r2->rmap.rm_offset);
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
 -- 
 2.27.0
 
