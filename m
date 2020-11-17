@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63D62B613E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB95F2B6140
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730531AbgKQNRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:17:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49138 "EHLO mail.kernel.org"
+        id S1730541AbgKQNRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:17:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729782AbgKQNQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:16:58 -0500
+        id S1729935AbgKQNRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:17:03 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85C13206D5;
-        Tue, 17 Nov 2020 13:16:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82BF221734;
+        Tue, 17 Nov 2020 13:17:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619018;
-        bh=Ath5HiLb+Ur+ryUqN182/0Y5RZXzARERCr1b6+NLivk=;
+        s=default; t=1605619022;
+        bh=bAOESwU40WE647EZwq+HTbu5x/7cJ1kekcQwV8aud5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tVzFVRAg3v5gRWCpAVfA0S1Gza/3UZYHhwFUGTvhyQnBJhx0kjRDsYyFmwOOOSsvA
-         KIr8xerQNPMi27RKXThzTVg2y34qeJoax+rna2AyNZgVR2MWA22vbwqy5XNOZqpBLu
-         2GezHcfR4c1H3l5kLhSdcp3kJMFThkLND+KMqfRs=
+        b=I2Kn5w3s7xSAY6mAqSGmFFsBTxsu9XhjJeJrG+vTjPHNPIl7R66PziW6s3I8PZeft
+         uxnCpSAQXebdqYfCmCEZl7r+e0s5BYGXv0oXJH+fttX0eM7Kfs69pkZ+BKVZKdbyBl
+         d2itY2isbRX6wCilyj8ryRMH5vE2gInyILVK44b4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 68/85] perf/core: Fix a memory leak in perf_event_parse_addr_filter()
-Date:   Tue, 17 Nov 2020 14:05:37 +0100
-Message-Id: <20201117122114.364908010@linuxfoundation.org>
+        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>, Jinoh Kang <luke1337@theori.io>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Wei Liu <wl@xen.org>
+Subject: [PATCH 4.14 69/85] xen/events: avoid removing an event channel while handling it
+Date:   Tue, 17 Nov 2020 14:05:38 +0100
+Message-Id: <20201117122114.416198605@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
 References: <20201117122111.018425544@linuxfoundation.org>
@@ -46,86 +45,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "kiyin(尹亮)" <kiyin@tencent.com>
+From: Juergen Gross <jgross@suse.com>
 
-commit 7bdb157cdebbf95a1cd94ed2e01b338714075d00 upstream
+commit 073d0552ead5bfc7a3a9c01de590e924f11b5dd2 upstream.
 
-As shown through runtime testing, the "filename" allocation is not
-always freed in perf_event_parse_addr_filter().
+Today it can happen that an event channel is being removed from the
+system while the event handling loop is active. This can lead to a
+race resulting in crashes or WARN() splats when trying to access the
+irq_info structure related to the event channel.
 
-There are three possible ways that this could happen:
+Fix this problem by using a rwlock taken as reader in the event
+handling loop and as writer when deallocating the irq_info structure.
 
- - It could be allocated twice on subsequent iterations through the loop,
- - or leaked on the success path,
- - or on the failure path.
+As the observed problem was a NULL dereference in evtchn_from_irq()
+make this function more robust against races by testing the irq_info
+pointer to be not NULL before dereferencing it.
 
-Clean up the code flow to make it obvious that 'filename' is always
-freed in the reallocation path and in the two return paths as well.
+And finally make all accesses to evtchn_to_irq[row][col] atomic ones
+in order to avoid seeing partial updates of an array element in irq
+handling. Note that irq handling can be entered only for event channels
+which have been valid before, so any not populated row isn't a problem
+in this regard, as rows are only ever added and never removed.
 
-We rely on the fact that kfree(NULL) is NOP and filename is initialized
-with NULL.
+This is XSA-331.
 
-This fixes the leak. No other side effects expected.
-
-[ Dan Carpenter: cleaned up the code flow & added a changelog. ]
-[ Ingo Molnar: updated the changelog some more. ]
-
-Fixes: 375637bc5249 ("perf/core: Introduce address range filtering")
-Signed-off-by: "kiyin(尹亮)" <kiyin@tencent.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Cc: Anthony Liguori <aliguori@amazon.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: stable@vger.kernel.org
+Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Reported-by: Jinoh Kang <luke1337@theori.io>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Reviewed-by: Wei Liu <wl@xen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/events/core.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/xen/events/events_base.c |   40 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -8581,6 +8581,7 @@ perf_event_parse_addr_filter(struct perf
- 			if (token == IF_SRC_FILE || token == IF_SRC_FILEADDR) {
- 				int fpos = filter->range ? 2 : 1;
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -32,6 +32,7 @@
+ #include <linux/slab.h>
+ #include <linux/irqnr.h>
+ #include <linux/pci.h>
++#include <linux/spinlock.h>
  
-+				kfree(filename);
- 				filename = match_strdup(&args[fpos]);
- 				if (!filename) {
- 					ret = -ENOMEM;
-@@ -8619,16 +8620,13 @@ perf_event_parse_addr_filter(struct perf
- 				 */
- 				ret = -EOPNOTSUPP;
- 				if (!event->ctx->task)
--					goto fail_free_name;
-+					goto fail;
+ #ifdef CONFIG_X86
+ #include <asm/desc.h>
+@@ -69,6 +70,23 @@ const struct evtchn_ops *evtchn_ops;
+  */
+ static DEFINE_MUTEX(irq_mapping_update_lock);
  
- 				/* look up the path and grab its inode */
- 				ret = kern_path(filename, LOOKUP_FOLLOW,
- 						&filter->path);
- 				if (ret)
--					goto fail_free_name;
--
--				kfree(filename);
--				filename = NULL;
-+					goto fail;
++/*
++ * Lock protecting event handling loop against removing event channels.
++ * Adding of event channels is no issue as the associated IRQ becomes active
++ * only after everything is setup (before request_[threaded_]irq() the handler
++ * can't be entered for an event, as the event channel will be unmasked only
++ * then).
++ */
++static DEFINE_RWLOCK(evtchn_rwlock);
++
++/*
++ * Lock hierarchy:
++ *
++ * irq_mapping_update_lock
++ *   evtchn_rwlock
++ *     IRQ-desc lock
++ */
++
+ static LIST_HEAD(xen_irq_list_head);
  
- 				ret = -EINVAL;
- 				if (!filter->path.dentry ||
-@@ -8648,13 +8646,13 @@ perf_event_parse_addr_filter(struct perf
- 	if (state != IF_STATE_ACTION)
- 		goto fail;
+ /* IRQ <-> VIRQ mapping. */
+@@ -103,7 +121,7 @@ static void clear_evtchn_to_irq_row(unsi
+ 	unsigned col;
  
-+	kfree(filename);
- 	kfree(orig);
+ 	for (col = 0; col < EVTCHN_PER_ROW; col++)
+-		evtchn_to_irq[row][col] = -1;
++		WRITE_ONCE(evtchn_to_irq[row][col], -1);
+ }
  
+ static void clear_evtchn_to_irq_all(void)
+@@ -140,7 +158,7 @@ static int set_evtchn_to_irq(unsigned ev
+ 		clear_evtchn_to_irq_row(row);
+ 	}
+ 
+-	evtchn_to_irq[row][col] = irq;
++	WRITE_ONCE(evtchn_to_irq[row][col], irq);
  	return 0;
+ }
  
--fail_free_name:
--	kfree(filename);
- fail:
-+	kfree(filename);
- 	free_filters_list(filters);
- 	kfree(orig);
+@@ -150,7 +168,7 @@ int get_evtchn_to_irq(unsigned evtchn)
+ 		return -1;
+ 	if (evtchn_to_irq[EVTCHN_ROW(evtchn)] == NULL)
+ 		return -1;
+-	return evtchn_to_irq[EVTCHN_ROW(evtchn)][EVTCHN_COL(evtchn)];
++	return READ_ONCE(evtchn_to_irq[EVTCHN_ROW(evtchn)][EVTCHN_COL(evtchn)]);
+ }
  
+ /* Get info for IRQ */
+@@ -259,10 +277,14 @@ static void xen_irq_info_cleanup(struct
+  */
+ unsigned int evtchn_from_irq(unsigned irq)
+ {
+-	if (unlikely(WARN(irq >= nr_irqs, "Invalid irq %d!\n", irq)))
++	const struct irq_info *info = NULL;
++
++	if (likely(irq < nr_irqs))
++		info = info_for_irq(irq);
++	if (!info)
+ 		return 0;
+ 
+-	return info_for_irq(irq)->evtchn;
++	return info->evtchn;
+ }
+ 
+ unsigned irq_from_evtchn(unsigned int evtchn)
+@@ -438,16 +460,21 @@ static int __must_check xen_allocate_irq
+ static void xen_free_irq(unsigned irq)
+ {
+ 	struct irq_info *info = info_for_irq(irq);
++	unsigned long flags;
+ 
+ 	if (WARN_ON(!info))
+ 		return;
+ 
++	write_lock_irqsave(&evtchn_rwlock, flags);
++
+ 	list_del(&info->list);
+ 
+ 	set_info_for_irq(irq, NULL);
+ 
+ 	WARN_ON(info->refcnt > 0);
+ 
++	write_unlock_irqrestore(&evtchn_rwlock, flags);
++
+ 	kfree(info);
+ 
+ 	/* Legacy IRQ descriptors are managed by the arch. */
+@@ -1233,6 +1260,8 @@ static void __xen_evtchn_do_upcall(void)
+ 	int cpu = get_cpu();
+ 	unsigned count;
+ 
++	read_lock(&evtchn_rwlock);
++
+ 	do {
+ 		vcpu_info->evtchn_upcall_pending = 0;
+ 
+@@ -1248,6 +1277,7 @@ static void __xen_evtchn_do_upcall(void)
+ 	} while (count != 1 || vcpu_info->evtchn_upcall_pending);
+ 
+ out:
++	read_unlock(&evtchn_rwlock);
+ 
+ 	put_cpu();
+ }
 
 
