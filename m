@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DDD2B678E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1292B677B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731455AbgKQOcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:32:36 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:38813 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729401AbgKQOcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:32:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605623552; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=xBQcg+Wcwhh18eydvFxaDQClwZpGMJnYWJxgECPLHjo=; b=iu29VqF8ioCQxnte6GzPPfVvm2KinNdFCiDRCaK5890VZxFZz9XvAVLZ5JmeGA6pCGXuWapV
- 8j2LROiFR1Q3wjmIluPT6pSO+yjPlNMR9GnLehqc2Wvn/1D0Qnv5fVK0l/MD06oWYeWHa3Xz
- tWfLZBk9EArEe7QksRV1fS2lGqc=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5fb3dedff34fcfd5e5782fbe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Nov 2020 14:31:59
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 51788C43464; Tue, 17 Nov 2020 14:31:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 688D4C433ED;
-        Tue, 17 Nov 2020 14:31:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 688D4C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv8 8/8] iommu: arm-smmu-impl: Add a space before open parenthesis
-Date:   Tue, 17 Nov 2020 20:00:47 +0530
-Message-Id: <ef0f8ba1c8fc728e6766b64661326e6c5bc6081d.1605621785.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1605621785.git.saiprakash.ranjan@codeaurora.org>
+        id S1728837AbgKQObg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:31:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727473AbgKQObe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:31:34 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ADDC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 06:31:33 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id 142so10845086ljj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 06:31:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CRNNMopfkxn+VbJFF8fI8tGBFKP5orloO2rQjUFQKOI=;
+        b=Y+j3kYy6CxUVpJjX7uiv8z7kUFQHFfUnW9E0aI+eOYbtbt9nS2SMFoEUKTnwpvBUu+
+         0lQJ5/liKye2i5rZW8uFJRRyeBQdr4DuPKQCkmGL5ubzxFm+FgmZw0irLfRPvi1egPLq
+         K7rVTVLzIv6K4M4L09dGY2RvA+GzzJyUPH+mFdPC013corbwI8z8WW4mn/UrK5oKw5gr
+         LluD3kJed8bGNncliPXXXwWLcNRJ10BhgJryKOjPNVN2WlKvQI5C2U8xbjZCHi/yR/ZI
+         E2+u3W2f/DAZD4LPtLkl0hkebQXMIplJD52nG+lA8FsslNMvewcGYddshfKBsh6NSY52
+         A77w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CRNNMopfkxn+VbJFF8fI8tGBFKP5orloO2rQjUFQKOI=;
+        b=BE8nft6xyXS4XVPpb5wjFx4G2JtGwkQA7g2bLv94BcJM+6qAdOZFaoxmtCVAZT7yqE
+         TGDQ2lOOxVYsaSXAVSdr6xW3A8qMtAJctGmQi4pskehVt6Q4xnVDgemG2oWgpVTn8iic
+         Dm7Q3XSSUHbX2tEv4A8ySPyKFnfC4wvWbDvCxkt28vc7GRFzCb4lgQTI246o+tyeR0rP
+         POuTHRSUPOU1r1msCLiNowDpnL4qQXAsZFvlC9EKUm363LVFbHt373D924ZFxO/+7z8p
+         uVmiYY38NInSeokk2HmKJpCRq3VQiB9/pt6eKud2+xE3HHlCkE2ARdGJ+HN+OL5U/Kud
+         QaEg==
+X-Gm-Message-State: AOAM530lOLDBbo9TP2pFq5w+ZaUujK/gJL4AMARkA8LWozCKuJEs3+BT
+        49miXzE1Iq86aT1al/OdfJDc2f7ERHi9S7AA305Xjw==
+X-Google-Smtp-Source: ABdhPJwhFmmmrgC7UXjA7BTEFoJsK9fNW3jfe2IY5edq9Fj8wxs51CC8G1UDkNLs8JvWkLj1TaUUNtitFeqWzOQCp6g=
+X-Received: by 2002:a2e:8050:: with SMTP id p16mr2174189ljg.69.1605623491013;
+ Tue, 17 Nov 2020 06:31:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201117134222.31482-1-mgorman@techsingularity.net>
+ <20201117134222.31482-4-mgorman@techsingularity.net> <20201117141814.GN3121392@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201117141814.GN3121392@hirez.programming.kicks-ass.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 17 Nov 2020 15:31:19 +0100
+Message-ID: <CAKfTPtDQgv8RCe1RRCGg0px0Bp6GbdAhXbRKTH5zeVaRDmK+vg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] sched/numa: Limit the amount of imbalance that can
+ exist at fork time
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the checkpatch warning for space required before the open
-parenthesis.
+On Tue, 17 Nov 2020 at 15:18, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Nov 17, 2020 at 01:42:22PM +0000, Mel Gorman wrote:
+> > -                     if (local_sgs.idle_cpus)
+> > +                     if (local_sgs.idle_cpus >= (sd->span_weight >> 2))
+> >                               return NULL;
+>
+> Is that the same 25% ?
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Acked-by: Will Deacon <will@kernel.org>
----
- drivers/iommu/arm/arm-smmu/arm-smmu-impl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-index 26e2734eb4d7..136872e77195 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-@@ -12,7 +12,7 @@
- 
- static int arm_smmu_gr0_ns(int offset)
- {
--	switch(offset) {
-+	switch (offset) {
- 	case ARM_SMMU_GR0_sCR0:
- 	case ARM_SMMU_GR0_sACR:
- 	case ARM_SMMU_GR0_sGFSR:
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+same question for me
+could we encapsulate this 25% allowed imbalance like for adjust_numa_imbalance
