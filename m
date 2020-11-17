@@ -2,176 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8E32B5F02
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D2A2B5F05
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgKQMU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:20:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbgKQMU0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:20:26 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F3BC0613CF;
-        Tue, 17 Nov 2020 04:20:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=F4oE8CWK7FZC7t2FRoj08gxnQ3r+g6SQr4V4iGcIE4A=; b=Tnku2STyYKtDDGxw9QXvCiJaeB
-        1XxlTH3ZFpYC80CBv54GWKmMXFVsXDfXmtiKVTwX+2s5nw5GvfYc07smDgNqvJSEu/H3hZlHu60xG
-        daMFq71bIAmDCIPFNVCGvvXSbZRkcrT6UvA0KIfO1pFehp85AfbLTyOi0FUHLq/jn8T4hFQqqmBcE
-        fcsSR3Fbm8lOMYyJJDh6tE5nsrGApZ/lh4ZT24DINAyJRMtxsBQuyUg+Wyf0A8gjA+HNvqMn3hLSt
-        oOgaKBxnaq0692MqiEWgS9GGy3IOk4rhh2M8sdC6/Yed0OKu5BZP+dgZoJPKLMUioWSYJKnX3yBlW
-        yGdIA+9A==;
-Received: from 54-240-197-232.amazon.com ([54.240.197.232] helo=freeip.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kezxm-0003Hv-FJ; Tue, 17 Nov 2020 12:19:58 +0000
-Message-ID: <f0d35834054cc1ac77ac0e6b68e84d62de3c48f7.camel@infradead.org>
-Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>, lukas@wunner.de,
-        linux-pci@vger.kernel.org, kernelfans@gmail.com,
-        andi@firstfloor.org, hpa@zytor.com, bhe@redhat.com, x86@kernel.org,
-        okaya@kernel.org, mingo@redhat.com, jay.vosburgh@canonical.com,
-        dyoung@redhat.com, gavin.guo@canonical.com, bp@alien8.de,
-        bhelgaas@google.com, Guowen Shan <gshan@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel@gpiccoli.net,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ddstreet@canonical.com, vgoyal@redhat.com
-Date:   Tue, 17 Nov 2020 12:19:53 +0000
-In-Reply-To: <873618xqaa.fsf@nanos.tec.linutronix.de>
-References: <20201117001907.GA1342260@bjorn-Precision-5520>
-         <87h7poeqqn.fsf@x220.int.ebiederm.org>
-         <873618xqaa.fsf@nanos.tec.linutronix.de>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-TrWVw4FTKA8TBc3D348P"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+        id S1727977AbgKQMVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:21:41 -0500
+Received: from mga01.intel.com ([192.55.52.88]:5164 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726360AbgKQMVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:21:40 -0500
+IronPort-SDR: Sl9ijPSEbNwnULNOKmhviTZ6rH5hr/wa4ZF0yxShKntL+Gq6k+3mndD5BNcoqH76XFyObsb763
+ x1imdg1BVvnQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="188967990"
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="188967990"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 04:21:40 -0800
+IronPort-SDR: N37MpWcFs4jQosLgJFR7LuYond0jFmr3/dy8avuqv++cBXS3uA/MnnCaXE4lRziVClT/9/0gdS
+ 5+lwjJ/93TLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="430461169"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 17 Nov 2020 04:21:37 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Nov 2020 14:21:37 +0200
+Date:   Tue, 17 Nov 2020 14:21:37 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        pmalani@chromium.org, enric.balletbo@collabora.com,
+        rajmohan.mani@intel.com, azhar.shaikh@intel.com
+Subject: Re: [PATCH v2 7/8] usb: typec: intel_pmc_mux: Configure active cable
+ properties for USB4
+Message-ID: <20201117122137.GG3437448@kuha.fi.intel.com>
+References: <20201113202503.6559-1-utkarsh.h.patel@intel.com>
+ <20201113202503.6559-8-utkarsh.h.patel@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113202503.6559-8-utkarsh.h.patel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 13, 2020 at 12:25:02PM -0800, Utkarsh Patel wrote:
+> Value received as a part of Thunderbolt 3 cable discover mode VDO needs
+> to be configured in the USB4 mode for the Thunderbolt rounded support and
+> active cable plug link training.
+> 
+> Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+> 
+> --
+> Changes in v2:
+> - No change.
+> --
+> ---
+>  drivers/usb/typec/mux/intel_pmc_mux.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+> index aa3211f1c4c3..61feb358aad3 100644
+> --- a/drivers/usb/typec/mux/intel_pmc_mux.c
+> +++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+> @@ -295,6 +295,7 @@ pmc_usb_mux_usb4(struct pmc_usb_port *port, struct typec_mux_state *state)
+>  {
+>  	struct enter_usb_data *data = state->data;
+>  	struct altmode_req req = { };
+> +	u8 cable_rounded;
+>  	u8 cable_speed;
+>  
+>  	if (IOM_PORT_ACTIVITY_IS(port->iom_status, TBT) ||
+> @@ -308,9 +309,6 @@ pmc_usb_mux_usb4(struct pmc_usb_port *port, struct typec_mux_state *state)
+>  	/* USB4 Mode */
+>  	req.mode_data = PMC_USB_ALTMODE_FORCE_LSR;
+>  
+> -	if (data->active_link_training)
+> -		req.mode_data |= PMC_USB_ALTMODE_ACTIVE_LINK;
+> -
+>  	req.mode_data |= (port->orientation - 1) << PMC_USB_ALTMODE_ORI_SHIFT;
+>  	req.mode_data |= (port->role - 1) << PMC_USB_ALTMODE_UFP_SHIFT;
+>  
+> @@ -322,6 +320,20 @@ pmc_usb_mux_usb4(struct pmc_usb_port *port, struct typec_mux_state *state)
+>  		fallthrough;
+>  	default:
+>  		req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE;
+> +
+> +		if (data->tbt_cable_vdo) {
+> +			/* Active Thunderbolt 3 cable */
+> +			if (data->tbt_cable_vdo & TBT_CABLE_LINK_TRAINING)
+> +				req.mode_data |= PMC_USB_ALTMODE_ACTIVE_LINK;
+> +
+> +			cable_rounded =
+> +				TBT_CABLE_ROUNDED_SUPPORT(data->tbt_cable_vdo);
 
---=-TrWVw4FTKA8TBc3D348P
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+No need for the newline:
 
-On Tue, 2020-11-17 at 10:53 +0100, Thomas Gleixner wrote:
-> But that does not solve the problem either simply because then the IOMMU
-> will catch the rogue MSIs and you get an interrupt storm on the IOMMU
-> error interrupt.
+			cable_rounded = TBT_CABLE_ROUNDED_SUPPORT(data->tbt_cable_vdo);
 
-Not if you can tell the IOMMU to stop reporting those errors.
+> +			req.mode_data |= PMC_USB_ALTMODE_TBT_GEN(cable_rounded);
+> +		} else {
+> +			/* Active USB4 cable */
+> +			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_LINK |
+> +				PMC_USB_ALTMODE_TBT_GEN(1);
+> +		}
+>  		break;
+>  	}
 
-We can easily do it per-device for DMA errors; not quite sure what
-granularity we have for interrupts. Perhaps the Intel IOMMU only lets
-you set the Fault Processing Disable bit per IRTE entry, and you still
-get faults for Compatibility Format interrupts? Not sure about AMD...
+thanks,
 
---=-TrWVw4FTKA8TBc3D348P
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
-MTE3MTIxOTUzWjAvBgkqhkiG9w0BCQQxIgQgLnLL+Sjrt5I94zL5TIN0F/ZwijSYTUGBxZWBRUgA
-aL4wgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAHvZE+1h/3xlpI0hIkfl7xJKxE3zvJk4/q+TB/5Nl3BjR6Ke7mw/Y/5RDJn5DjF0
-MCL0ljLix9zFYlvqtFpZ6Rvq1FrTqLqQs3RmaKVx3AsqjfKFEe1L+6pmAjNx3nWm7jrNawo7szog
-5pv6xAQq+b/TGos6o9c/JN+6SfYOCO5oqlZiEguY+LT3qbxyt0NG9IDYkS2Reev2lp9HpWVFw/sj
-ltNZxofq9oHWirJbmxbwTww7ucZMFINMYHtwf7+UIJSAMKppqV0t8wHQNsHz9n6k8yfXCoX1CVv+
-zEMS3p8bZDlhIRZImEPt4C9JbiFi5KUCXLYlJL9Pmn2dyeiWyCgAAAAAAAA=
-
-
---=-TrWVw4FTKA8TBc3D348P--
-
+-- 
+heikki
