@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46372B6201
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71FC2B617C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731008AbgKQNY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:24:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59382 "EHLO mail.kernel.org"
+        id S1730404AbgKQNTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:19:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730835AbgKQNYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:24:24 -0500
+        id S1730745AbgKQNTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:19:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4675B2467D;
-        Tue, 17 Nov 2020 13:24:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F17C2225B;
+        Tue, 17 Nov 2020 13:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619464;
-        bh=fZXpqzRVhUKq/GPnlC0UTgWYvCzqvthyjK3Oz86uZ6M=;
+        s=default; t=1605619140;
+        bh=kW6BdGEdt/qVS4A1JYuP8GKZc0CMpt5ud0hNVAooEno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TrzUrACe9I8+QUz2zWoBW/ajcntgSd1+waSapJF9oGDE0s9E1o1MzAFgQ6py18C1z
-         g7pmhuaNCeZMx4EglBNj1RvrCydsbHAI2VAdPrS+7Dc9ya74v07bdJZAnTmUd/LWdp
-         dWNDn59bFO22Fhd2rqDNDTuqzc75ZrDNpYySN5A0=
+        b=ieI8egw1ygRGJw0zrYIM7lwdXv5802BZh9LCDtmODUCScOsdM417S/+XqcF4Lkr2Y
+         oCDuZmK3wntgnLwn7IEC4YY3zBZNRgV+/a+HzQrg+V+KdN5z9ss2niPKYTWH5rVg3T
+         WBc6S6eSkMNnGCnGZ6QZqtLk/v149pFU0tG3w+gE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Brian Foster <bfoster@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 048/151] usb: dwc3: pci: add support for the Intel Alder Lake-S
+Subject: [PATCH 4.19 011/101] xfs: set xefi_discard when creating a deferred agfl free log intent item
 Date:   Tue, 17 Nov 2020 14:04:38 +0100
-Message-Id: <20201117122123.766124392@linuxfoundation.org>
+Message-Id: <20201117122113.651550678@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 1384ab4fee12c4c4f8bd37bc9f8686881587b286 ]
+[ Upstream commit 2c334e12f957cd8c6bb66b4aa3f79848b7c33cab ]
 
-This patch adds the necessary PCI ID for Intel Alder Lake-S
-devices.
+Make sure that we actually initialize xefi_discard when we're scheduling
+a deferred free of an AGFL block.  This was (eventually) found by the
+UBSAN while I was banging on realtime rmap problems, but it exists in
+the upstream codebase.  While we're at it, rearrange the structure to
+reduce the struct size from 64 to 56 bytes.
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Fixes: fcb762f5de2e ("xfs: add bmapi nodiscard flag")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/dwc3-pci.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/xfs/libxfs/xfs_alloc.c | 1 +
+ fs/xfs/libxfs/xfs_bmap.h  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
-index ba88039449e03..58b8801ce8816 100644
---- a/drivers/usb/dwc3/dwc3-pci.c
-+++ b/drivers/usb/dwc3/dwc3-pci.c
-@@ -40,6 +40,7 @@
- #define PCI_DEVICE_ID_INTEL_TGPLP		0xa0ee
- #define PCI_DEVICE_ID_INTEL_TGPH		0x43ee
- #define PCI_DEVICE_ID_INTEL_JSP			0x4dee
-+#define PCI_DEVICE_ID_INTEL_ADLS		0x7ae1
+diff --git a/fs/xfs/libxfs/xfs_alloc.c b/fs/xfs/libxfs/xfs_alloc.c
+index 1eb7933dac83e..b3a9043b0c9ee 100644
+--- a/fs/xfs/libxfs/xfs_alloc.c
++++ b/fs/xfs/libxfs/xfs_alloc.c
+@@ -2213,6 +2213,7 @@ xfs_defer_agfl_block(
+ 	new->xefi_startblock = XFS_AGB_TO_FSB(mp, agno, agbno);
+ 	new->xefi_blockcount = 1;
+ 	new->xefi_oinfo = *oinfo;
++	new->xefi_skip_discard = false;
  
- #define PCI_INTEL_BXT_DSM_GUID		"732b85d5-b7a7-4a1b-9ba0-4bbd00ffd511"
- #define PCI_INTEL_BXT_FUNC_PMU_PWR	4
-@@ -367,6 +368,9 @@ static const struct pci_device_id dwc3_pci_id_table[] = {
- 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_JSP),
- 	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
+ 	trace_xfs_agfl_free_defer(mp, agno, 0, agbno, 1);
  
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ADLS),
-+	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
-+
- 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_NL_USB),
- 	  (kernel_ulong_t) &dwc3_pci_amd_properties, },
- 	{  }	/* Terminating Entry */
+diff --git a/fs/xfs/libxfs/xfs_bmap.h b/fs/xfs/libxfs/xfs_bmap.h
+index 488dc8860fd7c..50242ba3cdb72 100644
+--- a/fs/xfs/libxfs/xfs_bmap.h
++++ b/fs/xfs/libxfs/xfs_bmap.h
+@@ -52,9 +52,9 @@ struct xfs_extent_free_item
+ {
+ 	xfs_fsblock_t		xefi_startblock;/* starting fs block number */
+ 	xfs_extlen_t		xefi_blockcount;/* number of blocks in extent */
++	bool			xefi_skip_discard;
+ 	struct list_head	xefi_list;
+ 	struct xfs_owner_info	xefi_oinfo;	/* extent owner */
+-	bool			xefi_skip_discard;
+ };
+ 
+ #define	XFS_BMAP_MAX_NMAP	4
 -- 
 2.27.0
 
