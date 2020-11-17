@@ -2,92 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E71A2B7085
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA4D2B7082
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgKQU5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:57:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
+        id S1726487AbgKQU5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgKQU5F (ORCPT
+        with ESMTP id S1726156AbgKQU5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:57:05 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D46C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:57:04 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id 131so7593786pfb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:57:04 -0800 (PST)
+        Tue, 17 Nov 2020 15:57:04 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0547BC0613CF;
+        Tue, 17 Nov 2020 12:57:03 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id m16so9078998edr.3;
+        Tue, 17 Nov 2020 12:57:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Uf9n4l7EOSL8uXdRL9UcruoyeN94agPo5jcXDhX5nJY=;
-        b=jMJNd1lM27olGuBxYU0sDngc2zuZeRq5lDKU5rOo2wtnUwZ4jfa4T725Tygz07t15a
-         TU8VyMCTM6dXGgeiravn3uQtZjP7pKLH09v76BS/6su0Z2BSW+JB0UMbeI5eZalXmiF0
-         8TSnButTlMZ/XkuaWmMlqSrWxG85xBInJUGVk=
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ddOfz6r21avy+Gf5L6KkTvDcz/FVQukeuhfDgsb2Gz8=;
+        b=svJ9Vk5Pp32nkIViNuhyl+wme/EAIknlj4Uw/KAckNvqSwMiraD6LyAcUMn4JxttXa
+         j4NC69v1pj/ZyN7SrTmoObbzWm5tLrF6rYlvU/oNTiAXKPsb6fRyjnron6qWd4p9FLsZ
+         FSxhxATCssVyj5MY3XnJDBNkquwF3c2lV+5tiYrvbyfivlx8UcseFwk6OwRGwyDV8Vsd
+         SHDwroSBFp7+mqpOv3YRNVREEE0ZoxyFmnMRB6RG+n0SR1N+2/UeMH0HtAFhbzHFv+Xs
+         wl/Z94Eq0eFvOgooDOMZfX975RLmObA0k+O1K0UFC5jtR2jaf6rGhDHRoc9wLar/SLub
+         gYGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Uf9n4l7EOSL8uXdRL9UcruoyeN94agPo5jcXDhX5nJY=;
-        b=ecqzWqbYBDFbzhhAjPafrg3VRCJmmD/7F5duvz/wwLnvD/Ps9YT2JnXrGEvFxYEy24
-         eYq26Ym2hMG/AAqTLfp05dAA9d/vqce25qHAEXr5hTHK5LSI56T8mn+Hxo2QQguzJRMW
-         4mrsDLsyI5GEGQwMO9CjnAGY9R1TjI+b326897GQDJSHYBpksujdeGnKTr0BKXZsOF+R
-         NlZC5X7Js+gD8S8zwYEj8auy6FqewYBCmK0bSsS4+YcjDMyslsDZ+wNqBqmhe/DLkNii
-         g6zfLacNPGh4PcHMIyJSH8pM1p4DzyzugpjDO3acr9jz822R2WiLaCZSrEhqi4eRSZEk
-         JqYQ==
-X-Gm-Message-State: AOAM533tsr9vIPvJ/n3mw0Np5Bpu/mK1zmv8Yfnr7Qi5sUQJMnLKQu+E
-        a9jTOYkjBWXqbHUWDeWIfQhwYQ==
-X-Google-Smtp-Source: ABdhPJw3j1XCkoo/ADs9hWbTzIJn4p6GlAXgdrb/on1MkteJCUDhZcYZTutrBGXrcTCm/MG8EIRZZA==
-X-Received: by 2002:a63:1a1e:: with SMTP id a30mr5301001pga.168.1605646623572;
-        Tue, 17 Nov 2020 12:57:03 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q12sm4412524pjl.41.2020.11.17.12.57.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ddOfz6r21avy+Gf5L6KkTvDcz/FVQukeuhfDgsb2Gz8=;
+        b=fDy7uKhYKZI+OGIw+/OL5Plz+Fpeo56/RdBRGu8kAt3+p1vPR1aCFvhPMfpv3DXYng
+         jIimWcBAgyXA/xZvADgcCZ9mp/aaTLbVxOIPEMFVrIk3sRggCPmSEcIeIyunyu1Wu8HR
+         wfzCRiGnP6/qhciuZLEZGG+Lh9Q4imL5te8I2xk/ziEnob9m1F3ws2gMxtZ3YkkMNyHo
+         FfN6KtB1EXxbPssFhS7lGq5AEazrLx0P+YjMSgH4JU5qMLweHHyXa8jEVlDCQDzs1GSF
+         /KQqylZfg867e9cfQNxSGqF6ncp33cgz75cLliigDg9BWZQek0+r6bsk8bOsZHti2DzM
+         mJHw==
+X-Gm-Message-State: AOAM531vPywLRympA1if0LU4TexsMxhy7eMpJcC/n8bA4FhzkLEcUnSL
+        Hf6jqCBnHGNkJTAIpEUTA6w=
+X-Google-Smtp-Source: ABdhPJyoQgV3y0Y/kAeZqRFPyaod8kZF8F+DWFpzgW5AaJLeEBIGdgw0h+WzFzDkPy3TcaeZDrwo4w==
+X-Received: by 2002:a50:daca:: with SMTP id s10mr14271292edj.263.1605646622596;
         Tue, 17 Nov 2020 12:57:02 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, linux-kselftest@vger.kernel.org
-Subject: [PATCH] selftests/seccomp: sh: Fix register names
-Date:   Tue, 17 Nov 2020 12:56:56 -0800
-Message-Id: <20201117205656.1000223-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id k2sm11859258ejp.6.2020.11.17.12.57.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 12:57:01 -0800 (PST)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
+Date:   Tue, 17 Nov 2020 22:57:00 +0200
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, robh@kernel.org, ciorneiioana@gmail.com,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4 4/4] net: phy: dp83td510: Add support for the
+ DP83TD510 Ethernet PHY
+Message-ID: <20201117205700.to7h7pfgniq5fx5l@skbuf>
+References: <20201117201555.26723-1-dmurphy@ti.com>
+ <20201117201555.26723-5-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117201555.26723-5-dmurphy@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It looks like the seccomp selftests were never actually built for sh.
-This fixes it, though I don't have an environment to do a runtime test
-of it yet.
+On Tue, Nov 17, 2020 at 02:15:55PM -0600, Dan Murphy wrote:
+> The DP83TD510E is an ultra-low power Ethernet physical layer transceiver
+> that supports 10M single pair cable.
+> 
+> The device supports both 2.4-V p2p and 1-V p2p output voltage as defined
+> by IEEE 802.3cg 10Base-T1L specfications. These modes can be forced via
+> the device tree or the device is defaulted to auto negotiation to
+> determine the proper p2p voltage.
+> 
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+> 
+> v4 - Considerable rework of the code after secondary test setup was created.
+> This version also uses the handle_interrupt call back and reduces the
+> configuration arrays as it was determined that 80% of the array was the same.
+> 
+>  drivers/net/phy/Kconfig     |   6 +
+>  drivers/net/phy/Makefile    |   1 +
+>  drivers/net/phy/dp83td510.c | 505 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 512 insertions(+)
+>  create mode 100644 drivers/net/phy/dp83td510.c
+> 
 
-Fixes: 0bb605c2c7f2b4b3 ("sh: Add SECCOMP_FILTER")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[snip]
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 7f7ecfcd66db..26c72f2b61b1 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1804,8 +1804,8 @@ TEST_F(TRACE_poke, getpid_runs_normally)
- #define SYSCALL_RET(_regs)	(_regs).a[(_regs).windowbase * 4 + 2]
- #elif defined(__sh__)
- # define ARCH_REGS		struct pt_regs
--# define SYSCALL_NUM(_regs)	(_regs).gpr[3]
--# define SYSCALL_RET(_regs)	(_regs).gpr[0]
-+# define SYSCALL_NUM(_regs)	(_regs).regs[3]
-+# define SYSCALL_RET(_regs)	(_regs).regs[0]
- #else
- # error "Do not know how to find your architecture's registers and syscalls"
- #endif
--- 
-2.25.1
+> +static int dp83td510_ack_interrupt(struct phy_device *phydev)
+> +{
+> +	int ret;
+> +
+> +	ret = phy_read(phydev, DP83TD510_INT_REG1);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = phy_read(phydev, DP83TD510_INT_REG2);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	phy_trigger_machine(phydev);
+> +
+> +	return 0;
+> +}
+> +
+> +static irqreturn_t dp83td510_handle_interrupt(struct phy_device *phydev)
+> +{
+> +	int ret;
+> +
+> +	ret = dp83td510_ack_interrupt(phydev);
+> +	if (ret)
+> +		return IRQ_NONE;
+> +
+> +	return IRQ_HANDLED;
+> +}
 
+From what I can see in the datasheet, the INT_REG1 and INT_REG2 are used
+for both interrupt configuration and interrupt status.
+
+If this is the case, the state machine should only be triggered if the
+interrupt was triggered (eg DP83TD510_INT1_LINK is set), not if _any_
+bit from the register is set. This is broken since anytime you have
+interrupts enabled, the lower half of the register will be non-zero
+since that contains you interrupt enabled bits.
+
+The .handle_interrupt() should look something like:
+
+	ret = phy_read(phydev, DP83TD510_INT_REG1);
+	if (ret < 0)
+		return ret;
+	
+	if (!(ret & (DP83TD510_INT1_ESD | DP83TD510_INT1_LINK | DP83TD510_INT1_RHF)))
+		return IRQ_NONE;
+
+	ret = phy_read(phydev, DP83TD510_INT_REG2);
+	if (ret < 0)
+		return ret;
+	
+	if (!(ret & (DP83TD510_INT2_POR | DP83TD510_INT2_POL | DP83TD510_INT2_PAGE)))
+		return IRQ_NONE;
+
+	phy_trigger_machine(phydev);
+
+	return IRQ_HANDLED;
+
+> +
+> +static int dp83td510_config_intr(struct phy_device *phydev)
+> +{
+> +	int int_status;
+> +	int gen_cfg_val;
+> +	int ret;
+> +
+> +	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
+> +		int_status = phy_read(phydev, DP83TD510_INT_REG1);
+> +		if (int_status < 0)
+> +			return int_status;
+> +
+> +		int_status = (DP83TD510_INT1_ESD_EN | DP83TD510_INT1_LINK_EN |
+> +			      DP83TD510_INT1_RHF_EN);
+> +
+> +		ret = phy_write(phydev, DP83TD510_INT_REG1, int_status);
+> +		if (ret)
+> +			return ret;
+> +
+> +		int_status = phy_read(phydev, DP83TD510_INT_REG2);
+> +		if (int_status < 0)
+> +			return int_status;
+> +
+> +		int_status = (DP83TD510_INT2_POR | DP83TD510_INT2_POL |
+> +				DP83TD510_INT2_PAGE);
+> +
+
+Shouldn't you use DP83TD510_INT2_POR_EN, DP83TD510_INT2_POL_EN etc here?
+It seems that you are setting up the bits corresponding with the
+interrupt status and not the interrupt enable.
+
+Ioana
