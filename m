@@ -2,229 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB562B5908
+	by mail.lfdr.de (Postfix) with ESMTP id CA3FB2B5909
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgKQFIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 00:08:52 -0500
-Received: from mga14.intel.com ([192.55.52.115]:38231 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgKQFIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 00:08:52 -0500
-IronPort-SDR: ktIBitpLMIdG8mGpNGjnmZq+woz227auCDlkgKg2r33K2VcBP++YHyPwNGqLwTsH2vfepaL3XV
- AqsuDa1JEEMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="170080137"
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="170080137"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 21:08:50 -0800
-IronPort-SDR: i01Crj7irBcfQ7jzhdErDCJiTb3lyxWqUi5a/zEe7Dl+e9CsKxCJXNjNJCLktgC0V19sNOi/I5
- DC+RIMUfmowg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="430375801"
-Received: from lkp-server01.sh.intel.com (HELO 345567a03a52) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 16 Nov 2020 21:08:49 -0800
-Received: from kbuild by 345567a03a52 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ketEW-00001B-J5; Tue, 17 Nov 2020 05:08:48 +0000
-Date:   Tue, 17 Nov 2020 13:08:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:ras/core] BUILD SUCCESS
- 098416e6986127f7e4c8ce4fd6bbbd80e55b0386
-Message-ID: <5fb35ad1.SUG3lk3raYWDaAfO%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726902AbgKQFJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 00:09:03 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:55782 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQFJC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 00:09:02 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH543Qe103066;
+        Tue, 17 Nov 2020 05:08:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : sender : to : cc : subject : references :
+ in-reply-to : content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=JPFAvW3nwCtBjHj95lKDgrg4Zm+QWmvC+LDlS0/00vw=;
+ b=y31QKlvUzrn25sVA1aRn/t40CHbjKiqW7XG0rdE9WcCFwV+gncPj5B5G352Z6k704Gn7
+ V7KvIhFWqtZVl+YzyX4O3P8Gz75JSntv2/O78xfVONnHZy+W7dMqhl2gs8MUi+I/93oe
+ Ye91eElxDmLGy0HoWEp5h3J9ihZLsXxcqlNhBxVU/W2dyyuxGK9hnF/aae6UIOgU3/nZ
+ x2TgnGh8ig7FTIy6nGO1pAa4VHgDu9NYKCcOhPvexzoBzNCUoM8w+hW/EmqJiCJGO2pV
+ xCy4I6PnaQqrnUWU7vmJDmI4qTchVRoEz+1j99rS2DdoVxdl7AbUMqsxDcMfKg2FDFKb iA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 34t7vn0gqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 05:08:53 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH51Rcc110521;
+        Tue, 17 Nov 2020 05:08:53 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 34ts0qcuhe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 05:08:52 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AH58p0I010793;
+        Tue, 17 Nov 2020 05:08:51 GMT
 MIME-Version: 1.0
+Message-ID: <48883f4d-edfa-4a8d-9d45-aa5225f82e57@default>
+Date:   Mon, 16 Nov 2020 21:08:45 -0800 (PST)
+From:   Gulam Mohamed <gulam.mohamed@oracle.com>
+Sender: Gulam Mohamed <gulam.mohamed@oracle.com>
+To:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Martin Petersen <martin.petersen@oracle.com>,
+        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Junxiao Bi <junxiao.bi@oracle.com>
+Subject: RE: [PATCH] iscsi: Do Not set param when sock is NULL
+References: <1a8aaa17-b1a3-4d6a-b87a-ff49d61a0d0b@default>
+ <9df96d73-015c-4de6-96fa-2f315b066909@default>
+In-Reply-To: <9df96d73-015c-4de6-96fa-2f315b066909@default>
+X-Priority: 3
+X-Mailer: Oracle Beehive Extensions for Outlook 2.0.1.9.1  (1003210) [OL
+ 16.0.5056.0 (x86)]
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170036
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011170036
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
-branch HEAD: 098416e6986127f7e4c8ce4fd6bbbd80e55b0386  x86/mce: Use "safe" MSR functions when enabling additional error logging
+Gentle reminder.
 
-elapsed time: 725m
+Regards,
+Gulam Mohamed.
 
-configs tested: 165
-configs skipped: 60
+-----Original Message-----
+From: Gulam Mohamed=20
+Sent: Thursday, November 5, 2020 11:11 AM
+To: Lee Duncan <lduncan@suse.com>; Chris Leech <cleech@redhat.com>; James E=
+.J. Bottomley <jejb@linux.ibm.com>; Martin K. Petersen <martin.petersen@ora=
+cle.com>; open-iscsi@googlegroups.com; linux-scsi@vger.kernel.org; linux-ke=
+rnel@vger.kernel.org
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Subject: [PATCH] iscsi: Do Not set param when sock is NULL
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Description
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+1. This Kernel panic could be due to a timing issue when there is a race be=
+tween the sync thread and the initiator was processing of a login response =
+from the target. The session re-open can be invoked from two places
+          a.=09Sessions sync thread when the iscsid restart
+          b.=09From iscsid through iscsi error handler
+2. The session reopen sequence is as follows in user-space (iscsi-initiator=
+-utils)
+          a.=09Disconnect the connection
+          b.=09Then send the stop connection request to the kernel which re=
+leases the connection (releases the socket)
+          c.=09Queues the reopen for 2 seconds delay
+         d.=09Once the delay expires, create the TCP connection again by ca=
+lling the connect() call
+         e.=09Poll for the connection
+          f.=09When poll is successful i.e when the TCP connection is estab=
+lished, it performs
+=09i. Creation of session and connection data structures
+=09ii. Bind the connection to the session. This is the place where we assig=
+n the sock to tcp_sw_conn->sock
+=09iii. Sets the parameters like target name, persistent address etc .
+=09iv. Creates the login pdu
+=09v. Sends the login pdu to kernel
+=09vi. Returns to the main loop to process further events. The kernel then =
+sends the login request over to the target node
+=09g. Once login response with success is received, it enters into full fea=
+ture phase and sets the negotiable parameters like max_recv_data_length, ma=
+x_transmit_length, data_digest etc . 3. While setting the negotiable parame=
+ters by calling "iscsi_session_set_neg_params()", kernel panicked as sock w=
+as NULL
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                     cu1830-neo_defconfig
-arm                         socfpga_defconfig
-nios2                         10m50_defconfig
-powerpc                 mpc8315_rdb_defconfig
-xtensa                  nommu_kc705_defconfig
-sh                          rsk7203_defconfig
-arm                       netwinder_defconfig
-arm                     am200epdkit_defconfig
-mips                           gcw0_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                     mpc512x_defconfig
-sh                        sh7785lcr_defconfig
-arm                        oxnas_v6_defconfig
-m68k                            q40_defconfig
-m68k                       m5475evb_defconfig
-arm                       cns3420vb_defconfig
-arm                        mini2440_defconfig
-arm                        vexpress_defconfig
-mips                  decstation_64_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                         bigsur_defconfig
-sh                           sh2007_defconfig
-mips                        bcm63xx_defconfig
-nios2                         3c120_defconfig
-sh                          landisk_defconfig
-arm                          ep93xx_defconfig
-arm                         lpc32xx_defconfig
-arm                  colibri_pxa270_defconfig
-arm                              alldefconfig
-arc                      axs103_smp_defconfig
-arm                      tct_hammer_defconfig
-arm                           u8500_defconfig
-powerpc                     tqm8560_defconfig
-powerpc64                        alldefconfig
-arm                        shmobile_defconfig
-openrisc                            defconfig
-sh                         microdev_defconfig
-sh                             espt_defconfig
-powerpc                     tqm8555_defconfig
-mips                          rm200_defconfig
-mips                       lemote2f_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                     ppa8548_defconfig
-sh                     magicpanelr2_defconfig
-arm                            zeus_defconfig
-arm                           omap1_defconfig
-arm                        neponset_defconfig
-mips                           ip22_defconfig
-arm                     eseries_pxa_defconfig
-sh                               alldefconfig
-arm                           h3600_defconfig
-mips                      bmips_stb_defconfig
-powerpc                   lite5200b_defconfig
-sh                        apsh4ad0a_defconfig
-s390                             alldefconfig
-arm                           sunxi_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                     powernv_defconfig
-arm                            mmp2_defconfig
-ia64                      gensparse_defconfig
-powerpc                    amigaone_defconfig
-sh                           se7724_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                           h5000_defconfig
-arm                          simpad_defconfig
-sh                          rsk7264_defconfig
-powerpc                     tqm5200_defconfig
-mips                            e55_defconfig
-sh                     sh7710voipgw_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20201116
-x86_64               randconfig-a005-20201116
-x86_64               randconfig-a004-20201116
-x86_64               randconfig-a002-20201116
-x86_64               randconfig-a001-20201116
-x86_64               randconfig-a006-20201116
-i386                 randconfig-a006-20201116
-i386                 randconfig-a005-20201116
-i386                 randconfig-a001-20201116
-i386                 randconfig-a002-20201116
-i386                 randconfig-a004-20201116
-i386                 randconfig-a003-20201116
-i386                 randconfig-a006-20201115
-i386                 randconfig-a005-20201115
-i386                 randconfig-a001-20201115
-i386                 randconfig-a002-20201115
-i386                 randconfig-a004-20201115
-i386                 randconfig-a003-20201115
-x86_64               randconfig-a015-20201115
-x86_64               randconfig-a011-20201115
-x86_64               randconfig-a016-20201115
-x86_64               randconfig-a012-20201115
-i386                 randconfig-a012-20201116
-i386                 randconfig-a014-20201116
-i386                 randconfig-a016-20201116
-i386                 randconfig-a011-20201116
-i386                 randconfig-a015-20201116
-i386                 randconfig-a013-20201116
-i386                 randconfig-a012-20201115
-i386                 randconfig-a014-20201115
-i386                 randconfig-a016-20201115
-i386                 randconfig-a011-20201115
-i386                 randconfig-a015-20201115
-i386                 randconfig-a013-20201115
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+What happened here is
+--------------------------------
+1.=09Before initiator received the login response mentioned in above point =
+2.f.v, another reopen request was sent from the error handler/sync session =
+for the same session, as the initiator utils was in main loop to process fu=
+rther events (as=20
+=09mentioned in point 2.f.vi above).=20
+2.=09While processing this reopen, it stopped the connection which released=
+ the socket and queued this connection and at this point of time the login =
+response was received for the earlier one
+3.=09The kernel passed over this response to user-space which then sent the=
+ set_neg_params request to kernel
+4.=09As the connection was stopped, the sock was NULL and hence while the k=
+ernel was processing the set param request from user-space, it panicked
 
-clang tested configs:
-x86_64               randconfig-a003-20201115
-x86_64               randconfig-a005-20201115
-x86_64               randconfig-a004-20201115
-x86_64               randconfig-a002-20201115
-x86_64               randconfig-a001-20201115
-x86_64               randconfig-a006-20201115
-x86_64               randconfig-a015-20201116
-x86_64               randconfig-a011-20201116
-x86_64               randconfig-a014-20201116
-x86_64               randconfig-a013-20201116
-x86_64               randconfig-a016-20201116
-x86_64               randconfig-a012-20201116
+Fix
+----
+1.=09While setting the set_param in kernel, we need to check if sock is NUL=
+L
+2.=09If the sock is NULL, then return EPERM (operation not permitted)
+3.=09Due to this error handler will be invoked in user-space again to recov=
+er the session
 
+Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
+Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c index df47=
+557a02a3..fd668a194053 100644
+--- a/drivers/scsi/iscsi_tcp.c
++++ b/drivers/scsi/iscsi_tcp.c
+@@ -711,6 +711,12 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi_cl=
+s_conn *cls_conn,
+        struct iscsi_tcp_conn *tcp_conn =3D conn->dd_data;
+        struct iscsi_sw_tcp_conn *tcp_sw_conn =3D tcp_conn->dd_data;
+
++       if (!tcp_sw_conn->sock) {
++               iscsi_conn_printk(KERN_ERR, conn,
++                               "Cannot set param as sock is NULL\n");
++               return -ENOTCONN;
++       }
++
+        switch(param) {
+        case ISCSI_PARAM_HDRDGST_EN:
+                iscsi_set_param(cls_conn, param, buf, buflen);
+--
+2.18.4
