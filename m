@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CB32B70C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B47842B70CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgKQVRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
+        id S1726281AbgKQVUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:20:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgKQVRc (ORCPT
+        with ESMTP id S1725730AbgKQVUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:17:32 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E522FC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:17:31 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 142so12320281ljj.10
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:17:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I/hHF4xlcau8abUMMWWu9ZOPfLuX56SHUOKI4p/GLog=;
-        b=FPqXJr9icDh9L7sI6ggEaWimg9DuZcX++8IlgUQAq4mXREd7/XhwpmygB9qKmqGvqN
-         SgbZqbV8tybddAgk78HR7TYSHbwylUQzGkMaoaX8Un84MYCZ5QF3DXxAmnEV6pZf/g60
-         tNyL40rr2dqucYJetfJpcOCm9LHFMSF1y9AnHiL/5Po5NzezA3haTP/heFqC2oAsbS3j
-         D9vdsy5PKYnI45n5K1+qUG97MU0q4SQnq1oZnXo6MIQihRQn0QRF3t3+EtlG1QduJniW
-         +cRsHvzXQ8D3t2PmcksPlXKrcPcLwOBxN/Hd8u2jOyRMLnLNeJ78n8ZtuqKZDUofrVoN
-         dZ3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I/hHF4xlcau8abUMMWWu9ZOPfLuX56SHUOKI4p/GLog=;
-        b=pEYpfmGbuYfTj/YDAX/s70nTJvHp8gLdYufATWAv/SZiPH316qsxsecsYNsWDc/rTE
-         5WwRXssVSKzS/lCgPSZ4xFAUiLqfspxQzyGgUW45MzHyu0L9ZgVUpncOUKQQDLcpUuwc
-         tHY+kkMxwEw4kLmH3wq/RtjAYVwU4x00wDZS4DXri6PtON59YyRHgwzZvZaM2UaJ1A/L
-         UkcMvtVQjTxHYa+SbrRmi3RPKdgd1p/b9dOPpF0hHaG06LKsxardH6/sPAQBtuwZ++oJ
-         ILO5ZUPeS+1bX8JA6z7/8hlDFipmYijDvbYwu/qV+M7SAb/FZxQqiTEEXqwTxC1zOuY1
-         kiuQ==
-X-Gm-Message-State: AOAM53276cvjfyrFx8sRuY7uHFhB4sSJZVKAUnLyews4mNp60z/ZOmON
-        du+ck7CrJqJexB9a8fZ4sHhgbaA579At+34KQ+ynTQ==
-X-Google-Smtp-Source: ABdhPJwwYzjaEnUocguKy9WJ8dtjA20kmRVQYAgUyPCCmjjYxTPilv86jTYXLmDvrReOEOTbXTIGkyUopqHL2PSdFCc=
-X-Received: by 2002:a2e:95d2:: with SMTP id y18mr2899299ljh.286.1605647850397;
- Tue, 17 Nov 2020 13:17:30 -0800 (PST)
+        Tue, 17 Nov 2020 16:20:23 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B0AC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:20:23 -0800 (PST)
+Received: from zn.tnic (p200300ec2f10130053cbbcbd889a5460.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:1300:53cb:bcbd:889a:5460])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 76DFE1EC03FA;
+        Tue, 17 Nov 2020 22:20:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605648021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=2OhG3czmKZvF/G88BiMnJqwOIdJuRAjW7cfRmQFy+9w=;
+        b=paPUw/arWB0ng9H9XjZ8pPFq8+b7DKDPRHLyG23CAmYZTmcftAlrZnomxTOVcS3sTbYFDj
+        me14TXVFpVdFeb/7dbyXdxZKfu+vtGuu2poSGD5oxiVEB9ge09d4ncCHgIPuVuIKF0cBsZ
+        UddioruCdaIOs0kmn02hT9k6Uif/Jkg=
+Date:   Tue, 17 Nov 2020 22:20:16 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mathieu Chouquet-Stringer <me@mathieu.digital>
+Cc:     Matthew Garrett <mjg59@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        sean.j.christopherson@intel.com, tony.luck@intel.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        the arch/x86 maintainers <x86@kernel.org>, kernel-team@fb.com
+Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
+Message-ID: <20201117212016.GQ5719@zn.tnic>
+References: <20200615063837.GA14668@zn.tnic>
+ <20200714121955.GA2080@chrisdown.name>
+ <20200714154728.GA3101@nazgul.tnic>
+ <20200714160448.GC2080@chrisdown.name>
+ <CACdnJuvfhjMNQUYNYWpPMfwTE3xHi7UNPm7HEwUMv_1F3KT4gA@mail.gmail.com>
+ <20201117210018.GA4247@weirdfishes>
 MIME-Version: 1.0
-References: <20201112183839.1009297-1-natechancellor@gmail.com>
-In-Reply-To: <20201112183839.1009297-1-natechancellor@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Nov 2020 22:17:19 +0100
-Message-ID: <CACRpkda_u7wVr6E97WaxPC6h5SGTrmGWYBrph_0oLUAFgYnYMw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Always link with '-z norelro'
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Jian Cai <jiancai@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201117210018.GA4247@weirdfishes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 7:41 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
+On Tue, Nov 17, 2020 at 10:00:18PM +0100, Mathieu Chouquet-Stringer wrote:
+> I'm late to the party but it seems allowing MSR_IA32_ENERGY_PERF_BIAS
+> has the downside of flagging the kernel as tainted without telling you
+> why if you use something like x86_energy_perf_policy (from
+> tools/power/x86/x86_energy_perf_policy) which itself is used by tuned.
 
-> Commit 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker
-> script and options") added '-z norelro' to the arm64 Makefile when
-> CONFIG_RELOCATABLE was set to help support ld.lld because ld.lld
-> defaults to '-z relro' but the kernel does not use program headers or
-> adhere to the section layout that is required for RELRO to work.
->
-> Commit 3b92fa7485eb ("arm64: link with -z norelro regardless of
-> CONFIG_RELOCATABLE") unconditionally added it to LDFLAGS_vmlinux because
-> an error occurs with CONFIG_KASAN set even when CONFIG_RELOCATABLE is
-> unset.
->
-> As it turns out, ARM experiences the same error after CONFIG_KASAN was
-> implemented, meaning that '-z norelro' needs to be added to that
-> Makefile as well (multi_v7_defconfig + CONFIG_KASAN=y + LD=ld.lld):
->
-> $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LLVM=1 zImage
-> ld.lld: error: section: .exit.data is not contiguous with other relro sections
->
-> To avoid playing whack-a-mole with different architectures over time,
-> hoist '-z norelro' into the main Makefile. This does not affect ld.bfd
-> because '-z norelro' is the default for it.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1189
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Not for long:
 
-OK makes sense, FWIW:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+https://git.kernel.org/tip/fe0a5788624c8b8f113a35bbe4636e37f9321241
 
-Yours,
-Linus Walleij
+> So while both documentation and tools should be updated as to be clearer
+> and to not taint the kernel respectively, there's something that remains
+> to be done to explain why or how the kernel got tainted because of
+> poking into MSRs...
+
+Because if you poke at random MSRs and you manage to "configure" your
+CPU to run "out of spec" - this is what the taint flag is called:
+TAINT_CPU_OUT_OF_SPEC - then this is exactly the case you've created: a
+CPU executing outside of specifications.
+
+I agree with the update-the-documentation aspect - S does not mean only
+SMP kernel on !SMP-capable CPU but the more general, CPU is out of spec.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
