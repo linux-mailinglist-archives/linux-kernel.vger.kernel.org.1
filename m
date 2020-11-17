@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B362B5A09
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CB22B5A03
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgKQHEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:04:40 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:26986 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgKQHEk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:04:40 -0500
-IronPort-SDR: DH8PTV49Co+O8YM5bEM+C47FWbs58QyJqIqeqXBIpcrJXBARY7GoNHkSrBNwquk+8/BdFqxf13
- EJUQEEBLXTGkA2r2IH/JUEZ0lUYYtzzQu4KjnEuhohwijysQk6hitOdkVlFyggF37zboZFTxCx
- MLLWtfvVHiTclSpDduNdKzebn3zNgoKg2+yRGDT50dQLyou0ONjkjLPs4f7IU8AB7cgiwXp3iu
- bg25XlblB3iAJyhSJW0MjolHFvU1CNUXQYkklhBrqigTwSCKepwKLkco1Ujkoribh1cFmN+hDl
- 3Zs=
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="47474919"
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by labrats.qualcomm.com with ESMTP; 16 Nov 2020 23:04:39 -0800
-X-QCInternal: smtphost
-Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 16 Nov 2020 23:04:39 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 411E52181A; Mon, 16 Nov 2020 23:04:39 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 3/3] scsi: ufs: Print host regs in IRQ handler when AH8 error happens
-Date:   Mon, 16 Nov 2020 23:04:19 -0800
-Message-Id: <1605596660-2987-4-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605596660-2987-1-git-send-email-cang@codeaurora.org>
-References: <1605596660-2987-1-git-send-email-cang@codeaurora.org>
+        id S1726248AbgKQHDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:03:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725792AbgKQHDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 02:03:47 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 364C3241A7;
+        Tue, 17 Nov 2020 07:03:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605596626;
+        bh=cRePH6Nm3raiXQTH7vJXeE6RGULZOaB6FuGTJ6mWU/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zWTiqqkxLdREQx9EBE5d/pls6OCiksEky6lQTcOeAlNo1FZI6zmP3Yj23WHeOZfIE
+         ADi95zcSVMwDOy11/ZrJkY+sS/orLBxb4FFZqD9M7ntwoQcqpfP9Mcu0Nhe63MCBko
+         inMxYPi9pi5wyUSI+ng3628C0plETDvzOA4O716M=
+Date:   Tue, 17 Nov 2020 08:04:35 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Junyong Sun <sunjy516@gmail.com>
+Cc:     arnd@arndb.de, sunjunyong@xiaomi.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ttyprintk: optimize tpk_close flush code
+Message-ID: <X7N2A+i22d6sC0lH@kroah.com>
+References: <1605579667-16573-1-git-send-email-sunjunyong@xiaomi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605579667-16573-1-git-send-email-sunjunyong@xiaomi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When AH8 error happens, all the regs and states are dumped in err handler.
-Sometime we need to look into host regs right after AH8 error happens,
-which is before leaving the IRQ handler.
+On Tue, Nov 17, 2020 at 10:21:07AM +0800, Junyong Sun wrote:
+> tpk_printk(NULL,0) do nothing but call tpk_flush to
+> flush buffer, so why don't use tpk_flush diretcly?
+> this is a small optimization.
+> 
+> Signed-off-by: Junyong Sun <sunjunyong@xiaomi.com>
+> ---
+> changes in v2:
+> - rm the flush comment as tpk_flush makes it obvious.
+> ---
+> ---
+>  drivers/char/ttyprintk.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
+> index 6a0059e..1f82742 100644
+> --- a/drivers/char/ttyprintk.c
+> +++ b/drivers/char/ttyprintk.c
+> @@ -103,8 +103,7 @@ static void tpk_close(struct tty_struct *tty, struct file *filp)
+>  	unsigned long flags;
+>  
+>  	spin_lock_irqsave(&tpkp->spinlock, flags);
+> -	/* flush tpk_printk buffer */
+> -	tpk_printk(NULL, 0);
+> +	tpk_flush();
+>  	spin_unlock_irqrestore(&tpkp->spinlock, flags);
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Why did you not make the change to tpk_printk() as well that I asked you
+to?
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index cd7394e..a7857f6 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6057,7 +6057,8 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
- 		hba->saved_uic_err |= hba->uic_error;
- 
- 		/* dump controller state before resetting */
--		if ((hba->saved_err & (INT_FATAL_ERRORS)) ||
-+		if ((hba->saved_err &
-+		     (INT_FATAL_ERRORS | UFSHCD_UIC_HIBERN8_MASK)) ||
- 		    (hba->saved_uic_err &&
- 		     (hba->saved_uic_err != UFSHCD_UIC_PA_GENERIC_ERROR))) {
- 			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+It is a static function, you control the callers, so the extra "is this
+NULL, if so flush" logic makes no sense to keep around anymore, right?
 
+thanks,
+
+greg k-h
