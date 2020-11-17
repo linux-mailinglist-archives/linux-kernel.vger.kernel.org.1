@@ -2,49 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15D22B6133
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67A92B6199
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730340AbgKQNQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:16:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48142 "EHLO mail.kernel.org"
+        id S1730307AbgKQNUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:20:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730294AbgKQNQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:16:22 -0500
+        id S1729938AbgKQNU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:20:27 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7354E206D5;
-        Tue, 17 Nov 2020 13:16:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2AA224248;
+        Tue, 17 Nov 2020 13:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618981;
-        bh=RQ1kzh+Mlqyc2N2MBby52SnnpV173ppyW1s2kdtnH4M=;
+        s=default; t=1605619225;
+        bh=/mW5c9+y1YNaGR0NIFZTSCylhnDyM+t49alXXQ2o7Ag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ey7CQmpddw3J2mGx3Nez+az9oRPoJ5u5ppxmgwNRjsfWfs2DsH3QsRNuCGiz4ippl
-         LMPXL2Vc30nMggI4gEj52PlisLDqPcvPzpWHd8OKH+Ct9LNHYaZ5JoMhMIMEd4D6k0
-         zxFD3aQb+Odxjyn7o35cp38wfO97GUONL0kmGyOE=
+        b=oozwVMn9buxOxy1XC629jlzGdDwod94tFeffiVorB0DlbdusS0tOJemHdv4VctLFk
+         TuQDio4DXU7eZdicRIWMavaSpvN36TeK4oMyaFbyumE1ygt2ktX2dnD7k9qlxUxo0B
+         6XnNzHeObS6kiFFpKpo5wZHzk3bjuVRS+dJSNki4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
-        Song Liu <songliubraving@fb.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        kernel-team@fb.com,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 66/85] perf/core: Fix bad use of igrab()
-Date:   Tue, 17 Nov 2020 14:05:35 +0100
-Message-Id: <20201117122114.261555116@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH 4.19 069/101] uio: Fix use-after-free in uio_unregister_device()
+Date:   Tue, 17 Nov 2020 14:05:36 +0100
+Message-Id: <20201117122116.473612055@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,160 +42,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Liu <songliubraving@fb.com>
+From: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 
-commit 9511bce9fe8e5e6c0f923c09243a713eba560141 upstream
+commit 092561f06702dd4fdd7fb74dd3a838f1818529b7 upstream.
 
-As Miklos reported and suggested:
+Commit 8fd0e2a6df26 ("uio: free uio id after uio file node is freed")
+triggered KASAN use-after-free failure at deletion of TCM-user
+backstores [1].
 
- "This pattern repeats two times in trace_uprobe.c and in
-  kernel/events/core.c as well:
+In uio_unregister_device(), struct uio_device *idev is passed to
+uio_free_minor() to refer idev->minor. However, before uio_free_minor()
+call, idev is already freed by uio_device_release() during call to
+device_unregister().
 
-      ret = kern_path(filename, LOOKUP_FOLLOW, &path);
-      if (ret)
-          goto fail_address_parse;
+To avoid reference to idev->minor after idev free, keep idev->minor
+value in a local variable. Also modify uio_free_minor() argument to
+receive the value.
 
-      inode = igrab(d_inode(path.dentry));
-      path_put(&path);
+[1]
+BUG: KASAN: use-after-free in uio_unregister_device+0x166/0x190
+Read of size 4 at addr ffff888105196508 by task targetcli/49158
 
-  And it's wrong.  You can only hold a reference to the inode if you
-  have an active ref to the superblock as well (which is normally
-  through path.mnt) or holding s_umount.
+CPU: 3 PID: 49158 Comm: targetcli Not tainted 5.10.0-rc1 #1
+Hardware name: Supermicro Super Server/X10SRL-F, BIOS 2.0 12/17/2015
+Call Trace:
+ dump_stack+0xae/0xe5
+ ? uio_unregister_device+0x166/0x190
+ print_address_description.constprop.0+0x1c/0x210
+ ? uio_unregister_device+0x166/0x190
+ ? uio_unregister_device+0x166/0x190
+ kasan_report.cold+0x37/0x7c
+ ? kobject_put+0x80/0x410
+ ? uio_unregister_device+0x166/0x190
+ uio_unregister_device+0x166/0x190
+ tcmu_destroy_device+0x1c4/0x280 [target_core_user]
+ ? tcmu_release+0x90/0x90 [target_core_user]
+ ? __mutex_unlock_slowpath+0xd6/0x5d0
+ target_free_device+0xf3/0x2e0 [target_core_mod]
+ config_item_cleanup+0xea/0x210
+ configfs_rmdir+0x651/0x860
+ ? detach_groups.isra.0+0x380/0x380
+ vfs_rmdir.part.0+0xec/0x3a0
+ ? __lookup_hash+0x20/0x150
+ do_rmdir+0x252/0x320
+ ? do_file_open_root+0x420/0x420
+ ? strncpy_from_user+0xbc/0x2f0
+ ? getname_flags.part.0+0x8e/0x450
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f9e2bfc91fb
+Code: 73 01 c3 48 8b 0d 9d ec 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 54 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 6d ec 0c 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffdd2baafe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000054
+RAX: ffffffffffffffda RBX: 00007f9e2beb44a0 RCX: 00007f9e2bfc91fb
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00007f9e1c20be90
+RBP: 00007ffdd2bab000 R08: 0000000000000000 R09: 00007f9e2bdf2440
+R10: 00007ffdd2baaf37 R11: 0000000000000246 R12: 00000000ffffff9c
+R13: 000055f9abb7e390 R14: 000055f9abcf9558 R15: 00007f9e2be7a780
 
-  This way unmounting the containing filesystem while the tracepoint is
-  active will give you the "VFS: Busy inodes after unmount..." message
-  and a crash when the inode is finally put.
+Allocated by task 34735:
+ kasan_save_stack+0x1b/0x40
+ __kasan_kmalloc.constprop.0+0xc2/0xd0
+ __uio_register_device+0xeb/0xd40
+ tcmu_configure_device+0x5a0/0xbc0 [target_core_user]
+ target_configure_device+0x12f/0x760 [target_core_mod]
+ target_dev_enable_store+0x32/0x50 [target_core_mod]
+ configfs_write_file+0x2bb/0x450
+ vfs_write+0x1ce/0x610
+ ksys_write+0xe9/0x1b0
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-  Solution: store path instead of inode."
+Freed by task 49158:
+ kasan_save_stack+0x1b/0x40
+ kasan_set_track+0x1c/0x30
+ kasan_set_free_info+0x1b/0x30
+ __kasan_slab_free+0x110/0x150
+ slab_free_freelist_hook+0x5a/0x170
+ kfree+0xc6/0x560
+ device_release+0x9b/0x210
+ kobject_put+0x13e/0x410
+ uio_unregister_device+0xf9/0x190
+ tcmu_destroy_device+0x1c4/0x280 [target_core_user]
+ target_free_device+0xf3/0x2e0 [target_core_mod]
+ config_item_cleanup+0xea/0x210
+ configfs_rmdir+0x651/0x860
+ vfs_rmdir.part.0+0xec/0x3a0
+ do_rmdir+0x252/0x320
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-This patch fixes the issue in kernel/event/core.c.
+The buggy address belongs to the object at ffff888105196000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 1288 bytes inside of
+ 2048-byte region [ffff888105196000, ffff888105196800)
+The buggy address belongs to the page:
+page:0000000098e6ca81 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x105190
+head:0000000098e6ca81 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x17ffffc0010200(slab|head)
+raw: 0017ffffc0010200 dead000000000100 dead000000000122 ffff888100043040
+raw: 0000000000000000 0000000000080008 00000001ffffffff ffff88810eb55c01
+page dumped because: kasan: bad access detected
+page->mem_cgroup:ffff88810eb55c01
 
-Reviewed-and-tested-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Reported-by: Miklos Szeredi <miklos@szeredi.hu>
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: <kernel-team@fb.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vince Weaver <vincent.weaver@maine.edu>
-Fixes: 375637bc5249 ("perf/core: Introduce address range filtering")
-Link: http://lkml.kernel.org/r/20180418062907.3210386-2-songliubraving@fb.com
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Memory state around the buggy address:
+ ffff888105196400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888105196480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888105196500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                      ^
+ ffff888105196580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888105196600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+
+Fixes: 8fd0e2a6df26 ("uio: free uio id after uio file node is freed")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Link: https://lore.kernel.org/r/20201102122819.2346270-1-shinichiro.kawasaki@wdc.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/events/intel/pt.c |    4 ++--
- include/linux/perf_event.h |    2 +-
- kernel/events/core.c       |   21 +++++++++------------
- 3 files changed, 12 insertions(+), 15 deletions(-)
 
---- a/arch/x86/events/intel/pt.c
-+++ b/arch/x86/events/intel/pt.c
-@@ -1190,7 +1190,7 @@ static int pt_event_addr_filters_validat
- 		if (!filter->range || !filter->size)
- 			return -EOPNOTSUPP;
+---
+ drivers/uio/uio.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+--- a/drivers/uio/uio.c
++++ b/drivers/uio/uio.c
+@@ -413,10 +413,10 @@ static int uio_get_minor(struct uio_devi
+ 	return retval;
+ }
  
--		if (!filter->inode) {
-+		if (!filter->path.dentry) {
- 			if (!valid_kernel_ip(filter->offset))
- 				return -EINVAL;
+-static void uio_free_minor(struct uio_device *idev)
++static void uio_free_minor(unsigned long minor)
+ {
+ 	mutex_lock(&minor_lock);
+-	idr_remove(&uio_idr, idev->minor);
++	idr_remove(&uio_idr, minor);
+ 	mutex_unlock(&minor_lock);
+ }
  
-@@ -1217,7 +1217,7 @@ static void pt_event_addr_filters_sync(s
+@@ -988,7 +988,7 @@ err_request_irq:
+ err_uio_dev_add_attributes:
+ 	device_del(&idev->dev);
+ err_device_create:
+-	uio_free_minor(idev);
++	uio_free_minor(idev->minor);
+ 	put_device(&idev->dev);
+ 	return ret;
+ }
+@@ -1002,11 +1002,13 @@ EXPORT_SYMBOL_GPL(__uio_register_device)
+ void uio_unregister_device(struct uio_info *info)
+ {
+ 	struct uio_device *idev;
++	unsigned long minor;
+ 
+ 	if (!info || !info->uio_dev)
  		return;
  
- 	list_for_each_entry(filter, &head->list, entry) {
--		if (filter->inode && !offs[range]) {
-+		if (filter->path.dentry && !offs[range]) {
- 			msr_a = msr_b = 0;
- 		} else {
- 			/* apply the offset */
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -466,7 +466,7 @@ struct pmu {
-  */
- struct perf_addr_filter {
- 	struct list_head	entry;
--	struct inode		*inode;
-+	struct path		path;
- 	unsigned long		offset;
- 	unsigned long		size;
- 	unsigned int		range	: 1,
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6450,7 +6450,7 @@ static void perf_event_addr_filters_exec
+ 	idev = info->uio_dev;
++	minor = idev->minor;
  
- 	raw_spin_lock_irqsave(&ifh->lock, flags);
- 	list_for_each_entry(filter, &ifh->list, entry) {
--		if (filter->inode) {
-+		if (filter->path.dentry) {
- 			event->addr_filters_offs[count] = 0;
- 			restart++;
- 		}
-@@ -7124,7 +7124,7 @@ static bool perf_addr_filter_match(struc
- 				     struct file *file, unsigned long offset,
- 				     unsigned long size)
- {
--	if (filter->inode != file_inode(file))
-+	if (d_inode(filter->path.dentry) != file_inode(file))
- 		return false;
+ 	mutex_lock(&idev->info_lock);
+ 	uio_dev_del_attributes(idev);
+@@ -1019,7 +1021,7 @@ void uio_unregister_device(struct uio_in
  
- 	if (filter->offset > offset + size)
-@@ -8345,8 +8345,7 @@ static void free_filters_list(struct lis
- 	struct perf_addr_filter *filter, *iter;
+ 	device_unregister(&idev->dev);
  
- 	list_for_each_entry_safe(filter, iter, filters, entry) {
--		if (filter->inode)
--			iput(filter->inode);
-+		path_put(&filter->path);
- 		list_del(&filter->entry);
- 		kfree(filter);
- 	}
-@@ -8443,7 +8442,7 @@ static void perf_event_addr_filters_appl
- 		 * Adjust base offset if the filter is associated to a binary
- 		 * that needs to be mapped:
- 		 */
--		if (filter->inode)
-+		if (filter->path.dentry)
- 			event->addr_filters_offs[count] =
- 				perf_addr_filter_apply(filter, mm);
+-	uio_free_minor(idev);
++	uio_free_minor(minor);
  
-@@ -8516,7 +8515,6 @@ perf_event_parse_addr_filter(struct perf
- {
- 	struct perf_addr_filter *filter = NULL;
- 	char *start, *orig, *filename = NULL;
--	struct path path;
- 	substring_t args[MAX_OPT_ARGS];
- 	int state = IF_STATE_ACTION, token;
- 	unsigned int kernel = 0;
-@@ -8620,19 +8618,18 @@ perf_event_parse_addr_filter(struct perf
- 					goto fail_free_name;
- 
- 				/* look up the path and grab its inode */
--				ret = kern_path(filename, LOOKUP_FOLLOW, &path);
-+				ret = kern_path(filename, LOOKUP_FOLLOW,
-+						&filter->path);
- 				if (ret)
- 					goto fail_free_name;
- 
--				filter->inode = igrab(d_inode(path.dentry));
--				path_put(&path);
- 				kfree(filename);
- 				filename = NULL;
- 
- 				ret = -EINVAL;
--				if (!filter->inode ||
--				    !S_ISREG(filter->inode->i_mode))
--					/* free_filters_list() will iput() */
-+				if (!filter->path.dentry ||
-+				    !S_ISREG(d_inode(filter->path.dentry)
-+					     ->i_mode))
- 					goto fail;
- 
- 				event->addr_filters.nr_file_filters++;
+ 	return;
+ }
 
 
