@@ -2,57 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895D82B6951
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9ED62B6954
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgKQQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:04:30 -0500
-Received: from smtprelay0225.hostedemail.com ([216.40.44.225]:34252 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725767AbgKQQEa (ORCPT
+        id S1726970AbgKQQFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgKQQFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:04:30 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 4C9FE18225DF8;
-        Tue, 17 Nov 2020 16:04:29 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1537:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3870:3872:3873:3874:4321:5007:7775:10004:10400:10848:11026:11232:11658:11914:12048:12297:12740:12760:12895:13069:13149:13230:13311:13357:13439:14659:21080:21627:21987:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: earth94_2c0ee1027332
-X-Filterd-Recvd-Size: 1447
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 17 Nov 2020 16:04:28 +0000 (UTC)
-Message-ID: <6ba830d2a07b93e5c6602fcc1b329d74dcb7e2d8.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Fix unescaped left brace
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 17 Nov 2020 08:04:26 -0800
-In-Reply-To: <CABJPP5CBccqvLVpzahMXhkuTt5Z+Gz-HaEGWgJdc4aMi4JsMEA@mail.gmail.com>
-References: <20201115202928.81955-1-dwaipayanray1@gmail.com>
-         <d3d6b68178b4193f04c35863163ce811a1571c0a.camel@perches.com>
-         <67332536788cefbc39c7f87129adca462bb42fa5.camel@perches.com>
-         <CABJPP5CBccqvLVpzahMXhkuTt5Z+Gz-HaEGWgJdc4aMi4JsMEA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 17 Nov 2020 11:05:06 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF71C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:05:05 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id h2so3778069wmm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:05:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=eeHttLgR79pcdp9MMr/QfOUcrgRAzex1AqWx+Q75Fcw=;
+        b=o+0axMYg87OlMQK+SQlz3DpQV+Qp9LXbvtweaiFGcpijjHCCKCsOFpS7Dx9iByn18w
+         FvCU2w472NopCnEBQhJP3Yydj2MryLjNEMjsJN+G3M6nYKVL0VlfONdGhJHTSDl7HfiK
+         b8Y3lGQH5o6lj1l6QlK4TnS4wEwZUWEXMqYHNMUeZykbwyDV8TdI0NfAlllJKUCBR77h
+         srXwXLiClYt4JDSLC2TVDSOT+EILrvx448BjfHP6rJOvEpx4YJ22oL7kNSA65+6iF3C/
+         N+4hKyKAdAoxVucdcSnWAE4XUnuiTjaHfRiKT0P6oA3kSDEox7E4zfvvI2jvKF90T30o
+         PmZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=eeHttLgR79pcdp9MMr/QfOUcrgRAzex1AqWx+Q75Fcw=;
+        b=Yq9gUegfpGIOutd7hSXRMkYZ5EkiF9az7AKchrQ2qrIhGdzY2f54TFqThoGVm5V/BP
+         A7KpwozPyUGm2EpEV++CM8++DQpP/3iDudUgF3iBa/UpVEru5y2+LBdDagw0hFEE7gdD
+         GfdOp3HHQJryShFcfzpPzgAOFBrc43UkbCeQgIYXv2HNo+z0yZDkeDh5+hTg03RSxYcF
+         sci1U6mBs/AE8ZNReTchVARh9SrcbjRieyLysKNvTSNR5E4lR6ayGFdsK/2EAjeEWivR
+         qLomAIakBBMIAQqOcRcH5w0OtJreaqKOhmtimb5Q8d5ZivTpNUAfowtP/i6j35Spn46r
+         np5g==
+X-Gm-Message-State: AOAM5334FDQCUdHJo/0HydXze/ccS5dtM80R9m6Jvr9g3KZPZ+lpLt5W
+        dQMjrYARbY9JpDQlh27++4c2GWqfxiFGAPAH
+X-Google-Smtp-Source: ABdhPJzA2XEJXCHJs60/AGk1RiJTwsk0UIn1lA1kBouxOZZHrVZKfqq7z53KJxelcMpjV6tp63fzLQ==
+X-Received: by 2002:a05:600c:255:: with SMTP id 21mr351246wmj.69.1605629103973;
+        Tue, 17 Nov 2020 08:05:03 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id m3sm24339559wrv.6.2020.11.17.08.05.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 08:05:03 -0800 (PST)
+Date:   Tue, 17 Nov 2020 16:05:01 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2] mfd: syscon: Add
+ syscon_regmap_lookup_by_phandle_optional() function.
+Message-ID: <20201117160501.GJ1869941@dell>
+References: <20201110161338.18198-1-enric.balletbo@collabora.com>
+ <20201113101940.GH3718728@dell>
+ <c4ed34d5-83a1-98d1-580f-8f8504c5ca0a@gmail.com>
+ <20201117123741.GH1869941@dell>
+ <d4424323-25a9-9f70-b2c8-ce464180f788@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d4424323-25a9-9f70-b2c8-ce464180f788@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-17 at 14:37 +0530, Dwaipayan Ray wrote:
-> I have seen that
-> the perl_version_ok check mandates perl 5.10 which was
-> released more than 10 years back.
+On Tue, 17 Nov 2020, Matthias Brugger wrote:
+
 > 
-> Do you think that check could be removed completely?
-> Maybe sometime in the future or just have it lay around
-> for backward compatibility?
+> 
+> On 17/11/2020 13:37, Lee Jones wrote:
+> > On Tue, 17 Nov 2020, Matthias Brugger wrote:
+> > 
+> > > Hi Lee,
+> > > 
+> > > On 13/11/2020 11:19, Lee Jones wrote:
+> > > > On Tue, 10 Nov 2020, Enric Balletbo i Serra wrote:
+> > > > 
+> > > > > This adds syscon_regmap_lookup_by_phandle_optional() function to get an
+> > > > > optional regmap.
+> > > > > 
+> > > > > It behaves the same as syscon_regmap_lookup_by_phandle() except where
+> > > > > there is no regmap phandle. In this case, instead of returning -ENODEV,
+> > > > > the function returns NULL. This makes error checking simpler when the
+> > > > > regmap phandle is optional.
+> > > > > 
+> > > > > Suggested-by: Nicolas Boichat <drinkcat@chromium.org>
+> > > > > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> > > > > Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> > > > > ---
+> > > > > 
+> > > > > Changes in v2:
+> > > > > - Add Matthias r-b tag.
+> > > > > - Add the explanation from the patch description to the code.
+> > > > > - Return NULL instead of -ENOTSUPP when regmap helpers are not enabled.
+> > > > > 
+> > > > >    drivers/mfd/syscon.c       | 18 ++++++++++++++++++
+> > > > >    include/linux/mfd/syscon.h | 11 +++++++++++
+> > > > >    2 files changed, 29 insertions(+)
+> > > > 
+> > > > Applied, thanks.
+> > > > 
+> > > 
+> > > I've a series [1] that's based on this patch, could you provide a stable
+> > > branch for it, so that I can take the series.
+> > 
+> > Why can't you base it off of for-mfd-next?
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/log/?h=for-mfd-next
+> > 
+> 
+> I can do that, if you are willing to not overwrite the commit history. In my
+> case it can happen that I drop a patch from my for-next branch as I realize
+> that it e.g. breaks something. I think that's the reason why normally a
+> stable branch get's created, as the commit ID won't change although you
+> change the commit history of your for-mfd-next branch.
+> 
+> If you want to go the route for me rebasing my tree on top of for-mfd-next
+> then I'd like to have at least a stable tag, so that it will be easier to
+> provide the pull-request later on. Would that be a compromise?
 
-I think having the check in the code isn't burdensome.
+I don't usually provide immutable branches/tags unless I'm sharing
+topic branches for other maintainers to pick-up, in order to avoid
+merge conflicts.
 
+It's highly irregular (in fact this is a first for me) for a
+contributor to request one to base their work on top of.
 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
