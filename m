@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7482B5E3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5CD2B5E44
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgKQL22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:28:28 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:42262 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQL22 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:28:28 -0500
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 3A926803071C;
-        Tue, 17 Nov 2020 11:28:25 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3b7RSBy8AN_V; Tue, 17 Nov 2020 14:28:23 +0300 (MSK)
-Date:   Tue, 17 Nov 2020 14:28:23 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] spi: Take the SPI IO-mutex in the spi_setup() method
-Message-ID: <20201117112823.fwadsn5ld7ovjqun@mobilestation>
-References: <20201117094517.5654-1-Sergey.Semin@baikalelectronics.ru>
- <CAHp75VfgdtLxh3uWd-79vEL9bDA0CH2Jiug2g2cJ0R0mQRhW2A@mail.gmail.com>
+        id S1728185AbgKQL30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:29:26 -0500
+Received: from foss.arm.com ([217.140.110.172]:54760 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728155AbgKQL3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 06:29:25 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E467FD6E;
+        Tue, 17 Nov 2020 03:29:24 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EEFF23F718;
+        Tue, 17 Nov 2020 03:29:23 -0800 (PST)
+References: <a1fd0d9c6c8cd90a74879b61467ae48d@natalenko.name> <jhj3619y63v.mognet@arm.com> <20201117110620.GG3121378@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, rostedt@goodmis.org
+Subject: Re: WARNING at kernel/sched/core.c:2013 migration_cpu_stop+0x2e3/0x330
+In-reply-to: <20201117110620.GG3121378@hirez.programming.kicks-ass.net>
+Date:   Tue, 17 Nov 2020 11:29:18 +0000
+Message-ID: <jhjwnykw7ap.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VfgdtLxh3uWd-79vEL9bDA0CH2Jiug2g2cJ0R0mQRhW2A@mail.gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 12:56:44PM +0200, Andy Shevchenko wrote:
-> On Tue, Nov 17, 2020 at 11:45 AM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
-> >
-> > I've discovered that due to the recent commit 49d7d695ca4b ("spi: dw:
-> > Explicitly de-assert CS on SPI transfer completion") a concurrent usage of
-> > the spidev devices with different chip-selects causes the "SPI transfer
-> > timed out" error.
-> 
-> I'll read this later...
-> 
-> > +       mutex_lock(&spi->controller->io_mutex);
-> > +
-> >         if (spi->controller->setup)
-> >                 status = spi->controller->setup(spi);
-> >
-> >         if (spi->controller->auto_runtime_pm && spi->controller->set_cs) {
-> >                 status = pm_runtime_get_sync(spi->controller->dev.parent);
-> 
 
-> I didn't check what this lock is protecting,
+On 17/11/20 11:06, Peter Zijlstra wrote:
+> On Mon, Nov 16, 2020 at 10:00:14AM +0000, Valentin Schneider wrote:
+>> 
+>> On 15/11/20 22:32, Oleksandr Natalenko wrote:
+>> > Hi.
+>> >
+>> > I'm running v5.10-rc3-rt7 for some time, and I came across this splat in 
+>> > dmesg:
+>> >
+>> > ```
+>> > [118769.951010] ------------[ cut here ]------------
+>> > [118769.951013] WARNING: CPU: 19 PID: 146 at kernel/sched/core.c:2013 
+>> 
+>> Err, I didn't pick up on this back then, but isn't that check bogus? If the
+>> task is enqueued elsewhere, it's valid for it not to be affined
+>> 'here'. Also that is_migration_disabled() check within is_cpu_allowed()
+>> makes me think this isn't the best thing to call on a remote task.
+>> 
+>> ---
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index 1218f3ce1713..47d5b677585f 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -2010,7 +2010,7 @@ static int migration_cpu_stop(void *data)
+>>  		 * valid again. Nothing to do.
+>>  		 */
+>>  		if (!pending) {
+>> -			WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
+>> +			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), p->cpus_ptr));
+>
+> Ho humm.. bit of a mess that. I'm trying to figure out if we need that
+> is_per_cpu_kthread() test here or not.
+>
+> I suppose not, what we want here is to ensure the CPU is in cpus_mask
+> and not care about the whole hotplug mess.
+>
 
-It is used to protect the SPI io operations. So it's locked only
-during the SPI memory operations and the SPI-message execution. That's
-the time when the core toggles the controller chip-selects by calling
-the spi_set_cs() method and the set_cs callback.
+That was my thought as well. On top of that, is_cpu_allowed(p) does a
+p->migration_disabled read, which isn't so great in the remote case.
 
-> but have you checked all
-> PM runtime callbacks if they are not taking the lock. When you call PM
-> runtime functions with 'sync' it may include a lot of work, some of
-> which may sleep (not a problem for mutex) and may take arbitrary locks
-> (might be a deadlock in case of trying the same lock).
+> Would it makes sense to replace both instances in migration_cpu_stop()
+> with:
+>
+> 	WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), p->cpus_mask));
+>
+> ?
 
-Yeah, I understand that. Simple grepping hasn't showed anyone else but
-the SPI-core using it. So unless the controllers PM methods also call
-spi_setup() or request SPI-transfers, there shouldn't be a deadlock.
-Moreover as I can see from the __spi_pump_messages() method the
-IO-mutex is locked during the sync-suffixed PM-methods invocation.
-AFAICS locking io_mutex around the PM-methods here shouldn't cause
-problems. But of course testing it in various platforms/controllers is
-always welcome.
-
--Sergey
-
-> 
-> >                 if (status < 0) {
-> > +                       mutex_unlock(&spi->controller->io_mutex);
-> >                         pm_runtime_put_noidle(spi->controller->dev.parent);
-> >                         dev_err(&spi->controller->dev, "Failed to power device: %d\n",
-> >                                 status);
-> > @@ -3354,6 +3357,8 @@ int spi_setup(struct spi_device *spi)
-> >                 spi_set_cs(spi, false);
-> >         }
-> >
-> > +       mutex_unlock(&spi->controller->io_mutex);
-> > +
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+I guess so; I was trying to see if we could factorize this, but stopped
+mid-swing as I'm really wary of shuffling too much of this code (even with
+the help of TLA+; well, maybe *because* of it).
