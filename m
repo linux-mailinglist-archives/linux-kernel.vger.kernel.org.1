@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CD62B5EE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19ACB2B5EE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728267AbgKQMJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:09:57 -0500
-Received: from mga03.intel.com ([134.134.136.65]:35508 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgKQMJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:09:57 -0500
-IronPort-SDR: xtxZrDzIH4pKUnRVWUDQIYNOEpgNjBXO6+tsX1PtNqC29fTfXkLYpBQfffqgRw+Q8zGtiEUEqB
- PxItTiW1LrVA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="171011629"
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="171011629"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 04:09:56 -0800
-IronPort-SDR: 6zU5qG2I4Kp6HIQDmtkOp7foVGq8DLZXaUq3cKtauuAubFVlTfh/9o07sAPidfHaUaD5vnudEf
- bDmB7a0iYDGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="430458516"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 17 Nov 2020 04:09:53 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Nov 2020 14:09:52 +0200
-Date:   Tue, 17 Nov 2020 14:09:52 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        pmalani@chromium.org, enric.balletbo@collabora.com,
-        rajmohan.mani@intel.com, azhar.shaikh@intel.com
-Subject: Re: [PATCH v2 5/8] usb: typec: Use Thunderbolt 3 cable discover mode
- VDO in Enter_USB message
-Message-ID: <20201117120952.GE3437448@kuha.fi.intel.com>
-References: <20201113202503.6559-1-utkarsh.h.patel@intel.com>
- <20201113202503.6559-6-utkarsh.h.patel@intel.com>
+        id S1728325AbgKQMKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgKQMKY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:10:24 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43EB0C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:10:23 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id v143so20082116qkb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:10:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5o0jeVSQmzUAmk1xbEshzaNLz0SjmeOddDRU/spmatk=;
+        b=qjxtY4L/pSZsKkQwzyQ6WPWLgfbeHzjz9s4p4X2Gvs722PBi6eL1lpTiMJBzQ/va/n
+         5ZlaCxDNa9s/U8dqmLJm27888YvgtSPNwjbIn5lrebZu+w4S9cZrMb/JhhYiglVlqdyt
+         P+TJNudUVjahKiRKQVMCmAHhSNdHt/BGcbFzjqsWOhnYGc9d5UIfhWUZORc8l2WZLsWM
+         c+JWjM6u7kePTGWtkh7shVB9PcMLCoiGRP5KDTa5p+HhncjRFxmWx0JGuweIqi97nW3I
+         qZQrINX0bHF7JgnrIUv309t0mFZbMeex58hGvdWWJ5mFL3Lx9dTxHzpdOo7fK6EKL6dH
+         NCHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5o0jeVSQmzUAmk1xbEshzaNLz0SjmeOddDRU/spmatk=;
+        b=eI/7w1RvubqSd0xLgFTr0TbsEzKDQRpCEqi7bMOIFB9FWYmn2Tfwm/OIbvQHTGCMIa
+         LWiHNm5J/mZv+pPqngn7K5DNtAOJDYooUr0QbeWsoonwbZ5BUOAzaM0sAzXUCpE7tnGH
+         3jmnsuBAnKi9EcpZfxHVWgXTOKxChKPM8pS3eXsGCIwNRxfZMK4kZT2XxJ7H66EWWdum
+         811mTZ2MlKN6TKmHK9DWWTnJ416aCDoJH8p9q0fQKX8omx1YakW7QMbZfQmMmGgRdCGk
+         jOHN9kotpLr3cqsUxA/zfQjHrjFblJ1GQ4g+ZyCun00Z9j25l6KMuvYY2+6Bijla8kRW
+         JuEQ==
+X-Gm-Message-State: AOAM530Ou8SoqX9bVZ/7FSxAuvdHOLA7TsLlxnCAAuqohoaPlqRg8bXX
+        06kXTKwkLxSlRj0DSL4quyx3ScgN5uyoBCxLTBgPWfQDkzc=
+X-Google-Smtp-Source: ABdhPJycvwWHeb8fzvv63MFpLzr6/5oraxZLR4rtjnfAvrxrXARcgoeFIsesUsHb924vobxAYepNl0zcIbqyuYX/+Jg=
+X-Received: by 2002:ae9:f715:: with SMTP id s21mr18936312qkg.467.1605615022569;
+ Tue, 17 Nov 2020 04:10:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113202503.6559-6-utkarsh.h.patel@intel.com>
+References: <160560676899.144950.4148778261999789656.stgit@devnote2> <160560677952.144950.8229834525319742454.stgit@devnote2>
+In-Reply-To: <160560677952.144950.8229834525319742454.stgit@devnote2>
+From:   Chen Yu <yu.chen.surf@gmail.com>
+Date:   Tue, 17 Nov 2020 20:10:10 +0800
+Message-ID: <CADjb_WS+tc-oHX7hXVoWGz9pP_e66DcMp1npKbdpcVa9DhPKPA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] tools/bootconfig: Fix to check the write failure correctly
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Chen Yu <yu.c.chen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:25:00PM -0800, Utkarsh Patel wrote:
-> USB4 also uses same cable properties as Thunderbolt 3 so use Thunderbolt 3
-> cable discover mode VDO to fill details such as active cable plug link
-> training and cable rounded support.
-
-I'm sorry, but I think that has to be explained better. We only need
-the Thunderbolt 3 properties when we create the USB4 connection with
-Thunderbolt 3 cables. With USB4 cables that information is simply not
-available. Claiming that USB4 uses the same properties in general is
-not true.
-
-> Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
-> --
-> Changes in v2:
-> - No change.
-> --
-> ---
->  include/linux/usb/typec.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-> index 6be558045942..d91e09d9d91c 100644
-> --- a/include/linux/usb/typec.h
-> +++ b/include/linux/usb/typec.h
-> @@ -75,6 +75,7 @@ enum typec_orientation {
->  /*
->   * struct enter_usb_data - Enter_USB Message details
->   * @eudo: Enter_USB Data Object
-> + * @tbt_cable_vdo: TBT3 Cable Discover Mode Response
->   * @active_link_training: Active Cable Plug Link Training
->   *
->   * @active_link_training is a flag that should be set with uni-directional SBRX
-
-Please also explain the same here with a short comment. So basically,
-if the USB4 connection is created using TBT3 cable, then we need to
-supply also the TBT3 Cable VDO as part of this data. But if USB4
-cable is used, then that member should not be filled at all.
-
-> @@ -83,6 +84,7 @@ enum typec_orientation {
->   */
->  struct enter_usb_data {
->  	u32			eudo;
-> +	u32			tbt_cable_vdo;
->  	unsigned char		active_link_training:1;
->  };
-
-thanks,
+On Tue, Nov 17, 2020 at 5:53 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Fix to check the write(2) failure including partial write
+> correctly and try to rollback the partial write, because
+> if there is no BOOTCONFIG_MAGIC string, we can not remove it.
+>
+> Fixes: 85c46b78da58 ("bootconfig: Add bootconfig magic word for indicating bootconfig explicitly")
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+For [1/3] and [2/3]
+Tested-by: Chen Yu <yu.chen.surf@gmail.com>
 
 -- 
-heikki
+Thanks,
+Chenyu
