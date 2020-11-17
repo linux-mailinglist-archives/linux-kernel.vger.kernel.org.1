@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E37E2B5DEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155482B5DF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbgKQLFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:05:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
+        id S1728435AbgKQLGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:06:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728216AbgKQLFU (ORCPT
+        with ESMTP id S1728362AbgKQLGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:05:20 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED9DC0613CF;
-        Tue, 17 Nov 2020 03:05:20 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id 62so15873858pgg.12;
-        Tue, 17 Nov 2020 03:05:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L+Gvwy/fVcc4cI9UDXN25/HNa0h/y9qTShVXqIhVxo0=;
-        b=qV+UWjXJF2RgbvGcjzWENyf++xA8QpuO/XMyppU73AUcuQTaRn7LHupiz2WlSwgqS5
-         thOU9PGbLOHsHapP0vfdkx4PNlkXq+AFNdlJo9eZ2koLfm5lSOms1op3ipjqwK5X+NCg
-         BYcs8BQne8GjdgdNub2osFxSb1zASxhiOdtpiSY3XioPXzuHguWYNIZv3aCWUu80paXw
-         axUV8/pq83SrDgxj0RgJWR9yEN2Jw1vJQIBy/uiH+67A+7l4cQx6nLmTyjPggsogYWrU
-         GlfZjyhpZjXlwByyp1ZWtMSHBGrPZh2y31e1J0cboLuYAkmfIe/DzyunYUN1TldeQlyr
-         mxlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L+Gvwy/fVcc4cI9UDXN25/HNa0h/y9qTShVXqIhVxo0=;
-        b=ruSI/OBt0o4VU9B7bw44ZQvVJDBjE5PWztwiD4tLcAKvlNlsjQe7TaAlorhjT7dGAW
-         uukih6WSNOLVkqCCmcfNWjysJrSlHUaL04j0LAeXSHQQ58UEeLiSSh59ZOQIMVxGmSzS
-         vXHH8u/aK5YSht5xQ2xjZ81CH/LvKEGnyCCNWSp7oPUL2OutduaeBJ5FSd5vEBoaSGqc
-         DZ+xDtCXnBX/tnUf9iFILq/bS91OBJ6uDumgwyrqW2QrxD5otViYS2sEplV61SJEAo3L
-         cEh89xd9oo75RVgx2HLLqPRCMn7umvvRWoHxnPjaIVWVWp0Uhl8crlXCHE5UsS2Sj8xW
-         fo4g==
-X-Gm-Message-State: AOAM530t6Y5PSvS0zU6zXP/PUNA8jEK/agOpUdA8QGtx/M/IRTXABOx3
-        bUzH8mfsmq1PBervapzoqANK79xI5kDDn0IOz3c=
-X-Google-Smtp-Source: ABdhPJw1KuJKVfATx3aB32L9dyWwi9V7zJPKMAFvfbcUAfxYFibBIHBD7SnRy7C7cdP+d9Fsc4xqhkwGIeG6pQ5T4D8=
-X-Received: by 2002:a62:7e4f:0:b029:18c:9322:739b with SMTP id
- z76-20020a627e4f0000b029018c9322739bmr954490pfc.7.1605611120281; Tue, 17 Nov
- 2020 03:05:20 -0800 (PST)
+        Tue, 17 Nov 2020 06:06:44 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806BCC0613CF;
+        Tue, 17 Nov 2020 03:06:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BRrBBz1KgvikzkccKqFTVSAPFjaDPkfexbTOVrIOZI8=; b=u8kf7c54YIWfDuyxYoHulRHvoS
+        h0L8H4TE1o3yzAlu35DwMUMyAql7jIOPyCMJ8/V3Nii5adSvXvbWwcNrGoTFGaKnB522jlan70HxA
+        0/jh5hu/bWr1ulwp74ouOm4lEY5raFw0z9armYVRw98qK0EBvFzp2TQGnf9uhZua/Zs5Ko0tji9GN
+        H1QhGjaeQ1HJdPkLHoyaSfzMIRcq8XoZ4dfRGveCIBN7FtM/iIz4IM95gHu8juWLdoKe0knSW/csN
+        jbHra8ntqpMv9Z1Bso3KGEAxUWAbZEabelzXjZi3sOIhezFPdvF8W2txAgmwK01hUu1IS1e4jgTAN
+        j4r/gbaA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1keyob-0001aY-65; Tue, 17 Nov 2020 11:06:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B29BD305CC3;
+        Tue, 17 Nov 2020 12:06:20 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 987F720159855; Tue, 17 Nov 2020 12:06:20 +0100 (CET)
+Date:   Tue, 17 Nov 2020 12:06:20 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, rostedt@goodmis.org
+Subject: Re: WARNING at kernel/sched/core.c:2013
+ migration_cpu_stop+0x2e3/0x330
+Message-ID: <20201117110620.GG3121378@hirez.programming.kicks-ass.net>
+References: <a1fd0d9c6c8cd90a74879b61467ae48d@natalenko.name>
+ <jhj3619y63v.mognet@arm.com>
 MIME-Version: 1.0
-References: <20201117075254.4861-1-alexandru.ardelean@analog.com>
- <20201117075254.4861-2-alexandru.ardelean@analog.com> <20201117110111.0000468a@Huawei.com>
-In-Reply-To: <20201117110111.0000468a@Huawei.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 17 Nov 2020 13:05:04 +0200
-Message-ID: <CAHp75VcXNGb5Poo8iKBJen52=FhNHUHqYc6Vz0mV7gwcETOHgw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] iio: adc: ad7887: convert driver to full DT probing
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vaishnav M A <vaishnav@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhj3619y63v.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 1:01 PM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Tue, 17 Nov 2020 09:52:53 +0200
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > This change removes the SPI device table, adds an OF device table instead.
-> > This should also be usable for ACPI via PRP0001.
+On Mon, Nov 16, 2020 at 10:00:14AM +0000, Valentin Schneider wrote:
+> 
+> On 15/11/20 22:32, Oleksandr Natalenko wrote:
+> > Hi.
 > >
-> > This device is usually probed via device-tree, so it makes more sense to
-> > use the OF device table.
+> > I'm running v5.10-rc3-rt7 for some time, and I came across this splat in 
+> > dmesg:
 > >
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> So, we've had a few cases of having to put the device_id table
-> back again recently.
-> https://lore.kernel.org/linux-iio/20201101152613.2c37581a@archlinux/
->
-> They tend to be due to greybus doing it's probing in yet another fashion.
-> So far they've been all i2c devices, but I kind of assume it does the same for spi.
-> https://elixir.bootlin.com/linux/latest/source/drivers/staging/greybus/spilib.c#L437
->
-> How device_get_match_data() plays with that I'm not sure. It probably
-> doesn't right now given swnode doesn't have a device_get_match_data() callback.
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/base/swnode.c#L539
->
-> So after all that I think I've argued myself around to thinking what you have
-> here is fine.  If someone wants to support this via a swnode then they can
-> figure out how to make that work.
->
-> +CC Vaishnav and Andy for their input.
+> > ```
+> > [118769.951010] ------------[ cut here ]------------
+> > [118769.951013] WARNING: CPU: 19 PID: 146 at kernel/sched/core.c:2013 
+> 
+> Err, I didn't pick up on this back then, but isn't that check bogus? If the
+> task is enqueued elsewhere, it's valid for it not to be affined
+> 'here'. Also that is_migration_disabled() check within is_cpu_allowed()
+> makes me think this isn't the best thing to call on a remote task.
+> 
+> ---
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 1218f3ce1713..47d5b677585f 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2010,7 +2010,7 @@ static int migration_cpu_stop(void *data)
+>  		 * valid again. Nothing to do.
+>  		 */
+>  		if (!pending) {
+> -			WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
+> +			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), p->cpus_ptr));
 
-device_get_match_data() doesn't know about bus type specifics. One may
-introduce a helper like
+Ho humm.. bit of a mess that. I'm trying to figure out if we need that
+is_per_cpu_kthread() test here or not.
 
-const void *spi_device_get_match_data(dev)
-{
-  const void *match = device_get_match_data(dev);
-  if (match)
-    return match;
-  return spi_dev_id....;
-}
+I suppose not, what we want here is to ensure the CPU is in cpus_mask
+and not care about the whole hotplug mess.
 
-And use it with the SPI ID table.
+Would it makes sense to replace both instances in migration_cpu_stop()
+with:
 
--- 
-With Best Regards,
-Andy Shevchenko
+	WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), p->cpus_mask));
+
+?
