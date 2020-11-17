@@ -2,101 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98792B6A00
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDCD2B6A0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727755AbgKQQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:28:49 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:38418 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgKQQ2s (ORCPT
+        id S1727001AbgKQQ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:29:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgKQQ3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:28:48 -0500
-Received: by mail-lj1-f195.google.com with SMTP id r17so24964172ljg.5;
-        Tue, 17 Nov 2020 08:28:46 -0800 (PST)
+        Tue, 17 Nov 2020 11:29:49 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08617C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:29:47 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id w20so772619pjh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:29:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A3QTWUzTvUT9gxMoshGLtqPLDCXqi6pfAh27cLWuKoY=;
+        b=oF6O0GItwqng2CH4SIbYH2aWyQ0yc6lC98D8jhxQh/Z/K6wGgSrCp+VelucrtJYIN+
+         yfrPeJi0WnWoX5NjeJg7eGFqFQH7j+0A/kup3R4Gpm/Na2hqHBDTwGnqDR8yqmKMDFxB
+         jWQsbr+qnzpVfnxrIHMriUpUcKtH1Ei4VI4pdgcMN8m7OKjz1fLIvEICdudJz+MTX8Hb
+         pur0CMetqz1ZfpjWZf0ixQoiXRCmCJ970vKWlb7PggfovGKJFPkHgRalGrdCYI7ATCYB
+         EHeAV57hqAfhxZP2iYYglDOS2Q99Zw+xdno1A/n+4pWJdBqnLMHxUGUnCQa1wcQUc5t9
+         OL3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JjQd+tw3c5x0K9ttbX2Yz1ZaogjJI7xLMTz04fJy+b0=;
-        b=JZZUS+kDf95siM6ldFfLoo8aoMasmynyITOQlEYouVrMI8cLQA8FxFafPZDdltszMX
-         Ml65pwDyOqdyJk/o4ULcv8mXVg/GYmUfQdE0YuPmnbawjPy+GIkfi8k1NunlRn58SfUA
-         H5TFNv3cGahMrrEotJc9oEQdyicaY2gXif2k0iu96fY4WyqcrpsuWIokq+galFNAs/VS
-         90SKBDncWhlX8DvmBjiZyj54s7EG0O/VmTk9BwRVms5y25zjZifn+j5xwXaWdSQ87eMH
-         5J3ADYtTRwAxXImKAR4g5fVLZ6gCQQyw6USKhJmzIPXM4EzRrdwIzt9DdHRI40Tbdppx
-         f9pg==
-X-Gm-Message-State: AOAM532FQODvQRvx8Ywqi2GG8z3rCgGCDeio6yR3xFbF+hZyUO0VWZvG
-        I4Hu6ksm+ftzcMVsyNl847aaZ+WeV6tj5w==
-X-Google-Smtp-Source: ABdhPJyFoWuvXpRj42Hi89TfIM5ae+V1n4xj3v6bwEN9q+sJWskrjbJCs5CDQ+cYJXqZ6axKNywE3Q==
-X-Received: by 2002:a2e:91d6:: with SMTP id u22mr2169639ljg.206.1605630525941;
-        Tue, 17 Nov 2020 08:28:45 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id 131sm3195289lfb.248.2020.11.17.08.28.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 08:28:44 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kf3qZ-0003F8-VI; Tue, 17 Nov 2020 17:28:48 +0100
-Date:   Tue, 17 Nov 2020 17:28:47 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH] USB: serial: mos7720: defer state restore to a workqueue
-Message-ID: <X7P6P018BQSypuP6@localhost>
-References: <20201103204014.3ue37owcras6cx7p@linux-p48b.lan>
- <20201104110657.GW4085@localhost>
- <20201104162534.GY4085@localhost>
- <20201105001307.lelve65nif344cfs@linux-p48b.lan>
- <20201105082540.GA4085@localhost>
- <20201106061713.lgghl4xnvdmkvges@linux-p48b.lan>
- <20201113091443.GI4085@localhost>
- <20201114042725.ofs7zbzmxg32tbbi@linux-p48b.lan>
- <X7KyPrY8FDH4C/gm@localhost>
- <20201116223102.eliwt7uh5rkiiq5h@linux-p48b.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A3QTWUzTvUT9gxMoshGLtqPLDCXqi6pfAh27cLWuKoY=;
+        b=t4RSQ9O2A1m9zVDoCq8UtX1rxoONBIvRrMQ7WK3l7cMZzt1W9WUcPpMRgb6Y4Y/O8I
+         gJBWjU5p26YG+cDUU9ril98dKVFiAdiBz6s7KahsYLd0NE1vPM1lLSdViXl/b0jFLPX/
+         BIq0y0+mXWlXS8m1Rz0dEEMFkOnLvZFsBqrSd9Of+uzKTyRVo5kRbOS8xHqt6H2vc2SB
+         dTS1YVaL8QBI5BmRXUjIbmjE3tgh3B2bL1LbzRpcJ4oAEKWvOek7i0ZOiuMpkfeS+rnb
+         LFGZhg6NH0Yxpr0iI143sRtnZv0bfmsgkcBler19CzHEe35yUJiaUVKSl/j4ObuTxhGw
+         87Eg==
+X-Gm-Message-State: AOAM53340+KhmMcyMVtEuPir0YQQa8NDbpr9PtZaawy5qiDr7Id7DOOT
+        hUHASL4Uc6Gg+J/yfqRM8g+jgavgzL8v4AdnzmgqWw==
+X-Google-Smtp-Source: ABdhPJyKdXILrrCSaxnUg7OSQj7ryLePl/Z4V9HWSFy1zzwaaUm05L7FiTmkFJslcslXKPtsd9XP4QPPRhSICbNSWHs=
+X-Received: by 2002:a17:902:c14b:b029:d6:ab18:108d with SMTP id
+ 11-20020a170902c14bb02900d6ab18108dmr314927plj.20.1605630587256; Tue, 17 Nov
+ 2020 08:29:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116223102.eliwt7uh5rkiiq5h@linux-p48b.lan>
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <349168819c1249d4bceea26597760b0a@hisilicon.com> <CAMZfGtUVDJ4QHYRCKnPTkgcKGJ38s2aOOktH+8Urz7oiVfimww@mail.gmail.com>
+ <714ae7d701d446259ab269f14a030fe9@hisilicon.com>
+In-Reply-To: <714ae7d701d446259ab269f14a030fe9@hisilicon.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 18 Nov 2020 00:29:07 +0800
+Message-ID: <CAMZfGtWNa=abZdN6HmWE1VBFHfGCbsW9D0zrN-F5zrhn6s=ErA@mail.gmail.com>
+Subject: Re: [External] RE: [PATCH v4 00/21] Free some vmemmap pages of
+ hugetlb page
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
+        "pawan.kumar.gupta@linux.intel.com" 
+        <pawan.kumar.gupta@linux.intel.com>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "oneukum@suse.com" <oneukum@suse.com>,
+        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        "almasrymina@google.com" <almasrymina@google.com>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "mhocko@suse.com" <mhocko@suse.com>,
+        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 02:31:02PM -0800, Davidlohr Bueso wrote:
-> On Mon, 16 Nov 2020, Johan Hovold wrote:
-> 
-> >On Fri, Nov 13, 2020 at 08:27:25PM -0800, Davidlohr Bueso wrote:
-> >> @@ -1883,21 +1724,17 @@ static void mos7720_release(struct usb_serial *serial)
-> >>		if (mos_parport->msg_pending)
-> >>			wait_for_completion_timeout(&mos_parport->syncmsg_compl,
-> >>					    msecs_to_jiffies(MOS_WDR_TIMEOUT));
-> >> +		/*
-> >> +		 * If delayed work is currently scheduled, wait for it to
-> >> +		 * complete. This also implies barriers that ensure the
-> >> +		 * below serial clearing is not hoisted above the ->work.
-> >> +		 */
-> >> +		cancel_work_sync(&mos_parport->work);
+On Tue, Nov 17, 2020 at 7:08 PM Song Bao Hua (Barry Song)
+<song.bao.hua@hisilicon.com> wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Muchun Song [mailto:songmuchun@bytedance.com]
+> > Sent: Tuesday, November 17, 2020 11:50 PM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: corbet@lwn.net; mike.kravetz@oracle.com; tglx@linutronix.de;
+> > mingo@redhat.com; bp@alien8.de; x86@kernel.org; hpa@zytor.com;
+> > dave.hansen@linux.intel.com; luto@kernel.org; peterz@infradead.org;
+> > viro@zeniv.linux.org.uk; akpm@linux-foundation.org; paulmck@kernel.org;
+> > mchehab+huawei@kernel.org; pawan.kumar.gupta@linux.intel.com;
+> > rdunlap@infradead.org; oneukum@suse.com; anshuman.khandual@arm.com;
+> > jroedel@suse.de; almasrymina@google.com; rientjes@google.com;
+> > willy@infradead.org; osalvador@suse.de; mhocko@suse.com;
+> > duanxiongchun@bytedance.com; linux-doc@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; linux-mm@kvack.org;
+> > linux-fsdevel@vger.kernel.org
+> > Subject: Re: [External] RE: [PATCH v4 00/21] Free some vmemmap pages of
+> > hugetlb page
 > >
-> >As I mentioned, this needs to be done *after* deregistering the port or
-> >you could theoretically end up with the work item being requeued.
-> 
-> Hmm sorry yes I forgot to mention this. I was counting on the private_data
-> already being null to prevent any new work being actually scheduled, so an
-> incoming restore state, for example, would be a nop.
+> > On Tue, Nov 17, 2020 at 6:16 PM Song Bao Hua (Barry Song)
+> > <song.bao.hua@hisilicon.com> wrote:
+> > >
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: owner-linux-mm@kvack.org [mailto:owner-linux-mm@kvack.org] On
+> > > > Behalf Of Muchun Song
+> > > > Sent: Saturday, November 14, 2020 12:00 AM
+> > > > To: corbet@lwn.net; mike.kravetz@oracle.com; tglx@linutronix.de;
+> > > > mingo@redhat.com; bp@alien8.de; x86@kernel.org; hpa@zytor.com;
+> > > > dave.hansen@linux.intel.com; luto@kernel.org; peterz@infradead.org;
+> > > > viro@zeniv.linux.org.uk; akpm@linux-foundation.org; paulmck@kernel.org;
+> > > > mchehab+huawei@kernel.org; pawan.kumar.gupta@linux.intel.com;
+> > > > rdunlap@infradead.org; oneukum@suse.com;
+> > anshuman.khandual@arm.com;
+> > > > jroedel@suse.de; almasrymina@google.com; rientjes@google.com;
+> > > > willy@infradead.org; osalvador@suse.de; mhocko@suse.com
+> > > > Cc: duanxiongchun@bytedance.com; linux-doc@vger.kernel.org;
+> > > > linux-kernel@vger.kernel.org; linux-mm@kvack.org;
+> > > > linux-fsdevel@vger.kernel.org; Muchun Song
+> > <songmuchun@bytedance.com>
+> > > > Subject: [PATCH v4 00/21] Free some vmemmap pages of hugetlb page
+> > > >
+> > > > Hi all,
+> > > >
+> > > > This patch series will free some vmemmap pages(struct page structures)
+> > > > associated with each hugetlbpage when preallocated to save memory.
+> > > >
+> > > > Nowadays we track the status of physical page frames using struct page
+> > > > structures arranged in one or more arrays. And here exists one-to-one
+> > > > mapping between the physical page frame and the corresponding struct
+> > page
+> > > > structure.
+> > > >
+> > > > The HugeTLB support is built on top of multiple page size support that
+> > > > is provided by most modern architectures. For example, x86 CPUs normally
+> > > > support 4K and 2M (1G if architecturally supported) page sizes. Every
+> > > > HugeTLB has more than one struct page structure. The 2M HugeTLB has
+> > 512
+> > > > struct page structure and 1G HugeTLB has 4096 struct page structures. But
+> > > > in the core of HugeTLB only uses the first 4 (Use of first 4 struct page
+> > > > structures comes from HUGETLB_CGROUP_MIN_ORDER.) struct page
+> > > > structures to
+> > > > store metadata associated with each HugeTLB. The rest of the struct page
+> > > > structures are usually read the compound_head field which are all the same
+> > > > value. If we can free some struct page memory to buddy system so that we
+> > > > can save a lot of memory.
+> > > >
+> > > > When the system boot up, every 2M HugeTLB has 512 struct page
+> > structures
+> > > > which size is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
+> > > >
+> > > >    hugetlbpage                  struct pages(8 pages)          page
+> > > > frame(8 pages)
+> > > >   +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+> > > >   |           |                     |     0     | -------------> |
+> > 0
+> > > > |
+> > > >   |           |                     |     1     | -------------> |
+> > 1
+> > > > |
+> > > >   |           |                     |     2     | -------------> |
+> > 2
+> > > > |
+> > > >   |           |                     |     3     | -------------> |
+> > 3
+> > > > |
+> > > >   |           |                     |     4     | -------------> |
+> > 4
+> > > > |
+> > > >   |     2M    |                     |     5     | -------------> |
+> > > > 5     |
+> > > >   |           |                     |     6     | -------------> |
+> > 6
+> > > > |
+> > > >   |           |                     |     7     | -------------> |
+> > 7
+> > > > |
+> > > >   |           |                     +-----------+
+> > > > +-----------+
+> > > >   |           |
+> > > >   |           |
+> > > >   +-----------+
+> > > >
+> > > >
+> > > > When a hugetlbpage is preallocated, we can change the mapping from
+> > above
+> > > > to
+> > > > bellow.
+> > > >
+> > > >    hugetlbpage                  struct pages(8 pages)          page
+> > > > frame(8 pages)
+> > > >   +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+> > > >   |           |                     |     0     | -------------> |
+> > 0
+> > > > |
+> > > >   |           |                     |     1     | -------------> |
+> > 1
+> > > > |
+> > > >   |           |                     |     2     | ------------->
+> > > > +-----------+
+> > > >   |           |                     |     3     | -----------------^ ^
+> > ^ ^
+> > > > ^
+> > > >   |           |                     |     4     | -------------------+
+> > | |
+> > > > |
+> > > >   |     2M    |                     |     5     |
+> > ---------------------+ |
+> > > > |
+> > > >   |           |                     |     6     |
+> > -----------------------+ |
+> > > >   |           |                     |     7     |
+> > -------------------------+
+> > > >   |           |                     +-----------+
+> > > >   |           |
+> > > >   |           |
+> > > >   +-----------+
+> > > >
+> > > > For tail pages, the value of compound_head is the same. So we can reuse
+> > > > first page of tail page structs. We map the virtual addresses of the
+> > > > remaining 6 pages of tail page structs to the first tail page struct,
+> > > > and then free these 6 pages. Therefore, we need to reserve at least 2
+> > > > pages as vmemmap areas.
+> > > >
+> > > > When a hugetlbpage is freed to the buddy system, we should allocate six
+> > > > pages for vmemmap pages and restore the previous mapping relationship.
+> > > >
+> > > > If we uses the 1G hugetlbpage, we can save 4088 pages(There are 4096
+> > pages
+> > > > for
+> > > > struct page structures, we reserve 2 pages for vmemmap and 8 pages for
+> > page
+> > > > tables. So we can save 4088 pages). This is a very substantial gain. On our
+> > > > server, run some SPDK/QEMU applications which will use 1024GB
+> > hugetlbpage.
+> > > > With this feature enabled, we can save ~16GB(1G hugepage)/~11GB(2MB
+> > > > hugepage)
+> > >
+> > > Hi Muchun,
+> > >
+> > > Do we really save 11GB for 2MB hugepage?
+> > > How much do we save if we only get one 2MB hugetlb from one 128MB
+> > mem_section?
+> > > It seems we need to get at least one page for the PTEs since we are splitting
+> > PMD of
+> > > vmemmap into PTE?
+> >
+> > There are 524288(1024GB/2MB) 2MB HugeTLB pages. We can save 6 pages for
+> > each
+> > 2MB HugeTLB page. So we can save 3145728 pages. But we need to split PMD
+> > page
+> > table for every one 128MB mem_section and every section need one page
+> > as PTE page
+> > table. So we need 8192(1024GB/128MB) pages as PTE page tables.
+> > Finally, we can save
+> > 3137536(3145728-8192) pages which is 11.97GB.
+>
+> The worst case I can see is that:
+> if we get 100 hugetlb with 2MB size, but the 100 hugetlb comes from different
+> mem_section, we won't save 11.97GB. we only save 5/8 * 16GB=10GB.
+>
+> Anyway, it seems 11GB is in the middle of 10GB and 11.97GB,
+> so sounds sensible :-)
+>
+> ideally, we should be able to free PageTail if we change struct page in some way.
+> Then we will save much more for 2MB hugetlb. but it seems it is not easy.
 
-Ah, yes, you're right. 
+Now for the 2MB HugrTLB page, we only free 6 vmemmap pages.
+But your words woke me up. Maybe we really can free 7 vmemmap
+pages. In this case, we can see 8 of the 512 struct page structures
+has beed set PG_head flag. If we can adjust compound_head()
+slightly and make compound_head() return the real head struct
+page when the parameter is the tail struct page but with PG_head
+flag set. I will start an investigation and a test.
 
-> >Yes, the same applies for the "synchronous" requests, but that's a
-> >preexisting issue.
-> 
-> Per the above I also assumed sync requests were also safe as is.
+Thanks.
 
-Indeed.
+>
+> Thanks
+> Barry
 
-> But I can certainly re-order things, how about:
 
-No, that's ok, no need to change this as part of this clean up.
 
-Can you just fix up that irq comment, and I'll apply this? Thanks.
-
-Johan
+-- 
+Yours,
+Muchun
