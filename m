@@ -2,633 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8F42B5D0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467252B5D14
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727698AbgKQKjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:39:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
+        id S1727827AbgKQKkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:40:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgKQKjO (ORCPT
+        with ESMTP id S1727811AbgKQKkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:39:14 -0500
+        Tue, 17 Nov 2020 05:40:12 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7E5C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:39:13 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E07C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:40:12 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1keyO2-0004ml-Uz; Tue, 17 Nov 2020 11:38:58 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1keyO2-0001bb-6V; Tue, 17 Nov 2020 11:38:58 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
+        (envelope-from <mkl@pengutronix.de>)
+        id 1keyP5-0005Aj-Ql; Tue, 17 Nov 2020 11:40:03 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:4295:bc9e:e8ea:bff7] (unknown [IPv6:2a03:f580:87bc:d400:4295:bc9e:e8ea:bff7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 30AE75944F2;
+        Tue, 17 Nov 2020 10:40:02 +0000 (UTC)
+Subject: Re: [PATCH v3 1/3] dt-bindings: vendor-prefixes: add "virtual" prefix
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Mark Rutland <mark.rutland@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Shawn Guo <shawnguo@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         NXP Linux Team <linux-imx@nxp.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: [PATCH v3 3/3] ARM: dts: add Protonic WD3 board
-Date:   Tue, 17 Nov 2020 11:38:57 +0100
-Message-Id: <20201117103857.6089-4-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117103857.6089-1-o.rempel@pengutronix.de>
+        David Jander <david@protonic.nl>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
 References: <20201117103857.6089-1-o.rempel@pengutronix.de>
+ <20201117103857.6089-2-o.rempel@pengutronix.de>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <87fb8903-662e-572d-1a74-d0d5bc2fa49b@pengutronix.de>
+Date:   Tue, 17 Nov 2020 11:39:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
+In-Reply-To: <20201117103857.6089-2-o.rempel@pengutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="6hrVmYOfhJ7ukpJP0Lrln8c7tYEa2bYXc"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Protonic WD3 is a proof of concept platform for tractor e-cockpit applications
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--6hrVmYOfhJ7ukpJP0Lrln8c7tYEa2bYXc
+Content-Type: multipart/mixed; boundary="P3SyXmEQQ5dwNcyruNHVb1qEL4LcAfJJK";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oleksij Rempel <o.rempel@pengutronix.de>,
+ Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ NXP Linux Team <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ David Jander <david@protonic.nl>, Fabio Estevam <festevam@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
+Message-ID: <87fb8903-662e-572d-1a74-d0d5bc2fa49b@pengutronix.de>
+Subject: Re: [PATCH v3 1/3] dt-bindings: vendor-prefixes: add "virtual" prefix
+References: <20201117103857.6089-1-o.rempel@pengutronix.de>
+ <20201117103857.6089-2-o.rempel@pengutronix.de>
+In-Reply-To: <20201117103857.6089-2-o.rempel@pengutronix.de>
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/boot/dts/Makefile          |   1 +
- arch/arm/boot/dts/imx6qp-prtwd3.dts | 552 ++++++++++++++++++++++++++++
- 2 files changed, 553 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6qp-prtwd3.dts
+--P3SyXmEQQ5dwNcyruNHVb1qEL4LcAfJJK
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 3c17387752c0..a2197907bc4f 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -587,6 +587,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6qp-nitrogen6_max.dtb \
- 	imx6qp-nitrogen6_som2.dtb \
- 	imx6qp-phytec-mira-rdk-nand.dtb \
-+	imx6qp-prtwd3.dtb \
- 	imx6qp-sabreauto.dtb \
- 	imx6qp-sabresd.dtb \
- 	imx6qp-tx6qp-8037.dtb \
-diff --git a/arch/arm/boot/dts/imx6qp-prtwd3.dts b/arch/arm/boot/dts/imx6qp-prtwd3.dts
-new file mode 100644
-index 000000000000..a93aa3776db6
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6qp-prtwd3.dts
-@@ -0,0 +1,552 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright (c) 2018 Protonic Holland
-+ */
-+
-+/dts-v1/;
-+#include <dt-bindings/gpio/gpio.h>
-+#include "imx6qp.dtsi"
-+
-+/ {
-+	model = "Protonic WD3 board";
-+	compatible = "prt,prtwd3", "fsl,imx6qp";
-+
-+	chosen {
-+		stdout-path = &uart4;
-+	};
-+
-+	memory@10000000 {
-+		device_type = "memory";
-+		reg = <0x10000000 0x20000000>;
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x20000000>;
-+	};
-+
-+	clock_ksz8081: clock-ksz8081 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <50000000>;
-+	};
-+
-+	clock_ksz9031: clock-ksz9031 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	clock_mcp251xfd: clock-mcp251x {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <20000000>;
-+	};
-+
-+	clock_sja1105: clock-sja1105 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	mdio {
-+		compatible = "virtual,mdio-gpio";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_mdio>;
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpios = <&gpio5 6 GPIO_ACTIVE_HIGH
-+			 &gpio5 7 GPIO_ACTIVE_HIGH>;
-+
-+		/* Microchip KSZ8081 */
-+		usbeth_phy: ethernet-phy@3 {
-+			reg = <0x3>;
-+
-+			interrupts-extended = <&gpio5 12 IRQ_TYPE_LEVEL_LOW>;
-+			reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <500>;
-+			reset-deassert-us = <1000>;
-+			clocks = <&clock_ksz8081>;
-+			clock-names = "rmii-ref";
-+			micrel,led-mode = <0>;
-+		};
-+
-+		tja1102_phy0: ethernet-phy@4 {
-+			reg = <0x4>;
-+
-+			interrupts-extended = <&gpio5 8 IRQ_TYPE_LEVEL_LOW>;
-+			reset-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <20>;
-+			reset-deassert-us = <2000>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			tja1102_phy1: ethernet-phy@5 {
-+				reg = <0x5>;
-+
-+				interrupts-extended = <&gpio5 8 IRQ_TYPE_LEVEL_LOW>;
-+			};
-+		};
-+	};
-+
-+	reg_5v0: regulator-5v0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5v0";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+	};
-+
-+	reg_otg_vbus: regulator-otg-vbus {
-+		compatible = "regulator-fixed";
-+		regulator-name = "otg-vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		gpio = <&gpio3 22 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	usdhc2_wifi_pwrseq: usdhc2-wifi-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_wifi_npd>;
-+		reset-gpios = <&gpio6 10 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&can1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can1>;
-+	xceiver-supply = <&reg_5v0>;
-+	status = "okay";
-+};
-+
-+&ecspi2 {
-+	cs-gpios = <&gpio2 26 GPIO_ACTIVE_HIGH>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi2>;
-+	status = "okay";
-+
-+	switch@0 {
-+		compatible = "nxp,sja1105q";
-+		reg = <0>;
-+		spi-max-frequency = <4000000>;
-+		spi-rx-delay-us = <1>;
-+		spi-tx-delay-us = <1>;
-+		spi-cpha;
-+
-+		reset-gpios = <&gpio5 5 GPIO_ACTIVE_LOW>;
-+
-+		clocks = <&clock_sja1105>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				label = "usb";
-+				phy-handle = <&usbeth_phy>;
-+				phy-mode = "rmii";
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				label = "t1slave";
-+				phy-handle = <&tja1102_phy1>;
-+				phy-mode = "rmii";
-+			};
-+
-+			port@2 {
-+				reg = <2>;
-+				label = "t1master";
-+				phy-handle = <&tja1102_phy0>;
-+				phy-mode = "rmii";
-+
-+			};
-+
-+			port@3 {
-+				reg = <3>;
-+				label = "rj45";
-+				phy-handle = <&rgmii_phy>;
-+				phy-mode = "rgmii-id";
-+			};
-+
-+			port@4 {
-+				reg = <4>;
-+				label = "cpu";
-+				ethernet = <&fec>;
-+				phy-mode = "rgmii-id";
-+
-+				fixed-link {
-+					speed = <100>;
-+					full-duplex;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&ecspi3 {
-+	cs-gpios = <&gpio4 24 GPIO_ACTIVE_HIGH>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi3>;
-+	status = "okay";
-+
-+	can@0 {
-+		compatible = "microchip,mcp251xfd";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_can2>;
-+		reg = <0>;
-+		clocks = <&clock_mcp251xfd>;
-+		spi-max-frequency = <5000000>;
-+		interrupts-extended = <&gpio4 25 IRQ_TYPE_EDGE_FALLING>;
-+	};
-+};
-+
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet>;
-+	status = "okay";
-+
-+	phy-mode = "rgmii";
-+
-+	fixed-link {
-+		speed = <100>;
-+		full-duplex;
-+	};
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* Microchip KSZ9031 */
-+		rgmii_phy: ethernet-phy@2 {
-+			reg = <2>;
-+
-+			interrupts-extended = <&gpio1 28 IRQ_TYPE_EDGE_FALLING>;
-+			reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <1000>;
-+
-+			clocks = <&clock_ksz9031>;
-+		};
-+	};
-+};
-+
-+&gpio1 {
-+	gpio-line-names =
-+		"", "SD1_CD", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "PHY3_RESET", "", "", "PHY3_INT", "", "", "";
-+};
-+
-+&gpio2 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"REV_ID0", "REV_ID1", "REV_ID2", "REV_ID3", "BOARD_ID3",
-+			"BOARD_ID0", "BOARD_ID1", "BOARD_ID2",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "ECSPI2_SS0", "", "", "", "", "";
-+};
-+
-+&gpio3 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "USB_OTG_OC", "USB_OTG_PWR", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&gpio4 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "CAN1_SR", "CAN2_SR", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"ECSPI3_SS0", "CANFD_INT", "USB_ETH_RESET", "", "", "", "", "";
-+};
-+
-+&gpio5 {
-+	gpio-line-names =
-+		"", "", "", "", "", "SW_RESET", "", "",
-+		"PHY12_INT", "PHY12_RESET", "PHY12_EN", "PHY0_RESET",
-+			"PHY0_INT", "", "", "",
-+		"", "", "DISP1_EN", "DISP1_LR", "DISP1_TS_IRQ", "LVDS1_PD",
-+			"", "",
-+		"", "LVDS1_INT", "", "", "DISP0_LR", "DISP0_TS_IRQ",
-+			"DISP0_EN", "CAM_GPIO0";
-+};
-+
-+&gpio6 {
-+	gpio-line-names =
-+		"LVDS0_INT", "LVDS0_PD", "CAM_INT", "CAM_GPIO1", "CAM_PD",
-+			"CAM_LOCK", "", "POWER_TG",
-+		"POWER_VSEL", "", "WLAN_REG_ON", "USB_ETH_CHG", "", "",
-+			"USB_ETH_CHG_ID0", "USB_ETH_CHG_ID1",
-+		"USB_ETH_CHG_ID2", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	/* additional i2c devices are added automatically by the boot loader */
-+};
-+
-+&i2c3 {
-+	adc@49 {
-+		compatible = "ti,ads1015";
-+		reg = <0x49>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* VIN */
-+		channel@4 {
-+			reg = <4>;
-+			ti,gain = <1>;
-+			ti,datarate = <3>;
-+		};
-+
-+		/* VBUS */
-+		channel@5 {
-+			reg = <5>;
-+			ti,gain = <1>;
-+			ti,datarate = <3>;
-+		};
-+
-+		/* ICHG */
-+		channel@6 {
-+			reg = <6>;
-+			ti,gain = <1>;
-+			ti,datarate = <3>;
-+		};
-+
-+		channel@7 {
-+			reg = <7>;
-+			ti,gain = <1>;
-+			ti,datarate = <3>;
-+		};
-+	};
-+};
-+
-+&uart4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart4>;
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	vbus-supply = <&reg_otg_vbus>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg>;
-+	phy_type = "utmi";
-+	dr_mode = "host";
-+	disable-over-current;
-+	status = "okay";
-+};
-+
-+&usbphynop1 {
-+	status = "disabled";
-+};
-+
-+&usbphynop2 {
-+	status = "disabled";
-+};
-+
-+&usdhc1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	cd-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-+	no-1-8-v;
-+	disable-wp;
-+	cap-sd-highspeed;
-+	no-mmc;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&usdhc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc2>;
-+	no-1-8-v;
-+	non-removable;
-+	mmc-pwrseq = <&usdhc2_wifi_pwrseq>;
-+	status = "okay";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	brcmf: bcrmf@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+&usdhc3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	bus-width = <8>;
-+	no-1-8-v;
-+	non-removable;
-+	no-sd;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_can1: can1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_ROW2__FLEXCAN1_RX		0x1b000
-+			MX6QDL_PAD_KEY_COL2__FLEXCAN1_TX		0x3008
-+			/* CAN1_SR */
-+			MX6QDL_PAD_KEY_COL3__GPIO4_IO12			0x13008
-+		>;
-+	};
-+
-+	pinctrl_can2: can2grp {
-+		fsl,pins = <
-+			/* CAN2_nINT */
-+			MX6QDL_PAD_DISP0_DAT4__GPIO4_IO25		0x1b0b1
-+			/* CAN2_SR */
-+			MX6QDL_PAD_KEY_ROW3__GPIO4_IO13			0x13070
-+		>;
-+	};
-+
-+	pinctrl_ecspi2: ecspi2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_OE__ECSPI2_MISO			0x100b1
-+			MX6QDL_PAD_EIM_CS0__ECSPI2_SCLK			0x100b1
-+			MX6QDL_PAD_EIM_CS1__ECSPI2_MOSI			0x100b1
-+			MX6QDL_PAD_EIM_RW__GPIO2_IO26			0x000b1
-+		>;
-+	};
-+
-+	pinctrl_ecspi3: ecspi3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DISP0_DAT0__ECSPI3_SCLK		0x100b1
-+			MX6QDL_PAD_DISP0_DAT1__ECSPI3_MOSI		0x100b1
-+			MX6QDL_PAD_DISP0_DAT2__ECSPI3_MISO		0x100b1
-+			/* CS */
-+			MX6QDL_PAD_DISP0_DAT3__GPIO4_IO24		0x000b1
-+		>;
-+	};
-+
-+	pinctrl_enet: enetgrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_RGMII_RXC__RGMII_RXC			0x1b030
-+			MX6QDL_PAD_RGMII_RD0__RGMII_RD0			0x1b030
-+			MX6QDL_PAD_RGMII_RD1__RGMII_RD1			0x1b030
-+			MX6QDL_PAD_RGMII_RD2__RGMII_RD2			0x1b030
-+			MX6QDL_PAD_RGMII_RD3__RGMII_RD3			0x1b030
-+			MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL		0x1b030
-+			MX6QDL_PAD_RGMII_TXC__RGMII_TXC			0x10030
-+			MX6QDL_PAD_RGMII_TD0__RGMII_TD0			0x10030
-+			MX6QDL_PAD_RGMII_TD1__RGMII_TD1			0x10030
-+			MX6QDL_PAD_RGMII_TD2__RGMII_TD2			0x10030
-+			MX6QDL_PAD_RGMII_TD3__RGMII_TD3			0x10030
-+			MX6QDL_PAD_RGMII_TX_CTL__RGMII_TX_CTL		0x10030
-+
-+			MX6QDL_PAD_ENET_MDIO__ENET_MDIO			0x10030
-+			MX6QDL_PAD_ENET_MDC__ENET_MDC			0x10030
-+
-+			/* Configure clock provider for RGMII ref clock */
-+			MX6QDL_PAD_GPIO_16__ENET_REF_CLK		0x4001b0b0
-+			/* Configure clock consumer for RGMII ref clock */
-+			MX6QDL_PAD_ENET_REF_CLK__ENET_TX_CLK		0x10030
-+
-+			/* SJA1105Q switch reset */
-+			MX6QDL_PAD_DISP0_DAT11__GPIO5_IO05		0x10030
-+
-+			/* phy3/rgmii_phy reset */
-+			MX6QDL_PAD_ENET_CRS_DV__GPIO1_IO25		0x10030
-+			/* phy3/rgmii_phy int */
-+			MX6QDL_PAD_ENET_TX_EN__GPIO1_IO28		0x40010000
-+		>;
-+	};
-+
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_CSI0_DAT8__I2C1_SDA			0x4001f8b1
-+			MX6QDL_PAD_CSI0_DAT9__I2C1_SCL			0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_mdio: mdiogrp {
-+		fsl,pins = <
-+			/* phy0/usbeth_phy reset */
-+			MX6QDL_PAD_DISP0_DAT17__GPIO5_IO11		0x10030
-+			/* phy0/usbeth_phy int */
-+			MX6QDL_PAD_DISP0_DAT18__GPIO5_IO12		0x100b1
-+
-+			/* phy12/tja1102_phy0 reset */
-+			MX6QDL_PAD_DISP0_DAT15__GPIO5_IO09		0x10030
-+			/* phy12/tja1102_phy0 int */
-+			MX6QDL_PAD_DISP0_DAT14__GPIO5_IO08		0x100b1
-+			/* phy12/tja1102_phy0 enable. Set 100K pull-up */
-+			MX6QDL_PAD_DISP0_DAT16__GPIO5_IO10		0x1f030
-+		>;
-+	};
-+
-+	pinctrl_uart4: uart4grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_COL0__UART4_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_KEY_ROW0__UART4_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_usbotg: usbotggrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D21__USB_OTG_OC			0x1b0b0
-+			MX6QDL_PAD_EIM_D22__GPIO3_IO22			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD1_CMD__SD1_CMD			0x170f9
-+			MX6QDL_PAD_SD1_CLK__SD1_CLK			0x100f9
-+			MX6QDL_PAD_SD1_DAT0__SD1_DATA0			0x170f9
-+			MX6QDL_PAD_SD1_DAT1__SD1_DATA1			0x170f9
-+			MX6QDL_PAD_SD1_DAT2__SD1_DATA2			0x170f9
-+			MX6QDL_PAD_SD1_DAT3__SD1_DATA3			0x170f9
-+			MX6QDL_PAD_GPIO_1__GPIO1_IO01			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD2_CMD__SD2_CMD			0x170b9
-+			MX6QDL_PAD_SD2_CLK__SD2_CLK			0x100b9
-+			MX6QDL_PAD_SD2_DAT0__SD2_DATA0			0x170b9
-+			MX6QDL_PAD_SD2_DAT1__SD2_DATA1			0x170b9
-+			MX6QDL_PAD_SD2_DAT2__SD2_DATA2			0x170b9
-+			MX6QDL_PAD_SD2_DAT3__SD2_DATA3			0x170b9
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD3_CMD__SD3_CMD			0x17099
-+			MX6QDL_PAD_SD3_CLK__SD3_CLK			0x10099
-+			MX6QDL_PAD_SD3_DAT0__SD3_DATA0			0x17099
-+			MX6QDL_PAD_SD3_DAT1__SD3_DATA1			0x17099
-+			MX6QDL_PAD_SD3_DAT2__SD3_DATA2			0x17099
-+			MX6QDL_PAD_SD3_DAT3__SD3_DATA3			0x17099
-+			MX6QDL_PAD_SD3_DAT4__SD3_DATA4			0x17099
-+			MX6QDL_PAD_SD3_DAT5__SD3_DATA5			0x17099
-+			MX6QDL_PAD_SD3_DAT6__SD3_DATA6			0x17099
-+			MX6QDL_PAD_SD3_DAT7__SD3_DATA7			0x17099
-+			MX6QDL_PAD_SD3_RST__SD3_RESET			0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_wifi_npd: wifinpd {
-+		fsl,pins = <
-+			/* WL_REG_ON */
-+			MX6QDL_PAD_NANDF_RB0__GPIO6_IO10		0x13069
-+		>;
-+	};
-+};
--- 
-2.29.2
+On 11/17/20 11:38 AM, Oleksij Rempel wrote:
+> "virtual" is used for vendor-less "devices". For example for the GPIO
+> based MDIO bus "virtual,mdio-gpio".
+>=20
+> This patch is needed to fix the checkpatch warning for the Protonic WD3=
+ board.
+>=20
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/D=
+ocumentation/devicetree/bindings/vendor-prefixes.yaml
+> index d3454100e94e..365ac2fedd7d 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -1160,6 +1160,8 @@ patternProperties:
+>      description: Videostrong Technology Co., Ltd.
+>    "^virtio,.*":
+>      description: Virtual I/O Device Specification, developed by the OA=
+SIS consortium
+> +  "^virtual,.*":
+> +    description: Used for virtula device without specific vendor.
+                             ^^^^^^^
 
+typo
+
+
+>    "^vishay,.*":
+>      description: Vishay Intertechnology, Inc
+>    "^vitesse,.*":
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--P3SyXmEQQ5dwNcyruNHVb1qEL4LcAfJJK--
+
+--6hrVmYOfhJ7ukpJP0Lrln8c7tYEa2bYXc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+zqH0ACgkQqclaivrt
+76m5dwgAmkKCID30Met034iadj2hGfqNvJQCt67lt/N6MDJFHoOgH544U26fAsOo
+lZnsazHb4s5KmAPmm8tZg4kevVCYYOHHlBO+RLhB3W+UUKnkEUIzn+FuqL9107iu
+jMRqJD17j+2MrpRlen18gW7G46Oa6LUuhNmVzeZ1oOKuscwu9VtgPkSO1LvfzUf0
+JfdOeVjKYFuc4RA9ItlyCcs73N6UHoNFaGwPFwklUlHSMJ9UoAjAqoM8S6B/9+r0
+6fuSfXX17KN7pf+ITi/QV18RY9O+Q8g9IirS05RtVH00p3l1x9yCA1y43VKXTcf8
+ZgfsykyyMuzynYhCXaycCERURgmmzQ==
+=+WfS
+-----END PGP SIGNATURE-----
+
+--6hrVmYOfhJ7ukpJP0Lrln8c7tYEa2bYXc--
