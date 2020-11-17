@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D712B566A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE0B2B5673
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgKQBuL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 16 Nov 2020 20:50:11 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:55329 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgKQBuL (ORCPT
+        id S1726884AbgKQBym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgKQBym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:50:11 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0AH1o4WJ1014800, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb03.realtek.com.tw[172.21.6.96])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0AH1o4WJ1014800
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 17 Nov 2020 09:50:04 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.33) by
- RTEXMB03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 17 Nov 2020 09:50:03 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 17 Nov 2020 09:50:03 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
- RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
- 15.01.2044.006; Tue, 17 Nov 2020 09:50:03 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: RE: [PATCH net-next] r8153_ecm: avoid to be prior to r8152 driver
-Thread-Topic: [PATCH net-next] r8153_ecm: avoid to be prior to r8152 driver
-Thread-Index: AQHWu+Uk6MVFESXbN0aOZKSDeZR30KnJ9OqAgACBuYCAARgAcA==
-Date:   Tue, 17 Nov 2020 01:50:03 +0000
-Message-ID: <02f38e505a3a45389e2f3c06b2f6c850@realtek.com>
-References: <7fd014f2-c9a5-e7ec-f1c6-b3e4bb0f6eb6@samsung.com>
-        <CGME20201116065317eucas1p2a2d141857bbdd6b4998dd11937d52f56@eucas1p2.samsung.com>
-        <1394712342-15778-393-Taiwan-albertk@realtek.com>
-        <5f3db229-940c-c8ed-257b-0b4b3dd2afbb@samsung.com>
- <20201116090231.423afc8f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201116090231.423afc8f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.146]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 16 Nov 2020 20:54:42 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70E9C0613CF;
+        Mon, 16 Nov 2020 17:54:41 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id m65so14588852qte.11;
+        Mon, 16 Nov 2020 17:54:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NTtCzB5VIaFDrBNNNZ7NaHNKVBpJ8Hadb4R3oCLX97k=;
+        b=rtx/RU+s+8cPVIrxRCrElV7tpyND3P0XAg2TofP4rT0WDB7pYRXWgCN0tPwwytBqzm
+         dQiiSC8vlen4ulMHSLlnPMzExAzkL6dtKyTO1aF34lWSB54q67cx5AsGAA6vVYx4xTG3
+         o1CCon4XTtNcfJkxdg4qxQeqx6YXpLey84hDTajAudYBngKt9IxD3lqQz7yaOv2iNRfE
+         pF4ZQyQP+C+x7DWc/knwsv6HNK36wcCcVwLEs04rQ/30YGHjF1IPZ0zmchERdoem/XKA
+         qqI8xfpGXe6HuxEj+ltWDXovggWLBZaST43NW4VJugRHzyUBOyYqGKSh2hKRmtr14HHt
+         vGTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NTtCzB5VIaFDrBNNNZ7NaHNKVBpJ8Hadb4R3oCLX97k=;
+        b=S1j3J/UcTwd5FrCbQ9PB67qxIDaFnApJKqXf9V62PEf3VjghZUC4FBTNXif0uNFhDx
+         OVYUQSTVpZbA0ipUTo+kxHtl8nwEdX+2z+XEl/IhxzO43i3lDDZesLUFyvQIktSUnb0K
+         czzDVFh+0uCy5qf4WP7H0z0XJ4I+mEbxS4YOOChfJQzYhePSK2zIUi80bL7bh4sUMI68
+         whlL6dM8omh/MzYWpxExSSQX2axbZjA/3HaIWhMcjUwzZaW5Nj3G/Lzj7Tv6oteLfzI2
+         DfPva/bR1VZUHRGf5B+n4RQqxOuDv47L7FtBVNMTTQaWVUm5Hesj/7lQmzqNJuhemxca
+         dXzQ==
+X-Gm-Message-State: AOAM530yjASSnFzxJ5IDY4crLibgvtiTbb0NubNLdBr0kAFjANgDO7Vk
+        QfNVt077AUt1c/Oz+PsFays=
+X-Google-Smtp-Source: ABdhPJyuFuM/Nr8VHJEMu8p4WFcxiSTMgMKAz+9tvCAPF267qYflO/YfHmr2Gr/AgEALLCEUyJl0CA==
+X-Received: by 2002:ac8:6b06:: with SMTP id w6mr17145176qts.6.1605578081016;
+        Mon, 16 Nov 2020 17:54:41 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id f27sm3258802qtv.95.2020.11.16.17.54.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 17:54:39 -0800 (PST)
+Date:   Mon, 16 Nov 2020 18:54:38 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Kees Cook <keescook@chromium.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH 1/2] kbuild: Hoist '--orphan-handling' into Kconfig
+Message-ID: <20201117015438.GA299247@ubuntu-m3-large-x86>
+References: <20201113195553.1487659-1-natechancellor@gmail.com>
+ <CAKwvOdnf5WKJrLnwM9dDDniP0eG5gnFSMB0rapqWLUAZbVJZvQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnf5WKJrLnwM9dDDniP0eG5gnFSMB0rapqWLUAZbVJZvQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org>
-> Sent: Tuesday, November 17, 2020 1:03 AM
-[...]
-> > Yes, this fixes this issue, although I would prefer a separate Kconfig
-> > entry for r8153_ecm with proper dependencies instead of this ifdefs in
-> > Makefile.
+On Mon, Nov 16, 2020 at 05:41:58PM -0800, Nick Desaulniers wrote:
+> On Fri, Nov 13, 2020 at 11:56 AM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > Currently, '--orphan-handling=warn' is spread out across four different
+> > architectures in their respective Makefiles, which makes it a little
+> > unruly to deal with in case it needs to be disabled for a specific
+> > linker version (in this case, ld.lld 10.0.1).
 > 
-> Agreed, this is what dependency resolution is for.
-> 
-> Let's just make this a separate Kconfig entry.
+> Hi Nathan,
+> This patch fails to apply for me via b4 on next-20201116 due to a
+> conflict in arch/Kconfig:1028. Would you mind sending a rebased V2?
 
-Excuse me. I am not familiar with Kconfig.
+Hi Nick,
 
-I wish r8153_ecm could be used, even
-CONFIG_USB_RTL8152 is not defined.
+This series is intended to go into v5.10 so rebasing it against -next
+defeats that; please test it against v5.10-rc4, where it still applies
+cleanly. The conflicts will be handled by other entities (Stephen Rothwell
+and Linus).
 
-How should set it in Kconfig? 
+If you want to test it against -next, 'git am -3' will allow you to
+easily handle the conflict.
 
-Best Regards,
-Hayes
-
+Cheers,
+Nathan
