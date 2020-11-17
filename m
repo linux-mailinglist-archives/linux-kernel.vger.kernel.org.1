@@ -2,150 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8D12B5E77
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D7D2B5E7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbgKQLgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:36:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48073 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727928AbgKQLgq (ORCPT
+        id S1728006AbgKQLjK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 06:39:10 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2115 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQLjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:36:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605613005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ojbyE0PcDtW26NIEQPg/SaNisXd9lAY9pA+BqplcSlc=;
-        b=RiuWGSr0oqnj8skx6zZpRfGSw8VprJvT/nqbx8EF5ElHwDVazoQqJEPvahuXXTP8PEDXVT
-        eeYKX9gOERN4lxB3B/jzrlyOKLFQ6caGPLWnz5xT59D/hWBFvM2CZHmcGT4vxDgEnjrNVN
-        bvvjY+KiHTv1Hs6am8FdqL9nuYMYRsw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-XjfEPL-VPQumwALw6W0xUg-1; Tue, 17 Nov 2020 06:36:43 -0500
-X-MC-Unique: XjfEPL-VPQumwALw6W0xUg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA4501084C8B;
-        Tue, 17 Nov 2020 11:36:41 +0000 (UTC)
-Received: from localhost (ovpn-113-172.ams2.redhat.com [10.36.113.172])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D41295C1D0;
-        Tue, 17 Nov 2020 11:36:37 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 11:36:36 +0000
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: Re: [PATCH RFC 12/12] vdpa_sim_blk: implement ramdisk behaviour
-Message-ID: <20201117113636.GG131917@stefanha-x1.localdomain>
-References: <20201113134712.69744-1-sgarzare@redhat.com>
- <20201113134712.69744-13-sgarzare@redhat.com>
+        Tue, 17 Nov 2020 06:39:09 -0500
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cb3p54gljz67DZ2;
+        Tue, 17 Nov 2020 19:37:33 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 17 Nov 2020 12:39:06 +0100
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 17 Nov 2020 11:39:06 +0000
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.1913.007; Tue, 17 Nov 2020 11:39:06 +0000
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     Eric Auger <eric.auger@redhat.com>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "will@kernel.org" <will@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+CC:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "yi.l.liu@intel.com" <yi.l.liu@intel.com>,
+        "tn@semihalf.com" <tn@semihalf.com>,
+        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>
+Subject: RE: [PATCH v12 04/15] iommu/smmuv3: Dynamically allocate s1_cfg and
+ s2_cfg
+Thread-Topic: [PATCH v12 04/15] iommu/smmuv3: Dynamically allocate s1_cfg and
+ s2_cfg
+Thread-Index: AQHWvAWCBAR6HyUG4kmYcGJ553yHvqnMLPVw
+Date:   Tue, 17 Nov 2020 11:39:05 +0000
+Message-ID: <166d9bfb655b44c4990bade987a49860@huawei.com>
+References: <20201116104316.31816-1-eric.auger@redhat.com>
+ <20201116104316.31816-5-eric.auger@redhat.com>
+In-Reply-To: <20201116104316.31816-5-eric.auger@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.11.163]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20201113134712.69744-13-sgarzare@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="NPukt5Otb9an/u20"
-Content-Disposition: inline
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---NPukt5Otb9an/u20
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Eric,
 
-On Fri, Nov 13, 2020 at 02:47:12PM +0100, Stefano Garzarella wrote:
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim=
-/vdpa_sim_blk.c
-> index 8e41b3ab98d5..68e74383322f 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-> @@ -7,6 +7,7 @@
->   */
-> =20
->  #include <linux/module.h>
-> +#include <linux/blkdev.h>
->  #include <uapi/linux/virtio_blk.h>
-> =20
->  #include "vdpa_sim.h"
-> @@ -24,10 +25,137 @@
-> =20
->  static struct vdpasim *vdpasim_blk_dev;
-> =20
-> +static int vdpasim_blk_handle_req(struct vdpasim *vdpasim,
-> +=09=09=09=09  struct vdpasim_virtqueue *vq)
+> -----Original Message-----
+> From: Eric Auger [mailto:eric.auger@redhat.com]
+> Sent: 16 November 2020 10:43
+> To: eric.auger.pro@gmail.com; eric.auger@redhat.com;
+> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
+> kvm@vger.kernel.org; kvmarm@lists.cs.columbia.edu; will@kernel.org;
+> joro@8bytes.org; maz@kernel.org; robin.murphy@arm.com
+> Cc: jean-philippe@linaro.org; zhangfei.gao@linaro.org;
+> zhangfei.gao@gmail.com; vivek.gautam@arm.com; Shameerali Kolothum
+> Thodi <shameerali.kolothum.thodi@huawei.com>;
+> alex.williamson@redhat.com; jacob.jun.pan@linux.intel.com;
+> yi.l.liu@intel.com; tn@semihalf.com; nicoleotsuka@gmail.com
+> Subject: [PATCH v12 04/15] iommu/smmuv3: Dynamically allocate s1_cfg and
+> s2_cfg
+> 
+> In preparation for the introduction of nested stages
+> let's turn s1_cfg and s2_cfg fields into pointers which are
+> dynamically allocated depending on the smmu_domain stage.
 
-This function has a non-standard int return value. Please document it.
+This will break compile if we have CONFIG_ARM_SMMU_V3_SVA
+because ,
+https://github.com/eauger/linux/blob/5.10-rc4-2stage-v12/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c#L40
 
-> +{
-> +=09size_t wrote =3D 0, to_read =3D 0, to_write =3D 0;
-> +=09struct virtio_blk_outhdr hdr;
-> +=09uint8_t status;
-> +=09uint32_t type;
-> +=09ssize_t bytes;
-> +=09loff_t offset;
-> +=09int i, ret;
+Do we really need to make these pointers?
+
+Thanks,
+Shameer
+ 
+> In nested mode, both stages will coexist and s1_cfg will
+> be allocated when the guest configuration gets passed.
+> 
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 83 ++++++++++++---------
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  6 +-
+>  2 files changed, 48 insertions(+), 41 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index d828d6cbeb0e..4baf9fafe462 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -953,9 +953,9 @@ static __le64 *arm_smmu_get_cd_ptr(struct
+> arm_smmu_domain *smmu_domain,
+>  	unsigned int idx;
+>  	struct arm_smmu_l1_ctx_desc *l1_desc;
+>  	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> -	struct arm_smmu_ctx_desc_cfg *cdcfg = &smmu_domain->s1_cfg.cdcfg;
+> +	struct arm_smmu_ctx_desc_cfg *cdcfg =
+> &smmu_domain->s1_cfg->cdcfg;
+> 
+> -	if (smmu_domain->s1_cfg.s1fmt == STRTAB_STE_0_S1FMT_LINEAR)
+> +	if (smmu_domain->s1_cfg->s1fmt == STRTAB_STE_0_S1FMT_LINEAR)
+>  		return cdcfg->cdtab + ssid * CTXDESC_CD_DWORDS;
+> 
+>  	idx = ssid >> CTXDESC_SPLIT;
+> @@ -990,7 +990,7 @@ int arm_smmu_write_ctx_desc(struct
+> arm_smmu_domain *smmu_domain, int ssid,
+>  	__le64 *cdptr;
+>  	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> 
+> -	if (WARN_ON(ssid >= (1 << smmu_domain->s1_cfg.s1cdmax)))
+> +	if (WARN_ON(ssid >= (1 << smmu_domain->s1_cfg->s1cdmax)))
+>  		return -E2BIG;
+> 
+>  	cdptr = arm_smmu_get_cd_ptr(smmu_domain, ssid);
+> @@ -1056,7 +1056,7 @@ static int arm_smmu_alloc_cd_tables(struct
+> arm_smmu_domain *smmu_domain)
+>  	size_t l1size;
+>  	size_t max_contexts;
+>  	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> -	struct arm_smmu_s1_cfg *cfg = &smmu_domain->s1_cfg;
+> +	struct arm_smmu_s1_cfg *cfg = smmu_domain->s1_cfg;
+>  	struct arm_smmu_ctx_desc_cfg *cdcfg = &cfg->cdcfg;
+> 
+>  	max_contexts = 1 << cfg->s1cdmax;
+> @@ -1104,7 +1104,7 @@ static void arm_smmu_free_cd_tables(struct
+> arm_smmu_domain *smmu_domain)
+>  	int i;
+>  	size_t size, l1size;
+>  	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> -	struct arm_smmu_ctx_desc_cfg *cdcfg = &smmu_domain->s1_cfg.cdcfg;
+> +	struct arm_smmu_ctx_desc_cfg *cdcfg =
+> &smmu_domain->s1_cfg->cdcfg;
+> 
+>  	if (cdcfg->l1_desc) {
+>  		size = CTXDESC_L2_ENTRIES * (CTXDESC_CD_DWORDS << 3);
+> @@ -1211,17 +1211,8 @@ static void arm_smmu_write_strtab_ent(struct
+> arm_smmu_master *master, u32 sid,
+>  	}
+> 
+>  	if (smmu_domain) {
+> -		switch (smmu_domain->stage) {
+> -		case ARM_SMMU_DOMAIN_S1:
+> -			s1_cfg = &smmu_domain->s1_cfg;
+> -			break;
+> -		case ARM_SMMU_DOMAIN_S2:
+> -		case ARM_SMMU_DOMAIN_NESTED:
+> -			s2_cfg = &smmu_domain->s2_cfg;
+> -			break;
+> -		default:
+> -			break;
+> -		}
+> +		s1_cfg = smmu_domain->s1_cfg;
+> +		s2_cfg = smmu_domain->s2_cfg;
+>  	}
+> 
+>  	if (val & STRTAB_STE_0_V) {
+> @@ -1664,10 +1655,10 @@ static void arm_smmu_tlb_inv_context(void
+> *cookie)
+>  	 * careful, 007.
+>  	 */
+>  	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+> -		arm_smmu_tlb_inv_asid(smmu, smmu_domain->s1_cfg.cd.asid);
+> +		arm_smmu_tlb_inv_asid(smmu, smmu_domain->s1_cfg->cd.asid);
+>  	} else {
+>  		cmd.opcode	= CMDQ_OP_TLBI_S12_VMALL;
+> -		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
+> +		cmd.tlbi.vmid	= smmu_domain->s2_cfg->vmid;
+>  		arm_smmu_cmdq_issue_cmd(smmu, &cmd);
+>  		arm_smmu_cmdq_issue_sync(smmu);
+>  	}
+> @@ -1693,10 +1684,10 @@ static void arm_smmu_tlb_inv_range(unsigned
+> long iova, size_t size,
+> 
+>  	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+>  		cmd.opcode	= CMDQ_OP_TLBI_NH_VA;
+> -		cmd.tlbi.asid	= smmu_domain->s1_cfg.cd.asid;
+> +		cmd.tlbi.asid	= smmu_domain->s1_cfg->cd.asid;
+>  	} else {
+>  		cmd.opcode	= CMDQ_OP_TLBI_S2_IPA;
+> -		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
+> +		cmd.tlbi.vmid	= smmu_domain->s2_cfg->vmid;
+>  	}
+> 
+>  	if (smmu->features & ARM_SMMU_FEAT_RANGE_INV) {
+> @@ -1846,24 +1837,25 @@ static void arm_smmu_domain_free(struct
+> iommu_domain *domain)
+>  {
+>  	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+>  	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> +	struct arm_smmu_s1_cfg *s1_cfg = smmu_domain->s1_cfg;
+> +	struct arm_smmu_s2_cfg *s2_cfg = smmu_domain->s2_cfg;
+> 
+>  	iommu_put_dma_cookie(domain);
+>  	free_io_pgtable_ops(smmu_domain->pgtbl_ops);
+> 
+>  	/* Free the CD and ASID, if we allocated them */
+> -	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+> -		struct arm_smmu_s1_cfg *cfg = &smmu_domain->s1_cfg;
+> -
+> -		/* Prevent SVA from touching the CD while we're freeing it */
+> +	if (s1_cfg) {
+>  		mutex_lock(&arm_smmu_asid_lock);
+> -		if (cfg->cdcfg.cdtab)
+> +		/* Prevent SVA from touching the CD while we're freeing it */
+> +		if (s1_cfg->cdcfg.cdtab)
+>  			arm_smmu_free_cd_tables(smmu_domain);
+> -		arm_smmu_free_asid(&cfg->cd);
+> +		arm_smmu_free_asid(&s1_cfg->cd);
+>  		mutex_unlock(&arm_smmu_asid_lock);
+> -	} else {
+> -		struct arm_smmu_s2_cfg *cfg = &smmu_domain->s2_cfg;
+> -		if (cfg->vmid)
+> -			arm_smmu_bitmap_free(smmu->vmid_map, cfg->vmid);
+> +	}
+> +	if (s2_cfg) {
+> +		if (s2_cfg->vmid)
+> +			arm_smmu_bitmap_free(smmu->vmid_map, s2_cfg->vmid);
+> +		kfree(s2_cfg);
+>  	}
+> 
+>  	kfree(smmu_domain);
+> @@ -1876,8 +1868,11 @@ static int arm_smmu_domain_finalise_s1(struct
+> arm_smmu_domain *smmu_domain,
+>  	int ret;
+>  	u32 asid;
+>  	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> -	struct arm_smmu_s1_cfg *cfg = &smmu_domain->s1_cfg;
+>  	typeof(&pgtbl_cfg->arm_lpae_s1_cfg.tcr) tcr =
+> &pgtbl_cfg->arm_lpae_s1_cfg.tcr;
+> +	struct arm_smmu_s1_cfg *cfg = kzalloc(sizeof(*cfg), GFP_KERNEL);
 > +
-> +=09vringh_kiov_cleanup(&vq->riov);
-> +=09vringh_kiov_cleanup(&vq->wiov);
+> +	if (!cfg)
+> +		return -ENOMEM;
+> 
+>  	refcount_set(&cfg->cd.refs, 1);
+> 
+> @@ -1890,6 +1885,8 @@ static int arm_smmu_domain_finalise_s1(struct
+> arm_smmu_domain *smmu_domain,
+> 
+>  	cfg->s1cdmax = master->ssid_bits;
+> 
+> +	smmu_domain->s1_cfg = cfg;
 > +
-> +=09ret =3D vringh_getdesc_iotlb(&vq->vring, &vq->riov, &vq->wiov,
-> +=09=09=09=09   &vq->head, GFP_ATOMIC);
-> +=09if (ret !=3D 1)
-> +=09=09return ret;
+>  	ret = arm_smmu_alloc_cd_tables(smmu_domain);
+>  	if (ret)
+>  		goto out_free_asid;
+> @@ -1922,6 +1919,8 @@ static int arm_smmu_domain_finalise_s1(struct
+> arm_smmu_domain *smmu_domain,
+>  out_free_asid:
+>  	arm_smmu_free_asid(&cfg->cd);
+>  out_unlock:
+> +	kfree(cfg);
+> +	smmu_domain->s1_cfg = NULL;
+>  	mutex_unlock(&arm_smmu_asid_lock);
+>  	return ret;
+>  }
+> @@ -1930,14 +1929,19 @@ static int arm_smmu_domain_finalise_s2(struct
+> arm_smmu_domain *smmu_domain,
+>  				       struct arm_smmu_master *master,
+>  				       struct io_pgtable_cfg *pgtbl_cfg)
+>  {
+> -	int vmid;
+> +	int vmid, ret;
+>  	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> -	struct arm_smmu_s2_cfg *cfg = &smmu_domain->s2_cfg;
+> +	struct arm_smmu_s2_cfg *cfg = kzalloc(sizeof(*cfg), GFP_KERNEL);
+>  	typeof(&pgtbl_cfg->arm_lpae_s2_cfg.vtcr) vtcr;
+> 
+> +	if (!cfg)
+> +		return -ENOMEM;
 > +
-> +=09for (i =3D 0; i < vq->wiov.used; i++)
-> +=09=09to_write +=3D vq->wiov.iov[i].iov_len;
-> +=09to_write -=3D 1; /* last byte is the status */
-
-What if vq->wiov.used =3D=3D 0?
-
+>  	vmid = arm_smmu_bitmap_alloc(smmu->vmid_map, smmu->vmid_bits);
+> -	if (vmid < 0)
+> -		return vmid;
+> +	if (vmid < 0) {
+> +		ret = vmid;
+> +		goto out_free_cfg;
+> +	}
+> 
+>  	vtcr = &pgtbl_cfg->arm_lpae_s2_cfg.vtcr;
+>  	cfg->vmid	= (u16)vmid;
+> @@ -1949,7 +1953,12 @@ static int arm_smmu_domain_finalise_s2(struct
+> arm_smmu_domain *smmu_domain,
+>  			  FIELD_PREP(STRTAB_STE_2_VTCR_S2SH0, vtcr->sh) |
+>  			  FIELD_PREP(STRTAB_STE_2_VTCR_S2TG, vtcr->tg) |
+>  			  FIELD_PREP(STRTAB_STE_2_VTCR_S2PS, vtcr->ps);
+> +	smmu_domain->s2_cfg = cfg;
+>  	return 0;
 > +
-> +=09for (i =3D 0; i < vq->riov.used; i++)
-> +=09=09to_read +=3D vq->riov.iov[i].iov_len;
-> +
-> +=09bytes =3D vringh_iov_pull_iotlb(&vq->vring, &vq->riov, &hdr, sizeof(h=
-dr));
-> +=09if (bytes !=3D sizeof(hdr))
-> +=09=09return 0;
-> +
-> +=09to_read -=3D bytes;
-> +
-> +=09type =3D le32_to_cpu(hdr.type);
-> +=09offset =3D le64_to_cpu(hdr.sector) << SECTOR_SHIFT;
-> +=09status =3D VIRTIO_BLK_S_OK;
-> +
-> +=09switch (type) {
-> +=09case VIRTIO_BLK_T_IN:
-> +=09=09if (offset + to_write > VDPASIM_BLK_CAPACITY << SECTOR_SHIFT) {
-
-Integer overflow is not handled.
-
---NPukt5Otb9an/u20
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl+ztcQACgkQnKSrs4Gr
-c8iolAgApTBD1PaVo9UuMIiHwUOHDFHckP5/xzilctMNmZYAzMd60k7GRTsYu0z2
-eTkPw8Ik1Z5PXqgtSa8w2alDtWE7kJV6x2K+D4Xs3Y4miArXfd8NlozeFYsJCScf
-b37DkWKR7sXDLWv/ITGqH5M+HjT6hIbXA4hrOtrUsF9S07OfzwwS7T0HmBxreiom
-IUaloJ95O+c8WzhlHzoyxJeC/MSV4wPyivmuJZ6FzrtPMvPhAJwjWa5Xark5s3bM
-A9iDFP1eikLSn0zrn03cWy7FzA14QAyO/Ppnv0sllpLDLWx5flHXnyQRIZx74JNh
-yuLDV+JjZJroWZYLpKPWdZQ+xoQ/Fw==
-=TgK+
------END PGP SIGNATURE-----
-
---NPukt5Otb9an/u20--
+> +out_free_cfg:
+> +	kfree(cfg);
+> +	return ret;
+>  }
+> 
+>  static int arm_smmu_domain_finalise(struct iommu_domain *domain,
+> @@ -2231,10 +2240,10 @@ static int arm_smmu_attach_dev(struct
+> iommu_domain *domain, struct device *dev)
+>  		ret = -ENXIO;
+>  		goto out_unlock;
+>  	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1 &&
+> -		   master->ssid_bits != smmu_domain->s1_cfg.s1cdmax) {
+> +		   master->ssid_bits != smmu_domain->s1_cfg->s1cdmax) {
+>  		dev_err(dev,
+>  			"cannot attach to incompatible domain (%u SSID bits != %u)\n",
+> -			smmu_domain->s1_cfg.s1cdmax, master->ssid_bits);
+> +			smmu_domain->s1_cfg->s1cdmax, master->ssid_bits);
+>  		ret = -EINVAL;
+>  		goto out_unlock;
+>  	}
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> index 2944beb1571b..6fdc35b32dbf 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> @@ -679,10 +679,8 @@ struct arm_smmu_domain {
+>  	atomic_t			nr_ats_masters;
+> 
+>  	enum arm_smmu_domain_stage	stage;
+> -	union {
+> -		struct arm_smmu_s1_cfg	s1_cfg;
+> -		struct arm_smmu_s2_cfg	s2_cfg;
+> -	};
+> +	struct arm_smmu_s1_cfg	*s1_cfg;
+> +	struct arm_smmu_s2_cfg	*s2_cfg;
+> 
+>  	struct iommu_domain		domain;
+> 
+> --
+> 2.21.3
 
