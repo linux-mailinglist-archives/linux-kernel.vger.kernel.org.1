@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13052B718C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B142B7193
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgKQW0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:26:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgKQW0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:26:03 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CDF3241A6;
-        Tue, 17 Nov 2020 22:26:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605651962;
-        bh=oolxzZft70FKdrR5koKNa14651ERpY0sfPZUoLt+SKw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ngK+nrIRMKPhN+J5uZcql2PrzLrKZaW8pxtXdhSBlqaOF+DNS5W3tkYFFWqhz9jub
-         3xEOKj78jUGahxn++pXBprA8VephbYFUS+GCtwgt0ApkOwqc4tVU8+HvNTH+ugf2pF
-         bI3VHTWcHH0Dp5kwkh9LqNO/CwAGRpJzHaNvTfyo=
-Date:   Tue, 17 Nov 2020 14:25:59 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tom Seewald <tseewald@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vishal Kulkarni <vishal@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rohit Maheshwari <rohitm@chelsio.com>
-Subject: Re: [PATCH] cxbgb4: Fix build failure when CHELSIO_TLS_DEVICE=n
-Message-ID: <20201117142559.37e6847f@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201116023140.28975-1-tseewald@gmail.com>
-References: <20201116023140.28975-1-tseewald@gmail.com>
+        id S1728811AbgKQW2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:28:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728184AbgKQW2y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:28:54 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6BEC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:28:54 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id u2so11062982pls.10
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:28:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l+l6bPNdAyGzxXdbN4WyqDuDuPAZPzRdy+08/xBki4g=;
+        b=oxyyGnn2pbqzNcAh7Ro5v/5q+r5L0/p8tgKM5bY5Amc103WXnHI72zTmNIl9EKzGUP
+         hx+MTwWTcvuW+rL3rnEp3nVYrbexUS+150D5tGwQ7D80hcO9gUlWErWSaBGVadR7zLv7
+         WEN+YlkXUTrpAr8XzzyDVMXB68lyehw2wG25TORvlwowlCEIbqmEalhfueDvU6V4t8xQ
+         3F0PhD/cM5Y2wpMOOwp68iwtNEfMy7WD8y3fh9XUK9zFP1R82KM7z8aRDE/zDmieqzLF
+         2CR9WVPP7zoYKtH/jT86zIJKogoA6Y755rDX953a0ITuhls5qVkiVB7fPVgjYXcvmrn+
+         k2Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l+l6bPNdAyGzxXdbN4WyqDuDuPAZPzRdy+08/xBki4g=;
+        b=jRV0O/Pv4f7W6Jlcu0xtYfibttroQLB0mwgbnktnhT0o2Rce5CJu4nXim/+/HpvAkM
+         ZaCDIB+YqQex7wq6oyyM8VekxAlHzyUdn6+GqHT8ULPTXBE6bDkDMk7ym//scPw1BCtY
+         +E4zxIhOf1yMB994y/Qe3tTva6/IcII3n2lPji+u0cUxEzDybycpCoCSnPBRNQNTojWk
+         XsbSvribyimbLnq/t+couf72a6NVymKr67dGer7MTI0X4YUYQsV/qwJSQ6ALh2TdGxrB
+         H1OVWwqrxuyQtn2kklYaWjRznlxP+8Gvf3xAMGkmSgLYB9tyzLkwNz0hMivzy+QWFDH0
+         j2wQ==
+X-Gm-Message-State: AOAM531WUIbpWuBetVnyCn9Ym2T23Sawd/uKIbC3cg2Ue5NG0CCqwMQd
+        6C1fD8IeHpEykt7liuXHKbxSfanirTUQ8jsyaUh/2Q==
+X-Google-Smtp-Source: ABdhPJxWXioFAPozNpXYIDJ3H6sf8MNf9Tby1TCVJwkV7fzb9RpugKiB0p81VLrblJcCJB4KyhP3+HCdilQdR+vYEIM=
+X-Received: by 2002:a17:902:e901:b029:d8:e727:2595 with SMTP id
+ k1-20020a170902e901b02900d8e7272595mr1537952pld.56.1605652134074; Tue, 17 Nov
+ 2020 14:28:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201116043532.4032932-1-ndesaulniers@google.com>
+ <20201116043532.4032932-3-ndesaulniers@google.com> <20201117030214.GB1340689@ubuntu-m3-large-x86>
+ <CAKwvOdk_sphJGQarEWJLzGZWkdzO9dqmcRmys3Retw3vn2Fwag@mail.gmail.com> <20201117221629.GA4679@embeddedor>
+In-Reply-To: <20201117221629.GA4679@embeddedor>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 17 Nov 2020 14:28:43 -0800
+Message-ID: <CAKwvOdmNW3iynqi_+2c1P-6Prq1a8iVufoaZh2NAbsaBLeZZ4Q@mail.gmail.com>
+Subject: Re: [PATCH 2/3] Revert "lib: Revert use of fallthrough pseudo-keyword
+ in lib/"
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 15 Nov 2020 20:31:40 -0600 Tom Seewald wrote:
-> After commit 9d2e5e9eeb59 ("cxgb4/ch_ktls: decrypted bit is not enough")
-> building the kernel with CHELSIO_T4=y and CHELSIO_TLS_DEVICE=n results
-> in the following error:
-> 
-> ld: drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.o: in function
-> `cxgb_select_queue':
-> cxgb4_main.c:(.text+0x2dac): undefined reference to `tls_validate_xmit_skb'
-> 
-> This is caused by cxgb_select_queue() calling cxgb4_is_ktls_skb() without
-> checking if CHELSIO_TLS_DEVICE=y. Fix this by calling cxgb4_is_ktls_skb()
-> only when this config option is enabled.
-> 
-> Fixes: 9d2e5e9eeb59 ("cxgb4/ch_ktls: decrypted bit is not enough")
-> Signed-off-by: Tom Seewald <tseewald@gmail.com>
-> ---
->  drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-> index 7fd264a6d085..8e8783afd6df 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-> @@ -1176,7 +1176,9 @@ static u16 cxgb_select_queue(struct net_device *dev, struct sk_buff *skb,
->  		txq = netdev_pick_tx(dev, skb, sb_dev);
->  		if (xfrm_offload(skb) || is_ptp_enabled(skb, dev) ||
->  		    skb->encapsulation ||
-> -		    cxgb4_is_ktls_skb(skb) ||
-> +#if IS_ENABLED(CONFIG_CHELSIO_TLS_DEVICE)
-> +		cxgb4_is_ktls_skb(skb) ||
-> +#endif /* CHELSIO_TLS_DEVICE */
->  		    (proto != IPPROTO_TCP && proto != IPPROTO_UDP))
->  			txq = txq % pi->nqsets;
->  
+On Tue, Nov 17, 2020 at 2:16 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> I'm happy to take this series in my tree.  I'm planing to send a
+> pull-request for -rc5 with more related changes. So, I can include
+> this in the same PR.
+>
+> In the meantime I'll add this to my testing tree, so it can be
+> build-tested by the 0-day folks. :)
 
-The tls header already tries to solve this issue, it just does it
-poorly. This is a better fix:
+SGTM, and thank you.  I'm sure you saw the existing warning about
+indentation.  Do we want to modify the revert patch, or put another
+patch on top?
 
-diff --git a/include/net/tls.h b/include/net/tls.h
-index baf1e99d8193..2ff3f4f7954a 100644
---- a/include/net/tls.h
-+++ b/include/net/tls.h
-@@ -441,11 +441,11 @@ struct sk_buff *
- tls_validate_xmit_skb(struct sock *sk, struct net_device *dev,
-                      struct sk_buff *skb);
- 
- static inline bool tls_is_sk_tx_device_offloaded(struct sock *sk)
- {
--#ifdef CONFIG_SOCK_VALIDATE_XMIT
-+#ifdef CONFIG_TLS_DEVICE
-        return sk_fullsock(sk) &&
-               (smp_load_acquire(&sk->sk_validate_xmit_skb) ==
-               &tls_validate_xmit_skb);
- #else
-        return false;
-
-
-Please test this and submit if it indeed solves the problem.
-
-Thanks!
+-- 
+Thanks,
+~Nick Desaulniers
