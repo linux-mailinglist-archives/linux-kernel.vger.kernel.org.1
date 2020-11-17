@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D0B2B64BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9933E2B658B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732992AbgKQNsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:48:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45560 "EHLO mail.kernel.org"
+        id S1731807AbgKQN4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:56:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727554AbgKQNew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:34:52 -0500
+        id S1731204AbgKQNWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:22:50 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51B162078E;
-        Tue, 17 Nov 2020 13:34:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92782246A5;
+        Tue, 17 Nov 2020 13:22:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620092;
-        bh=7lcMbKOxhN/Le0MESmUbQj5z7nRfEq6LZOAd40/ORv0=;
+        s=default; t=1605619370;
+        bh=AOJ0PAjxzViNiDp9NnJFqaIJfJbgKExCReIodRxyUsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KYV9Dd6+H7lqcnC28QBQS6Qm2YGN9NYgIjGhJkkmXOXu0ZJwBdFL8vK2qIXTwGEaX
-         wDMqgSR3HUfT3ZaqJqQPdvLtw4oZc/fnU7qPCgY0aOIQUsVylxHP0SxUlaCprllAiQ
-         fbFfIs/0BMONlOFeGXuh3zfAArvtHN0c5zBeKdUs=
+        b=QfIDjx9VIGrzlS1TmuUE527dO/7/0XW6JIXLmK6qcqAoEnG7+/XmzfRQvWodyEqzq
+         8S82CuUV272b6o6gMa6a3MbgghA0mabUZGKZcRxKkf528NBWHHwuiy5Y2/IsOmqaS+
+         +2TUJu+YPtoODOqrNWfwgECw9UeIoC6/TIhM4T3o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Bunker <brian@purestorage.com>,
-        Jitendra Khasdev <jitendra.khasdev@oracle.com>,
-        Hannes Reinecke <hare@suse.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Brian Foster <bfoster@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 105/255] scsi: scsi_dh_alua: Avoid crash during alua_bus_detach()
-Date:   Tue, 17 Nov 2020 14:04:05 +0100
-Message-Id: <20201117122144.069004291@linuxfoundation.org>
+Subject: [PATCH 5.4 016/151] xfs: set xefi_discard when creating a deferred agfl free log intent item
+Date:   Tue, 17 Nov 2020 14:04:06 +0100
+Message-Id: <20201117122122.194319393@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,71 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 5faf50e9e9fdc2117c61ff7e20da49cd6a29e0ca ]
+[ Upstream commit 2c334e12f957cd8c6bb66b4aa3f79848b7c33cab ]
 
-alua_bus_detach() might be running concurrently with alua_rtpg_work(), so
-we might trip over h->sdev == NULL and call BUG_ON().  The correct way of
-handling it is to not set h->sdev to NULL in alua_bus_detach(), and call
-rcu_synchronize() before the final delete to ensure that all concurrent
-threads have left the critical section.  Then we can get rid of the
-BUG_ON() and replace it with a simple if condition.
+Make sure that we actually initialize xefi_discard when we're scheduling
+a deferred free of an AGFL block.  This was (eventually) found by the
+UBSAN while I was banging on realtime rmap problems, but it exists in
+the upstream codebase.  While we're at it, rearrange the structure to
+reduce the struct size from 64 to 56 bytes.
 
-Link: https://lore.kernel.org/r/1600167537-12509-1-git-send-email-jitendra.khasdev@oracle.com
-Link: https://lore.kernel.org/r/20200924104559.26753-1-hare@suse.de
-Cc: Brian Bunker <brian@purestorage.com>
-Acked-by: Brian Bunker <brian@purestorage.com>
-Tested-by: Jitendra Khasdev <jitendra.khasdev@oracle.com>
-Reviewed-by: Jitendra Khasdev <jitendra.khasdev@oracle.com>
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: fcb762f5de2e ("xfs: add bmapi nodiscard flag")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/device_handler/scsi_dh_alua.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/xfs/libxfs/xfs_alloc.c | 1 +
+ fs/xfs/libxfs/xfs_bmap.h  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/device_handler/scsi_dh_alua.c b/drivers/scsi/device_handler/scsi_dh_alua.c
-index f32da0ca529e0..308bda2e9c000 100644
---- a/drivers/scsi/device_handler/scsi_dh_alua.c
-+++ b/drivers/scsi/device_handler/scsi_dh_alua.c
-@@ -658,8 +658,8 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
- 					rcu_read_lock();
- 					list_for_each_entry_rcu(h,
- 						&tmp_pg->dh_list, node) {
--						/* h->sdev should always be valid */
--						BUG_ON(!h->sdev);
-+						if (!h->sdev)
-+							continue;
- 						h->sdev->access_state = desc[0];
- 					}
- 					rcu_read_unlock();
-@@ -705,7 +705,8 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
- 			pg->expiry = 0;
- 			rcu_read_lock();
- 			list_for_each_entry_rcu(h, &pg->dh_list, node) {
--				BUG_ON(!h->sdev);
-+				if (!h->sdev)
-+					continue;
- 				h->sdev->access_state =
- 					(pg->state & SCSI_ACCESS_STATE_MASK);
- 				if (pg->pref)
-@@ -1147,7 +1148,6 @@ static void alua_bus_detach(struct scsi_device *sdev)
- 	spin_lock(&h->pg_lock);
- 	pg = rcu_dereference_protected(h->pg, lockdep_is_held(&h->pg_lock));
- 	rcu_assign_pointer(h->pg, NULL);
--	h->sdev = NULL;
- 	spin_unlock(&h->pg_lock);
- 	if (pg) {
- 		spin_lock_irq(&pg->lock);
-@@ -1156,6 +1156,7 @@ static void alua_bus_detach(struct scsi_device *sdev)
- 		kref_put(&pg->kref, release_port_group);
- 	}
- 	sdev->handler_data = NULL;
-+	synchronize_rcu();
- 	kfree(h);
- }
+diff --git a/fs/xfs/libxfs/xfs_alloc.c b/fs/xfs/libxfs/xfs_alloc.c
+index 0a36f532cf86c..436f686a98918 100644
+--- a/fs/xfs/libxfs/xfs_alloc.c
++++ b/fs/xfs/libxfs/xfs_alloc.c
+@@ -2209,6 +2209,7 @@ xfs_defer_agfl_block(
+ 	new->xefi_startblock = XFS_AGB_TO_FSB(mp, agno, agbno);
+ 	new->xefi_blockcount = 1;
+ 	new->xefi_oinfo = *oinfo;
++	new->xefi_skip_discard = false;
  
+ 	trace_xfs_agfl_free_defer(mp, agno, 0, agbno, 1);
+ 
+diff --git a/fs/xfs/libxfs/xfs_bmap.h b/fs/xfs/libxfs/xfs_bmap.h
+index e2798c6f3a5f3..093716a074fb7 100644
+--- a/fs/xfs/libxfs/xfs_bmap.h
++++ b/fs/xfs/libxfs/xfs_bmap.h
+@@ -52,9 +52,9 @@ struct xfs_extent_free_item
+ {
+ 	xfs_fsblock_t		xefi_startblock;/* starting fs block number */
+ 	xfs_extlen_t		xefi_blockcount;/* number of blocks in extent */
++	bool			xefi_skip_discard;
+ 	struct list_head	xefi_list;
+ 	struct xfs_owner_info	xefi_oinfo;	/* extent owner */
+-	bool			xefi_skip_discard;
+ };
+ 
+ #define	XFS_BMAP_MAX_NMAP	4
 -- 
 2.27.0
 
