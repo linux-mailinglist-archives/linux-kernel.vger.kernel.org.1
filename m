@@ -2,122 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109E42B5BAD
+	by mail.lfdr.de (Postfix) with ESMTP id E92742B5BAF
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbgKQJTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:19:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726200AbgKQJTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:19:52 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B4E02417E;
-        Tue, 17 Nov 2020 09:19:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605604791;
-        bh=W2obSm8Q5WV3J0n3YYVGmzEgDz3xGzgFoH4NhA880LY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qmSlsSfThTdhsSFxqYJ8Ssxf74VZV4gCGKJP6Xzh0J0UaDYFvOAcer//u1GVrLJcR
-         yUOwRen2klvD5MHwIVJBsDzZic9MqzCy4Xjw7vOaDH8wg53nUmusjicPu4fcpJqpyd
-         Bv8+6izebH3AYsBoF21oTj670rpQE/fJI9fgsGsI=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kex9Q-00BHax-U0; Tue, 17 Nov 2020 09:19:49 +0000
+        id S1726890AbgKQJVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:21:36 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7634 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQJVf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 04:21:35 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cb0mk721kz15LrY;
+        Tue, 17 Nov 2020 17:21:10 +0800 (CST)
+Received: from [10.174.176.185] (10.174.176.185) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 17 Nov 2020 17:21:19 +0800
+Subject: Re: [PATCH] ubifs: wbuf: Don't leak kernel memory to flash
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+CC:     Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+References: <20201116210530.26230-1-richard@nod.at>
+ <bfea268f-b5c2-5467-7b17-5eef7b0269ce@huawei.com>
+ <CAFLxGvy4_H0rn085j9=o2kW2X0rHcRJVMSAbp8OyYVVFhTcXpg@mail.gmail.com>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <64125c57-6165-9501-ccb7-b87746b7fe04@huawei.com>
+Date:   Tue, 17 Nov 2020 17:21:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 17 Nov 2020 09:19:48 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        kernel-team@android.com, dri-devel@lists.freedesktop.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] drm/meson: Module removal fixes
-In-Reply-To: <0b429c41-421a-2ae0-66a0-a142c56acadd@baylibre.com>
-References: <20201116200744.495826-1-maz@kernel.org>
- <0b429c41-421a-2ae0-66a0-a142c56acadd@baylibre.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <09de6683eea499cfd83ab0c67e0cdca2@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: narmstrong@baylibre.com, khilman@baylibre.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com, kernel-team@android.com, dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <CAFLxGvy4_H0rn085j9=o2kW2X0rHcRJVMSAbp8OyYVVFhTcXpg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.185]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
-
-On 2020-11-17 08:49, Neil Armstrong wrote:
-> Hi Marc,
+在 2020/11/17 16:43, Richard Weinberger 写道:
+> On Tue, Nov 17, 2020 at 2:28 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
+>>
+>> Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
 > 
-> On 16/11/2020 21:07, Marc Zyngier wrote:
->> Hi all,
->> 
->> Having recently moved over to a top-of-the-tree u-boot on one of my
->> VIM3L systems in order to benefit from unrelated improvements
->> (automatic PCIe detection, EFI...), I faced the issue that my kernel
->> would hang like this:
->> 
->> [  OK  ] Finished Helper to synchronize boot up for ifupdown.
->> [  OK  ] Started Rule-based Manager for Device Events and Files.
->> [    7.114516] VDDCPU: supplied by regulator-dummy
->> [  OK  ] Found device /dev/ttyAML0.
->> [    7.146862] meson-drm ff900000.vpu: Queued 2 outputs on vpu
->> [    7.169630] fb0: switching to meson-drm-fb from simple
->> [    7.169944] Console: switching to colour dummy device 80x25
->> [    7.179250] meson-drm ff900000.vpu: CVBS Output connector not 
->> available
->> 
->> and that's it.
->> 
->> After some poking around, I figured out that it is in the
->> meson-dw-hdmi module that the CPU was hanging...
+> Thanks for reviewing, highly appreciated!
 > 
-> I'll be interested in having your kernel config, I never had such 
-> report
-> since I enabled HDMI support in U-Boot a few years ago.
-
-Yeah, I was pretty surprised too. I have a hunch that this is caused
-by u-boot DT exposing an extra MMIO region (dubbed "hhi") that gets
-picked up by the kernel driver. *Not* having the region in the DT
-(as in the kernel's version of the same DT) makes the driver work
-exactly once:
-
-Decompiled u-boot DT:
-
-         hdmi-tx@0 {
-                 compatible = "amlogic,meson-g12a-dw-hdmi";
-                 reg = <0x00 0x00 0x00 0x10000 0x00 0x3c000 0x00 0x1000>;
-                 [...]
-                 reg-names = "hdmitx\0hhi";
-
-Decompiled kernel DT:
-
-         hdmi-tx@0 {
-                 compatible = "amlogic,meson-g12a-dw-hdmi";
-                 reg = <0x00 0x00 0x00 0x10000>;
-
-There seem to be some complex interactions between the HDMI driver
-and the DRM driver, both using this MMIO region at any given time.
-But I admit not having tried very hard to follow the DRM maze of
-intricate callbacks. All I needed was this box to reliably boot with
-the firmware-provided DT.
-
-You can find a reasonably recent version of my config at [1].
-
-         M.
-
-[1] http://www.loen.fr/tmp/Config.full-arm64
--- 
-Jazz is not dead. It just smells funny...
+You're welcome. Actually I've been following the linux-mtd. It's just 
+that this patch isn't complicated, so I checked it. :-)
