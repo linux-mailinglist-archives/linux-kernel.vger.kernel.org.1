@@ -2,117 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27782B5A1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 528B02B5A1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgKQHMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgKQHMw (ORCPT
+        id S1726648AbgKQHMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:12:55 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:40165 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726205AbgKQHMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:12:52 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD97C0613CF;
-        Mon, 16 Nov 2020 23:12:52 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZxwc2nzXz9sPB;
-        Tue, 17 Nov 2020 18:12:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605597168;
-        bh=9MqRUSnkpO3SeeLB+V4BrXp6RQvKtXmson5+puyyqo4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YKl+cbRdEx0lrmIMDAaJcszpvAajgtGUZgqp7tXaFcXv2Viz8idFaxAVGZUZYdWLi
-         mpXTuXfp97pTiGsdfywpEQSUu7U9kuEHG8f87XB+AeB5klW3sEtSOfUB8cHU6NkwNZ
-         lGEHSOGeVU5xy8IS2YwQPHs6kLwjuvVVngEAAV3vphbRhweLsiik0UzUVcmqgUs0hL
-         W1qAIUdRbuhaCx2LYCx4nIXph2vKP5E6bsCSnFWHrJ5awVOIDB6razqykn2RvS7kps
-         PDyeLAPhRVflykkjlcEYVbcBd0NRjIqugL1nD32FRZx+Hf+NVuHEy0jJ+/FL+ar4j0
-         6vrd7KM2bmitw==
-Date:   Tue, 17 Nov 2020 18:12:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        mm-commits@vger.kernel.org, sh_def@163.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: + mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
- added to -mm tree
-Message-ID: <20201117181246.5f29f9ca@canb.auug.org.au>
-In-Reply-To: <alpine.LSU.2.11.2011162149210.1082@eggly.anvils>
-References: <20201116230526.NkEfmeDCH%akpm@linux-foundation.org>
-        <alpine.LSU.2.11.2011162149210.1082@eggly.anvils>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lJf.D2B5rRqG2sSnrpSxtMC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Tue, 17 Nov 2020 02:12:55 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UFg6Xp9_1605597170;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFg6Xp9_1605597170)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 17 Nov 2020 15:12:51 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: add colon to fix kernel-doc markups error for check_pte
+Date:   Tue, 17 Nov 2020 15:12:47 +0800
+Message-Id: <1605597167-25145-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/lJf.D2B5rRqG2sSnrpSxtMC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The function check_pte needs a correct colon for kernel-doc markup,
+otherwise, gcc has the following warning for W=1,
+mm/page_vma_mapped.c:86: warning: Function parameter or member 'pvmw'
+not described in 'check_pte'
 
-Hi Hugh,
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/page_vma_mapped.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-On Mon, 16 Nov 2020 22:17:20 -0800 (PST) Hugh Dickins <hughd@google.com> wr=
-ote:
->
-> On Mon, 16 Nov 2020, akpm@linux-foundation.org wrote:
-> >=20
-> > The patch titled
-> >      Subject: mm/shmem: use kmem_cache_zalloc in shmem_alloc_inode()
-> > has been added to the -mm tree.  Its filename is
-> >      mm-shmem-use-kmem_cache_zalloc-in-shmem_alloc_inode.patch
-> >=20
-> > This patch should soon appear at
-> >     https://ozlabs.org/~akpm/mmots/broken-out/mm-shmem-use-kmem_cache_z=
-alloc-in-shmem_alloc_inode.patch
-> > and later at
-> >     https://ozlabs.org/~akpm/mmotm/broken-out/mm-shmem-use-kmem_cache_z=
-alloc-in-shmem_alloc_inode.patch
-> >=20
-> > Before you just go and hit "reply", please:
-> >    a) Consider who else should be cc'ed
-> >    b) Prefer to cc a suitable mailing list as well
-> >    c) Ideally: find the original patch on the mailing list and do a
-> >       reply-to-all to that, adding suitable additional cc's
-> >=20
-> > *** Remember to use Documentation/process/submit-checklist.rst when tes=
-ting your code ***
-> >=20
-> > The -mm tree is included into linux-next and is updated
-> > there every 3-4 working days
-> >=20
-> > ------------------------------------------------------
-> > From: Hui Su <sh_def@163.com>
-> > Subject: mm/shmem: use kmem_cache_zalloc in shmem_alloc_inode() =20
->=20
-> Andrew, Stephen, please revert this untested "cleanup" from your
-> trees a.s.a.p: it's a disaster for anyone using shmem/tmpfs.
+diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+index 5e77b269c330..86e3a3688d59 100644
+--- a/mm/page_vma_mapped.c
++++ b/mm/page_vma_mapped.c
+@@ -66,18 +66,19 @@ static inline bool pfn_is_match(struct page *page, unsigned long pfn)
+ 
+ /**
+  * check_pte - check if @pvmw->page is mapped at the @pvmw->pte
++ * @pvmw: page_vma_mapped_walk struct, includes a pair pte and page for checking
+  *
+  * page_vma_mapped_walk() found a place where @pvmw->page is *potentially*
+  * mapped. check_pte() has to validate this.
+  *
+- * @pvmw->pte may point to empty PTE, swap PTE or PTE pointing to arbitrary
+- * page.
++ * pvmw->pte may point to empty PTE, swap PTE or PTE pointing to
++ * arbitrary page.
+  *
+  * If PVMW_MIGRATION flag is set, returns true if @pvmw->pte contains migration
+  * entry that points to @pvmw->page or any subpage in case of THP.
+  *
+- * If PVMW_MIGRATION flag is not set, returns true if @pvmw->pte points to
+- * @pvmw->page or any subpage in case of THP.
++ * If PVMW_MIGRATION flag is not set, returns true if pvmw->pte points to
++ * pvmw->page or any subpage in case of THP.
+  *
+  * Otherwise, return false.
+  *
+-- 
+2.29.GIT
 
-Thanks for that.  I have also bisected my boot failures to that commit
-and so have reverted it from linux-next today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/lJf.D2B5rRqG2sSnrpSxtMC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+zd+4ACgkQAVBC80lX
-0Gx1Ugf8C5haoqlz+b6RB9D3i2I3sOqleXM0COjh+nSBcJMbFZZO+v2ID+/1zl9y
-PGT3uF5GCkNFqMVY2+thFkAy0Lwjdcc/nmTAEyHFgFK9Ae9ATSgMn+vv40OHsDo4
-+uHoMonPqctxhHzLEs6CJV3f39dxBVUdHExEISDZCltpXpOBDohp5c2heMHmwbis
-nwd4cgx209btXBNImSGtPNRsYa94nuR+DZZ1BEFLC5pkI2v/jDJf2H0N+g6wqwCf
-IOGCaSnyPInTnJy/nVC0SOWIeDwnNohgDsaCAAhNbKUFJdpEVtlLcNMxxV1LA+8Q
-3pkjSqFse94Pz1sWm1sMv5QaYdq8Sg==
-=LNUE
------END PGP SIGNATURE-----
-
---Sig_/lJf.D2B5rRqG2sSnrpSxtMC--
