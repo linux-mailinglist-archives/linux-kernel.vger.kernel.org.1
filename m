@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10AD2B65EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 340092B6396
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732101AbgKQN7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:59:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
+        id S1732684AbgKQNj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:39:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730670AbgKQNS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:18:26 -0500
+        id S1732408AbgKQNjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:39:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52B5B24654;
-        Tue, 17 Nov 2020 13:18:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D705520870;
+        Tue, 17 Nov 2020 13:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619105;
-        bh=O8sN/Fj7w+5g61Gjf9SEq4lrUkuxb/eAuuxjUzW77+s=;
+        s=default; t=1605620346;
+        bh=KQCuwdMUqM8EjjgvAFkva6iPqgagY4BwNMp1qW9+J0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qfgn3NbvhhyTc8spwsyTYbNl+XWrzkULpLIt/vN31h3pUKD3Ayzfuwh+s4oRFhj6F
-         Tyj8SknAex9ICLU1tygWOiO7IcgpGUzFcMQpacyIOyJhJBM6/XXN7V3mdPHwKyOhJT
-         7sUPGFlzNxu0USkQH0OHBXQG23b85Yx3Tq9aTfak=
+        b=hCI533KXeHEO080roUq8nC34aH2RCIQvJWHLCxjQCgG76s/SqTkdlEiZZ5hBiW/cg
+         3lz3TAxmh3IFXCBSbxmF8y/lQPO53TO4pIjPhYstxYW0w8uOUGFuh774Bk///GZcN0
+         HZRiPqOj0ia04cIeEf2xlnIysHVUnhyEg4SkzPz4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 4.19 029/101] crypto: arm64/aes-modes - get rid of literal load of addend vector
-Date:   Tue, 17 Nov 2020 14:04:56 +0100
-Message-Id: <20201117122114.510330023@linuxfoundation.org>
+        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 157/255] net: phy: realtek: support paged operations on RTL8201CP
+Date:   Tue, 17 Nov 2020 14:04:57 +0100
+Message-Id: <20201117122146.590282409@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-commit ed6ed11830a9ded520db31a6e2b69b6b0a1eb0e2 upstream.
+[ Upstream commit f3037c5a31b58a73b32a36e938ad0560085acadd ]
 
-Replace the literal load of the addend vector with a sequence that
-performs each add individually. This sequence is only 2 instructions
-longer than the original, and 2% faster on Cortex-A53.
+The RTL8401-internal PHY identifies as RTL8201CP, and the init
+sequence in r8169, copied from vendor driver r8168, uses paged
+operations. Therefore set the same paged operation callbacks as
+for the other Realtek PHY's.
 
-This is an improvement by itself, but also works around a Clang issue,
-whose integrated assembler does not implement the GNU ARM asm syntax
-completely, and does not support the =literal notation for FP registers
-(more info at https://bugs.llvm.org/show_bug.cgi?id=38642)
-
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: cdafdc29ef75 ("r8169: sync support for RTL8401 with vendor driver")
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Link: https://lore.kernel.org/r/69882f7a-ca2f-e0c7-ae83-c9b6937282cd@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/crypto/aes-modes.S |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/net/phy/realtek.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arm64/crypto/aes-modes.S
-+++ b/arch/arm64/crypto/aes-modes.S
-@@ -232,17 +232,19 @@ AES_ENTRY(aes_ctr_encrypt)
- 	bmi		.Lctr1x
- 	cmn		w6, #4			/* 32 bit overflow? */
- 	bcs		.Lctr1x
--	ldr		q8, =0x30000000200000001	/* addends 1,2,3[,0] */
--	dup		v7.4s, w6
-+	add		w7, w6, #1
- 	mov		v0.16b, v4.16b
--	add		v7.4s, v7.4s, v8.4s
-+	add		w8, w6, #2
- 	mov		v1.16b, v4.16b
--	rev32		v8.16b, v7.16b
-+	add		w9, w6, #3
- 	mov		v2.16b, v4.16b
-+	rev		w7, w7
- 	mov		v3.16b, v4.16b
--	mov		v1.s[3], v8.s[0]
--	mov		v2.s[3], v8.s[1]
--	mov		v3.s[3], v8.s[2]
-+	rev		w8, w8
-+	mov		v1.s[3], w7
-+	rev		w9, w9
-+	mov		v2.s[3], w8
-+	mov		v3.s[3], w9
- 	ld1		{v5.16b-v7.16b}, [x20], #48	/* get 3 input blocks */
- 	bl		aes_encrypt_block4x
- 	eor		v0.16b, v5.16b, v0.16b
+diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+index 0f09609718007..81a614f903c4a 100644
+--- a/drivers/net/phy/realtek.c
++++ b/drivers/net/phy/realtek.c
+@@ -542,6 +542,8 @@ static struct phy_driver realtek_drvs[] = {
+ 	{
+ 		PHY_ID_MATCH_EXACT(0x00008201),
+ 		.name           = "RTL8201CP Ethernet",
++		.read_page	= rtl821x_read_page,
++		.write_page	= rtl821x_write_page,
+ 	}, {
+ 		PHY_ID_MATCH_EXACT(0x001cc816),
+ 		.name		= "RTL8201F Fast Ethernet",
+-- 
+2.27.0
+
 
 
