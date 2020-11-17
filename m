@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BE92B6E3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C9F2B6E42
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgKQTPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:15:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgKQTPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:15:50 -0500
-Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E87A924248;
-        Tue, 17 Nov 2020 19:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605640549;
-        bh=qCbF58vgiefZ8VCYS9ofR3cSVoZzEVxnJQJ9R5/mjYA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AxSXaDVSs9+X8EC5IoAogPm8KBYugk+hG0CvV5NERmDBD26HGnSiqO7qN855ik75o
-         WBLZU7DBN62oQtX/RSvNs3Fuezj/58unPbE/8zZKVltEUQfnnFDJiNVbu6VAlr5GzU
-         RvrxcCoF7GiJY6YRVot03n0h3aZwvOoFm8m/ECOM=
-Date:   Tue, 17 Nov 2020 21:15:40 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v41 10/24] mm: Add 'mprotect' hook to struct
- vm_operations_struct
-Message-ID: <20201117191540.GB10393@kernel.org>
-References: <20201112220135.165028-1-jarkko@kernel.org>
- <20201112220135.165028-11-jarkko@kernel.org>
- <20201115173208.GR17076@casper.infradead.org>
- <96318679-3320-8d7c-d178-7fa34ed11fdf@intel.com>
- <20201116100957.GM3371@techsingularity.net>
+        id S1727980AbgKQTQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:16:51 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25852 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728018AbgKQTQt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:16:49 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHJ2QWM099825;
+        Tue, 17 Nov 2020 14:16:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=mzfxdXONFyP+nJ5WN6LW0aUav7QlWg3P/f3RdTXK1ro=;
+ b=i9kLbdKFvR7tnxUsGo273bA3drLv04yrihNrxx5tejV7MewwD8WPgQKWS6baLPRiR0Iy
+ 8qKOU28xrOY46Bzvse6Q6r4VbpnFhtNg6FzUIh0O29uSG2gKVFbOrl4ZnG62R+6ynhO6
+ DFeIdJLodY0VxVQVZ0QMObZTVhqGxA1J6ip0UdJTnbMMinVoY9/+pKILLqMNZJ3sc2AD
+ BS7QTgFV5y3IJdqPrhQFKHTeUguxiIN8Rzg87qR/2T5sUmfFLOBUoMlwkIxH+fCW9H/w
+ Zcpl+SMKYhLwf8HWLjbqFcpXsjU/Y7/vdXAhuZPMJAiF8auwiL0uqpQgT5hE8BWRKvRo 8w== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34v3yfjuj7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 14:16:41 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AHJ7f6n012700;
+        Tue, 17 Nov 2020 19:16:40 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma03dal.us.ibm.com with ESMTP id 34t6v9evv0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 19:16:40 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AHJGU2339125252
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 19:16:30 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE9B3C6055;
+        Tue, 17 Nov 2020 19:16:38 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6FC18C6059;
+        Tue, 17 Nov 2020 19:16:38 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 17 Nov 2020 19:16:38 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH v2 0/6] ibmvfc: Protocol definition updates and new targetWWPN Support
+Date:   Tue, 17 Nov 2020 13:16:30 -0600
+Message-Id: <20201117191636.131127-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116100957.GM3371@techsingularity.net>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_07:2020-11-17,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 adultscore=0 bulkscore=0 spamscore=0 mlxlogscore=629
+ priorityscore=1501 malwarescore=0 suspectscore=1 mlxscore=0 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 10:09:57AM +0000, Mel Gorman wrote:
-> On Sun, Nov 15, 2020 at 10:36:51AM -0800, Dave Hansen wrote:
-> > On 11/15/20 9:32 AM, Matthew Wilcox wrote:
-> > > On Fri, Nov 13, 2020 at 12:01:21AM +0200, Jarkko Sakkinen wrote:
-> > >> +++ b/include/linux/mm.h
-> > >> @@ -559,6 +559,13 @@ struct vm_operations_struct {
-> > >>  	void (*close)(struct vm_area_struct * area);
-> > >>  	int (*split)(struct vm_area_struct * area, unsigned long addr);
-> > >>  	int (*mremap)(struct vm_area_struct * area);
-> > >> +	/*
-> > >> +	 * Called by mprotect() to make driver-specific permission
-> > >> +	 * checks before mprotect() is finalised.   The VMA must not
-> > >> +	 * be modified.  Returns 0 if eprotect() can proceed.
-> > >> +	 */
+Several Management Datagrams (MADs) have been reversioned to add a targetWWPN
+field that is intended to better identify a target over a scsi_id. Further, a
+couple new MADs have been introduced to the protocol to be used for negotiation
+of channels/hw queues resources when the VIOS is using SLI-4 capable adapters.
 
-Wonder if this should also document the negative case for the return
-value, i.e. -EACCES is returned otherwise.
+This patchset adds the new protocol definitions and implements support for using
+the new targetWWPN field and exposing the capability to the VIOS. This
+targetWWPN support is a prerequisuite for upcoming channelization/MQ support.
 
-> > > 
-> > > This is the wrong place for this documentation, and it's absurdly
-> > > specific to your implementation.  It should be in
-> > > Documentation/filesystems/locking.rst.
-> > 
-> > I'll let you and Mel duke that one out:
-> > 
-> 
-> I suggested placing the comment there to make it clear what the expected
-> semantics of the hook was to reduce the chances of abuse or surprises. The
-> hook does not affect locking so Documentation/filesystems/locking.rst
-> didn't appear appropriate other than maybe adding a note there
-> that it doesn't affect locks. The hook also is not expecting any
-> filesystems-specific action that I aware of but a note could be added to
-> the effect that filesystems should not need to take special action for it.
-> Protections on the filesystem level are for the inode, I can't imagine what
-> a filesystem would do with a protection change on the page table level
-> but maybe I'm not particularly imaginative today.
+changes in v2:
+	Removed bug fixes to separate patchset
+	Fixed up checkpatch warnings
 
-I try to decipher this in generic context.
+Tyrel Datwyler (6):
+  ibmvfc: deduplicate common ibmvfc_cmd init code
+  ibmvfc: add new fields for version 2 of several MADs
+  ibmvfc: add helper for testing capability flags
+  ibmvfc: add FC payload retrieval routines for versioned vfcFrames
+  ibmvfc: add support for targetWWPN field in v2 MADs and vfcFrame
+  ibmvfc: advertise client support for targetWWPN using v2 commands
 
-In a permission check of a filesystem, truncated pages should be
-encapsulated in to the permission decision. It's a just a query.
+ drivers/scsi/ibmvscsi/ibmvfc.c | 183 ++++++++++++++++++++++-----------
+ drivers/scsi/ibmvscsi/ibmvfc.h |  28 ++++-
+ 2 files changed, 145 insertions(+), 66 deletions(-)
 
-So maybe I'll add something like:
+-- 
+2.27.0
 
-"This callback does only a permission query, and thus does never
-return locked pages."
-
-> -- 
-> Mel Gorman
-> SUSE Labs
-
-/Jarkko
