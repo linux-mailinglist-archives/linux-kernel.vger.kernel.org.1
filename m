@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2B52B69E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA3B2B69E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgKQQTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:19:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727013AbgKQQTm (ORCPT
+        id S1727649AbgKQQUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:20:04 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46902 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgKQQUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:19:42 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62716C0613CF;
-        Tue, 17 Nov 2020 08:19:42 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id r7so20923920qkf.3;
-        Tue, 17 Nov 2020 08:19:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0bP0N5G3q4990O7UPG9qRselKLApk1bnmbnwIqPu2sM=;
-        b=quCQWsqM/G7NUW8nG/cRtbhFeRATbrfM9fvJTlEYihkQrZEOLYtBP0T5+AdNrmyCSk
-         Ds9CtnwjcEjJeU2bGSCgXIowOWbO1KxckhDVCCfD9uhxcFcI0UFdc/6QEuc9iqFBSFSn
-         Zmn1RHMubmXzoY5sR8r5Ge9hBIk9e5DQaDICCibObS3rDRDWeBjCfZhGbNWXfKlHPrc2
-         BUSBWsxSdbwNSN0r7r/tSKHNL7fiwuNnZuxNhO6fNYFWCFUmc2EJ9vmdbEzCsQYruclj
-         dynVQvYLjIx2dY9EegBovc3Xw/x3onkQC6A5TDyjY+NnGZwzm92vv5LDgFfLe9emkO6O
-         IsJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0bP0N5G3q4990O7UPG9qRselKLApk1bnmbnwIqPu2sM=;
-        b=PAuuM/3QzcQzYUK8nLlOnK3/+1uPQ89BLAt5aUq0ys7Wwz8TiYxRoQ7DxQt3DgQjcj
-         X3wF2r4XNHlqc3uO/QwXgHb0xkCobzJCktX6QS+aGxaqYlaMhalU2tBvNST7gtygLZL8
-         GViEoIg46crj3pgk2txUMnk9xWfIPBAELDRTVGXRa7qN0uqw776p7LQyoAKtCCWlikMb
-         oGs/gQ/wzt75I0V9xNRLpDrz45npPLW6yif/Qdnr0j3/9AOpArmN58kGuEuzRHkCJX+N
-         Sc0zuyQaHIWjhuHFXu+5YZ0usIuo5WX4Q8nA4h489NnUveau4Pm2+hHeTocS10VV8LTj
-         rmEw==
-X-Gm-Message-State: AOAM532hFzjvjG6DYi5YaYvVvxDxBHOrgp0G2fP5jjf62LHtY2Aw4/BG
-        sZkuuEzCQz1S2vNy9efvltM=
-X-Google-Smtp-Source: ABdhPJzufKely6Ve/NrxH3TgVvKFp2euIaxPShtuwEADEG9FSgYwKaPVuHGMV+IJYsywA6Hamm8K6w==
-X-Received: by 2002:a37:4948:: with SMTP id w69mr299290qka.472.1605629981408;
-        Tue, 17 Nov 2020 08:19:41 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id b64sm2779946qkg.19.2020.11.17.08.19.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 08:19:40 -0800 (PST)
-Date:   Tue, 17 Nov 2020 09:19:38 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Tom Rix <trix@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ring-buffer: remove obsolete rb_event_is_commit()
-Message-ID: <20201117161938.GA1271942@ubuntu-m3-large-x86>
-References: <20201117053703.11275-1-lukas.bulwahn@gmail.com>
+        Tue, 17 Nov 2020 11:20:01 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AHGJort008011;
+        Tue, 17 Nov 2020 10:19:50 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605629990;
+        bh=fOcGPq25kCNFtsMe/61ChnGUekQJo9px2A8HMNw0tXs=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=VlBA8xDU38k1OmY54F+lhoUf4oYPVObnEE3g08c4aoXKdIOjSzupdLN3XwCNsMKAh
+         iYq9IgZLB02ey+C9mxHv3EfBtS7Y7M4tkl4KFWQH8GXrNtZbtXdDiHdR2bBXtu4Ag+
+         3m/l9GfrgPgBqNora/OQNNEaiQ/5+k9cDwW/7IRI=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AHGJoZU099417
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 10:19:50 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 17
+ Nov 2020 10:19:50 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 17 Nov 2020 10:19:50 -0600
+Received: from pxplinux063.india.englab.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AHGJhwH032251;
+        Tue, 17 Nov 2020 10:19:47 -0600
+From:   Sekhar Nori <nsekhar@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <t-kristo@ti.com>
+CC:     Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Andre Przywara <andre.przywara@arm.com>
+Subject: [PATCH v2 1/4] arm64: dts: ti: k3: squelch warning about lack of #interrupt-cells
+Date:   Tue, 17 Nov 2020 21:49:39 +0530
+Message-ID: <20201117161942.38754-2-nsekhar@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201117161942.38754-1-nsekhar@ti.com>
+References: <20201117161942.38754-1-nsekhar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117053703.11275-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 06:37:03AM +0100, Lukas Bulwahn wrote:
-> Commit a389d86f7fd0 ("ring-buffer: Have nested events still record running
-> time stamp") removed the only uses of rb_event_is_commit() in
-> rb_update_event() and rb_update_write_stamp().
-> 
-> Hence, since then, make CC=clang W=1 warns:
-> 
->   kernel/trace/ring_buffer.c:2763:1:
->     warning: unused function 'rb_event_is_commit' [-Wunused-function]
-> 
-> Remove this obsolete function.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
+There are couple of places where INTA interrupt controller
+lacks #interrupt-cells property. This leads to warnings of
+the type:
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+arch/arm64/boot/dts/ti/k3-j721e-main.dtsi:147.51-156.5: Warning (interrupt_provider): /bus@100000/main-navss/interrupt-controller@33d00000: Missing #interrupt-cells in interrupt provider
+
+When building TI device-tree files with W=2 warning level.
+Fix these.
+
+Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi  | 1 +
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index 3eeb6e9876db..aa8725db0187 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -473,6 +473,7 @@
+ 			interrupt-controller;
+ 			interrupt-parent = <&intr_main_navss>;
+ 			msi-controller;
++			#interrupt-cells = <0>;
+ 			ti,sci = <&dmsc>;
+ 			ti,sci-dev-id = <179>;
+ 			ti,interrupt-ranges = <0 0 256>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index e2a96b2c423c..ffedd9531362 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -148,6 +148,7 @@
+ 			interrupt-controller;
+ 			interrupt-parent = <&main_navss_intr>;
+ 			msi-controller;
++			#interrupt-cells = <0>;
+ 			ti,sci = <&dmsc>;
+ 			ti,sci-dev-id = <209>;
+ 			ti,interrupt-ranges = <0 0 256>;
+-- 
+2.17.1
+
