@@ -2,20 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8A92B671B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE4C2B670D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388031AbgKQOIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:08:42 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:41479 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387984AbgKQOIG (ORCPT
+        id S1731719AbgKQOIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:08:20 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:27623 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387988AbgKQOIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:08:06 -0500
+        Tue, 17 Nov 2020 09:08:07 -0500
+X-Originating-IP: 86.194.74.19
 Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
         (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id A9750200018;
-        Tue, 17 Nov 2020 14:08:03 +0000 (UTC)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 43EAB240009;
+        Tue, 17 Nov 2020 14:08:05 +0000 (UTC)
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
 To:     Jonathan Cameron <jic23@kernel.org>
 Cc:     Lars-Peter Clausen <lars@metafoo.de>,
@@ -25,9 +26,9 @@ Cc:     Lars-Peter Clausen <lars@metafoo.de>,
         linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v2 08/11] iio: adc: at91_adc: remove forward declaration
-Date:   Tue, 17 Nov 2020 15:06:53 +0100
-Message-Id: <20201117140656.1235055-9-alexandre.belloni@bootlin.com>
+Subject: [PATCH v2 09/11] ARM: dts: at91: sama5d3: use proper ADC compatible
+Date:   Tue, 17 Nov 2020 15:06:54 +0100
+Message-Id: <20201117140656.1235055-10-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201117140656.1235055-1-alexandre.belloni@bootlin.com>
 References: <20201117140656.1235055-1-alexandre.belloni@bootlin.com>
@@ -37,69 +38,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the forward declaration of at91_adc_dt_ids by using
-of_device_get_match_data. Also add const were possible since it is not
-discarded by the cast anymore.
+The ADC is different from the at91sam9x5 ADC. Not only it doesn't have the
+same resolution but it even have only one and the LOWRES bit doesn't exist.
 
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Reviewed-by: Ludovic Desroches <ludovic.desroches@microchip.com>
 ---
-Changes in v2:
- - use of_device_get_match_data instead of device_get_match_data
+ arch/arm/boot/dts/sama5d3.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/iio/adc/at91_adc.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-index 347464844263..4c1b3b67445d 100644
---- a/drivers/iio/adc/at91_adc.c
-+++ b/drivers/iio/adc/at91_adc.c
-@@ -224,7 +224,6 @@ struct at91_adc_state {
- 	struct mutex		lock;
- 	u8			num_channels;
- 	void __iomem		*reg_base;
--	struct at91_adc_reg_desc *registers;
- 	u32			startup_time;
- 	u8			sample_hold_time;
- 	bool			sleep_mode;
-@@ -233,7 +232,8 @@ struct at91_adc_state {
- 	u32			vref_mv;
- 	u32			res;		/* resolution used for convertions */
- 	wait_queue_head_t	wq_data_avail;
--	struct at91_adc_caps	*caps;
-+	const struct at91_adc_caps *caps;
-+	const struct at91_adc_reg_desc *registers;
- 
- 	/*
- 	 * Following ADC channels are shared by touchscreen:
-@@ -569,7 +569,7 @@ static int at91_adc_configure_trigger(struct iio_trigger *trig, bool state)
- {
- 	struct iio_dev *idev = iio_trigger_get_drvdata(trig);
- 	struct at91_adc_state *st = iio_priv(idev);
--	struct at91_adc_reg_desc *reg = st->registers;
-+	const struct at91_adc_reg_desc *reg = st->registers;
- 	u32 status = at91_adc_readl(st, reg->trigger_register);
- 	int value;
- 	u8 bit;
-@@ -796,8 +796,6 @@ static u32 calc_startup_ticks_9x5(u32 startup_time, u32 adc_clk_khz)
- 	return ticks;
- }
- 
--static const struct of_device_id at91_adc_dt_ids[];
--
- static int at91_adc_probe_dt_ts(struct device_node *node,
- 	struct at91_adc_state *st, struct device *dev)
- {
-@@ -1011,8 +1009,7 @@ static int at91_adc_probe(struct platform_device *pdev)
- 
- 	st = iio_priv(idev);
- 
--	st->caps = (struct at91_adc_caps *)
--		of_match_device(at91_adc_dt_ids, &pdev->dev)->data;
-+	st->caps = of_device_get_match_data(&pdev->dev);
- 
- 	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
- 
+diff --git a/arch/arm/boot/dts/sama5d3.dtsi b/arch/arm/boot/dts/sama5d3.dtsi
+index 86137f8d2b45..bba2a3f41c42 100644
+--- a/arch/arm/boot/dts/sama5d3.dtsi
++++ b/arch/arm/boot/dts/sama5d3.dtsi
+@@ -307,7 +307,7 @@ ssc1: ssc@f800c000 {
+ 			adc0: adc@f8018000 {
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+-				compatible = "atmel,at91sam9x5-adc";
++				compatible = "atmel,sama5d3-adc";
+ 				reg = <0xf8018000 0x100>;
+ 				interrupts = <29 IRQ_TYPE_LEVEL_HIGH 5>;
+ 				pinctrl-names = "default";
 -- 
 2.28.0
 
