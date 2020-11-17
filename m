@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87E92B65FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BAD2B668A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729893AbgKQN74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:59:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49682 "EHLO mail.kernel.org"
+        id S1732424AbgKQOEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:04:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730556AbgKQNRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:17:25 -0500
+        id S1729468AbgKQNKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:10:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21E5B2225B;
-        Tue, 17 Nov 2020 13:17:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EC852225B;
+        Tue, 17 Nov 2020 13:10:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619043;
-        bh=r9FZfaF4eisPjUR73+5jQ3IF4euogePyoV4bXnwH3RA=;
+        s=default; t=1605618624;
+        bh=2wvs64zcWjOehOw6+ulkbhTAeef1miK9PtQWMhCo43Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jOxrVjQhAInJonKgjGsLSP96RjHJ+bUezv7bMDCK9LwsSkXGDlcGQKc1X7VTuV1M/
-         5wMu5jHiVgUWkzObFLSM1dM93H5AA/VOqcUdGODmHxST5Atkzh0DFjCbfgFR6mqxP2
-         PKptoSv8qu6GYcblirYUEU5Q2TIUVkq2FcbmU4iU=
+        b=DFMSo9yQBIt8++lQElGINIA7gYxa6t6KujRz4TJLSR9o0iVcZ+gnpbiCzZrGleyfi
+         bGHisS2jzLZBdtCe7lF0qPU2yoBzBV09pIKxsPG1mFG+9xLl9sjaNFudebi7RH3wsj
+         FqA8Mh06F5MY06E9p4t60XrsBz2pD5GDpnzpxnIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megous@megous.com>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 001/101] regulator: defer probe when trying to get voltage from unresolved supply
-Date:   Tue, 17 Nov 2020 14:04:28 +0100
-Message-Id: <20201117122113.196963972@linuxfoundation.org>
+Subject: [PATCH 4.9 03/78] gfs2: Wake up when sd_glock_disposal becomes zero
+Date:   Tue, 17 Nov 2020 14:04:29 +0100
+Message-Id: <20201117122109.292186369@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,42 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit cf1ad559a20d1930aa7b47a52f54e1f8718de301 ]
+[ Upstream commit da7d554f7c62d0c17c1ac3cc2586473c2d99f0bd ]
 
-regulator_get_voltage_rdev() is called in regulator probe() when
-applying machine constraints.  The "fixed" commit exposed the problem
-that non-bypassed regulators can forward the request to its parent
-(like bypassed ones) supply. Return -EPROBE_DEFER when the supply
-is expected but not resolved yet.
+Commit fc0e38dae645 ("GFS2: Fix glock deallocation race") fixed a
+sd_glock_disposal accounting bug by adding a missing atomic_dec
+statement, but it failed to wake up sd_glock_wait when that decrement
+causes sd_glock_disposal to reach zero.  As a consequence,
+gfs2_gl_hash_clear can now run into a 10-minute timeout instead of
+being woken up.  Add the missing wakeup.
 
-Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
-Cc: stable@vger.kernel.org
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Reported-by: Ondřej Jirman <megous@megous.com>
-Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Tested-by: Ondřej Jirman <megous@megous.com>
-Link: https://lore.kernel.org/r/a9041d68b4d35e4a2dd71629c8a6422662acb5ee.1604351936.git.mirq-linux@rere.qmqm.pl
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: fc0e38dae645 ("GFS2: Fix glock deallocation race")
+Cc: stable@vger.kernel.org # v2.6.39+
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/gfs2/glock.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index c290c89421314..ad5235ca8e4ee 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -3405,6 +3405,8 @@ static int _regulator_get_voltage(struct regulator_dev *rdev)
- 		ret = rdev->desc->fixed_uV;
- 	} else if (rdev->supply) {
- 		ret = _regulator_get_voltage(rdev->supply->rdev);
-+	} else if (rdev->supply_name) {
-+		return -EPROBE_DEFER;
- 	} else {
- 		return -EINVAL;
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index efd44d5645d83..f19e49a5d032b 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -758,7 +758,8 @@ again:
  	}
+ 	kfree(gl->gl_lksb.sb_lvbptr);
+ 	kmem_cache_free(cachep, gl);
+-	atomic_dec(&sdp->sd_glock_disposal);
++	if (atomic_dec_and_test(&sdp->sd_glock_disposal))
++		wake_up(&sdp->sd_glock_wait);
+ 	*glp = tmp;
+ 
+ 	return ret;
 -- 
 2.27.0
 
