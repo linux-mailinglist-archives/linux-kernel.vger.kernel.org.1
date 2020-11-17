@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3662B5E3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB382B5E3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgKQL2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:28:47 -0500
-Received: from mailout01.rmx.de ([94.199.90.91]:51055 "EHLO mailout01.rmx.de"
+        id S1728036AbgKQL1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:27:53 -0500
+Received: from mga01.intel.com ([192.55.52.88]:1082 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727815AbgKQL2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:28:47 -0500
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout01.rmx.de (Postfix) with ESMTPS id 4Cb3bt4cv1z2SVD8;
-        Tue, 17 Nov 2020 12:28:42 +0100 (CET)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4Cb3bT6n2Lz2TSDJ;
-        Tue, 17 Nov 2020 12:28:21 +0100 (CET)
-Received: from n95hx1g2.localnet (192.168.54.38) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 17 Nov
- 2020 12:27:18 +0100
-From:   Christian Eggers <ceggers@arri.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     Richard Cochran <richardcochran@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add hardware time stamping support
-Date:   Tue, 17 Nov 2020 12:27:17 +0100
-Message-ID: <1813904.kIZFssEuCH@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <2477133.fPTnnZM2lx@n95hx1g2>
-References: <20201019172435.4416-1-ceggers@arri.de> <20201110193245.uwsmrqzio5hco7fb@skbuf> <2477133.fPTnnZM2lx@n95hx1g2>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.38]
-X-RMX-ID: 20201117-122823-4Cb3bT6n2Lz2TSDJ-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+        id S1725355AbgKQL1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 06:27:53 -0500
+IronPort-SDR: 5cLWV8aVxJr1wx73M7yifHYrpfjBzwjJ0efANfihBlp4uG8uRr3Kwz4J4rLGPHwjvl2PuTl6ne
+ P6SXBCAzxjww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="188961214"
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="188961214"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 03:27:52 -0800
+IronPort-SDR: dG1ny2XRRY/+PJJPjr68EMmoLNYp7HC3dGGtUVrmxGNxJadnv2NJr5ZmpnPZ5JCtnw3qcgPK+G
+ 4sglLFud5/AA==
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="544009964"
+Received: from lil6-mobl1.ccr.corp.intel.com ([10.255.30.220])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 03:27:50 -0800
+Message-ID: <fd11744b16a91428303fe848ef8f72fd8f5c9a5e.camel@intel.com>
+Subject: Re: [PATCH] thermal: Fix NULL pointer dereference issue
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Mukesh Ojha <mojha@codeaurora.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     amitk@kernel.org
+Date:   Tue, 17 Nov 2020 19:27:47 +0800
+In-Reply-To: <f8c436ae-0f4c-5d2e-51a8-0e856fbf8f44@linaro.org>
+References: <1605544181-5348-1-git-send-email-mojha@codeaurora.org>
+         <4e28affd89ba8a852e0fb7ace076458b3d43839a.camel@intel.com>
+         <f8c436ae-0f4c-5d2e-51a8-0e856fbf8f44@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 12 November 2020, 16:28:44 CET, Christian Eggers wrote:
-> Hi Vladimir,
+On Tue, 2020-11-17 at 09:57 +0100, Daniel Lezcano wrote:
+> On 17/11/2020 08:18, Zhang Rui wrote:
+> > On Mon, 2020-11-16 at 21:59 +0530, Mukesh Ojha wrote:
+> > > Cooling stats variable inside
+> > > thermal_cooling_device_stats_update()
+> > > can get NULL. We should add a NULL check on stat inside for
+> > > sanity.
+> > > 
+> > > Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
+> > > ---
+> > >  drivers/thermal/thermal_sysfs.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/drivers/thermal/thermal_sysfs.c
+> > > b/drivers/thermal/thermal_sysfs.c
+> > > index a6f371f..f52708f 100644
+> > > --- a/drivers/thermal/thermal_sysfs.c
+> > > +++ b/drivers/thermal/thermal_sysfs.c
+> > > @@ -754,6 +754,9 @@ void
+> > > thermal_cooling_device_stats_update(struct
+> > > thermal_cooling_device *cdev,
+> > >  {
+> > >  	struct cooling_dev_stats *stats = cdev->stats;
+> > >  
+> > > +	if (!stats)
+> > > +		return;
+> > > +
+> > 
+> > May I know in which case stats can be NULL?
+> > The only possibility I can see is that cdev->ops->get_max_state()
+> > fails
+> > in cooling_device_stats_setup(), right?
 > 
-> On Tuesday, 10 November 2020, 20:32:45 CET, Vladimir Oltean wrote:
-> > But something is still wrong if you need to special-case the negative
-> > correctionField, it looks like the arithmetic is not done on the correct
-> > number of bits, either by the driver or by the hardware.
+> A few lines below, the allocation could fail.
 > 
-> I got it! 
-I got it not!
-
-While keeping the (negative) correction field works perfect when using
-PTP over L2 (what I did the last weeks), this causes an unwanted side effect
-when using UDP:
-
-...
-> User Datagram Protocol, Src Port: 319, Dst Port: 319
+>         stats = kzalloc(var, GFP_KERNEL);
+>         if (!stats)
+>                 return;
 > 
->     Source Port: 319
->     Destination Port: 319
->     Length: 62
->  
->  Checksum: 0x2285 incorrect, should be 0x2286 (maybe caused by "UDP checksum offload"?)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
->     [Checksum Status: Bad]
->     [Stream index: 0]
->     [Timestamps]
+> Some drivers define themselves as a cooling device state to let the
+> userspace to act on their power. The screen brightness is one example
+> with a cdev with 1024 states, the resulting stats table to be
+> allocated
+> is very big and the kzalloc is prone to fail.
 > 
-> Precision Time Protocol (IEEE1588)
+Oh, right.
+As we're not going to fix the cdev, so I think we do need this patch,
+right?
+
+thanks,
+rui
+> > thanks,
+> > rui
+> > 
+> > >  	spin_lock(&stats->lock);
+> > >  
+> > >  	if (stats->state == new_state)
 > 
->     0000 .... = transportSpecific: 0x0
->     .... 0011 = messageId: Peer_Delay_Resp Message (0x3)
->     0000 .... = Reserved: 0
->     .... 0010 = versionPTP: 2
->     messageLength: 54
->     subdomainNumber: 0
->     Reserved: 0
->     flags: 0x0000
->     correction: 5579788,000000 nanoseconds
->     Reserved: 0
->     ClockIdentity: 0x849000fffe0980f7
->     SourcePortID: 1
->     sequenceId: 785
->     control: Other Message (5)
->     logMessagePeriod: 127
->     requestreceiptTimestamp (seconds): 0
->     requestreceiptTimestamp (nanoseconds): 0
->     requestingSourcePortIdentity: 0x849000fffe0980f6
->     requestingSourcePortId: 2
-While correction field is ok (residential delay ~5ms, using one printk...),
-the UDP checksum is off by one in all PDelay_Resp messages.
-
-The KSZ device offers on option to set the UDP checksum to zero, but this also
-didn't help and additionally wouldn't work for IPv6.
-
-It seems that I should return to "moving T2 from the correction field to the
-tail tag" on tx.
- 
-regards
-Christian
-
-
-
+> 
 
