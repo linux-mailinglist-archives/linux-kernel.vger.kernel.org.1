@@ -2,145 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF97B2B6D22
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB052B6D2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730671AbgKQST5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:19:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
+        id S1730983AbgKQSVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:21:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730534AbgKQSTz (ORCPT
+        with ESMTP id S1730673AbgKQSVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:19:55 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2577C0613CF;
-        Tue, 17 Nov 2020 10:19:55 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f18so16563831pgi.8;
-        Tue, 17 Nov 2020 10:19:55 -0800 (PST)
+        Tue, 17 Nov 2020 13:21:51 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4EFC0613CF;
+        Tue, 17 Nov 2020 10:21:50 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id w24so4137129wmi.0;
+        Tue, 17 Nov 2020 10:21:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FbR8FBZ8v9oRIOK3rZ6XdWYjeIbKFf31XDvQwkSkmGg=;
-        b=ONymwN4v702ZwagKvnMijNuBl6CFcG6m7iSi/X/p3JHQERk+7YhRRnwIsAQnzbzLrn
-         JszoxS2Govb2yKO3jW7iuS6PpImRZPjbxPC21Stn1Pp+mYa+oRhcodUSyxKYBxWhanf8
-         Nf6U1Bh38Ij8hrlEWj3tacl+yhlsE82tB3P1oHIv4MLpFGgFjSKIZUV69pDHusbBWt2U
-         iCNCCHZWZj3ibUzIZP5mkcY03yF7ceeljrKL03zVouTD9zdw0lvKP//ukKZaVh52XC+e
-         Wp4HWWtYV2F7XkuK13BPNKQhGkYONBSiE8gNSU1BiuWGXNBZZWxV6kmVVofoQu1slgvI
-         Tluw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lsPkuDxQwYWMGyO8nE94LMCfTZHp1ssgAlo/Bs3ZxK4=;
+        b=h2CSxUaN3C/Ngk8aQArmeYUShlnFesWWoPjm1vCOy7wQBNQC2HY0RrHUPlocg3tP9q
+         O3GtRDKAjzO1aDfhlszmnlqXx57btldVJpVNXU2dO38fBByyKs8AHs/HVHgFGhTROScW
+         apd/8hzb6d1d6H5ppyLQYw2zNWvjSW39IWQl/Lvarj2dG0KSBmppXkBEQaZQhhHmXFaD
+         vhSlx7eDTZiJ4H57MhbjzmPyGJZ7UcjXQ/BvJS0P8Ie0cIsz7WwRgA7qzUI/+Y3mlWW7
+         QQ0/L9rZZON4Z0ktWoLkHw0HxU8FXZe0bqvJCo8JYcJ4xWnL+iB2p9QvG8xOVXzcPPyb
+         Nx9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=FbR8FBZ8v9oRIOK3rZ6XdWYjeIbKFf31XDvQwkSkmGg=;
-        b=RJ3Klbw2ymcZDPDBMj5cKf0cdohx3E360G+pojgd4XWJjloDlr+QJjj7R9MWI9Hqz9
-         whdAnLAjUv12y5HZMqLc7YYDx7JoC/XxdJ8/FEytU0S3E241D0wQJ9Ki61v/jv7PSfOn
-         6bRj9e0rxlaA2s7yLJjD5PIYweu0BmXiVFZzZ4JDw6T4XIrPopbOeTh4qy/s+geHFnMY
-         ZmS482/GD8Wy18o9ae+W+nQlhctBEMo5ZvRqyZtA282jXYpfvNC8vg67+5x5Y2MZn3Is
-         PC18nhqco4LvCCtgcJ/0K8Cr9NWSy7ZzQ+t0wbEU73oEZ9hIe2JbOYxKsndJkf9He6WX
-         zAKQ==
-X-Gm-Message-State: AOAM5324katgqzXD7EEcj+c3xrykP9mjuMXo6JPvPSo6C8Yyv4q8PxWS
-        4BqcaKsk+nJqSPsgXLkWxgU=
-X-Google-Smtp-Source: ABdhPJx4cA1WlpSWJrNjJCeWkhFiCJNtehbF8opfuAbfGhq3jrdOy0v8F8YQec3puI0Q8HXVwmFOVg==
-X-Received: by 2002:a62:d11b:0:b029:18b:b3e:95aa with SMTP id z27-20020a62d11b0000b029018b0b3e95aamr554667pfg.3.1605637195227;
-        Tue, 17 Nov 2020 10:19:55 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id h8sm4302639pjc.54.2020.11.17.10.19.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 10:19:54 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        hyesoo.yu@samsung.com, willy@infradead.org, david@redhat.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz, surenb@google.com,
-        pullip.cho@samsung.com, joaodias@google.com, hridya@google.com,
-        sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH 4/4] dma-heap: Devicetree binding for chunk heap
-Date:   Tue, 17 Nov 2020 10:19:35 -0800
-Message-Id: <20201117181935.3613581-5-minchan@kernel.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-In-Reply-To: <20201117181935.3613581-1-minchan@kernel.org>
-References: <20201117181935.3613581-1-minchan@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lsPkuDxQwYWMGyO8nE94LMCfTZHp1ssgAlo/Bs3ZxK4=;
+        b=lO+EEMCWW+bOcjhzpCxfETRbdz316UnTVjMtAmk46Y2EtiYtx+QvnyLFzRtygRdCTI
+         Cy+J6amfFJtA0eB7pWP1es8RuF3GralRTZflyl5v6Loc3pPJ2M5NdudjuVoutqebHYXe
+         REupQ+ccjjK9rlz1/JP7BDs4qu/nTXUQgOSZyAjaUnF4K9bOklW1pBWOSvHcn8Yv9CuL
+         4oUhODrfWAgTL1JXXdvB7lW89mVuKwhWmdqLThaAu2o9xPdmTcDGZAp0IXS9RiSChBOu
+         QAMuCPt+9/3KeycwVnTSnp4ICPbjjpP4fys4Znd2T457gw6sUx66Rjhnt7EIry02ruSr
+         opeQ==
+X-Gm-Message-State: AOAM531Td/k+vkTd/ihohnKcoytTKro4bqp7mfi8FrQzLXjIxgiia37C
+        9yYql/9/+Z1TvqVfNG7Wg7PMPU72AOEnUMnCRFs=
+X-Google-Smtp-Source: ABdhPJydtSf2Xvrne4xsro+k4ZMOn7mJM7ngTqoTDlG58EuQZD1DYGRl8136MhDdx2L7WbVaX/lApCUE//K0y0vt0aQ=
+X-Received: by 2002:a05:600c:22d3:: with SMTP id 19mr366287wmg.161.1605637309533;
+ Tue, 17 Nov 2020 10:21:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201117175452.26914-1-sohambiswas41@gmail.com> <20201117181214.GK1869941@dell>
+In-Reply-To: <20201117181214.GK1869941@dell>
+From:   Soham Biswas <sohambiswas41@gmail.com>
+Date:   Tue, 17 Nov 2020 23:51:38 +0530
+Message-ID: <CAMmt7eO5te05AuVC+MR-zLB-z+r9FCuJwtON=1QXXY2YwQG0eg@mail.gmail.com>
+Subject: Re: [PATCH] pwm: core: Use octal permission
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hyesoo Yu <hyesoo.yu@samsung.com>
+This fixes the following warning:
 
-Document devicetree binding for chunk heap on dma heap framework
+`drivers/pwm/core.c:1341: WARNING: Symbolic permissions 'S_IRUGO' are
+not preferred. Consider using octal permissions '0444'.`
 
-Signed-off-by: Hyesoo Yu <hyesoo.yu@samsung.com>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- .../bindings/dma-buf/chunk_heap.yaml          | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/dma-buf/chunk_heap.yaml
+generated by the following script:
 
-diff --git a/Documentation/devicetree/bindings/dma-buf/chunk_heap.yaml b/Documentation/devicetree/bindings/dma-buf/chunk_heap.yaml
-new file mode 100644
-index 000000000000..f382bee02778
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dma-buf/chunk_heap.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dma-buf/chunk_heap.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Device tree binding for chunk heap on DMA HEAP FRAMEWORK
-+
-+maintainers:
-+  - Sumit Semwal <sumit.semwal@linaro.org>
-+
-+description: |
-+  The chunk heap is backed by the Contiguous Memory Allocator (CMA) and
-+  allocates the buffers that are made up to a list of fixed size chunks
-+  taken from CMA. Chunk sizes are configurated when the heaps are created.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - dma_heap,chunk
-+
-+  memory-region:
-+    maxItems: 1
-+
-+  alignment:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - memory-region
-+  - alignment
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    reserved-memory {
-+        #address-cells = <2>;
-+        #size-cells = <1>;
-+
-+        chunk_memory: chunk_memory {
-+            compatible = "shared-dma-pool";
-+            reusable;
-+            size = <0x10000000>;
-+        };
-+    };
-+
-+    chunk_default_heap: chunk_default_heap {
-+        compatible = "dma_heap,chunk";
-+        memory-region = <&chunk_memory>;
-+        alignment = <0x10000>;
-+    };
--- 
-2.29.2.299.gdc1121823c-goog
+`./scripts/checkpatch.pl --file --terse drivers/pwm/core.c`
 
+
+On Tue, 17 Nov 2020 at 23:42, Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Tue, 17 Nov 2020, Soham Biswas wrote:
+>
+> > Fixed Warning.
+>
+> Which warning does this fix?
+>
+> > Replaced symbolic permission 'S_IRUGO' with octal permission '0444'.
+>
+> This is semantically equivalent.
+>
+> Not sure what and/or how this fixes anything.
+>
+> > Signed-off-by: Soham Biswas <sohambiswas41@gmail.com>
+> > ---
+> >  drivers/pwm/core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> > index 1f16f5365d3c..a8eff4b3ee36 100644
+> > --- a/drivers/pwm/core.c
+> > +++ b/drivers/pwm/core.c
+> > @@ -1338,7 +1338,7 @@ DEFINE_SEQ_ATTRIBUTE(pwm_debugfs);
+> >
+> >  static int __init pwm_debugfs_init(void)
+> >  {
+> > -     debugfs_create_file("pwm", S_IFREG | S_IRUGO, NULL, NULL,
+> > +     debugfs_create_file("pwm", S_IFREG | 0444, NULL, NULL,
+> >                           &pwm_debugfs_fops);
+> >
+> >       return 0;
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
