@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6EF2B600D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192842B6143
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbgKQNFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:05:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:56224 "EHLO foss.arm.com"
+        id S1730551AbgKQNRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:17:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgKQNFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:05:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D843101E;
-        Tue, 17 Nov 2020 05:05:44 -0800 (PST)
-Received: from [192.168.2.21] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D53A33F719;
-        Tue, 17 Nov 2020 05:05:41 -0800 (PST)
-Subject: Re: [PATCH 00/24] x86/resctrl: Merge the CDP resources
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-References: <20201030161120.227225-1-james.morse@arm.com>
- <04fdd774-99e0-4b99-2d70-06cfd0ab3be6@intel.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <af17ed35-15e8-d779-60d1-c16f14004bec@arm.com>
-Date:   Tue, 17 Nov 2020 13:05:39 +0000
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729704AbgKQNRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:17:05 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48DAD2225B;
+        Tue, 17 Nov 2020 13:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605619024;
+        bh=aCmNFqxGqjg0MaIKn3bMohrVDuuo7zL289AJAp+FoPo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=O8Ho6LikQejU8kz85n8uZaMyOzajJY0wX32yrO6iKOR6Rof7iHbo2HnquHl7AtbcV
+         i1XFIEVXZuzQ8May8K8Yd6wdbR0c5zkzzzDGu/7graF7M5FjJZN+PP5ZMIZBDPomJX
+         9qjkbVVw9MHJE3zla/Ku2LEEt1o3bs6sD1vsTsV0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Julien Grall <julien@xen.org>, Juergen Gross <jgross@suse.com>,
+        Julien Grall <jgrall@amazon.com>, Wei Liu <wl@xen.org>
+Subject: [PATCH 4.14 70/85] xen/events: add a proper barrier to 2-level uevent unmasking
+Date:   Tue, 17 Nov 2020 14:05:39 +0100
+Message-Id: <20201117122114.467288437@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <04fdd774-99e0-4b99-2d70-06cfd0ab3be6@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+From: Juergen Gross <jgross@suse.com>
 
-On 16/11/2020 17:54, Reinette Chatre wrote:
-> On 10/30/2020 9:10 AM, James Morse wrote:
->> MPAM has an equivalent feature to CDP, but its a property of the CPU,
->> not the cache. Resctrl needs to have x86's odd/even behaviour, as that
->> its the ABI, but this isn't how the MPAM hardware works. It is entirely
->> possible that an in-kernel user of MPAM would not be using CDP, whereas
->> resctrl is.
+commit 4d3fe31bd993ef504350989786858aefdb877daa upstream.
 
-> The above seems to distinguish between "in-kernel user of MPAM" and resctrl (now obtaining
-> support for MPAM). Could you please provide more details on the "in-kernel user of MPAM"
-> and elaborate on how these two usages are expected to interact with MPAM concurrently?
+A follow-up patch will require certain write to happen before an event
+channel is unmasked.
 
-This is a badly phrased reference to all the bits of MPAM that are left on the floor after
-the resctrl support is plumbed up.
+While the memory barrier is not strictly necessary for all the callers,
+the main one will need it. In order to avoid an extra memory barrier
+when using fifo event channels, mandate evtchn_unmask() to provide
+write ordering.
 
-Currently none of the software exists, but MPAM also has support for: virtualisation, the
-interrupt-controller (GIC) and the IO-MMU. None of these things are exposed via resctrl,
-so they either need new schema (which must also work for x86), or handling 'invisibly' in
-the kernel.
+The 2-level event handling unmask operation is missing an appropriate
+barrier, so add it. Fifo event channels are fine in this regard due to
+using sync_cmpxchg().
 
-Virtualisation is probably the easiest example: With MPAM, the guest may be 'using CDP'
-whereas the host is not, or vice-versa.
-The guest will never be allowed to access the MMIO configuration directly, it will be
-managed via the host's driver. Now the host's driver has to handle CDP-on and CDP-off
-configurations.
-Keeping the odd/even CDP stuff in resctrl means the arch-code/driver doesn't need to know
-or care about this stuff if the hardware doesn't.
+This is part of XSA-332.
 
-If the interrupt-controller or IO-MMU consume closid/rmid, then I'd describe them as
-in-kernel users (as the kernel owns their configuration). These would never use CDP as
-they don't fetch instructions.
+Cc: stable@vger.kernel.org
+Suggested-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Julien Grall <jgrall@amazon.com>
+Reviewed-by: Wei Liu <wl@xen.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/xen/events/events_2l.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-
-How do I envision these things working concurrently?
-(a) closid/rmid can be reserved before resctrl is mounted, or
-(b) allocated by user-space and handed back to the kernel (e.g. virtualisation).
-
-The ctrlval values move to belong to the arch-code/driver, so if 'something' changes the
-configuration behind resctrls back, the new schema values are immediately visible via the
-corresponding schema file in case (b). In case (a), resctrl would never look at those
-closid, but it wouldn't matter if it did.
-
-(the counter-example is mba_sc, which may need to convert the current ctrlval back to a
-mbps_val if its being managed by something other than resctrl)
+--- a/drivers/xen/events/events_2l.c
++++ b/drivers/xen/events/events_2l.c
+@@ -91,6 +91,8 @@ static void evtchn_2l_unmask(unsigned po
+ 
+ 	BUG_ON(!irqs_disabled());
+ 
++	smp_wmb();	/* All writes before unmask must be visible. */
++
+ 	if (unlikely((cpu != cpu_from_evtchn(port))))
+ 		do_hypercall = 1;
+ 	else {
 
 
-
-Thanks,
-
-James
