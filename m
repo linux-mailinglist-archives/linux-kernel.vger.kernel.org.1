@@ -2,72 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E48A2B61D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC9A2B623F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730347AbgKQNWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:22:54 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:33638 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731181AbgKQNWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:22:42 -0500
-Received: from zn.tnic (p200300ec2f101300ba25257689a011f5.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:1300:ba25:2576:89a0:11f5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 90B8B1EC03CE;
-        Tue, 17 Nov 2020 14:22:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1605619361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=20A+JSZTq0uSGOoQCxJWr5HNHVawruXZylnMqKk1XtY=;
-        b=XQ8/EgQsrFEBFXODTFwizejrV6cmkUB4O9w3QoB2B8+AuClH7cWIrwjLeV8PagcEIdLsOY
-        LNIu2V/rAV3/7H87f7a4YFJq5x2+OjkG16LWCDLuHDcNhyCZldxBKmxmx8cf55Hu8gBGbC
-        uixEsZG7WCjsAJZ4t+3YSm5zgCWYNZk=
-Date:   Tue, 17 Nov 2020 14:22:41 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v41 20/24] selftests/x86: Add a selftest for SGX
-Message-ID: <20201117132241.GE5719@zn.tnic>
-References: <20201112220135.165028-1-jarkko@kernel.org>
- <20201112220135.165028-21-jarkko@kernel.org>
- <e58ee564-597a-336e-53dc-7c4d172d51f5@linuxfoundation.org>
+        id S1731663AbgKQN05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:26:57 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:24001 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730813AbgKQN0a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:26:30 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kf105-00047U-31; Tue, 17 Nov 2020 14:26:25 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1kf104-000Jms-7s; Tue, 17 Nov 2020 14:26:24 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 71C91240041;
+        Tue, 17 Nov 2020 14:26:23 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id E1E2E240040;
+        Tue, 17 Nov 2020 14:26:22 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 1670121EF7;
+        Tue, 17 Nov 2020 14:26:22 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e58ee564-597a-336e-53dc-7c4d172d51f5@linuxfoundation.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 17 Nov 2020 14:26:22 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 5/6] net/lapb: support netdev events
+Organization: TDT AG
+In-Reply-To: <CAJht_EPN=hXsGLsCSxj1bB8yTYNOe=yUzwtrtnMzSybiWhL-9Q@mail.gmail.com>
+References: <20201116135522.21791-1-ms@dev.tdt.de>
+ <20201116135522.21791-6-ms@dev.tdt.de>
+ <CAJht_EM-ic4-jtN7e9F6zcJgG3OTw_ePXiiH1i54M+Sc8zq6bg@mail.gmail.com>
+ <f3ab8d522b2bcd96506352656a1ef513@dev.tdt.de>
+ <CAJht_EPN=hXsGLsCSxj1bB8yTYNOe=yUzwtrtnMzSybiWhL-9Q@mail.gmail.com>
+Message-ID: <c0c2cedad399b12d152d2610748985fc@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.15
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate: clean
+X-purgate-ID: 151534::1605619584-0001FA9D-13ABCA1E/0/0
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 11:19:12AM -0700, Shuah Khan wrote:
-> Please keep the list sorted alphabetically as stated
-> in the comment above.
+On 2020-11-17 12:32, Xie He wrote:
+> On Tue, Nov 17, 2020 at 1:53 AM Martin Schiller <ms@dev.tdt.de> wrote:
+>> 
+>> On 2020-11-16 21:16, Xie He wrote:
+>> > Do you mean we will now automatically establish LAPB connections
+>> > without upper layers instructing us to do so?
+>> 
+>> Yes, as soon as the physical link is established, the L2 and also the
+>> L3 layer (restart handshake) is established.
+> 
+> I see. Looking at your code in Patch 1 and this patch, I see after the
+> device goes up, L3 code will instruct L2 to establish the connection,
+> and before the device goes down, L3 will instruct L2 to terminate the
+> connection. But if there is a carrier up/down event, L2 will
+> automatically handle this without being instructed by L3, and it will
+> establish the connection automatically when the carrier goes up. L2
+> will notify L3 on any L2 link status change.
+> 
+> Is this right?
 
-Done.
+Yes, this is right.
 
-> This should be KSFT_FAIL.
+> I think for a DCE, it doesn't need to initiate the L2
+> connection on device-up. It just needs to wait for a connection to
+> come. But L3 seems to be still instructing it to initiate the L2
+> connection. This seems to be a problem.
 
-and done.
+The "ITU-T Recommendation X.25 (10/96) aka "Blue Book" [1] says under
+point 2.4.4.1:
+"Either the DTE or the DCE may initiate data link set-up."
 
-Thx.
+Experience shows that there are also DTEs that do not establish a
+connection themselves.
 
--- 
-Regards/Gruss,
-    Boris.
+That is also the reason why I've added this patch:
+https://patchwork.kernel.org/project/netdevbpf/patch/20201116135522.21791-7-ms@dev.tdt.de/
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> It feels unclean to me that the L2 connection will sometimes be
+> initiated by L3 and sometimes by L2 itself. Can we make L2 connections
+> always be initiated by L2 itself? If L3 needs to do something after L2
+> links up, L2 will notify it anyway.
+
+My original goal was to change as little as possible of the original
+code. And in the original code the NETDEV_UP/NETDEV_DOWN events were/are
+handled in L3. But it is of course conceivable to shift this to L2.
+
+But you have to keep in mind that the X.25 L3 stack can also be used
+with tap interfaces (e.g. for XOT), where you do not have a L2 at all.
+
+> 
+>> In this context I also noticed that I should add another patch to this
+>> patch-set to correct the restart handling.
+> 
+> Do you mean you will add code to let L3 restart any L3 connections
+> previously abnormally terminated after L2 link up?
+
+No, I mean the handling of Restart Request and Restart Confirm is buggy
+and needs to be fixed also.
+
+> 
+>> As already mentioned I have a stack of fixes and extensions lying 
+>> around
+>> that I would like to get upstream.
+> 
+> Please do so! Thanks!
+> 
+> I previously found a locking problem in X.25 code and tried to address 
+> it in:
+> https://patchwork.kernel.org/project/netdevbpf/patch/20201114103625.323919-1-xie.he.0141@gmail.com/
+> But later I found I needed to fix more code than I previously thought.
+> Do you already have a fix for this problem?
+
+No, sorry.
+
+
+[1] https://www.itu.int/rec/T-REC-X.25-199610-I/
