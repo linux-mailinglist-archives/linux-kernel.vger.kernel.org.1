@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E363A2B6045
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6AA2B6164
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729119AbgKQNHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:07:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34986 "EHLO mail.kernel.org"
+        id S1730698AbgKQNSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:18:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729094AbgKQNH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:07:27 -0500
+        id S1730107AbgKQNSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:18:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 231492469D;
-        Tue, 17 Nov 2020 13:07:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5523241A5;
+        Tue, 17 Nov 2020 13:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618446;
-        bh=b4DVEnv7NChjMLM9ddUPcoDbrPCQLRPzs4KHY1O5TC0=;
+        s=default; t=1605619086;
+        bh=++HxS3+p8gG6RTXrNM7OCmaJlpeTrw2wJbrK08BS/PM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0tclfLLNVuRVmdieQG4w/YAndg7Z525Th/9fCMwiSA7mdVFKWqFDe/oQhDmSpwdpE
-         WlSuKgBfXEtiQM8c5L24y7mGVB5l0LnJtAQfDXmyVAzbETaVCQiyRJBn93zIhXCoWQ
-         HU1Dvc2AgK3EidmfDdFFjew/zWJmhV5WNU8PWOfE=
+        b=f2XSJsoNDmtFHWeh+0ZmMCzd//XG78onDMeb8YONNspZg3DK/OdPnQ+sMwFLgdNNr
+         MAUWPK0RC1ickNM+G72TUuoCqL85uih3v8h/YvDyE2c4lvi0DnWJWJwIwet6e9d4/X
+         eRChoXvZX6ijg5uf1niVkQ02HSCvAeQoYYebG5MI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        stable@vger.kernel.org,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 28/64] xfs: fix a missing unlock on error in xfs_fs_map_blocks
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 024/101] xfs: fix scrub flagging rtinherit even if there is no rt device
 Date:   Tue, 17 Nov 2020 14:04:51 +0100
-Message-Id: <20201117122107.528113940@linuxfoundation.org>
+Message-Id: <20201117122114.266213618@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 2bd3fa793aaa7e98b74e3653fdcc72fa753913b5 ]
+[ Upstream commit c1f6b1ac00756a7108e5fcb849a2f8230c0b62a5 ]
 
-We also need to drop the iolock when invalidate_inode_pages2 fails, not
-only on all other error or successful cases.
+The kernel has always allowed directories to have the rtinherit flag
+set, even if there is no rt device, so this check is wrong.
 
-Fixes: 527851124d10 ("xfs: implement pNFS export operations")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Fixes: 80e4e1268802 ("xfs: scrub inodes")
 Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_pnfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/scrub/inode.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/xfs/xfs_pnfs.c b/fs/xfs/xfs_pnfs.c
-index dc6221942b85f..ab66ea0a72bfb 100644
---- a/fs/xfs/xfs_pnfs.c
-+++ b/fs/xfs/xfs_pnfs.c
-@@ -162,7 +162,7 @@ xfs_fs_map_blocks(
- 		goto out_unlock;
- 	error = invalidate_inode_pages2(inode->i_mapping);
- 	if (WARN_ON_ONCE(error))
--		return error;
-+		goto out_unlock;
+diff --git a/fs/xfs/scrub/inode.c b/fs/xfs/scrub/inode.c
+index e386c9b0b4ab7..8d45d60832db9 100644
+--- a/fs/xfs/scrub/inode.c
++++ b/fs/xfs/scrub/inode.c
+@@ -131,8 +131,7 @@ xchk_inode_flags(
+ 		goto bad;
  
- 	end_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)offset + length);
- 	offset_fsb = XFS_B_TO_FSBT(mp, offset);
+ 	/* rt flags require rt device */
+-	if ((flags & (XFS_DIFLAG_REALTIME | XFS_DIFLAG_RTINHERIT)) &&
+-	    !mp->m_rtdev_targp)
++	if ((flags & XFS_DIFLAG_REALTIME) && !mp->m_rtdev_targp)
+ 		goto bad;
+ 
+ 	/* new rt bitmap flag only valid for rbmino */
 -- 
 2.27.0
 
