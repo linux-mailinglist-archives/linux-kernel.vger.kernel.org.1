@@ -2,69 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B852B7034
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B32702B7036
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbgKQUgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:36:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKQUgQ (ORCPT
+        id S1728399AbgKQUgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:36:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33481 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727480AbgKQUgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:36:16 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE09C0613CF;
-        Tue, 17 Nov 2020 12:36:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=oJYI9L3oiXkFcCPNemvmAO3tCBC9E9iUG5QLGCipFfU=; b=D9oEeMD5QyXlFsPSpU1BXoj7xA
-        Q+P3e9V57HcsatlptBcqq9ZhlIm1B8ilqWa2U8EovSugU2ytK7GE1AU78kwonoDncyrxLS/ghjl2k
-        t7/MsRMSYvb7N24sdr7PSU27NKjx6/ZMvFeHvBLqbHw+Wvdmcl39f99lhce6M1YIEWa8kZqPqhawu
-        UctjB/gygHKlXwGCeA48VNfM6UX/wGopJSWkkyyBC57uMdj14KzUPzMW6MIlNglf1U7/ldPZ6Msna
-        23yaA2sHCVE4fJ8fC/k66SS3FdD105jkceY4hZ5nur1jpPKZw9vKZwuMqce1v0MppmwqCl/2RM2yz
-        KcBVueaQ==;
-Received: from [2601:1c0:6280:3f0::bcc4]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kf7i1-0001bI-7X; Tue, 17 Nov 2020 20:36:13 +0000
-Subject: Re: [PATCH 8/9] platform/surface: Add Surface Aggregator user-space
- interface
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Tue, 17 Nov 2020 15:36:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605645380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=G8/wxJoq12QfdqHJtRO4GIpzD5Y227qifeERfdJXT9A=;
+        b=DQhs56ri9ZfSjAEDJ9TexE2Djbe9BXpCIo57UzulI7bQf/op5bslFzxO7R21IN7tcPp/y/
+        Uz4TFc+W+ByBFYAWXGMVn5M24GzuGwU/36yz4xKJeGgFTeImbqny+/+C3+pBudFyCLFr5j
+        3zMKbDSDHY5z/xHT6eOaF1uFektFr5A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-zg-lqcXVP2uA9_nkr76IBA-1; Tue, 17 Nov 2020 15:36:18 -0500
+X-MC-Unique: zg-lqcXVP2uA9_nkr76IBA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28A918030DA;
+        Tue, 17 Nov 2020 20:36:17 +0000 (UTC)
+Received: from sulaco.redhat.com (ovpn-112-190.rdu2.redhat.com [10.10.112.190])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9180E5C1CF;
+        Tue, 17 Nov 2020 20:36:16 +0000 (UTC)
+From:   Tony Asleson <tasleson@redhat.com>
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>, linux-doc@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-References: <20201115192143.21571-1-luzmaximilian@gmail.com>
- <20201115192143.21571-9-luzmaximilian@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5341e4aa-4af3-104e-af54-577f5b6a3594@infradead.org>
-Date:   Tue, 17 Nov 2020 12:36:09 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Subject: [v2] buffer_io_error: Use dev_err_ratelimited
+Date:   Tue, 17 Nov 2020 14:36:16 -0600
+Message-Id: <20201117203616.307787-1-tasleson@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201115192143.21571-9-luzmaximilian@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/20 11:21 AM, Maximilian Luz wrote:
-> +#define SSAM_CDEV_REQUEST	_IOWR(0xA5, 1, struct ssam_cdev_request)
+Replace printk_ratelimited with dev_err_ratelimited which
+adds dev_printk meta data. This is used by journald to
+add disk ID information to the journal entry.
 
-All ioctl major numbers (0xA5) should be documented in
-Documentation/userspace-api/ioctl/ioctl-number.rst
+Signed-off-by: Tony Asleson <tasleson@redhat.com>
+---
 
-Apologies if I missed it somewhere else.
+V2: 
 
-thanks.
+- Move change log to after marker line (Andy Shevchenko)
+- Remove printk cast (Andy Shevchenko)
+    
+V1: 
+
+This re-worked change is from a different patch series
+and utilizes the following suggestions.
+    
+- Reduce indentation level (Andy Shevchenko)
+- Remove unneeded () for conditional operator (Sergei Shtylyov)
+
+ fs/buffer.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 50bbc99e3d96..32f237e350bf 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -125,10 +125,17 @@ EXPORT_SYMBOL(__wait_on_buffer);
+ 
+ static void buffer_io_error(struct buffer_head *bh, char *msg)
+ {
+-	if (!test_bit(BH_Quiet, &bh->b_state))
+-		printk_ratelimited(KERN_ERR
+-			"Buffer I/O error on dev %pg, logical block %llu%s\n",
+-			bh->b_bdev, (unsigned long long)bh->b_blocknr, msg);
++	struct device *gendev;
++
++	if (test_bit(BH_Quiet, &bh->b_state))
++		return;
++
++	gendev = bh->b_bdev->bd_disk ?
++		disk_to_dev(bh->b_bdev->bd_disk) : NULL;
++
++	dev_err_ratelimited(gendev,
++		"Buffer I/O error, logical block %llu%s\n",
++		bh->b_blocknr, msg);
+ }
+ 
+ /*
+
+base-commit: bbf5c979011a099af5dc76498918ed7df445635b
 -- 
-~Randy
+2.26.2
 
