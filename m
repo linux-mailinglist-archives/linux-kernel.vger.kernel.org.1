@@ -2,80 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF752B71C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B29E92B71C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgKQWlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:41:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726319AbgKQWlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:41:07 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0787720709;
-        Tue, 17 Nov 2020 22:41:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605652866;
-        bh=aesflSSYIio9RUvTzHtgIgEoBgRRVoXJ8Ijz+a/sfyI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uS3dCUKL6WFxURM7zFODhozxOOvUIRtS5/nhXQgMIIRf00VUQ+S2X+GvIrcTVSiNf
-         tsRxeURBO1Q2jzx7d7dPMBxKja0S1W9Am/ZpO07cm3BAMZlZBvCfQ9S1TRLVRBgHum
-         53Aa+N9+/selE+q+CxLJsVann3TpX5J16I2ODveI=
-Date:   Tue, 17 Nov 2020 22:41:02 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu: fix return error code in iommu_probe_device()
-Message-ID: <20201117224102.GD524@willie-the-truck>
-References: <20201117025238.3425422-1-yangyingliang@huawei.com>
- <835ab066-b6b8-a211-4941-c01781031de8@linux.intel.com>
- <454f5e3e-c380-e8a5-9283-3f7578eb601e@huawei.com>
+        id S1729287AbgKQWlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:41:47 -0500
+Received: from www62.your-server.de ([213.133.104.62]:59538 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729139AbgKQWlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:41:47 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kf9fU-0006g3-P7; Tue, 17 Nov 2020 23:41:44 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kf9fU-000UHR-JN; Tue, 17 Nov 2020 23:41:44 +0100
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Add bpf_lsm_set_bprm_opts helper
+To:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+References: <20201117021307.1846300-1-kpsingh@chromium.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <cc03ab7e-dee8-f717-7a4f-413a3a5f58b7@iogearbox.net>
+Date:   Tue, 17 Nov 2020 23:41:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <454f5e3e-c380-e8a5-9283-3f7578eb601e@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201117021307.1846300-1-kpsingh@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25991/Tue Nov 17 14:12:35 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 07:11:28PM +0800, Yang Yingliang wrote:
-> On 2020/11/17 17:40, Lu Baolu wrote:
-> > On 2020/11/17 10:52, Yang Yingliang wrote:
-> > > If iommu_group_get() failed, it need return error code
-> > > in iommu_probe_device().
-> > > 
-> > > Fixes: cf193888bfbd ("iommu: Move new probe_device path...")
-> > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> > > ---
-> > >   drivers/iommu/iommu.c | 4 +++-
-> > >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> > > index b53446bb8c6b..6f4a32df90f6 100644
-> > > --- a/drivers/iommu/iommu.c
-> > > +++ b/drivers/iommu/iommu.c
-> > > @@ -253,8 +253,10 @@ int iommu_probe_device(struct device *dev)
-> > >           goto err_out;
-> > >         group = iommu_group_get(dev);
-> > > -    if (!group)
-> > > +    if (!group) {
-> > > +        ret = -ENODEV;
-> > 
-> > Can you please explain why you use -ENODEV here?
+On 11/17/20 3:13 AM, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
 > 
-> Before 79659190ee97 ("iommu: Don't take group reference in
-> iommu_alloc_default_domain()"), in
+> The helper allows modification of certain bits on the linux_binprm
+> struct starting with the secureexec bit which can be updated using the
+> BPF_LSM_F_BPRM_SECUREEXEC flag.
 > 
-> iommu_alloc_default_domain(), if group is NULL, it will return -ENODEV.
+> secureexec can be set by the LSM for privilege gaining executions to set
+> the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
+> use of certain environment variables (like LD_PRELOAD).
+> 
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
+>   include/uapi/linux/bpf.h       | 18 ++++++++++++++++++
+>   kernel/bpf/bpf_lsm.c           | 27 +++++++++++++++++++++++++++
+>   scripts/bpf_helpers_doc.py     |  2 ++
+>   tools/include/uapi/linux/bpf.h | 18 ++++++++++++++++++
+>   4 files changed, 65 insertions(+)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 162999b12790..bfa79054d106 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3787,6 +3787,18 @@ union bpf_attr {
+>    *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
+>    *	Return
+>    *		Pointer to the current task.
+> + *
+> + * long bpf_lsm_set_bprm_opts(struct linux_binprm *bprm, u64 flags)
+> + *
 
-Hmm. While I think the patch is ok, I'm not sure it qualifies as a fix.
-Has iommu_probe_device() ever propagated this error? The commit you
-identify in the 'Fixes:' tag doesn't seem to change this afaict.
+small nit: should have no extra newline (same for the tools/ copy)
 
-Will
+> + *	Description
+> + *		Set or clear certain options on *bprm*:
+> + *
+> + *		**BPF_LSM_F_BPRM_SECUREEXEC** Set the secureexec bit
+> + *		which sets the **AT_SECURE** auxv for glibc. The bit
+> + *		is cleared if the flag is not specified.
+> + *	Return
+> + *		**-EINVAL** if invalid *flags* are passed.
+> + *
+>    */
+>   #define __BPF_FUNC_MAPPER(FN)		\
+>   	FN(unspec),			\
+> @@ -3948,6 +3960,7 @@ union bpf_attr {
+>   	FN(task_storage_get),		\
+>   	FN(task_storage_delete),	\
+>   	FN(get_current_task_btf),	\
+> +	FN(lsm_set_bprm_opts),		\
+>   	/* */
+>   
+>   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> @@ -4119,6 +4132,11 @@ enum bpf_lwt_encap_mode {
+>   	BPF_LWT_ENCAP_IP,
+>   };
+>   
+> +/* Flags for LSM helpers */
+> +enum {
+> +	BPF_LSM_F_BPRM_SECUREEXEC	= (1ULL << 0),
+> +};
+> +
+>   #define __bpf_md_ptr(type, name)	\
+>   union {					\
+>   	type name;			\
+> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> index 553107f4706a..cd85482228a0 100644
+> --- a/kernel/bpf/bpf_lsm.c
+> +++ b/kernel/bpf/bpf_lsm.c
+> @@ -7,6 +7,7 @@
+>   #include <linux/filter.h>
+>   #include <linux/bpf.h>
+>   #include <linux/btf.h>
+> +#include <linux/binfmts.h>
+>   #include <linux/lsm_hooks.h>
+>   #include <linux/bpf_lsm.h>
+>   #include <linux/kallsyms.h>
+> @@ -51,6 +52,30 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+>   	return 0;
+>   }
+>   
+> +/* Mask for all the currently supported BPRM option flags */
+> +#define BPF_LSM_F_BRPM_OPTS_MASK	BPF_LSM_F_BPRM_SECUREEXEC
+> +
+> +BPF_CALL_2(bpf_lsm_set_bprm_opts, struct linux_binprm *, bprm, u64, flags)
+> +{
+> +
+
+ditto
+
+Would have fixed up these things on the fly while applying, but one small item
+I wanted to bring up here given uapi which will then freeze: it would be cleaner
+to call the helper just bpf_bprm_opts_set() or so given it's implied that we
+attach to lsm here and we don't use _lsm in the naming for the others either.
+Similarly, I'd drop the _LSM from the flag/mask.
+
+> +	if (flags & ~BPF_LSM_F_BRPM_OPTS_MASK)
+> +		return -EINVAL;
+> +
+> +	bprm->secureexec = (flags & BPF_LSM_F_BPRM_SECUREEXEC);
+> +	return 0;
+> +}
+> +
+> +BTF_ID_LIST_SINGLE(bpf_lsm_set_bprm_opts_btf_ids, struct, linux_binprm)
+> +
+> +const static struct bpf_func_proto bpf_lsm_set_bprm_opts_proto = {
+> +	.func		= bpf_lsm_set_bprm_opts,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_BTF_ID,
+> +	.arg1_btf_id	= &bpf_lsm_set_bprm_opts_btf_ids[0],
+> +	.arg2_type	= ARG_ANYTHING,
+> +};
+> +
+>   static const struct bpf_func_proto *
+>   bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   {
+> @@ -71,6 +96,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   		return &bpf_task_storage_get_proto;
+>   	case BPF_FUNC_task_storage_delete:
+>   		return &bpf_task_storage_delete_proto;
+> +	case BPF_FUNC_lsm_set_bprm_opts:
+> +		return &bpf_lsm_set_bprm_opts_proto;
+>   	default:
+>   		return tracing_prog_func_proto(func_id, prog);
+>   	}
