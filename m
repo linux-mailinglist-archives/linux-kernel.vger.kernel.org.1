@@ -2,69 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCAA2B68AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730C72B68B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387648AbgKQP1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:27:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46744 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730431AbgKQP1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:27:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 81342AC1F;
-        Tue, 17 Nov 2020 15:27:04 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 16:27:02 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rashmica Gupta <rashmica.g@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: Re: [PATCH v2 3/8] powerpc/mm: factor out creating/removing linear
- mapping
-Message-ID: <20201117152701.GC15987@linux>
-References: <20201111145322.15793-1-david@redhat.com>
- <20201111145322.15793-4-david@redhat.com>
+        id S1730337AbgKQPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:30:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728894AbgKQPa0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 10:30:26 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628EFC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:30:25 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id b3so10380948pls.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:30:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qIvZeddIQ2d7OXVk2Uvs8VZdn+XX8s/0AnrjeK+3CsU=;
+        b=bhwrJmc0GjcqgX8OVmcbGhlIi+xRPTfFufg6IrO2IlzzbU2Ro3Dn1DorKGtrkbUhEY
+         HfnFy5EeLrIq4OJNeRGdwTMen1DVJO+eQ9C7cHlEv+AzRolv5nul5z0n+C2yOfDcXnEc
+         /wLam43UU7fEiHh4i7hNQOZNJ5Q0tk3KYhHoLz7WhPJiv3X2623wQ0g8ZvVZ3VeE3sFF
+         yPpUA+21czYfv1dFNgXKviqcQPaRVTpcydWad4DAdlQ2fQxVYFTbG0R+HRg13t9aqvCx
+         92e93IxrRQspe2wBpWSCgI6jZi9VTzWlxzJ8zPyZPVjGAlxrtzGQWafIqKPs99SMpGxA
+         bNKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qIvZeddIQ2d7OXVk2Uvs8VZdn+XX8s/0AnrjeK+3CsU=;
+        b=ID06kzT71SC+uVKpjeMdtGYWRvDUer5bO0CBSHALYms08sy2V8NDF+uF7jyi0s3rDG
+         7iWBcXn1j5ybsWwz0F3Mq9bZIofCQDRyd2SS2PXWcGEHH3/h+TEyJd3OTEXeHE7CfDW5
+         jLKdtS6LwtmIYW6MXn9WT1sQug09n6LE3tMLFmfglByAAr+WbswQ3xyWuJ6AsnUedPBd
+         B6uS9H1GJROkCfy/g5WH/+l8TPPYnpWKSTR3zdOgG9OqFybbEOY90UKVOlldQ4QrzO0J
+         eqqaD7MCt8l5w5D9PqLR7+Dk7RhZ0ZT0eN737e8hq9IjIaV4gTk7lnnzIhpAMvv11bpz
+         063Q==
+X-Gm-Message-State: AOAM532d3BJRHA2/+o4XaLGQMAI8kuFo2p/whsscAxqO2jW1Ryf/0eaI
+        XOhQv5ZuXDna/UVjarb9A0mIRvHjFWEyEBu/hXkaxQ==
+X-Google-Smtp-Source: ABdhPJwIhciLv1sUAGBmks9JTdZrzhMo5xSdPzoc5eR6bFAjo9blSdT+iwLKdn8nt0XnjcldUMgbZHy6/eG17MNR+nw=
+X-Received: by 2002:a17:90b:88b:: with SMTP id bj11mr5214598pjb.229.1605627024793;
+ Tue, 17 Nov 2020 07:30:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111145322.15793-4-david@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <20201113105952.11638-6-songmuchun@bytedance.com> <20201117150604.GA15679@linux>
+In-Reply-To: <20201117150604.GA15679@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 17 Nov 2020 23:29:45 +0800
+Message-ID: <CAMZfGtWPu2GKquUfNusVBD7LsiYSB6t6+ugoAcKRkpLeQd+bQQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v4 05/21] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 03:53:17PM +0100, David Hildenbrand wrote:
-> We want to stop abusing memory hotplug infrastructure in memtrace code
-> to perform allocations and remove the linear mapping. Instead we will use
-> alloc_contig_pages() and remove the linear mapping manually.
-> 
-> Let's factor out creating/removing the linear mapping into
-> arch_create_linear_mapping() / arch_remove_linear_mapping() - so in the
-> future, we might be able to have whole arch_add_memory() /
-> arch_remove_memory() be implemented in common code.
-> 
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Rashmica Gupta <rashmica.g@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Tue, Nov 17, 2020 at 11:06 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Fri, Nov 13, 2020 at 06:59:36PM +0800, Muchun Song wrote:
+> > +#define page_huge_pte(page)          ((page)->pmd_huge_pte)
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Yeah, I forgot to remove it. Thanks.
 
--- 
-Oscar Salvador
-SUSE L3
+>
+> Seems you do not need this one anymore.
+>
+> > +void vmemmap_pgtable_free(struct page *page)
+> > +{
+> > +     struct page *pte_page, *t_page;
+> > +
+> > +     list_for_each_entry_safe(pte_page, t_page, &page->lru, lru) {
+> > +             list_del(&pte_page->lru);
+> > +             pte_free_kernel(&init_mm, page_to_virt(pte_page));
+> > +     }
+> > +}
+> > +
+> > +int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> > +{
+> > +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> > +
+> > +     /* Store preallocated pages on huge page lru list */
+> > +     INIT_LIST_HEAD(&page->lru);
+> > +
+> > +     while (nr--) {
+> > +             pte_t *pte_p;
+> > +
+> > +             pte_p = pte_alloc_one_kernel(&init_mm);
+> > +             if (!pte_p)
+> > +                     goto out;
+> > +             list_add(&virt_to_page(pte_p)->lru, &page->lru);
+> > +     }
+>
+> Definetely this looks better and easier to handle.
+> Btw, did you explore Matthew's hint about instead of allocating a new page,
+> using one of the ones you are going to free to store the ptes?
+
+Oh, sorry for missing his reply. It is a good idea. I will start an
+investigation.
+Thanks for reminding me.
+
+> I am not sure whether it is feasible at all though.
+>
+>
+> > --- a/mm/hugetlb_vmemmap.h
+> > +++ b/mm/hugetlb_vmemmap.h
+> > @@ -9,12 +9,24 @@
+> >  #ifndef _LINUX_HUGETLB_VMEMMAP_H
+> >  #define _LINUX_HUGETLB_VMEMMAP_H
+> >  #include <linux/hugetlb.h>
+> > +#include <linux/mm.h>
+>
+> why do we need this here?
+
+Yeah, also can remove:).
+
+
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
+--
+Yours,
+Muchun
