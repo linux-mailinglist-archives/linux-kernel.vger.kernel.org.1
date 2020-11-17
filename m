@@ -2,190 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE9B2B6D8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41652B6D92
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731471AbgKQSi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731055AbgKQSi3 (ORCPT
+        id S1729008AbgKQSjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:39:48 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17084 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727007AbgKQSjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:38:29 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC071C061A04
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:38:28 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id t11so23491298edj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:38:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c3LgJ1btHwr+UlowB5dcekxQptEcC5LkMAcIQycCj/s=;
-        b=HPUWe+MEmh4/ZGZhS/NOZCJ/FcMIxqkdI1j6yjJn0rS8dL8H7TA6ft97CtJHcQhfDE
-         yswJwYsO3BFqjZa1LX3WsLbKQLmPGwdx6hE+5AHWVSx+SAYOv40Q6rJykNC8KgfQidwW
-         LPA3JNaUV09LZX522K+ZYhBQ4PudnNpPP+gdFTUbCYLlX1Bj8oFOPvHK2dBSblFnNJQb
-         KYHJcIC4UlSR0OBgy71IGxCFAfxpx0uf9B96ghNPDSW+GPmGm37x1QKBaWLT/Zb2SywC
-         gs7Om2GvQm1HTzlhJa7czIUXY0Eay0asC90kQNyTg6L2MqrXQHlVFaGqoOSyl1rnRdoO
-         F1kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c3LgJ1btHwr+UlowB5dcekxQptEcC5LkMAcIQycCj/s=;
-        b=ev7vlxtW0fIyYWjvQM6iWYYYil3K23f+aDxP3Yb1smA/aYu40xJTzQYCXiAewUMJar
-         oxgPL6VLr+PJDTnUsYBBkrdAs1K2f9GPVY6Pm3I25AEZ3aztLvbu+vyBxGly3J33gJfC
-         pNiPByzPUpmJr0mxBweep0y1m2MVWeS0jWGMMR/A+NStWF5HA8lPkwtn1UJ7WrbHh6xs
-         a7Vkz260DjPZ4DJSAoJWYYTTpHQ4GnRG0jy02cwnbIUCsMhU7JvdPknZddWn7Tnbz4mc
-         ikf5RZZws/so3O9sTzPtuz5GZiJ62lP9Rny6jwCj+xfIzw85s9bX18de32vG0Jvm4fb6
-         /ZBg==
-X-Gm-Message-State: AOAM532k0O1uu7iupQOXm4xN5sXz53OHxUL6gCeDyE5pUdCcR4K7pGOB
-        D9nzO/ngnJG1ixojIHuAba1lZQ81BubK4an3e7FSFA==
-X-Google-Smtp-Source: ABdhPJzRbZ3GE9o2Fhnn1yExUl8l8zyNLuAMhobgMHPT7mpHWPmtL56Ye4MixpEyGH0MpV4BKUOrZSS5oTVRqdyBXvA=
-X-Received: by 2002:a05:6402:31b6:: with SMTP id dj22mr22956236edb.348.1605638307225;
- Tue, 17 Nov 2020 10:38:27 -0800 (PST)
+        Tue, 17 Nov 2020 13:39:47 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHIWOw7149360;
+        Tue, 17 Nov 2020 13:39:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=T6Ye0CKhENIxOnxeqWCOYLZpFw1tGya9HrUY+2DOlMg=;
+ b=kAvEr5rC8uQ3wB1V6PUhwhpvWnXmCy4CYG8uz0tV5Fm0AskFbU8ePQP5yjKUFt5vVY4+
+ hJGtJCrXJNfeQie/ys6uX9USfIVedXrq83m3I1XOHDphmG35vPd8snJeldaMeXICT6IR
+ gKm/uX4FfQ6Kh0Eb8Wyhn7MkVCALZlSG5ETYexoGMw2GxfEqXw4p+8J6JhuNtPHIAw/W
+ BI0HeQfa/3kx3Cu6En/UFiqE78fezS86h/Rr7tBk5zYchviamMEnIX3zEA0vYJigojAF
+ lwABJWztXGvPRmFXlpZpKzpQLuLHaZBB5dxUhwYHH97AgEZE5Wbcnv3de+kIBvBUApIc ew== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34vb0vu0se-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 13:39:33 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AHISkGI006341;
+        Tue, 17 Nov 2020 18:39:30 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 34t6v8bcaq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 18:39:30 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AHIdRBb1245722
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 18:39:27 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A8C8752051;
+        Tue, 17 Nov 2020 18:39:27 +0000 (GMT)
+Received: from osiris (unknown [9.171.25.24])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 22B5252052;
+        Tue, 17 Nov 2020 18:39:27 +0000 (GMT)
+Date:   Tue, 17 Nov 2020 19:39:25 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: irq-loongson-pch-pic.c:undefined reference to `of_iomap'
+Message-ID: <20201117183925.GC4746@osiris>
+References: <202011140757.5QyVghe2-lkp@intel.com>
+ <4f6f2244-033c-8413-818d-0b9c1b0b33ae@infradead.org>
+ <CAK8P3a0w5MpvExp1jShAhqZ3Z08HjMALic6x2K+1_0eqFUi5QA@mail.gmail.com>
+ <CAMuHMdU2L5GcEHdCHh_1-WaVVQNGkm0-CwFW5D1KS0dkqBQ3zw@mail.gmail.com>
+ <CAK8P3a2+DvA4zwRBh_0cCuXJWxsg3SX8rQRZYfgB=8We9R6uiQ@mail.gmail.com>
+ <20201117183455.GA101572@kozik-lap>
 MIME-Version: 1.0
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
- <20201111054356.793390-8-ben.widawsky@intel.com> <20201117153122.00001a5a@Huawei.com>
- <20201117163438.co63em73mmil5xm5@intel.com> <20201117180638.00003703@Huawei.com>
-In-Reply-To: <20201117180638.00003703@Huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 17 Nov 2020 10:38:15 -0800
-Message-ID: <CAPcyv4jyXR99bEUTiT8HFsb0cTLA3XBfuNrHosUR2GQOWAA_5Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 7/9] cxl/mem: Implement polled mode mailbox
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117183455.GA101572@kozik-lap>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_07:2020-11-17,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ priorityscore=1501 adultscore=0 lowpriorityscore=0 mlxlogscore=886
+ malwarescore=0 impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 10:07 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Tue, 17 Nov 2020 08:34:38 -0800
-> Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> > On 20-11-17 15:31:22, Jonathan Cameron wrote:
-> > > On Tue, 10 Nov 2020 21:43:54 -0800
-> > > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > >
-> > > > Create a function to handle sending a command, optionally with a
-> > > > payload, to the memory device, polling on a result, and then optionally
-> > > > copying out the payload. The algorithm for doing this come straight out
-> > > > of the CXL 2.0 specification.
-> > > >
-> > > > Primary mailboxes are capable of generating an interrupt when submitting
-> > > > a command in the background. That implementation is saved for a later
-> > > > time.
-> > > >
-> > > > Secondary mailboxes aren't implemented at this time.
-> > > >
-> > > > WARNING: This is untested with actual timeouts occurring.
-> > > >
-> > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > >
-> > > Question inline for why the preempt / local timer dance is worth bothering with.
-> > > What am I missing?
-> > >
-> > > Thanks,
-> > >
-> > > Jonathan
-> > >
-> > > > ---
-> > > >  drivers/cxl/cxl.h |  16 +++++++
-> > > >  drivers/cxl/mem.c | 107 ++++++++++++++++++++++++++++++++++++++++++++++
-> > > >  2 files changed, 123 insertions(+)
-> > > >
-> > > > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> > > > index 482fc9cdc890..f49ab80f68bd 100644
-> > > > --- a/drivers/cxl/cxl.h
-> > > > +++ b/drivers/cxl/cxl.h
-> > > > @@ -21,8 +21,12 @@
-> > > >  #define CXLDEV_MB_CTRL 0x04
-> > > >  #define   CXLDEV_MB_CTRL_DOORBELL BIT(0)
-> > > >  #define CXLDEV_MB_CMD 0x08
-> > > > +#define   CXLDEV_MB_CMD_PAYLOAD_LENGTH_SHIFT 16
-> > > >  #define CXLDEV_MB_STATUS 0x10
-> > > > +#define   CXLDEV_MB_STATUS_RET_CODE_SHIFT 32
-> > > > +#define   CXLDEV_MB_STATUS_RET_CODE_MASK 0xffff
-> > > >  #define CXLDEV_MB_BG_CMD_STATUS 0x18
-> > > > +#define CXLDEV_MB_PAYLOAD 0x20
-> > > >
-> > > >  /* Memory Device */
-> > > >  #define CXLMDEV_STATUS 0
-> > > > @@ -114,4 +118,16 @@ static inline u64 __cxl_raw_read_reg64(struct cxl_mem *cxlm, u32 reg)
-> > > >
-> > > >   return readq(reg_addr + reg);
-> > > >  }
-> > > > +
-> > > > +static inline void cxl_mbox_payload_fill(struct cxl_mem *cxlm, u8 *input,
-> > > > +                                     unsigned int length)
-> > > > +{
-> > > > + memcpy_toio(cxlm->mbox.regs + CXLDEV_MB_PAYLOAD, input, length);
-> > > > +}
-> > > > +
-> > > > +static inline void cxl_mbox_payload_drain(struct cxl_mem *cxlm,
-> > > > +                                      u8 *output, unsigned int length)
-> > > > +{
-> > > > + memcpy_fromio(output, cxlm->mbox.regs + CXLDEV_MB_PAYLOAD, length);
-> > > > +}
-> > > >  #endif /* __CXL_H__ */
-> > > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > > index 9fd2d1daa534..08913360d500 100644
-> > > > --- a/drivers/cxl/mem.c
-> > > > +++ b/drivers/cxl/mem.c
-> > > > @@ -1,5 +1,6 @@
-> > > >  // SPDX-License-Identifier: GPL-2.0-only
-> > > >  // Copyright(c) 2020 Intel Corporation. All rights reserved.
-> > > > +#include <linux/sched/clock.h>
-> > > >  #include <linux/module.h>
-> > > >  #include <linux/pci.h>
-> > > >  #include <linux/io.h>
-> > > > @@ -7,6 +8,112 @@
-> > > >  #include "pci.h"
-> > > >  #include "cxl.h"
-> > > >
-> > > > +struct mbox_cmd {
-> > > > + u16 cmd;
-> > > > + u8 *payload;
-> > > > + size_t payload_size;
-> > > > + u16 return_code;
-> > > > +};
-> > > > +
-> > > > +static int cxldev_wait_for_doorbell(struct cxl_mem *cxlm)
-> > > > +{
-> > > > + u64 start, now;
-> > > > + int cpu, ret, timeout = 2000000000;
-> > > > +
-> > > > + start = local_clock();
-> > > > + preempt_disable();
-> > > > + cpu = smp_processor_id();
-> > > > + for (;;) {
-> > > > +         now = local_clock();
-> > > > +         preempt_enable();
-> > >
-> > > What do we ever do with this mailbox that is particularly
-> > > performance critical? I'd like to understand why we care enough
-> > > to mess around with the preemption changes and local clock etc.
-> > >
-> >
-> > It is quite obviously a premature optimization at this point (since we only
-> > support a single command in QEMU). However, the polling can be anywhere from
-> > instant to 2 seconds. QEMU implementation aside again, some devices may never
-> > support interrupts on completion, and so I thought providing a poll function now
-> > that is capable of working for most [all?] cases was wise.
->
-> Definitely seems premature.  I'd want to see real numbers on hardware
-> to justify this sort of complexity.  Maybe others disagree though.
+On Tue, Nov 17, 2020 at 07:34:55PM +0100, Krzysztof Kozlowski wrote:
+> > Looking a bit further, I now find that we ended up disabling CONFIG_COMPILE_TEST
+> > entirely for arch/um, which is clearly an option that would also work for s390.
+> 
+> Yes, that was the easier solution than to spread "depends on HAS_IOMEM"
+> all over Kconfigs.
+> 
+> +Cc Greg KH,
+> 
+> I got similar report around phy drivers:
+> https://lore.kernel.org/lkml/202011140335.tceVqHmN-lkp@intel.com/
+> 
+> When reproducing this, I saw multiple unmet dependencies on s390 for
+> MFD_SYSCON and MFD_STM32_TIMERS.
+> 
+> I suppose there is no point to fix them all because this will be
+> basically UML case, so HAS_IOMEM all over the tree.
 
-The polling is definitely needed, but I think it can be a simple
-jiffies based loop and avoid this sched_clock() complexity.
+FWIW, I just replied a couple of minutes, but you might have missed
+that:
+---
+I'll add a patch to the s390 tree which disables CONFIG_COMPILE_TEST
+for s390. I wouldn't like to start again chasing/adding missing
+'select' or 'depends on' statements in various config files.
+---
