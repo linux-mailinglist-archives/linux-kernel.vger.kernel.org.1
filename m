@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E652B6073
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B97692B61FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgKQNJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:09:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38328 "EHLO mail.kernel.org"
+        id S1730916AbgKQNY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:24:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728728AbgKQNJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:09:23 -0500
+        id S1730386AbgKQNYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:24:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A56962225B;
-        Tue, 17 Nov 2020 13:09:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F4FB2463D;
+        Tue, 17 Nov 2020 13:24:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618563;
-        bh=sqohEiHw2DyEKnZcJxyoc6VpB1kp/IeXQp8ti6EM8Dg=;
+        s=default; t=1605619460;
+        bh=lCSQVerc+jJ4Piycr3n5lNXAN1aByZZN2bWhfq7Vax4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bGtVdMgj6QLdJ70S666tJTYjGf6IumxpnxEktEIyzlTZrulkLwzZOet8f9fI3yaBN
-         Gpi0w1hVWlwfM71cjLuneEMM6PUZnS7cmeHmpm/IY0rAev8NsnWDGpuWT6aDZ/68TF
-         Gcip6z63gSI8Ocd6sAM29gCsMeMIArhpkLQb5RCw=
+        b=Cl/6LlzEFPPexY0rETDLm0n0UESKBNsweui693MREW+SpMWx6Yx1DlmAF6Ui1lHBW
+         OJ71ufnLi34nm+osYR54ym16hdojkapdzafIM1BUSNvfoI3oksf8JMTz+f/QkuOL4r
+         nsXxn3NPFn/zQVm/SaPe/EtBUzOA2FHMzdQYEZSc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Olivier Moysan <olivier.moysan@st.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 11/78] can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ context
+Subject: [PATCH 5.4 047/151] ASoC: cs42l51: manage mclk shutdown delay
 Date:   Tue, 17 Nov 2020 14:04:37 +0100
-Message-Id: <20201117122109.652553599@linuxfoundation.org>
+Message-Id: <20201117122123.717745008@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,64 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Olivier Moysan <olivier.moysan@st.com>
 
-[ Upstream commit 2283f79b22684d2812e5c76fc2280aae00390365 ]
+[ Upstream commit 20afe581c9b980848ad097c4d54dde9bec7593ef ]
 
-If a driver calls can_get_echo_skb() during a hardware IRQ (which is often, but
-not always, the case), the 'WARN_ON(in_irq)' in
-net/core/skbuff.c#skb_release_head_state() might be triggered, under network
-congestion circumstances, together with the potential risk of a NULL pointer
-dereference.
+A delay must be introduced before the shutdown down of the mclk,
+as stated in CS42L51 datasheet. Otherwise the codec may
+produce some noise after the end of DAPM power down sequence.
+The delay between DAC and CLOCK_SUPPLY widgets is too short.
+Add a delay in mclk shutdown request to manage the shutdown delay
+explicitly. From experiments, at least 10ms delay is necessary.
+Set delay to 20ms as recommended in Documentation/timers/timers-howto.rst
+when using msleep().
 
-The root cause of this issue is the call to kfree_skb() instead of
-dev_kfree_skb_irq() in net/core/dev.c#enqueue_to_backlog().
-
-This patch prevents the skb to be freed within the call to netif_rx() by
-incrementing its reference count with skb_get(). The skb is finally freed by
-one of the in-irq-context safe functions: dev_consume_skb_any() or
-dev_kfree_skb_any(). The "any" version is used because some drivers might call
-can_get_echo_skb() in a normal context.
-
-The reason for this issue to occur is that initially, in the core network
-stack, loopback skb were not supposed to be received in hardware IRQ context.
-The CAN stack is an exeption.
-
-This bug was previously reported back in 2017 in [1] but the proposed patch
-never got accepted.
-
-While [1] directly modifies net/core/dev.c, we try to propose here a
-smoother modification local to CAN network stack (the assumption
-behind is that only CAN devices are affected by this issue).
-
-[1] http://lore.kernel.org/r/57a3ffb6-3309-3ad5-5a34-e93c3fe3614d@cetitec.com
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201002154219.4887-2-mailhol.vincent@wanadoo.fr
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/20201020150109.482-1-olivier.moysan@st.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/dev.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs42l51.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index ffc5467a1ec2b..aa2158fabf2ac 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -496,7 +496,11 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
- 	if (!skb)
- 		return 0;
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 55408c8fcb4e3..cdd7ae90c2b59 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -247,8 +247,28 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
+ 		&cs42l51_adcr_mux_controls),
+ };
  
--	netif_rx(skb);
-+	skb_get(skb);
-+	if (netif_rx(skb) == NET_RX_SUCCESS)
-+		dev_consume_skb_any(skb);
-+	else
-+		dev_kfree_skb_any(skb);
++static int mclk_event(struct snd_soc_dapm_widget *w,
++		      struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
++	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		return clk_prepare_enable(cs42l51->mclk_handle);
++	case SND_SOC_DAPM_POST_PMD:
++		/* Delay mclk shutdown to fulfill power-down sequence requirements */
++		msleep(20);
++		clk_disable_unprepare(cs42l51->mclk_handle);
++		break;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
+-	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
++	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ };
  
- 	return len;
- }
+ static const struct snd_soc_dapm_route cs42l51_routes[] = {
 -- 
 2.27.0
 
