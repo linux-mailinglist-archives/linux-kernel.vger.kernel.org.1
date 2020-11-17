@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8792B6465
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14822B6464
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387702AbgKQNrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:47:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48292 "EHLO mail.kernel.org"
+        id S2387494AbgKQNrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:47:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732465AbgKQNhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:37:11 -0500
+        id S1732918AbgKQNhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:37:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF410207BC;
-        Tue, 17 Nov 2020 13:37:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B711820870;
+        Tue, 17 Nov 2020 13:37:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620231;
-        bh=Bo6lZWNbdN0XvnUOgMmstIab24GXFOSeNseYs0p7vpk=;
+        s=default; t=1605620234;
+        bh=myYv0he5p2CdkcgI5uEpZSWy6z0e2rA2qvajbIVRYqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EJ2horVWYjQT4SramI7tcktxj0BCWwqpnZKg//j9/kmhGe1ylOmlQQk9CABhtTUJ7
-         ZF2O/2XVxsrPYHiNjp1pZDP6bJerd0LJ3lcJHRY5Vw00YcWc+xD6FrA8BZ/w2hAkWW
-         67ZXWnDVMCkcWjD+OOGmR2J+VRoQFiq+WPrtzkY4=
+        b=Cf/pz+WZzA2aNsNB8ju1LR2o2a0VfJSCTqGH6gA1uziCzAsMOLKfuR0aLwTr0ZNL4
+         jJDAEvQPOdZ34jcG4cv1lSs6B6u10jmaS8u3aQVdDoQ36fYvMmAIkXA3XnzO59elER
+         AN49seZyX1Pnx2j/8AdufKJdCkB2x2793ELVa0KI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 149/255] r8169: disable hw csum for short packets on all chip versions
-Date:   Tue, 17 Nov 2020 14:04:49 +0100
-Message-Id: <20201117122146.216001243@linuxfoundation.org>
+Subject: [PATCH 5.9 150/255] pinctrl: qcom: Move clearing pending IRQ to .irq_request_resources callback
+Date:   Tue, 17 Nov 2020 14:04:50 +0100
+Message-Id: <20201117122146.265586695@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -43,55 +43,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Maulik Shah <mkshah@codeaurora.org>
 
-[ Upstream commit 847f0a2bfd2fe16d6afa537816b313b71f32e139 ]
+[ Upstream commit 71266d9d39366c9b24b866d811b3facaf837f13f ]
 
-RTL8125B has same or similar short packet hw padding bug as RTL8168evl.
-The main workaround has been extended accordingly, however we have to
-disable also hw checksumming for short packets on affected new chip
-versions. Instead of checking for an affected chip version let's
-simply disable hw checksumming for short packets in general.
+When GPIOs that are routed to PDC are used as output they can still latch
+the IRQ pending at GIC. As a result the spurious IRQ was handled when the
+client driver change the direction to input to starts using it as IRQ.
 
-v2:
-- remove the version checks and disable short packet hw csum in general
-- reflect this in commit title and message
+Currently such erroneous latched IRQ are cleared with .irq_enable callback
+however if the driver continue to use GPIO as interrupt and invokes
+disable_irq() followed by enable_irq() then everytime during enable_irq()
+previously latched interrupt gets cleared.
 
-Fixes: 0439297be951 ("r8169: add support for RTL8125B")
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/7fbb35f0-e244-ef65-aa55-3872d7d38698@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This can make edge IRQs not seen after enable_irq() if they had arrived
+after the driver has invoked disable_irq() and were pending at GIC.
+
+Move clearing erroneous IRQ to .irq_request_resources callback as this is
+the place where GPIO direction is changed as input and its locked as IRQ.
+
+While at this add a missing check to invoke msm_gpio_irq_clear_unmask()
+from .irq_enable callback only when GPIO is not routed to PDC.
+
+Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+Link: https://lore.kernel.org/r/1604561884-10166-1-git-send-email-mkshah@codeaurora.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ drivers/pinctrl/qcom/pinctrl-msm.c | 32 ++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index ed918c12bc5e9..515d9116dfadf 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -4325,18 +4325,9 @@ static netdev_features_t rtl8169_features_check(struct sk_buff *skb,
- 		    rtl_chip_supports_csum_v2(tp))
- 			features &= ~NETIF_F_ALL_TSO;
- 	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
--		if (skb->len < ETH_ZLEN) {
--			switch (tp->mac_version) {
--			case RTL_GIGA_MAC_VER_11:
--			case RTL_GIGA_MAC_VER_12:
--			case RTL_GIGA_MAC_VER_17:
--			case RTL_GIGA_MAC_VER_34:
--				features &= ~NETIF_F_CSUM_MASK;
--				break;
--			default:
--				break;
--			}
--		}
-+		/* work around hw bug on some chip versions */
-+		if (skb->len < ETH_ZLEN)
-+			features &= ~NETIF_F_CSUM_MASK;
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+index 1df232266f63a..1554f0275067e 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+@@ -815,21 +815,14 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
  
- 		if (transport_offset > TCPHO_MAX &&
- 		    rtl_chip_supports_csum_v2(tp))
+ static void msm_gpio_irq_enable(struct irq_data *d)
+ {
+-	/*
+-	 * Clear the interrupt that may be pending before we enable
+-	 * the line.
+-	 * This is especially a problem with the GPIOs routed to the
+-	 * PDC. These GPIOs are direct-connect interrupts to the GIC.
+-	 * Disabling the interrupt line at the PDC does not prevent
+-	 * the interrupt from being latched at the GIC. The state at
+-	 * GIC needs to be cleared before enabling.
+-	 */
+-	if (d->parent_data) {
+-		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
++
++	if (d->parent_data)
+ 		irq_chip_enable_parent(d);
+-	}
+ 
+-	msm_gpio_irq_clear_unmask(d, true);
++	if (!test_bit(d->hwirq, pctrl->skip_wake_irqs))
++		msm_gpio_irq_clear_unmask(d, true);
+ }
+ 
+ static void msm_gpio_irq_disable(struct irq_data *d)
+@@ -1104,6 +1097,19 @@ static int msm_gpio_irq_reqres(struct irq_data *d)
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
++
++	/*
++	 * Clear the interrupt that may be pending before we enable
++	 * the line.
++	 * This is especially a problem with the GPIOs routed to the
++	 * PDC. These GPIOs are direct-connect interrupts to the GIC.
++	 * Disabling the interrupt line at the PDC does not prevent
++	 * the interrupt from being latched at the GIC. The state at
++	 * GIC needs to be cleared before enabling.
++	 */
++	if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
++		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
++
+ 	return 0;
+ out:
+ 	module_put(gc->owner);
 -- 
 2.27.0
 
