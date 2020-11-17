@@ -2,634 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADB52B6617
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0752B6610
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729637AbgKQOBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:01:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
+        id S1730111AbgKQOAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730045AbgKQNOX (ORCPT
+        with ESMTP id S1730065AbgKQNOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:14:23 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9204C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:14:22 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kf0o1-0002hY-DD; Tue, 17 Nov 2020 14:13:57 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kf0nz-00084S-6g; Tue, 17 Nov 2020 14:13:55 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: [PATCH v4 3/3] ARM: dts: add Protonic WD3 board
-Date:   Tue, 17 Nov 2020 14:13:54 +0100
-Message-Id: <20201117131354.30943-4-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117131354.30943-1-o.rempel@pengutronix.de>
-References: <20201117131354.30943-1-o.rempel@pengutronix.de>
+        Tue, 17 Nov 2020 08:14:35 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8F3C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:14:35 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id j14so19337553ots.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:14:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AsagFz3qpxvVnJRhGWKP2r3LdabVn8VjcVj7U5Klrqw=;
+        b=majB0eflvTZCnsjAsfnZsNXqpawuau5y4+fJhgwuuqiCP0xVrd6B1KkxkGe7ZHyYU4
+         jKoyt4r1Mfvcnsx9tYLr6e6T1spacTbgHuwy/akI8xg3OtqCGqa/Nq+VCbgUFyAwSAfn
+         lDgRyU8JHoYVVDEa/BB6pnwenkJaDYUyX24mO+0LnM2OVylEZDqZsc2jKejD5LF9BpcR
+         mRpy8nQHrV5pOfDcnaQF7VVLFWmsISTfSpuXIdeACocGlN4BbB4zE4butjnCSA6BUWhv
+         vgSrsBca/vRSe7tWnpEH8hPxhpD8yCXXvDkcCK1lLsyyaMXQedVOlfsy+htriMGMTQ8o
+         SEOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=AsagFz3qpxvVnJRhGWKP2r3LdabVn8VjcVj7U5Klrqw=;
+        b=TgmOYf0IB2GV54onEjqER4uktYCoY9RZ/5XaZesUpIuzRCLM/BV2hB9ifKR4kxJP4E
+         8jKr/CjkR1uqvtUk4U2UtKhtLmc6Aq0BnPWAhI396cEVzFfxsSSmGbjIpXZ6wolU3F5w
+         18zmHZEIWY2TXAHn4w/yxiJqA+xr9SOqudnvKY4GlidIVFvBWDcg/wwPkjvl2z7XlMob
+         z7d9G7UxTFuQeM31bJV7/a+v0SZwD4V+37PdiwWHbx2DENvQvi1O8T98AbfdcDDeWaz6
+         bMmoZY5JP4celHne63SWeqNLmgThsR9rhqIeaboKzG+xw9PheHoZ4s8TD1AWLtujjcTC
+         Nlmw==
+X-Gm-Message-State: AOAM530Z6CBZ5jWMhNKP1X6TY8ZinVpmCj5sJ5ju+ZcUEzkELgJ8/4KF
+        ZhWJXSRPuiZfS/MWFiF/8Q==
+X-Google-Smtp-Source: ABdhPJyKZn00h7XgR3FLqYlpXYY/rrlfnfyXcZ8qxAbNzeMsbVYqgp/tRBAQSFSYYhpRd5BrCbJEzQ==
+X-Received: by 2002:a9d:6351:: with SMTP id y17mr3012191otk.68.1605618874859;
+        Tue, 17 Nov 2020 05:14:34 -0800 (PST)
+Received: from serve.minyard.net ([47.184.170.156])
+        by smtp.gmail.com with ESMTPSA id x18sm436917otq.6.2020.11.17.05.14.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 05:14:33 -0800 (PST)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:2568:ae33:2356:c8f1])
+        by serve.minyard.net (Postfix) with ESMTPSA id 8B574180048;
+        Tue, 17 Nov 2020 13:14:32 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 07:14:31 -0600
+From:   Corey Minyard <minyard@acm.org>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipmi/watchdog: replace atomic_add() and atomic_sub()
+Message-ID: <20201117131431.GF3710@minyard.net>
+Reply-To: minyard@acm.org
+References: <1605511807-7135-1-git-send-email-yejune.deng@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605511807-7135-1-git-send-email-yejune.deng@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Protonic WD3 is a proof of concept platform for tractor e-cockpit applications
+On Mon, Nov 16, 2020 at 03:30:07PM +0800, Yejune Deng wrote:
+> atomic_inc() and atomic_dec() looks better
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/boot/dts/Makefile          |   1 +
- arch/arm/boot/dts/imx6qp-prtwd3.dts | 553 ++++++++++++++++++++++++++++
- 2 files changed, 554 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6qp-prtwd3.dts
+Yes, that's a little neater.  Queued for next release.
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 3c17387752c0..a2197907bc4f 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -587,6 +587,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6qp-nitrogen6_max.dtb \
- 	imx6qp-nitrogen6_som2.dtb \
- 	imx6qp-phytec-mira-rdk-nand.dtb \
-+	imx6qp-prtwd3.dtb \
- 	imx6qp-sabreauto.dtb \
- 	imx6qp-sabresd.dtb \
- 	imx6qp-tx6qp-8037.dtb \
-diff --git a/arch/arm/boot/dts/imx6qp-prtwd3.dts b/arch/arm/boot/dts/imx6qp-prtwd3.dts
-new file mode 100644
-index 000000000000..c42723989bc0
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6qp-prtwd3.dts
-@@ -0,0 +1,553 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright (c) 2018 Protonic Holland
-+ * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-+ */
-+
-+/dts-v1/;
-+#include <dt-bindings/gpio/gpio.h>
-+#include "imx6qp.dtsi"
-+
-+/ {
-+	model = "Protonic WD3 board";
-+	compatible = "prt,prtwd3", "fsl,imx6qp";
-+
-+	chosen {
-+		stdout-path = &uart4;
-+	};
-+
-+	memory@10000000 {
-+		device_type = "memory";
-+		reg = <0x10000000 0x20000000>;
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x20000000>;
-+	};
-+
-+	clock_ksz8081: clock-ksz8081 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <50000000>;
-+	};
-+
-+	clock_ksz9031: clock-ksz9031 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	clock_mcp251xfd: clock-mcp251xfd {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <20000000>;
-+	};
-+
-+	clock_sja1105: clock-sja1105 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	mdio {
-+		compatible = "virtual,mdio-gpio";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_mdio>;
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpios = <&gpio5 6 GPIO_ACTIVE_HIGH
-+			 &gpio5 7 GPIO_ACTIVE_HIGH>;
-+
-+		/* Microchip KSZ8081 */
-+		usbeth_phy: ethernet-phy@3 {
-+			reg = <0x3>;
-+
-+			interrupts-extended = <&gpio5 12 IRQ_TYPE_LEVEL_LOW>;
-+			reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <500>;
-+			reset-deassert-us = <1000>;
-+			clocks = <&clock_ksz8081>;
-+			clock-names = "rmii-ref";
-+			micrel,led-mode = <0>;
-+		};
-+
-+		tja1102_phy0: ethernet-phy@4 {
-+			reg = <0x4>;
-+
-+			interrupts-extended = <&gpio5 8 IRQ_TYPE_LEVEL_LOW>;
-+			reset-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <20>;
-+			reset-deassert-us = <2000>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			tja1102_phy1: ethernet-phy@5 {
-+				reg = <0x5>;
-+
-+				interrupts-extended = <&gpio5 8 IRQ_TYPE_LEVEL_LOW>;
-+			};
-+		};
-+	};
-+
-+	reg_5v0: regulator-5v0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5v0";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+	};
-+
-+	reg_otg_vbus: regulator-otg-vbus {
-+		compatible = "regulator-fixed";
-+		regulator-name = "otg-vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		gpio = <&gpio3 22 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	usdhc2_wifi_pwrseq: usdhc2-wifi-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_wifi_npd>;
-+		reset-gpios = <&gpio6 10 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&can1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can1>;
-+	xceiver-supply = <&reg_5v0>;
-+	status = "okay";
-+};
-+
-+&ecspi2 {
-+	cs-gpios = <&gpio2 26 GPIO_ACTIVE_HIGH>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi2>;
-+	status = "okay";
-+
-+	switch@0 {
-+		compatible = "nxp,sja1105q";
-+		reg = <0>;
-+		spi-max-frequency = <4000000>;
-+		spi-rx-delay-us = <1>;
-+		spi-tx-delay-us = <1>;
-+		spi-cpha;
-+
-+		reset-gpios = <&gpio5 5 GPIO_ACTIVE_LOW>;
-+
-+		clocks = <&clock_sja1105>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				label = "usb";
-+				phy-handle = <&usbeth_phy>;
-+				phy-mode = "rmii";
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				label = "t1slave";
-+				phy-handle = <&tja1102_phy1>;
-+				phy-mode = "rmii";
-+			};
-+
-+			port@2 {
-+				reg = <2>;
-+				label = "t1master";
-+				phy-handle = <&tja1102_phy0>;
-+				phy-mode = "rmii";
-+
-+			};
-+
-+			port@3 {
-+				reg = <3>;
-+				label = "rj45";
-+				phy-handle = <&rgmii_phy>;
-+				phy-mode = "rgmii-id";
-+			};
-+
-+			port@4 {
-+				reg = <4>;
-+				label = "cpu";
-+				ethernet = <&fec>;
-+				phy-mode = "rgmii-id";
-+
-+				fixed-link {
-+					speed = <100>;
-+					full-duplex;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&ecspi3 {
-+	cs-gpios = <&gpio4 24 GPIO_ACTIVE_HIGH>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi3>;
-+	status = "okay";
-+
-+	can@0 {
-+		compatible = "microchip,mcp251xfd";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_can2>;
-+		reg = <0>;
-+		clocks = <&clock_mcp251xfd>;
-+		spi-max-frequency = <10000000>;
-+		interrupts-extended = <&gpio4 25 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+};
-+
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet>;
-+	status = "okay";
-+
-+	phy-mode = "rgmii";
-+
-+	fixed-link {
-+		speed = <100>;
-+		full-duplex;
-+	};
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* Microchip KSZ9031 */
-+		rgmii_phy: ethernet-phy@2 {
-+			reg = <2>;
-+
-+			interrupts-extended = <&gpio1 28 IRQ_TYPE_EDGE_FALLING>;
-+			reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <1000>;
-+
-+			clocks = <&clock_ksz9031>;
-+		};
-+	};
-+};
-+
-+&gpio1 {
-+	gpio-line-names =
-+		"", "SD1_CD", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "PHY3_RESET", "", "", "PHY3_INT", "", "", "";
-+};
-+
-+&gpio2 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"REV_ID0", "REV_ID1", "REV_ID2", "REV_ID3", "BOARD_ID3",
-+			"BOARD_ID0", "BOARD_ID1", "BOARD_ID2",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "ECSPI2_SS0", "", "", "", "", "";
-+};
-+
-+&gpio3 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "USB_OTG_OC", "USB_OTG_PWR", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&gpio4 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "CAN1_SR", "CAN2_SR", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"ECSPI3_SS0", "CANFD_INT", "USB_ETH_RESET", "", "", "", "", "";
-+};
-+
-+&gpio5 {
-+	gpio-line-names =
-+		"", "", "", "", "", "SW_RESET", "", "",
-+		"PHY12_INT", "PHY12_RESET", "PHY12_EN", "PHY0_RESET",
-+			"PHY0_INT", "", "", "",
-+		"", "", "DISP1_EN", "DISP1_LR", "DISP1_TS_IRQ", "LVDS1_PD",
-+			"", "",
-+		"", "LVDS1_INT", "", "", "DISP0_LR", "DISP0_TS_IRQ",
-+			"DISP0_EN", "CAM_GPIO0";
-+};
-+
-+&gpio6 {
-+	gpio-line-names =
-+		"LVDS0_INT", "LVDS0_PD", "CAM_INT", "CAM_GPIO1", "CAM_PD",
-+			"CAM_LOCK", "", "POWER_TG",
-+		"POWER_VSEL", "", "WLAN_REG_ON", "USB_ETH_CHG", "", "",
-+			"USB_ETH_CHG_ID0", "USB_ETH_CHG_ID1",
-+		"USB_ETH_CHG_ID2", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	/* additional i2c devices are added automatically by the boot loader */
-+};
-+
-+&i2c3 {
-+	adc@49 {
-+		compatible = "ti,ads1015";
-+		reg = <0x49>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* VIN */
-+		channel@4 {
-+			reg = <4>;
-+			ti,gain = <1>;
-+			ti,datarate = <3>;
-+		};
-+
-+		/* VBUS */
-+		channel@5 {
-+			reg = <5>;
-+			ti,gain = <1>;
-+			ti,datarate = <3>;
-+		};
-+
-+		/* ICHG */
-+		channel@6 {
-+			reg = <6>;
-+			ti,gain = <1>;
-+			ti,datarate = <3>;
-+		};
-+
-+		channel@7 {
-+			reg = <7>;
-+			ti,gain = <1>;
-+			ti,datarate = <3>;
-+		};
-+	};
-+};
-+
-+&uart4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart4>;
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	vbus-supply = <&reg_otg_vbus>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg>;
-+	phy_type = "utmi";
-+	dr_mode = "host";
-+	disable-over-current;
-+	status = "okay";
-+};
-+
-+&usbphynop1 {
-+	status = "disabled";
-+};
-+
-+&usbphynop2 {
-+	status = "disabled";
-+};
-+
-+&usdhc1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	cd-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-+	no-1-8-v;
-+	disable-wp;
-+	cap-sd-highspeed;
-+	no-mmc;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&usdhc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc2>;
-+	no-1-8-v;
-+	non-removable;
-+	mmc-pwrseq = <&usdhc2_wifi_pwrseq>;
-+	status = "okay";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	brcmf: bcrmf@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+&usdhc3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	bus-width = <8>;
-+	no-1-8-v;
-+	non-removable;
-+	no-sd;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_can1: can1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_ROW2__FLEXCAN1_RX		0x1b000
-+			MX6QDL_PAD_KEY_COL2__FLEXCAN1_TX		0x3008
-+			/* CAN1_SR */
-+			MX6QDL_PAD_KEY_COL3__GPIO4_IO12			0x13008
-+		>;
-+	};
-+
-+	pinctrl_can2: can2grp {
-+		fsl,pins = <
-+			/* CAN2_nINT */
-+			MX6QDL_PAD_DISP0_DAT4__GPIO4_IO25		0x1b0b1
-+			/* CAN2_SR */
-+			MX6QDL_PAD_KEY_ROW3__GPIO4_IO13			0x13070
-+		>;
-+	};
-+
-+	pinctrl_ecspi2: ecspi2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_OE__ECSPI2_MISO			0x100b1
-+			MX6QDL_PAD_EIM_CS0__ECSPI2_SCLK			0x100b1
-+			MX6QDL_PAD_EIM_CS1__ECSPI2_MOSI			0x100b1
-+			MX6QDL_PAD_EIM_RW__GPIO2_IO26			0x000b1
-+		>;
-+	};
-+
-+	pinctrl_ecspi3: ecspi3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DISP0_DAT0__ECSPI3_SCLK		0x100b1
-+			MX6QDL_PAD_DISP0_DAT1__ECSPI3_MOSI		0x100b1
-+			MX6QDL_PAD_DISP0_DAT2__ECSPI3_MISO		0x100b1
-+			/* CS */
-+			MX6QDL_PAD_DISP0_DAT3__GPIO4_IO24		0x000b1
-+		>;
-+	};
-+
-+	pinctrl_enet: enetgrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_RGMII_RXC__RGMII_RXC			0x1b030
-+			MX6QDL_PAD_RGMII_RD0__RGMII_RD0			0x1b030
-+			MX6QDL_PAD_RGMII_RD1__RGMII_RD1			0x1b030
-+			MX6QDL_PAD_RGMII_RD2__RGMII_RD2			0x1b030
-+			MX6QDL_PAD_RGMII_RD3__RGMII_RD3			0x1b030
-+			MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL		0x1b030
-+			MX6QDL_PAD_RGMII_TXC__RGMII_TXC			0x10030
-+			MX6QDL_PAD_RGMII_TD0__RGMII_TD0			0x10030
-+			MX6QDL_PAD_RGMII_TD1__RGMII_TD1			0x10030
-+			MX6QDL_PAD_RGMII_TD2__RGMII_TD2			0x10030
-+			MX6QDL_PAD_RGMII_TD3__RGMII_TD3			0x10030
-+			MX6QDL_PAD_RGMII_TX_CTL__RGMII_TX_CTL		0x10030
-+
-+			MX6QDL_PAD_ENET_MDIO__ENET_MDIO			0x10030
-+			MX6QDL_PAD_ENET_MDC__ENET_MDC			0x10030
-+
-+			/* Configure clock provider for RGMII ref clock */
-+			MX6QDL_PAD_GPIO_16__ENET_REF_CLK		0x4001b0b0
-+			/* Configure clock consumer for RGMII ref clock */
-+			MX6QDL_PAD_ENET_REF_CLK__ENET_TX_CLK		0x10030
-+
-+			/* SJA1105Q switch reset */
-+			MX6QDL_PAD_DISP0_DAT11__GPIO5_IO05		0x10030
-+
-+			/* phy3/rgmii_phy reset */
-+			MX6QDL_PAD_ENET_CRS_DV__GPIO1_IO25		0x10030
-+			/* phy3/rgmii_phy int */
-+			MX6QDL_PAD_ENET_TX_EN__GPIO1_IO28		0x40010000
-+		>;
-+	};
-+
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_CSI0_DAT8__I2C1_SDA			0x4001f8b1
-+			MX6QDL_PAD_CSI0_DAT9__I2C1_SCL			0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_mdio: mdiogrp {
-+		fsl,pins = <
-+			/* phy0/usbeth_phy reset */
-+			MX6QDL_PAD_DISP0_DAT17__GPIO5_IO11		0x10030
-+			/* phy0/usbeth_phy int */
-+			MX6QDL_PAD_DISP0_DAT18__GPIO5_IO12		0x100b1
-+
-+			/* phy12/tja1102_phy0 reset */
-+			MX6QDL_PAD_DISP0_DAT15__GPIO5_IO09		0x10030
-+			/* phy12/tja1102_phy0 int */
-+			MX6QDL_PAD_DISP0_DAT14__GPIO5_IO08		0x100b1
-+			/* phy12/tja1102_phy0 enable. Set 100K pull-up */
-+			MX6QDL_PAD_DISP0_DAT16__GPIO5_IO10		0x1f030
-+		>;
-+	};
-+
-+	pinctrl_uart4: uart4grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_COL0__UART4_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_KEY_ROW0__UART4_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_usbotg: usbotggrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D21__USB_OTG_OC			0x1b0b0
-+			MX6QDL_PAD_EIM_D22__GPIO3_IO22			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD1_CMD__SD1_CMD			0x170f9
-+			MX6QDL_PAD_SD1_CLK__SD1_CLK			0x100f9
-+			MX6QDL_PAD_SD1_DAT0__SD1_DATA0			0x170f9
-+			MX6QDL_PAD_SD1_DAT1__SD1_DATA1			0x170f9
-+			MX6QDL_PAD_SD1_DAT2__SD1_DATA2			0x170f9
-+			MX6QDL_PAD_SD1_DAT3__SD1_DATA3			0x170f9
-+			MX6QDL_PAD_GPIO_1__GPIO1_IO01			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD2_CMD__SD2_CMD			0x170b9
-+			MX6QDL_PAD_SD2_CLK__SD2_CLK			0x100b9
-+			MX6QDL_PAD_SD2_DAT0__SD2_DATA0			0x170b9
-+			MX6QDL_PAD_SD2_DAT1__SD2_DATA1			0x170b9
-+			MX6QDL_PAD_SD2_DAT2__SD2_DATA2			0x170b9
-+			MX6QDL_PAD_SD2_DAT3__SD2_DATA3			0x170b9
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD3_CMD__SD3_CMD			0x17099
-+			MX6QDL_PAD_SD3_CLK__SD3_CLK			0x10099
-+			MX6QDL_PAD_SD3_DAT0__SD3_DATA0			0x17099
-+			MX6QDL_PAD_SD3_DAT1__SD3_DATA1			0x17099
-+			MX6QDL_PAD_SD3_DAT2__SD3_DATA2			0x17099
-+			MX6QDL_PAD_SD3_DAT3__SD3_DATA3			0x17099
-+			MX6QDL_PAD_SD3_DAT4__SD3_DATA4			0x17099
-+			MX6QDL_PAD_SD3_DAT5__SD3_DATA5			0x17099
-+			MX6QDL_PAD_SD3_DAT6__SD3_DATA6			0x17099
-+			MX6QDL_PAD_SD3_DAT7__SD3_DATA7			0x17099
-+			MX6QDL_PAD_SD3_RST__SD3_RESET			0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_wifi_npd: wifinpd {
-+		fsl,pins = <
-+			/* WL_REG_ON */
-+			MX6QDL_PAD_NANDF_RB0__GPIO6_IO10		0x13069
-+		>;
-+	};
-+};
--- 
-2.29.2
+Thanks,
 
+-corey
+
+> 
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> ---
+>  drivers/char/ipmi/ipmi_watchdog.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
+> index f78156d..32c334e 100644
+> --- a/drivers/char/ipmi/ipmi_watchdog.c
+> +++ b/drivers/char/ipmi/ipmi_watchdog.c
+> @@ -495,7 +495,7 @@ static void panic_halt_ipmi_heartbeat(void)
+>  	msg.cmd = IPMI_WDOG_RESET_TIMER;
+>  	msg.data = NULL;
+>  	msg.data_len = 0;
+> -	atomic_add(1, &panic_done_count);
+> +	atomic_inc(&panic_done_count);
+>  	rv = ipmi_request_supply_msgs(watchdog_user,
+>  				      (struct ipmi_addr *) &addr,
+>  				      0,
+> @@ -505,7 +505,7 @@ static void panic_halt_ipmi_heartbeat(void)
+>  				      &panic_halt_heartbeat_recv_msg,
+>  				      1);
+>  	if (rv)
+> -		atomic_sub(1, &panic_done_count);
+> +		atomic_dec(&panic_done_count);
+>  }
+>  
+>  static struct ipmi_smi_msg panic_halt_smi_msg = {
+> @@ -529,12 +529,12 @@ static void panic_halt_ipmi_set_timeout(void)
+>  	/* Wait for the messages to be free. */
+>  	while (atomic_read(&panic_done_count) != 0)
+>  		ipmi_poll_interface(watchdog_user);
+> -	atomic_add(1, &panic_done_count);
+> +	atomic_inc(&panic_done_count);
+>  	rv = __ipmi_set_timeout(&panic_halt_smi_msg,
+>  				&panic_halt_recv_msg,
+>  				&send_heartbeat_now);
+>  	if (rv) {
+> -		atomic_sub(1, &panic_done_count);
+> +		atomic_dec(&panic_done_count);
+>  		pr_warn("Unable to extend the watchdog timeout\n");
+>  	} else {
+>  		if (send_heartbeat_now)
+> -- 
+> 1.9.1
+> 
