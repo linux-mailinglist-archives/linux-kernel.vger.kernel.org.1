@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C932B63BD
+	by mail.lfdr.de (Postfix) with ESMTP id D7A1F2B63BE
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732710AbgKQNlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:41:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
+        id S1733071AbgKQNlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:41:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732391AbgKQNlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:41:04 -0500
+        id S1733040AbgKQNlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:41:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C90E4207BC;
-        Tue, 17 Nov 2020 13:41:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7A6A207BC;
+        Tue, 17 Nov 2020 13:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620463;
-        bh=qABi8Z2Sw8PXTMh6ugHDVS9zVeQESYovPOrcGYIVp6E=;
+        s=default; t=1605620466;
+        bh=kG9H6gj7gjLkuQiml/8Yje27kYOXE5q1qZ4fi5gkF1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gHTPV5YAoHHhHOnUxgAKNzDaGqT/Wx0eOJe3UIq+fFWUrnbMJKcOLj9LCeK1QLirq
-         oPeHlt4tX+7GXfnCZK8maXya/JhiUR669SLyLi8Ccpbq5Hquak0qWvHkKgPxKjUr+C
-         RlojEmjkVS5tjZnknaFt/xEEEDaELdIBioqYlkzc=
+        b=zOxhMGEcsWivluMh9rMiLnHh9ANc6xREPFUC2pDuVGGK9lKYDqQ2T8wdD+xAgS8FO
+         a8Sa4KjifbS4Gq9udugrAsfvln4bYQPU66m+NKq7XnoQIDl734TCO3EDB6mtRq9TGU
+         BJyyAkYoWSLirQPRzSPxR4YdCxKXwi0YPg5cAxJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Charlene Liu <Charlene.Liu@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.9 228/255] drm/amd/display: Add missing pflip irq
-Date:   Tue, 17 Nov 2020 14:06:08 +0100
-Message-Id: <20201117122150.031951638@linuxfoundation.org>
+        stable@vger.kernel.org, Matt Roper <matthew.d.roper@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Venkata Sandeep Dhanalakota <venkata.s.dhanalakota@intel.com>,
+        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.9 229/255] drm/i915: Correctly set SFC capability for video engines
+Date:   Tue, 17 Nov 2020 14:06:09 +0100
+Message-Id: <20201117122150.080568605@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -45,36 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
+From: Venkata Sandeep Dhanalakota <venkata.s.dhanalakota@intel.com>
 
-commit a422490a595600659664901b609aacccdbba4a5f upstream.
+commit 5ce6861d36ed5207aff9e5eead4c7cc38a986586 upstream.
 
-If we have more than 4 displays we will run
-into dummy irq calls or flip timout issues.
+SFC capability of video engines is not set correctly because i915
+is testing for incorrect bits.
 
-Signed-off-by: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
-Reviewed-by: Charlene Liu <Charlene.Liu@amd.com>
-Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org # 5.9.x
+Fixes: c5d3e39caa45 ("drm/i915: Engine discovery query")
+Cc: Matt Roper <matthew.d.roper@intel.com>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Signed-off-by: Venkata Sandeep Dhanalakota <venkata.s.dhanalakota@intel.com>
+Signed-off-by: Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
+Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Cc: <stable@vger.kernel.org> # v5.3+
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201106011842.36203-1-daniele.ceraolospurio@intel.com
+(cherry picked from commit ad18fa0f5f052046cad96fee762b5c64f42dd86a)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/display/dc/irq/dcn30/irq_service_dcn30.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_engine_cs.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/dc/irq/dcn30/irq_service_dcn30.c
-+++ b/drivers/gpu/drm/amd/display/dc/irq/dcn30/irq_service_dcn30.c
-@@ -306,8 +306,8 @@ irq_source_info_dcn30[DAL_IRQ_SOURCES_NU
- 	pflip_int_entry(1),
- 	pflip_int_entry(2),
- 	pflip_int_entry(3),
--	[DC_IRQ_SOURCE_PFLIP5] = dummy_irq_entry(),
--	[DC_IRQ_SOURCE_PFLIP6] = dummy_irq_entry(),
-+	pflip_int_entry(4),
-+	pflip_int_entry(5),
- 	[DC_IRQ_SOURCE_PFLIP_UNDERLAY0] = dummy_irq_entry(),
- 	gpio_pad_int_entry(0),
- 	gpio_pad_int_entry(1),
+--- a/drivers/gpu/drm/i915/gt/intel_engine_cs.c
++++ b/drivers/gpu/drm/i915/gt/intel_engine_cs.c
+@@ -370,7 +370,8 @@ static void __setup_engine_capabilities(
+ 		 * instances.
+ 		 */
+ 		if ((INTEL_GEN(i915) >= 11 &&
+-		     engine->gt->info.vdbox_sfc_access & engine->mask) ||
++		     (engine->gt->info.vdbox_sfc_access &
++		      BIT(engine->instance))) ||
+ 		    (INTEL_GEN(i915) >= 9 && engine->instance == 0))
+ 			engine->uabi_capabilities |=
+ 				I915_VIDEO_AND_ENHANCE_CLASS_CAPABILITY_SFC;
 
 
