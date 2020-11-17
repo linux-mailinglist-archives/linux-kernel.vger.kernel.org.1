@@ -2,204 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A292B6F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5D22B6F96
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731027AbgKQUGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:06:00 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:53751 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730094AbgKQUF7 (ORCPT
+        id S1731478AbgKQUGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730520AbgKQUGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:05:59 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id B9A71C4E;
-        Tue, 17 Nov 2020 15:05:57 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 17 Nov 2020 15:05:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=e+edu/6Q4wBbY
-        YEXH8t+dOvgpbiWbWHOudleytAG4Gc=; b=USaN3eDeLtIP4HGV8RR1/MyzaMSxC
-        TInaSQX7xI55CMmbEgf2H5Xo1XMmuQN/xslcU+2Bopac/NKaVHOX/QnWU4Doe/Kr
-        HbMWMOu7QJy7VCi+VR/SbeMrS5nDx3OTjK5IOK0M1xUO/S6kixMqzwySs2znu3/t
-        l+/7Z1OhjowI6uYzDX3s+qWtw7sHcpEIZe+pkzWHXyXcfxZ9z+n+ABdAj26z/OYO
-        oGCHsC2P5llqIlfpewSRsHPOcUu84+We479H5ZFh/XgDut5jkjANrLJN11/l4Qii
-        D1U+QLnmYNS+1nd2rjLiuzlffloz9lUHO0CtWfcBBoMVVfwadKzcZVuPQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=e+edu/6Q4wBbYYEXH8t+dOvgpbiWbWHOudleytAG4Gc=; b=kKjnQ9UI
-        SXPOD6i/SbXLTwrVgcszqONFoEpIm1T7ep8MVz3GHwYDoBRcOBtzRBLL+dpJi78b
-        1RafK+zEe2ZzGjz7U80GtWieYkuacGGWzsfuE0HrSVME3I3aZBXQ9LTXmwqHynu9
-        zmVlN0z60yodrZhm+PHRPXf/F/+CLtJ8zKDsSotSY02Z+CqMa2YsJ1b3x6EKb3HM
-        H0OoPLX2hvrruQlKk8AG0AuxxPpuf9MDxupXmVY3niajHcW2JJ9EFJB5WUZt6ySu
-        SGheovvJhHrntSMeruKh3+4Z5vLy9v3lblOAXEW17nv6PoVEQkx3lgXmNn/GrK70
-        BhLRh8oCVcaz9g==
-X-ME-Sender: <xms:JS20X7J5JFqoFDTJl57m1ZyXBYeaTbKvia0UREaPYe4ouxA92_D2eA>
-    <xme:JS20X_LY6_oUECAyqSXbXfg9W3h3IX3fHNwgm-qGNvw5PPZQeFwfboOE6FGahA97h
-    p4CKQniT6gDidm29g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeffedgudeffecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculddvfedmnecujfgurhephffvufffkffojghfggfgsedtkeertder
-    tddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepgfekudelkefhteevhfeggfdvgeefjeefgfeuvddutdfhgffg
-    hfehtdeuueetfeeinecukfhppeeiledrudekuddruddthedrieegnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiih
-    ii
-X-ME-Proxy: <xmx:JS20XzsjzY2xCNLAr3WzoDMBoYvI_YnaAY30vm7WqP6daZpOLh0f2g>
-    <xmx:JS20X0ZuRpddUekKA1kQL9X_lsxPZ_qh9jdlzAl16q5Y3dL6vR0yAA>
-    <xmx:JS20Xyac20hkR9iT1icYoPzS-DgFQa0R1W8heGPhImIUcj_sqX0SXg>
-    <xmx:JS20X66DpY3aYAtzWi-sFwdDU14JWPorO6LddC-lz_p9nkDZsNErqw>
-Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3AE5C3064AB0;
-        Tue, 17 Nov 2020 15:05:56 -0500 (EST)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, songliubraving@fb.com,
-        andrii.nakryiko@gmail.com, torvalds@linux-foundation.org
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf v7 2/2] selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes after NUL
-Date:   Tue, 17 Nov 2020 12:05:46 -0800
-Message-Id: <4d977508fab4ec5b7b574b85bdf8b398868b6ee9.1605642949.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1605642949.git.dxu@dxuuu.xyz>
-References: <cover.1605642949.git.dxu@dxuuu.xyz>
+        Tue, 17 Nov 2020 15:06:50 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B90AC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:06:50 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id k27so3807346ejs.10
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:06:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Gs7R2ev+GdvZkSQzyJKlOzGhV1YIG/geSIkcbosi9pE=;
+        b=SFN5xJOiz2XcXHz3OFDRYlyYwt7CLXtwyLFD9t/jgtx2R4I6SqUtSNFKGyVnXuNP3U
+         mqJcSQRqIIPqMLfz8gIHoCGG0tBdBJGnrB58UfgFMLDfjxL/YttrUPW5EPsXEnw/zOBl
+         3S3svsw6LdCWPwOj3gf5VEHkJ+Atbmee4/EYugZy1ZBHF3kcuYaazFkTGRyqw5csgJiP
+         NFL1SllAnbKorUOgYYcKvrZBKeoq4j2QqNPHn5n2xyIdiLtcpsOQEuATGUlMa85IETnY
+         IrQToDk/aJKuP6ZTx5lZqjKKY4iUKkFisE/WkNxFpf82J9gn5Tz43OJqIgEKkJZxDvj1
+         5qtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Gs7R2ev+GdvZkSQzyJKlOzGhV1YIG/geSIkcbosi9pE=;
+        b=nWDNXKPUAtkCV9sg3qS0oPZgvVXdeGQM0S9r9C8q/Gk6e7UG++GvE4hKPP1mZT9xkK
+         2QAETWoNj4qLi+fXh02fDeq2YWyjsPSYpj68Zq1L6yzt1X/8h3ivaVy9QJiu/Y4g7d0D
+         D2U6iKEb+sPkPFy3wOhw+XnJ7SMq1pbBk7CLm0697PHEkIEFkaQnIG+7UMPj672oGsjs
+         JUCogkFQTOGoRt6spqjj0n4Yos5bXNlNAfdd7CRnwiDJkR32Nf+3T2U1BINI0yPtBsN4
+         BGgq1+ulHF2zSjiCFNfKNxL87ILDcJguNyrXjDMkEMaNctnqtbFq3AjMHuQHvtKM/eDl
+         aORw==
+X-Gm-Message-State: AOAM5301tuIHja9nT5rddUfMIcpi0QZOytHA1qiObP4CQKe0VS2GjaUL
+        ZeNh3skh5gBWBLEIjCKgNZ2oZg==
+X-Google-Smtp-Source: ABdhPJyw0TAxMlvDFPbO5r0vaRxG3Do/B02IFkrtB4Ds+fgy9DAGN4O9NkmbIQXxlPyRpdRAKA0hZQ==
+X-Received: by 2002:a17:906:ee2:: with SMTP id x2mr10069840eji.326.1605643609131;
+        Tue, 17 Nov 2020 12:06:49 -0800 (PST)
+Received: from netronome.com ([2001:982:7ed1:403:9eeb:e8ff:fe0d:5b6a])
+        by smtp.gmail.com with ESMTPSA id f18sm12345754edt.32.2020.11.17.12.06.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 12:06:48 -0800 (PST)
+Date:   Tue, 17 Nov 2020 21:06:47 +0100
+From:   Simon Horman <simon.horman@netronome.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, oss-drivers@netronome.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] nfp: tls: Fix unreachable code issue
+Message-ID: <20201117200646.GA10136@netronome.com>
+References: <20201117171347.GA27231@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117171347.GA27231@embeddedor>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, bpf_probe_read_user_str() could potentially overcopy the
-trailing bytes after the NUL due to how do_strncpy_from_user() does the
-copy in long-sized strides. The issue has been fixed in the previous
-commit.
+On Tue, Nov 17, 2020 at 11:13:47AM -0600, Gustavo A. R. Silva wrote:
+> Fix the following unreachable code issue:
+> 
+>    drivers/net/ethernet/netronome/nfp/crypto/tls.c: In function 'nfp_net_tls_add':
+>    include/linux/compiler_attributes.h:208:41: warning: statement will never be executed [-Wswitch-unreachable]
+>      208 | # define fallthrough                    __attribute__((__fallthrough__))
+>          |                                         ^~~~~~~~~~~~~
+>    drivers/net/ethernet/netronome/nfp/crypto/tls.c:299:3: note: in expansion of macro 'fallthrough'
+>      299 |   fallthrough;
+>          |   ^~~~~~~~~~~
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-This commit adds a selftest that ensures we don't regress
-bpf_probe_read_user_str() again.
-
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
- .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
- 2 files changed, 96 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-new file mode 100644
-index 000000000000..e419298132b5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "test_probe_read_user_str.skel.h"
-+
-+static const char str1[] = "mestring";
-+static const char str2[] = "mestringalittlebigger";
-+static const char str3[] = "mestringblubblubblubblubblub";
-+
-+static int test_one_str(struct test_probe_read_user_str *skel, const char *str,
-+			size_t len)
-+{
-+	int err, duration = 0;
-+	char buf[256];
-+
-+	/* Ensure bytes after string are ones */
-+	memset(buf, 1, sizeof(buf));
-+	memcpy(buf, str, len);
-+
-+	/* Give prog our userspace pointer */
-+	skel->bss->user_ptr = buf;
-+
-+	/* Trigger tracepoint */
-+	usleep(1);
-+
-+	/* Did helper fail? */
-+	if (CHECK(skel->bss->ret < 0, "prog_ret", "prog returned: %ld\n",
-+		  skel->bss->ret))
-+		return 1;
-+
-+	/* Check that string was copied correctly */
-+	err = memcmp(skel->bss->buf, str, len);
-+	if (CHECK(err, "memcmp", "prog copied wrong string"))
-+		return 1;
-+
-+	/* Now check that no extra trailing bytes were copied */
-+	memset(buf, 0, sizeof(buf));
-+	err = memcmp(skel->bss->buf + len, buf, sizeof(buf) - len);
-+	if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+void test_probe_read_user_str(void)
-+{
-+	struct test_probe_read_user_str *skel;
-+	int err, duration = 0;
-+
-+	skel = test_probe_read_user_str__open_and_load();
-+	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
-+		  "skeleton open and load failed\n"))
-+		return;
-+
-+	/* Give pid to bpf prog so it doesn't read from anyone else */
-+	skel->bss->pid = getpid();
-+
-+	err = test_probe_read_user_str__attach(skel);
-+	if (CHECK(err, "test_probe_read_user_str__attach",
-+		  "skeleton attach failed: %d\n", err))
-+		goto out;
-+
-+	if (test_one_str(skel, str1, sizeof(str1)))
-+		goto out;
-+	if (test_one_str(skel, str2, sizeof(str2)))
-+		goto out;
-+	if (test_one_str(skel, str3, sizeof(str3)))
-+		goto out;
-+
-+out:
-+	test_probe_read_user_str__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-new file mode 100644
-index 000000000000..3ae398b75dcd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#include <sys/types.h>
-+
-+pid_t pid = 0;
-+long ret = 0;
-+void *user_ptr = 0;
-+char buf[256] = {};
-+
-+SEC("tracepoint/syscalls/sys_enter_nanosleep")
-+int on_write(void *ctx)
-+{
-+	if (pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	ret = bpf_probe_read_user_str(buf, sizeof(buf), user_ptr);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.29.2
-
+Reviewed-by: Simon Horman <simon.horman@netronome.com>
