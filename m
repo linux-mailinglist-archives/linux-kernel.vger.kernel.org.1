@@ -2,100 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08182B5BBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729832B5BC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:26:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbgKQJYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:24:23 -0500
-Received: from foss.arm.com ([217.140.110.172]:52698 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgKQJYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:24:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A35A1042;
-        Tue, 17 Nov 2020 01:24:20 -0800 (PST)
-Received: from [10.57.25.49] (unknown [10.57.25.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BDB53F719;
-        Tue, 17 Nov 2020 01:24:15 -0800 (PST)
-Subject: Re: [PATCH v4 0/4] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Nayak, Rajendra" <rnayak@codeaurora.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>
-References: <20201103090600.29053-1-lukasz.luba@arm.com>
- <9382ea70-cc50-7b78-f5de-716678bdefbf@arm.com>
- <CAJZ5v0iS2jFvqiddjTDFpXq0gcNrrKML6raQOq=S4boZZC_V5Q@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <1685b7c8-e6bb-fc3b-c2ff-5c87c35610f0@arm.com>
-Date:   Tue, 17 Nov 2020 09:24:14 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iS2jFvqiddjTDFpXq0gcNrrKML6raQOq=S4boZZC_V5Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727153AbgKQJY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:24:56 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38419 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725730AbgKQJY4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 04:24:56 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UFh2-H3_1605605092;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFh2-H3_1605605092)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 17 Nov 2020 17:24:53 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/truncate: add parameter explanation for invalidate_mapping_pagevec
+Date:   Tue, 17 Nov 2020 17:24:46 +0800
+Message-Id: <1605605088-30668-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+To fix a kernel-doc markups issue:
+mm/truncate.c:646: warning: Function parameter or member 'mapping' not
+described in 'invalidate_mapping_pagevec'
+mm/truncate.c:646: warning: Function parameter or member 'start' not
+described in 'invalidate_mapping_pagevec'
+mm/truncate.c:646: warning: Function parameter or member 'end' not
+described in 'invalidate_mapping_pagevec'
+mm/truncate.c:646: warning: Function parameter or member 'nr_pagevec'
+not described in 'invalidate_mapping_pagevec'
 
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/truncate.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-On 11/10/20 7:32 PM, Rafael J. Wysocki wrote:
-> On Wed, Nov 4, 2020 at 11:58 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> Hi Rafael,
->>
->> On 11/3/20 9:05 AM, Lukasz Luba wrote:
->>> Hi all,
->>>
->>> The Energy Model supports power values expressed in an abstract scale.
->>> This has an impact on Intelligent Power Allocation (IPA) and should be
->>> documented properly. Kernel sub-systems like EAS, IPA and DTPM
->>> (new comming PowerCap framework) would use the new flag to capture
->>> potential miss-configuration where the devices have registered different
->>> power scales, thus cannot operate together.
->>>
->>> There was a discussion below v2 of this patch series, which might help
->>> you to get context of these changes [2].
->>>
->>> The agreed approach is to have the DT as a source of power values expressed
->>> always in milli-Watts and the only way to submit with abstract scale values
->>> is via the em_dev_register_perf_domain() API.
->>>
->>> Changes:
->>> v4:
->>> - change bool to int type for 'miliwatts' in struct em_perf_domain
->>>     (suggested by Quentin)
->>> - removed one sentence from patch 2/4 in IPA doc power_allocator.rst
->>>     (suggested by Quentin)
->>> - added reviewed-by from Quentin to 1/4, 3/4, 4/4 patches
->>
->> There was no major objections in the v3 and this v4 just addressed
->> minor comments. The important discussions mostly happen in v2.
->>
->> Could you take the patches via your tree, please?
-> 
-> Applied as 5.11 material, thanks!
-> 
+diff --git a/mm/truncate.c b/mm/truncate.c
+index 960edf5803ca..c196fad0bb5d 100644
+--- a/mm/truncate.c
++++ b/mm/truncate.c
+@@ -637,9 +637,15 @@ unsigned long invalidate_mapping_pages(struct address_space *mapping,
+ EXPORT_SYMBOL(invalidate_mapping_pages);
+ 
+ /**
+- * This helper is similar with the above one, except that it accounts for pages
+- * that are likely on a pagevec and count them in @nr_pagevec, which will used by
+- * the caller.
++ * invalidate_mapping_pagevec - Invalidate all the unlocked pages of one inode
++ * @mapping: the address_space which holds the pages to invalidate
++ * @start: the offset 'from' which to invalidate
++ * @end: the offset 'to' which to invalidate (inclusive)
++ * @nr_pagevec: invalidate failed page number for caller
++ *
++ * This helper is similar with invalidate_mapping_pages, except that it accounts
++ * for pages that failed to invalidate on a pagevec and count them in
++ * @nr_pagevec, which will used by the caller.
+  */
+ void invalidate_mapping_pagevec(struct address_space *mapping,
+ 		pgoff_t start, pgoff_t end, unsigned long *nr_pagevec)
+-- 
+2.29.GIT
 
-Thank you Rafael!
-
-Regards,
-Lukasz
