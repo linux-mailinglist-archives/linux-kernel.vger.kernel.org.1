@@ -2,120 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAA32B5842
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AAF2B57F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbgKQDms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 22:42:48 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8772 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727892AbgKQDmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 22:42:45 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0AH3cZtO024957;
-        Mon, 16 Nov 2020 19:42:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=9mYTdJZ0Rj3C/ChWgVaJ68z21aCoWI08mwu76njSMac=;
- b=MZVOfyaPTCYE3yimo2XSrXyMyCBt5ZEvdXRyzApe+A7xz/mJ2tmoBAIdIIW8ty6kDu9S
- 1sFy4HMQcVEwHbfI21F92wRNn+eLieBNu8FjDtscdHSlCvW3yXBGFIjhW5L0tJYiuley
- ji/64AnIZlN8eIYP1qNcXI9QPnhI5Dht8U4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 34tbssbtcg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 16 Nov 2020 19:42:30 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 16 Nov 2020 19:42:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iHy2FmZZek1kyrUCL+ajAOQS0uDPwWOlo7yo+Dxb778zgdN+PKug+zRIYPMSU1UNh45xFRWcRAFQBxMeplwU+oiHg3oFzkLV+dYL/whdDqthjjOq5ya0lBrGXdYg4K11sEAw5VG1P47FAMmV3L5hogKY7JAyeWVruu1B+oMkGyeKXCpfGA2WlhdkAC7y0/d9N+Cp/kRz+yOY8ia/aMY5fxK7wxWNamKpzQQodnWZdcjjG50ZetUBz2G+FasVHeVUbixIPzBwTMljhvLwooqgcUcfmdQlN9xvZYzpzySeagtLb1mt1Ou4OafDjHg4nlaKCxnXlhcF7feax63PJt/aGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9mYTdJZ0Rj3C/ChWgVaJ68z21aCoWI08mwu76njSMac=;
- b=KnupwChqoJhW4MXDvoMYL+SeSXHEicdAH5CapUkGzy4V1A8pNDSlXMIfk5PZNUtGX0dxhX+GmaLuhvDo31KD1fho0nyrXgkCOalCQygjf+UW0Uq7ky3EeITdArBcockoKADcfnUl2JcYiqAvhCmkzjtxmWZAt9D/Ew40cCIOw8iBpURet/HcYmUpOSUQDvZc9HLHBHiGmh6qMqACXc+9zsO1QaKdNxHZ3aOoNcw3p0msmpfkWexcU8+YiMuqlNkb6oIe014+ZmAickbDdTj+JyiJgWiSn8vfh1neBgD8aepO/soDYb6vr6fVD58UmyZLE4TA0KzTpWUsVhJNnY2PMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9mYTdJZ0Rj3C/ChWgVaJ68z21aCoWI08mwu76njSMac=;
- b=IdMD0xxF+xO3Va5LfTJkNGsCBcvCpL5uaF6X1cRdtVE5bOJnO48xZNe0lYKUaRJ7UhHvfLYcoDkeCBR6iA2t0WCgflX5bDGN7As/GmsSorDMili9FnwkepscyuwsBopLJzi8lOYEFDEPIJj9Gl2iTT5XSQa/pbiO3OMfrUA58Rc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2661.namprd15.prod.outlook.com (2603:10b6:a03:15b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Tue, 17 Nov
- 2020 03:42:26 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3564.025; Tue, 17 Nov 2020
- 03:42:25 +0000
-Date:   Mon, 16 Nov 2020 19:42:20 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <andrii@kernel.org>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-team@fb.com>
-Subject: Re: [PATCH v6 00/34] bpf: switch to memcg-based memory accounting
-Message-ID: <20201117034220.GA109785@carbon.dhcp.thefacebook.com>
-References: <20201117025529.1034387-1-guro@fb.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117025529.1034387-1-guro@fb.com>
-X-Originating-IP: [2620:10d:c090:400::5:1580]
-X-ClientProxiedBy: MWHPR01CA0033.prod.exchangelabs.com (2603:10b6:300:101::19)
- To BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:1580) by MWHPR01CA0033.prod.exchangelabs.com (2603:10b6:300:101::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Tue, 17 Nov 2020 03:42:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9b017e6b-7496-4d1c-e1dd-08d88aaacca1
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2661:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2661E4FCD11E994BBED4D5D2BEE20@BYAPR15MB2661.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vfK7fgrEGBW3bwcH9yTdGPqNu3r+Lj6m+7ltaegOc7I+llDUZEikqXCGJ40xdo1metj9u2vHB/iuWPVg7dDZpYZkFTlSVCeX8ysDurmiF89bmrD8sbDfrevvsjV0f6iBL1zynP/Gg7FjCdiQ3Iucq/bI4LvVIjqObsv5V/TPwwfJBnoxn9ZPerr5+hhmMthFVQK2aQTBrITdEZ5o6ptA5ECnGLPCP+fzCx8Wg17ViwY91UDNSbv1GCLSYLYwSeQ+FcEhlMpIDuCeHqSeXOtAVjciknYcWVaHisOdhVntbbT780kq4tdCLr8WtcP4WqvBUFPvieMVaWeNq81oljWFdQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(396003)(136003)(376002)(39860400002)(6506007)(16526019)(8676002)(52116002)(7696005)(1076003)(4744005)(66946007)(66476007)(66556008)(86362001)(5660300002)(2906002)(316002)(15650500001)(478600001)(55016002)(9686003)(4326008)(83380400001)(8936002)(6666004)(6916009)(33656002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: XzymWl1+Ht7sVYUyZQn22KekkO6P37wtBVNEY07ytEiIwRIZdwLxIRIOT1MZ2GXfu4/ATQ3Wvr1Eb2aJ/PBhoq+C0J8A18Em3GkYr4pA4xuOAh9DyP/1cyMYDMyan5eZ37mLxCSktbGxXYGfvR3whzH8AGwTCXUvbIEHHFnAhJYFAYzB/R4vAtdAC/HlEWvyUmubSIZpGFQZH1aoFqzpyGkksyjXAkkYguKCdiFm5W4JoIODcvcoWxMSXM52Kpkppmgdw/8rzKBk4YhD+klldoZGrp5Joto4l2LL1GJmVFb4RrtZaQbBpvRuCuBccgDWmPcJRmeTqiP9SvgTiC4ABkqLPyW6tfIpAUKS/HNfqMnvDVrmNH1V1CI6eEErfWRryCBaza2hhTQYWwmwWhIe3vK2UAYcHqnc32THC5zWyvy+hfAfKKVZ/lG7Qdg3pSetKfEIm4/c3oN15Uty96NIJO7lLM5QUG5miGJ9GkHdGMGia+X6kySOgn5pEf/TRmVe4gaJ3w18t5VTVGQu8p+8FDVJZo7yxtWLHL7QyU64bVUZnlF7i4J7lOL8dbs7/sJixriSWXjEu91Wc+tM+fiFa0hGcPqt9sVvw/ZoBA2cZnwbOyV41RHQOF4+9kZVbZFHA95u9JyqnOAZoSs5Iko1r+5GMvMEA7/o/9oTxCFb0y1DvjwBazWwXSgtJUI02ZRM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b017e6b-7496-4d1c-e1dd-08d88aaacca1
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 03:42:25.7458
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n1A5XNiIE6d/emhAQUCsKjeo9HCI6FZCTlF1vj7e2laQcdtZZvPyiH/O/TezuiEv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2661
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_01:2020-11-13,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- suspectscore=34 impostorscore=0 adultscore=0 priorityscore=1501
- phishscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0 mlxlogscore=812
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011170027
-X-FB-Internal: deliver
+        id S1726532AbgKQDek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 22:34:40 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:43226 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbgKQDek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 22:34:40 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8FC3A200E26;
+        Tue, 17 Nov 2020 04:34:37 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 60DB12011C9;
+        Tue, 17 Nov 2020 04:34:34 +0100 (CET)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 180A2402D2;
+        Tue, 17 Nov 2020 04:34:30 +0100 (CET)
+From:   andy.tang@nxp.com
+To:     shawnguo@kernel.org
+Cc:     leoyang.li@nxp.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yuantian Tang <andy.tang@nxp.com>
+Subject: [PATCH 1/2] arm64: dts: freescale: update calibration table for TMU module
+Date:   Tue, 17 Nov 2020 11:43:04 +0800
+Message-Id: <20201117034305.42546-1-andy.tang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 06:54:55PM -0800, Roman Gushchin wrote:
-> Currently bpf is using the memlock rlimit for the memory accounting.
-> This approach has its downsides and over time has created a significant
-> amount of problems:
-> 
+From: Yuantian Tang <andy.tang@nxp.com>
 
-I'm sorry, I've missed the "bpf-next" prefix in the subject.
-Resending.
+Update the calibration table to make the temperature more accurate.
+Three platforms have been updated: ls1012a, ls1043a and ls1046a.
 
-Thanks!
+Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
+---
+ .../arm64/boot/dts/freescale/fsl-ls1012a.dtsi | 63 ++++++++-------
+ .../arm64/boot/dts/freescale/fsl-ls1043a.dtsi | 78 ++++++++++---------
+ .../arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 72 +++++++++--------
+ 3 files changed, 112 insertions(+), 101 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+index 5be686a0de54..b3683cda7f5b 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+@@ -293,43 +293,46 @@
+ 			compatible = "fsl,qoriq-tmu";
+ 			reg = <0x0 0x1f00000 0x0 0x10000>;
+ 			interrupts = <0 33 0x4>;
+-			fsl,tmu-range = <0xb0000 0x9002a 0x6004c 0x30062>;
+-			fsl,tmu-calibration = <0x00000000 0x00000026
+-					       0x00000001 0x0000002d
++			fsl,tmu-range = <0xb0000 0x9002a 0x6004c 0x60062>;
++			fsl,tmu-calibration = <0x00000000 0x00000025
++					       0x00000001 0x0000002c
+ 					       0x00000002 0x00000032
+ 					       0x00000003 0x00000039
+ 					       0x00000004 0x0000003f
+ 					       0x00000005 0x00000046
+-					       0x00000006 0x0000004d
+-					       0x00000007 0x00000054
+-					       0x00000008 0x0000005a
+-					       0x00000009 0x00000061
+-					       0x0000000a 0x0000006a
+-					       0x0000000b 0x00000071
+-
+-					       0x00010000 0x00000025
+-					       0x00010001 0x0000002c
++					       0x00000006 0x0000004c
++					       0x00000007 0x00000053
++					       0x00000008 0x00000059
++					       0x00000009 0x0000005f
++					       0x0000000a 0x00000066
++					       0x0000000b 0x0000006c
++
++					       0x00010000 0x00000026
++					       0x00010001 0x0000002d
+ 					       0x00010002 0x00000035
+ 					       0x00010003 0x0000003d
+ 					       0x00010004 0x00000045
+-					       0x00010005 0x0000004e
+-					       0x00010006 0x00000057
+-					       0x00010007 0x00000061
+-					       0x00010008 0x0000006b
+-					       0x00010009 0x00000076
+-
+-					       0x00020000 0x00000029
+-					       0x00020001 0x00000033
+-					       0x00020002 0x0000003d
+-					       0x00020003 0x00000049
+-					       0x00020004 0x00000056
+-					       0x00020005 0x00000061
+-					       0x00020006 0x0000006d
+-
+-					       0x00030000 0x00000021
+-					       0x00030001 0x0000002a
+-					       0x00030002 0x0000003c
+-					       0x00030003 0x0000004e>;
++					       0x00010005 0x0000004d
++					       0x00010006 0x00000055
++					       0x00010007 0x0000005d
++					       0x00010008 0x00000065
++					       0x00010009 0x0000006d
++
++					       0x00020000 0x00000026
++					       0x00020001 0x00000030
++					       0x00020002 0x0000003a
++					       0x00020003 0x00000044
++					       0x00020004 0x0000004e
++					       0x00020005 0x00000059
++					       0x00020006 0x00000063
++
++					       0x00030000 0x00000014
++					       0x00030001 0x00000021
++					       0x00030002 0x0000002e
++					       0x00030003 0x0000003a
++					       0x00030004 0x00000047
++					       0x00030005 0x00000053
++					       0x00030006 0x00000060>;
+ 			big-endian;
+ 			#thermal-sensor-cells = <1>;
+ 		};
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+index d5d219311161..bbae4b353d3f 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+@@ -403,43 +403,47 @@
+ 			compatible = "fsl,qoriq-tmu";
+ 			reg = <0x0 0x1f00000 0x0 0x10000>;
+ 			interrupts = <0 33 0x4>;
+-			fsl,tmu-range = <0xb0000 0x9002a 0x6004c 0x30062>;
+-			fsl,tmu-calibration = <0x00000000 0x00000026
+-					       0x00000001 0x0000002d
+-					       0x00000002 0x00000032
+-					       0x00000003 0x00000039
+-					       0x00000004 0x0000003f
+-					       0x00000005 0x00000046
+-					       0x00000006 0x0000004d
+-					       0x00000007 0x00000054
+-					       0x00000008 0x0000005a
+-					       0x00000009 0x00000061
+-					       0x0000000a 0x0000006a
+-					       0x0000000b 0x00000071
+-
+-					       0x00010000 0x00000025
+-					       0x00010001 0x0000002c
+-					       0x00010002 0x00000035
+-					       0x00010003 0x0000003d
+-					       0x00010004 0x00000045
+-					       0x00010005 0x0000004e
+-					       0x00010006 0x00000057
+-					       0x00010007 0x00000061
+-					       0x00010008 0x0000006b
+-					       0x00010009 0x00000076
+-
+-					       0x00020000 0x00000029
+-					       0x00020001 0x00000033
+-					       0x00020002 0x0000003d
+-					       0x00020003 0x00000049
+-					       0x00020004 0x00000056
+-					       0x00020005 0x00000061
+-					       0x00020006 0x0000006d
+-
+-					       0x00030000 0x00000021
+-					       0x00030001 0x0000002a
+-					       0x00030002 0x0000003c
+-					       0x00030003 0x0000004e>;
++			fsl,tmu-range = <0xb0000 0x9002a 0x6004c 0x70062>;
++			fsl,tmu-calibration = <0x00000000 0x00000023
++					       0x00000001 0x0000002a
++					       0x00000002 0x00000031
++					       0x00000003 0x00000037
++					       0x00000004 0x0000003e
++					       0x00000005 0x00000044
++					       0x00000006 0x0000004b
++					       0x00000007 0x00000051
++					       0x00000008 0x00000058
++					       0x00000009 0x0000005e
++					       0x0000000a 0x00000065
++					       0x0000000b 0x0000006b
++
++					       0x00010000 0x00000023
++					       0x00010001 0x0000002b
++					       0x00010002 0x00000033
++					       0x00010003 0x0000003b
++					       0x00010004 0x00000043
++					       0x00010005 0x0000004b
++					       0x00010006 0x00000054
++					       0x00010007 0x0000005c
++					       0x00010008 0x00000064
++					       0x00010009 0x0000006c
++
++					       0x00020000 0x00000021
++					       0x00020001 0x0000002c
++					       0x00020002 0x00000036
++					       0x00020003 0x00000040
++					       0x00020004 0x0000004b
++					       0x00020005 0x00000055
++					       0x00020006 0x0000005f
++
++					       0x00030000 0x00000013
++					       0x00030001 0x0000001d
++					       0x00030002 0x00000028
++					       0x00030003 0x00000032
++					       0x00030004 0x0000003d
++					       0x00030005 0x00000047
++					       0x00030006 0x00000052
++					       0x00030007 0x0000005c>;
+ 			#thermal-sensor-cells = <1>;
+ 		};
+ 
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+index 1fa39bacff4b..025e1f587662 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+@@ -400,45 +400,49 @@
+ 			compatible = "fsl,qoriq-tmu";
+ 			reg = <0x0 0x1f00000 0x0 0x10000>;
+ 			interrupts = <0 33 0x4>;
+-			fsl,tmu-range = <0xb0000 0x9002a 0x6004c 0x30062>;
++			fsl,tmu-range = <0xb0000 0x9002a 0x6004c 0x70062>;
+ 			fsl,tmu-calibration =
+ 				/* Calibration data group 1 */
+-				<0x00000000 0x00000026
+-				0x00000001 0x0000002d
+-				0x00000002 0x00000032
+-				0x00000003 0x00000039
+-				0x00000004 0x0000003f
+-				0x00000005 0x00000046
+-				0x00000006 0x0000004d
+-				0x00000007 0x00000054
+-				0x00000008 0x0000005a
+-				0x00000009 0x00000061
+-				0x0000000a 0x0000006a
+-				0x0000000b 0x00000071
++				<0x00000000 0x00000023
++				0x00000001 0x00000029
++				0x00000002 0x0000002f
++				0x00000003 0x00000036
++				0x00000004 0x0000003c
++				0x00000005 0x00000042
++				0x00000006 0x00000049
++				0x00000007 0x0000004f
++				0x00000008 0x00000055
++				0x00000009 0x0000005c
++				0x0000000a 0x00000062
++				0x0000000b 0x00000068
+ 				/* Calibration data group 2 */
+-				0x00010000 0x00000025
+-				0x00010001 0x0000002c
+-				0x00010002 0x00000035
+-				0x00010003 0x0000003d
+-				0x00010004 0x00000045
+-				0x00010005 0x0000004e
+-				0x00010006 0x00000057
+-				0x00010007 0x00000061
+-				0x00010008 0x0000006b
+-				0x00010009 0x00000076
++				0x00010000 0x00000022
++				0x00010001 0x0000002a
++				0x00010002 0x00000032
++				0x00010003 0x0000003a
++				0x00010004 0x00000042
++				0x00010005 0x0000004a
++				0x00010006 0x00000052
++				0x00010007 0x0000005a
++				0x00010008 0x00000062
++				0x00010009 0x0000006a
+ 				/* Calibration data group 3 */
+-				0x00020000 0x00000029
+-				0x00020001 0x00000033
+-				0x00020002 0x0000003d
+-				0x00020003 0x00000049
+-				0x00020004 0x00000056
+-				0x00020005 0x00000061
+-				0x00020006 0x0000006d
++				0x00020000 0x00000021
++				0x00020001 0x0000002b
++				0x00020002 0x00000035
++				0x00020003 0x0000003e
++				0x00020004 0x00000048
++				0x00020005 0x00000052
++				0x00020006 0x0000005c
+ 				/* Calibration data group 4 */
+-				0x00030000 0x00000021
+-				0x00030001 0x0000002a
+-				0x00030002 0x0000003c
+-				0x00030003 0x0000004e>;
++				0x00030000 0x00000011
++				0x00030001 0x0000001a
++				0x00030002 0x00000024
++				0x00030003 0x0000002e
++				0x00030004 0x00000038
++				0x00030005 0x00000042
++				0x00030006 0x0000004c
++				0x00030007 0x00000056>;
+ 			big-endian;
+ 			#thermal-sensor-cells = <1>;
+ 		};
+-- 
+2.17.1
+
