@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622F82B5589
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F242B558C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728948AbgKQAI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 19:08:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgKQAI4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 19:08:56 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83042C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 16:08:55 -0800 (PST)
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        id S1729999AbgKQAJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 19:09:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbgKQAJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 19:09:40 -0500
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 4165E806AC;
-        Tue, 17 Nov 2020 13:08:52 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1605571732;
-        bh=wKzDSvjyemjUgMegwRGh/s2qiK7Q90DAOnmI1lz/PbI=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=1Mn1NPsyJ4VCOMRqXYFf64lqfBs4NKzopnp37oDl32X4jmdNr8Cht/xcfObflzftB
-         /kFnyUbzF+bQmMIOlAxfXB0nKw/udlPmtuHimGIt/ExI3iACbQ8McE7wp4ZHx8Tz3e
-         N9IAQfuRyslmTJzLOGkIl/rDKTa9e5fgcc/qNsKNZj4Z4Exn+8AG7P8lS8WNBXhUya
-         X64xvc4KT9j6P1ImDv0rnVbIBPHlUXyPAlcO4wyz619IeU4c9ff8RPRcLEDkncct3K
-         NKpl71g8k0Sjw/+MuzK9MHC9XuGOv3mg7UYwSxRdhNh/8oSBf+Zf8TJ9hp0Hr5yayZ
-         g7dQet3NXIdQA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5fb314930000>; Tue, 17 Nov 2020 13:08:51 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 17 Nov 2020 13:08:51 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.008; Tue, 17 Nov 2020 13:08:51 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 2/2] spi: Add generic SPI multiplexer
-Thread-Topic: [PATCH v5 2/2] spi: Add generic SPI multiplexer
-Thread-Index: AQHV2ws2/p8yDzV/8U25Wa5FU7HxrKnHGE6AgAVDVAA=
-Date:   Tue, 17 Nov 2020 00:08:50 +0000
-Message-ID: <104152dd-a51e-1893-cc6b-022aecd89250@alliedtelesis.co.nz>
-References: <20200204032838.20739-3-chris.packham@alliedtelesis.co.nz>
- <20201113154633.21542-1-nsaenzjulienne@suse.de>
-In-Reply-To: <20201113154633.21542-1-nsaenzjulienne@suse.de>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2C940F91EF07274D86BCE85D636E8CD6@atlnz.lc>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FE732465B;
+        Tue, 17 Nov 2020 00:09:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605571779;
+        bh=kxglu5UvP5BYkoq5KmpDkh39wczJaE8VszE0bLZCrWo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u0dTIwkh4WBu5GRaGCFP4C7qBv/iSMk4MP+foCBRnVkYjGDtkMfxhLQ3sQAbpc2IX
+         YxO2z3g8OwGmNlda4hjKLNTE1jq8bsrxJqJZmh4545Lh4MeuVSAcSgaln/s0sBeSgC
+         yPQVNe3jx2XGAqc7imhFfUVrwQGc6ghpSlsAbc2o=
+Date:   Tue, 17 Nov 2020 09:09:36 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Chen Yu <yu.chen.surf@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v2 1/2] tools/bootconfig: Align the bootconfig applied
+ initrd image size to 4
+Message-Id: <20201117090936.cfa520bc662954d2fb6fc895@kernel.org>
+In-Reply-To: <CAHk-=wj-eXNoAXmtsr3hiLWsJffVpi9sOzy6W-gQwqAqbDBv5A@mail.gmail.com>
+References: <160554375807.96595.16142008590130221699.stgit@devnote2>
+        <160554376709.96595.14400301252651907015.stgit@devnote2>
+        <CAHk-=wj-eXNoAXmtsr3hiLWsJffVpi9sOzy6W-gQwqAqbDBv5A@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxNC8xMS8yMCA0OjQ2IGFtLCBOaWNvbGFzIFNhZW56IEp1bGllbm5lIHdyb3RlOg0KPiBV
-cG9uIHJlZ2lzdGVyaW5nIHNwaS1tdXgncyBkZXZpY2VzIHRocm91Z2ggc3BpX2FkZF9kZXZpY2Uo
-KSB0aGUga2VybmVsIGdldHMNCj4gc3R1Y2sgd2FpdGluZyBmb3IgdGhlICdzcGlfYWRkX2xvY2sn
-IG11dGV4IHRvIGJlIHJlbGVhc2VkLiBUaGUgbXV0ZXggaGFwcGVucyB0bw0KPiBiZSBoZWxkIGJ5
-IHNwaS1tdXgncyBwYXJlbnQgU1BJIGJ1cywgd2hpY2ggdW5sdWNraWx5LCBpcyB3YWl0aW5nIGZv
-ciBzcGktbXV4J3MNCj4gcHJvYmUgdG8gZmluaXNoIGJlZm9yZSByZWxlYXNpbmcgaXQuDQoNCkkg
-anVzdCByZS10ZXN0ZWQgbXkgc3lzdGVtIHdpdGggdjUuMTAuMC1yYzQgYW5kIGRpZG4ndCBzZWUg
-YW55IHByb2JsZW0uIA0KTXkgZHRzIGlzIHByZXR0eSBzaW1pbGFyIHRvIHlvdXJzIHRoZSBvbmx5
-IG9idmlvdXMgdGhpbmcgbWlzc2luZyBpcyANCmBtdXgtY29udHJvbC1uYW1lcyA9ICJzcGkiO2Ag
-YW5kIEkgYWxzbyBzZXQgYCNzaXplLWNlbGxzID0gPDE+O2AgKGxldCBtZSANCmtub3cgaWYgeW91
-IHdhbnQgbWUgdG8gcG9zdCB0aGUgd2hvbGUgdGhpbmcpLg0KDQpJdCBtaWdodCBiZSBkZXBlbmRl
-bnQgb24gdGhlIGhvc3Qgc3BpIGNvbnRyb2xsZXIuIFRoZSByZS10ZXN0IEkganVzdCBkaWQgDQp3
-YXMgb24gYSBib2FyZCB1c2luZyB0aGUgc3BpLW9yaW9uLmMgZHJpdmVyIGFuZCBJIHRlc3RlZCBt
-eSBvcmlnaW5hbCANCmNoYW5nZSBvbiBhIGJvYXJkIHVzaW5nIHNwaS1iY20tcXNwaS5jIChJIGhh
-dmVuJ3QgZ290IHRoZSBib2FyZCBoYW5keSANCnJpZ2h0IG5vdyBidXQgSSBjb3VsZCBnbyBhbmQg
-ZmluZCBvbmUgaWYgbmVjZXNzYXJ5KS4NCg0KPiBJIG1pZ2h0IGFzd2VsbCBiZSBkb2luZyBzb21l
-dGhpbmcgd3JvbmcuIEJ1dCBzbyBmYXIgSSB0cnVzdCBteSBEVA0KPiBpbXBsZW1lbnRhdGlvbjoN
-Cj4NCj4gCSZzcGkgew0KPiAJCXN0YXR1cyA9ICJva2F5IjsNCj4gCQlwaW5jdHJsLW5hbWVzID0g
-ImRlZmF1bHQiOw0KPiAJCXBpbmN0cmwtMCA9IDwmc3BpMF9ncGlvNz47DQo+DQo+IAkJc3BpQDAg
-ew0KPiAJCQljb21wYXRpYmxlID0gInNwaS1tdXgiOw0KPiAJCQlyZWcgPSA8MD47DQo+IAkJCSNh
-ZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiAJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gCQkJc3BpLW1h
-eC1mcmVxdWVuY3kgPSA8MTAwMDAwMDAwPjsNCj4NCj4gCQkJbXV4LWNvbnRyb2xzID0gPCZncGlv
-X211eD47DQo+DQo+IAkJCXc1NTAwQDAgew0KPiAJCQkJY29tcGF0aWJsZSA9ICJ3aXpuZXQsdzU1
-MDAiOw0KPiAJCQkJcmVnID0gPDA+Ow0KPiAJCQkJcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0IjsN
-Cj4gCQkJCXBpbmN0cmwtMCA9IDwmZXRoMV9waW5zPjsNCj4gCQkJCWludGVycnVwdC1wYXJlbnQg
-PSA8JmdwaW8+Ow0KPiAJCQkJaW50ZXJydXB0cyA9IDwyNyBJUlFfVFlQRV9FREdFX0ZBTExJTkc+
-Ow0KPiAJCQkJc3BpLW1heC1mcmVxdWVuY3kgPSA8MzAwMDAwMDA+Ow0KPiAJCQl9Ow0KPg0KPiAJ
-CQlzcGktZmxhc2hAMSB7DQo+IAkJCQljb21wYXRpYmxlID0gImplZGVjLHNwaS1ub3IiOw0KPiAJ
-CQkJcmVnID0gPDE+Ow0KPiAJCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+IAkJCQkjc2l6ZS1j
-ZWxscyA9IDwwPjsNCj4gCQkJCXNwaS1tYXgtZnJlcXVlbmN5ID0gPDE2MDAwMDAwPjsNCj4gCQkJ
-fTsNCj4gCQl9Ow0KPiAJfTsNCj4NCj4gUmVnYXJkcywNCj4gTmljb2xhcw==
+On Mon, 16 Nov 2020 10:29:45 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> On Mon, Nov 16, 2020 at 8:22 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> >         /* TODO: Ensure the @path is initramfs/initrd image */
+> > -       ret = write(fd, data, size + 8);
+> > +       ret = write(fd, data, size);
+> >         if (ret < 0) {
+> >                 pr_err("Failed to apply a boot config: %d\n", ret);
+> 
+> Side note: that's not the right error check for a write() call.
+> 
+> The problem predates your patch, so it's independent, I just noticed
+> as I looked at it.
+> 
+> The right error check is
+> 
+>         if (ret != size) {
+> 
+> because partial writes can happen even with regular files (yeah, it's
+> not POSIX, but NFS is a thing).
+> 
+> And the filesystem filling up is a possibility too, of course.
+
+Yes, and I also found the error message used return code, but it must use
+errno...  
+
+> 
+> > +               /* Write padding null characters */
+> > +               ret = write(fd, padbuf, pad);
+> > +               if (ret < 0) {
+> ...
+> > +       ret = write(fd, &size, sizeof(u32));
+> > +       ret = write(fd, &csum, sizeof(u32));
+> 
+> Those two guys don't check at all...
+
+Oops, OK, fix it.
+
+> 
+> >         /* Write a magic word of the bootconfig */
+> >         ret = write(fd, BOOTCONFIG_MAGIC, BOOTCONFIG_MAGIC_LEN);
+> >         if (ret < 0) {
+> 
+> .. and same comment.
+> 
+> Anyway, I'm not sure this is worth worrying about - even on NFS the
+> partial IO thing is basically non-existent.
+> 
+> But the filesystem full (or file size limit, or whatever) case is real
+> even on POSIX filesystems, and testing for write errors by checking
+> for a negative return is simply incorrect.
+> 
+> Partial writes are an issue (although the _next_ write will then
+> return an error, so you have to be unlucky to hit that partial write
+> on the very last write() that you do and that you test the return
+> value incorrectly).
+> 
+> The fact that it works in all normal circumstances just means that
+> these kinds of bugs tend to stay around, until somebody is really
+> unlocky and then you have inexplicably corrupt files..
+
+Agreed. If I hit the partial write, I need to roll it back. Or bootconfig
+command can not find the magic word and initrd image may just increase
+the size with the garbage data.
+
+Thank you!
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
