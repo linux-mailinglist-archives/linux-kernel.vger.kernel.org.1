@@ -2,176 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BB02B6F3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E21F72B6F43
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731284AbgKQTrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:47:23 -0500
-Received: from mail.efficios.com ([167.114.26.124]:40818 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728948AbgKQTrW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:47:22 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 4A8EB2E36C2;
-        Tue, 17 Nov 2020 14:47:21 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id GR3dE06nSY_Y; Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C2DBA2E3946;
-        Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C2DBA2E3946
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1605642440;
-        bh=+B59aLsvKUka/9WP6zUbeiECXbkqSfWKHUa+MS2yq28=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=c9pI2WHhQqyR0JFf55+95q5YT43Kp1xWnub2hm9BSUNVibjMfp+odXZ8TQ7ueM5ea
-         1DAT01hpE3YoCwl9Qbswo5oN4Dftd0GalhskDcxOr4pCn2ynpg/8lFSxh6WQH/DFch
-         aj3m2uC+ToZ3LAO9lE4UttmWlgmfVz9mTnYyVFUTmXy2NCIcXcTcI8BpzhF7VHbJte
-         h3vwS6tQc6gTF+RkvYKJbDC4PVvxoZVHP672k6E3UPaUUSzV7Y80ijSYKtG+ooW+fL
-         ZUKJ0Gypovl3miO3ZqOxeqDxnKIHlizesapoAGKwTblWyCOBbUXGjd6km7wL19ziG+
-         wRmCIAIysei6w==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id iuc9IeOT2QZf; Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id AE1BB2E3945;
-        Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-Date:   Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Message-ID: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201117142145.43194f1a@gandalf.local.home>
-References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com> <20201117142145.43194f1a@gandalf.local.home>
-Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
- memory allocation
+        id S1731115AbgKQTsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:48:20 -0500
+Received: from mga01.intel.com ([192.55.52.88]:52925 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728309AbgKQTsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:48:20 -0500
+IronPort-SDR: iFEGiG2lFdBbxLrib+0VoTEDL18Y5l2dNKOCksGCTUE5eUjeWBe/nZAkqG3NtGCAuLNGFfnqSA
+ 6FEGMqd2Yn9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="189059962"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="189059962"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 11:48:14 -0800
+IronPort-SDR: uK2aDNABIkYVgWjxiZ7a31Em1YrqeOxpE6X8G9o9d5vYHpuVUdGevKZeD2U39F5Oxl2snQFaeW
+ 3Fz9xC97YIhQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="356728752"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by orsmga008.jf.intel.com with ESMTP; 17 Nov 2020 11:48:14 -0800
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] thermal: int340x: Support Alder Lake
+Date:   Tue, 17 Nov 2020 11:48:02 -0800
+Message-Id: <20201117194802.503337-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
-Thread-Topic: tracepoint: Do not fail unregistering a probe due to memory allocation
-Thread-Index: cU8QSyXnFie0NdnbNChYpOJ7ycvfPg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Nov 17, 2020, at 2:21 PM, rostedt rostedt@goodmis.org wrote:
+Add ACPI IDs for thermal drivers for Alder Lake support.
 
-> On Tue, 17 Nov 2020 14:15:10 -0500 (EST)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
-> 
->> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
->> index e7c2276be33e..e0351bb0b140 100644
->> --- a/include/linux/tracepoint-defs.h
->> +++ b/include/linux/tracepoint-defs.h
->> @@ -38,6 +38,7 @@ struct tracepoint {
->>         int (*regfunc)(void);
->>         void (*unregfunc)(void);
->>         struct tracepoint_func __rcu *funcs;
->> +       void *stub_func;
->>  };
->>  
->>  #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
->> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
->> index 0f21617f1a66..b0b805de3779 100644
->> --- a/include/linux/tracepoint.h
->> +++ b/include/linux/tracepoint.h
->> @@ -287,6 +287,9 @@ static inline struct tracepoint
->> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->>  #define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)              \
->>         static const char __tpstrtab_##_name[]                          \
->>         __section("__tracepoints_strings") = #_name;                    \
->> +       static void __cold __tracepoint_stub_func_##_name(void *__data, proto) \
->> +       {                                                               \
->> +       }                                                               \
-> 
-> The thing is, tracepoints are already bloated. I do not want to add
-> something like this that will unnecessarily add more text.
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ drivers/thermal/intel/int340x_thermal/int3400_thermal.c | 1 +
+ drivers/thermal/intel/int340x_thermal/int3403_thermal.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-I've measured the impact of adding these stubs to kernel/sched/core.o, and
-it's entirely lost in the code alignment (it effectively adds 0 byte of text
-to my build) when using the "cold" attribute.
-
-Over an entire vmlinux, it adds 256 bytes of text overall, for a 0.008% code size
-increase.
-
-Can you measure any significant code size increase with this approach ?
-
-There seems to be more effect on the data size: adding the "stub_func" field
-in struct tracepoint adds 8320 bytes of data to my vmlinux. But considering
-the layout of struct tracepoint:
-
-struct tracepoint {
-        const char *name;               /* Tracepoint name */
-        struct static_key key;
-        struct static_call_key *static_call_key;
-        void *static_call_tramp;
-        void *iterator;
-        int (*regfunc)(void);
-        void (*unregfunc)(void);
-        struct tracepoint_func __rcu *funcs;
-        void *stub_func;
-};
-
-I would argue that we have many other things to optimize there if we want to
-shrink the bloat, starting with static keys and system call reg/unregfunc pointers.
-
-> 
-> Since all tracepoints callbacks have at least one parameter (__data), we
-> could declare tp_stub_func as:
-> 
-> static void tp_stub_func(void *data, ...)
-> {
->	return;
-> }
-> 
-> And now C knows that tp_stub_func() can be called with one or more
-> parameters, and had better be able to deal with it!
-
-AFAIU this won't work.
-
-C99 6.5.2.2 Function calls
-
-"If the function is defined with a type that is not compatible with the type (of the
-expression) pointed to by the expression that denotes the called function, the behavior is
-undefined."
-
-and
-
-6.7.5.3 Function declarators (including prototypes), item 15:
-
-"For two function types to be compatible, both shall specify compatible return types.
-
-Moreover, the parameter type lists, if both are present, shall agree in the number of
-parameters and in use of the ellipsis terminator; corresponding parameters shall have
-compatible types. [...]"
-
-What you suggest here is to use the ellipsis in the stub definition, but the caller
-prototype does not use the ellipsis, which brings us into undefined behavior territory
-again.
-
-Thanks,
-
-Mathieu
-
+diff --git a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+index 0966551cbaaa..823354a1a91a 100644
+--- a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
++++ b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+@@ -584,6 +584,7 @@ static int int3400_thermal_remove(struct platform_device *pdev)
+ static const struct acpi_device_id int3400_thermal_match[] = {
+ 	{"INT3400", 0},
+ 	{"INTC1040", 0},
++	{"INTC1041", 0},
+ 	{}
+ };
+ 
+diff --git a/drivers/thermal/intel/int340x_thermal/int3403_thermal.c b/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
+index ec1d58c4ceaa..c3c4c4d34542 100644
+--- a/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
++++ b/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
+@@ -284,6 +284,7 @@ static int int3403_remove(struct platform_device *pdev)
+ static const struct acpi_device_id int3403_device_ids[] = {
+ 	{"INT3403", 0},
+ 	{"INTC1043", 0},
++	{"INTC1046", 0},
+ 	{"", 0},
+ };
+ MODULE_DEVICE_TABLE(acpi, int3403_device_ids);
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.25.4
+
