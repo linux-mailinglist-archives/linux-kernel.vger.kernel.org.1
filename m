@@ -2,115 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950A62B6151
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E48A2B61D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbgKQNSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:18:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50368 "EHLO mail.kernel.org"
+        id S1730347AbgKQNWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:22:54 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:33638 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730628AbgKQNR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:17:57 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1731181AbgKQNWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:22:42 -0500
+Received: from zn.tnic (p200300ec2f101300ba25257689a011f5.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:1300:ba25:2576:89a0:11f5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D56D9241A5;
-        Tue, 17 Nov 2020 13:17:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619076;
-        bh=ic5jBbux+UJZJYLocT+D+GpplxxWtefD7bxISAML9mE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HY5fET/ibuahJ83p06su5x1ExQVINy2eFT6YPWXjaRZIWREzx48FRhlo67NHtccWw
-         afYr8ZvOiM7Ot0TrZPYCCIgJVTuz2zWKxsmcxMcS+wsA7zTjYNAvOagdaoFPSYMVO5
-         ZH6EBDyNpxBhi9zJAa/nDewNAKL0rwJs/zrX5kpM=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Al Grant <al.grant@arm.com>, Ian Rogers <irogers@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [GIT PULL] perf tools fixes for v5.10: 3rd batch
-Date:   Tue, 17 Nov 2020 10:17:47 -0300
-Message-Id: <20201117131747.650843-1-acme@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 90B8B1EC03CE;
+        Tue, 17 Nov 2020 14:22:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605619361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=20A+JSZTq0uSGOoQCxJWr5HNHVawruXZylnMqKk1XtY=;
+        b=XQ8/EgQsrFEBFXODTFwizejrV6cmkUB4O9w3QoB2B8+AuClH7cWIrwjLeV8PagcEIdLsOY
+        LNIu2V/rAV3/7H87f7a4YFJq5x2+OjkG16LWCDLuHDcNhyCZldxBKmxmx8cf55Hu8gBGbC
+        uixEsZG7WCjsAJZ4t+3YSm5zgCWYNZk=
+Date:   Tue, 17 Nov 2020 14:22:41 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v41 20/24] selftests/x86: Add a selftest for SGX
+Message-ID: <20201117132241.GE5719@zn.tnic>
+References: <20201112220135.165028-1-jarkko@kernel.org>
+ <20201112220135.165028-21-jarkko@kernel.org>
+ <e58ee564-597a-336e-53dc-7c4d172d51f5@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e58ee564-597a-336e-53dc-7c4d172d51f5@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Nov 16, 2020 at 11:19:12AM -0700, Shuah Khan wrote:
+> Please keep the list sorted alphabetically as stated
+> in the comment above.
 
-	Please consider pulling,
+Done.
 
-Best regards,
+> This should be KSFT_FAIL.
 
-- Arnaldo
+and done.
 
-The following changes since commit af5043c89a8ef6b6949a245fff355a552eaed240:
+Thx.
 
-  Merge tag 'acpi-5.10-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm (2020-11-12 11:06:53 -0800)
+-- 
+Regards/Gruss,
+    Boris.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.10-2020-11-17
-
-for you to fetch changes up to 568beb27959b0515d325ea1c6cf211eed2d66740:
-
-  perf test: Avoid an msan warning in a copied stack. (2020-11-16 14:10:58 -0300)
-
-----------------------------------------------------------------
-perf tools updates for v5.10: 3rd batch.
-
-- Fix file corruption due to event deletion in 'perf inject'.
-
-- Update arch/x86/lib/mem{cpy,set}_64.S copies used in 'perf bench mem
-  memcpy', silencing perf build warning.
-
-- Avoid an msan warning in a copied stack in 'perf test'.
-
-- Correct tracepoint field name "flags" in ARM's CS-ETM hardware tracing
-  'perf test' entry.
-
-- Update branch sample pattern for cs-etm to cope with excluding guest
-  in userspace counting.
-
-- Don't free "lock_seq_stat" if read_count isn't zero in 'perf lock'.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-Test results at the signed tag at:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-fixes-for-v5.10-2020-11-17
-
-----------------------------------------------------------------
-Al Grant (1):
-      perf inject: Fix file corruption due to event deletion
-
-Arnaldo Carvalho de Melo (1):
-      tools arch: Update arch/x86/lib/mem{cpy,set}_64.S copies used in 'perf bench mem memcpy'
-
-Ian Rogers (1):
-      perf test: Avoid an msan warning in a copied stack.
-
-Leo Yan (4):
-      perf lock: Correct field name "flags"
-      perf lock: Don't free "lock_seq_stat" if read_count isn't zero
-      perf test: Fix a typo in cs-etm testing
-      perf test: Update branch sample pattern for cs-etm
-
- tools/arch/x86/lib/memcpy_64.S               |  8 +++-----
- tools/arch/x86/lib/memset_64.S               | 11 ++++++-----
- tools/perf/arch/x86/tests/dwarf-unwind.c     |  7 +++++++
- tools/perf/bench/mem-memcpy-x86-64-asm.S     |  3 +++
- tools/perf/bench/mem-memset-x86-64-asm.S     |  3 +++
- tools/perf/builtin-inject.c                  | 12 +-----------
- tools/perf/builtin-lock.c                    |  4 ++--
- tools/perf/tests/shell/test_arm_coresight.sh |  4 ++--
- tools/perf/util/include/linux/linkage.h      |  7 +++++++
- 9 files changed, 34 insertions(+), 25 deletions(-)
+https://people.kernel.org/tglx/notes-about-netiquette
