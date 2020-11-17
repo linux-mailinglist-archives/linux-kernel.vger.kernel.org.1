@@ -2,116 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240982B6FED
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF582B6FF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgKQUVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:21:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgKQUVp (ORCPT
+        id S1726847AbgKQUWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:22:08 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:34937 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbgKQUWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:21:45 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB31C0613CF;
-        Tue, 17 Nov 2020 12:21:44 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id a9so30925762lfh.2;
-        Tue, 17 Nov 2020 12:21:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=usYoX1OUo+I43l78t6yKp9KT+NTtewGJzWDSoIma1po=;
-        b=vJ5gRw4OgRcSRzP93FGLPxWoOQvh4WwrYZTYKtDXw6DTvxGoZtlgswFl33TrAqlOOS
-         BnUzlkx1X6FRwPL6I4TrNcLQRzwHa0JM0loB42eAvhDkMglTsmGFk1aJOzytK/Tgl9le
-         /rS5H1dFDiC7wzWz6favYGUd9en8jNofwuk+Aw++oHFM6QmWLoXdx2MKKe+iTS5guEfF
-         vdu1H2xPW7QLhlmoS0vi0vfF58fSV1aKJcm8vy58wwil2C8XONlPmtfpRlcNdBp6uxyd
-         R6BCk/G/LhUUF3vQYgd/RcsagkvZK9CADRKHeaJGCkftT+obe4Qu9ricwkCW9wcnCxBU
-         JAlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=usYoX1OUo+I43l78t6yKp9KT+NTtewGJzWDSoIma1po=;
-        b=XqO1enaQ9FX1B88QjR7IAe9Wl6Z9aUZNcnivnwK3HMpm5MkBtqlb2oW/4lws8PiyGM
-         +z7DNJ9U2UB/1QBSWj+0gKnpvZNpuhtrh/GnUqiYGTVTbshRe2018POR+SWgvlJryCsk
-         qkr3SzEbzqGEID3F92IuYtgEmgBOdcssi2wy/K8w595LGsCQ2sSKFzmZi6Z4+HJ6FH6o
-         YEWwJoYhyx2PmAHL7FrpG3wwC63Cm0Cq9/vigc01PEjkz0HR9kXAJgeKaXm01rlB8AiK
-         e5uE5j9oBnQAYaIeUeqfFoWLJLqOY/EaeDMGL4655zAX8AWVII+hCGN6LQ1xV4WPlEUx
-         4ySg==
-X-Gm-Message-State: AOAM531acSjaYNAqI/WdbX7UPXUIP1lJkLeiScVkjFUCBHFLy7MUBeLa
-        zeSvFk4GRseGTHZNY31lwMA=
-X-Google-Smtp-Source: ABdhPJyIcj5fOJ77BPNWh48VfX9Ra3j2O98tJu12S72MAkpa2AM43C37crl33CQj9R7+XQX+xeqSZQ==
-X-Received: by 2002:a19:8396:: with SMTP id f144mr2226096lfd.444.1605644503034;
-        Tue, 17 Nov 2020 12:21:43 -0800 (PST)
-Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id z19sm1287729ljn.15.2020.11.17.12.21.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 12:21:42 -0800 (PST)
-Subject: Re: [PATCH v4] mm: Optional full ASLR for mmap() and mremap()
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@kernel.org>
-References: <20201026160518.9212-1-toiwoton@gmail.com>
- <20201117165455.GN29991@casper.infradead.org>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <19373af5-2272-7615-27a7-6734c584f8bd@gmail.com>
-Date:   Tue, 17 Nov 2020 22:21:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201117165455.GN29991@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 17 Nov 2020 15:22:07 -0500
+Received: from orion.localdomain ([95.118.38.12]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MxV4T-1kLnHF1wKX-00xrRX; Tue, 17 Nov 2020 21:21:36 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dmitry.torokhov@gmail.com, derek.kiernan@xilinx.com,
+        dragan.cvetic@xilinx.com, richardcochran@gmail.com,
+        linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 1/2] x86: make vmware support optional
+Date:   Tue, 17 Nov 2020 21:21:33 +0100
+Message-Id: <20201117202134.6312-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:fj7bI7mxdFqhriaDicYuz7rizi0CREEvGlsNB/AQyB8FEbrW0oH
+ B52rlTGY4CnMVb+RyM4Qc38z7ak4H7tmwcHOts9ktXZWiM5bAecB9zFr3hzGQp65FPRzK1I
+ OL2SbPsDtWwQyYJbmQ8kRnCfgIxJSbty28soy9TljpmlROSSyhqNIaE3ws74KdgYuQigXd9
+ RCeOeaogZgrc886CMZOHA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PW0Dl+stmBc=:ADu7HeDjtlv53rpmVSMYa0
+ VS5RyG8whEA+BocAFE+4MbVYTS3Ojfb9lI2FcoW5U2VioSQ1XHcnccHAzV+vlX+53viq5PgJA
+ rkhAquzR+na/exO5tmR5WKRZVF7/l6o15k31/fIw4cZ+Y9mywZaCQ5V3Riv4DaQn7kqzM0IJU
+ clKvmid/dRtUzz1c6Y7OE3PqlA/LDCzC2YrPpctLzmTDqGc7nxppMGRk5zF9CIV5Pma8xGiEe
+ xXyrL1ozXgUERKIvHDhIG63K0dYmPDjvdbElbopPR9pMbq+TrVKQtXveKmz8MSk3dkquuIQi7
+ MPCZecu/LVDORd6irMrKq2vzGBJWn2s2WkoRI6Zpc76zA0Y9Zmo3CeYDmmy7Gy1O/3jmiSISa
+ PY2qcS99pUqnw6qZR+0v5nwSGUseDDcIvUDcd9a564pgb4Ujbeqx029yYPYab
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.11.2020 18.54, Matthew Wilcox wrote:
-> On Mon, Oct 26, 2020 at 06:05:18PM +0200, Topi Miettinen wrote:
->> Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
->> enables full randomization of memory mappings created with mmap(NULL,
->> ...). With 2, the base of the VMA used for such mappings is random,
->> but the mappings are created in predictable places within the VMA and
->> in sequential order. With 3, new VMAs are created to fully randomize
->> the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
->> even if not necessary.
-> 
-> Is this worth it?
-> 
-> https://www.ndss-symposium.org/ndss2017/ndss-2017-programme/aslrcache-practical-cache-attacks-mmu/
+---
+ arch/x86/Kconfig                 | 7 +++++++
+ arch/x86/kernel/cpu/Makefile     | 4 +++-
+ arch/x86/kernel/cpu/hypervisor.c | 2 ++
+ drivers/input/mouse/Kconfig      | 2 +-
+ drivers/misc/Kconfig             | 2 +-
+ drivers/ptp/Kconfig              | 2 +-
+ 6 files changed, 15 insertions(+), 4 deletions(-)
 
-Thanks, very interesting. The paper presents an attack (AnC) which can 
-break ASLR even from JavaScript in browsers. In the process it compares 
-the memory allocators of Firefox and Chrome. Firefox relies on Linux 
-mmap() to randomize the memory location, but Chrome internally chooses 
-the randomized address. The paper doesn't present exact numbers to break 
-ASLR for Chrome case, but it seems to require more effort. Chrome also 
-aggressively randomizes the memory on each allocation, which seems to 
-enable further possibilities for AnC to probe the MMU tables.
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index f6946b81f74a..c227c1fa0091 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -801,6 +801,13 @@ config X86_HV_CALLBACK_VECTOR
+ 
+ source "arch/x86/xen/Kconfig"
+ 
++config VMWARE_GUEST
++	bool "Vmware Guest support"
++	default y
++	help
++	  This option enables several optimizations for running under the
++	  VMware hypervisor.
++
+ config KVM_GUEST
+ 	bool "KVM Guest support (including kvmclock)"
+ 	depends on PARAVIRT
+diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
+index 93792b457b81..a615b0152bf0 100644
+--- a/arch/x86/kernel/cpu/Makefile
++++ b/arch/x86/kernel/cpu/Makefile
+@@ -51,7 +51,9 @@ obj-$(CONFIG_X86_CPU_RESCTRL)		+= resctrl/
+ 
+ obj-$(CONFIG_X86_LOCAL_APIC)		+= perfctr-watchdog.o
+ 
+-obj-$(CONFIG_HYPERVISOR_GUEST)		+= vmware.o hypervisor.o mshyperv.o
++obj-$(CONFIG_HYPERVISOR_GUEST)		+= hypervisor.o mshyperv.o
++obj-$(CONFIG_VMWARE_GUEST)		+= vmware.o
++
+ obj-$(CONFIG_ACRN_GUEST)		+= acrn.o
+ 
+ ifdef CONFIG_X86_FEATURE_NAMES
+diff --git a/arch/x86/kernel/cpu/hypervisor.c b/arch/x86/kernel/cpu/hypervisor.c
+index 553bfbfc3a1b..c0e770a224aa 100644
+--- a/arch/x86/kernel/cpu/hypervisor.c
++++ b/arch/x86/kernel/cpu/hypervisor.c
+@@ -34,7 +34,9 @@ static const __initconst struct hypervisor_x86 * const hypervisors[] =
+ #ifdef CONFIG_XEN_PVHVM
+ 	&x86_hyper_xen_hvm,
+ #endif
++#ifdef CONFIG_VMWARE_GUEST
+ 	&x86_hyper_vmware,
++#endif
+ 	&x86_hyper_ms_hyperv,
+ #ifdef CONFIG_KVM_GUEST
+ 	&x86_hyper_kvm,
+diff --git a/drivers/input/mouse/Kconfig b/drivers/input/mouse/Kconfig
+index d8b6a5dab190..29ced69d5c85 100644
+--- a/drivers/input/mouse/Kconfig
++++ b/drivers/input/mouse/Kconfig
+@@ -186,7 +186,7 @@ config MOUSE_PS2_FOCALTECH
+ 
+ config MOUSE_PS2_VMMOUSE
+ 	bool "Virtual mouse (vmmouse)"
+-	depends on MOUSE_PS2 && X86 && HYPERVISOR_GUEST
++	depends on MOUSE_PS2 && X86 && VMWARE_GUEST
+ 	help
+ 	  Say Y here if you are running under control of VMware hypervisor
+ 	  (ESXi, Workstation or Fusion). Also make sure that when you enable
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index fafa8b0d8099..d2bd8eff6eb6 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -363,7 +363,7 @@ config DS1682
+ 
+ config VMWARE_BALLOON
+ 	tristate "VMware Balloon Driver"
+-	depends on VMWARE_VMCI && X86 && HYPERVISOR_GUEST
++	depends on VMWARE_VMCI && X86 && VMWARE_GUEST
+ 	select MEMORY_BALLOON
+ 	help
+ 	  This is VMware physical memory management driver which acts
+diff --git a/drivers/ptp/Kconfig b/drivers/ptp/Kconfig
+index 942f72d8151d..6bf30153270e 100644
+--- a/drivers/ptp/Kconfig
++++ b/drivers/ptp/Kconfig
+@@ -141,7 +141,7 @@ config PTP_1588_CLOCK_IDTCM
+ 
+ config PTP_1588_CLOCK_VMW
+ 	tristate "VMware virtual PTP clock"
+-	depends on ACPI && HYPERVISOR_GUEST && X86
++	depends on ACPI && VMWARE_GUEST && X86
+ 	depends on PTP_1588_CLOCK
+ 	help
+ 	  This driver adds support for using VMware virtual precision
+-- 
+2.11.0
 
-Disregarding the difference in aggressiveness of memory allocators, I 
-think with sysctl.kernel.randomize_va_space=3, the effort for breaking 
-ASLR with Firefox should be increased closer to Chrome case since mmap() 
-will use the address space more randomly.
-
-I have used this setting now for a month without any visible performance 
-issues, so I think the extra bits (for some additional effort to 
-attackers) are definitely worth the low cost.
-
-Furthermore, the paper does not describe in detail how the attack would 
-continue after breaking ASLR. Perhaps there are assumptions which are 
-not valid when the different memory areas are no longer sequential. For 
-example, if ASLR is initially broken wrt. the JIT buffer but continuing 
-the attack would require other locations to be determined (like stack, 
-data segment for main exe or libc etc), further efforts may be needed to 
-resolve these locations. With randomize_va_space=2, resolving any 
-address (JIT buffer) can reveal the addresses of many other memory areas 
-but this is not the case with 3.
-
--Topi
