@@ -2,129 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE32D2B691A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A30F2B691C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgKQPwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:52:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726498AbgKQPwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:52:51 -0500
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5B7C246A4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:52:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605628370;
-        bh=n5hKtnSFbRkV9Ne7F3tzTOQSjkjOGG9/Snmw1ldMllw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wng07msAE8++JfieGqzZYgVw6nSQ52Zny/os6+FInAAdBYxt737ime6etV+2z58Yk
-         jZDkSmOz9r0h4poU7EmRmoS/9HB+AjshlaMerJZMpWBTUTZq9EEGY83tFGTyH1KtBf
-         76ekIZR7dJDSBr5gAbBWlYjcbsQ2EU8hryh4m3jg=
-Received: by mail-wr1-f54.google.com with SMTP id r17so23695013wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:52:49 -0800 (PST)
-X-Gm-Message-State: AOAM5304KIDee2ICLdmn3F0je6oUNEKLCydB99WF7fgqrZ+8fN5BHKEf
-        jWpNa5IHVS1Yoi5oiUwIrsx9XpmVlb2VMx+Mq82WAQ==
-X-Google-Smtp-Source: ABdhPJx7Js1z7R2ybZj/Qw2xAJYSDUwnncWIhJhMB0U7OUakF/SEBWlcTmMuoU9g5eD15k4CqaHtRGsPOcVPbpJ2Puk=
-X-Received: by 2002:a5d:5482:: with SMTP id h2mr204314wrv.18.1605628368294;
- Tue, 17 Nov 2020 07:52:48 -0800 (PST)
+        id S1726736AbgKQPxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:53:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726391AbgKQPxZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 10:53:25 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADC1C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:53:23 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id w142so30737655lff.8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:53:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wrbxy0MZbhrpOaPG1/4psjQwixG+teUQ/GK/suwoP/8=;
+        b=yRuwbwjVjZFUz+DlpAdwpiqrtorJh3UEIh9dc9GnB3kVjn+eewa5XaU05O5Jyu1uXT
+         VnmKIQBBT1eZ4O/j4PMuGhIBlW+59zR/H2tq4tDz5rooCjDQFxOwRNZ8w7S2zMYW+Pv0
+         zghBO+IhPQQk3pkDz+FrUA5fXETCIReiXwfXK8rFRcXSWUp33CGGzg4wPPKG9vJa8MGB
+         bv5fdaYPaV831g562hFV5PSquJATRU9bobX17kduK3MczuSLidYGngfJyL3Dj+JIbOL9
+         XM62djJv2VgagyDtTxLsXISjXDuY5W4x4VuZvtJGjk6pJuv8TOvPPl/OgiFqWJ6Ttl8i
+         RsNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wrbxy0MZbhrpOaPG1/4psjQwixG+teUQ/GK/suwoP/8=;
+        b=Hh+nOb9UyyRuKubyLgRYdN6f8E93RDVDYKmeX3WfTfS1AhWs7VX7nCYnKkQnk83xMA
+         oNAMzyRcmxepPTNoXtKLMEjMn4bbtjpctq2tx6mkno5dsUqJaIR4yeJ/fgblmXajEpcN
+         tacGRloX8BxtAhj2OsZVHBvSBZz2sNOSkXv0zGD1+x0XKxUmtsSpBldHhfhKS80uVTei
+         qh1h54oDl35fje28I4h9YVAJUECMvmdILkcsy2DfOMXc6xI25Yp34z6b8ko1PA/RRl04
+         O+5L0AwUL9zDNncLQWpE8JyYbUlkVR7Zb86GwIuGiLNJFQZGJ6EG77DmQ2yavoVLl3Ll
+         XfrA==
+X-Gm-Message-State: AOAM532GFj1EzBGOGmJwbLQbA/KgaNOHHN7O+ovt/urQhure9jbgw1JH
+        IFqs4TgV7KYK6oDK1olJEZp8qnD4Peqa56g7qCRrTdnPh3mPEA==
+X-Google-Smtp-Source: ABdhPJy/V0/KpToMYO+dMPADvlNAhDw2bd5bpQCN7rrvxz4L2wXj/3B4gzWRa/iXU11g2Od6sKGuEPJ+lE/MI28Yjzc=
+X-Received: by 2002:a05:6512:200e:: with SMTP id a14mr1851590lfb.573.1605628401788;
+ Tue, 17 Nov 2020 07:53:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116144757.1920077-13-alexandre.chartre@oracle.com> <CALCETrUSCwtR41CCo_cAQf_BwG7istH6fM=bxWh_VfOjSNFmSw@mail.gmail.com>
- <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com> <CALCETrUJQJRi6fE=bs3iAySgM8wjmGU1f464FqOuU+PiBwwnQQ@mail.gmail.com>
- <bf919e4b-d56f-711d-f7ae-b463b8fdadfd@oracle.com>
-In-Reply-To: <bf919e4b-d56f-711d-f7ae-b463b8fdadfd@oracle.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 17 Nov 2020 07:52:33 -0800
-X-Gmail-Original-Message-ID: <CALCETrWS8_yugbLGFpGUbj2Z5bV04jnCNcnc40QUXWCdmJQU-g@mail.gmail.com>
-Message-ID: <CALCETrWS8_yugbLGFpGUbj2Z5bV04jnCNcnc40QUXWCdmJQU-g@mail.gmail.com>
-Subject: Re: [RFC][PATCH v2 12/21] x86/pti: Use PTI stack instead of
- trampoline stack
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+References: <20201117134222.31482-1-mgorman@techsingularity.net>
+ <20201117134222.31482-4-mgorman@techsingularity.net> <20201117141814.GN3121392@hirez.programming.kicks-ass.net>
+ <CAKfTPtDQgv8RCe1RRCGg0px0Bp6GbdAhXbRKTH5zeVaRDmK+vg@mail.gmail.com> <20201117151740.GB3371@techsingularity.net>
+In-Reply-To: <20201117151740.GB3371@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 17 Nov 2020 16:53:10 +0100
+Message-ID: <CAKfTPtD27L0Epg7wPzw7G2zDL8XgdVbB45dZEZEsLmuwRp5gcg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] sched/numa: Limit the amount of imbalance that can
+ exist at fork time
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
-        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
-        kuzuno@gmail.com
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 7:07 AM Alexandre Chartre
-<alexandre.chartre@oracle.com> wrote:
+On Tue, 17 Nov 2020 at 16:17, Mel Gorman <mgorman@techsingularity.net> wrote:
 >
->
->
-> On 11/16/20 7:34 PM, Andy Lutomirski wrote:
-> > On Mon, Nov 16, 2020 at 10:10 AM Alexandre Chartre
-> > <alexandre.chartre@oracle.com> wrote:
-> >>
-> >>
-> >> On 11/16/20 5:57 PM, Andy Lutomirski wrote:
-> >>> On Mon, Nov 16, 2020 at 6:47 AM Alexandre Chartre
-> >>> <alexandre.chartre@oracle.com> wrote:
-> >>>>
-> >>>> When entering the kernel from userland, use the per-task PTI stack
-> >>>> instead of the per-cpu trampoline stack. Like the trampoline stack,
-> >>>> the PTI stack is mapped both in the kernel and in the user page-table.
-> >>>> Using a per-task stack which is mapped into the kernel and the user
-> >>>> page-table instead of a per-cpu stack will allow executing more code
-> >>>> before switching to the kernel stack and to the kernel page-table.
-> >>>
-> >>> Why?
-> >>
-> >> When executing more code in the kernel, we are likely to reach a point
-> >> where we need to sleep while we are using the user page-table, so we need
-> >> to be using a per-thread stack.
-> >>
-> >>> I can't immediately evaluate how nasty the page table setup is because
-> >>> it's not in this patch.
-> >>
-> >> The page-table is the regular page-table as introduced by PTI. It is just
-> >> augmented with a few additional mapping which are in patch 11 (x86/pti:
-> >> Extend PTI user mappings).
-> >>
-> >>>   But AFAICS the only thing that this enables is sleeping with user pagetables.
-> >>
-> >> That's precisely the point, it allows to sleep with the user page-table.
-> >>
-> >>> Do we really need to do that?
-> >>
-> >> Actually, probably not with this particular patchset, because I do the page-table
-> >> switch at the very beginning and end of the C handler. I had some code where I
-> >> moved the page-table switch deeper in the kernel handler where you definitively
-> >> can sleep (for example, if you switch back to the user page-table before
-> >> exit_to_user_mode_prepare()).
-> >>
-> >> So a first step should probably be to not introduce the per-task PTI trampoline stack,
-> >> and stick with the existing trampoline stack. The per-task PTI trampoline stack can
-> >> be introduced later when the page-table switch is moved deeper in the C handler and
-> >> we can effectively sleep while using the user page-table.
+> On Tue, Nov 17, 2020 at 03:31:19PM +0100, Vincent Guittot wrote:
+> > On Tue, 17 Nov 2020 at 15:18, Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Tue, Nov 17, 2020 at 01:42:22PM +0000, Mel Gorman wrote:
+> > > > -                     if (local_sgs.idle_cpus)
+> > > > +                     if (local_sgs.idle_cpus >= (sd->span_weight >> 2))
+> > > >                               return NULL;
+> > >
+> > > Is that the same 25% ?
 > >
-> > Seems reasonable.
-> >
+> > same question for me
 >
-> I finally remember why I have introduced a per-task PTI trampoline stack right now:
-> that's to be able to move the CR3 switch anywhere in the C handler. To do so, we need
-> a per-task stack to enter (and return) from the C handler as the handler can potentially
-> go to sleep.
+> It's the same 25%. It's in the comment as -- utilisation is not too high
+
+utilization is misleading, it usually refers to pelt utilization
+whereas whet you check is the number of busy cpus
+
+> where "high" is related to adjust_numa_imbalance.
 >
-> Without a per-task trampoline stack, we would be limited to call the switch CR3 functions
-> from the assembly entry code before and after calling the C function handler (also called
-> from assembly).
+> > could we encapsulate this 25% allowed imbalance like for adjust_numa_imbalance
+>
+> Using adjust_numa_imbalance() directly in this context would be awkward
 
-The noinstr part of the C entry code won't sleep.
+Would be good to use the same function to say if we allow or not the imbalance
 
---Andy
+something like numa_allow_imbalance(sg_lb_stats * group_stats)
+
+which would return how much margin remains available before not
+allowing the imbalance
+
+and use the same metrics in all cases
+
+
+> but the threshold could be shared with something like the additional
+> diff below. Is that what you had in mind or something different?
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index adfab218a498..49ef3484c56c 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5878,6 +5878,8 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+>  static struct sched_group *
+>  find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu);
+>
+> +static inline int numa_imbalance_threshold(int weight);
+> +
+>  /*
+>   * find_idlest_group_cpu - find the idlest CPU among the CPUs in the group.
+>   */
+> @@ -8894,7 +8896,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+>                          * If there is a real need of migration, periodic load
+>                          * balance will take care of it.
+>                          */
+> -                       if (local_sgs.idle_cpus >= (sd->span_weight >> 2))
+
+also here you use idle_cpus and on the other part you use nr_running.
+Can't we use the same metrics on both sides?
+
+> +                       if (local_sgs.idle_cpus >= numa_imbalance_threshold(sd->span_weight))
+>                                 return NULL;
+>                 }
+>
+> @@ -8998,6 +9000,14 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+>
+>  #define NUMA_IMBALANCE_MIN 2
+>
+> +/* Allows imbalances until active CPUs hits 25% of a domain */
+> +#define IMBALANCE_THRESHOLD_SHIFT 2
+> +
+> +static inline int numa_imbalance_threshold(int weight)
+> +{
+> +       return weight >> IMBALANCE_THRESHOLD_SHIFT;
+> +}
+> +
+>  static inline long adjust_numa_imbalance(int imbalance,
+>                                 int dst_running, int dst_weight)
+>  {
+> @@ -9006,8 +9016,10 @@ static inline long adjust_numa_imbalance(int imbalance,
+>          * when the destination is lightly loaded so that pairs of
+>          * communicating tasks may remain local.
+>          */
+> -       if (dst_running < (dst_weight >> 2) && imbalance <= NUMA_IMBALANCE_MIN)
+> +       if (dst_running < numa_imbalance_threshold(dst_weight) &&
+> +           imbalance <= NUMA_IMBALANCE_MIN) {
+>                 return 0;
+> +       }
+>
+>         return imbalance;
+>  }
+>
+> --
+> Mel Gorman
+> SUSE Labs
