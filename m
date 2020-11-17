@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBB82B61A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E102B6053
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730797AbgKQNUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:20:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54118 "EHLO mail.kernel.org"
+        id S1729240AbgKQNIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:08:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729499AbgKQNUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:20:37 -0500
+        id S1729224AbgKQNIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:08:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A0D1241A6;
-        Tue, 17 Nov 2020 13:20:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53796238E6;
+        Tue, 17 Nov 2020 13:08:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619237;
-        bh=6Yev0pjRKHStnjnyUM7qIny4PcOwexPPhGLSFztfQ90=;
+        s=default; t=1605618484;
+        bh=bCshQWkkaXReYk2snvFAXpUAtrXIdW7b5JSTHMtVw+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1JFSVskz5KnrPpq1dZVgeexiAmIgih7eY1CiBCBXbvcWPtDFjkEw1UW9lRg+p3kzn
-         syxdAKYtCoAOyzRDObfKZzsqZxQVvd6jJr7aJFzsnnZ4CQq/pmC4vpKq2M+oTf+S55
-         tbKyV6y7z82PHGJ4cWbsD7t7rOx795+2WIhLsQeM=
+        b=YWdiUJsUEEaiXld+YAvFCvnXE2PjLMWdkOWRq+SkGhvdwYO8Nf4Naj/Mv2+XVxA5Y
+         21rf2Kb64uB9ElanY+veYEHpfT15EQQlbNuzkq4pX5SnH5KahRo3Ivt9Lb/XHBVSkQ
+         RH1TDQ2MLjnMNLIVMs8w4QLdhrV4JfPzFXhFIjik=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 044/101] s390/smp: move rcu_cpu_starting() earlier
+        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>, Jinoh Kang <luke1337@theori.io>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Wei Liu <wl@xen.org>
+Subject: [PATCH 4.4 48/64] xen/events: avoid removing an event channel while handling it
 Date:   Tue, 17 Nov 2020 14:05:11 +0100
-Message-Id: <20201117122115.242580393@linuxfoundation.org>
+Message-Id: <20201117122108.536464247@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,72 +45,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@redhat.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit de5d9dae150ca1c1b5c7676711a9ca139d1a8dec ]
+commit 073d0552ead5bfc7a3a9c01de590e924f11b5dd2 upstream.
 
-The call to rcu_cpu_starting() in smp_init_secondary() is not early
-enough in the CPU-hotplug onlining process, which results in lockdep
-splats as follows:
+Today it can happen that an event channel is being removed from the
+system while the event handling loop is active. This can lead to a
+race resulting in crashes or WARN() splats when trying to access the
+irq_info structure related to the event channel.
 
- WARNING: suspicious RCU usage
- -----------------------------
- kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
+Fix this problem by using a rwlock taken as reader in the event
+handling loop and as writer when deallocating the irq_info structure.
 
- other info that might help us debug this:
+As the observed problem was a NULL dereference in evtchn_from_irq()
+make this function more robust against races by testing the irq_info
+pointer to be not NULL before dereferencing it.
 
- RCU used illegally from offline CPU!
- rcu_scheduler_active = 1, debug_locks = 1
- no locks held by swapper/1/0.
+And finally make all accesses to evtchn_to_irq[row][col] atomic ones
+in order to avoid seeing partial updates of an array element in irq
+handling. Note that irq handling can be entered only for event channels
+which have been valid before, so any not populated row isn't a problem
+in this regard, as rows are only ever added and never removed.
 
- Call Trace:
- show_stack+0x158/0x1f0
- dump_stack+0x1f2/0x238
- __lock_acquire+0x2640/0x4dd0
- lock_acquire+0x3a8/0xd08
- _raw_spin_lock_irqsave+0xc0/0xf0
- clockevents_register_device+0xa8/0x528
- init_cpu_timer+0x33e/0x468
- smp_init_secondary+0x11a/0x328
- smp_start_secondary+0x82/0x88
+This is XSA-331.
 
-This is avoided by moving the call to rcu_cpu_starting up near the
-beginning of the smp_init_secondary() function. Note that the
-raw_smp_processor_id() is required in order to avoid calling into
-lockdep before RCU has declared the CPU to be watched for readers.
-
-Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
-Signed-off-by: Qian Cai <cai@redhat.com>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Reported-by: Jinoh Kang <luke1337@theori.io>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Reviewed-by: Wei Liu <wl@xen.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kernel/smp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/xen/events/events_base.c |   40 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
 
-diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
-index 8e31dfd85de32..888f247c9261a 100644
---- a/arch/s390/kernel/smp.c
-+++ b/arch/s390/kernel/smp.c
-@@ -831,7 +831,7 @@ void __init smp_detect_cpus(void)
-  */
- static void smp_start_secondary(void *cpuvoid)
- {
--	int cpu = smp_processor_id();
-+	int cpu = raw_smp_processor_id();
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -32,6 +32,7 @@
+ #include <linux/slab.h>
+ #include <linux/irqnr.h>
+ #include <linux/pci.h>
++#include <linux/spinlock.h>
  
- 	S390_lowcore.last_update_clock = get_tod_clock();
- 	S390_lowcore.restart_stack = (unsigned long) restart_stack;
-@@ -844,6 +844,7 @@ static void smp_start_secondary(void *cpuvoid)
- 	set_cpu_flag(CIF_ASCE_PRIMARY);
- 	set_cpu_flag(CIF_ASCE_SECONDARY);
- 	cpu_init();
-+	rcu_cpu_starting(cpu);
- 	preempt_disable();
- 	init_cpu_timer();
- 	vtime_init();
--- 
-2.27.0
-
+ #ifdef CONFIG_X86
+ #include <asm/desc.h>
+@@ -70,6 +71,23 @@ const struct evtchn_ops *evtchn_ops;
+  */
+ static DEFINE_MUTEX(irq_mapping_update_lock);
+ 
++/*
++ * Lock protecting event handling loop against removing event channels.
++ * Adding of event channels is no issue as the associated IRQ becomes active
++ * only after everything is setup (before request_[threaded_]irq() the handler
++ * can't be entered for an event, as the event channel will be unmasked only
++ * then).
++ */
++static DEFINE_RWLOCK(evtchn_rwlock);
++
++/*
++ * Lock hierarchy:
++ *
++ * irq_mapping_update_lock
++ *   evtchn_rwlock
++ *     IRQ-desc lock
++ */
++
+ static LIST_HEAD(xen_irq_list_head);
+ 
+ /* IRQ <-> VIRQ mapping. */
+@@ -104,7 +122,7 @@ static void clear_evtchn_to_irq_row(unsi
+ 	unsigned col;
+ 
+ 	for (col = 0; col < EVTCHN_PER_ROW; col++)
+-		evtchn_to_irq[row][col] = -1;
++		WRITE_ONCE(evtchn_to_irq[row][col], -1);
+ }
+ 
+ static void clear_evtchn_to_irq_all(void)
+@@ -141,7 +159,7 @@ static int set_evtchn_to_irq(unsigned ev
+ 		clear_evtchn_to_irq_row(row);
+ 	}
+ 
+-	evtchn_to_irq[row][col] = irq;
++	WRITE_ONCE(evtchn_to_irq[row][col], irq);
+ 	return 0;
+ }
+ 
+@@ -151,7 +169,7 @@ int get_evtchn_to_irq(unsigned evtchn)
+ 		return -1;
+ 	if (evtchn_to_irq[EVTCHN_ROW(evtchn)] == NULL)
+ 		return -1;
+-	return evtchn_to_irq[EVTCHN_ROW(evtchn)][EVTCHN_COL(evtchn)];
++	return READ_ONCE(evtchn_to_irq[EVTCHN_ROW(evtchn)][EVTCHN_COL(evtchn)]);
+ }
+ 
+ /* Get info for IRQ */
+@@ -260,10 +278,14 @@ static void xen_irq_info_cleanup(struct
+  */
+ unsigned int evtchn_from_irq(unsigned irq)
+ {
+-	if (unlikely(WARN(irq >= nr_irqs, "Invalid irq %d!\n", irq)))
++	const struct irq_info *info = NULL;
++
++	if (likely(irq < nr_irqs))
++		info = info_for_irq(irq);
++	if (!info)
+ 		return 0;
+ 
+-	return info_for_irq(irq)->evtchn;
++	return info->evtchn;
+ }
+ 
+ unsigned irq_from_evtchn(unsigned int evtchn)
+@@ -447,16 +469,21 @@ static int __must_check xen_allocate_irq
+ static void xen_free_irq(unsigned irq)
+ {
+ 	struct irq_info *info = info_for_irq(irq);
++	unsigned long flags;
+ 
+ 	if (WARN_ON(!info))
+ 		return;
+ 
++	write_lock_irqsave(&evtchn_rwlock, flags);
++
+ 	list_del(&info->list);
+ 
+ 	set_info_for_irq(irq, NULL);
+ 
+ 	WARN_ON(info->refcnt > 0);
+ 
++	write_unlock_irqrestore(&evtchn_rwlock, flags);
++
+ 	kfree(info);
+ 
+ 	/* Legacy IRQ descriptors are managed by the arch. */
+@@ -1241,6 +1268,8 @@ static void __xen_evtchn_do_upcall(void)
+ 	int cpu = get_cpu();
+ 	unsigned count;
+ 
++	read_lock(&evtchn_rwlock);
++
+ 	do {
+ 		vcpu_info->evtchn_upcall_pending = 0;
+ 
+@@ -1256,6 +1285,7 @@ static void __xen_evtchn_do_upcall(void)
+ 	} while (count != 1 || vcpu_info->evtchn_upcall_pending);
+ 
+ out:
++	read_unlock(&evtchn_rwlock);
+ 
+ 	put_cpu();
+ }
 
 
