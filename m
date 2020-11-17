@@ -2,105 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE0B2B5673
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC9A2B5675
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgKQBym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 20:54:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
+        id S1727059AbgKQBzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:55:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgKQBym (ORCPT
+        with ESMTP id S1725730AbgKQBzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:54:42 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70E9C0613CF;
-        Mon, 16 Nov 2020 17:54:41 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id m65so14588852qte.11;
-        Mon, 16 Nov 2020 17:54:41 -0800 (PST)
+        Mon, 16 Nov 2020 20:55:17 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADF8C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 17:55:16 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id h23so22446641ljg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 17:55:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NTtCzB5VIaFDrBNNNZ7NaHNKVBpJ8Hadb4R3oCLX97k=;
-        b=rtx/RU+s+8cPVIrxRCrElV7tpyND3P0XAg2TofP4rT0WDB7pYRXWgCN0tPwwytBqzm
-         dQiiSC8vlen4ulMHSLlnPMzExAzkL6dtKyTO1aF34lWSB54q67cx5AsGAA6vVYx4xTG3
-         o1CCon4XTtNcfJkxdg4qxQeqx6YXpLey84hDTajAudYBngKt9IxD3lqQz7yaOv2iNRfE
-         pF4ZQyQP+C+x7DWc/knwsv6HNK36wcCcVwLEs04rQ/30YGHjF1IPZ0zmchERdoem/XKA
-         qqI8xfpGXe6HuxEj+ltWDXovggWLBZaST43NW4VJugRHzyUBOyYqGKSh2hKRmtr14HHt
-         vGTg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YfmeEzTzooKWiWXCjbwP20V8N58LWWLSI+WemXBqoSo=;
+        b=TupcO9kkun3hFmFaHl+Hd59DU33+9i2l1KglJF0L5RdSg05j11UByYlDKCEr906/SB
+         06DminEu3QjwEzyvvFnwk5AzhzWZVlLL3sleE4dH+4wlNwJ9YMZL6PCAyIhx7/LGUV8p
+         pydxIu3TUTFSQf4Mdti2YUr3a+qqqtQZxjcGg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NTtCzB5VIaFDrBNNNZ7NaHNKVBpJ8Hadb4R3oCLX97k=;
-        b=S1j3J/UcTwd5FrCbQ9PB67qxIDaFnApJKqXf9V62PEf3VjghZUC4FBTNXif0uNFhDx
-         OVYUQSTVpZbA0ipUTo+kxHtl8nwEdX+2z+XEl/IhxzO43i3lDDZesLUFyvQIktSUnb0K
-         czzDVFh+0uCy5qf4WP7H0z0XJ4I+mEbxS4YOOChfJQzYhePSK2zIUi80bL7bh4sUMI68
-         whlL6dM8omh/MzYWpxExSSQX2axbZjA/3HaIWhMcjUwzZaW5Nj3G/Lzj7Tv6oteLfzI2
-         DfPva/bR1VZUHRGf5B+n4RQqxOuDv47L7FtBVNMTTQaWVUm5Hesj/7lQmzqNJuhemxca
-         dXzQ==
-X-Gm-Message-State: AOAM530yjASSnFzxJ5IDY4crLibgvtiTbb0NubNLdBr0kAFjANgDO7Vk
-        QfNVt077AUt1c/Oz+PsFays=
-X-Google-Smtp-Source: ABdhPJyuFuM/Nr8VHJEMu8p4WFcxiSTMgMKAz+9tvCAPF267qYflO/YfHmr2Gr/AgEALLCEUyJl0CA==
-X-Received: by 2002:ac8:6b06:: with SMTP id w6mr17145176qts.6.1605578081016;
-        Mon, 16 Nov 2020 17:54:41 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id f27sm3258802qtv.95.2020.11.16.17.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 17:54:39 -0800 (PST)
-Date:   Mon, 16 Nov 2020 18:54:38 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Kees Cook <keescook@chromium.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH 1/2] kbuild: Hoist '--orphan-handling' into Kconfig
-Message-ID: <20201117015438.GA299247@ubuntu-m3-large-x86>
-References: <20201113195553.1487659-1-natechancellor@gmail.com>
- <CAKwvOdnf5WKJrLnwM9dDDniP0eG5gnFSMB0rapqWLUAZbVJZvQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YfmeEzTzooKWiWXCjbwP20V8N58LWWLSI+WemXBqoSo=;
+        b=gqlgZbJpyy1QnS+BNa4yo0m1XimfY5Rt2RKOk+UlUlYRVh91+V1Sj/aHGLB39JXTns
+         Ejyf31oJOPK5KJhNDNod0l8MuzXY8qG5NYn3UEXE6dPu7rtChMu3eJmXOv3Rt44D9EJO
+         LFYlSPB9zdDj8KqsRFamlqbWtGjQ7lG5N7CgEOhNl01Bu8JhYtoexgfN6bDoPq0ZsTmp
+         AjfqKOEyoo/3uaC5SwyWFJ/5aJ8WEU4vhKephUQbTjK9H5FGCF9IAwEXvZ1eZw8+qd19
+         N6b11/RZog6G0Xf3iKy7xRuRJVwlBsNU5kQ7SgY7Ccz/jLizneuq26AwP2qPvS++1RnO
+         cLDQ==
+X-Gm-Message-State: AOAM532mvFnPKEktRM6eM0lnanYoaDblO6qIWm7BzkhN328oQNX6i46S
+        l9lm6pRRHDFFLIfOrri8zWwFXG+Teor5qkvyUOwemg==
+X-Google-Smtp-Source: ABdhPJyYqclDkEPQUIluKSITU8uV0ihQHUQvxzyKDVy+syv1mcr6maPIcigji34v5DajSjRS3l6kDOnbeNwcgZPIUIY=
+X-Received: by 2002:a2e:b16f:: with SMTP id a15mr896846ljm.430.1605578114448;
+ Mon, 16 Nov 2020 17:55:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnf5WKJrLnwM9dDDniP0eG5gnFSMB0rapqWLUAZbVJZvQ@mail.gmail.com>
+References: <20201116232536.1752908-1-kpsingh@chromium.org>
+ <20201116232536.1752908-2-kpsingh@chromium.org> <20201117004303.zpzoqluhslwbp7ce@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201117004303.zpzoqluhslwbp7ce@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Tue, 17 Nov 2020 02:55:03 +0100
+Message-ID: <CACYkzJ5oisqFDW3QU_+Wuuh4UiRmrjH2mR0UM9qCm8RuCjzzeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: Add tests for bpf_lsm_set_bprm_opts
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 05:41:58PM -0800, Nick Desaulniers wrote:
-> On Fri, Nov 13, 2020 at 11:56 AM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
+On Tue, Nov 17, 2020 at 1:43 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Mon, Nov 16, 2020 at 11:25:36PM +0000, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
 > >
-> > Currently, '--orphan-handling=warn' is spread out across four different
-> > architectures in their respective Makefiles, which makes it a little
-> > unruly to deal with in case it needs to be disabled for a specific
-> > linker version (in this case, ld.lld 10.0.1).
-> 
-> Hi Nathan,
-> This patch fails to apply for me via b4 on next-20201116 due to a
-> conflict in arch/Kconfig:1028. Would you mind sending a rebased V2?
+> > The test forks a child process, updates the local storage to set/unset
+> > the securexec bit.
+> >
+> > The BPF program in the test attaches to bprm_creds_for_exec which checks
+> > the local storage of the current task to set the secureexec bit on the
+> > binary parameters (bprm).
+> >
+> > The child then execs a bash command with the environment variable
+> > TMPDIR set in the envp.  The bash command returns a different exit code
+> > based on its observed value of the TMPDIR variable.
+> >
+> > Since TMPDIR is one of the variables that is ignored by the dynamic
+> > loader when the secureexec bit is set, one should expect the
+> > child execution to not see this value when the secureexec bit is set.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/test_bprm_opts.c | 124 ++++++++++++++++++
+> >  tools/testing/selftests/bpf/progs/bprm_opts.c |  34 +++++
+> >  2 files changed, 158 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/bprm_opts.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
+> > new file mode 100644
+> > index 000000000000..cba1ef3dc8b4
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
+> > @@ -0,0 +1,124 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +/*
+> > + * Copyright (C) 2020 Google LLC.
+> > + */
+> > +
+> > +#include <asm-generic/errno-base.h>
+> > +#include <sys/stat.h>
+> Is it needed?
 
-Hi Nick,
+No, Good catch, removed.
 
-This series is intended to go into v5.10 so rebasing it against -next
-defeats that; please test it against v5.10-rc4, where it still applies
-cleanly. The conflicts will be handled by other entities (Stephen Rothwell
-and Linus).
+>
+> > +#include <test_progs.h>
 
-If you want to test it against -next, 'git am -3' will allow you to
-easily handle the conflict.
+[...]
 
-Cheers,
-Nathan
+> > +              * If the value of TMPDIR is set, the bash command returns 10
+> > +              * and if the value is unset, it returns 20.
+> > +              */
+> > +             ret = execle("/bin/bash", "bash", "-c",
+> > +                          "[[ -z \"${TMPDIR}\" ]] || exit 10 && exit 20",
+> > +                          NULL, bash_envp);
+> > +             if (ret)
+
+> It should never reach here?  May be just exit() unconditionally
+> instead of having a chance to fall-through and then return -EINVAL.
+
+Agreed. changed it to exit(errno); here.
+
+>
+> > +                     exit(errno);
+> > +     } else if (child_pid > 0) {
+> > +             waitpid(child_pid, &child_status, 0);
+> > +             ret = WEXITSTATUS(child_status);
+> > +
+> > +             /* If a secureexec occured, the exit status should be 20.
+> > +              */
+> > +             if (secureexec && ret == 20)
+> > +                     return 0;
+> > +
+> > +             /* If normal execution happened the exit code should be 10.
+> > +              */
+> > +             if (!secureexec && ret == 10)
+> > +                     return 0;
+> > +
+> > +             return ret;
+> Any chance that ret may be 0?
+
+I think it's safer to just let it fall through and return -EINVAL, so
+I removed the return ret here.
+
+>
+> > +     }
+
+[...]
+
+> > +                              0 /* secureexec */);
+> > +     if (CHECK(err, "run_set_secureexec:0", "err = %d", err))
+> nit. err = %d"\n"
+
+Fixed.
+
+>
+> > +             goto close_prog;
+> > +
+> > +     /* Run the test with the secureexec bit set */
+> > +     err = run_set_secureexec(bpf_map__fd(skel->maps.secure_exec_task_map),
+> > +                              1 /* secureexec */);
+> > +     if (CHECK(err, "run_set_secureexec:1", "err = %d", err))
+> Same here.
+
+Fixed.
+
+- KP
+
+>
+> Others LGTM.
