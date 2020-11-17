@@ -2,839 +2,527 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B192B59AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA68C2B59C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727135AbgKQGWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 01:22:03 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:54272 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726854AbgKQGWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 01:22:02 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 848191A11A5;
-        Tue, 17 Nov 2020 07:21:57 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8EB761A11A3;
-        Tue, 17 Nov 2020 07:21:48 +0100 (CET)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 18B91402D2;
-        Tue, 17 Nov 2020 07:21:37 +0100 (CET)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     xiaoliang.yang_1@nxp.com, Arvid.Brodin@xdin.com,
-        m-karicheri2@ti.com, vinicius.gomes@intel.com,
-        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
-        jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        ivan.khoronzhuk@linaro.org, andre.guedes@linux.intel.com,
-        allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
-        po.liu@nxp.com, mingkai.hu@nxp.com, claudiu.manoil@nxp.com,
-        vladimir.oltean@nxp.com, leoyang.li@nxp.com
-Subject: [RFC, net-next] net: qos: introduce a redundancy flow action
-Date:   Tue, 17 Nov 2020 14:30:13 +0800
-Message-Id: <20201117063013.37433-1-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726363AbgKQGaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 01:30:46 -0500
+Received: from mail-eopbgr1320071.outbound.protection.outlook.com ([40.107.132.71]:19170
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725355AbgKQGap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 01:30:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yf0pjqzk5tqSXgnf+nRLlQfAYDPccjmY4rW65HL7dqwDcbovDUWCopQbhEZVnHrWuiE4vp3rhD5ht/6E3SRSW6hJq3NIz3mYSVChr1bizvSPse/rSGqxaLBR5Mg3zmA9vOpAgaZSovh1LEHSqIZ02ZO6DIqEJrdjSasBUiyx6tFrIw9dY/WitBw4voNZBANd2esx40FO5gTbML7IzX3PHA4yVBD9+s+f+dNYoM5CgZO7ZXTet8zkO8MUVAVHLLoBy9ys2aVD2LjT1CEtMe/HpTiUO1HegMlxgcffb1NggHpzv37HQKZyXFfoe9fndmvRm4FiUzL7xqvUg82sw84MmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h015o2PplFdJianjN82Rvof+518WDVLBKrn0e9YwiiQ=;
+ b=QlqDd5OxU1kpRn/5SDWsWS1C0HWtPKyBX1AaASEg9KbaDdEczUJmXz8qjKTDzY5nZCuch3MBb6LGFhlXFUnVZ9WVlgEYg36B5oloIHSw4kbClr8vjgbfI7MFjDoTfL9aJ2YOq22EYMqOrJZQe85ZI8SoVkWN3738OWcVQGFncGgIEn2J1jf6yXSEtO304AlIFLZaF/CRnWavfvxmzqavExNGZJs2KBbXEdbILIMQWBQC1paYrV/XLoWw2GIX9ShkNJZvjr7BeXsLOOAHEbzBPPbhWsFUhodgsaO0SlWpifnZ7yRuQ4qNsAWjAfMVZG0dnMdB2VoMFUU2MuT8JD9IdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=quectel.com; dmarc=pass action=none header.from=quectel.com;
+ dkim=pass header.d=quectel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quectel.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h015o2PplFdJianjN82Rvof+518WDVLBKrn0e9YwiiQ=;
+ b=GZkzt+CAea4wOXVDfW2/30wNgvz/zEJwVBXUr/7/OK9uApDMrvjVHI100E6SPyTWnWCKz3+mq2yBECclI4kLMHcrTFENpgGbJUuyY3TfAkNiOSwNw4kyuuHWmKaLH7xfruhFFWrCcv5GzF8VynITRYcHKJyQWnNK/l4BXBsRO6U=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=quectel.com;
+Received: from HK2PR06MB3507.apcprd06.prod.outlook.com (2603:1096:202:3e::14)
+ by HK0PR06MB2161.apcprd06.prod.outlook.com (2603:1096:203:4b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Tue, 17 Nov
+ 2020 06:30:39 +0000
+Received: from HK2PR06MB3507.apcprd06.prod.outlook.com
+ ([fe80::94f:c55a:f9c8:22f4]) by HK2PR06MB3507.apcprd06.prod.outlook.com
+ ([fe80::94f:c55a:f9c8:22f4%5]) with mapi id 15.20.3564.025; Tue, 17 Nov 2020
+ 06:30:39 +0000
+From:   carl.yin@quectel.com
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
+        sfr@canb.auug.org.au
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com
+Subject: [PATCH] bus: mhi: core: manager all mhi ctrl data in one segment
+Date:   Tue, 17 Nov 2020 14:30:30 +0800
+Message-Id: <20201117063030.12004-1-carl.yin@quectel.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [203.93.254.85]
+X-ClientProxiedBy: HK2PR03CA0053.apcprd03.prod.outlook.com
+ (2603:1096:202:17::23) To HK2PR06MB3507.apcprd06.prod.outlook.com
+ (2603:1096:202:3e::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (203.93.254.85) by HK2PR03CA0053.apcprd03.prod.outlook.com (2603:1096:202:17::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.15 via Frontend Transport; Tue, 17 Nov 2020 06:30:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 791b74e1-e76c-492b-2fc2-08d88ac24cbe
+X-MS-TrafficTypeDiagnostic: HK0PR06MB2161:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HK0PR06MB21611EFD4B1FE8D7A2BA90B286E20@HK0PR06MB2161.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VSuTkg/PXXbIvXk/5UqqnshPR2Np7Y5GvqSU3DTJ7tu466RpLbugvq/piFaPXhyuwdEejR9yM8IwJGyTuWtjHCeAV9T0N3OQGVGFQyMBL2e+nhw2S1NKO18PmHiGyYEq+ss1f8wUFzuKmtSpxAzE7Uyp5C0S9Ra0JgibGt/Tervf2qFpLCctDdOz/52HEpHi1FvV/Iw1mIPJxjdgbfzdlPq9hZXq3n5aJp1vWDJFfPpkJjl1sBe6RCp1tzfeziv/P5TjXrjNeHuT1LmlrYcW2UXGYxI7gjAX01xpgMGR/E7X4y/ZDzd2nCsZa12yiMwPpmW+B1anZUQwjNx4rQim7kVtLG9akdmnv55xJTDVRBllEFYfZvQ+oEU56LiFcGGy
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3507.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(346002)(136003)(39860400002)(9686003)(66476007)(6512007)(6486002)(66946007)(66556008)(4326008)(36756003)(107886003)(69590400008)(86362001)(5660300002)(30864003)(83380400001)(1076003)(2616005)(956004)(26005)(186003)(8676002)(19627235002)(2906002)(16526019)(6506007)(316002)(8936002)(52116002)(6666004)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Cvispz4OcPwxBEw5p8dQmwpwEI4hkK2Q9GJtz2olbPw60Wey9DmP2qn/BsolMy1KcdtwRcbB4vRwDQw0wCh2X3Qk1IMy33OMy1esniswuQOgkRzM4s3R+E1SuJkffZ0Q2wfKXVbR5BV7NE62eMUKoGs+Dw8V/D963f8x1iZPh5MLgULkSBH8ldCrG8ErDPMXE+zsmr4g+EB6DQEBAUUsP4xpNBeOgSS94yHhJezO+OAy9VqjX4GUBKQPYI1pcnMCIFKTyvuJCHjqXW0eaUKuu9OMPwcKpqwU/CEOW08dy6VxAdUF4ez2SrtYFLouYkWty0HzH647Yuc4nwR5SAMlmJdtvPrtu9eRFr2fs/jYJq+gbNEn/zr2j+wckemttG6NdojlkuZv9K/nftIckvOZ6O8XMDW4xJ+XxPZtaVwkNNweq5ZbJsRxcTrqdCv0hceRpw+jM44NmFPa8ppFkPqJnmUKpadKliel6eKP+Osruaa+f5EYbhj62Hn0kW6EY7r5zfxlOhijp3dh7FExHv1xgOttN0guqUnccIPFpMXW0IWN15FEY3yIF2ms8RtVseZfTyjZrUUoWSf+dp5YFmNT2ztze+Jj7CL6t0ziI/DtBFov+XbEnFPXYmHC/XEpMOhlehMSeZ+kkXe7jqRjpbpD1sL+Oj+ZCnYTPaM5F7+Of5N7AbwECTu9hJdEeWRl7QC6ijvvZ7Gt6LZBYdeBWdzNMhDvtSZnmhnv4kxKjKn1bp3BaPL2BBRHxKYhlwlEat5a0hLKC7R22k5DDVZ9rU8z1SkmxxaMHUIgg2SBGdIIcButtlepy6oxYKAFfV9KOXDsdQxhFTJmXa7PvRNuGcQPW9ozgRcQSYv2nRnKp64+7+afDyOqxGwnZda1uzqLUzEcuL7K2eZbdibMIjJcbqAkcA==
+X-OriginatorOrg: quectel.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 791b74e1-e76c-492b-2fc2-08d88ac24cbe
+X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3507.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 06:30:39.2523
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 7730d043-e129-480c-b1ba-e5b6a9f476aa
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SgUU1puAOTurSUdX9ix36Dyfm5RkOVp3DzCvUddYZQZpZtf4gta6123s+Bw6ssE07oYWoEiEG6ABto7CSWU5fg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2161
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduce a redundancy flow action to implement frame
-replication and elimination for reliability, which is defined in
-IEEE P802.1CB.
+From: Carl Yin <carl.yin@quectel.com>
 
-There are two modes for redundancy action: generator and recover mode.
-Generator mode add redundancy tag and replicate the frame to different
-egress ports. Recover mode drop the repeat frames and remove redundancy
-tag from the frame.
+I test SDX24 and SDX55 modems on Dell-OptiPlex-7060 has 16GB memory.
+So I set dma_data_width in mhi/pci_generic.c to 37,
+then get next error:
 
-Below is the setting example in user space:
-	> tc qdisc add dev swp0 clsact
-	> tc filter add dev swp0 ingress protocol 802.1Q flower \
-		skip_hw dst_mac 00:01:02:03:04:05 vlan_id 1 \
-		action redundancy generator split dev swp1 dev swp2
+[  538.338317] mhi 0000:03:00.0: Requested to power ON
+[  538.338441] mhi 0000:03:00.0: Power on setup success
+[  538.338519] mhi 0000:03:00.0: Handling state transition: PBL
+[  543.383661] mhi 0000:03:00.0: Device in READY State
+[  543.383667] mhi 0000:03:00.0: Initializing MHI registers
+[  545.612647] mhi 0000:03:00.0: local ee:AMSS device ee:PASS THRU dev_state:READY
+[  545.646114] mhi 0000:03:00.0: Unhandled event type: 0
+[  545.646150] mhi 0000:03:00.0: tre: 0, 0, 0
+[  545.656697] mhi 0000:03:00.0: Unhandled event type: 0
+[  545.656733] mhi 0000:03:00.0: tre: 0, 0, 0
 
-	> tc filter add dev swp0 ingress protocol 802.1Q flower
-		skip_hw dst_mac 00:01:02:03:04:06 vlan_id 1 \
-		action redundancy recover
+I refer to the QUALLCOMM Windows MHI driver,
+manager all mhi ctrl data in one segment, above error can be solved.
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Signed-off-by: Carl Yin <carl.yin@quectel.com>
 ---
- include/net/flow_offload.h                |   6 +
- include/net/tc_act/tc_redundancy.h        |  69 +++
- include/uapi/linux/if_ether.h             |   1 +
- include/uapi/linux/pkt_cls.h              |   1 +
- include/uapi/linux/tc_act/tc_redundancy.h |  36 ++
- net/sched/Kconfig                         |  14 +
- net/sched/Makefile                        |   1 +
- net/sched/act_redundancy.c                | 495 ++++++++++++++++++++++
- net/sched/cls_api.c                       |  31 ++
- 9 files changed, 654 insertions(+)
- create mode 100644 include/net/tc_act/tc_redundancy.h
- create mode 100644 include/uapi/linux/tc_act/tc_redundancy.h
- create mode 100644 net/sched/act_redundancy.c
+ drivers/bus/mhi/core/init.c     | 251 +++++++++++++++-----------------
+ drivers/bus/mhi/core/internal.h |   6 +-
+ 2 files changed, 123 insertions(+), 134 deletions(-)
 
-diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
-index 123b1e9ea304..aed41f3801b7 100644
---- a/include/net/flow_offload.h
-+++ b/include/net/flow_offload.h
-@@ -147,6 +147,7 @@ enum flow_action_id {
- 	FLOW_ACTION_MPLS_POP,
- 	FLOW_ACTION_MPLS_MANGLE,
- 	FLOW_ACTION_GATE,
-+	FLOW_ACTION_REDUNDANCY,
- 	NUM_FLOW_ACTIONS,
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 655d539c6808..996b0f61920b 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -112,23 +112,6 @@ static struct attribute *mhi_dev_attrs[] = {
  };
+ ATTRIBUTE_GROUPS(mhi_dev);
  
-@@ -271,6 +272,11 @@ struct flow_action_entry {
- 			u32		num_entries;
- 			struct action_gate_entry *entries;
- 		} gate;
-+		struct {
-+			u8		mode;
-+			u32		split_num;
-+			struct net_device **split_devs;
-+		} redundancy;
- 	};
- 	struct flow_action_cookie *cookie; /* user defined action cookie */
- };
-diff --git a/include/net/tc_act/tc_redundancy.h b/include/net/tc_act/tc_redundancy.h
-new file mode 100644
-index 000000000000..77b043636f93
---- /dev/null
-+++ b/include/net/tc_act/tc_redundancy.h
-@@ -0,0 +1,69 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/* Copyright 2020 NXP */
-+
-+#ifndef __NET_TC_REDUNDANCY_H
-+#define __NET_TC_REDUNDANCY_H
-+
-+#include <net/act_api.h>
-+#include <linux/tc_act/tc_redundancy.h>
-+
-+struct tcf_redundancy_split_dev {
-+	struct list_head list;
-+	struct net_device *dev;
-+};
-+
-+struct tcf_redundancy {
-+	struct tc_action	common;
-+	u8			mode;
-+	struct list_head	split_list;
-+	u32			gen_seq_num;
-+	u32			sequence_history;
-+	u32			recov_seq_num;
-+};
-+
-+#define to_redundancy(a) ((struct tcf_redundancy *)a)
-+
-+static inline bool is_tcf_redundancy(const struct tc_action *a)
-+{
-+#ifdef CONFIG_NET_CLS_ACT
-+	if (a->ops && a->ops->id == TCA_ID_REDUNDANCY)
-+		return true;
-+#endif
-+	return false;
-+}
-+
-+static inline u8 tcf_redundancy_mode(const struct tc_action *a)
-+{
-+	u8 mode;
-+
-+	mode = to_redundancy(a)->mode;
-+
-+	return mode;
-+}
-+
-+static inline struct net_device **
-+	tcf_redundancy_create_dev_array(const struct tc_action *a, int *len)
-+{
-+	struct tcf_redundancy_split_dev *entry;
-+	struct tcf_redundancy *red_act;
-+	struct net_device **devices;
-+	int i = 0;
-+
-+	red_act = to_redundancy(a);
-+
-+	list_for_each_entry(entry, &red_act->split_list, list)
-+		i++;
-+
-+	devices = kcalloc(i, sizeof(*devices), GFP_ATOMIC);
-+	if (!devices)
-+		return NULL;
-+	*len = i;
-+
-+	i = 0;
-+	list_for_each_entry(entry, &red_act->split_list, list)
-+		devices[i++] = entry->dev;
-+
-+	return devices;
-+}
-+
-+#endif
-diff --git a/include/uapi/linux/if_ether.h b/include/uapi/linux/if_ether.h
-index a0b637911d3c..c465d68b1d93 100644
---- a/include/uapi/linux/if_ether.h
-+++ b/include/uapi/linux/if_ether.h
-@@ -114,6 +114,7 @@
- #define ETH_P_EDSA	0xDADA		/* Ethertype DSA [ NOT AN OFFICIALLY REGISTERED ID ] */
- #define ETH_P_DSA_8021Q	0xDADB		/* Fake VLAN Header for DSA [ NOT AN OFFICIALLY REGISTERED ID ] */
- #define ETH_P_IFE	0xED3E		/* ForCES inter-FE LFB type */
-+#define ETH_P_RTAG	0xF1C1		/* Redundancy Tag(IEEE 802.1CB) */
- #define ETH_P_AF_IUCV   0xFBFB		/* IBM af_iucv [ NOT AN OFFICIALLY REGISTERED ID ] */
+-/* MHI protocol requires the transfer ring to be aligned with ring length */
+-static int mhi_alloc_aligned_ring(struct mhi_controller *mhi_cntrl,
+-				  struct mhi_ring *ring,
+-				  u64 len)
+-{
+-	ring->alloc_size = len + (len - 1);
+-	ring->pre_aligned = mhi_alloc_coherent(mhi_cntrl, ring->alloc_size,
+-					       &ring->dma_handle, GFP_KERNEL);
+-	if (!ring->pre_aligned)
+-		return -ENOMEM;
+-
+-	ring->iommu_base = (ring->dma_handle + (len - 1)) & ~(len - 1);
+-	ring->base = ring->pre_aligned + (ring->iommu_base - ring->dma_handle);
+-
+-	return 0;
+-}
+-
+ void mhi_deinit_free_irq(struct mhi_controller *mhi_cntrl)
+ {
+ 	int i;
+@@ -205,40 +188,136 @@ void mhi_deinit_dev_ctxt(struct mhi_controller *mhi_cntrl)
+ 	mhi_cmd = mhi_cntrl->mhi_cmd;
+ 	for (i = 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++) {
+ 		ring = &mhi_cmd->ring;
+-		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
+-				  ring->pre_aligned, ring->dma_handle);
+ 		ring->base = NULL;
+ 		ring->iommu_base = 0;
+ 	}
  
- #define ETH_P_802_3_MIN	0x0600		/* If the value in the ethernet type is less than this value
-diff --git a/include/uapi/linux/pkt_cls.h b/include/uapi/linux/pkt_cls.h
-index ee95f42fb0ec..17a82cae74f4 100644
---- a/include/uapi/linux/pkt_cls.h
-+++ b/include/uapi/linux/pkt_cls.h
-@@ -135,6 +135,7 @@ enum tca_id {
- 	TCA_ID_MPLS,
- 	TCA_ID_CT,
- 	TCA_ID_GATE,
-+	TCA_ID_REDUNDANCY,
- 	/* other actions go here */
- 	__TCA_ID_MAX = 255
- };
-diff --git a/include/uapi/linux/tc_act/tc_redundancy.h b/include/uapi/linux/tc_act/tc_redundancy.h
-new file mode 100644
-index 000000000000..2ddffff73f24
---- /dev/null
-+++ b/include/uapi/linux/tc_act/tc_redundancy.h
-@@ -0,0 +1,36 @@
-+/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-+/* Copyright 2020 NXP */
-+
-+#ifndef __LINUX_TC_REDUNDANCY_H
-+#define __LINUX_TC_REDUNDANCY_H
-+
-+#include <linux/pkt_cls.h>
-+
-+struct tc_redundancy {
-+	tc_gen;
-+};
-+
-+enum {
-+	TCA_REDUNDANCY_ENTRY_UNSPEC,
-+	TCA_REDUNDANCY_ENTRY_PORT,
-+	__TCA_REDUNDANCY_ENTRY_MAX,
-+};
-+#define TCA_REDUNDANCY_ENTRY_MAX (__TCA_REDUNDANCY_ENTRY_MAX - 1)
-+
-+enum {
-+	TCA_REDUNDANCY_UNSPEC,
-+	TCA_REDUNDANCY_TM,
-+	TCA_REDUNDANCY_PARMS,
-+	TCA_REDUNDANCY_PAD,
-+	TCA_REDUNDANCY_MODE,
-+	TCA_REDUNDANCY_SPLITLIST,
-+	__TCA_REDUNDANCY_MAX,
-+};
-+#define TCA_REDUNDANCY_MAX (__TCA_REDUNDANCY_MAX - 1)
-+
-+enum {
-+	TCA_REDUNDANCY_GENERATOR,
-+	TCA_REDUNDANCY_RECOVER,
-+};
-+
-+#endif
-diff --git a/net/sched/Kconfig b/net/sched/Kconfig
-index a3b37d88800e..fba452fb9bd5 100644
---- a/net/sched/Kconfig
-+++ b/net/sched/Kconfig
-@@ -997,6 +997,20 @@ config NET_ACT_GATE
- 	  To compile this code as a module, choose M here: the
- 	  module will be called act_gate.
+-	mhi_free_coherent(mhi_cntrl,
+-			  sizeof(*mhi_ctxt->cmd_ctxt) * NR_OF_CMD_RINGS,
+-			  mhi_ctxt->cmd_ctxt, mhi_ctxt->cmd_ctxt_addr);
+-
+ 	mhi_event = mhi_cntrl->mhi_event;
+ 	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, mhi_event++) {
+ 		if (mhi_event->offload_ev)
+ 			continue;
  
-+config NET_ACT_REDUNDANCY
-+	tristate "Frame redundancy tc action"
-+	depends on NET_CLS_ACT
-+	help
-+	  Say Y here to support frame replication and elimination for
-+	  reliability, which is defined by IEEE 802.1CB.
-+	  This action allow to control the ingress flow to split to
-+	  multiple egress ports, each frame will add a redundancy tag.
-+	  It also allow to remove redundancy tag and drop repeat frames.
-+
-+	  If unsure, say N.
-+	  To compile this code as a module, choose M here: the
-+	  module will be called act_redundancy.
-+
- config NET_IFE_SKBMARK
- 	tristate "Support to encoding decoding skb mark on IFE action"
- 	depends on NET_ACT_IFE
-diff --git a/net/sched/Makefile b/net/sched/Makefile
-index 66bbf9a98f9e..1809e894510f 100644
---- a/net/sched/Makefile
-+++ b/net/sched/Makefile
-@@ -31,6 +31,7 @@ obj-$(CONFIG_NET_IFE_SKBTCINDEX)	+= act_meta_skbtcindex.o
- obj-$(CONFIG_NET_ACT_TUNNEL_KEY)+= act_tunnel_key.o
- obj-$(CONFIG_NET_ACT_CT)	+= act_ct.o
- obj-$(CONFIG_NET_ACT_GATE)	+= act_gate.o
-+obj-$(CONFIG_NET_ACT_REDUNDANCY)	+= act_redundancy.o
- obj-$(CONFIG_NET_SCH_FIFO)	+= sch_fifo.o
- obj-$(CONFIG_NET_SCH_CBQ)	+= sch_cbq.o
- obj-$(CONFIG_NET_SCH_HTB)	+= sch_htb.o
-diff --git a/net/sched/act_redundancy.c b/net/sched/act_redundancy.c
-new file mode 100644
-index 000000000000..c937b772c29d
---- /dev/null
-+++ b/net/sched/act_redundancy.c
-@@ -0,0 +1,495 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Copyright 2020 NXP */
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/string.h>
-+#include <linux/errno.h>
-+#include <linux/skbuff.h>
-+#include <linux/rtnetlink.h>
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <net/act_api.h>
-+#include <net/netlink.h>
-+#include <net/pkt_cls.h>
-+#include <net/tc_act/tc_redundancy.h>
-+
-+#define SEQ_HISTORY_LEN 32
-+
-+static unsigned int redundancy_net_id;
-+static struct tc_action_ops act_redundancy_ops;
-+
-+struct redundancy_tag {
-+	__be16 proto;
-+	__be16 reserved;
-+	__be16 sequence;
-+} __packed;
-+
-+struct rtag_ethhdr {
-+	unsigned char		h_dest[ETH_ALEN];
-+	unsigned char		h_source[ETH_ALEN];
-+	struct redundancy_tag	h_rtag;
-+	__be16			h_proto;
-+} __packed;
-+
-+struct rtag_vlan_ethhdr {
-+	unsigned char		h_dest[ETH_ALEN];
-+	unsigned char		h_source[ETH_ALEN];
-+	__be16			h_vlan_proto;
-+	__be16			h_vlan_TCI;
-+	struct redundancy_tag	h_rtag;
-+	__be16			h_proto;
-+} __packed;
-+
-+static const struct nla_policy entry_policy[TCA_REDUNDANCY_ENTRY_MAX + 1] = {
-+	[TCA_REDUNDANCY_ENTRY_PORT]	= { .type = NLA_U32 },
-+};
-+
-+static const struct nla_policy red_policy[TCA_REDUNDANCY_MAX + 1] = {
-+	[TCA_REDUNDANCY_PARMS]		=
-+		NLA_POLICY_EXACT_LEN(sizeof(struct tc_redundancy)),
-+	[TCA_REDUNDANCY_MODE]		= { .type = NLA_U8 },
-+	[TCA_REDUNDANCY_SPLITLIST]	= { .type = NLA_NESTED },
-+};
-+
-+static void tcf_red_release_splitlist(struct list_head *listhead)
-+{
-+	struct tcf_redundancy_split_dev *entry, *e;
-+
-+	list_for_each_entry_safe(entry, e, listhead, list) {
-+		list_del(&entry->list);
-+		kfree(entry);
-+	}
-+}
-+
-+static int tcf_red_parse_splitlist(struct net *net, struct nlattr *list_attr,
-+				   struct tcf_redundancy *red_act,
-+				   struct netlink_ext_ack *extack)
-+{
-+	struct nlattr *tb[TCA_REDUNDANCY_ENTRY_MAX + 1] = { };
-+	struct tcf_redundancy_split_dev *entry;
-+	struct net_device *dev;
-+	struct nlattr *n;
-+	int err, rem;
-+	u32 ifindex;
-+
-+	if (!list_attr)
-+		return -EINVAL;
-+
-+	nla_for_each_nested(n, list_attr, rem) {
-+		err = nla_parse_nested(tb, TCA_REDUNDANCY_ENTRY_MAX, n,
-+				       entry_policy, extack);
-+		if (err < 0) {
-+			NL_SET_ERR_MSG(extack, "Could not parse nested entry");
-+			return -EINVAL;
-+		}
-+		ifindex = nla_get_u32(tb[TCA_REDUNDANCY_ENTRY_PORT]);
-+		dev = dev_get_by_index(net, ifindex);
-+		entry = kzalloc(sizeof(*entry), GFP_ATOMIC);
-+		if (!entry) {
-+			NL_SET_ERR_MSG(extack, "Not enough memory for entry");
-+			tcf_red_release_splitlist(&red_act->split_list);
-+			return -ENOMEM;
-+		}
-+		entry->dev = dev;
-+		list_add_tail(&entry->list, &red_act->split_list);
-+	}
-+	return 0;
-+}
-+
-+static int tcf_red_init(struct net *net, struct nlattr *nla,
-+			struct nlattr *est, struct tc_action **a,
-+			int ovr, int bind, bool rtnl_held,
-+			struct tcf_proto *tp, u32 flags,
-+			struct netlink_ext_ack *extack)
-+{
-+	struct tc_action_net *tn = net_generic(net, redundancy_net_id);
-+	struct nlattr *tb[TCA_REDUNDANCY_MAX + 1];
-+	struct tcf_chain *goto_ch = NULL;
-+	struct tcf_redundancy *red_act;
-+	struct tc_redundancy *parm;
-+	int ret = 0, err, index;
-+
-+	if (!nla)
-+		return -EINVAL;
-+
-+	err = nla_parse_nested(tb, TCA_REDUNDANCY_MAX, nla, red_policy, extack);
-+	if (err < 0)
-+		return err;
-+
-+	if (!tb[TCA_REDUNDANCY_PARMS])
-+		return -EINVAL;
-+
-+	parm = nla_data(tb[TCA_REDUNDANCY_PARMS]);
-+	index = parm->index;
-+
-+	err = tcf_idr_check_alloc(tn, &index, a, bind);
-+	if (err < 0)
-+		return err;
-+
-+	if (err && bind)
-+		return 0;
-+
-+	if (!err) {
-+		ret = tcf_idr_create(tn, index, est, a,
-+				     &act_redundancy_ops, bind, false, 0);
-+
-+		if (ret) {
-+			tcf_idr_cleanup(tn, index);
-+			return ret;
-+		}
-+		ret = ACT_P_CREATED;
-+	} else if (!ovr) {
-+		tcf_idr_release(*a, bind);
-+		return -EEXIST;
-+	}
-+
-+	err = tcf_action_check_ctrlact(parm->action, tp, &goto_ch, extack);
-+	if (err < 0)
-+		goto release_idr;
-+
-+	red_act = to_redundancy(*a);
-+
-+	spin_lock_bh(&red_act->tcf_lock);
-+	goto_ch = tcf_action_set_ctrlact(*a, parm->action, goto_ch);
-+
-+	if (ret == ACT_P_CREATED)
-+		INIT_LIST_HEAD(&red_act->split_list);
-+
-+	red_act->mode = nla_get_u8(tb[TCA_REDUNDANCY_MODE]);
-+	if (tb[TCA_REDUNDANCY_SPLITLIST])
-+		tcf_red_parse_splitlist(net, tb[TCA_REDUNDANCY_SPLITLIST],
-+					red_act, extack);
-+
-+	red_act->gen_seq_num = 0;
-+	red_act->recov_seq_num = 0;
-+	red_act->sequence_history = 0xFFFFFFFF;
-+	spin_unlock_bh(&red_act->tcf_lock);
-+
-+	if (goto_ch)
-+		tcf_chain_put_by_act(goto_ch);
-+
-+	return ret;
-+
-+release_idr:
-+	tcf_idr_release(*a, bind);
-+	return err;
-+}
-+
-+static int tcf_red_tag_insert(struct sk_buff *skb,
-+			      struct tcf_redundancy *red_act)
-+{
-+	int rtag_len = sizeof(struct redundancy_tag);
-+	struct rtag_vlan_ethhdr *red_vlan_hdr;
-+	struct rtag_ethhdr *red_hdr;
-+	struct redundancy_tag *rtag;
-+	unsigned char *dst, *src;
-+
-+	red_vlan_hdr = (struct rtag_vlan_ethhdr *)skb_mac_header(skb);
-+	if (red_vlan_hdr->h_vlan_proto == htons(ETH_P_8021Q)) {
-+		rtag = &red_vlan_hdr->h_rtag;
-+	} else {
-+		red_hdr = (struct rtag_ethhdr *)skb_mac_header(skb);
-+		rtag = &red_hdr->h_rtag;
-+	}
-+
-+	if (rtag->proto == htons(ETH_P_RTAG))
-+		return 0;
-+
-+	if (skb_cow_head(skb, rtag_len) < 0)
-+		return -ENOMEM;
-+
-+	src = skb_mac_header(skb);
-+	skb->data = skb_mac_header(skb);
-+	skb_push(skb, rtag_len);
-+
-+	skb_reset_mac_header(skb);
-+	dst = skb_mac_header(skb);
-+	memmove(dst, src, (unsigned char *)rtag - src);
-+
-+	rtag--;
-+	rtag->proto = htons(ETH_P_RTAG);
-+	rtag->sequence = htons(red_act->gen_seq_num);
-+	rtag->reserved = 0;
-+
-+	return 0;
-+}
-+
-+static void tcf_red_recover_reset(u16 sequence, struct tcf_redundancy *red_act)
-+{
-+	red_act->sequence_history = 0xFFFFFFFF;
-+	red_act->recov_seq_num = sequence;
-+}
-+
-+static int tcf_red_recover_drop(u16 sequence,
-+				struct tcf_redundancy *red_act)
-+{
-+	int drop = 1;
-+	u32 len;
-+	int i, bit;
-+
-+	if (sequence > (red_act->recov_seq_num + SEQ_HISTORY_LEN) ||
-+	    sequence < (red_act->recov_seq_num - SEQ_HISTORY_LEN)) {
-+		tcf_red_recover_reset(sequence, red_act);
-+		return 0;
-+	}
-+
-+	if (sequence > red_act->recov_seq_num) {
-+		len = sequence - red_act->recov_seq_num;
-+		for (i = 0; i < len; i++) {
-+			bit = SEQ_HISTORY_LEN - 1 - i;
-+			if (!(red_act->sequence_history & BIT(bit)))
-+				red_act->tcf_qstats.drops++;
-+		}
-+		red_act->sequence_history <<= len;
-+		red_act->sequence_history |= 1;
-+		red_act->recov_seq_num = sequence;
-+
-+		return 0;
-+	}
-+
-+	len = red_act->recov_seq_num - sequence;
-+
-+	if (red_act->sequence_history & (1 << len))
-+		return drop;
-+
-+	red_act->sequence_history |= (1 << len);
-+
-+	return 0;
-+}
-+
-+static int tcf_red_tag_remove(struct sk_buff *skb,
-+			      struct tcf_redundancy *red_act)
-+{
-+	int rtag_len = sizeof(struct redundancy_tag);
-+	struct rtag_vlan_ethhdr *red_vlan_hdr;
-+	struct rtag_ethhdr *red_hdr;
-+	struct redundancy_tag *rtag;
-+	unsigned char *dst, *src;
-+	u16 sequence;
-+
-+	red_vlan_hdr = (struct rtag_vlan_ethhdr *)skb_mac_header(skb);
-+	if (red_vlan_hdr->h_vlan_proto == htons(ETH_P_8021Q)) {
-+		rtag = &red_vlan_hdr->h_rtag;
-+	} else {
-+		red_hdr = (struct rtag_ethhdr *)skb_mac_header(skb);
-+		rtag = &red_hdr->h_rtag;
-+	}
-+
-+	if (rtag->proto != htons(ETH_P_RTAG))
-+		return 0;
-+
-+	sequence = ntohs(rtag->sequence);
-+
-+	src = skb_mac_header(skb);
-+	skb->data = skb_mac_header(skb);
-+	skb_pull(skb, rtag_len);
-+
-+	skb_reset_mac_header(skb);
-+	dst = skb_mac_header(skb);
-+	memmove(dst, src, (unsigned char *)rtag - src);
-+
-+	return tcf_red_recover_drop(sequence, red_act);
-+}
-+
-+static int tcf_red_act(struct sk_buff *skb, const struct tc_action *a,
-+		       struct tcf_result *res)
-+{
-+	struct tcf_redundancy *red_act = to_redundancy(a);
-+	struct tcf_redundancy_split_dev *entry;
-+	struct net_device *splitdev;
-+	struct sk_buff *skb2 = skb;
-+	int err, ret, retval;
-+
-+	tcf_lastuse_update(&red_act->tcf_tm);
-+	tcf_action_update_bstats(&red_act->common, skb);
-+
-+	retval = READ_ONCE(red_act->tcf_action);
-+
-+	if (red_act->mode == TCA_REDUNDANCY_RECOVER) {
-+		/* Recover skb */
-+		spin_lock(&red_act->tcf_lock);
-+		ret = tcf_red_tag_remove(skb, red_act);
-+		if (ret)
-+			retval = TC_ACT_SHOT;
-+
-+		spin_unlock(&red_act->tcf_lock);
-+		return retval;
-+	}
-+
-+	err = tcf_red_tag_insert(skb, red_act);
-+	if (err) {
-+		tcf_action_inc_overlimit_qstats(&red_act->common);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	list_for_each_entry(entry, &red_act->split_list, list) {
-+		splitdev = entry->dev;
-+		skb2 = skb_clone(skb, GFP_ATOMIC);
-+		skb2->skb_iif = splitdev->ifindex;
-+		skb2->dev = splitdev;
-+		dev_queue_xmit(skb2);
-+	}
-+
-+	spin_lock(&red_act->tcf_lock);
-+	red_act->gen_seq_num++;
-+	spin_unlock(&red_act->tcf_lock);
-+
-+	return retval;
-+}
-+
-+static int dumping_entry(struct sk_buff *skb,
-+			 struct tcf_redundancy_split_dev *entry)
-+{
-+	struct nlattr *item;
-+
-+	item = nla_nest_start_noflag(skb, 0);
-+	if (!item)
-+		return -ENOSPC;
-+
-+	if (nla_put_u32(skb, TCA_REDUNDANCY_ENTRY_PORT,
-+			entry->dev->ifindex))
-+		goto nla_put_failure;
-+
-+	return nla_nest_end(skb, item);
-+
-+nla_put_failure:
-+	nla_nest_cancel(skb, item);
-+	return -1;
-+}
-+
-+static int tcf_red_dump(struct sk_buff *skb, struct tc_action *a,
-+			int bind, int ref)
-+{
-+	unsigned char *b = skb_tail_pointer(skb);
-+	struct tcf_redundancy_split_dev *entry;
-+	struct tcf_redundancy *red_act = to_redundancy(a);
-+	struct tc_redundancy opt = {
-+		.index	= red_act->tcf_index,
-+		.refcnt	= refcount_read(&red_act->tcf_refcnt) - ref,
-+		.bindcnt = atomic_read(&red_act->tcf_bindcnt) - bind,
-+	};
-+	struct tcf_t t;
-+	struct nlattr *entry_list;
-+
-+	spin_lock_bh(&red_act->tcf_lock);
-+	opt.action = red_act->tcf_action;
-+
-+	if (nla_put(skb, TCA_REDUNDANCY_PARMS, sizeof(opt), &opt))
-+		goto nla_put_failure;
-+
-+	if (nla_put_u8(skb, TCA_REDUNDANCY_MODE, red_act->mode))
-+		goto nla_put_failure;
-+
-+	entry_list = nla_nest_start_noflag(skb, TCA_REDUNDANCY_SPLITLIST);
-+	if (!entry_list)
-+		goto nla_put_failure;
-+
-+	list_for_each_entry(entry, &red_act->split_list, list) {
-+		if (dumping_entry(skb, entry) < 0)
-+			goto nla_put_failure;
-+	}
-+	nla_nest_end(skb, entry_list);
-+
-+	tcf_tm_dump(&t, &red_act->tcf_tm);
-+	if (nla_put_64bit(skb, TCA_REDUNDANCY_TM, sizeof(t),
-+			  &t, TCA_REDUNDANCY_PAD))
-+		goto nla_put_failure;
-+	spin_unlock_bh(&red_act->tcf_lock);
-+
-+	return skb->len;
-+
-+nla_put_failure:
-+	spin_unlock_bh(&red_act->tcf_lock);
-+	nlmsg_trim(skb, b);
-+
-+	return -1;
-+}
-+
-+static int tcf_red_walker(struct net *net, struct sk_buff *skb,
-+			  struct netlink_callback *cb, int type,
-+			  const struct tc_action_ops *ops,
-+			  struct netlink_ext_ack *extack)
-+{
-+	struct tc_action_net *tn = net_generic(net, redundancy_net_id);
-+
-+	return tcf_generic_walker(tn, skb, cb, type, ops, extack);
-+}
-+
-+static int tcf_red_search(struct net *net, struct tc_action **a, u32 index)
-+{
-+	struct tc_action_net *tn = net_generic(net, redundancy_net_id);
-+
-+	return tcf_idr_search(tn, a, index);
-+}
-+
-+static void tcf_red_stats_update(struct tc_action *a, u64 bytes, u64 packets,
-+				 u64 drops, u64 lastuse, bool hw)
-+{
-+	struct tcf_redundancy *red_act = to_redundancy(a);
-+	struct tcf_t *tm = &red_act->tcf_tm;
-+
-+	tcf_action_update_stats(a, bytes, packets, drops, hw);
-+	tm->lastuse = max_t(u64, tm->lastuse, lastuse);
-+}
-+
-+static void tcf_red_cleanup(struct tc_action *a)
-+{
-+	struct tcf_redundancy *red_act = to_redundancy(a);
-+
-+	tcf_red_release_splitlist(&red_act->split_list);
-+}
-+
-+static size_t tcf_red_get_fill_size(const struct tc_action *act)
-+{
-+	return nla_total_size(sizeof(struct tc_redundancy));
-+}
-+
-+static struct tc_action_ops act_redundancy_ops = {
-+	.kind		=	"redundancy",
-+	.id		=	TCA_ID_REDUNDANCY,
-+	.owner		=	THIS_MODULE,
-+	.act		=	tcf_red_act,
-+	.init		=	tcf_red_init,
-+	.cleanup	=	tcf_red_cleanup,
-+	.dump		=	tcf_red_dump,
-+	.walk		=	tcf_red_walker,
-+	.stats_update	=	tcf_red_stats_update,
-+	.get_fill_size	=	tcf_red_get_fill_size,
-+	.lookup		=	tcf_red_search,
-+	.size		=	sizeof(struct tcf_redundancy),
-+};
-+
-+static __net_init int redundancy_init_net(struct net *net)
-+{
-+	struct tc_action_net *tn = net_generic(net, redundancy_net_id);
-+
-+	return tc_action_net_init(net, tn, &act_redundancy_ops);
-+}
-+
-+static void __net_exit redundancy_exit_net(struct list_head *net_list)
-+{
-+	tc_action_net_exit(net_list, redundancy_net_id);
-+};
-+
-+static struct pernet_operations redundancy_net_ops = {
-+	.init = redundancy_init_net,
-+	.exit_batch = redundancy_exit_net,
-+	.id   = &redundancy_net_id,
-+	.size = sizeof(struct tc_action_net),
-+};
-+
-+static int __init redundancy_init_module(void)
-+{
-+	return tcf_register_action(&act_redundancy_ops, &redundancy_net_ops);
-+}
-+
-+static void __exit redundancy_cleanup_module(void)
-+{
-+	tcf_unregister_action(&act_redundancy_ops, &redundancy_net_ops);
-+}
-+
-+module_init(redundancy_init_module);
-+module_exit(redundancy_cleanup_module);
-+MODULE_LICENSE("GPL v2");
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index ba0715ee9eac..68ae5ffe07a0 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -39,6 +39,7 @@
- #include <net/tc_act/tc_ct.h>
- #include <net/tc_act/tc_mpls.h>
- #include <net/tc_act/tc_gate.h>
-+#include <net/tc_act/tc_redundancy.h>
- #include <net/flow_offload.h>
+ 		ring = &mhi_event->ring;
+-		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
+-				  ring->pre_aligned, ring->dma_handle);
+ 		ring->base = NULL;
+ 		ring->iommu_base = 0;
+ 	}
  
- extern const struct nla_policy rtm_tca_policy[TCA_MAX + 1];
-@@ -3534,6 +3535,30 @@ static int tcf_gate_get_entries(struct flow_action_entry *entry,
- 	return 0;
+-	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->er_ctxt) *
+-			  mhi_cntrl->total_ev_rings, mhi_ctxt->er_ctxt,
+-			  mhi_ctxt->er_ctxt_addr);
+-
+-	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->chan_ctxt) *
+-			  mhi_cntrl->max_chan, mhi_ctxt->chan_ctxt,
+-			  mhi_ctxt->chan_ctxt_addr);
++	mhi_free_coherent(mhi_cntrl,
++			  mhi_ctxt->ctrl_seg_len,
++			  mhi_ctxt->ctrl_seg,
++			  mhi_ctxt->ctrl_seg_addr);
+ 
+ 	kfree(mhi_ctxt);
+ 	mhi_cntrl->mhi_ctxt = NULL;
  }
  
-+static void tcf_redundancy_devlist_destructor(void *priv)
++static struct mhi_ctxt *mhi_alloc_dev_ctxt(struct mhi_controller *mhi_cntrl)
 +{
-+	struct netdevice **devices = priv;
++	struct mhi_ctxt *mhi_ctxt;
++	struct mhi_chan *mhi_chan;
++	struct mhi_event *mhi_event;
++	struct mhi_cmd *mhi_cmd;
++	struct mhi_ring *ring;
++	int i;
 +
-+	kfree(devices);
++	mhi_ctxt = kzalloc(sizeof(*mhi_ctxt), GFP_KERNEL);
++	if (!mhi_ctxt)
++		return NULL;
++
++	mhi_ctxt->chan_ctxt_addr = mhi_ctxt->ctrl_seg_len;
++	mhi_ctxt->ctrl_seg_len += (sizeof(*mhi_ctxt->chan_ctxt) * mhi_cntrl->max_chan);
++
++	mhi_ctxt->er_ctxt_addr = mhi_ctxt->ctrl_seg_len;
++	mhi_ctxt->ctrl_seg_len += (sizeof(*mhi_ctxt->er_ctxt) * mhi_cntrl->total_ev_rings);
++
++	mhi_ctxt->cmd_ctxt_addr = mhi_ctxt->ctrl_seg_len;
++	mhi_ctxt->ctrl_seg_len += (sizeof(*mhi_ctxt->cmd_ctxt) * NR_OF_CMD_RINGS);
++
++/* MHI protocol requires the transfer ring to be aligned with ring length */
++#define mhi_aligned_ring(mhi_ctxt, ring) \
++	do { \
++		ring->el_size = sizeof(struct mhi_tre); \
++		ring->len = ring->el_size * ring->elements; \
++		mhi_ctxt->ctrl_seg_len = ALIGN(mhi_ctxt->ctrl_seg_len, ring->len); \
++		ring->iommu_base = mhi_ctxt->ctrl_seg_len; \
++		mhi_ctxt->ctrl_seg_len += ring->len; \
++	} while (0)
++
++	mhi_chan = mhi_cntrl->mhi_chan;
++	for (i = 0; i < mhi_cntrl->max_chan; i++, mhi_chan++) {
++		/* Skip if it is an invalid or offload channel */
++		if (!mhi_chan->name || mhi_chan->offload_ch)
++			continue;
++
++		ring = &mhi_chan->tre_ring;
++		mhi_aligned_ring(mhi_ctxt, ring);
++	}
++
++	mhi_event = mhi_cntrl->mhi_event;
++	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, mhi_event++) {
++		/* Skip if it is an offload event */
++		if (mhi_event->offload_ev)
++			continue;
++
++		ring = &mhi_event->ring;
++		mhi_aligned_ring(mhi_ctxt, ring);
++	}
++
++	mhi_cmd = mhi_cntrl->mhi_cmd;
++	for (i = 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++) {
++		ring = &mhi_cmd->ring;
++		ring->elements = CMD_EL_PER_RING;
++		mhi_aligned_ring(mhi_ctxt, ring);
++	}
++
++	mhi_ctxt->ctrl_seg = mhi_alloc_coherent(mhi_cntrl,
++						 mhi_ctxt->ctrl_seg_len,
++						 &mhi_ctxt->ctrl_seg_addr,
++						 GFP_KERNEL);
++	if (!mhi_ctxt->ctrl_seg) {
++		kfree(mhi_ctxt);
++		return NULL;
++	}
++
++	mhi_ctxt->chan_ctxt = mhi_ctxt->ctrl_seg + mhi_ctxt->chan_ctxt_addr;
++	mhi_ctxt->chan_ctxt_addr += mhi_ctxt->ctrl_seg_addr;
++	mhi_ctxt->er_ctxt = mhi_ctxt->ctrl_seg + mhi_ctxt->er_ctxt_addr;
++	mhi_ctxt->er_ctxt_addr += mhi_ctxt->ctrl_seg_addr;
++	mhi_ctxt->cmd_ctxt = mhi_ctxt->ctrl_seg + mhi_ctxt->cmd_ctxt_addr;
++	mhi_ctxt->cmd_ctxt_addr += mhi_ctxt->ctrl_seg_addr;
++
++	mhi_chan = mhi_cntrl->mhi_chan;
++	for (i = 0; i < mhi_cntrl->max_chan; i++, mhi_chan++) {
++		/* Skip if it is an invalid or offload channel */
++		if (!mhi_chan->name || mhi_chan->offload_ch)
++			continue;
++
++		ring = &mhi_chan->tre_ring;
++		ring->base = mhi_ctxt->ctrl_seg + ring->iommu_base;
++		ring->iommu_base += mhi_ctxt->ctrl_seg_addr;
++	}
++
++	mhi_event = mhi_cntrl->mhi_event;
++	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, mhi_event++) {
++		/* Skip if it is an offload event */
++		if (mhi_event->offload_ev)
++			continue;
++
++		ring = &mhi_event->ring;
++		ring->base = mhi_ctxt->ctrl_seg + ring->iommu_base;
++		ring->iommu_base += mhi_ctxt->ctrl_seg_addr;
++	}
++
++	mhi_cmd = mhi_cntrl->mhi_cmd;
++	for (i = 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++) {
++		ring = &mhi_cmd->ring;
++		ring->base = mhi_ctxt->ctrl_seg + ring->iommu_base;
++		ring->iommu_base += mhi_ctxt->ctrl_seg_addr;
++	}
++
++	return mhi_ctxt;
 +}
 +
-+static int tcf_redundancy_get_splitdevs(struct flow_action_entry *entry,
-+					const struct tc_action *act)
-+{
-+	u32 len;
-+
-+	entry->redundancy.split_devs = tcf_redundancy_create_dev_array(act, &len);
-+	if (!entry->redundancy.split_devs)
-+		return -EINVAL;
-+
-+	entry->redundancy.split_num = len;
-+
-+	entry->destructor = tcf_redundancy_devlist_destructor;
-+	entry->destructor_priv = entry->redundancy.split_devs;
-+
-+	return 0;
-+}
-+
- static enum flow_action_hw_stats tc_act_hw_stats(u8 hw_stats)
+ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
  {
- 	if (WARN_ON_ONCE(hw_stats > TCA_ACT_HW_STATS_ANY))
-@@ -3703,6 +3728,12 @@ int tc_setup_flow_action(struct flow_action *flow_action,
- 			err = tcf_gate_get_entries(entry, act);
- 			if (err)
- 				goto err_out_locked;
-+		} else if (is_tcf_redundancy(act)) {
-+			entry->id = FLOW_ACTION_REDUNDANCY;
-+			entry->redundancy.mode = tcf_redundancy_mode(act);
-+			err = tcf_redundancy_get_splitdevs(entry, act);
-+			if (err)
-+				goto err_out;
- 		} else {
- 			err = -EOPNOTSUPP;
- 			goto err_out_locked;
+ 	struct mhi_ctxt *mhi_ctxt;
+@@ -249,24 +328,16 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
+ 	struct mhi_event *mhi_event;
+ 	struct mhi_cmd *mhi_cmd;
+ 	u32 tmp;
+-	int ret = -ENOMEM, i;
++	int i;
+ 
+ 	atomic_set(&mhi_cntrl->dev_wake, 0);
+ 	atomic_set(&mhi_cntrl->pending_pkts, 0);
+ 
+-	mhi_ctxt = kzalloc(sizeof(*mhi_ctxt), GFP_KERNEL);
++	mhi_ctxt = mhi_alloc_dev_ctxt(mhi_cntrl);
+ 	if (!mhi_ctxt)
+ 		return -ENOMEM;
+ 
+ 	/* Setup channel ctxt */
+-	mhi_ctxt->chan_ctxt = mhi_alloc_coherent(mhi_cntrl,
+-						 sizeof(*mhi_ctxt->chan_ctxt) *
+-						 mhi_cntrl->max_chan,
+-						 &mhi_ctxt->chan_ctxt_addr,
+-						 GFP_KERNEL);
+-	if (!mhi_ctxt->chan_ctxt)
+-		goto error_alloc_chan_ctxt;
+-
+ 	mhi_chan = mhi_cntrl->mhi_chan;
+ 	chan_ctxt = mhi_ctxt->chan_ctxt;
+ 	for (i = 0; i < mhi_cntrl->max_chan; i++, chan_ctxt++, mhi_chan++) {
+@@ -291,14 +362,6 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
+ 	}
+ 
+ 	/* Setup event context */
+-	mhi_ctxt->er_ctxt = mhi_alloc_coherent(mhi_cntrl,
+-					       sizeof(*mhi_ctxt->er_ctxt) *
+-					       mhi_cntrl->total_ev_rings,
+-					       &mhi_ctxt->er_ctxt_addr,
+-					       GFP_KERNEL);
+-	if (!mhi_ctxt->er_ctxt)
+-		goto error_alloc_er_ctxt;
+-
+ 	er_ctxt = mhi_ctxt->er_ctxt;
+ 	mhi_event = mhi_cntrl->mhi_event;
+ 	for (i = 0; i < mhi_cntrl->total_ev_rings; i++, er_ctxt++,
+@@ -319,12 +382,6 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
+ 		er_ctxt->msivec = mhi_event->irq;
+ 		mhi_event->db_cfg.db_mode = true;
+ 
+-		ring->el_size = sizeof(struct mhi_tre);
+-		ring->len = ring->el_size * ring->elements;
+-		ret = mhi_alloc_aligned_ring(mhi_cntrl, ring, ring->len);
+-		if (ret)
+-			goto error_alloc_er;
+-
+ 		/*
+ 		 * If the read pointer equals to the write pointer, then the
+ 		 * ring is empty
+@@ -337,27 +394,11 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
+ 	}
+ 
+ 	/* Setup cmd context */
+-	ret = -ENOMEM;
+-	mhi_ctxt->cmd_ctxt = mhi_alloc_coherent(mhi_cntrl,
+-						sizeof(*mhi_ctxt->cmd_ctxt) *
+-						NR_OF_CMD_RINGS,
+-						&mhi_ctxt->cmd_ctxt_addr,
+-						GFP_KERNEL);
+-	if (!mhi_ctxt->cmd_ctxt)
+-		goto error_alloc_er;
+-
+ 	mhi_cmd = mhi_cntrl->mhi_cmd;
+ 	cmd_ctxt = mhi_ctxt->cmd_ctxt;
+ 	for (i = 0; i < NR_OF_CMD_RINGS; i++, mhi_cmd++, cmd_ctxt++) {
+ 		struct mhi_ring *ring = &mhi_cmd->ring;
+ 
+-		ring->el_size = sizeof(struct mhi_tre);
+-		ring->elements = CMD_EL_PER_RING;
+-		ring->len = ring->el_size * ring->elements;
+-		ret = mhi_alloc_aligned_ring(mhi_cntrl, ring, ring->len);
+-		if (ret)
+-			goto error_alloc_cmd;
+-
+ 		ring->rp = ring->wp = ring->base;
+ 		cmd_ctxt->rbase = ring->iommu_base;
+ 		cmd_ctxt->rp = cmd_ctxt->wp = cmd_ctxt->rbase;
+@@ -368,43 +409,6 @@ int mhi_init_dev_ctxt(struct mhi_controller *mhi_cntrl)
+ 	mhi_cntrl->mhi_ctxt = mhi_ctxt;
+ 
+ 	return 0;
+-
+-error_alloc_cmd:
+-	for (--i, --mhi_cmd; i >= 0; i--, mhi_cmd--) {
+-		struct mhi_ring *ring = &mhi_cmd->ring;
+-
+-		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
+-				  ring->pre_aligned, ring->dma_handle);
+-	}
+-	mhi_free_coherent(mhi_cntrl,
+-			  sizeof(*mhi_ctxt->cmd_ctxt) * NR_OF_CMD_RINGS,
+-			  mhi_ctxt->cmd_ctxt, mhi_ctxt->cmd_ctxt_addr);
+-	i = mhi_cntrl->total_ev_rings;
+-	mhi_event = mhi_cntrl->mhi_event + i;
+-
+-error_alloc_er:
+-	for (--i, --mhi_event; i >= 0; i--, mhi_event--) {
+-		struct mhi_ring *ring = &mhi_event->ring;
+-
+-		if (mhi_event->offload_ev)
+-			continue;
+-
+-		mhi_free_coherent(mhi_cntrl, ring->alloc_size,
+-				  ring->pre_aligned, ring->dma_handle);
+-	}
+-	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->er_ctxt) *
+-			  mhi_cntrl->total_ev_rings, mhi_ctxt->er_ctxt,
+-			  mhi_ctxt->er_ctxt_addr);
+-
+-error_alloc_er_ctxt:
+-	mhi_free_coherent(mhi_cntrl, sizeof(*mhi_ctxt->chan_ctxt) *
+-			  mhi_cntrl->max_chan, mhi_ctxt->chan_ctxt,
+-			  mhi_ctxt->chan_ctxt_addr);
+-
+-error_alloc_chan_ctxt:
+-	kfree(mhi_ctxt);
+-
+-	return ret;
+ }
+ 
+ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
+@@ -455,11 +459,11 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
+ 		},
+ 		{
+ 			MHICTRLBASE_HIGHER, U32_MAX, 0,
+-			upper_32_bits(mhi_cntrl->iova_start),
++			upper_32_bits(mhi_cntrl->mhi_ctxt->ctrl_seg_addr),
+ 		},
+ 		{
+ 			MHICTRLBASE_LOWER, U32_MAX, 0,
+-			lower_32_bits(mhi_cntrl->iova_start),
++			lower_32_bits(mhi_cntrl->mhi_ctxt->ctrl_seg_addr),
+ 		},
+ 		{
+ 			MHIDATABASE_HIGHER, U32_MAX, 0,
+@@ -471,11 +475,13 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
+ 		},
+ 		{
+ 			MHICTRLLIMIT_HIGHER, U32_MAX, 0,
+-			upper_32_bits(mhi_cntrl->iova_stop),
++			upper_32_bits(mhi_cntrl->mhi_ctxt->ctrl_seg_addr
++							+ mhi_cntrl->mhi_ctxt->ctrl_seg_len),
+ 		},
+ 		{
+ 			MHICTRLLIMIT_LOWER, U32_MAX, 0,
+-			lower_32_bits(mhi_cntrl->iova_stop),
++			lower_32_bits(mhi_cntrl->mhi_ctxt->ctrl_seg_addr
++							+ mhi_cntrl->mhi_ctxt->ctrl_seg_len),
+ 		},
+ 		{
+ 			MHIDATALIMIT_HIGHER, U32_MAX, 0,
+@@ -542,19 +548,10 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
+ 			  struct mhi_chan *mhi_chan)
+ {
+ 	struct mhi_ring *buf_ring;
+-	struct mhi_ring *tre_ring;
+-	struct mhi_chan_ctxt *chan_ctxt;
+ 
+ 	buf_ring = &mhi_chan->buf_ring;
+-	tre_ring = &mhi_chan->tre_ring;
+-	chan_ctxt = &mhi_cntrl->mhi_ctxt->chan_ctxt[mhi_chan->chan];
+-
+-	mhi_free_coherent(mhi_cntrl, tre_ring->alloc_size,
+-			  tre_ring->pre_aligned, tre_ring->dma_handle);
+ 	vfree(buf_ring->base);
+-
+-	buf_ring->base = tre_ring->base = NULL;
+-	chan_ctxt->rbase = 0;
++	buf_ring->base = NULL;
+ }
+ 
+ int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
+@@ -564,24 +561,16 @@ int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
+ 	struct mhi_ring *tre_ring;
+ 	struct mhi_chan_ctxt *chan_ctxt;
+ 	u32 tmp;
+-	int ret;
+ 
+ 	buf_ring = &mhi_chan->buf_ring;
+ 	tre_ring = &mhi_chan->tre_ring;
+-	tre_ring->el_size = sizeof(struct mhi_tre);
+-	tre_ring->len = tre_ring->el_size * tre_ring->elements;
+ 	chan_ctxt = &mhi_cntrl->mhi_ctxt->chan_ctxt[mhi_chan->chan];
+-	ret = mhi_alloc_aligned_ring(mhi_cntrl, tre_ring, tre_ring->len);
+-	if (ret)
+-		return -ENOMEM;
+ 
+ 	buf_ring->el_size = sizeof(struct mhi_buf_info);
+ 	buf_ring->len = buf_ring->el_size * buf_ring->elements;
+ 	buf_ring->base = vzalloc(buf_ring->len);
+ 
+ 	if (!buf_ring->base) {
+-		mhi_free_coherent(mhi_cntrl, tre_ring->alloc_size,
+-				  tre_ring->pre_aligned, tre_ring->dma_handle);
+ 		return -ENOMEM;
+ 	}
+ 
+diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+index 6f80ec30c0cd..546997d1a390 100644
+--- a/drivers/bus/mhi/core/internal.h
++++ b/drivers/bus/mhi/core/internal.h
+@@ -255,6 +255,9 @@ struct mhi_ctxt {
+ 	dma_addr_t er_ctxt_addr;
+ 	dma_addr_t chan_ctxt_addr;
+ 	dma_addr_t cmd_ctxt_addr;
++	void *ctrl_seg;
++	dma_addr_t ctrl_seg_addr;
++	size_t ctrl_seg_len;
+ };
+ 
+ struct mhi_tre {
+@@ -483,17 +486,14 @@ struct state_transition {
+ };
+ 
+ struct mhi_ring {
+-	dma_addr_t dma_handle;
+ 	dma_addr_t iommu_base;
+ 	u64 *ctxt_wp; /* point to ctxt wp */
+-	void *pre_aligned;
+ 	void *base;
+ 	void *rp;
+ 	void *wp;
+ 	size_t el_size;
+ 	size_t len;
+ 	size_t elements;
+-	size_t alloc_size;
+ 	void __iomem *db_addr;
+ };
+ 
 -- 
-2.17.1
+2.25.1
 
