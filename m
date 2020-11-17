@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA63A2B608D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF052B6212
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729453AbgKQNKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:10:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39208 "EHLO mail.kernel.org"
+        id S1731086AbgKQNZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:25:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729411AbgKQNKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:10:07 -0500
+        id S1731052AbgKQNZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:25:03 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9E51221EB;
-        Tue, 17 Nov 2020 13:10:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6626F24686;
+        Tue, 17 Nov 2020 13:25:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618606;
-        bh=NM8DvxLvu6Mo3N4dhuw7pC9oJmM+M5lk3POkOtP+UtE=;
+        s=default; t=1605619502;
+        bh=dmDJI0QQe4VlDG5EGtS5+/ssCqnCyrFhWR8O/fPYlM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G/TkdQB7/w5XXnPLIRiPCxxwKHZumJDFXr3GWkIBLpoZnpkRbmViSZKd446PixL18
-         OsW/fhB2Qsu4fVuxaTLdZ4bsboEmnRwTakSdqz9rcQzw8NetmGYQVx7n4SQDnLAvrT
-         w+zn7BaVkRt6hVlfM2RgW69zA4IYwC44AfKrBjYM=
+        b=Q+IDj117zPxdbAMrV9uRC8viGwiGIVbqdAF+RtIPks5tSxz8oqENX1Wvh7neVsFXk
+         EXypFoevjlusbIEFqZUs5gSPBeCuAuGMfE2KdzUKP/CdZn+LBe0ZbVAuRdES+NHms4
+         PRqJiGLVmHOFeJ3vwFfOx3Eh0seiwlP9IeEm1Ofw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiuyu Xiao <qiuyu.xiao.qyx@gmail.com>,
-        Mark Gray <mark.d.gray@redhat.com>,
-        Greg Rose <gvrose8192@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Sandeep Raghuraman <sandy.8925@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 24/78] geneve: add transport ports in route lookup for geneve
+Subject: [PATCH 5.4 060/151] drm/amd/pm: perform SMC reset on suspend/hibernation
 Date:   Tue, 17 Nov 2020 14:04:50 +0100
-Message-Id: <20201117122110.295663982@linuxfoundation.org>
+Message-Id: <20201117122124.347436776@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,180 +44,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Gray <mark.d.gray@redhat.com>
+From: Evan Quan <evan.quan@amd.com>
 
-commit 34beb21594519ce64a55a498c2fe7d567bc1ca20 upstream.
+[ Upstream commit 277b080f98803cb73a83fb234f0be83a10e63958 ]
 
-This patch adds transport ports information for route lookup so that
-IPsec can select Geneve tunnel traffic to do encryption. This is
-needed for OVS/OVN IPsec with encrypted Geneve tunnels.
+So that the succeeding resume can be performed based on
+a clean state.
 
-This can be tested by configuring a host-host VPN using an IKE
-daemon and specifying port numbers. For example, for an
-Openswan-type configuration, the following parameters should be
-configured on both hosts and IPsec set up as-per normal:
-
-$ cat /etc/ipsec.conf
-
-conn in
-...
-left=$IP1
-right=$IP2
-...
-leftprotoport=udp/6081
-rightprotoport=udp
-...
-conn out
-...
-left=$IP1
-right=$IP2
-...
-leftprotoport=udp
-rightprotoport=udp/6081
-...
-
-The tunnel can then be setup using "ip" on both hosts (but
-changing the relevant IP addresses):
-
-$ ip link add tun type geneve id 1000 remote $IP2
-$ ip addr add 192.168.0.1/24 dev tun
-$ ip link set tun up
-
-This can then be tested by pinging from $IP1:
-
-$ ping 192.168.0.2
-
-Without this patch the traffic is unencrypted on the wire.
-
-Fixes: 2d07dc79fe04 ("geneve: add initial netdev driver for GENEVE tunnels")
-Signed-off-by: Qiuyu Xiao <qiuyu.xiao.qyx@gmail.com>
-Signed-off-by: Mark Gray <mark.d.gray@redhat.com>
-Reviewed-by: Greg Rose <gvrose8192@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-[bwh: Backported to 4.9:
- - Use geneve->dst_port instead of geneve->cfg.info.key.tp_dst
- - Adjust context]
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Tested-by: Sandeep Raghuraman <sandy.8925@gmail.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/geneve.c | 36 ++++++++++++++++++++++++++----------
- 1 file changed, 26 insertions(+), 10 deletions(-)
+ .../gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c  |  4 ++++
+ drivers/gpu/drm/amd/powerplay/inc/hwmgr.h     |  1 +
+ drivers/gpu/drm/amd/powerplay/inc/smumgr.h    |  2 ++
+ .../gpu/drm/amd/powerplay/smumgr/ci_smumgr.c  | 24 +++++++++++++++++++
+ drivers/gpu/drm/amd/powerplay/smumgr/smumgr.c |  8 +++++++
+ 5 files changed, 39 insertions(+)
 
-diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-index 35d8c636de123..d89995f4bd433 100644
---- a/drivers/net/geneve.c
-+++ b/drivers/net/geneve.c
-@@ -732,7 +732,8 @@ static int geneve6_build_skb(struct dst_entry *dst, struct sk_buff *skb,
- static struct rtable *geneve_get_v4_rt(struct sk_buff *skb,
- 				       struct net_device *dev,
- 				       struct flowi4 *fl4,
--				       struct ip_tunnel_info *info)
-+				       struct ip_tunnel_info *info,
-+				       __be16 dport, __be16 sport)
- {
- 	bool use_cache = ip_tunnel_dst_cache_usable(skb, info);
- 	struct geneve_dev *geneve = netdev_priv(dev);
-@@ -746,6 +747,8 @@ static struct rtable *geneve_get_v4_rt(struct sk_buff *skb,
- 	memset(fl4, 0, sizeof(*fl4));
- 	fl4->flowi4_mark = skb->mark;
- 	fl4->flowi4_proto = IPPROTO_UDP;
-+	fl4->fl4_dport = dport;
-+	fl4->fl4_sport = sport;
+diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
+index 35e6cbe805eb4..7cde55854b65c 100644
+--- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
++++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu7_hwmgr.c
+@@ -1533,6 +1533,10 @@ int smu7_disable_dpm_tasks(struct pp_hwmgr *hwmgr)
+ 	PP_ASSERT_WITH_CODE((tmp_result == 0),
+ 			"Failed to reset to default!", result = tmp_result);
  
- 	if (info) {
- 		fl4->daddr = info->key.u.ipv4.dst;
-@@ -791,7 +794,8 @@ static struct rtable *geneve_get_v4_rt(struct sk_buff *skb,
- static struct dst_entry *geneve_get_v6_dst(struct sk_buff *skb,
- 					   struct net_device *dev,
- 					   struct flowi6 *fl6,
--					   struct ip_tunnel_info *info)
-+					   struct ip_tunnel_info *info,
-+					   __be16 dport, __be16 sport)
- {
- 	bool use_cache = ip_tunnel_dst_cache_usable(skb, info);
- 	struct geneve_dev *geneve = netdev_priv(dev);
-@@ -807,6 +811,8 @@ static struct dst_entry *geneve_get_v6_dst(struct sk_buff *skb,
- 	memset(fl6, 0, sizeof(*fl6));
- 	fl6->flowi6_mark = skb->mark;
- 	fl6->flowi6_proto = IPPROTO_UDP;
-+	fl6->fl6_dport = dport;
-+	fl6->fl6_sport = sport;
++	tmp_result = smum_stop_smc(hwmgr);
++	PP_ASSERT_WITH_CODE((tmp_result == 0),
++			"Failed to stop smc!", result = tmp_result);
++
+ 	tmp_result = smu7_force_switch_to_arbf0(hwmgr);
+ 	PP_ASSERT_WITH_CODE((tmp_result == 0),
+ 			"Failed to force to switch arbf0!", result = tmp_result);
+diff --git a/drivers/gpu/drm/amd/powerplay/inc/hwmgr.h b/drivers/gpu/drm/amd/powerplay/inc/hwmgr.h
+index 7bf9a14bfa0be..f6490a1284384 100644
+--- a/drivers/gpu/drm/amd/powerplay/inc/hwmgr.h
++++ b/drivers/gpu/drm/amd/powerplay/inc/hwmgr.h
+@@ -229,6 +229,7 @@ struct pp_smumgr_func {
+ 	bool (*is_hw_avfs_present)(struct pp_hwmgr  *hwmgr);
+ 	int (*update_dpm_settings)(struct pp_hwmgr *hwmgr, void *profile_setting);
+ 	int (*smc_table_manager)(struct pp_hwmgr *hwmgr, uint8_t *table, uint16_t table_id, bool rw); /*rw: true for read, false for write */
++	int (*stop_smc)(struct pp_hwmgr *hwmgr);
+ };
  
- 	if (info) {
- 		fl6->daddr = info->key.u.ipv6.dst;
-@@ -894,13 +900,14 @@ static netdev_tx_t geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
- 			goto tx_error;
- 	}
+ struct pp_hwmgr_func {
+diff --git a/drivers/gpu/drm/amd/powerplay/inc/smumgr.h b/drivers/gpu/drm/amd/powerplay/inc/smumgr.h
+index c5288831aa15c..05a55e850b5e0 100644
+--- a/drivers/gpu/drm/amd/powerplay/inc/smumgr.h
++++ b/drivers/gpu/drm/amd/powerplay/inc/smumgr.h
+@@ -114,4 +114,6 @@ extern int smum_update_dpm_settings(struct pp_hwmgr *hwmgr, void *profile_settin
  
--	rt = geneve_get_v4_rt(skb, dev, &fl4, info);
-+	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
-+	rt = geneve_get_v4_rt(skb, dev, &fl4, info,
-+			      geneve->dst_port, sport);
- 	if (IS_ERR(rt)) {
- 		err = PTR_ERR(rt);
- 		goto tx_error;
- 	}
+ extern int smum_smc_table_manager(struct pp_hwmgr *hwmgr, uint8_t *table, uint16_t table_id, bool rw);
  
--	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
- 	skb_reset_mac_header(skb);
- 
- 	if (info) {
-@@ -983,13 +990,14 @@ static netdev_tx_t geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
- 		}
- 	}
- 
--	dst = geneve_get_v6_dst(skb, dev, &fl6, info);
-+	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
-+	dst = geneve_get_v6_dst(skb, dev, &fl6, info,
-+				geneve->dst_port, sport);
- 	if (IS_ERR(dst)) {
- 		err = PTR_ERR(dst);
- 		goto tx_error;
- 	}
- 
--	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
- 	skb_reset_mac_header(skb);
- 
- 	if (info) {
-@@ -1114,9 +1122,14 @@ static int geneve_fill_metadata_dst(struct net_device *dev, struct sk_buff *skb)
- 	struct dst_entry *dst;
- 	struct flowi6 fl6;
++extern int smum_stop_smc(struct pp_hwmgr *hwmgr);
++
  #endif
-+	__be16 sport;
- 
- 	if (ip_tunnel_info_af(info) == AF_INET) {
--		rt = geneve_get_v4_rt(skb, dev, &fl4, info);
-+		sport = udp_flow_src_port(geneve->net, skb,
-+					  1, USHRT_MAX, true);
-+
-+		rt = geneve_get_v4_rt(skb, dev, &fl4, info,
-+				      geneve->dst_port, sport);
- 		if (IS_ERR(rt))
- 			return PTR_ERR(rt);
- 
-@@ -1124,7 +1137,11 @@ static int geneve_fill_metadata_dst(struct net_device *dev, struct sk_buff *skb)
- 		info->key.u.ipv4.src = fl4.saddr;
- #if IS_ENABLED(CONFIG_IPV6)
- 	} else if (ip_tunnel_info_af(info) == AF_INET6) {
--		dst = geneve_get_v6_dst(skb, dev, &fl6, info);
-+		sport = udp_flow_src_port(geneve->net, skb,
-+					  1, USHRT_MAX, true);
-+
-+		dst = geneve_get_v6_dst(skb, dev, &fl6, info,
-+					geneve->dst_port, sport);
- 		if (IS_ERR(dst))
- 			return PTR_ERR(dst);
- 
-@@ -1135,8 +1152,7 @@ static int geneve_fill_metadata_dst(struct net_device *dev, struct sk_buff *skb)
- 		return -EINVAL;
- 	}
- 
--	info->key.tp_src = udp_flow_src_port(geneve->net, skb,
--					     1, USHRT_MAX, true);
-+	info->key.tp_src = sport;
- 	info->key.tp_dst = geneve->dst_port;
+diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
+index 09a3d8ae44491..0f4f27a89020d 100644
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
+@@ -2936,6 +2936,29 @@ static int ci_update_smc_table(struct pp_hwmgr *hwmgr, uint32_t type)
  	return 0;
  }
+ 
++static void ci_reset_smc(struct pp_hwmgr *hwmgr)
++{
++	PHM_WRITE_INDIRECT_FIELD(hwmgr->device, CGS_IND_REG__SMC,
++				  SMC_SYSCON_RESET_CNTL,
++				  rst_reg, 1);
++}
++
++
++static void ci_stop_smc_clock(struct pp_hwmgr *hwmgr)
++{
++	PHM_WRITE_INDIRECT_FIELD(hwmgr->device, CGS_IND_REG__SMC,
++				  SMC_SYSCON_CLOCK_CNTL_0,
++				  ck_disable, 1);
++}
++
++static int ci_stop_smc(struct pp_hwmgr *hwmgr)
++{
++	ci_reset_smc(hwmgr);
++	ci_stop_smc_clock(hwmgr);
++
++	return 0;
++}
++
+ const struct pp_smumgr_func ci_smu_funcs = {
+ 	.name = "ci_smu",
+ 	.smu_init = ci_smu_init,
+@@ -2960,4 +2983,5 @@ const struct pp_smumgr_func ci_smu_funcs = {
+ 	.is_dpm_running = ci_is_dpm_running,
+ 	.update_dpm_settings = ci_update_dpm_settings,
+ 	.update_smc_table = ci_update_smc_table,
++	.stop_smc = ci_stop_smc,
+ };
+diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/smumgr.c
+index 4240aeec9000e..83d06f8e99ec2 100644
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/smumgr.c
+@@ -217,3 +217,11 @@ int smum_smc_table_manager(struct pp_hwmgr *hwmgr, uint8_t *table, uint16_t tabl
+ 
+ 	return -EINVAL;
+ }
++
++int smum_stop_smc(struct pp_hwmgr *hwmgr)
++{
++	if (hwmgr->smumgr_funcs->stop_smc)
++		return hwmgr->smumgr_funcs->stop_smc(hwmgr);
++
++	return 0;
++}
 -- 
 2.27.0
 
