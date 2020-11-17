@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC60D2B5F5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8FB2B5F5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgKQMtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:49:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50890 "EHLO mail.kernel.org"
+        id S1728211AbgKQMuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:50:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgKQMtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:49:16 -0500
+        id S1725779AbgKQMuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:50:44 -0500
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B4EE2222A;
-        Tue, 17 Nov 2020 12:49:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15D202222A;
+        Tue, 17 Nov 2020 12:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605617355;
-        bh=g3uBuIEXEPO6bYZF59d9KG1UdPdjPXY5irw/TxIMzSs=;
+        s=default; t=1605617443;
+        bh=nufKKNFjFQgQkEMjmPmhWQ5WpTuzpxY2cQYNBOxXtvw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KyJomvIzi+Vze+9G0ynumnjdMxgRcqVwtkI+H89VCydWlnJAf9aHEsXg4aFnc8m2C
-         iRvtasVi1kNLOMNpvLEgZ3syPICqA4lxieXUst75zUF2E84evXWkPkOzWhjpdp4JqS
-         cqTG3gw44MI4zZw53sS/kxqKPGqdTiDyizTTtU6U=
+        b=N69vzxl0MfEp6K0J8nWD/oHBlrXt2aKh63pblyDpKkFy4aM2J6J3oOjS/ifj3npx7
+         tzUyJXJRI43WVfUVFrNNpVHKKyH+471CyxE3OuIpaSb8RPF/Dvd4kwhfLrLfcdRoI9
+         1rO9b7QpdIfk0tsDRm2jojwPk5vt3fWCSY9CwG/8=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1788E40E29; Tue, 17 Nov 2020 09:49:13 -0300 (-03)
-Date:   Tue, 17 Nov 2020 09:49:13 -0300
+        id 0744D40E29; Tue, 17 Nov 2020 09:50:41 -0300 (-03)
+Date:   Tue, 17 Nov 2020 09:50:40 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -41,152 +41,55 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 22/24] perf buildid-cache: Add --debuginfod option
-Message-ID: <20201117124913.GS614220@kernel.org>
+Subject: Re: [PATCH 23/24] perf buildid-list: Add support for mmap2's buildid
+ events
+Message-ID: <20201117125040.GT614220@kernel.org>
 References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-23-jolsa@kernel.org>
+ <20201117110053.1303113-24-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117110053.1303113-23-jolsa@kernel.org>
+In-Reply-To: <20201117110053.1303113-24-jolsa@kernel.org>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 17, 2020 at 12:00:51PM +0100, Jiri Olsa escreveu:
-> Adding --debuginfod option to specify debuginfod url and
-> support to do that through config file as well.
+Em Tue, Nov 17, 2020 at 12:00:52PM +0100, Jiri Olsa escreveu:
+> Add buildid-list support for mmap2's build id data, so we can
+> display build ids for dso objects for data without the build
+> id cache update.
+
+>   $ perf buildid-list
+>   1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
+>   d278249792061c6b74d1693ca59513be1def13f2 /usr/lib64/libc-2.31.so
 > 
-> Use following in ~/.perfconfig file:
-> 
->   [buildid-cache]
->   debuginfod=http://192.168.122.174:8002
- 
-Ditto, its cool this is getting nicely integrated :-)
+> By default only dso objects with hits are shown.
+
+Would be interesting to be able to show all the build ids that are
+there. a 'perf buildid-list --all' or make this under --force?
 
 - Arnaldo
-
+ 
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  .../perf/Documentation/perf-buildid-cache.txt |  6 ++++
->  tools/perf/Documentation/perf-config.txt      |  7 +++++
->  tools/perf/builtin-buildid-cache.c            | 28 +++++++++++++++++--
->  3 files changed, 38 insertions(+), 3 deletions(-)
+>  tools/perf/builtin-buildid-list.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/tools/perf/Documentation/perf-buildid-cache.txt b/tools/perf/Documentation/perf-buildid-cache.txt
-> index b77da5138bca..75385f4dc11f 100644
-> --- a/tools/perf/Documentation/perf-buildid-cache.txt
-> +++ b/tools/perf/Documentation/perf-buildid-cache.txt
-> @@ -84,6 +84,12 @@ OPTIONS
->  	used when creating a uprobe for a process that resides in a
->  	different mount namespace from the perf(1) utility.
+> diff --git a/tools/perf/builtin-buildid-list.c b/tools/perf/builtin-buildid-list.c
+> index e3ef75583514..87f5b1a4a7fa 100644
+> --- a/tools/perf/builtin-buildid-list.c
+> +++ b/tools/perf/builtin-buildid-list.c
+> @@ -77,6 +77,9 @@ static int perf_session__list_build_ids(bool force, bool with_hits)
+>  	    perf_header__has_feat(&session->header, HEADER_AUXTRACE))
+>  		with_hits = false;
 >  
-> +--debuginfod=URL::
-> +	Specify debuginfod URL to be used when retrieving perf.data binaries,
-> +	it follows the same syntax as the DEBUGINFOD_URLS variable, like:
+> +	if (!perf_header__has_feat(&session->header, HEADER_BUILD_ID))
+> +		with_hits = true;
 > +
-> +	  buildid-cache.debuginfod=http://192.168.122.174:8002
-> +
->  SEE ALSO
->  --------
->  linkperf:perf-record[1], linkperf:perf-report[1], linkperf:perf-buildid-list[1]
-> diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-> index 31069d8a5304..15fad32b9885 100644
-> --- a/tools/perf/Documentation/perf-config.txt
-> +++ b/tools/perf/Documentation/perf-config.txt
-> @@ -238,6 +238,13 @@ buildid.*::
->  		cache location, or to disable it altogether. If you want to disable it,
->  		set buildid.dir to /dev/null. The default is $HOME/.debug
->  
-> +buildid-cache.*::
-> +	buildid-cache.debuginfod=URL
-> +		Specify debuginfod URL to be used when retrieving perf.data binaries,
-> +		it follows the same syntax as the DEBUGINFOD_URLS variable, like:
-> +
-> +		  buildid-cache.debuginfod=http://192.168.122.174:8002
-> +
->  annotate.*::
->  	These are in control of addresses, jump function, source code
->  	in lines of assembly code from a specific program.
-> diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
-> index 0bfb54ee1e5e..fc03de7d2a28 100644
-> --- a/tools/perf/builtin-buildid-cache.c
-> +++ b/tools/perf/builtin-buildid-cache.c
-> @@ -27,6 +27,7 @@
->  #include "util/time-utils.h"
->  #include "util/util.h"
->  #include "util/probe-file.h"
-> +#include "util/config.h"
->  #include <linux/string.h>
->  #include <linux/err.h>
->  #include <linux/zalloc.h>
-> @@ -552,12 +553,21 @@ build_id_cache__add_perf_data(const char *path, bool all)
->  	return err;
->  }
->  
-> +static int perf_buildid_cache_config(const char *var, const char *value, void *cb)
-> +{
-> +	const char **debuginfod = cb;
-> +
-> +	if (!strcmp(var, "buildid-cache.debuginfod"))
-> +		*debuginfod = strdup(value);
-> +
-> +	return 0;
-> +}
-> +
->  int cmd_buildid_cache(int argc, const char **argv)
->  {
->  	struct strlist *list;
->  	struct str_node *pos;
-> -	int ret = 0;
-> -	int ns_id = -1;
-> +	int ret, ns_id = -1;
->  	bool force = false;
->  	bool list_files = false;
->  	bool opts_flag = false;
-> @@ -567,7 +577,8 @@ int cmd_buildid_cache(int argc, const char **argv)
->  		   *purge_name_list_str = NULL,
->  		   *missing_filename = NULL,
->  		   *update_name_list_str = NULL,
-> -		   *kcore_filename = NULL;
-> +		   *kcore_filename = NULL,
-> +		   *debuginfod = NULL;
->  	char sbuf[STRERR_BUFSIZE];
->  
->  	struct perf_data data = {
-> @@ -592,6 +603,8 @@ int cmd_buildid_cache(int argc, const char **argv)
->  	OPT_BOOLEAN('f', "force", &force, "don't complain, do it"),
->  	OPT_STRING('u', "update", &update_name_list_str, "file list",
->  		    "file(s) to update"),
-> +	OPT_STRING(0, "debuginfod", &debuginfod, "debuginfod url",
-> +		    "set debuginfod url"),
->  	OPT_INCR('v', "verbose", &verbose, "be more verbose"),
->  	OPT_INTEGER(0, "target-ns", &ns_id, "target pid for namespace context"),
->  	OPT_END()
-> @@ -601,6 +614,10 @@ int cmd_buildid_cache(int argc, const char **argv)
->  		NULL
->  	};
->  
-> +	ret = perf_config(perf_buildid_cache_config, &debuginfod);
-> +	if (ret)
-> +		return ret;
-> +
->  	argc = parse_options(argc, argv, buildid_cache_options,
->  			     buildid_cache_usage, 0);
->  
-> @@ -612,6 +629,11 @@ int cmd_buildid_cache(int argc, const char **argv)
->  	if (argc || !(list_files || opts_flag))
->  		usage_with_options(buildid_cache_usage, buildid_cache_options);
->  
-> +	if (debuginfod) {
-> +		pr_debug("DEBUGINFOD_URLS=%s\n", debuginfod);
-> +		setenv("DEBUGINFOD_URLS", debuginfod, 1);
-> +	}
-> +
->  	/* -l is exclusive. It can not be used with other options. */
->  	if (list_files && opts_flag) {
->  		usage_with_options_msg(buildid_cache_usage,
+>  	/*
+>  	 * in pipe-mode, the only way to get the buildids is to parse
+>  	 * the record stream. Buildids are stored as RECORD_HEADER_BUILD_ID
 > -- 
 > 2.26.2
 > 
