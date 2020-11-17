@@ -2,197 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E732B5CFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532EE2B5D04
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgKQKhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:37:04 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:52969 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgKQKhE (ORCPT
+        id S1727524AbgKQKhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:37:36 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:47049 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgKQKhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:37:04 -0500
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 072F82000C;
-        Tue, 17 Nov 2020 10:36:59 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 11:37:02 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        sakari.ailus@iki.fi, laurent.pinchart@ideasonboard.com
-Subject: Re: [PATCH v5 1/3] dt-bindings: media: atmel: csi2dc: add bindings
- for microchip csi2dc
-Message-ID: <20201117103702.2h77qvh7ebqx4yaq@uno.localdomain>
-References: <20201112133437.372475-1-eugen.hristev@microchip.com>
+        Tue, 17 Nov 2020 05:37:35 -0500
+Received: by mail-ot1-f65.google.com with SMTP id g19so18885614otp.13;
+        Tue, 17 Nov 2020 02:37:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xlpCdbdwdgiAHLJ6o3j80s/A4tWrQRJFEA4CoHh+SMQ=;
+        b=lWyeL40SYRWaaQ0rOX80mEl3n9CH4mVMQvaiDT7zG5c0wplXgelM9COEIWiR9qJrKo
+         4M5cIRRya2nuOj+rkr7dfitxQPhdWpw2c1MwrYlQDzSz61Ky/WHsK9IqNUNhOAXSIrgx
+         yqFLckwLPSoXMsDpxViraJgvMlp0aKdmwMsvTQU30xLeQL8A9XSQpgAqLlwmJXOIJY8g
+         t+ODtM71CDdfJc6gOvwdzuwKvrQ/VzyDo8OYLn8zzxLxh2SYpQw2QZ62ASw9PbWgHIvc
+         1PZJyGkEv2LspiMc/aevZygaax2gbb6j0t4I+nqQvcbLCiUPR8yaBumgapxTr6j3QeK0
+         FcJw==
+X-Gm-Message-State: AOAM5305487CT7c845SG/CcdHTjzb225hmEiEjoxmFvF/DnCXSZ+xxpm
+        8yPM9WwnDBW6toRIf1Q5gFhTzCSWcFzd6p75wxI=
+X-Google-Smtp-Source: ABdhPJwdmx7r6I5zj8jodkYho7XnaytzF+QMp1QBc/itOa9ld+ji3I3oUftzlTM4p0M68kkeI24eiE8vpMn7CYfNO3c=
+X-Received: by 2002:a9d:5e14:: with SMTP id d20mr2362156oti.107.1605609454288;
+ Tue, 17 Nov 2020 02:37:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201112133437.372475-1-eugen.hristev@microchip.com>
+References: <20201117103123.3938-1-chunfeng.yun@mediatek.com>
+In-Reply-To: <20201117103123.3938-1-chunfeng.yun@mediatek.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 17 Nov 2020 11:37:23 +0100
+Message-ID: <CAMuHMdXVXqj9k4FMFH5aiqKwNrWocJpjahYKA8k2e3Z2ji2hvQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: arm: add additionalProperties
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-unisoc@lists.infradead.org,
+        linux-realtek-soc@lists.infradead.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again,
+Hi Chunfeng,
 
-On Thu, Nov 12, 2020 at 03:34:35PM +0200, Eugen Hristev wrote:
-> Add bindings documentation for Microchip CSI2 Demultiplexer controller.
+On Tue, Nov 17, 2020 at 11:32 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+> Add an explicit "additionalProperties: true" to avoid
+> dt_binding_check error caused by:
+> 'additionalProperties' is a required property
 >
-> CSI2DC is a demultiplexer from Synopsys IDI interface specification to
-> parallel interface connection or direct memory access.
+> This will not change function, due to additionalProperties
+> is true by default.
 >
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> ---
-> Changes in v5:
-> - modified bindings as per Rob Herring review
->
-> Changes in v4:
-> - Removed property for inter-line-delay and for clock continuous/non-continuous
-> - Removed virtual channel by reg for second endpoint
->
-> Changes in v3:
-> - Removed some text from description, as it was explained in the schema
-> - fixed other things as per Rob's review
-> - moved some text inside the schema, like the clock description
->
-> Changes in v2:
-> - fixed warnings reported by dt_binding_check
->
->  .../bindings/media/microchip,csi2dc.yaml      | 119 ++++++++++++++++++
->  1 file changed, 119 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
->
-> diff --git a/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
-> new file mode 100644
-> index 000000000000..e79f0d6ba9db
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
-> @@ -0,0 +1,119 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/microchip,csi2dc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip CSI2 Demux Controller (CSI2DC)
-> +
-> +maintainers:
-> +  - Eugen Hristev <eugen.hristev@microchip.com>
-> +
-> +description:
-> +  CSI2DC - Camera Serial Interface 2 Demux Controller
-> +
-> +  CSI2DC is a hardware block that receives incoming data from an IDI interface
-> +  and filters packets based on their data type and virtual channel identifier,
-> +  then converts the byte stream into a cross clock domain to a pixel stream
-> +  to a parallel interface that can be read by a sensor controller.
-> +
-> +  CSI2DC provides two pipes, one video pipe and one data pipe. Video pipe
-> +  is connected to a sensor controller and the data pipe is accessible
-> +  as a DMA slave port to a DMA controller.
-> +
-> +  CSI2DC supports a single 'port' node as a source pad with Synopsys 32-bit
-> +  IDI interface. The connected endpoint must be a IDI interface compatible
-> +  device (like Synopsys CSI2HOST) , that can provide 32-bit IDI interface
-> +  connection as sink pad.
-> +  For media entity and endpoints please refer to the bindings defined in
-> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
-> +  For Synopsys IDI interface please refer to
-> +  Documentation/devicetree/bindings/media/snps,dw-csi-plat.txt
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-Is it me or this file doesn't exists on the most recent media/master
-and on v5.10-rc4 ?
+Thanks for your patch!
 
+> --- a/Documentation/devicetree/bindings/arm/actions.yaml
+> +++ b/Documentation/devicetree/bindings/arm/actions.yaml
+> @@ -49,3 +49,5 @@ properties:
+>            - enum:
+>                - ucrobotics,bubblegum-96 # uCRobotics Bubblegum-96
+>            - const: actions,s900
 > +
-> +  CSI2DC supports one 'port' node as sink pad with parallel interface. This is
-> +  called video pipe.
-> +  This port has an 'endpoint' can then be used as a source pad for another
-> +  controller (next in pipeline).
-> +  Please refer to the bindings defined in
-> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
-> +
-> +  CSI2DC also supports direct access to the data through AHB, via DMA channel,
-> +  called data pipe.
-> +  Because of this, the sink 'port' child node (second) is not mandatory.
-> +  If the sink 'port' child node is missing, only data pipe is available.
-> +
-> +properties:
-> +  compatible:
-> +    const: microchip,sama7g5-csi2dc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    description:
-> +      CSI2DC must have two clocks to function correctly. One clock is the
-> +      peripheral clock for the inside functionality of the hardware block.
-> +      This is named 'pclk'. The second clock must be the cross domain clock,
-> +      in which CSI2DC will perform clock crossing. This clock must be fed
-> +      by the next controller in pipeline, which usually is a sensor controller.
-> +      Normally this clock should be given by this sensor controller who
-> +      is also a clock source. This clock is named 'scck', sensor controller clock.
-> +    items:
-> +      - const: pclk
-> +      - const: scck
-> +
-> +  ports:
-> +    type: object
-> +    description:
-> +      List of ports
-> +
-> +    properties:
-> +      port@0:
-> +        type: object
-> +        description:
-> +          Input port node, single endpoint describing the input pad.
-> +      port@1:
-> +        type: object
-> +        description:
-> +          Output port node, single endpoint, describing the output pad.
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - ports
-> +
-> +examples:
-> +  - |
-> +    csi2dc@e1404000 {
-> +        compatible = "microchip,sama7g5-csi2dc";
-> +        reg = <0xe1404000 0x500>;
-> +        clocks = <&pclk>, <&scck>;
-> +        clock-names = "pclk", "scck";
-> +
-> +        ports {
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +               port@0 {
-> +                       reg = <0>; /* must be 0, first child port */
-> +                       csi2dc_in: endpoint { /* input from IDI interface */
-> +                               remote-endpoint = <&csi2host_out>;
-> +                       };
-> +               };
-> +
-> +               port@1 {
-> +                       reg = <1>; /* must be 1, second child port */
-> +                       csi2dc_out: endpoint {
-> +                               remote-endpoint = <&xisc_in>; /* output to sensor controller */
-> +                       };
-> +               };
-> +        };
-> +    };
-> +
-> +...
-> --
-> 2.25.1
->
+> +additionalProperties: true
+
+Looks very similar to commit 62298364bd489b06 ("dt-bindings: Explicitly
+allow additional properties in board/SoC schemas") in v5.10-rc2?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
