@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6872B6161
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A5B2B621A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbgKQNSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:18:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50840 "EHLO mail.kernel.org"
+        id S1731300AbgKQNZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:25:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730669AbgKQNSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:18:24 -0500
+        id S1731101AbgKQNZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:25:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 365592225B;
-        Tue, 17 Nov 2020 13:18:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5003924654;
+        Tue, 17 Nov 2020 13:25:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619102;
-        bh=71HFCKSLs4U5k0hEdLly7JzlmSqqmmbMfZKQRL+YpRM=;
+        s=default; t=1605619521;
+        bh=d27cmWgeyUv47FxmWWJe19s6e4Ic9i6PgChQ7oKF6lM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sSG4NC1xdbh0DC0WvH4pkPNJIWZBR7/bMBWSxkwukgyCNZVygmqYzfaTVuyDeAFix
-         1qo126QYG0Fw/IdAUliuAiIFak15WdQlMqHvwMhs5fPkcONa+xqzOG2ub2Ls7Sf9aO
-         zI5Y2mwq+2JyUihuXvJKWWvqMN2rEVd1975f5hcA=
+        b=vlLfW0hLWbb05dAkN+Mvgh2Z3C4QTR77drVbMex3gkegNYPMkWaXYzeh3WJbP79A/
+         0qxh/g1xdv6YcEDGieIe3cAkXqVHrYShaCkj0LRLvP8sdiYirJ4eiPXLR8ltU4MoUq
+         u1L336gGL2+zD2SMZ3B5RmxDh4RUDCtV4HysUvEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 028/101] netfilter: use actual socket sk rather than skb sk when routing harder
-Date:   Tue, 17 Nov 2020 14:04:55 +0100
-Message-Id: <20201117122114.466493674@linuxfoundation.org>
+Subject: [PATCH 5.4 066/151] tracing: Fix the checking of stackidx in __ftrace_trace_stack
+Date:   Tue, 17 Nov 2020 14:04:56 +0100
+Message-Id: <20201117122124.631952827@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,256 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason A. Donenfeld <Jason@zx2c4.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit 46d6c5ae953cc0be38efd0e469284df7c4328cf8 upstream.
+[ Upstream commit 906695e59324635c62b5ae59df111151a546ca66 ]
 
-If netfilter changes the packet mark when mangling, the packet is
-rerouted using the route_me_harder set of functions. Prior to this
-commit, there's one big difference between route_me_harder and the
-ordinary initial routing functions, described in the comment above
-__ip_queue_xmit():
+The array size is FTRACE_KSTACK_NESTING, so the index FTRACE_KSTACK_NESTING
+is illegal too. And fix two typos by the way.
 
-   /* Note: skb->sk can be different from sk, in case of tunnels */
-   int __ip_queue_xmit(struct sock *sk, struct sk_buff *skb, struct flowi *fl,
+Link: https://lkml.kernel.org/r/20201031085714.2147-1-hqjagain@gmail.com
 
-That function goes on to correctly make use of sk->sk_bound_dev_if,
-rather than skb->sk->sk_bound_dev_if. And indeed the comment is true: a
-tunnel will receive a packet in ndo_start_xmit with an initial skb->sk.
-It will make some transformations to that packet, and then it will send
-the encapsulated packet out of a *new* socket. That new socket will
-basically always have a different sk_bound_dev_if (otherwise there'd be
-a routing loop). So for the purposes of routing the encapsulated packet,
-the routing information as it pertains to the socket should come from
-that socket's sk, rather than the packet's original skb->sk. For that
-reason __ip_queue_xmit() and related functions all do the right thing.
-
-One might argue that all tunnels should just call skb_orphan(skb) before
-transmitting the encapsulated packet into the new socket. But tunnels do
-*not* do this -- and this is wisely avoided in skb_scrub_packet() too --
-because features like TSQ rely on skb->destructor() being called when
-that buffer space is truely available again. Calling skb_orphan(skb) too
-early would result in buffers filling up unnecessarily and accounting
-info being all wrong. Instead, additional routing must take into account
-the new sk, just as __ip_queue_xmit() notes.
-
-So, this commit addresses the problem by fishing the correct sk out of
-state->sk -- it's already set properly in the call to nf_hook() in
-__ip_local_out(), which receives the sk as part of its normal
-functionality. So we make sure to plumb state->sk through the various
-route_me_harder functions, and then make correct use of it following the
-example of __ip_queue_xmit().
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
-[Jason: backported to 4.19 from Sasha's 5.4 backport]
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/netfilter_ipv4.h            |    2 +-
- include/linux/netfilter_ipv6.h            |    2 +-
- net/ipv4/netfilter.c                      |   12 +++++++-----
- net/ipv4/netfilter/ipt_SYNPROXY.c         |    2 +-
- net/ipv4/netfilter/iptable_mangle.c       |    2 +-
- net/ipv4/netfilter/nf_nat_l3proto_ipv4.c  |    2 +-
- net/ipv4/netfilter/nf_reject_ipv4.c       |    2 +-
- net/ipv4/netfilter/nft_chain_route_ipv4.c |    2 +-
- net/ipv6/netfilter.c                      |    6 +++---
- net/ipv6/netfilter/ip6table_mangle.c      |    2 +-
- net/ipv6/netfilter/nf_nat_l3proto_ipv6.c  |    2 +-
- net/ipv6/netfilter/nft_chain_route_ipv6.c |    2 +-
- net/netfilter/ipvs/ip_vs_core.c           |    4 ++--
- 13 files changed, 22 insertions(+), 20 deletions(-)
+ kernel/trace/trace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/include/linux/netfilter_ipv4.h
-+++ b/include/linux/netfilter_ipv4.h
-@@ -16,7 +16,7 @@ struct ip_rt_info {
- 	u_int32_t mark;
- };
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2a357bda45cf0..f7cac11a90055 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2510,7 +2510,7 @@ trace_event_buffer_lock_reserve(struct ring_buffer **current_rb,
+ 	/*
+ 	 * If tracing is off, but we have triggers enabled
+ 	 * we still need to look at the event data. Use the temp_buffer
+-	 * to store the trace event for the tigger to use. It's recusive
++	 * to store the trace event for the trigger to use. It's recursive
+ 	 * safe and will not be recorded anywhere.
+ 	 */
+ 	if (!entry && trace_file->flags & EVENT_FILE_FL_TRIGGER_COND) {
+@@ -2832,7 +2832,7 @@ static void __ftrace_trace_stack(struct ring_buffer *buffer,
+ 	stackidx = __this_cpu_inc_return(ftrace_stack_reserve) - 1;
  
--int ip_route_me_harder(struct net *net, struct sk_buff *skb, unsigned addr_type);
-+int ip_route_me_harder(struct net *net, struct sock *sk, struct sk_buff *skb, unsigned addr_type);
+ 	/* This should never happen. If it does, yell once and skip */
+-	if (WARN_ON_ONCE(stackidx > FTRACE_KSTACK_NESTING))
++	if (WARN_ON_ONCE(stackidx >= FTRACE_KSTACK_NESTING))
+ 		goto out;
  
- struct nf_queue_entry;
- 
---- a/include/linux/netfilter_ipv6.h
-+++ b/include/linux/netfilter_ipv6.h
-@@ -36,7 +36,7 @@ struct nf_ipv6_ops {
- };
- 
- #ifdef CONFIG_NETFILTER
--int ip6_route_me_harder(struct net *net, struct sk_buff *skb);
-+int ip6_route_me_harder(struct net *net, struct sock *sk, struct sk_buff *skb);
- __sum16 nf_ip6_checksum(struct sk_buff *skb, unsigned int hook,
- 			unsigned int dataoff, u_int8_t protocol);
- 
---- a/net/ipv4/netfilter.c
-+++ b/net/ipv4/netfilter.c
-@@ -17,17 +17,19 @@
- #include <net/netfilter/nf_queue.h>
- 
- /* route_me_harder function, used by iptable_nat, iptable_mangle + ip_queue */
--int ip_route_me_harder(struct net *net, struct sk_buff *skb, unsigned int addr_type)
-+int ip_route_me_harder(struct net *net, struct sock *sk, struct sk_buff *skb, unsigned int addr_type)
- {
- 	const struct iphdr *iph = ip_hdr(skb);
- 	struct rtable *rt;
- 	struct flowi4 fl4 = {};
- 	__be32 saddr = iph->saddr;
--	const struct sock *sk = skb_to_full_sk(skb);
--	__u8 flags = sk ? inet_sk_flowi_flags(sk) : 0;
-+	__u8 flags;
- 	struct net_device *dev = skb_dst(skb)->dev;
- 	unsigned int hh_len;
- 
-+	sk = sk_to_full_sk(sk);
-+	flags = sk ? inet_sk_flowi_flags(sk) : 0;
-+
- 	if (addr_type == RTN_UNSPEC)
- 		addr_type = inet_addr_type_dev_table(net, dev, saddr);
- 	if (addr_type == RTN_LOCAL || addr_type == RTN_UNICAST)
-@@ -91,8 +93,8 @@ int nf_ip_reroute(struct sk_buff *skb, c
- 		      skb->mark == rt_info->mark &&
- 		      iph->daddr == rt_info->daddr &&
- 		      iph->saddr == rt_info->saddr))
--			return ip_route_me_harder(entry->state.net, skb,
--						  RTN_UNSPEC);
-+			return ip_route_me_harder(entry->state.net, entry->state.sk,
-+						  skb, RTN_UNSPEC);
- 	}
- 	return 0;
- }
---- a/net/ipv4/netfilter/ipt_SYNPROXY.c
-+++ b/net/ipv4/netfilter/ipt_SYNPROXY.c
-@@ -54,7 +54,7 @@ synproxy_send_tcp(struct net *net,
- 
- 	skb_dst_set_noref(nskb, skb_dst(skb));
- 	nskb->protocol = htons(ETH_P_IP);
--	if (ip_route_me_harder(net, nskb, RTN_UNSPEC))
-+	if (ip_route_me_harder(net, nskb->sk, nskb, RTN_UNSPEC))
- 		goto free_nskb;
- 
- 	if (nfct) {
---- a/net/ipv4/netfilter/iptable_mangle.c
-+++ b/net/ipv4/netfilter/iptable_mangle.c
-@@ -65,7 +65,7 @@ ipt_mangle_out(struct sk_buff *skb, cons
- 		    iph->daddr != daddr ||
- 		    skb->mark != mark ||
- 		    iph->tos != tos) {
--			err = ip_route_me_harder(state->net, skb, RTN_UNSPEC);
-+			err = ip_route_me_harder(state->net, state->sk, skb, RTN_UNSPEC);
- 			if (err < 0)
- 				ret = NF_DROP_ERR(err);
- 		}
---- a/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-+++ b/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-@@ -329,7 +329,7 @@ nf_nat_ipv4_local_fn(void *priv, struct
- 
- 		if (ct->tuplehash[dir].tuple.dst.u3.ip !=
- 		    ct->tuplehash[!dir].tuple.src.u3.ip) {
--			err = ip_route_me_harder(state->net, skb, RTN_UNSPEC);
-+			err = ip_route_me_harder(state->net, state->sk, skb, RTN_UNSPEC);
- 			if (err < 0)
- 				ret = NF_DROP_ERR(err);
- 		}
---- a/net/ipv4/netfilter/nf_reject_ipv4.c
-+++ b/net/ipv4/netfilter/nf_reject_ipv4.c
-@@ -129,7 +129,7 @@ void nf_send_reset(struct net *net, stru
- 				   ip4_dst_hoplimit(skb_dst(nskb)));
- 	nf_reject_ip_tcphdr_put(nskb, oldskb, oth);
- 
--	if (ip_route_me_harder(net, nskb, RTN_UNSPEC))
-+	if (ip_route_me_harder(net, nskb->sk, nskb, RTN_UNSPEC))
- 		goto free_nskb;
- 
- 	niph = ip_hdr(nskb);
---- a/net/ipv4/netfilter/nft_chain_route_ipv4.c
-+++ b/net/ipv4/netfilter/nft_chain_route_ipv4.c
-@@ -50,7 +50,7 @@ static unsigned int nf_route_table_hook(
- 		    iph->daddr != daddr ||
- 		    skb->mark != mark ||
- 		    iph->tos != tos) {
--			err = ip_route_me_harder(state->net, skb, RTN_UNSPEC);
-+			err = ip_route_me_harder(state->net, state->sk, skb, RTN_UNSPEC);
- 			if (err < 0)
- 				ret = NF_DROP_ERR(err);
- 		}
---- a/net/ipv6/netfilter.c
-+++ b/net/ipv6/netfilter.c
-@@ -17,10 +17,10 @@
- #include <net/xfrm.h>
- #include <net/netfilter/nf_queue.h>
- 
--int ip6_route_me_harder(struct net *net, struct sk_buff *skb)
-+int ip6_route_me_harder(struct net *net, struct sock *sk_partial, struct sk_buff *skb)
- {
- 	const struct ipv6hdr *iph = ipv6_hdr(skb);
--	struct sock *sk = sk_to_full_sk(skb->sk);
-+	struct sock *sk = sk_to_full_sk(sk_partial);
- 	unsigned int hh_len;
- 	struct dst_entry *dst;
- 	int strict = (ipv6_addr_type(&iph->daddr) &
-@@ -81,7 +81,7 @@ static int nf_ip6_reroute(struct sk_buff
- 		if (!ipv6_addr_equal(&iph->daddr, &rt_info->daddr) ||
- 		    !ipv6_addr_equal(&iph->saddr, &rt_info->saddr) ||
- 		    skb->mark != rt_info->mark)
--			return ip6_route_me_harder(entry->state.net, skb);
-+			return ip6_route_me_harder(entry->state.net, entry->state.sk, skb);
- 	}
- 	return 0;
- }
---- a/net/ipv6/netfilter/ip6table_mangle.c
-+++ b/net/ipv6/netfilter/ip6table_mangle.c
-@@ -60,7 +60,7 @@ ip6t_mangle_out(struct sk_buff *skb, con
- 	     skb->mark != mark ||
- 	     ipv6_hdr(skb)->hop_limit != hop_limit ||
- 	     flowlabel != *((u_int32_t *)ipv6_hdr(skb)))) {
--		err = ip6_route_me_harder(state->net, skb);
-+		err = ip6_route_me_harder(state->net, state->sk, skb);
- 		if (err < 0)
- 			ret = NF_DROP_ERR(err);
- 	}
---- a/net/ipv6/netfilter/nf_nat_l3proto_ipv6.c
-+++ b/net/ipv6/netfilter/nf_nat_l3proto_ipv6.c
-@@ -352,7 +352,7 @@ nf_nat_ipv6_local_fn(void *priv, struct
- 
- 		if (!nf_inet_addr_cmp(&ct->tuplehash[dir].tuple.dst.u3,
- 				      &ct->tuplehash[!dir].tuple.src.u3)) {
--			err = ip6_route_me_harder(state->net, skb);
-+			err = ip6_route_me_harder(state->net, state->sk, skb);
- 			if (err < 0)
- 				ret = NF_DROP_ERR(err);
- 		}
---- a/net/ipv6/netfilter/nft_chain_route_ipv6.c
-+++ b/net/ipv6/netfilter/nft_chain_route_ipv6.c
-@@ -52,7 +52,7 @@ static unsigned int nf_route_table_hook(
- 	     skb->mark != mark ||
- 	     ipv6_hdr(skb)->hop_limit != hop_limit ||
- 	     flowlabel != *((u_int32_t *)ipv6_hdr(skb)))) {
--		err = ip6_route_me_harder(state->net, skb);
-+		err = ip6_route_me_harder(state->net, state->sk, skb);
- 		if (err < 0)
- 			ret = NF_DROP_ERR(err);
- 	}
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -725,12 +725,12 @@ static int ip_vs_route_me_harder(struct
- 		struct dst_entry *dst = skb_dst(skb);
- 
- 		if (dst->dev && !(dst->dev->flags & IFF_LOOPBACK) &&
--		    ip6_route_me_harder(ipvs->net, skb) != 0)
-+		    ip6_route_me_harder(ipvs->net, skb->sk, skb) != 0)
- 			return 1;
- 	} else
- #endif
- 		if (!(skb_rtable(skb)->rt_flags & RTCF_LOCAL) &&
--		    ip_route_me_harder(ipvs->net, skb, RTN_LOCAL) != 0)
-+		    ip_route_me_harder(ipvs->net, skb->sk, skb, RTN_LOCAL) != 0)
- 			return 1;
- 
- 	return 0;
+ 	/*
+-- 
+2.27.0
+
 
 
