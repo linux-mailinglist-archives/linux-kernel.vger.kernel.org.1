@@ -2,178 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D32D2B6BD6
+	by mail.lfdr.de (Postfix) with ESMTP id EA0532B6BD7
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729287AbgKQRfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729351AbgKQRfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:35:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729212AbgKQRfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 17 Nov 2020 12:35:12 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16663 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726397AbgKQRfL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:35:11 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb409c50000>; Tue, 17 Nov 2020 09:35:01 -0800
-Received: from [10.25.99.52] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
- 2020 17:35:01 +0000
-Subject: Re: [PATCH 0/3] Add support to handle prefetchable memoryg
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     Thierry Reding <treding@nvidia.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kthota@nvidia.com" <kthota@nvidia.com>,
-        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
-        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
-References: <20201023195655.11242-1-vidyas@nvidia.com>
- <SLXP216MB04777D651A59246A60D036A8AA1B0@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
- <20201026123012.GA356750@ulmo>
- <53277a71-13e5-3e7e-7c51-aca367b99d31@nvidia.com>
- <92d5ead4-a3d2-42ba-a542-3e305f3d5523@nvidia.com>
- <20201117121011.GA6050@e121166-lin.cambridge.arm.com>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <f4d87b99-5a5b-e7de-e72a-18407a875aeb@nvidia.com>
-Date:   Tue, 17 Nov 2020 23:04:57 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87967241A7;
+        Tue, 17 Nov 2020 17:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605634511;
+        bh=tQu1pI1qjQaV4zwahQOtinSwn4c6fb37u09aK1UMb28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xBu6h+10hCW0N9FyzElLqNY/hAkR6G4ko2Kq4hPFjtXg2y+w/b45byJ5knV2Rnb/q
+         /YLUV/cqcQ4ErJ5++H92YF2uoUoobm1t1vXqTb7a0cgO5TxYS2nklVNv5CuMk9a8qf
+         dYH9DcU3NBw2xCh/XkwpxqgrW7+WvZCQjqpZjfco=
+Date:   Tue, 17 Nov 2020 19:35:06 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org
+Subject: Re: [PATCH v41 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+Message-ID: <20201117173506.GB8524@kernel.org>
+References: <20201112220135.165028-13-jarkko@kernel.org>
+ <20201115044044.11040-1-hdanton@sina.com>
 MIME-Version: 1.0
-In-Reply-To: <20201117121011.GA6050@e121166-lin.cambridge.arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605634501; bh=BveVLnsDjnYJ3hmmRmttCms4YrIKDQZf7HcE5RYng70=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=EH00Z/kCnd6eL6XI3vVuskJdBgpGlBiA0cFummLuDNm4lipW4ucZAa9noOh2GuD2C
-         KW6LNh7b0xWzfNlmZlQgk9jDvAank+x//Zx8WUJiIRSaCqeG9Mk1Eb8bKHKxhNZaV9
-         iEzqLpXyem4iy8ymUkf8CFDdKCjeAImrWxJbI4EUymAnMfHvDH73z3yFAYe9CoDdli
-         G4I8BdUmH6VSUdRUsrLfu+HsewxvGp/nhf4Hob3q2J0DPKry7BOdBrsHj+v3y/U3k0
-         LSD6RA+q//bQ0ISW4xELs5yg6HQ7fdGdzOXA+ZO6pLg70lfd0jvXi1aEU1MxurnisS
-         Itrj6fy0QYjng==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201115044044.11040-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 15, 2020 at 12:40:44PM +0800, Hillf Danton wrote:
+> On Fri, 13 Nov 2020 00:01:23 +0200 Jarkko Sakkinen wrote:
+> > 
+> > +long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
+> > +{
+> > +	struct sgx_encl *encl = filep->private_data;
+> > +	int ret;
+> > +
+> > +	if (test_and_set_bit(SGX_ENCL_IOCTL, &encl->flags))
+> > +		return -EBUSY;
+> 
+> Looks like encl->ioctl_mutex is needed to exlusively serialize
+> concurrent ioctl threads and make encl->flags free of the duty.
+> Plus it can cut the confusing EBUSY in userspace as it is not
+> a critical path in any form.
 
+The reason it is there was lock juggling with sgx_encl_grow() [*].
 
-On 11/17/2020 5:40 PM, Lorenzo Pieralisi wrote:
-> External email: Use caution opening links or attachments
->=20
->=20
-> On Tue, Nov 17, 2020 at 10:08:35AM +0530, Vidya Sagar wrote:
->> Hi Lorenzo & Bjorn,
->> Sorry to bother you.
->> Could you please take a look at the patches-1 & 2 from this series?
->=20
-> IIUC we should:
->=20
-> (1) apply https://patchwork.kernel.org/project/linux-pci/patch/2020102618=
-1652.418729-1-robh@kernel.org
-> (2) apply [1,2] from this series
->=20
-> For (2), are they rebased against v5.10-rc3 with (1) applied ? I need to
-> check but I will probably have to use v5.10-rc3 as baseline owing to
-> commit:
->=20
-> 9fff3256f93d
->=20
-> (1) depends on it.
->=20
-> Lorenzo
-My patches [1,2] from this series apply cleanly on v5.10-rc3. But with=20
-(1) applied first, there is a trivial rebase required. Let me know if=20
-you want me to send the trivial rebased version (of patch-2 particularly).
+Andd since you never should use these ioctl's in parallel so why not
+explicitly signal it to the user space?
 
-Thanks,
-Vidya Sagar
->=20
->> Thanks,
->> Vidya Sagar
->>
->> On 11/4/2020 1:16 PM, Vidya Sagar wrote:
->>> External email: Use caution opening links or attachments
->>>
->>>
->>> Lorenzo / Bjorn,
->>> Could you please review patches-1 & 2 in this series?
->>> For the third patch, we already went with Rob's patch @
->>> http://patchwork.ozlabs.org/project/linux-pci/patch/20201026154852.2214=
-83-1-robh@kernel.org/
->>>
->>>
->>> Thanks,
->>> Vidya Sagar
->>>
->>> On 10/26/2020 6:02 PM, Thierry Reding wrote:
->>>> On Sat, Oct 24, 2020 at 04:03:41AM +0000, Jingoo Han wrote:
->>>>> On 10/23/20, 3:57 PM, Vidya Sagar wrote:
->>>>>>
->>>>>> This patch series adds support for configuring the DesignWare IP's A=
-TU
->>>>>> region for prefetchable memory translations.
->>>>>> It first starts by flagging a warning if the size of non-prefetchabl=
-e
->>>>>> aperture goes beyond 32-bit as PCIe spec doesn't allow it.
->>>>>> And then adds required support for programming the ATU to handle hig=
-her
->>>>>> (i.e. >4GB) sizes and then finally adds support for differentiating
->>>>>> between prefetchable and non-prefetchable regions and
->>>>>> configuring one of
->>>>>> the ATU regions for prefetchable memory translations purpose.
->>>>>>
->>>>>> Vidya Sagar (3):
->>>>>>     PCI: of: Warn if non-prefetchable memory aperture size is > 32-b=
-it
->>>>>>     PCI: dwc: Add support to program ATU for >4GB memory aperture si=
-zes
->>>>>>     PCI: dwc: Add support to handle prefetchable memory mapping
->>>>>
->>>>> For 2nd & 3rd,
->>>>> Acked-by: Jingoo <jingoohan1@gmail.com>
->>>>> But, I still want someone to ack 1st patch, not me.
->>>>>
->>>>> To Vidya,
->>>>> If possible, can you ask your coworker to give 'Tested-by'? It
->>>>> will be very helpful.
->>>>> Thank you.
->>>>
->>>> On next-20201026 (but also going back quite a while) I'm seeing this
->>>> during boot on Jetson AGX Xavier (Tegra194):
->>>>
->>>> [=C2=A0=C2=A0=C2=A0 3.493382] ahci 0001:01:00.0: version 3.0
->>>> [=C2=A0=C2=A0=C2=A0 3.493889] ahci 0001:01:00.0: SSS flag set, paralle=
-l bus scan
->>>> disabled
->>>> [=C2=A0=C2=A0=C2=A0 4.497706] ahci 0001:01:00.0: controller reset fail=
-ed (0xffffffff)
->>>> [=C2=A0=C2=A0=C2=A0 4.498114] ahci: probe of 0001:01:00.0 failed with =
-error -5
->>>>
->>>> After applying this series, AHCI over PCI is back to normal:
->>>>
->>>> [=C2=A0=C2=A0=C2=A0 3.543230] ahci 0001:01:00.0: AHCI 0001.0000 32 slo=
-ts 1 ports 6
->>>> Gbps 0x1 impl SATA mode
->>>> [=C2=A0=C2=A0=C2=A0 3.550841] ahci 0001:01:00.0: flags: 64bit ncq sntf=
- led only pmp
->>>> fbs pio slum part sxs
->>>> [=C2=A0=C2=A0=C2=A0 3.559747] scsi host0: ahci
->>>> [=C2=A0=C2=A0=C2=A0 3.561998] ata1: SATA max UDMA/133 abar m512@0x1230=
-010000 port
->>>> 0x1230010100 irq 63
->>>>
->>>> So for the series:
->>>>
->>>> Tested-by: Thierry Reding <treding@nvidia.com>
->>>>
+[*] https://lore.kernel.org/linux-sgx/20190827001128.25066-4-sean.j.christopherson@intel.com/
+
+/Jarkko
