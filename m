@@ -2,288 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC102B7276
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C722B727A
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728455AbgKQXbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:31:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58310 "EHLO mail.kernel.org"
+        id S1728481AbgKQXcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:32:32 -0500
+Received: from mga04.intel.com ([192.55.52.120]:51171 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728256AbgKQXbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:31:35 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A98DF222E9;
-        Tue, 17 Nov 2020 23:31:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605655894;
-        bh=FUJIe+tYb6b4p8rYd+uv8J0w8N74SCpwrlgRhVa7pNk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MYOOAUI9L1eXqDkeV1RxSKp+K+I1rR6/H6uQISVBs4wuAePjqT8Xhac/CO++PrSA+
-         6P1wWhwTERPrTRSOh1sLAsqXJuLyz99cfr6Xc9qowFB6msSTdCS/sGwO9bwYSeaXSh
-         HG4+KvgLOatu+lo3gntPiatALwk7zwksyk6IYPwQ=
-Date:   Tue, 17 Nov 2020 15:31:23 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v7 1/8] block: ensure bios are not split in middle of
- crypto data unit
-Message-ID: <X7RdS2cINwFkl/MN@sol.localdomain>
-References: <20201117140708.1068688-1-satyat@google.com>
- <20201117140708.1068688-2-satyat@google.com>
+        id S1725779AbgKQXcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 18:32:31 -0500
+IronPort-SDR: S6lC9JeWep0S01W7DjuWhMandJhDKLd4iv7+2/iXQJ7JappZ1WdNgb/CRpEB8lTYmps9M73nli
+ S1g5B/DnQGLg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="168461202"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="168461202"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 15:32:31 -0800
+IronPort-SDR: 5382oeKWx+HYT1RMhyNPodt0b+9JjqrE65FbskKgyoQWOCiOkPDwmesPlkd4bELgNbAbYweNIN
+ IIUaC5ZVD7Zw==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="532413741"
+Received: from jli128-mobl1.ccr.corp.intel.com (HELO [10.254.209.252]) ([10.254.209.252])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 15:32:28 -0800
+Cc:     baolu.lu@linux.intel.com, ning.sun@intel.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        dwmw2@infradead.org, joro@8bytes.org,
+        iommu@lists.linux-foundation.org, tboot-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2] iommu/vt-d: avoid unnecessory panic if iommu init fail
+ in tboot system
+To:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>
+References: <20201110071908.3133-1-zhenzhong.duan@gmail.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <34e8f6c6-e9f7-634b-8f68-3645261fd882@linux.intel.com>
+Date:   Wed, 18 Nov 2020 07:32:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117140708.1068688-2-satyat@google.com>
+In-Reply-To: <20201110071908.3133-1-zhenzhong.duan@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:07:01PM +0000, Satya Tangirala wrote:
-> Introduce blk_crypto_bio_sectors_alignment() that returns the required
-> alignment for the number of sectors in a bio. Any bio split must ensure
-> that the number of sectors in the resulting bios is aligned to that
-> returned value. This patch also updates __blk_queue_split(),
-> __blk_queue_bounce() and blk_crypto_split_bio_if_needed() to respect
-> blk_crypto_bio_sectors_alignment() when splitting bios.
++Will
+
+Please consider this patch for v5.10.
+
+Best regards,
+baolu
+
+On 2020/11/10 15:19, Zhenzhong Duan wrote:
+> "intel_iommu=off" command line is used to disable iommu but iommu is force
+> enabled in a tboot system for security reason.
 > 
-> Signed-off-by: Satya Tangirala <satyat@google.com>
+> However for better performance on high speed network device, a new option
+> "intel_iommu=tboot_noforce" is introduced to disable the force on.
+> 
+> By default kernel should panic if iommu init fail in tboot for security
+> reason, but it's unnecessory if we use "intel_iommu=tboot_noforce,off".
+> 
+> Fix the code setting force_on and move intel_iommu_tboot_noforce
+> from tboot code to intel iommu code.
+> 
+> Fixes: 7304e8f28bb2 ("iommu/vt-d: Correctly disable Intel IOMMU force on")
+> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 > ---
->  block/bio.c                 |  1 +
->  block/blk-crypto-fallback.c | 10 ++--
->  block/blk-crypto-internal.h | 18 +++++++
->  block/blk-merge.c           | 96 ++++++++++++++++++++++++++++++++-----
->  block/blk-mq.c              |  3 ++
->  block/bounce.c              |  4 ++
->  6 files changed, 117 insertions(+), 15 deletions(-)
+> v2: move ckeck of intel_iommu_tboot_noforce into iommu code per Baolu.
 > 
-
-I feel like this should be split into multiple patches: one patch that
-introduces blk_crypto_bio_sectors_alignment(), and a patch for each place that
-needs to take blk_crypto_bio_sectors_alignment() into account.
-
-It would also help to give a real-world example of why support for
-data_unit_size > logical_block_size is needed.  E.g. ext4 or f2fs encryption
-with a 4096-byte filesystem block size, using eMMC inline encryption hardware
-that has logical_block_size=512.
-
-Also, is this needed even without the fscrypt direct I/O support?  If so, it
-should be sent out separately.
-
-> diff --git a/block/blk-merge.c b/block/blk-merge.c
-> index bcf5e4580603..f34dda7132f9 100644
-> --- a/block/blk-merge.c
-> +++ b/block/blk-merge.c
-> @@ -149,13 +149,15 @@ static inline unsigned get_max_io_size(struct request_queue *q,
->  	unsigned pbs = queue_physical_block_size(q) >> SECTOR_SHIFT;
->  	unsigned lbs = queue_logical_block_size(q) >> SECTOR_SHIFT;
->  	unsigned start_offset = bio->bi_iter.bi_sector & (pbs - 1);
-> +	unsigned int bio_sectors_alignment =
-> +					blk_crypto_bio_sectors_alignment(bio);
->  
->  	max_sectors += start_offset;
->  	max_sectors &= ~(pbs - 1);
-> -	if (max_sectors > start_offset)
-> -		return max_sectors - start_offset;
-> +	if (max_sectors - start_offset >= bio_sectors_alignment)
-> +		return round_down(max_sectors - start_offset, bio_sectors_alignment);
->  
-> -	return sectors & ~(lbs - 1);
-> +	return round_down(sectors & ~(lbs - 1), bio_sectors_alignment);
->  }
-
-'max_sectors - start_offset >= bio_sectors_alignment' looks wrong, as
-'max_sectors - start_offset' underflows if 'max_sectors < start_offset'.
-
-Maybe consider something like the below?
-
-static inline unsigned get_max_io_size(struct request_queue *q,
-				       struct bio *bio)
-{
-	unsigned sectors = blk_max_size_offset(q, bio->bi_iter.bi_sector);
-	unsigned pbs = queue_physical_block_size(q) >> SECTOR_SHIFT;
-	unsigned lbs = queue_logical_block_size(q) >> SECTOR_SHIFT;
-	sector_t pb_aligned_sector =
-		round_down(bio->bi_iter.bi_sector + sectors, pbs);
-
-	lbs = max(lbs, blk_crypto_bio_sectors_alignment(bio));
-
-	if (pb_aligned_sector >= bio->bi_iter.bi_sector + lbs)
-		sectors = pb_aligned_sector - bio->bi_iter.bi_sector;
-
-	return round_down(sectors, lbs);
-}
-
-Maybe it would be useful to have a helper function bio_required_alignment() that
-returns the crypto data unit size if the bio has an encryption context, and the
-logical block size if it doesn't?
-
->  
->  static inline unsigned get_max_segment_size(const struct request_queue *q,
-> @@ -174,6 +176,41 @@ static inline unsigned get_max_segment_size(const struct request_queue *q,
->  			(unsigned long)queue_max_segment_size(q));
->  }
->  
-> +/**
-> + * update_aligned_sectors_and_segs() - Ensures that *@aligned_sectors is aligned
-> + *				       to @bio_sectors_alignment, and that
-> + *				       *@aligned_segs is the value of nsegs
-> + *				       when sectors reached/first exceeded that
-> + *				       value of *@aligned_sectors.
-> + *
-> + * @nsegs: [in] The current number of segs
-> + * @sectors: [in] The current number of sectors
-> + * @aligned_segs: [in,out] The number of segments that make up @aligned_sectors
-> + * @aligned_sectors: [in,out] The largest number of sectors <= @sectors that is
-> + *		     aligned to @sectors
-> + * @bio_sectors_alignment: [in] The alignment requirement for the number of
-> + *			  sectors
-> + *
-> + * Updates *@aligned_sectors to the largest number <= @sectors that is also a
-> + * multiple of @bio_sectors_alignment. This is done by updating *@aligned_sectors
-> + * whenever @sectors is at least @bio_sectors_alignment more than
-> + * *@aligned_sectors, since that means we can increment *@aligned_sectors while
-> + * still keeping it aligned to @bio_sectors_alignment and also keeping it <=
-> + * @sectors. *@aligned_segs is updated to the value of nsegs when @sectors first
-> + * reaches/exceeds any value that causes *@aligned_sectors to be updated.
-> + */
-> +static inline void update_aligned_sectors_and_segs(const unsigned int nsegs,
-> +						   const unsigned int sectors,
-> +						   unsigned int *aligned_segs,
-> +				unsigned int *aligned_sectors,
-> +				const unsigned int bio_sectors_alignment)
-> +{
-> +	if (sectors - *aligned_sectors < bio_sectors_alignment)
-> +		return;
-> +	*aligned_sectors = round_down(sectors, bio_sectors_alignment);
-> +	*aligned_segs = nsegs;
-> +}
-> +
->  /**
->   * bvec_split_segs - verify whether or not a bvec should be split in the middle
->   * @q:        [in] request queue associated with the bio associated with @bv
-> @@ -195,9 +232,12 @@ static inline unsigned get_max_segment_size(const struct request_queue *q,
->   * the block driver.
->   */
->  static bool bvec_split_segs(const struct request_queue *q,
-> -			    const struct bio_vec *bv, unsigned *nsegs,
-> -			    unsigned *sectors, unsigned max_segs,
-> -			    unsigned max_sectors)
-> +			    const struct bio_vec *bv, unsigned int *nsegs,
-> +			    unsigned int *sectors, unsigned int *aligned_segs,
-> +			    unsigned int *aligned_sectors,
-> +			    unsigned int bio_sectors_alignment,
-> +			    unsigned int max_segs,
-> +			    unsigned int max_sectors)
->  {
->  	unsigned max_len = (min(max_sectors, UINT_MAX >> 9) - *sectors) << 9;
->  	unsigned len = min(bv->bv_len, max_len);
-> @@ -211,6 +251,11 @@ static bool bvec_split_segs(const struct request_queue *q,
->  
->  		(*nsegs)++;
->  		total_len += seg_size;
-> +		update_aligned_sectors_and_segs(*nsegs,
-> +						*sectors + (total_len >> 9),
-> +						aligned_segs,
-> +						aligned_sectors,
-> +						bio_sectors_alignment);
->  		len -= seg_size;
->  
->  		if ((bv->bv_offset + total_len) & queue_virt_boundary(q))
-> @@ -235,6 +280,8 @@ static bool bvec_split_segs(const struct request_queue *q,
->   * following is guaranteed for the cloned bio:
->   * - That it has at most get_max_io_size(@q, @bio) sectors.
->   * - That it has at most queue_max_segments(@q) segments.
-> + * - That the number of sectors in the returned bio is aligned to
-> + *   blk_crypto_bio_sectors_alignment(@bio)
->   *
->   * Except for discard requests the cloned bio will point at the bi_io_vec of
->   * the original bio. It is the responsibility of the caller to ensure that the
-> @@ -252,6 +299,9 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
->  	unsigned nsegs = 0, sectors = 0;
->  	const unsigned max_sectors = get_max_io_size(q, bio);
->  	const unsigned max_segs = queue_max_segments(q);
-> +	const unsigned int bio_sectors_alignment =
-> +					blk_crypto_bio_sectors_alignment(bio);
-> +	unsigned int aligned_segs = 0, aligned_sectors = 0;
->  
->  	bio_for_each_bvec(bv, bio, iter) {
->  		/*
-> @@ -266,8 +316,14 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
->  		    bv.bv_offset + bv.bv_len <= PAGE_SIZE) {
->  			nsegs++;
->  			sectors += bv.bv_len >> 9;
-> -		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors, max_segs,
-> -					 max_sectors)) {
-> +			update_aligned_sectors_and_segs(nsegs, sectors,
-> +							&aligned_segs,
-> +							&aligned_sectors,
-> +							bio_sectors_alignment);
-> +		} else if (bvec_split_segs(q, &bv, &nsegs, &sectors,
-> +					   &aligned_segs, &aligned_sectors,
-> +					   bio_sectors_alignment, max_segs,
-> +					   max_sectors)) {
->  			goto split;
->  		}
->  
-> @@ -275,11 +331,24 @@ static struct bio *blk_bio_segment_split(struct request_queue *q,
->  		bvprvp = &bvprv;
->  	}
->  
-> +	/*
-> +	 * The input bio's number of sectors is assumed to be aligned to
-> +	 * bio_sectors_alignment. If that's the case, then this function should
-> +	 * ensure that aligned_segs == nsegs and aligned_sectors == sectors if
-> +	 * the bio is not going to be split.
-> +	 */
-> +	WARN_ON(aligned_segs != nsegs || aligned_sectors != sectors);
->  	*segs = nsegs;
->  	return NULL;
->  split:
-> -	*segs = nsegs;
-> -	return bio_split(bio, sectors, GFP_NOIO, bs);
-> +	*segs = aligned_segs;
-> +	if (WARN_ON(aligned_sectors == 0))
-> +		goto err;
-> +	return bio_split(bio, aligned_sectors, GFP_NOIO, bs);
-> +err:
-> +	bio->bi_status = BLK_STS_IOERR;
-> +	bio_endio(bio);
-> +	return bio;
->  }
-
-This part is pretty complex.  Are you sure it's needed?  How was alignment to
-logical_block_size ensured before?
-
-> diff --git a/block/bounce.c b/block/bounce.c
-> index 162a6eee8999..b15224799008 100644
-> --- a/block/bounce.c
-> +++ b/block/bounce.c
-> @@ -295,6 +295,7 @@ static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
->  	bool bounce = false;
->  	int sectors = 0;
->  	bool passthrough = bio_is_passthrough(*bio_orig);
-> +	unsigned int bio_sectors_alignment;
->  
->  	bio_for_each_segment(from, *bio_orig, iter) {
->  		if (i++ < BIO_MAX_PAGES)
-> @@ -305,6 +306,9 @@ static void __blk_queue_bounce(struct request_queue *q, struct bio **bio_orig,
->  	if (!bounce)
->  		return;
->  
-> +	bio_sectors_alignment = blk_crypto_bio_sectors_alignment(bio);
-> +	sectors = round_down(sectors, bio_sectors_alignment);
-> +
-
-This can be one line:
-
-	sectors = round_down(sectors, blk_crypto_bio_sectors_alignment(bio));
-
-- Eric
+>   arch/x86/kernel/tboot.c     | 3 ---
+>   drivers/iommu/intel/iommu.c | 5 +++--
+>   include/linux/intel-iommu.h | 1 -
+>   3 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
+> index 992fb14..420be87 100644
+> --- a/arch/x86/kernel/tboot.c
+> +++ b/arch/x86/kernel/tboot.c
+> @@ -514,9 +514,6 @@ int tboot_force_iommu(void)
+>   	if (!tboot_enabled())
+>   		return 0;
+>   
+> -	if (intel_iommu_tboot_noforce)
+> -		return 1;
+> -
+>   	if (no_iommu || swiotlb || dmar_disabled)
+>   		pr_warn("Forcing Intel-IOMMU to enabled\n");
+>   
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 1b1ca63..4d9b298 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -179,7 +179,7 @@ static inline unsigned long virt_to_dma_pfn(void *p)
+>    * (used when kernel is launched w/ TXT)
+>    */
+>   static int force_on = 0;
+> -int intel_iommu_tboot_noforce;
+> +static int intel_iommu_tboot_noforce;
+>   static int no_platform_optin;
+>   
+>   #define ROOT_ENTRY_NR (VTD_PAGE_SIZE/sizeof(struct root_entry))
+> @@ -4885,7 +4885,8 @@ int __init intel_iommu_init(void)
+>   	 * Intel IOMMU is required for a TXT/tboot launch or platform
+>   	 * opt in, so enforce that.
+>   	 */
+> -	force_on = tboot_force_iommu() || platform_optin_force_iommu();
+> +	force_on = (!intel_iommu_tboot_noforce && tboot_force_iommu()) ||
+> +		    platform_optin_force_iommu();
+>   
+>   	if (iommu_init_mempool()) {
+>   		if (force_on)
+> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+> index fbf5b3e..d956987 100644
+> --- a/include/linux/intel-iommu.h
+> +++ b/include/linux/intel-iommu.h
+> @@ -798,7 +798,6 @@ struct context_entry *iommu_context_addr(struct intel_iommu *iommu, u8 bus,
+>   extern int iommu_calculate_max_sagaw(struct intel_iommu *iommu);
+>   extern int dmar_disabled;
+>   extern int intel_iommu_enabled;
+> -extern int intel_iommu_tboot_noforce;
+>   extern int intel_iommu_gfx_mapped;
+>   #else
+>   static inline int iommu_calculate_agaw(struct intel_iommu *iommu)
+> 
