@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B33A2B6365
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E032B633E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732067AbgKQNht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:37:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49020 "EHLO mail.kernel.org"
+        id S1732565AbgKQNgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:36:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732985AbgKQNho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:37:44 -0500
+        id S1732551AbgKQNgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:36:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BCDE207BC;
-        Tue, 17 Nov 2020 13:37:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54590207BC;
+        Tue, 17 Nov 2020 13:36:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620263;
-        bh=KTYLfaT/c110WMmN+/ylv59n2v7cA2zK8bH4TV2ouIU=;
+        s=default; t=1605620170;
+        bh=HJPSa0KmKV95ZybTLaMu/IKpYZrY18GvP37V/Fllc/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=giW4eB5wE/a29947vGV1uK8WboYTkq1aKWAnpaOf8CKAZCbV2rGyjzGhmG7slppbd
-         jNKrMpDxCN2JILorMDho2+f81uWKQT9iGhk2CHX0FwIC7M/bCSvsMzf1keJHyZjiDK
-         5ZJ5M8EQW61uusSc4ao5Jo2HJIbVwejEme96GkFQ=
+        b=DWHaxgKQSsZMmdPz+R5zKQcnZOHGGPsRuz5UDdZ+AzBUfx43fXjZYFS4ztuQMLV/n
+         yTlHDeGXua79P5hvWU3cFm0DqFQaSqwR/09mAoY/0+nP6LoV0mdDhPG3yHq+6iWQBl
+         WaDSbD2+tZ77cV1EJJonQrJHiITwnM+7knh1Gn5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Anderson <seanga2@gmail.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 121/255] riscv: Set text_offset correctly for M-Mode
-Date:   Tue, 17 Nov 2020 14:04:21 +0100
-Message-Id: <20201117122144.829558008@linuxfoundation.org>
+        stable@vger.kernel.org, Ulrich Hecht <uli+renesas@fpond.eu>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 122/255] i2c: sh_mobile: implement atomic transfers
+Date:   Tue, 17 Nov 2020 14:04:22 +0100
+Message-Id: <20201117122144.879152511@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -43,43 +44,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Anderson <seanga2@gmail.com>
+From: Ulrich Hecht <uli+renesas@fpond.eu>
 
-[ Upstream commit 79605f1394261995c2b955c906a5a20fb27cdc84 ]
+[ Upstream commit a49cc1fe9d64a2dc4e19b599204f403e5d25f44b ]
 
-M-Mode Linux is loaded at the start of RAM, not 2MB later. Perhaps this
-should be calculated based on PAGE_OFFSET somehow? Even better would be to
-deprecate text_offset and instead introduce something absolute.
+Implements atomic transfers to fix reboot/shutdown on r8a7790 Lager and
+similar boards.
 
-Signed-off-by: Sean Anderson <seanga2@gmail.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[wsa: some whitespace fixing]
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/head.S | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/i2c/busses/i2c-sh_mobile.c | 86 +++++++++++++++++++++++-------
+ 1 file changed, 66 insertions(+), 20 deletions(-)
 
-diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-index 0a4e81b8dc795..5a0ae2eaf5e2f 100644
---- a/arch/riscv/kernel/head.S
-+++ b/arch/riscv/kernel/head.S
-@@ -27,12 +27,17 @@ ENTRY(_start)
- 	/* reserved */
- 	.word 0
- 	.balign 8
-+#ifdef CONFIG_RISCV_M_MODE
-+	/* Image load offset (0MB) from start of RAM for M-mode */
-+	.dword 0
-+#else
- #if __riscv_xlen == 64
- 	/* Image load offset(2MB) from start of RAM */
- 	.dword 0x200000
- #else
- 	/* Image load offset(4MB) from start of RAM */
- 	.dword 0x400000
-+#endif
- #endif
- 	/* Effective size of kernel image */
- 	.dword _end - _start
+diff --git a/drivers/i2c/busses/i2c-sh_mobile.c b/drivers/i2c/busses/i2c-sh_mobile.c
+index cab7255599991..bdd60770779ad 100644
+--- a/drivers/i2c/busses/i2c-sh_mobile.c
++++ b/drivers/i2c/busses/i2c-sh_mobile.c
+@@ -129,6 +129,7 @@ struct sh_mobile_i2c_data {
+ 	int sr;
+ 	bool send_stop;
+ 	bool stop_after_dma;
++	bool atomic_xfer;
+ 
+ 	struct resource *res;
+ 	struct dma_chan *dma_tx;
+@@ -330,13 +331,15 @@ static unsigned char i2c_op(struct sh_mobile_i2c_data *pd, enum sh_mobile_i2c_op
+ 		ret = iic_rd(pd, ICDR);
+ 		break;
+ 	case OP_RX_STOP: /* enable DTE interrupt, issue stop */
+-		iic_wr(pd, ICIC,
+-		       ICIC_DTEE | ICIC_WAITE | ICIC_ALE | ICIC_TACKE);
++		if (!pd->atomic_xfer)
++			iic_wr(pd, ICIC,
++			       ICIC_DTEE | ICIC_WAITE | ICIC_ALE | ICIC_TACKE);
+ 		iic_wr(pd, ICCR, ICCR_ICE | ICCR_RACK);
+ 		break;
+ 	case OP_RX_STOP_DATA: /* enable DTE interrupt, read data, issue stop */
+-		iic_wr(pd, ICIC,
+-		       ICIC_DTEE | ICIC_WAITE | ICIC_ALE | ICIC_TACKE);
++		if (!pd->atomic_xfer)
++			iic_wr(pd, ICIC,
++			       ICIC_DTEE | ICIC_WAITE | ICIC_ALE | ICIC_TACKE);
+ 		ret = iic_rd(pd, ICDR);
+ 		iic_wr(pd, ICCR, ICCR_ICE | ICCR_RACK);
+ 		break;
+@@ -429,7 +432,8 @@ static irqreturn_t sh_mobile_i2c_isr(int irq, void *dev_id)
+ 
+ 	if (wakeup) {
+ 		pd->sr |= SW_DONE;
+-		wake_up(&pd->wait);
++		if (!pd->atomic_xfer)
++			wake_up(&pd->wait);
+ 	}
+ 
+ 	/* defeat write posting to avoid spurious WAIT interrupts */
+@@ -581,6 +585,9 @@ static void start_ch(struct sh_mobile_i2c_data *pd, struct i2c_msg *usr_msg,
+ 	pd->pos = -1;
+ 	pd->sr = 0;
+ 
++	if (pd->atomic_xfer)
++		return;
++
+ 	pd->dma_buf = i2c_get_dma_safe_msg_buf(pd->msg, 8);
+ 	if (pd->dma_buf)
+ 		sh_mobile_i2c_xfer_dma(pd);
+@@ -637,15 +644,13 @@ static int poll_busy(struct sh_mobile_i2c_data *pd)
+ 	return i ? 0 : -ETIMEDOUT;
+ }
+ 
+-static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
+-			      struct i2c_msg *msgs,
+-			      int num)
++static int sh_mobile_xfer(struct sh_mobile_i2c_data *pd,
++			 struct i2c_msg *msgs, int num)
+ {
+-	struct sh_mobile_i2c_data *pd = i2c_get_adapdata(adapter);
+ 	struct i2c_msg	*msg;
+ 	int err = 0;
+ 	int i;
+-	long timeout;
++	long time_left;
+ 
+ 	/* Wake up device and enable clock */
+ 	pm_runtime_get_sync(pd->dev);
+@@ -662,15 +667,35 @@ static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
+ 		if (do_start)
+ 			i2c_op(pd, OP_START);
+ 
+-		/* The interrupt handler takes care of the rest... */
+-		timeout = wait_event_timeout(pd->wait,
+-				       pd->sr & (ICSR_TACK | SW_DONE),
+-				       adapter->timeout);
+-
+-		/* 'stop_after_dma' tells if DMA transfer was complete */
+-		i2c_put_dma_safe_msg_buf(pd->dma_buf, pd->msg, pd->stop_after_dma);
++		if (pd->atomic_xfer) {
++			unsigned long j = jiffies + pd->adap.timeout;
++
++			time_left = time_before_eq(jiffies, j);
++			while (time_left &&
++			       !(pd->sr & (ICSR_TACK | SW_DONE))) {
++				unsigned char sr = iic_rd(pd, ICSR);
++
++				if (sr & (ICSR_AL   | ICSR_TACK |
++					  ICSR_WAIT | ICSR_DTE)) {
++					sh_mobile_i2c_isr(0, pd);
++					udelay(150);
++				} else {
++					cpu_relax();
++				}
++				time_left = time_before_eq(jiffies, j);
++			}
++		} else {
++			/* The interrupt handler takes care of the rest... */
++			time_left = wait_event_timeout(pd->wait,
++					pd->sr & (ICSR_TACK | SW_DONE),
++					pd->adap.timeout);
++
++			/* 'stop_after_dma' tells if DMA xfer was complete */
++			i2c_put_dma_safe_msg_buf(pd->dma_buf, pd->msg,
++						 pd->stop_after_dma);
++		}
+ 
+-		if (!timeout) {
++		if (!time_left) {
+ 			dev_err(pd->dev, "Transfer request timed out\n");
+ 			if (pd->dma_direction != DMA_NONE)
+ 				sh_mobile_i2c_cleanup_dma(pd);
+@@ -696,14 +721,35 @@ static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
+ 	return err ?: num;
+ }
+ 
++static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
++			      struct i2c_msg *msgs,
++			      int num)
++{
++	struct sh_mobile_i2c_data *pd = i2c_get_adapdata(adapter);
++
++	pd->atomic_xfer = false;
++	return sh_mobile_xfer(pd, msgs, num);
++}
++
++static int sh_mobile_i2c_xfer_atomic(struct i2c_adapter *adapter,
++				     struct i2c_msg *msgs,
++				     int num)
++{
++	struct sh_mobile_i2c_data *pd = i2c_get_adapdata(adapter);
++
++	pd->atomic_xfer = true;
++	return sh_mobile_xfer(pd, msgs, num);
++}
++
+ static u32 sh_mobile_i2c_func(struct i2c_adapter *adapter)
+ {
+ 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_PROTOCOL_MANGLING;
+ }
+ 
+ static const struct i2c_algorithm sh_mobile_i2c_algorithm = {
+-	.functionality	= sh_mobile_i2c_func,
+-	.master_xfer	= sh_mobile_i2c_xfer,
++	.functionality = sh_mobile_i2c_func,
++	.master_xfer = sh_mobile_i2c_xfer,
++	.master_xfer_atomic = sh_mobile_i2c_xfer_atomic,
+ };
+ 
+ static const struct i2c_adapter_quirks sh_mobile_i2c_quirks = {
 -- 
 2.27.0
 
