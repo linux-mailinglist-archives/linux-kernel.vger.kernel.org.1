@@ -2,174 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F4F2B6F6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BDE2B6F71
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731181AbgKQTzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:55:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgKQTzp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:55:45 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE8AC0613CF;
-        Tue, 17 Nov 2020 11:55:44 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id E798C1F44CCE
-Message-ID: <649607da7517ac88f49ff4332d2a5eba585424f9.camel@collabora.com>
-Subject: Re: Re: [PATCH v2 2/9] media: cedrus: h264: Support profile and
- level controls
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Jernej =?UTF-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com, Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Tue, 17 Nov 2020 16:55:36 -0300
-In-Reply-To: <2278543.vxa8QGFfu4@kista>
-References: <20201113215121.505173-1-ezequiel@collabora.com>
-         <1725677.6jS8d4RcRb@kista>
-         <22e909c7fe5722a7edf0828521c5a43f79ab70e3.camel@collabora.com>
-         <2278543.vxa8QGFfu4@kista>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1731398AbgKQT5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:57:30 -0500
+Received: from mga12.intel.com ([192.55.52.136]:48614 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728273AbgKQT53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:57:29 -0500
+IronPort-SDR: 4f4rr/d+gNP8rgPQe38Ee/xKgdQT7CxNj7OixJ8935Dam90dhrffoLEPWbr1x4oU4jo9RIyXMY
+ M3b8l5HT5VIw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="150270455"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="150270455"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 11:57:26 -0800
+IronPort-SDR: T6gNYqTHHtBXT6lxp+ALRXHMVjXza0LAb79WnPq3/+jpBnoZ88Uv6cKtZpAsfcz1NdnRs5NbBU
+ Nz25/FxneV7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="544188108"
+Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
+  by orsmga005.jf.intel.com with ESMTP; 17 Nov 2020 11:57:25 -0800
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, mingo@kernel.org, jolsa@redhat.com
+Cc:     linux-kernel@vger.kernel.org, namhyung@kernel.org,
+        eranian@google.com, ak@linux.intel.com, mark.rutland@arm.com,
+        will@kernel.org, mpe@ellerman.id.au,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 00/12] Add the page size in the perf record (user tools)
+Date:   Tue, 17 Nov 2020 11:56:25 -0800
+Message-Id: <20201117195637.6499-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-17 at 20:55 +0100, Jernej Škrabec wrote:
-> Dne torek, 17. november 2020 ob 20:40:09 CET je Ezequiel Garcia napisal(a):
-> > On Tue, 2020-11-17 at 20:24 +0100, Jernej Škrabec wrote:
-> > > Hi Ezequiel,
-> > > 
-> > > sorry for late review.
-> > > 
-> > > First of all, this patch doesn't break anything. However, see comment 
-> below.
-> > > Dne petek, 13. november 2020 ob 22:51:14 CET je Ezequiel Garcia 
-> napisal(a):
-> > > > Cedrus supports H.264 profiles from Baseline to High,
-> > > > up to Level 5.1, except for the Extended profile
-> > > > 
-> > > > Expose the V4L2_CID_MPEG_VIDEO_H264_PROFILE and
-> > > > V4L2_CID_MPEG_VIDEO_H264_LEVEL so that userspace can
-> > > > query the driver for the supported profiles and levels.
-> > > > 
-> > > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > > > ---
-> > > >  drivers/staging/media/sunxi/cedrus/cedrus.c | 21 +++++++++++++++++++++
-> > > >  1 file changed, 21 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/
-> staging/
-> > > media/sunxi/cedrus/cedrus.c
-> > > > index 9a102b7c1bb9..8b0e97752d27 100644
-> > > > --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
-> > > > +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
-> > > > @@ -103,6 +103,27 @@ static const struct cedrus_control 
-> cedrus_controls[] = 
-> > > {
-> > > >  		.codec		= CEDRUS_CODEC_H264,
-> > > >  		.required	= false,
-> > > >  	},
-> > > > +	{
-> > > > +		.cfg = {
-> > > > +			.id	= 
-> > > V4L2_CID_MPEG_VIDEO_H264_PROFILE,
-> > > > +			.min	= 
-> > > V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE,
-> > > > +			.def	= 
-> > > V4L2_MPEG_VIDEO_H264_PROFILE_MAIN,
-> > > > +			.max	= 
-> > > V4L2_MPEG_VIDEO_H264_PROFILE_HIGH,
-> > > > +			.menu_skip_mask =
-> > > > +				
-> > > BIT(V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED),
-> > > > +		},
-> > > > +		.codec		= CEDRUS_CODEC_H264,
-> > > > +		.required	= false,
-> > > > +	},
-> > > > +	{
-> > > > +		.cfg = {
-> > > > +			.id = V4L2_CID_MPEG_VIDEO_H264_LEVEL,
-> > > > +			.min = V4L2_MPEG_VIDEO_H264_LEVEL_1_0,
-> > > > +			.max = V4L2_MPEG_VIDEO_H264_LEVEL_5_1,
-> > > 
-> > > I went through several datasheets and only newer ones (H6, H616) state 
-> max. 
-> > > supported level, which is 4.2. Please change it in next revision.
-> > > 
-> > > After that, you can add
-> > > Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> > > 
-> > 
-> > Note that I used level 5.1 based on a commit from you:
-> > """
-> >     media: cedrus: h264: Fix 4K decoding on H6
-> >     
-> >     Due to unknown reason, H6 needs larger intraprediction buffer for 4K
-> >     videos than other SoCs. This was discovered by playing 4096x2304 video,
-> >     which is maximum what H6 VPU is supposed to support.
-> > """
-> > 
-> > I guessed this meant it supported level 5 or higher.
-> > (Now that I think about it, I meant at least H6, does).
-> > 
-> > According to https://en.wikipedia.org/wiki/Advanced_Video_Coding#Levels,
-> > level 4.2 is up to 2,048×1,080@60.0.
-> 
-> Strange, then I guess datasheet is wrong (wouldn't be first time). 
-> Unfortunatelly there is no documentation for Cedrus capabilities, so 
-> everything is either educated guess or tested on HW. Documentation for older 
-> than H6 SoCs always mention only 1080p @ 60fps limit, even though several of 
-> them are capable of decoding 4K H264 videos (I'm not sure about max. fps 
-> though).
-> 
-> > Frankly, I'm open to put whatever value makes you happy.
-> 
-> To be honest, I'm not sure what is correct value here. It may depend on Cedrus 
-> core variant.
-> 
+From: Kan Liang <kan.liang@linux.intel.com>
 
-We can drop the level information as well, and just keep the profile one.
+Current perf can report both virtual addresses and physical addresses,
+but not the page size. Without the page size information of the utilized
+page, users cannot decide whether to promote/demote large pages to
+optimize memory usage.
 
-Maximum resolution is already enforced, via TRY_FMT, anyway.
+The kernel patches have been merged into tip perf/core branch,
+commit 8d97e71811aa ("perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE")
+commit 76a5433f95f3 ("perf/x86/intel: Support PERF_SAMPLE_DATA_PAGE_SIZE")
+commit 4cb6a42e4c4b ("powerpc/perf: Support PERF_SAMPLE_DATA_PAGE_SIZE")
+commit 995f088efebe ("perf/core: Add support for PERF_SAMPLE_CODE_PAGE_SIZE")
+commit 51b646b2d9f8 ("perf,mm: Handle non-page-table-aligned hugetlbfs")
 
-Thanks,
-Ezequiel
+and Peter's perf/core branch
+commit 524680ce47a1 ("mm/gup: Provide gup_get_pte() more generic")
+commit 44a35d6937d2 ("mm: Introduce pXX_leaf_size()")
+commit 2f1e2f091ad0 ("perf/core: Fix arch_perf_get_page_size()")
+commit 7649e44aacdd ("arm64/mm: Implement pXX_leaf_size() support")
+commit 1df1ae7e262c ("sparc64/mm: Implement pXX_leaf_size() support")
 
-> Best regards,
-> Jernej
-> 
-> >   
-> > Thanks,
-> > Ezequiel
-> > 
-> > > Best regards,
-> > > Jernej
-> > > 
-> > > > +		},
-> > > > +		.codec		= CEDRUS_CODEC_H264,
-> > > > +		.required	= false,
-> > > > +	},
-> > > >  	{
-> > > >  		.cfg = {
-> > > >  			.id	= V4L2_CID_MPEG_VIDEO_HEVC_SPS,
-> > > > -- 
-> > > > 2.27.0
-> > > > 
-> > > > 
-> > 
-> > 
-> 
-> 
+This patch set is to enable the page size support in user tools.
 
+Kan Liang (8):
+  tools headers UAPI: Update tools's copy of linux/perf_event.h
+  perf record: Support new sample type for data page size
+  perf script: Support data page size
+  perf sort: Add sort option for data page size
+  perf mem: Factor out a function to generate sort order
+  perf mem: Clean up output format
+  perf mem: Support data page size
+  perf test: Add test case for PERF_SAMPLE_DATA_PAGE_SIZE
+
+Stephane Eranian (4):
+  perf tools: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+  perf script: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+  perf report: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+  perf test: Add test case for PERF_SAMPLE_CODE_PAGE_SIZE
+
+ tools/include/uapi/linux/perf_event.h     |   6 +-
+ tools/perf/Documentation/perf-mem.txt     |   3 +
+ tools/perf/Documentation/perf-record.txt  |   6 +
+ tools/perf/Documentation/perf-report.txt  |   2 +
+ tools/perf/Documentation/perf-script.txt  |   5 +-
+ tools/perf/builtin-mem.c                  | 150 ++++++++++++----------
+ tools/perf/builtin-record.c               |   4 +
+ tools/perf/builtin-script.c               |  26 +++-
+ tools/perf/tests/sample-parsing.c         |  10 +-
+ tools/perf/util/event.h                   |   5 +
+ tools/perf/util/evsel.c                   |  18 +++
+ tools/perf/util/hist.c                    |   5 +
+ tools/perf/util/hist.h                    |   2 +
+ tools/perf/util/machine.c                 |   7 +-
+ tools/perf/util/map_symbol.h              |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c |   2 +-
+ tools/perf/util/record.h                  |   2 +
+ tools/perf/util/session.c                 |  26 ++++
+ tools/perf/util/sort.c                    |  56 ++++++++
+ tools/perf/util/sort.h                    |   3 +
+ tools/perf/util/synthetic-events.c        |  16 +++
+ 21 files changed, 278 insertions(+), 77 deletions(-)
+
+-- 
+2.17.1
 
