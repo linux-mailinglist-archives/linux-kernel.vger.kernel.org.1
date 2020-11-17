@@ -2,73 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F3C2B59E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4C82B59E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgKQGzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 01:55:04 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7694 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgKQGzC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 01:55:02 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CZxWf0lVBzkYTV;
-        Tue, 17 Nov 2020 14:54:38 +0800 (CST)
-Received: from [10.174.179.81] (10.174.179.81) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 17 Nov 2020 14:54:50 +0800
-Subject: Re: [PATCH] PCI: dwc: fix error return code in dw_pcie_host_init()
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-CC:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201116135023.57321-1-wanghai38@huawei.com>
- <20201117094906.6e196cac@xhacker.debian>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <ddb1ed3c-da47-ff01-76ce-958ec31f0cec@huawei.com>
-Date:   Tue, 17 Nov 2020 14:54:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726411AbgKQGzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 01:55:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725792AbgKQGzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 01:55:49 -0500
+Received: from coco.lan (ip5f5ad5cc.dynamic.kabel-deutschland.de [95.90.213.204])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 891EE20E65;
+        Tue, 17 Nov 2020 06:55:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605596148;
+        bh=cGf90cxOk4enH15mxLAGIs0fBknMa6LCpcQRUFZeb4A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kOI8CK5s/FBBia2UB+hfbeLQeOx0k6CIYipvUxM+343W+K/H/EvzOlVa5yjMbNaAB
+         B4Tixubiso0iht/zuyH5l8kyTJg4+CL9YAKu8MbRug3cGdIl76K+k/GTUL4MCeb63R
+         qIbauobehr8dWB6Ki5acvvl/+Ef1o4V+wM8Mkrw8=
+Date:   Tue, 17 Nov 2020 07:55:42 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Yu Chen <chenyu56@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/8] phy: phy-hi3670-usb3: move driver from staging into
+ phy
+Message-ID: <20201117075542.734f429b@coco.lan>
+In-Reply-To: <20201116153106.GA1682049@bogus>
+References: <cover.1605530560.git.mchehab+huawei@kernel.org>
+        <420faf39bb03d07f8823b03bc55a429e975e23a0.1605530560.git.mchehab+huawei@kernel.org>
+        <20201116153106.GA1682049@bogus>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201117094906.6e196cac@xhacker.debian>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.81]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Mon, 16 Nov 2020 09:31:06 -0600
+Rob Herring <robh@kernel.org> escreveu:
 
-在 2020/11/17 9:49, Jisheng Zhang 写道:
-> On Mon, 16 Nov 2020 21:50:23 +0800 Wang Hai wrote:
->
->>
->> Fix to return a negative error code from the error handling
->> case instead of 0, as done elsewhere in this function.
-> good catch.
->
->> Fixes: 07940c369a6b ("PCI: dwc: Fix MSI page leakage in suspend/resume")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Wang Hai <wanghai38@huawei.com>
->>
->>                          if (dma_mapping_error(pci->dev, pp->msi_data)) {
->>                                  dev_err(pci->dev, "Failed to map MSI data\n");
->>                                  pp->msi_data = 0;
->> +                               ret = -ENOMEM;
-> what about use the return value of dma_maping_error()? I.E
->
-> ret = dma_mapping_error()
-> if (ret) {
-> ....
-> }
->
+> On Mon, Nov 16, 2020 at 01:59:27PM +0100, Mauro Carvalho Chehab wrote:
+> > The phy USB3 driver for Hisilicon 970 (hi3670) is ready
+> > for mainstream. Mode it from staging into the main driver's  
+> 
+> s/Mode/Move/
+> 
+> > phy/ directory.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  .../bindings/phy/phy-hi3670-usb3.yaml         |  72 ++
+> >  MAINTAINERS                                   |   9 +-
+> >  drivers/phy/hisilicon/Kconfig                 |  10 +
+> >  drivers/phy/hisilicon/Makefile                |   1 +
+> >  drivers/phy/hisilicon/phy-hi3670-usb3.c       | 671 ++++++++++++++++++
+> >  drivers/staging/hikey9xx/Kconfig              |  11 -
+> >  drivers/staging/hikey9xx/Makefile             |   2 -
+> >  drivers/staging/hikey9xx/phy-hi3670-usb3.c    | 671 ------------------
+> >  drivers/staging/hikey9xx/phy-hi3670-usb3.yaml |  72 --  
+> 
+> I assume this is only a move? Use '-M' option.
 
-Thanks for your review,  I just sent v2
+This is a move, although I explicitly disabled -M on this series, as both
+the driver code and DT may still require some review, as those patches
+are for subsystems that I haven't made any relevant contributions
+so far.
 
-"[PATCH v2] PCI: dwc: fix error return code in dw_pcie_host_init()"
-
-> .
->
+Thanks,
+Mauro
