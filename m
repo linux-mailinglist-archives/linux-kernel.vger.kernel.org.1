@@ -2,119 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC222B688E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC062B6891
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387457AbgKQPVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:21:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46851 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729474AbgKQPVx (ORCPT
+        id S2387592AbgKQPWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:22:30 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:35279 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728874AbgKQPW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:21:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605626512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jR7aAwBFoMkDOKbYfk5oE2u3r5jLhu+r7XSshNfCDcQ=;
-        b=Rm2Kyw1Kg0H/qDlo76/sELFTLZMoiWrbR1t0mpuuPHHFKJl0i40YWA0bZxm3iJrEQunSv/
-        c269A0WZTu+3f1cUs4rBKhGXVhmSZl/XrDpRzJwoucA8F9GeqeSL61ZXJ1gqZ/lCWgRF/4
-        0sXKaXozTIVxn1e0zbA7HpdYtMFn/zw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-574-gWumX4JGPuaPFXuQrhUj8w-1; Tue, 17 Nov 2020 10:21:46 -0500
-X-MC-Unique: gWumX4JGPuaPFXuQrhUj8w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C1721084CA3;
-        Tue, 17 Nov 2020 15:21:44 +0000 (UTC)
-Received: from krava (unknown [10.40.192.215])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 1C86A5C1CF;
-        Tue, 17 Nov 2020 15:21:40 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 16:21:40 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 23/24] perf buildid-list: Add support for mmap2's buildid
- events
-Message-ID: <20201117152140.GE1216482@krava>
-References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-24-jolsa@kernel.org>
- <20201117125040.GT614220@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117125040.GT614220@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Tue, 17 Nov 2020 10:22:29 -0500
+Received: from orion.localdomain ([95.118.38.12]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MwwuJ-1kKDoC0xC7-00yOCQ; Tue, 17 Nov 2020 16:22:15 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     wim@linux-watchdog.org, linux@roeck-us.net,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH 1/3] watchdog: iTCO_wdt: use module_platform_device() macro
+Date:   Tue, 17 Nov 2020 16:22:12 +0100
+Message-Id: <20201117152214.32244-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:YDt3UYgs0gevj5QPBMD0MFefGjsM1hX2gDTlqeZDv30Ba3Spfh/
+ LYF6cJSuhyDjlgYUV5+F2ELVKgYTrAS7yWQF7ZaIi5heiYXMz0g8BEi1pkJK8lSBF+sWMPP
+ 7kq9ox1k/VcTJGRNQssbTmP8iZH8ATk+u10M9s86wyHU3UAvJ3vILcZ2dtBqv/W9BZ67epI
+ 1FNcoqtdiwWqEQq78B6FA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uzlam8SNgd0=:hWx/UI/nGfTejdapvDEhfz
+ yo6No6x5TFRzgD8CCRMyE2o29GSV1VT8b/C1KzLYgg7gE7nIf/zsqedvvdoSzjfD5uiHPItot
+ Wt9rzwnHMzzsYpW/OrqgMCBU5fMMxSy4Jx5gKNpluIYNheyxtx/eVybcAL80OrqBxWyQdQi49
+ TIyOlQ3kX7pjlwFPARFJ7SmMLA7vAfgPdr8N/xf3BEkg01mrIaLhTkmAF/K/x/4/NEP1G8zED
+ X/PG3jKqNbFHKPPA19F49bu1zwkMa9rAtSgxDjB20c06/PgWsEwerNznuOAEbFjMYw9ZylLIu
+ HLtYP9k/yc8jvjCpDrXsj67IuPPN9at0Wyc+RZlWRj6uZeB6jRwcGhnX5XH2r8IFHT2TIHS/s
+ HoK7eA9YHPJQtZ+ITIPT9abRVmGFLHDd/3b+1q3e0FNNtnammBsf9znPjAtxq
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 09:50:40AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Nov 17, 2020 at 12:00:52PM +0100, Jiri Olsa escreveu:
-> > Add buildid-list support for mmap2's build id data, so we can
-> > display build ids for dso objects for data without the build
-> > id cache update.
-> 
-> >   $ perf buildid-list
-> >   1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
-> >   d278249792061c6b74d1693ca59513be1def13f2 /usr/lib64/libc-2.31.so
-> > 
-> > By default only dso objects with hits are shown.
-> 
-> Would be interesting to be able to show all the build ids that are
-> there. a 'perf buildid-list --all' or make this under --force?
+Reducing init boilerplate by using the module_platform_device macro.
 
-ok, will check.. one other tool I think would be handy is
-to show which debuginfo is not available, because it can
-change the report a lot - missing symbols are not getting
-accounted, and their hits are accounted only as separated
-addresses
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ drivers/watchdog/iTCO_wdt.c | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
 
-jirka
-
-> 
-> - Arnaldo
->  
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/perf/builtin-buildid-list.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/tools/perf/builtin-buildid-list.c b/tools/perf/builtin-buildid-list.c
-> > index e3ef75583514..87f5b1a4a7fa 100644
-> > --- a/tools/perf/builtin-buildid-list.c
-> > +++ b/tools/perf/builtin-buildid-list.c
-> > @@ -77,6 +77,9 @@ static int perf_session__list_build_ids(bool force, bool with_hits)
-> >  	    perf_header__has_feat(&session->header, HEADER_AUXTRACE))
-> >  		with_hits = false;
-> >  
-> > +	if (!perf_header__has_feat(&session->header, HEADER_BUILD_ID))
-> > +		with_hits = true;
-> > +
-> >  	/*
-> >  	 * in pipe-mode, the only way to get the buildids is to parse
-> >  	 * the record stream. Buildids are stored as RECORD_HEADER_BUILD_ID
-> > -- 
-> > 2.26.2
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
-> 
+diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+index a370a185a41c..f2ddc8fc71cd 100644
+--- a/drivers/watchdog/iTCO_wdt.c
++++ b/drivers/watchdog/iTCO_wdt.c
+@@ -651,21 +651,7 @@ static struct platform_driver iTCO_wdt_driver = {
+ 	},
+ };
+ 
+-static int __init iTCO_wdt_init_module(void)
+-{
+-	pr_info("Intel TCO WatchDog Timer Driver v%s\n", DRV_VERSION);
+-
+-	return platform_driver_register(&iTCO_wdt_driver);
+-}
+-
+-static void __exit iTCO_wdt_cleanup_module(void)
+-{
+-	platform_driver_unregister(&iTCO_wdt_driver);
+-	pr_info("Watchdog Module Unloaded\n");
+-}
+-
+-module_init(iTCO_wdt_init_module);
+-module_exit(iTCO_wdt_cleanup_module);
++module_platform_driver(iTCO_wdt_driver);
+ 
+ MODULE_AUTHOR("Wim Van Sebroeck <wim@iguana.be>");
+ MODULE_DESCRIPTION("Intel TCO WatchDog Timer Driver");
+-- 
+2.11.0
 
