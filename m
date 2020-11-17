@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C7A2B6AA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C22032B6AB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727330AbgKQQtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:49:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgKQQtK (ORCPT
+        id S1727184AbgKQQxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:53:21 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9542 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgKQQxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:49:10 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F23C0613CF;
-        Tue, 17 Nov 2020 08:49:10 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id gv24so761090pjb.3;
-        Tue, 17 Nov 2020 08:49:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9eWscDwZQ3CWBezdlVFPaRIFcqDLiQIitdTtQk021vM=;
-        b=eYd32u3aYWqn822wbN6Yre+7CnFye2qgszav79YI4UwMHcwhGdd028xLX04IEPZ7Ef
-         F/LLkqJ2hYuKisTwNUFovM992EVpyZ2MclzbJBaOzIE/O7v+WH3jvOWb7tudVWHuhrGe
-         57yyAQR85HcMiNfy6hePe3zTYcMs9rhqipOTWrEEfSVEwaoG3lWIBS2p1mpPOZpSlria
-         xpd5qjJhQokn739B5AH8JkQjvsXgqSIw3Hz7R3d5DTenkbMXIvuvxMa8XN774ysR4uHC
-         HNolsKSMDYI4+tWvwjabV2mpW2GZZSV7KPKFr5XZe3hb/TpHolpGO0JtHhGplN2FNQpf
-         XLHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9eWscDwZQ3CWBezdlVFPaRIFcqDLiQIitdTtQk021vM=;
-        b=dbfdzry7YHyCDVv7xKtcVd2LxElNG3WeA5Dolq2IX/oGEYSbXb6Hl01UCFijfkWKlU
-         QAM7Qsdh2A4OJHuWcf16Yq4hecmAblwZbYS4uzCZKaa64Mb4LqKzAS/HrRtBj13HPdn6
-         dZ2JA+9RXGJ2eA9inYzF8JA6sEbQ/EG8rRDD6pEDywNgAS+EJDUA7+rlfsVXsEh/ldfj
-         6Q/CeaY6qbUlEVimMRiQPZbHx/S4e2mFlkmT+R8bQSF+sADDdhUG5dtaRudVTaBcuCcZ
-         o6cBJzJlypctZzkHnWcltr8E5/brSnYesGX92BqTtmXqvbvGn8n6hYvHRQG3V0BrB60I
-         MQoQ==
-X-Gm-Message-State: AOAM533d1FxVEIM5AHQglvMa2jUNaP8vezWFs00oK7PNi0Jti+sbr05B
-        EH0wORcDd2kNjV9B5T85jn2Du2g2FE8XOUhWW2U=
-X-Google-Smtp-Source: ABdhPJz6rWufym/vh0udkK67P2ipA+U/+eKLZoaBuqlA0jxR3jhdsU6ECiUF/iIcNPOepG57WTDzW7gedgg653jY1Go=
-X-Received: by 2002:a17:902:ac93:b029:d8:d2c5:e5b1 with SMTP id
- h19-20020a170902ac93b02900d8d2c5e5b1mr34128plr.17.1605631748839; Tue, 17 Nov
- 2020 08:49:08 -0800 (PST)
+        Tue, 17 Nov 2020 11:53:21 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb3fff80000>; Tue, 17 Nov 2020 08:53:12 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 16:53:18 +0000
+Received: from vidyas-desktop.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 17 Nov 2020 16:53:15 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
+        <robh@kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
+        <sagar.tv@gmail.com>
+Subject: [PATCH] PCI: dwc: Set 32-bit DMA mask for MSI target address allocation
+Date:   Tue, 17 Nov 2020 22:23:12 +0530
+Message-ID: <20201117165312.25847-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-References: <20201117154340.18216-1-info@metux.net> <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
-In-Reply-To: <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 17 Nov 2020 18:49:57 +0200
-Message-ID: <CAHp75Vfgs=-_SZoxGf9T93sBdKb6ak_YUi8=WPPF3YeZUsxQcA@mail.gmail.com>
-Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andrew Jeffery <andrew@aj.id.au>, Alban Bedel <albeu@free.fr>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>, orsonzhai@gmail.com,
-        baolin.wang7@gmail.com, zhang.lyra@gmail.com,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605631992; bh=y6GQXycgh+Z2dqDNkgy3czX9p4aDC7PVHnEjFtMGryM=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=CRsFpVopn+0hALteMxwuECRqtiLtDbdmWOYD4hAcrZbKZzyq8yYio9Dun6pjhs0Zq
+         bZ+UgAxLlC2YG3SdulHPCYhzgBkGAfR1PQ8wHG1d/DbckIZdHDM6g7UrwhS/ICtuNZ
+         LG/Z4/ECFnEPHjlRwgE5Pu+2+bynVsEkpWFVe1o2RTOIuyA6VITsvBYTnPhFodTI/A
+         rmj1LZ+Cvm4hfss7hYzmudbq4Re1xQpeRWZQuz9C0sRnhScNnJUveiRiJf3lBvYrk2
+         b+OyJKDG2+lG0thbfK87/8lYuh8QW3SgH083ac6gH8+kD8WLpgI70AHoCd+o4bfa5+
+         MARqaQKyfLLHA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 6:45 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Tue, Nov 17, 2020 at 5:45 PM Enrico Weigelt, metux IT consult
-> <info@metux.net> wrote:
-> >
-> > The of_match_ptr(foo) macro evaluates to foo, only if
-> > CONFIG_OF is set, otherwise to NULL. Same does ACPI_PTR with
-> > CONFIG_ACPI. That's very helpful for drivers that can be used
-> > with or without oftree / acpi.
-> >
-> > Even though most of the drivers touched here probably don't
-> > actually need that, it's also nice for consistency to make it
-> > the de-facto standard and change all drivers to use the
-> > of_match_ptr() and ACPI_PTR() macros.
-> >
-> > A nice side effect: in some situations, when compiled w/o
-> > CONFIG_OF/CONFIG_ACPI, the corresponding match tables could
-> > automatically become unreferenced and optimized-away by the
-> > compiler, w/o explicitly cluttering the code w/ ifdef's.
->
-> NAK.
->
-> It prevents using DT-enabled drivers on ACPI based platforms.
->
-> +Cc: Jonathan who had done the opposite in the entire IIO subsystem.
+Set DMA mask to 32-bit while allocating the MSI target address so that
+the address is usable for both 32-bit and 64-bit MSI capable devices.
+Throw a warning if it fails to set the mask to 32-bit to alert that
+devices that are only 32-bit MSI capable may not work properly.
 
-And a side note: use of_match_ptr() and ACPI_PTR() in 99% is a mistake.
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+---
+Given the other patch that I've pushed to the MSI sub-system
+http://patchwork.ozlabs.org/project/linux-pci/patch/20201117145728.4516-1-vidyas@nvidia.com/
+which is going to catch any mismatch between MSI capability (32-bit) of the
+device and system's inability to allocate the required MSI target address,
+I'm not sure how much sense is this patch going to be make. But, I can
+certainly say that if the memory allocation mechanism gives the addresses
+from 64-bit pool by default, this patch at least makes sure that MSI target
+address is allocated from 32-bit pool.
 
+ drivers/pci/controller/dwc/pcie-designware-host.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index 44c2a6572199..e6a230eddf66 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -388,6 +388,14 @@ int dw_pcie_host_init(struct pcie_port *pp)
+ 							    dw_chained_msi_isr,
+ 							    pp);
+ 
++			ret = dma_set_mask(pci->dev, DMA_BIT_MASK(32));
++			if (!ret) {
++				dev_warn(pci->dev,
++					 "Failed to set DMA mask to 32-bit. "
++					 "Devices with only 32-bit MSI support"
++					 " may not work properly\n");
++			}
++
+ 			pp->msi_data = dma_map_single_attrs(pci->dev, &pp->msi_msg,
+ 						      sizeof(pp->msi_msg),
+ 						      DMA_FROM_DEVICE,
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
