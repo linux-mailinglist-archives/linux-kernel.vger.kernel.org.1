@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761A62B60CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A402B6169
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729887AbgKQNMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:12:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42734 "EHLO mail.kernel.org"
+        id S1730710AbgKQNSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:18:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729865AbgKQNMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:12:41 -0500
+        id S1730312AbgKQNQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:16:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A2D2241A5;
-        Tue, 17 Nov 2020 13:12:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31EA42225B;
+        Tue, 17 Nov 2020 13:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618760;
-        bh=9k1GzaQskuGl5Gm1SQOBqk+VcyKLvXW2BgKdbA76bUE=;
+        s=default; t=1605618986;
+        bh=78DAGkVlp0rQA3aOLbgDAkw6TlVi6S2k8+Zrlyo6uU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e7Ilgo2jiT9fw6SB4plhSoYI3oSB9Ufnlxc/B7RigKOyx4SqnRYkQ0wxJZKC+IPS7
-         5xEJHZ5/AoUJ761biQSz8KB/aUKRIQ5MY5K94LpOcOkr3J3wzKRoFPelmF+PvU0Mhp
-         UnU/SRShjHea4+d1nuEu32OmVWCL1WFo3VwrsVEY=
+        b=1mz15a7p6s5vDZFq4W/6xZvr1Rw1n4Lo2Ec1mQOziWl15uVD5XG71J2vvEjuHnMA5
+         gMSiUJmhk9a4od49SDRTHXJ6Jjyy1xzoP8RnU72s+ikYOHCs6huJkMPXa35PUBuNkH
+         y6hok+LcMCUqMM8n+SA5uPJBoHHFvaS1Q/Hs4YJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boris Protopopov <pboris@amazon.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.9 78/78] Convert trailing spaces and periods in path components
-Date:   Tue, 17 Nov 2020 14:05:44 +0100
-Message-Id: <20201117122112.909571580@linuxfoundation.org>
+        Julien Grall <julien@xen.org>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Wei Liu <wl@xen.org>
+Subject: [PATCH 4.14 76/85] xen/pvcallsback: use lateeoi irq binding
+Date:   Tue, 17 Nov 2020 14:05:45 +0100
+Message-Id: <20201117122114.773785170@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +43,229 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Protopopov <pboris@amazon.com>
+From: Juergen Gross <jgross@suse.com>
 
-commit 57c176074057531b249cf522d90c22313fa74b0b upstream.
+commit c8d647a326f06a39a8e5f0f1af946eacfa1835f8 upstream.
 
-When converting trailing spaces and periods in paths, do so
-for every component of the path, not just the last component.
-If the conversion is not done for every path component, then
-subsequent operations in directories with trailing spaces or
-periods (e.g. create(), mkdir()) will fail with ENOENT. This
-is because on the server, the directory will have a special
-symbol in its name, and the client needs to provide the same.
+In order to reduce the chance for the system becoming unresponsive due
+to event storms triggered by a misbehaving pvcallsfront use the lateeoi
+irq binding for pvcallsback and unmask the event channel only after
+handling all write requests, which are the ones coming in via an irq.
 
-Signed-off-by: Boris Protopopov <pboris@amazon.com>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+This requires modifying the logic a little bit to not require an event
+for each write request, but to keep the ioworker running until no
+further data is found on the ring page to be processed.
+
+This is part of XSA-332.
+
+Cc: stable@vger.kernel.org
+Reported-by: Julien Grall <julien@xen.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Reviewed-by: Wei Liu <wl@xen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/cifs/cifs_unicode.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/xen/pvcalls-back.c |   76 +++++++++++++++++++++++++++------------------
+ 1 file changed, 46 insertions(+), 30 deletions(-)
 
---- a/fs/cifs/cifs_unicode.c
-+++ b/fs/cifs/cifs_unicode.c
-@@ -493,7 +493,13 @@ cifsConvertToUTF16(__le16 *target, const
- 		else if (map_chars == SFM_MAP_UNI_RSVD) {
- 			bool end_of_string;
+--- a/drivers/xen/pvcalls-back.c
++++ b/drivers/xen/pvcalls-back.c
+@@ -75,6 +75,7 @@ struct sock_mapping {
+ 	atomic_t write;
+ 	atomic_t io;
+ 	atomic_t release;
++	atomic_t eoi;
+ 	void (*saved_data_ready)(struct sock *sk);
+ 	struct pvcalls_ioworker ioworker;
+ };
+@@ -96,7 +97,7 @@ static int pvcalls_back_release_active(s
+ 				       struct pvcalls_fedata *fedata,
+ 				       struct sock_mapping *map);
  
--			if (i == srclen - 1)
-+			/**
-+			 * Remap spaces and periods found at the end of every
-+			 * component of the path. The special cases of '.' and
-+			 * '..' do not need to be dealt with explicitly because
-+			 * they are addressed in namei.c:link_path_walk().
-+			 **/
-+			if ((i == srclen - 1) || (source[i+1] == '\\'))
- 				end_of_string = true;
- 			else
- 				end_of_string = false;
+-static void pvcalls_conn_back_read(void *opaque)
++static bool pvcalls_conn_back_read(void *opaque)
+ {
+ 	struct sock_mapping *map = (struct sock_mapping *)opaque;
+ 	struct msghdr msg;
+@@ -116,17 +117,17 @@ static void pvcalls_conn_back_read(void
+ 	virt_mb();
+ 
+ 	if (error)
+-		return;
++		return false;
+ 
+ 	size = pvcalls_queued(prod, cons, array_size);
+ 	if (size >= array_size)
+-		return;
++		return false;
+ 	spin_lock_irqsave(&map->sock->sk->sk_receive_queue.lock, flags);
+ 	if (skb_queue_empty(&map->sock->sk->sk_receive_queue)) {
+ 		atomic_set(&map->read, 0);
+ 		spin_unlock_irqrestore(&map->sock->sk->sk_receive_queue.lock,
+ 				flags);
+-		return;
++		return true;
+ 	}
+ 	spin_unlock_irqrestore(&map->sock->sk->sk_receive_queue.lock, flags);
+ 	wanted = array_size - size;
+@@ -154,7 +155,7 @@ static void pvcalls_conn_back_read(void
+ 	ret = inet_recvmsg(map->sock, &msg, wanted, MSG_DONTWAIT);
+ 	WARN_ON(ret > wanted);
+ 	if (ret == -EAGAIN) /* shouldn't happen */
+-		return;
++		return true;
+ 	if (!ret)
+ 		ret = -ENOTCONN;
+ 	spin_lock_irqsave(&map->sock->sk->sk_receive_queue.lock, flags);
+@@ -173,10 +174,10 @@ static void pvcalls_conn_back_read(void
+ 	virt_wmb();
+ 	notify_remote_via_irq(map->irq);
+ 
+-	return;
++	return true;
+ }
+ 
+-static void pvcalls_conn_back_write(struct sock_mapping *map)
++static bool pvcalls_conn_back_write(struct sock_mapping *map)
+ {
+ 	struct pvcalls_data_intf *intf = map->ring;
+ 	struct pvcalls_data *data = &map->data;
+@@ -193,7 +194,7 @@ static void pvcalls_conn_back_write(stru
+ 	array_size = XEN_FLEX_RING_SIZE(map->ring_order);
+ 	size = pvcalls_queued(prod, cons, array_size);
+ 	if (size == 0)
+-		return;
++		return false;
+ 
+ 	memset(&msg, 0, sizeof(msg));
+ 	msg.msg_flags |= MSG_DONTWAIT;
+@@ -215,12 +216,11 @@ static void pvcalls_conn_back_write(stru
+ 
+ 	atomic_set(&map->write, 0);
+ 	ret = inet_sendmsg(map->sock, &msg, size);
+-	if (ret == -EAGAIN || (ret >= 0 && ret < size)) {
++	if (ret == -EAGAIN) {
+ 		atomic_inc(&map->write);
+ 		atomic_inc(&map->io);
++		return true;
+ 	}
+-	if (ret == -EAGAIN)
+-		return;
+ 
+ 	/* write the data, then update the indexes */
+ 	virt_wmb();
+@@ -233,9 +233,13 @@ static void pvcalls_conn_back_write(stru
+ 	}
+ 	/* update the indexes, then notify the other end */
+ 	virt_wmb();
+-	if (prod != cons + ret)
++	if (prod != cons + ret) {
+ 		atomic_inc(&map->write);
++		atomic_inc(&map->io);
++	}
+ 	notify_remote_via_irq(map->irq);
++
++	return true;
+ }
+ 
+ static void pvcalls_back_ioworker(struct work_struct *work)
+@@ -244,6 +248,7 @@ static void pvcalls_back_ioworker(struct
+ 		struct pvcalls_ioworker, register_work);
+ 	struct sock_mapping *map = container_of(ioworker, struct sock_mapping,
+ 		ioworker);
++	unsigned int eoi_flags = XEN_EOI_FLAG_SPURIOUS;
+ 
+ 	while (atomic_read(&map->io) > 0) {
+ 		if (atomic_read(&map->release) > 0) {
+@@ -251,10 +256,18 @@ static void pvcalls_back_ioworker(struct
+ 			return;
+ 		}
+ 
+-		if (atomic_read(&map->read) > 0)
+-			pvcalls_conn_back_read(map);
+-		if (atomic_read(&map->write) > 0)
+-			pvcalls_conn_back_write(map);
++		if (atomic_read(&map->read) > 0 &&
++		    pvcalls_conn_back_read(map))
++			eoi_flags = 0;
++		if (atomic_read(&map->write) > 0 &&
++		    pvcalls_conn_back_write(map))
++			eoi_flags = 0;
++
++		if (atomic_read(&map->eoi) > 0 && !atomic_read(&map->write)) {
++			atomic_set(&map->eoi, 0);
++			xen_irq_lateeoi(map->irq, eoi_flags);
++			eoi_flags = XEN_EOI_FLAG_SPURIOUS;
++		}
+ 
+ 		atomic_dec(&map->io);
+ 	}
+@@ -351,12 +364,9 @@ static struct sock_mapping *pvcalls_new_
+ 		goto out;
+ 	map->bytes = page;
+ 
+-	ret = bind_interdomain_evtchn_to_irqhandler(fedata->dev->otherend_id,
+-						    evtchn,
+-						    pvcalls_back_conn_event,
+-						    0,
+-						    "pvcalls-backend",
+-						    map);
++	ret = bind_interdomain_evtchn_to_irqhandler_lateeoi(
++			fedata->dev->otherend_id, evtchn,
++			pvcalls_back_conn_event, 0, "pvcalls-backend", map);
+ 	if (ret < 0)
+ 		goto out;
+ 	map->irq = ret;
+@@ -890,15 +900,18 @@ static irqreturn_t pvcalls_back_event(in
+ {
+ 	struct xenbus_device *dev = dev_id;
+ 	struct pvcalls_fedata *fedata = NULL;
++	unsigned int eoi_flags = XEN_EOI_FLAG_SPURIOUS;
+ 
+-	if (dev == NULL)
+-		return IRQ_HANDLED;
++	if (dev) {
++		fedata = dev_get_drvdata(&dev->dev);
++		if (fedata) {
++			pvcalls_back_work(fedata);
++			eoi_flags = 0;
++		}
++	}
+ 
+-	fedata = dev_get_drvdata(&dev->dev);
+-	if (fedata == NULL)
+-		return IRQ_HANDLED;
++	xen_irq_lateeoi(irq, eoi_flags);
+ 
+-	pvcalls_back_work(fedata);
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -908,12 +921,15 @@ static irqreturn_t pvcalls_back_conn_eve
+ 	struct pvcalls_ioworker *iow;
+ 
+ 	if (map == NULL || map->sock == NULL || map->sock->sk == NULL ||
+-		map->sock->sk->sk_user_data != map)
++		map->sock->sk->sk_user_data != map) {
++		xen_irq_lateeoi(irq, 0);
+ 		return IRQ_HANDLED;
++	}
+ 
+ 	iow = &map->ioworker;
+ 
+ 	atomic_inc(&map->write);
++	atomic_inc(&map->eoi);
+ 	atomic_inc(&map->io);
+ 	queue_work(iow->wq, &iow->register_work);
+ 
+@@ -948,7 +964,7 @@ static int backend_connect(struct xenbus
+ 		goto error;
+ 	}
+ 
+-	err = bind_interdomain_evtchn_to_irq(dev->otherend_id, evtchn);
++	err = bind_interdomain_evtchn_to_irq_lateeoi(dev->otherend_id, evtchn);
+ 	if (err < 0)
+ 		goto error;
+ 	fedata->irq = err;
 
 
