@@ -2,114 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBA62B69A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5BB2B69AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbgKQQPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:15:36 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7429 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727012AbgKQQPe (ORCPT
+        id S1727590AbgKQQPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727210AbgKQQPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:15:34 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb3f72a0000>; Tue, 17 Nov 2020 08:15:38 -0800
-Received: from [10.2.53.74] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
- 2020 16:15:32 +0000
-Subject: Re: [PATCH v2 3/6] dt-bindings: ata: tegra: Convert binding
- documentation to YAML
-To:     Rob Herring <robh@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-ide@vger.kernel.org>, <thierry.reding@gmail.com>,
-        <devicetree@vger.kernel.org>, <jonathanh@nvidia.com>,
-        <robh+dt@kernel.org>
-References: <1605296218-2510-1-git-send-email-skomatineni@nvidia.com>
- <1605296218-2510-4-git-send-email-skomatineni@nvidia.com>
- <20201116150022.GA1642318@bogus>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <4b1d90b7-63e7-8b32-16f8-a1020827f207@nvidia.com>
-Date:   Tue, 17 Nov 2020 08:15:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 17 Nov 2020 11:15:37 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09840C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:15:37 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id m9so21694039iox.10
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:15:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Xs5k6YmbTpMovlIFJB8mdshUmOv20DI0EOKiJyCm2p8=;
+        b=RqPHXFKC0r07EUj3VDcH44zvE4ccrWVVfCttCRK9UoI2TgwDNQBdZdboesMHvSaobF
+         j3xKWyla3OTvIL3oWpC/u07BBWaqSRKc1aKdihR5KaniKEhFtrFRTsxIVDeVza93G12C
+         Nc4ZAWQPtwO1+lCH+Tu9yc+kZnCSKCadNtqV0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Xs5k6YmbTpMovlIFJB8mdshUmOv20DI0EOKiJyCm2p8=;
+        b=l0q7am7PVvEb5tjnA5tUs0Ga8IZAPwxZwGWz4bAh1cHF+Yhj6OWUXB04OasCgOtN9L
+         7GFMJTm/+iJAfPuVgEx5i/0gG+EIt2Wq5HAEo88Z172HBg8UK2SINiSRLzcqtVArLZms
+         3i5CydC7IxaEbeka+Pr0ccStfboGNX7BO5GCANCMolHRoOekKbRVJ9fhLPEZWOOJP75R
+         9OvHzvXhPiOmGZenn8Tq/vkU/6h3TMz8o9Up0aNwGRi1PbUixhbvBQYqAD0cuvjgdxj0
+         OggGjUN+r+GQGudMIxTKWcpyLhG3aP+iB4T/rgzD44Uy6peE5GRC+a8ulZGWWo7s2/Zj
+         YKGg==
+X-Gm-Message-State: AOAM5309XI8Jdk8L5BE37FhL1r/lIELI/S/P5g0/ztBAJeNZnjPyJnNA
+        wAGFSwGgVJlc+XYM5JxpNcrXaMdD20fM1A==
+X-Google-Smtp-Source: ABdhPJzPxtjW4UEbWguV0tGH3zB08KjlVyyfqkpm6Q82roW+c92WTHp3RBzgnBHcoeKGOPtNlA9tXg==
+X-Received: by 2002:a6b:fb07:: with SMTP id h7mr12048193iog.163.1605629736300;
+        Tue, 17 Nov 2020 08:15:36 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y3sm10847573ioq.18.2020.11.17.08.15.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 08:15:35 -0800 (PST)
+Subject: Re: [PATCH v2 01/13] seqnum_ops: Introduce Sequence Number Ops
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org
+References: <cover.1605287778.git.skhan@linuxfoundation.org>
+ <26cbcc431be5e3ab7d8e0e881d522605a27b1312.1605287778.git.skhan@linuxfoundation.org>
+ <20201116145309.GF3121378@hirez.programming.kicks-ass.net>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <105a8806-7a44-1b1e-f77c-4471cc9e1f17@linuxfoundation.org>
+Date:   Tue, 17 Nov 2020 09:15:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201116150022.GA1642318@bogus>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201116145309.GF3121378@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605629738; bh=18wsPT8+1d4fVxmKRiuoV3ixoFKxrPxACtJejsOp+Cs=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=cdn4ijPz1qfOZvWGWdxjHT625Z1ufEtVZ9AB32TR8/QeyhoszmT/8P6Iyf9hfSBE4
-         aLJFxnC2TKZio3rNBSN49G00embWxfZl6+3nAu0hm2gAiA894An0BYRx+BiivWJOQR
-         hNqtCcB2DDnuezHzLKw2QDVb+2zRVctAqVI9nQ4cWhU1SX/0Ko+8+Fh/EFHrim1wDw
-         Q2nOr1nu5eBhMRFWs4F3RnfmG+UKOFAm/cMktiRPKX/Z81+DMt5VhH9SeAsu2OFkpf
-         eRSKvo521m8Zjdkwii6o3LdQmajp8f5HDs2ag6HIXn7mgga96697oM9BsFd1NM10JV
-         B0djcb3m7Vx+w==
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/16/20 7:53 AM, Peter Zijlstra wrote:
+> On Fri, Nov 13, 2020 at 10:46:03AM -0700, Shuah Khan wrote:
+> 
+>> +Increment interface
+>> +-------------------
+>> +
+>> +Increments sequence number and returns the new value. ::
+>> +
+>> +        seqnum32_inc_return() --> (u32) atomic_inc_return(seqnum)
+>> +        seqnum64_inc_return() --> (u64) atomic64_inc_return(seqnum)
+> 
+> Did you think about the ordering?
+> 
 
-On 11/16/20 7:00 AM, Rob Herring wrote:
-> On Fri, 13 Nov 2020 11:36:55 -0800, Sowjanya Komatineni wrote:
->> This patch converts text based dt-binding document to YAML based
->> dt-binding document.
->>
->> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->> ---
->>   .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 137 +++++++++++++++++++++
->>   .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 -------
->>   2 files changed, 137 insertions(+), 44 deletions(-)
->>   create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
->>   delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
->>
->
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> Error: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dts:27.31-32 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1364: dt_binding_check] Error 2
->
->
-> See https://patchwork.ozlabs.org/patch/1400065
->
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
+Looking at atomic_t.txt _inc_return() can be fully ordered without
+loosing or making the intermediate state visible. This is good for
+this sequence number use-case. Is there something I am overlooking?
 
-Hi Rob,
+>> +Fetch interface
+>> +---------------
+>> +
+>> +Fetched and returns current sequence number value. ::
+>> +
+>> +        seqnum32_fetch() --> (u32) atomic_add_return(0, seqnum)
+>> +        seqnum64_fetch() --> (u64) atomic64_add_return(0, seqnum)
+> 
+> That's horrible. Please explain how that is not broken garbage.
+> 
+> Per the fact that it is atomic, nothing prevents the counter being
+> incremented concurrently. There is no such thing as a 'current' sequence
+> number.
+> 
 
-make dt_binding_check shows other yaml warmings and didn't go thru 
-tegra-ahci.yaml even with specifying DT_SHHEMA_FILES
+Correct. Some usages of this _fecth() in this patch series are for
+printing sequence numbers in debug message and others are stats.
 
-But, When I do dtbs_check, I see
-Documentation/devicetree/bindings/processed-schema.json generated and
-also it passes for tegra-ahci.yaml
+I will review the patches in this series and drop the ones that use
+read/fetch - the reason being sequence numbers are strictly up counters
+and don't need read/fetch.
+
+thanks,
+-- Shuah
 
 
-In v1 feedback discussion, you mentioned it should be good if dtbs_check 
-passes.
 
-Regards,
 
-Sowjanya
 
->
