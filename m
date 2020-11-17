@@ -2,141 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83B82B719A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709FB2B7198
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729186AbgKQWbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:31:48 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18356 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728726AbgKQWbr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:31:47 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHM38vf190903;
-        Tue, 17 Nov 2020 17:31:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=7MrrKV5Y2QJgd8GDuAPq+YmtMal0O5LLBFJHp8Cfj3M=;
- b=eqX9VAuQsxKFBrQe54iXwmzlG1I14skqNrnbKmxC+KrLwXjtOtheXEVo3nYIlg8RqwIU
- RKaSEn+pxIOHL+fuS6LrsGWUrKKq139taOitPXxbHl7gsbkRfe3kXdYqZZjIWlNI8Wvs
- Q03EUEV/Sp6fU51dj+lWjP5wNwK1GBeKks/wHTaciuAmx+2UZoOogs6q8k0FMMPMi+j0
- HVYwdH/L1N7txcq7dzpYLhTZxMy34mmCIpyiS83IUQvdwPcspJtyfFayooe8SiVPaXht
- vxvcs4nCy1ePD978sPJvaewo/DirSpi0bk54/Apm3dsuvIZTTqYkGBOB5oNa1ZAUVNqP YQ== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34vcs3jyg5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 17:31:43 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AHMS3m6005430;
-        Tue, 17 Nov 2020 22:31:41 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03wdc.us.ibm.com with ESMTP id 34t6v91ube-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 22:31:41 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AHMVVFR41025976
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 22:31:31 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F3F351367BD;
-        Tue, 17 Nov 2020 22:14:10 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7C6481367BB;
-        Tue, 17 Nov 2020 22:14:10 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.40.231])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Nov 2020 22:14:10 +0000 (GMT)
-Subject: Re: [PATCH 4/6] ibmvfc: add FC payload retrieval routines for
- versioned vfcFrames
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201112010442.102589-1-tyreld@linux.ibm.com>
- <20201112010442.102589-4-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <9e38f449-d2e6-6408-4fef-cfb5351393cc@linux.vnet.ibm.com>
-Date:   Tue, 17 Nov 2020 16:14:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1728963AbgKQWaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:30:16 -0500
+Received: from mga03.intel.com ([134.134.136.65]:28550 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728044AbgKQWaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:30:15 -0500
+IronPort-SDR: 3a0cFuXdo+sc2YNW3y2XF7A20ZitU9JxLRI8b1Oq/4L+5eYs5LTSuLmYukcNz6UZeOJYw7LGaI
+ NPzeDqUjKOog==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="171122266"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="171122266"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 14:30:14 -0800
+IronPort-SDR: C9yolD4gKeJ2G5zpjKFCqjYNa7Lrq0O4qpCrC4CDGP8+zTmBHsAXa7INbkSBU9TI7JAo4qj0K4
+ bP8cxwR3ZmZg==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="430607336"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.24.101]) ([10.212.24.101])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 14:30:13 -0800
+Subject: Re: [PATCH 07/24] x86/resctrl: Label the resources with their
+ configuration type
+To:     James Morse <james.morse@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        shameerali.kolothum.thodi@huawei.com,
+        Jamie Iles <jamie@nuviainc.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>
+References: <20201030161120.227225-1-james.morse@arm.com>
+ <20201030161120.227225-8-james.morse@arm.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <2de84538-9741-c902-9be0-5b279bbe162f@intel.com>
+Date:   Tue, 17 Nov 2020 14:30:12 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <20201112010442.102589-4-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201030161120.227225-8-james.morse@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_09:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- spamscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015 phishscore=0
- mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170162
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/20 7:04 PM, Tyrel Datwyler wrote:
-> The FC iu and response payloads are located at different offsets
-> depending on the ibmvfc_cmd version. This is a result of the version 2
-> vfcFrame definition adding an extra 64bytes of reserved space to the
-> structure prior to the payloads.
+Hi James,
+
+On 10/30/2020 9:11 AM, James Morse wrote:
+> Before the name for the schema can be generated, the type of the
+> configuration being applied to the resource needs to be known. Label
+> all the entries in rdt_resources_all[], and copy that value in to struct
+
+s/in to/into/ or s/in to/to/ ?
+
+> resctrl_schema.
 > 
-> Add helper routines to determine the current vfcFrame version and
-> returning pointers to the proper iu or response structures within that
-> ibmvfc_cmd.
+
+This commit message does not explain why it is needed to copy this value.
+
+> Subsequent patches will generate the schema names in what will become
+> the fs code. Eventually the fs code will generate pairs of CODE/DATA if
+> the platform supports CDP for this resource.
+
+Explaining how the copy is a step towards accomplishing this goal would 
+be very helpful.
+
 > 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> Signed-off-by: James Morse <james.morse@arm.com>
 > ---
->  drivers/scsi/ibmvscsi/ibmvfc.c | 76 ++++++++++++++++++++++++----------
->  1 file changed, 53 insertions(+), 23 deletions(-)
+>   arch/x86/kernel/cpu/resctrl/core.c     | 7 +++++++
+>   arch/x86/kernel/cpu/resctrl/internal.h | 1 +
+>   arch/x86/kernel/cpu/resctrl/rdtgroup.c | 1 +
+>   include/linux/resctrl.h                | 8 ++++++++
+>   4 files changed, 17 insertions(+)
 > 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index aa3445bec42c..5e666f7c9266 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -138,6 +138,22 @@ static void ibmvfc_tgt_move_login(struct ibmvfc_target *);
->  
->  static const char *unknown_error = "unknown error";
->  
-> +static struct ibmvfc_fcp_cmd_iu *ibmvfc_get_fcp_iu(struct ibmvfc_host *vhost, struct ibmvfc_cmd *vfc_cmd)
-> +{
-> +	if (be64_to_cpu(vhost->login_buf->resp.capabilities) & IBMVFC_HANDLE_VF_WWPN)
 
-Suggest adding a flag to the vhost structure that you setup after login in order to
-simplify this check and avoid chasing multiple pointers along with a byte swap.
 
-Maybe something like:
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index 682e84aebd14..6c87a81946b1 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -367,6 +367,7 @@ struct rdt_parse_data {
+>    * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
+>    */
+>   struct rdt_hw_resource {
+> +	enum resctrl_conf_type	conf_type;
+>   	struct rdt_resource     resctrl;
+>   
 
-vhost->is_v2
+Missing an accompanying kernel-doc entry?
 
-> +		return &vfc_cmd->v2.iu;
-> +	else
-> +		return &vfc_cmd->v1.iu;
-> +}
+>   	int			num_closid;
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 1bd785b1920c..628e5eb4d7a9 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -2141,6 +2141,7 @@ static int create_schemata_list(void)
+>   
+>   		s->res = r;
+>   		s->num_closid = resctrl_arch_get_num_closid(r);
+
+Above seems to be last user of this helper remaining ... why is helper 
+needed instead of something similar to below?
+
+> +		s->conf_type = resctrl_to_arch_res(r)->conf_type;
+>   
+>   		INIT_LIST_HEAD(&s->list);
+>   		list_add(&s->list, &resctrl_all_schema);
+> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+> index b32152968bca..20d8b6dd4af4 100644
+> --- a/include/linux/resctrl.h
+> +++ b/include/linux/resctrl.h
+> @@ -15,6 +15,12 @@ int proc_resctrl_show(struct seq_file *m,
+>   
+>   #endif
+>   
+> +enum resctrl_conf_type {
+> +	CDP_BOTH,
+> +	CDP_CODE,
+> +	CDP_DATA,
+> +};
 > +
-> +static struct ibmvfc_fcp_rsp *ibmvfc_get_fcp_rsp(struct ibmvfc_host *vhost, struct ibmvfc_cmd *vfc_cmd)
-> +{
-> +	if (be64_to_cpu(vhost->login_buf->resp.capabilities) & IBMVFC_HANDLE_VF_WWPN)
+>   /**
+>    * struct rdt_domain - group of cpus sharing an RDT resource
+>    * @list:		all instances of this resource
+> @@ -165,11 +171,13 @@ struct rdt_resource {
+>   
+>   /**
+>    * @list:	Member of resctrl's schema list
+> + * @cdp_type:	Whether this entry is for code/data/both
 
-Same here
+Typo? This is fixed in the next patch so that hunk could be merged here.
 
-> +		return &vfc_cmd->v2.rsp;
-> +	else
-> +		return &vfc_cmd->v1.rsp;
-> +}
-> +
->  #ifdef CONFIG_SCSI_IBMVFC_TRACE
->  /**
->   * ibmvfc_trc_start - Log a start trace entry
+>    * @res:	The rdt_resource for this entry
+>    * @num_closid	Number of CLOSIDs available for this resource
+>    */
+>   struct resctrl_schema {
+>   	struct list_head		list;
+> +	enum resctrl_conf_type		conf_type;
+>   	struct rdt_resource		*res;
+>   	u32				num_closid;
+>   };
+> 
 
-
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+Reinette
