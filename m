@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BAD2B668A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D86892B6685
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732424AbgKQOEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:04:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39706 "EHLO mail.kernel.org"
+        id S1729168AbgKQOEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:04:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729468AbgKQNKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:10:25 -0500
+        id S1729488AbgKQNKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:10:36 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EC852225B;
-        Tue, 17 Nov 2020 13:10:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12B56221EB;
+        Tue, 17 Nov 2020 13:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618624;
-        bh=2wvs64zcWjOehOw6+ulkbhTAeef1miK9PtQWMhCo43Y=;
+        s=default; t=1605618635;
+        bh=sDle4BanFvLiTyXPkW94/wH0luaWEP4b4rv4Z2/qip0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DFMSo9yQBIt8++lQElGINIA7gYxa6t6KujRz4TJLSR9o0iVcZ+gnpbiCzZrGleyfi
-         bGHisS2jzLZBdtCe7lF0qPU2yoBzBV09pIKxsPG1mFG+9xLl9sjaNFudebi7RH3wsj
-         FqA8Mh06F5MY06E9p4t60XrsBz2pD5GDpnzpxnIs=
+        b=qFQGG2HqC3TsGv4QW6DICIAZtMdUcUIe9M/qQFmYzW5cDKKxEI7zcYEe1ZG88qR0j
+         r2z+zreJ3sgVsx1kll6ofbg/kzBNG49Li6nnSlQPp4Nnk5SNp6NJOpZ1pf0hpDxXg2
+         I8pZjzkKnDdKtglJCBr0VFN1Xv6RvmNsP4dShY1A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        stable@vger.kernel.org, Shijie Luo <luoshijie1@huawei.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Feilong Lin <linfeilong@huawei.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 03/78] gfs2: Wake up when sd_glock_disposal becomes zero
-Date:   Tue, 17 Nov 2020 14:04:29 +0100
-Message-Id: <20201117122109.292186369@linuxfoundation.org>
+Subject: [PATCH 4.9 04/78] mm: mempolicy: fix potential pte_unmap_unlock pte error
+Date:   Tue, 17 Nov 2020 14:04:30 +0100
+Message-Id: <20201117122109.334051504@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
 References: <20201117122109.116890262@linuxfoundation.org>
@@ -43,40 +48,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Shijie Luo <luoshijie1@huawei.com>
 
-[ Upstream commit da7d554f7c62d0c17c1ac3cc2586473c2d99f0bd ]
+[ Upstream commit 3f08842098e842c51e3b97d0dcdebf810b32558e ]
 
-Commit fc0e38dae645 ("GFS2: Fix glock deallocation race") fixed a
-sd_glock_disposal accounting bug by adding a missing atomic_dec
-statement, but it failed to wake up sd_glock_wait when that decrement
-causes sd_glock_disposal to reach zero.  As a consequence,
-gfs2_gl_hash_clear can now run into a 10-minute timeout instead of
-being woken up.  Add the missing wakeup.
+When flags in queue_pages_pte_range don't have MPOL_MF_MOVE or
+MPOL_MF_MOVE_ALL bits, code breaks and passing origin pte - 1 to
+pte_unmap_unlock seems like not a good idea.
 
-Fixes: fc0e38dae645 ("GFS2: Fix glock deallocation race")
-Cc: stable@vger.kernel.org # v2.6.39+
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+queue_pages_pte_range can run in MPOL_MF_MOVE_ALL mode which doesn't
+migrate misplaced pages but returns with EIO when encountering such a
+page.  Since commit a7f40cfe3b7a ("mm: mempolicy: make mbind() return
+-EIO when MPOL_MF_STRICT is specified") and early break on the first pte
+in the range results in pte_unmap_unlock on an underflow pte.  This can
+lead to lockups later on when somebody tries to lock the pte resp.
+page_table_lock again..
+
+Fixes: a7f40cfe3b7a ("mm: mempolicy: make mbind() return -EIO when MPOL_MF_STRICT is specified")
+Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Feilong Lin <linfeilong@huawei.com>
+Cc: Shijie Luo <luoshijie1@huawei.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201019074853.50856-1-luoshijie1@huawei.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/glock.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/mempolicy.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index efd44d5645d83..f19e49a5d032b 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -758,7 +758,8 @@ again:
- 	}
- 	kfree(gl->gl_lksb.sb_lvbptr);
- 	kmem_cache_free(cachep, gl);
--	atomic_dec(&sdp->sd_glock_disposal);
-+	if (atomic_dec_and_test(&sdp->sd_glock_disposal))
-+		wake_up(&sdp->sd_glock_wait);
- 	*glp = tmp;
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index a2be65bf5d8cc..2f443767fd1b4 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -487,7 +487,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
+ 	struct queue_pages *qp = walk->private;
+ 	unsigned long flags = qp->flags;
+ 	int nid, ret;
+-	pte_t *pte;
++	pte_t *pte, *mapped_pte;
+ 	spinlock_t *ptl;
  
- 	return ret;
+ 	if (pmd_trans_huge(*pmd)) {
+@@ -515,7 +515,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
+ 	if (pmd_trans_unstable(pmd))
+ 		return 0;
+ retry:
+-	pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
++	mapped_pte = pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
+ 	for (; addr != end; pte++, addr += PAGE_SIZE) {
+ 		if (!pte_present(*pte))
+ 			continue;
+@@ -554,7 +554,7 @@ retry:
+ 		} else
+ 			break;
+ 	}
+-	pte_unmap_unlock(pte - 1, ptl);
++	pte_unmap_unlock(mapped_pte, ptl);
+ 	cond_resched();
+ 	return addr != end ? -EIO : 0;
+ }
 -- 
 2.27.0
 
