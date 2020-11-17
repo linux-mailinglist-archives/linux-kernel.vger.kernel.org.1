@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CC02B6319
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 604932B64BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732311AbgKQNex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:34:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45294 "EHLO mail.kernel.org"
+        id S2387658AbgKQNs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:48:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731584AbgKQNep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:34:45 -0500
+        id S1731678AbgKQNev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:34:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CE8C246A5;
-        Tue, 17 Nov 2020 13:34:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 736A22467A;
+        Tue, 17 Nov 2020 13:34:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620086;
-        bh=6IoiOFJUKOcUhztuRrXe9uOyWyzAOJU/nq/G7DDNUvE=;
+        s=default; t=1605620090;
+        bh=7ztnYkMLU7W1/hYN9RH7Mo/BzV5XRX/k8BGYnIAvE5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CZ8b1ODlCHswM3ZpSdSe2geZYr/Ge8rI+6m8vhutbPIh6LLgFegLrEGaZGfdcj0wA
-         kQlU1sKoSGINa6pVV3MQdQEmK2A32nQj5dfgdVL4aKewqDoRMEmflFEkKVy3W1H3El
-         7QDDCaXZwEW/kNEfIK4v/g5VeLOQSxXiSn660XLA=
+        b=lBXgzqVLeh4FpoJRGx1soQeaYrcDea4HQfsvrMk3IQNt6zV8DlHNhz5pEUn+tJGJM
+         w6poV44o0rYEsDDkf950KL3DADMRKK8IF/53QO1LQuWdPdE1XN1xcuFmPNv8janf/h
+         fXZHXssVjTeIPlg386+Ywur0+rndanqNAQsQ5UkU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "B.L. Jones" <brandon.gustav@googlemail.com>,
-        Keith Busch <kbusch@kernel.org>,
+        stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        linux-mm@kvack.org, Vineet Gupta <vgupta@synopsys.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 103/255] Revert "nvme-pci: remove last_sq_tail"
-Date:   Tue, 17 Nov 2020 14:04:03 +0100
-Message-Id: <20201117122143.971355832@linuxfoundation.org>
+Subject: [PATCH 5.9 104/255] ARC: [plat-hsdk] Remap CCMs super early in asm boot trampoline
+Date:   Tue, 17 Nov 2020 14:04:04 +0100
+Message-Id: <20201117122144.020937696@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -44,91 +43,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keith Busch <kbusch@kernel.org>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit 38210800bf66d7302da1bb5b624ad68638da1562 ]
+[ Upstream commit 3b57533b460c8dc22a432684b7e8d22571f34d2e ]
 
-Multiple CPUs may be mapped to the same hctx, allowing mulitple
-submission contexts to attempt commit_rqs(). We need to verify we're
-not writing the same doorbell value multiple times since that's a spec
-violation.
+ARC HSDK platform stopped booting on released v5.10-rc1, getting stuck
+in startup of non master SMP cores.
 
-Revert commit 54b2fcee1db041a83b52b51752dade6090cf952f.
+This was bisected to upstream commit 7fef431be9c9ac25
+"(mm/page_alloc: place pages to tail in __free_pages_core())"
+That commit itself is harmless, it just exposed a subtle assumption in
+our platform code (hence CC'ing linux-mm just as FYI in case some other
+arches / platforms trip on it).
 
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=1878596
-Reported-by: "B.L. Jones" <brandon.gustav@googlemail.com>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+The upstream commit is semantically disruptive as it reverses the order
+of page allocations (actually it can be good test for hardware
+verification to exercise different memory patterns altogether).
+For ARC HSDK platform that meant a remapped memory region (pertaining to
+unused Closely Coupled Memory) started getting used early for dynamice
+allocations, while not effectively remapped on all the cores, triggering
+memory error exception on those cores.
+
+The fix is to move the CCM remapping from early platform code to to early core
+boot code. And while it is undesirable to riddle common boot code with
+platform quirks, there is no other way to do this since the faltering code
+involves setting up stack itself so even function calls are not allowed at
+that point.
+
+If anyone is interested, all the gory details can be found at Link below.
+
+Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/32
+Cc: David Hildenbrand <david@redhat.com>
+Cc: linux-mm@kvack.org
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/pci.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ arch/arc/kernel/head.S        | 17 ++++++++++++++++-
+ arch/arc/plat-hsdk/platform.c | 17 -----------------
+ 2 files changed, 16 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 8984796db0c80..a6af96aaa0eb7 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -198,6 +198,7 @@ struct nvme_queue {
- 	u32 q_depth;
- 	u16 cq_vector;
- 	u16 sq_tail;
-+	u16 last_sq_tail;
- 	u16 cq_head;
- 	u16 qid;
- 	u8 cq_phase;
-@@ -455,11 +456,24 @@ static int nvme_pci_map_queues(struct blk_mq_tag_set *set)
- 	return 0;
- }
- 
--static inline void nvme_write_sq_db(struct nvme_queue *nvmeq)
-+/*
-+ * Write sq tail if we are asked to, or if the next command would wrap.
-+ */
-+static inline void nvme_write_sq_db(struct nvme_queue *nvmeq, bool write_sq)
- {
-+	if (!write_sq) {
-+		u16 next_tail = nvmeq->sq_tail + 1;
+diff --git a/arch/arc/kernel/head.S b/arch/arc/kernel/head.S
+index 17fd1ed700cca..9152782444b55 100644
+--- a/arch/arc/kernel/head.S
++++ b/arch/arc/kernel/head.S
+@@ -67,7 +67,22 @@
+ 	sr	r5, [ARC_REG_LPB_CTRL]
+ 1:
+ #endif /* CONFIG_ARC_LPB_DISABLE */
+-#endif
 +
-+		if (next_tail == nvmeq->q_depth)
-+			next_tail = 0;
-+		if (next_tail != nvmeq->last_sq_tail)
-+			return;
-+	}
++	/* On HSDK, CCMs need to remapped super early */
++#ifdef CONFIG_ARC_SOC_HSDK
++	mov	r6, 0x60000000
++	lr	r5, [ARC_REG_ICCM_BUILD]
++	breq	r5, 0, 1f
++	sr	r6, [ARC_REG_AUX_ICCM]
++1:
++	lr	r5, [ARC_REG_DCCM_BUILD]
++	breq	r5, 0, 2f
++	sr	r6, [ARC_REG_AUX_DCCM]
++2:
++#endif	/* CONFIG_ARC_SOC_HSDK */
 +
- 	if (nvme_dbbuf_update_and_check_event(nvmeq->sq_tail,
- 			nvmeq->dbbuf_sq_db, nvmeq->dbbuf_sq_ei))
- 		writel(nvmeq->sq_tail, nvmeq->q_db);
-+	nvmeq->last_sq_tail = nvmeq->sq_tail;
- }
++#endif	/* CONFIG_ISA_ARCV2 */
++
+ 	; Config DSP_CTRL properly, so kernel may use integer multiply,
+ 	; multiply-accumulate, and divide operations
+ 	DSP_EARLY_INIT
+diff --git a/arch/arc/plat-hsdk/platform.c b/arch/arc/plat-hsdk/platform.c
+index 0b961a2a10b8e..22c9e2c9c0283 100644
+--- a/arch/arc/plat-hsdk/platform.c
++++ b/arch/arc/plat-hsdk/platform.c
+@@ -17,22 +17,6 @@ int arc_hsdk_axi_dmac_coherent __section(.data) = 0;
  
- /**
-@@ -476,8 +490,7 @@ static void nvme_submit_cmd(struct nvme_queue *nvmeq, struct nvme_command *cmd,
- 	       cmd, sizeof(*cmd));
- 	if (++nvmeq->sq_tail == nvmeq->q_depth)
- 		nvmeq->sq_tail = 0;
--	if (write_sq)
--		nvme_write_sq_db(nvmeq);
-+	nvme_write_sq_db(nvmeq, write_sq);
- 	spin_unlock(&nvmeq->sq_lock);
- }
+ #define ARC_CCM_UNUSED_ADDR	0x60000000
  
-@@ -486,7 +499,8 @@ static void nvme_commit_rqs(struct blk_mq_hw_ctx *hctx)
- 	struct nvme_queue *nvmeq = hctx->driver_data;
+-static void __init hsdk_init_per_cpu(unsigned int cpu)
+-{
+-	/*
+-	 * By default ICCM is mapped to 0x7z while this area is used for
+-	 * kernel virtual mappings, so move it to currently unused area.
+-	 */
+-	if (cpuinfo_arc700[cpu].iccm.sz)
+-		write_aux_reg(ARC_REG_AUX_ICCM, ARC_CCM_UNUSED_ADDR);
+-
+-	/*
+-	 * By default DCCM is mapped to 0x8z while this area is used by kernel,
+-	 * so move it to currently unused area.
+-	 */
+-	if (cpuinfo_arc700[cpu].dccm.sz)
+-		write_aux_reg(ARC_REG_AUX_DCCM, ARC_CCM_UNUSED_ADDR);
+-}
  
- 	spin_lock(&nvmeq->sq_lock);
--	nvme_write_sq_db(nvmeq);
-+	if (nvmeq->sq_tail != nvmeq->last_sq_tail)
-+		nvme_write_sq_db(nvmeq, true);
- 	spin_unlock(&nvmeq->sq_lock);
- }
- 
-@@ -1496,6 +1510,7 @@ static void nvme_init_queue(struct nvme_queue *nvmeq, u16 qid)
- 	struct nvme_dev *dev = nvmeq->dev;
- 
- 	nvmeq->sq_tail = 0;
-+	nvmeq->last_sq_tail = 0;
- 	nvmeq->cq_head = 0;
- 	nvmeq->cq_phase = 1;
- 	nvmeq->q_db = &dev->dbs[qid * 2 * dev->db_stride];
+ #define ARC_PERIPHERAL_BASE	0xf0000000
+ #define CREG_BASE		(ARC_PERIPHERAL_BASE + 0x1000)
+@@ -339,5 +323,4 @@ static const char *hsdk_compat[] __initconst = {
+ MACHINE_START(SIMULATION, "hsdk")
+ 	.dt_compat	= hsdk_compat,
+ 	.init_early     = hsdk_init_early,
+-	.init_per_cpu	= hsdk_init_per_cpu,
+ MACHINE_END
 -- 
 2.27.0
 
