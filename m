@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACFE2B60C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3E72B6252
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729866AbgKQNMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:12:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42494 "EHLO mail.kernel.org"
+        id S1731327AbgKQN1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:27:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729831AbgKQNMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:12:23 -0500
+        id S1731711AbgKQN11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:27:27 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78543241A5;
-        Tue, 17 Nov 2020 13:12:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9D1C20781;
+        Tue, 17 Nov 2020 13:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618743;
-        bh=3eBINsAxBUz7D1g8ELnA1CBADrPi9le66HwZhBPZRHM=;
+        s=default; t=1605619647;
+        bh=HTJPBbTXiaezYSYUFt1vEApllh2IIbW2iUeRUSn41C4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z75S9chjrlQXGxIyAobBUihC68pbMi8NJXRXIticnJKARnZOGSClawOr02Gn+Xrn3
-         UcRZ6OArh3PDwEm9wBXMjFStiTm/KJIZbp12IAuDlk2I8V5N6rtIRspn74oNzh/B/v
-         W3KpQkjU1xtDn1cCwFVPNg9OjAWzZwfqzPo67MpU=
+        b=cUD/TB6X6Z3OX2uUFLg6RYvPMLVslOz6EIFl14CDDMgaV/sndxct351YIqJq0Fr2B
+         wMuV1sg8dwvG9BxzqciHoV+YYNjV8mLH6CU5pnG0994cXAIF45Z+ILZLWXScPt5TQk
+         K3HRL0qHqetrv1o0rBx1lrgC+vDlhO2UOxkTqlkA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 42/78] perf: Fix get_recursion_context()
+        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 078/151] i2c: mediatek: move dma reset before i2c reset
 Date:   Tue, 17 Nov 2020 14:05:08 +0100
-Message-Id: <20201117122111.167866630@linuxfoundation.org>
+Message-Id: <20201117122125.216296019@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Qii Wang <qii.wang@mediatek.com>
 
-[ Upstream commit ce0f17fc93f63ee91428af10b7b2ddef38cd19e5 ]
+[ Upstream commit aafced673c06b7c77040c1df42e2e965be5d0376 ]
 
-One should use in_serving_softirq() to detect SoftIRQ context.
+The i2c driver default do dma reset after i2c reset, but sometimes
+i2c reset will trigger dma tx2rx, then apdma write data to dram
+which has been i2c_put_dma_safe_msg_buf(kfree). Move dma reset
+before i2c reset in mtk_i2c_init_hw to fix it.
 
-Fixes: 96f6d4444302 ("perf_counter: avoid recursion")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201030151955.120572175@infradead.org
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/events/internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-mt65xx.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/events/internal.h b/kernel/events/internal.h
-index 486fd78eb8d5e..c8c1c3db5d065 100644
---- a/kernel/events/internal.h
-+++ b/kernel/events/internal.h
-@@ -212,7 +212,7 @@ static inline int get_recursion_context(int *recursion)
- 		rctx = 3;
- 	else if (in_irq())
- 		rctx = 2;
--	else if (in_softirq())
-+	else if (in_serving_softirq())
- 		rctx = 1;
- 	else
- 		rctx = 0;
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 2152ec5f535c1..5a9f0d17f52c8 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -389,6 +389,10 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
+ {
+ 	u16 control_reg;
+ 
++	writel(I2C_DMA_HARD_RST, i2c->pdmabase + OFFSET_RST);
++	udelay(50);
++	writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
++
+ 	mtk_i2c_writew(i2c, I2C_SOFT_RST, OFFSET_SOFTRESET);
+ 
+ 	/* Set ioconfig */
+@@ -419,10 +423,6 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
+ 
+ 	mtk_i2c_writew(i2c, control_reg, OFFSET_CONTROL);
+ 	mtk_i2c_writew(i2c, I2C_DELAY_LEN, OFFSET_DELAY_LEN);
+-
+-	writel(I2C_DMA_HARD_RST, i2c->pdmabase + OFFSET_RST);
+-	udelay(50);
+-	writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
+ }
+ 
+ /*
 -- 
 2.27.0
 
