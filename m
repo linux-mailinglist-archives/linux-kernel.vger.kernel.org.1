@@ -2,157 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527522B5F70
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4694F2B5F7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728317AbgKQMzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:55:12 -0500
-Received: from mail-oo1-f41.google.com ([209.85.161.41]:42336 "EHLO
-        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728015AbgKQMzK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:55:10 -0500
-Received: by mail-oo1-f41.google.com with SMTP id g4so4696962oom.9;
-        Tue, 17 Nov 2020 04:55:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zMMRuYViSm/P06w2h0LMNk8Q4hsk4EKGQOMKopq1p4k=;
-        b=Cp7tlgKHpAH6d4vuIOsyDlOzzK3MqqdK4Y5ILDk7JMdBVtkszA+7UpoqyEYmTpOwrT
-         aG8RzcO58rEs27M+uKenJun464PniQkwJopXRKX06YtuNIV9IBXC8HdDq4dOFxPOUSCZ
-         jKVlHW0W4yJVY4X0ng1vcBPn9rxGpqhSXLP3yIz6vvfvSymK+qp9+DhTBjuoFBfFgRNy
-         p3qH64+tuiOU6SD/2EiLbGRWipBBHCUaH3iWjou2q11Zi6OzElcMo9KCYdvNrlAiiekD
-         O1TbNAjf53UssdduOr7NvG4RrVSPFUeosmxOcNGZUdWqxika6koHwUSo+CBJFWlgf0+x
-         hSKQ==
-X-Gm-Message-State: AOAM5306TAZRcSJEdtl64u7D7aO3BjMwKWJCd0JEa4J9Ij4xgl6js6kw
-        Hc8GA3RrYAdHOB4KW/9ox5rcHlK7znj3YPJJSqI=
-X-Google-Smtp-Source: ABdhPJxUvS202AqJmumZU34scvmzfxxdpHkn/iNWaHi1XHQXOpyNx1s/T3+FHnCvkT5MiswarUhgHyAGeuxmChyNkPU=
-X-Received: by 2002:a4a:c018:: with SMTP id v24mr2872558oop.2.1605617708192;
- Tue, 17 Nov 2020 04:55:08 -0800 (PST)
+        id S1728363AbgKQM45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:56:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726809AbgKQM44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:56:56 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 314002151B;
+        Tue, 17 Nov 2020 12:56:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605617815;
+        bh=Uq7Mm0fH0GeoEf0FK7NZg4YvfEhyM/7m8LEGhI5rbic=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ubcbgztce59LlW2+OTAwTLVCT6WwQN1zhxdUDaxBm1NWgwi/l1cAwu8LGt1oi5Ulq
+         Xjrn7pL5tEpTBoRMUnPgPjHnOQR54XQ9Av7Rk/k2qaR99WmRPGNORJ9B0GyVhPCf18
+         yjEG1eJwjDFrh7EHeSSBjg6etnO19YZhJGsD/QHs=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>,
+        Ladislav Michl <ladis@linux-mips.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Tero Kristo <t-kristo@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-omap@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 01/21] Revert "Revert "gpio: omap: Fix lost edge wake-up interrupts""
+Date:   Tue, 17 Nov 2020 07:56:32 -0500
+Message-Id: <20201117125652.599614-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201116192320.GA1290192@bjorn-Precision-5520> <40579a7ed0692d535f002112b18d1bb6e25aad0e.camel@linux.intel.com>
-In-Reply-To: <40579a7ed0692d535f002112b18d1bb6e25aad0e.camel@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 17 Nov 2020 13:54:56 +0100
-Message-ID: <CAJZ5v0h0Y-MD3LQ_q3AO8ioBDh_jwJ9HF_hZn3nYyQud8w0fXg@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Disable PTM during suspend on Intel PCI bridges
-To:     David Box <david.e.box@linux.intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Len Brown <len.brown@intel.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 9:58 PM David E. Box
-<david.e.box@linux.intel.com> wrote:
->
-> On Mon, 2020-11-16 at 13:23 -0600, Bjorn Helgaas wrote:
-> > On Mon, Nov 16, 2020 at 06:53:09PM +0100, Rafael J. Wysocki wrote:
-> > > On Wed, Oct 7, 2020 at 7:10 PM Bjorn Helgaas <helgaas@kernel.org>
-> > > wrote:
-> > > > On Wed, Oct 07, 2020 at 06:53:16PM +0200, Rafael J. Wysocki
-> > > > wrote:
-> > > > > On Wed, Oct 7, 2020 at 6:49 PM David E. Box <
-> > > > > david.e.box@linux.intel.com> wrote:
-> > > > > > On Intel Platform Controller Hubs (PCH) since Cannon Lake,
-> > > > > > the Precision
-> > > > > > Time Measurement (PTM) capability can prevent PCIe root ports
-> > > > > > from power
-> > > > > > gating during suspend-to-idle, causing increased power
-> > > > > > consumption on
-> > > > > > systems that suspend using Low Power S0 Idle [1]. The issue
-> > > > > > is yet to be
-> > > > > > root caused but believed to be coming from a race condition
-> > > > > > in the suspend
-> > > > > > flow as the incidence rate varies for different platforms on
-> > > > > > Linux but the
-> > > > > > issue does not occur at all in other operating systems. For
-> > > > > > now, disable
-> > > > > > the feature on suspend on all Intel root ports and enable
-> > > > > > again on resume.
-> > > > >
-> > > > > IMV it should also be noted that there is no particular reason
-> > > > > why PTM
-> > > > > would need to be enabled while the whole system is
-> > > > > suspended.  At
-> > > > > least it doesn't seem to be particularly useful in that state.
-> > > >
-> > > > Is this a hardware erratum?  If not, and this is working as
-> > > > designed,
-> > > > it sounds like we'd need to apply this quirk to every device that
-> > > > supports PTM.  That's not really practical.
-> > >
-> > > Why not?
-> >
-> > My objection was that the original patch is a quirk that applies only
-> > to Intel devices.
-> >
-> > If this is a generic thing that should be done for *all* devices that
-> > support PTM, that's fine, but it should not be a quirk, and it should
-> > not involve a list of Vendor or Device IDs.
-> >
-> > > It looks like the capability should be saved by pci_save_state()
-> > > (it
-> > > isn't ATM, which appears to be a mistake) and restored by
-> > > pci_restore_state(), so if that is implemented, the saving can be
-> > > combined with the disabling in principle.
-> >
-> > Yup, looks like a mistake.  Maybe David can fix that at the same time
-> > (probably a separate patch, though).  I don't have a way to test it,
-> > but he probably does.
->
-> Yes, I can test save/restore of the PTM capability and submit a patch.
->
-> >
-> > > > The bugzilla says "there is no erratum as this does not affect
-> > > > Windows," but that doesn't answer the question.  What I want to
-> > > > know
-> > > > is whether this is a *hardware* defect and whether it will be
-> > > > fixed in
-> > > > future hardware.
-> > >
-> > > I cannot answer this question, sorry.
-> > >
-> > > ATM we only know that certain SoCs may not enter the deepest idle
-> > > state if PTM is enabled on some PCIe root ports during suspend.
-> > >
-> > > Disabling PTM on those ports while suspending helps and hence the
-> > > patch.
-> > >
-> > > It doesn't appear to qualify as a "hardware defect".
-> > >
-> > > > If it's a "wont-fix" hardware issue, we can just disable PTM
-> > > > completely on Intel hardware and we won't have to worry about it
-> > > > during suspend.
-> > >
-> > > I'm not following the logic here, sorry again.
-> > >
-> > > First of all, there are systems that never suspend, so why would
-> > > they
-> > > be affected by the remedy (whatever it is)?
-> > >
-> > > Second, it is not about the suspend failing entirely.  It's about
-> > > being able to make the system draw less power while suspended.
-> > >
-> > > Generally, if someone said "I can make the system draw less power
-> > > while suspended if I disable PCIe feature X during suspend", would
-> > > you
-> > > disregard that?
-> >
-> > My questions were all prompted by the Intel-specific nature of the
-> > original patch, which suggests an ongoing maintenance burden.  If it
-> > can be done generically, I have no problem with it.
->
-> Okay. I'll add this to the save/restore patch then with the comment
-> that it saves power on some Intel platforms.
+From: Tony Lindgren <tony@atomide.com>
 
-I'd suggest doing two patches, then, one to save/restore the PTM
-capability and the other to add disabling it to the "save" path (with
-a comment as appropriate).
+[ Upstream commit 7ffa08169849be898eed6f3694aab8c425497749 ]
+
+This reverts commit 579ced8fdb00b8e94304a83e3cc419f6f8eab08e.
+
+Turns out I was overly optimistic about cpu_pm blocking idle being a
+solution for handling edge interrupts. While it helps in preventing
+entering idle states that potentially lose context, we can still get
+an edge interrupt triggering while entering idle. So we need to also
+add back the workaround for seeing if there are any pending edge
+interrupts when waking up.
+
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: Keerthy <j-keerthy@ti.com>
+Cc: Ladislav Michl <ladis@linux-mips.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>
+Cc: Tero Kristo <t-kristo@ti.com>
+Link: https://lore.kernel.org/r/20201028060556.56038-1-tony@atomide.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpio/gpio-omap.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
+index 0ea640fb636cf..3b87989e27640 100644
+--- a/drivers/gpio/gpio-omap.c
++++ b/drivers/gpio/gpio-omap.c
+@@ -1114,13 +1114,23 @@ static void omap_gpio_idle(struct gpio_bank *bank, bool may_lose_context)
+ {
+ 	struct device *dev = bank->chip.parent;
+ 	void __iomem *base = bank->base;
+-	u32 nowake;
++	u32 mask, nowake;
+ 
+ 	bank->saved_datain = readl_relaxed(base + bank->regs->datain);
+ 
+ 	if (!bank->enabled_non_wakeup_gpios)
+ 		goto update_gpio_context_count;
+ 
++	/* Check for pending EDGE_FALLING, ignore EDGE_BOTH */
++	mask = bank->enabled_non_wakeup_gpios & bank->context.fallingdetect;
++	mask &= ~bank->context.risingdetect;
++	bank->saved_datain |= mask;
++
++	/* Check for pending EDGE_RISING, ignore EDGE_BOTH */
++	mask = bank->enabled_non_wakeup_gpios & bank->context.risingdetect;
++	mask &= ~bank->context.fallingdetect;
++	bank->saved_datain &= ~mask;
++
+ 	if (!may_lose_context)
+ 		goto update_gpio_context_count;
+ 
+-- 
+2.27.0
+
