@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8AE2B6AC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE55B2B6ACB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgKQQzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:55:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727943AbgKQQzv (ORCPT
+        id S1728210AbgKQQ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:57:40 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:35263 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727070AbgKQQ5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:55:51 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE2DC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:55:51 -0800 (PST)
-Received: from zn.tnic (p200300ec2f1013008aaa2b5438c9ced9.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:1300:8aaa:2b54:38c9:ced9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6913B1EC027D;
-        Tue, 17 Nov 2020 17:55:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1605632146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=HBIh7i4QOSKbMiy/F85oAnmMMn6JecinNCtNPwE55Ys=;
-        b=pM+1B0P14Tao4sR2Dupvt/SEA0WTo+Yq9v74kHKTwZ0XUl/autGuWhaxNqCQ7uTp2I+MGt
-        iu3gGjLNeZAl6KMC/Oubof2x+/k3hr3m9CYsYILsgiub3L8bmvveflFYgssnpVBoRUR5nf
-        ElqDwUr8+Vi80vfzPFPKT3ppClPgd8k=
-Date:   Tue, 17 Nov 2020 17:55:39 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
-        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
-        kuzuno@gmail.com
-Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
-Message-ID: <20201117165539.GG5719@zn.tnic>
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116201711.GE1131@zn.tnic>
- <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
+        Tue, 17 Nov 2020 11:57:39 -0500
+Received: by mail-ot1-f49.google.com with SMTP id n11so20124324ota.2;
+        Tue, 17 Nov 2020 08:57:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7NLRFj8nHCygasEBHceubBbH3HeMeHr99Ml1bGtCW9o=;
+        b=N5aNtxPcylGbM7jh2INd3qvaC2FQvMEQJUNcoC2Isb+oovuuhULsTKJfVzNgjVu1oa
+         //h7p7GWTg9wbRmD8/8aCuycjv5fxjsnGkD2s3j2TyjRVLII3ZN0XKFbW8VHUznWgmT2
+         af1Q/U5SLoPQug9airMTihl8382tk5lfCGm9uiH60lDHgiWHA7AaY251NTHCBpw6K9Ul
+         /KGo3Iqz3i8hYy0VW64EGqmY5MMDYFUdRXllWQiIC/pI40bARewAIqGe5dgoaDljvS1/
+         +D+GNtn8hrpRmcfLy6fVcwVn4BrF65wyUVyOvIlC5zuCCllheJyqhWXl2QTzEOZCsY56
+         BGbg==
+X-Gm-Message-State: AOAM531yvQqzPpk50ipQrIXigzHWbqhnqZX3g2YSSSL2MSxRE+xkts1V
+        p93PizmXCLRHpdeJ5u5ZTD0eERFf26GXHs7cvdo=
+X-Google-Smtp-Source: ABdhPJzociPk59c3aEW92lx5PQkRb0ADhjgmmggbLMdVyRcJQxet3/KWpklyWaGp1kYUDAKDDMgxsfmnnXhX+JFoXo8=
+X-Received: by 2002:a9d:16f:: with SMTP id 102mr3851962otu.206.1605632258611;
+ Tue, 17 Nov 2020 08:57:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
+References: <79940973-b631-90f9-dbc4-9579c6000816@gmail.com> <20201117163817.GA1397220@bjorn-Precision-5520>
+In-Reply-To: <20201117163817.GA1397220@bjorn-Precision-5520>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 17 Nov 2020 17:57:27 +0100
+Message-ID: <CAJZ5v0ipMJ1gCB7okpROG_yAUi5Q8LknqeH+Jpdrjbb4D_vfuQ@mail.gmail.com>
+Subject: Re: Time to re-enable Runtime PM per default for PCI devcies?
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kai Heng Feng <kai.heng.feng@canonical.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 08:56:23AM +0100, Alexandre Chartre wrote:
-> The main goal of ASI is to provide KVM address space isolation to
-> mitigate guest-to-host speculative attacks like L1TF or MDS.
-
-Because the current L1TF and MDS mitigations are lacking or why?
-
-> Current proposal of ASI is plugged into the CR3 switch assembly macro
-> which make the code brittle and complex. (see [1])
+On Tue, Nov 17, 2020 at 5:38 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
 >
-> I am also expected this might help with some other ideas like having
-> syscall (or interrupt handler) which can run without switching the
-> page-table.
+> [+to Rafael, author of the commit you mentioned,
+> +cc Mika, Kai Heng, Lukas, linux-pm, linux-kernel]
+>
+> On Tue, Nov 17, 2020 at 04:56:09PM +0100, Heiner Kallweit wrote:
+> > More than 10 yrs ago Runtime PM was disabled per default by bb910a7040
+> > ("PCI/PM Runtime: Make runtime PM of PCI devices inactive by default").
+> >
+> > Reason given: "avoid breakage on systems where ACPI-based wake-up is
+> > known to fail for some devices"
+> > Unfortunately the commit message doesn't mention any affected  devices
+> > or systems.
 
-I still fail to see why we need all that. I read, "this does this and
-that" but I don't read "the current problem is this" and "this is our
-suggested solution for it".
+Even if it did that, it wouldn't have been a full list almost for sure.
 
-So what is the issue which needs addressing in the current kernel which
-is going to justify adding all that code?
+We had received multiple problem reports related to that, most likely
+because the ACPI PM in BIOSes at that time was tailored for
+system-wide PM transitions only.
 
-> PTI has a measured overhead of roughly 5% for most workloads, but it can
-> be much higher in some cases.
+> > With Runtime PM disabled e.g. the PHY on network devices may remain
+> > powered up even with no cable plugged in, affecting battery lifetime
+> > on mobile devices. Currently we have to rely on the respective distro
+> > or user to enable Runtime PM via sysfs (echo auto > power/control).
+> > Some devices work around this restriction by calling pm_runtime_allow
+> > in their probe routine, even though that's not recommended by
+> > https://www.kernel.org/doc/Documentation/power/pci.txt
+> >
+> > Disabling Runtime PM per default seems to be a big hammer, a quirk
+> > for affected devices / systems may had been better. And we still
+> > have the option to disable Runtime PM for selected devices via sysfs.
+> >
+> > So, to cut a long story short: Wouldn't it be time to remove this
+> > restriction?
+>
+> I don't know the history of this, but maybe Rafael or the others can
+> shed some light on it.
 
-"it can be"? Where? Actual use case?
-
-> The latest ASI RFC (RFC v4) is here [1]. This RFC has ASI plugged
-> directly into the CR3 switch assembly macro. We are working on a new
-> implementation, based on these changes which avoid having to deal with
-> assembly code and makes the implementation more robust.
-
-This still doesn't answer my questions. I read a lot of "could be used
-for" formulations but I still don't know why we need that. So what is
-the problem that the kernel currently has which you're trying to address
-with this?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+The systems that had those problems 10 years ago would still have
+them, but I expect there to be more systems where runtime PM can be
+enabled by default for PCI devices without issues.
