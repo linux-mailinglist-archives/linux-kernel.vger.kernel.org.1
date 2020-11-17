@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3502B6E68
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769272B6E75
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729863AbgKQTU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:20:58 -0500
-Received: from mga04.intel.com ([192.55.52.120]:31805 "EHLO mga04.intel.com"
+        id S1729992AbgKQTVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:21:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729706AbgKQTUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:20:55 -0500
-IronPort-SDR: jiOnxZU5Bg4yYnPW0SiBXCYRtM6WwP7bExAXqp7K812aQZblJ12zo5wfc/j0kGRsW8hm7alvMb
- NZrhhg1DEIMw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="168417278"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="168417278"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 11:20:55 -0800
-IronPort-SDR: fpV+DCJ9E1XMFYJVbpnCZfU3miW/VWwEilq6VP+ZWtS+mCVGvU4KNzU4Hv3lB3VT62YAw7rv5l
- fHVz0kaGF2rw==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="533931780"
-Received: from rojasmor-mobl1.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.255.231.24])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 11:20:54 -0800
-From:   Sean V Kelley <sean.v.kelley@intel.com>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        xerces.zhao@gmail.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: [PATCH v11 16/16] PCI/AER: Add RCEC AER error injection support
-Date:   Tue, 17 Nov 2020 11:19:54 -0800
-Message-Id: <20201117191954.1322844-17-sean.v.kelley@intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117191954.1322844-1-sean.v.kelley@intel.com>
-References: <20201117191954.1322844-1-sean.v.kelley@intel.com>
+        id S1728984AbgKQTUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:20:42 -0500
+Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F364224248;
+        Tue, 17 Nov 2020 19:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605640842;
+        bh=AKihFwRJCZZWXGwXaAxY3JSzSDgAj4J55BVPy5dt1CA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xPSTsPq8T7Tkh3Bu/Ey77epGKfsByhCm66mY6AMeRSlmxAoECCrNrYFMETwwlZlmX
+         5TbDOcs6VdbFfkvz6xvTuPLnf25Ipot9ADO5FqL+lHlAIsYB5X4em/OYW7dydmiWXZ
+         PvNWJ3CjNMRZmjg3ZKzp+HhY9AetZ2ln7PxhQxSA=
+Date:   Tue, 17 Nov 2020 21:20:33 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, sean.j.christopherson@intel.com,
+        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v41 00/24] Intel SGX foundations
+Message-ID: <20201117192033.GC10393@kernel.org>
+References: <20201112220135.165028-1-jarkko@kernel.org>
+ <20201116165544.GC1131@zn.tnic>
+ <eb8100e8-1439-4dd3-ba7b-68e8919ab5b7@intel.com>
+ <20201116172840.GD1131@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116172840.GD1131@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+On Mon, Nov 16, 2020 at 06:28:40PM +0100, Borislav Petkov wrote:
+> On Mon, Nov 16, 2020 at 09:21:16AM -0800, Dave Hansen wrote:
+> > That works when there is something universal across the set, like if
+> > Sean Signed-off-by on each patch and we didn't have any other SoB's.
+> > Sean is also mentioned in at least one of five different tags:
+> 
+> So?
+> 
+> You git-format-patch, build the CC-list and supply it with --cc-cmd or
+> whatever scripting you have and do --suppress-cc=all as the last switch.
+> 
+> > The bounces aren't the end of the world, they're just annoying.
+> 
+> And I have to go edit every patch by hand to remove those comments
+> again. No, bounces happen all the time and we ignore them simply. Can't
+> fix them all.
 
-Root Complex Event Collectors (RCEC) appear as peers to Root Ports and may
-also have the AER capability.
+I'm fine with either way.
 
-Add RCEC support to the AER error injection driver.
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-Link: https://lore.kernel.org/r/20201002184735.1229220-15-seanvk.dev@oregontracks.org
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/pci/pcie/aer_inject.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/pcie/aer_inject.c b/drivers/pci/pcie/aer_inject.c
-index c2cbf425afc5..767f8859b99b 100644
---- a/drivers/pci/pcie/aer_inject.c
-+++ b/drivers/pci/pcie/aer_inject.c
-@@ -333,8 +333,11 @@ static int aer_inject(struct aer_error_inj *einj)
- 	if (!dev)
- 		return -ENODEV;
- 	rpdev = pcie_find_root_port(dev);
-+	/* If Root Port not found, try to find an RCEC */
-+	if (!rpdev)
-+		rpdev = dev->rcec;
- 	if (!rpdev) {
--		pci_err(dev, "Root port not found\n");
-+		pci_err(dev, "Neither Root Port nor RCEC found\n");
- 		ret = -ENODEV;
- 		goto out_put;
- 	}
--- 
-2.29.2
-
+/Jarkko
