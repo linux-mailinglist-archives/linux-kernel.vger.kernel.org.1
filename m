@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202732B705D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441D02B705A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729173AbgKQUnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:43:25 -0500
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:39362 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726278AbgKQUnZ (ORCPT
+        id S1728838AbgKQUmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:42:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727108AbgKQUmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:43:25 -0500
-Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHKbc6Z018583;
-        Tue, 17 Nov 2020 20:42:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=EcHFVilktMF2E05oaED2Dz/I7Xyg++eV/cmoU4aUmog=;
- b=lA+I9G3T8cNIdYrFsd83iqaS5kegyhkbmWL8n9GJtDQxlAVcMbm1Pc+ofeFeBfQfmgK4
- rnGROgjmsAxOKEAXIsecb+eanftF4dU+B9i8fUwMutf1qdcYqVispmwRD0QP74jM/n5o
- pZLKRf+QPRtif+TEqcPQqjaoZXnsqAU4wrfsWqBjRP5Jp9MmvJBy17UBRSTLsSsjnPts
- vvgvpgXVNgTg+xYweZeWCDCUGNazQpjLPnRJBrube1X3dgCapVLWF4oZe//ugwkVVg+T
- EMwyUIMt0AQbNDSLSRAPyndJJ0n4FdpeHTHUGcK6DoFNro7ekkiaRQEysv3rUOrobKuf 8A== 
-Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
-        by mx0a-002e3701.pphosted.com with ESMTP id 34vm4g8sgn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 20:42:48 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3425.houston.hpe.com (Postfix) with ESMTP id 331DE92;
-        Tue, 17 Nov 2020 20:42:47 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id ED4FC4B;
-        Tue, 17 Nov 2020 20:42:46 +0000 (UTC)
-Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 605001)
-        id 7E10E3003D751; Tue, 17 Nov 2020 14:42:45 -0600 (CST)
-From:   Justin Ernst <justin.ernst@hpe.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org
-Cc:     Andy Shevchenko <andy@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Justin Ernst <justin.ernst@hpe.com>
-Subject: [PATCH 5/5] x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
-Date:   Tue, 17 Nov 2020 14:42:24 -0600
-Message-Id: <20201117204224.51230-6-justin.ernst@hpe.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201117204224.51230-1-justin.ernst@hpe.com>
-References: <20201117204224.51230-1-justin.ernst@hpe.com>
+        Tue, 17 Nov 2020 15:42:46 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6304CC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:42:46 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id l11so19949077lfg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:42:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=L2XntWx1y1gpB2zza3sexbEVvLmMOFS8PQu3a25Ms+I=;
+        b=WJypW+MHidKZaX64TWWzLmN6D07RxOwfKLvMUmMki4n6R9DuTk3yi7tRfOdJl/n4jx
+         R/7T7OtppVTMUo5Bw5+NEZ1p+oqDhQOpEjVF2+sGPO42/Am/Y+X9Wy41MTZg4+awaMuZ
+         +Ck/KOt01whYifxeNP9YyxwrAxJfAlmZyfxIn859V3X2+K/nvSivBAJKy8yRXadrxhxX
+         81kAqDwKmDcedER8pf/GB8NKck15xAOOyQ072y//0MIzl1f+M+kYGj+07Eo0XnTG1711
+         aXTYeWZ1yKHJtUxBXxokBge+JYcJDczwDoISNZ9e4FdaT4C1z8AhKU8FLN4MGI3zTIlu
+         nnaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=L2XntWx1y1gpB2zza3sexbEVvLmMOFS8PQu3a25Ms+I=;
+        b=Bk7Cc0CoVjcplC3M6lzUcPUVguIfn8FMtTIkIRtxvQ+qeLwLUBe2U7xzT/rTGZ7C6w
+         hNJ+ABMC/ZXxcozCaaOJ+5Dvz1AgdCL6EBA4eD3KjfgPQ5v8mhMpgnc/2U2RiPEKhu6J
+         cQ2JqCPKQScQ/2f8SNY8b5894BsE54fGyXe28gnDsvSdNy9eSccNNcCRI6a8kdVtmGoC
+         sZj+HLsQ0lURAGOkXWATxN2UDXB0hJx0lIDkTJmdPonVQVtjgdVXA/TjH3XECK1rOkCN
+         n7ulnrfSo9q/o5rGQRH7yNfQ7bHPkPsAX/7dToaVYvh/aH9pNMcyQss54dPHb+Cuz3j3
+         6fwA==
+X-Gm-Message-State: AOAM530kCJ0ZtO/5VXCmKqlxl/JUR1GOkOzs3E+XpZEkoNSwh33sYsz8
+        Ip3rby+EUTFQKK/J0vZVdRrJvCjLA8qLcxktlFQh/Q==
+X-Google-Smtp-Source: ABdhPJwCEFlugDpftC5aCbRFV58aiwRCbJbF7gyOc8c0nXAR58EkOd4ZGBwLbtPI/hao+2//l0/OetjMt0kKI3hEWWE=
+X-Received: by 2002:a19:546:: with SMTP id 67mr2233621lff.502.1605645764854;
+ Tue, 17 Nov 2020 12:42:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_09:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- suspectscore=0 malwarescore=0 bulkscore=0 phishscore=0 priorityscore=1501
- lowpriorityscore=0 mlxscore=0 mlxlogscore=826 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011170151
+References: <cover.1605635248.git.agx@sigxcpu.org> <a4930fb7a7464e4feedbdae993fe25080c8f5490.1605635248.git.agx@sigxcpu.org>
+In-Reply-To: <a4930fb7a7464e4feedbdae993fe25080c8f5490.1605635248.git.agx@sigxcpu.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 17 Nov 2020 21:42:33 +0100
+Message-ID: <CACRpkdao_TMcpRsdK=7K5fNKJse0Bqwk58iWu0xsXdDNdcffVA@mail.gmail.com>
+Subject: Re: [PATCH v1 5/6] dt-bindings: vendor-prefixes: Add ys vendor prefix
+To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an entry and email address for the new uv_sysfs driver and
-its maintainer.
+On Tue, Nov 17, 2020 at 6:49 PM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
 
-Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
-Acked-by: Steve Wahl <steve.wahl@hpe.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+> Add prefix for Shenzhen Yashi Changhua Intelligent Technology Co., Ltd.
+>
+> Signed-off-by: Guido G=C3=BCnther <agx@sigxcpu.org>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
+umentation/devicetree/bindings/vendor-prefixes.yaml
+> index e40ee369f808..d0f3abf2f12c 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -1220,6 +1220,8 @@ patternProperties:
+>      description: Shenzhen Yangliming Electronic Technology Co., Ltd.
+>    "^yna,.*":
+>      description: YSH & ATIL
+> +  "^ys,.*":
+> +    description: Shenzhen Yashi Changhua Intelligent Technology Co., Ltd=
+.
+>    "^yones-toptech,.*":
+>      description: Yones Toptech Co., Ltd.
+>    "^ysoft,.*":
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b43b59542d15..f693d2d97203 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18361,6 +18361,12 @@ F:	include/uapi/linux/uuid.h
- F:	lib/test_uuid.c
- F:	lib/uuid.c
- 
-+UV SYSFS DRIVER
-+M:	Justin Ernst <justin.ernst@hpe.com>
-+L:	platform-driver-x86@vger.kernel.org
-+S:	Maintained
-+F:	drivers/platform/x86/uv_sysfs.c
-+
- UVESAFB DRIVER
- M:	Michal Januszewski <spock@gentoo.org>
- L:	linux-fbdev@vger.kernel.org
--- 
-2.26.2
+I think this should be in alphabetical order of the compatible string, i.e.
+under yones.
 
+Yours,
+Linus Walleij
