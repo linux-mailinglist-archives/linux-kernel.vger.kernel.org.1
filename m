@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20B02B6049
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044982B6124
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729167AbgKQNHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:07:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35542 "EHLO mail.kernel.org"
+        id S1729386AbgKQNQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:16:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729146AbgKQNHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:07:44 -0500
+        id S1730271AbgKQNQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:16:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1FF4246B1;
-        Tue, 17 Nov 2020 13:07:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11797221EB;
+        Tue, 17 Nov 2020 13:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618463;
-        bh=AlUa/pbm+bH9N5PoR3Bw8w04rwDYAw9GVosdmUSpTPg=;
+        s=default; t=1605618963;
+        bh=A/k6XTPAawjrrPQ6K5c9pEXpDrHPINnEPp/rjI/B8uo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JXTUARg78Ew83AeRd86zN1nOhx4M8U/MLzGGysndV0WMn3EzNXuEkRMQXwPlrf/ys
-         B3Ehh4wVXF0HFoHZEPJpWvU3/GsMZ47Qj2+diDtP9xKLuaq4hFFsq69OUCrsPVf4wR
-         fZfSdBoKUVg4RHh2gJr5+ONKq0oWMWBGXzhGFMSo=
+        b=ptUVmxgWtQ2x7ARuU0eZ072gT13Rsn7mNp1tCOoanT8Y6cGOQdr6b6WpQTQvMqWVx
+         1eYFG8cBfe3azVG7m5Ql0of4cuM3AiXSmxYx9jiKQ8sYv1mJfqCS4e8Tkl/Sc3URT6
+         7LFsmM9US8RXGdno18fkoos6RRrI4MLdCj6sE47I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Oliver Herms <oliver.peter.herms@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 42/64] IPv6: Set SIT tunnel hard_header_len to zero
-Date:   Tue, 17 Nov 2020 14:05:05 +0100
-Message-Id: <20201117122108.245226504@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 37/85] nbd: fix a block_device refcount leak in nbd_release
+Date:   Tue, 17 Nov 2020 14:05:06 +0100
+Message-Id: <20201117122112.842203051@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Herms <oliver.peter.herms@gmail.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 8ef9ba4d666614497a057d09b0a6eafc1e34eadf ]
+[ Upstream commit 2bd645b2d3f0bacadaa6037f067538e1cd4e42ef ]
 
-Due to the legacy usage of hard_header_len for SIT tunnels while
-already using infrastructure from net/ipv4/ip_tunnel.c the
-calculation of the path MTU in tnl_update_pmtu is incorrect.
-This leads to unnecessary creation of MTU exceptions for any
-flow going over a SIT tunnel.
+bdget_disk needs to be paired with bdput to not leak a reference
+on the block device inode.
 
-As SIT tunnels do not have a header themsevles other than their
-transport (L3, L2) headers we're leaving hard_header_len set to zero
-as tnl_update_pmtu is already taking care of the transport headers
-sizes.
-
-This will also help avoiding unnecessary IPv6 GC runs and spinlock
-contention seen when using SIT tunnels and for more than
-net.ipv6.route.gc_thresh flows.
-
-Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
-Signed-off-by: Oliver Herms <oliver.peter.herms@gmail.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Link: https://lore.kernel.org/r/20201103104133.GA1573211@tws
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 08ba91ee6e2c ("nbd: Add the nbd NBD_DISCONNECT_ON_CLOSE config flag.")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/sit.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/block/nbd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/ipv6/sit.c
-+++ b/net/ipv6/sit.c
-@@ -1079,7 +1079,6 @@ static void ipip6_tunnel_bind_dev(struct
- 	if (tdev && !netif_is_l3_master(tdev)) {
- 		int t_hlen = tunnel->hlen + sizeof(struct iphdr);
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 9a0fb2d52a76c..70ef826af7f8d 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1432,6 +1432,7 @@ static void nbd_release(struct gendisk *disk, fmode_t mode)
+ 	if (test_bit(NBD_DISCONNECT_ON_CLOSE, &nbd->config->runtime_flags) &&
+ 			bdev->bd_openers == 0)
+ 		nbd_disconnect_and_put(nbd);
++	bdput(bdev);
  
--		dev->hard_header_len = tdev->hard_header_len + sizeof(struct iphdr);
- 		dev->mtu = tdev->mtu - t_hlen;
- 		if (dev->mtu < IPV6_MIN_MTU)
- 			dev->mtu = IPV6_MIN_MTU;
-@@ -1371,7 +1370,6 @@ static void ipip6_tunnel_setup(struct ne
- 	dev->destructor		= ipip6_dev_free;
- 
- 	dev->type		= ARPHRD_SIT;
--	dev->hard_header_len	= LL_MAX_HEADER + t_hlen;
- 	dev->mtu		= ETH_DATA_LEN - t_hlen;
- 	dev->flags		= IFF_NOARP;
- 	netif_keep_dst(dev);
+ 	nbd_config_put(nbd);
+ 	nbd_put(nbd);
+-- 
+2.27.0
+
 
 
