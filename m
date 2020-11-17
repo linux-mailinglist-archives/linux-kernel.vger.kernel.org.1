@@ -2,170 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6C62B5A65
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62ED42B5A68
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgKQHjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:39:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKQHjf (ORCPT
+        id S1726912AbgKQHkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:40:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57732 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726249AbgKQHkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:39:35 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F64C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:39:35 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id 2so18045602ybc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:39:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=81ys4Af4st2C7XlSsqfW1vjLoryjipiQwkJBYd8Bo1U=;
-        b=qPO31PsA3+HYL9IisFSxJrvBZLmIsrkN8o/iV2M3AOUHsepg70/TfKn0eS8qY+TxQi
-         ej+Bp4N1qNv+itrMiWmkurTzf8Z0yHtm60c/6Vr6+n8pkDmnynE1F5wCZNqPC1u5dnby
-         dKG+hNM5L+uPwAPk+svJaiZT8hQfCH3fqzth6l8+Kr3X4UDCunB9uYtZHUpr/SptrDYH
-         ecGWIM01/Up1MhaMoemLFK8FDHIyOFPv2NtqnYz7d3He52aPPKVirz4pdHU4P6OU5nMO
-         crL6KY6HYqCEJCYEIYrpuW7c+38mKemrZK3MBpVK8ai3eVskkm6PpFEtf5dlDlTVOoyL
-         +UZg==
+        Tue, 17 Nov 2020 02:40:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605598811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4XVB2HLVPXWZSYAGy1w+L0QjlzQTnzB+6hDaTM7i40Y=;
+        b=TUIzZOJiorOBEd+wWx/H7rtlF9MU+nRqlQp+58LKC4EVDNouCZ1JSxQnjd0fbFgEmtTGFu
+        A/gKuC0KvbXvTlh3fajnAOWQ8IgLfsm5hESU9nA1zCwxTzXl0XEfg8vzAVAb84nOO+En/7
+        DWcAQ3VoXuLMzGK2c0xrjbk7yZ3zUEg=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-69-YmaFQl74NWSykzQmrwJnhw-1; Tue, 17 Nov 2020 02:40:09 -0500
+X-MC-Unique: YmaFQl74NWSykzQmrwJnhw-1
+Received: by mail-ej1-f70.google.com with SMTP id e7so3479957eja.15
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 23:40:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=81ys4Af4st2C7XlSsqfW1vjLoryjipiQwkJBYd8Bo1U=;
-        b=IOiMbqp9sRj9MmRcNbYE108HlDTPuoISccRkbszKpfadCPw7KYAGwAh9fUYceOBodU
-         hNU/MEVtJJP26PyZfYt0b1plWkVQa65mD4Ij7ashx4VQ6MiNys5osOfIdmYpS83izGYP
-         vrwdESwJ4kX/1ZAZjj9tptkueM76K+1QVNXSsr+GCAcX7vzlpO2IW1ex+d57fKpqCGAY
-         XLO93RlCDQA/ZZADhVaFfuJOUEwxTVB2CuRrJdj9GU0f3w9mpov/lzFU5/5RCXoeiPiY
-         eDNFWQ74iGr92abz0zeGyO+9qweoQ+JeLRLY4CgZ6rSKu/daG2M9yUtdO36fyIepFri1
-         zBTg==
-X-Gm-Message-State: AOAM533oDQuMtyLR5HrmpC6RBEMvJyaKetIIeJ/f2aCfajZ6r6tTLOZa
-        +Hlssgwudkgyn92v+q1LmfU2HgMHu3e0a/RXUX72hA==
-X-Google-Smtp-Source: ABdhPJzDnZMr2YRtv9cPXx5CTKyXfN/NpaliyWDLrR2posEVPhRIdfPrLI3ancUlJyJxW4OfYDMnCrpcotjbsg0YoZ0=
-X-Received: by 2002:a25:e7cd:: with SMTP id e196mr23631737ybh.375.1605598772788;
- Mon, 16 Nov 2020 23:39:32 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4XVB2HLVPXWZSYAGy1w+L0QjlzQTnzB+6hDaTM7i40Y=;
+        b=bcsJ/KAwiJab8x2m4+cjTOIqevFuwRppM94cE1uFotEFi8nl8WR2bgOwaiEh455j+U
+         704BOBNNvBgERo09zdglyUd9UpcMgk4uuPtW//drDOcTF69ZHJN1zp3QZAVnb2woIS8r
+         ZuvZoKczTlmAWtovYbZcn6JVTslYJC4VWynGSTlDZsRhjlTvhCla4ko9srWdngXt0Ief
+         xSy13tVJxt7+/eCvgjOEARWmmqdGoK9HaA5AB3Min5Gd+DzQuUuaEVHy9n5UGo1m8RWn
+         N4OQJ8xQb9pt1Sd3vkrca0YtiNjgGyXNBD4bGKz1qTZFfuCNVwdVkh9R6wjxZ9PJuk6h
+         i06g==
+X-Gm-Message-State: AOAM532DnEjgO5PTsoaDx5jRwhTg2MJlLWhWK0dri5qLimknujYRMQNI
+        S+Q+1Q85jaIqBGhijKnENPNsRVTD21H/LgghhEABNcqDLQku3DfwbsA9dtK3WTz6rd21VRXPjnU
+        JIIQn6U5J9qT1WL6v8jCK+56ebdKBFJ3ObitbNvthMM1fzim9JISjJiSySjdO6prKcAGcp45YCV
+        XF
+X-Received: by 2002:aa7:cc8f:: with SMTP id p15mr20781360edt.240.1605598808032;
+        Mon, 16 Nov 2020 23:40:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyrEkHOlHKCbof8IeyU5M5pVclQNmoojK/SG37Qm5GctY0ngu506HbkBX3BPY9sTkZNAjQL1w==
+X-Received: by 2002:aa7:cc8f:: with SMTP id p15mr20781340edt.240.1605598807737;
+        Mon, 16 Nov 2020 23:40:07 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id w3sm11726222edt.84.2020.11.16.23.40.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Nov 2020 23:40:07 -0800 (PST)
+Subject: Re: [PATCH] KVM: SVM: fix error return code in svm_create_vcpu()
+To:     Chen Zhou <chenzhou10@huawei.com>, rkrcmar@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com
+Cc:     hpa@zytor.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201117025426.167824-1-chenzhou10@huawei.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3ffc3a59-fdc1-3cb4-46e8-0369084bcc06@redhat.com>
+Date:   Tue, 17 Nov 2020 08:40:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20200916071950.1493-1-gilad@benyossef.com> <20200916071950.1493-2-gilad@benyossef.com>
- <20200923015702.GA3676455@bogus> <CAOtvUMekoMjFij_xDnrwRj2PsfgO8tKx4Jk6d7C5vq-Vh+boWw@mail.gmail.com>
- <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com> <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
-In-Reply-To: <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Tue, 17 Nov 2020 09:39:21 +0200
-Message-ID: <CAOtvUMdN2NOJ+7g=XnjOyW7W=77OM=d-d69YDk-a-QmO8Wze5w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
-To:     Rob Herring <robh@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Steven Price <steven.price@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201117025426.167824-1-chenzhou10@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 8:54 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Thu, Oct 22, 2020 at 1:18 AM Gilad Ben-Yossef <gilad@benyossef.com> wr=
-ote:
-> >
-> >
-> > Hi again,
-> >
-> > Any opinion on the suggested below?
->
-> Sorry, lost in the pile...
+On 17/11/20 03:54, Chen Zhou wrote:
+> Fix to return a negative error code from the error handling case
+> instead of 0 in function svm_create_vcpu(), as done elsewhere in this
+> function.
+> 
+> Fixes: f4c847a95654 ("KVM: SVM: refactor msr permission bitmap allocation")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+> ---
+>   arch/x86/kvm/svm/svm.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 1e81cfebd491..79b3a564f1c9 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1309,8 +1309,10 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+>   		svm->avic_is_running = true;
+>   
+>   	svm->msrpm = svm_vcpu_alloc_msrpm();
+> -	if (!svm->msrpm)
+> +	if (!svm->msrpm) {
+> +		err = -ENOMEM;
+>   		goto error_free_vmcb_page;
+> +	}
+>   
+>   	svm_vcpu_init_msrpm(vcpu, svm->msrpm);
+>   
+> 
 
-No problem at all. I know how it is...
+Queued, thanks.
 
+Paolo
 
-> >
-> >
-> > On Tue, Sep 29, 2020 at 9:08 PM Gilad Ben-Yossef <gilad@benyossef.com> =
-wrote:
-> >>
-> >>
-> >> On Wed, Sep 23, 2020 at 4:57 AM Rob Herring <robh@kernel.org> wrote:
-> >> >
-> >> > On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
-> >> > > Document ccree driver supporting new optional parameters allowing =
-to
-> >> > > customize the DMA transactions cache parameters and ACE bus sharab=
-ility
-> >> > > properties.
-> >> > >
-> >> > > Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> >> > > ---
-> >> > >  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 +=
-+++
-> >> > >  1 file changed, 4 insertions(+)
-> >> > >
-> >> > > diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptoce=
-ll.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> >> > > index 6130e6eb4af8..1a1603e457a8 100644
-> >> > > --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> >> > > +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> >> > > @@ -13,6 +13,10 @@ Required properties:
-> >> > >  Optional properties:
-> >> > >  - clocks: Reference to the crypto engine clock.
-> >> > >  - dma-coherent: Present if dma operations are coherent.
-> >> > > +- awcache: Set write transactions cache attributes
-> >> > > +- arcache: Set read transactions cache attributes
-> >> >
-
-<snip>
-
-> >> > These could also just be implied by the compatible string (and requi=
-ring
-> >> > an SoC specific one).
-> >>
-> >> hm... we could do it but this will require us to know (and publicly
-> >> acknowledge) of every SoC making use of this piece of hardware design.
->
-> That's already a requirement in general. Sometimes we can avoid it,
-> but that's cases of getting lucky.
->
-> >> There is currently no other part of the driver that needs this.
->
-> If your DT is part of firmware, then waiting until adding some driver
-> feature or quirk based on a new DT property is too late. Whereas with
-> a SoC specific compatible, you can handle any new feature or quirk
-> without a DT change (e.g. just a stable kernel update). Some platforms
-> may not care about that model, but in general that's the policy we
-> follow. Not doing that, we end up with the DWC3 binding.
->
-> A fallback compatible is how we avoid updating drivers for every
-> single SoC unless needed.
-
-OK, I now better understand what you meant and that does make some
-sense and I will defer to your better judgment  about the proper way
-to do this.
-
-Having said that, there is still something that bugs me about this,
-even just at the level of better understanding why we do things:
-
-Way back when, before DT, we had SoC specific code that identified the
-SoC somehow and set things up in a SoC specific way.
-Then we introduced DT as a way to say - "hey look, this is how my
-busses looks like, these are the devices I have, deal with it" and I
-always assumed that this was meant as a way to release us from having
-SoC specific setup code.
-
-It seems now potentially every SoC vendor needs to modify not just the
-device tree source (which makes sense of course) but also the driver
-supporting their platform.
-It now looks like we've come a full circle to me :-)
-
-Thanks!
-Gilad
-
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
-
-values of =CE=B2 will give rise to dom!
