@@ -2,72 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD592B6D57
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DC32B6D59
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731368AbgKQS2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:28:10 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:54698 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726504AbgKQS2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:28:10 -0500
-Received: from zn.tnic (p200300ec2f101300378e6ae0a1a779ec.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:1300:378e:6ae0:a1a7:79ec])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E864D1EC0402;
-        Tue, 17 Nov 2020 19:28:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1605637689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Iv/oL4ZsWEgCGT0FNKjRrZW4WXNcn8Mky6gXuPvvyGE=;
-        b=l9Od5R41YU4mUUa8RhDTgtegthh9VlqpQA2w1err2WGyBufdx+6aOD8Rsyt71j1rfRiiqH
-        dsioFyo0Bg/PZgPkIuPg9qn+hxAggQy4i/z1c82OYk+h+ouxN2xKUwQhJgT7XvjmO0RB1T
-        LVjhaj10H/o7WaYNfwlUdXhqitnnxDQ=
-Date:   Tue, 17 Nov 2020 19:28:09 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
-        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
-        kuzuno@gmail.com
-Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
-Message-ID: <20201117182809.GK5719@zn.tnic>
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116201711.GE1131@zn.tnic>
- <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
- <20201117165539.GG5719@zn.tnic>
- <890f6b7e-a268-2257-edcb-5eacc7db3d8e@oracle.com>
+        id S1731111AbgKQS2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729033AbgKQS2W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:28:22 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308E2C0613CF;
+        Tue, 17 Nov 2020 10:28:22 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id k7so10711852plk.3;
+        Tue, 17 Nov 2020 10:28:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WJ3TelP5n774DABmEp0rl+zb95lOF3fu98sIHKylYts=;
+        b=Vs8fao0qgNhlR1JCBnv9y0ahocSWCQFEAo6yWqP/pGfBAlLQAgxOVsnLBNdEJ7DZ9M
+         DMwVBKh5x6y5dy0lPV0RFC/i/wjk2j/g1mv+6K9FfUZ8VUq89/Id3YDvGsLsYWYwbvSj
+         YF8JCdb3ILqO30epC2HnRiQzYPGOym25Cja5OIw5xclJs+fxE0t+o+rpZ03CPiwNjTel
+         G1APIkjW7pHdoKw8Z6nHWqzqP8iEt+JoYOREamVWLduyzXzksvgZOrtZAVggkr0am/ah
+         uRjJiM8KOrKoimmtd0SACzduc5NrSqH61IQM2VEQ1NloS1rIHbly0XHfqkco91Rqd3iQ
+         jrRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WJ3TelP5n774DABmEp0rl+zb95lOF3fu98sIHKylYts=;
+        b=tGQ4ze6TfEXcLnu+Fvbk+aiad8it+ziRTGFFknKGohydjsiOp5geUcTEUL/+OazEQT
+         im7TdFDiFs5F5v6NqVt1hdlR7aAmJQfMwylADba71rjoNOAQoeDvJc+GCwpkDjwjGTOM
+         yrU669iUBYqQcQNqWVWHE4LMOaNsXMRAIkUBhWqXQzLuR9MXzja1x7tjWhD9FftXuXDs
+         xa3156wjLcL1ZGQTjYGaZgeR8t+MuZ+Q4kiWcYRdPC8ZbgTs+zP9tEdAB5fqXPSKEcus
+         RQyzRiTd1T+bKpFl8YWICxfzOro+32rCFDof2ZFONVdB4G/iHBAOpXxpbcUxgD5c+vbz
+         dq1Q==
+X-Gm-Message-State: AOAM531qx/yOA1vR/rtiPxEXGRQr1BwoEZ8vDrZPC53HtAV8LCGk8Sbi
+        ejvyaLSatraeRADXYdksH/ulS3CaRA5KADqax8E1t1Jg
+X-Google-Smtp-Source: ABdhPJx+sJJt8qQoPsMT91X8H5myPqZ6vLt654FtcczZW+DrRL76cwl2H6ssROocyatjNRk0IwRefZxMNEAP1Q71RWY=
+X-Received: by 2002:a17:90a:11:: with SMTP id 17mr385506pja.66.1605637701651;
+ Tue, 17 Nov 2020 10:28:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <890f6b7e-a268-2257-edcb-5eacc7db3d8e@oracle.com>
+References: <20201116135522.21791-1-ms@dev.tdt.de> <20201116135522.21791-6-ms@dev.tdt.de>
+ <CAJht_EM-ic4-jtN7e9F6zcJgG3OTw_ePXiiH1i54M+Sc8zq6bg@mail.gmail.com>
+ <f3ab8d522b2bcd96506352656a1ef513@dev.tdt.de> <CAJht_EPN=hXsGLsCSxj1bB8yTYNOe=yUzwtrtnMzSybiWhL-9Q@mail.gmail.com>
+ <c0c2cedad399b12d152d2610748985fc@dev.tdt.de>
+In-Reply-To: <c0c2cedad399b12d152d2610748985fc@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Tue, 17 Nov 2020 10:28:10 -0800
+Message-ID: <CAJht_EO=G94_xoCupr_7Tt_-kjYxZVfs2n4CTa14mXtu7oYMjg@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 5/6] net/lapb: support netdev events
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Andrew Hendry <andrew.hendry@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 07:12:07PM +0100, Alexandre Chartre wrote:
-> Yes. L1TF/MDS allow some inter cpu-thread attacks which are not mitigated at
-> the moment. In particular, this allows a guest VM to attack another guest VM
-> or the host kernel running on a sibling cpu-thread. Core Scheduling will
-> mitigate the guest-to-guest attack but not the guest-to-host attack.
+On Tue, Nov 17, 2020 at 5:26 AM Martin Schiller <ms@dev.tdt.de> wrote:
+>
+> On 2020-11-17 12:32, Xie He wrote:
+> >
+> > I think for a DCE, it doesn't need to initiate the L2
+> > connection on device-up. It just needs to wait for a connection to
+> > come. But L3 seems to be still instructing it to initiate the L2
+> > connection. This seems to be a problem.
+>
+> The "ITU-T Recommendation X.25 (10/96) aka "Blue Book" [1] says under
+> point 2.4.4.1:
+> "Either the DTE or the DCE may initiate data link set-up."
+>
+> Experience shows that there are also DTEs that do not establish a
+> connection themselves.
+>
+> That is also the reason why I've added this patch:
+> https://patchwork.kernel.org/project/netdevbpf/patch/20201116135522.21791-7-ms@dev.tdt.de/
 
-I see in vmx_vcpu_enter_exit():
+Yes, I understand that either the DTE or the DCE *may* initiate the L2
+connection. This is also the way the current code (before this patch
+set) works. But I see both the DTE and the DCE will try to initiate
+the L2 connection after device-up, because according to your 1st
+patch, L3 will always instruct L2 to do this on device-up. However,
+looking at your 6th patch (in the link you gave), you seem to want the
+DCE to wait for a while before initiating the connection by itself. So
+I'm unclear which way you want to go. Making DCE initiate the L2
+connection on device-up, or making DCE wait for a while before
+initiating the L2 connection? I think the second way is more
+reasonable.
 
-        /* L1D Flush includes CPU buffer clear to mitigate MDS */
-        if (static_branch_unlikely(&vmx_l1d_should_flush))
-                vmx_l1d_flush(vcpu);
-        else if (static_branch_unlikely(&mds_user_clear))
-                mds_clear_cpu_buffers();
+> > It feels unclean to me that the L2 connection will sometimes be
+> > initiated by L3 and sometimes by L2 itself. Can we make L2 connections
+> > always be initiated by L2 itself? If L3 needs to do something after L2
+> > links up, L2 will notify it anyway.
+>
+> My original goal was to change as little as possible of the original
+> code. And in the original code the NETDEV_UP/NETDEV_DOWN events were/are
+> handled in L3. But it is of course conceivable to shift this to L2.
 
-Is that not enough?
+I suggested moving L2 connection handling to L2 because I think having
+both L2 and L3 to handle this makes the logic of the code too complex.
+For example, after a device-up event, L3 will instruct L2 to initiate
+the L2 connection. But L2 code has its own way of initiating
+connections. For a DCE, L2 wants to wait a while before initiating the
+connection. So currently L2 and L3 want to do things differently and
+they are doing things at the same time.
 
--- 
-Regards/Gruss,
-    Boris.
+> But you have to keep in mind that the X.25 L3 stack can also be used
+> with tap interfaces (e.g. for XOT), where you do not have a L2 at all.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Can we treat XOT the same as LAPB? I think XOT should be considered a
+L2 in this case. So maybe XOT can establish the TCP connection by
+itself without being instructed by L3. I'm not sure if this is
+feasible in practice but it'd be good if it is.
+
+This also simplifies the L3 code.
