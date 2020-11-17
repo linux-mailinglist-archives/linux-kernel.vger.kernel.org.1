@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE84F2B6994
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F4E2B6996
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727292AbgKQQLu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 11:11:50 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:40008 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726884AbgKQQLt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:11:49 -0500
-Received: by mail-qk1-f194.google.com with SMTP id y197so20843109qkb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:11:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4jQUk+uUdUDMuBpooa0vLGDCE03iHWsS7jO3tfLTcGg=;
-        b=avCj0kArPnH5IYX1Dg5Qrm1oOcfBRUXPBHC6DEAbrHy4S6tKBMp6Gw51H/J9rMF/sx
-         uWCWEdmDz0ZV0NpTynLdXxIxeMjqOxTnKwLSMzBjb1+Qpo7yIuZP/QEhDJ4a6NtYnXjs
-         fPR0aw1FJFIiM+NuWE5UO1sc6DHfoxfNlYUmX5QxopYc5PCfNMpBVzi2JWMYZNV1aK5k
-         k/WYSlO0mZZAeMj0yzoL3xK1VQPAeyrY0vo2LCyzELCr3F2mpCSWxetsrj8QwW73vp9K
-         SUBirg787U5ADHUbI/YOiniQoSRsDeyw1T0TBdDGxfNkbERh22cKshlhA7OG1fIvPpye
-         44fQ==
-X-Gm-Message-State: AOAM533F1QAdlraD08TnLGudmdvSXmvT0qEML2b1v8vuG4T/Lne1vSgs
-        cMcc8YHd5/DLDWQAxDmmuFYjk4c3N0dP5v0QpY6gWA==
-X-Google-Smtp-Source: ABdhPJy0Jve5BCweZh1H+wHNiYQj8kf0zBPe07AYUTmIZ2kjuY3FW71wI4aU48sTEGgglj1eU1KjWcEwW819X9ywc2c=
-X-Received: by 2002:a37:a249:: with SMTP id l70mr245194qke.79.1605629508326;
- Tue, 17 Nov 2020 08:11:48 -0800 (PST)
+        id S1727339AbgKQQLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:11:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727298AbgKQQLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:11:51 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7F6C2463D;
+        Tue, 17 Nov 2020 16:11:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605629511;
+        bh=L63llMV2FMC+E9qdiSTIJ//xn/d4NWH+qdGamgCxkJQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=v2sl2oz12YbryGBOd2sByIEKQ/YCxX0nfN+kIW8Wu3YibAXAlOAdNW6HF8O71BKUF
+         dF98dpigKw9Y5U2RsH8jurGARVEclLn8CPo/fkvFxpTLrqdAlrbrBvesD82a3idu5+
+         61ziDNM45vw/dZwtX6vF14fOreWkUj85A2B/OkL0=
+Date:   Tue, 17 Nov 2020 08:11:49 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH net-next] r8153_ecm: avoid to be prior to r8152 driver
+Message-ID: <20201117081149.20723b4a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <02f38e505a3a45389e2f3c06b2f6c850@realtek.com>
+References: <7fd014f2-c9a5-e7ec-f1c6-b3e4bb0f6eb6@samsung.com>
+        <CGME20201116065317eucas1p2a2d141857bbdd6b4998dd11937d52f56@eucas1p2.samsung.com>
+        <1394712342-15778-393-Taiwan-albertk@realtek.com>
+        <5f3db229-940c-c8ed-257b-0b4b3dd2afbb@samsung.com>
+        <20201116090231.423afc8f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <02f38e505a3a45389e2f3c06b2f6c850@realtek.com>
 MIME-Version: 1.0
-References: <20201117150856.GA12240@mail.hallyn.com>
-In-Reply-To: <20201117150856.GA12240@mail.hallyn.com>
-From:   "Andrew G. Morgan" <morgan@kernel.org>
-Date:   Tue, 17 Nov 2020 08:11:37 -0800
-Message-ID: <CALQRfL5UzUt0YkKDAguETmdXM7qsPC9sGmsgutQ-P2cymPte-w@mail.gmail.com>
-Subject: Re: [PATCH] fix namespaced fscaps when !CONFIG_SECURITY
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Herv=C3=A9_Guillemet?= <herve@guillemet.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Andrew G. Morgan <morgan@kernel.org>
+On Tue, 17 Nov 2020 01:50:03 +0000 Hayes Wang wrote:
+> Jakub Kicinski <kuba@kernel.org>
+> > Sent: Tuesday, November 17, 2020 1:03 AM  
+> [...]
+> > > Yes, this fixes this issue, although I would prefer a separate Kconfig
+> > > entry for r8153_ecm with proper dependencies instead of this ifdefs in
+> > > Makefile.  
+> > 
+> > Agreed, this is what dependency resolution is for.
+> > 
+> > Let's just make this a separate Kconfig entry.  
+> 
+> Excuse me. I am not familiar with Kconfig.
+> 
+> I wish r8153_ecm could be used, even
+> CONFIG_USB_RTL8152 is not defined.
+> 
+> How should set it in Kconfig? 
+
+Something like this?
+
+config USB_RTL8153_ECM
+	tristate <headline text>
+	select MII
+	select USB_NET_CDCETHER
+	depends on USB_RTL8152 || USB_RTL8152=n
+	help
+		<you help text>
 
 
-On Tue, Nov 17, 2020 at 7:09 AM Serge E. Hallyn <serge@hallyn.com> wrote:
->
-> Namespaced file capabilities were introduced in 8db6c34f1dbc .
-> When userspace reads an xattr for a namespaced capability, a
-> virtualized representation of it is returned if the caller is
-> in a user namespace owned by the capability's owning rootid.
-> The function which performs this virtualization was not hooked
-> up if CONFIG_SECURITY=n.  Therefore in that case the original
-> xattr was shown instead of the virtualized one.
->
-> To test this using libcap-bin (*1),
->
-> $ v=$(mktemp)
-> $ unshare -Ur setcap cap_sys_admin-eip $v
-> $ unshare -Ur setcap -v cap_sys_admin-eip $v
-> /tmp/tmp.lSiIFRvt8Y: OK
->
-> "setcap -v" verifies the values instead of setting them, and
-> will check whether the rootid value is set.  Therefore, with
-> this bug un-fixed, and with CONFIG_SECURITY=n, setcap -v will
-> fail:
->
-> $ v=$(mktemp)
-> $ unshare -Ur setcap cap_sys_admin=eip $v
-> $ unshare -Ur setcap -v cap_sys_admin=eip $v
-> nsowner[got=1000, want=0],/tmp/tmp.HHDiOOl9fY differs in []
->
-> Fix this bug by calling cap_inode_getsecurity() in
-> security_inode_getsecurity() instead of returning
-> -EOPNOTSUPP, when CONFIG_SECURITY=n.
->
-> *1 - note, if libcap is too old for getcap to have the '-n'
-> option, then use verify-caps instead.
->
-> Signed-off-by: Serge Hallyn <serge@hallyn.com>
-> Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1593431
-> Cc: Hervé Guillemet <herve@guillemet.org>
-> Cc: Andrew G. Morgan <morgan@kernel.org>
-> Cc: Casey Schaufler <casey@schaufler-ca.com>
-> ---
->  include/linux/security.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index bc2725491560..39642626a707 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -869,7 +869,7 @@ static inline int security_inode_killpriv(struct dentry *dentry)
->
->  static inline int security_inode_getsecurity(struct inode *inode, const char *name, void **buffer, bool alloc)
->  {
-> -       return -EOPNOTSUPP;
-> +       return cap_inode_getsecurity(inode, name, buffer, alloc);
->  }
->
->  static inline int security_inode_setsecurity(struct inode *inode, const char *name, const void *value, size_t size, int flags)
-> --
-> 2.25.1
->
+select clauses will pull in the dependencies you need, and the
+dependency on RTL8152 will be satisfied either when RTL8152's code 
+is reachable (both are modules or RTL8152 is built in) or when RTL8152
+is not built at all.
+
+Does that help?
