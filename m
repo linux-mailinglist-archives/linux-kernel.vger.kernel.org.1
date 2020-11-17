@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093F62B66AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1512B6652
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729688AbgKQOGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:06:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37164 "EHLO mail.kernel.org"
+        id S1729130AbgKQNOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:14:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729285AbgKQNIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:08:31 -0500
+        id S1729985AbgKQNOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:14:03 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 894422468F;
-        Tue, 17 Nov 2020 13:08:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90BF22151B;
+        Tue, 17 Nov 2020 13:14:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618511;
-        bh=DxkkgTtrPZbYCopD7O4N1V/qXoIssIfiTtsLiiIsIoc=;
+        s=default; t=1605618841;
+        bh=7QVeMpI2+iAP18908zHnxBg2IE3anftp/HX4JK2Uquo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PtpHXBtfnjUY3gbeY2ZbNMt1lDwC6PwBIrkqVxFPPe92lFPEsUvNom2zVLJiCeo3T
-         mip0LzIv/G4eQKr7NbH6hdaMrk0JXwlL6EuST2bW7jM4UwdPOnH4qh91jV529vzzVF
-         xDfm2r/5VbxhRRC6cRhRlwyleIlHRoDsqf7BWqgc=
+        b=y0fM6HzsmQP0QLhshjIT0gdx/2MhepngUXJYK63noWldYVOSRUXqK5pU1nuq/N+9K
+         pzfi+MpGPNbU7haqmsEI4lQiUJWRLnXvlyQXpVVN5mgiOF9ryL+dFjnPMftypBY6U2
+         hBhN26jmasumGTpYYuwrCrf4sHIc2LPQJQlq+u1E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        =?UTF-8?q?Jan=20 Yenya =20Kasprzak?= <kas@fi.muni.cz>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 30/64] cosa: Add missing kfree in error path of cosa_write
-Date:   Tue, 17 Nov 2020 14:04:53 +0100
-Message-Id: <20201117122107.631309139@linuxfoundation.org>
+Subject: [PATCH 4.14 25/85] gfs2: Add missing truncate_inode_pages_final for sd_aspace
+Date:   Tue, 17 Nov 2020 14:04:54 +0100
+Message-Id: <20201117122112.266007903@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 52755b66ddcef2e897778fac5656df18817b59ab ]
+[ Upstream commit a9dd945ccef07a904e412f208f8de708a3d7159e ]
 
-If memory allocation for 'kbuf' succeed, cosa_write() doesn't have a
-corresponding kfree() in exception handling. Thus add kfree() for this
-function implementation.
+Gfs2 creates an address space for its rgrps called sd_aspace, but it never
+called truncate_inode_pages_final on it. This confused vfs greatly which
+tried to reference the address space after gfs2 had freed the superblock
+that contained it.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Acked-by: Jan "Yenya" Kasprzak <kas@fi.muni.cz>
-Link: https://lore.kernel.org/r/20201110144614.43194-1-wanghai38@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This patch adds a call to truncate_inode_pages_final for sd_aspace, thus
+avoiding the use-after-free.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/cosa.c | 1 +
+ fs/gfs2/super.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wan/cosa.c b/drivers/net/wan/cosa.c
-index 848ea6a399f23..cbda69e58e084 100644
---- a/drivers/net/wan/cosa.c
-+++ b/drivers/net/wan/cosa.c
-@@ -903,6 +903,7 @@ static ssize_t cosa_write(struct file *file,
- 			chan->tx_status = 1;
- 			spin_unlock_irqrestore(&cosa->lock, flags);
- 			up(&chan->wsem);
-+			kfree(kbuf);
- 			return -ERESTARTSYS;
- 		}
- 	}
+diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
+index c3f3f1ae4e1b7..639e2c86758a4 100644
+--- a/fs/gfs2/super.c
++++ b/fs/gfs2/super.c
+@@ -924,6 +924,7 @@ restart:
+ 	gfs2_jindex_free(sdp);
+ 	/*  Take apart glock structures and buffer lists  */
+ 	gfs2_gl_hash_clear(sdp);
++	truncate_inode_pages_final(&sdp->sd_aspace);
+ 	gfs2_delete_debugfs_file(sdp);
+ 	/*  Unmount the locking protocol  */
+ 	gfs2_lm_unmount(sdp);
 -- 
 2.27.0
 
