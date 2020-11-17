@@ -2,53 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BFE2B5682
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C51D82B5685
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729955AbgKQCCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:02:33 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:59114 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726571AbgKQCCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:02:32 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1keqKA-007S5K-FA; Tue, 17 Nov 2020 03:02:26 +0100
-Date:   Tue, 17 Nov 2020 03:02:26 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, netdev@vger.kernel.org,
-        jianxin.pan@amlogic.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, khilman@baylibre.com,
-        narmstrong@baylibre.com, jbrunet@baylibre.com, f.fainelli@gmail.com
-Subject: Re: [PATCH RFC v2 2/5] net: stmmac: dwmac-meson8b: fix enabling the
- timing-adjustment clock
-Message-ID: <20201117020226.GB1752213@lunn.ch>
-References: <20201115185210.573739-1-martin.blumenstingl@googlemail.com>
- <20201115185210.573739-3-martin.blumenstingl@googlemail.com>
+        id S1726647AbgKQCEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:04:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgKQCEM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 21:04:12 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A2CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:04:11 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id j205so27990963lfj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:04:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yqbgq64ReeSsWVRfJZSYCmJDwtd55XetjTjMDOlnW+w=;
+        b=HZRO+6VFpomk3p/phkHzWTic70PPvGOgnTXVJZgstfa5SI7EFt4np4dBT9UeaBUIwc
+         LhggC9VlRcHUsgmvTADl29p3Q0pvCXdJm9zs5Pws0DqGB5eYFjo26CldUtEv3j02ESS8
+         1Fb4L2QkC6qGQvFu70FptgZAUwMmA+DRK4NR0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yqbgq64ReeSsWVRfJZSYCmJDwtd55XetjTjMDOlnW+w=;
+        b=AFwdDGrZAy5M8KggGwkAM83XuokjYfRPjv9iAqtDpu1r0zr4SEPZj25HvBQpMTVpTH
+         mC5wz08MMlPuuAGzE7YpdstH8MtJvIzyTkCuBNRFUK2PAnpzNpkYljwEFjZ1Q33iP0n1
+         9Y+0QNQkbn20UY2FdkA2rR/U7NhHA6U2O9HtAEhJfMCVg3c/NWS6y4PWl5aSz+OfOfNu
+         cYybjS6+6B12mXfOYn++vEfJ6I803q2+uoQqZfA4m0QRrQsKjrpxS4pouxvgrdEv7Z2v
+         P05XdEWSJ4eiMYg2C4CMaaq49hOhFbzW7bzxl9DJFOarPaqLqoO37Ao5kvKwLya6GESI
+         IPGg==
+X-Gm-Message-State: AOAM532MBdhv6RbF54F8Ff94YnrOwPIpEgO4PTVyX9DdQBVWLLAPi0pr
+        laox3NObP8c/7hDP7SatubLMdp2BsEGrhaRzVun2sQ==
+X-Google-Smtp-Source: ABdhPJwDqnfWgQki8Ww+IF+GWFVbVZKf//vug1X2s8dt85qg+mkGigf5wHUA4E2g9dmqndc1znghGOacZpgHRNd/kC0=
+X-Received: by 2002:ac2:5591:: with SMTP id v17mr763576lfg.562.1605578650470;
+ Mon, 16 Nov 2020 18:04:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201115185210.573739-3-martin.blumenstingl@googlemail.com>
+References: <20201116232536.1752908-1-kpsingh@chromium.org> <20201117001128.7bepy37cxuymfwr3@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201117001128.7bepy37cxuymfwr3@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Tue, 17 Nov 2020 03:03:59 +0100
+Message-ID: <CACYkzJ7ONFy0ph+cREetsApKKMn26XJnzfYC_oKcknHzjy0wgg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add bpf_lsm_set_bprm_opts helper
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Pauline Middelink <middelin@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 07:52:07PM +0100, Martin Blumenstingl wrote:
-> The timing-adjustment clock only has to be enabled when a) there is a
-> 2ns RX delay configured using device-tree and b) the phy-mode indicates
-> that the RX delay should be enabled.
-> 
-> Only enable the RX delay if both are true, instead of (by accident) also
-> enabling it when there's the 2ns RX delay configured but the phy-mode
-> incicates that the RX delay is not used.
-> 
-> Fixes: 9308c47640d515 ("net: stmmac: dwmac-meson8b: add support for the RX delay configuration")
-> Reported-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On Tue, Nov 17, 2020 at 1:11 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Mon, Nov 16, 2020 at 11:25:35PM +0000, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > The helper allows modification of certain bits on the linux_binprm
+> > struct starting with the secureexec bit which can be updated using the
+> > BPF_LSM_F_BPRM_SECUREEXEC flag.
+> >
+> > secureexec can be set by the LSM for privilege gaining executions to set
+> > the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
+> > use of certain environment variables (like LD_PRELOAD).
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  include/uapi/linux/bpf.h       | 14 ++++++++++++++
+> >  kernel/bpf/bpf_lsm.c           | 27 +++++++++++++++++++++++++++
+> >  scripts/bpf_helpers_doc.py     |  2 ++
+> >  tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
+> >  4 files changed, 57 insertions(+)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 162999b12790..7f1b6ba8246c 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3787,6 +3787,14 @@ union bpf_attr {
+> >   *           *ARG_PTR_TO_BTF_ID* of type *task_struct*.
+> >   *   Return
+> >   *           Pointer to the current task.
+> > + *
+> > + * long bpf_lsm_set_bprm_opts(struct linux_binprm *bprm, u64 flags)
+> > + *
+> > + *   Description
+> > + *           Sets certain options on the *bprm*:
+> > + *
+> > + *           **BPF_LSM_F_BPRM_SECUREEXEC** Set the secureexec bit
+> > + *           which sets the **AT_SECURE** auxv for glibc.
+> The return value needs to be documented also.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Done.
 
-    Andrew
+>
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)                \
+> >       FN(unspec),                     \
+> > @@ -3948,6 +3956,7 @@ union bpf_attr {
+> >       FN(task_storage_get),           \
+> >       FN(task_storage_delete),        \
+> >       FN(get_current_task_btf),       \
+> > +     FN(lsm_set_bprm_opts),          \
+> >       /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > @@ -4119,6 +4128,11 @@ enum bpf_lwt_encap_mode {
+> >       BPF_LWT_ENCAP_IP,
+> >  };
+> >
+> > +/* Flags for LSM helpers */
+> > +enum {
+> > +     BPF_LSM_F_BPRM_SECUREEXEC       = (1ULL << 0),
+> > +};
+> > +
+> >  #define __bpf_md_ptr(type, name)     \
+> >  union {                                      \
+> >       type name;                      \
+> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > index 553107f4706a..31f85474a0ef 100644
+> > --- a/kernel/bpf/bpf_lsm.c
+> > +++ b/kernel/bpf/bpf_lsm.c
+> > @@ -7,6 +7,7 @@
+> >  #include <linux/filter.h>
+> >  #include <linux/bpf.h>
+> >  #include <linux/btf.h>
+> > +#include <linux/binfmts.h>
+> >  #include <linux/lsm_hooks.h>
+> >  #include <linux/bpf_lsm.h>
+> >  #include <linux/kallsyms.h>
+> > @@ -51,6 +52,30 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+> >       return 0;
+> >  }
+> >
+> > +/* Mask for all the currently supported BPRM option flags */
+> > +#define BPF_LSM_F_BRPM_OPTS_MASK     0x1ULL
+> If there is a need to have v3, it will be better to use
+> BPF_LSM_F_BPRM_SECUREEXEC instead of 0x1ULL.
+
+Done.
+
+>
+> > +
+> > +BPF_CALL_2(bpf_lsm_set_bprm_opts, struct linux_binprm *, bprm, u64, flags)
+> > +{
+> > +
+> > +     if (flags & ~BPF_LSM_F_BRPM_OPTS_MASK)
+> > +             return -EINVAL;
+> > +
+> > +     bprm->secureexec = (flags & BPF_LSM_F_BPRM_SECUREEXEC);
+> The intention of this helper is to set "or clear" a bit?
+> It may be useful to clarify the "clear" part in the doc also.
+
+Updated the docs:
+
+ * long bpf_lsm_set_bprm_opts(struct linux_binprm *bprm, u64 flags)
+ *
+ *      Description
+ *              Set or clear certain options on *bprm*:
+ *
+ *              **BPF_LSM_F_BPRM_SECUREEXEC** Set the secureexec bit
+ *              which sets the **AT_SECURE** auxv for glibc. The bit is
+ *              is cleared if the flag is not specified.
+ *      Return
+ *              **-EINVAL** if invalid *flags* are passed.
+
+>
+> > +     return 0;
+> > +}
+> > +
