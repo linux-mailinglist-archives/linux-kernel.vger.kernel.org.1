@@ -2,110 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8246C2B57BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2FF2B57C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbgKQDRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 22:17:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgKQDRe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 22:17:34 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25619C0613CF;
-        Mon, 16 Nov 2020 19:17:34 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id 34so11804623pgp.10;
-        Mon, 16 Nov 2020 19:17:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:cc:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6w6Y+KqzYbUwOj4A2p9Oz5OKTpIjMcQwiYg01iziPDg=;
-        b=YfWZvwi04XQpIu88S35NvFhkwZGp3RXqeam0pIp4LMSrQLR9hpxk6Vt0AUwO+kYgzy
-         8sh6m6J+8VM9FQZEbEI/eMTe9SWwNinhS+3w5Pz7xktWA9SdSeKXv6NtupePZwX4YP6b
-         9Uuu/h4oQ2cYzaiOuZdsN8SOGixniVnP8AmslVlqtcRd1RH+4TszkR3yRwpqGZj5Dhal
-         QytFRpteTeBUU4rOkeLaF5CXlKJSJFi6UjTpseAlI17oZtgn0nJyvVHcuz9XoCvh9vir
-         Sxn6n1dwGYXGCfTdE9dGKFFrUVN5D0BeAUNJ3IKrO451MibByObzTtptHxJ4TjeQQzhw
-         H07A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:cc:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6w6Y+KqzYbUwOj4A2p9Oz5OKTpIjMcQwiYg01iziPDg=;
-        b=gF/jB81kYxmk5f1I4jwh5g4ZqsgyJ99tm7JKVQ8vfZ7PTW/J2yRNvugqDJS4uFcq0b
-         nIr8d2S2qhNXnS8SfTWc3XS3iyNj4HntJzUr85CIUc/9+5+clKWbmjidtcRsCmqA3Kcl
-         vTTMqX4kiRJ8AdBIzBDQRI/H6wuyxI/vZc8bSjufhH5PZhhEFhzQ1yRSPnhBUjNhWpPf
-         ZXZebCh1b4m/8iSMi6IRz1z5bGIQLWOaeY0uLb45r9KJiiUUoiLLC7akR8UaLfQj1gj2
-         3ZxZ5zFVidUnef2fbIvqLfDUQGfgjcpXr7AP/1MaA16X4i28GnWxQufr4Wlc20Ly6J15
-         HpsQ==
-X-Gm-Message-State: AOAM530p+gmIaYzt7mPIq56igiulc94wbKewuZpu9gG9wtIY64ogPF8w
-        pxknsR4Lcb2Kz/kNJdY6Vw==
-X-Google-Smtp-Source: ABdhPJykU1tkk71gKf6j4um/95973o5WKsvcw7cpJ6eI6Gdfq+Q9J1aBfsjMElSOlmc3YNE4Z/pMNQ==
-X-Received: by 2002:a62:e516:0:b029:156:3b35:9423 with SMTP id n22-20020a62e5160000b02901563b359423mr16121769pff.19.1605583053709;
-        Mon, 16 Nov 2020 19:17:33 -0800 (PST)
-Received: from [10.76.131.47] ([103.7.29.7])
-        by smtp.gmail.com with ESMTPSA id t26sm21393757pfl.72.2020.11.16.19.17.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 19:17:33 -0800 (PST)
-Subject: Re: [PATCH] btrfs: remove the useless value assignment in
- block_rsv_release_bytes
-To:     dsterba@suse.cz, dsterba@suse.com
-References: <1605422363-14947-1-git-send-email-kaixuxia@tencent.com>
- <20201116151512.GJ6756@twin.jikos.cz>
-From:   kaixuxia <xiakaixu1987@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-Message-ID: <104c5965-fbbe-b306-e835-5f2bbf60aa7f@gmail.com>
-Date:   Tue, 17 Nov 2020 11:17:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1726455AbgKQDSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 22:18:37 -0500
+Received: from mga04.intel.com ([192.55.52.120]:55229 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726375AbgKQDSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 22:18:37 -0500
+IronPort-SDR: TFffYbsSefyq5/u1rqPbNKqLDgblvPf3kqgJ5CpbQgVn7gAP7ZHceezpW/q5vm0b5IaNchIalA
+ WTttDzPRYRog==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="168277730"
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="168277730"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 19:18:33 -0800
+IronPort-SDR: N+fXsM8vRA/YFVxoP2R/e5RA8i//x2nurHUiUWmkV2anGgKy9RhsxAGWQzE9mvZwUK4WiBV6OW
+ /dHhoND9Rkpg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="325011096"
+Received: from lkp-server01.sh.intel.com (HELO 5abab2bd15ab) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 16 Nov 2020 19:18:32 -0800
+Received: from kbuild by 5abab2bd15ab with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kerVn-00002g-Iq; Tue, 17 Nov 2020 03:18:31 +0000
+Date:   Tue, 17 Nov 2020 11:17:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ 8c67d247dcad67fbdd07c8bab9818d0b8d9240bf
+Message-ID: <5fb340cc.xokM4trDCOpsRaP/%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20201116151512.GJ6756@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  irq/core
+branch HEAD: 8c67d247dcad67fbdd07c8bab9818d0b8d9240bf  genirq: Fix kernel-doc markups
 
+elapsed time: 726m
 
-On 2020/11/16 23:15, David Sterba wrote:
-> On Sun, Nov 15, 2020 at 02:39:23PM +0800, xiakaixu1987@gmail.com wrote:
->> From: Kaixu Xia <kaixuxia@tencent.com>
->>
->> The variable qgroup_to_release is overwritten by the following if/else
->> statement before it is used, so this assignment is useless. Remove it.
-> 
-> Again this lacks explanation why removing it is correct.
-> 
-Actually this assignment is redundant because the variable qgroup_to_release
-has been overwritten before it is used. The logic like this,
+configs tested: 182
+configs skipped: 2
 
- static u64 block_rsv_release_bytes(...)
- {
- ...
-        if (num_bytes == (u64)-1) {
-                num_bytes = block_rsv->size;
-                qgroup_to_release = block_rsv->qgroup_rsv_size;
-        }   
-        
-	//qgroup_to_release isn't used
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-        if (block_rsv->qgroup_rsv_reserved >= block_rsv->qgroup_rsv_size) {
-                qgroup_to_release = block_rsv->qgroup_rsv_reserved -
-                                    block_rsv->qgroup_rsv_size;
-                block_rsv->qgroup_rsv_reserved = block_rsv->qgroup_rsv_size;
-        } else {
-                qgroup_to_release = 0;
-        }//qgroup_to_release is overwritten    
- ...
- }
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     tqm8541_defconfig
+arm                            qcom_defconfig
+ia64                        generic_defconfig
+m68k                         amcore_defconfig
+arm                      footbridge_defconfig
+sh                          rsk7203_defconfig
+arm                       netwinder_defconfig
+arm                     am200epdkit_defconfig
+m68k                            q40_defconfig
+m68k                       m5475evb_defconfig
+arm                       cns3420vb_defconfig
+arm                        mini2440_defconfig
+arm                        vexpress_defconfig
+mips                  decstation_64_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                         bigsur_defconfig
+sh                           sh2007_defconfig
+mips                        bcm63xx_defconfig
+arc                                 defconfig
+arm                         shannon_defconfig
+mips                           gcw0_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                          iop32x_defconfig
+nios2                         3c120_defconfig
+sh                          landisk_defconfig
+arm                          ep93xx_defconfig
+arm                         lpc32xx_defconfig
+arm                  colibri_pxa270_defconfig
+arm                              alldefconfig
+arc                      axs103_smp_defconfig
+nios2                         10m50_defconfig
+arm                      tct_hammer_defconfig
+arm                           u8500_defconfig
+powerpc                     tqm8560_defconfig
+powerpc64                        alldefconfig
+arm                        shmobile_defconfig
+openrisc                            defconfig
+sh                         microdev_defconfig
+sh                             espt_defconfig
+powerpc                     tqm8555_defconfig
+mips                          rm200_defconfig
+mips                       lemote2f_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                     ppa8548_defconfig
+sh                     magicpanelr2_defconfig
+arm                           omap1_defconfig
+mips                           ip22_defconfig
+mips                         tb0219_defconfig
+mips                        qi_lb60_defconfig
+m68k                            mac_defconfig
+mips                          ath79_defconfig
+sh                         ecovec24_defconfig
+mips                  cavium_octeon_defconfig
+mips                           ip28_defconfig
+x86_64                           alldefconfig
+sh                           se7721_defconfig
+m68k                          hp300_defconfig
+arm                          gemini_defconfig
+mips                        bcm47xx_defconfig
+arm                            zeus_defconfig
+arm                     eseries_pxa_defconfig
+sh                               alldefconfig
+arm                           h3600_defconfig
+arm                        neponset_defconfig
+xtensa                  nommu_kc705_defconfig
+mips                      loongson3_defconfig
+powerpc                     stx_gp3_defconfig
+arc                     nsimosci_hs_defconfig
+mips                        jmr3927_defconfig
+powerpc                       holly_defconfig
+xtensa                          iss_defconfig
+powerpc                     mpc83xx_defconfig
+mips                      bmips_stb_defconfig
+powerpc                   lite5200b_defconfig
+sh                        apsh4ad0a_defconfig
+s390                             alldefconfig
+arm                           sunxi_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                     powernv_defconfig
+arm                            mmp2_defconfig
+ia64                      gensparse_defconfig
+arm                           h5000_defconfig
+arm                          simpad_defconfig
+sh                          rsk7264_defconfig
+powerpc                     tqm5200_defconfig
+mips                            e55_defconfig
+sh                     sh7710voipgw_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201116
+x86_64               randconfig-a005-20201116
+x86_64               randconfig-a004-20201116
+x86_64               randconfig-a002-20201116
+x86_64               randconfig-a001-20201116
+x86_64               randconfig-a006-20201116
+i386                 randconfig-a006-20201116
+i386                 randconfig-a005-20201116
+i386                 randconfig-a001-20201116
+i386                 randconfig-a002-20201116
+i386                 randconfig-a004-20201116
+i386                 randconfig-a003-20201116
+i386                 randconfig-a006-20201115
+i386                 randconfig-a005-20201115
+i386                 randconfig-a001-20201115
+i386                 randconfig-a002-20201115
+i386                 randconfig-a004-20201115
+i386                 randconfig-a003-20201115
+x86_64               randconfig-a015-20201115
+x86_64               randconfig-a011-20201115
+x86_64               randconfig-a016-20201115
+x86_64               randconfig-a012-20201115
+i386                 randconfig-a012-20201116
+i386                 randconfig-a014-20201116
+i386                 randconfig-a016-20201116
+i386                 randconfig-a011-20201116
+i386                 randconfig-a015-20201116
+i386                 randconfig-a013-20201116
+i386                 randconfig-a012-20201115
+i386                 randconfig-a014-20201115
+i386                 randconfig-a016-20201115
+i386                 randconfig-a011-20201115
+i386                 randconfig-a015-20201115
+i386                 randconfig-a013-20201115
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Thanks,
-Kaixu
+clang tested configs:
+x86_64               randconfig-a003-20201115
+x86_64               randconfig-a005-20201115
+x86_64               randconfig-a004-20201115
+x86_64               randconfig-a002-20201115
+x86_64               randconfig-a001-20201115
+x86_64               randconfig-a006-20201115
+x86_64               randconfig-a015-20201116
+x86_64               randconfig-a011-20201116
+x86_64               randconfig-a014-20201116
+x86_64               randconfig-a013-20201116
+x86_64               randconfig-a016-20201116
+x86_64               randconfig-a012-20201116
 
--- 
-kaixuxia
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
