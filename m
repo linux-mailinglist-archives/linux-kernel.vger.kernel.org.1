@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7672B5613
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEDD2B55F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731800AbgKQBMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 20:12:37 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7254 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728551AbgKQBMh (ORCPT
+        id S1731084AbgKQBJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:09:28 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8096 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725814AbgKQBJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:12:37 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CZnwd24nXzkYWX;
-        Tue, 17 Nov 2020 09:12:17 +0800 (CST)
-Received: from [10.67.76.251] (10.67.76.251) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Tue, 17 Nov 2020
- 09:12:28 +0800
-Subject: Re: [PATCH v6] lib: optimize cpumask_local_spread()
-To:     Dave Hansen <dave.hansen@intel.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Yuqi Jin <jinyuqi@huawei.com>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Paul Burton <paul.burton@mips.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Anshuman Khandual" <anshuman.khandual@arm.com>
-References: <1604410767-55947-1-git-send-email-zhangshaokun@hisilicon.com>
- <3e2e760d-e4b9-8bd0-a279-b23bd7841ae7@intel.com>
- <eec4c1b6-8dad-9d07-7ef4-f0fbdcff1785@hisilicon.com>
- <5e8b0304-4de1-4bdc-41d2-79fa5464fbc7@intel.com>
- <1ca0d77f-7cf3-57d8-af23-169975b63b32@hisilicon.com>
- <11889127-21f0-bba9-7beb-5a07f263923e@intel.com>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <9b69f841-7b4a-5ff7-817f-523ccdb9cb67@hisilicon.com>
-Date:   Tue, 17 Nov 2020 09:12:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Mon, 16 Nov 2020 20:09:28 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CZns01YDlzLnt1;
+        Tue, 17 Nov 2020 09:09:08 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Tue, 17 Nov 2020
+ 09:09:19 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <linus.walleij@linaro.org>
+CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
+        <zhangxiaoxu5@huawei.com>
+Subject: [PATCH] pinctrl: falcon: add missing put_device() call in pinctrl_falcon_probe()
+Date:   Tue, 17 Nov 2020 09:12:52 +0800
+Message-ID: <20201117011252.469915-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <11889127-21f0-bba9-7beb-5a07f263923e@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.76.251]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+if of_find_device_by_node() succeed, pinctrl_falcon_probe() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-在 2020/11/16 22:48, Dave Hansen 写道:
-> On 11/15/20 11:59 PM, Shaokun Zhang wrote:
->>> Do you want to take another pass at submitting this patch?
->> 'Another pass'? Sorry for my bad understading, I don't follow it correctly.
-> 
-> Could you please incorporate the feedback that I've given about this
-> version of the patch and write a new version?
+Fixes: commit e316cb2b16bb ("OF: pinctrl: MIPS: lantiq: adds support for FALCON SoC")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ drivers/pinctrl/pinctrl-falcon.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Yeah, I will do it soon addressed your comments.
+diff --git a/drivers/pinctrl/pinctrl-falcon.c b/drivers/pinctrl/pinctrl-falcon.c
+index 62c02b969327..7521a924dffb 100644
+--- a/drivers/pinctrl/pinctrl-falcon.c
++++ b/drivers/pinctrl/pinctrl-falcon.c
+@@ -431,24 +431,28 @@ static int pinctrl_falcon_probe(struct platform_device *pdev)
+ 
+ 	/* load and remap the pad resources of the different banks */
+ 	for_each_compatible_node(np, NULL, "lantiq,pad-falcon") {
+-		struct platform_device *ppdev = of_find_device_by_node(np);
+ 		const __be32 *bank = of_get_property(np, "lantiq,bank", NULL);
+ 		struct resource res;
++		struct platform_device *ppdev;
+ 		u32 avail;
+ 		int pins;
+ 
+ 		if (!of_device_is_available(np))
+ 			continue;
+ 
+-		if (!ppdev) {
+-			dev_err(&pdev->dev, "failed to find pad pdev\n");
+-			continue;
+-		}
+ 		if (!bank || *bank >= PORTS)
+ 			continue;
+ 		if (of_address_to_resource(np, 0, &res))
+ 			continue;
++
++		ppdev = of_find_device_by_node(np);
++		if (!ppdev) {
++			dev_err(&pdev->dev, "failed to find pad pdev\n");
++			continue;
++		}
++
+ 		falcon_info.clk[*bank] = clk_get(&ppdev->dev, NULL);
++		put_device(&ppdev->dev);
+ 		if (IS_ERR(falcon_info.clk[*bank])) {
+ 			dev_err(&ppdev->dev, "failed to get clock\n");
+ 			of_node_put(np);
+-- 
+2.25.4
 
-Cheers,
-Shaokun.
-
-> 
