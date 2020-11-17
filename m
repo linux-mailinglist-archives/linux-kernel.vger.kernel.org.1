@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC362B6696
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9B22B6679
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387565AbgKQOFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:05:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38186 "EHLO mail.kernel.org"
+        id S1731503AbgKQODq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:03:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728619AbgKQNJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:09:15 -0500
+        id S1729735AbgKQNLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:11:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4F8924698;
-        Tue, 17 Nov 2020 13:09:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D7BC24698;
+        Tue, 17 Nov 2020 13:11:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618554;
-        bh=G0CUy7218bVZ/qERDH8RjZBfATQhVOAGQzd3v7sKvxU=;
+        s=default; t=1605618706;
+        bh=YZazvjlvemrBYLJFCENxdHrYjC4xxJ97fb5MfuuvgIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u8/PS8p/YKg5/J89whtKC9lTBEZigkaJYKEsoW4NU3Lbgnm8j5TqkYS2TBbhXCeTK
-         WrKEEm+AQYgMk5LybtlHcGF0teAOaXc9rdREvbmb08Zrgpwvl+yGhOXhd/Tb5ngRls
-         YuM2Z9ABtIkUmQfD8Rdh6VIL55EtyX8P8xcB5iE4=
+        b=StLWTN5aHUJFE+XSa1lHYKM5hx374GrABHvk0Shx7PyLZacfTq6B/8F1AqXau5ghM
+         tG7tLpMXDRKRPPCqeNSCcgQXBMZTs//LAChCVgH3B4viwVoSTpsM2N+N4b+8fmbVr4
+         H7UVxNSbAENi+GRT7qOcUU/p+Ej44v3L7xmbNxnQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wade Mealing <wmealing@redhat.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.4 60/64] perf/core: Fix race in the perf_mmap_close() function
-Date:   Tue, 17 Nov 2020 14:05:23 +0100
-Message-Id: <20201117122109.140341844@linuxfoundation.org>
+        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH 4.9 58/78] x86/speculation: Allow IBPB to be conditionally enabled on CPUs with always-on STIBP
+Date:   Tue, 17 Nov 2020 14:05:24 +0100
+Message-Id: <20201117122111.950324481@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,100 +44,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@redhat.com>
+From: Anand K Mistry <amistry@google.com>
 
-commit f91072ed1b7283b13ca57fcfbece5a3b92726143 upstream.
+commit 1978b3a53a74e3230cd46932b149c6e62e832e9a upstream.
 
-There's a possible race in perf_mmap_close() when checking ring buffer's
-mmap_count refcount value. The problem is that the mmap_count check is
-not atomic because we call atomic_dec() and atomic_read() separately.
+On AMD CPUs which have the feature X86_FEATURE_AMD_STIBP_ALWAYS_ON,
+STIBP is set to on and
 
-  perf_mmap_close:
-  ...
-   atomic_dec(&rb->mmap_count);
-   ...
-   if (atomic_read(&rb->mmap_count))
-      goto out_put;
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
 
-   <ring buffer detach>
-   free_uid
+At the same time, IBPB can be set to conditional.
 
-out_put:
-  ring_buffer_put(rb); /* could be last */
+However, this leads to the case where it's impossible to turn on IBPB
+for a process because in the PR_SPEC_DISABLE case in ib_prctl_set() the
 
-The race can happen when we have two (or more) events sharing same ring
-buffer and they go through atomic_dec() and then they both see 0 as refcount
-value later in atomic_read(). Then both will go on and execute code which
-is meant to be run just once.
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
 
-The code that detaches ring buffer is probably fine to be executed more
-than once, but the problem is in calling free_uid(), which will later on
-demonstrate in related crashes and refcount warnings, like:
+condition leads to a return before the task flag is set. Similarly,
+ib_prctl_get() will return PR_SPEC_DISABLE even though IBPB is set to
+conditional.
 
-  refcount_t: addition on 0; use-after-free.
-  ...
-  RIP: 0010:refcount_warn_saturate+0x6d/0xf
-  ...
-  Call Trace:
-  prepare_creds+0x190/0x1e0
-  copy_creds+0x35/0x172
-  copy_process+0x471/0x1a80
-  _do_fork+0x83/0x3a0
-  __do_sys_wait4+0x83/0x90
-  __do_sys_clone+0x85/0xa0
-  do_syscall_64+0x5b/0x1e0
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+More generally, the following cases are possible:
 
-Using atomic decrease and check instead of separated calls.
+1. STIBP = conditional && IBPB = on for spectre_v2_user=seccomp,ibpb
+2. STIBP = on && IBPB = conditional for AMD CPUs with
+   X86_FEATURE_AMD_STIBP_ALWAYS_ON
 
-Tested-by: Michael Petlan <mpetlan@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Wade Mealing <wmealing@redhat.com>
-Fixes: 9bb5d40cd93c ("perf: Fix mmap() accounting hole");
-Link: https://lore.kernel.org/r/20200916115311.GE2301783@krava
-[sudip: backport to v4.9.y by using ring_buffer]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+The first case functions correctly today, but only because
+spectre_v2_user_ibpb isn't updated to reflect the IBPB mode.
+
+At a high level, this change does one thing. If either STIBP or IBPB
+is set to conditional, allow the prctl to change the task flag.
+Also, reflect that capability when querying the state. This isn't
+perfect since it doesn't take into account if only STIBP or IBPB is
+unconditionally on. But it allows the conditional feature to work as
+expected, without affecting the unconditional one.
+
+ [ bp: Massage commit message and comment; space out statements for
+   better readability. ]
+
+Fixes: 21998a351512 ("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.")
+Signed-off-by: Anand K Mistry <amistry@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lkml.kernel.org/r/20201105163246.v2.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- kernel/events/core.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4664,11 +4664,11 @@ static void perf_mmap_open(struct vm_are
- static void perf_mmap_close(struct vm_area_struct *vma)
+---
+ arch/x86/kernel/cpu/bugs.c |   52 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 19 deletions(-)
+
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1248,6 +1248,14 @@ static int ssb_prctl_set(struct task_str
+ 	return 0;
+ }
+ 
++static bool is_spec_ib_user_controlled(void)
++{
++	return spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP;
++}
++
+ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
  {
- 	struct perf_event *event = vma->vm_file->private_data;
--
- 	struct ring_buffer *rb = ring_buffer_get(event);
- 	struct user_struct *mmap_user = rb->mmap_user;
- 	int mmap_locked = rb->mmap_locked;
- 	unsigned long size = perf_data_size(rb);
-+	bool detach_rest = false;
+ 	switch (ctrl) {
+@@ -1255,17 +1263,26 @@ static int ib_prctl_set(struct task_stru
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return 0;
+-		/*
+-		 * Indirect branch speculation is always disabled in strict
+-		 * mode. It can neither be enabled if it was force-disabled
+-		 * by a  previous prctl call.
  
- 	if (event->pmu->event_unmapped)
- 		event->pmu->event_unmapped(event);
-@@ -4687,7 +4687,8 @@ static void perf_mmap_close(struct vm_ar
- 		mutex_unlock(&event->mmap_mutex);
- 	}
++		/*
++		 * With strict mode for both IBPB and STIBP, the instruction
++		 * code paths avoid checking this task flag and instead,
++		 * unconditionally run the instruction. However, STIBP and IBPB
++		 * are independent and either can be set to conditionally
++		 * enabled regardless of the mode of the other.
++		 *
++		 * If either is set to conditional, allow the task flag to be
++		 * updated, unless it was force-disabled by a previous prctl
++		 * call. Currently, this is possible on an AMD CPU which has the
++		 * feature X86_FEATURE_AMD_STIBP_ALWAYS_ON. In this case, if the
++		 * kernel is booted with 'spectre_v2_user=seccomp', then
++		 * spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP and
++		 * spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED.
+ 		 */
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ||
++		if (!is_spec_ib_user_controlled() ||
+ 		    task_spec_ib_force_disable(task))
+ 			return -EPERM;
++
+ 		task_clear_spec_ib_disable(task);
+ 		task_update_spec_tif(task);
+ 		break;
+@@ -1278,10 +1295,10 @@ static int ib_prctl_set(struct task_stru
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return -EPERM;
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++
++		if (!is_spec_ib_user_controlled())
+ 			return 0;
++
+ 		task_set_spec_ib_disable(task);
+ 		if (ctrl == PR_SPEC_FORCE_DISABLE)
+ 			task_set_spec_ib_force_disable(task);
+@@ -1344,20 +1361,17 @@ static int ib_prctl_get(struct task_stru
+ 	if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 	    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 		return PR_SPEC_ENABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
+-		return PR_SPEC_DISABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP) {
++	else if (is_spec_ib_user_controlled()) {
+ 		if (task_spec_ib_force_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE;
+ 		if (task_spec_ib_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
+ 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
+-	} else
++	} else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++		return PR_SPEC_DISABLE;
++	else
+ 		return PR_SPEC_NOT_AFFECTED;
+ }
  
--	atomic_dec(&rb->mmap_count);
-+	if (atomic_dec_and_test(&rb->mmap_count))
-+		detach_rest = true;
- 
- 	if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
- 		goto out_put;
-@@ -4696,7 +4697,7 @@ static void perf_mmap_close(struct vm_ar
- 	mutex_unlock(&event->mmap_mutex);
- 
- 	/* If there's still other mmap()s of this buffer, we're done. */
--	if (atomic_read(&rb->mmap_count))
-+	if (!detach_rest)
- 		goto out_put;
- 
- 	/*
 
 
