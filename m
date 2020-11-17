@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276252B6FCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A962B6FD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731593AbgKQULc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:11:32 -0500
-Received: from mga18.intel.com ([134.134.136.126]:46452 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgKQULa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:11:30 -0500
-IronPort-SDR: JE8O67fg1jAPcxVb5m1fMoXduGaffjKNN3TYUYgCT2QlipTggWPxuNC6O9wC5Ft19bXn5t8rWO
- v0tfRzxOh/Mw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="158775999"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="158775999"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:11:30 -0800
-IronPort-SDR: UiI97zKusUtzHTje+aBHIAjU+aOkuuk3tFn3Y+iCiRXZagpqlayuTrPm+mEDchuAR9zzGGSpLB
- xBFjx5nYNkEQ==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="544192746"
-Received: from chimtrax-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.222])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:11:29 -0800
-Subject: Re: [PATCH v11 06/16] PCI/ERR: Simplify by using
- pci_upstream_bridge()
-To:     Sean V Kelley <sean.v.kelley@intel.com>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, xerces.zhao@gmail.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201117191954.1322844-1-sean.v.kelley@intel.com>
- <20201117191954.1322844-7-sean.v.kelley@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <9df63e69-4ef0-9560-68c4-d3f4130b965c@linux.intel.com>
-Date:   Tue, 17 Nov 2020 12:11:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730657AbgKQUNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:13:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgKQUNj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:13:39 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45609C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:13:39 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id j5so10866629plk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:13:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OiYQHkYqtsWMrbxAgg5uqvn4s6SS9WvyA+bC9y6faaY=;
+        b=R17JdDlRo48mLGhSs6XeKtxCd/fu4bpFLuaEFmc8ZMHMDr3aDitOWgqqGLijKWHl/P
+         IiLYb8cCijUklpvexTBp/Q8gy0rjjLX8lt+qQAQxNc7SwzUEbh4QUn641oHOS+M9w2M5
+         NAeUi0htAsPgjLfoUehQLP8XISiFg4YL1cqh/yyL9Pw4NizuvrT4j3ApWFrtQuuB7o3p
+         cKE2ODKmIr6COpu+7uWRDhctCGbNBgDtSl8K39ugDAVR8zvRv0+z0CnVvnPO0C0VxLoo
+         hS+sq6UeP8JgVC0EEorjAzkhbtoybXnlffTNk8sJufS9nrHQpp3lvUEueQg0g3ip0oLA
+         x+4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OiYQHkYqtsWMrbxAgg5uqvn4s6SS9WvyA+bC9y6faaY=;
+        b=hmLVkSisJAIsL5tCcHCQ0LaYZHMY3VbZUEzFRkF3U95shl2cuTbAAR5MKMxKXDWJcj
+         l8PNzqsF6NoytGTBAAiC9Fbz8FJnycMqH0QSBeYUokaw4maIfaQ8J9UHsMWOJy0huYLy
+         Qk7gejfRMAsBpUPaEkuX6QokhqA2OH5QM/DqPdCbKfCgXVP/pKrTDG2007l4s01TP2se
+         g3x6kQXA6nTZSVy9JscRiP0vDrsXnc5yg3BYn7WHnPLgu8ugLVapseUxioFGGdK+eydx
+         TgBEmxycnreGNN7ZXV62+26zVyKk84UjyixQIyWRAoKqf/dGBtN/Fw3+hkdClgPOb6Y6
+         sUWQ==
+X-Gm-Message-State: AOAM530OdjsuEbk1VFEX7Wr+oZrN3ISnmCRnleTm4FUgPPZP77zx8/zv
+        7x2YJlKZI6ewwH63qJcHbYQ=
+X-Google-Smtp-Source: ABdhPJzUZDYasxQm32VBKPbjzgNfrCYEWVkfOI79WsuSIypR+8vmoT0smq2/7t4nBSsKjBgTvy7Ltw==
+X-Received: by 2002:a17:902:d698:b029:d6:b974:13c5 with SMTP id v24-20020a170902d698b02900d6b97413c5mr826115ply.13.1605644018679;
+        Tue, 17 Nov 2020 12:13:38 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:60ba:80c7:87c0:8479:8968])
+        by smtp.gmail.com with ESMTPSA id d22sm4179462pjw.11.2020.11.17.12.13.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 12:13:37 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH] checkpatch: fix spacing check for return with parentheses
+Date:   Wed, 18 Nov 2020 01:43:05 +0530
+Message-Id: <20201117201305.108427-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201117191954.1322844-7-sean.v.kelley@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The spacing check is unreachable for return statements
+followed by an opening parentheses.
+For example:
 
+int foo(int bar, int baz)
+{
+	return(bar+baz);
+}
 
-On 11/17/20 11:19 AM, Sean V Kelley wrote:
-> Use pci_upstream_bridge() in place of dev->bus->self.  No functional change
-> intended.
-> 
-> [bhelgaas: split to separate patch]
-> Link: https://lore.kernel.org/r/20201002184735.1229220-6-seanvk.dev@oregontracks.org
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
->   drivers/pci/pcie/err.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index db149c6ce4fb..05f61da5ed9d 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -159,7 +159,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->   	 */
->   	if (!(pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
->   	      pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM))
-> -		dev = dev->bus->self;
-> +		dev = pci_upstream_bridge(dev);
-Makes it easier to read.
->   	bus = dev->subordinate;
->   
->   	pci_dbg(dev, "broadcast error_detected message\n");
-> 
+There should be an error emitted for a space between
+return and the opening parentheses but checkpatch doesn't
+emit one.
 
+Fix the spacing check. Also add --fix option to
+the check.
+
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+ scripts/checkpatch.pl | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 8da6cde20c68..07feeb3321e2 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5176,10 +5176,13 @@ sub process {
+ 				if ($value =~ m/^\s*$FuncArg\s*(?:\?|$)/) {
+ 					ERROR("RETURN_PARENTHESES",
+ 					      "return is not a function, parentheses are not required\n" . $herecurr);
++				} elsif ($spacing !~ /\s+/) {
++					if (ERROR("SPACING",
++						  "space required before the open parenthesis '('\n" . $herecurr) &&
++					    $fix) {
++						$fixed[$fixlinenr] =~ s/\breturn\s*\(/return \(/;
++					}
+ 				}
+-			} elsif ($spacing !~ /\s+/) {
+-				ERROR("SPACING",
+-				      "space required before the open parenthesis '('\n" . $herecurr);
+ 			}
+ 		}
+ 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.27.0
+
