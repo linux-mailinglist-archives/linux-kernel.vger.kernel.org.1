@@ -2,97 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE1F2B6C15
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978BE2B6C17
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729770AbgKQRoK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 12:44:10 -0500
-Received: from mail-am6eur05olkn2034.outbound.protection.outlook.com ([40.92.91.34]:59310
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726174AbgKQRoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:44:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F8GS3LTitzQN1PHWgXW9LPGvX5TuMSAY3SitZNGD9GbjoE28jrlwrzX+67GjkNGkQkpobqAV7prJRdDGoNjOWbl8PqtwW/RYo/VIP/TqxNx7CMZMRq4iGIHYRzr41L17AXJAoZ3t3QVmVSwgZf4T8Avi2/rQBnH0UCAbJ6qBiyc2QWTUmv/6hW0JkzGZG+nOYz96ygoenTUNdCcVdHjXjJpuunmyd6B9/tmvipb2BlTwm13ObacSOd9HWuygTTtT/h+MLU//aOnt+tWonHgE7GDWfIWzm6WN4eQZbos0N78ftxOHEESLZNFBccblUMxcjtXtxtKq1M47n5dX5v6LLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2McBTSLTXQwhye9zASywz7Q4F8i0UstVTPRZPgQx7Bc=;
- b=E0MaWTYiUL54jCynFF15jz+PTxg8Peuisvhtfv2PIx+Nj7+2plVM+P3XaCOW1Pb7ILkGs2jDwTrmlXO4NJirnSz26oZSa/dhKHDxnGXdFBtQ/n6259Mc6LgjtTmRrqnBzrm07sLgrUu+3ZBlmitCJQFXAOeqf5P9Upgrlswm/cIoGGscLDrqaiMKaaboqD8Ea2Ekqd4QirYYt+kJ9tLKEE7n1TAd34PJrU9l3yotShdLFi/llfy3yvAu0wcJb8Bem6F0F0qjYZ18PqEmsd93ILran9c2WFn3nZ6wzf3RAFIvoa7JkL2yk+JyXJ5HxGWfUwWFkDFwbfwfb4HEytRTDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from AM6EUR05FT011.eop-eur05.prod.protection.outlook.com
- (2a01:111:e400:fc11::41) by
- AM6EUR05HT047.eop-eur05.prod.protection.outlook.com (2a01:111:e400:fc11::178)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.22; Tue, 17 Nov
- 2020 17:44:03 +0000
-Received: from VI1PR04MB3216.eurprd04.prod.outlook.com
- (2a01:111:e400:fc11::46) by AM6EUR05FT011.mail.protection.outlook.com
- (2a01:111:e400:fc11::285) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.22 via Frontend
- Transport; Tue, 17 Nov 2020 17:44:03 +0000
-Received: from VI1PR04MB3216.eurprd04.prod.outlook.com
- ([fe80::ed8b:4d28:ab1:b495]) by VI1PR04MB3216.eurprd04.prod.outlook.com
- ([fe80::ed8b:4d28:ab1:b495%5]) with mapi id 15.20.3564.028; Tue, 17 Nov 2020
- 17:44:03 +0000
-From:   Mensah Attoh <euloge.blackwell2019@outlook.fr>
-Subject: =?iso-8859-8-i?B?6+vsIPnm5CDw5eLyIOzpIC4uLg==?=
-Thread-Topic: =?iso-8859-8-i?B?6+vsIPnm5CDw5eLyIOzpIC4uLg==?=
-Thread-Index: AQHWvQk9uD32/+oNWkGza+8qng5lkA==
-Date:   Tue, 17 Nov 2020 17:44:03 +0000
-Message-ID: <VI1PR04MB3216BF268498CA3DA24B53E3E9E20@VI1PR04MB3216.eurprd04.prod.outlook.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-incomingtopheadermarker: OriginalChecksum:F74D99B3AD2BAAE423DA2E76664B282FD28B1D54F07EECDF528FB92C235C0E9F;UpperCasedChecksum:9B00324B558D167CD9A9E8B754FA29665FE25DE533FC1E5D21650D0F05C0FD0A;SizeAsReceived:11575;Count:41
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn:  [E3pe/lupJXkZAli89sL0iJn4U/bSuGbj]
-x-ms-publictraffictype: Email
-x-incomingheadercount: 41
-x-eopattributedmessage: 0
-x-ms-office365-filtering-correlation-id: b5549798-311c-4ae5-9df9-08d88b205fd1
-x-ms-exchange-slblob-mailprops: I5qrvvDeUuTJumcg58k08DItmFW7RApSnpYZQ5xKmbrYtQ6gR+qg47i/YSs3xObkMLujTe8uIDk8TMlA2fxf7BHSXwUZNVZP9YScCg95pm7gr8lAXfhkqjwxpgqpubyvj4GwAHBPi5i30T9RxOndnkJPyvfzbryh6eTY3wyh7HBtKCT/D4QEllhdYQymKWtEYnsP3+V1YdOHX6h2/gb/gFbb5y327YEvpp0bqhSptd5+B5ZHaw047HtALpCz2qIuN+DlQt9Q+EQFPburpVTicvLm3wgk0QhvhKxu7WhQmsPjqG7gCb61iNSCc/nRFsDUf78Q050h3JHap+aKX2ZGKQ3fOAmOF8GrX2Ft3nPnw4Q+zNiT1KAijHfzuLZUiWOpV8T+IODWwRnFKhwNhvUyqgyUSpHy9L4Jp3cvk9tQ8UZYy43WhtYvrBtqGZ+x2sh9DzVyDtxIEQayZB7esFDDzYhZQld5tFiqziMPL057MlU9mI3O+fr9S+Tp2XfqEUgZDdNg66DAam1U+AXUHiZeoiEykRArizj6FEFzEU2QLzm4J+MBXxJQGDjj3tOG3pR/7bvjVdBGQUTZdpXpI+yKQE44dWj4ac0Gd5v6Eh/FyD6AypZT2M7YwVa3DlRwrbb9nnA63niCm/mpEuZZxsliMXeI5brXmWfD+nYhjy7S80LDegR17tw8G4+N9FyXBOVFeTMeuc4uXaS+CEYNkZ0Jx3v0ztBqIgN9xah1/lomD9cmzIUVXt7YCKihMn5PPsO8gSYUO9x8bAxEO53Sjdc6qA==
-x-ms-traffictypediagnostic: AM6EUR05HT047:
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hlN5NhtWcgf8YW/vyGryWl+KETsC300E+tXUreVw8q44DwqCLR9zARWRb0ttlI4xPli0L+mcMkYxj8be11rsB1f+fYfuSJJTHyLBUwk22fTzbUxDqussTH0C5OPCbwSHAEgxc+zktWbT1+gqIFpeenuVni9pqQYXdiHiSCEmM0wthrvduxrA4p8xyKlDryZ651kyC7ZPidDgNEKs3Wjr2w==
-x-ms-exchange-antispam-messagedata: WoMmzIShT+FhgGPhSxSHVzhBqLn+pyH3Nl/5b1QcPgaZqMobe0zWtBjbeRUw8UFr42ZdrqlXvr53hSp+W0GL77p14jrKfq/aAaiGgO2u24VhNPAckplw96J3EsxJ9BCdoc2PEcNz1c/mZ5wwOWn61A==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-8-i"
-Content-Transfer-Encoding: 8BIT
+        id S1729589AbgKQRot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:44:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgKQRor (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:44:47 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A1DC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:44:46 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id k2so24100561wrx.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:44:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2KngzT5ko8rC3OE2ve8gvahOiuba+uhDRJQ9LOXl0+U=;
+        b=U26KxbAXVUUUUL1n5lEOI+uP+pQIx39CGrKbakbVvqZkamGw28UVz32cC9lesi6lRN
+         DnJF9yjA3ZI8kYVJclfFfFyDGAGn5xWyQIDffoZEVhpf0mkP1VzJ7LhYgua60W/ZollW
+         0X7rqlIdAmvayvJPqL/lS5ZN9kDohVdOqdJ8z/KNTygSOkXxahF6ek5qVzoo+dsH/k63
+         OyTe0Ly/CEP7C180c3iNgNVAgwzZLoDTs+ULga4gFfNVEhl+n1x7EaNujowpADJt5t28
+         rbi6TPAcwU+XNmiTh2JCMxQV8Niy+g60OEC7RJtuDeO3d7vL7aY0YlQ0EbTyArlm5mTF
+         1PIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2KngzT5ko8rC3OE2ve8gvahOiuba+uhDRJQ9LOXl0+U=;
+        b=UlS79L0ulL7KQgL+GLSuCLx0fP08RGrj4/qhyQfEyIaWun+tbTJ8F5zKUAxrWYx0Kr
+         zFFPU/FnTyY2le16WCpPruwmpeVFFF1Wpulgl2aqC39Gh8aQo27GrVoJWrjVJLj6CGSA
+         lf8g4hEH6vXtar9oGgvzCC1vy243TeQFAcsx0UNu6Z0D1lnKJg7mzWBCBxIDpGhNypQ6
+         gjaDyBOtw1c8YsGwXSPYtKLq/OEDzA630ZW9verCKeWAUU2J/i8HjOT6M1Fkr6EbAc/s
+         eJtAjXTgqef6Jtcmm0NQm4B+6bppRZgQRi6r/FZhfHzjg42M2+juS+lZwkE0Q58kDPXD
+         pIqg==
+X-Gm-Message-State: AOAM530N0YoehSt+B9JSCKmTfO2PWY/j4tagt7YFw4tWv2Vpan+djmA1
+        RN1pS3XPZ0d10jZMFsxz046xUQ==
+X-Google-Smtp-Source: ABdhPJxxEywh7zcSdCOpHrh5uQpARJrYhQeE0KoFgQi1md4vXIramoI6QvgWCCjx/ZqOFlHoqWGY9g==
+X-Received: by 2002:adf:ebc6:: with SMTP id v6mr597996wrn.427.1605635084716;
+        Tue, 17 Nov 2020 09:44:44 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5150:1004:6c70:8db9? ([2a01:e34:ed2f:f020:5150:1004:6c70:8db9])
+        by smtp.googlemail.com with ESMTPSA id n11sm27882644wru.38.2020.11.17.09.44.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 09:44:43 -0800 (PST)
+Subject: Re: [PATCH v2 4/4] powercap/drivers/dtpm: Add CPU energy model based
+ support
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     rjw@rjwysocki.net, ilina@codeaurora.org, ulf.hansson@linaro.org,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, rkumbako@codeaurora.org,
+        rui.zhang@intel.com
+References: <20201116152649.11482-1-daniel.lezcano@linaro.org>
+ <20201116152649.11482-5-daniel.lezcano@linaro.org>
+ <c467cb4d-2226-e558-e340-cd5764490078@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <6c9db999-0846-cd42-a061-c638197b5661@linaro.org>
+Date:   Tue, 17 Nov 2020 18:44:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-AuthSource: AM6EUR05FT011.eop-eur05.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5549798-311c-4ae5-9df9-08d88b205fd1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2020 17:44:03.4793
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Internet
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6EUR05HT047
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <c467cb4d-2226-e558-e340-cd5764490078@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-***
+On 17/11/2020 14:15, Lukasz Luba wrote:
+> Hi Daniel,
+> 
+> Only one small comment regarding the setup of 'power_limit'.
+> 
+> On 11/16/20 3:26 PM, Daniel Lezcano wrote:
+>> With the powercap dtpm controller, we are able to plug devices with
+>> power limitation features in the tree.
+>>
+>> The following patch introduces the CPU power limitation based on the
+>> energy model and the performance states.
+>>
+>> The power limitation is done at the performance domain level. If some
+>> CPUs are unplugged, the corresponding power will be subtracted from
+>> the performance domain total power.
+>>
+>> It is up to the platform to initialize the dtpm tree and add the CPU.
+>>
 
-ùìåí,
-ëáø ëúáúé ìê áìé ùåí úâåáä àå çæøä îîê; àåìé äééú áìúé îåùâú åìëï çæøúé òì æä.
+[ ... ]
 
-àðé òåøê ãéï áî÷öåòé ðöéâ îùôèé ùì îø àîéì, ì÷åç áîùøãé áàåúä îùôçäëîåê. àðé îâéù ìê äöòä æå áðåâò ì÷øï äòéæáåï äáìúé úáåòä ùìå áñê 5.5îéìéåï ãåìø ìàçø ðéñéåðåú ëåùìéí ìîöåà ëàï ÷ùø éùéø.
+>> +
+>> +Â Â Â  dtpm = per_cpu(dtpm_per_cpu, cpu);
+>> +Â Â Â  if (dtpm)
+>> +Â Â Â Â Â Â Â  return power_add(dtpm, pd);
+> 
+> The dtpm->power_limit is not incremented in this path, when a new
+> CPU joins the cluster.
+> Is it correct?
 
-àðà úï ìé àú úâåáúê äîäéøä òí àéù ä÷ùø ùìê òì îðú ìùôø àú äú÷ùåøú åäîéãò áðåùà ìöåøê ôåøîìéåú úáéòä (úðàé úùìåí).
+Yes, you are right, there is something missing here. It does not change
+the behavior of the power capping, but the value will be inconsistent in
+the tree.
 
-úåãä,
-îðùä
+> Or maybe we need something like:
+> ------------------------------>8---------------------
+> Â Â Â Â Â Â Â  if (dtpm) {
+> Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  ret = power_add(dtpm, pd);
+> Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  if (!ret)
+> Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  dtpm->power_limit = dtpm->power_max;
+> Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  return ret;
+> Â Â Â Â Â Â Â  }
+> ------------------------8<---------------
+> 
+> The power_max should be updated after successful power_add().
+> It would disturb user set value in power_limit, though (described
+> below).
+> 
+> 
+>> +
+>> +Â Â Â  dtpm = dtpm_alloc();
+>> +Â Â Â  if (!dtpm)
+>> +Â Â Â Â Â Â Â  return -EINVAL;
+>> +
+>> +Â Â Â  dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
+>> +Â Â Â  if (!dtpm_cpu) {
+>> +Â Â Â Â Â Â Â  kfree(dtpm);
+>> +Â Â Â Â Â Â Â  return -ENOMEM;
+>> +Â Â Â  }
+>> +
+>> +Â Â Â  dtpm->private = dtpm_cpu;
+>> +Â Â Â  dtpm_cpu->cpu = cpu;
+>> +
+>> +Â Â Â  for_each_cpu(cpu, policy->related_cpus)
+>> +Â Â Â Â Â Â Â  per_cpu(dtpm_per_cpu, cpu) = dtpm;
+>> +
+>> +Â Â Â  ret = power_add(dtpm, pd);
+>> +Â Â Â  if (ret)
+>> +Â Â Â Â Â Â Â  goto out_kfree_dtpm_cpu;
+>> +
+>> +Â Â Â  dtpm->power_limit = dtpm->power_max;
+> 
+> Here, the power_limit will be set only once with power_max
+> for a single CPU. I am not sure, but maybe we can simple say:
+> 
+> dtpm->power_limit = dtpm->power_max * cpumask_weight(policy->related_cpus)
+> 
+> an avoid touching it later (?)
+> 
+> Because this function can be called in runtime, when the power_limit
+> was already set by userspace, the hotpluging in/out/in... CPU shouldn't
+> change this limit.
 
-***
+Hmm, I have to think about it because the power_limit is always less or
+equal to power_max.
 
 
+-- 
+<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
 
-
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
