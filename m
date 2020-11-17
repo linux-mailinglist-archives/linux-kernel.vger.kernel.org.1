@@ -2,66 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC212B692F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE202B6938
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgKQP6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:58:23 -0500
-Received: from smtprelay0003.hostedemail.com ([216.40.44.3]:36376 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725767AbgKQP6X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:58:23 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 56C59182CF66C;
-        Tue, 17 Nov 2020 15:58:22 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2691:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3871:3872:4321:5007:10004:10400:10848:11232:11658:11914:12043:12297:12438:12740:12895:13069:13311:13357:13439:13894:14181:14659:21080:21221:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: push88_2a0d62927332
-X-Filterd-Recvd-Size: 1813
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 17 Nov 2020 15:58:21 +0000 (UTC)
-Message-ID: <756a22eddf82cbbdcdfe5bef1735154d123cd081.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: add fix option for
- ASSIGNMENT_CONTINUATIONS
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Tue, 17 Nov 2020 07:58:20 -0800
-In-Reply-To: <20201117105237.757-1-yashsri421@gmail.com>
-References: <20201117105237.757-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1726837AbgKQP6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:58:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgKQP6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 10:58:42 -0500
+Received: from kernel.org (unknown [77.125.7.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3B60238E6;
+        Tue, 17 Nov 2020 15:58:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605628721;
+        bh=9is+MjALfTGepw57FVx0JouySPxlzfHt3CDVLQ4Unmk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p8sWlliyDkUNYoXZjFWSoiuQvdgEZNX+2SxP4AeRu3E6J1nQ7q1oTfz+6Ip2yE0wn
+         cmwAFaK1S/AmhU4S6q0bHx0jhCupiexg9VCuzKWD3rTOMD16YOJ0wT4exivwNxppfK
+         VG9oFzcdjadQK9Y3xyHqBPePYLUqwIL58wy/neZo=
+Date:   Tue, 17 Nov 2020 17:58:29 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v8 2/9] mmap: make mlock_future_check() global
+Message-ID: <20201117155829.GJ370813@kernel.org>
+References: <20201112190827.GP4758@kernel.org>
+ <7A16CA44-782D-4ABA-8D93-76BDD0A90F94@redhat.com>
+ <20201115082625.GT4758@kernel.org>
+ <d47fdd2e-a8fa-6792-ca8f-e529be76340c@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d47fdd2e-a8fa-6792-ca8f-e529be76340c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-17 at 16:22 +0530, Aditya Srivastava wrote:
-> Currently, checkpatch warns us if an assignment operator is placed
-> at the start of a line and not at the end of previous line.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3542,8 +3542,14 @@ sub process {
->  
+On Tue, Nov 17, 2020 at 04:09:39PM +0100, David Hildenbrand wrote:
+> On 15.11.20 09:26, Mike Rapoport wrote:
+> > On Thu, Nov 12, 2020 at 09:15:18PM +0100, David Hildenbrand wrote:
+
+...
+
+> > My thinking was that since secretmem does what mlock() does wrt
+> > swapability, it should at least obey the same limit, i.e.
+> > RLIMIT_MEMLOCK.
 > 
->  # check for assignments on the start of a line
->  		if ($sline =~ /^\+\s+($Assignment)[^=]/) {
-> -			CHK("ASSIGNMENT_CONTINUATIONS",
-> -			    "Assignment operator '$1' should be on the previous line\n" . $hereprev);
-> +			my $operator = $1;
-> +			if (CHK("ASSIGNMENT_CONTINUATIONS",
-> +				"Assignment operator '$1' should be on the previous line\n" . $hereprev) &&
-> +			    $fix && $prevrawline =~ /^\+/) {
-> +				# add assignment operator to the previous line, remove from current line
-> +				$fixed[$fixlinenr - 1] .= " $operator";
-> +				$fixed[$fixlinenr] =~ s/$operator\s*//;
+> Right, but at least currently, it behaves like any other CMA allocation
+> (IIRC they are all unmovable and, therefore, not swappable). In the future,
+> if pages would be movable (but not swappable), I guess it might makes more
+> sense. I assume we never ever want to swap secretmem.
+> 
+> "man getrlimit" states for RLIMIT_MEMLOCK:
+> 
+> "This is the maximum number of bytes of memory that may be
+>  locked into RAM.  [...] This limit affects
+>  mlock(2), mlockall(2), and the mmap(2) MAP_LOCKED operation.
+>  Since Linux 2.6.9, it also affects the shmctl(2) SHM_LOCK opâ€
+>  eration [...]"
+> 
+> So that place has to be updated as well I guess? Otherwise this might come
+> as a surprise for users.
 
-As $operator could be a division, I believe it needs to be quoted.
+Sure.
 
+> > 
+> > > E.g., we also donâ€˜t
+> > > account for gigantic pages - which might be allocated from CMA and are
+> > > not swappable.
+> > Do you mean gigantic pages in hugetlbfs?
+> 
+> Yes
+> 
+> > It seems to me that hugetlbfs accounting is a completely different
+> > story.
+> 
+> I'd say it is right now comparable to secretmem - which is why I though
+> similar accounting would make sense.
 
+IMHO, using RLIMIT_MEMLOCK and memcg is a more straightforward way than
+a custom cgroup.
+
+And if we'll see a need for additional mechanism, we can always add it.
+ 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
+> 
+
+-- 
+Sincerely yours,
+Mike.
