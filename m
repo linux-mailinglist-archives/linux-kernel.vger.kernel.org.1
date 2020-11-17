@@ -2,46 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997742B6265
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0BC2B61AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731846AbgKQN2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:28:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36298 "EHLO mail.kernel.org"
+        id S1730847AbgKQNVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:21:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731823AbgKQN2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:28:12 -0500
+        id S1729481AbgKQNVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:21:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07F542168B;
-        Tue, 17 Nov 2020 13:28:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 526B12464E;
+        Tue, 17 Nov 2020 13:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619691;
-        bh=Q+zPvcNTMQ8xL1RFYLfLuAUC7/DAXrSDDaMTwC5n2VM=;
+        s=default; t=1605619274;
+        bh=FzkOdRW074rezyjYXQChK2BcxggfyWFQoUxukawEFjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2hN6j7DMTQnzLkScFMigQ1tQ6kHw2P3m+lo61KSK0sNa7yZ+DnKqJqSXVS3n9CctZ
-         HIXUNB3q3GYI5JozPivK8bsLEEO3FIa7KeAVo0lT5kLN2gEJnESuPpB72To7XdFUR2
-         NP4h03wDDj4dks3Ygx2SoyhLUv4JWbdcT4nmUET4=
+        b=CiarzUpk7LJhq+v+7El4+dERJcU2KVGlHQHBNjPemEbbWi8wp3juGRA3/DN5wNk90
+         hnktZFB/Xl1USvVwXR875MSocor3gn1F/Nwq8cjWz0MWUW7awRL5+nzRuy+f+HRci5
+         OvVbrN/mzpchgBI4nofurjreRX6ANTtklwI7P1S4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Petr Mladek <pmladek@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Fabian Frederick <fabf@skynet.be>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 123/151] Revert "kernel/reboot.c: convert simple_strtoul to kstrtoint"
-Date:   Tue, 17 Nov 2020 14:05:53 +0100
-Message-Id: <20201117122127.407404649@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Oliver Herms <oliver.peter.herms@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 087/101] IPv6: Set SIT tunnel hard_header_len to zero
+Date:   Tue, 17 Nov 2020 14:05:54 +0100
+Message-Id: <20201117122117.368413165@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,86 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+From: Oliver Herms <oliver.peter.herms@gmail.com>
 
-commit 8b92c4ff4423aa9900cf838d3294fcade4dbda35 upstream.
+[ Upstream commit 8ef9ba4d666614497a057d09b0a6eafc1e34eadf ]
 
-Patch series "fix parsing of reboot= cmdline", v3.
+Due to the legacy usage of hard_header_len for SIT tunnels while
+already using infrastructure from net/ipv4/ip_tunnel.c the
+calculation of the path MTU in tnl_update_pmtu is incorrect.
+This leads to unnecessary creation of MTU exceptions for any
+flow going over a SIT tunnel.
 
-The parsing of the reboot= cmdline has two major errors:
+As SIT tunnels do not have a header themsevles other than their
+transport (L3, L2) headers we're leaving hard_header_len set to zero
+as tnl_update_pmtu is already taking care of the transport headers
+sizes.
 
- - a missing bound check can crash the system on reboot
+This will also help avoiding unnecessary IPv6 GC runs and spinlock
+contention seen when using SIT tunnels and for more than
+net.ipv6.route.gc_thresh flows.
 
- - parsing of the cpu number only works if specified last
-
-Fix both.
-
-This patch (of 2):
-
-This reverts commit 616feab753972b97.
-
-kstrtoint() and simple_strtoul() have a subtle difference which makes
-them non interchangeable: if a non digit character is found amid the
-parsing, the former will return an error, while the latter will just
-stop parsing, e.g.  simple_strtoul("123xyx") = 123.
-
-The kernel cmdline reboot= argument allows to specify the CPU used for
-rebooting, with the syntax `s####` among the other flags, e.g.
-"reboot=warm,s31,force", so if this flag is not the last given, it's
-silently ignored as well as the subsequent ones.
-
-Fixes: 616feab75397 ("kernel/reboot.c: convert simple_strtoul to kstrtoint")
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc: Robin Holt <robinmholt@gmail.com>
-Cc: Fabian Frederick <fabf@skynet.be>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201103214025.116799-2-mcroce@linux.microsoft.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
+Signed-off-by: Oliver Herms <oliver.peter.herms@gmail.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Link: https://lore.kernel.org/r/20201103104133.GA1573211@tws
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/reboot.c |   21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+ net/ipv6/sit.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -551,22 +551,15 @@ static int __init reboot_setup(char *str
- 			break;
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -1087,7 +1087,6 @@ static void ipip6_tunnel_bind_dev(struct
+ 	if (tdev && !netif_is_l3_master(tdev)) {
+ 		int t_hlen = tunnel->hlen + sizeof(struct iphdr);
  
- 		case 's':
--		{
--			int rc;
--
--			if (isdigit(*(str+1))) {
--				rc = kstrtoint(str+1, 0, &reboot_cpu);
--				if (rc)
--					return rc;
--			} else if (str[1] == 'm' && str[2] == 'p' &&
--				   isdigit(*(str+3))) {
--				rc = kstrtoint(str+3, 0, &reboot_cpu);
--				if (rc)
--					return rc;
--			} else
-+			if (isdigit(*(str+1)))
-+				reboot_cpu = simple_strtoul(str+1, NULL, 0);
-+			else if (str[1] == 'm' && str[2] == 'p' &&
-+							isdigit(*(str+3)))
-+				reboot_cpu = simple_strtoul(str+3, NULL, 0);
-+			else
- 				*mode = REBOOT_SOFT;
- 			break;
--		}
-+
- 		case 'g':
- 			*mode = REBOOT_GPIO;
- 			break;
+-		dev->hard_header_len = tdev->hard_header_len + sizeof(struct iphdr);
+ 		dev->mtu = tdev->mtu - t_hlen;
+ 		if (dev->mtu < IPV6_MIN_MTU)
+ 			dev->mtu = IPV6_MIN_MTU;
+@@ -1377,7 +1376,6 @@ static void ipip6_tunnel_setup(struct ne
+ 	dev->priv_destructor	= ipip6_dev_free;
+ 
+ 	dev->type		= ARPHRD_SIT;
+-	dev->hard_header_len	= LL_MAX_HEADER + t_hlen;
+ 	dev->mtu		= ETH_DATA_LEN - t_hlen;
+ 	dev->min_mtu		= IPV6_MIN_MTU;
+ 	dev->max_mtu		= IP6_MAX_MTU - t_hlen;
 
 
