@@ -2,106 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F1C2B5DDE
+	by mail.lfdr.de (Postfix) with ESMTP id ED8CD2B5DE0
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgKQLCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728460AbgKQLCc (ORCPT
+        id S1727981AbgKQLDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:03:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37248 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727740AbgKQLDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:02:32 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE30AC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:02:30 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id q7so10331473qvt.12
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:02:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=BYhYUhRJ3iwbx5RvkgDxhY0ZIfAUwuAVrsbzhkyOflE=;
-        b=TsCZ+s1zX1l7W/if2zXBLgDZmu4zdx2DouPu8hzzPHrus5TpjmVgB38Q55AEb9vrvQ
-         r2eDCY6iyfR5uxf3uRSuzxs1H4NtuO460Av7jzU31jK3O8UB7v8umt/b/ORt8VwkWVzj
-         IXixH024be4M0VOrMGgTTlooicSOOQvCtqy3tM0SXaZe/GJkHTTQpdQ/RBdv192XzafL
-         1eFacw5BFnzZDGhpf+8ARDIJkhFc7UpkYoXoPP/ZTSd1Gbuu8C5LKf8Vvk/0hhqtiVOA
-         xFtJTFteKIbp5C7JId/AOw8WOU/db0yZkrnAHBSyhaKbQe2KpVIkLw0R70M/iG+hrimY
-         fR2w==
+        Tue, 17 Nov 2020 06:03:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605610997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h5lmX7LExkzM+QM3a2cocE9/WZPLYRxF3to83Xkns2o=;
+        b=dtoD41TI1HKT2P8ADcaX/MlftH/jTBmq1Ghd+ctT+fg0ES4fefV+CL+Oj5HvIAZvrc03Zc
+        6wLvarHAhKpnPiO9chyCaxdTOPQv6cPSFvY71qIcHjBQbnBBnHC8xaINtBTQ89AdkWfyvj
+        qWBPJoTFgWfVZSRRdq0mqezkY6z4MyU=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-_8LL4duEMRy0b54WlA5mQA-1; Tue, 17 Nov 2020 06:03:15 -0500
+X-MC-Unique: _8LL4duEMRy0b54WlA5mQA-1
+Received: by mail-wr1-f71.google.com with SMTP id u1so12924227wri.6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:03:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=BYhYUhRJ3iwbx5RvkgDxhY0ZIfAUwuAVrsbzhkyOflE=;
-        b=iTM4xi1XUWkYDprwjjMYDuWmt36ZWX6MNhNQriinGbyzt8pz/T2UQ/SPaP4AhHkYK7
-         p+IJmGy09Un6CppcCEKuXx2hcFajKj+X+DLktaKjPDysITeUVunuMOVbo4G7hBSPdiun
-         OLYGpdsZgH3ckYMDJnOQmXxE/OorQLEMJ4ZGEdfUDJ5NK0HpkQIzZDrLhOrr91iALpnU
-         l7foWToms6FBgS72ioXrKKod6R42LsddXvS1bRig9Ke8A7xeBHeSUugI7wt5b5x3EveA
-         hvG9wI3LUkOqaqeLV/yxgRlAJjcXqUIaFOZZ2LsXSbXm9sDaPYLzwLq0ksOjNAP664rx
-         szrA==
-X-Gm-Message-State: AOAM531mNicyzHF1+pWmJtPbYlo1pmnyPe37HNo3iu/8Rj8KWcWkOXqH
-        RVOdgkOfGp/od9cjQA+FtnMV0TRWqy17szPsgKk=
-X-Google-Smtp-Source: ABdhPJxxI/eoxXY1u174ISa6KmuLtm/AgMdbNW+HqTUq0/f9jUyLfDo7lE33ny74yRGpuA047ftYDk86TmMFwguY56A=
-X-Received: by 2002:a05:6214:c4e:: with SMTP id r14mr13789628qvj.22.1605610950084;
- Tue, 17 Nov 2020 03:02:30 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h5lmX7LExkzM+QM3a2cocE9/WZPLYRxF3to83Xkns2o=;
+        b=KT16YZ7xTNIXP+KV8d1ga9VDztD238hE3XGNbgMdO+GLx/cb22G4xGfsOYBXvqa6yP
+         C7e+JO0Fs+OGdyXlsaXPTgjm7Y8PKVSJo08v0TTdnXRIFWAMDrYcBid88j7WstBd92FP
+         tKYY0akw+o1esYNdxEm2bVg/lS1QUXHgWpDXBzHi96nSYDQTRNDiDbZPhjjn+GP7mnxb
+         WcpywaCIbT/SZw4O37xO4Wlx7axvEe2N8aJaL0AMvXsHB1LHi8nvRVcmSJur/4zYRCJ/
+         rE2Rp+lCDeywADMiH16kPwQ6GmFHoyyGc52doZGIdx8ROuPqJvJK6pVVx7vBuLO5YjAb
+         6xmw==
+X-Gm-Message-State: AOAM533cDUIusDy8qBjW2ZlRDwlqf5mtuGydYUDG/vn3WxKwJJKWE45G
+        ZO7Sal7Iw5wGKeSZGtolHB96MqyQXXCmhmIpAppU/+OmUXuKio6JhaW+Ej+vPbTO59xJjt5t/wV
+        h11boGfkonTyh6uSf0E14uy3w
+X-Received: by 2002:adf:a2c2:: with SMTP id t2mr25295042wra.54.1605610994149;
+        Tue, 17 Nov 2020 03:03:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxhzCHrbfSX6RQjbbtqNxHHoDd2RnJkMXxmQCe8E3wqAYWOCJAnCPyC2ZlHe6lR3BY1URbqVg==
+X-Received: by 2002:adf:a2c2:: with SMTP id t2mr25295004wra.54.1605610993917;
+        Tue, 17 Nov 2020 03:03:13 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id h128sm3216045wme.38.2020.11.17.03.03.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 03:03:13 -0800 (PST)
+Subject: Re: [PATCH v2 0/2] KVM: SVM: Create separate vmcbs for L1 and L2
+To:     Cathy Avery <cavery@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     vkuznets@redhat.com, wei.huang2@amd.com, mlevitsk@redhat.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <20201011184818.3609-1-cavery@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1a450000-dd0c-6c38-191b-8ad869c21807@redhat.com>
+Date:   Tue, 17 Nov 2020 12:03:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Reply-To: mrsmayaoliver7@gmail.com
-Sender: bestberlin411@gmail.com
-Received: by 2002:ac8:1c23:0:0:0:0:0 with HTTP; Tue, 17 Nov 2020 03:02:29
- -0800 (PST)
-From:   "Mrs. Maya Oliver" <mrsmayaoliver7@gmail.com>
-Date:   Tue, 17 Nov 2020 03:02:29 -0800
-X-Google-Sender-Auth: ezz-WK4FhkB6aQB52-V3Rq0dU_s
-Message-ID: <CA+SOPk_BrKuJ095Ga6cyvLByoVi2ho4oqh0yaE-S1apdGn4Y3Q@mail.gmail.com>
-Subject: My Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201011184818.3609-1-cavery@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear
+Hi Cathy,
 
-My Name is Mrs. Maya Oliver, from Norway. I know that this message
-will be a surprise to you. Firstly, I am married to Mr. Patrick
-Oliver, A gold merchant who owns a small gold Mine in Burkina Faso; He
-died of Cardiovascular Disease in mid-March 2011. During his life time
-he deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five
-hundred thousand Euros in a bank in Ouagadougou the capital city of
-Burkina Faso. The deposited money was from the sale of the shares,
-death benefits payment and entitlements of my deceased husband by his
-company.
+I found an issue with the second patch: the svm->asid_generation and 
+svm->vcpu.cpu fields must become per-VMCB.  Once again we are 
+rediscovering what VMX already does (for different reasons) with its 
+struct loaded_vmcs.
 
-I am sending this message to you praying that it will reach you in
-good health, since I am not in good health condition in which I sleep
-every night without knowing if I may be alive to see the next day. I
-am suffering from long time cancer and presently i am partially
-suffering from a stroke illness which has become almost impossible for
-me to move around. I am married to my late husband for over 4 years
-before he died and is unfortunately that we don't have a child, my
-doctor confided in me that i have less chance to live. Having known my
-health condition, I decided to contact you to claim the fund since I
-don't have any relation I grew up from the orphanage home,
+The good thing is that it can be worked around easily: for the ASID 
+generation, it simply be cleared after changing svm->vmcb.  For the CPU 
+field, it's not an issue yet because the VMCB is marked all-dirty after 
+each switch.  With these workarounds, everything works nicely.
 
-I have decided to donate what I have to you for the support of helping
-Motherless babies/Less privileged/Widows' because I am dying and
-diagnosed of cancer for about 2 years ago. I have been touched by God
-Almighty to donate from what I have inherited from my late husband to
-you for good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has, because He is a Merciful God I will be
-going in for an operation surgery soon
+However, removing the calls to vmcb_mark_all_dirty is the main 
+optimization that is enabled by the VMCB01/VMCB02 split, so it should be 
+fixed too.  And also, the code duplication every time svm->vmcb is 
+assigned starts to be ugly, proving Sean to be right. :)
 
-This is the reason i need your services to stand as my next of kin or
-an executor to claim the funds for charity purposes. If this money
-remains unclaimed after my death, the bank executives or the
-government will take the money as unclaimed fund and maybe use it for
-selfish and worthless ventures, I need a very honest person who can
-claim this money and use it for Charity works, for orphanages, widows
-and also build schools for less privilege that will be named after my
-late husband and my name; I need your urgent answer to know if you
-will be able to execute this project, and I will give you more
-Information on how the fund will be transferred to your bank account.
+My suggestion is that you do something like this:
 
-Thanks
-Mrs. Maya
+1) create a struct for all per-VMCB data:
+
+	struct kvm_vmcb_info {
+		void *ptr;
+		u64 pa;
+	}
+
+and use it in structs vcpu_svm and svm_nested_state:
+
+	struct vcpu_svm {
+		...
+		struct kvm_vmcb_info vmcb01;
+		struct kvm_vmcb_info *current_vmcb;
+		void *vmcb;
+		u64 vmcb_pa;
+		...
+	}
+
+	struct svm_nested_state {
+		struct kvm_vmcb_info vmcb02;
+		...
+	}
+
+The struct can be passed to a vmcb_switch function like this one:
+
+	void vmcb_switch(struct vcpu_svm *svm,
+			 struct kvm_vmcb_info *target_vmcb)
+	{
+		svm->current_vmcb = target_vmcb;
+		svm->vmcb = target_vmcb->ptr;
+		svm->vmcb_pa = target_vmcb->pa;
+
+		/*
+		 * Workaround: we don't yet track the ASID generation
+		 * that was active the last time target_vmcb was run.
+		 */
+		svm->asid_generation = 0;
+
+		/*
+		 * Workaround: we don't yet track the physical CPU that
+		 * target_vmcb has run on.
+		 */
+		vmcb_mark_all_dirty(svm->vmcb);
+	}
+
+You can use this function every time the current code is assigning to 
+svm->vmcb.  Once the struct and function is in place, we can proceed to 
+removing the last two (inefficient) lines of vmcb_switch by augmenting 
+struct kvm_vmcb_info.
+
+2) First, add an "int cpu" field.  Move the vcpu->cpu check from 
+svm_vcpu_load to pre_svm_run, using svm->current_vmcb->cpu instead of 
+vcpu->cpu, and you will be able to remove the vmcb_mark_all_dirty call 
+from vmcb_switch.
+
+3) Then do the same with asid_generation.  All uses of 
+svm->asid_generation become uses of svm->current_vmcb->asid_generation, 
+and you can remove the clearing of svm->asid_generation.
+
+These can be three separate patches on top of the changes you have sent 
+(or rather the rebased version, see below).  Writing good commit 
+messages for them will be a good exercise too. :)
+
+I have pushed the current nested SVM queue to kvm.git on a "nested-svm" 
+branch.  You can discard the top commits and work on top of commit 
+a33b86f151a0 from that branch ("KVM: SVM: Use a separate vmcb for the 
+nested L2 guest", 2020-11-17).
+
+Once this is done, we can start reaping the advantages of the 
+VMCB01/VMCB02 split.  Some patches for that are already in the 
+nested-svm branch, but there's more fun to be had.  First of all, 
+Maxim's ill-fated attempt at using VMCB12 clean bits will now work. 
+Second, we can try doing VMLOAD/VMSAVE always from VMCB01 (while VMRUN 
+switches between VMCB01 and VMCB02) and therefore remove the 
+nested_svm_vmloadsave calls from nested_vmrun and nested_vmexit.  But, 
+one thing at a time.
+
+Thanks,
+
+Paolo
+
