@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE0A2B7038
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36EAA2B703D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728597AbgKQUgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:36:50 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55294 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726805AbgKQUgt (ORCPT
+        id S1728718AbgKQUhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:37:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728630AbgKQUhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:36:49 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AHKaihr072887;
-        Tue, 17 Nov 2020 14:36:44 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605645404;
-        bh=7g8+febBysogqn0CrrzambHHvshikLPusWzANaG4ARM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=WzvjfoShrXMk2Oaw229UmzxJt/tpCFx90MecnbO11SqjKHmyE0Qbw2Nq7VTS1YkMO
-         vZ8Zp74GzEvy1fjyG94uj7+GFN1h0gc/GhhsWGDBKnkUKiAzxFqkoDRf9BaXJqCH5E
-         2mQNOExw1W4B6ACKTeGe6pENbOmXikxsoLakBHlk=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AHKaiFg048577
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 17 Nov 2020 14:36:44 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 17
- Nov 2020 14:36:43 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 17 Nov 2020 14:36:43 -0600
-Received: from [10.250.40.192] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AHKahRp018100;
-        Tue, 17 Nov 2020 14:36:43 -0600
-Subject: Re: [PATCH net-next v4 2/4] dt-bindings: net: Add Rx/Tx output
- configuration for 10base T1L
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <robh@kernel.org>,
-        <ciorneiioana@gmail.com>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201117201555.26723-1-dmurphy@ti.com>
- <20201117201555.26723-3-dmurphy@ti.com> <20201117203150.GA1800835@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <553087de-e6e4-23b9-e8c0-d77b430703f3@ti.com>
-Date:   Tue, 17 Nov 2020 14:36:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 17 Nov 2020 15:37:08 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4D4C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:37:06 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id b17so25796836ljf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:37:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VBawTBZeGDei1h6v3qT5rtQtXBaTES0YnmaYqJM2GNs=;
+        b=D+N/vgCe2QB5LLybajWeW3aLxWfyO6wqQ0s1MXm5AKuHEiaMK+zq0b6I+SbTc5jNMb
+         fVgahe8wLHQTjRL5PEMhtUFS1/zunYiAzwibsGLFHlmb2q/q+sOyfThNJAnFdXDcMlQa
+         bDPDKADnIiE60UbmgItJ1BP+RNIVmplSStluy/36J3KtDJGRcDhPKtwGXBBs4bfz4hrX
+         C/d7fAogdTgk+F6kFerrwo9wl+7tG2esiZEaD40ieVHUuezWchN/w/Sm1m8u0lDcwNWl
+         SZ8pg1OE1r/N3fKHQKDeD7b9bGEJ+2FKWk2HKvAFuufmRDSmP8qqeR691T4cNIzfkYJW
+         m48w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VBawTBZeGDei1h6v3qT5rtQtXBaTES0YnmaYqJM2GNs=;
+        b=PTBveL2SbwWMOTj/AirfO8xqqQUGoM/eBcwbUBtNinn+O6Kkmdtb5MLcQqnINAAOxk
+         3hXIKVX94oL0fTNqRjhWtOrTQEt87qQsv5D9K1ecqwQFqJr43sgu0jjmFHKBMVDBtlWf
+         HqeuXmRnKrAVSL5vIOZGbPoD9/F7ds6WdXh5pZiv2AyiIHbmJ2Fs1GLM+lPJjJbM/ggH
+         HpzDxmzxn/c/aW7IqYnwVzXoCqbWVsJwdFDyQnHZf4pgLnhh/6Bk623gtII2lLCpD/X5
+         uMXaJqdh6BUsvel2ltU0deIUFJ7YkUS96ZPl/VLaJ/L7enG1z50me63k3m5koT5LEZOv
+         1lyQ==
+X-Gm-Message-State: AOAM530W3AHnLFGqd7ghgpJdqZNDX+koUm1EQ73kTqGyAwcmEevRyEJS
+        HJfT7t2fqwy+OESkp/mGQ/ffezLoINJZ3HYjlpp1cA==
+X-Google-Smtp-Source: ABdhPJwaS2B6HfL/+PScb1mQInpJJpSlRKinA0MJAmBjiWs9aJ0EGtMf1sjwzqSjWpH0V50ABOt7UCdKF0FZIH63EBE=
+X-Received: by 2002:a2e:b1c9:: with SMTP id e9mr1535370lja.283.1605645424802;
+ Tue, 17 Nov 2020 12:37:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201117203150.GA1800835@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <cover.1605635248.git.agx@sigxcpu.org> <1321f3abdc3df6e9d1999bd32b436ae71e89c27e.1605635248.git.agx@sigxcpu.org>
+In-Reply-To: <1321f3abdc3df6e9d1999bd32b436ae71e89c27e.1605635248.git.agx@sigxcpu.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 17 Nov 2020 21:36:53 +0100
+Message-ID: <CACRpkdbkcYz7RHz8_7ab-vVvBpOaD+SEosPZpvh8NNqDBuzfqA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/6] drm/panel: mantix: Tweak init sequence
+To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+On Tue, Nov 17, 2020 at 6:49 PM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
 
-On 11/17/20 2:31 PM, Andrew Lunn wrote:
-> On Tue, Nov 17, 2020 at 02:15:53PM -0600, Dan Murphy wrote:
->> Per the 802.3cg spec the 10base T1L can operate at 2 different
->> differential voltages 1v p2p and 2.4v p2p. The abiility of the PHY to
-> ability
-Ack
+> We've seen some (non permanent) burn in and bad white balance
+> on some of the panels. Adding this bit from a vendor supplied
+> sequence fixes it.
 >
->> drive that output is dependent on the PHY's on board power supply.
->> This common feature is applicable to all 10base T1L PHYs so this binding
->> property belongs in a top level ethernet document.
->>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>   Documentation/devicetree/bindings/net/ethernet-phy.yaml | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/net/ethernet-phy.yaml b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
->> index 6dd72faebd89..bda1ce51836b 100644
->> --- a/Documentation/devicetree/bindings/net/ethernet-phy.yaml
->> +++ b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
->> @@ -174,6 +174,12 @@ properties:
->>         PHY's that have configurable TX internal delays. If this property is
->>         present then the PHY applies the TX delay.
->>   
->> +  max-tx-rx-p2p-microvolt:
->> +    description: |
->> +      Configures the Tx/Rx p2p differential output voltage for 10base-T1L PHYs.
-> Does it configure, or does it limit? I _think_ this is a negotiation
-> parameter, so the PHY might decide to do 1100mV if the link peer is
-> near by even when max-tx-rx-p2p-microvolt has the higher value.
+> Fixes: 72967d5616d3 ("drm/panel: Add panel driver for the Mantix MLAF057W=
+E51-X DSI panel")
+> Signed-off-by: Guido G=C3=BCnther <agx@sigxcpu.org>
 
-For this device we can configure or force it to only work at 1.1v p2p 
-otherwise 2.4 is the default.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-But each LP's have to be configured for the same voltage. unless auto 
-negotiation is on then it negotiates the voltage.
-
-Dan
-
->
->       Andrew
+Yours,
+Linus Walleij
