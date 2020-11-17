@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC5A2B6FBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 337FF2B6FBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731172AbgKQUKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKQUKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:10:37 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4911C0613CF;
-        Tue, 17 Nov 2020 12:10:37 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id f12so1074992pjp.4;
-        Tue, 17 Nov 2020 12:10:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bmbJEohduwIPhnsFk/cfq3mtQUXTQveb1Iq9VOsGuMU=;
-        b=jZM/9RMqhYJxtofwet0Zn613Rc8plW58KNwfn1ShIQjROJ5GlqgnuRc3EY2GyZA/2H
-         eK/0gn7vkgWnlC+1vElgkJOMFlZVdbCNoxfVb4awATNTv3IMPsz2OCIz9XcR7KyhXRq/
-         HY/F5JTv5PY16HTaPfCAwv9DdfYiaxYN+OXAZhJ+UXyZdAzrXNMpZnVfwgWVkPbHfXk+
-         cewSFd0i0ynorooarcBhYRx+Ht+blCi36jqFc7aqMGBvwdNJX3PfYn61oHxx0FUvACiJ
-         THQJ5IB4xxrVnJyLaVIGzTQ3Hyy1qsaHvy8oyIpzlomQmm/tYMGehXj+zkcksv/ZPzhz
-         6FJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bmbJEohduwIPhnsFk/cfq3mtQUXTQveb1Iq9VOsGuMU=;
-        b=pUN8BczV0iaN07Q4uM1XB4j2lpabc1nI24eO3Th24efxpL+CzC6APSotWCqivwDVsf
-         zhfK7BJ1h+dOBGyQWF+Uhd4Z37Q3qZMFoRjwQMbMjchhWcliIQ5Jymz/oRebix7blgCU
-         WppAEn/9vHBEJzkMWMhJ7ryz64WKjBCsuZ9icv74ELyovdvv77pxB06625616LuO7BeU
-         HXj8Gzz1Ua5Rev80Yk6vSCN6j3klhX4mYF1jtso+ycjBpmONIwZRYfLq9S7CtQP7NrVr
-         TPpxh1PqZs+fLbVX3THLjB/wBVMBeAmeFJlLpVoxOmnV7odngafpD+Vsv2O5/WIzI3MU
-         bTTA==
-X-Gm-Message-State: AOAM532n5SG2tIv2od76EYAqdj7g8No5hKKj2yXR5HM3elPqFOhnKygO
-        RpzVgJhOB2CR3hxocXmoRMY=
-X-Google-Smtp-Source: ABdhPJz5uefSitZ/i0yMZ12HAGdsOeL40fwWRL8vg1C3nO+a8kN0tYqDfbzee8n5UI0eCMDZxR/hRg==
-X-Received: by 2002:a17:90a:fa93:: with SMTP id cu19mr735753pjb.117.1605643837076;
-        Tue, 17 Nov 2020 12:10:37 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id h32sm19167326pgl.36.2020.11.17.12.10.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 12:10:36 -0800 (PST)
-Date:   Tue, 17 Nov 2020 12:10:34 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: Re: [PATCH] Input: sunkbd - fix UAF in sunkbd_reinit()
-Message-ID: <20201117201034.GA2009714@dtor-ws>
-References: <20201117132751.14863-1-yangyingliang@huawei.com>
+        id S1731487AbgKQUKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:10:55 -0500
+Received: from mga02.intel.com ([134.134.136.20]:47971 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725771AbgKQUKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:10:41 -0500
+IronPort-SDR: RTY3pewITNH9P1e29O3A2kOgtnuq8tzLhs23QpPHnp5MEIWD6/7PT1PpQ8lxXxAYLrAeCwFZ1L
+ xImRK6L/w6wA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="158033899"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="158033899"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:10:38 -0800
+IronPort-SDR: 4OHLaR8PqVGEgsWMQQj6l6s8DzfRVg7aJFG0PVgrL4/tln6zbSbJ9OYLdIvjXPwiKeK6L6inPO
+ mAtn4U7GFG3A==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="544192441"
+Received: from chimtrax-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.222])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 12:10:38 -0800
+Subject: Re: [PATCH v11 05/16] PCI/ERR: Rename reset_link() to
+ reset_subordinates()
+To:     Sean V Kelley <sean.v.kelley@intel.com>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, xerces.zhao@gmail.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        qiuxu.zhuo@intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201117191954.1322844-1-sean.v.kelley@intel.com>
+ <20201117191954.1322844-6-sean.v.kelley@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <80f4244a-5d1a-7b47-3f89-d97d0a589b30@linux.intel.com>
+Date:   Tue, 17 Nov 2020 12:10:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117132751.14863-1-yangyingliang@huawei.com>
+In-Reply-To: <20201117191954.1322844-6-sean.v.kelley@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang,
+Hi,
 
-On Tue, Nov 17, 2020 at 09:27:51PM +0800, Yang Yingliang wrote:
+On 11/17/20 11:19 AM, Sean V Kelley wrote:
+> reset_link() appears to be misnamed.  The point is to reset any devices
+> below a given bridge, so rename it to reset_subordinates() to make it clear
+> that we are passing a bridge with the intent to reset the devices below it.
 > 
-> After sunkbd->tq is added to workqueue, before scheduled work finish, sunkbd is
-> freed by sunkbd_disconnect(), when sunkbd is used in sunkbd_reinit(), it causes
-> a UAF. Fix this by calling flush_scheduled_work() before free sunkbd.
-> 
-> This fixes CVE-2020-25669.
-> 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> [bhelgaas: fix reset_subordinate_device() typo, shorten name]
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Link: https://lore.kernel.org/r/20201002184735.1229220-5-seanvk.dev@oregontracks.org
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > ---
->  drivers/input/keyboard/sunkbd.c | 1 +
->  1 file changed, 1 insertion(+)
+>   drivers/pci/pci.h      | 4 ++--
+>   drivers/pci/pcie/err.c | 8 ++++----
+>   2 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/input/keyboard/sunkbd.c b/drivers/input/keyboard/sunkbd.c
-> index 27126e621eb6..b6222896acdf 100644
-> --- a/drivers/input/keyboard/sunkbd.c
-> +++ b/drivers/input/keyboard/sunkbd.c
-> @@ -316,6 +316,7 @@ static void sunkbd_disconnect(struct serio *serio)
->  {
->  	struct sunkbd *sunkbd = serio_get_drvdata(serio);
->  
-> +	flush_scheduled_work();
-
-This is unfortunately racy as we may get interrupt and reschedule the
-work again before we get to disabling the port.
-
-It is properly fixed by 77e70d351db7de07a46ac49b87a6c3c7a60fca7e.
-
->  	sunkbd_enable(sunkbd, false);
->  	input_unregister_device(sunkbd->dev);
->  	serio_close(serio);
-> -- 
-> 2.17.1
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 12dcad8f3635..3c4570a3058f 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -572,8 +572,8 @@ static inline int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
+>   
+>   /* PCI error reporting and recovery */
+>   pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+> -			pci_channel_state_t state,
+> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
+> +		pci_channel_state_t state,
+> +		pci_ers_result_t (*reset_subordinates)(struct pci_dev *pdev));
+>   
+>   bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
+>   #ifdef CONFIG_PCIEASPM
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index c543f419d8f9..db149c6ce4fb 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -147,8 +147,8 @@ static int report_resume(struct pci_dev *dev, void *data)
+>   }
+>   
+>   pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+> -			pci_channel_state_t state,
+> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
+> +		pci_channel_state_t state,
+> +		pci_ers_result_t (*reset_subordinates)(struct pci_dev *pdev))
+>   {
+>   	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+>   	struct pci_bus *bus;
+> @@ -165,9 +165,9 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>   	pci_dbg(dev, "broadcast error_detected message\n");
+>   	if (state == pci_channel_io_frozen) {
+>   		pci_walk_bus(bus, report_frozen_detected, &status);
+> -		status = reset_link(dev);
+> +		status = reset_subordinates(dev);
+>   		if (status != PCI_ERS_RESULT_RECOVERED) {
+> -			pci_warn(dev, "link reset failed\n");
+> +			pci_warn(dev, "subordinate device reset failed\n");
+>   			goto failed;
+>   		}
+>   	} else {
 > 
-
-Thanks.
 
 -- 
-Dmitry
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
