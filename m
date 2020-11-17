@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E302B7224
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 504F62B722C
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728892AbgKQXUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:20:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
+        id S1729088AbgKQXUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:20:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728835AbgKQXUg (ORCPT
+        with ESMTP id S1728857AbgKQXUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:20:36 -0500
+        Tue, 17 Nov 2020 18:20:38 -0500
 Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D364C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:36 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id v143so42468qkb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49C1C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:37 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id a13so28677qkl.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=VPSOzxBuhrqOGihjbHgtv0qjD3UKBL0IUmAQYIlYK+c=;
-        b=l9QxaTKdQwQA7Cl33JZIoIYsAumSeADU95QBkUMbq5wPzXh+6UQlr5FQ1sKxPHJ0N0
-         f8VeKa+bTbQpkNOK4a7xcwuNYxGPPZHC2V4JvPn3kZiRRkhGIrnhh1Gw5GAMBas9weOG
-         Y7K91HrDAqcGY016lYfXWW8sqEwswbaJr4n8U=
+        bh=uwgACvUC+jgEBROgGyLWrwdXgyZr1axLbHJ4ZXmNfrc=;
+        b=LFUA6H8QqFGJvQcrbbvdVbwaQHXcRg7kWFYgU1iTJzjtLg0L48Hf0Ddh40olAaoaMq
+         7QzzB/zvWBKjBcy4wEobySGjaXTlDsIeJOJzSjgVyUujiGNHVbCW7+1P5krm3I/1c6ST
+         rfBJ+1HDLaVLyflPYRosDFaDqz6QE1sC1gnhw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VPSOzxBuhrqOGihjbHgtv0qjD3UKBL0IUmAQYIlYK+c=;
-        b=Sxn5ddHRDpsLHzt2iTrxRu9sV/AwPBwFU/yOkb40IdcCUxeLnRmPevLne0lhcDuZ9c
-         qN+dDpoAx+jr8j/tl1M2IZb4Q+r/Oei/APBdemugZ/cYJBECYLe50hdJT+8oPALb7Btm
-         ybcVo+YGns0W5qaZk3/gREWADQYLzYJ8IVoieOVg5pfRqExnGYKLf8DHqEon6mslsZfn
-         GLqMxQriYIcaQCvf8nMyQTpVNJXCH7rIRpyBuU7Y3SENwFtEDaQwDfOv4rUNQrE1EO2Q
-         EX8j9S3f/Qx9PXzfYJ5uDjoNmx5wdP9UST/igAL8xBlx6nNTzMqoBxaqUl2Fg+x4EWRV
-         jJdg==
-X-Gm-Message-State: AOAM531lbFGAthGNsr9UMfye3F4QU0EqZUjSyMNC61ndXgB4/Fm8J6ZY
-        lH27/335PTeI8CpWoOocVtXRHQ==
-X-Google-Smtp-Source: ABdhPJxIWErcjom4Cb5wck7QOzNI/jSgxRJJ8VGbZOeOXtr/Lm+ZEFXry60Dq5Ikiuiirh2+Mnz71Q==
-X-Received: by 2002:a05:620a:148d:: with SMTP id w13mr2002772qkj.299.1605655235375;
-        Tue, 17 Nov 2020 15:20:35 -0800 (PST)
+        bh=uwgACvUC+jgEBROgGyLWrwdXgyZr1axLbHJ4ZXmNfrc=;
+        b=pN/J7OvnvTiMzl64Arj/k1FD0GpqCLMSafRo4lzMQ/c0Dm8tA+/EJg+9z9xJYuRf+O
+         09ajlHWo8kUD4qoROu7nPc0A5T4eVgG5CjNqIDqq04twXyE3UABfp7GRCNJ3ZJXbyhZd
+         que4pMP3AgToIuQWG7r8nh5hhV6RSzZAkwJd8hA0MAwDTHk9uVD5Z9wIttJH0trV27A+
+         XPOWCR489cTd0gduqQNdh9zW3lOO06zQfLqP4Cr2NlrzyytBoQ+CpGA7BP708Rj3J9Kj
+         rFlvfAEpXJSZjsfgsh68alpURvzj3vsjEqH+SkjD/SL4xlIqtxFER4XDDPDLVrSTNBQJ
+         6xqA==
+X-Gm-Message-State: AOAM531c2Sv1nvn47A9vAsccy3cP+GgtdLCn52HeJrxIIIvfz/m7vGq1
+        cOyrISj34azY5CiTD4xiG5lIVw==
+X-Google-Smtp-Source: ABdhPJwZW4823DMbklDPWeclOtfOgN12Qru3ZXDZpJ/N6X/gf0VH9qVFUdM8Smfh/3Jn/Y6X1k+sdw==
+X-Received: by 2002:a37:9ed3:: with SMTP id h202mr2140866qke.126.1605655237107;
+        Tue, 17 Nov 2020 15:20:37 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id d12sm14555544qtp.77.2020.11.17.15.20.33
+        by smtp.gmail.com with ESMTPSA id d12sm14555544qtp.77.2020.11.17.15.20.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 15:20:34 -0800 (PST)
+        Tue, 17 Nov 2020 15:20:36 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -78,9 +78,9 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         Aubrey Li <aubrey.li@linux.intel.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Tim Chen <tim.c.chen@intel.com>
-Subject: [PATCH -tip 11/32] sched: Enqueue task into core queue only after vruntime is updated
-Date:   Tue, 17 Nov 2020 18:19:41 -0500
-Message-Id: <20201117232003.3580179-12-joel@joelfernandes.org>
+Subject: [PATCH -tip 12/32] sched: Simplify the core pick loop for optimized case
+Date:   Tue, 17 Nov 2020 18:19:42 -0500
+Message-Id: <20201117232003.3580179-13-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 In-Reply-To: <20201117232003.3580179-1-joel@joelfernandes.org>
 References: <20201117232003.3580179-1-joel@joelfernandes.org>
@@ -90,47 +90,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A waking task may have its vruntime adjusted. However, the code right
-now puts it into the core queue without the adjustment. This means the
-core queue may have a task with incorrect vruntime, potentially a very
-long one. This may cause a task to get artificially boosted during
-picking.
+The core pick loop grew a lot of warts over time to support
+optimizations. Turns out that that directly doing a class pick before
+entering the core-wide pick is better for readability. Make the changes.
 
-Fix it by enqueuing into the core queue only after the class-specific
-enqueue callback has been called. This ensures that for CFS tasks, the
-updated vruntime value is used when enqueuing the task into the core
-rbtree.
+Since this is a relatively new patch, make it a separate patch so that
+it is easier to revert in case anyone reports an issue with it. Testing
+shows it to be working for me.
 
 Reviewed-by: Vineeth Pillai <viremana@linux.microsoft.com>
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/sched/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/sched/core.c | 73 ++++++++++++++++-----------------------------
+ 1 file changed, 26 insertions(+), 47 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 53af817740c0..6aa76de55ef2 100644
+index 6aa76de55ef2..12e8e6627ab3 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1753,9 +1753,6 @@ static inline void init_uclamp(void) { }
+@@ -5180,6 +5180,15 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	put_prev_task_balance(rq, prev, rf);
  
- static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
- {
--	if (sched_core_enabled(rq))
--		sched_core_enqueue(rq, p);
--
- 	if (!(flags & ENQUEUE_NOCLOCK))
- 		update_rq_clock(rq);
- 
-@@ -1766,6 +1763,9 @@ static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
- 
- 	uclamp_rq_inc(rq, p);
- 	p->sched_class->enqueue_task(rq, p, flags);
+ 	smt_mask = cpu_smt_mask(cpu);
++	need_sync = !!rq->core->core_cookie;
 +
-+	if (sched_core_enabled(rq))
-+		sched_core_enqueue(rq, p);
- }
++	/* reset state */
++	rq->core->core_cookie = 0UL;
++	if (rq->core->core_forceidle) {
++		need_sync = true;
++		fi_before = true;
++		rq->core->core_forceidle = false;
++	}
  
- static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
+ 	/*
+ 	 * core->core_task_seq, core->core_pick_seq, rq->core_sched_seq
+@@ -5192,16 +5201,25 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	 * 'Fix' this by also increasing @task_seq for every pick.
+ 	 */
+ 	rq->core->core_task_seq++;
+-	need_sync = !!rq->core->core_cookie;
+ 
+-	/* reset state */
+-reset:
+-	rq->core->core_cookie = 0UL;
+-	if (rq->core->core_forceidle) {
++	/*
++	 * Optimize for common case where this CPU has no cookies
++	 * and there are no cookied tasks running on siblings.
++	 */
++	if (!need_sync) {
++		for_each_class(class) {
++			next = class->pick_task(rq);
++			if (next)
++				break;
++		}
++
++		if (!next->core_cookie) {
++			rq->core_pick = NULL;
++			goto done;
++		}
+ 		need_sync = true;
+-		fi_before = true;
+-		rq->core->core_forceidle = false;
+ 	}
++
+ 	for_each_cpu(i, smt_mask) {
+ 		struct rq *rq_i = cpu_rq(i);
+ 
+@@ -5239,38 +5257,8 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 			 * core.
+ 			 */
+ 			p = pick_task(rq_i, class, max);
+-			if (!p) {
+-				/*
+-				 * If there weren't no cookies; we don't need to
+-				 * bother with the other siblings.
+-				 */
+-				if (i == cpu && !need_sync)
+-					goto next_class;
+-
++			if (!p)
+ 				continue;
+-			}
+-
+-			/*
+-			 * Optimize the 'normal' case where there aren't any
+-			 * cookies and we don't need to sync up.
+-			 */
+-			if (i == cpu && !need_sync) {
+-				if (p->core_cookie) {
+-					/*
+-					 * This optimization is only valid as
+-					 * long as there are no cookies
+-					 * involved. We may have skipped
+-					 * non-empty higher priority classes on
+-					 * siblings, which are empty on this
+-					 * CPU, so start over.
+-					 */
+-					need_sync = true;
+-					goto reset;
+-				}
+-
+-				next = p;
+-				goto done;
+-			}
+ 
+ 			rq_i->core_pick = p;
+ 
+@@ -5298,18 +5286,9 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 						cpu_rq(j)->core_pick = NULL;
+ 					}
+ 					goto again;
+-				} else {
+-					/*
+-					 * Once we select a task for a cpu, we
+-					 * should not be doing an unconstrained
+-					 * pick because it might starve a task
+-					 * on a forced idle cpu.
+-					 */
+-					need_sync = true;
+ 				}
+ 			}
+ 		}
+-next_class:;
+ 	}
+ 
+ 	rq->core->core_pick_seq = rq->core->core_task_seq;
 -- 
 2.29.2.299.gdc1121823c-goog
 
