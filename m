@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65272B6097
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 657292B6042
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729532AbgKQNKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:10:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40038 "EHLO mail.kernel.org"
+        id S1729104AbgKQNH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:07:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729503AbgKQNKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:10:39 -0500
+        id S1729084AbgKQNHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:07:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AACB2225B;
-        Tue, 17 Nov 2020 13:10:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FD8324698;
+        Tue, 17 Nov 2020 13:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618638;
-        bh=2dQHQ4y/7d2lTuy439M7DmWm45Nj0t27ZhtaEcZzszQ=;
+        s=default; t=1605618440;
+        bh=c1RjsYpybytkZYv5J8jzew395hSj7ZM48MZi/yF+9rQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LviORb2FZGYH22hK8irrlcKimqH04wLeuv2R8llDuhCGoYXi+wDcjjzAs9VY6Jb3O
-         f/kdjDwJlUyiEv10PBrHq1M7yL/00RlgHYn2coPz2V58IdJ830F4gum/hgdKHWm3Ik
-         Zxmikt8n5bs9a7n8fGCZJAmL59ESnRwrEkpGwT3g=
+        b=eC8w9cyJ5/MrVqd8NJ3esNthCKF+F7SRye2w3iRuRwa4wEvUMKetVYmhGUDXMblKk
+         u6FyVGE9hrHVeBWdegSTmnKg9sDWhfS+j0lwzurYgqXYmklqwukEbDA9BVsC7uVb3o
+         L031ndPWIMwKjOyHkoIITgR7DcTE+Qy2w7V7t4nw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zeng Tao <prime.zeng@hisilicon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 05/78] time: Prevent undefined behaviour in timespec64_to_ns()
-Date:   Tue, 17 Nov 2020 14:04:31 +0100
-Message-Id: <20201117122109.366986454@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 09/64] can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ context
+Date:   Tue, 17 Nov 2020 14:04:32 +0100
+Message-Id: <20201117122106.599646315@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zeng Tao <prime.zeng@hisilicon.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-[ Upstream commit cb47755725da7b90fecbb2aa82ac3b24a7adb89b ]
+[ Upstream commit 2283f79b22684d2812e5c76fc2280aae00390365 ]
 
-UBSAN reports:
+If a driver calls can_get_echo_skb() during a hardware IRQ (which is often, but
+not always, the case), the 'WARN_ON(in_irq)' in
+net/core/skbuff.c#skb_release_head_state() might be triggered, under network
+congestion circumstances, together with the potential risk of a NULL pointer
+dereference.
 
-Undefined behaviour in ./include/linux/time64.h:127:27
-signed integer overflow:
-17179869187 * 1000000000 cannot be represented in type 'long long int'
-Call Trace:
- timespec64_to_ns include/linux/time64.h:127 [inline]
- set_cpu_itimer+0x65c/0x880 kernel/time/itimer.c:180
- do_setitimer+0x8e/0x740 kernel/time/itimer.c:245
- __x64_sys_setitimer+0x14c/0x2c0 kernel/time/itimer.c:336
- do_syscall_64+0xa1/0x540 arch/x86/entry/common.c:295
+The root cause of this issue is the call to kfree_skb() instead of
+dev_kfree_skb_irq() in net/core/dev.c#enqueue_to_backlog().
 
-Commit bd40a175769d ("y2038: itimer: change implementation to timespec64")
-replaced the original conversion which handled time clamping correctly with
-timespec64_to_ns() which has no overflow protection.
+This patch prevents the skb to be freed within the call to netif_rx() by
+incrementing its reference count with skb_get(). The skb is finally freed by
+one of the in-irq-context safe functions: dev_consume_skb_any() or
+dev_kfree_skb_any(). The "any" version is used because some drivers might call
+can_get_echo_skb() in a normal context.
 
-Fix it in timespec64_to_ns() as this is not necessarily limited to the
-usage in itimers.
+The reason for this issue to occur is that initially, in the core network
+stack, loopback skb were not supposed to be received in hardware IRQ context.
+The CAN stack is an exeption.
 
-[ tglx: Added comment and adjusted the fixes tag ]
+This bug was previously reported back in 2017 in [1] but the proposed patch
+never got accepted.
 
-Fixes: 361a3bf00582 ("time64: Add time64.h header and define struct timespec64")
-Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com
+While [1] directly modifies net/core/dev.c, we try to propose here a
+smoother modification local to CAN network stack (the assumption
+behind is that only CAN devices are affected by this issue).
+
+[1] http://lore.kernel.org/r/57a3ffb6-3309-3ad5-5a34-e93c3fe3614d@cetitec.com
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201002154219.4887-2-mailhol.vincent@wanadoo.fr
+Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/time64.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/can/dev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/time64.h b/include/linux/time64.h
-index 980c71b3001a5..2a45b8c87edbf 100644
---- a/include/linux/time64.h
-+++ b/include/linux/time64.h
-@@ -188,6 +188,10 @@ static inline bool timespec64_valid_strict(const struct timespec64 *ts)
-  */
- static inline s64 timespec64_to_ns(const struct timespec64 *ts)
- {
-+	/* Prevent multiplication overflow */
-+	if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
-+		return KTIME_MAX;
-+
- 	return ((s64) ts->tv_sec * NSEC_PER_SEC) + ts->tv_nsec;
- }
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 9dd968ee792e0..3c0f141262ad5 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -466,7 +466,11 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
+ 	if (!skb)
+ 		return 0;
  
+-	netif_rx(skb);
++	skb_get(skb);
++	if (netif_rx(skb) == NET_RX_SUCCESS)
++		dev_consume_skb_any(skb);
++	else
++		dev_kfree_skb_any(skb);
+ 
+ 	return len;
+ }
 -- 
 2.27.0
 
