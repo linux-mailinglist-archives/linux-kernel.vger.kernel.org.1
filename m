@@ -2,386 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758542B70E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6E32B70E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgKQVY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:24:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30897 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725730AbgKQVY7 (ORCPT
+        id S1726993AbgKQVZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:25:53 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9311 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgKQVZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:24:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605648297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S9Sdw3rsrMeGbshhPqJW5JIbbH1tSidQC9dyk6u1X20=;
-        b=R39Z3pXhURJJmp3b/QdGgCrXcLoYdR8KMZCZZXFuuRWtDMiU5r1QnjZkzOoco08R7qmjt7
-        9p3WBUm5IWOFf4H1nY1WNwuTcnLMET0RBefSk48iFpyvJ5N4tebdwm5SESFi1UiYS7+QxM
-        6V4HUajSwSMguBeOv2nGR3WEUywhprU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-_eG3P1QaPk2PwBpCjavISA-1; Tue, 17 Nov 2020 16:24:55 -0500
-X-MC-Unique: _eG3P1QaPk2PwBpCjavISA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AED1610866A6;
-        Tue, 17 Nov 2020 21:24:53 +0000 (UTC)
-Received: from localhost (ovpn-115-101.rdu2.redhat.com [10.10.115.101])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 66E7260C05;
-        Tue, 17 Nov 2020 21:24:53 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 16:24:52 -0500
-From:   Eduardo Habkost <ehabkost@redhat.com>
+        Tue, 17 Nov 2020 16:25:53 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb43feb0000>; Tue, 17 Nov 2020 13:26:03 -0800
+Received: from [10.2.160.29] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 21:25:48 +0000
+From:   Zi Yan <ziy@nvidia.com>
 To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 2/2] kernel-doc: Handle function typedefs without
- asterisks
-Message-ID: <20201117212452.GM1235237@habkost.net>
-References: <20201030144713.201372-1-pbonzini@redhat.com>
- <20201030144713.201372-3-pbonzini@redhat.com>
- <20201113152106.7b4a07ee@lwn.net>
- <20201113223912.GK17076@casper.infradead.org>
+CC:     Roman Gushchin <guro@fb.com>, <linux-mm@kvack.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>
+Subject: Re: [RFC PATCH 3/6] mm: page_owner: add support for splitting to any
+ order in split page_owner.
+Date:   Tue, 17 Nov 2020 16:25:46 -0500
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <3A55517E-7F24-45ED-A04B-061948E7EC11@nvidia.com>
+In-Reply-To: <20201117212255.GZ29991@casper.infradead.org>
+References: <20201111204008.21332-1-zi.yan@sent.com>
+ <20201111204008.21332-4-zi.yan@sent.com>
+ <20201114001505.GA3047204@carbon.dhcp.thefacebook.com>
+ <F55878E8-22B1-443E-9CC8-E97B3DAA7EA4@nvidia.com>
+ <20201114013801.GA3069806@carbon.dhcp.thefacebook.com>
+ <20201117210532.GX29991@casper.infradead.org>
+ <3E32BC50-700F-471E-89FD-35414610B84E@nvidia.com>
+ <20201117212255.GZ29991@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201113223912.GK17076@casper.infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: multipart/signed;
+        boundary="=_MailMate_26D3A069-E576-44CF-990B-9BC028E6017F_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605648363; bh=lPJdtj5JXOpu+djq7qkfJl2/r4VpbFNQk4h33JTvPpk=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=eZ4HcZPBLKil2zsTRp3S0Hdq92D/HFSCbAv06hd2E3nnmAPeWtOd24sN3jUgCxYkY
+         DzBIEWInOzmNL7POdASxowrXSQIPUxtXzbn/QHdpahuMSRWw0aMD4xf+9LSg2b9IoX
+         RM0fRm72EYXyzEzGyYk1pS1ra5FeKonptOCOp7w8SGcbJNGYmhkjUFn3R9xxEYg36O
+         sFrgAqBn67rKYCrMOEtWx0ngjqb+C4pLD6vcrhX79eYur6KXowQnzpHCK1YhHftc8X
+         8l/cEMGBL3XUhx7BXiIb5TKYe3A4++sgoOGvRefsI64QOorWo3hQoqvRqzI969QqJc
+         Hz0MuirL+MP1A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 10:39:12PM +0000, Matthew Wilcox wrote:
-> On Fri, Nov 13, 2020 at 03:21:06PM -0700, Jonathan Corbet wrote:
-> > On Fri, 30 Oct 2020 15:47:13 +0100
-> > Paolo Bonzini <pbonzini@redhat.com> wrote:
-> > 
-> > > From: Eduardo Habkost <ehabkost@redhat.com>
-> > > 
-> > > Example of typedef that was not parsed by kernel-doc:
-> > > 
-> > >   typedef void (ObjectUnparent)(Object *obj);
-> > > 
-> > > Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
-> > > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > 
-> > So as you've undoubtedly noticed, reading those kernel-doc regexes is ... a
-> > wee bit on the painful side.  Trying to compare two of them in a patch to
-> > figure out what you have done is even worse.  I suspect we want these
-> > patches, but can you please supply a changelog that describes the change? 
-> 
-> Better ... can we have a test suite for the regexes and make patches to
-> them include updates to the test suite?  They have clearly passed the
-> point of human understanding ;-)
+--=_MailMate_26D3A069-E576-44CF-990B-9BC028E6017F_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Would a simple black box test script like this be desirable?
+On 17 Nov 2020, at 16:22, Matthew Wilcox wrote:
 
-Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
----
- scripts/kernel-doc-test-case.h            |  89 ++++++++++++
- scripts/kernel-doc-test-case.rst.expected | 167 ++++++++++++++++++++++
- scripts/kernel-doc-test.sh                |  15 ++
- 3 files changed, 271 insertions(+)
- create mode 100644 scripts/kernel-doc-test-case.h
- create mode 100644 scripts/kernel-doc-test-case.rst.expected
- create mode 100755 scripts/kernel-doc-test.sh
+> On Tue, Nov 17, 2020 at 04:12:03PM -0500, Zi Yan wrote:
+>> On 17 Nov 2020, at 16:05, Matthew Wilcox wrote:
+>>
+>>> On Fri, Nov 13, 2020 at 05:38:01PM -0800, Roman Gushchin wrote:
+>>>> On Fri, Nov 13, 2020 at 08:08:58PM -0500, Zi Yan wrote:
+>>>>> Matthew recently converted split_page_owner to take nr instead of o=
+rder.[1]
+>>>>> But I am not
+>>>>> sure why, since it seems to me that two call sites (__split_huge_pa=
+ge in
+>>>>> mm/huge_memory.c and split_page in mm/page_alloc.c) can pass the or=
+der
+>>>>> information.
+>>>>
+>>>> Yeah, I'm not sure why too. Maybe Matthew has some input here?
+>>>> You can also pass new_nr, but IMO orders look so much better here.
+>>>
+>>> If only I'd written that information in the changelog ... oh wait, I =
+did!
+>>>
+>>>     mm/page_owner: change split_page_owner to take a count
+>>>
+>>>     The implementation of split_page_owner() prefers a count rather t=
+han the
+>>>     old order of the page.  When we support a variable size THP, we w=
+on't
+>>>     have the order at this point, but we will have the number of page=
+s.
+>>>     So change the interface to what the caller and callee would prefe=
+r.
+>>
+>> There are two callers, split_page in mm/page_alloc.c and __split_huge_=
+page in
+>> mm/huge_memory.c. The former has the page order. The latter has the pa=
+ge order
+>> information before __split_huge_page_tail is called, so we can do
+>> old_order =3D thp_order(head) instead of nr =3D thp_nr_page(head) and =
+use old_order.
+>> What am I missing there?
+>
+> Sure, we could also do that.  But what I wrote was true at the time I
+> wrote it.
 
-diff --git a/scripts/kernel-doc-test-case.h b/scripts/kernel-doc-test-case.h
-new file mode 100644
-index 0000000000000..5cea705d85392
---- /dev/null
-+++ b/scripts/kernel-doc-test-case.h
-@@ -0,0 +1,89 @@
-+/**
-+ * DOC: kernel-doc test case
-+ *
-+ * ``kernel-doc-test-case.h`` contains a series of declarations
-+ * and kernel-doc comments. The expected kernel-doc output can be
-+ * found at ``kernel-doc-test-case.rst.expected``.
-+ */
-+
-+/**
-+ * typedef void_func_ptr - pointer to a function
-+ * @a: first argument
-+ * @b: second argument
-+ */
-+typedef void (*void_func_ptr)(int a, struct struct_name1 *b);
-+
-+/**
-+ * typedef int_ptr_func_ptr - a pointer to a function returning a pointer
-+ * @a: argument
-+ */
-+typedef int *(*int_ptr_func_ptr)(int a);
-+
-+/**
-+ * typedef func_par - a function, with parenthesis
-+ * @a: argument
-+ *
-+ * A typedef for a function type (not a function pointer), with
-+ * parenthesis around the function name.
-+ */
-+typedef void (func_par)(int a);
-+
-+/**
-+ * struct struct_name1 - a struct
-+ * @i: an int field
-+ * @j: an int pointer
-+ * @u: an union field
-+ * @sptr: pointer to a `struct_name1`
-+ *
-+ * A simple struct with multiple fields.
-+ *
-+ * Here's a reference to another struct type: &struct struct_name2.
-+ */
-+struct struct_name1 {
-+    int i, *j;
-+    union {
-+        int i;
-+        const char *s;
-+    } u;
-+    struct struct_name1 *sptr;
-+    /**
-+     * @field_with_inline_doc: another way to document struct fields
-+     *
-+     * This field is documented inside the struct definition,
-+     * closer to the field declaration instead the doc comment at
-+     * the top.
-+     */
-+    int field_with_inline_doc;
-+    /**
-+     * @func: a function pointer
-+     *
-+     * Parsing a function pointer field involves some tricks to handle
-+     * the commas properly.
-+     */
-+    int (*func)(int x, struct struct_name1 *p);
-+    /** @bitmap: a bitmap */
-+    DECLARE_BITMAP(bitmap, 128);
-+};
-+
-+/**
-+ * struct struct_name2 - another struct
-+ * @x: first field
-+ * @y: second field
-+ * @another: another struct
-+ *
-+ * This struct is defined inside a typedef declaration.
-+ */
-+typedef struct struct_name2 {
-+    int x, y;
-+    struct struct_name1 another;
-+} struct_name2;
-+
-+/**
-+ * SOME_MACRO - a macro that takes a few arguments
-+ * @a: first argument
-+ * @b: second argument
-+ */
-+#define SOME_MACRO(a, b) \
-+    { multi_line_macro_definition(a); \
-+      second_line(b); \
-+    }
-diff --git a/scripts/kernel-doc-test-case.rst.expected b/scripts/kernel-doc-test-case.rst.expected
-new file mode 100644
-index 0000000000000..4f68931121bb7
---- /dev/null
-+++ b/scripts/kernel-doc-test-case.rst.expected
-@@ -0,0 +1,167 @@
-+**kernel-doc test case**
-+
-+
-+``kernel-doc-test-case.h`` contains a series of declarations
-+and kernel-doc comments. The expected kernel-doc output can be
-+found at ``kernel-doc-test-case.rst.expected``.
-+
-+.. c:macro:: void_func_ptr
-+
-+   **Typedef**: pointer to a function
-+
-+
-+**Syntax**
-+
-+  ``void void_func_ptr (int a, struct struct_name1 *b)``
-+
-+**Parameters**
-+
-+``int a``
-+  first argument
-+
-+``struct struct_name1 *b``
-+  second argument
-+
-+
-+.. c:macro:: int_ptr_func_ptr
-+
-+   **Typedef**: a pointer to a function returning a pointer
-+
-+
-+**Syntax**
-+
-+  ``int * int_ptr_func_ptr (int a)``
-+
-+**Parameters**
-+
-+``int a``
-+  argument
-+
-+
-+.. c:macro:: func_par
-+
-+   **Typedef**: a function, with parenthesis
-+
-+
-+**Syntax**
-+
-+  ``void func_par (int a)``
-+
-+**Parameters**
-+
-+``int a``
-+  argument
-+
-+**Description**
-+
-+A typedef for a function type (not a function pointer), with
-+parenthesis around the function name.
-+
-+
-+
-+
-+.. c:struct:: struct_name1
-+
-+   a struct
-+
-+**Definition**
-+
-+::
-+
-+  struct struct_name1 {
-+    int i, *j;
-+    union {
-+      int i;
-+      const char *s;
-+    } u;
-+    struct struct_name1 *sptr;
-+    int field_with_inline_doc;
-+    int (*func)(int x, struct struct_name1 *p);
-+    unsigned long bitmap[BITS_TO_LONGS(128)];
-+  };
-+
-+**Members**
-+
-+``i``
-+  an int field
-+
-+``j``
-+  an int pointer
-+
-+``u``
-+  an union field
-+
-+``sptr``
-+  pointer to a `struct_name1`
-+
-+``field_with_inline_doc``
-+  another way to document struct fields
-+  
-+  This field is documented inside the struct definition,
-+  closer to the field declaration instead the doc comment at
-+  the top.
-+
-+``func``
-+  a function pointer
-+  
-+  Parsing a function pointer field involves some tricks to handle
-+  the commas properly.
-+
-+``bitmap``
-+  a bitmap 
-+
-+
-+**Description**
-+
-+A simple struct with multiple fields.
-+
-+Here's a reference to another struct type: :c:type:`struct struct_name2 <struct_name2>`.
-+
-+
-+
-+
-+.. c:struct:: struct_name2
-+
-+   another struct
-+
-+**Definition**
-+
-+::
-+
-+  struct struct_name2 {
-+    int x, y;
-+    struct struct_name1 another;
-+  };
-+
-+**Members**
-+
-+``x``
-+  first field
-+
-+``y``
-+  second field
-+
-+``another``
-+  another struct
-+
-+
-+**Description**
-+
-+This struct is defined inside a typedef declaration.
-+
-+
-+.. c:macro:: SOME_MACRO
-+
-+``SOME_MACRO (a, b)``
-+
-+   a macro that takes a few arguments
-+
-+**Parameters**
-+
-+``a``
-+  first argument
-+
-+``b``
-+  second argument
-+
-+
-diff --git a/scripts/kernel-doc-test.sh b/scripts/kernel-doc-test.sh
-new file mode 100755
-index 0000000000000..4c96592649451
---- /dev/null
-+++ b/scripts/kernel-doc-test.sh
-@@ -0,0 +1,15 @@
-+#!/bin/bash
-+set -e
-+mydir="$(dirname "$0")"
-+kerneldoc="$mydir/kernel-doc"
-+
-+tmp="$(mktemp -d)"
-+trap 'rm -rf "$tmp"' EXIT
-+
-+"$kerneldoc" -sphinx-version 3.2.1 -rst "$mydir/kernel-doc-test-case.h" > "$tmp/kernel-doc-test-case.rst.actual" 2>&1
-+if diff -u "$mydir/kernel-doc-test-case.rst.expected" "$tmp/kernel-doc-test-case.rst.actual";then
-+    echo OK
-+else
-+    echo kernel-doc output mismatch
-+    exit 1
-+fi
--- 
-2.28.0
+Got it. Thanks. Will change it to use old_order to make split_page_owner =
+parameters
+look more consistent.
 
--- 
-Eduardo
+=E2=80=94
+Best Regards,
+Yan Zi
 
+--=_MailMate_26D3A069-E576-44CF-990B-9BC028E6017F_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+0P9oPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKrSgQAJyxI+rZ1uE5zujtkuQav3qyE83lKnE7QMe5
+fOjFSI2Rf0q8N9Tcv6thKs3T6CGi0NPgvf6CoUkk+gikGR09VE9V1bbFaTcXNaFD
+VnlYS8HcoH8AMFlLWBSmiM+u2QWRAdShNfdKn+bi5SfWkhqGPlax+SEushXH1qHC
+uDWvpa5GGkeBy4xf+djdAl30/ZoS2L+I84hQo6DyttoBZjSDCOuj3B1sKK2DGY98
+/mCBLR+E+8tl33aD4UK0EKHAdqx7cm9lvb0QCEzCi7udmsySt3sazrhujDOAbYNX
+CYID9Wj74W/IEhwWwHxA2loUEb2kV+3brFOKBePUKu+LrQa6EzR1BSOqJBocspGa
+IVcfC/BDJ8Ky/QBsgbWMC/aawpvdkXG83vt+dksMbjnVinl9yEcQCrG80pQ21Ez0
+YPQAl/1xTJJPM327vwF7xASrYSWm/WmVxNHVf1bG/8oqev3YFAV86+wlDuDI7kxN
+MoqxlJfexsWBFEbkTcMWOUgFAc0z59xhjFBJjAjIdaCYPgDFf/dW0HaCjuHMGj7r
+Q4P1k1YqUHDHupoKn2Xf8kJQq7oevinO98szN595ebShtQ4ioG3G8Gm7QtCHyWln
+ngbYohKFWlcutB4WZpuBUOeLn6YE79OAJxmD7a5yzaWaGYhf5l1N8j3c7vLr/XWg
+fCSM0TDk
+=qnws
+-----END PGP SIGNATURE-----
+
+--=_MailMate_26D3A069-E576-44CF-990B-9BC028E6017F_=--
