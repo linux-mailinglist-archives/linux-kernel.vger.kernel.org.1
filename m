@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DB72B5A22
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E8A2B5A27
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgKQHOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:14:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgKQHOr (ORCPT
+        id S1726863AbgKQHPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:15:08 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:55042 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgKQHPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:14:47 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5185CC0613CF;
-        Mon, 16 Nov 2020 23:14:47 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 23so22036746wrc.8;
-        Mon, 16 Nov 2020 23:14:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=CUtBCyqo5ZGyuM7QUEphV6yKwsbwY0PU35m2CCb5vDc=;
-        b=XC/IZrqgoNDUlrsdarXUYpWeMIqqrkvJCPgf4LguYz1TmPps0Tp0Dfcmb0+gKUXryr
-         UOe1U664I7CxgdLFp0tZGeGj0mLt+V4o9xIXZo8rAFQWZiJhiZYeeRTHj1H4pfmCbXP4
-         YCuLZZbS7qX4kt9OZPZu1wv70ku50EoyJdFsi8praKskaOomAvXDf5QlOn5YJr7JF3GB
-         EEBYUaOwh7gfBrRIF2yIUyD9ZySPszmWfH7IOkySyFojlBXqAva1JcPqqzogcD6nZ2zV
-         9ozgyPySfrzOQndcc10LMoko0/MtrVeD7GS3XWqdzFjEf/ft0gpmKKIteH7Cw9Y3FqMP
-         yyTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=CUtBCyqo5ZGyuM7QUEphV6yKwsbwY0PU35m2CCb5vDc=;
-        b=briBd6E+0BktiYRaI7deoDYR1oiD/+HDIBTY7YuN3HU05r06t6FIeHB3Y1TemI2XUh
-         j57uqk23KqIAFTg7DiN2Ow3f1NPxoZha/NjNb0idl+Hi++PYIbjdNWiTadaIUcAv83kR
-         62eiFvOoyVOHGOam/OUVLQplxxBchbYwv5XmXNs9CEKMJT7gnQfZwg8TLHcciWw5M/CG
-         6TJ3F88MB3PZf2+ePI8qq8epzmjzX6JCrntG/xnkOmJOPUV0V0x9nz6Qc12Xd+nB/UXE
-         EcGe2d6lzddkNtRo8XsMLnRHklZ0A1rup3l/D7efV6uz49yVGOwHNyx8J1C3Y7s9jrsD
-         Fvpg==
-X-Gm-Message-State: AOAM533vmZyzG2PrZGZtiqocLPwnFByHSkRDRAkRtqNJROfVBn35EGuD
-        6OCEIRVoHoc7WNW1JnbYPlN84f7ScisOYw==
-X-Google-Smtp-Source: ABdhPJzL5bdbdWHO323RYLKSYq8q5YLvu5rCTltMAgSun1F6sTl1s4Hc8/L/r02To0gdetZ0eYq+lA==
-X-Received: by 2002:adf:f906:: with SMTP id b6mr23212657wrr.244.1605597285890;
-        Mon, 16 Nov 2020 23:14:45 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f23:2800:703b:c7f4:f658:541b? (p200300ea8f232800703bc7f4f658541b.dip0.t-ipconnect.de. [2003:ea:8f23:2800:703b:c7f4:f658:541b])
-        by smtp.googlemail.com with ESMTPSA id n11sm25341365wru.38.2020.11.16.23.14.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 23:14:45 -0800 (PST)
-Subject: Re: [PATCH net] atl1c: fix error return code in atl1c_probe()
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>, jcliburn@gmail.com,
-        chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        yanaijie@huawei.com, christophe.jaillet@wanadoo.fr, mst@redhat.com,
-        leon@kernel.org, jesse.brandeburg@intel.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1605581721-36028-1-git-send-email-zhangchangzhong@huawei.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <34800149-ce40-b993-1d82-5f26abc61b28@gmail.com>
-Date:   Tue, 17 Nov 2020 08:14:39 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Tue, 17 Nov 2020 02:15:07 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH7A8Bg081987;
+        Tue, 17 Nov 2020 07:14:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=2Er4Ef/B2oUzeMoaWyPoLq8u1BgWABeaEVsse/R6ZAI=;
+ b=YSpk9V+2+1+Yl4RocsGc+JhuBXzfk2KhCJX3Ih5OEj+3/2IbZ13e3OTUjHFYG0EF9UUo
+ kM9T2qVkKc6RR2klyynFZw23U6JYvolQ/0MluXO3bETSh4rBNVCrS61zonQk+0BbqFsJ
+ nKogRFhVM7P24DUnx4paQxb91j2sAy6pw0Bax44Fz2G+PiTJ2HaZpD3Rb6MSr77hC1jL
+ zair2B4cwfs+BQrrdIil2d4ECuTgZhRN7bihy0LAgDVrMI1SCK5bmt08/VirVhMfAyAu
+ /lClGx41pMuHu4H2yBXB0LqDaUgxQ/T617F6GXP5E2WNE4FlA6mG6pvJakBvH8I8073Z 3A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 34t76krxnd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 07:14:53 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH79Qpq076947;
+        Tue, 17 Nov 2020 07:14:52 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 34ts0qg8u5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 07:14:52 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AH7EpdO009382;
+        Tue, 17 Nov 2020 07:14:51 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 16 Nov 2020 23:14:50 -0800
+Date:   Tue, 17 Nov 2020 10:14:42 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Leo Li <leoyang.li@nxp.com>
+Cc:     "kbuild@lists.01.org" <kbuild@lists.01.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "lkp@intel.com" <lkp@intel.com>, Dan Carpenter <error27@gmail.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Timur Tabi <timur@kernel.org>
+Subject: Re: drivers/net/ethernet/freescale/gianfar.c:580 gfar_parse_group()
+ warn: 'grp->regs' not released on lines: 517.
+Message-ID: <20201117071442.GF18329@kadam>
+References: <20201116092505.GU29398@kadam>
+ <VE1PR04MB6687ADE11367CF7FAE759B678FE20@VE1PR04MB6687.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <1605581721-36028-1-git-send-email-zhangchangzhong@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VE1PR04MB6687ADE11367CF7FAE759B678FE20@VE1PR04MB6687.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170050
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011170050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 17.11.2020 um 03:55 schrieb Zhang Changzhong:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
+On Tue, Nov 17, 2020 at 01:41:15AM +0000, Leo Li wrote:
+> > ee873fda3bec7c6 drivers/net/ethernet/freescale/gianfar.c Claudiu Manoil
+> > 2013-01-29  513  		gfar_irq(grp, ER)->irq =
+> > irq_of_parse_and_map(np, 2);
+> > fea0f6650979a4f drivers/net/ethernet/freescale/gianfar.c Mark Brown
+> > 2015-11-26  514  		if (!gfar_irq(grp, TX)->irq ||
+> > fea0f6650979a4f drivers/net/ethernet/freescale/gianfar.c Mark Brown
+> > 2015-11-26  515  		    !gfar_irq(grp, RX)->irq ||
+> > fea0f6650979a4f drivers/net/ethernet/freescale/gianfar.c Mark Brown
+> > 2015-11-26  516  		    !gfar_irq(grp, ER)->irq)
+> > 46ceb60ca80fa07 drivers/net/gianfar.c                    Sandeep Gopalpet 2009-11-
+> > 02  517  			return -EINVAL;
+> > 
+> > This should unmap "grp->regs".
 > 
-> Fixes: 85eb5bc33717 ("net: atheros: switch from 'pci_' to 'dma_' API")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> ---
->  drivers/net/ethernet/atheros/atl1c/atl1c_main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> This variable is unmapped in the caller with a wholesale cleanup function unmap_group_regs().  Probably a false positive for smatch?
 > 
-> diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> index 0c12cf7..3f65f2b 100644
-> --- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> +++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> @@ -2543,8 +2543,8 @@ static int atl1c_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	 * various kernel subsystems to support the mechanics required by a
->  	 * fixed-high-32-bit system.
->  	 */
-> -	if ((dma_set_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0) ||
-> -	    (dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0)) {
-> +	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
 
-I wonder whether you need this call at all, because 32bit is the default.
-See following
+Yeah.  Thanks.  Smatch doesn't consider that the variable might be freed
+in the caller.
 
-"By default, the kernel assumes that your device can address 32-bits
-of DMA addressing."
-
-in https://www.kernel.org/doc/Documentation/DMA-API-HOWTO.txt
-
-> +	if (err) {
->  		dev_err(&pdev->dev, "No usable DMA configuration,aborting\n");
->  		goto err_dma;
->  	}
-> 
+regards,
+dan carpenter
 
