@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6698F2B6313
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5212B656A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732243AbgKQNep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:34:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45100 "EHLO mail.kernel.org"
+        id S1731571AbgKQNzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:55:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731678AbgKQNek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:34:40 -0500
+        id S1730857AbgKQNYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:24:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A2A0207BC;
-        Tue, 17 Nov 2020 13:34:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBD022463D;
+        Tue, 17 Nov 2020 13:24:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620080;
-        bh=SmetXMGFYEULYqz7nCI0ATV54GEb+/W/qHALEN/M+zw=;
+        s=default; t=1605619448;
+        bh=kmuqCUfm9zSf7c1aNmUb/mtXrU+xM+WtkkvfC/WVZRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wGIdAnk3rIxCaMv/ivRqDV6oFUzfgs7aOZb3time7p9fEiRwdqyGkP+AZf0W4jevn
-         2rP0srkhj+7v6416T4mR+VbYh+F1SqW+PI+Itum8QugvzTBkSDjP/WUt2wF00SBuzB
-         6ie+9hc1JoAXRVaUONgTHryWX6U1W8kiaQIUbl5E=
+        b=d79jBIJ7iIxs7pLq8r1BP8yuBBpN/pI41l7ItiI4+/7OoqUQZug6ERm/CEORcMs1F
+         bRz+DkiCPQjvuW/Vf75F8xPiK3j8MvpizXh7N3VmiCPpaZgED5eqyz1dwVQVmuBe79
+         5BXr95Hz4+I8ZsfW0T4/ua9jqm1y0cdaJFdP+gbk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Minqiang <ptpt52@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 101/255] wireguard: selftests: check that route_me_harder packets use the right sk
-Date:   Tue, 17 Nov 2020 14:04:01 +0100
-Message-Id: <20201117122143.871387143@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 012/151] genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
+Date:   Tue, 17 Nov 2020 14:04:02 +0100
+Message-Id: <20201117122122.003505514@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason A. Donenfeld <Jason@zx2c4.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit af8afcf1fdd5f365f70e2386c2d8c7a1abd853d7 ]
+[ Upstream commit 151a535171be6ff824a0a3875553ea38570f4c05 ]
 
-If netfilter changes the packet mark, the packet is rerouted. The
-ip_route_me_harder family of functions fails to use the right sk, opting
-to instead use skb->sk, resulting in a routing loop when used with
-tunnels. With the next change fixing this issue in netfilter, test for
-the relevant condition inside our test suite, since wireguard was where
-the bug was discovered.
+kernel/irq/ipi.c otherwise fails to compile if nothing else
+selects it.
 
-Reported-by: Chen Minqiang <ptpt52@gmail.com>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 379b656446a3 ("genirq: Add GENERIC_IRQ_IPI Kconfig symbol")
+Reported-by: Pavel Machek <pavel@ucw.cz>
+Tested-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20201015101222.GA32747@amd
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/wireguard/netns.sh           | 8 ++++++++
- tools/testing/selftests/wireguard/qemu/kernel.config | 2 ++
- 2 files changed, 10 insertions(+)
+ kernel/irq/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/wireguard/netns.sh b/tools/testing/selftests/wireguard/netns.sh
-index d77f4829f1e07..74c69b75f6f5a 100755
---- a/tools/testing/selftests/wireguard/netns.sh
-+++ b/tools/testing/selftests/wireguard/netns.sh
-@@ -316,6 +316,14 @@ pp sleep 3
- n2 ping -W 1 -c 1 192.168.241.1
- n1 wg set wg0 peer "$pub2" persistent-keepalive 0
+diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
+index f92d9a6873720..4e11120265c74 100644
+--- a/kernel/irq/Kconfig
++++ b/kernel/irq/Kconfig
+@@ -81,6 +81,7 @@ config IRQ_FASTEOI_HIERARCHY_HANDLERS
+ # Generic IRQ IPI support
+ config GENERIC_IRQ_IPI
+ 	bool
++	select IRQ_DOMAIN_HIERARCHY
  
-+# Test that sk_bound_dev_if works
-+n1 ping -I wg0 -c 1 -W 1 192.168.241.2
-+# What about when the mark changes and the packet must be rerouted?
-+n1 iptables -t mangle -I OUTPUT -j MARK --set-xmark 1
-+n1 ping -c 1 -W 1 192.168.241.2 # First the boring case
-+n1 ping -I wg0 -c 1 -W 1 192.168.241.2 # Then the sk_bound_dev_if case
-+n1 iptables -t mangle -D OUTPUT -j MARK --set-xmark 1
-+
- # Test that onion routing works, even when it loops
- n1 wg set wg0 peer "$pub3" allowed-ips 192.168.242.2/32 endpoint 192.168.241.2:5
- ip1 addr add 192.168.242.1/24 dev wg0
-diff --git a/tools/testing/selftests/wireguard/qemu/kernel.config b/tools/testing/selftests/wireguard/qemu/kernel.config
-index d531de13c95b0..4eecb432a66c1 100644
---- a/tools/testing/selftests/wireguard/qemu/kernel.config
-+++ b/tools/testing/selftests/wireguard/qemu/kernel.config
-@@ -18,10 +18,12 @@ CONFIG_NF_NAT=y
- CONFIG_NETFILTER_XTABLES=y
- CONFIG_NETFILTER_XT_NAT=y
- CONFIG_NETFILTER_XT_MATCH_LENGTH=y
-+CONFIG_NETFILTER_XT_MARK=y
- CONFIG_NF_CONNTRACK_IPV4=y
- CONFIG_NF_NAT_IPV4=y
- CONFIG_IP_NF_IPTABLES=y
- CONFIG_IP_NF_FILTER=y
-+CONFIG_IP_NF_MANGLE=y
- CONFIG_IP_NF_NAT=y
- CONFIG_IP_ADVANCED_ROUTER=y
- CONFIG_IP_MULTIPLE_TABLES=y
+ # Generic MSI interrupt support
+ config GENERIC_MSI_IRQ
 -- 
 2.27.0
 
