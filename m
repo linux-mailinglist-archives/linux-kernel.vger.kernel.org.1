@@ -2,112 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333EB2B5ED3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 680292B5ED8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728192AbgKQMFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:05:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726807AbgKQMFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:05:05 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC76CC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:05:04 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id d12so22877498wrr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:05:04 -0800 (PST)
+        id S1727919AbgKQMIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:08:46 -0500
+Received: from mail-bn7nam10on2088.outbound.protection.outlook.com ([40.107.92.88]:4576
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725446AbgKQMIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:08:46 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MR3OksGE+iS13BRwIddkuWQOPl6cBNCGFCTYpbT+CAPR1m2CrLeAiuh7SexTqpyTvLa6RfApVuOGhTr3wXazwNVTamuA1ppKaF0O7bCf9dhKkkf8MUsjZnJI6PCXuBj+Cy/g2EmFCdLrfDonsw96MPTr5nK1JN4dKPBdA7b4jWWYRsV7xuj7kQ3GlxZhjnv+qSxWvtL16YK7eCDvNGCBy1SCC3pxMQdBoJ0foBGi5QOOvKXhANTNAZ5eGq/sUnJctuYad5Qp86dyjX0CYI+y4Y0wE+vZdM4dWS8fzmEUOaGey4x65n4erN7pNS5Et6N3s54pC2VUJR/gFNhLoheaXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gPlJUK4TPJkN6hQ3N92zr++dT/2zCXtL72BxYRNjg3I=;
+ b=hpiMpW1RSZwFcnsay3uTTwuk6FPeVBJXuwEgqqBWASxEznW+EPwx8+wr+THwWyFx2NOnTDqXEjP9QocM9e3PcnPN+IAwX1uRD1pXimtxBg+sr6uHp0wzEJrUTIyGfkieFyilIkWyvF67Dg3w/A/PRCOJpfk8cykksXA8BHIRwPbmcVI7BwkcOHb5C7PdmJcjuxlAp3uyadx4SR5qZk3qG3a/fep0Tgb76akhd8kXwU/UcftB1+G9nvh0FnYV1uErMeOuOLuC6NaTL47f0IApTYRM4etCx6QoiXPJMWN/PH40PHI2fIARr2O48h5AHjaZpbg5NVwev5IwjW0WASZNwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=davemloft.net smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=i2NSbE2GJ1K5LQUCG3yi/zC4b4F5mGd3uE8mjQliaik=;
-        b=VeoI0NM8o1thw5usvDBU1uSb/n56yDlZDEseNnKfAqmxzFWekylSgT2FWdBJ9YuTrC
-         aZXo+Q+6JqhRbfvvE7216PdZEB3RV7g7NZJspN3DLQgwoxNagHVOKOADXLl7wq/EbExQ
-         efD9/hVN24fOrjdekhN8OrlkqtbW56DOzqyEQrw7GxWjmozS9DuBQK/lZiXJIjS1LRvh
-         AZmtSUrcIY1XKpHEKM8gqREbRXSJ3OWbzfgN5tS267+Zi4s3zUbwesXMUrDWzU8jDcNA
-         h8MEx5/16tSUpD+VpyBXemfcxSsoChcCt63jZZOKUeVdRD6f1lyeO8NjBIrKugN5XpKy
-         9V5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=i2NSbE2GJ1K5LQUCG3yi/zC4b4F5mGd3uE8mjQliaik=;
-        b=q8OSPNrmbIgdtemp/ScDMzgxZ1Yai1yFwbNzoNEQd1hTz4jKtfAGsyY5bKJh0UzqX6
-         lNrG7TskT28ojIIeXeDg8ZfwfnqzN+GsuCkZjpNDa6GBQi7xQJV35dcgT80rDzz+e7bg
-         Fxu9CtYYoebDW1aG4UGNiUXrhtYIx41laBj4/Ngg3ZfWRTirbzvjZcrwYvDViaYdG/VG
-         w2+nmXo1oIud1bAAWNmOGA1Sh2f1aPsl8rHxR9AG3R/T2UfE7kQlmkIy0ntpSCmgtLhZ
-         d/FZfBRhnvQbevfGzAeywzMdDQPc9zFci5vQRChWKxQLkDgmGDGxP6UxCaf1/qu5q0y+
-         +8Fg==
-X-Gm-Message-State: AOAM530D+A84DfCczDfmOnGiwjRh5GSp1pladPYjttyD1JLn9Cb//irb
-        YYp6bCyayYNwH4beOzaDl4Q=
-X-Google-Smtp-Source: ABdhPJxSyrNAxAvfT1+XwkATrVUcM7qjvWrgPL6yjAHLV1n5gVtMEx4Dw11H5YtGl/rRjYdLCFSeJA==
-X-Received: by 2002:adf:f241:: with SMTP id b1mr24713314wrp.248.1605614703714;
-        Tue, 17 Nov 2020 04:05:03 -0800 (PST)
-Received: from ziggy.stardust ([213.195.112.112])
-        by smtp.gmail.com with ESMTPSA id p3sm20860055wrs.50.2020.11.17.04.05.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 04:05:02 -0800 (PST)
-Subject: Re: [PATCH v2] mfd: syscon: Add
- syscon_regmap_lookup_by_phandle_optional() function.
-To:     Lee Jones <lee.jones@linaro.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20201110161338.18198-1-enric.balletbo@collabora.com>
- <20201113101940.GH3718728@dell>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <c4ed34d5-83a1-98d1-580f-8f8504c5ca0a@gmail.com>
-Date:   Tue, 17 Nov 2020 13:05:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gPlJUK4TPJkN6hQ3N92zr++dT/2zCXtL72BxYRNjg3I=;
+ b=T/caYAeuKCmsmLhm5fWLOXOWf9T5uTIBYMKwZSF/PR851CRQOMwQPtQGsKpjRNAqbyfBo/DHu6yKxNeFAMXZ9EFwH50yMK6J8MYX6egwxppYISt5OEVrG3nyCOHomwZGfs7LaK2zqPD8u68fKrr0z1rzShtALuL7AN2L2S2CZj8=
+Received: from DM6PR06CA0023.namprd06.prod.outlook.com (2603:10b6:5:120::36)
+ by DM6PR02MB6329.namprd02.prod.outlook.com (2603:10b6:5:1d4::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Tue, 17 Nov
+ 2020 12:08:37 +0000
+Received: from CY1NAM02FT054.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:5:120:cafe::14) by DM6PR06CA0023.outlook.office365.com
+ (2603:10b6:5:120::36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28 via Frontend
+ Transport; Tue, 17 Nov 2020 12:08:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT054.mail.protection.outlook.com (10.152.74.100) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3564.22 via Frontend Transport; Tue, 17 Nov 2020 12:08:36 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 17 Nov 2020 04:08:02 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Tue, 17 Nov 2020 04:08:02 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ davem@davemloft.net,
+ kuba@kernel.org,
+ mchehab+samsung@kernel.org,
+ gregkh@linuxfoundation.org,
+ linux-arm-kernel@lists.infradead.org,
+ nicolas.ferre@microchip.com,
+ linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
+Received: from [172.23.64.106] (port=41946 helo=xhdvnc125.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <radhey.shyam.pandey@xilinx.com>)
+        id 1kezmC-0003wG-Un; Tue, 17 Nov 2020 04:08:01 -0800
+Received: by xhdvnc125.xilinx.com (Postfix, from userid 13245)
+        id 1E6CF121216; Tue, 17 Nov 2020 17:38:00 +0530 (IST)
+From:   Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+To:     <davem@davemloft.net>, <netdev@vger.kernel.org>
+CC:     <kuba@kernel.org>, <michal.simek@xilinx.com>,
+        <mchehab+samsung@kernel.org>, <gregkh@linuxfoundation.org>,
+        <nicolas.ferre@microchip.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <git@xilinx.com>,
+        Shravya Kumbham <shravya.kumbham@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Subject: [PATCH net v2] net: emaclite: Add error handling for of_address_ and _mdio_setup functions
+Date:   Tue, 17 Nov 2020 17:37:57 +0530
+Message-ID: <1605614877-5670-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-In-Reply-To: <20201113101940.GH3718728@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 07a492b3-74a0-4a22-0f28-08d88af182ee
+X-MS-TrafficTypeDiagnostic: DM6PR02MB6329:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB63296D6C2A0293675C20CAACC7E20@DM6PR02MB6329.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:747;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9vUv/YrfE37l5MWEhEcL7jSe5tkvNaQcvn3D8cS/VtHAdyMW+l4courUmF7bkiaLcRrvI/PbQMJWTIVrkALY+lmWiwNDFskRVp0uJj0mgq9eIqkA+ZO2JLDk6NGZXIcstMtUcDjKzVrzBPhPvLzNhfw/WZIasnMUJNlLCSaxVm+3UUq6TaA47qCh5ag/VumtsS5pyuGaLKgumRxjBdwJJ15wwBTzXS0BoCvMagGBOknxzOwBaDFZanQkT07uWCObpFF0AZEeAISHHUs9wlqZfyBQKUn5YZcL3QJqRSvStPhmt6xgjxkrcY7g7yL0CWHcCBFLNSn7zOeE4aZON2jgzIrINBibTmbYAeLeT/2BXIeivYHYmhMjgDfxAbPubX/nyQfsHsVs54tJb1BTik8edcC3aLdPRC0ELi5IeJ4wc0o=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(46966005)(82740400003)(47076004)(7636003)(6266002)(54906003)(110136005)(356005)(478600001)(70586007)(70206006)(82310400003)(2616005)(426003)(26005)(336012)(36756003)(2906002)(6666004)(42186006)(4326008)(83380400001)(316002)(36906005)(8936002)(8676002)(5660300002)(107886003)(186003)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 12:08:36.0016
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07a492b3-74a0-4a22-0f28-08d88af182ee
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT054.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6329
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+From: Shravya Kumbham <shravya.kumbham@xilinx.com>
 
-On 13/11/2020 11:19, Lee Jones wrote:
-> On Tue, 10 Nov 2020, Enric Balletbo i Serra wrote:
-> 
->> This adds syscon_regmap_lookup_by_phandle_optional() function to get an
->> optional regmap.
->>
->> It behaves the same as syscon_regmap_lookup_by_phandle() except where
->> there is no regmap phandle. In this case, instead of returning -ENODEV,
->> the function returns NULL. This makes error checking simpler when the
->> regmap phandle is optional.
->>
->> Suggested-by: Nicolas Boichat <drinkcat@chromium.org>
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
->> ---
->>
->> Changes in v2:
->> - Add Matthias r-b tag.
->> - Add the explanation from the patch description to the code.
->> - Return NULL instead of -ENOTSUPP when regmap helpers are not enabled.
->>
->>   drivers/mfd/syscon.c       | 18 ++++++++++++++++++
->>   include/linux/mfd/syscon.h | 11 +++++++++++
->>   2 files changed, 29 insertions(+)
-> 
-> Applied, thanks.
-> 
+Add ret variable, condition to check the return value and error
+path for the of_address_to_resource() function. It also adds error
+handling for mdio setup and decrement refcount of phy node.
 
-I've a series [1] that's based on this patch, could you provide a stable branch 
-for it, so that I can take the series.
+Addresses-Coverity: Event check_return value.
+Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+---
+Changes for v2:
 
-Thanks,
-Matthias
+- Change subject_prefix to target net tree.
+- Add error handling for mdio_setup and remove phy_read changes.
+  Error checking of phy_read will be added along with phy_write
+  in a followup patch. Document the changes in commit description.
+---
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-[1] 
-https://lore.kernel.org/linux-mediatek/20201030113622.201188-1-enric.balletbo@collabora.com/
+diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+index 0c26f5bcc523..4e0005164785 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
++++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+@@ -820,7 +820,7 @@ static int xemaclite_mdio_write(struct mii_bus *bus, int phy_id, int reg,
+ static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
+ {
+ 	struct mii_bus *bus;
+-	int rc;
++	int rc, ret;
+ 	struct resource res;
+ 	struct device_node *np = of_get_parent(lp->phy_node);
+ 	struct device_node *npp;
+@@ -834,7 +834,12 @@ static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
+ 	}
+ 	npp = of_get_parent(np);
+ 
+-	of_address_to_resource(npp, 0, &res);
++	ret = of_address_to_resource(npp, 0, &res);
++	if (ret) {
++		dev_err(dev, "%s resource error!\n",
++			dev->of_node->full_name);
++		return ret;
++	}
+ 	if (lp->ndev->mem_start != res.start) {
+ 		struct phy_device *phydev;
+ 		phydev = of_phy_find_device(lp->phy_node);
+@@ -1173,7 +1178,11 @@ static int xemaclite_of_probe(struct platform_device *ofdev)
+ 	xemaclite_update_address(lp, ndev->dev_addr);
+ 
+ 	lp->phy_node = of_parse_phandle(ofdev->dev.of_node, "phy-handle", 0);
+-	xemaclite_mdio_setup(lp, &ofdev->dev);
++	rc = xemaclite_mdio_setup(lp, &ofdev->dev);
++	if (rc) {
++		dev_warn(dev, "error registering MDIO bus: %d\n", rc);
++		goto error;
++	}
+ 
+ 	dev_info(dev, "MAC address is now %pM\n", ndev->dev_addr);
+ 
+@@ -1197,6 +1206,7 @@ static int xemaclite_of_probe(struct platform_device *ofdev)
+ 	return 0;
+ 
+ error:
++	of_node_put(lp->phy_node);
+ 	free_netdev(ndev);
+ 	return rc;
+ }
+-- 
+2.7.4
+
