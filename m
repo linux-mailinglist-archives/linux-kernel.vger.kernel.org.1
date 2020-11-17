@@ -2,140 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BAF2B71D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 222422B71DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729430AbgKQWxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:53:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        id S1729325AbgKQWzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:55:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727692AbgKQWxE (ORCPT
+        with ESMTP id S1726498AbgKQWzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:53:04 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9DBC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:53:03 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id l11so1324977plt.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:53:03 -0800 (PST)
+        Tue, 17 Nov 2020 17:55:39 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B87C0613CF;
+        Tue, 17 Nov 2020 14:55:39 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id k27so4381759ejs.10;
+        Tue, 17 Nov 2020 14:55:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=Ce5mdOiUnXdpgxCp5xEN1C00ke4lV/R4t5KP7C9QieU=;
-        b=lpuXNOnoMJPZCqJXzeKrt0bjw4/lBl9bLgEmGMpS9SlE6ATrhwz3JE00zeefPVNRyE
-         SmBlnlNZNbh0M/9eC1gsvbObC5dvzN8ha7DagBcePbYJwkaNToAum5xcWOWe4M9GJVUH
-         MjjJWm6VpC2Z1Ato6DZxLnyIxWJllMJ8w39a8=
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qEpMsX7umrh9W1uoj4wOxIl7k65AMD4+895y5wqaPqQ=;
+        b=KZY7kjNmYGv4a0Uipuqg5wXyUqIQvGZYBkO5n34n9uNgWczhClk8jRt0v8EfYTdbfz
+         zpuaA69UXFIxk58q4VOKQTpN6dlzqtiYWPpHQ8QWRZ7R+X/MEtnc9Z/Bxx3rDS3JsOdF
+         6BZi773NNYPLSTnnQYSgeIp93X4FQfZS6kZdQrk1cDYPMXoAhOxba1zVeQG74hZ8SpR/
+         u2ssh18JioOyWC6ItFwTUVXoLANoNeHfJHKO3DSulKre7HDpYYpU06VWgybLDmQ+wFvo
+         nBNABrOAYeTFCZq7kIzCgB+WATeKAD0ESkOWL42kTq9DDrORR6g3pGkGTR6c5EmHqK46
+         jrWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=Ce5mdOiUnXdpgxCp5xEN1C00ke4lV/R4t5KP7C9QieU=;
-        b=ahR/zYT+O29mDoOvo7SqczfoVy1WYJkLLacf4/ejWVAOgExb88wykBb3H3+tbgAsRP
-         EQ2HPeAek5oKc3SV3z/QPnRHIqlm2cAd7uV6vYRigoz465DV1jfdkr1hSP4VCrDf0rX5
-         GJOhqnq5H5calGfdCE8Stkx83XtojKMNe6b2tOV2l9kQFOvs6WJVrYav3716rhNkQLAt
-         oNncpvwLkrxIc1HSFcgMjkp3OmHd7EqEDZPvaOSX/WHzfOL7fH/Ho2PZK+VQgYYtxs0M
-         kyCLTmCHYglx1BFu9V3j5wEKp65oN3Y42cQHkmVt7/qVi7QrfJ+R27AtOQdoOV+biHbC
-         toag==
-X-Gm-Message-State: AOAM533xRkeAiDjCgIifcyiqKNuBehUb7TwRobfQOW/0msmWDzrVR0xJ
-        VPt51rEYsfvobxJ4SMNAQfDRLQ==
-X-Google-Smtp-Source: ABdhPJyjPQ5ZJcnbca+0zpUp5+RhAj0mYPzGqNb46PCd3r24FPJ1Ddl2hsvuztEftWzQK9r9fBJuPw==
-X-Received: by 2002:a17:90a:d486:: with SMTP id s6mr1202521pju.115.1605653583407;
-        Tue, 17 Nov 2020 14:53:03 -0800 (PST)
-Received: from chromium.org ([100.99.132.239])
-        by smtp.gmail.com with ESMTPSA id p7sm12688384pfn.83.2020.11.17.14.53.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 14:53:02 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qEpMsX7umrh9W1uoj4wOxIl7k65AMD4+895y5wqaPqQ=;
+        b=jI5mTsiXirSVo3oah+m/27bfNJLz1/GC8UOPFqqGyi9RX7mqWd9LAeRRwfHCFR9dwn
+         TmIzsliMoef2uoyBx/1K2BnHDSnH9pM2poPGUtAy9p48N047hnglqPB9FmwJiR0CUNuO
+         bEjQtQmkFgwPwzvxyroRgdXSyC1ly1+zYUWLzXki4w2Zax8g9e7rGBWrKSGDPXEQrBFH
+         DmXAFvvipE/ZarxviL+Z6xKLJV7Hs/psyQS5lhmozY9npBpwILq3vUmfZoCXbp/FfmsX
+         dePJaqwsU0jGIRv6E7OiJTuHSmHO96cs20mPjNiZ8E75j7N4q+DpDwSd5NN0Y1wW2kWE
+         yzng==
+X-Gm-Message-State: AOAM530s/PrOaADjhUWdxtqM5ZuFryzKIwp70RGhl1RUA0FKlkgiHBzY
+        8Oud8869nKUvgZc61VsqNIA6sA7AF2IhN0Czdcs=
+X-Google-Smtp-Source: ABdhPJxbijK6/juoUqP/6V1GLG3p23sEWaIracp25d6S9D3+wLH6rLRBCosXcMAiY74K1MjHk1++m3w5bCpmNLMLoSs=
+X-Received: by 2002:a17:906:76d3:: with SMTP id q19mr20994562ejn.162.1605653737992;
+ Tue, 17 Nov 2020 14:55:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <71aebca216babf4010c92d4d1ce9a9b4@codeaurora.org>
-References: <20201117172608.2091648-1-swboyd@chromium.org> <71aebca216babf4010c92d4d1ce9a9b4@codeaurora.org>
-Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: Remove chatty vbif debug print
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@gmail.com>, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Sean Paul <sean@poorly.run>,
-        kalyan_t@codeaurora.org
-To:     abhinavk@codeaurora.org
-Date:   Tue, 17 Nov 2020 14:53:01 -0800
-Message-ID: <160565358127.60232.4382778730228368993@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20201115185210.573739-1-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20201115185210.573739-1-martin.blumenstingl@googlemail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 17 Nov 2020 23:55:27 +0100
+Message-ID: <CAFBinCAXLqxqK=oB2eVDV+WY5up0dRYZ9=46riQ3uOWnw9jmng@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 0/5] dwmac-meson8b: picosecond precision RX delay support
+To:     khilman@baylibre.com
+Cc:     jianxin.pan@amlogic.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
+        andrew@lunn.ch, f.fainelli@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, linux-amlogic@lists.infradead.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting abhinavk@codeaurora.org (2020-11-17 12:34:56)
-> On 2020-11-17 09:26, Stephen Boyd wrote:
-> > I don't know what this debug print is for but it is super chatty,
-> > throwing 8 lines of debug prints in the logs every time we update a
-> > plane. It looks like it has no value. Let's nuke it so we can get
-> > better logs.
-> >=20
-> > Cc: Sean Paul <sean@poorly.run>
-> > Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->=20
-> > ---
-> >  drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c | 3 ---
-> >  1 file changed, 3 deletions(-)
-> >=20
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> > b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> > index 5e8c3f3e6625..5eb2b2ee09f5 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> > @@ -245,9 +245,6 @@ void dpu_vbif_set_qos_remap(struct dpu_kms=20
-> > *dpu_kms,
-> >       forced_on =3D mdp->ops.setup_clk_force_ctrl(mdp, params->clk_ctrl=
-,=20
-> > true);
-> >=20
-> >       for (i =3D 0; i < qos_tbl->npriority_lvl; i++) {
-> > -             DPU_DEBUG("vbif:%d xin:%d lvl:%d/%d\n",
-> > -                             params->vbif_idx, params->xin_id, i,
-> > -                             qos_tbl->priority_lvl[i]);
->=20
-> Instead of getting rid of this print, we should optimize the caller of=20
-> this.
+Hi Kevin,
 
-Does the print tell us anything? Right now it prints 8 lines where it
-feels like it could be trimmed down:
+On Sun, Nov 15, 2020 at 7:52 PM Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+[...]
+> I have tested this on an X96 Air 4GB board (not upstream yet).
+[...]
+> Also I have tested this on a X96 Max board without any .dts changes
 
-           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:0/3
-           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:1/3
-           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:2/4
-           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:3/4
-           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:4/5
-           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:5/5
-           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:6/6
-           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:7/6
+can you please add this series to your testing branch?
+I am interested in feedback from Kernel CI for all the boards which
+are there as well as any other testing bots
 
-maybe one line that combines the index into values?
 
-           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 [3 3 4 4 5 5 6 6]
-
-But again I have no idea if this print is really useful. Maybe we can
-print it only if the value changes from what was already there?
-Basically move the print into dpu_hw_set_qos_remap() and then skip out
-early if nothing changed or print and modify the register.
-
-> This is what
-> we are doing in downstream. So we need to update the property only if we =
-
-> are switching from a RT client
-> to non-RT client for the plane and vice-versa. So we should try to do=20
-> the same thing here.
->=20
->         is_rt =3D sde_crtc_is_rt_client(crtc, crtc->state);
->         if (is_rt !=3D psde->is_rt_pipe) {
->                 psde->is_rt_pipe =3D is_rt;
->                 pstate->dirty |=3D SDE_PLANE_DIRTY_QOS;
->         }
->=20
->=20
->         if (pstate->dirty & DPU_PLANE_DIRTY_QOS)
->                 _dpu_plane_set_qos_remap(plane);
->=20
-
-Sounds great! Can you send the patch?
+Thank you!
+Best regards,
+Martin
