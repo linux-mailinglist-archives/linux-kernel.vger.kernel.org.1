@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BF42B71B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D622B71B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729303AbgKQWiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:38:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41640 "EHLO mail.kernel.org"
+        id S1729331AbgKQWik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:38:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726319AbgKQWiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:38:21 -0500
+        id S1726319AbgKQWij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:38:39 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB8F820709;
-        Tue, 17 Nov 2020 22:38:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72C27206E0;
+        Tue, 17 Nov 2020 22:38:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605652700;
-        bh=VmnNW11IpNcYjP7v4gnTxb4aMYjRyWugf3f+TWyC6Sk=;
+        s=default; t=1605652719;
+        bh=vILjhSWwMhfSHXOq6DY+7hG8MW09zNf3uZxuRd/5cNY=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=sX3AUEI4QAN1gQoO25dLMALQ+ct7FupUG62S26KCv7gxvzEcQhZ/8aetnl4Xhy1ei
-         94reH1+3EUKvHgLSvCLeC0ud79b6LNeHPFZPKsUjApm1xt3CHks+YZoTQt9sJ1YIqw
-         j66YlAl9IeXgY2TOXnnscfeBgPaJuW6RkBr9/YB8=
-Date:   Tue, 17 Nov 2020 22:38:01 +0000
+        b=klOp3GTLcro2EGF4J5btw7KN/m95MW2EkFF7zhDqNpqkU37AR5fw7p6Bw5s7ZVct6
+         zf4XunnqWy53oznHQ34AIBH+x7xHzXEENXH3pLcWpTiZDaIc9x5AuySDzNuSZA3dkc
+         4hPzK/AEKoFqAuFkWi2yvnfGX6efe14G8jvTik3I=
+Date:   Tue, 17 Nov 2020 22:38:19 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Jie Yang <yang.jie@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sia Jee Heng <jee.heng.sia@intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201110145001.3280479-1-geert+renesas@glider.be>
-References: <20201110145001.3280479-1-geert+renesas@glider.be>
-Subject: Re: [PATCH] ASoC: intel: SND_SOC_INTEL_KEEMBAY should depend on ARCH_KEEMBAY
-Message-Id: <160565265703.23689.2267658300131565861.b4-ty@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+In-Reply-To: <20201117094054.4696-1-Sergey.Semin@baikalelectronics.ru>
+References: <20201117094054.4696-1-Sergey.Semin@baikalelectronics.ru>
+Subject: Re: [PATCH] spi: dw: Set transfer handler before unmasking the IRQs
+Message-Id: <160565269952.23908.7875361978634320011.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,20 +42,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 15:50:01 +0100, Geert Uytterhoeven wrote:
-> The Intel Keem Bay audio module is only present on Intel Keem Bay SoCs.
-> Hence add a dependency on ARCH_KEEMBAY, to prevent asking the user about
-> this driver when configuring a kernel without Intel Keem Bay platform
-> support.
+On Tue, 17 Nov 2020 12:40:54 +0300, Serge Semin wrote:
+> It turns out the IRQs most like can be unmasked before the controller is
+> enabled with no problematic consequences. The manual doesn't explicitly
+> state that, but the examples perform the controller initialization
+> procedure in that order. So the commit da8f58909e7e ("spi: dw: Unmask IRQs
+> after enabling the chip") hasn't been that required as I thought. But
+> anyway setting the IRQs up after the chip enabling still worth adding
+> since it has simplified the code a bit. The problem is that it has
+> introduced a potential bug. The transfer handler pointer is now
+> initialized after the IRQs are enabled. That may and eventually will cause
+> an invalid or uninitialized callback invocation. Fix that just by
+> performing the callback initialization before the IRQ unmask procedure.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: intel: SND_SOC_INTEL_KEEMBAY should depend on ARCH_KEEMBAY
-      commit: 9a207228bdf0a4933b794c944d7111564353ea94
+[1/1] spi: dw: Set transfer handler before unmasking the IRQs
+      commit: a41b0ad07bfa081584218431cb0cd7e7ecc71210
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
