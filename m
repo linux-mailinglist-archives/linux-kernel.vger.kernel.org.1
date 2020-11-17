@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340092B6396
+	by mail.lfdr.de (Postfix) with ESMTP id A16C12B6397
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732684AbgKQNj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:39:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50882 "EHLO mail.kernel.org"
+        id S1732729AbgKQNjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:39:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732408AbgKQNjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:39:07 -0500
+        id S1731779AbgKQNjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:39:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D705520870;
-        Tue, 17 Nov 2020 13:39:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF0C12467A;
+        Tue, 17 Nov 2020 13:39:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620346;
-        bh=KQCuwdMUqM8EjjgvAFkva6iPqgagY4BwNMp1qW9+J0c=;
+        s=default; t=1605620349;
+        bh=NzdHly+7c26pvwN5o164d4lBi3M5YlXSL8ErBom7EgU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hCI533KXeHEO080roUq8nC34aH2RCIQvJWHLCxjQCgG76s/SqTkdlEiZZ5hBiW/cg
-         3lz3TAxmh3IFXCBSbxmF8y/lQPO53TO4pIjPhYstxYW0w8uOUGFuh774Bk///GZcN0
-         HZRiPqOj0ia04cIeEf2xlnIysHVUnhyEg4SkzPz4=
+        b=Ls8tzACKbBzyjoATCe2i9zcdKPbAvgtZteGdZvth/AYvNR5P493siuKr8ueNC1Y3C
+         7Fq1cGVSBcPzKuzUoyaR+05T8KyJjK/x90Ashzw5UkUMII2rLJfHjtCeoQecoqyPQg
+         m2+MGzZaJJMshCbUzckrSyOsYpDwuPEQeeXtRBOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 157/255] net: phy: realtek: support paged operations on RTL8201CP
-Date:   Tue, 17 Nov 2020 14:04:57 +0100
-Message-Id: <20201117122146.590282409@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 158/255] xfs: fix flags argument to rmap lookup when converting shared file rmaps
+Date:   Tue, 17 Nov 2020 14:04:58 +0100
+Message-Id: <20201117122146.642708037@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -43,37 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit f3037c5a31b58a73b32a36e938ad0560085acadd ]
+[ Upstream commit ea8439899c0b15a176664df62aff928010fad276 ]
 
-The RTL8401-internal PHY identifies as RTL8201CP, and the init
-sequence in r8169, copied from vendor driver r8168, uses paged
-operations. Therefore set the same paged operation callbacks as
-for the other Realtek PHY's.
+Pass the same oldext argument (which contains the existing rmapping's
+unwritten state) to xfs_rmap_lookup_le_range at the start of
+xfs_rmap_convert_shared.  At this point in the code, flags is zero,
+which means that we perform lookups using the wrong key.
 
-Fixes: cdafdc29ef75 ("r8169: sync support for RTL8401 with vendor driver")
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/69882f7a-ca2f-e0c7-ae83-c9b6937282cd@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 3f165b334e51 ("xfs: convert unwritten status of reverse mappings for shared files")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/xfs/libxfs/xfs_rmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
-index 0f09609718007..81a614f903c4a 100644
---- a/drivers/net/phy/realtek.c
-+++ b/drivers/net/phy/realtek.c
-@@ -542,6 +542,8 @@ static struct phy_driver realtek_drvs[] = {
- 	{
- 		PHY_ID_MATCH_EXACT(0x00008201),
- 		.name           = "RTL8201CP Ethernet",
-+		.read_page	= rtl821x_read_page,
-+		.write_page	= rtl821x_write_page,
- 	}, {
- 		PHY_ID_MATCH_EXACT(0x001cc816),
- 		.name		= "RTL8201F Fast Ethernet",
+diff --git a/fs/xfs/libxfs/xfs_rmap.c b/fs/xfs/libxfs/xfs_rmap.c
+index 27c39268c31f7..82117b1ee34cb 100644
+--- a/fs/xfs/libxfs/xfs_rmap.c
++++ b/fs/xfs/libxfs/xfs_rmap.c
+@@ -1514,7 +1514,7 @@ xfs_rmap_convert_shared(
+ 	 * record for our insertion point. This will also give us the record for
+ 	 * start block contiguity tests.
+ 	 */
+-	error = xfs_rmap_lookup_le_range(cur, bno, owner, offset, flags,
++	error = xfs_rmap_lookup_le_range(cur, bno, owner, offset, oldext,
+ 			&PREV, &i);
+ 	if (error)
+ 		goto done;
 -- 
 2.27.0
 
