@@ -2,81 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D732B597C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8112B597E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgKQFz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 00:55:59 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:44862 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgKQFz7 (ORCPT
+        id S1726302AbgKQF6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 00:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQF63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 00:55:59 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH5oGCL103955;
-        Tue, 17 Nov 2020 05:55:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=XrT7x1ZlUCIcIw69duUraHnPzjHwxlu/NNf/mTwVUxw=;
- b=no/bZBfZj9ILRtb3KqW+8xKpD4rWqqroB6W99hZlaIruixMwuILoo0ceSOsOqbzoVhjn
- PK6RSCKRFyxuky2i8bpVGFxFwYgtDlkRgO/bf25mwvfFFAelYvfS670BhX9Vu6nDJvDC
- y8BVv2VZHI83ne0j58sXm63zr+CnwaPv3UEX0fsB2wELh4c2iGUkTbTSZUc+hD7Ny8dN
- N2c0nPl8lhuAfN7RGPYZ2hWlWaJgNA42DGPwUh317Tl4Jdq2gEoK7Np800krnfaiYdSG
- 0dNULHmLvjl8+dbq8rCrwxbWMIGbfpFplh2VRXlT0wgtZsTREbc+fRf3Sg4w/HA+a0Bp kw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34t4rarst6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 17 Nov 2020 05:55:52 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH5pQWc046735;
-        Tue, 17 Nov 2020 05:53:51 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34ts0qe4ps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 05:53:51 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AH5roOJ008613;
-        Tue, 17 Nov 2020 05:53:50 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 16 Nov 2020 21:53:50 -0800
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: qla4xxx: Remove redundant assignment to variable
- rval
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1o8jw34ww.fsf@ca-mkp.ca.oracle.com>
-References: <20201103120137.109717-1-jingxiangfeng@huawei.com>
-Date:   Tue, 17 Nov 2020 00:53:48 -0500
-In-Reply-To: <20201103120137.109717-1-jingxiangfeng@huawei.com> (Jing
-        Xiangfeng's message of "Tue, 3 Nov 2020 20:01:37 +0800")
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 suspectscore=1 spamscore=0 malwarescore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170043
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=1 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170043
+        Tue, 17 Nov 2020 00:58:29 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7751C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 21:58:29 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id j5so9651897plk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 21:58:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xnycLun0wGTXJ5w4SlwLZ5E7rhEFIbLoOAivxoxcjMU=;
+        b=YX38hifiak7WQOUJqn8+5xtTz1bzKEG2biRDzQ72ZLpGENMfpQ85YAAfyYA+RDyKOU
+         JaWlSIO4kzBv/fpo/tePuCNr/1zE/jMari7BYAuIINQWpVutDSBzyKJCM6HdctbTUamX
+         AS5yVzczEJjEFpVI52zDlYBcg1NleXqWfzF8x9FYgyedqHqq6GMIf7k+CYctNyxRR2CQ
+         TFSpXA5SQbKekjMySkJnu3hNCf2hsqgMwcqUFTTylN/cDywnmrSU2jGfhEMLj+liT+D6
+         iQyaTOJbWFMV9xFkyB/Tu8SwUMNZP6A/UKENrvFu3AWoXKtzbWq2GqondpIf1uxfZsmK
+         YkqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xnycLun0wGTXJ5w4SlwLZ5E7rhEFIbLoOAivxoxcjMU=;
+        b=mX3568hDuqz8F6a5ANf7MDdPwMjl0ulKg1pq+12mbYWhiFPhmJa1a7ClhPTKXL0snv
+         Qi4xqZVBues+X2iM0Ci+V0i+9dCqoCHiXFgnT6D2Adu4vwixmgn8U8bULNb1O6PluLte
+         c4/aW+7y5ZiOOSb0p2Wi535vlWzk5YjOXBT1Fzq/bQAS76COqAD46q9A+fCe238WiLvy
+         1Kg86i7SI7Y4MX2PJKS5dnCv4VQWZZO96OBeQdNenzi3/UfQEOY+fukxznsOY8Mu2EJc
+         2SiMQndzHMODnj8fs6NY5ADlXVMBcuWtZnQI+LjpXvs3JmyNxk3G1XuEXbkiC8VspDan
+         6+uA==
+X-Gm-Message-State: AOAM531jQtxw0QOdYcfA4qDScTjUQrhEZl6JDgqMQ+CoB9fnfamgjtIp
+        jKYzhBl7sKJMpdtegZFcTxA=
+X-Google-Smtp-Source: ABdhPJxMktzZl30xTOJeJFAJhDVALgcXZJ+/C9qIfyy0vXG3fQUNueITrB+y/WqASXZI4yww3+e5BA==
+X-Received: by 2002:a17:902:6b8c:b029:d6:d32e:4a8c with SMTP id p12-20020a1709026b8cb02900d6d32e4a8cmr15885726plk.28.1605592709342;
+        Mon, 16 Nov 2020 21:58:29 -0800 (PST)
+Received: from localhost.localdomain ([8.210.202.142])
+        by smtp.gmail.com with ESMTPSA id s21sm5955013pgm.65.2020.11.16.21.58.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Nov 2020 21:58:28 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     kishon@ti.com, vkoul@kernel.org, khilman@baylibre.com,
+        narmstrong@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, p.zabel@pengutronix.de
+Cc:     lorenzo.pieralisi@arm.com, repk@triplefau.lt,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] phy: amlogic: Replace devm_reset_control_array_get()
+Date:   Tue, 17 Nov 2020 13:58:09 +0800
+Message-Id: <1605592689-10108-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+devm_reset_control_array_get_exclusive() looks more readable
 
-Jing,
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ drivers/phy/amlogic/phy-meson-axg-pcie.c       | 2 +-
+ drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c | 2 +-
+ drivers/soc/amlogic/meson-ee-pwrc.c            | 3 +--
+ drivers/soc/amlogic/meson-gx-pwrc-vpu.c        | 2 +-
+ 4 files changed, 4 insertions(+), 5 deletions(-)
 
-> The variable rval has been initialized with 'QLA_ERROR'. The
-> assignment is redundant in an error path. So remove it.
-
-Applied to 5.11/scsi-staging, thanks!
-
+diff --git a/drivers/phy/amlogic/phy-meson-axg-pcie.c b/drivers/phy/amlogic/phy-meson-axg-pcie.c
+index 377ed0d..3204f02 100644
+--- a/drivers/phy/amlogic/phy-meson-axg-pcie.c
++++ b/drivers/phy/amlogic/phy-meson-axg-pcie.c
+@@ -155,7 +155,7 @@ static int phy_axg_pcie_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->regmap))
+ 		return PTR_ERR(priv->regmap);
+ 
+-	priv->reset = devm_reset_control_array_get(dev, false, false);
++	priv->reset = devm_reset_control_array_get_exclusive(dev);
+ 	if (IS_ERR(priv->reset))
+ 		return PTR_ERR(priv->reset);
+ 
+diff --git a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
+index 08e3227..bab6345 100644
+--- a/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
++++ b/drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c
+@@ -418,7 +418,7 @@ static int phy_g12a_usb3_pcie_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_disable_clk_ref;
+ 
+-	priv->reset = devm_reset_control_array_get(dev, false, false);
++	priv->reset = devm_reset_control_array_get_exclusive(dev);
+ 	if (IS_ERR(priv->reset))
+ 		return PTR_ERR(priv->reset);
+ 
+diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
+index ed7d2fb..3a879a4 100644
+--- a/drivers/soc/amlogic/meson-ee-pwrc.c
++++ b/drivers/soc/amlogic/meson-ee-pwrc.c
+@@ -413,8 +413,7 @@ static int meson_ee_pwrc_init_domain(struct platform_device *pdev,
+ 			dev_warn(&pdev->dev, "Invalid resets count %d for domain %s\n",
+ 				 count, dom->desc.name);
+ 
+-		dom->rstc = devm_reset_control_array_get(&pdev->dev, false,
+-							 false);
++		dom->rstc = devm_reset_control_array_get_exclusive(&pdev->dev);
+ 		if (IS_ERR(dom->rstc))
+ 			return PTR_ERR(dom->rstc);
+ 	}
+diff --git a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
+index 8790627..b4615b2 100644
+--- a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
++++ b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
+@@ -304,7 +304,7 @@ static int meson_gx_pwrc_vpu_probe(struct platform_device *pdev)
+ 		return PTR_ERR(regmap_hhi);
+ 	}
+ 
+-	rstc = devm_reset_control_array_get(&pdev->dev, false, false);
++	rstc = devm_reset_control_array_get_exclusive(&pdev->dev);
+ 	if (IS_ERR(rstc)) {
+ 		if (PTR_ERR(rstc) != -EPROBE_DEFER)
+ 			dev_err(&pdev->dev, "failed to get reset lines\n");
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+1.9.1
+
