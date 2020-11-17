@@ -2,123 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB102B5900
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B91B92B5903
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726224AbgKQFBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 00:01:51 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:36374 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbgKQFBu (ORCPT
+        id S1725790AbgKQFFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 00:05:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgKQFFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 00:01:50 -0500
-Received: by mail-lf1-f68.google.com with SMTP id f11so28386027lfs.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 21:01:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D6Qu4LBvzg0KV5uCK88WACJ6tGCBOoR1HGCMw7qp6WQ=;
-        b=GjD1zuMtoqHO1ziPsds7y1ADtexEBfTRCH8MyjGh8ZI/2BbgIvQpuhr//em49ghvcK
-         P5odvFILEMkw8jHfhqpswPUVwjVEowZ8deEI9eO7LtDnGOYdze1DQNG2u3QEDWHENBgG
-         Zwlp6ZtealByQVBprI/RJmA2ltGnc2wUnCrfF2loOzJcbJFNGIL7TqkJDomsyRWpvild
-         1AKwySar4RquFZlWYsIgDMkGd9nmbsBH3Xgjg9DXqo97qCqHINioMh5rFEOLzMeJA3og
-         s4zcg2btoDpbzrL/QA+XWIVcfFbs9d7qUUj7DtIS7pxo4C4Exj1jBal8BNssfEfXMwMD
-         fb/w==
-X-Gm-Message-State: AOAM530NpWJoaCW0GFKONrs/2CeIQuU8VZ3meTqrxKlwpCFKTf+q1Qst
-        dPkca6qqKZ8aXYLmzZJgMYUT1B7NtCMUvdd8AN0=
-X-Google-Smtp-Source: ABdhPJyctWAEvCuK1obWq1qK/A5S09DSKpBk8yoYR4poJhvuRnBc6Q1gU+gAmBYuISMpMeysaUxN5HA4TKigj2CHgSM=
-X-Received: by 2002:ac2:5e72:: with SMTP id a18mr929091lfr.220.1605589307873;
- Mon, 16 Nov 2020 21:01:47 -0800 (PST)
+        Tue, 17 Nov 2020 00:05:33 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8FBC0613CF;
+        Mon, 16 Nov 2020 21:05:32 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZv5j4h5Wz9sPB;
+        Tue, 17 Nov 2020 16:05:29 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1605589530;
+        bh=C5KjgF0SiWdqCYc1oAuQ/UH1AFK/PWdYDX0JLs83AHo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VFodMqoHOr0b49+x3BJuBbs8ZF3/vA+KUIzAM4qv9pvNVBkZjTALXyUx+hs8H0kIT
+         6MZp2pfa97RZQTvBgiX1nruaYSLxD+o1djUH/KfqxwTMUjuCyoiZFW0G+Hc1PFQ2Bp
+         Fq23Tavs1i4VxXLx8t4M7HcQq4lbVVpgkWEI8caefpL23Ur/0iBjdQQcr2RtLooqH1
+         iIWgQ5uaxWZPCXL9uEc3F/RKpoEaU3qJKrT4sCoaT73UpZtBJRavbur7XjNE3fPBby
+         DHCqjdh5fEPiUDcP6kgCnDW+DFa3J3na0TU9IJnGfcLlYGd6rL9FZR3DvY/pP8mBob
+         D5Kr7DnO+fzpg==
+Date:   Tue, 17 Nov 2020 16:05:28 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the akpm-current tree with the block
+ tree
+Message-ID: <20201117160528.41a907a0@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201106212935.28943-1-kan.liang@linux.intel.com>
- <20201109095235.GC2594@hirez.programming.kicks-ass.net> <20201109110405.GN2651@hirez.programming.kicks-ass.net>
- <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com> <20201111162509.GW2611@hirez.programming.kicks-ass.net>
- <2dc483f6-7b29-c42b-13a4-4c549d720aa2@linux.intel.com>
-In-Reply-To: <2dc483f6-7b29-c42b-13a4-4c549d720aa2@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 17 Nov 2020 14:01:36 +0900
-Message-ID: <CAM9d7cjwFp9JBqs1Ga9n1ojbez9chZLvmOgFv1EE4KDhAa9ryA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU events
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Gabriel Marin <gmx@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/S2=30Yqu9+ZMjhPjQJC6F75";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/S2=30Yqu9+ZMjhPjQJC6F75
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 12, 2020 at 4:54 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
->
->
->
-> On 11/11/2020 11:25 AM, Peter Zijlstra wrote:
-> > On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
-> >
-> >> - When the large PEBS was introduced (9c964efa4330), the sched_task() should
-> >> be invoked to flush the PEBS buffer in each context switch. However, The
-> >> perf_sched_events in account_event() is not updated accordingly. The
-> >> perf_event_task_sched_* never be invoked for a pure per-CPU context. Only
-> >> per-task event works.
-> >>     At that time, the perf_pmu_sched_task() is outside of
-> >> perf_event_context_sched_in/out. It means that perf has to double
-> >> perf_pmu_disable() for per-task event.
-> >
-> >> - The patch 1 tries to fix broken per-CPU events. The CPU context cannot be
-> >> retrieved from the task->perf_event_ctxp. So it has to be tracked in the
-> >> sched_cb_list. Yes, the code is very similar to the original codes, but it
-> >> is actually the new code for per-CPU events. The optimization for per-task
-> >> events is still kept.
-> >>    For the case, which has both a CPU context and a task context, yes, the
-> >> __perf_pmu_sched_task() in this patch is not invoked. Because the
-> >> sched_task() only need to be invoked once in a context switch. The
-> >> sched_task() will be eventually invoked in the task context.
-> >
-> > The thing is; your first two patches rely on PERF_ATTACH_SCHED_CB and
-> > only set that for large pebs. Are you sure the other users (Intel LBR
-> > and PowerPC BHRB) don't need it?
->
-> I didn't set it for LBR, because the perf_sched_events is always enabled
-> for LBR. But, yes, we should explicitly set the PERF_ATTACH_SCHED_CB
-> for LBR.
->
->         if (has_branch_stack(event))
->                 inc = true;
->
-> >
-> > If they indeed do not require the pmu::sched_task() callback for CPU
-> > events, then I still think the whole perf_sched_cb_{inc,dec}() interface
->
-> No, LBR requires the pmu::sched_task() callback for CPU events.
->
-> Now, The LBR registers have to be reset in sched in even for CPU events.
->
-> To fix the shorter LBR callstack issue for CPU events, we also need to
-> save/restore LBRs in pmu::sched_task().
-> https://lore.kernel.org/lkml/1578495789-95006-4-git-send-email-kan.liang@linux.intel.com/
->
-> > is confusing at best.
-> >
-> > Can't we do something like this instead?
-> >
-> I think the below patch may have two issues.
-> - PERF_ATTACH_SCHED_CB is required for LBR (maybe PowerPC BHRB as well) now.
-> - We may disable the large PEBS later if not all PEBS events support
-> large PEBS. The PMU need a way to notify the generic code to decrease
-> the nr_sched_task.
+Hi all,
 
-Any updates on this?  I've reviewed and tested Kan's patches
-and they all look good.
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-Maybe we can talk to PPC folks to confirm the BHRB case?
+  mm/filemap.c
 
-Thanks,
-Namhyung
+between commit:
+
+  0abed7c69b95 ("mm: never attempt async page lock if we've transferred dat=
+a already")
+
+from the block tree and commit:
+
+  b5c7e73f6bd3 ("mm/filemap/c: break generic_file_buffered_read up into mul=
+tiple functions")
+
+from the akpm-current tree.
+
+I just used the latter version for today, if more is needed, please let
+me know.
+
+This is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/S2=30Yqu9+ZMjhPjQJC6F75
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+zWhgACgkQAVBC80lX
+0Gwl/wf+InLHogofgLuBAdRaTJD/sPQNnM9vmThUCtmGmcAy9QDuZ7NvlzrjTY6P
+zsry+Hv/5r1SurlzPBwKmO4Wr65kzjEYDgSjeLEI020oriyB8VqTAgf/6bJ8YH22
+NAIIbPwXbjs71OzCg+YU8M73e5PE6BrzVpJigY2p26fkAN+gO54XsTrudDRdHGi0
+oE53O2fMjpzPo5JAu5im7i/CQ0xNtbTv36gJVHwq4BsXInUDtPPoOrqjVMPQ1+F8
+RciHimv0MOkG9JnS9VKVdBBOI0HzSTGWJ9YRTj8mH54kmZcLnlT/Q79SCBSiSwvQ
+OG38rzteXSwUfE8fMRuxfaS4M1ePdA==
+=PrSk
+-----END PGP SIGNATURE-----
+
+--Sig_/S2=30Yqu9+ZMjhPjQJC6F75--
