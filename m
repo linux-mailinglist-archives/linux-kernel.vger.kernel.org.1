@@ -2,181 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA1A2B6BBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD5A2B6BBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgKQR3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:29:15 -0500
-Received: from mga02.intel.com ([134.134.136.20]:32303 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726498AbgKQR3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:29:14 -0500
-IronPort-SDR: AHrNXTCsB0YSpaKc0R1n03PJSRJhK1lJaXkuus9AVN+SFDo12x0SilJ4jH6juIXLRfgcX/S84X
- Ek454JXvXlrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="158000634"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="158000634"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 09:29:10 -0800
-IronPort-SDR: 1GNo4EGS7u7Jv5CkkId9EhRHOUL8pZ1QrK4TjY8IokCMQacjJGYhiF9ikoojEYsjodUtHMTdQl
- 8/MLHE+t13ag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="310285629"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Nov 2020 09:29:09 -0800
-Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 17 Nov 2020 09:29:08 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 17 Nov 2020 09:29:08 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 17 Nov 2020 09:29:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WqJIyBTVwKXuEzPzs2MCk4OWnz3gmW6f5HDyECUzSYcyI+QsuQ7ZdNDmEfHW/iaRKE/jPrsSSnLGqavwoDs4xwGlgqIiV5ignZVJpi5CqBfyDXrhP6oLMSjWyS1/StPXgl3iKA79JwQXtYlnkoJJlm0hcP1U4tTT7KmJUq3NPzwcRE78SFWwEJqfSqNMKrjNKzL9RsUz6ddC3oWFAINP+kI1Yg7sohXIP2UYCBtdD9DrxFdJhKEGHfaBm/PKVoGp5n70hOZUdy9mvytGvbyRev4CZwsnRmGANHXJgp2EUTGPlOH5vx5p+XamrlB4s+f/G+EzydHw5YkMTiS2lfebBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+y+zaE2Yi+Yrx+fIKIWJicQO/I52yIi8sC0GY4ZUkY8=;
- b=JmlmqvyXWzqkugbBinDvlr6B4Z6lX1RP57ezxyG+uCW/6QqLG/v6zSk348vnBW3EOOHDZl5jHI5EnXm9jZC/qY1kHzbUO4X72JxzZfwCV4KwmcKICloRMoq93z98CqNPRU6E20fh+JclxszWu4NzGXKk5/clspWvvKHsMwhYoBM2dGJh1dmqVsz0mvM5umH4M9Au+sLLFAoz16JMjWUXzTxiYtsNGO0fXBteCU6g3fRcCT+ivLrMLfjg8tDK3M+okqf0+y0kLsRXiXulRdIvs9r5nvijj2izBXxB1X9kfY60hybFa5IUoBzDfa/XOGMzUlOHM8eSnmSFjSgnVY2gRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+y+zaE2Yi+Yrx+fIKIWJicQO/I52yIi8sC0GY4ZUkY8=;
- b=C3RSaLHuZnlPS1Y6b9dgqPKUwbBuESfBleK3Zpu6Rbpn4Vr9yNtmxCeRuJvmtt1VfyrW9HhSfoFQfR6Ur2O+c6ILeT3sgvSL2mx09Kn5M2WNUGd/1QsoNpYLzxbJ1G4slQa3rrJxyPoi+k6E+RJNavFoSke/ldq5vDK+J8CkqD8=
-Received: from DM6PR11MB4250.namprd11.prod.outlook.com (2603:10b6:5:1df::18)
- by DM5PR11MB1451.namprd11.prod.outlook.com (2603:10b6:4:11::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Tue, 17 Nov
- 2020 17:29:01 +0000
-Received: from DM6PR11MB4250.namprd11.prod.outlook.com
- ([fe80::b90d:d053:9de6:e5ef]) by DM6PR11MB4250.namprd11.prod.outlook.com
- ([fe80::b90d:d053:9de6:e5ef%4]) with mapi id 15.20.3589.020; Tue, 17 Nov 2020
- 17:29:01 +0000
-From:   "Ayyathurai, Vijayakannan" <vijayakannan.ayyathurai@intel.com>
-To:     =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "Linux Memory Management List" <linux-mm@kvack.org>,
-        "Lai, Poey Seng" <poey.seng.lai@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        lkp <lkp@intel.com>
-Subject: RE: [PATCH RFC] pwm: keembay: Fix build failure with -Os
-Thread-Topic: [PATCH RFC] pwm: keembay: Fix build failure with -Os
-Thread-Index: AQHWu/gOwJsV/Qehpk218Q5UlO0i2KnMlCrA
-Date:   Tue, 17 Nov 2020 17:29:01 +0000
-Message-ID: <DM6PR11MB4250E11A47E3B45FE0BEDC26FBE20@DM6PR11MB4250.namprd11.prod.outlook.com>
-References: <202011160303.qi5aRChY-lkp@intel.com>
- <20201116090804.206286-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20201116090804.206286-1-u.kleine-koenig@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [42.106.177.190]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7e6cc576-b9b1-4e89-42b5-08d88b1e466f
-x-ms-traffictypediagnostic: DM5PR11MB1451:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR11MB14517B4FD35812B4EFA2CAD0FBE20@DM5PR11MB1451.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cY20wus1xem9h+RM/wvBzKw17UPG5HKTS4vR/Pmdb6bJRxt9WGi+Oh2jznI4NaaSQYCax3WNyn5Co6MOG14H9i9JA2UVptegfTzwRwqVfo8jmzDfLhO7dYsO6m/nn+AF4gS1UVJ4s9AiU1jHcFn/qCz/SY3Dr/VK4KUM52ROc+jrKDjus2XMyiMbgnQLoQtkDJx3r9vT40MlgGs9Sowc0kfNvx9h8sTmWq0uIT5ODmhOTCyLh2UGi1uFIu0POvpFehHb47gTvj+GdDvDObS9Q0cQOkRFrsg0ObJ27xE6kUTWt+UKAwdrxCdy83053qZB9AL5wcfoTALjCBfwtZG3aw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4250.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(376002)(346002)(136003)(76116006)(33656002)(66946007)(66476007)(64756008)(71200400001)(53546011)(2906002)(66446008)(66556008)(4326008)(5660300002)(8676002)(7696005)(54906003)(9686003)(86362001)(186003)(55016002)(316002)(8936002)(6506007)(478600001)(83380400001)(26005)(110136005)(66574015)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: fkfjf4xH34XpUA7HbnpDi41cIBgJCTAZzXuvRJYMlOgTfnkMU8zyavxYswrDAFE1+PiZZHfbirqKpEI1RyiHfxXgnaSQdD8lYt7aqMP1nK8+MmMzBx2L6hFil+nrMnP2FTJuojphf4zbrgNgz8kTZLnidAw4/TSIbEqC10HABEqklOqoRsvcnJIQlk3CL6YaL6m58IzRMveH/ze/KBQBjHHMNnyCeRekUJUyLUR0OaNMbvp1+gOyu0N1qvb6xBkmZogKUO3XJT1xRmaQGwLcf889dqAe1XyCca1qlgYYaC38KinwvZYk4D3eK4ue6Z8vyQWfcbAIVaNX9tWqFtHMsPncosz94sjtC7cU9T8LIxiFZU1mGWAhpkbE71GBifZwxTR8girqmjZcrI5ujlJRarFrlxbk+wzVuucUdrHV13kRLNqzYX6Nvi3BqYnOzwz4sBMKlQijRV1lRnSHdOwKCcrclDVgmY19FtBZWPYPzt8TQBiBO7wrAjs8tLX8Ggr7NQZAa7KAcKig31eJKcRTCWZ1NphaXTS7IrX8kOX3JU0NUKKmhLzTTgmme69eCR5wfUKBC4+CmM3C6ZCiWvXo+Rmd6gANvbVvGXFc+W4VxX8tMtnWqLNW3aKC31vJ40y1frJUh8p2LwHXHERoBt6OnE57ttrEH+w56FNkQqnydaEOX82URiy5EKC84b7WgbbnFEkoYfRHkshIJUEhuW1z+t0JF7BW+uGP6jHLdjPCTr5cdLQwCX8AIZhFuOsfIzQ0nHq8jqid7kBxLaA79cMEm2pFeCIYebbl3KkLJz/bsujB8wu1gbDoYeWKxv/JGBO0Bqu85H+65GnwGzLxJCwdwKxLLp3Zn1clvsr74OfXynAWIWD+Hy9WOBot29Japj3yJ+A1M/sVyA3L1S4akmczaQ==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728067AbgKQR3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:29:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727372AbgKQR33 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:29:29 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13050C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:29:29 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id r17so24032168wrw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:29:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FROWGsH7Dx97guc9ujjqMeX/SzGuLi2yD3mmQjMN8Gw=;
+        b=lWa4MH/4y1JT4uoM08zKk7JftI+U9CDGGyz8OX0rRi7T9zDzoCGKTrzRaczE+OYdQa
+         xKZdr7i8MeRzbLh11SQGZW9DhRFzHG5NVFURHUeXdHU0hOAwyNLKfMCYjVguTYCzFlAQ
+         aqYwXcl8u/X+GL+3j2W6ylnIHZEjk5+dstyRc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=FROWGsH7Dx97guc9ujjqMeX/SzGuLi2yD3mmQjMN8Gw=;
+        b=prHg5lKyTYcgk7INc6IVqKGNvl2kRqikkvG5dKa5S9UoXqlpbk84DhDPWIiVu2CYVP
+         yqFVphO6Kv4LKD4WOBzcIeWw0q+RmTUMBi/EZ+6+y7kqwAUvGYA+21nmNoaJ06VKBkV4
+         lbDwK0KfF9DZa0WGErk8Kdxk2144MbneFXFfqgff0nZOM90NfTv8XxAoIvnvjoWWaL4j
+         BtzFADt/ovbZz/RxjwqXmWPg/bEOCv2XS8D/55KqhsCMDxnpBHNmeU8jdbxWNvHO3tVc
+         RC+oGafarqbHm+wkUcRYG3GVPCXGWTCNEVV0iMK6GywX/6Vg9YkD2RANtX5D9Wyes/12
+         sQdg==
+X-Gm-Message-State: AOAM532p6Rcs+bAtV7gbqcLrY7nywce6SYNEdPuATPIu4YVIpjIQyE1C
+        IikIzW9zRs1MZeHCsXCrHY7av/WVWYyccQ==
+X-Google-Smtp-Source: ABdhPJx+BnHbl/cFR2hypORia53biB2S0AX0CRMhWkYyVQSS1zuJpDkCMnVSXjw1JIT88MC4cefjtg==
+X-Received: by 2002:a5d:5308:: with SMTP id e8mr567492wrv.299.1605634167815;
+        Tue, 17 Nov 2020 09:29:27 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u23sm4816488wmc.32.2020.11.17.09.29.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 09:29:26 -0800 (PST)
+Date:   Tue, 17 Nov 2020 18:29:25 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 03/42] drm/drm_dp_mst_topology: Remove set but never used
+ variable 'len'
+Message-ID: <20201117172925.GN401619@phenom.ffwll.local>
+Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org
+References: <20201116174112.1833368-1-lee.jones@linaro.org>
+ <20201116174112.1833368-4-lee.jones@linaro.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4250.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e6cc576-b9b1-4e89-42b5-08d88b1e466f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2020 17:29:01.9032
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: o+J/NDomOYjGYF3Nqi6gGqEUpake9F6a+6Sjkp/8yMkPu9YOSgSBXRIG2s84vMYvbnnB7yWw4ejtSkNV1Uv6pIFmXQJA9n12yRTT3A8mXQhero7iUqf58iA7jX8mCQLA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1451
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201116174112.1833368-4-lee.jones@linaro.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVXdlLA0KDQo+IEZyb206IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVu
-Z3V0cm9uaXguZGU+DQo+IFNlbnQ6IE1vbmRheSwgMTYgTm92ZW1iZXIsIDIwMjAgNTowOCBQTQ0K
-PiBTdWJqZWN0OiBbUEFUQ0ggUkZDXSBwd206IGtlZW1iYXk6IEZpeCBidWlsZCBmYWlsdXJlIHdp
-dGggLU9zDQo+IA0KPiBUaGUgZHJpdmVyIHVzZWQgdGhpcyBjb25zdHJ1Y3Q6DQo+IA0KPiAJI2Rl
-ZmluZSBLTUJfUFdNX0xFQURJTl9NQVNLICAgICAgICAgICAgIEdFTk1BU0soMzAsIDApDQo+IA0K
-PiAJc3RhdGljIGlubGluZSB2b2lkIGtlZW1iYXlfcHdtX3VwZGF0ZV9iaXRzKHN0cnVjdCBrZWVt
-YmF5X3B3bQ0KPiAqcHJpdiwgdTMyIG1hc2ssDQo+IAkJCQkJCSAgIHUzMiB2YWwsIHUzMiBvZmZz
-ZXQpDQo+IAl7DQo+IAkJdTMyIGJ1ZmYgPSByZWFkbChwcml2LT5iYXNlICsgb2Zmc2V0KTsNCj4g
-DQo+IAkJYnVmZiA9IHUzMl9yZXBsYWNlX2JpdHMoYnVmZiwgdmFsLCBtYXNrKTsNCj4gCQl3cml0
-ZWwoYnVmZiwgcHJpdi0+YmFzZSArIG9mZnNldCk7DQo+IAl9DQo+IA0KPiAJLi4uDQo+IAlrZWVt
-YmF5X3B3bV91cGRhdGVfYml0cyhwcml2LCBLTUJfUFdNX0xFQURJTl9NQVNLLCAwLA0KPiAJCQkJ
-CUtNQl9QV01fTEVBRElOX09GRlNFVChwd20tDQo+ID5od3B3bSkpOw0KPiANCj4gV2l0aCBDT05G
-SUdfQ0NfT1BUSU1JWkVfRk9SX1NJWkUgdGhlIGNvbXBpbGVyIChoZXJlOiBnY2MgMTAuMi4wKSB0
-aGlzDQo+IHRyaWdnZXJzOg0KPiANCj4gCUluIGZpbGUgaW5jbHVkZWQgZnJvbSAvaG9tZS91d2Uv
-Z3NyYy9saW51eC9kcml2ZXJzL3B3bS9wd20tDQo+IGtlZW1iYXkuYzoxNjoNCj4gCUluIGZ1bmN0
-aW9uIOKAmGZpZWxkX211bHRpcGxpZXLigJksDQo+IAkgICAgaW5saW5lZCBmcm9tIOKAmGtlZW1i
-YXlfcHdtX3VwZGF0ZV9iaXRz4oCZIGF0DQo+IC9ob21lL3V3ZS9nc3JjL2xpbnV4L2luY2x1ZGUv
-bGludXgvYml0ZmllbGQuaDoxMjQ6MTc6DQo+IAkvaG9tZS91d2UvZ3NyYy9saW51eC9pbmNsdWRl
-L2xpbnV4L2JpdGZpZWxkLmg6MTE5OjM6IGVycm9yOiBjYWxsIHRvDQo+IOKAmF9fYmFkX21hc2vi
-gJkgZGVjbGFyZWQgd2l0aCBhdHRyaWJ1dGUgZXJyb3I6IGJhZCBiaXRmaWVsZCBtYXNrDQo+IAkg
-IDExOSB8ICAgX19iYWRfbWFzaygpOw0KPiAJICAgICAgfCAgIF5+fn5+fn5+fn5+fg0KPiAJSW4g
-ZnVuY3Rpb24g4oCYZmllbGRfbXVsdGlwbGllcuKAmSwNCj4gCSAgICBpbmxpbmVkIGZyb20g4oCY
-a2VlbWJheV9wd21fdXBkYXRlX2JpdHPigJkgYXQNCj4gL2hvbWUvdXdlL2dzcmMvbGludXgvaW5j
-bHVkZS9saW51eC9iaXRmaWVsZC5oOjE1NDoxOg0KPiAJL2hvbWUvdXdlL2dzcmMvbGludXgvaW5j
-bHVkZS9saW51eC9iaXRmaWVsZC5oOjExOTozOiBlcnJvcjogY2FsbCB0bw0KPiDigJhfX2JhZF9t
-YXNr4oCZIGRlY2xhcmVkIHdpdGggYXR0cmlidXRlIGVycm9yOiBiYWQgYml0ZmllbGQgbWFzaw0K
-PiAJICAxMTkgfCAgIF9fYmFkX21hc2soKTsNCj4gCSAgICAgIHwgICBefn5+fn5+fn5+fn4NCj4g
-DQo+IFRoZSBjb21waWxlciBkb2Vzbid0IHNlZW0gdG8gYmUgYWJsZSB0byBub3RpY2UgdGhhdCB3
-aXRoIGZpZWxkIGJlaW5nDQo+IDB4M2ZmZmZmZiB0aGUgZXhwcmVzc2lvbg0KPiANCj4gCWlmICgo
-ZmllbGQgfCAoZmllbGQgLSAxKSkgJiAoKGZpZWxkIHwgKGZpZWxkIC0gMSkpICsgMSkpDQo+IAkJ
-X19iYWRfbWFzaygpOw0KPiANCj4gY2FuIGJlIG9wdGltaXplZCBhd2F5Lg0KPiANCj4gU28gdXNl
-IF9fYWx3YXlzX2lubGluZSBhbmQgZG9jdW1lbnQgdGhlIHByb2JsZW0gaW4gYSBjb21tZW50IHRv
-IGZpeA0KPiB0aGlzLg0KPiANCj4gUmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BA
-aW50ZWwuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUt
-a29lbmlnQHBlbmd1dHJvbml4LmRlPg0KDQpUaGFuayB5b3UgZm9yIHNwZW5kaW5nIHRpbWUgaW4g
-cmVzb2x2aW5nIHRoaXMgYnVpbGQgZmFpbHVyZS4NCg0KSSBzaGFsbCBwcmVwYXJlIGFuZCBzaGFy
-ZSB0aGUgbmV4dCB2ZXJzaW9uIG9mIHBhdGNoIHdpdGggeW91ciBhcHByb2FjaC4NCiANCj4gLS0t
-DQo+IEhlbGxvLA0KPiANCj4gSSdtIG5vdCBzdXJlIHRoaXMgaXMgdGhlIHJpZ2h0IGZpeC4gTWF5
-YmUgdGhlIGJpdGZpZWxkIHN0dWZmIGNhbiBiZQ0KPiBjaGFuZ2VkIHNvbWVob3cgdG8gbWFrZSB0
-aGlzIHByb2JsZW0gZ28gYXdheSwgdG9vPw0KPiANCj4gQmVzdCByZWdhcmRzDQo+IFV3ZQ0KPiAN
-Cj4gIGRyaXZlcnMvcHdtL3B3bS1rZWVtYmF5LmMgfCA3ICsrKysrKy0NCj4gIDEgZmlsZSBjaGFu
-Z2VkLCA2IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL3B3bS9wd20ta2VlbWJheS5jIGIvZHJpdmVycy9wd20vcHdtLWtlZW1iYXkuYw0KPiBp
-bmRleCAyYjZkZDA3MGRhYTQuLmNkZmRlZjY2ZmY4ZSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9w
-d20vcHdtLWtlZW1iYXkuYw0KPiArKysgYi9kcml2ZXJzL3B3bS9wd20ta2VlbWJheS5jDQo+IEBA
-IC02Myw3ICs2MywxMiBAQCBzdGF0aWMgaW50IGtlZW1iYXlfY2xrX2VuYWJsZShzdHJ1Y3QgZGV2
-aWNlICpkZXYsDQo+IHN0cnVjdCBjbGsgKmNsaykNCj4gIAlyZXR1cm4gZGV2bV9hZGRfYWN0aW9u
-X29yX3Jlc2V0KGRldiwga2VlbWJheV9jbGtfdW5wcmVwYXJlLCBjbGspOw0KPiAgfQ0KPiANCj4g
-LXN0YXRpYyBpbmxpbmUgdm9pZCBrZWVtYmF5X3B3bV91cGRhdGVfYml0cyhzdHJ1Y3Qga2VlbWJh
-eV9wd20gKnByaXYsIHUzMg0KPiBtYXNrLA0KPiArLyoNCj4gKyAqIFdpdGggZ2NjIDEwLCBDT05G
-SUdfQ0NfT1BUSU1JWkVfRk9SX1NJWkUgYW5kIG9ubHkgImlubGluZSIgaW5zdGVhZCBvZg0KPiAr
-ICogIl9fYWx3YXlzX2lubGluZSIgdGhpcyBmYWlscyB0byBjb21waWxlIGJlY2F1c2UgdGhlIGNv
-bXBpbGVyIGRvZXNuJ3Qgbm90aWNlDQo+ICsgKiBmb3IgYWxsIHZhbGlkIG1hc2tzIChlLmcuIEtN
-Ql9QV01fTEVBRElOX01BU0spIHRoYXQgdGhleSBhcmUgb2suDQo+ICsgKi8NCj4gK3N0YXRpYyBf
-X2Fsd2F5c19pbmxpbmUgdm9pZCBrZWVtYmF5X3B3bV91cGRhdGVfYml0cyhzdHJ1Y3QNCj4ga2Vl
-bWJheV9wd20gKnByaXYsIHUzMiBtYXNrLA0KPiAgCQkJCQkgICB1MzIgdmFsLCB1MzIgb2Zmc2V0
-KQ0KPiAgew0KPiAgCXUzMiBidWZmID0gcmVhZGwocHJpdi0+YmFzZSArIG9mZnNldCk7DQo+IC0t
-DQo+IDIuMjguMA0KDQpUaGFua3MsDQpWaWpheQ0K
+On Mon, Nov 16, 2020 at 05:40:33PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/drm_dp_mst_topology.c: In function ‘drm_dp_send_query_stream_enc_status’:
+>  drivers/gpu/drm/drm_dp_mst_topology.c:3263:6: warning: variable ‘len’ set but not used [-Wunused-but-set-variable]
+> 
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Going to apply this, but I noticed that the return value of the
+build_query_stream_enc_status() is pointless. Can you pls follow up with
+an additional patch to change that to void?
+
+Thanks, Daniel
+
+> ---
+>  drivers/gpu/drm/drm_dp_mst_topology.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index e875425336406..0401b2f475002 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -3260,7 +3260,7 @@ int drm_dp_send_query_stream_enc_status(struct drm_dp_mst_topology_mgr *mgr,
+>  {
+>  	struct drm_dp_sideband_msg_tx *txmsg;
+>  	u8 nonce[7];
+> -	int len, ret;
+> +	int ret;
+>  
+>  	txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
+>  	if (!txmsg)
+> @@ -3281,7 +3281,7 @@ int drm_dp_send_query_stream_enc_status(struct drm_dp_mst_topology_mgr *mgr,
+>  	 */
+>  	txmsg->dst = mgr->mst_primary;
+>  
+> -	len = build_query_stream_enc_status(txmsg, port->vcpi.vcpi, nonce);
+> +	build_query_stream_enc_status(txmsg, port->vcpi.vcpi, nonce);
+>  
+>  	drm_dp_queue_down_tx(mgr, txmsg);
+>  
+> -- 
+> 2.25.1
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
