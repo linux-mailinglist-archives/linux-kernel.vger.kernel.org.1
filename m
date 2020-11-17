@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0DE2B6A89
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5822B6A9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728074AbgKQQov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727251AbgKQQou (ORCPT
+        id S1728227AbgKQQqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:46:51 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:38100 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727439AbgKQQqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:44:50 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC86FC0613CF;
-        Tue, 17 Nov 2020 08:44:49 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id oc3so800361pjb.4;
-        Tue, 17 Nov 2020 08:44:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B8QzwI2A4JiMjBdpbYfzTZikgzOSJPgc8kyE3psYOaY=;
-        b=ccOT9e4Cq3nEg1uwVEtpv1U8N4LontAVmAzlX5HUNjjcXHx5n/NZNL9SRvY+Dd1vrm
-         Wab0TbCtv/RB2fqIYXQ2+5cQoWXCPUR5mGj1/HJkYwnfw2FLRJYXaTUuWBsYtUUmVe59
-         4EaLdkrcGNnETkIRr6RCMMp2/DRjEGZoLAO94SbuivESyoQphgeg3WuqtfKoNOkQxjja
-         tbbXCtdfs8nio7bMoHtA3hKEdPZvxdqEwO1S1ofu3Ryl+GcDr5Ig9v8e7hgk5FVgIT6N
-         bz5mV4/qPRABguAyyP+L5gCq4aXEht8Ryu6CHMoT9V1mie7wg+ZtNRyKuRx4HoUsLOnH
-         5fYA==
+        Tue, 17 Nov 2020 11:46:51 -0500
+Received: by mail-pj1-f65.google.com with SMTP id gi3so804201pjb.3;
+        Tue, 17 Nov 2020 08:46:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B8QzwI2A4JiMjBdpbYfzTZikgzOSJPgc8kyE3psYOaY=;
-        b=nvbHNDugd/Qp16/alLMb9yxjXFhrS8EBuX1h5ZmTsF3ZsqXOygm3Qw4DTEqYQQF5kb
-         Do+7pmOtGnIpgZWkd6C/5+xvQ7OqHD+KGYGr5w4vLSb2r8gULgfpQAUnXay4ZVvwLGaO
-         qVuI8W+taag9EODJeY4B4aj7zpBNbE4YevQ83tlU4AyvYkikexhRGm1KMNhhkdbUPsuA
-         GQyunNpY0TsNGWlw2DzrjmRJOLVn+tQVOsJjAgjNWolywTY2ldlGRJ2mZmQ5V1OKQ/7J
-         c2k7sYQXU//4rcduIR0ONn73m145is2QsDUP2kdxkSy2Ukj+BJFvGcFUGIUuCsYK0pP9
-         4oqQ==
-X-Gm-Message-State: AOAM533br2oZ2N56/R06n8VI+vWxjhoClEStA9ckp23SEDmSwUnxvaYw
-        3asTTAXMk89mmIRuQeCHoDDyuTLLtd/g1K7Uwf8=
-X-Google-Smtp-Source: ABdhPJwvYdEFzP8xHWLyXY+/m9CfiCPoozx6BGYVNLVbOYR5fdvQzRfgXO1baMYIKH18JHEtpDcfCR9bmqf6oaksZPY=
-X-Received: by 2002:a17:90a:d90a:: with SMTP id c10mr231762pjv.129.1605631489523;
- Tue, 17 Nov 2020 08:44:49 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s43DkhroP2fE2p52MdenTBrlylmGcPquO8ir0v8/P+k=;
+        b=VBsGMpd9gkhyUTKC7WBTIFs2tvZ6Wlo7Yl74FzVYob9iOXUCQrHTVpzVCOyGfZLomI
+         8cbF3RQqBi9cKqT8/u0P9oYxQvIhWctHfUx3jbMvUhwA4JhdZNqlCUZtbosQBaQw46dk
+         uomMVL0RMikI7kFgVIlvvYqyCTUiwiwKCCLKWolFmvqnexSjufn4DUwdk7IrSubpd27v
+         wEEoXxHemsku80o2PzA/Jc4qzGz8yzaQvcVdPmN0oY4qvLSS6B7IYkVDtyYnMeLnibax
+         pqZrQglgCNxOFLLsNWMRadstRQNvZK8UpYHVXBew5rWJAB7EMQXjbTWjyWFgVRk2PUzB
+         MxSw==
+X-Gm-Message-State: AOAM53282rKgcI2BxJFOSCEFzzexlt+64REo3hhRhkfi7gEO4GGMSEX4
+        UeKj+hc5vtybtvzJBeV+fMRhvJ5MNFQ=
+X-Google-Smtp-Source: ABdhPJz0hqwFgrU/OtvJed64cAOwajiwlODGtEkQGu6HWuBNUwihdbumB1I5mFm6Z4kOFMlk7z+DuQ==
+X-Received: by 2002:a17:90a:5b0a:: with SMTP id o10mr228686pji.197.1605631610234;
+        Tue, 17 Nov 2020 08:46:50 -0800 (PST)
+Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id t7sm3592605pji.27.2020.11.17.08.46.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 08:46:49 -0800 (PST)
+Subject: Re: [block, scsi, ide] 3e3b42fee6:
+ kmsg.sd#:#:#:#:[sdf]Asking_for_cache_data_failed
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Martin Kepplinger <martin.kepplinger@puri.sm>,
+        0day robot <lkp@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+References: <20201117143350.GA17824@xsang-OptiPlex-9020>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <38bed525-3453-f614-7310-ad01f1bc2605@acm.org>
+Date:   Tue, 17 Nov 2020 08:46:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201117154340.18216-1-info@metux.net>
-In-Reply-To: <20201117154340.18216-1-info@metux.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 17 Nov 2020 18:45:37 +0200
-Message-ID: <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
-Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andrew Jeffery <andrew@aj.id.au>, Alban Bedel <albeu@free.fr>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>, orsonzhai@gmail.com,
-        baolin.wang7@gmail.com, zhang.lyra@gmail.com,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201117143350.GA17824@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 5:45 PM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
->
-> The of_match_ptr(foo) macro evaluates to foo, only if
-> CONFIG_OF is set, otherwise to NULL. Same does ACPI_PTR with
-> CONFIG_ACPI. That's very helpful for drivers that can be used
-> with or without oftree / acpi.
->
-> Even though most of the drivers touched here probably don't
-> actually need that, it's also nice for consistency to make it
-> the de-facto standard and change all drivers to use the
-> of_match_ptr() and ACPI_PTR() macros.
->
-> A nice side effect: in some situations, when compiled w/o
-> CONFIG_OF/CONFIG_ACPI, the corresponding match tables could
-> automatically become unreferenced and optimized-away by the
-> compiler, w/o explicitly cluttering the code w/ ifdef's.
+On 11/17/20 8:00 AM, kernel test robot wrote:
+> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
 
-NAK.
+Please fix the test bot. The DID_ERROR messages are reported during test 
+block/001 and in the attached dmesg output I found the following:
 
-It prevents using DT-enabled drivers on ACPI based platforms.
+block/001 (stress device hotplugging)                        [passed]
 
-+Cc: Jonathan who had done the opposite in the entire IIO subsystem.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Bart.
