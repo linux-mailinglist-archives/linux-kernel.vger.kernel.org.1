@@ -2,39 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A992B6189
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5212B60B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730468AbgKQNUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:20:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53230 "EHLO mail.kernel.org"
+        id S1729302AbgKQNMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:12:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730337AbgKQNTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:19:52 -0500
+        id S1729258AbgKQNLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:11:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CFB52463D;
-        Tue, 17 Nov 2020 13:19:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 405E624199;
+        Tue, 17 Nov 2020 13:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619192;
-        bh=5kKcpGw954eg3NVFCsOovNhQJgpF+nYHOfnUCzNLAJw=;
+        s=default; t=1605618711;
+        bh=xTAXFNREFzNiLURv6XXd01JKeNZ3ZXa4zHUHpNhRLEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UTI0ngQkjIk7ZL/hsIBaljZVQdW2N3D16Fh48PVQDTmDD4rcUMvG62VKYwWuv4JgA
-         UgVYveYMpQYtcJCGHDlN9AONetXOZI9X4lf5viFftDaZwNLEuBepR6KtUfsWZHbjuj
-         T/efa9vq/EqkxWjn5vaSqqmSIr/pANWEQwCuoapE=
+        b=bcgp/ZiAgHQunXzaE5k4cI56XDg5fbNRGqWsDP1U/6GL17q3SoWhPraSFnCNpCLcG
+         dMOeUJrBXPIZsnlWc4wEWrrsao/kK51yrjlpIveHNXSkgEZKbdNsmXMnDUzrfwGKl1
+         SSHv51Z/dkf5EPGaRK79DPAP+OUQ0iiRzsHFHiwM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 059/101] xfs: fix a missing unlock on error in xfs_fs_map_blocks
+        stable@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vince Weaver <vincent.weaver@maine.edu>, acme@kernel.org,
+        miklos@szeredi.hu, namhyung@kernel.org, songliubraving@fb.com,
+        Ingo Molnar <mingo@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.9 60/78] perf/core: Fix crash when using HW tracing kernel filters
 Date:   Tue, 17 Nov 2020 14:05:26 +0100
-Message-Id: <20201117122115.978115770@linuxfoundation.org>
+Message-Id: <20201117122112.038248140@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +53,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-[ Upstream commit 2bd3fa793aaa7e98b74e3653fdcc72fa753913b5 ]
+commit 7f635ff187ab6be0b350b3ec06791e376af238ab upstream
 
-We also need to drop the iolock when invalidate_inode_pages2 fails, not
-only on all other error or successful cases.
+In function perf_event_parse_addr_filter(), the path::dentry of each struct
+perf_addr_filter is left unassigned (as it should be) when the pattern
+being parsed is related to kernel space.  But in function
+perf_addr_filter_match() the same dentries are given to d_inode() where
+the value is not expected to be NULL, resulting in the following splat:
 
-Fixes: 527851124d10 ("xfs: implement pNFS export operations")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000058
+  pc : perf_event_mmap+0x2fc/0x5a0
+  lr : perf_event_mmap+0x2c8/0x5a0
+  Process uname (pid: 2860, stack limit = 0x000000001cbcca37)
+  Call trace:
+   perf_event_mmap+0x2fc/0x5a0
+   mmap_region+0x124/0x570
+   do_mmap+0x344/0x4f8
+   vm_mmap_pgoff+0xe4/0x110
+   vm_mmap+0x2c/0x40
+   elf_map+0x60/0x108
+   load_elf_binary+0x450/0x12c4
+   search_binary_handler+0x90/0x290
+   __do_execve_file.isra.13+0x6e4/0x858
+   sys_execve+0x3c/0x50
+   el0_svc_naked+0x30/0x34
+
+This patch is fixing the problem by introducing a new check in function
+perf_addr_filter_match() to see if the filter's dentry is NULL.
+
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vince Weaver <vincent.weaver@maine.edu>
+Cc: acme@kernel.org
+Cc: miklos@szeredi.hu
+Cc: namhyung@kernel.org
+Cc: songliubraving@fb.com
+Fixes: 9511bce9fe8e ("perf/core: Fix bad use of igrab()")
+Link: http://lkml.kernel.org/r/1531782831-1186-1-git-send-email-mathieu.poirier@linaro.org
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/xfs/xfs_pnfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/events/core.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/xfs/xfs_pnfs.c b/fs/xfs/xfs_pnfs.c
-index f44c3599527d0..1c9bced3e8601 100644
---- a/fs/xfs/xfs_pnfs.c
-+++ b/fs/xfs/xfs_pnfs.c
-@@ -141,7 +141,7 @@ xfs_fs_map_blocks(
- 		goto out_unlock;
- 	error = invalidate_inode_pages2(inode->i_mapping);
- 	if (WARN_ON_ONCE(error))
--		return error;
-+		goto out_unlock;
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -6814,6 +6814,10 @@ static bool perf_addr_filter_match(struc
+ 				     struct file *file, unsigned long offset,
+ 				     unsigned long size)
+ {
++	/* d_inode(NULL) won't be equal to any mapped user-space file */
++	if (!filter->path.dentry)
++		return false;
++
+ 	if (d_inode(filter->path.dentry) != file_inode(file))
+ 		return false;
  
- 	end_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)offset + length);
- 	offset_fsb = XFS_B_TO_FSBT(mp, offset);
--- 
-2.27.0
-
 
 
