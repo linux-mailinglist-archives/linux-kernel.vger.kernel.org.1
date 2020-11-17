@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099612B6279
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853C02B61C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731547AbgKQN25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:28:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36672 "EHLO mail.kernel.org"
+        id S1731120AbgKQNWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:22:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731869AbgKQN2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:28:32 -0500
+        id S1730979AbgKQNVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:21:42 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E952A20781;
-        Tue, 17 Nov 2020 13:28:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0F0720781;
+        Tue, 17 Nov 2020 13:21:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619711;
-        bh=3X/amyWukI/RU6rYYv8FQh95lYcw6srlsikoMepcCiU=;
+        s=default; t=1605619301;
+        bh=f9CQlTPVnI5Uv0FczfARKCe/ctgrxXi1oJfV3keQNvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YRlC/jfi53DyAODYucvue/a5xHtU607008h9UuO86pfY3fypk0MYDWiVvQAkuIt3P
-         0MV52l9Oo4OEmGhMMK3F5b9gwg6bvPYoAipVXdGayX2uagfo7lIYL+WynxghJlJ0tC
-         aLhnFHgUUDXEN72Bo8fggCfxQRoeQUbzeDefaJKs=
+        b=WjGvvTKzi8SYFdgeDTeh82XkNc/jT3uCMWBXvISiOdAt5sW34fYAe/C80pkbdxipv
+         uBRN6NrYJCWohUWJ1EpG/2CFc0Qq0sC9Fa7SIkvJdp56Xg5wPPZhPS+w6j1bEMCSiX
+         GpWA9dSSvOOXIwXOr0Tpj2tPn8+21hULKtF6gADU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnaud de Turckheim <quarium@gmail.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 5.4 130/151] gpio: pcie-idio-24: Enable PEX8311 interrupts
-Date:   Tue, 17 Nov 2020 14:06:00 +0100
-Message-Id: <20201117122127.750362193@linuxfoundation.org>
+        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH 4.19 095/101] x86/speculation: Allow IBPB to be conditionally enabled on CPUs with always-on STIBP
+Date:   Tue, 17 Nov 2020 14:06:02 +0100
+Message-Id: <20201117122117.764437853@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,117 +44,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaud de Turckheim <quarium@gmail.com>
+From: Anand K Mistry <amistry@google.com>
 
-commit 10a2f11d3c9e48363c729419e0f0530dea76e4fe upstream.
+commit 1978b3a53a74e3230cd46932b149c6e62e832e9a upstream.
 
-This enables the PEX8311 internal PCI wire interrupt and the PEX8311
-local interrupt input so the local interrupts are forwarded to the PCI.
+On AMD CPUs which have the feature X86_FEATURE_AMD_STIBP_ALWAYS_ON,
+STIBP is set to on and
 
-Fixes: 585562046628 ("gpio: Add GPIO support for the ACCES PCIe-IDIO-24 family")
-Cc: stable@vger.kernel.org
-Signed-off-by: Arnaud de Turckheim <quarium@gmail.com>
-Reviewed-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
+
+At the same time, IBPB can be set to conditional.
+
+However, this leads to the case where it's impossible to turn on IBPB
+for a process because in the PR_SPEC_DISABLE case in ib_prctl_set() the
+
+  spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED
+
+condition leads to a return before the task flag is set. Similarly,
+ib_prctl_get() will return PR_SPEC_DISABLE even though IBPB is set to
+conditional.
+
+More generally, the following cases are possible:
+
+1. STIBP = conditional && IBPB = on for spectre_v2_user=seccomp,ibpb
+2. STIBP = on && IBPB = conditional for AMD CPUs with
+   X86_FEATURE_AMD_STIBP_ALWAYS_ON
+
+The first case functions correctly today, but only because
+spectre_v2_user_ibpb isn't updated to reflect the IBPB mode.
+
+At a high level, this change does one thing. If either STIBP or IBPB
+is set to conditional, allow the prctl to change the task flag.
+Also, reflect that capability when querying the state. This isn't
+perfect since it doesn't take into account if only STIBP or IBPB is
+unconditionally on. But it allows the conditional feature to work as
+expected, without affecting the unconditional one.
+
+ [ bp: Massage commit message and comment; space out statements for
+   better readability. ]
+
+Fixes: 21998a351512 ("x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.")
+Signed-off-by: Anand K Mistry <amistry@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lkml.kernel.org/r/20201105163246.v2.1.Ifd7243cd3e2c2206a893ad0a5b9a4f19549e22c6@changeid
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpio/gpio-pcie-idio-24.c |   52 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 51 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/bugs.c |   52 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 19 deletions(-)
 
---- a/drivers/gpio/gpio-pcie-idio-24.c
-+++ b/drivers/gpio/gpio-pcie-idio-24.c
-@@ -28,6 +28,47 @@
- #include <linux/spinlock.h>
- #include <linux/types.h>
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1240,6 +1240,14 @@ static int ssb_prctl_set(struct task_str
+ 	return 0;
+ }
  
-+/*
-+ * PLX PEX8311 PCI LCS_INTCSR Interrupt Control/Status
-+ *
-+ * Bit: Description
-+ *   0: Enable Interrupt Sources (Bit 0)
-+ *   1: Enable Interrupt Sources (Bit 1)
-+ *   2: Generate Internal PCI Bus Internal SERR# Interrupt
-+ *   3: Mailbox Interrupt Enable
-+ *   4: Power Management Interrupt Enable
-+ *   5: Power Management Interrupt
-+ *   6: Slave Read Local Data Parity Check Error Enable
-+ *   7: Slave Read Local Data Parity Check Error Status
-+ *   8: Internal PCI Wire Interrupt Enable
-+ *   9: PCI Express Doorbell Interrupt Enable
-+ *  10: PCI Abort Interrupt Enable
-+ *  11: Local Interrupt Input Enable
-+ *  12: Retry Abort Enable
-+ *  13: PCI Express Doorbell Interrupt Active
-+ *  14: PCI Abort Interrupt Active
-+ *  15: Local Interrupt Input Active
-+ *  16: Local Interrupt Output Enable
-+ *  17: Local Doorbell Interrupt Enable
-+ *  18: DMA Channel 0 Interrupt Enable
-+ *  19: DMA Channel 1 Interrupt Enable
-+ *  20: Local Doorbell Interrupt Active
-+ *  21: DMA Channel 0 Interrupt Active
-+ *  22: DMA Channel 1 Interrupt Active
-+ *  23: Built-In Self-Test (BIST) Interrupt Active
-+ *  24: Direct Master was the Bus Master during a Master or Target Abort
-+ *  25: DMA Channel 0 was the Bus Master during a Master or Target Abort
-+ *  26: DMA Channel 1 was the Bus Master during a Master or Target Abort
-+ *  27: Target Abort after internal 256 consecutive Master Retrys
-+ *  28: PCI Bus wrote data to LCS_MBOX0
-+ *  29: PCI Bus wrote data to LCS_MBOX1
-+ *  30: PCI Bus wrote data to LCS_MBOX2
-+ *  31: PCI Bus wrote data to LCS_MBOX3
-+ */
-+#define PLX_PEX8311_PCI_LCS_INTCSR  0x68
-+#define INTCSR_INTERNAL_PCI_WIRE    BIT(8)
-+#define INTCSR_LOCAL_INPUT          BIT(11)
++static bool is_spec_ib_user_controlled(void)
++{
++	return spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
++		spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP;
++}
 +
- /**
-  * struct idio_24_gpio_reg - GPIO device registers structure
-  * @out0_7:	Read: FET Outputs 0-7
-@@ -92,6 +133,7 @@ struct idio_24_gpio_reg {
- struct idio_24_gpio {
- 	struct gpio_chip chip;
- 	raw_spinlock_t lock;
-+	__u8 __iomem *plx;
- 	struct idio_24_gpio_reg __iomem *reg;
- 	unsigned long irq_mask;
- };
-@@ -481,6 +523,7 @@ static int idio_24_probe(struct pci_dev
- 	struct device *const dev = &pdev->dev;
- 	struct idio_24_gpio *idio24gpio;
- 	int err;
-+	const size_t pci_plx_bar_index = 1;
- 	const size_t pci_bar_index = 2;
- 	const char *const name = pci_name(pdev);
+ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ {
+ 	switch (ctrl) {
+@@ -1247,17 +1255,26 @@ static int ib_prctl_set(struct task_stru
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return 0;
+-		/*
+-		 * Indirect branch speculation is always disabled in strict
+-		 * mode. It can neither be enabled if it was force-disabled
+-		 * by a  previous prctl call.
  
-@@ -494,12 +537,13 @@ static int idio_24_probe(struct pci_dev
- 		return err;
- 	}
++		/*
++		 * With strict mode for both IBPB and STIBP, the instruction
++		 * code paths avoid checking this task flag and instead,
++		 * unconditionally run the instruction. However, STIBP and IBPB
++		 * are independent and either can be set to conditionally
++		 * enabled regardless of the mode of the other.
++		 *
++		 * If either is set to conditional, allow the task flag to be
++		 * updated, unless it was force-disabled by a previous prctl
++		 * call. Currently, this is possible on an AMD CPU which has the
++		 * feature X86_FEATURE_AMD_STIBP_ALWAYS_ON. In this case, if the
++		 * kernel is booted with 'spectre_v2_user=seccomp', then
++		 * spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP and
++		 * spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED.
+ 		 */
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ||
++		if (!is_spec_ib_user_controlled() ||
+ 		    task_spec_ib_force_disable(task))
+ 			return -EPERM;
++
+ 		task_clear_spec_ib_disable(task);
+ 		task_update_spec_tif(task);
+ 		break;
+@@ -1270,10 +1287,10 @@ static int ib_prctl_set(struct task_stru
+ 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 		    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 			return -EPERM;
+-		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++
++		if (!is_spec_ib_user_controlled())
+ 			return 0;
++
+ 		task_set_spec_ib_disable(task);
+ 		if (ctrl == PR_SPEC_FORCE_DISABLE)
+ 			task_set_spec_ib_force_disable(task);
+@@ -1336,20 +1353,17 @@ static int ib_prctl_get(struct task_stru
+ 	if (spectre_v2_user_ibpb == SPECTRE_V2_USER_NONE &&
+ 	    spectre_v2_user_stibp == SPECTRE_V2_USER_NONE)
+ 		return PR_SPEC_ENABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
+-		return PR_SPEC_DISABLE;
+-	else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_ibpb == SPECTRE_V2_USER_SECCOMP ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_PRCTL ||
+-	    spectre_v2_user_stibp == SPECTRE_V2_USER_SECCOMP) {
++	else if (is_spec_ib_user_controlled()) {
+ 		if (task_spec_ib_force_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE;
+ 		if (task_spec_ib_disable(task))
+ 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
+ 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
+-	} else
++	} else if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
++	    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
++		return PR_SPEC_DISABLE;
++	else
+ 		return PR_SPEC_NOT_AFFECTED;
+ }
  
--	err = pcim_iomap_regions(pdev, BIT(pci_bar_index), name);
-+	err = pcim_iomap_regions(pdev, BIT(pci_plx_bar_index) | BIT(pci_bar_index), name);
- 	if (err) {
- 		dev_err(dev, "Unable to map PCI I/O addresses (%d)\n", err);
- 		return err;
- 	}
- 
-+	idio24gpio->plx = pcim_iomap_table(pdev)[pci_plx_bar_index];
- 	idio24gpio->reg = pcim_iomap_table(pdev)[pci_bar_index];
- 
- 	idio24gpio->chip.label = name;
-@@ -520,6 +564,12 @@ static int idio_24_probe(struct pci_dev
- 
- 	/* Software board reset */
- 	iowrite8(0, &idio24gpio->reg->soft_reset);
-+	/*
-+	 * enable PLX PEX8311 internal PCI wire interrupt and local interrupt
-+	 * input
-+	 */
-+	iowrite8((INTCSR_INTERNAL_PCI_WIRE | INTCSR_LOCAL_INPUT) >> 8,
-+		 idio24gpio->plx + PLX_PEX8311_PCI_LCS_INTCSR + 1);
- 
- 	err = devm_gpiochip_add_data(dev, &idio24gpio->chip, idio24gpio);
- 	if (err) {
 
 
