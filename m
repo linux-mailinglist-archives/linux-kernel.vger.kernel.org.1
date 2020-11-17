@@ -2,92 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C6D2B712B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 541DA2B712E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgKQWBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:01:02 -0500
-Received: from mga14.intel.com ([192.55.52.115]:61259 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726182AbgKQWBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:01:01 -0500
-IronPort-SDR: dCgte3pvOPdtmM6pzsEICc+k2YwMihmUB5i8gq98WNv3hBrGCRU72MTg3LbeW5Ldg4nS0EeF1o
- WBZVM7oDA1Dg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="170238893"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="170238893"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 14:00:59 -0800
-IronPort-SDR: OS97W7zIxXgebRJ4qGlwW4dETSzIhTftuSahs2Isaygs5I8bQDIZPrsGzh9YFe5vM5snu0Th6Z
- 65aIpYjI7rAA==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="544225340"
-Received: from chimtrax-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.222])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 14:00:58 -0800
-Subject: Re: [PATCH v11 09/16] PCI/ERR: Avoid negated conditional for clarity
-To:     Sean V Kelley <sean.v.kelley@intel.com>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, xerces.zhao@gmail.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201117191954.1322844-1-sean.v.kelley@intel.com>
- <20201117191954.1322844-10-sean.v.kelley@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <c430ba69-3e2c-a6fc-fc41-a27567f88b06@linux.intel.com>
-Date:   Tue, 17 Nov 2020 14:00:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728606AbgKQWCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:02:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgKQWCh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:02:37 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBA0C0613CF;
+        Tue, 17 Nov 2020 14:02:36 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id b17so16550ljf.12;
+        Tue, 17 Nov 2020 14:02:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=W5om3zQzsHiBGMpHdWoQikEGL2r18KBMb1Ag+GnaG08=;
+        b=aUPTRertfb05h4PXQBp+XblhFmhkq3dYxYo19vCMmRFRwFfo3o1IW4o98iLAok03IX
+         SB7/dAIf/DxDZrSAmId3g1EI40aBDac3fFJ5YPVvSW4ZcmMmQ1/fZT7zXo9ji1tnSBH2
+         2ryoHGWBmcPCOGGdekoRik9gvEfoJIq1jigT730xbZyGcrmpeGU4NrOrXGvOplzotgE/
+         YujRyvzI7YgCBSKphSJsvHJdJaz64JVUE1DdR45WFz0QWc2ezvGHPVWoY5Lg6HFf46Nl
+         0V2nRoj5jQVYhYcul1ZHcmKsPqCQgZ5dqIGEIVHgEXRfIfsykIDOct6IpeM1FbHDQTJX
+         oN4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W5om3zQzsHiBGMpHdWoQikEGL2r18KBMb1Ag+GnaG08=;
+        b=Ue1BuOWJ5esZvC4xTAbhknFSXbd5ZEjvBF0Z0EzmHKQgLAE25nteGP60PitT7U5xtx
+         Ni30aY5XdRyyLCCu/O+8xujmhLSTUsadauTIfMhnlMCIvMHo8frwgV8A8DEMTAZmFJBz
+         tZQglRBPi8FxjI8pW2YUTvpnZAb9/QTcLmm6qqZnIkasyKMcOkxjxJWQSkPMa3zv/T4l
+         92w7keejWhlc7RZqID5OF412FqEmlrOWT+iHEmHgHnjG5Itkan8NjB+6VOC10FM9nPKe
+         HYqGCYlRUvrSi1PT53jYoQLbtw+5mAqRncx5i/auDPd2zVOMN6cSXlOmvN4h76fHcvCV
+         3iqg==
+X-Gm-Message-State: AOAM530Q/iTPEWsZaEltAKuHfYU0u5d7Uyr3uI8BYoD46z3NTII/bZgu
+        LZw8EnL0BcEwmj4QYxQ5kKE=
+X-Google-Smtp-Source: ABdhPJxGxTDDbi0d8oMMgkGSyKhMr/XNvJc72UcmGlAMm4SW4FF2fTuHTUsirRfiv8AMfkDsmlK1rg==
+X-Received: by 2002:a05:651c:30d:: with SMTP id a13mr2849268ljp.386.1605650555139;
+        Tue, 17 Nov 2020 14:02:35 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id v16sm3215544ljj.0.2020.11.17.14.02.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 14:02:34 -0800 (PST)
+Subject: Re: [PATCH v9 01/17] memory: tegra30: Support interconnect framework
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20201115212922.4390-1-digetx@gmail.com>
+ <20201115212922.4390-2-digetx@gmail.com>
+ <61e777d9-b730-02c6-cedf-cf0aa1a50fb8@linaro.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <7e484678-43cc-e612-1017-73ed580f9840@gmail.com>
+Date:   Wed, 18 Nov 2020 01:02:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <20201117191954.1322844-10-sean.v.kelley@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <61e777d9-b730-02c6-cedf-cf0aa1a50fb8@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/17/20 11:19 AM, Sean V Kelley wrote:
-> Reverse the sense of the Root Port/Downstream Port conditional for clarity.
-> No functional change intended.
+17.11.2020 23:24, Georgi Djakov пишет:
+> Hi Dmitry,
 > 
-> [bhelgaas: split to separate patch]
-> Link: https://lore.kernel.org/r/20201002184735.1229220-6-seanvk.dev@oregontracks.org
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
->   drivers/pci/pcie/err.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+> Thank you working on this!
 > 
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 46a5b84f8842..931e75f2549d 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -159,11 +159,11 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->   	 * Error recovery runs on all subordinates of the bridge.  If the
->   	 * bridge detected the error, it is cleared at the end.
->   	 */
-> -	if (!(type == PCI_EXP_TYPE_ROOT_PORT ||
-> -	      type == PCI_EXP_TYPE_DOWNSTREAM))
-> -		bridge = pci_upstream_bridge(dev);
-> -	else
-> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
-> +	    type == PCI_EXP_TYPE_DOWNSTREAM)
->   		bridge = dev;
-> +	else
-> +		bridge = pci_upstream_bridge(dev);
->   
->   	bus = bridge->subordinate;
->   	pci_dbg(bridge, "broadcast error_detected message\n");
+> On 15.11.20 23:29, Dmitry Osipenko wrote:
+>> Now Internal and External memory controllers are memory interconnection
+>> providers. This allows us to use interconnect API for tuning of memory
+>> configuration. EMC driver now supports OPPs and DVFS. MC driver now
+>> supports tuning of memory arbitration latency, which needs to be done
+>> for ISO memory clients, like a Display client for example.
+>>
+>> Tested-by: Peter Geis <pgwipeout@gmail.com>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>   drivers/memory/tegra/Kconfig       |   1 +
+>>   drivers/memory/tegra/tegra30-emc.c | 349 +++++++++++++++++++++++++++--
+>>   drivers/memory/tegra/tegra30.c     | 173 +++++++++++++-
+>>   3 files changed, 501 insertions(+), 22 deletions(-)
+>>
+> [..]> diff --git a/drivers/memory/tegra/tegra30.c
+> b/drivers/memory/tegra/tegra30.c
+>> index d0314f29608d..ea849003014b 100644
+>> --- a/drivers/memory/tegra/tegra30.c
+>> +++ b/drivers/memory/tegra/tegra30.c
+> [..]
+>> +
+>> +static int tegra30_mc_icc_set(struct icc_node *src, struct icc_node
+>> *dst)
+>> +{
+>> +    struct tegra_mc *mc = icc_provider_to_tegra_mc(src->provider);
+>> +    const struct tegra_mc_client *client = &mc->soc->clients[src->id];
+>> +    u64 peak_bandwidth = icc_units_to_bps(src->peak_bw);
+>> +
+>> +    /*
+>> +     * Skip pre-initialization that is done by icc_node_add(), which
+>> sets
+>> +     * bandwidth to maximum for all clients before drivers are loaded.
+>> +     *
+>> +     * This doesn't make sense for us because we don't have drivers
+>> for all
+>> +     * clients and it's okay to keep configuration left from bootloader
+>> +     * during boot, at least for today.
+>> +     */
+>> +    if (src == dst)
+>> +        return 0;
 > 
+> Nit: The "proper" way to express this should be to implement the
+> .get_bw() callback to return zero as initial average/peak bandwidth.
+> I'm wondering if this will work here?
+> 
+> The rest looks good to me!
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Hello Georgi,
+
+Returning zeros doesn't allow us to skip the initialization that is done
+by provider->set(node, node) in icc_node_add(). It will reconfigure
+memory latency in accordance to a zero memory bandwidth, which is wrong
+to do.
+
+It actually should be more preferred to preset bandwidth to a maximum
+before all drivers are synced, but this should be done only once we will
+wire up all drivers to use ICC framework. For now it's safer to keep the
+default hardware configuration untouched.
