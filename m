@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E882B6639
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 921122B65F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729539AbgKQNKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:10:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40144 "EHLO mail.kernel.org"
+        id S1731305AbgKQN7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:59:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728530AbgKQNKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:10:48 -0500
+        id S1730016AbgKQNRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:17:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84D1C2468F;
-        Tue, 17 Nov 2020 13:10:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D34D21734;
+        Tue, 17 Nov 2020 13:17:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618647;
-        bh=MyyVrVhxxSxMlX0j11555xj4CT/uRjIwpQ6kpo5EBFI=;
+        s=default; t=1605619063;
+        bh=YZmvnOUC23Ga2rGue8Y+m8id7/FGfE6naE3y3o9pAG8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iyogoQY76u4s3q/d7T18eHTot0ZQO+vhmxorKKr1nfoint8+M6yNxKgItUpa8wVtx
-         YqwhajIM2V1fCGNt8+cYvRp/tcJ32CwlvUbz9WLBeCqcMc5AfYqzEojeuqho0t/D9H
-         IXeRUylfu7M4EEAV1B7m0+HfdObSwAeSobDteMsM=
+        b=s1QOLoj619JMuOBv5uW9MnmcLW2DUdgXpiVms/Wgp76vroofpxypG8OwiJ6lrZKat
+         TeUCOSPJ3ZjjfmVDbQ1cmwr08TFZRGynwZX2qIlrESikO40/6DggsAWym2s+5Sd7Xr
+         njWM3XiLaWZnKeWrh/Kk4pvZT+0drCcuNkSnnz4k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        zhuoliang zhang <zhuoliang.zhang@mediatek.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 08/78] net: xfrm: fix a race condition during allocing spi
-Date:   Tue, 17 Nov 2020 14:04:34 +0100
-Message-Id: <20201117122109.506212727@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 008/101] genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
+Date:   Tue, 17 Nov 2020 14:04:35 +0100
+Message-Id: <20201117122113.506907088@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,92 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhuoliang zhang <zhuoliang.zhang@mediatek.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit a779d91314ca7208b7feb3ad817b62904397c56d ]
+[ Upstream commit 151a535171be6ff824a0a3875553ea38570f4c05 ]
 
-we found that the following race condition exists in
-xfrm_alloc_userspi flow:
+kernel/irq/ipi.c otherwise fails to compile if nothing else
+selects it.
 
-user thread                                    state_hash_work thread
-----                                           ----
-xfrm_alloc_userspi()
- __find_acq_core()
-   /*alloc new xfrm_state:x*/
-   xfrm_state_alloc()
-   /*schedule state_hash_work thread*/
-   xfrm_hash_grow_check()   	               xfrm_hash_resize()
- xfrm_alloc_spi                                  /*hold lock*/
-      x->id.spi = htonl(spi)                     spin_lock_bh(&net->xfrm.xfrm_state_lock)
-      /*waiting lock release*/                     xfrm_hash_transfer()
-      spin_lock_bh(&net->xfrm.xfrm_state_lock)      /*add x into hlist:net->xfrm.state_byspi*/
-	                                                hlist_add_head_rcu(&x->byspi)
-                                                 spin_unlock_bh(&net->xfrm.xfrm_state_lock)
-
-    /*add x into hlist:net->xfrm.state_byspi 2 times*/
-    hlist_add_head_rcu(&x->byspi)
-
-1. a new state x is alloced in xfrm_state_alloc() and added into the bydst hlist
-in  __find_acq_core() on the LHS;
-2. on the RHS, state_hash_work thread travels the old bydst and tranfers every xfrm_state
-(include x) into the new bydst hlist and new byspi hlist;
-3. user thread on the LHS gets the lock and adds x into the new byspi hlist again.
-
-So the same xfrm_state (x) is added into the same list_hash
-(net->xfrm.state_byspi) 2 times that makes the list_hash become
-an inifite loop.
-
-To fix the race, x->id.spi = htonl(spi) in the xfrm_alloc_spi() is moved
-to the back of spin_lock_bh, sothat state_hash_work thread no longer add x
-which id.spi is zero into the hash_list.
-
-Fixes: f034b5d4efdf ("[XFRM]: Dynamic xfrm_state hash table sizing.")
-Signed-off-by: zhuoliang zhang <zhuoliang.zhang@mediatek.com>
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 379b656446a3 ("genirq: Add GENERIC_IRQ_IPI Kconfig symbol")
+Reported-by: Pavel Machek <pavel@ucw.cz>
+Tested-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20201015101222.GA32747@amd
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_state.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ kernel/irq/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index 0eb85765d35a1..4d19f2ff6e052 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -1591,6 +1591,7 @@ int xfrm_alloc_spi(struct xfrm_state *x, u32 low, u32 high)
- 	int err = -ENOENT;
- 	__be32 minspi = htonl(low);
- 	__be32 maxspi = htonl(high);
-+	__be32 newspi = 0;
- 	u32 mark = x->mark.v & x->mark.m;
+diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
+index 5f3e2baefca92..d532bf0c5a672 100644
+--- a/kernel/irq/Kconfig
++++ b/kernel/irq/Kconfig
+@@ -80,6 +80,7 @@ config IRQ_FASTEOI_HIERARCHY_HANDLERS
+ # Generic IRQ IPI support
+ config GENERIC_IRQ_IPI
+ 	bool
++	select IRQ_DOMAIN_HIERARCHY
  
- 	spin_lock_bh(&x->lock);
-@@ -1609,21 +1610,22 @@ int xfrm_alloc_spi(struct xfrm_state *x, u32 low, u32 high)
- 			xfrm_state_put(x0);
- 			goto unlock;
- 		}
--		x->id.spi = minspi;
-+		newspi = minspi;
- 	} else {
- 		u32 spi = 0;
- 		for (h = 0; h < high-low+1; h++) {
- 			spi = low + prandom_u32()%(high-low+1);
- 			x0 = xfrm_state_lookup(net, mark, &x->id.daddr, htonl(spi), x->id.proto, x->props.family);
- 			if (x0 == NULL) {
--				x->id.spi = htonl(spi);
-+				newspi = htonl(spi);
- 				break;
- 			}
- 			xfrm_state_put(x0);
- 		}
- 	}
--	if (x->id.spi) {
-+	if (newspi) {
- 		spin_lock_bh(&net->xfrm.xfrm_state_lock);
-+		x->id.spi = newspi;
- 		h = xfrm_spi_hash(net, &x->id.daddr, x->id.spi, x->id.proto, x->props.family);
- 		hlist_add_head_rcu(&x->byspi, net->xfrm.state_byspi + h);
- 		spin_unlock_bh(&net->xfrm.xfrm_state_lock);
+ # Generic MSI interrupt support
+ config GENERIC_MSI_IRQ
 -- 
 2.27.0
 
