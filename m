@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A9D2B6186
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CF52B6276
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730458AbgKQNT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:19:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53066 "EHLO mail.kernel.org"
+        id S1731471AbgKQN2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:28:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730397AbgKQNTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:19:46 -0500
+        id S1731504AbgKQN0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:26:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D7A22465E;
-        Tue, 17 Nov 2020 13:19:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2EC3206D5;
+        Tue, 17 Nov 2020 13:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619186;
-        bh=CHrSrhxaSDBygUeWx8DikqmEOYsoGcez1vsSOkiG43o=;
+        s=default; t=1605619604;
+        bh=1QT9HRE/DdywlrkuAxGHltvhDA0FbHg4eUI177LYd1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ckvgoKjbKmtVkeeTjiRmV/dcsjQLag+f3Bs6YJJWN6irXsS7wcHxIhRySTJBb9GFX
-         MxiLQ4eTLnMRaYGgUg4YM+K8/JW9DQUtMk8xKwAHcxLJiEyzOS30WOzcvjcfgLxHaO
-         aTQRtAkOC40X+Hi5Lxq7kOB2SVcbJA+29gKPBDcU=
+        b=C+1rdvH0JiTNxgwanKDfdIGzNmO7UfrBjO9r9ORH7NJaa2X2hS1Ky1IKYOuInQ4Xo
+         N+GcI5E43F7W15W7BfDqijWoGrItTj+z1VCJKiok8grkURMPL/GJgaXsEKThG3+YkA
+         IgflYZ2O50F1k09yLIRZ3idf1gxGDKI79p3/X7/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 057/101] xfs: fix brainos in the refcount scrubbers rmap fragment processor
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 094/151] nbd: fix a block_device refcount leak in nbd_release
 Date:   Tue, 17 Nov 2020 14:05:24 +0100
-Message-Id: <20201117122115.877021179@linuxfoundation.org>
+Message-Id: <20201117122125.980260339@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,59 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 54e9b09e153842ab5adb8a460b891e11b39e9c3d ]
+[ Upstream commit 2bd645b2d3f0bacadaa6037f067538e1cd4e42ef ]
 
-Fix some serious WTF in the reference count scrubber's rmap fragment
-processing.  The code comment says that this loop is supposed to move
-all fragment records starting at or before bno onto the worklist, but
-there's no obvious reason why nr (the number of items added) should
-increment starting from 1, and breaking the loop when we've added the
-target number seems dubious since we could have more rmap fragments that
-should have been added to the worklist.
+bdget_disk needs to be paired with bdput to not leak a reference
+on the block device inode.
 
-This seems to manifest in xfs/411 when adding one to the refcount field.
-
-Fixes: dbde19da9637 ("xfs: cross-reference the rmapbt data with the refcountbt")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Fixes: 08ba91ee6e2c ("nbd: Add the nbd NBD_DISCONNECT_ON_CLOSE config flag.")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/scrub/refcount.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/block/nbd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/xfs/scrub/refcount.c b/fs/xfs/scrub/refcount.c
-index e8c82b026083e..76e4f16a9fab2 100644
---- a/fs/xfs/scrub/refcount.c
-+++ b/fs/xfs/scrub/refcount.c
-@@ -180,7 +180,6 @@ xchk_refcountbt_process_rmap_fragments(
- 	 */
- 	INIT_LIST_HEAD(&worklist);
- 	rbno = NULLAGBLOCK;
--	nr = 1;
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 62a873718b5bb..a3037fe54c3ab 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1503,6 +1503,7 @@ static void nbd_release(struct gendisk *disk, fmode_t mode)
+ 	if (test_bit(NBD_RT_DISCONNECT_ON_CLOSE, &nbd->config->runtime_flags) &&
+ 			bdev->bd_openers == 0)
+ 		nbd_disconnect_and_put(nbd);
++	bdput(bdev);
  
- 	/* Make sure the fragments actually /are/ in agbno order. */
- 	bno = 0;
-@@ -194,15 +193,14 @@ xchk_refcountbt_process_rmap_fragments(
- 	 * Find all the rmaps that start at or before the refc extent,
- 	 * and put them on the worklist.
- 	 */
-+	nr = 0;
- 	list_for_each_entry_safe(frag, n, &refchk->fragments, list) {
--		if (frag->rm.rm_startblock > refchk->bno)
--			goto done;
-+		if (frag->rm.rm_startblock > refchk->bno || nr > target_nr)
-+			break;
- 		bno = frag->rm.rm_startblock + frag->rm.rm_blockcount;
- 		if (bno < rbno)
- 			rbno = bno;
- 		list_move_tail(&frag->list, &worklist);
--		if (nr == target_nr)
--			break;
- 		nr++;
- 	}
- 
+ 	nbd_config_put(nbd);
+ 	nbd_put(nbd);
 -- 
 2.27.0
 
