@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6CE2B6057
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 610182B60A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729261AbgKQNIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:08:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36684 "EHLO mail.kernel.org"
+        id S1729115AbgKQNLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:11:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729242AbgKQNIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:08:11 -0500
+        id S1729566AbgKQNLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:11:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15414238E6;
-        Tue, 17 Nov 2020 13:08:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C7A7221EB;
+        Tue, 17 Nov 2020 13:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618490;
-        bh=cFm+X33idwFBFy3k9VmCTbLnVijn82oAwo+YDVz0Upk=;
+        s=default; t=1605618671;
+        bh=ae/Vjyqzmrs+5emgSO6m4U3q0C8ZhW9q71LqXTkC+Tw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VoZkGbASsPu2rkn5bWMJ8LhQfgBjzSjoX0AFfUUiefoGdxaDsEDNHKkYPwiToD9Ko
-         dgvh3q/EGBPA1ukHEtIyKigHoi1LFHhz+WIq/glpiLvm+cxsJgdFkvq8GPThEIBbzg
-         aKmD+0WB9qLoROmrqJVnbHxdP3NE4BR4NdOtsduY=
+        b=YvmBRm3lXpZAq7u6obtyc4Bt1lLZOAItZPFcFK/fLwwnTUVQDHf14RElOO/zsYxRb
+         gXwzcUB76cA69xXmdkezYmCM4xW5M9eYWGk+J322x+FERHlfJTJyhKSJCMhF7mNgbc
+         TpLVFLoeTeRaOIhw0+Q6C7BQ0mnS9DbQP7xn5H94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 4.4 50/64] xen/events: fix race in evtchn_fifo_unmask()
+        stable@vger.kernel.org, Wengang Wang <wen.gang.wang@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 47/78] ocfs2: initialize ip_next_orphan
 Date:   Tue, 17 Nov 2020 14:05:13 +0100
-Message-Id: <20201117122108.636669729@linuxfoundation.org>
+Message-Id: <20201117122111.413868472@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +49,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Wengang Wang <wen.gang.wang@oracle.com>
 
-commit f01337197419b7e8a492e83089552b77d3b5fb90 upstream.
+commit f5785283dd64867a711ca1fb1f5bb172f252ecdf upstream.
 
-Unmasking a fifo event channel can result in unmasking it twice, once
-directly in the kernel and once via a hypercall in case the event was
-pending.
+Though problem if found on a lower 4.1.12 kernel, I think upstream has
+same issue.
 
-Fix that by doing the local unmask only if the event is not pending.
+In one node in the cluster, there is the following callback trace:
 
-This is part of XSA-332.
+   # cat /proc/21473/stack
+   __ocfs2_cluster_lock.isra.36+0x336/0x9e0 [ocfs2]
+   ocfs2_inode_lock_full_nested+0x121/0x520 [ocfs2]
+   ocfs2_evict_inode+0x152/0x820 [ocfs2]
+   evict+0xae/0x1a0
+   iput+0x1c6/0x230
+   ocfs2_orphan_filldir+0x5d/0x100 [ocfs2]
+   ocfs2_dir_foreach_blk+0x490/0x4f0 [ocfs2]
+   ocfs2_dir_foreach+0x29/0x30 [ocfs2]
+   ocfs2_recover_orphans+0x1b6/0x9a0 [ocfs2]
+   ocfs2_complete_recovery+0x1de/0x5c0 [ocfs2]
+   process_one_work+0x169/0x4a0
+   worker_thread+0x5b/0x560
+   kthread+0xcb/0xf0
+   ret_from_fork+0x61/0x90
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
+The above stack is not reasonable, the final iput shouldn't happen in
+ocfs2_orphan_filldir() function.  Looking at the code,
+
+  2067         /* Skip inodes which are already added to recover list, since dio may
+  2068          * happen concurrently with unlink/rename */
+  2069         if (OCFS2_I(iter)->ip_next_orphan) {
+  2070                 iput(iter);
+  2071                 return 0;
+  2072         }
+  2073
+
+The logic thinks the inode is already in recover list on seeing
+ip_next_orphan is non-NULL, so it skip this inode after dropping a
+reference which incremented in ocfs2_iget().
+
+While, if the inode is already in recover list, it should have another
+reference and the iput() at line 2070 should not be the final iput
+(dropping the last reference).  So I don't think the inode is really in
+the recover list (no vmcore to confirm).
+
+Note that ocfs2_queue_orphans(), though not shown up in the call back
+trace, is holding cluster lock on the orphan directory when looking up
+for unlinked inodes.  The on disk inode eviction could involve a lot of
+IOs which may need long time to finish.  That means this node could hold
+the cluster lock for very long time, that can lead to the lock requests
+(from other nodes) to the orhpan directory hang for long time.
+
+Looking at more on ip_next_orphan, I found it's not initialized when
+allocating a new ocfs2_inode_info structure.
+
+This causes te reflink operations from some nodes hang for very long
+time waiting for the cluster lock on the orphan directory.
+
+Fix: initialize ip_next_orphan as NULL.
+
+Signed-off-by: Wengang Wang <wen.gang.wang@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201109171746.27884-1-wen.gang.wang@oracle.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/xen/events/events_fifo.c |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
 
---- a/drivers/xen/events/events_fifo.c
-+++ b/drivers/xen/events/events_fifo.c
-@@ -227,19 +227,25 @@ static bool evtchn_fifo_is_masked(unsign
- 	return sync_test_bit(EVTCHN_FIFO_BIT(MASKED, word), BM(word));
- }
- /*
-- * Clear MASKED, spinning if BUSY is set.
-+ * Clear MASKED if not PENDING, spinning if BUSY is set.
-+ * Return true if mask was cleared.
-  */
--static void clear_masked(volatile event_word_t *word)
-+static bool clear_masked_cond(volatile event_word_t *word)
- {
- 	event_word_t new, old, w;
+---
+ fs/ocfs2/super.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/fs/ocfs2/super.c
++++ b/fs/ocfs2/super.c
+@@ -1733,6 +1733,7 @@ static void ocfs2_inode_init_once(void *
  
- 	w = *word;
+ 	oi->ip_blkno = 0ULL;
+ 	oi->ip_clusters = 0;
++	oi->ip_next_orphan = NULL;
  
- 	do {
-+		if (w & (1 << EVTCHN_FIFO_PENDING))
-+			return false;
-+
- 		old = w & ~(1 << EVTCHN_FIFO_BUSY);
- 		new = old & ~(1 << EVTCHN_FIFO_MASKED);
- 		w = sync_cmpxchg(word, old, new);
- 	} while (w != old);
-+
-+	return true;
- }
+ 	ocfs2_resv_init_once(&oi->ip_la_data_resv);
  
- static void evtchn_fifo_unmask(unsigned port)
-@@ -248,8 +254,7 @@ static void evtchn_fifo_unmask(unsigned
- 
- 	BUG_ON(!irqs_disabled());
- 
--	clear_masked(word);
--	if (evtchn_fifo_is_pending(port)) {
-+	if (!clear_masked_cond(word)) {
- 		struct evtchn_unmask unmask = { .port = port };
- 		(void)HYPERVISOR_event_channel_op(EVTCHNOP_unmask, &unmask);
- 	}
 
 
