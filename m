@@ -2,324 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D421C2B5CF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521D12B5CF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727645AbgKQKdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:33:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33580 "EHLO
+        id S1727729AbgKQKeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgKQKdn (ORCPT
+        with ESMTP id S1727439AbgKQKeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:33:43 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60248C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:33:43 -0800 (PST)
-Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28] helo=dude02.pengutronix.de.)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1keyIv-00046d-QC; Tue, 17 Nov 2020 11:33:41 +0100
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Ramiro Oliveira <Ramiro.Oliveira@synopsys.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Amjad Ouled-Ameur <aouledameur@baylibre.com>,
-        kernel@pengutronix.de
-Subject: [PATCH] docs: add a reset controller chapter to the driver API docs
-Date:   Tue, 17 Nov 2020 11:33:06 +0100
-Message-Id: <20201117103306.17010-1-p.zabel@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
+        Tue, 17 Nov 2020 05:34:08 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36F1C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:34:07 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id j7so22628742wrp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:34:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Sud3D2o5i/2sKQgZl/D7nnujJzuFFholMZb2B2KvWWM=;
+        b=RGpqDPpFmT5G7SLxjr4yX6NK5dr/9nYyj3C/p65ke0uLMsIvEFmNrGtPWv2NsIy/C6
+         w+6xb49utWRuAe6ghTEpCM3mkh7TE5ACOZsfVXBs/7BiQaajfy6AH2pM3NaodxjAz/D8
+         TLYtR4aFmK4BA0wi6T9Hll8ND398GpXmmf+ELBDpJMFadc3cA5XzP85KJ02gFlHN+kBu
+         0zwN1K4sUPMNGrfseUYM7M45k/OLSxKV93SRm93IYBV+Vpw9R3mFoiEt18aJn1WMnRDy
+         C9KUGjjgC7h+UprkQvyVJCwkQi6Q1w6pYwArQWRadqDn19nESVxmJMemdcX9wLXxkM0i
+         tQNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Sud3D2o5i/2sKQgZl/D7nnujJzuFFholMZb2B2KvWWM=;
+        b=ZUfRrIJATDy7IF62rg7QVrQj8mMqghW7xZclEUzLOFe7fc9oTdwY1oT90Sv1JBhqoo
+         kV1fook8dnseveJFOXNwwDPsgm1ziz+5Rjr51PwSkjm/f5NbnVNIecNLGfsgEN7qQYpq
+         cMak4B8uuo68AO2PTCx5BhRjZrsumb0xk+hPbr5mzZ9k89XYpnEvjNjUrc/Ty6+LEIZF
+         L7E0hgLsKqrFQjSWMQk3Zl5+4NPCdwysNclXn0kqHHC7bCE1yfINdiY91uIUskBsZRXc
+         UegI73Jc9er5vOQnc2o0xnKZniamo9WI2h3L/nQlw8HGUPo5Jd0b/EqMWw1GE2SriHqf
+         d8Tw==
+X-Gm-Message-State: AOAM530ok+DKKwxVXotdH6Ths4Hwskb83X/gYWNHeCgqJtJ5899WMi0M
+        AIiqCuAPp4U9wiW/9g23Rc38Kg==
+X-Google-Smtp-Source: ABdhPJxtIQ23iZHX7uQawoEIGGH345+Ol3HRW/RC+sRVxjokZR9d24k5wZsq7t1rf1Uq/aibvoAMeA==
+X-Received: by 2002:a5d:4388:: with SMTP id i8mr24032522wrq.262.1605609246430;
+        Tue, 17 Nov 2020 02:34:06 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id j71sm3094716wmj.10.2020.11.17.02.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 02:34:05 -0800 (PST)
+Date:   Tue, 17 Nov 2020 10:34:04 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 02/30] include: drm: drm_atomic: Artificially use 'crtc'
+ to avoid 'not used' warning
+Message-ID: <20201117103404.GF1869941@dell>
+References: <20201112190039.2785914-1-lee.jones@linaro.org>
+ <20201112190039.2785914-3-lee.jones@linaro.org>
+ <20201112202516.GA3340631@ravnborg.org>
+ <20201113204959.GW401619@phenom.ffwll.local>
+ <CAF2Aj3j6+fEFS66qg-a-0Z1XtNQ7EAEnu4ECZ9gLiH7buH=PLw@mail.gmail.com>
+ <CAKMK7uEQwFLj+D4LfdQNfb+cQZCH34HZU7oJh8r=mjozuKmZGQ@mail.gmail.com>
+ <CAF2Aj3jRFM95R7VaV_4Chi3Tr3ja31EjdVTeHeDkUWETweqCGA@mail.gmail.com>
+ <20201117100509.GJ401619@phenom.ffwll.local>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201117100509.GJ401619@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial reset controller API documentation. This is mostly intended
-to describe the concepts to users of the consumer API, and to tie the
-kerneldoc comments we already have into the driver API documentation.
+Daniel,
 
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
----
-Changes since the RFC [1]:
-- Replaced all :c:func:`function` with function() (Jonathan Corbet)
-- Typo fixes and wording improvements (Randy Dunlap)
-- Mention new reset_control_rearm() API as a counterpart to
-  reset_control_reset() for shared resets in the Triggering section
-- Grammar fix in the Querying section
-- Add reset.rst to MAINTAINERS
+For some reason, you're not appearing in the recipents list when I
+reply to all.  You're not in the Mail-Followup-To header.  Any idea
+why this might be?
 
-[1] https://lore.kernel.org/lkml/20191022164547.22632-1-p.zabel@pengutronix.de/
----
- Documentation/driver-api/index.rst |   1 +
- Documentation/driver-api/reset.rst | 219 +++++++++++++++++++++++++++++
- MAINTAINERS                        |   1 +
- 3 files changed, 221 insertions(+)
- create mode 100644 Documentation/driver-api/reset.rst
+Anyway, please see below:
 
-diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-index f357f3eb400c..08c32952fce3 100644
---- a/Documentation/driver-api/index.rst
-+++ b/Documentation/driver-api/index.rst
-@@ -29,6 +29,7 @@ available subsections can be seen below.
-    infiniband
-    frame-buffer
-    regulator
-+   reset
-    iio/index
-    input
-    usb/index
-diff --git a/Documentation/driver-api/reset.rst b/Documentation/driver-api/reset.rst
-new file mode 100644
-index 000000000000..00a6ad79dd6c
---- /dev/null
-+++ b/Documentation/driver-api/reset.rst
-@@ -0,0 +1,219 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+====================
-+Reset controller API
-+====================
-+
-+Introduction
-+============
-+
-+Reset controllers are central units that control the reset signals to multiple
-+peripherals.
-+The reset controller API is split into two parts:
-+the `consumer driver interface <#consumer-driver-interface>`__ (`API reference
-+<#reset-consumer-api>`__), which allows peripheral drivers to request control
-+over their reset input signals, and the `reset controller driver interface
-+<#reset-controller-driver-interface>`__ (`API reference
-+<#reset-controller-driver-api>`__), which is used by drivers for reset
-+controller devices to register their reset controls to provide them to the
-+consumers.
-+
-+While some reset controller hardware units also implement system restart
-+functionality, restart handlers are out of scope for the reset controller API.
-+
-+Glossary
-+--------
-+
-+The reset controller API uses these terms with a specific meaning:
-+
-+Reset line
-+
-+    Physical reset line carrying a reset signal from a reset controller
-+    hardware unit to a peripheral module.
-+
-+Reset control
-+
-+    Control method that determines the state of one or multiple reset lines.
-+    Most commonly this is a single bit in reset controller register space that
-+    either allows direct control over the physical state of the reset line, or
-+    is self-clearing and can be used to trigger a predetermined pulse on the
-+    reset line.
-+    In more complicated reset controls, a single trigger action can launch a
-+    carefully timed sequence of pulses on multiple reset lines.
-+
-+Reset controller
-+
-+    A hardware module that provides a number of reset controls to control a
-+    number of reset lines.
-+
-+Reset consumer
-+
-+    Peripheral module or external IC that is put into reset by the signal on a
-+    reset line.
-+
-+Consumer driver interface
-+=========================
-+
-+This interface provides an API that is similar to the kernel clock framework.
-+Consumer drivers use get and put operations to acquire and release reset
-+controls.
-+Functions are provided to assert and deassert the controlled reset lines,
-+trigger reset pulses, or to query reset line status.
-+
-+When requesting reset controls, consumers can use symbolic names for their
-+reset inputs, which are mapped to an actual reset control on an existing reset
-+controller device by the core.
-+
-+A stub version of this API is provided when the reset controller framework is
-+not in use in order to minimize the need to use ifdefs.
-+
-+Shared and exclusive resets
-+---------------------------
-+
-+The reset controller API provides either reference counted deassertion and
-+assertion or direct, exclusive control.
-+The distinction between shared and exclusive reset controls is made at the time
-+the reset control is requested, either via devm_reset_control_get_shared() or
-+via devm_reset_control_get_exclusive().
-+This choice determines the behavior of the API calls made with the reset
-+control.
-+
-+Shared resets behave similarly to clocks in the kernel clock framework.
-+They provide reference counted deassertion, where only the first deassert,
-+which increments the deassertion reference count to one, and the last assert
-+which decrements the deassertion reference count back to zero, have a physical
-+effect on the reset line.
-+
-+Exclusive resets on the other hand guarantee direct control.
-+That is, an assert causes the reset line to be asserted immediately, and a
-+deassert causes the reset line to be deasserted immediately.
-+
-+Assertion and deassertion
-+-------------------------
-+
-+Consumer drivers use the reset_control_assert() and reset_control_deassert()
-+functions to assert and deassert reset lines.
-+For shared reset controls, calls to the two functions must be balanced.
-+
-+Note that since multiple consumers may be using a shared reset control, there
-+is no guarantee that calling reset_control_assert() on a shared reset control
-+will actually cause the reset line to be asserted.
-+Consumer drivers using shared reset controls should assume that the reset line
-+may be kept deasserted at all times.
-+The API only guarantees that the reset line can not be asserted as long as any
-+consumer has requested it to be deasserted.
-+
-+Triggering
-+----------
-+
-+Consumer drivers use reset_control_reset() to trigger a reset pulse on a
-+self-deasserting reset control.
-+In general, these resets can not be shared between multiple consumers, since
-+requesting a pulse from any consumer driver will reset all connected
-+peripherals.
-+
-+The reset controller API allows requesting self-deasserting reset controls as
-+shared, but for those only the first trigger request causes an actual pulse to
-+be issued on the reset line.
-+All further calls to this function have no effect until all consumers have
-+called reset_control_rearm().
-+For shared reset controls, calls to the two functions must be balanced.
-+This allows devices that only require an initial reset at any point before the
-+driver is probed or resumed to share a pulsed reset line.
-+
-+Querying
-+--------
-+
-+Only some reset controllers support querying the current status of a reset
-+line, via reset_control_status().
-+This function returns a positive non-zero value if the given reset line is
-+asserted.
-+
-+Optional resets
-+---------------
-+
-+Often peripherals require a reset line on some platforms but not on others.
-+For this, reset controls can be requested as optional using
-+devm_reset_control_get_optional_exclusive() or
-+devm_reset_control_get_optional_shared().
-+These functions return a NULL pointer instead of an error when the requested
-+reset control is not specified in the device tree.
-+Passing a NULL pointer to the reset_control functions causes them to return
-+quietly without an error.
-+
-+Reset control arrays
-+--------------------
-+
-+Some drivers need to assert a bunch of reset lines in no particular order.
-+devm_reset_control_array_get() returns an opaque reset control handle that can
-+be used to assert, deassert, or trigger all specified reset controls at once.
-+The reset control API does not guarantee the order in which the individual
-+controls therein are handled.
-+
-+Reset controller driver interface
-+=================================
-+
-+Drivers for reset controller modules provide the functionality necessary to
-+assert or deassert reset signals, to trigger a reset pulse on a reset line, or
-+to query its current state.
-+All functions are optional.
-+
-+Initialization
-+--------------
-+
-+Drivers fill a struct :c:type:`reset_controller_dev` and register it with
-+reset_controller_register() in their probe function.
-+The actual functionality is implemented in callback functions via a struct
-+:c:type:`reset_control_ops`.
-+
-+API reference
-+=============
-+
-+The reset controller API is documented here in two parts:
-+the `reset consumer API <#reset-consumer-api>`__ and the `reset controller
-+driver API <#reset-controller-driver-api>`__.
-+
-+Reset consumer API
-+------------------
-+
-+Reset consumers can control a reset line using an opaque reset control handle,
-+which can be obtained from devm_reset_control_get_exclusive() or
-+devm_reset_control_get_shared().
-+Given the reset control, consumers can call reset_control_assert() and
-+reset_control_deassert(), trigger a reset pulse using reset_control_reset(), or
-+query the reset line status using reset_control_status().
-+
-+.. kernel-doc:: include/linux/reset.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/reset/core.c
-+   :functions: reset_control_reset
-+               reset_control_assert
-+               reset_control_deassert
-+               reset_control_status
-+               reset_control_acquire
-+               reset_control_release
-+               reset_control_rearm
-+               reset_control_put
-+               of_reset_control_get_count
-+               of_reset_control_array_get
-+               devm_reset_control_array_get
-+               reset_control_get_count
-+
-+Reset controller driver API
-+---------------------------
-+
-+Reset controller drivers are supposed to implement the necessary functions in
-+a static constant structure :c:type:`reset_control_ops`, allocate and fill out
-+a struct :c:type:`reset_controller_dev`, and register it using
-+devm_reset_controller_register().
-+
-+.. kernel-doc:: include/linux/reset-controller.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/reset/core.c
-+   :functions: of_reset_simple_xlate
-+               reset_controller_register
-+               reset_controller_unregister
-+               devm_reset_controller_register
-+               reset_controller_add_lookup
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e73636b75f29..678bd80a2e65 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14948,6 +14948,7 @@ M:	Philipp Zabel <p.zabel@pengutronix.de>
- S:	Maintained
- T:	git git://git.pengutronix.de/git/pza/linux
- F:	Documentation/devicetree/bindings/reset/
-+F:	Documentation/driver-api/reset.rst
- F:	drivers/reset/
- F:	include/dt-bindings/reset/
- F:	include/linux/reset-controller.h
+On Tue, 17 Nov 2020, Daniel Vetter wrote:
+> On Fri, Nov 13, 2020 at 10:01:57PM +0000, Lee Jones wrote:
+> > On Fri, 13 Nov 2020, 21:31 Daniel Vetter, <daniel@ffwll.ch> wrote:
+> > 
+> > > On Fri, Nov 13, 2020 at 9:53 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On Fri, 13 Nov 2020, 20:50 Daniel Vetter, <daniel@ffwll.ch> wrote:
+> > > >>
+> > > >> On Thu, Nov 12, 2020 at 09:25:16PM +0100, Sam Ravnborg wrote:
+> > > >> > Hi Lee,
+> > > >> >
+> > > >> > On Thu, Nov 12, 2020 at 07:00:11PM +0000, Lee Jones wrote:
+> > > >> > > The precedent has already been set by other macros in the same file.
+> > > >> > >
+> > > >> > > Fixes the following W=1 kernel build warning(s):
+> > > >> > >
+> > > >> > >  drivers/gpu/drm/vkms/vkms_drv.c:55:19: warning: variable ‘crtc’
+> > > set but not used [-Wunused-but-set-variable]
+> > > >> > >  55 | struct drm_crtc *crtc;
+> > > >> > >  | ^~~~
+> > > >> > >
+> > > >> > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > > >> > > Cc: Maxime Ripard <mripard@kernel.org>
+> > > >> > > Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> > > >> > > Cc: David Airlie <airlied@linux.ie>
+> > > >> > > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > > >> > > Cc: Rob Clark <robdclark@gmail.com>
+> > > >> > > Cc: dri-devel@lists.freedesktop.org
+> > > >> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > >> >
+> > > >> > Also applied to drm-misc-next.
+> > > >> > This was the last patch from this batch I will process.
+> > > >> > The others are left for the maintainers to pick up.
+> > > >>
+> > > >> btw for patches that maintainers don't pick up, the usual process is
+> > > that
+> > > >> we give them 2 weeks, then just mass apply. Now you're producing a lot
+> > > of
+> > > >> patches, too much for me to keep track, so please just ping me with a
+> > > >> resend for those that expired and I'll go through and pick them all up.
+> > > >
+> > > >
+> > > > That's great Daniel. Thanks for your support.
+> > > >
+> > > > I can do one better than that.
+> > > >
+> > > > Would a pull-request suit you?
+> > >
+> > > We have a few trees going on, and your patches are landing through all
+> > > kinds of them. So this might be more coordination pain. If you can
+> > > exclude patches for the separately and usually fairly well maintained
+> > > drivers out of the pull it should work (drm/amd, drm/radeon, drm/i915,
+> > > drm/nouveau, drm/msm and drm/omapdrm probably the usual ones).
+> > >
+> > > Or you just send the next pile and we'll see.
+> > >
+> > > Also I guess I can't really interest you in commit rights so this
+> > > patch bombs get off my back again? :-)
+> > >
+> > 
+> > What does that mean? Merge my own patches?
+> > 
+> > Not sure how that works with your group maintenance setup.
+> > 
+> > Is it just a `git push`?
+> 
+> It's a bunch of scripting and setup, might not be worth it for just one
+> of. Plus we still take pull requests from submaintainers so it's all just
+> if you feel like it. Some docs if you're curious:
+> 
+> https://drm.pages.freedesktop.org/maintainer-tools/getting-started.html
+
+As *fun* as that looks, I think I'll give it a miss, thanks. :)
+
+So for the final merge of the non-Radeon set [0] to date (Alex just
+pulled in all of the outstanding Radeon patches), we have a few
+options:
+
+ 1. Take them directly from the most recent set [0]
+ 2. I can rebase and resubmit again in a few days
+ 3. I can submit a PR
+
+Whatever works for you.
+
+[0] "[PATCH v2 00/42] Rid W=1 warnings from GPU (non-Radeon)"
+
 -- 
-2.20.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
