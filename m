@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1922B610D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE4A2B60C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730172AbgKQNPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:15:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46604 "EHLO mail.kernel.org"
+        id S1729839AbgKQNM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:12:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730162AbgKQNPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:15:17 -0500
+        id S1729755AbgKQNMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:12:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAD86246BF;
-        Tue, 17 Nov 2020 13:15:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37C81246BE;
+        Tue, 17 Nov 2020 13:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618916;
-        bh=EXnd/v92FTeYhAqhSbs36rm6Qfj6+smhBqqNFaS+fqE=;
+        s=default; t=1605618731;
+        bh=lizyS5mrYNK43M9hHvR+yVuN3yY1CZ9vOn9/uUKHLHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=duwb3jp470+u9N55hah5lphWw6r3yWJyXlBUFiX/g/BrZpPmpltGRgaBsZizIRgQF
-         Erq4LB7gtiEcDM2FfEoe60Vy4tT0BHGHegPreyD8EkOkOJM+L4/Eni0wfTe/Kaxs41
-         o106iv8+P97e0XnnWYy8qELBK61iUBjvrJGwax1w=
+        b=ZKbygzCk0aoi2ityZ7BqI/bkJL+L1YCCUigBylUpNaShT1acPpdaIKm4+498lONat
+         B1o5+FwASQ8SK4VXe3KlvPJzhXocbBtJTapALD9rqMgNCb+taHef7QLmkmakdNtmEE
+         AUixbQ+aE8Q1TWuhHBviF3RaN9JYqMmt1hHZGK98=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jamie McClymont <jamie@kwiius.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 34/85] pinctrl: intel: Set default bias in case no particular value given
-Date:   Tue, 17 Nov 2020 14:05:03 +0100
-Message-Id: <20201117122112.699344401@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 38/78] xfs: fix rmap key and record comparison functions
+Date:   Tue, 17 Nov 2020 14:05:04 +0100
+Message-Id: <20201117122110.966400393@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,56 +43,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit f3c75e7a9349d1d33eb53ddc1b31640994969f73 ]
+[ Upstream commit 6ff646b2ceb0eec916101877f38da0b73e3a5b7f ]
 
-When GPIO library asks pin control to set the bias, it doesn't pass
-any value of it and argument is considered boolean (and this is true
-for ACPI GpioIo() / GpioInt() resources, by the way). Thus, individual
-drivers must behave well, when they got the resistance value of 1 Ohm,
-i.e. transforming it to sane default.
+Keys for extent interval records in the reverse mapping btree are
+supposed to be computed as follows:
 
-In case of Intel pin control hardware the 5 kOhm sounds plausible
-because on one hand it's a minimum of resistors present in all
-hardware generations and at the same time it's high enough to minimize
-leakage current (will be only 200 uA with the above choice).
+(physical block, owner, fork, is_btree, is_unwritten, offset)
 
-Fixes: e57725eabf87 ("pinctrl: intel: Add support for hardware debouncer")
-Reported-by: Jamie McClymont <jamie@kwiius.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+This provides users the ability to look up a reverse mapping from a bmbt
+record -- start with the physical block; then if there are multiple
+records for the same block, move on to the owner; then the inode fork
+type; and so on to the file offset.
+
+However, the key comparison functions incorrectly remove the
+fork/btree/unwritten information that's encoded in the on-disk offset.
+This means that lookup comparisons are only done with:
+
+(physical block, owner, offset)
+
+This means that queries can return incorrect results.  On consistent
+filesystems this hasn't been an issue because blocks are never shared
+between forks or with bmbt blocks; and are never unwritten.  However,
+this bug means that online repair cannot always detect corruption in the
+key information in internal rmapbt nodes.
+
+Found by fuzzing keys[1].attrfork = ones on xfs/371.
+
+Fixes: 4b8ed67794fe ("xfs: add rmap btree operations")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/intel/pinctrl-intel.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/xfs/libxfs/xfs_rmap_btree.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-index 71df0f70b61f0..45b062b0d4188 100644
---- a/drivers/pinctrl/intel/pinctrl-intel.c
-+++ b/drivers/pinctrl/intel/pinctrl-intel.c
-@@ -602,6 +602,10 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned pin,
+diff --git a/fs/xfs/libxfs/xfs_rmap_btree.c b/fs/xfs/libxfs/xfs_rmap_btree.c
+index 33a28efc3085b..c5a24b80c7f72 100644
+--- a/fs/xfs/libxfs/xfs_rmap_btree.c
++++ b/fs/xfs/libxfs/xfs_rmap_btree.c
+@@ -262,8 +262,8 @@ xfs_rmapbt_key_diff(
+ 	else if (y > x)
+ 		return -1;
  
- 		value |= PADCFG1_TERM_UP;
+-	x = XFS_RMAP_OFF(be64_to_cpu(kp->rm_offset));
+-	y = rec->rm_offset;
++	x = be64_to_cpu(kp->rm_offset);
++	y = xfs_rmap_irec_offset_pack(rec);
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -294,8 +294,8 @@ xfs_rmapbt_diff_two_keys(
+ 	else if (y > x)
+ 		return -1;
  
-+		/* Set default strength value in case none is given */
-+		if (arg == 1)
-+			arg = 5000;
-+
- 		switch (arg) {
- 		case 20000:
- 			value |= PADCFG1_TERM_20K << PADCFG1_TERM_SHIFT;
-@@ -624,6 +628,10 @@ static int intel_config_set_pull(struct intel_pinctrl *pctrl, unsigned pin,
- 	case PIN_CONFIG_BIAS_PULL_DOWN:
- 		value &= ~(PADCFG1_TERM_UP | PADCFG1_TERM_MASK);
- 
-+		/* Set default strength value in case none is given */
-+		if (arg == 1)
-+			arg = 5000;
-+
- 		switch (arg) {
- 		case 20000:
- 			value |= PADCFG1_TERM_20K << PADCFG1_TERM_SHIFT;
+-	x = XFS_RMAP_OFF(be64_to_cpu(kp1->rm_offset));
+-	y = XFS_RMAP_OFF(be64_to_cpu(kp2->rm_offset));
++	x = be64_to_cpu(kp1->rm_offset);
++	y = be64_to_cpu(kp2->rm_offset);
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -401,8 +401,8 @@ xfs_rmapbt_keys_inorder(
+ 		return 1;
+ 	else if (a > b)
+ 		return 0;
+-	a = XFS_RMAP_OFF(be64_to_cpu(k1->rmap.rm_offset));
+-	b = XFS_RMAP_OFF(be64_to_cpu(k2->rmap.rm_offset));
++	a = be64_to_cpu(k1->rmap.rm_offset);
++	b = be64_to_cpu(k2->rmap.rm_offset);
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
+@@ -431,8 +431,8 @@ xfs_rmapbt_recs_inorder(
+ 		return 1;
+ 	else if (a > b)
+ 		return 0;
+-	a = XFS_RMAP_OFF(be64_to_cpu(r1->rmap.rm_offset));
+-	b = XFS_RMAP_OFF(be64_to_cpu(r2->rmap.rm_offset));
++	a = be64_to_cpu(r1->rmap.rm_offset);
++	b = be64_to_cpu(r2->rmap.rm_offset);
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
 -- 
 2.27.0
 
