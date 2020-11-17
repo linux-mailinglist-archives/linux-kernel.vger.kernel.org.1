@@ -2,48 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0812B6647
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F552B6601
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729871AbgKQNMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:12:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42650 "EHLO mail.kernel.org"
+        id S1732306AbgKQOAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:00:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729852AbgKQNMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:12:35 -0500
+        id S1729577AbgKQNQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:16:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29CA224199;
-        Tue, 17 Nov 2020 13:12:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A58A424248;
+        Tue, 17 Nov 2020 13:16:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618754;
-        bh=Erzmw6T1KHPpYXvP6UTHaqQVh+xzUZeFxd3OXrj3tkM=;
+        s=default; t=1605619015;
+        bh=xkxCDZrvI81kovN52nHtM7xfGI8a26IvSOwrGz1V8sQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IRkrWlDpmspUJSXrmO/fLlYBEy3YvmaMteu7b/YgFN4S+Mw4O9PqavqNFwSZZ0w0z
-         2hW2qeaiqXY/wyAaB0XwnbRaXXIsUYs1e5zqUbiZXagzSwOi0VZsvxu4BNEoqQX2Gr
-         Bw5lNAsVLoFvzWu1AIJs/sr7FxcVhDfa6BnVnyNw=
+        b=jmM10PjbfAdKyhcrhxV6HjaHzQ6TiP5ge/pJIsvrp3j2cj+5BiLhck4jp/Jd68ja1
+         xqCChegcwn9/VDo0L9/eOq/w/tBIcqsqHdI2pii5mJo/ztoBC0e1a9cTSq0dwJSTdD
+         sGb6LclnE4ePuPGivlHJizEwDH6ALLx53u6KXBMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabian Frederick <fabf@skynet.be>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 76/78] reboot: fix overflow parsing reboot cpu number
-Date:   Tue, 17 Nov 2020 14:05:42 +0100
-Message-Id: <20201117122112.811466407@linuxfoundation.org>
+        stable@vger.kernel.org, Boris Protopopov <pboris@amazon.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 4.14 85/85] Convert trailing spaces and periods in path components
+Date:   Tue, 17 Nov 2020 14:05:54 +0100
+Message-Id: <20201117122115.221452982@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
+References: <20201117122111.018425544@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,75 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+From: Boris Protopopov <pboris@amazon.com>
 
-commit df5b0ab3e08a156701b537809914b339b0daa526 upstream.
+commit 57c176074057531b249cf522d90c22313fa74b0b upstream.
 
-Limit the CPU number to num_possible_cpus(), because setting it to a
-value lower than INT_MAX but higher than NR_CPUS produces the following
-error on reboot and shutdown:
+When converting trailing spaces and periods in paths, do so
+for every component of the path, not just the last component.
+If the conversion is not done for every path component, then
+subsequent operations in directories with trailing spaces or
+periods (e.g. create(), mkdir()) will fail with ENOENT. This
+is because on the server, the directory will have a special
+symbol in its name, and the client needs to provide the same.
 
-    BUG: unable to handle page fault for address: ffffffff90ab1bb0
-    #PF: supervisor read access in kernel mode
-    #PF: error_code(0x0000) - not-present page
-    PGD 1c09067 P4D 1c09067 PUD 1c0a063 PMD 0
-    Oops: 0000 [#1] SMP
-    CPU: 1 PID: 1 Comm: systemd-shutdow Not tainted 5.9.0-rc8-kvm #110
-    Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-    RIP: 0010:migrate_to_reboot_cpu+0xe/0x60
-    Code: ea ea 00 48 89 fa 48 c7 c7 30 57 f1 81 e9 fa ef ff ff 66 2e 0f 1f 84 00 00 00 00 00 53 8b 1d d5 ea ea 00 e8 14 33 fe ff 89 da <48> 0f a3 15 ea fc bd 00 48 89 d0 73 29 89 c2 c1 e8 06 65 48 8b 3c
-    RSP: 0018:ffffc90000013e08 EFLAGS: 00010246
-    RAX: ffff88801f0a0000 RBX: 0000000077359400 RCX: 0000000000000000
-    RDX: 0000000077359400 RSI: 0000000000000002 RDI: ffffffff81c199e0
-    RBP: ffffffff81c1e3c0 R08: ffff88801f41f000 R09: ffffffff81c1e348
-    R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-    R13: 00007f32bedf8830 R14: 00000000fee1dead R15: 0000000000000000
-    FS:  00007f32bedf8980(0000) GS:ffff88801f480000(0000) knlGS:0000000000000000
-    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-    CR2: ffffffff90ab1bb0 CR3: 000000001d057000 CR4: 00000000000006a0
-    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-    Call Trace:
-      __do_sys_reboot.cold+0x34/0x5b
-      do_syscall_64+0x2d/0x40
-
-Fixes: 1b3a5d02ee07 ("reboot: move arch/x86 reboot= handling to generic kernel")
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Fabian Frederick <fabf@skynet.be>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Robin Holt <robinmholt@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201103214025.116799-3-mcroce@linux.microsoft.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-[sudip: use reboot_mode instead of mode]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Boris Protopopov <pboris@amazon.com>
+Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- kernel/reboot.c |    7 +++++++
- 1 file changed, 7 insertions(+)
 
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -519,6 +519,13 @@ static int __init reboot_setup(char *str
- 				reboot_cpu = simple_strtoul(str+3, NULL, 0);
- 			else
- 				reboot_mode = REBOOT_SOFT;
-+			if (reboot_cpu >= num_possible_cpus()) {
-+				pr_err("Ignoring the CPU number in reboot= option. "
-+				       "CPU %d exceeds possible cpu number %d\n",
-+				       reboot_cpu, num_possible_cpus());
-+				reboot_cpu = 0;
-+				break;
-+			}
- 			break;
+---
+ fs/cifs/cifs_unicode.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+--- a/fs/cifs/cifs_unicode.c
++++ b/fs/cifs/cifs_unicode.c
+@@ -501,7 +501,13 @@ cifsConvertToUTF16(__le16 *target, const
+ 		else if (map_chars == SFM_MAP_UNI_RSVD) {
+ 			bool end_of_string;
  
- 		case 'g':
+-			if (i == srclen - 1)
++			/**
++			 * Remap spaces and periods found at the end of every
++			 * component of the path. The special cases of '.' and
++			 * '..' do not need to be dealt with explicitly because
++			 * they are addressed in namei.c:link_path_walk().
++			 **/
++			if ((i == srclen - 1) || (source[i+1] == '\\'))
+ 				end_of_string = true;
+ 			else
+ 				end_of_string = false;
 
 
