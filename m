@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC162B699E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBA62B69A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727561AbgKQQNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:13:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727524AbgKQQN3 (ORCPT
+        id S1727167AbgKQQPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:15:36 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7429 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727012AbgKQQPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:13:29 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0078C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:13:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=noYJcmkZ1pKuEG0/DtLEB1n7xvrgps4QtlKybXX4u7Q=; b=ERIGSMjoZeskjSWCb0nMDzylOJ
-        BllmA8djxY7fO25/odBSbGFx5iv/7Mnt5PXHKGuFrKJxfKYvnmhSLppaxZQVSj5BSS5Mr/GB6npi/
-        y4bfS9lOJ0QAAPqXcQtuqgaq/KYk7xPOLYSZ4/kk+yI6PU6njfFe6jRwK/K8Hpk4PfF1zt4EHE5gW
-        h2leHUQJWYSEFcfBx9b4x7Lla1iSsWGXSbTmr6F7r1lu8wu8qyRV1iywrZyLnMrie8wwcGWFxNKD6
-        evhN8EM7wwFC4IefdNs9h0g5vJM8gQJ5TaKEGns4Ywh52vRTXB8ve4bfFppowRkSAjIjyLKJQ5pIo
-        2mxo2IKA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kf3be-0008So-JC; Tue, 17 Nov 2020 16:13:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 654883019CE;
-        Tue, 17 Nov 2020 17:13:18 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4F6C0203DEE9D; Tue, 17 Nov 2020 17:13:18 +0100 (CET)
-Date:   Tue, 17 Nov 2020 17:13:18 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: Fix data-race in wakeup
-Message-ID: <20201117161318.GP3121392@hirez.programming.kicks-ass.net>
-References: <20201116131102.GA29992@willie-the-truck>
- <20201116133721.GQ3371@techsingularity.net>
- <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
- <20201116193149.GW3371@techsingularity.net>
- <20201117083016.GK3121392@hirez.programming.kicks-ass.net>
- <20201117091545.GA31837@willie-the-truck>
- <20201117092936.GA3121406@hirez.programming.kicks-ass.net>
- <20201117094621.GE3121429@hirez.programming.kicks-ass.net>
- <jhjv9e4w3gj.mognet@arm.com>
- <jhjtutovvtm.mognet@arm.com>
+        Tue, 17 Nov 2020 11:15:34 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb3f72a0000>; Tue, 17 Nov 2020 08:15:38 -0800
+Received: from [10.2.53.74] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
+ 2020 16:15:32 +0000
+Subject: Re: [PATCH v2 3/6] dt-bindings: ata: tegra: Convert binding
+ documentation to YAML
+To:     Rob Herring <robh@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-ide@vger.kernel.org>, <thierry.reding@gmail.com>,
+        <devicetree@vger.kernel.org>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>
+References: <1605296218-2510-1-git-send-email-skomatineni@nvidia.com>
+ <1605296218-2510-4-git-send-email-skomatineni@nvidia.com>
+ <20201116150022.GA1642318@bogus>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <4b1d90b7-63e7-8b32-16f8-a1020827f207@nvidia.com>
+Date:   Tue, 17 Nov 2020 08:15:33 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhjtutovvtm.mognet@arm.com>
+In-Reply-To: <20201116150022.GA1642318@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605629738; bh=18wsPT8+1d4fVxmKRiuoV3ixoFKxrPxACtJejsOp+Cs=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=cdn4ijPz1qfOZvWGWdxjHT625Z1ufEtVZ9AB32TR8/QeyhoszmT/8P6Iyf9hfSBE4
+         aLJFxnC2TKZio3rNBSN49G00embWxfZl6+3nAu0hm2gAiA894An0BYRx+BiivWJOQR
+         hNqtCcB2DDnuezHzLKw2QDVb+2zRVctAqVI9nQ4cWhU1SX/0Ko+8+Fh/EFHrim1wDw
+         Q2nOr1nu5eBhMRFWs4F3RnfmG+UKOFAm/cMktiRPKX/Z81+DMt5VhH9SeAsu2OFkpf
+         eRSKvo521m8Zjdkwii6o3LdQmajp8f5HDs2ag6HIXn7mgga96697oM9BsFd1NM10JV
+         B0djcb3m7Vx+w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 03:37:24PM +0000, Valentin Schneider wrote:
 
-> >> +	/*
-> >> +	 * This field must not be in the scheduler word above due to wakelist
-> >> +	 * queueing no longer being serialized by p->on_cpu. However:
-> >> +	 *
-> >> +	 * p->XXX = X;			ttwu()
-> >> +	 * schedule()			  if (p->on_rq && ..) // false
-> >> +	 *   smp_mb__after_spinlock();	  if (smp_load_acquire(&p->on_cpu) && //true
-> >> +	 *   deactivate_task()		      ttwu_queue_wakelist())
-> >> +	 *     p->on_rq = 0;			p->sched_remote_wakeup = Y;
-> >> +	 *
-> >> +	 * guarantees all stores of 'current' are visible before
-> >> +	 * ->sched_remote_wakeup gets used, so it can be in this word.
-> >> +	 */
-> >
-> > Isn't the control dep between that ttwu() p->on_rq read and
-> > p->sched_remote_wakeup write "sufficient"?
-> 
-> smp_acquire__after_ctrl_dep() that is, since we need
->   ->on_rq load => 'current' bits load + store
+On 11/16/20 7:00 AM, Rob Herring wrote:
+> On Fri, 13 Nov 2020 11:36:55 -0800, Sowjanya Komatineni wrote:
+>> This patch converts text based dt-binding document to YAML based
+>> dt-binding document.
+>>
+>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>> ---
+>>   .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 137 +++++++++++++++++++++
+>>   .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 -------
+>>   2 files changed, 137 insertions(+), 44 deletions(-)
+>>   create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
+>>   delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
+>>
+>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> Error: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dts:27.31-32 syntax error
+> FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.example.dt.yaml] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1364: dt_binding_check] Error 2
+>
+>
+> See https://patchwork.ozlabs.org/patch/1400065
+>
+> The base for the patch is generally the last rc1. Any dependencies
+> should be noted.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
 
-I don't think we need that extra barrier; after all, there will be a
-complete schedule() between waking the task and it actually becoming
-current.
+Hi Rob,
+
+make dt_binding_check shows other yaml warmings and didn't go thru 
+tegra-ahci.yaml even with specifying DT_SHHEMA_FILES
+
+But, When I do dtbs_check, I see
+Documentation/devicetree/bindings/processed-schema.json generated and
+also it passes for tegra-ahci.yaml
+
+
+In v1 feedback discussion, you mentioned it should be good if dtbs_check 
+passes.
+
+Regards,
+
+Sowjanya
+
+>
