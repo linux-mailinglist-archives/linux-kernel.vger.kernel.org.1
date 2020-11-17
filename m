@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB3D2B5AB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253E72B5ABC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgKQIHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:07:35 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:38321 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725771AbgKQIHe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:07:34 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kew1O-001xdB-Lp; Tue, 17 Nov 2020 09:07:26 +0100
-Received: from p57bd9382.dip0.t-ipconnect.de ([87.189.147.130] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kew1O-0011QE-Dv; Tue, 17 Nov 2020 09:07:26 +0100
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-References: <20201101170454.9567-1-rppt@kernel.org>
- <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
- <20201117062316.GB370813@kernel.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <d34f431a-288d-82a9-2632-85e8e695df12@physik.fu-berlin.de>
-Date:   Tue, 17 Nov 2020 09:07:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727115AbgKQIIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:08:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726537AbgKQII3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 03:08:29 -0500
+Received: from coco.lan (ip5f5ad5cc.dynamic.kabel-deutschland.de [95.90.213.204])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE5DA217A0;
+        Tue, 17 Nov 2020 08:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605600509;
+        bh=cRiR775sbP/iM4xvFYf2hnVUp7zOkSPpk4O4Ifcuc+I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OcdWHYNAp9Idh3juVnQys4lCUIATjqkUV9VMjC0eC76liXginBdO3BsXsudMTb8Da
+         aE10utKWj9StftQrGI4Nsbzed7t/e31IyQKmeMLqW5ieiA5rZ0ZIuUoomHq2Xp4NjU
+         +enwnfYCSLAn+zSobcyol2YJzku7RMPp1nagUl88=
+Date:   Tue, 17 Nov 2020 09:08:22 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mayulong <mayulong1@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] regulator: hi6421v600-regulator: move it from
+ staging
+Message-ID: <20201117090724.4ade833a@coco.lan>
+In-Reply-To: <20201116183833.GC4739@sirena.org.uk>
+References: <cover.1605530560.git.mchehab+huawei@kernel.org>
+        <471362653f22a8748202c55babd2b462056a5797.1605530560.git.mchehab+huawei@kernel.org>
+        <20201116183833.GC4739@sirena.org.uk>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201117062316.GB370813@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.147.130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike!
+Hi Mark,
 
-On 11/17/20 7:23 AM, Mike Rapoport wrote:
-> There were minor differences only for m68k between the versions. I've
-> verified them on ARAnyM but if you have a real machine a run there would
-> be nice.
+Em Mon, 16 Nov 2020 18:38:33 +0000
+Mark Brown <broonie@kernel.org> escreveu:
 
-I do have a real machine (Amiga 68060) but it's currently not set up (but it
-will be in the near future). So I'm not sure if I can test the change within
-a short time frame.
+> > This driver is ready for mainstream. Move it out of staging.  
+> 
+> There's quite a few issues here, to be honest I'm disappointed some of
+> them weren't caught during staging review, this needs fairly substantial
+> work and there's signs that this also applies to at least the MFD
+> portion.
+> 
+...
+> > +static int hi6421_spmi_regulator_probe_ldo(struct platform_device *pdev,
+> > +                                          struct device_node *np,
+> > +                                          struct hi6421_spmi_pmic *pmic)
+> > +{  
+> 
+> This probe code looks very different to other regulator drivers, this
+> alone should have been a warning that the driver needs some substantial
+> refactoring here.  As indicated information about what regulators are
+> present on devices and their properties should be in the driver not the
+> DT, the driver should just be able to register them unconditionally and
+> use of_match and regulators_node to allow the core to find any
+> constraints that are provided by the platform.
 
-I will certainly report back when I run into issues on real hardware.
+Let me reply to this before handling the other issues you pointed, as
+this one is related to some design decisions I had to make for this driver
+to properly work upstream.
+
+FYI, all documentation I have about this board is at:
+	https://www.96boards.org/documentation/consumer/hikey/hikey970/
+
+-
+
+The setup for MFD/regulator is different than almost all other
+regulator drivers currently upstreamed[1]. 
+
+The PM part of Hikey970 is based on a master/slave SPMI bus. Each
+bus can have up to 16 PM chips connected into it.
+
+It means that, for the regulator driver to work, two drivers
+should be probed first: the SPMI bus controller driver
+(hisi-spmi-controller.c) and the SPMI bus client driver, which is
+at the MFD driver(hi6421-spmi-pmic.c).
+
+Only after having both probed, the regulator driver can be
+probed.
+
+Also, as all the communication between the PM chip
+and the SoC happens via a single serial bus, there's no
+sense on probing the regulators in parallel.
+
+That's mainly the reason why I opted to serialize the probe
+inside hi6421v600-regulator.c. 
+
+The relevant changeset that ensures that everything is
+probed the right way is this one:
+	75937f8f961e ("staging: regulator: hi6421v600-regulator: change the binding logic")
+
+Without such change, the driver doesn't work upstream, as the 
+regulator driver ends by being probed before the bus client
+driver (MFD).
+
+There's a second reason, though: when letting regulator probe to
+happen in parallel, the LDOs got probed on a random order, which
+makes more difficult to debug the driver, as the LDO numbering
+may not be following the LDO name, making harder to debug the
+drivers that depend on regulator support.
 
 Thanks,
-Adrian
+Mauro
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+[1] The only other drivers for SPMI bus are from some Qualcomm
+based boards - those seem to be using a different setup.
