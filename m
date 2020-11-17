@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AF02B6173
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E8B2B606C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729011AbgKQNTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:19:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51130 "EHLO mail.kernel.org"
+        id S1728655AbgKQNJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:09:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730685AbgKQNS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:18:29 -0500
+        id S1729326AbgKQNIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:08:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9B52206D5;
-        Tue, 17 Nov 2020 13:18:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B41532468F;
+        Tue, 17 Nov 2020 13:08:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619108;
-        bh=nu/fqrzXW8Y6fnHt6NEplWxuDJnS8wfMgJbxvGOqIlo=;
+        s=default; t=1605618531;
+        bh=hw0zv2f522OPGgfKPxzCuZETXRm58zVzGazybghGR9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WssjvUZKGeP7tRbq4ljJPm/JUWDHlPSUOL/ko6qExOXoSbj7fC61geVp76ALNTedI
-         YXopj5d/qe5RWNu9IfeMPVvzOXypGOzyhqNc1meKc71K+rY4BxoTH6tnFAe9zNljo8
-         BnEjXCNfIhPUZSYC5scUY73r3myW4jZuU4ttYXzg=
+        b=hr1XLo6LJLfhmNItHlQCT7F723lYEjOMcJvEgX/mSOWI0U4rQr1mwTKX/glvjkfPq
+         gxIs3+sg7YRX0OsrMcV60el2FW38qkd2EG+fVld7HHRmYkgWpYDbaSCYxh3zaigCxa
+         AW2VyX22e4hQjGNp3Q9vNcHt34vcJqkd3D/A6EZs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Andrianov <andrianov@ispras.ru>,
-        Evgeny Novikov <novikov@ispras.ru>,
-        Felipe Balbi <balbi@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 030/101] usb: gadget: goku_udc: fix potential crashes in probe
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Chris Brandt <chris.brandt@renesas.com>
+Subject: [PATCH 4.4 34/64] usb: cdc-acm: Add DISABLE_ECHO for Renesas USB Download mode
 Date:   Tue, 17 Nov 2020 14:04:57 +0100
-Message-Id: <20201117122114.557605715@linuxfoundation.org>
+Message-Id: <20201117122107.838788611@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Chris Brandt <chris.brandt@renesas.com>
 
-[ Upstream commit 0d66e04875c5aae876cf3d4f4be7978fa2b00523 ]
+commit 6d853c9e4104b4fc8d55dc9cd3b99712aa347174 upstream.
 
-goku_probe() goes to error label "err" and invokes goku_remove()
-in case of failures of pci_enable_device(), pci_resource_start()
-and ioremap(). goku_remove() gets a device from
-pci_get_drvdata(pdev) and works with it without any checks, in
-particular it dereferences a corresponding pointer. But
-goku_probe() did not set this device yet. So, one can expect
-various crashes. The patch moves setting the device just after
-allocation of memory for it.
+Renesas R-Car and RZ/G SoCs have a firmware download mode over USB.
+However, on reset a banner string is transmitted out which is not expected
+to be echoed back and will corrupt the protocol.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Chris Brandt <chris.brandt@renesas.com>
+Link: https://lore.kernel.org/r/20201111131209.3977903-1-chris.brandt@renesas.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Reported-by: Pavel Andrianov <andrianov@ispras.ru>
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/goku_udc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/class/cdc-acm.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/usb/gadget/udc/goku_udc.c b/drivers/usb/gadget/udc/goku_udc.c
-index c3721225b61ed..b706ad3034bc1 100644
---- a/drivers/usb/gadget/udc/goku_udc.c
-+++ b/drivers/usb/gadget/udc/goku_udc.c
-@@ -1757,6 +1757,7 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto err;
- 	}
- 
-+	pci_set_drvdata(pdev, dev);
- 	spin_lock_init(&dev->lock);
- 	dev->pdev = pdev;
- 	dev->gadget.ops = &goku_ops;
-@@ -1790,7 +1791,6 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	}
- 	dev->regs = (struct goku_udc_regs __iomem *) base;
- 
--	pci_set_drvdata(pdev, dev);
- 	INFO(dev, "%s\n", driver_desc);
- 	INFO(dev, "version: " DRIVER_VERSION " %s\n", dmastr());
- 	INFO(dev, "irq %d, pci mem %p\n", pdev->irq, base);
--- 
-2.27.0
-
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1693,6 +1693,15 @@ static const struct usb_device_id acm_id
+ 	{ USB_DEVICE(0x0870, 0x0001), /* Metricom GS Modem */
+ 	.driver_info = NO_UNION_NORMAL, /* has no union descriptor */
+ 	},
++	{ USB_DEVICE(0x045b, 0x023c),	/* Renesas USB Download mode */
++	.driver_info = DISABLE_ECHO,	/* Don't echo banner */
++	},
++	{ USB_DEVICE(0x045b, 0x0248),	/* Renesas USB Download mode */
++	.driver_info = DISABLE_ECHO,	/* Don't echo banner */
++	},
++	{ USB_DEVICE(0x045b, 0x024D),	/* Renesas USB Download mode */
++	.driver_info = DISABLE_ECHO,	/* Don't echo banner */
++	},
+ 	{ USB_DEVICE(0x0e8d, 0x0003), /* FIREFLY, MediaTek Inc; andrey.arapov@gmail.com */
+ 	.driver_info = NO_UNION_NORMAL, /* has no union descriptor */
+ 	},
 
 
