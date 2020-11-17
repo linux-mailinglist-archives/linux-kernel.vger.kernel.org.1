@@ -2,311 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB16C2B59B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598982B59BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgKQGZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 01:25:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726881AbgKQGZW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 01:25:22 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE15C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 22:25:21 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id o21so27856776ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 22:25:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NISx6qo4MAtDUyxlNrw/u2QVc3BlOb0ENRmcuhctq5c=;
-        b=fSXTvmNsjXNBTl9amx03uPqz/+UZnndzsEaPr4SN3RdSd2Fot0aJlZqKyAdi0JVrLb
-         eM1UkxroWhgvslUtSILcVFzRvL7jkhP7vlQ2ivQaGm75N2mFvg3ljyfBjmilGDLGvH/b
-         saJZ7uO+sucaheprxA/vc/DU12feZXe8lMtO4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NISx6qo4MAtDUyxlNrw/u2QVc3BlOb0ENRmcuhctq5c=;
-        b=mr/IxiFSCSwOuQErFcDbYjLnhrerHf7lJMJ856lpLlpZzi3LEcBNcF8h/j1XOI75DC
-         SrnLEJvs7WJH/KSxdRC8i4rhKN+tZQZ4PA1LYZdST8HZnVYkcHrBbuEQTnHn/diWckFu
-         gt5j4nZbfByp+rsxuP0k3NLCfjwmfpjp3++sYy2tsUJEr+rsyckhMcOcrQw6N7Tx1aiX
-         4o0mj8c2cH7S9YigfXrf71BpiyzCf4ngrbwb4qIvYsOmEmfeVlXsdz6KxVjuaYSPbypV
-         rhEQR2gns0IO+qNpZv2rMF969akO4bkF5QL7gxIUaOVgIx/HG7B93NrxH1sITZLAkkUZ
-         OpJg==
-X-Gm-Message-State: AOAM5327GPU8IfYRt+sTJr1EpZExW6q0ZQQJQCJ+wW7XhT9PPmPweY4H
-        v3OpgUSHR8uA0ZKmw4fJhsSM5Jscc19ldtAzpYzGWw==
-X-Google-Smtp-Source: ABdhPJzbuj34UCE3pIVHL/HVPU3ZbrfMToMDXXNHslMxjGcJ5hXLNPjDIX3oj72uu2/1dL+i4jgHWZY3BwnSCP6dcjE=
-X-Received: by 2002:a17:906:1989:: with SMTP id g9mr16860164ejd.62.1605594320129;
- Mon, 16 Nov 2020 22:25:20 -0800 (PST)
+        id S1727206AbgKQG0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 01:26:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726863AbgKQG0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 01:26:48 -0500
+Received: from kernel.org (unknown [77.125.7.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA86E20855;
+        Tue, 17 Nov 2020 06:26:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605594406;
+        bh=ie0VlDH/vj4hY7eKDBRc8yNlYb8JMMI+sECKmsJ0SAU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PZ37+aP7qsQAQGaQgrviuuTES+oK/KF+aENGZoDR9HzBV3Jaqk/mPUi4s8TouHZcb
+         Gxna9F5Fo/vt3rqRFavtJK/inbQFHR4ChVg6L8bs7emdbKfZ/wDPWS7H2oALG9KgBR
+         199CMDQwY+Gu5iEF24GqZcZyZFpnnDE7wlV7JG9Y=
+Date:   Tue, 17 Nov 2020 08:26:30 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Alejandro Colomar <alx.manpages@gmail.com>
+Cc:     mtk.manpages@gmail.com, Mike Rapoport <rppt@linux.ibm.com>,
+        akpm@linux-foundation.org, arnd@arndb.de, bp@alien8.de,
+        catalin.marinas@arm.com, cl@linux.com, colomar.6.4.3@gmail.com,
+        dan.j.williams@intel.com, dave.hansen@linux.intel.com,
+        david@redhat.com, elena.reshetova@intel.com, hpa@zytor.com,
+        idan.yaniv@ibm.com, jejb@linux.ibm.com, kirill@shutemov.name,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, luto@kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, peterz@infradead.org, shuah@kernel.org,
+        tglx@linutronix.de, tycho@tycho.ws, viro@zeniv.linux.org.uk,
+        will@kernel.org, willy@infradead.org, x86@kernel.org
+Subject: Re: [PATCH v2] memfd_secret.2: New page describing memfd_secret()
+ system call
+Message-ID: <20201117062630.GC370813@kernel.org>
+References: <20201005073242.GA4251@kernel.org>
+ <20201116210136.12390-1-alx.manpages@gmail.com>
 MIME-Version: 1.0
-References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
- <20201112175852.21572-1-vikas.gupta@broadcom.com> <96436cba-88e3-ddb6-36d6-000929b86979@redhat.com>
- <CAHLZf_uAp-CzA-rkvFF70wT5zoB98OvErXxFthoBHyvzwTRxAQ@mail.gmail.com> <c78d2706-f406-32ab-1637-bd0c9f459e23@redhat.com>
-In-Reply-To: <c78d2706-f406-32ab-1637-bd0c9f459e23@redhat.com>
-From:   Vikas Gupta <vikas.gupta@broadcom.com>
-Date:   Tue, 17 Nov 2020 11:55:08 +0530
-Message-ID: <CAHLZf_uQBzQndGo1vtPtrUd2KXk+im=A9evowggzk6U=5vEvAg@mail.gmail.com>
-Subject: Re: [RFC, v1 0/3] msi support for platform devices
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikram Prakash <vikram.prakash@broadcom.com>,
-        Srinath Mannam <srinath.mannam@broadcom.com>,
-        Manish Kurup <manish.kurup@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000023cedb05b4478f42"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116210136.12390-1-alx.manpages@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000023cedb05b4478f42
-Content-Type: text/plain; charset="UTF-8"
+On Mon, Nov 16, 2020 at 10:01:37PM +0100, Alejandro Colomar wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Cowritten-by: Alejandro Colomar <alx.manpages@gmail.com>
+> Acked-by: Alejandro Colomar <alx.manpages@gmail.com>
+> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+> ---
+> 
+> Hi Mike,
+> 
+> I added that note about not having a wrapper,
+> fixed a few minor formatting and wording issues,
+> and sorted ERRORS alphabetically.
 
-Hi Eric,
+Thanks, Alejandro!
 
-On Mon, Nov 16, 2020 at 6:44 PM Auger Eric <eric.auger@redhat.com> wrote:
->
-> Hi Vikas,
->
-> On 11/13/20 6:24 PM, Vikas Gupta wrote:
-> > Hi Eric,
-> >
-> > On Fri, Nov 13, 2020 at 12:10 AM Auger Eric <eric.auger@redhat.com> wrote:
-> >>
-> >> Hi Vikas,
-> >>
-> >> On 11/12/20 6:58 PM, Vikas Gupta wrote:
-> >>> This RFC adds support for MSI for platform devices.
-> >>> a) MSI(s) is/are added in addition to the normal interrupts.
-> >>> b) The vendor specific MSI configuration can be done using
-> >>>    callbacks which is implemented as msi module.
-> >>> c) Adds a msi handling module for the Broadcom platform devices.
-> >>>
-> >>> Changes from:
-> >>> -------------
-> >>>  v0 to v1:
-> >>>    i)  Removed MSI device flag VFIO_DEVICE_FLAGS_MSI.
-> >>>    ii) Add MSI(s) at the end of the irq list of platform IRQs.
-> >>>        MSI(s) with first entry of MSI block has count and flag
-> >>>        information.
-> >>>        IRQ list: Allocation for IRQs + MSIs are allocated as below
-> >>>        Example: if there are 'n' IRQs and 'k' MSIs
-> >>>        -------------------------------------------------------
-> >>>        |IRQ-0|IRQ-1|....|IRQ-n|MSI-0|MSI-1|MSI-2|......|MSI-k|
-> >>>        -------------------------------------------------------
-> >> I have not taken time yet to look at your series, but to me you should have
-> >> |IRQ-0|IRQ-1|....|IRQ-n|MSI|MSIX
-> >> then for setting a given MSIX (i) you would select the MSIx index and
-> >> then set start=i count=1.
-> >
-> > As per your suggestion, we should have, if there are n-IRQs, k-MSIXs
-> > and m-MSIs, allocation of IRQs should be done as below
-> >
-> > |IRQ0|IRQ1|......|IRQ-(n-1)|MSI|MSIX|
-> >                                              |        |
-> >                                              |
-> > |MSIX0||MSIX1||MSXI2|....|MSIX-(k-1)|
-> >                                              |MSI0||MSI1||MSI2|....|MSI-(m-1)|
-> No I really meant this list of indices: IRQ0|IRQ1|......|IRQ-(n-1)|MSI|MSIX|
-> and potentially later on IRQ0|IRQ1|......|IRQ-(n-1)|MSI|MSIX| ERR| REQ
-> if ERR/REQ were to be added.
-I agree on this. Actually the map I drew incorrectly above but wanted
-to demonstrate the same. It was a child-parent relationship for MSI
-and its members and similarly for MSIX as well.
->
-> I think the userspace could query the total number of indices using
-> VFIO_DEVICE_GET_INFO and retrieve num_irqs (corresponding to the n wire
-> interrupts + MSI index + MSIX index)
->
-> Then userspace can loop on all the indices using
-> VFIO_DEVICE_GET_IRQ_INFO. For each index it uses count to determine the
-> first indices related to wire interrupts (count = 1). Then comes the MSI
-> index, and after the MSI index. If any of those is supported, count >1,
-> otherwise count=0. The only thing I am dubious about is can the device
-> use a single MSI/MSIX? Because my hypothesis here is we use count to
-> discriminate between wire first indices and other indices.
-I believe count can be one as well, especially for ERR/REQ as you
-mentioned above.I think we can not rely on the count > 1. Now, this is
-blocking and we are not left with options unless we consider adding
-more enums in flags in vfio_irq_info to tell userspace that particular
-index is wired, MSI, MSIX etc. for the platform device.
-What do you think?
->
->
->
-> > With this implementation user space can know that, at indexes n and
-> > n+1, edge triggered interrupts are present.
-> note wired interrupts can also be edge ones.
-> >    We may add an element in vfio_platform_irq itself to allocate MSIs/MSIXs
-> >    struct vfio_platform_irq{
-> >    .....
-> >    .....
-> >    struct vfio_platform_irq *block; => this points to the block
-> > allocation for MSIs/MSIXs and all msi/msix are type of IRQs.As wired interrupts and MSI interrupts coexist, I would store in vdev an
-> array of wired interrupts (the existing vdev->irqs) and a new array for
-> MSI(x) as done in the PCI code.
->
-> vdev->ctx = kcalloc(nvec, sizeof(struct vfio_pci_irq_ctx), GFP_KERNEL);
->
-> Does it make sense?
-Yes, we can use similar kinds of allocations.
+> Cheers,
+> 
+> Alex
+> 
+>  man2/memfd_secret.2 | 178 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 178 insertions(+)
+>  create mode 100644 man2/memfd_secret.2
+> 
+> diff --git a/man2/memfd_secret.2 b/man2/memfd_secret.2
+> new file mode 100644
+> index 000000000..4e617aa0e
+> --- /dev/null
+> +++ b/man2/memfd_secret.2
+> @@ -0,0 +1,178 @@
+> +.\" Copyright (c) 2020, IBM Corporation.
+> +.\" Written by Mike Rapoport <rppt@linux.ibm.com>
+> +.\"
+> +.\" Based on memfd_create(2) man page
+> +.\" Copyright (C) 2014 Michael Kerrisk <mtk.manpages@gmail.com>
+> +.\" and Copyright (C) 2014 David Herrmann <dh.herrmann@gmail.com>
+> +.\"
+> +.\" %%%LICENSE_START(GPLv2+)
+> +.\"
+> +.\" This program is free software; you can redistribute it and/or modify
+> +.\" it under the terms of the GNU General Public License as published by
+> +.\" the Free Software Foundation; either version 2 of the License, or
+> +.\" (at your option) any later version.
+> +.\"
+> +.\" This program is distributed in the hope that it will be useful,
+> +.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+> +.\" GNU General Public License for more details.
+> +.\"
+> +.\" You should have received a copy of the GNU General Public
+> +.\" License along with this manual; if not, see
+> +.\" <http://www.gnu.org/licenses/>.
+> +.\" %%%LICENSE_END
+> +.\"
+> +.TH MEMFD_SECRET 2 2020-08-02 Linux "Linux Programmer's Manual"
+> +.SH NAME
+> +memfd_secret \- create an anonymous file to map secret memory regions
+> +.SH SYNOPSIS
+> +.nf
+> +.B #include <linux/secretmem.h>
+> +.PP
+> +.BI "int memfd_secret(unsigned long " flags ");"
+> +.fi
+> +.PP
+> +.IR Note :
+> +There is no glibc wrapper for this system call; see NOTES.
+> +.SH DESCRIPTION
+> +.BR memfd_secret ()
+> +creates an anonymous file and returns a file descriptor that refers to it.
+> +The file can only be memory-mapped;
+> +the memory in such mapping
+> +will have stronger protection than usual memory mapped files,
+> +and so it can be used to store application secrets.
+> +Unlike a regular file, a file created with
+> +.BR memfd_secret ()
+> +lives in RAM and has a volatile backing storage.
+> +Once all references to the file are dropped, it is automatically released.
+> +The initial size of the file is set to 0.
+> +Following the call, the file size should be set using
+> +.BR ftruncate (2).
+> +.PP
+> +The memory areas obtained with
+> +.BR mmap (2)
+> +from the file descriptor are exclusive to the owning context.
+> +These areas are removed from the kernel page tables
+> +and only the page table of the process holding the file descriptor
+> +maps the corresponding physical memory.
+> +.PP
+> +The following values may be bitwise ORed in
+> +.IR flags
+> +to control the behavior of
+> +.BR memfd_secret (2):
+> +.TP
+> +.BR FD_CLOEXEC
+> +Set the close-on-exec flag on the new file descriptor.
+> +See the description of the
+> +.B O_CLOEXEC
+> +flag in
+> +.BR open (2)
+> +for reasons why this may be useful.
+> +.PP
+> +.TP
+> +.BR SECRETMEM_UNCACHED
+> +In addition to excluding memory areas from the kernel page tables,
+> +mark the memory mappings uncached in the page table of the owning process.
+> +Such mappings can be used to prevent speculative loads
+> +and cache-based side channels.
+> +This mode of
+> +.BR memfd_secret ()
+> +is not supported on all architectures.
+> +.PP
+> +See also NOTES below.
+> +.PP
+> +As its return value,
+> +.BR memfd_secret ()
+> +returns a new file descriptor that can be used to refer to an anonymous file.
+> +This file descriptor is opened for both reading and writing
+> +.RB ( O_RDWR )
+> +and
+> +.B O_LARGEFILE
+> +is set for the file descriptor.
+> +.PP
+> +With respect to
+> +.BR fork (2)
+> +and
+> +.BR execve (2),
+> +the usual semantics apply for the file descriptor created by
+> +.BR memfd_secret ().
+> +A copy of the file descriptor is inherited by the child produced by
+> +.BR fork (2)
+> +and refers to the same file.
+> +The file descriptor is preserved across
+> +.BR execve (2),
+> +unless the close-on-exec flag has been set.
+> +.PP
+> +The memory regions backed with
+> +.BR memfd_secret ()
+> +are locked in the same way as
+> +.BR mlock (2),
+> +however the implementation will not try to
+> +populate the whole range during the
+> +.BR mmap ()
+> +call.
+> +The amount of memory allowed for memory mappings
+> +of the file descriptor obeys the same rules as
+> +.BR mlock (2)
+> +and cannot exceed
+> +.BR RLIMIT_MEMLOCK .
+> +.SH RETURN VALUE
+> +On success,
+> +.BR memfd_secret ()
+> +returns a new file descriptor.
+> +On error, \-1 is returned and
+> +.I errno
+> +is set to indicate the error.
+> +.SH ERRORS
+> +.TP
+> +.B EINVAL
+> +.I flags
+> +included unknown bits.
+> +.TP
+> +.B EMFILE
+> +The per-process limit on the number of open file descriptors has been reached.
+> +.TP
+> +.B EMFILE
+> +The system-wide limit on the total number of open files has been reached.
+> +.TP
+> +.B ENOMEM
+> +There was insufficient memory to create a new anonymous file.
+> +.TP
+> +.B ENOSYS
+> +.BR memfd_secret ()
+> +is not implemented on this architecture.
+> +.SH VERSIONS
+> +The
+> +.BR memfd_secret (2)
+> +system call first appeared in Linux 5.X;
+> +.SH CONFORMING TO
+> +The
+> +.BR memfd_secret (2)
+> +system call is Linux-specific.
+> +.SH NOTES
+> +The
+> +.BR memfd_secret (2)
+> +system call provides an ability to hide information
+> +from the operating system.
+> +Normally Linux userspace mappings are protected from other users,
+> +but they are visible to privileged code.
+> +The mappings created using
+> +.BR memfd_secret ()
+> +are hidden from the kernel as well.
+> +.PP
+> +If an architecture supports
+> +.BR SECRETMEM_UNCACHED ,
+> +the mappings also have protection from speculative execution vulnerabilties,
+> +at the expense of increased memory access latency.
+> +Care should be taken when using
+> +.B SECRETMEM_UNCACHED
+> +to avoid degrading application performance.
+> +.PP
+> +Glibc does not provide a wrapper for this system call; call it using
+> +.BR syscall (2).
+> +.SH SEE ALSO
+> +.BR fcntl (2),
+> +.BR ftruncate (2),
+> +.BR mlock (2),
+> +.BR mmap (2),
+> +.BR setrlimit (2)
+> -- 
+> 2.29.2
+> 
 
-Thanks,
-Vikas
->
-> >    };
-> >                          OR
-> > Another structure can be defined in 'vfio_pci_private.h'
-> > struct vfio_msi_ctx {
-> >         struct eventfd_ctx      *trigger;
-> >         char                    *name;
-> > };
-> > and
-> > struct vfio_platform_irq {
-> >   .....
-> >   .....
-> >   struct vfio_msi_ctx *block; => this points to the block allocation
-> > for MSIs/MSIXs
-> > };
-> > Which of the above two options sounds OK to you? Please suggest.
-> >
-> >> to me individual MSIs are encoded in the subindex and not in the index.
-> >> The index just selects the "type" of interrupt.
-> >>
-> >> For PCI you just have:
-> >>         VFIO_PCI_INTX_IRQ_INDEX,
-> >>         VFIO_PCI_MSI_IRQ_INDEX, -> MSI index and then you play with
-> >> start/count
-> >>         VFIO_PCI_MSIX_IRQ_INDEX,
-> >>         VFIO_PCI_ERR_IRQ_INDEX,
-> >>         VFIO_PCI_REQ_IRQ_INDEX,
-> >>
-> >> (include/uapi/linux/vfio.h)
-> >
-> > In pci case, type of interrupts is fixed so they can be 'indexed' by
-> > these enums but for VFIO platform user space will need to iterate all
-> > (num_irqs) indexes to know at which indexes edge triggered interrupts
-> > are present.
-> indeed, but can't you loop over all indices looking until count !=1? At
-> this point you know if have finished emurating the wires. Holds if
-> MSI(x) count !=1 of course.
->
-> Thanks
->
-> Eric
->
-> >
-> > Thanks,
-> > Vikas
-> >>
-> >> Thanks
-> >>
-> >> Eric
-> >>>        MSI-0 will have count=k set and flags set accordingly.
-> >>>
-> >>> Vikas Gupta (3):
-> >>>   vfio/platform: add support for msi
-> >>>   vfio/platform: change cleanup order
-> >>>   vfio/platform: add Broadcom msi module
-> >>>
-> >>>  drivers/vfio/platform/Kconfig                 |   1 +
-> >>>  drivers/vfio/platform/Makefile                |   1 +
-> >>>  drivers/vfio/platform/msi/Kconfig             |   9 +
-> >>>  drivers/vfio/platform/msi/Makefile            |   2 +
-> >>>  .../vfio/platform/msi/vfio_platform_bcmplt.c  |  74 ++++++
-> >>>  drivers/vfio/platform/vfio_platform_common.c  |  86 ++++++-
-> >>>  drivers/vfio/platform/vfio_platform_irq.c     | 238 +++++++++++++++++-
-> >>>  drivers/vfio/platform/vfio_platform_private.h |  23 ++
-> >>>  8 files changed, 419 insertions(+), 15 deletions(-)
-> >>>  create mode 100644 drivers/vfio/platform/msi/Kconfig
-> >>>  create mode 100644 drivers/vfio/platform/msi/Makefile
-> >>>  create mode 100644 drivers/vfio/platform/msi/vfio_platform_bcmplt.c
-> >>>
-> >>
->
-
---00000000000023cedb05b4478f42
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-2lQ6rFUP408r38ha7ieLj9GoHHitwSmKYwUIGObe2Y57xYNj855BF4wx44Z80uM2ugKCZwIDAQAB
-o4IBzzCCAcswDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZB
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmcz
-b2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNv
-bmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0w
-OzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMu
-Y3JsMCMGA1UdEQQcMBqBGHZpa2FzLmd1cHRhQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
-BQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUnmgVV8btvFtO
-FD3kFjPWxD/aB8MwDQYJKoZIhvcNAQELBQADggEBAGCcuBN7G3mbQ7xMF8g8Lpz6WE+UFmkSSqU3
-FZLC2I92SA5lRIthcdz4AEgte6ywnef3+2mG7HWMoQ1wriSG5qLppAD02Uku6yRD52Sn67DB2Ozk
-yhBJayurzUxN1+R5E/YZtj2fkNajS5+i85e83PZPvVJ8/WnseIADGvDoouWqK7mxU/p8hELdb3PW
-JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
-WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
-Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
-MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
-lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgY4IJ+nU1TYmzbF9T
-mLVcGRaW87XjXCILhtSizBS2tbgwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMjAxMTE3MDYyNTIwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
-ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
-CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAE3AswrI+/i5AqopEMTvRrrhs5qfknanolrl
-Umx2SNSN0pvR+3P2qvwe8M5onzmR1c43TRZ875k9RV5bu68T3kEQMmkNp1wMKQwbKihF7QeBJvf1
-uHNwkXbKqrJU4OwZ08b6D911v3KryxObUjg6dQof/91+rPA3WjPZM9APNG/9oyHjH60d4Wq0OK1X
-07b2+iiPcq9TPjdIQch8IAWFPeMsAon1X75WFTcw4yv8do8ilxsEnsJRh56MEKPGGLHRCuVPLUtU
-LMmB573y3xmPqUziu30qWQ3im4DLYIjz1skIEyiPxkpC806u7oHEsRIeGwF2r+JAe++j2nhzHUkt
-T+w=
---00000000000023cedb05b4478f42--
+-- 
+Sincerely yours,
+Mike.
