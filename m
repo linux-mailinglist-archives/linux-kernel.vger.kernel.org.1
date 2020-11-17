@@ -2,105 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5522B56BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A2F2B56C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgKQCaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:30:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726519AbgKQCaG (ORCPT
+        id S1727039AbgKQChK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:37:10 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8097 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726771AbgKQChK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:30:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605580205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CmZ1mGxlAVYrel/KK7OgqUxp4N3oZUIGmB1egO/JG/0=;
-        b=W1bcZiRuFYzkNidavFq+0znMaIfQfhmnH5Y3OeCS9iLhrqI8vZzh7XbeULemi9hIdHS/dv
-        is432aE2lxmPW1rZtJXkGnlrcn9wiwHGrVhfX2btWxFyBraP9O9UHAgjUrHJvGRAkmRCqL
-        w1BN8RiIqEGWWx5IPWiT5oRIEA2605E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-69-M2lvSCNmNwiLwy4MuK1gcQ-1; Mon, 16 Nov 2020 21:30:03 -0500
-X-MC-Unique: M2lvSCNmNwiLwy4MuK1gcQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91968107ACF5;
-        Tue, 17 Nov 2020 02:30:02 +0000 (UTC)
-Received: from [10.72.13.201] (ovpn-13-201.pek2.redhat.com [10.72.13.201])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B214760C04;
-        Tue, 17 Nov 2020 02:29:57 +0000 (UTC)
-Subject: Re: [PATCH] vringh: fix vringh_iov_push_*() documentation
-To:     Stefano Garzarella <sgarzare@redhat.com>, mst@redhat.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20201116161653.102904-1-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <3aa02874-1c7f-d516-b80b-c79b33c0b1fd@redhat.com>
-Date:   Tue, 17 Nov 2020 10:29:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 16 Nov 2020 21:37:10 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CZqp85jgVzLn1R;
+        Tue, 17 Nov 2020 10:36:48 +0800 (CST)
+Received: from euler.huawei.com (10.175.124.27) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 17 Nov 2020 10:36:55 +0800
+From:   Wei Li <liwei391@huawei.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rajesh Yadav <ryadav@codeaurora.org>,
+        Sravanthi Kollukuduru <skolluku@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <guohanjun@huawei.com>
+Subject: [PATCH] drm/msm: Fix error return code in msm_drm_init()
+Date:   Tue, 17 Nov 2020 10:36:49 +0800
+Message-ID: <20201117023649.26657-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20201116161653.102904-1-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When it fail to create crtc_event kthread, it just jump to err_msm_uninit,
+while the 'ret' is not updated. So assign the return code before that.
 
-On 2020/11/17 上午12:16, Stefano Garzarella wrote:
-> vringh_iov_push_*() functions don't have 'dst' parameter, but have
-> the 'src' parameter.
->
-> Replace 'dst' description with 'src' description.
->
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Li <liwei391@huawei.com>
+---
+ drivers/gpu/drm/msm/msm_drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   drivers/vhost/vringh.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> index 8bd8b403f087..b7403ba8e7f7 100644
-> --- a/drivers/vhost/vringh.c
-> +++ b/drivers/vhost/vringh.c
-> @@ -730,7 +730,7 @@ EXPORT_SYMBOL(vringh_iov_pull_user);
->   /**
->    * vringh_iov_push_user - copy bytes into vring_iov.
->    * @wiov: the wiov as passed to vringh_getdesc_user() (updated as we consume)
-> - * @dst: the place to copy.
-> + * @src: the place to copy from.
->    * @len: the maximum length to copy.
->    *
->    * Returns the bytes copied <= len or a negative errno.
-> @@ -976,7 +976,7 @@ EXPORT_SYMBOL(vringh_iov_pull_kern);
->   /**
->    * vringh_iov_push_kern - copy bytes into vring_iov.
->    * @wiov: the wiov as passed to vringh_getdesc_kern() (updated as we consume)
-> - * @dst: the place to copy.
-> + * @src: the place to copy from.
->    * @len: the maximum length to copy.
->    *
->    * Returns the bytes copied <= len or a negative errno.
-> @@ -1333,7 +1333,7 @@ EXPORT_SYMBOL(vringh_iov_pull_iotlb);
->    * vringh_iov_push_iotlb - copy bytes into vring_iov.
->    * @vrh: the vring.
->    * @wiov: the wiov as passed to vringh_getdesc_iotlb() (updated as we consume)
-> - * @dst: the place to copy.
-> + * @src: the place to copy from.
->    * @len: the maximum length to copy.
->    *
->    * Returns the bytes copied <= len or a negative errno.
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 49685571dc0e..37a373c5ced3 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -506,6 +506,7 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
+ 			"crtc_event:%d", priv->event_thread[i].crtc_id);
+ 		if (IS_ERR(priv->event_thread[i].worker)) {
+ 			DRM_DEV_ERROR(dev, "failed to create crtc_event kthread\n");
++			ret = PTR_ERR(priv->event_thread[i].worker);
+ 			goto err_msm_uninit;
+ 		}
+ 
+-- 
+2.17.1
 
