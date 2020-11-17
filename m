@@ -2,104 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7812B56B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF0A2B56CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgKQCWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:22:45 -0500
-Received: from mga09.intel.com ([134.134.136.24]:44728 "EHLO mga09.intel.com"
+        id S1726810AbgKQCim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:38:42 -0500
+Received: from mga04.intel.com ([192.55.52.120]:52551 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726619AbgKQCWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:22:44 -0500
-IronPort-SDR: aMYa4t9TkdTWbGXd7AvgbW/mwohYUSBYurSRzx5g/a6dkKEyBrgp0LCRmeaNwjUaA1qz0128qC
- cBRI0RBfWWBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="171019823"
+        id S1726085AbgKQCil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 21:38:41 -0500
+IronPort-SDR: 4qKMfQ/tqs1pkWvsp01DxdJE3Aj5B/opG6VPxLc6+EB7RzMbbKKLGe3ApiewFN0Tbn2SpF5EDG
+ UB9kcsv7fI8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="168274031"
 X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="171019823"
+   d="scan'208";a="168274031"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 18:22:43 -0800
-IronPort-SDR: rnWeFILlHT4o7cLSEHwmEZ151Cp1cb+Rfxgi1BQV1L8Jh5xPl9zo//ipZYt4ZOLU4lj2EgZFBp
- uc6YBs9TDGLQ==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 18:38:37 -0800
+IronPort-SDR: 6JJ6MB+A92tqTnNPId0FFfP8GJ/OuDGLot0rTr/VBS3xpWYX7fD4oS+UgHXgabc12SrhckMKoa
+ dxX6hjQlzseg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="543844106"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 18:22:40 -0800
-Date:   Tue, 17 Nov 2020 10:25:18 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][v2] x86/microcode/intel: check cpu stepping and
- processor flag before saving microcode
-Message-ID: <20201117022518.GA17555@chenyu-office.sh.intel.com>
-References: <20201113015923.13960-1-yu.c.chen@intel.com>
- <20201116122735.GA1131@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116122735.GA1131@zn.tnic>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+   d="scan'208";a="358705999"
+Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Nov 2020 18:38:35 -0800
+From:   Sia Jee Heng <jee.heng.sia@intel.com>
+To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v4 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay AxiDMA
+Date:   Tue, 17 Nov 2020 10:22:00 +0800
+Message-Id: <20201117022215.2461-1-jee.heng.sia@intel.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
-thanks for taking a look,
-On Mon, Nov 16, 2020 at 01:27:35PM +0100, Borislav Petkov wrote:
-> ( drop stable@ from Cc because this is not how fixes get added to stable@ )
-> 
-> On Fri, Nov 13, 2020 at 09:59:23AM +0800, Chen Yu wrote:
-> > Currently scan_microcode() leverages microcode_matches() to check if the
-> > microcode matches the CPU by comparing the family and model. However before
-> > saving the microcode in scan_microcode(), the processor stepping and flag
-> > of the microcode signature should also be considered in order to avoid
-> > incompatible update and caused the failure of microcode update.
-> 
-> This is going in the right direction but needs to take care of one
-> more angle. I've extended your fix to the version below. Lemme know if
-> something's not clear or still missing.
-> 
-This patch works for me. Besides I have one question about adding the
-signature check in save_mc_for_early():
-> ---
-> From: Chen Yu <yu.c.chen@intel.com>
-> Date: Fri, 13 Nov 2020 09:59:23 +0800
-> Subject: [PATCH] x86/microcode/intel: Check patch signature before saving microcode for early loading
-> 
-> Currently, scan_microcode() leverages microcode_matches() to check
-> if the microcode matches the CPU by comparing the family and model.
-> However, the processor stepping and flags of the microcode signature
-> should also be considered when saving a microcode patch for early
-> update.
-> 
-> Use find_matching_signature() in scan_microcode() and get rid of the
-> now-unused microcode_matches() which is a good cleanup in itself.
-> 
-> Complete the verification of the patch being saved for early loading in
-> save_microcode_patch() directly. This needs to be done there too because
-> save_mc_for_early() will call save_microcode_patch() too.
->
-If I understand correctly, the only place that invokes save_mc_for_early()
-is in generic_load_microcode(). While in generic_load_microcode() only
-microcode has a newer version will be saved by checking has_newer_microcode(),
-and this function leverages find_matching_signature() to check if the candidate
-is of the same signature. So when it comes to save_microcode_patch(), the signature
-already matches. In case save_mc_for_early() will be invoked by other
-function in the future, it is okay to add this check too.
+The below patch series are to support AxiDMA running on Intel KeemBay SoC.
+The base driver is dw-axi-dmac. This driver only support DMA memory copy
+transfers. Code refactoring is needed so that additional features can be
+supported.
 
-thanks,
-Chenyu
+The features added in this patch series are:
+- Replacing Linked List with virtual descriptor management.
+- Remove unrelated hw desc stuff from dma memory pool.
+- Manage dma memory pool alloc/destroy based on channel activity.
+- Support dmaengine device_sync() callback.
+- Support dmaengine device_config().
+- Support dmaengine device_prep_slave_sg().
+- Support dmaengine device_prep_dma_cyclic().
+- Support of_dma_controller_register().
+- Support burst residue granularity.
+- Support Intel KeemBay AxiDMA registers.
+- Support Intel KeemBay AxiDMA device handshake.
+- Support Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+- Add constraint to Max segment size.
 
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+This patch series are tested on Intel KeemBay platform.
+
+v4:
+- Fixed bot found errors running make_dt_binding_check.
+- Added minItems: 1 to the YAML schemas DT binding.
+- Updated "reg" field to the YAML schemas DT binding.
+
+v3:
+- Added additionalProperties: false to the YAML schemas DT binding.
+- Reordered patch sequence for patch 10th, 11th and 12th so that
+  DT binding come first, follow by adding Intel KeemBay SoC registers
+  and update .compatible field.
+- Checked txstate NULL condition.
+- Created helper function dw_axi_dma_set_hw_desc() to handle common code.
+
+v2:
+- Rebased to v5.10-rc1 kernel.
+- Added support for dmaengine device_config().
+- Added support for dmaengine device_prep_slave_sg().
+- Added support for dmaengine device_prep_dma_cyclic().
+- Added support for of_dma_controller_register().
+- Added support for burst residue granularity.
+- Added support for Intel KeemBay AxiDMA registers.
+- Added support for Intel KeemBay AxiDMA device handshake.
+- Added support for Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+- Added constraint to Max segment size.
+
+v1:
+- Initial version. Patch on top of dw-axi-dma driver. This version improve
+  the descriptor management by replacing Linked List Item (LLI) with
+  virtual descriptor management, only allocate hardware LLI memories from
+  DMA memory pool, manage DMA memory pool alloc/destroy based on channel
+  activity and to support device_sync callback.
+
+Sia Jee Heng (15):
+  dt-bindings: dma: Add YAML schemas for dw-axi-dmac
+  dmaengine: dw-axi-dmac: simplify descriptor management
+  dmaengine: dw-axi-dmac: move dma_pool_create() to
+    alloc_chan_resources()
+  dmaengine: dw-axi-dmac: Add device_synchronize() callback
+  dmaengine: dw-axi-dmac: Add device_config operation
+  dmaengine: dw-axi-dmac: Support device_prep_slave_sg
+  dmaegine: dw-axi-dmac: Support device_prep_dma_cyclic()
+  dmaengine: dw-axi-dmac: Support of_dma_controller_register()
+  dmaengine: dw-axi-dmac: Support burst residue granularity
+  dt-binding: dma: dw-axi-dmac: Add support for Intel KeemBay AxiDMA
+  dmaengine: dw-axi-dmac: Add Intel KeemBay DMA register fields
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA support
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA handshake
+  dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA BYTE and HALFWORD
+    registers
+  dmaengine: dw-axi-dmac: Set constraint to the Max segment size
+
+ .../bindings/dma/snps,dw-axi-dmac.txt         |  39 --
+ .../bindings/dma/snps,dw-axi-dmac.yaml        | 153 +++++
+ .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 636 +++++++++++++++---
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |  33 +-
+ 4 files changed, 727 insertions(+), 134 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+ create mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+
+
+base-commit: 9c87c9f41245baa3fc4716cf39141439cf405b01
+-- 
+2.18.0
+
