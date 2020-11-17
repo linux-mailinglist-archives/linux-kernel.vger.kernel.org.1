@@ -2,80 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF12A2B7127
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4327C2B7128
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgKQV7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:59:50 -0500
-Received: from mga05.intel.com ([192.55.52.43]:8194 "EHLO mga05.intel.com"
+        id S1728452AbgKQWAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:00:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726472AbgKQV7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:59:49 -0500
-IronPort-SDR: Ai55vrLLSXuQll4MqH3LTupFYRyaL4HBp7tbwrqZL4D7jwxD7Ap6BTwvVrCLk7jVhtS9OiRNVJ
- NtgsMeOSU0TA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="255731034"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="255731034"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 13:59:48 -0800
-IronPort-SDR: ae4Tc6GzlnDVxo785U7AaSGaAz1iDpuQ1xqDq8Km2lAHEr9i2vPqoBy4t4BMUrdH2y3RE3ft/U
- QWL2bPu5QFxA==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="544224316"
-Received: from chimtrax-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.222])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 13:59:47 -0800
-Subject: Re: [PATCH v11 08/16] PCI/ERR: Use "bridge" for clarity in
- pcie_do_recovery()
-To:     Sean V Kelley <sean.v.kelley@intel.com>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, xerces.zhao@gmail.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201117191954.1322844-1-sean.v.kelley@intel.com>
- <20201117191954.1322844-9-sean.v.kelley@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <eb655100-68c8-d1e9-9370-9a6f8104f41e@linux.intel.com>
-Date:   Tue, 17 Nov 2020 13:59:47 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726433AbgKQWAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:00:09 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605650408;
+        bh=nJe27WpcM/U4Xti35M0uG8AHrm3YMUVm1KR0EuwZwAU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=JQAYJuuAP+aU/rEf7mF0DQx+DuBcWD0oiOq7Mk4gtpLpGU5ST+oME72MsfxXwS/Vy
+         FZwC+pllSL5BviNliOBx/4zNlkFgq+TS7o9a0fzqCnFNmLbUh7mJvI8XhP5TGvgPd2
+         332s/AsHrwQIFAPh+JsVn7hrOuUjFq0BcjJWIwyk=
 MIME-Version: 1.0
-In-Reply-To: <20201117191954.1322844-9-sean.v.kelley@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 net-next 00/13] Add ethtool ntuple filters support
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160565040832.10116.551528627224189010.git-patchwork-notify@kernel.org>
+Date:   Tue, 17 Nov 2020 22:00:08 +0000
+References: <20201114195303.25967-1-naveenm@marvell.com>
+In-Reply-To: <20201114195303.25967-1-naveenm@marvell.com>
+To:     Naveen Mamindlapalli <naveenm@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, saeed@kernel.org,
+        alexander.duyck@gmail.com, sgoutham@marvell.com,
+        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
+        sbhatta@marvell.com, hkelam@marvell.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On 11/17/20 11:19 AM, Sean V Kelley wrote:
-> pcie_do_recovery() may be called with "dev" being either a bridge (Root
-> Port or Switch Downstream Port) or an Endpoint.  The bulk of the function
-> deals with the bridge, so if we start with an Endpoint, we reset "dev" to
-> be the bridge leading to it.
+On Sun, 15 Nov 2020 01:22:50 +0530 you wrote:
+> This patch series adds support for ethtool ntuple filters, unicast
+> address filtering, VLAN offload and SR-IOV ndo handlers. All of the
+> above features are based on the Admin Function(AF) driver support to
+> install and delete the low level MCAM entries. Each MCAM entry is
+> programmed with the packet fields to match and what actions to take
+> if the match succeeds. The PF driver requests AF driver to allocate
+> set of MCAM entries to be used to install the flows by that PF. The
+> entries will be freed when the PF driver is unloaded.
 > 
-> For clarity, replace "dev" in the body of the function with "bridge".  No
-> functional change intended.
-> 
-> [bhelgaas: commit log, split pieces out so this is pure rename, also
-> replace "dev" with "bridge" in messages and pci_uevent_ers()]
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Link: https://lore.kernel.org/r/20201002184735.1229220-6-seanvk.dev@oregontracks.org
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
->   drivers/pci/pcie/err.c | 37 ++++++++++++++++++++-----------------
->   1 file changed, 20 insertions(+), 17 deletions(-)
-> 
+> [...]
+
+Here is the summary with links:
+  - [v4,net-next,01/13] octeontx2-af: Modify default KEX profile to extract TX packet fields
+    https://git.kernel.org/netdev/net-next/c/f1517f6f1d6f
+  - [v4,net-next,02/13] octeontx2-af: Verify MCAM entry channel and PF_FUNC
+    https://git.kernel.org/netdev/net-next/c/041a1c171581
+  - [v4,net-next,03/13] octeontx2-af: Generate key field bit mask from KEX profile
+    https://git.kernel.org/netdev/net-next/c/9b179a960a96
+  - [v4,net-next,04/13] octeontx2-af: Add mbox messages to install and delete MCAM rules
+    https://git.kernel.org/netdev/net-next/c/55307fcb9258
+  - [v4,net-next,05/13] octeontx2-pf: Add support for ethtool ntuple filters
+    https://git.kernel.org/netdev/net-next/c/f0a1913f8a6f
+  - [v4,net-next,06/13] octeontx2-pf: Add support for unicast MAC address filtering
+    https://git.kernel.org/netdev/net-next/c/63ee51575f6c
+  - [v4,net-next,07/13] octeontx2-af: Add debugfs entry to dump the MCAM rules
+    https://git.kernel.org/netdev/net-next/c/4d6beb9c8032
+  - [v4,net-next,08/13] octeontx2-af: Modify nix_vtag_cfg mailbox to support TX VTAG entries
+    https://git.kernel.org/netdev/net-next/c/9a946def264d
+  - [v4,net-next,09/13] octeontx2-pf: Implement ingress/egress VLAN offload
+    https://git.kernel.org/netdev/net-next/c/fd9d7859db6c
+  - [v4,net-next,10/13] octeontx2-pf: Add support for SR-IOV management functions
+    https://git.kernel.org/netdev/net-next/c/f0c2982aaf98
+  - [v4,net-next,11/13] octeontx2-af: Handle PF-VF mac address changes
+    https://git.kernel.org/netdev/net-next/c/4f88ed2cc5af
+  - [v4,net-next,12/13] octeontx2-af: Add new mbox messages to retrieve MCAM entries
+    https://git.kernel.org/netdev/net-next/c/dbab48cecc94
+  - [v4,net-next,13/13] octeontx2-af: Delete NIX_RXVLAN_ALLOC mailbox message
+    https://git.kernel.org/netdev/net-next/c/5a579667850a
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
