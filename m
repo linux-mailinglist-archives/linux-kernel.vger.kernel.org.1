@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2636C2B729C
+	by mail.lfdr.de (Postfix) with ESMTP id 9352E2B729D
 	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgKQXqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:46:15 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33699 "EHLO ozlabs.org"
+        id S1728142AbgKQXqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:46:37 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:42829 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgKQXqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:46:15 -0500
+        id S1728031AbgKQXqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 18:46:37 -0500
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CbMyr6430z9sSn;
-        Wed, 18 Nov 2020 10:46:12 +1100 (AEDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CbMzF2x60z9sPB;
+        Wed, 18 Nov 2020 10:46:33 +1100 (AEDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1605656773;
-        bh=AMrA3+pg0LMhouKa556X8tMX0lNqK/li/UDTQcX3xZU=;
+        s=201909; t=1605656793;
+        bh=oMbUvmEwIV1erVGEeTb/ximWdVDTiuB2dVzFoifZbmA=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MN7PA4DcqRWgzqoi0ANOFE3bvUZHVsPDFAjJ00ebAwcWgILEiYwbkr13ef/C47D2I
-         R71A+RafewqwMn/KswXWi5sUluMERYnCpggL/tCc2S9tkN5nQxp4Ei76SGrxiFgVaa
-         Zk5aU7IToEwOcvl/A5MnP/k4CgCIAtNo5W/aGM9j3XlzGS2nBCJtRurL3zguxZ57d8
-         4XIAOh7CEM9bYoYKbb6X5Za8jib9snfUmoTBeJHnopgZSKnKm+21/fXwc4W3bZL6FD
-         rvoSQrPkGbl+8GaQ2ANS6R8kqW90IE4cuiHq/9OEai0TY/LUBxs+9U+J8D/Hw0VTIi
-         ujCpuXmQZXC9g==
+        b=r9lvxBwKL2lvcH3aO/YmBX6QKSfdhqSdvs2+jYAXZfQGfMyi8gvbWF/wNKIqDt5+f
+         UZLekQp2pC1C/BlLu7cGtTAGyLV0Y1dyTfJ2Ylq9WhvgIT4OemuO7rhB9CivqX+3OW
+         xRVxWCN8/IDpFFNug+FQ7O82Uh9ZwS448JXg+ybVWjJx//manM1a+sANmvznk9bOwq
+         o3vuyuq4WjSQ/9yUNsiZK0WPHTMYjz/Ox4qw554fIIiaT3fqHC6eJUFtUFKczetdCl
+         4pv4/hsgn5Oi5gF6zkKO2ShBesne4UeWvEZkaDgZjqTDFwVHIWbAfszyu20a9p8lI0
+         QjqeN8fhTy7yQ==
 From:   Michael Ellerman <mpe@ellerman.id.au>
 To:     Nick Desaulniers <ndesaulniers@google.com>,
         "Gustavo A . R . Silva" <gustavoars@kernel.org>,
@@ -37,11 +37,11 @@ Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         clang-built-linux@googlegroups.com, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org,
         Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH 1/3] powerpc: boot: include compiler_attributes.h
-In-Reply-To: <20201116043532.4032932-2-ndesaulniers@google.com>
-References: <20201116043532.4032932-1-ndesaulniers@google.com> <20201116043532.4032932-2-ndesaulniers@google.com>
-Date:   Wed, 18 Nov 2020 10:46:06 +1100
-Message-ID: <87o8jv35tt.fsf@mpe.ellerman.id.au>
+Subject: Re: [PATCH 3/3] powerpc: fix -Wimplicit-fallthrough
+In-Reply-To: <20201116043532.4032932-4-ndesaulniers@google.com>
+References: <20201116043532.4032932-1-ndesaulniers@google.com> <20201116043532.4032932-4-ndesaulniers@google.com>
+Date:   Wed, 18 Nov 2020 10:46:32 +1100
+Message-ID: <87lfez35t3.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
@@ -49,32 +49,17 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Nick Desaulniers <ndesaulniers@google.com> writes:
-> The kernel uses `-include` to include include/linux/compiler_types.h
-> into all translation units (see scripts/Makefile.lib), which #includes
-> compiler_attributes.h.
->
-> arch/powerpc/boot/ uses different compiler flags from the rest of the
-> kernel. As such, it doesn't contain the definitions from these headers,
-> and redefines a few that it needs.
->
-> For the purpose of enabling -Wimplicit-fallthrough for ppc, include
-> compiler_types.h via `-include`.
+> The "fallthrough" pseudo-keyword was added as a portable way to denote
+> intentional fallthrough. Clang will still warn on cases where there is a
+> fallthrough to an immediate break. Add explicit breaks for those cases.
 >
 > Link: https://github.com/ClangBuiltLinux/linux/issues/236
 > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 > ---
-> We could just `#include "include/linux/compiler_types.h"` in the few .c
-> sources used from lib/ (there are proper header guards in
-> compiler_types.h).
->
-> It was also noted in 6a9dc5fd6170 that we could -D__KERNEL__ and
-> -include compiler_types.h like the main kernel does, though testing that
-> produces a whole sea of warnings to cleanup. This approach is minimally
-> invasive.
->
->  arch/powerpc/boot/Makefile     | 1 +
->  arch/powerpc/boot/decompress.c | 1 -
->  2 files changed, 1 insertion(+), 1 deletion(-)
+>  arch/powerpc/kernel/prom_init.c | 1 +
+>  arch/powerpc/kernel/uprobes.c   | 1 +
+>  arch/powerpc/perf/imc-pmu.c     | 1 +
+>  3 files changed, 3 insertions(+)
 
 Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 
