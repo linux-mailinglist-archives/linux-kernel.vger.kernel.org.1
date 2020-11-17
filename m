@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD1B2B6510
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB232B6374
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731543AbgKQN2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:28:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33376 "EHLO mail.kernel.org"
+        id S1732546AbgKQNiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:38:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731400AbgKQN0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:26:03 -0500
+        id S1732279AbgKQNiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:38:13 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A16F2464E;
-        Tue, 17 Nov 2020 13:26:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD67220870;
+        Tue, 17 Nov 2020 13:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619562;
-        bh=6Zp+YV6Z2BWDD9deiTge0AlKV+A0u0z1bSS6kiV9ATg=;
+        s=default; t=1605620292;
+        bh=6iOxNDJRpZRddC+e2/LAvY92XRl6JIkcy/8/Q7+pMU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DsGyAmIHedgNjKeKgdKPe50wA+zAzv29HAYK4ClQ8O9zA+UvCx34eOI+g0b3DygP5
-         LKuiqaPyuvK3pgZh5z8d/IY/TVBJiBgscYtg4VlN8En2o4xqtBnWDt8HsD4xMCG9Pw
-         MwYErDq0B2QqeKV22W+pun3XCYPkXWSWdpwYyGrA=
+        b=FWWXtsF/RUmssVSj+9w49gIo2cOZpMeh8WTqnl/w0JT9Fj1bSP79h1XYndclxvlQP
+         pEvxFO6hHYpVcAUFl/8fzhQuq5eSMS0PInZND1G3m6ox0mT6hBFLz5OIa/8k0FsG4O
+         FraLSiPPLuXhr/3bzryERwL0Le4Mi9hP7xm5oPag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Anderson <seanga2@gmail.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 081/151] riscv: Set text_offset correctly for M-Mode
+Subject: [PATCH 5.9 171/255] lan743x: fix use of uninitialized variable
 Date:   Tue, 17 Nov 2020 14:05:11 +0100
-Message-Id: <20201117122125.360974946@linuxfoundation.org>
+Message-Id: <20201117122147.256254115@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Anderson <seanga2@gmail.com>
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-[ Upstream commit 79605f1394261995c2b955c906a5a20fb27cdc84 ]
+[ Upstream commit edbc21113bde13ca3d06eec24b621b1f628583dd ]
 
-M-Mode Linux is loaded at the start of RAM, not 2MB later. Perhaps this
-should be calculated based on PAGE_OFFSET somehow? Even better would be to
-deprecate text_offset and instead introduce something absolute.
+When no devicetree is present, the driver will use an
+uninitialized variable.
 
-Signed-off-by: Sean Anderson <seanga2@gmail.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Fix by initializing this variable.
+
+Fixes: 902a66e08cea ("lan743x: correctly handle chips with internal PHY")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+Link: https://lore.kernel.org/r/20201112152513.1941-1-TheSven73@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/head.S | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/microchip/lan743x_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-index 72f89b7590dd6..344793159b97d 100644
---- a/arch/riscv/kernel/head.S
-+++ b/arch/riscv/kernel/head.S
-@@ -26,12 +26,17 @@ ENTRY(_start)
- 	/* reserved */
- 	.word 0
- 	.balign 8
-+#ifdef CONFIG_RISCV_M_MODE
-+	/* Image load offset (0MB) from start of RAM for M-mode */
-+	.dword 0
-+#else
- #if __riscv_xlen == 64
- 	/* Image load offset(2MB) from start of RAM */
- 	.dword 0x200000
- #else
- 	/* Image load offset(4MB) from start of RAM */
- 	.dword 0x400000
-+#endif
- #endif
- 	/* Effective size of kernel image */
- 	.dword _end - _start
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 6c25c7c8b7cf8..bc368136bccc6 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1015,8 +1015,8 @@ static void lan743x_phy_close(struct lan743x_adapter *adapter)
+ static int lan743x_phy_open(struct lan743x_adapter *adapter)
+ {
+ 	struct lan743x_phy *phy = &adapter->phy;
++	struct phy_device *phydev = NULL;
+ 	struct device_node *phynode;
+-	struct phy_device *phydev;
+ 	struct net_device *netdev;
+ 	int ret = -EIO;
+ 
 -- 
 2.27.0
 
