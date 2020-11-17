@@ -2,104 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9282B7098
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F082B7097
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgKQVDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:03:25 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:49812 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgKQVDZ (ORCPT
+        id S1726417AbgKQVBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:01:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgKQVBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:03:25 -0500
-Received: from relay8-d.mail.gandi.net (unknown [217.70.183.201])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 5D05F3A2217
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 21:00:42 +0000 (UTC)
-X-Originating-IP: 62.210.143.248
-Received: from weirdfishes.localdomain (62-210-143-248.rev.poneytelecom.eu [62.210.143.248])
-        (Authenticated sender: m@thi.eu.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id DA6F61BF208;
-        Tue, 17 Nov 2020 21:00:18 +0000 (UTC)
-Received: by weirdfishes.localdomain (Postfix, from userid 1000)
-        id 8111872214948; Tue, 17 Nov 2020 22:00:18 +0100 (CET)
-Date:   Tue, 17 Nov 2020 22:00:18 +0100
-From:   Mathieu Chouquet-Stringer <me@mathieu.digital>
-To:     Matthew Garrett <mjg59@google.com>
-Cc:     Chris Down <chris@chrisdown.name>, Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        sean.j.christopherson@intel.com, tony.luck@intel.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        the arch/x86 maintainers <x86@kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
-Message-ID: <20201117210018.GA4247@weirdfishes>
-Mail-Followup-To: Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Matthew Garrett <mjg59@google.com>,
-        Chris Down <chris@chrisdown.name>, Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        sean.j.christopherson@intel.com, tony.luck@intel.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        the arch/x86 maintainers <x86@kernel.org>, kernel-team@fb.com
-References: <20200615063837.GA14668@zn.tnic>
- <20200714121955.GA2080@chrisdown.name>
- <20200714154728.GA3101@nazgul.tnic>
- <20200714160448.GC2080@chrisdown.name>
- <CACdnJuvfhjMNQUYNYWpPMfwTE3xHi7UNPm7HEwUMv_1F3KT4gA@mail.gmail.com>
+        Tue, 17 Nov 2020 16:01:10 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A22DC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:01:09 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id y7so18091894pfq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:01:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AGpDbeOLIQYmDecfUyHhqhfmNTQyLQY1DSvv/8hSQSY=;
+        b=LZZ72TSctc9SPaHEneVA0C8y9Do+GmeSSzCzpVAoV6LoS3pSkZ+6wLlWZ84VwB+6Vj
+         SFKAYixXtdL931CiM3bCEacnRru2VZ7Nym0sHol4DIKXVffLRTm7IcgVsA59QvtSFGBb
+         h+jEVAYEw7/2w/CGhFNoxWlpdpEWu6Zm23EyQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AGpDbeOLIQYmDecfUyHhqhfmNTQyLQY1DSvv/8hSQSY=;
+        b=f5wsxJY5kP67mavs0ogvtOrmgjiv9NBe65LCiwfsmpU+den8DE3PQKBGO6yjcvexVv
+         IqPiizig4gWPPr/GzuPM1YAHNGhgnWzrXi+RinmpoMrEj2Ni/+fYbgJmimTZWKwfudhB
+         sl/cdDR90XLsPg3z0Ui0vHvBst0Y0TllYSWfVFYfGzCUwpk7yU5w/UyOd5bV8OJk/ofG
+         UnKhTgNcIW7kqjXaWXDpNGYH0as4yFUkRPcMJu+jdiJthdVXxeuZQZCwk60T7LJ+6sxK
+         NxxaBGTorHPXbo7iDvl3it1Tqpa1ipug29lO/nqT3LTWCXKfZVC2VW0xrU2+ydFGx+/M
+         /oeg==
+X-Gm-Message-State: AOAM533vsNJpYXheF2mW6XmWooegS9CKG8u6nfbdvIQJVbsm8RPqiTER
+        pRxcSBLeCVSfwfhyMxTorpyElQ==
+X-Google-Smtp-Source: ABdhPJyf/AKFS14sUQ6AHtjxlqAaFb5lczA1nMZh7LMW08O/410rO9l4mbPTPxGg7on/J8wkmrvTJQ==
+X-Received: by 2002:a62:1506:0:b029:18b:44dd:6325 with SMTP id 6-20020a6215060000b029018b44dd6325mr1462999pfv.30.1605646868521;
+        Tue, 17 Nov 2020 13:01:08 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t36sm19772615pfg.55.2020.11.17.13.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 13:01:07 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kselftest@vger.kernel.org
+Subject: [PATCH] selftests/seccomp: powerpc: Fix typo in macro variable name
+Date:   Tue, 17 Nov 2020 13:01:04 -0800
+Message-Id: <20201117210104.1000661-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACdnJuvfhjMNQUYNYWpPMfwTE3xHi7UNPm7HEwUMv_1F3KT4gA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
+A typo sneaked into the powerpc selftest. Fix the name so it builds again.
 
-On Tue, Jul 14, 2020 at 12:17:50PM -0700, Matthew Garrett wrote:
-> On Tue, Jul 14, 2020 at 9:04 AM Chris Down <chris@chrisdown.name> wrote:
-> > Either way, again, this isn't really the point. :-) The point is that there
-> > _are_ currently widespread cases involving poking MSRs from userspace, however
-> > sacrilegious or ugly (which I agree with!), and while people should be told
-> > about that, it's excessive to have the potential to take up 80% of kmsg in the
-> > default configuration. It doesn't take thousands of messages to get the message
-> > across, that's what a custom printk ratelimit is for.
+Fixes: 46138329faea ("selftests/seccomp: powerpc: Fix seccomp return value testing")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Agreed - we should now offer all the necessary interfaces to avoid
-> userspace having to hit MSRs directly for thermal management, but that
-> wasn't always the case, and as a result there's tooling that still
-> behaves this way.
-
-I'm late to the party but it seems allowing MSR_IA32_ENERGY_PERF_BIAS
-has the downside of flagging the kernel as tainted without telling you
-why if you use something like x86_energy_perf_policy (from
-tools/power/x86/x86_energy_perf_policy) which itself is used by tuned.
-
-I can taint my kernel manually by just running:
-x86_energy_perf_policy -c all performance
-
-The net impact is an OOPS triggered on such kernel won't necessarily be
-read by anyone nor analyzed by reporting tools as the kernel is now
-considered tainted.
-
-For instance abrt reports the following:
-===========8<===========8<===========8<===========8<===========8<===========8<
-A kernel problem occurred, but your kernel has been tainted (flags:GS).
-Explanation:
-S - SMP with CPUs not designed for SMP.
-Kernel maintainers are unable to diagnose tainted reports.
-===========8<===========8<===========8<===========8<===========8<===========8<
-
-To add to the confusion, kernel documentation
-(Documentation/admin-guide/tainted-kernels.rst) is not up to date so
-while looking for an explanation, one gets to wonder how what used to be
-a regular average computer can now be classified as something using "an
-officially SMP incapable processor"...
-
-So while both documentation and tools should be updated as to be clearer
-and to not taint the kernel respectively, there's something that remains
-to be done to explain why or how the kernel got tainted because of
-poking into MSRs...
-
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 76c458055c54..26c72f2b61b1 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -1758,10 +1758,10 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+ 		 * and the code is stored as a positive value.	\
+ 		 */						\
+ 		if (_result < 0) {				\
+-			SYSCALL_RET(_regs) = -result;		\
++			SYSCALL_RET(_regs) = -_result;		\
+ 			(_regs).ccr |= 0x10000000;		\
+ 		} else {					\
+-			SYSCALL_RET(_regs) = result;		\
++			SYSCALL_RET(_regs) = _result;		\
+ 			(_regs).ccr &= ~0x10000000;		\
+ 		}						\
+ 	} while (0)
 -- 
-Mathieu Chouquet-Stringer
-            The sun itself sees not till heaven clears.
-	             -- William Shakespeare --
+2.25.1
+
