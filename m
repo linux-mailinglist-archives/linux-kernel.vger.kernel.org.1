@@ -2,153 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBCF2B5ADA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6847A2B5ADF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgKQIRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:17:06 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:39836 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQIRG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:17:06 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH8EAWS183951;
-        Tue, 17 Nov 2020 08:16:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=w45UBZTEsjzQNU0Kylmv3fwJ/nypxL4Qcx+v1uER5uk=;
- b=sXM9pJz9/XB+7Vo3r0F8sEkE5o4GHnMtiGbsah9ca03T5fcAcrU73oaOh0akzQPU6aoC
- S2yevzMblynxDOOpJkGkuBzUjNnJNQ+cYExi5PF7r2HPUgXi/7p4gundi1BOK58GlApl
- XWHwLN12lcPK6mu75gdUAVBT19oCmABkO5lY2+1GV7G9TGvjnUcdoORSq2+BC2C7a4TM
- yxwjGsl5R5LcPHLpTtkwoNlUOkUf+tRItn/MaHGZdfjJ4m6XAQVMdZ0YJWUBmKCOtOvW
- 4Jfi41hdVT4QgVBydR3LY/WmpPxdIbOm0F6o8CI3/UPdA50bzDH1ru0qcHEHbB5FVFsz Eg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 34t76ks4mx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 17 Nov 2020 08:16:44 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH8FaPj086046;
-        Tue, 17 Nov 2020 08:16:44 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 34uspt25e2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 08:16:44 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AH8GfwA020111;
-        Tue, 17 Nov 2020 08:16:41 GMT
-Received: from linux.home (/92.157.91.83)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 17 Nov 2020 00:16:41 -0800
-Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
-        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
-        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
-        kuzuno@gmail.com
-References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
- <20201116202426.GF1131@zn.tnic>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <692599af-53c8-7881-2bc7-8898085400cd@oracle.com>
-Date:   Tue, 17 Nov 2020 09:19:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726851AbgKQITV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:19:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46686 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgKQITV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 03:19:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605601159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jBSwZgAuEvWHMjM4d4hzcqClmDivjG0qI8H2PdJ0jpE=;
+        b=aBvtB6OW+wniVNWwSdyEAPT9jdP+RRtrWwmViYqKzHPhVgQvkYOF9uj+DJrD4A1SyHY+8P
+        Vc0r0YVu/Uii3y/e7zY3IEi1dJMNKmtDwBgHe8wwNl23FuvkJG3OwPa1bZzU9LIJOLrqzy
+        I6WE9Bcz+Z1k2p8rTPSkfIRoOb8/smc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D0DC8AB3D;
+        Tue, 17 Nov 2020 08:19:18 +0000 (UTC)
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     xen-devel <xen-devel@lists.xenproject.org>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20201116152301.24558-1-jgross@suse.com>
+ <20201116152301.24558-5-jgross@suse.com>
+ <CALCETrW_UO9sksa1agOfs5E7yV+RqOyugEEOBjZY8Z47R-04Pg@mail.gmail.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Subject: Re: [PATCH 4/4] x86/xen: drop USERGS_SYSRET64 paravirt call
+Message-ID: <194ffa2c-cfc6-29b2-5ee4-3d02581b8e28@suse.com>
+Date:   Tue, 17 Nov 2020 09:19:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201116202426.GF1131@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=900 malwarescore=0
- mlxscore=0 bulkscore=0 suspectscore=0 adultscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170060
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=891
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011170060
+In-Reply-To: <CALCETrW_UO9sksa1agOfs5E7yV+RqOyugEEOBjZY8Z47R-04Pg@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="TZeSXnOA78aXm6rOFpyaEcYCc2ZyiwE9B"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--TZeSXnOA78aXm6rOFpyaEcYCc2ZyiwE9B
+Content-Type: multipart/mixed; boundary="x8PsBNwBukhgo2A84pdicBLVDWhNt46lb";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Andy Lutomirski <luto@kernel.org>
+Cc: xen-devel <xen-devel@lists.xenproject.org>, X86 ML <x86@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Linux Virtualization <virtualization@lists.linux-foundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ Deep Shah <sdeep@vmware.com>, "VMware, Inc." <pv-drivers@vmware.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Message-ID: <194ffa2c-cfc6-29b2-5ee4-3d02581b8e28@suse.com>
+Subject: Re: [PATCH 4/4] x86/xen: drop USERGS_SYSRET64 paravirt call
+References: <20201116152301.24558-1-jgross@suse.com>
+ <20201116152301.24558-5-jgross@suse.com>
+ <CALCETrW_UO9sksa1agOfs5E7yV+RqOyugEEOBjZY8Z47R-04Pg@mail.gmail.com>
+In-Reply-To: <CALCETrW_UO9sksa1agOfs5E7yV+RqOyugEEOBjZY8Z47R-04Pg@mail.gmail.com>
 
-On 11/16/20 9:24 PM, Borislav Petkov wrote:
-> On Mon, Nov 16, 2020 at 03:47:36PM +0100, Alexandre Chartre wrote:
->> Deferring CR3 switch to C code means that we need to run more of the
->> kernel entry code with the user page-table. To do so, we need to:
+--x8PsBNwBukhgo2A84pdicBLVDWhNt46lb
+Content-Type: multipart/mixed;
+ boundary="------------9EE45120FE990CE4FF143A7A"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------9EE45120FE990CE4FF143A7A
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 16.11.20 17:28, Andy Lutomirski wrote:
+> On Mon, Nov 16, 2020 at 7:23 AM Juergen Gross <jgross@suse.com> wrote:
 >>
->>   - map more syscall, interrupt and exception entry code into the user
->>     page-table (map all noinstr code);
+>> USERGS_SYSRET64 is used to return from a syscall via sysret, but
+>> a Xen PV guest will nevertheless use the iret hypercall, as there
+>> is no sysret PV hypercall defined.
 >>
->>   - map additional data used in the entry code (such as stack canary);
+>> So instead of testing all the prerequisites for doing a sysret and
+>> then mangling the stack for Xen PV again for doing an iret just use
+>> the iret exit from the beginning.
 >>
->>   - run more entry code on the trampoline stack (which is mapped both
->>     in the kernel and in the user page-table) until we switch to the
->>     kernel page-table and then switch to the kernel stack;
-> 
-> So PTI was added exactly to *not* have kernel memory mapped in the user
-> page table. You're partially reversing that...
+>> This can easily be done via an ALTERNATIVE like it is done for the
+>> sysenter compat case already.
+>>
+>> While at it remove to stale sysret32 remnants.
+>>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>=20
+> Acked-by: Andy Lutomirski <luto@kernel.org>
+>=20
+> FWIW, you've lost the VGCF_in_syscall optimization.  Let me see if I
+> can give it back to you better.
 
-We are not reversing PTI, we are extending it.
+Ah, right.
 
-PTI removes all kernel mapping from the user page-table. However there's
-no issue with mapping some kernel data into the user page-table as long as
-these data have no sensitive information.
-
-Actually, PTI is already doing that but with a very limited scope. PTI adds
-into the user page-table some kernel mappings which are needed for userland
-to enter the kernel (such as the kernel entry text, the ESPFIX, the
-CPU_ENTRY_AREA_BASE...).
-
-So here, we are extending the PTI mapping so that we can execute more kernel
-code while using the user page-table; it's a kind of PTI on steroids.
+Nevertheless a simple kernel build is about 0.5% faster with this
+patch.
 
 
->>   - have a per-task trampoline stack instead of a per-cpu trampoline
->>     stack, so the task can be scheduled out while it hasn't switched
->>     to the kernel stack.
-> 
-> per-task? How much more memory is that per task?
-> 
+Juergen
 
-Currently, this is done by doubling the size of the task stack (patch 8),
-so that's an extra 8KB. Half of the stack is used as the regular kernel
-stack, and the other half used as the PTI stack:
+--------------9EE45120FE990CE4FF143A7A
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-+/*
-+ * PTI doubles the size of the stack. The entire stack is mapped into
-+ * the kernel address space. However, only the top half of the stack is
-+ * mapped into the user address space.
-+ *
-+ * On syscall or interrupt, user mode enters the kernel with the user
-+ * page-table, and the stack pointer is switched to the top of the
-+ * stack (which is mapped in the user address space and in the kernel).
-+ * The syscall/interrupt handler will then later decide when to switch
-+ * to the kernel address space, and to switch to the top of the kernel
-+ * stack which is only mapped in the kernel.
-+ *
-+ *   +-------------+
-+ *   |             | ^                       ^
-+ *   | kernel-only | | KERNEL_STACK_SIZE     |
-+ *   |    stack    | |                       |
-+ *   |             | V                       |
-+ *   +-------------+ <- top of kernel stack  | THREAD_SIZE
-+ *   |             | ^                       |
-+ *   | kernel and  | | KERNEL_STACK_SIZE     |
-+ *   | PTI stack   | |                       |
-+ *   |             | V                       v
-+ *   +-------------+ <- top of stack
-+ */
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-The minimum size would be 1 page (4KB) as this is the minimum mapping size.
-It's certainly enough for now as the usage of the PTI stack is limited, but
-we will need larger stack if we won't to execute more kernel code with the
-user page-table.
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-alex.
+--------------9EE45120FE990CE4FF143A7A--
+
+--x8PsBNwBukhgo2A84pdicBLVDWhNt46lb--
+
+--TZeSXnOA78aXm6rOFpyaEcYCc2ZyiwE9B
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl+zh4UFAwAAAAAACgkQsN6d1ii/Ey9U
+fQf7BHJ5Bw5iPQtVJ/DpCX/TPqNeQ3JbRh2IfYAve06UfVeTmwGYkv8kMpPcyvdbh87G1IyYJai6
+XwGksJU2kH+Lzj+jt1ISI+/TYIzmgATD1RCs5iyHAkV8Eh6oYvWpCpQaoUGhRSzZ5XfwjyAWtT0m
+V8ZY1BH9SOvyL/XvxaEIHOnFsYTcnhno3fhJwZW5jCc148Y2E1Tby91TG1XE2YFfbbgAWc8963Kk
+5v4mmQZuPi8MKDTB5tytwc2g8y47YBAtyBKqPO5BuBZoJpNqAgOXgswKmWV4jyB6Ppter0tgZmYL
+gQTEpG3aja8xEHLKFPZpZBYBWPRNGubSu7+QTZM6Hg==
+=7+u4
+-----END PGP SIGNATURE-----
+
+--TZeSXnOA78aXm6rOFpyaEcYCc2ZyiwE9B--
