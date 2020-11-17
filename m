@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2602B70C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CB32B70C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgKQVQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:16:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
+        id S1727012AbgKQVRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:17:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbgKQVQY (ORCPT
+        with ESMTP id S1726211AbgKQVRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:16:24 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48932C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:16:23 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id l11so1185823plt.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:16:23 -0800 (PST)
+        Tue, 17 Nov 2020 16:17:32 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E522FC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:17:31 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id 142so12320281ljj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:17:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kFhpnG7ItKRkl9t+3slguWZUGnqb2EfB7a1pd57utgo=;
-        b=Cp43UXvcun6VvuWOX3KNkLSSWhmuzhmQrRsjxVYRM8spKBjEc3AnwqDySaMoVRU+Df
-         0jYuVsXpYctmuK6FQDFfH8zvYFbE0EL14930drGPt5ZJxrayoqeBkF1yKjcYTfMv/0pd
-         4rne6CNwqoiZAqyVXbtnkQk8/pkgPrK4icXKs=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I/hHF4xlcau8abUMMWWu9ZOPfLuX56SHUOKI4p/GLog=;
+        b=FPqXJr9icDh9L7sI6ggEaWimg9DuZcX++8IlgUQAq4mXREd7/XhwpmygB9qKmqGvqN
+         SgbZqbV8tybddAgk78HR7TYSHbwylUQzGkMaoaX8Un84MYCZ5QF3DXxAmnEV6pZf/g60
+         tNyL40rr2dqucYJetfJpcOCm9LHFMSF1y9AnHiL/5Po5NzezA3haTP/heFqC2oAsbS3j
+         D9vdsy5PKYnI45n5K1+qUG97MU0q4SQnq1oZnXo6MIQihRQn0QRF3t3+EtlG1QduJniW
+         +cRsHvzXQ8D3t2PmcksPlXKrcPcLwOBxN/Hd8u2jOyRMLnLNeJ78n8ZtuqKZDUofrVoN
+         dZ3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kFhpnG7ItKRkl9t+3slguWZUGnqb2EfB7a1pd57utgo=;
-        b=Y/q041SRPUH7u11c0nAn1CgON5dAey1kv304RhjE8QFLscubpziHNrJKNsE7wOXpMu
-         H8p7WuU4GrNrBmepcnVawwsUucoJ1bDgb9SOgqoXXo7lMT83tWdEeAveNdfPY8FO1exO
-         SivAlI3DRVvh7q9fRi3kFsjhqk+x23KfdVY62jDIkfBV8Ao4KNDfAyUOHwfPS2CBNQW6
-         rMsuSDhspktiJfQc90BBDWNaDWBI2XBEoz3md/lG9GX0xFqJjbX/cATZ/nfRWjy0+aYB
-         RPPeYUnYLpMVZ/dj6Q3wdtEiktAFdv3nX9FkkAOZxR0oXVh/r7dQ16nJy+u1k1ae9M0H
-         DPGg==
-X-Gm-Message-State: AOAM5327rJ1cjWyhmNzk+eOL2lFQxa894nlYWSFCoWCCpuXm6tVmdsdV
-        be5+gufDsFdDaGsNNeF3HH/Clw==
-X-Google-Smtp-Source: ABdhPJxyeIg4uAWzn1zKiszkmAiFSTExo4eOMPjDPjxUXqeYzxo5Prlo/4PU7KH15I7n0sChaYi7Yg==
-X-Received: by 2002:a17:902:7b90:b029:d6:ad06:d4c0 with SMTP id w16-20020a1709027b90b02900d6ad06d4c0mr1425725pll.35.1605647781374;
-        Tue, 17 Nov 2020 13:16:21 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id q12sm22885708pfc.84.2020.11.17.13.16.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 13:16:20 -0800 (PST)
-Date:   Tue, 17 Nov 2020 13:16:19 -0800
-From:   Prashant Malani <pmalani@chromium.org>
-To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, enric.balletbo@collabora.com,
-        rajmohan.mani@intel.com, azhar.shaikh@intel.com
-Subject: Re: [PATCH v2 5/8] usb: typec: Use Thunderbolt 3 cable discover mode
- VDO in Enter_USB message
-Message-ID: <20201117211619.GD1819103@google.com>
-References: <20201113202503.6559-1-utkarsh.h.patel@intel.com>
- <20201113202503.6559-6-utkarsh.h.patel@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I/hHF4xlcau8abUMMWWu9ZOPfLuX56SHUOKI4p/GLog=;
+        b=pEYpfmGbuYfTj/YDAX/s70nTJvHp8gLdYufATWAv/SZiPH316qsxsecsYNsWDc/rTE
+         5WwRXssVSKzS/lCgPSZ4xFAUiLqfspxQzyGgUW45MzHyu0L9ZgVUpncOUKQQDLcpUuwc
+         tHY+kkMxwEw4kLmH3wq/RtjAYVwU4x00wDZS4DXri6PtON59YyRHgwzZvZaM2UaJ1A/L
+         UkcMvtVQjTxHYa+SbrRmi3RPKdgd1p/b9dOPpF0hHaG06LKsxardH6/sPAQBtuwZ++oJ
+         ILO5ZUPeS+1bX8JA6z7/8hlDFipmYijDvbYwu/qV+M7SAb/FZxQqiTEEXqwTxC1zOuY1
+         kiuQ==
+X-Gm-Message-State: AOAM53276cvjfyrFx8sRuY7uHFhB4sSJZVKAUnLyews4mNp60z/ZOmON
+        du+ck7CrJqJexB9a8fZ4sHhgbaA579At+34KQ+ynTQ==
+X-Google-Smtp-Source: ABdhPJwwYzjaEnUocguKy9WJ8dtjA20kmRVQYAgUyPCCmjjYxTPilv86jTYXLmDvrReOEOTbXTIGkyUopqHL2PSdFCc=
+X-Received: by 2002:a2e:95d2:: with SMTP id y18mr2899299ljh.286.1605647850397;
+ Tue, 17 Nov 2020 13:17:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113202503.6559-6-utkarsh.h.patel@intel.com>
+References: <20201112183839.1009297-1-natechancellor@gmail.com>
+In-Reply-To: <20201112183839.1009297-1-natechancellor@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 17 Nov 2020 22:17:19 +0100
+Message-ID: <CACRpkda_u7wVr6E97WaxPC6h5SGTrmGWYBrph_0oLUAFgYnYMw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Always link with '-z norelro'
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Jian Cai <jiancai@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Utkarsh,
+On Thu, Nov 12, 2020 at 7:41 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
 
-On Fri, Nov 13, 2020 at 12:25:00PM -0800, Utkarsh Patel wrote:
-> USB4 also uses same cable properties as Thunderbolt 3 so use Thunderbolt 3
-> cable discover mode VDO to fill details such as active cable plug link
-> training and cable rounded support.
-> 
-> Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
-> 
-> --
-> Changes in v2:
-> - No change.
-> --
-> ---
->  include/linux/usb/typec.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-> index 6be558045942..d91e09d9d91c 100644
-> --- a/include/linux/usb/typec.h
-> +++ b/include/linux/usb/typec.h
-> @@ -75,6 +75,7 @@ enum typec_orientation {
->  /*
->   * struct enter_usb_data - Enter_USB Message details
->   * @eudo: Enter_USB Data Object
-> + * @tbt_cable_vdo: TBT3 Cable Discover Mode Response
->   * @active_link_training: Active Cable Plug Link Training
->   *
->   * @active_link_training is a flag that should be set with uni-directional SBRX
-> @@ -83,6 +84,7 @@ enum typec_orientation {
->   */
->  struct enter_usb_data {
->  	u32			eudo;
-> +	u32			tbt_cable_vdo;
+> Commit 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker
+> script and options") added '-z norelro' to the arm64 Makefile when
+> CONFIG_RELOCATABLE was set to help support ld.lld because ld.lld
+> defaults to '-z relro' but the kernel does not use program headers or
+> adhere to the section layout that is required for RELRO to work.
+>
+> Commit 3b92fa7485eb ("arm64: link with -z norelro regardless of
+> CONFIG_RELOCATABLE") unconditionally added it to LDFLAGS_vmlinux because
+> an error occurs with CONFIG_KASAN set even when CONFIG_RELOCATABLE is
+> unset.
+>
+> As it turns out, ARM experiences the same error after CONFIG_KASAN was
+> implemented, meaning that '-z norelro' needs to be added to that
+> Makefile as well (multi_v7_defconfig + CONFIG_KASAN=y + LD=ld.lld):
+>
+> $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LLVM=1 zImage
+> ld.lld: error: section: .exit.data is not contiguous with other relro sections
+>
+> To avoid playing whack-a-mole with different architectures over time,
+> hoist '-z norelro' into the main Makefile. This does not affect ld.bfd
+> because '-z norelro' is the default for it.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1189
+> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Can we instead just include a field for the rounded cable support property
-, similar to what was done for active_link_training? That way this gets decoupled
-from whether a TBT VDO was present in the cable or not
+OK makes sense, FWIW:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
->  	unsigned char		active_link_training:1;
->  };
->  
-> -- 
-> 2.17.1
-> 
-
-Best regards,
-
--Prashant
+Yours,
+Linus Walleij
