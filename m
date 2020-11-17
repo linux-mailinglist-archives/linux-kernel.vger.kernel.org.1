@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AFE2B619A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E8F2B622C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730781AbgKQNUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:20:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53990 "EHLO mail.kernel.org"
+        id S1730925AbgKQN0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:26:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730745AbgKQNU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:20:28 -0500
+        id S1731394AbgKQN0A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:26:00 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E7AC206D5;
-        Tue, 17 Nov 2020 13:20:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17ADC20781;
+        Tue, 17 Nov 2020 13:25:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619228;
-        bh=Ejy93RLnNmUphyjzU+ljQMEPhyJJaHefgobGx91pGyQ=;
+        s=default; t=1605619559;
+        bh=K50d19qP/F886/2Ft2H5yb441enUZkoFfD7ULSsqUn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1MoptByzGaCdUxAZXEPG9pA0Tmg1h6Q+MCHvc4vl4PkQU2qDDACqPYpptQiiLcOVq
-         CRISpVgtNCDnD32BUEtqs8BevsyRnnBi8Y3BnkZ6JHFatOKneuJe+Hp20LQ+L34WTa
-         NvhmZJdbVcN/AI9E1N8+EWzNLgJrahfWa2jyK7UQ=
+        b=BRZLij8V2bdMI+oDp3KhmbXKS4hsndULLJh2HUIegqmAur9gUqS+OngruYxNDDfqN
+         3B7dt1Zpzx8QMYQPhzDVACsXTJxwFSdwU1pJAUwGGcxMV7nlIEENfKMj2OGoK6ggOw
+         9y6gWKUL3gOUVOoI13J95wPlvgdMgUEERNZcDvVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 043/101] iommu/amd: Increase interrupt remapping table limit to 512 entries
+        stable@vger.kernel.org, Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 080/151] selftests: proc: fix warning: _GNU_SOURCE redefined
 Date:   Tue, 17 Nov 2020 14:05:10 +0100
-Message-Id: <20201117122115.191217891@linuxfoundation.org>
+Message-Id: <20201117122125.313990255@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+From: Tommi Rantala <tommi.t.rantala@nokia.com>
 
-[ Upstream commit 73db2fc595f358460ce32bcaa3be1f0cce4a2db1 ]
+[ Upstream commit f3ae6c6e8a3ea49076d826c64e63ea78fbf9db43 ]
 
-Certain device drivers allocate IO queues on a per-cpu basis.
-On AMD EPYC platform, which can support up-to 256 cpu threads,
-this can exceed the current MAX_IRQ_PER_TABLE limit of 256,
-and result in the error message:
+Makefile already contains -D_GNU_SOURCE, so we can remove it from the
+*.c files.
 
-    AMD-Vi: Failed to allocate IRTE
-
-This has been observed with certain NVME devices.
-
-AMD IOMMU hardware can actually support upto 512 interrupt
-remapping table entries. Therefore, update the driver to
-match the hardware limit.
-
-Please note that this also increases the size of interrupt remapping
-table to 8KB per device when using the 128-bit IRTE format.
-
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Link: https://lore.kernel.org/r/20201015025002.87997-1-suravee.suthikulpanit@amd.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd_iommu_types.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tools/testing/selftests/proc/proc-loadavg-001.c  | 1 -
+ tools/testing/selftests/proc/proc-self-syscall.c | 1 -
+ tools/testing/selftests/proc/proc-uptime-002.c   | 1 -
+ 3 files changed, 3 deletions(-)
 
-diff --git a/drivers/iommu/amd_iommu_types.h b/drivers/iommu/amd_iommu_types.h
-index 859b06424e5c4..df6f3cc958e5e 100644
---- a/drivers/iommu/amd_iommu_types.h
-+++ b/drivers/iommu/amd_iommu_types.h
-@@ -410,7 +410,11 @@ extern bool amd_iommu_np_cache;
- /* Only true if all IOMMUs support device IOTLBs */
- extern bool amd_iommu_iotlb_sup;
- 
--#define MAX_IRQS_PER_TABLE	256
-+/*
-+ * AMD IOMMU hardware only support 512 IRTEs despite
-+ * the architectural limitation of 2048 entries.
-+ */
-+#define MAX_IRQS_PER_TABLE	512
- #define IRQ_TABLE_ALIGNMENT	128
- 
- struct irq_remap_table {
+diff --git a/tools/testing/selftests/proc/proc-loadavg-001.c b/tools/testing/selftests/proc/proc-loadavg-001.c
+index 471e2aa280776..fb4fe9188806e 100644
+--- a/tools/testing/selftests/proc/proc-loadavg-001.c
++++ b/tools/testing/selftests/proc/proc-loadavg-001.c
+@@ -14,7 +14,6 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ /* Test that /proc/loadavg correctly reports last pid in pid namespace. */
+-#define _GNU_SOURCE
+ #include <errno.h>
+ #include <sched.h>
+ #include <sys/types.h>
+diff --git a/tools/testing/selftests/proc/proc-self-syscall.c b/tools/testing/selftests/proc/proc-self-syscall.c
+index 9f6d000c02455..8511dcfe67c75 100644
+--- a/tools/testing/selftests/proc/proc-self-syscall.c
++++ b/tools/testing/selftests/proc/proc-self-syscall.c
+@@ -13,7 +13,6 @@
+  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+-#define _GNU_SOURCE
+ #include <unistd.h>
+ #include <sys/syscall.h>
+ #include <sys/types.h>
+diff --git a/tools/testing/selftests/proc/proc-uptime-002.c b/tools/testing/selftests/proc/proc-uptime-002.c
+index 30e2b78490898..e7ceabed7f51f 100644
+--- a/tools/testing/selftests/proc/proc-uptime-002.c
++++ b/tools/testing/selftests/proc/proc-uptime-002.c
+@@ -15,7 +15,6 @@
+  */
+ // Test that values in /proc/uptime increment monotonically
+ // while shifting across CPUs.
+-#define _GNU_SOURCE
+ #undef NDEBUG
+ #include <assert.h>
+ #include <unistd.h>
 -- 
 2.27.0
 
