@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECC72B6387
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 360462B6389
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732704AbgKQNix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:38:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47894 "EHLO mail.kernel.org"
+        id S1732716AbgKQNi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:38:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732782AbgKQNgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:36:52 -0500
+        id S1732853AbgKQNgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:36:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7635207BC;
-        Tue, 17 Nov 2020 13:36:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C624120780;
+        Tue, 17 Nov 2020 13:36:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620212;
-        bh=LGUjmngtKBsYdUm9AYXeULPsR0jyCDVhnz6TrZR9j0M=;
+        s=default; t=1605620215;
+        bh=5chNI52tjZEY8XlpZjeJ7rSm/KurCIeRPXa6E6EFi/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=izuBqSb2OxiAkAr9vVAOEjGRtCzHVRN72dpa88nNikafx0NCDWTzMKrYRbCzN+U4t
-         iQfbJLe7p1q5M8KPRNo+1U02eU+L7/h0ilBn+dco73CCA9n1FfBaKT4xceNE7+0DGW
-         IsEpQO7/pV7NA5MnAeRTcC4nEOTNDqApRnD9RdvI=
+        b=bkbEwXrl2pyK3SzmSDQ/FBgHC/ARHOk81UyQZqvHjETzmyWr4k6lgngA/nMSRTX9W
+         Za65Syk+IgkIqTtyLphVDpdLiBanGCP/+FKoJNVo4vDyWHKAzs9q8iGXCg2agEBs8P
+         cWlFaxecIT6TFlHsX72Spz2JpC8WMqYTADNqV+JI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Dai Ngo <dai.ngo@oracle.com>,
         "J. Bruce Fields" <bfields@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 143/255] SUNRPC: Fix general protection fault in trace_rpc_xdr_overflow()
-Date:   Tue, 17 Nov 2020 14:04:43 +0100
-Message-Id: <20201117122145.909256388@linuxfoundation.org>
+Subject: [PATCH 5.9 144/255] NFSD: Fix use-after-free warning when doing inter-server copy
+Date:   Tue, 17 Nov 2020 14:04:44 +0100
+Message-Id: <20201117122145.959037674@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -43,40 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Dai Ngo <dai.ngo@oracle.com>
 
-[ Upstream commit d321ff589c16d8c2207485a6d7fbdb14e873d46e ]
+[ Upstream commit 36e1e5ba90fb3fba6888fae26e4dfc28bf70aaf1 ]
 
-The TP_fast_assign() section is careful enough not to dereference
-xdr->rqst if it's NULL. The TP_STRUCT__entry section is not.
+The source file nfsd_file is not constructed the same as other
+nfsd_file's via nfsd_file_alloc. nfsd_file_put should not be
+called to free the object; nfsd_file_put is not the inverse of
+kzalloc, instead kfree is called by nfsd4_do_async_copy when done.
 
-Fixes: 5582863f450c ("SUNRPC: Add XDR overflow trace event")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: ce0887ac96d3 ("NFSD add nfs4 inter ssc to nfsd4_copy")
+Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
 Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/trace/events/sunrpc.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/nfsd/nfs4proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
-index 65d7dfbbc9cd7..ca2f27b9f919d 100644
---- a/include/trace/events/sunrpc.h
-+++ b/include/trace/events/sunrpc.h
-@@ -607,10 +607,10 @@ TRACE_EVENT(rpc_xdr_overflow,
- 		__field(size_t, tail_len)
- 		__field(unsigned int, page_len)
- 		__field(unsigned int, len)
--		__string(progname,
--			 xdr->rqst->rq_task->tk_client->cl_program->name)
--		__string(procedure,
--			 xdr->rqst->rq_task->tk_msg.rpc_proc->p_name)
-+		__string(progname, xdr->rqst ?
-+			 xdr->rqst->rq_task->tk_client->cl_program->name : "unknown")
-+		__string(procedure, xdr->rqst ?
-+			 xdr->rqst->rq_task->tk_msg.rpc_proc->p_name : "unknown")
- 	),
- 
- 	TP_fast_assign(
+diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+index 84e10aef14175..80effaa18b7b2 100644
+--- a/fs/nfsd/nfs4proc.c
++++ b/fs/nfsd/nfs4proc.c
+@@ -1299,7 +1299,7 @@ nfsd4_cleanup_inter_ssc(struct vfsmount *ss_mnt, struct nfsd_file *src,
+ 			struct nfsd_file *dst)
+ {
+ 	nfs42_ssc_close(src->nf_file);
+-	nfsd_file_put(src);
++	/* 'src' is freed by nfsd4_do_async_copy */
+ 	nfsd_file_put(dst);
+ 	mntput(ss_mnt);
+ }
 -- 
 2.27.0
 
