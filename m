@@ -2,139 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED232B7029
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 027A92B702D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728161AbgKQUe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:34:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42082 "EHLO mail.kernel.org"
+        id S1728317AbgKQUfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:35:00 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:10748 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgKQUe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:34:56 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728195AbgKQUe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:34:59 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605645298; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=B5UuYlGm/Tc1iL48YeEinA+NtRG1i1qyUD8YV4GrWcw=;
+ b=s9mx6bjLC1HasZuUZJ+wnLW8k3proxMOpni+YbiI8Wj1Af+Pr2O+PqHG44RmKtJI3kTDaYaZ
+ pUKkGe1RwBaJiC9E9MQWI78ARO77Zma5jHbFSZ/6ZlSSAaihQY3NkhAAsND1P1d244h9PO0T
+ i/iRUbh4AZvzC/8qJXn0nKnSL8k=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fb433f137ede2253bc89c3a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Nov 2020 20:34:57
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A0DE6C43464; Tue, 17 Nov 2020 20:34:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A0FF2225B;
-        Tue, 17 Nov 2020 20:34:53 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 15:34:51 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
- memory allocation
-Message-ID: <20201117153451.3015c5c9@gandalf.local.home>
-In-Reply-To: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-References: <20201116175107.02db396d@gandalf.local.home>
-        <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
-        <20201117142145.43194f1a@gandalf.local.home>
-        <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DCB1BC433C6;
+        Tue, 17 Nov 2020 20:34:56 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 17 Nov 2020 12:34:56 -0800
+From:   abhinavk@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Clark <robdclark@gmail.com>, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Sean Paul <sean@poorly.run>,
+        kalyan_t@codeaurora.org
+Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: Remove chatty vbif debug print
+In-Reply-To: <20201117172608.2091648-1-swboyd@chromium.org>
+References: <20201117172608.2091648-1-swboyd@chromium.org>
+Message-ID: <71aebca216babf4010c92d4d1ce9a9b4@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-
-> There seems to be more effect on the data size: adding the "stub_func" field
-> in struct tracepoint adds 8320 bytes of data to my vmlinux. But considering
-> the layout of struct tracepoint:
+On 2020-11-17 09:26, Stephen Boyd wrote:
+> I don't know what this debug print is for but it is super chatty,
+> throwing 8 lines of debug prints in the logs every time we update a
+> plane. It looks like it has no value. Let's nuke it so we can get
+> better logs.
 > 
-> struct tracepoint {
->         const char *name;               /* Tracepoint name */
->         struct static_key key;
->         struct static_call_key *static_call_key;
->         void *static_call_tramp;
->         void *iterator;
->         int (*regfunc)(void);
->         void (*unregfunc)(void);
->         struct tracepoint_func __rcu *funcs;
->         void *stub_func;
-> };
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> I would argue that we have many other things to optimize there if we want to
-> shrink the bloat, starting with static keys and system call reg/unregfunc pointers.
-
-This is the part that I want to decrease, and yes there's other fish to fry
-in that code, but I really don't want to be adding more.
-
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
+> b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
+> index 5e8c3f3e6625..5eb2b2ee09f5 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
+> @@ -245,9 +245,6 @@ void dpu_vbif_set_qos_remap(struct dpu_kms 
+> *dpu_kms,
+>  	forced_on = mdp->ops.setup_clk_force_ctrl(mdp, params->clk_ctrl, 
+> true);
 > 
-> > 
-> > Since all tracepoints callbacks have at least one parameter (__data), we
-> > could declare tp_stub_func as:
-> > 
-> > static void tp_stub_func(void *data, ...)
-> > {
-> >	return;
-> > }
-> > 
-> > And now C knows that tp_stub_func() can be called with one or more
-> > parameters, and had better be able to deal with it!  
-> 
-> AFAIU this won't work.
-> 
-> C99 6.5.2.2 Function calls
-> 
-> "If the function is defined with a type that is not compatible with the type (of the
-> expression) pointed to by the expression that denotes the called function, the behavior is
-> undefined."
+>  	for (i = 0; i < qos_tbl->npriority_lvl; i++) {
+> -		DPU_DEBUG("vbif:%d xin:%d lvl:%d/%d\n",
+> -				params->vbif_idx, params->xin_id, i,
+> -				qos_tbl->priority_lvl[i]);
 
-But is it really a problem in practice. I'm sure we could create an objtool
-function to check to make sure we don't break anything at build time.
+Instead of getting rid of this print, we should optimize the caller of 
+this. This is what
+we are doing in downstream. So we need to update the property only if we 
+are switching from a RT client
+to non-RT client for the plane and vice-versa. So we should try to do 
+the same thing here.
 
-> 
-> and
-> 
-> 6.7.5.3 Function declarators (including prototypes), item 15:
-> 
-> "For two function types to be compatible, both shall specify compatible return types.
+  	is_rt = sde_crtc_is_rt_client(crtc, crtc->state);
+  	if (is_rt != psde->is_rt_pipe) {
+  		psde->is_rt_pipe = is_rt;
+  		pstate->dirty |= SDE_PLANE_DIRTY_QOS;
+  	}
 
-But all tracepoint callbacks have void return types, which means they are
-compatible.
 
-> 
-> Moreover, the parameter type lists, if both are present, shall agree in the number of
-> parameters and in use of the ellipsis terminator; corresponding parameters shall have
-> compatible types. [...]"
+  	if (pstate->dirty & DPU_PLANE_DIRTY_QOS)
+  		_dpu_plane_set_qos_remap(plane);
 
-Which is why I gave the stub function's first parameter the same type that
-all tracepoint callbacks have a prototype that starts with "void *data"
-
-and my solution is to define:
-
-	void tp_stub_func(void *data, ...) { return; }
-
-Which is in line with: "corresponding parameters shall have compatible
-types". The corresponding parameter is simply "void *data".
-
-> 
-> What you suggest here is to use the ellipsis in the stub definition, but the caller
-> prototype does not use the ellipsis, which brings us into undefined behavior territory
-> again.
-
-And I believe the "undefined behavior" is that you can't trust what is in
-the parameters if the callee chooses to look at them, and that is not the
-case here. But since the called function doesn't care, I highly doubt it
-will ever be an issue. I mean, the only way this can break is if the caller
-places something in the stack that it expects the callee to fix. With all
-the functions in assembly we have, I'm pretty confident that if a compiler
-does something like this, it would break all over the place.
-
--- Steve
