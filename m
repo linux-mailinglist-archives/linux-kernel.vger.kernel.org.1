@@ -2,141 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDAA2B55BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 381732B55C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731459AbgKQAcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 19:32:11 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52843 "EHLO ozlabs.org"
+        id S1730360AbgKQAed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 19:34:33 -0500
+Received: from mga03.intel.com ([134.134.136.65]:49741 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730225AbgKQAcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 19:32:10 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CZn2B4JDGz9sRK;
-        Tue, 17 Nov 2020 11:32:02 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605573127;
-        bh=V9ydg2LxEVWrqzBnw4r/Moz9ZtUWw12zFNoMCblPROw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cL4zmRA1ccuklJbyk5L34kIble7StjBtSt5a9+4IVX+tiAxZnyriyPJy5glAxGPvZ
-         uzbIpwNeQUgXyqITQrr2RROUd4gfeHivduAx64GyF9YIai7/XlTTFmNss//EGPiR50
-         0iGKLNr4S480tKzVgau/4KzhJXHm/9kW/0fE98IIPDXXfAEL0mPHAeukroKd1kNK3E
-         rerVuGswvb84VGd4M5YqPayo7ogZ5+4OTrHLEd04JNjt462kgF4bO2R0QMHzy1uIUR
-         zoEjT2RFTW18JPtS0iCCsdydzywtk15tP4QDNlmvNI9cr+NdYa7t692d1DY3CLkZet
-         Z1rwr5dftf03w==
-Date:   Tue, 17 Nov 2020 11:31:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Dave Airlie <airlied@linux.ie>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Subject: linux-next: manual merge of the amdgpu tree with the drm tree
-Message-ID: <20201117113159.3574fbcf@canb.auug.org.au>
+        id S1726437AbgKQAed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 19:34:33 -0500
+IronPort-SDR: +dHjOWS4B+DaGq4pI5sQBB6J15CUCzRt0PyG5fkMN+RZ2+pRvyaq7uctY6YN23LW584vpGl3uw
+ hu3EHntu/+eQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="170941511"
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="170941511"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 16:34:26 -0800
+IronPort-SDR: SA5jR4jLoO4SIJYG4aFPL45zStozXakzwH47AkH2/v2MxiwVCoFb9R50Jf5p2wwpvZgCY4PRs/
+ EyxzfwGlozZw==
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="358667634"
+Received: from pgao1-mobl1.amr.corp.intel.com (HELO [10.212.6.211]) ([10.212.6.211])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 16:34:24 -0800
+Subject: Re: [PATCH v41 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+To:     Hillf Danton <hdanton@sina.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+References: <20201115044044.11040-1-hdanton@sina.com>
+ <15c3349c-44dd-7057-395c-8fd8c674e87d@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <610d665e-564e-621d-4ecb-fbe5bfdf7133@intel.com>
+Date:   Mon, 16 Nov 2020 16:34:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uHhQCdvnBQ_XxE5t5/mxZAN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <15c3349c-44dd-7057-395c-8fd8c674e87d@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uHhQCdvnBQ_XxE5t5/mxZAN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 11/16/20 9:54 AM, Dave Hansen wrote:
+>> ENCLS instructions must be serialized for a given enclave, but holding
+>> encl->lock for an entire ioctl() will result in deadlock due to an enclave
+>> triggering reclaim on itself.
+>>
+>> Building an enclave must also be serialized, i.e. userspace can't queue up
+>> EADD on multiple threads, because the order in which pages are added to an
+>> enclave affects the measurement.  In other words, rejecting the ioctl() as
+>> opposed to waiting on a lock is also desirable.
+> Sounds like we need should follow up with an add-on patch to get some of
+> that into a comment.
 
-Hi all,
+Jarkko, first of all, let's rename:
 
-Today's linux-next merge of the amdgpu tree got a conflict in:
+	SGX_ENCL_IOCTL -> SGX_ENCL_IOCTL_LOCK
 
-  drivers/gpu/drm/radeon/radeon_drv.c
+If it walks like a duck and quacks like a duck...
 
-between commit:
+Sean had a good example of examples of how EADD could go wrong with
+multiple threads.  Were there more good examples we could stick in a
+changelog?  I seem to recall that there are more than a few SGX
+instructions don't even work in parallel and require software
+synchronization.  Could we get a list or at least a few more good examples?
 
-  384bc5e059d4 ("drm/radeon: Stop changing the drm_driver struct")
+I also think we should be much more assertive about multiple ioctl()
+callers:
 
-from the drm tree and commits:
+	/* Multi-threaded enclave management is invalid and unsafe: */
+	if (test_and_set_bit(SGX_ENCL_IOCTL_LOCK, &encl->flags))
+		return -EINVAL;
 
-  4d3efadd374a ("drm/radeon/radeon: Move prototype into shared header")
-  0a2e8d51e4da ("drm/radeon/radeon_drv: Move 'radeon_mmap()'s prototype to =
-shared header")
-  f3723ad110c5 ("drm/radeon/radeon_drv: Move 'radeon_driver_irq_handler_kms=
-'s prototype into shared header")
-  4138b62b8a79 ("drm/radeon/radeon_drv: Move 'radeon_gem_prime_import_sg_ta=
-ble()'s prototype to shared header")
+-EBUSY is saying "everything is OK, just busy, please try again later."
+ -EINVAL is saying, "userspace, you screwed up".
 
-from the amdgpu tree.
+Also, does SGX_ENCL_IOCTL_LOCK provide serialization for anything other
+than the *hardware* instructions?  I couldn't find much, although:
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+        encl->attributes_mask |= SGX_ATTR_PROVISIONKEY;
 
---=20
-Cheers,
-Stephen Rothwell
+seems to be lacking any other serialization.
 
-diff --cc drivers/gpu/drm/radeon/radeon_drv.c
-index bfadb799d6a3,84f5d56528ee..000000000000
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@@ -51,7 -51,10 +51,11 @@@
-  #include <drm/radeon_drm.h>
- =20
-  #include "radeon_drv.h"
- +#include "radeon.h"
-+ #include "radeon_kms.h"
-+ #include "radeon_ttm.h"
-+ #include "radeon_device.h"
-+ #include "radeon_prime.h"
- =20
-  /*
-   * KMS wrapper.
-@@@ -130,7 -123,8 +124,6 @@@ extern int radeon_get_crtc_scanoutpos(s
-  				      ktime_t *stime, ktime_t *etime,
-  				      const struct drm_display_mode *mode);
-  extern bool radeon_is_px(struct drm_device *dev);
-- int radeon_mmap(struct file *filp, struct vm_area_struct *vma);
- -extern const struct drm_ioctl_desc radeon_ioctls_kms[];
- -extern int radeon_max_kms_ioctl;
-  int radeon_mode_dumb_mmap(struct drm_file *filp,
-  			  struct drm_device *dev,
-  			  uint32_t handle, uint64_t *offset_p);
-@@@ -297,10 -288,8 +287,8 @@@ static struct pci_device_id pciidlist[
- =20
-  MODULE_DEVICE_TABLE(pci, pciidlist);
- =20
- -static struct drm_driver kms_driver;
- +static const struct drm_driver kms_driver;
- =20
-- bool radeon_device_is_virtual(void);
--=20
-  static int radeon_pci_probe(struct pci_dev *pdev,
-  			    const struct pci_device_id *ent)
-  {
-
---Sig_/uHhQCdvnBQ_XxE5t5/mxZAN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+zGf8ACgkQAVBC80lX
-0Gw+/QgAg0MJJ75mimiIgTtnahfvVlArpUqlZvsVAqagrAdkfl8iiDmeVNNYy1P/
-y0I7gFYAt3IoxG5qtMgkUS4pka7K/1Ez8ChJF28VMmCpC8KLDAhQ4+p76RyKfMbU
-tgF3m23NljXCHC9xHVekxLXyE2C7vCF2I55dHDcGrM1bxmsoX3K8UyhkNIIdp/wM
-tpdqT/LsYRzY3WOwNgzqdIbn2V8ySRjfDtOGovC3aiHmheYUGX4TPMHpbcMR0sWn
-1SZfDVfB65krcsc1rzKZAkPFm0asFNTqsbfjA9Re5qwMD7NpPaphQ6IfqjhvCvCj
-hcIzD8//p1dwCWmFzp6st9g1glTF6g==
-=Iyjy
------END PGP SIGNATURE-----
-
---Sig_/uHhQCdvnBQ_XxE5t5/mxZAN--
+sgx_encl_create() also seems like it has no other locking and relies on
+SGX_ENCL_IOCTL_LOCK for sanity.
