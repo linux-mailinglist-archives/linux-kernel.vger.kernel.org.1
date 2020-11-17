@@ -2,157 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19242B6EFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0362B6EF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730765AbgKQTm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:42:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54646 "EHLO mail.kernel.org"
+        id S1730695AbgKQTm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:42:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728060AbgKQTm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:42:29 -0500
-Received: from kernel.org (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        id S1728060AbgKQTm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:42:26 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2B622463D;
-        Tue, 17 Nov 2020 19:42:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EBBF22240;
+        Tue, 17 Nov 2020 19:42:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605642147;
-        bh=WfH7BFVzUSEZv+f6jZxK9ydp1lynvYQ2oovxy7EJVXg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vmvo0oLI2+zUSZRhwq0NiGDjYhcKWJZyY+Ph8A1MJPfxjbJH0Zol91ECmkxg91DyH
-         NXWk7uQXJtd/v1xuxdNQ/GI5Ed040w/C7hrjjZBRrgfQy+sNkrZpD48Pz8cg82N6po
-         cl4QXLIN7mw/CndOK2P3ZytLUp2cBUGrSWYQ5kVI=
-Date:   Tue, 17 Nov 2020 21:42:17 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v41 20/24] selftests/x86: Add a selftest for SGX
-Message-ID: <20201117194217.GG10393@kernel.org>
-References: <20201112220135.165028-1-jarkko@kernel.org>
- <20201112220135.165028-21-jarkko@kernel.org>
- <e58ee564-597a-336e-53dc-7c4d172d51f5@linuxfoundation.org>
+        s=default; t=1605642146;
+        bh=YbJvILkvf8lCXj8XwrKNQtfr2sGjPnWQ8m4G2jFh55A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VP+wv2YC26no7HSFhvoxh7DkR+FmYoSWFxTA+h/2Eb0q6FLKKQqB6bOZXaWdXr990
+         a9MNuGAvUtSmfST3Zm7bIsZIz3bMcPt95dni0+F+sSWFyrqWlVOuVP8f/HYVEYlPtR
+         ZlD3/pWn3T0Dj6iA9yqUHbKFIsvojC8FiySNyQIE=
+Date:   Tue, 17 Nov 2020 11:42:24 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Huazhong Tan <tanhuazhong@huawei.com>
+Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>
+Subject: Re: [PATCH V4 net-next 0/4] net: hns3: updates for -next
+Message-ID: <20201117114224.297162ee@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <1605514854-11205-1-git-send-email-tanhuazhong@huawei.com>
+References: <1605514854-11205-1-git-send-email-tanhuazhong@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e58ee564-597a-336e-53dc-7c4d172d51f5@linuxfoundation.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 11:19:12AM -0700, Shuah Khan wrote:
-> On 11/12/20 3:01 PM, Jarkko Sakkinen wrote:
-> > Add a selftest for SGX. It is a trivial test where a simple enclave copies
-> > one 64-bit word of memory between two memory locations, but ensures that
-> > all SGX hardware and software infrastructure is functioning.
-> > 
-> > Cc: Shuah Khan <shuah@kernel.org>
-> > Cc: linux-kselftest@vger.kernel.org
-> > Acked-by: Jethro Beekman <jethro@fortanix.com> # v40
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> > Changes from v40:
-> > * Remove $(OUTPUT)/test_encl.elf from TEST_CUSTOM_PROGS, as otherwise
-> >    run_tests tries to execute it. Add it as a build dependency.
-> > * Use the correct device path, /dev/sgx_enclave, instead of
-> >    /dev/sgx/enclave.
-> > * Return kselftest framework expected return codes.
-> > 
-> >   tools/testing/selftests/Makefile              |   1 +
-> >   tools/testing/selftests/sgx/.gitignore        |   2 +
-> >   tools/testing/selftests/sgx/Makefile          |  53 +++
-> >   tools/testing/selftests/sgx/call.S            |  44 ++
-> >   tools/testing/selftests/sgx/defines.h         |  21 +
-> >   tools/testing/selftests/sgx/load.c            | 277 +++++++++++++
-> >   tools/testing/selftests/sgx/main.c            | 246 +++++++++++
-> >   tools/testing/selftests/sgx/main.h            |  38 ++
-> >   tools/testing/selftests/sgx/sigstruct.c       | 391 ++++++++++++++++++
-> >   tools/testing/selftests/sgx/test_encl.c       |  20 +
-> >   tools/testing/selftests/sgx/test_encl.lds     |  40 ++
-> >   .../selftests/sgx/test_encl_bootstrap.S       |  89 ++++
-> >   12 files changed, 1222 insertions(+)
-> >   create mode 100644 tools/testing/selftests/sgx/.gitignore
-> >   create mode 100644 tools/testing/selftests/sgx/Makefile
-> >   create mode 100644 tools/testing/selftests/sgx/call.S
-> >   create mode 100644 tools/testing/selftests/sgx/defines.h
-> >   create mode 100644 tools/testing/selftests/sgx/load.c
-> >   create mode 100644 tools/testing/selftests/sgx/main.c
-> >   create mode 100644 tools/testing/selftests/sgx/main.h
-> >   create mode 100644 tools/testing/selftests/sgx/sigstruct.c
-> >   create mode 100644 tools/testing/selftests/sgx/test_encl.c
-> >   create mode 100644 tools/testing/selftests/sgx/test_encl.lds
-> >   create mode 100644 tools/testing/selftests/sgx/test_encl_bootstrap.S
-> > 
-> > diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-> > index d9c283503159..aa06e3ea0250 100644
-> > --- a/tools/testing/selftests/Makefile
-> > +++ b/tools/testing/selftests/Makefile
-> > @@ -68,6 +68,7 @@ TARGETS += user
-> >   TARGETS += vm
-> >   TARGETS += x86
-> >   TARGETS += zram
-> > +TARGETS += sgx
-> >   #Please keep the TARGETS list alphabetically sorted
+On Mon, 16 Nov 2020 16:20:50 +0800 Huazhong Tan wrote:
+> There are several updates relating to the interrupt coalesce for
+> the HNS3 ethernet driver.
 > 
-> Please keep the list sorted alphabetically as stated
-> in the comment above.
+> #1 adds support for QL(quantity limiting, interrupt coalesce
+>    based on the frame quantity).
+> #2 queries the maximum value of GL from the firmware instead of
+>    a fixed value in code.
+> #3 adds support for 1us unit GL(gap limiting, interrupt coalesce
+>    based on the gap time).
+> #4 renames gl_adapt_enable in struct hns3_enet_coalesce to fit
+>    its new usage.
 > 
-> 
-> > +}
-> > +
-> > +int main(int argc, char *argv[], char *envp[])
-> > +{
-> > +	struct sgx_enclave_run run;
-> > +	struct vdso_symtab symtab;
-> > +	Elf64_Sym *eenter_sym;
-> > +	uint64_t result = 0;
-> > +	struct encl encl;
-> > +	unsigned int i;
-> > +	void *addr;
-> > +	int ret;
-> > +
-> > +	memset(&run, 0, sizeof(run));
-> > +
-> > +	if (!encl_load("test_encl.elf", &encl)) {
-> > +		encl_delete(&encl);
-> > +		ksft_exit_skip("cannot load enclaves\n");
-> > +	}
-> > +
-> > +	if (!encl_measure(&encl))
-> > +		goto err;
-> > +
-> > +	if (!encl_build(&encl))
-> > +		goto err;
-> > +
-> > +	/*
-> > +	 * An enclave consumer only must do this.
-> > +	 */
-> > +	for (i = 0; i < encl.nr_segments; i++) {
-> > +		struct encl_segment *seg = &encl.segment_tbl[i];
-> > +
-> > +		addr = mmap((void *)encl.encl_base + seg->offset, seg->size,
-> > +			    seg->prot, MAP_SHARED | MAP_FIXED, encl.fd, 0);
-> > +		if (addr == MAP_FAILED) {
-> > +			fprintf(stderr, "mmap() failed, errno=%d.\n", errno);
-> > +			exit(1);
-> 
-> This should be KSFT_FAIL.
-> 
-> thanks,
-> -- Shuah
+> change log:
+> V4 - remove #5~#10 from this series, which needs more discussion.
+> V3 - fix a typo error in #1 reported by Jakub Kicinski.
+>      rewrite #9 commit log.
+>      remove #11 from this series.
+> V2 - reorder #2 & #3 to fix compiler error.
+>      fix some checkpatch warnings in #10 & #11.
 
-Thanks.
-
-/Jarkko
+Applied, thanks!
