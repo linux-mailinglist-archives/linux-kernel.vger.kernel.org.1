@@ -2,86 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5CD2B5E44
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F26A2B5E68
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgKQL30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:29:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:54760 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728155AbgKQL3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:29:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E467FD6E;
-        Tue, 17 Nov 2020 03:29:24 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EEFF23F718;
-        Tue, 17 Nov 2020 03:29:23 -0800 (PST)
-References: <a1fd0d9c6c8cd90a74879b61467ae48d@natalenko.name> <jhj3619y63v.mognet@arm.com> <20201117110620.GG3121378@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, rostedt@goodmis.org
-Subject: Re: WARNING at kernel/sched/core.c:2013 migration_cpu_stop+0x2e3/0x330
-In-reply-to: <20201117110620.GG3121378@hirez.programming.kicks-ass.net>
-Date:   Tue, 17 Nov 2020 11:29:18 +0000
-Message-ID: <jhjwnykw7ap.mognet@arm.com>
+        id S1728067AbgKQLcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:32:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727218AbgKQLcP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 06:32:15 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10B1C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:32:15 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id c66so17116309pfa.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:32:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xiNLBAz3BX1KIFm2JNjthX8cwAVQmDEzefgF+x8ny1U=;
+        b=vraFpE5FI22YwriZY/wUgYJ9/sksC+hGBQP35PmeDMFy89LeOkwLucbEk+63ax0FBq
+         vF4PTSetvSbgHIz1RbiPiE9h8HHS4UXT+JwI/UI9Xupzx2ReVRHx1KrvRO6DseHhs98a
+         o5bU+fzvXTOKKwCCzdZTiHZ4V2/N9CPW7cgDAY1gW+2czgUu03k41bvvOiHh6Stm1rSM
+         9odQ8EtVUjWyC3gpgFTkAd02qfZ0DjXJ46ktjVRFRsmDD/Oq+LjaaSuxn5Yw03ZI5L6+
+         gVSE0HMssZvtTdxGzKqYV2+0nwxBtczkWmVtaTn+qRlqQpu3IM/D8kesaYj74unXdpUF
+         SY8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xiNLBAz3BX1KIFm2JNjthX8cwAVQmDEzefgF+x8ny1U=;
+        b=hjkFX8hBLx/0uNDlTS1ZscJy+TrkIageJjii2YTrIeJYiCeV42SsyqZ+i/oAmEw1bW
+         AiAP5p+5L+uJHoAyh5nLo1yQo1y/5wws+eKPV23Fgm0Y+i9ao2UqTrlYkDlwqMNt5EGk
+         w1fyfsNvPo9BrtJkzLBmVvb7ejqxu2bdyy22wugllv5JLfLWcfU041Mh9ByqIchJEa27
+         LXm/22NmVy4+vSruIJ91RODWUywYVzVVEUouGmsc3QPcMMJUNZJbEPGy7Xb3mKkzwv0d
+         +fvvAf19jbTDcI3xD0bkvhvCkQa431cOV28oXhouVevCRtn0DJV7SMDnA82ivOe0CzcB
+         hoAw==
+X-Gm-Message-State: AOAM530LefQbwBbCWUvMEMRpgqb9gLYZja91cmnOrqKuuVnKq+cFOssx
+        go1EoVAByDE6F1GAv/Xus4hAqQ==
+X-Google-Smtp-Source: ABdhPJyFC/WI2JO0kAdAFeaA4lNlodJdkTxwerz1QrDsM7ZTcad7JdlaaZ2b8T0pHigkkmojyGEXtA==
+X-Received: by 2002:a63:f84d:: with SMTP id v13mr3129393pgj.234.1605612735131;
+        Tue, 17 Nov 2020 03:32:15 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id w131sm20732519pfd.14.2020.11.17.03.32.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Nov 2020 03:32:14 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        lukasz.luba@arm.com, linux-kernel@vger.kernel.org
+Subject: [PATCH V2] cpufreq: stats: Use local_clock() instead of jiffies
+Date:   Tue, 17 Nov 2020 17:02:10 +0530
+Message-Id: <d6d9193249832c54fdd29656558f48914a4015dd.1605612661.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+local_clock() has better precision and accuracy as compared to jiffies,
+lets use it for time management in cpufreq stats.
 
-On 17/11/20 11:06, Peter Zijlstra wrote:
-> On Mon, Nov 16, 2020 at 10:00:14AM +0000, Valentin Schneider wrote:
->> 
->> On 15/11/20 22:32, Oleksandr Natalenko wrote:
->> > Hi.
->> >
->> > I'm running v5.10-rc3-rt7 for some time, and I came across this splat in 
->> > dmesg:
->> >
->> > ```
->> > [118769.951010] ------------[ cut here ]------------
->> > [118769.951013] WARNING: CPU: 19 PID: 146 at kernel/sched/core.c:2013 
->> 
->> Err, I didn't pick up on this back then, but isn't that check bogus? If the
->> task is enqueued elsewhere, it's valid for it not to be affined
->> 'here'. Also that is_migration_disabled() check within is_cpu_allowed()
->> makes me think this isn't the best thing to call on a remote task.
->> 
->> ---
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index 1218f3ce1713..47d5b677585f 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -2010,7 +2010,7 @@ static int migration_cpu_stop(void *data)
->>  		 * valid again. Nothing to do.
->>  		 */
->>  		if (!pending) {
->> -			WARN_ON_ONCE(!is_cpu_allowed(p, cpu_of(rq)));
->> +			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), p->cpus_ptr));
->
-> Ho humm.. bit of a mess that. I'm trying to figure out if we need that
-> is_per_cpu_kthread() test here or not.
->
-> I suppose not, what we want here is to ensure the CPU is in cpus_mask
-> and not care about the whole hotplug mess.
->
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V2:
+- Doesn't change the units to msec and use local_clock() instead of
+  ktime.
 
-That was my thought as well. On top of that, is_cpu_allowed(p) does a
-p->migration_disabled read, which isn't so great in the remote case.
+ drivers/cpufreq/cpufreq_stats.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-> Would it makes sense to replace both instances in migration_cpu_stop()
-> with:
->
-> 	WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), p->cpus_mask));
->
-> ?
+diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
+index 6cd5c8ab5d49..da717f7cd9a9 100644
+--- a/drivers/cpufreq/cpufreq_stats.c
++++ b/drivers/cpufreq/cpufreq_stats.c
+@@ -9,9 +9,9 @@
+ #include <linux/cpu.h>
+ #include <linux/cpufreq.h>
+ #include <linux/module.h>
++#include <linux/sched/clock.h>
+ #include <linux/slab.h>
+ 
+-
+ struct cpufreq_stats {
+ 	unsigned int total_trans;
+ 	unsigned long long last_time;
+@@ -30,7 +30,7 @@ struct cpufreq_stats {
+ static void cpufreq_stats_update(struct cpufreq_stats *stats,
+ 				 unsigned long long time)
+ {
+-	unsigned long long cur_time = get_jiffies_64();
++	unsigned long long cur_time = local_clock();
+ 
+ 	stats->time_in_state[stats->last_index] += cur_time - time;
+ 	stats->last_time = cur_time;
+@@ -42,7 +42,7 @@ static void cpufreq_stats_reset_table(struct cpufreq_stats *stats)
+ 
+ 	memset(stats->time_in_state, 0, count * sizeof(u64));
+ 	memset(stats->trans_table, 0, count * count * sizeof(int));
+-	stats->last_time = get_jiffies_64();
++	stats->last_time = local_clock();
+ 	stats->total_trans = 0;
+ 
+ 	/* Adjust for the time elapsed since reset was requested */
+@@ -82,18 +82,18 @@ static ssize_t show_time_in_state(struct cpufreq_policy *policy, char *buf)
+ 				 * before the reset_pending read above.
+ 				 */
+ 				smp_rmb();
+-				time = get_jiffies_64() - READ_ONCE(stats->reset_time);
++				time = local_clock() - READ_ONCE(stats->reset_time);
+ 			} else {
+ 				time = 0;
+ 			}
+ 		} else {
+ 			time = stats->time_in_state[i];
+ 			if (i == stats->last_index)
+-				time += get_jiffies_64() - stats->last_time;
++				time += local_clock() - stats->last_time;
+ 		}
+ 
+ 		len += sprintf(buf + len, "%u %llu\n", stats->freq_table[i],
+-			       jiffies_64_to_clock_t(time));
++			       nsec_to_clock_t(time));
+ 	}
+ 	return len;
+ }
+@@ -109,7 +109,7 @@ static ssize_t store_reset(struct cpufreq_policy *policy, const char *buf,
+ 	 * Defer resetting of stats to cpufreq_stats_record_transition() to
+ 	 * avoid races.
+ 	 */
+-	WRITE_ONCE(stats->reset_time, get_jiffies_64());
++	WRITE_ONCE(stats->reset_time, local_clock());
+ 	/*
+ 	 * The memory barrier below is to prevent the readers of reset_time from
+ 	 * seeing a stale or partially updated value.
+@@ -249,7 +249,7 @@ void cpufreq_stats_create_table(struct cpufreq_policy *policy)
+ 			stats->freq_table[i++] = pos->frequency;
+ 
+ 	stats->state_num = i;
+-	stats->last_time = get_jiffies_64();
++	stats->last_time = local_clock();
+ 	stats->last_index = freq_table_get_index(stats, policy->cur);
+ 
+ 	policy->stats = stats;
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
-I guess so; I was trying to see if we could factorize this, but stopped
-mid-swing as I'm really wary of shuffling too much of this code (even with
-the help of TLA+; well, maybe *because* of it).
