@@ -2,132 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B712B709B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0122B709F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgKQVFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:05:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
+        id S1726890AbgKQVFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:05:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKQVFI (ORCPT
+        with ESMTP id S1726136AbgKQVFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:05:08 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B44C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:05:08 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id oq3so31394112ejb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:05:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kPEScT6gyGX81QUKHxjlw3b2BBUYfWDEeiwl2fVm1wc=;
-        b=p+pnzb/QV2PtGwSdlBCCfgAyW8YeNSqAdFBepLZnfBYuN8ZsISPTLreqLJrA1uF2a7
-         JIXpiidK8x1BZ3q54txbRPbxcTBDky4tJDzlsTVAhQKBxJoobg/6zPaXV7Vl+QSryYTW
-         soZx7D0rcc+lDUmhEejuFMzf1msPmPpBn+PNoxSblv6bfenihydjzscQsDUgo2sREyOU
-         qvJ+nDebS94wyW7FnAt3NR3eDkvEdqhOn/DNfQmD7fC/TZImL/cMErCXf/K8W5yTtYga
-         1ue9DHOUJDF5V2UGiwF6AIAXecxfsnCmkUuDOPjFFBFpbofxmE7TOC7SUS5j4hF6t4B1
-         rXoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kPEScT6gyGX81QUKHxjlw3b2BBUYfWDEeiwl2fVm1wc=;
-        b=LpQfsiqLKrL0ADrg7EV4VV2kw96gpicunE2oN0qkTnb7Nfoel5EAAmTA8WBMP2ahNO
-         sEsTHeMKzBd8pR0J08AaBbBEJ5vlnx4BWdZR8NUTasCJ6Z2qzIjEBPT8kkTwigi2jDSy
-         eom+gr46JMlvK7Ysst2NB6yA6oPRnfnwI8c+/FolO2UZe4PY/qLLHwkkjOx06PZLgCE2
-         F5eRXqujGMUXOB5SM1l1KPJGc0UJvOdxiqUrfaCSZAXxRzwIAPgbNwKTjPiOuqrHqRaT
-         dsmgQWSQrRXO7svb9CgNhoxd3Zs1dyIEAsoFUeyXaT6xlyVeMnvBh84WLTOzOCzNnnup
-         LVjg==
-X-Gm-Message-State: AOAM531OpA24oRjmWLwPOfLpWn9Za6Lk5ItcaAjEf484Hw0R5mdOZUzG
-        tMHc9PRbPlGFOQBxz8DD3wDkKiHTDGrF6CbdJuCenw==
-X-Google-Smtp-Source: ABdhPJxIPEbRet7rRI98nHMy4znmKu8Wwkus/v7GOUPBHi9d8SdQldIDo6o+qUCd10IbSYlqVfJ2O+BKKa6GUrV8c6Y=
-X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr17989866ejb.264.1605647107261;
- Tue, 17 Nov 2020 13:05:07 -0800 (PST)
+        Tue, 17 Nov 2020 16:05:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D33FC0613CF;
+        Tue, 17 Nov 2020 13:05:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RFeeohkz2Cx/D+vXLKhH0do1RFDw2pXSfBePcdf6Zq8=; b=M+do9ccIfreRYCvuhFX2i+cV+S
+        Q4YXBNQDOrGUz2802V6jQ7B4IwsEKpIwiGzPwqn6UNsf8fGsARnKy+Os3eMXHnZhfsBAoSrdoriUj
+        OcgC9DcoW6OQSsfceAFW4j10Kh0wf18h2ch+LCzNK3Hhkh3kuCeo8Ggvo6R7c9BckJWW77w7qfgtr
+        iwr5kKaNZNpjDuybJBqrISx/L1aelBIYJEpkbH6Iuccvc2Jxy9dFJd3pOgpk1+WM9D8cblhsh68Lu
+        WhQ2KhsOdIbCjxE+c+PZgdS40amPZJKFE6e0EIgrJGuCnFAOGFdh2ibu91sV9rfHam7wBpSDM9s+9
+        1YkvGVHg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kf8AO-0003JG-DG; Tue, 17 Nov 2020 21:05:32 +0000
+Date:   Tue, 17 Nov 2020 21:05:32 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Yang Shi <shy828301@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>
+Subject: Re: [RFC PATCH 3/6] mm: page_owner: add support for splitting to any
+ order in split page_owner.
+Message-ID: <20201117210532.GX29991@casper.infradead.org>
+References: <20201111204008.21332-1-zi.yan@sent.com>
+ <20201111204008.21332-4-zi.yan@sent.com>
+ <20201114001505.GA3047204@carbon.dhcp.thefacebook.com>
+ <F55878E8-22B1-443E-9CC8-E97B3DAA7EA4@nvidia.com>
+ <20201114013801.GA3069806@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20201113161859.1775473-1-david.m.ertman@intel.com>
- <20201113161859.1775473-2-david.m.ertman@intel.com> <20201117053000.GM47002@unreal>
- <X7N1naYOXodPsP/I@kroah.com>
-In-Reply-To: <X7N1naYOXodPsP/I@kroah.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 17 Nov 2020 13:04:56 -0800
-Message-ID: <CAPcyv4jXinvaLgtdpXTLLQ3sDOhvoBjF=7v7pba5rAd0g_rdow@mail.gmail.com>
-Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201114013801.GA3069806@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 11:02 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
-> > On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
-> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> > > It enables drivers to create an auxiliary_device and bind an
-> > > auxiliary_driver to it.
-> > >
-> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > > Each auxiliary_device has a unique string based id; driver binds to
-> > > an auxiliary_device based on this id through the bus.
-> > >
-> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > ---
-> >
-> > Greg,
-> >
-> > This horse was beaten to death, can we please progress with this patch?
-> > Create special topic branch or ack so I'll prepare this branch.
-> >
-> > We are in -rc4 now and we (Mellanox) can't hold our submissions anymore.
-> > My mlx5_core probe patches [1] were too intrusive and they are ready to
-> > be merged, Parav's patches got positive review as well [2] and will be
-> > taken next.
-> >
-> > We delayed and have in our internal queues the patches for VDPA, eswitch
-> > and followup for mlx5_core probe rework, but trapped due to this AUX bus
-> > patch.
->
-> There are no deadlines for kernel patches here, sorry.  Give me some
-> time to properly review this, core kernel changes should not be rushed.
->
-> Also, if you really want to blame someone for the delay, look at the
-> patch submitters not the reviewers, as they are the ones that took a
-> very long time with this over the lifecycle of this patchset, not me.  I
-> have provided many "instant" reviews of this patchset, and then months
-> went by between updates from them.
+On Fri, Nov 13, 2020 at 05:38:01PM -0800, Roman Gushchin wrote:
+> On Fri, Nov 13, 2020 at 08:08:58PM -0500, Zi Yan wrote:
+> > Matthew recently converted split_page_owner to take nr instead of order.[1]
+> > But I am not
+> > sure why, since it seems to me that two call sites (__split_huge_page in
+> > mm/huge_memory.c and split_page in mm/page_alloc.c) can pass the order
+> > information.
+> 
+> Yeah, I'm not sure why too. Maybe Matthew has some input here?
+> You can also pass new_nr, but IMO orders look so much better here.
 
-Please stop this finger pointing. It was already noted that the team,
-out of abundance of caution / deference to the process, decided not to
-push the patches while I was out on family leave. It's cruel to hold
-that against them, and if anyone is to blame it's me for not
-clarifying it was ok to proceed while I was out.
+If only I'd written that information in the changelog ... oh wait, I did!
+
+    mm/page_owner: change split_page_owner to take a count
+    
+    The implementation of split_page_owner() prefers a count rather than the
+    old order of the page.  When we support a variable size THP, we won't
+    have the order at this point, but we will have the number of pages.
+    So change the interface to what the caller and callee would prefer.
+
