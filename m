@@ -2,131 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605B02B5C8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C172B5C98
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727766AbgKQKDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:03:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
+        id S1727404AbgKQKFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:05:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgKQKDu (ORCPT
+        with ESMTP id S1726561AbgKQKFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:03:50 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80544C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:03:50 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id w8so7974720ilg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:03:50 -0800 (PST)
+        Tue, 17 Nov 2020 05:05:15 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A38C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:05:13 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id k2so22590622wrx.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:05:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DPHGLiORbaJbLxUM7+BhRXlMBVSZRTpOSLRe1ua1EJU=;
-        b=Zn2SMY+essfbJPuhgilqqLmFJylQDR9RinMiH8a5O3JxvWKq3503dJmQxlV9cUvyN7
-         kRW3XmOMkiKgkrQ12XtFqBg1/28VixwRrmA5WLxPAWEohqQMZHeiCvG7p2lp7BKbSNnz
-         mijKzcpj+gO/ZFU96WloUL3Tu6VXC4WlEyLVqSQPHWOIC0h+q0fON5KEKzmtuMTPPyNk
-         9pbgOxrBjcs5mIpiniS2rCZSSimk4v+hlJMW33vpPjMkLxmnnCTwqC7AVWloaQv1+GLo
-         nDhhadH1doOxU6a2QA7hffRyqhuyg6A0zrnBwnMqDVtFzV4F7re2h7cVCcDMJPYTNli6
-         xwjw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=a5Wi2WgEQj4V/fZoMbuAUA0hIayxQxzUHqeI84Mc1FE=;
+        b=jcwtfN8McGJzUoRDkq8qC68cj8dg0fKU3MjNMXmKmi/lxXkV95Q937dwb0jm5ofyRw
+         b29Vkb7ZV6YcZYcAc08tixve5ngaIO9o4Ny/iiwjCUJUGUi7xdXJIT2lv1bq+/LdkU/Z
+         aBCiT57QqqqzZCgmbnseFCB2XKKyzy29xnO9w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DPHGLiORbaJbLxUM7+BhRXlMBVSZRTpOSLRe1ua1EJU=;
-        b=EHpqrSAeGxZmt4WF3nuPsTU1cMRvafaEvntisAbUWj8uQJzUAX3CPgCC0vaJkKWlbS
-         XzOqRFLCqHlsiSannlD2ODtIIKNDwYGsGWQYbnwNKpsNlLTGIH52knR7xlVAffzFsGEv
-         xJ6roy8EOBDGRA8psWwwTF5/Mjo1cl1gTZKmwaiiWw/Co12i9pwhYM8KbOIHQzcps9e2
-         3GSE+i/xV2fEJHOWXF8pvkwe/s1QaZ5bxwGruZXUz+MbcLhVooo7slmSepCdZ/TokDp7
-         8raaSmD6Ifz5PTKNGB/tb/qWTCZ1Wc5sOZkqA7PhcFKIEx2f3AGYeM/dU0I8LW5rjN4b
-         0BNA==
-X-Gm-Message-State: AOAM531Zt8vWznY5WXmAqyGHfVYeIDaSeXm0lvgr5nhyadZbqC86H0cb
-        05hTR5EKZCtOWAljg5oZcEwy1wAzxnZir4wS2mwRuQ==
-X-Google-Smtp-Source: ABdhPJxpzE0hfqNEPElqTxkhKxnLGbU0Jc7DfYxYbIEhVnGR5svnoF49V7Yxf7pgQ7SOPd3w1CySAUjKJwnaY89p1O8=
-X-Received: by 2002:a92:ac02:: with SMTP id r2mr11518854ilh.31.1605607429892;
- Tue, 17 Nov 2020 02:03:49 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=a5Wi2WgEQj4V/fZoMbuAUA0hIayxQxzUHqeI84Mc1FE=;
+        b=Baw8ym1zjvIpB9WVvY+jhYr6LAWPlLA6HBE4FCP02GsmTX2cdXpys+x9hLmFzJv89c
+         D6ZSYLdc1+2DtTI/5ljJS8w+6YTyl8eEdpYibRz4G0I3wC6DbBwg4qafLsAlK/AcOjPM
+         3V5yD6k8C+ufoQwywLLGNrfYBWIprhHje8Mgv0QcglAwk9FQPhpThcFH36KpDAxTUovy
+         YLXrBatyDfr7pdb3ZPIwgAfd0/9wm/FLW1H06DL+fibDXDG4e+4cxkJ98CSxBASXxFtB
+         6F3WOoYv0gNVMRqdnP9e3AQeMItkkBGvxS3wwId3xlDZfja/+Y/OgembcNxbPj3OiWge
+         3bAw==
+X-Gm-Message-State: AOAM533wDpqE1hZT1X/VsGTNmKQ+OOW90Qij/f7JoD4M1jFkgDE3v29l
+        XVWWTzKVN6I67dx3kn4o8Tm34Q==
+X-Google-Smtp-Source: ABdhPJyRMGrawjvmO5x/3ra1IWyMGFjfgvN36ipmgsKrzL1M9MQ0E0rIX/0e1m6SBMTLUu/PiZ0Mww==
+X-Received: by 2002:a5d:4d02:: with SMTP id z2mr16395374wrt.109.1605607512109;
+        Tue, 17 Nov 2020 02:05:12 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t5sm2923320wmg.19.2020.11.17.02.05.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 02:05:11 -0800 (PST)
+Date:   Tue, 17 Nov 2020 11:05:09 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH 02/30] include: drm: drm_atomic: Artificially use 'crtc'
+ to avoid 'not used' warning
+Message-ID: <20201117100509.GJ401619@phenom.ffwll.local>
+Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+References: <20201112190039.2785914-1-lee.jones@linaro.org>
+ <20201112190039.2785914-3-lee.jones@linaro.org>
+ <20201112202516.GA3340631@ravnborg.org>
+ <20201113204959.GW401619@phenom.ffwll.local>
+ <CAF2Aj3j6+fEFS66qg-a-0Z1XtNQ7EAEnu4ECZ9gLiH7buH=PLw@mail.gmail.com>
+ <CAKMK7uEQwFLj+D4LfdQNfb+cQZCH34HZU7oJh8r=mjozuKmZGQ@mail.gmail.com>
+ <CAF2Aj3jRFM95R7VaV_4Chi3Tr3ja31EjdVTeHeDkUWETweqCGA@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAKMK7uHAgVUPHOPxDdt3LeAWqokxfuzqjZj4qqFkoKxFbRbRrg@mail.gmail.com>
- <20201020112413.xbk2vow2kgjky3pb@vireshk-i7> <CAF6AEGsCj-AtFozn8d1xiNNFNbuMJ0UxS-eMhBVXiQ7rKahKnQ@mail.gmail.com>
- <20201022080644.2ck4okrxygmkuatn@vireshk-i7> <CAF6AEGv6RMCsK4yp-W2d1mVTMcEiiwFGAb+V8rYLhDdMhqP80Q@mail.gmail.com>
- <20201027113532.nriqqws7gdcu5su6@vireshk-i7> <20201103054715.4l5j57pyjz6zd6ed@vireshk-i7>
- <CAF6AEGtgUVXm6Wwod0FC38g91Q8CotLFSoC4NmXx7GzcA=1mOA@mail.gmail.com>
- <20201104030353.ny7zvakgb4fsye6r@vireshk-i7> <CAF6AEGv215ixcAWmaOWs7UKAqmbMs=aFyTBBYLU-bt8XBnWb7g@mail.gmail.com>
- <20201106071621.j732gt4nqifjrccd@vireshk-i7>
-In-Reply-To: <20201106071621.j732gt4nqifjrccd@vireshk-i7>
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-Date:   Tue, 17 Nov 2020 15:33:38 +0530
-Message-ID: <CAKohpo=EhGtLqseRwbc9_zPeHCkzFoYcj2bz_YdQSN3M0ms4zQ@mail.gmail.com>
-Subject: Re: [PATCH v2 07/22] drm/msm: Do rpm get sooner in the submit path
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Menon, Nishanth" <nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF2Aj3jRFM95R7VaV_4Chi3Tr3ja31EjdVTeHeDkUWETweqCGA@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Nov 2020 at 12:46, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 05-11-20, 11:24, Rob Clark wrote:
-> > On Tue, Nov 3, 2020 at 7:04 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Fri, Nov 13, 2020 at 10:01:57PM +0000, Lee Jones wrote:
+> On Fri, 13 Nov 2020, 21:31 Daniel Vetter, <daniel@ffwll.ch> wrote:
+> 
+> > On Fri, Nov 13, 2020 at 9:53 PM Lee Jones <lee.jones@linaro.org> wrote:
 > > >
-> > > On 03-11-20, 08:50, Rob Clark wrote:
-> > > > sorry, it didn't apply cleanly (which I guess is due to some other
-> > > > dependencies that need to be picked back to v5.4 product kernel), and
-> > > > due to some other things I'm in middle of debugging I didn't have time
-> > > > yet to switch to v5.10-rc or look at what else needs to
-> > > > cherry-picked..
-> > > >
-> > > > If you could, pushing a branch with this patch somewhere would be a
-> > > > bit easier to work with (ie. fetch && cherry-pick is easier to deal
-> > > > with than picking things from list)
 > > >
-> > > It has been in linux-next for a few days. Here is the HEAD to pick
-> > > from. There are few patches there since rc1.
 > > >
-> > > commit 203e29749cc0 ("opp: Allocate the OPP table outside of opp_table_lock")
+> > > On Fri, 13 Nov 2020, 20:50 Daniel Vetter, <daniel@ffwll.ch> wrote:
+> > >>
+> > >> On Thu, Nov 12, 2020 at 09:25:16PM +0100, Sam Ravnborg wrote:
+> > >> > Hi Lee,
+> > >> >
+> > >> > On Thu, Nov 12, 2020 at 07:00:11PM +0000, Lee Jones wrote:
+> > >> > > The precedent has already been set by other macros in the same file.
+> > >> > >
+> > >> > > Fixes the following W=1 kernel build warning(s):
+> > >> > >
+> > >> > >  drivers/gpu/drm/vkms/vkms_drv.c:55:19: warning: variable ‘crtc’
+> > set but not used [-Wunused-but-set-variable]
+> > >> > >  55 | struct drm_crtc *crtc;
+> > >> > >  | ^~~~
+> > >> > >
+> > >> > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > >> > > Cc: Maxime Ripard <mripard@kernel.org>
+> > >> > > Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> > >> > > Cc: David Airlie <airlied@linux.ie>
+> > >> > > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > >> > > Cc: Rob Clark <robdclark@gmail.com>
+> > >> > > Cc: dri-devel@lists.freedesktop.org
+> > >> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > >> >
+> > >> > Also applied to drm-misc-next.
+> > >> > This was the last patch from this batch I will process.
+> > >> > The others are left for the maintainers to pick up.
+> > >>
+> > >> btw for patches that maintainers don't pick up, the usual process is
+> > that
+> > >> we give them 2 weeks, then just mass apply. Now you're producing a lot
+> > of
+> > >> patches, too much for me to keep track, so please just ping me with a
+> > >> resend for those that expired and I'll go through and pick them all up.
 > > >
+> > >
+> > > That's great Daniel. Thanks for your support.
+> > >
+> > > I can do one better than that.
+> > >
+> > > Would a pull-request suit you?
 > >
-> > sorry for the delay, with that cherry-picked, I'm getting a whole lot of:
->
-> Ahh, sorry about that and thanks for reporting it. Here is the fix:
->
-> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-> index c718092757d9..6b7f0066942d 100644
-> --- a/drivers/opp/of.c
-> +++ b/drivers/opp/of.c
-> @@ -112,8 +112,6 @@ static struct opp_table *_find_table_of_opp_np(struct device_node *opp_np)
->         struct opp_table *opp_table;
->         struct device_node *opp_table_np;
->
-> -       lockdep_assert_held(&opp_table_lock);
-> -
->         opp_table_np = of_get_parent(opp_np);
->         if (!opp_table_np)
->                 goto err;
-> @@ -121,12 +119,15 @@ static struct opp_table *_find_table_of_opp_np(struct device_node *opp_np)
->         /* It is safe to put the node now as all we need now is its address */
->         of_node_put(opp_table_np);
->
-> +       mutex_lock(&opp_table_lock);
->         list_for_each_entry(opp_table, &opp_tables, node) {
->                 if (opp_table_np == opp_table->np) {
->                         _get_opp_table_kref(opp_table);
-> +                       mutex_unlock(&opp_table_lock);
->                         return opp_table;
->                 }
->         }
-> +       mutex_unlock(&opp_table_lock);
->
->  err:
->         return ERR_PTR(-ENODEV);
+> > We have a few trees going on, and your patches are landing through all
+> > kinds of them. So this might be more coordination pain. If you can
+> > exclude patches for the separately and usually fairly well maintained
+> > drivers out of the pull it should work (drm/amd, drm/radeon, drm/i915,
+> > drm/nouveau, drm/msm and drm/omapdrm probably the usual ones).
+> >
+> > Or you just send the next pile and we'll see.
+> >
+> > Also I guess I can't really interest you in commit rights so this
+> > patch bombs get off my back again? :-)
+> >
+> 
+> What does that mean? Merge my own patches?
+> 
+> Not sure how that works with your group maintenance setup.
+> 
+> Is it just a `git push`?
 
-Ping.
+It's a bunch of scripting and setup, might not be worth it for just one
+of. Plus we still take pull requests from submaintainers so it's all just
+if you feel like it. Some docs if you're curious:
+
+https://drm.pages.freedesktop.org/maintainer-tools/getting-started.html
+
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
