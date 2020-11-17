@@ -2,208 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655812B6F80
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5966C2B6F82
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728452AbgKQUBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:01:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49397 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726685AbgKQUBd (ORCPT
+        id S1730469AbgKQUCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:02:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730251AbgKQUCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:01:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605643285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ND73jfjt6Cg0vVbxjFwNhOqlMoziW1VRnPfbZwD42HI=;
-        b=M/d5ylnaZDn9cCuDsU3Cfo+WX4sGGAa4/9bAdQJM5QbyPUZGzYyLvPystTz2ugb27MyxhC
-        ammyqoAgQYmLhNRhAXsxtL6uVfwRTmT8WKOwOtT1jI/iubIP2gJf3wOW8OHA6k46KvdyOz
-        szKoGBZZbs9wwDiACE+8Uyl0jmz3Y0s=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-gqkescO-NWaIulJGxCcy4g-1; Tue, 17 Nov 2020 15:01:23 -0500
-X-MC-Unique: gqkescO-NWaIulJGxCcy4g-1
-Received: by mail-qv1-f70.google.com with SMTP id c18so1273254qvm.19
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:01:23 -0800 (PST)
+        Tue, 17 Nov 2020 15:02:15 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9669AC061A04
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:02:14 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id s9so25664576ljo.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:02:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GSCHMMM0D0q85Saw3BGZ1mrSdRqytsRtsFlwlLFUG1Q=;
+        b=U5ZlwbFbW6wzZ9SjWFK+Je9NtJURJfuA+CBtm8mpTtA3OAFV31Gt7/PVFooFI3hJSJ
+         FPe5GnyQ9vo+K8E4DGvg2CmIfBjU80aj+PwOMi9JxkBrfyCFhmQwE8yG25tVzzpwHM/G
+         +SLjkMHpsWn0eetojTcyUPdUG+YBEUlN6bkAREdia0RwgRe5Az5vSyoEcUpsdqwdqQS2
+         wQsiqbs+NFvyybKCLcEoNJlXX+Q79meG+WhN0TKvoL+R5ZHI5kwQtcSrRMvmI503HpW4
+         iQFfKDV7kGEefpCno1fqlRK8X77oqYAJVuKjI7LR9wx0wgLXu6vuCzgHwKA6G32zuy1F
+         Z/Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ND73jfjt6Cg0vVbxjFwNhOqlMoziW1VRnPfbZwD42HI=;
-        b=GQiTSwV4MlFFl1P2kjUoBJBEu/7j3dLXMXYvxpCxfGCXrbs/a1IZak5bJO0HOzWM//
-         YFSgduNPilMMCBWRrDIkOBKhAHQVBr++81gCbXDanWPZWo7GiEAfNDwGOgAIy7DbGAYR
-         9I9rDK17wP/577vtaRZqI910d0jVSQElLYUuemCgHV02GlhujGEl1+wJ9BkLJ7Ye9Xk6
-         mPCtd4fd9aYKJ0eMR7RfKe08fLXBMQMxTWDWYcWkmCGSs9+coeFQglQA93BDHamDf9e+
-         CVgUObhCMeT3DHvO0kib4vd/B5GCHVswHEgmImpIsEkp8FBT536MPrYWno1z7gE86AH6
-         NSfA==
-X-Gm-Message-State: AOAM532gXkrnYux18fiYdxB843zL3NbenLo85lbEMSvP1nWCIes9zJAK
-        71Wvv7QbIlelyLlFKufNBGviPIdFJAdVNWs8YufZZeQqk3U07OZR1uNwjf5BAvqeQwgyX2AXI6/
-        SKlUk8pjJx16ou/0dE8ASjCgx
-X-Received: by 2002:ac8:425a:: with SMTP id r26mr882715qtm.294.1605643283261;
-        Tue, 17 Nov 2020 12:01:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxpFqI4NgZYCgW6oTJavU4GxsEw9QFGdZkruOuOOSrq41bMODuFBbrl9IVKUKQjUfPCI/qpgg==
-X-Received: by 2002:ac8:425a:: with SMTP id r26mr882686qtm.294.1605643282988;
-        Tue, 17 Nov 2020 12:01:22 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id c14sm15069168qko.29.2020.11.17.12.01.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 12:01:22 -0800 (PST)
-Subject: Re: [PATCH 1/2] fpga: dfl: refactor cci_enumerate_feature_devs()
-To:     matthew.gerlach@linux.intel.com, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mdf@kernel.org, hao.wu@intel.com,
-        linux-doc@vger.kernel.org, corbet@lwn.net
-References: <20201117012552.262149-1-matthew.gerlach@linux.intel.com>
- <20201117012552.262149-2-matthew.gerlach@linux.intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <82385a1c-66c6-c311-e504-068be13bbf0e@redhat.com>
-Date:   Tue, 17 Nov 2020 12:01:20 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GSCHMMM0D0q85Saw3BGZ1mrSdRqytsRtsFlwlLFUG1Q=;
+        b=RGX4U+0eHSlPL/jlBhQijaI2qTr75+tauXKQvFCA5I9A/KX9NlBi0XnaRtc59R+A/O
+         GZ5euftYzHjkxuJJC1xaWmRVuDYAUAQXBAZsC69YRMWkWgaf7O1FaFQOfX0KQJ5XlzFQ
+         05j/RV7hD6SxPNvaDsYmEaiZRyhfPXZZEFKaPAC9R5fvlOyubUsjpxGqawRFIDmgIWx0
+         0dPap1g0BWqpAvhUCsqlainHdRIyiaz8ECKh2EmW3iD6xIGUPkqYxXlupJB4LedYj9Iy
+         Xij0E1ztTkI6k/JhgZ+ZVBeu8xb4g8vt7dBCxbiXJKvyTbrxccuH79LZlqm3/4upVzqz
+         pl9w==
+X-Gm-Message-State: AOAM530BMvqUSpcyZsstvoDUGG807IUFbuvEqD1DWrPSv26X0W++yJ3z
+        Navdeih5Nzn/gk75TfP2xB4gvIgw3rCcbNyY0vh/+g==
+X-Google-Smtp-Source: ABdhPJzrteo1SoLGHTARp2PUs3U3i4VQkUG29Mj40M+A73s5OoqlPLDhJ7M0v+3kzosqo9RIkW4zU8tz5/C7FbMtdpI=
+X-Received: by 2002:a05:651c:204c:: with SMTP id t12mr2581977ljo.347.1605643332643;
+ Tue, 17 Nov 2020 12:02:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201117012552.262149-2-matthew.gerlach@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201117162932.13649-1-rppt@kernel.org> <20201117162932.13649-7-rppt@kernel.org>
+ <20201117193358.GB109785@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20201117193358.GB109785@carbon.dhcp.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 17 Nov 2020 12:02:01 -0800
+Message-ID: <CALvZod5mJnR2DXoYTbp9RX4uR7zVyqAPfD+XKpqXKgxaNyJ1VA@mail.gmail.com>
+Subject: Re: [PATCH v9 6/9] secretmem: add memcg accounting
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/16/20 5:25 PM, matthew.gerlach@linux.intel.com wrote:
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+On Tue, Nov 17, 2020 at 11:49 AM Roman Gushchin <guro@fb.com> wrote:
 >
-> In preparation of looking for dfls based on a vendor
-> specific pcie capability, move code that assumes
-> Bar0/offset0 as start of DFL to its own function.
->
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> ---
->  drivers/fpga/dfl-pci.c | 86 ++++++++++++++++++++++++------------------
->  1 file changed, 49 insertions(+), 37 deletions(-)
->
-> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-> index a2203d03c9e2..b1b157b41942 100644
-> --- a/drivers/fpga/dfl-pci.c
-> +++ b/drivers/fpga/dfl-pci.c
-> @@ -119,49 +119,20 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
->  	return table;
->  }
->  
-> -/* enumerate feature devices under pci device */
-> -static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
-> +static int find_dfl_in_bar0(struct pci_dev *pcidev,
-> +			    struct dfl_fpga_enum_info *info)
->  {
-> -	struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
-> -	int port_num, bar, i, nvec, ret = 0;
-> -	struct dfl_fpga_enum_info *info;
-> -	struct dfl_fpga_cdev *cdev;
->  	resource_size_t start, len;
-> +	int port_num, bar, i;
->  	void __iomem *base;
-> -	int *irq_table;
-> +	int ret = 0;
->  	u32 offset;
->  	u64 v;
->  
-> -	/* allocate enumeration info via pci_dev */
-> -	info = dfl_fpga_enum_info_alloc(&pcidev->dev);
-> -	if (!info)
-> -		return -ENOMEM;
-> -
-> -	/* add irq info for enumeration if the device support irq */
-> -	nvec = cci_pci_alloc_irq(pcidev);
-> -	if (nvec < 0) {
-> -		dev_err(&pcidev->dev, "Fail to alloc irq %d.\n", nvec);
-> -		ret = nvec;
-> -		goto enum_info_free_exit;
-> -	} else if (nvec) {
-> -		irq_table = cci_pci_create_irq_table(pcidev, nvec);
-> -		if (!irq_table) {
-> -			ret = -ENOMEM;
-> -			goto irq_free_exit;
-> -		}
-> -
-> -		ret = dfl_fpga_enum_info_add_irq(info, nvec, irq_table);
-> -		kfree(irq_table);
-> -		if (ret)
-> -			goto irq_free_exit;
-> -	}
-> -
-> -	/* start to find Device Feature List in Bar 0 */
-> +	/* start to find Device Feature List from Bar 0 */
->  	base = cci_pci_ioremap_bar0(pcidev);
-> -	if (!base) {
-> -		ret = -ENOMEM;
-> -		goto irq_free_exit;
-> -	}
-> +	if (!base)
-> +		return -ENOMEM;
->  
->  	/*
->  	 * PF device has FME and Ports/AFUs, and VF device only has one
-> @@ -208,12 +179,53 @@ static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
->  		dfl_fpga_enum_info_add_dfl(info, start, len);
->  	} else {
->  		ret = -ENODEV;
-> -		goto irq_free_exit;
->  	}
->  
->  	/* release I/O mappings for next step enumeration */
->  	pcim_iounmap_regions(pcidev, BIT(0));
-This ws was already commented on.
->  
-> +
-> +	return ret;
-> +}
-> +
-> +/* enumerate feature devices under pci device */
-> +static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
-> +{
-> +	struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
-> +	struct dfl_fpga_enum_info *info;
-> +	struct dfl_fpga_cdev *cdev;
-> +	int nvec, ret = 0;
-> +	int *irq_table;
-> +
-> +	/* allocate enumeration info via pci_dev */
-> +	info = dfl_fpga_enum_info_alloc(&pcidev->dev);
-> +	if (!info)
-> +		return -ENOMEM;
-> +
-> +	/* add irq info for enumeration if the device support irq */
-> +	nvec = cci_pci_alloc_irq(pcidev);
-> +	if (nvec < 0) {
-> +		dev_err(&pcidev->dev, "Fail to alloc irq %d.\n", nvec);
-> +		ret = nvec;
-> +		goto enum_info_free_exit;
-> +	} else if (nvec) {
-> +		irq_table = cci_pci_create_irq_table(pcidev, nvec);
-> +		if (!irq_table) {
-> +			ret = -ENOMEM;
-> +			goto irq_free_exit;
-> +		}
-> +
-> +		ret = dfl_fpga_enum_info_add_irq(info, nvec, irq_table);
-> +		kfree(irq_table);
-> +		if (ret)
-> +			goto irq_free_exit;
-> +	}
-> +
-> +	ret = find_dfl_in_bar0(pcidev, info);
-> +
-> +	if (ret)
-> +		goto irq_free_exit;
-> +
->  	/* start enumeration with prepared enumeration information */
->  	cdev = dfl_fpga_feature_devs_enumerate(info);
->  	if (IS_ERR(cdev)) {
+> On Tue, Nov 17, 2020 at 06:29:29PM +0200, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> >
+> > Account memory consumed by secretmem to memcg. The accounting is updated
+> > when the memory is actually allocated and freed.
+> >
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+[snip]
+> >
+> > +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
+> > +{
+> > +     int err;
+> > +
+> > +     err = memcg_kmem_charge_page(page, gfp, order);
 
-This looks fine.
-
-Reviewed-by: Tom Rix <trix@redhat.com>
-
+I haven't looked at the whole series but it seems like these pages
+will be mapped into the userspace, so this patch has dependency on
+Roman's "mm: allow mapping
+accounted kernel pages to userspace" patch series.
