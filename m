@@ -2,141 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381732B55C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D65602B55C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 01:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730360AbgKQAed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 19:34:33 -0500
-Received: from mga03.intel.com ([134.134.136.65]:49741 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726437AbgKQAed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 19:34:33 -0500
-IronPort-SDR: +dHjOWS4B+DaGq4pI5sQBB6J15CUCzRt0PyG5fkMN+RZ2+pRvyaq7uctY6YN23LW584vpGl3uw
- hu3EHntu/+eQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="170941511"
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="170941511"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 16:34:26 -0800
-IronPort-SDR: SA5jR4jLoO4SIJYG4aFPL45zStozXakzwH47AkH2/v2MxiwVCoFb9R50Jf5p2wwpvZgCY4PRs/
- EyxzfwGlozZw==
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="358667634"
-Received: from pgao1-mobl1.amr.corp.intel.com (HELO [10.212.6.211]) ([10.212.6.211])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 16:34:24 -0800
-Subject: Re: [PATCH v41 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-To:     Hillf Danton <hdanton@sina.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-References: <20201115044044.11040-1-hdanton@sina.com>
- <15c3349c-44dd-7057-395c-8fd8c674e87d@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <610d665e-564e-621d-4ecb-fbe5bfdf7133@intel.com>
-Date:   Mon, 16 Nov 2020 16:34:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <15c3349c-44dd-7057-395c-8fd8c674e87d@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1730667AbgKQAha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 19:37:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgKQAh3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 19:37:29 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D543DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 16:37:27 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id z130so12834507pgz.19
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 16:37:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:cc;
+        bh=cUwDNYk9lrKRqwceLJkP3XcP/q8L/2Z1kszygFqoP/s=;
+        b=AsiNCDIr9bl8emtZqAWSCHJdcFwB0X83Mn0+L8clxjlY3a+s2HZw6BGz4YZC/6fere
+         TE5g1Lh6BlD2AlLjMPskQnspETRr8TcbxHP8CU/NxPyJD5QVBdEQUps0R7cQ4OPE4Yhw
+         Rg95Er8uEVFre5jGvKg15j4LVoPFUEhOi8KjVK01MSek92NTaQox9j9/5mXLS9tEE45A
+         eYpSwQ1SoSZLnPL+WmwB/VQe8vKzS+n/CXqPmkQFF7v+LddEykk1yHofLpaJPdPtGgsn
+         1aY0xFx5LqjtiwzjQfKveT9jv6007PLN5OFbMybpvAh7qpNo+dYJXCB41xi7jID8/nCi
+         68YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:cc;
+        bh=cUwDNYk9lrKRqwceLJkP3XcP/q8L/2Z1kszygFqoP/s=;
+        b=nQOtbUgpzGYReEpy4LHgDewIHp0C+mgk92KedzshM5cy3+K2bMG3sLjVxHwIDZTSqg
+         TmuYKkXC8VePUzGrH692wmktkikJeKeX+HLZrhlpWRW2yTo/prvvpm9g88GjaVN6i/eP
+         /gxEbHqbmpI57ZpL7fPlsmog89J7S6seYuMUE+cUYc2K3eENc2fkFmpTEgfngt5ItwBH
+         FUYFmGf2nmJt1qJVekeoVhr2sl/0i4rPJ2Soc8jLACEqSmpGGY9dLTdfhOO8B02/usW6
+         65NtaUvqF6P/zK99ZYa1Q70/8aXhTc4zGFh+y/k73agovGAiU+GAKCk6nJv4y00I+uWn
+         8SVQ==
+X-Gm-Message-State: AOAM530zCJce+haYNnmWuGrgMKuVbKl5mN7/uoDBvvRNbtqWLFQKF2O9
+        D7oXasRQ/wofS1/gjePPLFQuz9UgQeRj
+X-Google-Smtp-Source: ABdhPJzWBz70ueVLpGe3Hhl0/3yckCA/47vKitdqdu1EWVY+wD+SlbNV8O8dwc21Vc6pgYIVIZ4nymTCE62X
+Sender: "jiancai via sendgmr" <jiancai@jiancai.svl.corp.google.com>
+X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:f693:9fff:fef4:238b])
+ (user=jiancai job=sendgmr) by 2002:aa7:8c4f:0:b029:18b:f361:4aa3 with SMTP id
+ e15-20020aa78c4f0000b029018bf3614aa3mr16501083pfd.73.1605573447322; Mon, 16
+ Nov 2020 16:37:27 -0800 (PST)
+Date:   Mon, 16 Nov 2020 16:37:21 -0800
+In-Reply-To: <20201112200718.2747316-1-jiancai@google.com>
+Message-Id: <20201117003724.2381423-1-jiancai@google.com>
+Mime-Version: 1.0
+References: <20201112200718.2747316-1-jiancai@google.com>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+Subject: [PATCH v4] Make iwmmxt.S support Clang's integrated assembler
+From:   Jian Cai <jiancai@google.com>
+Cc:     ndesaulniers@google.com, ardb@kernel.org, manojgupta@google.com,
+        llozano@google.com, clang-built-linux@googlegroups.com,
+        Jian Cai <jiancai@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/20 9:54 AM, Dave Hansen wrote:
->> ENCLS instructions must be serialized for a given enclave, but holding
->> encl->lock for an entire ioctl() will result in deadlock due to an enclave
->> triggering reclaim on itself.
->>
->> Building an enclave must also be serialized, i.e. userspace can't queue up
->> EADD on multiple threads, because the order in which pages are added to an
->> enclave affects the measurement.  In other words, rejecting the ioctl() as
->> opposed to waiting on a lock is also desirable.
-> Sounds like we need should follow up with an add-on patch to get some of
-> that into a comment.
+This patch replaces 6 IWMMXT instructions Clang's integrated assembler
+does not support in iwmmxt.S using macros, while making sure GNU
+assembler still emit the same instructions. This should be easier than
+providing full IWMMXT support in Clang.  This is one of the last bits of
+kernel code that could be compiled but not assembled with clang. Once
+all of it works with IAS, we no longer need to special-case 32-bit Arm
+in Kbuild, or turn off CONFIG_IWMMXT when build-testing.
 
-Jarkko, first of all, let's rename:
+"Intel Wireless MMX Technology - Developer Guide - August, 2002" should
+be referenced for the encoding schemes of these extensions.
 
-	SGX_ENCL_IOCTL -> SGX_ENCL_IOCTL_LOCK
+Link: https://github.com/ClangBuiltLinux/linux/issues/975
 
-If it walks like a duck and quacks like a duck...
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Jian Cai <jiancai@google.com>
+---
 
-Sean had a good example of examples of how EADD could go wrong with
-multiple threads.  Were there more good examples we could stick in a
-changelog?  I seem to recall that there are more than a few SGX
-instructions don't even work in parallel and require software
-synchronization.  Could we get a list or at least a few more good examples?
+Changes v3 -> v4:
+Forgot to include iwmmxt.h in v3.
 
-I also think we should be much more assertive about multiple ioctl()
-callers:
+ arch/arm/kernel/iwmmxt.S | 89 ++++++++++++++++++++--------------------
+ arch/arm/kernel/iwmmxt.h | 47 +++++++++++++++++++++
+ 2 files changed, 92 insertions(+), 44 deletions(-)
+ create mode 100644 arch/arm/kernel/iwmmxt.h
 
-	/* Multi-threaded enclave management is invalid and unsafe: */
-	if (test_and_set_bit(SGX_ENCL_IOCTL_LOCK, &encl->flags))
-		return -EINVAL;
+diff --git a/arch/arm/kernel/iwmmxt.S b/arch/arm/kernel/iwmmxt.S
+index 0dcae787b004..d2b4ac06e4ed 100644
+--- a/arch/arm/kernel/iwmmxt.S
++++ b/arch/arm/kernel/iwmmxt.S
+@@ -16,6 +16,7 @@
+ #include <asm/thread_info.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/assembler.h>
++#include "iwmmxt.h"
+ 
+ #if defined(CONFIG_CPU_PJ4) || defined(CONFIG_CPU_PJ4B)
+ #define PJ4(code...)		code
+@@ -113,33 +114,33 @@ concan_save:
+ 
+ concan_dump:
+ 
+-	wstrw	wCSSF, [r1, #MMX_WCSSF]
+-	wstrw	wCASF, [r1, #MMX_WCASF]
+-	wstrw	wCGR0, [r1, #MMX_WCGR0]
+-	wstrw	wCGR1, [r1, #MMX_WCGR1]
+-	wstrw	wCGR2, [r1, #MMX_WCGR2]
+-	wstrw	wCGR3, [r1, #MMX_WCGR3]
++	wstrw	wCSSF, r1, MMX_WCSSF
++	wstrw	wCASF, r1, MMX_WCASF
++	wstrw	wCGR0, r1, MMX_WCGR0
++	wstrw	wCGR1, r1, MMX_WCGR1
++	wstrw	wCGR2, r1, MMX_WCGR2
++	wstrw	wCGR3, r1, MMX_WCGR3
+ 
+ 1:	@ MUP? wRn
+ 	tst	r2, #0x2
+ 	beq	2f
+ 
+-	wstrd	wR0,  [r1, #MMX_WR0]
+-	wstrd	wR1,  [r1, #MMX_WR1]
+-	wstrd	wR2,  [r1, #MMX_WR2]
+-	wstrd	wR3,  [r1, #MMX_WR3]
+-	wstrd	wR4,  [r1, #MMX_WR4]
+-	wstrd	wR5,  [r1, #MMX_WR5]
+-	wstrd	wR6,  [r1, #MMX_WR6]
+-	wstrd	wR7,  [r1, #MMX_WR7]
+-	wstrd	wR8,  [r1, #MMX_WR8]
+-	wstrd	wR9,  [r1, #MMX_WR9]
+-	wstrd	wR10, [r1, #MMX_WR10]
+-	wstrd	wR11, [r1, #MMX_WR11]
+-	wstrd	wR12, [r1, #MMX_WR12]
+-	wstrd	wR13, [r1, #MMX_WR13]
+-	wstrd	wR14, [r1, #MMX_WR14]
+-	wstrd	wR15, [r1, #MMX_WR15]
++	wstrd	wR0,  r1, MMX_WR0
++	wstrd	wR1,  r1, MMX_WR1
++	wstrd	wR2,  r1, MMX_WR2
++	wstrd	wR3,  r1, MMX_WR3
++	wstrd	wR4,  r1, MMX_WR4
++	wstrd	wR5,  r1, MMX_WR5
++	wstrd	wR6,  r1, MMX_WR6
++	wstrd	wR7,  r1, MMX_WR7
++	wstrd	wR8,  r1, MMX_WR8
++	wstrd	wR9,  r1, MMX_WR9
++	wstrd	wR10, r1, MMX_WR10
++	wstrd	wR11, r1, MMX_WR11
++	wstrd	wR12, r1, MMX_WR12
++	wstrd	wR13, r1, MMX_WR13
++	wstrd	wR14, r1, MMX_WR14
++	wstrd	wR15, r1, MMX_WR15
+ 
+ 2:	teq	r0, #0				@ anything to load?
+ 	reteq	lr				@ if not, return
+@@ -147,30 +148,30 @@ concan_dump:
+ concan_load:
+ 
+ 	@ Load wRn
+-	wldrd	wR0,  [r0, #MMX_WR0]
+-	wldrd	wR1,  [r0, #MMX_WR1]
+-	wldrd	wR2,  [r0, #MMX_WR2]
+-	wldrd	wR3,  [r0, #MMX_WR3]
+-	wldrd	wR4,  [r0, #MMX_WR4]
+-	wldrd	wR5,  [r0, #MMX_WR5]
+-	wldrd	wR6,  [r0, #MMX_WR6]
+-	wldrd	wR7,  [r0, #MMX_WR7]
+-	wldrd	wR8,  [r0, #MMX_WR8]
+-	wldrd	wR9,  [r0, #MMX_WR9]
+-	wldrd	wR10, [r0, #MMX_WR10]
+-	wldrd	wR11, [r0, #MMX_WR11]
+-	wldrd	wR12, [r0, #MMX_WR12]
+-	wldrd	wR13, [r0, #MMX_WR13]
+-	wldrd	wR14, [r0, #MMX_WR14]
+-	wldrd	wR15, [r0, #MMX_WR15]
++	wldrd	wR0,  r0, MMX_WR0
++	wldrd	wR1,  r0, MMX_WR1
++	wldrd	wR2,  r0, MMX_WR2
++	wldrd	wR3,  r0, MMX_WR3
++	wldrd	wR4,  r0, MMX_WR4
++	wldrd	wR5,  r0, MMX_WR5
++	wldrd	wR6,  r0, MMX_WR6
++	wldrd	wR7,  r0, MMX_WR7
++	wldrd	wR8,  r0, MMX_WR8
++	wldrd	wR9,  r0, MMX_WR9
++	wldrd	wR10, r0, MMX_WR10
++	wldrd	wR11, r0, MMX_WR11
++	wldrd	wR12, r0, MMX_WR12
++	wldrd	wR13, r0, MMX_WR13
++	wldrd	wR14, r0, MMX_WR14
++	wldrd	wR15, r0, MMX_WR15
+ 
+ 	@ Load wCx
+-	wldrw	wCSSF, [r0, #MMX_WCSSF]
+-	wldrw	wCASF, [r0, #MMX_WCASF]
+-	wldrw	wCGR0, [r0, #MMX_WCGR0]
+-	wldrw	wCGR1, [r0, #MMX_WCGR1]
+-	wldrw	wCGR2, [r0, #MMX_WCGR2]
+-	wldrw	wCGR3, [r0, #MMX_WCGR3]
++	wldrw	wCSSF, r0, MMX_WCSSF
++	wldrw	wCASF, r0, MMX_WCASF
++	wldrw	wCGR0, r0, MMX_WCGR0
++	wldrw	wCGR1, r0, MMX_WCGR1
++	wldrw	wCGR2, r0, MMX_WCGR2
++	wldrw	wCGR3, r0, MMX_WCGR3
+ 
+ 	@ clear CUP/MUP (only if r1 != 0)
+ 	teq	r1, #0
+diff --git a/arch/arm/kernel/iwmmxt.h b/arch/arm/kernel/iwmmxt.h
+new file mode 100644
+index 000000000000..fb627286f5bb
+--- /dev/null
++++ b/arch/arm/kernel/iwmmxt.h
+@@ -0,0 +1,47 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __IWMMXT_H__
++#define __IWMMXT_H__
++
++.irp b, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
++.set .LwR\b, \b
++.set .Lr\b, \b
++.endr
++
++.set .LwCSSF, 0x2
++.set .LwCASF, 0x3
++.set .LwCGR0, 0x8
++.set .LwCGR1, 0x9
++.set .LwCGR2, 0xa
++.set .LwCGR3, 0xb
++
++.macro wldrd, reg:req, base:req, offset:req
++.inst 0xedd00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
++.endm
++
++.macro wldrw, reg:req, base:req, offset:req
++.inst 0xfd900100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
++.endm
++
++.macro wstrd, reg:req, base:req, offset:req
++.inst 0xedc00100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
++.endm
++
++.macro wstrw, reg:req, base:req, offset:req
++.inst 0xfd800100 | (.L\reg << 12) | (.L\base << 16) | (\offset >> 2)
++.endm
++
++#ifdef __clang__
++
++#define wCon c1
++
++.macro tmrc, dest:req, control:req
++mrc p1, 0, \dest, \control, c0, 0
++.endm
++
++.macro tmcr, control:req, src:req
++mcr p1, 0, \src, \control, c0, 0
++.endm
++#endif
++
++#endif
+-- 
+2.29.2.299.gdc1121823c-goog
 
--EBUSY is saying "everything is OK, just busy, please try again later."
- -EINVAL is saying, "userspace, you screwed up".
-
-Also, does SGX_ENCL_IOCTL_LOCK provide serialization for anything other
-than the *hardware* instructions?  I couldn't find much, although:
-
-        encl->attributes_mask |= SGX_ATTR_PROVISIONKEY;
-
-seems to be lacking any other serialization.
-
-sgx_encl_create() also seems like it has no other locking and relies on
-SGX_ENCL_IOCTL_LOCK for sanity.
