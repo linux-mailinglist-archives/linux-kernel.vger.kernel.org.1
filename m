@@ -2,218 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E942B5C9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387892B5CA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgKQKG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:06:26 -0500
-Received: from mga03.intel.com ([134.134.136.65]:26969 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgKQKGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:06:25 -0500
-IronPort-SDR: pxdQXnrh1E2SPzmLY42uTVLIO4ZzAD1P5KqtwM6DsW+mkAxfv5nByThVhjI/WTk2t0pCR5OYhQ
- DfgdEZfHcZDA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="170997887"
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="170997887"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 02:06:25 -0800
-IronPort-SDR: /bqZ4CzeMOKO+SnMTRaV4J6K53T4WTfZf7QyCfXj9mvyb8MZLJrAzPePPNm4yb+I2jmI4qRYCF
- bSHFmcq4YOpA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="310689827"
-Received: from lkp-server01.sh.intel.com (HELO 45561eaec37e) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 17 Nov 2020 02:06:23 -0800
-Received: from kbuild by 45561eaec37e with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kexsV-00001m-2R; Tue, 17 Nov 2020 10:06:23 +0000
-Date:   Tue, 17 Nov 2020 18:05:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:urgent-fixes] BUILD SUCCESS
- c583bcb8f5edd48c1798798e341f78afb9bf4f6f
-Message-ID: <5fb3a06c.yPkvRy8qOmSTwdFQ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727777AbgKQKHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:07:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727270AbgKQKHI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 05:07:08 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5813C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:07:08 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id 5so3188000plj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:07:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zDO/TYpqBjmcYMHioNqIZuUjbpR+6v11u2ajK5HGwak=;
+        b=j2kVKHsvyPuW4TDoJ5BP//mL+ksNhHdSc2ZBZWPScdQ2jZIts6ntDXd2+J63MUJV8t
+         HRTbq8mx6qTfzgXHQiRl4fMa+WvbnP/LeyC1YMaEYd8aC9j2Cr/db3o3npmopsFCSzWs
+         ym/WQEMe6VXS+cQNu2CMGhPkm0akAgSp1QhkYbIDXhlys1ybehAe0dKIXpm4fvnAujct
+         MF2GWB77hza8pcpL2wrYNDZDxGw1ecHBfyW8VUStTXsbYV/Za2yd6Tick3n+d0EmTYmj
+         p0Yd+Uq3IZ6k4m/8k+q3dCYHQWvtmgkk07AZgXiJKH6GO4vdyqd57ZaFKKtRPUZx9trc
+         BzTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zDO/TYpqBjmcYMHioNqIZuUjbpR+6v11u2ajK5HGwak=;
+        b=oC2aS+6qSLfXfLFidN4HDAoWNObjq3MuJncMZYJMnG2uHww6YzqHeGFwHyggAOA+s2
+         iXY3knWZea43IB7JW6iUvSqdTEWuqU+pvlEM/QxKimAZjlefg3C+K1YhDodZiDogh22B
+         6hYOiimuR2aN9nmUzQaIZqloOkydd24p/EuFU1bfBIt33FQBxfnQk32ilam9tF8MGK8q
+         mnvSuvTg+yTmKF+SujxkuSj7DfByQDdf7JBXQWZxJvjGA4TafsmDSPMxQgpkMaSVCfaR
+         0TvdMOgB6jid5BROP1ovYbV7VEs4vo2WBz5TehY36YfWLycQ83bym75rWgXFiNzrSTCD
+         yBJA==
+X-Gm-Message-State: AOAM531ccr7GQQA8scpDzZ35RVeOHhkye4Hn9Ipp0Mna9Qi5NwDypl7+
+        SSLDkMup4nHx8HtU+vlXF6asZA==
+X-Google-Smtp-Source: ABdhPJyJ6tjgZVNUAp3v1jcIXODPPSj506Em6+r/KEB8PPBt691bL5Vm0hi+UoZwIT3mJxFLcb8oLg==
+X-Received: by 2002:a17:90a:7409:: with SMTP id a9mr3934084pjg.48.1605607628171;
+        Tue, 17 Nov 2020 02:07:08 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id c28sm22436619pfj.108.2020.11.17.02.07.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Nov 2020 02:07:07 -0800 (PST)
+Date:   Tue, 17 Nov 2020 15:37:05 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v9 07/17] PM / devfreq: tegra30: Support interconnect and
+ OPPs from device-tree
+Message-ID: <20201117100705.i62qr4gosvu76o22@vireshk-i7>
+References: <20201115212922.4390-1-digetx@gmail.com>
+ <20201115212922.4390-8-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201115212922.4390-8-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  urgent-fixes
-branch HEAD: c583bcb8f5edd48c1798798e341f78afb9bf4f6f  rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled
+On 16-11-20, 00:29, Dmitry Osipenko wrote:
+> This patch moves ACTMON driver away from generating OPP table by itself,
+> transitioning it to use the table which comes from device-tree. This
+> change breaks compatibility with older device-trees in order to bring
+> support for the interconnect framework to the driver. This is a mandatory
+> change which needs to be done in order to implement interconnect-based
+> memory DVFS. Users of legacy device-trees will get a message telling that
+> theirs DT needs to be upgraded. Now ACTMON issues memory bandwidth request
+> using dev_pm_opp_set_bw(), instead of driving EMC clock rate directly.
+> 
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/devfreq/tegra30-devfreq.c | 86 ++++++++++++++++---------------
+>  1 file changed, 44 insertions(+), 42 deletions(-)
+> 
+> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
+> index 38cc0d014738..ed6d4469c8c7 100644
+> --- a/drivers/devfreq/tegra30-devfreq.c
+> +++ b/drivers/devfreq/tegra30-devfreq.c
+> @@ -19,6 +19,8 @@
+>  #include <linux/reset.h>
+>  #include <linux/workqueue.h>
+>  
+> +#include <soc/tegra/fuse.h>
+> +
+>  #include "governor.h"
+>  
+>  #define ACTMON_GLB_STATUS					0x0
+> @@ -155,6 +157,7 @@ struct tegra_devfreq_device {
+>  
+>  struct tegra_devfreq {
+>  	struct devfreq		*devfreq;
+> +	struct opp_table	*opp_table;
+>  
+>  	struct reset_control	*reset;
+>  	struct clk		*clock;
+> @@ -612,34 +615,19 @@ static void tegra_actmon_stop(struct tegra_devfreq *tegra)
+>  static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
+>  				u32 flags)
+>  {
+> -	struct tegra_devfreq *tegra = dev_get_drvdata(dev);
+> -	struct devfreq *devfreq = tegra->devfreq;
+>  	struct dev_pm_opp *opp;
+> -	unsigned long rate;
+> -	int err;
+> +	int ret;
+>  
+>  	opp = devfreq_recommended_opp(dev, freq, flags);
+>  	if (IS_ERR(opp)) {
+>  		dev_err(dev, "Failed to find opp for %lu Hz\n", *freq);
+>  		return PTR_ERR(opp);
+>  	}
+> -	rate = dev_pm_opp_get_freq(opp);
+> -	dev_pm_opp_put(opp);
+> -
+> -	err = clk_set_min_rate(tegra->emc_clock, rate * KHZ);
+> -	if (err)
+> -		return err;
+> -
+> -	err = clk_set_rate(tegra->emc_clock, 0);
+> -	if (err)
+> -		goto restore_min_rate;
+>  
+> -	return 0;
+> -
+> -restore_min_rate:
+> -	clk_set_min_rate(tegra->emc_clock, devfreq->previous_freq);
+> +	ret = dev_pm_opp_set_bw(dev, opp);
+> +	dev_pm_opp_put(opp);
+>  
+> -	return err;
+> +	return ret;
+>  }
+>  
+>  static int tegra_devfreq_get_dev_status(struct device *dev,
+> @@ -655,7 +643,7 @@ static int tegra_devfreq_get_dev_status(struct device *dev,
+>  	stat->private_data = tegra;
+>  
+>  	/* The below are to be used by the other governors */
+> -	stat->current_frequency = cur_freq;
+> +	stat->current_frequency = cur_freq * KHZ;
+>  
+>  	actmon_dev = &tegra->devices[MCALL];
+>  
+> @@ -705,7 +693,12 @@ static int tegra_governor_get_target(struct devfreq *devfreq,
+>  		target_freq = max(target_freq, dev->target_freq);
+>  	}
+>  
+> -	*freq = target_freq;
+> +	/*
+> +	 * tegra-devfreq driver operates with KHz units, while OPP table
+> +	 * entries use Hz units. Hence we need to convert the units for the
+> +	 * devfreq core.
+> +	 */
+> +	*freq = target_freq * KHZ;
+>  
+>  	return 0;
+>  }
+> @@ -774,6 +767,7 @@ static struct devfreq_governor tegra_devfreq_governor = {
+>  
+>  static int tegra_devfreq_probe(struct platform_device *pdev)
+>  {
+> +	u32 hw_version = BIT(tegra_sku_info.soc_speedo_id);
+>  	struct tegra_devfreq_device *dev;
+>  	struct tegra_devfreq *tegra;
+>  	struct devfreq *devfreq;
+> @@ -781,6 +775,13 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>  	long rate;
+>  	int err;
+>  
+> +	/* legacy device-trees don't have OPP table and must be updated */
+> +	if (!device_property_present(&pdev->dev, "operating-points-v2")) {
+> +		dev_err(&pdev->dev,
+> +			"OPP table not found, please update your device tree\n");
+> +		return -ENODEV;
+> +	}
+> +
 
-elapsed time: 722m
+You forgot to remove this ?
 
-configs tested: 154
-configs skipped: 2
+>  	tegra = devm_kzalloc(&pdev->dev, sizeof(*tegra), GFP_KERNEL);
+>  	if (!tegra)
+>  		return -ENOMEM;
+> @@ -822,11 +823,25 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>  		return err;
+>  	}
+>  
+> +	tegra->opp_table = dev_pm_opp_set_supported_hw(&pdev->dev,
+> +						       &hw_version, 1);
+> +	err = PTR_ERR_OR_ZERO(tegra->opp_table);
+> +	if (err) {
+> +		dev_err(&pdev->dev, "Failed to set supported HW: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	err = dev_pm_opp_of_add_table(&pdev->dev);
+> +	if (err) {
+> +		dev_err(&pdev->dev, "Failed to add OPP table: %d\n", err);
+> +		goto put_hw;
+> +	}
+> +
+>  	err = clk_prepare_enable(tegra->clock);
+>  	if (err) {
+>  		dev_err(&pdev->dev,
+>  			"Failed to prepare and enable ACTMON clock\n");
+> -		return err;
+> +		goto remove_table;
+>  	}
+>  
+>  	err = reset_control_reset(tegra->reset);
+> @@ -850,23 +865,6 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>  		dev->regs = tegra->regs + dev->config->offset;
+>  	}
+>  
+> -	for (rate = 0; rate <= tegra->max_freq * KHZ; rate++) {
+> -		rate = clk_round_rate(tegra->emc_clock, rate);
+> -
+> -		if (rate < 0) {
+> -			dev_err(&pdev->dev,
+> -				"Failed to round clock rate: %ld\n", rate);
+> -			err = rate;
+> -			goto remove_opps;
+> -		}
+> -
+> -		err = dev_pm_opp_add(&pdev->dev, rate / KHZ, 0);
+> -		if (err) {
+> -			dev_err(&pdev->dev, "Failed to add OPP: %d\n", err);
+> -			goto remove_opps;
+> -		}
+> -	}
+> -
+>  	platform_set_drvdata(pdev, tegra);
+>  
+>  	tegra->clk_rate_change_nb.notifier_call = tegra_actmon_clk_notify_cb;
+> @@ -882,7 +880,6 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	tegra_devfreq_profile.initial_freq = clk_get_rate(tegra->emc_clock);
+> -	tegra_devfreq_profile.initial_freq /= KHZ;
+>  
+>  	devfreq = devfreq_add_device(&pdev->dev, &tegra_devfreq_profile,
+>  				     "tegra_actmon", NULL);
+> @@ -902,6 +899,10 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>  	reset_control_reset(tegra->reset);
+>  disable_clk:
+>  	clk_disable_unprepare(tegra->clock);
+> +remove_table:
+> +	dev_pm_opp_of_remove_table(&pdev->dev);
+> +put_hw:
+> +	dev_pm_opp_put_supported_hw(tegra->opp_table);
+>  
+>  	return err;
+>  }
+> @@ -913,11 +914,12 @@ static int tegra_devfreq_remove(struct platform_device *pdev)
+>  	devfreq_remove_device(tegra->devfreq);
+>  	devfreq_remove_governor(&tegra_devfreq_governor);
+>  
+> -	dev_pm_opp_remove_all_dynamic(&pdev->dev);
+> -
+>  	reset_control_reset(tegra->reset);
+>  	clk_disable_unprepare(tegra->clock);
+>  
+> +	dev_pm_opp_of_remove_table(&pdev->dev);
+> +	dev_pm_opp_put_supported_hw(tegra->opp_table);
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.29.2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                     cu1830-neo_defconfig
-arm                         socfpga_defconfig
-nios2                         10m50_defconfig
-powerpc                 mpc8315_rdb_defconfig
-xtensa                  nommu_kc705_defconfig
-m68k                            q40_defconfig
-m68k                       m5475evb_defconfig
-arm                        mini2440_defconfig
-arm                        vexpress_defconfig
-mips                  decstation_64_defconfig
-arm                         shannon_defconfig
-mips                           gcw0_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                          iop32x_defconfig
-sh                           sh2007_defconfig
-powerpc                 linkstation_defconfig
-mips                          rb532_defconfig
-m68k                        mvme147_defconfig
-openrisc                    or1ksim_defconfig
-sh                          rsk7201_defconfig
-mips                          rm200_defconfig
-mips                       lemote2f_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                     ppa8548_defconfig
-sh                     magicpanelr2_defconfig
-nds32                               defconfig
-arm                            zeus_defconfig
-arm                           omap1_defconfig
-arm                        neponset_defconfig
-mips                           ip22_defconfig
-mips                         tb0219_defconfig
-arc                      axs103_smp_defconfig
-mips                        qi_lb60_defconfig
-m68k                            mac_defconfig
-mips                          ath79_defconfig
-sh                         ecovec24_defconfig
-m68k                          hp300_defconfig
-arm                          gemini_defconfig
-arm                      tct_hammer_defconfig
-mips                        bcm47xx_defconfig
-mips                      loongson3_defconfig
-powerpc                     stx_gp3_defconfig
-arc                     nsimosci_hs_defconfig
-mips                        jmr3927_defconfig
-powerpc                       holly_defconfig
-xtensa                          iss_defconfig
-powerpc                     mpc83xx_defconfig
-mips                        bcm63xx_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                     powernv_defconfig
-arm                            mmp2_defconfig
-arm                       cns3420vb_defconfig
-arm                         lpc32xx_defconfig
-ia64                      gensparse_defconfig
-powerpc                    amigaone_defconfig
-sh                           se7724_defconfig
-arc                    vdk_hs38_smp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20201116
-x86_64               randconfig-a005-20201116
-x86_64               randconfig-a004-20201116
-x86_64               randconfig-a002-20201116
-x86_64               randconfig-a001-20201116
-x86_64               randconfig-a006-20201116
-i386                 randconfig-a006-20201115
-i386                 randconfig-a005-20201115
-i386                 randconfig-a001-20201115
-i386                 randconfig-a002-20201115
-i386                 randconfig-a004-20201115
-i386                 randconfig-a003-20201115
-i386                 randconfig-a006-20201116
-i386                 randconfig-a005-20201116
-i386                 randconfig-a001-20201116
-i386                 randconfig-a002-20201116
-i386                 randconfig-a004-20201116
-i386                 randconfig-a003-20201116
-x86_64               randconfig-a015-20201115
-x86_64               randconfig-a011-20201115
-x86_64               randconfig-a014-20201115
-x86_64               randconfig-a013-20201115
-x86_64               randconfig-a016-20201115
-x86_64               randconfig-a012-20201115
-i386                 randconfig-a012-20201116
-i386                 randconfig-a014-20201116
-i386                 randconfig-a016-20201116
-i386                 randconfig-a011-20201116
-i386                 randconfig-a015-20201116
-i386                 randconfig-a013-20201116
-i386                 randconfig-a012-20201115
-i386                 randconfig-a014-20201115
-i386                 randconfig-a016-20201115
-i386                 randconfig-a011-20201115
-i386                 randconfig-a015-20201115
-i386                 randconfig-a013-20201115
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201115
-x86_64               randconfig-a005-20201115
-x86_64               randconfig-a004-20201115
-x86_64               randconfig-a002-20201115
-x86_64               randconfig-a001-20201115
-x86_64               randconfig-a006-20201115
-x86_64               randconfig-a015-20201116
-x86_64               randconfig-a014-20201116
-x86_64               randconfig-a013-20201116
-x86_64               randconfig-a016-20201116
-x86_64               randconfig-a011-20201116
-x86_64               randconfig-a012-20201116
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+viresh
