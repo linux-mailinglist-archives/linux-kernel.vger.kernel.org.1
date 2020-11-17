@@ -2,96 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894B82B6F1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2362B6F22
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730863AbgKQTpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730464AbgKQTp1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:45:27 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3F2C0617A6;
-        Tue, 17 Nov 2020 11:45:25 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id d18so10850907edt.7;
-        Tue, 17 Nov 2020 11:45:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=MNzWsDtU39BR4iFEfSJQ9mnoYu92ToJLMEGgLWUUrPw=;
-        b=j/P6lB+wO6vdZOi5Agv1mqQVbIrni+q+ALO6i+QbbntEAjO3ALjbyoaIccUUaOa0Yj
-         o6cvV+wMx3wOdDlbzNzxjXywYGNQbe72oR4JacgcqedptYB1kV4gPGE+9dGv9jes269G
-         Bq0r064CiJxLQraZzATdDk96xLcU/rIXbMJPuKTx1omwbiBt8qZeYKJpGfqDIPuYdMfY
-         kyat5CUjgA9yeRMemvobcamXiv2alDl+Dd1uzPC8Lmqx7g7WXqB3glUF4qtkFkoaYh1h
-         ZI4XdciXwfyp2DhlBEthUhQgPupbBA3tggimAtRPScUSsyZY2QGd69uiH5vjBKPHREA3
-         /ZCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=MNzWsDtU39BR4iFEfSJQ9mnoYu92ToJLMEGgLWUUrPw=;
-        b=dJuvB3Qgo1AGvdC2TdoWLF8PQfOPudWcf5FfmyGdfNRvhegV3YjgoBVoDApD4NuvX7
-         kn3e/B6IMf1+RQauSuKG+aMnzKnFeXFF+a+MPHlCSQc2/bXPwXULZZixOM6oNZTyUixw
-         QqcqWL8vTRoFRnzBBXXyhludzAFl9bCYcV2VN7Od+a/bEPcvMdAQDKGPs16hXkqFdcAk
-         bkCO/y9zwnJxLo+uxfleouZC6Jm6sAuH0vGcuf2uwrePgaVPYGLrO4B8wF3oy9aJS5i4
-         e6ffe0mtMoHPxdns4rw7qgKQdt7ZtzN71KKHFLf3mF8Be07oKW/ug1bkwlvPDg7jV7uu
-         CQRg==
-X-Gm-Message-State: AOAM531i81udNCiTCYipIk4kP0BfNcERPxd5Qixb5VmGdradl6zS067K
-        kBB4QG1SDASS1v833uYTvOk=
-X-Google-Smtp-Source: ABdhPJyrzzhxGF5lvPmDjYfPklRS9F51sz7rQAaESr2rA6OkcPjado8yI8xHELXCq5r82ignHt0H3A==
-X-Received: by 2002:a50:a105:: with SMTP id 5mr21926061edj.165.1605642324325;
-        Tue, 17 Nov 2020 11:45:24 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id w2sm727972ejc.109.2020.11.17.11.45.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Nov 2020 11:45:23 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     hjc@rock-chips.com, robh+dt@kernel.org, airlied@linux.ie,
-        daniel@ffwll.ch, mturquette@baylibre.com, sboyd@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, linux-clk@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 7/7] ARM: dts: rockchip: enable hdmi_sound and i2s0 for rk3066a-mk808
-Date:   Tue, 17 Nov 2020 20:45:07 +0100
-Message-Id: <20201117194507.14843-8-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201117194507.14843-1-jbx6244@gmail.com>
-References: <20201117194507.14843-1-jbx6244@gmail.com>
+        id S1731107AbgKQTpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:45:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47558 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730564AbgKQTpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:45:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 00F9FABDE;
+        Tue, 17 Nov 2020 19:45:23 +0000 (UTC)
+MIME-Version: 1.0
+Date:   Tue, 17 Nov 2020 20:45:21 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [External] RE: [PATCH v4 00/21] Free some vmemmap pages of
+ hugetlb page
+In-Reply-To: <CAMZfGtWNa=abZdN6HmWE1VBFHfGCbsW9D0zrN-F5zrhn6s=ErA@mail.gmail.com>
+References: <20201113105952.11638-1-songmuchun@bytedance.com>
+ <349168819c1249d4bceea26597760b0a@hisilicon.com>
+ <CAMZfGtUVDJ4QHYRCKnPTkgcKGJ38s2aOOktH+8Urz7oiVfimww@mail.gmail.com>
+ <714ae7d701d446259ab269f14a030fe9@hisilicon.com>
+ <CAMZfGtWNa=abZdN6HmWE1VBFHfGCbsW9D0zrN-F5zrhn6s=ErA@mail.gmail.com>
+User-Agent: Roundcube Webmail
+Message-ID: <d04fdbf6c955054fddb152c78bc53db6@suse.de>
+X-Sender: osalvador@suse.de
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make some noise with mk808. Enable the hdmi_sound node and
-add i2s0 as sound source for hdmi.
+On 2020-11-17 17:29, Muchun Song wrote:
+> Now for the 2MB HugrTLB page, we only free 6 vmemmap pages.
+> But your words woke me up. Maybe we really can free 7 vmemmap
+> pages. In this case, we can see 8 of the 512 struct page structures
+> has beed set PG_head flag. If we can adjust compound_head()
+> slightly and make compound_head() return the real head struct
+> page when the parameter is the tail struct page but with PG_head
+> flag set. I will start an investigation and a test.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm/boot/dts/rk3066a-mk808.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+I would not overcomplicate things at this stage, but rather keep it 
+simple as the code is already tricky enough(without counting the LOC 
+thatvit adds).
+We can always build on top later on in order to improve things.
 
-diff --git a/arch/arm/boot/dts/rk3066a-mk808.dts b/arch/arm/boot/dts/rk3066a-mk808.dts
-index eed9e60cf..5fe74c097 100644
---- a/arch/arm/boot/dts/rk3066a-mk808.dts
-+++ b/arch/arm/boot/dts/rk3066a-mk808.dts
-@@ -116,6 +116,14 @@
- 	};
- };
- 
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
-+&i2s0 {
-+	status = "okay";
-+};
-+
- &mmc0 {
- 	bus-width = <4>;
- 	cap-mmc-highspeed;
 -- 
-2.11.0
-
+Oscar Salvador
+SUSE L3
