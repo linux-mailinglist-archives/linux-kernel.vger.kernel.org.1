@@ -2,173 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10742B713B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 180942B713F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgKQWHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:07:03 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23102 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728411AbgKQWHD (ORCPT
+        id S1728792AbgKQWH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728161AbgKQWHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:07:03 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHM4H5d083997;
-        Tue, 17 Nov 2020 17:06:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ai6BAreswhyDf4MnMxZzL8UpCtwkvNq9pLaziKNJwZA=;
- b=GAMAWdfVh3mlc+7/SZ06WB8euH4+ynkd0/e0UPnnjcm1aUyl35L4v7E9a7WaegG8v7bS
- 6E5ZBOwMErfHu6kKDIaJNgsXzn8B4046Ah/iP5FTVsniXIYSQJdktd58B5XBSNxtFHjT
- RFZEDyfeSrAGtjx4t6sBiFyLGiWcEnODMyDzPdkM93Nw/0HAtyfNXpHOWVLpVqXdPhbY
- IGGyrDAhwV7xfdYWFy+UQ2nmtZHmt5i1nKaZBedsIj9426+Fvt5PRE4E3rDQlnIKpTLn
- hEJm0OAVxVy4SlCyYd/M9NhNGaXoLr9b5xcUe9EzynZk75wdmROPZd2Lcy7k1KVFD9SA Ww== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34vfd8f0x0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 17:06:54 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AHM1wxj029891;
-        Tue, 17 Nov 2020 22:06:52 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma02wdc.us.ibm.com with ESMTP id 34vfj9tud1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 22:06:52 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AHM6pKX3277442
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 22:06:51 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7DC091363AD;
-        Tue, 17 Nov 2020 22:06:51 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E0491363AF;
-        Tue, 17 Nov 2020 22:06:50 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.40.231])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Nov 2020 22:06:50 +0000 (GMT)
-Subject: Re: [PATCH 3/6] ibmvfc: add new fields for version 2 of several MADs
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201112010442.102589-1-tyreld@linux.ibm.com>
- <20201112010442.102589-3-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <5b772ce2-3119-f05b-15d3-357729e46e70@linux.vnet.ibm.com>
-Date:   Tue, 17 Nov 2020 16:06:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Tue, 17 Nov 2020 17:07:55 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4394EC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:07:55 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id y78so11951903vsy.6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:07:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=umEa7JuHmTxIADXNGGqKNEHKb3a04RTaswLCVFJxa4M=;
+        b=tI4mA80+Xd+JUJ/JzwWEysBKnaTvgHAU/hR2i1Wqs9FEiBXbaulhbQxwgONQh5AKZk
+         9JQ4pKVTUHba6Ba5Ytj7wdoKe8NLQYcL6W0bKir9B6Qnbtv0atVqDA0X0VacBHNxQDFc
+         ltG2s+9QQ7PnpRfVrsZPaVcgwAWqw+EiOCi4RmC6O3YM2781T5LdZvaitL/10JhqaZE0
+         OYM9rgwZTQ3VNwb7RqVlGg3K7NXXVUTEDT6iT8glzocYQdWjMcXuKb6lyIn66gVC+zQH
+         wo4wTmGsb1H3lf79eje+pGYOANlnYRA6ObW6mqh/7w8dArzIczPEEvgTCxMWKTYqcYaH
+         0L0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=umEa7JuHmTxIADXNGGqKNEHKb3a04RTaswLCVFJxa4M=;
+        b=fpa9qHcjrFaipX5UdxNGYx5x5eFbp4TFcPh9R7KI7u6oCuvsNf4A+ccwzXEPhlpRJ+
+         AXUT7HI2lnCp4uyqIuW3D5NHSP8QarcNbWNXGxzHamNoICfPF56zLwXiV6oHXJYpZ27V
+         DTiH0p7/zvZfCbwnYr/UkyufAZ6voYQKQUyHA6hcx/5HacJGjeruGdUlQWIU1+bZ/465
+         7wV7+IAPdGXObbFgkbPdMVrx1gSxBnQDvmPYfZkteHeac5ruOKlLo7tHO9QhlLDgv8nx
+         TQIoFEUS/v0605UNiMiezgGGv1HF8o7A3qLM1W78h+nAJ+1c6/i/EXZdA46AOlVZzG4i
+         VhUw==
+X-Gm-Message-State: AOAM533ne6dRZYXfwSq3cQwEKRDUBUl7AjrrNwHq+K/4MgdZB+FWShbt
+        +mCbQasc3vKmGIQ/vN7kX6YuviHqSDd8Xtw0WPU6WQ==
+X-Google-Smtp-Source: ABdhPJy1j7yuSAkeHluT8wnz4btQvLYJWOobaaWW1k9hE9h6H7I1udmnoO2ccRadkiR3syWb8ZwHFHLeDEr/GT1JY7A=
+X-Received: by 2002:a05:6102:22da:: with SMTP id a26mr1462614vsh.13.1605650874215;
+ Tue, 17 Nov 2020 14:07:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201112010442.102589-3-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_12:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- clxscore=1011 priorityscore=1501 phishscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170162
+References: <20201117205902.405316-1-samitolvanen@google.com> <202011171338.BB25DBD1E6@keescook>
+In-Reply-To: <202011171338.BB25DBD1E6@keescook>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 17 Nov 2020 14:07:43 -0800
+Message-ID: <CABCJKudJojTh+is8mdMicczgWiTXw+KwCuepmG5gLVmqPWjnHA@mail.gmail.com>
+Subject: Re: [PATCH net] cfg80211: fix callback type mismatches in wext-compat
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/20 7:04 PM, Tyrel Datwyler wrote:
-> @@ -211,7 +214,9 @@ struct ibmvfc_npiv_login_resp {
->  	__be64 capabilities;
->  #define IBMVFC_CAN_FLUSH_ON_HALT	0x08
->  #define IBMVFC_CAN_SUPPRESS_ABTS	0x10
-> -#define IBMVFC_CAN_SUPPORT_CHANNELS	0x20
-> +#define IBMVFC_MAD_VERSION_CAP		0x20
-> +#define IBMVFC_HANDLE_VF_WWPN		0x40
-> +#define IBMVFC_CAN_SUPPORT_CHANNELS	0x80
->  	__be32 max_cmds;
->  	__be32 scsi_id_sz;
->  	__be64 max_dma_len;
-> @@ -293,6 +298,7 @@ struct ibmvfc_port_login {
->  	__be32 reserved2;
->  	struct ibmvfc_service_parms service_parms;
->  	struct ibmvfc_service_parms service_parms_change;
-> +	__be64 targetWWPN;
+On Tue, Nov 17, 2020 at 1:45 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Tue, Nov 17, 2020 at 12:59:02PM -0800, Sami Tolvanen wrote:
+> > Instead of casting callback functions to type iw_handler, which trips
+> > indirect call checking with Clang's Control-Flow Integrity (CFI), add
+> > stub functions with the correct function type for the callbacks.
+>
+> Oh, wow. iw_handler with union iwreq_data look like really nasty hacks.
+> Aren't those just totally bypassing type checking? Where do the
+> callbacks actually happen? I couldn't find them...
 
-For consistency, can you make this target_wwpn?
+The callbacks to these happen in ioctl_standard_call in wext-core.c.
 
->  	__be64 reserved3[2];
->  } __packed __aligned(8);
->  
-> @@ -344,6 +350,7 @@ struct ibmvfc_process_login {
->  	__be16 status;
->  	__be16 error;			/* also fc_reason */
->  	__be32 reserved2;
-> +	__be64 targetWWPN;
-
-For consistency, can you make this target_wwpn?
-
->  	__be64 reserved3[2];
->  } __packed __aligned(8);
->  
-> @@ -378,6 +385,8 @@ struct ibmvfc_tmf {
->  	__be32 cancel_key;
->  	__be32 my_cancel_key;
->  	__be32 pad;
-> +	__be64 targetWWPN;
-
-For consistency, can you make this target_wwpn?
-
-> +	__be64 taskTag;
-
-and make this task_tag. 
-
->  	__be64 reserved[2];
->  } __packed __aligned(8);
->  
-> @@ -474,9 +483,19 @@ struct ibmvfc_cmd {
->  	__be64 correlation;
->  	__be64 tgt_scsi_id;
->  	__be64 tag;
-> -	__be64 reserved3[2];
-> -	struct ibmvfc_fcp_cmd_iu iu;
-> -	struct ibmvfc_fcp_rsp rsp;
-> +	__be64 targetWWPN;
-
-For consistency, can you make this target_wwpn?
-
-> +	__be64 reserved3;
-> +	union {
-> +		struct {
-> +			struct ibmvfc_fcp_cmd_iu iu;
-> +			struct ibmvfc_fcp_rsp rsp;
-> +		} v1;
-> +		struct {
-> +			__be64 reserved4;
-> +			struct ibmvfc_fcp_cmd_iu iu;
-> +			struct ibmvfc_fcp_rsp rsp;
-> +		} v2;
-> +	};
->  } __packed __aligned(8);
->  
->  struct ibmvfc_passthru_fc_iu {
-> @@ -503,6 +522,7 @@ struct ibmvfc_passthru_iu {
->  	__be64 correlation;
->  	__be64 scsi_id;
->  	__be64 tag;
-> +	__be64 targetWWPN;
-
-For consistency, can you make this target_wwpn?
-
->  	__be64 reserved2[2];
->  } __packed __aligned(8);
->  
-> 
-
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+Sami
