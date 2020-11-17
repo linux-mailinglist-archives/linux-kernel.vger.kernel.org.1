@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096B62B5ACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EA52B5AD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727117AbgKQING (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:13:06 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:46042 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgKQING (ORCPT
+        id S1726918AbgKQIO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgKQIO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:13:06 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0AH8CfjL6015835, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb01.realtek.com.tw[172.21.6.94])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0AH8CfjL6015835
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 17 Nov 2020 16:12:41 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.34) by
- RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 17 Nov 2020 16:12:41 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMBS03.realtek.com.tw (172.21.6.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 17 Nov 2020 16:12:40 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
- RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
- 15.01.2044.006; Tue, 17 Nov 2020 16:12:40 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Tony Chuang <yhchuang@realtek.com>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "xiakaixu1987@gmail.com" <xiakaixu1987@gmail.com>
-CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kaixuxia@tencent.com" <kaixuxia@tencent.com>
-Subject: Re: [PATCH] rtw88: coex: remove the unreached code in rtw_coex_set_tdma
-Thread-Topic: [PATCH] rtw88: coex: remove the unreached code in
- rtw_coex_set_tdma
-Thread-Index: AQHWupojIOQCHYBFVUSs8qBgiST6ganLdzgA
-Date:   Tue, 17 Nov 2020 08:12:40 +0000
-Message-ID: <1605600696.20048.11.camel@realtek.com>
-References: <1605367343-11770-1-git-send-email-kaixuxia@tencent.com>
-In-Reply-To: <1605367343-11770-1-git-send-email-kaixuxia@tencent.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.213]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BA391B2213CAA64BAC339DA5BFC57AA1@realtek.com>
-Content-Transfer-Encoding: base64
+        Tue, 17 Nov 2020 03:14:27 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F2DC0613CF;
+        Tue, 17 Nov 2020 00:14:26 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id o144so9281385ybg.7;
+        Tue, 17 Nov 2020 00:14:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=eAGz42ZtxKLiRa/2ANKf/P4Nyy7DGwzBtfcI18AZXIc=;
+        b=SOJoNCxoRMBGJMrUdvbzBB8Z2kiVlkQqx6D+2CyBw/i9fvEgrvsn9cywoOtAunjzDL
+         FERIYA0oUuxN4sfjh3ZwdT7AtEgW7//J/TpMgxAPM0zf4po8jpjEclHSwTKi/6yrtA6p
+         CwumNRsd1FGQX9vsXPYpYNPYMN9P4bb+Yku1VG0dOnxuE1SzRT490EZu1QTNRdRk1un+
+         K7ON02ZrVlU128Ze7hya1jWSyLVAi5Ll7OcOISnAbM6BV3+lEwpf17ly5dKFHN35A2E0
+         MBWoQ8tv3mhklVEbn9ETamaBkQvvu4SEPOQqZ7bWQEZOOSrQ7HKpAMdCkrSa3MOUlAo3
+         28UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=eAGz42ZtxKLiRa/2ANKf/P4Nyy7DGwzBtfcI18AZXIc=;
+        b=juv17+vRKE+fT342uck7BhKZemVon6aphrFV6OpOS66SogBDyeLVhyg1jffTQjZVp/
+         uwy0JdwjWDurtljh5Fi6vXYYRaxVluQLuqShGT3+K9FDXZgLAD8dvKl3hdkH1qGmMvff
+         dDZQMCPQkvY3vG57XV5fp+LDySdIhVbgqkHVk8ibb1SvCM5R31viPsKBkVhyUEPSxWI7
+         QdvCIAy75x4wAojp5Nb2xCvv8ZOmgTM8DHRIGJz3UjStrvjy3WTAG+/DFKDvQsdMDjZw
+         05Q0t5X6VxgxwQKjWkdF4pUy1V5dBb06J5f7Pk8ReioZi6pKzMZQPhGsVs2FCAulOOFV
+         nO1g==
+X-Gm-Message-State: AOAM5328ShFxbRTX8uI3WyX/O4L8x96TEYA1tmIj1WL25mSBA/RJrXE2
+        sde/yueWlRrlq4JQdgo2sh9U2OPIXsdgvrG2rE8=
+X-Google-Smtp-Source: ABdhPJxzgJBycg8nfMT6vuP+7enT3jtQyv3riK+C8f2sAwkzM9YEMUpxcDrUXxcxVJEuW+SdoTBleDd4xqqL0U5k4js=
+X-Received: by 2002:a25:2d55:: with SMTP id s21mr21945436ybe.389.1605600865548;
+ Tue, 17 Nov 2020 00:14:25 -0800 (PST)
 MIME-Version: 1.0
+Received: by 2002:a25:9785:0:0:0:0:0 with HTTP; Tue, 17 Nov 2020 00:14:24
+ -0800 (PST)
+In-Reply-To: <20201117074207.GC3436@kozik-lap>
+References: <CGME20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
+ <20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2> <20201117074207.GC3436@kozik-lap>
+From:   Bongsu Jeon <bs.jeon87@gmail.com>
+Date:   Tue, 17 Nov 2020 17:14:24 +0900
+Message-ID: <CAEx-X7epecwBYV7UYoesQ9+Q8ir+kjYGyysiyDtCa0BzKiCGtA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 1/3] nfc: s3fwrn5: Remove the max_payload
+To:     "krzk@kernel.org" <krzk@kernel.org>
+Cc:     Bongsu Jeon <bongsu.jeon@samsung.com>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>,
+        "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIwLTExLTE0IGF0IDE1OjIyICswMDAwLCB4aWFrYWl4dTE5ODdAZ21haWwuY29t
-IHdyb3RlOg0KPiBGcm9tOiBLYWl4dSBYaWEgPGthaXh1eGlhQHRlbmNlbnQuY29tPg0KPiANCj4g
-VGhlIHZhbHVlIG9mIHRoZSBib29sIHZhcmlhYmxlIGFwX2VuYWJsZSBpcyBhbHdheXMgZmFsc2Us
-IHNvIHRoZSBmaXJzdA0KPiBpZiBicmFuY2ggaXMgdW5yZWFjaGVkIGNvZGUuIFJlbW92ZSBpdC4N
-Cj4gDQo+IFJlcG9ydGVkLWJ5OiBUb3NrIFJvYm90IDx0ZW5jZW50X29zX3JvYm90QHRlbmNlbnQu
-Y29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBLYWl4dSBYaWEgPGthaXh1eGlhQHRlbmNlbnQuY29tPg0K
-PiAtLS0NCj4gwqBkcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L2NvZXguYyB8IDEy
-ICstLS0tLS0tLS0tLQ0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMTEgZGVs
-ZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRl
-ay9ydHc4OC9jb2V4LmMNCj4gYi9kcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L2Nv
-ZXguYw0KPiBpbmRleCBhYTA4ZmQ3ZDlmY2QuLjljNzk2M2U0NTc1NSAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9jb2V4LmMNCj4gKysrIGIvZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9jb2V4LmMNCj4gQEAgLTg2MywxOCArODYzLDgg
-QEAgc3RhdGljIHZvaWQgcnR3X2NvZXhfc2V0X3RkbWEoc3RydWN0IHJ0d19kZXYgKnJ0d2Rldiwg
-dTgNCj4gYnl0ZTEsIHU4IGJ5dGUyLA0KPiDCoAlzdHJ1Y3QgcnR3X2NvZXhfZG0gKmNvZXhfZG0g
-PSAmY29leC0+ZG07DQo+IMKgCXN0cnVjdCBydHdfY2hpcF9pbmZvICpjaGlwID0gcnR3ZGV2LT5j
-aGlwOw0KPiDCoAl1OCBwc190eXBlID0gQ09FWF9QU19XSUZJX05BVElWRTsNCj4gLQlib29sIGFw
-X2VuYWJsZSA9IGZhbHNlOw0KDQpUaGUgdmFyaWFibGUgJ2FwX2VuYWJsZScgaXMgdXNlZCB0byBp
-bmRpY2F0ZSBhIHZpZiBpcyBydW5uaW5nIGluIEFQIG1vZGUuDQpBdCB0aGUgZmlyc3QgY29leCB2
-ZXJzaW9uLCBydHc4OCBkb2Vzbid0IHN1cHBvcnQgQVAgbW9kZSB5ZXQsIHNvIGFwX2VuYWJsZQ0K
-aXMgc2V0IHRvIGZhbHNlLiBGb3Igbm93LCBBUCBtb2RlIGlzIHJlYWR5LCBhbmQgSSBjYW4gc2Vu
-ZCBhIHBhdGNoIHRvIHNldA0KcHJvcGVyIHZhbHVlIGRlcGVuZHMgb24gdmlmIG1vZGUuDQoNClNp
-bmNlIEknbSBzdWJtaXR0aW5nIGNvZXggcGF0Y2hlcyB0byB1cGdyYWRlIHRoZSBjb2RlLiBJbiBv
-cmRlciB0byBhdm9pZA0KY29uZmxpY3RpbmcsIEknbGwgc2VuZCB0aGUgcGF0Y2ggdG8gc2V0IHBy
-b3BlciBhcF9lbmFibGUgYWZ0ZXIgYWxsIG15IHBhdGNoZXMNCmFyZSBtZXJnZWQuDQoNCg0KPiAt
-DQo+IC0JaWYgKGFwX2VuYWJsZSAmJiAoYnl0ZTEgJiBCSVQoNCkgJiYgIShieXRlMSAmIEJJVCg1
-KSkpKSB7DQo+IC0JCWJ5dGUxICY9IH5CSVQoNCk7DQo+IC0JCWJ5dGUxIHw9IEJJVCg1KTsNCj4g
-LQ0KPiAtCQlieXRlNSB8PSBCSVQoNSk7DQo+IC0JCWJ5dGU1ICY9IH5CSVQoNik7DQo+IMKgDQo+
-IC0JCXBzX3R5cGUgPSBDT0VYX1BTX1dJRklfTkFUSVZFOw0KPiAtCQlydHdfY29leF9wb3dlcl9z
-YXZlX3N0YXRlKHJ0d2RldiwgcHNfdHlwZSwgMHgwLCAweDApOw0KPiAtCX0gZWxzZSBpZiAoYnl0
-ZTEgJiBCSVQoNCkgJiYgIShieXRlMSAmIEJJVCg1KSkpIHsNCj4gKwlpZiAoYnl0ZTEgJiBCSVQo
-NCkgJiYgIShieXRlMSAmIEJJVCg1KSkpIHsNCj4gwqAJCWlmIChjaGlwLT5wc3RkbWFfdHlwZSA9
-PSBDT0VYX1BTVERNQV9GT1JDRV9MUFNPRkYpDQo+IMKgCQkJcHNfdHlwZSA9IENPRVhfUFNfTFBT
-X09GRjsNCj4gwqAJCWVsc2UNCj4gLS3CoA0KPiAyLjIwLjANCj4gDQoNCi0tLQ0KUGluZy1LZQ0K
-DQo=
+2020-11-17 16:42 GMT+09:00, krzk@kernel.org <krzk@kernel.org>:
+> On Tue, Nov 17, 2020 at 10:16:11AM +0900, Bongsu Jeon wrote:
+>> max_payload is unused.
+>
+> Why did you resend the patch ignoring my review? I already provided you
+> with a tag, so you should include it.
+>
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+>
+> Best regards,
+> Krzysztof
+>
+
+Sorry about that. I included the tag.
