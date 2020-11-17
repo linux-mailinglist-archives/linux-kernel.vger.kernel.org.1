@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA8F2B65EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2302B6469
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730622AbgKQN7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:59:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50316 "EHLO mail.kernel.org"
+        id S2387500AbgKQNrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:47:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730618AbgKQNRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:17:53 -0500
+        id S1732312AbgKQNhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:37:08 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E025721734;
-        Tue, 17 Nov 2020 13:17:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03982207BC;
+        Tue, 17 Nov 2020 13:37:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619072;
-        bh=IWr3R8EYx1/TCIyAGku2f1ozi+QUWTFcJKEwCsO2hw8=;
+        s=default; t=1605620225;
+        bh=fO1S97ZftjUpm9v2EJWbtcQIvEl1tJs1a4t72bmKxro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jSC2cgbjsh4tTJDXsx1Er6Il2nhhXXYLytp2B0dYLp6ODQJFZk3IP6ZPAxa3+9kms
-         3/SjF413v47Bc5YW1k1SaTgnyTNf+4K1k0miFgZ7D/xj87CaybymhoDZqxCusiQ7lE
-         WlvIMf3QIqhYzrGot7BlF0erEICQpJLIMH7zW5qE=
+        b=G4uW9RvBFwv56MRsdgn48JY71GAaFY48cn/IeSi8wjZmSuVt8mHkWtRRP31ZwDsRN
+         HnZwKQPTBbcVshIAdX+ypsrrYCOj51Due4dmPc+gxbi5kRRVXerRzqr363uV3Y4C0S
+         6clrcHaCDmeirCzzRl9mx55HPtwKkdaKi1fIV+ZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org,
+        David Verbeiren <david.verbeiren@tessares.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 019/101] can: peak_usb: add range checking in decode operations
-Date:   Tue, 17 Nov 2020 14:04:46 +0100
-Message-Id: <20201117122114.030656831@linuxfoundation.org>
+Subject: [PATCH 5.9 147/255] bpf: Zero-fill re-used per-cpu map element
+Date:   Tue, 17 Nov 2020 14:04:47 +0100
+Message-Id: <20201117122146.119726667@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,127 +46,355 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: David Verbeiren <david.verbeiren@tessares.net>
 
-[ Upstream commit a6921dd524fe31d1f460c161d3526a407533b6db ]
+[ Upstream commit d3bec0138bfbe58606fc1d6f57a4cdc1a20218db ]
 
-These values come from skb->data so Smatch considers them untrusted.  I
-believe Smatch is correct but I don't have a way to test this.
+Zero-fill element values for all other cpus than current, just as
+when not using prealloc. This is the only way the bpf program can
+ensure known initial values for all cpus ('onallcpus' cannot be
+set when coming from the bpf program).
 
-The usb_if->dev[] array has 2 elements but the index is in the 0-15
-range without checks.  The cfd->len can be up to 255 but the maximum
-valid size is CANFD_MAX_DLEN (64) so that could lead to memory
-corruption.
+The scenario is: bpf program inserts some elements in a per-cpu
+map, then deletes some (or userspace does). When later adding
+new elements using bpf_map_update_elem(), the bpf program can
+only set the value of the new elements for the current cpu.
+When prealloc is enabled, previously deleted elements are re-used.
+Without the fix, values for other cpus remain whatever they were
+when the re-used entry was previously freed.
 
-Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200813140604.GA456946@mwanda
-Acked-by: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+A selftest is added to validate correct operation in above
+scenario as well as in case of LRU per-cpu map element re-use.
+
+Fixes: 6c9059817432 ("bpf: pre-allocate hash map elements")
+Signed-off-by: David Verbeiren <david.verbeiren@tessares.net>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20201104112332.15191-1-david.verbeiren@tessares.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 48 +++++++++++++++++-----
- 1 file changed, 37 insertions(+), 11 deletions(-)
+ kernel/bpf/hashtab.c                          |  30 ++-
+ .../selftests/bpf/prog_tests/map_init.c       | 214 ++++++++++++++++++
+ .../selftests/bpf/progs/test_map_init.c       |  33 +++
+ 3 files changed, 275 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_init.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_map_init.c
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 41988358f63c8..19600d35aac55 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -476,12 +476,18 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
- 				     struct pucan_msg *rx_msg)
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 7df28a45c66bf..15364543b2c0f 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -821,6 +821,32 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
+ 	}
+ }
+ 
++static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr,
++			    void *value, bool onallcpus)
++{
++	/* When using prealloc and not setting the initial value on all cpus,
++	 * zero-fill element values for other cpus (just as what happens when
++	 * not using prealloc). Otherwise, bpf program has no way to ensure
++	 * known initial values for cpus other than current one
++	 * (onallcpus=false always when coming from bpf prog).
++	 */
++	if (htab_is_prealloc(htab) && !onallcpus) {
++		u32 size = round_up(htab->map.value_size, 8);
++		int current_cpu = raw_smp_processor_id();
++		int cpu;
++
++		for_each_possible_cpu(cpu) {
++			if (cpu == current_cpu)
++				bpf_long_memcpy(per_cpu_ptr(pptr, cpu), value,
++						size);
++			else
++				memset(per_cpu_ptr(pptr, cpu), 0, size);
++		}
++	} else {
++		pcpu_copy_value(htab, pptr, value, onallcpus);
++	}
++}
++
+ static bool fd_htab_map_needs_adjust(const struct bpf_htab *htab)
  {
- 	struct pucan_rx_msg *rm = (struct pucan_rx_msg *)rx_msg;
--	struct peak_usb_device *dev = usb_if->dev[pucan_msg_get_channel(rm)];
--	struct net_device *netdev = dev->netdev;
-+	struct peak_usb_device *dev;
-+	struct net_device *netdev;
- 	struct canfd_frame *cfd;
- 	struct sk_buff *skb;
- 	const u16 rx_msg_flags = le16_to_cpu(rm->flags);
+ 	return htab->map.map_type == BPF_MAP_TYPE_HASH_OF_MAPS &&
+@@ -891,7 +917,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+ 			}
+ 		}
  
-+	if (pucan_msg_get_channel(rm) >= ARRAY_SIZE(usb_if->dev))
-+		return -ENOMEM;
-+
-+	dev = usb_if->dev[pucan_msg_get_channel(rm)];
-+	netdev = dev->netdev;
-+
- 	if (rx_msg_flags & PUCAN_MSG_EXT_DATA_LEN) {
- 		/* CANFD frame case */
- 		skb = alloc_canfd_skb(netdev, &cfd);
-@@ -527,15 +533,21 @@ static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
- 				     struct pucan_msg *rx_msg)
- {
- 	struct pucan_status_msg *sm = (struct pucan_status_msg *)rx_msg;
--	struct peak_usb_device *dev = usb_if->dev[pucan_stmsg_get_channel(sm)];
--	struct pcan_usb_fd_device *pdev =
--			container_of(dev, struct pcan_usb_fd_device, dev);
-+	struct pcan_usb_fd_device *pdev;
- 	enum can_state new_state = CAN_STATE_ERROR_ACTIVE;
- 	enum can_state rx_state, tx_state;
--	struct net_device *netdev = dev->netdev;
-+	struct peak_usb_device *dev;
-+	struct net_device *netdev;
- 	struct can_frame *cf;
- 	struct sk_buff *skb;
+-		pcpu_copy_value(htab, pptr, value, onallcpus);
++		pcpu_init_value(htab, pptr, value, onallcpus);
  
-+	if (pucan_stmsg_get_channel(sm) >= ARRAY_SIZE(usb_if->dev))
-+		return -ENOMEM;
+ 		if (!prealloc)
+ 			htab_elem_set_ptr(l_new, key_size, pptr);
+@@ -1183,7 +1209,7 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+ 		pcpu_copy_value(htab, htab_elem_get_ptr(l_old, key_size),
+ 				value, onallcpus);
+ 	} else {
+-		pcpu_copy_value(htab, htab_elem_get_ptr(l_new, key_size),
++		pcpu_init_value(htab, htab_elem_get_ptr(l_new, key_size),
+ 				value, onallcpus);
+ 		hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+ 		l_new = NULL;
+diff --git a/tools/testing/selftests/bpf/prog_tests/map_init.c b/tools/testing/selftests/bpf/prog_tests/map_init.c
+new file mode 100644
+index 0000000000000..14a31109dd0e0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/map_init.c
+@@ -0,0 +1,214 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2020 Tessares SA <http://www.tessares.net> */
 +
-+	dev = usb_if->dev[pucan_stmsg_get_channel(sm)];
-+	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
-+	netdev = dev->netdev;
++#include <test_progs.h>
++#include "test_map_init.skel.h"
 +
- 	/* nothing should be sent while in BUS_OFF state */
- 	if (dev->can.state == CAN_STATE_BUS_OFF)
- 		return 0;
-@@ -587,9 +599,14 @@ static int pcan_usb_fd_decode_error(struct pcan_usb_fd_if *usb_if,
- 				    struct pucan_msg *rx_msg)
- {
- 	struct pucan_error_msg *er = (struct pucan_error_msg *)rx_msg;
--	struct peak_usb_device *dev = usb_if->dev[pucan_ermsg_get_channel(er)];
--	struct pcan_usb_fd_device *pdev =
--			container_of(dev, struct pcan_usb_fd_device, dev);
-+	struct pcan_usb_fd_device *pdev;
-+	struct peak_usb_device *dev;
++#define TEST_VALUE 0x1234
++#define FILL_VALUE 0xdeadbeef
 +
-+	if (pucan_ermsg_get_channel(er) >= ARRAY_SIZE(usb_if->dev))
-+		return -EINVAL;
++static int nr_cpus;
++static int duration;
 +
-+	dev = usb_if->dev[pucan_ermsg_get_channel(er)];
-+	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
- 
- 	/* keep a trace of tx and rx error counters for later use */
- 	pdev->bec.txerr = er->tx_err_cnt;
-@@ -603,11 +620,17 @@ static int pcan_usb_fd_decode_overrun(struct pcan_usb_fd_if *usb_if,
- 				      struct pucan_msg *rx_msg)
- {
- 	struct pcan_ufd_ovr_msg *ov = (struct pcan_ufd_ovr_msg *)rx_msg;
--	struct peak_usb_device *dev = usb_if->dev[pufd_omsg_get_channel(ov)];
--	struct net_device *netdev = dev->netdev;
-+	struct peak_usb_device *dev;
-+	struct net_device *netdev;
- 	struct can_frame *cf;
- 	struct sk_buff *skb;
- 
-+	if (pufd_omsg_get_channel(ov) >= ARRAY_SIZE(usb_if->dev))
-+		return -EINVAL;
++typedef unsigned long long map_key_t;
++typedef unsigned long long map_value_t;
++typedef struct {
++	map_value_t v; /* padding */
++} __bpf_percpu_val_align pcpu_map_value_t;
 +
-+	dev = usb_if->dev[pufd_omsg_get_channel(ov)];
-+	netdev = dev->netdev;
 +
- 	/* allocate an skb to store the error frame */
- 	skb = alloc_can_err_skb(netdev, &cf);
- 	if (!skb)
-@@ -724,6 +747,9 @@ static int pcan_usb_fd_encode_msg(struct peak_usb_device *dev,
- 	u16 tx_msg_size, tx_msg_flags;
- 	u8 can_dlc;
- 
-+	if (cfd->len > CANFD_MAX_DLEN)
-+		return -EINVAL;
++static int map_populate(int map_fd, int num)
++{
++	pcpu_map_value_t value[nr_cpus];
++	int i, err;
++	map_key_t key;
 +
- 	tx_msg_size = ALIGN(sizeof(struct pucan_tx_msg) + cfd->len, 4);
- 	tx_msg->size = cpu_to_le16(tx_msg_size);
- 	tx_msg->type = cpu_to_le16(PUCAN_MSG_CAN_TX);
++	for (i = 0; i < nr_cpus; i++)
++		bpf_percpu(value, i) = FILL_VALUE;
++
++	for (key = 1; key <= num; key++) {
++		err = bpf_map_update_elem(map_fd, &key, value, BPF_NOEXIST);
++		if (!ASSERT_OK(err, "bpf_map_update_elem"))
++			return -1;
++	}
++
++	return 0;
++}
++
++static struct test_map_init *setup(enum bpf_map_type map_type, int map_sz,
++			    int *map_fd, int populate)
++{
++	struct test_map_init *skel;
++	int err;
++
++	skel = test_map_init__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return NULL;
++
++	err = bpf_map__set_type(skel->maps.hashmap1, map_type);
++	if (!ASSERT_OK(err, "bpf_map__set_type"))
++		goto error;
++
++	err = bpf_map__set_max_entries(skel->maps.hashmap1, map_sz);
++	if (!ASSERT_OK(err, "bpf_map__set_max_entries"))
++		goto error;
++
++	err = test_map_init__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto error;
++
++	*map_fd = bpf_map__fd(skel->maps.hashmap1);
++	if (CHECK(*map_fd < 0, "bpf_map__fd", "failed\n"))
++		goto error;
++
++	err = map_populate(*map_fd, populate);
++	if (!ASSERT_OK(err, "map_populate"))
++		goto error_map;
++
++	return skel;
++
++error_map:
++	close(*map_fd);
++error:
++	test_map_init__destroy(skel);
++	return NULL;
++}
++
++/* executes bpf program that updates map with key, value */
++static int prog_run_insert_elem(struct test_map_init *skel, map_key_t key,
++				map_value_t value)
++{
++	struct test_map_init__bss *bss;
++
++	bss = skel->bss;
++
++	bss->inKey = key;
++	bss->inValue = value;
++	bss->inPid = getpid();
++
++	if (!ASSERT_OK(test_map_init__attach(skel), "skel_attach"))
++		return -1;
++
++	/* Let tracepoint trigger */
++	syscall(__NR_getpgid);
++
++	test_map_init__detach(skel);
++
++	return 0;
++}
++
++static int check_values_one_cpu(pcpu_map_value_t *value, map_value_t expected)
++{
++	int i, nzCnt = 0;
++	map_value_t val;
++
++	for (i = 0; i < nr_cpus; i++) {
++		val = bpf_percpu(value, i);
++		if (val) {
++			if (CHECK(val != expected, "map value",
++				  "unexpected for cpu %d: 0x%llx\n", i, val))
++				return -1;
++			nzCnt++;
++		}
++	}
++
++	if (CHECK(nzCnt != 1, "map value", "set for %d CPUs instead of 1!\n",
++		  nzCnt))
++		return -1;
++
++	return 0;
++}
++
++/* Add key=1 elem with values set for all CPUs
++ * Delete elem key=1
++ * Run bpf prog that inserts new key=1 elem with value=0x1234
++ *   (bpf prog can only set value for current CPU)
++ * Lookup Key=1 and check value is as expected for all CPUs:
++ *   value set by bpf prog for one CPU, 0 for all others
++ */
++static void test_pcpu_map_init(void)
++{
++	pcpu_map_value_t value[nr_cpus];
++	struct test_map_init *skel;
++	int map_fd, err;
++	map_key_t key;
++
++	/* max 1 elem in map so insertion is forced to reuse freed entry */
++	skel = setup(BPF_MAP_TYPE_PERCPU_HASH, 1, &map_fd, 1);
++	if (!ASSERT_OK_PTR(skel, "prog_setup"))
++		return;
++
++	/* delete element so the entry can be re-used*/
++	key = 1;
++	err = bpf_map_delete_elem(map_fd, &key);
++	if (!ASSERT_OK(err, "bpf_map_delete_elem"))
++		goto cleanup;
++
++	/* run bpf prog that inserts new elem, re-using the slot just freed */
++	err = prog_run_insert_elem(skel, key, TEST_VALUE);
++	if (!ASSERT_OK(err, "prog_run_insert_elem"))
++		goto cleanup;
++
++	/* check that key=1 was re-created by bpf prog */
++	err = bpf_map_lookup_elem(map_fd, &key, value);
++	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
++		goto cleanup;
++
++	/* and has expected values */
++	check_values_one_cpu(value, TEST_VALUE);
++
++cleanup:
++	test_map_init__destroy(skel);
++}
++
++/* Add key=1 and key=2 elems with values set for all CPUs
++ * Run bpf prog that inserts new key=3 elem
++ *   (only for current cpu; other cpus should have initial value = 0)
++ * Lookup Key=1 and check value is as expected for all CPUs
++ */
++static void test_pcpu_lru_map_init(void)
++{
++	pcpu_map_value_t value[nr_cpus];
++	struct test_map_init *skel;
++	int map_fd, err;
++	map_key_t key;
++
++	/* Set up LRU map with 2 elements, values filled for all CPUs.
++	 * With these 2 elements, the LRU map is full
++	 */
++	skel = setup(BPF_MAP_TYPE_LRU_PERCPU_HASH, 2, &map_fd, 2);
++	if (!ASSERT_OK_PTR(skel, "prog_setup"))
++		return;
++
++	/* run bpf prog that inserts new key=3 element, re-using LRU slot */
++	key = 3;
++	err = prog_run_insert_elem(skel, key, TEST_VALUE);
++	if (!ASSERT_OK(err, "prog_run_insert_elem"))
++		goto cleanup;
++
++	/* check that key=3 replaced one of earlier elements */
++	err = bpf_map_lookup_elem(map_fd, &key, value);
++	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
++		goto cleanup;
++
++	/* and has expected values */
++	check_values_one_cpu(value, TEST_VALUE);
++
++cleanup:
++	test_map_init__destroy(skel);
++}
++
++void test_map_init(void)
++{
++	nr_cpus = bpf_num_possible_cpus();
++	if (nr_cpus <= 1) {
++		printf("%s:SKIP: >1 cpu needed for this test\n", __func__);
++		test__skip();
++		return;
++	}
++
++	if (test__start_subtest("pcpu_map_init"))
++		test_pcpu_map_init();
++	if (test__start_subtest("pcpu_lru_map_init"))
++		test_pcpu_lru_map_init();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_map_init.c b/tools/testing/selftests/bpf/progs/test_map_init.c
+new file mode 100644
+index 0000000000000..c89d28ead6737
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_map_init.c
+@@ -0,0 +1,33 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020 Tessares SA <http://www.tessares.net> */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++
++__u64 inKey = 0;
++__u64 inValue = 0;
++__u32 inPid = 0;
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
++	__uint(max_entries, 2);
++	__type(key, __u64);
++	__type(value, __u64);
++} hashmap1 SEC(".maps");
++
++
++SEC("tp/syscalls/sys_enter_getpgid")
++int sysenter_getpgid(const void *ctx)
++{
++	/* Just do it for once, when called from our own test prog. This
++	 * ensures the map value is only updated for a single CPU.
++	 */
++	int cur_pid = bpf_get_current_pid_tgid() >> 32;
++
++	if (cur_pid == inPid)
++		bpf_map_update_elem(&hashmap1, &inKey, &inValue, BPF_NOEXIST);
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.27.0
 
