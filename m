@@ -2,467 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5056F2B5C56
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FC32B5C58
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727715AbgKQJzF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 17 Nov 2020 04:55:05 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2309 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgKQJzE (ORCPT
+        id S1727746AbgKQJzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:55:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727724AbgKQJzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:55:04 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Cb1WD6nwqz13RDX;
-        Tue, 17 Nov 2020 17:54:32 +0800 (CST)
-Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 17 Nov 2020 17:54:58 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 17 Nov 2020 17:54:58 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Tue, 17 Nov 2020 17:54:58 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Muchun Song <songmuchun@bytedance.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        "pawan.kumar.gupta@linux.intel.com" 
-        <pawan.kumar.gupta@linux.intel.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "oneukum@suse.com" <oneukum@suse.com>,
-        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "almasrymina@google.com" <almasrymina@google.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "mhocko@suse.com" <mhocko@suse.com>
-CC:     "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH v4 09/21] mm/hugetlb: Free the vmemmap pages associated
- with each hugetlb page
-Thread-Topic: [PATCH v4 09/21] mm/hugetlb: Free the vmemmap pages associated
- with each hugetlb page
-Thread-Index: AQHWuayJ5IHmiBdm3EqHSWIQbQOrfanMFzHg
-Date:   Tue, 17 Nov 2020 09:54:57 +0000
-Message-ID: <e28c3bb8689d4cb7aee16052c1a059a9@hisilicon.com>
-References: <20201113105952.11638-1-songmuchun@bytedance.com>
- <20201113105952.11638-10-songmuchun@bytedance.com>
-In-Reply-To: <20201113105952.11638-10-songmuchun@bytedance.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.113]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 17 Nov 2020 04:55:10 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29DCC0613CF;
+        Tue, 17 Nov 2020 01:55:10 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id t16so21923434oie.11;
+        Tue, 17 Nov 2020 01:55:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=g6cFr1GWe/3eh4NUqXWAinlK5cgfPVLY2u3q3tSx53o=;
+        b=CzawzkGYSM3k6pL0T1hbwyHjk6lf4OIJYruDp2QL9npIt9xSBOSoriYK+lZN9iL+1X
+         Rcg9c8kQYukPpCN7TI/x193Dnvx9ojNTqpQD9pRj/8HF9pLMqS+OHXMcCkLl9uqVDXOg
+         +dpwSRi5RPt+5kwajoY5fEgEg6mIUXRavCobmMSmukmp+kmUagl1I+8xeqZCMAm2dOKj
+         5GapsgPY+wOutrJEWvwAD9zyseIihpDzWEpMAAonb1aiZ8MVdJRJOZdKhxs/Q7I5VokN
+         eAVT1dU8mjcSJsiklHSwc26Qpa+BWC/Hdg3gS1B8COd1jgrAbqvhKWTj+NzoaSwfKFSJ
+         /C8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g6cFr1GWe/3eh4NUqXWAinlK5cgfPVLY2u3q3tSx53o=;
+        b=AbUlJZPlCQqjuwh8j+YjzFrFuivBjD5/uGpOQI4OPWbflbQ9ZGAMxkreyys97ulHqM
+         KDhWOaBPNv15HeIzJmqqS8Ikk44TBB3c9O62m6FzG7NqnrGam+rwNlJvQSD3fIJtoheK
+         1d+eIOsJmN+sNjLZv86mhWbt7Lg2cfjhvgSeBd8ZHVzdLAyacrugIQ1w1wsF/4MTworJ
+         bLQxw8lYZy+2HDdrWVrZ+tsgT9NPgkzTlvw9LieRorJqOpE57PrFeg+rXTfxSdKGO8A8
+         d0gQpGMxoM0EtdqPRrpN3P7YA4mHoUJNpDA6JyhwuAtXDuOgWLfGEg2UzvsAe/+/9EuT
+         zmtw==
+X-Gm-Message-State: AOAM5325/E6iPrcgvN/cRJnmaDYApXHuUIKR71Ie25A0ubtq+i37xRN/
+        z5sb+tmD1SggmlEIN+rfZINsvMSS0rJ4GCLnOOs=
+X-Google-Smtp-Source: ABdhPJya8F6HqaXOxv32vLbvDlmGZZUV8Q00KUBZXfRPq3qbh5S+PA3y0CdQ8g7uWdODqTVA4V0Epe3FABZHNroWpjk=
+X-Received: by 2002:aca:4783:: with SMTP id u125mr1917664oia.23.1605606909920;
+ Tue, 17 Nov 2020 01:55:09 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <1602034966-3524-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1602034966-3524-3-git-send-email-gene.chen.richtek@gmail.com>
+ <5a9b31c4-739c-06fc-2015-ed474993ad22@gmail.com> <CAE+NS35Y41mFKNhj+54BeeSYFu2J9BtvMWOxyMcf9a==39cbdA@mail.gmail.com>
+ <8925db23-5cc4-3c5f-932a-461fe6450dad@gmail.com> <CAE+NS379bgtRotqzioR+Ya3mE1kZrKfe9qV=W2p=hH7Omrn8Hw@mail.gmail.com>
+ <1bb76c54-14af-6c78-4623-77c6678b262e@gmail.com> <CAE+NS35z7_ZUdm6gRNw2z7Ozs+1A8_Vtj_9x-F65RLd4QqDFDA@mail.gmail.com>
+ <af17141f-23ae-063d-ade2-42dfdf611d81@gmail.com> <CAE+NS37-vQ4LLbCv-1+WsLe7qEQdVvBhhNKK4=oDj5VtWuaeoQ@mail.gmail.com>
+ <aab50d87-c696-6480-b5c7-2f75df19f50f@gmail.com>
+In-Reply-To: <aab50d87-c696-6480-b5c7-2f75df19f50f@gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Tue, 17 Nov 2020 17:54:58 +0800
+Message-ID: <CAE+NS36aqhNwF=+n=-UHTgLvb+PTt1VHR1pV5+rxR7d3p3N2zA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] leds: mt6360: Add LED driver for MT6360
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=
+=9C=8817=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=882:25=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+>
+> On 11/16/20 11:01 AM, Gene Chen wrote:
+> > Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B410=
+=E6=9C=8831=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=886:34=E5=AF=AB=E9=
+=81=93=EF=BC=9A
+> >>
+> >> On 10/30/20 9:51 AM, Gene Chen wrote:
+> >>> Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B4=
+10=E6=9C=8828=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:28=E5=AF=AB=
+=E9=81=93=EF=BC=9A
+> >>>>
+> >>>> On 10/27/20 10:28 AM, Gene Chen wrote:
+> >>>>> Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=
+=B410=E6=9C=8821=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=885:47=E5=AF=
+=AB=E9=81=93=EF=BC=9A
+> >>>>>>
+> >>>>>> On 10/20/20 8:44 AM, Gene Chen wrote:
+> >>>>>>> Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=
+=B9=B410=E6=9C=889=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=885:51=E5=AF=
+=AB=E9=81=93=EF=BC=9A
+> >>>>>>>>
+> >>>>>>>> Hi Gene,
+> >>>>>>>>
+> >>>>>>>> On 10/7/20 3:42 AM, Gene Chen wrote:
+> >>>>>>>>> From: Gene Chen <gene_chen@richtek.com>
+> >>>>>>>>>
+> >>>>>>>>> Add MT6360 LED driver include 2-channel Flash LED with torch/st=
+robe mode,
+> >>>>>>>>> 3-channel RGB LED support Register/Flash/Breath Mode, and 1-cha=
+nnel for
+> >>>>>>>>> moonlight LED.
+> >>>>>>>>>
+> >>>>>>>>> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> >>>>>>>>> ---
+> >>>>>>>>>       drivers/leds/Kconfig       |  12 +
+> >>>>>>>>>       drivers/leds/Makefile      |   1 +
+> >>>>>>>>>       drivers/leds/leds-mt6360.c | 783 ++++++++++++++++++++++++=
++++++++++++++++++++++
+> >>>>>>>>>       3 files changed, 796 insertions(+)
+> >>>>>>>>>       create mode 100644 drivers/leds/leds-mt6360.c
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> >>>>>>>>> index 1c181df..c7192dd 100644
+> >>>>>>>>> --- a/drivers/leds/Kconfig
+> >>>>>>>>> +++ b/drivers/leds/Kconfig
+> >>>>>>>>> @@ -271,6 +271,18 @@ config LEDS_MT6323
+> >>>>>>>>>             This option enables support for on-chip LED drivers=
+ found on
+> >>>>>>>>>             Mediatek MT6323 PMIC.
+> >>>>>>>>>
+> >>>>>>>>> +config LEDS_MT6360
+> >>>>>>>>> +     tristate "LED Support for Mediatek MT6360 PMIC"
+> >>>>>>>>> +     depends on LEDS_CLASS_FLASH && OF
+> >>>>>>>>> +     depends on LEDS_CLASS_MULTICOLOR
+> >>>>>>>>
+> >>>>>>>> Since CONFIG_LED_CLASS_MULTICOLOR can be turned off you need to =
+have
+> >>>>>>>> below instead:
+> >>>>>>>>
+> >>>>>>>> depends on LEDS_CLASS_MULTICOLOR || !!LEDS_CLASS_MULTICOLOR
+> >>>>
+> >>>> My typo here, should be one "!":
+> >>>>
+> >>>> depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
+> >>>>
+> >>>> And you should also have
+> >>>>
+> >>>> depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
+> >>>>
+> >>>> But to make it work correctly you would have to add registration
+> >>>> stubs to include/linux/led-class-flash.h similarly to LED mc stubs
+> >>>> in include/linux/led-class-multicolor.h.
+> >>>>
+> >>>>>>>>
+> >>>>>>>> Unless you want to prevent enabling the driver without RGB LED,
+> >>>>>>>> but that does not seem to be reasonable at first glance.
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> May I change to "select LEDS_CLASS_MULTICOLOR"?
+> >>>>>>> I suppose RGB always use multicolor mode.
+> >>>>>>
+> >>>>>> You will also have moonlight LED that will not need multicolor
+> >>>>>> framework. Is it somehow troublesome to keep "depends on"?
+> >>>>>>
+> >>>>>
+> >>>>> If only use ML LED and FLED,  DTSI will only define ML LED and FLED=
+.
+> >>>>> Therefore, the drivers probe will not register rgb multicolor devic=
+e.
+> >>>>
+> >>>> Please test your use case again with my fixed "depends on".
+> >>>>
+> >>>> In case when there is only ML LED and FLED in the DT it should
+> >>>> register both devices if LEDS_CLASS_FLASH is turned on.
+> >>>> Multicolor framework has nothing to do in this case.
+> >>>>
+> >>>> But if you additionally had MC LED node, then it should
+> >>>> be registered only if LEDS_CLASS_MULTICOLOR is enabled.
+> >>>>
+> >>>> Similarly, when FLED node is present, but LEDS_CLASS_FLASH
+> >>>> is off, and LEDS_CLASS_MULTICOLOR is on, the driver should still
+> >>>> compile, but register only LED MC device (if its node is present).
+> >>>>
+> >>>
+> >>> I think this case only register LED device, not LED "MC" device.
+> >>> Because our FLASH is not a multicolor device.
+> >>
+> >> No, here I was describing following setup:
+> >>
+> >> - DT FLED node is present, CONFIG_LEDS_CLASS_FLASH is off
+> >> - DT MC node is present, CONFIG_LEDS_CLASS_MULTICOLOR is on
+> >>
+> >> ML LED presence in DT is irrelevant in this case.
+> >> It should be always registered if there is corresponding DT node
+> >> and LEDS_CLASS is on.
+> >>
+> >
+> > As a long time discussion, we conclude some rules about MT6360 LED driv=
+er.
+> > FLED is necessary, so Kconfig depends on LED_CLASS_FLASH
+>
+> Maybe it is necessary in your use case, but probably it is possible to
+> use the device without FLED. If so, then you should allow users
+> disabling it. Therefore you should have:
+>
+> depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
+>
 
+ACK
 
-> -----Original Message-----
-> From: owner-linux-mm@kvack.org [mailto:owner-linux-mm@kvack.org] On
-> Behalf Of Muchun Song
-> Sent: Saturday, November 14, 2020 12:00 AM
-> To: corbet@lwn.net; mike.kravetz@oracle.com; tglx@linutronix.de;
-> mingo@redhat.com; bp@alien8.de; x86@kernel.org; hpa@zytor.com;
-> dave.hansen@linux.intel.com; luto@kernel.org; peterz@infradead.org;
-> viro@zeniv.linux.org.uk; akpm@linux-foundation.org; paulmck@kernel.org;
-> mchehab+huawei@kernel.org; pawan.kumar.gupta@linux.intel.com;
-> rdunlap@infradead.org; oneukum@suse.com; anshuman.khandual@arm.com;
-> jroedel@suse.de; almasrymina@google.com; rientjes@google.com;
-> willy@infradead.org; osalvador@suse.de; mhocko@suse.com
-> Cc: duanxiongchun@bytedance.com; linux-doc@vger.kernel.org;
-> linux-kernel@vger.kernel.org; linux-mm@kvack.org;
-> linux-fsdevel@vger.kernel.org; Muchun Song <songmuchun@bytedance.com>
-> Subject: [PATCH v4 09/21] mm/hugetlb: Free the vmemmap pages associated
-> with each hugetlb page
-> 
-> When we allocate a hugetlb page from the buddy, we should free the
-> unused vmemmap pages associated with it. We can do that in the
-> prep_new_huge_page().
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  arch/x86/include/asm/hugetlb.h          |   9 ++
->  arch/x86/include/asm/pgtable_64_types.h |   8 ++
->  mm/hugetlb.c                            |  16 +++
->  mm/hugetlb_vmemmap.c                    | 188
-> ++++++++++++++++++++++++++++++++
->  mm/hugetlb_vmemmap.h                    |   5 +
->  5 files changed, 226 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/hugetlb.h b/arch/x86/include/asm/hugetlb.h
-> index 1721b1aadeb1..c601fe042832 100644
-> --- a/arch/x86/include/asm/hugetlb.h
-> +++ b/arch/x86/include/asm/hugetlb.h
-> @@ -4,6 +4,15 @@
-> 
->  #include <asm/page.h>
->  #include <asm-generic/hugetlb.h>
-> +#include <asm/pgtable.h>
-> +
-> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> +#define vmemmap_pmd_huge vmemmap_pmd_huge
-> +static inline bool vmemmap_pmd_huge(pmd_t *pmd)
-> +{
-> +	return pmd_large(*pmd);
-> +}
-> +#endif
-> 
->  #define hugepages_supported() boot_cpu_has(X86_FEATURE_PSE)
-> 
-> diff --git a/arch/x86/include/asm/pgtable_64_types.h
-> b/arch/x86/include/asm/pgtable_64_types.h
-> index 52e5f5f2240d..bedbd2e7d06c 100644
-> --- a/arch/x86/include/asm/pgtable_64_types.h
-> +++ b/arch/x86/include/asm/pgtable_64_types.h
-> @@ -139,6 +139,14 @@ extern unsigned int ptrs_per_p4d;
->  # define VMEMMAP_START		__VMEMMAP_BASE_L4
->  #endif /* CONFIG_DYNAMIC_MEMORY_LAYOUT */
-> 
-> +/*
-> + * VMEMMAP_SIZE - allows the whole linear region to be covered by
-> + *                a struct page array.
-> + */
-> +#define VMEMMAP_SIZE		(1UL << (__VIRTUAL_MASK_SHIFT -
-> PAGE_SHIFT - \
-> +					 1 + ilog2(sizeof(struct page))))
-> +#define VMEMMAP_END		(VMEMMAP_START + VMEMMAP_SIZE)
-> +
->  #define VMALLOC_END		(VMALLOC_START + (VMALLOC_SIZE_TB <<
-> 40) - 1)
-> 
->  #define MODULES_VADDR		(__START_KERNEL_map +
-> KERNEL_IMAGE_SIZE)
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index f88032c24667..a0ce6f33a717 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1499,6 +1499,14 @@ void free_huge_page(struct page *page)
-> 
->  static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
->  {
-> +	free_huge_page_vmemmap(h, page);
-> +	/*
-> +	 * Because we store preallocated pages on @page->lru,
-> +	 * vmemmap_pgtable_free() must be called before the
-> +	 * initialization of @page->lru in INIT_LIST_HEAD().
-> +	 */
-> +	vmemmap_pgtable_free(page);
-> +
->  	INIT_LIST_HEAD(&page->lru);
->  	set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
->  	set_hugetlb_cgroup(page, NULL);
-> @@ -1751,6 +1759,14 @@ static struct page *alloc_fresh_huge_page(struct
-> hstate *h,
->  	if (!page)
->  		return NULL;
-> 
-> +	if (vmemmap_pgtable_prealloc(h, page)) {
-> +		if (hstate_is_gigantic(h))
-> +			free_gigantic_page(page, huge_page_order(h));
-> +		else
-> +			put_page(page);
-> +		return NULL;
-> +	}
-> +
->  	if (hstate_is_gigantic(h))
->  		prep_compound_gigantic_page(page, huge_page_order(h));
->  	prep_new_huge_page(h, page, page_to_nid(page));
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 332c131c01a8..937562a15f1e 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -74,6 +74,7 @@
->  #include <linux/pagewalk.h>
->  #include <linux/mmzone.h>
->  #include <linux/list.h>
-> +#include <linux/bootmem_info.h>
->  #include <asm/pgalloc.h>
->  #include "hugetlb_vmemmap.h"
-> 
-> @@ -86,6 +87,8 @@
->   * reserve at least 2 pages as vmemmap areas.
->   */
->  #define RESERVE_VMEMMAP_NR		2U
-> +#define RESERVE_VMEMMAP_SIZE		(RESERVE_VMEMMAP_NR <<
-> PAGE_SHIFT)
-> +#define TAIL_PAGE_REUSE			-1
-> 
->  #ifndef VMEMMAP_HPAGE_SHIFT
->  #define VMEMMAP_HPAGE_SHIFT		HPAGE_SHIFT
-> @@ -97,6 +100,21 @@
-> 
->  #define page_huge_pte(page)		((page)->pmd_huge_pte)
-> 
-> +#define vmemmap_hpage_addr_end(addr, end)				 \
-> +({									 \
-> +	unsigned long __boundary;					 \
-> +	__boundary = ((addr) + VMEMMAP_HPAGE_SIZE) &
-> VMEMMAP_HPAGE_MASK; \
-> +	(__boundary - 1 < (end) - 1) ? __boundary : (end);		 \
-> +})
-> +
-> +#ifndef vmemmap_pmd_huge
-> +#define vmemmap_pmd_huge vmemmap_pmd_huge
-> +static inline bool vmemmap_pmd_huge(pmd_t *pmd)
-> +{
-> +	return pmd_huge(*pmd);
-> +}
-> +#endif
-> +
->  static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
->  {
->  	return h->nr_free_vmemmap_pages;
-> @@ -158,6 +176,176 @@ int vmemmap_pgtable_prealloc(struct hstate *h,
-> struct page *page)
->  	return -ENOMEM;
->  }
-> 
-> +/*
-> + * Walk a vmemmap address to the pmd it maps.
-> + */
-> +static pmd_t *vmemmap_to_pmd(unsigned long page)
-> +{
-> +	pgd_t *pgd;
-> +	p4d_t *p4d;
-> +	pud_t *pud;
-> +	pmd_t *pmd;
-> +
-> +	if (page < VMEMMAP_START || page >= VMEMMAP_END)
-> +		return NULL;
-> +
-> +	pgd = pgd_offset_k(page);
-> +	if (pgd_none(*pgd))
-> +		return NULL;
-> +	p4d = p4d_offset(pgd, page);
-> +	if (p4d_none(*p4d))
-> +		return NULL;
-> +	pud = pud_offset(p4d, page);
-> +
-> +	if (pud_none(*pud) || pud_bad(*pud))
-> +		return NULL;
-> +	pmd = pmd_offset(pud, page);
-> +
-> +	return pmd;
-> +}
-> +
-> +static inline spinlock_t *vmemmap_pmd_lock(pmd_t *pmd)
-> +{
-> +	return pmd_lock(&init_mm, pmd);
-> +}
-> +
-> +static inline int freed_vmemmap_hpage(struct page *page)
-> +{
-> +	return atomic_read(&page->_mapcount) + 1;
-> +}
-> +
-> +static inline int freed_vmemmap_hpage_inc(struct page *page)
-> +{
-> +	return atomic_inc_return_relaxed(&page->_mapcount) + 1;
-> +}
-> +
-> +static inline int freed_vmemmap_hpage_dec(struct page *page)
-> +{
-> +	return atomic_dec_return_relaxed(&page->_mapcount) + 1;
-> +}
-> +
-> +static inline void free_vmemmap_page_list(struct list_head *list)
-> +{
-> +	struct page *page, *next;
-> +
-> +	list_for_each_entry_safe(page, next, list, lru) {
-> +		list_del(&page->lru);
-> +		free_vmemmap_page(page);
-> +	}
-> +}
-> +
-> +static void __free_huge_page_pte_vmemmap(struct page *reuse, pte_t *ptep,
-> +					 unsigned long start,
-> +					 unsigned long end,
-> +					 struct list_head *free_pages)
-> +{
-> +	/* Make the tail pages are mapped read-only. */
-> +	pgprot_t pgprot = PAGE_KERNEL_RO;
-> +	pte_t entry = mk_pte(reuse, pgprot);
-> +	unsigned long addr;
-> +
-> +	for (addr = start; addr < end; addr += PAGE_SIZE, ptep++) {
-> +		struct page *page;
-> +		pte_t old = *ptep;
-> +
-> +		VM_WARN_ON(!pte_present(old));
-> +		page = pte_page(old);
-> +		list_add(&page->lru, free_pages);
-> +
-> +		set_pte_at(&init_mm, addr, ptep, entry);
-> +	}
-> +}
-> +
-> +static void __free_huge_page_pmd_vmemmap(struct hstate *h, pmd_t *pmd,
-> +					 unsigned long addr,
-> +					 struct list_head *free_pages)
-> +{
-> +	unsigned long next;
-> +	unsigned long start = addr + RESERVE_VMEMMAP_SIZE;
-> +	unsigned long end = addr + vmemmap_pages_size_per_hpage(h);
-> +	struct page *reuse = NULL;
-> +
-> +	addr = start;
-> +	do {
-> +		pte_t *ptep;
-> +
-> +		ptep = pte_offset_kernel(pmd, addr);
-> +		if (!reuse)
-> +			reuse = pte_page(ptep[TAIL_PAGE_REUSE]);
-> +
-> +		next = vmemmap_hpage_addr_end(addr, end);
-> +		__free_huge_page_pte_vmemmap(reuse, ptep, addr, next,
-> +					     free_pages);
-> +	} while (pmd++, addr = next, addr != end);
-> +
-> +	flush_tlb_kernel_range(start, end);
-> +}
-> +
-> +static void split_vmemmap_pmd(pmd_t *pmd, pte_t *pte_p, unsigned long
-> addr)
+> > ML LED is optional, which is registered as led class device.
+> > RGB LED can be either simple led class device or multicolor device,
+> > which is decided in DT node
+> > If Multicolor LED DT node is exist, it should be register multicolor
+> > device success.
+>
+> But only if CONFIG_LEDS_CLASS_MULTICOLOR is enabled.
+>
+> > Maybe it is more specific to send a new patch?
+> >
+> > Sample DT as below
+> > LED "red" is simple led class device, LED "green&blue" is multicolor de=
+vices.
+> > led@0 {
+> >          reg =3D <0>;
+> >          function =3D LED_FUNCTION_INDICATOR;
+> >          color =3D <LED_COLOR_ID_RED>;
+> >          led-max-microamp =3D <24000>;
+> > };
+> > led@6 {
+> >          reg =3D <6>;
+> >          function =3D LED_FUNCTION_INDICATOR;
+> >          color =3D <LED_COLOR_ID_MULTI>;
+> >
+> >          led@1 {
+> >                  reg =3D <1>;
+> >                  function =3D LED_FUNCTION_INDICATOR;
+> >                  color =3D <LED_COLOR_ID_GREEN>;
+> >                  led-max-microamp =3D <24000>;
+> >          };
+> >          led@2 {
+> >                  reg =3D <2>;
+> >                  function =3D LED_FUNCTION_INDICATOR;
+> >                  color =3D <LED_COLOR_ID_BLUE>;
+> >                  led-max-microamp =3D <24000>;
+> >          };
+> > };
+>
+> It looks OK.
+>
+> >>>> Possible should be also the case when both LEDS_CLASS_FLASH
+> >>>> and LEDS_CLASS_MULTICOLOR are off. Then only LED class device
+> >>>> for ML LED will be registered (provided there is ML DT node).
+> >>>> But to make it possible you should have also "depends on LEDS_CLASS"
+> >>>> in the Kconfig entry.
+> >>>>
+> >>>
+> >>> According to your suggestion,
+> >>> depends on LED_CLASS && LEDS_CLASS_FLASH && OF
+> >>
+> >> s/LED_CLASS/LEDS_CLASS/
+> >>
+> >> And you have to remove LEDS_CLASS_FLASH from above line.
+> >>
+> >>> depends on LEDS_CLASS_MULTICOLOR || !!LEDS_CLASS_MULTICOLOR
+> >>
+> >> s/!!LEDS_CLASS_MULTICOLOR/!LEDS_CLASS_MULTICOLOR/
+> >>
+> >>> depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
+> >>> depends on MFD_MT6360
+> >>
+> >> You will need V4L2_FLASH_LED_CLASS dependency as well, to avoid
+> >> build break, when it is set to 'm'.
+> >>
+> >> To recap, following block of dependencies is required:
+> >>
+> >> depends on LEDS_CLASS && OF
+> >> depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
+> >> depends on LEDS_CLASS_FLASH || !LEDS_CLASS_FLASH
+> >> depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
+> >> depends on MFD_MT6360
+> >>
+> >
+> > LEDS_MT6360 depends on LEDS_CLASS_FLASH, and LEDS_CLASS_FLASH depends
+> > on LEDS_CLASS
+> > Is "depends on LEDS_CLASS" still needed?
+>
+> Yes, because you should allow disabling CONFIG_LEDS_CLASS_FLASH.
+> In such a case driver should still compile and register ML LED class
+> device when it has corresponding DT node.
+>
 
-Hi Muchun,
+ACK
 
-Are you going to restore the pmd mapping after you free the hugetlb? I mean,
-When you free continuous 128MB hugetlb pages with 2MB size, will you
-redo the PMD vmemmap since 2MB PMD can just contain the page struct of
-128MB memory?
+> >>> and source code add constraint
+> >>>
+> >>> #if IS_ENABLED(CONFIG_LEDS_CLASS_MULTICOLOR)
+> >>>       ret =3D devm_led_classdev_multicolor_register_ext(parent, &led-=
+>rgb,
+> >>> init_data);
+> >>> #endif
+> >>>
+> >>> #if IS_ENABLED(CONFIG_LEDS_CLASS_FLASH)
+> >>>       ret =3D devm_led_classdev_flash_register_ext(parent, &led->flas=
+h, init_data);
+> >>> #endif
+> >>
+> >> No, the guards should be in headers. That's why I recommended adding
+> >> no ops for LED flash class registration functions in previous email.
+> >>
+> >> Please compare include/linux/led-class-multicolor.h and do similar
+> >> changes in include/linux/led-class-flash.h.
+> >>
+> >
+> > ACK, I will submit a fixed patch about leds-class-flash.h.
+> >
+> > By the way, if CONFIG_LED_CLASS_MULTICOLOR is not enabled and we don't
+> > use #if IS_ENABLED,
+> > according to led-class-multicolor.h return -EINVAL,
+> > we will register multicolor device fail and cause probe fail.
+>
+> Good point. So led-class-multicolor.h no-ops need to be fixed to return
+> 0 instead of -EINVAL.
+>
+> And no-ops in include/linux/led-class-flash.h should also return 0.
 
-If no, wouldn't it be simpler to only use base pages while populating vmemmap?
-I mean, once we enable the Kconfig option you add for VMEMMAP_FREE, we
-only use base pages to place "page struct" but not split PMD into base pages
-afterwards.
+DT node is first priority to decide how leds work.
+If RGB LED use multicolor form in DT, CONFIG_LEDS_CLASS_FLASH should be def=
+ined.
+Otherwise It is right action to probe fail.
 
-One negative side effect might be that base pages are also used for those pages
-which won't be hugetlb later. but if most pages of host will be hugetlb for
-guest and SPDK, it shouldn't hurt too much.  
-
-Or at least this can be done for hugetlb reserved by cmdline?
-
-> +{
-> +	int i;
-> +	pgprot_t pgprot = PAGE_KERNEL;
-> +	struct mm_struct *mm = &init_mm;
-> +	struct page *page;
-> +	pmd_t old_pmd, _pmd;
-> +
-> +	old_pmd = READ_ONCE(*pmd);
-> +	page = pmd_page(old_pmd);
-> +	pmd_populate_kernel(mm, &_pmd, pte_p);
-> +
-> +	for (i = 0; i < VMEMMAP_HPAGE_NR; i++, addr += PAGE_SIZE) {
-> +		pte_t entry, *pte;
-> +
-> +		entry = mk_pte(page + i, pgprot);
-> +		pte = pte_offset_kernel(&_pmd, addr);
-> +		VM_BUG_ON(!pte_none(*pte));
-> +		set_pte_at(mm, addr, pte, entry);
-> +	}
-> +
-> +	/* make pte visible before pmd */
-> +	smp_wmb();
-> +	pmd_populate_kernel(mm, pmd, pte_p);
-> +}
-> +
-> +static void split_vmemmap_huge_page(struct page *head, pmd_t *pmd)
-> +{
-> +	struct page *pte_page, *t_page;
-> +	unsigned long start = (unsigned long)head & VMEMMAP_HPAGE_MASK;
-> +	unsigned long addr = start;
-> +
-> +	list_for_each_entry_safe(pte_page, t_page, &head->lru, lru) {
-> +		list_del(&pte_page->lru);
-> +		VM_BUG_ON(freed_vmemmap_hpage(pte_page));
-> +		split_vmemmap_pmd(pmd++, page_to_virt(pte_page), addr);
-> +		addr += VMEMMAP_HPAGE_SIZE;
-> +	}
-> +
-> +	flush_tlb_kernel_range(start, addr);
-> +}
-> +
-> +void free_huge_page_vmemmap(struct hstate *h, struct page *head)
-> +{
-> +	pmd_t *pmd;
-> +	spinlock_t *ptl;
-> +	LIST_HEAD(free_pages);
-> +
-> +	if (!free_vmemmap_pages_per_hpage(h))
-> +		return;
-> +
-> +	pmd = vmemmap_to_pmd((unsigned long)head);
-> +	BUG_ON(!pmd);
-> +
-> +	ptl = vmemmap_pmd_lock(pmd);
-> +	if (vmemmap_pmd_huge(pmd))
-> +		split_vmemmap_huge_page(head, pmd);
-> +
-> +	__free_huge_page_pmd_vmemmap(h, pmd, (unsigned long)head,
-> &free_pages);
-> +	freed_vmemmap_hpage_inc(pmd_page(*pmd));
-> +	spin_unlock(ptl);
-> +
-> +	free_vmemmap_page_list(&free_pages);
-> +}
-> +
->  void __init hugetlb_vmemmap_init(struct hstate *h)
->  {
->  	unsigned int order = huge_page_order(h);
-> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-> index 2a72d2f62411..fb8b77659ed5 100644
-> --- a/mm/hugetlb_vmemmap.h
-> +++ b/mm/hugetlb_vmemmap.h
-> @@ -15,6 +15,7 @@
->  void __init hugetlb_vmemmap_init(struct hstate *h);
->  int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page);
->  void vmemmap_pgtable_free(struct page *page);
-> +void free_huge_page_vmemmap(struct hstate *h, struct page *head);
->  #else
->  static inline void hugetlb_vmemmap_init(struct hstate *h)
->  {
-> @@ -28,5 +29,9 @@ static inline int vmemmap_pgtable_prealloc(struct hstate
-> *h, struct page *page)
->  static inline void vmemmap_pgtable_free(struct page *page)
->  {
->  }
-> +
-> +static inline void free_huge_page_vmemmap(struct hstate *h, struct page
-> *head)
-> +{
-> +}
->  #endif /* CONFIG_HUGETLB_PAGE_FREE_VMEMMAP */
->  #endif /* _LINUX_HUGETLB_VMEMMAP_H */
+>
 > --
-> 2.11.0
-> 
-
-Thanks
-Barry
-
+> Best regards,
+> Jacek Anaszewski
