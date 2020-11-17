@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F402B65CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7A12B643F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729909AbgKQNRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:17:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49382 "EHLO mail.kernel.org"
+        id S1733197AbgKQNpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:45:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730529AbgKQNRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:17:15 -0500
+        id S1732150AbgKQNjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:39:49 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2ABBF241A5;
-        Tue, 17 Nov 2020 13:17:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88B4E2465E;
+        Tue, 17 Nov 2020 13:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619034;
-        bh=MMnO4sjRiKkTxWezw4rX+lA7iqfPOga9KpZqGnhN6KY=;
+        s=default; t=1605620388;
+        bh=y24tq/uZoF7Z8AzdoEnd60M9185zguZyDp16jYYr+TE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ewpEWFTJ+bnQSKkDwmBTmY0J+rnas9whQb04OjJb7dbfW/7a2DFC7ioYpJPfjogr
-         L6q6jI2Mr6PQ+IwEkP8s63uIYcaqvPcsy2Wi6JUhuKdZQ5YeDuHQ7rvMeLYPWwCPUe
-         zTuUmNWjLHpSY32/PmZgIpjGe2DDTtWI21TA3a84=
+        b=JRBiSpwRcQ8L7MtTOHEyfyoEKspx5DNJ+SiHFc6Ru57U+lU4d1e0vpw7hmdOa5/9C
+         3NcCaD1s3g6+iL3+Y5KjqJXGtUP8mYT/ByYT+rU0a0SZ5J5WrKLwNYy0d+QL8+UTeZ
+         /25wk7/t1Att6oVZr5/n64/BYzcBv9sV7jqrc1NE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Julien Grall <julien@xen.org>, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>, Wei Liu <wl@xen.org>
-Subject: [PATCH 4.14 73/85] xen/blkback: use lateeoi irq binding
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Vladimir Yerilov <openmindead@gmail.com>
+Subject: [PATCH 5.9 202/255] usb: typec: ucsi: Report power supply changes
 Date:   Tue, 17 Nov 2020 14:05:42 +0100
-Message-Id: <20201117122114.618028230@linuxfoundation.org>
+Message-Id: <20201117122148.762781964@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,125 +43,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-commit 01263a1fabe30b4d542f34c7e2364a22587ddaf2 upstream.
+commit 0e6371fbfba3a4f76489e6e97c1c7f8386ad5fd2 upstream.
 
-In order to reduce the chance for the system becoming unresponsive due
-to event storms triggered by a misbehaving blkfront use the lateeoi
-irq binding for blkback and unmask the event channel only after
-processing all pending requests.
+When the ucsi power supply goes online/offline, and when the
+power levels change, the power supply class needs to be
+notified so it can inform the user space.
 
-As the thread processing requests is used to do purging work in regular
-intervals an EOI may be sent only after having received an event. If
-there was no pending I/O request flag the EOI as spurious.
-
-This is part of XSA-332.
-
+Fixes: 992a60ed0d5e ("usb: typec: ucsi: register with power_supply class")
 Cc: stable@vger.kernel.org
-Reported-by: Julien Grall <julien@xen.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Wei Liu <wl@xen.org>
+Reported-and-tested-by: Vladimir Yerilov <openmindead@gmail.com>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Link: https://lore.kernel.org/r/20201110120547.67922-1-heikki.krogerus@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/block/xen-blkback/blkback.c |   22 +++++++++++++++++-----
- drivers/block/xen-blkback/xenbus.c  |    5 ++---
- 2 files changed, 19 insertions(+), 8 deletions(-)
 
---- a/drivers/block/xen-blkback/blkback.c
-+++ b/drivers/block/xen-blkback/blkback.c
-@@ -183,7 +183,7 @@ static inline void shrink_free_pagepool(
+---
+ drivers/usb/typec/ucsi/psy.c  |    9 +++++++++
+ drivers/usb/typec/ucsi/ucsi.c |    7 ++++++-
+ drivers/usb/typec/ucsi/ucsi.h |    2 ++
+ 3 files changed, 17 insertions(+), 1 deletion(-)
+
+--- a/drivers/usb/typec/ucsi/psy.c
++++ b/drivers/usb/typec/ucsi/psy.c
+@@ -238,4 +238,13 @@ void ucsi_unregister_port_psy(struct ucs
+ 		return;
  
- #define vaddr(page) ((unsigned long)pfn_to_kaddr(page_to_pfn(page)))
- 
--static int do_block_io_op(struct xen_blkif_ring *ring);
-+static int do_block_io_op(struct xen_blkif_ring *ring, unsigned int *eoi_flags);
- static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 				struct blkif_request *req,
- 				struct pending_req *pending_req);
-@@ -608,6 +608,8 @@ int xen_blkif_schedule(void *arg)
- 	struct xen_vbd *vbd = &blkif->vbd;
- 	unsigned long timeout;
- 	int ret;
-+	bool do_eoi;
-+	unsigned int eoi_flags = XEN_EOI_FLAG_SPURIOUS;
- 
- 	set_freezable();
- 	while (!kthread_should_stop()) {
-@@ -632,16 +634,23 @@ int xen_blkif_schedule(void *arg)
- 		if (timeout == 0)
- 			goto purge_gnt_list;
- 
-+		do_eoi = ring->waiting_reqs;
+ 	power_supply_unregister(con->psy);
++	con->psy = NULL;
++}
 +
- 		ring->waiting_reqs = 0;
- 		smp_mb(); /* clear flag *before* checking for work */
- 
--		ret = do_block_io_op(ring);
-+		ret = do_block_io_op(ring, &eoi_flags);
- 		if (ret > 0)
- 			ring->waiting_reqs = 1;
- 		if (ret == -EACCES)
- 			wait_event_interruptible(ring->shutdown_wq,
- 						 kthread_should_stop());
- 
-+		if (do_eoi && !ring->waiting_reqs) {
-+			xen_irq_lateeoi(ring->irq, eoi_flags);
-+			eoi_flags |= XEN_EOI_FLAG_SPURIOUS;
-+		}
++void ucsi_port_psy_changed(struct ucsi_connector *con)
++{
++	if (IS_ERR_OR_NULL(con->psy))
++		return;
 +
- purge_gnt_list:
- 		if (blkif->vbd.feature_gnt_persistent &&
- 		    time_after(jiffies, ring->next_lru)) {
-@@ -1114,7 +1123,7 @@ static void end_block_io_op(struct bio *
-  * and transmute  it to the block API to hand it over to the proper block disk.
-  */
- static int
--__do_block_io_op(struct xen_blkif_ring *ring)
-+__do_block_io_op(struct xen_blkif_ring *ring, unsigned int *eoi_flags)
- {
- 	union blkif_back_rings *blk_rings = &ring->blk_rings;
- 	struct blkif_request req;
-@@ -1137,6 +1146,9 @@ __do_block_io_op(struct xen_blkif_ring *
- 		if (RING_REQUEST_CONS_OVERFLOW(&blk_rings->common, rc))
- 			break;
- 
-+		/* We've seen a request, so clear spurious eoi flag. */
-+		*eoi_flags &= ~XEN_EOI_FLAG_SPURIOUS;
-+
- 		if (kthread_should_stop()) {
- 			more_to_do = 1;
- 			break;
-@@ -1195,13 +1207,13 @@ done:
++	power_supply_changed(con->psy);
  }
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -643,8 +643,10 @@ static void ucsi_handle_connector_change
+ 	role = !!(con->status.flags & UCSI_CONSTAT_PWR_DIR);
  
- static int
--do_block_io_op(struct xen_blkif_ring *ring)
-+do_block_io_op(struct xen_blkif_ring *ring, unsigned int *eoi_flags)
- {
- 	union blkif_back_rings *blk_rings = &ring->blk_rings;
- 	int more_to_do;
+ 	if (con->status.change & UCSI_CONSTAT_POWER_OPMODE_CHANGE ||
+-	    con->status.change & UCSI_CONSTAT_POWER_LEVEL_CHANGE)
++	    con->status.change & UCSI_CONSTAT_POWER_LEVEL_CHANGE) {
+ 		ucsi_pwr_opmode_change(con);
++		ucsi_port_psy_changed(con);
++	}
  
- 	do {
--		more_to_do = __do_block_io_op(ring);
-+		more_to_do = __do_block_io_op(ring, eoi_flags);
- 		if (more_to_do)
- 			break;
- 
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -236,9 +236,8 @@ static int xen_blkif_map(struct xen_blki
- 		BUG();
+ 	if (con->status.change & UCSI_CONSTAT_POWER_DIR_CHANGE) {
+ 		typec_set_pwr_role(con->port, role);
+@@ -674,6 +676,8 @@ static void ucsi_handle_connector_change
+ 			ucsi_register_partner(con);
+ 		else
+ 			ucsi_unregister_partner(con);
++
++		ucsi_port_psy_changed(con);
  	}
  
--	err = bind_interdomain_evtchn_to_irqhandler(blkif->domid, evtchn,
--						    xen_blkif_be_int, 0,
--						    "blkif-backend", ring);
-+	err = bind_interdomain_evtchn_to_irqhandler_lateeoi(blkif->domid,
-+			evtchn, xen_blkif_be_int, 0, "blkif-backend", ring);
- 	if (err < 0) {
- 		xenbus_unmap_ring_vfree(blkif->be->dev, ring->blk_ring);
- 		ring->blk_rings.common.sring = NULL;
+ 	if (con->status.change & UCSI_CONSTAT_CAM_CHANGE) {
+@@ -994,6 +998,7 @@ static int ucsi_register_port(struct ucs
+ 				  !!(con->status.flags & UCSI_CONSTAT_PWR_DIR));
+ 		ucsi_pwr_opmode_change(con);
+ 		ucsi_register_partner(con);
++		ucsi_port_psy_changed(con);
+ 	}
+ 
+ 	if (con->partner) {
+--- a/drivers/usb/typec/ucsi/ucsi.h
++++ b/drivers/usb/typec/ucsi/ucsi.h
+@@ -340,9 +340,11 @@ int ucsi_resume(struct ucsi *ucsi);
+ #if IS_ENABLED(CONFIG_POWER_SUPPLY)
+ int ucsi_register_port_psy(struct ucsi_connector *con);
+ void ucsi_unregister_port_psy(struct ucsi_connector *con);
++void ucsi_port_psy_changed(struct ucsi_connector *con);
+ #else
+ static inline int ucsi_register_port_psy(struct ucsi_connector *con) { return 0; }
+ static inline void ucsi_unregister_port_psy(struct ucsi_connector *con) { }
++static inline void ucsi_port_psy_changed(struct ucsi_connector *con) { }
+ #endif /* CONFIG_POWER_SUPPLY */
+ 
+ #if IS_ENABLED(CONFIG_TYPEC_DP_ALTMODE)
 
 
