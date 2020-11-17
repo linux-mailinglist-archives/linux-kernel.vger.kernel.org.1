@@ -2,174 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3622E2B681A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71B32B6821
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387553AbgKQO6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:58:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729875AbgKQO6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:58:23 -0500
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2387572AbgKQO7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:59:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36667 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729733AbgKQO67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:58:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605625138;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bUjO6Gi+rUqRafvOaWLAMF3YmRkHsdaCsNnrxjA1lmI=;
+        b=Q5HH3gNnB9YpqjFTEVtiQGGaGWjstwhD7IoZ3c2HINJncCEKTmejJS2vuw71stIsfjbgY1
+        SKrI6+VH0CauW2KYLQQldGV20+fNR8HOgNZcwvptco+sSCtBI7VbhAWYs71c8JbcGxT+V1
+        AdAWBR1zgSBULcBV+H1JPjJd0gRgWVM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-CKHrpfupMZW4GVIDn1JBQQ-1; Tue, 17 Nov 2020 09:58:54 -0500
+X-MC-Unique: CKHrpfupMZW4GVIDn1JBQQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B67B24198;
-        Tue, 17 Nov 2020 14:58:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605625102;
-        bh=ntJaD8fOjxDYGmX2Qdy51YlJpyvBSJbhwkEb7CuraqY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=L6+F9+39hJDJ2LJ07FgxJsizUSiHF4hhUH8EyvtqzZSXTJXV9IuJjM4C7bHwckbEr
-         fwqAg8tVHb5cTonFG6VVP28EwX+VaiDxpG8SsRUn9hxD3bNg41d8GSy1sMp7e10jBl
-         6QMw1HhE1xkaelac5XtdVIHyksI5y1bdKZYfrbpw=
-Received: by mail-ot1-f52.google.com with SMTP id 79so19626435otc.7;
-        Tue, 17 Nov 2020 06:58:22 -0800 (PST)
-X-Gm-Message-State: AOAM531+eGMGdPOFYUkDu4I0ZMg9PfFEEeVg38s+cKDb+YBexFibE8ef
-        j1D+2w+j9WUAVyFSFBALV63fHUwi/1gC3qrupw==
-X-Google-Smtp-Source: ABdhPJwJY25KwVJRjJCwnl/SMbCUykxVzPqGEFaXZ7R5w36zpxQ3ggqNg4707acf03hjg1ZUuAa9bHo6M3JMJtJiqU0=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr3083096oti.107.1605625101656;
- Tue, 17 Nov 2020 06:58:21 -0800 (PST)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 305BD5F9E6;
+        Tue, 17 Nov 2020 14:58:52 +0000 (UTC)
+Received: from [10.36.114.99] (ovpn-114-99.ams2.redhat.com [10.36.114.99])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 012896EF49;
+        Tue, 17 Nov 2020 14:58:49 +0000 (UTC)
+Subject: Re: [RFC] depopulate_range_driver_managed() for removing page-table
+ mappings for hot-added memory blocks
+To:     Christoph Hellwig <hch@infradead.org>,
+        Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Suren Baghdasaryan <surenb@google.com>,
+        Pratik Patel <pratikp@codeaurora.org>
+References: <bb30aa44d367ad217e9c877eba7b0a12@codeaurora.org>
+ <20201114102853.GA8618@infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <f1ff619d-5190-1181-6514-41f0c69ffe54@redhat.com>
+Date:   Tue, 17 Nov 2020 15:58:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200916071950.1493-1-gilad@benyossef.com> <20200916071950.1493-2-gilad@benyossef.com>
- <20200923015702.GA3676455@bogus> <CAOtvUMekoMjFij_xDnrwRj2PsfgO8tKx4Jk6d7C5vq-Vh+boWw@mail.gmail.com>
- <CAOtvUMfAKnodo+7EYx2M4yAvxu_VmxwXNRmgOW=KFWi3Wy7msQ@mail.gmail.com>
- <CAL_JsqJditVYJ=4K9i11BjoV2ejABnuMbRyLtm8+e93ApUTu9w@mail.gmail.com> <CAOtvUMdN2NOJ+7g=XnjOyW7W=77OM=d-d69YDk-a-QmO8Wze5w@mail.gmail.com>
-In-Reply-To: <CAOtvUMdN2NOJ+7g=XnjOyW7W=77OM=d-d69YDk-a-QmO8Wze5w@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 17 Nov 2020 08:58:10 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLh88p6nFprUkac-pBi=r_+De0zyJs0UJAJ3o-S+BPzwg@mail.gmail.com>
-Message-ID: <CAL_JsqLh88p6nFprUkac-pBi=r_+De0zyJs0UJAJ3o-S+BPzwg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Steven Price <steven.price@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201114102853.GA8618@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 1:39 AM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
->
-> On Mon, Nov 16, 2020 at 8:54 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Thu, Oct 22, 2020 at 1:18 AM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
-> > >
-> > >
-> > > Hi again,
-> > >
-> > > Any opinion on the suggested below?
-> >
-> > Sorry, lost in the pile...
->
-> No problem at all. I know how it is...
->
->
-> > >
-> > >
-> > > On Tue, Sep 29, 2020 at 9:08 PM Gilad Ben-Yossef <gilad@benyossef.com> wrote:
-> > >>
-> > >>
-> > >> On Wed, Sep 23, 2020 at 4:57 AM Rob Herring <robh@kernel.org> wrote:
-> > >> >
-> > >> > On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
-> > >> > > Document ccree driver supporting new optional parameters allowing to
-> > >> > > customize the DMA transactions cache parameters and ACE bus sharability
-> > >> > > properties.
-> > >> > >
-> > >> > > Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> > >> > > ---
-> > >> > >  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 ++++
-> > >> > >  1 file changed, 4 insertions(+)
-> > >> > >
-> > >> > > diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> > >> > > index 6130e6eb4af8..1a1603e457a8 100644
-> > >> > > --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> > >> > > +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> > >> > > @@ -13,6 +13,10 @@ Required properties:
-> > >> > >  Optional properties:
-> > >> > >  - clocks: Reference to the crypto engine clock.
-> > >> > >  - dma-coherent: Present if dma operations are coherent.
-> > >> > > +- awcache: Set write transactions cache attributes
-> > >> > > +- arcache: Set read transactions cache attributes
-> > >> >
->
-> <snip>
->
-> > >> > These could also just be implied by the compatible string (and requiring
-> > >> > an SoC specific one).
-> > >>
-> > >> hm... we could do it but this will require us to know (and publicly
-> > >> acknowledge) of every SoC making use of this piece of hardware design.
-> >
-> > That's already a requirement in general. Sometimes we can avoid it,
-> > but that's cases of getting lucky.
-> >
-> > >> There is currently no other part of the driver that needs this.
-> >
-> > If your DT is part of firmware, then waiting until adding some driver
-> > feature or quirk based on a new DT property is too late. Whereas with
-> > a SoC specific compatible, you can handle any new feature or quirk
-> > without a DT change (e.g. just a stable kernel update). Some platforms
-> > may not care about that model, but in general that's the policy we
-> > follow. Not doing that, we end up with the DWC3 binding.
-> >
-> > A fallback compatible is how we avoid updating drivers for every
-> > single SoC unless needed.
->
-> OK, I now better understand what you meant and that does make some
-> sense and I will defer to your better judgment  about the proper way
-> to do this.
->
-> Having said that, there is still something that bugs me about this,
-> even just at the level of better understanding why we do things:
->
-> Way back when, before DT, we had SoC specific code that identified the
-> SoC somehow and set things up in a SoC specific way.
-> Then we introduced DT as a way to say - "hey look, this is how my
-> busses looks like, these are the devices I have, deal with it" and I
-> always assumed that this was meant as a way to release us from having
-> SoC specific setup code.
+On 14.11.20 11:28, Christoph Hellwig wrote:
+> On Fri, Nov 13, 2020 at 06:41:22PM -0800, Sudarshan Rajagopalan wrote:
+>>
+>> Hello,
+>>
+>> When memory blocks are removed, along with removing the memmap entries,
+>> memory resource and memory block devices, the arch specific
+>> arch_remove_memory() is called which takes care of tearing down the
+>> page-tables.
+>>
+>> Suppose there???s a usecase where the removed memory blocks will be added
+>> back into the system at later point,
+> 
+> Stop this crap.  If you have a use case post the actual use here,
+> including code and specs.  If you don't have that don't waste peoples
+> time on your pipe dream.
+> 
 
-Yes, but in the end it's a judgement call as to what the boundary is.
-Take clocks for example, in the beginning we were trying to describe
-clocks on a mux/divider/gate level in DT. We realized this would
-result in hundreds to thousands of DT nodes and it would never be
-completely correct. So we model only the leaf clocks for the most part
-and there's lots of SoC code for clock controller blocks still.
+Adding to that, we (upstream people) are not interested in introducing 
+and maintaining kernel interfaces/infrastructure only relevant to 
+out-of-tree / proprietary drivers. If you're planning on upstreaming, 
+then please share the actual problem you are trying to solve and the 
+issues you see with the current interfaces/infrastructure, best along 
+with an RFC that shows the bigger picture.
 
-The questions for having properties or not to ask is:
+Having that said, what you describe sounds more like a special kind of 
+allocation, whereby the linear mapping is removed, similar to [1].
 
-Is this board specific? Yes, then use a property.
-
-Who needs to change this and when? Should/would you want to control
-this in your PC BIOS or via a BIOS update?
+[1] https://lkml.kernel.org/r/20201111145322.15793-1-david@redhat.com
 
 
-Zero SoC code was never a goal. It was about a standard way to define
-SoCs and having common frameworks (we have a common clock api, but not
-implementation at the time). We have *way* less SoC code per SoC than
-we used to. At the start of the DT conversion for Arm, we had ~400
-boards and now we're at ~1400 last I checked.
+-- 
+Thanks,
 
-> It seems now potentially every SoC vendor needs to modify not just the
-> device tree source (which makes sense of course) but also the driver
-> supporting their platform.
-> It now looks like we've come a full circle to me :-)
+David / dhildenb
 
-As I said, if the h/w is 'exactly the same' (hint: it rarely is), then
-use a fallback compatible. Then the new SoC specific compatible is
-there just in case.
-
-Think of compatible just as a VID/PID in PCI and USB land (though the
-closest thing to a fallback there is class codes). They are the only
-way we can uniquely identify h/w.
-
-Rob
