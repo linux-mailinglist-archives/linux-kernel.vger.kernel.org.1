@@ -2,96 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657352B5620
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7DD2B5622
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729513AbgKQBQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 20:16:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbgKQBQK (ORCPT
+        id S1731624AbgKQBQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:16:19 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:32879 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726321AbgKQBQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:16:10 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFCEC0613CF;
-        Mon, 16 Nov 2020 17:16:10 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id m9so5228152pgb.4;
-        Mon, 16 Nov 2020 17:16:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8QL8bbL+oGG6j6oJ9WDXTBxGYp2AuVWWexQCgXhyNIw=;
-        b=UzrhGmoUmM8ZOz+737sUWqYfpZdtl90uocjfMWmiVl9dmtFbEMana3Bc3y8L9pp7II
-         wnIpwQwAs70r5FmJBe+p10GqkY84K1z+l1imKI25hqOoG7gPXQccxHBPMS7nsymmz/YU
-         6gvgFLulRuKS2VqsccCdluS6S4soaChBTxcLwijS1onUrjad1u/DvPJe6e9ZvdeeOC5T
-         CbCpRZ4wvMez0H2dz5reHYPdu6qlyjTKzntDoQsCsbQzB5nGOkGax9Jk9UDSfO7fveLX
-         i0TJvZVrRZnMqmZZplsdXRGfvKRfOlIQ6BQiVPIGbY0dtA0um6bhTEYCnAv7dpqPM6NB
-         2ahw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8QL8bbL+oGG6j6oJ9WDXTBxGYp2AuVWWexQCgXhyNIw=;
-        b=Zsd5JUqyFWJAo5jLd7AklKwIBQjKa3rMPxFgja1/g+3xF533vQDTghfiCZ7JrKSMCn
-         yXzAeX9BZPVHpdgEgLMarknuvXessMQvE8fMlKb9TcsUvWDQdVVby2mHCPPg98tEWT1M
-         me0hNtdV01YOC5LuLl230QCgASI8aRKgUodCH14+Im3ctp9+9U9G6yFGGu+3n48GNmLd
-         3dKW74IRok4Sc949l3xv0j9MScu+Fo52hl0XylUPI/8W7fhkm70eWzc+5oZvvy2aKgVY
-         TSIxZ/8snINS1HNP8b50vqTDPBzRsqdH+paE3v8LvbVv/JlouFYcAWffQgrmTsQJa0Sw
-         dl5g==
-X-Gm-Message-State: AOAM532CYzvXpBBCSITd/scN15mG/QGnlHfbkVwFK+jtOd209RSfxG/L
-        gw2Bm2XW2zM6cHEoHO2vvqQ=
-X-Google-Smtp-Source: ABdhPJyZmrK95Glb6r1a/zk7QiBx5GV1jnOBBZa8fDAoJbRhXkoD/TKm2WoqieMhtraGYKlO38A0hA==
-X-Received: by 2002:a17:90a:4a12:: with SMTP id e18mr1870538pjh.9.1605575770256;
-        Mon, 16 Nov 2020 17:16:10 -0800 (PST)
-Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id h14sm19306404pfr.32.2020.11.16.17.16.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 16 Nov 2020 17:16:09 -0800 (PST)
-Date:   Mon, 16 Nov 2020 17:16:03 -0800
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Tao Ren <taoren@fb.com>
-Subject: Re: [PATCH] ARM: dts: aspeed: minipack: Fixup I2C tree
-Message-ID: <20201117011602.GA28529@taoren-ubuntu-R90MNF91>
-References: <20201110072446.8218-1-rentao.bupt@gmail.com>
- <CACPK8Xcpj_LsYOJ=S0p1D5Wqof_2m7SLnPRantQen61B2_XjAA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACPK8Xcpj_LsYOJ=S0p1D5Wqof_2m7SLnPRantQen61B2_XjAA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Mon, 16 Nov 2020 20:16:18 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201117011616epoutp01ca8ccd805b449f5ddd0e07e3776c7d7c~IJqllZ11J1606616066epoutp01j
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:16:16 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201117011616epoutp01ca8ccd805b449f5ddd0e07e3776c7d7c~IJqllZ11J1606616066epoutp01j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1605575776;
+        bh=JHbfhQmZY2Kdf9uCqVWWi/pKiuSfpP7K0ZJj50SZUM0=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=ZnUyLObvDW1gdN6IzQCUNArBCn2SCsKdKFSgX0GPRot4UeGfIwG43tPykMWH1X5kv
+         t65NzE9krznNYJU8fEkg9inWSE3WQUf5DSUscWpIuGWyB5dM3z2iY/8ht1/sEC3swT
+         8GoR0CR811KCVBNm3h2FjOR1K3RoacJrGsngW6GI=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20201117011615epcas2p209777b38dfd23e07fee8a9a06af390dd~IJqlUGGmv2294422944epcas2p2e;
+        Tue, 17 Nov 2020 01:16:15 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.186]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4CZp1B1WVGzMqYkq; Tue, 17 Nov
+        2020 01:16:14 +0000 (GMT)
+X-AuditID: b6c32a47-72bff7000000d2c4-52-5fb3245c58b0
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7C.49.53956.C5423BF5; Tue, 17 Nov 2020 10:16:12 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH net-next v2 1/3] nfc: s3fwrn5: Remove the max_payload
+Reply-To: bongsu.jeon@samsung.com
+Sender: Bongsu Jeon <bongsu.jeon@samsung.com>
+From:   Bongsu Jeon <bongsu.jeon@samsung.com>
+To:     "krzk@kernel.org" <krzk@kernel.org>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>
+CC:     "linux-nfc@lists.01.org" <linux-nfc@lists.01.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
+Date:   Tue, 17 Nov 2020 10:16:11 +0900
+X-CMS-MailID: 20201117011611epcms2p22fb0315814144e94856a96014c376a04
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLKsWRmVeSWpSXmKPExsWy7bCmmW6MyuZ4g89LJCy2NE9it7g9cRqb
+        xfnzG9gtLu+aw2YxZ8NmdotjC8Qc2Dw2repk8+ie/Y/Fo2/LKkaPz5vkAliicmwyUhNTUosU
+        UvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgHYrKZQl5pQChQISi4uV
+        9O1sivJLS1IVMvKLS2yVUgtScgoMDQv0ihNzi0vz0vWS83OtDA0MjEyBKhNyMjpmNjAVnBCu
+        eH9jLWMD40aBLkZODgkBE4lHd1pZuhi5OIQEdjBKvH07na2LkYODV0BQ4u8OYZAaYQFXic3X
+        V7KB2EICihL/O86xQcR1JV78PQpmswloS6w92sgE0ioiECLxsa8WZCSzwGpGic6fncwQu3gl
+        ZrQ/ZYGwpSW2L9/KCGFrSPxY1gtVIypxc/Vbdhj7/bH5UDUiEq33zkLVCEo8+LkbKi4p8Xbf
+        PHaQZRIC7YwS53/+YINwZjBKnNr8F6pDX2LxuRVMIDavgK9E+7LXYHEWAVWJZd2zWCFqXCTW
+        9t0Gs5kF5CW2v53DDPINs4CmxPpd+iCmhICyxJFbLBAVfBIdh/+yw/y1Y94TJghbVaK3+QsT
+        zI+TZ7dA3ekhcbO/nwUShoESC5ZvYZnAqDALEdKzkOydhbB3ASPzKkax1ILi3PTUYqMCY+TI
+        3cQIToda7jsYZ7z9oHeIkYmD8RCjBAezkgivi8nGeCHelMTKqtSi/Pii0pzU4kOMpkAfT2SW
+        Ek3OBybkvJJ4Q1MjMzMDS1MLUzMjCyVx3tCVffFCAumJJanZqakFqUUwfUwcnFINTArv54gX
+        PzIWOc94RLs1uyjbzHydUvIGjSihr3c1rnz+XNP76l+rEdt36V9fb+XdsJDe/bb79QvOePPd
+        UzxnflNaVbD43d+W6Ue6iiR5f662Tm39qajhKb3aedtfgYcrI9Lyjri83St+Q271tPnJR6wM
+        NJkf1lS5CO8P3MgbsnTW2SRzvte8/SzHWNqMlM8tny+kLTux78X99YdTGzJlL//45rV8umbp
+        1tnqZ89UyMxaef7cbeOj056zCX6bZyN+tmX28h87zFwD7dv7LVvyT+6WnLxU/5hwcFhj7dRV
+        fc+UUmOzlNmctL60erJ/Ebk+qZDnv2nK3EsJMR6GB8+/+L5LbtZLvZQS5ajT1gxpS5RYijMS
+        DbWYi4oTAUAa2goQBAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201117011611epcms2p22fb0315814144e94856a96014c376a04
+References: <CGME20201117011611epcms2p22fb0315814144e94856a96014c376a04@epcms2p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 03:33:45AM +0000, Joel Stanley wrote:
-> On Tue, 10 Nov 2020 at 07:24, <rentao.bupt@gmail.com> wrote:
-> >
-> > From: Tao Ren <rentao.bupt@gmail.com>
-> >
-> > Create all the i2c switches in device tree and use aliases to assign
-> > child channels with consistent bus numbers.
-> >
-> > Besides, "i2c-mux-idle-disconnect" is set for all the i2c switches to
-> > avoid potential conflicts when multiple devices (beind the switches) use
-> > the same device address.
-> >
-> > Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
-> 
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
-> 
-> I will apply for 5.11.
+max_payload is unused.
 
-Great. Thank you Joel!
+Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+---
+ drivers/nfc/s3fwrn5/core.c    | 3 +--
+ drivers/nfc/s3fwrn5/i2c.c     | 4 +---
+ drivers/nfc/s3fwrn5/s3fwrn5.h | 3 +--
+ 3 files changed, 3 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/nfc/s3fwrn5/core.c b/drivers/nfc/s3fwrn5/core.c
+index ba6c486d6465..f8e5d78d9078 100644
+--- a/drivers/nfc/s3fwrn5/core.c
++++ b/drivers/nfc/s3fwrn5/core.c
+@@ -136,7 +136,7 @@ static struct nci_ops s3fwrn5_nci_ops = {
+ };
+ 
+ int s3fwrn5_probe(struct nci_dev **ndev, void *phy_id, struct device *pdev,
+-	const struct s3fwrn5_phy_ops *phy_ops, unsigned int max_payload)
++	const struct s3fwrn5_phy_ops *phy_ops)
+ {
+ 	struct s3fwrn5_info *info;
+ 	int ret;
+@@ -148,7 +148,6 @@ int s3fwrn5_probe(struct nci_dev **ndev, void *phy_id, struct device *pdev,
+ 	info->phy_id = phy_id;
+ 	info->pdev = pdev;
+ 	info->phy_ops = phy_ops;
+-	info->max_payload = max_payload;
+ 	mutex_init(&info->mutex);
+ 
+ 	s3fwrn5_set_mode(info, S3FWRN5_MODE_COLD);
+diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
+index dc995286be84..0ffa389066a0 100644
+--- a/drivers/nfc/s3fwrn5/i2c.c
++++ b/drivers/nfc/s3fwrn5/i2c.c
+@@ -19,7 +19,6 @@
+ 
+ #define S3FWRN5_I2C_DRIVER_NAME "s3fwrn5_i2c"
+ 
+-#define S3FWRN5_I2C_MAX_PAYLOAD 32
+ #define S3FWRN5_EN_WAIT_TIME 150
+ 
+ struct s3fwrn5_i2c_phy {
+@@ -248,8 +247,7 @@ static int s3fwrn5_i2c_probe(struct i2c_client *client,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = s3fwrn5_probe(&phy->ndev, phy, &phy->i2c_dev->dev, &i2c_phy_ops,
+-		S3FWRN5_I2C_MAX_PAYLOAD);
++	ret = s3fwrn5_probe(&phy->ndev, phy, &phy->i2c_dev->dev, &i2c_phy_ops);
+ 	if (ret < 0)
+ 		return ret;
+ 
+diff --git a/drivers/nfc/s3fwrn5/s3fwrn5.h b/drivers/nfc/s3fwrn5/s3fwrn5.h
+index ede68bb5eeae..9d5f34759225 100644
+--- a/drivers/nfc/s3fwrn5/s3fwrn5.h
++++ b/drivers/nfc/s3fwrn5/s3fwrn5.h
+@@ -34,7 +34,6 @@ struct s3fwrn5_info {
+ 	struct device *pdev;
+ 
+ 	const struct s3fwrn5_phy_ops *phy_ops;
+-	unsigned int max_payload;
+ 
+ 	struct s3fwrn5_fw_info fw_info;
+ 
+@@ -79,7 +78,7 @@ static inline int s3fwrn5_write(struct s3fwrn5_info *info, struct sk_buff *skb)
+ }
+ 
+ int s3fwrn5_probe(struct nci_dev **ndev, void *phy_id, struct device *pdev,
+-	const struct s3fwrn5_phy_ops *phy_ops, unsigned int max_payload);
++	const struct s3fwrn5_phy_ops *phy_ops);
+ void s3fwrn5_remove(struct nci_dev *ndev);
+ 
+ int s3fwrn5_recv_frame(struct nci_dev *ndev, struct sk_buff *skb,
+-- 
+2.17.1
 
-Cheers,
-
-Tao
