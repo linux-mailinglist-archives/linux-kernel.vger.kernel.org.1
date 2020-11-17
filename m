@@ -2,86 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82832B7031
+	by mail.lfdr.de (Postfix) with ESMTP id 576522B7030
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728502AbgKQUfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:35:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727340AbgKQUfa (ORCPT
+        id S1728411AbgKQUf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:35:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34470 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728195AbgKQUf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:35:30 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA984C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:35:29 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id 74so31979272lfo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:35:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CUqG2S3O5iVKKIdkeqzaWrGNBNP8isqkl4rsycIm70U=;
-        b=oWhwGjqYt6rOLIpCStPQBXV8QWtZnwUn/hQGu52cU3RUIPT5wxF/peJnuiQHp87yzn
-         q1KV/E/rxa6f2f3yZOqY0DAEe+DMtfwyiGPz8ajXUwPF5KpNzzEjLuUcOOsMpfFBnRlk
-         cJROJM55gDbZHFVVLUmOc0MjHJKTec80sVQOWzihCtp9FIDskjS0Eo/TIrpzJpNhlgaS
-         XnSUsK2555TuXhrzI5tYV6En9AkpSonFJSuGXk1n8kJJXUOVYR4pAFn5oQqEbSAqCWqW
-         E1ER1hg6dzTIv1qln8i5nHRQYA05BHveho1X0IOLmu735CVMH6OzBxtn/zeHBY4JwQkX
-         9nrw==
+        Tue, 17 Nov 2020 15:35:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605645324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vByS5kpz80AZKFxgvOpQGebYSL7WXU8v4XJYr3GtPus=;
+        b=eYqrxXfQLw6OUmFKzexwoPYO/CdzyBNNwaoCRPCirSjpd2yWPwtcVhlDWj3iwhMim5RRQ3
+        8LiNixOXdpyP+lqdbPGkaPL57uG3P32KKaLjRGZoCaK3JStjohgV+jfT/nylTqnZbOWNzk
+        KkAigABpLLX0tSHyLWqU8E/FYYgSWzY=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-ZKzTXsEqMtGliV1i4UNsDQ-1; Tue, 17 Nov 2020 15:35:23 -0500
+X-MC-Unique: ZKzTXsEqMtGliV1i4UNsDQ-1
+Received: by mail-qt1-f200.google.com with SMTP id i20so13374179qtr.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:35:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CUqG2S3O5iVKKIdkeqzaWrGNBNP8isqkl4rsycIm70U=;
-        b=QnmzDc/sfbcJBhGfJBZyCk3bmoV9C/QBWj25UgbYP7wz/0d3+iSXRFuhvv+aWspIwV
-         LII6sm97h1cqYo/pVng95gcG2zOWmT9COe72RaLHxQWHXWTqeN40ZT+Y2brZL3k3BIKL
-         sfUzY1SRcuOGe20JSpSdbm/cIW4leoTR/MW5mYXO4VOa8oruHIG5UWrbGhpj44Q4NIzo
-         fvGeGjZlfn7+CqnI1WpEbks0b9KXR8a0Rlpvo65d4OHjndM3X2BYmVF8NLr7y+CVoGBc
-         TORLLeF9D8uX28lrgIQPABiok2zWObqJ/wOuT5cHp+nhX0WQr0HOEFFFT/NJatCtcCAv
-         bQ0g==
-X-Gm-Message-State: AOAM533WiuQBrtf5j1qnFz6ltxyoQusr7w48bdhkIfb9FDtE9nxWPWLq
-        1C75XWxXHPtc/2z37Nu6QqhSNEn0hMEOpZCzLhjRTg==
-X-Google-Smtp-Source: ABdhPJwCDvm4/w79+gK5F8PMQmv1tpX3mMErfW/IFt4EzZL/b27lJfAggTSLrQyOPxfCwI6a1O+grGFL5Rq39GYdYr8=
-X-Received: by 2002:a19:7b06:: with SMTP id w6mr2565896lfc.260.1605645328269;
- Tue, 17 Nov 2020 12:35:28 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=vByS5kpz80AZKFxgvOpQGebYSL7WXU8v4XJYr3GtPus=;
+        b=P/aPJ3N5ChJgR1Js12vAyh0Jn9VCv047ikc3qzGZaIuy2xwcC4PzqSuTLIQbcs2kJ7
+         QlP1xKw23RwEzdLD1mfkBetMvZxe7CZ4c2GBQczJmISlxtpgcqVk1E6iYrXc7cYTxo1S
+         6H7QOXohTTVozHMcP/pAezMifchpTey423I2zhwnLPb9OTW+l3ALkkQwHPY/Wv7xxe7G
+         oaJzxyTUPiXFMljtSqX0duGB3Jf3V9T2ZLrEsO5JvaqRMUbVgUFE/ElKhTu0YAW7FIvV
+         xaaM8kfzgNGPJC1H/g5Mlp93jke+SJaN/0hyz60M3ZbIDqstFhJJuXgrGjRU8e80qrL5
+         VCCQ==
+X-Gm-Message-State: AOAM531rCukndo4mA44SlUgpXpeUKR5y6pweWWyz9uPzAZog+jmqcqkw
+        ABje8QjUfd5Rba066I/9v8cD70Ywtv9ywnCqPUJ4e1VTSlxNQ6pVVTxCf0fcRrDiImO+ySZ0pnL
+        FIeTuGhlqoAn+Z3A1KLH42fqB
+X-Received: by 2002:a37:9a43:: with SMTP id c64mr1499051qke.223.1605645322575;
+        Tue, 17 Nov 2020 12:35:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyVFW4odEPbASd6yXmPk9DUs3zSDbet8Mv70Ww7X01oVR3uetiTAQ28SO0aj8M6nWXlW01YGw==
+X-Received: by 2002:a37:9a43:: with SMTP id c64mr1499028qke.223.1605645322308;
+        Tue, 17 Nov 2020 12:35:22 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id z16sm16139413qka.18.2020.11.17.12.35.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 12:35:21 -0800 (PST)
+Subject: Re: [PATCH 2/2] fpga: dfl: look for vendor specific capability
+To:     matthew.gerlach@linux.intel.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mdf@kernel.org, hao.wu@intel.com,
+        linux-doc@vger.kernel.org, corbet@lwn.net
+References: <20201117012552.262149-1-matthew.gerlach@linux.intel.com>
+ <20201117012552.262149-3-matthew.gerlach@linux.intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <53b9cb12-8002-5737-ba8b-7c59687ead5a@redhat.com>
+Date:   Tue, 17 Nov 2020 12:35:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <cover.1605635248.git.agx@sigxcpu.org> <85b58da3eb68b81c1bdf7fc2f4a38b1f9ad8c90a.1605635248.git.agx@sigxcpu.org>
-In-Reply-To: <85b58da3eb68b81c1bdf7fc2f4a38b1f9ad8c90a.1605635248.git.agx@sigxcpu.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Nov 2020 21:35:17 +0100
-Message-ID: <CACRpkdZ982o2pNbg0Zcfma80HmemRWyLBmsgeqpQTUdknD1=UQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/6] drm/panel: st7703: Use dev_err_probe
-To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201117012552.262149-3-matthew.gerlach@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 6:49 PM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
 
-> Less code and easier probe deferral debugging.
+On 11/16/20 5:25 PM, matthew.gerlach@linux.intel.com wrote:
+> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 >
-> Signed-off-by: Guido G=C3=BCnther <agx@sigxcpu.org>
+> A DFL may not begin at offset 0 of BAR 0.  A PCIe vendor
+> specific capability can be used to specify the start of a
+> number of DFLs.
+>
+> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> ---
+>  Documentation/fpga/dfl.rst | 10 +++++
+>  drivers/fpga/dfl-pci.c     | 88 +++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 97 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
+> index 0404fe6ffc74..c81ceb1e79e2 100644
+> --- a/Documentation/fpga/dfl.rst
+> +++ b/Documentation/fpga/dfl.rst
+> @@ -501,6 +501,16 @@ Developer only needs to provide a sub feature driver with matched feature id.
+>  FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
+>  could be a reference.
+>  
+> +Location of DFLs on PCI bus
+> +===========================
+> +The start of the DFL is assumed to be offset 0 of bar 0.
+> +Alternatively, a vendor specific capability structure can be used to
+> +specify the location of one or more DFLs.  Intel has reserved the
+> +vendor specific id of 0x43 for this purpose.  The vendor specific
+> +data begins with a 4 byte count of the number of DFLs followed 4 byte
+> +Offset/BIR fields for each DFL. Bits 2:0 of Offset/BIR field indicates
+> +the BAR, and bits 31:3 form the 8 byte aligned offset where bits 2:0 are
+> +zero.
+>  
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Does the 'Device Feature List (DFL) Overview' section need to change ?
 
-Yours,
-Linus Walleij
+Maybe some more ascii art on location of bar0 vs vendor specific ?
+
+>  Open discussion
+>  ===============
+> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> index b1b157b41942..5418e8bf2496 100644
+> --- a/drivers/fpga/dfl-pci.c
+> +++ b/drivers/fpga/dfl-pci.c
+> @@ -27,6 +27,13 @@
+>  #define DRV_VERSION	"0.8"
+Since basic pci functionality is changing, consider incrementing this version.
+>  #define DRV_NAME	"dfl-pci"
+>  
+> +#define PCI_VNDR_ID_DFLS 0x43
+> +
+> +#define PCI_VNDR_DFLS_CNT_OFFSET 8
+> +#define PCI_VNDR_DFLS_RES_OFFSET 0x0c
+> +
+> +#define PCI_VND_DFLS_RES_BAR_MASK 0x7
+Is this missing a R? PCI_VNDR_DFLS_RES_BAR_MASK ?
+> +
+>  struct cci_drvdata {
+>  	struct dfl_fpga_cdev *cdev;	/* container device */
+>  };
+> @@ -119,6 +126,82 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
+>  	return table;
+>  }
+>  
+> +static int find_dfl_in_cfg(struct pci_dev *pcidev,
+> +			   struct dfl_fpga_enum_info *info)
+> +{
+> +	u32 bar, offset, vndr_hdr, dfl_cnt, dfl_res;
+> +	int dfl_res_off, i, voff = 0;
+> +	resource_size_t start, len;
+> +
+> +	while ((voff = pci_find_next_ext_capability(pcidev, voff, PCI_EXT_CAP_ID_VNDR))) {
+> +
+extra nl
+> +		pci_read_config_dword(pcidev, voff + PCI_VNDR_HEADER, &vndr_hdr);
+
+A general problem.
+
+Return of pci_read is not checked, nor are the values ex/ vndr_hdr initialized.
+
+> +
+> +		dev_dbg(&pcidev->dev,
+> +			"vendor-specific capability id 0x%x, rev 0x%x len 0x%x\n",
+> +			PCI_VNDR_HEADER_ID(vndr_hdr),
+> +			PCI_VNDR_HEADER_REV(vndr_hdr),
+> +			PCI_VNDR_HEADER_LEN(vndr_hdr));
+> +
+> +		if (PCI_VNDR_HEADER_ID(vndr_hdr) == PCI_VNDR_ID_DFLS)
+> +			break;
+> +	}
+> +
+> +	if (!voff) {
+> +		dev_dbg(&pcidev->dev, "%s no VSEC found\n", __func__);
+> +		return -ENODEV;
+> +	}
+> +
+> +	pci_read_config_dword(pcidev, voff + PCI_VNDR_DFLS_CNT_OFFSET, &dfl_cnt);
+> +	dev_info(&pcidev->dev, "dfl_cnt %d\n", dfl_cnt);
+> +	for (i = 0; i < dfl_cnt; i++) {
+Is there a upper limit on the dfl_cnt ? maybe PCI_STD_NUM_BARS ?
+> +		dfl_res_off = voff + PCI_VNDR_DFLS_RES_OFFSET +
+> +				      (i * sizeof(dfl_res));
+> +		pci_read_config_dword(pcidev, dfl_res_off, &dfl_res);
+> +
+> +		dev_dbg(&pcidev->dev, "dfl_res 0x%x\n", dfl_res);
+> +
+> +		bar = dfl_res & PCI_VND_DFLS_RES_BAR_MASK;
+an extra nl, fix the similar ones as well.
+> +
+> +		if (bar >= PCI_STD_NUM_BARS) {
+> +			dev_err(&pcidev->dev, "%s bad bar number %d\n",
+> +				__func__, bar);
+> +			return -EINVAL;
+> +		}
+> +
+> +		len = pci_resource_len(pcidev, bar);
+> +
+> +		if (len == 0) {
+> +			dev_err(&pcidev->dev, "%s unmapped bar number %d\n",
+> +				__func__, bar);
+> +			return -EINVAL;
+> +		}
+> +
+> +		offset = dfl_res & ~PCI_VND_DFLS_RES_BAR_MASK;
+> +
+> +		if (offset >= len) {
+> +			dev_err(&pcidev->dev, "%s bad offset %u >= %llu\n",
+> +				__func__, offset, len);
+> +			return -EINVAL;
+> +		}
+> +
+> +		dev_info(&pcidev->dev, "%s BAR %d offset 0x%x\n", __func__, bar, offset);
+> +
+> +		start = pci_resource_start(pcidev, bar) + offset;
+> +		len -= offset;
+> +
+> +		if (!PAGE_ALIGNED(start)) {
+> +			dev_err(&pcidev->dev, "%s unaliged start 0x%llx\n",
+> +				__func__, start);
+> +			return -EINVAL;
+> +		}
+> +
+> +		dfl_fpga_enum_info_add_dfl(info, start, len);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int find_dfl_in_bar0(struct pci_dev *pcidev,
+>  			    struct dfl_fpga_enum_info *info)
+>  {
+> @@ -221,7 +304,10 @@ static int cci_enumerate_feature_devs(struct pci_dev *pcidev)
+>  			goto irq_free_exit;
+>  	}
+>  
+> -	ret = find_dfl_in_bar0(pcidev, info);
+> +	ret = find_dfl_in_cfg(pcidev, info);
+> +
+> +	if (ret)
+> +		ret = find_dfl_in_bar0(pcidev, info);
+
+Is this really an either/or ?
+
+Could there be a base functionality on bar0 and a skew functionality on vendor bars?
+
+If vendor is going to completely override, why not use bar0 ?
+
+Tom
+
+>  
+>  	if (ret)
+>  		goto irq_free_exit;
+
