@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC232B7245
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BED7A2B722D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729774AbgKQXVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:21:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
+        id S1729136AbgKQXUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:20:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728985AbgKQXUn (ORCPT
+        with ESMTP id S1729041AbgKQXUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:20:43 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D86C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:43 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id x13so98107qvk.8
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:43 -0800 (PST)
+        Tue, 17 Nov 2020 18:20:45 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39747C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:45 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id u4so22737472qkk.10
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:20:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PHwCPb6C7f/1AEFvEjifktUOCyNsLZKi2lWeLxumHTE=;
-        b=ftP9mCWUt43LZdDBROhLjBsVJg1sH6Agm0l19rcbu0SPzrtU/x51yQShZE2Q0/Xgz5
-         n2lhlGyqXAszu5n2D5AIHf1Of2ciKCOShIu72cjDQPo8Lt2/TLv7y1L5Od4gzxmih+kt
-         S4jThKClB8pSaoeFYgGCERpeXsS0plFWZILTE=
+        bh=LiU0BWgJBIpvRDAjRzw3hLX7dmdBpDccgDcQDLBe/m4=;
+        b=Ndq62+H/pKw9FNjZWjaO2SV6fOY1Sw5lCewH3n47OM3TjjDY6VTfAEnhooT8FACTBU
+         97su8diKNwLmNwAjt0YvPkmh/c3YpSamcHoSPnNxQ9gB9fkmaC2hwIzaJonmOyYNMr58
+         LpwmlLqc/ActlE6uHAph6G7EXgSem22nkZNLA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PHwCPb6C7f/1AEFvEjifktUOCyNsLZKi2lWeLxumHTE=;
-        b=GhMbWAsr87JnE2xHZwouCCLzKflIJ3ZwLRGy6rx/pSytFtkQ30ro/Rko1qRgTkoPO4
-         v+fkrHuouPc7AyLztHrfRuOw6TyymzWFiCbIYDMYCS8tjGy/cyh+Hz7RCUwlp6I6BO7B
-         IChPXr+irKpoCMPsFXExkrmT5m6Xfz3WO1L49KcHO0WN9xDjdlLLtkv8LqMjXWBRaine
-         hyZGLBqYzeHt9IpfTizu8EaUNpqCsN/MjiQpHa6At4VhB9jlM+OJWZP2A5nOOZ77Dsob
-         Cc0LM/NJNVrQh9WZVhXA77L79Hrf1su36Bk2zVdE1AzgTX7BJ0/25/p56AtpufcTB4sV
-         a+/g==
-X-Gm-Message-State: AOAM531SplgqZ4WWpK7MuKePC/pTllJ0/ZHtMefO78JONxrjjSPSh6/Q
-        Zc772nwbdqzAq4Jwccv1VwkQ4A==
-X-Google-Smtp-Source: ABdhPJzjqVo2uEPjJn0vuRwtjKG0r9qBeoIA/NoqsNl5lb3zay6YouoiFuroiXaoUaMTBkfYS9BxqA==
-X-Received: by 2002:a0c:d414:: with SMTP id t20mr2282945qvh.34.1605655242616;
-        Tue, 17 Nov 2020 15:20:42 -0800 (PST)
+        bh=LiU0BWgJBIpvRDAjRzw3hLX7dmdBpDccgDcQDLBe/m4=;
+        b=S4jePMk+Gs56e9bwkJ4SKtHcH771FidXD1ft2+knJK3rDcW6A6AhfnbSH5MjBGFGqo
+         WpycadQW31vEVrK1PvVh7O6nX1UpcXhbrCIo27+GPEL5oHQxcSjxNH699W7piqJJ/tdC
+         ps9fOxb1Je4i2SVsOyhcSaGE7j87Cm5Wmh4bXn5BgRUD7AVot7dWdwRr1tDKxAAvYC30
+         XNlRtiiZe9+s0kDsJxaRQo78nJM+2Z7F+3mEh9ss1JkjG3nfPFJItmuzhBvui/375qJy
+         5HM7lcH9kSTS3rszNfYzfVR7IeLsXQXRuMecxD4t7x9cocaY+H2i8Dz7K6CpYJcsj7MT
+         x4YQ==
+X-Gm-Message-State: AOAM533wHlK5jbtnkgdaaMM4Qvn66FEvNVwupxHVuQax5juNfQ5Nx8pN
+        Romu+8HCSHO01PwP+Ng5cJwJZg==
+X-Google-Smtp-Source: ABdhPJxbpeI00acu41Y8gXRk23uo4/041nuCMhFr2eLpoaBnIbJGSjShShccUK8iIi1bxn6K1N+Nxw==
+X-Received: by 2002:a37:658b:: with SMTP id z133mr2179564qkb.356.1605655244413;
+        Tue, 17 Nov 2020 15:20:44 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id d12sm14555544qtp.77.2020.11.17.15.20.41
+        by smtp.gmail.com with ESMTPSA id d12sm14555544qtp.77.2020.11.17.15.20.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 15:20:42 -0800 (PST)
+        Tue, 17 Nov 2020 15:20:43 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -78,9 +78,9 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         Aubrey Li <aubrey.li@linux.intel.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Tim Chen <tim.c.chen@intel.com>
-Subject: [PATCH -tip 15/32] sched: Improve snapshotting of min_vruntime for CGroups
-Date:   Tue, 17 Nov 2020 18:19:45 -0500
-Message-Id: <20201117232003.3580179-16-joel@joelfernandes.org>
+Subject: [PATCH -tip 16/32] irq_work: Cleanup
+Date:   Tue, 17 Nov 2020 18:19:46 -0500
+Message-Id: <20201117232003.3580179-17-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 In-Reply-To: <20201117232003.3580179-1-joel@joelfernandes.org>
 References: <20201117232003.3580179-1-joel@joelfernandes.org>
@@ -90,354 +90,278 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A previous patch improved cross-cpu vruntime comparison opertations in
-pick_next_task(). Improve it further for tasks in CGroups.
+From: Peter Zijlstra <peterz@infradead.org>
 
-In particular, for cross-CPU comparisons, we were previously going to
-the root-level se(s) for both the task being compared. That was strange.
-This patch instead finds the se(s) for both tasks that have the same
-parent (which may be different from root).
+Get rid of the __call_single_node union and clean up the API a little
+to avoid external code relying on the structure layout as much.
 
-A note about the min_vruntime snapshot and force idling:
-Abbreviations: fi: force-idled now? ; fib: force-idled before?
-During selection:
-When we're not fi, we need to update snapshot.
-when we're fi and we were not fi, we must update snapshot.
-When we're fi and we were already fi, we must not update snapshot.
+(Needed for irq_work_is_busy() API in core-scheduling series).
 
-Which gives:
-        fib     fi      update?
-        0       0       1
-        0       1       1
-        1       0       1
-        1       1       0
-So the min_vruntime snapshot needs to be updated when: !(fib && fi).
-
-Also, the cfs_prio_less() function needs to be aware of whether the core
-is in force idle or not, since it will be use this information to know
-whether to advance a cfs_rq's min_vruntime_fi in the hierarchy. So pass
-this information along via pick_task() -> prio_less().
-
-Reviewed-by: Vineeth Pillai <viremana@linux.microsoft.com>
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/sched/core.c  | 61 +++++++++++++++++----------------
- kernel/sched/fair.c  | 80 ++++++++++++++++++++++++++++++++------------
- kernel/sched/sched.h |  7 +++-
- 3 files changed, 97 insertions(+), 51 deletions(-)
+ drivers/gpu/drm/i915/i915_request.c |  4 ++--
+ include/linux/irq_work.h            | 33 ++++++++++++++++++-----------
+ include/linux/irqflags.h            |  4 ++--
+ kernel/bpf/stackmap.c               |  2 +-
+ kernel/irq_work.c                   | 18 ++++++++--------
+ kernel/printk/printk.c              |  6 ++----
+ kernel/rcu/tree.c                   |  3 +--
+ kernel/time/tick-sched.c            |  6 ++----
+ kernel/trace/bpf_trace.c            |  2 +-
+ 9 files changed, 41 insertions(+), 37 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3b373b592680..20125431af87 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -101,7 +101,7 @@ static inline int __task_prio(struct task_struct *p)
-  */
+diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
+index 0e813819b041..5385b081a376 100644
+--- a/drivers/gpu/drm/i915/i915_request.c
++++ b/drivers/gpu/drm/i915/i915_request.c
+@@ -197,7 +197,7 @@ __notify_execute_cb(struct i915_request *rq, bool (*fn)(struct irq_work *wrk))
  
- /* real prio, less is less */
--static inline bool prio_less(struct task_struct *a, struct task_struct *b)
-+static inline bool prio_less(struct task_struct *a, struct task_struct *b, bool in_fi)
- {
- 
- 	int pa = __task_prio(a), pb = __task_prio(b);
-@@ -116,7 +116,7 @@ static inline bool prio_less(struct task_struct *a, struct task_struct *b)
- 		return !dl_time_before(a->dl.deadline, b->dl.deadline);
- 
- 	if (pa == MAX_RT_PRIO + MAX_NICE)	/* fair */
--		return cfs_prio_less(a, b);
-+		return cfs_prio_less(a, b, in_fi);
- 
- 	return false;
+ 	llist_for_each_entry_safe(cb, cn,
+ 				  llist_del_all(&rq->execute_cb),
+-				  work.llnode)
++				  work.node.llist)
+ 		fn(&cb->work);
  }
-@@ -130,7 +130,7 @@ static inline bool __sched_core_less(struct task_struct *a, struct task_struct *
- 		return false;
  
- 	/* flip prio, so high prio is leftmost */
--	if (prio_less(b, a))
-+	if (prio_less(b, a, task_rq(a)->core->core_forceidle))
- 		return true;
- 
- 	return false;
-@@ -5101,7 +5101,7 @@ static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
-  * - Else returns idle_task.
-  */
- static struct task_struct *
--pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *max)
-+pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *max, bool in_fi)
- {
- 	struct task_struct *class_pick, *cookie_pick;
- 	unsigned long cookie = rq->core->core_cookie;
-@@ -5116,7 +5116,7 @@ pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *ma
- 		 * higher priority than max.
- 		 */
- 		if (max && class_pick->core_cookie &&
--		    prio_less(class_pick, max))
-+		    prio_less(class_pick, max, in_fi))
- 			return idle_sched_class.pick_task(rq);
- 
- 		return class_pick;
-@@ -5135,13 +5135,15 @@ pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *ma
- 	 * the core (so far) and it must be selected, otherwise we must go with
- 	 * the cookie pick in order to satisfy the constraint.
+@@ -460,7 +460,7 @@ __await_execution(struct i915_request *rq,
+ 	 * callback first, then checking the ACTIVE bit, we serialise with
+ 	 * the completed/retired request.
  	 */
--	if (prio_less(cookie_pick, class_pick) &&
--	    (!max || prio_less(max, class_pick)))
-+	if (prio_less(cookie_pick, class_pick, in_fi) &&
-+	    (!max || prio_less(max, class_pick, in_fi)))
- 		return class_pick;
+-	if (llist_add(&cb->work.llnode, &signal->execute_cb)) {
++	if (llist_add(&cb->work.node.llist, &signal->execute_cb)) {
+ 		if (i915_request_is_active(signal) ||
+ 		    __request_in_flight(signal))
+ 			__notify_execute_cb_imm(signal);
+diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
+index 30823780c192..ec2a47a81e42 100644
+--- a/include/linux/irq_work.h
++++ b/include/linux/irq_work.h
+@@ -14,28 +14,37 @@
+  */
  
- 	return cookie_pick;
- }
- 
-+extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
-+
- static struct task_struct *
- pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- {
-@@ -5230,9 +5232,14 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 
- 		if (!next->core_cookie) {
- 			rq->core_pick = NULL;
-+			/*
-+			 * For robustness, update the min_vruntime_fi for
-+			 * unconstrained picks as well.
-+			 */
-+			WARN_ON_ONCE(fi_before);
-+			task_vruntime_update(rq, next, false);
- 			goto done;
- 		}
--		need_sync = true;
- 	}
- 
- 	for_each_cpu(i, smt_mask) {
-@@ -5244,14 +5251,6 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 			update_rq_clock(rq_i);
- 	}
- 
--	/* Reset the snapshot if core is no longer in force-idle. */
--	if (!fi_before) {
--		for_each_cpu(i, smt_mask) {
--			struct rq *rq_i = cpu_rq(i);
--			rq_i->cfs.min_vruntime_fi = rq_i->cfs.min_vruntime;
--		}
--	}
--
- 	/*
- 	 * Try and select tasks for each sibling in decending sched_class
- 	 * order.
-@@ -5271,7 +5270,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 			 * highest priority task already selected for this
- 			 * core.
- 			 */
--			p = pick_task(rq_i, class, max);
-+			p = pick_task(rq_i, class, max, fi_before);
- 			if (!p)
- 				continue;
- 
-@@ -5279,6 +5278,11 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 				occ++;
- 
- 			rq_i->core_pick = p;
-+			if (rq_i->idle == p && rq_i->nr_running) {
-+				rq->core->core_forceidle = true;
-+				if (!fi_before)
-+					rq->core->core_forceidle_seq++;
-+			}
- 
- 			/*
- 			 * If this new candidate is of higher priority than the
-@@ -5297,6 +5301,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 				max = p;
- 
- 				if (old_max) {
-+					rq->core->core_forceidle = false;
- 					for_each_cpu(j, smt_mask) {
- 						if (j == i)
- 							continue;
-@@ -5338,10 +5343,16 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 		if (!rq_i->core_pick)
- 			continue;
- 
--		if (is_task_rq_idle(rq_i->core_pick) && rq_i->nr_running &&
--		    !rq_i->core->core_forceidle) {
--			rq_i->core->core_forceidle = true;
--		}
-+		/*
-+		 * Update for new !FI->FI transitions, or if continuing to be in !FI:
-+		 * fi_before     fi      update?
-+		 *  0            0       1
-+		 *  0            1       1
-+		 *  1            0       1
-+		 *  1            1       0
-+		 */
-+		if (!(fi_before && rq->core->core_forceidle))
-+			task_vruntime_update(rq_i, rq_i->core_pick, rq->core->core_forceidle);
- 
- 		rq_i->core_pick->core_occupation = occ;
- 
-@@ -5361,14 +5372,6 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 		resched_curr(rq_i);
- 	}
- 
--	/* Snapshot if core is in force-idle. */
--	if (!fi_before && rq->core->core_forceidle) {
--		for_each_cpu(i, smt_mask) {
--			struct rq *rq_i = cpu_rq(i);
--			rq_i->cfs.min_vruntime_fi = rq_i->cfs.min_vruntime;
--		}
--	}
--
- done:
- 	set_next_task(rq, next);
- 	return next;
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ceb3906c9a8a..a89c7c917cc6 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10781,43 +10781,81 @@ static inline void task_tick_core(struct rq *rq, struct task_struct *curr)
- 		resched_curr(rq);
- }
- 
--bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
-+/*
-+ * se_fi_update - Update the cfs_rq->min_vruntime_fi in a CFS hierarchy if needed.
-+ */
-+static void se_fi_update(struct sched_entity *se, unsigned int fi_seq, bool forceidle)
- {
--	bool samecpu = task_cpu(a) == task_cpu(b);
-+	bool root = true;
-+	long old, new;
-+
-+	for_each_sched_entity(se) {
-+		struct cfs_rq *cfs_rq = cfs_rq_of(se);
-+
-+		if (forceidle) {
-+			if (cfs_rq->forceidle_seq == fi_seq)
-+				break;
-+			cfs_rq->forceidle_seq = fi_seq;
-+		}
-+
-+		cfs_rq->min_vruntime_fi = cfs_rq->min_vruntime;
-+	}
-+}
-+
-+void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi)
-+{
-+	struct sched_entity *se = &p->se;
-+
-+	if (p->sched_class != &fair_sched_class)
-+		return;
-+
-+	se_fi_update(se, rq->core->core_forceidle_seq, in_fi);
-+}
-+
-+bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool in_fi)
-+{
-+	struct rq *rq = task_rq(a);
- 	struct sched_entity *sea = &a->se;
- 	struct sched_entity *seb = &b->se;
- 	struct cfs_rq *cfs_rqa;
- 	struct cfs_rq *cfs_rqb;
- 	s64 delta;
- 
--	if (samecpu) {
--		/* vruntime is per cfs_rq */
--		while (!is_same_group(sea, seb)) {
--			int sea_depth = sea->depth;
--			int seb_depth = seb->depth;
--			if (sea_depth >= seb_depth)
--				sea = parent_entity(sea);
--			if (sea_depth <= seb_depth)
--				seb = parent_entity(seb);
--		}
-+	SCHED_WARN_ON(task_rq(b)->core != rq->core);
- 
--		delta = (s64)(sea->vruntime - seb->vruntime);
--		goto out;
-+#ifdef CONFIG_FAIR_GROUP_SCHED
-+	/*
-+	 * Find an se in the hierarchy for tasks a and b, such that the se's
-+	 * are immediate siblings.
-+	 */
-+	while (sea->cfs_rq->tg != seb->cfs_rq->tg) {
-+		int sea_depth = sea->depth;
-+		int seb_depth = seb->depth;
-+
-+		if (sea_depth >= seb_depth)
-+			sea = parent_entity(sea);
-+		if (sea_depth <= seb_depth)
-+			seb = parent_entity(seb);
- 	}
- 
--	/* crosscpu: compare root level se's vruntime to decide priority */
--	while (sea->parent)
--		sea = sea->parent;
--	while (seb->parent)
--		seb = seb->parent;
-+	se_fi_update(sea, rq->core->core_forceidle_seq, in_fi);
-+	se_fi_update(seb, rq->core->core_forceidle_seq, in_fi);
- 
- 	cfs_rqa = sea->cfs_rq;
- 	cfs_rqb = seb->cfs_rq;
-+#else
-+	cfs_rqa = &task_rq(a)->cfs;
-+	cfs_rqb = &task_rq(b)->cfs;
-+#endif
- 
--	/* normalize vruntime WRT their rq's base */
-+	/*
-+	 * Find delta after normalizing se's vruntime with its cfs_rq's
-+	 * min_vruntime_fi, which would have been updated in prior calls
-+	 * to se_fi_update().
-+	 */
- 	delta = (s64)(sea->vruntime - seb->vruntime) +
- 		(s64)(cfs_rqb->min_vruntime_fi - cfs_rqa->min_vruntime_fi);
--out:
-+
- 	return delta > 0;
- }
- #else
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index de553d39aa40..5c258ab64052 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -518,8 +518,10 @@ struct cfs_rq {
- 	u64			exec_clock;
- 	u64			min_vruntime;
- #ifdef CONFIG_SCHED_CORE
-+	unsigned int		forceidle_seq;
- 	u64			min_vruntime_fi;
- #endif
-+
- #ifndef CONFIG_64BIT
- 	u64			min_vruntime_copy;
- #endif
-@@ -1078,6 +1080,7 @@ struct rq {
- 	unsigned int		core_pick_seq;
- 	unsigned long		core_cookie;
- 	unsigned char		core_forceidle;
-+	unsigned int		core_forceidle_seq;
- #endif
+ struct irq_work {
+-	union {
+-		struct __call_single_node node;
+-		struct {
+-			struct llist_node llnode;
+-			atomic_t flags;
+-		};
+-	};
++	struct __call_single_node node;
+ 	void (*func)(struct irq_work *);
  };
  
-@@ -1133,7 +1136,7 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
- 	return &rq->__lock;
++#define __IRQ_WORK_INIT(_func, _flags) (struct irq_work){	\
++	.node = { .u_flags = (_flags), },			\
++	.func = (_func),					\
++}
++
++#define IRQ_WORK_INIT(_func) __IRQ_WORK_INIT(_func, 0)
++#define IRQ_WORK_INIT_LAZY(_func) __IRQ_WORK_INIT(_func, IRQ_WORK_LAZY)
++#define IRQ_WORK_INIT_HARD(_func) __IRQ_WORK_INIT(_func, IRQ_WORK_HARD_IRQ)
++
++#define DEFINE_IRQ_WORK(name, _f)				\
++	struct irq_work name = IRQ_WORK_INIT(_f)
++
+ static inline
+ void init_irq_work(struct irq_work *work, void (*func)(struct irq_work *))
+ {
+-	atomic_set(&work->flags, 0);
+-	work->func = func;
++	*work = IRQ_WORK_INIT(func);
  }
  
--bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
-+bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool fi);
+-#define DEFINE_IRQ_WORK(name, _f) struct irq_work name = {	\
+-		.flags = ATOMIC_INIT(0),			\
+-		.func  = (_f)					\
++static inline bool irq_work_is_pending(struct irq_work *work)
++{
++	return atomic_read(&work->node.a_flags) & IRQ_WORK_PENDING;
+ }
+ 
++static inline bool irq_work_is_busy(struct irq_work *work)
++{
++	return atomic_read(&work->node.a_flags) & IRQ_WORK_BUSY;
++}
+ 
+ bool irq_work_queue(struct irq_work *work);
+ bool irq_work_queue_on(struct irq_work *work, int cpu);
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index 3ed4e8771b64..fef2d43a7a1d 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -109,12 +109,12 @@ do {						\
+ 
+ # define lockdep_irq_work_enter(__work)					\
+ 	  do {								\
+-		  if (!(atomic_read(&__work->flags) & IRQ_WORK_HARD_IRQ))\
++		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
+ 			current->irq_config = 1;			\
+ 	  } while (0)
+ # define lockdep_irq_work_exit(__work)					\
+ 	  do {								\
+-		  if (!(atomic_read(&__work->flags) & IRQ_WORK_HARD_IRQ))\
++		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
+ 			current->irq_config = 0;			\
+ 	  } while (0)
+ 
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 06065fa27124..599041cd0c8a 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -298,7 +298,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+ 	if (irqs_disabled()) {
+ 		if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
+ 			work = this_cpu_ptr(&up_read_work);
+-			if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY) {
++			if (irq_work_is_busy(&work->irq_work)) {
+ 				/* cannot queue more up_read, fallback */
+ 				irq_work_busy = true;
+ 			}
+diff --git a/kernel/irq_work.c b/kernel/irq_work.c
+index eca83965b631..fbff25adb574 100644
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -31,7 +31,7 @@ static bool irq_work_claim(struct irq_work *work)
+ {
+ 	int oflags;
+ 
+-	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->flags);
++	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->node.a_flags);
+ 	/*
+ 	 * If the work is already pending, no need to raise the IPI.
+ 	 * The pairing atomic_fetch_andnot() in irq_work_run() makes sure
+@@ -53,12 +53,12 @@ void __weak arch_irq_work_raise(void)
+ static void __irq_work_queue_local(struct irq_work *work)
+ {
+ 	/* If the work is "lazy", handle it from next tick if any */
+-	if (atomic_read(&work->flags) & IRQ_WORK_LAZY) {
+-		if (llist_add(&work->llnode, this_cpu_ptr(&lazy_list)) &&
++	if (atomic_read(&work->node.a_flags) & IRQ_WORK_LAZY) {
++		if (llist_add(&work->node.llist, this_cpu_ptr(&lazy_list)) &&
+ 		    tick_nohz_tick_stopped())
+ 			arch_irq_work_raise();
+ 	} else {
+-		if (llist_add(&work->llnode, this_cpu_ptr(&raised_list)))
++		if (llist_add(&work->node.llist, this_cpu_ptr(&raised_list)))
+ 			arch_irq_work_raise();
+ 	}
+ }
+@@ -102,7 +102,7 @@ bool irq_work_queue_on(struct irq_work *work, int cpu)
+ 	if (cpu != smp_processor_id()) {
+ 		/* Arch remote IPI send/receive backend aren't NMI safe */
+ 		WARN_ON_ONCE(in_nmi());
+-		__smp_call_single_queue(cpu, &work->llnode);
++		__smp_call_single_queue(cpu, &work->node.llist);
+ 	} else {
+ 		__irq_work_queue_local(work);
+ 	}
+@@ -142,7 +142,7 @@ void irq_work_single(void *arg)
+ 	 * to claim that work don't rely on us to handle their data
+ 	 * while we are in the middle of the func.
+ 	 */
+-	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->flags);
++	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->node.a_flags);
+ 
+ 	lockdep_irq_work_enter(work);
+ 	work->func(work);
+@@ -152,7 +152,7 @@ void irq_work_single(void *arg)
+ 	 * no-one else claimed it meanwhile.
+ 	 */
+ 	flags &= ~IRQ_WORK_PENDING;
+-	(void)atomic_cmpxchg(&work->flags, flags, flags & ~IRQ_WORK_BUSY);
++	(void)atomic_cmpxchg(&work->node.a_flags, flags, flags & ~IRQ_WORK_BUSY);
+ }
+ 
+ static void irq_work_run_list(struct llist_head *list)
+@@ -166,7 +166,7 @@ static void irq_work_run_list(struct llist_head *list)
+ 		return;
+ 
+ 	llnode = llist_del_all(list);
+-	llist_for_each_entry_safe(work, tmp, llnode, llnode)
++	llist_for_each_entry_safe(work, tmp, llnode, node.llist)
+ 		irq_work_single(work);
+ }
+ 
+@@ -198,7 +198,7 @@ void irq_work_sync(struct irq_work *work)
+ {
+ 	lockdep_assert_irqs_enabled();
+ 
+-	while (atomic_read(&work->flags) & IRQ_WORK_BUSY)
++	while (irq_work_is_busy(work))
+ 		cpu_relax();
+ }
+ EXPORT_SYMBOL_GPL(irq_work_sync);
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index fe64a49344bf..9ef23d4b07c7 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3025,10 +3025,8 @@ static void wake_up_klogd_work_func(struct irq_work *irq_work)
+ 		wake_up_interruptible(&log_wait);
+ }
+ 
+-static DEFINE_PER_CPU(struct irq_work, wake_up_klogd_work) = {
+-	.func = wake_up_klogd_work_func,
+-	.flags = ATOMIC_INIT(IRQ_WORK_LAZY),
+-};
++static DEFINE_PER_CPU(struct irq_work, wake_up_klogd_work) =
++	IRQ_WORK_INIT_LAZY(wake_up_klogd_work_func);
+ 
+ void wake_up_klogd(void)
+ {
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index bd04b09b84b3..ed4941f0bd59 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1311,8 +1311,6 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+ 		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
+ 		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
+ 		    (rnp->ffmask & rdp->grpmask)) {
+-			init_irq_work(&rdp->rcu_iw, rcu_iw_handler);
+-			atomic_set(&rdp->rcu_iw.flags, IRQ_WORK_HARD_IRQ);
+ 			rdp->rcu_iw_pending = true;
+ 			rdp->rcu_iw_gp_seq = rnp->gp_seq;
+ 			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
+@@ -3964,6 +3962,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
+ 	rdp->cpu_no_qs.b.norm = true;
+ 	rdp->core_needs_qs = false;
+ 	rdp->rcu_iw_pending = false;
++	rdp->rcu_iw = IRQ_WORK_INIT_HARD(rcu_iw_handler);
+ 	rdp->rcu_iw_gp_seq = rdp->gp_seq - 1;
+ 	trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuonl"));
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 81632cd5e3b7..1b734070f028 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -243,10 +243,8 @@ static void nohz_full_kick_func(struct irq_work *work)
+ 	/* Empty, the tick restart happens on tick_nohz_irq_exit() */
+ }
+ 
+-static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) = {
+-	.func = nohz_full_kick_func,
+-	.flags = ATOMIC_INIT(IRQ_WORK_HARD_IRQ),
+-};
++static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) =
++	IRQ_WORK_INIT_HARD(nohz_full_kick_func);
  
  /*
-  * Helper to check if the CPU's core cookie matches with the task's cookie
-@@ -1166,6 +1169,8 @@ static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
+  * Kick this CPU if it's full dynticks in order to force it to
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 4517c8b66518..a6903912f7a0 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1086,7 +1086,7 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
+ 			return -EINVAL;
  
- extern void queue_core_balance(struct rq *rq);
+ 		work = this_cpu_ptr(&send_signal_work);
+-		if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY)
++		if (irq_work_is_busy(&work->irq_work))
+ 			return -EBUSY;
  
-+bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool fi);
-+
- #else /* !CONFIG_SCHED_CORE */
- 
- static inline bool sched_core_enabled(struct rq *rq)
+ 		/* Add the current task, which is the target of sending signal,
 -- 
 2.29.2.299.gdc1121823c-goog
 
