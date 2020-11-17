@@ -2,166 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140D02B5F2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D382B5F31
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgKQMd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:33:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44754 "EHLO mail.kernel.org"
+        id S1727201AbgKQMem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:34:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:55422 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727272AbgKQMd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:33:27 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 745602222A;
-        Tue, 17 Nov 2020 12:33:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605616406;
-        bh=a9U740DOhAgvSETdSFX2dByGdJRi8rwwrKDsyYyqZwo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bp/qErDw6v3Ql3SwuLn6uKPPCDwYEW5m+AigWZjVwAMkNnroDicwr9fq8enu7Ow9f
-         2HejWUXrsDwHfNDBQMuAhxAG5ZktEGN7qM0mNI0XqEF3g0mWPeDYYIURdUKqEx6C1h
-         DIlgo/J0glX610rHISxokRrfswWd2sIG0YkU6uEQ=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5474440E29; Tue, 17 Nov 2020 09:33:24 -0300 (-03)
-Date:   Tue, 17 Nov 2020 09:33:24 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 08/24] perf tools: Add support to read build id from
- compressed elf
-Message-ID: <20201117123324.GL614220@kernel.org>
-References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-9-jolsa@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117110053.1303113-9-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+        id S1726315AbgKQMel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:34:41 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A2E2101E;
+        Tue, 17 Nov 2020 04:34:41 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 432AB3F719;
+        Tue, 17 Nov 2020 04:34:39 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        Jonathan.Cameron@Huawei.com, broonie@kernel.org, robh@kernel.org,
+        satyakim@qti.qualcomm.com, etienne.carriere@linaro.org,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, cristian.marussi@arm.com
+Subject: [PATCH v5 0/5] Add support for SCMIv3.0 Voltage Domain Protocol and SCMI-Regulator
+Date:   Tue, 17 Nov 2020 12:34:10 +0000
+Message-Id: <20201117123415.55105-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 17, 2020 at 12:00:37PM +0100, Jiri Olsa escreveu:
-> Adding support to decompress file before reading build id.
-> 
-> Adding filename__read_build_id and change its current
-> versions to read_build_id.
-> 
-> Shutting down stderr output of perf list in the shell test:
->   82: Check open filename arg using perf trace + vfs_getname          : Ok
-> 
-> because with decompression code in the place we the
-> filename__read_build_id function is more verbose in case
-> of error and the test did not account for that.
+Hi,
+
+this series introduces the support for the new SCMI Voltage Domain Protocol
+defined by the upcoming SCMIv3.0 specification, whose BETA release is
+available at [1].
+
+Afterwards, a new generic SCMI Regulator driver is developed on top of the
+new SCMI VD Protocol.
+
+in V4 Patch 3/5 introduced a needed fix in Regulator framework to cope with
+generic named nodes.
+
+The series is currently based on for-next/scmi [2] on top of:
+
+commit b141fca08207 ("firmware: arm_scmi: Fix missing destroy_workqueue()")
+
+Any feedback welcome,
+
+Thanks,
+
+Cristian
 
 ---
-because with decompression code in place filename__read_build_id() is
-more verbose in case of an error and the test didn't account for that.
----
+v4 --> v5
+- rebased
+- VD Protocol
+ - removed inline
+ - moved segmented intervals defines
+ - fixed some macros complaints by checkpatch
 
-I'll  fix it up when applying :-)
+v3 --> v4
+- DT bindings
+ - using generic node names
+ - listing explicitly subset of supported regulators bindings
+- SCMI Regulator
+ - using of_match_full_name core regulator flag
+ - avoid coccinelle false flag complaints
+- VD Protocol
+ - avoid coccinelle false flag complaints
+ - avoiding fixed size typing
 
-- Arnaldo
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  .../tests/shell/trace+probe_vfs_getname.sh    |  2 +-
->  tools/perf/util/symbol-elf.c                  | 37 ++++++++++++++++++-
->  2 files changed, 36 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/tests/shell/trace+probe_vfs_getname.sh b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-> index 11cc2af13f2b..3660fcc02fef 100755
-> --- a/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-> +++ b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-> @@ -20,7 +20,7 @@ skip_if_no_perf_trace || exit 2
->  file=$(mktemp /tmp/temporary_file.XXXXX)
->  
->  trace_open_vfs_getname() {
-> -	evts=$(echo $(perf list syscalls:sys_enter_open* 2>&1 | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
-> +	evts=$(echo $(perf list syscalls:sys_enter_open* >&1 2>/dev/nul | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
->  	perf trace -e $evts touch $file 2>&1 | \
->  	egrep " +[0-9]+\.[0-9]+ +\( +[0-9]+\.[0-9]+ ms\): +touch\/[0-9]+ open(at)?\((dfd: +CWD, +)?filename: +${file}, +flags: CREAT\|NOCTTY\|NONBLOCK\|WRONLY, +mode: +IRUGO\|IWUGO\) += +[0-9]+$"
->  }
-> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-> index 44dd86a4f25f..f3577f7d72fe 100644
-> --- a/tools/perf/util/symbol-elf.c
-> +++ b/tools/perf/util/symbol-elf.c
-> @@ -534,7 +534,7 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
->  
->  #ifdef HAVE_LIBBFD_BUILDID_SUPPORT
->  
-> -int filename__read_build_id(const char *filename, struct build_id *bid)
-> +static int read_build_id(const char *filename, struct build_id *bid)
->  {
->  	size_t size = sizeof(bid->data);
->  	int err = -1;
-> @@ -563,7 +563,7 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
->  
->  #else // HAVE_LIBBFD_BUILDID_SUPPORT
->  
-> -int filename__read_build_id(const char *filename, struct build_id *bid)
-> +static int read_build_id(const char *filename, struct build_id *bid)
->  {
->  	size_t size = sizeof(bid->data);
->  	int fd, err = -1;
-> @@ -595,6 +595,39 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
->  
->  #endif // HAVE_LIBBFD_BUILDID_SUPPORT
->  
-> +int filename__read_build_id(const char *filename, struct build_id *bid)
-> +{
-> +	struct kmod_path m = { .name = NULL, };
-> +	char path[PATH_MAX];
-> +	int err;
-> +
-> +	if (!filename)
-> +		return -EFAULT;
-> +
-> +	err = kmod_path__parse(&m, filename);
-> +	if (err)
-> +		return -1;
-> +
-> +	if (m.comp) {
-> +		int error = 0, fd;
-> +
-> +		fd = filename__decompress(filename, path, sizeof(path), m.comp, &error);
-> +		if (fd < 0) {
-> +			pr_debug("Failed to decompress (error %d) %s\n",
-> +				 error, filename);
-> +			return -1;
-> +		}
-> +		close(fd);
-> +		filename = path;
-> +	}
-> +
-> +	err = read_build_id(filename, bid);
-> +
-> +	if (m.comp)
-> +		unlink(filename);
-> +	return err;
-> +}
-> +
->  int sysfs__read_build_id(const char *filename, struct build_id *bid)
->  {
->  	size_t size = sizeof(bid->data);
-> -- 
-> 2.26.2
-> 
+v2 --> v3
+- DT bindings
+  - avoid awkard examples based on _cpu/_gpu regulators
+- SCMI Regulator
+  - remove multiple linear mappings support
+  - removed duplicated voltage name printout
+  - added a few comments
+  - simplified return path in scmi_reg_set_voltage_sel()
+- VD Protocol
+  - restrict segmented voltage domain descriptors to one triplet
+  - removed unneeded inline
+  - free allocated resources for invalid voltage domain
+  - added __must_check to info_get voltage operations
+  - added a few comments
+  - removed fixed size typing from struct voltage_info
+    
+v1 --> v2
+- rebased on for-next/scmi v5.10
+- DT bindings
+  - removed any reference to negative voltages
+- SCMI Regulator
+  - removed duplicate regulator naming
+  - removed redundant .get/set_voltage ops: only _sel variants implemented
+  - removed condexpr on fail path to increase readability
+- VD Protocol
+  - fix voltage levels query loop to reload full cmd description
+    between iterations as reported by Etienne Carriere
+  - ensure transport rx buffer is properly sized calli scmi_reset_rx_to_maxsz
+    between transfers
+
+[1]:https://developer.arm.com/documentation/den0056/c/
+[2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+
+Cristian Marussi (5):
+  firmware: arm_scmi: Add Voltage Domain Support
+  firmware: arm_scmi: add SCMI Voltage Domain devname
+  regulator: core: add of_match_full_name boolean flag
+  regulator: add SCMI driver
+  dt-bindings: arm: add support for SCMI Regulators
+
+ .../devicetree/bindings/arm/arm,scmi.txt      |  43 ++
+ drivers/firmware/arm_scmi/Makefile            |   2 +-
+ drivers/firmware/arm_scmi/common.h            |   1 +
+ drivers/firmware/arm_scmi/driver.c            |   3 +
+ drivers/firmware/arm_scmi/voltage.c           | 397 +++++++++++++++++
+ drivers/regulator/Kconfig                     |   9 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/of_regulator.c              |   8 +-
+ drivers/regulator/scmi-regulator.c            | 409 ++++++++++++++++++
+ include/linux/regulator/driver.h              |   3 +
+ include/linux/scmi_protocol.h                 |  64 +++
+ 11 files changed, 937 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/firmware/arm_scmi/voltage.c
+ create mode 100644 drivers/regulator/scmi-regulator.c
 
 -- 
+2.17.1
 
-- Arnaldo
