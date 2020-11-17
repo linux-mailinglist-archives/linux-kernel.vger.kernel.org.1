@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCF72B616D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D16E92B625F
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730720AbgKQNSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:18:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
+        id S1731820AbgKQN2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:28:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730403AbgKQNQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:16:44 -0500
+        id S1731287AbgKQN2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:28:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D954221EB;
-        Tue, 17 Nov 2020 13:16:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4932020781;
+        Tue, 17 Nov 2020 13:28:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619004;
-        bh=z3Or68PiewAElmm4wbmq3UlPvEMzqrO8teh/bEWY3tA=;
+        s=default; t=1605619681;
+        bh=jPuyBa0TFVZn/Vmsf9yYWkhloXgwvGOjxCiFIchbXaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u/UA9g2C03eTHivHZjizY2dUeLytp7q9a1G4F8mJgAvAtcQWfj17pY06DYRNArgwJ
-         m5rRzYf5kx4eJz8YOuXh/CTAn3RXGQTp92XjosCLE/ucUQwfHAcyrZJO/2JG83lihl
-         I7G1gobM1K/XfyuoOrl43Fa4aqDE9fX8QDC57CW8=
+        b=OYOv87oImqYGygMYkSqZFhqlvF4OhBdSxDlBEatNKeIgGEpF8S6M2omrlWC8YgemI
+         2WQKmcpdocm9Btijo9GzG8h5vE2xu9S0OeCjJlDvev9COlCgEytLR0oN1qEJFTs9IS
+         R4zdPY35kk7CL8/8C43f/sKxHz7z68ikKPO64BwU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wade Mealing <wmealing@redhat.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 82/85] perf/core: Fix race in the perf_mmap_close() function
+        stable@vger.kernel.org, stable@kernel.org,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.4 121/151] jbd2: fix up sparse warnings in checkpoint code
 Date:   Tue, 17 Nov 2020 14:05:51 +0100
-Message-Id: <20201117122115.077694082@linuxfoundation.org>
+Message-Id: <20201117122127.308168306@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,100 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@redhat.com>
+From: Theodore Ts'o <tytso@mit.edu>
 
-commit f91072ed1b7283b13ca57fcfbece5a3b92726143 upstream.
+commit 05d5233df85e9621597c5838e95235107eb624a2 upstream.
 
-There's a possible race in perf_mmap_close() when checking ring buffer's
-mmap_count refcount value. The problem is that the mmap_count check is
-not atomic because we call atomic_dec() and atomic_read() separately.
+Add missing __acquires() and __releases() annotations.  Also, in an
+"this should never happen" WARN_ON check, if it *does* actually
+happen, we need to release j_state_lock since this function is always
+supposed to release that lock.  Otherwise, things will quickly grind
+to a halt after the WARN_ON trips.
 
-  perf_mmap_close:
-  ...
-   atomic_dec(&rb->mmap_count);
-   ...
-   if (atomic_read(&rb->mmap_count))
-      goto out_put;
-
-   <ring buffer detach>
-   free_uid
-
-out_put:
-  ring_buffer_put(rb); /* could be last */
-
-The race can happen when we have two (or more) events sharing same ring
-buffer and they go through atomic_dec() and then they both see 0 as refcount
-value later in atomic_read(). Then both will go on and execute code which
-is meant to be run just once.
-
-The code that detaches ring buffer is probably fine to be executed more
-than once, but the problem is in calling free_uid(), which will later on
-demonstrate in related crashes and refcount warnings, like:
-
-  refcount_t: addition on 0; use-after-free.
-  ...
-  RIP: 0010:refcount_warn_saturate+0x6d/0xf
-  ...
-  Call Trace:
-  prepare_creds+0x190/0x1e0
-  copy_creds+0x35/0x172
-  copy_process+0x471/0x1a80
-  _do_fork+0x83/0x3a0
-  __do_sys_wait4+0x83/0x90
-  __do_sys_clone+0x85/0xa0
-  do_syscall_64+0x5b/0x1e0
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Using atomic decrease and check instead of separated calls.
-
-Tested-by: Michael Petlan <mpetlan@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Wade Mealing <wmealing@redhat.com>
-Fixes: 9bb5d40cd93c ("perf: Fix mmap() accounting hole");
-Link: https://lore.kernel.org/r/20200916115311.GE2301783@krava
-[sudip: used ring_buffer]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Fixes: 96f1e0974575 ("jbd2: avoid long hold times of j_state_lock...")
+Cc: stable@kernel.org
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- kernel/events/core.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5207,11 +5207,11 @@ static void perf_pmu_output_stop(struct
- static void perf_mmap_close(struct vm_area_struct *vma)
+---
+ fs/jbd2/checkpoint.c  |    2 ++
+ fs/jbd2/transaction.c |    4 +++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+--- a/fs/jbd2/checkpoint.c
++++ b/fs/jbd2/checkpoint.c
+@@ -106,6 +106,8 @@ static int __try_to_free_cp_buf(struct j
+  * for a checkpoint to free up some space in the log.
+  */
+ void __jbd2_log_wait_for_space(journal_t *journal)
++__acquires(&journal->j_state_lock)
++__releases(&journal->j_state_lock)
  {
- 	struct perf_event *event = vma->vm_file->private_data;
--
- 	struct ring_buffer *rb = ring_buffer_get(event);
- 	struct user_struct *mmap_user = rb->mmap_user;
- 	int mmap_locked = rb->mmap_locked;
- 	unsigned long size = perf_data_size(rb);
-+	bool detach_rest = false;
+ 	int nblocks, space_left;
+ 	/* assert_spin_locked(&journal->j_state_lock); */
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -171,8 +171,10 @@ static void wait_transaction_switching(j
+ 	DEFINE_WAIT(wait);
  
- 	if (event->pmu->event_unmapped)
- 		event->pmu->event_unmapped(event, vma->vm_mm);
-@@ -5242,7 +5242,8 @@ static void perf_mmap_close(struct vm_ar
- 		mutex_unlock(&event->mmap_mutex);
- 	}
- 
--	atomic_dec(&rb->mmap_count);
-+	if (atomic_dec_and_test(&rb->mmap_count))
-+		detach_rest = true;
- 
- 	if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
- 		goto out_put;
-@@ -5251,7 +5252,7 @@ static void perf_mmap_close(struct vm_ar
- 	mutex_unlock(&event->mmap_mutex);
- 
- 	/* If there's still other mmap()s of this buffer, we're done. */
--	if (atomic_read(&rb->mmap_count))
-+	if (!detach_rest)
- 		goto out_put;
- 
- 	/*
+ 	if (WARN_ON(!journal->j_running_transaction ||
+-		    journal->j_running_transaction->t_state != T_SWITCH))
++		    journal->j_running_transaction->t_state != T_SWITCH)) {
++		read_unlock(&journal->j_state_lock);
+ 		return;
++	}
+ 	prepare_to_wait(&journal->j_wait_transaction_locked, &wait,
+ 			TASK_UNINTERRUPTIBLE);
+ 	read_unlock(&journal->j_state_lock);
 
 
