@@ -2,102 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5F82B5657
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3812B5658
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgKQBkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 20:40:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgKQBkA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:40:00 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72BEC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 17:39:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=jvqxGYjFQsaLtu5EXBK7p5m45joX49ZCWSOOd/T3udE=; b=bEW/mOR3h0K8l0u4AaVy1R1+zI
-        ROf2Ll3aPiGI3P2HtNWM1WVjyLD65MQmAbOMqj5jeA9eUqU1MQng0s0KgIxnOw0nvWFaWdKXBu/Y7
-        j1LKeEo2epEIY1YPuOL2SRQHznhjCJPAIiLA8EIWPtWLD9T5lBJAHl1MtOftYYNd7StE3aGTzGqs3
-        esw7grI8ENWCUz7Nii9TGCZ9qRkx/MpRjNw3NCSU50bDkc85SVO35KAXw9iTvY/tJxWKvRawmjWw1
-        qSAQXp3GcOYMphZXOUoMmXYpAUjo2QMqMk0UH/tWUxY2AfWv+zNzkoszX/FSiO0LTSQvc3vj6v5MX
-        T7SuX1hQ==;
-Received: from [2601:1c0:6280:3f0::f32] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kepyN-00042a-Uc; Tue, 17 Nov 2020 01:39:56 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-riscv@lists.infradead.org,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: [PATCH] RISC-V: fix barrier() use in <vdso/processor.h>
-Date:   Mon, 16 Nov 2020 17:39:51 -0800
-Message-Id: <20201117013951.7827-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726610AbgKQBkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:40:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbgKQBkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 20:40:05 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605577205;
+        bh=aWa1sRw7CoxvhNmPL9K51E1+wWHyG8lRZmRe8hEAmnk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=zG+/Wrf4/tiiESFEtfmnWYdJeYJuVuQJVSY70ICNthQwZsVpvFrcoReOOX6AZSUdT
+         hOEsTyEw4krlB17pL5qP+q8B+kTgv1KzhMOvttIgkTI1AnmxLzXIHxooFwtZBMG9A/
+         CMXh/LmsoHVDGU7mu0pc7wClhGVM9APeka2edq1U=
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: ipa: lock when freeing transaction
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160557720487.5616.9020550394630303825.git-patchwork-notify@kernel.org>
+Date:   Tue, 17 Nov 2020 01:40:04 +0000
+References: <20201114182017.28270-1-elder@linaro.org>
+In-Reply-To: <20201114182017.28270-1-elder@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, evgreen@chromium.org,
+        subashab@codeaurora.org, cpratapa@codeaurora.org,
+        bjorn.andersson@linaro.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-riscv's <vdso/processor.h> uses barrier() so it should
-#include <asm/barrier.h> to prevent build errors.
+Hello:
 
-Fixes this build error:
-  CC [M]  drivers/net/ethernet/emulex/benet/be_main.o
-In file included from ./include/vdso/processor.h:10,
-                 from ./arch/riscv/include/asm/processor.h:11,
-                 from ./include/linux/prefetch.h:15,
-                 from drivers/net/ethernet/emulex/benet/be_main.c:14:
-./arch/riscv/include/asm/vdso/processor.h: In function 'cpu_relax':
-./arch/riscv/include/asm/vdso/processor.h:14:2: error: implicit declaration of function 'barrier' [-Werror=implicit-function-declaration]
-   14 |  barrier();
+This patch was applied to netdev/net.git (refs/heads/master):
 
-This happens with a total of 5 networking drivers -- they all use
-<linux/prefetch.h>.
+On Sat, 14 Nov 2020 12:20:17 -0600 you wrote:
+> Transactions sit on one of several lists, depending on their state
+> (allocated, pending, complete, or polled).  A spinlock protects
+> against concurrent access when transactions are moved between these
+> lists.
+> 
+> Transactions are also reference counted.  A newly-allocated
+> transaction has an initial count of 1; a transaction is released in
+> gsi_trans_free() only if its decremented reference count reaches 0.
+> Releasing a transaction includes removing it from the polled (or if
+> unused, allocated) list, so the spinlock is acquired when we release
+> a transaction.
+> 
+> [...]
 
-rv64 allmodconfig now builds cleanly after this patch.
+Here is the summary with links:
+  - [net] net: ipa: lock when freeing transaction
+    https://git.kernel.org/netdev/net/c/064c9c32b17c
 
-Fixes fallout from:
-815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Fixes: ad5d1122b82f ("riscv: use vDSO common flow to reduce the latency of the time-related functions")
-Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Arvind Sankar <nivedita@alum.mit.edu>
-Cc: linux-riscv@lists.infradead.org
-Cc: clang-built-linux@googlegroups.com
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
----
- arch/riscv/include/asm/vdso/processor.h |    2 ++
- 1 file changed, 2 insertions(+)
 
---- lnx-510-rc4.orig/arch/riscv/include/asm/vdso/processor.h
-+++ lnx-510-rc4/arch/riscv/include/asm/vdso/processor.h
-@@ -4,6 +4,8 @@
- 
- #ifndef __ASSEMBLY__
- 
-+#include <asm/barrier.h>
-+
- static inline void cpu_relax(void)
- {
- #ifdef __riscv_muldiv
