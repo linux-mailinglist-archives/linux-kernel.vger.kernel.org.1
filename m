@@ -2,220 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9272B6E2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9AF2B6E23
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727648AbgKQTLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
+        id S1727022AbgKQTKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:10:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgKQTLi (ORCPT
+        with ESMTP id S1725771AbgKQTKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:11:38 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E285C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:11:38 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a3so4261272wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 11:11:38 -0800 (PST)
+        Tue, 17 Nov 2020 14:10:16 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711AFC0613CF;
+        Tue, 17 Nov 2020 11:10:15 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id 11so21732631qkd.5;
+        Tue, 17 Nov 2020 11:10:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hu7bOYUgtnFLMBiA1U9xKBu85h7yzSk1KLbNCN463rI=;
-        b=X5xkpElnuKlOphb7oubo5uykS6+OI+php6jhCFtFcZhmtzzwWArV8Df6/gG5zzJ117
-         AYrkJBx9rLECsYAk6+Z/lS3xFE5GUhpCTUDLmj4v406RilyJDbUB9Uyu+0VSDGYgvm2l
-         jukkd1AGe1UjqosgfxOcW7pjmYpNky0Zfc6wQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TsBR4O6UFEDrBC3QEJ/nwbEoFCyB4eIoHpr56aXTsfk=;
+        b=GsvzR040TtBZt1H2pzpGYgQK2JtDqfB170AbwaLlW+/0pGI3hATIsEF7HnogecNQLH
+         +w7b4JBP8pifT4qUqvSzWRSQE7a1TeaLhUnQyih5MWdQSXh+FzDExXiUctair2ei64S4
+         6eidSqCulIZZozacI6mRr1tOyllLWR1LxGw9Lbe7zkrvpSaLo1oOtSpPLlcSxAv30sSz
+         XL+0ZR9icp+zW2LnEYGnGP3TxHZymPBZqDHy6ww7YglssMgENMT5kCaWf9vyqs48QhEW
+         HUgyi2NrsNSEHo6/w0Oex63MiWwexSO/C89mOPaO3cGb7trZZGcP5V5zU9Qw8NGu96R5
+         DZ2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=hu7bOYUgtnFLMBiA1U9xKBu85h7yzSk1KLbNCN463rI=;
-        b=aK1tiDTi0G1J106RwViV90fe8tdt+cpj8EssA73Y07++r+ak6mQwMJi4C9SLS2gS8/
-         QMsBVhWoUUvpbUm8xfMJibGev1GLKGQZw/dKyXx/RYJYO3jq8M8mA/WgV8QNaV9+zpFm
-         Pif6q9/Sglntxv41CGGxQXdCFAdo4eCY654w1Zv9gonSapWuXPALLB9lDUWt9KCz0s73
-         IjXh3NEEG9DlXISVC0x4WFX6kLAtDyScpmbNDM03QHsVH3gG2q/kKzR/Ae2D3Dsz/Kc/
-         s8okxjaU4nGQfrXXmRa4z/M+njG392DimYaDRpFOuHfWl+HdhgdIS5k82pcATC2Pygr4
-         FVEg==
-X-Gm-Message-State: AOAM5306ka3wPLJ751+5UYnMuN4wYVSAq4B/NQ9ZJJMJ/9Dwz+WEEZuO
-        EPn192AWUxDi/7JtU/eQEv++HQ==
-X-Google-Smtp-Source: ABdhPJwbYqX7pbIz2K9J0KeaqAR4C73oOOuRTBZ3QqO4swjxEvr2VoxyUPHO42dNRwlmR9/xM6NPWg==
-X-Received: by 2002:a7b:c1d2:: with SMTP id a18mr604240wmj.41.1605640297385;
-        Tue, 17 Nov 2020 11:11:37 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id a14sm4774135wmj.40.2020.11.17.11.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 11:11:36 -0800 (PST)
-Date:   Tue, 17 Nov 2020 20:11:34 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH 31/42] drm/ttm/ttm_bo: Fix one function header - demote
- lots of kernel-doc abuses
-Message-ID: <20201117191134.GR401619@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-References: <20201116174112.1833368-1-lee.jones@linaro.org>
- <20201116174112.1833368-32-lee.jones@linaro.org>
- <7745c8a0-12ad-8dcd-3740-51c640ea4ef2@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TsBR4O6UFEDrBC3QEJ/nwbEoFCyB4eIoHpr56aXTsfk=;
+        b=DGqNybK09UPzh64q6XwogbMq2TQ6UT7Y+Tkb5IQOyMXgqnJCRBu/L+/kqEhIkpXSwF
+         Q19u/Hn90piGgNPxiEE7FOvdxmmBUU3DERBgJ5rwmyUUrDr8Ge+/wxeE+35tZfT1gmlY
+         gUSAM15WFMBgIYQR2oowbGdjoDvzHRfnwWfJjyVqsFVx89ixEnCEGkZcHpW9QFp9Oz9Z
+         y05jy95O+Qt0PsKKPvp43Z243yMdwxUKZGV8DOgx2I4AHcyEXr7NVDvHathxHPMOZIMs
+         53WzgK/+Og8BbNvpgO8ae6wWpTx5snX9TVGi6WXC+Hszfxd/P596S9n3ni8qNBK4K9oI
+         Sjww==
+X-Gm-Message-State: AOAM530x5ZGr1tKCXKyPRJRsw2gjQntacHOSE6VRrHONFBxW+BatC1QS
+        4SrlKYU3kSVWa0IDphuuHKoUwPUC7xsfJHlwmcU=
+X-Google-Smtp-Source: ABdhPJzr9HEwhoFCr9J6s5kAvFafaPoiG6qZ5glXIl+9IjEDCsUFwc4mr85AqIDxG83t8w6FX2QhVHKw3Z9NyBWqxxU=
+X-Received: by 2002:a37:5156:: with SMTP id f83mr1061398qkb.197.1605640214468;
+ Tue, 17 Nov 2020 11:10:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7745c8a0-12ad-8dcd-3740-51c640ea4ef2@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+References: <20201116174112.1833368-1-lee.jones@linaro.org> <20201116174112.1833368-18-lee.jones@linaro.org>
+In-Reply-To: <20201116174112.1833368-18-lee.jones@linaro.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 17 Nov 2020 11:12:01 -0800
+Message-ID: <CAF6AEGs-6vYd1ytMToPfC+sd8yVuAptMGhFSXA9LG+L1X5HwhQ@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH 17/42] drm/msm/disp/mdp5/mdp5_ctl: Demote
+ non-conformant kernel-doc headers
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 09:33:48PM +0100, Christian König wrote:
-> Am 16.11.20 um 18:41 schrieb Lee Jones:
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >   drivers/gpu/drm/ttm/ttm_bo.c:51: warning: Function parameter or member 'ttm_global_mutex' not described in 'DEFINE_MUTEX'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:286: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_memtype_use'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'bo' not described in 'ttm_bo_cleanup_refs'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'interruptible' not described in 'ttm_bo_cleanup_refs'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_cleanup_refs'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:359: warning: Function parameter or member 'unlock_resv' not described in 'ttm_bo_cleanup_refs'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'bdev' not described in 'ttm_bo_delayed_delete'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:424: warning: Function parameter or member 'remove_all' not described in 'ttm_bo_delayed_delete'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'bo' not described in 'ttm_bo_evict_swapout_allowable'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'ctx' not described in 'ttm_bo_evict_swapout_allowable'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'locked' not described in 'ttm_bo_evict_swapout_allowable'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:635: warning: Function parameter or member 'busy' not described in 'ttm_bo_evict_swapout_allowable'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'bo' not described in 'ttm_bo_add_move_fence'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'man' not described in 'ttm_bo_add_move_fence'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'mem' not described in 'ttm_bo_add_move_fence'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:769: warning: Function parameter or member 'no_wait_gpu' not described in 'ttm_bo_add_move_fence'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_force_space'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'place' not described in 'ttm_bo_mem_force_space'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_force_space'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:806: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_force_space'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'bo' not described in 'ttm_bo_mem_space'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'placement' not described in 'ttm_bo_mem_space'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'mem' not described in 'ttm_bo_mem_space'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:872: warning: Function parameter or member 'ctx' not described in 'ttm_bo_mem_space'
-> >   drivers/gpu/drm/ttm/ttm_bo.c:1387: warning: Function parameter or member 'ctx' not described in 'ttm_bo_swapout'
-> > 
-> > Cc: Christian Koenig <christian.koenig@amd.com>
-> > Cc: Huang Rui <ray.huang@amd.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: linux-media@vger.kernel.org
-> > Cc: linaro-mm-sig@lists.linaro.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> 
-> Reviewed-by: Christian König <christian.koenig@amd.com>
-> 
-> Going to pick that one up for upstreaming.
+On Mon, Nov 16, 2020 at 9:41 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Very little attempt has been made to document these functions.
+>
+> Fixes the following W=1 kernel build warning(s):
+>
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'ctl' not described in 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'pipeline' not described in 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Function parameter or member 'enabled' not described in 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:227: warning: Excess function parameter 'enable' description in 'mdp5_ctl_set_encoder_state'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'ctl' not described in 'mdp5_ctl_commit'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'pipeline' not described in 'mdp5_ctl_commit'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'flush_mask' not described in 'mdp5_ctl_commit'
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c:529: warning: Function parameter or member 'start' not described in 'mdp5_ctl_commit'
+>
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: freedreno@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
 
-I mass applied this pile, so also this one. Thanks for patch&review.
--Daniel
+Thanks, this one I'll try to replace with actual doc fixes, but I'll
+pick up the rest (and possibly this one if I run out of time) in
+msm-next for v5.11 as soon as I switch back to my kernel hat (next day
+or two)
 
-> 
-> Thanks,
-> Christian.
-> 
-> > ---
-> >   drivers/gpu/drm/ttm/ttm_bo.c | 23 ++++++++++++-----------
-> >   1 file changed, 12 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-> > index e6bcbfe530ecc..9a03c7834b1ed 100644
-> > --- a/drivers/gpu/drm/ttm/ttm_bo.c
-> > +++ b/drivers/gpu/drm/ttm/ttm_bo.c
-> > @@ -45,7 +45,7 @@
-> >   static void ttm_bo_global_kobj_release(struct kobject *kobj);
-> > -/**
-> > +/*
-> >    * ttm_global_mutex - protecting the global BO state
-> >    */
-> >   DEFINE_MUTEX(ttm_global_mutex);
-> > @@ -278,7 +278,7 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
-> >   	return ret;
-> >   }
-> > -/**
-> > +/*
-> >    * Call bo::reserved.
-> >    * Will release GPU memory type usage on destruction.
-> >    * This is the place to put in driver specific hooks to release
-> > @@ -352,9 +352,10 @@ static void ttm_bo_flush_all_fences(struct ttm_buffer_object *bo)
-> >    * Must be called with lru_lock and reservation held, this function
-> >    * will drop the lru lock and optionally the reservation lock before returning.
-> >    *
-> > - * @interruptible         Any sleeps should occur interruptibly.
-> > - * @no_wait_gpu           Never wait for gpu. Return -EBUSY instead.
-> > - * @unlock_resv           Unlock the reservation lock as well.
-> > + * @bo:                    The buffer object to clean-up
-> > + * @interruptible:         Any sleeps should occur interruptibly.
-> > + * @no_wait_gpu:           Never wait for gpu. Return -EBUSY instead.
-> > + * @unlock_resv:           Unlock the reservation lock as well.
-> >    */
-> >   static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
-> > @@ -420,7 +421,7 @@ static int ttm_bo_cleanup_refs(struct ttm_buffer_object *bo,
-> >   	return 0;
-> >   }
-> > -/**
-> > +/*
-> >    * Traverse the delayed list, and call ttm_bo_cleanup_refs on all
-> >    * encountered buffers.
-> >    */
-> > @@ -628,7 +629,7 @@ bool ttm_bo_eviction_valuable(struct ttm_buffer_object *bo,
-> >   }
-> >   EXPORT_SYMBOL(ttm_bo_eviction_valuable);
-> > -/**
-> > +/*
-> >    * Check the target bo is allowable to be evicted or swapout, including cases:
-> >    *
-> >    * a. if share same reservation object with ctx->resv, have assumption
-> > @@ -767,7 +768,7 @@ int ttm_mem_evict_first(struct ttm_bo_device *bdev,
-> >   	return ret;
-> >   }
-> > -/**
-> > +/*
-> >    * Add the last move fence to the BO and reserve a new shared slot.
-> >    */
-> >   static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
-> > @@ -803,7 +804,7 @@ static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
-> >   	return 0;
-> >   }
-> > -/**
-> > +/*
-> >    * Repeatedly evict memory from the LRU for @mem_type until we create enough
-> >    * space, or we've evicted everything and there isn't enough space.
-> >    */
-> > @@ -865,7 +866,7 @@ static int ttm_bo_mem_placement(struct ttm_buffer_object *bo,
-> >   	return 0;
-> >   }
-> > -/**
-> > +/*
-> >    * Creates space for memory region @mem according to its type.
-> >    *
-> >    * This function first searches for free space in compatible memory types in
-> > @@ -1430,7 +1431,7 @@ int ttm_bo_wait(struct ttm_buffer_object *bo,
-> >   }
-> >   EXPORT_SYMBOL(ttm_bo_wait);
-> > -/**
-> > +/*
-> >    * A buffer object shrink method that tries to swap out the first
-> >    * buffer object on the bo_global::swap_lru list.
-> >    */
-> 
+BR,
+-R
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> ---
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+> index 030279d7b64b7..b5c40f9773629 100644
+> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_ctl.c
+> @@ -213,10 +213,10 @@ static void send_start_signal(struct mdp5_ctl *ctl)
+>         spin_unlock_irqrestore(&ctl->hw_lock, flags);
+>  }
+>
+> -/**
+> +/*
+>   * mdp5_ctl_set_encoder_state() - set the encoder state
+>   *
+> - * @enable: true, when encoder is ready for data streaming; false, otherwise.
+> + * @enabled: true, when encoder is ready for data streaming; false, otherwise.
+>   *
+>   * Note:
+>   * This encoder state is needed to trigger START signal (data path kickoff).
+> @@ -507,7 +507,7 @@ static void fix_for_single_flush(struct mdp5_ctl *ctl, u32 *flush_mask,
+>         }
+>  }
+>
+> -/**
+> +/*
+>   * mdp5_ctl_commit() - Register Flush
+>   *
+>   * The flush register is used to indicate several registers are all
+> --
+> 2.25.1
+>
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
