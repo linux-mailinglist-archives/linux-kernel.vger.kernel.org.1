@@ -2,148 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730C72B68B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17742B6880
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730337AbgKQPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:30:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728894AbgKQPa0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:30:26 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628EFC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:30:25 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id b3so10380948pls.11
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:30:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qIvZeddIQ2d7OXVk2Uvs8VZdn+XX8s/0AnrjeK+3CsU=;
-        b=bhwrJmc0GjcqgX8OVmcbGhlIi+xRPTfFufg6IrO2IlzzbU2Ro3Dn1DorKGtrkbUhEY
-         HfnFy5EeLrIq4OJNeRGdwTMen1DVJO+eQ9C7cHlEv+AzRolv5nul5z0n+C2yOfDcXnEc
-         /wLam43UU7fEiHh4i7hNQOZNJ5Q0tk3KYhHoLz7WhPJiv3X2623wQ0g8ZvVZ3VeE3sFF
-         yPpUA+21czYfv1dFNgXKviqcQPaRVTpcydWad4DAdlQ2fQxVYFTbG0R+HRg13t9aqvCx
-         92e93IxrRQspe2wBpWSCgI6jZi9VTzWlxzJ8zPyZPVjGAlxrtzGQWafIqKPs99SMpGxA
-         bNKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qIvZeddIQ2d7OXVk2Uvs8VZdn+XX8s/0AnrjeK+3CsU=;
-        b=ID06kzT71SC+uVKpjeMdtGYWRvDUer5bO0CBSHALYms08sy2V8NDF+uF7jyi0s3rDG
-         7iWBcXn1j5ybsWwz0F3Mq9bZIofCQDRyd2SS2PXWcGEHH3/h+TEyJd3OTEXeHE7CfDW5
-         jLKdtS6LwtmIYW6MXn9WT1sQug09n6LE3tMLFmfglByAAr+WbswQ3xyWuJ6AsnUedPBd
-         B6uS9H1GJROkCfy/g5WH/+l8TPPYnpWKSTR3zdOgG9OqFybbEOY90UKVOlldQ4QrzO0J
-         eqqaD7MCt8l5w5D9PqLR7+Dk7RhZ0ZT0eN737e8hq9IjIaV4gTk7lnnzIhpAMvv11bpz
-         063Q==
-X-Gm-Message-State: AOAM532d3BJRHA2/+o4XaLGQMAI8kuFo2p/whsscAxqO2jW1Ryf/0eaI
-        XOhQv5ZuXDna/UVjarb9A0mIRvHjFWEyEBu/hXkaxQ==
-X-Google-Smtp-Source: ABdhPJwIhciLv1sUAGBmks9JTdZrzhMo5xSdPzoc5eR6bFAjo9blSdT+iwLKdn8nt0XnjcldUMgbZHy6/eG17MNR+nw=
-X-Received: by 2002:a17:90b:88b:: with SMTP id bj11mr5214598pjb.229.1605627024793;
- Tue, 17 Nov 2020 07:30:24 -0800 (PST)
+        id S1729226AbgKQPS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:18:58 -0500
+Received: from mga06.intel.com ([134.134.136.31]:54003 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728430AbgKQPS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 10:18:57 -0500
+IronPort-SDR: itqlG4WL4UZc5DRnwBM02PouqFGQTeu81tGC8nbNOYHGSu662oyB1sYqmciugFzHZ+pzh0V1zO
+ e0XRpHyTqvPw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="232558367"
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="232558367"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 07:18:56 -0800
+IronPort-SDR: QnxcYKp0ZsxrXN3O9Up2pMA+5XVfSYi3dreEgkW7vxPfhQ2IbUo9/j9vCsfOix0Tpo8P1ei+Hm
+ IZR2yoZKQd8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="532252459"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Nov 2020 07:18:55 -0800
+Subject: Re: [PATCHv1 3/4] dt-bindings: fpga: add authenticate-fpga-config
+ property
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, trix@redhat.com,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinguyen@kernel.org, sridhar.rajagopal@intel.com,
+        Richard Gong <richard.gong@intel.com>
+References: <1605204403-6663-1-git-send-email-richard.gong@linux.intel.com>
+ <1605204403-6663-4-git-send-email-richard.gong@linux.intel.com>
+ <20201115192106.GB283592@epycbox.lan>
+ <20201116024758.GA6810@yilunxu-OptiPlex-7050>
+ <d83b37c2-2baa-b366-8ca4-bb2924bcd4f9@linux.intel.com>
+ <20201117022453.GA12837@yilunxu-OptiPlex-7050>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <e9492bbf-f3c5-41a7-0a08-8de142700880@linux.intel.com>
+Date:   Tue, 17 Nov 2020 09:39:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201113105952.11638-1-songmuchun@bytedance.com>
- <20201113105952.11638-6-songmuchun@bytedance.com> <20201117150604.GA15679@linux>
-In-Reply-To: <20201117150604.GA15679@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 17 Nov 2020 23:29:45 +0800
-Message-ID: <CAMZfGtWPu2GKquUfNusVBD7LsiYSB6t6+ugoAcKRkpLeQd+bQQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v4 05/21] mm/hugetlb: Introduce pgtable
- allocation/freeing helpers
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201117022453.GA12837@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:06 PM Oscar Salvador <osalvador@suse.de> wrote:
+
+
+On 11/16/20 8:24 PM, Xu Yilun wrote:
+> On Mon, Nov 16, 2020 at 08:14:52AM -0600, Richard Gong wrote:
+>>
+>> Hi Yilun,
+>>
+>> On 11/15/20 8:47 PM, Xu Yilun wrote:
+>>> On Sun, Nov 15, 2020 at 11:21:06AM -0800, Moritz Fischer wrote:
+>>>> Hi Richard,
+>>>>
+>>>> On Thu, Nov 12, 2020 at 12:06:42PM -0600, richard.gong@linux.intel.com wrote:
+>>>>> From: Richard Gong <richard.gong@intel.com>
+>>>>>
+>>>>> Add authenticate-fpga-config property for FPGA bitstream authentication.
+>>>>>
+>>>>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+>>>>> ---
+>>>>>   Documentation/devicetree/bindings/fpga/fpga-region.txt | 1 +
+>>>>>   1 file changed, 1 insertion(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>>>>> index e811cf8..7a512bc 100644
+>>>>> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>>>>> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>>>>> @@ -187,6 +187,7 @@ Optional properties:
+>>>>>   - external-fpga-config : boolean, set if the FPGA has already been configured
+>>>>>   	prior to OS boot up.
+>>>>>   - encrypted-fpga-config : boolean, set if the bitstream is encrypted
+>>>>> +- authenticate-fpga-config : boolean, set if do bitstream authentication
+>>>> It is unclear to me from the description whether this entails
+>>>> authentication + reconfiguration or just authentication.
+>>>>
+>>>> If the latter is the case this should probably be described as such.
+>>>
+>>> If it is just authentication, do we still need to disable bridges in
+>>> fpga_region_program_fpga?
+>>>
+>>
+>> Yes.
+>>
+>> Except for the actual configuration of the device, the authentication
+>> feature is the same as FPGA configuration.
+> 
+> FPGA Bridges gate bus signals between a host and FPGA. So the FPGA
+> region could not be accessed by host when doing configuration. But for
+> this authentication, we are just writing the flash, we don't actually
+> touch the FPGA soft logic. The host should still be able to operate on
+> the old logic before reboot, is it?
 >
-> On Fri, Nov 13, 2020 at 06:59:36PM +0800, Muchun Song wrote:
-> > +#define page_huge_pte(page)          ((page)->pmd_huge_pte)
+Yes, it's feasible in theory but doesn't make much sense in practice. I 
+prefer to keep fpga_region_program_fpga() unchanged.
 
-Yeah, I forgot to remove it. Thanks.
+Regards,
+Richard
 
->
-> Seems you do not need this one anymore.
->
-> > +void vmemmap_pgtable_free(struct page *page)
-> > +{
-> > +     struct page *pte_page, *t_page;
-> > +
-> > +     list_for_each_entry_safe(pte_page, t_page, &page->lru, lru) {
-> > +             list_del(&pte_page->lru);
-> > +             pte_free_kernel(&init_mm, page_to_virt(pte_page));
-> > +     }
-> > +}
-> > +
-> > +int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
-> > +{
-> > +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
-> > +
-> > +     /* Store preallocated pages on huge page lru list */
-> > +     INIT_LIST_HEAD(&page->lru);
-> > +
-> > +     while (nr--) {
-> > +             pte_t *pte_p;
-> > +
-> > +             pte_p = pte_alloc_one_kernel(&init_mm);
-> > +             if (!pte_p)
-> > +                     goto out;
-> > +             list_add(&virt_to_page(pte_p)->lru, &page->lru);
-> > +     }
->
-> Definetely this looks better and easier to handle.
-> Btw, did you explore Matthew's hint about instead of allocating a new page,
-> using one of the ones you are going to free to store the ptes?
-
-Oh, sorry for missing his reply. It is a good idea. I will start an
-investigation.
-Thanks for reminding me.
-
-> I am not sure whether it is feasible at all though.
->
->
-> > --- a/mm/hugetlb_vmemmap.h
-> > +++ b/mm/hugetlb_vmemmap.h
-> > @@ -9,12 +9,24 @@
-> >  #ifndef _LINUX_HUGETLB_VMEMMAP_H
-> >  #define _LINUX_HUGETLB_VMEMMAP_H
-> >  #include <linux/hugetlb.h>
-> > +#include <linux/mm.h>
->
-> why do we need this here?
-
-Yeah, also can remove:).
-
-
->
-> --
-> Oscar Salvador
-> SUSE L3
-
-
-
---
-Yours,
-Muchun
+> Thanks,
+> Yilun
+> 
+>>
+>> Regards,
+>> Richard
+>>
+>>> I'm wondering if the FPGA functionalities could still be working when
+>>> the authenticating is ongoing, or when the authenticating is failed.
+>>>
+>>
+>>
+>>
+>>> Thanks,
+>>> Yilun
+>>>
+>>>>
+>>>>>   - region-unfreeze-timeout-us : The maximum time in microseconds to wait for
+>>>>>   	bridges to successfully become enabled after the region has been
+>>>>>   	programmed.
+>>>>> -- 
+>>>>> 2.7.4
+>>>>>
+>>>>
+>>>> Thanks
