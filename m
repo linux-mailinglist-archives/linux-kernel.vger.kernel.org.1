@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F362B63E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 150A32B6509
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732215AbgKQNmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:42:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55078 "EHLO mail.kernel.org"
+        id S1731873AbgKQN2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:28:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387440AbgKQNmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:42:31 -0500
+        id S1731334AbgKQN22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:28:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CC9520729;
-        Tue, 17 Nov 2020 13:42:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FCE620781;
+        Tue, 17 Nov 2020 13:28:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620551;
-        bh=8tw9+Xn/S8KkVCfwmBYzaM8x8dYawQMuzZce+Kn6gfI=;
+        s=default; t=1605619708;
+        bh=VtZqPqHdulf/Dbcc2C0lldB/XlyVF4+MLKNHmpJAyE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kEYVCSGGaDoMyKhZRnpwWyAII8LCGf9YqrTl1hK7FQqBntx9SKWYdYFFdOdpKEQfW
-         n/1yTO8AOOIdOTl/EVZSRpxm11T72OeZ6rxB1RestkYX0g1OMLZKuuoMYiEabfanpR
-         1KMdoHSn5pz8iZuLoU3LqLfumfskdDg9KZurgJ0k=
+        b=IAy+sdCotpIhCZI4HKoP9rGZH6/rWM6hRMRt+KxsEFoih1WBt4NbHbY1E7A9Y6bZ+
+         6I88+GsyXuWmWDvDhEaGfp5fVsllw4HndWDTcagoKnV9iNQuK40NfGG3wFGxzvEHfb
+         DqIG433uWBokYqBOGlYJfz291e0mC7yrpuYrgK14=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Naveen Krishna Chatradhi <nchatrad@amd.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.9 218/255] hwmon: (amd_energy) modify the visibility of the counters
-Date:   Tue, 17 Nov 2020 14:05:58 +0100
-Message-Id: <20201117122149.547521228@linuxfoundation.org>
+        stable@vger.kernel.org, Arnaud de Turckheim <quarium@gmail.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 5.4 129/151] gpio: pcie-idio-24: Fix IRQ Enable Register value
+Date:   Tue, 17 Nov 2020 14:05:59 +0100
+Message-Id: <20201117122127.700920114@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naveen Krishna Chatradhi <nchatrad@amd.com>
+From: Arnaud de Turckheim <quarium@gmail.com>
 
-commit 60268b0e8258fdea9a3c9f4b51e161c123571db3 upstream.
+commit 23a7fdc06ebcc334fa667f0550676b035510b70b upstream.
 
-This patch limits the visibility to owner and groups only for the
-energy counters exposed through the hwmon based amd_energy driver.
+This fixes the COS Enable Register value for enabling/disabling the
+corresponding IRQs bank.
 
+Fixes: 585562046628 ("gpio: Add GPIO support for the ACCES PCIe-IDIO-24 family")
 Cc: stable@vger.kernel.org
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
-Link: https://lore.kernel.org/r/20201112172159.8781-1-nchatrad@amd.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Arnaud de Turckheim <quarium@gmail.com>
+Reviewed-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hwmon/amd_energy.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpio/gpio-pcie-idio-24.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/hwmon/amd_energy.c
-+++ b/drivers/hwmon/amd_energy.c
-@@ -209,7 +209,7 @@ static umode_t amd_energy_is_visible(con
- 				     enum hwmon_sensor_types type,
- 				     u32 attr, int channel)
- {
--	return 0444;
-+	return 0440;
- }
+--- a/drivers/gpio/gpio-pcie-idio-24.c
++++ b/drivers/gpio/gpio-pcie-idio-24.c
+@@ -360,13 +360,13 @@ static void idio_24_irq_mask(struct irq_
+ 	unsigned long flags;
+ 	const unsigned long bit_offset = irqd_to_hwirq(data) - 24;
+ 	unsigned char new_irq_mask;
+-	const unsigned long bank_offset = bit_offset/8 * 8;
++	const unsigned long bank_offset = bit_offset / 8;
+ 	unsigned char cos_enable_state;
  
- static int energy_accumulator(void *p)
+ 	raw_spin_lock_irqsave(&idio24gpio->lock, flags);
+ 
+ 	idio24gpio->irq_mask &= ~BIT(bit_offset);
+-	new_irq_mask = idio24gpio->irq_mask >> bank_offset;
++	new_irq_mask = idio24gpio->irq_mask >> bank_offset * 8;
+ 
+ 	if (!new_irq_mask) {
+ 		cos_enable_state = ioread8(&idio24gpio->reg->cos_enable);
+@@ -389,12 +389,12 @@ static void idio_24_irq_unmask(struct ir
+ 	unsigned long flags;
+ 	unsigned char prev_irq_mask;
+ 	const unsigned long bit_offset = irqd_to_hwirq(data) - 24;
+-	const unsigned long bank_offset = bit_offset/8 * 8;
++	const unsigned long bank_offset = bit_offset / 8;
+ 	unsigned char cos_enable_state;
+ 
+ 	raw_spin_lock_irqsave(&idio24gpio->lock, flags);
+ 
+-	prev_irq_mask = idio24gpio->irq_mask >> bank_offset;
++	prev_irq_mask = idio24gpio->irq_mask >> bank_offset * 8;
+ 	idio24gpio->irq_mask |= BIT(bit_offset);
+ 
+ 	if (!prev_irq_mask) {
 
 
