@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667A22B611A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E97182B6245
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730228AbgKQNPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:15:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47132 "EHLO mail.kernel.org"
+        id S1730744AbgKQN1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:27:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730216AbgKQNPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:15:40 -0500
+        id S1730546AbgKQN04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:26:56 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C212C246BB;
-        Tue, 17 Nov 2020 13:15:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0C08246A4;
+        Tue, 17 Nov 2020 13:26:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618939;
-        bh=yFtHC+uO5knMhaFCfRNp1ahOpUZvlwEh9PLy1vPIGAU=;
+        s=default; t=1605619616;
+        bh=XOfjNhLuUK1+CIGjPXn3xW4zAAVzCA5p+rv2AJnkpgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=01ReNduNgOqURnx+UaRuOrwpSMJgM4NafvmE0ihWfy6k0qFvEEtd6R9NR1HJF9Qdv
-         zcELQea+C5ffDZLMQCvvWG8DxEL+GexbyNmWD2VUoaj+F8M3yQ1kEhApynP3YzRKwX
-         X4CoiHemu288OA+BpslNQFuV8zUNNTyHOHI4rAOg=
+        b=L8U929ExqTgMnBdbbr0zKezts+4QZn+bKz/rmpXRU/pVREor/aic5aVcdOC/EPAHl
+         mFRHyzp51GT8qjk7pHP6WAv22r0fQijaqTz4HqooOEa3P0nG/61q9r1E5+YILFRIsc
+         ynqv/ILTGIvxCK+xTBRwo7iUJnCjMTOejSZZhQOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 59/85] net/af_iucv: fix null pointer dereference on shutdown
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 098/151] xfs: fix rmap key and record comparison functions
 Date:   Tue, 17 Nov 2020 14:05:28 +0100
-Message-Id: <20201117122113.926875822@linuxfoundation.org>
+Message-Id: <20201117122126.178386399@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,61 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ursula Braun <ubraun@linux.ibm.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 4031eeafa71eaf22ae40a15606a134ae86345daf ]
+[ Upstream commit 6ff646b2ceb0eec916101877f38da0b73e3a5b7f ]
 
-syzbot reported the following KASAN finding:
+Keys for extent interval records in the reverse mapping btree are
+supposed to be computed as follows:
 
-BUG: KASAN: nullptr-dereference in iucv_send_ctrl+0x390/0x3f0 net/iucv/af_iucv.c:385
-Read of size 2 at addr 000000000000021e by task syz-executor907/519
+(physical block, owner, fork, is_btree, is_unwritten, offset)
 
-CPU: 0 PID: 519 Comm: syz-executor907 Not tainted 5.9.0-syzkaller-07043-gbcf9877ad213 #0
-Hardware name: IBM 3906 M04 701 (KVM/Linux)
-Call Trace:
- [<00000000c576af60>] unwind_start arch/s390/include/asm/unwind.h:65 [inline]
- [<00000000c576af60>] show_stack+0x180/0x228 arch/s390/kernel/dumpstack.c:135
- [<00000000c9dcd1f8>] __dump_stack lib/dump_stack.c:77 [inline]
- [<00000000c9dcd1f8>] dump_stack+0x268/0x2f0 lib/dump_stack.c:118
- [<00000000c5fed016>] print_address_description.constprop.0+0x5e/0x218 mm/kasan/report.c:383
- [<00000000c5fec82a>] __kasan_report mm/kasan/report.c:517 [inline]
- [<00000000c5fec82a>] kasan_report+0x11a/0x168 mm/kasan/report.c:534
- [<00000000c98b5b60>] iucv_send_ctrl+0x390/0x3f0 net/iucv/af_iucv.c:385
- [<00000000c98b6262>] iucv_sock_shutdown+0x44a/0x4c0 net/iucv/af_iucv.c:1457
- [<00000000c89d3a54>] __sys_shutdown+0x12c/0x1c8 net/socket.c:2204
- [<00000000c89d3b70>] __do_sys_shutdown net/socket.c:2212 [inline]
- [<00000000c89d3b70>] __s390x_sys_shutdown+0x38/0x48 net/socket.c:2210
- [<00000000c9e36eac>] system_call+0xe0/0x28c arch/s390/kernel/entry.S:415
+This provides users the ability to look up a reverse mapping from a bmbt
+record -- start with the physical block; then if there are multiple
+records for the same block, move on to the owner; then the inode fork
+type; and so on to the file offset.
 
-There is nothing to shutdown if a connection has never been established.
-Besides that iucv->hs_dev is not yet initialized if a socket is in
-IUCV_OPEN state and iucv->path is not yet initialized if socket is in
-IUCV_BOUND state.
-So, just skip the shutdown calls for a socket in these states.
+However, the key comparison functions incorrectly remove the
+fork/btree/unwritten information that's encoded in the on-disk offset.
+This means that lookup comparisons are only done with:
 
-Fixes: eac3731bd04c ("[S390]: Add AF_IUCV socket support")
-Fixes: 82492a355fac ("af_iucv: add shutdown for HS transport")
-Reviewed-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Ursula Braun <ubraun@linux.ibm.com>
-[jwi: correct one Fixes tag]
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+(physical block, owner, offset)
+
+This means that queries can return incorrect results.  On consistent
+filesystems this hasn't been an issue because blocks are never shared
+between forks or with bmbt blocks; and are never unwritten.  However,
+this bug means that online repair cannot always detect corruption in the
+key information in internal rmapbt nodes.
+
+Found by fuzzing keys[1].attrfork = ones on xfs/371.
+
+Fixes: 4b8ed67794fe ("xfs: add rmap btree operations")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/iucv/af_iucv.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/xfs/libxfs/xfs_rmap_btree.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/net/iucv/af_iucv.c
-+++ b/net/iucv/af_iucv.c
-@@ -1552,7 +1552,8 @@ static int iucv_sock_shutdown(struct soc
- 		break;
- 	}
+diff --git a/fs/xfs/libxfs/xfs_rmap_btree.c b/fs/xfs/libxfs/xfs_rmap_btree.c
+index fc78efa52c94e..3780609c7860c 100644
+--- a/fs/xfs/libxfs/xfs_rmap_btree.c
++++ b/fs/xfs/libxfs/xfs_rmap_btree.c
+@@ -243,8 +243,8 @@ xfs_rmapbt_key_diff(
+ 	else if (y > x)
+ 		return -1;
  
--	if (how == SEND_SHUTDOWN || how == SHUTDOWN_MASK) {
-+	if ((how == SEND_SHUTDOWN || how == SHUTDOWN_MASK) &&
-+	    sk->sk_state == IUCV_CONNECTED) {
- 		if (iucv->transport == AF_IUCV_TRANS_IUCV) {
- 			txmsg.class = 0;
- 			txmsg.tag = 0;
+-	x = XFS_RMAP_OFF(be64_to_cpu(kp->rm_offset));
+-	y = rec->rm_offset;
++	x = be64_to_cpu(kp->rm_offset);
++	y = xfs_rmap_irec_offset_pack(rec);
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -275,8 +275,8 @@ xfs_rmapbt_diff_two_keys(
+ 	else if (y > x)
+ 		return -1;
+ 
+-	x = XFS_RMAP_OFF(be64_to_cpu(kp1->rm_offset));
+-	y = XFS_RMAP_OFF(be64_to_cpu(kp2->rm_offset));
++	x = be64_to_cpu(kp1->rm_offset);
++	y = be64_to_cpu(kp2->rm_offset);
+ 	if (x > y)
+ 		return 1;
+ 	else if (y > x)
+@@ -390,8 +390,8 @@ xfs_rmapbt_keys_inorder(
+ 		return 1;
+ 	else if (a > b)
+ 		return 0;
+-	a = XFS_RMAP_OFF(be64_to_cpu(k1->rmap.rm_offset));
+-	b = XFS_RMAP_OFF(be64_to_cpu(k2->rmap.rm_offset));
++	a = be64_to_cpu(k1->rmap.rm_offset);
++	b = be64_to_cpu(k2->rmap.rm_offset);
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
+@@ -420,8 +420,8 @@ xfs_rmapbt_recs_inorder(
+ 		return 1;
+ 	else if (a > b)
+ 		return 0;
+-	a = XFS_RMAP_OFF(be64_to_cpu(r1->rmap.rm_offset));
+-	b = XFS_RMAP_OFF(be64_to_cpu(r2->rmap.rm_offset));
++	a = be64_to_cpu(r1->rmap.rm_offset);
++	b = be64_to_cpu(r2->rmap.rm_offset);
+ 	if (a <= b)
+ 		return 1;
+ 	return 0;
+-- 
+2.27.0
+
 
 
