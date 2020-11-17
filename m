@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9243C2B638C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4D52B64FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732741AbgKQNjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:39:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50290 "EHLO mail.kernel.org"
+        id S1731674AbgKQN1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:27:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732672AbgKQNis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:38:48 -0500
+        id S1731219AbgKQN0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:26:37 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 099FC207BC;
-        Tue, 17 Nov 2020 13:38:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42A2A2078E;
+        Tue, 17 Nov 2020 13:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620327;
-        bh=ukp620K4yYyVPbyJ05RHjLjLRFfL43RGcfN+nHHVND8=;
+        s=default; t=1605619595;
+        bh=V5iMUCoqIhEK1rY2KVqewuUcVp26OcCcV9LEKdfnF34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lhzip1FqOA1JgtoKA38vNNnRAOk3zS/PNP9giMY4H5reqtaHy5Q7PeoAoeZXOBIBL
-         G8EIHRk56NnDqz2R6xMyQWPqnNTghN9GQhCjn7F/o5pWC7nHvLi+VY4icC4EjB9T+2
-         ic0AzGFzzVRcAZOtsD8Ry9konhccEJ/gDv1xZJhY=
+        b=zcKJjpJY1dmSvXyPuhtsQyMNvv1rOik+Rpqd/WrqIx9yX4Vy9I1cL2dSrOSF2hWx1
+         hkFuCbMfrIAF8kZtGSkxMoR63IEXSD9+t6HcQNOEjw+CDQjE/LzWkeJjRrVZISI62s
+         aOHCnQzCNh7XgWjBYjOxKUIx2Hbavg516sAz4/tM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 181/255] perf: Fix event multiplexing for exclusive groups
+Subject: [PATCH 5.4 091/151] net/mlx5: Fix deletion of duplicate rules
 Date:   Tue, 17 Nov 2020 14:05:21 +0100
-Message-Id: <20201117122147.736654851@linuxfoundation.org>
+Message-Id: <20201117122125.836156682@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
-References: <20201117122138.925150709@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-[ Upstream commit 2714c3962f304d031d5016c963c4b459337b0749 ]
+[ Upstream commit 465e7baab6d93b399344f5868f84c177ab5cd16f ]
 
-Commit 9e6302056f80 ("perf: Use hrtimers for event multiplexing")
-placed the hrtimer (re)start call in the wrong place.  Instead of
-capturing all scheduling failures, it only considered the PMU failure.
+When a rule is duplicated, the refcount of the rule is increased so only
+the second deletion of the rule should cause destruction of the FTE.
+Currently, the FTE will be destroyed in the first deletion of rule since
+the modify_mask will be 0.
+Fix it and call to destroy FTE only if all the rules (FTE's children)
+have been removed.
 
-The result is that groups using perf_event_attr::exclusive are no
-longer rotated.
-
-Fixes: 9e6302056f80 ("perf: Use hrtimers for event multiplexing")
-Reported-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201029162902.038667689@infradead.org
+Fixes: 718ce4d601db ("net/mlx5: Consolidate update FTE for all removal changes")
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/events/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index c245ccd426b71..a06ac60d346f1 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -2597,7 +2597,6 @@ group_error:
- 
- error:
- 	pmu->cancel_txn(pmu);
--	perf_mux_hrtimer_restart(cpuctx);
- 	return -EAGAIN;
- }
- 
-@@ -3653,6 +3652,7 @@ static int merge_sched_in(struct perf_event *event, void *data)
- 
- 		*can_add_hw = 0;
- 		ctx->rotate_necessary = 1;
-+		perf_mux_hrtimer_restart(cpuctx);
- 	}
- 
- 	return 0;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+index 9ac2f52187ea4..16511f6485531 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+@@ -1923,10 +1923,11 @@ void mlx5_del_flow_rules(struct mlx5_flow_handle *handle)
+ 	down_write_ref_node(&fte->node, false);
+ 	for (i = handle->num_rules - 1; i >= 0; i--)
+ 		tree_remove_node(&handle->rule[i]->node, true);
+-	if (fte->modify_mask && fte->dests_size) {
+-		modify_fte(fte);
++	if (fte->dests_size) {
++		if (fte->modify_mask)
++			modify_fte(fte);
+ 		up_write_ref_node(&fte->node, false);
+-	} else {
++	} else if (list_empty(&fte->node.children)) {
+ 		del_hw_fte(&fte->node);
+ 		/* Avoid double call to del_hw_fte */
+ 		fte->node.del_hw_func = NULL;
 -- 
 2.27.0
 
