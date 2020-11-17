@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FF32B6175
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 333062B606D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730760AbgKQNTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:19:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51162 "EHLO mail.kernel.org"
+        id S1728641AbgKQNJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:09:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730321AbgKQNSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:18:31 -0500
+        id S1728498AbgKQNIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:08:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97F2021734;
-        Tue, 17 Nov 2020 13:18:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 921FB246BC;
+        Tue, 17 Nov 2020 13:08:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619111;
-        bh=2ttryGY3eT5+z8ilDfIM5PMl2ptH1k50VUbYb4lTFH8=;
+        s=default; t=1605618534;
+        bh=bDiUE3Eha4KTeAqzc1mssI3d5b8AScDTg3IoKj/Uylo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ko9aS5YQsL0rhU06v+o6OOpn4hd3e5f8WicrZ3iAiuHXaSHaVfrM5WuhESkw2KMEy
-         1ltGilDbvQnJOUyqAmWbmBuX8Z5N+mN9ioeNv7Sk/uvga+p4xgIZhfqYvM1WLACQqB
-         s25KflnJwmAQ0GGPksBPtHyk79q5A8NGQ3iabLxk=
+        b=YjbNWrgGBJK4nEeUVXWI7XPYIdmzjQddCGM+2L2qHw67OiIuY5Tj86daWACW+3SEr
+         oGABcOdKxOGUAFD0bOC9fq4x7g5nftW1PXgjALnbkMlSe8rjF0i++Ft0E+ibX13Ny/
+         ObUgP9sQufTaFe2wB79T7GUmwA12P/msxoWXcdKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 031/101] ALSA: hda: Reinstate runtime_allow() for all hda controllers
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>
+Subject: [PATCH 4.4 35/64] mei: protect mei_cl_mtu from null dereference
 Date:   Tue, 17 Nov 2020 14:04:58 +0100
-Message-Id: <20201117122114.605040102@linuxfoundation.org>
+Message-Id: <20201117122107.891486298@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-[ Upstream commit 9fc149c3bce7bdbb94948a8e6bd025e3b3538603 ]
+commit bcbc0b2e275f0a797de11a10eff495b4571863fc upstream.
 
-The broken jack detection should be fixed by commit a6e7d0a4bdb0 ("ALSA:
-hda: fix jack detection with Realtek codecs when in D3"), let's try
-enabling runtime PM by default again.
+A receive callback is queued while the client is still connected
+but can still be called after the client was disconnected. Upon
+disconnect cl->me_cl is set to NULL, hence we need to check
+that ME client is not-NULL in mei_cl_mtu to avoid
+null dereference.
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20201027130038.16463-4-kai.heng.feng@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Link: https://lore.kernel.org/r/20201029095444.957924-2-tomas.winkler@intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/pci/hda/hda_intel.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/mei/client.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index d43245937db7e..8e1eb5f243a27 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2478,6 +2478,7 @@ static int azx_probe_continue(struct azx *chip)
+--- a/drivers/misc/mei/client.h
++++ b/drivers/misc/mei/client.h
+@@ -156,11 +156,11 @@ static inline u8 mei_cl_me_id(const stru
+  *
+  * @cl: host client
+  *
+- * Return: mtu
++ * Return: mtu or 0 if client is not connected
+  */
+ static inline size_t mei_cl_mtu(const struct mei_cl *cl)
+ {
+-	return cl->me_cl->props.max_msg_length;
++	return cl->me_cl ? cl->me_cl->props.max_msg_length : 0;
+ }
  
- 	if (azx_has_pm_runtime(chip)) {
- 		pm_runtime_use_autosuspend(&pci->dev);
-+		pm_runtime_allow(&pci->dev);
- 		pm_runtime_put_autosuspend(&pci->dev);
- 	}
- 
--- 
-2.27.0
-
+ /**
 
 
