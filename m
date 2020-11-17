@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0062B57E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 594FC2B57EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbgKQD32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 22:29:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725804AbgKQD31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 22:29:27 -0500
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB74F2469D
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 03:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605583767;
-        bh=WMRhCW6DOK8RnOuLzcdydvPfp06u9UtoDSKwaFODpgY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=btN8fO4oH59fwlcG1NlVB4yzWn5RNtXq6pmYb2loUqeLdn2YjXYpk6lQAav6vrQ4t
-         rwple4e4fcjb0LCj47dr8za6O1qNlxXzOjS8t5a7A28P4NbJCNeH3xSZBIaUlcayO5
-         EBfmgv8CtTziraWpki+n94sDYN3+7lWfchtdoJcs=
-Received: by mail-wm1-f44.google.com with SMTP id 19so1884756wmf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 19:29:26 -0800 (PST)
-X-Gm-Message-State: AOAM533M3CkY16gh46N2QtmFVV/C/SrWAgPfz8AQpsmRVlT7NyqHthn9
-        nWgn2eQvvhlMEVBcLxz73LNUjg7UrdbrBWuF5QR6aA==
-X-Google-Smtp-Source: ABdhPJzFWgJUzKTEsaSvrSr5rrOi4fhhYM2FMrNXfJy5CkO1AmG6K+e912rcJptHY+4p1YoKCncqmFpCn68qjhsiqLw=
-X-Received: by 2002:a05:600c:22d3:: with SMTP id 19mr1948152wmg.21.1605583765456;
- Mon, 16 Nov 2020 19:29:25 -0800 (PST)
+        id S1726293AbgKQDdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 22:33:31 -0500
+Received: from fralinode-sdnproxy-1.icoremail.net ([172.104.134.221]:53892
+        "HELO fralinode-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S1725804AbgKQDdb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 22:33:31 -0500
+Received: from localhost (unknown [218.77.105.7])
+        by c1app3 (Coremail) with SMTP id AwINCgCXee5wQbNfoxtjAA--.23132S3;
+        Tue, 17 Nov 2020 11:20:16 +0800 (CST)
+From:   Chen Baozi <cbz@baozis.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] irqchip/exiu: Fix the index of fwspec for IRQ type
+Date:   Tue, 17 Nov 2020 11:20:15 +0800
+Message-Id: <20201117032015.11805-1-cbz@baozis.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201002042915.403558-1-mark.mossberg@gmail.com>
- <20201103125034.GA30391@redhat.com> <20201103171537.GC4111@zn.tnic>
- <20201103174744.GB23992@redhat.com> <20201103175237.GD4111@zn.tnic>
- <20201103181114.GC23992@redhat.com> <20201103182018.GE4111@zn.tnic>
- <87blfxx8ps.fsf@nanos.tec.linutronix.de> <CALCETrW+Jek_t51RyqxO=HUA_PJ4APwS9hJQWsXyc426cgf0wA@mail.gmail.com>
- <878sb0yisp.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <878sb0yisp.fsf@nanos.tec.linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 16 Nov 2020 19:29:11 -0800
-X-Gmail-Original-Message-ID: <CALCETrVoOA3u6Hej4r3n3d6C+ZE+wB0+mbOZzPUtLF6DzYZdCQ@mail.gmail.com>
-Message-ID: <CALCETrVoOA3u6Hej4r3n3d6C+ZE+wB0+mbOZzPUtLF6DzYZdCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/dumpstack: Fix misleading instruction pointer
- error message
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Borislav Petkov <bp@alien8.de>, Oleg Nesterov <oleg@redhat.com>,
-        Mark Mossberg <mark.mossberg@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jann Horn <jannh@google.com>,
-        kyin@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AwINCgCXee5wQbNfoxtjAA--.23132S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8GFW5urW7Zw1DXFWkJFb_yoW3trc_ur
+        17WF43Kr4FvF17t348Kw4YqryIva4DuFs7Wr1qka98Xayj9w4UAFn2g395JwnrAFWUAFWS
+        yrWY9r1FvF43JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsxYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8GwCF04k2
+        0xvY0x0EwIxGrwCF04k20xvEw4C26cxK6c8Ij28IcwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
+        ZFpf9x07b7CJPUUUUU=
+X-Originating-IP: [218.77.105.7]
+Sender: chenbaozi@phytium.com.cn
+X-CM-SenderInfo: hfkh0updr2xqxsk13x1xpou0fpof0/1tbiAQTfP17E3XxfYwAAsi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 3:37 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Mon, Nov 16 2020 at 15:04, Andy Lutomirski wrote:
->
-> > On Mon, Nov 16, 2020 at 2:01 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >>  arch/x86/kernel/dumpstack.c |   23 +++++++++++++++++++----
-> >>  1 file changed, 19 insertions(+), 4 deletions(-)
-> >>
-> >> --- a/arch/x86/kernel/dumpstack.c
-> >> +++ b/arch/x86/kernel/dumpstack.c
-> >> @@ -78,6 +78,9 @@ static int copy_code(struct pt_regs *reg
-> >>         if (!user_mode(regs))
-> >>                 return copy_from_kernel_nofault(buf, (u8 *)src, nbytes);
-> >>
-> >> +       /* The user space code from other tasks cannot be accessed. */
-> >> +       if (regs != task_pt_regs(current))
-> >> +               return -EPERM;
-> >
-> > Depending on exactly where this gets called, this may not be
-> > sufficient.  You should also check nmi_uaccess_okay().
->
-> which is what copy_from_user_nmi() already does.
+From: Chen Baozi <chenbaozi@phytium.com.cn>
 
-Whoops.  I thought I checked that...
+Since fwspec->param_count of ACPI node is two, the index of IRQ type
+in fwspec->param[] should be 1 rather than 2.
+
+Signed-off-by: Chen Baozi <chenbaozi@phytium.com.cn>
+---
+ drivers/irqchip/irq-sni-exiu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-sni-exiu.c b/drivers/irqchip/irq-sni-exiu.c
+index 1d027623c776..abd011fcecf4 100644
+--- a/drivers/irqchip/irq-sni-exiu.c
++++ b/drivers/irqchip/irq-sni-exiu.c
+@@ -136,7 +136,7 @@ static int exiu_domain_translate(struct irq_domain *domain,
+ 		if (fwspec->param_count != 2)
+ 			return -EINVAL;
+ 		*hwirq = fwspec->param[0];
+-		*type = fwspec->param[2] & IRQ_TYPE_SENSE_MASK;
++		*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
+ 	}
+ 	return 0;
+ }
+-- 
+2.28.0
+
