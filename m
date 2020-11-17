@@ -2,404 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51ED62B65CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82072B65E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730368AbgKQNRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:17:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:56676 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729460AbgKQNQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:16:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 854AA101E;
-        Tue, 17 Nov 2020 05:16:00 -0800 (PST)
-Received: from [10.57.25.49] (unknown [10.57.25.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C0C63F719;
-        Tue, 17 Nov 2020 05:15:58 -0800 (PST)
-Subject: Re: [PATCH v2 4/4] powercap/drivers/dtpm: Add CPU energy model based
- support
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rjw@rjwysocki.net, ilina@codeaurora.org, ulf.hansson@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, rkumbako@codeaurora.org,
-        rui.zhang@intel.com
-References: <20201116152649.11482-1-daniel.lezcano@linaro.org>
- <20201116152649.11482-5-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <c467cb4d-2226-e558-e340-cd5764490078@arm.com>
-Date:   Tue, 17 Nov 2020 13:15:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1733142AbgKQN6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:58:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730714AbgKQNSp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:18:45 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353F9C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:18:45 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id 79so19295598otc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:18:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pa0dw+2YDpQA3Ip7yWMCpwDF+q2V8p/vPHE4K5vOsWU=;
+        b=kHpe6ZacvQalxImqYZ7Y/Tk8Xjw4k5FGX1UY3t/LRIwWRZmd9vBOLAnRtGqkYTNV/8
+         N1tM1Z4t15cJ3hI03/Fqy/u766FH2Q7C8ibXnQH7ygnlt6SoY516fehJgltRw4Tdf5ou
+         /MIP8VoxRk3+7pMZiBxotFbBZH69xaXFxn/P770IbhdeB8US1QVd5wwWZSv2TGMJMdDq
+         q1vj0z/gj/AVe8F1on0J3RXV2WEidKxliEvz9jYscGMLWveMr31Z1FwxwYoWb4MwZ8K7
+         RXBTdRlJRkRk6umlo+RJd4UAY9lxe5infHlR0AznIXeW8P+2ovCZb7vlhoqecEma65s+
+         4xJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pa0dw+2YDpQA3Ip7yWMCpwDF+q2V8p/vPHE4K5vOsWU=;
+        b=iqvinht+A6PFyOzxQeBXemCalYC1SdWqFMok2D6pz0s3Bix3hUCdJBT1e2r8/pDlnt
+         2B+7X8i+4vByMMYlvpPQUSHlNR7EuAuEN9tTcJ/LNQ/FqxQ+mt5JN+GvrkMhwDXgOj3X
+         YXC2V7bS8tUIBNoD7c8zl8VN6hJDYXjLXYFw1t/i8XhCltDgP0SKVJLLeDKKz0HNubWh
+         FCp49Y3SKKlUByllckIROfD8VkC3NScbtDwu1RaH1d6lAG6+46ilsdWflPQ+J1+0286o
+         xnyiThGuJFq/RXSI/mYRs6Y/kUzV5Bixw05v+nbV9Z11Rojgm887B08bk7nSqRGB4/2j
+         LBlA==
+X-Gm-Message-State: AOAM532Jzeied+6LoP/P43tJo4ih7Ui4HrtxUXIf+sE87XD/hO8D22BS
+        M1LiWLWMVkpZ3MD7zWMQgpJsRaR2OwDhqtyEkb3YKA==
+X-Google-Smtp-Source: ABdhPJzceQV4pvLQZoRKoQlzVJPrNglPcBp5aH4wjBQUCmugGSRGSwyeI7fnJHOFVn7ftcB1JSeqjD1Y2otDtNStrlc=
+X-Received: by 2002:a9d:f44:: with SMTP id 62mr3111227ott.17.1605619124327;
+ Tue, 17 Nov 2020 05:18:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201116152649.11482-5-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1605305978.git.andreyknvl@google.com> <52518837b34d607abbf30855b3ac4cb1a9486946.1605305978.git.andreyknvl@google.com>
+ <CACT4Y+ZaRgqpgPRe5k5fVrhd_He5_6N55715YzwWcQyvxYUNRQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZaRgqpgPRe5k5fVrhd_He5_6N55715YzwWcQyvxYUNRQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 17 Nov 2020 14:18:32 +0100
+Message-ID: <CANpmjNN6=5Vy5puLbhOQxSNUNptFA9jKKqnU4RXRcLb4JT=hJg@mail.gmail.com>
+Subject: Re: [PATCH mm v3 17/19] kasan: clean up metadata allocation and usage
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Tue, 17 Nov 2020 at 14:12, Dmitry Vyukov <dvyukov@google.com> wrote:
 
-Only one small comment regarding the setup of 'power_limit'.
+> > +        */
+> >         *(u8 *)kasan_mem_to_shadow(object) = KASAN_KMALLOC_FREE;
+> > +
+> >         ___cache_free(cache, object, _THIS_IP_);
+> >
+> >         if (IS_ENABLED(CONFIG_SLAB))
+> > @@ -168,6 +173,9 @@ void quarantine_put(struct kmem_cache *cache, void *object)
+> >         struct qlist_head temp = QLIST_INIT;
+> >         struct kasan_free_meta *meta = kasan_get_free_meta(cache, object);
+> >
+> > +       if (!meta)
+> > +               return;
+>
+> Humm... is this possible? If yes, we would be leaking the object here...
+> Perhaps BUG_ON with a comment instead.
 
-On 11/16/20 3:26 PM, Daniel Lezcano wrote:
-> With the powercap dtpm controller, we are able to plug devices with
-> power limitation features in the tree.
-> 
-> The following patch introduces the CPU power limitation based on the
-> energy model and the performance states.
-> 
-> The power limitation is done at the performance domain level. If some
-> CPUs are unplugged, the corresponding power will be subtracted from
-> the performance domain total power.
-> 
-> It is up to the platform to initialize the dtpm tree and add the CPU.
-> 
-> Here is an example to create a simple tree with one root node called
-> "pkg" and the CPU's performance domains.
-> 
-> static int dtpm_register_pkg(struct dtpm_descr *descr)
-> {
-> 	struct dtpm *pkg;
-> 	int ret;
-> 
-> 	pkg = dtpm_alloc();
-> 	if (!pkg)
-> 		return -ENOMEM;
-> 
-> 	ret = dtpm_register_parent(descr->name, pkg, descr->parent);
-> 	if (ret)
-> 		return ret;
-> 
-> 	return dtpm_register_cpu(pkg);
-> }
-> 
-> static struct dtpm_descr descr = {
-> 	.name = "pkg",
-> 	.init = dtpm_register_pkg,
-> };
-> DTPM_DECLARE(descr);
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   drivers/powercap/Kconfig    |   7 +
->   drivers/powercap/Makefile   |   1 +
->   drivers/powercap/dtpm_cpu.c | 282 ++++++++++++++++++++++++++++++++++++
->   include/linux/cpuhotplug.h  |   1 +
->   include/linux/dtpm.h        |   3 +
->   5 files changed, 294 insertions(+)
->   create mode 100644 drivers/powercap/dtpm_cpu.c
-> 
-> diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-> index cc1953bd8bed..20b4325c6161 100644
-> --- a/drivers/powercap/Kconfig
-> +++ b/drivers/powercap/Kconfig
-> @@ -49,4 +49,11 @@ config DTPM
->   	help
->   	  This enables support for the power capping for the dynamic
->   	  thermal power management userspace engine.
-> +
-> +config DTPM_CPU
-> +	bool "Add CPU power capping based on the energy model"
-> +	depends on DTPM && ENERGY_MODEL
-> +	help
-> +	  This enables support for CPU power limitation based on
-> +	  energy model.
->   endif
-> diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
-> index 6482ac52054d..fabcf388a8d3 100644
-> --- a/drivers/powercap/Makefile
-> +++ b/drivers/powercap/Makefile
-> @@ -1,5 +1,6 @@
->   # SPDX-License-Identifier: GPL-2.0-only
->   obj-$(CONFIG_DTPM) += dtpm.o
-> +obj-$(CONFIG_DTPM_CPU) += dtpm_cpu.o
->   obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
->   obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
->   obj-$(CONFIG_INTEL_RAPL) += intel_rapl_msr.o
-> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-> new file mode 100644
-> index 000000000000..6bff5f27d891
-> --- /dev/null
-> +++ b/drivers/powercap/dtpm_cpu.c
-> @@ -0,0 +1,282 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright 2020 Linaro Limited
-> + *
-> + * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-> + *
-> + * The DTPM CPU is based on the energy model. It hooks the CPU in the
-> + * DTPM tree which in turns update the power number by propagating the
-> + * power number from the CPU energy model information to the parents.
-> + *
-> + * The association between the power and the performance state, allows
-> + * to set the power of the CPU at the OPP granularity.
-> + *
-> + * The CPU hotplug is supported and the power numbers will be updated
-> + * if a CPU is hot plugged / unplugged.
-> + */
-> +#include <linux/cpumask.h>
-> +#include <linux/cpufreq.h>
-> +#include <linux/cpuhotplug.h>
-> +#include <linux/dtpm.h>
-> +#include <linux/energy_model.h>
-> +#include <linux/pm_qos.h>
-> +#include <linux/slab.h>
-> +#include <linux/units.h>
-> +
-> +static struct dtpm *__parent;
-> +
-> +static DEFINE_PER_CPU(struct dtpm *, dtpm_per_cpu);
-> +
-> +struct dtpm_cpu {
-> +	struct freq_qos_request qos_req;
-> +	int cpu;
-> +};
-> +
-> +/*
-> + * When a new CPU is inserted at hotplug or boot time, add the power
-> + * contribution and update the dtpm tree.
-> + */
-> +static int power_add(struct dtpm *dtpm, struct em_perf_domain *em)
-> +{
-> +	u64 power_min, power_max;
-> +
-> +	power_min = em->table[0].power;
-> +	power_min *= MICROWATT_PER_MILLIWATT;
-> +	power_min += dtpm->power_min;
-> +
-> +	power_max = em->table[em->nr_perf_states - 1].power;
-> +	power_max *= MICROWATT_PER_MILLIWATT;
-> +	power_max += dtpm->power_max;
-> +
-> +	return dtpm_update_power(dtpm, power_min, power_max);
-> +}
-> +
-> +/*
-> + * When a CPU is unplugged, remove its power contribution from the
-> + * dtpm tree.
-> + */
-> +static int power_sub(struct dtpm *dtpm, struct em_perf_domain *em)
-> +{
-> +	u64 power_min, power_max;
-> +
-> +	power_min = em->table[0].power;
-> +	power_min *= MICROWATT_PER_MILLIWATT;
-> +	power_min = dtpm->power_min - power_min;
-> +
-> +	power_max = em->table[em->nr_perf_states - 1].power;
-> +	power_max *= MICROWATT_PER_MILLIWATT;
-> +	power_max = dtpm->power_max - power_max;
-> +
-> +	return dtpm_update_power(dtpm, power_min, power_max);
-> +}
-> +
-> +static int set_pd_power_limit(struct powercap_zone *pcz, int cid,
-> +			      u64 power_limit)
-> +{
-> +	struct dtpm *dtpm = to_dtpm(pcz);
-> +	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-> +	struct em_perf_domain *pd;
-> +	struct cpumask cpus;
-> +	unsigned long freq;
-> +	u64 power;
-> +	int i, nr_cpus;
-> +
-> +	spin_lock(&dtpm->lock);
-> +
-> +	power_limit = clamp_val(power_limit, dtpm->power_min, dtpm->power_max);
-> +
-> +	pd = em_cpu_get(dtpm_cpu->cpu);
-> +
-> +	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
-> +
-> +	nr_cpus = cpumask_weight(&cpus);
-> +
-> +	for (i = 0; i < pd->nr_perf_states; i++) {
-> +
-> +		power = pd->table[i].power * MICROWATT_PER_MILLIWATT * nr_cpus;
-> +
-> +		if (power > power_limit)
-> +			break;
-> +	}
-> +
-> +	freq = pd->table[i - 1].frequency;
-> +
-> +	dtpm->power_limit = pd->table[i - 1].power *
-> +		MICROWATT_PER_MILLIWATT * nr_cpus;
-> +
-> +	spin_unlock(&dtpm->lock);
-> +
-> +	freq_qos_update_request(&dtpm_cpu->qos_req, freq);
-> +
-> +	return 0;
-> +}
-> +
-> +static int get_pd_power_limit(struct powercap_zone *pcz, int cid, u64 *data)
-> +{
-> +	struct dtpm *dtpm = to_dtpm(pcz);
-> +
-> +	spin_lock(&dtpm->lock);
-> +	*data = dtpm->power_limit;
-> +	spin_unlock(&dtpm->lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int get_pd_power_uw(struct powercap_zone *pcz, u64 *power_uw)
-> +{
-> +	struct dtpm *dtpm = to_dtpm(pcz);
-> +	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-> +	struct em_perf_domain *pd;
-> +	unsigned long freq;
-> +	int i, nr_cpus;
-> +
-> +	freq = cpufreq_quick_get(dtpm_cpu->cpu);
-> +	pd = em_cpu_get(dtpm_cpu->cpu);
-> +	nr_cpus = cpumask_weight(to_cpumask(pd->cpus));
-> +
-> +	for (i = 0; i < pd->nr_perf_states; i++) {
-> +
-> +		if (pd->table[i].frequency < freq)
-> +			continue;
-> +
-> +		*power_uw = pd->table[i].power *
-> +			MICROWATT_PER_MILLIWATT * nr_cpus;
-> +
-> +		return 0;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static int cpu_release_zone(struct powercap_zone *pcz)
-> +{
-> +	struct dtpm *dtpm = to_dtpm(pcz);
-> +	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-> +
-> +	freq_qos_remove_request(&dtpm_cpu->qos_req);
-> +	kfree(dtpm_cpu);
-> +
-> +	return dtpm_release_zone(pcz);
-> +}
-> +
-> +static struct powercap_zone_constraint_ops pd_constraint_ops = {
-> +	.set_power_limit_uw = set_pd_power_limit,
-> +	.get_power_limit_uw = get_pd_power_limit,
-> +};
-> +
-> +static struct powercap_zone_ops pd_zone_ops = {
-> +	.get_power_uw = get_pd_power_uw,
-> +	.release = cpu_release_zone,
-> +};
-> +
-> +static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
-> +{
-> +	struct cpufreq_policy *policy;
-> +	struct em_perf_domain *pd;
-> +	struct dtpm *dtpm;
-> +
-> +	policy = cpufreq_cpu_get(cpu);
-> +
-> +	if (!policy)
-> +		return 0;
-> +
-> +	pd = em_cpu_get(cpu);
-> +	if (!pd)
-> +		return -EINVAL;
-> +
-> +	dtpm = per_cpu(dtpm_per_cpu, cpu);
-> +
-> +	power_sub(dtpm, pd);
-> +
-> +	if (cpumask_weight(policy->cpus) != 1)
-> +		return 0;
-> +
-> +	for_each_cpu(cpu, policy->related_cpus)
-> +		per_cpu(dtpm_per_cpu, cpu) = NULL;
-> +
-> +	dtpm_unregister(dtpm);
-> +
-> +	return 0;
-> +}
-> +
-> +static int cpuhp_dtpm_cpu_online(unsigned int cpu)
-> +{
-> +        struct dtpm *dtpm;
-> +	struct dtpm_cpu *dtpm_cpu;
-> +	struct cpufreq_policy *policy;
-> +	struct em_perf_domain *pd;
-> +	char name[CPUFREQ_NAME_LEN];
-> +	int ret;
-> +
-> +	policy = cpufreq_cpu_get(cpu);
-> +
-> +	if (!policy)
-> +		return 0;
-> +
-> +	pd = em_cpu_get(cpu);
-> +	if (!pd)
-> +		return -EINVAL;
-> +
-> +	dtpm = per_cpu(dtpm_per_cpu, cpu);
-> +	if (dtpm)
-> +		return power_add(dtpm, pd);
-
-The dtpm->power_limit is not incremented in this path, when a new
-CPU joins the cluster.
-Is it correct?
-
-Or maybe we need something like:
------------------------------->8---------------------
-         if (dtpm) {
-                 ret = power_add(dtpm, pd);
-                 if (!ret)
-                         dtpm->power_limit = dtpm->power_max;
-                 return ret;
-         }
-------------------------8<---------------
-
-The power_max should be updated after successful power_add().
-It would disturb user set value in power_limit, though (described
-below).
-
-
-> +
-> +	dtpm = dtpm_alloc();
-> +	if (!dtpm)
-> +		return -EINVAL;
-> +
-> +	dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
-> +	if (!dtpm_cpu) {
-> +		kfree(dtpm);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	dtpm->private = dtpm_cpu;
-> +	dtpm_cpu->cpu = cpu;
-> +
-> +	for_each_cpu(cpu, policy->related_cpus)
-> +		per_cpu(dtpm_per_cpu, cpu) = dtpm;
-> +
-> +	ret = power_add(dtpm, pd);
-> +	if (ret)
-> +		goto out_kfree_dtpm_cpu;
-> +
-> +	dtpm->power_limit = dtpm->power_max;
-
-Here, the power_limit will be set only once with power_max
-for a single CPU. I am not sure, but maybe we can simple say:
-
-dtpm->power_limit = dtpm->power_max * cpumask_weight(policy->related_cpus)
-
-an avoid touching it later (?)
-
-Because this function can be called in runtime, when the power_limit
-was already set by userspace, the hotpluging in/out/in... CPU shouldn't
-change this limit.
-
-Regards,
-Lukasz
+If this is possible in prod-mode KASAN, a WARN_ON() that returns would be safer.
