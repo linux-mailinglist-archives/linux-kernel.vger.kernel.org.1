@@ -2,238 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5647A2B71D6
+	by mail.lfdr.de (Postfix) with ESMTP id E7BAF2B71D7
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 23:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729396AbgKQWwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 17:52:37 -0500
-Received: from mga05.intel.com ([192.55.52.43]:12193 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729377AbgKQWwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 17:52:36 -0500
-IronPort-SDR: hYHoRbsSbCSABdWQO5LHJhpa1B1EAeHMKNveoYbDiVHux//lyeLGTwJ4SnIr5EdyJ8ihs+jw1Q
- HgF6hnAWlb7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="255738589"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="255738589"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 14:52:35 -0800
-IronPort-SDR: VfEzHyyvJ0e/p97hww3lasn37tddRl29gSgLoHHGVIDaY1ygMr9O4akyGC2lL6RtEC6wbZTJ09
- BAOY2VEpSQKg==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="430611760"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.24.101]) ([10.212.24.101])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 14:52:34 -0800
-Subject: Re: [PATCH 08/24] x86/resctrl: Walk the resctrl schema list instead
- of an arch list
-To:     James Morse <james.morse@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-References: <20201030161120.227225-1-james.morse@arm.com>
- <20201030161120.227225-9-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <cb95b485-4d34-fa88-7c66-2d4d6fc62b5d@intel.com>
-Date:   Tue, 17 Nov 2020 14:52:33 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1729430AbgKQWxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 17:53:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727692AbgKQWxE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 17:53:04 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9DBC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:53:03 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id l11so1324977plt.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 14:53:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=Ce5mdOiUnXdpgxCp5xEN1C00ke4lV/R4t5KP7C9QieU=;
+        b=lpuXNOnoMJPZCqJXzeKrt0bjw4/lBl9bLgEmGMpS9SlE6ATrhwz3JE00zeefPVNRyE
+         SmBlnlNZNbh0M/9eC1gsvbObC5dvzN8ha7DagBcePbYJwkaNToAum5xcWOWe4M9GJVUH
+         MjjJWm6VpC2Z1Ato6DZxLnyIxWJllMJ8w39a8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=Ce5mdOiUnXdpgxCp5xEN1C00ke4lV/R4t5KP7C9QieU=;
+        b=ahR/zYT+O29mDoOvo7SqczfoVy1WYJkLLacf4/ejWVAOgExb88wykBb3H3+tbgAsRP
+         EQ2HPeAek5oKc3SV3z/QPnRHIqlm2cAd7uV6vYRigoz465DV1jfdkr1hSP4VCrDf0rX5
+         GJOhqnq5H5calGfdCE8Stkx83XtojKMNe6b2tOV2l9kQFOvs6WJVrYav3716rhNkQLAt
+         oNncpvwLkrxIc1HSFcgMjkp3OmHd7EqEDZPvaOSX/WHzfOL7fH/Ho2PZK+VQgYYtxs0M
+         kyCLTmCHYglx1BFu9V3j5wEKp65oN3Y42cQHkmVt7/qVi7QrfJ+R27AtOQdoOV+biHbC
+         toag==
+X-Gm-Message-State: AOAM533xRkeAiDjCgIifcyiqKNuBehUb7TwRobfQOW/0msmWDzrVR0xJ
+        VPt51rEYsfvobxJ4SMNAQfDRLQ==
+X-Google-Smtp-Source: ABdhPJyjPQ5ZJcnbca+0zpUp5+RhAj0mYPzGqNb46PCd3r24FPJ1Ddl2hsvuztEftWzQK9r9fBJuPw==
+X-Received: by 2002:a17:90a:d486:: with SMTP id s6mr1202521pju.115.1605653583407;
+        Tue, 17 Nov 2020 14:53:03 -0800 (PST)
+Received: from chromium.org ([100.99.132.239])
+        by smtp.gmail.com with ESMTPSA id p7sm12688384pfn.83.2020.11.17.14.53.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 14:53:02 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20201030161120.227225-9-james.morse@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <71aebca216babf4010c92d4d1ce9a9b4@codeaurora.org>
+References: <20201117172608.2091648-1-swboyd@chromium.org> <71aebca216babf4010c92d4d1ce9a9b4@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: Remove chatty vbif debug print
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Clark <robdclark@gmail.com>, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Sean Paul <sean@poorly.run>,
+        kalyan_t@codeaurora.org
+To:     abhinavk@codeaurora.org
+Date:   Tue, 17 Nov 2020 14:53:01 -0800
+Message-ID: <160565358127.60232.4382778730228368993@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Quoting abhinavk@codeaurora.org (2020-11-17 12:34:56)
+> On 2020-11-17 09:26, Stephen Boyd wrote:
+> > I don't know what this debug print is for but it is super chatty,
+> > throwing 8 lines of debug prints in the logs every time we update a
+> > plane. It looks like it has no value. Let's nuke it so we can get
+> > better logs.
+> >=20
+> > Cc: Sean Paul <sean@poorly.run>
+> > Cc: Abhinav Kumar <abhinavk@codeaurora.org>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+>=20
+> > ---
+> >  drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c | 3 ---
+> >  1 file changed, 3 deletions(-)
+> >=20
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
+> > b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
+> > index 5e8c3f3e6625..5eb2b2ee09f5 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
+> > @@ -245,9 +245,6 @@ void dpu_vbif_set_qos_remap(struct dpu_kms=20
+> > *dpu_kms,
+> >       forced_on =3D mdp->ops.setup_clk_force_ctrl(mdp, params->clk_ctrl=
+,=20
+> > true);
+> >=20
+> >       for (i =3D 0; i < qos_tbl->npriority_lvl; i++) {
+> > -             DPU_DEBUG("vbif:%d xin:%d lvl:%d/%d\n",
+> > -                             params->vbif_idx, params->xin_id, i,
+> > -                             qos_tbl->priority_lvl[i]);
+>=20
+> Instead of getting rid of this print, we should optimize the caller of=20
+> this.
 
-On 10/30/2020 9:11 AM, James Morse wrote:
-> Now that resctrl has its own list of resources it is using, walk that
-> list instead of the architectures list. This means resctrl has somewhere
-> to keep schema properties with the resource that is using them.
-> 
-> Most users of for_each_alloc_enabled_rdt_resource() are per-schema,
-> and also want a schema property, like the conf_type. Switch these to
-> walk the schema list. Schema were only created for alloc_enabled
-> resources so these two lists are currently equivalent.
-> 
+Does the print tell us anything? Right now it prints 8 lines where it
+feels like it could be trimmed down:
 
- From what I understand based on this description the patch will 
-essentially change instances of for_each_alloc_enabled_rdt_resource() to 
-walking the schema list ....
+           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:0/3
+           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:1/3
+           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:2/4
+           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:3/4
+           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:4/5
+           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:5/5
+           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:6/6
+           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 lvl:7/6
 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->   arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 38 ++++++++++++++---------
->   arch/x86/kernel/cpu/resctrl/internal.h    |  6 ++--
->   arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 34 +++++++++++++-------
->   include/linux/resctrl.h                   |  5 +--
->   4 files changed, 53 insertions(+), 30 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> index 8ac104c634fe..d3f9d142f58a 100644
-> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> @@ -57,9 +57,10 @@ static bool bw_validate(char *buf, unsigned long *data, struct rdt_resource *r)
->   	return true;
->   }
->   
-> -int parse_bw(struct rdt_parse_data *data, struct rdt_resource *r,
-> +int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
->   	     struct rdt_domain *d)
->   {
-> +	struct rdt_resource *r = s->res;
->   	unsigned long bw_val;
->   
->   	if (d->have_new_ctrl) {
+maybe one line that combines the index into values?
 
-... this change and also the ones to parse_cbm() and 
-rdtgroup_cbm_overlaps() are not clear to me because it seems they 
-replace the rdt_resource parameter with resctrl_schema, but all in turn 
-use that to access rdt_resource again. That seems unnecessary?
+           [drm:dpu_vbif_set_qos_remap] vbif:0 xin:0 [3 3 4 4 5 5 6 6]
 
-> @@ -125,10 +126,11 @@ static bool cbm_validate(char *buf, u32 *data, struct rdt_resource *r)
->    * Read one cache bit mask (hex). Check that it is valid for the current
->    * resource type.
->    */
-> -int parse_cbm(struct rdt_parse_data *data, struct rdt_resource *r,
-> +int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
->   	      struct rdt_domain *d)
->   {
->   	struct rdtgroup *rdtgrp = data->rdtgrp;
-> +	struct rdt_resource *r = s->res;
->   	u32 cbm_val;
->   
->   	if (d->have_new_ctrl) {
+But again I have no idea if this print is really useful. Maybe we can
+print it only if the value changes from what was already there?
+Basically move the print into dpu_hw_set_qos_remap() and then skip out
+early if nothing changed or print and modify the register.
 
-Really needed?
+> This is what
+> we are doing in downstream. So we need to update the property only if we =
 
-> @@ -160,12 +162,12 @@ int parse_cbm(struct rdt_parse_data *data, struct rdt_resource *r,
->   	 * The CBM may not overlap with the CBM of another closid if
->   	 * either is exclusive.
->   	 */
-> -	if (rdtgroup_cbm_overlaps(r, d, cbm_val, rdtgrp->closid, true)) {
-> +	if (rdtgroup_cbm_overlaps(s, d, cbm_val, rdtgrp->closid, true)) {
->   		rdt_last_cmd_puts("Overlaps with exclusive group\n");
->   		return -EINVAL;
->   	}
->   
-> -	if (rdtgroup_cbm_overlaps(r, d, cbm_val, rdtgrp->closid, false)) {
-> +	if (rdtgroup_cbm_overlaps(s, d, cbm_val, rdtgrp->closid, false)) {
->   		if (rdtgrp->mode == RDT_MODE_EXCLUSIVE ||
->   		    rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP) {
->   			rdt_last_cmd_puts("Overlaps with other group\n");
+> are switching from a RT client
+> to non-RT client for the plane and vice-versa. So we should try to do=20
+> the same thing here.
+>=20
+>         is_rt =3D sde_crtc_is_rt_client(crtc, crtc->state);
+>         if (is_rt !=3D psde->is_rt_pipe) {
+>                 psde->is_rt_pipe =3D is_rt;
+>                 pstate->dirty |=3D SDE_PLANE_DIRTY_QOS;
+>         }
+>=20
+>=20
+>         if (pstate->dirty & DPU_PLANE_DIRTY_QOS)
+>                 _dpu_plane_set_qos_remap(plane);
+>=20
 
-Needed?
-
-> @@ -185,9 +187,10 @@ int parse_cbm(struct rdt_parse_data *data, struct rdt_resource *r,
->    * separated by ";". The "id" is in decimal, and must match one of
->    * the "id"s for this resource.
->    */
-> -static int parse_line(char *line, struct rdt_resource *r,
-> +static int parse_line(char *line, struct resctrl_schema *s,
->   		      struct rdtgroup *rdtgrp)
->   {
-> +	struct rdt_resource *r = s->res;
->   	struct rdt_parse_data data;
->   	char *dom = NULL, *id;
->   	struct rdt_domain *d;
-> @@ -213,7 +216,8 @@ static int parse_line(char *line, struct rdt_resource *r,
->   		if (d->id == dom_id) {
->   			data.buf = dom;
->   			data.rdtgrp = rdtgrp;
-> -			if (r->parse_ctrlval(&data, r, d))
-> +
-> +			if (r->parse_ctrlval(&data, s, d))
->   				return -EINVAL;
->   			if (rdtgrp->mode ==  RDT_MODE_PSEUDO_LOCKSETUP) {
->   	
-
-needed?
-
-			/*
-> @@ -289,10 +293,12 @@ static int rdtgroup_parse_resource(char *resname, char *tok,
->   	struct resctrl_schema *s;
->   	struct rdt_resource *r;
->   
-> +	lockdep_assert_held(&rdtgroup_mutex);
-> +
-
-It is not clear how this addition fits into patch.
-
->   	list_for_each_entry(s, &resctrl_all_schema, list) {
->   		r = s->res;
->   		if (!strcmp(resname, r->name) && rdtgrp->closid < s->num_closid)
-> -			return parse_line(tok, r, rdtgrp);
-> +			return parse_line(tok, s, rdtgrp);
->   	}
-
-
-needed? (similar comments to other changes in this patch but I will stop 
-here)
-
->   	rdt_last_cmd_printf("Unknown or unsupported resource name '%s'\n", resname);
->   	return -EINVAL;
-
-...
-
-
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index 628e5eb4d7a9..592a517afd6a 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-
-...
-
-> @@ -2832,14 +2840,18 @@ static void rdtgroup_init_mba(struct rdt_resource *r)
->   /* Initialize the RDT group's allocations. */
->   static int rdtgroup_init_alloc(struct rdtgroup *rdtgrp)
->   {
-> +	struct resctrl_schema *s;
->   	struct rdt_resource *r;
->   	int ret;
->   
-> -	for_each_alloc_enabled_rdt_resource(r) {
-> +	lockdep_assert_held(&rdtgroup_mutex);
-> +
-
-Another addition that does not match patch description.
-
-> +	list_for_each_entry(s, &resctrl_all_schema, list) {
-> +		r = s->res;
->   		if (r->rid == RDT_RESOURCE_MBA) {
->   			rdtgroup_init_mba(r);
->   		} else {
-> -			ret = rdtgroup_init_cat(r, rdtgrp->closid);
-> +			ret = rdtgroup_init_cat(s, rdtgrp->closid);
->   			if (ret < 0)
->   				return ret;
->   		}
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 20d8b6dd4af4..8a12f4128209 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-
-...
-
-> @@ -171,7 +172,7 @@ struct rdt_resource {
->   
->   /**
->    * @list:	Member of resctrl's schema list
-> - * @cdp_type:	Whether this entry is for code/data/both
-> + * @conf_type:	Type of configuration, e.g. code/data/both
->    * @res:	The rdt_resource for this entry
->    * @num_closid	Number of CLOSIDs available for this resource
->    */
-> 
-
-This hunk can be merged with previous patch.
-
-Reinette
+Sounds great! Can you send the patch?
