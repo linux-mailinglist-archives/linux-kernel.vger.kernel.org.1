@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5212B656A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365F12B631B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731571AbgKQNzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:55:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59154 "EHLO mail.kernel.org"
+        id S1732340AbgKQNfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:35:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730857AbgKQNYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:24:09 -0500
+        id S1732207AbgKQNen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:34:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBD022463D;
-        Tue, 17 Nov 2020 13:24:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95432207BC;
+        Tue, 17 Nov 2020 13:34:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619448;
-        bh=kmuqCUfm9zSf7c1aNmUb/mtXrU+xM+WtkkvfC/WVZRQ=;
+        s=default; t=1605620083;
+        bh=UPwJARsOdU6P1yw4JwYRAKDD8DH4a/UifEn2hEdex+s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d79jBIJ7iIxs7pLq8r1BP8yuBBpN/pI41l7ItiI4+/7OoqUQZug6ERm/CEORcMs1F
-         bRz+DkiCPQjvuW/Vf75F8xPiK3j8MvpizXh7N3VmiCPpaZgED5eqyz1dwVQVmuBe79
-         5BXr95Hz4+I8ZsfW0T4/ua9jqm1y0cdaJFdP+gbk=
+        b=YIPbQ3vFpWqQ+cU/aY3WkCK7CLkSCB6yvgwrzs1QB7f9IhgBF37AfFbGjmm50ERen
+         E7xKQziRBr/NgLrkF696wViMIuQu4HmPW/WBZWBrnidRPxTkB9At5e27UKCf/s5biX
+         jySmLn+0QgEx0Pt0p3ojKw+b0J3mItz2QduFxdRU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 012/151] genirq: Let GENERIC_IRQ_IPI select IRQ_DOMAIN_HIERARCHY
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 102/255] tracing: Fix the checking of stackidx in __ftrace_trace_stack
 Date:   Tue, 17 Nov 2020 14:04:02 +0100
-Message-Id: <20201117122122.003505514@linuxfoundation.org>
+Message-Id: <20201117122143.919637262@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-[ Upstream commit 151a535171be6ff824a0a3875553ea38570f4c05 ]
+[ Upstream commit 906695e59324635c62b5ae59df111151a546ca66 ]
 
-kernel/irq/ipi.c otherwise fails to compile if nothing else
-selects it.
+The array size is FTRACE_KSTACK_NESTING, so the index FTRACE_KSTACK_NESTING
+is illegal too. And fix two typos by the way.
 
-Fixes: 379b656446a3 ("genirq: Add GENERIC_IRQ_IPI Kconfig symbol")
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Tested-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20201015101222.GA32747@amd
+Link: https://lkml.kernel.org/r/20201031085714.2147-1-hqjagain@gmail.com
+
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/irq/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/trace/trace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
-index f92d9a6873720..4e11120265c74 100644
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -81,6 +81,7 @@ config IRQ_FASTEOI_HIERARCHY_HANDLERS
- # Generic IRQ IPI support
- config GENERIC_IRQ_IPI
- 	bool
-+	select IRQ_DOMAIN_HIERARCHY
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 6e2fb7dc41bf3..1c76a0faf3cd1 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2611,7 +2611,7 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
+ 	/*
+ 	 * If tracing is off, but we have triggers enabled
+ 	 * we still need to look at the event data. Use the temp_buffer
+-	 * to store the trace event for the tigger to use. It's recusive
++	 * to store the trace event for the trigger to use. It's recursive
+ 	 * safe and will not be recorded anywhere.
+ 	 */
+ 	if (!entry && trace_file->flags & EVENT_FILE_FL_TRIGGER_COND) {
+@@ -2934,7 +2934,7 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
+ 	stackidx = __this_cpu_inc_return(ftrace_stack_reserve) - 1;
  
- # Generic MSI interrupt support
- config GENERIC_MSI_IRQ
+ 	/* This should never happen. If it does, yell once and skip */
+-	if (WARN_ON_ONCE(stackidx > FTRACE_KSTACK_NESTING))
++	if (WARN_ON_ONCE(stackidx >= FTRACE_KSTACK_NESTING))
+ 		goto out;
+ 
+ 	/*
 -- 
 2.27.0
 
