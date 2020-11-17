@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E882B711F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD372B7124
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgKQVw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726297AbgKQVw0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:52:26 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28030C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:52:26 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id i13so16923424pgm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:52:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4XjG60ocQx4PkwGgrAEoZIyPUhnxDgPZrMBdqiIZG+4=;
-        b=FumCDSzaVj4k7q4V2p0oNKAIKu0GYbAFc2SyCI1aqTxJUFpFoUH6T8PWWxOryTG19/
-         Q1zlGV6Di3ZGEwaZIfQcQ4NcdAXg07SmAHCYzmm4aemVr6P+UEqs5yTGo761PszGobNa
-         LiUwMgr6+SbWyc3qbTPN/Ai3ee1ReodEOFMas=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4XjG60ocQx4PkwGgrAEoZIyPUhnxDgPZrMBdqiIZG+4=;
-        b=oSLwStnjXfSxgPDDFMV/AhDTKfKqo/+kTQkQPWC0osrZ5xK/SJ9R2IAJGhg89JVkWi
-         2b2u8yXUF4n+JS+vnXEUTy3LWCohcPruLqIqnT4W8j0Nn8koIIxVr4YSk7ewN+YUocnn
-         S3DfJy41xRFxZ7DDQdKoGquIor9cMP4c41d3pC50VTF6IDTbyIicfCLfQTjHHbo+igoH
-         e0IBcCFcyjNRnGA34h69n+vWYk2hkX6O6DB7purvOujMMs6Td6Ok2CVn9bxCQ+GHT5Cs
-         rP8PbFr6in3NjmS8gCK4HH+PxSwNcvWn4Uf5+woLAHr/6rmxSKLxea79fGQOSSmbKDoC
-         oTSw==
-X-Gm-Message-State: AOAM5305xqoouuypz3O6r+sQvMBdWgiheKye8G1scnObb/dinQJHM+Y7
-        kx1rnMCJ7GB5HY+/tZWHLO1AzQ==
-X-Google-Smtp-Source: ABdhPJwx/GwY1vsKuE+ZykhwdU5XFj+Q/8T4Jjrzzd8kbh1afM17NqsLxZ988EMini1U8GWrTVGnNg==
-X-Received: by 2002:a63:1445:: with SMTP id 5mr5119858pgu.357.1605649945756;
-        Tue, 17 Nov 2020 13:52:25 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b29sm1039089pgn.87.2020.11.17.13.52.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 13:52:24 -0800 (PST)
-Date:   Tue, 17 Nov 2020 13:52:23 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 1/2] kbuild: Hoist '--orphan-handling' into Kconfig
-Message-ID: <202011171351.728E1194EF@keescook>
-References: <20201113195553.1487659-1-natechancellor@gmail.com>
+        id S1727956AbgKQV6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:58:41 -0500
+Received: from mga17.intel.com ([192.55.52.151]:9888 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726182AbgKQV6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 16:58:41 -0500
+IronPort-SDR: UiWoy1hIrgGpOmricjRR5QzIY2YkgALuutVAKtR3xnmhRVuuyP0wXN14p4mKu4LYvdg+0PgC5t
+ W5bPerDA5pGg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="150867407"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="150867407"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 13:58:38 -0800
+IronPort-SDR: B+xFNCS5/yZL0R++PpXTVj+Yc9brAxYzIpD1yhxmH35WmaW8UnLPODj3VEHMNPrmPMLZ6i1EXT
+ 9AiEosLdczMQ==
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="544223980"
+Received: from chimtrax-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.222])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 13:58:37 -0800
+Subject: Re: [PATCH v11 07/16] PCI/ERR: Simplify by computing pci_pcie_type()
+ once
+To:     Sean V Kelley <sean.v.kelley@intel.com>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, xerces.zhao@gmail.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        qiuxu.zhuo@intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201117191954.1322844-1-sean.v.kelley@intel.com>
+ <20201117191954.1322844-8-sean.v.kelley@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <248d4a59-fa56-60cc-edb1-e3871431664d@linux.intel.com>
+Date:   Tue, 17 Nov 2020 13:58:34 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113195553.1487659-1-natechancellor@gmail.com>
+In-Reply-To: <20201117191954.1322844-8-sean.v.kelley@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:55:52PM -0700, Nathan Chancellor wrote:
-> Currently, '--orphan-handling=warn' is spread out across four different
-> architectures in their respective Makefiles, which makes it a little
-> unruly to deal with in case it needs to be disabled for a specific
-> linker version (in this case, ld.lld 10.0.1).
-> 
-> To make it easier to control this, hoist this warning into Kconfig and
-> the main Makefile so that disabling it is simpler, as the warning will
-> only be enabled in a couple places (main Makefile and a couple of
-> compressed boot folders that blow away LDFLAGS_vmlinx) and making it
-> conditional is easier due to Kconfig syntax. One small additional
-> benefit of this is saving a call to ld-option on incremental builds
-> because we will have already evaluated it for CONFIG_LD_ORPHAN_WARN.
-> 
-> To keep the list of supported architectures the same, introduce
-> CONFIG_ARCH_WANT_LD_ORPHAN_WARN, which an architecture can select to
-> gain this automatically after all of the sections are specified and size
-> asserted. A special thanks to Kees Cook for the help text on this
-> config.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1187
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Hi,
 
-Looks good to me. With the other suggestions from the thread added,
-please consider it:
+On 11/17/20 11:19 AM, Sean V Kelley wrote:
+> Instead of calling pci_pcie_type(dev) twice, call it once and save the
+> result.  No functional change intended.
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Same optimization can be applied to drivers/pci/pcie/portdrv_pci.c and
+drivers/pci/pcie/aer.c.
+
+Can you fix them together ?
+
+> 
+> [bhelgaas: split to separate patch]
+> Link: https://lore.kernel.org/r/20201002184735.1229220-6-seanvk.dev@oregontracks.org
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+>   drivers/pci/pcie/err.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index 05f61da5ed9d..7a5af873d8bc 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -150,6 +150,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>   		pci_channel_state_t state,
+>   		pci_ers_result_t (*reset_subordinates)(struct pci_dev *pdev))
+>   {
+> +	int type = pci_pcie_type(dev);
+>   	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+>   	struct pci_bus *bus;
+>   
+> @@ -157,8 +158,8 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>   	 * Error recovery runs on all subordinates of the first downstream port.
+>   	 * If the downstream port detected the error, it is cleared at the end.
+>   	 */
+> -	if (!(pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> -	      pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM))
+> +	if (!(type == PCI_EXP_TYPE_ROOT_PORT ||
+> +	      type == PCI_EXP_TYPE_DOWNSTREAM))
+>   		dev = pci_upstream_bridge(dev);
+>   	bus = dev->subordinate;
+>   
+> 
 
 -- 
-Kees Cook
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
