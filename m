@@ -2,122 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8E72B65E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE492B6693
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731746AbgKQN65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:58:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40424 "EHLO mail.kernel.org"
+        id S1731651AbgKQOFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 09:05:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731343AbgKQN6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:58:54 -0500
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728738AbgKQNJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:09:18 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A15282468D
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:58:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE0152468F;
+        Tue, 17 Nov 2020 13:09:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605621532;
-        bh=h0tP/2EDBP+w629n4RIUFP0ww+ilNgg3bULmsl5N/go=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eO7ncMNKEnEk/C0m3RgjKwLdSouPFjHJwPBiE8nfas8R7lqi/yMmAXCOWSp3YpTyJ
-         z5KMePS+uNSarTpLyw/daiN/5UYiZvg2fPxYMwkOYO/tRm+jSGqlVUMxiVLIIkirCC
-         2OMu18Ps9RBdIzuMA3koS8dZNh1c+p4iPO77STR0=
-Received: by mail-ot1-f43.google.com with SMTP id l36so19454654ota.4
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:58:52 -0800 (PST)
-X-Gm-Message-State: AOAM5324Yj3Dc8NhjUt4rhrtZChiV9XFdWrB0k+V8xpcq3gLtMqNiNJU
-        naWtYlaTih2UU9CKzGu/bITh2K3qLQwj+LEg8EQ=
-X-Google-Smtp-Source: ABdhPJzWjY5Ize8OPQB6lZT19ylq0ipsqvKTMzVBF9gDabFABnJhhWpHeGx7Yx96l6oO+GI+kqjNKJtrAwz8bPTMKWw=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr2829215oth.251.1605621531812;
- Tue, 17 Nov 2020 05:58:51 -0800 (PST)
+        s=default; t=1605618557;
+        bh=uLws+EVf+TYNMDRCPYzmyez1zVXCcR3NUyUaD3WzrmI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=uAAUeqG5K+Fw7FAhVF64/qP2w8NBTNU0wRcrRBGaV7Ibafr2JGSMysvKsjw9mN3r+
+         jyc4erWAJyRnLwmnXHSSTXuWzRbkJ/1kE/AjClWF50BXQsj/MwSuJtqj85jtRce+Sa
+         FDQE2j8OBCLKOnWjQXw1uvNzz0gopa50gOqqN9ek=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megous@megous.com>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 01/78] regulator: defer probe when trying to get voltage from unresolved supply
+Date:   Tue, 17 Nov 2020 14:04:27 +0100
+Message-Id: <20201117122109.187747121@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-References: <202011111443.lt7V48Ig-lkp@intel.com> <CACRpkdbYXyVGf9_6PjmPgw_KNSEfiFVrmXWWmqLD-8Hmxg1xmg@mail.gmail.com>
- <20201113235801.GB6117@piout.net>
-In-Reply-To: <20201113235801.GB6117@piout.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 17 Nov 2020 14:58:36 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2MyLnULmUr4zgzkiWPiYfp+Xs8ruz9_q-PugVf_9DCCw@mail.gmail.com>
-Message-ID: <CAK8P3a2MyLnULmUr4zgzkiWPiYfp+Xs8ruz9_q-PugVf_9DCCw@mail.gmail.com>
-Subject: Re: ./include/generated/autoconf.h:1601:33: fatal error:
- mach/debug-macro.S: No such file or directory
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Olof Johansson <olof@lixom.net>, kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 14, 2020 at 12:58 AM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
-> On 11/11/2020 09:51:26+0100, Linus Walleij wrote:
-> > On Wed, Nov 11, 2020 at 7:18 AM kernel test robot <lkp@intel.com> wrote:
-> >
-> > >    In file included from include/linux/kconfig.h:7,
-> > >                     from <command-line>:
-> > > >> ./include/generated/autoconf.h:1601:33: fatal error: mach/debug-macro.S: No such file or directory
-> > >     1601 | #define CONFIG_DEBUG_LL_INCLUDE "mach/debug-macro.S"
-> > >          |                                 ^~~~~~~~~~~~~~~~~~~~
-> > >    compilation terminated.
-> >
-> > This is an interesting one!
-> >
-> > It happens when CONFIG_DEBUG_LL_INCLUDE does not have a custom
-> > debug header for the platform under arch/arm/include/debug and the
-> > KConfig falls through to the default value, which is <mach/debug-macro.S>.
-> >
-> > Only that the majority is not using <mach/*> anymore.
-> >
-> > I feel a bit like setting the default to debug/8250.S or something.
-> >
-> > Suggestions?
-> >
-> > Then the actual bug exposed:
-> >
-> > The config tested by the robot is using
-> > CONFIG_ARCH_AT91=y
-> > CONFIG_SOC_SAMV7=y
-> >
-> > When I look into Kconfig.debug it seems that this will define
-> > DEBUG_AT91_SAMV7_USART1 but only a physical address,
-> > no virtual address and and actually no debug header. It seems
-> > LL_DEBUG is broken on SAMV7 and never really worked
-> > so now that crops up.
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-The last mach/debug-macro.S file was apparently removed in 2015,
-in commit 0045c0dd2f64 ("ARM: debug-ll: rework footbridge handling").
-At that point we should have changed the fallback
+[ Upstream commit cf1ad559a20d1930aa7b47a52f54e1f8718de301 ]
 
-> > Nicolas, something that should be fixed, I think?
-> >
->
-> I confirm DEBUG_LL is not broken on SAMV7. The config used by lkp doen't
-> define DEBUG_AT91_SAMV7_USART1, it is not the culprit. Select it and the
-> problem is gone since DEBUG_AT91_SAMV7_USART1 selects DEBUG_AT91_UART
-> and DEBUG_LL_INCLUDE has:
-> default "debug/at91.S" if DEBUG_AT91_UART
->
-> Your issue is CONFIG_DEBUG_SEMIHOSTING
+regulator_get_voltage_rdev() is called in regulator probe() when
+applying machine constraints.  The "fixed" commit exposed the problem
+that non-bypassed regulators can forward the request to its parent
+(like bypassed ones) supply. Return -EPROBE_DEFER when the supply
+is expected but not resolved yet.
 
-Right, in particular, semihosting is not handled in
-arch/arm/boot/compressed/head.S the way it is handled in
-arch/arm/boot/compressed/debug.S, arch/arm/kernel/debug.S
-and arch/arm/kernel/head.S.
+Fixes: aea6cb99703e ("regulator: resolve supply after creating regulator")
+Cc: stable@vger.kernel.org
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Reported-by: Ondřej Jirman <megous@megous.com>
+Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Tested-by: Ondřej Jirman <megous@megous.com>
+Link: https://lore.kernel.org/r/a9041d68b4d35e4a2dd71629c8a6422662acb5ee.1604351936.git.mirq-linux@rere.qmqm.pl
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/regulator/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I wonder if we should move the semihosting code into a separate
-arch/arm/include/debug/semihosting.S to make the generic
-code treat it the same as all the other options.
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 0f730e4bf6bcb..0caf751d85ded 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -3185,6 +3185,8 @@ static int _regulator_get_voltage(struct regulator_dev *rdev)
+ 		ret = rdev->desc->fixed_uV;
+ 	} else if (rdev->supply) {
+ 		ret = _regulator_get_voltage(rdev->supply->rdev);
++	} else if (rdev->supply_name) {
++		return -EPROBE_DEFER;
+ 	} else {
+ 		return -EINVAL;
+ 	}
+-- 
+2.27.0
 
-Alternatively, disabling CONFIG_DEBUG_UNCOMPRESS
-when SEMIHOSTING is set would be the cheapest workaround
-for the particular build failure.
 
-      Arnd
+
