@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27BE2B70B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBFA2B70BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbgKQVKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:10:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
+        id S1728047AbgKQVN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:13:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725823AbgKQVKt (ORCPT
+        with ESMTP id S1727672AbgKQVN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:10:49 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FF2C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:10:48 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id f11so32133152lfs.3
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:10:48 -0800 (PST)
+        Tue, 17 Nov 2020 16:13:26 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48BBC0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:13:26 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id b3so10932131pls.11
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:13:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3qvLQy5uXFpIrg6tKYvqeLz2PzWU29eE1D3GlGEf7hA=;
-        b=RQGc5BDlqCxPdo6QO0uTD/X3Hcx7aIM9LLRlWuTXrjTLDGNHalufPHT/+S1VuDQ5IE
-         ZfRVxzTnC/a6N8EPqu0vPEQrEZy/xiR+EYgC+CEnT3+eP5hDz3tKZNIfEnM3hoQlmjL2
-         CzNNGCo6/aA9uoXrwKktURNVP2nGcbx8ZMsydDJ81n2DQPR8yVbJBC3FlyeDJ0SOOz77
-         2Uu9uL4oZJMJFINAYCg1lkMPoonWbBw018agy/RRIufINIn8G3jx5XYxKdrQILDngm85
-         K4krG8aRB8y2AitVMIjEjv4b8BNhYV/6oh9MxzLUSAygxd8M0evOGAHQ3nrTCkMoO53F
-         yPrA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=cUL+9SvzrRzllFEAM5OhpKctCqgJfj/sR/XV7GWar0I=;
+        b=MWHmfYIY9ch9OvmV2riVcHnEmRpuPVUXqLW0gkD2sszZU8xssgw1NP5X1ShxEm8HJa
+         0hsVkK3fKE20KdO6VmXkfWW+cgXtGbCsjVnNFMstYf+pK2L5LTkbrAxCuUfBB/WpAjAt
+         75tDLdzwv7U0UzXqesHtuAuhick5Z8a/RrA2E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3qvLQy5uXFpIrg6tKYvqeLz2PzWU29eE1D3GlGEf7hA=;
-        b=cCbsPvziSwit5lVuhOA6oTIrJdAhAvaiPE2i6wWcBtovRVZNOmDnQeBjoaJlNTmtuP
-         u/17LIho+d3buL1J3NKQoKCAvl86AOUQ/DzOR7qHp/19UH11uEDl0FxdourGBG/pGa2x
-         uHb7bnQs/My1/CQc2pDA4FXn2l0dCX6oeVfTcNfzpO1rFZiHJavsPL0LIN9mj3SJiawZ
-         W1Wn7qQulD8TfXVJmW8WupKIoZklWx3ov7lCplrPqDM3YFBkmZgMK6/FbqD2k3DHg9Hn
-         m5BwPDN9NlIl+yI387ef3JFIafrxFDUjJUFldVneaQi+huB2Sk0HD25zrRkuIAj7Fg68
-         N7Tw==
-X-Gm-Message-State: AOAM532H+InSQnF2k5R+GZ/HebaWJZbs+Zh3HXjOXZsN7afPoWezj2dm
-        6C9ahtgXet081z/RiJfgdSVJXx3ZhgbzmeCz8xWzAg==
-X-Google-Smtp-Source: ABdhPJxkBvjPwPqdZfFC0v46RqXEY3h0mC9gU0DWW5QyqY1whnhbT6cH9oIiB3zYhnME/r0H//P+GtfhkSgfahbkzRc=
-X-Received: by 2002:a19:8686:: with SMTP id i128mr2305571lfd.333.1605647447061;
- Tue, 17 Nov 2020 13:10:47 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=cUL+9SvzrRzllFEAM5OhpKctCqgJfj/sR/XV7GWar0I=;
+        b=P6uUheI+UXU9jvDi7cX4Pgrlgy+FlulCIK3d7xDetx5TvrmcuiKMTC0czcagsd+v5s
+         DZx43TsPNqE2BIxdcmMJ3FN1l5KT1H2k4x3/AgXmd67GNpElmLXS/BgN2Ydd0IuAfJF8
+         O/Eb5C9TIrYy12WqSXJatbK94k5DcvKkpRbzHXrGeRfIyGnEPxyuDIsE2ys0SEJKcta+
+         W5EVYCpCiNqRZuUVRE229NngYUAPL+xst+tIAAje50MqjbQG9TMB5L3RHKsaqNU/MFdh
+         /oDoFsRy2Gl3sNamSEqLvUdPAbP4yyhSeex4Ho/rvAZ1LEv3LYpvaLFsTiq5orEBPF4l
+         iTvg==
+X-Gm-Message-State: AOAM532UweAyVGrt6A8zfpv3SiLeK9icGu8fVo4vAES/FrjP5sJXrZQk
+        qWWH4nK51ENvxF47fYUEvhry+g==
+X-Google-Smtp-Source: ABdhPJylohww9dg1GYyIbVMq/Nw8ytFEu6RVmpEehQbjLtvam+DWoalMEAMP5jppFr2nQ0E9S6IUIA==
+X-Received: by 2002:a17:90b:80f:: with SMTP id bk15mr934491pjb.119.1605647606216;
+        Tue, 17 Nov 2020 13:13:26 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d18sm19469582pgm.68.2020.11.17.13.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 13:13:25 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     containers@lists.linux-foundation.org,
+        YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        linux-riscv@lists.infradead.org,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-sh@vger.kernel.org, Hubertus Franke <frankeh@us.ibm.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, linux-parisc@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        linux-csky@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        linux-xtensa@linux-xtensa.org, Jann Horn <jannh@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        linux-kernel@vger.kernel.org, Will Drewry <wad@chromium.org>,
+        linux-s390@vger.kernel.org,
+        Valentin Rothberg <vrothber@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH seccomp v2 0/8] seccomp: add bitmap cache support on remaining arches and report cache in procfs
+Date:   Tue, 17 Nov 2020 13:11:13 -0800
+Message-Id: <160564746555.1001899.9792418917631139658.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1605101222.git.yifeifz2@illinois.edu>
+References: <cover.1605101222.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
-References: <20201113182435.64015-1-andre.przywara@arm.com> <20201113182435.64015-4-andre.przywara@arm.com>
-In-Reply-To: <20201113182435.64015-4-andre.przywara@arm.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Nov 2020 22:10:36 +0100
-Message-ID: <CACRpkdZq=RBrJ52vbSguTQBdyfACNQxyCLA6yvtVqZvv1ndaCQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] ARM: implement support for SMCCC TRNG entropy source
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 7:24 PM Andre Przywara <andre.przywara@arm.com> wrote:
+On Wed, 11 Nov 2020 07:33:46 -0600, YiFei Zhu wrote:
+> This patch series enables bitmap cache for the remaining arches with
+> SECCOMP_FILTER, other than MIPS.
+> 
+> I was unable to find any of the arches having subarch-specific NR_syscalls
+> macros, so generic NR_syscalls is used. SH's syscall_get_arch seems to
+> only have the 32-bit subarch implementation. I'm not sure if this is
+> expected.
+> 
+> [...]
 
-> From: Ard Biesheuvel <ardb@kernel.org>
->
-> Implement arch_get_random_seed_*() for ARM based on the firmware
-> or hypervisor provided entropy source described in ARM DEN0098.
->
-> This will make the kernel's random number generator consume entropy
-> provided by this interface, at early boot, and periodically at
-> runtime when reseeding.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> [Andre: rework to be initialised by the SMCCC firmware driver]
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Applied to for-next/seccomp, thanks!
 
-Excellent idea,
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I made a small tweak to the last patch to add more details to the per-ARCH
+help text, and to drop the needless "depends on SECCOMP" (which "depends
+on SECCOMP_FILTER" was already present).
 
-Yours,
-Linus Walleij
+I successfully build-tested on parisc, powerpc, riscv, s390, and
+sh. xtensa doesn't build using the existing Debian cross-compiler, and
+I can't make csky with clang work, but they look correct. *cross fingers*
+
+[1/8] csky: Enable seccomp architecture tracking
+      https://git.kernel.org/kees/c/ee7ce951028f
+[2/8] parisc: Enable seccomp architecture tracking
+      https://git.kernel.org/kees/c/7f049cc068a3
+[3/8] powerpc: Enable seccomp architecture tracking
+      https://git.kernel.org/kees/c/95f8ae2624a0
+[4/8] riscv: Enable seccomp architecture tracking
+      https://git.kernel.org/kees/c/8f9f0f44a37b
+[5/8] s390: Enable seccomp architecture tracking
+      https://git.kernel.org/kees/c/5897106c6902
+[6/8] sh: Enable seccomp architecture tracking
+      https://git.kernel.org/kees/c/75186111c257
+[7/8] xtensa: Enable seccomp architecture tracking
+      https://git.kernel.org/kees/c/4f408bc643aa
+[8/8] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+      https://git.kernel.org/kees/c/49a6968cc78f
+
+-- 
+Kees Cook
+
