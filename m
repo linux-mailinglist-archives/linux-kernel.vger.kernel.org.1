@@ -2,320 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67EB2B69FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDB22B6967
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbgKQQ2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:28:15 -0500
-Received: from pbmsgap01.intersil.com ([192.157.179.201]:43310 "EHLO
-        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgKQQ2O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:28:14 -0500
-X-Greylist: delayed 1298 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Nov 2020 11:28:13 EST
-Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
-        by pbmsgap01.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0AHFxQPt031483;
-        Tue, 17 Nov 2020 11:06:35 -0500
-Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
-        by pbmsgap01.intersil.com with ESMTP id 34tbn59bc7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 17 Nov 2020 11:06:34 -0500
-Received: from pbmxdp03.intersil.corp (132.158.200.224) by
- pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.1979.3; Tue, 17 Nov 2020 11:06:33 -0500
-Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
- (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 17 Nov 2020 11:06:33 -0500
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH v2 net-next 5/5] ptp: clockmatrix: deprecate firmware older than 4.8.7
-Date:   Tue, 17 Nov 2020 11:06:02 -0500
-Message-ID: <1605629162-31876-6-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1605629162-31876-1-git-send-email-min.li.xe@renesas.com>
-References: <1605629162-31876-1-git-send-email-min.li.xe@renesas.com>
-X-TM-AS-MML: disable
+        id S1726929AbgKQQHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:07:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726504AbgKQQHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:07:54 -0500
+Received: from trantor (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E8D7241A7;
+        Tue, 17 Nov 2020 16:07:50 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 16:07:48 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v4 2/2] arm64: kvm: Introduce MTE VCPU feature
+Message-ID: <X7P1VLZhBh045tsr@trantor>
+References: <20201026155727.36685-1-steven.price@arm.com>
+ <20201026155727.36685-3-steven.price@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-17_04:2020-11-17,2020-11-17 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 adultscore=0 malwarescore=0
- bulkscore=0 spamscore=0 mlxlogscore=999 suspectscore=4 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170115
-X-Proofpoint-Spam-Reason: mlx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026155727.36685-3-steven.price@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+Hi Steven,
 
-Add deprecated flag to indicate < v4.8.7.
-Fix idtcm_enable_tod() call correct settime().
+On Mon, Oct 26, 2020 at 03:57:27PM +0000, Steven Price wrote:
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 19aacc7d64de..38fe25310ca1 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -862,6 +862,26 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  	if (vma_pagesize == PAGE_SIZE && !force_pte)
+>  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+>  							   &pfn, &fault_ipa);
+> +
+> +	/*
+> +	 * The otherwise redundant test for system_supports_mte() allows the
+> +	 * code to be compiled out when CONFIG_ARM64_MTE is not present.
+> +	 */
+> +	if (system_supports_mte() && kvm->arch.mte_enabled && pfn_valid(pfn)) {
+> +		/*
+> +		 * VM will be able to see the page's tags, so we must ensure
+> +		 * they have been initialised.
+> +		 */
+> +		struct page *page = pfn_to_page(pfn);
+> +		long i, nr_pages = compound_nr(page);
+> +
+> +		/* if PG_mte_tagged is set, tags have already been initialised */
+> +		for (i = 0; i < nr_pages; i++, page++) {
+> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> +				mte_clear_page_tags(page_address(page));
+> +		}
+> +	}
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
----
- drivers/ptp/ptp_clockmatrix.c | 69 ++++++++++++++++++++++++-------------------
- drivers/ptp/ptp_clockmatrix.h | 11 +++----
- 2 files changed, 45 insertions(+), 35 deletions(-)
+If this page was swapped out and mapped back in, where does the
+restoring from swap happen?
 
-diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-index b10c6b9..007d3e0 100644
---- a/drivers/ptp/ptp_clockmatrix.c
-+++ b/drivers/ptp/ptp_clockmatrix.c
-@@ -939,8 +939,8 @@ static void restore_output_phase_adj(struct idtcm_channel *channel)
- 	}
- }
- 
--static int _idtcm_settime(struct idtcm_channel *channel,
--			  struct timespec64 const *ts)
-+static int _idtcm_settime_deprecated(struct idtcm_channel *channel,
-+				     struct timespec64 const *ts)
- {
- 	struct idtcm *idtcm = channel->idtcm;
- 	int retval;
-@@ -965,9 +965,9 @@ static int _idtcm_settime(struct idtcm_channel *channel,
- 	return retval;
- }
- 
--static int _idtcm_settime_v487(struct idtcm_channel *channel,
--			       struct timespec64 const *ts,
--			       enum scsr_tod_write_type_sel wr_type)
-+static int _idtcm_settime(struct idtcm_channel *channel,
-+			  struct timespec64 const *ts,
-+			  enum scsr_tod_write_type_sel wr_type)
- {
- 	return _idtcm_set_dpll_scsr_tod(channel, ts,
- 					SCSR_TOD_WR_TRIG_SEL_IMMEDIATE,
-@@ -1109,14 +1109,14 @@ static int set_tod_write_overhead(struct idtcm_channel *channel)
- 	return err;
- }
- 
--static int _idtcm_adjtime(struct idtcm_channel *channel, s64 delta)
-+static int _idtcm_adjtime_deprecated(struct idtcm_channel *channel, s64 delta)
- {
- 	int err;
- 	struct idtcm *idtcm = channel->idtcm;
- 	struct timespec64 ts;
- 	s64 now;
- 
--	if (abs(delta) < PHASE_PULL_IN_THRESHOLD_NS) {
-+	if (abs(delta) < PHASE_PULL_IN_THRESHOLD_NS_DEPRECATED) {
- 		err = idtcm_do_phase_pull_in(channel, delta, 0);
- 	} else {
- 		idtcm->calculate_overhead_flag = 1;
-@@ -1136,7 +1136,7 @@ static int _idtcm_adjtime(struct idtcm_channel *channel, s64 delta)
- 
- 		ts = ns_to_timespec64(now);
- 
--		err = _idtcm_settime(channel, &ts);
-+		err = _idtcm_settime_deprecated(channel, &ts);
- 	}
- 
- 	return err;
-@@ -1640,8 +1640,8 @@ static int idtcm_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
- 	return err;
- }
- 
--static int idtcm_settime(struct ptp_clock_info *ptp,
--			 const struct timespec64 *ts)
-+static int idtcm_settime_deprecated(struct ptp_clock_info *ptp,
-+				    const struct timespec64 *ts)
- {
- 	struct idtcm_channel *channel =
- 		container_of(ptp, struct idtcm_channel, caps);
-@@ -1650,7 +1650,7 @@ static int idtcm_settime(struct ptp_clock_info *ptp,
- 
- 	mutex_lock(&idtcm->reg_lock);
- 
--	err = _idtcm_settime(channel, ts);
-+	err = _idtcm_settime_deprecated(channel, ts);
- 
- 	if (err)
- 		dev_err(&idtcm->client->dev,
-@@ -1663,7 +1663,7 @@ static int idtcm_settime(struct ptp_clock_info *ptp,
- 	return err;
- }
- 
--static int idtcm_settime_v487(struct ptp_clock_info *ptp,
-+static int idtcm_settime(struct ptp_clock_info *ptp,
- 			 const struct timespec64 *ts)
- {
- 	struct idtcm_channel *channel =
-@@ -1673,7 +1673,7 @@ static int idtcm_settime_v487(struct ptp_clock_info *ptp,
- 
- 	mutex_lock(&idtcm->reg_lock);
- 
--	err = _idtcm_settime_v487(channel, ts, SCSR_TOD_WR_TYPE_SEL_ABSOLUTE);
-+	err = _idtcm_settime(channel, ts, SCSR_TOD_WR_TYPE_SEL_ABSOLUTE);
- 
- 	if (err)
- 		dev_err(&idtcm->client->dev,
-@@ -1686,7 +1686,7 @@ static int idtcm_settime_v487(struct ptp_clock_info *ptp,
- 	return err;
- }
- 
--static int idtcm_adjtime(struct ptp_clock_info *ptp, s64 delta)
-+static int idtcm_adjtime_deprecated(struct ptp_clock_info *ptp, s64 delta)
- {
- 	struct idtcm_channel *channel =
- 		container_of(ptp, struct idtcm_channel, caps);
-@@ -1695,7 +1695,7 @@ static int idtcm_adjtime(struct ptp_clock_info *ptp, s64 delta)
- 
- 	mutex_lock(&idtcm->reg_lock);
- 
--	err = _idtcm_adjtime(channel, delta);
-+	err = _idtcm_adjtime_deprecated(channel, delta);
- 
- 	if (err)
- 		dev_err(&idtcm->client->dev,
-@@ -1708,7 +1708,7 @@ static int idtcm_adjtime(struct ptp_clock_info *ptp, s64 delta)
- 	return err;
- }
- 
--static int idtcm_adjtime_v487(struct ptp_clock_info *ptp, s64 delta)
-+static int idtcm_adjtime(struct ptp_clock_info *ptp, s64 delta)
- {
- 	struct idtcm_channel *channel =
- 		container_of(ptp, struct idtcm_channel, caps);
-@@ -1717,7 +1717,7 @@ static int idtcm_adjtime_v487(struct ptp_clock_info *ptp, s64 delta)
- 	enum scsr_tod_write_type_sel type;
- 	int err;
- 
--	if (abs(delta) < PHASE_PULL_IN_THRESHOLD_NS_V487) {
-+	if (abs(delta) < PHASE_PULL_IN_THRESHOLD_NS) {
- 		err = idtcm_do_phase_pull_in(channel, delta, 0);
- 		if (err)
- 			dev_err(&idtcm->client->dev,
-@@ -1737,7 +1737,7 @@ static int idtcm_adjtime_v487(struct ptp_clock_info *ptp, s64 delta)
- 
- 	mutex_lock(&idtcm->reg_lock);
- 
--	err = _idtcm_settime_v487(channel, &ts, type);
-+	err = _idtcm_settime(channel, &ts, type);
- 
- 	if (err)
- 		dev_err(&idtcm->client->dev,
-@@ -2081,10 +2081,14 @@ static int idtcm_enable_tod(struct idtcm_channel *channel)
- 	if (err)
- 		return err;
- 
--	return _idtcm_settime(channel, &ts);
-+	if (idtcm->deprecated)
-+		return _idtcm_settime_deprecated(channel, &ts);
-+	else
-+		return _idtcm_settime(channel, &ts,
-+				      SCSR_TOD_WR_TYPE_SEL_ABSOLUTE);
- }
- 
--static void idtcm_display_version_info(struct idtcm *idtcm)
-+static void idtcm_set_version_info(struct idtcm *idtcm)
- {
- 	u8 major;
- 	u8 minor;
-@@ -2106,31 +2110,36 @@ static void idtcm_display_version_info(struct idtcm *idtcm)
- 	snprintf(idtcm->version, sizeof(idtcm->version), "%u.%u.%u",
- 		 major, minor, hotfix);
- 
-+	if (idtcm_strverscmp(idtcm->version, "4.8.7") >= 0)
-+		idtcm->deprecated = 0;
-+	else
-+		idtcm->deprecated = 1;
-+
- 	dev_info(&idtcm->client->dev, fmt, major, minor, hotfix,
- 		 product_id, hw_rev_id, config_select);
- }
- 
--static const struct ptp_clock_info idtcm_caps_v487 = {
-+static const struct ptp_clock_info idtcm_caps = {
- 	.owner		= THIS_MODULE,
- 	.max_adj	= 244000,
- 	.n_per_out	= 12,
- 	.adjphase	= &idtcm_adjphase,
- 	.adjfine	= &idtcm_adjfine,
--	.adjtime	= &idtcm_adjtime_v487,
-+	.adjtime	= &idtcm_adjtime,
- 	.gettime64	= &idtcm_gettime,
--	.settime64	= &idtcm_settime_v487,
-+	.settime64	= &idtcm_settime,
- 	.enable		= &idtcm_enable,
- };
- 
--static const struct ptp_clock_info idtcm_caps = {
-+static const struct ptp_clock_info idtcm_caps_deprecated = {
- 	.owner		= THIS_MODULE,
- 	.max_adj	= 244000,
- 	.n_per_out	= 12,
- 	.adjphase	= &idtcm_adjphase,
- 	.adjfine	= &idtcm_adjfine,
--	.adjtime	= &idtcm_adjtime,
-+	.adjtime	= &idtcm_adjtime_deprecated,
- 	.gettime64	= &idtcm_gettime,
--	.settime64	= &idtcm_settime,
-+	.settime64	= &idtcm_settime_deprecated,
- 	.enable		= &idtcm_enable,
- };
- 
-@@ -2253,15 +2262,15 @@ static int idtcm_enable_channel(struct idtcm *idtcm, u32 index)
- 
- 	channel->idtcm = idtcm;
- 
--	if (idtcm_strverscmp(idtcm->version, "4.8.7") >= 0)
--		channel->caps = idtcm_caps_v487;
-+	if (idtcm->deprecated)
-+		channel->caps = idtcm_caps_deprecated;
- 	else
- 		channel->caps = idtcm_caps;
- 
- 	snprintf(channel->caps.name, sizeof(channel->caps.name),
- 		 "IDT CM TOD%u", index);
- 
--	if (idtcm_strverscmp(idtcm->version, "4.8.7") >= 0) {
-+	if (!idtcm->deprecated) {
- 		err = idtcm_enable_tod_sync(channel);
- 		if (err) {
- 			dev_err(&idtcm->client->dev,
-@@ -2360,7 +2369,7 @@ static int idtcm_probe(struct i2c_client *client,
- 	mutex_init(&idtcm->reg_lock);
- 	mutex_lock(&idtcm->reg_lock);
- 
--	idtcm_display_version_info(idtcm);
-+	idtcm_set_version_info(idtcm);
- 
- 	err = idtcm_load_firmware(idtcm, &client->dev);
- 
-diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
-index 3790dfa..645de2c 100644
---- a/drivers/ptp/ptp_clockmatrix.h
-+++ b/drivers/ptp/ptp_clockmatrix.h
-@@ -45,11 +45,11 @@
- #define DEFAULT_TOD2_PTP_PLL		(2)
- #define DEFAULT_TOD3_PTP_PLL		(3)
- 
--#define POST_SM_RESET_DELAY_MS		(3000)
--#define PHASE_PULL_IN_THRESHOLD_NS	(150000)
--#define PHASE_PULL_IN_THRESHOLD_NS_V487	(15000)
--#define TOD_WRITE_OVERHEAD_COUNT_MAX	(2)
--#define TOD_BYTE_COUNT			(11)
-+#define POST_SM_RESET_DELAY_MS			(3000)
-+#define PHASE_PULL_IN_THRESHOLD_NS_DEPRECATED	(150000)
-+#define PHASE_PULL_IN_THRESHOLD_NS		(15000)
-+#define TOD_WRITE_OVERHEAD_COUNT_MAX		(2)
-+#define TOD_BYTE_COUNT				(11)
- 
- #define PEROUT_ENABLE_OUTPUT_MASK	(0xdeadbeef)
- 
-@@ -132,6 +132,7 @@ struct idtcm {
- 	u8			page_offset;
- 	u8			tod_mask;
- 	char			version[16];
-+	u8			deprecated;
- 
- 	/* Overhead calculation for adjtime */
- 	u8			calculate_overhead_flag;
+I may have asked in the past, is user_mem_abort() the only path for
+mapping Normal pages into stage 2?
+
 -- 
-2.7.4
-
+Catalin
