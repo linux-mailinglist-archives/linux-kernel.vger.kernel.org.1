@@ -2,257 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775AB2B6A62
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B312B6A67
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgKQQfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:35:01 -0500
-Received: from mga18.intel.com ([134.134.136.126]:25203 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727388AbgKQQfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:35:00 -0500
-IronPort-SDR: Qzmmd8EU6GuMdLDKA7FANVzxuvd0v329TN25mO7THOFXN2XLgm76oBTXbjNJ0P6oGp3CZcIuVZ
- tefCymDyHjJw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="158733445"
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="158733445"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 08:34:41 -0800
-IronPort-SDR: J6822doQKRsj9l6A4VwA94PHbZk9rQQyveINjJxCtLsGQR/s13D6cnjdga1nVT3svUpkVShWys
- rim2ubUusKTQ==
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="533873576"
-Received: from sturner2-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.135.20])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 08:34:40 -0800
-Date:   Tue, 17 Nov 2020 08:34:38 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [RFC PATCH 7/9] cxl/mem: Implement polled mode mailbox
-Message-ID: <20201117163438.co63em73mmil5xm5@intel.com>
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
- <20201111054356.793390-8-ben.widawsky@intel.com>
- <20201117153122.00001a5a@Huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117153122.00001a5a@Huawei.com>
+        id S1728139AbgKQQg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:36:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgKQQg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:36:59 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D017CC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:36:58 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id 3so1997776wms.9
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:36:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=1AB7jWGDKqYLUDgu1C5v3wJ4U1VEzQNUsWCkMQleGjc=;
+        b=NgPOtLVr3vxHbX4TvNNxUpe6EqYYLOZmMZP5lXvsFtFkS9aHzMKXS4gXEjWyXvfhj6
+         lkxhDkZ5xXf3L8CJPu4KWEsmVjHlevFYkmL/PPwDPT+T1jKsW6cyQk/e5R/PCDkNu/20
+         t7pY1X0Ff7JUk1WD3ftXrt35oJ1ORgDP1Ml1EYKWYbLiYQGPuvXBue/X0syo1m4wnZzG
+         Oe1Vi9NArJP9TgLAr+PDMuTKgnzPWywIlfF5EaqEzIqff3p0WRt9RVIS3kZWitWHDeoJ
+         GnLmp1nrhNu3EFPvUxUpz1StQCort44URbqqWrhtPBnH5sHqpimJaOcFP/EysmRBmDlG
+         cVlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=1AB7jWGDKqYLUDgu1C5v3wJ4U1VEzQNUsWCkMQleGjc=;
+        b=TwNF3LTtQ6FubfvDEMUhc/zpSoMR824Vq/ZPSd9MsFNrbb3eT73iEucdSPgAK6mljK
+         O9MFdduD5lr2CjqZ6/KaTXk13dU0RHGIwR8pLDHGYDblV11TmUgvhFa2jgb7vjvR3V5r
+         WsoMkrwGwfLkiIMFtsQWBL3qjpahtUgSHMM/wwvp9wF6oSgtc008UR4eOXvKkT8l25TA
+         vDWS8OUE2S/bgXjmb1QmYiZFuUasrDDIInbTx9ZUy7aR4JMmv3i9V0oT7X3lVjkFR5Zx
+         8psbbOIoR3rKBfiYfywcQa0BjzkTeHnddvV/Mpiwk6oY4q/nYzVFaB8fcuQZGS7aPE3P
+         qkOQ==
+X-Gm-Message-State: AOAM531Gkvc9enRcVOQCN2B1UE7bQmIJ5Q+2o+w5IuAlEfzVydoy/VJX
+        hRH4hxqOR4XLFz6cfnJNuKprbAOCBA==
+X-Google-Smtp-Source: ABdhPJx+dUpTJoVqJNMHpC2Y4LofeI+h+gBPz+ugnc+RuKcKyfvLtiSI2Vf2z49tSNVd+vufXa9YG8PFQg==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+ (user=elver job=sendgmr) by 2002:a1c:791a:: with SMTP id l26mr22568wme.1.1605631016587;
+ Tue, 17 Nov 2020 08:36:56 -0800 (PST)
+Date:   Tue, 17 Nov 2020 17:36:41 +0100
+Message-Id: <20201117163641.3389352-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+Subject: [PATCH] kcsan: Avoid scheduler recursion by using non-instrumented preempt_disable()
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, paulmck@kernel.org
+Cc:     will@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+        mingo@kernel.org, mark.rutland@arm.com, boqun.feng@gmail.com,
+        dvyukov@google.com, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-11-17 15:31:22, Jonathan Cameron wrote:
-> On Tue, 10 Nov 2020 21:43:54 -0800
-> Ben Widawsky <ben.widawsky@intel.com> wrote:
-> 
-> > Create a function to handle sending a command, optionally with a
-> > payload, to the memory device, polling on a result, and then optionally
-> > copying out the payload. The algorithm for doing this come straight out
-> > of the CXL 2.0 specification.
-> > 
-> > Primary mailboxes are capable of generating an interrupt when submitting
-> > a command in the background. That implementation is saved for a later
-> > time.
-> > 
-> > Secondary mailboxes aren't implemented at this time.
-> > 
-> > WARNING: This is untested with actual timeouts occurring.
-> > 
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> 
-> Question inline for why the preempt / local timer dance is worth bothering with.
-> What am I missing?
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > ---
-> >  drivers/cxl/cxl.h |  16 +++++++
-> >  drivers/cxl/mem.c | 107 ++++++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 123 insertions(+)
-> > 
-> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> > index 482fc9cdc890..f49ab80f68bd 100644
-> > --- a/drivers/cxl/cxl.h
-> > +++ b/drivers/cxl/cxl.h
-> > @@ -21,8 +21,12 @@
-> >  #define CXLDEV_MB_CTRL 0x04
-> >  #define   CXLDEV_MB_CTRL_DOORBELL BIT(0)
-> >  #define CXLDEV_MB_CMD 0x08
-> > +#define   CXLDEV_MB_CMD_PAYLOAD_LENGTH_SHIFT 16
-> >  #define CXLDEV_MB_STATUS 0x10
-> > +#define   CXLDEV_MB_STATUS_RET_CODE_SHIFT 32
-> > +#define   CXLDEV_MB_STATUS_RET_CODE_MASK 0xffff
-> >  #define CXLDEV_MB_BG_CMD_STATUS 0x18
-> > +#define CXLDEV_MB_PAYLOAD 0x20
-> >  
-> >  /* Memory Device */
-> >  #define CXLMDEV_STATUS 0
-> > @@ -114,4 +118,16 @@ static inline u64 __cxl_raw_read_reg64(struct cxl_mem *cxlm, u32 reg)
-> >  
-> >  	return readq(reg_addr + reg);
-> >  }
-> > +
-> > +static inline void cxl_mbox_payload_fill(struct cxl_mem *cxlm, u8 *input,
-> > +					    unsigned int length)
-> > +{
-> > +	memcpy_toio(cxlm->mbox.regs + CXLDEV_MB_PAYLOAD, input, length);
-> > +}
-> > +
-> > +static inline void cxl_mbox_payload_drain(struct cxl_mem *cxlm,
-> > +					     u8 *output, unsigned int length)
-> > +{
-> > +	memcpy_fromio(output, cxlm->mbox.regs + CXLDEV_MB_PAYLOAD, length);
-> > +}
-> >  #endif /* __CXL_H__ */
-> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > index 9fd2d1daa534..08913360d500 100644
-> > --- a/drivers/cxl/mem.c
-> > +++ b/drivers/cxl/mem.c
-> > @@ -1,5 +1,6 @@
-> >  // SPDX-License-Identifier: GPL-2.0-only
-> >  // Copyright(c) 2020 Intel Corporation. All rights reserved.
-> > +#include <linux/sched/clock.h>
-> >  #include <linux/module.h>
-> >  #include <linux/pci.h>
-> >  #include <linux/io.h>
-> > @@ -7,6 +8,112 @@
-> >  #include "pci.h"
-> >  #include "cxl.h"
-> >  
-> > +struct mbox_cmd {
-> > +	u16 cmd;
-> > +	u8 *payload;
-> > +	size_t payload_size;
-> > +	u16 return_code;
-> > +};
-> > +
-> > +static int cxldev_wait_for_doorbell(struct cxl_mem *cxlm)
-> > +{
-> > +	u64 start, now;
-> > +	int cpu, ret, timeout = 2000000000;
-> > +
-> > +	start = local_clock();
-> > +	preempt_disable();
-> > +	cpu = smp_processor_id();
-> > +	for (;;) {
-> > +		now = local_clock();
-> > +		preempt_enable();
-> 
-> What do we ever do with this mailbox that is particularly
-> performance critical? I'd like to understand why we care enough
-> to mess around with the preemption changes and local clock etc.
-> 
+When enabling KCSAN for kernel/sched (remove KCSAN_SANITIZE := n from
+kernel/sched/Makefile), with CONFIG_DEBUG_PREEMPT=y, we can observe
+recursion due to:
 
-It is quite obviously a premature optimization at this point (since we only
-support a single command in QEMU). However, the polling can be anywhere from
-instant to 2 seconds. QEMU implementation aside again, some devices may never
-support interrupts on completion, and so I thought providing a poll function now
-that is capable of working for most [all?] cases was wise.
+	check_access() [via instrumentation]
+	  kcsan_setup_watchpoint()
+	    reset_kcsan_skip()
+	      kcsan_prandom_u32_max()
+	        get_cpu_var()
+		  preempt_disable()
+		    preempt_count_add() [in kernel/sched/core.c]
+		      check_access() [via instrumentation]
 
-> > +		if ((cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CTRL) &
-> > +		     CXLDEV_MB_CTRL_DOORBELL) == 0) {
-> > +			ret = 0;
-> > +			break;
-> > +		}
-> > +
-> > +		if (now - start >= timeout) {
-> > +			ret = -ETIMEDOUT;
-> > +			break;
-> > +		}
-> > +
-> > +		cpu_relax();
-> > +		preempt_disable();
-> > +		if (unlikely(cpu != smp_processor_id())) {
-> > +			timeout -= (now - start);
-> > +			cpu = smp_processor_id();
-> > +			start = local_clock();
-> > +		}
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/*
-> > + * Returns 0 if the doorbell transaction was successful from a protocol level.
-> > + * Caller should check the return code in @mbox_cmd to make sure it succeeded.
-> > + */
-> > +static int __maybe_unused cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, struct mbox_cmd *mbox_cmd)
-> > +{
-> > +	u64 cmd, status;
-> > +	int rc;
-> > +
-> > +	lockdep_assert_held(&cxlm->mbox_lock);
-> > +
-> > +	/*
-> > +	 * Here are the steps from 8.2.8.4 of the CXL 2.0 spec.
-> > +	 *   1. Caller reads MB Control Register to verify doorbell is clear
-> > +	 *   2. Caller writes Command Register
-> > +	 *   3. Caller writes Command Payload Registers if input payload is non-empty
-> > +	 *   4. Caller writes MB Control Register to set doorbell
-> > +	 *   5. Caller either polls for doorbell to be clear or waits for interrupt if configured
-> > +	 *   6. Caller reads MB Status Register to fetch Return code
-> > +	 *   7. If command successful, Caller reads Command Register to get Payload Length
-> > +	 *   8. If output payload is non-empty, host reads Command Payload Registers
-> > +	 */
-> > +
-> > +	cmd = mbox_cmd->cmd;
-> > +	if (mbox_cmd->payload_size) {
-> > +		/* #3 */
-> 
-> Having just given the steps above, having them out of order feels like it needs
-> a comment to state why.
-> 
-> > +		cmd |= mbox_cmd->payload_size
-> > +		       << CXLDEV_MB_CMD_PAYLOAD_LENGTH_SHIFT;
-> > +		cxl_mbox_payload_fill(cxlm, mbox_cmd->payload, mbox_cmd->payload_size);
-> > +	}
-> > +
-> > +	/* #2 */
-> > +	cxl_write_mbox_reg64(cxlm, CXLDEV_MB_CMD, cmd);
-> > +
-> > +	/* #4 */
-> > +	cxl_write_mbox_reg32(cxlm, CXLDEV_MB_CTRL, CXLDEV_MB_CTRL_DOORBELL);
-> > +
-> > +	/* #5 */
-> > +	rc = cxldev_wait_for_doorbell(cxlm);
-> > +	if (rc == -ETIMEDOUT) {
-> > +		dev_warn(&cxlm->pdev->dev, "Mailbox command timed out\n");
-> > +		return rc;
-> > +	}
-> > +
-> > +	/* #6 */
-> > +	status = cxl_read_mbox_reg64(cxlm, CXLDEV_MB_STATUS);
-> > +	cmd = cxl_read_mbox_reg64(cxlm, CXLDEV_MB_CMD);
-> > +
-> > +	mbox_cmd->return_code = (status >> CXLDEV_MB_STATUS_RET_CODE_SHIFT) &
-> > +				CXLDEV_MB_STATUS_RET_CODE_MASK;
-> > +
-> > +	/* There was a problem, let the caller deal with it */
-> > +	if (mbox_cmd->return_code != 0)
-> > +		return 0;
-> > +
-> > +	/* #7 */
-> > +	mbox_cmd->payload_size = cmd >> CXLDEV_MB_CMD_PAYLOAD_LENGTH_SHIFT;
-> > +
-> > +	/* #8 */
-> > +	if (mbox_cmd->payload_size)
-> > +		cxl_mbox_payload_drain(cxlm, mbox_cmd->payload, mbox_cmd->payload_size);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int cxl_mem_mbox_get(struct cxl_mem *cxlm)
-> >  {
-> >  	u64 md_status;
-> 
+Avoid this by rewriting kcsan_prandom_u32_max() to only use safe
+versions of preempt_disable() that do not call into scheduler code.
+
+Note, while this currently does not affect an unmodified kernel, it'd be
+good to keep a KCSAN kernel working when KCSAN_SANITIZE := n is removed
+from kernel/sched/Makefile to permit testing scheduler code with KCSAN
+if desired.
+
+Fixes: cd290ec24633 ("kcsan: Use tracing-safe version of prandom")
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ kernel/kcsan/core.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index 3994a217bde7..967b0b2f9d59 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -284,10 +284,18 @@ should_watch(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *
+  */
+ static u32 kcsan_prandom_u32_max(u32 ep_ro)
+ {
+-	struct rnd_state *state = &get_cpu_var(kcsan_rand_state);
+-	const u32 res = prandom_u32_state(state);
++	struct rnd_state *state;
++	u32 res;
++
++	/*
++	 * Avoid recursion with scheduler by using non-tracing version of
++	 * preempt_disable() that do not call into scheduler code.
++	 */
++	preempt_disable_notrace();
++	state = raw_cpu_ptr(&kcsan_rand_state);
++	res = prandom_u32_state(state);
++	preempt_enable_no_resched_notrace();
+ 
+-	put_cpu_var(kcsan_rand_state);
+ 	return (u32)(((u64) res * ep_ro) >> 32);
+ }
+ 
+-- 
+2.29.2.299.gdc1121823c-goog
+
