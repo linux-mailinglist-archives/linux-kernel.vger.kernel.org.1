@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008E82B66AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250862B6640
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729965AbgKQOGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:06:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37028 "EHLO mail.kernel.org"
+        id S1729739AbgKQNLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:11:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729277AbgKQNI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:08:29 -0500
+        id S1729647AbgKQNLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:11:37 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90D8E221EB;
-        Tue, 17 Nov 2020 13:08:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53C1A246BE;
+        Tue, 17 Nov 2020 13:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618508;
-        bh=WsR2k/rF0cm3YmDATP6Q/YMvfTfqpOq85JxJy+u30oo=;
+        s=default; t=1605618697;
+        bh=KIjxkzgdOwMJoSiRdDNpZiJS6sgnIB69WrDcBfVwplk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mTntM17WqdkMXBjFI/Nulm1YilrerekfAfCCxz1eUjSuQu/wvBsjqFinwtHyG6e4G
-         JlgpDSBtOOCl6iK+1oF8R4aWomzpC5dj+wAAluZ2lyC67nVV0UphR4nenmcrQyJ4r1
-         NcqFRYwU9+U00QssWXlBnH5TaBqX5TmkNkl1196k=
+        b=ZSBRLoUrpd+th3JeuErdtw1eAxPF1Ys7RtaGcWlLYMxEcsHc9clKZOWrtGBitwM9c
+         QLBajTXwtFZ+txg+XdiGDtxhCA9Sa7ZSWZk7lCAKR7Cg8AmlR3/rUdGPZXaVbbuejD
+         xozm3SVQLPl5KOfC3cHKKAzlFVupXmAwRwCipzug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Julien Grall <julien@xen.org>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jan Beulich <jbeulich@suse.com>, Wei Liu <wl@xen.org>
-Subject: [PATCH 4.4 56/64] xen/events: switch user event channels to lateeoi model
-Date:   Tue, 17 Nov 2020 14:05:19 +0100
-Message-Id: <20201117122108.942172526@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
+        Xie He <xie.he.0141@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 55/78] net/x25: Fix null-ptr-deref in x25_connect
+Date:   Tue, 17 Nov 2020 14:05:21 +0100
+Message-Id: <20201117122111.815695041@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Martin Schiller <ms@dev.tdt.de>
 
-commit c44b849cee8c3ac587da3b0980e01f77500d158c upstream.
+[ Upstream commit 361182308766a265b6c521879b34302617a8c209 ]
 
-Instead of disabling the irq when an event is received and enabling
-it again when handled by the user process use the lateeoi model.
+This fixes a regression for blocking connects introduced by commit
+4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect").
 
-This is part of XSA-332.
+The x25->neighbour is already set to "NULL" by x25_disconnect() now,
+while a blocking connect is waiting in
+x25_wait_for_connection_establishment(). Therefore x25->neighbour must
+not be accessed here again and x25->state is also already set to
+X25_STATE_0 by x25_disconnect().
 
-Cc: stable@vger.kernel.org
-Reported-by: Julien Grall <julien@xen.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Wei Liu <wl@xen.org>
+Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect")
+Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+Reviewed-by: Xie He <xie.he.0141@gmail.com>
+Link: https://lore.kernel.org/r/20201109065449.9014-1-ms@dev.tdt.de
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/xen/evtchn.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ net/x25/af_x25.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/xen/evtchn.c
-+++ b/drivers/xen/evtchn.c
-@@ -173,7 +173,6 @@ static irqreturn_t evtchn_interrupt(int
- 	     "Interrupt for port %d, but apparently not enabled; per-user %p\n",
- 	     evtchn->port, u);
- 
--	disable_irq_nosync(irq);
- 	evtchn->enabled = false;
- 
- 	spin_lock(&u->ring_prod_lock);
-@@ -299,7 +298,7 @@ static ssize_t evtchn_write(struct file
- 		evtchn = find_evtchn(u, port);
- 		if (evtchn && !evtchn->enabled) {
- 			evtchn->enabled = true;
--			enable_irq(irq_from_evtchn(port));
-+			xen_irq_lateeoi(irq_from_evtchn(port), 0);
- 		}
- 	}
- 
-@@ -399,8 +398,8 @@ static int evtchn_bind_to_user(struct pe
- 	if (rc < 0)
- 		goto err;
- 
--	rc = bind_evtchn_to_irqhandler(port, evtchn_interrupt, 0,
--				       u->name, evtchn);
-+	rc = bind_evtchn_to_irqhandler_lateeoi(port, evtchn_interrupt, 0,
-+					       u->name, evtchn);
- 	if (rc < 0)
- 		goto err;
- 
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -823,7 +823,7 @@ static int x25_connect(struct socket *so
+ 	sock->state = SS_CONNECTED;
+ 	rc = 0;
+ out_put_neigh:
+-	if (rc) {
++	if (rc && x25->neighbour) {
+ 		read_lock_bh(&x25_list_lock);
+ 		x25_neigh_put(x25->neighbour);
+ 		x25->neighbour = NULL;
 
 
