@@ -2,221 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9802B5B40
+	by mail.lfdr.de (Postfix) with ESMTP id DC3612B5B41
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgKQIs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:48:26 -0500
-Received: from mga03.intel.com ([134.134.136.65]:20215 "EHLO mga03.intel.com"
+        id S1726735AbgKQItL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:49:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726272AbgKQIsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:48:25 -0500
-IronPort-SDR: p0WDEFRupaMmRwoOBd/G7kL7h/F0B0QAL5mVfXoSAqb/yJUTFNnpwVT16twQLEdWKyRFC//rO0
- /2owiVT1s8CQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="170987981"
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="170987981"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 00:48:25 -0800
-IronPort-SDR: 1TA7coRWl/uHCkst0kXcBo7HVPTW601Sz3FDmpNspuv4ao6gtwafPB3c0BLErMEB5xrbQVEVbm
- ktCxqrJYCdVQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="475846353"
-Received: from lkp-server01.sh.intel.com (HELO 345567a03a52) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 17 Nov 2020 00:48:22 -0800
-Received: from kbuild by 345567a03a52 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kewf0-00005y-1O; Tue, 17 Nov 2020 08:48:22 +0000
-Date:   Tue, 17 Nov 2020 16:48:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/mm] BUILD SUCCESS
- 1eb0616c2df5b78c301eaa7bd2ee859f43915001
-Message-ID: <5fb38e40.nWz835vk5u+b3Yop%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726561AbgKQItK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 03:49:10 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12F842225E;
+        Tue, 17 Nov 2020 08:49:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605602950;
+        bh=htTADclsiKM9iBHnxQjBA65269s1iebyH+Dc/3nPf/c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Bm6hrdaBW1+9GYWeb8yj32XrGY8JRUNXvZRnbRi02xVt+vea9fAYWvxRa4cSBzoFt
+         stNdlBNaJij5KDipXG0YUqdLNxNs68rxAz/0KST/CXOYdD69UTXwbUKhTlvc48doyL
+         ny0ZsGdJBhbrKtMtoqNVPXjpNIUihWlxXwjnnOi8=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kewfj-00BH7x-Vo; Tue, 17 Nov 2020 08:49:08 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 17 Nov 2020 08:49:07 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, eric.auger@redhat.com,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, wanghaibin.wang@huawei.com,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Subject: Re: [PATCH 1/2] KVM: arm64: vgic: Forbid invalid userspace
+ Redistributor accesses
+In-Reply-To: <7e58200c-814e-3598-155a-9a7e6cc24374@huawei.com>
+References: <20201113142801.1659-1-yuzenghui@huawei.com>
+ <20201113142801.1659-2-yuzenghui@huawei.com>
+ <724c43702b52aac0d3c9beb9604d1bfb@kernel.org>
+ <584b7ff1-ecf2-b0ec-cea3-ccc29902f43a@huawei.com>
+ <cc45285fe491aff5c28a24f94c124508@kernel.org>
+ <7e58200c-814e-3598-155a-9a7e6cc24374@huawei.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <c20865a267e44d1e2c0d52ce4e012263@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: yuzenghui@huawei.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, eric.auger@redhat.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, wanghaibin.wang@huawei.com, zhukeqian1@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/mm
-branch HEAD: 1eb0616c2df5b78c301eaa7bd2ee859f43915001  xtensa/mm/highmem: Make generic kmap_atomic() work correctly
+Hi Zenghui,
 
-elapsed time: 722m
+On 2020-11-16 14:57, Zenghui Yu wrote:
+> Hi Marc,
+> 
+> On 2020/11/16 22:10, Marc Zyngier wrote:
+>>> My take is that only if the "[Re]Distributor base address" is 
+>>> specified
+>>> in the system memory map, will the user-provided 
+>>> kvm_device_attr.offset
+>>> make sense. And we can then handle the access to the register which 
+>>> is
+>>> defined by "base address + offset".
+>> 
+>> I'd tend to agree, but it is just that this is a large change at -rc4.
+>> I'd rather have a quick fix for 5.10, and a more invasive change for 
+>> 5.11,
+>> spanning all the possible vgic devices.
+> 
+> So you prefer fixing it by "return a value that doesn't have the Last
+> bit set" for v5.10? I'm ok with it and can send v2 for it.
 
-configs tested: 157
-configs skipped: 2
+Cool. Thanks for that.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Btw, looking again at the way we handle the user-reading of GICR_TYPER
+> 
+> 	vgic_mmio_read_v3r_typer(vcpu, addr, len)
+> 
+> it seems that @addr is actually the *offset* of GICR_TYPER (0x0008) and
+> @addr is unlikely to be equal to last_rdist_typer, which is the *GPA* 
+> of
+> the last RD. Looks like the user-reading of GICR_TYPER.Last is always
+> broken?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     tqm8541_defconfig
-arm                            qcom_defconfig
-ia64                        generic_defconfig
-m68k                         amcore_defconfig
-arm                      footbridge_defconfig
-sh                          rsk7203_defconfig
-arm                       netwinder_defconfig
-arm                     am200epdkit_defconfig
-mips                           gcw0_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                     mpc512x_defconfig
-sh                        sh7785lcr_defconfig
-arm                        oxnas_v6_defconfig
-m68k                            q40_defconfig
-m68k                       m5475evb_defconfig
-arm                        mini2440_defconfig
-arm                        vexpress_defconfig
-mips                  decstation_64_defconfig
-arm                         shannon_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                          iop32x_defconfig
-sh                           sh2007_defconfig
-powerpc                 linkstation_defconfig
-mips                          rb532_defconfig
-m68k                        mvme147_defconfig
-openrisc                    or1ksim_defconfig
-sh                          rsk7201_defconfig
-mips                          rm200_defconfig
-mips                       lemote2f_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                     ppa8548_defconfig
-sh                     magicpanelr2_defconfig
-mips                         tb0219_defconfig
-arc                      axs103_smp_defconfig
-mips                        qi_lb60_defconfig
-m68k                            mac_defconfig
-mips                          ath79_defconfig
-sh                         ecovec24_defconfig
-m68k                          hp300_defconfig
-arm                          gemini_defconfig
-arm                      tct_hammer_defconfig
-mips                        bcm47xx_defconfig
-mips                      loongson3_defconfig
-powerpc                     stx_gp3_defconfig
-arc                     nsimosci_hs_defconfig
-mips                        jmr3927_defconfig
-powerpc                       holly_defconfig
-xtensa                          iss_defconfig
-powerpc                     mpc83xx_defconfig
-mips                        bcm63xx_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                     powernv_defconfig
-arm                            mmp2_defconfig
-arm                       cns3420vb_defconfig
-arm                         lpc32xx_defconfig
-ia64                      gensparse_defconfig
-powerpc                    amigaone_defconfig
-sh                           se7724_defconfig
-arc                    vdk_hs38_smp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20201116
-x86_64               randconfig-a004-20201116
-x86_64               randconfig-a002-20201116
-x86_64               randconfig-a001-20201116
-x86_64               randconfig-a005-20201116
-x86_64               randconfig-a006-20201116
-i386                 randconfig-a006-20201116
-i386                 randconfig-a005-20201116
-i386                 randconfig-a001-20201116
-i386                 randconfig-a002-20201116
-i386                 randconfig-a004-20201116
-i386                 randconfig-a003-20201116
-i386                 randconfig-a006-20201115
-i386                 randconfig-a005-20201115
-i386                 randconfig-a001-20201115
-i386                 randconfig-a002-20201115
-i386                 randconfig-a004-20201115
-i386                 randconfig-a003-20201115
-x86_64               randconfig-a015-20201115
-x86_64               randconfig-a011-20201115
-x86_64               randconfig-a014-20201115
-x86_64               randconfig-a013-20201115
-x86_64               randconfig-a016-20201115
-x86_64               randconfig-a012-20201115
-i386                 randconfig-a012-20201116
-i386                 randconfig-a014-20201116
-i386                 randconfig-a016-20201116
-i386                 randconfig-a011-20201116
-i386                 randconfig-a015-20201116
-i386                 randconfig-a013-20201116
-i386                 randconfig-a012-20201115
-i386                 randconfig-a014-20201115
-i386                 randconfig-a016-20201115
-i386                 randconfig-a011-20201115
-i386                 randconfig-a015-20201115
-i386                 randconfig-a013-20201115
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+I think you are right. Somehow, we don't seem to track the index of
+the RD in the region, so we can never compute the address of the RD
+even if the base address is set.
 
-clang tested configs:
-x86_64               randconfig-a003-20201115
-x86_64               randconfig-a005-20201115
-x86_64               randconfig-a004-20201115
-x86_64               randconfig-a002-20201115
-x86_64               randconfig-a001-20201115
-x86_64               randconfig-a006-20201115
-x86_64               randconfig-a015-20201116
-x86_64               randconfig-a011-20201116
-x86_64               randconfig-a014-20201116
-x86_64               randconfig-a013-20201116
-x86_64               randconfig-a016-20201116
-x86_64               randconfig-a012-20201116
+Let's drop the reporting of Last for userspace for now, as it never
+worked. If you post a patch addressing that quickly, I'll get it to
+Paolo by the end of the week (there's another fix that needs merging).
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Eric: do we have any test covering the userspace API?
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
