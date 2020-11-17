@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E282B6157
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 537AE2B6092
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730666AbgKQNSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:18:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50658 "EHLO mail.kernel.org"
+        id S1729476AbgKQNKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:10:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730653AbgKQNSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:18:14 -0500
+        id S1729447AbgKQNKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:10:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9982B21734;
-        Tue, 17 Nov 2020 13:18:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9103F2468F;
+        Tue, 17 Nov 2020 13:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619094;
-        bh=poXG0TMt0rDRzcwVgWBKKbtwmrEd1LEv34LIXkT19gM=;
+        s=default; t=1605618615;
+        bh=qkWavBfOqHxAJgW4ykEWsYQH2aj3VzXkm8hVXHhHPK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QmpYeoAKPuNX0OE/5+vu0NFOMtLWTaHJjjbQVy5oD4jgJ53mxKA3uqrd/pXQYBPQJ
-         vAWbzAPsdp0EpVo1ZXrqkJueHJyweCDxCnS/ojP/uvhpFPvPA9pg3+qxUNt0NDqJWH
-         3OELgXs5k2+YE1ssozRKJ2yBFAhlEMvazq+LShXs=
+        b=yHpan5QGIysdtsKX3Xs6wVTM1aQjuvuRTAkXNw1cmvdTWK0Bus0/TnDQBynk2mJtO
+         LPpTbsUIZuaPky9Q45ZcY4tP7bI3BP98MNtchLz+CrHHwM+4dybdwvDmTMLJG238ir
+         ib/dydaFZN1RHFXojvIOLshFRmn+EZVyoDzS4XPI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 026/101] Btrfs: fix missing error return if writeback for extent buffer never started
+Subject: [PATCH 4.9 27/78] gfs2: Free rd_bits later in gfs2_clear_rgrpd to fix use-after-free
 Date:   Tue, 17 Nov 2020 14:04:53 +0100
-Message-Id: <20201117122114.364566422@linuxfoundation.org>
+Message-Id: <20201117122110.432797956@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 0607eb1d452d45c5ac4c745a9e9e0d95152ea9d0 ]
+[ Upstream commit d0f17d3883f1e3f085d38572c2ea8edbd5150172 ]
 
-If lock_extent_buffer_for_io() fails, it returns a negative value, but its
-caller btree_write_cache_pages() ignores such error. This means that a
-call to flush_write_bio(), from lock_extent_buffer_for_io(), might have
-failed. We should make btree_write_cache_pages() notice such error values
-and stop immediatelly, making sure filemap_fdatawrite_range() returns an
-error to the transaction commit path. A failure from flush_write_bio()
-should also result in the endio callback end_bio_extent_buffer_writepage()
-being invoked, which sets the BTRFS_FS_*_ERR bits appropriately, so that
-there's no risk a transaction or log commit doesn't catch a writeback
-failure.
+Function gfs2_clear_rgrpd calls kfree(rgd->rd_bits) before calling
+return_all_reservations, but return_all_reservations still dereferences
+rgd->rd_bits in __rs_deltree.  Fix that by moving the call to kfree below the
+call to return_all_reservations.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/gfs2/rgrp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 301111922a1a2..dabf153843e90 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3913,6 +3913,10 @@ int btree_write_cache_pages(struct address_space *mapping,
- 			if (!ret) {
- 				free_extent_buffer(eb);
- 				continue;
-+			} else if (ret < 0) {
-+				done = 1;
-+				free_extent_buffer(eb);
-+				break;
- 			}
+diff --git a/fs/gfs2/rgrp.c b/fs/gfs2/rgrp.c
+index 0a80f66365492..0958f76ada6a3 100644
+--- a/fs/gfs2/rgrp.c
++++ b/fs/gfs2/rgrp.c
+@@ -730,9 +730,9 @@ void gfs2_clear_rgrpd(struct gfs2_sbd *sdp)
+ 		}
  
- 			ret = write_one_eb(eb, fs_info, wbc, &epd);
+ 		gfs2_free_clones(rgd);
++		return_all_reservations(rgd);
+ 		kfree(rgd->rd_bits);
+ 		rgd->rd_bits = NULL;
+-		return_all_reservations(rgd);
+ 		kmem_cache_free(gfs2_rgrpd_cachep, rgd);
+ 	}
+ }
 -- 
 2.27.0
 
