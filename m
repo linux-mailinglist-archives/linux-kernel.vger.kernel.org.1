@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA482B6541
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F362B63E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732594AbgKQNxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:53:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36536 "EHLO mail.kernel.org"
+        id S1732215AbgKQNmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:42:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731363AbgKQN2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:28:22 -0500
+        id S2387440AbgKQNmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:42:31 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E50624199;
-        Tue, 17 Nov 2020 13:28:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CC9520729;
+        Tue, 17 Nov 2020 13:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619702;
-        bh=hkvMx6OIWMhNYFoYTvpsHkWPk/WZbiJDCxC8MjX2UIU=;
+        s=default; t=1605620551;
+        bh=8tw9+Xn/S8KkVCfwmBYzaM8x8dYawQMuzZce+Kn6gfI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V0/OnRJw9IyfJU3Luri4oXoCIJxX1/MdRBYAqg2/ISHFBPzZpMqx87/XgLn3G1Ggq
-         vjgL2PV50MSJ2T73/S4IOFJBQSBjZwUk6MkfCGlLX1HCQMeJXAJ0qP50zZ5EiHEks7
-         Yj+E0g9YQhhqIy5YMW3DIexI2ThpPF+8euC/NEpE=
+        b=kEYVCSGGaDoMyKhZRnpwWyAII8LCGf9YqrTl1hK7FQqBntx9SKWYdYFFdOdpKEQfW
+         n/1yTO8AOOIdOTl/EVZSRpxm11T72OeZ6rxB1RestkYX0g1OMLZKuuoMYiEabfanpR
+         1KMdoHSn5pz8iZuLoU3LqLfumfskdDg9KZurgJ0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Chen Zhou <chenzhou10@huawei.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.4 127/151] selinux: Fix error return code in sel_ib_pkey_sid_slow()
-Date:   Tue, 17 Nov 2020 14:05:57 +0100
-Message-Id: <20201117122127.603093123@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Naveen Krishna Chatradhi <nchatrad@amd.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.9 218/255] hwmon: (amd_energy) modify the visibility of the counters
+Date:   Tue, 17 Nov 2020 14:05:58 +0100
+Message-Id: <20201117122149.547521228@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Zhou <chenzhou10@huawei.com>
+From: Naveen Krishna Chatradhi <nchatrad@amd.com>
 
-commit c350f8bea271782e2733419bd2ab9bf4ec2051ef upstream.
+commit 60268b0e8258fdea9a3c9f4b51e161c123571db3 upstream.
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function sel_ib_pkey_sid_slow(), as done elsewhere
-in this function.
+This patch limits the visibility to owner and groups only for the
+energy counters exposed through the hwmon based amd_energy driver.
 
 Cc: stable@vger.kernel.org
-Fixes: 409dcf31538a ("selinux: Add a cache for quicker retreival of PKey SIDs")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
+Link: https://lore.kernel.org/r/20201112172159.8781-1-nchatrad@amd.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/selinux/ibpkey.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/hwmon/amd_energy.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/security/selinux/ibpkey.c
-+++ b/security/selinux/ibpkey.c
-@@ -151,8 +151,10 @@ static int sel_ib_pkey_sid_slow(u64 subn
- 	 * is valid, it just won't be added to the cache.
- 	 */
- 	new = kzalloc(sizeof(*new), GFP_ATOMIC);
--	if (!new)
-+	if (!new) {
-+		ret = -ENOMEM;
- 		goto out;
-+	}
+--- a/drivers/hwmon/amd_energy.c
++++ b/drivers/hwmon/amd_energy.c
+@@ -209,7 +209,7 @@ static umode_t amd_energy_is_visible(con
+ 				     enum hwmon_sensor_types type,
+ 				     u32 attr, int channel)
+ {
+-	return 0444;
++	return 0440;
+ }
  
- 	new->psec.subnet_prefix = subnet_prefix;
- 	new->psec.pkey = pkey_num;
+ static int energy_accumulator(void *p)
 
 
