@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C23C2B6207
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D502B6023
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730419AbgKQNYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:24:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59758 "EHLO mail.kernel.org"
+        id S1728956AbgKQNGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:06:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731014AbgKQNYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:24:36 -0500
+        id S1728945AbgKQNGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:06:45 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF7002464E;
-        Tue, 17 Nov 2020 13:24:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B245E24248;
+        Tue, 17 Nov 2020 13:06:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619476;
-        bh=RxdypS5yFALZA7A6ct64lelo/+SmNXp/dWCwIyV0Fao=;
+        s=default; t=1605618403;
+        bh=A37OiWbnTjlyCr+Wpq+gqaATOUcIelbqofq8d0wJNqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FUmjMvPZ9yy4Qwir75fx2OfZ+l0rPtuTXINgi23SxnvWlACuJ/iCR5vJZUnLxDkcs
-         24KejVgL3TMS9Bcs4Jfk3Iq3+c1Bhr0u3D77iDOBl/Lhtt+BPOZugbsvu/feK517dN
-         RlMzPze4eqUDF7FzEX3m9jxoJ8t3HIRVJHWhTmlo=
+        b=rqw7gcvnn9sdwH2sJYA74bTvgn0i60mTK8+FucRtAPbC1BjdGXdv5UxEQrtHQTkl4
+         X4VtzstnxLhsNbNiaLRvT7XEQfY9tegV9toh09S6pYDsM420T573l5pipz9+pNdqH9
+         w+UmRSvYc5qCT04Rs4y2YJr2/xYHWFXZfIML+xtU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Pavel Andrianov <andrianov@ispras.ru>,
+        Evgeny Novikov <novikov@ispras.ru>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 052/151] selftests: pidfd: fix compilation errors due to wait.h
-Date:   Tue, 17 Nov 2020 14:04:42 +0100
-Message-Id: <20201117122123.965547388@linuxfoundation.org>
+Subject: [PATCH 4.4 20/64] usb: gadget: goku_udc: fix potential crashes in probe
+Date:   Tue, 17 Nov 2020 14:04:43 +0100
+Message-Id: <20201117122107.127030934@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,52 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tommi Rantala <tommi.t.rantala@nokia.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 1948172fdba5ad643529ddcd00a601c0caa913ed ]
+[ Upstream commit 0d66e04875c5aae876cf3d4f4be7978fa2b00523 ]
 
-Drop unneeded <linux/wait.h> header inclusion to fix pidfd compilation
-errors seen in Fedora 32:
+goku_probe() goes to error label "err" and invokes goku_remove()
+in case of failures of pci_enable_device(), pci_resource_start()
+and ioremap(). goku_remove() gets a device from
+pci_get_drvdata(pdev) and works with it without any checks, in
+particular it dereferences a corresponding pointer. But
+goku_probe() did not set this device yet. So, one can expect
+various crashes. The patch moves setting the device just after
+allocation of memory for it.
 
-In file included from pidfd_open_test.c:9:
-../../../../usr/include/linux/wait.h:17:16: error: expected identifier before numeric constant
-   17 | #define P_ALL  0
-      |                ^
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Reported-by: Pavel Andrianov <andrianov@ispras.ru>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/pidfd/pidfd_open_test.c | 1 -
- tools/testing/selftests/pidfd/pidfd_poll_test.c | 1 -
- 2 files changed, 2 deletions(-)
+ drivers/usb/gadget/udc/goku_udc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/pidfd/pidfd_open_test.c b/tools/testing/selftests/pidfd/pidfd_open_test.c
-index b9fe75fc3e517..8a59438ccc78b 100644
---- a/tools/testing/selftests/pidfd/pidfd_open_test.c
-+++ b/tools/testing/selftests/pidfd/pidfd_open_test.c
-@@ -6,7 +6,6 @@
- #include <inttypes.h>
- #include <limits.h>
- #include <linux/types.h>
--#include <linux/wait.h>
- #include <sched.h>
- #include <signal.h>
- #include <stdbool.h>
-diff --git a/tools/testing/selftests/pidfd/pidfd_poll_test.c b/tools/testing/selftests/pidfd/pidfd_poll_test.c
-index 4b115444dfe90..6108112753573 100644
---- a/tools/testing/selftests/pidfd/pidfd_poll_test.c
-+++ b/tools/testing/selftests/pidfd/pidfd_poll_test.c
-@@ -3,7 +3,6 @@
- #define _GNU_SOURCE
- #include <errno.h>
- #include <linux/types.h>
--#include <linux/wait.h>
- #include <poll.h>
- #include <signal.h>
- #include <stdbool.h>
+diff --git a/drivers/usb/gadget/udc/goku_udc.c b/drivers/usb/gadget/udc/goku_udc.c
+index 1fdfec14a3ba1..5d4616061309e 100644
+--- a/drivers/usb/gadget/udc/goku_udc.c
++++ b/drivers/usb/gadget/udc/goku_udc.c
+@@ -1773,6 +1773,7 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto err;
+ 	}
+ 
++	pci_set_drvdata(pdev, dev);
+ 	spin_lock_init(&dev->lock);
+ 	dev->pdev = pdev;
+ 	dev->gadget.ops = &goku_ops;
+@@ -1806,7 +1807,6 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	}
+ 	dev->regs = (struct goku_udc_regs __iomem *) base;
+ 
+-	pci_set_drvdata(pdev, dev);
+ 	INFO(dev, "%s\n", driver_desc);
+ 	INFO(dev, "version: " DRIVER_VERSION " %s\n", dmastr());
+ 	INFO(dev, "irq %d, pci mem %p\n", pdev->irq, base);
 -- 
 2.27.0
 
