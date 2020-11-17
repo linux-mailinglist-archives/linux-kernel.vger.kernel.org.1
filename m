@@ -2,160 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB122B6DB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9472B6DDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgKQSuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:50:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727271AbgKQSuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:50:09 -0500
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A480F24180;
-        Tue, 17 Nov 2020 18:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605639009;
-        bh=ptz9XT3UpBck0+d8VvUIsolwmj+r8a3+u1aG77tQJmI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VmVR2pAkTlpMKVjjgmbkim6ODtn1XHcuCvpY+dS/cItfgY5lVJnQyb+QKecfKG9cH
-         bB2akSGX5XKm0Y290MyY1d6qvi6oF9ARKg0xqZ0rWF7bfyngwmZbo5JBR5qyfqscDa
-         opfxCyeGR/g5xyvZBhCdhIHAorzvoK1oBOibSCcE=
-Date:   Tue, 17 Nov 2020 10:50:07 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 3/3] f2fs: Handle casefolding with Encryption
-Message-ID: <X7QbX9Q4xzhg+5UU@sol.localdomain>
-References: <20201117040315.28548-1-drosen@google.com>
- <20201117040315.28548-4-drosen@google.com>
+        id S1728879AbgKQSuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:50:50 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13450 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727825AbgKQSup (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:50:45 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AHIXYaI069645;
+        Tue, 17 Nov 2020 13:50:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=RmsftSqeK+iTEilXtDQxEDiHH74AX0QOs+3P/fEMQIY=;
+ b=hHneyeGzUhUj7i7hjtJBKKHFgpOtiR237EmJ3u5d1JLX7cNj28fsJ+c2dI6I9UasL9zw
+ 0MDoWV5Dwr665tYRu016lzmBowj/IvW2V65kCIdGDDm92fiV6qegQBubf4zUMiHUGfwE
+ OQqBvxwwk+tVbJucnKrIRWFKrcJmDmRB2pTudt2PFbkVs9tpoAvhcJQ4tQqOSiZxa8mw
+ dt0KAvsEaPtnYgKbhPuzqUcppTyFA68n5FNeYJuUH8jjt5qclZ4F7uIluo2EPEbojEqj
+ BZVWL9ZjSrA8hxakLDKBza3fqfHJj0Kbb56UMEC7MDys6qiUVmj5FkAlZmR20ZrdA1+T RA== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34vcs3e3g2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 13:50:37 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AHImc1i004337;
+        Tue, 17 Nov 2020 18:50:36 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma02dal.us.ibm.com with ESMTP id 34vgjm9t9p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Nov 2020 18:50:36 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AHIoSp27930374
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 18:50:28 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 987EE7805E;
+        Tue, 17 Nov 2020 18:50:34 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2194978060;
+        Tue, 17 Nov 2020 18:50:34 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 17 Nov 2020 18:50:33 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH 1/3] ibmvfc: byte swap login_buf.resp values in attribute show functions
+Date:   Tue, 17 Nov 2020 12:50:29 -0600
+Message-Id: <20201117185031.129939-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117040315.28548-4-drosen@google.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-17_07:2020-11-17,2020-11-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ spamscore=0 mlxlogscore=999 suspectscore=1 clxscore=1015 phishscore=0
+ mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 04:03:15AM +0000, Daniel Rosenberg wrote:
-> Expand f2fs's casefolding support to include encrypted directories.  To
-> index casefolded+encrypted directories, we use the SipHash of the
-> casefolded name, keyed by a key derived from the directory's fscrypt
-> master key.  This ensures that the dirhash doesn't leak information
-> about the plaintext filenames.
-> 
-> Encryption keys are unavailable during roll-forward recovery, so we
-> can't compute the dirhash when recovering a new dentry in an encrypted +
-> casefolded directory.  To avoid having to force a checkpoint when a new
-> file is fsync'ed, store the dirhash on-disk appended to i_name.
-> 
-> This patch incorporates work by Eric Biggers <ebiggers@google.com>
-> and Jaegeuk Kim <jaegeuk@kernel.org>.
-> 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> ---
->  fs/f2fs/dir.c      | 89 +++++++++++++++++++++++++++++++++++++---------
->  fs/f2fs/f2fs.h     |  8 +++--
->  fs/f2fs/hash.c     | 11 +++++-
->  fs/f2fs/inline.c   |  4 +++
->  fs/f2fs/recovery.c | 12 ++++++-
->  fs/f2fs/super.c    |  6 ----
->  6 files changed, 103 insertions(+), 27 deletions(-)
-> 
-> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-> index 71fdf5076461..0adc6bcfb5c0 100644
-> --- a/fs/f2fs/dir.c
-> +++ b/fs/f2fs/dir.c
-> @@ -5,6 +5,7 @@
->   * Copyright (c) 2012 Samsung Electronics Co., Ltd.
->   *             http://www.samsung.com/
->   */
-> +#include <asm/unaligned.h>
->  #include <linux/fs.h>
->  #include <linux/f2fs_fs.h>
->  #include <linux/sched/signal.h>
-> @@ -195,26 +196,53 @@ static struct f2fs_dir_entry *find_in_block(struct inode *dir,
->  {
->  	struct f2fs_dentry_block *dentry_blk;
->  	struct f2fs_dentry_ptr d;
-> +	struct f2fs_dir_entry *res;
->  
->  	dentry_blk = (struct f2fs_dentry_block *)page_address(dentry_page);
->  
->  	make_dentry_ptr_block(dir, &d, dentry_blk);
-> -	return f2fs_find_target_dentry(&d, fname, max_slots);
-> +	res = f2fs_find_target_dentry(&d, fname, max_slots);
-> +	if (IS_ERR(res)) {
-> +		dentry_page = ERR_CAST(res);
-> +		res = NULL;
-> +	}
-> +	return res;
->  }
+Both ibmvfc_show_host_(capabilities|npiv_version) functions retrieve
+values from vhost->login_buf.resp buffer. This is the MAD response
+buffer from the VIOS and as such any multi-byte non-string values are in
+big endian format.
 
-What is the assignment to dentry_page supposed to be accomplishing?  It looks
-like it's meant to pass up errors from f2fs_find_target_dentry(), but it doesn't
-do that.
+Byte swap these values to host cpu endian format for better human
+readability.
 
-> @@ -222,14 +250,20 @@ static bool f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
->  		 * fall back to treating them as opaque byte sequences.
->  		 */
->  		if (sb_has_strict_encoding(sb) || name->len != entry.len)
-> -			return false;
-> -		return !memcmp(name->name, entry.name, name->len);
-> +			res = 0;
-> +		else
-> +			res = memcmp(name->name, entry.name, name->len) == 0;
-> +	} else {
-> +		/* utf8_strncasecmp_folded returns 0 on match */
-> +		res = (res == 0);
->  	}
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+---
+ drivers/scsi/ibmvscsi/ibmvfc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The following might be easier to understand:
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index 070cf516b98f..01fe65de9086 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -3025,7 +3025,7 @@ static ssize_t ibmvfc_show_host_npiv_version(struct device *dev,
+ {
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+-	return snprintf(buf, PAGE_SIZE, "%d\n", vhost->login_buf->resp.version);
++	return snprintf(buf, PAGE_SIZE, "%d\n", be32_to_cpu(vhost->login_buf->resp.version));
+ }
+ 
+ static ssize_t ibmvfc_show_host_capabilities(struct device *dev,
+@@ -3033,7 +3033,7 @@ static ssize_t ibmvfc_show_host_capabilities(struct device *dev,
+ {
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+-	return snprintf(buf, PAGE_SIZE, "%llx\n", vhost->login_buf->resp.capabilities);
++	return snprintf(buf, PAGE_SIZE, "%llx\n", be64_to_cpu(vhost->login_buf->resp.capabilities));
+ }
+ 
+ /**
+-- 
+2.27.0
 
-	/*
-	 * In strict mode, ignore invalid names.  In non-strict mode, fall back
-	 * to treating them as opaque byte sequences.
-	 */
-	if (res < 0 && !sb_has_strict_encoding(sb)) {
-		res = name->len == entry.len &&
-		      memcmp(name->name, entry.name, name->len) == 0;
-	} else {
-		/* utf8_strncasecmp_folded returns 0 on match */
-		res = (res == 0);
-	}
-
-> @@ -273,10 +308,14 @@ struct f2fs_dir_entry *f2fs_find_target_dentry(const struct f2fs_dentry_ptr *d,
->  			continue;
->  		}
->  
-> -		if (de->hash_code == fname->hash &&
-> -		    f2fs_match_name(d->inode, fname, d->filename[bit_pos],
-> -				    le16_to_cpu(de->name_len)))
-> -			goto found;
-> +		if (de->hash_code == fname->hash) {
-> +			res = f2fs_match_name(d->inode, fname, d->filename[bit_pos],
-> +				    le16_to_cpu(de->name_len));
-> +			if (res < 0)
-> +				return ERR_PTR(res);
-> +			else if (res)
-> +				goto found;
-> +		}
-
-Overly long line here.  Also 'else if' is unnecessary, just use 'if'.
-
-- Eric
