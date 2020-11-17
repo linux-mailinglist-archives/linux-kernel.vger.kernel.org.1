@@ -2,82 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A202B6FF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A87142B700A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgKQUXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:23:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgKQUXg (ORCPT
+        id S1726325AbgKQU2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:28:35 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:50522 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgKQU2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:23:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FA1C0613CF;
-        Tue, 17 Nov 2020 12:23:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=zW7PJS/kK75G8AdfaRvVDViJ861hr4mlWDOhVvzNbPs=; b=HGDME0EmiKRaW95KdNNyjYwM05
-        CWmwbgUDSx7/o1/Hjofufa3hzq37Rj4xzQe4yYLwWhzshQVGaHORvFB/FdSglxS1UOASi0myH+3Q9
-        aXmrxEsfockiLEoKeVuGSgcnKkozYBEEB8KRgRAra8nQc9QzKEfwP6xjjAcpWSbZhnFgiOjy67LKZ
-        J75tt70fbfCnr4784SYi8aELKaV3ce0KPlM8llzcQLAVLcDkFvxAHDhAmtnjaafwyvwOiFWn3q8ZC
-        piE6NIKevGXnvtGptNEHGMh8GQPla4NvtoELbGbip2X5fd59f1dpOF+P1oY76YW6O2RCYFn6l0xpK
-        2tX3K6XQ==;
-Received: from [2601:1c0:6280:3f0::bcc4]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kf7Vh-0000lA-CJ; Tue, 17 Nov 2020 20:23:32 +0000
-Subject: Re: [PATCH] drivers: acpi: add opt-out of apple specific property
- parsing
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-acpi@vger.kernel.org
-References: <20201117201825.5407-1-info@metux.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <334dbf18-0e2d-ba15-0bb2-af217ec06b9c@infradead.org>
-Date:   Tue, 17 Nov 2020 12:23:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 17 Nov 2020 15:28:32 -0500
+Message-Id: <20201117202333.869470686@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605644910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HIsDjyXeSLNWc9myZP2CX9aTSUUuBu9+OX3PukPNpBU=;
+        b=FG2IAC4brZfwgtuDJxHNa+2yayXz4baTqTda+vPWEjEUXym7LR2hWzjQFvoVlqZG9Z7xf+
+        VG8Iq5sukJ1fKteneTRreabeUwPcWhhePBnXgyIIFTW19HMg+QL8Grz1uGxpIy6+X98qVP
+        U4nSQeRvHu3ZZuPN6rKyrSDSYyZdZo5MiJ/Bb8MgvP9nbD6LmuxvkXJT5NmhZQD18K+soD
+        r6zB2QUPJrS+CGfF+Q3Nrpht8lNLGgKnBGFKgNt3xYDDT+dlazMfPF+M9x+OVPWGTeYlvs
+        lcazUsHaNNKWYb/lk29FH58ugD6LsUcsPcTiIuD662cFOZmQAAzgV4dEWbv6eQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605644910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HIsDjyXeSLNWc9myZP2CX9aTSUUuBu9+OX3PukPNpBU=;
+        b=ZS4I/54shUyhwEEItaNpy5a2joXkWkjrbgX88+oojcgTQU+/3yFx+T/Ji2O/rcKXIXOzLN
+        bkM2OU3ysNdam8DQ==
+Date:   Tue, 17 Nov 2020 21:23:33 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Mark Mossberg <mark.mossberg@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        Jann Horn <jannh@google.com>, kyin@redhat.com
+Subject: [patch v2 0/2] x86/dumpstack: Prevent access to foreign tasks user space
 MIME-Version: 1.0
-In-Reply-To: <20201117201825.5407-1-info@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/20 12:18 PM, Enrico Weigelt, metux IT consult wrote:
-> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> index edf1558c1105..398a9ae73705 100644
-> --- a/drivers/acpi/Kconfig
-> +++ b/drivers/acpi/Kconfig
-> @@ -79,6 +79,15 @@ config ACPI_DEBUGGER_USER
->  
->  endif
->  
-> +config ACPI_APPLE
-> +	bool "Apple ACPI properties support"
-> +	default y if X86
-> +	help
-> +	  Extraction of apple specific ACPI properties.
-
-	                Apple-specific
-
-> +
-> +	  Say N if you're sure the kernel won't be used on an Apple machine
-> +	  and wanna save a few kb of memory. (embedded or hi-density VMs)
-
-	      want to save a few KB                       high-
-
-
-> +
->  config ACPI_SPCR_TABLE
->  	bool "ACPI Serial Port Console Redirection Support"
->  	default y if X86
-
-
--- 
-~Randy
-
+VGhpcyBpcyB0aGUgc2Vjb25kIHZlcnNpb24gb2YgdGhlIHBhdGNoIHRvIHByZXZlbnQgYWNjZXNz
+IHRvIGEgZm9yZWlnbgp0YXNrcyB1c2VyIHNwYWNlIGluIGNvcHlfY29kZSgpLiBJdCBhZGRyZXNz
+ZXMgdGhlIHJldmlldyBjb21tZW50cyBmcm9tCkJvcmlzIGFuZCBhZGRzIGEgbmV3IHBhdGNoIHdo
+aWNoIHByb3ZpZGVzIGRvY3VtZW50YXRpb24gZm9yCmNvcHlfZnJvbV91c2VyX25taSgpIHRvIGF2
+b2lkIGZ1cnRoZXIgY29uZnVzaW9uIGFib3V0IGl0J3MgdXNhZ2UuCgpWMSBjYW4gYmUgZm91bmQg
+aGVyZToKCiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzg3YmxmeHg4cHMuZnNmQG5hbm9zLnRl
+Yy5saW51dHJvbml4LmRlCgpUaGFua3MsCgoJdGdseAoKCg==
