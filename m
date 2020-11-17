@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C722B727A
-	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D04B2B727D
+	for <lists+linux-kernel@lfdr.de>; Wed, 18 Nov 2020 00:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgKQXcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 18:32:32 -0500
-Received: from mga04.intel.com ([192.55.52.120]:51171 "EHLO mga04.intel.com"
+        id S1727453AbgKQXdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 18:33:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgKQXcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:32:31 -0500
-IronPort-SDR: S6lC9JeWep0S01W7DjuWhMandJhDKLd4iv7+2/iXQJ7JappZ1WdNgb/CRpEB8lTYmps9M73nli
- S1g5B/DnQGLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="168461202"
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="168461202"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 15:32:31 -0800
-IronPort-SDR: 5382oeKWx+HYT1RMhyNPodt0b+9JjqrE65FbskKgyoQWOCiOkPDwmesPlkd4bELgNbAbYweNIN
- IIUaC5ZVD7Zw==
-X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
-   d="scan'208";a="532413741"
-Received: from jli128-mobl1.ccr.corp.intel.com (HELO [10.254.209.252]) ([10.254.209.252])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 15:32:28 -0800
-Cc:     baolu.lu@linux.intel.com, ning.sun@intel.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        dwmw2@infradead.org, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, tboot-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2] iommu/vt-d: avoid unnecessory panic if iommu init fail
- in tboot system
-To:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>
-References: <20201110071908.3133-1-zhenzhong.duan@gmail.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <34e8f6c6-e9f7-634b-8f68-3645261fd882@linux.intel.com>
-Date:   Wed, 18 Nov 2020 07:32:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1725779AbgKQXdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 18:33:18 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA252222E9;
+        Tue, 17 Nov 2020 23:33:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605655997;
+        bh=Y6O0hmdHN+QQnB04I7VkG/GmBcbPTiUeyQkoNJTfCXU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2OYboSBp/JjJysgOagASPLmEiBKUy7PIMPgkkTRLKAfgdAypk3RLPgC6t9ulrhGcP
+         1fxNZ8vVmurejx4nhLoKbI+BAKC9adI/GE+js4+KWqupGMBdhECG/HfO8EL1R3Qbkn
+         9YldUHo6+RySh8miCEYCi6ZYS77wl7xtFOXp4a5g=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 100A040E29; Tue, 17 Nov 2020 20:33:14 -0300 (-03)
+Date:   Tue, 17 Nov 2020 20:33:13 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 06/24] perf tools: Add build_id__is_defined function
+Message-ID: <20201117233313.GD657351@kernel.org>
+References: <20201117110053.1303113-1-jolsa@kernel.org>
+ <20201117110053.1303113-7-jolsa@kernel.org>
+ <CAP-5=fUrf9Kq3XwKALSZut3M6NXtnJCAMw0Pe2rh8_31a7tX4w@mail.gmail.com>
+ <20201117205359.GJ1216482@krava>
 MIME-Version: 1.0
-In-Reply-To: <20201110071908.3133-1-zhenzhong.duan@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117205359.GJ1216482@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Will
+Em Tue, Nov 17, 2020 at 09:53:59PM +0100, Jiri Olsa escreveu:
+> On Tue, Nov 17, 2020 at 11:00:37AM -0800, Ian Rogers wrote:
+> > On Tue, Nov 17, 2020 at 3:01 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > 
+> > > Adding build_id__is_defined helper to check build id
+> > > is defined and is != zero build id.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/perf/util/build-id.c | 7 +++++++
+> > >  tools/perf/util/build-id.h | 1 +
+> > >  2 files changed, 8 insertions(+)
+> > >
+> > > diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+> > > index 6b410c3d52dc..7d9ecc37849c 100644
+> > > --- a/tools/perf/util/build-id.c
+> > > +++ b/tools/perf/util/build-id.c
+> > > @@ -912,3 +912,10 @@ void build_id__init(struct build_id *bid, const u8
+> > > *data, size_t size)
+> > >         memcpy(bid->data, data, size);
+> > >         bid->size = size;
+> > >  }
+> > > +
+> > > +bool build_id__is_defined(const struct build_id *bid)
+> > > +{
+> > > +       static u8 zero[BUILD_ID_SIZE];
+> > > +
+> > > +       return bid && bid->size ? memcmp(bid->data, &zero, bid->size) :
+> > > false;
 
-Please consider this patch for v5.10.
+> > Fwiw, I find this method to test for zero a little hard to parse - I'm
+> 
+> heh, it's controversial one, Namhyung commented
+> on this one in previous version, so I changed it ;-)
+>   https://lore.kernel.org/lkml/CAM9d7cjjGjTN8sDgLZ1PoQZ-sUXWjnVaNdyOVE1yHxq46PrPkw@mail.gmail.com/
 
-Best regards,
-baolu
+So, the kernel has an idiom for this in lib/string.c:
 
-On 2020/11/10 15:19, Zhenzhong Duan wrote:
-> "intel_iommu=off" command line is used to disable iommu but iommu is force
-> enabled in a tboot system for security reason.
+/**
+ * memchr_inv - Find an unmatching character in an area of memory.
+ * @start: The memory area
+ * @c: Find a character other than c
+ * @bytes: The size of the area.
+ *
+ * returns the address of the first character other than @c, or %NULL
+ * if the whole buffer contains just @c.
+ */
+void *memchr_inv(const void *start, int c, size_t bytes)
+
+No need for any array of some particular size :-)
+
+Its been there for a while:
+
+commit 798248206b59acc6e1238c778281419c041891a7
+Author: Akinobu Mita <akinobu.mita@gmail.com>
+Date:   Mon Oct 31 17:08:07 2011 -0700
+
+    lib/string.c: introduce memchr_inv()
+
+    memchr_inv() is mainly used to check whether the whole buffer is filled
+    with just a specified byte.
+
+- Arnaldo
+ 
 > 
-> However for better performance on high speed network device, a new option
-> "intel_iommu=tboot_noforce" is introduced to disable the force on.
+> > failing as a C programmer :-) Nit, should zero be const?
 > 
-> By default kernel should panic if iommu init fail in tboot for security
-> reason, but it's unnecessory if we use "intel_iommu=tboot_noforce,off".
-> 
-> Fix the code setting force_on and move intel_iommu_tboot_noforce
-> from tboot code to intel iommu code.
-> 
-> Fixes: 7304e8f28bb2 ("iommu/vt-d: Correctly disable Intel IOMMU force on")
-> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
-> ---
-> v2: move ckeck of intel_iommu_tboot_noforce into iommu code per Baolu.
-> 
->   arch/x86/kernel/tboot.c     | 3 ---
->   drivers/iommu/intel/iommu.c | 5 +++--
->   include/linux/intel-iommu.h | 1 -
->   3 files changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
-> index 992fb14..420be87 100644
-> --- a/arch/x86/kernel/tboot.c
-> +++ b/arch/x86/kernel/tboot.c
-> @@ -514,9 +514,6 @@ int tboot_force_iommu(void)
->   	if (!tboot_enabled())
->   		return 0;
->   
-> -	if (intel_iommu_tboot_noforce)
-> -		return 1;
-> -
->   	if (no_iommu || swiotlb || dmar_disabled)
->   		pr_warn("Forcing Intel-IOMMU to enabled\n");
->   
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index 1b1ca63..4d9b298 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -179,7 +179,7 @@ static inline unsigned long virt_to_dma_pfn(void *p)
->    * (used when kernel is launched w/ TXT)
->    */
->   static int force_on = 0;
-> -int intel_iommu_tboot_noforce;
-> +static int intel_iommu_tboot_noforce;
->   static int no_platform_optin;
->   
->   #define ROOT_ENTRY_NR (VTD_PAGE_SIZE/sizeof(struct root_entry))
-> @@ -4885,7 +4885,8 @@ int __init intel_iommu_init(void)
->   	 * Intel IOMMU is required for a TXT/tboot launch or platform
->   	 * opt in, so enforce that.
->   	 */
-> -	force_on = tboot_force_iommu() || platform_optin_force_iommu();
-> +	force_on = (!intel_iommu_tboot_noforce && tboot_force_iommu()) ||
-> +		    platform_optin_force_iommu();
->   
->   	if (iommu_init_mempool()) {
->   		if (force_on)
-> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-> index fbf5b3e..d956987 100644
-> --- a/include/linux/intel-iommu.h
-> +++ b/include/linux/intel-iommu.h
-> @@ -798,7 +798,6 @@ struct context_entry *iommu_context_addr(struct intel_iommu *iommu, u8 bus,
->   extern int iommu_calculate_max_sagaw(struct intel_iommu *iommu);
->   extern int dmar_disabled;
->   extern int intel_iommu_enabled;
-> -extern int intel_iommu_tboot_noforce;
->   extern int intel_iommu_gfx_mapped;
->   #else
->   static inline int iommu_calculate_agaw(struct intel_iommu *iommu)
-> 
+> right, should be const, will change
