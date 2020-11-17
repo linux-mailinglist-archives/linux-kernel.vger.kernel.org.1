@@ -2,140 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839C22B6013
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DC32B600C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728501AbgKQNGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:06:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728453AbgKQNGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:06:14 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08C732225E;
-        Tue, 17 Nov 2020 13:06:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618373;
-        bh=e/ZA+rSjyNAAwAafilfOd2JPZLcajknEqJZEOpFZyaE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S3VzHqw8CbBN4PkF00gNaYRraS+vADvQtE+7dtj4qFMR2MngfhCiuzRmKbVKPrsrJ
-         qvi0EEZT1uCRv1/Es4c9+ia+XYd77ictaYtZWiBTewv4wNX4Yxp+O0lnBT8rmbUsVT
-         TnDJfmNL07BdVr8XyngUukckJb/9hDElVU4ug5I4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 11/64] can: can_create_echo_skb(): fix echo skb generation: always use skb_clone()
+        id S1728345AbgKQNEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:04:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbgKQNEl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:04:41 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0809BC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:04:39 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id a9so28969285lfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 05:04:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lOoRt7gRUVygfU+Sl/VWrnk6H3xPmjMwBcvxXe+wyCQ=;
+        b=ZZSQqqcITOCtDFjG/ylX0ox1zmLGFZefZpz8kipr3jXFFmLZ0QJXJ1nl5PYWGyry17
+         vkRHeSyzuWuQfi+7bZEIg44eUwT75uYcVjKPg0H46nErXw+DU/LCe9Pj7rMa4BNolqjY
+         qJeaS3GN2KR9eExu1CJhGjwpkMKlFFOmXRllK/TFQYSCni4LsMkUbfg0KGLkpBm8mIcu
+         2Eq20stKp1j2r484tIRJ0waV7in3q2aa+/DGVylHWV7IjjDVaRq+64kkEnt2DmMR6j7M
+         LMg29udOJu2QT+gXTXv8BMTptc2EGLf3TeIF+NCk5m88KNb0KQIplnHXPQHXnr3zZUAr
+         jL/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lOoRt7gRUVygfU+Sl/VWrnk6H3xPmjMwBcvxXe+wyCQ=;
+        b=p0sKeuhhGyi51e/RM8RAYa6js6jgCtrKSe7RYnP7cNyq2gWAd4ZnH8kkf/sbfl6ouD
+         9cJSmazzxwbHqY/69onNaHsHUsQ+oTaa6V0op5/8RcxegdlLT/DeD5SeWN4rDS2Qd0i6
+         nZrUiGpUsfv98q+6H6pYSaQ1sMzUj62knWWtDY+11LUTHeJ9BWkOqmZN9gyHFCPdkNKO
+         MV1Qh+yOHykrAfBgb+FiuJ/VA5yuS/S2Y/mgb5EMSrNowhZiXxaKp1Gb0SS+mUbbxz24
+         Q1q2nEipyQq1eubeUTATqPZwtzkeT1Ph+mVHjLHhK+7qFAWFsGLHQxgradoxd8B8jDZ/
+         Qx/A==
+X-Gm-Message-State: AOAM5337gB8XvEnFmAoVxXykRE7rfc049iX4owuXYougXCtbCxpC8ddX
+        K+12fzAoKdQ3jQge3CbVMs4=
+X-Google-Smtp-Source: ABdhPJxGk98DUyyioKZA28nW7+rRaIXDNACiz7urpEtkaq6VVVMF4oMmiM58tbnMbl2hVm/FCLeAIQ==
+X-Received: by 2002:a05:6512:210b:: with SMTP id q11mr1594356lfr.238.1605618277471;
+        Tue, 17 Nov 2020 05:04:37 -0800 (PST)
+Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id t6sm2989482lfk.207.2020.11.17.05.04.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 05:04:36 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
 Date:   Tue, 17 Nov 2020 14:04:34 +0100
-Message-Id: <20201117122106.687931012@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
-User-Agent: quilt/0.66
+To:     huang ying <huang.ying.caritas@gmail.com>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/2] mm/vmalloc: rework the drain logic
+Message-ID: <20201117130434.GA10769@pc636>
+References: <20201116220033.1837-1-urezki@gmail.com>
+ <20201116220033.1837-2-urezki@gmail.com>
+ <CAC=cRTN77LAn-9-6rGukc2aUZQzx7oP9eKt_hJeb=wbnhGqObQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAC=cRTN77LAn-9-6rGukc2aUZQzx7oP9eKt_hJeb=wbnhGqObQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+On Tue, Nov 17, 2020 at 10:37:34AM +0800, huang ying wrote:
+> On Tue, Nov 17, 2020 at 6:00 AM Uladzislau Rezki (Sony)
+> <urezki@gmail.com> wrote:
+> >
+> > A current "lazy drain" model suffers from at least two issues.
+> >
+> > First one is related to the unsorted list of vmap areas, thus
+> > in order to identify the [min:max] range of areas to be drained,
+> > it requires a full list scan. What is a time consuming if the
+> > list is too long.
+> >
+> > Second one and as a next step is about merging all fragments
+> > with a free space. What is also a time consuming because it
+> > has to iterate over entire list which holds outstanding lazy
+> > areas.
+> >
+> > See below the "preemptirqsoff" tracer that illustrates a high
+> > latency. It is ~24 676us. Our workloads like audio and video
+> > are effected by such long latency:
+> 
+> This seems like a real problem.  But I found there's long latency
+> avoidance mechanism in the loop in __purge_vmap_area_lazy() as
+> follows,
+> 
+>         if (atomic_long_read(&vmap_lazy_nr) < resched_threshold)
+>             cond_resched_lock(&free_vmap_area_lock);
+> 
+I have added that "resched threshold" because of on my tests i could
+simply hit out of memory, due to the fact that a drain work is not up
+to speed to process such long outstanding list of vmap areas.
 
-[ Upstream commit 286228d382ba6320f04fa2e7c6fc8d4d92e428f4 ]
+>
+> If it works properly, the latency problem can be solved.  Can you
+> check whether this doesn't work for you?
+>
+We have that cond_resched_lock() in our products. The patch that is
+in question creates bigger vmap areas on early step(merge them), so
+the final structure becomes less fragmented, what speeds up a drain
+logic, thus reduces a preemption off time.
 
-All user space generated SKBs are owned by a socket (unless injected into the
-key via AF_PACKET). If a socket is closed, all associated skbs will be cleaned
-up.
+Apart of that, high priority tasks like RT or DL which are users of
+the vmalloc()/vfree() can start draining process from its contexts,
+what is also a problem. In that sense, i think we need to make the
+vfree() call to be asynchronous, so latency sensitive tasks and others
+do not perform any draining from their contexts.
 
-This leads to a problem when a CAN driver calls can_put_echo_skb() on a
-unshared SKB. If the socket is closed prior to the TX complete handler,
-can_get_echo_skb() and the subsequent delivering of the echo SKB to all
-registered callbacks, a SKB with a refcount of 0 is delivered.
-
-To avoid the problem, in can_get_echo_skb() the original SKB is now always
-cloned, regardless of shared SKB or not. If the process exists it can now
-safely discard its SKBs, without disturbing the delivery of the echo SKB.
-
-The problem shows up in the j1939 stack, when it clones the incoming skb, which
-detects the already 0 refcount.
-
-We can easily reproduce this with following example:
-
-testj1939 -B -r can0: &
-cansend can0 1823ff40#0123
-
-WARNING: CPU: 0 PID: 293 at lib/refcount.c:25 refcount_warn_saturate+0x108/0x174
-refcount_t: addition on 0; use-after-free.
-Modules linked in: coda_vpu imx_vdoa videobuf2_vmalloc dw_hdmi_ahb_audio vcan
-CPU: 0 PID: 293 Comm: cansend Not tainted 5.5.0-rc6-00376-g9e20dcb7040d #1
-Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-Backtrace:
-[<c010f570>] (dump_backtrace) from [<c010f90c>] (show_stack+0x20/0x24)
-[<c010f8ec>] (show_stack) from [<c0c3e1a4>] (dump_stack+0x8c/0xa0)
-[<c0c3e118>] (dump_stack) from [<c0127fec>] (__warn+0xe0/0x108)
-[<c0127f0c>] (__warn) from [<c01283c8>] (warn_slowpath_fmt+0xa8/0xcc)
-[<c0128324>] (warn_slowpath_fmt) from [<c0539c0c>] (refcount_warn_saturate+0x108/0x174)
-[<c0539b04>] (refcount_warn_saturate) from [<c0ad2cac>] (j1939_can_recv+0x20c/0x210)
-[<c0ad2aa0>] (j1939_can_recv) from [<c0ac9dc8>] (can_rcv_filter+0xb4/0x268)
-[<c0ac9d14>] (can_rcv_filter) from [<c0aca2cc>] (can_receive+0xb0/0xe4)
-[<c0aca21c>] (can_receive) from [<c0aca348>] (can_rcv+0x48/0x98)
-[<c0aca300>] (can_rcv) from [<c09b1fdc>] (__netif_receive_skb_one_core+0x64/0x88)
-[<c09b1f78>] (__netif_receive_skb_one_core) from [<c09b2070>] (__netif_receive_skb+0x38/0x94)
-[<c09b2038>] (__netif_receive_skb) from [<c09b2130>] (netif_receive_skb_internal+0x64/0xf8)
-[<c09b20cc>] (netif_receive_skb_internal) from [<c09b21f8>] (netif_receive_skb+0x34/0x19c)
-[<c09b21c4>] (netif_receive_skb) from [<c0791278>] (can_rx_offload_napi_poll+0x58/0xb4)
-
-Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: http://lore.kernel.org/r/20200124132656.22156-1-o.rempel@pengutronix.de
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/linux/can/skb.h | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
-
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 51bb6532785c3..1a2111c775ae1 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -60,21 +60,17 @@ static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
-  */
- static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
- {
--	if (skb_shared(skb)) {
--		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
-+	struct sk_buff *nskb;
- 
--		if (likely(nskb)) {
--			can_skb_set_owner(nskb, skb->sk);
--			consume_skb(skb);
--			return nskb;
--		} else {
--			kfree_skb(skb);
--			return NULL;
--		}
-+	nskb = skb_clone(skb, GFP_ATOMIC);
-+	if (unlikely(!nskb)) {
-+		kfree_skb(skb);
-+		return NULL;
- 	}
- 
--	/* we can assume to have an unshared skb with proper owner */
--	return skb;
-+	can_skb_set_owner(nskb, skb->sk);
-+	consume_skb(skb);
-+	return nskb;
- }
- 
- #endif /* !_CAN_SKB_H */
--- 
-2.27.0
-
-
-
+--
+Vlad Rezki
