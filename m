@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFB52B7041
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 108A92B7043
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgKQUiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:38:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50913 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726020AbgKQUiS (ORCPT
+        id S1726955AbgKQUiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:38:54 -0500
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:27397 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726867AbgKQUiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:38:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605645497;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DUPF+9bNm2EMgx4/e8UDCTy5nIDtLC2Xx5lpaZyO1mg=;
-        b=eS4rkdnM0uw1eIEwJKQlEqSAR3OboryxsO05TF6n0PVnsE91hgaIzu8X2jUzRJq1B1/pY4
-        aJFS4WkPILgKlk34Muu1cT3AHqGrq0CAXz7lz3aPOdymgdK1sZtVBVAsZVYKtHN73ruOxr
-        9I9WAxAuTiGL4Tlnecc7FyS4tjZpYcI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-Yc2ClJHKP9Oiq52U406y-w-1; Tue, 17 Nov 2020 15:38:15 -0500
-X-MC-Unique: Yc2ClJHKP9Oiq52U406y-w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B8085F9E3;
-        Tue, 17 Nov 2020 20:38:13 +0000 (UTC)
-Received: from [10.10.112.190] (ovpn-112-190.rdu2.redhat.com [10.10.112.190])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C00E35B4A2;
-        Tue, 17 Nov 2020 20:38:12 +0000 (UTC)
-Reply-To: tasleson@redhat.com
-Subject: Re: [PATCH] buffer_io_error: Use dev_err_ratelimited
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201026155730.542020-1-tasleson@redhat.com>
- <CAHp75Vfno9LULSfvwYA+4bEz4kW1Z7c=65HTy-O0fgLrzVA24g@mail.gmail.com>
- <71148b03-d880-8113-bd91-25dadef777c7@redhat.com>
- <ec93ba9e-ead9-f49a-d569-abf4c06a60eb@redhat.com>
- <CAHp75VfngLah7nkARydc-BAivtyCQbHhcEGFLHLRHpXFSE_PwQ@mail.gmail.com>
-From:   Tony Asleson <tasleson@redhat.com>
-Organization: Red Hat
-Message-ID: <8fc251fd-4ec5-b5d5-8193-c8a59e30b6fa@redhat.com>
-Date:   Tue, 17 Nov 2020 14:38:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 17 Nov 2020 15:38:54 -0500
+Received: from [192.168.1.41] ([92.131.86.32])
+        by mwinf5d57 with ME
+        id tYel230090hrljw03YelgD; Tue, 17 Nov 2020 21:38:50 +0100
+X-ME-Helo: [192.168.1.41]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 17 Nov 2020 21:38:50 +0100
+X-ME-IP: 92.131.86.32
+Subject: Re: [PATCH net] atl1e: fix error return code in atl1e_probe()
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>, jcliburn@gmail.com,
+        chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        mst@redhat.com, leon@kernel.org, hkallweit1@gmail.com,
+        tglx@linutronix.de, jesse.brandeburg@intel.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1605581875-36281-1-git-send-email-zhangchangzhong@huawei.com>
+From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <b7b4dcd3-a536-b72f-6a8b-12354c995ee7@wanadoo.fr>
+Date:   Tue, 17 Nov 2020 21:38:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfngLah7nkARydc-BAivtyCQbHhcEGFLHLRHpXFSE_PwQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1605581875-36281-1-git-send-email-zhangchangzhong@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/28/20 6:22 PM, Andy Shevchenko wrote:
-> Staled documentation. You may send a patch to fix it (I Cc'ed
-> Christoph and Jonathan).
-> It means that it doesn't go under this category and the example should
-> be changed to something else.
 
-I'm looking into a suitable replacement example.  Will post
-documentation patch when I find one.
+Le 17/11/2020 à 03:57, Zhang Changzhong a écrit :
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+>
+> Fixes: 85eb5bc33717 ("net: atheros: switch from 'pci_' to 'dma_' API")
+Hi, should it have any importance, the Fixes tag is wrong.
 
-Thanks,
-Tony
+The issue was already there before 85eb5bc33717 which was just a 
+mechanical update.
 
+just my 2c
+
+CJ
+
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> ---
+>   drivers/net/ethernet/atheros/atl1e/atl1e_main.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+> index 098b032..ff9f96d 100644
+> --- a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+> +++ b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+> @@ -2312,8 +2312,8 @@ static int atl1e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>   	 * various kernel subsystems to support the mechanics required by a
+>   	 * fixed-high-32-bit system.
+>   	 */
+> -	if ((dma_set_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0) ||
+> -	    (dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32)) != 0)) {
+> +	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+> +	if (err) {
+>   		dev_err(&pdev->dev, "No usable DMA configuration,aborting\n");
+>   		goto err_dma;
+>   	}
