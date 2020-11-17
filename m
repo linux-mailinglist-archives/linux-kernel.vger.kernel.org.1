@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8767F2B644B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3CE2B639D
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732732AbgKQNpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:45:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51362 "EHLO mail.kernel.org"
+        id S1732794AbgKQNjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:39:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732736AbgKQNje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:39:34 -0500
+        id S1732734AbgKQNji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:39:38 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37FA724686;
-        Tue, 17 Nov 2020 13:39:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECB4C2468D;
+        Tue, 17 Nov 2020 13:39:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605620373;
-        bh=a++5pX6LYbrmR0abOiTDtqu6oEjVo+MRQja8dm5Y104=;
+        s=default; t=1605620376;
+        bh=BJxXwPFVPC2oTDeqVeV3w+TrQZ3GLWMOJ91YNGurQC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=po1QfH+oawiFXwSkLMkFPd9MQjgSIWTgQkiEg6hhOWrNR2Gh5KRqXSt76SUlQ4ESt
-         yNcOe8XMORtdF0DSkA+eC5KTXYBmEj/YIkywIlOSCoAyMEfZuXYJD1twaLMmBkc8vT
-         fLLxak7QMA7L6Gn+sSOH9/h+pF+yk6jJuUpCxyAU=
+        b=Co/jX+Fp8UqU42uprUhBHb0Ng77+Vw8yFRDzUg7iB5UBcewduS/jxIoYsRdVwgLSZ
+         DpDsGSfLVWkkTOZ8lnml50MLJ3THlmnAFh2J5Heyve8EEsxssR+ZisVjMMNUdrWG35
+         JAWzgGDrLD8yIfor8xzzsFCUNKxvTVSqHn51brcM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Petr Vorel <pvorel@suse.cz>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.9 197/255] block: add a return value to set_capacity_revalidate_and_notify
-Date:   Tue, 17 Nov 2020 14:05:37 +0100
-Message-Id: <20201117122148.517812147@linuxfoundation.org>
+        stable@vger.kernel.org, ltp@lists.linux.it,
+        Petr Vorel <pvorel@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.9 198/255] loop: Fix occasional uevent drop
+Date:   Tue, 17 Nov 2020 14:05:38 +0100
+Message-Id: <20201117122148.567147400@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -42,55 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Petr Vorel <pvorel@suse.cz>
 
-commit 7e890c37c25c7cbca37ff0ab292873d8146e713b upstream.
+commit c01a21b77722db0474bbcc4eafc8c4e0d8fed6d8 upstream.
 
-Return if the function ended up sending an uevent or not.
+Commit 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify")
+causes an occasional drop of loop device uevent, which are no longer
+triggered in loop_set_size() but in a different part of code.
+
+Bug is reproducible with LTP test uevent01 [1]:
+
+i=0; while true; do
+    i=$((i+1)); echo "== $i =="
+    lsmod |grep -q loop && rmmod -f loop
+    ./uevent01 || break
+done
+
+Put back triggering through code called in loop_set_size().
+
+Fix required to add yet another parameter to
+set_capacity_revalidate_and_notify().
+
+[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/uevents/uevent01.c
+
+[hch: rebased on a different change to the prototype of
+ set_capacity_revalidate_and_notify]
 
 Cc: stable@vger.kernel.org # v5.9
+Fixes: 716ad0986cbd ("loop: Switch to set_capacity_revalidate_and_notify")
+Reported-by: <ltp@lists.linux.it>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- block/genhd.c         |    5 ++++-
- include/linux/genhd.h |    2 +-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/block/loop.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -49,7 +49,7 @@ static void disk_release_events(struct g
-  * Set disk capacity and notify if the size is not currently
-  * zero and will not be set to zero
-  */
--void set_capacity_revalidate_and_notify(struct gendisk *disk, sector_t size,
-+bool set_capacity_revalidate_and_notify(struct gendisk *disk, sector_t size,
- 					bool revalidate)
- {
- 	sector_t capacity = get_capacity(disk);
-@@ -63,7 +63,10 @@ void set_capacity_revalidate_and_notify(
- 		char *envp[] = { "RESIZE=1", NULL };
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -255,7 +255,8 @@ static void loop_set_size(struct loop_de
  
- 		kobject_uevent_env(&disk_to_dev(disk)->kobj, KOBJ_CHANGE, envp);
-+		return true;
- 	}
-+
-+	return false;
+ 	bd_set_size(bdev, size << SECTOR_SHIFT);
+ 
+-	set_capacity_revalidate_and_notify(lo->lo_disk, size, false);
++	if (!set_capacity_revalidate_and_notify(lo->lo_disk, size, false))
++		kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, KOBJ_CHANGE);
  }
  
- EXPORT_SYMBOL_GPL(set_capacity_revalidate_and_notify);
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -315,7 +315,7 @@ static inline int get_disk_ro(struct gen
- extern void disk_block_events(struct gendisk *disk);
- extern void disk_unblock_events(struct gendisk *disk);
- extern void disk_flush_events(struct gendisk *disk, unsigned int mask);
--extern void set_capacity_revalidate_and_notify(struct gendisk *disk,
-+extern bool set_capacity_revalidate_and_notify(struct gendisk *disk,
- 			sector_t size, bool revalidate);
- extern unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask);
- 
+ static inline int
 
 
