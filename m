@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53D72B6288
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84EE72B628C
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731280AbgKQN3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:29:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37876 "EHLO mail.kernel.org"
+        id S1731602AbgKQN3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:29:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731551AbgKQN3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:29:16 -0500
+        id S1731576AbgKQN3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:29:22 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9396220781;
-        Tue, 17 Nov 2020 13:29:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4485A2078D;
+        Tue, 17 Nov 2020 13:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619756;
-        bh=z9NTU619R+5CEdd4pUp0MofU7lmkDm90S80NkQVZqFo=;
+        s=default; t=1605619761;
+        bh=ha6bZhqTCYO40+kGQ3S6CrIeRW3n9o6h2ac7PtqCpRU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xnu4ScunJTB40gu/ljLL7YzHWyxlOR/voweKkyv2dmrve5GEl1vBfaDo8Z9UMyY3V
-         kxi3C1ppb3bcSfh9XtD2hdWIA+2g30f+43rZZog/E6iHiE60nsiKgdOo3+creiYhmv
-         P/toHLczufvQcPHIqvu+fVgST4VUQP89e+Ew7Bss=
+        b=s1+YMshN7jiDFFgEBZvDSqi1BOmu587v3MGD64IoQXvyIwsOxSeWaK1iYKvYHT/tg
+         NJKp4G1jokMPKS66n4ryGZEVghBgeWCQKJ33gtz4uV7K74IYMQAgPnxPPqecC0eGVh
+         cmGduHQlJWCEXCI4KBvZKRWZj9CF1kqa+pHzZ+YI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 146/151] powerpc/603: Always fault when _PAGE_ACCESSED is not set
-Date:   Tue, 17 Nov 2020 14:06:16 +0100
-Message-Id: <20201117122128.530783513@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Tapas Kundu <tkundu@vmware.com>
+Subject: [PATCH 5.4 148/151] perf scripting python: Avoid declaring function pointers with a visibility attribute
+Date:   Tue, 17 Nov 2020 14:06:18 +0100
+Message-Id: <20201117122128.630029567@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
 References: <20201117122121.381905960@linuxfoundation.org>
@@ -43,64 +45,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-commit 11522448e641e8f1690c9db06e01985e8e19b401 upstream.
+commit d0e7b0c71fbb653de90a7163ef46912a96f0bdaf upstream.
 
-The kernel expects pte_young() to work regardless of CONFIG_SWAP.
+To avoid this:
 
-Make sure a minor fault is taken to set _PAGE_ACCESSED when it
-is not already set, regardless of the selection of CONFIG_SWAP.
+  util/scripting-engines/trace-event-python.c: In function 'python_start_script':
+  util/scripting-engines/trace-event-python.c:1595:2: error: 'visibility' attribute ignored [-Werror=attributes]
+   1595 |  PyMODINIT_FUNC (*initfunc)(void);
+        |  ^~~~~~~~~~~~~~
 
-Fixes: 84de6ab0e904 ("powerpc/603: don't handle PAGE_ACCESSED in TLB miss handlers.")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/a44367744de54e2315b2f1a8cbbd7f88488072e0.1602342806.git.christophe.leroy@csgroup.eu
+That started breaking when building with PYTHON=python3 and these gcc
+versions (I haven't checked with the clang ones, maybe it breaks there
+as well):
+
+  # export PERF_TARBALL=http://192.168.86.5/perf/perf-5.9.0.tar.xz
+  # dm  fedora:33 fedora:rawhide
+     1   107.80 fedora:33         : Ok   gcc (GCC) 10.2.1 20201005 (Red Hat 10.2.1-5), clang version 11.0.0 (Fedora 11.0.0-1.fc33)
+     2    92.47 fedora:rawhide    : Ok   gcc (GCC) 10.2.1 20201016 (Red Hat 10.2.1-6), clang version 11.0.0 (Fedora 11.0.0-1.fc34)
+  #
+
+Avoid that by ditching that 'initfunc' function pointer with its:
+
+    #define Py_EXPORTED_SYMBOL _attribute_ ((visibility ("default")))
+    #define PyMODINIT_FUNC Py_EXPORTED_SYMBOL PyObject*
+
+And just call PyImport_AppendInittab() at the end of the ifdef python3
+block with the functions that were being attributed to that initfunc.
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Tapas Kundu <tkundu@vmware.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
 ---
- arch/powerpc/kernel/head_32.S |   12 ------------
- 1 file changed, 12 deletions(-)
+ tools/perf/util/scripting-engines/trace-event-python.c |    7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
---- a/arch/powerpc/kernel/head_32.S
-+++ b/arch/powerpc/kernel/head_32.S
-@@ -418,11 +418,7 @@ InstructionTLBMiss:
- 	cmplw	0,r1,r3
+--- a/tools/perf/util/scripting-engines/trace-event-python.c
++++ b/tools/perf/util/scripting-engines/trace-event-python.c
+@@ -1587,7 +1587,6 @@ static void _free_command_line(wchar_t *
+ static int python_start_script(const char *script, int argc, const char **argv)
+ {
+ 	struct tables *tables = &tables_global;
+-	PyMODINIT_FUNC (*initfunc)(void);
+ #if PY_MAJOR_VERSION < 3
+ 	const char **command_line;
+ #else
+@@ -1602,20 +1601,18 @@ static int python_start_script(const cha
+ 	FILE *fp;
+ 
+ #if PY_MAJOR_VERSION < 3
+-	initfunc = initperf_trace_context;
+ 	command_line = malloc((argc + 1) * sizeof(const char *));
+ 	command_line[0] = script;
+ 	for (i = 1; i < argc + 1; i++)
+ 		command_line[i] = argv[i - 1];
++	PyImport_AppendInittab(name, initperf_trace_context);
+ #else
+-	initfunc = PyInit_perf_trace_context;
+ 	command_line = malloc((argc + 1) * sizeof(wchar_t *));
+ 	command_line[0] = Py_DecodeLocale(script, NULL);
+ 	for (i = 1; i < argc + 1; i++)
+ 		command_line[i] = Py_DecodeLocale(argv[i - 1], NULL);
++	PyImport_AppendInittab(name, PyInit_perf_trace_context);
  #endif
- 	mfspr	r2, SPRN_SPRG_PGDIR
--#ifdef CONFIG_SWAP
- 	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
--#else
--	li	r1,_PAGE_PRESENT | _PAGE_EXEC
--#endif
- #if defined(CONFIG_MODULES) || defined(CONFIG_DEBUG_PAGEALLOC)
- 	bge-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
-@@ -484,11 +480,7 @@ DataLoadTLBMiss:
- 	lis	r1,PAGE_OFFSET@h		/* check if kernel address */
- 	cmplw	0,r1,r3
- 	mfspr	r2, SPRN_SPRG_PGDIR
--#ifdef CONFIG_SWAP
- 	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
--#else
--	li	r1, _PAGE_PRESENT
--#endif
- 	bge-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
- 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
-@@ -564,11 +556,7 @@ DataStoreTLBMiss:
- 	lis	r1,PAGE_OFFSET@h		/* check if kernel address */
- 	cmplw	0,r1,r3
- 	mfspr	r2, SPRN_SPRG_PGDIR
--#ifdef CONFIG_SWAP
- 	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
--#else
--	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT
--#endif
- 	bge-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
- 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+-
+-	PyImport_AppendInittab(name, initfunc);
+ 	Py_Initialize();
+ 
+ #if PY_MAJOR_VERSION < 3
 
 
