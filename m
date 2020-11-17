@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850262B61A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1692B60D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730822AbgKQNVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:21:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54648 "EHLO mail.kernel.org"
+        id S1729922AbgKQNNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:13:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730817AbgKQNU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:20:57 -0500
+        id S1728827AbgKQNNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:13:06 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B657324654;
-        Tue, 17 Nov 2020 13:20:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE78C221EB;
+        Tue, 17 Nov 2020 13:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619257;
-        bh=pQdsyDq0m77nWGYcxE5VeRNPamitsE1SmAC4DqC0lnM=;
+        s=default; t=1605618786;
+        bh=7VGnJb/e2JX3WsNJAqASnGnKnnUvJYAr5ZezzCKHD/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nszBBY7FefcFLFf/AwDIhPOI7SBxuud+G7ICpPEvwV8KKZKE2p/D3bb1fkk0iqVj8
-         rsB7aVu/K4xx/FLltg5w1XSveOv4o+XKHWRAJUuuUwJIWDrZE/L5KZj3+2ki1iEneF
-         iS5rlxxTLla21VgsmztAyRw3InUgy3msJdVzoce0=
+        b=lMF2PnXUHSSLwKP0heeixyArmfjzaygeBJDmebp6h6uMKmkIcmeL6164nSIhit2hT
+         sVCqIRV9LGkE+PeFA0NsYN6rdkn+Ux3m7lyOCrmeVZ67knx9ZE2p8UHCqW0NmDicKt
+         hQ884Ck0W89+KdGP8yfixVjA8EUWvWom+zWrHQtY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.19 073/101] futex: Dont enable IRQs unconditionally in put_pi_state()
+        stable@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wade Mealing <wmealing@redhat.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.9 74/78] perf/core: Fix race in the perf_mmap_close() function
 Date:   Tue, 17 Nov 2020 14:05:40 +0100
-Message-Id: <20201117122116.673018980@linuxfoundation.org>
+Message-Id: <20201117122112.722605910@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
-References: <20201117122113.128215851@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +46,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Jiri Olsa <jolsa@redhat.com>
 
-commit 1e106aa3509b86738769775969822ffc1ec21bf4 upstream.
+commit f91072ed1b7283b13ca57fcfbece5a3b92726143 upstream.
 
-The exit_pi_state_list() function calls put_pi_state() with IRQs disabled
-and is not expecting that IRQs will be enabled inside the function.
+There's a possible race in perf_mmap_close() when checking ring buffer's
+mmap_count refcount value. The problem is that the mmap_count check is
+not atomic because we call atomic_dec() and atomic_read() separately.
 
-Use the _irqsave() variant so that IRQs are restored to the original state
-instead of being enabled unconditionally.
+  perf_mmap_close:
+  ...
+   atomic_dec(&rb->mmap_count);
+   ...
+   if (atomic_read(&rb->mmap_count))
+      goto out_put;
 
-Fixes: 153fbd1226fb ("futex: Fix more put_pi_state() vs. exit_pi_state_list() races")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201106085205.GA1159983@mwanda
+   <ring buffer detach>
+   free_uid
+
+out_put:
+  ring_buffer_put(rb); /* could be last */
+
+The race can happen when we have two (or more) events sharing same ring
+buffer and they go through atomic_dec() and then they both see 0 as refcount
+value later in atomic_read(). Then both will go on and execute code which
+is meant to be run just once.
+
+The code that detaches ring buffer is probably fine to be executed more
+than once, but the problem is in calling free_uid(), which will later on
+demonstrate in related crashes and refcount warnings, like:
+
+  refcount_t: addition on 0; use-after-free.
+  ...
+  RIP: 0010:refcount_warn_saturate+0x6d/0xf
+  ...
+  Call Trace:
+  prepare_creds+0x190/0x1e0
+  copy_creds+0x35/0x172
+  copy_process+0x471/0x1a80
+  _do_fork+0x83/0x3a0
+  __do_sys_wait4+0x83/0x90
+  __do_sys_clone+0x85/0xa0
+  do_syscall_64+0x5b/0x1e0
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Using atomic decrease and check instead of separated calls.
+
+Tested-by: Michael Petlan <mpetlan@redhat.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Acked-by: Wade Mealing <wmealing@redhat.com>
+Fixes: 9bb5d40cd93c ("perf: Fix mmap() accounting hole");
+Link: https://lore.kernel.org/r/20200916115311.GE2301783@krava
+[sudip: backport to v4.9.y by using ring_buffer]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/futex.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/events/core.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -856,8 +856,9 @@ static void put_pi_state(struct futex_pi
- 	 */
- 	if (pi_state->owner) {
- 		struct task_struct *owner;
-+		unsigned long flags;
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -5069,11 +5069,11 @@ static void perf_pmu_output_stop(struct
+ static void perf_mmap_close(struct vm_area_struct *vma)
+ {
+ 	struct perf_event *event = vma->vm_file->private_data;
+-
+ 	struct ring_buffer *rb = ring_buffer_get(event);
+ 	struct user_struct *mmap_user = rb->mmap_user;
+ 	int mmap_locked = rb->mmap_locked;
+ 	unsigned long size = perf_data_size(rb);
++	bool detach_rest = false;
  
--		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
-+		raw_spin_lock_irqsave(&pi_state->pi_mutex.wait_lock, flags);
- 		owner = pi_state->owner;
- 		if (owner) {
- 			raw_spin_lock(&owner->pi_lock);
-@@ -865,7 +866,7 @@ static void put_pi_state(struct futex_pi
- 			raw_spin_unlock(&owner->pi_lock);
- 		}
- 		rt_mutex_proxy_unlock(&pi_state->pi_mutex, owner);
--		raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
-+		raw_spin_unlock_irqrestore(&pi_state->pi_mutex.wait_lock, flags);
+ 	if (event->pmu->event_unmapped)
+ 		event->pmu->event_unmapped(event);
+@@ -5104,7 +5104,8 @@ static void perf_mmap_close(struct vm_ar
+ 		mutex_unlock(&event->mmap_mutex);
  	}
  
- 	if (current->pi_state_cache) {
+-	atomic_dec(&rb->mmap_count);
++	if (atomic_dec_and_test(&rb->mmap_count))
++		detach_rest = true;
+ 
+ 	if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
+ 		goto out_put;
+@@ -5113,7 +5114,7 @@ static void perf_mmap_close(struct vm_ar
+ 	mutex_unlock(&event->mmap_mutex);
+ 
+ 	/* If there's still other mmap()s of this buffer, we're done. */
+-	if (atomic_read(&rb->mmap_count))
++	if (!detach_rest)
+ 		goto out_put;
+ 
+ 	/*
 
 
