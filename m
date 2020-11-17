@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A6A2B707E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E71A2B7085
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgKQUyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:54:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51742 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726297AbgKQUyP (ORCPT
+        id S1726597AbgKQU5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgKQU5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:54:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605646453;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Na5qrtekWhtUQWyADlsoTi+TWRlxFpXFSkHs1Gld4JY=;
-        b=dg6PqXsT2y6+N26rS3npXlYuY+7qbDXd/kXxtEzw87IOkKFlF6DdMxCsmgHJa056JHhFiO
-        zWBLXmNMWKmykS6kXeyVQ4Cb2k7oDS71eVfERrcXAhEQEc7BI0BWcJWpZIciOgCc7G9cmg
-        ybhQV73y+QWNGnGYL7pdJd8Xw1jkWcc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-WJ5oIdGpNcWrgVNJG58W-g-1; Tue, 17 Nov 2020 15:54:06 -0500
-X-MC-Unique: WJ5oIdGpNcWrgVNJG58W-g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D5D08030B9;
-        Tue, 17 Nov 2020 20:54:04 +0000 (UTC)
-Received: from krava (unknown [10.40.192.215])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 660526B8E9;
-        Tue, 17 Nov 2020 20:54:00 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 21:53:59 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 06/24] perf tools: Add build_id__is_defined function
-Message-ID: <20201117205359.GJ1216482@krava>
-References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-7-jolsa@kernel.org>
- <CAP-5=fUrf9Kq3XwKALSZut3M6NXtnJCAMw0Pe2rh8_31a7tX4w@mail.gmail.com>
+        Tue, 17 Nov 2020 15:57:05 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D46C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:57:04 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id 131so7593786pfb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:57:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Uf9n4l7EOSL8uXdRL9UcruoyeN94agPo5jcXDhX5nJY=;
+        b=jMJNd1lM27olGuBxYU0sDngc2zuZeRq5lDKU5rOo2wtnUwZ4jfa4T725Tygz07t15a
+         TU8VyMCTM6dXGgeiravn3uQtZjP7pKLH09v76BS/6su0Z2BSW+JB0UMbeI5eZalXmiF0
+         8TSnButTlMZ/XkuaWmMlqSrWxG85xBInJUGVk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Uf9n4l7EOSL8uXdRL9UcruoyeN94agPo5jcXDhX5nJY=;
+        b=ecqzWqbYBDFbzhhAjPafrg3VRCJmmD/7F5duvz/wwLnvD/Ps9YT2JnXrGEvFxYEy24
+         eYq26Ym2hMG/AAqTLfp05dAA9d/vqce25qHAEXr5hTHK5LSI56T8mn+Hxo2QQguzJRMW
+         4mrsDLsyI5GEGQwMO9CjnAGY9R1TjI+b326897GQDJSHYBpksujdeGnKTr0BKXZsOF+R
+         NlZC5X7Js+gD8S8zwYEj8auy6FqewYBCmK0bSsS4+YcjDMyslsDZ+wNqBqmhe/DLkNii
+         g6zfLacNPGh4PcHMIyJSH8pM1p4DzyzugpjDO3acr9jz822R2WiLaCZSrEhqi4eRSZEk
+         JqYQ==
+X-Gm-Message-State: AOAM533tsr9vIPvJ/n3mw0Np5Bpu/mK1zmv8Yfnr7Qi5sUQJMnLKQu+E
+        a9jTOYkjBWXqbHUWDeWIfQhwYQ==
+X-Google-Smtp-Source: ABdhPJw3j1XCkoo/ADs9hWbTzIJn4p6GlAXgdrb/on1MkteJCUDhZcYZTutrBGXrcTCm/MG8EIRZZA==
+X-Received: by 2002:a63:1a1e:: with SMTP id a30mr5301001pga.168.1605646623572;
+        Tue, 17 Nov 2020 12:57:03 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q12sm4412524pjl.41.2020.11.17.12.57.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 12:57:02 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        Rich Felker <dalias@libc.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kselftest@vger.kernel.org
+Subject: [PATCH] selftests/seccomp: sh: Fix register names
+Date:   Tue, 17 Nov 2020 12:56:56 -0800
+Message-Id: <20201117205656.1000223-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fUrf9Kq3XwKALSZut3M6NXtnJCAMw0Pe2rh8_31a7tX4w@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:00:37AM -0800, Ian Rogers wrote:
-> On Tue, Nov 17, 2020 at 3:01 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> 
-> > Adding build_id__is_defined helper to check build id
-> > is defined and is != zero build id.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/perf/util/build-id.c | 7 +++++++
-> >  tools/perf/util/build-id.h | 1 +
-> >  2 files changed, 8 insertions(+)
-> >
-> > diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-> > index 6b410c3d52dc..7d9ecc37849c 100644
-> > --- a/tools/perf/util/build-id.c
-> > +++ b/tools/perf/util/build-id.c
-> > @@ -912,3 +912,10 @@ void build_id__init(struct build_id *bid, const u8
-> > *data, size_t size)
-> >         memcpy(bid->data, data, size);
-> >         bid->size = size;
-> >  }
-> > +
-> > +bool build_id__is_defined(const struct build_id *bid)
-> > +{
-> > +       static u8 zero[BUILD_ID_SIZE];
-> > +
-> > +       return bid && bid->size ? memcmp(bid->data, &zero, bid->size) :
-> > false;
-> >
-> 
-> Fwiw, I find this method to test for zero a little hard to parse - I'm
+It looks like the seccomp selftests were never actually built for sh.
+This fixes it, though I don't have an environment to do a runtime test
+of it yet.
 
-heh, it's controversial one, Namhyung commented
-on this one in previous version, so I changed it ;-)
-  https://lore.kernel.org/lkml/CAM9d7cjjGjTN8sDgLZ1PoQZ-sUXWjnVaNdyOVE1yHxq46PrPkw@mail.gmail.com/
+Fixes: 0bb605c2c7f2b4b3 ("sh: Add SECCOMP_FILTER")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-> failing as a C programmer :-) Nit, should zero be const?
-
-right, should be const, will change
-
-thanks,
-jirka
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 7f7ecfcd66db..26c72f2b61b1 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -1804,8 +1804,8 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+ #define SYSCALL_RET(_regs)	(_regs).a[(_regs).windowbase * 4 + 2]
+ #elif defined(__sh__)
+ # define ARCH_REGS		struct pt_regs
+-# define SYSCALL_NUM(_regs)	(_regs).gpr[3]
+-# define SYSCALL_RET(_regs)	(_regs).gpr[0]
++# define SYSCALL_NUM(_regs)	(_regs).regs[3]
++# define SYSCALL_RET(_regs)	(_regs).regs[0]
+ #else
+ # error "Do not know how to find your architecture's registers and syscalls"
+ #endif
+-- 
+2.25.1
 
