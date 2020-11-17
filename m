@@ -2,153 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914392B5B09
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A73F2B5B0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 09:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgKQIdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 03:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
+        id S1727261AbgKQIdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 03:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgKQIdt (ORCPT
+        with ESMTP id S1725770AbgKQIdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:33:49 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E563C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:33:47 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id c9so2386413wml.5
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:33:47 -0800 (PST)
+        Tue, 17 Nov 2020 03:33:50 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA31C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:33:50 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id w24so2410387wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 00:33:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5Xx1bbaV9WY8YuvJTFw/lB1Mvb2Cd4/4KjUR7W7pbAA=;
-        b=zPd5l4z9ICe7zDcsR8y5GZw1kk3NEb8ttGEmvMcYf/yydX07XV60y3vGG3WYOsamKN
-         VsmhGiVt6F63PIAUga+SIg+Z01cUO8M9RPBNymmcBXE/+ep5a6Qdht6Fh9yzVbANC4GF
-         WY/keYzYG48xwMvk4k4Q2xDIdy3Vysp51YGlWJZXKNL58CDEpMqMmtRf3GJkwMWqx+Zk
-         8w4RWm2r0j5SddbSG1O40x8Z2N2nWv9ZNFYkkX9T9WlO3R4gUZBihit18eGNg+//Zvpk
-         zmIEsHaWT5VoK00EwDBniZY+hCG2PjP9p0f/d2lFjFPXx65ROMU7olpDwQ5TEk39sDd/
-         BqAA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=jXS3JRBqPu/ouJmDg/xmae2SThRp3NsRXzX2BYUctrU=;
+        b=NmDzOe3LdbzfAZUeAM5vuY/Mc3PzHlr9l4joMVf2ePlGLMAfdlwlLXItkNSZVXdlUH
+         61q4xOhCxXR9dwUy0CYZVCeVZ3tBJD4FwoWLPX9vgGoamWYYvdM3NdLk9myeQ7+5CLsJ
+         jPEhnoyVbbHGBWsbGjK8+3LQs6QjCFRVSu8kbBkzvEUyID6y+hEub7ZZUMcwmR869kbt
+         hxYppdO+bCfFgMoc19/HDXKbRrRIEDwYs6FxoYIzX9skfHDfu19ZkP7kAsmdAcDqygcQ
+         3JmmDXy6cTZtXdd6zYr2niLwvElDY3Fq5uU8r1zridlAev+wPMEngwj5WplY8JmjpsXH
+         y5Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=5Xx1bbaV9WY8YuvJTFw/lB1Mvb2Cd4/4KjUR7W7pbAA=;
-        b=GSHfe1TEwXL0igjpRKrG2SHj17Zgpo72MLBlr5k5yOLbDv4Ut13okiDXw9f6TZAgUO
-         0MZydlW3b5zQiI9G5vNgxTAVtv1JWqZazhrb20de4yTboiiXbxXA6uQKcm1MFxj+XtQG
-         fs5qC1XhLO74VqR+tyLAh5PclkEOEuZ4KpbKrlf+o2IDseDcRc94tpTuAhdmYy21RUV/
-         Icvr7eLn7vmBknGyDB3Tr+7ONpVRbzVEXaH0XtOikAxt8cxeBW+UjP1MEZ2/hn/qzC0Y
-         46SEEfehjBCIaih1522kyfUmoAIF+ziMkp/jFP66TfMGQKnP9SFyyxqUcZ35u/NQ6Smm
-         uf3w==
-X-Gm-Message-State: AOAM530xakzMS63dVjqlI4Tcdr3CcTIU5vj+7TS8BCbGIZAeI9kvDyNr
-        JPzYeGQmEijuMR2oTI2tmMMniQ2EZvDM1Ofe
-X-Google-Smtp-Source: ABdhPJzF+ARW4y0D2FdPtxzTQvHdAYwWOvqNYv3Iwi8FLXNgm4z58P6+0PseFBJmvfcxA/NUNeEFNg==
-X-Received: by 2002:a1c:c909:: with SMTP id f9mr2945964wmb.87.1605602025666;
-        Tue, 17 Nov 2020 00:33:45 -0800 (PST)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:1561:9f4b:5829:8e26? ([2a01:e35:2ec0:82b0:1561:9f4b:5829:8e26])
-        by smtp.gmail.com with ESMTPSA id a18sm2357315wmm.22.2020.11.17.00.33.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 00:33:45 -0800 (PST)
-Subject: Re: [PATCH] arm64: meson: select COMMON_CLK
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201116165853.544263-1-jbrunet@baylibre.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <96386e0a-b3dd-1247-cf61-b2009915ab2d@baylibre.com>
-Date:   Tue, 17 Nov 2020 09:33:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jXS3JRBqPu/ouJmDg/xmae2SThRp3NsRXzX2BYUctrU=;
+        b=WxYnfQnerCofUoMcKI0HLfk1zNRTRY/Lr30fvxoIgkj/ABTU7i0VAIX4za5zVoxOUj
+         uKpsx88GhRJLBDPEZju4fSBAgxT4bXcFGoA+OfR0idyxofCZnFuxohdJ4n28FP32YJOT
+         pGrMc7KffEC8CKUEMagTL1nc6kQGbMpZwxAKyW/rsw/vf+u3Md5WAhfuzJq3e1A2lnZ9
+         SQ5bxVZTpchrpjgXL3R1sgR14Qw4zjXXz6nWnJ5iwLW5hlvBXxgUgQYBLiroFoWTWAhy
+         DrtIbNvsXp4TTR3HvNoOAPln8CHBcVC8eLX5fzVomkTjfLx0qi4jHqycoe1j/tyctcEP
+         2NaA==
+X-Gm-Message-State: AOAM532j9zDGrplA9w8tvdzCLG1UMUmAb/ihkoDsdEXAeDQlt/DQU3qp
+        rYmYG5RUMsJY27FWyWFI2ZCOyg==
+X-Google-Smtp-Source: ABdhPJzxWk6XuiGhBXFExyZ0JfUqN1RS3xrB52XjjVNRYWA6fBykStdQeer94ktHR6GxDDziqP+i2Q==
+X-Received: by 2002:a7b:cb13:: with SMTP id u19mr3050107wmj.89.1605602028789;
+        Tue, 17 Nov 2020 00:33:48 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id u14sm23640010wrq.93.2020.11.17.00.33.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 00:33:47 -0800 (PST)
+Date:   Tue, 17 Nov 2020 08:33:46 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     linux-kernel@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 32/42] drm/ttm/ttm_tt: Demote kernel-doc header format
+ abuses
+Message-ID: <20201117083346.GB1869941@dell>
+References: <20201116174112.1833368-1-lee.jones@linaro.org>
+ <20201116174112.1833368-33-lee.jones@linaro.org>
+ <bcb40255-312f-8cdb-28a8-7ee2e6596f90@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20201116165853.544263-1-jbrunet@baylibre.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bcb40255-312f-8cdb-28a8-7ee2e6596f90@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2020 17:58, Jerome Brunet wrote:
-> This fix the recent removal of clock drivers selection.
-> While it is not necessary to select the clock drivers themselves, we need
-> to select a proper implementation of the clock API, which for the meson, is
-> CCF
+On Mon, 16 Nov 2020, Christian König wrote:
+
+> Am 16.11.20 um 18:41 schrieb Lee Jones:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >   drivers/gpu/drm/ttm/ttm_tt.c:45: warning: Function parameter or member 'bo' not described in 'ttm_tt_create'
+> >   drivers/gpu/drm/ttm/ttm_tt.c:45: warning: Function parameter or member 'zero_alloc' not described in 'ttm_tt_create'
+> >   drivers/gpu/drm/ttm/ttm_tt.c:83: warning: Function parameter or member 'ttm' not described in 'ttm_tt_alloc_page_directory'
 > 
-> Fixes: ba66a25536dd ("arm64: meson: ship only the necessary clock controllers")
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> ---
->  
->  This fix is a side effect of this 0day report:
->  https://lore.kernel.org/r/202011151309.DVCsUlLh-lkp@intel.com
->  It shows that we need to select an implementation of clk.h
-> 
->  arch/arm64/Kconfig.platforms | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-> index 329e22c09cad..484e81f39db7 100644
-> --- a/arch/arm64/Kconfig.platforms
-> +++ b/arch/arm64/Kconfig.platforms
-> @@ -151,6 +151,7 @@ config ARCH_MEDIATEK
->  
->  config ARCH_MESON
->  	bool "Amlogic Platforms"
-> +	select COMMON_CLK
->  	select PINCTRL
->  	select PINCTRL_MESON
->  	select MESON_IRQ_GPIO
+> Couldn't we rather describe the missing parameters? Shouldn't be much work.
+
+My rule is; if a substantial attempt has been made to document
+something, I'll patch it up.  If little or no attempt has been made,
+then it gets demoted.
+
+Please feel free to document and upgrade them once more.
+
+Bear in mind however, there is a script that reports on all files
+which utilise kernel-doc notation but do not have matching references
+from the Documentation area.
+
+See: scripts/find-unused-docs.sh
+
+> > Cc: Christian Koenig <christian.koenig@amd.com>
+> > Cc: Huang Rui <ray.huang@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >   drivers/gpu/drm/ttm/ttm_tt.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
+> > index cfd633c7e7643..da9eeffe0c6d7 100644
+> > --- a/drivers/gpu/drm/ttm/ttm_tt.c
+> > +++ b/drivers/gpu/drm/ttm/ttm_tt.c
+> > @@ -38,7 +38,7 @@
+> >   #include <drm/drm_cache.h>
+> >   #include <drm/ttm/ttm_bo_driver.h>
+> > -/**
+> > +/*
+> >    * Allocates a ttm structure for the given BO.
+> >    */
+> >   int ttm_tt_create(struct ttm_buffer_object *bo, bool zero_alloc)
+> > @@ -73,7 +73,7 @@ int ttm_tt_create(struct ttm_buffer_object *bo, bool zero_alloc)
+> >   	return 0;
+> >   }
+> > -/**
+> > +/*
+> >    * Allocates storage for pointers to the pages that back the ttm.
+> >    */
+> >   static int ttm_tt_alloc_page_directory(struct ttm_tt *ttm)
 > 
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
