@@ -2,110 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEC02B58DD
+	by mail.lfdr.de (Postfix) with ESMTP id E94B42B58DE
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbgKQEgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 23:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgKQEgE (ORCPT
+        id S1726929AbgKQEgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 23:36:19 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:55117 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726211AbgKQEgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 23:36:04 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B256C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 20:36:03 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f18so15211427pgi.8
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 20:36:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GXmmDGf+Ql390cIFcG7bVcYsBCCOZ8KyowjvFWUw4do=;
-        b=W5MwZyGZouVl3P4IMf7TuS8nrhz1X2sfj6Tx5PDGw7b8zEslxsX4DD6Wc/d3f63Lh9
-         jWuWdWnKjhrPsWfHRRG4PBQGyGJ4gARr+xcJ+fDBV10gD9O0ywrJctsAlOh+eCHYt380
-         bzwzHipfMZ9fWxQHyTTW7W0CgL6g9GyPCHhQvY/sn3Kci005p1xeb7svbNFUBnkQWB1K
-         S+JbwwJ4vgukWB3zFnNPzpBUMctsk+ItOa1aYjRhg8WlLhJyOSmTgmXKb2rf4YVqLD4Q
-         vWuVV9rzvNyzLsqVQjPtSXH9KpRlK9lLFOmSBLGMLYsu2xFhlCOYDC4j6PjH5ceqDKBB
-         wqMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GXmmDGf+Ql390cIFcG7bVcYsBCCOZ8KyowjvFWUw4do=;
-        b=FR+yuafIZTPbyF8Wjv6lyik6d7ba7o4Ftn46mxhCGbs8j71FwxEILjcqVzk1ylH9db
-         Zf6HWo5QF9cX+BT+lVOZzhkQ6UiVgkggBnDmAetmCQlsuzKHb5ZS5rgEqNDAsUbX3l0a
-         L9cWlZc3dyC6SD+SCLbq5q2HRC6hIlHx54hU3/kqaO8ly5UhIKnppuog0J5P0y3oUXHP
-         K84dtArcPZJJXTHpgV478qXLB9ORdZOFasOqEJ6cAPRfh90yT9VjVG3YXBVihE9OI9NJ
-         un81VUCBnFBYzQK296BQ8uelaGLgq9RKyIEfZYwDh9pQw8Jlij3FxaUJrTPgNT51tYEg
-         NNWA==
-X-Gm-Message-State: AOAM531WX/GBBRdtTj6t/Zl1t1f4kZUEhf75g5Wvm/BpSPJQCGwHpW0a
-        zhRwI4GKb0ltOpofNgmu3W7FUQ==
-X-Google-Smtp-Source: ABdhPJwCsvKqJnATAFc1CG4/cKeaAaFwvK+9nVK27eKk0paNUS1Td2ckt/DKW6KQHHvYpgHJu2bbmg==
-X-Received: by 2002:a17:90a:df93:: with SMTP id p19mr2783061pjv.170.1605587762764;
-        Mon, 16 Nov 2020 20:36:02 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id s21sm5726680pgm.65.2020.11.16.20.36.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Nov 2020 20:36:01 -0800 (PST)
-Date:   Tue, 17 Nov 2020 10:06:00 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sumit Gupta <sumitg@nvidia.com>, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: tegra186: Fix get frequency callback
-Message-ID: <20201117043600.bqzr3zmw6n7vj3fj@vireshk-i7>
-References: <20201103115514.547047-1-jonathanh@nvidia.com>
- <20201104093349.l3r3eftwyvaoqjf2@vireshk-i7>
- <c4c384cd-2d8f-6f19-cd6b-18450cbf957b@nvidia.com>
+        Mon, 16 Nov 2020 23:36:18 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 13E9C12DF;
+        Mon, 16 Nov 2020 23:36:16 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 16 Nov 2020 23:36:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=p
+        kszPB7jeuJ2s0wgF4vEobMXp32NtsKINiE+dXw3VWA=; b=faQ040BYeumwKBqS6
+        VAgIb8XEx/yt88bgcSSTyuSgg1Q5pyEZmTnJEbTiC4s4pePmK1u+vJH3bKt5aZxf
+        XW3VZ9Pb64FCp5XALSrSSy64yoR3ZJoi8/e3ZFmnBawHo6fSIKeki5mAud8PKC/w
+        Ii+6Sky1WOR9vNl3CcZjrX/gcd3g6Zv/DSMcxYwzDZPYRqq13lo0yuH4Ly7db1Vd
+        bkqjPkR2/Qq0uMk/zQktEidmdrJ8bNf8SQqlHcQdkSVoVHe5p5tVYGaVpJtGGwV8
+        H8e9QWoWiLC+647XqQo/FMGZuh9TPoWZpqBdFarSKUH+MgQ0WisQIsZNi/7rE9xN
+        /LQcw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=pkszPB7jeuJ2s0wgF4vEobMXp32NtsKINiE+dXw3V
+        WA=; b=mEqfsoGrOXn64UpvVznr0IwaETGuAhL2+cFv1OI8DwzMW77ixhdVGpdMN
+        vbbjCqXHZI3ftX7YRTEXh4j9tdX6C2d3qBB1zMZcD+4stis12XSzEK+oa9jTReMM
+        rObIAu9/GoMkhtlplDQ3gKrQoKHvBbAOTBm1ab5RFY5z5lOSCHBxRuhasVcflOZt
+        USPLpZHetF27YtYyyqVLoxcIJdRPioe09ZHdFK+XaYf5liRbwES3Xvik6OPsfVWu
+        EAUS8qwBnOsI4OtnPnaIBj9N4xH0Br5cMpME7Jyge/JWsJQMZfhczsVXnKibxoyX
+        UCfxT/7H5dcnMZSEvmMvLaCgPwkMQ==
+X-ME-Sender: <xms:PVOzXz6kXgyWcKgQjxAevdVgKQpWBF6dhptuhu2_khtd-9N8T8jUPg>
+    <xme:PVOzX46--cBuRWjUkte98zmS-9qkfNnEabFIoXDk2U_SX_NmSxLTsxU0a-pJoWhU4
+    XkzGqvpATX-3Vj_kg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudefvddgiedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
+    uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+    nhgurdhorhhg
+X-ME-Proxy: <xmx:PVOzX6cO0lFlBJXntTv3tGcR9iQZWWG7530idRXzM3N7fUF8-acCLA>
+    <xmx:PVOzX0KzcSio2QdVCCWApNH4gdajMeu7Z_TXHSOdkGDVJICDxBAJ7Q>
+    <xmx:PVOzX3Jjkhi5yiNbY5W4mRVc8Mq5jjB2y49yIGB24iXBZSUvduwC3A>
+    <xmx:P1OzXw6oI-JF_KyUNvkPBU0U7NPkZyzfoH3N--HMfZKlzYlSRjYYUg9gSSc>
+Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D73E13280060;
+        Mon, 16 Nov 2020 23:36:12 -0500 (EST)
+Subject: Re: [RFC 2/3] ARM: sunxi: do not select COMMON_CLK to fix builds
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+References: <20201115170950.304460-1-krzk@kernel.org>
+ <20201115170950.304460-3-krzk@kernel.org>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <f637762e-0b02-1705-ea6b-24ac338fcd69@sholland.org>
+Date:   Mon, 16 Nov 2020 22:36:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4c384cd-2d8f-6f19-cd6b-18450cbf957b@nvidia.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201115170950.304460-3-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-11-20, 15:55, Jon Hunter wrote:
-> Hi Rafael,
-> 
-> On 04/11/2020 09:33, Viresh Kumar wrote:
-> > On 03-11-20, 11:55, Jon Hunter wrote:
-> >> Commit b89c01c96051 ("cpufreq: tegra186: Fix initial frequency")
-> >> implemented the CPUFREQ 'get' callback to determine the current
-> >> operating frequency for each CPU. This implementation used a simple
-> >> looked up to determine the current operating frequency. The problem
-> >> with this is that frequency table for different Tegra186 devices may
-> >> vary and so the default boot frequency for Tegra186 device may or may
-> >> not be present in the frequency table. If the default boot frequency is
-> >> not present in the frequency table, this causes the function
-> >> tegra186_cpufreq_get() to return 0 and in turn causes cpufreq_online()
-> >> to fail which prevents CPUFREQ from working.
-> >>
-> >> Fix this by always calculating the CPU frequency based upon the current
-> >> 'ndiv' setting for the CPU. Note that the CPU frequency for Tegra186 is
-> >> calculated by reading the current 'ndiv' setting, multiplying by the
-> >> CPU reference clock and dividing by a constant divisor.
-> >>
-> >> Fixes: b89c01c96051 ("cpufreq: tegra186: Fix initial frequency")
-> >>
-> >> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> >> ---
-> >>  drivers/cpufreq/tegra186-cpufreq.c | 33 +++++++++++++++++++-----------
-> >>  1 file changed, 21 insertions(+), 12 deletions(-)
-> > 
-> > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > 
-> > Rafael: This needs to go in the next rc and so I am not applying it
-> > in my tree as this is the only fix I have for now.
-> 
-> 
-> Are you able to pick this up for v5.10 fixes?
+On 11/15/20 11:09 AM, Krzysztof Kozlowski wrote:
+> COMMON_CLK is a user-selectable option with its own dependencies.  The
+> most important dependency is !HAVE_LEGACY_CLK.  User-selectable drivers
+> should not select COMMON_CLK because they will create a dependency cycle
+> and build failures.  For example on MIPS a configuration with COMMON_CLK
+> (selected by SND_SUN8I_CODEC) and HAVE_LEGACY_CLK (selected by
+> SOC_RT305X) is possible:
 
-Applied to my tree now, will send a PULL request soon.
+Ah, that makes sense.
 
--- 
-viresh
+> 
+>   WARNING: unmet direct dependencies detected for COMMON_CLK
+>     Depends on [n]: !HAVE_LEGACY_CLK [=y]
+>     Selected by [y]:
+>     - SND_SUN8I_CODEC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
+>       (ARCH_SUNXI || COMPILE_TEST [=y]) && OF [=y] && (MACH_SUN8I || ARM64 && ARCH_SUNXI || COMPILE_TEST [=y])
+> 
+>     /usr/bin/mips-linux-gnu-ld: drivers/clk/clk.o: in function `clk_set_rate':
+>     (.text+0xaeb4): multiple definition of `clk_set_rate'; arch/mips/ralink/clk.o:(.text+0x88): first defined here
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  arch/arm/mach-sunxi/Kconfig | 1 +
+>  sound/soc/sunxi/Kconfig     | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mach-sunxi/Kconfig b/arch/arm/mach-sunxi/Kconfig
+> index eeadb1a4dcfe..4d9f9b6d329d 100644
+> --- a/arch/arm/mach-sunxi/Kconfig
+> +++ b/arch/arm/mach-sunxi/Kconfig
+> @@ -4,6 +4,7 @@ menuconfig ARCH_SUNXI
+>  	depends on ARCH_MULTI_V5 || ARCH_MULTI_V7
+>  	select ARCH_HAS_RESET_CONTROLLER
+>  	select CLKSRC_MMIO
+> +	select COMMON_CLK
+
+This is not necessary, since ARCH_SUNXI depends (through ARCH_MULTI_V{5,7}) on
+ARCH_MULTIPLATFORM, which selects COMMON_CLK already.
+
+>  	select GENERIC_IRQ_CHIP
+>  	select GPIOLIB
+>  	select PINCTRL
+> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+> index 69b9d8515335..ddcaaa98d3cb 100644
+> --- a/sound/soc/sunxi/Kconfig
+> +++ b/sound/soc/sunxi/Kconfig
+> @@ -14,7 +14,7 @@ config SND_SUN8I_CODEC
+>  	tristate "Allwinner SUN8I audio codec"
+>  	depends on OF
+>  	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+> -	select COMMON_CLK
+> +	depends on COMMON_CLK
+>  	select REGMAP_MMIO
+>  	help
+>  	  This option enables the digital part of the internal audio codec for
+> 
+
+For this file:
+Reviewed-by: Samuel Holland <samuel@sholland.org>
+
+Thanks,
+Samuel
