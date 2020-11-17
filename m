@@ -2,82 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4CD2B59D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6F82B59D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 07:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgKQGqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 01:46:05 -0500
-Received: from mga04.intel.com ([192.55.52.120]:29108 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbgKQGqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 01:46:05 -0500
-IronPort-SDR: a1sVP0jDy3TdTmOGdRdiXw0E8SATfGe7gxDBsyChQzdkIg553EBdLiKeuBsCaXUFJtSpX4pVAu
- HYfFE96UGhxg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="168295858"
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="168295858"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 22:46:04 -0800
-IronPort-SDR: oPByFUcIR23Myifk+UBC6rKyN+Ak6PGMMeO1W0YSO+b61rD/oBl1lHFMcd4E634XG5VHfgfNRH
- NDylH3oPKxQw==
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="310116791"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.34.253])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 22:46:03 -0800
-Date:   Tue, 17 Nov 2020 07:45:54 +0100
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
-Message-ID: <20201117064553.GA10837@ubuntu>
-References: <20201109175536.GD3395222@xps15>
- <eb7f6707-4483-3e1a-1e39-7f32fbf437e0@st.com>
- <20201111144942.GA6403@ubuntu>
- <c31b8427-baca-5c77-6420-b592c57a3a7b@st.com>
- <20201112115115.GA11069@ubuntu>
- <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
- <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com>
- <20201116151028.GA1519@ubuntu>
- <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
- <20201116224003.GC3892875@xps15>
+        id S1726477AbgKQGqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 01:46:33 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60419 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725792AbgKQGqd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 01:46:33 -0500
+X-UUID: 4319619206784ed88c895eb25ae18e31-20201117
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=P0hBz/eNIE1si2tntwhLbvvsKCxvPoGSYMCr0jXLKx8=;
+        b=jd9X6gOgeoJDMRomj7O5zZfk/Jfwv4mcTPRlBLeTM9kpLHbicA64cRYZE5WN6fpEs5KOzUXfj3sOegUXt/D7IE18AuV1/pSDk0Bh1qYgQ7zD5N/Wsg3HsbGEeUoJlIUyRQGIycS6CAoX/cLV1EnAfIfkkP146HfJbGbE1Z199jc=;
+X-UUID: 4319619206784ed88c895eb25ae18e31-20201117
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <kuan-ying.lee@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 636884911; Tue, 17 Nov 2020 14:46:24 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 17 Nov 2020 14:46:22 +0800
+Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 17 Nov 2020 14:46:22 +0800
+Message-ID: <1605595583.29084.24.camel@mtksdccf07>
+Subject: Re: [PATCH v2 1/1] kasan: fix object remain in offline per-cpu
+ quarantine
+From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+CC:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <nicholas.tang@mediatek.com>,
+        Miles Chen <miles.chen@mediatek.com>,
+        <guangye.yang@mediatek.com>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Date:   Tue, 17 Nov 2020 14:46:23 +0800
+In-Reply-To: <CACT4Y+Zy_JQ3y7_P2NXffiijTuxcnh7VPcAGL66Ks2LaLTj-eg@mail.gmail.com>
+References: <1605508168-7418-1-git-send-email-Kuan-Ying.Lee@mediatek.com>
+         <1605508168-7418-2-git-send-email-Kuan-Ying.Lee@mediatek.com>
+         <CACT4Y+Zy_JQ3y7_P2NXffiijTuxcnh7VPcAGL66Ks2LaLTj-eg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116224003.GC3892875@xps15>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+T24gTW9uLCAyMDIwLTExLTE2IGF0IDEwOjI2ICswMTAwLCBEbWl0cnkgVnl1a292IHdyb3RlOg0K
+PiBPbiBNb24sIE5vdiAxNiwgMjAyMCBhdCA3OjMwIEFNIEt1YW4tWWluZyBMZWUNCj4gPEt1YW4t
+WWluZy5MZWVAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IFdlIGhpdCB0aGlzIGlzc3Vl
+IGluIG91ciBpbnRlcm5hbCB0ZXN0Lg0KPiA+IFdoZW4gZW5hYmxpbmcgZ2VuZXJpYyBrYXNhbiwg
+YSBrZnJlZSgpJ2Qgb2JqZWN0IGlzIHB1dCBpbnRvIHBlci1jcHUNCj4gPiBxdWFyYW50aW5lIGZp
+cnN0LiBJZiB0aGUgY3B1IGdvZXMgb2ZmbGluZSwgb2JqZWN0IHN0aWxsIHJlbWFpbnMgaW4NCj4g
+PiB0aGUgcGVyLWNwdSBxdWFyYW50aW5lLiBJZiB3ZSBjYWxsIGttZW1fY2FjaGVfZGVzdHJveSgp
+IG5vdywgc2x1Yg0KPiA+IHdpbGwgcmVwb3J0ICJPYmplY3RzIHJlbWFpbmluZyIgZXJyb3IuDQo+
+ID4NCj4gPiBbICAgNzQuOTgyNjI1XSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPiA+IFsgICA3NC45
+ODMzODBdIEJVRyB0ZXN0X21vZHVsZV9zbGFiIChOb3QgdGFpbnRlZCk6IE9iamVjdHMgcmVtYWlu
+aW5nIGluIHRlc3RfbW9kdWxlX3NsYWIgb24gX19rbWVtX2NhY2hlX3NodXRkb3duKCkNCj4gPiBb
+ICAgNzQuOTg0MTQ1XSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+IFsgICA3NC45ODQxNDVdDQo+
+ID4gWyAgIDc0Ljk4NDg4M10gRGlzYWJsaW5nIGxvY2sgZGVidWdnaW5nIGR1ZSB0byBrZXJuZWwg
+dGFpbnQNCj4gPiBbICAgNzQuOTg1NTYxXSBJTkZPOiBTbGFiIDB4KF9fX19wdHJ2YWxfX19fKSBv
+YmplY3RzPTM0IHVzZWQ9MSBmcD0weChfX19fcHRydmFsX19fXykgZmxhZ3M9MHgyZmZmZjAwMDAw
+MDEwMjAwDQo+ID4gWyAgIDc0Ljk4NjYzOF0gQ1BVOiAzIFBJRDogMTc2IENvbW06IGNhdCBUYWlu
+dGVkOiBHICAgIEIgICAgICAgICAgICAgNS4xMC4wLXJjMS0wMDAwNy1nNDUyNWM4NzgxZWMwLWRp
+cnR5ICMxMA0KPiA+IFsgICA3NC45ODcyNjJdIEhhcmR3YXJlIG5hbWU6IGxpbnV4LGR1bW15LXZp
+cnQgKERUKQ0KPiA+IFsgICA3NC45ODc2MDZdIENhbGwgdHJhY2U6DQo+ID4gWyAgIDc0Ljk4Nzky
+NF0gIGR1bXBfYmFja3RyYWNlKzB4MC8weDJiMA0KPiA+IFsgICA3NC45ODgyOTZdICBzaG93X3N0
+YWNrKzB4MTgvMHg2OA0KPiA+IFsgICA3NC45ODg2OThdICBkdW1wX3N0YWNrKzB4ZmMvMHgxNjgN
+Cj4gPiBbICAgNzQuOTg5MDMwXSAgc2xhYl9lcnIrMHhhYy8weGQ0DQo+ID4gWyAgIDc0Ljk4OTM0
+Nl0gIF9fa21lbV9jYWNoZV9zaHV0ZG93bisweDFlNC8weDNjOA0KPiA+IFsgICA3NC45ODk3Nzld
+ICBrbWVtX2NhY2hlX2Rlc3Ryb3krMHg2OC8weDEzMA0KPiA+IFsgICA3NC45OTAxNzZdICB0ZXN0
+X3ZlcnNpb25fc2hvdysweDg0LzB4ZjANCj4gPiBbICAgNzQuOTkwNjc5XSAgbW9kdWxlX2F0dHJf
+c2hvdysweDQwLzB4NjANCj4gPiBbICAgNzQuOTkxMjE4XSAgc3lzZnNfa2Zfc2VxX3Nob3crMHgx
+MjgvMHgxYzANCj4gPiBbICAgNzQuOTkxNjU2XSAga2VybmZzX3NlcV9zaG93KzB4YTAvMHhiOA0K
+PiA+IFsgICA3NC45OTIwNTldICBzZXFfcmVhZCsweDFmMC8weDdlOA0KPiA+IFsgICA3NC45OTI0
+MTVdICBrZXJuZnNfZm9wX3JlYWQrMHg3MC8weDMzOA0KPiA+IFsgICA3NC45OTMwNTFdICB2ZnNf
+cmVhZCsweGU0LzB4MjUwDQo+ID4gWyAgIDc0Ljk5MzQ5OF0gIGtzeXNfcmVhZCsweGM4LzB4MTgw
+DQo+ID4gWyAgIDc0Ljk5MzgyNV0gIF9fYXJtNjRfc3lzX3JlYWQrMHg0NC8weDU4DQo+ID4gWyAg
+IDc0Ljk5NDIwM10gIGVsMF9zdmNfY29tbW9uLmNvbnN0cHJvcC4wKzB4YWMvMHgyMjgNCj4gPiBb
+ICAgNzQuOTk0NzA4XSAgZG9fZWwwX3N2YysweDM4LzB4YTANCj4gPiBbICAgNzQuOTk1MDg4XSAg
+ZWwwX3N5bmNfaGFuZGxlcisweDE3MC8weDE3OA0KPiA+IFsgICA3NC45OTU0OTddICBlbDBfc3lu
+YysweDE3NC8weDE4MA0KPiA+IFsgICA3NC45OTYwNTBdIElORk86IE9iamVjdCAweChfX19fcHRy
+dmFsX19fXykgQG9mZnNldD0xNTg0OA0KPiA+IFsgICA3NC45OTY3NTJdIElORk86IEFsbG9jYXRl
+ZCBpbiB0ZXN0X3ZlcnNpb25fc2hvdysweDk4LzB4ZjAgYWdlPTgxODggY3B1PTYgcGlkPTE3Mg0K
+PiA+IFsgICA3NS4wMDA4MDJdICBzdGFja190cmFjZV9zYXZlKzB4OWMvMHhkMA0KPiA+IFsgICA3
+NS4wMDI0MjBdICBzZXRfdHJhY2srMHg2NC8weGYwDQo+ID4gWyAgIDc1LjAwMjc3MF0gIGFsbG9j
+X2RlYnVnX3Byb2Nlc3NpbmcrMHgxMDQvMHgxYTANCj4gPiBbICAgNzUuMDAzMTcxXSAgX19fc2xh
+Yl9hbGxvYysweDYyOC8weDY0OA0KPiA+IFsgICA3NS4wMDQyMTNdICBfX3NsYWJfYWxsb2MuaXNy
+YS4wKzB4MmMvMHg1OA0KPiA+IFsgICA3NS4wMDQ3NTddICBrbWVtX2NhY2hlX2FsbG9jKzB4NTYw
+LzB4NTg4DQo+ID4gWyAgIDc1LjAwNTM3Nl0gIHRlc3RfdmVyc2lvbl9zaG93KzB4OTgvMHhmMA0K
+PiA+IFsgICA3NS4wMDU3NTZdICBtb2R1bGVfYXR0cl9zaG93KzB4NDAvMHg2MA0KPiA+IFsgICA3
+NS4wMDcwMzVdICBzeXNmc19rZl9zZXFfc2hvdysweDEyOC8weDFjMA0KPiA+IFsgICA3NS4wMDc0
+MzNdICBrZXJuZnNfc2VxX3Nob3crMHhhMC8weGI4DQo+ID4gWyAgIDc1LjAwNzgwMF0gIHNlcV9y
+ZWFkKzB4MWYwLzB4N2U4DQo+ID4gWyAgIDc1LjAwODEyOF0gIGtlcm5mc19mb3BfcmVhZCsweDcw
+LzB4MzM4DQo+ID4gWyAgIDc1LjAwODUwN10gIHZmc19yZWFkKzB4ZTQvMHgyNTANCj4gPiBbICAg
+NzUuMDA4OTkwXSAga3N5c19yZWFkKzB4YzgvMHgxODANCj4gPiBbICAgNzUuMDA5NDYyXSAgX19h
+cm02NF9zeXNfcmVhZCsweDQ0LzB4NTgNCj4gPiBbICAgNzUuMDEwMDg1XSAgZWwwX3N2Y19jb21t
+b24uY29uc3Rwcm9wLjArMHhhYy8weDIyOA0KPiA+IFsgICA3NS4wMTEwMDZdIGttZW1fY2FjaGVf
+ZGVzdHJveSB0ZXN0X21vZHVsZV9zbGFiOiBTbGFiIGNhY2hlIHN0aWxsIGhhcyBvYmplY3RzDQo+
+ID4NCj4gPiBSZWdpc3RlciBhIGNwdSBob3RwbHVnIGZ1bmN0aW9uIHRvIHJlbW92ZSBhbGwgb2Jq
+ZWN0cyBpbiB0aGUgb2ZmbGluZQ0KPiA+IHBlci1jcHUgcXVhcmFudGluZSB3aGVuIGNwdSBpcyBn
+b2luZyBvZmZsaW5lLiBTZXQgYSBwZXItY3B1IHZhcmlhYmxlDQo+ID4gdG8gaW5kaWNhdGUgdGhp
+cyBjcHUgaXMgb2ZmbGluZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEt1YW4tWWluZyBMZWUg
+PEt1YW4tWWluZy5MZWVAbWVkaWF0ZWsuY29tPg0KPiA+IFN1Z2dlc3RlZC1ieTogRG1pdHJ5IFZ5
+dWtvdiA8ZHZ5dWtvdkBnb29nbGUuY29tPg0KPiA+IFJlcG9ydGVkLWJ5OiBHdWFuZ3llIFlhbmcg
+PGd1YW5neWUueWFuZ0BtZWRpYXRlay5jb20+DQo+ID4gQ2M6IEFuZHJleSBSeWFiaW5pbiA8YXJ5
+YWJpbmluQHZpcnR1b3p6by5jb20+DQo+ID4gQ2M6IEFsZXhhbmRlciBQb3RhcGVua28gPGdsaWRl
+ckBnb29nbGUuY29tPg0KPiA+IENjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4LWZvdW5kYXRp
+b24ub3JnPg0KPiA+IENjOiBNYXR0aGlhcyBCcnVnZ2VyIDxtYXR0aGlhcy5iZ2dAZ21haWwuY29t
+Pg0KPiA+IC0tLQ0KPiA+ICBtbS9rYXNhbi9xdWFyYW50aW5lLmMgfCAzNSArKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMzUgaW5zZXJ0aW9u
+cygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL21tL2thc2FuL3F1YXJhbnRpbmUuYyBiL21tL2th
+c2FuL3F1YXJhbnRpbmUuYw0KPiA+IGluZGV4IDRjNTM3NTgxMDQ0OS4uMTZlNjE4ZWE4MDVlIDEw
+MDY0NA0KPiA+IC0tLSBhL21tL2thc2FuL3F1YXJhbnRpbmUuYw0KPiA+ICsrKyBiL21tL2thc2Fu
+L3F1YXJhbnRpbmUuYw0KPiA+IEBAIC0yOSw2ICsyOSw3IEBADQo+ID4gICNpbmNsdWRlIDxsaW51
+eC9zcmN1Lmg+DQo+ID4gICNpbmNsdWRlIDxsaW51eC9zdHJpbmcuaD4NCj4gPiAgI2luY2x1ZGUg
+PGxpbnV4L3R5cGVzLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9jcHVob3RwbHVnLmg+DQo+ID4N
+Cj4gPiAgI2luY2x1ZGUgIi4uL3NsYWIuaCINCj4gPiAgI2luY2x1ZGUgImthc2FuLmgiDQo+ID4g
+QEAgLTQzLDYgKzQ0LDcgQEAgc3RydWN0IHFsaXN0X2hlYWQgew0KPiA+ICAgICAgICAgc3RydWN0
+IHFsaXN0X25vZGUgKmhlYWQ7DQo+ID4gICAgICAgICBzdHJ1Y3QgcWxpc3Rfbm9kZSAqdGFpbDsN
+Cj4gPiAgICAgICAgIHNpemVfdCBieXRlczsNCj4gPiArICAgICAgIGJvb2wgb2ZmbGluZTsNCj4g
+PiAgfTsNCj4gPg0KPiA+ICAjZGVmaW5lIFFMSVNUX0lOSVQgeyBOVUxMLCBOVUxMLCAwIH0NCj4g
+PiBAQCAtMTg4LDYgKzE5MCwxMSBAQCB2b2lkIHF1YXJhbnRpbmVfcHV0KHN0cnVjdCBrYXNhbl9m
+cmVlX21ldGEgKmluZm8sIHN0cnVjdCBrbWVtX2NhY2hlICpjYWNoZSkNCj4gPiAgICAgICAgIGxv
+Y2FsX2lycV9zYXZlKGZsYWdzKTsNCj4gPg0KPiA+ICAgICAgICAgcSA9IHRoaXNfY3B1X3B0cigm
+Y3B1X3F1YXJhbnRpbmUpOw0KPiA+ICsgICAgICAgaWYgKHEtPm9mZmxpbmUpIHsNCj4gPiArICAg
+ICAgICAgICAgICAgcWxpbmtfZnJlZSgmaW5mby0+cXVhcmFudGluZV9saW5rLCBjYWNoZSk7DQo+
+ID4gKyAgICAgICAgICAgICAgIGxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsNCj4gPiArICAgICAg
+ICAgICAgICAgcmV0dXJuOw0KPiA+ICsgICAgICAgfQ0KDQpJIHRoaW5rIHdlIG5lZWQgdG8gbWFr
+ZSBzdXJlIG9iamVjdHMgd2lsbCBub3QgYmUgcHV0IGluIHBlci1jcHUNCnF1YXJhbnRpbmUgd2hp
+Y2ggaXMgb2ZmbGluZS4NCg0KPiA+ICAgICAgICAgcWxpc3RfcHV0KHEsICZpbmZvLT5xdWFyYW50
+aW5lX2xpbmssIGNhY2hlLT5zaXplKTsNCj4gPiAgICAgICAgIGlmICh1bmxpa2VseShxLT5ieXRl
+cyA+IFFVQVJBTlRJTkVfUEVSQ1BVX1NJWkUpKSB7DQo+ID4gICAgICAgICAgICAgICAgIHFsaXN0
+X21vdmVfYWxsKHEsICZ0ZW1wKTsNCj4gPiBAQCAtMzI4LDMgKzMzNSwzMSBAQCB2b2lkIHF1YXJh
+bnRpbmVfcmVtb3ZlX2NhY2hlKHN0cnVjdCBrbWVtX2NhY2hlICpjYWNoZSkNCj4gPg0KPiA+ICAg
+ICAgICAgc3luY2hyb25pemVfc3JjdSgmcmVtb3ZlX2NhY2hlX3NyY3UpOw0KPiA+ICB9DQo+ID4g
+Kw0KPiA+ICtzdGF0aWMgaW50IGthc2FuX2NwdV9vbmxpbmUodW5zaWduZWQgaW50IGNwdSkNCj4g
+PiArew0KPiA+ICsgICAgICAgdGhpc19jcHVfcHRyKCZjcHVfcXVhcmFudGluZSktPm9mZmxpbmUg
+PSBmYWxzZTsNCj4gPiArICAgICAgIHJldHVybiAwOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0
+aWMgaW50IGthc2FuX2NwdV9vZmZsaW5lKHVuc2lnbmVkIGludCBjcHUpDQo+ID4gK3sNCj4gPiAr
+ICAgICAgIHN0cnVjdCBxbGlzdF9oZWFkICpxOw0KPiA+ICsNCj4gPiArICAgICAgIHEgPSB0aGlz
+X2NwdV9wdHIoJmNwdV9xdWFyYW50aW5lKTsNCj4gPiArICAgICAgIHEtPm9mZmxpbmUgPSB0cnVl
+Ow0KPiA+ICsgICAgICAgcWxpc3RfZnJlZV9hbGwocSwgTlVMTCk7DQo+IA0KPiBMb29rcyBtdWNo
+IG5pY2VyIG5vdyENCj4gDQo+IFdoYXQgaXMgdGhlIHN0b3J5IHdpdGggaW50ZXJydXB0cyBpbiB0
+aGVzZSBjYWxsYmFja3M/DQo+IEluIHRoZSBwcmV2aW91cyBwYXRjaCB5b3UgbWVudGlvbmVkIHRo
+YXQgdGhpcyBDUFUgY2FuIHN0aWxsIHJlY2VpdmUNCj4gaW50ZXJydXB0cyBmb3IgYSBicmllZiBw
+ZXJpb2Qgb2YgdGltZS4gSWYgdGhlc2UgaW50ZXJydXB0cyBhbHNvIGZyZWUNCj4gc29tZXRoaW5n
+LCBjYW4ndCB3ZSBjb3JydXB0IHRoZSBwZXItY3B1IHF1YXJhbnRpbmU/IEluIHF1YXJhbnRpbmVf
+cHV0DQo+IHdlIHByb3RlY3QgaXQgYnkgZGlzYWJsaW5nIGludGVycnVwdHMgSSB0aGluay4NCj4g
+DQoNCkhlcmUgaXMgYSBzaXR1YXRpb24uDQpBZnRlciB3ZSBmcmVlZCBhbGwgb2JqZWN0cyBmcm9t
+IHRoZSBwZXItY3B1IHF1YXJhbnRpbmUgd2hpY2ggaXMgZ29pbmcNCm9mZmxpbmUsIHRoZSBpbnRl
+cnJ1cHRzIGhhcHBlbmVkLiBUaGVzZSBpbnRlcnJ1cHRzIGZyZWUgc29tZXRoaW5nIGFuZA0KcHV0
+IG9iamVjdHMgaW50byB0aGlzIHBlci1jcHUgcXVhcmFudGluZS4gSWYgd2UgY2FsbA0Ka21lbV9j
+YWNoZV9kZXN0cm95KCkgbm93LCBzbHViIHN0aWxsIGRldGVjdCBvYmplY3RzIHJlbWFpbiBpbg0K
+dGhlIHBlci1jcHUgcXVhcmFudGluZSBhbmQgcmVwb3J0ICJPYmplY3QgcmVtYWluaW5nIiBlcnJv
+ci4NCg0KVGh1cywgd2UgbmVlZCB0byBjaGVjayBxLT5vZmZsaW5lIGluIHF1YXJhbnRpbmVfcHV0
+IGFuZCBtYWtlIHN1cmUNCnRoZSBvZmZsaW5lIHBlci1jcHUgcXVhcmFudGluZSBpcyBub3QgY29y
+cnVwdGVkLg0KDQo+IA0KPiA+ICsgICAgICAgcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4g
+K3N0YXRpYyBpbnQgX19pbml0IGthc2FuX2NwdV9vZmZsaW5lX3F1YXJhbnRpbmVfaW5pdCh2b2lk
+KQ0KPiA+ICt7DQo+ID4gKyAgICAgICBpbnQgcmV0ID0gMDsNCj4gPiArDQo+ID4gKyAgICAgICBy
+ZXQgPSBjcHVocF9zZXR1cF9zdGF0ZShDUFVIUF9BUF9PTkxJTkVfRFlOLCAibW0va2FzYW46b25s
+aW5lIiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGthc2FuX2NwdV9vbmxp
+bmUsIGthc2FuX2NwdV9vZmZsaW5lKTsNCj4gPiArICAgICAgIGlmIChyZXQgPCAwKQ0KPiA+ICsg
+ICAgICAgICAgICAgICBwcl9lcnIoImthc2FuIG9mZmxpbmUgY3B1IHF1YXJhbnRpbmUgcmVnaXN0
+ZXIgZmFpbGVkIFslZF1cbiIsIHJldCk7DQo+ID4gKyAgICAgICByZXR1cm4gcmV0Ow0KPiA+ICt9
+DQo+ID4gK2xhdGVfaW5pdGNhbGwoa2FzYW5fY3B1X29mZmxpbmVfcXVhcmFudGluZV9pbml0KTsN
+Cj4gPiAtLQ0KPiA+IDIuMTguMA0KDQo=
 
-On Mon, Nov 16, 2020 at 03:40:03PM -0700, Mathieu Poirier wrote:
-> On Mon, Nov 16, 2020 at 04:51:52PM +0100, Arnaud POULIQUEN wrote:
-
-[snip]
-
-> > Having said that, does this guarantee the probe, a good question!
-> > Maybe you or Mathieu have the answer, not me...
-> 
-> I did a lot of probing, went deep in the bowels of the user mode helper
-> subsystem and looked at sys_load_module().  Especially at do_init_module() where
-> function do_one_initcall()[1] is called on mod->init, which happens to be
-> rpmsg_ns_init() where the name space driver is registered.  I am confident we
-> can rely on this mechanism.
-
-Thanks for investigating and confirming that! So, we can be confident, that 
-if the module is already loaded at the time when the NS device is registered, 
-the probing happens synchronously. Now, as for how to actually load the 
-module, I'd really propose to move rpmsg_ns_register_device() into the .c 
-file and then the problem will be resolved automatically: as a symbol 
-dependence the module will be loaded whenever another module, calling 
-rpmsg_ns_register_device() is loaded.
-
-Thanks
-Guennadi
