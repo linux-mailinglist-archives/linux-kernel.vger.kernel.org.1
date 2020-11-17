@@ -2,144 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74212B5750
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30052B5797
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 04:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727769AbgKQC4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:56:42 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2502 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727202AbgKQCzr (ORCPT
+        id S1727475AbgKQC7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:59:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726854AbgKQCzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:55:47 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AH2sDwK023481
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:55:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=qdqw2vIRlP2yIbod8BHIh3XnNn0ZSs325Y5RG0+0/sU=;
- b=EdnNVLpl9Y2neFCB7LniIcAuJRwJXH+xAYrUhdSudZ5jMEsNxfi3J3U5GEd/VdODa1+o
- E1N1+mZTzlOYu9d8bHKYE+yX+Z8Q2Nr35DnC84/VTm1fRFsDp4RZq9D4SInrB+XILv6R
- l8dZIXIzNC1J5rYp5umItUJ0QiAe5sIJsCY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34uphj4xw3-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:55:47 -0800
-Received: from intmgw004.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 16 Nov 2020 18:55:42 -0800
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 38EBCC5F7F6; Mon, 16 Nov 2020 18:55:34 -0800 (PST)
-From:   Roman Gushchin <guro@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <andrii@kernel.org>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-team@fb.com>
-Subject: [PATCH v6 27/34] bpf: eliminate rlimit-based memory accounting for bpf ringbuffer
+        Mon, 16 Nov 2020 21:55:39 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A08DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:55:39 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id c137so6775615ybf.21
+        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 18:55:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=vsK84Ng+Z4z4Uq7LdUN/Nr2gJYEHbnenP5+by4dnRzk=;
+        b=qSrzyW9nLdh9bU+bPUOYF/5Q4aN8fANryQkOSHHLcw2ofOoVR+SwnF0ipnFzRphAXP
+         UGT4Qc8ABYEZ+uxjoqDP2vY/w8JXHr5qC6TQM/F+ZqdsHSE6qmHpTJjnwHIgT+b3K3c1
+         EgH5uycjdZIfX77aTSSPgRTi3KwNogNoJcO7uJB3IhbIvSLQEXsltgNL2p1sGHXzSu8o
+         Ma2wRIyH1566PrAyVkFgU2cNspRg5y3a9ZRQa2oSa4xuNZd3og//5wln7vz9qyxyqOjm
+         TaMqPy/hvRNSj7z3Whn7YE7FnLXNWLo1sW9eGHzmJPVDTyaY44w+INn0pegKoUU1jwKd
+         wSAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=vsK84Ng+Z4z4Uq7LdUN/Nr2gJYEHbnenP5+by4dnRzk=;
+        b=b/d4Ldq/ZhqeT1FUUOR7Lo3TLyYjyAsJEzA9j/9Ee2lCtC9ktIIuBwWumXxNdzEf2q
+         QbfxnKE1qWgWMoax+6cTc+QJ1r3adHH+Hz3X4l4coAabiW2rk/USnKwys5aBrMaWqVvM
+         xqfH32qfnoY01WjrPrRnB4iietvq9G+2Q2Z+mcW2p/DY1pBS3rFvVyo/HGeFEkUwn3bO
+         tSzT7fyuM0igEnae23mhLVK3mrzblBBinKWv+kG/xbD224rkWI6GemjvrOYiUXSOjKN5
+         ZcK3uYXixgh1SE3Or5GmAEsFpibbg8tKk0oMn0EgbQM3VoXkJeZnirF/AJaTsJg+IhNt
+         IgBQ==
+X-Gm-Message-State: AOAM532yPiDVg4LyPffTjkeH+4tb8ezGL0yXi8CE7+J22DBCBq+ZXLe7
+        rdD1CJX/ZCbDyNBuj7TCYfp4W+0+
+X-Google-Smtp-Source: ABdhPJxq7FoafmMJ37cwrScaa9fL85uvDt3+7HUyrD5C7ncM4/DsdLAS/c4Pezj14hOhYyGIveghQXhb
+Sender: "rkir via sendgmr" <rkir@rkir.kir.corp.google.com>
+X-Received: from rkir.kir.corp.google.com ([2620:15c:29:200:3e52:82ff:fe5f:f95])
+ (user=rkir job=sendgmr) by 2002:a25:a86:: with SMTP id 128mr21027336ybk.370.1605581738797;
+ Mon, 16 Nov 2020 18:55:38 -0800 (PST)
 Date:   Mon, 16 Nov 2020 18:55:22 -0800
-Message-ID: <20201117025529.1034387-28-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201117025529.1034387-1-guro@fb.com>
-References: <20201117025529.1034387-1-guro@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-16_13:2020-11-13,2020-11-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- impostorscore=0 bulkscore=0 mlxlogscore=696 priorityscore=1501
- malwarescore=0 clxscore=1015 suspectscore=38 adultscore=0 spamscore=0
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170023
-X-FB-Internal: deliver
+Message-Id: <20201117025522.1874864-1-rkir@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+Subject: [PATCH] arch: x86: platform: retire arch/x86/platform/goldfish
+From:   rkir@google.com
+To:     dvhart@infradead.org, andy@infradead.org
+Cc:     linux-kernel@vger.kernel.org, lfy@google.com,
+        Roman Kiryanov <rkir@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not use rlimit-based memory accounting for bpf ringbuffer.
-It has been replaced with the memcg-based memory accounting.
+From: Roman Kiryanov <rkir@google.com>
 
-bpf_ringbuf_alloc() can't return anything except ERR_PTR(-ENOMEM)
-and a valid pointer, so to simplify the code make it return NULL
-in the first case. This allows to drop a couple of lines in
-ringbuf_map_alloc() and also makes it look similar to other memory
-allocating function like kmalloc().
+The Android Studio Emulator (aka goldfish) does not
+use arch/x86/platform/goldfish since 5.4 kernel.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Roman Kiryanov <rkir@google.com>
 ---
- kernel/bpf/ringbuf.c | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+ arch/x86/platform/Makefile            |  1 -
+ arch/x86/platform/goldfish/Makefile   |  2 -
+ arch/x86/platform/goldfish/goldfish.c | 54 ---------------------------
+ 3 files changed, 57 deletions(-)
+ delete mode 100644 arch/x86/platform/goldfish/Makefile
+ delete mode 100644 arch/x86/platform/goldfish/goldfish.c
 
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index ee5f55d9276e..c8892b58501e 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -48,7 +48,6 @@ struct bpf_ringbuf {
-=20
- struct bpf_ringbuf_map {
- 	struct bpf_map map;
--	struct bpf_map_memory memory;
- 	struct bpf_ringbuf *rb;
- };
-=20
-@@ -135,7 +134,7 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t d=
-ata_sz, int numa_node)
-=20
- 	rb =3D bpf_ringbuf_area_alloc(data_sz, numa_node);
- 	if (!rb)
--		return ERR_PTR(-ENOMEM);
-+		return NULL;
-=20
- 	spin_lock_init(&rb->spinlock);
- 	init_waitqueue_head(&rb->waitq);
-@@ -151,8 +150,6 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t d=
-ata_sz, int numa_node)
- static struct bpf_map *ringbuf_map_alloc(union bpf_attr *attr)
- {
- 	struct bpf_ringbuf_map *rb_map;
--	u64 cost;
--	int err;
-=20
- 	if (attr->map_flags & ~RINGBUF_CREATE_FLAG_MASK)
- 		return ERR_PTR(-EINVAL);
-@@ -174,26 +171,13 @@ static struct bpf_map *ringbuf_map_alloc(union bpf_=
-attr *attr)
-=20
- 	bpf_map_init_from_attr(&rb_map->map, attr);
-=20
--	cost =3D sizeof(struct bpf_ringbuf_map) +
--	       sizeof(struct bpf_ringbuf) +
--	       attr->max_entries;
--	err =3D bpf_map_charge_init(&rb_map->map.memory, cost);
--	if (err)
--		goto err_free_map;
+diff --git a/arch/x86/platform/Makefile b/arch/x86/platform/Makefile
+index d0e835470d01..b2f90a1a89f1 100644
+--- a/arch/x86/platform/Makefile
++++ b/arch/x86/platform/Makefile
+@@ -4,7 +4,6 @@ obj-y	+= atom/
+ obj-y	+= ce4100/
+ obj-y	+= efi/
+ obj-y	+= geode/
+-obj-y	+= goldfish/
+ obj-y	+= iris/
+ obj-y	+= intel/
+ obj-y	+= intel-mid/
+diff --git a/arch/x86/platform/goldfish/Makefile b/arch/x86/platform/goldfish/Makefile
+deleted file mode 100644
+index 072c395379ac..000000000000
+--- a/arch/x86/platform/goldfish/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_GOLDFISH)	+= goldfish.o
+diff --git a/arch/x86/platform/goldfish/goldfish.c b/arch/x86/platform/goldfish/goldfish.c
+deleted file mode 100644
+index 6b6f8b4360dd..000000000000
+--- a/arch/x86/platform/goldfish/goldfish.c
++++ /dev/null
+@@ -1,54 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright (C) 2007 Google, Inc.
+- * Copyright (C) 2011 Intel, Inc.
+- * Copyright (C) 2013 Intel, Inc.
+- */
 -
- 	rb_map->rb =3D bpf_ringbuf_alloc(attr->max_entries, rb_map->map.numa_no=
-de);
--	if (IS_ERR(rb_map->rb)) {
--		err =3D PTR_ERR(rb_map->rb);
--		goto err_uncharge;
-+	if (!rb_map->rb) {
-+		kfree(rb_map);
-+		return ERR_PTR(-ENOMEM);
- 	}
-=20
- 	return &rb_map->map;
+-#include <linux/kernel.h>
+-#include <linux/irq.h>
+-#include <linux/platform_device.h>
 -
--err_uncharge:
--	bpf_map_charge_finish(&rb_map->map.memory);
--err_free_map:
--	kfree(rb_map);
--	return ERR_PTR(err);
- }
-=20
- static void bpf_ringbuf_free(struct bpf_ringbuf *rb)
---=20
-2.26.2
+-/*
+- * Where in virtual device memory the IO devices (timers, system controllers
+- * and so on)
+- */
+-
+-#define GOLDFISH_PDEV_BUS_BASE	(0xff001000)
+-#define GOLDFISH_PDEV_BUS_END	(0xff7fffff)
+-#define GOLDFISH_PDEV_BUS_IRQ	(4)
+-
+-#define GOLDFISH_TTY_BASE	(0x2000)
+-
+-static struct resource goldfish_pdev_bus_resources[] = {
+-	{
+-		.start  = GOLDFISH_PDEV_BUS_BASE,
+-		.end    = GOLDFISH_PDEV_BUS_END,
+-		.flags  = IORESOURCE_MEM,
+-	},
+-	{
+-		.start	= GOLDFISH_PDEV_BUS_IRQ,
+-		.end	= GOLDFISH_PDEV_BUS_IRQ,
+-		.flags	= IORESOURCE_IRQ,
+-	}
+-};
+-
+-static bool goldfish_enable __initdata;
+-
+-static int __init goldfish_setup(char *str)
+-{
+-	goldfish_enable = true;
+-	return 0;
+-}
+-__setup("goldfish", goldfish_setup);
+-
+-static int __init goldfish_init(void)
+-{
+-	if (!goldfish_enable)
+-		return -ENODEV;
+-
+-	platform_device_register_simple("goldfish_pdev_bus", -1,
+-					goldfish_pdev_bus_resources, 2);
+-	return 0;
+-}
+-device_initcall(goldfish_init);
+-- 
+2.29.2.299.gdc1121823c-goog
 
