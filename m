@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4C52B604A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFC62B617A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728393AbgKQNHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:07:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35660 "EHLO mail.kernel.org"
+        id S1729041AbgKQNTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:19:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729163AbgKQNHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:07:47 -0500
+        id S1730166AbgKQNS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:18:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9312E238E6;
-        Tue, 17 Nov 2020 13:07:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C54021734;
+        Tue, 17 Nov 2020 13:18:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618466;
-        bh=baNtvZpiappr025bWo+l4iL67JcL2QnChO9tnfoTZZQ=;
+        s=default; t=1605619137;
+        bh=QDl6ZGTPmYEEeILA0AcjUgmPYYSeYYTVzSyeHeQ9+lY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gn06Nawc+TRUMRLul8TVh8ECINTPtYB61fx0fZUDoc+wgahXdsShl4kNTHoHzM7IS
-         0zV+g5tYL0nGlx9FbIO6okK5CqLoi3KYGx5VBDO7ZL8Gg7lvjjNLYMvBu9MmKWaPEE
-         kqT15lLtCIFC9z49sRKFY77VMXVMKE/k35Bx+oHo=
+        b=NEgRCLoQdPWTMVEKH+/wH/X26J234IbxirofN+4uj0unisuqvvWqIu2wF0abXciyn
+         x7+oTxv81C1uqICqXbFowxTqkyTohE1q80hjrO4UfvhhkFwuFLm1gXhA+yZ7yBTEoO
+         havlCQ7548eUEQymQGXuOvpIX7/P5QRccTN16KBc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 43/64] net/af_iucv: fix null pointer dereference on shutdown
+        stable@vger.kernel.org,
+        syzbot+32fd1a1bfe355e93f1e2@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 039/101] mac80211: fix use of skb payload instead of header
 Date:   Tue, 17 Nov 2020 14:05:06 +0100
-Message-Id: <20201117122108.285620771@linuxfoundation.org>
+Message-Id: <20201117122115.002353385@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,61 +44,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ursula Braun <ubraun@linux.ibm.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 4031eeafa71eaf22ae40a15606a134ae86345daf ]
+[ Upstream commit 14f46c1e5108696ec1e5a129e838ecedf108c7bf ]
 
-syzbot reported the following KASAN finding:
+When ieee80211_skb_resize() is called from ieee80211_build_hdr()
+the skb has no 802.11 header yet, in fact it consist only of the
+payload as the ethernet frame is removed. As such, we're using
+the payload data for ieee80211_is_mgmt(), which is of course
+completely wrong. This didn't really hurt us because these are
+always data frames, so we could only have added more tailroom
+than we needed if we determined it was a management frame and
+sdata->crypto_tx_tailroom_needed_cnt was false.
 
-BUG: KASAN: nullptr-dereference in iucv_send_ctrl+0x390/0x3f0 net/iucv/af_iucv.c:385
-Read of size 2 at addr 000000000000021e by task syz-executor907/519
+However, syzbot found that of course there need not be any payload,
+so we're using at best uninitialized memory for the check.
 
-CPU: 0 PID: 519 Comm: syz-executor907 Not tainted 5.9.0-syzkaller-07043-gbcf9877ad213 #0
-Hardware name: IBM 3906 M04 701 (KVM/Linux)
-Call Trace:
- [<00000000c576af60>] unwind_start arch/s390/include/asm/unwind.h:65 [inline]
- [<00000000c576af60>] show_stack+0x180/0x228 arch/s390/kernel/dumpstack.c:135
- [<00000000c9dcd1f8>] __dump_stack lib/dump_stack.c:77 [inline]
- [<00000000c9dcd1f8>] dump_stack+0x268/0x2f0 lib/dump_stack.c:118
- [<00000000c5fed016>] print_address_description.constprop.0+0x5e/0x218 mm/kasan/report.c:383
- [<00000000c5fec82a>] __kasan_report mm/kasan/report.c:517 [inline]
- [<00000000c5fec82a>] kasan_report+0x11a/0x168 mm/kasan/report.c:534
- [<00000000c98b5b60>] iucv_send_ctrl+0x390/0x3f0 net/iucv/af_iucv.c:385
- [<00000000c98b6262>] iucv_sock_shutdown+0x44a/0x4c0 net/iucv/af_iucv.c:1457
- [<00000000c89d3a54>] __sys_shutdown+0x12c/0x1c8 net/socket.c:2204
- [<00000000c89d3b70>] __do_sys_shutdown net/socket.c:2212 [inline]
- [<00000000c89d3b70>] __s390x_sys_shutdown+0x38/0x48 net/socket.c:2210
- [<00000000c9e36eac>] system_call+0xe0/0x28c arch/s390/kernel/entry.S:415
+Fix this to pass explicitly the kind of frame that we have instead
+of checking there, by replacing the "bool may_encrypt" argument
+with an argument that can carry the three possible states - it's
+not going to be encrypted, it's a management frame, or it's a data
+frame (and then we check sdata->crypto_tx_tailroom_needed_cnt).
 
-There is nothing to shutdown if a connection has never been established.
-Besides that iucv->hs_dev is not yet initialized if a socket is in
-IUCV_OPEN state and iucv->path is not yet initialized if socket is in
-IUCV_BOUND state.
-So, just skip the shutdown calls for a socket in these states.
-
-Fixes: eac3731bd04c ("[S390]: Add AF_IUCV socket support")
-Fixes: 82492a355fac ("af_iucv: add shutdown for HS transport")
-Reviewed-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Ursula Braun <ubraun@linux.ibm.com>
-[jwi: correct one Fixes tag]
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot+32fd1a1bfe355e93f1e2@syzkaller.appspotmail.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Link: https://lore.kernel.org/r/20201009132538.e1fd7f802947.I799b288466ea2815f9d4c84349fae697dca2f189@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/iucv/af_iucv.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/mac80211/tx.c | 37 ++++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
 
---- a/net/iucv/af_iucv.c
-+++ b/net/iucv/af_iucv.c
-@@ -1513,7 +1513,8 @@ static int iucv_sock_shutdown(struct soc
- 		break;
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 3160ffd93a153..98d048630ad2f 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -1908,19 +1908,24 @@ static bool ieee80211_tx(struct ieee80211_sub_if_data *sdata,
+ 
+ /* device xmit handlers */
+ 
++enum ieee80211_encrypt {
++	ENCRYPT_NO,
++	ENCRYPT_MGMT,
++	ENCRYPT_DATA,
++};
++
+ static int ieee80211_skb_resize(struct ieee80211_sub_if_data *sdata,
+ 				struct sk_buff *skb,
+-				int head_need, bool may_encrypt)
++				int head_need,
++				enum ieee80211_encrypt encrypt)
+ {
+ 	struct ieee80211_local *local = sdata->local;
+-	struct ieee80211_hdr *hdr;
+ 	bool enc_tailroom;
+ 	int tail_need = 0;
+ 
+-	hdr = (struct ieee80211_hdr *) skb->data;
+-	enc_tailroom = may_encrypt &&
+-		       (sdata->crypto_tx_tailroom_needed_cnt ||
+-			ieee80211_is_mgmt(hdr->frame_control));
++	enc_tailroom = encrypt == ENCRYPT_MGMT ||
++		       (encrypt == ENCRYPT_DATA &&
++			sdata->crypto_tx_tailroom_needed_cnt);
+ 
+ 	if (enc_tailroom) {
+ 		tail_need = IEEE80211_ENCRYPT_TAILROOM;
+@@ -1952,23 +1957,29 @@ void ieee80211_xmit(struct ieee80211_sub_if_data *sdata,
+ {
+ 	struct ieee80211_local *local = sdata->local;
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+-	struct ieee80211_hdr *hdr;
++	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+ 	int headroom;
+-	bool may_encrypt;
++	enum ieee80211_encrypt encrypt;
+ 
+-	may_encrypt = !(info->flags & IEEE80211_TX_INTFL_DONT_ENCRYPT);
++	if (info->flags & IEEE80211_TX_INTFL_DONT_ENCRYPT)
++		encrypt = ENCRYPT_NO;
++	else if (ieee80211_is_mgmt(hdr->frame_control))
++		encrypt = ENCRYPT_MGMT;
++	else
++		encrypt = ENCRYPT_DATA;
+ 
+ 	headroom = local->tx_headroom;
+-	if (may_encrypt)
++	if (encrypt != ENCRYPT_NO)
+ 		headroom += sdata->encrypt_headroom;
+ 	headroom -= skb_headroom(skb);
+ 	headroom = max_t(int, 0, headroom);
+ 
+-	if (ieee80211_skb_resize(sdata, skb, headroom, may_encrypt)) {
++	if (ieee80211_skb_resize(sdata, skb, headroom, encrypt)) {
+ 		ieee80211_free_txskb(&local->hw, skb);
+ 		return;
  	}
  
--	if (how == SEND_SHUTDOWN || how == SHUTDOWN_MASK) {
-+	if ((how == SEND_SHUTDOWN || how == SHUTDOWN_MASK) &&
-+	    sk->sk_state == IUCV_CONNECTED) {
- 		if (iucv->transport == AF_IUCV_TRANS_IUCV) {
- 			txmsg.class = 0;
- 			txmsg.tag = 0;
++	/* reload after potential resize */
+ 	hdr = (struct ieee80211_hdr *) skb->data;
+ 	info->control.vif = &sdata->vif;
+ 
+@@ -2751,7 +2762,7 @@ static struct sk_buff *ieee80211_build_hdr(struct ieee80211_sub_if_data *sdata,
+ 		head_need += sdata->encrypt_headroom;
+ 		head_need += local->tx_headroom;
+ 		head_need = max_t(int, 0, head_need);
+-		if (ieee80211_skb_resize(sdata, skb, head_need, true)) {
++		if (ieee80211_skb_resize(sdata, skb, head_need, ENCRYPT_DATA)) {
+ 			ieee80211_free_txskb(&local->hw, skb);
+ 			skb = NULL;
+ 			return ERR_PTR(-ENOMEM);
+@@ -3414,7 +3425,7 @@ static bool ieee80211_xmit_fast(struct ieee80211_sub_if_data *sdata,
+ 	if (unlikely(ieee80211_skb_resize(sdata, skb,
+ 					  max_t(int, extra_head + hw_headroom -
+ 						     skb_headroom(skb), 0),
+-					  false))) {
++					  ENCRYPT_NO))) {
+ 		kfree_skb(skb);
+ 		return true;
+ 	}
+-- 
+2.27.0
+
 
 
