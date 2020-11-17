@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027A92B702D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82832B7031
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728317AbgKQUfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:35:00 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:10748 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728195AbgKQUe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:34:59 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605645298; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=B5UuYlGm/Tc1iL48YeEinA+NtRG1i1qyUD8YV4GrWcw=;
- b=s9mx6bjLC1HasZuUZJ+wnLW8k3proxMOpni+YbiI8Wj1Af+Pr2O+PqHG44RmKtJI3kTDaYaZ
- pUKkGe1RwBaJiC9E9MQWI78ARO77Zma5jHbFSZ/6ZlSSAaihQY3NkhAAsND1P1d244h9PO0T
- i/iRUbh4AZvzC/8qJXn0nKnSL8k=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fb433f137ede2253bc89c3a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Nov 2020 20:34:57
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A0DE6C43464; Tue, 17 Nov 2020 20:34:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DCB1BC433C6;
-        Tue, 17 Nov 2020 20:34:56 +0000 (UTC)
+        id S1728502AbgKQUfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727340AbgKQUfa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:35:30 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA984C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:35:29 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id 74so31979272lfo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:35:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CUqG2S3O5iVKKIdkeqzaWrGNBNP8isqkl4rsycIm70U=;
+        b=oWhwGjqYt6rOLIpCStPQBXV8QWtZnwUn/hQGu52cU3RUIPT5wxF/peJnuiQHp87yzn
+         q1KV/E/rxa6f2f3yZOqY0DAEe+DMtfwyiGPz8ajXUwPF5KpNzzEjLuUcOOsMpfFBnRlk
+         cJROJM55gDbZHFVVLUmOc0MjHJKTec80sVQOWzihCtp9FIDskjS0Eo/TIrpzJpNhlgaS
+         XnSUsK2555TuXhrzI5tYV6En9AkpSonFJSuGXk1n8kJJXUOVYR4pAFn5oQqEbSAqCWqW
+         E1ER1hg6dzTIv1qln8i5nHRQYA05BHveho1X0IOLmu735CVMH6OzBxtn/zeHBY4JwQkX
+         9nrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CUqG2S3O5iVKKIdkeqzaWrGNBNP8isqkl4rsycIm70U=;
+        b=QnmzDc/sfbcJBhGfJBZyCk3bmoV9C/QBWj25UgbYP7wz/0d3+iSXRFuhvv+aWspIwV
+         LII6sm97h1cqYo/pVng95gcG2zOWmT9COe72RaLHxQWHXWTqeN40ZT+Y2brZL3k3BIKL
+         sfUzY1SRcuOGe20JSpSdbm/cIW4leoTR/MW5mYXO4VOa8oruHIG5UWrbGhpj44Q4NIzo
+         fvGeGjZlfn7+CqnI1WpEbks0b9KXR8a0Rlpvo65d4OHjndM3X2BYmVF8NLr7y+CVoGBc
+         TORLLeF9D8uX28lrgIQPABiok2zWObqJ/wOuT5cHp+nhX0WQr0HOEFFFT/NJatCtcCAv
+         bQ0g==
+X-Gm-Message-State: AOAM533WiuQBrtf5j1qnFz6ltxyoQusr7w48bdhkIfb9FDtE9nxWPWLq
+        1C75XWxXHPtc/2z37Nu6QqhSNEn0hMEOpZCzLhjRTg==
+X-Google-Smtp-Source: ABdhPJwCDvm4/w79+gK5F8PMQmv1tpX3mMErfW/IFt4EzZL/b27lJfAggTSLrQyOPxfCwI6a1O+grGFL5Rq39GYdYr8=
+X-Received: by 2002:a19:7b06:: with SMTP id w6mr2565896lfc.260.1605645328269;
+ Tue, 17 Nov 2020 12:35:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 17 Nov 2020 12:34:56 -0800
-From:   abhinavk@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@gmail.com>, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Sean Paul <sean@poorly.run>,
-        kalyan_t@codeaurora.org
-Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: Remove chatty vbif debug print
-In-Reply-To: <20201117172608.2091648-1-swboyd@chromium.org>
-References: <20201117172608.2091648-1-swboyd@chromium.org>
-Message-ID: <71aebca216babf4010c92d4d1ce9a9b4@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <cover.1605635248.git.agx@sigxcpu.org> <85b58da3eb68b81c1bdf7fc2f4a38b1f9ad8c90a.1605635248.git.agx@sigxcpu.org>
+In-Reply-To: <85b58da3eb68b81c1bdf7fc2f4a38b1f9ad8c90a.1605635248.git.agx@sigxcpu.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 17 Nov 2020 21:35:17 +0100
+Message-ID: <CACRpkdZ982o2pNbg0Zcfma80HmemRWyLBmsgeqpQTUdknD1=UQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/6] drm/panel: st7703: Use dev_err_probe
+To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-17 09:26, Stephen Boyd wrote:
-> I don't know what this debug print is for but it is super chatty,
-> throwing 8 lines of debug prints in the logs every time we update a
-> plane. It looks like it has no value. Let's nuke it so we can get
-> better logs.
-> 
-> Cc: Sean Paul <sean@poorly.run>
-> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+On Tue, Nov 17, 2020 at 6:49 PM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
 
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> index 5e8c3f3e6625..5eb2b2ee09f5 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> @@ -245,9 +245,6 @@ void dpu_vbif_set_qos_remap(struct dpu_kms 
-> *dpu_kms,
->  	forced_on = mdp->ops.setup_clk_force_ctrl(mdp, params->clk_ctrl, 
-> true);
-> 
->  	for (i = 0; i < qos_tbl->npriority_lvl; i++) {
-> -		DPU_DEBUG("vbif:%d xin:%d lvl:%d/%d\n",
-> -				params->vbif_idx, params->xin_id, i,
-> -				qos_tbl->priority_lvl[i]);
+> Less code and easier probe deferral debugging.
+>
+> Signed-off-by: Guido G=C3=BCnther <agx@sigxcpu.org>
 
-Instead of getting rid of this print, we should optimize the caller of 
-this. This is what
-we are doing in downstream. So we need to update the property only if we 
-are switching from a RT client
-to non-RT client for the plane and vice-versa. So we should try to do 
-the same thing here.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-  	is_rt = sde_crtc_is_rt_client(crtc, crtc->state);
-  	if (is_rt != psde->is_rt_pipe) {
-  		psde->is_rt_pipe = is_rt;
-  		pstate->dirty |= SDE_PLANE_DIRTY_QOS;
-  	}
-
-
-  	if (pstate->dirty & DPU_PLANE_DIRTY_QOS)
-  		_dpu_plane_set_qos_remap(plane);
-
+Yours,
+Linus Walleij
