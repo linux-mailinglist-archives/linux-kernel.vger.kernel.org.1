@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8747E2B5D56
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988FA2B5D61
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgKQKzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:55:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
+        id S1727983AbgKQK4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:56:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727759AbgKQKzD (ORCPT
+        with ESMTP id S1727952AbgKQK4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:55:03 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260EBC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:55:03 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id t18so10045484plo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:55:03 -0800 (PST)
+        Tue, 17 Nov 2020 05:56:19 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FE3C0613CF;
+        Tue, 17 Nov 2020 02:56:17 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id js21so246399pjb.0;
+        Tue, 17 Nov 2020 02:56:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yZ9rf9Tu27SxIk+03VeBF6ah9AiWAmkZ8caQiD4rxC0=;
-        b=zh7REe1V6g6SzZqzuG0FgOF0qRE4Ee6PBvoJ9nkMBaOpMcAU+HPz7/NZTZkLnm3Rc5
-         jKkJq/0eUB7kt3U9gIt+7mV9oR9OmHU9Ya+8Qleu09ROuyvS6oBxA0Y8YixTXlLlpVqO
-         UEZPJPDiqQRorWZnnSllozNq0ANNQr2vrGni9ApCnT3UFRX4LUgbu/iV06cATNCB0G58
-         dpuAl/VYn5U5nxiQijpqotH4KguB+g5Gpp5O1XydkJHkCAEU4weFWZ/5R5BUkH7xGoEY
-         R5A8T+ltLnBVngWkwyU2wkE/O8Pn0hzLYFeAGFlPw1WY3ORGqmFlLlnrL1lm5umP/hC6
-         tT2w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NLioOEcjfW/MmxTk00oamg+ivAVVHPp1FiA+wpjNbWQ=;
+        b=m16pyCmzxROuHGcdnv2Xv4oL6krzQq0Gt2whfw3SxwIGX6hcYcu9GDcMI+kZfnOlfk
+         JwynXS8svraxDwOQL3//C8AK+vnlfskp4OstdzkF7aFMPq+YqWNlGyxVp6zcQfV8vnuN
+         PzcyaR8upFUAwpppzQDFaiLB91QxvCk4cDbczEqh8PHlS9rlBXdWyUoZkECp63RijA7f
+         EDqgMuWJsBOvjyFZJ/rmui1rv+e9d9AEt8YCO7ebt6V/Rm9Srto8iN01GghqLq6x6MSW
+         QJg5zleOp+e2usSrbOkRlcw62xxT/aqw0U0dRKwvplQhqd/9qlUvCVgeBZR9oQC+6unj
+         kT1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yZ9rf9Tu27SxIk+03VeBF6ah9AiWAmkZ8caQiD4rxC0=;
-        b=MYPnFm4EHUKsmLBVcQdUSkiS9tIbhdcrZwbC6839dlsFfWKOJQUeHbQYSM7Ij2tc+x
-         Gaeu134KHHWbedzoOt9QrP7saWsMyUvV9+NJ/SiI0ijnkOlKL0dv2HYgOMrVqDvDmTbX
-         veha9NXpJtByh6an8kHvFucLghq2hqvONsE4cBFu+X0enRUeEsTeEdIgvnsHVEdN1MlX
-         6/WLpx42sDoQbWGJnTKpNPqo18yLinJ+8hWf/eX5nP60OZCdUGNfyGO7XwcU4y+byfst
-         qUEMgZ+HEeT9b3lAZJ/xpC9v/9jFojXAPXyA/R1BA5B67CV2Sty3P1+nluL6m6y90A1y
-         NdWg==
-X-Gm-Message-State: AOAM531+6EoDjdUU03U5r81nEjd1TmFngTVIb1fF8hVHHYNMcvlRBaBz
-        4AJo9udUf7BeeQz4Qgimou7LsQ==
-X-Google-Smtp-Source: ABdhPJxkTetKMQ8NIopvVvYdFNalwIpPjrKHgDjIhDVA+vQxFA244sZo+bs8USWr69gtaoq2bSufHg==
-X-Received: by 2002:a17:90a:7f93:: with SMTP id m19mr3707452pjl.61.1605610502752;
-        Tue, 17 Nov 2020 02:55:02 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id e184sm20923760pfe.146.2020.11.17.02.55.01
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NLioOEcjfW/MmxTk00oamg+ivAVVHPp1FiA+wpjNbWQ=;
+        b=o52Y1h2aZwe5Ab2phQON6yJyorFbwZpjumXnmXj0O8BTtN69d6gKv+6JesC7IewraL
+         DnUXJttNkANqS35MRopDpe3kDVK6PolHcAnMZKmAuiVw2191m7FtuzqO4lgOb5qCUG4l
+         32FxDHjxvlEz3KUbVILgH24PJmsOX45gC/bRkOTSdlHKYZAL3Og6R7iYya9ahQLKYYvr
+         pe8i/BCpzHjW+/IrmiJ3p9wQDSJyYk4v0AC8UKF6ZTgX/MIuyk+/QD1BLO9pAt4J61cK
+         migJpl+z0aQTPuLOfBF6NlWa1duPjCa8woXdy+yp5r1/KQ0rFZrajr/Fn909UKXuEORX
+         mAlA==
+X-Gm-Message-State: AOAM5317EewSMSTs/ETHqOY794C6QgCC0AsYoJiCIU2JLzAV9xT6fDYu
+        d12apqY8dxSDmV1xNFRogQE=
+X-Google-Smtp-Source: ABdhPJzOnlyq5JZKywoPCUL0ozBIsDw0gn8Ce0wd4hCMagPJR9P7t/9xKX9Pruuso/Sx+MXfdcBbOA==
+X-Received: by 2002:a17:90b:208:: with SMTP id fy8mr1101286pjb.204.1605610577432;
+        Tue, 17 Nov 2020 02:56:17 -0800 (PST)
+Received: from localhost.localdomain ([2402:7500:462:32e6:3119:2966:5eda:751d])
+        by smtp.gmail.com with ESMTPSA id j11sm17708214pgp.82.2020.11.17.02.56.11
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Nov 2020 02:55:02 -0800 (PST)
-Date:   Tue, 17 Nov 2020 16:25:00 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
-        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
-        chris.redpath@arm.com
-Subject: Re: [PATCH v3 3/3] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201117105500.m3wwdlrsme4iiu7e@vireshk-i7>
-References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
- <20201102120115.29993-4-nicola.mazzucato@arm.com>
- <20201106092020.za3oxg7gutzc3y2b@vireshk-i7>
- <0a334a73-45ef-58ff-7dfd-9df6f4ff290a@arm.com>
- <20201106105514.bhtdklyhn7goml64@vireshk-i7>
- <7f73bcd6-0f06-4ef0-7f02-0751e6c4d94b@arm.com>
- <20201109065742.22czfgyjhsjmkytf@vireshk-i7>
- <2fa8a5c0-f66d-34bc-7f1c-8462e7532e0a@arm.com>
- <20201117101128.6uapqg56arwqmm5p@vireshk-i7>
- <117c6d30-0013-7222-dedb-57e65ba84d15@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <117c6d30-0013-7222-dedb-57e65ba84d15@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        Tue, 17 Nov 2020 02:56:16 -0800 (PST)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: [PATCH v6 0/2] leds: mt6360: Add LED driver for MT6360
+Date:   Tue, 17 Nov 2020 18:55:35 +0800
+Message-Id: <1605610537-18085-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-11-20, 10:47, Lukasz Luba wrote:
-> Fair enough. What if we come back with experiments results in future?
-> Currently we are trying to conduct experiments with Nicola on modified Juno
-> firmware and kernel)
+This patch series add MT6360 LED support contains driver and binding document
 
-Sure. If we think it improves things, why not. I just wanted to make
-sure we understand why would we go do this change now.
+Gene Chen (2)
+ dt-bindings: leds: Add bindings for MT6360 LED
+ leds: mt6360: Add LED driver for MT6360
 
--- 
-viresh
+ Documentation/devicetree/bindings/leds/leds-mt6360.yaml |   95 +
+ drivers/leds/Kconfig                                    |   12 
+ drivers/leds/Makefile                                   |    1 
+ drivers/leds/leds-mt6360.c                              |  783 ++++++++++++++++
+ 4 files changed, 891 insertions(+)
+
+changelogs between v1 & v2
+ - add led driver with mfd
+
+changelogs between v2 & v3
+ - independent add led driver
+ - add dt-binding document
+ - refactor macros definition for easy to debug
+ - parse device tree by fwnode
+ - use devm*ext to register led class device
+
+changelogs between v3 & v4
+ - fix binding document description
+ - use GENMASK and add unit postfix to definition
+ - isink register led class device
+
+changelogs between v4 & v5
+ - change rgb isink to multicolor control
+ - add binding reference to mfd yaml
+
+changelogs between v5 & v6
+ - Use DT to decide RGB LED is multicolor device or indicator device only
+
