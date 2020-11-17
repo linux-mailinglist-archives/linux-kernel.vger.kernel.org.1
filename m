@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41FF2B5730
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171592B5713
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 03:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727413AbgKQCzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 21:55:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727377AbgKQCzy (ORCPT
+        id S1726377AbgKQCvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 21:51:46 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7692 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726321AbgKQCvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 21:55:54 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E18AC0613CF;
-        Mon, 16 Nov 2020 18:55:54 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id 199so19175341qkg.9;
-        Mon, 16 Nov 2020 18:55:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rph6elS4sVb6X0aZV8oBI4KEro3xkFbil1su2bbIStE=;
-        b=USQyK3bB+z/rsRt1AELXV8ctRWtIiY5icuzdfAECiIyyhTqCjd/cubqHwqXKSUrpNW
-         jS0x+7FDLMQEfX5d7LQRDJHMhIRUHZF7ZyjiIzz9U1hm4GfyOWrcoaA437AVuzPTV8jD
-         gPnd6rltXsXDr1sppsRO9SurjxkcvrJY9DaPtvKkm38dDeNTSA+354EJG7j5ZVdclpAn
-         oz/RVsDsjTwbuaICvAL+c02bw1WRI2G1FJ+tljpDFR8an2UnbZAvBcHpkmo4aS1mSE9w
-         nBDJ91GZEg6FqhfGkMA0vfYxJtfEqU73B3egT2cKvmkDKOWEzPGV2v85V43YHu74tHYP
-         09tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rph6elS4sVb6X0aZV8oBI4KEro3xkFbil1su2bbIStE=;
-        b=e1cXfGi0EelZDDCIZL3DCkzrUoE4K0pNQc8qI0XMbNhq2iE3/4DwFCqcvo5Y5x8c7s
-         CpWsPgq3IRxEmJnSxtd1EbSWqpVHVts6JC7itRuytO7pA4BjcJXzSbx4Yddl0rP30MTl
-         U+l4/Y/8/NoGWagaH6U16x98mTaJe+7mMgxXzYJdS2nANC9oKNWkinZZ+cuK06BOgYap
-         Cj17jowHXa8okNS/uZzC1ZHfZBdcPNgaMSxhZq35ot4juhG0wDusRmO2u0jRU8RdrpKK
-         il487YLgOnIarnYyAHI/54LIB9+VlAveW9fSL1IX6pmp9IzzUJX2e/r64NUAlsAGbesJ
-         R46w==
-X-Gm-Message-State: AOAM532qIy0un2715zRgb5+t8nshbfzyjuwkpslq3YdJIOKS6o2VoDMg
-        laHbFN3l5oykH5uuArasIFE=
-X-Google-Smtp-Source: ABdhPJwMRPqQ+amOILxvnHFquv3aE3v+OBpkNV+6SrgJ/aizT1KI3eZnAQXhApmCEhRAYQUTMxaztQ==
-X-Received: by 2002:a37:8305:: with SMTP id f5mr17316880qkd.209.1605581753676;
-        Mon, 16 Nov 2020 18:55:53 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id r14sm13431270qtu.25.2020.11.16.18.55.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 18:55:53 -0800 (PST)
-Date:   Mon, 16 Nov 2020 19:55:51 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcg: remove obsolete memcg_has_children()
-Message-ID: <20201117025551.GA1103291@ubuntu-m3-large-x86>
-References: <20201116055043.20886-1-lukas.bulwahn@gmail.com>
+        Mon, 16 Nov 2020 21:51:46 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CZr713ZY4zkYgG;
+        Tue, 17 Nov 2020 10:51:25 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 17 Nov 2020 10:51:32 +0800
+From:   Chen Zhou <chenzhou10@huawei.com>
+To:     <robdclark@gmail.com>, <airlied@linux.ie>
+CC:     <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <chenzhou10@huawei.com>
+Subject: [PATCH] drm/msm/dpu: Fix error return code in dpu_mdss_init()
+Date:   Tue, 17 Nov 2020 10:56:17 +0800
+Message-ID: <20201117025617.168259-1-chenzhou10@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201116055043.20886-1-lukas.bulwahn@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 06:50:43AM +0100, Lukas Bulwahn wrote:
-> Commit 2ef1bf118c40 ("mm: memcg: deprecate the non-hierarchical mode")
-> removed the only use of memcg_has_children() in
-> mem_cgroup_hierarchy_write() as part of the feature deprecation.
-> 
-> Hence, since then, make CC=clang W=1 warns:
-> 
->   mm/memcontrol.c:3421:20:
->     warning: unused function 'memcg_has_children' [-Wunused-function]
-> 
-> Simply remove this obsolete unused function.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Fix to return a negative error code from the error handling case
+instead of 0 in function dpu_mdss_init(), as done elsewhere in this
+function.
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Fixes: 070e64dc1bbc ("drm/msm/dpu: Convert to a chained irq chip")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+index cd4078807db1..6e600b4ca995 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+@@ -297,8 +297,10 @@ int dpu_mdss_init(struct drm_device *dev)
+ 		goto irq_domain_error;
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
++	if (irq < 0) {
++		ret = irq;
+ 		goto irq_error;
++	}
+ 
+ 	irq_set_chained_handler_and_data(irq, dpu_mdss_irq,
+ 					 dpu_mdss);
+-- 
+2.20.1
+
