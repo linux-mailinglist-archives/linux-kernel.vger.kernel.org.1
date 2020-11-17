@@ -2,228 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1812B6C60
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BAD2B6C63
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728890AbgKQRyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:54:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726846AbgKQRyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:54:05 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5731B22202;
-        Tue, 17 Nov 2020 17:54:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605635643;
-        bh=rgF0U88Kwfu3xZ3v4Wq/M1IGNiDLELUJTFymISSr95o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DB8zeZmm1bnNGRVjlWBFtk50PmzYoh/PU+5LL0DxoqZp0CpL5Cix1SKYfp3gETPCR
-         ywtcYY4wNIjWZwAhmMpZdv2Xl9gGKYxkhADP75Z53+vF7y5Oqc4j8xwTMmMjTUuPF2
-         9a6HnzWad9UsdsQhIgFtbwxtUUn+ubzVQxTvoWuk=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8623940E29; Tue, 17 Nov 2020 14:54:00 -0300 (-03)
-Date:   Tue, 17 Nov 2020 14:54:00 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 23/24] perf buildid-list: Add support for mmap2's buildid
- events
-Message-ID: <20201117175400.GV614220@kernel.org>
-References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-24-jolsa@kernel.org>
- <20201117125040.GT614220@kernel.org>
- <20201117152140.GE1216482@krava>
+        id S1729633AbgKQRyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:54:49 -0500
+Received: from mail-eopbgr750085.outbound.protection.outlook.com ([40.107.75.85]:43150
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726697AbgKQRys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:54:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y5hfk1nmYHI1NNT/LcbVASjIANpKJ0I3kZh2bjlrNkXrtUr1EMEv5cxIbCYnLIV44ouHgPIsi/ytwr77hDmMJsIqIJl007w53K0G7cM+CtSIN6ET+l3yVmlWua7i0WAmYnddjGzPCqYPF8FyrwL5Qm1WHxUtjBuA/Rz2yMHObB44KXebzalP7LsTn5oMjzaycxgf+HQbdIR/G1hvJ79mtJ4YGfrOkgmejYI4Lew6g+5mKljlhGrZjH7l+djlChec6k4OK3mgA4+zZhe6In7VPWKMlkMQTg4QnbKDHLxRpmLMjJRLJoZuJ+/PETDEGqFG4NqWCqVQliRcQ3NxPWytMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fJMxUBSDEc9yaU3I+CzwY0Z+k+Tk4ORw9qFrXzqGAU0=;
+ b=XJq7Boj+NhSzNxYED4aOwa7R/ugmkLVRpPBc+3f38M6HEdl7cjj4dnOsgrZRjipXHE77MItdo3+X+UlgmvAIFv2HAuLrJC5eaTuoUVErx2n6Cv7MDU7GuLiHesosWJrTlQZkgE8vd7VncQY034OAfDsY1VhSsd4u0lyC5tTHL+gk0r/jBHe+Evb8KL9FcPK0H+fCS+T+Vd2nBJNw5ZYk4gIiVUyzviuj23yM2A9luizGoor+2yTWSY6VxSxZhB63g0ld0lOEfLMigl9W5D6M97PtCpzlraDVMLx9jcZONeRxsqyRJ4ltJzCZw8GRpsCVSfKJCG/sqkqaOUeWNk2w4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fJMxUBSDEc9yaU3I+CzwY0Z+k+Tk4ORw9qFrXzqGAU0=;
+ b=Nw05bFViUGgLNdBZI1g7Xj24GCznlebTDTiR4IIuK/GwUBX0VHMyYV8avNdfPwTe+DDDTifIBNxvxUtegW8BEpUnqdG9UnwLdjZmhuv10+/uT/42NQPimuDH4QuDWM7Ay7Os5Mj/wbRJFCvErBslm3Uk+6UNf8bZHAqSXE7El/c=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4559.namprd12.prod.outlook.com (2603:10b6:806:9e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Tue, 17 Nov
+ 2020 17:54:44 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Tue, 17 Nov 2020
+ 17:54:44 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     konrad.wilk@oracle.com
+Cc:     hch@lst.de, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, jon.grimm@amd.com,
+        rientjes@google.com
+Subject: [PATCH v4] swiotlb: Adjust SWIOTBL bounce buffer size for SEV guests.
+Date:   Tue, 17 Nov 2020 17:54:32 +0000
+Message-Id: <20201117175432.21910-1-Ashish.Kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM3PR03CA0002.namprd03.prod.outlook.com
+ (2603:10b6:0:50::12) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117152140.GE1216482@krava>
-X-Url:  http://acmel.wordpress.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by DM3PR03CA0002.namprd03.prod.outlook.com (2603:10b6:0:50::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Tue, 17 Nov 2020 17:54:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f8c63782-4bcb-4598-8a0e-08d88b21ddcd
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4559:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4559FA9996FC4574221B9B018EE20@SA0PR12MB4559.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zysfxLDhlxC12e0j0/Mg7PX9ptnvtWA65awgAnhgCQ1odXq/kfK/8jbr2q6RIoGBbfOos7VxeNO13nB/69Gi1Kdwl3cRyczNH8WZXgN4ub9WY1Je+eR09C9AZsV2lgRiU8ohD/NtFaGwEOomy5khOVpSgKOQ2hFI3emoda6xgTkBXznKm7CFskop3b4hj1wpxlCdCXzqQNi8vwU153wzN2SZ7QiKlNvcfKlCV19UXXldHl8K49eRzrRkC313qarZrJDc05Y4+CCX4DFXoEpbNRWxdmaTU14B+L/yXAaCe8fpmbY6TldxHW5YVCyonjJIbB+xlviXiWXFBEfKMcKFtg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(396003)(39860400002)(4326008)(5660300002)(6916009)(83380400001)(2616005)(6666004)(7416002)(1076003)(8936002)(956004)(8676002)(2906002)(36756003)(7696005)(316002)(66946007)(86362001)(186003)(478600001)(6486002)(66476007)(52116002)(26005)(66556008)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ir95k6zY7nsklgsBJlMKYjYCvDDc4M6NP0aSTAA5z5Cp5+Tt6mU5nXT1k+imAoBHyQRSiXedD3WFtVt9QgF2rP8PL9Vio4p6CPu9H0Cqs9GlqqnAYLFtex9luMlrRNMkscN4PYw/ouPlt0evxRclVlNff7uk/tfPPJT8NZSGeXLi30JHABDoFZnT++mR3dQeMy6Z3Giw22cwJZFwN8D0BXVlVSI4B9CsKLHldjFhnKsbVlfZBblevhsUTj9BjuvfjxsC0FolvhpFGvR+LWQUteRUa3U1PZkhDjTpzV71iMrTqYAvl54bXuWoJAiurgGemnRzS/NlzHqXa49qsGc17h0cQkR2CwursXPJvRkusvHOQcNq62aVyKl4J65W3Y4/tLooNLqIBn0g8I5RHYj9QaEn0d1uWvDiwjIj5pztlGHBuVEhbvwu5u3SYEYSIlPIzCr+0yNnkPeqr/ZE+Kn2+3k2WpnPuv2/PIxOu1A+O/MvfARjICyd7dV0X/EqekJYAUseNqQnat89JMXli7wwyPt2CJssmbuFW5+VgwMxZTSA+YAA1lKjbuslPXGsqyhWcQLgcpgzqszZkT/s2qqwt/FfJfGbNQaafIZW6MwBGGUcaS6xWYyVFJgB9rZ4AWo9GcDmQPKOQYqguw6a1g/kCmxvGpEoyBqFOB9opg1RvWO+ugX2l9Z+ZJM3IbhkjnMGOG7NQHch5/tI5sOpd3N1CdnLSARyX4V7SBajuEw6qJ5ngJf3FVLI2/QA3Y3uL9S48sH9JQNMDcNGewznS8EfEc5tzIsJEP5FLcHt8lxSaCnOWxYXJ9uWTujnlwE8p//4gQq/i5VDof2IeWK+I5Hy8hZ8p+i9ELAGbfN09mPbvrfaSIbLsDKQtjO7YBQURPBknhG46F8bnWl2KeUt/vCSYQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8c63782-4bcb-4598-8a0e-08d88b21ddcd
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2020 17:54:44.5671
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FSrM2/lo8ddMYa7hZiAxayHE+kYH00vqf9AnYvJAnrHUB7XbtiwMY/XGkwqcuzHSXsGyug3P7h+gyDb96DuzTw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4559
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 17, 2020 at 04:21:40PM +0100, Jiri Olsa escreveu:
-> On Tue, Nov 17, 2020 at 09:50:40AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, Nov 17, 2020 at 12:00:52PM +0100, Jiri Olsa escreveu:
-> > > Add buildid-list support for mmap2's build id data, so we can
-> > > display build ids for dso objects for data without the build
-> > > id cache update.
-> > 
-> > >   $ perf buildid-list
-> > >   1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
-> > >   d278249792061c6b74d1693ca59513be1def13f2 /usr/lib64/libc-2.31.so
-> > > 
-> > > By default only dso objects with hits are shown.
-> > 
-> > Would be interesting to be able to show all the build ids that are
-> > there. a 'perf buildid-list --all' or make this under --force?
-> 
-> ok, will check.. one other tool I think would be handy is
-> to show which debuginfo is not available, because it can
-> change the report a lot - missing symbols are not getting
-> accounted, and their hits are accounted only as separated
-> addresses
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-Right, as below.
+For SEV, all DMA to and from guest has to use shared
+(un-encrypted) pages. SEV uses SWIOTLB to make this
+happen without requiring changes to device drivers.
+However, depending on workload being run, the default
+64MB of SWIOTLB might not be enough and SWIOTLB
+may run out of buffers to use for DMA, resulting
+in I/O errors and/or performance degradation for
+high I/O workloads.
 
-So you suggest something like:
+Increase the default size of SWIOTLB for SEV guests
+using a minimum value of 128MB and a maximum value
+of 512MB, determining on amount of provisioned guest
+memory.
 
-  # perf buildid-cache --fetch-missing-debuginfo
+Using late_initcall() interface to invoke
+swiotlb_adjust() does not work as the size
+adjustment needs to be done before mem_encrypt_init()
+and reserve_crashkernel() which use the allocated
+SWIOTLB buffer size, hence calling it explicitly
+from setup_arch().
 
-?
+The SWIOTLB default size adjustment is added as an
+architecture specific interface/callback to allow
+architectures such as those supporting memory
+encryption to adjust/expand SWIOTLB size for their
+use.
 
-- Arnaldo
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+---
+ arch/x86/kernel/setup.c   |  2 ++
+ arch/x86/mm/mem_encrypt.c | 32 ++++++++++++++++++++++++++++++++
+ include/linux/swiotlb.h   |  1 +
+ kernel/dma/swiotlb.c      | 27 +++++++++++++++++++++++++++
+ 4 files changed, 62 insertions(+)
 
-[root@quaco ~]# rpm -qf `which stress-ng`
-stress-ng-0.11.21-1.fc32.x86_64
-[root@quaco ~]# rpm -q stress-ng-debuginfo
-stress-ng-debuginfo-0.07.29-10.fc31.x86_64
-[root@quaco ~]# perf record stress-ng -t 1 -c 1
-stress-ng: info:  [656926] dispatching hogs: 1 cpu
-stress-ng: info:  [656926] successful run completed in 1.02s
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.204 MB perf.data (4082 samples) ]
-[root@quaco ~]# perf report | head -20
-# To display the perf.data header info, please use --header/--header-only options.
-#
-#
-# Total Lost Samples: 0
-#
-# Samples: 4K of event 'cycles'
-# Event count (approx.): 3997318603
-#
-# Overhead  Command        Shared Object     Symbol                        
-# ........  .............  ................  ..............................
-#
-     7.91%  stress-ng-cpu  stress-ng         [.] 0x0000000000035ed9
-     7.15%  stress-ng-cpu  stress-ng         [.] 0x0000000000035ecc
-     6.54%  stress-ng-cpu  stress-ng         [.] 0x000000000003bbf6
-     4.39%  stress-ng-cpu  stress-ng         [.] 0x000000000003a083
-     4.15%  stress-ng-cpu  stress-ng         [.] 0x0000000000065ed8
-     3.67%  stress-ng-cpu  stress-ng         [.] 0x0000000000065ecf
-     3.41%  stress-ng-cpu  stress-ng         [.] 0x0000000000065ee1
-     3.11%  stress-ng-cpu  stress-ng         [.] 0x000000000003bbf2
-     2.65%  stress-ng-cpu  stress-ng         [.] 0x000000000003a07b
-[root@quaco ~]#
-
-
-So the above is with a stress-ng-debuginfo package that doesn't matches
-the binary installed, so build-id checkign fails, resolving symbols
-fail, then:
-
-[root@quaco ~]# rpm -q stress-ng-debuginfo
-stress-ng-debuginfo-0.11.21-1.fc32.x86_64
-[root@quaco ~]# rpm -q stress-ng
-stress-ng-0.11.21-1.fc32.x86_64
-[root@quaco ~]#
-
-[root@quaco ~]# rpm -q stress-ng-debuginfo
-stress-ng-debuginfo-0.11.21-1.fc32.x86_64
-[root@quaco ~]# rpm -q stress-ng
-stress-ng-0.11.21-1.fc32.x86_64
-[root@quaco ~]# perf report | head -20
-# To display the perf.data header info, please use --header/--header-only options.
-#
-#
-# Total Lost Samples: 0
-#
-# Samples: 4K of event 'cycles'
-# Event count (approx.): 3997318603
-#
-# Overhead  Command        Shared Object  Symbol
-# ........  .............  .............  .........................................
-#
-    21.48%  stress-ng-cpu  stress-ng      [.] is_prime
-    16.02%  stress-ng-cpu  stress-ng      [.] stress_cpu_sieve
-    12.61%  stress-ng-cpu  stress-ng      [.] stress_cpu_cpuid.sse2.2
-    11.94%  stress-ng-cpu  stress-ng      [.] ackermann
-     8.24%  stress-ng-cpu  stress-ng      [.] stress_cpu_correlate
-     3.82%  stress-ng-cpu  stress-ng      [.] queens_try
-     2.63%  stress-ng-cpu  stress-ng      [.] stress_cpu_nsqrt.sse2.2
-     2.46%  stress-ng-cpu  stress-ng      [.] ccitt_crc16
-     2.25%  stress-ng-cpu  stress-ng      [.] stress_cpu_complex_long_double.sse2.2
-[root@quaco ~]#
-
-[root@quaco ~]# perf report -v | head -20
-build id event received for vmlinux: f72ec65d81949c5ba63ccaa16b59c79d1696bc4d [20]
-build id event received for /usr/bin/stress-ng: 82b81bd823dcac393292faaaf40997723ce358a8 [20]
-build id event received for [vdso]: a1f89b9b9d2093ae926c550a7de060d435277fbf [20]
-build id event received for /usr/lib64/libm-2.31.so: fdf1f1d0761b7392e419d5d72e43d3fd3db6e184 [20]
-build id event received for /usr/lib64/libc-2.31.so: d278249792061c6b74d1693ca59513be1def13f2 [20]
-Looking at the vmlinux_path (8 entries long)
-symsrc__init: build id mismatch for vmlinux.
-Using /usr/lib/debug/lib/modules/5.8.14-200.fc32.x86_64/vmlinux for symbols
-# To display the perf.data header info, please use --header/--header-only options.
-#
-#
-# Total Lost Samples: 0
-#
-# Samples: 4K of event 'cycles'
-# Event count (approx.): 3997318603
-#
-# Overhead  Command        Shared Object       Symbol                                              
-# ........  .............  ..................  ....................................................
-#
-    21.48%  stress-ng-cpu  /usr/bin/stress-ng  0x35e80  l [.] is_prime
-    16.02%  stress-ng-cpu  /usr/bin/stress-ng  0x3bbf6  l [.] stress_cpu_sieve
-    12.61%  stress-ng-cpu  /usr/bin/stress-ng  0x65ec6  l [.] stress_cpu_cpuid.sse2.2
-    11.94%  stress-ng-cpu  /usr/bin/stress-ng  0x3c66b  l [.] ackermann
-     8.24%  stress-ng-cpu  /usr/bin/stress-ng  0x39fd8  l [.] stress_cpu_correlate
-     3.82%  stress-ng-cpu  /usr/bin/stress-ng  0x64742  l [.] queens_try
-     2.63%  stress-ng-cpu  /usr/bin/stress-ng  0x7a0a8  l [.] stress_cpu_nsqrt.sse2.2
-     2.46%  stress-ng-cpu  /usr/bin/stress-ng  0x3400e  l [.] ccitt_crc16
-     2.25%  stress-ng-cpu  /usr/bin/stress-ng  0x71761  l [.] stress_cpu_complex_long_double.sse2.2
-[root@quaco ~]#
-> 
-> jirka
-> 
-> > 
-> > - Arnaldo
-> >  
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/perf/builtin-buildid-list.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/tools/perf/builtin-buildid-list.c b/tools/perf/builtin-buildid-list.c
-> > > index e3ef75583514..87f5b1a4a7fa 100644
-> > > --- a/tools/perf/builtin-buildid-list.c
-> > > +++ b/tools/perf/builtin-buildid-list.c
-> > > @@ -77,6 +77,9 @@ static int perf_session__list_build_ids(bool force, bool with_hits)
-> > >  	    perf_header__has_feat(&session->header, HEADER_AUXTRACE))
-> > >  		with_hits = false;
-> > >  
-> > > +	if (!perf_header__has_feat(&session->header, HEADER_BUILD_ID))
-> > > +		with_hits = true;
-> > > +
-> > >  	/*
-> > >  	 * in pipe-mode, the only way to get the buildids is to parse
-> > >  	 * the record stream. Buildids are stored as RECORD_HEADER_BUILD_ID
-> > > -- 
-> > > 2.26.2
-> > > 
-> > 
-> > -- 
-> > 
-> > - Arnaldo
-> > 
-> 
-
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 3511736fbc74..b073d58dd4a3 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1166,6 +1166,8 @@ void __init setup_arch(char **cmdline_p)
+ 	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+ 		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+ 
++	swiotlb_adjust();
++
+ 	/*
+ 	 * Reserve memory for crash kernel after SRAT is parsed so that it
+ 	 * won't consume hotpluggable memory.
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 3f248f0d0e07..f6c04a3ac830 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -490,6 +490,38 @@ static void print_mem_encrypt_feature_info(void)
+ }
+ 
+ /* Architecture __weak replacement functions */
++unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
++{
++	unsigned long size = 0;
++
++	/*
++	 * For SEV, all DMA has to occur via shared/unencrypted pages.
++	 * SEV uses SWOTLB to make this happen without changing device
++	 * drivers. However, depending on the workload being run, the
++	 * default 64MB of SWIOTLB may not be enough & SWIOTLB may
++	 * run out of buffers for DMA, resulting in I/O errors and/or
++	 * performance degradation especially with high I/O workloads.
++	 * Increase the default size of SWIOTLB for SEV guests using
++	 * a minimum value of 128MB and a maximum value of 512MB,
++	 * depending on amount of provisioned guest memory.
++	 */
++	if (sev_active()) {
++		phys_addr_t total_mem = memblock_phys_mem_size();
++
++		if (total_mem <= SZ_1G)
++			size = max(iotlb_default_size, (unsigned long) SZ_128M);
++		else if (total_mem <= SZ_4G)
++			size = max(iotlb_default_size, (unsigned long) SZ_256M);
++		else
++			size = max(iotlb_default_size, (unsigned long) SZ_512M);
++
++		pr_info("SEV adjusted max SWIOTLB size = %luMB",
++			size >> 20);
++	}
++
++	return size;
++}
++
+ void __init mem_encrypt_init(void)
+ {
+ 	if (!sme_me_mask)
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 046bb94bd4d6..01ae6d891327 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -33,6 +33,7 @@ extern void swiotlb_init(int verbose);
+ int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
+ extern unsigned long swiotlb_nr_tbl(void);
+ unsigned long swiotlb_size_or_default(void);
++extern void __init swiotlb_adjust(void);
+ extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
+ extern void __init swiotlb_update_mem_attributes(void);
+ 
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index c19379fabd20..66a9e627bb51 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -163,6 +163,33 @@ unsigned long swiotlb_size_or_default(void)
+ 	return size ? size : (IO_TLB_DEFAULT_SIZE);
+ }
+ 
++unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
++{
++	return 0;
++}
++
++void __init swiotlb_adjust(void)
++{
++	unsigned long size;
++
++	/*
++	 * If swiotlb parameter has not been specified, give a chance to
++	 * architectures such as those supporting memory encryption to
++	 * adjust/expand SWIOTLB size for their use.
++	 */
++	if (!io_tlb_nslabs) {
++		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
++		if (size) {
++			size = ALIGN(size, 1 << IO_TLB_SHIFT);
++			io_tlb_nslabs = size >> IO_TLB_SHIFT;
++			io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
++
++			pr_info("architecture adjusted SWIOTLB slabs = %lu\n",
++				io_tlb_nslabs);
++		}
++	}
++}
++
+ void swiotlb_print_info(void)
+ {
+ 	unsigned long bytes = io_tlb_nslabs << IO_TLB_SHIFT;
 -- 
+2.17.1
 
-- Arnaldo
