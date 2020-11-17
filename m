@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BC62B5CC4
+	by mail.lfdr.de (Postfix) with ESMTP id F017D2B5CC5
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 11:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727356AbgKQKVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 05:21:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59988 "EHLO
+        id S1727428AbgKQKWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 05:22:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgKQKVx (ORCPT
+        with ESMTP id S1726260AbgKQKWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:21:53 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F96C0613CF;
-        Tue, 17 Nov 2020 02:21:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lz8fb1sA27SpTdUEKJWeEE6yTKqyBHsG4/7A8XEhKU0=; b=WkL2DpM49F2w4P+YSmMqpgYZ0h
-        noytDa9oWxuztYs4L02dt10qN3d6HvrlKa0oLByIaG8m8+zoqtsIKUdIy81aGN0AfB2EgVhImk6NF
-        4F3+mCsU78CgfgrigRrYWAWF2d1rcQNg6uU2no2kV0o/eni+jT/Nyp48FY+kAcBwjCstyR9cxarWE
-        Ei+E3jW+ypULpMbm6GZkIurr/YfrjGjSsVFLU/d6TLbK9DCfMXnCYL7bkSfMpKwQRWzpY32GZGqdH
-        cL2NX6iLhhhRCeTior/wT0GkRt1U3LSc6pBp1hadGwBS/UP0g5G6hsrRwp5TZETyBxEvGr+rlgAzk
-        o0QZ7mmg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1key6y-0000EQ-Q4; Tue, 17 Nov 2020 10:21:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 84FDE3019CE;
-        Tue, 17 Nov 2020 11:21:19 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 28E4029AC4786; Tue, 17 Nov 2020 11:21:19 +0100 (CET)
-Date:   Tue, 17 Nov 2020 11:21:19 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [patch 10/19] preempt: Cleanup the macro maze a bit
-Message-ID: <20201117102119.GE3121406@hirez.programming.kicks-ass.net>
-References: <20201113140207.499353218@linutronix.de>
- <20201113141733.864469886@linutronix.de>
- <20201116121748.GD3121378@hirez.programming.kicks-ass.net>
- <871rgtyz9g.fsf@nanos.tec.linutronix.de>
+        Tue, 17 Nov 2020 05:22:05 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF447C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:22:05 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id w10so3752729ilq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 02:22:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yw60kYhqDr8ucVZwMJU6Ksh44AdpP2IZ3BFIM3cTzRo=;
+        b=LvHrMR1lfhWHyeQcTkHK37DeXiBddSQQBxVKj63o0rJUyRa/Le6hZ0RdFTRqSXNWg2
+         2TnM3OBFrwfb4Fc83RIE9mpI8M8b69AghoMIDfwoVHK4UeRpW/Wuj/76qgZHJDLKfLec
+         Rr4A0LqkRob9YuhD4D9ADVfc+T1USBq1o/3B4ni98+KR9uYg69G3Cyuea0M9eJGpW7vP
+         W71P0VZ2vo+QIQ1tra1LizrdjXg9eMJ23SfFRAcRPx1ASuhemmSmHKcbI5BhbbCcbdvl
+         usV8qzirhM1jXlj8Az0DG36t8hA8DE4ZzbPvWHLGOtawYN31OFTbqQUBIIlDVekjSAkA
+         ltBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yw60kYhqDr8ucVZwMJU6Ksh44AdpP2IZ3BFIM3cTzRo=;
+        b=RwTjZPI01RI1xQQQnfpV4w/5gEouhjC0kgvQpr7ECDYzGOeiht3927NfnCcphSMpJD
+         zKTi6/LAJH4VwoFD2XyB0B6qNzBVmT4OaD5AR0BYrzHZBp4gRB6B44ckmOyUfVZVoPti
+         pjMUMJecOikjq+TW4kq6/xZUnXa5zjBscxpT3HqX8vikQSFyKjf2AC53i1HikyyrZLL1
+         o3QOdzrkenyuk4ku0Yqcg11Gv09tkCqrhI9VtCtLiziROZeWZWkGXpjR+Wa1BEWVWh2i
+         7ghXI9YWdOmZjnYE2Pgl3zGZzJkv4ZtuN0v7Hi+g8/kPhqdadAyaxPZ2d7dhQP4O6OcF
+         9NXg==
+X-Gm-Message-State: AOAM531B8PK2PQBvCQSZ3OVMjLg+gwwhCzj1AB2oFxasP6xbcG198fHY
+        EuQR0GPUWPvuWLsrGp6dMnjGp/7Tsmtz/TQtzLIld55sQr8=
+X-Google-Smtp-Source: ABdhPJxPVUFNZHk/tHp765anbL/PX5LiAT50Eagj4VX1/c2e/6QjgTEAJQvKGDjBoBTQsI9nWscsJrnY0d1Grjd4NQM=
+X-Received: by 2002:a92:512:: with SMTP id q18mr11260314ile.147.1605608524946;
+ Tue, 17 Nov 2020 02:22:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871rgtyz9g.fsf@nanos.tec.linutronix.de>
+References: <20201117040501.21914-1-yashsri421@gmail.com> <1b9c5353c6318cc7a4e013886012739e6627d82d.camel@perches.com>
+ <791b3213aaabd5ecccc9d3f6dd0e8ee420611dbd.camel@perches.com>
+In-Reply-To: <791b3213aaabd5ecccc9d3f6dd0e8ee420611dbd.camel@perches.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 17 Nov 2020 11:21:54 +0100
+Message-ID: <CAKXUXMxGbL8myAJwobCNEimxmwKTyF41WUNkLU45HTqSKKAPRw@mail.gmail.com>
+Subject: Re: [PATCH v3] checkpatch: add fix option for MAINTAINERS_STYLE
+To:     Joe Perches <joe@perches.com>
+Cc:     Aditya Srivastava <yashsri421@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 06:42:19PM +0100, Thomas Gleixner wrote:
-> On Mon, Nov 16 2020 at 13:17, Peter Zijlstra wrote:
-> > On Fri, Nov 13, 2020 at 03:02:17PM +0100, Thomas Gleixner wrote:
+On Tue, Nov 17, 2020 at 5:29 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2020-11-16 at 20:26 -0800, Joe Perches wrote:
+> > On Tue, 2020-11-17 at 09:35 +0530, Aditya Srivastava wrote:
+> > > Checkpatch expects entries in MAINTAINERS file in a specific order and
+> > > warns if the changes made do not follow the specified order.
+> > >
+> > > E.g., running checkpatch on commit b33bc2b878e0 ("nexthop: Add entry to
+> > > MAINTAINERS") reports this warning:
+> > >
+> > > WARNING: Misordered MAINTAINERS entry - list file patterns in
+> > > alphabetic order
+> > > +F: include/uapi/linux/nexthop.h
+> > > +F: include/net/netns/nexthop.h
+> > >
+> > > Provide a simple fix by swapping the unordered lines, if both the lines
+> > > are additions (start with '+')
 > >
-> >> -#define irq_count()	(preempt_count() & (HARDIRQ_MASK | SOFTIRQ_MASK \
-> >> -				 | NMI_MASK))
-> >> +#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+> > On second thought, nak.
 > >
+> > This fails when there are 3 consecutive misordered lines.
 > >
-> >> +#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
-> >> -#define in_task()		(!(preempt_count() & \
-> >> -				   (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
+> > SECTION
+> > F:    c
+> > F:    b
+> > F:    a
 > >
-> > How horrible is the code-gen? Because preempt_count() is
-> > raw_cpu_read_4() and at least some old compilers will refuse to CSE it
-> > (consider the this_cpu_read_stable mess).
-> 
-> I looked at gcc8 and 10 output and the compilers are smart enough to
-> fold it for the !RT case. But yeah ...
+>
+> btw:
+>
+> scripts/parse-maintainers.pl already does this reordering properly so
+> this particular --fix addition isn't all that useful.
+>
 
-If recent GCC is smart enough I suppose it doesn't matter, thanks!
+I think the real fix is to provide some more documentation on
+scripts/parse-maintainers.pl that explains how to run this script when
+an author hits the warning type in checkpatch.pl.
+
+I see these follow-up patches:
+
+  - some documentation on scripts/parse-maintainers.pl
+  - a patch to checkpatch.pl that points out this documentation when
+this warning occurs.
+  - maybe: improve of scripts/parse-maintainers.pl to handle exactly
+this use case of a patch author (assuming that the patch was just
+created with git format-patch -1) and how to get the corrected diff
+for this patch.
+  - maybe: a patch to checkpatch.pl that can create the command for
+scripts/parse-maintainers.pl for a specific patch and which then can
+be added with git commit --amend or git commit && git rebase and
+squashing that in.
+
+I think once that is done and better understood, you can much better
+judge if there is really a need for a fix in checkpatch.pl.
+
+Lukas
