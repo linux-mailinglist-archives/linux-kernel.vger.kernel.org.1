@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844232B6599
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A738C2B65A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730812AbgKQN5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731936AbgKQN4i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:56:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B067FC0613CF;
-        Tue, 17 Nov 2020 05:56:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=E24uSWfoTl4Cofu3qQrfxUps4G3LuyBx4MqJTQyuhJA=; b=rvxkhDnmXgjJbSa0RuhPokJurG
-        4hj1wuzM6npD+VT1WBhyXi5yfWDwjljSh+RudYdsVi6dDwzKgRF68oomM8b+EL/c1Wts9xTk3stdm
-        X+pYUQkf7P75emWj2l0M3stykyOof+6vx13/6SKZJlt8JxGH8laobVtcD4/FFEnnKPAJd0FWMxGHP
-        bf0pKMf4pOfzkTcIbhm698q7Rdo4KZzXW8PTtwcUtRB53mUM84AH88jTP83QglTSLVMql8iiGsp5d
-        1LuGwqCN3CF6i5dM3TKHWbwErVu+OJI5O4IQ7ztRsQ6k2rTl0hA5c/tuoi7ln0XoQ95AhfLQZP7sF
-        I5tw4Tfw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kf1TE-0007V6-Mi; Tue, 17 Nov 2020 13:56:32 +0000
-Date:   Tue, 17 Nov 2020 13:56:32 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm/vunmap: add cond_resched() in
- vunmap_pmd_range"
-Message-ID: <20201117135632.GA27763@infradead.org>
-References: <20201105170249.387069-1-minchan@kernel.org>
- <20201106175933.90e4c8851010c9ce4dd732b6@linux-foundation.org>
- <20201107083939.GA1633068@google.com>
- <20201112200101.GC123036@google.com>
- <20201112144919.5f6b36876f4e59ebb4a99d6d@linux-foundation.org>
- <20201113162529.GA2378542@google.com>
- <20201116175323.GB3805951@google.com>
+        id S1732228AbgKQN5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:57:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731321AbgKQN5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:57:30 -0500
+Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C374206F1;
+        Tue, 17 Nov 2020 13:57:28 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 15:57:24 +0200
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Dave Ertman <david.m.ertman@intel.com>, gregkh@linuxfoundation.org,
+        alsa-devel@alsa-project.org, tiwai@suse.de,
+        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        parav@mellanox.com, shiraz.saleem@intel.com,
+        dan.j.williams@intel.com, kiran.patil@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
+Message-ID: <20201117135724.GA2160964@unreal>
+References: <20201113161859.1775473-1-david.m.ertman@intel.com>
+ <20201113161859.1775473-2-david.m.ertman@intel.com>
+ <20201117053000.GM47002@unreal>
+ <20201117134808.GC5142@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201116175323.GB3805951@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201117134808.GC5142@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Btw, I remember that the whole vmalloc magic in zsmalloc was only giving
-a small benefit for a few niche use cases.  Given that it generally has
-very strange interaction with the vmalloc core, including using various
-APIs not used by any driver I'm going to ask once again why we can't
-just drop the CONFIG_ZSMALLOC_PGTABLE_MAPPING case entirely?
+On Tue, Nov 17, 2020 at 01:48:08PM +0000, Mark Brown wrote:
+> On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
+> > On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
+>
+> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> > > It enables drivers to create an auxiliary_device and bind an
+> > > auxiliary_driver to it.
+>
+> > This horse was beaten to death, can we please progress with this patch?
+> > Create special topic branch or ack so I'll prepare this branch.
+>
+> It's been about 2 working days since the patch was last posted.
+
+There is no code changes between v3 and v4 except docs improvements.
+The v3 was posted almost 3-4 weeks ago.
+
+Thanks
