@@ -2,130 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A612B693C
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE32D2B691A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726886AbgKQP7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:59:41 -0500
-Received: from de-deferred1.bosch-org.com ([139.15.180.216]:41406 "EHLO
-        de-deferred1.bosch-org.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725767AbgKQP7l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:59:41 -0500
-X-Greylist: delayed 386 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Nov 2020 10:59:39 EST
-Received: from de-out1.bosch-org.com (snat-lb41g3-dmz-psi-sl1-maildeferred.fe.ssn.bosch.com [139.15.180.215])
-        by si0vms0224.rbdmz01.com (Postfix) with ESMTPS id 4Cb9T43HXPz9kd
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 16:53:12 +0100 (CET)
-Received: from si0vm1948.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
-        by si0vms0216.rbdmz01.com (Postfix) with ESMTPS id 4Cb9T31LNMz1XLV7L;
-        Tue, 17 Nov 2020 16:53:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=de.bosch.com;
-        s=key2-intmail; t=1605628391;
-        bh=zDqtHDV+ivhKpQnY1nJip3xTSwLuqCaHQ5GfXtNk3nw=; l=10;
-        h=From:Subject:From:Reply-To:Sender;
-        b=OUzJh/8ZjVucfFJIcjJwdqquvm+xLmiiUeU0lkt99H2/DHrQZL6MXa/XSW8IhjfQE
-         1Y8igW0vV3G/LJobMbXljEj63YNPc1ve80AUTGC1j/mcvKU88tOp/fcE4VUln2FYeB
-         n8WYq0Is/ko7nLHtE6udiOkjd5kLqtKMFkznj3uA=
-Received: from si0vm4642.rbesz01.com (unknown [10.58.172.176])
-        by si0vm1948.rbesz01.com (Postfix) with ESMTPS id 4Cb9T30hzQz9wl;
-        Tue, 17 Nov 2020 16:53:11 +0100 (CET)
-X-AuditID: 0a3aad12-24bff700000028b1-5e-5fb3f1e74ea7
-Received: from fe0vm1651.rbesz01.com ( [10.58.173.29])
-        (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by si0vm4642.rbesz01.com (SMG Outbound) with SMTP id 8E.D0.10417.7E1F3BF5; Tue, 17 Nov 2020 16:53:11 +0100 (CET)
-Received: from FE-HUB2000.de.bosch.com (fe-hub2000.de.bosch.com [10.4.103.109])
-        by fe0vm1651.rbesz01.com (Postfix) with ESMTPS id 4Cb9T26w5pzvlD;
-        Tue, 17 Nov 2020 16:53:10 +0100 (CET)
-Received: from ninja.grb-fir.grb.de.bosch.com (10.19.187.97) by
- FE-HUB2000.de.bosch.com (10.4.103.109) with Microsoft SMTP Server id
- 15.1.2106.2; Tue, 17 Nov 2020 16:53:10 +0100
-From:   Mark Jonas <mark.jonas@de.bosch.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-CC:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Leo Ruan <tingquan.ruan@cn.bosch.com>,
-        Mark Jonas <mark.jonas@de.bosch.com>
-Subject: [PATCH] drm: imx: Move fbdev setup to before output polling
-Date:   Tue, 17 Nov 2020 16:52:29 +0100
-Message-ID: <20201117155229.9837-1-mark.jonas@de.bosch.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726579AbgKQPwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:52:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726498AbgKQPwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 10:52:51 -0500
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5B7C246A4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 15:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605628370;
+        bh=n5hKtnSFbRkV9Ne7F3tzTOQSjkjOGG9/Snmw1ldMllw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=wng07msAE8++JfieGqzZYgVw6nSQ52Zny/os6+FInAAdBYxt737ime6etV+2z58Yk
+         jZDkSmOz9r0h4poU7EmRmoS/9HB+AjshlaMerJZMpWBTUTZq9EEGY83tFGTyH1KtBf
+         76ekIZR7dJDSBr5gAbBWlYjcbsQ2EU8hryh4m3jg=
+Received: by mail-wr1-f54.google.com with SMTP id r17so23695013wrw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 07:52:49 -0800 (PST)
+X-Gm-Message-State: AOAM5304KIDee2ICLdmn3F0je6oUNEKLCydB99WF7fgqrZ+8fN5BHKEf
+        jWpNa5IHVS1Yoi5oiUwIrsx9XpmVlb2VMx+Mq82WAQ==
+X-Google-Smtp-Source: ABdhPJx7Js1z7R2ybZj/Qw2xAJYSDUwnncWIhJhMB0U7OUakF/SEBWlcTmMuoU9g5eD15k4CqaHtRGsPOcVPbpJ2Puk=
+X-Received: by 2002:a5d:5482:: with SMTP id h2mr204314wrv.18.1605628368294;
+ Tue, 17 Nov 2020 07:52:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGLMWRmVeSWpSXmKPExsXCZbVWVvf5x83xBucuMln0njvJZPF/20Rm
-        iytf37NZPLzqb7Fq6k4Wi02Pr7FadP1ayWxxedccNou7906wWPzdvonF4sUWcQduj73fFrB4
-        7Jx1l91j06pONo/t3x6wetzvPs7ksXlJvcfGdzuYPPr/Gnh83iQXwBnFZZOSmpNZllqkb5fA
-        lTHn7Ru2gt+8FeuuTWdvYDzE3cXIySEhYCKxp3sXWxcjF4eQwHQmiZXnn7FDOLsZJW6f6mKF
-        cLYySpw8cZIZpIVNQEvi5okdzCAJEYE7jBJvPu0Hq2IWmMok0bPwGliVsICLxKH2B2A2i4Cq
-        xJodn9lAbF4Ba4mny14xQSyXl1i94QAzRFxQ4uTMJywgNrOAhMTBFy+YJzDyzkKSmoUktYCR
-        aRWjaHGmQVmuiZmJkV5RUmpxlYGhXnJ+7iZGSFAL7WD81fFB7xAjEwfjIUYJDmYlEV4Xk43x
-        QrwpiZVVqUX58UWlOanFhxilOViUxHlVeDbGCQmkJ5akZqemFqQWwWSZODilGpgi/jqnvBR8
-        8frrUl7m1RPXL/V7w+pxWTn17letF2q8qrm/HyW9X56e6Mhdt97vntT0mW9VdEvvnjzTnXbe
-        LvxYwMLvrlv01dT6b1kpyLBJ6O/LjZ59P4+pQClZf40gg79rX2yPdvH8S22y549P3iWs7dS2
-        PCTUsPwKO39Y5r2rThks7J+btn6qWya+Za7CwqApoW7zK+RfrUt7Np1lWnXoxs96tou4C189
-        uHfXYsnPlgnre/4G7jvN83/31atW0zeukLp+kY1hx7Sf9fNOKiXdOFbyKIRda9ndSy9+1934
-        sHnly8erF6zJ6qzy06gTCOHi1Y/5eG7joUtHxY9cDUk4ObFfe/mNecclH+sYGJ0IVWIpzkg0
-        1GIuKk4EAEMZO23ZAgAA
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
+ <20201116144757.1920077-13-alexandre.chartre@oracle.com> <CALCETrUSCwtR41CCo_cAQf_BwG7istH6fM=bxWh_VfOjSNFmSw@mail.gmail.com>
+ <bc8a254e-deaa-388e-99ea-0291f5625b5b@oracle.com> <CALCETrUJQJRi6fE=bs3iAySgM8wjmGU1f464FqOuU+PiBwwnQQ@mail.gmail.com>
+ <bf919e4b-d56f-711d-f7ae-b463b8fdadfd@oracle.com>
+In-Reply-To: <bf919e4b-d56f-711d-f7ae-b463b8fdadfd@oracle.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 17 Nov 2020 07:52:33 -0800
+X-Gmail-Original-Message-ID: <CALCETrWS8_yugbLGFpGUbj2Z5bV04jnCNcnc40QUXWCdmJQU-g@mail.gmail.com>
+Message-ID: <CALCETrWS8_yugbLGFpGUbj2Z5bV04jnCNcnc40QUXWCdmJQU-g@mail.gmail.com>
+Subject: Re: [RFC][PATCH v2 12/21] x86/pti: Use PTI stack instead of
+ trampoline stack
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
+        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
+        kuzuno@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Ruan <tingquan.ruan@cn.bosch.com>
+On Tue, Nov 17, 2020 at 7:07 AM Alexandre Chartre
+<alexandre.chartre@oracle.com> wrote:
+>
+>
+>
+> On 11/16/20 7:34 PM, Andy Lutomirski wrote:
+> > On Mon, Nov 16, 2020 at 10:10 AM Alexandre Chartre
+> > <alexandre.chartre@oracle.com> wrote:
+> >>
+> >>
+> >> On 11/16/20 5:57 PM, Andy Lutomirski wrote:
+> >>> On Mon, Nov 16, 2020 at 6:47 AM Alexandre Chartre
+> >>> <alexandre.chartre@oracle.com> wrote:
+> >>>>
+> >>>> When entering the kernel from userland, use the per-task PTI stack
+> >>>> instead of the per-cpu trampoline stack. Like the trampoline stack,
+> >>>> the PTI stack is mapped both in the kernel and in the user page-table.
+> >>>> Using a per-task stack which is mapped into the kernel and the user
+> >>>> page-table instead of a per-cpu stack will allow executing more code
+> >>>> before switching to the kernel stack and to the kernel page-table.
+> >>>
+> >>> Why?
+> >>
+> >> When executing more code in the kernel, we are likely to reach a point
+> >> where we need to sleep while we are using the user page-table, so we need
+> >> to be using a per-thread stack.
+> >>
+> >>> I can't immediately evaluate how nasty the page table setup is because
+> >>> it's not in this patch.
+> >>
+> >> The page-table is the regular page-table as introduced by PTI. It is just
+> >> augmented with a few additional mapping which are in patch 11 (x86/pti:
+> >> Extend PTI user mappings).
+> >>
+> >>>   But AFAICS the only thing that this enables is sleeping with user pagetables.
+> >>
+> >> That's precisely the point, it allows to sleep with the user page-table.
+> >>
+> >>> Do we really need to do that?
+> >>
+> >> Actually, probably not with this particular patchset, because I do the page-table
+> >> switch at the very beginning and end of the C handler. I had some code where I
+> >> moved the page-table switch deeper in the kernel handler where you definitively
+> >> can sleep (for example, if you switch back to the user page-table before
+> >> exit_to_user_mode_prepare()).
+> >>
+> >> So a first step should probably be to not introduce the per-task PTI trampoline stack,
+> >> and stick with the existing trampoline stack. The per-task PTI trampoline stack can
+> >> be introduced later when the page-table switch is moved deeper in the C handler and
+> >> we can effectively sleep while using the user page-table.
+> >
+> > Seems reasonable.
+> >
+>
+> I finally remember why I have introduced a per-task PTI trampoline stack right now:
+> that's to be able to move the CR3 switch anywhere in the C handler. To do so, we need
+> a per-task stack to enter (and return) from the C handler as the handler can potentially
+> go to sleep.
+>
+> Without a per-task trampoline stack, we would be limited to call the switch CR3 functions
+> from the assembly entry code before and after calling the C function handler (also called
+> from assembly).
 
-The generic fbdev has to be setup before enabling output polling.
-Otherwise the fbdev client is not ready to handle delayed events.
+The noinstr part of the C entry code won't sleep.
 
-Since f53705fd, the generic fbdev is setup after the output polling
-init. During fbdev setup, when fbdev probes attached outputs and a
-status changes from unknown to connected, the delayed event is
-marked and the output_poll_work thread is scheduled without delay.
-If output_poll_execute() is runs immediately, the delayed event
-is handled without actually polling the output because the fbdev is not
-registered yet. So the delayed event is lost. This leads to a dark
-screen until a KMS application (or fbcon) sets the screen mode.
-
-This patch fixes the issue by moving the setup of generic fbdev before
-initializing and enabling output polling.
-
-Signed-off-by: Leo Ruan <tingquan.ruan@cn.bosch.com>
-Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
----
- drivers/gpu/drm/imx/imx-drm-core.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/imx/imx-drm-core.c b/drivers/gpu/drm/imx/imx-drm-core.c
-index 9bf5ad6d18a2..2665040e11c7 100644
---- a/drivers/gpu/drm/imx/imx-drm-core.c
-+++ b/drivers/gpu/drm/imx/imx-drm-core.c
-@@ -240,14 +240,18 @@ static int imx_drm_bind(struct device *dev)
- 		legacyfb_depth = 16;
- 	}
- 
-+	/*
-+	 * The generic fbdev has to be setup before enabling output polling.
-+	 * Otherwise the fbdev client is not ready to handle delayed events.
-+	 */
-+	drm_fbdev_generic_setup(drm, legacyfb_depth);
-+
- 	drm_kms_helper_poll_init(drm);
- 
- 	ret = drm_dev_register(drm, 0);
- 	if (ret)
- 		goto err_poll_fini;
- 
--	drm_fbdev_generic_setup(drm, legacyfb_depth);
--
- 	return 0;
- 
- err_poll_fini:
--- 
-2.17.1
-
+--Andy
