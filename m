@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD722B70DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 846252B70DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 22:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgKQVXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 16:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
+        id S1726760AbgKQVXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 16:23:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgKQVXE (ORCPT
+        with ESMTP id S1725730AbgKQVXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:23:04 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369B3C0613CF;
-        Tue, 17 Nov 2020 13:23:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8Le6nenVdfqug4GtB+TuVFFmGAO2UeQg8aKMVmpcDyQ=; b=vzOxukK9yDaGfyVYUmioAz5KU0
-        MIcMpKA70ufQ7Gjat7Zm3T8FPDQU3BEmO8kyrTbBFe22r/dxfkMhgG0UK68dsUpNx3ISfu5ffBg+i
-        J764GpsRUjtb5zmFjAE0xteJeP/fGCEUx/5yEx8PhZJ7bVRDBThuxJhW0GCCuSLb6GpNVEpDHkId3
-        jcEzwjrNvoAgPrtf5g1SFXsqpiyigeQyFjBYCoyputpzR3zVH79ekkbAoUHKZn/2uMC52ndo+lX3X
-        CPuQsNI5X180Q0x8iagaKdG3sd8Xth3L403wZg+tIAyA7jCK/Biw9GSELCV31CaCyxYa2u9QtFNH8
-        l7w8rMzg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kf8RD-0004N9-Ox; Tue, 17 Nov 2020 21:22:55 +0000
-Date:   Tue, 17 Nov 2020 21:22:55 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Yang Shi <shy828301@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>
-Subject: Re: [RFC PATCH 3/6] mm: page_owner: add support for splitting to any
- order in split page_owner.
-Message-ID: <20201117212255.GZ29991@casper.infradead.org>
-References: <20201111204008.21332-1-zi.yan@sent.com>
- <20201111204008.21332-4-zi.yan@sent.com>
- <20201114001505.GA3047204@carbon.dhcp.thefacebook.com>
- <F55878E8-22B1-443E-9CC8-E97B3DAA7EA4@nvidia.com>
- <20201114013801.GA3069806@carbon.dhcp.thefacebook.com>
- <20201117210532.GX29991@casper.infradead.org>
- <3E32BC50-700F-471E-89FD-35414610B84E@nvidia.com>
+        Tue, 17 Nov 2020 16:23:08 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93510C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 13:23:08 -0800 (PST)
+Received: from zn.tnic (p200300ec2f10130053cbbcbd889a5460.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:1300:53cb:bcbd:889a:5460])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 18FBB1EC04B9;
+        Tue, 17 Nov 2020 22:23:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605648187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=x3UrhrGPN+9oncUVOMwc/Shd/swOmOyRSPQXEE/TNBQ=;
+        b=XyoG9BG/jFuearKcQWJ0aiGMPi4DrwtL5zuLUFrj/QvDyLa9LTx1gMcplrtlhPf4CRXNBH
+        B3GaIGqbSTV+BOABUF9upfD333uTHSu+SM0CSdMl4E3O8qYTAMwY5BAsvte6dSl6RYct2i
+        AKrzJ1N7TmpL5oyldjXcv9+RxpLySUw=
+Date:   Tue, 17 Nov 2020 22:23:07 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        thomas.lendacky@amd.com, jroedel@suse.de, konrad.wilk@oracle.com,
+        jan.setjeeilers@oracle.com, junaids@google.com, oweisse@google.com,
+        rppt@linux.vnet.ibm.com, graf@amazon.de, mgross@linux.intel.com,
+        kuzuno@gmail.com
+Subject: Re: [RFC][PATCH v2 00/21] x86/pti: Defer CR3 switch to C code
+Message-ID: <20201117212307.GR5719@zn.tnic>
+References: <20201116144757.1920077-1-alexandre.chartre@oracle.com>
+ <20201116201711.GE1131@zn.tnic>
+ <44a88648-738a-4a4b-9c25-6b70000e037c@oracle.com>
+ <20201117165539.GG5719@zn.tnic>
+ <890f6b7e-a268-2257-edcb-5eacc7db3d8e@oracle.com>
+ <20201117182809.GK5719@zn.tnic>
+ <33a1c6ee-0122-0b0c-ed2d-1578b29ef7c1@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3E32BC50-700F-471E-89FD-35414610B84E@nvidia.com>
+In-Reply-To: <33a1c6ee-0122-0b0c-ed2d-1578b29ef7c1@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 04:12:03PM -0500, Zi Yan wrote:
-> On 17 Nov 2020, at 16:05, Matthew Wilcox wrote:
-> 
-> > On Fri, Nov 13, 2020 at 05:38:01PM -0800, Roman Gushchin wrote:
-> >> On Fri, Nov 13, 2020 at 08:08:58PM -0500, Zi Yan wrote:
-> >>> Matthew recently converted split_page_owner to take nr instead of order.[1]
-> >>> But I am not
-> >>> sure why, since it seems to me that two call sites (__split_huge_page in
-> >>> mm/huge_memory.c and split_page in mm/page_alloc.c) can pass the order
-> >>> information.
-> >>
-> >> Yeah, I'm not sure why too. Maybe Matthew has some input here?
-> >> You can also pass new_nr, but IMO orders look so much better here.
-> >
-> > If only I'd written that information in the changelog ... oh wait, I did!
-> >
-> >     mm/page_owner: change split_page_owner to take a count
-> >
-> >     The implementation of split_page_owner() prefers a count rather than the
-> >     old order of the page.  When we support a variable size THP, we won't
-> >     have the order at this point, but we will have the number of pages.
-> >     So change the interface to what the caller and callee would prefer.
-> 
-> There are two callers, split_page in mm/page_alloc.c and __split_huge_page in
-> mm/huge_memory.c. The former has the page order. The latter has the page order
-> information before __split_huge_page_tail is called, so we can do
-> old_order = thp_order(head) instead of nr = thp_nr_page(head) and use old_order.
-> What am I missing there?
+On Tue, Nov 17, 2020 at 08:02:51PM +0100, Alexandre Chartre wrote:
+> No. This prevents the guest VM from gathering data from the host
+> kernel on the same cpu-thread. But there's no mitigation for a guest
+> VM running on a cpu-thread attacking another cpu-thread (which can be
+> running another guest VM or the host kernel) from the same cpu-core.
+> You cannot use flush/clear barriers because the two cpu-threads are
+> running in parallel.
 
-Sure, we could also do that.  But what I wrote was true at the time I
-wrote it.
+Now there's your justification for why you're doing this. It took a
+while...
 
+The "why" should always be part of the 0th message to provide
+reviewers/maintainers with answers to the question, what this pile of
+patches is all about. Please always add this rationale to your patchset
+in the future.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
