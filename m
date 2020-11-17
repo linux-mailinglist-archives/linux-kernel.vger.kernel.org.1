@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537AE2B6092
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E562B615A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729476AbgKQNKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:10:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39352 "EHLO mail.kernel.org"
+        id S1730681AbgKQNS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:18:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729447AbgKQNKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:10:15 -0500
+        id S1730665AbgKQNSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:18:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9103F2468F;
-        Tue, 17 Nov 2020 13:10:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70CBF206D5;
+        Tue, 17 Nov 2020 13:18:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618615;
-        bh=qkWavBfOqHxAJgW4ykEWsYQH2aj3VzXkm8hVXHhHPK4=;
+        s=default; t=1605619100;
+        bh=xeYpaxuO47D45EWr6Jn+S2bY+bmGk0f0UFnMwkgkJlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yHpan5QGIysdtsKX3Xs6wVTM1aQjuvuRTAkXNw1cmvdTWK0Bus0/TnDQBynk2mJtO
-         LPpTbsUIZuaPky9Q45ZcY4tP7bI3BP98MNtchLz+CrHHwM+4dybdwvDmTMLJG238ir
-         ib/dydaFZN1RHFXojvIOLshFRmn+EZVyoDzS4XPI=
+        b=WB8GryTwil2VdGSsQEtx5Ti2N8nHSE4GY0+gICzK1qHwb97QDtgZAGOxZlkRiNfZa
+         rruIKSp1eflYz6DJp2NrcaXvfF8F6S1K5SYmwVRV9VSkBZf60h/XiOT/SiNTpj/VzJ
+         UnEkRx/Npw6L2nrXHM71VXub640lwZHfTeByzdfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 27/78] gfs2: Free rd_bits later in gfs2_clear_rgrpd to fix use-after-free
-Date:   Tue, 17 Nov 2020 14:04:53 +0100
-Message-Id: <20201117122110.432797956@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Masashi Honma <masashi.honma@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.19 027/101] ath9k_htc: Use appropriate rs_datalen type
+Date:   Tue, 17 Nov 2020 14:04:54 +0100
+Message-Id: <20201117122114.416518225@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Masashi Honma <masashi.honma@gmail.com>
 
-[ Upstream commit d0f17d3883f1e3f085d38572c2ea8edbd5150172 ]
+commit 5024f21c159f8c1668f581fff37140741c0b1ba9 upstream.
 
-Function gfs2_clear_rgrpd calls kfree(rgd->rd_bits) before calling
-return_all_reservations, but return_all_reservations still dereferences
-rgd->rd_bits in __rs_deltree.  Fix that by moving the call to kfree below the
-call to return_all_reservations.
+kernel test robot says:
+drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:987:20: sparse: warning: incorrect type in assignment (different base types)
+drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:987:20: sparse:    expected restricted __be16 [usertype] rs_datalen
+drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:987:20: sparse:    got unsigned short [usertype]
+drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:988:13: sparse: warning: restricted __be16 degrades to integer
+drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:1001:13: sparse: warning: restricted __be16 degrades to integer
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Indeed rs_datalen has host byte order, so modify it's own type.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: cd486e627e67 ("ath9k_htc: Discard undersized packets")
+Signed-off-by: Masashi Honma <masashi.honma@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200808233258.4596-1-masashi.honma@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/gfs2/rgrp.c | 2 +-
+ drivers/net/wireless/ath/ath9k/htc_drv_txrx.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/rgrp.c b/fs/gfs2/rgrp.c
-index 0a80f66365492..0958f76ada6a3 100644
---- a/fs/gfs2/rgrp.c
-+++ b/fs/gfs2/rgrp.c
-@@ -730,9 +730,9 @@ void gfs2_clear_rgrpd(struct gfs2_sbd *sdp)
- 		}
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
+@@ -973,7 +973,7 @@ static bool ath9k_rx_prepare(struct ath9
+ 	struct ath_htc_rx_status *rxstatus;
+ 	struct ath_rx_status rx_stats;
+ 	bool decrypt_error = false;
+-	__be16 rs_datalen;
++	u16 rs_datalen;
+ 	bool is_phyerr;
  
- 		gfs2_free_clones(rgd);
-+		return_all_reservations(rgd);
- 		kfree(rgd->rd_bits);
- 		rgd->rd_bits = NULL;
--		return_all_reservations(rgd);
- 		kmem_cache_free(gfs2_rgrpd_cachep, rgd);
- 	}
- }
--- 
-2.27.0
-
+ 	if (skb->len < HTC_RX_FRAME_HEADER_SIZE) {
 
 
