@@ -2,114 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADBE2B6823
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFF52B6827
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387578AbgKQO7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:59:36 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:45561 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729164AbgKQO7f (ORCPT
+        id S1733088AbgKQPAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:00:41 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2118 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728662AbgKQPAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 09:59:35 -0500
-Received: by mail-ot1-f65.google.com with SMTP id k3so19621859otp.12;
-        Tue, 17 Nov 2020 06:59:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cBAt+SOaJCyDloFwjlRJ/ezQ7X0Co5bocslvDWABnKo=;
-        b=b38Hd9RXoZlJrwyEifprcBNhnyPD0ueBCSmtNTHtrpIYUf0GBU2Cf0ZwzqmpOgTucs
-         f0Z9KhPUUbaIM7soZImVeHXejbYz7Rhg/sd2tQQ6KHUz5ufTKYJaoXOURzmWuZgy1j72
-         d3mf4ypWG+W4hHgH1C+hmrVolKyC7DtPW1e1sME2lxmbsMUkwKkI/zhLBxZqKIkcBU8k
-         r5qMocerDpmdVsd52IIgwFEodbJ4VKskJ/OwZNFFqfHYBNOpxN2WOj2ji5HgiQaLZzkg
-         PEq87NzINjiBssNSlyiRc6DoMjK4SzvovKQztTSgrs8gliebwRMVb0bEeJ9LfSuoGtEb
-         XDAQ==
-X-Gm-Message-State: AOAM533gA9UzEjU3st3zHnTSf7cESpoufnPzHmWSTDCEXXInu7VflEkW
-        SxeoX51tBP+zrJVx4qGCUIQ7l70qhDhwz7u2k5Q=
-X-Google-Smtp-Source: ABdhPJx/vcIT9i+JK3UjFgMS/W4kUHQudvPXg2GomkpBC9XwnCKOGTckmJw4Uop1jB6m9rP6eHUSAYKAbjESxGwpBsA=
-X-Received: by 2002:a9d:171a:: with SMTP id i26mr3450409ota.260.1605625174900;
- Tue, 17 Nov 2020 06:59:34 -0800 (PST)
+        Tue, 17 Nov 2020 10:00:41 -0500
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cb8Gd5GrCz67DS4;
+        Tue, 17 Nov 2020 22:59:05 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 17 Nov 2020 16:00:38 +0100
+Received: from localhost (10.47.31.177) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 17 Nov
+ 2020 15:00:37 +0000
+Date:   Tue, 17 Nov 2020 15:00:29 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [RFC PATCH 4/9] cxl/mem: Map memory device registers
+Message-ID: <20201117150029.000018a9@Huawei.com>
+In-Reply-To: <20201111054356.793390-5-ben.widawsky@intel.com>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+        <20201111054356.793390-5-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20201105125524.4409-1-ionela.voinescu@arm.com>
-In-Reply-To: <20201105125524.4409-1-ionela.voinescu@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 17 Nov 2020 15:59:24 +0100
-Message-ID: <CAJZ5v0hucue4fwGgHF5-jXRn8kSt3hORyQ7Q4-azmZ8UBijUkw@mail.gmail.com>
-Subject: Re: [PATCH 0/8] cppc_cpufreq: fix, clarify and improve support
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Len Brown <lenb@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.31.177]
+X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 1:56 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
->
-> Hi guys,
->
-> I found myself staring a bit too much at this driver in the past weeks
-> and that's likely the cause for me coming up with this series of 8
-> patches that cleans up, clarifies and reworks parts of it, as follows:
->
->  - patches 1-3/8: trivial clean-up and renaming with the purpose to
->                   improve readability
->  - patch 4/8: replace previous per-cpu data structures with lists of
->               domains and CPUs to get more efficient storage for driver
->               data and fix previous issues in case of CPU hotplugging,
->               as discussed at [1].
->  - patches 5-6/8: a few fixes and clarifications: mostly making sure
->                   the behavior described in the comments and debug
->                   messages matches the code and there is clear
->                   indication of what is supported and how.
->  - patch 7/8: use the existing freqdomains_cpus attribute to inform
->               the user on frequency domains.
->  - patch 8/8: acpi: replace ALL coordination with NONE coordination
->                     when errors are find parsing the _PSD domains
->               (as described in the comments in the code).
->
-> Hopefully you'll find this useful for ease of maintenance and ease of
-> future development of the driver.
->
-> This functionality was tested on a Juno platform with modified _PSD
-> tables to test the functionality for all currently supported
-> coordination types: ANY, HW, NONE.
->
-> The current code is based on v5.10-rc2.
->
-> Thanks,
-> Ionela.
->
-> [1] https://lore.kernel.org/linux-pm/20200922162540.GB796@arm.com/
->
-> Ionela Voinescu (8):
->   cppc_cpufreq: fix misspelling, code style and readability issues
->   cppc_cpufreq: clean up cpu, cpu_num and cpunum variable use
->   cppc_cpufreq: simplify use of performance capabilities
->   cppc_cpufreq: replace per-cpu structures with lists
->   cppc_cpufreq: use policy->cpu as driver of frequency setting
->   cppc_cpufreq: clarify support for coordination types
->   cppc_cpufreq: expose information on frequency domains
->   acpi: fix NONE coordination for domain mapping failure
->
->  .../ABI/testing/sysfs-devices-system-cpu      |   3 +-
->  drivers/acpi/cppc_acpi.c                      | 126 +++---
->  drivers/acpi/processor_perflib.c              |   2 +-
->  drivers/cpufreq/cppc_cpufreq.c                | 358 +++++++++++-------
->  include/acpi/cppc_acpi.h                      |  14 +-
->  5 files changed, 277 insertions(+), 226 deletions(-)
->
-> --
+On Tue, 10 Nov 2020 21:43:51 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-All patches applied as 5.11 material (with a minor subject edit in the
-last patch), thanks!
+> All the necessary bits are initialized in order to find and map the
+> register space for CXL Memory Devices. This is accomplished by using the
+> Register Locator DVSEC (CXL 2.0 - 8.1.9.1) to determine which PCI BAR to
+> use, and how much of an offset from that BAR should be added.
+> 
+> If the memory device registers are found and mapped a new internal data
+> structure tracking device state is allocated.
+> 
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> ---
+>  drivers/cxl/mem.c | 68 +++++++++++++++++++++++++++++++++++++++++++----
+>  drivers/cxl/pci.h |  6 +++++
+>  2 files changed, 69 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index aa7d881fa47b..8d9b9ab6c5ea 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -7,9 +7,49 @@
+>  #include "pci.h"
+>  
+>  struct cxl_mem {
+> +	struct pci_dev *pdev;
+>  	void __iomem *regs;
+>  };
+>  
+> +static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo, u32 reg_hi)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct cxl_mem *cxlm;
+> +	void __iomem *regs;
+> +	u64 offset;
+> +	u8 bar;
+> +	int rc;
+> +
+> +	offset = ((u64)reg_hi << 32) | (reg_lo & 0xffff0000);
+> +	bar = reg_lo & 0x7;
+> +
+> +	/* Basic sanity check that BAR is big enough */
+> +	if (pci_resource_len(pdev, bar) < offset) {
+> +		dev_err(dev, "bar%d: %pr: too small (offset: %#llx)\n",
+> +				bar, &pdev->resource[bar], (unsigned long long) offset);
+> +		return ERR_PTR(-ENXIO);
+> +	}
+> +
+> +	rc = pcim_iomap_regions(pdev, 1 << bar, pci_name(pdev));
+> +	if (rc != 0) {
+> +		dev_err(dev, "failed to map registers\n");
+> +		return ERR_PTR(-ENXIO);
+> +	}
+> +
+> +	cxlm = devm_kzalloc(&pdev->dev, sizeof(*cxlm), GFP_KERNEL);
+> +	if (!cxlm) {
+> +		dev_err(dev, "No memory available\n");
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+> +	regs = pcim_iomap_table(pdev)[bar];
+> +	cxlm->pdev = pdev;
+> +	cxlm->regs = regs + offset;
+> +
+> +	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
+> +	return cxlm;
+> +}
+> +
+>  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+>  {
+>  	int pos;
+> @@ -34,9 +74,9 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+>  
+>  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  {
+> +	struct cxl_mem *cxlm = ERR_PTR(-ENXIO);
+>  	struct device *dev = &pdev->dev;
+> -	struct cxl_mem *cxlm;
+> -	int rc, regloc;
+> +	int rc, regloc, i;
+>  
+>  	rc = cxl_bus_prepared(pdev);
+>  	if (rc != 0) {
+> @@ -44,15 +84,33 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  		return rc;
+>  	}
+>  
+> +	rc = pcim_enable_device(pdev);
+> +	if (rc)
+> +		return rc;
+> +
+>  	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
+>  	if (!regloc) {
+>  		dev_err(dev, "register location dvsec not found\n");
+>  		return -ENXIO;
+>  	}
+> +	regloc += 0xc; /* Skip DVSEC + reserved fields */
+> +
+> +	for (i = regloc; i < regloc + 0x24; i += 8) {
+> +		u32 reg_lo, reg_hi;
 
-In the future, though, please CC all/any ACPI-related changes to the
-linux-acpi mailing list.
+Hmm. That "register offset low" naming in the spec is just designed to confuse
+given lots of other things packed in the register.
+Perhaps a comment here to say it contains other information?
+Also possibly some docs for cxl_mem_create to make the same point there.
+
+> +
+> +		pci_read_config_dword(pdev, i, &reg_lo);
+> +		pci_read_config_dword(pdev, i + 4, &reg_hi);
+> +
+> +		if (CXL_REGLOG_IS_MEMDEV(reg_lo)) {
+> +			cxlm = cxl_mem_create(pdev, reg_lo, reg_hi);
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (IS_ERR(cxlm))
+> +		return -ENXIO;
+>  
+> -	cxlm = devm_kzalloc(dev, sizeof(*cxlm), GFP_KERNEL);
+> -	if (!cxlm)
+> -		return -ENOMEM;
+> +	pci_set_drvdata(pdev, cxlm);
+
+I could be wrong but don't think this is used yet.  I'd prefer to see
+it introduced only when it is.  Makes it easy to match up without
+having to search back in earlier patches.
+
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/cxl/pci.h b/drivers/cxl/pci.h
+> index beb03921e6da..be87f62e9132 100644
+> --- a/drivers/cxl/pci.h
+> +++ b/drivers/cxl/pci.h
+> @@ -12,4 +12,10 @@
+>  #define PCI_DVSEC_ID_CXL	0x0
+>  #define PCI_DVSEC_ID_CXL_REGLOC	0x8
+>  
+> +#define CXL_REGLOG_RBI_EMPTY 0
+
+As in the QEMU patches, please add a comment on what RBI means
+here. It's non obvious even just after you've read through the spec!
+
+> +#define CXL_REGLOG_RBI_COMPONENT 1
+> +#define CXL_REGLOG_RBI_VIRT 2
+> +#define CXL_REGLOG_RBI_MEMDEV 3
+> +#define CXL_REGLOG_IS_MEMDEV(x) ((((x) >> 8) & 0xff) == CXL_REGLOG_RBI_MEMDEV)
+> +
+>  #endif /* __CXL_PCI_H__ */
+
