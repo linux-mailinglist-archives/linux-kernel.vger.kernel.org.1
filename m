@@ -2,163 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B0C2B55EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 245432B55F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731501AbgKQBAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 20:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730988AbgKQBAQ (ORCPT
+        id S1729102AbgKQBHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:07:06 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:35896 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgKQBHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:00:16 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD3FC0613D2
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 17:00:16 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id c66so15855124pfa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 16 Nov 2020 17:00:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=PuExbIj6CoeitWmQQjoOETDlqV6PNYzOVzDyJ83+bUM=;
-        b=QIK29EeQBxKfUcrXB/o0zASZ0enH3DTfkTyOtmZv/6Kul0xepHNOrP6vcXrexOXTZr
-         Jf7WPzyY+x36w8kkS6fijV02icwrKxoMEsT1/hK/7Xh4GJpYHbrJ1Lqf4YHYmRAKzw+2
-         pQRmRF1jExMSGgLX1pwTHAY5KixKcCiArNfhA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=PuExbIj6CoeitWmQQjoOETDlqV6PNYzOVzDyJ83+bUM=;
-        b=ffNvUqV3MPjD/WQ1cbokPEp6wKvuc9BWJYFHL/Hu48tCae33ZtQRQ0Uop9l4fyne5b
-         uNA9whP7Nx0lrl1xq0H2ilzuF3YRC6H3PjJgkP+CIbI2h364609ZxwOjyhMGGfGtE+Cx
-         St0/SJUKYmmmAgNg/DfNRDfu25GNhtubmnX8Fcwodult0y28Avt/G9/yvFaSHAVf4SOv
-         kMT2rlNOzN50FxfMycmeobHLpo9+Y8B/yCYwOeMJIORkJuuQbRnzQ0aHoj+kjApXbgj1
-         DIkz+BIB686mseA6lVM7wj8c/DygCpfQfBAeXYQHwGCW7HAOuEINXMNiYe6XVB2Hn0da
-         NueA==
-X-Gm-Message-State: AOAM533hfefu6ucnaiIJC56rv3HHdyd+Itypn5rVxAZpjGMHRr+jQu+W
-        Lro24TPC9ZDyQ0WXh7inQmqGuw==
-X-Google-Smtp-Source: ABdhPJzohwSM2vGqzunfEj57/N7SS+yFjY7d2u20TWgXUDIMq5bsYUDz2+kVu7HVvVFWXPnuOH+lQw==
-X-Received: by 2002:a63:565d:: with SMTP id g29mr1448743pgm.249.1605574815376;
-        Mon, 16 Nov 2020 17:00:15 -0800 (PST)
-Received: from chromium.org ([100.99.132.239])
-        by smtp.gmail.com with ESMTPSA id i6sm641469pjt.49.2020.11.16.17.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 17:00:14 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 16 Nov 2020 20:07:05 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kepSU-00Ds8n-El; Mon, 16 Nov 2020 18:06:58 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kepST-002qfT-AH; Mon, 16 Nov 2020 18:06:58 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Thomas Gleixner <tglx@linutronix.de>, lukas@wunner.de,
+        linux-pci@vger.kernel.org, kernelfans@gmail.com,
+        andi@firstfloor.org, hpa@zytor.com, bhe@redhat.com, x86@kernel.org,
+        okaya@kernel.org, mingo@redhat.com, jay.vosburgh@canonical.com,
+        dyoung@redhat.com, gavin.guo@canonical.com, bp@alien8.de,
+        bhelgaas@google.com, Guowen Shan <gshan@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel@gpiccoli.net,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ddstreet@canonical.com, vgoyal@redhat.com
+References: <20201117001907.GA1342260@bjorn-Precision-5520>
+Date:   Mon, 16 Nov 2020 19:06:40 -0600
+In-Reply-To: <20201117001907.GA1342260@bjorn-Precision-5520> (Bjorn Helgaas's
+        message of "Mon, 16 Nov 2020 18:19:07 -0600")
+Message-ID: <87h7poeqqn.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201113222639.18786-1-khsieh@codeaurora.org>
-References: <20201113222639.18786-1-khsieh@codeaurora.org>
-Subject: Re: [PATCH] drm/msm/dp: fix connect/disconnect handled at ir_hdp
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Date:   Mon, 16 Nov 2020 17:00:12 -0800
-Message-ID: <160557481298.60232.17821932910000059522@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain
+X-XM-SPF: eid=1kepST-002qfT-AH;;;mid=<87h7poeqqn.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX188ydrQYzwMz6XyNvsZC3ptsCeXvn1fyKU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4679]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Bjorn Helgaas <helgaas@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 547 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 9 (1.7%), b_tie_ro: 8 (1.4%), parse: 1.45 (0.3%),
+        extract_message_metadata: 5 (0.9%), get_uri_detail_list: 2.2 (0.4%),
+        tests_pri_-1000: 6 (1.1%), tests_pri_-950: 1.73 (0.3%),
+        tests_pri_-900: 1.48 (0.3%), tests_pri_-90: 98 (17.8%), check_bayes:
+        95 (17.5%), b_tokenize: 8 (1.4%), b_tok_get_all: 9 (1.6%),
+        b_comp_prob: 2.6 (0.5%), b_tok_touch_all: 72 (13.2%), b_finish: 1.00
+        (0.2%), tests_pri_0: 401 (73.4%), check_dkim_signature: 0.87 (0.2%),
+        check_dkim_adsp: 2.7 (0.5%), poll_dns_idle: 0.51 (0.1%), tests_pri_10:
+        3.1 (0.6%), tests_pri_500: 8 (1.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2020-11-13 14:26:39)
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp=
-/dp_display.c
-> index 27e7e27b8b90..4e84f500b721 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -279,13 +279,25 @@ static void dp_display_send_hpd_event(struct msm_dp=
- *dp_display)
->         drm_helper_hpd_irq_event(connector->dev);
->  }
-> =20
-> -static int dp_display_send_hpd_notification(struct dp_display_private *d=
-p,
-> -                                           bool hpd)
-> +
-> +static void dp_display_set_encoder_mode(struct dp_display_private *dp)
->  {
-> -       static bool encoder_mode_set;
->         struct msm_drm_private *priv =3D dp->dp_display.drm_dev->dev_priv=
-ate;
->         struct msm_kms *kms =3D priv->kms;
-> +       static bool encoder_mode_set;
+Bjorn Helgaas <helgaas@kernel.org> writes:
 
-Can this be stored in the dp_display_private structure instead? No
-singletons please.
+> I don't think passing the device information to the kdump kernel is
+> really practical.  The kdump kernel would use it to do PCI config
+> writes to disable MSIs before enabling IRQs, and it doesn't know how
+> to access config space that early.
 
-> +
-> +       if (!encoder_mode_set && dp->dp_display.encoder &&
-> +                               kms->funcs->set_encoder_mode) {
-> +               kms->funcs->set_encoder_mode(kms,
-> +                               dp->dp_display.encoder, false);
-> =20
-> +               encoder_mode_set =3D true;
-> +       }
-> +}
-> +
-> +static int dp_display_send_hpd_notification(struct dp_display_private *d=
-p,
-> +                                           bool hpd)
-> +{
->         if ((hpd && dp->dp_display.is_connected) ||
->                         (!hpd && !dp->dp_display.is_connected)) {
->                 DRM_DEBUG_DP("HPD already %s\n", (hpd ? "on" : "off"));
-> @@ -491,17 +487,29 @@ static int dp_display_usbpd_attention_cb(struct dev=
-ice *dev)
->         if (!rc) {
->                 sink_request =3D dp->link->sink_request;
->                 if (sink_request & DS_PORT_STATUS_CHANGED) {
-> -                       /* same as unplugged */
-> -                       hpd->hpd_high =3D 0;
-> -                       dp->hpd_state =3D ST_DISCONNECT_PENDING;
-> -                       dp_add_event(dp, EV_USER_NOTIFICATION, false, 0);
-> -               }
-> -
-> -               rc =3D dp_display_handle_irq_hpd(dp);
-> -
-> -               if (!rc && (sink_request & DS_PORT_STATUS_CHANGED)) {
-> -                       hpd->hpd_high =3D 1;
-> -                       dp->hpd_state =3D ST_CONNECT_PENDING;
-> +                       if (dp_display_is_sink_count_zero(dp)) {
-> +                               DRM_DEBUG_DP("sink count is zero, nothing=
- to do\n");
-> +                               if (dp->hpd_state !=3D ST_DISCONNECTED) {
-> +                                       hpd->hpd_high =3D 0;
-> +                                       dp->hpd_state =3D ST_DISCONNECT_P=
-ENDING;
-> +                                       dp_add_event(dp, EV_USER_NOTIFICA=
-TION, false, 0);
-> +                               }
-> +                               rc =3D -ENOTCONN;
-> +                       } else {
-> +                               if (dp->hpd_state =3D=3D ST_DISCONNECTED)=
- {
-> +                                       hpd->hpd_high =3D 1;
+I don't think it is particularly practical either.  But in practice
+on x86 it is either mmio writes or 0xcf8 style writes and we could
+pass a magic table that would have all of that information.
 
-This else and then if can be an else if, right?
+> We could invent special "early config access" things, but that gets
+> really complicated really fast.  Config access depends on ACPI MCFG
+> tables, firmware interfaces, and in many cases, on the native host
+> bridge drivers in drivers/pci/controllers/.
 
-> +                                       dp->hpd_state =3D ST_CONNECT_PEND=
-ING;
-> +
-> +                                       rc =3D dp_display_process_hpd_hig=
-h(dp);
-> +                                       if (rc) {
-> +                                               hpd->hpd_high =3D 0;
-> +                                               dp->hpd_state =3D ST_DISC=
-ONNECTED;
-> +                                       }
-> +                               }
-> +                       }
-> +               } else {
-> +                       if (!dp_display_is_ds_bridge(dp->panel))
-> +                               rc =3D dp_display_handle_irq_hpd(dp);
->                 }
->         }
->
+I do agree that the practical problem with passing information early
+is that gets us into the weeds and creates code that we only care
+about in the case of kexec-on-panic.  It is much better to make the
+existing code more robust, so that we reduce our dependency on firmware
+doing the right thing.
+
+> I think we need to disable MSIs in the crashing kernel before the
+> kexec.  It adds a little more code in the crash_kexec() path, but it
+> seems like a worthwhile tradeoff.
+
+Disabling MSIs in the b0rken kernel is not possible.
+
+Walking the device tree or even a significant subset of it hugely
+decreases the chances that we will run into something that is incorrect
+in the known broken kernel.  I expect the code to do that would double
+or triple the amount of code that must be executed in the known broken
+kernel.  The last time something like that happened (switching from xchg
+to ordinary locks) we had cases that stopped working.  Walking all of
+the pci devices in the system is much more invasive.
+
+That is not to downplay the problems of figuring out how to disable
+things in early boot.
+
+My two top candidates are poking the IOMMUs early to shut things off,
+and figuring out if we can delay enabling interrupts until we have
+initialized pci.
+
+Poking at IOMMUs early should work for most systems with ``enterprise''
+hardware.  Systems where people care about kdump the most.
+
+Eric
