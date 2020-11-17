@@ -2,145 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513A12B5F4C
+	by mail.lfdr.de (Postfix) with ESMTP id BD0E72B5F4D
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 13:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbgKQMpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 07:45:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQMpL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 07:45:11 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4526BC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 04:45:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=L6YLBlkW6W7l/DjGRUeegpN2Sts9zkEATW3WfyM92jI=; b=zhXiGoKud8aVcPw381ah8troIn
-        T2mDi2pD03wus+BOUUJm7izR3PDf/hlfZAA7f+SoOK37Qq35HT6PsrXwuVEbKI3TScvpqBy4daJ1B
-        tRt9uy4tDgs1uT5yocxmUWt47eAa1tZ6rEzeD3knoraVzb+9n5goVI1itaIdK/tBwKAKukKES+WGZ
-        WNWgZoDmvxagRwhvYmUXKRTUQmkaXQQ1dU+UL+IKaPonPQkxCV2jzylp+C+D8neGTaI/6XBk1efCc
-        9TAPcQWY23Hf7WyXLSZXM2rpryr+76PePxcl5KT1e+4biHMcoEyfBQQd7YweZiw35OBoK/6cgEda1
-        A2SOMvYg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kf0M5-0006yv-6b; Tue, 17 Nov 2020 12:45:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8B3313069B1;
-        Tue, 17 Nov 2020 13:45:03 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6EF40203DDBF7; Tue, 17 Nov 2020 13:45:03 +0100 (CET)
-Date:   Tue, 17 Nov 2020 13:45:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 1/2] kthread: Move prio/affinite change into the newly
- created thread
-Message-ID: <20201117124503.GI3121406@hirez.programming.kicks-ass.net>
-References: <20201110113848.801379-1-bigeasy@linutronix.de>
- <20201110113848.801379-2-bigeasy@linutronix.de>
+        id S1728098AbgKQMpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 07:45:17 -0500
+Received: from mga18.intel.com ([134.134.136.126]:1159 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgKQMpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 07:45:15 -0500
+IronPort-SDR: 4+2BqcwkUBwZer24G03E/XY1D8mu6UHbMSPqdTdEhV3DSqt5iFtf+Yo0w9TVvNQ3KJqn/Ksjux
+ 016Jr/8Z7DOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="158690181"
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="158690181"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 04:45:14 -0800
+IronPort-SDR: CWh7jgNj/QKRbB51DDHqaVhuH+1ZYb4GB01V6RyBrdqVqoA3CnDT2wBgRF84toMHKkdiv2gBDw
+ uyEftAor/Sjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="430468045"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 17 Nov 2020 04:45:11 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 17 Nov 2020 14:45:10 +0200
+Date:   Tue, 17 Nov 2020 14:45:10 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, enric.balletbo@collabora.com,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH v3 10/11] platform/chrome: cros_ec_typec: Register SOP'
+ cable plug
+Message-ID: <20201117124510.GJ3437448@kuha.fi.intel.com>
+References: <20201116201150.2919178-1-pmalani@chromium.org>
+ <20201116201150.2919178-11-pmalani@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201110113848.801379-2-bigeasy@linutronix.de>
+In-Reply-To: <20201116201150.2919178-11-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 12:38:47PM +0100, Sebastian Andrzej Siewior wrote:
-> With enabled threaded interrupts the nouveau driver reported the
-> following:
-> | Chain exists of:
-> |   &mm->mmap_lock#2 --> &device->mutex --> &cpuset_rwsem
-> |
-> |  Possible unsafe locking scenario:
-> |
-> |        CPU0                    CPU1
-> |        ----                    ----
-> |   lock(&cpuset_rwsem);
-> |                                lock(&device->mutex);
-> |                                lock(&cpuset_rwsem);
-> |   lock(&mm->mmap_lock#2);
+On Mon, Nov 16, 2020 at 12:11:56PM -0800, Prashant Malani wrote:
+> In order to register cable alternate modes, we need to first register a
+> plug object. Use the Type C connector class framework to register a SOP'
+> plug for this purpose.
 > 
-> The device->mutex is nvkm_device::mutex.
+> Since a cable and plug go hand in hand, we can handle the registration
+> and removal together.
 > 
-> Unblocking the lockchain at `cpuset_rwsem' is probably the easiest thing
-> to do.
-> Move the priority reset to the start of the newly created thread.
-> 
-> Fixes: 710da3c8ea7df ("sched/core: Prevent race condition between cpuset and __sched_setscheduler()")
-> Reported-by: Mike Galbraith <efault@gmx.de>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Link: https://lkml.kernel.org/r/a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
 
-Moo... yes this is certainly the easiest solution, because nouveau is a
-horrible rats nest. But when I spoke to Greg KH about this, he suggested
-nouveau ought to be fixed.
+FWIW:
 
-Ben, I got terminally lost when trying to untangle nouvea init, is there
-any chance this can be fixed to not hold that nvkm_device::mutex thing
-while doing request_irq() ?
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
 > ---
->  kernel/kthread.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 933a625621b8d..4a31127c6efbf 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -243,6 +243,7 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
->  
->  static int kthread(void *_create)
+> Changes in v3:
+> - Re-arranged patch order and combined it with related series of
+>   patches.
+> 
+> No version v2.
+> 
+>  drivers/platform/chrome/cros_ec_typec.c | 35 ++++++++++++++++++-------
+>  1 file changed, 26 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index ad5e37bfd45d..d2e154ae2362 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -45,6 +45,8 @@ struct cros_typec_port {
+>  	struct typec_capability caps;
+>  	struct typec_partner *partner;
+>  	struct typec_cable *cable;
+> +	/* SOP' plug. */
+> +	struct typec_plug *plug;
+>  	/* Port partner PD identity info. */
+>  	struct usb_pd_identity p_identity;
+>  	/* Port cable PD identity info. */
+> @@ -222,6 +224,8 @@ static void cros_typec_remove_cable(struct cros_typec_data *typec,
 >  {
-> +	static const struct sched_param param = { .sched_priority = 0 };
->  	/* Copy data: it's on kthread's stack */
->  	struct kthread_create_info *create = _create;
->  	int (*threadfn)(void *data) = create->threadfn;
-> @@ -273,6 +274,13 @@ static int kthread(void *_create)
->  	init_completion(&self->parked);
->  	current->vfork_done = &self->exited;
+>  	struct cros_typec_port *port = typec->ports[port_num];
 >  
-> +	/*
-> +	 * The new thread inherited kthreadd's priority and CPU mask. Reset
-> +	 * back to default in case they have been changed.
-> +	 */
-> +	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
-> +	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_KTHREAD));
+> +	typec_unregister_plug(port->plug);
+> +	port->plug = NULL;
+>  	typec_unregister_cable(port->cable);
+>  	port->cable = NULL;
+>  	memset(&port->c_identity, 0, sizeof(port->c_identity));
+> @@ -712,7 +716,8 @@ static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int p
+>  {
+>  	struct cros_typec_port *port = typec->ports[port_num];
+>  	struct ec_response_typec_discovery *disc = port->disc_data;
+> -	struct typec_cable_desc desc = {};
+> +	struct typec_cable_desc c_desc = {};
+> +	struct typec_plug_desc p_desc;
+>  	struct ec_params_typec_discovery req = {
+>  		.port = port_num,
+>  		.partner_type = TYPEC_PARTNER_SOP_PRIME,
+> @@ -735,32 +740,44 @@ static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int p
+>  		cable_plug_type = VDO_TYPEC_CABLE_TYPE(port->c_identity.vdo[0]);
+>  		switch (cable_plug_type) {
+>  		case CABLE_ATYPE:
+> -			desc.type = USB_PLUG_TYPE_A;
+> +			c_desc.type = USB_PLUG_TYPE_A;
+>  			break;
+>  		case CABLE_BTYPE:
+> -			desc.type = USB_PLUG_TYPE_B;
+> +			c_desc.type = USB_PLUG_TYPE_B;
+>  			break;
+>  		case CABLE_CTYPE:
+> -			desc.type = USB_PLUG_TYPE_C;
+> +			c_desc.type = USB_PLUG_TYPE_C;
+>  			break;
+>  		case CABLE_CAPTIVE:
+> -			desc.type = USB_PLUG_CAPTIVE;
+> +			c_desc.type = USB_PLUG_CAPTIVE;
+>  			break;
+>  		default:
+> -			desc.type = USB_PLUG_NONE;
+> +			c_desc.type = USB_PLUG_NONE;
+>  		}
+> -		desc.active = PD_IDH_PTYPE(port->c_identity.id_header) == IDH_PTYPE_ACABLE;
+> +		c_desc.active = PD_IDH_PTYPE(port->c_identity.id_header) == IDH_PTYPE_ACABLE;
+>  	}
+>  
+> -	desc.identity = &port->c_identity;
+> +	c_desc.identity = &port->c_identity;
+>  
+> -	port->cable = typec_register_cable(port->port, &desc);
+> +	port->cable = typec_register_cable(port->port, &c_desc);
+>  	if (IS_ERR(port->cable)) {
+>  		ret = PTR_ERR(port->cable);
+>  		port->cable = NULL;
+> +		goto sop_prime_disc_exit;
+> +	}
 > +
->  	/* OK, tell user we're spawned, wait for stop or wakeup */
->  	__set_current_state(TASK_UNINTERRUPTIBLE);
->  	create->result = current;
-> @@ -370,7 +378,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+> +	p_desc.index = TYPEC_PLUG_SOP_P;
+> +	port->plug = typec_register_plug(port->cable, &p_desc);
+> +	if (IS_ERR(port->plug)) {
+> +		ret = PTR_ERR(port->plug);
+> +		port->plug = NULL;
+> +		goto sop_prime_disc_exit;
 >  	}
->  	task = create->result;
->  	if (!IS_ERR(task)) {
-> -		static const struct sched_param param = { .sched_priority = 0 };
->  		char name[TASK_COMM_LEN];
 >  
->  		/*
-> @@ -379,13 +386,6 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
->  		 */
->  		vsnprintf(name, sizeof(name), namefmt, args);
->  		set_task_comm(task, name);
-> -		/*
-> -		 * root may have changed our (kthreadd's) priority or CPU mask.
-> -		 * The kernel thread should not inherit these properties.
-> -		 */
-> -		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
-> -		set_cpus_allowed_ptr(task,
-> -				     housekeeping_cpumask(HK_FLAG_KTHREAD));
->  	}
->  	kfree(create);
->  	return task;
+> +	return 0;
+> +
+>  sop_prime_disc_exit:
+> +	cros_typec_remove_cable(typec, port_num);
+>  	return ret;
+>  }
+>  
 > -- 
-> 2.29.2
-> 
+> 2.29.2.299.gdc1121823c-goog
+
+-- 
+heikki
