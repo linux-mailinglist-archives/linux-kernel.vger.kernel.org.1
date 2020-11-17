@@ -2,128 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE202B6938
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACBC2B6939
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgKQP6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:58:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35552 "EHLO mail.kernel.org"
+        id S1726871AbgKQP7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:59:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgKQP6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:58:42 -0500
-Received: from kernel.org (unknown [77.125.7.142])
+        id S1726844AbgKQP7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 10:59:09 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3B60238E6;
-        Tue, 17 Nov 2020 15:58:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2030238E6;
+        Tue, 17 Nov 2020 15:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605628721;
-        bh=9is+MjALfTGepw57FVx0JouySPxlzfHt3CDVLQ4Unmk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p8sWlliyDkUNYoXZjFWSoiuQvdgEZNX+2SxP4AeRu3E6J1nQ7q1oTfz+6Ip2yE0wn
-         cmwAFaK1S/AmhU4S6q0bHx0jhCupiexg9VCuzKWD3rTOMD16YOJ0wT4exivwNxppfK
-         VG9oFzcdjadQK9Y3xyHqBPePYLUqwIL58wy/neZo=
-Date:   Tue, 17 Nov 2020 17:58:29 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v8 2/9] mmap: make mlock_future_check() global
-Message-ID: <20201117155829.GJ370813@kernel.org>
-References: <20201112190827.GP4758@kernel.org>
- <7A16CA44-782D-4ABA-8D93-76BDD0A90F94@redhat.com>
- <20201115082625.GT4758@kernel.org>
- <d47fdd2e-a8fa-6792-ca8f-e529be76340c@redhat.com>
+        s=default; t=1605628748;
+        bh=OeZuhpRt7mealRHY0C4vDv9bs04SbwLGlMifQU9q21Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iXspfp0YYZB3UouRnWw9JZQ4X+0k4ynTPNvptBdnPZdooEs7Qvz8Xi8N/guy5w9Sz
+         LeqRFFspORqE9S0+xSjjhyf4JpkTVTyvhdUADPX98zPocReedbjiwQ3YdcTLb8dHqT
+         TtWCpNpgcttz5lIaPjH/9YbnCjGKqFjwYZcyvxJA=
+Date:   Tue, 17 Nov 2020 09:59:04 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] iwlwifi: dvm: Fix fall-through warnings for Clang
+Message-ID: <20201117155904.GA14551@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d47fdd2e-a8fa-6792-ca8f-e529be76340c@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 04:09:39PM +0100, David Hildenbrand wrote:
-> On 15.11.20 09:26, Mike Rapoport wrote:
-> > On Thu, Nov 12, 2020 at 09:15:18PM +0100, David Hildenbrand wrote:
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly using the fallthrough pseudo-keyword as a
+replacement for a number of "fall through" markings.
 
-...
+Notice that Clang doesn't recognize "fall through" comments as
+implicit fall-through.
 
-> > My thinking was that since secretmem does what mlock() does wrt
-> > swapability, it should at least obey the same limit, i.e.
-> > RLIMIT_MEMLOCK.
-> 
-> Right, but at least currently, it behaves like any other CMA allocation
-> (IIRC they are all unmovable and, therefore, not swappable). In the future,
-> if pages would be movable (but not swappable), I guess it might makes more
-> sense. I assume we never ever want to swap secretmem.
-> 
-> "man getrlimit" states for RLIMIT_MEMLOCK:
-> 
-> "This is the maximum number of bytes of memory that may be
->  locked into RAM.  [...] This limit affects
->  mlock(2), mlockall(2), and the mmap(2) MAP_LOCKED operation.
->  Since Linux 2.6.9, it also affects the shmctl(2) SHM_LOCK op‐
->  eration [...]"
-> 
-> So that place has to be updated as well I guess? Otherwise this might come
-> as a surprise for users.
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c | 2 +-
+ drivers/net/wireless/intel/iwlwifi/dvm/rx.c       | 6 +++---
+ drivers/net/wireless/intel/iwlwifi/dvm/scan.c     | 2 +-
+ drivers/net/wireless/intel/iwlwifi/dvm/sta.c      | 2 +-
+ drivers/net/wireless/intel/iwlwifi/dvm/tx.c       | 2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
 
-Sure.
-
-> > 
-> > > E.g., we also don‘t
-> > > account for gigantic pages - which might be allocated from CMA and are
-> > > not swappable.
-> > Do you mean gigantic pages in hugetlbfs?
-> 
-> Yes
-> 
-> > It seems to me that hugetlbfs accounting is a completely different
-> > story.
-> 
-> I'd say it is right now comparable to secretmem - which is why I though
-> similar accounting would make sense.
-
-IMHO, using RLIMIT_MEMLOCK and memcg is a more straightforward way than
-a custom cgroup.
-
-And if we'll see a need for additional mechanism, we can always add it.
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c
+index 423d3c396b2d..75e7665773c5 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/mac80211.c
+@@ -619,7 +619,7 @@ static int iwlagn_mac_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 	switch (key->cipher) {
+ 	case WLAN_CIPHER_SUITE_TKIP:
+ 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_MMIC;
+-		/* fall through */
++		fallthrough;
+ 	case WLAN_CIPHER_SUITE_CCMP:
+ 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV;
+ 		break;
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/rx.c b/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
+index 9d55ece05020..dd251190f68e 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
+@@ -582,7 +582,7 @@ static int iwlagn_set_decrypted_flag(struct iwl_priv *priv,
+ 		if ((decrypt_res & RX_RES_STATUS_DECRYPT_TYPE_MSK) ==
+ 		    RX_RES_STATUS_BAD_KEY_TTAK)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	case RX_RES_STATUS_SEC_TYPE_WEP:
+ 		if ((decrypt_res & RX_RES_STATUS_DECRYPT_TYPE_MSK) ==
+ 		    RX_RES_STATUS_BAD_ICV_MIC) {
+@@ -591,7 +591,7 @@ static int iwlagn_set_decrypted_flag(struct iwl_priv *priv,
+ 			IWL_DEBUG_RX(priv, "Packet destroyed\n");
+ 			return -1;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case RX_RES_STATUS_SEC_TYPE_CCMP:
+ 		if ((decrypt_res & RX_RES_STATUS_DECRYPT_TYPE_MSK) ==
+ 		    RX_RES_STATUS_DECRYPT_OK) {
+@@ -720,7 +720,7 @@ static u32 iwlagn_translate_rx_status(struct iwl_priv *priv, u32 decrypt_in)
+ 			decrypt_out |= RX_RES_STATUS_BAD_KEY_TTAK;
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		if (!(decrypt_in & RX_MPDU_RES_STATUS_ICV_OK))
+ 			decrypt_out |= RX_RES_STATUS_BAD_ICV_MIC;
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/scan.c b/drivers/net/wireless/intel/iwlwifi/dvm/scan.c
+index 832fcbb787e9..c4ecf6ed2186 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/scan.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/scan.c
+@@ -405,7 +405,7 @@ static u16 iwl_limit_dwell(struct iwl_priv *priv, u16 dwell_time)
+ 		limit = (limits[1] * 98) / 100 - IWL_CHANNEL_TUNE_TIME * 2;
+ 		limit /= 2;
+ 		dwell_time = min(limit, dwell_time);
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		limit = (limits[0] * 98) / 100 - IWL_CHANNEL_TUNE_TIME * 2;
+ 		limit /= n_active;
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/sta.c b/drivers/net/wireless/intel/iwlwifi/dvm/sta.c
+index e622948661fa..ddc14059b07d 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/sta.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/sta.c
+@@ -1109,7 +1109,7 @@ static int iwlagn_send_sta_key(struct iwl_priv *priv,
+ 		break;
+ 	case WLAN_CIPHER_SUITE_WEP104:
+ 		key_flags |= STA_KEY_FLG_KEY_SIZE_MSK;
+-		/* fall through */
++		fallthrough;
+ 	case WLAN_CIPHER_SUITE_WEP40:
+ 		key_flags |= STA_KEY_FLG_WEP;
+ 		memcpy(&sta_cmd.key.key[3], keyconf->key, keyconf->keylen);
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/tx.c b/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
+index e3962bb52328..847b8e07f81c 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
+@@ -210,7 +210,7 @@ static void iwlagn_tx_cmd_build_hwcrypto(struct iwl_priv *priv,
  
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
-> 
-
+ 	case WLAN_CIPHER_SUITE_WEP104:
+ 		tx_cmd->sec_ctl |= TX_CMD_SEC_KEY128;
+-		/* fall through */
++		fallthrough;
+ 	case WLAN_CIPHER_SUITE_WEP40:
+ 		tx_cmd->sec_ctl |= (TX_CMD_SEC_WEP |
+ 			(keyconf->keyidx & TX_CMD_SEC_MSK) << TX_CMD_SEC_SHIFT);
 -- 
-Sincerely yours,
-Mike.
+2.27.0
+
