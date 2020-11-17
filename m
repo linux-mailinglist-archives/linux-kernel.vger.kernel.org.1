@@ -2,167 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3FB2B5909
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5636D2B5913
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 06:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbgKQFJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 00:09:03 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:55782 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgKQFJC (ORCPT
+        id S1726146AbgKQFVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 00:21:46 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:7647 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQFVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 00:09:02 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH543Qe103066;
-        Tue, 17 Nov 2020 05:08:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
- message-id : date : from : sender : to : cc : subject : references :
- in-reply-to : content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=JPFAvW3nwCtBjHj95lKDgrg4Zm+QWmvC+LDlS0/00vw=;
- b=y31QKlvUzrn25sVA1aRn/t40CHbjKiqW7XG0rdE9WcCFwV+gncPj5B5G352Z6k704Gn7
- V7KvIhFWqtZVl+YzyX4O3P8Gz75JSntv2/O78xfVONnHZy+W7dMqhl2gs8MUi+I/93oe
- Ye91eElxDmLGy0HoWEp5h3J9ihZLsXxcqlNhBxVU/W2dyyuxGK9hnF/aae6UIOgU3/nZ
- x2TgnGh8ig7FTIy6nGO1pAa4VHgDu9NYKCcOhPvexzoBzNCUoM8w+hW/EmqJiCJGO2pV
- xCy4I6PnaQqrnUWU7vmJDmI4qTchVRoEz+1j99rS2DdoVxdl7AbUMqsxDcMfKg2FDFKb iA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 34t7vn0gqc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 17 Nov 2020 05:08:53 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH51Rcc110521;
-        Tue, 17 Nov 2020 05:08:53 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 34ts0qcuhe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 05:08:52 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AH58p0I010793;
-        Tue, 17 Nov 2020 05:08:51 GMT
+        Tue, 17 Nov 2020 00:21:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1605590505; x=1637126505;
+  h=from:to:cc:references:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=vHpNoShI7LbC3muKG5w8nt5MVX3+Fnn0Z+E1/h5TXO8=;
+  b=EupYrJrv7p7eTxZlJqf+EjiRA7+7THf3IZvYa9HOdkXyn0v81x7DmKli
+   yaPzJFirDUPo5qfixbHersh+F6NKvHGn850ChbiXnBaxct0tyW+x4ble+
+   DOas4iHlTowVgoIbxThdYCgjZBqRlrtcRixEGHje1vaqqeEObg1y0YrA3
+   I=;
+X-IronPort-AV: E=Sophos;i="5.77,484,1596499200"; 
+   d="scan'208";a="94769631"
+Subject: Re: linux-next: build warning after merge of the tip tree
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 17 Nov 2020 05:21:38 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id ECF44B2C30;
+        Tue, 17 Nov 2020 05:21:35 +0000 (UTC)
+Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 17 Nov 2020 05:21:35 +0000
+Received: from uc18d6cc16d755e.ant.amazon.com (10.43.161.237) by
+ EX13d01UWB002.ant.amazon.com (10.43.161.136) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 17 Nov 2020 05:21:33 +0000
+From:   Balbir Singh <sblbir@amazon.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Linux Next Mailing List" <linux-next@vger.kernel.org>
+References: <20201028142300.34ed89b1@canb.auug.org.au>
+ <4614a858-3719-f8c0-3543-faab3524b8b8@amazon.com>
+Message-ID: <7590a38a-12f1-3648-f5c0-6bc9773e7a9a@amazon.com>
+Date:   Tue, 17 Nov 2020 16:21:31 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <48883f4d-edfa-4a8d-9d45-aa5225f82e57@default>
-Date:   Mon, 16 Nov 2020 21:08:45 -0800 (PST)
-From:   Gulam Mohamed <gulam.mohamed@oracle.com>
-Sender: Gulam Mohamed <gulam.mohamed@oracle.com>
-To:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Martin Petersen <martin.petersen@oracle.com>,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Junxiao Bi <junxiao.bi@oracle.com>
-Subject: RE: [PATCH] iscsi: Do Not set param when sock is NULL
-References: <1a8aaa17-b1a3-4d6a-b87a-ff49d61a0d0b@default>
- <9df96d73-015c-4de6-96fa-2f315b066909@default>
-In-Reply-To: <9df96d73-015c-4de6-96fa-2f315b066909@default>
-X-Priority: 3
-X-Mailer: Oracle Beehive Extensions for Outlook 2.0.1.9.1  (1003210) [OL
- 16.0.5056.0 (x86)]
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170036
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011170036
+In-Reply-To: <4614a858-3719-f8c0-3543-faab3524b8b8@amazon.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D49UWC003.ant.amazon.com (10.43.162.10) To
+ EX13d01UWB002.ant.amazon.com (10.43.161.136)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle reminder.
 
-Regards,
-Gulam Mohamed.
 
------Original Message-----
-From: Gulam Mohamed=20
-Sent: Thursday, November 5, 2020 11:11 AM
-To: Lee Duncan <lduncan@suse.com>; Chris Leech <cleech@redhat.com>; James E=
-.J. Bottomley <jejb@linux.ibm.com>; Martin K. Petersen <martin.petersen@ora=
-cle.com>; open-iscsi@googlegroups.com; linux-scsi@vger.kernel.org; linux-ke=
-rnel@vger.kernel.org
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Subject: [PATCH] iscsi: Do Not set param when sock is NULL
+On 11/16/20 9:23 AM, Balbir Singh wrote:
+> 
+> 
+> On 10/28/20 2:23 PM, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> After merging the tip tree, today's linux-next build (htmldocs) produced
+>> this warning:
+>>
+>> Documentation/admin-guide/hw-vuln/l1d_flush.rst:25: WARNING: undefined label: documentation/userspace-api/spec_ctrl.rst (if the link has no caption the label must precede a section header)
+>>
+>> Introduced by commit
+>>
+>>   767d46ab566d ("Documentation: Add L1D flushing Documentation")
+>>
+> 
+> Looking at it thanks, I am no expert with sphinx, but it seems like I need angular braces around the link
+> 
+> Balbir Singh.
+> 
 
-Description
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-1. This Kernel panic could be due to a timing issue when there is a race be=
-tween the sync thread and the initiator was processing of a login response =
-from the target. The session re-open can be invoked from two places
-          a.=09Sessions sync thread when the iscsid restart
-          b.=09From iscsid through iscsi error handler
-2. The session reopen sequence is as follows in user-space (iscsi-initiator=
--utils)
-          a.=09Disconnect the connection
-          b.=09Then send the stop connection request to the kernel which re=
-leases the connection (releases the socket)
-          c.=09Queues the reopen for 2 seconds delay
-         d.=09Once the delay expires, create the TCP connection again by ca=
-lling the connect() call
-         e.=09Poll for the connection
-          f.=09When poll is successful i.e when the TCP connection is estab=
-lished, it performs
-=09i. Creation of session and connection data structures
-=09ii. Bind the connection to the session. This is the place where we assig=
-n the sock to tcp_sw_conn->sock
-=09iii. Sets the parameters like target name, persistent address etc .
-=09iv. Creates the login pdu
-=09v. Sends the login pdu to kernel
-=09vi. Returns to the main loop to process further events. The kernel then =
-sends the login request over to the target node
-=09g. Once login response with success is received, it enters into full fea=
-ture phase and sets the negotiable parameters like max_recv_data_length, ma=
-x_transmit_length, data_digest etc . 3. While setting the negotiable parame=
-ters by calling "iscsi_session_set_neg_params()", kernel panicked as sock w=
-as NULL
+I am testing a fix by pointing the ref to a label, will send it out (hopefully soon), seems to work at my end.
 
-What happened here is
---------------------------------
-1.=09Before initiator received the login response mentioned in above point =
-2.f.v, another reopen request was sent from the error handler/sync session =
-for the same session, as the initiator utils was in main loop to process fu=
-rther events (as=20
-=09mentioned in point 2.f.vi above).=20
-2.=09While processing this reopen, it stopped the connection which released=
- the socket and queued this connection and at this point of time the login =
-response was received for the earlier one
-3.=09The kernel passed over this response to user-space which then sent the=
- set_neg_params request to kernel
-4.=09As the connection was stopped, the sock was NULL and hence while the k=
-ernel was processing the set param request from user-space, it panicked
-
-Fix
-----
-1.=09While setting the set_param in kernel, we need to check if sock is NUL=
-L
-2.=09If the sock is NULL, then return EPERM (operation not permitted)
-3.=09Due to this error handler will be invoked in user-space again to recov=
-er the session
-
-Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
-Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com>
----
-diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c index df47=
-557a02a3..fd668a194053 100644
---- a/drivers/scsi/iscsi_tcp.c
-+++ b/drivers/scsi/iscsi_tcp.c
-@@ -711,6 +711,12 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi_cl=
-s_conn *cls_conn,
-        struct iscsi_tcp_conn *tcp_conn =3D conn->dd_data;
-        struct iscsi_sw_tcp_conn *tcp_sw_conn =3D tcp_conn->dd_data;
-
-+       if (!tcp_sw_conn->sock) {
-+               iscsi_conn_printk(KERN_ERR, conn,
-+                               "Cannot set param as sock is NULL\n");
-+               return -ENOTCONN;
-+       }
-+
-        switch(param) {
-        case ISCSI_PARAM_HDRDGST_EN:
-                iscsi_set_param(cls_conn, param, buf, buflen);
---
-2.18.4
+Balbir Singh.
