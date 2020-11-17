@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB502B6274
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CA52B6184
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731463AbgKQN2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:28:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34134 "EHLO mail.kernel.org"
+        id S1728875AbgKQNTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:19:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731218AbgKQN0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:26:33 -0500
+        id S1730437AbgKQNTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:19:37 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97CD62078D;
-        Tue, 17 Nov 2020 13:26:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFFD12225B;
+        Tue, 17 Nov 2020 13:19:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619593;
-        bh=WEW9WBG8tdkhI3KFgCR/Z3gUpDrjHq7F/pa6hhfoDTQ=;
+        s=default; t=1605619176;
+        bh=snFqh1W3HsHODuPRRzFEPf6AZfPh6NtQMwK7+9Yn7iY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PZuSpwCmEF0vo3GOUq0rLfrLf9xKrKKeoWjM4cYZ7bsu+i3T8Yzg3XeyVqCeLlK7d
-         rIOK/o8k8qm5WyxPGhnyMN3M6BJpI9gX/wlATV3vQ00HZSuAIlKsik+vjsuhMsLd6z
-         cx4XRL3k/eXMzswzSzBvaXSrvYkXn/vV8hjRENgs=
+        b=uUJmp+c8lAkBTWKH08OdOm5/NJZp5TzH2FA4WpkZoC/XUowsmJmjSnyqXTAuR7v+s
+         cDQ64cVjVU5mu91EJjidFg4ax9b8Ib5p49v9enQHd8S3OuaqvcXZtLfBspyUBOw/Td
+         7Rt7Lhtt96iIflXm2ka3EVQzlAo5NDxyhRVY7CGM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 090/151] pinctrl: aspeed: Fix GPI only function problem.
-Date:   Tue, 17 Nov 2020 14:05:20 +0100
-Message-Id: <20201117122125.785018271@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 054/101] xfs: fix flags argument to rmap lookup when converting shared file rmaps
+Date:   Tue, 17 Nov 2020 14:05:21 +0100
+Message-Id: <20201117122115.728253200@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Billy Tsai <billy_tsai@aspeedtech.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 9b92f5c51e9a41352d665f6f956bd95085a56a83 ]
+[ Upstream commit ea8439899c0b15a176664df62aff928010fad276 ]
 
-Some gpio pin at aspeed soc is input only and the prefix name of these
-pin is "GPI" only.
-This patch fine-tune the condition of GPIO check from "GPIO" to "GPI"
-and it will fix the usage error of banks D and E in the AST2400/AST2500
-and banks T and U in the AST2600.
+Pass the same oldext argument (which contains the existing rmapping's
+unwritten state) to xfs_rmap_lookup_le_range at the start of
+xfs_rmap_convert_shared.  At this point in the code, flags is zero,
+which means that we perform lookups using the wrong key.
 
-Fixes: 4d3d0e4272d8 ("pinctrl: Add core support for Aspeed SoCs")
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-Link: https://lore.kernel.org/r/20201030055450.29613-1-billy_tsai@aspeedtech.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 3f165b334e51 ("xfs: convert unwritten status of reverse mappings for shared files")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/aspeed/pinctrl-aspeed.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/xfs/libxfs/xfs_rmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-index 54933665b5f8b..93b5654ff2828 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
-@@ -277,13 +277,14 @@ int aspeed_pinmux_set_mux(struct pinctrl_dev *pctldev, unsigned int function,
- static bool aspeed_expr_is_gpio(const struct aspeed_sig_expr *expr)
- {
- 	/*
--	 * The signal type is GPIO if the signal name has "GPIO" as a prefix.
-+	 * The signal type is GPIO if the signal name has "GPI" as a prefix.
- 	 * strncmp (rather than strcmp) is used to implement the prefix
- 	 * requirement.
- 	 *
--	 * expr->signal might look like "GPIOT3" in the GPIO case.
-+	 * expr->signal might look like "GPIOB1" in the GPIO case.
-+	 * expr->signal might look like "GPIT0" in the GPI case.
+diff --git a/fs/xfs/libxfs/xfs_rmap.c b/fs/xfs/libxfs/xfs_rmap.c
+index 245af452840ef..ab3e72e702f00 100644
+--- a/fs/xfs/libxfs/xfs_rmap.c
++++ b/fs/xfs/libxfs/xfs_rmap.c
+@@ -1387,7 +1387,7 @@ xfs_rmap_convert_shared(
+ 	 * record for our insertion point. This will also give us the record for
+ 	 * start block contiguity tests.
  	 */
--	return strncmp(expr->signal, "GPIO", 4) == 0;
-+	return strncmp(expr->signal, "GPI", 3) == 0;
- }
- 
- static bool aspeed_gpio_in_exprs(const struct aspeed_sig_expr **exprs)
+-	error = xfs_rmap_lookup_le_range(cur, bno, owner, offset, flags,
++	error = xfs_rmap_lookup_le_range(cur, bno, owner, offset, oldext,
+ 			&PREV, &i);
+ 	if (error)
+ 		goto done;
 -- 
 2.27.0
 
