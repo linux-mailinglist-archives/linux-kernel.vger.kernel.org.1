@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EE02B650E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D7C2B6395
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731491AbgKQN2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:28:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34332 "EHLO mail.kernel.org"
+        id S1732665AbgKQNjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:39:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731564AbgKQN0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:26:47 -0500
+        id S1732746AbgKQNjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:39:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D46FA2078D;
-        Tue, 17 Nov 2020 13:26:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE4C824695;
+        Tue, 17 Nov 2020 13:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619607;
-        bh=NbPT1sIn2yq17CMD0RaNvxfHh+0AHuuj9z1B3Js53ww=;
+        s=default; t=1605620343;
+        bh=4DNCZ6+FMinlU++vDarM+jhq+IRWGEFaJP+yXy8rkN8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b7Th8w75xjrywhW2qH0F58RnITsJcNa7+XWdLlpRCA/CTpnw68wwfvLyusKYHqsrI
-         y4O9MaXtGb4Hf3IWqyI0y3lKGRR8ndADbJpXUNXtL6WC+h7qkVuVLO8IzHFcJ/Snfq
-         1To1jNYLpKd74pHwWH5nDsP31zm8SJj+ngt/CD1k=
+        b=mRPvMT1qfj1iM+REc+BnwPUPYjzpUnzQnGrGQfHii1l2T90T1NDDAHoxr92Wm3Kas
+         fba82F5nzQl4gjDy7np6z3245TT5yAKYTprWhNtB730zo3BsaY9k0VFR4DVquqEjDx
+         uoEY9YJtt53D8KAQ2+0CSmIZ9QFJW3y3dgZhIVXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 095/151] igc: Fix returning wrong statistics
+        stable@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH 5.9 185/255] ext4: correctly report "not supported" for {usr,grp}jquota when !CONFIG_QUOTA
 Date:   Tue, 17 Nov 2020 14:05:25 +0100
-Message-Id: <20201117122126.028579936@linuxfoundation.org>
+Message-Id: <20201117122147.925602954@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
+References: <20201117122138.925150709@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,73 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-[ Upstream commit 6b7ed22ae4c96a415001f0c3116ebee15bb8491a ]
+commit 174fe5ba2d1ea0d6c5ab2a7d4aa058d6d497ae4d upstream.
 
-'igc_update_stats()' was not updating 'netdev->stats', so the returned
-statistics, for example, requested by:
+The macro MOPT_Q is used to indicates the mount option is related to
+quota stuff and is defined to be MOPT_NOSUPPORT when CONFIG_QUOTA is
+disabled.  Normally the quota options are handled explicitly, so it
+didn't matter that the MOPT_STRING flag was missing, even though the
+usrjquota and grpjquota mount options take a string argument.  It's
+important that's present in the !CONFIG_QUOTA case, since without
+MOPT_STRING, the mount option matcher will match usrjquota= followed
+by an integer, and will otherwise skip the table entry, and so "mount
+option not supported" error message is never reported.
 
-$ ip -s link show dev enp3s0
+[ Fixed up the commit description to better explain why the fix
+  works. --TYT ]
 
-were not being updated and were always zero.
+Fixes: 26092bf52478 ("ext4: use a table-driven handler for mount options")
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+Link: https://lore.kernel.org/r/1603986396-28917-1-git-send-email-kaixuxia@tencent.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fix by returning a set of statistics that are actually being
-updated (adapter->stats64).
-
-Fixes: c9a11c23ceb6 ("igc: Add netdev")
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Tested-by: Aaron Brown <aaron.f.brown@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ fs/ext4/super.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 24888676f69ba..6b43e1c5b1c3e 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -2222,21 +2222,23 @@ static int igc_change_mtu(struct net_device *netdev, int new_mtu)
- }
- 
- /**
-- * igc_get_stats - Get System Network Statistics
-+ * igc_get_stats64 - Get System Network Statistics
-  * @netdev: network interface device structure
-+ * @stats: rtnl_link_stats64 pointer
-  *
-  * Returns the address of the device statistics structure.
-  * The statistics are updated here and also from the timer callback.
-  */
--static struct net_device_stats *igc_get_stats(struct net_device *netdev)
-+static void igc_get_stats64(struct net_device *netdev,
-+			    struct rtnl_link_stats64 *stats)
- {
- 	struct igc_adapter *adapter = netdev_priv(netdev);
- 
-+	spin_lock(&adapter->stats64_lock);
- 	if (!test_bit(__IGC_RESETTING, &adapter->state))
- 		igc_update_stats(adapter);
--
--	/* only return the current stats */
--	return &netdev->stats;
-+	memcpy(stats, &adapter->stats64, sizeof(*stats));
-+	spin_unlock(&adapter->stats64_lock);
- }
- 
- static netdev_features_t igc_fix_features(struct net_device *netdev,
-@@ -3984,7 +3986,7 @@ static const struct net_device_ops igc_netdev_ops = {
- 	.ndo_start_xmit		= igc_xmit_frame,
- 	.ndo_set_mac_address	= igc_set_mac,
- 	.ndo_change_mtu		= igc_change_mtu,
--	.ndo_get_stats		= igc_get_stats,
-+	.ndo_get_stats64	= igc_get_stats64,
- 	.ndo_fix_features	= igc_fix_features,
- 	.ndo_set_features	= igc_set_features,
- 	.ndo_features_check	= igc_features_check,
--- 
-2.27.0
-
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1829,8 +1829,8 @@ static const struct mount_opts {
+ 	{Opt_noquota, (EXT4_MOUNT_QUOTA | EXT4_MOUNT_USRQUOTA |
+ 		       EXT4_MOUNT_GRPQUOTA | EXT4_MOUNT_PRJQUOTA),
+ 							MOPT_CLEAR | MOPT_Q},
+-	{Opt_usrjquota, 0, MOPT_Q},
+-	{Opt_grpjquota, 0, MOPT_Q},
++	{Opt_usrjquota, 0, MOPT_Q | MOPT_STRING},
++	{Opt_grpjquota, 0, MOPT_Q | MOPT_STRING},
+ 	{Opt_offusrjquota, 0, MOPT_Q},
+ 	{Opt_offgrpjquota, 0, MOPT_Q},
+ 	{Opt_jqfmt_vfsold, QFMT_VFS_OLD, MOPT_QFMT},
 
 
