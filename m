@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4949E2B5BB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819262B5BB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbgKQJV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:21:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726561AbgKQJVz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:21:55 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ACCC0613CF;
-        Tue, 17 Nov 2020 01:21:55 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605604913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+oNN0MQgkiBnCbtfwugoj2ueCMN1m2mxEsnINrDLEe0=;
-        b=DwBmeWJShTfSxI7/bv9yMVNbyXuplY6dNWaJqhWyEBj0NEoUnDzm/Q61zBRx/jvfVqMab3
-        YqSSqciJOklmsPQhLhvFcAhDaCgdtLjlgDx1WVoEJhofYrTb+HZOhHdBmFYZ8sOC2J+3rF
-        kkEshToFTkEciOfblmWCrEZp5P6IbtwlfRxWHlsTJbeLlyWYtXZ7SdaRZeP8Ae+vxzSOqK
-        eStnMibR6Ryujt1YDKfPzB2cupuDgeXiLMpjrk89EkPjUsUGpsAGsIueuBeEINhXacrsmY
-        QdeJkh0tBpaCWJVw6wHbr0zQo5UbpJ4Qszu9RndP91TowUjpuEanGAb23BvW1w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605604913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+oNN0MQgkiBnCbtfwugoj2ueCMN1m2mxEsnINrDLEe0=;
-        b=YCVL+0Qrok4yb6+AmGU6uun36CXW4zeVISlAXjUYay+MYF25xqVx1q5xsECe4BULShPhcB
-        gQiiXXhWd1DZjrAg==
-To:     "Tian\, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Raj\, Ashok" <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Wilk\, Konrad" <konrad.wilk@oracle.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "maz\@kernel.org" <maz@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: RE: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-In-Reply-To: <MWHPR11MB1645E87DBEFFCC017C4849CC8CE30@MWHPR11MB1645.namprd11.prod.outlook.com>
-References: <877dqqmc2h.fsf@nanos.tec.linutronix.de> <20201114103430.GA9810@infradead.org> <20201114211837.GB12197@araj-mobl1.jf.intel.com> <877dqmamjl.fsf@nanos.tec.linutronix.de> <20201115193156.GB14750@araj-mobl1.jf.intel.com> <875z665kz4.fsf@nanos.tec.linutronix.de> <20201116002232.GA2440@araj-mobl1.jf.intel.com> <MWHPR11MB164539B8FDE63D5CBDA300E18CE30@MWHPR11MB1645.namprd11.prod.outlook.com> <20201116154635.GK917484@nvidia.com> <87y2j1xk1a.fsf@nanos.tec.linutronix.de> <20201116180241.GP917484@nvidia.com> <MWHPR11MB1645E87DBEFFCC017C4849CC8CE30@MWHPR11MB1645.namprd11.prod.outlook.com>
-Date:   Tue, 17 Nov 2020 10:21:52 +0100
-Message-ID: <875z64xrrj.fsf@nanos.tec.linutronix.de>
+        id S1727344AbgKQJWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:22:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:52654 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726561AbgKQJWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 04:22:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B486D1042;
+        Tue, 17 Nov 2020 01:22:06 -0800 (PST)
+Received: from [10.57.25.49] (unknown [10.57.25.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E7E43F719;
+        Tue, 17 Nov 2020 01:22:05 -0800 (PST)
+Subject: Re: [PATCH] powercap: Adjust printing the constraint name with new
+ line
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20201109172452.6923-1-lukasz.luba@arm.com>
+ <CAJZ5v0gQj8cNHgXkgwGeNcegAmP2xxqPQXz1kGNqFFDDCgfX_w@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <6d29b192-bad4-3abc-96fd-dfe12cc402e4@arm.com>
+Date:   Tue, 17 Nov 2020 09:22:02 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAJZ5v0gQj8cNHgXkgwGeNcegAmP2xxqPQXz1kGNqFFDDCgfX_w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 16 2020 at 23:51, Kevin Tian wrote:
->> From: Jason Gunthorpe <jgg@nvidia.com>
-> btw Jason/Thomas, how do you think about the proposal down in this
-> thread (ims=[auto|on|off])? Does it sound a good tradeoff to move forward?
+Hi Rafael,
 
-What does it solve? It defaults to auto and then you still need to solve
-the problem of figuring out whether it's safe to use it or not.
+On 11/10/20 7:19 PM, Rafael J. Wysocki wrote:
+> On Mon, Nov 9, 2020 at 6:25 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> The constraint name has limit of size 30, which sometimes might be hit.
+>> When this happens the new line might be lost. Prevent this and set the
+>> new line when the name string is too long."
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/powercap/powercap_sys.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/powercap/powercap_sys.c b/drivers/powercap/powercap_sys.c
+>> index f808c5fa9838..575f9fdb810e 100644
+>> --- a/drivers/powercap/powercap_sys.c
+>> +++ b/drivers/powercap/powercap_sys.c
+>> @@ -174,6 +174,10 @@ static ssize_t show_constraint_name(struct device *dev,
+>>                                                                  "%s\n", name);
+>>                          buf[POWERCAP_CONSTRAINT_NAME_LEN] = '\0';
+>>                          len = strlen(buf);
+>> +
+>> +                       /* When the 'name' is too long, don't lose new line */
+>> +                       if (strlen(name) >= POWERCAP_CONSTRAINT_NAME_LEN)
+>> +                               buf[POWERCAP_CONSTRAINT_NAME_LEN - 1] = '\n';
+> 
+> Wouldn't it be better to pass POWERCAP_CONSTRAINT_NAME_LEN - 1 to
+> snprintf() above?
 
-The command line option is not a solution per se. It's the last resort
-when the logic which decides whether IMS can be used or not fails to do
-the right thing. Nothing more.
+My apologies for delay, I was on holidays.
 
-We clearly have outlined what needs to be done and you can come up with
-as many magic bullets you want, they won't make the real problems go
-away.
+The snprintf() overwrites the '\n' in that case also. I've experimented
+with it a bit more and tried to come with a bit 'cleaner' solution.
 
-Thanks,
+What we are looking is probably: "%.*s\n" semantic.
+Another solution would be:
+------------------------------8<---------------------------
+                 if (name) {
+-                       snprintf(buf, POWERCAP_CONSTRAINT_NAME_LEN,
+-                                                               "%s\n", 
+name);
+-                       buf[POWERCAP_CONSTRAINT_NAME_LEN] = '\0';
++                       sprintf(buf, "%.*s\n", 
+POWERCAP_CONSTRAINT_NAME_LEN -1,
++                               name);
+                         len = strlen(buf);
+                 }
 
-        tglx
+----------------------------->8----------------------------
+
+I've check this and it behaves very well.
+
+It looks cleaner and it is a used pattern in the kernel.
+What do you think? Is it good for v2?
+
+Regards,
+Lukasz
+
+
