@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856C82B6519
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E2A2B652E
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731942AbgKQNal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:30:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39334 "EHLO mail.kernel.org"
+        id S2387627AbgKQNv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:51:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731884AbgKQNaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:30:14 -0500
+        id S1731891AbgKQNaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:30:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29ECC21534;
-        Tue, 17 Nov 2020 13:30:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D122B2078E;
+        Tue, 17 Nov 2020 13:30:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619812;
-        bh=ytFdN20S7CJAW/UFz/wMfQqFpT6G/gNgj59iUaR/6a8=;
+        s=default; t=1605619816;
+        bh=xpxuWE5pO62/YMqkZ2nFUDwZHSXCZjj46pc1owWSEDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eUoU1WgB2K0xPiWCqPa2Vc6OFfuf4LZy1W++dfEoORutgatKEhSsxqaGD0W5m8TEc
-         XF9tcvc/fgHLpuP6Zg2qqRz4eLqlggrzR/46Fn6uVFo8DuJYTTHKINYNacX3w8s+Z+
-         phr8z05xnDm6Ww7yIJ1Nbp0IuZBw0elq+I3R+RjE=
+        b=l0tqQ/LKt2B71OUJjyRIuETK53wv95LeBcXvkinyQJcRnMhNwgjq11RW+0/n9I62w
+         TAPAtCPUT5xL9MBRT+v2cu6AqSriPuWSCf6ZAbcNQyYpIl3jC6Jiezfg6sESMnOWbz
+         0nIXT12bLg+MyZl6Fizr2Sh+jsm2T0KdWzWkMAf4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greentime Hu <greentime.hu@sifive.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
+        stable@vger.kernel.org, David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 013/255] irqchip/sifive-plic: Fix broken irq_set_affinity() callback
-Date:   Tue, 17 Nov 2020 14:02:33 +0100
-Message-Id: <20201117122139.584662453@linuxfoundation.org>
+Subject: [PATCH 5.9 014/255] kunit: Fix kunit.py --raw_output option
+Date:   Tue, 17 Nov 2020 14:02:34 +0100
+Message-Id: <20201117122139.634413840@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122138.925150709@linuxfoundation.org>
 References: <20201117122138.925150709@linuxfoundation.org>
@@ -44,60 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greentime Hu <greentime.hu@sifive.com>
+From: David Gow <davidgow@google.com>
 
-[ Upstream commit a7480c5d725c4ecfc627e70960f249c34f5d13e8 ]
+[ Upstream commit 3023d8ff3fc60e5d32dc1d05f99ad6ffa12b0033 ]
 
-An interrupt submitted to an affinity change will always be left enabled
-after plic_set_affinity() has been called, while the expectation is that
-it should stay in whatever state it was before the call.
+Due to the raw_output() function on kunit_parser.py actually being a
+generator, it only runs if something reads the lines it returns. Since
+we no-longer do that (parsing doesn't actually happen if raw_output is
+enabled), it was not printing anything.
 
-Preserving the configuration fixes a PWM hang issue on the Unleashed
-board.
-
-[  919.015783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-[  919.020922] rcu:     0-...0: (0 ticks this GP)
-idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=105807
-[  919.030295]  (detected by 1, t=225825 jiffies, g=1561, q=3496)
-[  919.036109] Task dump for CPU 0:
-[  919.039321] kworker/0:1     R  running task        0    30      2 0x00000008
-[  919.046359] Workqueue: events set_brightness_delayed
-[  919.051302] Call Trace:
-[  919.053738] [<ffffffe000930d92>] __schedule+0x194/0x4de
-[  982.035783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-[  982.040923] rcu:     0-...0: (0 ticks this GP)
-idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=113325
-[  982.050294]  (detected by 1, t=241580 jiffies, g=1561, q=3509)
-[  982.056108] Task dump for CPU 0:
-[  982.059321] kworker/0:1     R  running task        0    30      2 0x00000008
-[  982.066359] Workqueue: events set_brightness_delayed
-[  982.071302] Call Trace:
-[  982.073739] [<ffffffe000930d92>] __schedule+0x194/0x4de
-[..]
-
-Fixes: bb0fed1c60cc ("irqchip/sifive-plic: Switch to fasteoi flow")
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-[maz: tidy-up commit message]
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Link: https://lore.kernel.org/r/20201020081532.2377-1-greentime.hu@sifive.com
+Fixes: 45ba7a893ad8 ("kunit: kunit_tool: Separate out config/build/exec/parse")
+Signed-off-by: David Gow <davidgow@google.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-sifive-plic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/kunit/kunit_parser.py | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index eaa3e9fe54e91..4048657ece0ac 100644
---- a/drivers/irqchip/irq-sifive-plic.c
-+++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -151,7 +151,7 @@ static int plic_set_affinity(struct irq_data *d,
- 		return -EINVAL;
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index f13e0c0d66639..62a0848699671 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -65,7 +65,6 @@ def isolate_kunit_output(kernel_output):
+ def raw_output(kernel_output):
+ 	for line in kernel_output:
+ 		print(line)
+-		yield line
  
- 	plic_irq_toggle(&priv->lmask, d, 0);
--	plic_irq_toggle(cpumask_of(cpu), d, 1);
-+	plic_irq_toggle(cpumask_of(cpu), d, !irqd_irq_masked(d));
- 
- 	irq_data_update_effective_affinity(d, cpumask_of(cpu));
+ DIVIDER = '=' * 60
  
 -- 
 2.27.0
