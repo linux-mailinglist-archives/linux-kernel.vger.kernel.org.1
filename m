@@ -2,242 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BAA2B6ECA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3856C2B6ECD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 20:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729259AbgKQTfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 14:35:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726352AbgKQTfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:35:51 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A4D52463B;
-        Tue, 17 Nov 2020 19:35:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605641750;
-        bh=99AH2Pflh0GwKHkWBYpSX6kuQO3h28x2SHcSILfOZbk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SsOiLaC2b5E319CIqSVfbBjX1ZCEiVfxcU+YTgV5K2evaZJiz5Kecgq1KkBq3vMkr
-         i7WmyYfxEWMnDM6f9T1wmrWwz2uDrDTMaJVkpwpJPc8jOiXrKxuzJpGkOIVlmXHWjw
-         F08wCG8b1AXUBpnxdrUACJo6BjrsWAas6hRc5SK8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kf6lY-00BTAR-6r; Tue, 17 Nov 2020 19:35:48 +0000
+        id S1730402AbgKQTg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 14:36:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbgKQTg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:36:26 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01076C0613CF;
+        Tue, 17 Nov 2020 11:36:26 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id p22so4479536wmg.3;
+        Tue, 17 Nov 2020 11:36:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=eSOMRKTehP2DeGUhI6ZUphXvg5rrCFia/70gJOxthGI=;
+        b=eCdZ7LtCQkcs1VLeFJFP8fvVlW/9XV//FlXF7qbQ9z2kmQGXWUbnN7GLrSm6dC0HPE
+         IvkOasPAM0bZE5uFKhZhAab0LMS/KzTi5kHG+Pr3MspA1+iBuxOUHPVARwjAkdM8/CFV
+         EMbx4r6VJAd6Z5YcgfwtED2/smowMw2FQvnLMqxdmz4dCEcaK8XClrcYl/Jp2Gs2M1Ab
+         dJqK0HiurvT33f1oZIBai3McKPHheLQWsC4+9wJBksd2bz6SnVMSdF93M4oQGGAqR9Sg
+         EtD6WFyALyAsqMT5EnOVy5momGz9quEaHt3QqIbbyNs0VRELGD3mhER9U+5KRnh/2nX9
+         U4Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=eSOMRKTehP2DeGUhI6ZUphXvg5rrCFia/70gJOxthGI=;
+        b=KasjW2Bucadvh5viop4Q9L9CueJoKQZ4FGSRiotSd4H0QWo0n5ywNLfkrGrqjXsu3G
+         M6l/3Ogcbf68F+GSe8wgpm0ztXYIMDt/DfZxBTzbjGmHEtGsribh21YM6J9WEtOfx7Lb
+         fv/ZUUx3/OKjeV4yAFmH1qt5PvwzTHMuKt7XB1Azxfpoq2QNl3/NOXOlnVZMjugbSUig
+         glEWT+ax+KpnzoMluRS7hHQmQnur/Q+qktPwYkAF5wEKHqoM2jZR2RRgr41t8LCb4O+t
+         6oA9P7Llxq4zeEYFUqm+CMp29DOtEe8K4Yg0PeGfRpGmvm9eq+eR23c4PiYlrou4U+Iw
+         U1Bw==
+X-Gm-Message-State: AOAM532zwa1pKjz+HnUP1Qws8GsiA6w8ril6+3lTnIUrWARUCYxkZa9q
+        mg7wojvh5jSTNwauS3fpbBaaufct06nPBA==
+X-Google-Smtp-Source: ABdhPJwETgzPaVvged0xWepz8FXRosLkftY8agZYvFxO2lXzmW0t5lWTtLPn54u3/iNwfHIXyDoOBw==
+X-Received: by 2002:a1c:f20d:: with SMTP id s13mr722205wmc.156.1605641784324;
+        Tue, 17 Nov 2020 11:36:24 -0800 (PST)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id m126sm5240840wmm.0.2020.11.17.11.36.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 11:36:22 -0800 (PST)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Tue, 17 Nov 2020 20:36:21 +0100
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/264] 4.19.153-rc1 review
+Message-ID: <20201117193621.GA25637@eldamar.lan>
+References: <20201027135430.632029009@linuxfoundation.org>
+ <20201028171035.GD118534@roeck-us.net>
+ <20201028195619.GC124982@roeck-us.net>
+ <20201031094500.GA271135@eldamar.lan>
+ <7608060e-f48b-1a7c-1a92-9c41d81d9a40@roeck-us.net>
+ <20201114083501.GA468764@eldamar.lan>
+ <0a338aae-c3cc-97d4-825e-9082a9659504@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 17 Nov 2020 19:35:48 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v4 2/2] arm64: kvm: Introduce MTE VCPU feature
-In-Reply-To: <20201026155727.36685-3-steven.price@arm.com>
-References: <20201026155727.36685-1-steven.price@arm.com>
- <20201026155727.36685-3-steven.price@arm.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <8507a92b4ba3bbc45814b7197bd4e2fb@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0a338aae-c3cc-97d4-825e-9082a9659504@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+Hi Guenter,
 
-On 2020-10-26 15:57, Steven Price wrote:
-> Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
-> for a VM. This exposes the feature to the guest and automatically tags
-> memory pages touched by the VM as PG_mte_tagged (and clears the tags
-> storage) to ensure that the guest cannot see stale tags, and so that 
-> the
-> tags are correctly saved/restored across swap.
+On Sat, Nov 14, 2020 at 05:27:41AM -0800, Guenter Roeck wrote:
+> On 11/14/20 12:35 AM, Salvatore Bonaccorso wrote:
+> > Hi Guenter,
+> > 
+> > On Sat, Oct 31, 2020 at 07:31:32AM -0700, Guenter Roeck wrote:
+> >> On 10/31/20 2:45 AM, Salvatore Bonaccorso wrote:
+> >>> Hi Greg,
+> >>>
+> >>> On Wed, Oct 28, 2020 at 12:56:19PM -0700, Guenter Roeck wrote:
+> >>>> Retry.
+> >>>>
+> >>>> On Wed, Oct 28, 2020 at 10:10:35AM -0700, Guenter Roeck wrote:
+> >>>>> On Tue, Oct 27, 2020 at 02:50:58PM +0100, Greg Kroah-Hartman wrote:
+> >>>>>> This is the start of the stable review cycle for the 4.19.153 release.
+> >>>>>> There are 264 patches in this series, all will be posted as a response
+> >>>>>> to this one.  If anyone has any issues with these being applied, please
+> >>>>>> let me know.
+> >>>>>>
+> >>>>>> Responses should be made by Thu, 29 Oct 2020 13:53:47 +0000.
+> >>>>>> Anything received after that time might be too late.
+> >>>>>>
+> >>>>>
+> >>>>> Build results:
+> >>>>> 	total: 155 pass: 152 fail: 3
+> >>>>> Failed builds:
+> >>>>> 	i386:tools/perf
+> >>>>> 	powerpc:ppc6xx_defconfig
+> >>>>> 	x86_64:tools/perf
+> >>>>> Qemu test results:
+> >>>>> 	total: 417 pass: 417 fail: 0
+> >>>>>
+> >>>>> perf failures are as usual. powerpc:
+> >>>
+> >>> Regarding the perf failures, do you plan to revert b801d568c7d8 ("perf
+> >>> cs-etm: Move definition of 'traceid_list' global variable from header
+> >>> file") included in 4.19.152 or is a bugfix underway?
+> >>>
+> >>
+> >> The problem is:
+> >>
+> >> In file included from util/evlist.h:15:0,
+> >>                  from util/evsel.c:30:
+> >> util/evsel.c: In function ‘perf_evsel__exit’:
+> >> util/util.h:25:28: error: passing argument 1 of ‘free’ discards ‘const’ qualifier from pointer target type
+> >> /usr/include/stdlib.h:563:13: note: expected ‘void *’ but argument is of type ‘const char *’
+> >>  extern void free (void *__ptr) __THROW;
+> >>
+> >> This is seen with older versions of gcc (6.5.0 in my case). I have no idea why
+> >> newer versions of gcc/glibc accept this (afaics free() still expects a char *,
+> >> not a const char *). The underlying problem is that pmu_name should not be
+> >> declared const char *, but char *, since it is allocated. The upstream version
+> >> of perf no longer uses the same definition of zfree(). It was changed from
+> >> 	#define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
+> >> to
+> >> 	#define zfree(ptr) __zfree((void **)(ptr))
+> >> which does the necessary typecast. The fix would be to either change the definition
+> >> of zfree to add the typecast, or to change the definition of pmu_name to drop the const.
+> >> Both would only apply to v4.19.y. I don't know if either would be acceptable.
+> >>
+> >> Either case, reverting b801d568c7d8 won't solve that problem.
+> > 
+> > Are we talking about the same problem though? With v4.19.157 and
+> > building with "gcc (Debian 8.3.0-6) 8.3.0", with an unpatched source:
+> > 
+> > $ LC_ALL=C.UTF-8 ARCH=x86 make perf
+> > mkdir -p  .
+> > make --no-print-directory -C perf O= subdir=
+> >   BUILD:   Doing 'make -j2' parallel build
+> > Warning: Kernel ABI header at 'tools/include/uapi/drm/i915_drm.h' differs from latest version at 'include/uapi/drm/i915_drm.h'
+> > diff -u tools/include/uapi/drm/i915_drm.h include/uapi/drm/i915_drm.h
+> > Warning: Kernel ABI header at 'tools/include/uapi/linux/kvm.h' differs from latest version at 'include/uapi/linux/kvm.h'
+> > diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
+> > Warning: Kernel ABI header at 'tools/include/uapi/linux/perf_event.h' differs from latest version at 'include/uapi/linux/perf_event.h'
+> > diff -u tools/include/uapi/linux/perf_event.h include/uapi/linux/perf_event.h
+> > Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h'
+> > diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
+> > Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/kvm.h' differs from latest version at 'arch/x86/include/uapi/asm/kvm.h'
+> > diff -u tools/arch/x86/include/uapi/asm/kvm.h arch/x86/include/uapi/asm/kvm.h
+> > Warning: Kernel ABI header at 'tools/arch/x86/lib/memcpy_64.S' differs from latest version at 'arch/x86/lib/memcpy_64.S'
+> > diff -u tools/arch/x86/lib/memcpy_64.S arch/x86/lib/memcpy_64.S
+> > Warning: Kernel ABI header at 'tools/include/uapi/linux/mman.h' differs from latest version at 'include/uapi/linux/mman.h'
+> > diff -u tools/include/uapi/linux/mman.h include/uapi/linux/mman.h
+> > 
+> > Auto-detecting system features:
+> > ...                         dwarf: [ on  ]
+> > ...            dwarf_getlocations: [ on  ]
+> > ...                         glibc: [ on  ]
+> > ...                          gtk2: [ OFF ]
+> > ...                      libaudit: [ on  ]
+> > ...                        libbfd: [ OFF ]
+> > ...                        libelf: [ on  ]
+> > ...                       libnuma: [ on  ]
+> > ...        numa_num_possible_cpus: [ on  ]
+> > ...                       libperl: [ on  ]
+> > ...                     libpython: [ on  ]
+> > ...                      libslang: [ on  ]
+> > ...                     libcrypto: [ on  ]
+> > ...                     libunwind: [ on  ]
+> > ...            libdw-dwarf-unwind: [ on  ]
+> > ...                          zlib: [ on  ]
+> > ...                          lzma: [ on  ]
+> > ...                     get_cpuid: [ on  ]
+> > ...                           bpf: [ on  ]
+> > 
+> > Makefile.config:456: No sys/sdt.h found, no SDT events are defined, please install systemtap-sdt-devel or systemtap-sdt-dev
+> > Makefile.config:623: GTK2 not found, disables GTK2 support. Please install gtk2-devel or libgtk2.0-dev
+> > Makefile.config:682: No 'python-config' tool was found: disables Python support - please install python-devel/python-dev
+> > Makefile.config:853: No alternatives command found, you need to set JDIR= to point to the root of your Java directory
+> > Warning: Kernel ABI header at 'tools/include/uapi/linux/bpf.h' differs from latest version at 'include/uapi/linux/bpf.h'
+> >   CC       util/cs-etm-decoder/cs-etm-decoder.o
+> >   CC       util/intel-pt.o
+> > util/cs-etm-decoder/cs-etm-decoder.c: In function 'cs_etm_decoder__buffer_packet':
+> > util/cs-etm-decoder/cs-etm-decoder.c:287:24: error: 'traceid_list' undeclared (first use in this function); did you mean 'trace_event'?
+> >   inode = intlist__find(traceid_list, trace_chan_id);
+> >                         ^~~~~~~~~~~~
+> >                         trace_event
+> > util/cs-etm-decoder/cs-etm-decoder.c:287:24: note: each undeclared identifier is reported only once for each function it appears in
+> > make[6]: *** [/build/linux-stable/tools/build/Makefile.build:97: util/cs-etm-decoder/cs-etm-decoder.o] Error 1
+> > make[5]: *** [/build/linux-stable/tools/build/Makefile.build:139: cs-etm-decoder] Error 2
+> > make[5]: *** Waiting for unfinished jobs....
+> > make[4]: *** [/build/linux-stable/tools/build/Makefile.build:139: util] Error 2
+> > make[3]: *** [Makefile.perf:633: libperf-in.o] Error 2
+> > make[2]: *** [Makefile.perf:206: sub-make] Error 2
+> > make[1]: *** [Makefile:70: all] Error 2
+> > make: *** [Makefile:77: perf] Error 2
+> > 
+> > Reverting b801d568c7d8 would still fix the issue for me.
+> > 
 > 
-> Signed-off-by: Steven Price <steven.price@arm.com>
-> Reviewed-by: Andrew Jones <drjones@redhat.com>
-> ---
->  arch/arm64/include/asm/kvm_emulate.h |  3 +++
->  arch/arm64/include/asm/kvm_host.h    |  3 +++
->  arch/arm64/kvm/arm.c                 |  9 +++++++++
->  arch/arm64/kvm/mmu.c                 | 20 ++++++++++++++++++++
->  arch/arm64/kvm/sys_regs.c            |  6 +++++-
->  include/uapi/linux/kvm.h             |  1 +
->  6 files changed, 41 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_emulate.h
-> b/arch/arm64/include/asm/kvm_emulate.h
-> index 5ef2669ccd6c..66c0d9e7c2b4 100644
-> --- a/arch/arm64/include/asm/kvm_emulate.h
-> +++ b/arch/arm64/include/asm/kvm_emulate.h
-> @@ -79,6 +79,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu 
-> *vcpu)
->  	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
->  	    vcpu_el1_is_32bit(vcpu))
->  		vcpu->arch.hcr_el2 |= HCR_TID2;
-> +
-> +	if (vcpu->kvm->arch.mte_enabled)
+> You are correct, that is a different issue, and b801d568c7d8 will need to be reverted
+> to fix it. I just can't figure out how to convince perf to compile this file for me.
 
-Please add a predicate (vcpu_has_mte() or kvm_has_mte()?) for this.
+Thanks for confirming/acking.
 
-> +		vcpu->arch.hcr_el2 |= HCR_ATA;
->  }
-> 
->  static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
-> diff --git a/arch/arm64/include/asm/kvm_host.h
-> b/arch/arm64/include/asm/kvm_host.h
-> index 95ab7345dcc8..cd993aec0440 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -118,6 +118,9 @@ struct kvm_arch {
->  	 */
->  	unsigned long *pmu_filter;
->  	unsigned int pmuver;
-> +
-> +	/* Memory Tagging Extension enabled for the guest */
-> +	bool mte_enabled;
->  };
-> 
->  struct kvm_vcpu_fault_info {
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index f56122eedffc..7ee93bcac017 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -89,6 +89,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->  		r = 0;
->  		kvm->arch.return_nisv_io_abort_to_user = true;
->  		break;
-> +	case KVM_CAP_ARM_MTE:
-> +		if (!system_supports_mte() || kvm->created_vcpus)
-> +			return -EINVAL;
+So how to move from here, Greg do you need an explicit patch with the
+revert or can it be taken from here?
 
-You also want to avoid 32bit guests. Also, what is the rational for
-this being a VM capability as opposed to a CPU feature, similar
-to SVE and PMU?
-
-> +		r = 0;
-> +		kvm->arch.mte_enabled = true;
-> +		break;
->  	default:
->  		r = -EINVAL;
->  		break;
-> @@ -210,6 +216,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, 
-> long ext)
->  		 */
->  		r = 1;
->  		break;
-> +	case KVM_CAP_ARM_MTE:
-> +		r = system_supports_mte();
-
-Same comment about 32bit.
-
-> +		break;
->  	case KVM_CAP_STEAL_TIME:
->  		r = kvm_arm_pvtime_supported();
->  		break;
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 19aacc7d64de..38fe25310ca1 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -862,6 +862,26 @@ static int user_mem_abort(struct kvm_vcpu *vcpu,
-> phys_addr_t fault_ipa,
->  	if (vma_pagesize == PAGE_SIZE && !force_pte)
->  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->  							   &pfn, &fault_ipa);
-> +
-> +	/*
-> +	 * The otherwise redundant test for system_supports_mte() allows the
-> +	 * code to be compiled out when CONFIG_ARM64_MTE is not present.
-> +	 */
-> +	if (system_supports_mte() && kvm->arch.mte_enabled && pfn_valid(pfn)) 
-> {
-> +		/*
-> +		 * VM will be able to see the page's tags, so we must ensure
-> +		 * they have been initialised.
-> +		 */
-> +		struct page *page = pfn_to_page(pfn);
-> +		long i, nr_pages = compound_nr(page);
-> +
-> +		/* if PG_mte_tagged is set, tags have already been initialised */
-> +		for (i = 0; i < nr_pages; i++, page++) {
-> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-> +				mte_clear_page_tags(page_address(page));
-> +		}
-> +	}
-
-What are the visibility requirements for the tags, specially if the
-guest has its MMU off? Is there any cache management that needs to
-occur?
-
-Another thing is device-like memory that is managed by userspace,
-such as the QEMU emulated flash, for which there also might be tags.
-How is that dealt with? In general, what are the expectations for
-tags on memory shared between host and guest? Who owns them?
-
-> +
->  	if (writable) {
->  		prot |= KVM_PGTABLE_PROT_W;
->  		kvm_set_pfn_dirty(pfn);
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 430e36e1a13d..35a3dc448231 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -1132,7 +1132,8 @@ static u64 read_id_reg(const struct kvm_vcpu 
-> *vcpu,
->  		    arm64_get_spectre_v2_state() == SPECTRE_UNAFFECTED)
->  			val |= (1UL << ID_AA64PFR0_CSV2_SHIFT);
->  	} else if (id == SYS_ID_AA64PFR1_EL1) {
-> -		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
-> +		if (!vcpu->kvm->arch.mte_enabled)
-> +			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
->  	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
->  		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
->  			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
-> @@ -1394,6 +1395,9 @@ static bool access_mte_regs(struct kvm_vcpu
-> *vcpu, struct sys_reg_params *p,
->  static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
->  				   const struct sys_reg_desc *rd)
->  {
-> +	if (vcpu->kvm->arch.mte_enabled)
-> +		return 0;
-> +
->  	return REG_HIDDEN_USER | REG_HIDDEN_GUEST;
->  }
-> 
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index ca41220b40b8..3e6fb5b580a9 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1053,6 +1053,7 @@ struct kvm_ppc_resize_hpt {
->  #define KVM_CAP_X86_USER_SPACE_MSR 188
->  #define KVM_CAP_X86_MSR_FILTER 189
->  #define KVM_CAP_ENFORCE_PV_FEATURE_CPUID 190
-> +#define KVM_CAP_ARM_MTE 191
-> 
->  #ifdef KVM_CAP_IRQ_ROUTING
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Salvatore
