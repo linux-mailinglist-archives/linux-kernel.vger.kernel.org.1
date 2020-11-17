@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CBC2B600E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D562B6022
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgKQNGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:06:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60366 "EHLO mail.kernel.org"
+        id S1728944AbgKQNGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:06:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbgKQNGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:06:07 -0500
+        id S1728855AbgKQNGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:06:40 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 281FE2225B;
-        Tue, 17 Nov 2020 13:06:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF8A2238E6;
+        Tue, 17 Nov 2020 13:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618366;
-        bh=LBIH3sQvzP/PAIMEm3ghGZPvF3ruNK91fZwiHv8/E7M=;
+        s=default; t=1605618400;
+        bh=kKdD/bDi/r9OKiJHaRI2vjjhiyyLMAeSez8UFZWZ7lk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rEtvS7gMOqSx/UCQRV0Jui40BGa2sZ63+ZOfW8IO4EptlfWSNBo4YIfnka7ufpl3+
-         GBeo+IkYWhChRYRYHj12IpjL1zbq8/zTHtWuVUovOduYksHk3W63ZPA3v8BHb0ihc5
-         3POWDuHLsHvh+o5xkdHMAyBSQzF3AQTNfY19akYU=
+        b=S+X7XFXLu4aUYsF2gw5HLtNfC/Pi4mTr38R+aCr7udEYJ/n+CynO0HP7IjQXYlE9x
+         xyPZSeW9cBKjza8394JFHMkmngzjYQ4YR+3IW9JlIE/3guCukLSigzutWu3tQh3UDd
+         rknWJnY/0LSbTdYPD9rm3b6OkkEDOUG0n659Eps0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 01/64] ring-buffer: Fix recursion protection transitions between interrupt context
-Date:   Tue, 17 Nov 2020 14:04:24 +0100
-Message-Id: <20201117122106.199383932@linuxfoundation.org>
+Subject: [PATCH 4.4 02/64] gfs2: Wake up when sd_glock_disposal becomes zero
+Date:   Tue, 17 Nov 2020 14:04:25 +0100
+Message-Id: <20201117122106.250567431@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
 References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,117 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit b02414c8f045ab3b9afc816c3735bc98c5c3d262 ]
+[ Upstream commit da7d554f7c62d0c17c1ac3cc2586473c2d99f0bd ]
 
-The recursion protection of the ring buffer depends on preempt_count() to be
-correct. But it is possible that the ring buffer gets called after an
-interrupt comes in but before it updates the preempt_count(). This will
-trigger a false positive in the recursion code.
+Commit fc0e38dae645 ("GFS2: Fix glock deallocation race") fixed a
+sd_glock_disposal accounting bug by adding a missing atomic_dec
+statement, but it failed to wake up sd_glock_wait when that decrement
+causes sd_glock_disposal to reach zero.  As a consequence,
+gfs2_gl_hash_clear can now run into a 10-minute timeout instead of
+being woken up.  Add the missing wakeup.
 
-Use the same trick from the ftrace function callback recursion code which
-uses a "transition" bit that gets set, to allow for a single recursion for
-to handle transitions between contexts.
-
-Cc: stable@vger.kernel.org
-Fixes: 567cd4da54ff4 ("ring-buffer: User context bit recursion checking")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: fc0e38dae645 ("GFS2: Fix glock deallocation race")
+Cc: stable@vger.kernel.org # v2.6.39+
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ring_buffer.c | 54 +++++++++++++++++++++++++++++++-------
- 1 file changed, 44 insertions(+), 10 deletions(-)
+ fs/gfs2/glock.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 1c1ecc1d49ad2..547a3a5ac57b5 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -416,14 +416,16 @@ struct rb_event_info {
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index 1eb737c466ddc..8e8695eb652af 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -751,7 +751,8 @@ again:
+ 	}
+ 	kfree(gl->gl_lksb.sb_lvbptr);
+ 	kmem_cache_free(cachep, gl);
+-	atomic_dec(&sdp->sd_glock_disposal);
++	if (atomic_dec_and_test(&sdp->sd_glock_disposal))
++		wake_up(&sdp->sd_glock_wait);
+ 	*glp = tmp;
  
- /*
-  * Used for which event context the event is in.
-- *  NMI     = 0
-- *  IRQ     = 1
-- *  SOFTIRQ = 2
-- *  NORMAL  = 3
-+ *  TRANSITION = 0
-+ *  NMI     = 1
-+ *  IRQ     = 2
-+ *  SOFTIRQ = 3
-+ *  NORMAL  = 4
-  *
-  * See trace_recursive_lock() comment below for more details.
-  */
- enum {
-+	RB_CTX_TRANSITION,
- 	RB_CTX_NMI,
- 	RB_CTX_IRQ,
- 	RB_CTX_SOFTIRQ,
-@@ -2585,10 +2587,10 @@ rb_wakeups(struct ring_buffer *buffer, struct ring_buffer_per_cpu *cpu_buffer)
-  * a bit of overhead in something as critical as function tracing,
-  * we use a bitmask trick.
-  *
-- *  bit 0 =  NMI context
-- *  bit 1 =  IRQ context
-- *  bit 2 =  SoftIRQ context
-- *  bit 3 =  normal context.
-+ *  bit 1 =  NMI context
-+ *  bit 2 =  IRQ context
-+ *  bit 3 =  SoftIRQ context
-+ *  bit 4 =  normal context.
-  *
-  * This works because this is the order of contexts that can
-  * preempt other contexts. A SoftIRQ never preempts an IRQ
-@@ -2611,6 +2613,30 @@ rb_wakeups(struct ring_buffer *buffer, struct ring_buffer_per_cpu *cpu_buffer)
-  * The least significant bit can be cleared this way, and it
-  * just so happens that it is the same bit corresponding to
-  * the current context.
-+ *
-+ * Now the TRANSITION bit breaks the above slightly. The TRANSITION bit
-+ * is set when a recursion is detected at the current context, and if
-+ * the TRANSITION bit is already set, it will fail the recursion.
-+ * This is needed because there's a lag between the changing of
-+ * interrupt context and updating the preempt count. In this case,
-+ * a false positive will be found. To handle this, one extra recursion
-+ * is allowed, and this is done by the TRANSITION bit. If the TRANSITION
-+ * bit is already set, then it is considered a recursion and the function
-+ * ends. Otherwise, the TRANSITION bit is set, and that bit is returned.
-+ *
-+ * On the trace_recursive_unlock(), the TRANSITION bit will be the first
-+ * to be cleared. Even if it wasn't the context that set it. That is,
-+ * if an interrupt comes in while NORMAL bit is set and the ring buffer
-+ * is called before preempt_count() is updated, since the check will
-+ * be on the NORMAL bit, the TRANSITION bit will then be set. If an
-+ * NMI then comes in, it will set the NMI bit, but when the NMI code
-+ * does the trace_recursive_unlock() it will clear the TRANSTION bit
-+ * and leave the NMI bit set. But this is fine, because the interrupt
-+ * code that set the TRANSITION bit will then clear the NMI bit when it
-+ * calls trace_recursive_unlock(). If another NMI comes in, it will
-+ * set the TRANSITION bit and continue.
-+ *
-+ * Note: The TRANSITION bit only handles a single transition between context.
-  */
- 
- static __always_inline int
-@@ -2629,8 +2655,16 @@ trace_recursive_lock(struct ring_buffer_per_cpu *cpu_buffer)
- 	} else
- 		bit = RB_CTX_NORMAL;
- 
--	if (unlikely(val & (1 << bit)))
--		return 1;
-+	if (unlikely(val & (1 << bit))) {
-+		/*
-+		 * It is possible that this was called by transitioning
-+		 * between interrupt context, and preempt_count() has not
-+		 * been updated yet. In this case, use the TRANSITION bit.
-+		 */
-+		bit = RB_CTX_TRANSITION;
-+		if (val & (1 << bit))
-+			return 1;
-+	}
- 
- 	val |= (1 << bit);
- 	cpu_buffer->current_context = val;
+ 	return ret;
 -- 
 2.27.0
 
