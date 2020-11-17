@@ -2,90 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E8E2B5B85
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFE52B5B8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgKQJHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgKQJHr (ORCPT
+        id S1726412AbgKQJLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:11:46 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:41153 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725779AbgKQJLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:07:47 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC62BC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:07:46 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id r17so22396446wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:07:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ts4BFcU0sHwTEKKetcBY/3wKsZjB9OOJgvAEje1H0F0=;
-        b=v22/1V4+04gSsSDBR/Ch5PN/piZrAcdlR0tXX1ctQ0NKy28D+GeZRe54zIgiuGmxOz
-         sjwflDpyMenJdH8w36vKXVpY24Yir+1erqNDiCgkWwEF1rC3f/BDmc30JaKMXSa0jZbM
-         AhkgjiooQcp9eU5ctkIjsN3KotmKT0fUgniaLsjBU6y4/p6206baFMnJK62BNmPueUx7
-         AHjc5LqjxXbofktYvPStmZf5cOSvCIqBYuBKbCD1beyhh4gr61GdWLkylIn8LEhPALCP
-         dvZN/Ne4xYJL+Cs5Z8YUZOwfhkxNFzxdMADXu7Xr5xPwC6h0F238N62o4DSnC9d4Dszp
-         qO6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ts4BFcU0sHwTEKKetcBY/3wKsZjB9OOJgvAEje1H0F0=;
-        b=h60ewq1kYNHoTuReBXs0I09FvIkA0QJnZmUKnJoktS03kByLC5KPrfvOUj36KuZWvY
-         bsFZdGULF3U+bsCnKZyMjnLXQOrXGVAEubqtyzVe+Ifq54g/uN0kLW2xOBXYP0SxcBC4
-         yBS/whQ50X6qAoAVSlvTBBpS7zrlR0p+4MQP2W+Z7NzFOQEwWqZ8howLmLekWZKMYMpj
-         UM2UPCIzaHhEWuovKCnZZpShuEBMncU8Bayx5FZ8n+KKaRg5CJSE3KjWbIQy1Pb5drPs
-         jy/gXLOly6dcf84H2MizPp1SsDQBUTJRMvIaJ9bS6dXkqjQKsS7jipqQwP4mzabg+mTh
-         vPTw==
-X-Gm-Message-State: AOAM532cT3ZFzzjijxd8gpUOGzPvOf0HqY7QaW9jrZCfSBlJrCsoEd9g
-        owdg9stDSLLJyExvAbDmhfWjLw==
-X-Google-Smtp-Source: ABdhPJwDDbgFpsuYQELr3NNS8bdXjMS+2XuAKHywdNCvGmWnp+ygpVfxML9V7JK4bkd2OZV25rIDSA==
-X-Received: by 2002:adf:f783:: with SMTP id q3mr23238148wrp.88.1605604065531;
-        Tue, 17 Nov 2020 01:07:45 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:6186:703a:2abc:2187? ([2a01:e34:ed2f:f020:6186:703a:2abc:2187])
-        by smtp.googlemail.com with ESMTPSA id p3sm20121858wrs.50.2020.11.17.01.07.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Nov 2020 01:07:44 -0800 (PST)
-Subject: Re: [PATCH V4] clocksource/drivers/cadence_ttc: fix memory leak in
- ttc_setup_clockevent()
-To:     Yu Kuai <yukuai3@huawei.com>, michal.simek@xilinx.com,
-        tglx@linutronix.de, soren.brinkmann@xilinx.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, zhangxiaoxu5@huawei.com
-References: <20201116070802.1353842-1-yukuai3@huawei.com>
- <20201116135123.2164033-1-yukuai3@huawei.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <c967b46b-2093-7a99-5629-79bee7fcdb9e@linaro.org>
-Date:   Tue, 17 Nov 2020 10:07:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 17 Nov 2020 04:11:45 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id B16515C014F;
+        Tue, 17 Nov 2020 04:11:43 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 17 Nov 2020 04:11:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=IVEiwUxXqMt1oyhEyl4UBJexyAn
+        5tXLqbFTD/YW55YY=; b=Dy6JrmAaDMb28LuAAg5d3oX+n4UWRvYP84Y73XSD4DY
+        pvxUhR2wpmY2iyzyfroGSo78kt68goiJD3UHfUTPj+OB0QANjPkG2mToTkFJ0f2W
+        YkIaiI7YtEL4FCIpxl3JohTkqPJjmA5nNakuIXFXPwregcuZXg+YBadTJufOu6sw
+        YFBXPXgU81kTvuQX066fZPYYw/QfVGeqbm7syC/ioar7mdrcBWS/LItSwGEaExxM
+        qblUjXYTamxGs56OfUVGuDxWSOCwbXO9rq4GxbZgmH+yju5+GwHlQY7dPD8zeaKE
+        xkzc4wKyQp7oruAjWlm5Y7kBZC45mMOF3j3BpBWIbXA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=IVEiwU
+        xXqMt1oyhEyl4UBJexyAn5tXLqbFTD/YW55YY=; b=lyJWBTms4xk6BUInogyJXU
+        yLUKDlUX8NA0G358ZpiSYuprR6Y5qUdqtmBQJzytf6IMroCHY+sUn4t6/BuEBpxg
+        VexS5fA2A6bHFPGg8mrMiEWfxFPB1MClFozhFt0ULD6SZDcb7802CQXCZjYoLDqP
+        R+qecKwLa2x0eYxsCw9wqeXbQHWyhocDjR0zQUhlNBAjwoKP4UGy3aK3ffPh2mma
+        pKoR8QLVHQA4C/4FwNMUMwytg+KN+as9nfb46jPBv/KispYTO5o1sshW3ZW9eNaO
+        pTibmFJ9MT65b0ch1sdtiYnS1jrEwDdeGeuIHDP3Zf0GUpj/zbOVEeEFGp/I7cAQ
+        ==
+X-ME-Sender: <xms:zpOzX3zhH3Pl1N8fASBsOtcc5Lf_nt87OMcQunlAOrVSXHxD-rI9Zg>
+    <xme:zpOzX_SFbldKZrdK77xRvQhCbqRM85_-HxfdrggvO-ED1M7uwJtRwE_tGSAPaZ4RF
+    hYroLdu0AzbLg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeffecutefuodetggdotefrodftvfcurf
+    hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdertddttd
+    dvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucgg
+    tffrrghtthgvrhhnpeetgfeiiefhkefgleehfedvfeekgeejkeeijeegvdefleeigfeuvd
+    ekleefjefhvdenucffohhmrghinheplhgruhhntghhphgrugdrnhgvthdpghhithhhuhgs
+    rdgtohhmpdgrshhkuhgsuhhnthhurdgtohhmpdhlihhnuhigmhhinhhtrdgtohhmpdhkvg
+    hrnhgvlhdrohhrghenucfkphepkeefrdekiedrjeegrdeigeenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:zpOzXxWZuJI2h-Lo0yGlyeJzYlyKtaxK8WF0Y-pjWpXgXA1KuKsWPQ>
+    <xmx:zpOzXxh4Yeyegn3PAvGNg7NuecmO11S2Fk2x4WIS8xpM4f7pnNfOTA>
+    <xmx:zpOzX5B2yflXJBi-vPTf9IdPyjP22g0IBEofKLum8Z_12g-495RLkg>
+    <xmx:z5OzX87tEu9DkPMbmvAZtIiNzAv6pik_9NfnbTyHKPrRzhrQIKmBSg>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 552B23064AA6;
+        Tue, 17 Nov 2020 04:11:42 -0500 (EST)
+Date:   Tue, 17 Nov 2020 10:12:30 +0100
+From:   Greg KH <greg@kroah.com>
+To:     siarhei.liakh@concurrent-rt.com
+Cc:     linux-kernel@vger.kernel.org, initramfs@vger.kernel.org,
+        stable@vger.kernel.org, kyungsik.lee@lge.com, yinghai@kernel.org,
+        4sschmid@informatik.uni-hamburg.de, JBeulich@suse.com
+Subject: Re: [PATCH] unlz4: Handle 0-size chunks, discard trailing
+ padding/garbage
+Message-ID: <X7OT/pQmlas2cJK5@kroah.com>
+References: <20201116220959.16593-1-siarhei.liakh@concurrent-rt.com>
 MIME-Version: 1.0
-In-Reply-To: <20201116135123.2164033-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116220959.16593-1-siarhei.liakh@concurrent-rt.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2020 14:51, Yu Kuai wrote:
-> If clk_notifier_register() failed, ttc_setup_clockevent() will return
-> without freeing 'ttcce', which will leak memory.
+On Mon, Nov 16, 2020 at 05:09:59PM -0500, siarhei.liakh@concurrent-rt.com wrote:
+> From: Siarhei Liakh <siarhei.liakh@concurrent-rt.com>
 > 
-> Fixes: 70504f311d4b ("clocksource/drivers/cadence_ttc: Convert init function to return error")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> TL;DR:
+> 
+> There are two places in unlz4() function where reads beyond the end of a buffer
+> might happen under certain conditions which had been observed in real life on
+> stock Ubuntu 20.04 x86_64 with several vanilla mainline kernels, including 5.10.
+> As a result of this issue, the kernel fails to decompress LZ4-compressed
+> initramfs with following message showing up in the logs:
+> 
+> initramfs unpacking failed: Decoding failed
+> 
+> Note that in most cases the affected system is still able to proceed with the
+> boot process to completion.
+> 
+> LONG STORY:
+> 
+> Background.
+> 
+> Not so long ago we've noticed that some of our Ubuntu 20.04 x86_64 test systems
+> often fail to boot newly generated initramfs image. After extensive
+> investigation we determined that a failure required the following combination
+> for our 5.4.66-rt38 kernel with some additional custom patches:
+> 
+> Real x86_64 hardware or QEMU
+> UEFI boot
+> Ubunutu 20.04 (or 20.04.1) x86_64
+> CONFIG_BLK_DEV_RAM=y in .config
+> COMPRESS=lz4 in initramfs.conf
+> Freshly compiled and installed kernel
+> Freshly generated and installed initramfs image
+> 
+> In our testing, such a combination would often produce a non-bootable system. It
+> is important to note that [un]bootability of the system was later tracked down
+> to particular instances of initramfs images, and would follow them if they were
+> to be switched around/transferred to other systems. What is even more important
+> is that consecutive re-generations of initramfs images from the same source and
+> binary materials would yield about 75% of "bad" images. Further, once the image
+> is identified as "bad",it always stays "bad"; once one is "good" it always stays
+> "good". Reverting CONFIG_BLK_DEV_RAM to "m" (default in Ubuntu), or changing
+> COMPRESS to "gzip" yields a 100% bootable system. Decompressing "bad" initramfs
+> image with "unmkinitramfs" yields *exactly* the same set of binaries, as
+> verified by matching MD5 sums to those from "good" image.
+> 
+> Speculation.
+> 
+> Based on general observations, it appears that Ubuntu's userland toolchain
+> cannot consistently generate exactly the same compressed initramfs image, likely
+> due to some variations in timestamps between the runs. This causes variations in
+> compressed lz4 data stream. Further, either initramfs tools or lz4 libraries
+> appear to pad compressed lz4 output to closest 4-byte boundary. lz4 v1.9.2 that
+> ships with Ubuntu 20.04 appears to be able to handle such padding just fine,
+> while lz4 (supposedly v1.8.3) within Linux kernel cannot.
+> Several reports of somewhat similar behavior had been recently circulation
+> through different bug tracking systems and discussion forums [1-4].
+> I also suspect only that systems which can mount permanent root directly (or
+> with help of modules contained in first, supposedly uncompressed, part of
+> initramfs, or the ones with statically linked modules) can actually complete the
+> boot when LZ4 decompression fails. This would certainly explain why most of
+> Ubuntu systems still manage to boot even after failing to decompress the image.
+> 
+> The facts.
+> 
+> Regardless of whether Ubuntu 20.04 toolchain produces a valid lz4-compressed
+> initramfs image or not, current version of unlz4() function in kernel has two
+> code paths which had been observed attempting to read beyond the buffer end when
+> presented with one of the "padded"/"bad" initramfs images generated by stock
+> Ubuntu 20.04 toolchain. Some configurations of some 5.4 kernels are known to
+> fail to boot in such cases. This behavior also becomes evident on vanilla
+> 5.10.0-rc3 and 5.10.0-rc4 kernels with addition of two logging statements for
+> corresponding edge cases, even though it does not prevent system from booting in
+> most generic configurations.
+> 
+> Further investigation is likely warranted to confirm whether userland toolchain
+> contains any bugs and/or whether any of these cases constitute violation of LZ4
+> and/or initramfs specification.
+> 
+> References
+> 
+> [1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1835660
+> [2] https://github.com/linuxmint/mint20-beta/issues/90
+> [3] https://askubuntu.com/questions/1245458/getting-the-message-0-283078-initramfs-unpacking-failed-decoding-failed-wh
+> [4] https://forums.linuxmint.com/viewtopic.php?t=323152
+> 
+> Signed-off-by: Siarhei Liakh <siarhei.liakh@concurrent-rt.com>
+> 
 > ---
+> 
+> Please CC: me directly on all replies.
+> 
+>  lib/decompress_unlz4.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
 
-Applied, thanks
+<formletter>
 
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+</formletter>
