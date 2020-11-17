@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E622B5E0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 283532B5E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgKQLLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:11:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727214AbgKQLLE (ORCPT
+        id S1727960AbgKQLLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:11:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39969 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727214AbgKQLLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:11:04 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA1EC0613CF;
-        Tue, 17 Nov 2020 03:11:04 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id a18so17081096pfl.3;
-        Tue, 17 Nov 2020 03:11:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pIwP/qFwnBLD+oPTw1kSA2+OGFpTVI9bS1ER2i+57dk=;
-        b=JJohZP+qoVsw2y0PW5daTNosizS27Wrl8lr5x0kaxYG5FO1p+vKRFgZ+SdYJtviO/4
-         ztG4C8dUoVm/psjO77uJUBhMPAF8dibuCuguQy7SV0ph5x7TcoaaamnzFqizK/thxzaC
-         U1V0HCQNVSyhJrG1Xfy6LjBXNNZEeKKQjNndFUrWmeSoQsoJDkeqiDlDdcY7OhDCOCmE
-         dWppO/uAXXUwTElMLphZDaoeWi5d+WOlgjsfA9KozHkbNhMI4r2Yommp0VYKjxoGp1LY
-         L4zIx9XECvtbcHlVFqNC+eLAkD5sc1ke0IdE+zFL4V091FaoR5MuGwDEdlfw49E/7FVv
-         iIPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pIwP/qFwnBLD+oPTw1kSA2+OGFpTVI9bS1ER2i+57dk=;
-        b=fV4m398KyTKV+DUkY9bQcKis0syHzhAugEhjPI3dFkdUpl0LkOK4oOwjE2sT3UvrbP
-         VdamkRmzkv/9RLqn9yA+irdq3xcPMVlXLxWmPlaE3X3YvQbBNP2CIv7eDgIQSQVc6jG5
-         KeX6sN9civvvE0OnQblBY89q/bFVEwMNVcLelfGyPZ4jkeGlL0D0sNW2Br+ACvw6TSFR
-         2uW4mYmFZhFAVwyXm1h59MJMaQFvLFQLfWmHfkJDQJd4ly54EcWcfBVcXKwlhVGKp9ia
-         tKzqtwrZSBZNRKm7bQusl6CkdrSK0F6g3tANJp/6nKKWHVoSGJpHM+kyj9x8PhNW3QKv
-         6Ebg==
-X-Gm-Message-State: AOAM530hLMgbMlWd6rnF259yH/RRiwYm+xfEDe0XlHUlk9RZ2jBEFbSh
-        pY60K9vHz9Mswg26vcNvhiFmujuaHgQ6ZIqYUl4=
-X-Google-Smtp-Source: ABdhPJwCYvRc/HQBxZ6xAksYzWsA9HF55QAGZR7ISArQT8QBE24DlxMNGF8gVjiI1QsUWI1ZmImcrAnhkcUj6XmEW58=
-X-Received: by 2002:a63:3e05:: with SMTP id l5mr3017553pga.74.1605611464473;
- Tue, 17 Nov 2020 03:11:04 -0800 (PST)
+        Tue, 17 Nov 2020 06:11:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605611489;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ITDbJ5FeObPmxp9jb5MtpoVUKiHieLkWbG48UC2H4M=;
+        b=WZPzW8lfkigKn26Ysd147LCgTsi1UFrG+JttTvOQq4lIgCg3bAORa+os/wMNLU/uM+SrPe
+        TNrrwdnSXGGZ7qojJ/E0PuxNREujgIAi+x6bohfXsbXq1vUzXJwGNG6fdO4r5w7Y0ZOmNK
+        Pq46E/o/yHj6ivg+7vk30aRdTYQDsBk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-7tS0sVaAN0awBuS74jjcyg-1; Tue, 17 Nov 2020 06:11:26 -0500
+X-MC-Unique: 7tS0sVaAN0awBuS74jjcyg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C8561802B61;
+        Tue, 17 Nov 2020 11:11:25 +0000 (UTC)
+Received: from localhost (ovpn-113-172.ams2.redhat.com [10.36.113.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 468555D707;
+        Tue, 17 Nov 2020 11:11:22 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 11:11:21 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 04/12] vdpa: add vdpa simulator for block device
+Message-ID: <20201117111121.GD131917@stefanha-x1.localdomain>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <20201113134712.69744-5-sgarzare@redhat.com>
 MIME-Version: 1.0
-References: <20201112130734.331094-1-ch@denx.de> <20201112130734.331094-3-ch@denx.de>
- <20201116144631.GB1689012@smile.fi.intel.com> <20201116163024.74c767b6@md1za8fc.ad001.siemens.net>
- <AM0PR10MB316964C5127D27DC9D7C3DCCE7E20@AM0PR10MB3169.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <AM0PR10MB316964C5127D27DC9D7C3DCCE7E20@AM0PR10MB3169.EURPRD10.PROD.OUTLOOK.COM>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 17 Nov 2020 13:10:48 +0200
-Message-ID: <CAHp75Ve3UuzRj+0GNRT__XriuYihGx5sLjDYG=JMFooy=4j_dQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] rtc: rx6110: add ACPI bindings to I2C
-To:     "johannes-hahn@siemens.com" <johannes-hahn@siemens.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Claudius Heine <ch@denx.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "werner.zeh@siemens.com" <werner.zeh@siemens.com>,
-        "henning.schild@siemens.com" <henning.schild@siemens.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201113134712.69744-5-sgarzare@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bjuZg6miEcdLYP6q"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 9:39 AM johannes-hahn@siemens.com
-<johannes-hahn@siemens.com> wrote:
->
-> Hello Andy,
->
-> when comparing the ACPI IDs used in rtc-ds1307.c, which is already on mainline
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/rtc/rtc-ds1307.c#L1141
->
-> for example. Every ID listed there is also not formatted the ACPI ID , PNP ID way defined in the ACPI spec.
->
-> How about that ?
+--bjuZg6miEcdLYP6q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Bad examples should not prevent you from doing the right thing, correct?
+On Fri, Nov 13, 2020 at 02:47:04PM +0100, Stefano Garzarella wrote:
+> +static void vdpasim_blk_work(struct work_struct *work)
+> +{
+> +	struct vdpasim *vdpasim = container_of(work, struct vdpasim, work);
+> +	u8 status = VIRTIO_BLK_S_OK;
+> +	int i;
+> +
+> +	spin_lock(&vdpasim->lock);
+> +
+> +	if (!(vdpasim->status & VIRTIO_CONFIG_S_DRIVER_OK))
+> +		goto out;
+> +
+> +	for (i = 0; i < VDPASIM_BLK_VQ_NUM; i++) {
+> +		struct vdpasim_virtqueue *vq = &vdpasim->vqs[i];
+> +
+> +		if (!vq->ready)
+> +			continue;
+> +
+> +		while (vringh_getdesc_iotlb(&vq->vring, &vq->iov, &vq->iov,
+> +					    &vq->head, GFP_ATOMIC) > 0) {
+> +
+> +			int write;
+> +
+> +			vq->iov.i = vq->iov.used - 1;
+> +			write = vringh_iov_push_iotlb(&vq->vring, &vq->iov, &status, 1);
+> +			if (write <= 0)
+> +				break;
 
-JFYI: https://lore.kernel.org/linux-rtc/20201116142859.31257-1-andriy.shevchenko@linux.intel.com/
+We're lucky the guest driver doesn't crash after VIRTIO_BLK_T_GET_ID? :)
 
+--bjuZg6miEcdLYP6q
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-With Best Regards,
-Andy Shevchenko
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl+zr9kACgkQnKSrs4Gr
+c8iPWQgAum2Wx+ML7CwyIMXTLzRGqriW1/Z2uu/EQd5+DN1mh1OwzeQx+lyRC/I/
+ateKy1MSPp6uXbOBPcjwNjoO/i9rpgMAv5k+T7zsCYjGYyUksR3+uyipbDo11qsW
+FRkBsxyffjMmQupvEVoDj125ACqgtc8uajpbU9qdwGeDSEDiGWf4yuma1Jo9speI
+VNH6UL4lmffCVhz1c385SW9L6oi0wVYBQlECdkKadgZsTWW3vN5sufKW53/8MHod
+MTnf85IqyDbRMMVcXR5nD/B577+04gmSjauzHpIg9iDXDG35zgB6Uk4tV+wv9XA7
+RuZaCUywt6pKH9zkeO4+Kcpxd6h4jw==
+=58Zf
+-----END PGP SIGNATURE-----
+
+--bjuZg6miEcdLYP6q--
+
