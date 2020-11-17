@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23362B5A25
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515E92B5A28
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgKQHPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:15:06 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:25366 "EHLO m42-4.mailgun.net"
+        id S1726830AbgKQHPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:15:08 -0500
+Received: from mga04.intel.com ([192.55.52.120]:31188 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726266AbgKQHPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:15:05 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605597305; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=F+0hhCoD2WD3yTTBazhWHu/abFlHBp5GwIq2XdTJMr4=; b=diKVtk7TxJLr4ZAT7RuTpwU7IJY7C0nDIJ2za8+zTwW0OXr+If9kQB+ZHERcTkVs02rHD2sb
- TsG3eRNnGF3tBkpyaFWTX23FFzyJPYOtfuoTjDpFgEW+F4Is1unQx9oPHh6iLBirQxpdPYs6
- tmFY4HJgRexQrm+GRRlVG/D8qO4=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5fb37877309342b9149f0e9c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 17 Nov 2020 07:15:03
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B4CB0C43460; Tue, 17 Nov 2020 07:15:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2EDDFC43461;
-        Tue, 17 Nov 2020 07:14:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2EDDFC43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: Re: [PATCH] ath11k: use MHI provided APIs to allocate and free MHI controller
-References: <1605571300-4438-1-git-send-email-bbhatt@codeaurora.org>
-Date:   Tue, 17 Nov 2020 09:14:58 +0200
-In-Reply-To: <1605571300-4438-1-git-send-email-bbhatt@codeaurora.org> (Bhaumik
-        Bhatt's message of "Mon, 16 Nov 2020 16:01:40 -0800")
-Message-ID: <87tutozc7h.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1726802AbgKQHPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 02:15:07 -0500
+IronPort-SDR: nu7tpJqvoaAbwvDHcF3Zt6CvhTGJ9RwptoI7aO62NJ9TTnXKN9X48jEPU/LRweMB+hR+qMQlIl
+ R1YFeo2cB3lw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="168298824"
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="168298824"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 23:15:07 -0800
+IronPort-SDR: sR8h+o7akjT61qOtzbZd64/FD6vJBKF7clfnMi8baqWtQQzuhTDi9yyL3jKGyxSSXRaoaX7eiD
+ MYTzcLc3ZDig==
+X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
+   d="scan'208";a="543921746"
+Received: from lil6-mobl1.ccr.corp.intel.com ([10.255.30.220])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 23:15:04 -0800
+Message-ID: <3776af7407728bc11428d887a9a7028919218f6b.camel@intel.com>
+Subject: Re: [PATCH] thermal: Fix slab-out-of-bounds in
+ thermal_cooling_device_stats_update()
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     zhuguangqing83@gmail.com, daniel.lezcano@linaro.org,
+        amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhuguangqing@xiaomi.com
+Date:   Tue, 17 Nov 2020 15:15:02 +0800
+In-Reply-To: <20200915055837.498-1-zhuguangqing83@gmail.com>
+References: <20200915055837.498-1-zhuguangqing83@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bhaumik Bhatt <bbhatt@codeaurora.org> writes:
+On Tue, 2020-09-15 at 13:58 +0800, zhuguangqing83@gmail.com wrote:
+> From: zhuguangqing <zhuguangqing@xiaomi.com>
+> 
+> In function thermal_cooling_device_stats_update(), if the input
+> parameter
+> new_state is greater or equal to stats->max_states, then it will
+> cause
+> slab-out-of-bounds error when execute the code as follows:
+> stats->trans_table[stats->state * stats->max_states + new_state]++;
+> 
+> Two functions call the function
+> thermal_cooling_device_stats_update().
+> 1. cur_state_store()
+> 2. thermal_cdev_set_cur_state()
+> Both of the two functions call cdev->ops->set_cur_state(cdev, state)
+> before thermal_cooling_device_stats_update(), if the return value is
+> not 0, then thermal_cooling_device_stats_update() will not be called.
+> So if all cdev->ops->set_cur_state(cdev, state) check validity of the
+> parameter state, then it's ok. Unfortunately, it's not now.
+> 
+> We have two methods to avoid the slab-out-of-bounds error in
+> thermal_cooling_device_stats_update().
+> 1. Check the validity of the parameter state in all
+> cdev->ops->set_cur_state(cdev, state).
+> 2. Check the validity of the parameter state in
+> thermal_cooling_device_stats_update().
+> 
+> Use method 2 in this patch. Because the modification is simple and
+> resolve the problem in the scope of "#ifdef
+> CONFIG_THERMAL_STATISTICS".
+> 
+> Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
 
-> Use MHI provided APIs to allocate and free MHI controller to
-> improve MHI host driver handling.
+Hi, Daniel,
 
-How does it improve the handling?
+this patch is a similar fix as
 
-> This also fixes a memory leak as the MHI controller was allocated but
-> never freed.
->
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+https://patchwork.kernel.org/project/linux-pm/patch/20200408041917.2329-4-rui.zhang@intel.com/
+
+I think we'd better take the original fix from Takashi Iwai.
+And I will refresh and submit the patches that supports dynamic cooling
+states later when I have time.
+
+thanks,
+rui
 > ---
->  drivers/net/wireless/ath/ath11k/mhi.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  drivers/thermal/thermal_sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/thermal_sysfs.c
+> b/drivers/thermal/thermal_sysfs.c
+> index 8c231219e15d..9c49f744d79d 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -756,7 +756,7 @@ void thermal_cooling_device_stats_update(struct
+> thermal_cooling_device *cdev,
+>  
+>  	spin_lock(&stats->lock);
+>  
+> -	if (stats->state == new_state)
+> +	if (stats->state == new_state || new_state >= stats-
+> >max_states)
+>  		goto unlock;
+>  
+>  	update_time_in_state(stats);
 
-For ath11k patches please CC ath11k and linux-wireless lists so that
-patchwork sees it. So you need to resend this.
-
-Is this a new API? I need to understand if there are any dependencies
-between mhi and ath trees, or if I can apply this directly to my ath.git
-tree.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
