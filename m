@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610182B60A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3792B6230
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729115AbgKQNLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:11:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40786 "EHLO mail.kernel.org"
+        id S1731416AbgKQN0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:26:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729566AbgKQNLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:11:11 -0500
+        id S1731407AbgKQN0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:26:08 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C7A7221EB;
-        Tue, 17 Nov 2020 13:11:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E662B2464E;
+        Tue, 17 Nov 2020 13:26:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618671;
-        bh=ae/Vjyqzmrs+5emgSO6m4U3q0C8ZhW9q71LqXTkC+Tw=;
+        s=default; t=1605619568;
+        bh=wEyukaOv6IIkdkpz+Z6uNIT4pecAvMCdfZeRtCH3gIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YvmBRm3lXpZAq7u6obtyc4Bt1lLZOAItZPFcFK/fLwwnTUVQDHf14RElOO/zsYxRb
-         gXwzcUB76cA69xXmdkezYmCM4xW5M9eYWGk+J322x+FERHlfJTJyhKSJCMhF7mNgbc
-         TpLVFLoeTeRaOIhw0+Q6C7BQ0mnS9DbQP7xn5H94=
+        b=jeynDCBQsisD0323SWw0ihIVRHsiTpW4t+P0/EWufFtbUsPk+F4FhRTy/2kW80NSn
+         +ysMC7jspzQ9uqZ9SyF1jvTMXWGgsH7Nm48uP+IiNlOp1G9o+yzqy0C48hY23Y4DlK
+         1aINGX5cevWIqa3ZaTzUiMp+kd5bUe7SuUMWGRBo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wengang Wang <wen.gang.wang@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 47/78] ocfs2: initialize ip_next_orphan
+        stable@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 083/151] tpm_tis: Disable interrupts on ThinkPad T490s
 Date:   Tue, 17 Nov 2020 14:05:13 +0100
-Message-Id: <20201117122111.413868472@linuxfoundation.org>
+Message-Id: <20201117122125.458844797@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,93 +47,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wengang Wang <wen.gang.wang@oracle.com>
+From: Jerry Snitselaar <jsnitsel@redhat.com>
 
-commit f5785283dd64867a711ca1fb1f5bb172f252ecdf upstream.
+[ Upstream commit b154ce11ead925de6a94feb3b0317fafeefa0ebc ]
 
-Though problem if found on a lower 4.1.12 kernel, I think upstream has
-same issue.
+There is a misconfiguration in the bios of the gpio pin used for the
+interrupt in the T490s. When interrupts are enabled in the tpm_tis
+driver code this results in an interrupt storm. This was initially
+reported when we attempted to enable the interrupt code in the tpm_tis
+driver, which previously wasn't setting a flag to enable it. Due to
+the reports of the interrupt storm that code was reverted and we went back
+to polling instead of using interrupts. Now that we know the T490s problem
+is a firmware issue, add code to check if the system is a T490s and
+disable interrupts if that is the case. This will allow us to enable
+interrupts for everyone else. If the user has a fixed bios they can
+force the enabling of interrupts with tpm_tis.interrupts=1 on the
+kernel command line.
 
-In one node in the cluster, there is the following callback trace:
-
-   # cat /proc/21473/stack
-   __ocfs2_cluster_lock.isra.36+0x336/0x9e0 [ocfs2]
-   ocfs2_inode_lock_full_nested+0x121/0x520 [ocfs2]
-   ocfs2_evict_inode+0x152/0x820 [ocfs2]
-   evict+0xae/0x1a0
-   iput+0x1c6/0x230
-   ocfs2_orphan_filldir+0x5d/0x100 [ocfs2]
-   ocfs2_dir_foreach_blk+0x490/0x4f0 [ocfs2]
-   ocfs2_dir_foreach+0x29/0x30 [ocfs2]
-   ocfs2_recover_orphans+0x1b6/0x9a0 [ocfs2]
-   ocfs2_complete_recovery+0x1de/0x5c0 [ocfs2]
-   process_one_work+0x169/0x4a0
-   worker_thread+0x5b/0x560
-   kthread+0xcb/0xf0
-   ret_from_fork+0x61/0x90
-
-The above stack is not reasonable, the final iput shouldn't happen in
-ocfs2_orphan_filldir() function.  Looking at the code,
-
-  2067         /* Skip inodes which are already added to recover list, since dio may
-  2068          * happen concurrently with unlink/rename */
-  2069         if (OCFS2_I(iter)->ip_next_orphan) {
-  2070                 iput(iter);
-  2071                 return 0;
-  2072         }
-  2073
-
-The logic thinks the inode is already in recover list on seeing
-ip_next_orphan is non-NULL, so it skip this inode after dropping a
-reference which incremented in ocfs2_iget().
-
-While, if the inode is already in recover list, it should have another
-reference and the iput() at line 2070 should not be the final iput
-(dropping the last reference).  So I don't think the inode is really in
-the recover list (no vmcore to confirm).
-
-Note that ocfs2_queue_orphans(), though not shown up in the call back
-trace, is holding cluster lock on the orphan directory when looking up
-for unlinked inodes.  The on disk inode eviction could involve a lot of
-IOs which may need long time to finish.  That means this node could hold
-the cluster lock for very long time, that can lead to the lock requests
-(from other nodes) to the orhpan directory hang for long time.
-
-Looking at more on ip_next_orphan, I found it's not initialized when
-allocating a new ocfs2_inode_info structure.
-
-This causes te reflink operations from some nodes hang for very long
-time waiting for the cluster lock on the orphan directory.
-
-Fix: initialize ip_next_orphan as NULL.
-
-Signed-off-by: Wengang Wang <wen.gang.wang@oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201109171746.27884-1-wen.gang.wang@oracle.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: Peter Huewe <peterhuewe@gmx.de>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Reviewed-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ocfs2/super.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/char/tpm/tpm_tis.c | 29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
 
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -1733,6 +1733,7 @@ static void ocfs2_inode_init_once(void *
+diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
+index e7df342a317d6..c722e3b3121a8 100644
+--- a/drivers/char/tpm/tpm_tis.c
++++ b/drivers/char/tpm/tpm_tis.c
+@@ -27,6 +27,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/kernel.h>
++#include <linux/dmi.h>
+ #include "tpm.h"
+ #include "tpm_tis_core.h"
  
- 	oi->ip_blkno = 0ULL;
- 	oi->ip_clusters = 0;
-+	oi->ip_next_orphan = NULL;
+@@ -49,8 +50,8 @@ static inline struct tpm_tis_tcg_phy *to_tpm_tis_tcg_phy(struct tpm_tis_data *da
+ 	return container_of(data, struct tpm_tis_tcg_phy, priv);
+ }
  
- 	ocfs2_resv_init_once(&oi->ip_la_data_resv);
+-static bool interrupts = true;
+-module_param(interrupts, bool, 0444);
++static int interrupts = -1;
++module_param(interrupts, int, 0444);
+ MODULE_PARM_DESC(interrupts, "Enable interrupts");
  
+ static bool itpm;
+@@ -63,6 +64,28 @@ module_param(force, bool, 0444);
+ MODULE_PARM_DESC(force, "Force device probe rather than using ACPI entry");
+ #endif
+ 
++static int tpm_tis_disable_irq(const struct dmi_system_id *d)
++{
++	if (interrupts == -1) {
++		pr_notice("tpm_tis: %s detected: disabling interrupts.\n", d->ident);
++		interrupts = 0;
++	}
++
++	return 0;
++}
++
++static const struct dmi_system_id tpm_tis_dmi_table[] = {
++	{
++		.callback = tpm_tis_disable_irq,
++		.ident = "ThinkPad T490s",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T490s"),
++		},
++	},
++	{}
++};
++
+ #if defined(CONFIG_PNP) && defined(CONFIG_ACPI)
+ static int has_hid(struct acpi_device *dev, const char *hid)
+ {
+@@ -192,6 +215,8 @@ static int tpm_tis_init(struct device *dev, struct tpm_info *tpm_info)
+ 	int irq = -1;
+ 	int rc;
+ 
++	dmi_check_system(tpm_tis_dmi_table);
++
+ 	rc = check_acpi_tpm2(dev);
+ 	if (rc)
+ 		return rc;
+-- 
+2.27.0
+
 
 
