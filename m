@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3D82B601F
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E51082B6206
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgKQNGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:06:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60770 "EHLO mail.kernel.org"
+        id S1731022AbgKQNYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:24:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728524AbgKQNGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:06:32 -0500
+        id S1730835AbgKQNYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:24:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FD03238E6;
-        Tue, 17 Nov 2020 13:06:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE31B2467A;
+        Tue, 17 Nov 2020 13:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618391;
-        bh=XZgKa9sLT+bkLqnqpU2cXilc5PX73Yer78389k18gC4=;
+        s=default; t=1605619473;
+        bh=zAo+rX/HJd0EhyEP4ZjfM0EPLEC2xbl048pitavwzjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yMpQ52FejGXqQVIHRDiwnDIKpF7owUAHWxsQ2Lzt5BnFlSwKgHIyDUSDPxNxCrxAQ
-         BCI01OAT/F5Ss+CgGuize0rT/HxuRAViVR4xjuQLqLeCf147E90lC89vmzW9guvv/Z
-         CvuCxD8UDhViUHDu0yKK9qxfSQ3s9Nnao4OI7ggs=
+        b=StcuKT+zxkYuuJqlrtXqROQf8IatiOgqo7udq6I7pPsTPq84L5EnvDbpZEgL/M4uU
+         EGbLtv6VMkxQTbMc61yUarQxs7atCGEid4p3nrLSfp9bWJ8CoXFXY5nvPeXuaEx/qe
+         0NRkQoULJ//WXvLWasHc0E61RmZ510rauIBaVJgI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martyna Szapar <martyna.szapar@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 17/64] i40e: Fix of memory leak and integer truncation in i40e_virtchnl.c
-Date:   Tue, 17 Nov 2020 14:04:40 +0100
-Message-Id: <20201117122106.976231505@linuxfoundation.org>
+Subject: [PATCH 5.4 051/151] selftests/ftrace: check for do_sys_openat2 in user-memory test
+Date:   Tue, 17 Nov 2020 14:04:41 +0100
+Message-Id: <20201117122123.914573332@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martyna Szapar <martyna.szapar@intel.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 24474f2709af6729b9b1da1c5e160ab62e25e3a4 upstream.
+[ Upstream commit e3e40312567087fbe6880f316cb2b0e1f3d8a82c ]
 
-Fixed possible memory leak in i40e_vc_add_cloud_filter function:
-cfilter is being allocated and in some error conditions
-the function returns without freeing the memory.
+More recent libc implementations are now using openat/openat2 system
+calls so also add do_sys_openat2 to the tracing so that the test
+passes on these systems because do_sys_open may not be called.
 
-Fix of integer truncation from u16 (type of queue_id value) to u8
-when calling i40e_vc_isvalid_queue_id function.
+Thanks to Masami Hiramatsu for the help on getting this fix to work
+correctly.
 
-Signed-off-by: Martyna Szapar <martyna.szapar@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-[bwh: Backported to 4.4: i40e_vc_add_cloud_filter() does not exist
- but the integer truncation is still possible]
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../selftests/ftrace/test.d/kprobe/kprobe_args_user.tc        | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index 18e10357f1d0b..b4b4d46da1734 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -188,7 +188,7 @@ static inline bool i40e_vc_isvalid_vsi_id(struct i40e_vf *vf, u16 vsi_id)
-  * check for the valid queue id
-  **/
- static inline bool i40e_vc_isvalid_queue_id(struct i40e_vf *vf, u16 vsi_id,
--					    u8 qid)
-+					    u16 qid)
- {
- 	struct i40e_pf *pf = vf->pf;
- 	struct i40e_vsi *vsi = i40e_find_vsi_from_id(pf, vsi_id);
+diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc
+index 0f60087583d8f..a753c73d869ab 100644
+--- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc
++++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc
+@@ -11,12 +11,16 @@ grep -A10 "fetcharg:" README | grep -q '\[u\]<offset>' || exit_unsupported
+ :;: "user-memory access syntax and ustring working on user memory";:
+ echo 'p:myevent do_sys_open path=+0($arg2):ustring path2=+u0($arg2):string' \
+ 	> kprobe_events
++echo 'p:myevent2 do_sys_openat2 path=+0($arg2):ustring path2=+u0($arg2):string' \
++	>> kprobe_events
+ 
+ grep myevent kprobe_events | \
+ 	grep -q 'path=+0($arg2):ustring path2=+u0($arg2):string'
+ echo 1 > events/kprobes/myevent/enable
++echo 1 > events/kprobes/myevent2/enable
+ echo > /dev/null
+ echo 0 > events/kprobes/myevent/enable
++echo 0 > events/kprobes/myevent2/enable
+ 
+ grep myevent trace | grep -q 'path="/dev/null" path2="/dev/null"'
+ 
 -- 
 2.27.0
 
