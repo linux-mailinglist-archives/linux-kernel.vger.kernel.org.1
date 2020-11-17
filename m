@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057292B687B
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF402B6875
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 16:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387531AbgKQPRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 10:17:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7637 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731788AbgKQPRB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:17:01 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cb8fw0kzCz15L8v;
-        Tue, 17 Nov 2020 23:16:40 +0800 (CST)
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 17 Nov 2020 23:16:45 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <kvmarm@lists.cs.columbia.edu>, <maz@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <eric.auger@redhat.com>,
-        <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
-        <suzuki.poulose@arm.com>, <wanghaibin.wang@huawei.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Subject: [PATCH] KVM: arm64: vgic-v3: Drop the reporting of GICR_TYPER.Last for userspace
-Date:   Tue, 17 Nov 2020 23:16:29 +0800
-Message-ID: <20201117151629.1738-1-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
+        id S1730315AbgKQPQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 10:16:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730178AbgKQPQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 10:16:48 -0500
+Received: from localhost.localdomain (unknown [176.167.180.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2809124198;
+        Tue, 17 Nov 2020 15:16:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605626207;
+        bh=T+zglwTSaKT1Oy/VUNqM5qfAwKuwu4cmh4SCTRct9Zw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZRMyToxIR7yEwGtbSm/ls4iV+HPir19TbNB6Ea56nuiA5av7awCjF8Xuj2/BjkP59
+         xddLjjlw7I3Fche0WzCKj5gQVWv8NRHdSlR1Gk9y9s/TBRmFuDXHWUUdMRimSBXAJy
+         9wNjmLnNOH3fNSSgdFMyQSfHxpkC2WbrYnuK45E4=
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Phil Auld <pauld@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: [PATCH 0/5] context_tracking: Flatter archs not using exception_enter/exit() v3
+Date:   Tue, 17 Nov 2020 16:16:32 +0100
+Message-Id: <20201117151637.259084-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.179]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was recently reported that if GICR_TYPER is accessed before the RD base
-address is set, we'll suffer from the unset @rdreg dereferencing. Oops...
+In this new version, I fixed the changelogs according to peterz's review.
+Especially on the 2nd patch where I added lots of details to better
+understand what exception_enter/exit() do and what is required to get
+rid of it.
 
-	gpa_t last_rdist_typer = rdreg->base + GICR_TYPER +
-			(rdreg->free_index - 1) * KVM_VGIC_V3_REDIST_SIZE;
+Also rebased against -rc4.
 
-It's "expected" that users will access registers in the redistributor if
-the RD has been properly configured (e.g., the RD base address is set). But
-it hasn't yet been covered by the existing documentation.
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	core/isolation-v3
 
-Per discussion on the list [1], the reporting of the GICR_TYPER.Last bit
-for userspace never actually worked. And it's difficult for us to emulate
-it correctly given that userspace has the flexibility to access it any
-time. Let's just drop the reporting of the Last bit for userspace for now
-(userspace should have full knowledge about it anyway) and it at least
-prevents kernel from panic ;-)
+HEAD: b358a96584150feacc20d7d10410fd1b7c7c19fe
 
-[1] https://lore.kernel.org/kvmarm/c20865a267e44d1e2c0d52ce4e012263@kernel.org/
-
-Fixes: ba7b3f1275fd ("KVM: arm/arm64: Revisit Redistributor TYPER last bit computation")
-Reported-by: Keqian Zhu <zhukeqian1@huawei.com>
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+Thanks,
+	Frederic
 ---
 
-This may be the easiest way to fix the issue and to get the fix backported
-to stable tree. There is still some work can be done since (at least) we
-have code duplicates between the MMIO and uaccess callbacks.
+Frederic Weisbecker (5):
+      context_tracking: Introduce HAVE_CONTEXT_TRACKING_OFFSTACK
+      context_tracking:  Don't implement exception_enter/exit() on CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK
+      sched: Detect call to schedule from critical entry code
+      context_tracking: Only define schedule_user() on !HAVE_CONTEXT_TRACKING_OFFSTACK archs
+      x86: Support HAVE_CONTEXT_TRACKING_OFFSTACK
 
- arch/arm64/kvm/vgic/vgic-mmio-v3.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-index 52d6f24f65dc..15a6c98ee92f 100644
---- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-+++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-@@ -273,6 +273,23 @@ static unsigned long vgic_mmio_read_v3r_typer(struct kvm_vcpu *vcpu,
- 	return extract_bytes(value, addr & 7, len);
- }
- 
-+static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
-+						 gpa_t addr, unsigned int len)
-+{
-+	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
-+	int target_vcpu_id = vcpu->vcpu_id;
-+	u64 value;
-+
-+	value = (u64)(mpidr & GENMASK(23, 0)) << 32;
-+	value |= ((target_vcpu_id & 0xffff) << 8);
-+
-+	if (vgic_has_its(vcpu->kvm))
-+		value |= GICR_TYPER_PLPIS;
-+
-+	/* reporting of the Last bit is not supported for userspace */
-+	return extract_bytes(value, addr & 7, len);
-+}
-+
- static unsigned long vgic_mmio_read_v3r_iidr(struct kvm_vcpu *vcpu,
- 					     gpa_t addr, unsigned int len)
- {
-@@ -593,8 +610,9 @@ static const struct vgic_register_region vgic_v3_rd_registers[] = {
- 	REGISTER_DESC_WITH_LENGTH(GICR_IIDR,
- 		vgic_mmio_read_v3r_iidr, vgic_mmio_write_wi, 4,
- 		VGIC_ACCESS_32bit),
--	REGISTER_DESC_WITH_LENGTH(GICR_TYPER,
--		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi, 8,
-+	REGISTER_DESC_WITH_LENGTH_UACCESS(GICR_TYPER,
-+		vgic_mmio_read_v3r_typer, vgic_mmio_write_wi,
-+		vgic_uaccess_read_v3r_typer, vgic_mmio_uaccess_write_wi, 8,
- 		VGIC_ACCESS_64bit | VGIC_ACCESS_32bit),
- 	REGISTER_DESC_WITH_LENGTH(GICR_WAKER,
- 		vgic_mmio_read_raz, vgic_mmio_write_wi, 4,
--- 
-2.19.1
-
+ arch/Kconfig                     | 17 +++++++++++++++++
+ arch/x86/Kconfig                 |  1 +
+ include/linux/context_tracking.h |  6 ++++--
+ kernel/sched/core.c              |  3 ++-
+ 4 files changed, 24 insertions(+), 3 deletions(-)
