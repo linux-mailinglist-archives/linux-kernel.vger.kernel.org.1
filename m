@@ -2,48 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6AA2B6070
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D85B2B6187
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgKQNJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:09:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37754 "EHLO mail.kernel.org"
+        id S1730463AbgKQNT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:19:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729373AbgKQNJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:09:06 -0500
+        id S1730412AbgKQNTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:19:50 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11E6D2225B;
-        Tue, 17 Nov 2020 13:09:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CA6B24248;
+        Tue, 17 Nov 2020 13:19:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618545;
-        bh=Erzmw6T1KHPpYXvP6UTHaqQVh+xzUZeFxd3OXrj3tkM=;
+        s=default; t=1605619189;
+        bh=9KR9emB6vwp1BsTaAAB3Ljt/BM+q5eDOtc6D+Gvnyh8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y29sIGGlmF+GYpqTGqdDd/HpSdct95pzwQuqZ2E0zW8Sxij6zpITRNCmnvZ0yVAPx
-         HKTyARteNbjSwqaVn+ykiTZOjRkGJV9LqAWBl9wLQFYo7cIF309Zb2JV7cYqDfj5Hq
-         eyIzXjYsyMKGeRJfRlVnhOcPza+6kQ0IEYCRcqJE=
+        b=aBEkhufyunQyN2xAjRA9QdIgzIZYZdpMsNp6dIvTrZlHhzcXmQ6UPJvn2T7sU7C3c
+         4PH24F8aWeiTxlSxvV7olK1BftYzE4tYAu6Tv/rPdIfEm72fhWz32nhgiroluGFEeZ
+         xHFUldpF7D8/s3zBRkf7G8URL3Mnf4P9I+4ANGyg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabian Frederick <fabf@skynet.be>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.4 62/64] reboot: fix overflow parsing reboot cpu number
+        stable@vger.kernel.org, Sven Van Asbroeck <thesven73@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 058/101] lan743x: fix "BUG: invalid wait context" when setting rx mode
 Date:   Tue, 17 Nov 2020 14:05:25 +0100
-Message-Id: <20201117122109.241383427@linuxfoundation.org>
+Message-Id: <20201117122115.927004640@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
-References: <20201117122106.144800239@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,75 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-commit df5b0ab3e08a156701b537809914b339b0daa526 upstream.
+[ Upstream commit 2b52a4b65bc8f14520fe6e996ea7fb3f7e400761 ]
 
-Limit the CPU number to num_possible_cpus(), because setting it to a
-value lower than INT_MAX but higher than NR_CPUS produces the following
-error on reboot and shutdown:
+In the net core, the struct net_device_ops -> ndo_set_rx_mode()
+callback is called with the dev->addr_list_lock spinlock held.
 
-    BUG: unable to handle page fault for address: ffffffff90ab1bb0
-    #PF: supervisor read access in kernel mode
-    #PF: error_code(0x0000) - not-present page
-    PGD 1c09067 P4D 1c09067 PUD 1c0a063 PMD 0
-    Oops: 0000 [#1] SMP
-    CPU: 1 PID: 1 Comm: systemd-shutdow Not tainted 5.9.0-rc8-kvm #110
-    Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-    RIP: 0010:migrate_to_reboot_cpu+0xe/0x60
-    Code: ea ea 00 48 89 fa 48 c7 c7 30 57 f1 81 e9 fa ef ff ff 66 2e 0f 1f 84 00 00 00 00 00 53 8b 1d d5 ea ea 00 e8 14 33 fe ff 89 da <48> 0f a3 15 ea fc bd 00 48 89 d0 73 29 89 c2 c1 e8 06 65 48 8b 3c
-    RSP: 0018:ffffc90000013e08 EFLAGS: 00010246
-    RAX: ffff88801f0a0000 RBX: 0000000077359400 RCX: 0000000000000000
-    RDX: 0000000077359400 RSI: 0000000000000002 RDI: ffffffff81c199e0
-    RBP: ffffffff81c1e3c0 R08: ffff88801f41f000 R09: ffffffff81c1e348
-    R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-    R13: 00007f32bedf8830 R14: 00000000fee1dead R15: 0000000000000000
-    FS:  00007f32bedf8980(0000) GS:ffff88801f480000(0000) knlGS:0000000000000000
-    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-    CR2: ffffffff90ab1bb0 CR3: 000000001d057000 CR4: 00000000000006a0
-    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-    Call Trace:
-      __do_sys_reboot.cold+0x34/0x5b
-      do_syscall_64+0x2d/0x40
+However, this driver's ndo_set_rx_mode callback eventually calls
+lan743x_dp_write(), which acquires a mutex. Mutex acquisition
+may sleep, and this is not allowed when holding a spinlock.
 
-Fixes: 1b3a5d02ee07 ("reboot: move arch/x86 reboot= handling to generic kernel")
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Fabian Frederick <fabf@skynet.be>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Robin Holt <robinmholt@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201103214025.116799-3-mcroce@linux.microsoft.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-[sudip: use reboot_mode instead of mode]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix by removing the dp_lock mutex entirely. Its purpose is to
+prevent concurrent accesses to the data port. No concurrent
+accesses are possible, because the dev->addr_list_lock
+spinlock in the core only lets through one thread at a time.
+
+Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+Link: https://lore.kernel.org/r/20201109203828.5115-1-TheSven73@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/reboot.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/ethernet/microchip/lan743x_main.c | 12 +++---------
+ drivers/net/ethernet/microchip/lan743x_main.h |  3 ---
+ 2 files changed, 3 insertions(+), 12 deletions(-)
 
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -519,6 +519,13 @@ static int __init reboot_setup(char *str
- 				reboot_cpu = simple_strtoul(str+3, NULL, 0);
- 			else
- 				reboot_mode = REBOOT_SOFT;
-+			if (reboot_cpu >= num_possible_cpus()) {
-+				pr_err("Ignoring the CPU number in reboot= option. "
-+				       "CPU %d exceeds possible cpu number %d\n",
-+				       reboot_cpu, num_possible_cpus());
-+				reboot_cpu = 0;
-+				break;
-+			}
- 			break;
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 208341541087e..085fdceb3821b 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -672,14 +672,12 @@ clean_up:
+ static int lan743x_dp_write(struct lan743x_adapter *adapter,
+ 			    u32 select, u32 addr, u32 length, u32 *buf)
+ {
+-	int ret = -EIO;
+ 	u32 dp_sel;
+ 	int i;
  
- 		case 'g':
+-	mutex_lock(&adapter->dp_lock);
+ 	if (lan743x_csr_wait_for_bit(adapter, DP_SEL, DP_SEL_DPRDY_,
+ 				     1, 40, 100, 100))
+-		goto unlock;
++		return -EIO;
+ 	dp_sel = lan743x_csr_read(adapter, DP_SEL);
+ 	dp_sel &= ~DP_SEL_MASK_;
+ 	dp_sel |= select;
+@@ -691,13 +689,10 @@ static int lan743x_dp_write(struct lan743x_adapter *adapter,
+ 		lan743x_csr_write(adapter, DP_CMD, DP_CMD_WRITE_);
+ 		if (lan743x_csr_wait_for_bit(adapter, DP_SEL, DP_SEL_DPRDY_,
+ 					     1, 40, 100, 100))
+-			goto unlock;
++			return -EIO;
+ 	}
+-	ret = 0;
+ 
+-unlock:
+-	mutex_unlock(&adapter->dp_lock);
+-	return ret;
++	return 0;
+ }
+ 
+ static u32 lan743x_mac_mii_access(u16 id, u16 index, int read)
+@@ -2679,7 +2674,6 @@ static int lan743x_hardware_init(struct lan743x_adapter *adapter,
+ 
+ 	adapter->intr.irq = adapter->pdev->irq;
+ 	lan743x_csr_write(adapter, INT_EN_CLR, 0xFFFFFFFF);
+-	mutex_init(&adapter->dp_lock);
+ 
+ 	ret = lan743x_gpio_init(adapter);
+ 	if (ret)
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.h b/drivers/net/ethernet/microchip/lan743x_main.h
+index 2d6eea18973e8..77273be2d1ee0 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.h
++++ b/drivers/net/ethernet/microchip/lan743x_main.h
+@@ -702,9 +702,6 @@ struct lan743x_adapter {
+ 	struct lan743x_csr      csr;
+ 	struct lan743x_intr     intr;
+ 
+-	/* lock, used to prevent concurrent access to data port */
+-	struct mutex		dp_lock;
+-
+ 	struct lan743x_gpio	gpio;
+ 	struct lan743x_ptp	ptp;
+ 
+-- 
+2.27.0
+
 
 
