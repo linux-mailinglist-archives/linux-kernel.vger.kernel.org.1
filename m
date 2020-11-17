@@ -2,60 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769422B63A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EFC2B63E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732838AbgKQNkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:40:15 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:60119 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732816AbgKQNkD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:40:03 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7225C240012;
-        Tue, 17 Nov 2020 13:39:58 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc:     linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] rtc: at91rm9200: Add sam9x60 compatible
-Date:   Tue, 17 Nov 2020 14:39:20 +0100
-Message-Id: <20201117133920.1229679-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.28.0
+        id S2387458AbgKQNmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:42:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41570 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733166AbgKQNlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:41:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0A77EAC1F;
+        Tue, 17 Nov 2020 13:41:38 +0000 (UTC)
+Subject: Re: [PATCH] drm/omap: dmm_tiler: fix return error code in
+ omap_dmm_probe()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        tomi.valkeinen@ti.com
+References: <20201117061045.3452287-1-yangyingliang@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <04c96207-3c67-0cab-d3e7-919b96fbb46b@suse.de>
+Date:   Tue, 17 Nov 2020 14:41:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <20201117061045.3452287-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Handle the sam9x60 RTC. While it can work with the at91sam9x5 fallback, it
-has crystal correction support and doesn't need to shadow IMR.
+Hi
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/rtc/rtc-at91rm9200.c | 3 +++
- 1 file changed, 3 insertions(+)
+Am 17.11.20 um 07:10 schrieb Yang Yingliang:
+> Return -ENOMEM when allocating refill memory failed.
+> 
+> Fixes: 71e8831f6407 ("drm/omap: DMM/TILER support for OMAP4+ platform")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/gpu/drm/omapdrm/omap_dmm_tiler.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+> index 42ec51bb7b1b..7f4317248812 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+> +++ b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+> @@ -889,6 +889,7 @@ static int omap_dmm_probe(struct platform_device *dev)
+>  					   &omap_dmm->refill_pa, GFP_KERNEL);
+>  	if (!omap_dmm->refill_va) {
+>  		dev_err(&dev->dev, "could not allocate refill memory\n");
+> +		ret = -ENOMEM;
 
-diff --git a/drivers/rtc/rtc-at91rm9200.c b/drivers/rtc/rtc-at91rm9200.c
-index 1eea187d9850..da24e68adcca 100644
---- a/drivers/rtc/rtc-at91rm9200.c
-+++ b/drivers/rtc/rtc-at91rm9200.c
-@@ -437,6 +437,9 @@ static const struct of_device_id at91_rtc_dt_ids[] = {
- 	}, {
- 		.compatible = "atmel,sama5d2-rtc",
- 		.data = &sama5d4_config,
-+	}, {
-+		.compatible = "microchip,sam9x60-rtc",
-+		.data = &sama5d4_config,
- 	}, {
- 		/* sentinel */
- 	}
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+Thanks for the patch. I'll add it to drm-misc-next. There are more such
+errors here. If the very first allocation fails, the function returns
+-EFAULT, which makes no sense.
+
+Best regards
+Thomas
+
+>  		goto fail;
+>  	}
+>  
+> 
+
 -- 
-2.28.0
-
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
