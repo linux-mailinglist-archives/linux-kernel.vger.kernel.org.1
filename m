@@ -2,94 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122F92B6950
+	by mail.lfdr.de (Postfix) with ESMTP id 895D82B6951
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgKQQDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:03:43 -0500
-Received: from mga06.intel.com ([134.134.136.31]:58471 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgKQQDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:03:43 -0500
-IronPort-SDR: sIK4wotKrdYhe6Ui4An37FFZlPAyTE/uaM/mnn0PN1yiALgWBVj4SBe0GHsfmNRm+0EFPucgCp
- J8gt2n4U1kdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="232567101"
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="232567101"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 08:03:42 -0800
-IronPort-SDR: MgMJFhvz1WxqBDp0qQDWfbasziMLBzN+LgGtFfziH2qf6LA11nU1BNpLEiRw0szajESBOa5X3Q
- gCdgNHn3F5Fg==
-X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
-   d="scan'208";a="310254823"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.34.253])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 08:03:40 -0800
-Date:   Tue, 17 Nov 2020 17:03:31 +0100
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
-Message-ID: <20201117160330.GA15538@ubuntu>
-References: <eb7f6707-4483-3e1a-1e39-7f32fbf437e0@st.com>
- <20201111144942.GA6403@ubuntu>
- <c31b8427-baca-5c77-6420-b592c57a3a7b@st.com>
- <20201112115115.GA11069@ubuntu>
- <945f377d-1975-552d-25b2-1dc25d3c3a46@st.com>
- <2d25d1aa-bd8a-f0db-7888-9f72edc9f687@st.com>
- <20201116151028.GA1519@ubuntu>
- <e5e49e1a-dc2a-ce16-425c-d2d87f415868@st.com>
- <20201116224003.GC3892875@xps15>
- <50549519-d9ff-9048-a3d8-dab02bfda096@st.com>
+        id S1726924AbgKQQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:04:30 -0500
+Received: from smtprelay0225.hostedemail.com ([216.40.44.225]:34252 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725767AbgKQQEa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:04:30 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 4C9FE18225DF8;
+        Tue, 17 Nov 2020 16:04:29 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1537:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3870:3872:3873:3874:4321:5007:7775:10004:10400:10848:11026:11232:11658:11914:12048:12297:12740:12760:12895:13069:13149:13230:13311:13357:13439:14659:21080:21627:21987:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: earth94_2c0ee1027332
+X-Filterd-Recvd-Size: 1447
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 17 Nov 2020 16:04:28 +0000 (UTC)
+Message-ID: <6ba830d2a07b93e5c6602fcc1b329d74dcb7e2d8.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Fix unescaped left brace
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 17 Nov 2020 08:04:26 -0800
+In-Reply-To: <CABJPP5CBccqvLVpzahMXhkuTt5Z+Gz-HaEGWgJdc4aMi4JsMEA@mail.gmail.com>
+References: <20201115202928.81955-1-dwaipayanray1@gmail.com>
+         <d3d6b68178b4193f04c35863163ce811a1571c0a.camel@perches.com>
+         <67332536788cefbc39c7f87129adca462bb42fa5.camel@perches.com>
+         <CABJPP5CBccqvLVpzahMXhkuTt5Z+Gz-HaEGWgJdc4aMi4JsMEA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <50549519-d9ff-9048-a3d8-dab02bfda096@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 12:42:30PM +0100, Arnaud POULIQUEN wrote:
-
-[snip]
-
-> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-> index 5bda7cb44618..80c2cc23bada 100644
-> --- a/drivers/rpmsg/rpmsg_ns.c
-> +++ b/drivers/rpmsg/rpmsg_ns.c
-> @@ -55,6 +55,39 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void
-> *data, int len,
->  	return 0;
->  }
+On Tue, 2020-11-17 at 14:37 +0530, Dwaipayan Ray wrote:
+> I have seen that
+> the perl_version_ok check mandates perl 5.10 which was
+> released more than 10 years back.
 > 
-> +/**
-> + * rpmsg_ns_register_device() - register name service device based on rpdev
-> + * @rpdev: prepared rpdev to be used for creating endpoints
-> + *
-> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
-> + * basis for the rpmsg name service device.
-> + */
-> +int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
-> +{
-> +#ifdef MODULES
-> +	int ret;
-> +	struct module *rpmsg_ns;
-> +
-> +	mutex_lock(&module_mutex);
-> +	rpmsg_ns = find_module(KBUILD_MODNAME);
-> +	mutex_unlock(&module_mutex);
-> +
-> +	if (!rpmsg_ns) {
-> +		ret = request_module(KBUILD_MODNAME);
+> Do you think that check could be removed completely?
+> Maybe sometime in the future or just have it lay around
+> for backward compatibility?
 
-Is this code requesting the module in which it is located?.. I must be missing 
-something...
+I think having the check in the code isn't burdensome.
 
-Thanks
-Guennadi
+
