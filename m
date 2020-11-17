@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A81E2B6BFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 497832B6BFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729636AbgKQRjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:39:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        id S1729718AbgKQRjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:39:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729026AbgKQRjb (ORCPT
+        with ESMTP id S1726560AbgKQRjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:39:31 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D10C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:39:31 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id ei22so895655pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:39:31 -0800 (PST)
+        Tue, 17 Nov 2020 12:39:36 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08A9C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:39:34 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id t21so10186774pgl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:39:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=a081+5sEtLZdxVjnEsgO/mWDD8NzqZQtkeB5cfYLH30=;
-        b=kCPiliRHIVUfr3L65ip40e8uAZiZ43JMLQyUgVBVtUA29OXaMwbzaSiamP11wt0nLi
-         YVa3Qf38eA5gN/+rNsQ2yM+7QDY/yuP/UdK8t7jLdm57RGM4czTgeq4kP1cVpogmijvV
-         wVjnFT8FXE1vJP4YXScEOzp/B9Pef8KcRULWWV4OzUD2rdL3nK/eh3z2bTvZw7qs9an7
-         5QQE5YXAMymBZT4ZOuhJAS7VyRoE8JXOX2V/jyfYemcIdNu/N3KtrbCHfJ/sb+LCu0/B
-         4xh1S+Bz4jEDDhMyHZgJGwX6DIIZ2Gr9XIAgLvexRPm71kwn/sfBOs90yUGokUHCxsoU
-         E3Ig==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=Z7z9ZRILC9uN9iHlx1xbJ9BYeKh/BzimXNJ9muC2tZE=;
+        b=iMhheqEEtzlcTH3JWm7eKlSWO6dx+/gAWszscdzjMx9IT9JSPVzPdUu7Xlocg3dVp4
+         RS5+e1e1hjcLCK4A+Xpo4IIlMmbkHzIIbD2VtAQsYELArr5qAx+uagVGYh1eFhhw1IeX
+         mHCxvRlro8+iZzHxTuB5nBNU9tQ3IigTM/1s0rYId0eGZI3F8iOZRRHbpqUW1jtrZpmx
+         JjLzFAODDzSPZMWTuznEM3H8wb1zgbLgEqQPXiR6p5/xCR8fdLQYDI9JgtN6T/0q+0tI
+         1IKamxmeuoflCVM4GPjY7GWDfebj3peqcn6JdlCYn1E2pW8mSoz6M6WDcQsI1WCDXFrX
+         uqNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=a081+5sEtLZdxVjnEsgO/mWDD8NzqZQtkeB5cfYLH30=;
-        b=E6vUCOCrD4gkpF/Z+uXCxdlGmD/lHj71ScmS4X059gjKw4D3oDnYzokkK3YpgyUhHK
-         eGL8OPuscAtBWZutjVWmolsMc5yL0kXVOBPyXZixRCVNxD+YQwlgPxYCM/i9IiM6VO1u
-         66HIT5LDJMEyMrfYOX+/SUEBTAIYkcWDdzEQQ9VFYLmss9lBuAcLijYPHHv3jkazlRCb
-         aPmHxu+jOc1PPerWGe9RbMU5PLrvcu7d/tnCflDJjRAZvZUR1XMeBHSLWo1bE1apbNIB
-         /i6jXTkcNiQK5oodR5f+iCnz+msbE9uYlkIkzjea4oeakJ7NyOScDv2PzU4iyARDplUC
-         Av0Q==
-X-Gm-Message-State: AOAM532NclL6pwIoIbSyw1iPpRtL7Cno0VQBvqQWCk0scf/vkWUDxEKV
-        C3BpIpIoxg9F0+D3m2Ip8iN/
-X-Google-Smtp-Source: ABdhPJzen4z1mH9hBVGR9pVV33DpCmvTAdG0rBun1a5GKDaehYXQ3z704Mh6UStGa5Zhwit7VNd1Xw==
-X-Received: by 2002:a17:90b:a02:: with SMTP id gg2mr149355pjb.225.1605634770702;
-        Tue, 17 Nov 2020 09:39:30 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=Z7z9ZRILC9uN9iHlx1xbJ9BYeKh/BzimXNJ9muC2tZE=;
+        b=sCcdf4+XjABnhFpcQK4p+U2gjE72z3/buCjH+B/iEIDMkY5QVyy1jKDUJH5wwiJSBB
+         9zIrFBd8FZpQq3LZ+7YMA3Z32FsA7z7NSSiWyUW5VAWqnrthCEAByeLiXyYnRe0PkBAS
+         iZ1K38TBx3jTNZuR1TfMii9DIdu41VQ63gX0Tu3iEu2m9TXpima0BVM5W7Uf7xe0kpsU
+         e6H0CCy7pgAlP7znEoLCIFnVoCH8DHCWLKAYiZ1tlG27V3ve1uG8yNo73PjhAPWNY+hn
+         ddtc2IB+hdlGr+AQh421l9tEbZGMKZhfejqzg6K7hyHNwA1WsTI1vqDuDNNVqucpWjtz
+         /v3g==
+X-Gm-Message-State: AOAM530BI8N8cQOTMNk5rBfZA0OqIM0wsMvVDGImtb63zleawwNSTs/0
+        lZwqTBBYIKAxCA1Goy67qMjr
+X-Google-Smtp-Source: ABdhPJyiyMmrvmPp7kwm8dB7Il6lF8A+hmI+MKoQZ7IM7qdwm41PZpdxi/RlvI+65FSOqv9cdsE5pA==
+X-Received: by 2002:aa7:86c9:0:b029:18b:b0c:53e5 with SMTP id h9-20020aa786c90000b029018b0b0c53e5mr381547pfo.57.1605634774347;
+        Tue, 17 Nov 2020 09:39:34 -0800 (PST)
 Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id a21sm1751330pjq.37.2020.11.17.09.39.26
+        by smtp.googlemail.com with ESMTPSA id a21sm1751330pjq.37.2020.11.17.09.39.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 09:39:29 -0800 (PST)
+        Tue, 17 Nov 2020 09:39:33 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
         robh+dt@kernel.org
@@ -53,42 +54,62 @@ Cc:     bjorn.andersson@linaro.org, linux-mtd@lists.infradead.org,
         devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 0/4] Add support for Qcom SMEM based NAND parser
-Date:   Tue, 17 Nov 2020 23:09:05 +0530
-Message-Id: <20201117173909.23585-1-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 1/4] dt-bindings: mtd: partitions: Add binding for Qcom SMEM parser
+Date:   Tue, 17 Nov 2020 23:09:06 +0530
+Message-Id: <20201117173909.23585-2-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201117173909.23585-1-manivannan.sadhasivam@linaro.org>
+References: <20201117173909.23585-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add YAML binding for Qualcomm Shared Memory (SMEM) Flash partition
+parser.
 
-This series adds support for parsing the partitions defined in Shared
-Memory (SMEM) of the Qualcomm platforms supporting NAND interface.
-Current parser only supports V3 and V4 of the partition tables.
-
-This series has been tested on SDX55 MTP board which has an onboard NAND
-device.
-
-Thanks,
-Mani
-
-Manivannan Sadhasivam (4):
-  dt-bindings: mtd: partitions: Add binding for Qcom SMEM parser
-  mtd: parsers: Add Qcom SMEM parser
-  mtd: rawnand: qcom: Add support for Qcom SMEM parser
-  mtd: parsers: afs: Fix freeing the part name memory in failure
-
- .../mtd/partitions/qcom,smem-part.yaml        |  31 ++++
- drivers/mtd/nand/raw/qcom_nandc.c             |   4 +-
- drivers/mtd/parsers/Kconfig                   |   8 +
- drivers/mtd/parsers/Makefile                  |   1 +
- drivers/mtd/parsers/afs.c                     |   4 +-
- drivers/mtd/parsers/qcomsmempart.c            | 169 ++++++++++++++++++
- 6 files changed, 213 insertions(+), 4 deletions(-)
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ .../mtd/partitions/qcom,smem-part.yaml        | 31 +++++++++++++++++++
+ 1 file changed, 31 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
- create mode 100644 drivers/mtd/parsers/qcomsmempart.c
 
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+new file mode 100644
+index 000000000000..0682aef2d54f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+@@ -0,0 +1,31 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/qcom,smem-part.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm SMEM NAND flash partition parser binding
++
++maintainers:
++  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
++
++description: |
++  The Qualcomm SoCs supporting the NAND controller interface features a Shared
++  Memory (SMEM) based partition table scheme. The maximum partitions supported
++  varies between partition table revisions. V3 supports maximum 16 partitions
++  and V4 supports 48 partitions.
++
++properties:
++  compatible:
++    const: qcom,smem-part
++
++required:
++  - compatible
++
++examples:
++  - |
++    flash@0 {
++        partitions {
++            compatible = "qcom,smem-part";
++        };
++    };
 -- 
 2.17.1
 
