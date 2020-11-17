@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EB12B6123
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65922B6284
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729593AbgKQNQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:16:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47610 "EHLO mail.kernel.org"
+        id S1731562AbgKQN3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:29:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730258AbgKQNP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:15:57 -0500
+        id S1731482AbgKQN3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:29:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8973024199;
-        Tue, 17 Nov 2020 13:15:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED81720781;
+        Tue, 17 Nov 2020 13:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618955;
-        bh=F7jYy+78FQLHwGtOLoFCPgI3Iv+3WrvgbtTwzwWhQxM=;
+        s=default; t=1605619744;
+        bh=LeOLpe6JzKGsvUzYKvzdbXPz3fZyecQfFP587CelvAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bw0IbM8nc+dKW9uBdSJAOEZbI4XsQwIhk6SIkVeKjfNXgEEdg0Eu0BPsdFrPcMsO8
-         qXKlAjGFZbiLV1Vt4e0SXfrhJlLjNGbtLsYD84YCQCQ9gzPV5ovNXsAyzUdFK1z31k
-         yjkvXVfpgtsmO+2CFJZbW4Cuu1GtwPJfNR2u1zeE=
+        b=CsfvGsF/9pomp4LiR2KlnVLnlYgPgJYqTMHa1g+zLgwVRJ5s61EgVvgEV8xWVSM2Y
+         R9/y2DTDj0a8Qw5b+e9zQ5kdKX/rdOfVY69zc0cAfXprOKhAC/2GH3AActGeU59VAK
+         wxMor1GPY5LsHPp/Atps0pDXZmgUeLw57YcMd04Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mao Wenan <wenan.mao@linux.alibaba.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 63/85] net: Update window_clamp if SOCK_RCVBUF is set
+        stable@vger.kernel.org,
+        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 102/151] of/address: Fix of_node memory leak in of_dma_is_coherent
 Date:   Tue, 17 Nov 2020 14:05:32 +0100
-Message-Id: <20201117122114.132053482@linuxfoundation.org>
+Message-Id: <20201117122126.375356198@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122111.018425544@linuxfoundation.org>
-References: <20201117122111.018425544@linuxfoundation.org>
+In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
+References: <20201117122121.381905960@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,82 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mao Wenan <wenan.mao@linux.alibaba.com>
+From: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
 
-[ Upstream commit 909172a149749242990a6e64cb55d55460d4e417 ]
+[ Upstream commit a5bea04fcc0b3c0aec71ee1fd58fd4ff7ee36177 ]
 
-When net.ipv4.tcp_syncookies=1 and syn flood is happened,
-cookie_v4_check or cookie_v6_check tries to redo what
-tcp_v4_send_synack or tcp_v6_send_synack did,
-rsk_window_clamp will be changed if SOCK_RCVBUF is set,
-which will make rcv_wscale is different, the client
-still operates with initial window scale and can overshot
-granted window, the client use the initial scale but local
-server use new scale to advertise window value, and session
-work abnormally.
+Commit dabf6b36b83a ("of: Add OF_DMA_DEFAULT_COHERENT & select it on
+powerpc") added a check to of_dma_is_coherent which returns early
+if OF_DMA_DEFAULT_COHERENT is enabled. This results in the of_node_put()
+being skipped causing a memory leak. Moved the of_node_get() below this
+check so we now we only get the node if OF_DMA_DEFAULT_COHERENT is not
+enabled.
 
-Fixes: e88c64f0a425 ("tcp: allow effective reduction of TCP's rcv-buffer via setsockopt")
-Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/1604967391-123737-1-git-send-email-wenan.mao@linux.alibaba.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: dabf6b36b83a ("of: Add OF_DMA_DEFAULT_COHERENT & select it on powerpc")
+Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+Link: https://lore.kernel.org/r/20201110022825.30895-1-evan.nimmo@alliedtelesis.co.nz
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/syncookies.c |    9 +++++++--
- net/ipv6/syncookies.c |   10 ++++++++--
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ drivers/of/address.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/syncookies.c
-+++ b/net/ipv4/syncookies.c
-@@ -296,7 +296,7 @@ struct sock *cookie_v4_check(struct sock
- 	__u32 cookie = ntohl(th->ack_seq) - 1;
- 	struct sock *ret = sk;
- 	struct request_sock *req;
--	int mss;
-+	int full_space, mss;
- 	struct rtable *rt;
- 	__u8 rcv_wscale;
- 	struct flowi4 fl4;
-@@ -389,8 +389,13 @@ struct sock *cookie_v4_check(struct sock
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index 8f74c4626e0ef..5abb056b2b515 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -1003,11 +1003,13 @@ EXPORT_SYMBOL_GPL(of_dma_get_range);
+  */
+ bool of_dma_is_coherent(struct device_node *np)
+ {
+-	struct device_node *node = of_node_get(np);
++	struct device_node *node;
  
- 	/* Try to redo what tcp_v4_send_synack did. */
- 	req->rsk_window_clamp = tp->window_clamp ? :dst_metric(&rt->dst, RTAX_WINDOW);
-+	/* limit the window selection if the user enforce a smaller rx buffer */
-+	full_space = tcp_full_space(sk);
-+	if (sk->sk_userlocks & SOCK_RCVBUF_LOCK &&
-+	    (req->rsk_window_clamp > full_space || req->rsk_window_clamp == 0))
-+		req->rsk_window_clamp = full_space;
+ 	if (IS_ENABLED(CONFIG_OF_DMA_DEFAULT_COHERENT))
+ 		return true;
  
--	tcp_select_initial_window(tcp_full_space(sk), req->mss,
-+	tcp_select_initial_window(full_space, req->mss,
- 				  &req->rsk_rcv_wnd, &req->rsk_window_clamp,
- 				  ireq->wscale_ok, &rcv_wscale,
- 				  dst_metric(&rt->dst, RTAX_INITRWND));
---- a/net/ipv6/syncookies.c
-+++ b/net/ipv6/syncookies.c
-@@ -141,7 +141,7 @@ struct sock *cookie_v6_check(struct sock
- 	__u32 cookie = ntohl(th->ack_seq) - 1;
- 	struct sock *ret = sk;
- 	struct request_sock *req;
--	int mss;
-+	int full_space, mss;
- 	struct dst_entry *dst;
- 	__u8 rcv_wscale;
- 	u32 tsoff = 0;
-@@ -244,7 +244,13 @@ struct sock *cookie_v6_check(struct sock
- 	}
- 
- 	req->rsk_window_clamp = tp->window_clamp ? :dst_metric(dst, RTAX_WINDOW);
--	tcp_select_initial_window(tcp_full_space(sk), req->mss,
-+	/* limit the window selection if the user enforce a smaller rx buffer */
-+	full_space = tcp_full_space(sk);
-+	if (sk->sk_userlocks & SOCK_RCVBUF_LOCK &&
-+	    (req->rsk_window_clamp > full_space || req->rsk_window_clamp == 0))
-+		req->rsk_window_clamp = full_space;
++	node = of_node_get(np);
 +
-+	tcp_select_initial_window(full_space, req->mss,
- 				  &req->rsk_rcv_wnd, &req->rsk_window_clamp,
- 				  ireq->wscale_ok, &rcv_wscale,
- 				  dst_metric(dst, RTAX_INITRWND));
+ 	while (node) {
+ 		if (of_property_read_bool(node, "dma-coherent")) {
+ 			of_node_put(node);
+-- 
+2.27.0
+
 
 
