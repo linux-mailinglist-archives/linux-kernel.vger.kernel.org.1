@@ -2,114 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B786F2B7073
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5902B7074
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 21:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729136AbgKQUpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 15:45:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43936 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726716AbgKQUpt (ORCPT
+        id S1727235AbgKQUrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 15:47:18 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:51262 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726759AbgKQUrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:45:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605645948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gASke7Kz5tgOcaqYjUaf5uexfUJxIKQ7Onx3b8uucCc=;
-        b=FiNJf6r+hx/NL3Un26Ojk/Ca6xkFSq2oa2YjOklqlhqfcY8DEBglKilweUSudJ/G7DgioW
-        OTY1ZXg7xhugn3pnn8FsXzNXuopuOF+5c5lV3qFUu9t/xzeins13ZsNRK9bKiOIj3wkQRR
-        5/hQslCziLklLdUBoP+YsjO88Mf2iMA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-XdgjwxwNPma8j7lhaxmbLw-1; Tue, 17 Nov 2020 15:45:44 -0500
-X-MC-Unique: XdgjwxwNPma8j7lhaxmbLw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4CCD5F9D1;
-        Tue, 17 Nov 2020 20:45:41 +0000 (UTC)
-Received: from krava (unknown [10.40.192.215])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9419D19930;
-        Tue, 17 Nov 2020 20:45:38 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 21:45:37 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 13/24] perf tools: Allow mmap2 event to synthesize kernel
- image
-Message-ID: <20201117204537.GH1216482@krava>
-References: <20201117110053.1303113-1-jolsa@kernel.org>
- <20201117110053.1303113-14-jolsa@kernel.org>
- <20201117124437.GO614220@kernel.org>
- <20201117151651.GD1216482@krava>
- <20201117174333.GU614220@kernel.org>
+        Tue, 17 Nov 2020 15:47:17 -0500
+Received: by mail-io1-f70.google.com with SMTP id l15so5255979ioh.18
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 12:47:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=g5pesXitIdT83qeXpTb2UUjP/lm8xGuI+nNj4EZ6F6w=;
+        b=KTD3JuShbloMkw3nt588llpFQ/OQDf5TGRo8ahNaESh9RtLHDjt49/MEQuWy62Xjtx
+         yKVXRdIOVLDMJcUWvTBW0LTSaR2H6f6F3LHIMo2igEiLeoxgSGhhxJXVf/hDQ3nUBTwx
+         /Tcnb2AY+lKHaFp67s8F73p1DypsiQVauoaOi3Y6qvIb7K+T2o1c01oNwJJuY/342mAx
+         rsZLCJc3wBuuixWwZb6J0UQ+PgMQJXXTcS5jV6QonrFU2pn/BHLOj9xvg73IfosrbJdf
+         gIsCLHcwU8TMBf+rPw4Xe8dZRbQONToseUHpX9h/smXP7dyo58gu8aTSPOQeDlDtzRqY
+         jjew==
+X-Gm-Message-State: AOAM531Sd6GsTVfnUcXKN1zJKbmrsS297Hn0kBmIYyIiMb7UbiyhHFbd
+        O328SOT2dnN09ILQDNoW6ELgoZGgv3Vx7yCgT7f8RFmOhhLc
+X-Google-Smtp-Source: ABdhPJzfYkoNeM6JM5oM3SgfhAX3KwAOT7hLO4hl1PqcqYqrkzzGETJ9Ej/aImLJ9xUY7VEDHgX9/yUnKOhIMXG4KEPYM5ZmLJJQ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117174333.GU614220@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Received: by 2002:a6b:5d0f:: with SMTP id r15mr10717304iob.20.1605646036985;
+ Tue, 17 Nov 2020 12:47:16 -0800 (PST)
+Date:   Tue, 17 Nov 2020 12:47:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ab6df705b453993a@google.com>
+Subject: BUG: unable to handle kernel paging request in bitfill_aligned (2)
+From:   syzbot <syzbot+a4edd73d589b0b7efbeb@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:43:33PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Nov 17, 2020 at 04:16:51PM +0100, Jiri Olsa escreveu:
-> > On Tue, Nov 17, 2020 at 09:44:37AM -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Tue, Nov 17, 2020 at 12:00:42PM +0100, Jiri Olsa escreveu:
-> > > > Allow mmap2 event to synthesize kernel image,
-> > > > so we can synthesize kernel build id data in
-> > > > following changes.
-> > > > 
-> > > > It's enabled by new symbol_conf.buildid_mmap2
-> > > > bool, which will be switched in following
-> > > > changes.
-> > > 
-> > > Why make this an option? MMAP2 goes back years:
-> > > 
-> > > 13d7a2410fa637f45 (Stephane Eranian         2013-08-21 12:10:24 +0200  904)      * The MMAP2 records are an augmented version of MMAP, they add
-> > > 13d7a2410fa637f45 (Stephane Eranian         2013-08-21 12:10:24 +0200  905)      * maj, min, ino numbers to be used to uniquely identify each mapping
-> > > 
-> > > Also we unconditionally generate MMAP2 events if the kernel supports it,
-> > > from evsel__config():
-> > > 
-> > >   attr->mmap  = track;
-> > >   attr->mmap2 = track && !perf_missing_features.mmap2;
-> > > 
-> > > So perhaps we should reuse that logic? I.e. use mmap2 if the kernel
-> > > supports it?
-> > 
-> > mmap2 itself is not a problem, the problem is the new
-> > bit (PERF_RECORD_MISC_MMAP_BUILD_ID) that says there's
-> > build id in mmap2.. older perf tool won't understand
-> > that and report will crash
-> 
-> Is this theoretical or have you experienced it?
-> 
-> Would be good to tweak the perf.data reader code to not crash on unknown
-> bits like that :-\
-> 
-> But by looking at machine__process_mmap2_event() I couldn't imagine how
-> that would crash.
-> 
-> It would get bogus maj, min, ino, ino_generation, but probably that
-> wouldn't make it crash.
+Hello,
 
-right, I shouldn't said crash, sry ;-) but bogus values are worse
-than that anyway
+syzbot found the following issue on:
 
-jirka
+HEAD commit:    0062442e Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16584b81500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f9aa2432c01bcb1f
+dashboard link: https://syzkaller.appspot.com/bug?extid=a4edd73d589b0b7efbeb
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a4edd73d589b0b7efbeb@syzkaller.appspotmail.com
+
+BUG: unable to handle page fault for address: ffff888001000000
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0003) - permissions violation
+PGD fc01067 P4D fc01067 PUD fc02067 PMD 80000000010001e1 
+Oops: 0003 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 12457 Comm: syz-executor.5 Not tainted 5.10.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__writeq arch/x86/include/asm/io.h:98 [inline]
+RIP: 0010:bitfill_aligned drivers/video/fbdev/core/cfbfillrect.c:70 [inline]
+RIP: 0010:bitfill_aligned+0x11d/0x200 drivers/video/fbdev/core/cfbfillrect.c:35
+Code: 41 83 fc 07 76 5f 4c 89 ed e8 bf 28 8a fd 48 89 5d 00 48 89 5d 08 48 89 5d 10 48 89 5d 18 48 89 5d 20 48 89 5d 28 48 8d 45 38 <48> 89 5d 30 48 83 c5 40 48 89 18 41 83 ef 08 bf 07 00 00 00 44 89
+RSP: 0018:ffffc900082176d0 EFLAGS: 00010246
+RAX: ffff888001000008 RBX: 0000000000000000 RCX: ffffc90013da2000
+RDX: 0000000000040000 RSI: ffffffff83e60721 RDI: 0000000000000005
+RBP: ffff888000ffffd0 R08: 0000000000001380 R09: 0000000000000040
+R10: 0000000000000007 R11: 0000000000000000 R12: 000000000000004e
+R13: ffff888000ffff10 R14: 0000000000000000 R15: 0000000000000036
+FS:  0000000000000000(0000) GS:ffff8880b9e00000(0063) knlGS:00000000f5542b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: ffff888001000000 CR3: 000000001c7d6000 CR4: 00000000001526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ cfb_fillrect+0x40b/0x7b0 drivers/video/fbdev/core/cfbfillrect.c:327
+ vga16fb_fillrect+0x683/0x1940 drivers/video/fbdev/vga16fb.c:951
+ bit_clear_margins+0x3f6/0x4b0 drivers/video/fbdev/core/bitblit.c:224
+ fbcon_clear_margins+0x1f1/0x280 drivers/video/fbdev/core/fbcon.c:1325
+ fbcon_switch+0xafe/0x16b0 drivers/video/fbdev/core/fbcon.c:2187
+ redraw_screen+0x2b9/0x790 drivers/tty/vt/vt.c:1021
+ vc_do_resize+0xed8/0x1150 drivers/tty/vt/vt.c:1326
+ vt_resize+0xa3/0xe0 drivers/tty/vt/vt.c:1367
+ tiocswinsz drivers/tty/tty_io.c:2278 [inline]
+ tty_ioctl+0x11a2/0x1600 drivers/tty/tty_io.c:2576
+ tty_compat_ioctl+0x295/0x410 drivers/tty/tty_io.c:2818
+ __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
+ do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+ __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f48549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f55420cc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000005414
+RDX: 0000000020000040 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+CR2: ffff888001000000
+---[ end trace 7c559c247d0f5502 ]---
+RIP: 0010:__writeq arch/x86/include/asm/io.h:98 [inline]
+RIP: 0010:bitfill_aligned drivers/video/fbdev/core/cfbfillrect.c:70 [inline]
+RIP: 0010:bitfill_aligned+0x11d/0x200 drivers/video/fbdev/core/cfbfillrect.c:35
+Code: 41 83 fc 07 76 5f 4c 89 ed e8 bf 28 8a fd 48 89 5d 00 48 89 5d 08 48 89 5d 10 48 89 5d 18 48 89 5d 20 48 89 5d 28 48 8d 45 38 <48> 89 5d 30 48 83 c5 40 48 89 18 41 83 ef 08 bf 07 00 00 00 44 89
+RSP: 0018:ffffc900082176d0 EFLAGS: 00010246
+RAX: ffff888001000008 RBX: 0000000000000000 RCX: ffffc90013da2000
+RDX: 0000000000040000 RSI: ffffffff83e60721 RDI: 0000000000000005
+RBP: ffff888000ffffd0 R08: 0000000000001380 R09: 0000000000000040
+R10: 0000000000000007 R11: 0000000000000000 R12: 000000000000004e
+R13: ffff888000ffff10 R14: 0000000000000000 R15: 0000000000000036
+FS:  0000000000000000(0000) GS:ffff8880b9e00000(0063) knlGS:00000000f5542b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: ffff888001000000 CR3: 000000001c7d6000 CR4: 00000000001526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
