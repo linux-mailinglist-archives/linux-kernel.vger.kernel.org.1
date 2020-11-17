@@ -2,249 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF13F2B5635
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0243C2B5641
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 02:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgKQBYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 20:24:31 -0500
-Received: from mga04.intel.com ([192.55.52.120]:45311 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726908AbgKQBYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 20:24:30 -0500
-IronPort-SDR: SkWSQGjpagGQSbKIeGQ5cY0/9ghFiwLbFGnYUiXYjMCol1OKZPNAbyv2Gw+sMHJbblNzkWBoXH
- 00H/w6hza4RQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="168266516"
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="168266516"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 17:24:26 -0800
-IronPort-SDR: vNGDHZpKRWumCjDQyer7dyiiRA2AyxUrwY4YD98MC0MG/a+VQdJ43IN29x53qqOT/SDXqWfNCQ
- NX5tnOpI7c2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,484,1596524400"; 
-   d="scan'208";a="367696213"
-Received: from lkp-server01.sh.intel.com (HELO 5abab2bd15ab) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Nov 2020 17:24:24 -0800
-Received: from kbuild by 5abab2bd15ab with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kepjM-00000q-AH; Tue, 17 Nov 2020 01:24:24 +0000
-Date:   Tue, 17 Nov 2020 09:24:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 8986f223bd777a73119f5d593c15b4d630ff49bb
-Message-ID: <5fb3263f.e/w7VpMUtvrYlnoj%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1731736AbgKQBZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 20:25:14 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7690 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726387AbgKQBZN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 16 Nov 2020 20:25:13 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CZpC86y4JzkYxZ;
+        Tue, 17 Nov 2020 09:24:52 +0800 (CST)
+Received: from [10.174.176.185] (10.174.176.185) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 17 Nov 2020 09:25:09 +0800
+Subject: Re: [PATCH] ubifs: wbuf: Don't leak kernel memory to flash
+To:     Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20201116210530.26230-1-richard@nod.at>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <bfea268f-b5c2-5467-7b17-5eef7b0269ce@huawei.com>
+Date:   Tue, 17 Nov 2020 09:25:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201116210530.26230-1-richard@nod.at>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.185]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: 8986f223bd777a73119f5d593c15b4d630ff49bb  iommu/vt-d: Take CONFIG_PCI_ATS into account
+ÔÚ 2020/11/17 5:05, Richard Weinberger Ð´µÀ:
+> Write buffers use a kmalloc()'ed buffer, they can leak
+> up to seven bytes of kernel memory to flash if writes are not
+> aligned.
+> So use ubifs_pad() to fill these gaps with padding bytes.
+> This was never a problem while scanning because the scanner logic
+> manually aligns node lengths and skips over these gaps.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>   fs/ubifs/io.c | 13 +++++++++++--
+>   1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+> index 7e4bfaf2871f..eae9cf5a57b0 100644
+> --- a/fs/ubifs/io.c
+> +++ b/fs/ubifs/io.c
+> @@ -319,7 +319,7 @@ void ubifs_pad(const struct ubifs_info *c, void *buf, int pad)
+>   {
+>   	uint32_t crc;
+>   
+> -	ubifs_assert(c, pad >= 0 && !(pad & 7));
+> +	ubifs_assert(c, pad >= 0);
+>   
+>   	if (pad >= UBIFS_PAD_NODE_SZ) {
+>   		struct ubifs_ch *ch = buf;
+> @@ -764,6 +764,10 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+>   		 * write-buffer.
+>   		 */
+>   		memcpy(wbuf->buf + wbuf->used, buf, len);
+> +		if (aligned_len > len) {
+> +			ubifs_assert(c, aligned_len - len < 8);
+> +			ubifs_pad(c, wbuf->buf + wbuf->used + len, aligned_len - len);
+> +		}
+>   
+>   		if (aligned_len == wbuf->avail) {
+>   			dbg_io("flush jhead %s wbuf to LEB %d:%d",
+> @@ -856,13 +860,18 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+>   	}
+>   
+>   	spin_lock(&wbuf->lock);
+> -	if (aligned_len)
+> +	if (aligned_len) {
+>   		/*
+>   		 * And now we have what's left and what does not take whole
+>   		 * max. write unit, so write it to the write-buffer and we are
+>   		 * done.
+>   		 */
+>   		memcpy(wbuf->buf, buf + written, len);
+> +		if (aligned_len > len) {
+> +			ubifs_assert(c, aligned_len - len < 8);
+> +			ubifs_pad(c, wbuf->buf + len, aligned_len - len);
+> +		}
+> +	}
+>   
+>   	if (c->leb_size - wbuf->offs >= c->max_write_size)
+>   		wbuf->size = c->max_write_size;
+> 
 
-elapsed time: 724m
-
-configs tested: 185
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     tqm8541_defconfig
-arm                            qcom_defconfig
-ia64                        generic_defconfig
-m68k                         amcore_defconfig
-arm                      footbridge_defconfig
-sh                          rsk7203_defconfig
-arm                       netwinder_defconfig
-arm                     am200epdkit_defconfig
-m68k                            q40_defconfig
-m68k                       m5475evb_defconfig
-arm                       cns3420vb_defconfig
-arm                        mini2440_defconfig
-arm                        vexpress_defconfig
-mips                  decstation_64_defconfig
-arm                         shannon_defconfig
-mips                           gcw0_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                          iop32x_defconfig
-sh                           sh2007_defconfig
-nios2                         3c120_defconfig
-sh                          landisk_defconfig
-arm                          ep93xx_defconfig
-arm                         lpc32xx_defconfig
-arm                  colibri_pxa270_defconfig
-arm                              alldefconfig
-powerpc                 linkstation_defconfig
-mips                          rb532_defconfig
-m68k                        mvme147_defconfig
-openrisc                    or1ksim_defconfig
-sh                          rsk7201_defconfig
-arm                        shmobile_defconfig
-openrisc                            defconfig
-sh                         microdev_defconfig
-sh                             espt_defconfig
-powerpc                     tqm8555_defconfig
-arc                          axs101_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                     sbc8548_defconfig
-mips                         tb0219_defconfig
-arc                      axs103_smp_defconfig
-mips                        qi_lb60_defconfig
-m68k                            mac_defconfig
-mips                          ath79_defconfig
-sh                         ecovec24_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                           xway_defconfig
-riscv                             allnoconfig
-powerpc                     mpc512x_defconfig
-m68k                          hp300_defconfig
-arm                          gemini_defconfig
-arm                      tct_hammer_defconfig
-mips                        bcm47xx_defconfig
-arm                            zeus_defconfig
-arm                     eseries_pxa_defconfig
-sh                               alldefconfig
-arm                           h3600_defconfig
-arm                        neponset_defconfig
-xtensa                  nommu_kc705_defconfig
-sh                           se7750_defconfig
-sh                          urquell_defconfig
-powerpc                       ebony_defconfig
-arc                           tb10x_defconfig
-riscv                               defconfig
-mips                        jmr3927_defconfig
-powerpc                       holly_defconfig
-xtensa                          iss_defconfig
-powerpc                     mpc83xx_defconfig
-mips                        bcm63xx_defconfig
-mips                      bmips_stb_defconfig
-powerpc                   lite5200b_defconfig
-sh                        apsh4ad0a_defconfig
-s390                             alldefconfig
-arm                           sunxi_defconfig
-powerpc                    amigaone_defconfig
-sh                           se7724_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                 mpc8272_ads_defconfig
-m68k                       m5249evb_defconfig
-m68k                          sun3x_defconfig
-arm                          collie_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                           h5000_defconfig
-arm                          simpad_defconfig
-powerpc                     ppa8548_defconfig
-sh                          rsk7264_defconfig
-powerpc                     tqm5200_defconfig
-mips                            e55_defconfig
-powerpc                     tqm8560_defconfig
-sh                     sh7710voipgw_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20201116
-x86_64               randconfig-a005-20201116
-x86_64               randconfig-a004-20201116
-x86_64               randconfig-a002-20201116
-x86_64               randconfig-a001-20201116
-x86_64               randconfig-a006-20201116
-i386                 randconfig-a006-20201116
-i386                 randconfig-a005-20201116
-i386                 randconfig-a001-20201116
-i386                 randconfig-a002-20201116
-i386                 randconfig-a004-20201116
-i386                 randconfig-a003-20201116
-i386                 randconfig-a006-20201115
-i386                 randconfig-a005-20201115
-i386                 randconfig-a001-20201115
-i386                 randconfig-a002-20201115
-i386                 randconfig-a004-20201115
-i386                 randconfig-a003-20201115
-x86_64               randconfig-a015-20201115
-x86_64               randconfig-a011-20201115
-x86_64               randconfig-a016-20201115
-x86_64               randconfig-a012-20201115
-x86_64               randconfig-a014-20201115
-x86_64               randconfig-a013-20201115
-i386                 randconfig-a012-20201116
-i386                 randconfig-a014-20201116
-i386                 randconfig-a016-20201116
-i386                 randconfig-a011-20201116
-i386                 randconfig-a015-20201116
-i386                 randconfig-a013-20201116
-i386                 randconfig-a012-20201115
-i386                 randconfig-a014-20201115
-i386                 randconfig-a016-20201115
-i386                 randconfig-a011-20201115
-i386                 randconfig-a015-20201115
-i386                 randconfig-a013-20201115
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20201115
-x86_64               randconfig-a005-20201115
-x86_64               randconfig-a004-20201115
-x86_64               randconfig-a002-20201115
-x86_64               randconfig-a001-20201115
-x86_64               randconfig-a006-20201115
-x86_64               randconfig-a015-20201116
-x86_64               randconfig-a011-20201116
-x86_64               randconfig-a014-20201116
-x86_64               randconfig-a013-20201116
-x86_64               randconfig-a016-20201116
-x86_64               randconfig-a012-20201116
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
