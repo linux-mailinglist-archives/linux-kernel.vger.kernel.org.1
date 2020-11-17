@@ -2,142 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959CC2B69FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D98792B6A00
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgKQQ03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:26:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbgKQQ03 (ORCPT
+        id S1727755AbgKQQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:28:49 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:38418 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgKQQ2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:26:29 -0500
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE60FC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:26:28 -0800 (PST)
-Received: by mail-oo1-xc42.google.com with SMTP id l10so4872685oom.6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 08:26:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=z75qkcvTDD7D5ZVAs+uCqlqVE13UoCxrYrBW5Z0YsDk=;
-        b=NbWG5mavXseC8TwQhZgdUwUaEBWIg13azPa/dMhqYJ71H7R1Z/qeTEhVaPbUVfXyE7
-         cuuDbCoMHIkFBt9qXX+uZsQB+89riqdLmQ+Ffxx0ad4LOr351/dC7ap3Si3KFvSK4Mbu
-         qKKfB3tCkpSSeKQ40lQuoVQzZYl8KLmUe7l8MnAJpt/8rqT5/DrPdYZfW0upTES0dNdI
-         a6Yxcj79g/bjpQENWeUZUTpbfKlPhhN0tzEyTZrTW7+jaOqhRfIEw5d0vt2cZc8xGLWG
-         VGnbiU/hV7wmCd9cvERoCxcrALe9HXxE5vyEiqOzyoKTFOR/LBmkiop+NMI7MROxwuoU
-         oyAg==
+        Tue, 17 Nov 2020 11:28:48 -0500
+Received: by mail-lj1-f195.google.com with SMTP id r17so24964172ljg.5;
+        Tue, 17 Nov 2020 08:28:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=z75qkcvTDD7D5ZVAs+uCqlqVE13UoCxrYrBW5Z0YsDk=;
-        b=caex4Ra9kkHJa6PrwHW+3k0CtUiFpFsf/URkl6k0Vs9P6tRfhtIWN69ChTCwjDvpJm
-         Q/zLY9Hh9nKHJW8n3J7dKSHZUuru5MtoiZ2l1POhwexCm1CYogq4EGrc0slwd6emkCxt
-         haJ2QOY+1V0q11v/HAjxwGDRQgn4g90U7RhcG4p42zFtxAiJk/a7fOKhdPB+SemQNxp3
-         NGRAR7CNpyAPIX3+GPTsfTfuf2ZANgUZXlBdtJk6xT7bk/olstRD8Qcc2QZhfsGBzPVx
-         JWdrj3+WKVJiptnGbSzm6caGosMWvYX9QFnJDkn2hUwC2Ivd23f158CXG0AKmJO1EvUs
-         oTpg==
-X-Gm-Message-State: AOAM530NoiTrvMTdsbNxy8jBa7tl5RFn8m7wXITnuQFlvq80ixkiK9/A
-        JfMhi14jtLMlLRctIrHk0TqoLQ==
-X-Google-Smtp-Source: ABdhPJwEbtJaSAIffWbfsiQiaPRdu+CN3ysGQxSh48oJAho68bZkA6+kWULhGCBChKSe1hVhZ9aP1w==
-X-Received: by 2002:a4a:e5ce:: with SMTP id r14mr3587297oov.11.1605630387621;
-        Tue, 17 Nov 2020 08:26:27 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id b123sm6262913oii.47.2020.11.17.08.26.25
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 17 Nov 2020 08:26:26 -0800 (PST)
-Date:   Tue, 17 Nov 2020 08:26:03 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hch@lst.de,
-        hannes@cmpxchg.org, yang.shi@linux.alibaba.com,
-        dchinner@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
-In-Reply-To: <20201117153947.GL29991@casper.infradead.org>
-Message-ID: <alpine.LSU.2.11.2011170820030.1014@eggly.anvils>
-References: <20201112212641.27837-1-willy@infradead.org> <alpine.LSU.2.11.2011160128001.1206@eggly.anvils> <20201117153947.GL29991@casper.infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JjQd+tw3c5x0K9ttbX2Yz1ZaogjJI7xLMTz04fJy+b0=;
+        b=JZZUS+kDf95siM6ldFfLoo8aoMasmynyITOQlEYouVrMI8cLQA8FxFafPZDdltszMX
+         Ml65pwDyOqdyJk/o4ULcv8mXVg/GYmUfQdE0YuPmnbawjPy+GIkfi8k1NunlRn58SfUA
+         H5TFNv3cGahMrrEotJc9oEQdyicaY2gXif2k0iu96fY4WyqcrpsuWIokq+galFNAs/VS
+         90SKBDncWhlX8DvmBjiZyj54s7EG0O/VmTk9BwRVms5y25zjZifn+j5xwXaWdSQ87eMH
+         5J3ADYtTRwAxXImKAR4g5fVLZ6gCQQyw6USKhJmzIPXM4EzRrdwIzt9DdHRI40Tbdppx
+         f9pg==
+X-Gm-Message-State: AOAM532FQODvQRvx8Ywqi2GG8z3rCgGCDeio6yR3xFbF+hZyUO0VWZvG
+        I4Hu6ksm+ftzcMVsyNl847aaZ+WeV6tj5w==
+X-Google-Smtp-Source: ABdhPJyFoWuvXpRj42Hi89TfIM5ae+V1n4xj3v6bwEN9q+sJWskrjbJCs5CDQ+cYJXqZ6axKNywE3Q==
+X-Received: by 2002:a2e:91d6:: with SMTP id u22mr2169639ljg.206.1605630525941;
+        Tue, 17 Nov 2020 08:28:45 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id 131sm3195289lfb.248.2020.11.17.08.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 08:28:44 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kf3qZ-0003F8-VI; Tue, 17 Nov 2020 17:28:48 +0100
+Date:   Tue, 17 Nov 2020 17:28:47 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH] USB: serial: mos7720: defer state restore to a workqueue
+Message-ID: <X7P6P018BQSypuP6@localhost>
+References: <20201103204014.3ue37owcras6cx7p@linux-p48b.lan>
+ <20201104110657.GW4085@localhost>
+ <20201104162534.GY4085@localhost>
+ <20201105001307.lelve65nif344cfs@linux-p48b.lan>
+ <20201105082540.GA4085@localhost>
+ <20201106061713.lgghl4xnvdmkvges@linux-p48b.lan>
+ <20201113091443.GI4085@localhost>
+ <20201114042725.ofs7zbzmxg32tbbi@linux-p48b.lan>
+ <X7KyPrY8FDH4C/gm@localhost>
+ <20201116223102.eliwt7uh5rkiiq5h@linux-p48b.lan>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116223102.eliwt7uh5rkiiq5h@linux-p48b.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020, Matthew Wilcox wrote:
-> On Mon, Nov 16, 2020 at 02:34:34AM -0800, Hugh Dickins wrote:
-> > Fix to [PATCH v4 15/16] mm/truncate,shmem: Handle truncates that split THPs.
-> > One machine ran fine, swapping and building in ext4 on loop0 on huge tmpfs;
-> > one machine got occasional pages of zeros in its .os; one machine couldn't
-> > get started because of ext4_find_dest_de errors on the newly mkfs'ed fs.
-> > The partial_end case was decided by PAGE_SIZE, when there might be a THP
-> > there.  The below patch has run well (for not very long), but I could
-> > easily have got it slightly wrong, off-by-one or whatever; and I have
-> > not looked into the similar code in mm/truncate.c, maybe that will need
-> > a similar fix or maybe not.
+On Mon, Nov 16, 2020 at 02:31:02PM -0800, Davidlohr Bueso wrote:
+> On Mon, 16 Nov 2020, Johan Hovold wrote:
 > 
-> Thank you for the explanation in your later email!  There is indeed an
-> off-by-one, although in the safe direction.
+> >On Fri, Nov 13, 2020 at 08:27:25PM -0800, Davidlohr Bueso wrote:
+> >> @@ -1883,21 +1724,17 @@ static void mos7720_release(struct usb_serial *serial)
+> >>		if (mos_parport->msg_pending)
+> >>			wait_for_completion_timeout(&mos_parport->syncmsg_compl,
+> >>					    msecs_to_jiffies(MOS_WDR_TIMEOUT));
+> >> +		/*
+> >> +		 * If delayed work is currently scheduled, wait for it to
+> >> +		 * complete. This also implies barriers that ensure the
+> >> +		 * below serial clearing is not hoisted above the ->work.
+> >> +		 */
+> >> +		cancel_work_sync(&mos_parport->work);
+> >
+> >As I mentioned, this needs to be done *after* deregistering the port or
+> >you could theoretically end up with the work item being requeued.
 > 
-> > --- 5103w/mm/shmem.c	2020-11-12 15:46:21.075254036 -0800
-> > +++ 5103wh/mm/shmem.c	2020-11-16 01:09:35.431677308 -0800
-> > @@ -874,7 +874,7 @@ static void shmem_undo_range(struct inod
-> >  	long nr_swaps_freed = 0;
-> >  	pgoff_t index;
-> >  	int i;
-> > -	bool partial_end;
-> > +	bool same_page;
-> >  
-> >  	if (lend == -1)
-> >  		end = -1;	/* unsigned, so actually very big */
-> > @@ -907,16 +907,12 @@ static void shmem_undo_range(struct inod
-> >  		index++;
-> >  	}
-> >  
-> > -	partial_end = ((lend + 1) % PAGE_SIZE) > 0;
-> > +	same_page = (lstart >> PAGE_SHIFT) == end;
-> 
-> 'end' is exclusive, so this is always false.  Maybe something "obvious":
-> 
-> 	same_page = (lstart >> PAGE_SHIFT) == (lend >> PAGE_SHIFT);
-> 
-> (lend is inclusive, so lend in 0-4095 are all on the same page)
+> Hmm sorry yes I forgot to mention this. I was counting on the private_data
+> already being null to prevent any new work being actually scheduled, so an
+> incoming restore state, for example, would be a nop.
 
-My brain is not yet in gear this morning, so I haven't given this the
-necessary thought: but I do have to question what you say there, and
-throw it back to you for the further thought -
+Ah, yes, you're right. 
 
-the first shmem_getpage(inode, lstart >> PAGE_SHIFT, &page, SGP_READ);
-the second shmem_getpage(inode, end, &page, SGP_READ).
-So same_page = (lstart >> PAGE_SHIFT) == end
-had seemed right to me.
+> >Yes, the same applies for the "synchronous" requests, but that's a
+> >preexisting issue.
+> 
+> Per the above I also assumed sync requests were also safe as is.
 
-> 
-> >  	page = NULL;
-> >  	shmem_getpage(inode, lstart >> PAGE_SHIFT, &page, SGP_READ);
-> >  	if (page) {
-> > -		bool same_page;
-> > -
-> >  		page = thp_head(page);
-> >  		same_page = lend < page_offset(page) + thp_size(page);
-> > -		if (same_page)
-> > -			partial_end = false;
-> >  		set_page_dirty(page);
-> >  		if (!truncate_inode_partial_page(page, lstart, lend)) {
-> >  			start = page->index + thp_nr_pages(page);
-> > @@ -928,7 +924,7 @@ static void shmem_undo_range(struct inod
-> >  		page = NULL;
-> >  	}
-> >  
-> > -	if (partial_end)
-> > +	if (!same_page)
-> >  		shmem_getpage(inode, end, &page, SGP_READ);
-> >  	if (page) {
-> >  		page = thp_head(page);
-> 
+Indeed.
+
+> But I can certainly re-order things, how about:
+
+No, that's ok, no need to change this as part of this clean up.
+
+Can you just fix up that irq comment, and I'll apply this? Thanks.
+
+Johan
