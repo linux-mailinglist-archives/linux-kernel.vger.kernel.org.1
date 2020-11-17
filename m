@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E5C2B668D
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3DF2B66C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 15:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387525AbgKQOEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 09:04:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39060 "EHLO mail.kernel.org"
+        id S1729008AbgKQNG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:06:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728942AbgKQNJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:09:54 -0500
+        id S1728991AbgKQNGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:06:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 161EE24698;
-        Tue, 17 Nov 2020 13:09:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5D51238E6;
+        Tue, 17 Nov 2020 13:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605618593;
-        bh=QEBM97sDOsOYGVJv2sJ0AfHyKIxvJh92X0hN957cl6c=;
+        s=default; t=1605618414;
+        bh=OcpfW0WjPXMjdh4Sdc6X3qXvvfeQEuxE7xMccfYjUj4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f6eS9R3qrIEI5pBT7Wl6ThyeBKAXat5pLihBndypuRdx2PaOjOUXQEvIM2AHjNF9e
-         v/GCMyUMM8+i828y0cJCdcwqeuW9xHVoAhHLo2O2CIEcbi7qT7Dtum2tZOmXMoOIOf
-         x57mT5wYYyY8KQ4TDRqbagELBiLPAgaPxeQxtgWM=
+        b=ZAIzJwER67Rp4VP51PPCJfOjKu6gN1cQHcWhlSneKhkk6HQTUz9/mZAkRnq6C0+ga
+         eAdXj/QFh7OvR2RRcAFUCW0DaPbEexRadV5Y7f/GP4eXqs00Gr/RJfyoaa14Wz24EI
+         sBmGiAsgCb7DaEBWFUVgELCoZq6k8xg6tgmlai5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Nemov <sergey.nemov@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        stable@vger.kernel.org,
+        syzbot+32fd1a1bfe355e93f1e2@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 20/78] i40e: add num_vectors checker in iwarp handler
-Date:   Tue, 17 Nov 2020 14:04:46 +0100
-Message-Id: <20201117122110.095164212@linuxfoundation.org>
+Subject: [PATCH 4.4 24/64] mac80211: fix use of skb payload instead of header
+Date:   Tue, 17 Nov 2020 14:04:47 +0100
+Message-Id: <20201117122107.328604707@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
-References: <20201117122109.116890262@linuxfoundation.org>
+In-Reply-To: <20201117122106.144800239@linuxfoundation.org>
+References: <20201117122106.144800239@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +44,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Nemov <sergey.nemov@intel.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 7015ca3df965378bcef072cca9cd63ed098665b5 upstream.
+[ Upstream commit 14f46c1e5108696ec1e5a129e838ecedf108c7bf ]
 
-Field num_vectors from struct virtchnl_iwarp_qvlist_info should not be
-larger than num_msix_vectors_vf in the hw struct.  The iwarp uses the
-same set of vectors as the LAN VF driver.
+When ieee80211_skb_resize() is called from ieee80211_build_hdr()
+the skb has no 802.11 header yet, in fact it consist only of the
+payload as the ethernet frame is removed. As such, we're using
+the payload data for ieee80211_is_mgmt(), which is of course
+completely wrong. This didn't really hurt us because these are
+always data frames, so we could only have added more tailroom
+than we needed if we determined it was a management frame and
+sdata->crypto_tx_tailroom_needed_cnt was false.
 
-Signed-off-by: Sergey Nemov <sergey.nemov@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-[bwh: Backported to 4.9: adjust context]
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+However, syzbot found that of course there need not be any payload,
+so we're using at best uninitialized memory for the check.
+
+Fix this to pass explicitly the kind of frame that we have instead
+of checking there, by replacing the "bool may_encrypt" argument
+with an argument that can carry the three possible states - it's
+not going to be encrypted, it's a management frame, or it's a data
+frame (and then we check sdata->crypto_tx_tailroom_needed_cnt).
+
+Reported-by: syzbot+32fd1a1bfe355e93f1e2@syzkaller.appspotmail.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Link: https://lore.kernel.org/r/20201009132538.e1fd7f802947.I799b288466ea2815f9d4c84349fae697dca2f189@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ net/mac80211/tx.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index 0f54269ffc463..0ac09c9e4aaac 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -418,6 +418,16 @@ static int i40e_config_iwarp_qvlist(struct i40e_vf *vf,
- 	u32 next_q_idx, next_q_type;
- 	u32 msix_vf, size;
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 98c34c3adf392..4466413c5eecc 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -1594,19 +1594,24 @@ static bool ieee80211_tx(struct ieee80211_sub_if_data *sdata,
  
-+	msix_vf = pf->hw.func_caps.num_msix_vectors_vf;
+ /* device xmit handlers */
+ 
++enum ieee80211_encrypt {
++	ENCRYPT_NO,
++	ENCRYPT_MGMT,
++	ENCRYPT_DATA,
++};
 +
-+	if (qvlist_info->num_vectors > msix_vf) {
-+		dev_warn(&pf->pdev->dev,
-+			 "Incorrect number of iwarp vectors %u. Maximum %u allowed.\n",
-+			 qvlist_info->num_vectors,
-+			 msix_vf);
-+		goto err;
-+	}
-+
- 	size = sizeof(struct i40e_virtchnl_iwarp_qvlist_info) +
- 	       (sizeof(struct i40e_virtchnl_iwarp_qv_info) *
- 						(qvlist_info->num_vectors - 1));
+ static int ieee80211_skb_resize(struct ieee80211_sub_if_data *sdata,
+ 				struct sk_buff *skb,
+-				int head_need, bool may_encrypt)
++				int head_need,
++				enum ieee80211_encrypt encrypt)
+ {
+ 	struct ieee80211_local *local = sdata->local;
+-	struct ieee80211_hdr *hdr;
+ 	bool enc_tailroom;
+ 	int tail_need = 0;
+ 
+-	hdr = (struct ieee80211_hdr *) skb->data;
+-	enc_tailroom = may_encrypt &&
+-		       (sdata->crypto_tx_tailroom_needed_cnt ||
+-			ieee80211_is_mgmt(hdr->frame_control));
++	enc_tailroom = encrypt == ENCRYPT_MGMT ||
++		       (encrypt == ENCRYPT_DATA &&
++			sdata->crypto_tx_tailroom_needed_cnt);
+ 
+ 	if (enc_tailroom) {
+ 		tail_need = IEEE80211_ENCRYPT_TAILROOM;
+@@ -1639,21 +1644,27 @@ void ieee80211_xmit(struct ieee80211_sub_if_data *sdata,
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+ 	int headroom;
+-	bool may_encrypt;
++	enum ieee80211_encrypt encrypt;
+ 
+-	may_encrypt = !(info->flags & IEEE80211_TX_INTFL_DONT_ENCRYPT);
++	if (info->flags & IEEE80211_TX_INTFL_DONT_ENCRYPT)
++		encrypt = ENCRYPT_NO;
++	else if (ieee80211_is_mgmt(hdr->frame_control))
++		encrypt = ENCRYPT_MGMT;
++	else
++		encrypt = ENCRYPT_DATA;
+ 
+ 	headroom = local->tx_headroom;
+-	if (may_encrypt)
++	if (encrypt != ENCRYPT_NO)
+ 		headroom += sdata->encrypt_headroom;
+ 	headroom -= skb_headroom(skb);
+ 	headroom = max_t(int, 0, headroom);
+ 
+-	if (ieee80211_skb_resize(sdata, skb, headroom, may_encrypt)) {
++	if (ieee80211_skb_resize(sdata, skb, headroom, encrypt)) {
+ 		ieee80211_free_txskb(&local->hw, skb);
+ 		return;
+ 	}
+ 
++	/* reload after potential resize */
+ 	hdr = (struct ieee80211_hdr *) skb->data;
+ 	info->control.vif = &sdata->vif;
+ 
+@@ -2346,7 +2357,7 @@ static struct sk_buff *ieee80211_build_hdr(struct ieee80211_sub_if_data *sdata,
+ 		head_need += sdata->encrypt_headroom;
+ 		head_need += local->tx_headroom;
+ 		head_need = max_t(int, 0, head_need);
+-		if (ieee80211_skb_resize(sdata, skb, head_need, true)) {
++		if (ieee80211_skb_resize(sdata, skb, head_need, ENCRYPT_DATA)) {
+ 			ieee80211_free_txskb(&local->hw, skb);
+ 			skb = NULL;
+ 			return ERR_PTR(-ENOMEM);
+@@ -2756,7 +2767,7 @@ static bool ieee80211_xmit_fast(struct ieee80211_sub_if_data *sdata,
+ 	if (unlikely(ieee80211_skb_resize(sdata, skb,
+ 					  max_t(int, extra_head + hw_headroom -
+ 						     skb_headroom(skb), 0),
+-					  false))) {
++					  ENCRYPT_NO))) {
+ 		kfree_skb(skb);
+ 		return true;
+ 	}
 -- 
 2.27.0
 
