@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0D12B627E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2092B61D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731495AbgKQN3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:29:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36912 "EHLO mail.kernel.org"
+        id S1731191AbgKQNWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:22:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731461AbgKQN2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:28:40 -0500
+        id S1731017AbgKQNVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:21:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACA862078E;
-        Tue, 17 Nov 2020 13:28:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF24F2463D;
+        Tue, 17 Nov 2020 13:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619720;
-        bh=BfuTfJXIb0LLt+hxDKfmSbrX8QIkYFZF4qfpRJHgPuU=;
+        s=default; t=1605619304;
+        bh=TLVIvwsvMB97RHHE/Gx0HUixDjU2pJaETFWFpQ9yHdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZyUVD/A9STrjZuqdgN3l+Zs6cbWZQZMojyD+VpdKa6aTLCQQ8pzFoYsskzt1QjR/r
-         St+0VTlp6XffRa2prb8TWrhdV2iDnRM4kNI6+neb8+M/NmsF6gtkLVYQEPd3v+87+7
-         vUpr9oEpFYG/upkLf1JFV0BsOW2mn7NK8cvWUqJ8=
+        b=g0dYhNXZ8yyVnj+FOIbA4WhpjKWqWqj6AvtJsUREYXTBRi185taeOil0cOtmAw3Ht
+         Ts3TKkFGQ8EkxynDMYU0TBPgCN/1c7Qjfmv0qMzGCL6fR0xy1W1a1ffwHgFSeX7di4
+         nTRQqX1iUps/q0BF9c/y9rmE2uqoqvWgO/HlnGPc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 132/151] mmc: renesas_sdhi_core: Add missing tmio_mmc_host_free() at remove
-Date:   Tue, 17 Nov 2020 14:06:02 +0100
-Message-Id: <20201117122127.848194814@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Tapas Kundu <tkundu@vmware.com>
+Subject: [PATCH 4.19 096/101] perf scripting python: Avoid declaring function pointers with a visibility attribute
+Date:   Tue, 17 Nov 2020 14:06:03 +0100
+Message-Id: <20201117122117.812072802@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122113.128215851@linuxfoundation.org>
+References: <20201117122113.128215851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +45,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-commit e8973201d9b281375b5a8c66093de5679423021a upstream.
+commit d0e7b0c71fbb653de90a7163ef46912a96f0bdaf upstream.
 
-The commit 94b110aff867 ("mmc: tmio: add tmio_mmc_host_alloc/free()")
-added tmio_mmc_host_free(), but missed the function calling in
-the sh_mobile_sdhi_remove() at that time. So, fix it. Otherwise,
-we cannot rebind the sdhi/mmc devices when we use aliases of mmc.
+To avoid this:
 
-Fixes: 94b110aff867 ("mmc: tmio: add tmio_mmc_host_alloc/free()")
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/1604654730-29914-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+  util/scripting-engines/trace-event-python.c: In function 'python_start_script':
+  util/scripting-engines/trace-event-python.c:1595:2: error: 'visibility' attribute ignored [-Werror=attributes]
+   1595 |  PyMODINIT_FUNC (*initfunc)(void);
+        |  ^~~~~~~~~~~~~~
+
+That started breaking when building with PYTHON=python3 and these gcc
+versions (I haven't checked with the clang ones, maybe it breaks there
+as well):
+
+  # export PERF_TARBALL=http://192.168.86.5/perf/perf-5.9.0.tar.xz
+  # dm  fedora:33 fedora:rawhide
+     1   107.80 fedora:33         : Ok   gcc (GCC) 10.2.1 20201005 (Red Hat 10.2.1-5), clang version 11.0.0 (Fedora 11.0.0-1.fc33)
+     2    92.47 fedora:rawhide    : Ok   gcc (GCC) 10.2.1 20201016 (Red Hat 10.2.1-6), clang version 11.0.0 (Fedora 11.0.0-1.fc34)
+  #
+
+Avoid that by ditching that 'initfunc' function pointer with its:
+
+    #define Py_EXPORTED_SYMBOL _attribute_ ((visibility ("default")))
+    #define PyMODINIT_FUNC Py_EXPORTED_SYMBOL PyObject*
+
+And just call PyImport_AppendInittab() at the end of the ifdef python3
+block with the functions that were being attributed to that initfunc.
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Tapas Kundu <tkundu@vmware.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/renesas_sdhi_core.c |    1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/util/scripting-engines/trace-event-python.c |    7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
---- a/drivers/mmc/host/renesas_sdhi_core.c
-+++ b/drivers/mmc/host/renesas_sdhi_core.c
-@@ -874,6 +874,7 @@ int renesas_sdhi_remove(struct platform_
+--- a/tools/perf/util/scripting-engines/trace-event-python.c
++++ b/tools/perf/util/scripting-engines/trace-event-python.c
+@@ -1493,7 +1493,6 @@ static void _free_command_line(wchar_t *
+ static int python_start_script(const char *script, int argc, const char **argv)
+ {
+ 	struct tables *tables = &tables_global;
+-	PyMODINIT_FUNC (*initfunc)(void);
+ #if PY_MAJOR_VERSION < 3
+ 	const char **command_line;
+ #else
+@@ -1508,20 +1507,18 @@ static int python_start_script(const cha
+ 	FILE *fp;
  
- 	tmio_mmc_host_remove(host);
- 	renesas_sdhi_clk_disable(host);
-+	tmio_mmc_host_free(host);
+ #if PY_MAJOR_VERSION < 3
+-	initfunc = initperf_trace_context;
+ 	command_line = malloc((argc + 1) * sizeof(const char *));
+ 	command_line[0] = script;
+ 	for (i = 1; i < argc + 1; i++)
+ 		command_line[i] = argv[i - 1];
++	PyImport_AppendInittab(name, initperf_trace_context);
+ #else
+-	initfunc = PyInit_perf_trace_context;
+ 	command_line = malloc((argc + 1) * sizeof(wchar_t *));
+ 	command_line[0] = Py_DecodeLocale(script, NULL);
+ 	for (i = 1; i < argc + 1; i++)
+ 		command_line[i] = Py_DecodeLocale(argv[i - 1], NULL);
++	PyImport_AppendInittab(name, PyInit_perf_trace_context);
+ #endif
+-
+-	PyImport_AppendInittab(name, initfunc);
+ 	Py_Initialize();
  
- 	return 0;
- }
+ #if PY_MAJOR_VERSION < 3
 
 
