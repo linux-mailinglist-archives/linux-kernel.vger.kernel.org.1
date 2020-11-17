@@ -2,144 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6CF2B58E1
+	by mail.lfdr.de (Postfix) with ESMTP id B9AB12B58E2
 	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 05:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgKQEit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 16 Nov 2020 23:38:49 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3039 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgKQEis (ORCPT
+        id S1727182AbgKQEiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 16 Nov 2020 23:38:54 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40476 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726277AbgKQEiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 16 Nov 2020 23:38:48 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb353e20001>; Mon, 16 Nov 2020 20:38:58 -0800
-Received: from [10.25.99.52] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Nov
- 2020 04:38:39 +0000
-Subject: Re: [PATCH 0/3] Add support to handle prefetchable memory
-From:   Vidya Sagar <vidyas@nvidia.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>
-CC:     "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kthota@nvidia.com" <kthota@nvidia.com>,
-        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
-        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
-References: <20201023195655.11242-1-vidyas@nvidia.com>
- <SLXP216MB04777D651A59246A60D036A8AA1B0@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
- <20201026123012.GA356750@ulmo>
- <53277a71-13e5-3e7e-7c51-aca367b99d31@nvidia.com>
-Message-ID: <92d5ead4-a3d2-42ba-a542-3e305f3d5523@nvidia.com>
-Date:   Tue, 17 Nov 2020 10:08:35 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Mon, 16 Nov 2020 23:38:54 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH4YR6e031696;
+        Tue, 17 Nov 2020 04:38:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=y7APG0r/bokydck1IBhchdPfzUvszS6zFkeHS2rPBow=;
+ b=ZaXe+oqUx86jdo+okh2XRHHLJ78hWm9aZDZkGRhgLdFR5w2RSmcQnRmI1ixyivUx14xU
+ yl90I3B0gyhGSWeQOYOiu+GuFTmi6+HigCgGG7hYP3TEEoUXlSySNiG0r29dr+h5Ks1Z
+ OBjUebGpIo0wW2FfVMyfokSc4FBN/FmmnI5jXF6EmC7BczOlGA1gSmy3LUsoxKuSWtdM
+ r9sHsFEB4NWwDH6qSJdes6K8mT434Mb5VnWT8NtMgY5YB71lImDqtz9iwW7mgT9lI2+x
+ tdDLNapPHxm073cxYkmgN+RrTr7ToC459x8aQJTYw9EGZiF/JdqiPfubAsxN9COFtWin 6w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 34t76krg8q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 17 Nov 2020 04:38:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AH4VYl1039885;
+        Tue, 17 Nov 2020 04:38:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 34uspsv4a3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Nov 2020 04:38:42 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AH4ceTu027733;
+        Tue, 17 Nov 2020 04:38:40 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 16 Nov 2020 20:38:39 -0800
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     <subbu.seetharaman@broadcom.com>, <ketan.mukadam@broadcom.com>,
+        <jitendra.bhivare@broadcom.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] scsi: be2iscsi: Mark beiscsi_attrs with static
+ keyword
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1blfw4myg.fsf@ca-mkp.ca.oracle.com>
+References: <1605339474-22329-1-git-send-email-zou_wei@huawei.com>
+Date:   Mon, 16 Nov 2020 23:38:37 -0500
+In-Reply-To: <1605339474-22329-1-git-send-email-zou_wei@huawei.com> (Zou Wei's
+        message of "Sat, 14 Nov 2020 15:37:54 +0800")
 MIME-Version: 1.0
-In-Reply-To: <53277a71-13e5-3e7e-7c51-aca367b99d31@nvidia.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605587938; bh=LWTX7EIE05huuVD68czK2CHeNKaLvf8HX1JxbzKZqZ4=;
-        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=hlMpZPVK5IWiVWi4hFo60n3Z5dQl78lATnhNAnJ6T8ZAUJCg+LOqptVJJ5zF7HB/4
-         QOG09llSqyX93OQQgYSeTt+N6Gd78USCu7AZABR4UvTSJkMccU4JpfEzdJq9G88Xkh
-         tIHxJFAUw6A642o59EgP8Pm+jdDbQ2q8JXfIOo9qRBz0wwrwciuOqe54/e8KbSm/r5
-         WBn7qK/ogKGiLBLlUipVBv5rlMsezqqpHUsxbgDHRTrWXK9zJod+WludPVsmSbEj0/
-         o2TZVJbXJOhgwq8ZdyVbnh4Fse4WDSMIlac7hoOufMLxLRQnI+hOPOLpRGHPfgcaJo
-         jYemra8sL9H9g==
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 bulkscore=0 suspectscore=1 adultscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011170033
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1011 mlxlogscore=999
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011170033
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo & Bjorn,
-Sorry to bother you.
-Could you please take a look at the patches-1 & 2 from this series?
 
-Thanks,
-Vidya Sagar
+Zou,
 
-On 11/4/2020 1:16 PM, Vidya Sagar wrote:
-> External email: Use caution opening links or attachments
->=20
->=20
-> Lorenzo / Bjorn,
-> Could you please review patches-1 & 2 in this series?
-> For the third patch, we already went with Rob's patch @
-> http://patchwork.ozlabs.org/project/linux-pci/patch/20201026154852.221483=
--1-robh@kernel.org/=20
->=20
->=20
-> Thanks,
-> Vidya Sagar
->=20
-> On 10/26/2020 6:02 PM, Thierry Reding wrote:
->> On Sat, Oct 24, 2020 at 04:03:41AM +0000, Jingoo Han wrote:
->>> On 10/23/20, 3:57 PM, Vidya Sagar wrote:
->>>>
->>>> This patch series adds support for configuring the DesignWare IP's ATU
->>>> region for prefetchable memory translations.
->>>> It first starts by flagging a warning if the size of non-prefetchable
->>>> aperture goes beyond 32-bit as PCIe spec doesn't allow it.
->>>> And then adds required support for programming the ATU to handle highe=
-r
->>>> (i.e. >4GB) sizes and then finally adds support for differentiating
->>>> between prefetchable and non-prefetchable regions and configuring=20
->>>> one of
->>>> the ATU regions for prefetchable memory translations purpose.
->>>>
->>>> Vidya Sagar (3):
->>>> =A0=A0 PCI: of: Warn if non-prefetchable memory aperture size is > 32-=
-bit
->>>> =A0=A0 PCI: dwc: Add support to program ATU for >4GB memory aperture s=
-izes
->>>> =A0=A0 PCI: dwc: Add support to handle prefetchable memory mapping
->>>
->>> For 2nd & 3rd,
->>> Acked-by: Jingoo <jingoohan1@gmail.com>
->>> But, I still want someone to ack 1st patch, not me.
->>>
->>> To Vidya,
->>> If possible, can you ask your coworker to give 'Tested-by'? It will=20
->>> be very helpful.
->>> Thank you.
->>
->> On next-20201026 (but also going back quite a while) I'm seeing this
->> during boot on Jetson AGX Xavier (Tegra194):
->>
->> [=A0=A0=A0 3.493382] ahci 0001:01:00.0: version 3.0
->> [=A0=A0=A0 3.493889] ahci 0001:01:00.0: SSS flag set, parallel bus scan=
-=20
->> disabled
->> [=A0=A0=A0 4.497706] ahci 0001:01:00.0: controller reset failed (0xfffff=
-fff)
->> [=A0=A0=A0 4.498114] ahci: probe of 0001:01:00.0 failed with error -5
->>
->> After applying this series, AHCI over PCI is back to normal:
->>
->> [=A0=A0=A0 3.543230] ahci 0001:01:00.0: AHCI 0001.0000 32 slots 1 ports =
-6=20
->> Gbps 0x1 impl SATA mode
->> [=A0=A0=A0 3.550841] ahci 0001:01:00.0: flags: 64bit ncq sntf led only p=
-mp=20
->> fbs pio slum part sxs
->> [=A0=A0=A0 3.559747] scsi host0: ahci
->> [=A0=A0=A0 3.561998] ata1: SATA max UDMA/133 abar m512@0x1230010000 port=
-=20
->> 0x1230010100 irq 63
->>
->> So for the series:
->>
->> Tested-by: Thierry Reding <treding@nvidia.com>
->>
+> Fix the following sparse warning:
+>
+> ./be_main.c:167:25: warning: symbol 'beiscsi_attrs' was not declared. Should it be static?
+
+Applied to 5.11/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
