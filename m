@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CABF2B6C4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC452B6C55
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730360AbgKQRts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:49:48 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:34976 "EHLO honk.sigxcpu.org"
+        id S1730411AbgKQRt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:49:58 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:34918 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730311AbgKQRtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:49:47 -0500
+        id S1730350AbgKQRtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:49:49 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id E490EFB05;
-        Tue, 17 Nov 2020 18:49:44 +0100 (CET)
+        by honk.sigxcpu.org (Postfix) with ESMTP id 2F941FB07;
+        Tue, 17 Nov 2020 18:49:48 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id OKR7asW2yOyz; Tue, 17 Nov 2020 18:49:42 +0100 (CET)
+        with ESMTP id RH-yvqaDcr5H; Tue, 17 Nov 2020 18:49:47 +0100 (CET)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 34CBD43F73; Tue, 17 Nov 2020 18:49:38 +0100 (CET)
+        id 3DD0843F74; Tue, 17 Nov 2020 18:49:38 +0100 (CET)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>,
@@ -37,9 +37,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1 5/6] dt-bindings: vendor-prefixes: Add ys vendor prefix
-Date:   Tue, 17 Nov 2020 18:49:36 +0100
-Message-Id: <a4930fb7a7464e4feedbdae993fe25080c8f5490.1605635248.git.agx@sigxcpu.org>
+Subject: [PATCH v1 6/6] dt-binding: display: mantix: Add compatible for panel from YS
+Date:   Tue, 17 Nov 2020 18:49:37 +0100
+Message-Id: <31b1013d78f539537a6e9e2b70bd9865b430a69e.1605635248.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1605635248.git.agx@sigxcpu.org>
 References: <cover.1605635248.git.agx@sigxcpu.org>
@@ -50,26 +50,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add prefix for Shenzhen Yashi Changhua Intelligent Technology Co., Ltd.
+This panel from Shenzhen Yashi Changhua Intelligent Technology Co
+uses the same driver IC but a different LCD.
 
 Signed-off-by: Guido Günther <agx@sigxcpu.org>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml  | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index e40ee369f808..d0f3abf2f12c 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1220,6 +1220,8 @@ patternProperties:
-     description: Shenzhen Yangliming Electronic Technology Co., Ltd.
-   "^yna,.*":
-     description: YSH & ATIL
-+  "^ys,.*":
-+    description: Shenzhen Yashi Changhua Intelligent Technology Co., Ltd.
-   "^yones-toptech,.*":
-     description: Yones Toptech Co., Ltd.
-   "^ysoft,.*":
+diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+index 51f423297ec8..9e78f2e60f99 100644
+--- a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
++++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+@@ -20,6 +20,7 @@ properties:
+   compatible:
+     enum:
+       - mantix,mlaf057we51-x
++      - ys,ys57pss36bh5gq
+ 
+   port: true
+   reg:
 -- 
 2.29.2
 
