@@ -2,114 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFE92B6C13
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519EE2B6C14
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 18:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729707AbgKQRnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 12:43:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgKQRnG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 12:43:06 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745BBC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:43:06 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id v144so31205587lfa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 09:43:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/OcK8vS7qwP+2MUiwggUAsGSyQgPJ6vX74pEaK+mCpA=;
-        b=EfimNTvREFiRdOY2ieeDuVAPDlSiosLb27iyWW6BIJAubZtFMDUVVV+gCCDiPICtKs
-         ItTcqtEzY+1iI9DPKSjq2dlThhD6Ug3CKvs/Ajrc3U9K6BKjNnwPrTggEQxL6diILEd+
-         CzuWZMRCS++XV6cDo2OGzUPEArL6039UquYvpSLbemqAYZ+tETi02G9JlWmnPDQEVu/q
-         QG5Rn3MNQpGHmjpPC56EDLlDs2loMHOppVpVN5/n5mjW9PSkdrw2dAEYP8/qFw65AD+L
-         xgA5n+NwZ8+hj/UlTVYTOjtdwIF+PtZZy7BdBoZsLpHS+UUDc2SKhNOdS67nJwrHHzAc
-         zhDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/OcK8vS7qwP+2MUiwggUAsGSyQgPJ6vX74pEaK+mCpA=;
-        b=fkWeXILF2qIdu77YM/sENuQ7t/08vTIc8uAwjzo/rZdbjtRq+9Jqn30PeZdTu4vyH9
-         umJhql3Rn7JwRlw/waOlpQF66rHc3PsBfLP25mYoqKSHHDam1Yhd2svg9SPBqz/eLeLe
-         1vE2RSiFGVwVVBwQN7tB0C6h8r0yF4frsRN045eUyuEmdQycDmDeuy1GQnLAgRIqyLzQ
-         mang6bX+JDGWnLtN9xtUkGpHSG0Ag/aOrttYY7mlGsVzsOPBQGnIHTx5dQP6lUdJRv4I
-         w/1sdd7lRjCUxmyP6NOySlEyuj7DuXyFkiIdfksbmlxHXQ62c2url2N59IagL0mJV1SK
-         u54w==
-X-Gm-Message-State: AOAM533uCKWtwmn4MRnuQjB/o67awSEHzNUmPk/SzxXS+boi2CX7OVYb
-        fQPPELMwTmlo+HuB0TPTyJzyRS7N2LoBRLs1+ep6iA==
-X-Google-Smtp-Source: ABdhPJxcad+TUU7WOPJC9TQcbIdDavzSM9nTnUW8s0epJhwrmsMVdl0Df6mTIo+ZUlYJFp8YDhhALLMeRKwxtRWPXUE=
-X-Received: by 2002:ac2:50d8:: with SMTP id h24mr1997878lfm.449.1605634984523;
- Tue, 17 Nov 2020 09:43:04 -0800 (PST)
+        id S1729683AbgKQRnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 12:43:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725790AbgKQRng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 12:43:36 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D0EA2083E;
+        Tue, 17 Nov 2020 17:43:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605635015;
+        bh=E6HWsnYm3SnHpM8JEcIpgapNiVSLIULbsQPmNXW/KLo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BDNZnNxq+YMtlA85kbVAssgE8qQsvSBqMBjwl6QLj/h0mhkiGaM2bLxvu1IWRJRdl
+         auPt3EGYltgCb5T36XHnAffSpPgsUE1zsHQChZxR6G0vHyCjB3FtZ5segwBPpDkZAf
+         3Uq7CED3K3kxkv+uELx34qjsn/EecrMaPCHXe8go=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 603DE40E29; Tue, 17 Nov 2020 14:43:33 -0300 (-03)
+Date:   Tue, 17 Nov 2020 14:43:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 13/24] perf tools: Allow mmap2 event to synthesize kernel
+ image
+Message-ID: <20201117174333.GU614220@kernel.org>
+References: <20201117110053.1303113-1-jolsa@kernel.org>
+ <20201117110053.1303113-14-jolsa@kernel.org>
+ <20201117124437.GO614220@kernel.org>
+ <20201117151651.GD1216482@krava>
 MIME-Version: 1.0
-References: <20201110195753.530157-1-guro@fb.com> <20201110195753.530157-2-guro@fb.com>
- <20201112162303.GB873621@cmpxchg.org> <20201113001926.GA2934489@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20201113001926.GA2934489@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 17 Nov 2020 09:42:53 -0800
-Message-ID: <CALvZod7gMyasoXgaGJ9hKJO98Cick07gdLabKLqrrPXyXonCrw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: memcg/slab: pre-allocate obj_cgroups for slab
- caches with SLAB_ACCOUNT
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117151651.GD1216482@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 4:19 PM Roman Gushchin <guro@fb.com> wrote:
->
-[snip]
->
-> From 8b28d91475d54c552e503e66f169e1e00475c856 Mon Sep 17 00:00:00 2001
-> From: Roman Gushchin <guro@fb.com>
-> Date: Wed, 16 Sep 2020 15:43:48 -0700
-> Subject: [PATCH v2 2/2] mm: memcg/slab: pre-allocate obj_cgroups for slab
->  caches with SLAB_ACCOUNT
->
-> In general it's unknown in advance if a slab page will contain
-> accounted objects or not. In order to avoid memory waste, an
-> obj_cgroup vector is allocated dynamically when a need to account
-> of a new object arises. Such approach is memory efficient, but
-> requires an expensive cmpxchg() to set up the memcg/objcgs pointer,
-> because an allocation can race with a different allocation on another
-> cpu.
->
-> But in some common cases it's known for sure that a slab page will
-> contain accounted objects: if the page belongs to a slab cache with a
-> SLAB_ACCOUNT flag set. It includes such popular objects like
-> vm_area_struct, anon_vma, task_struct, etc.
->
-> In such cases we can pre-allocate the objcgs vector and simple assign
-> it to the page without any atomic operations, because at this early
-> stage the page is not visible to anyone else.
->
-> v2: inline set_page_objcgs() and add some comments, by Johannes
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-[snip]
->
->  static __always_inline void account_slab_page(struct page *page, int order,
-> -                                             struct kmem_cache *s)
-> +                                             struct kmem_cache *s,
-> +                                             gfp_t gfp)
->  {
-> +       if (memcg_kmem_enabled() && (s->flags & SLAB_ACCOUNT))
-> +               memcg_alloc_page_obj_cgroups(page, s, gfp, true);
-> +
+Em Tue, Nov 17, 2020 at 04:16:51PM +0100, Jiri Olsa escreveu:
+> On Tue, Nov 17, 2020 at 09:44:37AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Nov 17, 2020 at 12:00:42PM +0100, Jiri Olsa escreveu:
+> > > Allow mmap2 event to synthesize kernel image,
+> > > so we can synthesize kernel build id data in
+> > > following changes.
+> > > 
+> > > It's enabled by new symbol_conf.buildid_mmap2
+> > > bool, which will be switched in following
+> > > changes.
+> > 
+> > Why make this an option? MMAP2 goes back years:
+> > 
+> > 13d7a2410fa637f45 (Stephane Eranian         2013-08-21 12:10:24 +0200  904)      * The MMAP2 records are an augmented version of MMAP, they add
+> > 13d7a2410fa637f45 (Stephane Eranian         2013-08-21 12:10:24 +0200  905)      * maj, min, ino numbers to be used to uniquely identify each mapping
+> > 
+> > Also we unconditionally generate MMAP2 events if the kernel supports it,
+> > from evsel__config():
+> > 
+> >   attr->mmap  = track;
+> >   attr->mmap2 = track && !perf_missing_features.mmap2;
+> > 
+> > So perhaps we should reuse that logic? I.e. use mmap2 if the kernel
+> > supports it?
+> 
+> mmap2 itself is not a problem, the problem is the new
+> bit (PERF_RECORD_MISC_MMAP_BUILD_ID) that says there's
+> build id in mmap2.. older perf tool won't understand
+> that and report will crash
 
-I was wondering why not add (gfp & __GFP_ACCOUNT) check as well but it
-seems like for that some additional plumbing is required.
+Is this theoretical or have you experienced it?
 
-Anyways:
+Would be good to tweak the perf.data reader code to not crash on unknown
+bits like that :-\
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+But by looking at machine__process_mmap2_event() I couldn't imagine how
+that would crash.
+
+It would get bogus maj, min, ino, ino_generation, but probably that
+wouldn't make it crash.
+
+- Arnaldo
+
+int machine__process_mmap2_event(struct machine *machine,
+                                 union perf_event *event,
+                                 struct perf_sample *sample)
+{                            
+        struct thread *thread;
+        struct map *map;
+        struct dso_id dso_id = {
+                .maj = event->mmap2.maj,
+                .min = event->mmap2.min,
+                .ino = event->mmap2.ino,
+                .ino_generation = event->mmap2.ino_generation,
+        };             
+        int ret = 0;   
+
+        if (dump_trace)
+                perf_event__fprintf_mmap2(event, stdout);
+                             
+        if (sample->cpumode == PERF_RECORD_MISC_GUEST_KERNEL ||
+            sample->cpumode == PERF_RECORD_MISC_KERNEL) {
+                ret = machine__process_kernel_mmap_event(machine, event);
+                if (ret < 0)
+                        goto out_problem;
+                return 0;
+        }
+                             
+        thread = machine__findnew_thread(machine, event->mmap2.pid,
+                                        event->mmap2.tid);
+        if (thread == NULL)
+                goto out_problem;
+
+        map = map__new(machine, event->mmap2.start,
+                        event->mmap2.len, event->mmap2.pgoff,
+                        &dso_id, event->mmap2.prot,
+                        event->mmap2.flags,
+                        event->mmap2.filename, thread);
+
+        if (map == NULL)
+                goto out_problem_map;
+
+        ret = thread__insert_map(thread, map);
+        if (ret)
+                goto out_problem_insert;
+
+        thread__put(thread);
+        map__put(map);
+        return 0;
+
+out_problem_insert:
+        map__put(map);
+out_problem_map:
+        thread__put(thread);
+out_problem:
+        dump_printf("problem processing PERF_RECORD_MMAP2, skipping event.\n");
+        return 0;
+}
