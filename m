@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C439C2B59FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B842B59FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 08:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgKQHBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 02:01:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57454 "EHLO mail.kernel.org"
+        id S1726598AbgKQHCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 02:02:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726387AbgKQHBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 02:01:54 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
+        id S1726417AbgKQHCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 02:02:05 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22FF4241A6;
-        Tue, 17 Nov 2020 07:01:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE8B8241A7;
+        Tue, 17 Nov 2020 07:02:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605596513;
-        bh=F9nczTQGYkSFtNatdOGDtmL3fXRqk522Wwk8t9ZSgD4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EKvG/6RRxoZkJdDAAE7nVFcOzZnEbrVziizhvLF7Kn1QmWasYfrmo2g+pNXGInijq
-         +7APxZ7QKauXmTKu5q4mLn3dYFpm+eFHOU3+GTA4Itye3lhE2WAs4oR81tF7O4L0Ck
-         sH+9onwF4zPk4Cz5DCKg79mBaiMUqKq/JRWXyylA=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mark Zhang <markz@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-next v5 0/3] Track memory allocation with restrack DB help (Part II)
-Date:   Tue, 17 Nov 2020 09:01:45 +0200
-Message-Id: <20201117070148.1974114-1-leon@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        s=default; t=1605596524;
+        bh=x6cXubNXc3tGqmxmQvpt5NxRCngt77HtQoMhgwcbzN0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HccT+e98CTjo/3xnpyy36qRn2CLzuuWriOejALzW0PBKOKrRbf9noJh7Xv7v+IYRM
+         nwikssCF7+zKPCQmoCWAytzUdz8bUQGWRddiyyWZRe7Vr5cGoA7H8Tj80uUVmuFkKd
+         0EXZCXTnnO+jkOVyGCUWrNmdDbzubNoCXSUijIRc=
+Date:   Tue, 17 Nov 2020 08:02:53 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Dave Ertman <david.m.ertman@intel.com>,
+        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        parav@mellanox.com, shiraz.saleem@intel.com,
+        dan.j.williams@intel.com, kiran.patil@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
+Message-ID: <X7N1naYOXodPsP/I@kroah.com>
+References: <20201113161859.1775473-1-david.m.ertman@intel.com>
+ <20201113161859.1775473-2-david.m.ertman@intel.com>
+ <20201117053000.GM47002@unreal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117053000.GM47002@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
+> On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
+> > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> > It enables drivers to create an auxiliary_device and bind an
+> > auxiliary_driver to it.
+> >
+> > The bus supports probe/remove shutdown and suspend/resume callbacks.
+> > Each auxiliary_device has a unique string based id; driver binds to
+> > an auxiliary_device based on this id through the bus.
+> >
+> > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > Reviewed-by: Parav Pandit <parav@mellanox.com>
+> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > ---
+> 
+> Greg,
+> 
+> This horse was beaten to death, can we please progress with this patch?
+> Create special topic branch or ack so I'll prepare this branch.
+> 
+> We are in -rc4 now and we (Mellanox) can't hold our submissions anymore.
+> My mlx5_core probe patches [1] were too intrusive and they are ready to
+> be merged, Parav's patches got positive review as well [2] and will be
+> taken next.
+> 
+> We delayed and have in our internal queues the patches for VDPA, eswitch
+> and followup for mlx5_core probe rework, but trapped due to this AUX bus
+> patch.
 
-Changelog:
-v5:
- * Reorder patches to postpone changes in rdma_restrack_add to be in next series.
-v4: https://lore.kernel.org/linux-rdma/20201104144008.3808124-1-leon@kernel.org/
- * Rebased on latest for-upstream, all that time the patches were in
- our regression and didn't introduce any issues.
- * Took first five patches that hadn't any comments
-v3: https://lore.kernel.org/lkml/20200926101938.2964394-1-leon@kernel.org
- * Rebased on already accepted patches.
- * Added mlx4 special QPs to the list of not-tracked QPs (dropped previous mlx4 special QP patch).
- * Separated to two patches change in return value of cma_listen_* routines.
- * Changed commit messages and added Fixes as Jason requested.
-v2: https://lore.kernel.org/linux-rdma/20200907122156.478360-1-leon@kernel.org/
- * Added new patch to fix mlx4 failure on SR-IOV, it didn't have port set.
- * Changed "RDMA/cma: Delete from restrack DB after successful destroy" patch.
-v1: https://lore.kernel.org/lkml/20200830101436.108487-1-leon@kernel.org
- * Fixed rebase error, deleted second assignment of qp_type.
- * Rebased code on latests rdma-next, the changes in cma.c caused to change
-   in patch "RDMA/cma: Delete from restrack DB after successful destroy".
- * Dropped patch of port assignment, it is already done as part of this
-   series.
- * I didn't add @calller description, regular users should not use _named() funciton.
-v0: https://lore.kernel.org/lkml/20200824104415.1090901-1-leon@kernel.org
+There are no deadlines for kernel patches here, sorry.  Give me some
+time to properly review this, core kernel changes should not be rushed.
 
-----------------------------------------------------------------------------------
+Also, if you really want to blame someone for the delay, look at the
+patch submitters, not the reviewers, as they are the ones that took a
+very long time with this over the lifecycle of this patchset, not me.  I
+have provided many "instant" reviews of this patchset, and then months
+went by between updates from them.
 
-Leon Romanovsky (3):
-  RDMA/core: Track device memory MRs
-  RDMA/core: Allow drivers to disable restrack DB
-  RDMA/restrack: Support all QP types
-
- drivers/infiniband/core/core_priv.h           | 25 ++++++-------------
- drivers/infiniband/core/counters.c            |  2 +-
- drivers/infiniband/core/restrack.c            | 12 +++++++--
- drivers/infiniband/core/uverbs_cmd.c          |  4 +--
- drivers/infiniband/core/uverbs_std_types_mr.c |  4 +++
- drivers/infiniband/core/uverbs_std_types_qp.c |  4 +--
- drivers/infiniband/core/verbs.c               | 11 ++++----
- drivers/infiniband/hw/mlx4/qp.c               |  5 ++++
- drivers/infiniband/hw/mlx5/qp.c               |  2 +-
- include/rdma/ib_verbs.h                       | 10 ++++++--
- include/rdma/restrack.h                       | 24 ++++++++++++++++++
- 11 files changed, 70 insertions(+), 33 deletions(-)
-
---
-2.28.0
-
+greg k-h
