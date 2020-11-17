@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619D92B6D09
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669742B6CFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 19:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731195AbgKQSRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 13:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
+        id S1731063AbgKQSRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 13:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731026AbgKQSRI (ORCPT
+        with ESMTP id S1731029AbgKQSRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:17:08 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7654BC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:17:06 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id dp12so7862071qvb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:17:06 -0800 (PST)
+        Tue, 17 Nov 2020 13:17:09 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3737C061A47
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:17:08 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id z68so14751099qkc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 10:17:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=uWTirSBGllb/UnC1/gfuRUGVZCQysfGVvtfYpfqhwps=;
-        b=QOvLP7+8rJSTpw6cIxRDKU37M+xX2BsqlE+SSoroXw4nil7j3KIE5nlZL9QPhOUnV2
-         neKN1A7pQ+x+SQWyzb6lI+RG4t3CdSbNFNKbHjPSf/y2Cy7OdeGY+IEdNMjcuceKN2L0
-         T1sJRvfMBIkD++hzeifuRpVg7u3ErEumK8vjo1uj0nq8BIvfiQAko56WeOPhqZZMID8+
-         SHUSt/rtqPXiPAZnsC7EX97B/GMHUi2XVojFSZHDFVU95enBs0xE3vp9oc+pprUh9dxA
-         0RVD59xrq8RJdccXUEgST+e87cFbujgI/4HZeyYKmtJHEk87BTRvkL+2Jbca91yf6Bx+
-         Bx1A==
+        bh=YRRsngS9OD6tBnxQxVeL/idwsF6yEfmuwUZwYdjr4cI=;
+        b=u6eskt9lKKmGSunnDChD5nx9UAFs54CCl+3VWgy6MyEcVVg8OeGSLy6w+3jrAgg5wo
+         lIQFdYhOvLApYwomcOOT904ylp69grlIlOZX+z4g49TOTxv58iJt30YEMMbaDkgokaiV
+         +kDh/6I2WkKdw1mI/OeSLV7yoQu8bc9QP/M3gsk0AO2v4897Wo4N8zHFREx6/Mmrycej
+         FaBnrvSuEuIl+wMhPSOrswKNQVY/YQYHpDnZtnmHTfXn3RryY102vNLKNzxLh5JQxvcA
+         ikQQMFvZGh6oA+q0po5wCBIIFKVotM758kswEkO/JkHpisi3Q+W2jTRHPSKvegIXFjFe
+         7iFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=uWTirSBGllb/UnC1/gfuRUGVZCQysfGVvtfYpfqhwps=;
-        b=uXL38/i4/UebdC3KBOPLthfeBePPNA6uhqbPBvOnv3C4gwTzy98uJC71vBQSlV7xfW
-         zIP+4wKf0urInAthoLB/y2tBvGQDye8OqAZcI2lK9c4E+mh3LtDAdm6xYGRyEUu+t1ks
-         68WNiIkDljPHUf/hqGFq8hGeq8aruZzE0izUdb+k04Bhm3u82E7FMg6QTxn++YHFsNFf
-         7XfyF93JoJxVzZg+2n2UPSf6/RWox8/V9kphVy35m+B94hDox5nw+cIdtKnZJ8cLLLJB
-         5ye5F0K3xlAOGF7fDXW4svEvOFjhyRkm92AJEgF5Nh3g05Rs1XJ64Oe8bmHarfD80xu4
-         9EOw==
-X-Gm-Message-State: AOAM532/8nxlsEqUXhe9aqAV8CTTU+Z3PJz1wvoJnXGOZpOl3DkdzShW
-        QON+ktLEXWYPOfoNn6C4OJ1QcTDrrZnO
-X-Google-Smtp-Source: ABdhPJwdF2Gg54bc1EmlvAWDzl41GijC84V6agc2skK4FVwntGHb1cSvCccXppxqfrsHcQ1LZjG1wvbDZQfU
+        bh=YRRsngS9OD6tBnxQxVeL/idwsF6yEfmuwUZwYdjr4cI=;
+        b=RZjHa657vg3e7tY33PzxSqI5Z1QpC3DJHYROjhp4Usnpnb4rRj4xureG4p4YDJWwpU
+         AweongRI3BgqJ6K7CnT2Bxd3SQr5mHBDsJe6avU0KC0JS1fpgn3dQCwm8erT2Hhj2EkU
+         1k7JQA5DAhyULcqZ5vIj1tDcSrnwRuHBFl1TuAEFi+DcqtEicMFs34dueW2zsgISzEND
+         j8jVrM7n64zIMyd+a1jaPz7xXgdtnO1+QFVotWCNxWlKVPrNL7vMK0A2MX9PJiPJjtKi
+         xbYcPML0oRCRfLpplkZuUAi9/Yi+Ph4qDfm7AibM3G0ywni8rJsMVJHWW2WKUTMS3mY9
+         Hsjg==
+X-Gm-Message-State: AOAM532mVsaCJthWoMzb6eLf2ORRJHW3wJn3MWuN0Hm05hE9E0uPW1oo
+        s0MnRLWGkrSPDQu8W9lv5Gdb7KCvOfEO
+X-Google-Smtp-Source: ABdhPJx5Z5F0VDtWsI/mKAVXvn+oRTGzalsg8aLfqcFVm74qRo8wjQOMWj3cl7sUTCwGro5vT2NLftM2aBIV
 Sender: "qperret via sendgmr" <qperret@luke.lon.corp.google.com>
 X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
- (user=qperret job=sendgmr) by 2002:a0c:db11:: with SMTP id
- d17mr513281qvk.39.1605637025659; Tue, 17 Nov 2020 10:17:05 -0800 (PST)
-Date:   Tue, 17 Nov 2020 18:16:00 +0000
+ (user=qperret job=sendgmr) by 2002:a0c:e443:: with SMTP id
+ d3mr975170qvm.18.1605637028048; Tue, 17 Nov 2020 10:17:08 -0800 (PST)
+Date:   Tue, 17 Nov 2020 18:16:01 +0000
 In-Reply-To: <20201117181607.1761516-1-qperret@google.com>
-Message-Id: <20201117181607.1761516-21-qperret@google.com>
+Message-Id: <20201117181607.1761516-22-qperret@google.com>
 Mime-Version: 1.0
 References: <20201117181607.1761516-1-qperret@google.com>
 X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-Subject: [RFC PATCH 20/27] KVM: arm64: Set host stage 2 using kvm_nvhe_init_params
+Subject: [RFC PATCH 21/27] KVM: arm64: Refactor kvm_arm_setup_stage2()
 From:   Quentin Perret <qperret@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
@@ -74,98 +74,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the registers relevant to host stage 2 enablement to
-kvm_nvhe_init_params to prepare the ground for enabling it in later
-patches.
+In order to re-use some of the stage 2 setup at EL2, factor parts of
+kvm_arm_setup_stage2() out into static inline functions.
+
+No functional change intended.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/include/asm/kvm_asm.h   | 3 +++
- arch/arm64/kernel/asm-offsets.c    | 3 +++
- arch/arm64/kvm/arm.c               | 5 +++++
- arch/arm64/kvm/hyp/nvhe/hyp-init.S | 9 +++++++++
- arch/arm64/kvm/hyp/nvhe/switch.c   | 5 +----
- 5 files changed, 21 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/kvm_mmu.h | 48 ++++++++++++++++++++++++++++++++
+ arch/arm64/kvm/reset.c           | 42 +++-------------------------
+ 2 files changed, 52 insertions(+), 38 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-index 9266b17f8ba9..089eea6e54fc 100644
---- a/arch/arm64/include/asm/kvm_asm.h
-+++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -158,6 +158,9 @@ struct kvm_nvhe_init_params {
- 	unsigned long stack_hyp_va;
- 	unsigned long entry_hyp_va;
- 	phys_addr_t pgd_pa;
-+	unsigned long hcr_el2;
-+	unsigned long vttbr;
-+	unsigned long vtcr;
- };
+diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+index 714357ebd278..5a76358e8c7a 100644
+--- a/arch/arm64/include/asm/kvm_mmu.h
++++ b/arch/arm64/include/asm/kvm_mmu.h
+@@ -256,6 +256,54 @@ static inline int kvm_write_guest_lock(struct kvm *kvm, gpa_t gpa,
+ 	return ret;
+ }
  
- /* Translate a kernel address @ptr into its equivalent linear mapping */
-diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-index 9752100bf01f..2c3813bff6ea 100644
---- a/arch/arm64/kernel/asm-offsets.c
-+++ b/arch/arm64/kernel/asm-offsets.c
-@@ -115,6 +115,9 @@ int main(void)
-   DEFINE(NVHE_INIT_STACK_HYP_VA,	offsetof(struct kvm_nvhe_init_params, stack_hyp_va));
-   DEFINE(NVHE_INIT_ENTRY_HYP_VA,	offsetof(struct kvm_nvhe_init_params, entry_hyp_va));
-   DEFINE(NVHE_INIT_PGD_PA,	offsetof(struct kvm_nvhe_init_params, pgd_pa));
-+  DEFINE(NVHE_INIT_HCR_EL2,	offsetof(struct kvm_nvhe_init_params, hcr_el2));
-+  DEFINE(NVHE_INIT_VTTBR,	offsetof(struct kvm_nvhe_init_params, vttbr));
-+  DEFINE(NVHE_INIT_VTCR,	offsetof(struct kvm_nvhe_init_params, vtcr));
- #endif
- #ifdef CONFIG_CPU_PM
-   DEFINE(CPU_CTX_SP,		offsetof(struct cpu_suspend_ctx, sp));
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index cfe5cc55b425..e06c95a10dba 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1365,6 +1365,11 @@ static void cpu_prepare_hyp_mode(int cpu)
- 	params->stack_hyp_va = kern_hyp_va(per_cpu(kvm_arm_hyp_stack_page, cpu) + PAGE_SIZE);
- 	params->entry_hyp_va = kern_hyp_va((unsigned long)kvm_ksym_ref_nvhe(__kvm_hyp_psci_cpu_entry));
- 	params->pgd_pa = kvm_mmu_get_httbr();
-+	if (is_protected_kvm_enabled())
-+		params->hcr_el2 = HCR_HOST_NVHE_PROTECTED_FLAGS;
-+	else
-+		params->hcr_el2 = HCR_HOST_NVHE_FLAGS;
-+	params->vttbr = params->vtcr = 0;
- 
- 	/*
- 	 * Flush the init params from the data cache because the struct will
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-init.S b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-index e2d62297edfe..9f3f3098670a 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-@@ -103,6 +103,15 @@ alternative_else_nop_endif
- 	ldr	x1, [x0, #NVHE_INIT_STACK_HYP_VA]
- 	mov	sp, x1
- 
-+	ldr	x1, [x0, #NVHE_INIT_HCR_EL2]
-+	msr	hcr_el2, x1
++static inline u64 kvm_get_parange(u64 mmfr0)
++{
++	u64 parange = cpuid_feature_extract_unsigned_field(mmfr0,
++				ID_AA64MMFR0_PARANGE_SHIFT);
++	if (parange > ID_AA64MMFR0_PARANGE_MAX)
++		parange = ID_AA64MMFR0_PARANGE_MAX;
 +
-+	ldr	x1, [x0, #NVHE_INIT_VTTBR]
-+	msr	vttbr_el2, x1
++	return parange;
++}
 +
-+	ldr	x1, [x0, #NVHE_INIT_VTCR]
-+	msr	vtcr_el2, x1
++/*
++ * The VTCR value is common across all the physical CPUs on the system.
++ * We use system wide sanitised values to fill in different fields,
++ * except for Hardware Management of Access Flags. HA Flag is set
++ * unconditionally on all CPUs, as it is safe to run with or without
++ * the feature and the bit is RES0 on CPUs that don't support it.
++ */
++static inline u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
++{
++	u64 vtcr = VTCR_EL2_FLAGS;
++	u8 lvls;
 +
- 	ldr	x1, [x0, #NVHE_INIT_PGD_PA]
- 	phys_to_ttbr x0, x1
- alternative_if ARM64_HAS_CNP
-diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
-index f3d0e9eca56c..979a76cdf9fb 100644
---- a/arch/arm64/kvm/hyp/nvhe/switch.c
-+++ b/arch/arm64/kvm/hyp/nvhe/switch.c
-@@ -97,10 +97,7 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
- 	mdcr_el2 |= MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT;
++	vtcr |= kvm_get_parange(mmfr0) << VTCR_EL2_PS_SHIFT;
++	vtcr |= VTCR_EL2_T0SZ(phys_shift);
++	/*
++	 * Use a minimum 2 level page table to prevent splitting
++	 * host PMD huge pages at stage2.
++	 */
++	lvls = stage2_pgtable_levels(phys_shift);
++	if (lvls < 2)
++		lvls = 2;
++	vtcr |= VTCR_EL2_LVLS_TO_SL0(lvls);
++
++	/*
++	 * Enable the Hardware Access Flag management, unconditionally
++	 * on all CPUs. The features is RES0 on CPUs without the support
++	 * and must be ignored by the CPUs.
++	 */
++	vtcr |= VTCR_EL2_HA;
++
++	/* Set the vmid bits */
++	vtcr |= (get_vmid_bits(mmfr1) == 16) ?
++		VTCR_EL2_VS_16BIT :
++		VTCR_EL2_VS_8BIT;
++
++	return vtcr;
++}
++
+ #define kvm_phys_to_vttbr(addr)		phys_to_ttbr(addr)
  
- 	write_sysreg(mdcr_el2, mdcr_el2);
--	if (is_protected_kvm_enabled())
--		write_sysreg(HCR_HOST_NVHE_PROTECTED_FLAGS, hcr_el2);
--	else
--		write_sysreg(HCR_HOST_NVHE_FLAGS, hcr_el2);
-+	write_sysreg(this_cpu_ptr(&kvm_init_params)->hcr_el2, hcr_el2);
- 	write_sysreg(CPTR_EL2_DEFAULT, cptr_el2);
- 	write_sysreg(__kvm_hyp_host_vector, vbar_el2);
+ static __always_inline u64 kvm_get_vttbr(struct kvm_s2_mmu *mmu)
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index 3e772ea4e066..074b39dbe539 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -384,19 +384,10 @@ int kvm_set_ipa_limit(void)
+ 	return 0;
+ }
+ 
+-/*
+- * Configure the VTCR_EL2 for this VM. The VTCR value is common
+- * across all the physical CPUs on the system. We use system wide
+- * sanitised values to fill in different fields, except for Hardware
+- * Management of Access Flags. HA Flag is set unconditionally on
+- * all CPUs, as it is safe to run with or without the feature and
+- * the bit is RES0 on CPUs that don't support it.
+- */
+ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
+ {
+-	u64 vtcr = VTCR_EL2_FLAGS, mmfr0;
+-	u32 parange, phys_shift;
+-	u8 lvls;
++	u64 mmfr0, mmfr1;
++	u32 phys_shift;
+ 
+ 	if (type & ~KVM_VM_TYPE_ARM_IPA_SIZE_MASK)
+ 		return -EINVAL;
+@@ -411,33 +402,8 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
+ 	}
+ 
+ 	mmfr0 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
+-	parange = cpuid_feature_extract_unsigned_field(mmfr0,
+-				ID_AA64MMFR0_PARANGE_SHIFT);
+-	if (parange > ID_AA64MMFR0_PARANGE_MAX)
+-		parange = ID_AA64MMFR0_PARANGE_MAX;
+-	vtcr |= parange << VTCR_EL2_PS_SHIFT;
+-
+-	vtcr |= VTCR_EL2_T0SZ(phys_shift);
+-	/*
+-	 * Use a minimum 2 level page table to prevent splitting
+-	 * host PMD huge pages at stage2.
+-	 */
+-	lvls = stage2_pgtable_levels(phys_shift);
+-	if (lvls < 2)
+-		lvls = 2;
+-	vtcr |= VTCR_EL2_LVLS_TO_SL0(lvls);
+-
+-	/*
+-	 * Enable the Hardware Access Flag management, unconditionally
+-	 * on all CPUs. The features is RES0 on CPUs without the support
+-	 * and must be ignored by the CPUs.
+-	 */
+-	vtcr |= VTCR_EL2_HA;
++	mmfr1 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
++	kvm->arch.vtcr = kvm_get_vtcr(mmfr0, mmfr1, phys_shift);
+ 
+-	/* Set the vmid bits */
+-	vtcr |= (kvm_get_vmid_bits() == 16) ?
+-		VTCR_EL2_VS_16BIT :
+-		VTCR_EL2_VS_8BIT;
+-	kvm->arch.vtcr = vtcr;
+ 	return 0;
  }
 -- 
 2.29.2.299.gdc1121823c-goog
