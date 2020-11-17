@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3792B6230
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10DA2B60A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 14:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731416AbgKQN0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 08:26:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33472 "EHLO mail.kernel.org"
+        id S1728959AbgKQNL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 08:11:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731407AbgKQN0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:26:08 -0500
+        id S1729600AbgKQNLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 08:11:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E662B2464E;
-        Tue, 17 Nov 2020 13:26:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5C242225B;
+        Tue, 17 Nov 2020 13:11:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605619568;
-        bh=wEyukaOv6IIkdkpz+Z6uNIT4pecAvMCdfZeRtCH3gIQ=;
+        s=default; t=1605618674;
+        bh=W/ZyvxqhtECWPimroT5kkThLCF0T68U3xugO1d+a6L4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jeynDCBQsisD0323SWw0ihIVRHsiTpW4t+P0/EWufFtbUsPk+F4FhRTy/2kW80NSn
-         +ysMC7jspzQ9uqZ9SyF1jvTMXWGgsH7Nm48uP+IiNlOp1G9o+yzqy0C48hY23Y4DlK
-         1aINGX5cevWIqa3ZaTzUiMp+kd5bUe7SuUMWGRBo=
+        b=cKnSd3+QbNjG5F34+lZmOjWbLztesmsR7IfmSHgwmjzwZATfIN+pvAk1C8jrNCpV7
+         RFNfCQVAAt7aYIXnhBZG2ydVCTpOA1UoVv7KV+t/l2pijrMPi3/yscwvvMB4kJu0SV
+         K0nuZA6mgJ+o+h1SKzCh+Nci8eO50stSuW7y/g30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 083/151] tpm_tis: Disable interrupts on ThinkPad T490s
-Date:   Tue, 17 Nov 2020 14:05:13 +0100
-Message-Id: <20201117122125.458844797@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 4.9 48/78] dont dump the threads that had been already exiting when zapped.
+Date:   Tue, 17 Nov 2020 14:05:14 +0100
+Message-Id: <20201117122111.455899012@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201117122121.381905960@linuxfoundation.org>
-References: <20201117122121.381905960@linuxfoundation.org>
+In-Reply-To: <20201117122109.116890262@linuxfoundation.org>
+References: <20201117122109.116890262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,99 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerry Snitselaar <jsnitsel@redhat.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit b154ce11ead925de6a94feb3b0317fafeefa0ebc ]
+commit 77f6ab8b7768cf5e6bdd0e72499270a0671506ee upstream.
 
-There is a misconfiguration in the bios of the gpio pin used for the
-interrupt in the T490s. When interrupts are enabled in the tpm_tis
-driver code this results in an interrupt storm. This was initially
-reported when we attempted to enable the interrupt code in the tpm_tis
-driver, which previously wasn't setting a flag to enable it. Due to
-the reports of the interrupt storm that code was reverted and we went back
-to polling instead of using interrupts. Now that we know the T490s problem
-is a firmware issue, add code to check if the system is a T490s and
-disable interrupts if that is the case. This will allow us to enable
-interrupts for everyone else. If the user has a fixed bios they can
-force the enabling of interrupts with tpm_tis.interrupts=1 on the
-kernel command line.
+Coredump logics needs to report not only the registers of the dumping
+thread, but (since 2.5.43) those of other threads getting killed.
 
-Cc: Peter Huewe <peterhuewe@gmx.de>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
-Reviewed-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Doing that might require extra state saved on the stack in asm glue at
+kernel entry; signal delivery logics does that (we need to be able to
+save sigcontext there, at the very least) and so does seccomp.
+
+That covers all callers of do_coredump().  Secondary threads get hit with
+SIGKILL and caught as soon as they reach exit_mm(), which normally happens
+in signal delivery, so those are also fine most of the time.  Unfortunately,
+it is possible to end up with secondary zapped when it has already entered
+exit(2) (or, worse yet, is oopsing).  In those cases we reach exit_mm()
+when mm->core_state is already set, but the stack contents is not what
+we would have in signal delivery.
+
+At least on two architectures (alpha and m68k) it leads to infoleaks - we
+end up with a chunk of kernel stack written into coredump, with the contents
+consisting of normal C stack frames of the call chain leading to exit_mm()
+instead of the expected copy of userland registers.  In case of alpha we
+leak 312 bytes of stack.  Other architectures (including the regset-using
+ones) might have similar problems - the normal user of regsets is ptrace
+and the state of tracee at the time of such calls is special in the same
+way signal delivery is.
+
+Note that had the zapper gotten to the exiting thread slightly later,
+it wouldn't have been included into coredump anyway - we skip the threads
+that have already cleared their ->mm.  So let's pretend that zapper always
+loses the race.  IOW, have exit_mm() only insert into the dumper list if
+we'd gotten there from handling a fatal signal[*]
+
+As the result, the callers of do_exit() that have *not* gone through get_signal()
+are not seen by coredump logics as secondary threads.  Which excludes voluntary
+exit()/oopsen/traps/etc.  The dumper thread itself is unaffected by that,
+so seccomp is fine.
+
+[*] originally I intended to add a new flag in tsk->flags, but ebiederman pointed
+out that PF_SIGNALED is already doing just what we need.
+
+Cc: stable@vger.kernel.org
+Fixes: d89f3847def4 ("[PATCH] thread-aware coredumps, 2.5.43-C3")
+History-tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/char/tpm/tpm_tis.c | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+ kernel/exit.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
-index e7df342a317d6..c722e3b3121a8 100644
---- a/drivers/char/tpm/tpm_tis.c
-+++ b/drivers/char/tpm/tpm_tis.c
-@@ -27,6 +27,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/kernel.h>
-+#include <linux/dmi.h>
- #include "tpm.h"
- #include "tpm_tis_core.h"
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -483,7 +483,10 @@ static void exit_mm(struct task_struct *
+ 		up_read(&mm->mmap_sem);
  
-@@ -49,8 +50,8 @@ static inline struct tpm_tis_tcg_phy *to_tpm_tis_tcg_phy(struct tpm_tis_data *da
- 	return container_of(data, struct tpm_tis_tcg_phy, priv);
- }
- 
--static bool interrupts = true;
--module_param(interrupts, bool, 0444);
-+static int interrupts = -1;
-+module_param(interrupts, int, 0444);
- MODULE_PARM_DESC(interrupts, "Enable interrupts");
- 
- static bool itpm;
-@@ -63,6 +64,28 @@ module_param(force, bool, 0444);
- MODULE_PARM_DESC(force, "Force device probe rather than using ACPI entry");
- #endif
- 
-+static int tpm_tis_disable_irq(const struct dmi_system_id *d)
-+{
-+	if (interrupts == -1) {
-+		pr_notice("tpm_tis: %s detected: disabling interrupts.\n", d->ident);
-+		interrupts = 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct dmi_system_id tpm_tis_dmi_table[] = {
-+	{
-+		.callback = tpm_tis_disable_irq,
-+		.ident = "ThinkPad T490s",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T490s"),
-+		},
-+	},
-+	{}
-+};
-+
- #if defined(CONFIG_PNP) && defined(CONFIG_ACPI)
- static int has_hid(struct acpi_device *dev, const char *hid)
- {
-@@ -192,6 +215,8 @@ static int tpm_tis_init(struct device *dev, struct tpm_info *tpm_info)
- 	int irq = -1;
- 	int rc;
- 
-+	dmi_check_system(tpm_tis_dmi_table);
-+
- 	rc = check_acpi_tpm2(dev);
- 	if (rc)
- 		return rc;
--- 
-2.27.0
-
+ 		self.task = tsk;
+-		self.next = xchg(&core_state->dumper.next, &self);
++		if (self.task->flags & PF_SIGNALED)
++			self.next = xchg(&core_state->dumper.next, &self);
++		else
++			self.task = NULL;
+ 		/*
+ 		 * Implies mb(), the result of xchg() must be visible
+ 		 * to core_state->dumper.
 
 
