@@ -2,143 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5202B5DE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CBD2B5DE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 12:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgKQLDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 06:03:42 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2113 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727849AbgKQLDk (ORCPT
+        id S1728104AbgKQLEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 06:04:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgKQLEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 06:03:40 -0500
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cb3195n6cz67Dvd;
-        Tue, 17 Nov 2020 19:02:05 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 17 Nov 2020 12:03:38 +0100
-Received: from localhost (10.47.31.177) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 17 Nov
- 2020 11:03:38 +0000
-Date:   Tue, 17 Nov 2020 11:03:30 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <jic23@kernel.org>,
-        <robh+dt@kernel.org>
-Subject: Re: [PATCH 3/3] dt-bindings: adc: ad7887: add binding doc for
- AD7887
-Message-ID: <20201117110330.00004adb@Huawei.com>
-In-Reply-To: <20201117075254.4861-3-alexandru.ardelean@analog.com>
-References: <20201117075254.4861-1-alexandru.ardelean@analog.com>
-        <20201117075254.4861-3-alexandru.ardelean@analog.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 17 Nov 2020 06:04:45 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C969C0613CF;
+        Tue, 17 Nov 2020 03:04:44 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 1so1321019wme.3;
+        Tue, 17 Nov 2020 03:04:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rOaJF6sxlfFSahGzMed0tR7LlFvBke/MI1WU7Gd8cdk=;
+        b=NFPX05QKHgHmo7GME58le2xewfdkwEflb3rY9BaSq+L3qzh6T+2i+sQ4TADpUb2+Ze
+         Y5yZfE7ZRKtwwYCIXVDI3aLjCF2nQaJ+6FwyPP7R1WcXeBe1CYtMk3mZ39RXCcwsulIu
+         g82v65KKB+JlXL4/WhEtaBFMArHzDDtiY32aYtQwnuThw8l1kDKlILpCrv/pzBWi0Fed
+         R5TUyVEmJ8wIwMRSGq06hhtJ44IXctkzSY3GoA+V/nhyk0tut6r2KGajEuRbr/ENfD3i
+         RCWiwUeFVYpOf2RojV3ZMr6o8csQohwsKqP8+wQUGY2OyfIaRsEwcV612jognuV0INcr
+         VKTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:cc:references:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rOaJF6sxlfFSahGzMed0tR7LlFvBke/MI1WU7Gd8cdk=;
+        b=sffI2Tt5EXqXzpKAksakU2bNPL7a0ZQTPjbfdyNiEyT9Klqwf/8+gH77XYJahC8YTB
+         oj0faQKxJfLuo+AMyZdZpKMPtxwBYaf/2j9lIi1DhdeSFq68TxXGAUCu6cbFuxF9bOtq
+         ChjBjgxHZL1YhHV/xgZ7ATB6Q9CUkF2UuCWRBvnu4R+a+MHIFAjc1qE7rdZP3wfr9k3u
+         GstrjqWrn/pjrYT4M1hxwRxdJEcb2ViNBQce/E01TIanOPPYw4QqyWyUnQ2f21OhVjFv
+         hUgAthyOWoQvtu1ZoNvsAGytItLGw4soxPw0+XLv4pNJURC1Nx/QpcE2ZqTMLQhg5epY
+         wedg==
+X-Gm-Message-State: AOAM53193fMkUahkfzNJfFCNDcdTQfRI/wn1j8/ic/JivZ7PUo/RPJub
+        QugcAgzGnKuwJqtObdGWFas=
+X-Google-Smtp-Source: ABdhPJwOAgFYO4Mpln0IO7uONcF1bnKVn80AtWHkGz/Yiu3U4Nwe3vYitCywHhvciVa0p0YiuxQNcQ==
+X-Received: by 2002:a1c:3907:: with SMTP id g7mr3683736wma.176.1605611083335;
+        Tue, 17 Nov 2020 03:04:43 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.googlemail.com with ESMTPSA id t7sm1886255wrp.26.2020.11.17.03.04.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Nov 2020 03:04:42 -0800 (PST)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Subject: Re: [PATCH 1/2] kvm: x86/mmu: Add existing trace points to TDP MMU
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     Ben Gardon <bgardon@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Peter Feiner <pfeiner@google.com>
+References: <20201027175944.1183301-1-bgardon@google.com>
+ <CANgfPd8FkNL-05P7us6sPq8pXPJ1jedXGMPkR2OrvTtg8+WSLg@mail.gmail.com>
+ <0751cea5-9f4a-1bb9-b023-f9e5eece1d01@redhat.com>
+Message-ID: <4f18ac24-6c81-f8c2-8f88-bc33cb7c3cba@redhat.com>
+Date:   Tue, 17 Nov 2020 12:04:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <0751cea5-9f4a-1bb9-b023-f9e5eece1d01@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.31.177]
-X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020 09:52:54 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-
-> This change adds a simple device-tree binding for thhe Analog Devices
-> AD7887 ADC.
+On 16/11/20 20:25, Paolo Bonzini wrote:
+> On 16/11/20 20:15, Ben Gardon wrote:
+>> If anyone has time to review this short series, I'd appreciate it. I
+>> don't want these to get lost in the shuffle.
+>> Thanks!
 > 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> Yup, it's on the list. :)
 
-Binding looks good to me.
+Queued, thanks.
 
-Jonathan
-
-> ---
->  .../bindings/iio/adc/adi,ad7887.yaml          | 70 +++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7887.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7887.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7887.yaml
-> new file mode 100644
-> index 000000000000..9b30f4569b4e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7887.yaml
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/adi,ad7887.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD7887 low power, 12-bit ADC
-> +
-> +maintainers:
-> +  - Michael Hennerich <michael.hennerich@analog.com>
-> +
-> +description: |
-> +  Analog Devices AD7887 low power, 12-bit analog-to-digital converter (ADC)
-> +  that operates from a single 2.7 V to 5.25 V power supply.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad7887
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-cpha: true
-> +
-> +  spi-cpol: true
-> +
-> +  avcc-supply: true
-> +
-> +  spi-max-frequency: true
-> +
-> +  vref-supply:
-> +    description:
-> +      ADC reference voltage supply
-> +
-> +  adi,dual-channel-mode:
-> +    description:
-> +      Configures dual-channel mode for the ADC. In dual-channel operation,
-> +      the AIN1/VREF pin assumes its AIN1 function, providing a second analog
-> +      input channel. In this case, he reference voltage for the part is provided
-> +      via the VDD pin. As a result, the input voltage range on both the AIN0 and
-> +      AIN1 inputs is 0 to VDD.
-> +    type: boolean
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - spi-cpha
-> +  - spi-cpol
-> +
-> +examples:
-> +  - |
-> +    spi0 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        adc@0 {
-> +                compatible = "adi,ad7887";
-> +                reg = <0>;
-> +                spi-max-frequency = <1000000>;
-> +                spi-cpol;
-> +                spi-cpha;
-> +
-> +                avcc-supply = <&adc_supply>;
-> +                vref-supply = <&adc_vref>;
-> +        };
-> +    };
-> +...
-
+Paolo
