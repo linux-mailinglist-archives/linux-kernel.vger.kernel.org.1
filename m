@@ -2,75 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC14A2B6AA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C7A2B6AA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 17:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727717AbgKQQto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 11:49:44 -0500
-Received: from m12-13.163.com ([220.181.12.13]:40163 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgKQQto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:49:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=0kJRm
-        r4J72jwh/DQ8J2Hn1LSz9YEVVyO0Q8Q29QpUT0=; b=C9rNxyGL3AtlGGxtIBYm1
-        qPBLzJBCe1vJ/ULlazMLGHol+V4y8CdNS71kp63+fMhPasNAKZwVq1Mk9tvQQ05j
-        FHxOQweDyKIvB2mtqOxQtFfklG8Wc0Wotvhs4qHI+JpMYoktyrawdIG3g+QBUoKZ
-        am6oZC+OPKdldhfUJnSBbw=
-Received: from localhost (unknown [101.86.213.141])
-        by smtp9 (Coremail) with SMTP id DcCowACnvXoP_7Nfk7jURA--.60410S2;
-        Wed, 18 Nov 2020 00:49:20 +0800 (CST)
-Date:   Wed, 18 Nov 2020 00:49:19 +0800
-From:   Hui Su <sh_def@163.com>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     sh_def@163.com
-Subject: [PATCH] mm/lru: simplify is_file_lru() and is_active_lru()
-Message-ID: <20201117164919.GA82821@rlk>
+        id S1727330AbgKQQtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 11:49:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726392AbgKQQtK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:49:10 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F23C0613CF;
+        Tue, 17 Nov 2020 08:49:10 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id gv24so761090pjb.3;
+        Tue, 17 Nov 2020 08:49:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9eWscDwZQ3CWBezdlVFPaRIFcqDLiQIitdTtQk021vM=;
+        b=eYd32u3aYWqn822wbN6Yre+7CnFye2qgszav79YI4UwMHcwhGdd028xLX04IEPZ7Ef
+         F/LLkqJ2hYuKisTwNUFovM992EVpyZ2MclzbJBaOzIE/O7v+WH3jvOWb7tudVWHuhrGe
+         57yyAQR85HcMiNfy6hePe3zTYcMs9rhqipOTWrEEfSVEwaoG3lWIBS2p1mpPOZpSlria
+         xpd5qjJhQokn739B5AH8JkQjvsXgqSIw3Hz7R3d5DTenkbMXIvuvxMa8XN774ysR4uHC
+         HNolsKSMDYI4+tWvwjabV2mpW2GZZSV7KPKFr5XZe3hb/TpHolpGO0JtHhGplN2FNQpf
+         XLHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9eWscDwZQ3CWBezdlVFPaRIFcqDLiQIitdTtQk021vM=;
+        b=dbfdzry7YHyCDVv7xKtcVd2LxElNG3WeA5Dolq2IX/oGEYSbXb6Hl01UCFijfkWKlU
+         QAM7Qsdh2A4OJHuWcf16Yq4hecmAblwZbYS4uzCZKaa64Mb4LqKzAS/HrRtBj13HPdn6
+         dZ2JA+9RXGJ2eA9inYzF8JA6sEbQ/EG8rRDD6pEDywNgAS+EJDUA7+rlfsVXsEh/ldfj
+         6Q/CeaY6qbUlEVimMRiQPZbHx/S4e2mFlkmT+R8bQSF+sADDdhUG5dtaRudVTaBcuCcZ
+         o6cBJzJlypctZzkHnWcltr8E5/brSnYesGX92BqTtmXqvbvGn8n6hYvHRQG3V0BrB60I
+         MQoQ==
+X-Gm-Message-State: AOAM533d1FxVEIM5AHQglvMa2jUNaP8vezWFs00oK7PNi0Jti+sbr05B
+        EH0wORcDd2kNjV9B5T85jn2Du2g2FE8XOUhWW2U=
+X-Google-Smtp-Source: ABdhPJz6rWufym/vh0udkK67P2ipA+U/+eKLZoaBuqlA0jxR3jhdsU6ECiUF/iIcNPOepG57WTDzW7gedgg653jY1Go=
+X-Received: by 2002:a17:902:ac93:b029:d8:d2c5:e5b1 with SMTP id
+ h19-20020a170902ac93b02900d8d2c5e5b1mr34128plr.17.1605631748839; Tue, 17 Nov
+ 2020 08:49:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: DcCowACnvXoP_7Nfk7jURA--.60410S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKFWxXw4DGr48JFWfAr18Zrb_yoW3Cwc_ua
-        y8A3WkJwsxXrnrWw40k3ZrJ3yYk3W7XF4kZF95tw4IyrnxKws8K34kCr4qqr4kWay29ryU
-        W3W09ryfur13GjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRiwID3UUUUU==
-X-Originating-IP: [101.86.213.141]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbBDhDfX1rbLE6IsgAAsH
+References: <20201117154340.18216-1-info@metux.net> <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
+In-Reply-To: <CAHp75VfPio=TacTTrY=vZp8vZ7qst_7zWeXKDpYvJ6q7oh2Hdw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 17 Nov 2020 18:49:57 +0200
+Message-ID: <CAHp75Vfgs=-_SZoxGf9T93sBdKb6ak_YUi8=WPPF3YeZUsxQcA@mail.gmail.com>
+Subject: Re: [PATCH] drivers: gpio: use of_match_ptr() and ACPI_PTR() macros
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Jeffery <andrew@aj.id.au>, Alban Bedel <albeu@free.fr>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>, orsonzhai@gmail.com,
+        baolin.wang7@gmail.com, zhang.lyra@gmail.com,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-page->lru bit 0 can tell whether the page is
-avtive page or not.
-page->lru bit 1 can tell whether the page is
-file page or not.
+On Tue, Nov 17, 2020 at 6:45 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Tue, Nov 17, 2020 at 5:45 PM Enrico Weigelt, metux IT consult
+> <info@metux.net> wrote:
+> >
+> > The of_match_ptr(foo) macro evaluates to foo, only if
+> > CONFIG_OF is set, otherwise to NULL. Same does ACPI_PTR with
+> > CONFIG_ACPI. That's very helpful for drivers that can be used
+> > with or without oftree / acpi.
+> >
+> > Even though most of the drivers touched here probably don't
+> > actually need that, it's also nice for consistency to make it
+> > the de-facto standard and change all drivers to use the
+> > of_match_ptr() and ACPI_PTR() macros.
+> >
+> > A nice side effect: in some situations, when compiled w/o
+> > CONFIG_OF/CONFIG_ACPI, the corresponding match tables could
+> > automatically become unreferenced and optimized-away by the
+> > compiler, w/o explicitly cluttering the code w/ ifdef's.
+>
+> NAK.
+>
+> It prevents using DT-enabled drivers on ACPI based platforms.
+>
+> +Cc: Jonathan who had done the opposite in the entire IIO subsystem.
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- include/linux/mmzone.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+And a side note: use of_match_ptr() and ACPI_PTR() in 99% is a mistake.
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index fb3bf696c05e..294369c652d0 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -258,12 +258,12 @@ enum lru_list {
- 
- static inline bool is_file_lru(enum lru_list lru)
- {
--	return (lru == LRU_INACTIVE_FILE || lru == LRU_ACTIVE_FILE);
-+	return lru & LRU_FILE;
- }
- 
- static inline bool is_active_lru(enum lru_list lru)
- {
--	return (lru == LRU_ACTIVE_ANON || lru == LRU_ACTIVE_FILE);
-+	return lru & LRU_ACTIVE;
- }
- 
- #define ANON_AND_FILE 2
+
+
 -- 
-2.29.0
-
-
+With Best Regards,
+Andy Shevchenko
