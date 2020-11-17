@@ -2,233 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4142B5BDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CC32B5BE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 17 Nov 2020 10:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgKQJhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 17 Nov 2020 04:37:18 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:47126 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgKQJhS (ORCPT
+        id S1727263AbgKQJig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 17 Nov 2020 04:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726502AbgKQJig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 17 Nov 2020 04:37:18 -0500
-Date:   Tue, 17 Nov 2020 09:37:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605605834;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fQ7OVL5zUp1dRHHqiye6cfkISaYJKqaGkukaoe40K7M=;
-        b=UecBPSHCMbxXPl6VPb5Drr6VkVj6/SbH9CV5L6YvRucE/6XS5uzWx3unCnmALtzXdt79E8
-        E8H4s+v+xNlbVWxY2rbnDpoCCQuYkYGHx3FwYQIql9R43XWb6bLqZuper3M8VtQcltkLnU
-        sDN9W8bdiiMp1YJIdG8csDtw7jG3PD3zhd0Tk8dILohSFz+dvrVoCoOC2fz9iTF83N+HPU
-        WPzSR4vLcDMYGvILH645jAAw2iKbQp7YT1zEeBd24erZrq9LUmNEUUYoLkZfVAkpE5wmc1
-        1uPVQ7IlHcUDkrX3Wm8bwFBrdTxdHFK9HA0i/ExAe9bNqnBy8W3EgEA7Co4D+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605605834;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fQ7OVL5zUp1dRHHqiye6cfkISaYJKqaGkukaoe40K7M=;
-        b=kiViCLZ0EFJXo63UWvXiAO+06chz16BNlSfw2NDUK8imMSU23cJlarOaLh8bClpl19782S
-        qClrOd/WyIKKz2Cw==
-From:   "tip-bot2 for Chen Yu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/microcode/intel: Check patch signature before
- saving microcode for early loading
-Cc:     Chen Yu <yu.c.chen@intel.com>, Borislav Petkov <bp@suse.de>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201113015923.13960-1-yu.c.chen@intel.com>
-References: <20201113015923.13960-1-yu.c.chen@intel.com>
+        Tue, 17 Nov 2020 04:38:36 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2CEC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 17 Nov 2020 01:38:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ml+AWrO6PMqaRF0x0zELssnj5J1f5i17DJx7o/swHjw=; b=ecD4yzUIy4eHZvXRSm5fpFqGS1
+        IC1HOihF+b1EhuWTYh4ND4xzy0GC5e12hECr/FbJXKO1/UXCVRyAR2NRCH2DObzNJH+PMfi7cWdH6
+        1c5sy1x/jCrbL9VjcEt3yMdw8dAXWe5ipow4Y83SIcBwxmk+zW5IuYma241V9q9AumwfKNzII2W4L
+        TlITcNH1W/uoJ6GS3XDYMlK39cS1TiTUsAjYWQ8T5sxZx0AExhmbQEH3KhFlLkYJ8giebFH+WNSBm
+        Yo5HBq1+9JUBWlGF/bhc/5ejAQisl9GTcYDhZTE80F2RrYWJhSVQM5oQc9d69n2pWXVO1lsrae4EL
+        qNSEOHVg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kexRW-00062f-Kt; Tue, 17 Nov 2020 09:38:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9AD29301959;
+        Tue, 17 Nov 2020 10:38:29 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8546C2012638E; Tue, 17 Nov 2020 10:38:29 +0100 (CET)
+Date:   Tue, 17 Nov 2020 10:38:29 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Will Deacon <will@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+Subject: [PATCH] sched: Fix rq->nr_iowait ordering
+Message-ID: <20201117093829.GD3121429@hirez.programming.kicks-ass.net>
+References: <20201116091054.GL3371@techsingularity.net>
+ <20201116131102.GA29992@willie-the-truck>
+ <20201116133721.GQ3371@techsingularity.net>
+ <20201116142005.GE3121392@hirez.programming.kicks-ass.net>
+ <20201116193149.GW3371@techsingularity.net>
+ <20201117083016.GK3121392@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <160560583321.11244.936702015885379911.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117083016.GK3121392@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     1a371e67dc77125736cc56d3a0893f06b75855b6
-Gitweb:        https://git.kernel.org/tip/1a371e67dc77125736cc56d3a0893f06b75855b6
-Author:        Chen Yu <yu.c.chen@intel.com>
-AuthorDate:    Fri, 13 Nov 2020 09:59:23 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 17 Nov 2020 10:33:18 +01:00
+And poking at this reminded me of an order email from TJ that seems to
+have stagnated.
 
-x86/microcode/intel: Check patch signature before saving microcode for early loading
-
-Currently, scan_microcode() leverages microcode_matches() to check
-if the microcode matches the CPU by comparing the family and model.
-However, the processor stepping and flags of the microcode signature
-should also be considered when saving a microcode patch for early
-update.
-
-Use find_matching_signature() in scan_microcode() and get rid of the
-now-unused microcode_matches() which is a good cleanup in itself.
-
-Complete the verification of the patch being saved for early loading in
-save_microcode_patch() directly. This needs to be done there too because
-save_mc_for_early() will call save_microcode_patch() too.
-
-The second reason why this needs to be done is because the loader still
-tries to support, at least hypothetically, mixed-steppings systems and
-thus adds all patches to the cache that belong to the same CPU model
-albeit with different steppings.
-
-For example:
-
-  microcode: CPU: sig=0x906ec, pf=0x2, rev=0xd6
-  microcode: mc_saved[0]: sig=0x906e9, pf=0x2a, rev=0xd6, total size=0x19400, date = 2020-04-23
-  microcode: mc_saved[1]: sig=0x906ea, pf=0x22, rev=0xd6, total size=0x19000, date = 2020-04-27
-  microcode: mc_saved[2]: sig=0x906eb, pf=0x2, rev=0xd6, total size=0x19400, date = 2020-04-23
-  microcode: mc_saved[3]: sig=0x906ec, pf=0x22, rev=0xd6, total size=0x19000, date = 2020-04-27
-  microcode: mc_saved[4]: sig=0x906ed, pf=0x22, rev=0xd6, total size=0x19400, date = 2020-04-23
-
-The patch which is being saved for early loading, however, can only be
-the one which fits the CPU this runs on so do the signature verification
-before saving.
-
- [ bp: Do signature verification in save_microcode_patch()
-       and rewrite commit message. ]
-
-Fixes: ec400ddeff20 ("x86/microcode_intel_early.c: Early update ucode on Intel's CPU")
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=208535
-Link: https://lkml.kernel.org/r/20201113015923.13960-1-yu.c.chen@intel.com
 ---
- arch/x86/kernel/cpu/microcode/intel.c | 63 ++++----------------------
- 1 file changed, 10 insertions(+), 53 deletions(-)
+Subject: sched: Fix rq->nr_iowait ordering
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Thu, 24 Sep 2020 13:50:42 +0200
 
-diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
-index 6a99535..7e8e07b 100644
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -100,53 +100,6 @@ static int has_newer_microcode(void *mc, unsigned int csig, int cpf, int new_rev
- 	return find_matching_signature(mc, csig, cpf);
- }
+  schedule()				ttwu()
+    deactivate_task();			  if (p->on_rq && ...) // false
+					    atomic_dec(&task_rq(p)->nr_iowait);
+    if (prev->in_iowait)
+      atomic_inc(&rq->nr_iowait);
+
+Allows nr_iowait to be decremented before it gets incremented,
+resulting in more dodgy IO-wait numbers than usual.
+
+Note that because we can now do ttwu_queue_wakelist() before
+p->on_cpu==0, we lose the natural ordering and have to further delay
+the decrement.
+
+Fixes: Fixes: c6e7bd7afaeb ("sched/core: Optimize ttwu() spinning on p->on_cpu")
+Reported-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/sched/core.c |   15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2949,7 +2949,12 @@ ttwu_do_activate(struct rq *rq, struct t
+ #ifdef CONFIG_SMP
+ 	if (wake_flags & WF_MIGRATED)
+ 		en_flags |= ENQUEUE_MIGRATED;
++	else
+ #endif
++	if (p->in_iowait) {
++		delayacct_blkio_end(p);
++		atomic_dec(&task_rq(p)->nr_iowait);
++	}
  
--/*
-- * Given CPU signature and a microcode patch, this function finds if the
-- * microcode patch has matching family and model with the CPU.
-- *
-- * %true - if there's a match
-- * %false - otherwise
-- */
--static bool microcode_matches(struct microcode_header_intel *mc_header,
--			      unsigned long sig)
--{
--	unsigned long total_size = get_totalsize(mc_header);
--	unsigned long data_size = get_datasize(mc_header);
--	struct extended_sigtable *ext_header;
--	unsigned int fam_ucode, model_ucode;
--	struct extended_signature *ext_sig;
--	unsigned int fam, model;
--	int ext_sigcount, i;
--
--	fam   = x86_family(sig);
--	model = x86_model(sig);
--
--	fam_ucode   = x86_family(mc_header->sig);
--	model_ucode = x86_model(mc_header->sig);
--
--	if (fam == fam_ucode && model == model_ucode)
--		return true;
--
--	/* Look for ext. headers: */
--	if (total_size <= data_size + MC_HEADER_SIZE)
--		return false;
--
--	ext_header   = (void *) mc_header + data_size + MC_HEADER_SIZE;
--	ext_sig      = (void *)ext_header + EXT_HEADER_SIZE;
--	ext_sigcount = ext_header->count;
--
--	for (i = 0; i < ext_sigcount; i++) {
--		fam_ucode   = x86_family(ext_sig->sig);
--		model_ucode = x86_model(ext_sig->sig);
--
--		if (fam == fam_ucode && model == model_ucode)
--			return true;
--
--		ext_sig++;
+ 	activate_task(rq, p, en_flags);
+ 	ttwu_do_wakeup(rq, p, wake_flags, rf);
+@@ -3336,11 +3341,6 @@ try_to_wake_up(struct task_struct *p, un
+ 	if (READ_ONCE(p->on_rq) && ttwu_runnable(p, wake_flags))
+ 		goto unlock;
+ 
+-	if (p->in_iowait) {
+-		delayacct_blkio_end(p);
+-		atomic_dec(&task_rq(p)->nr_iowait);
 -	}
--	return false;
--}
 -
- static struct ucode_patch *memdup_patch(void *data, unsigned int size)
- {
- 	struct ucode_patch *p;
-@@ -164,7 +117,7 @@ static struct ucode_patch *memdup_patch(void *data, unsigned int size)
- 	return p;
- }
- 
--static void save_microcode_patch(void *data, unsigned int size)
-+static void save_microcode_patch(struct ucode_cpu_info *uci, void *data, unsigned int size)
- {
- 	struct microcode_header_intel *mc_hdr, *mc_saved_hdr;
- 	struct ucode_patch *iter, *tmp, *p = NULL;
-@@ -210,6 +163,9 @@ static void save_microcode_patch(void *data, unsigned int size)
- 	if (!p)
- 		return;
- 
-+	if (!find_matching_signature(p->data, uci->cpu_sig.sig, uci->cpu_sig.pf))
-+		return;
-+
+ #ifdef CONFIG_SMP
  	/*
- 	 * Save for early loading. On 32-bit, that needs to be a physical
- 	 * address as the APs are running from physical addresses, before
-@@ -344,13 +300,14 @@ scan_microcode(void *data, size_t size, struct ucode_cpu_info *uci, bool save)
+ 	 * Ensure we load p->on_cpu _after_ p->on_rq, otherwise it would be
+@@ -3411,6 +3411,11 @@ try_to_wake_up(struct task_struct *p, un
  
- 		size -= mc_size;
- 
--		if (!microcode_matches(mc_header, uci->cpu_sig.sig)) {
-+		if (!find_matching_signature(data, uci->cpu_sig.sig,
-+					     uci->cpu_sig.pf)) {
- 			data += mc_size;
- 			continue;
- 		}
- 
- 		if (save) {
--			save_microcode_patch(data, mc_size);
-+			save_microcode_patch(uci, data, mc_size);
- 			goto next;
- 		}
- 
-@@ -483,14 +440,14 @@ static void show_saved_mc(void)
-  * Save this microcode patch. It will be loaded early when a CPU is
-  * hot-added or resumes.
-  */
--static void save_mc_for_early(u8 *mc, unsigned int size)
-+static void save_mc_for_early(struct ucode_cpu_info *uci, u8 *mc, unsigned int size)
- {
- 	/* Synchronization during CPU hotplug. */
- 	static DEFINE_MUTEX(x86_cpu_microcode_mutex);
- 
- 	mutex_lock(&x86_cpu_microcode_mutex);
- 
--	save_microcode_patch(mc, size);
-+	save_microcode_patch(uci, mc, size);
- 	show_saved_mc();
- 
- 	mutex_unlock(&x86_cpu_microcode_mutex);
-@@ -935,7 +892,7 @@ static enum ucode_state generic_load_microcode(int cpu, struct iov_iter *iter)
- 	 * permanent memory. So it will be loaded early when a CPU is hot added
- 	 * or resumes.
- 	 */
--	save_mc_for_early(new_mc, new_mc_size);
-+	save_mc_for_early(uci, new_mc, new_mc_size);
- 
- 	pr_debug("CPU%d found a matching microcode update with version 0x%x (current=0x%x)\n",
- 		 cpu, new_rev, uci->cpu_sig.rev);
+ 	cpu = select_task_rq(p, p->wake_cpu, wake_flags | WF_TTWU);
+ 	if (task_cpu(p) != cpu) {
++		if (p->in_iowait) {
++			delayacct_blkio_end(p);
++			atomic_dec(&task_rq(p)->nr_iowait);
++		}
++
+ 		wake_flags |= WF_MIGRATED;
+ 		psi_ttwu_dequeue(p);
+ 		set_task_cpu(p, cpu);
